@@ -5009,7 +5009,7 @@ Mogrify(ref,...)
               current.rx*affine.tx+current.sy*affine.ty+current.ty;
           }
           if (attribute_flag[15])
-            draw_info->tile=
+            draw_info->fill_pattern=
               CloneImage(argument_list[15].image_reference,0,0,True,&exception);
           if (attribute_flag[16])
             draw_info->pointsize=argument_list[16].double_reference;
