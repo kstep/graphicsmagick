@@ -581,6 +581,7 @@ MagickExport void MagickIncarnate(const char *path)
   SetClientPath(filename);
   GetPathComponent(path,BasePath,filename);
   SetClientName(filename);
+  InitializeSemaphore();
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
 }
