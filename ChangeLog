@@ -1,5 +1,8 @@
 2003-01-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* PerlMagick/t/tiff/read.t: Added a test for reading 16-bit TIFF
+	images.
+
 	* coders/tiff.c (ReadTIFFImage): Support reading 16-bit TIFF images
 	with a Q:8 build.
 
