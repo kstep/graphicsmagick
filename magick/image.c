@@ -8386,7 +8386,8 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
   (void) CloneString(&local_info->pen,montage_info->pen);
   (void) CloneString(&local_info->font,montage_info->font);
   local_info->pointsize=montage_info->pointsize;
-  (void) CloneString(&local_info->background_color,montage_info->background_color);
+  (void) CloneString(&local_info->background_color,
+    montage_info->background_color);
   (void) CloneString(&local_info->border_color,montage_info->border_color);
   GetAnnotateInfo(local_info,&annotate_info);
   annotate_info.gravity=NorthGravity;

@@ -6004,7 +6004,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
               XGetResourceInfo(resource_database,client_name,&resource_info);
               resource_info.close_server=False;
               resource_info.colormap=PrivateColormap;
-              (void) CloneString(&resource_info.font,local_info->font);
+              resource_info.font=AllocateString(local_info->font);
               resource_info.background_color=AllocateString("black");
               resource_info.foreground_color=AllocateString("white");
               map_info=XAllocStandardColormap();

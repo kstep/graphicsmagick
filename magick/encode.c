@@ -304,7 +304,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         bmp_header.bit_count=8;
         bytes_per_line=((image->columns*bmp_header.bit_count+31)/32)*4;
-        if (image_info->compression != NoCompression)
+        if (image_info->compression == NoCompression)
           bytes_per_line=image->columns;
         if (IsMonochromeImage(image))
           {
