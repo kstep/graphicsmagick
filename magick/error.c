@@ -215,9 +215,22 @@ static void DefaultErrorHandler(const ExceptionType severity,const char *reason,
 {
   if (reason == (char *) NULL)
     return;
-  (void) fprintf(stderr,"%.1024s: %.1024s",GetClientName(),reason);
-  if (description != (char *) NULL)
-    (void) fprintf(stderr," (%.1024s)",description);
+
+  (void) fprintf(stderr,"%.1024s: ",GetClientName());
+  if (strstr(reason,"%s") && description)
+    {
+      /*
+        Reason contains printf specification. %s in reason string
+        is substituted with description.
+      */
+      (void) fprintf(stderr,reason,description);
+    }
+  else
+    {
+      (void) fprintf(stderr,"%.1024s",reason);
+      if (description != (char *) NULL)
+        (void) fprintf(stderr," (%.1024s)",description);
+    }
   if ((severity != OptionError) && errno)
     (void) fprintf(stderr," [%.1024s]",GetErrorMessageString(errno));
   (void) fprintf(stderr,".\n");

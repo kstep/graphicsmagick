@@ -1,3 +1,12 @@
+2003-09-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* locale/C.mgk (MissingArgument) Updated to include %s so that the
+	description field appears earlier in the message.
+	* magick/error.c (DefaultErrorHandler): Added a hack to allow the
+	'reason' member to include a %s so that it may specify the
+	formating of the message.  Care should be taken to not over-use
+	this hack.
+
 2003-09-18  Lars Ruben Skyum  <lars.skyum@stibo.com>
 
 	* coders/ps3.c: Major update of the PS3 coder. Now ascii85 encodes

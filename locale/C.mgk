@@ -913,7 +913,7 @@
         Missing an image filename
       </Message>
       <Message name="MissingArgument">
-        Option requires an argument or argument is malformed
+        Option '%s' requires an argument or argument is malformed
       </Message>
       <Message name="MustSpecifyAnImageName">
         Must specify a image name
@@ -1104,7 +1104,7 @@
         Invalid endian type
       </Message>
       <Message name="MissingArgument">
-        Option requires an argument or argument is malformed
+        Option '%s' requires an argument or argument is malformed
       </Message>
       <Message name="MissingAnImageFilename">
         Missing an image filename

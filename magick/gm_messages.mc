@@ -1639,7 +1639,7 @@ Missing an image filename
 MessageId       = +1
 SymbolicName    = OptionErrorMissingArgument
 Language        = English
-Option requires an argument or argument is malformed
+Option '%s' requires an argument or argument is malformed
 .
 
 MessageId       = +1
@@ -2023,7 +2023,7 @@ Missing an image filename
 MessageId       = +1
 SymbolicName    = OptionFatalErrorMissingArgument
 Language        = English
-Option requires an argument or argument is malformed
+Option '%s' requires an argument or argument is malformed
 .
 
 MessageId       = +1
