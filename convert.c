@@ -561,6 +561,16 @@ int main(int argc,char **argv)
         }
         case 'c':
         {
+          if (strncmp("cache",option+1,3) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                    MagickError(OptionError,"Missing threshold",option);
+                }
+              break;
+            }
           if (strncmp("charcoal",option+1,2) == 0)
             {
               if (*option == '-')
