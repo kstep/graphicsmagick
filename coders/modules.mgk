@@ -1,67 +1,67 @@
 <?xml version="1.0"?>
 <modulemap>
-  <module name="TTF" alias="AFM"/>
-  <module name="JBIG" alias="BIE"/>
-  <module name="PCX" alias="DCX"/>
-  <module name="PDF" alias="EPDF"/>
-  <module name="PS" alias="EPI"/>
-  <module name="PS" alias="EPS"/>
-  <module name="PS2" alias="EPS2"/>
-  <module name="PS" alias="EPSF"/>
-  <module name="PS" alias="EPSI"/>
-  <module name="URL" alias="FILE"/>
-  <module name="URL" alias="FTP"/>
-  <module name="FAX" alias="G3"/>
-  <module name="GIF" alias="GIF87"/>
-  <module name="GRAY" alias="R"/>
-  <module name="GRAY" alias="C"/>
-  <module name="GRAY" alias="G"/>
-  <module name="GRAY" alias="M"/>
-  <module name="GRAY" alias="B"/>
-  <module name="GRAY" alias="Y"/>
-  <module name="GRAY" alias="O"/>
-  <module name="GRAY" alias="K"/>
-  <module name="LOGO" alias="GRANITE"/>
-  <module name="LOGO" alias="H"/>
-  <module name="HDF" alias="H5"/>
-  <module name="HTML" alias="HTM"/>
-  <module name="META" alias="8BIM"/>
-  <module name="META" alias="APP1"/>
-  <module name="META" alias="ICM"/>
-  <module name="META" alias="IPTC"/>
-  <module name="URL" alias="HTTP"/>
-  <module name="TGA" alias="ICB"/>
-  <module name="ICON" alias="ICO"/>
-  <module name="MIFF" alias="IMPLICIT"/>
-  <module name="JBIG" alias="JBG"/>
-  <module name="JPEG" alias="JPG"/>
-  <module name="MPEG" alias="M2V"/>
-  <module name="PNG" alias="MNG"/>
-  <module name="MPEG" alias="MPG"/>
-  <module name="MPR" alias="MPRI"/>
-  <module name="LOGO" alias="NETSCAPE"/>
-  <module name="PNM" alias="P7"/>
-  <module name="UYVY" alias="PAL"/>
-  <module name="PNM" alias="PBM"/>
-  <module name="PCD" alias="PCDS"/>
-  <module name="PICT" alias="PCT"/>
-  <module name="TTF" alias="PFA"/>
-  <module name="TTF" alias="PFB"/>
-  <module name="TTF" alias="PFM"/>
-  <module name="PNM" alias="PGM"/>
-  <module name="XPM" alias="PICON"/>
-  <module name="XPM" alias="PM"/>
-  <module name="PNM" alias="PPM"/>
-  <module name="PSD" alias="PSD"/>
-  <module name="TIFF" alias="PTIF"/>
-  <module name="SUN" alias="RAS"/>
-  <module name="RGB" alias="RGBA"/>
-  <module name="HTML" alias="SHTML"/>
-  <module name="TXT" alias="TEXT"/>
-  <module name="TIFF" alias="TIF"/>
-  <module name="TGA" alias="VDA"/>
-  <module name="TGA" alias="VST"/>
-  <module name="VIFF" alias="XV"/>
-  <module name="WMF" alias="EMF"/>
-  <module name="WMF" alias="WMFWIN32"/>
+  <module alias="8BIM" name="META" />
+  <module alias="AFM" name="TTF" />
+  <module alias="APP1" name="META" />
+  <module alias="B" name="GRAY" />
+  <module alias="BIE" name="JBIG" />
+  <module alias="C" name="GRAY" />
+  <module alias="DCX" name="PCX" />
+  <module alias="EMF" name="WMF" />
+  <module alias="EPDF" name="PDF" />
+  <module alias="EPI" name="PS" />
+  <module alias="EPS" name="PS" />
+  <module alias="EPS2" name="PS2" />
+  <module alias="EPSF" name="PS" />
+  <module alias="EPSI" name="PS" />
+  <module alias="FILE" name="URL" />
+  <module alias="FTP" name="URL" />
+  <module alias="G" name="GRAY" />
+  <module alias="G3" name="FAX" />
+  <module alias="GIF87" name="GIF" />
+  <module alias="GRANITE" name="LOGO" />
+  <module alias="H" name="LOGO" />
+  <module alias="H5" name="HDF" />
+  <module alias="HTM" name="HTML" />
+  <module alias="HTTP" name="URL" />
+  <module alias="ICB" name="TGA" />
+  <module alias="ICM" name="META" />
+  <module alias="ICO" name="ICON" />
+  <module alias="IMPLICIT" name="MIFF" />
+  <module alias="IPTC" name="META" />
+  <module alias="JBG" name="JBIG" />
+  <module alias="JPG" name="JPEG" />
+  <module alias="K" name="GRAY" />
+  <module alias="M" name="GRAY" />
+  <module alias="M2V" name="MPEG" />
+  <module alias="MNG" name="PNG" />
+  <module alias="MPG" name="MPEG" />
+  <module alias="MPRI" name="MPR" />
+  <module alias="NETSCAPE" name="LOGO" />
+  <module alias="O" name="GRAY" />
+  <module alias="P7" name="PNM" />
+  <module alias="PAL" name="UYVY" />
+  <module alias="PBM" name="PNM" />
+  <module alias="PCDS" name="PCD" />
+  <module alias="PCT" name="PICT" />
+  <module alias="PFA" name="TTF" />
+  <module alias="PFB" name="TTF" />
+  <module alias="PFM" name="TTF" />
+  <module alias="PGM" name="PNM" />
+  <module alias="PICON" name="XPM" />
+  <module alias="PM" name="XPM" />
+  <module alias="PPM" name="PNM" />
+  <module alias="PSD" name="PSD" />
+  <module alias="PTIF" name="TIFF" />
+  <module alias="R" name="GRAY" />
+  <module alias="RAS" name="SUN" />
+  <module alias="RGBA" name="RGB" />
+  <module alias="SHTML" name="HTML" />
+  <module alias="TEXT" name="TXT" />
+  <module alias="TIF" name="TIFF" />
+  <module alias="VDA" name="TGA" />
+  <module alias="VST" name="TGA" />
+  <module alias="WMFWIN32" name="WMF" />
+  <module alias="XV" name="VIFF" />
+  <module alias="Y" name="GRAY" />
 </modulemap>
