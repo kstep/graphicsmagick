@@ -2612,6 +2612,7 @@ AC_OUTPUT( \
         magick/Makefile \
         magick/magick_types.h \
         magick/version.h \
+        rungm.sh \
         tests/Makefile \
         utilities/Makefile \
         wand/GraphicsMagickWand-config \

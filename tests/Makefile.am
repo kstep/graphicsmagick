@@ -8,11 +8,13 @@
 # Makefile for ImageMagick tests invoked via the C API
 #
 
-AUTOMAKE_OPTIONS = 1.6 foreign
+AUTOMAKE_OPTIONS = 1.7 foreign
 
 INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
 #INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 # ../magick/config.h is needed.
+
+RUNENV = $(SHELL) $(top_builddir)/rungm.sh
 
 #
 # Execute 'make check' to compile and run a test program
@@ -258,7 +260,7 @@ check-constitute: constitute$(EXEEXT)
 	  storage_type_failed=0 ; \
 	  for map in $(CHECK_CONSTITUTE_MAPS) ; \
 	  do \
-	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./constitute -storagetype $$storage_type $(srcdir)/input_truecolor.miff $$map ; \
+	    if $(RUNENV) ./constitute -storagetype $$storage_type $(srcdir)/input_truecolor.miff $$map ; \
 	    then \
 	      : ; \
 	    else \
@@ -285,7 +287,7 @@ check-rwblob: rwblob$(EXEEXT)
 	  format_failed=0 ; \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwblob $$file $$format ; \
+	    if $(RUNENV) ./rwblob $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -312,7 +314,7 @@ check-rwfile: rwfile$(EXEEXT)
 	  format_failed=0 ; \
 	  for file in  $(CHECK_FILES) ; \
 	  do \
-	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwfile $$file $$format ; \
+	    if $(RUNENV) ./rwfile $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -339,7 +341,7 @@ check-rwblob-sized: rwblob$(EXEEXT)
 	  format_failed=0 ; \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwblob -size 70x46 $$file $$format ; \
+	    if $(RUNENV) ./rwblob -size 70x46 $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -366,7 +368,7 @@ check-rwfile-sized: rwfile$(EXEEXT)
 	  format_failed=0 ; \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwfile -size 70x46 $$file $$format ; \
+	    if $(RUNENV) ./rwfile -size 70x46 $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -386,8 +388,8 @@ check-rwfile-sized: rwfile$(EXEEXT)
 	exit $$status
 
 check-drawtest: drawtest$(EXEEXT)
-	-./drawtest drawtest_out.miff
-	-./drawtest drawtest_out.mvg
+	$(RUNENV) ./drawtest drawtest_out.miff
+	$(RUNENV) ./drawtest rawtest_out.mvg
 
 CHECK_MIFF_FILE_COMPRESS= \
 	$(NOCOMPRESS) \
@@ -403,7 +405,7 @@ check-miff: rwfile$(EXEEXT)
 	  test_failed=0 ; \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwfile -compress $$compress $$file MIFF ; \
+	    if $(RUNENV) ./rwfile -compress $$compress $$file MIFF ; \
 	    then \
 	      : ; \
 	    else \

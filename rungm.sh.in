@@ -1,0 +1,27 @@
+# !/bin/sh
+# Copyright (C) 2003 GraphicsMagick Group
+#
+# This program is covered by multiple licenses, which are described in
+# Copyright.txt. You should have received a copy of Copyright.txt with this
+# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+#
+# Execute a program with the environment required to execute it using
+# files from the source and build directory.  This helps avoid needing to
+# install GraphicsMagick before testing it.
+#
+# Written by Bob Friesenhahn <bfriesen@simple.dallas.tx.us> December 2003
+#
+top_srcdir=`(cd @top_srcdir@ && pwd)`
+top_builddir=`dirname $0`
+top_builddir=`(cd $top_builddir && pwd)`
+echo "$@"
+MAGICK_MODULE_PATH="${top_builddir}/coders/.libs"
+MAGICK_CONFIGURE_PATH="${top_srcdir}/config:${top_builddir}/config"
+PATH="${top_builddir}/utilities:${PATH}"
+export MAGICK_MODULE_PATH MAGICK_CONFIGURE_PATH PATH
+env \
+  MAGICK_MODULE_PATH="${top_builddir}/coders/.libs" \
+  MAGICK_CONFIGURE_PATH="${top_srcdir}/config:${top_builddir}/config" \
+  LD_LIBRARY_PATH="${top_builddir}/magick/.libs:${LD_LIBRARY_PATH}" \
+  PATH="${top_builddir}/utilities:${PATH}" \
+  "$@"

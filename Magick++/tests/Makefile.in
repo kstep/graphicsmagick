@@ -401,6 +401,8 @@ CLEANFILES = colorHistogram.txt testmagick_anim_out.miff ir.out # SunWS_cache
 
 @WIN32_NATIVE_BUILD_TRUE@SRCDIR = '$(shell @WinPathScript@ $(srcdir)/)'
 @WIN32_NATIVE_BUILD_FALSE@SRCDIR = '$(srcdir)/'
+
+RUNENV = $(SHELL) $(top_builddir)/rungm.sh
 subdir = Magick++/tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -797,18 +799,18 @@ uninstall-am: uninstall-info-am
 
 # FIXME: MinGW needs Windows path form of srcdir here (or pass as command argument)
 check:
-	-env SRCDIR=$(SRCDIR) ./exceptions
-	-env SRCDIR=$(SRCDIR) ./attributes
-	-env SRCDIR=$(SRCDIR) ./appendImages
-	-env SRCDIR=$(SRCDIR) ./averageImages
-	-env SRCDIR=$(SRCDIR) ./coalesceImages
-	-env SRCDIR=$(SRCDIR) ./coderInfo
-	-env SRCDIR=$(SRCDIR) ./color
-	-env SRCDIR=$(SRCDIR) ./colorHistogram > colorHistogram.txt
-	-env SRCDIR=$(SRCDIR) ./montageImages
-	-env SRCDIR=$(SRCDIR) ./morphImages
-	-env SRCDIR=$(SRCDIR) ./readWriteBlob
-	-env SRCDIR=$(SRCDIR) ./readWriteImages
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./exceptions
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./attributes
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./appendImages
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./averageImages
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./coalesceImages
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./coderInfo
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./color
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./colorHistogram > colorHistogram.txt
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./montageImages
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./morphImages
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./readWriteBlob
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./readWriteImages
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

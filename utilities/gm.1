@@ -7904,6 +7904,13 @@ hostname:display.screen).
 \fRLocation of user's home directory. GraphicsMagick searches for
 configuration files in $HOME/.magick if the directory exists.
 .TP
+.B "MAGICK_CONFIGURE_PATH"
+\fRSearch path to use when searching for configuration (.mgk) files.
+The formatting of the search path is similar to operating system search
+paths (i.e. colon delimited for Unix, and semi-colon delimited for
+Microsoft Windows). This user specified search path is used before trying
+the default search path.
+.TP
 .B "MAGICK_DEBUG"
 \fRDebug options (see \fB-debug\fP for details)
 .TP

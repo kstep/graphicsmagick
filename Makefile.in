@@ -425,7 +425,7 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
 	$(top_builddir)/magick/magick_config_api.h
 CONFIG_CLEAN_FILES = GraphicsMagick.spec PerlMagick/Magick.pm \
-	PerlMagick/Makefile.PL
+	PerlMagick/Makefile.PL rungm.sh
 DIST_SOURCES =
 DATA = $(pkgdata_DATA)
 
@@ -438,7 +438,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/configure AUTHORS \
 	ChangeLog GraphicsMagick.spec.in Makefile.am NEWS acinclude.m4 \
 	aclocal.m4 config.guess config.sub configure configure.ac \
-	depcomp install-sh ltmain.sh missing mkinstalldirs
+	depcomp install-sh ltmain.sh missing mkinstalldirs rungm.sh.in
 all: all-recursive
 
 .SUFFIXES:
@@ -463,6 +463,8 @@ GraphicsMagick.spec: $(top_builddir)/config.status GraphicsMagick.spec.in
 PerlMagick/Magick.pm: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Magick.pm.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 PerlMagick/Makefile.PL: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Makefile.PL.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+rungm.sh: $(top_builddir)/config.status rungm.sh.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:

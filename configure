@@ -35544,7 +35544,7 @@ MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS"
 
 
 
-                                                                                                                                                                                                                                                                                                                      ac_config_files="$ac_config_files GraphicsMagick.spec Magick++/Makefile Magick++/bin/GraphicsMagick++-config Magick++/bin/Makefile Magick++/demo/Makefile Magick++/lib/GraphicsMagick++.pc Magick++/lib/Magick++/Makefile Magick++/lib/Makefile Magick++/tests/Makefile Makefile PerlMagick/Magick.pm PerlMagick/Makefile.PL coders/Makefile config/Makefile config/delegates.mgk config/type-ghostscript.mgk config/type-solaris.mgk config/type-windows.mgk config/type.mgk filters/Makefile ltdl/Makefile magick/GraphicsMagick-config magick/GraphicsMagick.pc magick/Makefile magick/magick_types.h magick/version.h tests/Makefile utilities/Makefile wand/GraphicsMagickWand-config wand/GraphicsMagickWand.pc wand/Makefile"
+                                                                                                                                                                                                                                                                                                                                ac_config_files="$ac_config_files GraphicsMagick.spec Magick++/Makefile Magick++/bin/GraphicsMagick++-config Magick++/bin/Makefile Magick++/demo/Makefile Magick++/lib/GraphicsMagick++.pc Magick++/lib/Magick++/Makefile Magick++/lib/Makefile Magick++/tests/Makefile Makefile PerlMagick/Magick.pm PerlMagick/Makefile.PL coders/Makefile config/Makefile config/delegates.mgk config/type-ghostscript.mgk config/type-solaris.mgk config/type-windows.mgk config/type.mgk filters/Makefile ltdl/Makefile magick/GraphicsMagick-config magick/GraphicsMagick.pc magick/Makefile magick/magick_types.h magick/version.h rungm.sh tests/Makefile utilities/Makefile wand/GraphicsMagickWand-config wand/GraphicsMagickWand.pc wand/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -36650,6 +36650,7 @@ do
   "magick/Makefile" ) CONFIG_FILES="$CONFIG_FILES magick/Makefile" ;;
   "magick/magick_types.h" ) CONFIG_FILES="$CONFIG_FILES magick/magick_types.h" ;;
   "magick/version.h" ) CONFIG_FILES="$CONFIG_FILES magick/version.h" ;;
+  "rungm.sh" ) CONFIG_FILES="$CONFIG_FILES rungm.sh" ;;
   "tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
   "utilities/Makefile" ) CONFIG_FILES="$CONFIG_FILES utilities/Makefile" ;;
   "wand/GraphicsMagickWand-config" ) CONFIG_FILES="$CONFIG_FILES wand/GraphicsMagickWand-config" ;;

@@ -44,6 +44,14 @@ hostname:display.screen).</abs>
 <abs>Location of user's home directory. GraphicsMagick searches for
 configuration files in $HOME/.magick if the directory exists.</abs>
 
+<opt>MAGICK_CONFIGURE_PATH</opt>
+
+<abs>Search path to use when searching for configuration (.mgk) files.
+The formatting of the search path is similar to operating system search
+paths (i.e. colon delimited for Unix, and semi-colon delimited for
+Microsoft Windows). This user specified search path is used before trying
+the default search path.</abs>
+
 <opt>MAGICK_DEBUG</opt>
 
 <abs>Debug options (see <s>-debug</s> for details)</abs>

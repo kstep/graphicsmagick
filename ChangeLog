@@ -1,3 +1,11 @@
+2003-12-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* rungm.sh.in: New script to support executing uninstalled
+	executables.
+	* magick/blob.c (GetConfigureBlob): New MAGICK_CONFIGURE_PATH
+	environment variable allows the user to specify the search path
+	for configuration (.mgk) files.
+
 2003-12-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* index.html: Added a table showing current stable release and

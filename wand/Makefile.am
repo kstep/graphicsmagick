@@ -66,6 +66,8 @@ else
 SRCDIR='$(srcdir)/'
 endif
 
+RUNENV = $(SHELL) $(top_builddir)/rungm.sh
+
 check:
-	./drawtest drawtest_out.miff
-	env SRCDIR=$(SRCDIR) ./wandtest
+	-@$(RUNENV) ./drawtest drawtest_out.miff
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./wandtest

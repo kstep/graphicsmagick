@@ -46,13 +46,16 @@ EXTRA_DIST = $(ALLMANPAGES)
 clean-local:
 	$(RMDelegate) -f *_out.miff demo.miff gm.core core
 
-GM=./gm
+RUNENV = $(SHELL) $(top_builddir)/rungm.sh
+
+GM=@$(RUNENV) ./gm
+
 MODEL_MIFF=$(top_srcdir)/Magick++/demo/model.miff
 SMILE_MIFF=$(top_srcdir)/Magick++/demo/smile.miff
 GENERIC_TTF=$(top_srcdir)/PerlMagick/demo/Generic.ttf
 
 check:
-	$(RMDelegate) -f demo.miff *_out.miff
+	$(RM) demo.miff *_out.miff
 	${GM} convert $(MODEL_MIFF) +noise Laplacian              -label AddNoise AddNoise_out.miff
 	${GM} convert $(MODEL_MIFF) -fill gold \
 	        -pointsize 14 -font $(GENERIC_TTF) \

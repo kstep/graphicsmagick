@@ -1132,6 +1132,48 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   (void) strncpy(path,filename,MaxTextExtent-1);
   path_map=MagickMapAllocateMap(MagickMapCopyString,MagickMapDeallocateString);
 
+  {
+    /*
+      Allow the configuration file search path to be explicitly
+      specified.
+    */
+    const char
+      *magick_configure_path = getenv("MAGICK_CONFIGURE_PATH");
+    if ( magick_configure_path )
+      {
+        const char
+          *end = NULL,
+          *start = magick_configure_path;
+        
+        end=start+strlen(start);
+        while ( start < end )
+          {
+            char
+              buffer[MaxTextExtent];
+            
+            const char
+              *seperator;
+            
+            int
+              length;
+            
+            seperator = strchr(start,DirectoryListSeparator);
+            if (seperator)
+              length=seperator-start;
+            else
+              length=end-start;
+            if (length > MaxTextExtent-1)
+              length = MaxTextExtent-1;
+            strncpy(buffer,start,length);
+            buffer[length]='\0';
+            if (buffer[length-1] != DirectorySeparator[0])
+              strcat(buffer,DirectorySeparator);
+            AddConfigurePath(path_map,&path_index,buffer,exception);
+            start += length+1;
+          }
+      }
+  }
+
 #if defined(UseInstalledMagick)
 
 # if defined(MagickLibConfigPath)

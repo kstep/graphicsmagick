@@ -50,18 +50,20 @@ else
 SRCDIR='$(srcdir)/'
 endif
 
+RUNENV = $(SHELL) $(top_builddir)/rungm.sh
+
 # FIXME: MinGW needs Windows path form of srcdir here (or pass as command argument)
 check:
-	-env SRCDIR=$(SRCDIR) ./exceptions
-	-env SRCDIR=$(SRCDIR) ./attributes
-	-env SRCDIR=$(SRCDIR) ./appendImages
-	-env SRCDIR=$(SRCDIR) ./averageImages
-	-env SRCDIR=$(SRCDIR) ./coalesceImages
-	-env SRCDIR=$(SRCDIR) ./coderInfo
-	-env SRCDIR=$(SRCDIR) ./color
-	-env SRCDIR=$(SRCDIR) ./colorHistogram > colorHistogram.txt
-	-env SRCDIR=$(SRCDIR) ./montageImages
-	-env SRCDIR=$(SRCDIR) ./morphImages
-	-env SRCDIR=$(SRCDIR) ./readWriteBlob
-	-env SRCDIR=$(SRCDIR) ./readWriteImages
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./exceptions
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./attributes
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./appendImages
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./averageImages
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./coalesceImages
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./coderInfo
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./color
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./colorHistogram > colorHistogram.txt
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./montageImages
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./morphImages
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./readWriteBlob
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./readWriteImages
 

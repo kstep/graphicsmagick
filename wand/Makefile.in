@@ -416,6 +416,8 @@ man_MANS = GraphicsMagickWand-config.1
 
 @WIN32_NATIVE_BUILD_TRUE@SRCDIR = '$(shell @WinPathScript@ $(srcdir)/)'
 @WIN32_NATIVE_BUILD_FALSE@SRCDIR = '$(srcdir)/'
+
+RUNENV = $(SHELL) $(top_builddir)/rungm.sh
 subdir = wand
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -873,8 +875,8 @@ uninstall-man: uninstall-man1
 
 
 check:
-	./drawtest drawtest_out.miff
-	env SRCDIR=$(SRCDIR) ./wandtest
+	-@$(RUNENV) ./drawtest drawtest_out.miff
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./wandtest
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

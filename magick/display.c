@@ -11286,7 +11286,6 @@ static unsigned int XTrimImage(Display *display,XResourceInfo *resource_info,
 static Image *XVisualDirectoryImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows)
 {
-#define LoadImageText  "  Load images...  "
 #define TileImageText  "  Scale image tiles...  "
 #define XClientName  "montage"
 
