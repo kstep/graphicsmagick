@@ -1364,8 +1364,7 @@ MagickExport unsigned int CompositeImage(Image *image,
       {
         case OverCompositeOp:
         {
-          if (pixel.opacity != TransparentOpacity)
-            *q=AlphaComposite(p,pixel.opacity,q,q->opacity);
+          *q=AlphaComposite(p,pixel.opacity,q,q->opacity);
           break;
         }
         case InCompositeOp:
