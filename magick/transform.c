@@ -1030,6 +1030,31 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 %
 %
 */
+#if defined(HasLCMS)
+#if defined(LCMS_VERSION) && (LCMS_VERSION > 1010)
+static int lcmsReplacementErrorHandler(int ErrorCode, const char *ErrorText)
+{
+  ExceptionType
+    type;
+
+  switch(ErrorCode)
+  {
+    case LCMS_ERRC_ABORTED:
+      type=TransformError;
+      break;
+    default:
+    case LCMS_ERRC_RECOVERABLE:
+    case LCMS_ERRC_WARNING:
+      type=TransformWarning;
+      break;
+  }
+  (void) LogMagickEvent(type,GetMagickModule(),"lcms: #%d, %s",
+    ErrorCode,(ErrorText != (char *) NULL) ? ErrorText : "No error text");
+  return 1; /* tells lcms that we handled the problem */
+}
+#endif
+#endif
+
 MagickExport unsigned int ProfileImage(Image *image,const char *name,
   const unsigned char *profile,const size_t length,unsigned int clone)
 {
@@ -1141,7 +1166,6 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
             *indexes;
 
           int
-            error_action,
             intent;
 
           long
@@ -1163,7 +1187,11 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
           /*
             Transform pixel colors as defined by the color profiles.
           */
-          error_action=cmsErrorAction(LCMS_ERROR_SHOW);
+#if defined(LCMS_VERSION) && (LCMS_VERSION > 1010)
+          cmsSetErrorHandler(lcmsReplacementErrorHandler);
+#else
+          (void) cmsErrorAction(LCMS_ERROR_SHOW);
+#endif
           source_profile=cmsOpenProfileFromMem(image->color_profile.info,
             image->color_profile.length);
           target_profile=cmsOpenProfileFromMem((unsigned char *) profile,
@@ -1297,7 +1325,6 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
           cmsCloseProfile(target_profile);
           if (transform == (cmsHTRANSFORM) NULL)
             {
-              cmsErrorAction(error_action);
               ThrowBinaryException3(ResourceLimitError,UnableToManageColor,
                 UnableToCreateColorTransform);
             }
@@ -1369,9 +1396,8 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
               quantize_info.number_colors=image->colors;
               (void) QuantizeImage(&quantize_info,image);
             }
-          cmsErrorAction(error_action);
 #else
-          ThrowBinaryException(MissingDelegateError,"LCMSLibraryIsNotAvailable",
+          ThrowBinaryException(MissingDelegateError,LCMSLibraryIsNotAvailable,
             image->filename);
 #endif
           MagickFreeMemory(image->color_profile.info);

@@ -1,3 +1,7 @@
+2003-08-22  William Radcliffe  <billr@corbis.com>
+	* magick\gm_messages.bin locale_c.h transform.c: Fixed missing
+	message problem and added support for new lcms error handler.
+
 2003-08-21  Lars Ruben Skyum  <lars.skyum@stibo.com>
 
 	* magick/attribute.c, magick/image.c, magick/command.c: Added
