@@ -116,6 +116,8 @@ static void DestroyDelegateInfo(void)
   AcquireSemaphore(&delegate_semaphore);
   for (p=delegate_list; p != (DelegateInfo *) NULL; )
   {
+    if (p->filename != (char *) NULL)
+      LiberateMemory((void **) &p->filename);
     if (p->decode != (char *) NULL)
       LiberateMemory((void **) &p->decode);
     if (p->encode != (char *) NULL)

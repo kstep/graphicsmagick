@@ -54,6 +54,13 @@ typedef enum
 
 typedef enum
 {
+  AllCompliance,
+  SVGCompliance,
+  X11Compliance,
+} ComplianceType;
+
+typedef enum
+{
   UndefinedCompositeOp = 0,
   OverCompositeOp,
   InCompositeOp,

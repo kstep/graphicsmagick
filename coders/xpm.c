@@ -740,7 +740,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     /*
       Define XPM color.
     */
-    (void) QueryColorname(image,image->colormap+i,name);
+    (void) QueryColorname(image,image->colormap+i,X11Compliance,name);
     if (transparent)
       {
         if (i == (int) (colors-1))

@@ -36,7 +36,7 @@ $call Make draw.c
 $call Make effects.c
 $call Make enhance.c
 $call Make error.c
-$call Make font.c
+$call Make fonts.c
 $call Make gems.c
 $call Make image.c
 $call Make semaphore.c

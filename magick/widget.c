@@ -1613,14 +1613,14 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   (void) strcpy(reset_pattern,"*");
-  colorlist=ListColors(glob_pattern,&colors);
+  colorlist=GetColorlist(glob_pattern,&colors);
   if (colorlist == (char **) NULL)
     {
       /*
         Pattern failed, obtain all the colors.
       */
       (void) strcpy(glob_pattern,"*");
-      colorlist=ListColors(glob_pattern,&colors);
+      colorlist=GetColorlist(glob_pattern,&colors);
       if (colorlist == (char **) NULL)
         {
           XNoticeWidget(display,windows,"Unable to obtain colors names:",
@@ -1868,7 +1868,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         /*
           Update color list.
         */
-        checklist=ListColors(glob_pattern,&number_colors);
+        checklist=GetColorlist(glob_pattern,&number_colors);
         if (number_colors == 0)
           {
             (void) strcpy(glob_pattern,reset_pattern);

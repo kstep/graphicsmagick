@@ -37,14 +37,8 @@ typedef struct _QuantizeInfo
 /*
   Quantization utilities methods.
 */
-extern MagickExport char
-  **ListColors(const char *,int *);
-
 extern MagickExport QuantizeInfo
   *CloneQuantizeInfo(const QuantizeInfo *);
-
-extern MagickExport size_t
-  GetNumberColors(Image *,FILE *);
 
 extern MagickExport unsigned int
   MapImage(Image *,Image *,const unsigned int),
@@ -57,6 +51,7 @@ extern MagickExport unsigned int
     const double);
 
 extern MagickExport void
+  CompressColormap(Image *),
   DestroyQuantizeInfo(QuantizeInfo *),
   GetQuantizeInfo(QuantizeInfo *);
 

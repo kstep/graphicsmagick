@@ -107,6 +107,8 @@ MagickExport void DestroyFontInfo(void)
   AcquireSemaphore(&font_semaphore);
   for (p=font_list; p != (FontInfo *) NULL; )
   {
+    if (p->filename != (char *) NULL)
+      LiberateMemory((void **) &p->filename);
     if (p->name != (char *) NULL)
       LiberateMemory((void **) &p->name);
     if (p->family != (char *) NULL)

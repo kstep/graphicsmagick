@@ -681,8 +681,7 @@ extern MagickExport ImageType
   GetImageType(Image *);
 
 extern MagickExport IndexPacket
-  *(*GetIndexes)(const Image *),
-  ValidateColormapIndex(Image *,const int);
+  *(*GetIndexes)(const Image *);
 
 extern MagickExport int
   ParseGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
@@ -721,12 +720,8 @@ extern MagickExport unsigned int
   GetImageDepth(Image *),
   GetNumberScenes(const Image *),
   IsGeometry(const char *),
-  IsGrayImage(Image *),
   IsImagesEqual(Image *,Image *),
   IsMagickConflict(const char *),
-  IsMonochromeImage(Image *),
-  IsOpaqueImage(Image *),
-  IsPseudoClass(Image *),
   IsSubimage(const char *,const unsigned int),
   IsImageTainted(const Image *),
   ListMagickInfo(FILE *,ExceptionInfo *),
@@ -740,8 +735,6 @@ extern MagickExport unsigned int
   PopImagePixels(Image *,const QuantumType,unsigned char *),
   ProfileImage(Image *,const char *,const char *),
   PushImagePixels(Image *,const QuantumType,const unsigned char *),
-  QueryColorDatabase(const char *,PixelPacket *),
-  QueryColorname(Image *,const PixelPacket *,char *),
   RaiseImage(Image *,const RectangleInfo *,const int),
   ReadStream(const ImageInfo *,int (*)(const Image *,const void *,const size_t),
     ExceptionInfo *),

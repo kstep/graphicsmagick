@@ -2,7 +2,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%                                                                             %
 %                  CCCC   OOO   L       OOO   RRRR   SSSSS                    %
 %                 C      O   O  L      O   O  R   R  SS                       %
 %                 C      O   O  L      O   O  RRRR    SSS                     %
@@ -10,71 +9,59 @@
 %                  CCCC   OOO   LLLLL   OOO   R  R   SSSSS                    %
 %                                                                             %
 %                                                                             %
-%                  methods to Count the Colors in an image                    %
+%                  Methods to Count the Colors in an Image                    %
 %                                                                             %
 %                                                                             %
+%                              Software Design                                %
+%                                John Cristy                                  %
+%                                 July 1992                                   %
 %                                                                             %
-%                           Software Design                                   %
-%                             John Cristy                                     %
-%                              July 1992                                      %
 %                                                                             %
-%                                                                             %
-%  Copyright (C) 2001 imagemagick Studio, a non-profit organization dedicated %
+%  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
 %  to making software imaging solutions freely available.                     %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
-%  copy of this software and associated documentation files ("imagemagick"),  %
-%  to deal in imagemagick without restriction, including without limitation   %
+%  copy of this software and associated documentation files ("ImageMagick"),  %
+%  to deal in ImageMagick without restriction, including without limitation   %
 %  the rights to use, copy, modify, merge, publish, distribute, sublicense,   %
-%  and/or sell copies of imagemagick, and to permit persons to whom the       %
-%  imagemagick is furnished to do so, subject to the following conditions:    %
+%  and/or sell copies of ImageMagick, and to permit persons to whom the       %
+%  ImageMagick is furnished to do so, subject to the following conditions:    %
 %                                                                             %
-%  the above copyright notice and this permission notice shall be included in %
-%  all copies or substantial portions of imagemagick.                         %
+%  The above copyright notice and this permission notice shall be included in %
+%  all copies or substantial portions of ImageMagick.                         %
 %                                                                             %
-%  the software is provided "as is", without warranty of any kind, express or %
+%  The software is provided "as is", without warranty of any kind, express or %
 %  implied, including but not limited to the warranties of merchantability,   %
-%  fitness for a particular purpose and noninfringement.  in no event shall   %
-%  imagemagick Studio be liable for any claim, damages or other liability,    %
+%  fitness for a particular purpose and noninfringement.  In no event shall   %
+%  ImageMagick Studio be liable for any claim, damages or other liability,    %
 %  whether in an action of contract, tort or otherwise, arising from, out of  %
-%  or in connection with imagemagick or the use or other dealings in          %
-%  imagemagick.                                                               %
+%  or in connection with ImageMagick or the use or other dealings in          %
+%  ImageMagick.                                                               %
 %                                                                             %
-%  Except as contained in this notice, the name of the imagemagick Studio     %
+%  Except as contained in this notice, the name of the ImageMagick Studio     %
 %  shall not be used in advertising or otherwise to promote the sale, use or  %
-%  other dealings in imagemagick without prior written authorization from the %
-%  imagemagick Studio.                                                        %
+%  other dealings in ImageMagick without prior written authorization from the %
+%  ImageMagick Studio.                                                        %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
-%
 */
 
 /*
-  include declarations.
+  Include declarations.
 */
 #include "magick.h"
 #include "defines.h"
-#if defined(HasX11)
-#include "xwindows.h"
-#endif
+
+/*  
+  Define declarations.
+*/
+#define ColorFilename  "colors.mgk"
 
 /*
   Structures.
 */
-typedef struct _ColorlistInfo
-{
-  char
-    *name;
-
-  Quantum
-    red,
-    green,
-    blue,
-    opacity;
-} ColorlistInfo;
-
 typedef struct _ColorPacket
 {
   Quantum
@@ -133,265 +120,14 @@ typedef struct _CubeInfo
   Nodes
     *node_queue;
 } CubeInfo;
-
 /*
-  Color list.
+  Static declarations.
 */
-static const ColorlistInfo
-  Colorlist[251] =
-  {
-    { (char *) "aliceblue", UpScale(240), UpScale(248), UpScale(255), OpaqueOpacity },
-    { (char *) "antiquewhite", UpScale(250), UpScale(235), UpScale(215), OpaqueOpacity },
-    { (char *) "aqua", UpScale(0), UpScale(255), UpScale(255), OpaqueOpacity },
-    { (char *) "aquamarine", UpScale(127), UpScale(255), UpScale(212), OpaqueOpacity },
-    { (char *) "azure", UpScale(240), UpScale(255), UpScale(255), OpaqueOpacity },
-    { (char *) "beige", UpScale(245), UpScale(245), UpScale(220), OpaqueOpacity },
-    { (char *) "bisque", UpScale(255), UpScale(228), UpScale(196), OpaqueOpacity },
-    { (char *) "black", UpScale(0), UpScale(0), UpScale(0), OpaqueOpacity },
-    { (char *) "blanchedalmond", UpScale(255), UpScale(235), UpScale(205), OpaqueOpacity },
-    { (char *) "blue", UpScale(0), UpScale(0), UpScale(255), OpaqueOpacity },
-    { (char *) "blueviolet", UpScale(138), UpScale(43), UpScale(226), OpaqueOpacity },
-    { (char *) "brown", UpScale(165), UpScale(42), UpScale(42), OpaqueOpacity },
-    { (char *) "burlywood", UpScale(222), UpScale(184), UpScale(135), OpaqueOpacity },
-    { (char *) "cadetblue", UpScale(95), UpScale(158), UpScale(160), OpaqueOpacity },
-    { (char *) "chartreuse", UpScale(127), UpScale(255), UpScale(0), OpaqueOpacity },
-    { (char *) "chocolate", UpScale(210), UpScale(105), UpScale(30), OpaqueOpacity },
-    { (char *) "coral", UpScale(255), UpScale(127), UpScale(80), OpaqueOpacity },
-    { (char *) "cornflowerblue", UpScale(100), UpScale(149), UpScale(237), OpaqueOpacity },
-    { (char *) "cornsilk", UpScale(255), UpScale(248), UpScale(220), OpaqueOpacity },
-    { (char *) "crimson", UpScale(220), UpScale(20), UpScale(60), OpaqueOpacity },
-    { (char *) "cyan", UpScale(0), UpScale(255), UpScale(255), OpaqueOpacity },
-    { (char *) "darkblue", UpScale(0), UpScale(0), UpScale(139), OpaqueOpacity },
-    { (char *) "darkcyan", UpScale(0), UpScale(139), UpScale(139), OpaqueOpacity },
-    { (char *) "darkgoldenrod", UpScale(184), UpScale(134), UpScale(11), OpaqueOpacity },
-    { (char *) "darkgray", UpScale(169), UpScale(169), UpScale(169), OpaqueOpacity },
-    { (char *) "darkgreen", UpScale(0), UpScale(100), UpScale(0), OpaqueOpacity },
-    { (char *) "darkgrey", UpScale(169), UpScale(169), UpScale(169), OpaqueOpacity },
-    { (char *) "darkkhaki", UpScale(189), UpScale(183), UpScale(107), OpaqueOpacity },
-    { (char *) "darkmagenta", UpScale(139), UpScale(0), UpScale(139), OpaqueOpacity },
-    { (char *) "darkolivegreen", UpScale(85), UpScale(107), UpScale(47), OpaqueOpacity },
-    { (char *) "darkorange", UpScale(255), UpScale(140), UpScale(0), OpaqueOpacity },
-    { (char *) "darkorchid", UpScale(153), UpScale(50), UpScale(204), OpaqueOpacity },
-    { (char *) "darkred", UpScale(139), UpScale(0), UpScale(0), OpaqueOpacity },
-    { (char *) "darksalmon", UpScale(233), UpScale(150), UpScale(122), OpaqueOpacity },
-    { (char *) "darkseagreen", UpScale(143), UpScale(188), UpScale(143), OpaqueOpacity },
-    { (char *) "darkslateblue", UpScale(72), UpScale(61), UpScale(139), OpaqueOpacity },
-    { (char *) "darkslategray", UpScale(47), UpScale(79), UpScale(79), OpaqueOpacity },
-    { (char *) "darkslategrey", UpScale(47), UpScale(79), UpScale(79), OpaqueOpacity },
-    { (char *) "darkturquoise", UpScale(0), UpScale(206), UpScale(209), OpaqueOpacity },
-    { (char *) "darkviolet", UpScale(148), UpScale(0), UpScale(211), OpaqueOpacity },
-    { (char *) "deeppink", UpScale(255), UpScale(20), UpScale(147), OpaqueOpacity },
-    { (char *) "deepskyblue", UpScale(0), UpScale(191), UpScale(255), OpaqueOpacity },
-    { (char *) "dimgray", UpScale(105), UpScale(105), UpScale(105), OpaqueOpacity },
-    { (char *) "dimgrey", UpScale(105), UpScale(105), UpScale(105), OpaqueOpacity },
-    { (char *) "dodgerblue", UpScale(30), UpScale(144), UpScale(255), OpaqueOpacity },
-    { (char *) "firebrick", UpScale(178), UpScale(34), UpScale(34), OpaqueOpacity },
-    { (char *) "floralwhite", UpScale(255), UpScale(250), UpScale(240), OpaqueOpacity },
-    { (char *) "forestgreen", UpScale(34), UpScale(139), UpScale(34), OpaqueOpacity },
-    { (char *) "fractal", UpScale(128), UpScale(128), UpScale(128), OpaqueOpacity },
-    { (char *) "fuchsia", UpScale(255), UpScale(0), UpScale(255), OpaqueOpacity },
-    { (char *) "gainsboro", UpScale(220), UpScale(220), UpScale(220), OpaqueOpacity },
-    { (char *) "ghostwhite", UpScale(248), UpScale(248), UpScale(255), OpaqueOpacity },
-    { (char *) "gold", UpScale(255), UpScale(215), UpScale(0), OpaqueOpacity },
-    { (char *) "goldenrod", UpScale(218), UpScale(165), UpScale(32), OpaqueOpacity },
-    { (char *) "gray", UpScale(126), UpScale(126), UpScale(126), OpaqueOpacity },
-    { (char *) "gray0", UpScale(0), UpScale(0), UpScale(0), OpaqueOpacity },
-    { (char *) "gray1", UpScale(3), UpScale(3), UpScale(3), OpaqueOpacity },
-    { (char *) "gray10", UpScale(26), UpScale(26), UpScale(26), OpaqueOpacity },
-    { (char *) "gray100", UpScale(255), UpScale(255), UpScale(255), OpaqueOpacity },
-    { (char *) "gray11", UpScale(28), UpScale(28), UpScale(28), OpaqueOpacity },
-    { (char *) "gray12", UpScale(31), UpScale(31), UpScale(31), OpaqueOpacity },
-    { (char *) "gray13", UpScale(33), UpScale(33), UpScale(33), OpaqueOpacity },
-    { (char *) "gray14", UpScale(36), UpScale(36), UpScale(36), OpaqueOpacity },
-    { (char *) "gray15", UpScale(38), UpScale(38), UpScale(38), OpaqueOpacity },
-    { (char *) "gray16", UpScale(41), UpScale(41), UpScale(41), OpaqueOpacity },
-    { (char *) "gray17", UpScale(43), UpScale(43), UpScale(43), OpaqueOpacity },
-    { (char *) "gray18", UpScale(46), UpScale(46), UpScale(46), OpaqueOpacity },
-    { (char *) "gray19", UpScale(48), UpScale(48), UpScale(48), OpaqueOpacity },
-    { (char *) "gray2", UpScale(5), UpScale(5), UpScale(5), OpaqueOpacity },
-    { (char *) "gray20", UpScale(51), UpScale(51), UpScale(51), OpaqueOpacity },
-    { (char *) "gray21", UpScale(54), UpScale(54), UpScale(54), OpaqueOpacity },
-    { (char *) "gray22", UpScale(56), UpScale(56), UpScale(56), OpaqueOpacity },
-    { (char *) "gray23", UpScale(59), UpScale(59), UpScale(59), OpaqueOpacity },
-    { (char *) "gray24", UpScale(61), UpScale(61), UpScale(61), OpaqueOpacity },
-    { (char *) "gray25", UpScale(64), UpScale(64), UpScale(64), OpaqueOpacity },
-    { (char *) "gray26", UpScale(66), UpScale(66), UpScale(66), OpaqueOpacity },
-    { (char *) "gray27", UpScale(69), UpScale(69), UpScale(69), OpaqueOpacity },
-    { (char *) "gray28", UpScale(71), UpScale(71), UpScale(71), OpaqueOpacity },
-    { (char *) "gray29", UpScale(74), UpScale(74), UpScale(74), OpaqueOpacity },
-    { (char *) "gray3", UpScale(8), UpScale(8), UpScale(8), OpaqueOpacity },
-    { (char *) "gray30", UpScale(77), UpScale(77), UpScale(77), OpaqueOpacity },
-    { (char *) "gray31", UpScale(79), UpScale(79), UpScale(79), OpaqueOpacity },
-    { (char *) "gray32", UpScale(82), UpScale(82), UpScale(82), OpaqueOpacity },
-    { (char *) "gray33", UpScale(84), UpScale(84), UpScale(84), OpaqueOpacity },
-    { (char *) "gray34", UpScale(87), UpScale(87), UpScale(87), OpaqueOpacity },
-    { (char *) "gray35", UpScale(89), UpScale(89), UpScale(89), OpaqueOpacity },
-    { (char *) "gray36", UpScale(92), UpScale(92), UpScale(92), OpaqueOpacity },
-    { (char *) "gray37", UpScale(94), UpScale(94), UpScale(94), OpaqueOpacity },
-    { (char *) "gray38", UpScale(97), UpScale(97), UpScale(97), OpaqueOpacity },
-    { (char *) "gray39", UpScale(99), UpScale(99), UpScale(99), OpaqueOpacity },
-    { (char *) "gray4", UpScale(10), UpScale(10), UpScale(10), OpaqueOpacity },
-    { (char *) "gray40", UpScale(102), UpScale(102), UpScale(102), OpaqueOpacity },
-    { (char *) "gray41", UpScale(105), UpScale(105), UpScale(105), OpaqueOpacity },
-    { (char *) "gray42", UpScale(107), UpScale(107), UpScale(107), OpaqueOpacity },
-    { (char *) "gray43", UpScale(110), UpScale(110), UpScale(110), OpaqueOpacity },
-    { (char *) "gray44", UpScale(112), UpScale(112), UpScale(112), OpaqueOpacity },
-    { (char *) "gray45", UpScale(115), UpScale(115), UpScale(115), OpaqueOpacity },
-    { (char *) "gray46", UpScale(117), UpScale(117), UpScale(117), OpaqueOpacity },
-    { (char *) "gray47", UpScale(120), UpScale(120), UpScale(120), OpaqueOpacity },
-    { (char *) "gray48", UpScale(122), UpScale(122), UpScale(122), OpaqueOpacity },
-    { (char *) "gray49", UpScale(125), UpScale(125), UpScale(125), OpaqueOpacity },
-    { (char *) "gray5", UpScale(13), UpScale(13), UpScale(13), OpaqueOpacity },
-    { (char *) "gray50", UpScale(127), UpScale(127), UpScale(127), OpaqueOpacity },
-    { (char *) "gray51", UpScale(130), UpScale(130), UpScale(130), OpaqueOpacity },
-    { (char *) "gray52", UpScale(133), UpScale(133), UpScale(133), OpaqueOpacity },
-    { (char *) "gray53", UpScale(135), UpScale(135), UpScale(135), OpaqueOpacity },
-    { (char *) "gray54", UpScale(138), UpScale(138), UpScale(138), OpaqueOpacity },
-    { (char *) "gray55", UpScale(140), UpScale(140), UpScale(140), OpaqueOpacity },
-    { (char *) "gray56", UpScale(143), UpScale(143), UpScale(143), OpaqueOpacity },
-    { (char *) "gray57", UpScale(145), UpScale(145), UpScale(145), OpaqueOpacity },
-    { (char *) "gray58", UpScale(148), UpScale(148), UpScale(148), OpaqueOpacity },
-    { (char *) "gray59", UpScale(150), UpScale(150), UpScale(150), OpaqueOpacity },
-    { (char *) "gray6", UpScale(15), UpScale(15), UpScale(15), OpaqueOpacity },
-    { (char *) "gray60", UpScale(153), UpScale(153), UpScale(153), OpaqueOpacity },
-    { (char *) "gray61", UpScale(156), UpScale(156), UpScale(156), OpaqueOpacity },
-    { (char *) "gray62", UpScale(158), UpScale(158), UpScale(158), OpaqueOpacity },
-    { (char *) "gray63", UpScale(161), UpScale(161), UpScale(161), OpaqueOpacity },
-    { (char *) "gray64", UpScale(163), UpScale(163), UpScale(163), OpaqueOpacity },
-    { (char *) "gray65", UpScale(166), UpScale(166), UpScale(166), OpaqueOpacity },
-    { (char *) "gray66", UpScale(168), UpScale(168), UpScale(168), OpaqueOpacity },
-    { (char *) "gray67", UpScale(171), UpScale(171), UpScale(171), OpaqueOpacity },
-    { (char *) "gray68", UpScale(173), UpScale(173), UpScale(173), OpaqueOpacity },
-    { (char *) "gray69", UpScale(176), UpScale(176), UpScale(176), OpaqueOpacity },
-    { (char *) "gray7", UpScale(18), UpScale(18), UpScale(18), OpaqueOpacity },
-    { (char *) "gray70", UpScale(179), UpScale(179), UpScale(179), OpaqueOpacity },
-    { (char *) "gray71", UpScale(181), UpScale(181), UpScale(181), OpaqueOpacity },
-    { (char *) "gray72", UpScale(184), UpScale(184), UpScale(184), OpaqueOpacity },
-    { (char *) "gray73", UpScale(186), UpScale(186), UpScale(186), OpaqueOpacity },
-    { (char *) "gray74", UpScale(189), UpScale(189), UpScale(189), OpaqueOpacity },
-    { (char *) "gray75", UpScale(191), UpScale(191), UpScale(191), OpaqueOpacity },
-    { (char *) "gray76", UpScale(194), UpScale(194), UpScale(194), OpaqueOpacity },
-    { (char *) "gray77", UpScale(196), UpScale(196), UpScale(196), OpaqueOpacity },
-    { (char *) "gray78", UpScale(199), UpScale(199), UpScale(199), OpaqueOpacity },
-    { (char *) "gray79", UpScale(201), UpScale(201), UpScale(201), OpaqueOpacity },
-    { (char *) "gray8", UpScale(20), UpScale(20), UpScale(20), OpaqueOpacity },
-    { (char *) "gray80", UpScale(204), UpScale(204), UpScale(204), OpaqueOpacity },
-    { (char *) "gray81", UpScale(207), UpScale(207), UpScale(207), OpaqueOpacity },
-    { (char *) "gray82", UpScale(209), UpScale(209), UpScale(209), OpaqueOpacity },
-    { (char *) "gray83", UpScale(212), UpScale(212), UpScale(212), OpaqueOpacity },
-    { (char *) "gray84", UpScale(214), UpScale(214), UpScale(214), OpaqueOpacity },
-    { (char *) "gray85", UpScale(217), UpScale(217), UpScale(217), OpaqueOpacity },
-    { (char *) "gray86", UpScale(219), UpScale(219), UpScale(219), OpaqueOpacity },
-    { (char *) "gray87", UpScale(222), UpScale(222), UpScale(222), OpaqueOpacity },
-    { (char *) "gray88", UpScale(224), UpScale(224), UpScale(224), OpaqueOpacity },
-    { (char *) "gray89", UpScale(227), UpScale(227), UpScale(227), OpaqueOpacity },
-    { (char *) "gray9", UpScale(23), UpScale(23), UpScale(23), OpaqueOpacity },
-    { (char *) "gray90", UpScale(229), UpScale(229), UpScale(229), OpaqueOpacity },
-    { (char *) "gray91", UpScale(232), UpScale(232), UpScale(232), OpaqueOpacity },
-    { (char *) "gray92", UpScale(235), UpScale(235), UpScale(235), OpaqueOpacity },
-    { (char *) "gray93", UpScale(237), UpScale(237), UpScale(237), OpaqueOpacity },
-    { (char *) "gray94", UpScale(240), UpScale(240), UpScale(240), OpaqueOpacity },
-    { (char *) "gray95", UpScale(242), UpScale(242), UpScale(242), OpaqueOpacity },
-    { (char *) "gray96", UpScale(245), UpScale(245), UpScale(245), OpaqueOpacity },
-    { (char *) "gray97", UpScale(247), UpScale(247), UpScale(247), OpaqueOpacity },
-    { (char *) "gray98", UpScale(250), UpScale(250), UpScale(250), OpaqueOpacity },
-    { (char *) "gray99", UpScale(252), UpScale(252), UpScale(252), OpaqueOpacity },
-    { (char *) "green", UpScale(0), UpScale(128), UpScale(0), OpaqueOpacity },
-    { (char *) "greenyellow", UpScale(173), UpScale(255), UpScale(47), OpaqueOpacity },
-    { (char *) "grey", UpScale(128), UpScale(128), UpScale(128), OpaqueOpacity },
-    { (char *) "honeydew", UpScale(240), UpScale(255), UpScale(240), OpaqueOpacity },
-    { (char *) "hotpink", UpScale(255), UpScale(105), UpScale(180), OpaqueOpacity },
-    { (char *) "indianred", UpScale(205), UpScale(92), UpScale(92), OpaqueOpacity },
-    { (char *) "indigo", UpScale(75), UpScale(0), UpScale(130), OpaqueOpacity },
-    { (char *) "ivory", UpScale(255), UpScale(255), UpScale(240), OpaqueOpacity },
-    { (char *) "khaki", UpScale(240), UpScale(230), UpScale(140), OpaqueOpacity },
-    { (char *) "lavender", UpScale(230), UpScale(230), UpScale(250), OpaqueOpacity },
-    { (char *) "lavenderblush", UpScale(255), UpScale(240), UpScale(245), OpaqueOpacity },
-    { (char *) "lawngreen", UpScale(124), UpScale(252), UpScale(0), OpaqueOpacity },
-    { (char *) "lemonchiffon", UpScale(255), UpScale(250), UpScale(205), OpaqueOpacity },
-    { (char *) "lightblue", UpScale(173), UpScale(216), UpScale(230), OpaqueOpacity },
-    { (char *) "lightcoral", UpScale(240), UpScale(128), UpScale(128), OpaqueOpacity },
-    { (char *) "lightcyan", UpScale(224), UpScale(255), UpScale(255), OpaqueOpacity },
-    { (char *) "lightgoldenrodyellow", UpScale(250), UpScale(250), UpScale(210), OpaqueOpacity },
-    { (char *) "lightgray", UpScale(211), UpScale(211), UpScale(211), OpaqueOpacity },
-    { (char *) "lightgreen", UpScale(144), UpScale(238), UpScale(144), OpaqueOpacity },
-    { (char *) "lightgrey", UpScale(211), UpScale(211), UpScale(211), OpaqueOpacity },
-    { (char *) "lightpink", UpScale(255), UpScale(182), UpScale(193), OpaqueOpacity },
-    { (char *) "lightsalmon", UpScale(255), UpScale(160), UpScale(122), OpaqueOpacity },
-    { (char *) "lightseagreen", UpScale(32), UpScale(178), UpScale(170), OpaqueOpacity },
-    { (char *) "lightskyblue", UpScale(135), UpScale(206), UpScale(250), OpaqueOpacity },
-    { (char *) "lightslategray", UpScale(119), UpScale(136), UpScale(153), OpaqueOpacity },
-    { (char *) "lightslategrey", UpScale(119), UpScale(136), UpScale(153), OpaqueOpacity },
-    { (char *) "lightsteelblue", UpScale(176), UpScale(196), UpScale(222), OpaqueOpacity },
-    { (char *) "lightyellow", UpScale(255), UpScale(255), UpScale(224), OpaqueOpacity },
-    { (char *) "lime", UpScale(0), UpScale(255), UpScale(0), OpaqueOpacity },
-    { (char *) "limegreen", UpScale(50), UpScale(205), UpScale(50), OpaqueOpacity },
-    { (char *) "linen", UpScale(250), UpScale(240), UpScale(230), OpaqueOpacity },
-    { (char *) "magenta", UpScale(255), UpScale(0), UpScale(255), OpaqueOpacity },
-    { (char *) "maroon", UpScale(128), UpScale(0), UpScale(0), OpaqueOpacity },
-    { (char *) "mediumaquamarine", UpScale(102), UpScale(205), UpScale(170), OpaqueOpacity },
-    { (char *) "mediumblue", UpScale(0), UpScale(0), UpScale(205), OpaqueOpacity },
-    { (char *) "mediumorchid", UpScale(186), UpScale(85), UpScale(211), OpaqueOpacity },
-    { (char *) "mediumpurple", UpScale(147), UpScale(112), UpScale(219), OpaqueOpacity },
-    { (char *) "mediumseagreen", UpScale(60), UpScale(179), UpScale(113), OpaqueOpacity },
-    { (char *) "mediumslateblue", UpScale(123), UpScale(104), UpScale(238), OpaqueOpacity },
-    { (char *) "mediumspringgreen", UpScale(0), UpScale(250), UpScale(154), OpaqueOpacity },
-    { (char *) "mediumturquoise", UpScale(72), UpScale(209), UpScale(204), OpaqueOpacity },
-    { (char *) "mediumvioletred", UpScale(199), UpScale(21), UpScale(133), OpaqueOpacity },
-    { (char *) "midnightblue", UpScale(25), UpScale(25), UpScale(112), OpaqueOpacity },
-    { (char *) "mintcream", UpScale(245), UpScale(255), UpScale(250), OpaqueOpacity },
-    { (char *) "mistyrose", UpScale(255), UpScale(228), UpScale(225), OpaqueOpacity },
-    { (char *) "moccasin", UpScale(255), UpScale(228), UpScale(181), OpaqueOpacity },
-    { (char *) "navajowhite", UpScale(255), UpScale(222), UpScale(173), OpaqueOpacity },
-    { (char *) "navy", UpScale(0), UpScale(0), UpScale(128), OpaqueOpacity },
-    { (char *) "none", UpScale(0), UpScale(0), UpScale(0), TransparentOpacity },
-    { (char *) "oldlace", UpScale(253), UpScale(245), UpScale(230), OpaqueOpacity },
-    { (char *) "olive", UpScale(128), UpScale(128), UpScale(0), OpaqueOpacity },
-    { (char *) "olivedrab", UpScale(107), UpScale(142), UpScale(35), OpaqueOpacity },
-    { (char *) "orange", UpScale(255), UpScale(165), UpScale(0), OpaqueOpacity },
-    { (char *) "orangered", UpScale(255), UpScale(69), UpScale(0), OpaqueOpacity },
-    { (char *) "orchid", UpScale(218), UpScale(112), UpScale(214), OpaqueOpacity },
-    { (char *) "palegoldenrod", UpScale(238), UpScale(232), UpScale(170), OpaqueOpacity },
-    { (char *) "palegreen", UpScale(152), UpScale(251), UpScale(152), OpaqueOpacity },
-    { (char *) "paleturquoise", UpScale(175), UpScale(238), UpScale(238), OpaqueOpacity },
-    { (char *) "palevioletred", UpScale(219), UpScale(112), UpScale(147), OpaqueOpacity },
-    { (char *) "papayawhip", UpScale(255), UpScale(239), UpScale(213), OpaqueOpacity },
-    { (char *) "peachpuff", UpScale(255), UpScale(218), UpScale(185), OpaqueOpacity },
-    { (char *) "peru", UpScale(205), UpScale(133), UpScale(63), OpaqueOpacity },
-    { (char *) "pink", UpScale(255), UpScale(192), UpScale(203), OpaqueOpacity },
-    { (char *) "plum", UpScale(221), UpScale(160), UpScale(221), OpaqueOpacity },
-    { (char *) "powderblue", UpScale(176), UpScale(224), UpScale(230), OpaqueOpacity },
-    { (char *) "purple", UpScale(128), UpScale(0), UpScale(128), OpaqueOpacity },
-    { (char *) "red", UpScale(255), UpScale(0), UpScale(0), OpaqueOpacity },
-    { (char *) "rosybrown", UpScale(188), UpScale(143), UpScale(143), OpaqueOpacity },
-    { (char *) "royalblue", UpScale(65), UpScale(105), UpScale(225), OpaqueOpacity },
-    { (char *) "saddlebrown", UpScale(139), UpScale(69), UpScale(19), OpaqueOpacity },
-    { (char *) "salmon", UpScale(250), UpScale(128), UpScale(114), OpaqueOpacity },
-    { (char *) "sandybrown", UpScale(244), UpScale(164), UpScale(96), OpaqueOpacity },
-    { (char *) "seagreen", UpScale(46), UpScale(139), UpScale(87), OpaqueOpacity },
-    { (char *) "seashell", UpScale(255), UpScale(245), UpScale(238), OpaqueOpacity },
-    { (char *) "sienna", UpScale(160), UpScale(82), UpScale(45), OpaqueOpacity },
-    { (char *) "silver", UpScale(192), UpScale(192), UpScale(192), OpaqueOpacity },
-    { (char *) "skyblue", UpScale(135), UpScale(206), UpScale(235), OpaqueOpacity },
-    { (char *) "slateblue", UpScale(106), UpScale(90), UpScale(205), OpaqueOpacity },
-    { (char *) "slategray", UpScale(112), UpScale(128), UpScale(144), OpaqueOpacity },
-    { (char *) "slategrey", UpScale(112), UpScale(128), UpScale(144), OpaqueOpacity },
-    { (char *) "snow", UpScale(255), UpScale(250), UpScale(250), OpaqueOpacity },
-    { (char *) "springgreen", UpScale(0), UpScale(255), UpScale(127), OpaqueOpacity },
-    { (char *) "steelblue", UpScale(70), UpScale(130), UpScale(180), OpaqueOpacity },
-    { (char *) "tan", UpScale(210), UpScale(180), UpScale(140), OpaqueOpacity },
-    { (char *) "teal", UpScale(0), UpScale(128), UpScale(128), OpaqueOpacity },
-    { (char *) "thistle", UpScale(216), UpScale(191), UpScale(216), OpaqueOpacity },
-    { (char *) "tomato", UpScale(255), UpScale(99), UpScale(71), OpaqueOpacity },
-    { (char *) "turquoise", UpScale(64), UpScale(224), UpScale(208), OpaqueOpacity },
-    { (char *) "violet", UpScale(238), UpScale(130), UpScale(238), OpaqueOpacity },
-    { (char *) "wheat", UpScale(245), UpScale(222), UpScale(179), OpaqueOpacity },
-    { (char *) "white", UpScale(255), UpScale(255), UpScale(255), OpaqueOpacity },
-    { (char *) "whitesmoke", UpScale(245), UpScale(245), UpScale(245), OpaqueOpacity },
-    { (char *) "yellow", UpScale(255), UpScale(255), UpScale(0), OpaqueOpacity },
-    { (char *) "yellowgreen", UpScale(154), UpScale(205), UpScale(50), OpaqueOpacity },
-    { (char *) NULL, 0, 0, 0, 0 }
-  };
+static ColorInfo
+  *color_list = (ColorInfo *) NULL;
+
+static SemaphoreInfo
+  *color_semaphore = (SemaphoreInfo *) NULL;
 
 /*
   Forward declarations.
@@ -399,8 +135,11 @@ static const ColorlistInfo
 static NodeInfo
   *GetNodeInfo(CubeInfo *,const unsigned int);
 
+static unsigned int
+  ReadConfigurationFile(const char *);
+
 static void
-  DestroyList(const NodeInfo *),
+  DestroyColorList(const NodeInfo *),
   Histogram(Image *,CubeInfo *,const NodeInfo *,FILE *);
 
 /*
@@ -408,39 +147,48 @@ static void
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o m p r e s s C o l o r m a p                                           %
++   D e s t r o y C o l o r I n f o                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CompressColormap compresses an image colormap removing any
-%  duplicate and unused color entries.
+%  Method DestroyColorInfo deallocates memory associated with the color list.
 %
-%  The format of the CompressColormap method is:
+%  The format of the DestroyColorInfo method is:
 %
-%      void CompressColormap(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: The address of a structure of type Image.
+%      DestroyColorInfo(void)
 %
 %
 */
-MagickExport void CompressColormap(Image *image)
-{
-  QuantizeInfo
-    quantize_info;
 
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (!IsPseudoClass(image))
-    return;
-  GetQuantizeInfo(&quantize_info);
-  quantize_info.number_colors=image->colors;
-  quantize_info.tree_depth=8;
-  (void) QuantizeImage(&quantize_info,image);
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+MagickExport void DestroyColorInfo(void)
+{
+  register ColorInfo
+    *p;
+
+  AcquireSemaphore(&color_semaphore);
+  for (p=color_list; p != (ColorInfo *) NULL; )
+  {
+    if (p->filename != (char *) NULL)
+      LiberateMemory((void **) &p->filename);
+    if (p->name != (char *) NULL)
+      LiberateMemory((void **) &p->name);
+    color_list=p;
+    p=p->next;
+    LiberateMemory((void **) &color_list);
+  }
+  color_list=(ColorInfo *) NULL;
+  LiberateSemaphore(&color_semaphore);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -473,7 +221,7 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
   /*
     Release color cube tree storage.
   */
-  DestroyList(cube_info->root);
+  DestroyColorList(cube_info->root);
   do
   {
     nodes=cube_info->node_queue->next;
@@ -488,18 +236,18 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  D e s t r o y L i s t                                                      %
++  D e s t r o y C o l o r L i s t                                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyList traverses the color cube tree and free the list of
+%  Method DestroyColorList traverses the color cube tree and frees the list of
 %  unique colors.
 %
-%  The format of the DestroyList method is:
+%  The format of the DestroyColorList method is:
 %
-%      void DestroyList(const NodeInfo *node_info)
+%      void DestroyColorList(const NodeInfo *node_info)
 %
 %  A description of each parameter follows.
 %
@@ -508,7 +256,7 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
 %
 %
 */
-static void DestroyList(const NodeInfo *node_info)
+static void DestroyColorList(const NodeInfo *node_info)
 {
   register unsigned int
     id;
@@ -518,9 +266,139 @@ static void DestroyList(const NodeInfo *node_info)
   */
   for (id=0; id < 8; id++)
     if (node_info->child[id] != (NodeInfo *) NULL)
-      DestroyList(node_info->child[id]);
+      DestroyColorList(node_info->child[id]);
   if (node_info->list != (ColorPacket *) NULL)
     LiberateMemory((void **) &node_info->list);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t C o l o r I n f o                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetColorInfo searches the color list for the specified name and if
+%  found returns attributes for that color.
+%
+%  The format of the GetColorInfo method is:
+%
+%      PixelPacket *GetColorInfo(const char *name,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o color_info: Method GetColorInfo searches the color list for the
+%      specified name and if found returns attributes for that color.
+%
+%    o name: The color name.
+%
+%    o compliance: Define the required color standard.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport ColorInfo *GetColorInfo(const char *name,ExceptionInfo *exception)
+{
+  register ColorInfo
+    *p;
+
+  AcquireSemaphore(&color_semaphore);
+  if (color_list == (ColorInfo *) NULL)
+    {
+      unsigned int
+        status;
+
+      /*
+        Read color list.
+      */
+      status=ReadConfigurationFile(ColorFilename);
+      if (status == False)
+        ThrowException(exception,FileOpenWarning,
+          "Unable to read color configuration file",ColorFilename);
+      atexit(DestroyColorInfo);
+    }
+  LiberateSemaphore(&color_semaphore);
+  if (LocaleCompare(name,"*") == 0)
+    return(color_list);
+  /*
+    Search for named color.
+  */
+  for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
+    if (LocaleCompare(name,p->name) == 0)
+      break;
+  return(p);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C o l o r l i s t                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetColorlist returns any colors that match the specified pattern
+%  and color standard.
+%
+%  The format of the GetColorlist function is:
+%
+%      filelist=GetColorlist(const char *pattern,int number_colors)
+%
+%  A description of each parameter follows:
+%
+%    o filelist: Method GetColorlist returns a list of colors that match the
+%      specified pattern and color standard.
+%
+%    o pattern: Specifies a pointer to a text string containing a pattern.
+%
+%    o number_colors:  This integer returns the number of colors in the list.
+%
+%
+*/
+MagickExport char **GetColorlist(const char *pattern,int *number_colors)
+{
+  char
+    **colorlist;
+
+  ExceptionInfo
+    exception;
+
+  register ColorInfo
+    *p;
+
+  register int
+    i;
+
+  /*
+    Allocate color list.
+  */
+  assert(pattern != (char *) NULL);
+  assert(number_colors != (int *) NULL);
+  *number_colors=0;
+  GetExceptionInfo(&exception);
+  p=GetColorInfo("*",&exception);
+  if (p == (ColorInfo *) NULL)
+    return((char **) NULL);
+  i=0;
+  for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
+    i++;
+  colorlist=(char **) AcquireMemory(i*sizeof(char *));
+  if (colorlist == (char **) NULL)
+    return((char **) NULL);
+  i=0;
+  for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
+    if (GlobExpression(p->name,pattern))
+      colorlist[i++]=AllocateString(p->name);
+  *number_colors=i;
+  return(colorlist);
 }
 
 /*
@@ -534,7 +412,7 @@ static void DestroyList(const NodeInfo *node_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetCubeInfo initialize the Cube data structure.
+%  Method GetCubeInfo initialize the CubeInfo data structure.
 %
 %  The format of the GetCubeInfo method is:
 %
@@ -653,11 +531,10 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
 %      written to the file.
 %
 %
-%
 */
 MagickExport size_t GetNumberColors(Image *image,FILE *file)
 {
-#define NumberColorsImageText  "  Compute image colors...  "
+#define ComputeImageColorsText  "  Compute image colors...  "
 
   CubeInfo
     *cube_info;
@@ -758,7 +635,7 @@ MagickExport size_t GetNumberColors(Image *image,FILE *file)
       p++;
     }
     if (QuantumTick(y,image->rows))
-      MagickMonitor(NumberColorsImageText,y,image->rows);
+      MagickMonitor(ComputeImageColorsText,y,image->rows);
   }
   if (file != (FILE *) NULL)
     {
@@ -836,7 +713,7 @@ static void Histogram(Image *image,CubeInfo *cube_info,
         color.red=p->red;
         color.green=p->green;
         color.blue=p->blue;
-        (void) QueryColorname(image,&color,name);
+        (void) QueryColorname(image,&color,AllCompliance,name);
         (void) fprintf(file,"%.1024s",name);
         (void) fprintf(file,"\n");
         p++;
@@ -1190,140 +1067,68 @@ MagickExport unsigned int IsPseudoClass(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L i s t C o l o r s                                                       %
+%  L i s t C o l o r I n f o                                                  %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ListColors reads the X client color database and returns a list
-%  of colors contained in the database sorted in ascending alphabetic order.
+%  Method ListColorInfo lists the color info to a file.
 %
-%  The format of the ListColors function is:
+%  The format of the ListColorInfo method is:
 %
-%      filelist=ListColors(pattern,number_colors)
+%      unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
 %
-%  A description of each parameter follows:
+%  A description of each parameter follows.
 %
-%    o filelist: Method ListColors returns a list of colors contained
-%      in the database.  If the database cannot be read, a NULL list is
-%      returned.
+%    o file:  An pointer to a FILE.
 %
-%    o pattern: Specifies a pointer to a text string containing a pattern.
-%
-%    o number_colors:  This integer returns the number of colors in the list.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-static int ColorCompare(const void *x,const void *y)
+MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
 {
-  register char
-    **p,
-    **q;
+  register ColorInfo
+    *p;
 
-  p=(char **) x;
-  q=(char **) y;
-  return(LocaleCompare(*p,*q));
-}
+  register int
+    i;
 
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
-
-MagickExport char **ListColors(const char *pattern,int *number_colors)
-{
-  char
-    color[MaxTextExtent],
-    **colorlist,
-    *path,
-    text[MaxTextExtent];
-
-  FILE
-    *file;
-
-  int
-    blue,
-    count,
-    green,
-    red;
-
-  unsigned int
-    max_colors;
-
-  /*
-    Allocate color list.
-  */
-  assert(pattern != (char *) NULL);
-  assert(number_colors != (int *) NULL);
-  max_colors=sizeof(Colorlist)/sizeof(ColorlistInfo);
-  colorlist=(char **) AcquireMemory(max_colors*sizeof(char *));
-  if (colorlist == (char **) NULL)
-    return((char **) NULL);
-  /*
-    Open database.
-  */
-  *number_colors=0;
-  file=(FILE *) NULL;
-  path=GetMagickConfigurePath("rgb.txt");
-  if (path != (char *) NULL)
-    {
-      file=fopen(path,"r");
-      LiberateMemory((void **) &path);
-    }
-  if (file == (FILE *) NULL)
-    {
-      register const ColorlistInfo
-        *p;
-
-      /*
-        Can't find server color database-- use our color list.
-      */
-      for (p=Colorlist; p->name != (char *) NULL; p++)
-        if (GlobExpression(p->name,pattern))
-          {
-            colorlist[*number_colors]=(char *) AcquireMemory(Extent(p->name)+1);
-            if (colorlist[*number_colors] == (char *) NULL)
-              break;
-            (void) strcpy(colorlist[*number_colors],p->name);
-            (*number_colors)++;
-          }
-      return(colorlist);
-    }
-  while (fgets(text,MaxTextExtent,file) != (char *) NULL)
+  if (file == (const FILE *) NULL)
+    file=stdout;
+  (void) fprintf(file,"ImageMagick understands these color strings.\n");
+  p=GetColorInfo("*",exception);
+  if (p == (ColorInfo *) NULL)
+    return(False);
+  if (color_list->filename != (char *) NULL)
+    (void) fprintf(file,"\nFilename: %.1024s\n\n",color_list->filename);
+  (void) fprintf(file,
+    "Name                   Color                   Compliance\n");
+  (void) fprintf(file,"-------------------------------------------------------"
+    "------------------------\n");
+  for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
   {
-    count=sscanf(text,"%d %d %d %[^\n]\n",&red,&green,&blue,color);
-    if (count != 4)
-      continue;
-    if (GlobExpression(color,pattern))
-      {
-        if (*number_colors >= (int) max_colors)
-          {
-            max_colors<<=1;
-            ReacquireMemory((void **) &colorlist,max_colors*sizeof(char *));
-            if (colorlist == (char **) NULL)
-              {
-                (void) fclose(file);
-                return((char **) NULL);
-              }
-          }
-        colorlist[*number_colors]=(char *) AcquireMemory(Extent(color)+1);
-        if (colorlist[*number_colors] == (char *) NULL)
-          break;
-        (void) strcpy(colorlist[*number_colors],color);
-        (*number_colors)++;
-      }
+    (void) fprintf(file,"%.1024s",p->name);
+    for (i=Extent(p->name); i <= 22; i++)
+      (void) fprintf(file," ");
+    if (p->color.opacity == OpaqueOpacity)
+      (void) fprintf(file,"%5d,%5d,%5d       ",p->color.red,p->color.green,
+        p->color.blue);
+    else
+      (void) fprintf(file,"%5d,%5d,%5d,%5d ",p->color.red,p->color.green,
+        p->color.blue,p->color.opacity);
+    if (p->compliance == AllCompliance)
+      (void) fprintf(file,"SVG, X11");
+    else
+      if (p->compliance == X11Compliance)
+        (void) fprintf(file,"X11");
+      else
+        (void) fprintf(file,"SVG");
+    (void) fprintf(file,"\n");
   }
-  (void) fclose(file);
-  /*
-    Sort colorlist in ascending order.
-  */
-  qsort((void *) colorlist,*number_colors,sizeof(char **),ColorCompare);
-  return(colorlist);
+  (void) fflush(file);
+  return(True);
 }
 
 /*
@@ -1337,59 +1142,52 @@ MagickExport char **ListColors(const char *pattern,int *number_colors)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method QueryColorDatabase looks up a RGB values for a color given in the
-%  target string.
+%  Method QueryColorDatabase looks up a RGB values for a given color name.
 %
 %  The format of the QueryColorDatabase method is:
 %
-%      unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
+%      unsigned int QueryColorDatabase(const char *name,PixelPacket *color)
 %
 %  A description of each parameter follows:
 %
 %    o status:  Method QueryColorDatabase returns True if the RGB values
 %      of the target color is defined, otherwise False is returned.
 %
-%    o target: Specifies the color to lookup in the X color database.
+%    o name: Specifies the color to lookup in the X color database.
 %
 %    o color: A pointer to an PixelPacket structure.  The RGB value of the
 %      target color is returned as this value.
 %
 %
 */
-MagickExport unsigned int QueryColorDatabase(const char *target,
+MagickExport unsigned int QueryColorDatabase(const char *name,
   PixelPacket *color)
 {
-  char
-    colorname[MaxTextExtent],
-    *path,
-    text[MaxTextExtent];
+  ExceptionInfo
+    exception;
 
   int
     blue,
-    count,
     green,
-    left,
-    mid,
     opacity,
-    red,
-    right;
+    red;
 
   register int
     i;
 
-  FILE
-    *file;
+  register ColorInfo
+    *p;
 
   /*
     Initialize color return value.
   */
   assert(color != (PixelPacket *) NULL);
   GetPixelPacket(color);
-  if ((target == (char *) NULL) || (*target == '\0'))
-    target=BackgroundColor;
-  while (isspace((int) (*target)))
-    target++;
-  if (*target == '#')
+  if ((name == (char *) NULL) || (*name == '\0'))
+    name=BackgroundColor;
+  while (isspace((int) (*name)))
+    name++;
+  if (*name == '#')
     {
       char
         c;
@@ -1400,8 +1198,8 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
       green=0;
       blue=0;
       opacity=(-1);
-      target++;
-      n=Extent(target);
+      name++;
+      n=Extent(name);
       if ((n == 3) || (n == 6) || (n == 9) || (n == 12))
         {
           /*
@@ -1415,7 +1213,7 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
             blue=0;
             for (i=(int) n-1; i >= 0; i--)
             {
-              c=(*target++);
+              c=(*name++);
               blue<<=4;
               if ((c >= '0') && (c <= '9'))
                 blue|=c-'0';
@@ -1428,7 +1226,7 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
                   else
                     return(False);
             }
-          } while (*target != '\0');
+          } while (*name != '\0');
         }
       else
         if ((n != 4) && (n != 8) && (n != 16))
@@ -1447,7 +1245,7 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
               opacity=0;
               for (i=(int) n-1; i >= 0; i--)
               {
-                c=(*target++);
+                c=(*name++);
                 opacity<<=4;
                 if ((c >= '0') && (c <= '9'))
                   opacity|=c-'0';
@@ -1460,7 +1258,7 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
                     else
                       return(False);
               }
-            } while (*target != '\0');
+            } while (*name != '\0');
           }
       n<<=2;
       color->red=((unsigned long) (MaxRGB*red)/((1 << n)-1));
@@ -1471,18 +1269,18 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
         color->opacity=((unsigned long) (MaxRGB*opacity)/((1 << n)-1));
       return(True);
     }
-  if (LocaleNCompare(target,"rgb(",4) == 0)
+  if (LocaleNCompare(name,"rgb(",4) == 0)
     {
-      (void) sscanf(target,"%*[^(](%d%*[ ,]%d%*[ ,]%d",&red,&green,&blue);
+      (void) sscanf(name,"%*[^(](%d%*[ ,]%d%*[ ,]%d",&red,&green,&blue);
       color->red=UpScale(red);
       color->green=UpScale(green);
       color->blue=UpScale(blue);
       color->opacity=OpaqueOpacity;
       return(True);
     }
-  if (LocaleNCompare(target,"rgba(",5) == 0)
+  if (LocaleNCompare(name,"rgba(",5) == 0)
     {
-      (void) sscanf(target,"%*[^(](%d%*[ ,]%d%*[ ,]%d%*[ ,]%d",&red,&green,
+      (void) sscanf(name,"%*[^(](%d%*[ ,]%d%*[ ,]%d%*[ ,]%d",&red,&green,
         &blue,&opacity);
       color->red=UpScale(red);
       color->green=UpScale(green);
@@ -1490,81 +1288,12 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
       color->opacity=opacity;
       return(True);
     }
-  /*
-    Search our internal color database.
-  */
-  left=0;
-  right=sizeof(Colorlist)/sizeof(ColorlistInfo)-2;
-  for (mid=(right+left)/2 ; right != left; mid=(right+left)/2)
-  {
-    i=LocaleCompare(target,Colorlist[mid].name);
-    if (i < 0)
-      {
-        if (right == mid)
-          mid--;
-        right=mid;
-        continue;
-      }
-    if (i > 0)
-      {
-        if (left == mid)
-          mid++;
-        left=mid;
-        continue;
-      }
-    color->red=Colorlist[mid].red;
-    color->green=Colorlist[mid].green;
-    color->blue=Colorlist[mid].blue;
-    color->opacity=Colorlist[mid].opacity;
-    return(True);
-  }
-#if defined(HasX11)
-  {
-    XColor
-      xcolor;
-
-    unsigned int
-      status;
-
-    /*
-      Let the X server define the color for us.
-    */
-    status=XQueryColorDatabase(target,&xcolor);
-    if (status != False)
-      {
-        color->red=XDownScale(xcolor.red);
-        color->green=XDownScale(xcolor.green);
-        color->blue=XDownScale(xcolor.blue);
-        color->opacity=OpaqueOpacity;
-        return(status);
-      }
-  }
-#endif
-  /*
-    Match color against the X color database.
-  */
-  path=GetMagickConfigurePath("rgb.txt");
-  if (path == (char *) NULL)
+  GetExceptionInfo(&exception);
+  p=GetColorInfo(name,&exception);
+  if (p == (ColorInfo *) NULL)
     return(False);
-  file=fopen(path,"r");
-  LiberateMemory((void **) &path);  
-  if (file == (FILE *) NULL)
-    return(False);
-  while (fgets(text,MaxTextExtent,file) != (char *) NULL)
-  {
-    count=sscanf(text,"%d %d %d %[^\n]\n",&red,&green,&blue,colorname);
-    if (count != 4)
-      continue;
-    if (LocaleCompare(colorname,target) != 0)
-      continue;
-    color->red=UpScale(red);
-    color->green=UpScale(green);
-    color->blue=UpScale(blue);
-    color->opacity=OpaqueOpacity;
-    break;
-  }
-  (void) fclose(file);
-  return(LocaleCompare(colorname,target) == 0);
+  *color=p->color;
+  return(True);
 }
 
 /*
@@ -1584,7 +1313,7 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
 %  The format of the QueryColorName method is:
 %
 %      unsigned int QueryColorname(Image *image,const PixelPacket *color,
-%        char *name)
+%        ComplianceType compliance,char *name)
 %
 %  A description of each parameter follows.
 %
@@ -1602,29 +1331,38 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
 %
 */
 MagickExport unsigned int QueryColorname(Image *image,const PixelPacket *color,
-  char *name)
+  ComplianceType compliance,char *name)
 {
   double
     distance,
     distance_squared,
     min_distance;
 
-  register const ColorlistInfo
+  ExceptionInfo
+    exception;
+
+  register ColorInfo
     *p;
 
   *name='\0';
+  GetExceptionInfo(&exception);
+  p=GetColorInfo("*",&exception);
+  if (p == (ColorInfo *) NULL)
+    return(False);
   min_distance=0;
-  for (p=Colorlist; p->name != (char *) NULL; p++)
+  for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
   {
-    distance=color->red-(int) p->red;
+    if ((p->compliance != AllCompliance) && (p->compliance != compliance))
+      continue;
+    distance=color->red-(int) p->color.red;
     distance_squared=distance*distance;
-    distance=color->green-(int) p->green;
+    distance=color->green-(int) p->color.green;
     distance_squared+=distance*distance;
-    distance=color->blue-(int) p->blue;
+    distance=color->blue-(int) p->color.blue;
     distance_squared+=distance*distance;
-    distance=color->opacity-(int) p->opacity;
+    distance=color->opacity-(int) p->color.opacity;
     distance_squared+=distance*distance;
-    if ((p == Colorlist) || (distance_squared < min_distance))
+    if ((p == color_list) || (distance_squared < min_distance))
       {
         min_distance=distance_squared;
         (void) strcpy(name,p->name);
@@ -1653,6 +1391,211 @@ MagickExport unsigned int QueryColorname(Image *image,const PixelPacket *color,
       (unsigned int) color->green,(unsigned int) color->blue,
       (unsigned int) color->opacity);
   return((unsigned int) min_distance);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e a d C o n f i g u r a t i o n F i l e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadConfigurationFile reads the color configuration file which maps
+%  color strings with a particular image format.
+%
+%  The format of the ReadConfigurationFile method is:
+%
+%      unsigned int ReadConfigurationFile(const char *basename)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method ReadConfigurationFile returns True if at least one color
+%      is defined otherwise False.
+%
+%    o basename:  The color configuration filename.
+%
+%
+*/
+static unsigned int ReadConfigurationFile(const char *basename)
+{
+  char
+    filename[MaxTextExtent],
+    keyword[MaxTextExtent],
+    *path,
+    value[MaxTextExtent];
+
+  FILE
+    *file;
+
+  int
+    c;
+
+  register char
+    *p;
+
+  /*
+    Read the color configuration file.
+  */
+  path=GetMagickConfigurePath(basename);
+  if (path == (char *) NULL)
+    return(False);
+  FormatString(filename,"%.1024s",path);
+  LiberateMemory((void **) &path);
+  file=fopen(filename,"r");
+  if (file == (FILE *) NULL)
+    return(False);
+  for (c=fgetc(file); c != EOF; c=fgetc(file))
+  {
+    /*
+      Parse keyword.
+    */
+    while (isspace(c))
+      c=fgetc(file);
+    p=keyword;
+    do
+    {
+      if ((p-keyword) < (MaxTextExtent-1))
+        *p++=c;
+      c=fgetc(file);
+    } while ((c == '<') || isalnum(c));
+    *p='\0';
+    if (LocaleCompare(keyword,"<color") == 0)
+      {
+        ColorInfo
+          *color_info;
+
+        /*
+          Allocate memory for the color list.
+        */
+        color_info=(ColorInfo *) AcquireMemory(sizeof(ColorInfo));
+        if (color_info == (ColorInfo *) NULL)
+          MagickError(ResourceLimitError,"Unable to allocate color list",
+            "Memory allocation failed");
+        memset(color_info,0,sizeof(ColorInfo));
+        if (color_list == (ColorInfo *) NULL)
+          {
+            color_info->filename=AllocateString(filename);
+            color_list=color_info;
+          }
+        else
+          {
+            color_list->next=color_info;
+            color_info->previous=color_list;
+            color_list=color_list->next;
+          }
+      }
+    if (*keyword == '<')
+      continue;
+    while (isspace(c))
+      c=fgetc(file);
+    if (c != '=')
+      continue;
+    do
+    {
+      c=fgetc(file);
+    }
+    while (isspace(c));
+    if ((c != '"') && (c != '\''))
+      continue;
+    /*
+      Parse value.
+    */
+    p=value;
+    if (c == '"')
+      {
+        for (c=fgetc(file); (c != '"') && (c != EOF); c=fgetc(file))
+          if ((p-value) < (MaxTextExtent-1))
+            *p++=c;
+      }
+    else
+      for (c=fgetc(file); (c != '\'') && (c != EOF); c=fgetc(file))
+        if ((p-value) < (MaxTextExtent-1))
+          *p++=c;
+    *p='\0';
+    if (color_list == (ColorInfo *) NULL)
+      continue;
+    switch (*keyword) 
+    {
+      case 'B':
+      case 'b':
+      {
+        if (LocaleCompare((char *) keyword,"blue") == 0)
+          {
+            color_list->color.blue=UpScale(atoi(value));
+            break;
+          }
+        break;
+      }
+      case 'C':
+      case 'c':
+      {
+        if (LocaleCompare((char *) keyword,"compliance") == 0)
+          {
+            if (GlobExpression(value,"*SVG*") && GlobExpression(value,"*X11*"))
+              color_list->compliance=AllCompliance;
+            else
+              if (GlobExpression(value,"SVG"))
+                color_list->compliance=SVGCompliance;
+              else
+                color_list->compliance=X11Compliance;
+            break;
+          }
+        break;
+      }
+      case 'G':
+      case 'g':
+      {
+        if (LocaleCompare((char *) keyword,"green") == 0)
+          {
+            color_list->color.green=UpScale(atoi(value));
+            break;
+          }
+        break;
+      }
+      case 'N':
+      case 'n':
+      {
+        if (LocaleCompare((char *) keyword,"name") == 0)
+          {
+            color_list->name=AllocateString(value);
+            break;
+          }
+        break;
+      }
+      case 'O':
+      case 'o':
+      {
+        if (LocaleCompare((char *) keyword,"opacity") == 0)
+          {
+            color_list->color.opacity=UpScale(atoi(value));
+            break;
+          }
+        break;
+      }
+      case 'R':
+      case 'r':
+      {
+        if (LocaleCompare((char *) keyword,"red") == 0)
+          {
+            color_list->color.red=UpScale(atoi(value));
+            break;
+          }
+        break;
+      }
+      default:
+        break;
+    }
+  }
+  (void) fclose(file);
+  if (color_list == (ColorInfo *) NULL)
+    return(False);
+  while (color_list->previous != (ColorInfo *) NULL)
+    color_list=color_list->previous;
+  return(True);
 }
 
 /*

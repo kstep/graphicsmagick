@@ -765,6 +765,45 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o m p r e s s C o l o r m a p                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CompressColormap compresses an image colormap removing any
+%  duplicate and unused color entries.
+%
+%  The format of the CompressColormap method is:
+%
+%      void CompressColormap(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+MagickExport void CompressColormap(Image *image)
+{
+  QuantizeInfo
+    quantize_info;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (!IsPseudoClass(image))
+    return;
+  GetQuantizeInfo(&quantize_info);
+  quantize_info.number_colors=image->colors;
+  quantize_info.tree_depth=8;
+  (void) QuantizeImage(&quantize_info,image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   D e f i n e C o l o r m a p                                               %
 %                                                                             %
 %                                                                             %

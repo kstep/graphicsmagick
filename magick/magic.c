@@ -106,6 +106,8 @@ MagickExport void DestroyMagicInfo(void)
   AcquireSemaphore(&magic_semaphore);
   for (p=magic_list; p != (MagicInfo *) NULL; )
   {
+    if (p->filename != (char *) NULL)
+      LiberateMemory((void **) &p->filename);
     if (p->name != (char *) NULL)
       LiberateMemory((void **) &p->name);
     if (p->target != (char *) NULL)
@@ -148,8 +150,6 @@ MagickExport void DestroyMagicInfo(void)
 %    o magic_info: Method GetMagicInfo searches the magic list for any image
 %      format tag that matches the specified image signature and if found
 %      returns attributes for that image format.
-%
-%    o image: The address of a structure of type Image.
 %
 %    o magic: A binary string generally representing the first few characters
 %      of the image file or blob.
