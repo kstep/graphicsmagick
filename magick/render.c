@@ -3363,10 +3363,6 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   if (0)
     DrawBoundingRectangles(image,draw_info,polygon_info);
   (void) LogMagickEvent(RenderEvent,GetMagickModule(),"    begin draw-polygon");
-  fill=(primitive_info->method == FillToBorderMethod) ||
-    (primitive_info->method == FloodfillMethod);
-  fill_color=draw_info->fill;
-  stroke_color=draw_info->stroke;
   mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
   bounds=polygon_info->edges[0].bounds;
   for (i=1; i < polygon_info->number_edges; i++)
@@ -3393,6 +3389,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   bounds.y2+=(mid+1.0);
   bounds.y2=bounds.y2 < 0.0 ? 0.0 : bounds.y2 >= image->rows ?
     image->rows-1 : bounds.y2;
+  stroke_color=draw_info->stroke;
   if (primitive_info->coordinates == 1)
     {
       /*
@@ -3423,6 +3420,9 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   /*
     Draw polygon or line.
   */
+  fill=(primitive_info->method == FillToBorderMethod) ||
+    (primitive_info->method == FloodfillMethod);
+  fill_color=draw_info->fill;
   start=(long) ceil(bounds.x1-0.5);
   stop=(long) floor(bounds.x2+0.5);
   for (y=(long) ceil(bounds.y1-0.5); y <= (long) floor(bounds.y2+0.5); y++)
@@ -3447,8 +3447,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
       if (pattern != (Image *) NULL)
         fill_color=AcquireOnePixel(pattern,
           (long) (x-pattern->tile_info.x) % pattern->columns,
-          (long) (y-pattern->tile_info.y) % pattern->rows,
-          &image->exception);
+          (long) (y-pattern->tile_info.y) % pattern->rows,&image->exception);
       fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
       if (fill_opacity != TransparentOpacity)
         *q=AlphaComposite(&fill_color,fill_opacity,q,
