@@ -1,5 +1,8 @@
 2003-12-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/annotate.c (RenderFreetype): Ensure that image storage
+	class is set to DirectClass. Text rendering was not working
+	properly on top of PseudoClass images.
 	* magick/map.c (MagickMapRemoveEntry): Logic didn't properly
 	handle removing entry in list.
 	* configure.ac: Added --enable-efence option to enable memory
