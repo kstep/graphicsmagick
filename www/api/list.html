@@ -54,7 +54,7 @@
 <P>unsigned int  <STRONG>DeleteImageList</STRONG>( Image *images, const unsigned long offset );</P>
 <P>void  <STRONG>DestroyImageList</STRONG>( Image *image );</P>
 <P>Image * <STRONG>GetImageList</STRONG>( const Image *images, const unsigned long offset, ExceptionInfo *exception );</P>
-<P>off_t  <STRONG>GetImageListIndex</STRONG>( const Image *images );</P>
+<P>unsigned long  <STRONG>GetImageListIndex</STRONG>( const Image *images );</P>
 <P>size_t  <STRONG>GetImageListSize</STRONG>( const Image *images );</P>
 <P>Image * <STRONG>GetNextImage</STRONG>( const Image *images );</P>
 <P>Image **  <STRONG>ImageListToArray</STRONG>( const Image *images, ExceptionInfo *exception );</P>
@@ -130,7 +130,7 @@ Return any errors or warnings in this structure.
 <P>
 <H2><A NAME="getimagelistindex">GetImageListIndex</A></H2>
 <blockquote>GetImageListIndex() returns the position in the list of the specified image. </blockquote><P>The format of the GetImageListIndex method is:</P>
-<blockquote>off_t GetImageListIndex ( const <A HREF="types/Image.html">Image</A> *images ); </blockquote><P>
+<blockquote>unsigned long GetImageListIndex ( const <A HREF="types/Image.html">Image</A> *images ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>images:</STRONG><BR>

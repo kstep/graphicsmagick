@@ -276,7 +276,7 @@ MagickExport Image *GetImageList(const Image *images,const unsigned long offset,
 %
 %  The format of the GetImageListIndex method is:
 %
-%      off_t GetImageListIndex(const Image *images)
+%      unsigned long GetImageListIndex(const Image *images)
 %
 %  A description of each parameter follows:
 %
@@ -284,9 +284,9 @@ MagickExport Image *GetImageList(const Image *images,const unsigned long offset,
 %
 %
 */
-MagickExport off_t GetImageListIndex(const Image *images)
+MagickExport unsigned long GetImageListIndex(const Image *images)
 {
-  register off_t
+  register long
     i;
 
   if (images == (Image *) NULL)
