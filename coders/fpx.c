@@ -365,7 +365,6 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       (void) FPX_CloseImage(flashpix);
       FPX_ClearSystem();
-      (void) remove(image->filename);
       return(image);
     }
   /*

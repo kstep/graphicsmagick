@@ -1,5 +1,7 @@
 2003-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/fpx.c (ReadFPXImage): Removing the input file is
+	antisocial.
 	* PerlMagick/t/fpx/*.fpx: Replaced with new copies.  Files
 	seemed to be corrupt.
 	* PerlMagick/t/cgm/read.t: Specify file magick so that CGM
