@@ -228,7 +228,7 @@ man_MANS = $(ALLMANPAGES)
 
 # Ensure that configuration header is not distributed
 dist-hook:
-	-rm $(distdir)/magick_config.h
-	-rm $(distdir)/magick_config_api.h
+	-rm -f $(distdir)/magick_config.h
+	-rm -f $(distdir)/magick_config_api.h
 
 DEFS = @DEFS@ -I../

@@ -163,7 +163,10 @@ endif # WTIH_PERL_DYNAMIC
 
 
 clean-perl: $(PERLMAKEFILE)
-	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' clean && rm -f Makefile.old PerlMagick
+	(cd $(PERLMAGICK) && \
+	$(MAKE) CC='@CC@' clean && \
+	rm -f Makefile.old PerlMagick && \
+	rm -f t/output* t/jng/*_tmp.jng t/*/output* )
 	rm -f perl-sources
 
 distclean-perl: clean-perl

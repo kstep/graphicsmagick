@@ -414,6 +414,9 @@ EXTRA_DIST = GraphicsMagickWand-config.1 input_256c.miff input_bilevel.miff \
 # Manual pages to install
 man_MANS = GraphicsMagickWand-config.1
 
+# Files to clean
+CLEANFILES = *_out.* image.miff
+
 @WIN32_NATIVE_BUILD_TRUE@SRCDIR = '$(shell @WinPathScript@ $(srcdir)/)'
 @WIN32_NATIVE_BUILD_FALSE@SRCDIR = '$(srcdir)/'
 
@@ -796,6 +799,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f $(CONFIG_CLEAN_FILES)

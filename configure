@@ -35523,6 +35523,16 @@ MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS"
 
 
 
+# Set configured scripts to executable.
+          ac_config_commands="$ac_config_commands GraphicsMagick++-config.in"
+
+          ac_config_commands="$ac_config_commands GraphicsMagick-config.in"
+
+          ac_config_commands="$ac_config_commands GraphicsMagickWand-config.in"
+
+          ac_config_commands="$ac_config_commands rungm.sh.in"
+
+
                                                                                                                                                                                                                                                                                                                                 ac_config_files="$ac_config_files GraphicsMagick.spec Magick++/Makefile Magick++/bin/GraphicsMagick++-config Magick++/bin/Makefile Magick++/demo/Makefile Magick++/lib/GraphicsMagick++.pc Magick++/lib/Magick++/Makefile Magick++/lib/Makefile Magick++/tests/Makefile Makefile PerlMagick/Magick.pm PerlMagick/Makefile.PL coders/Makefile config/Makefile config/delegates.mgk config/type-ghostscript.mgk config/type-solaris.mgk config/type-windows.mgk config/type.mgk filters/Makefile ltdl/Makefile magick/GraphicsMagick-config magick/GraphicsMagick.pc magick/Makefile magick/magick_types.h magick/version.h rungm.sh tests/Makefile utilities/Makefile wand/GraphicsMagickWand-config wand/GraphicsMagickWand.pc wand/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -36637,6 +36647,10 @@ do
   "wand/Makefile" ) CONFIG_FILES="$CONFIG_FILES wand/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "libtool" ) CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
+  "GraphicsMagick++-config.in" ) CONFIG_COMMANDS="$CONFIG_COMMANDS GraphicsMagick++-config.in" ;;
+  "GraphicsMagick-config.in" ) CONFIG_COMMANDS="$CONFIG_COMMANDS GraphicsMagick-config.in" ;;
+  "GraphicsMagickWand-config.in" ) CONFIG_COMMANDS="$CONFIG_COMMANDS GraphicsMagickWand-config.in" ;;
+  "rungm.sh.in" ) CONFIG_COMMANDS="$CONFIG_COMMANDS rungm.sh.in" ;;
   "magick/magick_config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS magick/magick_config.h" ;;
   "magick/magick_config_api.h" ) CONFIG_HEADERS="$CONFIG_HEADERS magick/magick_config_api.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
@@ -38433,6 +38447,10 @@ echo "$as_me: error: unable to update list of available tagged configurations." 
     fi
 
  ;;
+    GraphicsMagick++-config.in ) chmod +x Magick++/bin/GraphicsMagick++-config ;;
+    GraphicsMagick-config.in ) chmod +x magick/GraphicsMagick-config ;;
+    GraphicsMagickWand-config.in ) chmod +x wand/GraphicsMagickWand-config ;;
+    rungm.sh.in ) chmod +x rungm.sh ;;
   esac
 done
 _ACEOF

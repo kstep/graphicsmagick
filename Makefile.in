@@ -953,7 +953,10 @@ perl-sources:
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	-cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
 
 @WITH_PERL_TRUE@clean-perl: $(PERLMAKEFILE)
-@WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' clean && rm -f Makefile.old PerlMagick
+@WITH_PERL_TRUE@	(cd $(PERLMAGICK) && \
+@WITH_PERL_TRUE@	$(MAKE) CC='@CC@' clean && \
+@WITH_PERL_TRUE@	rm -f Makefile.old PerlMagick && \
+@WITH_PERL_TRUE@	rm -f t/output* t/jng/*_tmp.jng t/*/output* )
 @WITH_PERL_TRUE@	rm -f perl-sources
 
 @WITH_PERL_TRUE@distclean-perl: clean-perl

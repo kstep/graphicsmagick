@@ -2569,6 +2569,12 @@ AC_SUBST(MAGICK_API_CPPFLAGS)
 AC_SUBST(MAGICK_API_LDFLAGS)
 AC_SUBST(MAGICK_API_LIBS)
 
+# Set configured scripts to executable.
+AC_CONFIG_COMMANDS([GraphicsMagick++-config.in],[chmod +x Magick++/bin/GraphicsMagick++-config])
+AC_CONFIG_COMMANDS([GraphicsMagick-config.in],[chmod +x magick/GraphicsMagick-config])
+AC_CONFIG_COMMANDS([GraphicsMagickWand-config.in],[chmod +x wand/GraphicsMagickWand-config])
+AC_CONFIG_COMMANDS([rungm.sh.in],[chmod +x rungm.sh])
+
 AC_OUTPUT( \
         GraphicsMagick.spec \
         Magick++/Makefile \

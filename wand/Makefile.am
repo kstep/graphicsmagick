@@ -60,6 +60,9 @@ EXTRA_DIST = GraphicsMagickWand-config.1 input_256c.miff input_bilevel.miff \
 # Manual pages to install
 man_MANS = GraphicsMagickWand-config.1
 
+# Files to clean
+CLEANFILES = *_out.* image.miff
+
 if WIN32_NATIVE_BUILD
 SRCDIR='$(shell @WinPathScript@ $(srcdir)/)'
 else

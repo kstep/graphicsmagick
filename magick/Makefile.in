@@ -1194,8 +1194,8 @@ uninstall-hook:
 
 # Ensure that configuration header is not distributed
 dist-hook:
-	-rm $(distdir)/magick_config.h
-	-rm $(distdir)/magick_config_api.h
+	-rm -f $(distdir)/magick_config.h
+	-rm -f $(distdir)/magick_config_api.h
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
