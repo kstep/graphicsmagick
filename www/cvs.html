@@ -1,195 +1,248 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
 <HEAD>
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <title>CVS: ImageMagick - Image Processing and Display Package</title>
-   <meta name="description" content="ImageMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
-   <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
-   <link rel="StyleSheet" href="magick.css" type="text/css">
-</head>
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
-
-<center><img SRC="../images/magick_small.png" alt="" height="118" width="114"></center>
-
-<p>The ImageMagick source is available via anonymous CVS. This is a convenient
-way for developers from around the country or world to download the ImageMagick
-source, fix bugs, or add new features.
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">What
-is CVS</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-CVS is the Concurrent Version System and is a very popular mean of version
-control for software projects. It is designed to allow multiple authors
-to be able to simultaneously operate on the same source tree. This source
-tree is centrally maintained, but each developer has a local mirror of
-this repository that they make their changes to.</dd>
-</dl>
-
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">CVS
-Command Summary</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-Here is a summary of CVS commands. See the <a href="http://www.cvshome.org/">CVS Home Page</a> for detailed information and documentation about CVS.</dd>
-
-<table BORDER=0 CELLPADDING=5 BGCOLOR="#99CCFF" >
-<tr>
-<td><b>Action</b></td>
-
-<td><b>Result</b></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>add</b></td>
-
-<td BGCOLOR="#9EBAC6">Add a new file or directory to the repository.</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>get</b></td>
-
-<td BGCOLOR="#9EBAC6">Make a working directory of source files for editing.&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>commit</b></td>
-
-<td BGCOLOR="#9EBAC6">Apply changes to the source repository (write access)&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>diff</b></td>
-
-<td BGCOLOR="#9EBAC6">Show differences between local files and the source
-repository.</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>history</b></td>
-
-<td BGCOLOR="#9EBAC6">Show reports on cvs commands against the source repository.</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>log</b></td>
-
-<td BGCOLOR="#9EBAC6">Display CVS log information.</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>rdiff</b></td>
-
-<td BGCOLOR="#9EBAC6">Prepare a collection of differences reflecting changes
-between release.</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>status</b></td>
-
-<td BGCOLOR="#9EBAC6">Show current status of files in the repository and
-local copies.</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>update</b></td>
-
-<td BGCOLOR="#9EBAC6">Bring your working directory up to date with the
-repository.</td>
-</tr>
-</table>
-</dl>
-
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Using
-Anonymous CVS</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-The source tree for ImageMagick is stored on <tt>cvs.simplesystems.org</tt>.
-To access the tree you need to first set up your CVSROOT environment variable
-so that cvs knows where to go to grab the source from. The proper value
-for CVSROOT is:</dd>
-
-<pre>&nbsp;&nbsp;&nbsp; :pserver:anonymous@cvs.simplesystems.org:/cvsroot</pre>
-For example, in tcsh do:
-<pre>&nbsp;&nbsp;&nbsp; setenv CVSROOT :pserver:anonymous@cvs.simplesystems.org:/cvsroot</pre>
-In a bourne shell descendant (e.g. bash) the following syntax has to be
-used
-<pre>&nbsp;&nbsp;&nbsp; export CVSROOT=':pserver:anonymous@cvs.simplesystems.org:/cvsroot'</pre>
-Or whatever the approriate syntax for your shell of choice is.
-<p>Alternatively, you can specify the cvs root directly on the command
-line:
-<pre>&nbsp;&nbsp;&nbsp; cvs -d :pserver:anonymous@cvs.simplesystems.org:/cvsroot</pre>
-Next, the first time the source tree is checked out, a cvs login is needed.
-<pre>&nbsp;&nbsp;&nbsp; cvs login</pre>
-This will ask you for a password. The password is <i>anonymous</i>. Enter
-it and press a carriage return.
-<p>To get the tree and place it in a sub-directory of your current working
-directory, issue the command:
-<pre>&nbsp;&nbsp;&nbsp; cvs co -P ImageMagick</pre>
-Or to save bandwidth get the compressed version, type:
-<pre>&nbsp;&nbsp;&nbsp; cvs -z3 co -P ImageMagick</pre>
-To update the sources within a checked out directory execute
-<pre>&nbsp;&nbsp;&nbsp; cvs update -P -d</pre>
-and only the files which have changed will be updated.
-<p>The available modules relating to ImageMagick are:
-<dl>
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> ImageMagick (core
-sources)</dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> ImageMagick-NT
-(everything needed for Windows)</dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> ImageMagick-World (everything
-related to ImageMagick)</dd>
-</dl>
-
-<p><br>To check out the ImageMagick source for NT, try this commmand line:
-<pre>&nbsp;&nbsp;&nbsp; cvs -z3 co -P ImageMagick-NT</pre>
-The anoncvs tree is only updated once a day or so, so constantly updating
-is useless and only puts unneeded load on the already overloaded cvs server.
-Also, please do not use compression levels over <tt>-z3</tt>, the amount
-of bandwidth it saves is minimal while putting a much larger load on the
-cvs server.</dl>
-
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">CVS
-Software</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-The best place to look for the latest version of CVS is at the
-<a href="http://www.cvshome.org">CVS Home Page
-</a>. There is also a lot of infomation and documentation about
-CVS available.</dd>
-</dl>
-
-<hr>
-<p><a href="../ImageMagick.html"><img SRC="../images/home.png"
-ALT="ImageMagick Home Page" BORDER=0 height=40 width=40
-align=MIDDLE></a><a 
-href="mailto:webmaster@imagemagick.org"><img SRC="../images/mail.png"
-ALT="ImageMagick Home Page" BORDER=0 height=40 width=40
-align=MIDDLE></a><font size="-2">
-Image manipulation software that works like magic.</font>
-</body>
-</html>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<TITLE>CVS: ImageMagick - Image Processing and Display Package</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
+	<META NAME="CREATED" CONTENT="20020908;16044300">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20020908;16324600">
+	<META NAME="DESCRIPTION" CONTENT="ImageMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
+	<META NAME="KEYWORDS" CONTENT="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
+	<STYLE>
+	<!--
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		DD { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		PRE { color: #000000 }
+		A:link { color: #0085c0 }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+<P>The ImageMagick source is available via anonymous CVS. This is a
+convenient way for developers from around the country or world to
+download the ImageMagick source, fix bugs, or add new features. 
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">What
+			is CVS</FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DD STYLE="margin-left: 0in; margin-bottom: 0.2in">CVS is the
+Concurrent Version System and is a very popular mean of version
+control for software projects. It is designed to allow multiple
+authors to be able to simultaneously operate on the same source tree.
+This source tree is centrally maintained, but each developer has a
+local mirror of this repository that they make their changes to. 
+</DD>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic3" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">CVS
+			Command Summary</FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DD STYLE="margin-left: 0in">Here is a summary of CVS commands. See
+the <A HREF="http://www.cvshome.org/">CVS Home Page</A> for detailed
+information and documentation about CVS. 
+</DD><CENTER>
+	<TABLE WIDTH=96% BORDER=0 CELLPADDING=5 CELLSPACING=0 BGCOLOR="#99ccff">
+		<COL WIDTH=30*>
+		<COL WIDTH=226*>
+		<TR>
+			<TD WIDTH=12% BGCOLOR="#52799e">
+				<P><FONT COLOR="#ffffff"><B><SPAN STYLE="background: transparent">Action</SPAN></B></FONT></P>
+			</TD>
+			<TD WIDTH=88% BGCOLOR="#52799e">
+				<P><FONT COLOR="#ffffff"><B><SPAN STYLE="background: transparent">Result</SPAN></B></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=12% BGCOLOR="#d0d0d0">
+				<P><B>add</B></P>
+			</TD>
+			<TD WIDTH=88% BGCOLOR="#9ebac6">
+				<P>Add a new file or directory to the repository.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=12% BGCOLOR="#d0d0d0">
+				<P><B>get</B></P>
+			</TD>
+			<TD WIDTH=88% BGCOLOR="#9ebac6">
+				<P>Make a working directory of source files for editing.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=12% BGCOLOR="#d0d0d0">
+				<P><B>commit</B></P>
+			</TD>
+			<TD WIDTH=88% BGCOLOR="#9ebac6">
+				<P>Apply changes to the source repository (write access).</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=12% BGCOLOR="#d0d0d0">
+				<P><B>diff</B></P>
+			</TD>
+			<TD WIDTH=88% BGCOLOR="#9ebac6">
+				<P>Show differences between local files and the source
+				repository.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=12% BGCOLOR="#d0d0d0">
+				<P><B>history</B></P>
+			</TD>
+			<TD WIDTH=88% BGCOLOR="#9ebac6">
+				<P>Show reports on cvs commands against the source repository.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=12% BGCOLOR="#d0d0d0">
+				<P><B>log</B></P>
+			</TD>
+			<TD WIDTH=88% BGCOLOR="#9ebac6">
+				<P>Display CVS log information.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=12% BGCOLOR="#d0d0d0">
+				<P><B>rdiff</B></P>
+			</TD>
+			<TD WIDTH=88% BGCOLOR="#9ebac6">
+				<P>Prepare a collection of differences reflecting changes between
+				release.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=12% BGCOLOR="#d0d0d0">
+				<P><B>status</B></P>
+			</TD>
+			<TD WIDTH=88% BGCOLOR="#9ebac6">
+				<P>Show current status of files in the repository and local
+				copies.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=12% BGCOLOR="#d0d0d0">
+				<P><B>update</B></P>
+			</TD>
+			<TD WIDTH=88% BGCOLOR="#9ebac6">
+				<P>Bring your working directory up to date with the repository.</P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic4" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Using
+			Anonymous CVS</FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DD STYLE="margin-left: 0in; margin-bottom: 0.2in">The source tree
+for ImageMagick is stored on <TT>cvs.simplesystems.org</TT>. To
+access the tree you need to first set up your CVSROOT environment
+variable so that cvs knows where to go to grab the source from. The
+proper value for CVSROOT is: 
+</DD><PRE STYLE="margin-bottom: 0.2in"> :pserver:anonymous@cvs.simplesystems.org:/cvsroot</PRE><P>
+For example, in tcsh do: 
+</P>
+<PRE STYLE="margin-bottom: 0.2in"> setenv CVSROOT :pserver:anonymous@cvs.simplesystems.org:/cvsroot</PRE><P>
+In a bourne shell descendant (e.g. bash) the following syntax has to
+be used 
+</P>
+<PRE STYLE="margin-bottom: 0.2in"> export CVSROOT=':pserver:anonymous@cvs.simplesystems.org:/cvsroot'</PRE><P>
+Or whatever the approriate syntax for your shell of choice is. 
+</P>
+<P>Alternatively, you can specify the cvs root directly on the
+command line: 
+</P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs -d :pserver:anonymous@cvs.simplesystems.org:/cvsroot</PRE><P>
+Next, the first time the source tree is checked out, a cvs login is
+needed. 
+</P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs login</PRE><P>
+This will ask you for a password. The password is <I>anonymous</I>.
+Enter it and press a carriage return. 
+</P>
+<P>To get the tree and place it in a sub-directory of your current
+working directory, issue the command: 
+</P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs co -P ImageMagick</PRE><P>
+Or to save bandwidth get the compressed version, type: 
+</P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 co -P ImageMagick</PRE><P>
+To update the sources within a checked out directory execute 
+</P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs update -P -d</PRE><P>
+and only the files which have changed will be updated. 
+</P>
+<P>The available modules relating to ImageMagick are: 
+</P>
+<DL>
+	<DL>
+		<DD><IMG SRC="../images/ball.png" NAME="Graphic5" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+		ImageMagick (core sources) 
+		</DD><DD>
+		<IMG SRC="../images/ball.png" NAME="Graphic6" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+		ImageMagick-NT (everything needed for Windows) 
+		</DD><DD STYLE="margin-bottom: 0.2in">
+		<IMG SRC="../images/ball.png" NAME="Graphic7" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+		ImageMagick-World (everything related to ImageMagick) 
+		</DD></DL>
+</DL>
+<P>
+To check out the ImageMagick source for NT, try this commmand line: 
+</P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 co -P ImageMagick-NT</PRE><P>
+If you require a specific release of ImageMagick, you may check it
+out like</P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 co -r ImageMagick-5_5_1 -P ImageMagick</PRE><P>
+where the &quot;<FONT FACE="Cumberland">ImageMagick-5_5_1</FONT>&quot;
+is the release branch tag. You can use</P>
+<PRE STYLE="margin-bottom: 0.2in">  cvs status -v README.txt</PRE><P>
+from within an existing checked out directory to see what branch tags
+are available.</P>
+<P>You can use</P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 update -r ImageMagick-5_5_1 </PRE><P>
+from within an existing checked out directory to move it up (or down)
+to that release branch.</P>
+<P>Once a release has been tagged, checking out from a release branch
+is the only reliable way to obtain release files from CVS since the
+default is to always check out the current development sources, which
+may not be stable or released.</P>
+<P>The anoncvs tree is only updated once a day or so, so updating
+more than once a day serves no purpose. Also, using compression
+levels over <TT>-z3</TT>,may actually slow the CVS transfer since
+they require the CVS server to work much harder, yet doesn't compress
+the data much more.</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic8" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">CVS
+			Software</FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DD STYLE="margin-left: 0in; margin-bottom: 0.2in">The best place to
+look for the latest version of CVS is at the <A HREF="http://www.cvshome.org/">CVS
+Home Page </A>. There is also a lot of infomation and documentation
+about CVS available. 
+</DD><HR>
+<P><A HREF="../ImageMagick.html"><IMG SRC="../images/home.png" NAME="Graphic9" ALT="ImageMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@imagemagick.org"><IMG SRC="../images/mail.png" NAME="Graphic10" ALT="ImageMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=1>
+Image manipulation software that works like magic.</FONT> 
+</P>
+</BODY>
+</HTML>
