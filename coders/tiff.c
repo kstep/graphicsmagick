@@ -956,6 +956,7 @@ ModuleExport void RegisterTIFFImage(void)
   entry=SetMagickInfo("PTIF");
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
+  entry->adjoin=False;
   entry->blob_support=False;
   entry->description=AllocateString("Pyramid encoded TIFF");
   entry->module=AllocateString("TIFF");
@@ -1190,13 +1191,20 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #define TIFFDefaultStripSize(tiff,request)  ((8*1024)/TIFFScanlineSize(tiff))
 #endif
 
+  char
+    filename[MaxTextExtent];
+
+  FILE
+    *file;
+
   Image
-    encode_image;
+    *reference_image;
 
   ImageAttribute
     *attribute;
 
   int
+    c,
     y;
 
   register IndexPacket
@@ -1230,6 +1238,13 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   unsigned long
     strip_size;
 
+  /*
+    Open TIFF file.
+  */
+  reference_image=image;
+  status=OpenBlob(image_info,reference_image,WriteBinaryType);
+  if (status == False)
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   adjoin=image_info->adjoin;
   if (LocaleCompare(image_info->magick,"PTIF") == 0)
     {
@@ -1259,28 +1274,11 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         image=image->previous;
       adjoin=True;
     }
-  /*
-    Open TIFF file.
-  */
-  status=OpenBlob(image_info,image,WriteBinaryType);
-  if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  if ((image->file != stdout) && !image->pipet)
-    (void) remove(image->filename);
-  else
-    {
-      /*
-        Write standard output or pipe to temporary file.
-      */
-      encode_image=(*image);
-      TemporaryFilename(image->filename);
-      image->temporary=True;
-    }
-  CloseBlob(image);
   tiff_exception=(&image->exception);
   TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
-  tiff=TIFFOpen(image->filename,WriteBinaryType);
+  TemporaryFilename(filename);
+  tiff=TIFFOpen(filename,WriteBinaryType);
   if (tiff == (TIFF *) NULL)
     return(False);
   image->status=0;
@@ -1758,27 +1756,17 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   TIFFClose(tiff);
-  if (image->temporary)
-    {
-      FILE
-        *file;
-
-      int
-        c;
-
-      /*
-        Copy temporary file to standard output or pipe.
-      */
-      file=fopen(image->filename,ReadBinaryType);
-      if (file == (FILE *) NULL)
-        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-      for (c=fgetc(file); c != EOF; c=fgetc(file))
-        (void) fputc(c,encode_image.file);
-      (void) fclose(file);
-      (void) remove(image->filename);
-      image->temporary=False;
-      CloseBlob(&encode_image);
-    }
+  /*
+    Copy temporary file to standard output or pipe.
+  */
+  file=fopen(filename,ReadBinaryType);
+  if (file == (FILE *) NULL)
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+  for (c=fgetc(file); c != EOF; c=fgetc(file))
+    (void) WriteBlobByte(reference_image,c);
+  (void) fclose(file);
+  (void) remove(filename);
+  CloseBlob(reference_image);
   if (LocaleCompare(image_info->magick,"PTIF") == 0)
     DestroyImages(image);
   return(True);

@@ -741,6 +741,9 @@ static void SetSaturation(double saturation,FPXColorTwistMatrix *color_twist)
 
 static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 {
+  char
+    filename[MaxTextExtent];
+
   FPXBackground
     background_color;
 
@@ -769,9 +772,6 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   FPXSummaryInformation
     summary_info;
 
-  Image
-    fpx_image;
-
   int
     y;
 
@@ -799,23 +799,11 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  if ((image->file != stdout) && !image->pipet)
-    (void) remove(image->filename);
-  else
-    {
-      /*
-        Write standard output or pipe to temporary file.
-      */
-      fpx_image=(*image);
-      TemporaryFilename(image->filename);
-      image->temporary=True;
-    }
-  CloseBlob(image);
-  image->depth=8;
-  TransformRGBImage(image,RGBColorspace);
   /*
     Initialize FPX toolkit.
   */
+  image->depth=8;
+  TransformRGBImage(image,RGBColorspace);
   memory_limit=20000000;
   fpx_status=FPX_SetToolkitMemoryLimit(&memory_limit);
   if (fpx_status != FPX_OK)
@@ -839,15 +827,16 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   compression=NONE;
   if (image_info->compression == JPEGCompression)
     compression=JPEG_UNSPECIFIED;
+  TemporaryFilename(filename);
   {
 #if defined(macintosh)
     FSSpec
       fsspec;
 
-    FilenameToFSSpec(image->filename,&fsspec);
+    FilenameToFSSpec(filename,&fsspec);
     fpx_status=FPX_CreateImageByFilename((const FSSpec &) fsspec,
 #else
-    fpx_status=FPX_CreateImageByFilename(image->filename,
+    fpx_status=FPX_CreateImageByFilename(filename,
 #endif
       image->columns,image->rows,tile_width,tile_height,colorspace,
       background_color,compression,&flashpix);
@@ -1103,27 +1092,19 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
   LiberateMemory((void **) &pixels);
-  if (image->temporary)
-    {
-      FILE
-        *file;
-
-      int
-        c;
-
-      /*
-        Copy temporary file to standard output or pipe.
-      */
-      file=fopen(image->filename,ReadBinaryType);
-      if (file == (FILE *) NULL)
-        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-      for (c=fgetc(file); c != EOF; c=fgetc(file))
-        (void) fputc(c,fpx_image.file);
-      (void) fclose(file);
-      (void) remove(image->filename);
-      image->temporary=False;
-      CloseBlob(&fpx_image);
-    }
+  /*
+    Copy temporary file to standard output or pipe.
+  */
+  file=fopen(filename,ReadBinaryType);
+  if (file == (FILE *) NULL)
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+  for (c=fgetc(file); c != EOF; c=fgetc(file))
+    (void) WriteBlobByte(image,c);
+  (void) fclose(file);
+  (void) remove(filename);
+  CloseBlob(image);
+  if (LocaleCompare(image_info->magick,"PTIF") == 0)
+    DestroyImages(image);
   return(True);
 }
 #else
