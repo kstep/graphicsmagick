@@ -686,7 +686,7 @@ then
   # Most delegates have includes in the same directory as the library, but not all ...
   #
   # Includes
-  for dir in bzlib fpx hdf/hdf/src jasper jbig/libjbig jpeg lcms/src mpeg2/include png tiff/libtiff ttf/include wmf/include xml zlib
+  for dir in bzlib fpx hdf/hdf/src jasper jbig/libjbig jpeg lcms lcms/src mpeg2/include png tiff/libtiff ttf/include wmf/include xml zlib
   do
     if test -d "$builddir/$dir"
     then
@@ -700,7 +700,7 @@ then
   done
 
   # Libraries
-  for dir in bzlib fpx/obj hdf/hdf/src jasper jbig/libjbig jpeg lcms/src png mpeg2/libmpeg2 tiff/libtiff ttf/objs wmf/src xml zlib
+  for dir in bzlib fpx/obj hdf/hdf/src jasper jbig/libjbig jpeg lcms lcms/src png mpeg2/libmpeg2 tiff/libtiff ttf/objs wmf/src xml zlib
   do
     if test -d "$builddir/$dir"
     then
