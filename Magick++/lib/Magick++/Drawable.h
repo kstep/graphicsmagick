@@ -21,7 +21,26 @@ namespace Magick
   //
   // Representation of an x,y coordinate
   //
-  typedef std::pair<double,double> Coordinate;
+  class Coordinate
+  {
+    friend std::ostream& operator<<( std::ostream& stream_,
+                                     const Coordinate& coordinate_ );
+  public:
+    Coordinate ( void );
+    Coordinate ( double x_, double y_ );
+    ~Coordinate ();
+
+    void   x ( double x_ );
+    double x ( void ) const;
+
+    void   y ( double y_ );
+    double y ( void ) const;
+
+  private:
+    double _x;
+    double _y;
+  };
+//   typedef std::pair<double,double> Coordinate;
 
   // Print coordinate to stream.
 //   std::ostream& operator<<( std::ostream& stream_,
@@ -192,12 +211,52 @@ namespace Magick
 
 
 // Print coordinate to stream.
-std::ostream& operator<<( std::ostream& stream_,
-			  const Magick::Coordinate& coordinate_ );
+// std::ostream& operator<<( std::ostream& stream_,
+// 			  const Magick::Coordinate& coordinate_ );
 
 //
 // Inlines
 //
+
+//
+// Coordinate class
+//
+inline Magick::Coordinate::Coordinate ( void )
+  : _x(0),
+    _y(0)
+{
+}
+
+inline Magick::Coordinate::Coordinate ( double x_, double y_ )
+  : _x(x_),
+    _y(y_)
+{
+}
+
+inline Magick::Coordinate::~Coordinate ()
+{
+  // Nothing to do
+}
+
+inline void Magick::Coordinate::x ( double x_ )
+{
+  _x = x_;
+}
+
+inline double Magick::Coordinate::x ( void ) const
+{
+  return _x;
+}
+
+inline void Magick::Coordinate::y ( double y_ )
+{
+  _y = y_;
+}
+
+inline double Magick::Coordinate::y ( void ) const
+{
+  return _y;
+}
 
 //
 // Drawable class
