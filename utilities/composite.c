@@ -497,7 +497,7 @@ static void CompositeUsage(void)
 %
 %
 */
-MagickExport unsigned int CompositeUtility(int argc,char **argv)
+unsigned int CompositeUtility(int argc,char **argv)
 {
 #define NotInitialized  (unsigned int) (~0)
 
@@ -796,7 +796,7 @@ MagickExport unsigned int CompositeUtility(int argc,char **argv)
             }
           if (LocaleCompare("copy",option+1) == 0)
             {
-              if (*option == '-')
+              if ((*option == '-') || (*option == '+'))
                 {
                   Image
                     *clone_image;
@@ -828,7 +828,13 @@ MagickExport unsigned int CompositeUtility(int argc,char **argv)
                       DestroyImages(mask_image);
                       mask_image=(Image *) NULL;
                     }
-                  DestroyImages(clone_image);
+                  if (*option == '-')
+                    DestroyImageList(clone_image);
+                  else
+                    {
+                      DestroyImageList(image);
+                      image=clone_image;
+                    }
                   DestroyImageInfo(clone_info);
                   j=i+1;
                 }
@@ -1218,6 +1224,13 @@ MagickExport unsigned int CompositeUtility(int argc,char **argv)
                   if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing scene number",option);
                 }
+              break;
+            }
+          if (LocaleCompare("sharpen",option+1) == 0)
+            {
+              i++;
+              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                MagickError(OptionError,"Missing geometry",option);
               break;
             }
           if (LocaleCompare("size",option+1) == 0)

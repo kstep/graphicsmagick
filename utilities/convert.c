@@ -1013,7 +1013,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
             }
           if (LocaleCompare("copy",option+1) == 0)
             {
-              if (*option == '-')
+              if ((*option == '-') || (*option == '+'))
                 {
                   Image
                     *clone_image;
@@ -1035,7 +1035,13 @@ static unsigned int ConvertUtility(int argc,char **argv)
                       (char *) NULL);
                   status&=ConvertImageList(clone_info,&clone_image,&option_info,
                     i-j+2,argv+j-1,&exception);
-                  DestroyImageList(clone_image);
+                  if (*option == '-')
+                    DestroyImageList(clone_image);
+                  else
+                    {
+                      DestroyImageList(image);
+                      image=clone_image;
+                    }
                   DestroyImageInfo(clone_info);
                   j=i+1;
                 }
