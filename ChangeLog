@@ -1,5 +1,7 @@
 2003-03-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* tests/Makefile.am : Removed some debug code which was
+	accidentally committed to CVS.
 	* Copyright.txt: Add copyright statements to all the files,
 	including some apparently missing copyrights.
 
