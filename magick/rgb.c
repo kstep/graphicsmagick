@@ -428,7 +428,7 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
   if (image->matte || (Latin1Compare(image_info->magick,"RGBA") == 0))
     packet_size=image->depth > 8 ? 8 : 4;
   pixels=(unsigned char *)
-    AllocateMemory(packet_size*image->columns*sizeof(PixelPacket));
+    AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
   if (pixels == (unsigned char *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   if (image_info->interlace != PartitionInterlace)
