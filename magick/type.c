@@ -251,7 +251,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   static Fontmap
     fontmap[] =
     {
-      { "arial", "helvetica" }, { "fixed", "courier" }, { "modern","courier" },
+      { "fixed", "courier" }, { "modern","courier" },
       { "monotype corsiva", "courier" }, { "news gothic", "helvetica" },
       { "system", "courier" }, { "terminal", "courier" },
       { "wingdings", "symbol" }, { (char *) NULL, (char *) NULL }
@@ -273,7 +273,8 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
       continue;
     if (family == (const char *) NULL)
       {
-        if (LocaleCompare(p->family,"helvetica") != 0)
+        if ((LocaleCompare(p->family,"arial") != 0) &&
+            (LocaleCompare(p->family,"helvetica") != 0))
           continue;
       }
     else
@@ -298,7 +299,8 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
       continue;
     if (family == (const char *) NULL)
       {
-        if (LocaleCompare(p->family,"helvetica") != 0)
+        if ((LocaleCompare(p->family,"arial") != 0) &&
+            (LocaleCompare(p->family,"helvetica") != 0))
           continue;
       }
     else
@@ -339,11 +341,12 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   {
     if (family == (const char *) NULL)
       {
-        if (LocaleCompare("helvetica",fontmap[i].name) != 0)
+        if ((LocaleCompare(fontmap[i].name,"arial") != 0) &&
+            (LocaleCompare(fontmap[i].name,"helvetica") != 0))
           continue;
       }
     else
-      if (LocaleCompare(family,fontmap[i].name) != 0)
+      if (LocaleCompare(fontmap[i].name,family) != 0)
         continue;
     type_info=GetTypeInfoByFamily(fontmap[i].substitute,style,stretch,weight,
       exception);
