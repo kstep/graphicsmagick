@@ -1386,13 +1386,15 @@ MagickExport unsigned int CompositeImage(Image *image,
               opacity=p->opacity;
               break;
             }
-          red=alpha*(double) (p->red*p->opacity+q->red*(MaxRGB-p->opacity));
+          red=alpha*(double)
+            (p->red*(MaxRGB-p->opacity)+q->red*p->opacity);
           green=alpha*(double)
-            (p->green*p->opacity+q->green*(MaxRGB-p->opacity));
-          blue=alpha*(double) (p->blue*p->opacity+q->blue*(MaxRGB-p->opacity));
+            (p->green*(MaxRGB-p->opacity)+q->green*p->opacity);
+          blue=alpha*(double)
+            (p->blue*(MaxRGB-p->opacity)+q->blue*p->opacity);
           if (composite_image->matte)
             opacity=alpha*(double)
-              (p->opacity*p->opacity+q->opacity*(MaxRGB-p->opacity));
+              (p->opacity*(MaxRGB-p->opacity)+q->opacity*p->opacity);
           break;
         }
         case InCompositeOp:
@@ -1415,10 +1417,12 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case AtopCompositeOp:
         {
-          red=alpha*(double) (p->red*(MaxRGB-q->opacity)+q->red*p->opacity);
+          red=alpha*(double)
+            (p->red*(MaxRGB-q->opacity)+q->red*p->opacity);
           green=alpha*(double)
             (p->green*(MaxRGB-q->opacity)+q->green*p->opacity);
-          blue=alpha*(double) (p->blue*(MaxRGB-q->opacity)+q->blue*p->opacity);
+          blue=alpha*(double)
+            (p->blue*(MaxRGB-q->opacity)+q->blue*p->opacity);
           if (composite_image->matte)
             opacity=alpha*(double) (p->opacity*(MaxRGB-q->opacity)+
               q->opacity*p->opacity);
@@ -1547,10 +1551,12 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case BlendCompositeOp:
         {
-          red=alpha*(double) (p->red*p->opacity+q->red*(MaxRGB-p->opacity));
+          red=alpha*(double)
+            (p->red*p->opacity+q->red*(MaxRGB-p->opacity));
           green=alpha*(double)
             (p->green*p->opacity+q->green*(MaxRGB-p->opacity));
-          blue=alpha*(double) (p->blue*p->opacity+q->blue*(MaxRGB-p->opacity));
+          blue=alpha*(double)
+            (p->blue*p->opacity+q->blue*(MaxRGB-p->opacity));
           opacity=OpaqueOpacity;
           break;
         }
@@ -1590,6 +1596,9 @@ MagickExport unsigned int CompositeImage(Image *image,
           offset=(int) (Intensity(*p)-midpoint);
           if (offset != 0)
             {
+              double
+                percent_brightness;
+
               /*
                 Pixel is not at 0 point.
               */

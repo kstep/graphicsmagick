@@ -6699,6 +6699,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 
           FormatString(command,"@%.1024s",image_info->filename);
           (void) SetImageAttribute(*image,"Comment",command);
+          (*image)->taint=True;
         }
       (void) remove(image_info->filename);
       XSetCursorState(display,windows,False);
