@@ -5194,7 +5194,6 @@ printf("%x: %d\n",window->segment_info[1].shmid,ximage->bytes_per_line*ximage->h
           window->shared_memory=False;
           if (window->ximage != (XImage *) NULL)
             {
-              XSync(display,False);
               XShmDetach(display,&window->segment_info[1]);
               XSync(display,False);
               (void) shmdt(window->segment_info[1].shmaddr);
