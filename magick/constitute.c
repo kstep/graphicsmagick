@@ -2436,7 +2436,6 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   status=False;
   magick_info=(MagickInfo *)
     GetMagickInfo(clone_info->magick,&image->exception);
-printf("%s %x\n",clone_info->magick,magick_info);
   if ((magick_info != (MagickInfo *) NULL) &&
       (magick_info->encoder !=
         (unsigned int (*)(const ImageInfo *,Image *)) NULL))
