@@ -199,7 +199,8 @@ MagickExport unsigned int AnnotateImage(Image *image,
         height-=2*y > height ? height : 2*y;
     }
   clone_info=CloneAnnotateInfo((ImageInfo *) NULL,annotate_info);
-  font_height=AffineExpansion(&annotate_info->affine)*annotate_info->pointsize;
+  font_height=AffineExpansion(&annotate_info->affine)*
+    annotate_info->pointsize;
   matte=image->matte;
   for (i=0; textlist[i] != (char *) NULL; i++)
   {
@@ -239,7 +240,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
       {
         offset.x=x;
         offset.y=y+0.5*height+i*font_height-0.5*font_height*number_lines+
-          0.5*font_height-bounds.y1+number_lines;
+          0.5*font_height-(font_height/-4.0)+number_lines;
         break;
       }
       case ForgetGravity:
@@ -249,32 +250,32 @@ MagickExport unsigned int AnnotateImage(Image *image,
       {
         offset.x=x+0.5*width-0.5*font_width;
         offset.y=y+0.5*height+i*font_height-0.5*font_height*number_lines+
-          0.5*font_height-bounds.y1+number_lines;
+          0.5*font_height-(font_height/-4.0)+number_lines;
         break;
       }
       case EastGravity:
       {
         offset.x=x+width-font_width;
         offset.y=y+0.5*height+i*font_height-0.5*font_height*number_lines+
-          0.5*font_height-bounds.y1+number_lines;
+          0.5*font_height-(font_height/-4.0)+number_lines;
         break;
       }
       case SouthWestGravity:
       {
         offset.x=x;
-        offset.y=y+height+i*font_height+bounds.y2;
+        offset.y=y+height+i*font_height+(3.0*font_height/4.0);
         break;
       }
       case SouthGravity:
       {
         offset.x=x+0.5*width-0.5*font_width;
-        offset.y=y+height+i*font_height+bounds.y2;
+        offset.y=y+height+i*font_height+(3.0*font_height/4.0);
         break;
       }
       case SouthEastGravity:
       {
         offset.x=x+width-font_width;
-        offset.y=y+height+i*font_height+bounds.y2;
+        offset.y=y+height+i*font_height+(3.0*font_height/4.0);
         break;
       }
     }
@@ -632,6 +633,7 @@ static unsigned int RenderTruetype(Image *image,
     y;
 
   PixelPacket
+    box_color,
     fill_color;
 
   PointInfo
@@ -816,6 +818,7 @@ static unsigned int RenderTruetype(Image *image,
     Render label.
   */
   alpha=1.0/MaxRGB;
+  box_color=annotate_info->box;
   fill_color=annotate_info->fill;
   for (glyph=glyphs; glyph->id != 0; glyph++)
   {
@@ -837,8 +840,13 @@ static unsigned int RenderTruetype(Image *image,
       point.x=offset->x+bitmap->left-bounds->x1;
       for (x=0; x < bitmap->bitmap.width; x++)
       {
-        if ((*p == 0) || (ceil(point.x+x-0.5) < 0) ||
+        if ((ceil(point.x+x-0.5) < 0) ||
             (ceil(point.x+x-0.5) >= image->columns))
+          {
+            p++;
+            continue;
+          }
+        if (*p == 0)
           {
             p++;
             continue;
