@@ -1534,14 +1534,12 @@ MagickExport void XDisplayImageInfo(Display *display,
   FILE
     *file;
 
-  off_t
-    length;
-
   register int
     i;
 
   size_t
     bytes,
+    length,
     number_pixels;
 
   unsigned int

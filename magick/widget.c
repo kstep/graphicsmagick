@@ -69,7 +69,7 @@
    (position.y >= (int) (matte_info.y-matte_info.bevel_width)) &&  \
    (position.x < (int) (matte_info.x+matte_info.width+matte_info.bevel_width)) &&  \
    (position.y < (int) (matte_info.y+matte_info.height+matte_info.bevel_width)))
-#define MaxTextWidth  (80*XTextWidth(font_info,"_",1))
+#define MaxTextWidth  (255*XTextWidth(font_info,"_",1))
 #define MinTextWidth  (26*XTextWidth(font_info,"_",1))
 #define QuantumMargin   Max(font_info->max_bounds.width,12)
 #define WindowIsActive(window_info,position)  \
