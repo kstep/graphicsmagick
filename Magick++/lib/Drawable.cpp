@@ -16,7 +16,7 @@
 using namespace std;
 
 std::ostream& operator<<( std::ostream& stream_,
-			  const Magick::Coordinate& coordinate_ )
+                          const Magick::Coordinate& coordinate_ )
 {
   stream_ << coordinate_.first << "," << coordinate_.second;
   return stream_;
