@@ -4429,8 +4429,8 @@ Mogrify(ref,...)
                   Rotate.
                 */
                 affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
-                affine.rx=(-sin(DegreesToRadians(fmod(angle,360.0))));
-                affine.ry=sin(DegreesToRadians(fmod(angle,360.0)));
+                affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
+                affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
                 affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
                 break;
               }
@@ -4765,10 +4765,10 @@ Mogrify(ref,...)
                 */
                 if (angle == 0.0)
                   break;
-                affine.sx=(-cos(DegreesToRadians(fmod(angle,360.0))));
+                affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
                 affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
                 affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
-                affine.sy=(-cos(DegreesToRadians(fmod(angle,360.0))));
+                affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
                 break;
               }
               case 13:

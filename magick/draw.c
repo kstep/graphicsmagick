@@ -983,10 +983,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("rotate",keyword) == 0)
           {
             angle=strtod(q,&q);
-            affine.sx=(-cos(DegreesToRadians(fmod(angle,360.0))));
+            affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
             affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
             affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
-            affine.sy=(-cos(DegreesToRadians(fmod(angle,360.0))));
+            affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
             break;
           }
         status=True;

@@ -41,11 +41,11 @@ testRead( 'input.fits', '27b8cea85c011f60024ff559096bd11f',
 
 print("CompuServe graphics interchange format ...\n");
 ++$test;
-testRead( 'input.gif', '06300c96272ed0ccc120dba7e0177db0');
+testRead( 'input.gif', '45e5c63ac641eda9bedd4f42a7f6b4cd');
 
 print("CompuServe graphics interchange format (1987) ...\n");
 ++$test;
-testRead( 'input.gif87', '06300c96272ed0ccc120dba7e0177db0');
+testRead( 'input.gif87', '45e5c63ac641eda9bedd4f42a7f6b4cd');
 
 print("Gradient (gradual passing from one shade to another) ...\n");
 #
@@ -56,7 +56,7 @@ testRead( 'gradient:red-blue', 'ce3e346956f17cc6131dfe7213d5e11a',
 print("GRANITE (granite texture) ...\n");
 #
 ++$test;
-testRead( 'granite:', '6e6a7d8ba88a989a02bad8f5e26db5f4');
+testRead( 'granite:', 'c80c00aa59794ef7731a9117d9222d80');
 
 print("Microsoft icon ...\n");
 ++$test;
