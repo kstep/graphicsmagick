@@ -4291,6 +4291,9 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   register PrimitiveInfo
     *p;
 
+printf("%g,%g %g,%g %g,%g %g %d %d\n",
+  start.x,start.y,end.x,end.y,arc.x,arc.y,angle,large_arc,sweep);
+
   primitive_info->coordinates=0;
   if ((arc.x == 0.0) || (arc.y == 0.0))
     return;
@@ -4320,7 +4323,7 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   else
     if ((theta > 0.0) && !sweep)
       theta-=2.0*MagickPI;
-  arc_segments=(int) ceil((fabs(theta/(0.5*MagickPI+MagickEpsilon)))-0.5);
+  arc_segments=(int) ceil(fabs(theta/(0.5*MagickPI+MagickEpsilon)));
   p=primitive_info;
   for (i=0; i < arc_segments; i++)
   {
