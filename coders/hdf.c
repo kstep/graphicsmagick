@@ -55,7 +55,11 @@
 #include "magick.h"
 #include "defines.h"
 #if defined(HasHDF)
+#if defined(HAVE_HDF_HDF_H)
+#include "hdf/hdf.h"
+#else
 #include "hdf.h"
+#endif
 #undef BSD
 #undef LOCAL
 #endif

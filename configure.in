@@ -846,7 +846,13 @@ then
     AC_CHECKING(for HDF components ...)
     failed=0;
     passed=0;
-    AC_CHECK_HEADER(hdf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_HEADERS(hdf.h hdf/hdf.h)
+    if test "$ac_cv_header_hdf_h" = 'yes' -o "$ac_cv_header_hdf_hdf_h" = 'yes'
+    then
+	passed=`expr $passed + 1`
+    else
+	failed=`expr $failed + 1`
+    fi
     AC_CHECK_LIB(df,DFANputlabel,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if HDF package is complete)
     if test $passed -gt 0
