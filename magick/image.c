@@ -866,8 +866,6 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   clone_image=AllocateImage((const ImageInfo *) NULL);
-  if (clone_image == (Image *) NULL)
-    return((Image *) NULL);
   *clone_image=(*image);
   clone_image->reference_count=1;
   clone_image->montage=(char *) NULL;
