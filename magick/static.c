@@ -33,6 +33,7 @@ void OpenStaticModules()
   RegisterLABELImage();
   RegisterLOGOImage();
   RegisterMAPImage();
+  RegisterMATImage();
   RegisterMATTEImage();
   RegisterMIFFImage();
   RegisterMONOImage();
