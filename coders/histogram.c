@@ -210,6 +210,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  SetImageDepth(image,image->depth);
   SetGeometry(image,&geometry);
   if (image_info->density == (char *) NULL)
     (void) GetMagickGeometry(HistogramDensity,&geometry.x,&geometry.y,
