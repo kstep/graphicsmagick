@@ -278,7 +278,7 @@ int main(int argc,char **argv)
     ConvertUsage();
   image_info=CloneImageInfo((ImageInfo *) NULL);
   GetExceptionInfo(&exception);
-  status=ConvertImageCommand(image_info,argc,argv,&exception);
+  status=ConvertImageCommand(image_info,argc,argv,(char **) NULL,&exception);
   if (exception.severity != UndefinedException)
     CatchException(&exception);
   DestroyImageInfo(image_info);

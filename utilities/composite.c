@@ -199,7 +199,7 @@ int main(int argc,char **argv)
     CompositeUsage();
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  status=CompositeImageCommand(image_info,argc,argv,&exception);
+  status=CompositeImageCommand(image_info,argc,argv,(char **) NULL,&exception);
   if (exception.severity != UndefinedException)
     CatchException(&exception);
   DestroyImageInfo(image_info);

@@ -128,7 +128,8 @@ static void IdentifyUsage(void)
 int main(int argc,char **argv)
 {
   char
-    *option;
+    *option,
+    *text;
 
   ExceptionInfo
     exception;
@@ -142,6 +143,7 @@ int main(int argc,char **argv)
   unsigned int
     status;
 
+  text=(char *) NULL;
   ReadCommandlLine(argc,&argv);
   for (i=1; i < argc; i++)
   {
@@ -162,9 +164,15 @@ int main(int argc,char **argv)
     IdentifyUsage();
   image_info=CloneImageInfo((ImageInfo *) NULL);
   GetExceptionInfo(&exception);
-  status=IdentifyImageCommand(image_info,argc,argv,&exception);
+  status=IdentifyImageCommand(image_info,argc,argv,&text,&exception);
   if (exception.severity != UndefinedException)
     CatchException(&exception);
+  if (text != (char *) NULL)
+    {
+      (void) fputs(text,stdout);
+      (void) fputc('\n',stdout);
+      LiberateMemory((void **) &text);
+    }
   DestroyImageInfo(image_info);
   DestroyExceptionInfo(&exception);
   DestroyMagick();

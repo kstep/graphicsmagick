@@ -258,7 +258,7 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
 }
 
 MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
-  const int argc,char **argv,ExceptionInfo *exception)
+  const int argc,char **argv,char **text,ExceptionInfo *exception)
 {
 #define NotInitialized  (unsigned int) (~0)
 #define ThrowCompositeException(code,reason,description) \
@@ -1286,7 +1286,7 @@ static unsigned int ConcatenateImages(const int argc,char **argv,
 }
 
 MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
-  const int argc,char **argv,ExceptionInfo *exception)
+  const int argc,char **argv,char **text,ExceptionInfo *exception)
 {
 #define NotInitialized  (unsigned int) (~0)
 #define ThrowConvertException(code,reason,description) \
@@ -2943,7 +2943,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 %
 */
 MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
-  const int argc,char **argv,ExceptionInfo *exception)
+  const int argc,char **argv,char **text,ExceptionInfo *exception)
 {
 #define ThrowIdentifyException(code,reason,description) \
 { \
@@ -2956,7 +2956,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
     *format,
     *option,
     *q,
-    *text;
+    *s;
 
   double
     sans;
@@ -3035,13 +3035,14 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
               DescribeImage(p,stdout,image_info->verbose);
               continue;
             }
-          text=TranslateText(image_info,p,format);
-          if (text == (char *) NULL)
-            ThrowIdentifyException(ResourceLimitError,
-              "Unable to format image metadata","Memory allocation failed");
-          (void) fputs(text,stdout);
-          (void) fputc('\n',stdout);
-          LiberateMemory((void **) &text);
+          if (text != (char **) NULL)
+            {
+              s=TranslateText(image_info,p,format);
+              if (s == (char *) NULL)
+                ThrowIdentifyException(ResourceLimitError,
+                  "Unable to format image metadata","Memory allocation failed");
+              *text=s;
+            }
         }
         DestroyImageList(image);
         number_images++;
@@ -3249,7 +3250,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
 %
 */
 MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
-  const int argc,char **argv,ExceptionInfo *exception)
+  const int argc,char **argv,char **text,ExceptionInfo *exception)
 {
 #define ThrowMogrifyException(code,reason,description) \
 { \
@@ -4794,7 +4795,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 %
 */
 MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
-  const int argc,char **argv,ExceptionInfo *exception)
+  const int argc,char **argv,char **text,ExceptionInfo *exception)
 {
 #define ThrowMontageException(code,reason,description) \
 { \

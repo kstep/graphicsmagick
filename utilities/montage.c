@@ -218,7 +218,7 @@ int main(int argc,char **argv)
     MontageUsage();
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  status=MontageImageCommand(image_info,argc,argv,&exception);
+  status=MontageImageCommand(image_info,argc,argv,(char **) NULL,&exception);
   if (exception.severity != UndefinedException)
     CatchException(&exception);
   DestroyImageInfo(image_info);

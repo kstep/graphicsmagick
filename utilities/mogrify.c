@@ -264,7 +264,7 @@ int main(int argc,char **argv)
     MogrifyUsage();
   image_info=CloneImageInfo((ImageInfo *) NULL);
   GetExceptionInfo(&exception);
-  status=MogrifyImageCommand(image_info,argc,argv,&exception);
+  status=MogrifyImageCommand(image_info,argc,argv,(char **) NULL,&exception);
   if (exception.severity != UndefinedException)
     CatchException(&exception);
   DestroyImageInfo(image_info);
