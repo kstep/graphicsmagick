@@ -20,6 +20,7 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A>
 	<UL>
 
+		<LI><A HREF="#affinetransformimage">AffineTransformImage</A>
 		<LI><A HREF="#rotateimage">RotateImage</A>
 		<LI><A HREF="#shearimage">ShearImage</A>
 	</UL>
@@ -36,6 +37,7 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P>Image * <STRONG>AffineTransformImage</STRONG>( const Image *image, AffineMatrix *affine, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>RotateImage</STRONG>( const Image *image, const double degrees, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ShearImage</STRONG>( const Image *image, const double x_shear, const double y_shear, ExceptionInfo *exception );</P>
 <P>
@@ -43,6 +45,24 @@
 <H1><A NAME="function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
+<P>
+<H2><A NAME="affinetransformimage">AffineTransformImage</A></H2>
+<blockquote>AffineTransformImage() transforms an image as dictated by the affine matrix. It allocates the memory necessary for the new <A HREF="types/Image.html">Image</A> structure and returns a pointer to the new image. </blockquote><P>The format of the AffineTransformImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *AffineTransformImage ( const <A HREF="types/Image.html">Image</A> *image, AffineMatrix *affine, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
+The image.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_affine%3A">affine:</A></STRONG><BR>
+<DD>
+The affine transform.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
 <P>
 <H2><A NAME="rotateimage">RotateImage</A></H2>
 <P>Method RotateImage creates a new image that is a rotated copy of an existing one.  Positive angles rotate counter-clockwise (right-hand rule), while negative angles rotate clockwise.  Rotated images are usually larger than the originals and have 'empty' triangular corners.  
@@ -60,7 +80,7 @@
 Method RotateImage returns a pointer to the image after rotating.  
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image; returned from ReadImage.
 <P></P>
@@ -68,7 +88,7 @@ The image; returned from ReadImage.
 <DD>
 Specifies the number of degrees to rotate the image.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
 <P></P></DL></DL>

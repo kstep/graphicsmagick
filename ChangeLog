@@ -1,3 +1,7 @@
+2002-04-20  Cristy  <cristy@mystic.es.dupont.com>
+  * Added magic string detection for the FPX format (patch provided by
+    Marc).
+
 2002-04-15  Cristy  <cristy@mystic.es.dupont.com>
   * Added ExceptionInfo parameter to C API method, QueryColorDatabase().
 
@@ -20,11 +24,11 @@
   * Added -transform option to convert/mogrify program.
 
 2002-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * magick/magick.c (MagickToMime): New method to return the MIME
-    media type corresponding to a specified magick tag.
+  * magick/magick.c (MagickToMime): New method to return the MIME media
+    type corresponding to a specified magick tag.
 
 2002-04-12  Leonard Rosenthol  <leonardr@lazerware.com>
-  * Fixed a bug in writing layer names in PSD files
+  * Fixed a bug in writing layer names in PSD files.
 
 2002-04-10  Cristy  <cristy@mystic.es.dupont.com>
   * Fixed PingImage() memory leak (thanks to Timo Vogel).
@@ -34,7 +38,7 @@
 2002-04-08  Cristy  <cristy@mystic.es.dupont.com>
   * Added reference counted blobs.
   * Added MagickFatalError() and SetFatalErrorHandler() to the C API.
-  * One color images caused memory overwrite in QuantizeImage() (thanks
+  * One color images caused memory corruption in QuantizeImage() (thanks
     to Vincent Broz).
   * Memory leak in NormalizeImage() (thanks to Vincent Broz).
 

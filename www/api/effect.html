@@ -74,7 +74,7 @@
 <P>Image * <STRONG>ImplodeImage</STRONG>( const Image *image, const double amount, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MedianFilterImage</STRONG>( const Image *image, const double radius, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MorphImages</STRONG>( const Image *image, const unsigned long number_frames, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>MotionBlurImage</STRONG>( const Image *image, const double radius, const double sigma, const double amount, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>MotionBlurImage</STRONG>( const Image *image, const double radius, const double sigma, const double angle, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>OilPaintImage</STRONG>( const Image *image, const double radius, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>PlasmaImage</STRONG>( Image *image, const SegmentInfo *segment, int attenuate, int depth );</P>
 <P>Image * <STRONG>ReduceNoiseImage</STRONG>( const Image *image, const double radius, ExceptionInfo *exception );</P>
@@ -362,7 +362,7 @@ Return any errors or warnings in this structure.
 <H2><A NAME="motionblurimage">MotionBlurImage</A></H2>
 <blockquote>MotionBlurImage() simulates motion blur. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, radius should be larger than sigma. Use a radius of 0 and MotionBlurImage ( ) selects a suitable radius for you. Angle gives the angle of the blurring motion. </blockquote><P>Andrew Protano contributed this effect.</P>
 <P>The format of the MotionBlurImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *MotionBlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, const double amount, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *MotionBlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, const double angle, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>image:</STRONG><BR>
@@ -504,7 +504,7 @@ Define the extent of the solarization.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="spreadimage">SpreadImage</A></H2>
-<blockquote>SpreadImage() is a special effects method that randomly displaces each pixel in a block defined by the amount parameter. </blockquote><P>The format of the SpreadImage method is:</P>
+<blockquote>SpreadImage() is a special effects method that randomly displaces each pixel in a block defined by the radius parameter. </blockquote><P>The format of the SpreadImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *SpreadImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>

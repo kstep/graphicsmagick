@@ -26,6 +26,7 @@
 		<LI><A HREF="#animateimages">AnimateImages</A>
 		<LI><A HREF="#appendimages">AppendImages</A>
 		<LI><A HREF="#averageimages">AverageImages</A>
+		<LI><A HREF="#catchimageexception">CatchImageException</A>
 		<LI><A HREF="#channelimage">ChannelImage</A>
 		<LI><A HREF="#clipimage">ClipImage</A>
 		<LI><A HREF="#cloneimage">CloneImage</A>
@@ -37,6 +38,7 @@
 		<LI><A HREF="#destroyimageinfo">DestroyImageInfo</A>
 		<LI><A HREF="#displayimages">DisplayImages</A>
 		<LI><A HREF="#getimagedepth">GetImageDepth</A>
+		<LI><A HREF="#getimageexception">GetImageException</A>
 		<LI><A HREF="#getimagegeometry">GetImageGeometry</A>
 		<LI><A HREF="#getimageinfo">GetImageInfo</A>
 		<LI><A HREF="#getimagetype">GetImageType</A>
@@ -70,6 +72,7 @@
 <P>unsigned int  <STRONG>AnimateImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>Image * <STRONG>AppendImages</STRONG>( const Image *image, const unsigned int stack, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>AverageImages</STRONG>( Image *image, ExceptionInfo *exception );</P>
+<P>ExceptionType  <STRONG>CatchImageException</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>ChannelImage</STRONG>( Image *image, const ChannelType channel );</P>
 <P>unsigned int  <STRONG>ClipImage</STRONG>( Image *image );</P>
 <P>Image * <STRONG>CloneImage</STRONG>( const Image *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, ExceptionInfo *exception );</P>
@@ -82,6 +85,7 @@
 <P>void  <STRONG>DestroyImageInfo</STRONG>( ImageInfo *image_info );</P>
 <P>unsigned int  <STRONG>DisplayImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>unsigned long  <STRONG>GetImageDepth</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>void  <STRONG>GetImageException</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>int  <STRONG>GetImageGeometry</STRONG>( const Image *image, const char *geometry, const unsigned int size_to_fit, RectangeInfo *region_info );</P>
 <P>void  <STRONG>GetImageInfo</STRONG>( ImageInfo *image_info );</P>
 <P>ImageType  <STRONG>GetImageType</STRONG>( const Image *image, ExceptionInfo *exception );</P>
@@ -186,6 +190,16 @@ The image sequence.
 <dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="catchimageexception">CatchImageException</A></H2>
+<blockquote>CatchImageException() returns if no exceptions are found in the image sequence, otherwise it determines the most severe exception and reports it as a warning or error depending on the severity. </blockquote><P>The format of the CatchImageException method is:</P>
+<blockquote><A HREF="types/Enumerations.html#ExceptionType">ExceptionType</A> CatchImageException ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<DD>
+An image sequence.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="channelimage">ChannelImage</A></H2>
@@ -365,6 +379,20 @@ The image.
 <dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="getimageexception">GetImageException</A></H2>
+<blockquote>GetImageException() traverses an image sequence and returns any error more severe than noted by the exception parameter. </blockquote><P>The format of the GetImageException method is:</P>
+<blockquote>void GetImageException ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<DD>
+Specifies a pointer to a list of one or more images.
+<P></P>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+return the highest severity exception.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimagegeometry">GetImageGeometry</A></H2>

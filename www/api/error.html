@@ -20,10 +20,8 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A>
 	<UL>
 
-		<LI><A HREF="#catchimageexception">CatchImageException</A>
 		<LI><A HREF="#destroyexceptioninfo">DestroyExceptionInfo</A>
 		<LI><A HREF="#getexceptioninfo">GetExceptionInfo</A>
-		<LI><A HREF="#getimageexception">GetImageException</A>
 		<LI><A HREF="#magickerror">MagickError</A>
 		<LI><A HREF="#magickwarning">MagickWarning</A>
 		<LI><A HREF="#seterrorhandler">SetErrorHandler</A>
@@ -45,10 +43,8 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P>ExceptionType  <STRONG>CatchImageException</STRONG>( Image *image );</P>
 <P>void  <STRONG>DestroyExceptionInfo</STRONG>( ExceptionInfo *exception );</P>
 <P><STRONG>GetExceptionInfo</STRONG>( ExceptionInfo *exception );</P>
-<P>void  <STRONG>GetImageException</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>void  <STRONG>MagickError</STRONG>( const ExceptionType error, const char *reason, const char *description );</P>
 <P>void  <STRONG>MagickWarning</STRONG>( const ExceptionType warning, const char *reason, const char *description );</P>
 <P>ErrorHandler  <STRONG>SetErrorHandler</STRONG>( ErrorHandler handler );</P>
@@ -60,16 +56,6 @@
 <H1><A NAME="function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
-<P>
-<H2><A NAME="catchimageexception">CatchImageException</A></H2>
-<blockquote>CatchImageException() returns if no exceptions are found in the image sequence, otherwise it determines the most severe exception and reports it as a warning or error depending on the severity. </blockquote><P>The format of the CatchImageException method is:</P>
-<blockquote><A HREF="types/Enumerations.html#ExceptionType">ExceptionType</A> CatchImageException ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
-<DD>
-An image sequence.
-<P></P></DL></DL>
 <P>
 <H2><A NAME="destroyexceptioninfo">DestroyExceptionInfo</A></H2>
 <blockquote>DestroyExceptionInfo() deallocates memory associated with exception. </blockquote><P>The format of the DestroyExceptionInfo method is:</P>
@@ -89,20 +75,6 @@ The exception info.
 <dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 The exception info.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="getimageexception">GetImageException</A></H2>
-<blockquote>GetImageException() traverses an image sequence and returns any error more severe than noted by the exception parameter. </blockquote><P>The format of the GetImageException method is:</P>
-<blockquote>void GetImageException ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>image:</STRONG><BR>
-<DD>
-Specifies a pointer to a list of one or more images.
-<P></P>
-<dd><p></p><dt><STRONG>exception:</STRONG><BR>
-<DD>
-return the highest severity exception.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="magickerror">MagickError</A></H2>

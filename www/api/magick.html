@@ -29,6 +29,7 @@
 		<LI><A HREF="#initializemagick">InitializeMagick</A>
 		<LI><A HREF="#ismagickconflict">IsMagickConflict</A>
 		<LI><A HREF="#listmagickinfo">ListMagickInfo</A>
+		<LI><A HREF="#magicktomime">MagickToMime</A>
 		<LI><A HREF="#registermagickinfo">RegisterMagickInfo</A>
 		<LI><A HREF="#setmagickinfo">SetMagickInfo</A>
 		<LI><A HREF="#unregistermagickinfo">UnregisterMagickInfo</A>
@@ -56,6 +57,7 @@
 <P>unsigned int  <STRONG>IsMagickConflict</STRONG>( const char *magick );</P>
 <P>unsigned int  <STRONG>ListMagickInfo</STRONG>( 
 <FONT SIZE=-1>FILE</FONT> *file, ExceptionInfo *exception );</P>
+<P>char * <STRONG>MagickToMime</STRONG>( const char *magick );</P>
 <P>MagickInfo * <STRONG>RegisterMagickInfo</STRONG>( MagickInfo *magick_info );</P>
 <P>MagickInfo * <STRONG>SetMagickInfo</STRONG>( const char *name );</P>
 <P>unsigned int  <STRONG>UnregisterMagickInfo</STRONG>( const char *name );</P>
@@ -178,6 +180,18 @@ Specifies the image format.
 <dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="magicktomime">MagickToMime</A></H2>
+<P>Method MagickToMime returns the officially registered (or de facto) 
+<FONT SIZE=-1>MIME</FONT> media-type corresponding to a magick string.  If there is no registered media-type, then the string ``image/x-magick'' (all lower case) is returned.  The returned string must be deallocated by the user.</P>
+<P>The format of the MagickToMime method is:</P>
+<blockquote>char *MagickToMime ( const char *magick ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>magick:</STRONG><BR>
+<DD>
+ImageMagick format specification ``magick'' tag.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="registermagickinfo">RegisterMagickInfo</A></H2>

@@ -23,6 +23,7 @@
 		<LI><A HREF="#clonedrawinfo">CloneDrawInfo</A>
 		<LI><A HREF="#colorfloodfillimage">ColorFloodfillImage</A>
 		<LI><A HREF="#destroydrawinfo">DestroyDrawInfo</A>
+		<LI><A HREF="#drawaffineimage">DrawAffineImage</A>
 		<LI><A HREF="#drawclippath">DrawClipPath</A>
 		<LI><A HREF="#drawimage">DrawImage</A>
 		<LI><A HREF="#drawpatternpath">DrawPatternPath</A>
@@ -46,6 +47,7 @@
 <P>DrawInfo * <STRONG>CloneDrawInfo</STRONG>( const ImageInfo *image_info, const DrawInfo *draw_info );</P>
 <P>unsigned int  <STRONG>ColorFloodfillImage</STRONG>( Image *image, const DrawInfo *draw_info, const PixelPacket target, const long x_offset, const long y_offset, const PaintMethod method );</P>
 <P>void  <STRONG>DestroyDrawInfo</STRONG>( DrawInfo *draw_info );</P>
+<P>unsigned int  <STRONG>DrawAffineImage</STRONG>( Image *image, const Image *composite, const AffineMatrix *affine );</P>
 <P>unsigned int  <STRONG>DrawClipPath</STRONG>( Image *image, const DrawInfo *draw_info, const char *name );</P>
 <P>unsigned int  <STRONG>DrawImage</STRONG>( Image *image, DrawInfo *draw_info );</P>
 <P>unsigned int  <STRONG>DrawPatternPath</STRONG>( Image *image, DrawInfo *draw_info, const char *name, Image ** pattern );</P>
@@ -109,6 +111,24 @@ Choose either FloodfillMethod or FillToBorderMethod.
 <dd><p></p><dt><STRONG>draw_info:</STRONG><BR>
 <DD>
 The draw info.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="drawaffineimage">DrawAffineImage</A></H2>
+<blockquote>DrawAffineImage() composites the source over the destination image as dictated by the affine transform. </blockquote><P>The format of the DrawAffineImage method is:</P>
+<blockquote>unsigned int DrawAffineImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Image.html">Image</A> *composite, const AffineMatrix *affine ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The composite image.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_affine%3A">affine:</A></STRONG><BR>
+<DD>
+The affine transform.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="drawclippath">DrawClipPath</A></H2>
