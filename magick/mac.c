@@ -204,6 +204,9 @@ static pascal void TextMethod(short byteCount,Ptr textBuf,Point numer,
 static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
   short *colormap_id)
 {
+  CGrafPtr
+    port;
+
   CQDProcs
     bottlenecks;
 
@@ -228,23 +231,24 @@ static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
     Define our own bottlenecks to do nothing.
   */
   SetStdCProcs(&bottlenecks);
-  bottlenecks.textProc=NewQDTextProc(&TextMethod);
-  bottlenecks.lineProc=NewQDLineProc(&LineMethod);
-  bottlenecks.rectProc=NewQDRectProc(&RectMethod);
-  bottlenecks.rRectProc=NewQDRRectProc(&RRectMethod);
-  bottlenecks.ovalProc=NewQDOvalProc(&OvalMethod);
-  bottlenecks.arcProc=NewQDArcProc(&ArcMethod);
-  bottlenecks.polyProc=NewQDPolyProc(&PolyMethod);
-  bottlenecks.rgnProc=NewQDRgnProc(&RegionMethod);
-  bottlenecks.bitsProc=NewQDBitsProc(&BitsMethod);
-  bottlenecks.newProc1=(RoutineDescriptor *) NewStdPixProc(&StandardPixmap);
+  bottlenecks.textProc=NewQDTextUPP(&TextMethod);
+  bottlenecks.lineProc=NewQDLineUPP(&LineMethod);
+  bottlenecks.rectProc=NewQDRectUPP(&RectMethod);
+  bottlenecks.rRectProc=NewQDRRectUPP(&RRectMethod);
+  bottlenecks.ovalProc=NewQDOvalUPP(&OvalMethod);
+  bottlenecks.arcProc=NewQDArcUPP(&ArcMethod);
+  bottlenecks.polyProc=NewQDPolyUPP(&PolyMethod);
+  bottlenecks.rgnProc=NewQDRgnUPP(&RegionMethod);
+  bottlenecks.bitsProc=NewQDBitsUPP(&BitsMethod);
+  bottlenecks.newProc1=(UniversalProcPtr) NewStdPixUPP(&StandardPixmap);
   /*
     Install our custom bottlenecks to intercept any compressed images.
   */
-  (*(qd.thePort)).grafProcs=(QDProcs *) &bottlenecks;
+  GetPort(&port);
+  SetPortGrafProcs(port,(QDProcs *) &bottlenecks);
   DrawPicture(picture,&((**picture).picFrame));
   PaintRect(&rectangle);
-  (*(qd.thePort)).grafProcs=0L;
+  SetPortGrafProcs(port,0L);
   /*
     Initialize our return values.
   */
@@ -257,16 +261,16 @@ static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
       *depth=(**image_description).depth;
       *colormap_id=(**image_description).clutID;
     }
-  DisposeRoutineDescriptor(bottlenecks.textProc);
-  DisposeRoutineDescriptor(bottlenecks.lineProc);
-  DisposeRoutineDescriptor(bottlenecks.rectProc);
-  DisposeRoutineDescriptor(bottlenecks.rRectProc);
-  DisposeRoutineDescriptor(bottlenecks.ovalProc);
-  DisposeRoutineDescriptor(bottlenecks.arcProc);
-  DisposeRoutineDescriptor(bottlenecks.polyProc);
-  DisposeRoutineDescriptor(bottlenecks.rgnProc);
-  DisposeRoutineDescriptor(bottlenecks.bitsProc);
-  DisposeRoutineDescriptor(bottlenecks.newProc1);
+  DisposeQDTextUPP(bottlenecks.textProc);
+  DisposeQDLineUPP(bottlenecks.lineProc);
+  DisposeQDRectUPP(bottlenecks.rectProc);
+  DisposeQDRRectUPP(bottlenecks.rRectProc);
+  DisposeQDOvalUPP(bottlenecks.ovalProc);
+  DisposeQDArcUPP(bottlenecks.arcProc);
+  DisposeQDPolyUPP(bottlenecks.polyProc);
+  DisposeQDRgnUPP(bottlenecks.rgnProc);
+  DisposeQDBitsUPP(bottlenecks.bitsProc);
+  DisposeStdPixUPP(bottlenecks.newProc1);
   return(0);
 }
 
@@ -362,8 +366,7 @@ MagickExport void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
     name;
 
   assert(filename != (char *) NULL);
-  (void) strncpy((char *) name,filename,254);
-  c2pstr((char *) name);
+  c2pstrcpy(name,filename);
   FSMakeFSSpec(0,0,name,fsspec);
 }
 
@@ -457,7 +460,8 @@ MagickExport unsigned int MACIsMagickConflict(const char *magick)
     status=HGetVInfo(index,p,&volume,&free_bytes,&number_bytes);
     if (status)
       return(False);
-    if (LocaleCompare(p2cstr(p),magick) == 0)
+    p2cstrcpy((char *) p,p);
+    if (LocaleCompare((char *) p,magick) == 0)
       return(True);
   }
   return(False);
@@ -889,8 +893,10 @@ MagickExport DIR *opendir(const char *path)
   search_info.hFileInfo.ioNamePtr=0;
   if ((path != (char *) NULL) || (*path != '\0'))
     if ((path[0] != '.') || (path[1] != '\0'))
-      search_info.hFileInfo.ioNamePtr=
-        c2pstr(strncpy(pathname,path,MaxTextExtent-1));
+      {
+        c2pstrcpy((StringPtr) pathname,path);
+        search_info.hFileInfo.ioNamePtr=(StringPtr) pathname;
+      }
   search_info.hFileInfo.ioCompletion=0;
   search_info.hFileInfo.ioVRefNum=0;
   search_info.hFileInfo.ioFDirIndex=0;
@@ -1004,7 +1010,7 @@ MagickExport struct dirent *readdir(DIR *entry)
       return((struct dirent *) NULL);
     }
   entry->d_index++;
-  (void) strncpy(dir_entry.d_name,p2cstr(search_info.hFileInfo.ioNamePtr),254);
+  p2cstrcpy(dir_entry.d_name,search_info.hFileInfo.ioNamePtr);
   dir_entry.d_namlen=strlen(dir_entry.d_name);
   return(&dir_entry);
 }
@@ -1407,8 +1413,7 @@ MagickExport void SetApplicationType(const char *filename,const char *magick,
   (void) strncpy((char *) &filetype,magick,Min(strlen(magick),4));
   if (LocaleCompare(magick,"JPG") == 0)
     (void) strcpy((char *) &filetype,"JPEG");
-  (void) strncpy((char *) name,filename,254);
-  c2pstr((char *) name);
+  c2pstrcpy(name,filename);
   FSMakeFSSpec(0,0,name,&file_specification);
   FSpCreate(&file_specification,application,filetype,smSystemScript);
 }
