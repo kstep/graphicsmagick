@@ -470,8 +470,7 @@ int main(int argc,char **argv)
               resource_info.backdrop=(*option == '-');
               break;
             }
-          if ((LocaleCompare("background",option+1) == 0) ||
-              (LocaleCompare("bg",option+1) == 0))
+          if (LocaleCompare("background",option+1) == 0)
             {
               if (*option == '-')
                 {
@@ -827,18 +826,17 @@ int main(int argc,char **argv)
                 resource_info.font=AllocateString(image_info->font);
               break;
             }
-          if ((LocaleCompare("foreground",option+1) == 0) ||
-              (LocaleCompare("fg",option+1) == 0))
-           {
-             if (*option == '-')
-               {
-                 i++;
-                 if (i == argc)
-                   MagickError(OptionError,"Missing foreground",option);
-                 resource_info.foreground_color=argv[i];
-               }
-              break;
-           }
+          if (LocaleCompare("foreground",option+1) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing foreground",option);
+                  resource_info.foreground_color=argv[i];
+                }
+               break;
+            }
           if (LocaleCompare("frame",option+1) == 0)
             {
               if (*option == '-')
