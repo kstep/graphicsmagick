@@ -493,7 +493,11 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) strcat(command,points);
           }
         if (LocaleCompare(primitive,"path") == 0)
-          (void) strcat(command,vertices);
+          {
+            (void) strcat(command,'"');
+            (void) strcat(command,vertices);
+            (void) strcat(command,'"');
+          }
         if (LocaleCompare(primitive,"polyline") == 0)
           (void) strcat(command,vertices);
         if (LocaleCompare(primitive,"polygon") == 0)
