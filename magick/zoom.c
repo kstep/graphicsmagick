@@ -803,12 +803,11 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     start=(long) Max(center-support+0.5,0);
     stop=(long) Min(center+support+0.5,source->columns);
     density=0.0;
-    for (n=0; start < stop; n++)
+    for (n=0; (start+n) < stop; n++)
     {
-      contribution[n].pixel=start;
-      contribution[n].weight=filter_info->function(scale*(start-center+0.5));
+      contribution[n].pixel=start+n;
+      contribution[n].weight=filter_info->function(scale*(start+n-center+0.5));
       density+=contribution[n].weight;
-      start++;
     }
     if ((density != 0.0) && (density != 1.0))
       {
@@ -822,8 +821,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
           contribution[i].weight*=density;
           weight+=contribution[i].weight;
         }
-        i=Max(Min((int) (center+0.5),start-n),stop-1);
-        contribution[i-(start-n)].weight+=1.0-weight;
+        i=Min(Max((long) (center+0.5),start),stop-1);
+        contribution[i-start].weight+=1.0-weight;
       }
     p=AcquireImagePixels(source,contribution[0].pixel,0,
       contribution[n-1].pixel-contribution[0].pixel+1,source->rows,exception);
@@ -928,12 +927,11 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     start=(long) Max(center-support+0.5,0);
     stop=(long) Min(center+support+0.5,source->rows);
     density=0.0;
-    for (n=0; start < stop; n++)
+    for (n=0; (start+n) < stop; n++)
     {
-      contribution[n].pixel=start;
-      contribution[n].weight=filter_info->function(scale*(start-center+0.5));
+      contribution[n].pixel=start+n;
+      contribution[n].weight=filter_info->function(scale*(start+n-center+0.5));
       density+=contribution[n].weight;
-      start++;
     }
     if ((density != 0.0) && (density != 1.0))
       {
@@ -947,8 +945,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
           contribution[i].weight*=density;
           weight+=contribution[i].weight;
         }
-        i=Max(Min((int) (center+0.5),start-n),stop-1);
-        contribution[i-(start-n)].weight+=1.0-weight;
+        i=Min(Max((long) (center+0.5),start),stop-1);
+        contribution[i-start].weight+=1.0-weight;
       }
     p=AcquireImagePixels(source,0,contribution[0].pixel,source->columns,
       contribution[n-1].pixel-contribution[0].pixel+1,exception);
