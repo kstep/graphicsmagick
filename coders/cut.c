@@ -55,7 +55,7 @@ typedef struct
   unsigned Width;
   unsigned Height;
   unsigned Reserved;
-  }CUTHeader;      /*Dr Hallo*/
+  }CUTHeader;      /*Dr Halo*/
 typedef struct
   {
   char FileId[2];
@@ -588,7 +588,7 @@ ModuleExport void RegisterCUTImage(void)
 
   entry=SetMagickInfo("CUT");
   entry->decoder=ReadCUTImage;
-  entry->description=AcquireString("DR Hallo");
+  entry->description=AcquireString("DR Halo");
   entry->module=AcquireString("CUT");
   (void) RegisterMagickInfo(entry);
 }
