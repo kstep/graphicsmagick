@@ -1,6 +1,6 @@
 # 
 # ***************************************************************
-# **  GraphicsMagick library - v.1.1 - 02 February 2004        **
+# **  GraphicsMagick library - v.1.2 - 01 July 2004            **
 # **                                                           **
 # **  Porting for compilation with Borland C++Builder 6.0      **
 # **-----------------------------------------------------------**
@@ -18,7 +18,7 @@
 #
 
 # Main dirs
-GMDIR=d:\GraphicsMagick-1.1
+GMDIR=D:\GraphicsMagick
 GMBCB=$(GMDIR)\BCBMagick
 
 

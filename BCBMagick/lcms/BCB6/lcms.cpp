@@ -18,6 +18,8 @@ USEUNIT("..\src\cmswtpnt.c");
 USEUNIT("..\src\cmscam97.c");
 USEUNIT("..\src\cmsps2.c");
 USEUNIT("..\src\cmsnamed.c");
+USEUNIT("..\src\cmscam02.c");
+USEUNIT("..\src\cmsvirt.c");
 //---------------------------------------------------------------------------
 #define Library
 

@@ -1,3 +1,12 @@
+2004-07-01  Mike Chiarappa <mikechiarappa@libero.it>
+
+	* BCBMagick: updated to GraphicsMagick v.1.2
+	* BCBMagick\All: project GMlib-1.1.bpr has been replaced with
+	GMlib.bpr
+	* BCBMagick\All: project GMdll-1.1.bpr has been replaced with
+	GMdll.bpr
+	* BCBMagick\readme.txt: updated documentation.
+
 2004-06-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImage): For -units, don't reset

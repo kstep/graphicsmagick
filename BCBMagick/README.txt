@@ -1,5 +1,5 @@
 ***********************************************************
-**  GraphicsMagick library - v.1.1 - 02 Feb 2004         **
+**  GraphicsMagick library - v.1.2 - 01 July 2004        **
 **                                                       **
 **  Porting for compilation with Borland C++Builder 6.0  **
 **-------------------------------------------------------**
@@ -57,7 +57,7 @@ INSTRUCTIONS FOR COMPILATION
 (3a) If you want compile the static version of library (LIB), launch BCB IDE 
      and Open the Project Group [File->Open Project...]:
 
-        [GM Dir]\BCBMagick\All\GMlib-1.1.bpg 
+        [GM Dir]\BCBMagick\All\GMlib.bpg 
 
      then Build libraries [Project->Build all projects]. Will be segnaled some 
      warnings: nothing of important.
@@ -65,12 +65,13 @@ INSTRUCTIONS FOR COMPILATION
 
         [GM Dir]\BCBMagick\All\getlibs.bat
  
-     Will be created the [LIB] directory that will contain all libs generated.
+     Will be created the directory [GM Dir]\BCBMagick\LIB that contain all
+     builded libs.
 
 (3b) If you want compile the DLL version of library, launch BCB IDE and Open
      the Project Group [File->Open Project...]:
 
-        [GM Dir]\BCBMagick\All\GMdll-1.1.bpg 
+        [GM Dir]\BCBMagick\All\GMdll.bpg 
 
      The compiler will segnal an error for each DLL to build:
      
@@ -82,11 +83,11 @@ INSTRUCTIONS FOR COMPILATION
 
         [GM Dir]\BCBMagick\All\getdlls.bat
  
-     Will be created the [DLL] directory that will contain all DLLs and needed
-     Import Libraries generated.
+     Will be created the directory [GM Dir]\BCBMagick\DLL that contain all 
+     builded DLLs and needed Import Libraries.
 
-4)  Collect all configuration files (.MGK) into directory [MGK] launching the
-    batch file:
+4)  Collect all configuration files (.MGK) into directory [GM Dir]\BCBMagick\MGK
+    launching the batch file:
     
         [GM Dir]\BCBMagick\All\getmgks.bat
  

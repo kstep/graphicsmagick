@@ -14,12 +14,10 @@ PROJECTS = lcms110.lib bcbGM_lcms.dll testcms.exe
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-
-
-lcms110.lib: lcms.bpr
+lcms.lib: lcms.bpr
   $(MAKE)
 
-bcbGM_lcms.dll: bcbGM_lcms.bpr
+GM_lcms.dll: GM_lcms.bpr
   $(MAKE)
 
 testcms.exe: testcms.bpr

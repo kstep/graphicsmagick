@@ -1,7 +1,7 @@
 @echo off
 REM 
 REM ***********************************************************
-REM **  GraphicsMagick library - v.1.1 - 10 July 2003        **
+REM **  GraphicsMagick library - v.1.2 - 1 July 2004         **
 REM **                                                       **
 REM **  Porting for compilation with Borland C++Builder 6.0  **
 REM **-------------------------------------------------------**

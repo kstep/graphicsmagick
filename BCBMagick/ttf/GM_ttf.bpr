@@ -103,13 +103,13 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=David Turner, Robert Wilhelm, and Werner Lemberg
 FileDescription=FreeType font library
-FileVersion=2.1.4.1
+FileVersion=2.1.5.1
 InternalName=FreeType 2 - Borland C++Builder porting by Mike Chiarappa, mikechiarappa@libero.it
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=FreeType
 ProductName=FreeType 2 font rendering library
-ProductVersion=2.1.4 (27 Mar 2003)
+ProductVersion=2.1.5 (11 Gen 2004)
 Comments=http://www.freetype.org
 
 [HistoryLists\hlIncludePath]
