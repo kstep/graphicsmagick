@@ -37,7 +37,7 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 MAGICK_LIB	= ../magick/libMagick.la # libtool library name
 INCLUDES	= -I../ -I$(top_srcdir) $(INCLTDL) $(X_CFLAGS)
 
-STDMANPAGES = ImageMagick.1  composite.1 convert.1  identify.1 \
+STDMANPAGES = ImageMagick.1  composite.1 conjure.1 convert.1  identify.1 \
    miff.4 mogrify.1 montage.1 quantize.5
 X11MANPAGES = animate.1 display.1 import.1
 ALLMANPAGES = $(STDMANPAGES) $(X11MANPAGES)
