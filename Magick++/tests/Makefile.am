@@ -1,7 +1,7 @@
 #
 # Makefile for Magick++ tests
 #
-# Copyright Bob Friesenhahn, 1999, 2000
+# Copyright Bob Friesenhahn, 1999, 2000, 2002
 #
 AUTOMAKE_OPTIONS = 1.4
 
@@ -36,7 +36,7 @@ readWriteBlob_SOURCES	= readWriteBlob.cpp
 readWriteImages_SOURCES = readWriteImages.cpp
 
 EXTRA_DIST = \
-	Generic.ttf test_image.miff test_image_anim.miff
+	test_image.miff test_image_anim.miff
 
 CLEANFILES = testmagick_anim_out.miff
 
