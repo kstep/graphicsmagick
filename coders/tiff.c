@@ -276,6 +276,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
+    filename[MaxTextExtent],
     *text;
 
   FILE
@@ -345,6 +346,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   /*
     Copy image to temporary file.
   */
+  (void) strcpy(filename,image_info->filename);
   UniqueImageFilename((char *) image_info->filename);
   file=fopen(image_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
@@ -876,6 +878,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   (void) remove(image->filename);
   while (image->previous != (Image *) NULL)
     image=image->previous;
+  (void) strcpy(image->filename,filename);
   CloseBlob(image);
   return(image);
 }
@@ -1717,8 +1720,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   TIFFClose(tiff);
-  if (LocaleCompare(image_info->magick,"PTIF") == 0)
-    DestroyImages(image);
   if ((image->file == stdout) || image->pipet ||
       (image->blob->data != (unsigned char *) NULL))
     {
@@ -1740,6 +1741,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       (void) remove(filename);
       CloseBlob(image);
     }
+  if (LocaleCompare(image_info->magick,"PTIF") == 0)
+    DestroyImages(image);
   return(True);
 }
 #else
