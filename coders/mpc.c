@@ -797,6 +797,11 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;
   cache_info->persist=True;
+  if (image_info->ping)
+    {
+      CloseBlob(image);
+      return(image);
+    }
   status=OpenCache(image);
   if (status == False)
     ThrowReaderException(CacheWarning,"Unable to open peristent cache",image);
