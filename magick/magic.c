@@ -66,7 +66,7 @@ static char
   *MagicMap =
     "<?xml version=\"1.0\"?>"
     "<magicmap>"
-    "  <magic />"
+    "  <magic stealth=\"True\" />"
     "</magicmap>";
 
 /*
@@ -227,6 +227,8 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
     "------------------------\n");
   for ( ; p != (MagicInfo *) NULL; p=p->next)
   {
+    if (p->stealth)
+      breal;
     (void) fprintf(file,"%.1024s",p->name);
     for (i=(long) strlen(p->name); i <= 9; i++)
       (void) fprintf(file," ");
@@ -364,6 +366,16 @@ static unsigned int ReadConfigurationFile(const char *basename,
         if (LocaleCompare((char *) keyword,"offset") == 0)
           {
             magic_list->offset=atol(token);
+            break;
+          }
+        break;
+      }
+      case 'S':
+      case 's':
+      {
+        if (LocaleCompare((char *) keyword,"stealth") == 0)
+          {
+            magic_list->stealth=LocaleCompare(token,"True") == 0;
             break;
           }
         break;

@@ -234,7 +234,7 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
     "------------------------\n");
   for ( ; p != (const TypeInfo *) NULL; p=p->next)
   {
-    if (!p->stealth)
+    if (p->stealth)
       continue;
     (void) fprintf(file,"%.1024s",p->name);
     for (i=(long) strlen(p->name); i <= 28; i++)

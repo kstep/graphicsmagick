@@ -25,6 +25,9 @@ typedef struct _MagicInfo
     length,
     offset;
 
+  unsigned int
+    stealth;
+
   struct _MagicInfo
     *previous,
     *next;
