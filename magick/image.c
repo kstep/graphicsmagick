@@ -154,7 +154,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   (void) strncpy(allocate_image->magick,image_info->magick,MaxTextExtent-1);
   if (image_info->size != (char *) NULL)
     {
-      flags=ParseGeometry(image_info->size,&allocate_image->tile_info.x,
+      flags=GetGeometry(image_info->size,&allocate_image->tile_info.x,
         &allocate_image->tile_info.y,&allocate_image->columns,
         &allocate_image->rows);
       allocate_image->offset=allocate_image->tile_info.x;
@@ -163,7 +163,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
     }
   if (image_info->tile != (char *) NULL)
     if (!IsSubimage(image_info->tile,False))
-      flags=ParseGeometry(image_info->tile,&allocate_image->tile_info.x,
+      flags=GetGeometry(image_info->tile,&allocate_image->tile_info.x,
         &allocate_image->tile_info.y,&allocate_image->columns,
         &allocate_image->rows);
   allocate_image->compression=image_info->compression;
@@ -3143,7 +3143,7 @@ MagickExport unsigned int IsSubimage(const char *geometry,
 
   if (geometry == (const char *) NULL)
     return(False);
-  flags=ParseGeometry((char *) geometry,&x,&y,&width,&height);
+  flags=GetGeometry((char *) geometry,&x,&y,&width,&height);
   if (pedantic)
     return((flags != NoValue) && !(flags & HeightValue));
   return(IsGeometry(geometry) && !(flags & HeightValue));
@@ -5143,7 +5143,7 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(NoValue);
   /*
-    Parse geometry using ParseGeometry.
+    Parse geometry using GetGeometry.
   */
   former_width=(*width);
   former_height=(*height);
