@@ -607,18 +607,18 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
         {
           if (!SetPixelCache(image,0,y,image->columns,1))
             break;
-          for (x=0; x < (int) (image->columns >> 3); x++)
+          for (x=0; x < (int) (image->columns-7); x+=8)
           {
             for (bit=0; bit < 8; bit++)
               image->indexes[x+bit]=
-                ((*p) & (0x01 << bit) ? (int) polarity : (int) !polarity);
+                ((*p) & (0x01 << bit) ? (int) !polarity : (int) polarity);
             p++;
           }
           if ((image->columns % 8) != 0)
             {
               for (bit=0; bit < (int) (image->columns % 8); bit++)
                 image->indexes[x+bit]=
-                  ((*p) & (0x01 << bit) ? (int) polarity : (int) !polarity);
+                  ((*p) & (0x01 << bit) ? (int) !polarity : (int) polarity);
               p++;
             }
           if (!SyncPixelCache(image))
@@ -1048,7 +1048,6 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                     bit=0;
                     byte=0;
                   }
-                p++;
               }
               if (bit != 0)
                 *q++=byte >> (8-bit);
