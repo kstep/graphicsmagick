@@ -1050,7 +1050,7 @@ int main(int argc,char **argv)
                       MagickError(OptionError,"Invalid list type",option);
                     }
                     case 'T':
-                    case 'T':
+                    case 't':
                     {
                       if (LocaleCompare("Type",option) == 0)
                         {

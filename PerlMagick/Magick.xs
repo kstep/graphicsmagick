@@ -6591,9 +6591,6 @@ QueryFontMetrics(ref,...)
     DrawInfo
       *draw_info;
 
-    FontMetric
-      metrics;
-
     Image
       *image;
 
@@ -6605,6 +6602,9 @@ QueryFontMetrics(ref,...)
 
     SV
       *reference;  /* reference is the SV* of ref=SvIV(reference) */
+
+    TypeMetric
+      metrics;
 
     unsigned int
       status;

@@ -1206,8 +1206,8 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   static XAnnotateInfo
     annotate_info;
 
-  static XTypeStruct
-    *type_info;
+  static XFontStruct
+    *font_info;
 
   static XPixelInfo
     pixel;
@@ -1278,15 +1278,15 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       /*
         Initialize font info.
       */
-      type_info=XBestType(display,&resource_info,False);
-      if (type_info == (XTypeStruct *) NULL)
+      font_info=XBestFont(display,&resource_info,False);
+      if (font_info == (XFontStruct *) NULL)
         ThrowBinaryException(XServerWarning,"Unable to load font",
           draw_info->font);
       if ((map_info == (XStandardColormap *) NULL) ||
           (visual_info == (XVisualInfo *) NULL) ||
-          (type_info == (XTypeStruct *) NULL))
+          (font_info == (XFontStruct *) NULL))
         {
-          XFreeResources(display,visual_info,map_info,&pixel,type_info,
+          XFreeResources(display,visual_info,map_info,&pixel,font_info,
             &resource_info,(XWindowInfo *) NULL);
           ThrowBinaryException(XServerWarning,"Unable to get X server font",
             draw_info->server_name);
@@ -1303,27 +1303,27 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       /*
         Type name has changed.
       */
-      XFreeType(display,type_info);
+      XFreeFont(display,font_info);
       (void) CloneString(&resource_info.font,draw_info->font);
-      type_info=XBestType(display,&resource_info,False);
-      if (type_info == (XTypeStruct *) NULL)
+      font_info=XBestFont(display,&resource_info,False);
+      if (font_info == (XFontStruct *) NULL)
         ThrowBinaryException(ResourceLimitWarning,"Unable to load font",
           draw_info->font);
     }
   cache_info=(*draw_info);
-  annotate_info.type_info=type_info;
+  annotate_info.font_info=font_info;
   annotate_info.text=(char *) draw_info->text;
-  annotate_info.width=XTextWidth(type_info,draw_info->text,
+  annotate_info.width=XTextWidth(font_info,draw_info->text,
     Extent(draw_info->text));
-  annotate_info.height=type_info->ascent+type_info->descent;
-  metrics->pixels_per_em.x=type_info->max_bounds.width;
-  metrics->pixels_per_em.y=type_info->max_bounds.width;
-  metrics->ascent=type_info->ascent;
-  metrics->descent=(-type_info->descent);
+  annotate_info.height=font_info->ascent+font_info->descent;
+  metrics->pixels_per_em.x=font_info->max_bounds.width;
+  metrics->pixels_per_em.y=font_info->max_bounds.width;
+  metrics->ascent=font_info->ascent;
+  metrics->descent=(-font_info->descent);
   metrics->width=(unsigned int)
     (annotate_info.width/ExpandAffine(&draw_info->affine));
   metrics->height=(unsigned int) (metrics->pixels_per_em.x+4);
-  metrics->max_advance=type_info->max_bounds.width;
+  metrics->max_advance=font_info->max_bounds.width;
   if (!render)
     return(True);
   if (draw_info->fill.opacity == TransparentOpacity)

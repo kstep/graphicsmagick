@@ -93,9 +93,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   DrawInfo
     *draw_info;
 
-  FontMetric
-    metrics;
-
   int
     y;
 
@@ -108,6 +105,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   register PixelPacket
     *q;
 
+  TypeMetric
+    metrics;
+
   unsigned int
     status;
 
@@ -119,9 +119,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   QueryColorDatabase("black",&draw_info->fill);
   draw_info->gravity=WestGravity;
   draw_info->text=AllocateString(image_info->filename);
-  status=GetFontMetrics(image,draw_info,&metrics);
+  status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
-    ThrowReaderException(DelegateWarning,"Unable to get font metrics",image);
+    ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
   image->columns=metrics.width;
   image->rows=metrics.height;
   QueryColorDatabase("white",&image->background_color);
