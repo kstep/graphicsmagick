@@ -326,8 +326,22 @@ MagickExport unsigned int AnnotateImage(Image *image,
     }
     if (annotate_info->box.opacity != TransparentOpacity)
       {
-        annotate_image->background_color=annotate_info->box;
-        SetImage(annotate_image,OpaqueOpacity);
+        Image
+          *box_image;
+
+        /*
+          Surround text with a border.
+        */
+        box_image=CloneImage(annotate_image,annotate_image->columns,
+          annotate_image->rows,True,&image->exception);
+        if (box_image != (Image *) NULL)
+          {
+            box_image->background_color=annotate_info->box;
+            SetImage(box_image,OpaqueOpacity);
+            CompositeImage(box_image,AnnotateCompositeOp,annotate_image,0,0);
+            DestroyImage(annotate_image);
+            annotate_image=box_image;
+          }
       }
     CompositeImage(image,AnnotateCompositeOp,annotate_image,
       clone_info->bounds.x,clone_info->bounds.y);
