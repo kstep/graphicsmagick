@@ -44,18 +44,36 @@ elsif ($QuantumDepth == 32)
 # Test reading a 16-bit file in which two signatures are possible,
 # depending on whether 16-bit pixels data has been enabled
 #
-# Usage: testRead( read filename, expected md5 [, expected md5_16] );
+# Usage: testRead( read filename, expected ref_8 [, expected ref_16] );
 #
 sub testRead {
-  my( $infile, $md5, $md5_16 ) =  @_;
+  my( $infile, $ref_8, $ref_16, $ref_32 ) =  @_;
 
-  my($image,$magick,$success);
+  my($image,$magick,$success,$depth,$ref_signature);
 
   $failure=0;
 
-  if ( !defined( $md5_16 ) )
+  if ( !defined( $ref_16 ) )
     {
-      $md5_16 = $md5;
+      $ref_16 = $ref_8;
+    }
+  if ( !defined( $ref_32 ) )
+    {
+      $ref_32 = $ref_16;
+    }
+
+  $depth=quantumDepth();
+  if ($depth == 32)
+    {
+      $ref_signature=$ref_32;
+    }
+  elsif ($depth == 16)
+    {
+      $ref_signature=$ref_16;
+    }
+  else
+    {
+      $ref_signature=$ref_8;
     }
 
   $magick='';
@@ -77,13 +95,13 @@ sub testRead {
       undef $status;
       $magick=$image->Get('magick');
       $signature=$image->Get('signature');
-      if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
+      
+      if ( $signature ne $ref_signature ) {
+        print "ReadImage()\n";
 	print "Image: $infile, signatures do not match.\n";
 	print "     Computed: $signature\n";
-	print "     Expected: $md5\n";
-        if ( $md5 ne $md5_16 ) {
-          print "     if 16-bit: $md5_16\n";
-        }
+	print "     Expected: $ref_signature\n";
+        print "     Depth:    $depth\n";
         ++$failure;
         #$image->Display();
       }
@@ -112,13 +130,12 @@ sub testRead {
             ++$failure;
           } else {
             $signature=$image->Get('signature');
-            if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
+            if ( $signature ne $ref_signature ) {
+              print "BlobToImage()\n";
               print "Image: $infile, signatures do not match.\n";
               print "     Computed: $signature\n";
-              print "     Expected: $md5\n";
-              if ( $md5 ne $md5_16 ) {
-		print "     if 16-bit: $md5_16\n";
-              }
+              print "     Expected: $ref_signature\n";
+              print "     Depth:    $depth\n";
               #$image->Display();
               ++$failure;
             }
@@ -146,11 +163,6 @@ sub testReadCompare {
   my( $srcimage_name,$refimage_name, $read_options,
       $normalized_mean_error_max, $normalized_maximum_error_max) = @_;
   my($srcimage, $refimage, $normalized_mean_error, $normalized_maximum_error);
-
-  if ( !defined( $md5_16 ) )
-    {
-      $md5_16 = $md5;
-    }
 
   $errorinfo='';
 
@@ -245,12 +257,35 @@ sub testReadCompare {
 # Test reading a file which requires a file size to read (GRAY, RGB, CMYK)
 # or supports multiple resolutions (JBIG, JPEG, PCD)
 #
-# Usage: testRead( read filename, size, depth, expected md5 [, expected md5_16] );
+# Usage: testRead( read filename, size, depth, expected ref_8 [, expected ref_16] );
 #
 sub testReadSized {
-  my( $infile, $size, $depth, $md5, $md5_16 ) =  @_;
+  my( $infile, $size, $depth, $ref_8, $ref_16, $ref_32 ) =  @_;
   
-  my($image);
+  my($image,$depth,$ref_signature);
+
+  if ( !defined( $ref_16 ) )
+    {
+      $ref_16 = $ref_8;
+    }
+  if ( !defined( $ref_32 ) )
+    {
+      $ref_32 = $ref_16;
+    }
+
+  $depth=quantumDepth();
+  if ($depth == 32)
+    {
+      $ref_signature=$ref_32;
+    }
+  elsif ($depth == 16)
+    {
+      $ref_signature=$ref_16;
+    }
+  else
+    {
+      $ref_signature=$ref_8;
+    }
 
   $image=Graphics::Magick->new;
 
@@ -270,44 +305,61 @@ sub testReadSized {
     print "not ok $test\n";
   } else {
     $signature=$image->Get('signature');
-    if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
-      print "Image: $infile, signatures do not match.\n";
-      print "     Computed: $signature\n";
-      print "     Expected: $md5\n";
-      if ( $md5 ne $md5_16 ) {
-	print "     if 16-bit: $md5_16\n";
-      }
-      #$image->Display();
-      print "not ok $test\n";
-    } else {
-      print "ok $test\n";
+      if ( $signature ne $ref_signature ) {
+        print "ReadImage()\n";
+	print "Image: $infile, signatures do not match.\n";
+	print "     Computed: $signature\n";
+	print "     Expected: $ref_signature\n";
+        print "     Depth:    $depth\n";
+        print "not ok $test\n";
+        #$image->Display();
+      } else {
+        print "ok $test\n";
     }
   }
 }
 
 #
 # Test writing a file by first reading a source image, writing to a new image,
-# reading the written image, and comparing with expected MD5.
+# reading the written image, and comparing with expected REF_8.
 #
 # Usage: testReadWrite( read filename, write filename, write options,
-#    expected md5 [, expected md5_16] );
+#    expected ref_8 [, expected ref_16] );
 #
 # .e.g
 #
 # testReadWrite( 'input.jpg', 'output.jpg', q/quality=>80, interlace=>'None'/,
 #                'dc0a144a0b9480cd1e93757a30f01ae3' );
 #
-# If the MD5 of the written image is not what is expected, the written
+# If the REF_8 of the written image is not what is expected, the written
 # image is preserved.  Otherwise, the written image is removed.
 #
 sub testReadWrite {
-  my( $infile, $outfile, $writeoptions, $md5, $md5_16 ) = @_;
+  my( $infile, $outfile, $writeoptions, $ref_8, $ref_16, $ref_32 ) = @_;
   
   my($image);
 
-  if ( !defined( $md5_16 ) )
+  if ( !defined( $ref_16 ) )
     {
-      $md5_16 = $md5;
+      $ref_16 = $ref_8;
+    }
+  if ( !defined( $ref_32 ) )
+    {
+      $ref_32 = $ref_16;
+    }
+
+  $depth=quantumDepth();
+  if ($depth == 32)
+    {
+      $ref_signature=$ref_32;
+    }
+  elsif ($depth == 16)
+    {
+      $ref_signature=$ref_16;
+    }
+  else
+    {
+      $ref_signature=$ref_8;
     }
 
   $image=Graphics::Magick->new;
@@ -341,15 +393,14 @@ sub testReadWrite {
       } else {
         # Check signature
         $signature=$image->Get('signature');
-        if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
+        if ( $signature ne $ref_signature ) {
+          print "ReadImage()\n";
           print "Image: $infile, signatures do not match.\n";
           print "     Computed: $signature\n";
-          print "     Expected: $md5\n";
-          if ( $md5 ne $md5_16 ) {
-	    print "     if 16-bit: $md5_16\n";
-          }
+          print "     Expected: $ref_signature\n";
+          print "     Depth:    $depth\n";
           print "not ok $test\n";
-          $image->Display();
+          #$image->Display();
         } else {
           print "ok $test\n";
           ($file = $outfile) =~ s/.*://g;
@@ -369,11 +420,6 @@ sub testReadWriteCompare {
       $normalized_mean_error_max, $normalized_maximum_error_max) = @_;
   my($srcimage, $refimage, $normalized_mean_error,
     $normalized_maximum_error);
-
-  if ( !defined( $md5_16 ) )
-    {
-      $md5_16 = $md5;
-    }
 
   $errorinfo='';
 
@@ -560,29 +606,53 @@ sub testReadWriteNoVerify {
 
 #
 # Test writing a file by first reading a source image, writing to a new image,
-# reading the written image, and comparing with expected MD5.
+# reading the written image, and comparing with expected REF_8.
 #
 # Usage: testReadWriteSized( read filename,
 #                            write filename,
 #                            read filename size,
 #                            read filename depth,
 #                            write options,
-#                            expected md5 [,expected md5_16] );
+#                            expected ref_8 [,expected ref_16] );
 #
 # .e.g
 #
 # testReadWriteSized( 'input.jpg', 'output.jpg', '70x46', 8, q/quality=>80,
 #                     'interlace'=>'None'/, 'dc0a144a0b9480cd1e93757a30f01ae3' );
 #
-# If the MD5 of the written image is not what is expected, the written
+# If the REF_8 of the written image is not what is expected, the written
 # image is preserved.  Otherwise, the written image is removed.  A depth of 0 is
 # ignored.
 #
 sub testReadWriteSized {
-  my( $infile, $outfile, $size, $readdepth, $writeoptions, $md5, $md5_16 ) = @_;
+  my( $infile, $outfile, $size, $readdepth, $writeoptions, $ref_8, $ref_16,
+      $ref_32 ) = @_;
   
-  my($image);
-  
+  my($image,$depth,$ref_signature);
+
+  if ( !defined( $ref_16 ) )
+    {
+      $ref_16 = $ref_8;
+    }
+  if ( !defined( $ref_32 ) )
+    {
+      $ref_32 = $ref_16;
+    }
+
+  $depth=quantumDepth();
+  if ($depth == 32)
+    {
+      $ref_signature=$ref_32;
+    }
+  elsif ($depth == 16)
+    {
+      $ref_signature=$ref_16;
+    }
+  else
+    {
+      $ref_signature=$ref_8;
+    }
+
   $image=Graphics::Magick->new;
 
   #$image->SetAttribute(debug=>'transform');
@@ -635,13 +705,13 @@ sub testReadWriteSized {
       } else {
         # Check signature
         $signature=$image->Get('signature');
-        if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
+
+        if ( $signature ne $ref_signature ) {
+          print "ReadImage()\n";
           print "Image: $infile, signatures do not match.\n";
           print "     Computed: $signature\n";
-          print "     Expected: $md5\n";
-          if ( $md5 ne $md5_16 ) {
-	    print "     if 16-bit: $md5_16\n";
-          }
+          print "     Expected: $ref_signature\n";
+          print "     Depth:    $depth\n";
           print "not ok $test\n";
           #$image->Display();
         } else {
@@ -737,13 +807,36 @@ sub testGetAttribute {
 #
 # Test MontageImage method
 #
-# Usage: testMontage( input image attributes, montage options, expected MD5
-#       [, expected MD5_16] );
+# Usage: testMontage( input image attributes, montage options, expected REF_8
+#       [, expected REF_16] );
 #
 sub testMontage {
-  my( $imageOptions, $montageOptions, $md5, $md5_16 ) = @_;
+  my( $imageOptions, $montageOptions, $ref_8, $ref_16, $ref_32 ) = @_;
 
-  my($image);
+  my($image,$depth,$ref_signature);
+
+  if ( !defined( $ref_16 ) )
+    {
+      $ref_16 = $ref_8;
+    }
+  if ( !defined( $ref_32 ) )
+    {
+      $ref_32 = $ref_16;
+    }
+
+  $depth=quantumDepth();
+  if ($depth == 32)
+    {
+      $ref_signature=$ref_32;
+    }
+  elsif ($depth == 16)
+    {
+      $ref_signature=$ref_16;
+    }
+  else
+    {
+      $ref_signature=$ref_8;
+    }
 
   # Create image for image list
   $images=Graphics::Magick->new;
@@ -795,18 +888,16 @@ sub testMontage {
   if( ! ref($montage) ) {
     print "not ok $test\n";
   } else {
-    # Check MD5 signature
+    # Check REF_8 signature
     #$montage->Display();
     $signature=$montage->GetAttribute('signature');
     if ( defined( $signature ) ) {
-      if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
-          print "Test $test, signatures do not match.\n";
-          print "     Computed: $signature\n";
-          print "     Expected: $md5\n";
-          if ( $md5 ne $md5_16 ) {
-	    print "  if 16-bit: $md5_16\n";
-          }
-        
+      if ( $signature ne $ref_signature ) {
+        print "ReadImage()\n";
+        print "Test $test, signatures do not match.\n";
+	print "     Computed: $signature\n";
+	print "     Expected: $ref_signature\n";
+        print "     Depth:    $depth\n";
         $status = $montage->Write("test_${test}_out.miff");
         warn "Write: $status" if "$status";
           
@@ -845,15 +936,38 @@ sub testMontage {
 #
 # Test filter method using signature compare
 #
-# Usage: testFilterSignature( input image attributes, filter, options, expected MD5
-#      [, expected MD5_16] );
+# Usage: testFilterSignature( input image attributes, filter, options, expected REF_8
+#      [, expected REF_16] );
 #
 sub testFilterSignature {
-  my( $srcimage, $filter, $filter_options, $md5, $md5_16 ) = @_;
+  my( $srcimage, $filter, $filter_options, $ref_8, $ref_16, $ref_32 ) = @_;
 
-  my($image);
+  my($image,$depth,$ref_signature);
 
 #  print( $filter, " ...\n" );
+
+  if ( !defined( $ref_16 ) )
+    {
+      $ref_16 = $ref_8;
+    }
+  if ( !defined( $ref_32 ) )
+    {
+      $ref_32 = $ref_16;
+    }
+
+  $depth=quantumDepth();
+  if ($depth == 32)
+    {
+      $ref_signature=$ref_32;
+    }
+  elsif ($depth == 16)
+    {
+      $ref_signature=$ref_16;
+    }
+  else
+    {
+      $ref_signature=$ref_8;
+    }
 
   # Create temporary image
   $image=Graphics::Magick->new;
@@ -867,13 +981,11 @@ sub testFilterSignature {
 
   $signature=$image->GetAttribute('signature');
   if ( defined( $signature ) ) {
-    if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
+    if ( $signature ne $ref_signature ) {
       print "Test $test, signatures do not match.\n";
       print "     Computed: $signature\n";
-      print "     Expected: $md5\n";
-      if ( $md5 ne $md5_16 ) {
-         print "   if 16-bit: $md5_16\n";
-      }
+      print "     Expected: $ref_signature\n";
+      print "     Depth:    $depth\n";
       #$image->Display();
       print "not ok $test\n";
     } else {

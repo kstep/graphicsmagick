@@ -1,5 +1,10 @@
 2003-04-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* PerlMagick/t/subroutines.pl: Extended routines
+	which are signature based to accept signatures for
+	Q:32 as well.
+	* PerlMagick/t/wmf/read.t: Relax error values slightly
+	to pass at Q:32.
 	* coders/miff.c (PushImageRLEPixels): Fix reading
 	RLE MIFF at Q:32.  A fragment of old code was being
 	used to obtain the length.
