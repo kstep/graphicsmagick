@@ -1,6 +1,6 @@
 #ECF - this file contains additional configuration info.
 DEFINE = _USRDLL
-DEFINE = _ATL_DLL
+DEFINE = _ATL_STATIC_REGISTRY
 EXCLUDE = dlldata.c
 EXCLUDE = ImageMagickObject_i.c
 EXCLUDE = ImageMagickObject_p.c
