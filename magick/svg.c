@@ -450,6 +450,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         tokens=StringToTokens(value,&number_tokens);
         for (i=0; i < (number_tokens-1); i++)
         {
+          (void) printf("  %d: %s %s\n",i,tokens[i],tokens[i+1]);
           if (Latin1Compare(tokens[i],"fill:") == 0)
             {
               (void) CloneString(&fill,tokens[++i]);
@@ -609,7 +610,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           DestroyImage(draw_info->tile);
         draw_info->tile=tile;
         (void) CloneString(&draw_info->primitive,command);
-        (void) printf("draw:  %s\n",command);
+        (void) printf("draw:  %s %s\n",draw_info->pen,command);
         status=DrawImage(canvas,draw_info);
         if (status == False)
           ThrowReaderException(ResourceLimitWarning,
@@ -628,7 +629,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               DestroyImage(draw_info->tile);
             draw_info->tile=tile;
             (void) CloneString(&draw_info->primitive,command+4);
-            (void) printf("draw:  %s\n",command);
+            (void) printf("draw:  %s %s\n",draw_info->pen,command);
             status=DrawImage(canvas,draw_info);
             if (status == False)
               ThrowReaderException(ResourceLimitWarning,
