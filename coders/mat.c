@@ -202,7 +202,7 @@ for(iz=0;iz<z;iz++)
 static Image *ReadMATLABImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image *image;
-  unsigned int status,EncodedByte;
+  unsigned int status;
   MATHeader MATLAB_HDR;
   DWORD size;
   int i;
