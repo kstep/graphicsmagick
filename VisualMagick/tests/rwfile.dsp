@@ -4,7 +4,7 @@
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=rwfile - Win32 Release
+CFG=rwfile - Win32 Debug static
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,12 +13,14 @@ CFG=rwfile - Win32 Release
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "rwfile.mak" CFG="rwfile - Win32 Release"
+!MESSAGE NMAKE /f "rwfile.mak" CFG="rwfile - Win32 Debug static"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "rwfile - Win32 Release" (based on "Win32 (x86) Console Application")
 !MESSAGE "rwfile - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "rwfile - Win32 Release static" (based on "Win32 (x86) Console Application")
+!MESSAGE "rwfile - Win32 Debug static" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -37,12 +39,12 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "..\..\bin"
-# PROP Intermediate_Dir ".\dRelease"
+# PROP Output_Dir "..\bin"
+# PROP Intermediate_Dir ".\drrwfile"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /YX /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_WINDOWS" /D "_VISUALC_" /D "NeedFunctionPrototypes" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\" /I "..\.." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_WINDOWS" /D "_VISUALC_" /D "NeedFunctionPrototypes" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +52,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 ..\..\lib\IMagick.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 ..\lib\IMagick.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"..\bin\rwfile.exe"
 
 !ELSEIF  "$(CFG)" == "rwfile - Win32 Debug"
 
@@ -61,12 +63,12 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "..\..\bin"
-# PROP Intermediate_Dir ".\dDebug"
+# PROP Output_Dir "..\bin"
+# PROP Intermediate_Dir ".\ddrwfile"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /YX /c
-# ADD CPP /nologo /W3 /Gm /GX /Zi /Od /D "_DEBUG" /D "_WINDOWS" /D "_VISUALC_" /D "NeedFunctionPrototypes" /D "WIN32" /D "_CONSOLE" /YX /FD /c
+# ADD CPP /nologo /W3 /Gm /GX /Zi /Od /I "..\\" /I "..\.." /D "_DEBUG" /D "_WINDOWS" /D "_VISUALC_" /D "NeedFunctionPrototypes" /D "WIN32" /D "_CONSOLE" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -74,7 +76,55 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386
-# ADD LINK32 ..\..\lib\IMagickDB.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386 /out:"..\..\bin\rwfileDB.exe"
+# ADD LINK32 ..\lib\IMagickDB.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386 /out:"..\bin\rwfileDB.exe"
+
+!ELSEIF  "$(CFG)" == "rwfile - Win32 Release static"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir ".\Release"
+# PROP BASE Intermediate_Dir ".\sRelease"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "..\bin"
+# PROP Intermediate_Dir ".\srrwfile"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /YX /c
+# ADD CPP /nologo /W3 /GX /O2 /I "..\" /I "..\.." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_WINDOWS" /D "_VISUALC_" /D "NeedFunctionPrototypes" /YX /FD /c
+# ADD BASE RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
+
+!ELSEIF  "$(CFG)" == "rwfile - Win32 Debug static"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir ".\Debug"
+# PROP BASE Intermediate_Dir ".\sDebug"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "..\bin"
+# PROP Intermediate_Dir ".\sdrwfile"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /YX /c
+# ADD CPP /nologo /W3 /Gm /GX /Zi /Od /I "..\" /I "..\.." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_WINDOWS" /D "_VISUALC_" /D "NeedFunctionPrototypes" /YX /FD /c
+# ADD BASE RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386 /out:"..\bin\rwfileDB.exe"
 
 !ENDIF 
 
@@ -82,6 +132,8 @@ LINK32=link.exe
 
 # Name "rwfile - Win32 Release"
 # Name "rwfile - Win32 Debug"
+# Name "rwfile - Win32 Release static"
+# Name "rwfile - Win32 Debug static"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
@@ -91,7 +143,7 @@ SOURCE=..\..\tests\rwfile.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\version.rc
+SOURCE=.\rwfile.rc
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -99,7 +151,7 @@ SOURCE=.\version.rc
 # PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
 # Begin Source File
 
-SOURCE=.\version.h
+SOURCE=.\rwfile.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
