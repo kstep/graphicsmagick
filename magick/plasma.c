@@ -202,7 +202,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,ExceptionInfo *excepti
 %      RegisterPLASMAImage(void)
 %
 */
-Export void RegisterPLASMAImage(void)
+ModuleExport void RegisterPLASMAImage(void)
 {
   MagickInfo
     *entry;
@@ -234,7 +234,7 @@ Export void RegisterPLASMAImage(void)
 %      UnregisterPLASMAImage(void)
 %
 */
-Export void UnregisterPLASMAImage(void)
+ModuleExport void UnregisterPLASMAImage(void)
 {
   UnregisterMagickInfo("PLASMA");
 }

@@ -89,7 +89,7 @@ static unsigned int
 %      RegisterPS3Image(void)
 %
 */
-Export void RegisterPS3Image(void)
+ModuleExport void RegisterPS3Image(void)
 {
   MagickInfo
     *entry;
@@ -120,7 +120,7 @@ Export void RegisterPS3Image(void)
 %      UnregisterPS3Image(void)
 %
 */
-Export void UnregisterPS3Image(void)
+ModuleExport void UnregisterPS3Image(void)
 {
   UnregisterMagickInfo("PS3");
 }

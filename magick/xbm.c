@@ -384,7 +384,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterXBMImage(void)
 %
 */
-Export void RegisterXBMImage(void)
+ModuleExport void RegisterXBMImage(void)
 {
   MagickInfo
     *entry;
@@ -419,7 +419,7 @@ Export void RegisterXBMImage(void)
 %      UnregisterXBMImage(void)
 %
 */
-Export void UnregisterXBMImage(void)
+ModuleExport void UnregisterXBMImage(void)
 {
   UnregisterMagickInfo("XBM");
 }

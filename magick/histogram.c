@@ -84,7 +84,7 @@ static unsigned int
 %      RegisterHISTOGRAMImage(void)
 %
 */
-Export void RegisterHISTOGRAMImage(void)
+ModuleExport void RegisterHISTOGRAMImage(void)
 {
   MagickInfo
     *entry;
@@ -116,7 +116,7 @@ Export void RegisterHISTOGRAMImage(void)
 %      UnregisterHISTOGRAMImage(void)
 %
 */
-Export void UnregisterHISTOGRAMImage(void)
+ModuleExport void UnregisterHISTOGRAMImage(void)
 {
   UnregisterMagickInfo("HISTOGRAM");
 }

@@ -209,7 +209,7 @@ static Image *Read8BIMImage(const ImageInfo *image_info,
 %      Register8BIMImage(void)
 %
 */
-Export void Register8BIMImage(void)
+ModuleExport void Register8BIMImage(void)
 {
   MagickInfo
     *entry;
@@ -243,7 +243,7 @@ Export void Register8BIMImage(void)
 %      Unregister8BIMImage(void)
 %
 */
-Export void Unregister8BIMImage(void)
+ModuleExport void Unregister8BIMImage(void)
 {
   UnregisterMagickInfo("8BIM");
 }

@@ -384,7 +384,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterTIMImage(void)
 %
 */
-Export void RegisterTIMImage(void)
+ModuleExport void RegisterTIMImage(void)
 {
   MagickInfo
     *entry;
@@ -415,7 +415,7 @@ Export void RegisterTIMImage(void)
 %      UnregisterTIMImage(void)
 %
 */
-Export void UnregisterTIMImage(void)
+ModuleExport void UnregisterTIMImage(void)
 {
   UnregisterMagickInfo("TIM");
 }

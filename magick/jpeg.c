@@ -730,7 +730,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 %      RegisterJPEGImage(void)
 %
 */
-Export void RegisterJPEGImage(void)
+ModuleExport void RegisterJPEGImage(void)
 {
 #if defined(HasJPEG)
   MagickInfo
@@ -783,7 +783,7 @@ Export void RegisterJPEGImage(void)
 %      UnregisterJPEGImage(void)
 %
 */
-Export void UnregisterJPEGImage(void)
+ModuleExport void UnregisterJPEGImage(void)
 {
   UnregisterMagickInfo("JPEG24");
   UnregisterMagickInfo("JPEG");

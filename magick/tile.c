@@ -162,7 +162,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
 %      RegisterTILEImage(void)
 %
 */
-Export void RegisterTILEImage(void)
+ModuleExport void RegisterTILEImage(void)
 {
   MagickInfo
     *entry;
@@ -194,7 +194,7 @@ Export void RegisterTILEImage(void)
 %      UnregisterTILEImage(void)
 %
 */
-Export void UnregisterTILEImage(void)
+ModuleExport void UnregisterTILEImage(void)
 {
   UnregisterMagickInfo("TILE");
 }

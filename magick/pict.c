@@ -1223,7 +1223,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
 %      RegisterPICTImage(void)
 %
 */
-Export void RegisterPICTImage(void)
+ModuleExport void RegisterPICTImage(void)
 {
   MagickInfo
     *entry;
@@ -1270,7 +1270,7 @@ Export void RegisterPICTImage(void)
 %      UnregisterPICTImage(void)
 %
 */
-Export void UnregisterPICTImage(void)
+ModuleExport void UnregisterPICTImage(void)
 {
   UnregisterMagickInfo("PCT");
   UnregisterMagickInfo("PICT");

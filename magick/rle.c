@@ -584,7 +584,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterRLEImage(void)
 %
 */
-Export void RegisterRLEImage(void)
+ModuleExport void RegisterRLEImage(void)
 {
   MagickInfo
     *entry;
@@ -617,7 +617,7 @@ Export void RegisterRLEImage(void)
 %      UnregisterRLEImage(void)
 %
 */
-Export void UnregisterRLEImage(void)
+ModuleExport void UnregisterRLEImage(void)
 {
   UnregisterMagickInfo("RLE");
 }

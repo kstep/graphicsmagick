@@ -779,7 +779,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterPCDImage(void)
 %
 */
-Export void RegisterPCDImage(void)
+ModuleExport void RegisterPCDImage(void)
 {
   MagickInfo
     *entry;
@@ -820,7 +820,7 @@ Export void RegisterPCDImage(void)
 %      UnregisterPCDImage(void)
 %
 */
-Export void UnregisterPCDImage(void)
+ModuleExport void UnregisterPCDImage(void)
 {
   UnregisterMagickInfo("PCD");
   UnregisterMagickInfo("PCDS");

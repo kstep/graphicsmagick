@@ -232,7 +232,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterMTVImage(void)
 %
 */
-Export void RegisterMTVImage(void)
+ModuleExport void RegisterMTVImage(void)
 {
   MagickInfo
     *entry;
@@ -264,7 +264,7 @@ Export void RegisterMTVImage(void)
 %      UnregisterMTVImage(void)
 %
 */
-Export void UnregisterMTVImage(void)
+ModuleExport void UnregisterMTVImage(void)
 {
   UnregisterMagickInfo("MTV");
 }

@@ -165,7 +165,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterXCImage(void)
 %
 */
-Export void RegisterXCImage(void)
+ModuleExport void RegisterXCImage(void)
 {
   MagickInfo
     *entry;
@@ -204,7 +204,7 @@ Export void RegisterXCImage(void)
 %      UnregisterXCImage(void)
 %
 */
-Export void UnregisterXCImage(void)
+ModuleExport void UnregisterXCImage(void)
 {
   UnregisterMagickInfo("NULL");
   UnregisterMagickInfo("XC");

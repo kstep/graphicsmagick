@@ -123,7 +123,7 @@ static unsigned int IsEPT(const unsigned char *magick,const unsigned int length)
 %      RegisterEPTImage(void)
 %
 */
-Export void RegisterEPTImage(void)
+ModuleExport void RegisterEPTImage(void)
 {
   MagickInfo
     *entry;
@@ -157,7 +157,7 @@ Export void RegisterEPTImage(void)
 %      UnregisterEPTImage(void)
 %
 */
-Export void UnregisterEPTImage(void)
+ModuleExport void UnregisterEPTImage(void)
 {
   UnregisterMagickInfo("EPT");
 }

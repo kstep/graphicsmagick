@@ -390,7 +390,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterRLAImage(void)
 %
 */
-Export void RegisterRLAImage(void)
+ModuleExport void RegisterRLAImage(void)
 {
   MagickInfo
     *entry;
@@ -422,7 +422,7 @@ Export void RegisterRLAImage(void)
 %      UnregisterRLAImage(void)
 %
 */
-Export void UnregisterRLAImage(void)
+ModuleExport void UnregisterRLAImage(void)
 {
   UnregisterMagickInfo("RLA");
 }

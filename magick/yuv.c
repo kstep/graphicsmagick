@@ -309,7 +309,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterYUVImage(void)
 %
 */
-Export void RegisterYUVImage(void)
+ModuleExport void RegisterYUVImage(void)
 {
   MagickInfo
     *entry;
@@ -343,7 +343,7 @@ Export void RegisterYUVImage(void)
 %      UnregisterYUVImage(void)
 %
 */
-Export void UnregisterYUVImage(void)
+ModuleExport void UnregisterYUVImage(void)
 {
   UnregisterMagickInfo("YUV");
 }

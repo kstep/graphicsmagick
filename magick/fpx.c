@@ -482,7 +482,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterFPXImage(void)
 %
 */
-Export void RegisterFPXImage(void)
+ModuleExport void RegisterFPXImage(void)
 {
 #if defined(HasFPX)
   MagickInfo
@@ -516,7 +516,7 @@ Export void RegisterFPXImage(void)
 %      UnregisterFPXImage(void)
 %
 */
-Export void UnregisterFPXImage(void)
+ModuleExport void UnregisterFPXImage(void)
 {
   UnregisterMagickInfo("FPX");
 }

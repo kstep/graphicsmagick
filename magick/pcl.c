@@ -163,7 +163,7 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterPCLImage(void)
 %
 */
-Export void RegisterPCLImage(void)
+ModuleExport void RegisterPCLImage(void)
 {
   MagickInfo
     *entry;
@@ -197,7 +197,7 @@ Export void RegisterPCLImage(void)
 %      UnregisterPCLImage(void)
 %
 */
-Export void UnregisterPCLImage(void)
+ModuleExport void UnregisterPCLImage(void)
 {
   UnregisterMagickInfo("PCL");
 }

@@ -654,7 +654,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterPNMImage(void)
 %
 */
-Export void RegisterPNMImage(void)
+ModuleExport void RegisterPNMImage(void)
 {
   MagickInfo
     *entry;
@@ -711,7 +711,7 @@ Export void RegisterPNMImage(void)
 %      UnregisterPNMImage(void)
 %
 */
-Export void UnregisterPNMImage(void)
+ModuleExport void UnregisterPNMImage(void)
 {
   UnregisterMagickInfo("P7");
   UnregisterMagickInfo("PBM");

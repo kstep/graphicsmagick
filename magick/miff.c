@@ -777,7 +777,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
 %      RegisterMIFFImage(void)
 %
 */
-Export void RegisterMIFFImage(void)
+ModuleExport void RegisterMIFFImage(void)
 {
   MagickInfo
     *entry;
@@ -813,7 +813,7 @@ Export void RegisterMIFFImage(void)
 %      UnregisterMIFFImage(void)
 %
 */
-Export void UnregisterMIFFImage(void)
+ModuleExport void UnregisterMIFFImage(void)
 {
   UnregisterMagickInfo("IMPLICIT");
   UnregisterMagickInfo("MIFF");

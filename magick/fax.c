@@ -199,7 +199,7 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterFAXImage(void)
 %
 */
-Export void RegisterFAXImage(void)
+ModuleExport void RegisterFAXImage(void)
 {
   MagickInfo
     *entry;
@@ -240,7 +240,7 @@ Export void RegisterFAXImage(void)
 %      UnregisterFAXImage(void)
 %
 */
-Export void UnregisterFAXImage(void)
+ModuleExport void UnregisterFAXImage(void)
 {
   UnregisterMagickInfo("FAX");
   UnregisterMagickInfo("G3");

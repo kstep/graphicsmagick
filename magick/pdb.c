@@ -556,7 +556,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterPDBImage(void)
 %
 */
-Export void RegisterPDBImage(void)
+ModuleExport void RegisterPDBImage(void)
 {
   MagickInfo
     *entry;
@@ -588,7 +588,7 @@ Export void RegisterPDBImage(void)
 %      UnregisterPDBImage(void)
 %
 */
-Export void UnregisterPDBImage(void)
+ModuleExport void UnregisterPDBImage(void)
 {
   UnregisterMagickInfo("PDB");
 }

@@ -234,7 +234,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
 %      RegisterWBMPImage(void)
 %
 */
-Export void RegisterWBMPImage(void)
+ModuleExport void RegisterWBMPImage(void)
 {
   MagickInfo
     *entry;
@@ -267,7 +267,7 @@ Export void RegisterWBMPImage(void)
 %      UnregisterWBMPImage(void)
 %
 */
-Export void UnregisterWBMPImage(void)
+ModuleExport void UnregisterWBMPImage(void)
 {
   UnregisterMagickInfo("WBMP");
 }

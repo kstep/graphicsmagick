@@ -2767,7 +2767,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterPNGImage(void)
 %
 */
-Export void RegisterPNGImage(void)
+ModuleExport void RegisterPNGImage(void)
 {
 #if defined(HasPNG)
   MagickInfo
@@ -2810,7 +2810,7 @@ Export void RegisterPNGImage(void)
 %      UnregisterPNGImage(void)
 %
 */
-Export void UnregisterPNGImage(void)
+ModuleExport void UnregisterPNGImage(void)
 {
   UnregisterMagickInfo("MNG");
   UnregisterMagickInfo("PNG");

@@ -242,7 +242,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterTTFImage(void)
 %
 */
-Export void RegisterTTFImage(void)
+ModuleExport void RegisterTTFImage(void)
 {
 #if defined(HasTTF)
   MagickInfo
@@ -276,7 +276,7 @@ Export void RegisterTTFImage(void)
 %      UnregisterTTFImage(void)
 %
 */
-Export void UnregisterTTFImage(void)
+ModuleExport void UnregisterTTFImage(void)
 {
 #if defined(HasTTF)
   UnregisterMagickInfo("TTF");

@@ -264,7 +264,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterSCTImage(void)
 %
 */
-Export void RegisterSCTImage(void)
+ModuleExport void RegisterSCTImage(void)
 {
   MagickInfo
     *entry;
@@ -297,7 +297,7 @@ Export void RegisterSCTImage(void)
 %      UnregisterSCTImage(void)
 %
 */
-Export void UnregisterSCTImage(void)
+ModuleExport void UnregisterSCTImage(void)
 {
   UnregisterMagickInfo("SCT");
 }

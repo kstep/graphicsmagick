@@ -84,7 +84,7 @@ static unsigned int
 %      RegisterMATTEImage(void)
 %
 */
-Export void RegisterMATTEImage(void)
+ModuleExport void RegisterMATTEImage(void)
 {
   MagickInfo
     *entry;
@@ -116,7 +116,7 @@ Export void RegisterMATTEImage(void)
 %      UnregisterMATTEImage(void)
 %
 */
-Export void UnregisterMATTEImage(void)
+ModuleExport void UnregisterMATTEImage(void)
 {
   UnregisterMagickInfo("MATTE");
 }

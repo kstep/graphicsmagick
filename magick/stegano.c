@@ -226,7 +226,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
 %      RegisterSTEGANOImage(void)
 %
 */
-Export void RegisterSTEGANOImage(void)
+ModuleExport void RegisterSTEGANOImage(void)
 {
   MagickInfo
     *entry;
@@ -257,7 +257,7 @@ Export void RegisterSTEGANOImage(void)
 %      UnregisterSTEGANOImage(void)
 %
 */
-Export void UnregisterSTEGANOImage(void)
+ModuleExport void UnregisterSTEGANOImage(void)
 {
   UnregisterMagickInfo("STEGANO");
 }

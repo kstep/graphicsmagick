@@ -345,7 +345,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterSFWImage(void)
 %
 */
-Export void RegisterSFWImage(void)
+ModuleExport void RegisterSFWImage(void)
 {
   MagickInfo
     *entry;
@@ -378,7 +378,7 @@ Export void RegisterSFWImage(void)
 %      UnregisterSFWImage(void)
 %
 */
-Export void UnregisterSFWImage(void)
+ModuleExport void UnregisterSFWImage(void)
 {
   UnregisterMagickInfo("SFW");
 }

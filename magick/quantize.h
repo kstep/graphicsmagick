@@ -34,7 +34,7 @@ typedef struct _QuantizeInfo
 /*
   Constant declarations.
 */
-extern const long
+extern Export const long
   MaxColormapSize;
 
 /*

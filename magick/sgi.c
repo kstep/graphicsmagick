@@ -514,7 +514,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterSGIImage(void)
 %
 */
-Export void RegisterSGIImage(void)
+ModuleExport void RegisterSGIImage(void)
 {
   MagickInfo
     *entry;
@@ -547,7 +547,7 @@ Export void RegisterSGIImage(void)
 %      UnregisterSGIImage(void)
 %
 */
-Export void UnregisterSGIImage(void)
+ModuleExport void UnregisterSGIImage(void)
 {
   UnregisterMagickInfo("SGI");
 }

@@ -897,7 +897,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterBMPImage(void)
 %
 */
-Export void RegisterBMPImage(void)
+ModuleExport void RegisterBMPImage(void)
 {
   MagickInfo
     *entry;
@@ -942,7 +942,7 @@ Export void RegisterBMPImage(void)
 %      UnregisterBMPImage(void)
 %
 */
-Export void UnregisterBMPImage(void)
+ModuleExport void UnregisterBMPImage(void)
 {
   UnregisterMagickInfo("BMP");
   UnregisterMagickInfo("BMP24");

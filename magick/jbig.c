@@ -273,7 +273,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
 %      RegisterJBIGImage(void)
 %
 */
-Export void RegisterJBIGImage(void)
+ModuleExport void RegisterJBIGImage(void)
 {
   MagickInfo
     *entry;
@@ -323,7 +323,7 @@ Export void RegisterJBIGImage(void)
 %      UnregisterJBIGImage(void)
 %
 */
-Export void UnregisterJBIGImage(void)
+ModuleExport void UnregisterJBIGImage(void)
 {
   UnregisterMagickInfo("BIE");
   UnregisterMagickInfo("JBG");

@@ -84,7 +84,7 @@ static unsigned int
 %      RegisterUILImage(void)
 %
 */
-Export void RegisterUILImage(void)
+ModuleExport void RegisterUILImage(void)
 {
   MagickInfo
     *entry;
@@ -116,7 +116,7 @@ Export void RegisterUILImage(void)
 %      UnregisterUILImage(void)
 %
 */
-Export void UnregisterUILImage(void)
+ModuleExport void UnregisterUILImage(void)
 {
   UnregisterMagickInfo("UIL");
 }

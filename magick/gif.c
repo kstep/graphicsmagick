@@ -994,7 +994,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterGIFImage(void)
 %
 */
-Export void RegisterGIFImage(void)
+ModuleExport void RegisterGIFImage(void)
 {
   MagickInfo
     *entry;
@@ -1036,7 +1036,7 @@ Export void RegisterGIFImage(void)
 %      UnregisterGIFImage(void)
 %
 */
-Export void UnregisterGIFImage(void)
+ModuleExport void UnregisterGIFImage(void)
 {
   UnregisterMagickInfo("GIF");
   UnregisterMagickInfo("GIF87");

@@ -353,7 +353,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
 %      RegisterVICARImage(void)
 %
 */
-Export void RegisterVICARImage(void)
+ModuleExport void RegisterVICARImage(void)
 {
   MagickInfo
     *entry;
@@ -387,7 +387,7 @@ Export void RegisterVICARImage(void)
 %      UnregisterVICARImage(void)
 %
 */
-Export void UnregisterVICARImage(void)
+ModuleExport void UnregisterVICARImage(void)
 {
   UnregisterMagickInfo("VICAR");
 }

@@ -446,7 +446,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,ExceptionInfo *exception
 %      RegisterICONImage(void)
 %
 */
-Export void RegisterICONImage(void)
+ModuleExport void RegisterICONImage(void)
 {
   MagickInfo
     *entry;
@@ -484,7 +484,7 @@ Export void RegisterICONImage(void)
 %      UnregisterICONImage(void)
 %
 */
-Export void UnregisterICONImage(void)
+ModuleExport void UnregisterICONImage(void)
 {
   UnregisterMagickInfo("ICO");
   UnregisterMagickInfo("ICON");

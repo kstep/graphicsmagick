@@ -198,7 +198,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
 %      RegisterMONOImage(void)
 %
 */
-Export void RegisterMONOImage(void)
+ModuleExport void RegisterMONOImage(void)
 {
   MagickInfo
     *entry;
@@ -232,7 +232,7 @@ Export void RegisterMONOImage(void)
 %      UnregisterMONOImage(void)
 %
 */
-Export void UnregisterMONOImage(void)
+ModuleExport void UnregisterMONOImage(void)
 {
   UnregisterMagickInfo("MONO");
 }

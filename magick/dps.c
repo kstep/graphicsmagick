@@ -522,7 +522,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterDPSImage(void)
 %
 */
-Export void RegisterDPSImage(void)
+ModuleExport void RegisterDPSImage(void)
 {
   MagickInfo
     *entry;
@@ -553,7 +553,7 @@ Export void RegisterDPSImage(void)
 %      UnregisterDPSImage(void)
 %
 */
-Export void UnregisterDPSImage(void)
+ModuleExport void UnregisterDPSImage(void)
 {
   UnregisterMagickInfo("DPS");
 }

@@ -225,7 +225,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterMAPImage(void)
 %
 */
-Export void RegisterMAPImage(void)
+ModuleExport void RegisterMAPImage(void)
 {
   MagickInfo
     *entry;
@@ -259,7 +259,7 @@ Export void RegisterMAPImage(void)
 %      UnregisterMAPImage(void)
 %
 */
-Export void UnregisterMAPImage(void)
+ModuleExport void UnregisterMAPImage(void)
 {
   UnregisterMagickInfo("MAP");
 }

@@ -455,7 +455,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterTGAImage(void)
 %
 */
-Export void RegisterTGAImage(void)
+ModuleExport void RegisterTGAImage(void)
 {
   MagickInfo
     *entry;
@@ -505,7 +505,7 @@ Export void RegisterTGAImage(void)
 %      UnregisterTGAImage(void)
 %
 */
-Export void UnregisterTGAImage(void)
+ModuleExport void UnregisterTGAImage(void)
 {
   UnregisterMagickInfo("ICB");
   UnregisterMagickInfo("TGA");

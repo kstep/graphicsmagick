@@ -817,7 +817,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterPSDImage(void)
 %
 */
-Export void RegisterPSDImage(void)
+ModuleExport void RegisterPSDImage(void)
 {
   MagickInfo
     *entry;
@@ -851,7 +851,7 @@ Export void RegisterPSDImage(void)
 %      UnregisterPSDImage(void)
 %
 */
-Export void UnregisterPSDImage(void)
+ModuleExport void UnregisterPSDImage(void)
 {
   UnregisterMagickInfo("PSD");
 }

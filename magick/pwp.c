@@ -254,7 +254,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterPWPImage(void)
 %
 */
-Export void RegisterPWPImage(void)
+ModuleExport void RegisterPWPImage(void)
 {
   MagickInfo
     *entry;
@@ -286,7 +286,7 @@ Export void RegisterPWPImage(void)
 %      UnregisterPWPImage(void)
 %
 */
-Export void UnregisterPWPImage(void)
+ModuleExport void UnregisterPWPImage(void)
 {
   UnregisterMagickInfo("PWP");
 }

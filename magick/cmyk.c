@@ -387,7 +387,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,ExceptionInfo *exception
 %      RegisterCMYKImage(void)
 %
 */
-Export void RegisterCMYKImage(void)
+ModuleExport void RegisterCMYKImage(void)
 {
   MagickInfo
     *entry;
@@ -422,7 +422,7 @@ Export void RegisterCMYKImage(void)
 %      UnregisterCMYKImage(void)
 %
 */
-Export void UnregisterCMYKImage(void)
+ModuleExport void UnregisterCMYKImage(void)
 {
   UnregisterMagickInfo("CMYK");
 }

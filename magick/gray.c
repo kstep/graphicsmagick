@@ -235,7 +235,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,ExceptionInfo *exception
 %      RegisterGRAYImage(void)
 %
 */
-Export void RegisterGRAYImage(void)
+ModuleExport void RegisterGRAYImage(void)
 {
   MagickInfo
     *entry;
@@ -268,7 +268,7 @@ Export void RegisterGRAYImage(void)
 %      UnregisterGRAYImage(void)
 %
 */
-Export void UnregisterGRAYImage(void)
+ModuleExport void UnregisterGRAYImage(void)
 {
   UnregisterMagickInfo("GRAY");
 }

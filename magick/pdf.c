@@ -377,7 +377,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterPDFImage(void)
 %
 */
-Export void RegisterPDFImage(void)
+ModuleExport void RegisterPDFImage(void)
 {
   MagickInfo
     *entry;
@@ -418,7 +418,7 @@ Export void RegisterPDFImage(void)
 %      UnregisterPDFImage(void)
 %
 */
-Export void UnregisterPDFImage(void)
+ModuleExport void UnregisterPDFImage(void)
 {
   UnregisterMagickInfo("EPDF");
   UnregisterMagickInfo("PDF");

@@ -750,7 +750,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
 %      RegisterVIFFImage(void)
 %
 */
-Export void RegisterVIFFImage(void)
+ModuleExport void RegisterVIFFImage(void)
 {
   MagickInfo
     *entry;
@@ -788,7 +788,7 @@ Export void RegisterVIFFImage(void)
 %      UnregisterVIFFImage(void)
 %
 */
-Export void UnregisterVIFFImage(void)
+ModuleExport void UnregisterVIFFImage(void)
 {
   UnregisterMagickInfo("VIFF");
   UnregisterMagickInfo("XV");

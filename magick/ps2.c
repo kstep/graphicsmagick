@@ -89,7 +89,7 @@ static unsigned int
 %      RegisterPS2Image(void)
 %
 */
-Export void RegisterPS2Image(void)
+ModuleExport void RegisterPS2Image(void)
 {
   MagickInfo
     *entry;
@@ -125,7 +125,7 @@ Export void RegisterPS2Image(void)
 %      UnregisterPS2Image(void)
 %
 */
-Export void UnregisterPS2Image(void)
+ModuleExport void UnregisterPS2Image(void)
 {
   UnregisterMagickInfo("EPS2");
   UnregisterMagickInfo("PS2");

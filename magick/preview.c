@@ -90,7 +90,7 @@ static unsigned int
 %      RegisterPREVIEWImage(void)
 %
 */
-Export void RegisterPREVIEWImage(void)
+ModuleExport void RegisterPREVIEWImage(void)
 {
   MagickInfo
     *entry;
@@ -123,7 +123,7 @@ Export void RegisterPREVIEWImage(void)
 %      UnregisterPREVIEWImage(void)
 %
 */
-Export void UnregisterPREVIEWImage(void)
+ModuleExport void UnregisterPREVIEWImage(void)
 {
   UnregisterMagickInfo("PREVIEW");
 }

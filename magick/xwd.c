@@ -484,7 +484,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterXWDImage(void)
 %
 */
-Export void RegisterXWDImage(void)
+ModuleExport void RegisterXWDImage(void)
 {
   MagickInfo
     *entry;
@@ -520,7 +520,7 @@ Export void RegisterXWDImage(void)
 %      UnregisterXWDImage(void)
 %
 */
-Export void UnregisterXWDImage(void)
+ModuleExport void UnregisterXWDImage(void)
 {
 #if defined(HasX11)
   UnregisterMagickInfo("XWD");

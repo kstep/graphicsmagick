@@ -554,7 +554,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterSUNImage(void)
 %
 */
-Export void RegisterSUNImage(void)
+ModuleExport void RegisterSUNImage(void)
 {
   MagickInfo
     *entry;
@@ -593,7 +593,7 @@ Export void RegisterSUNImage(void)
 %      UnregisterSUNImage(void)
 %
 */
-Export void UnregisterSUNImage(void)
+ModuleExport void UnregisterSUNImage(void)
 {
   UnregisterMagickInfo("RAS");
   UnregisterMagickInfo("SUN");

@@ -3364,7 +3364,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterDCMImage(void)
 %
 */
-Export void RegisterDCMImage(void)
+ModuleExport void RegisterDCMImage(void)
 {
   MagickInfo
     *entry;
@@ -3398,7 +3398,7 @@ Export void RegisterDCMImage(void)
 %      UnregisterDCMImage(void)
 %
 */
-Export void UnregisterDCMImage(void)
+ModuleExport void UnregisterDCMImage(void)
 {
   UnregisterMagickInfo("DCM");
 }

@@ -190,7 +190,7 @@ static Image *ReadGRADATIONImage(const ImageInfo *image_info,ExceptionInfo *exce
 %      RegisterGRADATIONImage(void)
 %
 */
-Export void RegisterGRADATIONImage(void)
+ModuleExport void RegisterGRADATIONImage(void)
 {
   MagickInfo
     *entry;
@@ -223,7 +223,7 @@ Export void RegisterGRADATIONImage(void)
 %      UnregisterGRADATIONImage(void)
 %
 */
-Export void UnregisterGRADATIONImage(void)
+ModuleExport void UnregisterGRADATIONImage(void)
 {
   UnregisterMagickInfo("GRADATION");
 }

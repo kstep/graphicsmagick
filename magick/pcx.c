@@ -633,7 +633,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterPCXImage(void)
 %
 */
-Export void RegisterPCXImage(void)
+ModuleExport void RegisterPCXImage(void)
 {
   MagickInfo
     *entry;
@@ -674,7 +674,7 @@ Export void RegisterPCXImage(void)
 %      UnregisterPCXImage(void)
 %
 */
-Export void UnregisterPCXImage(void)
+ModuleExport void UnregisterPCXImage(void)
 {
   UnregisterMagickInfo("DCX");
   UnregisterMagickInfo("PCX");

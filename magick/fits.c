@@ -513,7 +513,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
 %      RegisterFITSImage(void)
 %
 */
-Export void RegisterFITSImage(void)
+ModuleExport void RegisterFITSImage(void)
 {
   MagickInfo
     *entry;
@@ -547,7 +547,7 @@ Export void RegisterFITSImage(void)
 %      UnregisterFITSImage(void)
 %
 */
-Export void UnregisterFITSImage(void)
+ModuleExport void UnregisterFITSImage(void)
 {
   UnregisterMagickInfo("FITS");
 }

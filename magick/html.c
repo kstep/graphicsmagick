@@ -124,7 +124,7 @@ static unsigned int IsHTML(const unsigned char *magick,
 %      RegisterHTMLImage(void)
 %
 */
-Export void RegisterHTMLImage(void)
+ModuleExport void RegisterHTMLImage(void)
 {
   MagickInfo
     *entry;
@@ -169,7 +169,7 @@ Export void RegisterHTMLImage(void)
 %      UnregisterHTMLImage(void)
 %
 */
-Export void UnregisterHTMLImage(void)
+ModuleExport void UnregisterHTMLImage(void)
 {
   UnregisterMagickInfo("HTM");
   UnregisterMagickInfo("HTML");

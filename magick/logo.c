@@ -3867,7 +3867,7 @@ static Image *ReadLOGOImage(const ImageInfo *image_info,
 %      RegisterLOGOImage(void)
 %
 */
-Export void RegisterLOGOImage(void)
+ModuleExport void RegisterLOGOImage(void)
 {
   MagickInfo
     *entry;
@@ -3921,7 +3921,7 @@ Export void RegisterLOGOImage(void)
 %      UnregisterLOGOImage(void)
 %
 */
-Export void UnregisterLOGOImage(void)
+ModuleExport void UnregisterLOGOImage(void)
 {
   UnregisterMagickInfo("GRANITE");
   UnregisterMagickInfo("H");

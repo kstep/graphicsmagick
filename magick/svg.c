@@ -190,7 +190,7 @@ static unsigned int GetToken(Image *image,char **token,int *c,
   return(True);
 }
 
-Export char **StringToTokens(const char *text,int *number_tokens)
+ModuleExport char **StringToTokens(const char *text,int *number_tokens)
 {
   char
     **tokens;
@@ -1093,7 +1093,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterSVGImage(void)
 %
 */
-Export void RegisterSVGImage(void)
+ModuleExport void RegisterSVGImage(void)
 {
   MagickInfo
     *entry;
@@ -1131,7 +1131,7 @@ Export void RegisterSVGImage(void)
 %      UnregisterSVGImage(void)
 %
 */
-Export void UnregisterSVGImage(void)
+ModuleExport void UnregisterSVGImage(void)
 {
   UnregisterMagickInfo("SVG");
 }

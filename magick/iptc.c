@@ -223,7 +223,7 @@ static Image *ReadIPTCImage(const ImageInfo *image_info,ExceptionInfo *exception
 %      RegisterIPTCImage(void)
 %
 */
-Export void RegisterIPTCImage(void)
+ModuleExport void RegisterIPTCImage(void)
 {
   MagickInfo
     *entry;
@@ -257,7 +257,7 @@ Export void RegisterIPTCImage(void)
 %      UnregisterIPTCImage(void)
 %
 */
-Export void UnregisterIPTCImage(void)
+ModuleExport void UnregisterIPTCImage(void)
 {
   UnregisterMagickInfo("IPTC");
 }

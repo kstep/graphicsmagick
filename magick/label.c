@@ -865,7 +865,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
 %      RegisterLABELImage(void)
 %
 */
-Export void RegisterLABELImage(void)
+ModuleExport void RegisterLABELImage(void)
 {
   MagickInfo
     *entry;
@@ -897,7 +897,7 @@ Export void RegisterLABELImage(void)
 %      UnregisterLABELImage(void)
 %
 */
-Export void UnregisterLABELImage(void)
+ModuleExport void UnregisterLABELImage(void)
 {
   UnregisterMagickInfo("LABEL");
 }

@@ -631,7 +631,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
 %      RegisterCACHEImage(void)
 %
 */
-Export void RegisterCACHEImage(void)
+ModuleExport void RegisterCACHEImage(void)
 {
   MagickInfo
     *entry;
@@ -664,7 +664,7 @@ Export void RegisterCACHEImage(void)
 %      UnregisterCACHEImage(void)
 %
 */
-Export void UnregisterCACHEImage(void)
+ModuleExport void UnregisterCACHEImage(void)
 {
   UnregisterMagickInfo("CACHE");
 }

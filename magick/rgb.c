@@ -405,7 +405,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterRGBImage(void)
 %
 */
-Export void RegisterRGBImage(void)
+ModuleExport void RegisterRGBImage(void)
 {
   MagickInfo
     *entry;
@@ -445,7 +445,7 @@ Export void RegisterRGBImage(void)
 %      UnregisterRGBImage(void)
 %
 */
-Export void UnregisterRGBImage(void)
+ModuleExport void UnregisterRGBImage(void)
 {
   UnregisterMagickInfo("RGB");
   UnregisterMagickInfo("RGBA");

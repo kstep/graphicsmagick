@@ -231,7 +231,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterAVSImage(void)
 %
 */
-Export void RegisterAVSImage(void)
+ModuleExport void RegisterAVSImage(void)
 {
   MagickInfo
     *entry;
@@ -263,7 +263,7 @@ Export void RegisterAVSImage(void)
 %      UnregisterAVSImage(void)
 %
 */
-Export void UnregisterAVSImage(void)
+ModuleExport void UnregisterAVSImage(void)
 {
   UnregisterMagickInfo("AVS");
 }

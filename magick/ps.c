@@ -416,7 +416,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterPSImage(void)
 %
 */
-Export void RegisterPSImage(void)
+ModuleExport void RegisterPSImage(void)
 {
   MagickInfo
     *entry;
@@ -483,7 +483,7 @@ Export void RegisterPSImage(void)
 %      UnregisterPSImage(void)
 %
 */
-Export void UnregisterPSImage(void)
+ModuleExport void UnregisterPSImage(void)
 {
   UnregisterMagickInfo("EPI");
   UnregisterMagickInfo("EPS");

@@ -406,7 +406,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterHDFImage(void)
 %
 */
-Export void RegisterHDFImage(void)
+ModuleExport void RegisterHDFImage(void)
 {
 #if defined(HasHDF)
   MagickInfo
@@ -442,7 +442,7 @@ Export void RegisterHDFImage(void)
 %      UnregisterHDFImage(void)
 %
 */
-Export void UnregisterHDFImage(void)
+ModuleExport void UnregisterHDFImage(void)
 {
   UnregisterMagickInfo("HDF");
 }

@@ -445,7 +445,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterXPMImage(void)
 %
 */
-Export void RegisterXPMImage(void)
+ModuleExport void RegisterXPMImage(void)
 {
   MagickInfo
     *entry;
@@ -486,7 +486,7 @@ Export void RegisterXPMImage(void)
 %      UnregisterXPMImage(void)
 %
 */
-Export void UnregisterXPMImage(void)
+ModuleExport void UnregisterXPMImage(void)
 {
   UnregisterMagickInfo("PM");
   UnregisterMagickInfo("XPM");

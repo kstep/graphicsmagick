@@ -168,7 +168,7 @@ static Image *ReadICCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterICCImage(void)
 %
 */
-Export void RegisterICCImage(void)
+ModuleExport void RegisterICCImage(void)
 {
   MagickInfo
     *entry;
@@ -201,7 +201,7 @@ Export void RegisterICCImage(void)
 %      UnregisterICCImage(void)
 %
 */
-Export void UnregisterICCImage(void)
+ModuleExport void UnregisterICCImage(void)
 {
   UnregisterMagickInfo("ICC");
 }

@@ -102,7 +102,7 @@ static unsigned int
 %    o image: The address of a structure of type Image.
 %
 */
-Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
+ModuleExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 {
   char
     filename[MaxTextExtent];
@@ -1039,7 +1039,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 %      RegisterTIFFImage(void)
 %
 */
-Export void RegisterTIFFImage(void)
+ModuleExport void RegisterTIFFImage(void)
 {
 #if defined(HasTIFF)
   MagickInfo
@@ -1096,7 +1096,7 @@ Export void RegisterTIFFImage(void)
 %      UnregisterTIFFImage(void)
 %
 */
-Export void UnregisterTIFFImage(void)
+ModuleExport void UnregisterTIFFImage(void)
 {
 #if defined(HasTIFF)
   UnregisterMagickInfo("PTIF");

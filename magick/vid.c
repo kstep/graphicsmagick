@@ -211,7 +211,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterVIDImage(void)
 %
 */
-Export void RegisterVIDImage(void)
+ModuleExport void RegisterVIDImage(void)
 {
   MagickInfo
     *entry;
@@ -242,7 +242,7 @@ Export void RegisterVIDImage(void)
 %      UnregisterVIDImage(void)
 %
 */
-Export void UnregisterVIDImage(void)
+ModuleExport void UnregisterVIDImage(void)
 {
   UnregisterMagickInfo("VID");
 }

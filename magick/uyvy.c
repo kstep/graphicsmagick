@@ -185,7 +185,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,ExceptionInfo *exception
 %      RegisterUYVYImage(void)
 %
 */
-Export void RegisterUYVYImage(void)
+ModuleExport void RegisterUYVYImage(void)
 {
   MagickInfo
     *entry;
@@ -219,7 +219,7 @@ Export void RegisterUYVYImage(void)
 %      UnregisterUYVYImage(void)
 %
 */
-Export void UnregisterUYVYImage(void)
+ModuleExport void UnregisterUYVYImage(void)
 {
   UnregisterMagickInfo("UYVY");
 }

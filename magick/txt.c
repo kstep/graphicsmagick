@@ -268,7 +268,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterTXTImage(void)
 %
 */
-Export void RegisterTXTImage(void)
+ModuleExport void RegisterTXTImage(void)
 {
   MagickInfo
     *entry;
@@ -307,7 +307,7 @@ Export void RegisterTXTImage(void)
 %      UnregisterTXTImage(void)
 %
 */
-Export void UnregisterTXTImage(void)
+ModuleExport void UnregisterTXTImage(void)
 {
   UnregisterMagickInfo("TEXT");
   UnregisterMagickInfo("TXT");
