@@ -104,6 +104,9 @@ typedef struct _PolygonInfo
   EdgeInfo
     *edges;
 
+  PointInfo
+    *points;
+
   int
     number_edges;
 } PolygonInfo;
@@ -606,9 +609,7 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
     direction,
     edge,
     ghostline,
-    next_direction,
-    number_edges,
-    number_points;
+    next_direction;
 
   PointInfo
     point,
@@ -630,16 +631,17 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
   polygon_info=(PolygonInfo *) AcquireMemory(sizeof(PolygonInfo));
   if (polygon_info == (PolygonInfo *) NULL)
     return((PolygonInfo *) NULL);
-  number_edges=16;
-  polygon_info->edges=(EdgeInfo *) AcquireMemory(number_edges*sizeof(EdgeInfo));
-  if (polygon_info->edges == (EdgeInfo *) NULL)
+  for (i=0; path_info[i].code != EndCode; i++);
+  polygon_info->edges=(EdgeInfo *) AcquireMemory(i*sizeof(EdgeInfo));
+  polygon_info->points=(PointInfo *) AcquireMemory((2*i+3)*sizeof(PointInfo));
+  if ((polygon_info->edges == (EdgeInfo *) NULL) ||
+      (polygon_info->points == (PointInfo *) NULL))
     return((PolygonInfo *) NULL);
   direction=0;
   edge=0;
   ghostline=False;
   n=0;
-  number_points=0;
-  points=(PointInfo *) NULL;
+  points=polygon_info->points;
   memset(&point,0,sizeof(PointInfo));
   memset(&bounds,0,sizeof(SegmentInfo));
   for (i=0; path_info[i].code != EndCode; i++)
@@ -650,37 +652,22 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
         /*
           Move to.
         */
-        if ((points != (PointInfo *) NULL) && (n >= 2))
+        if (n >= 2)
           {
-            if (edge == number_edges)
-              {
-                number_edges<<=1;
-                ReacquireMemory((void **) &polygon_info->edges,
-                  number_edges*sizeof(EdgeInfo));
-                if (polygon_info->edges == (EdgeInfo *) NULL)
-                  return((PolygonInfo *) NULL);
-              }
+            if (direction < 0)
+              ReversePoints(points,n);
             polygon_info->edges[edge].number_points=n;
+            polygon_info->edges[edge].points=points;
             polygon_info->edges[edge].scanline=(-1.0);
             polygon_info->edges[edge].highwater=0;
             polygon_info->edges[edge].ghostline=ghostline;
             polygon_info->edges[edge].direction=direction > 0;
-            if (direction < 0)
-              ReversePoints(points,n);
-            polygon_info->edges[edge].points=points;
             polygon_info->edges[edge].bounds=bounds;
             polygon_info->edges[edge].bounds.y1=points[0].y;
             polygon_info->edges[edge].bounds.y2=points[n-1].y;
-            points=(PointInfo *) NULL;
-            ghostline=False;
             edge++;
-          }
-        if (points == (PointInfo *) NULL)
-          {
-            number_points=16;
-            points=(PointInfo *) AcquireMemory(number_points*sizeof(PointInfo));
-            if (points == (PointInfo *) NULL)
-              return((PolygonInfo *) NULL);
+            points+=n;
+            ghostline=False;
           }
         ghostline=path_info[i].code == GhostlineCode;
         point=path_info[i].point;
@@ -703,46 +690,26 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
           New edge.
         */
         point=points[n-1];
-        if (edge == number_edges)
-          {
-            number_edges<<=1;
-            ReacquireMemory((void **) &polygon_info->edges,
-              number_edges*sizeof(EdgeInfo));
-            if (polygon_info->edges == (EdgeInfo *) NULL)
-              return((PolygonInfo *) NULL);
-          }
+        if (direction < 0)
+          ReversePoints(points,n);
         polygon_info->edges[edge].number_points=n;
+        polygon_info->edges[edge].points=points;
         polygon_info->edges[edge].scanline=(-1.0);
         polygon_info->edges[edge].highwater=0;
         polygon_info->edges[edge].ghostline=ghostline;
         polygon_info->edges[edge].direction=direction > 0;
-        if (direction < 0)
-          ReversePoints(points,n);
-        polygon_info->edges[edge].points=points;
         polygon_info->edges[edge].bounds=bounds;
         polygon_info->edges[edge].bounds.y1=points[0].y;
         polygon_info->edges[edge].bounds.y2=points[n-1].y;
-        number_points=16;
-        points=(PointInfo *) AcquireMemory(number_points*sizeof(PointInfo));
-        if (points == (PointInfo *) NULL)
-          return((PolygonInfo *) NULL);
+        edge++;
+        points+=n;
         n=1;
         ghostline=False;
         points[0]=point;
         bounds.x1=point.x;
         bounds.x2=point.x;
-        edge++;
       }
     direction=next_direction;
-    if (points == (PointInfo *) NULL)
-      continue;
-    if (n == number_points)
-      {
-        number_points<<=1;
-        ReacquireMemory((void **) &points,number_points*sizeof(PointInfo));
-        if (points == (PointInfo *) NULL)
-          return((PolygonInfo *) NULL);
-      }
     point=path_info[i].point;
     points[n]=point;
     if (point.x < bounds.x1)
@@ -751,38 +718,29 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
       bounds.x2=point.x;
     n++;
   }
-  if (points != (PointInfo *) NULL)
+  if (n >= 2)
     {
-      if (n < 2)
-        LiberateMemory((void **) &points);
-      else
-        {
-          if (edge == number_edges)
-            {
-              number_edges<<=1;
-              ReacquireMemory((void **) &polygon_info->edges,
-                number_edges*sizeof(EdgeInfo));
-              if (polygon_info->edges == (EdgeInfo *) NULL)
-                return((PolygonInfo *) NULL);
-            }
-          polygon_info->edges[edge].number_points=n;
-          polygon_info->edges[edge].scanline=(-1.0);
-          polygon_info->edges[edge].highwater=0;
-          polygon_info->edges[edge].ghostline=ghostline;
-          polygon_info->edges[edge].direction=direction > 0;
-          if (direction < 0)
-            ReversePoints(points,n);
-          polygon_info->edges[edge].points=points;
-          polygon_info->edges[edge].bounds=bounds;
-          polygon_info->edges[edge].bounds.y1=points[0].y;
-          polygon_info->edges[edge].bounds.y2=points[n-1].y;
-          ghostline=False;
-          edge++;
-        }
+      if (direction < 0)
+        ReversePoints(points,n);
+      polygon_info->edges[edge].number_points=n;
+      polygon_info->edges[edge].points=points;
+      polygon_info->edges[edge].scanline=(-1.0);
+      polygon_info->edges[edge].highwater=0;
+      polygon_info->edges[edge].ghostline=ghostline;
+      polygon_info->edges[edge].direction=direction > 0;
+      polygon_info->edges[edge].bounds=bounds;
+      polygon_info->edges[edge].bounds.y1=points[0].y;
+      polygon_info->edges[edge].bounds.y2=points[n-1].y;
+      edge++;
+      points+=n;
     }
   polygon_info->number_edges=edge;
+  ReacquireMemory((void **) &polygon_info,
+    polygon_info->number_edges*sizeof(PolygonInfo));
   qsort(polygon_info->edges,polygon_info->number_edges,sizeof(EdgeInfo),
     CompareEdges);
+  ReacquireMemory((void **) &polygon_info->points,
+    (points-polygon_info->points+1)*sizeof(PointInfo));
   if (draw_info->debug)
     PrintPolygonInfo(polygon_info);
   return(polygon_info);
@@ -1001,7 +959,6 @@ static int DestroyEdge(PolygonInfo *polygon_info,const int edge)
 {
   assert(edge >= 0);
   assert(edge < polygon_info->number_edges);
-  LiberateMemory((void **) &polygon_info->edges[edge].points);
   polygon_info->number_edges--;
   if (edge < polygon_info->number_edges)
     memcpy(polygon_info->edges+edge,polygon_info->edges+edge+1,
@@ -1034,11 +991,7 @@ static int DestroyEdge(PolygonInfo *polygon_info,const int edge)
 */
 static void DestroyPolygonInfo(PolygonInfo *polygon_info)
 {
-  register int
-    i;
-
-  for (i=0; i < polygon_info->number_edges; i++)
-    LiberateMemory((void **) &polygon_info->edges[i].points);
+  LiberateMemory((void **) &polygon_info->points);
   LiberateMemory((void **) &polygon_info->edges);
   LiberateMemory((void **) &polygon_info);
 }
