@@ -132,20 +132,21 @@
 
 /*
   For diagnosing PerlMagick problems
-#define ALWAYS_VERBOSE
+#define MNG_ALWAYS_VERBOSE
  */
 
 /*
   This is temporary until I set up malloc'ed object attributes array.
-  Recompile with MAX_MNG_OBJECTS = 65536 to avoid this limit but
+  Recompile with MNG_MAX_OBJECTS = 65536 to avoid this limit but
   waste more memory.
  */
-#define MAX_MNG_OBJECTS 256
+#define MNG_MAX_OBJECTS 256
 
 /*
-  Feature under construction.  Define these to work on them.
+  Features under construction.  Define these to work on them.
   #define MNG_OBJECT_BUFFERS
   #define MNG_GLOBAL_COLORSPACE_SUPPORTED
+  #define MNG_BASI_SUPPORTED
 */
 
 /*
@@ -271,34 +272,36 @@ typedef struct _Mng
 
 #ifdef MNG_OBJECT_BUFFERS
   MngBuffer
-    *ob[MAX_MNG_OBJECTS];
+    *ob[MNG_MAX_OBJECTS];
 #endif
 
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
   FILE *
     file;
- 
+
   png_byte
      read_buffer[8];
 
   int
      bytes_in_read_buffer,
-     found_empty_plte;
+     found_empty_plte,
+     have_saved_bkgd_index,
+     saved_bkgd_index;
 #endif
 
   long
-    x_off[MAX_MNG_OBJECTS],
-    y_off[MAX_MNG_OBJECTS];
+    x_off[MNG_MAX_OBJECTS],
+    y_off[MNG_MAX_OBJECTS];
 
   MngBox
-    object_clip[MAX_MNG_OBJECTS];
+    object_clip[MNG_MAX_OBJECTS];
 
   unsigned char
     /* These flags could be combined into one byte */
-    exists[MAX_MNG_OBJECTS],
-    frozen[MAX_MNG_OBJECTS],
-    visible[MAX_MNG_OBJECTS],
-    viewable[MAX_MNG_OBJECTS];
+    exists[MNG_MAX_OBJECTS],
+    frozen[MNG_MAX_OBJECTS],
+    visible[MNG_MAX_OBJECTS],
+    viewable[MNG_MAX_OBJECTS];
 
   long
     loop_count[256],
@@ -331,78 +334,101 @@ typedef struct _Mng
     past_warning,
     show_warning,
     verbose;
+
+#ifdef MNG_BASI_SUPPORTED
+  unsigned long
+    basi_width,
+    basi_height;
+
+  unsigned int
+    basi_depth,
+    basi_color_type,
+    basi_compression_method,
+    basi_filter_type,
+    basi_interlace_method,
+    basi_red,
+    basi_green,
+    basi_blue,
+    basi_alpha,
+    basi_viewable;
+#endif
 } Mng;
 
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
 #if !defined(PNG_NO_STDIO)
-/* This is the function that does the actual reading of data.  */
+/*
+  This is the function that does the actual reading of data.  It is
+  the same as the one supplied in libpng, except that it intercepts
+  the datastream and deletes the bKGD chunk if it follows PLTE, and
+  stores its contents for use later.
+*/
 static void
 mng_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
 {
-   Mng *
-      m;
+  Mng *
+     m;
 
-   png_size_t check;
-   int i = 0;
+  png_size_t check;
+  int i = 0;
 
-   m=png_ptr->io_ptr;
+  m=(Mng *) png_ptr->io_ptr;
 
-   /* fread() returns 0 on error, so it is OK to store this in a png_size_t
-    * instead of an int, which is what fread() actually returns.
-    */
-   while (m->bytes_in_read_buffer && length)
-     {
-        data[i]=m->read_buffer[i];
-        m->bytes_in_read_buffer--;
-        length--;
-        i++;
-     }
-   if (length)
-     {
-       check = (png_size_t)fread(&data[i], (png_size_t)1, length,
-          (FILE *)m->file);
-
-       if (check != length)
-         {
-           png_error(png_ptr, "Read Error");
-         }
-
-       if (length == 4)
-         {
-           if (data[0]==0 && data[1]==0 && data[2]==0 && data[3]==0)
-             {
-               check = (png_size_t)fread(m->read_buffer,
-                 (png_size_t)1, length, (FILE *)m->file);
-               m->read_buffer[4]=0;
-               m->bytes_in_read_buffer = 4;
-               if (!png_memcmp(m->read_buffer, mng_PLTE, 4))
-                  m->found_empty_plte=True;
-               if (!png_memcmp(m->read_buffer, mng_IEND, 4))
+  /* fread() returns 0 on error, so it is OK to store this in a png_size_t
+   * instead of an int, which is what fread() actually returns.
+   */
+  while (m->bytes_in_read_buffer && length)
+    {
+       data[i]=m->read_buffer[i];
+       m->bytes_in_read_buffer--;
+       length--;
+       i++;
+    }
+  if (length)
+    {
+      check = (png_size_t)fread(&data[i], (png_size_t)1, length,
+         (FILE *)m->file);
+      if (check != length)
+          png_error(png_ptr, "Read Error");
+      if (length == 4)
+        {
+          if (data[0]==0 && data[1]==0 && data[2]==0 && data[3]==0)
+            {
+              check = (png_size_t)fread(m->read_buffer,
+                  (png_size_t)1, length, (FILE *)m->file);
+              m->read_buffer[4]=0;
+              m->bytes_in_read_buffer = 4;
+              if (!png_memcmp(m->read_buffer, mng_PLTE, 4))
+                m->found_empty_plte=True;
+              if (!png_memcmp(m->read_buffer, mng_IEND, 4))
+                {
                   m->found_empty_plte=False;
-             }
-           if (data[0]==0 && data[1]==0 && data[2]==0 && data[3]==1)
-             {
-               check = (png_size_t)fread(m->read_buffer,
-                 (png_size_t)1, length, (FILE *)m->file);
-               m->read_buffer[4]=0;
-               m->bytes_in_read_buffer = 4;
-               if (!png_memcmp(m->read_buffer, mng_bKGD, 4))
-                 if(m->found_empty_plte)
-                   {
-                   /* skip the bKGD data byte and CRC */
-                   check = (png_size_t)fread(m->read_buffer,
-                      (png_size_t)1, 5, (FILE *)m->file);
-                   /* read the next length */
-                   check = (png_size_t)fread(data, (png_size_t)1, length,
-                      (FILE *)m->file);
-                   m->bytes_in_read_buffer = 0;
-                   if(m->verbose)
-                     printf("Jettisoned a bKGD chunk after empty PLTE.\n");
-                   }
-             }
-         }
-   }
-
+                  m->have_saved_bkgd_index=False;
+                }
+            }
+          if (data[0]==0 && data[1]==0 && data[2]==0 && data[3]==1)
+            {
+              check = (png_size_t)fread(m->read_buffer,
+                  (png_size_t)1, length, (FILE *)m->file);
+              m->read_buffer[4]=0;
+              m->bytes_in_read_buffer = 4;
+              if (!png_memcmp(m->read_buffer, mng_bKGD, 4))
+                if(m->found_empty_plte)
+                  {
+                    /* skip the bKGD data byte and CRC */
+                    check = (png_size_t)fread(m->read_buffer,
+                       (png_size_t)1, 5, (FILE *)m->file);
+                    /* read the next length */
+                    check = (png_size_t)fread(data, (png_size_t)1, length,
+                       (FILE *)m->file);
+                    m->saved_bkgd_index = m->read_buffer[0];
+                    m->have_saved_bkgd_index=True;
+                    m->bytes_in_read_buffer = 0;
+                    if(m->verbose)
+                      printf("Read a bKGD chunk after empty PLTE.\n");
+                  }
+            }
+        }
+    }
 }
 #endif
 #endif
@@ -447,7 +473,7 @@ int PalettesAreEqual(const ImageInfo *image_info, Image *a, Image *b)
 
 static void MngDiscardObject(Mng *m, int i)
 {
-  if (i && i<MAX_MNG_OBJECTS && m != (Mng *)NULL && m->exists[i] && !m->frozen[i])
+  if (i && i<MNG_MAX_OBJECTS && m != (Mng *)NULL && m->exists[i] && !m->frozen[i])
     {
 #ifdef MNG_OBJECT_BUFFERS
     if (m->ob[i] != (MngBuffer *)NULL)
@@ -488,7 +514,7 @@ static void MngFreeStruct(Mng *m, int *have_mng_structure)
         i;
       if (m->verbose)
         printf("Free mng structure.\n");
-      for(i=1; i<MAX_MNG_OBJECTS; i++)
+      for(i=1; i<MNG_MAX_OBJECTS; i++)
         MngDiscardObject(m,i);
       if(m->global_plte != (png_colorp)NULL)
         FreeMemory(m->global_plte);
@@ -734,7 +760,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   first_mng_object=0;
   skipping_loop= -1;
   have_mng_structure=False;
-#ifndef ALWAYS_VERBOSE
+#ifndef MNG_ALWAYS_VERBOSE
   if (image_info->verbose)
 #endif
     printf("Reading %s\n",image_info->filename);
@@ -749,7 +775,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       (void) ReadData(magic_number,1,8,image->file);
       if (strncmp(magic_number,"\212MNG\r\n\032\n",8) != 0)
         ReaderExit(CorruptImageWarning,"Not a MNG image file",image);
-#ifndef ALWAYS_VERBOSE
+#ifndef MNG_ALWAYS_VERBOSE
       if (image_info->verbose)
 #endif
         printf("Reading MNG file.\n");
@@ -765,10 +791,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
       m->file = image->file;
 #endif
-#ifdef ALWAYS_VERBOSE
+#ifdef MNG_ALWAYS_VERBOSE
       m->verbose = True;
 #endif
-      for (i=0; i<MAX_MNG_OBJECTS; i++)
+      for (i=0; i<MNG_MAX_OBJECTS; i++)
         {
           m->exists[i]=False;
           m->visible[i]=True;
@@ -893,15 +919,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             m->dhdr_warning++;
           }
 
-        if (!png_memcmp(type, mng_BASI, 4))
-          {
-            skip_to_iend = True;
-            if(!m->basi_warning)
-            MagickWarning(DelegateWarning,"BASI is not implemented yet",
-              image->filename);
-            m->basi_warning++;
-          }
-
         if (length != 0)
           {
             chunk=(unsigned char *) AllocateMemory(length*sizeof(unsigned char));
@@ -982,7 +999,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             frame.top = 0;
             frame.bottom = (long)mng_height;
             clip = default_fb = previous_fb = frame;
-            for (i=0; i<MAX_MNG_OBJECTS; i++)
+            for (i=0; i<MNG_MAX_OBJECTS; i++)
                 m->object_clip[i] = frame;
 
             if (m->verbose)
@@ -1032,13 +1049,13 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             if (mng_type == 2 && object_id != 0)
               MagickWarning(DelegateWarning,
                  "Nonzero object_id in MNG-LC datastream",(char *) NULL);
-            if (object_id > MAX_MNG_OBJECTS)
+            if (object_id > MNG_MAX_OBJECTS)
               {
                 /* Instead of issuing a warning we should allocate a larger
                    Mng structure and continue. */
                 MagickWarning(DelegateWarning,
                    "object_id too large",(char *) NULL);
-                object_id = MAX_MNG_OBJECTS;
+                object_id = MNG_MAX_OBJECTS;
               }
 
             if (m->exists[object_id])
@@ -1105,11 +1122,11 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           {
             if (length>5)
               {
-                mng_background_color.red   = 
+                mng_background_color.red   =
                   (unsigned short)XDownScale((p[0]<<8) | p[1]);
-                mng_background_color.green = 
+                mng_background_color.green =
                   (unsigned short)XDownScale((p[2]<<8) | p[3]);
-                mng_background_color.blue  = 
+                mng_background_color.blue  =
                   (unsigned short)XDownScale((p[4]<<8) | p[5]);
               }
 
@@ -1373,7 +1390,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           {
             register int
               i;
-            for (i=1; i<MAX_MNG_OBJECTS; i++)
+            for (i=1; i<MNG_MAX_OBJECTS; i++)
               if (m->exists[i])
                 {
                  m->frozen[i] = True;
@@ -1396,7 +1413,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 
             if (length == 0 || !png_memcmp(type, mng_SEEK, 4))
               {
-                for (i=1; i<MAX_MNG_OBJECTS; i++)
+                for (i=1; i<MNG_MAX_OBJECTS; i++)
                   MngDiscardObject(m, i);
               }
             else
@@ -1550,6 +1567,61 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             m->show_warning++;
           }
 
+        if (!png_memcmp(type, mng_BASI, 4))
+          {
+#ifdef MNG_BASI_SUPPORTED
+            MngPair
+               pair;
+#endif
+
+            skip_to_iend = True;
+            if(!m->basi_warning)
+            MagickWarning(DelegateWarning,"BASI is not implemented yet",
+              image->filename);
+            m->basi_warning++;
+
+#ifdef MNG_BASI_SUPPORTED
+            pair.a = pair.b = 0;
+            pair=mng_read_pair(pair,0,p);
+            basi_width = (unsigned long)pair.a;
+            basi_height = (unsigned long)pair.b;
+            basi_color_type         = p[8];
+            basi_compression_method = p[9];
+            basi_filter_type        = p[10];
+            basi_interlace_method   = p[11];
+            if(length > 11)
+              basi_red     = p[12]<<8 & p[13];
+            else
+              basi_red = 0;
+            if(length > 13)
+              basi_green   = p[14]<<8 & p[15];
+            else
+              basi_green = 0;
+            if(length > 15)
+              basi_blue    = p[16]<<8 & p[17];
+            else
+              basi_blue = 0;
+            if(length > 17)
+              basi_alpha   = p[18]<<8 & p[19];
+            else
+              {
+                if(basi_sample_depth == 16)
+                  basi_alpha = 65535;
+                else
+                  basi_alpha = 255;
+              }
+            if(length > 19)
+              basi_viewable = p[20];
+            else
+              basi_viewable = 0;
+            /* etc.   BASI is going to be difficult to implement
+            with libpng. */
+#endif
+
+            FreeMemory((char *) chunk);
+            continue;
+          }
+
         if (png_memcmp(type, mng_IHDR, 4))
           {
             if (length > 0)
@@ -1698,8 +1770,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 
         /* Read the PNG image */
 
-        /* Seek back to the beginning of the IHDR chunk's length field */
-        (void) fseek(image->file,-((int) length+12),SEEK_CUR);
         if (image->pixels != (RunlengthPacket *) NULL)
           {
             /*
@@ -1737,8 +1807,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             if (image->page != (char *) NULL)
               FreeMemory((char *) image->page);
           image->page=PostscriptGeometry(page_geometry);
-      }
 
+        /* Seek back to the beginning of the IHDR chunk's length field */
+        (void) fseek(image->file,-((int) length+12),SEEK_CUR);
+      }
 
     /*
       Allocate the PNG structures
@@ -1788,12 +1860,17 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     image_found++;
     png_init_io(ping,image->file);
     if (Latin1Compare(image_info->magick,"MNG") == 0)
-      png_set_sig_bytes(ping,8);
+      {
+        png_set_sig_bytes(ping,8);
 #ifdef PNG_READ_EMPTY_PLTE_SUPPORTED
-    png_permit_empty_plte(ping, True);
+        png_permit_empty_plte(ping, True);
 #else
-    png_set_read_fn(ping, m, mng_read_data);
+        png_set_read_fn(ping, m, mng_read_data);
+        m->bytes_in_read_buffer=0;
+        m->found_empty_plte=False;
+        m->have_saved_bkgd_index=False;
 #endif
+      }
     png_read_info(ping,ping_info);
     image->depth=ping_info->bit_depth;
     if (ping_info->bit_depth < 8)
@@ -1869,12 +1946,21 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                        global_trns_length, NULL);
                   }
 #if defined(PNG_READ_bKGD_SUPPORTED)
-                if (ping_info->valid & PNG_INFO_bKGD)
+                if (
+#ifndef PNG_WRITE_EMPTY_PLTE_SUPPORTED
+                     m->have_saved_bkgd_index ||
+#endif
+                     ping_info->valid & PNG_INFO_bKGD)
                   {
                     png_color_16
                        background;
 
-                    background.index = ping_info->background.index;
+#ifndef PNG_WRITE_EMPTY_PLTE_SUPPORTED
+                    if (m->have_saved_bkgd_index)
+                      background.index=m->saved_bkgd_index;
+                    else
+#endif
+                      background.index = ping_info->background.index;
                     background.red =
                        (png_uint_16)m->global_plte[background.index].red;
                     background.green =
@@ -1948,7 +2034,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         frame = image_box;
         clip = image_box;
       }
-#ifndef ALWAYS_VERBOSE
+#ifndef MNG_ALWAYS_VERBOSE
     if (image_info->verbose)
 #endif
        printf("  Image width=%lu, height=%lu, delay=%d\n",
@@ -2232,7 +2318,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               {
                 char
                   *delay;
-  
+
                 delay=(char *) NULL;
                 ReadTextChunk(ping_info,i,&delay);
                 image->delay=atoi(delay);
@@ -2255,7 +2341,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             {
               char
                 *scene;
-  
+
               scene=(char *) NULL;
               ReadTextChunk(ping_info,i,&scene);
               image->scene=atoi(scene);
@@ -2497,15 +2583,11 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               }
           }
         if (image_info->coalesce_frames)
-          {
-            MNGCoalesce(image);
-            if (m->verbose)
-              printf("frames coalesced.\n");
-          }
+          MNGCoalesce(image);
       }
   } while (Latin1Compare(image_info->magick,"MNG") == 0);
 
-#ifndef ALWAYS_VERBOSE
+#ifndef MNG_ALWAYS_VERBOSE
   if (image_info->verbose)
 #endif
     printf("Supposedly there are %d visible images.\n",image_found);
@@ -2557,7 +2639,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         SetImage(image);
         CondenseImage(image);
         image_found++;
-#ifndef ALWAYS_VERBOSE
+#ifndef MNG_ALWAYS_VERBOSE
         if (image_info->verbose)
 #endif
           printf("Inserted an empty %s frame behind empty MNG.\n",
@@ -2598,7 +2680,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       MngFreeStruct(m,&have_mng_structure);
       return((Image *) NULL);
     }
-#ifndef ALWAYS_VERBOSE
+#ifndef MNG_ALWAYS_VERBOSE
   if (image_info->verbose)
 #endif
     printf("Finished loading %d visible images.\n",image_found);
@@ -2648,7 +2730,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 %    o image:  A pointer to an Image structure.
 %
 %
-%  To do (as of version 4.2.7, 9 June 1999 -- glennrp):
+%  To do (as of version 4.2.7, 15 June 1999 -- glennrp):
 %
 %    Improve selection of color type (use indexed-colour or indexed-colour
 %    with tRNS when 256 or fewer unique RGBA values are present).
@@ -2660,11 +2742,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 %
 %    Check for identical PLTE's or PLTE/tRNS combinations and use a
 %    global MNG PLTE or PLTE/tRNS combination when appropriate.
-%    [mostly done 8 June 1999 but doesn't work when bKGD chunk
-%    is written; for now we don't write one -- fix requires messing
-%    with libpng/pngrutil.c or compiling libpng without bKGD support]
-%
-%    Check for identical bKGD and write a global BACK chunk instead.
+%    [mostly done 15 June 1999 but still need to take care of tRNS]
 %
 %    Check for identical sRGB and replace with a global sRGB (and remove
 %    gAMA/cHRM if sRGB is found; check for identical gAMA/cHRM and
@@ -2676,11 +2754,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 %    instance of such objects instead of writing duplicate objects.
 %
 %    Encode JNG datastreams.
-%
-%    Get rid of the replacement PNG functions.  They make direct access
-%    to the png_struct, which introduces undesireable dependence on the
-%    libpng version and its compiler options.  I.e., add support of
-%    zero-length PLTE to libpng itself instead of supplying it here.
 %
 %    Provide an option to force LC files (to ensure exact framing rate)
 %    instead of VLC.
@@ -2698,6 +2771,12 @@ void PNGLong(png_bytep p,png_uint_32 value)
 {
   *p++=(png_byte) ((value >> 24) & 0xff);
   *p++=(png_byte) ((value >> 16) & 0xff);
+  *p++=(png_byte) ((value >> 8) & 0xff);
+  *p++=(png_byte) (value & 0xff);
+}
+
+void PNGShort(png_bytep p,png_uint_16 value)
+{
   *p++=(png_byte) ((value >> 8) & 0xff);
   *p++=(png_byte) (value & 0xff);
 }
@@ -2736,6 +2815,7 @@ static void WriteTextChunk(const ImageInfo *image_info,png_info *ping_info,
 Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
   int
+    equal_backgrounds,
     equal_palettes,
     framing_mode,
     old_framing_mode,
@@ -2843,6 +2923,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       initial_delay = image->delay;
       need_iterations=False;
       need_local_plte=False;
+      equal_backgrounds = True;
 
       for (next_image=image; next_image != (Image *) NULL; )
         {
@@ -2891,7 +2972,15 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 #else
           need_local_plte = True;
 #endif
-          
+          if(next_image->next != (Image *)NULL)
+            if( (next_image->background_color.red !=
+                 next_image->next->background_color.red) ||
+                (next_image->background_color.green !=
+                 next_image->next->background_color.green) ||
+                (next_image->background_color.blue !=
+                 next_image->next->background_color.blue))
+              equal_backgrounds = False;
+
           next_image=next_image->next;
        }
 
@@ -2993,6 +3082,39 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             PNGLong(chunk+10, (png_uint_32)image->iterations);
           (void) fwrite(chunk,1,14,image->file);
           MSBFirstWriteLong(crc32(0,chunk,14),image->file);
+        }
+      if(equal_backgrounds)
+        {
+          /*
+            Write MNG BACK chunk (and if global bKGD is approved, global bKGD
+            chunk)
+          */
+          unsigned short
+            color;
+
+          MSBFirstWriteLong(6L, image->file);
+          PNGType(chunk,mng_BACK);
+          color=(unsigned short)UpScale(image->background_color.red);
+          PNGShort(chunk+4, color);
+          color=(unsigned short)UpScale(image->background_color.green);
+          PNGShort(chunk+6, color);
+          color=(unsigned short)UpScale(image->background_color.blue);
+          PNGShort(chunk+8, color);
+          (void) fwrite(chunk,1,10,image->file);
+          MSBFirstWriteLong(crc32(0,chunk,10),image->file);
+#if 0
+          /* proposed MNG feature */
+          MSBFirstWriteLong(6L, image->file);
+          PNGType(chunk,mng_bkgd);
+          color=(unsigned short)UpScale(image->background_color.red);
+          PNGShort(chunk+4, color);
+          color=(unsigned short)UpScale(image->background_color.green);
+          PNGShort(chunk+6, color);
+          color=(unsigned short)UpScale(image->background_color.blue);
+          PNGShort(chunk+8, color);
+          (void) fwrite(chunk,1,10,image->file);
+          MSBFirstWriteLong(crc32(0,chunk,10),image->file);
+#endif
         }
       if(!need_local_plte && IsPseudoClass(image))
         {
@@ -3172,16 +3294,19 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               (100.0*image->y_resolution);
           }
       }
-    ping_info->valid|=PNG_INFO_bKGD;
-    ping_info->background.red=
-      (unsigned short)DownScale(image->background_color.red);
-    ping_info->background.green=
-      (unsigned short)DownScale(image->background_color.green);
-    ping_info->background.blue=
-      (unsigned short)DownScale(image->background_color.blue);
-    ping_info->background.gray=
-      (unsigned short)DownScale(Intensity(image->background_color));
-    ping_info->background.index=ping_info->background.gray;
+    if (!image_info->adjoin || !equal_backgrounds)
+      {
+        ping_info->valid|=PNG_INFO_bKGD;
+        ping_info->background.red=
+          (unsigned short)DownScale(image->background_color.red);
+        ping_info->background.green=
+          (unsigned short)DownScale(image->background_color.green);
+        ping_info->background.blue=
+          (unsigned short)DownScale(image->background_color.blue);
+        ping_info->background.gray=
+          (unsigned short)DownScale(Intensity(image->background_color));
+        ping_info->background.index=ping_info->background.gray;
+      }
     matte=image->matte;
     if (matte)
       {
