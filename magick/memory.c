@@ -95,19 +95,19 @@ MagickExport void *AcquireMemory(const size_t size)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o p y M e m o r y                                                       %
+%   C l o n e M e m o r y                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CopyMemory() copies size bytes from memory area source to the
+%  CloneMemory() copies size bytes from memory area source to the
 %  destination.  Copying between objects that overlap will take place
 %  correctly.  It returns destination.
 %
-%  The format of the CopyMemory method is:
+%  The format of the CloneMemory method is:
 %
-%      void *CopyMemory(void *destination,const void *source,const size_t size)
+%      void *CloneMemory(void *destination,const void *source,const size_t size)
 %
 %  A description of each parameter follows:
 %
@@ -115,7 +115,7 @@ MagickExport void *AcquireMemory(const size_t size)
 %
 %
 */
-MagickExport void *CopyMemory(void *destination,const void *source,
+MagickExport void *CloneMemory(void *destination,const void *source,
 	const size_t size)
 {
 	register char

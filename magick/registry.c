@@ -333,7 +333,7 @@ MagickExport void *GetMagickRegistry(const long id,RegistryType *type,
               "Memory allocation failed");
             break;
           }
-        (void) CopyMemory(blob,registry_info->blob,registry_info->length);
+        (void) CloneMemory(blob,registry_info->blob,registry_info->length);
         break;
       }
     }
@@ -448,7 +448,7 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       clone_blob=(void *) AcquireMemory(length);
       if (clone_blob == (void *) NULL)
         return(-1);
-      (void) CopyMemory(clone_blob,blob,length);
+      (void) CloneMemory(clone_blob,blob,length);
     }
   }
   registry_info=(RegistryInfo *) AcquireMemory(sizeof(RegistryInfo));

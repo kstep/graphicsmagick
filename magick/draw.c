@@ -237,7 +237,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
       if (clone_info->dash_pattern == (double *) NULL)
         MagickError(ResourceLimitError,"Unable to clone dash pattern",
           "Memory allocation failed");
-      (void) CopyMemory(clone_info->dash_pattern,draw_info->dash_pattern,
+      (void) CloneMemory(clone_info->dash_pattern,draw_info->dash_pattern,
         (x+1)*sizeof(double));
     }
   if (draw_info->clip_path != (char *) NULL)
@@ -1022,7 +1022,7 @@ static long DestroyEdge(PolygonInfo *polygon_info,const long edge)
   LiberateMemory((void **) &polygon_info->edges[edge].points);
   polygon_info->number_edges--;
   if (edge < polygon_info->number_edges)
-    (void) CopyMemory(polygon_info->edges+edge,polygon_info->edges+edge+1,
+    (void) CloneMemory(polygon_info->edges+edge,polygon_info->edges+edge+1,
       (polygon_info->number_edges-edge)*sizeof(EdgeInfo));
   return(polygon_info->number_edges);
 }
@@ -5151,7 +5151,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
   if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL) ||
       (polygon_primitive == (PrimitiveInfo *) NULL))
     return((PrimitiveInfo *) NULL);
-  (void) CopyMemory(polygon_primitive,primitive_info,number_vertices*
+  (void) CloneMemory(polygon_primitive,primitive_info,number_vertices*
     sizeof(PrimitiveInfo));
   closed_path=
     (primitive_info[number_vertices-1].point.x == primitive_info[0].point.x) &&

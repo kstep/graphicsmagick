@@ -380,7 +380,7 @@ static void UpdateSignature(SignatureInfo *signature_info,
       i=SignatureSize-signature_info->offset;
       if (i > (long) length)
         i=(long) length;
-      (void) CopyMemory(signature_info->message+signature_info->offset,message,i);
+      (void) CloneMemory(signature_info->message+signature_info->offset,message,i);
       length-=i;
       message+=i;
       signature_info->offset+=i;
@@ -390,12 +390,12 @@ static void UpdateSignature(SignatureInfo *signature_info,
     }
   while (length >= SignatureSize)
   {
-    (void) CopyMemory(signature_info->message,message,SignatureSize);
+    (void) CloneMemory(signature_info->message,message,SignatureSize);
     message+=SignatureSize;
     length-=SignatureSize;
     TransformSignature(signature_info);
   }
-  (void) CopyMemory(signature_info->message,message,length);
+  (void) CloneMemory(signature_info->message,message,length);
   signature_info->offset=(long) length;
 }
 
