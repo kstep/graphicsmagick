@@ -5236,7 +5236,7 @@ Export unsigned int XMakeImage(Display *display,
         Destroy previous X image.
       */
 #if defined(HasSharedMemory)
-      if (window->segment_info[0].shmid >= 0)
+      if (window->shared_memory && (window->segment_info[0].shmid >= 0))
         {
           XShmDetach(display,&window->segment_info[0]);
           XSync(display,False);
