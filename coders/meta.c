@@ -92,6 +92,7 @@ static unsigned int
 %
 %
 */
+#ifdef IMPLEMENT_IS_FUNCTION
 static unsigned int IsMETA(const unsigned char *magick,const size_t length)
 {
   if (length < 4)
@@ -104,6 +105,7 @@ static unsigned int IsMETA(const unsigned char *magick,const size_t length)
     return(True);
   return(False);
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1060,7 +1062,6 @@ ModuleExport void RegisterMETAImage(void)
   entry=SetMagickInfo("8BIM");
   entry->decoder=(DecoderHandler) ReadMETAImage;
   entry->encoder=(EncoderHandler) WriteMETAImage;
-  entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
   entry->seekable_stream=True;
   entry->description=AllocateString("Photoshop resource format");
@@ -1070,17 +1071,15 @@ ModuleExport void RegisterMETAImage(void)
   entry=SetMagickInfo("8BIMTEXT");
   entry->decoder=(DecoderHandler) ReadMETAImage;
   entry->encoder=(EncoderHandler) WriteMETAImage;
-  entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AllocateString("Photoshop resource format");
+  entry->description=AllocateString("Photoshop resource text format");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("APP1");
   entry->decoder=(DecoderHandler) ReadMETAImage;
   entry->encoder=(EncoderHandler) WriteMETAImage;
-  entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
   entry->seekable_stream=True;
   entry->description=AllocateString("Raw application information");
@@ -1090,10 +1089,27 @@ ModuleExport void RegisterMETAImage(void)
   entry=SetMagickInfo("APP1JPEG");
   entry->decoder=(DecoderHandler) ReadMETAImage;
   entry->encoder=(EncoderHandler) WriteMETAImage;
-  entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
   entry->seekable_stream=True;
   entry->description=AllocateString("Raw JPEG binary data");
+  entry->module=AllocateString("META");
+  (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("EXIF");
+  entry->decoder=(DecoderHandler) ReadMETAImage;
+  entry->encoder=(EncoderHandler) WriteMETAImage;
+  entry->adjoin=False;
+  entry->seekable_stream=True;
+  entry->description=AllocateString("Exif digital camera binary data");
+  entry->module=AllocateString("META");
+  (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("XMP");
+  entry->decoder=(DecoderHandler) ReadMETAImage;
+  entry->encoder=(EncoderHandler) WriteMETAImage;
+  entry->adjoin=False;
+  entry->seekable_stream=True;
+  entry->description=AllocateString("Adobe XML metadata");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
 
@@ -1118,7 +1134,6 @@ ModuleExport void RegisterMETAImage(void)
   entry=SetMagickInfo("IPTC");
   entry->decoder=(DecoderHandler) ReadMETAImage;
   entry->encoder=(EncoderHandler) WriteMETAImage;
-  entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
   entry->seekable_stream=True;
   entry->description=AllocateString("IPTC Newsphoto");
@@ -1128,10 +1143,9 @@ ModuleExport void RegisterMETAImage(void)
   entry=SetMagickInfo("IPTCTEXT");
   entry->decoder=(DecoderHandler) ReadMETAImage;
   entry->encoder=(EncoderHandler) WriteMETAImage;
-  entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AllocateString("IPTC Newsphoto");
+  entry->description=AllocateString("IPTC Newsphoto text format");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
 }
@@ -1159,10 +1173,13 @@ ModuleExport void UnregisterMETAImage(void)
 {
   (void) UnregisterMagickInfo("8BIM");
   (void) UnregisterMagickInfo("8BIMTEXT");
+  (void) UnregisterMagickInfo("ICC");
+  (void) UnregisterMagickInfo("ICCTEXT");
   (void) UnregisterMagickInfo("APP1");
   (void) UnregisterMagickInfo("ICM");
   (void) UnregisterMagickInfo("ICC");
-  (void) UnregisterMagickInfo("IPTC");
+  (void) UnregisterMagickInfo("EXIF");
+  (void) UnregisterMagickInfo("XMP");
 }
 
 /*
@@ -1807,6 +1824,8 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
       (void) WriteBlob(image,image->iptc_profile.length,
         (char *) image->iptc_profile.info);
+      CloseBlob(image);
+      return(True);
     }
   if (LocaleCompare(image_info->magick,"IPTC") == 0)
     {
@@ -1823,8 +1842,12 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
       length=image->iptc_profile.length;
       length=GetIPTCStream(&info,length);
       if (length == 0)
-        ThrowWriterException(CoderError,"NoIPTCInfoWasFound",image);
+        {
+          ThrowWriterException(CoderError,"NoIPTCInfoWasFound",image);
+        }
       (void) WriteBlob(image,length,info);
+      CloseBlob(image);
+      return(True);
     }
   if (LocaleCompare(image_info->magick,"8BIMTEXT") == 0)
     {
@@ -1838,11 +1861,15 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+        {
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+        }
       AttachBlob(buff->blob,image->iptc_profile.info,image->iptc_profile.length);
       format8BIM(buff,image);
       DetachBlob(buff->blob);
       DestroyImage(buff);
+      CloseBlob(image);
+      return(True);
     }
   if (LocaleCompare(image_info->magick,"IPTCTEXT") == 0)
     {
@@ -1867,77 +1894,42 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+        {
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+        }
       AttachBlob(buff->blob,info,length);
       formatIPTC(buff,image);
       DetachBlob(buff->blob);
       DestroyImage(buff);
+      CloseBlob(image);
+      return(True);
     }
-  if (LocaleCompare(image_info->magick,"APP1") == 0)
+  if ((LocaleCompare(image_info->magick,"APP1") == 0) ||
+      (LocaleCompare(image_info->magick,"EXIF") == 0) ||
+      (LocaleCompare(image_info->magick,"XMP") == 0))
     {
       /*
         Write APP1 image.
       */
       for (i=0; i < (int) image->generic_profiles; i++)
       {
-        if ((LocaleCompare(image->generic_profile[i].name,"APP1") == 0) &&
-            (image->generic_profile[i].length != 0))
+        char
+          *name;
+
+        long
+          length;
+
+        length=image->generic_profile[i].length;
+        if (length == 0)
+          ThrowWriterException(CoderError,"NoAPP1DataIsAvailable",image);
+        name=image->generic_profile[i].name;
+        if (LocaleCompare(name,image_info->magick) == 0)
           {
-            unsigned char
-              *p;
-            /*
-              Open image file.
-            */
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
             if (status == False)
               ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
-            p=(unsigned char *) image->generic_profile[i].info;
-            /* We used to do lossless embedding of IPTC into JPEG's at the
-               point of writing out the data using the APP1 mechanism, but
-               changed it to the read side instead since it was easier to
-               figure out how to access it at that point
-             */
-#if 1
-            /* if (p[0]!=0xff || p[1]!=M_SOI || p[2]!=0xff) */
-              {
-                (void) WriteBlob(image,(int) image->generic_profile[i].length,
-                  (char *)p);
-              }
-#else
-            /* else */
-              {
-                Image
-                  *jpeg,
-                  *iptc;
-
-                int
-                  result;
-
-                iptc=AllocateImage((ImageInfo *) NULL);
-                jpeg=AllocateImage((ImageInfo *) NULL);
-                if ((iptc == (Image *) NULL) || (jpeg == (Image *) NULL))
-                  ThrowWriterException(ResourceLimitError,
-                    "MemoryAllocationFailed",image);
-                if ((image->iptc_profile.info == (unsigned char *) NULL) ||
-                    (image->iptc_profile.length <= 0))
-                  ThrowWriterException(CoderError,"NoIPTCProfileAvailable",
-                    image);
-                AttachBlob(iptc->blob,image->iptc_profile.info,
-                  image->iptc_profile.length);
-                if ((p == (unsigned char *) NULL) ||
-                    (image->generic_profile[i].length <= 0))
-                  ThrowWriterException(CoderError,"NoJPEGProfileAvailable",
-                    image);
-                AttachBlob(jpeg->blob,p,image->generic_profile[i].length);
-                result=jpeg_embed(jpeg,image,iptc);
-                DetachBlob(jpeg->blob);
-                DestroyImage(jpeg);
-                DetachBlob(iptc->blob);
-                DestroyImage(iptc);
-                if (result == 0)
-                  ThrowWriterException(CoderError,"JpegEmbeddingFailed",image);
-              }
-#endif
+            (void) WriteBlob(image,(int) length,
+              (char *) image->generic_profile[i].info);
             CloseBlob(image);
             return(True);
           }
@@ -1957,7 +1949,8 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
       (void) WriteBlob(image,image->color_profile.length,
         (char *) image->color_profile.info);
+      CloseBlob(image);
+      return(True);
     }
-  CloseBlob(image);
-  return(True);
+  return(False);
 }
