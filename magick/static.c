@@ -195,7 +195,9 @@ MagickExport void RegisterStaticModules(void)
   RegisterPICTImage();
   RegisterPIXImage();
   RegisterPLASMAImage();
+#if defined(HasPNG)
   RegisterPNGImage();
+#endif
   RegisterPNMImage();
   RegisterPREVIEWImage();
   RegisterPSImage();
@@ -337,7 +339,9 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterPICTImage();
   UnregisterPIXImage();
   UnregisterPLASMAImage();
+#if defined(HasPNG)
   UnregisterPNGImage();
+#endif
   UnregisterPNMImage();
   UnregisterPREVIEWImage();
   UnregisterPSImage();

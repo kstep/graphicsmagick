@@ -21,9 +21,19 @@
 </tr>
 </table>
 <p>
+2005-01-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/static.c (RegisterStaticModules): Support compiling
+        without PNG.
+
+</UL>
+<p>
 2005-01-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/color.c (IsPaletteImage): Fix memory leak reported by
+        Stefan v. Wachter &lt;svwa-dev@mnet-online.de&gt;.
   <LI> magick/Makefile.am (MAGICK_INCLUDE_HDRS): Needed to install
         magick/operator.h.<BR>
   <LI> coders/tiff.c (ReadTIFFImage): Re-wrote TIFF reading code again
