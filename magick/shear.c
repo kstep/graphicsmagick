@@ -78,7 +78,7 @@
 %
 %  The format of the IntegralRotateImage method is:
 %
-%      Image *IntegralRotateImage(Image *image,unsigned int rotations,
+%      Image *IntegralRotateImage(const Image *image,unsigned int rotations,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
@@ -92,7 +92,7 @@
 %
 %
 */
-static Image *IntegralRotateImage(Image *image,unsigned int rotations,
+static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
   ExceptionInfo *exception)
 {
 #define RotateImageText  "  Rotate image...  "
@@ -109,11 +109,13 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
   register IndexPacket
     *indexes;
 
+  register const PixelPacket
+    *p;
+
   register long
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   /*
@@ -140,9 +142,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
       */
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
+        p=AcquireImagePixels(image,0,y,image->columns,1,exception);
         q=SetImagePixels(rotate_image,0,y,rotate_image->columns,1);
-        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
         indexes=GetIndexes(image);
@@ -163,9 +165,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
       */
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
+        p=AcquireImagePixels(image,0,y,image->columns,1,exception);
         q=SetImagePixels(rotate_image,image->rows-y-1,0,1,rotate_image->rows);
-        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
         indexes=GetIndexes(image);
@@ -189,9 +191,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
       */
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
+        p=AcquireImagePixels(image,0,y,image->columns,1,exception);
         q=SetImagePixels(rotate_image,0,image->rows-y-1,image->columns,1);
-        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         q+=image->columns;
         indexes=GetIndexes(rotate_image);
@@ -216,9 +218,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
       */
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
+        p=AcquireImagePixels(image,0,y,image->columns,1,exception);
         q=SetImagePixels(rotate_image,y,0,1,rotate_image->rows);
-        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         q+=image->columns;
         for (x=0; x < (long) image->columns; x++)
