@@ -345,7 +345,7 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
               XCFLayerInfo*  inLayerInfo, int data_length)
 {
   unsigned char data, val;
-  int size;
+  size_t size;
   int count;
   int length;
   int bpp;    /* BYTES per pixel! */
@@ -489,7 +489,7 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
 
 static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* inLayerInfo)
 {
-  unsigned long
+  off_t
     saved_pos,
     offset,
     offset2;

@@ -4519,7 +4519,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
           Determine slider id and position.
         */
         if (slider_info.id >= (int) (files-visible_files))
-          slider_info.id=files-visible_files;
+          slider_info.id=(int) (files-visible_files);
         if ((slider_info.id < 0) || (files <= (int) visible_files))
           slider_info.id=0;
         slider_info.y=slider_info.min_y;

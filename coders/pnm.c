@@ -222,12 +222,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  int
+  long
     blue,
     green,
-    red;
-
-  long
+    red,
     y;
 
   MonitorHandler

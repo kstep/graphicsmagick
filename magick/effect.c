@@ -1582,10 +1582,10 @@ static PixelPacket GetMedianList(MedianPixelList *pixel_list)
     while (count <= center);
     channels[channel]=color;
   }
-  pixel.red=channels[0];
-  pixel.green=channels[1];
-  pixel.blue=channels[2];
-  pixel.opacity=channels[3];
+  pixel.red=(Quantum) channels[0];
+  pixel.green=(Quantum) channels[1];
+  pixel.blue=(Quantum) channels[2];
+  pixel.opacity=(Quantum) channels[3];
   return(pixel);
 }
 
@@ -2508,10 +2508,10 @@ static PixelPacket GetNonpeakMedianList(MedianPixelList *pixel_list)
         color=previous;
     channels[channel]=color;
   }
-  pixel.red=channels[0];
-  pixel.green=channels[1];
-  pixel.blue=channels[2];
-  pixel.opacity=channels[3];
+  pixel.red=(Quantum) channels[0];
+  pixel.green=(Quantum) channels[1];
+  pixel.blue=(Quantum) channels[2];
+  pixel.opacity=(Quantum) channels[3];
   return(pixel);
 }
 

@@ -240,12 +240,12 @@ static char *Ascii85Tuple(unsigned char *data)
   quantum=85L*85L*85L*85L;
   for (i=0; i < 4; i++)
   {
-    x=code/quantum;
+    x=(long) (code/quantum);
     code-=quantum*x;
-    tuple[i]='!'+x;
+    tuple[i]=(char) ('!'+x);
     quantum/=85L;
   }
-  tuple[4]='!'+(code % 85L);
+  tuple[4]=(char) ('!'+(code % 85L));
   tuple[5]='\0';
   return(tuple);
 }
@@ -753,7 +753,8 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     indexes=GetIndexes(huffman_image);
     for (x=0; x < (long) huffman_image->columns; x++)
     {
-      *q=(indexes[x] == polarity ? (long) polarity : (long) !polarity);
+      *q=(unsigned char)
+        (indexes[x] == polarity ? (long) polarity : (long) !polarity);
       q++;
     }
     /*

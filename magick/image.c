@@ -1083,8 +1083,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
     }
   clone_image->page.width=columns;
   clone_image->page.height=rows;
-  clone_image->page.x=columns*image->page.x/clone_image->columns;
-  clone_image->page.y=rows*image->page.y/clone_image->rows;
+  clone_image->page.x=(long) (columns*image->page.x/clone_image->columns);
+  clone_image->page.y=(long) (rows*image->page.y/clone_image->rows);
   clone_image->columns=columns;
   clone_image->rows=rows;
   GetCacheInfo(&clone_image->cache);
@@ -3060,7 +3060,7 @@ MagickExport int GetImageGeometry(const Image *image,const char *geometry,
     }
     case NorthEastGravity:
     {
-      region_info->x=(long) image->columns-region_info->width-region_info->x;
+      region_info->x=(long) (image->columns-region_info->width-region_info->x);
       break;
     }
     case WestGravity:
@@ -3078,25 +3078,25 @@ MagickExport int GetImageGeometry(const Image *image,const char *geometry,
     }
     case EastGravity:
     {
-      region_info->x=(long) image->columns-region_info->width-region_info->x;
+      region_info->x=(long) (image->columns-region_info->width-region_info->x);
       region_info->y+=(long) (image->rows/2-region_info->width/2);
       break;
     }
     case SouthWestGravity:
     {
-      region_info->y=(long) image->rows-region_info->height-region_info->y;
+      region_info->y=(long) (image->rows-region_info->height-region_info->y);
       break;
     }
     case SouthGravity:
     {
       region_info->x+=(long) (image->columns/2-region_info->width/2);
-      region_info->y=(long) image->rows-region_info->height-region_info->y;
+      region_info->y=(long) (image->rows-region_info->height-region_info->y);
       break;
     }
     case SouthEastGravity:
     {
-      region_info->x=(long) image->columns-region_info->width-region_info->x;
-      region_info->y=(long) image->rows-region_info->height-region_info->y;
+      region_info->x=(long) (image->columns-region_info->width-region_info->x);
+      region_info->y=(long) (image->rows-region_info->height-region_info->y);
       break;
     }
   }

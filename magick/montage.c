@@ -635,8 +635,8 @@ MagickExport Image *MontageImages(const Image *images,
         tile_image->gravity=image->gravity;
       FormatString(tile_geometry,"%lux%lu+0+0",image->columns,image->rows);
       flags=GetImageGeometry(tile_image,tile_geometry,False,&geometry);
-      x=geometry.x+border_width;
-      y=geometry.y+border_width;
+      x=(long) (geometry.x+border_width);
+      y=(long) (geometry.y+border_width);
       if ((montage_info->frame != (char *) NULL) && (bevel_width != 0))
         {
           FrameInfo

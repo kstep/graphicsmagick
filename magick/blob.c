@@ -1999,7 +1999,7 @@ MagickExport size_t WriteBlobByte(Image *image,const unsigned long value)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  buffer[0]=value;
+  buffer[0]=(unsigned char) value;
   return(WriteBlob(image,1,buffer));
 }
 

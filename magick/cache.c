@@ -694,9 +694,6 @@ MagickExport void DestroyCacheInfo(Cache cache)
   CacheInfo
     *cache_info;
 
-  unsigned long
-    number_pixels;
-
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
@@ -708,7 +705,6 @@ MagickExport void DestroyCacheInfo(Cache cache)
       return;
     }
   LiberateSemaphoreInfo(&cache_info->semaphore);
-  number_pixels=cache_info->columns*cache_info->rows;
   switch (cache_info->type)
   {
     case MemoryCache:
@@ -853,14 +849,10 @@ MagickExport void DestroyImagePixels(Image *image)
 */
 static void DestroyPixelCache(Image *image)
 {
-  CacheInfo
-    *cache_info;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->cache == (void *) NULL)
     return;
-  cache_info=(CacheInfo *) image->cache;
   DestroyCacheInfo(image->cache);
   image->cache=(Cache) NULL;
 }

@@ -545,7 +545,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
   MSLInfo
     *msl_info;
 
-  register int
+  register long
     i, j;
 
   unsigned long
@@ -1745,8 +1745,8 @@ static void MSLStartElement(void *context,const xmlChar *name,
         FrameInfo
           frameInfo;
 
-        frameInfo.x = width;
-        frameInfo.y = height;
+        frameInfo.x = (long) width;
+        frameInfo.y = (long) height;
         frameInfo.width = msl_info->image[n]->columns + ( frameInfo.x << 1 );
         frameInfo.height = msl_info->image[n]->rows + ( frameInfo.y << 1 );
         frameInfo.outer_bevel = x;
@@ -3872,7 +3872,7 @@ static void MSLEndElement(void *context,const xmlChar *name)
       {
         if (msl_info->group_info[msl_info->nGroups-1].numImages > 0 )
         {
-          int  i = msl_info->group_info[msl_info->nGroups-1].numImages;
+          long  i = msl_info->group_info[msl_info->nGroups-1].numImages;
           while ( i-- )
           {
             if (msl_info->image[msl_info->n] != (Image *) NULL)

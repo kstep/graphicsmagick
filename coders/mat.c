@@ -287,7 +287,8 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image *image,*rotated_image;
   unsigned int status;
   MATHeader MATLAB_HDR;
-  unsigned long size,filepos;
+  unsigned long size;
+	off_t filepos;
   unsigned long CellType;
   int i,x;
   long ldblk;
@@ -351,11 +352,11 @@ MATLAB_KO:  ThrowReaderException(CorruptImageError,"Not a MATLAB image file!",im
    switch(CellType)
       {
       case 2:image->depth=8;    /*Byte type cell*/
-             ldblk=MATLAB_HDR.SizeX;
+             ldblk=(long) MATLAB_HDR.SizeX;
         if(MATLAB_HDR.StructureFlag==0x806) goto MATLAB_KO;    
              break;
       case 4:image->depth=16;      /*Word type cell*/
-             ldblk=2*MATLAB_HDR.SizeX;
+             ldblk=(long) (2*MATLAB_HDR.SizeX);
        if(MATLAB_HDR.StructureFlag==0x806) goto MATLAB_KO;    
              break; 
       case 9:image->depth=24;      /*double type cell*/
@@ -363,7 +364,7 @@ MATLAB_KO:  ThrowReaderException(CorruptImageError,"Not a MATLAB image file!",im
        if(MATLAB_HDR.StructureFlag==0x806) 
           {      /*complex double type cell*/
     }
-       ldblk=8*MATLAB_HDR.SizeX;
+       ldblk=(long) (8*MATLAB_HDR.SizeX);
              break; 
       default:ThrowReaderException(CorruptImageError,"Unsupported cell type in the matrix!",image)
       }    

@@ -369,10 +369,11 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
       p--;
       q-=2;
       *q=(*p);
-      (q+1)->red=(((long) p->red)+((long) (p+1)->red)+1)/2;
-      (q+1)->green=(((long) p->green)+((long) (p+1)->green)+1)/2;
-      (q+1)->blue=(((long) p->blue)+((long) (p+1)->blue)+1)/2;
-      (q+1)->opacity=(((long) p->opacity)+((long) (p+1)->opacity)+1)/2;
+      (q+1)->red=(Quantum) ((((long) p->red)+((long) (p+1)->red)+1)/2);
+      (q+1)->green=(Quantum) ((((long) p->green)+((long) (p+1)->green)+1)/2);
+      (q+1)->blue=(Quantum) ((((long) p->blue)+((long) (p+1)->blue)+1)/2);
+      (q+1)->opacity=(Quantum)
+        ((((long) p->opacity)+((long) (p+1)->opacity)+1)/2);
     }
     if (!SyncImagePixels(magnify_image))
       break;
@@ -391,33 +392,33 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
       r=q+magnify_image->columns;
     for (x=0; x < (long) (image->columns-1); x++)
     {
-      q->red=(((long) p->red)+((long) r->red)+1)/2;
-      q->green=(((long) p->green)+((long) r->green)+1)/2;
-      q->blue=(((long) p->blue)+((long) r->blue)+1)/2;
-      q->opacity=(((long) p->opacity)+((long) r->opacity)+1)/2;
-      (q+1)->red=(((long) p->red)+((long) (p+2)->red)+((long) r->red)+
-        ((long) (r+2)->red)+2) >> 2;
-      (q+1)->green=(((long) p->green)+((long) (p+2)->green)+((long) r->green)+
-        ((long) (r+2)->green)+2) >> 2;
-      (q+1)->blue=(((long) p->blue)+((long) (p+2)->blue)+((long) r->blue)+
-        ((long) (r+2)->blue)+2) >> 2;
-      (q+1)->opacity=(((long) p->opacity)+((long) (p+2)->opacity)+
-        ((long) r->opacity)+((long) (r+2)->opacity)+2) >> 2;
+      q->red=(Quantum) ((((long) p->red)+((long) r->red)+1)/2);
+      q->green=(Quantum) ((((long) p->green)+((long) r->green)+1)/2);
+      q->blue=(Quantum) ((((long) p->blue)+((long) r->blue)+1)/2);
+      q->opacity=(Quantum) ((((long) p->opacity)+((long) r->opacity)+1)/2);
+      (q+1)->red=(Quantum) ((((long) p->red)+
+        ((long) (p+2)->red)+((long) r->red)+((long) (r+2)->red)+2) >> 2);
+      (q+1)->green=(Quantum) ((((long) p->green)+
+        ((long) (p+2)->green)+((long) r->green)+((long) (r+2)->green)+2) >> 2);
+      (q+1)->blue=(Quantum) ((((long) p->blue)+
+        ((long) (p+2)->blue)+((long) r->blue)+((long) (r+2)->blue)+2) >> 2);
+      (q+1)->opacity=(Quantum) ((((long) p->opacity)+((long) (p+2)->opacity)+
+        ((long) r->opacity)+((long) (r+2)->opacity)+2) >> 2);
       q+=2;
       p+=2;
       r+=2;
     }
-    q->red=(((long) p->red)+((long) r->red)+1)/2;
-    q->green=(((long) p->green)+((long) r->green)+1)/2;
-    q->blue=(((long) p->blue)+((long) r->blue)+1)/2;
-    q->opacity=(((long) p->opacity)+((long) r->opacity)+1)/2;
+    q->red=(Quantum) ((((long) p->red)+((long) r->red)+1)/2);
+    q->green=(Quantum) ((((long) p->green)+((long) r->green)+1)/2);
+    q->blue=(Quantum) ((((long) p->blue)+((long) r->blue)+1)/2);
+    q->opacity=(Quantum) ((((long) p->opacity)+((long) r->opacity)+1)/2);
     p++;
     q++;
     r++;
-    q->red=(((long) p->red)+((long) r->red)+1)/2;
-    q->green=(((long) p->green)+((long) r->green)+1)/2;
-    q->blue=(((long) p->blue)+((long) r->blue)+1)/2;
-    q->opacity=(((long) p->opacity)+((long) r->opacity)+1)/2;
+    q->red=(Quantum) ((((long) p->red)+((long) r->red)+1)/2);
+    q->green=(Quantum) ((((long) p->green)+((long) r->green)+1)/2);
+    q->blue=(Quantum) ((((long) p->blue)+((long) r->blue)+1)/2);
+    q->opacity=(Quantum) ((((long) p->opacity)+((long) r->opacity)+1)/2);
     if (!SyncImagePixels(magnify_image))
       break;
     if (QuantumTick(y,image->rows))
@@ -964,8 +965,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       opacity=0.0;
       for (i=0; i < n; i++)
       {
-        j=(long) (contribution[i].pixel-contribution[0].pixel)*
-          source->columns+x;
+        j=(long) ((contribution[i].pixel-contribution[0].pixel)*
+          source->columns+x);
         red+=contribution[i].weight*(p+j)->red;
         green+=contribution[i].weight*(p+j)->green;
         blue+=contribution[i].weight*(p+j)->blue;
@@ -975,8 +976,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
           (source_indexes != (IndexPacket *) NULL))
         {
           i=Min(Max((long) (center+0.5),start),stop-1);
-          j=(long) (contribution[i-start].pixel-contribution[0].pixel)*
-            source->columns+x;
+          j=(long) ((contribution[i-start].pixel-contribution[0].pixel)*
+            source->columns+x);
           indexes[x]=source_indexes[j];
         }
       q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);

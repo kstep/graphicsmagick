@@ -762,10 +762,10 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   pdb_image.reserved_2=0;
   pdb_image.x_anchor=(short) 0xffff;
   pdb_image.y_anchor=(short) 0xffff;
-  pdb_image.width = image->columns;
+  pdb_image.width=(short) image->columns;
   if (image->columns % 16)
-    pdb_image.width=16*(image->columns/16+1);
-  pdb_image.height=image->rows;
+    pdb_image.width=(short) (16*(image->columns/16+1));
+  pdb_image.height=(short) image->rows;
   packets=(bits_per_pixel*image->columns/8)*image->rows;
   p=(unsigned char *) AcquireMemory(packets+packets/128);
   if (p == (unsigned char *) NULL)
@@ -847,7 +847,8 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   /*
     Write the Image record header.
   */
-  (void) WriteBlobMSBLong(image,TellBlob(image)+8*pdb_info.number_records);
+  (void) WriteBlobMSBLong(image,(unsigned long)
+    (TellBlob(image)+8*pdb_info.number_records));
   (void) WriteBlobByte(image,0x40);
   (void) WriteBlobByte(image,0x6f);
   (void) WriteBlobByte(image,0x80);

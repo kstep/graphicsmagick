@@ -402,10 +402,10 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           }
         if (fits_info.bits_per_pixel == -64)
           {
-            j=((unsigned int) long_quantum[1] << 24) |
-              ((unsigned int) long_quantum[2] << 16) |
-              ((unsigned int) long_quantum[3] << 8) |
-               (unsigned int) long_quantum[4];
+            j=((unsigned long) long_quantum[1] << 24) |
+              ((unsigned long) long_quantum[2] << 16) |
+              ((unsigned long) long_quantum[3] << 8) |
+               (unsigned long) long_quantum[4];
             k=(int) *long_quantum;
             l=((int) long_quantum[5] << 16) | ((int) long_quantum[6] << 8) |
                (int) long_quantum[7];
@@ -449,10 +449,10 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
             }
           if (fits_info.bits_per_pixel == -64)
             {
-              j=((unsigned int) long_quantum[1] << 24) |
-                ((unsigned int) long_quantum[2] << 16) |
-                ((unsigned int) long_quantum[3] << 8) |
-                 (unsigned int) long_quantum[4];
+              j=((unsigned long) long_quantum[1] << 24) |
+                ((unsigned long) long_quantum[2] << 16) |
+                ((unsigned long) long_quantum[3] << 8) |
+                 (unsigned long) long_quantum[4];
               k=(int) *long_quantum;
               l=((int) long_quantum[5] << 16) | ((int) long_quantum[6] << 8) |
                  (int) long_quantum[7];
@@ -515,10 +515,10 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           }
         if (fits_info.bits_per_pixel == -64)
           {
-            j=((unsigned int) long_quantum[1] << 24) |
-              ((unsigned int) long_quantum[2] << 16) |
-              ((unsigned int) long_quantum[3] << 8) |
-               (unsigned int) long_quantum[4];
+            j=((unsigned long) long_quantum[1] << 24) |
+              ((unsigned long) long_quantum[2] << 16) |
+              ((unsigned long) long_quantum[3] << 8) |
+               (unsigned long) long_quantum[4];
             k=(int) *long_quantum;
             l=((int) long_quantum[5] << 16) | ((int) long_quantum[6] << 8) |
                (int) long_quantum[7];

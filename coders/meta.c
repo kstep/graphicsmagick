@@ -1617,7 +1617,7 @@ static int format8BIM(Image *ifile, Image *ofile)
   unsigned int
     foundOSType;
 
-  long
+  off_t
     Size;
 
   int

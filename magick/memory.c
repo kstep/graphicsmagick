@@ -137,7 +137,7 @@ MagickExport void *CloneMemory(void *destination,const void *source,
   */
   p+=size;
   q+=size;
-  for (i=size-1; i >= 0; i--)
+  for (i=(long) (size-1); i >= 0; i--)
     *--q=(*--p);
   return(destination);
 }

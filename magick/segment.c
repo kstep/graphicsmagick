@@ -618,7 +618,7 @@ static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
   /*
     Consolidate zero crossings.
   */
-  for (i=number_crossings-1; i >= 0; i--)
+  for (i=(long) number_crossings-1; i >= 0; i--)
     for (j=0; j <= (long) ScaleQuantumToChar(MaxRGB); j++)
     {
       if (zero_crossing[i].crossings[j] == 0)

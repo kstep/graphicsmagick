@@ -397,7 +397,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'b':
       {
@@ -415,7 +414,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'c':
       {
@@ -579,7 +577,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'd':
       {
@@ -706,7 +703,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'f':
       {
@@ -784,7 +780,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'g':
       {
@@ -837,14 +832,12 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'h':
       {
         if (LocaleCompare("help",option+1) == 0)
           break;
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'i':
       {
@@ -873,7 +866,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'l':
       {
@@ -889,7 +881,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'm':
       {
@@ -898,7 +889,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
         if (LocaleCompare("monochrome",option+1) == 0)
           break;
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'n':
       {
@@ -922,7 +912,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           }
           break;
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'p':
       {
@@ -958,7 +947,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'q':
       {
@@ -975,7 +963,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'r':
       {
@@ -998,7 +985,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 's':
       {
@@ -1064,7 +1050,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 't':
       {
@@ -1121,7 +1106,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'u':
       {
@@ -1157,7 +1141,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'v':
       {
@@ -1167,7 +1150,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'w':
       {
@@ -1193,7 +1175,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case '?':
       {
@@ -1202,7 +1183,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       default:
       {
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
     }
   }
@@ -1443,7 +1423,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("average",option+1) == 0)
           break;
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'b':
       {
@@ -1501,7 +1480,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'c':
       {
@@ -1703,7 +1681,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'd':
       {
@@ -1790,7 +1767,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'e':
       {
@@ -1850,7 +1826,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("equalize",option+1) == 0)
           break;
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'f':
       {
@@ -1968,7 +1943,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'g':
       {
@@ -2033,14 +2007,12 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'h':
       {
         if (LocaleCompare("help",option+1) == 0)
           break;
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'i':
       {
@@ -2105,7 +2077,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'l':
       {
@@ -2224,7 +2195,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'm':
       {
@@ -2301,7 +2271,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("mosaic",option+1) == 0)
           break;
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'n':
       {
@@ -2337,7 +2306,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("normalize",option+1) == 0)
           break;
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'o':
       {
@@ -2353,7 +2321,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'p':
       {
@@ -2501,7 +2468,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'q':
       {
@@ -2518,7 +2484,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'r':
       {
@@ -2567,7 +2532,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 's':
       {
@@ -2729,7 +2693,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 't':
       {
@@ -2823,7 +2786,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'u':
       {
@@ -2865,7 +2827,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'v':
       {
@@ -2888,7 +2849,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'w':
       {
@@ -2907,7 +2867,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
       case '?':
       {
@@ -2916,7 +2875,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       default:
       {
         ThrowConvertException(OptionError,"Unrecognized option",option);
-        break;
       }
     }
   }
@@ -3117,7 +3075,6 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowIdentifyException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'd':
       {
@@ -3152,7 +3109,6 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowIdentifyException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'f':
       {
@@ -3168,14 +3124,12 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowIdentifyException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'h':
       {
         if (LocaleCompare("help",option+1) == 0)
           break;
         ThrowIdentifyException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'i':
       {
@@ -3203,14 +3157,12 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowIdentifyException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'p':
       {
         if (LocaleCompare("ping",option+1) == 0)
           break;  /* default is ping; silently ignore */
         ThrowIdentifyException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 's':
       {
@@ -3239,7 +3191,6 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowIdentifyException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'v':
       {
@@ -3249,7 +3200,6 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowIdentifyException(OptionError,"Unrecognized option",option);
-        break;
       }
       case '?':
       {
@@ -3258,7 +3208,6 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
       default:
       {
         ThrowIdentifyException(OptionError,"Unrecognized option",option);
-        break;
       }
     }
   }
@@ -3440,7 +3389,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'b':
       {
@@ -3499,7 +3447,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'c':
       {
@@ -3700,7 +3647,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'd':
       {
@@ -3787,7 +3733,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'e':
       {
@@ -3847,7 +3792,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("equalize",option+1) == 0)
           break;
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'f':
       {
@@ -3973,7 +3917,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'g':
       {
@@ -4039,14 +3982,12 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'h':
       {
         if (LocaleCompare("help",option+1) == 0)
           break;
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'i':
       {
@@ -4085,7 +4026,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'l':
       {
@@ -4214,7 +4154,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'm':
       {
@@ -4282,7 +4221,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'n':
       {
@@ -4318,7 +4256,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("normalize",option+1) == 0)
           break;
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'o':
       {
@@ -4334,7 +4271,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'p':
       {
@@ -4394,7 +4330,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'q':
       {
@@ -4411,7 +4346,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'r':
       {
@@ -4463,7 +4397,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 's':
       {
@@ -4632,7 +4565,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 't':
       {
@@ -4727,7 +4659,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'u':
       {
@@ -4766,7 +4697,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'v':
       {
@@ -4789,7 +4719,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case 'w':
       {
@@ -4801,14 +4730,12 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
       case '?':
         break;
       default:
       {
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
-        break;
       }
     }
   }
@@ -4992,7 +4919,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
         if (LocaleCompare("transform",option+1) == 0)
           break;
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'b':
       {
@@ -5047,7 +4973,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'c':
       {
@@ -5226,7 +5151,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'd':
       {
@@ -5299,7 +5223,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'e':
       {
@@ -5335,7 +5258,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'f':
       {
@@ -5442,7 +5364,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'g':
       {
@@ -5504,14 +5425,12 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'h':
       {
         if (LocaleCompare("help",option+1) == 0)
           break;
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'i':
       {
@@ -5540,7 +5459,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'l':
       {
@@ -5556,7 +5474,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'm':
       {
@@ -5629,14 +5546,12 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'n':
       {
         if (LocaleCompare("noop",option+1) == 0)
           break;
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'p':
       {
@@ -5680,7 +5595,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'q':
       {
@@ -5697,7 +5611,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'r':
       {
@@ -5719,7 +5632,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 's':
       {
@@ -5802,7 +5714,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 't':
       {
@@ -5907,7 +5818,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'v':
       {
@@ -5917,7 +5827,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
       case '?':
       {
@@ -5926,7 +5835,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       default:
       {
         ThrowMontageException(OptionError,"Unrecognized option",option);
-        break;
       }
     }
   }

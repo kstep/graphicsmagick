@@ -2231,7 +2231,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           for (x=0; x < (long) number_pixels; x++)
           {
             pixel=(*p++);
-            q->opacity=MaxRGB-(long) ScaleCharToQuantum(pixel);
+            q->opacity=MaxRGB-ScaleCharToQuantum(pixel);
             q++;
           }
           break;
@@ -2703,7 +2703,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           for (next=image; next != (Image *) NULL; next=next->next)
           {
             if (next->scene != 0)
-              i=next->scene;
+              i=(long) next->scene;
             if (i != (long) first)
               {
                 i++;
