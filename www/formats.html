@@ -2,15 +2,17 @@
 <HTML>
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
-	<TITLE>ImageMagick - Image Processing and Display Package</TITLE>
+	<TITLE>ImageMagick - File Formats</TITLE>
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020810;12535100">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20020810;17074500">
+	<META NAME="CHANGED" CONTENT="20020811;15434700">
+	<META NAME="CLASSIFICATION" CONTENT="Describes the file formats supported by ImageMagick.">
 	<META NAME="DESCRIPTION" CONTENT="ImageMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software    development, simulation, image, software, AniMagick, Animagic,    Magick++">
 	<STYLE>
 	<!--
+		@page { size: 8.5in 11in }
 		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
 		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
 		PRE { color: #000000 }
@@ -22,274 +24,416 @@
 </HEAD>
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
 <P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+<P STYLE="margin-bottom: 0in">ImageMagick uses an ASCII string known
+as &quot;<SPAN LANG="en-US">magick</SPAN>&quot; (e.g. &quot;GIF&quot;)
+to identify file formats, algorithms<SPAN LANG="en-US"> acting </SPAN>as
+formats, built-in images, and embedded profile types.</P>
 <P STYLE="margin-bottom: 0in"><BR>ImageMagick supports reading over
-68 file formats. The following is a table describing supported image
-formats.</P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Supported File Formats</B></P>
-<CENTER>
-	<TABLE WIDTH=90% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=5 CELLSPACING=1 BGCOLOR="#99ccff">
-		<COL WIDTH=53*>
-		<COL WIDTH=74*>
-		<COL WIDTH=129*>
+87 major file formats (not including sub-formats). The following
+table provides a summary of the supported image formats.</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT SIZE=4><B>Supported
+Image Formats</B></FONT></P>
+<DL>
+	<DD>
+	<TABLE WIDTH=729 BORDER=1 BORDERCOLOR="#000000" CELLPADDING=5 CELLSPACING=1 BGCOLOR="#99ccff">
+		<COL WIDTH=83>
+		<COL WIDTH=64>
+		<COL WIDTH=179>
+		<COL WIDTH=356>
 		<TR>
-			<TH WIDTH=21%>
-				<P>Tag</P>
+			<TH WIDTH=83>
+				<P><FONT SIZE=4>Format</FONT></P>
 			</TH>
-			<TH WIDTH=29%>
-				<P>Description</P>
+			<TH WIDTH=64>
+				<P><FONT SIZE=4>Mode</FONT></P>
 			</TH>
-			<TH WIDTH=50%>
-				<P>Notes</P>
+			<TH WIDTH=179>
+				<P><FONT SIZE=4>Description</FONT></P>
+			</TH>
+			<TH WIDTH=356>
+				<P><FONT SIZE=4>Notes</FONT></P>
 			</TH>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><A HREF="http://www.jmcgowan.com/avi.html">AVI</A></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>ART</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Audio/Video Interleave image file</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>PFS: 1st Publisher</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>AVS</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>AVS X image file</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Format originally used on the Macintosh
+				(MacPaint?) and later used for PFS: 1st Publisher clip art.</FONT></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><A HREF="http://msdn.microsoft.com/library/sdkdoc/gdi/bitmaps_9c6r.htm">BMP</A></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.jmcgowan.com/avi.html"><B>AVI</B></A></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Microsoft Windows bitmap image file</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Microsoft Audio/Visual Interleaved</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>CGM</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>AVS</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Computer Graphics Metafile</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>AVS X image</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P><A HREF="http://msdn.microsoft.com/library/sdkdoc/gdi/bitmaps_9c6r.htm"><B>BMP</B></A></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Microsoft Windows bitmap </FONT>
+				</P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>CGM</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Computer Graphics Metafile</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="http://www.agocg.ac.uk/train/cgm/ralcgm.htm">ralcgm</A>
-				to render CGM files. Read only.</P>
+				to render CGM files.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>CMYK</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>CMYK</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Raw cyan, magenta, yellow, and black samples</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Raw cyan, magenta, yellow, and black samples</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Set <TT>-size</TT> and <TT>-depth</TT> to specify the image
 				width, height, and depth.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>DCM</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>CUT</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Digital Imaging and Communications in Medicine (DICOM) image
-				file format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Read only. Used by the medical community for images like
-				X-rays.</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>DR Halo</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>DCX</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>ZSoft IBM PC multi-page Paintbrush file</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>DIB</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>DCM</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Microsoft Windows Device Independent Bitmap</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Digital Imaging and Communications in Medicine
+				(DICOM) image</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Used by the medical community for images like
+				X-rays.</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>DCX</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>ZSoft IBM PC multi-page Paintbrush image</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>DIB</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Microsoft Windows Device Independent Bitmap</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>DIB is a <A HREF="#BMP">BMP</A> file without the <A HREF="#BMP">BMP</A>
 				header. Used to support embedded images in compound formats like
 				WMF.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>DPX</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>DPX</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Digital Moving Picture Exchange</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Digital Moving Picture Exchange</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>EPDF</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Encapsulated Portable Document Format</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>EPI</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>EMF</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Adobe Encapsulated PostScript Interchange format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Microsoft Enhanced Metafile (32-bit)</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Only available under Microsoft Windows.</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>EPDF</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Encapsulated Portable Document Format</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>EPI</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Adobe Encapsulated PostScript Interchange format</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
 				to read.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>EPS</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>EPS</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Adobe Encapsulated PostScript file</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Adobe Encapsulated PostScript</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
 				to read.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>EPS2</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>EPS2</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Adobe Level II Encapsulated PostScript file</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>W</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Adobe Level II Encapsulated PostScript</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
 				to read.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>EPSF</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>EPS3</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Adobe Encapsulated PostScript file</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>W</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Adobe Level III Encapsulated PostScript</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
 				to read.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>EPSI</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>EPSF</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Adobe Encapsulated PostScript Interchange format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Adobe Encapsulated PostScript</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
 				to read.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>EPT</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>EPSI</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Adobe Encapsulated PostScript Interchange format</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
+				to read.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>EPT</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
 				<P>Adobe Encapsulated PostScript Interchange format with <A HREF="#TIFF">TIFF</A>
 				preview</P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
 				to read.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>FAX</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>FAX</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Group 3 TIFF</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Group 3 TIFF</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>See <A HREF="#TIFF">TIFF</A> format. Note that FAX machines
 				use non-square pixels which are 1.5 times wider than they are
 				tall but computer displays use square pixels so FAX images may
 				appear to be narrow unless they are explicitly resized using a
-				resize specification of &ldquo;<FONT FACE="Cumberland">150x100%</FONT>&rdquo;.</P>
+				resize specification of &quot;<FONT FACE="Cumberland">150x100%</FONT>&quot;.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>FIG</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P><A HREF="http://duke.usask.ca/~macphed/soft/fig/"><B>FIG</B></A></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>TransFig image format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>FIG graphics format</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="ftp://ftp.x.org/contrib/applications/drawing_tools/transfig">TransFig</A>.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><A HREF="http://www.cv.nrao.edu/fits/">FITS</A></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.cv.nrao.edu/fits/"><B>FITS</B></A></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Flexible Image Transport System</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Flexible Image Transport System</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>FPX</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>FPX</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>FlashPix Format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>FlashPix Format</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="ftp://ftp.imagemagick.org/pub/ImageMagick/delegates">FlashPix
 				SDK</A>.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>GIF</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>GIF</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>CompuServe Graphics Interchange Format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>8-bit RGB PseudoColor with up to 256 palette entires. Note
-				that since Unisys claims a <A HREF="http://www.delphion.com/details?&amp;pn=US04558302__">patent
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>CompuServe Graphics Interchange Format</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>8-bit RGB <SPAN LANG="en-US">PseudoColor</SPAN>
+				with up to 256 palette entires. Specify the format &quot;GIF87&quot;
+				to write the older version 87a of the format.</FONT></P>
+				<P>Note that since Unisys claims a <A HREF="http://www.delphion.com/details?&amp;pn=US04558302__">patent
 				on the LZW algorithm</A> (expiring in 2003) used by GIF,
 				ImageMagick binary distributions do not include support for the
 				LZW algorithm so GIF files are written uncompressed. Users are
@@ -299,808 +443,889 @@ formats.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>GIF87</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>GPLT</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>CompuServe Graphics Interchange Format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>8-bit color (version 87a). See GIF format for more
-				information.</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Gnuplot plot files</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>GPLT</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Gnuplot plot files</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="ftp://ftp.dartmouth.edu/pub/gnuplot/">gnuplot3.5.tar.Z</A>
 				or later.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>GRADIENT</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>GRAY</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Gradual passing from one shade to another</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Returns a rendered gradient image using the specified image
-				size. Specify the desired shading as part of the filename (e.g.
-				&ldquo;<TT>gradient:red-blue</TT>&rdquo; or
-				&ldquo;<FONT FACE="Cumberland">gradient:#F00-#00F</FONT>&rdquo;).</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Raw gray samples</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>GRANITE</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Granite texture.</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Built-in image to return a granite texture image (&ldquo;<FONT FACE="Cumberland">GRANITE:</FONT>&rdquo;).</P>
-			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>GRAY</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Raw gray samples</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Use <TT>-size</TT> and <TT>-depth</TT> to specify the image
 				width, height, and depth.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>HDF</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>HPGL</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Hierarchical Data Format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>requires <A HREF="ftp://ftp.ncsa.uiuc.edu/HDF/">HDF4.1r2.tar.gz</A></P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>HP-GL plotter language</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>HISTOGRAM</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Histogram of the image</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://ftp.cdrom.com/pub/ImageMagick/delegates/hp2xx-3.2.0.tar.gz">hp2xx-3.2.0.tar.gz</A></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>HPGL</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>HTML</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>HP-GL plotter language</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>requires <A HREF="http://ftp.cdrom.com/pub/ImageMagick/delegates/hp2xx-3.2.0.tar.gz">hp2xx-3.2.0.tar.gz</A></P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Hypertext Markup Language with a client-side
+				image map</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>HTML</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Hypertext Markup Language with a client-side image map</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>requires <A HREF="http://www.tdb.uu.se/~jan/">html2ps</A> to
-				read</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P>Also known as &quot;HTM&quot;. Requires <A HREF="http://www.tdb.uu.se/~jan/">html2ps</A>
+				to read.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>ICO</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>ICO</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Microsoft icon</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>read only</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Microsoft icon</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>ICC</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>International Color Consortium color profile</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>To read, use <TT>-profile</TT> with <A HREF="convert.html"><I>convert</I></A>.</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Also known as &quot;ICON&quot;.</FONT></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>ILBM</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>JBIG</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Amiga IFF</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Joint Bi-level Image experts Group file
+				interchange format</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>IPTC</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Newswire profile</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>To read, use <TT>-profile</TT> with <A HREF="convert.html"><I>convert</I></A></P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P>Also known as &quot;BIE&quot; and &quot;JBG&quot;. Requires
+				<A HREF="ftp://ftp.uni-erlangen.de/pub/doc/ISO/JBIG/">jbigkit-1.0.tar.gz</A>.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>JBIG</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>JP2</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Joint Bi-level Image experts Group file interchange format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>requires <A HREF="ftp://ftp.uni-erlangen.de/pub/doc/ISO/JBIG/">jbigkit-1.0.tar.gz</A></P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>JPEG-2000 JP2 File Format Syntax</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>JP2</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>JPEG-2000 JP2 File Format Syntax</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>requires <A HREF="http://www.ece.ubc.ca/~mdadams/jasper/">jasper-1.500.0.zip</A></P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://www.ece.ubc.ca/~mdadams/jasper/">jasper-1.500.0.zip</A></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>JPC</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>JPC</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>JPEG-2000 Code Stream Syntax</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>requires <A HREF="http://www.ece.ubc.ca/~mdadams/jasper/">jasper-1.500.0.zip</A></P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>JPEG-2000 Code Stream Syntax</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>JPEG</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Joint Photographic Experts Group JFIF format</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>requires <A HREF="ftp://ftp.uu.net/graphics/jpeg/">jpegsrc.v6b.tar.gz</A></P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://www.ece.ubc.ca/~mdadams/jasper/">jasper-1.500.0.zip</A></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>LABEL</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>JPEG</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Text image format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Specify the desired text as the filename (e.g. <TT>label:This
-				is a label<FONT FACE="Verdana, Arial, Helvetica">).</FONT></TT></P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Joint Photographic Experts Group JFIF format</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>MAP</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Colormap intensities and indices</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Set -depth to set the sample size of the intensities; indices
-				are 16-bit if colors &gt; 256.</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="ftp://ftp.uu.net/graphics/jpeg/">jpegsrc.v6b.tar.gz</A></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>MAN</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>MAN</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Unix reference manual pages</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Requires that GNU groff and Ghostcript are installed.</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Unix reference manual pages</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><A NAME="MIFF"></A><A HREF="miff.html">MIFF</A></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Magick image file format</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>ImageMagick's own image format (with ASCII header) which
-				ensures that no image attributes understood by ImageMagick are
-				lost.</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Requires that GNU <SPAN LANG="en-US">groff</SPAN>
+				and <SPAN LANG="en-US">Ghostcript</SPAN> are installed.</FONT></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><A HREF="http://www.libmng.com/">MNG</A></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>MAT</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Multiple-image Network Graphics</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>MATLAB image format</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P><A HREF="miff.html"><B>MIFF</B></A></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4><SPAN LANG="en-US">Magick</SPAN> image file
+				format</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>ImageMagick's own image format (with ASCII
+				header) which ensures that no image attributes understood by
+				ImageMagick are lost.</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>MONO</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Bi-level bitmap in least-significant-byte first
+				order</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.libmng.com/"><B>MNG</B></A></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Multiple-image Network Graphics</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="libpng-1.02.tar.gz">libpng-1.02.tar.gz</A>
 				or later.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><A HREF="http://www.mpeg.org/">MPEG</A></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.mpeg.org/"><B>MPEG</B></A></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Motion Picture Experts Group file interchange format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Motion Picture Experts Group file interchange
+				format (version 1)</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="ftp://ftp.mpeg.org/pub/mpeg/mssg/">mpeg2vidcodec_v12.tar.gz</A>.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><A HREF="http://www.mpeg.org/">M2V</A></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.mpeg.org/"><B>M2V</B></A></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Motion Picture Experts Group file interchange format (version
-				2)</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Motion Picture Experts Group file interchange
+				format (version 2)</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="ftp://ftp.mpeg.org/pub/mpeg/mssg/">mpeg2vidcodec_v12.tar.gz</A>.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>MPC</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>MPC</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Magick Persistent Cache image file format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>The native &ldquo;in-memory&rdquo; ImageMagick uncompressed
-				file format. This file format is identical to that used by
-				ImageMagick to represent images in memory and is read in &ldquo;zero
-				time&rdquo; via memory mapping. The MPC format is not portable
-				and is not suitable as an archive format. It is suitable as an
-				intermediate format for high-performance image processing.</P>
-				<P>The MPC format requires two files to support one image. When
-				writing the MPC format, a file with extension &ldquo;.mpc&rdquo;
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Magick Persistent Cache image file format</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>The native &quot;in-memory&quot; ImageMagick
+				uncompressed file format. This file format is identical to that
+				used by ImageMagick to represent images in memory and is read in
+				&quot;zero time&quot; via memory mapping. The MPC format is not
+				portable and is not suitable as an archive format. It is suitable
+				as an intermediate format for high-performance image processing.</FONT></P>
+				<P><FONT SIZE=4>The MPC format requires two files to support one
+				image. When writing the MPC format, a file with extension &quot;.mpc&quot;
 				is used to store information about the image, while a file with
 				extension &ldquo;.cache&rdquo; stores the image pixels. The
 				storage space required by a MPC image (or an image in memory) may
-				be calculated by the equation (QuantumDepth*Rows*Columns*5)/8.</P>
+				be calculated by the equation (QuantumDepth*Rows*Columns*5)/8.</FONT></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>MTV</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>MSL</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>MTV Raytracing image format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Magick Scripting Language</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P>MSL is the XML-based scripting language supported by the
+				<A HREF="conjure.html">conjure</A> utility.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>MVG</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>MTV</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Magick Vector Graphics.</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>MTV Raytracing image format</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>MVG</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Magick Vector Graphics.</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>The native ImageMagick vector metafile format. A text file
 				containing vector drawing commands accepted by <A HREF="convert.html">convert</A>'s
 				-draw option.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>NETSCAPE</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>OTB</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Netscape 216 color cube.</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Built-in image which returns an image containing the colors in
-				the 6x6x6 color cube used to render colors on 256 color displays
-				by the Netscape 2.0 browser. Most commonly used with the
-				<A HREF="convert.html">convert</A>/<A HREF="mogrify.html">mogrify</A>
-				-map option to create &ldquo;web safe&rdquo; images.</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>On-the-air Bitmap</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>NULL</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>NULL image</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Useful for creating blank tiles with <A HREF="montage.html">montage</A>
-				(use &ldquo;NULL:&rdquo;). Also useful as an output format when
-				evaluating image read performance.</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>OTB</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>P7</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>On-the-air Bitmap</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Xv's Visual Schnauzer thumbnail format</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PBM</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Portable bitmap format (black and white)</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PCD</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PALM</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Photo CD</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>The maximum resolution written is 768x512 pixels since larger
-				images require huffman compression (which is not supported).</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Palm pixmap</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PCDS</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Photo CD</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Decode with the sRGB color tables.</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PCL</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PBM</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>HP Page Control Language</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Write only.</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Portable bitmap format (black and white)</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PCX</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>ZSoft IBM PC Paintbrush file</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PDB</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PCD</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Palm Database ImageViewer Format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6"></TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Photo CD</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>The maximum resolution written is 768x512 pixels
+				since larger images require huffman compression (which is not
+				supported).</FONT></P>
+			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PDF</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PCDS</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Portable Document Format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Photo CD</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Decode with the sRGB color tables.</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PCL</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>W</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>HP Page Control Language</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>For output to HP laser printers.</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PCX</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>ZSoft IBM PC Paintbrush file</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PDB</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Palm Database ImageViewer Format</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PDF</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Portable Document Format</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
 				to read.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PGM</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PFA</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Portable graymap format (gray scale)</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Postscript Type 1 font (ASCII)</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PICT</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Apple Macintosh QuickDraw/PICT file</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Opening as file returns a preview image.</FONT></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PIX</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PFB</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Alias/Wavefront RLE image format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Read only.</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Postscript Type 1 font (binary)</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PLASMA</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Plasma fractal image.</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Returns a fractal image using the specified size. Specify the
-				base color as the filename (e.g. <TT>plasma:blue-yellow</TT>).
-				Use <TT>fractal</TT> to initialize to a random value (e.g.
-				&ldquo;<TT>plasma:fractal&rdquo;).</TT></P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Opening as file returns a preview image.</FONT></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><A HREF="http://www.cdrom.com/pub/png/">PNG</A></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PGM</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Portable Network Graphics</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Portable graymap format (gray scale)</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PICON</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Personal Icon</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PICT</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Apple Macintosh QuickDraw/PICT file</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PIX</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Alias/Wavefront RLE image format</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.cdrom.com/pub/png/"><B>PNG</B></A></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Portable Network Graphics</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="ftp://ftp.uu.net/graphics/png/src/">libpng-1.02.tar.gz</A>.
 								</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PNM</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PNM</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Portable anymap</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Use <TT>+compress</TT> to produce the ASCII version of the
-				format.</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Portable anymap</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PPM</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Portable pixmap format (color)</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>PNM is a family of formats supporting portable
+				bitmaps (PBM) , graymaps (PGM), and pixmaps (PPM). There is no
+				file format associated with pnm itself. If PNM is used as the
+				output format specifier, then ImageMagick automatically selects
+				the most appropriate format to represent the image.</FONT></P>
+				<P>The default is to write the binary version of the formats. Use
+				<TT>+compress</TT> to write the ASCII version of the formats.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PREVIEW</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PPM</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Show a preview an image enhancement, effect, or f/x</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Creates a preview montage of images prepared over a
-				parameteric range in order to assist with parameter selection.
-				Specify the desired preview type via the <TT>-preview</TT>
-				option).</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Portable pixmap format (color)</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PRINT</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Send image to your computer printer</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Unix users may set the PRINTER or LPDEST environment variables
-				to select the desired printer.</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PS</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PS</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Adobe PostScript file</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Adobe PostScript file</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
 				to read.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PSD</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PS2</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Adobe Photoshop bitmap file</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Adobe Level II PostScript file</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PS2</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Adobe Level II PostScript file</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
 				to read.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PS3</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PS3</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Adobe Level III PostScript file</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Adobe Level III PostScript file</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
 				to read.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>PTIF</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PSD</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Adobe Photoshop bitmap file</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PTIF</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
 				<P>Pyramid encoded <A HREF="#TIFF">TIFF</A></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Multi-resolution <A HREF="#TIFF">TIFF</A> containing
 				successively smaller versions of the image down to the size of an
-				icon. The desired sub-image size may be specified when readingvia
-				the -size option when reading the image.</P>
+				icon. The desired sub-image size may be specified when reading
+				via the -size option.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><A HREF="http://www.photoworks.com/">PWP</A></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.photoworks.com/"><B>PWP</B></A></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Seattle File Works multi-image file</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Seattle File Works multi-image file</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>P7</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Xv's Visual Schnauzer thumbnail format</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>RAD</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>RAD</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Radiance image file</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Requires that ra_ppm from the Radiance software package be
-				installed.</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Radiance image file</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Requires that <I>ra_ppm</I> from the Radiance
+				software package be installed.</FONT></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>RGB</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>RGB</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Raw red, green, and blue samples</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Raw red, green, and blue samples</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Use <TT>-size</TT> and <TT>-depth</TT> to specify the image
 				width, height, and depth.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>RGBA</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>RGBA</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Raw red, green, blue, and matte samples</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Raw red, green, blue, and matte samples</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Use <TT>-size</TT> and <TT>-depth</TT> to specify the image
 				width, height, and depth.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>RLA</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>RLA</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Alias/Wavefront image file</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Read only.</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Alias/Wavefront image file</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>RLE</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Utah Run length encoded image file</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Read only.</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>SCAN</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>RLE</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Import image from a scanner device</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Requires <A HREF="http://www.mostang.com/sane/">SANE</A>
-				Specify the device name and path as the filename (e.g.
-				&ldquo;<TT>scan:mustek:/dev/scanner<FONT FACE="Verdana, Arial, Helvetica, sans-serif">&ldquo;).</FONT></TT></P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Utah Run length encoded image file</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><A HREF="http://www.ora.com/centers/gff/formats/scitex/index.htm">SCT</A></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Scitex Continuous Tone Picture image file</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><A HREF="http://www.photoworks.com/">SFW</A></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.ora.com/centers/gff/formats/scitex/index.htm"><B>SCT</B></A></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Seattle File Works image file</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Scitex Continuous Tone Picture</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>SGI</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Irix RGB image file</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>SHTML</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.photoworks.com/"><B>SFW</B></A></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Hypertext Markup Language client-side image map</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Seattle File Works image</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>SGI</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Irix RGB image</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>SHTML</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>W</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Hypertext Markup Language client-side image map</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Used to write HTML clickable image maps based on a the output
 				of <A HREF="montage.html">montage</A> or a format which supports
 				tiled images such as <A HREF="#MIFF">MIFF</A>.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>STEGANO</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>SUN</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Steganographic image</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Use <TT>-size</TT> command line option to specify width,
-				height, and offset of the steganographic image</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>SUN Rasterfile</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>SUN</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>SUN Rasterfile</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><A HREF="http://www.w3.org/Graphics/SVG//">SVG</A></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.w3.org/Graphics/SVG//"><B>SVG</B></A></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Scalable Vector Graphics</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Scalable Vector Graphics</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Requires <A HREF="http://xmlsoft.org/">libxml2</A> and
 				<A HREF="freetype-2.tar.g">freetype-2</A>. Note that SVG is a
 				very complex specification so support is still not complete.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>TGA</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>TGA</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Truevision Targa image file</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Truevision Targa image</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Also known as formats &quot;ICB&quot;, &quot;VDA&quot;,
+				and &quot;VST&quot;.</FONT></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>TIFF</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>TIFF</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Tagged Image File Format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Requires <A HREF="http://ftp://ftp.remotesensing.org/pub/libtiff/">tiff-v3.5.4.tar.gz</A>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Tagged Image File Format</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P>Also known as &quot;TIF&quot;. Requires <A HREF="http://ftp://ftp.remotesensing.org/pub/libtiff/">tiff-v3.5.4.tar.gz</A>
 				or later. Note that since Unisys claims a <A HREF="http://www.delphion.com/details?&amp;pn=US04558302__">patent
 				on the LZW algorithm</A> (expiring in 2003) used by
 				LZW-compressed TIFF files, ImageMagick binary distributions do
@@ -1112,91 +1337,503 @@ formats.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>TILE</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>TIM</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Tiled image</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Create a tiled version of an image at by tiling a image. Use
-				-size to specify the tiled image size. The image is specified
-				similar to &ldquo;<FONT FACE="Cumberland">TILE:image.miff</FONT>&rdquo;.</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>PSX TIM file</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>TIM</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>PSX TIM file</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Read only.</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
 				<P><A HREF="http://www.freetype.org/"><B>TTF</B></A></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>TrueType font file</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Requires <A HREF="freetype-2-beta8.tar.g">freetype 2</A>.</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>TrueType font file</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>TXT</B></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Raw text file</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="freetype-2-beta8.tar.g">freetype 2</A>.
+				Opening as file returns a preview image.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>UIL</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>TXT</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>X-Motif UIL table</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Raw text file</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>UYVY</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>UIL</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Interleaved YUV</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>W</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>X-Motif UIL table</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>UYVY</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Interleaved YUV raw image</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
 				<P>Use <TT>-size</TT> command line option to specify width and
 				height.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>VICAR</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>VICAR</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>VICAR rasterfile format</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6"></TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>VICAR rasterfile format</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>VID</B></P>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>VIFF</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Visual Image Directory</P>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Khoros Visualization Image File Format</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.wapforum.org/"><B>WBMP</B></A></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Wireless bitmap</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Support for uncompressed monochrome only.</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.wvware.com/libwmf.html"><B>WMF</B></A></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER><BR>
+				</P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Windows Metafile</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://sourceforge.net/projects/wvware/">libwmf</A>.
+				By default, renders WMF files using the dimensions specified by
+				the metafile header. Use the -density option to adjust the output
+				resolution, and thereby adjust the ouput size. The default output
+				resolution is 72DPI so &quot;-density 144&quot; results in an
+				image twice as large as the default.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>WPG</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Word Perfect Graphics File</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>XBM</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>X Windows system bitmap, black and white only</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Used by the X Windows System to store monochrome
+				icons.</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>XCF</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>R</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>GIMP image</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.inria.fr/koala/lehors/xpm.html"><B>XPM</B></A></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>X Windows system pixmap</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Also known as &quot;PM&quot;. Used by the X
+				Windows System to store color icons.</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>XWD</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>X Windows system window dump</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Used by the X Windows System to save/display
+				screen dumps.</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=83 BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>YUV</B></FONT></P>
+			</TD>
+			<TD WIDTH=64 BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=179 BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>CCIR 601 4:1:1</FONT></P>
+			</TD>
+			<TD WIDTH=356 BGCOLOR="#9ebac6">
+				<P>Use <TT>-size</TT> command line option to specify width and
+				height.</P>
+			</TD>
+		</TR>
+	</TABLE>
+</DL>
+<P><BR><BR>
+</P>
+<P>ImageMagick supports a number of image format specifications which
+refer to images prepared via an algorithm, or input/output targets.
+The following table lists these pseudo image formats:</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT SIZE=4><B>Pseudo
+Image Formats</B></FONT></P>
+<CENTER>
+	<TABLE WIDTH=95% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=5 CELLSPACING=1 BGCOLOR="#99ccff">
+		<COL WIDTH=50*>
+		<COL WIDTH=25*>
+		<COL WIDTH=60*>
+		<COL WIDTH=121*>
+		<TR>
+			<TH WIDTH=19%>
+				<P><FONT SIZE=4>Tag</FONT></P>
+			</TH>
+			<TH WIDTH=10%>
+				<P><FONT SIZE=4>Mode</FONT></P>
+			</TH>
+			<TH WIDTH=24%>
+				<P><FONT SIZE=4>Description</FONT></P>
+			</TH>
+			<TH WIDTH=47%>
+				<P><FONT SIZE=4>Notes</FONT></P>
+			</TH>
+		</TR>
+		<TR>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>CAPTION</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>R</FONT></P>
+			</TD>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Image caption</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>fixme</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>CLIPBOARD</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Windows Clipboard</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Only available under Microsoft Windows.</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>FRACTAL</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>R</FONT></P>
+			</TD>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Plasma fractal image</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>GRADIENT</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>R</FONT></P>
+			</TD>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Gradual passing from one shade to another</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P>Returns a rendered gradient image using the specified image
+				size. Specify the desired shading as part of the filename (e.g.
+				&quot;<TT>gradient:red-blue</TT>&quot;or &quot;<FONT FACE="Cumberland">gradient:#F00-#00F</FONT>&quot;).</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>HISTOGRAM</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>W</FONT></P>
+			</TD>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Histogram of the image</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>&nbsp;</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>LABEL</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>R</FONT></P>
+			</TD>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Text image format</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P>Specify the desired text as the filename (e.g. &quot;<TT>label:This
+				is a label<FONT FACE="Verdana, Arial, Helvetica">&quot;).</FONT></TT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>MAP</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Colormap intensities and indices</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Set -depth to set the sample size of the
+				intensities; indices are 16-bit if colors &gt; 256.</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>MATTE</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>W</FONT></P>
+			</TD>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>MATTE format</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Write only.</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>NULL</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>NULL image</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P>Useful for creating blank tiles with <A HREF="montage.html">montage</A>
+				(use &quot;NULL:&quot;). Also useful as an output format when
+				evaluating image read performance.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PLASMA</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>R</FONT></P>
+			</TD>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Plasma fractal image</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PREVIEW</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>W</FONT></P>
+			</TD>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Show a preview an image enhancement, effect, or
+				f/x</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P>Creates a preview montage of images prepared over a
+				parameteric range in order to assist with parameter selection.
+				Specify the desired preview type via the <TT>-preview</TT>
+				option).</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>PRINT</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>W</FONT></P>
+			</TD>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Send image to your computer printer</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Unix users may set the PRINTER (for 'lp') or
+				LPDEST (for 'lpr') environment variables to select the desired
+				printer.</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>SCAN</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>R</FONT></P>
+			</TD>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Import image from a scanner device</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://www.mostang.com/sane/">SANE</A>
+				Specify the device name and path as the filename (e.g.
+				&quot;<TT>scan:mustek:/dev/scanner&quot;).</TT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>STEGANO</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>R</FONT></P>
+			</TD>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Steganographic image</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P>Use <TT>-size</TT> command line option to specify width,
+				height, and offset of the steganographic image</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>TILE</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>R</FONT></P>
+			</TD>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Tiled image</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Create a tiled version of an image at by tiling a
+				image. Use -size to specify the tiled image size. The image is
+				specified similar to &quot;<FONT FACE="Cumberland">TILE:image.miff</FONT>&quot;.</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>VID</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Visual Image Directory</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
 				<P>Used to create a thumbnailed directory (tiled thumbnails) of a
 				set of images which may be used to select images to view via the
 				<A HREF="display.html">display</A> program, or saved to a <A HREF="#MIFF">MIFF</A>
@@ -1204,133 +1841,256 @@ formats.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>VIFF</B></P>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>WIN</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Khoros Visualization Image File Format</P>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Select image from or display image to your
+				computer screen</FONT></P>
 			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><A HREF="http://www.wapforum.org/">WBMP</A></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Wireless bitmap image file</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Support for uncompressed monochrome only.</P>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Only supported under Microsoft Windows.</FONT></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>WIN</B></P>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>X</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Select image from or display image to your computer screen</P>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>RW</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6"></TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>WPG</B></P>
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Select image from or display image to your X
+				server screen</FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Word Perfect Graphics File</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>&nbsp;</P>
-			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><A HREF="http://www.wvware.com/libwmf.html"><B>WMF</B></A></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Windows Meta File</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Requires <A HREF="http://sourceforge.net/projects/wvware/">libwmf</A>.
-				By default, renders WMF files using the dimensions specified by
-				the metafile header. Use the -density option to adjust the output
-				resolution, and thereby adjust the ouput size. The default output
-				resolution is 72DPI so '-density 144' results in an image twice
-				as large as the default.</P>
-			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P>X</P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Select image from or display image to your X server screen</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
 				<P>Also see the <A HREF="import.html">import</A> and <A HREF="display.html">display</A>
 				programs.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>XC</B></P>
+			<TD WIDTH=19% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>XC</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>Canvas image of specified color</P>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>R</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Useful to create solid color &ldquo;canvas&rdquo; images. Use
+			<TD WIDTH=24% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Canvas image of specified color</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P>Useful to create solid color &quot;canvas&quot; images. Use
 				<TT>-size</TT> and <TT>-depth</TT> to specify the image width,
 				height, and depth. Example XC color specifications include
-				&ldquo;<FONT FACE="Cumberland">XC:red</FONT>&rdquo; and
-				&ldquo;<FONT FACE="Cumberland">XC:#FF0000</FONT>&rdquo;.</P>
+				&quot;<FONT FACE="Cumberland">XC:red</FONT>&quot; and
+				&quot;<FONT FACE="Cumberland">XC:#FF0000</FONT>&quot;.</P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<P><BR>ImageMagick includes several built-in images which may be
+referenced when reading as if they were an image format (e.g.
+&ldquo;<FONT FACE="Cumberland">GRANITE:</FONT>&rdquo;);</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT SIZE=4><B>Built-In
+Images</B></FONT></P>
+<CENTER>
+	<TABLE WIDTH=95% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=5 CELLSPACING=3 BGCOLOR="#99ccff">
+		<COL WIDTH=43*>
+		<COL WIDTH=91*>
+		<COL WIDTH=121*>
+		<TR>
+			<TH WIDTH=17%>
+				<P><FONT SIZE=4>Tag</FONT></P>
+			</TH>
+			<TH WIDTH=36%>
+				<P><FONT SIZE=4>Description</FONT></P>
+			</TH>
+			<TH WIDTH=47%>
+				<P><FONT SIZE=4>Notes</FONT></P>
+			</TH>
+		</TR>
+		<TR>
+			<TD WIDTH=17% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>GRANITE</B></FONT></P>
+			</TD>
+			<TD WIDTH=36% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Granite texture.</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Usually used as a texture image.</FONT></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>XBM</B></P>
+			<TD WIDTH=17% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>LOGO</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>X Windows system bitmap, black and white only</P>
+			<TD WIDTH=36% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>ImageMagick Logo</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Used by the X Windows System to store monochrome icons.</P>
-			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><A HREF="http://www.inria.fr/koala/lehors/xpm.html">XPM</A></P>
-			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>X Windows system pixmap file (color)</P>
-			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Used by the X Windows System to store color icons.</P>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>The famous wizard.</FONT></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>XWD</B></P>
+			<TD WIDTH=17% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>NETSCAPE</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>X Windows system window dump file (color)</P>
+			<TD WIDTH=36% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Netscape 216 color cube.</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Used by the X Windows System to save/display screen dumps.</P>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P>Built-in image which returns an image containing the colors in
+				the 6x6x6 color cube used to render colors on 256 color displays
+				by the Netscape 2.0 browser. Most commonly used with the
+				<A HREF="convert.html">convert</A>/<A HREF="mogrify.html">mogrify</A>
+				-map option to create &ldquo;web safe&rdquo; images.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=21% BGCOLOR="#d0d0d0">
-				<P><B>YUV</B></P>
+			<TD WIDTH=17% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>ROSE</B></FONT></P>
 			</TD>
-			<TD WIDTH=29% BGCOLOR="#9ebac6">
-				<P>CCIR 601 4:1:1 file</P>
+			<TD WIDTH=36% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Picture of a rose.</FONT></P>
 			</TD>
-			<TD WIDTH=50% BGCOLOR="#9ebac6">
-				<P>Use <TT>-size</TT> command line option to specify width and
-				height.</P>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Photo taken by Cristy.</FONT></P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<P><BR><BR>
+</P>
+<P STYLE="margin-bottom: 0in">ImageMagick provides a number of format
+identifiers which are used to add, remove, and save embedded profiles
+for images which can support embedded profiles. Image types which may
+contain embedded profiles are TIFF, JPEG, and PDF.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT SIZE=4><B>Supported
+Embedded Profile Formats</B></FONT></P>
+<CENTER>
+	<TABLE WIDTH=95% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=5 CELLSPACING=1 BGCOLOR="#99ccff">
+		<COL WIDTH=43*>
+		<COL WIDTH=25*>
+		<COL WIDTH=66*>
+		<COL WIDTH=121*>
+		<TR>
+			<TH WIDTH=17%>
+				<P><FONT SIZE=4>Format</FONT></P>
+			</TH>
+			<TH WIDTH=10%>
+				<P><FONT SIZE=4>Mode</FONT></P>
+			</TH>
+			<TH WIDTH=26%>
+				<P><FONT SIZE=4>Description</FONT></P>
+			</TH>
+			<TH WIDTH=47%>
+				<P><FONT SIZE=4>Notes</FONT></P>
+			</TH>
+		</TR>
+		<TR>
+			<TD WIDTH=17% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>8BIM</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=26% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Photoshop resource format (binary)</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=17% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>8BIMTEXT</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=26% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Photoshop resource format (ASCII)</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P>An ASCII representation of the 8BIM format.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=17% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>APP1</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=26% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Raw application information</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=17% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>APP1JPEG</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=26% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>Raw JPEG binary data</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P>Profile in JPEG wrapper.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=17% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>ICC</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=26% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>International Color Consortium color profile</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P>Also known as &quot;ICM&quot;. To read, use <TT>-profile</TT>
+				with <A HREF="convert.html"><I>convert</I></A>.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=17% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>IPTC</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=26% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>IPTC Newsphoto (binary)</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P>To read, use <TT>-profile</TT> with <A HREF="convert.html"><I>convert</I></A></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=17% BGCOLOR="#d0d0d0">
+				<P STYLE="font-style: normal"><FONT SIZE=4><B>IPTCTEXT</B></FONT></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#d0d0d0">
+				<P ALIGN=CENTER STYLE="font-style: normal; font-weight: medium"><FONT SIZE=4>RW</FONT></P>
+			</TD>
+			<TD WIDTH=26% BGCOLOR="#9ebac6">
+				<P><FONT SIZE=4>IPTC Newsphoto (ASCII)</FONT></P>
+			</TD>
+			<TD WIDTH=47% BGCOLOR="#9ebac6">
+				<P>An ASCII representation of the IPTC format.</P>
 			</TD>
 		</TR>
 	</TABLE>
