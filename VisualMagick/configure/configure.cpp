@@ -42,7 +42,7 @@ CConfigureApp theApp;
 
 enum {MULTITHREADEDDLL, SINGLETHREADEDSTATIC, MULTITHREADEDSTATIC, MULTITHREADEDSTATICDLL};
 
-enum {DISABLED, UTILITY, LIBRARY, STATICLIB, MODULE, THIRDPARTY};
+enum {DISABLED, UTILITY, LIBRARY, STATICLIB, MODULE, THIRDPARTY, PROJECT};
 
 BOOL useX11Stubs = TRUE;
 BOOL decorateFiles = FALSE;
@@ -68,7 +68,7 @@ std::string get_full_path(std::string root,std::string part)
     std::string combined;
 
     combined = root + part;
-
+    
     if( _fullpath( full, combined.c_str(), _MAX_PATH ) != NULL )
      return full;
     else
@@ -286,10 +286,10 @@ static bool process_one_entry(const char *entry, int nLinesRead,
   CString sValue = sTempString.GetField(_T(" = "),1);
   if (!sName.IsEmpty() && !sValue.IsEmpty())
   {
-    std::string temp = sValue;
+    std::string temp;
+    temp = sValue;
     if (sName.CompareNoCase(_T("DEFINE")) == 0)
 	    defines_list.push_back(temp);
-    temp = sValue;
     if (sName.CompareNoCase(_T("INCLUDE")) == 0)
 	    includes_list.push_back(temp);
     if (sName.CompareNoCase(_T("SOURCE")) == 0)
@@ -364,7 +364,10 @@ void CConfigureApp::process_utility(ofstream &dsw,
 
   std::string envpath;
   envpath = staging;
-  envpath += "\\UTILITY.txt";
+  if (project_type == UTILITY)
+    envpath += "\\UTILITY.txt";
+  else
+    envpath += "\\PROJECT.txt";
   load_environment_file(envpath.c_str(),
     defines_list, includes_list, source_list, exclude_list);
 
@@ -982,6 +985,38 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
       }
     }
     break;
+  case PROJECT:
+    {
+      /* MFC does not link for single threaded or multithreaded dll */
+      if ((runtimeOption == SINGLETHREADEDSTATIC) ||
+            (runtimeOption == MULTITHREADEDSTATICDLL))
+              return;
+      if (!optionalFiles)
+      {
+        CStringEx strTest = root;
+        if (strTest.FindNoCase("\\test") >= 0)
+          return;
+        if (strTest.FindNoCase("\\demo") >= 0)
+          return;
+      }
+      subpath = "..\\";
+	    subpath += root;
+      subpath += "\\*.cpp";
+	    WIN32_FIND_DATA	subdata;
+	    HANDLE subhandle = FindFirstFile(subpath, &subdata);
+	    if (subhandle != INVALID_HANDLE_VALUE)
+      {
+	      {
+	        CStringEx thepath = root;
+          int count = thepath.GetFieldCount('\\');
+          std::string parent = thepath.GetField('\\',count-1);
+          parent += ".cpp";
+          process_utility(dsw, root, parent.c_str(), runtimeOption, project_type);
+        }
+        FindClose(subhandle);
+      }
+    }
+    break;
   case LIBRARY:
     process_library(dsw, data.cFileName, (runtimeOption == MULTITHREADEDDLL),
         runtimeOption, project_type);
@@ -1034,6 +1069,9 @@ bool CConfigureApp::is_project_type(const char *root, const int project_type)
   searchpath += "\\";
   switch (project_type)
   {
+  case PROJECT:
+    searchpath += "PROJECT.txt";
+    break;
   case UTILITY:
     searchpath += "UTILITY.txt";
     break;
@@ -1223,7 +1261,7 @@ void CConfigureApp::process_project_type(ofstream &dsw,
           rootpath += "\\";
           rootpath += topdata.cFileName;
           process_one_folder(dsw,rootpath.c_str(),data,btype,runtime);
-          if (btype == UTILITY)
+          if (btype == UTILITY || btype == PROJECT)
           {
             rootpath = root;
             rootpath += "\\";
@@ -1331,7 +1369,7 @@ BOOL CConfigureApp::InitInstance()
 
     waitdlg.Pumpit();
 
-    standard_include.push_back(".");
+    //standard_include.push_back(".");
     standard_include.push_back("..\\..");
     standard_include.push_back("..\\..\\magick");
     standard_include.push_back("..\\..\\xlib");
@@ -1386,9 +1424,14 @@ BOOL CConfigureApp::InitInstance()
     waitdlg.Pumpit();
     process_project_type(dsw,"..",projectType,"MODULE.txt",    MODULE);
     waitdlg.Pumpit();
+    consoleMode = TRUE;
     process_project_type(dsw,"..",projectType,"UTILITY.txt",   UTILITY);
     waitdlg.Pumpit();
+    consoleMode = FALSE;
+    process_project_type(dsw,"..",projectType,"PROJECT.txt",   PROJECT);
+    waitdlg.Pumpit();
 
+    consoleMode = TRUE;
 	  begin_project(dsw, "All", ".\\All\\All.dsp");
     waitdlg.Pumpit();
     generate_dependencies(dsw, true, true);
@@ -1952,25 +1995,25 @@ void CConfigureApp::write_exe_dsp(
   std::string release_path;
   CStringEx getcount = directory.c_str();
   int levels = getcount.GetFieldCount('\\');
-  if (project_type == UTILITY && (bin_loc[0]=='.'))
+  if (bin_loc[0]=='.')
   {
     for (int j=0; j<(levels-2); j++)
       bin_path += "..\\";
   }
   bin_path += bin_loc;
-  if (project_type == UTILITY && (lib_loc[0]=='.'))
+  if (lib_loc[0]=='.')
   {
     for (int j=0; j<(levels-2); j++)
       lib_path += "..\\";
   }
   lib_path += lib_loc;
-  if (project_type == UTILITY && (debug_loc[0]=='.'))
+  if (debug_loc[0]=='.')
   {
     for (int j=0; j<(levels-2); j++)
       debug_path += "..\\";
   }
   debug_path += debug_loc;
-  if (project_type == UTILITY && (release_loc[0]=='.'))
+  if (release_loc[0]=='.')
   {
     for (int j=0; j<(levels-2); j++)
       release_path += "..\\";
@@ -2035,12 +2078,13 @@ void CConfigureApp::write_exe_dsp(
   }
   dsp << " /W3 /GX /O2";
 	{
+		dsp << " /I \".\"";
 		for (
 			std::list<std::string>::iterator it = standard_include.begin();
 			it != standard_include.end();
 			it++)
 		{
-			dsp << " /I \"" << get_full_path(directory + "\\",*it).c_str() << "\"";
+			dsp << " /I \"" << get_full_path("",*it).c_str() << "\"";
 		}
 	}
 	{
@@ -2067,6 +2111,8 @@ void CConfigureApp::write_exe_dsp(
 			dsp << " /D \"" << (*it).c_str() << "\"";
 		}
 	}
+  if ((project_type == PROJECT) && (runtime == MULTITHREADEDDLL))
+    dsp << "/D \"_AFXDLL\"";
 	dsp << " /YX /FD /c" << endl;
 
   dsp << "# ADD MTL /nologo /D \"NDEBUG\" /mktyplib203 /win32" << endl;
@@ -2196,12 +2242,13 @@ void CConfigureApp::write_exe_dsp(
   }
   dsp << " /W3 /Gm /GX /Zi /Od";
 	{
+		dsp << " /I \".\"";
 		for (
 			std::list<std::string>::iterator it = standard_include.begin();
 			it != standard_include.end();
 			it++)
 		{
-			dsp << " /I \"" << get_full_path(directory + "\\",*it).c_str() << "\"";
+			dsp << " /I \"" << get_full_path("",*it).c_str() << "\"";
 		}
 	}
 	{
@@ -2228,6 +2275,8 @@ void CConfigureApp::write_exe_dsp(
 			dsp << " /D \"" << (*it).c_str() << "\"";
 		}
 	}
+  if ((project_type == PROJECT) && (runtime == MULTITHREADEDDLL))
+    dsp << "/D \"_AFXDLL\"";
 	dsp << " /YX /FD /c" << endl;
 	
 	dsp << "# ADD MTL /nologo /D \"_DEBUG\" /mktyplib203 /win32" << endl;
@@ -2345,6 +2394,7 @@ void CConfigureApp::write_exe_dsp(
     valid_dirs[] = {
     { "\\",          ".c",   "src"     },
     { "\\",          ".cpp", "src"     },
+    { "\\",          ".rc",  "src"     },
     { "\\",          ".h",   "include" },
     { NULL,          NULL,   NULL      }
   };
@@ -2370,7 +2420,10 @@ void CConfigureApp::write_exe_dsp(
 
     dir = directory.c_str();
     dir += valid_dirs[i].name;
-	  spec = dspname.c_str();
+    if (project_type == UTILITY)
+	    spec = dspname.c_str();
+    else
+      spec = "*";
     spec += valid_dirs[i].extn;
 	  generate_dir(dsp, dir, spec, 0, project_type, exclude_list);
   }
@@ -2451,15 +2504,16 @@ void CConfigureApp::generate_dir(ofstream &dsp,
 
 		  if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
 			  continue;
-      if (project_type == UTILITY)
+      if (project_type == UTILITY || project_type == PROJECT)
       {
         CStringEx getcount = path;
         int levels = getcount.GetFieldCount('\\');
-        CStringEx relpath = "..\\";
+        std::string relpath = "..\\";
         for (int j=0; j<(levels-3); j++)
           relpath += "..\\";
         relpath += path;
-	      add_file(dsp, relpath + data.cFileName);
+        relpath += data.cFileName;
+	      add_file(dsp, get_full_path(dir,relpath).c_str());
       }
       else
 	      add_file(dsp, otherpath + data.cFileName);

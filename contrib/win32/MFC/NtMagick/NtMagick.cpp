@@ -77,6 +77,8 @@ BOOL CNtMagickApp::InitInstance()
                 RUNTIME_CLASS(CNtMagickView));
         AddDocTemplate(pDocTemplate);
 
+        MagickLib::MagickIncarnate(__targv[0]);
+
         // Parse command line for standard shell commands, DDE, file open
         CCommandLineInfo cmdInfo;
         ParseCommandLine(cmdInfo);

@@ -47,6 +47,7 @@ CNtMagickView::CNtMagickView()
   // Init local objects
   m_pImage = NULL;
 
+#ifdef MANIPULATE_ENVVARS
   // Get the current working directory
   GetCurrentDirectory(MAX_PATH, szDir.GetBuffer(MAX_PATH + 1));
 
@@ -64,7 +65,7 @@ CNtMagickView::CNtMagickView()
     s.Format("MAGICK_DELEGATE_PATH=%s",szDir);
     putenv(s);
   }
-
+#endif
 }
 
 CNtMagickView::~CNtMagickView()
