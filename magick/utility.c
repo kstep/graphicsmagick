@@ -435,6 +435,8 @@ MagickExport char *Base64Encode(const unsigned char *blob,
     remainder;
 
   assert(blob != (const unsigned char *) NULL);
+  assert(blob_length != 0);
+  assert(encode_length != (size_t *) NULL);
   *encode_length=0;
   max_length=4*blob_length/3+4;
   encode=(char *) AcquireMemory(max_length);
