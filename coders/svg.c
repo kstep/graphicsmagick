@@ -2145,7 +2145,7 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   xmlSAXHandler
-    SAXHandlerStruct =
+    SAXModules =
     {
       SVGInternalSubset,
       SVGIsStandalone,
@@ -2242,7 +2242,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (svg_info.verbose)
     (void) fprintf(stdout,"begin SAX\n");
   xmlSubstituteEntitiesDefault(1);
-  SAXHandler=(&SAXHandlerStruct);
+  SAXHandler=(&SAXModules);
   svg_info.parser=xmlCreatePushParserCtxt(SAXHandler,&svg_info,(char *) NULL,0,
     image->filename);
   while (ReadBlobString(image,buffer) != (char *) NULL)

@@ -54,6 +54,8 @@
 #include "magick.h"
 #include "defines.h"
 #if defined(HasJP2)
+#define HAVE_STDINT_H 1
+#define uchar unsigned int
 #include "jasper/jasper.h"
 #endif
 
@@ -177,15 +179,15 @@ static unsigned int IsJPC(const unsigned char *magick,const unsigned int length)
 
 #if defined(HasJP2)
 static int
-  JP2CloseBlob(stream_obj_t *),
-  JP2ReadBlob(stream_obj_t *,char *,int),
-  JP2WriteBlob(stream_obj_t *,char *, int);
+  JP2CloseBlob(jas_stream_obj_t *),
+  JP2ReadBlob(jas_stream_obj_t *,char *,int),
+  JP2WriteBlob(jas_stream_obj_t *,char *,int);
 
 static long
-  JP2SeekBlob(stream_obj_t *,long,int);
+  JP2SeekBlob(jas_stream_obj_t *,long,int);
 
-static stream_ops_t
-  jp2_stream_fileops =
+static jas_stream_ops_t
+  JP2StreamModules =
   {
     JP2ReadBlob,
     JP2WriteBlob,
@@ -195,7 +197,7 @@ static stream_ops_t
 
 typedef struct _SourceManager
 {
-  stream_t
+  jas_stream_t
     *stream;
 
   Image
@@ -208,33 +210,36 @@ typedef struct _SourceManager
     start_of_blob;
 } SourceManager;
 
-static int JP2CloseBlob(stream_object_t *object)
+static int JP2CloseBlob(jas_stream_obj_t *object)
 {
   CloseBlob(((SourceManager *) object)->image);
   return(0);
 }
 
-static int JP2ReadBlob(stream_object_t *object,char *buffer,int count)
+static int JP2ReadBlob(jas_stream_obj_t *object,char *buffer,int count)
 {
   return(ReadBlob(((SourceManager *) object)->image,count,(void *) buffer));
 }
 
-static long JP2SeekBlob(stream_object_t *object,long offset,int origin)
+static long JP2SeekBlob(jas_stream_obj_t *object,long offset,int origin)
 {
   return(SeekBlob(((SourceManager *) object)->image,offset,origin));
 }
 
-static void JP2SourceManager(stream_t *stream,Image *image)
+static void JP2SourceManager(jas_stream_t *stream,Image *image)
 {
   SourceManager
     *source;
 
-  if (stream->obj_ == (stream_obj_t *) NULL)
+  if (stream->obj_ == (jas_stream_obj_t *) NULL)
     {
-      stream->obj_=(stream_obj_t *) malloc(sizeof(SourceManager));
-      source=(SourceManager *) stream->obj_;
-      source->buffer=(unsigned char *) NULL;
+      stream->obj_=(jas_stream_obj_t *) AcquireMemory(sizeof(SourceManager));
+      if (stream->obj_ == (jas_stream_obj_t *) NULL)
+        MagickError(ResourceLimitError,"Unable to allocate source manager",
+          "Memory allocation failed");
     }
+  source=(SourceManager *) stream->obj_;
+  source->buffer=(unsigned char *) NULL;
   source->image=image;
   stream->openmode_=0;
   stream->bufmode_=0;
@@ -247,17 +252,17 @@ static void JP2SourceManager(stream_t *stream,Image *image)
   stream->ops_=0;
   stream->rwcnt_=0;
   stream->rwlimit_=(-1);
-  stream->ops_=&jp2_stream_fileops;
-  stream->openmode_=STREAM_READ | STREAM_WRITE | STREAM_BINARY;
+  stream->ops_=(&JP2StreamModules);
+  stream->openmode_=JAS_STREAM_READ | JAS_STREAM_WRITE | JAS_STREAM_BINARY;
   stream->bufbase_=stream->tinybuf_;
   stream->bufsize_=1;
-  stream->bufstart_=(&stream->bufbase_[STREAM_MAXPUTBACK]);
+  stream->bufstart_=(&stream->bufbase_[JAS_STREAM_MAXPUTBACK]);
   stream->ptr_=stream->bufstart_;
   stream->cnt_=0;
-  stream->bufmode_|=STREAM_UNBUF & STREAM_BUFMODEMASK;
+  stream->bufmode_|=JAS_STREAM_UNBUF & JAS_STREAM_BUFMODEMASK;
 }
 
-static int JP2WriteBlob(stream_object_t *object,char *buffer,int count)
+static int JP2WriteBlob(jas_stream_obj_t *object,char *buffer,int count)
 {
   return(WriteBlob(((SourceManager *) object)->image,count,(void *) buffer));
 }
@@ -272,17 +277,17 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  stream_t
-    jp2_stream;
-
-  image_t
-    *jp2_image;
-
   int
     y;
 
-  matrix_t
+  jas_image_t
+    *jp2_image;
+
+  jas_matrix_t
     *components[4];
+
+  jas_stream_t
+    jp2_stream;
 
   register int
     i,
@@ -309,7 +314,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  jp2_stream.obj_=(stream_obj_t *) NULL;
+  jp2_stream.obj_=(jas_stream_obj_t *) NULL;
   JP2SourceManager(&jp2_stream,image);
   if (LocaleCompare(image_info->magick,"JP2") == 0)
     {
@@ -361,7 +366,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=width;
   image->rows=height;
   image->depth=depth;
-  image->colorspace=(image_colormodel(jp2_image) == CM_GRAY) ?
+  image->colorspace=(image_colormodel(jp2_image) == JAS_IMAGE_CM_GRAY) ?
     GRAYColorspace : RGBColorspace;
   if (image_info->ping)
     {
@@ -532,17 +537,24 @@ ModuleExport void UnregisterJP2Image(void)
 #if defined(HasJP2)
 static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
 {
-  image_t
-    *jp2_image;
-
-  image_cmptparm_t
-    *parameters;
+  double
+    x_resolution,
+    y_resolution;
 
   int
     y;
 
-  matrix_t
+  jas_image_cmptparm_t
+    *parameters;
+
+  jas_image_t
+    *jp2_image;
+
+  jas_matrix_t
     *components[4];
+
+  jas_stream_t
+    jp2_stream;
 
   register int
     i,
@@ -551,15 +563,8 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
-  stream_t
-    jp2_stream;
-
   uint_fast16_t
-     number_components;
-
-  uint_fast32_t
-     x_resolution,
-     y_resolution;
+    number_components;
 
   unsigned int
      status;
@@ -572,11 +577,11 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   if (IsGrayImage(image) || (image->colorspace != RGBColorspace))
     TransformRGBImage(image,RGBColorspace);
-  jp2_stream.obj_=(stream_obj_t *) NULL;
+  jp2_stream.obj_=(jas_stream_obj_t *) NULL;
   JP2SourceManager(&jp2_stream,image);
   number_components=IsGrayImage(image) ? 1 : 3;
-  parameters=(image_cmptparm_t *)
-    AcquireMemory(number_components*sizeof(image_cmptparm_t));
+  parameters=(jas_image_cmptparm_t *)
+    AcquireMemory(number_components*sizeof(jas_image_cmptparm_t));
   parameters->tlx=0;
   parameters->tly=0;
   parameters->prec=image->depth;
@@ -602,7 +607,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   memcpy(parameters+1,parameters,sizeof(image_cmptparm_t));
   memcpy(parameters+2,parameters,sizeof(image_cmptparm_t));
   jp2_image=image_create(number_components,parameters,
-    (IsGrayImage(image) ? CM_GRAY : CM_RGB));
+    (IsGrayImage(image) ? JAS_IMAGE_CM_GRAY : JAS_IMAGE_CM_RGB));
   if (!jp2_image)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   for (i = 0; i < number_components; ++i)
