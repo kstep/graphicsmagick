@@ -1252,6 +1252,9 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
     *s,
     *t;
 
+  unsigned int
+    length;
+
   assert(image != (Image *) NULL);
   if ((image->columns < (2*radius+1)) || (image->rows < (2*radius+1)))
     {
@@ -1273,8 +1276,8 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
   /*
     Allocate neighbors and scanline.
   */
-  neighbors=(PixelPacket *)
-    AllocateMemory(M_PI*(radius+1)*(radius+1)*sizeof(PixelPacket));
+  length=M_PI*(radius+1)*(radius+1)*sizeof(PixelPacket);
+  neighbors=(PixelPacket *) AllocateMemory(length*sizeof(PixelPacket));
   if (neighbors == (PixelPacket *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to reduce noise",

@@ -102,7 +102,7 @@ typedef struct _CacheInfo
 /*
   Global declarations.
 */
-static size_t
+static off_t
   cache_threshold = PixelCacheThreshold;
 
 /*
@@ -313,9 +313,6 @@ Export void GetCacheInfo(CacheHandle *cache_handle)
 */
 Export off_t GetCacheMemory(off_t memory)
 {
-  CacheInfo
-    *cache_info;
-
   static off_t
     free_memory = PixelCacheThreshold*1024*1024;
 
@@ -349,7 +346,7 @@ Export off_t GetCacheMemory(off_t memory)
 %
 %  The format of the GetCacheThreshold method is:
 %
-%      unsigned int GetCacheThreshold()
+%      off_t GetCacheThreshold()
 %
 %  A description of each parameter follows:
 %
@@ -358,7 +355,7 @@ Export off_t GetCacheMemory(off_t memory)
 %
 %
 */
-Export unsigned int GetCacheThreshold()
+Export off_t GetCacheThreshold()
 {
   return(cache_threshold);
 }
@@ -408,10 +405,10 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
     status;
 
   off_t
+    number_pixels,
     offset;
 
   size_t
-    number_pixels,
     length;
 
   assert(cache_handle != (CacheHandle) NULL);
@@ -756,7 +753,7 @@ Export void SetCacheClassType(CacheHandle cache_handle,ClassType type)
 %
 %  The format of the SetCacheThreshold method is:
 %
-%      void SetCacheThreshold(unsigned int threshold)
+%      void SetCacheThreshold(size_t threshold)
 %
 %  A description of each parameter follows:
 %
@@ -765,7 +762,7 @@ Export void SetCacheClassType(CacheHandle cache_handle,ClassType type)
 %
 %
 */
-Export void SetCacheThreshold(unsigned int threshold)
+Export void SetCacheThreshold(off_t threshold)
 {
   (void) GetCacheMemory(-cache_threshold-threshold*1024*1024);
   cache_threshold=threshold;

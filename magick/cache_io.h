@@ -19,10 +19,10 @@ extern Export ClassType
   GetCacheClassType(CacheHandle);
 
 extern Export off_t
-  GetCacheMemory(off_t);
+  GetCacheMemory(off_t),
+  GetCacheThreshold();
 
 extern Export unsigned int
-  GetCacheThreshold(),
   InitializePixelCache(CacheHandle,ClassType,
     const unsigned int,const unsigned int),
   ReadCachePixels(CacheHandle,RectangleInfo *,PixelPacket *),
@@ -34,7 +34,7 @@ extern Export void
   ClosePixelCache(CacheHandle),
   DestroyCacheInfo(CacheHandle),
   GetCacheInfo(CacheHandle *),
-  SetCacheThreshold(unsigned int),
+  SetCacheThreshold(off_t),
   SetCacheClassType(CacheHandle,ClassType);
 
 #if defined(__cplusplus) || defined(c_plusplus)

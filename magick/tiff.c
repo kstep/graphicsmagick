@@ -323,7 +323,6 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
     pages,
     photometric,
     samples_per_pixel,
-    sans,
     units,
     value;
 
