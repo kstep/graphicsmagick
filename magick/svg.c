@@ -190,7 +190,7 @@ static unsigned int GetToken(Image *image,char **token,int *c,
   return(True);
 }
 
-Export char **StringToTokens(const char *text,int *number_tokens)
+ModuleExport char **StringToTokens(const char *text,int *number_tokens)
 {
   char
     **tokens;
@@ -279,11 +279,75 @@ Export char **StringToTokens(const char *text,int *number_tokens)
   return(tokens);
 }
 
-static char *TraversePath(const char *data)
-{
-#define BezierQuantum  1
 #define BezierCoordinates  4
       
+static void ReflectPoint(PointInfo *input, PointInfo *output)
+{
+  double
+    temp;
+      
+  /* reflect the x control point */
+  temp=input[3].x - input[0].x;
+  if (!temp)
+    temp=1.0;
+  temp=(input[3].x - input[2].x)/temp;
+  temp=temp*(output[3].x - input[3].x);
+  output[1].x=temp+input[3].x;
+
+  /* reflect the y control point */
+  temp=input[3].y - input[0].y;
+  if (!temp)
+    temp=1.0;
+  temp=(input[3].y - input[2].y)/temp;
+  temp=temp*(output[3].y - input[3].y);
+  output[1].y=temp+input[3].y;
+}
+
+static void BezierSmoothPoints(PointInfo *input, PointInfo *output, int outlen)
+{
+#ifdef SMOOTHING_STUFF
+  double
+    alpha,
+    weight,
+    coefficients[BezierCoordinates];
+
+  PointInfo
+    pixel;
+
+  register int
+    i,
+    j;
+
+  for (i=0; i < BezierCoordinates; i++)
+    coefficients[i]=Permutate(BezierCoordinates-1,i);
+  weight=0.0;
+  for (i=0; i < (BezierCoordinates*outlen); i++)
+  {
+    pixel.x=0;
+    pixel.y=0;
+    alpha=pow(1.0-weight,BezierCoordinates-1);
+    for (j=0; j < BezierCoordinates; j++)
+    {
+      pixel.x+=alpha*coefficients[j]*input[j].x;
+      pixel.y+=alpha*coefficients[j]*input[j].y;
+      alpha*=weight/(1.0-weight);
+    }
+    output[i]=pixel;
+    weight+=1.0/outlen/BezierCoordinates;
+  }
+#else
+  register int
+    i;
+
+  for (i=0; i < BezierCoordinates; i++)
+    output[i]=input[i];
+#endif
+}
+
+#define BezierQuantum  1
+
+static char *TraversePath(const char *data)
+{
   char
     *path,
     points[MaxTextExtent];
@@ -298,13 +362,12 @@ static char *TraversePath(const char *data)
 
   PointInfo
     point,
-    start;
+    start,
+    lastp,
+    pixels[BezierCoordinates];
 
   register const char
     *p;
-
-  unsigned int
-    status;
 
   path=AllocateString("");
   p=data;
@@ -318,14 +381,8 @@ static char *TraversePath(const char *data)
       case 'c':
       case 'C':
       {
-        double
-          alpha,
-          coefficients[BezierCoordinates],
-          weight;
-      
         PointInfo
-          pixel,
-          pixels[BezierCoordinates];
+          newpixels[BezierCoordinates];
       
         register int
           i,
@@ -334,39 +391,80 @@ static char *TraversePath(const char *data)
         /*
           Compute bezier points.
         */
+        p++;
         pixels[0]=point;
         for (i=1; i < BezierCoordinates; i++)
         {
           n=0;
-          (void) sscanf(p+1,"%lf%lf%n",&x,&y,&n);
+          if ((*p == ',') || isspace(*p))
+            p++;
+          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
           if (n == 0)
-            (void) sscanf(p+1,"%lf,%lf%n",&x,&y,&n);
+            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
           if (n == 0)
             break;
-          point.x=attribute == 'C' ? x : point.x+x;
-          point.y=attribute == 'C' ? y : point.y+y;
-          pixels[i]=point;
+          lastp.x=attribute == 'C' ? x : point.x+x;
+          lastp.y=attribute == 'C' ? y : point.y+y;
+          pixels[i]=lastp;
           p+=n;
         }
+
+        BezierSmoothPoints(pixels, newpixels, BezierQuantum);
         for (i=0; i < BezierCoordinates; i++)
-          coefficients[i]=Permutate(BezierCoordinates-1,i);
-        weight=0.0;
-        for (i=0; i < (BezierCoordinates*BezierQuantum); i++)
         {
-          pixel.x=0;
-          pixel.y=0;
-          alpha=pow(1.0-weight,BezierCoordinates-1);
-          for (j=0; j < BezierCoordinates; j++)
-          {
-            pixel.x+=alpha*coefficients[j]*pixels[j].x;
-            pixel.y+=alpha*coefficients[j]*pixels[j].y;
-            alpha*=weight/(1.0-weight);
-          }
-          (void) FormatString(points,"%g,%g ",pixel.x,pixel.y);
+          (void) FormatString(points,"%g,%g ",newpixels[i].x,newpixels[i].y);
           if (!ConcatenateString(&path,points))
             return((char *) NULL);
-          weight+=1.0/BezierQuantum/BezierCoordinates;
         }
+        point=lastp;
+        p--;
+        break;
+      }
+      case 's':
+      case 'S':
+      {
+        PointInfo
+          newpixels[BezierCoordinates];
+      
+        register int
+          i,
+          j;
+
+        /*
+          Compute bezier points.
+        */
+        p++;
+        newpixels[0]=pixels[3];
+        for (i=2; i < BezierCoordinates; i++)
+        {
+          n=0;
+          if ((*p == ',') || isspace(*p))
+            p++;
+          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
+          if (n == 0)
+            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
+          if (n == 0)
+            break;
+          lastp.x=attribute == 'S' ? x : point.x+x;
+          lastp.y=attribute == 'S' ? y : point.y+y;
+          newpixels[i]=lastp;
+          p+=n;
+        }
+
+        ReflectPoint(pixels, newpixels);
+        for (i=0; i < BezierCoordinates; i++)
+          pixels[i]=newpixels[i];
+
+        BezierSmoothPoints(pixels, newpixels, BezierQuantum);
+        for (i=0; i < BezierCoordinates; i++)
+        {
+          (void) FormatString(points,"%g,%g ",pixels[i].x,pixels[i].y);
+          if (!ConcatenateString(&path,points))
+            return((char *) NULL);
+        }
+
+        point=lastp;
+        p--;
         break;
       }
       case 'h':
