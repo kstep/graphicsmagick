@@ -33,10 +33,10 @@
 ;
 
 [Setup]
-AppName=ImageMagick
+AppName=ImageMagick 5.4.9 Q:16
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=ImageMagick 5.4.9 Q:16 Beta (August 21, 2002)
+AppVerName=ImageMagick 5.4.9 Q:16 Beta (August 24, 2002)
 AppVersion=5.4.9
 AppCopyright=Copyright (C) 2002 ImageMagick Studio LLC
 AppPublisher=ImageMagick Studio
@@ -61,8 +61,7 @@ Name: desktop_icon; Description: "Create a &desktop icon"; MinVersion: 4,4
 Name: update_path; Description: "Update executable search path"
 Name: associate_extensions; Description: "Associate supported file extensions with ImageMagick"
 Name: install_PerlMagick; Description: "Install PerlMagick for ActiveState Perl v5.6.1 build 633"; Flags: unchecked
-; Name: install_Magick_DLL; Description: "Install ImageMagickObject OLE Control for Visual Basic and WSH"; Flags: unchecked
-
+Name: install_Magick_DLL; Description: "Install ImageMagickObject OLE Control for Visual Basic and WSH"; Flags: unchecked
 
 ; Windows registry settings
 [Registry]
@@ -765,10 +764,10 @@ Source: "..\..\PerlMagick\Image-Magick.tar.gz"; DestDir: "{app}\PerlMagick\x86";
 Source: "..\..\PerlMagick\demo\*"; DestDir: "{app}\PerlMagick\demo"; CopyMode: alwaysoverwrite
 Source: "PerlMagick-PPM.txt"; DestDir: "{app}\PerlMagick"; CopyMode: alwaysoverwrite; DestName: "README.txt"
 ; ImageMagickObject DLL (usable from Visual Basic and WSH)
-;Source: "..\bin\ImageMagickObject.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
-;Source: "..\..\contrib\win32\ATL\ImageMagickObject\README.txt"; DestDir: "{app}\ImageMagickObject"; CopyMode: alwaysoverwrite
-;Source: "..\..\contrib\win32\ATL\ImageMagickObject\Tests\VBTest\*"; DestDir: "{app}\ImageMagickObject\VBExample"; CopyMode: alwaysoverwrite
-;Source: "..\..\contrib\win32\ATL\ImageMagickObject\Tests\WSHTest\*"; DestDir: "{app}\ImageMagickObject\WSHExample"; CopyMode: alwaysoverwrite
+Source: "..\bin\ImageMagickObject.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
+Source: "..\..\contrib\win32\ATL\ImageMagickObject\README.txt"; DestDir: "{app}\ImageMagickObject"; CopyMode: alwaysoverwrite
+Source: "..\..\contrib\win32\ATL\ImageMagickObject\Tests\VBTest\*"; DestDir: "{app}\ImageMagickObject\VBExample"; CopyMode: alwaysoverwrite
+Source: "..\..\contrib\win32\ATL\ImageMagickObject\Tests\WSHTest\*"; DestDir: "{app}\ImageMagickObject\WSHExample"; CopyMode: alwaysoverwrite
 ;  Development libraries
 Source: "..\lib\CORE_RL_Magick++_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
 ;Source: "..\lib\CORE_RL_bzlib_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
@@ -844,12 +843,12 @@ Name: "{userdesktop}\ImageMagick Display"; Filename: "{app}\IMDisplay.exe"; Icon
 Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -a:""{app}"""; StatusMsg: "Updating environment variables..."; Tasks: update_path
 Filename: "ppm"; Parameters: "install Image-Magick.ppd"; WorkingDir: "{app}\PerlMagick"; StatusMsg: "Installing PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
 ; Add /s to regsvr32 for silent operation
-;Filename: "regsvr32"; Parameters: "/c /s""{app}\ImageMagickObject.dll"""; StatusMsg: "Registering ImageMagickObject DLL..."; Tasks: install_Magick_DLL
+Filename: "regsvr32"; Parameters: "/c /s""{app}\ImageMagickObject.dll"""; StatusMsg: "Registering ImageMagickObject DLL..."; Tasks: install_Magick_DLL
 
 [UninstallRun]
 ; Add -debug to parameters to enable debugging
 Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -r:""{app}"""; StatusMsg: "Restoring environment variables..."; Tasks: update_path
 Filename: "ppm"; Parameters: "remove Image-Magick"; StatusMsg: "Uninstalling PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
 ; Add /s to regsvr32 for silent operation
-;Filename: "regsvr32"; Parameters: "/u /s""{app}\ImageMagickObject.dll"""; StatusMsg: "Unregistering ImageMagickObject DLL..."; Tasks: install_Magick_DLL
+Filename: "regsvr32"; Parameters: "/u /s""{app}\ImageMagickObject.dll"""; StatusMsg: "Unregistering ImageMagickObject DLL..."; Tasks: install_Magick_DLL
 
