@@ -164,7 +164,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   pwp_image=AllocateImage(image_info);
   status=OpenBlob(image_info,pwp_image,ReadBinaryType);
-  if (pwp_image->file == (FILE *) NULL)
+  if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",pwp_image);
   status=ReadBlob(pwp_image,5,(char *) magick);
   if ((status == False) || (LocaleNCompare((char *) magick,"SFW95",5) != 0))
