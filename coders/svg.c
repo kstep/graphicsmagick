@@ -229,8 +229,6 @@ static char **StringToTokens(const char *text,int *number_tokens)
     while (isspace((int) (*p)))
       p++;
     (*number_tokens)++;
-    while (isalpha((int) (*p)))
-      p++;
     if (*p == '"')
       for (p++; (*p != '"') && (*p != '\0'); p++);
     if (*p == '\'')
@@ -257,8 +255,6 @@ static char **StringToTokens(const char *text,int *number_tokens)
     while (isspace((int) (*p)))
       p++;
     q=p;
-    while (isalpha((int) (*q)))
-      q++;
     if (*q == '"')
       {
         p++;

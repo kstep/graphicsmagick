@@ -606,8 +606,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   image=AllocateImage(image_info);
   status=TT_Init_FreeType(&engine);
   if (status)
-    ThrowReaderException(DelegateWarning,"Cannot initialize TTF engine",
-      image);
+    ThrowReaderException(DelegateWarning,"Cannot initialize TTF engine",image);
   /*
     Search for Truetype font filename.
   */
@@ -732,8 +731,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     status|=TT_Load_Glyph(instance,glyphs[unicode[i]],code,
       TTLOAD_SCALE_GLYPH | TTLOAD_HINT_GLYPH);
     if (status)
-      ThrowReaderException(DelegateWarning,"Cannot initialize TTF glyph",
-        image);
+      ThrowReaderException(DelegateWarning,"Cannot initialize TTF glyph",image);
   }
   TT_Get_Face_Properties(face,&face_properties);
   TT_Get_Instance_Metrics(instance,&instance_metrics);
@@ -812,25 +810,11 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     if ((image->columns % 2) != 0)
       p++;
   }
-  if ((image_info->affine[0] != 1.0) && (image_info->affine[1] != 0.0))
-    {
-      Image
-        *rotate_image;
-
-      /*
-        Rotate text.
-      */
-      rotate_image=RotateImage(image,180.0*acos(image_info->affine[0])/M_PI,
-        &image->exception);
-      if (rotate_image == (Image *) NULL)
-        return(False);
-      DestroyImage(image);
-      image=rotate_image;
-    }
   image->bounding_box.x1=0.0;
   image->bounding_box.y1=0.0;
-  image->bounding_box.x2=image->columns;
-  image->bounding_box.y2=image->rows;
+  image->bounding_box.x2=Max(image->columns,image->rows);
+  image->bounding_box.y2=image_info->affine[0]*image_info->pointsize;
+  image->bounding_box.y2-=image->bounding_box.y2/3.0;
   /*
     Free TrueType resources.
   */
@@ -861,7 +845,7 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   char
     filename[MaxTextExtent],
     *font,
-    page[MaxTextExtent];
+    geometry[MaxTextExtent];
 
   FILE
     *file;
@@ -942,9 +926,9 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
   clone_info=CloneImageInfo(image_info);
-  FormatString(page,"%dx%d+0+0!",(int) ceil(extent.x),(int) ceil(extent.y));
+  FormatString(geometry,"%dx%d+0+0!",(int) ceil(extent.x),(int) ceil(extent.y));
   (void) FormatString(clone_info->filename,"ps:%.1024s",filename);
-  (void) CloneString(&clone_info->page,page);
+  (void) CloneString(&clone_info->page,geometry);
   DestroyImage(image);
   image=ReadImage(clone_info,exception);
   (void) remove(filename);
@@ -1016,10 +1000,9 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   }
   image->bounding_box.x1=0.0;
   image->bounding_box.y1=0.0;
-  image->bounding_box.x2=image->columns;
-  image->bounding_box.y2=image->rows;
-  if (identity)
-    image->bounding_box.y2-=floor(extent.y/8.0)+1;
+  image->bounding_box.x2=Max(image->columns,image->rows);
+  image->bounding_box.y2=image_info->affine[0]*image_info->pointsize;
+  image->bounding_box.y2-=image->bounding_box.y2/3.0;
   return(image);
 }
 
@@ -1103,8 +1086,7 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
           */
           visual_info=XBestVisualInfo(display,map_info,&resource_info);
           if (visual_info == (XVisualInfo *) NULL)
-            ThrowReaderException(XServerWarning,"Unable to get visual",
-              image);
+            ThrowReaderException(XServerWarning,"Unable to get visual",image);
           map_info->colormap=(Colormap) NULL;
           pixel.pixels=(unsigned long *) NULL;
           pixel.gamma_map=(XColor *) NULL;
@@ -1122,8 +1104,7 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
           */
           font_info=XBestFont(display,&resource_info,False);
           if (font_info == (XFontStruct *) NULL)
-            ThrowReaderException(XServerWarning,"Unable to load font",
-              image);
+            ThrowReaderException(XServerWarning,"Unable to load font",image);
           if ((map_info == (XStandardColormap *) NULL) ||
               (visual_info == (XVisualInfo *) NULL) ||
               (font_info == (XFontStruct *) NULL))
@@ -1151,8 +1132,7 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
       (void) CloneString(&resource_info.font,image_info->font);
       font_info=XBestFont(display,&resource_info,False);
       if (font_info == (XFontStruct *) NULL)
-        ThrowReaderException(ResourceLimitWarning,"Unable to load font",
-          image);
+        ThrowReaderException(ResourceLimitWarning,"Unable to load font",image);
     }
   annotate_info.font_info=font_info;
   annotate_info.text=(char *) text;
@@ -1167,15 +1147,10 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
   image->columns=annotate_info.width;
   image->rows=annotate_info.height;
   SetImage(image,TransparentOpacity);
-  image->bounding_box.x1=0.0;
-  image->bounding_box.y1=0.0;
-  image->bounding_box.x2=annotate_info.width-1;
-  image->bounding_box.y2=annotate_info.height-1;
   image->background_color=image->border_color;
   status=XAnnotateImage(display,&pixel,&annotate_info,image);
   if (status == 0)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-      image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   for (y=0; y < (int) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
@@ -1198,33 +1173,60 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
     if (!SyncImagePixels(image))
       break;
   }
-  if ((image_info->affine[0] != 1.0) && (image_info->affine[1] != 0.0))
+  if ((image_info->affine[1] == 0.0) && (image_info->affine[2] == 0.0))
     {
-      Image
-        *rotate_image;
+      if ((image_info->affine[0] != 1.0) || (image_info->affine[0] != 1.0))
+        {
+          Image
+            *scale_image;
 
-      /*
-        Rotate text.
-      */
-      rotate_image=RotateImage(image,180.0*acos(image_info->affine[0])/M_PI,
-        &image->exception);
-      if (rotate_image == (Image *) NULL)
-        return(False);
-      DestroyImage(image);
-      image=rotate_image;
+          unsigned int
+            height,
+            width;
+
+          width=image_info->affine[0]*image->columns;
+          height=image_info->affine[3]*image->rows;
+          scale_image=ZoomImage(image,width,height,exception);
+          if (scale_image != (Image *) NULL)
+            {
+              DestroyImage(image);
+              image=scale_image;
+            }
+        }
+    }
+  else
+    {
+      if (((image_info->affine[0]-image_info->affine[3]) == 0.0) &&
+          ((image_info->affine[1]+image_info->affine[2]) == 0.0))
+        {
+          double
+            theta;
+
+          Image
+            *rotate_image;
+
+          theta=(180.0/M_PI)*atan2(image_info->affine[1],image_info->affine[0]);
+          rotate_image=RotateImage(image,theta,exception);
+          if (rotate_image != (Image *) NULL)
+            {
+              DestroyImage(image);
+              image=rotate_image;
+            }
+        }
     }
   image->bounding_box.x1=0.0;
   image->bounding_box.y1=0.0;
-  image->bounding_box.x2=image->columns;
-  image->bounding_box.y2=image->rows;
+  image->bounding_box.x2=Max(image->columns,image->rows);
+  image->bounding_box.y2=image_info->affine[0]*image_info->pointsize;
+  image->bounding_box.y2-=image->bounding_box.y2/3.0;
   return(image);
 #else
   Image
     *image;
 
   image=AllocateImage(image_info);
-  ThrowReaderException(MissingDelegateWarning,
-    "X11 library is not available",image);
+  ThrowReaderException(MissingDelegateWarning,"X11 library is not available",
+    image);
 #endif
 }
 
@@ -1296,7 +1298,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       if (s == (char *) NULL)
         {
           ThrowException(exception,FileOpenWarning,
-              "Unable to read label data from file","Memory allocation failed");
+            "Unable to read label data from file","Memory allocation failed");
           FreeMemory((void **) &label);
           return((Image *) NULL);
         }

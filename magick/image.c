@@ -1224,18 +1224,23 @@ MagickExport unsigned int CompositeImage(Image *image,
       continue;
     if ((y-y_offset) >= composite_image->rows)
       break;
+    q=GetImagePixels(image,0,y,image->columns,1);
+    indexes=GetIndexes(image);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < image->columns; x++)
     {
       if (x < x_offset)
-        continue;
+        {
+          q++;
+          continue;
+        }
       if ((x-x_offset) >= composite_image->columns)
         break;
       p=GetImagePixels(composite_image,x-x_offset,y-y_offset,1,1);
-      q=GetImagePixels(image,x,y,1,1);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
       composite_indexes=GetIndexes(composite_image);
-      indexes=GetIndexes(image);
       opacity=q->opacity;
       switch (compose)
       {
@@ -1260,15 +1265,15 @@ MagickExport unsigned int CompositeImage(Image *image,
               }
             else
               {
-                red=alpha*(p->red*p->opacity+
-                  q->red*(OpaqueOpacity-p->opacity));
-                green=alpha*(p->green*p->opacity+
-                  q->green*(OpaqueOpacity-p->opacity));
-                blue=alpha*(p->blue*p->opacity+
-                  q->blue*(OpaqueOpacity-p->opacity));
+                red=alpha*((double) p->red*p->opacity+
+                  (double) q->red*(OpaqueOpacity-p->opacity));
+                green=alpha*((double) p->green*p->opacity+
+                  (double) q->green*(OpaqueOpacity-p->opacity));
+                blue=alpha*((double) p->blue*p->opacity+
+                  (double) q->blue*(OpaqueOpacity-p->opacity));
                 if (composite_image->matte)
-                  opacity=alpha*(p->opacity*p->opacity+
-                    q->opacity*(OpaqueOpacity-p->opacity));
+                  opacity=alpha*((double) p->opacity*p->opacity+
+                    (double) q->opacity*(OpaqueOpacity-p->opacity));
               }
           break;
         }
@@ -1477,15 +1482,16 @@ MagickExport unsigned int CompositeImage(Image *image,
       }
       if (image->class == PseudoClass)
         if (image->class == composite_image->class)
-          indexes[x]=composite_indexes[x];
+          indexes[x]=composite_indexes[x-x_offset];
       q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
       q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
       q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
       q->opacity=(opacity < TransparentOpacity) ? TransparentOpacity :
         (opacity > OpaqueOpacity) ? OpaqueOpacity : opacity+0.5;
-      if (!SyncImagePixels(image))
-        break;
+      q++;
     }
+    if (!SyncImagePixels(image))
+      break;
   }
   if (compose == DisplaceCompositeOp)
     DestroyImage(composite_image);
