@@ -537,6 +537,8 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       image->matte=True;
       image->columns=canvas.width;
       image->rows=canvas.rows;
+      crop_info.width=0;
+      crop_info.height=image->rows;
       p=(unsigned char *) canvas.bitmap;
       for (y=0; y < (int) image->rows; y++)
       {
@@ -552,7 +554,12 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
             q->opacity=(int) (Opaque*Min(*p,4))/4;
           else
             q->opacity=(*p) > 1 ? Opaque : Transparent;
-          if (q->opacity == Transparent)
+          if (q->opacity != Transparent)
+            {
+              if (x > (int) crop_info.width)
+                crop_info.width=x;
+            }
+          else
             {
               q->red=(~q->red);
               q->green=(~q->green);
@@ -566,6 +573,8 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
         if ((image->columns % 2) != 0)
           p++;
       }
+      (void) sprintf(geometry,"%ux%u+0+0",crop_info.width+1,crop_info.height);
+      TransformImage(&image,geometry,(char *) NULL);
       /*
         Free TrueType resources.
       */
@@ -821,8 +830,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       p++;
     }
   }
-  crop_info.width++;
-  (void) sprintf(geometry,"%ux%u%+d%+d",crop_info.width,crop_info.height,
+  (void) sprintf(geometry,"%ux%u%+d%+d",crop_info.width+1,crop_info.height,
     crop_info.x,crop_info.y);
   TransformImage(&image,geometry,(char *) NULL);
   image->matte=True;
