@@ -80,7 +80,7 @@ extern MagickExport DelegateInfo
   *SetDelegateInfo(DelegateInfo *);
 
 extern MagickExport unsigned int
-  ExecutePostscriptInterpreter(const unsigned int,const char *),
+  InvokePostscriptDelegate(const unsigned int,const char *),
   InvokeDelegate(ImageInfo *,Image *,const char *,const char *,ExceptionInfo *),
   ListDelegateInfo(FILE *,ExceptionInfo *);
 

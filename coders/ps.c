@@ -337,7 +337,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
     postscript_filename);
   MagickMonitor(RenderPostscriptText,0,8);
-  status=ExecutePostscriptInterpreter(image_info->verbose,command);
+  status=InvokePostscriptDelegate(image_info->verbose,command);
   if (!IsAccessible(image_info->filename))
     {
       /*
@@ -348,7 +348,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(FileOpenError,"Unable to write file",image);
       (void) fputs("showpage\n",file);
       (void) fclose(file);
-      status=ExecutePostscriptInterpreter(image_info->verbose,command);
+      status=InvokePostscriptDelegate(image_info->verbose,command);
     }
   (void) remove(postscript_filename);
   MagickMonitor(RenderPostscriptText,7,8);
