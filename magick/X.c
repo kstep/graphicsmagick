@@ -812,7 +812,7 @@ Export void XBestPixel(Display *display,const Colormap colormap,XColor *colors,
 %
 %    4  From the list of visuals, choose one that can display the most
 %       simultaneous colors.  If more than one visual can display the same
-%       number of simultaneous colors, one is choosen based on a rank.
+%       number of simultaneous colors, one is chosen based on a rank.
 %
 %  The format of the XBestVisualInfo routine is:
 %
@@ -3383,7 +3383,7 @@ Export char *XGetScreenDensity(Display *display)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XGetSubwindow returns the subwindow of a window choosen the
+%  Method XGetSubwindow returns the subwindow of a window chosen the
 %  user with the pointer and a button press.
 %
 %  The format of the XGetSubwindow routine is:
@@ -3453,7 +3453,7 @@ Export Window XGetSubwindow(Display *display,Window window,int x,int y)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XGetWindowColor returns the color of a pixel interactively choosen
+%  Method XGetWindowColor returns the color of a pixel interactively chosen
 %  from the X server.
 %
 %  The format of the XGetWindowColor routine is:
@@ -5891,7 +5891,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
 %
 %  Method XMakeImageMSBFirst initializes the pixel data of an X11 Image.
 %  The X image pixels are copied in most-significant bit and byte first order.
-%  The server's scanline pad is also resprected. Rather than using one or two
+%  The server's scanline pad is also respected. Rather than using one or two
 %  general cases, many special cases are found here to help speed up the image
 %  conversion.
 %
@@ -6504,7 +6504,7 @@ Export void XMakeMagnifyImage(Display *display,XWindows *windows)
     *ximage;
 
   /*
-    Check boundry conditions.
+    Check boundary conditions.
   */
   assert(display != (Display *) NULL);
   assert(windows != (XWindows *) NULL);
@@ -8129,7 +8129,7 @@ Export unsigned int XQueryColorDatabase(const char *target,XColor *color)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XQueryPosition gets the pointer coodinates relative to a window.
+%  Method XQueryPosition gets the pointer coordinates relative to a window.
 %
 %  The format of the XQueryPosition routine is:
 %
@@ -8327,7 +8327,7 @@ Export void XRemoteCommand(Display *display,const char * window,
   if (window != (char *) NULL)
     {
       /*
-        Search window heirarchy and identify any clients by name or ID.
+        Search window hierarchy and identify any clients by name or ID.
       */
       if (isdigit((int) (*window)))
         remote_window=XWindowByID(display,root_window,(Window)
@@ -8364,7 +8364,7 @@ Export void XRemoteCommand(Display *display,const char * window,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method XRetainWindowColors sets X11 color resources on a window.  This
-%  perserves the colors associated with an image displayed on the window.
+%  preserves the colors associated with an image displayed on the window.
 %
 %  The format of the XRetainWindowColors routine is:
 %

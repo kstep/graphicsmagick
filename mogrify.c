@@ -119,7 +119,7 @@
 %    -sharpen factor      apply a filter to sharpen the image
 %    -shear geometry      slide one edge of the image along the X or Y axis
 %    -size geometry       width and height of image
-%    -solarize thresold   negate all pixels above the threshold level
+%    -solarize threshold   negate all pixels above the threshold level
 %    -spread amount       displace image pixels by a random amount
 %    -swirl degrees       swirl image pixels about the center
 %    -texture filename    name of texture to tile onto the image background
@@ -241,7 +241,7 @@ static void Usage(const char *client_name)
       "-sharpen factor      apply a filter to sharpen the image",
       "-shear geometry      slide one edge of the image along the X or Y axis",
       "-size geometry       width and height of image",
-      "-solarize thresold   negate all pixels above the threshold level",
+      "-solarize threshold   negate all pixels above the threshold level",
       "-spread amount       displace image pixels by a random amount",
       "-swirl degrees       swirl image pixels about the center",
       "-texture filename    name of texture to tile onto the image background",

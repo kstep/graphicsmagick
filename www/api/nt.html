@@ -57,6 +57,9 @@ status=<STRONG>ImageFormatConflict</STRONG>(magick)
 <STRONG>NTTemporaryFilename</STRONG>(filename)
 
 <P>
+<STRONG>NTWarningHandler</STRONG>(warning,message,qualifier)
+
+<P>
 <STRONG>closedir</STRONG>(entry)
 
 <P>
@@ -222,6 +225,26 @@ Method NTWarningHandler displays a warning message.
 <P>
 The format of the NTWarningHandler routine is:
 
+<P>
+<PRE>        NTWarningHandler(warning,message,qualifier)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>warning:</STRONG><DD>
+<P>
+Specifies the numeric warning category.
+
+<DT><STRONG>message:</STRONG><DD>
+<P>
+Specifies the message to display before terminating the program.
+
+<DT><STRONG>qualifier:</STRONG><DD>
+<P>
+Specifies any qualifier to the message.
+
+</DL></DL>
 <P>
 <HR>
 <H2><A NAME="opendir">opendir</A></H2>

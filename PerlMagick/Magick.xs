@@ -1236,7 +1236,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                   info->image_info->filename);
               else
                 for ( ; image; image=image->next)
-                  FormatString(image->magick,info->image_info->magick);
+                  (void) strcpy(image->magick,info->image_info->magick);
             }
           return;
         }

@@ -6515,7 +6515,7 @@ Export void XInfoWidget(Display *display,XWindows *windows,char *activity)
       ((int) windows->info.height != height))
     {
       /*
-        Size Info widget to accomodate the activity text.
+        Size Info widget to accommodate the activity text.
       */
       windows->info.width=width;
       windows->info.height=height;

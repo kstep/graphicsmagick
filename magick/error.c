@@ -55,7 +55,7 @@
 #include "magick.h"
 
 /*
-  Forward declaraations.
+  Forward declarations.
 */
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

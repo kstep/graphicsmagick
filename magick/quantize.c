@@ -182,7 +182,7 @@
 %  For efficiency, QUANTIZE requires that the reference image be in a
 %  run-length encoded format.
 %
-%  This method is based on a similiar algorithm written by Paul Raveling.
+%  This method is based on a similar algorithm written by Paul Raveling.
 %
 %
 */
@@ -940,7 +940,7 @@ static void Dither(CubeInfo *cube_info,Image *image,unsigned int direction)
 %  the corresponding color reduced algorithm to neighboring pixels along a
 %  Hilbert curve.
 %
-%  This algorithm is strongly based on a similiar algorithm by Thiadmer
+%  This algorithm is strongly based on a similar algorithm by Thiadmer
 %  Riemersma.
 %
 %  The format of the DitherImage routine is:

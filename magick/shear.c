@@ -47,7 +47,7 @@
 %
 %  Method RotateImage, XShearImage, and YShearImage is based on the paper
 %  "A Fast Algorithm for General Raster Rotatation" by Alan W. Paeth,
-%  Graphics Interface '86 (Vancouver).  RotateImage is adapted from a similiar
+%  Graphics Interface '86 (Vancouver).  RotateImage is adapted from a similar
 %  routine based on the Paeth paper written by Michael Halle of the Spatial
 %  Imaging Group, MIT Media Lab.
 %
@@ -944,7 +944,7 @@ static void YShearImage(Image *image,const double degrees,
 %  image.
 %
 %  Method RotateImage is based on the paper "A Fast Algorithm for General
-%  Raster Rotatation" by Alan W. Paeth.  RotateImage is adapted from a similiar
+%  Raster Rotatation" by Alan W. Paeth.  RotateImage is adapted from a similar
 %  routine based on the Paeth paper written by Michael Halle of the Spatial
 %  Imaging Group, MIT Media Lab.
 %

@@ -45,7 +45,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The directory routines are strongly based on similiar routines written
+%  The directory routines are strongly based on similar routines written
 %  by Rich Salz.
 %
 */

@@ -48,7 +48,7 @@ gems - Graphic Gems - Graphic Support Methods
 <STRONG>Hull</STRONG>(x_offset,y_offset,polarity,columns,rows,f,g)
 
 <P>
-opacity=<STRONG>InsidePrimitive</STRONG>(primitive_info,annotate_info,x,y,image)
+opacity=<STRONG>InsidePrimitive</STRONG>(primitive_info,annotate_info,target,image)
 
 <P>
 <STRONG>InterpolateColor</STRONG>(image,x,y)
@@ -110,8 +110,8 @@ A structure of type Quantum.
 
 <DT><STRONG>noise_type:</STRONG><DD>
 <P>
-The type of noise: gaussian, multiplicative gaussian, impulse, laplacian,
-or poisson.
+The type of noise: Gaussian, multiplicative Gaussian, impulse, laplacian,
+or Poisson.
 
 </DL></DL>
 <P>
@@ -189,10 +189,13 @@ greater than fully transparent is returned for a primitive edge pixel to
 allow for anti-aliasing. Otherwise fully transparent is returned.
 
 <P>
+Rick Mabry provided the algorithms for anti-aliased primitives.
+
+<P>
 The format of the InsidePrimitive routine is:
 
 <P>
-<PRE>        opacity=InsidePrimitive(primitive_info,annotate_info,x,y,image)
+<PRE>        opacity=InsidePrimitive(primitive_info,annotate_info,target,image)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -211,9 +214,9 @@ Specifies a pointer to a PrimitiveInfo structure.
 <P>
 Specifies a pointer to a AnnotateInfo structure.
 
-<DT><STRONG>x,y:</STRONG><DD>
+<DT><STRONG>target:</STRONG><DD>
 <P>
-Integers representing the (x,y) location in the image.
+PointInfo representing the (x,y) location in the image.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>

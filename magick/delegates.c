@@ -348,7 +348,7 @@ Export unsigned int GetDelegateInfo(const char *decode_tag,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetDelegateCommand replaces any embedded formating characters with
+%  Method GetDelegateCommand replaces any embedded formatting characters with
 %  the appropriate image attribute and returns the resulting command.
 %
 %  The format of the GetDelegateCommand routine is:
@@ -421,7 +421,7 @@ Export char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method InvokeDelegate replaces any embedded formating characters with
+%  Method InvokeDelegate replaces any embedded formatting characters with
 %  the appropriate image attribute and executes the resulting command.  False
 %  is returned if the commands execute with success otherwise True.
 %

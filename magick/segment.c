@@ -182,7 +182,7 @@ static void
 %    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
-%    o extrema:  Specifies a pointer to an array of shortegers.  They
+%    o extrema:  Specifies a pointer to an array of integers.  They
 %      represent the peaks and valleys of the histogram for each color
 %      component.
 %
@@ -687,7 +687,7 @@ static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
 %
 %  A description of each parameter follows.
 %
-%    o extrema:  Specifies a pointer to an array of shortegers.  They
+%    o extrema:  Specifies a pointer to an array of integers.  They
 %      represent the peaks and valleys of the histogram for each color
 %      component.
 %
@@ -745,10 +745,10 @@ static int DefineRegion(const short *extrema,ExtentPacket *extents)
 %  A description of each parameter follows.
 %
 %    o histogram: Specifies an array of doubles representing the number of
-%      pixels for each intensity of a paritcular color component.
+%      pixels for each intensity of a particular color component.
 %
 %    o derivative: This array of doubles is initialized by DerivativeHistogram
-%      to the derivative of the histogram using centeral differencing.
+%      to the derivative of the histogram using central differencing.
 %
 %
 */
@@ -794,8 +794,8 @@ static void DerivativeHistogram(const double *histogram,double *derivative)
 %    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
-%    o histogram: Specifies an array of longegers representing the number
-%      of pixels for each intensity of a paritcular color component.
+%    o histogram: Specifies an array of integers representing the number
+%      of pixels for each intensity of a particular color component.
 %
 %
 */
@@ -1026,10 +1026,10 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
 %
 %  A description of each parameter follows.
 %
-%    o histogram: Specifies an array of longegers representing the number
-%      of pixels for each intensity of a paritcular color component.
+%    o histogram: Specifies an array of integers representing the number
+%      of pixels for each intensity of a particular color component.
 %
-%    o extrema:  Specifies a pointer to an array of shortegers.  They
+%    o extrema:  Specifies a pointer to an array of integers.  They
 %      represent the peaks and valleys of the histogram for each color
 %      component.
 %
@@ -1169,7 +1169,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
   if (root == (IntervalTree *) NULL)
     return(0.0);
   /*
-    Find active nodes:  stabilty is greater (or equal) to the mean stability of
+    Find active nodes:  stability is greater (or equal) to the mean stability of
     its children.
   */
   number_nodes=0;
@@ -1259,7 +1259,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
 %  A description of each parameter follows.
 %
 %    o histogram: Specifies an array of doubles representing the number of
-%      pixels for each intensity of a paritcular color component.
+%      pixels for each intensity of a particular color component.
 %
 %
 */
@@ -1313,7 +1313,7 @@ static void ScaleSpace(const long *histogram,const double tau,
 %    o second_derivative: Specifies an array of doubles representing the
 %      second derivative of the histogram of a particular color component.
 %
-%    o crossings:  This array of shortegers is initialized with
+%    o crossings:  This array of integers is initialized with
 %      -1, 0, or 1 representing the slope of the first derivative of the
 %      of a particular color component.
 %

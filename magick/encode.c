@@ -2583,7 +2583,7 @@ unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 %  image comment contains a list of unique pixel values and the number of times
 %  each occurs in the image.
 %
-%  This routine is strongly based on a similiar one written by
+%  This routine is strongly based on a similar one written by
 %  muquit@warm.semcor.com which in turn is based on ppmhistmap of netpbm.
 %
 %  The format of the WriteHISTOGRAMImage routine is:
@@ -7990,14 +7990,14 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       {
         for (x=0; x < i; x++)
           commands[argc++]="-contrast";
-        FormatString(label,"-contast %d",i+1);
+        FormatString(label,"-contrast %d",i+1);
         break;
       }
       case DullPreview:
       {
         for (x=0; x < i; x++)
           commands[argc++]="+contrast";
-        FormatString(label,"+contast %d",i+1);
+        FormatString(label,"+contrast %d",i+1);
         break;
       }
       case GrayscalePreview:
@@ -8038,11 +8038,11 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
         switch (x)
         {
           case 0: (void) strcpy(factor,"uniform"); break;
-          case 1: (void) strcpy(factor,"gaussian"); break;
+          case 1: (void) strcpy(factor,"Gaussian"); break;
           case 2: (void) strcpy(factor,"multiplicative"); break;
           case 3: (void) strcpy(factor,"impulse"); break;
           case 4: (void) strcpy(factor,"laplacian"); break;
-          case 5: (void) strcpy(factor,"poisson"); break;
+          case 5: (void) strcpy(factor,"Poisson"); break;
           default: (void) strcpy(images[i]->magick,"NULL"); break;
         }
         x++;

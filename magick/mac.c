@@ -45,7 +45,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The directory routines are strongly based on similiar routines written
+%  The directory routines are strongly based on similar routines written
 %  by Steve Summit, scs@eskimo.com.  The Ghostscript launch code is strongly
 %  based on Dave Schooley's Mac Gnuplot and provided by
 %  schindall@wave14i.nrl.navy.mil.

@@ -2192,7 +2192,7 @@ Export char *PostscriptGeometry(const char *page)
 %    o status:  Method ReadData returns True if all the data requested
 %      is obtained without error, otherwise False.
 %
-%    o data:  Specifies an area to place the information reuested from
+%    o data:  Specifies an area to place the information requested from
 %      the file.
 %
 %    o size:  Specifies an integer representing the length of an
@@ -2250,7 +2250,7 @@ Export unsigned int ReadData(char *data,const unsigned int size,
 %    o status:  Method ReadData returns the number of characters read
 %      unless there is an error, otherwise `-1'.
 %
-%    o data:  Specifies an area to place the information reuested from
+%    o data:  Specifies an area to place the information requested from
 %      the file.
 %
 %    o file:  Specifies a file to read the data.
@@ -2753,7 +2753,7 @@ Export void TemporaryFilename(char *filename)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method TranslateText replaces any embedded formating characters with
+%  Method TranslateText replaces any embedded formatting characters with
 %  the appropriate image attribute and returns the translated text.
 %
 %  The format of the TranslateText routine is:

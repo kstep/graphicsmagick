@@ -1210,7 +1210,7 @@ Export void CoalesceImages(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method ColorFloodfillImage floodfills the designated area with a color.
-%  The floodfill algorithm is strongly based on a similiar algorithm in
+%  The floodfill algorithm is strongly based on a similar algorithm in
 %  "Graphics Gems" by Paul Heckbert.
 %
 %  The format of the ColorFloodfillImage routine is:
@@ -1502,7 +1502,7 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method ColorizeImage colorizes an image with the pen color.  The amount
-%  of the coloring is controled with the opacity levels.
+%  of the coloring is controlled with the opacity levels.
 %
 %  The format of the ColorizeImage routine is:
 %
@@ -2675,6 +2675,101 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C r e a t e I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CreateImage creates an image from the specified normalized pixel data
+%  and returns it.  It allocates the memory necessary for the new Image
+%  structure and returns a pointer to the new image.
+%
+%  The format of the CreateImage routine is:
+%
+%      image=CreateImage(width,height,red,green,blue,opacity)
+%
+%  A description of each parameter follows:
+%
+%    o image:  Method CreateImage returns a pointer to the image after
+%      reading.  A null image is returned if there is a memory shortage or
+%      if the image cannot be read.
+%
+%    o width: Specifies the width in pixels of the image.
+%
+%    o height: Specifies the height in pixels of the image.
+%
+%    o red,green,blue,opacity: This array of normalized float values [0..1]
+%      contain the red, green, blue, and opacity components of the pixel data.
+%      The length of the arrays must equal the area specified by the width and
+%      height values.  If you do not want to initialize a particular
+%      component, specify it as NULL.
+%
+%
+*/
+Image *CreateImage(const unsigned int width,const unsigned int height,
+  const float *red,const float *green,const float *blue,const float *opacity)
+{
+  Image
+    *image;
+
+  register int
+    i;
+
+  RunlengthPacket
+    *q;
+
+  if ((width*height) == 0)
+    {
+      MagickWarning(CorruptImageWarning,"impossible image size",(char *) NULL);
+      return((Image *) NULL);
+    }
+  /*
+    Allocate image structure.
+  */
+  image=AllocateImage((ImageInfo *) NULL);
+  if (image == (Image *) NULL)
+    return((Image *) NULL);
+  /*
+    Initialize image structure.
+  */
+  image->matte=opacity != (float *) NULL;
+  image->columns=width;
+  image->rows=height;
+  image->packets=image->columns*image->rows;
+  image->pixels=(RunlengthPacket *)
+    AllocateMemory(image->packets*sizeof(RunlengthPacket));
+  if (image->pixels == (RunlengthPacket *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+        (char *) NULL);
+      return((Image *) NULL);
+    }
+  SetImage(image);
+  /*
+    Convert a rectangular array of float pixels to runlength-encoded.
+  */
+  q=image->pixels;
+  for (i=0; i < image->packets; i++)
+  {
+    if (red != (float *) NULL)
+      q->red=(Quantum) (MaxRGB*red[i]);
+    if (green != (float *) NULL)
+      q->green=(Quantum) (MaxRGB*green[i]);
+    if (blue != (float *) NULL)
+      q->blue=(Quantum) (MaxRGB*blue[i]);
+    if (opacity != (float *) NULL)
+      q->index=(unsigned short) Opaque*opacity[i];
+    q->length=0;
+  }
+  return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C r o p I m a g e                                                         %
 %                                                                             %
 %                                                                             %
@@ -2683,7 +2778,7 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %  Method CropImage creates a new image that is a subregion of an existing
 %  one.  It allocates the memory necessary for the new Image structure and
-%  returns a pointer to the new image.  This routine is optimized to perserve
+%  returns a pointer to the new image.  This routine is optimized to preserve
 %  the runlength encoding.  That is, the cropped image will always use less
 %  memory than the original.
 %
@@ -3836,9 +3931,6 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   PrimitiveType
     primitive_type;
 
-  Quantum
-    opacity;
-
   RunlengthPacket
     pixel;
 
@@ -3859,6 +3951,9 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     indirection,
     length,
     number_coordinates;
+
+  unsigned short
+    opacity;
 
   XColor
     pen_color;
@@ -5351,6 +5446,69 @@ Export void GetMontageInfo(MontageInfo *montage_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
+%   G e t P i x e l s                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetPixels returns the pixel data of an image as normalized red,
+%  green, blue, and opacity values.
+%
+%  The format of the GetPixels routine is:
+%
+%      GetPixels(image,red,green,blue,opacity)
+%
+%  A description of each parameter follows:
+%
+%    o image: Specifies a pointer to a Image structure;  returned from
+%      ReadImage.
+%
+%    o red,green,blue,opacity: These arrays are returned with the correponding
+%      red, green, blue, and opacity values from the image.  The length of the
+%      arrays must equal the area specified by the columns and row values
+%      values of the Image structure.  If you do not want to initialize a
+%      particular component, specify it as NULL.
+%
+%
+*/
+void GetPixels(const Image *image,float *red,float *green,float *blue,
+  float *opacity)
+{
+  register int
+    i,
+    j,
+    x;
+
+  register RunlengthPacket
+    *p;
+  
+  assert(image != (Image *) NULL);
+  x=0;
+  p=image->pixels;
+  for (i=0; i < (int) image->packets; i++)
+  {
+    for (j=0; j <= p->length; j++)
+    {
+      if (red != (float *) NULL)
+        red[x]=(float) p->red/MaxRGB;
+      if (green != (float *) NULL)
+        green[x]=(float) p->green/MaxRGB;
+      if (blue != (float *) NULL)
+        blue[x]=(float) p->blue/MaxRGB;
+      if (opacity != (float *) NULL)
+        opacity[x]=image->matte ? (float) p->index/Opaque : 0;
+      x++;
+    }
+    p++;
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %     I s G e o m e t r y                                                     %
 %                                                                             %
 %                                                                             %
@@ -6002,7 +6160,7 @@ Export Image *MagnifyImage(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method MatteFloodfillImage floodfills the designated area with a matte
-%  value.  The floodfill algorithm is strongly based on a similiar algorithm in
+%  value.  The floodfill algorithm is strongly based on a similar algorithm in
 %  "Graphics Gems" by Paul Heckbert.
 %
 %  The format of the MatteFloodfillImage routine is:
@@ -7232,7 +7390,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
 
             option=argv[++i];
             noise_type=UniformNoise;
-            if (Latin1Compare("gaussian",option) == 0)
+            if (Latin1Compare("Gaussian",option) == 0)
               noise_type=GaussianNoise;
             if (Latin1Compare("multiplicative",option) == 0)
               noise_type=MultiplicativeGaussianNoise;
@@ -7240,7 +7398,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
               noise_type=ImpulseNoise;
             if (Latin1Compare("laplacian",option) == 0)
               noise_type=LaplacianNoise;
-            if (Latin1Compare("poisson",option) == 0)
+            if (Latin1Compare("Poisson",option) == 0)
               noise_type=PoissonNoise;
             noisy_image=AddNoiseImage(*image,noise_type);
           }
@@ -8541,7 +8699,7 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
   images->orphan=False;
   if (morphed_images == (Image *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to morph image seqeunce",
+      MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
         "Memory allocation failed");
       return((Image *) NULL);
     }
@@ -8564,7 +8722,7 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
       image->orphan=False;
       if (morphed_images->next == (Image *) NULL)
         {
-          MagickWarning(ResourceLimitWarning,"Unable to morph image seqeunce",
+          MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
             "Memory allocation failed");
           break;
         }
@@ -8576,13 +8734,13 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
       image->next->orphan=False;
       if (morphed_image == (Image *) NULL)
         {
-          MagickWarning(ResourceLimitWarning,"Unable to morph image seqeunce",
+          MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
             "Memory allocation failed");
           break;
         }
       if (!UncondenseImage(morphed_images) || !UncondenseImage(morphed_image))
         {
-          MagickWarning(ResourceLimitWarning,"Unable to morph image seqeunce",
+          MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
             "Memory allocation failed");
           break;
         }
@@ -8610,7 +8768,7 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
     image->next->orphan=False;
     if (morphed_images->next == (Image *) NULL)
       {
-        MagickWarning(ResourceLimitWarning,"Unable to morph image seqeunce",
+        MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
           "Memory allocation failed");
         break;
       }
@@ -10611,7 +10769,7 @@ Export void SetImage(Image *image)
 %  structure.  It is set to a type of image format based on the prefix or
 %  suffix of the filename.  For example, `ps:image' returns PS indicating
 %  a Postscript image.  JPEG is returned for this filename: `image.jpg'.
-%  The filename prefix has precedance over the suffix.  Use an optional index
+%  The filename prefix has precendence over the suffix.  Use an optional index
 %  enclosed in brackets after a file name to specify a desired subimage of a
 %  multi-resolution image format like Photo CD (e.g. img0001.pcd[4]).
 %

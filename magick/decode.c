@@ -3168,7 +3168,7 @@ Image *ReadGIFImage(const ImageInfo *image_info)
         */
         status=ReadData((char *) &c,1,1,image->file);
         if (status == False)
-          PrematureExit(CorruptImageWarning,"Unable to read extention block",
+          PrematureExit(CorruptImageWarning,"Unable to read extension block",
             image);
         switch (c)
         {
@@ -11894,7 +11894,7 @@ Image *ReadRLAImage(const ImageInfo *image_info)
       storage_type,
       number_channels,
       number_matte_channels,
-      number_auxillary_channels,
+      number_auxiliary_channels,
       revision;
 
     char
@@ -11929,11 +11929,11 @@ Image *ReadRLAImage(const ImageInfo *image_info)
       bits_per_channel,
       matte_type,
       matte_bits,
-      auxillary_type,
-      auxillary_bits;
+      auxiliary_type,
+      auxiliary_bits;
 
     char
-      auxillary[32],
+      auxiliary[32],
       space[36];
 
     long
@@ -11991,7 +11991,7 @@ Image *ReadRLAImage(const ImageInfo *image_info)
   if (rla_header.number_channels == 0)
     rla_header.number_channels=3;
   rla_header.number_channels+=rla_header.number_matte_channels;
-  rla_header.number_auxillary_channels=MSBFirstReadShort(image->file);
+  rla_header.number_auxiliary_channels=MSBFirstReadShort(image->file);
   rla_header.revision=MSBFirstReadShort(image->file);
   (void) ReadData((char *) rla_header.gamma,16,1,image->file);
   (void) ReadData((char *) rla_header.red_primary,24,1,image->file);
@@ -12014,9 +12014,9 @@ Image *ReadRLAImage(const ImageInfo *image_info)
   rla_header.bits_per_channel=MSBFirstReadShort(image->file);
   rla_header.matte_type=MSBFirstReadShort(image->file);
   rla_header.matte_bits=MSBFirstReadShort(image->file);
-  rla_header.auxillary_type=MSBFirstReadShort(image->file);
-  rla_header.auxillary_bits=MSBFirstReadShort(image->file);
-  (void) ReadData((char *) rla_header.auxillary,32,1,image->file);
+  rla_header.auxiliary_type=MSBFirstReadShort(image->file);
+  rla_header.auxiliary_bits=MSBFirstReadShort(image->file);
+  (void) ReadData((char *) rla_header.auxiliary,32,1,image->file);
   (void) ReadData((char *) rla_header.space,36,1,image->file);
   rla_header.next=(long) MSBFirstReadLong(image->file);
   /*

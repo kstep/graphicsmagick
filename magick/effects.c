@@ -81,8 +81,8 @@
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o noise_type:  The type of noise: gaussian, multiplicative gaussian,
-%      impulse, laplacian, or poisson.
+%    o noise_type:  The type of noise: Gaussian, multiplicative Gaussian,
+%      impulse, laplacian, or Poisson.
 %
 %
 */
@@ -1609,7 +1609,7 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
 %    o segment_info:  specifies a structure of type SegmentInfo that defines
 %      the boundaries of the area where the plasma fractals are applied.
 %
-%    o attenuate:  specifies the plasma attentuation factor.
+%    o attenuate:  specifies the plasma attenuation factor.
 %
 %    o depth: this integer values define the plasma recursion depth.
 %
@@ -2718,7 +2718,7 @@ Export void SolarizeImage(Image *image,const double factor)
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o amount:  An unsigned value constraining the "vicintity" for choosing
+%    o amount:  An unsigned value constraining the "vicinity" for choosing
 %      a random pixel to swap.
 %
 %

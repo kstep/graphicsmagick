@@ -70,7 +70,7 @@
 %  X resource -borderwidth.  It can be changed with the -borderwidth or
 %  -geometry command line argument or X resource.  The label height is
 %  determined by the font you specify with the -font command line argument or
-%  X resource.  If you do not specify a font, a font is choosen that allows
+%  X resource.  If you do not specify a font, a font is chosen that allows
 %  the name of the image to fit the maximum width of a tiled area.  The label
 %  colors is determined by the -background and -pen command line
 %  argument or X resource.  Note, that if the background and pen colors

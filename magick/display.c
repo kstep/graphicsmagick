@@ -2737,8 +2737,8 @@ static unsigned int XConfigureImage(Display *display,
 %  A description of each parameter follows:
 %
 %    o status: Method XCropImage returns True if the image is
-%      copyped.  False is returned is there is a memory shortage or if the
-%      image fails to be copyped.
+%      copied.  False is returned is there is a memory shortage or if the
+%      image fails to be copied.
 %
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
@@ -5976,7 +5976,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case AddNoiseCommand:
     {
       static char
-        noise_type[MaxTextExtent] = "gaussian";
+        noise_type[MaxTextExtent] = "Gaussian";
 
       /*
         Add noise to the image.
@@ -10386,7 +10386,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method XTileImage loads or deletes a selected tile from a visual
-%  image directory.  The load or delete command is choosen from a menu.
+%  image directory.  The load or delete command is chosen from a menu.
 %
 %  The format of the XTileImage routine is:
 %

@@ -428,8 +428,7 @@ MAGICK DELEGATES
 
           ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
 
-      to read the JPEG image format.  ImageMagick creates progressive
-      JPEG images by default.
+      to read the JPEG image format.
 
       Concerning iterative JPEG compression:  see Kinoshita and
       Yamamuro, Journal of Imaging Science and Technology, "Image

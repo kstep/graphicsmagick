@@ -33,6 +33,7 @@
 		<LI><A HREF="#ContrastImage">ContrastImage</A>
 		<LI><A HREF="#CloneImage">CloneImage</A>
 		<LI><A HREF="#CloneImageInfo">CloneImageInfo</A>
+		<LI><A HREF="#CreateImage">CreateImage</A>
 		<LI><A HREF="#CropImage">CropImage</A>
 		<LI><A HREF="#CycleColormapImage">CycleColormapImage</A>
 		<LI><A HREF="#DescribeImage">DescribeImage</A>
@@ -51,6 +52,7 @@
 		<LI><A HREF="#GetImageInfo">GetImageInfo</A>
 		<LI><A HREF="#GetImageType">GetImageType</A>
 		<LI><A HREF="#GetMontageInfo">GetMontageInfo</A>
+		<LI><A HREF="#GetPixels">GetPixels</A>
 		<LI><A HREF="#IsGeometry">IsGeometry</A>
 		<LI><A HREF="#IsGrayImage">IsGrayImage</A>
 		<LI><A HREF="#IsMonochromeImage">IsMonochromeImage</A>
@@ -155,6 +157,9 @@ cloned_info=<STRONG>CloneImageInfo</STRONG>(image_info)
 <STRONG>ContrastImage</STRONG>(image,sharpen)
 
 <P>
+image=<STRONG>CreateImage</STRONG>(width,height,red,green,blue,opacity)
+
+<P>
 cropped_image=<STRONG>CropImage</STRONG>(image,crop_info)
 
 <P>
@@ -203,10 +208,13 @@ framed_image=<STRONG>FrameImage</STRONG>(image,frame_info)
 <STRONG>GetImageInfo</STRONG>(image_info)
 
 <P>
-type=<STRONG>GetImageType</STRONG>(image_info,image)
+type=<STRONG>GetImageType</STRONG>(image)
 
 <P>
 <STRONG>GetMontageInfo</STRONG>(montage_info)
+
+<P>
+<STRONG>GetPixels</STRONG>(image,red,green,blue,opacity)
 
 <P>
 status=<STRONG>IsGeometry</STRONG>(geometry)
@@ -305,7 +313,7 @@ stereo_image=<STRONG>StereoImage</STRONG>(left_image,right_image)
 <STRONG>SyncImage</STRONG>(image)
 
 <P>
-<STRONG>TextureImage</STRONG>(image,filename)
+<STRONG>TextureImage</STRONG>(image,texture)
 
 <P>
 <STRONG>ThresholdImage</STRONG>(image,threshold)
@@ -577,7 +585,7 @@ The address of a structure of type Image; returned from ReadImage.
 <H2><A NAME="ColorFloodfillImage">ColorFloodfillImage</A></H2>
 <P>
 Method ColorFloodfillImage floodfills the designated area with a color. The
-floodfill algorithm is strongly based on a similiar algorithm in ``Graphics
+floodfill algorithm is strongly based on a similar algorithm in ``Graphics
 Gems'' by Paul Heckbert.
 
 <P>
@@ -616,7 +624,7 @@ drawing method of type PrimitiveType: floodfill or fill to border.
 <H2><A NAME="ColorizeImage">ColorizeImage</A></H2>
 <P>
 Method ColorizeImage colorizes an image with the pen color. The amount of
-the coloring is controled with the opacity levels.
+the coloring is controlled with the opacity levels.
 
 <P>
 The format of the ColorizeImage routine is:
@@ -840,11 +848,51 @@ a structure of type info.
 </DL></DL>
 <P>
 <HR>
+<H2><A NAME="CreateImage">CreateImage</A></H2>
+<P>
+Method CreateImage creates an image from the specified normalized pixel
+data and returns it. It allocates the memory necessary for the new Image
+structure and returns a pointer to the new image.
+
+<P>
+The format of the CreateImage routine is:
+
+<P>
+<PRE>        image=CreateImage(width,height,red,green,blue,opacity)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Method CreateImage returns a pointer to the image after reading. A null
+image is returned if there is a memory shortage or if the image cannot be
+read.
+
+<DT><STRONG>width:</STRONG><DD>
+<P>
+Specifies the width in pixels of the image.
+
+<DT><STRONG>height:</STRONG><DD>
+<P>
+Specifies the height in pixels of the image.
+
+<DT><STRONG>red,green,blue,opacity:</STRONG><DD>
+<P>
+This array of normalized float values [0..1] contain the red, green, blue,
+and opacity components of the pixel data. The length of the arrays must
+equal the area specified by the width and height values. If you do not want
+to initialize a particular component, specify it as NULL.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="CropImage">CropImage</A></H2>
 <P>
 Method CropImage creates a new image that is a subregion of an existing
 one. It allocates the memory necessary for the new Image structure and
-returns a pointer to the new image. This routine is optimized to perserve
+returns a pointer to the new image. This routine is optimized to preserve
 the runlength encoding. That is, the cropped image will always use less
 memory than the original.
 
@@ -1256,7 +1304,7 @@ Method GetImageType returns the type of image (e.g. bilevel, palette, etc).
 The format of the GetImageType routine is:
 
 <P>
-<PRE>        type=GetImageType(image_info,image)
+<PRE>        type=GetImageType(image)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -1266,10 +1314,6 @@ A description of each parameter follows:
 <P>
 Method GetImageType returns a ImageType enum that specifies the type of the
 specified image (e.g. bilevel, palette, etc).
-
-<DT><STRONG>image_info:</STRONG><DD>
-<P>
-Specifies a pointer to an ImageInfo structure.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -1295,6 +1339,35 @@ A description of each parameter follows:
 <DT><STRONG>montage_info:</STRONG><DD>
 <P>
 Specifies a pointer to a MontageInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="GetPixels">GetPixels</A></H2>
+<P>
+Method GetPixels returns the pixel data of an image as normalized red,
+green, blue, and opacity values.
+
+<P>
+The format of the GetPixels routine is:
+
+<P>
+<PRE>        GetPixels(image,red,green,blue,opacity)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Specifies a pointer to a Image structure; returned from ReadImage.
+
+<DT><STRONG>red,green,blue,opacity:</STRONG><DD>
+<P>
+These arrays are returned with the correponding red, green, blue, and
+opacity values from the image. The length of the arrays must equal the area
+specified by the columns and row values values of the Image structure. If
+you do not want to initialize a particular component, specify it as NULL.
 
 </DL></DL>
 <P>
@@ -1567,7 +1640,7 @@ The address of a structure of type Image.
 <H2><A NAME="MatteFloodfillImage">MatteFloodfillImage</A></H2>
 <P>
 Method MatteFloodfillImage floodfills the designated area with a matte
-value. The floodfill algorithm is strongly based on a similiar algorithm in
+value. The floodfill algorithm is strongly based on a similar algorithm in
 ``Graphics Gems'' by Paul Heckbert.
 
 <P>
@@ -2184,7 +2257,7 @@ Method SetImageInfo initializes the `magick' field of the ImageInfo
 structure. It is set to a type of image format based on the prefix or
 suffix of the filename. For example, `ps:image' returns PS indicating a
 Postscript image. JPEG is returned for this filename: `image.jpg'. The
-filename prefix has precedance over the suffix. Use an optional index
+filename prefix has precendence over the suffix. Use an optional index
 enclosed in brackets after a file name to specify a desired subimage of a
 multi-resolution image format like Photo CD (e.g. img0001.pcd[4]).
 
@@ -2348,7 +2421,7 @@ Method TextureImage layers a texture onto the background of an image.
 The format of the TextureImage routine is:
 
 <P>
-<PRE>        TextureImage(image,filename)
+<PRE>        TextureImage(image,texture)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -2358,9 +2431,9 @@ A description of each parameter follows:
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>filename:</STRONG><DD>
+<DT><STRONG>texture:</STRONG><DD>
 <P>
-This file contains the texture to layer on the background.
+This image contains the texture to layer on the background.
 
 </DL></DL>
 <P>
