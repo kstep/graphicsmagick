@@ -2554,22 +2554,15 @@ MagickExport void TemporaryFilename(char *filename)
       *name;
 
     name=(char *) tempnam((char *) NULL,TemporaryTemplate);
-    if (name == (char *) NULL)
-      (void) tmpnam(filename);
-    else
+    if (name != (char *) NULL)
       {
         (void) strcpy(filename,name);
         LiberateMemory((void **) &name);
+        return;
       }
   }
 #endif
-#if defined(macintosh)
-  (void) getcwd(filename,MaxTextExtent >> 1);
-  (void) tmpnam(filename+strlen(filename));
-#endif
-#if defined(vms)
-  (void) tmpnam(filename+strlen(filename));
-#endif
+  (void) tmpnam(filename);
 }
 
 /*
