@@ -2710,7 +2710,6 @@ static void DrawPrimitive(const DrawInfo *draw_info,
         clone_info->server_name=AllocateString(draw_info->server_name);
       annotate=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
       DestroyImageInfo(clone_info);
-      annotate->degrees=draw_info->angle;
       annotate->gravity=draw_info->gravity;
       annotate->decorate=draw_info->decorate;
       annotate->geometry=AllocateString((char *) NULL);

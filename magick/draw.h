@@ -26,8 +26,7 @@ typedef struct _AnnotateInfo
     gravity;
 
   double
-    pointsize,
-    degrees;
+    pointsize;
 
   AffineInfo
     affine;
