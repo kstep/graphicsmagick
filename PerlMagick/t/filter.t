@@ -30,8 +30,8 @@ testFilter('input.miff', 'Channel',
 
 ++$test;
 testFilter('input.miff', 'Chop',
-  q/+10+10/,
-  '886abd0600151937beea6143c6c8ab149624ceddc40076cb28072a4c5c904bcf');
+  q/10x10!/,
+  'f30f652c3dad0f84474ec6fef65b34abef704bf5d4d1332a1fd79164b29d5a8b');
 
 ++$test;
 testFilter('input.miff', 'ColorFloodfill',
@@ -57,7 +57,7 @@ testFilter('input.miff', 'Convolve',
 
 ++$test;
 testFilter('input.miff', 'Crop',
-  q/10x10/,
+  q/10x10!/,
   '886abd0600151937beea6143c6c8ab149624ceddc40076cb28072a4c5c904bcf');
 
 ++$test;

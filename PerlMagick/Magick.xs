@@ -3973,20 +3973,21 @@ Mogrify(ref,...)
 
     int
       base,
-      first,
-      flags;
+      flags,
+      j,
+      k,
+      y;
 
     PixelPacket
       fill_color;
 
     RectangleInfo
-      rectangle_info,
+      geometry,
       region_info;
 
     register int
       i,
-      j,
-      k;
+      x;
 
     struct PackageInfo
       *info;
@@ -4149,16 +4150,12 @@ Mogrify(ref,...)
     if (setjmp(error_jmp))
       goto ReturnIt;
     (void) memset((char *) &fill_color,0,sizeof(PixelPacket));
-    first=True;
     pv=reference_vector;
-    for (next=image; next; first=False, next=next->next)
+    for (next=image; next; next=next->next)
     {
       image=next;
       exception=(&image->exception);
-      rectangle_info.width=image->columns;
-      rectangle_info.height=image->rows;
-      rectangle_info.x=0;
-      rectangle_info.y=0;
+      SetGeometry(image,&geometry);
       if ((region_info.width*region_info.height) != 0)
         {
           region_image=image;
@@ -4221,30 +4218,24 @@ Mogrify(ref,...)
         }
         case 5:  /* Border */
         {
-          if (first)
+          if (attribute_flag[0])
             {
-              if (attribute_flag[0])
-                {
-                  flags=ParseGeometry(argument_list[0].string_reference,
-                    &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
-                    &rectangle_info.height);
-                  if (!(flags & HeightValue))
-                    rectangle_info.height=rectangle_info.width;
-                }
-              if (attribute_flag[1])
-                rectangle_info.width=argument_list[1].int_reference;
-              if (attribute_flag[2])
-                rectangle_info.height=argument_list[2].int_reference;
-              if (attribute_flag[3])
-                QueryColorDatabase(argument_list[3].string_reference,
-                  &fill_color);
-              if (attribute_flag[4])
-                QueryColorDatabase(argument_list[4].string_reference,
-                  &fill_color);
+              flags=ParseGeometry(argument_list[0].string_reference,
+                &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+              if (!(flags & HeightValue))
+                geometry.height=geometry.width;
             }
+          if (attribute_flag[1])
+            geometry.width=argument_list[1].int_reference;
+          if (attribute_flag[2])
+            geometry.height=argument_list[2].int_reference;
+          if (attribute_flag[3])
+            QueryColorDatabase(argument_list[3].string_reference,&fill_color);
+          if (attribute_flag[4])
+            QueryColorDatabase(argument_list[4].string_reference,&fill_color);
           if (attribute_flag[3] || attribute_flag[4])
             image->border_color=fill_color;
-          image=BorderImage(image,&rectangle_info,exception);
+          image=BorderImage(image,&geometry,exception);
           break;
         }
         case 6:  /* Blur */
@@ -4268,22 +4259,17 @@ Mogrify(ref,...)
         case 7:  /* Chop */
         {
           if (attribute_flag[0])
-            {
-              flags=ParseGeometry(argument_list[0].string_reference,
-                &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
-                &rectangle_info.height);
-              if (!(flags & HeightValue))
-                rectangle_info.height=rectangle_info.width;
-            }
+            (void) ParseImageGeometry(argument_list[0].string_reference,
+              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[1])
-            rectangle_info.width=argument_list[1].int_reference;
+            geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])
-            rectangle_info.height=argument_list[2].int_reference;
+            geometry.height=argument_list[2].int_reference;
           if (attribute_flag[3])
-            rectangle_info.x=argument_list[3].int_reference;
+            geometry.x=argument_list[3].int_reference;
           if (attribute_flag[4])
-            rectangle_info.y=argument_list[4].int_reference;
-          image=ChopImage(image,&rectangle_info,exception);
+            geometry.y=argument_list[4].int_reference;
+          image=ChopImage(image,&geometry,exception);
           break;
         }
         case 59:  /* Trim */
@@ -4296,26 +4282,17 @@ Mogrify(ref,...)
         case 8:  /* Crop */
         {
           if (attribute_flag[0])
-            {
-              flags=ParseGeometry(argument_list[0].string_reference,
-                &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
-                &rectangle_info.height);
-              if ((flags & XNegative) != 0)
-                rectangle_info.x+=image->columns;
-              if ((flags & YNegative) != 0)
-                rectangle_info.y+=image->rows;
-              if (!(flags & HeightValue))
-                rectangle_info.height=rectangle_info.width;
-            }
+            (void) ParseImageGeometry(argument_list[0].string_reference,
+              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[1])
-            rectangle_info.width=argument_list[1].int_reference;
+            geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])
-            rectangle_info.height=argument_list[2].int_reference;
+            geometry.height=argument_list[2].int_reference;
           if (attribute_flag[3])
-            rectangle_info.x=argument_list[3].int_reference;
+            geometry.x=argument_list[3].int_reference;
           if (attribute_flag[4])
-            rectangle_info.y=argument_list[4].int_reference;
-          image=CropImage(image,&rectangle_info,exception);
+            geometry.y=argument_list[4].int_reference;
+          image=CropImage(image,&geometry,exception);
           break;
         }
         case 9:  /* Despeckle */
@@ -4369,40 +4346,35 @@ Mogrify(ref,...)
         }
         case 15:  /* Frame */
         {
-          if (first)
+          frame_info.height=frame_info.width=25;
+          frame_info.x=frame_info.y=0;
+          frame_info.inner_bevel=frame_info.outer_bevel=6;
+          if (attribute_flag[0])
             {
-              frame_info.height=frame_info.width=25;
-              frame_info.x=frame_info.y=0;
-              frame_info.inner_bevel=frame_info.outer_bevel=6;
-              if (attribute_flag[0])
-                {
-                  flags=ParseGeometry(argument_list[0].string_reference,
-                    &frame_info.outer_bevel,&frame_info.inner_bevel,
-                    &frame_info.width,&frame_info.height);
-                  if (!(flags & HeightValue))
-                    frame_info.height=frame_info.width;
-                  if (!(flags & XValue))
-                    frame_info.outer_bevel=(long) ((frame_info.width >> 2)+1);
-                  if (!(flags & YValue))
-                    frame_info.inner_bevel=(long) ((frame_info.height >> 2)+1);
-                }
-              if (attribute_flag[1])
-                frame_info.width=argument_list[1].int_reference;
-              if (attribute_flag[2])
-                frame_info.height=argument_list[2].int_reference;
-              if (attribute_flag[3])
-                frame_info.inner_bevel=argument_list[3].int_reference;
-              if (attribute_flag[4])
-                frame_info.outer_bevel=argument_list[4].int_reference;
-              frame_info.x=(long) frame_info.width;
-              frame_info.y=(long) frame_info.height;
-              if (attribute_flag[5])
-                QueryColorDatabase(argument_list[5].string_reference,
-                  &fill_color);
-              if (attribute_flag[6])
-                QueryColorDatabase(argument_list[6].string_reference,
-                  &fill_color);
+              flags=ParseGeometry(argument_list[0].string_reference,
+                &frame_info.outer_bevel,&frame_info.inner_bevel,
+                &frame_info.width,&frame_info.height);
+              if (!(flags & HeightValue))
+                frame_info.height=frame_info.width;
+              if (!(flags & XValue))
+                frame_info.outer_bevel=(long) ((frame_info.width >> 2)+1);
+              if (!(flags & YValue))
+                frame_info.inner_bevel=(long) ((frame_info.height >> 2)+1);
             }
+          if (attribute_flag[1])
+            frame_info.width=argument_list[1].int_reference;
+          if (attribute_flag[2])
+            frame_info.height=argument_list[2].int_reference;
+          if (attribute_flag[3])
+            frame_info.inner_bevel=argument_list[3].int_reference;
+          if (attribute_flag[4])
+            frame_info.outer_bevel=argument_list[4].int_reference;
+          frame_info.x=(long) frame_info.width;
+          frame_info.y=(long) frame_info.height;
+          if (attribute_flag[5])
+            QueryColorDatabase(argument_list[5].string_reference,&fill_color);
+          if (attribute_flag[6])
+            QueryColorDatabase(argument_list[6].string_reference,&fill_color);
           frame_info.width=image->columns+(frame_info.x << 1);
           frame_info.height=image->rows+(frame_info.y << 1);
           if (attribute_flag[5] || attribute_flag[6])
@@ -4454,15 +4426,14 @@ Mogrify(ref,...)
         }
         case 22:  /* Roll */
         {
-          if (attribute_flag[1])
-            rectangle_info.x=argument_list[1].int_reference;
-          if (attribute_flag[2])
-            rectangle_info.y=argument_list[2].int_reference;
           if (attribute_flag[0])
             (void) ParseGeometry(argument_list[0].string_reference,
-              &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
-              &rectangle_info.height);
-          image=RollImage(image,rectangle_info.x,rectangle_info.y,exception);
+              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+          if (attribute_flag[1])
+            geometry.x=argument_list[1].int_reference;
+          if (attribute_flag[2])
+            geometry.y=argument_list[2].int_reference;
+          image=RollImage(image,geometry.x,geometry.y,exception);
           break;
         }
         case 23:  /* Rotate */
@@ -4477,30 +4448,26 @@ Mogrify(ref,...)
         }
         case 24:  /* Sample */
         {
-          if (attribute_flag[1])
-            rectangle_info.width=argument_list[1].int_reference;
-          if (attribute_flag[2])
-            rectangle_info.height=argument_list[2].int_reference;
           if (attribute_flag[0])
             (void) ParseImageGeometry(argument_list[0].string_reference,
-              &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
-              &rectangle_info.height);
-          image=SampleImage(image,rectangle_info.width,rectangle_info.height,
-            exception);
+              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+          if (attribute_flag[1])
+            geometry.width=argument_list[1].int_reference;
+          if (attribute_flag[2])
+            geometry.height=argument_list[2].int_reference;
+          image=SampleImage(image,geometry.width,geometry.height,exception);
           break;
         }
         case 25:  /* Scale */
         {
-          if (attribute_flag[1])
-            rectangle_info.width=argument_list[1].int_reference;
-          if (attribute_flag[2])
-            rectangle_info.height=argument_list[2].int_reference;
           if (attribute_flag[0])
             (void) ParseImageGeometry(argument_list[0].string_reference,
-              &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
-              &rectangle_info.height);
-          image=ScaleImage(image,rectangle_info.width,rectangle_info.height,
-            exception);
+              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+          if (attribute_flag[1])
+            geometry.width=argument_list[1].int_reference;
+          if (attribute_flag[2])
+            geometry.height=argument_list[2].int_reference;
+          image=ScaleImage(image,geometry.width,geometry.height,exception);
           break;
         }
         case 26:  /* Shade */
@@ -4578,19 +4545,18 @@ Mogrify(ref,...)
         case 31:  /* Resize */
         case 32:  /* Zoom */
         {
-          if (attribute_flag[1])
-            rectangle_info.width=argument_list[1].int_reference;
-          if (attribute_flag[2])
-            rectangle_info.height=argument_list[2].int_reference;
           if (attribute_flag[0])
             (void) ParseImageGeometry(argument_list[0].string_reference,
-              &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
-              &rectangle_info.height);
+              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+          if (attribute_flag[1])
+            geometry.width=argument_list[1].int_reference;
+          if (attribute_flag[2])
+            geometry.height=argument_list[2].int_reference;
           if (!attribute_flag[3])
             argument_list[3].int_reference=(int) LanczosFilter;
           if (!attribute_flag[4])
             argument_list[4].double_reference=1.0;
-          image=ResizeImage(image,rectangle_info.width,rectangle_info.height,
+          image=ResizeImage(image,geometry.width,geometry.height,
             (FilterTypes) argument_list[3].int_reference,
             argument_list[4].double_reference,exception);
           break;
@@ -4726,34 +4692,29 @@ Mogrify(ref,...)
             (DrawInfo *) NULL);
           if (attribute_flag[0])
             (void) ParseGeometry(argument_list[0].string_reference,
-              &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
-              &rectangle_info.height);
+              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[1])
-            rectangle_info.x=argument_list[1].int_reference;
+            geometry.x=argument_list[1].int_reference;
           if (attribute_flag[2])
-            rectangle_info.y=argument_list[2].int_reference;
+            geometry.y=argument_list[2].int_reference;
           if (attribute_flag[3])
             (void) QueryColorDatabase(argument_list[3].string_reference,
               &draw_info->fill);
           if (attribute_flag[4])
             QueryColorDatabase(argument_list[4].string_reference,&fill_color);
-          target=GetOnePixel(image,(long) (rectangle_info.x % image->columns),
-            (long) (rectangle_info.y % image->rows));
+          target=GetOnePixel(image,(long) (geometry.x % image->columns),
+            (long) (geometry.y % image->rows));
           if (attribute_flag[4])
             target=fill_color;
           if (attribute_flag[5])
             image->fuzz=argument_list[5].double_reference;
-          ColorFloodfillImage(image,draw_info,target,rectangle_info.x,
-            rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
-            FloodfillMethod);
+          ColorFloodfillImage(image,draw_info,target,geometry.x,geometry.y,
+            attribute_flag[4] ? FillToBorderMethod : FloodfillMethod);
           DestroyDrawInfo(draw_info);
           break;
         }
         case 35:  /* Composite */
         {
-          char
-            geometry[MaxTextExtent];
-
           CompositeOperator
             compose;
 
@@ -4763,14 +4724,6 @@ Mogrify(ref,...)
           Image
             *composite_image,
             *rotate_image;
-
-          long
-            x,
-            y;
-
-          unsigned long
-            height,
-            width;
 
           compose=OverCompositeOp;
           if (attribute_flag[0])
@@ -4842,50 +4795,40 @@ Mogrify(ref,...)
           /*
             Respect gravity.
           */
-          width=image->columns;
-          height=image->rows;
-          x=0;
-          y=0;
-          if (attribute_flag[3])
-            x=argument_list[3].int_reference;
-          if (attribute_flag[4])
-            y=argument_list[4].int_reference;
-          FormatString(geometry,"%+d%+d\n",x,y);
           if (attribute_flag[2])
-            (void) strncpy(geometry,argument_list[2].string_reference,
-              MaxTextExtent-1);
-          flags=ParseGeometry(geometry,&x,&y,&width,&height);
-          if ((flags & XNegative) != 0)
-            x+=image->columns;
+            flags=ParseGeometry(argument_list[2].string_reference,
+              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+          if (attribute_flag[3])
+            geometry.x=argument_list[3].int_reference;
+          if (attribute_flag[4])
+            geometry.y=argument_list[4].int_reference;
           if ((flags & WidthValue) == 0)
-            width-=2*x > (long) width ? width : 2*x;
-          if ((flags & YNegative) != 0)
-            y+=image->rows;
-          if ((flags & HeightValue) == 0)
-            height-=2*y > (long) height ? height : 2*y;
+            geometry.width-=2*geometry.x > (long) geometry.width ?
+              geometry.width : 2*geometry.x;
           if (attribute_flag[5])
             switch (argument_list[5].int_reference)
             {
               case NorthWestGravity:
               {
-                y-=composite_image->rows;
+                geometry.y-=composite_image->rows;
                 break;
               }
               case NorthGravity:
               {
-                x+=(long) (width/2-composite_image->columns/2);
-                y-=composite_image->rows;
+                geometry.x+=(long)
+                  (geometry.width/2-composite_image->columns/2);
+                geometry.y-=composite_image->rows;
                 break;
               }
               case NorthEastGravity:
               {
-                x+=width-composite_image->columns;
-                y-=composite_image->rows;
+                geometry.x+=geometry.width-composite_image->columns;
+                geometry.y-=composite_image->rows;
                 break;
               }
               case WestGravity:
               {
-                y+=(long) (width/2-composite_image->rows/2);
+                geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
                 break;
               }
               case ForgetGravity:
@@ -4893,31 +4836,33 @@ Mogrify(ref,...)
               case CenterGravity:
               default:
               {
-                x+=(long) (width/2-composite_image->columns/2);
-                y+=(long) (width/2-composite_image->rows/2);
+                geometry.x+=(long)
+                  (geometry.width/2-composite_image->columns/2);
+                geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
                 break;
               }
               case EastGravity:
               {
-                x+=width-composite_image->columns;
-                y+=(long) (width/2-composite_image->rows/2);
+                geometry.x+=(long) geometry.width-composite_image->columns;
+                geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
                 break;
               }
               case SouthWestGravity:
               {
-                y+=height;
+                geometry.y+=geometry.height;
                 break;
               }
               case SouthGravity:
               {
-                x+=(long) (width/2-composite_image->columns/2);
-                y+=height;
+                geometry.x+=(long)
+                  (geometry.width/2-composite_image->columns/2);
+                geometry.y+=geometry.height;
                 break;
               }
               case SouthEastGravity:
               {
-                x+=width-composite_image->columns;
-                y+=height;
+                geometry.x+=geometry.width-composite_image->columns;
+                geometry.y+=geometry.height;
                 break;
               }
             }
@@ -4925,15 +4870,17 @@ Mogrify(ref,...)
             Composite image.
           */
           if (!attribute_flag[8])
-            CompositeImage(image,compose,composite_image,x,y);
+            CompositeImage(image,compose,composite_image,geometry.x,
+              geometry.y);
           else
             {
               /*
                 Rotate image.
               */
-              x-=(long) (rotate_image->columns-composite_image->columns)/2;
-              y-=(long) (rotate_image->rows-composite_image->rows)/2;
-              CompositeImage(image,compose,rotate_image,x,y);
+              geometry.x-=(long)
+                (rotate_image->columns-composite_image->columns)/2;
+              geometry.y-=(long) (rotate_image->rows-composite_image->rows)/2;
+              CompositeImage(image,compose,rotate_image,geometry.x,geometry.y);
               DestroyImage(rotate_image);
             }
           break;
@@ -5082,22 +5029,19 @@ Mogrify(ref,...)
         }
         case 40:  /* Gamma */
         {
-          if (first)
+          if (!attribute_flag[1])
+            argument_list[1].double_reference=1.0;
+          if (!attribute_flag[2])
+            argument_list[2].double_reference=1.0;
+          if (!attribute_flag[3])
+            argument_list[3].double_reference=1.0;
+          if (!attribute_flag[0])
             {
-              if (!attribute_flag[1])
-                argument_list[1].double_reference=1.0;
-              if (!attribute_flag[2])
-                argument_list[2].double_reference=1.0;
-              if (!attribute_flag[3])
-                argument_list[3].double_reference=1.0;
-              if (!attribute_flag[0])
-                {
-                  FormatString(message,"%g,%g,%g",
-                    argument_list[1].double_reference,
-                    argument_list[2].double_reference,
-                    argument_list[3].double_reference);
-                  argument_list[0].string_reference=AllocateString(message);
-                }
+              FormatString(message,"%g,%g,%g",
+                argument_list[1].double_reference,
+                argument_list[2].double_reference,
+                argument_list[3].double_reference);
+              argument_list[0].string_reference=AllocateString(message);
             }
           GammaImage(image,argument_list[0].string_reference);
           break;
@@ -5123,55 +5067,44 @@ Mogrify(ref,...)
           unsigned int
             opacity;
 
-          if (first)
-            {
-              if (attribute_flag[0])
-                {
-                  flags=ParseGeometry(argument_list[0].string_reference,
-                    &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
-                    &rectangle_info.height);
-                }
-              if (attribute_flag[1])
-                rectangle_info.x=argument_list[1].int_reference;
-              if (attribute_flag[2])
-                rectangle_info.y=argument_list[2].int_reference;
-              if (attribute_flag[4])
-                QueryColorDatabase(argument_list[4].string_reference,
-                  &fill_color);
-            }
+          if (attribute_flag[0])
+            flags=ParseGeometry(argument_list[0].string_reference,
+              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+          if (attribute_flag[1])
+            geometry.x=argument_list[1].int_reference;
+          if (attribute_flag[2])
+            geometry.y=argument_list[2].int_reference;
+          if (attribute_flag[4])
+            QueryColorDatabase(argument_list[4].string_reference,&fill_color);
           opacity=TransparentOpacity;
           if (attribute_flag[3])
             opacity=argument_list[3].int_reference;
           if (!image->matte)
             SetImageOpacity(image,OpaqueOpacity);
-          target=GetOnePixel(image,(long) (rectangle_info.x % image->columns),
-            (long) (rectangle_info.y % image->rows));
+          target=GetOnePixel(image,(long) (geometry.x % image->columns),
+            (long) (geometry.y % image->rows));
           if (attribute_flag[4])
             target=fill_color;
           if (attribute_flag[5])
             image->fuzz=argument_list[5].double_reference;
-          MatteFloodfillImage(image,target,opacity,rectangle_info.x,
-            rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
-            FloodfillMethod);
+          MatteFloodfillImage(image,target,opacity,geometry.x,geometry.y,
+            attribute_flag[4] ? FillToBorderMethod : FloodfillMethod);
           break;
         }
         case 43:  /* Modulate */
         {
-          if (first)
-            {
-              if (!attribute_flag[1])
-                argument_list[1].double_reference=100.0;
-              if (!attribute_flag[2])
-                argument_list[2].double_reference=100.0;
-              if (!attribute_flag[3])
-                argument_list[3].double_reference=100.0;
-              FormatString(message,"%g,%g,%g",
-                argument_list[1].double_reference,
-                argument_list[2].double_reference,
-                argument_list[3].double_reference);
-              if (!attribute_flag[0])
-                argument_list[0].string_reference=AllocateString(message);
-            }
+          if (!attribute_flag[1])
+            argument_list[1].double_reference=100.0;
+          if (!attribute_flag[2])
+            argument_list[2].double_reference=100.0;
+          if (!attribute_flag[3])
+            argument_list[3].double_reference=100.0;
+          FormatString(message,"%g,%g,%g",
+            argument_list[1].double_reference,
+            argument_list[2].double_reference,
+            argument_list[3].double_reference);
+          if (!attribute_flag[0])
+            argument_list[0].string_reference=AllocateString(message);
           ModulateImage(image,argument_list[0].string_reference);
           break;
         }
@@ -5244,24 +5177,20 @@ Mogrify(ref,...)
         }
         case 49:  /* Raise */
         {
-          if (first)
+          if (attribute_flag[0])
             {
-              if (attribute_flag[0])
-                {
-                  flags=ParseGeometry(argument_list[0].string_reference,
-                    &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
-                    &rectangle_info.height);
-                  if (!(flags & HeightValue))
-                    rectangle_info.height=rectangle_info.width;
-                }
-              if (attribute_flag[1])
-                rectangle_info.width=argument_list[1].int_reference;
-              if (attribute_flag[2])
-                rectangle_info.height=argument_list[2].int_reference;
-              if (attribute_flag[3])
-                argument_list[3].int_reference=1;
+              flags=ParseGeometry(argument_list[0].string_reference,
+                &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+              if (!(flags & HeightValue))
+                geometry.height=geometry.width;
             }
-          RaiseImage(image,&rectangle_info,argument_list[3].int_reference);
+          if (attribute_flag[1])
+            geometry.width=argument_list[1].int_reference;
+          if (attribute_flag[2])
+            geometry.height=argument_list[2].int_reference;
+          if (attribute_flag[3])
+            argument_list[3].int_reference=1;
+          RaiseImage(image,&geometry,argument_list[3].int_reference);
           break;
         }
         case 50:  /* Segment */
@@ -5526,42 +5455,35 @@ Mogrify(ref,...)
         }
         case 72:  /* Shave */
         {
-          if (first)
+          if (attribute_flag[0])
             {
-              if (attribute_flag[0])
-                {
-                  flags=ParseGeometry(argument_list[0].string_reference,
-                    &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
-                    &rectangle_info.height);
-                  if (!(flags & HeightValue))
-                    rectangle_info.height=rectangle_info.width;
-                }
-              if (attribute_flag[1])
-                rectangle_info.width=argument_list[1].int_reference;
-              if (attribute_flag[2])
-                rectangle_info.height=argument_list[2].int_reference;
+              flags=ParseGeometry(argument_list[0].string_reference,
+                &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+              if (!(flags & HeightValue))
+                geometry.height=geometry.width;
             }
-          image=ShaveImage(image,&rectangle_info,exception);
+          if (attribute_flag[1])
+            geometry.width=argument_list[1].int_reference;
+          if (attribute_flag[2])
+            geometry.height=argument_list[2].int_reference;
+          image=ShaveImage(image,&geometry,exception);
           break;
         }
         case 73:  /* Level */
         {
-          if (first)
+          if (!attribute_flag[1])
+            argument_list[1].double_reference=0.0;
+          if (!attribute_flag[2])
+            argument_list[2].double_reference=1.0;
+          if (!attribute_flag[3])
+            argument_list[3].double_reference=MaxRGB;
+          if (!attribute_flag[0])
             {
-              if (!attribute_flag[1])
-                argument_list[1].double_reference=0.0;
-              if (!attribute_flag[2])
-                argument_list[2].double_reference=1.0;
-              if (!attribute_flag[3])
-                argument_list[3].double_reference=MaxRGB;
-              if (!attribute_flag[0])
-                {
-                  FormatString(message,"%g,%g,%g",
-                    argument_list[1].double_reference,
-                    argument_list[2].double_reference,
-                    argument_list[3].double_reference);
-                  argument_list[0].string_reference=AllocateString(message);
-                }
+              FormatString(message,"%g,%g,%g",
+                argument_list[1].double_reference,
+                argument_list[2].double_reference,
+                argument_list[3].double_reference);
+              argument_list[0].string_reference=AllocateString(message);
             }
           LevelImage(image,argument_list[0].string_reference);
           break;

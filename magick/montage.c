@@ -258,7 +258,6 @@ MagickExport Image *MontageImages(const Image *images,
 #define TileImageText  "  Create image tiles...  "
 
   char
-    geometry[MaxTextExtent],
     *title;
 
   const ImageAttribute
@@ -298,6 +297,7 @@ MagickExport Image *MontageImages(const Image *images,
 
   RectangleInfo
     bounds,
+		geometry,
     tile_info;
 
   size_t
@@ -343,12 +343,10 @@ MagickExport Image *MontageImages(const Image *images,
   {
     image=image_list[i];
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    width=image->columns;
-    height=image->rows;
-    x=0;
-    y=0;
-    (void) ParseImageGeometry(montage_info->geometry,&x,&y,&width,&height);
-    zoom_image=ZoomImage(image,width,height,exception);
+    SetGeometry(image,&geometry);
+    (void) ParseImageGeometry(montage_info->geometry,&geometry.x,&geometry.y,
+			&geometry.width,&geometry.height);
+    zoom_image=ZoomImage(image,geometry.width,geometry.height,exception);
     if (zoom_image == (Image *) NULL)
       break;
     DestroyImage(image);
@@ -429,15 +427,14 @@ MagickExport Image *MontageImages(const Image *images,
       /*
         Initialize tile geometry.
       */
-      (void) strncpy(geometry,montage_info->geometry,MaxTextExtent-1);
       tile_info.x=0;
       tile_info.y=0;
-      if (strchr(geometry,'%') != (char *) NULL)
-        flags=ParseImageGeometry(geometry,&tile_info.x,&tile_info.y,
+      if (strchr(montage_info->geometry,'%') == (char *) NULL)
+        flags=GetGeometry(montage_info->geometry,&tile_info.x,&tile_info.y,
           &tile_info.width,&tile_info.height);
       else
-        flags=GetGeometry(geometry,&tile_info.x,&tile_info.y,&tile_info.width,
-          &tile_info.height);
+        flags=ParseImageGeometry(montage_info->geometry,&tile_info.x,
+          &tile_info.y,&tile_info.width,&tile_info.height);
       if ((tile_info.x == 0) && (tile_info.y == 0))
         concatenate=!((flags & WidthValue) || (flags & HeightValue));
       if (tile_info.x < 0)
@@ -476,7 +473,7 @@ MagickExport Image *MontageImages(const Image *images,
   /*
     Determine the number of lines in an next label.
   */
-  title=TranslateText(image_info,images,montage_info->title);
+  title=TranslateText(image_info,image_list[0],montage_info->title);
   title_offset=0;
   if (montage_info->title != (char *) NULL)
     title_offset=2*font_height*MultilineCensus(title)+2*tile_info.y;
@@ -565,6 +562,9 @@ MagickExport Image *MontageImages(const Image *images,
       TextureImage(montage,texture);
     if (montage_info->title != (char *) NULL)
       {
+        char
+          geometry[MaxTextExtent];
+
         /*
           Annotate composite image with title.
         */
@@ -754,6 +754,9 @@ MagickExport Image *MontageImages(const Image *images,
           attribute=GetImageAttribute(image,"label");
           if (attribute != (const ImageAttribute *) NULL)
             {
+              char
+                geometry[MaxTextExtent];
+
               /*
                 Annotate composite tile with label.
               */

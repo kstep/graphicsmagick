@@ -310,25 +310,25 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Use CropImage() to extract a region of the image starting at the offset
-%  defined by crop_info.
+%  defined by geometry.
 %
 %  The format of the CropImage method is:
 %
-%      Image *CropImage(const Image *image,const RectangleInfo *crop_info,
+%      Image *CropImage(const Image *image,const RectangleInfo *geometry,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
-%    o crop_info: Define the region of the image to crop with members
+%    o geometry: Define the region of the image to crop with members
 %      x, y, width, and height.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-MagickExport Image *CropImage(const Image *image,const RectangleInfo *crop_info,
+MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   ExceptionInfo *exception)
 {
 #define CropImageText  "  Crop image...  "
@@ -356,19 +356,19 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *crop_info,
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(crop_info != (const RectangleInfo *) NULL);
+  assert(geometry != (const RectangleInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((crop_info->width != 0) || (crop_info->height != 0))
+  if ((geometry->width != 0) || (geometry->height != 0))
     {
-      if (((crop_info->x+(long) crop_info->width) < 0) ||
-          ((crop_info->y+(long) crop_info->height) < 0) ||
-          (crop_info->x >= (long) image->columns) ||
-          (crop_info->y >= (long) image->rows))
+      if (((geometry->x+(long) geometry->width) < 0) ||
+          ((geometry->y+(long) geometry->height) < 0) ||
+          (geometry->x >= (long) image->columns) ||
+          (geometry->y >= (long) image->rows))
         ThrowImageException(OptionWarning,"Unable to crop image",
           "geometry does not contain any part of the image");
     }
-  page=(*crop_info);
+  page=(*geometry);
   if ((page.width != 0) || (page.height != 0))
     {
       if ((page.x+(long) page.width) > (long) image->columns)
@@ -392,12 +392,12 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *crop_info,
         Set bounding box to the image dimensions.
       */
       page=GetImageBoundingBox(image,exception);
-      page.width+=crop_info->x*2;
-      page.height+=crop_info->y*2;
-      page.x-=crop_info->x;
+      page.width+=geometry->x*2;
+      page.height+=geometry->y*2;
+      page.x-=geometry->x;
       if (page.x < 0)
         page.x=0;
-      page.y-=crop_info->y;
+      page.y-=geometry->y;
       if (page.y < 0)
         page.y=0;
       if ((((long) page.width+page.x) > (long) image->columns) ||
@@ -1345,13 +1345,13 @@ MagickExport Image *ShaveImage(const Image *image,
   const RectangleInfo *shave_info,ExceptionInfo *exception)
 {
   RectangleInfo
-    crop_info;
+    geometry;
 
-  crop_info.width=image->columns-2*shave_info->width;
-  crop_info.height=image->rows-2*shave_info->height;
-  crop_info.x=(long) shave_info->width;
-  crop_info.y=(long) shave_info->height;
-  return(CropImage(image,&crop_info,exception));
+  geometry.width=image->columns-2*shave_info->width;
+  geometry.height=image->rows-2*shave_info->height;
+  geometry.x=(long) shave_info->width;
+  geometry.y=(long) shave_info->height;
+  return(CropImage(image,&geometry,exception));
 }
 
 /*
@@ -1390,18 +1390,14 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
   const char *image_geometry)
 {
   Image
+    *resize_image,
     *transform_image;
 
   int
     flags;
 
-  long
-    x,
-    y;
-
-  unsigned long
-    height,
-    width;
+  RectangleInfo
+    geometry;
 
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);
@@ -1412,78 +1408,72 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
         *crop_image;
 
       RectangleInfo
-        crop_info;
+        geometry;
 
       /*
         Crop image to a user specified size.
       */
-      width=transform_image->columns;
-      height=transform_image->rows;
-      crop_info.x=0;
-      crop_info.y=0;
-      flags=ParseGeometry((char *) crop_geometry,&crop_info.x,&crop_info.y,
-        &width,&height);
-      if ((flags & XNegative) != 0)
-        crop_info.x+=transform_image->columns-width;
-      if ((flags & YNegative) != 0)
-        crop_info.y+=transform_image->rows-height;
-      if ((flags & WidthValue) == 0)
-        width=(unsigned long) ((long) transform_image->columns-crop_info.x);
-      if ((flags & HeightValue) == 0)
-        height=(unsigned long) ((long) transform_image->rows-crop_info.y);
+      SetGeometry(transform_image,&geometry);
+      flags=ParseImageGeometry(crop_geometry,&geometry.x,&geometry.y,
+        &geometry.width,&geometry.height);
       if (strchr(crop_geometry,'%') != (char *) NULL)
         {
           /*
             Crop geometry is relative to image size.
           */
-          x=0;
-          y=0;
-          (void) ParseImageGeometry(crop_geometry,&x,&y,&width,&height);
-          crop_info.x=(long) width/2;
-          crop_info.y=(long) height/2;
-          width=transform_image->columns-2*crop_info.x;
-          height=transform_image->rows-2*crop_info.y;
+          geometry.x=(long) geometry.width/2;
+          geometry.y=(long) geometry.height/2;
+          geometry.width=transform_image->columns-2*geometry.x;
+          geometry.height=transform_image->rows-2*geometry.y;
           flags|=XValue | YValue;
         }
-      crop_info.width=width;
-      crop_info.height=height;
       crop_image=(Image *) NULL;
-      if ((width == 0) || (height == 0) ||
+      if ((geometry.width == 0) || (geometry.height == 0) ||
           ((flags & XValue) != 0) || ((flags & YValue) != 0))
-        crop_image=CropImage(transform_image,&crop_info,&(*image)->exception);
+        crop_image=CropImage(transform_image,&geometry,&(*image)->exception);
       else
-        if ((transform_image->columns > width) ||
-            (transform_image->rows > height))
+        if ((transform_image->columns > geometry.width) ||
+            (transform_image->rows > geometry.height))
           {
             Image
-              *next_image;
+              *next;
+
+            long
+              x,
+              y;
+
+            unsigned long
+              height,
+              width;
 
             /*
               Crop repeatedly to create uniform subimages.
             */
-            next_image=(Image *) NULL;
+            width=geometry.width;
+            height=geometry.height;
+            next=(Image *) NULL;
             for (y=0; y < (long) transform_image->rows; y+=height)
             {
               for (x=0; x < (long) transform_image->columns; x+=width)
               {
-                crop_info.width=width;
-                crop_info.height=height;
-                crop_info.x=x;
-                crop_info.y=y;
-                next_image=
-                  CropImage(transform_image,&crop_info,&(*image)->exception);
-                if (next_image == (Image *) NULL)
+                geometry.width=width;
+                geometry.height=height;
+                geometry.x=x;
+                geometry.y=y;
+                next=CropImage(transform_image,&geometry,
+                  &(*image)->exception);
+                if (next == (Image *) NULL)
                   break;
                 if (crop_image == (Image *) NULL)
-                  crop_image=next_image;
+                  crop_image=next;
                 else
                   {
-                    next_image->previous=crop_image;
-                    crop_image->next=next_image;
+                    next->previous=crop_image;
+                    crop_image->next=next;
                     crop_image=crop_image->next;
                   }
               }
-              if (next_image == (Image *) NULL)
+              if (next == (Image *) NULL)
                 break;
             }
           }
@@ -1494,29 +1484,27 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
             crop_image=crop_image->previous;
           transform_image=crop_image;
         }
+      *image=transform_image;
     }
+  if (image_geometry == (const char *) NULL)
+    return;
   /*
     Scale image to a user specified size.
   */
-  width=transform_image->columns;
-  height=transform_image->rows;
-  x=0;
-  y=0;
-  (void) ParseImageGeometry(image_geometry,&x,&y,&width,&height);
-  if ((transform_image->columns != width) || (transform_image->rows != height))
-    {
-      Image
-        *resize_image;
-
-      /*
-        Zoom image.
-      */
-      resize_image=ZoomImage(transform_image,width,height,&(*image)->exception);
-      if (resize_image != (Image *) NULL)
-        {
-          DestroyImage(transform_image);
-          transform_image=resize_image;
-        }
-    }
+  SetGeometry(transform_image,&geometry);
+  flags=ParseImageGeometry(image_geometry,&geometry.x,&geometry.y,
+		&geometry.width,&geometry.height);
+  if ((transform_image->columns == geometry.width) &&
+      (transform_image->rows == geometry.height))
+    return;
+  /*
+    Resize image.
+  */
+  resize_image=ZoomImage(transform_image,geometry.width,geometry.height,
+    &(*image)->exception);
+  if (resize_image == (Image *) NULL)
+    return;
+  DestroyImage(transform_image);
+  transform_image=resize_image;
   *image=transform_image;
 }

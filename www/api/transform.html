@@ -48,7 +48,7 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>Image * <STRONG>ChopImage</STRONG>( const Image *image, const RectangleInfo *chop_info );</P>
 <P>Image * <STRONG>CoalesceImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>CropImage</STRONG>( const Image *image, const RectangleInfo *crop_info, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>CropImage</STRONG>( const Image *image, const RectangleInfo *geometry, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>DeconstructImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>FlattenImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>FlipImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
@@ -100,15 +100,15 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cropimage">CropImage</A></H2>
-<blockquote>Use CropImage() to extract a region of the image starting at the offset defined by crop_info. </blockquote><P>The format of the CropImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *CropImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *crop_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>Use CropImage() to extract a region of the image starting at the offset defined by geometry. </blockquote><P>The format of the CropImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *CropImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *geometry, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_crop_info%3A">crop_info:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_geometry%3A">geometry:</A></STRONG><BR>
 <DD>
 Define the region of the image to crop with members x, y, width, and height.
 <P></P>

@@ -143,12 +143,11 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     *annotate,
     *clone_info;
 
-  long
-    x,
-    y;
-
   PointInfo
     offset;
+
+  RectangleInfo
+    geometry;
 
   register int
     i;
@@ -162,10 +161,6 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   unsigned int
     matte,
     status;
-
-  unsigned long
-    height,
-    width;
 
   /*
     Translate any embedded format characters (e.g. %f).
@@ -194,10 +189,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   if (text == (char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
       "Memory allocation failed");
-  width=image->columns;
-  height=image->rows;
-  x=0;
-  y=0;
+  SetGeometry(image,&geometry);
   if (draw_info->geometry != (char *) NULL)
     {
       unsigned int
@@ -206,11 +198,14 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       /*
         User specified annotation geometry.
       */
-      flags=ParseGeometry(draw_info->geometry,&x,&y,&width,&height);
+      flags=ParseGeometry(draw_info->geometry,&geometry.x,&geometry.y,
+        &geometry.width,&geometry.height);
       if ((flags & WidthValue) == 0)
-        width-=2*x > (long) width ? width : 2*x;
+        geometry.width-=2*geometry.x > (long) geometry.width ?
+          geometry.width : 2*geometry.x;
       if ((flags & HeightValue) == 0)
-        height-=2*y > (long) height ? height : 2*y;
+        geometry.height-=2*geometry.y > (long) geometry.height ?
+          geometry.height : 2*geometry.y;
     }
   annotate=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
@@ -231,32 +226,33 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     {
       case NorthWestGravity:
       {
-        offset.x=x+i*draw_info->affine.ry*metrics.height;
-        offset.y=y+i*draw_info->affine.sy*metrics.height;
+        offset.x=geometry.x+i*draw_info->affine.ry*metrics.height;
+        offset.y=geometry.y+i*draw_info->affine.sy*metrics.height;
         break;
       }
       case NorthGravity:
       {
-        offset.x=x+0.5*width+i*draw_info->affine.ry*metrics.height-
-          draw_info->affine.sx*metrics.width/2;
-        offset.y=y+i*draw_info->affine.sy*metrics.height-
+        offset.x=geometry.x+geometry.width/2+i*draw_info->affine.ry*
+          metrics.height-draw_info->affine.sx*metrics.width/2;
+        offset.y=geometry.y+i*draw_info->affine.sy*metrics.height-
           draw_info->affine.rx*metrics.width/2;
         break;
       }
       case NorthEastGravity:
       {
-        offset.x=x+width+i*draw_info->affine.ry*metrics.height-
-          draw_info->affine.sx*metrics.width;
-        offset.y=y+i*draw_info->affine.sy*metrics.height-
+        offset.x=geometry.x+geometry.width+i*draw_info->affine.ry*
+          metrics.height-draw_info->affine.sx*metrics.width;
+        offset.y=geometry.y+i*draw_info->affine.sy*metrics.height-
           draw_info->affine.rx*metrics.width;
         break;
       }
       case WestGravity:
       {
-        offset.x=x+i*draw_info->affine.ry*metrics.height+
+        offset.x=geometry.x+i*draw_info->affine.ry*metrics.height+
           draw_info->affine.ry*(metrics.ascent+metrics.descent)/2;
-        offset.y=y+0.5*height+i*draw_info->affine.sy*metrics.height+
-          draw_info->affine.sy*(metrics.ascent+metrics.descent)/2;
+        offset.y=geometry.y+geometry.height/2+i*draw_info->affine.sy*
+          metrics.height+draw_info->affine.sy*(metrics.ascent+
+          metrics.descent)/2;
         break;
       }
       case ForgetGravity:
@@ -264,50 +260,50 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       case CenterGravity:
       default:
       {
-        offset.x=x+0.5*width+i*draw_info->affine.ry*metrics.height-
-          draw_info->affine.sx*metrics.width/2+draw_info->affine.ry*
-          (metrics.ascent+metrics.descent)/2;
-        offset.y=y+0.5*height+i*draw_info->affine.sy*metrics.height-
-          draw_info->affine.rx*metrics.width/2+draw_info->affine.sy*
-          (metrics.ascent+metrics.descent)/2;
+        offset.x=geometry.x+geometry.width/2+i*draw_info->affine.ry*
+          metrics.height-draw_info->affine.sx*metrics.width/2+
+          draw_info->affine.ry*(metrics.ascent+metrics.descent)/2;
+        offset.y=geometry.y+geometry.height/2+i*draw_info->affine.sy*
+          metrics.height-draw_info->affine.rx*metrics.width/2+
+          draw_info->affine.sy*(metrics.ascent+metrics.descent)/2;
         break;
       }
       case EastGravity:
       {
-        offset.x=x+width+i*draw_info->affine.ry*metrics.height-
-          draw_info->affine.sx*metrics.width+draw_info->affine.ry*
-          (metrics.ascent+metrics.descent)/2;
-        offset.y=y+0.5*height+i*draw_info->affine.sy*metrics.height-
-          draw_info->affine.rx*metrics.width+draw_info->affine.sy*
-          (metrics.ascent+metrics.descent)/2;
+        offset.x=geometry.x+geometry.width+i*draw_info->affine.ry*
+          metrics.height-draw_info->affine.sx*metrics.width+
+          draw_info->affine.ry*(metrics.ascent+metrics.descent)/2;
+        offset.y=geometry.y+geometry.height/2+i*draw_info->affine.sy*
+          metrics.height-draw_info->affine.rx*metrics.width+
+          draw_info->affine.sy*(metrics.ascent+metrics.descent)/2;
         break;
       }
       case SouthWestGravity:
       {
-        offset.x=x+i*draw_info->affine.ry*metrics.height+
+        offset.x=geometry.x+i*draw_info->affine.ry*metrics.height+
           draw_info->affine.ry*(metrics.ascent+metrics.descent);
-        offset.y=y+height+i*draw_info->affine.sy*metrics.height+
-          draw_info->affine.sy*metrics.ascent;
+        offset.y=geometry.y+geometry.height+i*draw_info->affine.sy*
+          metrics.height+draw_info->affine.sy*metrics.ascent;
         break;
       }
       case SouthGravity:
       {
-        offset.x=x+0.5*width+i*draw_info->affine.ry*metrics.height-
-          draw_info->affine.sx*metrics.width/2+draw_info->affine.ry*
-          (metrics.ascent+metrics.descent);
-        offset.y=y+height+i*draw_info->affine.sy*metrics.height-
-          draw_info->affine.rx*metrics.width/2+draw_info->affine.sy*
-          metrics.ascent;
+        offset.x=geometry.x+geometry.width/2+i*draw_info->affine.ry*
+          metrics.height-draw_info->affine.sx*metrics.width/2+
+          draw_info->affine.ry*(metrics.ascent+metrics.descent);
+        offset.y=geometry.y+geometry.height+i*draw_info->affine.sy*
+          metrics.height-draw_info->affine.rx*metrics.width/2+
+          draw_info->affine.sy*metrics.ascent;
         break;
       }
       case SouthEastGravity:
       {
-        offset.x=x+width+i*draw_info->affine.ry*metrics.height-
-          draw_info->affine.sx*metrics.width+draw_info->affine.ry*
-          (metrics.ascent+metrics.descent);
-        offset.y=y+height+i*draw_info->affine.sy*metrics.height-
-          draw_info->affine.rx*metrics.width+draw_info->affine.sy*
-          metrics.ascent;
+        offset.x=geometry.x+geometry.width+i*draw_info->affine.ry*
+          metrics.height-draw_info->affine.sx*metrics.width+
+          draw_info->affine.ry*(metrics.ascent+metrics.descent);
+        offset.y=geometry.y+geometry.height+i*draw_info->affine.sy*
+          metrics.height-draw_info->affine.rx*metrics.width+
+          draw_info->affine.sy*metrics.ascent;
         break;
       }
     }

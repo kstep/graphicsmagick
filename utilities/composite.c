@@ -295,43 +295,44 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
               int
                 flags;
 
-              unsigned long
-                height,
-                width;
+              RectangleInfo
+                geometry;
 
               /*
                 Digitally composite image.
               */
-              width=(*image)->columns;
-              height=(*image)->rows;
-              x=0;
-              y=0;
-              flags=ParseGeometry(option_info->geometry,&x,&y,&width,&height);
-              if ((flags & XNegative) != 0)
-                x+=(*image)->columns-width;
+              SetGeometry(*image,&geometry);
+              flags=ParseGeometry(option_info->geometry,&geometry.x,&geometry.y,
+                &geometry.width,&geometry.height);
+              if (attribute_flag[3])
+                geometry.x=argument_list[3].int_reference;
+              if (attribute_flag[4])
+                geometry.y=argument_list[4].int_reference;
               if ((flags & WidthValue) == 0)
-                width-=2*x > (long) width ? width : 2*x;
-              if ((flags & YNegative) != 0)
-                y+=(*image)->rows-height;
-              if ((flags & HeightValue) == 0)
-                height-=2*y > (long) height ? height : 2*y;
+                geometry.width-=2*geometry.x > (long) geometry.width ?
               switch (option_info->gravity)
               {
                 case NorthWestGravity:
+                {
+                  geometry.y-=composite_image->rows;
                   break;
+                }
                 case NorthGravity:
                 {
-                  x+=(long) (0.5*width-composite_image->columns/2);
+                  geometry.x+=(long)
+                    (geometry.width/2-composite_image->columns/2);
+                  geometry.y-=composite_image->rows;
                   break;
                 }
                 case NorthEastGravity:
                 {
-                  x+=(long) (width-composite_image->columns);
+                  geometry.x+=geometry.width-composite_image->columns;
+                  geometry.y-=composite_image->rows;
                   break;
                 }
                 case WestGravity:
                 {
-                  y+=(long) (height/2-composite_image->rows/2);
+                  geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
                   break;
                 }
                 case ForgetGravity:
@@ -339,36 +340,38 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
                 case CenterGravity:
                 default:
                 {
-                  x+=(long) (width/2-composite_image->columns/2);
-                  y+=(long) (height/2-composite_image->rows/2);
+                  geometry.x+=(long)
+                    (geometry.width/2-composite_image->columns/2);
+                  geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
                   break;
                 }
                 case EastGravity:
                 {
-                  x+=(long) (width-composite_image->columns);
-                  y+=(long) (height/2-composite_image->rows/2);
+                  geometry.x+=(long) geometry.width-composite_image->columns;
+                  geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
                   break;
                 }
                 case SouthWestGravity:
                 {
-                  y+=(long) (height-composite_image->rows);
+                  geometry.y+=geometry.height;
                   break;
                 }
                 case SouthGravity:
                 {
-                  x+=(long) (width/2-composite_image->columns/2);
-                  y+=(long) (height-composite_image->rows);
+                  geometry.x+=(long)
+                    (geometry.width/2-composite_image->columns/2);
+                  geometry.y+=geometry.height;
                   break;
                 }
                 case SouthEastGravity:
                 {
-                  x+=(long) (width-composite_image->columns);
-                  y+=(long) (height-composite_image->rows);
+                  geometry.x+=geometry.width-composite_image->columns;
+                  geometry.y+=geometry.height;
                   break;
                 }
               }
               status&=CompositeImage(*image,option_info->compose,
-                composite_image,x,y);
+                composite_image,geometry.x,geometry.y);
               (void) CatchImageException(*image);
             }
       (*image)->matte=matte;
@@ -500,7 +503,7 @@ static void CompositeUsage(void)
 %
 %
 */
-static unsigned int CompositeUtility(int argc,char **argv)
+MagickExport unsigned int CompositeUtility(int argc,char **argv)
 {
 #define NotInitialized  (unsigned int) (~0)
 

@@ -560,11 +560,11 @@ MagickExport char *GetExecutionPath(const char *path)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetGeometry parses a geometry specification and returns the
-%  width, height, x, and y values.  It also returns flags that indicates
-%  which of the four values (width, height, x, y) were located in the string,
-%  and whether the x and y values are negative.  In addition, there are flags
-%  to report any meta characters (%, !, <, and >).
+%  GetGeometry() parses a geometry specification and returns the width
+%  height, x, and y values.  It also returns flags that indicates which
+%  of the four values (width, height, x, y) were located in the string, and
+%  whether the x and y values are negative.  In addition, there are flags to
+%  report any meta characters (%, !, <, and >).
 %
 %  The format of the GetGeometry method is:
 %
@@ -659,6 +659,8 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
     Parse geometry using ParseGeometry.
   */
   flags|=ParseGeometry(geometry,x,y,width,height);
+  if ((flags & XValue) || (flags & YValue))
+    flags|=AspectValue;
   return(flags);
 }
 
@@ -1990,6 +1992,40 @@ MagickExport char *SetClientPath(const char *path)
   if ((path != (char *) NULL) && (*path != '\0'))
     (void) strncpy(client_path,path,MaxTextExtent-1);
   return(client_path);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t G e o m e t r y                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetGeometry sets a grometry to its default values.
+%
+%  The format of the SetGeometry method is:
+%
+%      SetGeometry(const Image *image,RectangleInfo *geometry)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o geometry: The geometry.
+%
+%
+*/
+MagickExport void SetGeometry(const Image *image,RectangleInfo *geometry)
+{
+  assert(image != (Image *) NULL);
+  assert(geometry != (RectangleInfo *) NULL);
+  (void) memset(geometry,0,sizeof(RectangleInfo));
+  geometry->width=image->columns;
+  geometry->height=image->rows;
 }
 
 /*

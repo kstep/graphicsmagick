@@ -75,6 +75,7 @@ extern MagickExport void
   LocaleUpper(char *),
   ReacquireMemory(void **,const size_t),
   Strip(char *),
+  SetGeometry(const Image *,RectangleInfo *),
   TemporaryFilename(char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

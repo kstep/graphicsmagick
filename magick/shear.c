@@ -78,7 +78,8 @@
 %  The format of the CropShearImage method is:
 %
 %      Image *CropShearImage(Image **image,const double x_shear,
-%        const double x_shear,const double width,const double height)
+%        const double x_shear,const double width,const double height,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -86,13 +87,16 @@
 %
 %    o x_shear, y_shear, width, height: Defines a region of the image to crop.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
 static void CropShearImage(Image **image,const double x_shear,
-  const double y_shear,const double width,const double height)
+  const double y_shear,const double width,const double height,
+	ExceptionInfo *exception)
 {
-  char
-    geometry[MaxTextExtent];
+	Image
+		*crop_image;
 
   PointInfo
     extent[4],
@@ -100,7 +104,7 @@ static void CropShearImage(Image **image,const double x_shear,
 		max;
 
   RectangleInfo
-    crop_info;
+    geometry;
 
   register long
     i;
@@ -137,13 +141,16 @@ static void CropShearImage(Image **image,const double x_shear,
     if (max.y < extent[i].y)
       max.y=extent[i].y;
   }
-  crop_info.width=(unsigned long) floor(max.x-min.x+0.5);
-	crop_info.height=(unsigned long) floor(max.y-min.y+0.5);
-  crop_info.x=(long) ceil(min.x-0.5);
-  crop_info.y=(long) ceil(min.y-0.5);
-  FormatString(geometry,"%lux%lu%+ld%+ld",crop_info.width,crop_info.height,
-    crop_info.x,crop_info.y);
-  TransformImage(image,geometry,(char *) NULL);
+  geometry.width=(unsigned long) floor(max.x-min.x+0.5);
+	geometry.height=(unsigned long) floor(max.y-min.y+0.5);
+  geometry.x=(long) ceil(min.x-0.5);
+  geometry.y=(long) ceil(min.y-0.5);
+  crop_image=CropImage(*image,&geometry,exception);
+  if (crop_image != (Image *) NULL)
+		{
+		  DestroyImage(*image);
+		  *image=crop_image;
+		}
 }
 
 /*
@@ -984,7 +991,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,
     (long) (rotate_image->columns-y_width+1)/2,0);
   (void) memset(&rotate_image->page,0,sizeof(RectangleInfo));
-  CropShearImage(&rotate_image,shear.x,shear.y,width,height);
+  CropShearImage(&rotate_image,shear.x,shear.y,width,height,exception);
   return(rotate_image);
 }
 
@@ -1099,6 +1106,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   YShearImage(shear_image,shear.y,y_width,image->rows,
     (long) (shear_image->columns-y_width+1)/2,y_offset);
   (void) memset(&shear_image->page,0,sizeof(RectangleInfo));
-  CropShearImage(&shear_image,shear.x,shear.y,image->columns,image->rows);
+  CropShearImage(&shear_image,shear.x,shear.y,image->columns,image->rows,
+		exception);
   return(shear_image);
 }
