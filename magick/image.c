@@ -2433,8 +2433,10 @@ MagickExport unsigned int GetImageDepth(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  image->depth=8;
   if (QuantumDepth == 8)
-    return(QuantumDepth);
+    return(image->depth);
+  image->depth=16;
   for (y=0; y < (int) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
@@ -2443,18 +2445,19 @@ MagickExport unsigned int GetImageDepth(Image *image)
     for (x=0; x < (int) image->columns; x++)
     {
       if (p->red != UpScale(DownScale(p->red)))
-        return(QuantumDepth);
+        return(image->depth);
       if (p->green != UpScale(DownScale(p->green)))
-        return(QuantumDepth);
+        return(image->depth);
       if (p->blue != UpScale(DownScale(p->blue)))
-        return(QuantumDepth);
+        return(image->depth);
       if (image->matte || (image->colorspace == CMYKColorspace))
         if (p->opacity != UpScale(DownScale(p->opacity)))
-          return(QuantumDepth);
+          return(image->depth);
       p++;
     }
   }
-  return(8);
+  image->depth=8;
+  return(image->depth);
 }
 
 /*
