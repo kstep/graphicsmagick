@@ -172,7 +172,7 @@ format.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeMagick(*argv);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GetExceptionInfo(&exception);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image_info=CloneImageInfo((ImageInfo *) NULL);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image_info->filename,"image.jpg");
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image_info->filename,"image.gif");
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; images=ReadImage(image_info,&amp;exception);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (images == (Image *) NULL)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.reason,exception.description);
@@ -185,14 +185,14 @@ format.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; resize_image=ResizeImage(image,106,80,MitchellFilter,1.0,&amp;exception);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (resize_image == (Image *) NULL)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.reason,exception.description);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) PushImageList(&thumbnails,resize_image,exception);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) PushImageList(&thumbnails,resize_image,&exception);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(image);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(resize_image);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Write the image as MIFF and destroy it.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(thumbnails->filename,"image.png");
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(thumbnails->filename,"image.miff");
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WriteImage(image_info,thumbnails);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImageInfo(image_info);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(thumbnails);

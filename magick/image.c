@@ -1099,7 +1099,7 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
     if (image == (Image *) NULL)
 		  {
 		    if (clone_images != (Image *) NULL)
-          DestroyImages(clone_images)
+          DestroyImages(clone_images);
         break;
 		  }
     PushImageList(&clone_images,image,exception);
