@@ -1309,7 +1309,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   metrics->bounds.y1/=64.0;
   metrics->bounds.x2/=64.0;
   metrics->bounds.y2/=64.0;
-  metrics->bounds.y1,metrics->bounds.x2,metrics->bounds.y2);
   if (render)
     if ((draw_info->stroke.opacity != TransparentOpacity) ||
         (draw_info->stroke_pattern != (Image *) NULL))
