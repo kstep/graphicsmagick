@@ -370,7 +370,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
-            index=!PNMInteger(image,2);
+            index=PNMInteger(image,2);
             if (index >= image->colors)
               {
                 ThrowException(&image->exception,CorruptImageError,
@@ -480,7 +480,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (bit == 0)
               byte=ReadBlobByte(image);
-            index=(byte & 0x80) ? 0x00 : 0x01;
+            index=(byte & 0x80) ? 0x01 : 0x00;
             indexes[x]=index;
             *q++=image->colormap[index];
             bit++;

@@ -349,7 +349,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       if (bit == 0)
         byte=(*p++);
-      indexes[x]=byte & 0x01 ? 0 : 1;
+      indexes[x]=byte & 0x01 ? 0x01 : 0x00
       bit++;
       byte>>=1;
       if (bit == 8)
