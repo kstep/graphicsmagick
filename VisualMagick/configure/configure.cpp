@@ -1297,7 +1297,12 @@ BOOL CConfigureApp::InitInstance()
     if (projectType == MULTITHREADEDDLL)
 		{
       if (!useX11Stubs)
-		    libs_list_shared.push_back("..\\lib\\X11.lib");
+      {
+        libs_list_shared.push_back("/libpath:\"..\\lib\"");
+        libs_list_shared.push_back("/libpath:\"..\\..\\lib\"");
+        libs_list_shared.push_back("/libpath:\"..\\..\\..\\lib\"");
+		    libs_list_shared.push_back("X11.lib");
+      }
 		  libs_list_shared.push_back("kernel32.lib");
 		  libs_list_shared.push_back("user32.lib");
 		  libs_list_shared.push_back("gdi32.lib");
