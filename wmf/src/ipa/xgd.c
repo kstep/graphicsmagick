@@ -18,46 +18,44 @@
 
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "wmfconfig.h"
 #endif /* HAVE_CONFIG_H */
-
-/* If compiling as module, rename global functions to a standard
- */
-#ifdef WMF_IPA_MODULE
-#define wmf_gd_device_open    wmf_device_open
-#define wmf_gd_device_close   wmf_device_close
-#define wmf_gd_device_begin   wmf_device_begin
-#define wmf_gd_device_end     wmf_device_end
-#define wmf_gd_flood_interior wmf_flood_interior
-#define wmf_gd_flood_exterior wmf_flood_exterior
-#define wmf_gd_draw_pixel     wmf_draw_pixel
-#define wmf_gd_draw_pie       wmf_draw_pie
-#define wmf_gd_draw_chord     wmf_draw_chord
-#define wmf_gd_draw_arc       wmf_draw_arc
-#define wmf_gd_draw_ellipse   wmf_draw_ellipse
-#define wmf_gd_draw_line      wmf_draw_line
-#define wmf_gd_poly_line      wmf_poly_line
-#define wmf_gd_draw_polygon   wmf_draw_polygon
-#define wmf_gd_draw_rectangle wmf_draw_rectangle
-#define wmf_gd_rop_draw       wmf_rop_draw
-#define wmf_gd_bmp_draw       wmf_bmp_draw
-#define wmf_gd_bmp_read       wmf_bmp_read
-#define wmf_gd_bmp_free       wmf_bmp_free
-#define wmf_gd_draw_text      wmf_draw_text
-#define wmf_gd_udata_init     wmf_udata_init
-#define wmf_gd_udata_copy     wmf_udata_copy
-#define wmf_gd_udata_set      wmf_udata_set
-#define wmf_gd_udata_free     wmf_udata_free
-#define wmf_gd_region_frame   wmf_region_frame
-#define wmf_gd_region_paint   wmf_region_paint
-#define wmf_gd_region_clip    wmf_region_clip
-#endif /* WMF_IPA_MODULE */
 
 #include <math.h>
 
 #include "wmfdefs.h"
 
+#ifdef HAVE_GD
+
 #include "libwmf/gd.h"
+
+static void wmf_gd_device_open (wmfAPI*);
+static void wmf_gd_device_close (wmfAPI*);
+static void wmf_gd_device_begin (wmfAPI*);
+static void wmf_gd_device_end (wmfAPI*);
+static void wmf_gd_flood_interior (wmfAPI*,wmfFlood_t*);
+static void wmf_gd_flood_exterior (wmfAPI*,wmfFlood_t*);
+static void wmf_gd_draw_pixel (wmfAPI*,wmfDrawPixel_t*);
+static void wmf_gd_draw_pie (wmfAPI*,wmfDrawArc_t*);
+static void wmf_gd_draw_chord (wmfAPI*,wmfDrawArc_t*);
+static void wmf_gd_draw_arc (wmfAPI*,wmfDrawArc_t*);
+static void wmf_gd_draw_ellipse (wmfAPI*,wmfDrawArc_t*);
+static void wmf_gd_draw_line (wmfAPI*,wmfDrawLine_t*);
+static void wmf_gd_poly_line (wmfAPI*,wmfPolyLine_t*);
+static void wmf_gd_draw_polygon (wmfAPI*,wmfPolyLine_t*);
+static void wmf_gd_draw_rectangle (wmfAPI*,wmfDrawRectangle_t*);
+static void wmf_gd_rop_draw (wmfAPI*,wmfROP_Draw_t*);
+static void wmf_gd_bmp_draw (wmfAPI*,wmfBMP_Draw_t*);
+static void wmf_gd_bmp_read (wmfAPI*,wmfBMP_Read_t*);
+static void wmf_gd_bmp_free (wmfAPI*,wmfBMP*);
+static void wmf_gd_draw_text (wmfAPI*,wmfDrawText_t*);
+static void wmf_gd_udata_init (wmfAPI*,wmfUserData_t*);
+static void wmf_gd_udata_copy (wmfAPI*,wmfUserData_t*);
+static void wmf_gd_udata_set (wmfAPI*,wmfUserData_t*);
+static void wmf_gd_udata_free (wmfAPI*,wmfUserData_t*);
+static void wmf_gd_region_frame (wmfAPI*,wmfPolyRectangle_t*);
+static void wmf_gd_region_paint (wmfAPI*,wmfPolyRectangle_t*);
+static void wmf_gd_region_clip (wmfAPI*,wmfPolyRectangle_t*);
 
 #include "ipa/xgd.h"
 #include "ipa/xgd/bmp.h"
@@ -66,8 +64,12 @@
 #include "ipa/xgd/font.h"
 #include "ipa/xgd/region.h"
 
+#endif /* HAVE_GD */
+
 void wmf_gd_function (wmfAPI* API)
-{	wmf_gd_t* ddata = 0;
+{
+#ifdef HAVE_GD
+	wmf_gd_t* ddata = 0;
 
 	wmfFunctionReference* FR = (wmfFunctionReference*) API->function_reference;
 
@@ -152,9 +154,14 @@ void wmf_gd_function (wmfAPI* API)
 #ifdef HAVE_LIBJPEG
 	ddata->flags |= WMF_GD_SUPPORTS_JPEG;
 #endif
-}
+#else /* HAVE_GD */
+	API->device_data = 0;
 
-void wmf_gd_udata_init (wmfAPI* API,wmfUserData_t* userdata)
+	API->err = wmf_E_DeviceError;
+#endif /* HAVE_GD */
+}
+#ifdef HAVE_GD
+static void wmf_gd_udata_init (wmfAPI* API,wmfUserData_t* userdata)
 {	/* wmf_gd_t* ddata = WMF_GD_GetData (API); */
 
 	/* gd_t* gd = (gd_t*) ddata->gd_data; */
@@ -163,7 +170,7 @@ void wmf_gd_udata_init (wmfAPI* API,wmfUserData_t* userdata)
 
 }
 
-void wmf_gd_udata_copy (wmfAPI* API,wmfUserData_t* userdata)
+static void wmf_gd_udata_copy (wmfAPI* API,wmfUserData_t* userdata)
 {	/* wmf_gd_t* ddata = WMF_GD_GetData (API); */
 
 	/* gd_t* gd = (gd_t*) ddata->gd_data; */
@@ -172,7 +179,7 @@ void wmf_gd_udata_copy (wmfAPI* API,wmfUserData_t* userdata)
 
 }
 
-void wmf_gd_udata_set (wmfAPI* API,wmfUserData_t* userdata)
+static void wmf_gd_udata_set (wmfAPI* API,wmfUserData_t* userdata)
 {	/* wmf_gd_t* ddata = WMF_GD_GetData (API); */
 
 	/* gd_t* gd = (gd_t*) ddata->gd_data; */
@@ -181,7 +188,7 @@ void wmf_gd_udata_set (wmfAPI* API,wmfUserData_t* userdata)
 
 }
 
-void wmf_gd_udata_free (wmfAPI* API,wmfUserData_t* userdata)
+static void wmf_gd_udata_free (wmfAPI* API,wmfUserData_t* userdata)
 {	/* wmf_gd_t* ddata = WMF_GD_GetData (API); */
 
 	/* gd_t* gd = (gd_t*) ddata->gd_data; */
@@ -516,3 +523,4 @@ static int setlinestyle (wmfAPI* API,wmfDC* dc)
 
 	return (linestyle);
 }
+#endif /* HAVE_GD */

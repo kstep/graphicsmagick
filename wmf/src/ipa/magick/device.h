@@ -49,7 +49,7 @@
 
 /* This is called by wmf_play() the *first* time the meta file is played
  */
-void wmf_magick_device_open (wmfAPI* API)
+static void wmf_magick_device_open (wmfAPI* API)
 {	wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
 	WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]device_open");
@@ -59,7 +59,7 @@ void wmf_magick_device_open (wmfAPI* API)
 
 /* This is called by wmf_api_destroy()
  */
-void wmf_magick_device_close (wmfAPI* API)
+static void wmf_magick_device_close (wmfAPI* API)
 {	wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
 	WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]device_close");
@@ -69,7 +69,7 @@ void wmf_magick_device_close (wmfAPI* API)
 
 /* This is called from the beginning of each play for initial page setup
  */
-void wmf_magick_device_begin (wmfAPI* API)
+static void wmf_magick_device_begin (wmfAPI* API)
 {	wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
 	wmfStream* out = ddata->out;
@@ -100,7 +100,7 @@ void wmf_magick_device_begin (wmfAPI* API)
 
 /* This is called from the end of each play for page termination
  */
-void wmf_magick_device_end (wmfAPI* API)
+static void wmf_magick_device_end (wmfAPI* API)
 {	wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
 	wmfStream* out = ddata->out;

@@ -17,7 +17,7 @@
    Boston, MA 02111-1307, USA.  */
 
 
-void wmf_x_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
+static void wmf_x_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
 {	wmf_x_t* ddata = WMF_X_GetData (API);
 
 	wmfFont* font = 0;

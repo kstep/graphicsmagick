@@ -19,7 +19,7 @@
 
 /* This is called by wmf_play() the *first* time the meta file is played
  */
-void wmf_x_device_open (wmfAPI* API)
+static void wmf_x_device_open (wmfAPI* API)
 {	wmf_x_t* ddata = WMF_X_GetData (API);
 
 	XWindowAttributes root_attributes;
@@ -179,7 +179,7 @@ void wmf_x_device_open (wmfAPI* API)
 
 /* This is called by wmf_api_destroy()
  */
-void wmf_x_device_close (wmfAPI* API)
+static void wmf_x_device_close (wmfAPI* API)
 {	wmf_x_t* ddata = WMF_X_GetData (API);
 
 	WMF_DEBUG (API,"wmf_[x_]device_close");
@@ -197,7 +197,7 @@ void wmf_x_device_close (wmfAPI* API)
 
 /* This is called from the beginning of each play for initial page setup
  */
-void wmf_x_device_begin (wmfAPI* API)
+static void wmf_x_device_begin (wmfAPI* API)
 {	wmf_x_t* ddata = WMF_X_GetData (API);
 
 	WMF_DEBUG (API,"wmf_[x_]device_begin");
@@ -220,7 +220,7 @@ void wmf_x_device_begin (wmfAPI* API)
 
 /* This is called from the end of each play for page termination
  */
-void wmf_x_device_end (wmfAPI* API)
+static void wmf_x_device_end (wmfAPI* API)
 {	wmf_x_t* ddata = WMF_X_GetData (API);
 
 	WMF_DEBUG (API,"wmf_[x_]device_end");

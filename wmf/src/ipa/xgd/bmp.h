@@ -17,7 +17,7 @@
    Boston, MA 02111-1307, USA.  */
 
 
-void wmf_gd_rop_draw (wmfAPI* API,wmfROP_Draw_t* rop_draw)
+static void wmf_gd_rop_draw (wmfAPI* API,wmfROP_Draw_t* rop_draw)
 {	wmf_gd_t* ddata = WMF_GD_GetData (API);
 
 	gd_t* gd = (gd_t*) ddata->gd_data;
@@ -77,7 +77,7 @@ void wmf_gd_rop_draw (wmfAPI* API,wmfROP_Draw_t* rop_draw)
 	gdImageFilledRectangle (gd->image,TL.x,TL.y,BR.x,BR.y,brushstyle);
 }
 
-void wmf_gd_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
+static void wmf_gd_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 {	wmf_gd_t* ddata = WMF_GD_GetData (API);
 
 	gd_t* gd = (gd_t*) ddata->gd_data;
@@ -131,13 +131,13 @@ void wmf_gd_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 	}
 }
 
-void wmf_gd_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
+static void wmf_gd_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
 {	WMF_DEBUG (API,"wmf_[gd_]bmp_read");
 
 	wmf_ipa_bmp_read (API,bmp_read);
 }
 
-void wmf_gd_bmp_free (wmfAPI* API,wmfBMP* bmp)
+static void wmf_gd_bmp_free (wmfAPI* API,wmfBMP* bmp)
 {	WMF_DEBUG (API,"wmf_[gd_]bmp_free");
 
 	wmf_ipa_bmp_free (API,bmp);

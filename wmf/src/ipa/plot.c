@@ -18,48 +18,44 @@
 
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "wmfconfig.h"
 #endif /* HAVE_CONFIG_H */
-
-/* If compiling as module, rename global functions to a standard
- */
-#ifdef WMF_IPA_MODULE
-#define wmf_plot_device_open    wmf_device_open
-#define wmf_plot_device_close   wmf_device_close
-#define wmf_plot_device_begin   wmf_device_begin
-#define wmf_plot_device_end     wmf_device_end
-#define wmf_plot_flood_interior wmf_flood_interior
-#define wmf_plot_flood_exterior wmf_flood_exterior
-#define wmf_plot_draw_pixel     wmf_draw_pixel
-#define wmf_plot_draw_pie       wmf_draw_pie
-#define wmf_plot_draw_chord     wmf_draw_chord
-#define wmf_plot_draw_arc       wmf_draw_arc
-#define wmf_plot_draw_ellipse   wmf_draw_ellipse
-#define wmf_plot_draw_line      wmf_draw_line
-#define wmf_plot_poly_line      wmf_poly_line
-#define wmf_plot_draw_polygon   wmf_draw_polygon
-#define wmf_plot_draw_rectangle wmf_draw_rectangle
-#define wmf_plot_rop_draw       wmf_rop_draw
-#define wmf_plot_bmp_draw       wmf_bmp_draw
-#define wmf_plot_bmp_read       wmf_bmp_read
-#define wmf_plot_bmp_free       wmf_bmp_free
-#define wmf_plot_draw_text      wmf_draw_text
-#define wmf_plot_udata_init     wmf_udata_init
-#define wmf_plot_udata_copy     wmf_udata_copy
-#define wmf_plot_udata_set      wmf_udata_set
-#define wmf_plot_udata_free     wmf_udata_free
-#define wmf_plot_region_frame   wmf_region_frame
-#define wmf_plot_region_paint   wmf_region_paint
-#define wmf_plot_region_clip    wmf_region_clip
-#endif /* WMF_IPA_MODULE */
 
 #include <math.h>
 
 #include "wmfdefs.h"
 
+#ifdef HAVE_LIBPLOT
+
 #include "libwmf/plot.h"
 
-#ifdef HAVE_LIBPLOT
+static void wmf_plot_device_open (wmfAPI*);
+static void wmf_plot_device_close (wmfAPI*);
+static void wmf_plot_device_begin (wmfAPI*);
+static void wmf_plot_device_end (wmfAPI*);
+static void wmf_plot_flood_interior (wmfAPI*,wmfFlood_t*);
+static void wmf_plot_flood_exterior (wmfAPI*,wmfFlood_t*);
+static void wmf_plot_draw_pixel (wmfAPI*,wmfDrawPixel_t*);
+static void wmf_plot_draw_pie (wmfAPI*,wmfDrawArc_t*);
+static void wmf_plot_draw_chord (wmfAPI*,wmfDrawArc_t*);
+static void wmf_plot_draw_arc (wmfAPI*,wmfDrawArc_t*);
+static void wmf_plot_draw_ellipse (wmfAPI*,wmfDrawArc_t*);
+static void wmf_plot_draw_line (wmfAPI*,wmfDrawLine_t*);
+static void wmf_plot_poly_line (wmfAPI*,wmfPolyLine_t*);
+static void wmf_plot_draw_polygon (wmfAPI*,wmfPolyLine_t*);
+static void wmf_plot_draw_rectangle (wmfAPI*,wmfDrawRectangle_t*);
+static void wmf_plot_rop_draw (wmfAPI*,wmfROP_Draw_t*);
+static void wmf_plot_bmp_draw (wmfAPI*,wmfBMP_Draw_t*);
+static void wmf_plot_bmp_read (wmfAPI*,wmfBMP_Read_t*);
+static void wmf_plot_bmp_free (wmfAPI*,wmfBMP*);
+static void wmf_plot_draw_text (wmfAPI*,wmfDrawText_t*);
+static void wmf_plot_udata_init (wmfAPI*,wmfUserData_t*);
+static void wmf_plot_udata_copy (wmfAPI*,wmfUserData_t*);
+static void wmf_plot_udata_set (wmfAPI*,wmfUserData_t*);
+static void wmf_plot_udata_free (wmfAPI*,wmfUserData_t*);
+static void wmf_plot_region_frame (wmfAPI*,wmfPolyRectangle_t*);
+static void wmf_plot_region_paint (wmfAPI*,wmfPolyRectangle_t*);
+static void wmf_plot_region_clip (wmfAPI*,wmfPolyRectangle_t*);
 
 #include "ipa/plot.h"
 #include "ipa/plot/bmp.h"
@@ -158,7 +154,7 @@ void wmf_plot_function (wmfAPI* API)
 #endif /* HAVE_LIBPLOT */
 }
 #ifdef HAVE_LIBPLOT
-void wmf_plot_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
+static void wmf_plot_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
 {	wmf_plot_t* ddata = WMF_PLOT_GetData (API);
 
 	plot_t* plot = (plot_t*) ddata->plot_data;
@@ -168,7 +164,7 @@ void wmf_plot_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
 	
 }
 
-void wmf_plot_udata_init (wmfAPI* API,wmfUserData_t* userdata)
+static void wmf_plot_udata_init (wmfAPI* API,wmfUserData_t* userdata)
 {	wmf_plot_t* ddata = WMF_PLOT_GetData (API);
 
 	plot_t* plot = (plot_t*) ddata->plot_data;
@@ -178,7 +174,7 @@ void wmf_plot_udata_init (wmfAPI* API,wmfUserData_t* userdata)
 	
 }
 
-void wmf_plot_udata_copy (wmfAPI* API,wmfUserData_t* userdata)
+static void wmf_plot_udata_copy (wmfAPI* API,wmfUserData_t* userdata)
 {	wmf_plot_t* ddata = WMF_PLOT_GetData (API);
 
 	plot_t* plot = (plot_t*) ddata->plot_data;
@@ -188,7 +184,7 @@ void wmf_plot_udata_copy (wmfAPI* API,wmfUserData_t* userdata)
 	
 }
 
-void wmf_plot_udata_set (wmfAPI* API,wmfUserData_t* userdata)
+static void wmf_plot_udata_set (wmfAPI* API,wmfUserData_t* userdata)
 {	wmf_plot_t* ddata = WMF_PLOT_GetData (API);
 
 	plot_t* plot = (plot_t*) ddata->plot_data;
@@ -198,7 +194,7 @@ void wmf_plot_udata_set (wmfAPI* API,wmfUserData_t* userdata)
 	
 }
 
-void wmf_plot_udata_free (wmfAPI* API,wmfUserData_t* userdata)
+static void wmf_plot_udata_free (wmfAPI* API,wmfUserData_t* userdata)
 {	wmf_plot_t* ddata = WMF_PLOT_GetData (API);
 
 	plot_t* plot = (plot_t*) ddata->plot_data;

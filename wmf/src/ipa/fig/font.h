@@ -54,7 +54,7 @@ static PS_to_FIG PSFontNo[35] = {
 	{ "ZapfChancery-MediumItalic",		33 },
 	{ "ZapfDingbats",			34 }};
 
-void wmf_fig_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
+static void wmf_fig_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
 {	wmf_fig_t* ddata = WMF_FIG_GetData (API);
 
 	wmfStream* out = ddata->out;

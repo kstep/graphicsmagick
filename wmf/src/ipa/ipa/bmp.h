@@ -17,6 +17,110 @@
    Boston, MA 02111-1307, USA.  */
 
 
+#ifndef HAVE_GD
+/* png stuff below adapted from stuff sent to me [fjf] by Lennard D. Rosenthal;
+ * probably used in ImageMagick and may not be covered, therefore, by the LGPL - (fjf)
+ * 
+ * utility routine for saving a pixbuf to a png file.
+ * This was adapted from Iain Holmes' code in gnome-iconedit, and probably
+ * should be in a utility library, possibly in gdk-pixbuf itself.
+ */
+static void ldr_bmp_png (wmfAPI* API,wmfBMP_Draw_t* bmp_draw,FILE* out)
+{
+#ifdef HAVE_LIBPNG
+	wmfRGB rgb;
+
+	png_structp png_ptr = 0;
+	png_infop info_ptr = 0;
+	png_text text[2];
+
+	int i;
+	int j;
+	int x;
+	int y;
+	int width  = (int) bmp_draw->crop.w;
+	int height = (int) bmp_draw->crop.h;
+	int depth = 8; /* ?? bit depth (bits per sample) */
+	int opacity;
+
+	char* ptr = 0;
+	char* buffer = (char*) wmf_malloc (API,4 * width);
+
+	if (ERR (API))
+	{	WMF_DEBUG (API,"bailing...");
+		return;
+	}
+
+	png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING,0,0,0);
+	if (png_ptr == 0) 
+	{	WMF_DEBUG (API,"Failed to write bitmap as PNG! (png_create_write_struct failed)");
+		wmf_free (API,buffer);
+		return;
+	}
+
+	info_ptr = png_create_info_struct (png_ptr);
+	if (info_ptr == 0)
+	{	WMF_DEBUG (API,"Failed to write bitmap as PNG! (png_create_info_struct failed)");
+		png_destroy_write_struct (&png_ptr,0);
+		wmf_free (API,buffer);
+		return;
+	}
+
+	if (setjmp (png_ptr->jmpbuf))
+	{	WMF_DEBUG (API,"Failed to write bitmap as PNG! (setjmp failed)");
+		png_destroy_write_struct (&png_ptr,&info_ptr);
+		wmf_free (API,buffer);
+		return;
+	}
+
+	png_init_io (png_ptr,out);
+
+	png_set_IHDR (png_ptr,info_ptr,width,height,depth,
+		      PNG_COLOR_TYPE_RGB_ALPHA,PNG_INTERLACE_NONE,PNG_COMPRESSION_TYPE_DEFAULT,PNG_FILTER_TYPE_DEFAULT);
+
+	/* Some text to go with the png image */
+	text[0].key = "Title";
+	text[0].text = "A converted bitmap";
+	text[0].compression = PNG_TEXT_COMPRESSION_NONE;
+	text[1].key = "Software";
+	text[1].text = "libwmf2";
+	text[1].compression = PNG_TEXT_COMPRESSION_NONE;
+
+	png_set_text (png_ptr,info_ptr,text,2);
+
+	/* Write header data
+	 */
+	png_write_info (png_ptr,info_ptr);
+
+	/* pump the raster data into libpng, one scan line at a time
+	 */	
+	x = (int) bmp_draw->crop.x;
+	y = (int) bmp_draw->crop.y;
+
+	for (j = 0; j < height; j++)
+	{	ptr = buffer;
+		for (i = 0; i < width; i++)
+		{	opacity = wmf_ipa_bmp_color (API,&(bmp_draw->bmp),&rgb,x+i,y+j);
+			*ptr++ = (char) rgb.r;
+			*ptr++ = (char) rgb.g;
+			*ptr++ = (char) rgb.b;
+			*ptr++ = (char) ((unsigned char) (opacity & 0xff));
+		}
+		png_write_row (png_ptr,(png_bytep) buffer);		
+	}
+	
+	png_write_end (png_ptr,info_ptr);
+	png_destroy_write_struct (&png_ptr,&info_ptr);
+
+	wmf_free (API,buffer);
+#else /* HAVE_LIBPNG */
+	WMF_ERROR (API,"Glitch? No PNG support!");
+	API->err = wmf_E_Glitch;
+#endif /* HAVE_LIBPNG */
+	return;
+}
+#endif /* ! HAVE_GD */
+#ifdef HAVE_GD
 static int ipa_b64_sink (void* context,const char* buffer,int length)
 {	ipa_b64_t* b64 = (ipa_b64_t*) context;
 
@@ -31,7 +135,8 @@ static int ipa_b64_sink (void* context,const char* buffer,int length)
 
 	return (i);
 }
-
+#endif /* HAVE_GD */
+#ifdef HAVE_GD
 static void ipa_b64_flush (void* context)
 {	ipa_b64_t* b64 = (ipa_b64_t*) context;
 
@@ -94,9 +199,12 @@ static void ipa_b64_flush (void* context)
 
 	b64->length = 0;
 }
+#endif /* HAVE_GD */
 
 void wmf_ipa_bmp_b64 (wmfAPI* API,wmfBMP_Draw_t* bmp_draw,wmfStream* out)
-{	gdImage* image = 0;
+{
+#ifdef HAVE_GD
+	gdImage* image = 0;
 
 	gdSink sink;
 
@@ -124,13 +232,14 @@ void wmf_ipa_bmp_b64 (wmfAPI* API,wmfBMP_Draw_t* bmp_draw,wmfStream* out)
 	gdImageDestroy (image);
 
 	ipa_b64_flush (sink.context);
+#endif /* HAVE_GD */
 }
 
 void wmf_ipa_bmp_png (wmfAPI* API,wmfBMP_Draw_t* bmp_draw,char* name)
 {	FILE* file = 0;
-
+#ifdef HAVE_GD
 	gdImage* image = 0;
-
+#endif /* HAVE_GD */
 	WMF_DEBUG (API,"~~~~~~~~wmf_ipa_bmp_png");
 #ifndef HAVE_LIBPNG
 	WMF_DEBUG (API,"No support for PNG, sorry!");
@@ -143,19 +252,24 @@ void wmf_ipa_bmp_png (wmfAPI* API,wmfBMP_Draw_t* bmp_draw,char* name)
 	{	WMF_ERROR (API,"Failed to open file to write GD image!");
 		return;
 	}
-
+#ifdef HAVE_GD
 	image = ipa_bmp_gd (API,bmp_draw);
 
 	if (image)
 	{	gdImagePng (image,file);
 		gdImageDestroy (image);
 	}
+#else /* HAVE_GD */
+	ldr_bmp_png (API,bmp_draw,file);	
+#endif /* HAVE_GD */
 
 	fclose (file);
 }
 
 void wmf_ipa_bmp_jpg (wmfAPI* API,wmfBMP_Draw_t* bmp_draw,char* name)
-{	FILE* file = 0;
+{
+#ifdef HAVE_GD
+	FILE* file = 0;
 
 	gdImage* image = 0;
 
@@ -180,8 +294,9 @@ void wmf_ipa_bmp_jpg (wmfAPI* API,wmfBMP_Draw_t* bmp_draw,char* name)
 	}
 
 	fclose (file);
+#endif /* HAVE_GD */
 }
-
+#ifdef HAVE_GD
 static gdImage* ipa_bmp_gd (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 {	wmfRGB rgb;
 
@@ -226,7 +341,7 @@ static gdImage* ipa_bmp_gd (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 
 	return (image);
 }
-
+#endif /* HAVE_GD */
 void wmf_ipa_bmp_eps (wmfAPI* API,wmfBMP_Draw_t* bmp_draw,char* name)
 {	wmfRGB rgb;
 

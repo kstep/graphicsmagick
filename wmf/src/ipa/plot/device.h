@@ -19,7 +19,7 @@
 
 /* This is called by wmf_play() the *first* time the meta file is played
  */
-void wmf_plot_device_open (wmfAPI* API)
+static void wmf_plot_device_open (wmfAPI* API)
 {	wmf_plot_t* ddata = WMF_PLOT_GetData (API);
 
 	/* plot_t* plot = (plot_t*) ddata->plot_data; */
@@ -31,7 +31,7 @@ void wmf_plot_device_open (wmfAPI* API)
 
 /* This is called by wmf_api_destroy()
  */
-void wmf_plot_device_close (wmfAPI* API)
+static void wmf_plot_device_close (wmfAPI* API)
 {	wmf_plot_t* ddata = WMF_PLOT_GetData (API);
 
 	plot_t* plot = (plot_t*) ddata->plot_data;
@@ -47,7 +47,7 @@ void wmf_plot_device_close (wmfAPI* API)
 
 /* This is called from the beginning of each play for initial page setup
  */
-void wmf_plot_device_begin (wmfAPI* API)
+static void wmf_plot_device_begin (wmfAPI* API)
 {	wmf_plot_t* ddata = WMF_PLOT_GetData (API);
 
 	plot_t* plot = (plot_t*) ddata->plot_data;
@@ -59,7 +59,7 @@ void wmf_plot_device_begin (wmfAPI* API)
 
 /* This is called from the end of each play for page termination
  */
-void wmf_plot_device_end (wmfAPI* API)
+static void wmf_plot_device_end (wmfAPI* API)
 {	wmf_plot_t* ddata = WMF_PLOT_GetData (API);
 
 	plot_t* plot = (plot_t*) ddata->plot_data;

@@ -43,7 +43,7 @@ dnl Initialize automake stuff
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION, no-define)
 
 # Specify a configuration file
-AM_CONFIG_HEADER(config.h)
+AM_CONFIG_HEADER(wmfconfig.h)
 
 # CFLAGS to be listed by libwmf-config should be added to this:
 WMF_CONFIG_CFLAGS=
@@ -89,10 +89,25 @@ AC_OBJEXT
 AC_MINGW32
 # End Tests for Windows
 
-# Configure libtool
-AC_LIBTOOL_WIN32_DLL
-AM_PROG_LIBTOOL
-#end libtool stuff
+# Special Release Mode Run-Time Config
+# Current compatibility: libtool-1.4.2
+# 
+release_mode="no"
+if test "$release_mode" = "yes"; then
+	os_name=`uname`
+	if test "x$os_name" = "xDarwin"; then
+		top_srcdir=`dirname $0`
+		echo ""
+		echo -n "Detected Darwin... "
+		if test -w "$top_srcdir"; then
+			echo "Fixing ltmain.sh"
+			(cd "$top_srcdir" && cp -f patches/lt142main.sh ltmain.sh && patch -p0 < patches/lt142macosx.patch)
+		else
+			echo "Warning: Unable to fix ltmain.sh - linking may fail!"
+		fi
+		echo ""
+	fi
+fi
 
 dnl Checks for programs.
 
@@ -103,6 +118,11 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
+
+# Configure libtool
+AC_LIBTOOL_WIN32_DLL
+AM_PROG_LIBTOOL
+#end libtool stuff
 
 dnl Checks for header files.
 AC_HEADER_STDC
@@ -135,7 +155,14 @@ if [ test "x$check_for_vsnprintf" = "xyes" ]; then
 	AC_CHECK_FUNC(_vsnprintf,[
 		AC_DEFINE(HAVE_VSNPRINTF,1,[define if you have vsnprintf])
 		AC_DEFINE(vsnprintf,_vsnprintf,[define to your implementation of vsnprintf])
-	],[	require_trio=yes
+	],[	dnl Hmm. On the off-chance, check for vsnprintf in libdb.
+		dnl This should, hopefully, solve the problem with Tru64 4.x
+		dnl which is incompatible with trio (the latter's fault).
+		AC_CHECK_LIB(db,vsnprintf,[
+			AC_DEFINE(HAVE_VSNPRINTF)
+			WMF_LDFLAGS="$WMF_LDFLAGS -ldb"
+		],[	require_trio=yes
+		])
 	])
 fi
 
@@ -165,13 +192,40 @@ AM_CONDITIONAL(LIBWMF_OPT_TRIO,[ test "x$require_trio" = "xyes" ])
 
 dnl Checks for libraries, etc.
 
+AC_ARG_WITH(layers,[  --with-layers           whether to build layers [default is yes]],[
+	if [ test "x$withval" = "xyes" ]; then
+		libwmf_layers=yes
+	elif [ test "x$withval" = "xno" ]; then
+		libwmf_layers=no
+	elif [ test "x$withval" = "xmodules" ]; then
+		AC_MSG_ERROR([* * * Sorry, modules not yet supported! * * *])
+		libwmf_layers=modules
+	else
+		AC_MSG_WARN([* * * Bad option to --with-layers! * * *])
+		libwmf_layers=yes
+	fi
+],[	libwmf_layers=yes
+])
+
+if [ test $libwmf_layers = no ]; then
+	AC_DEFINE(WITHOUT_LAYERS,1,[defining this will disable egs, fig, svg & foreign layers])
+fi
+
+AM_CONDITIONAL(LIBWMF_OPT_MODULES,[ test $libwmf_layers = modules ])
+AM_CONDITIONAL(LIBWMF_OPT_LAYERS,[ test $libwmf_layers != no ])
+
 libwmf_x=no
 libwmf_xml=no
 libwmf_gd_jpeg=no
 libwmf_plot=no
 
-AC_PATH_X
-AC_PATH_XTRA
+if [ test $libwmf_layers != no ]; then
+	AC_PATH_X
+	AC_PATH_XTRA
+else
+	X_CFLAGS="-DX_DISPLAY_MISSING=1"
+	no_x=yes
+fi
 
 dnl (1) X        {-lX11}      [(!)-DX_DISPLAY_MISSING]
 
@@ -266,26 +320,18 @@ else
 fi
 
 if [ test $search_for_xml = yes ]; then
-	AC_MSG_CHECKING(for xml2-config)
-
-	if [ test "x$XML_DIR" != "x" ]; then
-		if [ ${XML_DIR}/bin/xml2-config --libs print > /dev/null 2>&1 ]; then
-			XML_CONFIG=${XML_DIR}/bin/xml2-config
-		else
-			XML_CONFIG=xml2-config
-		fi
+	if [ test -n "$XML_DIR" ]; then
+		AC_PATH_PROG(XML2_CONFIG,xml2-config, ,[$XML_DIR/bin:$PATH])
 	else
-		XML_CONFIG=xml2-config
+		AC_PATH_PROG(XML2_CONFIG,xml2-config)
 	fi
 
-	if [ ${XML_CONFIG} --libs print > /dev/null 2>&1 ]; then
-		AC_MSG_RESULT($XML_CONFIG)
+	if [ test -n "$XML2_CONFIG" ]; then
+		WMF_XML_CFLAGS=`$XML2_CONFIG --cflags`
+		WMF_XML_LDFLAGS=`$XML2_CONFIG --libs`
 	else
-		AC_MSG_ERROR(Could not find xml2-config anywhere, check ftp://xmlsoft.org/.)
+		AC_MSG_ERROR([* * * unable to find xml2-config; unable to continue - check ftp://xmlsoft.org/ * * *])
 	fi
-	
-	WMF_XML_CFLAGS=`$XML_CONFIG --cflags`
-	WMF_XML_LDFLAGS=`$XML_CONFIG --libs`
 
 	libwmf_xml=xml2
 fi
@@ -558,6 +604,17 @@ AC_ARG_WITH(sys-gd,[  --with-sys-gd=DIR       use system GD in DIR (if compatibl
 ],[	search_for_gd=yes
 ])
 
+AC_ARG_ENABLE(gd,[  --disable-gd            don't build GD, don't look for it, don't require it],[
+	if [ test "x$enableval" = "xno" ]; then
+		search_for_gd=no
+		libwmf_gd="none"
+	fi
+],[	if [ test $libwmf_layers = no ]; then
+		search_for_gd=no
+		libwmf_gd="none"
+	fi
+])
+
 if [ test "$search_for_gd" != "no" ]; then
 	other_libs=""
 
@@ -591,6 +648,13 @@ if [ test "$search_for_gd" != "no" ]; then
 	])
 fi
 
+if [ test "x$libwmf_gd" != "xnone" ]; then
+	AC_DEFINE(HAVE_GD,1,[define if you have libgd])
+	build_gd_layer=yes
+else
+	build_gd_layer=no
+fi
+
 if [ test "x$libwmf_gd" = "xsys" ]; then
 	if [ test "x$GD_DIR" != "x" ]; then
 		WMF_GD_CFLAGS="-I$GD_DIR/include"
@@ -598,10 +662,14 @@ if [ test "x$libwmf_gd" = "xsys" ]; then
 	else
 		WMF_GD_LDFLAGS="-lgd $WMF_GD_LDFLAGS"
 	fi
+elif [ test "x$libwmf_gd" = "xnone" ]; then
+	dnl Slight hack here to disable GD build:
+	libwmf_gd="sys"
 else
 	WMF_GD_LDFLAGS=""
 fi
 
+AM_CONDITIONAL(LIBWMF_OPT_GD,[ test "x$build_gd_layer" = "xyes" ])
 AM_CONDITIONAL(LIBWMF_OPT_SYS_GD,[ test "x$libwmf_gd" = "xsys" ])
 
 CPPFLAGS=$_cppflags
@@ -654,6 +722,18 @@ AM_CONDITIONAL(LIBWMF_OPT_PLOT,[ test "x$libwmf_plot" != "xno" ])
 
 CPPFLAGS=$_cppflags
 LDFLAGS=$_ldflags
+
+dnl (9) magick
+
+libwmf_magick=no
+AC_ARG_ENABLE(magick,[  --enable-magick         build magick device layer [default=no]],[
+	if [ test "x$enableval" != "xno" ]; then
+		AC_DEFINE(ENABLE_MAGICK,1,[define if you wish to build the magick device layer])
+		libwmf_magick=yes
+	fi
+])
+
+AM_CONDITIONAL(LIBWMF_OPT_MAGICK,[ test "x$libwmf_magick" != "xno" ])
 
 dnl Other options...
 
@@ -775,7 +855,9 @@ echo "	Support for X:			$libwmf_x"
 echo "	Support for GD:			$libwmf_gd"
 echo "	Support for JPEG though GD:	$libwmf_gd_jpeg"
 echo "	Support for GNU plotutils:	$libwmf_plot"
+echo "	Whether to build magick layer:	$libwmf_magick"
 echo "	Support for XML:		$libwmf_xml"
+echo ""
 echo "	Documentation directory:	$WMF_DOCDIR"
 echo "	Font directory:			$WMF_FONTDIR"
 echo "	System XML fontmap file:	$WMF_SYS_FONTMAP"

@@ -47,7 +47,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 
-void wmf_magick_flood_interior (wmfAPI* API,wmfFlood_t* flood)
+static void wmf_magick_flood_interior (wmfAPI* API,wmfFlood_t* flood)
 {	wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
 	wmfRGB* rgb = &(flood->color);
@@ -67,7 +67,7 @@ void wmf_magick_flood_interior (wmfAPI* API,wmfFlood_t* flood)
 	wmf_stream_printf (API,out,"color %f,%f filltoborder\n",pt.x,pt.y);
 }
 
-void wmf_magick_flood_exterior (wmfAPI* API,wmfFlood_t* flood)
+static void wmf_magick_flood_exterior (wmfAPI* API,wmfFlood_t* flood)
 {	wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
 	wmfRGB* rgb = &(flood->color);
@@ -92,7 +92,7 @@ void wmf_magick_flood_exterior (wmfAPI* API,wmfFlood_t* flood)
 	}
 }
 
-void wmf_magick_draw_pixel (wmfAPI* API,wmfDrawPixel_t* draw_pixel)
+static void wmf_magick_draw_pixel (wmfAPI* API,wmfDrawPixel_t* draw_pixel)
 {	wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
 	wmfRGB* rgb = &(draw_pixel->color);
@@ -122,7 +122,7 @@ void wmf_magick_draw_pixel (wmfAPI* API,wmfDrawPixel_t* draw_pixel)
 	wmf_stream_printf (API,out,"rectangle %f,%f %f,%f\n",pt.x,pt.y,pt.x+width,pt.y+height);
 }
 
-void wmf_magick_draw_pie (wmfAPI* API,wmfDrawArc_t* draw_arc)
+static void wmf_magick_draw_pie (wmfAPI* API,wmfDrawArc_t* draw_arc)
 {	/* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
 	WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]draw_pie");
@@ -130,7 +130,7 @@ void wmf_magick_draw_pie (wmfAPI* API,wmfDrawArc_t* draw_arc)
 	magick_draw_arc (API,draw_arc,magick_arc_pie);
 }
 
-void wmf_magick_draw_chord (wmfAPI* API,wmfDrawArc_t* draw_arc)
+static void wmf_magick_draw_chord (wmfAPI* API,wmfDrawArc_t* draw_arc)
 {	/* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
 	WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]draw_chord");
@@ -138,7 +138,7 @@ void wmf_magick_draw_chord (wmfAPI* API,wmfDrawArc_t* draw_arc)
 	magick_draw_arc (API,draw_arc,magick_arc_chord);
 }
 
-void wmf_magick_draw_arc (wmfAPI* API,wmfDrawArc_t* draw_arc)
+static void wmf_magick_draw_arc (wmfAPI* API,wmfDrawArc_t* draw_arc)
 {	/* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
 	WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]draw_arc");
@@ -146,7 +146,7 @@ void wmf_magick_draw_arc (wmfAPI* API,wmfDrawArc_t* draw_arc)
 	magick_draw_arc (API,draw_arc,magick_arc_open);
 }
 
-void wmf_magick_draw_ellipse (wmfAPI* API,wmfDrawArc_t* draw_arc)
+static void wmf_magick_draw_ellipse (wmfAPI* API,wmfDrawArc_t* draw_arc)
 {	/* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
 	WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]draw_arc");
@@ -241,7 +241,7 @@ static void magick_draw_arc (wmfAPI* API,wmfDrawArc_t* draw_arc,magick_arc_t fin
 	}
 }
 
-void wmf_magick_draw_line (wmfAPI* API,wmfDrawLine_t* draw_line)
+static void wmf_magick_draw_line (wmfAPI* API,wmfDrawLine_t* draw_line)
 {	wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
 	magickPoint from;
@@ -263,7 +263,7 @@ void wmf_magick_draw_line (wmfAPI* API,wmfDrawLine_t* draw_line)
 	}
 }
 
-void wmf_magick_poly_line (wmfAPI* API,wmfPolyLine_t* poly_line)
+static void wmf_magick_poly_line (wmfAPI* API,wmfPolyLine_t* poly_line)
 {	wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
 	magickPoint pt;
@@ -293,7 +293,7 @@ void wmf_magick_poly_line (wmfAPI* API,wmfPolyLine_t* poly_line)
 	}
 }
 
-void wmf_magick_draw_polygon (wmfAPI* API,wmfPolyLine_t* poly_line)
+static void wmf_magick_draw_polygon (wmfAPI* API,wmfPolyLine_t* poly_line)
 {	wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
 	magickPoint pt;
@@ -324,7 +324,7 @@ void wmf_magick_draw_polygon (wmfAPI* API,wmfPolyLine_t* poly_line)
 	}
 }
 
-void wmf_magick_draw_rectangle (wmfAPI* API,wmfDrawRectangle_t* draw_rect)
+static void wmf_magick_draw_rectangle (wmfAPI* API,wmfDrawRectangle_t* draw_rect)
 {	wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
 	magickPoint TL;

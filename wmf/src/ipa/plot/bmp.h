@@ -17,7 +17,7 @@
    Boston, MA 02111-1307, USA.  */
 
 
-void wmf_plot_rop_draw (wmfAPI* API,wmfROP_Draw_t* ropdraw)
+static void wmf_plot_rop_draw (wmfAPI* API,wmfROP_Draw_t* ropdraw)
 {	wmf_plot_t* ddata = WMF_PLOT_GetData (API);
 
 	plot_t* plot = (plot_t*) ddata->plot_data;
@@ -27,7 +27,7 @@ void wmf_plot_rop_draw (wmfAPI* API,wmfROP_Draw_t* ropdraw)
 	
 }
 
-void wmf_plot_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
+static void wmf_plot_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 {	wmf_plot_t* ddata = WMF_PLOT_GetData (API);
 
 	plot_t* plot = (plot_t*) ddata->plot_data;
@@ -37,13 +37,13 @@ void wmf_plot_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 	
 }
 
-void wmf_plot_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
+static void wmf_plot_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
 {	WMF_DEBUG (API,"wmf_[plot_]bmp_read");
 
 	wmf_ipa_bmp_read (API,bmp_read);
 }
 
-void wmf_plot_bmp_free (wmfAPI* API,wmfBMP* bmp)
+static void wmf_plot_bmp_free (wmfAPI* API,wmfBMP* bmp)
 {	WMF_DEBUG (API,"wmf_[plot_]bmp_free");
 
 	wmf_ipa_bmp_free (API,bmp);

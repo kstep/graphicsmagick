@@ -17,7 +17,7 @@
    Boston, MA 02111-1307, USA.  */
 
 
-void wmf_x_flood_interior (wmfAPI* API,wmfFlood_t* flood)
+static void wmf_x_flood_interior (wmfAPI* API,wmfFlood_t* flood)
 {	/* wmf_x_t* ddata = WMF_X_GetData (API); */
 
 	WMF_DEBUG (API,"wmf_[x_]flood_interior");
@@ -25,7 +25,7 @@ void wmf_x_flood_interior (wmfAPI* API,wmfFlood_t* flood)
 	/* TODO */
 }
 
-void wmf_x_flood_exterior (wmfAPI* API,wmfFlood_t* flood)
+static void wmf_x_flood_exterior (wmfAPI* API,wmfFlood_t* flood)
 {	/* wmf_x_t* ddata = WMF_X_GetData (API); */
 
 	WMF_DEBUG (API,"wmf_[x_]flood_exterior");
@@ -33,7 +33,7 @@ void wmf_x_flood_exterior (wmfAPI* API,wmfFlood_t* flood)
 	/* TODO */
 }
 
-void wmf_x_draw_pixel (wmfAPI* API,wmfDrawPixel_t* draw_pixel)
+static void wmf_x_draw_pixel (wmfAPI* API,wmfDrawPixel_t* draw_pixel)
 {	wmf_x_t* ddata = WMF_X_GetData (API);
 
 	XPoint pt;
@@ -54,7 +54,7 @@ void wmf_x_draw_pixel (wmfAPI* API,wmfDrawPixel_t* draw_pixel)
 	}
 }
 
-void wmf_x_draw_pie (wmfAPI* API,wmfDrawArc_t* draw_arc)
+static void wmf_x_draw_pie (wmfAPI* API,wmfDrawArc_t* draw_arc)
 {	/* wmf_x_t* ddata = WMF_X_GetData (API); */
 
 	WMF_DEBUG (API,"wmf_[x_]draw_pie");
@@ -62,7 +62,7 @@ void wmf_x_draw_pie (wmfAPI* API,wmfDrawArc_t* draw_arc)
 	x_draw_arc (API,draw_arc,x_arc_pie);
 }
 
-void wmf_x_draw_chord (wmfAPI* API,wmfDrawArc_t* draw_arc)
+static void wmf_x_draw_chord (wmfAPI* API,wmfDrawArc_t* draw_arc)
 {	/* wmf_x_t* ddata = WMF_X_GetData (API); */
 
 	WMF_DEBUG (API,"wmf_[x_]draw_chord");
@@ -70,7 +70,7 @@ void wmf_x_draw_chord (wmfAPI* API,wmfDrawArc_t* draw_arc)
 	x_draw_arc (API,draw_arc,x_arc_chord);
 }
 
-void wmf_x_draw_arc (wmfAPI* API,wmfDrawArc_t* draw_arc)
+static void wmf_x_draw_arc (wmfAPI* API,wmfDrawArc_t* draw_arc)
 {	/* wmf_x_t* ddata = WMF_X_GetData (API); */
 
 	WMF_DEBUG (API,"wmf_[x_]draw_arc");
@@ -78,7 +78,7 @@ void wmf_x_draw_arc (wmfAPI* API,wmfDrawArc_t* draw_arc)
 	x_draw_arc (API,draw_arc,x_arc_open);
 }
 
-void wmf_x_draw_ellipse (wmfAPI* API,wmfDrawArc_t* draw_arc)
+static void wmf_x_draw_ellipse (wmfAPI* API,wmfDrawArc_t* draw_arc)
 {	/* wmf_x_t* ddata = WMF_X_GetData (API); */
 
 	WMF_DEBUG (API,"wmf_[x_]draw_ellipse");
@@ -195,7 +195,7 @@ static void x_draw_arc (wmfAPI* API,wmfDrawArc_t* draw_arc,x_arc_t finish) /* TO
 	}
 }
 
-void wmf_x_draw_line (wmfAPI* API,wmfDrawLine_t* draw_line)
+static void wmf_x_draw_line (wmfAPI* API,wmfDrawLine_t* draw_line)
 {	wmf_x_t* ddata = WMF_X_GetData (API);
 
 	XPoint from;
@@ -218,7 +218,7 @@ void wmf_x_draw_line (wmfAPI* API,wmfDrawLine_t* draw_line)
 	}
 }
 
-void wmf_x_poly_line (wmfAPI* API,wmfPolyLine_t* poly_line)
+static void wmf_x_poly_line (wmfAPI* API,wmfPolyLine_t* poly_line)
 {	wmf_x_t* ddata = WMF_X_GetData (API);
 
 	XPoint* pt;
@@ -256,7 +256,7 @@ void wmf_x_poly_line (wmfAPI* API,wmfPolyLine_t* poly_line)
 	wmf_free (API,pt);
 }
 
-void wmf_x_draw_polygon (wmfAPI* API,wmfPolyLine_t* poly_line)
+static void wmf_x_draw_polygon (wmfAPI* API,wmfPolyLine_t* poly_line)
 {	wmf_x_t* ddata = WMF_X_GetData (API);
 
 	XPoint* pt;
@@ -307,7 +307,7 @@ void wmf_x_draw_polygon (wmfAPI* API,wmfPolyLine_t* poly_line)
 	wmf_free (API,pt);
 }
 
-void wmf_x_draw_rectangle (wmfAPI* API,wmfDrawRectangle_t* draw_rectangle)
+static void wmf_x_draw_rectangle (wmfAPI* API,wmfDrawRectangle_t* draw_rectangle)
 {	wmf_x_t* ddata = WMF_X_GetData (API);
 
 	XPoint TL;

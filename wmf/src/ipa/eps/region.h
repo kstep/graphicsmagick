@@ -17,7 +17,7 @@
    Boston, MA 02111-1307, USA.  */
 
 
-void wmf_eps_region_frame (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
+static void wmf_eps_region_frame (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
 {	wmf_eps_t* ddata = WMF_EPS_GetData (API);
 
 	wmfStream* out = ddata->out;
@@ -76,7 +76,7 @@ void wmf_eps_region_frame (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
 	}
 }
 
-void wmf_eps_region_paint (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
+static void wmf_eps_region_paint (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
 {	wmf_eps_t* ddata = WMF_EPS_GetData (API);
 
 	unsigned int i;
@@ -111,7 +111,7 @@ void wmf_eps_region_paint (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
 	}
 }
 
-void wmf_eps_region_clip (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
+static void wmf_eps_region_clip (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
 {	wmf_eps_t* ddata = WMF_EPS_GetData (API);
 
 	unsigned int i;

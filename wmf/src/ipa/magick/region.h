@@ -47,7 +47,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 
-void wmf_magick_region_frame (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
+static void wmf_magick_region_frame (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
 {	/* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
 	WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]region_frame");
@@ -55,7 +55,7 @@ void wmf_magick_region_frame (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
 	
 }
 
-void wmf_magick_region_paint (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
+static void wmf_magick_region_paint (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
 {	/* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
 	WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]region_paint");
@@ -63,7 +63,7 @@ void wmf_magick_region_paint (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
 	
 }
 
-void wmf_magick_region_clip (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
+static void wmf_magick_region_clip (wmfAPI* API,wmfPolyRectangle_t* poly_rect)
 {	/* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
 	WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]region_clip");

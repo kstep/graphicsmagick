@@ -102,6 +102,7 @@ WMF_MINOR_VERSION = @WMF_MINOR_VERSION@
 WMF_SYS_FONTMAP = @WMF_SYS_FONTMAP@
 WMF_VERSION = @WMF_VERSION@
 WMF_XTRA_FONTMAP = @WMF_XTRA_FONTMAP@
+XML2_CONFIG = @XML2_CONFIG@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
@@ -118,14 +119,12 @@ LDFLAGS = @LDFLAGS@
 
 DEFS = @DEFS@ @GD_DEFS@
 
-gddir = $(includedir)/libwmf/gd
-
-gd_HEADERS = gd.h gdcache.h gd_clip.h gd_io.h \
-	gdfontg.h gdfontl.h gdfontmb.h gdfonts.h gdfontt.h
-
+GDHDRS = gd.h gdcache.h gd_clip.h gd_io.h gdfontg.h gdfontl.h gdfontmb.h gdfonts.h gdfontt.h
 
 @LIBWMF_OPT_SYS_GD_TRUE@LIBGD = 
 @LIBWMF_OPT_SYS_GD_FALSE@LIBGD = libgd.la
+@LIBWMF_OPT_SYS_GD_TRUE@HDRGDINST = 
+@LIBWMF_OPT_SYS_GD_FALSE@HDRGDINST = $(GDHDRS)
 
 noinst_LTLIBRARIES = $(LIBGD)
 
@@ -135,6 +134,10 @@ libgd_la_SOURCES = gd.c gd_gd.c gd_gd2.c gd_io.c gd_io_dp.c \
 		gdtables.c gdft.c gdcache.c gdkanji.c wbmp.c \
 		gd_wbmp.c gdhelpers.c gd_topal.c gd_clip.c
 
+
+gddir = $(includedir)/libwmf/gd
+
+gd_HEADERS = $(HDRGDINST)
 
 GDOTHER = \
 	Makefile.gd \
@@ -169,10 +172,10 @@ GDOTHER = \
 	webpng.c
 
 
-EXTRA_DIST = Makefile.gd Makefile.nt Readme.wmf $(GDOTHER)
+EXTRA_DIST = Makefile.gd Makefile.nt Readme.wmf $(GDHDRS) $(GDOTHER)
 subdir = src/extra/gd
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/config.h
+CONFIG_HEADER = $(top_builddir)/wmfconfig.h
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 

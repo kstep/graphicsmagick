@@ -9,10 +9,16 @@ DEFS = @DEFS@ @WMF_DEFS@ \
 	-DWMF_XTRA_FONTMAP=\"@WMF_XTRA_FONTMAP@\" \
 	-DWMF_GS_FONTMAP=\"@WMF_GS_FONTMAP@\"
 
+if LIBWMF_OPT_SYS_GD
+GDHDRS = 
+else
+GDHDRS = -I$(top_srcdir)/src/extra/gd
+endif
+
 INCLUDES = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/src \
-	-I$(top_srcdir)/src/extra/gd \
+	$(GDHDRS) \
 	-I$(top_builddir)
 
 noinst_LTLIBRARIES = libipa.la

@@ -1,0 +1,13 @@
+--- ltmain.sh	Mon Oct 15 18:47:27 2001
++++ ltmain.macosx	Mon Oct 15 18:46:44 2001
+@@ -1543,7 +1543,9 @@
+ 
+ 	if test $pass = conv; then
+ 	  # Only check for convenience libraries
+-	  deplibs="$lib $deplibs"
++	  if test "$libdir"; then
++	    deplibs="$lib $deplibs"
++	  fi
+ 	  if test -z "$libdir"; then
+ 	    if test -z "$old_library"; then
+ 	      $echo "$modename: cannot find name of link library for \`$lib'" 1>&2

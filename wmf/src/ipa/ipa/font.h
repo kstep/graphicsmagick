@@ -946,7 +946,7 @@ static void xml2fontmap_read (wmfAPI* API,wmfXML_FontData* FD,char* xmlfontmap)
 
 	xmlParserCtxtPtr ctxt;
 
-	xmlSAXHandler sax = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+	xmlSAXHandler sax = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
 	sax.startElement = (startElementSAXFunc) xml2_start;
 

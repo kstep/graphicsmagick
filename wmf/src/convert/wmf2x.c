@@ -18,7 +18,7 @@
 
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "wmfconfig.h"
 #endif
 
 #include <stdio.h>
@@ -331,6 +331,7 @@ int wmf2x_args (PlotData* pdata)
 				status = arg;
 				break;
 			}
+			continue;
 		}
 		if (strncmp (argv[arg],"--height=",9) == 0)
 		{	if (sscanf (argv[arg]+9,"%u",&(pdata->options.x_height)) != 1)
@@ -338,6 +339,7 @@ int wmf2x_args (PlotData* pdata)
 				status = arg;
 				break;
 			}
+			continue;
 		}
 
 		if (strncmp (argv[arg],"--wmf-",6) == 0)

@@ -18,40 +18,8 @@
 
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "wmfconfig.h"
 #endif /* HAVE_CONFIG_H */
-
-/* If compiling as module, rename global functions to a standard
- */
-#ifdef WMF_IPA_MODULE
-#define wmf_svg_device_open    wmf_device_open
-#define wmf_svg_device_close   wmf_device_close
-#define wmf_svg_device_begin   wmf_device_begin
-#define wmf_svg_device_end     wmf_device_end
-#define wmf_svg_flood_interior wmf_flood_interior
-#define wmf_svg_flood_exterior wmf_flood_exterior
-#define wmf_svg_draw_pixel     wmf_draw_pixel
-#define wmf_svg_draw_pie       wmf_draw_pie
-#define wmf_svg_draw_chord     wmf_draw_chord
-#define wmf_svg_draw_arc       wmf_draw_arc
-#define wmf_svg_draw_ellipse   wmf_draw_ellipse
-#define wmf_svg_draw_line      wmf_draw_line
-#define wmf_svg_poly_line      wmf_poly_line
-#define wmf_svg_draw_polygon   wmf_draw_polygon
-#define wmf_svg_draw_rectangle wmf_draw_rectangle
-#define wmf_svg_rop_draw       wmf_rop_draw
-#define wmf_svg_bmp_draw       wmf_bmp_draw
-#define wmf_svg_bmp_read       wmf_bmp_read
-#define wmf_svg_bmp_free       wmf_bmp_free
-#define wmf_svg_draw_text      wmf_draw_text
-#define wmf_svg_udata_init     wmf_udata_init
-#define wmf_svg_udata_copy     wmf_udata_copy
-#define wmf_svg_udata_set      wmf_udata_set
-#define wmf_svg_udata_free     wmf_udata_free
-#define wmf_svg_region_frame   wmf_region_frame
-#define wmf_svg_region_paint   wmf_region_paint
-#define wmf_svg_region_clip    wmf_region_clip
-#endif /* WMF_IPA_MODULE */
 
 #include <stdio.h>
 #include <string.h>
@@ -59,7 +27,37 @@
 
 #include "wmfdefs.h"
 
+#ifndef WITHOUT_LAYERS
+
 #include "libwmf/svg.h"
+
+static void wmf_svg_device_open (wmfAPI*);
+static void wmf_svg_device_close (wmfAPI*);
+static void wmf_svg_device_begin (wmfAPI*);
+static void wmf_svg_device_end (wmfAPI*);
+static void wmf_svg_flood_interior (wmfAPI*,wmfFlood_t*);
+static void wmf_svg_flood_exterior (wmfAPI*,wmfFlood_t*);
+static void wmf_svg_draw_pixel (wmfAPI*,wmfDrawPixel_t*);
+static void wmf_svg_draw_pie (wmfAPI*,wmfDrawArc_t*);
+static void wmf_svg_draw_chord (wmfAPI*,wmfDrawArc_t*);
+static void wmf_svg_draw_arc (wmfAPI*,wmfDrawArc_t*);
+static void wmf_svg_draw_ellipse (wmfAPI*,wmfDrawArc_t*);
+static void wmf_svg_draw_line (wmfAPI*,wmfDrawLine_t*);
+static void wmf_svg_poly_line (wmfAPI*,wmfPolyLine_t*);
+static void wmf_svg_draw_polygon (wmfAPI*,wmfPolyLine_t*);
+static void wmf_svg_draw_rectangle (wmfAPI*,wmfDrawRectangle_t*);
+static void wmf_svg_rop_draw (wmfAPI*,wmfROP_Draw_t*);
+static void wmf_svg_bmp_draw (wmfAPI*,wmfBMP_Draw_t*);
+static void wmf_svg_bmp_read (wmfAPI*,wmfBMP_Read_t*);
+static void wmf_svg_bmp_free (wmfAPI*,wmfBMP*);
+static void wmf_svg_draw_text (wmfAPI*,wmfDrawText_t*);
+static void wmf_svg_udata_init (wmfAPI*,wmfUserData_t*);
+static void wmf_svg_udata_copy (wmfAPI*,wmfUserData_t*);
+static void wmf_svg_udata_set (wmfAPI*,wmfUserData_t*);
+static void wmf_svg_udata_free (wmfAPI*,wmfUserData_t*);
+static void wmf_svg_region_frame (wmfAPI*,wmfPolyRectangle_t*);
+static void wmf_svg_region_paint (wmfAPI*,wmfPolyRectangle_t*);
+static void wmf_svg_region_clip (wmfAPI*,wmfPolyRectangle_t*);
 
 #include "ipa/svg.h"
 #include "ipa/svg/bmp.h"
@@ -67,8 +65,12 @@
 #include "ipa/svg/draw.h"
 #include "ipa/svg/region.h"
 
+#endif /* ! WITHOUT_LAYERS */
+
 void wmf_svg_function (wmfAPI* API)
-{	wmf_svg_t* ddata = 0;
+{
+#ifndef WITHOUT_LAYERS
+	wmf_svg_t* ddata = 0;
 
 	wmfFunctionReference* FR = (wmfFunctionReference*) API->function_reference;
 
@@ -131,9 +133,14 @@ void wmf_svg_function (wmfAPI* API)
 	ddata->image.name = 0;
 
 	ddata->flags = 0;
-}
+#else /* ! WITHOUT_LAYERS */
+	API->device_data = 0;
 
-void wmf_svg_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
+	API->err = wmf_E_DeviceError;
+#endif /* ! WITHOUT_LAYERS */
+}
+#ifndef WITHOUT_LAYERS
+static void wmf_svg_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
 {	wmf_svg_t* ddata = WMF_SVG_GetData (API);
 
 	svgFont font;
@@ -199,7 +206,7 @@ void wmf_svg_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
  */	wmf_stream_printf (API,out,"</text>\n");
 }
 
-void wmf_svg_udata_init (wmfAPI* API,wmfUserData_t* user_data)
+static void wmf_svg_udata_init (wmfAPI* API,wmfUserData_t* user_data)
 {	/* wmf_svg_t* ddata = WMF_SVG_GetData (API); */
 
 	WMF_DEBUG (API,"~~~~~~~~wmf_[svg_]udata_init");
@@ -207,7 +214,7 @@ void wmf_svg_udata_init (wmfAPI* API,wmfUserData_t* user_data)
 	
 }
 
-void wmf_svg_udata_copy (wmfAPI* API,wmfUserData_t* user_data)
+static void wmf_svg_udata_copy (wmfAPI* API,wmfUserData_t* user_data)
 {	/* wmf_svg_t* ddata = WMF_SVG_GetData (API); */
 
 	WMF_DEBUG (API,"~~~~~~~~wmf_[svg_]udata_copy");
@@ -215,7 +222,7 @@ void wmf_svg_udata_copy (wmfAPI* API,wmfUserData_t* user_data)
 	
 }
 
-void wmf_svg_udata_set (wmfAPI* API,wmfUserData_t* user_data)
+static void wmf_svg_udata_set (wmfAPI* API,wmfUserData_t* user_data)
 {	/* wmf_svg_t* ddata = WMF_SVG_GetData (API); */
 
 	WMF_DEBUG (API,"~~~~~~~~wmf_[svg_]udata_set");
@@ -223,7 +230,7 @@ void wmf_svg_udata_set (wmfAPI* API,wmfUserData_t* user_data)
 	
 }
 
-void wmf_svg_udata_free (wmfAPI* API,wmfUserData_t* user_data)
+static void wmf_svg_udata_free (wmfAPI* API,wmfUserData_t* user_data)
 {	/* wmf_svg_t* ddata = WMF_SVG_GetData (API); */
 
 	WMF_DEBUG (API,"~~~~~~~~wmf_[svg_]udata_free");
@@ -573,3 +580,4 @@ static void svg_style_stroke (wmfAPI* API,wmfDC* dc)
 
 	wmf_stream_printf (API,out,"stroke:%s",svg_color_closest (pen_color));
 }
+#endif /* ! WITHOUT_LAYERS */

@@ -17,7 +17,7 @@
    Boston, MA 02111-1307, USA.  */
 
 
-void wmf_gd_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
+static void wmf_gd_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
 {	wmf_gd_t* ddata = WMF_GD_GetData (API);
 
 	gd_t* gd = (gd_t*) ddata->gd_data;

@@ -8,6 +8,18 @@ DEFS = @DEFS@ @WMF_DEFS@ \
 
 INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/src -I$(top_builddir)
 
+if LIBWMF_OPT_LAYERS
+WMF2LAYERS = wmf2eps wmf2fig wmf2svg
+else
+WMF2LAYERS = 
+endif
+
+if LIBWMF_OPT_GD
+WMF2GD = wmf2gd
+else
+WMF2GD = 
+endif
+
 if LIBWMF_OPT_X
 WMF2X = wmf2x
 else
@@ -20,7 +32,13 @@ else
 WMF2PLOT = 
 endif
 
-bin_PROGRAMS = wmf2eps wmf2fig wmf2svg wmf2gd wmf2magick $(WMF2X) $(WMF2PLOT)
+if LIBWMF_OPT_MAGICK
+WMF2MAGICK = wmf2magick
+else
+WMF2MAGICK = 
+endif
+
+bin_PROGRAMS = $(WMF2LAYERS) $(WMF2GD) $(WMF2X) $(WMF2PLOT) $(WMF2MAGICK)
 
 wmf2eps_LDADD = ../libwmf.la
 

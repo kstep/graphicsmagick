@@ -102,6 +102,7 @@ WMF_MINOR_VERSION = @WMF_MINOR_VERSION@
 WMF_SYS_FONTMAP = @WMF_SYS_FONTMAP@
 WMF_VERSION = @WMF_VERSION@
 WMF_XTRA_FONTMAP = @WMF_XTRA_FONTMAP@
+XML2_CONFIG = @XML2_CONFIG@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
@@ -113,6 +114,11 @@ install_sh = @install_sh@
 SUBDIRS = . src include fonts doc
 
 bin_SCRIPTS = libwmf-config
+
+WMFPATCHES = \
+	patches/lt142main.sh \
+	patches/lt142macosx.patch
+
 
 WMFEXAMPLES = \
 	examples/2doorvan.wmf \
@@ -134,11 +140,11 @@ WMFEXAMPLES = \
 	examples/text.wmf
 
 
-EXTRA_DIST = AUTHORS BUILDING CREDITS NEWS README $(WMFEXAMPLES) libwmf.spec
+EXTRA_DIST = AUTHORS BUILDING CREDITS NEWS README $(WMFEXAMPLES) $(WMFPATCHES) libwmf.spec
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = config.h
+CONFIG_HEADER = wmfconfig.h
 CONFIG_CLEAN_FILES = libwmf-config
 SCRIPTS = $(bin_SCRIPTS)
 
@@ -150,11 +156,11 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
 DIST_COMMON = README ./stamp-h.in AUTHORS COPYING ChangeLog INSTALL \
 	Makefile.am Makefile.in NEWS TODO acinclude.m4 aclocal.m4 \
-	config.guess config.h.in config.sub configure configure.ac \
-	depcomp install-sh libwmf-config.in ltmain.sh missing \
-	mkinstalldirs
+	config.guess config.sub configure configure.ac depcomp \
+	install-sh libwmf-config.in ltmain.sh missing mkinstalldirs \
+	wmfconfig.h.in
 DIST_SUBDIRS = $(SUBDIRS)
-all: config.h
+all: wmfconfig.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
 .SUFFIXES:
@@ -182,19 +188,19 @@ $(srcdir)/configure:  $(srcdir)/configure.ac $(ACLOCAL_M4) $(CONFIGURE_DEPENDENC
 
 $(ACLOCAL_M4):  configure.ac acinclude.m4
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
-config.h: stamp-h
+wmfconfig.h: stamp-h
 	@if test ! -f $@; then \
 		rm -f stamp-h; \
 		$(MAKE) stamp-h; \
 	else :; fi
-stamp-h: $(srcdir)/config.h.in $(top_builddir)/config.status
+stamp-h: $(srcdir)/wmfconfig.h.in $(top_builddir)/config.status
 	@rm -f stamp-h stamp-hT
 	@echo timestamp > stamp-hT 2> /dev/null
 	cd $(top_builddir) \
-	  && CONFIG_FILES= CONFIG_HEADERS=config.h \
+	  && CONFIG_FILES= CONFIG_HEADERS=wmfconfig.h \
 	     $(SHELL) ./config.status
 	@mv stamp-hT stamp-h
-$(srcdir)/config.h.in:  $(srcdir)/./stamp-h.in
+$(srcdir)/wmfconfig.h.in:  $(srcdir)/./stamp-h.in
 	@if test ! -f $@; then \
 		rm -f $(srcdir)/./stamp-h.in; \
 		$(MAKE) $(srcdir)/./stamp-h.in; \
@@ -206,7 +212,7 @@ $(srcdir)/./stamp-h.in: $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	@mv $(srcdir)/./stamp-h.inT $(srcdir)/./stamp-h.in
 
 distclean-hdr:
-	-rm -f config.h
+	-rm -f wmfconfig.h
 libwmf-config: $(top_builddir)/config.status libwmf-config.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= CONFIG_LINKS= $(SHELL) ./config.status
 install-binSCRIPTS: $(bin_SCRIPTS)
@@ -298,7 +304,7 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	       END { for (i in files) print i; }'`; \
 	mkid -fID $$unique $(LISP)
 
-TAGS: tags-recursive $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
+TAGS: tags-recursive $(HEADERS) $(SOURCES) wmfconfig.h.in $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
@@ -313,8 +319,8 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
 	  done | \
 	  $(AWK) '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
-	test -z "$(ETAGS_ARGS)config.h.in$$unique$(LISP)$$tags" \
-	  || etags $(ETAGS_ARGS) $$tags config.h.in $$unique $(LISP)
+	test -z "$(ETAGS_ARGS)wmfconfig.h.in$$unique$(LISP)$$tags" \
+	  || etags $(ETAGS_ARGS) $$tags wmfconfig.h.in $$unique $(LISP)
 
 GTAGS:
 	here=`CDPATH=: && cd $(top_builddir) && pwd` \
@@ -335,7 +341,7 @@ GZIP_ENV = --best
 distdir: $(DISTFILES)
 	-chmod -R a+w $(distdir) >/dev/null 2>&1; rm -rf $(distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/. $(distdir)/examples $(distdir)/fonts
+	$(mkinstalldirs) $(distdir)/. $(distdir)/examples $(distdir)/fonts $(distdir)/patches
 	@for file in $(DISTFILES); do \
 	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
@@ -406,7 +412,7 @@ distcheck: dist
 	  sed 'h;s/./=/g;p;x;p;x'
 check-am: all-am
 check: check-recursive
-all-am: Makefile $(SCRIPTS) config.h
+all-am: Makefile $(SCRIPTS) wmfconfig.h
 installdirs: installdirs-recursive
 installdirs-am:
 	$(mkinstalldirs) $(DESTDIR)$(bindir)

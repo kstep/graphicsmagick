@@ -18,17 +18,31 @@
 
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "wmfconfig.h"
 #endif /* HAVE_CONFIG_H */
-
-#include <gd.h>
 
 #include "wmfdefs.h"
 
+#ifndef WITHOUT_LAYERS
+
+#ifdef HAVE_GD
+#include <gd.h>
+#endif /* HAVE_GD */
+
 #include "libwmf/foreign.h"
 
+#else /* ! WITHOUT_LAYERS */
+
+#ifdef HAVE_GD
+#undef HAVE_GD
+#endif
+
+#endif /* ! WITHOUT_LAYERS */
+
 void wmf_foreign_function (wmfAPI* API)
-{	wmf_foreign_t* ddata = 0;
+{
+#ifndef WITHOUT_LAYERS
+	wmf_foreign_t* ddata = 0;
 
 	API->function_reference = 0;
 
@@ -50,11 +64,16 @@ void wmf_foreign_function (wmfAPI* API)
 #ifdef HAVE_LIBJPEG
 	ddata->flags |= WMF_FOREIGN_SUPPORTS_JPEG;
 #endif
+#else /* ! WITHOUT_LAYERS */
+	API->device_data = 0;
+
+	API->err = wmf_E_DeviceError;
+#endif /* ! WITHOUT_LAYERS */
 }
 
 int wmf_image_load_png (wmfAPI* API,FILE* png_in,wmfImage* image)
 {	/* wmf_foreign_t* ddata = WMF_FOREIGN_GetData (API); */
-
+#ifdef HAVE_GD
 	gdImage* gd_image = 0;
 #ifndef HAVE_LIBPNG
 	return (-1);
@@ -71,11 +90,14 @@ int wmf_image_load_png (wmfAPI* API,FILE* png_in,wmfImage* image)
 	image->data = (void*) gd_image;
 
 	return (0);
+#else /* HAVE_GD */
+	return (-1);
+#endif /* HAVE_GD */
 }
 
 int wmf_image_load_jpg (wmfAPI* API,FILE* jpg_in,wmfImage* image)
 {	/* wmf_foreign_t* ddata = WMF_FOREIGN_GetData (API); */
-
+#ifdef HAVE_GD
 	gdImage* gd_image = 0;
 #ifndef HAVE_LIBJPEG
 	return (-1);
@@ -92,11 +114,14 @@ int wmf_image_load_jpg (wmfAPI* API,FILE* jpg_in,wmfImage* image)
 	image->data = (void*) gd_image;
 
 	return (0);
+#else /* HAVE_GD */
+	return (-1);
+#endif /* HAVE_GD */
 }
 
 int wmf_image_save_eps (wmfAPI* API,FILE* file,wmfImage* image)
 {	/* wmf_foreign_t* ddata = WMF_FOREIGN_GetData(API); */
-
+#ifdef HAVE_GD
 	wmfRGB rgb;
 
 	gdImage* gd_image = 0;
@@ -184,11 +209,14 @@ int wmf_image_save_eps (wmfAPI* API,FILE* file,wmfImage* image)
 	fputs ("showpage\n",file);
 
 	return (0);
+#else /* HAVE_GD */
+	return (-1);
+#endif /* HAVE_GD */
 }
 
 void wmf_image_free (wmfAPI* API,wmfImage* image)
 {	/* wmf_foreign_t* ddata = WMF_FOREIGN_GetData (API); */
-
+#ifdef HAVE_GD
 	gdImage* gd_image = (gdImage*) image->data;
 
 	if (image->type != wmf_I_gd)
@@ -202,4 +230,5 @@ void wmf_image_free (wmfAPI* API,wmfImage* image)
 	}
 
 	image->data = 0;
+#endif /* HAVE_GD */
 }

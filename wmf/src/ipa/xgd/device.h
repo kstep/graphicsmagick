@@ -19,7 +19,7 @@
 
 /* This is called by wmf_play() the *first* time the meta file is played
  */
-void wmf_gd_device_open (wmfAPI* API)
+static void wmf_gd_device_open (wmfAPI* API)
 {	wmf_gd_t* ddata = WMF_GD_GetData (API);
 
 	/* gd_t* gd = (gd_t*) ddata->gd_data; */
@@ -44,7 +44,7 @@ void wmf_gd_device_open (wmfAPI* API)
 
 /* This is called by wmf_api_destroy()
  */
-void wmf_gd_device_close (wmfAPI* API)
+static void wmf_gd_device_close (wmfAPI* API)
 {	wmf_gd_t* ddata = WMF_GD_GetData (API);
 
 	gd_t* gd = (gd_t*) ddata->gd_data;
@@ -59,7 +59,7 @@ void wmf_gd_device_close (wmfAPI* API)
 
 /* This is called from the beginning of each play for initial page setup
  */
-void wmf_gd_device_begin (wmfAPI* API)
+static void wmf_gd_device_begin (wmfAPI* API)
 {	wmf_gd_t* ddata = WMF_GD_GetData (API);
 
 	gd_t* gd = (gd_t*) ddata->gd_data;
@@ -91,7 +91,7 @@ void wmf_gd_device_begin (wmfAPI* API)
 
 /* This is called from the end of each play for page termination
  */
-void wmf_gd_device_end (wmfAPI* API)
+static void wmf_gd_device_end (wmfAPI* API)
 {	wmf_gd_t* ddata = WMF_GD_GetData (API);
 
 	gd_t* gd = (gd_t*) ddata->gd_data;

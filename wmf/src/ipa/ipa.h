@@ -22,8 +22,6 @@
 
 /* bmp.h
  */
-#include <gd.h> /* Use GD for BMP -> PNG conversion */
-
 typedef struct _ipa_b64_t   ipa_b64_t;
 
 typedef struct _BMPSource   BMPSource;
@@ -32,9 +30,18 @@ typedef struct _BMPData     BMPData;
 typedef struct _PointInfo   PointInfo;
 typedef struct _BMPInfo     BMPInfo;
 
-static int            ipa_b64_sink (void*,const char*,int);
-static void           ipa_b64_flush (void*);
-static gdImage*       ipa_bmp_gd (wmfAPI*,wmfBMP_Draw_t*);
+#ifdef HAVE_GD
+#include <gd.h> /* Use GD for BMP -> PNG conversion */
+
+static int      ipa_b64_sink (void*,const char*,int);
+static void     ipa_b64_flush (void*);
+static gdImage* ipa_bmp_gd (wmfAPI*,wmfBMP_Draw_t*);
+#else /* HAVE_GD */
+#ifdef HAVE_LIBPNG
+#include <png.h>
+#endif /* HAVE_LIBPNG */
+static void ldr_bmp_png (wmfAPI* API,wmfBMP_Draw_t* bmp_draw,FILE* out);
+#endif /* HAVE_GD */
 
 static size_t         ReadBlob (BMPSource*,size_t,unsigned char*);
 static int            ReadBlobByte (BMPSource*);

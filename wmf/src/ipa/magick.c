@@ -53,46 +53,44 @@
 */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "wmfconfig.h"
 #endif /* HAVE_CONFIG_H */
-
-/* If compiling as module, rename global functions to a standard
- */
-#ifdef WMF_IPA_MODULE
-#define wmf_magick_device_open    wmf_device_open
-#define wmf_magick_device_close   wmf_device_close
-#define wmf_magick_device_begin   wmf_device_begin
-#define wmf_magick_device_end     wmf_device_end
-#define wmf_magick_flood_interior wmf_flood_interior
-#define wmf_magick_flood_exterior wmf_flood_exterior
-#define wmf_magick_draw_pixel     wmf_draw_pixel
-#define wmf_magick_draw_pie       wmf_draw_pie
-#define wmf_magick_draw_chord     wmf_draw_chord
-#define wmf_magick_draw_arc       wmf_draw_arc
-#define wmf_magick_draw_ellipse   wmf_draw_ellipse
-#define wmf_magick_draw_line      wmf_draw_line
-#define wmf_magick_poly_line      wmf_poly_line
-#define wmf_magick_draw_polygon   wmf_draw_polygon
-#define wmf_magick_draw_rectangle wmf_draw_rectangle
-#define wmf_magick_rop_draw       wmf_rop_draw
-#define wmf_magick_bmp_draw       wmf_bmp_draw
-#define wmf_magick_bmp_read       wmf_bmp_read
-#define wmf_magick_bmp_free       wmf_bmp_free
-#define wmf_magick_draw_text      wmf_draw_text
-#define wmf_magick_udata_init     wmf_udata_init
-#define wmf_magick_udata_copy     wmf_udata_copy
-#define wmf_magick_udata_set      wmf_udata_set
-#define wmf_magick_udata_free     wmf_udata_free
-#define wmf_magick_region_frame   wmf_region_frame
-#define wmf_magick_region_paint   wmf_region_paint
-#define wmf_magick_region_clip    wmf_region_clip
-#endif /* WMF_IPA_MODULE */
 
 #include <math.h>
 
 #include "wmfdefs.h"
 
+#ifdef ENABLE_MAGICK
+
 #include "libwmf/magick.h"
+
+static void wmf_magick_device_open (wmfAPI*);
+static void wmf_magick_device_close (wmfAPI*);
+static void wmf_magick_device_begin (wmfAPI*);
+static void wmf_magick_device_end (wmfAPI*);
+static void wmf_magick_flood_interior (wmfAPI*,wmfFlood_t*);
+static void wmf_magick_flood_exterior (wmfAPI*,wmfFlood_t*);
+static void wmf_magick_draw_pixel (wmfAPI*,wmfDrawPixel_t*);
+static void wmf_magick_draw_pie (wmfAPI*,wmfDrawArc_t*);
+static void wmf_magick_draw_chord (wmfAPI*,wmfDrawArc_t*);
+static void wmf_magick_draw_arc (wmfAPI*,wmfDrawArc_t*);
+static void wmf_magick_draw_ellipse (wmfAPI*,wmfDrawArc_t*);
+static void wmf_magick_draw_line (wmfAPI*,wmfDrawLine_t*);
+static void wmf_magick_poly_line (wmfAPI*,wmfPolyLine_t*);
+static void wmf_magick_draw_polygon (wmfAPI*,wmfPolyLine_t*);
+static void wmf_magick_draw_rectangle (wmfAPI*,wmfDrawRectangle_t*);
+static void wmf_magick_rop_draw (wmfAPI*,wmfROP_Draw_t*);
+static void wmf_magick_bmp_draw (wmfAPI*,wmfBMP_Draw_t*);
+static void wmf_magick_bmp_read (wmfAPI*,wmfBMP_Read_t*);
+static void wmf_magick_bmp_free (wmfAPI*,wmfBMP*);
+static void wmf_magick_draw_text (wmfAPI*,wmfDrawText_t*);
+static void wmf_magick_udata_init (wmfAPI*,wmfUserData_t*);
+static void wmf_magick_udata_copy (wmfAPI*,wmfUserData_t*);
+static void wmf_magick_udata_set (wmfAPI*,wmfUserData_t*);
+static void wmf_magick_udata_free (wmfAPI*,wmfUserData_t*);
+static void wmf_magick_region_frame (wmfAPI*,wmfPolyRectangle_t*);
+static void wmf_magick_region_paint (wmfAPI*,wmfPolyRectangle_t*);
+static void wmf_magick_region_clip (wmfAPI*,wmfPolyRectangle_t*);
 
 #include "ipa/magick.h"
 #include "ipa/magick/bmp.h"
@@ -100,8 +98,12 @@
 #include "ipa/magick/draw.h"
 #include "ipa/magick/region.h"
 
+#endif /* ENABLE_MAGICK */
+
 void wmf_magick_function (wmfAPI* API)
-{	wmf_magick_t* ddata = 0;
+{
+#ifdef ENABLE_MAGICK
+	wmf_magick_t* ddata = 0;
 
 	wmfFunctionReference* FR = (wmfFunctionReference*) API->function_reference;
 
@@ -159,9 +161,14 @@ void wmf_magick_function (wmfAPI* API)
 	ddata->height = 0;
 
 	ddata->flags = 0;
-}
+#else /* ENABLE_MAGICK */
+	API->device_data = 0;
 
-void wmf_magick_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
+	API->err = wmf_E_DeviceError;
+#endif /* ENABLE_MAGICK */
+}
+#ifdef ENABLE_MAGICK
+static void wmf_magick_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
 {	wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
 	char* ps_name = 0;
@@ -182,28 +189,28 @@ void wmf_magick_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
 	/* etc. */
 }
 
-void wmf_magick_udata_init (wmfAPI* API,wmfUserData_t* userdata)
+static void wmf_magick_udata_init (wmfAPI* API,wmfUserData_t* userdata)
 {	/* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
 	WMF_DEBUG (API,"wmf_[magick_]udata_init");
 
 }
 
-void wmf_magick_udata_copy (wmfAPI* API,wmfUserData_t* userdata)
+static void wmf_magick_udata_copy (wmfAPI* API,wmfUserData_t* userdata)
 {	/* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
 	WMF_DEBUG (API,"wmf_[magick_]udata_copy");
 
 }
 
-void wmf_magick_udata_set (wmfAPI* API,wmfUserData_t* userdata)
+static void wmf_magick_udata_set (wmfAPI* API,wmfUserData_t* userdata)
 {	/* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
 	WMF_DEBUG (API,"wmf_[magick_]udata_set");
 
 }
 
-void wmf_magick_udata_free (wmfAPI* API,wmfUserData_t* userdata)
+static void wmf_magick_udata_free (wmfAPI* API,wmfUserData_t* userdata)
 {	/* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
 	WMF_DEBUG (API,"wmf_[magick_]udata_free");
@@ -500,3 +507,4 @@ static void magick_pen (wmfAPI* API,wmfDC* dc)
 
 	wmf_stream_printf (API,out,"stroke #%02x%02x%02x\n",(int)pen_color->r,(int)pen_color->g,(int)pen_color->b);
 }
+#endif /* ENABLE_MAGICK */

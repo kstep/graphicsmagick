@@ -47,7 +47,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 
-void wmf_magick_rop_draw (wmfAPI* API,wmfROP_Draw_t* rop_draw)
+static void wmf_magick_rop_draw (wmfAPI* API,wmfROP_Draw_t* rop_draw)
 {	/* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
 	WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]rop_draw");
@@ -57,7 +57,7 @@ void wmf_magick_rop_draw (wmfAPI* API,wmfROP_Draw_t* rop_draw)
 
 /* TODO ?? Care about bmp_draw->type
  */
-void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
+static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 {	wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
 	float width;
@@ -104,13 +104,13 @@ void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 	wmf_stream_printf (API,out,"image Copy %f,%f %f,%f %s\n",pt.x,pt.y,width,height,name);
 }
 
-void wmf_magick_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
+static void wmf_magick_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
 {	WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]bmp_read");
 
 	wmf_ipa_bmp_read (API,bmp_read);
 }
 
-void wmf_magick_bmp_free (wmfAPI* API,wmfBMP* bmp)
+static void wmf_magick_bmp_free (wmfAPI* API,wmfBMP* bmp)
 {	WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]bmp_free");
 
 	wmf_ipa_bmp_free (API,bmp);

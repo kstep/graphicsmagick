@@ -102,6 +102,7 @@ WMF_MINOR_VERSION = @WMF_MINOR_VERSION@
 WMF_SYS_FONTMAP = @WMF_SYS_FONTMAP@
 WMF_VERSION = @WMF_VERSION@
 WMF_XTRA_FONTMAP = @WMF_XTRA_FONTMAP@
+XML2_CONFIG = @XML2_CONFIG@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
@@ -122,10 +123,13 @@ DEFS = @DEFS@ @WMF_DEFS@ \
 	-DWMF_GS_FONTMAP=\"@WMF_GS_FONTMAP@\"
 
 
+@LIBWMF_OPT_SYS_GD_TRUE@GDHDRS = 
+@LIBWMF_OPT_SYS_GD_FALSE@GDHDRS = -I$(top_srcdir)/src/extra/gd
+
 INCLUDES = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/src \
-	-I$(top_srcdir)/src/extra/gd \
+	$(GDHDRS) \
 	-I$(top_builddir)
 
 
@@ -206,7 +210,7 @@ MAGICKHEADERS = \
 EXTRA_DIST = template.c template.h $(IPAHEADERS) $(EPSHEADERS) $(FIGHEADERS) $(SVGHEADERS) $(GDHEADERS) $(XHEADERS) $(PLOTHEADERS) $(MAGICKHEADERS)
 subdir = src/ipa
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/config.h
+CONFIG_HEADER = $(top_builddir)/wmfconfig.h
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 

@@ -17,7 +17,7 @@
    Boston, MA 02111-1307, USA.  */
 
 
-void wmf_eps_rop_draw (wmfAPI* API,wmfROP_Draw_t* rop_draw)
+static void wmf_eps_rop_draw (wmfAPI* API,wmfROP_Draw_t* rop_draw)
 {	/* wmf_eps_t* ddata = WMF_EPS_GetData (API); */
 
 	WMF_DEBUG (API,"~~~~~~~~wmf_[eps_]rop_draw");
@@ -27,7 +27,7 @@ void wmf_eps_rop_draw (wmfAPI* API,wmfROP_Draw_t* rop_draw)
 
 /* TODO ?? Care about bmp_draw->type
  */
-void wmf_eps_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
+static void wmf_eps_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 {	wmf_eps_t* ddata = WMF_EPS_GetData (API);
 
 	static const char hex[16] = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
@@ -105,13 +105,13 @@ void wmf_eps_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 	wmf_stream_printf (API,out,"grestore\n");
 }
 
-void wmf_eps_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
+static void wmf_eps_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
 {	WMF_DEBUG (API,"~~~~~~~~wmf_[eps_]bmp_read");
 
 	wmf_ipa_bmp_read (API,bmp_read);
 }
 
-void wmf_eps_bmp_free (wmfAPI* API,wmfBMP* bmp)
+static void wmf_eps_bmp_free (wmfAPI* API,wmfBMP* bmp)
 {	WMF_DEBUG (API,"~~~~~~~~wmf_[eps_]bmp_free");
 
 	wmf_ipa_bmp_free (API,bmp);

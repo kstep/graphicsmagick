@@ -1,3 +1,11 @@
+	* fix wmf2x arg detection bug (Bob Friesenhahn)
+	* added --with-layers option (fjf)
+	* de-necessitate GD, add libpng support (highly experimental);
+	  rename config.h* to wmfconfig.h*; libxml2 fix (fjf)
+	* release builds: configure-time Darwin-detection & lt-patching;
+	  make magick device layer optional; rewrite xml2 detection (wv);
+	  make secondary IPA functions static (fjf)
+	* change copyright on include/libwmf/magick.h
 	* add paranoid check for xmlChar**attributes==NULL
 	* add one of many missing consts (Bob Friesenhahn)
 	* add check for vsnprintf in libdb (David C Sterratt)
