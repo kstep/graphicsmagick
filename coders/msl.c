@@ -4400,9 +4400,6 @@ ModuleExport void UnregisterMSLImage(void)
 #if defined(HasXML)
 static unsigned int WriteMSLImage(const ImageInfo *image_info,Image *image)
 {
-  ExceptionInfo
-    exception;
-
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
