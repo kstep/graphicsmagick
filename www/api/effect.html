@@ -357,16 +357,14 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="motionblurimage">MotionBlurImage</A></H2>
-<P>Method MotionBlurImage creates a new image that has a ``motion blur'' effect applied to it.</P>
-<P>Andrew Protano contributed this effect.</P>
+<blockquote>MotionBlurImage ( ) simulates motion blur. We convolve the image with aGaussian operator of the given radius and standard deviation ( sigma ) .For reasonable results, radius should be larger than sigma. Use aradius of 0 and MotionBlurImage ( ) selects a suitable radius for you.Angle gives the angle of the blurring motion.; </blockquote><P>Andrew Protano contributed this effect.</P>
 <P>The format of the MotionBlurImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *MotionBlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, const double amount, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>blur_image:</STRONG><BR>
+<p><dt><STRONG>image:</STRONG><BR>
 <DD>
-Method MotionBlurImage returns a pointer to the image after it is blur.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
+The image.
 <P></P>
 <p><dt><STRONG>radius:</STRONG><BR>
 <DD>

@@ -66,8 +66,9 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ContrastImage enhances the intensity differences between the
-%  lighter and darker elements of the image.
+%  Contrast() enhances the intensity differences between the lighter and
+%  darker elements of the image.  Set sharpen to a value other than 0 to
+%  increase the image contrast otherwise the contrast is reduced.
 %
 %  The format of the ContrastImage method is:
 %
@@ -75,11 +76,9 @@
 %
 %  A description of each parameter follows:
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: The image.
 %
-%    o sharpen: If True, the intensity is increased otherwise it is
-%      decreased.
+%    o sharpen: Increase or decrease image contrast.
 %
 %
 */
@@ -159,8 +158,7 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method EqualizeImage performs histogram equalization on the reference
-%  image.
+%  EqualizeImage() applies a histogram equalization to the image.
 %
 %  The format of the EqualizeImage method is:
 %
@@ -168,9 +166,7 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
 %
 %  A description of each parameter follows:
 %
-%    o image: The image;  returned from
-%      ReadImage.
-%
+%    o image: The image.
 %
 */
 MagickExport unsigned int EqualizeImage(Image *image)
@@ -314,7 +310,15 @@ MagickExport unsigned int EqualizeImage(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GammaImage converts the reference image to gamma corrected colors.
+%  Use GammaImage() to gamma-correct an image.  The same image viewed
+%  on different devices will have perceptual differences in the way the
+%  image's intensities are represented on the screen.  Specify individual
+%  gamma levels for the red, green, and blue channels, or adjust all three
+%  with the gamma parameter.  Values typically range from 0.8 to 2.3.
+%
+%  You can also reduce the influence of a particular channel with a gamma
+%  value of 0.
+%
 %
 %  The format of the GammaImage method is:
 %
@@ -322,10 +326,9 @@ MagickExport unsigned int EqualizeImage(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: The image.
 %
-%    o gamma: A character string indicating the level of gamma correction.
+%    o gamma: Define the level of gamma correction.
 %
 %
 */
@@ -463,8 +466,9 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ModulateImage modulates the hue, saturation, and brightness of an
-%  image.
+%  ModulateImage() lets you control the brightness, saturation, and hue 
+%  of an image.  Modulate represents the brightness, saturation, and hue
+%  as one parameter (e.g. 90,150,100).
 %
 %  The format of the ModulateImage method is:
 %
@@ -472,12 +476,10 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
 %
 %  A description of each parameter follows:
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: The image.
 %
-%    o modulate: A character string indicating the percent change in brightness,
-%      saturation, and hue in floating point notation separated by commas
-%      (e.g. 110.1,100.0,83.1).
+%    o modulate: Define the percent change in brightness, saturation, and
+%      hue.
 %
 %
 */
@@ -664,8 +666,8 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method NormalizeImage normalizes the pixel values to span the full
-%  range of color values.  This is a contrast enhancement technique.
+%  The NormalizeImage() method enhances the contrast of a color image by
+%  adjusting the pixels color to span the entire range of colors available.
 %
 %  The format of the NormalizeImage method is:
 %
@@ -673,8 +675,7 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
 %
 %  A description of each parameter follows:
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: The image.
 %
 %
 */

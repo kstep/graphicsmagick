@@ -53,61 +53,57 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="contrastimage">ContrastImage</A></H2>
-<P>Method ContrastImage enhances the intensity differences between the lighter and darker elements of the image.</P>
+<P><CODE>Contrast()</CODE> enhances the intensity differences between the lighter and darker elements of the image.  Set sharpen to a value other than 0 to increase the image contrast otherwise the contrast is reduced.</P>
 <P>The format of the ContrastImage method is:</P>
 <blockquote>unsigned int ContrastImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int sharpen ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
-The image; returned from ReadImage.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_sharpen%3A">sharpen:</A></STRONG><BR>
 <DD>
-If True, the intensity is increased otherwise it is decreased.
+Increase or decrease image contrast.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="equalizeimage">EqualizeImage</A></H2>
-<P>Method EqualizeImage performs histogram equalization on the reference image.</P>
-<P>The format of the EqualizeImage method is:</P>
+<blockquote>EqualizeImage ( ) applies a histogram equalization to the image.; </blockquote><P>The format of the EqualizeImage method is:</P>
 <blockquote>unsigned int EqualizeImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The image; returned from ReadImage.
+The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="gammaimage">GammaImage</A></H2>
-<P>Method GammaImage converts the reference image to gamma corrected colors.</P>
+<blockquote>Use GammaImage ( ) to gamma-correct an image. The same image viewedon different devices will have perceptual differences in the way theimage's intensities are represented on the screen. Specify individualgamma levels for the red, green, and blue channels, or adjust all threewith the gamma parameter. Values typically range from 0.8 to 2.3.; </blockquote><P>You can also reduce the influence of a particular channel with a gamma value of 0.</P>
 <P>The format of the GammaImage method is:</P>
 <blockquote>unsigned int GammaImage ( <A HREF="types/Image.html">Image</A> *image, const char *gamma ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The image; returned from ReadImage.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_gamma%3A">gamma:</A></STRONG><BR>
 <DD>
-
-<FONT SIZE=-1>A</FONT> character string indicating the level of gamma correction.
+Define the level of gamma correction.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="modulateimage">ModulateImage</A></H2>
-<P>Method ModulateImage modulates the hue, saturation, and brightness of an image.</P>
-<P>The format of the ModulateImage method is:</P>
+<blockquote>ModulateImage ( ) lets you control the brightness, saturation, and hue of an image. Modulate represents the brightness, saturation, and hueas one parameter ( e.g. 90, 150, 100 ) .; </blockquote><P>The format of the ModulateImage method is:</P>
 <blockquote>unsigned int ModulateImage ( <A HREF="types/Image.html">Image</A> *image, const char *modulate ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The image; returned from ReadImage.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_modulate%3A">modulate:</A></STRONG><BR>
 <DD>
-
-<FONT SIZE=-1>A</FONT> character string indicating the percent change in brightness, saturation, and hue in floating point notation separated by commas (e.g.  110.1,100.0,83.1).
+Define the percent change in brightness, saturation, and hue.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="negateimage">NegateImage</A></H2>
@@ -122,14 +118,13 @@ The image; returned from ReadImage.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="normalizeimage">NormalizeImage</A></H2>
-<P>Method NormalizeImage normalizes the pixel values to span the full range of color values.  This is a contrast enhancement technique.</P>
-<P>The format of the NormalizeImage method is:</P>
+<blockquote>The NormalizeImage ( ) method enhances the contrast of a color image byadjusting the pixels color to span the entire range of colors available.; </blockquote><P>The format of the NormalizeImage method is:</P>
 <blockquote>unsigned int NormalizeImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The image; returned from ReadImage.
+The image.
 </DL></DL>
 
 </BODY>

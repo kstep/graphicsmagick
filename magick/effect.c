@@ -1814,8 +1814,11 @@ MagickExport Image *MorphImages(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MotionBlurImage creates a new image that has a "motion blur"
-%  effect applied to it.
+%  MotionBlurImage() simulates motion blur.  We convolve the image with a
+%  Gaussian operator of the given radius and standard deviation (sigma).
+%  For reasonable results, radius should be larger than sigma.  Use a
+%  radius of 0 and MotionBlurImage() selects a suitable radius for you.
+%  Angle gives the angle of the blurring motion.
 %
 %  Andrew Protano contributed this effect.
 %
@@ -1826,12 +1829,10 @@ MagickExport Image *MorphImages(const Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o blur_image: Method MotionBlurImage returns a pointer to the image
-%      after it is blur.  A null image is returned if there is a memory
-%      shortage.
+%    o image: The image.
 %
-%    o radius: The radius of the Gaussian, in pixels, not counting the center
-%      pixel.
+%    o radius: The radius of the Gaussian, in pixels, not counting
+%     the center pixel.
 %
 %    o sigma: The standard deviation of the Gaussian, in pixels.
 %
