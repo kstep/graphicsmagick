@@ -1,4 +1,8 @@
 2002-08-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Fix problem with TEXT encoder.  It was prepending the
+    filename to the text.
+
+2002-08-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Render Postscript via Ghostscript DLL (gsdll32.dll) under
     Windows if it can be loaded.  Only ps.c currently uses
     this to verify there are no problems.

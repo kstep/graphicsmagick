@@ -190,6 +190,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(DelegateError,"Unable to get type metrics",image);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   p=ReadBlobString(image,text);
+  if (p != (char *) NULL)
+    CloneString(&draw_info->text,"");
   for (offset=2*page.y; p != (char *) NULL; )
   {
     /*
