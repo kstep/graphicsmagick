@@ -688,7 +688,6 @@ static void DestroyCacheInfo(Cache cache)
   assert(cache_info->signature == MagickSignature);
   destroy=False;
   AcquireSemaphoreInfo(&cache_info->semaphore);
-printf("ref: %lu\n",cache_info->reference_count);
   cache_info->reference_count--;
   if (cache_info->reference_count == 0)
     destroy=True;
@@ -1541,6 +1540,59 @@ static unsigned int IsNexusInCore(const Cache cache,const unsigned long id)
   if (nexus_info->pixels == (cache_info->pixels+offset))
     return(True);
   return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M o d i f y C a c h e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ModifyCache() ensures that there is only a single reference to the pixel
+%  cache to be modified, updating the provided cache pointer to point to
+%  a clone of the original pixel cache if necessary.
+%
+%  The format of the ModifyCache method is:
+%
+%      ModifyCache(Cache *cache,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o cache: The pixel cache.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+static void ModifyCache(Cache *cache,ExceptionInfo *exception)
+{
+  CacheInfo
+    *cache_info;
+
+  unsigned int
+    clone;
+
+  assert(cache != (Cache *) NULL);
+  cache_info=(CacheInfo *) *cache;
+  clone=False;
+  AcquireSemaphoreInfo(&cache_info->semaphore);
+  if (cache_info->reference_count > 1)
+    clone=True;
+  LiberateSemaphoreInfo(&cache_info->semaphore);
+  if (!clone)
+    return;
+  /*
+    Clone cache here.
+  */
+  AcquireSemaphoreInfo(&cache_info->semaphore);
+  cache_info->reference_count--;
+  LiberateSemaphoreInfo(&cache_info->semaphore);
+  *cache=cache_info;
 }
 
 /*

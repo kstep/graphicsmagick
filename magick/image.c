@@ -3221,7 +3221,7 @@ MagickExport void ModifyImage(Image** image,ExceptionInfo *exception)
   Image
     *clone_image;
 
-  int
+  unsigned int
     clone;
 
   assert(image != (Image **) NULL);
