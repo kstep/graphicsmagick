@@ -3310,7 +3310,10 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
     {
       index=Intensity(q) < threshold ? 0 : 1;
       indexes[x]=index;
-      *q++=image->colormap[index];
+      q->red=image->colormap[index].red;
+      q->green=image->colormap[index].green;
+      q->blue=image->colormap[index].blue;
+      q++;
     }
     if (!SyncImagePixels(image))
       break;
