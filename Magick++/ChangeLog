@@ -1,3 +1,18 @@
+2000-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (DrawableCompositeImage): Renamed from
+ 	DrawableImage.
+	(DrawableTextDecoration): Renamed form DrawableDecoration.
+	(all-classes): Complete re-write to write the drawing command to a
+ 	stream when draw() is invoked rather than at object construction
+ 	time. This may be somewhat slower for individual draw operations
+ 	but but should be at least as fast for lists of drawing commands,
+ 	and is more flexible going into the future. Drawable classes now
+ 	inherit from DrawableBase but are passed into STL lists and Image
+ 	draw() methods via the surrogate class Drawable.  The upshot of
+ 	all this is that the existing published API has not been altered
+ 	but things work much differently under the covers.
+
 2000-10-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (DrawableStrokeColor): Renamed from DrawableStroke
@@ -10,7 +25,7 @@
 
 	* lib/Drawable.cpp (DrawableAffine): New class to influence object
  	scaling, rotation, and translation (as defined by SVG XML).
-	(DrawableAngle): New class to influence text drawing angle.
+	(DrawableAngle): New class to influence drawing angle.
 	(DrawableDecoration): New class to influence text decoration such
  	as underline.
 	(DrawableFill): New class to set object filling color.

@@ -530,14 +530,18 @@ void Magick::Image::display( void )
 }
 
 // Draw on image using single drawable
-void Magick::Image::draw ( const Drawable &drawable_ )
+void Magick::Image::draw ( const Magick::Drawable &drawable_ )
 {
   modifyImage();
 
   DrawInfo *drawInfo
     = options()->drawInfo();
 
-  drawInfo->primitive = const_cast<char*>(drawable_.primitive().c_str());
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << drawable_ << ends;
+
+  drawInfo->primitive = buffer;
   //cout << "Primitive:" << drawInfo->primitive << endl;
   DrawImage( image(), drawInfo );
   drawInfo->primitive = 0;
@@ -548,18 +552,30 @@ void Magick::Image::draw ( const Drawable &drawable_ )
 // Draw on image using a drawable list
 void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
 {
+  modifyImage();
+
+  DrawInfo *drawInfo
+    = options()->drawInfo();
+
+  char buffer[256000];
+  ostrstream buffstr( buffer, sizeof(buffer));
+
   std::list<Magick::Drawable>::const_iterator p = drawable_.begin();
-  std::string primitives;
   while ( p != drawable_.end() )
     {
-      if (primitives.length() != 0 )
-	primitives.append( " " );
-      primitives.append( p->primitive() );
+      cout << *p << endl;
+      if (buffer[0] != '\0' )
+	buffstr << " ";
+      buffstr << *p;
       ++p;
     }
-  Magick::Drawable drawable;
-  drawable.primitive( primitives );
-  draw( drawable );
+
+  drawInfo->primitive = buffer;
+  //cout << "Primitive:" << drawInfo->primitive << endl;
+  DrawImage( image(), drawInfo );
+  drawInfo->primitive = 0;
+
+  throwImageException();
 }
 
 // Hilight edges in image
