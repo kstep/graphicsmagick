@@ -95,7 +95,7 @@ extern MagickExport unsigned int
   OpenCache(Cache,const ClassType,const unsigned int,const unsigned int),
   ReadCachePixels(Cache,const unsigned int),
   ReadCacheIndexes(Cache,const unsigned int),
-  WriteCacheInfo(Image *,const char *),
+  WriteCacheInfo(Image *),
   WriteCachePixels(Cache,const unsigned int),
   WriteCacheIndexes(Cache,const unsigned int);
 

@@ -338,7 +338,7 @@ static void DestroyPixelCache(Image *image)
     return;
   cache_info=(CacheInfo *) image->cache;
   if (cache_info->persist)
-    WriteCacheInfo(image,cache_info->cache_filename);
+    WriteCacheInfo(image);
   DestroyCacheInfo(image->cache);
   image->cache=(Cache) NULL;
 }
@@ -1606,7 +1606,7 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 %
 %  The format of the WriteCacheInfo method is:
 %
-%      unsigned int WriteCacheInfo(Image *image,const char *filename)
+%      unsigned int WriteCacheInfo(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1615,12 +1615,9 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 %
 %    o image: The address of a structure of type Image.
 %
-%    o filename: The name of the file to write the persistent cache meta
-%      information.
-%
 %
 */
-MagickExport unsigned int WriteCacheInfo(Image *image,const char *filename)
+MagickExport unsigned int WriteCacheInfo(Image *image)
 {
   CacheInfo
     *cache_info;
@@ -1648,7 +1645,7 @@ MagickExport unsigned int WriteCacheInfo(Image *image,const char *filename)
   if (file == (FILE *) NULL)
     return(False);
   (void) fprintf(file,"Id=MagickCache\n");
-  (void) fprintf(file,"Cache=%.1024s\n",filename);
+  (void) fprintf(file,"Cache=%.1024s\n",cache_info->cache_filename);
   if (image->storage_class == PseudoClass)
     (void) fprintf(file,"Class=PseudoClass  Colors=%u  Matte=%s\n",
       image->colors,image->matte ? "True" : "False");
