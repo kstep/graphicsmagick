@@ -25,8 +25,6 @@ namespace Magick
   //
   class Coordinate
   {
-    friend std::ostream& operator<<( std::ostream& stream_,
-                                     const Coordinate& coordinate_ );
   public:
     Coordinate ( void )
       : _x(0),
@@ -76,13 +74,6 @@ namespace Magick
     virtual ~DrawableBase ( void )
       { }
 
-    // Assignment operator
-    //     const DrawableBase& operator= (const DrawableBase& original_ );
-
-    // Print object to stream
-    friend std::ostream& operator<< (std::ostream& stream_,
-                                     const DrawableBase& drawable_);
-
     // Support a polymorphic print-to-stream operator
     virtual void print (std::ostream& stream_) const = 0;
 
@@ -129,10 +120,7 @@ namespace Magick
         return *this;
       }
 
-    // Print object to stream
-    friend std::ostream& operator<< (std::ostream& stream_,
-                                     const Drawable& drawable_);
-  private:
+    // private: FIXME
     DrawableBase* dp;
   };
 
@@ -153,10 +141,6 @@ namespace Magick
 
     // Assignment operator
     const VPathBase& operator= (const VPathBase& original_ );
-
-    // Print object to stream
-    friend std::ostream& operator<< (std::ostream& stream_,
-                                     const VPathBase& drawable_);
 
     // Support a polymorphic print-to-stream operator
     virtual void print (std::ostream& stream_) const = 0;
@@ -205,10 +189,7 @@ namespace Magick
         return *this;
       }
 
-    // Print object to stream
-    friend std::ostream& operator<< (std::ostream& stream_,
-                                     const VPath& drawable_);
-  private:
+    // private:  FIXME
     VPathBase* dp;
   };
 
@@ -1031,10 +1012,7 @@ namespace Magick
         _x(x_),
         _y(y_) { }
 
-    friend std::ostream& operator<<( std::ostream& stream_,
-                                     const PathArcArgs& args_ );
-
-  private:
+    // private:  FIXME
     double	_radiusX;	// X radius
     double	_radiusY;	// Y radius
     double	_xAxisRotation;	// Rotation relative to X axis
@@ -1129,9 +1107,7 @@ namespace Magick
       {
       }
     
-    friend std::ostream& operator<<( std::ostream& stream_,
-                                     const PathCurvetoArgs& args_ );
-  private:
+    // private:  FIXME
     double _x1;
     double _y1;
     double _x2;
@@ -1251,9 +1227,7 @@ namespace Magick
       {
       }
     
-    friend std::ostream& operator<<( std::ostream& stream_,
-                                     const PathQuadraticCurvetoArgs& args_ );
-  private:
+    // private:  FIXME
     double _x1;
     double _y1;
     double _x;
@@ -1525,24 +1499,24 @@ namespace Magick
 } // namespace Magick
 
 // Write Coordinate to stream.
-inline std::ostream& Magick::operator<<( std::ostream& stream_,
-                                         const Magick::Coordinate& coordinate_)
+inline std::ostream& operator<<( std::ostream& stream_,
+                                 const Magick::Coordinate& coordinate_)
 {
-  stream_ << coordinate_._x << "," << coordinate_._y;
+  stream_ << coordinate_.x() << "," << coordinate_.y();
   return stream_;
 }
 
 // Write DrawableBase to stream
-inline std::ostream& Magick::operator<< (std::ostream& stream_,
-                                           const Magick::DrawableBase& drawable_)
+inline std::ostream& operator<< (std::ostream& stream_,
+                                 const Magick::DrawableBase& drawable_)
 {
   drawable_.print (stream_);
   return stream_;
 }
 
 // Write Drawable to stream
-inline std::ostream& Magick::operator<< (std::ostream& stream_,
-                                         const Magick::Drawable& drawable_)
+inline std::ostream& operator<< (std::ostream& stream_,
+                                 const Magick::Drawable& drawable_)
   
 {
   if (drawable_.dp != 0)
@@ -1551,16 +1525,16 @@ inline std::ostream& Magick::operator<< (std::ostream& stream_,
 }
 
 // Write VPathBase to stream
-inline std::ostream& Magick::operator<< (std::ostream& stream_,
-                                         const Magick::VPathBase& drawable_)
+inline std::ostream& operator<< (std::ostream& stream_,
+                                 const Magick::VPathBase& drawable_)
 {
   drawable_.print (stream_);
   return stream_;
 }
 
 // Write Path to stream
-inline std::ostream& Magick::operator<< (std::ostream& stream_,
-                                         const Magick::VPath& drawable_)
+inline std::ostream& operator<< (std::ostream& stream_,
+                                 const Magick::VPath& drawable_)
   
 {
   if (drawable_.dp != 0)

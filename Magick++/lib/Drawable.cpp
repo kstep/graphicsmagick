@@ -589,7 +589,7 @@ void Magick::DrawableTextAntialias::print (std::ostream& stream_) const
 //
 
 // Print coordinate to stream.
-std::ostream& Magick::operator<<( std::ostream& stream_, const Magick::PathArcArgs& args_
+std::ostream& operator<<( std::ostream& stream_, const Magick::PathArcArgs& args_
 )
 {
   stream_ << args_._radiusX
@@ -651,7 +651,7 @@ void Magick::PathClosePath::print (std::ostream& stream_) const
 //
 // Path Curveto (Cubic Bezier)
 //
-std::ostream& Magick::operator<<( std::ostream& stream_, const Magick::PathCurvetoArgs& args_
+std::ostream& operator<<( std::ostream& stream_, const Magick::PathCurvetoArgs& args_
 )
 {
   stream_ 
@@ -719,8 +719,7 @@ void Magick::PathSmoothCurvetoRel::print (std::ostream& stream_) const
 //
 // Quadratic Curveto (Quadratic Bezier)
 //
-std::ostream& Magick::operator<<( std::ostream& stream_, const Magick::PathQuadraticCurvetoArgs& args_
-)
+std::ostream& operator<<( std::ostream& stream_, const Magick::PathQuadraticCurvetoArgs& args_)
 {
   stream_ 
     << args_._x1
