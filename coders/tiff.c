@@ -397,7 +397,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   tiff_exception=exception;
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
-  if ((image->blob->file != stdin) && !image->blob->pipet)
+  if ((image->blob->file != stdin) && !(image->blob->type == PipeStream))
     tiff=TIFFClientOpen(image->filename,"rb",(thandle_t) image,TIFFReadBlob,
       TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFGetBlobSize,TIFFMapBlob,
       TIFFUnmapBlob);
@@ -423,7 +423,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     }
   if (tiff == (TIFF *) NULL)
     {
-      if ((image->blob->file == stdin) || image->blob->pipet)
+      if ((image->blob->file == stdin) || (image->blob->type == PipeStream))
         remove(filename);
       ThrowReaderException(FileOpenError,"UnableToOpenFile",image)
     }
@@ -438,7 +438,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       if (status == False)
         {
           TIFFClose(tiff);
-          if ((image->blob->file == stdin) || image->blob->pipet)
+          if ((image->blob->file == stdin) || (image->blob->type == PipeStream))
             remove(filename);
           ThrowReaderException(CorruptImageError,"UnableToReadSubimage",
             image)
@@ -607,7 +607,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (!AllocateImageColormap(image,image->colors))
           {
             TIFFClose(tiff);
-            if ((image->blob->file == stdin) || image->blob->pipet)
+            if ((image->blob->file == stdin) || (image->blob->type == PipeStream))
               remove(filename);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
@@ -682,7 +682,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             (scanline == (unsigned char *) NULL))
           {
             TIFFClose(tiff);
-            if ((image->blob->file == stdin) || image->blob->pipet)
+            if ((image->blob->file == stdin) || (image->blob->type == PipeStream))
               remove(filename);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
@@ -879,7 +879,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (scanline == (unsigned char *) NULL)
           {
             TIFFClose(tiff);
-            if ((image->blob->file == stdin) || image->blob->pipet)
+            if ((image->blob->file == stdin) || (image->blob->type == PipeStream))
               remove(filename);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
@@ -960,7 +960,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
-            if ((image->blob->file == stdin) || image->blob->pipet)
+            if ((image->blob->file == stdin) || (image->blob->type == PipeStream))
               remove(filename);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
@@ -1022,7 +1022,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
   } while (status == True);
   TIFFClose(tiff);
-  if ((image->blob->file == stdin) || image->blob->pipet)
+  if ((image->blob->file == stdin) || (image->blob->type == PipeStream))
     remove(filename);
   while (image->previous != (Image *) NULL)
     image=image->previous;
@@ -1455,7 +1455,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  if ((image->blob->file == stdout) || image->blob->pipet ||
+  if ((image->blob->file == stdout) || (image->blob->type == PipeStream) ||
       (image->blob->data != (unsigned char *) NULL))
     TemporaryFilename(filename);
   else
@@ -2010,7 +2010,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     image=image->previous;
   TIFFClose(tiff);
   image->blob->status=False;
-  if ((image->blob->file == stdout) || image->blob->pipet ||
+  if ((image->blob->file == stdout) || (image->blob->type == PipeStream) ||
       (image->blob->data != (unsigned char *) NULL))
     {
       FILE

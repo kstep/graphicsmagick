@@ -34,6 +34,14 @@ typedef enum
   IOMode
 } MapMode;
 
+typedef enum
+{
+  StandardStream,
+  ZipStream,
+  BZipStream,
+  PipeStream
+} StreamType;
+
 /*
   Typedef declarations.
 */
@@ -61,8 +69,10 @@ typedef struct _BlobInfo
   unsigned int
     exempt,
     status,
-    pipet,
     temporary;
+
+  StreamType
+    type;
 
   FILE
     *file;

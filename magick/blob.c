@@ -61,6 +61,12 @@
 #include "magick.h"
 #include "resource.h"
 #include "utility.h"
+#if defined(HasBZLIB)
+#include "bzlib.h"
+#endif 
+#if defined(HasZLIB)
+#include "zlib.h"
+#endif
 
 /*
   Define declarations.
@@ -318,10 +324,10 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
   clone_info->size=blob_info->size;
   clone_info->exempt=blob_info->exempt;
   clone_info->status=blob_info->status;
-  clone_info->pipet=blob_info->pipet;
   clone_info->temporary=blob_info->temporary;
   clone_info->file=blob_info->file;
   clone_info->stream=blob_info->stream;
+  clone_info->type=blob_info->type;
   clone_info->reference_count=1;
   clone_info->semaphore=(SemaphoreInfo *) NULL;
   return(clone_info);
@@ -365,16 +371,65 @@ MagickExport void CloseBlob(Image *image)
   if (image->blob->file != (FILE *) NULL)
     {
       image->blob->size=GetBlobSize(image);
-      image->blob->status=ferror(image->blob->file);
+      switch (image->blob->type)
+      {
+#if defined(HasBZLIB)
+        case BZipStream:
+        {
+          int
+            status;
+
+          (void) BZ2_bzerror(image->blob->file,&status);
+          image->blob->status=status;
+          break;
+        }
+#endif
+#if defined(HasZLIB)
+        case ZipStream:
+        {
+          int
+            status;
+
+          (void) gzerror(image->blob->file,&status);
+          image->blob->status=!status;
+          break;
+        }
+#endif
+        default:
+        {
+          image->blob->status=ferror(image->blob->file);
+          break;
+        }
+      }
       errno=0;
       if (!image->blob->exempt)
         {
-#if !defined(vms) && !defined(macintosh)
-          if (image->blob->pipet)
-            (void) pclose(image->blob->file);
-          else
+          switch (image->blob->type)
+          {
+#if defined(HasBZLIB)
+            case BZipStream:
+            {
+              (void) BZ2_bzclose(image->blob->file);
+              break;
+            }
 #endif
+#if defined(HasZLIB)
+            case ZipStream:
+            {
+              (void) gzclose(image->blob->file);
+              break;
+            }
+#endif
+#if !defined(vms) && !defined(macintosh)
+            case PipeStream:
+            {
+              (void) pclose(image->blob->file);
+              break;
+            }
+#endif
+            default:
             (void) fclose(image->blob->file);
+          }
           image->blob->file=(FILE *) NULL;
         }
     }
@@ -499,7 +554,25 @@ MagickExport int EOFBlob(const Image *image)
     return(image->blob->eof);
   if (image->blob->file == (FILE *) NULL)
     return(-1);
-  return(feof(image->blob->file));
+  switch (image->blob->type)
+  {
+#if defined(HasBZLIB)
+    case BZipStream:
+    {
+      int
+        status;
+
+      (void) BZ2_bzerror(image->blob->file,&status);
+      return(status == BZ_UNEXPECTED_EOF);
+    }
+#endif
+#if defined(HasZLIB)
+    case ZipStream:
+      return(!gzeof(image->blob->file));
+#endif
+    default:
+      return(feof(image->blob->file));
+  }
 }
 
 /*
@@ -671,11 +744,11 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
 */
 MagickExport ExtendedSignedIntegralType GetBlobSize(const Image *image)
 {
-  ExtendedSignedIntegralType
-    offset;
-
   struct stat
     attributes;
+
+  ExtendedSignedIntegralType
+    offset;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -683,8 +756,29 @@ MagickExport ExtendedSignedIntegralType GetBlobSize(const Image *image)
     return(image->blob->length);
   if (image->blob->file == (FILE *) NULL)
     return(image->blob->size);
-  offset=
-    fstat(fileno(image->blob->file),&attributes) < 0 ?  0 : attributes.st_size;
+  switch (image->blob->type)
+  {
+#if defined(HasBZLIB)
+    case BZipStream:
+    {
+      offset=stat(image->filename,&attributes) < 0 ? 0 : attributes.st_size;
+      break;
+    }
+#endif
+#if defined(HasZLIB)
+    case ZipStream:
+    {
+      offset=stat(image->filename,&attributes) < 0 ? 0 : attributes.st_size;
+      break;
+    }
+#endif
+    default:
+    {
+      offset=fstat(fileno(image->blob->file),&attributes) < 0 ? 0 :
+        attributes.st_size;
+      break;
+    }
+  }
   return(offset);
 }
 
@@ -1450,73 +1544,22 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 #if !defined(vms) && !defined(macintosh)
   if (*filename != '|')
     {
-      char
-        *command;
-
       /*
         Handle compressed images.
       */
-      command=(char *) NULL;
       if ((strlen(filename) > 4) &&
           (LocaleCompare(filename+strlen(filename)-4,".bz2") == 0))
-        {
-          /*
-            Uncompress/compress image file with BZIP compress utilities.
-          */
-          if (*type == 'r')
-            command=GetDelegateCommand(image_info,image,"bzip",(char *) NULL,
-              exception);
-          else
-            command=GetDelegateCommand(image_info,image,(char *) NULL,"bzip",
-              exception);
-        }
+        image->blob->type=BZipStream;
       else
         if ((strlen(filename) > 3) &&
             ((LocaleCompare(filename+strlen(filename)-3,".gz") == 0) ||
              (LocaleCompare(filename+strlen(filename)-2,".Z") == 0)))
-          {
-            /*
-              Uncompress/compress image file with GNU compress utilities.
-            */
-            if (*type == 'r')
-              command=GetDelegateCommand(image_info,image,"zip",(char *) NULL,
-                exception);
-            else
-              command=GetDelegateCommand(image_info,image,(char *) NULL,"zip",
-                exception);
-          }
-      if (command != (char *) NULL)
-        {
-          if (*type != 'r')
-            FormatString(filename,"|%.1024s",command);
-          else
-            {
-              FILE
-                *file;
-
-              int
-                c;
-
-              /*
-                Determine if we really are a compressed file.
-              */
-              file=(FILE *) popen(command,"r");
-              if (file != (FILE *) NULL)
-                {
-                  c=fgetc(file);
-                  if (c >= 0)
-                    FormatString(filename,"|%.1024s",command);
-                  (void) pclose(file);
-                }
-            }
-          LiberateMemory((void **) &command);
-        }
+          image->blob->type=ZipStream;
     }
 #endif
   /*
     Open image file.
   */
-  image->blob->pipet=False;
   if (LocaleCompare(filename,"-") == 0)
     {
       image->blob->file=(*type == 'r') ? stdin : stdout;
@@ -1543,7 +1586,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
         (void) strncpy(mode,type,1);
         mode[1]='\0';
         image->blob->file=(FILE *) popen(filename+1,mode);
-        image->blob->pipet=True;
+        image->blob->type=PipeStream;
       }
     else
 #endif
@@ -1591,9 +1634,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
             SetApplicationType(filename,image_info->magick,'8BIM');
 #endif
           }
-        if (image_info->file == (FILE *) NULL)
-          image->blob->file=(FILE *) fopen(filename,type);
-        else
+        if (image_info->file != (FILE *) NULL)
           {
             /*
               Use previously opened filehandle.
@@ -1601,7 +1642,31 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
             image->blob->file=image_info->file;
             image->blob->exempt=True;
           }
-        if ((image->blob->file != (FILE *) NULL) && (*type == 'r'))
+        else
+          switch (image->blob->type)
+          {
+#if defined(HasBZLIB)
+            case BZipStream:
+            {
+              image->blob->file=(FILE *) BZ2_bzopen(filename,type);
+              break;
+            }
+#endif
+#if defined(HasZLIB)
+            case ZipStream:
+            {
+              image->blob->file=(FILE *) gzopen(filename,type);
+              break;
+            }
+#endif
+            default:
+            {
+              image->blob->file=(FILE *) fopen(filename,type);
+              break;
+            }
+          }
+        if ((image->blob->file != (FILE *) NULL) &&
+            (image->blob->type == StandardStream) && (*type == 'r'))
           {
             const MagickInfo
               *magick_info;
@@ -1783,7 +1848,19 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
     }
   if (image->blob->file == (FILE *) NULL)
     return(0);
-  return(fread(data,1,length,image->blob->file));
+  switch (image->blob->type)
+  {
+#if defined(HasBZLIB)
+    case BZipStream:
+      return(BZ2_bzread(image->blob->file,data,length));
+#endif
+#if defined(HasZLIB)
+    case ZipStream:
+      return(gzread(image->blob->file,data,length));
+#endif
+    default:
+      return(fread(data,1,length,image->blob->file));
+  }
 }
 
 /*
@@ -2187,7 +2264,8 @@ MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
           }
       return(TellBlob(image));
     }
-  if (image->blob->file == (FILE *) NULL)
+  if ((image->blob->file == (FILE *) NULL) ||
+      (image->blob->type != StandardStream))
     return(-1);
   if (fseek(image->blob->file,(off_t) offset,whence) < 0)
     return(-1);
@@ -2237,7 +2315,19 @@ MagickExport int SyncBlob(Image *image)
     }
   if (image->blob->file == (FILE *) NULL)
     return(0);
-  return(fflush(image->blob->file));
+  switch (image->blob->type)
+  {
+#if defined(HasBZLIB)
+    case BZipStream:
+      return(BZ2_bzflush(image->blob->file));
+#endif
+#if defined(HasZLIB)
+    case ZipStream:
+      return(gzflush(image->blob->file,Z_SYNC_FLUSH));
+#endif
+    default:
+      return(fflush(image->blob->file));
+  }
 }
 
 /*
@@ -2385,7 +2475,19 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
     }
   if (image->blob->file == (FILE *) NULL)
     return(0);
-  return(fwrite((char *) data,1,length,image->blob->file));
+  switch (image->blob->type)
+  {
+#if defined(HasBZLIB)
+    case BZipStream:
+      return(BZ2_bzwrite(image->blob->file,(void *) data,length));
+#endif
+#if defined(HasZLIB)
+    case ZipStream:
+      return(gzwrite(image->blob->file,(void *) data,length));
+#endif
+    default:
+      return(fwrite((char *) data,1,length,image->blob->file));
+  }
 }
 
 /*
