@@ -641,8 +641,10 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
   // Get pixel view
   Pixels pixels(*this);
   // Fill image
-  ColorFloodfillImage ( image(),
-			pixels.get(x_, y_, 1, 1 ),
+  PixelPacket *packet = pixels.get(x_, y_, 1, 1 );
+  if (packet)
+    ColorFloodfillImage ( image(),
+			*packet,
 			const_cast<Image &>(texture_).image(),
 			x_, y_, FloodfillMethod );
   throwImageException();
@@ -662,7 +664,7 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
 {
   modifyImage();
   PixelPacket target = borderColor_;
-  ColorFloodfillImage ( image(), &target,
+  ColorFloodfillImage ( image(), target,
 			const_cast<Image &>(texture_).image(),
 			x_, y_, FillToBorderMethod );
   throwImageException();
@@ -815,7 +817,7 @@ void Magick::Image::matteFloodfill ( const Color &target_ ,
   modifyImage();
 
   PixelPacket rllPacket = target_;
-  MatteFloodfillImage ( image(), &rllPacket, matte_,
+  MatteFloodfillImage ( image(), rllPacket, matte_,
 				   x_, y_, method_ );
   throwImageException();
 }
