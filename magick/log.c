@@ -569,6 +569,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
     case ConfigureEvent: domain=(char *) "Configure"; break;
     case AnnotateEvent: domain=(char *) "Annotate"; break;
     case RenderEvent: domain=(char *) "Render"; break;
+    case TransformEvent: domain=(char *) "Transform"; break;
     case LocaleEvent: domain=(char *) "Locale"; break;
     case CoderEvent: domain=(char *) "Coder"; break;
     case X11Event: domain=(char *) "X11"; break;
@@ -884,6 +885,8 @@ static unsigned int ReadConfigureFile(const char *basename,
               log_info->events=NoEvents;
             if (GlobExpression(token,"*[Rr]ender*"))
               log_info->events|=RenderEvent;
+            if (GlobExpression(token,"*[Tt]ransform*"))
+              log_info->events|=TransformEvent;
             if (GlobExpression(token,"*[U]ser*"))
               log_info->events|=UserEvent;
             if (GlobExpression(token,"*[X]11*"))
@@ -1023,6 +1026,8 @@ MagickExport unsigned long SetLogEventMask(const char *events)
     log_info->events=NoEvents;
   if (GlobExpression(events,"*[Rr]ender*"))
     log_info->events|=RenderEvent;
+  if (GlobExpression(events,"*[Tt]ransform*"))
+    log_info->events|=TransformEvent;
   if (GlobExpression(events,"*[U]ser*"))
     log_info->events|=UserEvent;
   if (GlobExpression(events,"*[X]11*"))

@@ -21,12 +21,13 @@ typedef enum
   ConfigureEvent = 0x0001,
   AnnotateEvent = 0x0002,
   RenderEvent = 0x0004,
-  LocaleEvent = 0x0008,
-  CoderEvent = 0x0010,
-  X11Event = 0x0020,
-  CacheEvent = 0x0040,
-  BlobEvent = 0x0080,
-  UserEvent = 0x0100,
+  TransformEvent = 0x0008,
+  LocaleEvent = 0x0010,
+  CoderEvent = 0x0020,
+  X11Event = 0x0040,
+  CacheEvent = 0x0080,
+  BlobEvent = 0x0100,
+  UserEvent = 0x0200,
   AllEvents = 0xFFFF
 } LogEventType;
 
