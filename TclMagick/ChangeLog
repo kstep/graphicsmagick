@@ -1,8 +1,15 @@
+2004-01-08  David N. Welton  <davidw@dedasys.com>
+
+	* generic/TclMagick.c (drawObjCmd): Sub-switches need 'default'
+	case to avoid warnings caused by options not handled.
+
 2004-01-07  Rolf Schroedter <rolf.schroedter@dlr.de>
 
 	* Fixes for a few GCC warnings:
 
 2004-01-07  David N. Welton  <davidw@dedasys.com>
+
+	* unix/configure.ac: Use configure.ac instead of configure.in.
 
 	* ChangeLog: Undid CRLF line-end formatting.
 

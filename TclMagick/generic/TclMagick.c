@@ -6101,6 +6101,8 @@ static int drawObjCmd(
 	case TM_POLYLINE: case TM_PPOLYLINE:
 	    DrawPolyline(wandPtr, num, coordinates);
             break;
+	default:
+	    break;
 	}
 
 	ckfree((char *)coordinates);
@@ -6327,15 +6329,20 @@ static int drawObjCmd(
 		return TCL_ERROR;
 	    }
             switch ((enum subIndex)index) {
-                case TM_FILLCOLOR:
-                    (subIdx == 0) ? DrawGetFillColor(wandPtr, pixelPtr) : DrawSetFillColor(wandPtr, pixelPtr);
-                    break;
-                case TM_STROKE_COLOR:
-                    (subIdx == 0) ? DrawGetStrokeColor(wandPtr, pixelPtr) : DrawSetStrokeColor(wandPtr, pixelPtr);
-                    break;
-                case TM_TEXT_UNDERCOLOR:
-                    (subIdx == 0) ? DrawGetTextUnderColor(wandPtr, pixelPtr) : DrawSetTextUnderColor(wandPtr, pixelPtr);
-                    break;
+	    case TM_FILLCOLOR:
+		(subIdx == 0) ? DrawGetFillColor(wandPtr, pixelPtr) :
+		    DrawSetFillColor(wandPtr, pixelPtr);
+		break;
+	    case TM_STROKE_COLOR:
+		(subIdx == 0) ? DrawGetStrokeColor(wandPtr, pixelPtr) :
+		    DrawSetStrokeColor(wandPtr, pixelPtr);
+		break;
+	    case TM_TEXT_UNDERCOLOR:
+		(subIdx == 0) ? DrawGetTextUnderColor(wandPtr, pixelPtr) :
+		    DrawSetTextUnderColor(wandPtr, pixelPtr);
+		break;
+	    default:
+		break;
             }
             break;
         }
@@ -6356,15 +6363,17 @@ static int drawObjCmd(
 		return TCL_ERROR;
 	    }
             switch ((enum subIndex)index) {
-                case TM_GET_FILLCOLOR:
-                    DrawGetFillColor(wandPtr, pixelPtr);
-                    break;
-                case TM_GET_STROKE_COLOR:
-                    DrawGetStrokeColor(wandPtr, pixelPtr);
-                    break;
-                case TM_GET_TEXT_UNDERCOLOR:
-                    DrawGetTextUnderColor(wandPtr, pixelPtr);
-                    break;
+	    case TM_GET_FILLCOLOR:
+		DrawGetFillColor(wandPtr, pixelPtr);
+		break;
+	    case TM_GET_STROKE_COLOR:
+		DrawGetStrokeColor(wandPtr, pixelPtr);
+		break;
+	    case TM_GET_TEXT_UNDERCOLOR:
+		DrawGetTextUnderColor(wandPtr, pixelPtr);
+		break;
+	    default:
+		break;
             }
             break;
         }
@@ -6385,15 +6394,17 @@ static int drawObjCmd(
 		return TCL_ERROR;
 	    }
             switch ((enum subIndex)index) {
-                case TM_SET_FILLCOLOR:
-                    DrawSetFillColor(wandPtr, pixelPtr);
-                    break;
-                case TM_SET_STROKE_COLOR:
-                    DrawSetStrokeColor(wandPtr, pixelPtr);
-                    break;
-                case TM_SET_TEXT_UNDERCOLOR:
-                    DrawSetTextUnderColor(wandPtr, pixelPtr);
-                    break;
+	    case TM_SET_FILLCOLOR:
+		DrawSetFillColor(wandPtr, pixelPtr);
+		break;
+	    case TM_SET_STROKE_COLOR:
+		DrawSetStrokeColor(wandPtr, pixelPtr);
+		break;
+	    case TM_SET_TEXT_UNDERCOLOR:
+		DrawSetTextUnderColor(wandPtr, pixelPtr);
+		break;
+	    default:
+		break;
             }
             break;
         }
@@ -7429,6 +7440,7 @@ static int drawObjCmd(
 	case TM_POP_DEFS:           DrawPopDefs(wandPtr); break;
 	case TM_POP_GRAPHIC_CTX:    DrawPopGraphicContext(wandPtr); break;
 	case TM_POP_PATTERN:        DrawPopPattern(wandPtr); break;
+	default: break;
 	}
 	break;
     }
