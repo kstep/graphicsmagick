@@ -279,288 +279,6 @@ ModuleExport char **StringToTokens(const char *text,int *number_tokens)
   return(tokens);
 }
 
-#define SMOOTHING_STUFF_
-#define BezierCoordinates  4
-      
-static void ReflectPoint(PointInfo *input, PointInfo *output)
-{
-  double
-    temp;
-      
-  /* reflect the x control point */
-  temp=input[3].x - input[0].x;
-  if (!temp)
-    temp=1.0;
-  temp=(input[3].x - input[2].x)/temp;
-  temp=temp*(output[3].x - input[3].x);
-  output[1].x=temp+input[3].x;
-
-  /* reflect the y control point */
-  temp=input[3].y - input[0].y;
-  if (!temp)
-    temp=1.0;
-  temp=(input[3].y - input[2].y)/temp;
-  temp=temp*(output[3].y - input[3].y);
-  output[1].y=temp+input[3].y;
-}
-
-static void BezierSmoothPoints(PointInfo *input, PointInfo *output, int outlen)
-{
-#ifdef SMOOTHING_STUFF
-  double
-    alpha,
-    weight,
-    coefficients[BezierCoordinates];
-
-  PointInfo
-    pixel;
-
-  register int
-    i,
-    j;
-
-  for (i=0; i < BezierCoordinates; i++)
-    coefficients[i]=Permutate(BezierCoordinates-1,i);
-  weight=0.0;
-  for (i=0; i < (BezierCoordinates*outlen); i++)
-  {
-    pixel.x=0;
-    pixel.y=0;
-    alpha=pow(1.0-weight,BezierCoordinates-1);
-    for (j=0; j < BezierCoordinates; j++)
-    {
-      pixel.x+=alpha*coefficients[j]*input[j].x;
-      pixel.y+=alpha*coefficients[j]*input[j].y;
-      alpha*=weight/(1.0-weight);
-    }
-    output[i]=pixel;
-    weight+=1.0/outlen/BezierCoordinates;
-  }
-#else
-  register int
-    i;
-
-  for (i=0; i < BezierCoordinates; i++)
-    output[i]=input[i];
-#endif
-}
-
-PointInfo Bezier4(PointInfo *pixels,double mu)
-{
-  double mum1,mum13,mu3;
-  PointInfo p;
-  PointInfo p1,p2,p3,p4;
-
-  p1=pixels[0];
-  p2=pixels[1];
-  p3=pixels[2];
-  p4=pixels[3];
-
-  mum1 = 1 - mu;
-  mum13 = mum1 * mum1 * mum1;
-  mu3 = mu * mu * mu;
-
-  p.x = mum13*p1.x + 3*mu*mum1*mum1*p2.x + 3*mu*mu*mum1*p3.x + mu3*p4.x;
-  p.y = mum13*p1.y + 3*mu*mum1*mum1*p2.y + 3*mu*mu*mum1*p3.y + mu3*p4.y;
-
-  return(p);
-}
-
-#define BezierQuantum  2
-
-static char *TraversePath(const char *data)
-{
-  char
-    *path,
-    points[MaxTextExtent];
-
-  double
-    x,
-    y;
-
-  int
-    attribute,
-    n;
-
-  PointInfo
-    point,
-    start,
-    lastp,
-    pixels[BezierCoordinates];
-
-  register const char
-    *p;
-
-  path=AllocateString("");
-  p=data;
-  while (*p != '\0')
-  {
-    while (isspace(*p))
-      p++;
-    attribute=(*p);
-    switch (attribute)
-    {
-      case 'c':
-      case 'C':
-      {
-        register int
-          i;
-      
-        /*
-          Compute bezier points.
-        */
-        p++;
-        pixels[0]=point;
-        for (i=1; i < BezierCoordinates; i++)
-        {
-          n=0;
-          if ((*p == ',') || isspace(*p))
-            p++;
-          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
-          if (n == 0)
-            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
-          if (n == 0)
-            break;
-          lastp.x=attribute == 'C' ? x : point.x+x;
-          lastp.y=attribute == 'C' ? y : point.y+y;
-          pixels[i]=lastp;
-          p+=n;
-        }
-
-        for (i=0; i <= BezierCoordinates*BezierQuantum; i++)
-        {
-          lastp=Bezier4(pixels,((double)i/(BezierCoordinates*BezierQuantum)));
-          (void) FormatString(points,"%g,%g ",lastp.x,lastp.y);
-          if (!ConcatenateString(&path,points))
-            return((char *) NULL);
-        }
-        point=lastp;
-        p--;
-        break;
-      }
-      case 's':
-      case 'S':
-      {
-        PointInfo
-          newpixels[BezierCoordinates];
-      
-        register int
-          i;
-
-        /*
-          Compute bezier points.
-        */
-        p++;
-        newpixels[0]=pixels[3];
-        for (i=2; i < BezierCoordinates; i++)
-        {
-          n=0;
-          if ((*p == ',') || isspace(*p))
-            p++;
-          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
-          if (n == 0)
-            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
-          if (n == 0)
-            break;
-          lastp.x=attribute == 'S' ? x : point.x+x;
-          lastp.y=attribute == 'S' ? y : point.y+y;
-          newpixels[i]=lastp;
-          p+=n;
-        }
-
-        ReflectPoint(pixels, newpixels);
-        for (i=0; i < BezierCoordinates; i++)
-          pixels[i]=newpixels[i];
-
-        for (i=0; i <= BezierCoordinates; i++)
-        {
-          lastp=Bezier4(newpixels,((double)i/BezierCoordinates));
-          (void) FormatString(points,"%g,%g ",lastp.x,lastp.y);
-          if (!ConcatenateString(&path,points))
-            return((char *) NULL);
-        }
-
-        point=lastp;
-        p--;
-        break;
-      }
-      case 'h':
-      case 'H':
-      {
-        (void) sscanf(p+1,"%lf%n",&x,&n);
-        point.x=attribute == 'H' ? x: point.x+x;
-        (void) FormatString(points,"%g,%g ",point.x,point.y);
-        if (!ConcatenateString(&path,points))
-          return((char *) NULL);
-        p+=n;
-        break;
-      }
-      case 'l':
-      case 'L':
-      {
-        for (n=0; ; n=0)
-        {
-          (void) sscanf(p+1,"%lf%lf%n",&x,&y,&n);
-          if (n == 0)
-            (void) sscanf(p+1,"%lf,%lf%n",&x,&y,&n);
-          if (n == 0)
-            break;
-          point.x=attribute == 'L' ? x : point.x+x;
-          point.y=attribute == 'L' ? y : point.y+y;
-          (void) FormatString(points,"%g,%g  ",point.x,point.y);
-          if (!ConcatenateString(&path,points))
-            return((char *) NULL);
-          p+=n;
-        }
-        break;
-      }
-      case 'M':
-      {
-        n=0;
-        (void) sscanf(p+1,"%lf%lf%n",&point.x,&point.y,&n);
-        if (n == 0)
-          (void) sscanf(p+1,"%lf,%lf%n",&point.x,&point.y,&n);
-        (void) FormatString(points,"%g,%g ",point.x,point.y);
-        if (!ConcatenateString(&path,points))
-          return((char *) NULL);
-        start.x=point.x;
-        start.y=point.y;
-        p+=n;
-        break;
-      }
-      case 'v':
-      case 'V':
-      {
-        (void) sscanf(p+1,"%lf%n",&y,&n);
-        point.y=attribute == 'V' ? y : point.y+y;
-        (void) FormatString(points,"%g,%g ",point.x,point.y);
-        if (!ConcatenateString(&path,points))
-          return((char *) NULL);
-        p+=n;
-        break;
-      }
-      case 'z':
-      case 'Z':
-      {
-        point.x=start.x;
-        point.y=start.y;
-        (void) FormatString(points,"%g,%g ",start.x,start.y);
-        if (!ConcatenateString(&path,points))
-          return((char *) NULL);
-        break;
-      }
-      default:
-      {
-        if (isalpha((int) *p))
-          (void) fprintf(stderr,"attribute not implemented: %c\n",*p);
-        break;
-      }
-    }
-    p++;
-  }
-  return(path);
-}
-
 static double UnitOfMeasure(const char *value)
 {
   assert(value != (const char *) NULL);
@@ -774,6 +492,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               segment.x2,segment.y2);
             (void) strcat(command,points);
           }
+        if (LocaleCompare(primitive,"path") == 0)
+          (void) strcat(command,vertices);
         if (LocaleCompare(primitive,"polyline") == 0)
           (void) strcat(command,vertices);
         if (LocaleCompare(primitive,"polygon") == 0)
@@ -843,36 +563,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) CloneString(&keyword,token);
         continue;
       }
-    if (LocaleCompare(keyword,"d") == 0)
-      {
-        char
-          *path;
-
-        path=TraversePath(value);
-        if (path == (char *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
-            image);
-        (void) fprintf(file,"antialias %d\n",
-          graphic_context[n].antialias ? 1 : 0);
-        (void) fprintf(file,"linewidth %g\n",graphic_context[n].linewidth);
-        (void) fprintf(file,"pointsize %g\n",graphic_context[n].pointsize);
-        (void) fprintf(file,"translate %g,%g\n",translate.x,translate.y);
-        (void) fprintf(file,"rotate %g\n",element.angle);
-        (void) fprintf(file,"opacity %g\n",graphic_context[n].opacity);
-        if (LocaleCompare(graphic_context[n].fill,"none") != 0)
-          {
-            (void) fprintf(file,"pen %s\n",graphic_context[n].fill);
-            (void) fprintf(file,"fill 1\n");
-            (void) fprintf(file,"polyline %s\n",path);
-          }
-        if (LocaleCompare(graphic_context[n].stroke,"none") != 0)
-          (void) fprintf(file,"pen %s\n",graphic_context[n].stroke);
-        (void) fprintf(file,"fill 0\n");
-        (void) fprintf(file,"polyline %s\n",path);
-        (void) FreeMemory((void **) &path);
-        (void) CloneString(&keyword,token);
-        continue;
-      }
     if (LocaleCompare(keyword,">") == 0)
       CloneString(&primitive,"none");
     if (LocaleCompare(keyword,"angle") == 0)
@@ -889,6 +579,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) sscanf(value,"%lf",&element.cy);
         element.cy*=UnitOfMeasure(value);
       }
+    if (LocaleCompare(keyword,"d") == 0)
+      (void) CloneString(&vertices,value);
     if (LocaleCompare(keyword,"ellipse") == 0)
       CloneString(&primitive,"ellipse");
     if (LocaleCompare(keyword,"g") == 0)
@@ -915,6 +607,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) sscanf(value,"%lf",&element.major);
     if (LocaleCompare(keyword,"minor") == 0)
       (void) sscanf(value,"%lf",&element.minor);
+    if (LocaleCompare(keyword,"path") == 0)
+      CloneString(&primitive,"path");
     if (LocaleCompare(keyword,"polygon") == 0)
       CloneString(&primitive,"polygon");
     if (LocaleCompare(keyword,"polyline") == 0)
