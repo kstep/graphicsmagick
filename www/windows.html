@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020718;12063600">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20020730;14071800">
+	<META NAME="CHANGED" CONTENT="20020807;21315500">
 	<META NAME="CLASSIFICATION" CONTENT="Describes ImageMagick features which are peculiar to Microsoft Windows">
 	<META NAME="DESCRIPTION" CONTENT="Describes how to install ImageMagick for Windows.">
 	<META NAME="KEYWORDS" CONTENT="ImageMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, WebMagick, Web Magic, visualization, image processing, software development, image, software, Magick++">
@@ -16,19 +16,19 @@
 		TD P.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
 		P.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
 		H2.western { font-family: "Albany" }
-		H2.cjk { font-family: "HG Mincho Light J"; font-size: 12pt; font-weight: medium }
+		H2.cjk { font-size: 12pt; font-weight: medium }
 		H2.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif }
 		H3.western { font-family: "Albany"; font-size: 16pt }
-		H3.cjk { font-family: "HG Mincho Light J"; font-size: 12pt; font-weight: medium }
+		H3.cjk { font-size: 12pt; font-weight: medium }
 		H3.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif }
 		BLOCKQUOTE.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
 		DD { margin-left: 0.4in }
 		DD.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		DT { margin-left: 0.4in; background: transparent }
+		DT { margin-left: 0.4in }
 		DT.western { font-weight: bold }
 		DT.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
 		H4.western { font-family: "Albany"; font-size: 14pt }
-		H4.cjk { font-family: "HG Mincho Light J"; font-size: 12pt; font-weight: medium }
+		H4.cjk { font-weight: medium }
 		A:link { color: #0085c0 }
 		A:visited { color: #800080 }
 	-->
@@ -243,7 +243,7 @@ program.
 			<DT CLASS="western" STYLE="margin-left: -0.01in">
 			/COMPONENTS=&quot;comma separated list of component names&quot; 
 			</DT></DL>
-		<DD CLASS="western" STYLE="margin-left: 0.39in">
+		<DD CLASS="western" STYLE="margin-left: 0.39in; margin-bottom: 0.2in">
 		Overrides the default components settings. Using this command line
 		parameter causes Setup to automatically select a custom type. 
 		</DD></DL>
@@ -296,106 +296,108 @@ ImageMagick. These entries are available under the registry path
 </P>
 <P CLASS="western" STYLE="margin-left: 0.79in"><FONT FACE="Courier New, Courier, monospace"><FONT SIZE=3>HKEY_LOCAL_MACHINE\SOFTWARE\ImageMagick\Current</FONT></FONT></P>
 <P CLASS="western" STYLE="margin-left: 0.79in">These keys are
-available:</P>
+currently available:</P>
 <DL>
 	<DL>
 		<DD>
-		<TABLE WIDTH=578 BORDER=1 CELLPADDING=4 CELLSPACING=3>
-			<COL WIDTH=93>
-			<COL WIDTH=111>
-			<COL WIDTH=336>
+		<TABLE WIDTH=571 BORDER=1 CELLPADDING=4 CELLSPACING=3>
+			<COL WIDTH=181>
+			<COL WIDTH=97>
+			<COL WIDTH=255>
 			<TR VALIGN=TOP>
-				<TD WIDTH=93>
-					<P CLASS="western"><FONT SIZE=3><B>Key Name</B></FONT></P>
+				<TD WIDTH=181 BGCOLOR="#52799e">
+					<P CLASS="western"><FONT COLOR="#ffffff"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Key
+					Name</SPAN></B></FONT></FONT></P>
 				</TD>
-				<TD WIDTH=111>
-					<P CLASS="western"><FONT SIZE=3><B>Key Type</B></FONT></P>
+				<TD WIDTH=97 BGCOLOR="#52799e">
+					<P CLASS="western"><FONT COLOR="#ffffff"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Key
+					Type</SPAN></B></FONT></FONT></P>
 				</TD>
-				<TD WIDTH=336>
-					<P CLASS="western"><FONT SIZE=3><B>Description</B></FONT></P>
+				<TD WIDTH=255 BGCOLOR="#52799e">
+					<P CLASS="western"><FONT COLOR="#ffffff"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Description</SPAN></B></FONT></FONT></P>
 				</TD>
 			</TR>
 			<TR VALIGN=TOP>
-				<TD WIDTH=93>
+				<TD WIDTH=181>
 					<P CLASS="western"><FONT SIZE=3>ApplicationDefaultsPath</FONT></P>
 				</TD>
-				<TD WIDTH=111>
+				<TD WIDTH=97>
 					<P CLASS="western"><FONT SIZE=3>REG_SZ</FONT></P>
 				</TD>
-				<TD WIDTH=336>
+				<TD WIDTH=255>
 					<P CLASS="western"><FONT SIZE=3>Directory where ImageMagick
 					looks for X11 resource files</FONT></P>
 				</TD>
 			</TR>
 			<TR VALIGN=TOP>
-				<TD WIDTH=93>
+				<TD WIDTH=181>
 					<P CLASS="western"><FONT SIZE=3>BinPath</FONT></P>
 				</TD>
-				<TD WIDTH=111>
+				<TD WIDTH=97>
 					<P CLASS="western"><FONT SIZE=3>REG_SZ</FONT></P>
 				</TD>
-				<TD WIDTH=336>
+				<TD WIDTH=255>
 					<P CLASS="western"><FONT SIZE=3>Directory where ImageMagick
 					executables are installed</FONT></P>
 				</TD>
 			</TR>
 			<TR VALIGN=TOP>
-				<TD WIDTH=93>
+				<TD WIDTH=181>
 					<P CLASS="western"><FONT SIZE=3>LibPath</FONT></P>
 				</TD>
-				<TD WIDTH=111>
+				<TD WIDTH=97>
 					<P CLASS="western"><FONT SIZE=3>REG_SZ</FONT></P>
 				</TD>
-				<TD WIDTH=336>
+				<TD WIDTH=255>
 					<P CLASS="western"><FONT SIZE=3>Directory where ImageMagick core
 					DLLs are installed</FONT></P>
 				</TD>
 			</TR>
 			<TR VALIGN=TOP>
-				<TD WIDTH=93>
+				<TD WIDTH=181>
 					<P CLASS="western"><FONT SIZE=3>ModulesPath</FONT></P>
 				</TD>
-				<TD WIDTH=111>
+				<TD WIDTH=97>
 					<P CLASS="western"><FONT SIZE=3>REG_SZ</FONT></P>
 				</TD>
-				<TD WIDTH=336>
+				<TD WIDTH=255>
 					<P CLASS="western"><FONT SIZE=3>Directory where ImageMagick
 					loadable modules are installed</FONT></P>
 				</TD>
 			</TR>
 			<TR VALIGN=TOP>
-				<TD WIDTH=93>
+				<TD WIDTH=181>
 					<P CLASS="western"><FONT SIZE=3>QuantumDepth</FONT></P>
 				</TD>
-				<TD WIDTH=111>
+				<TD WIDTH=97>
 					<P CLASS="western"><FONT SIZE=3>REG_DWORD</FONT></P>
 				</TD>
-				<TD WIDTH=336>
+				<TD WIDTH=255>
 					<P CLASS="western"><FONT SIZE=3>Number of bits in a pixel
 					quantum. A pixel quantum is used to store part of a color (e.g.
 					red component)</FONT></P>
 				</TD>
 			</TR>
 			<TR VALIGN=TOP>
-				<TD WIDTH=93>
+				<TD WIDTH=181>
 					<P CLASS="western"><FONT SIZE=3>SharePath</FONT></P>
 				</TD>
-				<TD WIDTH=111>
+				<TD WIDTH=97>
 					<P CLASS="western"><FONT SIZE=3>REG_SZ</FONT></P>
 				</TD>
-				<TD WIDTH=336>
+				<TD WIDTH=255>
 					<P CLASS="western"><FONT SIZE=3>Directory where configuration
 					files are installed</FONT></P>
 				</TD>
 			</TR>
 			<TR VALIGN=TOP>
-				<TD WIDTH=93>
+				<TD WIDTH=181>
 					<P CLASS="western"><FONT SIZE=3>Version</FONT></P>
 				</TD>
-				<TD WIDTH=111>
+				<TD WIDTH=97>
 					<P CLASS="western"><FONT SIZE=3>REG_SZ</FONT></P>
 				</TD>
-				<TD WIDTH=336>
+				<TD WIDTH=255>
 					<P CLASS="western"><FONT SIZE=3>ImageMagick version</FONT></P>
 				</TD>
 			</TR>
@@ -415,81 +417,83 @@ Packages which require a particular version of ImageMagick built with
 a specific QuantumDepth may find a matching installation via these
 registry entries.</P>
 <P CLASS="western" STYLE="margin-left: 0.79in">These keys are
-available:</P>
+currently available:</P>
 <DL>
 	<DL>
 		<DD>
-		<TABLE WIDTH=578 BORDER=1 CELLPADDING=4 CELLSPACING=3>
-			<COL WIDTH=116>
-			<COL WIDTH=105>
-			<COL WIDTH=319>
+		<TABLE WIDTH=76% BORDER=1 CELLPADDING=4 CELLSPACING=3>
+			<COL WIDTH=64*>
+			<COL WIDTH=51*>
+			<COL WIDTH=141*>
 			<TR VALIGN=TOP>
-				<TD WIDTH=116>
-					<P CLASS="western"><FONT SIZE=3><B>Key Name</B></FONT></P>
+				<TD WIDTH=25% BGCOLOR="#52799e">
+					<P CLASS="western"><FONT COLOR="#ffffff"><FONT SIZE=3><B>Key
+					Name</B></FONT></FONT></P>
 				</TD>
-				<TD WIDTH=105>
-					<P CLASS="western"><FONT SIZE=3><B>Key Type</B></FONT></P>
+				<TD WIDTH=20% BGCOLOR="#52799e">
+					<P CLASS="western"><FONT COLOR="#ffffff"><FONT SIZE=3><B>Key
+					Type</B></FONT></FONT></P>
 				</TD>
-				<TD WIDTH=319>
-					<P CLASS="western"><FONT SIZE=3><B>Description</B></FONT></P>
+				<TD WIDTH=55% BGCOLOR="#52799e">
+					<P CLASS="western"><FONT COLOR="#ffffff"><FONT SIZE=3><B>Description</B></FONT></FONT></P>
 				</TD>
 			</TR>
 			<TR VALIGN=TOP>
-				<TD WIDTH=116>
+				<TD WIDTH=25%>
 					<P CLASS="western"><FONT SIZE=3>ApplicationDefaultsPath</FONT></P>
 				</TD>
-				<TD WIDTH=105>
+				<TD WIDTH=20%>
 					<P CLASS="western"><FONT SIZE=3>REG_SZ</FONT></P>
 				</TD>
-				<TD WIDTH=319>
+				<TD WIDTH=55%>
 					<P CLASS="western"><FONT SIZE=3>Directory where ImageMagick
 					looks for X11 resource files</FONT></P>
 				</TD>
 			</TR>
 			<TR VALIGN=TOP>
-				<TD WIDTH=116>
+				<TD WIDTH=25%>
 					<P CLASS="western"><FONT SIZE=3>BinPath</FONT></P>
 				</TD>
-				<TD WIDTH=105>
+				<TD WIDTH=20%>
 					<P CLASS="western"><FONT SIZE=3>REG_SZ</FONT></P>
 				</TD>
-				<TD WIDTH=319>
+				<TD WIDTH=55%>
 					<P CLASS="western"><FONT SIZE=3>Directory where ImageMagick
 					executables are installed</FONT></P>
 				</TD>
 			</TR>
 			<TR VALIGN=TOP>
-				<TD WIDTH=116>
+				<TD WIDTH=25%>
 					<P CLASS="western"><FONT SIZE=3>LibPath</FONT></P>
 				</TD>
-				<TD WIDTH=105>
+				<TD WIDTH=20%>
 					<P CLASS="western"><FONT SIZE=3>REG_SZ</FONT></P>
 				</TD>
-				<TD WIDTH=319>
+				<TD WIDTH=55%>
 					<P CLASS="western"><FONT SIZE=3>Directory where ImageMagick core
 					DLLs are installed</FONT></P>
 				</TD>
 			</TR>
 			<TR VALIGN=TOP>
-				<TD WIDTH=116>
+				<TD WIDTH=25%>
 					<P CLASS="western"><FONT SIZE=3>ModulesPath</FONT></P>
 				</TD>
-				<TD WIDTH=105>
+				<TD WIDTH=20%>
 					<P CLASS="western"><FONT SIZE=3>REG_SZ</FONT></P>
 				</TD>
-				<TD WIDTH=319>
+				<TD WIDTH=55%>
 					<P CLASS="western"><FONT SIZE=3>Directory where ImageMagick
 					loadable modules are installed</FONT></P>
 				</TD>
 			</TR>
 			<TR VALIGN=TOP>
-				<TD WIDTH=116>
+				<TD WIDTH=25%>
 					<P CLASS="western"><FONT SIZE=3>SharePath</FONT></P>
 				</TD>
-				<TD WIDTH=105>
+				<TD WIDTH=20%>
 					<P CLASS="western"><FONT SIZE=3>REG_SZ</FONT></P>
 				</TD>
-				<TD WIDTH=319>
+				<TD WIDTH=55%>
 					<P CLASS="western"><FONT SIZE=3>Directory where configuration
 					files are installed</FONT></P>
 				</TD>
