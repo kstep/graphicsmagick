@@ -558,31 +558,36 @@ static int magickCmd(
 	    Tcl_Obj *listPtr = Tcl_NewListObj(0, NULL);
 
             str = MagickGetCopyright();
-	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[0], strlen(options[0])));
-	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(str, strlen(str)));
+	    Tcl_ListObjAppendElement(
+		interp, listPtr,
+		Tcl_NewStringObj(options[0], -1));
+	    Tcl_ListObjAppendElement(
+		interp, listPtr, Tcl_NewStringObj(str, -1));
 
             str = MagickGetReleaseDate();
-	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[1], strlen(options[1])));
-	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(str, strlen(str)));
+	    Tcl_ListObjAppendElement(
+		interp, listPtr,
+		Tcl_NewStringObj(options[1], -1));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(str, -1));
 
             str = MagickGetPackageName();
-	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[2], strlen(options[2])));
-	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(str, strlen(str)));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[2], -1));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(str, -1));
 
             str = MagickGetQuantumDepth(&depth);
-	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[3], strlen(options[3])));
-	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewLongObj(depth));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[3], -1));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewLongObj((signed long)depth));
 
             str = MagickGetHomeURL();
-	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[4], strlen(options[4])));
-	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(str, strlen(str)));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[4], -1));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(str, -1));
 
             str = MagickGetVersion(&version);
-            sprintf( buf, "%d.%d.%d", version >> 8, (version >> 4) & 0x0F, version & 0x0F);
-	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[5], strlen(options[5])));
-	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(buf, strlen(buf)));
-	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[6], strlen(options[6])));
-	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(str, strlen(str)));
+            sprintf( buf, "%ld.%ld.%ld", version >> 8, (version >> 4) & 0x0F, version & 0x0F);
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[5], -1));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(buf, -1));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[6], -1));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(str, -1));
 
 	    Tcl_SetObjResult(interp, listPtr);
         } else {
@@ -594,32 +599,32 @@ static int magickCmd(
             switch( idx ) {
             case 0: /* -copyright */
                 str = MagickGetCopyright();
-                Tcl_SetObjResult(interp, Tcl_NewStringObj(str, strlen(str)));
+                Tcl_SetObjResult(interp, Tcl_NewStringObj(str, -1));
                 break;
             case 1: /* -date */
                 str = MagickGetReleaseDate();
-                Tcl_SetObjResult(interp, Tcl_NewStringObj(str, strlen(str)));
+                Tcl_SetObjResult(interp, Tcl_NewStringObj(str, -1));
                 break;
             case 2: /* -name */
                 str = MagickGetPackageName();
-                Tcl_SetObjResult(interp, Tcl_NewStringObj(str, strlen(str)));
+                Tcl_SetObjResult(interp, Tcl_NewStringObj(str, -1));
                 break;
             case 3: /* -quantumdepth */
                 MagickGetQuantumDepth(&depth);
-                Tcl_SetObjResult(interp, Tcl_NewLongObj(depth));
+                Tcl_SetObjResult(interp, Tcl_NewLongObj((signed long)depth));
                 break;
             case 4: /* -url */
                 str = MagickGetHomeURL();
-                Tcl_SetObjResult(interp, Tcl_NewStringObj(str, strlen(str)));
+                Tcl_SetObjResult(interp, Tcl_NewStringObj(str, -1));
                 break;
             case 5: /* -version */
                 MagickGetVersion(&version);
-                sprintf( buf, "%d.%d.%d", version >> 8, (version >> 4) & 0x0F, version & 0x0F);
-                Tcl_SetObjResult(interp, Tcl_NewStringObj(buf, strlen(buf)));
+                sprintf( buf, "%ld.%ld.%ld", version >> 8, (version >> 4) & 0x0F, version & 0x0F);
+                Tcl_SetObjResult(interp, Tcl_NewStringObj(buf, -1));
                 break;
             case 6: /* -versionstr */
                 str = MagickGetVersion(&version);
-                Tcl_SetObjResult(interp, Tcl_NewStringObj(str, strlen(str)));
+                Tcl_SetObjResult(interp, Tcl_NewStringObj(str, -1));
                 break;
             default:
                 break;

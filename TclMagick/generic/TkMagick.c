@@ -1,6 +1,6 @@
 /*  TkMagick.c -- Glue to make combine TclMagick and Tk. */
 
-/* Copyright 2003 David N. Welton <davidw@dedasys.com> */
+/* Copyright 2003, 2004 David N. Welton <davidw@dedasys.com> */
 
 /* $Id$ */
 
@@ -54,13 +54,13 @@ static int MagickToPhoto(
     }
 
     photoname = Tcl_GetStringFromObj(objv[2], NULL);
-    photohandle = Tk_FindPhoto(
-	interp, photoname);
+    photohandle = Tk_FindPhoto(interp, photoname);
     if (photohandle == NULL) {
 	Tcl_AddErrorInfo(interp, "Not a photo image.");
 	return TCL_ERROR;
     }
 
+    /* pixelSize corresponds to "RGB" format below. */
     magickblock.pixelSize = 3;
     magickblock.width = MagickGetImageWidth (wand);
     magickblock.height = MagickGetImageHeight (wand);
@@ -73,6 +73,7 @@ static int MagickToPhoto(
     magickblock.offset[2] = 2;
     magickblock.offset[3] = 3;
 
+    /* RGB corresponds to pixelSize above. */
     if (MagickGetImagePixels (
 	    wand, 0, 0, (unsigned)magickblock.width, (unsigned)magickblock.height,
 	    "RGB", CharPixel, magickblock.pixelPtr) == False) {
@@ -80,7 +81,7 @@ static int MagickToPhoto(
     }
 
     Tk_PhotoPutBlock(photohandle, &magickblock, 0, 0,
-		     magickblock.width, magickblock.height, 
+		     magickblock.width, magickblock.height,
 		     TK_PHOTO_COMPOSITE_SET);
 
     ckfree(magickblock.pixelPtr);
@@ -164,7 +165,7 @@ static int PhotoToMagick(
 	map[photoblock.offset[3]] = 'A';
 	break;
     default:
-	Tcl_AddErrorInfo(interp, "Unsuppored pixelSize in Tk image.");
+	Tcl_AddErrorInfo(interp, "Unsupported pixelSize in Tk image.");
 	return TCL_ERROR;
     };
 

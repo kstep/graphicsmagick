@@ -1,5 +1,11 @@
 2004-02-08  David N. Welton  <davidw@dedasys.com>
 
+	* generic/Makefile.am: Added magick libraries to libraries
+	variables.
+
+	* generic/TclMagick.c: Changed format type from int to long int to
+	make compiler happy.
+
 	* INSTALL: Added a bit to the install text.
 
 	* configure.ac: Created some code to grab
