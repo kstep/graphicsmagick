@@ -1821,9 +1821,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Initialize TIFF colormap.
         */
-        memset(red,0,65546*sizeof(unsigned short));
-        memset(green,0,65546*sizeof(unsigned short));
-        memset(blue,0,65546*sizeof(unsigned short));
+        memset(red,0,65536*sizeof(unsigned short));
+        memset(green,0,65536*sizeof(unsigned short));
+        memset(blue,0,65536*sizeof(unsigned short));
         for (i=0; i < (long) image->colors; i++)
         {
           red[i]=(unsigned short)
