@@ -434,67 +434,50 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
 %
 %
 */
-static const char* StretchTypeToString(StretchType stretch)
+
+static const char *StretchTypeToString(StretchType stretch)
 {
   switch(stretch)
-    {
-    case NormalStretch:
-      return "normal";
-    case UltraCondensedStretch:
-      return "ultra-condensed";
-    case ExtraCondensedStretch:
-      return "extra-condensed";
-    case CondensedStretch:
-      return "condensed";
-    case SemiCondensedStretch:
-      return "semi-condensed";
-    case SemiExpandedStretch:
-      return "semi-expanded";
-    case ExpandedStretch:
-      return "expanded";
-    case ExtraExpandedStretch:
-      return "extra-expanded";
-    case UltraExpandedStretch:
-      return "ultra-expanded";
-    case AnyStretch:
-      return "any";
-    default:
-      {
-        return "unknown";
-      }
-    }
-  return "unknown";
+  {
+    case NormalStretch: return("normal");
+    case UltraCondensedStretch: return("ultra-condensed");
+    case ExtraCondensedStretch: return("extra-condensed");
+    case CondensedStretch: return("condensed");
+    case SemiCondensedStretch: return("semi-condensed");
+    case SemiExpandedStretch: return("semi-expanded");
+    case ExpandedStretch: return("expanded");
+    case ExtraExpandedStretch: return("extra-expanded");
+    case UltraExpandedStretch: return("ultra-expanded");
+    case AnyStretch: return("any");
+    default: return("unknown");
+  }
+  return("unknown");
 }
-static const char* StyleTypeToString(StyleType style)
+
+static const char *StyleTypeToString(StyleType style)
 {
   switch(style)
-    {
-    case NormalStyle:
-      return "normal";
-    case ItalicStyle:
-      return "italic";
-    case ObliqueStyle:
-      return "oblique";
-    case AnyStyle:
-      return "any";
-    default:
-      {
-        return "unknown";
-      }
-    }
-  return "unknown";
+  {
+    case NormalStyle: return("normal");
+    case ItalicStyle: return("italic");
+    case ObliqueStyle: return("oblique");
+    case AnyStyle: return("any");
+    default: return("unknown");
+  }
+  return("unknown");
 }
+
 MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 {
   register const TypeInfo
     *p;
-  
+
   char
     weight[MaxTextExtent];
 
   const char
     *family,
-    *format = "%-32s %-19s %-7s %-12s %-3s\n",
+    *format,
     *name,
     *stretch,
     *style;
@@ -503,6 +486,7 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
     file=stdout;
   (void) GetTypeInfo("*",exception);
   AcquireSemaphoreInfo(&type_semaphore);
+  format="%-32s %-19s %-7s %-12s %-3s\n";
   for (p=type_list; p != (const TypeInfo *) NULL; p=p->next)
   {
     if ((p->previous == (TypeInfo *) NULL) ||
@@ -517,20 +501,15 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
       }
     if (p->stealth)
       continue;
-
+    name="unknown";
     if (p->name != (char *) NULL)
       name=p->name;
-    else
-      name="unknown";
-
+    family="unknown";
     if (p->family != (char *) NULL)
       family=p->family;
-    else
-      family="unknown";
-
     style=StyleTypeToString(p->style);
     stretch=StretchTypeToString(p->stretch);
-    FormatString(weight, "%lu",p->weight);
+    FormatString(weight,"%lu",p->weight);
     (void) fprintf(file,format,name,family,style,stretch,weight);
   }
   (void) fflush(file);
