@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1; print "1..4\n"; }
+BEGIN { $| = 1; $test=1; print "1..5\n"; }
 END {print "not ok $test\n" unless $loaded;}
 
 use Graphics::Magick;
@@ -45,3 +45,11 @@ print("TrueColor (16-bit) image ...\n");
 testRead( 'input_truecolor_16.tiff',
   '1030dc73bdc72c846831d10b661539e7a9e9c24a170f24ffdffaeae1a8aa769d',
   '72fd047e4f5942b4edc96e8b16444580e9eb1f265017dd6bb11795a842e58d58' );
+
+#
+# 5) Test Reading 8-bit TrueColor Tiled (32x32 tiles)
+# 
+++$test;
+print("TrueColor (8-bit) tiled image ...\n");
+testRead( 'input_truecolor_tiled32x32.tiff',
+  '326599218925e7aa27c735d482332744cccf41f460a1ba2d276a2d172f2b3de0' );

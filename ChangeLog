@@ -1,7 +1,9 @@
 2003-02-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* PerlMagick/t/tiff/read.t: Added test for reading tiled TIFF.
 	* coders/tiff.c (ReadTIFFImage): Add optimized support for
 	reading tiled TIFFs.
+	(ReadTIFFImage): Optimize loops for reading tiled TIFFs as well.
 
 2003-02-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

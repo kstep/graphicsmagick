@@ -970,7 +970,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if(!TIFFGetField(tiff,TIFFTAG_TILEWIDTH,&tile_columns)
            || !TIFFGetField(tiff,TIFFTAG_TILELENGTH,&tile_rows))
           {
-            ThrowReaderException(CoderError,"SourceImageNotTiled",image)
+            ThrowReaderException(CoderError,"ImageIsNotTiled",image)
           }
         tile_total_pixels=tile_columns*tile_rows;
         logging && LogMagickEvent(CoderEvent,GetMagickModule(),"Reading TIFF tiles ...");
@@ -1026,16 +1026,25 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 q=strip+(x+(tile_rows_remaining-1)*image->columns);
                 for ( tile_row=tile_rows_remaining; tile_row > 0; tile_row--)
                   {
-                    for (tile_column=0; tile_column < tile_columns_remaining; tile_column++)
-                      {
-                        q->red=ScaleCharToQuantum(TIFFGetR(*p));
-                        q->green=ScaleCharToQuantum(TIFFGetG(*p));
-                        q->blue=ScaleCharToQuantum(TIFFGetB(*p));
-                        if (image->matte)
+                    if (image->matte)
+                      for (tile_column=tile_columns_remaining; tile_column >0; tile_column--)
+                        {
+                          q->red=ScaleCharToQuantum(TIFFGetR(*p));
+                          q->green=ScaleCharToQuantum(TIFFGetG(*p));
+                          q->blue=ScaleCharToQuantum(TIFFGetB(*p));
                           q->opacity=(Quantum) ScaleCharToQuantum(TIFFGetA(*p));
-                        q++;
-                        p++;
-                      }
+                          q++;
+                          p++;
+                        }
+                    else
+                      for (tile_column=tile_columns_remaining; tile_column >0; tile_column--)
+                        {
+                          q->red=ScaleCharToQuantum(TIFFGetR(*p));
+                          q->green=ScaleCharToQuantum(TIFFGetG(*p));
+                          q->blue=ScaleCharToQuantum(TIFFGetB(*p));
+                          q++;
+                          p++;
+                        }
                     p+=tile_columns-tile_columns_remaining;
                     q-=(image->columns+tile_columns_remaining);
                   }
