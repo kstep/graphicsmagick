@@ -102,7 +102,7 @@ Magick::Color& Magick::Color::operator = ( const Magick::Color& color_ )
 }
 
 // Set color via X11 color specification string
-const Magick::Color& Magick::Color::operator = ( std::string x11color_ )
+const Magick::Color& Magick::Color::operator = ( const std::string &x11color_ )
 {
   initPixel();
   PixelPacket target_color;

@@ -35,7 +35,7 @@ namespace Magick
 	    Quantum green_,
 	    Quantum blue_,
 	    Quantum alpha_ );
-    Color ( const std::string x11color_ );
+    Color ( const std::string &x11color_ );
     Color ( const char * x11color_ );
     Color ( void );
     virtual        ~Color ( void );
@@ -67,7 +67,7 @@ namespace Magick
     bool           isValid ( void ) const;
     
     // Set color via X11 color specification string
-    const Color& operator= ( std::string x11color_ );
+    const Color& operator= ( const std::string &x11color_ );
     const Color& operator= ( const char * x11color_ );
 
     // Assignment operator
@@ -385,7 +385,7 @@ inline Magick::Color::Color ( Quantum red_,
 }
 
 // Construct from color expressed as C++ string
-inline Magick::Color::Color ( const std::string x11color_ )
+inline Magick::Color::Color ( const std::string &x11color_ )
   : _pixel(new PixelPacket),
     _pixelOwn(true),
     _pixelType(RGBPixel)
