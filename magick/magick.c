@@ -362,27 +362,24 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
         {
           p=p->previous;
 #if defined(HasPTHREADS)
-  pthread_mutex_unlock(&magick_mutex);
+          pthread_mutex_unlock(&magick_mutex);
 #endif
           UnregisterMagickInfo(entry->tag);
 #if defined(HasPTHREADS)
-  pthread_mutex_lock(&magick_mutex);
+          pthread_mutex_lock(&magick_mutex);
 #endif
         }
     }
   if (magick_list == (MagickInfo *) NULL)
+    magick_list=entry;
+  else
     {
-      magick_list=entry;
-#if defined(HasPTHREADS)
-  pthread_mutex_unlock(&magick_mutex);
-#endif
-      return(entry);
+      entry->previous=p;
+      entry->next=p->next;
+      if (p->next != (MagickInfo *) NULL)
+        p->next->previous=entry;
+      p->next=entry;
     }
-  entry->previous=p;
-  entry->next=p->next;
-  if (p->next != (MagickInfo *) NULL)
-    p->next->previous=entry;
-  p->next=entry;
 #if defined(HasPTHREADS)
   pthread_mutex_unlock(&magick_mutex);
 #endif
