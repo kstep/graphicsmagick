@@ -169,10 +169,11 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     CloneString(&clone_info->size,DefaultTileGeometry);
   for (i=0; i < number_files; i++)
   {
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"name: %.1024s",
+      filelist[i]);
     handler=SetMonitorHandler((MonitorHandler) NULL);
     (void) strncpy(clone_info->filename,filelist[i],MaxTextExtent-1);
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"name: %.1024s",
-      clone_info->filename);
+    *clone_info->magick='\0';
     next_image=ReadImage(clone_info,exception);
     LiberateMemory((void **) &filelist[i]);
     if (next_image != (Image *) NULL)
