@@ -21,7 +21,7 @@ void OpenStaticModules(void)
   RegisterGIFImage();
   RegisterGRAYImage();
   RegisterGRADIENTImage();
-  RegisterHDFImage();
+/*   RegisterHDFImage(); */
   RegisterHISTOGRAMImage();
   RegisterHTMLImage();
   RegisterICMImage();
