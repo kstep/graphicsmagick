@@ -922,8 +922,8 @@ sub testFilterCompare {
     }
 
   $srcimage->set(depth=>8);
+#  if ("$filter" eq "Shade") {
 #  $srcimage->Display();
-#  if ("$filter" eq "Segment") {
 #    $srcimage->write(filename=>"$refimage_name", compression=>'None');
 #  }
 

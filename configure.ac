@@ -626,12 +626,32 @@ AC_C_BIGENDIAN
 # or precision than the double type, define HAVE_LONG_DOUBLE.
 AC_C_LONG_DOUBLE
 
-# If the C compiler supports the 'long long' type, define HAVE_LONG_LONG
-AC_CHECK_TYPES([long long])
+# Obtain size of an 'short' and define as SIZEOF_SHORT
+AC_CHECK_SIZEOF(short)
 
-# If the C compiler supports the 'unsigned long long' type, define
-# HAVE_UNSIGNED_LONG_LONG
-AC_CHECK_TYPES([unsigned long long])
+# Obtain size of an 'unsigned short' and define as SIZEOF_UNSIGNED_SHORT
+AC_CHECK_SIZEOF(unsigned short)
+
+# Obtain size of an 'int' and define as SIZEOF_INT
+AC_CHECK_SIZEOF(int)
+
+# Obtain size of an 'unsigned int' and define as SIZEOF_UNSIGNED_INT
+AC_CHECK_SIZEOF(unsigned int)
+
+# Obtain size of a 'long' and define as SIZEOF_LONG
+AC_CHECK_SIZEOF(long)
+
+# Obtain size of a 'unsigned long' and define as SIZEOF_UNSIGNED_LONG
+AC_CHECK_SIZEOF(unsigned long)
+
+# Obtain size of a 'long long' and define as SIZEOF_LONG_LONG.  If
+# 'long long' is not supported then the value defined is zero.
+AC_CHECK_SIZEOF(long long)
+
+# Obtain size of a 'unsigned long long' and define as
+# SIZEOF_UNSIGNED_LONG_LONG.  If 'unsigned long long' is not
+# supported then the value defined is zero.
+AC_CHECK_SIZEOF(unsigned long long)
 
 # If the system does not provide a 'mode_t' type, use 'int' instead
 AC_CHECK_TYPE(mode_t, int)

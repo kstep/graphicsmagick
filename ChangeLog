@@ -1,3 +1,15 @@
+2003-01-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/api.h: Added typedefs gm_int16_t, gm_uint16_t,
+ 	gm_int32_t, gm_uint32_t, gm_int64_t, gm_uint64_t to support
+ 	specifically sized types.
+
+	* configure.ac: Test for size of 'short', 'unsigned short', 'int',
+ 	'unsigned int', 'long', 'unsigned long', 'long long', 'unsigned
+ 	long long' assigning the result to the defines SIZEOF_SHORT,
+ 	SIZEOF_UNSIGNED_SHORT, SIZEOF_INT, SIZEOF_UNSIGNED_INT,
+ 	SIZEOF_LONG, SIZEOF_UNSIGNED_LONG, SIZEOF_LONG_LONG, and
+ 	SIZEOF_UNSIGNED_LONG_LONG respectively.
 
 2003-01-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
