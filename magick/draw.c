@@ -992,7 +992,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             number_points+=BezierQuantum*Extent(path);
             primitive_info=(PrimitiveInfo *) ReallocateMemory(primitive_info,
               number_points*sizeof(PrimitiveInfo));
-            if (primitive_info != (PrimitiveInfo *) NULL)
+            if (primitive_info == (PrimitiveInfo *) NULL)
               {
                 if (indirection)
                   FreeMemory((void **) &primitive);
