@@ -1714,7 +1714,9 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
     }
   if (image->file == (FILE *) NULL)
     return(-1);
-  return(lseek(fileno(image->file),offset,whence));
+  if (fseek(image->file,offset,whence) < 0)
+    return(-1);
+  return(TellBlob(image));
 }
 
 /*
