@@ -1090,7 +1090,9 @@ namespace Magick
   {
   public:
     DrawablePopGraphicContext ( void )
-      { }
+      : _dummy(0)
+      {
+      }
 
     /*virtual*/ ~DrawablePopGraphicContext ( void );
 
@@ -1101,6 +1103,7 @@ namespace Magick
     /*virtual*/ DrawableBase* copy() const;
 
   private:
+    int   _dummy;
   };
 
   // Push Graphic Context
@@ -1108,7 +1111,9 @@ namespace Magick
   {
   public:
     DrawablePushGraphicContext ( void )
-      { }
+      : _dummy(0)
+      {
+      }
 
     /*virtual*/ ~DrawablePushGraphicContext ( void );
 
@@ -1119,6 +1124,7 @@ namespace Magick
     /*virtual*/ DrawableBase* copy() const;
 
   private:
+    int   _dummy;
   };
 
   // Pop (terminate) Pattern definition
@@ -1126,7 +1132,9 @@ namespace Magick
   {
   public:
     DrawablePopPattern ( void )
-      { }
+      : _dummy(0)
+      {
+      }
 
     /*virtual*/ ~DrawablePopPattern ( void );
 
@@ -1137,6 +1145,7 @@ namespace Magick
     /*virtual*/ DrawableBase* copy() const;
 
   private:
+    int   _dummy;
   };
 
   // Push (create) Pattern definition
@@ -2059,7 +2068,9 @@ namespace Magick
   {
   public:
     PathClosePath ( void )
-      { }
+      : _dummy(0)
+      {
+      }
 
     /*virtual*/ ~PathClosePath ( void );
 
@@ -2070,7 +2081,7 @@ namespace Magick
     /*virtual*/ VPathBase* copy() const;
 
   private:
-
+    int   _dummy;
   };
 
   //
