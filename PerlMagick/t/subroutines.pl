@@ -103,7 +103,7 @@ sub testReadBlob {
     }
   close( FILE );
 
-  $image=Image::Magick->new;
+  $image=Image::Magick->new(magick=>'MIFF');
   if( !defined($image) ) {
     print("Failed to open \"$infile\": image object not defined\n");
     print("not ok $test\n");
