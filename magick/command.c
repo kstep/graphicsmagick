@@ -100,7 +100,7 @@ typedef struct _CompositeOptions
 %  The format of the CompositeImageCommand method is:
 %
 %      unsigned int CompositeImageCommand(ImageInfo *image_info,const int argc,
-%        char **argv,ExceptionInfo *exception)
+%        char **argv,char **metadata,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -109,6 +109,8 @@ typedef struct _CompositeOptions
 %    o argc: The number of elements in the argument vector.
 %
 %    o argv: A text array containing the command line arguments.
+%
+%    o metadata: any metadata is returned here.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -258,7 +260,7 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
 }
 
 MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
-  const int argc,char **argv,char **text,ExceptionInfo *exception)
+  const int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
 #define NotInitialized  (unsigned int) (~0)
 #define ThrowCompositeException(code,reason,description) \
@@ -1230,7 +1232,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
 %  The format of the ConvertImageCommand method is:
 %
 %      unsigned int ConvertImageCommand(ImageInfo *image_info,const int argc,
-%        char **argv,ExceptionInfo *exception)
+%        char **argv,char **metadata,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1239,6 +1241,8 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
 %    o argc: The number of elements in the argument vector.
 %
 %    o argv: A text array containing the command line arguments.
+%
+%    o metadata: any metadata is returned here.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -1286,7 +1290,7 @@ static unsigned int ConcatenateImages(const int argc,char **argv,
 }
 
 MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
-  const int argc,char **argv,char **text,ExceptionInfo *exception)
+  const int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
 #define NotInitialized  (unsigned int) (~0)
 #define ThrowConvertException(code,reason,description) \
@@ -2928,7 +2932,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 %  The format of the IdentifyImageCommand method is:
 %
 %      unsigned int IdentifyImageCommand(ImageInfo *image_info,const int argc,
-%        char **argv,ExceptionInfo *exception)
+%        char **argv,char **metadata,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2938,12 +2942,14 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 %
 %    o argv: A text array containing the command line arguments.
 %
+%    o metadata: any metadata is returned here.
+%
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
 MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
-  const int argc,char **argv,char **text,ExceptionInfo *exception)
+  const int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
 #define ThrowIdentifyException(code,reason,description) \
 { \
@@ -2956,8 +2962,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   char
     *format,
     *option,
-    *q,
-    *s;
+    *q;
 
   double
     sans;
@@ -3036,13 +3041,12 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
               DescribeImage(p,stdout,image_info->verbose);
               continue;
             }
-          if (text != (char **) NULL)
+          if (metadata != (char **) NULL)
             {
-              s=TranslateText(image_info,p,format);
-              if (s == (char *) NULL)
+              (*metadata)=TranslateText(image_info,p,format);
+              if ((*metadata) == (char *) NULL)
                 ThrowIdentifyException(ResourceLimitError,
                   "Unable to format image metadata","Memory allocation failed");
-              *text=s;
             }
         }
         DestroyImageList(image);
@@ -3236,7 +3240,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
 %  The format of the MogrifyImageCommand method is:
 %
 %      unsigned int MogrifyImageCommand(ImageInfo *image_info,const int argc,
-%        char **argv,ExceptionInfo *exception)
+%        char **argv,char **metadata,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3246,12 +3250,14 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
 %
 %    o argv: A text array containing the command line arguments.
 %
+%    o metadata: any metadata is returned here.
+%
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
 MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
-  const int argc,char **argv,char **text,ExceptionInfo *exception)
+  const int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
 #define ThrowMogrifyException(code,reason,description) \
 { \
@@ -4781,7 +4787,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 %  The format of the MontageImageCommand method is:
 %
 %      unsigned int MontageImageCommand(ImageInfo *image_info,const int argc,
-%        char **argv,ExceptionInfo *exception)
+%        char **argv,char **metadata,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -4791,12 +4797,14 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 %
 %    o argv: A text array containing the command line arguments.
 %
+%    o metadata: any metadata is returned here.
+%
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
 MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
-  const int argc,char **argv,char **text,ExceptionInfo *exception)
+  const int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
 #define ThrowMontageException(code,reason,description) \
 { \
