@@ -593,9 +593,10 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
               break;
             for (x=0; x < (int) image->columns; x++)
             {
-              p->opacity=p->opacity == TransparentOpacity;
               if (p->opacity == TransparentOpacity)
                 transparent=True;
+              else
+                p->opacity=OpaqueOpacity;     
               p++;
             }
             if (!SyncImagePixels(image))
@@ -617,7 +618,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
             indexes=GetIndexes(image);
             for (x=0; x < (int) image->columns; x++)
             {
-              if (p->opacity)
+              if (p->opacity == TransparentOpacity)
                 indexes[x]=image->colors;
               p++;
             }

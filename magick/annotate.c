@@ -896,6 +896,9 @@ static unsigned int RenderPostscript(Image *image,
     filename[MaxTextExtent],
     geometry[MaxTextExtent];
 
+  double
+    font_height;
+
   FILE
     *file;
 
@@ -1004,14 +1007,11 @@ static unsigned int RenderPostscript(Image *image,
         crop_info.height,crop_info.x,crop_info.y);
       TransformImage(&annotate_image,geometry,(char *) NULL);
     }
-{
-double font_height;
   font_height=AffineExpansion(&annotate_info->affine)*annotate_info->pointsize;
   bounds->x1=0.0;
   bounds->y1=(font_height/-4.0)+1.5;
   bounds->x2=annotate_image->columns;
   bounds->y2=(3.0*font_height/4.0)-1.5;
-}
   if (image == (Image *) NULL)
     {
       DestroyImage(annotate_image);
