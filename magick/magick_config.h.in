@@ -418,6 +418,9 @@
 /* Command which returns total physical memory in bytes */
 #undef MAGICK_PHYSICAL_MEMORY_COMMAND
 
+/* define if the compiler lacks ios::binary */
+#undef MISSING_STD_IOS_BINARY
+
 /* Directory where executables are installed. */
 #undef MagickBinPath
 

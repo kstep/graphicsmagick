@@ -1435,7 +1435,6 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_info.image_width=(unsigned int) image->columns;
   jpeg_info.image_height=(unsigned int) image->rows;
   jpeg_info.input_components=3;
-  jpeg_info.data_precision=(int) Min(image->depth,BITS_IN_JSAMPLE);
 
   jpeg_info.in_color_space=JCS_RGB;
   switch (image_info->colorspace)
@@ -1555,6 +1554,21 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       jpeg_info.in_color_space=JCS_GRAYSCALE;
     }
   jpeg_set_defaults(&jpeg_info);
+  /*
+    Determine bit depth.
+  */
+  {
+    int
+      sample_size;
+    
+    sample_size=sizeof(JSAMPLE)*8;
+    if (sample_size > 8)
+      sample_size=12;
+    if ((jpeg_info.data_precision != 12) &&
+        (image->depth <= 8))
+      sample_size=8;
+    jpeg_info.data_precision=sample_size;
+  }
   if ((image->x_resolution == 0) || (image->y_resolution == 0))
     {
       image->x_resolution=72.0;

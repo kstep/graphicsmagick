@@ -292,6 +292,30 @@ fi
 rm -rf SunWS_cache
 ])
 
+dnl @synopsis AC_CXX_IOS_BINARY
+dnl
+dnl If the compiler supports ios::binary
+dnl
+dnl @author The Written Word, Inc.
+dnl
+AC_DEFUN([AC_CXX_IOS_BINARY],
+[AC_CACHE_CHECK(whether the compiler supports ios::binary,
+ac_cv_cxx_ios_binary,
+[AC_LANG_PUSH(C++)
+ AC_TRY_COMPILE([#include <fstream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif],[
+ifstream in( "/dev/null", ios::binary );],
+ ac_cv_cxx_ios_binary=yes, ac_cv_cxx_ios_binary=no)
+ AC_LANG_POP(C++)
+])
+if test "$ac_cv_cxx_ios_binary" = no; then
+  AC_DEFINE(MISSING_STD_IOS_BINARY,,[define if the compiler lacks ios::binary])
+fi
+rm -rf SunWS_cache
+])
+
 dnl @synopsis AC_CXX_MEMBER_TEMPLATES_OUTSIDE_CLASS
 dnl
 dnl If the compiler supports member templates outside the class declaration,

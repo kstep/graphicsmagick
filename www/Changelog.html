@@ -21,6 +21,33 @@
 </tr>
 </table>
 <p>
+2005-03-09  Alexander Yaworsky  &lt;yaworsky@users.sourceforge.net&gt;
+
+<UL>
+  <LI> coders/jbig.c (WriteJBIGImage): JBIG was writing an empty output
+        file. Apparently libjbig parameters have changed. Setting l0
+        parameter of jbg_enc_options to zero instead of -1 (like in
+        jbigkit's pbmtools) solved the problem.
+
+</UL>
+<p>
+2005-02-26  Albert Chin-A-Young  &lt;china@thewrittenword.com&gt;
+
+<UL>
+  <LI> acinclude.m4 (AC_CXX_IOS_BINARY): Added macro to detect if the
+        C++ compiler lacks support for ios::binary.
+  <LI> configure.ac: Use  AC_CXX_IOS_BINARY.
+
+</UL>
+<p>
+2005-02-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/jpeg.c (WriteJPEGImage): Don't use jpeglib private
+        BITS_IN_JSAMPLE definition to select JPEG bit depth.
+
+</UL>
+<p>
 2005-01-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
