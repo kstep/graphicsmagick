@@ -535,7 +535,6 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     basename[MaxTextExtent],
     filename[MaxTextExtent];
 
-
   Image
     *coalesce_image,
     *next_image;
@@ -650,7 +649,8 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
           break;
         }
         case 1:
-          blob=FileToBlob(previous_image,&length,&image->exception);
+          blob=(unsigned char *)
+            FileToBlob(previous_image,&length,&image->exception);
         default:
         {
           FormatString(filename,"%.1024s.%lu.yuv",basename,p->scene);
