@@ -175,13 +175,13 @@ $write sys$output "..symbol IDENTIFY defined."
 $SkipIdentify:
 $if ((p1 .nes. "") .and. (p1 .nes. "COMBINE")) then goto SkipCombine
 $write sys$output "Making Combine..."
-$call Make combine.c
+$call Make composite.c
 $
-$link'link_options' combine.obj, -
+$link'link_options' composite.obj, -
   'link_libraries',sys$input:/opt
   sys$share:decw$xlibshr.exe/share
 $
-$combine:==$'f$environment("default")'combine
+$composite:==$'f$environment("default")'composite
 $write sys$output "..symbol COMBINE defined."
 $SkipCombine:
 copy [.delegates]vms.mgk sys$login:delegates.mgk

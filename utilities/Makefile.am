@@ -37,7 +37,7 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 MAGICK_LIB	= ../magick/libMagick.la # libtool library name
 INCLUDES	= -I../ -I$(top_srcdir) $(INCLTDL) $(X_CFLAGS)
 
-STDMANPAGES = ImageMagick.1  combine.1 convert.1  identify.1 \
+STDMANPAGES = ImageMagick.1  composite.1 convert.1  identify.1 \
    miff.4 mogrify.1 montage.1 quantize.5
 X11MANPAGES = animate.1 display.1 import.1
 ALLMANPAGES = $(STDMANPAGES) $(X11MANPAGES)
@@ -50,7 +50,7 @@ else
 X11PROGRAMS =
 MANPAGES = $(STDMANPAGES)
 endif
-bin_PROGRAMS = cgimagick combine convert identify iptcutil mogrify montage $(X11PROGRAMS)
+bin_PROGRAMS = cgimagick composite convert identify iptcutil mogrify montage $(X11PROGRAMS)
 
 # Libtool libraries, dependencies, and linker flags used by most executables
 if WITH_MODULES
@@ -69,9 +69,9 @@ cgimagick_LDADD    = $(COMMONLDADD)
 cgimagick_LDFLAGS  = $(COMMONLDFLAGS)
 cgimagick_SOURCES  = cgimagick.c
 
-combine_LDADD     = $(COMMONLDADD)
-combine_LDFLAGS   = $(COMMONLDFLAGS)
-combine_SOURCES   = combine.c
+composite_LDADD     = $(COMMONLDADD)
+composite_LDFLAGS   = $(COMMONLDFLAGS)
+composite_SOURCES   = composite.c
 
 convert_LDADD     = $(COMMONLDADD)
 convert_LDFLAGS   = $(COMMONLDFLAGS)

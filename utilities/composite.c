@@ -3,14 +3,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                CCCC   OOO   M   M  BBBB   IIIII  N   N  EEEEE               %
-%               C      O   O  MM MM  B   B    I    NN  N  E                   %
-%               C      O   O  M M M  BBBB     I    N N N  EEE                 %
-%               C      O   O  M   M  B   B    I    N  NN  E                   %
-%                CCCC   OOO   M   N  BBBB   IIIII  N   N  EEEEE               %
+%         CCCC   OOO   M   M  PPPP    OOO   SSSSS  IIIII  TTTTT  EEEEE        %
+%        C      O   O  MM MM  P   P  O   O  SS       I      T    E            %
+%        C      O   O  M.M M  PPPP   O   O   SSS     I      T    EEE          %
+%        C      O   O  M   M  P      O   O     SS    I      T    E            %
+%         CCCC   OOO   M   M  P       OOO   SSSSS  IIIII    T    EEEEE        %
 %                                                                             %
 %                                                                             %
-%                        Digitally combine two images.                        %
+%                        Digitally composite two images.                      %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -47,9 +47,9 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The combine program syntax is:
+%  The composite program syntax is:
 %
-%  Usage: combine [options ...] image composite [mask] combine
+%  Usage: composite [options ...] image composite [mask] composite
 %
 %  Where options include:
 %    -cache threshold    number of megabytes available to the pixel cache
@@ -161,7 +161,7 @@ static void Usage()
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [options ...] image composite [mask] combine\n",
+  (void) printf("Usage: %.1024s [options ...] image composite [mask] composite\n",
     SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)

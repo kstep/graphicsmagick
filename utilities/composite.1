@@ -1,47 +1,47 @@
 .ad l
 .nh
-.TH combine 1 "10 January 1993" "ImageMagick"
+.TH composite 1 "10 January 1993" "ImageMagick"
 .SH NAME
-combine - combine images to create new images.
+composite - composite images to create new images.
 .SH SYNOPSIS
-.B "combine"
-[ \fIoptions\fP ... ] \fIimage\fP \fIcomposite\fP [ \fImask\fP ] \fIcombined\fP
+.B "composite"
+[ \fIoptions\fP ... ] \fIimage\fP \fIcomposite\fP [ \fImask\fP ] \fIcomposited\fP
 .SH DESCRIPTION
-\fBcombine\fP combine images to create new images.
+\fBcomposite\fP composite images to create new images.
 .SH EXAMPLES
 
-To combine a image of a cockatoo with a perch, use
+To composite a image of a cockatoo with a perch, use
 
 .nf
-     combine cockatoo.miff perch.ras composite.miff
+     composite cockatoo.miff perch.ras composite.miff
 .fi
 
 To compute the difference between images in a series, use
 
 .nf
-     combine -compose difference series.1 series.2 difference.miff
+     composite -compose difference series.1 series.2 difference.miff
 .fi
 
-To combine a image of a cockatoo with a perch starting at location (100,150),
+To composite a image of a cockatoo with a perch starting at location (100,150),
 use
 
 .nf
-     combine -geometry +100+150 cockatoo.miff perch.ras composite.miff
+     composite -geometry +100+150 cockatoo.miff perch.ras composite.miff
 .fi
 
 To tile a logo across your image of a cockatoo, use
 
 .nf
      convert +shade 30x60 cockatoo.miff mask.miff
-     combine -compose bumpmap -tile logo.gif cockatoo.miff mask.miff composite.miff
+     composite -compose bumpmap -tile logo.gif cockatoo.miff mask.miff composite.miff
 
 .fi
-To combine a red, green, and blue color plane into a single composite image,
+To composite a red, green, and blue color plane into a single composite image,
 try
 
 .nf
-     combine -compose CopyGreen red.png green.png red-green.png
-     combine -compose CopyBlue red-green.png blue.png composite.png
+     composite -compose CopyGreen red.png green.png red-green.png
+     composite -compose CopyBlue red-green.png blue.png composite.png
 
 .fi
 .SH OPTIONS
@@ -309,9 +309,9 @@ use a TrueType font, precede the TrueType filename with a \fB@\fP (e.g.
 .B "-geometry \fI{\+-}<x offset>{\+-}<y offset>{%}{!}{<}{>}\fP"
 location of the composite image.
 
-By default the images are combined relative to the image gravity
+By default the images are composited relative to the image gravity
 (see \fB-gravity\fP).  Use \fI<x offset>\fP and
-\fI<y offset>\fP to specify a particular location to combine the images.
+\fI<y offset>\fP to specify a particular location to composite the images.
 .TP
 .B "-gravity \fItype\fP"
 direction image gravitates to within the composite: NorthWest, North,
@@ -492,7 +492,7 @@ need this information to recover the steganographic image
 (e.g. display -size 320x256+35 stegano:image.png).
 .TP
 .B "-stereo"
-combine two image to create a stereo anaglyph.
+composite two image to create a stereo anaglyph.
 
 The left side of the stereo pair is saved as the red channel of the output
 image.  The right sife is saved as the green channel.  Red-blue stereo
@@ -503,7 +503,7 @@ repeat composite operation across image.
 .TP
 .B "-treedepth \fIvalue\fP"
 Normally, this integer value is zero or one.  A zero or one tells
-\fBcombine\fP to choose a optimal tree depth for the color reduction
+\fBcomposite\fP to choose a optimal tree depth for the color reduction
 algorithm.
 
 An optimal depth generally allows the best representation of the source
@@ -523,10 +523,10 @@ set the image type:
 .B -verbose
 print detailed information about the image.
 
-This information is printed: image scene number;  image name;  combined
+This information is printed: image scene number;  image name;  composited
 image name;  image size;  the image class (\fIDirectClass\fP or
 \fIPseudoClass\fP);  the total number of unique colors;  and the number
-of seconds to read and combine the image.
+of seconds to read and composite the image.
 .PP
 Options are processed in command line order.
 Any option you specify on the command line remains in effect until it is
@@ -544,9 +544,9 @@ filename is specified, the window is selected by clicking the mouse in
 the desired window.
 
 Specify \fIimage\fP as \fI-\fP for standard input,
-\fIcombined\fP as \fI-\fP for standard output.  If \fIimage\fP
+\fIcomposited\fP as \fI-\fP for standard output.  If \fIimage\fP
 has the extension \fB.Z\fP or \fB.gz\fP, the file is uncompressed with
-\fBuncompress\fP or \fBgunzip\fP respectively.  If \fIcombined\fP
+\fBuncompress\fP or \fBgunzip\fP respectively.  If \fIcomposited\fP
 has the extension \fB.Z\fP or \fB.gz\fP, the file size is compressed
 using with \fBcompress\fP or \fBgzip\fP respectively.  Finally, precede
 the image file name with \fI|\fP to pipe to or from a system command.
@@ -564,7 +564,7 @@ A mask image is typically grayscale and the same size as
 \fBcomposite\fP.  If the image is not grayscale, it is converted to
 grayscale and the resulting intensities are used as matte information.
 
-If \fIcombined\fP already exists, you will be prompted as to whether
+If \fIcomposited\fP already exists, you will be prompted as to whether
 it should be overwritten.
 .SH ENVIRONMENT
 

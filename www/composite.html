@@ -50,8 +50,8 @@
 </table>
 
 <dd>
-<b>combine</b> [ <i>options</i> ... ] <i>imagecomposite</i> [ <i>mask</i>
-] <i>combined</i></dd>
+<b>composite</b> [ <i>options</i> ... ] <i>imagecomposite</i> [ <i>mask</i>
+] <i>composited</i></dd>
 </dl>
 <i><a href="#top">Back to Contents</a></i>
 <br>&nbsp;
@@ -64,7 +64,7 @@
 </table>
 
 <dd>
-<b>combine</b> combine images to create new images.</dd>
+<b>composite</b> composite images to create new images.</dd>
 </dl>
 <i><a href="#top">Back to Contents</a></i>
 <br>&nbsp;
@@ -77,11 +77,11 @@
 </table>
 
 <dd>
-To combine an image of a cockatoo with a perch, use:</dd>
+To composite an image of a cockatoo with a perch, use:</dd>
 
 <dl>
 <dd>
-<tt>combine cockatoo.miff perch.ras composite.miff</tt></dd>
+<tt>composite cockatoo.miff perch.ras composite.miff</tt></dd>
 
 <br>&nbsp;
 <p>&nbsp;
@@ -93,7 +93,7 @@ To compute the difference between images in a series, use:</dd>
 
 <dl>
 <dd>
-<tt>combine -compose difference series.1 series.2 difference.miff</tt></dd>
+<tt>composite -compose difference series.1 series.2 difference.miff</tt></dd>
 
 <br>&nbsp;
 <p>&nbsp;
@@ -101,12 +101,12 @@ To compute the difference between images in a series, use:</dd>
 <br>&nbsp;</dl>
 
 <dd>
-To combine an image of a cockatoo with a perch starting at location (100,150),
+To composite an image of a cockatoo with a perch starting at location (100,150),
 use:</dd>
 
 <dl>
 <dd>
-<tt>combine -geometry "+1"00"+1"50 cockatoo.miff perch.ras composite.miff</tt></dd>
+<tt>composite -geometry "+1"00"+1"50 cockatoo.miff perch.ras composite.miff</tt></dd>
 
 <br>&nbsp;
 <p>&nbsp;
@@ -121,7 +121,7 @@ To tile a logo across your image of a cockatoo, use</dd>
 <tt>convert +shade 30x60 cockatoo.miff mask.miff</tt></dd>
 
 <dd>
-<tt>combine -compose bumpmap -tile logo.png cockatoo.miff mask.miff composite.miff</tt></dd>
+<tt>composite -compose bumpmap -tile logo.png cockatoo.miff mask.miff composite.miff</tt></dd>
 
 <br>&nbsp;
 <p>&nbsp;
@@ -129,15 +129,15 @@ To tile a logo across your image of a cockatoo, use</dd>
 <br>&nbsp;</dl>
 
 <dd>
-To combine a red, green, and blue color plane into a single composite image,
+To composite a red, green, and blue color plane into a single composite image,
 try</dd>
 
 <dl>
 <dd>
-<tt>combine -compose CopyGreen red.png green.png red-green.png</tt></dd>
+<tt>composite -compose CopyGreen red.png green.png red-green.png</tt></dd>
 
 <dd>
-<tt>combine -compose CopyBlue red-green.png blue.png composite.png</tt></dd>
+<tt>composite -compose CopyBlue red-green.png blue.png composite.png</tt></dd>
 
 <br>&nbsp;
 <p>&nbsp;
@@ -600,9 +600,9 @@ is Postscript, and <tt>x:fixed</tt> is X11. </dd>
 location of the composite image.</dd>
 
 <dd>
-By default the images are combined relative to the image gravity (see
+By default the images are composited relative to the image gravity (see
 <b>-gravity</b>).  Use &lt;<b>x</b> <i>offset</i>> and &lt;<b>y</b>
-<i>offset</i>> to specify a particular location to combine the images.</dd>
+<i>offset</i>> to specify a particular location to composite the images.</dd>
 
 <table BORDER=0 WIDTH="65%" >
 <tr>
@@ -882,7 +882,7 @@ this information to recover the steganographic image (e.g. <tt>display
 </table>
 
 <dd>
-combine two image to create a stereo anaglyph.</dd>
+composite two image to create a stereo anaglyph.</dd>
 
 <dd>
 The left side of the stereo pair is saved as the red channel of the output
@@ -906,7 +906,7 @@ repeat composite operation across image.</dd>
 </table>
 
 <dd>
-Normally, this integer value is zero or one. A zero or one tells <b>combine</b>
+Normally, this integer value is zero or one. A zero or one tells <b>composite</b>
 to choose an optimal tree depth for the color reduction algorithm.</dd>
 
 <dd>
@@ -945,10 +945,10 @@ the image type:
 print detailed information about the image.</dd>
 
 <dd>
-This information is printed: image scene number; image name; combined image
+This information is printed: image scene number; image name; composited image
 name; image size; the image class (<i>DirectClass</i> or <i>PseudoClass)</i>;
 the total number of unique colors; and the number of seconds to read and
-combine the image.</dd>
+composite the image.</dd>
 </dl>
 
 <dd>
@@ -966,11 +966,11 @@ window.</dd>
 
 <dd>
 Specify <i>image</i> as - for standard input,
-<i>combined</i> as - for
+<i>composited</i> as - for
 standard output. If <i>image</i> has the extension <b>.Z</b> or <b>.gz</b>,
 the file is uncompressed with
 <b>uncompress</b> or <b>gunzip</b> respectively.
-If <i>combined</i> has the extension <b>.Z</b> or <b>.gz</b>, the file
+If <i>composited</i> has the extension <b>.Z</b> or <b>.gz</b>, the file
 size is compressed using with <b>compress</b> or <b>gzip</b> respectively.
 Finally, precede the image file name with | to pipe to or from a system
 command.</dd>
@@ -991,7 +991,7 @@ grayscale and the same size as <b>composite</b>. If the image is not grayscale,
 it is converted to grayscale and the resulting intensities are used as
 matte information.
 <dd>
-If <i>combined</i> already exists, you will be prompted as to whether it
+If <i>composited</i> already exists, you will be prompted as to whether it
 should be overwritten.</dd>
 </dl>
 <i><a href="#top">Back to Contents</a></i>

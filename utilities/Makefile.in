@@ -208,7 +208,7 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 MAGICK_LIB = ../magick/libMagick.la # libtool library name
 INCLUDES = -I../ -I$(top_srcdir) $(INCLTDL) $(X_CFLAGS)
 
-STDMANPAGES = ImageMagick.1  combine.1 convert.1  identify.1 \
+STDMANPAGES = ImageMagick.1  composite.1 convert.1  identify.1 \
    miff.4 mogrify.1 montage.1 quantize.5
 
 X11MANPAGES = animate.1 display.1 import.1
@@ -217,7 +217,7 @@ ALLMANPAGES = $(STDMANPAGES) $(X11MANPAGES)
 @HasX11_FALSE@X11PROGRAMS = 
 @HasX11_TRUE@MANPAGES = @HasX11_TRUE@$(ALLMANPAGES)
 @HasX11_FALSE@MANPAGES = @HasX11_FALSE@$(STDMANPAGES)
-bin_PROGRAMS = cgimagick combine convert identify iptcutil mogrify montage $(X11PROGRAMS)
+bin_PROGRAMS = cgimagick composite convert identify iptcutil mogrify montage $(X11PROGRAMS)
 @WITH_MODULES_TRUE@COMMONLDADD = @WITH_MODULES_TRUE@$(MAGICK_LIB) $(top_builddir)/ltdl/libltdlc.la
 @WITH_MODULES_FALSE@COMMONLDADD = @WITH_MODULES_FALSE@$(MAGICK_LIB)
 @WITH_MODULES_TRUE@COMMONLDFLAGS = @WITH_MODULES_TRUE@@LDFLAGS@ @DLLDFLAGS@
@@ -231,9 +231,9 @@ cgimagick_LDADD = $(COMMONLDADD)
 cgimagick_LDFLAGS = $(COMMONLDFLAGS)
 cgimagick_SOURCES = cgimagick.c
 
-combine_LDADD = $(COMMONLDADD)
-combine_LDFLAGS = $(COMMONLDFLAGS)
-combine_SOURCES = combine.c
+composite_LDADD = $(COMMONLDADD)
+composite_LDFLAGS = $(COMMONLDFLAGS)
+composite_SOURCES = composite.c
 
 convert_LDADD = $(COMMONLDADD)
 convert_LDFLAGS = $(COMMONLDFLAGS)
@@ -272,10 +272,10 @@ subdir = utilities
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../magick/config.h
 CONFIG_CLEAN_FILES = 
-@HasX11_FALSE@bin_PROGRAMS =  cgimagick$(EXEEXT) combine$(EXEEXT) \
+@HasX11_FALSE@bin_PROGRAMS =  cgimagick$(EXEEXT) composite$(EXEEXT) \
 @HasX11_FALSE@convert$(EXEEXT) identify$(EXEEXT) iptcutil$(EXEEXT) \
 @HasX11_FALSE@mogrify$(EXEEXT) montage$(EXEEXT)
-@HasX11_TRUE@bin_PROGRAMS =  cgimagick$(EXEEXT) combine$(EXEEXT) \
+@HasX11_TRUE@bin_PROGRAMS =  cgimagick$(EXEEXT) composite$(EXEEXT) \
 @HasX11_TRUE@convert$(EXEEXT) identify$(EXEEXT) iptcutil$(EXEEXT) \
 @HasX11_TRUE@mogrify$(EXEEXT) montage$(EXEEXT) animate$(EXEEXT) \
 @HasX11_TRUE@display$(EXEEXT) import$(EXEEXT)
@@ -299,10 +299,10 @@ cgimagick_OBJECTS =  $(am_cgimagick_OBJECTS)
 @WITH_MODULES_FALSE@cgimagick_DEPENDENCIES =  ../magick/libMagick.la
 @WITH_MODULES_TRUE@cgimagick_DEPENDENCIES =  ../magick/libMagick.la \
 @WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-am_combine_OBJECTS =  combine.$(OBJEXT)
-combine_OBJECTS =  $(am_combine_OBJECTS)
-@WITH_MODULES_FALSE@combine_DEPENDENCIES =  ../magick/libMagick.la
-@WITH_MODULES_TRUE@combine_DEPENDENCIES =  ../magick/libMagick.la \
+am_composite_OBJECTS =  composite.$(OBJEXT)
+composite_OBJECTS =  $(am_composite_OBJECTS)
+@WITH_MODULES_FALSE@composite_DEPENDENCIES =  ../magick/libMagick.la
+@WITH_MODULES_TRUE@composite_DEPENDENCIES =  ../magick/libMagick.la \
 @WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
 am_convert_OBJECTS =  convert.$(OBJEXT)
 convert_OBJECTS =  $(am_convert_OBJECTS)
@@ -343,7 +343,7 @@ CFLAGS = @CFLAGS@
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES =  $(animate_SOURCES) $(cgimagick_SOURCES) \
-$(combine_SOURCES) $(convert_SOURCES) $(display_SOURCES) \
+$(composite_SOURCES) $(convert_SOURCES) $(display_SOURCES) \
 $(identify_SOURCES) $(import_SOURCES) $(iptcutil_SOURCES) \
 $(mogrify_SOURCES) $(montage_SOURCES)
 man1dir = $(mandir)/man1
@@ -354,7 +354,7 @@ MANS = $(man_MANS)
 NROFF = nroff
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 DEP_FILES =  @AMDEP@ $(DEPDIR)/animate.Po $(DEPDIR)/cgimagick.Po \
-$(DEPDIR)/combine.Po $(DEPDIR)/convert.Po $(DEPDIR)/display.Po \
+$(DEPDIR)/composite.Po $(DEPDIR)/convert.Po $(DEPDIR)/display.Po \
 $(DEPDIR)/identify.Po $(DEPDIR)/import.Po $(DEPDIR)/iptcutil.Po \
 $(DEPDIR)/mogrify.Po $(DEPDIR)/montage.Po
 DIST_COMMON =  Makefile.am Makefile.in
@@ -363,8 +363,8 @@ DIST_COMMON =  Makefile.am Makefile.in
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-SOURCES = $(animate_SOURCES) $(cgimagick_SOURCES) $(combine_SOURCES) $(convert_SOURCES) $(display_SOURCES) $(identify_SOURCES) $(import_SOURCES) $(iptcutil_SOURCES) $(mogrify_SOURCES) $(montage_SOURCES)
-OBJECTS = $(am_animate_OBJECTS) $(am_cgimagick_OBJECTS) $(am_combine_OBJECTS) $(am_convert_OBJECTS) $(am_display_OBJECTS) $(am_identify_OBJECTS) $(am_import_OBJECTS) $(am_iptcutil_OBJECTS) $(am_mogrify_OBJECTS) $(am_montage_OBJECTS)
+SOURCES = $(animate_SOURCES) $(cgimagick_SOURCES) $(composite_SOURCES) $(convert_SOURCES) $(display_SOURCES) $(identify_SOURCES) $(import_SOURCES) $(iptcutil_SOURCES) $(mogrify_SOURCES) $(montage_SOURCES)
+OBJECTS = $(am_animate_OBJECTS) $(am_cgimagick_OBJECTS) $(am_composite_OBJECTS) $(am_convert_OBJECTS) $(am_display_OBJECTS) $(am_identify_OBJECTS) $(am_import_OBJECTS) $(am_iptcutil_OBJECTS) $(am_mogrify_OBJECTS) $(am_montage_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -434,9 +434,9 @@ cgimagick$(EXEEXT): $(cgimagick_OBJECTS) $(cgimagick_DEPENDENCIES)
 	@rm -f cgimagick$(EXEEXT)
 	$(LINK) $(cgimagick_LDFLAGS) $(cgimagick_OBJECTS) $(cgimagick_LDADD) $(LIBS)
 
-combine$(EXEEXT): $(combine_OBJECTS) $(combine_DEPENDENCIES)
-	@rm -f combine$(EXEEXT)
-	$(LINK) $(combine_LDFLAGS) $(combine_OBJECTS) $(combine_LDADD) $(LIBS)
+composite$(EXEEXT): $(composite_OBJECTS) $(composite_DEPENDENCIES)
+	@rm -f composite$(EXEEXT)
+	$(LINK) $(composite_LDFLAGS) $(composite_OBJECTS) $(composite_LDADD) $(LIBS)
 
 convert$(EXEEXT): $(convert_OBJECTS) $(convert_DEPENDENCIES)
 	@rm -f convert$(EXEEXT)
@@ -612,7 +612,7 @@ maintainer-clean-tags:
 
 @AMDEP@include $(DEPDIR)/animate.Po
 @AMDEP@include $(DEPDIR)/cgimagick.Po
-@AMDEP@include $(DEPDIR)/combine.Po
+@AMDEP@include $(DEPDIR)/composite.Po
 @AMDEP@include $(DEPDIR)/convert.Po
 @AMDEP@include $(DEPDIR)/display.Po
 @AMDEP@include $(DEPDIR)/identify.Po

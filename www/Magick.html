@@ -329,14 +329,14 @@ and <tt>image3.ppm</tt>. Type</dd>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image3.ppm concatenated.miff</pre>
 To concatenate the images top-to-bottom, use <tt>-tile 1x3</tt>.
 <p>For more control over the placement of an image, use
-<a href="combine.html">combine</a>.
+<a href="composite.html">composite</a>.
 First create a matte image and position your images onto the matte. For
 example,
 <pre>&nbsp;&nbsp;&nbsp; convert -size 350x500 xc:black composite.miff
-&nbsp;&nbsp;&nbsp; combine -geometry +0+0&nbsp;&nbsp; composite.miff image1.gif composite.miff
-&nbsp;&nbsp;&nbsp; combine -geometry "+1"00+0 composite.miff image2.gif composite.miff
-&nbsp;&nbsp;&nbsp; combine -geometry +0+300 composite.miff image3.gif composite.miff
-&nbsp;&nbsp;&nbsp; combine -geometry +0+375 composite.miff image4.gif composite.miff</pre>
+&nbsp;&nbsp;&nbsp; composite -geometry +0+0&nbsp;&nbsp; composite.miff image1.gif composite.miff
+&nbsp;&nbsp;&nbsp; composite -geometry "+1"00+0 composite.miff image2.gif composite.miff
+&nbsp;&nbsp;&nbsp; composite -geometry +0+300 composite.miff image3.gif composite.miff
+&nbsp;&nbsp;&nbsp; composite -geometry +0+375 composite.miff image4.gif composite.miff</pre>
 
 <hr size=5 width=325>
 <dt>
@@ -365,7 +365,7 @@ Finally, if you want the image to loop within <b>Netscape</b>, use
 For further information about GIF animation, see
 <a href="http://members.aol.com/royalef.pngmake.htm">GIF
 Animation on the WWW</a>.
-<p>Note, that all the images are combined into a single multi-image GIF
+<p>Note, that all the images are composited into a single multi-image GIF
 animation. If you want a single image produced for each frame, use
 <b>+adjoin</b>:
 <pre>&nbsp;&nbsp;&nbsp; convert +adjoin images.* frames%d.gif</pre>

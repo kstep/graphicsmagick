@@ -381,7 +381,7 @@ UNIX/Cygwin COMPILATION
   Documentation:
 
     Be sure to read the manual pages for the display(1), animate(1),
-    montage(1), import(1), mogrify(1), identify(1), combine(1), and
+    montage(1), import(1), mogrify(1), identify(1), composite(1), and
     convert(1) utilities. Also read the ImageMagick frequently asked
     questions in the file www/Magick.html. This is required reading.
     Most of the questions I get via electronic mail are answered in this
