@@ -15,10 +15,10 @@
 
 using namespace std;
 
-#include <Magick++/Image.h>
-#include <Magick++/Functions.h>
-#include <Magick++/LastError.h>
-#include <Magick++/Include.h>
+#include "Magick++/Image.h"
+#include "Magick++/Functions.h"
+#include "Magick++/LastError.h"
+#include "Magick++/Include.h"
 
 //
 // Friend functions to compare Image objects
@@ -726,6 +726,13 @@ void Magick::Image::matteFloodfill ( const Color &target_ ,
   MagickLib::MatteFloodfillImage ( image(), &rllPacket, matte_,
 				   x_, y_, method_ );
   throwMagickError();
+}
+
+// Filter image by replacing each pixel component with the median
+// color in a circular neighborhood
+void Magick::Image::medianFilter ( unsigned int radius_ )
+{
+  replaceImage( MagickLib::MedianFilterImage ( image(), radius_ ) );
 }
 
 // Reduce image by integral size

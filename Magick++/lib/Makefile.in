@@ -74,12 +74,10 @@ CC = @CC@
 CPP = @CPP@
 CXX = @CXX@
 DLLTOOL = @DLLTOOL@
-LD = @LD@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
-NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
@@ -101,7 +99,7 @@ libMagick___la_LDFLAGS = -version-info $(INTERFACE_CURRENT):$(INTERFACE_REVISION
 
 include_HEADERS = Magick++.h
 
-EXTRA_DIST = Magick++.dsp
+EXTRA_DIST = 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
 LTLIBRARIES =  $(lib_LTLIBRARIES)

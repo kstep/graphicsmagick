@@ -21,4 +21,4 @@ libMagick___la_LDFLAGS = -version-info $(INTERFACE_CURRENT):$(INTERFACE_REVISION
 
 include_HEADERS = Magick++.h
 
-EXTRA_DIST = Magick++.dsp
+EXTRA_DIST =

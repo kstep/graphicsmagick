@@ -32,7 +32,7 @@ int main( int /*argc*/, char ** /*argv*/)
     Image averaged;
     averageImages( &averaged, imageList.begin(), imageList.end() );
     // averaged.display();
-    if ( averaged.signature() != "678f291ed463419f4cfe26289b99552f" &&
+    if ( averaged.signature() != "0ee231b0a02df53c6afae650dc05c04a" &&
 	 averaged.signature() != "b2dd960061090cf3e7f0864b6a9f044d")
       {
 	cout << "Line: " << __LINE__

@@ -1,3 +1,7 @@
+1999-12-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (medianFilter): New method.
+
 1999-12-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (density): Bug fix. Was not setting image x & y density.

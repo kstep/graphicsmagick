@@ -26,10 +26,9 @@ readWriteImages_SOURCES = readWriteImages.cpp
 readWriteBlob_SOURCES	= readWriteBlob.cpp
 
 EXTRA_DIST = \
-	Generic.ttf test_image.miff test_image_anim.miff \
-	appendImages.dsp attributes.dsp averageImages.dsp coalesceImages.dsp \
-	color.dsp montageImages.dsp morphImages.dsp readWriteImages.dsp \
-	readWriteBlob.dsp
+	Generic.ttf test_image.miff test_image_anim.miff
+
+CLEANFILES = testmagick_anim_out.miff
 
 check:
 	./color

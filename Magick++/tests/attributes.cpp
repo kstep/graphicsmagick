@@ -1202,7 +1202,7 @@ int main( int /*argc*/, char ** /*argv*/)
     // signature
     //
 
-    if ( image.signature() != "25c5a13ea4a3573a38a29c03739296f3" &&
+    if ( image.signature() != "31db28420ba5688baf604e708454ce9f" &&
 	 image.signature() != "104db7ce4069ac23c07ddef3ffd7fa90" )
       {
 	++failures;

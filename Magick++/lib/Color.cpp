@@ -14,9 +14,9 @@
 
 using namespace std;
 
-#include <Magick++/Color.h>
-#include <Magick++/Functions.h>
-#include <Magick++/Exception.h>
+#include "Magick++/Color.h"
+#include "Magick++/Functions.h"
+#include "Magick++/Exception.h"
 
 //
 // Color operator fuctions

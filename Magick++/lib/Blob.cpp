@@ -12,8 +12,8 @@
 
 using namespace std;
 
-#include <Magick++/Include.h>
-#include <Magick++/Blob.h>
+#include "Magick++/Include.h"
+#include "Magick++/Blob.h"
 
 //
 // Implementation of Magick::Blob

@@ -77,12 +77,10 @@ DLLTOOL = @DLLTOOL@
 INTERFACE_AGE = @INTERFACE_AGE@
 INTERFACE_CURRENT = @INTERFACE_CURRENT@
 INTERFACE_REVISION = @INTERFACE_REVISION@
-LD = @LD@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
-NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
@@ -101,8 +99,9 @@ demo_SOURCES = demo.cpp
 flip_SOURCES = flip.cpp
 shapes_SOURCES = shapes.cpp
 
-EXTRA_DIST = Generic.ttf model.miff smile.miff smile_anim.miff tile.miff 	button.dsp demo.dsp flip.dsp shapes.dsp
+EXTRA_DIST = Generic.ttf model.miff smile.miff smile_anim.miff tile.miff
 
+CLEANFILES = button.miff demo.miff flip_out.miff shapes.miff
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
 PROGRAMS =  $(noinst_PROGRAMS)
@@ -323,6 +322,7 @@ installdirs:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)

@@ -12,11 +12,11 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
-#include <Magick++/Drawable.h>
-#include <Magick++/Montage.h>
-#include <Magick++/LastError.h>
-#include <Magick++/Include.h>
-#include <Magick++/Functions.h>
+#include "Magick++/Drawable.h"
+#include "Magick++/Montage.h"
+#include "Magick++/LastError.h"
+#include "Magick++/Include.h"
+#include "Magick++/Functions.h"
 
 namespace Magick
 {
@@ -743,6 +743,22 @@ namespace Magick
     int           _x;
     int           _y;
     PaintMethod   _method;
+  };
+
+  // Filter image by replacing each pixel component with the median
+  // color in a circular neighborhood
+  class medianFilterImage : public std::unary_function<Image&,void>
+  {
+    public:
+    medianFilterImage( unsigned int radius_ )
+      : _radius( radius_ ) { }
+
+    void operator()( Image &image_ )
+      {
+	image_.medianFilter( _radius );
+      }
+  private:
+    const unsigned int _radius;
   };
 
   // Reduce image by integral size

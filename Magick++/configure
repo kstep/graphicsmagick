@@ -1793,9 +1793,8 @@ else
   echo "$ac_t""no" 1>&6
 fi
 test -z "$LD" && { echo "configure: error: no acceptable ld found in \$PATH" 1>&2; exit 1; }
-
 echo $ac_n "checking if the linker ($LD) is GNU ld""... $ac_c" 1>&6
-echo "configure:1799: checking if the linker ($LD) is GNU ld" >&5
+echo "configure:1798: checking if the linker ($LD) is GNU ld" >&5
 if eval "test \"\${ac_cv_prog_gnu_ld+set}\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1811,7 +1810,7 @@ echo "$ac_t""$ac_cv_prog_gnu_ld" 1>&6
 
 
 echo $ac_n "checking for BSD-compatible nm""... $ac_c" 1>&6
-echo "configure:1815: checking for BSD-compatible nm" >&5
+echo "configure:1814: checking for BSD-compatible nm" >&5
 if eval "test \"\${ac_cv_path_NM+set}\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1847,6 +1846,10 @@ NM="$ac_cv_path_NM"
 echo "$ac_t""$NM" 1>&6
 
 
+case "$target" in
+NONE) lt_target="$host" ;;
+*) lt_target="$target" ;;
+esac
 
 # Check for any special flags to pass to ltconfig.
 libtool_flags="--cache-file=$cache_file"
@@ -1868,11 +1871,11 @@ test x"$silent" = xyes && libtool_flags="$libtool_flags --silent"
 
 # Some flags need to be propagated to the compiler or linker for good
 # libtool support.
-case "$host" in
+case "$lt_target" in
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 1875 "configure"' > conftest.$ac_ext
-  if { (eval echo configure:1876: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  echo '#line 1878 "configure"' > conftest.$ac_ext
+  if { (eval echo configure:1879: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
     case "`/usr/bin/file conftest.o`" in
     *32-bit*)
       LD="${LD-ld} -32"
@@ -1893,19 +1896,19 @@ case "$host" in
   SAVE_CFLAGS="$CFLAGS"
   CFLAGS="$CFLAGS -belf"
   echo $ac_n "checking whether the C compiler needs -belf""... $ac_c" 1>&6
-echo "configure:1897: checking whether the C compiler needs -belf" >&5
+echo "configure:1900: checking whether the C compiler needs -belf" >&5
 if eval "test \"\${lt_cv_cc_needs_belf+set}\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1902 "configure"
+#line 1905 "configure"
 #include "confdefs.h"
 
 int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:1909: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:1912: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   lt_cv_cc_needs_belf=yes
 else
@@ -1983,7 +1986,7 @@ LD="$LD" LDFLAGS="$LDFLAGS" LIBS="$LIBS" \
 LN_S="$LN_S" NM="$NM" RANLIB="$RANLIB" \
 DLLTOOL="$DLLTOOL" AS="$AS" OBJDUMP="$OBJDUMP" \
 ${CONFIG_SHELL-/bin/sh} $ac_aux_dir/ltconfig --no-reexec \
-$libtool_flags --no-verify $ac_aux_dir/ltmain.sh $host \
+$libtool_flags --no-verify $ac_aux_dir/ltmain.sh $lt_target \
 || { echo "configure: error: libtool configure failed" 1>&2; exit 1; }
 
 # Reload cache, that may have been modified by ltconfig
@@ -2011,7 +2014,7 @@ exec 5>>./config.log
 # checking and generation useful to package maintainers.  This is made an
 # option to avoid confusing end users.
 echo $ac_n "checking whether to enable maintainer-specific portions of Makefiles""... $ac_c" 1>&6
-echo "configure:2015: checking whether to enable maintainer-specific portions of Makefiles" >&5
+echo "configure:2018: checking whether to enable maintainer-specific portions of Makefiles" >&5
     # Check whether --enable-maintainer-mode or --disable-maintainer-mode was given.
 if test "${enable_maintainer_mode+set}" = set; then
   enableval="$enable_maintainer_mode"
@@ -2035,7 +2038,7 @@ fi
 
 
 echo $ac_n "checking host system type""... $ac_c" 1>&6
-echo "configure:2039: checking host system type" >&5
+echo "configure:2042: checking host system type" >&5
 if test "x$ac_cv_host" = "x" || (test "x$host" != "xNONE" && test "x$host" != "x$ac_cv_host_alias"); then
 
 # Make sure we can run config.sub.
@@ -2080,18 +2083,18 @@ host_os=$ac_cv_host_os
 #
 
 echo $ac_n "checking pre-processor flags""... $ac_c" 1>&6
-echo "configure:2084: checking pre-processor flags" >&5
+echo "configure:2087: checking pre-processor flags" >&5
 # If -DHAVE_CONFIG_H is not specified, then QuantumLeap doesn't work.
 CPPFLAGS="$CPPFLAGS -DHAVE_CONFIG_H "`Magick-config --cppflags`
 echo "$ac_t"""$CPPFLAGS"" 1>&6
 
 echo $ac_n "checking linker flags""... $ac_c" 1>&6
-echo "configure:2090: checking linker flags" >&5
+echo "configure:2093: checking linker flags" >&5
 LDFLAGS="$LDFLAGS "`Magick-config --ldflags`
 echo "$ac_t"""$LDFLAGS"" 1>&6
 
 echo $ac_n "checking libraries""... $ac_c" 1>&6
-echo "configure:2095: checking libraries" >&5
+echo "configure:2098: checking libraries" >&5
 LIBS="$LIBS "`Magick-config --libs`
 echo "$ac_t"""$LIBS"" 1>&6
 
@@ -2274,8 +2277,6 @@ s%@CPP@%$CPP%g
 s%@CXX@%$CXX%g
 s%@LN_S@%$LN_S%g
 s%@RANLIB@%$RANLIB%g
-s%@LD@%$LD%g
-s%@NM@%$NM%g
 s%@LIBTOOL@%$LIBTOOL%g
 s%@MAINTAINER_MODE_TRUE@%$MAINTAINER_MODE_TRUE%g
 s%@MAINTAINER_MODE_FALSE@%$MAINTAINER_MODE_FALSE%g

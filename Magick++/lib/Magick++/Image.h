@@ -234,6 +234,10 @@ namespace Magick
 				     unsigned int matte_,
 				     int x_, int y_,
 				     PaintMethod method_ );
+
+    // Filter image by replacing each pixel component with the median
+    // color in a circular neighborhood
+    void            medianFilter ( unsigned int radius_ );
     
     // Reduce image by integral size
     void            minify ( void );
