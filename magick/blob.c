@@ -550,11 +550,6 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
   file=open(filename,O_RDONLY | O_BINARY,0777);
   if (file == -1)
     {
-#if defined(WIN32)
-      blob=NTResourceToBlob(filename);
-      if (blob != (unsigned char *) NULL)
-        return(blob);
-#endif
       ThrowException(exception,BlobError,"Unable to open file",filename);
       return((void *) NULL);
     }
@@ -782,7 +777,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   if (debug)
     (void) fprintf(stdout,"Searching for configure file \"%s\" ...\n",filename);
 #if defined(UseInstalledImageMagick)
-#  if defined(WIN32)
+#if defined(WIN32)
   {
     char
       *key_value;
@@ -801,8 +796,8 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
         return(FileToBlob(path,length,exception));
       }
   }
-#  endif /* WIN32 */
-#  if defined(MagickLibPath)
+#endif
+#if defined(MagickLibPath)
   /*
     Search hard coded paths.
   */
@@ -811,17 +806,17 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
     ThrowException(exception,ConfigurationError,
       "Unable to access configure file",path);
   return(FileToBlob(path,length,exception));
-#  endif /* MagickLibPath */
-#  else
-  /*
-    Search based on executable directory if directory is known.
-  */
+#endif
+#else
   if (*SetClientPath((char *) NULL) != '\0')
     {
 #if defined(POSIX)
       char
         prefix[MaxTextExtent];
 
+      /*
+        Search based on executable directory if directory is known.
+      */
       (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
       ChopBlobComponents(prefix,1,debug);
       FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",prefix,filename);
@@ -862,21 +857,10 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   */
   if (IsConfigureFileAccessible(path,debug))
     return(FileToBlob(path,length,exception));
-#  if defined(WIN32)
-  {
-    void
-      *blob;
-
-    /*
-      Look for a named resource.
-    */
-    FormatString(path,"%.1024s",filename);
-    blob=NTResourceToBlob(path);
-    if (blob != (void *) NULL)
-      return(blob);
-  }
-#  endif /* WIN32 */
-#endif /* UseInstalledImageMagick */
+#if defined(WIN32)
+  return(NTResourceToBlob(filename));
+#endif
+#endif
   ThrowException(exception,ConfigurationError,"Unable to access configure file",
     filename);
   return((void *) NULL);
@@ -942,7 +926,7 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
   if (IsConfigureFileAccessible(path,debug))
     return(FileToBlob(path,length,exception));
 #if defined(UseInstalledImageMagick)
-#  if defined(WIN32)
+#if defined(WIN32)
   {
     char
       *key_value;
@@ -961,8 +945,8 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
         return(FileToBlob(path,length,exception));
       }
   }
-#  endif /* WIN32 */
-#  if defined(MagickLibPath)
+#endif
+#if defined(MagickLibPath)
   /*
     Search hard coded paths.
   */
@@ -971,8 +955,8 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
     ThrowException(exception,ConfigurationError,"Unable to access font file",
       path);
   return(FileToBlob(path,length,exception));
-#  endif /* MagickLibPath */
-#  else
+#endif
+#else
   if (*SetClientPath((char *) NULL) != '\0')
     {
 #if defined(POSIX)
@@ -992,21 +976,10 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
       if (IsConfigureFileAccessible(path,debug))
         return(FileToBlob(path,length,exception));
     }
-#  if defined(WIN32)
-  {
-    void
-      *blob;
-
-    /*
-      Look for a named resource.
-    */
-    FormatString(path,"%.1024s",filename);
-    blob=NTResourceToBlob(path);
-    if (blob != (void *) NULL)
-      return(blob);
-  }
-#  endif /* WIN32 */
-#endif /* UseInstalledImageMagick */
+#if defined(WIN32)
+  return(NTResourceToBlob(filename));
+#endif
+#endif
   ThrowException(exception,ConfigurationError,"Unable to access font file",
     filename);
   return((void *) NULL);
@@ -1057,7 +1030,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
   if (debug)
     (void) fprintf(stdout,"Searching for module file \"%s\" ...\n", filename);
 #if defined(UseInstalledImageMagick)
-#  if defined(WIN32)
+#if defined(WIN32)
   {
     char
       *key_value;
@@ -1076,9 +1049,9 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
         return(FileToBlob(path,length,exception));
       }
   }
-#  endif /* WIN32 */
-#  if defined(MagickLibPath)
-#    if defined(MagickModulesPath)
+#endif
+#if defined(MagickLibPath)
+#if defined(MagickModulesPath)
   /*
     Search hard coded paths.
   */
@@ -1087,9 +1060,9 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
     ThrowException(exception,ConfigurationError,"Unable to access module file",
       path);
   return(FileToBlob(path,length,exception));
-#    endif /* MagickModulesBlob */
-#  endif /* MagickLibPath */
-#  else
+#endif
+#endif
+#else
   if (*SetClientPath((char *) NULL) != '\0')
     {
 #if defined(POSIX)
@@ -1140,21 +1113,10 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
   */
   if (IsConfigureFileAccessible(path,debug))
     return(FileToBlob(path,length,exception));
-#  if defined(WIN32)
-  {
-    void
-      *blob;
-
-    /*
-      Look for a named resource.
-    */
-    FormatString(path,"%.1024s",filename);
-    blob=NTResourceToBlob(path);
-    if (blob != (void *) NULL)
-      return(blob);
-  }
-#  endif /* WIN32 */
-#endif /* UseInstalledImageMagick */
+#if defined(WIN32)
+  return(NTResourceToBlob(path));
+#endif
+#endif
   ThrowException(exception,ConfigurationError,"Unable to access module file",
     filename);
   return((void *) NULL);
