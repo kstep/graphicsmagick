@@ -2623,13 +2623,14 @@ Export void DestroyImage(Image *image)
   */
   assert(image != (Image *) NULL);
   DestroyBlobInfo(&image->blob_info);
-  DestroyCacheInfo(image->cache);
   if (image->file != (FILE *) NULL)
     {
       CloseBlob(image);
       if (image->temporary)
         (void) remove(image->filename);
     }
+  DestroyCacheInfo(image->cache);
+  image->cache = (Cache)NULL;
   /*
     Deallocate the image comments.
   */
