@@ -228,7 +228,7 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 MagickExport Image *BlurImage(Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
-#define BlurImageText  "  Blurring image...  "
+#define BlurImageText  "  Blur image...  "
 
   double
     blue,
@@ -261,7 +261,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=(int) ceil(radius);
-  if (radius == 0.0)
+  if (radius <= 0.0)
     {
       double
         value;
@@ -1223,7 +1223,7 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method BlurImage creates a new image that is a copy of an existing
+%  Method GaussianBlurImage creates a new image that is a copy of an existing
 %  one with the pixels blur.  It allocates the memory necessary for the
 %  new Image structure and returns a pointer to the new image.
 %
@@ -1250,12 +1250,69 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 MagickExport Image *GaussianBlurImage(Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
+  double
+    *kernel,
+    normalize;
+
   Image
     *blur_image;
 
-  blur_image=BlurImage(image,radius,sigma,&(image->exception));
-  if (blur_image == (Image *) NULL)
-    return((Image *) NULL);
+  int
+    width;
+
+  register int
+    i,
+    u,
+    v;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  width=2.0*ceil(radius-0.5)+1.0;
+  if (radius <= 0.0)
+    {
+      double
+        value;
+
+      width=0;
+      normalize=0.0;
+      for ( ; ; )
+      {
+        value=exp((double) (-width*width)/(sigma*sigma));
+        normalize+=value;
+        if ((value/normalize) < (1.0/MaxRGB))
+          {
+            width=(2*(width-1))-1;
+            break;
+          }
+        width++;
+      }
+    }
+  if (width < 4)
+    width=3;
+  if ((image->columns < width) || (image->rows < width))
+    ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
+      "image is smaller than radius");
+  kernel=(double *) AcquireMemory(width*width*sizeof(double));
+  if (kernel == (double *) NULL)
+    ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
+      "Memory allocation failed");
+  i=0;
+  normalize=0;
+  for (v=(int) (-0.5*width); v <= (int) (0.5*width); v++)
+  {
+    for (u=(int) (-0.5*width); u <= (int) (0.5*width); u++)
+    {
+      kernel[i]=exp((double) (-v*v+u*u)/(sigma*sigma));
+      normalize+=kernel[i];
+      i++;
+    }
+  }
+  for (i=0; i < (width*width); i++)
+    kernel[i]/=normalize;
+  blur_image=ConvolveImage(image,width,kernel,exception);
+  LiberateMemory((void **) &kernel);
   return(blur_image);
 }
 
@@ -2473,7 +2530,7 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
 MagickExport Image *SharpenImage(Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
-  return(UnsharpMaskImage(image,radius,sigma,1.0,0.0,exception));
+  return(UnsharpMaskImage(image,radius,sigma,0.5,0.05,exception));
 }
 
 /*
@@ -3125,7 +3182,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
   }
   return(True);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3169,20 +3226,64 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
   const double sigma,const double amount,const double threshold,
   ExceptionInfo *exception)
 {
+#define SharpenImageText  "  Sharpen image...  "
+
+  double
+    blue,
+    green,
+    red;
+
   Image
-    *blur_image,
     *sharpen_image;
 
-  blur_image=BlurImage(image,radius,sigma,&(image->exception));
-  if (blur_image == (Image *) NULL)
-    return((Image *) NULL);
-  sharpen_image=CloneImage(image,image->columns,image->rows,False,exception);
+  int
+    y;
+
+  register int
+    x;
+
+  register PixelPacket
+    *p,
+    *q;
+
+  sharpen_image=GaussianBlurImage(image,radius,sigma,&(image->exception));
   if (sharpen_image == (Image *) NULL)
     return((Image *) NULL);
-  blur_image->geometry=AllocateString("");
-  FormatString(blur_image->geometry,"%.2fx%.2f",amount,threshold);
-  CompositeImage(sharpen_image,ThresholdCompositeOp,blur_image,0,0);
-  DestroyImage(blur_image);
+  for (y=0; y < (int) image->rows; y++)
+  {
+    p=GetImagePixels(image,0,y,image->columns,1);
+    q=GetImagePixels(sharpen_image,0,y,sharpen_image->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      red=p->red-(int) q->red;
+      if (AbsoluteValue(2.0*red) < (MaxRGB*threshold))
+        red=p->red;
+      else
+        red=p->red+(red*amount);
+      green=p->green-(int) q->green;
+      if (AbsoluteValue(2.0*green) < (MaxRGB*threshold))
+        green=p->green;
+      else
+        green=p->green+(green*amount);
+      blue=p->blue-(int) q->blue;
+      if (AbsoluteValue(2.0*blue) < (MaxRGB*threshold))
+        blue=p->blue;
+      else
+        blue=p->blue+(blue*amount);
+      q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+      q->green=(Quantum)
+        ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
+      q->blue=(Quantum) ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+      p++;
+      q++;
+    }
+    if (!SyncImagePixels(sharpen_image))
+      break;
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SharpenImageText,y,image->rows);
+  }
   return(sharpen_image);
 }
 
@@ -3204,7 +3305,7 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
 %  The format of the WaveImage method is:
 %
 %      Image *WaveImage(Image *image,const double amplitude,
-%        const double wavelength,ExceptionInfo *exception)
+%        const double wave_length,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3215,14 +3316,14 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
 %      ReadImage.
 %
 %    o amplitude, frequency:  A double value that indicates the amplitude
-%      and wavelength of the sine wave.
+%      and wave_length of the sine wave.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
 MagickExport Image *WaveImage(Image *image,const double amplitude,
-  const double wavelength,ExceptionInfo *exception)
+  const double wave_length,ExceptionInfo *exception)
 {
 #define WaveImageText  "  Waving image...  "
 
@@ -3265,7 +3366,7 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
         "Memory allocation failed");
     }
   for (x=0; x < (int) wave_image->columns; x++)
-    sine_map[x]=fabs(amplitude)+amplitude*sin((2*M_PI*x)/wavelength);
+    sine_map[x]=fabs(amplitude)+amplitude*sin((2*M_PI*x)/wave_length);
   /*
     Wave image.
   */
