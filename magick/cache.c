@@ -1725,8 +1725,7 @@ MagickExport unsigned int OpenCache(Image *image)
   if (write(file,&c,1) == -1)
     {
       (void) close(file);
-      ThrowBinaryException(CacheWarning,"Unable to write cache",
-        image->filename)
+      ThrowBinaryException(CacheWarning,"Unable to write cache",image->filename)
     }
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
