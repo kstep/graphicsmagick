@@ -302,7 +302,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   jp2_image=jas_image_decode(jp2_stream,-1,0);
   if (jp2_image == (jas_image_t *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to decode image file",image);
-  (void) jas_stream_close(jp2_stream);
   /*
     Convert JPEG 2000 pixels.
   */
@@ -350,6 +349,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   for (i=0; i < (long) number_components; i++)
     jas_matrix_destroy(pixels[i]);
+  (void) jas_stream_close(jp2_stream);
   jas_image_destroy(jp2_image);
   CloseBlob(image);
   return(image);
