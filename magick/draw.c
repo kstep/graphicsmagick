@@ -1316,37 +1316,30 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
     return(False);
   scale=ExpandAffine(&draw_info->affine);
   offset=draw_info->dash_offset != 0.0 ? scale*draw_info->dash_offset : 0.0;
-  length=0.0;
-  for (n=(-1); offset > 0.0; )
+  length=scale*draw_info->dash_pattern[0];
+  dash_polygon[0]=primitive_info[0];
+  j=1;
+  for (n=0; offset > 0.0; j=0)
   {
-    if (n == -1)
-      n=0;
-    if (draw_info->dash_pattern[n] == 0.0)
+    if (draw_info->dash_pattern[n] <= 0.0)
       break;
-    if (offset > (scale*draw_info->dash_pattern[n]))
+    length=scale*draw_info->dash_pattern[n];
+    if (offset > length)
       {
-        offset-=scale*draw_info->dash_pattern[n];
+        offset-=length;
         n++;
+        length=scale*draw_info->dash_pattern[n];
         continue;
       }
-    if (offset < (scale*draw_info->dash_pattern[n]))
+    if (offset < length)
       {
-        length=scale*draw_info->dash_pattern[n]-offset;
+        length-=offset;
         offset=0.0;
         break;
       }
     offset=0.0;
-    length=scale*draw_info->dash_pattern[n];
     n++;
   }
-  j=0;
-  if (n == -1)
-    {
-      length=scale*draw_info->dash_pattern[0];
-      dash_polygon[0]=primitive_info[0];
-      n=0;
-      j=1;
-    }
   status=True;
   for (i=1; i < (int) number_vertices; i++)
   {
