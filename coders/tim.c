@@ -333,7 +333,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SyncImage(image);
     LiberateMemory((void **) &tim_pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */

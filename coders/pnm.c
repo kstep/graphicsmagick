@@ -576,7 +576,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (scale != (Quantum *) NULL)
       LiberateMemory((void **) &scale);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */

@@ -198,7 +198,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->storage_class == PseudoClass)
       SyncImage(image);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */

@@ -259,7 +259,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->interlace == PartitionInterlace)
       (void) strcpy(image->filename,image_info->filename);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */
@@ -286,7 +286,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }

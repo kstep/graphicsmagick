@@ -398,7 +398,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickMonitor(LoadImageText,y,image->rows);
     }
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */

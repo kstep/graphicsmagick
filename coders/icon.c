@@ -434,7 +434,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           MagickMonitor(LoadImageText,image->rows-y-1,image->rows);
     }
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */

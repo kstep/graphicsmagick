@@ -491,7 +491,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SyncImage(image);
     LiberateMemory((void **) &sun_pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */

@@ -519,7 +519,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
       LiberateMemory((void **) &colormap);
     LiberateMemory((void **) &rle_pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */

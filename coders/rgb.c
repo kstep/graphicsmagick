@@ -354,7 +354,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */

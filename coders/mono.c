@@ -162,7 +162,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   }
   SyncImage(image);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }

@@ -161,7 +161,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   }
   TransformRGBImage(image,YCbCrColorspace);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }

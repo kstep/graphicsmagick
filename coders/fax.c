@@ -170,7 +170,7 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == False)
     ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }

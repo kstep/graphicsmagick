@@ -753,7 +753,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->chromaticity.white_point.z=1.0000f;
   image->gamma=0.5;
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }

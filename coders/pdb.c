@@ -477,7 +477,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   LiberateMemory((void **) &pixels);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   if ((offset-TellBlob(image)) == 0)
     {
       char

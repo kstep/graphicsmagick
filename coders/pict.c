@@ -1258,7 +1258,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
       }
   }
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }

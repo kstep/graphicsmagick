@@ -783,7 +783,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   /*
     Initialize cache.
   */

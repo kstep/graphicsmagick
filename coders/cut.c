@@ -550,7 +550,7 @@ Finish:
   if(palette!=NULL) DestroyImage(palette);
   if(clone_info!=NULL) DestroyImageInfo(clone_info);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);       
 }

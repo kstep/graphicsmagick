@@ -453,7 +453,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     }
     LiberateMemory((void **) &fits_pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */

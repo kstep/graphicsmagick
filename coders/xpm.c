@@ -417,7 +417,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     LiberateMemory((void **) &textlist[i]);
   LiberateMemory((void **) &textlist);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }

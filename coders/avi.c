@@ -792,7 +792,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }

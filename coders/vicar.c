@@ -282,7 +282,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   }
   LiberateMemory((void **) &scanline);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }
