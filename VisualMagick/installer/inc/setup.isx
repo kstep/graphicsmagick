@@ -24,6 +24,7 @@ DefaultGroupName={#MagickPackageName} {#MagickPackageVersion} Q{#QuantumDepth}
 Compression=bzip/9
 ChangesAssociations=1
 AllowRootDirectory=no
+LicenseFile=txt\before-{#MagickPackageType}.txt
 InfoBeforeFile=txt\before-{#MagickPackageType}.txt
 InfoAfterFile=txt\after-{#MagickPackageType}.txt
 UninstallDisplayIcon={#MagickAppDirectory}\ImageMagick.ico
