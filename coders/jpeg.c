@@ -755,9 +755,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       LogMagickEvent(CoderEvent,"   Interlace=%d",(int) image->interlace);
       LogMagickEvent(CoderEvent,"   Data precision=%d",
         (int) jpeg_info.data_precision);
-      LogMagickEvent(CoderEvent,"   Output_width=%lu",
+      LogMagickEvent(CoderEvent,"   Output_width=%d",
         (int) jpeg_info.output_width);
-      LogMagickEvent(CoderEvent,"   Output_height=%lu",
+      LogMagickEvent(CoderEvent,"   Output_height=%d",
         (int) jpeg_info.output_height);
 #ifdef D_LOSSLESS_SUPPORTED
       if (image->compression==LosslessJPEGCompression)
@@ -1353,6 +1353,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           LogMagickEvent(CoderEvent,"   image_info->colorspace=YCbCr");
           break;
         }
+				default:
+          break;
       }
       switch (image->colorspace)
       {
@@ -1452,8 +1454,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   if (logging)
     if (image_info->interlace != NoInterlace)
        LogMagickEvent(CoderEvent,"   Writing progressive JPEG");
-    else
 #endif
+    if (image_info->interlace == NoInterlace)
        LogMagickEvent(CoderEvent,"   Writing nonprogressive JPEG");
   if ((image->compression == LosslessJPEGCompression) ||
       (image_info->quality > 100))

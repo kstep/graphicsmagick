@@ -55,6 +55,8 @@
 */
 #include "studio.h"
 #include "deprecate.h"
+#include "resource.h"
+#include "utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
