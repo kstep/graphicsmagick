@@ -861,15 +861,15 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
     return(FileToBlob(path,length,exception));
 #  if defined(WIN32)
   {
-    /*
-      Look for a named resource.
-    */
     void
       *blob;
 
+    /*
+      Look for a named resource.
+    */
     FormatString(path,"%.1024s",filename);
     blob=NTResourceToBlob(path);
-    if (blob != (unsigned char *) NULL)
+    if (blob != (void *) NULL)
       return(blob);
   }
 #  endif /* WIN32 */
@@ -991,15 +991,15 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
     }
 #  if defined(WIN32)
   {
-    /*
-      Look for a named resource.
-    */
     void
       *blob;
 
+    /*
+      Look for a named resource.
+    */
     FormatString(path,"%.1024s",filename);
     blob=NTResourceToBlob(path);
-    if (blob != (unsigned char *) NULL)
+    if (blob != (void *) NULL)
       return(blob);
   }
 #  endif /* WIN32 */
@@ -1147,7 +1147,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
     */
     FormatString(path,"%.1024s",filename);
     blob=NTResourceToBlob(path);
-    if (blob != (unsigned char *) NULL)
+    if (blob != (void *) NULL)
       return(blob);
   }
 #  endif /* WIN32 */
