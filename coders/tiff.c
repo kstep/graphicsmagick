@@ -1636,7 +1636,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PopImagePixels(image,RGBAQuantum,scanline);
+          (void) PopImagePixels(image,CMYKQuantum,scanline);
           if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
             break;
           if (image->previous == (Image *) NULL)
