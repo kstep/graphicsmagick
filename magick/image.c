@@ -4632,7 +4632,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) QueryColorDatabase(argv[++i],&draw_info->stroke);
             continue;
           }
-        if (LocaleNCompare("-strokewidth",option,7) == 0)
+        if (LocaleNCompare("-strokewidth",option,8) == 0)
           {
             draw_info->stroke_width=atof(argv[++i]);
             continue;
