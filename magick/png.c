@@ -3194,14 +3194,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           {
             ping_info->bit_depth=8;
             image->depth=8;
-#if 1
-            printf("reducing 16-bit PNG to 8-bit\n");
-#endif
           }
-#if 1
-        else
-          printf("cannot reduce 16-bit PNG to 8-bit\n");
-#endif
       }
 #endif
     ping_info->color_type=PNG_COLOR_TYPE_RGB;

@@ -591,12 +591,12 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
                 }
             for (i=0; i < (int) image->colors; i++)
             {
-              image->colormap[i].red=(Quantum)
-                ((long) (MaxRGB*red_colormap[i])/range);
-              image->colormap[i].green=(Quantum)
-                ((long) (MaxRGB*green_colormap[i])/range);
-              image->colormap[i].blue=(Quantum)
-                ((long) (MaxRGB*blue_colormap[i])/range);
+              image->colormap[i].red=
+                ((unsigned long) (MaxRGB*red_colormap[i])/range);
+              image->colormap[i].green=
+                ((unsigned long) (MaxRGB*green_colormap[i])/range);
+              image->colormap[i].blue=
+                ((unsigned long) (MaxRGB*blue_colormap[i])/range);
             }
             break;
           }
@@ -1276,7 +1276,11 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             }
           else
             if (IsGrayImage(image))
-              photometric=PHOTOMETRIC_MINISBLACK;
+              {
+                if (image->depth > 8)
+                  TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
+                photometric=PHOTOMETRIC_MINISBLACK;
+              }
         }
     switch (image_info->compression)
     {
@@ -1372,7 +1376,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Write image scanlines.
     */
-    scanline=(unsigned char *) AllocateMemory(TIFFScanlineSize(tiff));
+    scanline=(unsigned char *) AllocateMemory(2*TIFFScanlineSize(tiff)+4);
     if (scanline == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     switch (photometric)
@@ -1496,9 +1500,9 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         */
         for (i=0; i < (int) image->colors; i++)
         {
-          red[i]=((unsigned long) (image->colormap[i].red*65535L)/MaxRGB);
-          green[i]=((unsigned long) (image->colormap[i].green*65535L)/MaxRGB);
-          blue[i]=((unsigned long) (image->colormap[i].blue*65535L)/MaxRGB);
+          red[i]=((unsigned long) (65535L*image->colormap[i].red)/MaxRGB);
+          green[i]=((unsigned long) (65535L*image->colormap[i].green)/MaxRGB);
+          blue[i]=((unsigned long) (65535L*image->colormap[i].blue)/MaxRGB);
         }
         for ( ; i < (1 << image->depth); i++)
         {
