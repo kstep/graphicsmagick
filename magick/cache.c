@@ -1509,6 +1509,8 @@ static unsigned long GetPixelCacheArea(const Image *image)
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
+  if (cache_info->nexus_info == (NexusInfo *) NULL)
+    return(cache_info->columns*cache_info->rows);
   nexus_info=cache_info->nexus_info+cache_info->id;
   return(nexus_info->columns*nexus_info->rows);
 }

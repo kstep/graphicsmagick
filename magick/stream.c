@@ -570,6 +570,8 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   /*
     Pixels are stored in a temporary buffer until they are synced to the cache.
   */
+  stream_info->columns=columns;
+  stream_info->rows=rows;
   number_pixels=columns*rows;
   offset=number_pixels*sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
