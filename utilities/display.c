@@ -966,11 +966,10 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("map",option+1) == 0)
             {
-              argv[i]=(char *) "+sans";
+              (void) strcpy(argv[i]+1,"sans");
               resource_info.map_type=(char *) NULL;
               if (*option == '-')
                 {
-                  argv[i]=(char *) "-sans";
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing map type",option);

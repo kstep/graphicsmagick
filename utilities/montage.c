@@ -739,7 +739,7 @@ static unsigned int MontageUtility(int argc,char **argv)
           if (LocaleCompare("frame",option+1) == 0)
             {
               (void) CloneString(&montage_info->frame,(char *) NULL);
-              argv[i]=(char *) "+sans";
+              (void) strcpy(argv[i]+1,"sans");
               if (*option == '-')
                 {
                   i++;
@@ -1102,7 +1102,7 @@ static unsigned int MontageUtility(int argc,char **argv)
           if (LocaleCompare("tile",option+1) == 0)
             {
               (void) CloneString(&montage_info->tile,(char *) NULL);
-              argv[i]=(char *) "+sans";
+              (void) strcpy(argv[i]+1,"sans");
               if (*option == '-')
                 {
                   i++;
