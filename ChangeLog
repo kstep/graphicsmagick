@@ -1,3 +1,8 @@
+2003-11-30  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+
+	* wand/Makefile.am: Add AUTOMAKE_OPTIONS.
+	* configure.ac: Update to Autoconf 2.59.
+
 2003-11-29  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/installer/inc/tasks-install-perlmagick.isx: Update
