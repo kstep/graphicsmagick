@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4a from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -9,43 +9,6 @@
 # but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
-
-#
-#  Makefile for building ImageMagick utilities
-#
-#  Copyright 1999 E. I. du Pont de Nemours and Company
-#
-#  Permission is hereby granted, free of charge, to any person obtaining a
-#  copy of this software and associated documentation files ("ImageMagick"),
-#  to deal in ImageMagick without restriction, including without limitation 
-#  the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-#  and/or sell copies of ImageMagick, and to permit persons to whom the 
-#  ImageMagick is furnished to do so, subject to the following conditions:
-#   
-#  The above copyright notice and this permission notice shall be included in 
-#  all copies or substantial portions of ImageMagick. 
-#   
-#  The software is provided "as is", without warranty of any kind, express or 
-#  implied, including but not limited to the warranties of merchantability, 
-#  fitness for a particular purpose and noninfringement.In no event shall 
-#  E. I. du Pont de Nemours and Company be liable for any claim, damages or 
-#  other liability, whether in an action of contract, tort or otherwise,
-#  arising from, out of or in connection with ImageMagick or the use or other 
-#  dealings in ImageMagick. 
-#   
-#  Except as contained in this notice, the name of the E. I. du Pont de 
-#  Nemours and Company shall not be used in advertising or otherwise to 
-#  promote the sale, use or other dealings in ImageMagick without prior 
-#  written authorization from the E. I. du Pont de Nemours and Company. 
-#
-#  This file is currently maintained by Bob Friesenhahn,
-#  bfriesen@simple.dallas.tx.us. Please report any bugs via the ImageMagick
-#  bug tracking system at http://www.simplesystems.org/ImageMagick/bugs.
-
-# Don't require all the GNU mandated files
-# Remove comment from no-dependencies for distributions compatable with
-# traditional 'make'
-
 
 SHELL = @SHELL@
 
@@ -82,9 +45,10 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -93,22 +57,30 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+
+@SET_MAKE@
 build_alias = @build_alias@
 build_triplet = @build@
 host_alias = @host_alias@
 host_triplet = @host@
 target_alias = @target_alias@
 target_triplet = @target@
+AMDEP = @AMDEP@
+AMTAR = @AMTAR@
 AS = @AS@
+AWK = @AWK@
 BZIPDelegate = @BZIPDelegate@
 BrowseDelegate = @BrowseDelegate@
 CC = @CC@
 CGMDecodeDelegate = @CGMDecodeDelegate@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 CatDelegate = @CatDelegate@
 ConvertDelegate = @ConvertDelegate@
 DELEGATES = @DELEGATES@
+DEPDIR = @DEPDIR@
 DLLDFLAGS = @DLLDFLAGS@
 DLLTOOL = @DLLTOOL@
 DOTDecodeDelegate = @DOTDecodeDelegate@
@@ -176,6 +148,7 @@ RANLIB = @RANLIB@
 RLEEncodeDelegate = @RLEEncodeDelegate@
 RMDelegate = @RMDelegate@
 SCANDecodeDelegate = @SCANDecodeDelegate@
+STRIP = @STRIP@
 ShowImageDelegate = @ShowImageDelegate@
 TXTDelegate = @TXTDelegate@
 VERSION = @VERSION@
@@ -187,6 +160,44 @@ X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 ZipDelegate = @ZipDelegate@
+install_sh = @install_sh@
+
+#
+#  Makefile for building ImageMagick utilities
+#
+#  Copyright 1999 E. I. du Pont de Nemours and Company
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a
+#  copy of this software and associated documentation files ("ImageMagick"),
+#  to deal in ImageMagick without restriction, including without limitation 
+#  the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+#  and/or sell copies of ImageMagick, and to permit persons to whom the 
+#  ImageMagick is furnished to do so, subject to the following conditions:
+#   
+#  The above copyright notice and this permission notice shall be included in 
+#  all copies or substantial portions of ImageMagick. 
+#   
+#  The software is provided "as is", without warranty of any kind, express or 
+#  implied, including but not limited to the warranties of merchantability, 
+#  fitness for a particular purpose and noninfringement.In no event shall 
+#  E. I. du Pont de Nemours and Company be liable for any claim, damages or 
+#  other liability, whether in an action of contract, tort or otherwise,
+#  arising from, out of or in connection with ImageMagick or the use or other 
+#  dealings in ImageMagick. 
+#   
+#  Except as contained in this notice, the name of the E. I. du Pont de 
+#  Nemours and Company shall not be used in advertising or otherwise to 
+#  promote the sale, use or other dealings in ImageMagick without prior 
+#  written authorization from the E. I. du Pont de Nemours and Company. 
+#
+#  This file is currently maintained by Bob Friesenhahn,
+#  bfriesen@simple.dallas.tx.us. Please report any bugs via the ImageMagick
+#  bug tracking system at http://www.simplesystems.org/ImageMagick/bugs.
+
+# Don't require all the GNU mandated files
+# Remove comment from no-dependencies for distributions compatable with
+# traditional 'make'
+
 
 AUTOMAKE_OPTIONS = 1.2 foreign # no-dependencies
 
@@ -196,14 +207,15 @@ INCLUDES = -I$(srcdir) $(INCLTDL) $(X_CFLAGS)
 # Subdirectories to build
 SUBDIRS = delegates ltdl magick tests
 
-STDMANPAGES = ImageMagick.1  combine.1 convert.1  identify.1    miff.4 mogrify.1 montage.1 quantize.5
+STDMANPAGES = ImageMagick.1  combine.1 convert.1  identify.1 \
+   miff.4 mogrify.1 montage.1 quantize.5
 
 X11MANPAGES = animate.1 display.1 import.1
 ALLMANPAGES = $(STDMANPAGES) $(X11MANPAGES)
-@HasX11_TRUE@X11PROGRAMS = animate display import
+@HasX11_TRUE@X11PROGRAMS = @HasX11_TRUE@animate display import
 @HasX11_FALSE@X11PROGRAMS = 
-@HasX11_TRUE@MANPAGES = $(ALLMANPAGES)
-@HasX11_FALSE@MANPAGES = $(STDMANPAGES)
+@HasX11_TRUE@MANPAGES = @HasX11_TRUE@$(ALLMANPAGES)
+@HasX11_FALSE@MANPAGES = @HasX11_FALSE@$(STDMANPAGES)
 bin_PROGRAMS = combine convert identify mogrify montage $(X11PROGRAMS)
 
 # Per-executable sources
@@ -215,28 +227,31 @@ convert_SOURCES = convert.c
 mogrify_SOURCES = mogrify.c
 identify_SOURCES = identify.c
 combine_SOURCES = combine.c
-@WITH_MODULES_TRUE@LDADD = $(MAGICK_LIB) $(top_builddir)/ltdl/libltdlc.la
-@WITH_MODULES_FALSE@LDADD = $(MAGICK_LIB)
-@WITH_MODULES_TRUE@DEPENDENCIES = $(LIBLTDL) $(MAGICK_LIB)
-@WITH_MODULES_FALSE@DEPENDENCIES = $(MAGICK_LIB)
-@WITH_MODULES_TRUE@LDFLAGS = @DLLDFLAGS@
+@WITH_MODULES_TRUE@LDADD = @WITH_MODULES_TRUE@$(MAGICK_LIB) $(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_FALSE@LDADD = @WITH_MODULES_FALSE@$(MAGICK_LIB)
+@WITH_MODULES_TRUE@DEPENDENCIES = @WITH_MODULES_TRUE@$(LIBLTDL) $(MAGICK_LIB)
+@WITH_MODULES_FALSE@DEPENDENCIES = @WITH_MODULES_FALSE@$(MAGICK_LIB)
+@WITH_MODULES_TRUE@LDFLAGS = @WITH_MODULES_TRUE@@DLLDFLAGS@
 @WITH_MODULES_FALSE@LDFLAGS = 
 
 # Manual pages to install
 man_MANS = $(MANPAGES)
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) Magick.tmpl Manifest.ps ImageMagick.html Imakefile 	Magickshr.opt Make.com README.txt Copyright.txt acconfig.h 	QuickStart.txt lndir.sh
+EXTRA_DIST = $(ALLMANPAGES) Magick.tmpl Manifest.ps ImageMagick.html Imakefile \
+	Magickshr.opt Make.com README.txt Copyright.txt acconfig.h \
+	QuickStart.txt lndir.sh
 
 
 # Non-Automake subdirectories to distribute
 DISTDIRS = images scenes scripts www PerlMagick Magick++
 
-@WITH_PERL_TRUE@PERLMAGICK = PerlMagick
-@WITH_PERL_TRUE@PERLMAKEMAKER = $(PERLMAGICK)/Makefile.PL
-@WITH_PERL_TRUE@PERLMAKEFILE = $(PERLMAGICK)/Makefile
+@WITH_PERL_TRUE@PERLMAGICK = @WITH_PERL_TRUE@PerlMagick
+@WITH_PERL_TRUE@PERLMAKEMAKER = @WITH_PERL_TRUE@$(PERLMAGICK)/Makefile.PL
+@WITH_PERL_TRUE@PERLMAKEFILE = @WITH_PERL_TRUE@$(PERLMAGICK)/Makefile
 
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@PERLSTATICNAME = PerlMagick
+@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@PERLSTATICNAME = @WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@PerlMagick
+subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ./magick/config.h
@@ -251,84 +266,98 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I./magick
 LIBS = @LIBS@
-combine_OBJECTS =  combine.$(OBJEXT)
-combine_LDADD = $(LDADD)
-@WITH_MODULES_TRUE@combine_DEPENDENCIES =  magick/libMagick.la \
-@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-@WITH_MODULES_FALSE@combine_DEPENDENCIES =  magick/libMagick.la
-combine_LDFLAGS = 
-convert_OBJECTS =  convert.$(OBJEXT)
-convert_LDADD = $(LDADD)
-@WITH_MODULES_TRUE@convert_DEPENDENCIES =  magick/libMagick.la \
-@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-@WITH_MODULES_FALSE@convert_DEPENDENCIES =  magick/libMagick.la
-convert_LDFLAGS = 
-identify_OBJECTS =  identify.$(OBJEXT)
-identify_LDADD = $(LDADD)
-@WITH_MODULES_TRUE@identify_DEPENDENCIES =  magick/libMagick.la \
-@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-@WITH_MODULES_FALSE@identify_DEPENDENCIES =  magick/libMagick.la
-identify_LDFLAGS = 
-mogrify_OBJECTS =  mogrify.$(OBJEXT)
-mogrify_LDADD = $(LDADD)
-@WITH_MODULES_TRUE@mogrify_DEPENDENCIES =  magick/libMagick.la \
-@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-@WITH_MODULES_FALSE@mogrify_DEPENDENCIES =  magick/libMagick.la
-mogrify_LDFLAGS = 
-montage_OBJECTS =  montage.$(OBJEXT)
-montage_LDADD = $(LDADD)
-@WITH_MODULES_TRUE@montage_DEPENDENCIES =  magick/libMagick.la \
-@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-@WITH_MODULES_FALSE@montage_DEPENDENCIES =  magick/libMagick.la
-montage_LDFLAGS = 
-animate_OBJECTS =  animate.$(OBJEXT)
+am_animate_OBJECTS =  animate.$(OBJEXT)
+animate_OBJECTS =  $(am_animate_OBJECTS)
 animate_LDADD = $(LDADD)
+@WITH_MODULES_FALSE@animate_DEPENDENCIES =  magick/libMagick.la
 @WITH_MODULES_TRUE@animate_DEPENDENCIES =  magick/libMagick.la \
 @WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-@WITH_MODULES_FALSE@animate_DEPENDENCIES =  magick/libMagick.la
 animate_LDFLAGS = 
-display_OBJECTS =  display.$(OBJEXT)
+am_combine_OBJECTS =  combine.$(OBJEXT)
+combine_OBJECTS =  $(am_combine_OBJECTS)
+combine_LDADD = $(LDADD)
+@WITH_MODULES_FALSE@combine_DEPENDENCIES =  magick/libMagick.la
+@WITH_MODULES_TRUE@combine_DEPENDENCIES =  magick/libMagick.la \
+@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
+combine_LDFLAGS = 
+am_convert_OBJECTS =  convert.$(OBJEXT)
+convert_OBJECTS =  $(am_convert_OBJECTS)
+convert_LDADD = $(LDADD)
+@WITH_MODULES_FALSE@convert_DEPENDENCIES =  magick/libMagick.la
+@WITH_MODULES_TRUE@convert_DEPENDENCIES =  magick/libMagick.la \
+@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
+convert_LDFLAGS = 
+am_display_OBJECTS =  display.$(OBJEXT)
+display_OBJECTS =  $(am_display_OBJECTS)
 display_LDADD = $(LDADD)
+@WITH_MODULES_FALSE@display_DEPENDENCIES =  magick/libMagick.la
 @WITH_MODULES_TRUE@display_DEPENDENCIES =  magick/libMagick.la \
 @WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-@WITH_MODULES_FALSE@display_DEPENDENCIES =  magick/libMagick.la
 display_LDFLAGS = 
-import_OBJECTS =  import.$(OBJEXT)
+am_identify_OBJECTS =  identify.$(OBJEXT)
+identify_OBJECTS =  $(am_identify_OBJECTS)
+identify_LDADD = $(LDADD)
+@WITH_MODULES_FALSE@identify_DEPENDENCIES =  magick/libMagick.la
+@WITH_MODULES_TRUE@identify_DEPENDENCIES =  magick/libMagick.la \
+@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
+identify_LDFLAGS = 
+am_import_OBJECTS =  import.$(OBJEXT)
+import_OBJECTS =  $(am_import_OBJECTS)
 import_LDADD = $(LDADD)
+@WITH_MODULES_FALSE@import_DEPENDENCIES =  magick/libMagick.la
 @WITH_MODULES_TRUE@import_DEPENDENCIES =  magick/libMagick.la \
 @WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-@WITH_MODULES_FALSE@import_DEPENDENCIES =  magick/libMagick.la
 import_LDFLAGS = 
-CFLAGS = @CFLAGS@
+am_mogrify_OBJECTS =  mogrify.$(OBJEXT)
+mogrify_OBJECTS =  $(am_mogrify_OBJECTS)
+mogrify_LDADD = $(LDADD)
+@WITH_MODULES_FALSE@mogrify_DEPENDENCIES =  magick/libMagick.la
+@WITH_MODULES_TRUE@mogrify_DEPENDENCIES =  magick/libMagick.la \
+@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
+mogrify_LDFLAGS = 
+am_montage_OBJECTS =  montage.$(OBJEXT)
+montage_OBJECTS =  $(am_montage_OBJECTS)
+montage_LDADD = $(LDADD)
+@WITH_MODULES_FALSE@montage_DEPENDENCIES =  magick/libMagick.la
+@WITH_MODULES_TRUE@montage_DEPENDENCIES =  magick/libMagick.la \
+@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
+montage_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CFLAGS = @CFLAGS@
 CCLD = $(CC)
-LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+DIST_SOURCES =  $(animate_SOURCES) $(combine_SOURCES) $(convert_SOURCES) \
+$(display_SOURCES) $(identify_SOURCES) $(import_SOURCES) \
+$(mogrify_SOURCES) $(montage_SOURCES)
 man1dir = $(mandir)/man1
 man4dir = $(mandir)/man4
 man5dir = $(mandir)/man5
 MANS = $(man_MANS)
 
 NROFF = nroff
-DIST_COMMON =  Makefile.am Makefile.in aclocal.m4 config.guess \
-config.sub configure configure.in install-sh ltconfig ltmain.sh missing \
-mkinstalldirs
+DIST_COMMON =  Makefile.am Makefile.in acconfig.h aclocal.m4 \
+config.guess config.sub configure configure.in depcomp install-sh \
+ltconfig ltmain.sh missing mkinstalldirs
 
 
-DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(combine_SOURCES) $(convert_SOURCES) $(identify_SOURCES) $(mogrify_SOURCES) $(montage_SOURCES) $(animate_SOURCES) $(display_SOURCES) $(import_SOURCES)
-OBJECTS = $(combine_OBJECTS) $(convert_OBJECTS) $(identify_OBJECTS) $(mogrify_OBJECTS) $(montage_OBJECTS) $(animate_OBJECTS) $(display_OBJECTS) $(import_OBJECTS)
+depcomp = $(SHELL) $(top_srcdir)/depcomp
+DEP_FILES =  @AMDEP@ $(DEPDIR)/animate.Po $(DEPDIR)/combine.Po \
+$(DEPDIR)/convert.Po $(DEPDIR)/display.Po $(DEPDIR)/identify.Po \
+$(DEPDIR)/import.Po $(DEPDIR)/mogrify.Po $(DEPDIR)/montage.Po
+SOURCES = $(animate_SOURCES) $(combine_SOURCES) $(convert_SOURCES) $(display_SOURCES) $(identify_SOURCES) $(import_SOURCES) $(mogrify_SOURCES) $(montage_SOURCES)
+OBJECTS = $(am_animate_OBJECTS) $(am_combine_OBJECTS) $(am_convert_OBJECTS) $(am_display_OBJECTS) $(am_identify_OBJECTS) $(am_import_OBJECTS) $(am_mogrify_OBJECTS) $(am_montage_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .obj .s
+.SUFFIXES: .c .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign --include-deps Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -354,30 +383,19 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	@list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	    f="`echo $$p|sed -e 's/$(EXEEXT)$$//' -e '$(transform)' -e 's/$$/$(EXEEXT)/'`"; \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(bindir)/$$f"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(bindir)/$$f; \
 	  else :; fi; \
 	done
 
 uninstall-binPROGRAMS:
 	@$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  f="`echo $$p|sed -e 's/$(EXEEXT)$$//' -e '$(transform)' -e 's/$$/$(EXEEXT)/'`"; \
+	  echo " rm -f $(DESTDIR)$(bindir)/$$f"; \
+	  rm -f $(DESTDIR)$(bindir)/$$f; \
 	done
-
-.c.o:
-	$(COMPILE) -c $<
-
-# FIXME: We should only use cygpath when building on Windows,
-# and only if it is available.
-.c.obj:
-	$(COMPILE) -c `cygpath -w $<`
-
-.s.o:
-	$(COMPILE) -c $<
-
-.S.o:
-	$(COMPILE) -c $<
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
@@ -390,15 +408,6 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-.c.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
-
-.s.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
-
-.S.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
-
 mostlyclean-libtool:
 	-rm -f *.lo
 
@@ -409,6 +418,10 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
+animate$(EXEEXT): $(animate_OBJECTS) $(animate_DEPENDENCIES)
+	@rm -f animate$(EXEEXT)
+	$(LINK) $(animate_LDFLAGS) $(animate_OBJECTS) $(animate_LDADD) $(LIBS)
+
 combine$(EXEEXT): $(combine_OBJECTS) $(combine_DEPENDENCIES)
 	@rm -f combine$(EXEEXT)
 	$(LINK) $(combine_LDFLAGS) $(combine_OBJECTS) $(combine_LDADD) $(LIBS)
@@ -417,9 +430,17 @@ convert$(EXEEXT): $(convert_OBJECTS) $(convert_DEPENDENCIES)
 	@rm -f convert$(EXEEXT)
 	$(LINK) $(convert_LDFLAGS) $(convert_OBJECTS) $(convert_LDADD) $(LIBS)
 
+display$(EXEEXT): $(display_OBJECTS) $(display_DEPENDENCIES)
+	@rm -f display$(EXEEXT)
+	$(LINK) $(display_LDFLAGS) $(display_OBJECTS) $(display_LDADD) $(LIBS)
+
 identify$(EXEEXT): $(identify_OBJECTS) $(identify_DEPENDENCIES)
 	@rm -f identify$(EXEEXT)
 	$(LINK) $(identify_LDFLAGS) $(identify_OBJECTS) $(identify_LDADD) $(LIBS)
+
+import$(EXEEXT): $(import_OBJECTS) $(import_DEPENDENCIES)
+	@rm -f import$(EXEEXT)
+	$(LINK) $(import_LDFLAGS) $(import_OBJECTS) $(import_LDADD) $(LIBS)
 
 mogrify$(EXEEXT): $(mogrify_OBJECTS) $(mogrify_DEPENDENCIES)
 	@rm -f mogrify$(EXEEXT)
@@ -428,18 +449,6 @@ mogrify$(EXEEXT): $(mogrify_OBJECTS) $(mogrify_DEPENDENCIES)
 montage$(EXEEXT): $(montage_OBJECTS) $(montage_DEPENDENCIES)
 	@rm -f montage$(EXEEXT)
 	$(LINK) $(montage_LDFLAGS) $(montage_OBJECTS) $(montage_LDADD) $(LIBS)
-
-animate$(EXEEXT): $(animate_OBJECTS) $(animate_DEPENDENCIES)
-	@rm -f animate$(EXEEXT)
-	$(LINK) $(animate_LDFLAGS) $(animate_OBJECTS) $(animate_LDADD) $(LIBS)
-
-display$(EXEEXT): $(display_OBJECTS) $(display_DEPENDENCIES)
-	@rm -f display$(EXEEXT)
-	$(LINK) $(display_LDFLAGS) $(display_OBJECTS) $(display_LDADD) $(LIBS)
-
-import$(EXEEXT): $(import_OBJECTS) $(import_DEPENDENCIES)
-	@rm -f import$(EXEEXT)
-	$(LINK) $(import_LDFLAGS) $(import_OBJECTS) $(import_LDADD) $(LIBS)
 
 install-man1:
 	$(mkinstalldirs) $(DESTDIR)$(man1dir)
@@ -454,6 +463,7 @@ install-man1:
 	  else file=$$i; fi; \
 	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
 	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
 	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
 	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man1dir)/$$inst"; \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(man1dir)/$$inst; \
@@ -469,6 +479,7 @@ uninstall-man1:
 	for i in $$list; do \
 	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
 	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
 	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
 	  echo " rm -f $(DESTDIR)$(man1dir)/$$inst"; \
 	  rm -f $(DESTDIR)$(man1dir)/$$inst; \
@@ -487,6 +498,7 @@ install-man4:
 	  else file=$$i; fi; \
 	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
 	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
 	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
 	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man4dir)/$$inst"; \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(man4dir)/$$inst; \
@@ -502,6 +514,7 @@ uninstall-man4:
 	for i in $$list; do \
 	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
 	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
 	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
 	  echo " rm -f $(DESTDIR)$(man4dir)/$$inst"; \
 	  rm -f $(DESTDIR)$(man4dir)/$$inst; \
@@ -520,6 +533,7 @@ install-man5:
 	  else file=$$i; fi; \
 	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
 	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
 	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
 	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man5dir)/$$inst"; \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(man5dir)/$$inst; \
@@ -535,6 +549,7 @@ uninstall-man5:
 	for i in $$list; do \
 	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
 	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
 	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
 	  echo " rm -f $(DESTDIR)$(man5dir)/$$inst"; \
 	  rm -f $(DESTDIR)$(man5dir)/$$inst; \
@@ -552,8 +567,6 @@ uninstall-man:
 # (1) if the variable is set in `config.status', edit `config.status'
 #     (which will cause the Makefiles to be regenerated when you run `make');
 # (2) otherwise, pass the desired values on the `make' command line.
-
-@SET_MAKE@
 
 all-recursive install-data-recursive install-exec-recursive \
 installdirs-recursive install-recursive uninstall-recursive  \
@@ -582,7 +595,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" = "." && dot_seen=yes; \
+	  if test "$$subdir" = "."; then dot_seen=yes; else :; fi; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \
@@ -603,15 +616,17 @@ tags-recursive:
 
 tags: TAGS
 
-ID: $(HEADERS) $(SOURCES) $(LISP)
-	list='$(SOURCES) $(HEADERS)'; \
-	unique=`for i in $$list; do echo $$i; done | \
-	  awk '    { files[$$0] = 1; } \
+ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
+	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
-	here=`pwd` && cd $(srcdir) \
-	  && mkid -f$$here/ID $$unique $(LISP)
+	mkid -f$$here/ID $$unique $(LISP)
 
-TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
 	list='$(SUBDIRS)'; for subdir in $$list; do \
@@ -619,12 +634,14 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	    test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
    fi; \
 	done; \
-	list='$(SOURCES) $(HEADERS)'; \
-	unique=`for i in $$list; do echo $$i; done | \
-	  awk '    { files[$$0] = 1; } \
+	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
 
 mostlyclean-tags:
 
@@ -638,45 +655,60 @@ maintainer-clean-tags:
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
 
+
 # This target untars the dist file and tries a VPATH configuration.  Then
 # it guarantees that the distribution is self-contained by making another
 # tarfile.
 distcheck: dist
-	-rm -rf $(distdir)
-	GZIP=$(GZIP_ENV) $(TAR) zxf $(distdir).tar.gz
+	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
+	GZIP=$(GZIP_ENV) gunzip -c $(distdir).tar.gz | $(AMTAR) xf -
+	chmod -R a-w $(distdir); chmod a+w $(distdir)
 	mkdir $(distdir)/=build
 	mkdir $(distdir)/=inst
-	dc_install_base=`cd $(distdir)/=inst && pwd`; \
-	cd $(distdir)/=build \
+	chmod a-w $(distdir)
+	dc_install_base=`CDPATH=: && cd $(distdir)/=inst && pwd` \
+	  && cd $(distdir)/=build \
 	  && ../configure --srcdir=.. --prefix=$$dc_install_base \
 	  && $(MAKE) $(AM_MAKEFLAGS) \
 	  && $(MAKE) $(AM_MAKEFLAGS) dvi \
 	  && $(MAKE) $(AM_MAKEFLAGS) check \
 	  && $(MAKE) $(AM_MAKEFLAGS) install \
 	  && $(MAKE) $(AM_MAKEFLAGS) installcheck \
-	  && $(MAKE) $(AM_MAKEFLAGS) dist
-	-rm -rf $(distdir)
+	  && $(MAKE) $(AM_MAKEFLAGS) uninstall \
+	  && test `find $$dc_install_base -type f -print | wc -l` -le 1 \
+	  && $(MAKE) $(AM_MAKEFLAGS) dist \
+	  && $(MAKE) $(AM_MAKEFLAGS) distclean \
+	  && rm -f $(distdir).tar.gz \
+	  && test `find . -type f -print | wc -l` -eq 0
+	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
 	@banner="$(distdir).tar.gz is ready for distribution"; \
 	dashes=`echo "$$banner" | sed s/./=/g`; \
 	echo "$$dashes"; \
 	echo "$$banner"; \
 	echo "$$dashes"
 dist: distdir
-	-chmod -R a+r $(distdir)
-	GZIP=$(GZIP_ENV) $(TAR) chozf $(distdir).tar.gz $(distdir)
-	-rm -rf $(distdir)
+	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
+	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
+	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
+	  ! -type d ! -perm -444 -exec $(SHELL) $(install_sh) -c -m a+r {} {} \; \
+	|| chmod -R a+r $(distdir)
+	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c > $(distdir).tar.gz
+	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
 dist-all: distdir
-	-chmod -R a+r $(distdir)
-	GZIP=$(GZIP_ENV) $(TAR) chozf $(distdir).tar.gz $(distdir)
-	-rm -rf $(distdir)
+	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
+	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
+	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
+	  ! -type d ! -perm -444 -exec $(SHELL) $(install_sh) -c -m a+r {} {} \; \
+	|| chmod -R a+r $(distdir)
+	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c > $(distdir).tar.gz
+	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
 distdir: $(DISTFILES)
-	-rm -rf $(distdir)
+	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
 	mkdir $(distdir)
-	-chmod 777 $(distdir)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pR $$d/$$file $(distdir); \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -688,12 +720,50 @@ distdir: $(DISTFILES)
 	    test -d $(distdir)/$$subdir \
 	    || mkdir $(distdir)/$$subdir \
 	    || exit 1; \
-	    chmod 777 $(distdir)/$$subdir; \
 	    (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir=../$(distdir) distdir=../$(distdir)/$$subdir distdir) \
 	      || exit 1; \
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+
+@AMDEP@include $(DEPDIR)/animate.Po
+@AMDEP@include $(DEPDIR)/combine.Po
+@AMDEP@include $(DEPDIR)/convert.Po
+@AMDEP@include $(DEPDIR)/display.Po
+@AMDEP@include $(DEPDIR)/identify.Po
+@AMDEP@include $(DEPDIR)/import.Po
+@AMDEP@include $(DEPDIR)/mogrify.Po
+@AMDEP@include $(DEPDIR)/montage.Po
+
+mostlyclean-depend:
+
+clean-depend:
+
+distclean-depend:
+	-rm -rf $(DEPDIR)
+
+maintainer-clean-depend:
+
+@AMDEP@CCDEPMODE = @CCDEPMODE@
+
+.c.o:
+@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c -o $@ $<
+
+.c.lo:
+@AMDEP@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
+@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(LTCOMPILE) -c -o $@ $<
+
+.c.obj:
+@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c -o $@ `cygpath -w $<`
+
 info-am:
 info: info-recursive
 dvi-am:
@@ -717,7 +787,7 @@ uninstall: uninstall-recursive
 all-am: Makefile $(PROGRAMS) $(MANS)
 all-redirect: all-recursive
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
 installdirs: installdirs-recursive
 installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man1 \
@@ -733,20 +803,21 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
+	-rm -f Makefile.in
 mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-recursive
 
 clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
-		clean-generic mostlyclean-am clean-local
+		clean-depend clean-generic mostlyclean-am clean-local
 
 clean: clean-recursive
 
 distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
-		distclean-tags distclean-generic clean-am \
-		distclean-local
+		distclean-tags distclean-depend distclean-generic \
+		clean-am distclean-local
 	-rm -f libtool
 
 distclean: distclean-recursive
@@ -754,8 +825,9 @@ distclean: distclean-recursive
 
 maintainer-clean-am:  maintainer-clean-binPROGRAMS \
 		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-tags maintainer-clean-generic \
-		distclean-am maintainer-clean-local
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean-am \
+		maintainer-clean-local
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -768,19 +840,21 @@ mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool install-man1 uninstall-man1 \
 install-man4 uninstall-man4 install-man5 uninstall-man5 install-man \
-uninstall-man install-data-recursive uninstall-data-recursive \
-install-exec-recursive uninstall-exec-recursive installdirs-recursive \
-uninstalldirs-recursive all-recursive check-recursive \
-installcheck-recursive info-recursive dvi-recursive \
-mostlyclean-recursive distclean-recursive clean-recursive \
+uninstall-man install-recursive uninstall-recursive \
+install-data-recursive uninstall-data-recursive install-exec-recursive \
+uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
+all-recursive check-recursive installcheck-recursive info-recursive \
+dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check-local check check-am installcheck-am installcheck \
-install-exec-local install-exec-am install-exec install-data-am \
-install-data install-am install uninstall-am uninstall all-redirect \
-all-am all installdirs-am installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+distclean-tags clean-tags maintainer-clean-tags distdir \
+mostlyclean-depend distclean-depend clean-depend \
+maintainer-clean-depend info-am info dvi-am dvi check-local check \
+check-am installcheck-am installcheck install-exec-local \
+install-exec-am install-exec install-data-am install-data install-am \
+install uninstall-am uninstall all-redirect all-am all install-strip \
+installdirs-am installdirs mostlyclean-generic distclean-generic \
+clean-generic maintainer-clean-generic clean mostlyclean distclean \
+maintainer-clean
 
 dist-hook:
 	( \

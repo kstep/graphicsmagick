@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4a from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -9,13 +9,6 @@
 # but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
-
-#
-# Makefile for Magick++ tests
-#
-# Copyright Bob Friesenhahn, 1999
-#
-
 
 SHELL = @SHELL@
 
@@ -52,9 +45,10 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -63,22 +57,30 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+
+@SET_MAKE@
 build_alias = @build_alias@
 build_triplet = @build@
 host_alias = @host_alias@
 host_triplet = @host@
 target_alias = @target_alias@
 target_triplet = @target@
+AMDEP = @AMDEP@
+AMTAR = @AMTAR@
 AS = @AS@
+AWK = @AWK@
 BZIPDelegate = @BZIPDelegate@
 BrowseDelegate = @BrowseDelegate@
 CC = @CC@
 CGMDecodeDelegate = @CGMDecodeDelegate@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 CatDelegate = @CatDelegate@
 ConvertDelegate = @ConvertDelegate@
 DELEGATES = @DELEGATES@
+DEPDIR = @DEPDIR@
 DLLDFLAGS = @DLLDFLAGS@
 DLLTOOL = @DLLTOOL@
 DOTDecodeDelegate = @DOTDecodeDelegate@
@@ -98,7 +100,6 @@ HTMLDecodeDelegate = @HTMLDecodeDelegate@
 ILBMDecodeDelegate = @ILBMDecodeDelegate@
 ILBMEncodeDelegate = @ILBMEncodeDelegate@
 INCLTDL = @INCLTDL@
-LDFLAGS = @LDFLAGS@
 LIBLTDL = @LIBLTDL@
 LIBTOOL = @LIBTOOL@
 LIB_BZLIB = @LIB_BZLIB@
@@ -147,6 +148,7 @@ RANLIB = @RANLIB@
 RLEEncodeDelegate = @RLEEncodeDelegate@
 RMDelegate = @RMDelegate@
 SCANDecodeDelegate = @SCANDecodeDelegate@
+STRIP = @STRIP@
 ShowImageDelegate = @ShowImageDelegate@
 TXTDelegate = @TXTDelegate@
 VERSION = @VERSION@
@@ -158,6 +160,14 @@ X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 ZipDelegate = @ZipDelegate@
+install_sh = @install_sh@
+
+#
+# Makefile for Magick++ tests
+#
+# Copyright Bob Friesenhahn, 1999
+#
+
 
 AUTOMAKE_OPTIONS = 1.2 foreign
 
@@ -174,64 +184,118 @@ rwblob_SOURCES = rwblob.c
 
 rwfile_SOURCES = rwfile.c
 
-CHECK_FILES =  	'LOGO:' 	'../PerlMagick/t/input_p4.pbm'  	'../PerlMagick/t/input_p5.pgm' 	'../PerlMagick/t/input_p6.ppm'
+CHECK_FILES = \
+	'LOGO:' \
+	'../PerlMagick/t/input_p4.pbm'  \
+	'../PerlMagick/t/input_p5.pgm' \
+	'../PerlMagick/t/input_p6.ppm'
 
-@HasHDF_TRUE@HDF = HDF
+@HasHDF_TRUE@HDF = @HasHDF_TRUE@HDF
 @HasHDF_FALSE@HDF = 
-@HasJBIG_TRUE@JBIG = JBIG
+@HasJBIG_TRUE@JBIG = @HasJBIG_TRUE@JBIG
 @HasJBIG_FALSE@JBIG = 
-@HasJPEG_TRUE@JPG = JPG
+@HasJPEG_TRUE@JPG = @HasJPEG_TRUE@JPG
 @HasJPEG_FALSE@JPG = 
-@HasPNG_TRUE@MNG = MNG
+@HasPNG_TRUE@MNG = @HasPNG_TRUE@MNG
 @HasPNG_FALSE@MNG = 
-@HasPNG_TRUE@PNG = PNG
+@HasPNG_TRUE@PNG = @HasPNG_TRUE@PNG
 @HasPNG_FALSE@PNG = 
-@HasTIFF_TRUE@TIFF = TIFF
+@HasTIFF_TRUE@TIFF = @HasTIFF_TRUE@TIFF
 @HasTIFF_FALSE@TIFF = 
-@HasTIFF_TRUE@PTIF = PTIF
+@HasTIFF_TRUE@PTIF = @HasTIFF_TRUE@PTIF
 @HasTIFF_FALSE@PTIF = 
-@HasX11_TRUE@XWD = XWD
+@HasX11_TRUE@XWD = @HasX11_TRUE@XWD
 @HasX11_FALSE@XWD = 
 
-CHECK_FORMATS =  	AVS 	BMP 	CMYK 	DIB 	FAX 	FITS 	GIF 	GRAY 	$(HDF) 	ICB 	$(JBIG) 	$(JPEG) 	MIFF 	$(MNG) 	MONO 	MTV 	P7 	PBM 	PCD 	PCDS 	PCX 	PGM 	PICT 	$(PNG) 	PNM 	PPM 	PSD 	$(PTIF) 	RAS 	RGB 	RGBA 	SGI 	SUN 	TGA 	$(TIFF) 	UYVY 	VDA 	VICAR 	VIFF 	VST 	XBM 	XPM 	$(XWD) 	YUV
+CHECK_FORMATS = \
+	AVS \
+	BMP \
+	CMYK \
+	DIB \
+	FAX \
+	FITS \
+	GIF \
+	GRAY \
+	$(HDF) \
+	ICB \
+	$(JBIG) \
+	$(JPEG) \
+	MIFF \
+	$(MNG) \
+	MONO \
+	MTV \
+	P7 \
+	PBM \
+	PCD \
+	PCDS \
+	PCX \
+	PGM \
+	PICT \
+	$(PNG) \
+	PNM \
+	PPM \
+	PSD \
+	$(PTIF) \
+	RAS \
+	RGB \
+	RGBA \
+	SGI \
+	SUN \
+	TGA \
+	$(TIFF) \
+	UYVY \
+	VDA \
+	VICAR \
+	VIFF \
+	VST \
+	XBM \
+	XPM \
+	$(XWD) \
+	YUV
 
+subdir = tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../magick/config.h
 CONFIG_CLEAN_FILES = 
 check_PROGRAMS =  rwblob$(EXEEXT) rwfile$(EXEEXT)
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../magick
+LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-rwblob_OBJECTS =  rwblob.$(OBJEXT)
+am_rwblob_OBJECTS =  rwblob.$(OBJEXT)
+rwblob_OBJECTS =  $(am_rwblob_OBJECTS)
 rwblob_LDADD = $(LDADD)
 rwblob_DEPENDENCIES =  ../magick/libMagick.la
 rwblob_LDFLAGS = 
-rwfile_OBJECTS =  rwfile.$(OBJEXT)
+am_rwfile_OBJECTS =  rwfile.$(OBJEXT)
+rwfile_OBJECTS =  $(am_rwfile_OBJECTS)
 rwfile_LDADD = $(LDADD)
 rwfile_DEPENDENCIES =  ../magick/libMagick.la
 rwfile_LDFLAGS = 
-CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CFLAGS = @CFLAGS@
 CCLD = $(CC)
-LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+DIST_SOURCES =  $(rwblob_SOURCES) $(rwfile_SOURCES)
 DIST_COMMON =  Makefile.am Makefile.in
 
 
-DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
 GZIP_ENV = --best
+depcomp = $(SHELL) $(top_srcdir)/depcomp
+DEP_FILES =  @AMDEP@ $(DEPDIR)/rwblob.Po $(DEPDIR)/rwfile.Po
 SOURCES = $(rwblob_SOURCES) $(rwfile_SOURCES)
-OBJECTS = $(rwblob_OBJECTS) $(rwfile_OBJECTS)
+OBJECTS = $(am_rwblob_OBJECTS) $(am_rwfile_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .obj .s
+.SUFFIXES: .c .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign --include-deps tests/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign tests/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -245,20 +309,6 @@ distclean-checkPROGRAMS:
 
 maintainer-clean-checkPROGRAMS:
 
-.c.o:
-	$(COMPILE) -c $<
-
-# FIXME: We should only use cygpath when building on Windows,
-# and only if it is available.
-.c.obj:
-	$(COMPILE) -c `cygpath -w $<`
-
-.s.o:
-	$(COMPILE) -c $<
-
-.S.o:
-	$(COMPILE) -c $<
-
 mostlyclean-compile:
 	-rm -f *.o core *.core
 	-rm -f *.$(OBJEXT)
@@ -269,15 +319,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 maintainer-clean-compile:
-
-.c.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
-
-.s.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
-
-.S.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -299,23 +340,27 @@ rwfile$(EXEEXT): $(rwfile_OBJECTS) $(rwfile_DEPENDENCIES)
 
 tags: TAGS
 
-ID: $(HEADERS) $(SOURCES) $(LISP)
-	list='$(SOURCES) $(HEADERS)'; \
-	unique=`for i in $$list; do echo $$i; done | \
-	  awk '    { files[$$0] = 1; } \
+ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
+	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
-	here=`pwd` && cd $(srcdir) \
-	  && mkid -f$$here/ID $$unique $(LISP)
+	mkid -f$$here/ID $$unique $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SOURCES) $(HEADERS)'; \
-	unique=`for i in $$list; do echo $$i; done | \
-	  awk '    { files[$$0] = 1; } \
+	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
 
 mostlyclean-tags:
 
@@ -328,19 +373,50 @@ maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = tests
-
 distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pR $$d/$$file $(distdir); \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+
+@AMDEP@include $(DEPDIR)/rwblob.Po
+@AMDEP@include $(DEPDIR)/rwfile.Po
+
+mostlyclean-depend:
+
+clean-depend:
+
+distclean-depend:
+	-rm -rf $(DEPDIR)
+
+maintainer-clean-depend:
+
+@AMDEP@CCDEPMODE = @CCDEPMODE@
+
+.c.o:
+@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c -o $@ $<
+
+.c.lo:
+@AMDEP@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
+@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(LTCOMPILE) -c -o $@ $<
+
+.c.obj:
+@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c -o $@ `cygpath -w $<`
+
 info-am:
 info: info-am
 dvi-am:
@@ -364,7 +440,7 @@ uninstall: uninstall-am
 all-am: Makefile
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
 installdirs:
 
 
@@ -377,28 +453,29 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
+	-rm -f Makefile.in
 mostlyclean-am:  mostlyclean-checkPROGRAMS mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
 clean-am:  clean-checkPROGRAMS clean-compile clean-libtool clean-tags \
-		clean-generic mostlyclean-am clean-local
+		clean-depend clean-generic mostlyclean-am clean-local
 
 clean: clean-am
 
 distclean-am:  distclean-checkPROGRAMS distclean-compile \
-		distclean-libtool distclean-tags distclean-generic \
-		clean-am
+		distclean-libtool distclean-tags distclean-depend \
+		distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
 maintainer-clean-am:  maintainer-clean-checkPROGRAMS \
 		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-tags maintainer-clean-generic \
-		distclean-am
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -409,12 +486,13 @@ clean-checkPROGRAMS maintainer-clean-checkPROGRAMS mostlyclean-compile \
 distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool tags mostlyclean-tags distclean-tags \
-clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
-check-am installcheck-am installcheck install-exec-am install-exec \
-install-data-am install-data install-am install uninstall-am uninstall \
-all-redirect all-am all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+clean-tags maintainer-clean-tags distdir mostlyclean-depend \
+distclean-depend clean-depend maintainer-clean-depend info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all install-strip \
+installdirs mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 #EXTRA_DIST = 

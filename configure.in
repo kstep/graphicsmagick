@@ -44,12 +44,18 @@ then
 fi
 
 # Check for programs
+
 AC_PROG_CC
 AC_PROG_CPP
 AM_PROG_CC_STDC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+#AC_C_INLINE
+AC_C_BIGENDIAN
 
 #
 # Tests for Windows
@@ -73,7 +79,7 @@ AC_LIBTOOL_DLOPEN
 # Configure libtool
 AM_ENABLE_SHARED(no)
 AM_ENABLE_STATIC(yes)
-AM_PROG_LIBTOOL
+AC_PROG_LIBTOOL
 
 # Check to see if building shared libraries
 libtool_build_shared_libs='no'
@@ -298,12 +304,7 @@ AC_CHECK_HEADERS(sys/time.h sys/stat.h sys/types.h)
 AC_CHECK_HEADERS(math.h string.h stdarg.h pwd.h malloc.h)
 AC_CHECK_HEADERS(memory.h errno.h fcntl.h)
 
-# Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-#AC_C_INLINE
-AC_C_BIGENDIAN
-
-AC_RETSIGTYPE
+AC_TYPE_SIGNAL
 AC_TYPE_MODE_T
 AC_TYPE_OFF_T
 AC_TYPE_PID_T
@@ -1269,7 +1270,7 @@ fi
 
 AC_SUBST(CPPFLAGS)
 AC_SUBST(X_CFLAGS)
-AC_SUBST(LDFLAGS)
+#AC_SUBST(LDFLAGS)
 AC_SUBST(X_PRE_LIBS)
 AC_SUBST(X_LIBS)
 AC_SUBST(X_EXTRA_LIBS)

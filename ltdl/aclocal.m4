@@ -1,4 +1,4 @@
-dnl aclocal.m4 generated automatically by aclocal 1.4
+dnl aclocal.m4 generated automatically by aclocal 1.4a
 
 dnl Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
@@ -430,12 +430,15 @@ dnl AM_INIT_AUTOMAKE(package,version, [no-define])
 
 AC_DEFUN(AM_INIT_AUTOMAKE,
 [AC_REQUIRE([AC_PROG_INSTALL])
+dnl We require 2.13 because we rely on SHELL being computed by configure.
+AC_PREREQ([2.13])
 PACKAGE=[$1]
 AC_SUBST(PACKAGE)
 VERSION=[$2]
 AC_SUBST(VERSION)
 dnl test to see if srcdir already configured
-if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
+if test "`CDPATH=: && cd $srcdir && pwd`" != "`pwd`" &&
+   test -f $srcdir/config.status; then
   AC_MSG_ERROR([source directory already configured; run "make distclean" there first])
 fi
 ifelse([$3],,
@@ -443,14 +446,24 @@ AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE", [Name of package])
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION", [Version number of package]))
 AC_REQUIRE([AM_SANITY_CHECK])
 AC_REQUIRE([AC_ARG_PROGRAM])
-dnl FIXME This is truly gross.
-missing_dir=`cd $ac_aux_dir && pwd`
-AM_MISSING_PROG(ACLOCAL, aclocal, $missing_dir)
-AM_MISSING_PROG(AUTOCONF, autoconf, $missing_dir)
-AM_MISSING_PROG(AUTOMAKE, automake, $missing_dir)
-AM_MISSING_PROG(AUTOHEADER, autoheader, $missing_dir)
-AM_MISSING_PROG(MAKEINFO, makeinfo, $missing_dir)
-AC_REQUIRE([AC_PROG_MAKE_SET])])
+AM_MISSING_PROG(ACLOCAL, aclocal)
+AM_MISSING_PROG(AUTOCONF, autoconf)
+AM_MISSING_PROG(AUTOMAKE, automake)
+AM_MISSING_PROG(AUTOHEADER, autoheader)
+AM_MISSING_PROG(MAKEINFO, makeinfo)
+AM_MISSING_PROG(AMTAR, tar)
+AM_MISSING_INSTALL_SH
+dnl We need awk for the "check" target.  The system "awk" is bad on
+dnl some platforms.
+AC_REQUIRE([AC_PROG_AWK])
+AC_REQUIRE([AC_PROG_MAKE_SET])
+AC_REQUIRE([AM_DEP_TRACK])
+AC_REQUIRE([AM_SET_DEPDIR])
+ifdef([AC_PROVIDE_AC_PROG_CC], [AM_DEPENDENCIES(CC)], [
+   define([AC_PROG_CC], defn([AC_PROG_CC])[AM_DEPENDENCIES(CC)])])
+ifdef([AC_PROVIDE_AC_PROG_CXX], [AM_DEPENDENCIES(CXX)], [
+   define([AC_PROG_CXX], defn([AC_PROG_CXX])[AM_DEPENDENCIES(CXX)])])
+])
 
 #
 # Check to make sure that the build environment is sane.
@@ -495,21 +508,191 @@ fi
 rm -f conftest*
 AC_MSG_RESULT(yes)])
 
-dnl AM_MISSING_PROG(NAME, PROGRAM, DIRECTORY)
-dnl The program must properly implement --version.
-AC_DEFUN(AM_MISSING_PROG,
-[AC_MSG_CHECKING(for working $2)
-# Run test in a subshell; some versions of sh will print an error if
-# an executable is not found, even if stderr is redirected.
-# Redirect stdin to placate older versions of autoconf.  Sigh.
-if ($2 --version) < /dev/null > /dev/null 2>&1; then
-   $1=$2
-   AC_MSG_RESULT(found)
-else
-   $1="$3/missing $2"
-   AC_MSG_RESULT(missing)
-fi
+dnl AM_MISSING_PROG(NAME, PROGRAM)
+AC_DEFUN(AM_MISSING_PROG, [
+AC_REQUIRE([AM_MISSING_HAS_RUN])
+$1=${$1-"${am_missing_run}$2"}
 AC_SUBST($1)])
+
+dnl Like AM_MISSING_PROG, but only looks for install-sh.
+dnl AM_MISSING_INSTALL_SH()
+AC_DEFUN(AM_MISSING_INSTALL_SH, [
+AC_REQUIRE([AM_MISSING_HAS_RUN])
+if test -z "$install_sh"; then
+   install_sh="$ac_aux_dir/install-sh"
+   test -f "$install_sh" || install_sh="$ac_aux_dir/install.sh"
+   test -f "$install_sh" || install_sh="${am_missing_run}${ac_auxdir}/install-sh"
+   dnl FIXME: an evil hack: we remove the SHELL invocation from
+   dnl install_sh because automake adds it back in.  Sigh.
+   install_sh="`echo $install_sh | sed -e 's/\${SHELL}//'`"
+fi
+AC_SUBST(install_sh)])
+
+dnl AM_MISSING_HAS_RUN.
+dnl Define MISSING if not defined so far and test if it supports --run.
+dnl If it does, set am_missing_run to use it, otherwise, to nothing.
+AC_DEFUN([AM_MISSING_HAS_RUN], [
+test x"${MISSING+set}" = xset || \
+  MISSING="\${SHELL} `CDPATH=: && cd $ac_aux_dir && pwd`/missing"
+dnl Use eval to expand $SHELL
+if eval "$MISSING --run :"; then
+  am_missing_run="$MISSING --run "
+else
+  am_missing_run=
+  AC_MSG_WARN([`missing' script is too old or missing])
+fi
+])
+
+dnl See how the compiler implements dependency checking.
+dnl Usage:
+dnl AM_DEPENDENCIES(NAME)
+dnl NAME is "CC", "CXX" or "OBJC".
+
+dnl We try a few techniques and use that to set a single cache variable.
+
+AC_DEFUN(AM_DEPENDENCIES,[
+AC_REQUIRE([AM_SET_DEPDIR])
+AC_REQUIRE([AM_OUTPUT_DEPENDENCY_COMMANDS])
+ifelse([$1],CC,[
+AC_REQUIRE([AC_PROG_CC])
+AC_REQUIRE([AC_PROG_CPP])
+depcc="$CC"
+depcpp="$CPP"],[$1],CXX,[
+AC_REQUIRE([AC_PROG_CXX])
+AC_REQUIRE([AC_PROG_CXXCPP])
+depcc="$CXX"
+depcpp="$CXXCPP"],[$1],OBJC,[
+am_cv_OBJC_dependencies_compiler_type=gcc],[
+AC_REQUIRE([AC_PROG_][$1])
+depcc="$[$1]"
+depcpp=""])
+AC_MSG_CHECKING([dependency style of $depcc])
+AC_CACHE_VAL(am_cv_[$1]_dependencies_compiler_type,[
+if test -z "$AMDEP"; then
+  echo '#include "conftest.h"' > conftest.c
+  echo 'int i;' > conftest.h
+
+  am_cv_[$1]_dependencies_compiler_type=none
+  for depmode in `sed -n 's/^#*\([a-zA-Z0-9]*\))$/\1/p' < "$am_depcomp"`; do
+    case "$depmode" in
+    nosideeffect)
+      # after this tag, mechanisms are not by side-effect, so they'll
+      # only be used when explicitly requested
+      if test "x$enable_dependency_tracking" = xyes; then
+	continue
+      else
+	break
+      fi
+      ;;
+    none) break ;;
+    esac
+    if depmode="$depmode" \
+       source=conftest.c object=conftest.o \
+       depfile=conftest.Po tmpdepfile=conftest.TPo \
+       $SHELL $am_depcomp $depcc -c conftest.c 2>/dev/null &&
+       grep conftest.h conftest.Po > /dev/null 2>&1; then
+      am_cv_[$1]_dependencies_compiler_type="$depmode"
+      break
+    fi
+  done
+
+  rm -f conftest.*
+else
+  am_cv_[$1]_dependencies_compiler_type=none
+fi
+])
+AC_MSG_RESULT($am_cv_[$1]_dependencies_compiler_type)
+[$1]DEPMODE="depmode=$am_cv_[$1]_dependencies_compiler_type"
+AC_SUBST([$1]DEPMODE)
+])
+
+dnl Choose a directory name for dependency files.
+dnl This macro is AC_REQUIREd in AM_DEPENDENCIES
+
+AC_DEFUN(AM_SET_DEPDIR,[
+if test -d .deps || mkdir .deps 2> /dev/null || test -d .deps; then
+  DEPDIR=.deps
+else
+  DEPDIR=_deps
+fi
+AC_SUBST(DEPDIR)
+])
+
+AC_DEFUN(AM_DEP_TRACK,[
+AC_ARG_ENABLE(dependency-tracking,
+[  --disable-dependency-tracking Speeds up one-time builds
+  --enable-dependency-tracking  Do not reject slow dependency extractors])
+if test "x$enable_dependency_tracking" = xno; then
+  AMDEP="#"
+else
+  am_depcomp="$ac_aux_dir/depcomp"
+  if test ! -f "$am_depcomp"; then
+    AMDEP="#"
+  else
+    AMDEP=
+  fi
+fi
+AC_SUBST(AMDEP)
+if test -z "$AMDEP"; then
+  AMDEPBACKSLASH='\'
+else
+  AMDEPBACKSLASH=
+fi
+pushdef([subst], defn([AC_SUBST]))
+subst(AMDEPBACKSLASH)
+popdef([subst])
+])
+
+dnl Generate code to set up dependency tracking.
+dnl This macro should only be invoked once -- use via AC_REQUIRE.
+dnl Usage:
+dnl AM_OUTPUT_DEPENDENCY_COMMANDS
+
+dnl
+dnl This code is only required when automatic dependency tracking
+dnl is enabled.  FIXME.  This creates each `.P' file that we will
+dnl need in order to bootstrap the dependency handling code.
+AC_DEFUN(AM_OUTPUT_DEPENDENCY_COMMANDS,[
+AC_OUTPUT_COMMANDS([
+test x"$AMDEP" != x"" ||
+for mf in $CONFIG_FILES; do
+  case "$mf" in
+  Makefile) dirpart=.;;
+  */Makefile) dirpart=`echo "$mf" | sed -e 's|/[^/]*$||'`;;
+  *) continue;;
+  esac
+  grep '^DEP_FILES *= *[^ #]' < "$mf" > /dev/null || continue
+  # Extract the definition of DEP_FILES from the Makefile without
+  # running `make'.
+  DEPDIR=`sed -n -e '/^DEPDIR = / s///p' < "$mf"`
+  test -z "$DEPDIR" && continue
+  # When using ansi2knr, U may be empty or an underscore; expand it
+  U=`sed -n -e '/^U = / s///p' < "$mf"`
+  test -d "$dirpart/$DEPDIR" || mkdir "$dirpart/$DEPDIR"
+  # We invoke sed twice because it is the simplest approach to
+  # changing $(DEPDIR) to its actual value in the expansion.
+  for file in `sed -n -e '
+    /^DEP_FILES = .*\\\\$/ {
+      s/^DEP_FILES = //
+      :loop
+	s/\\\\$//
+	p
+	n
+	/\\\\$/ b loop
+      p
+    }
+    /^DEP_FILES = / s/^DEP_FILES = //p' < "$mf" | \
+       sed -e 's/\$(DEPDIR)/'"$DEPDIR"'/g' -e 's/\$U/'"$U"'/g'`; do
+    # Make sure the directory exists.
+    test -f "$dirpart/$file" && continue
+    fdir=`echo "$file" | sed -e 's|/[^/]*$||'`
+    $ac_aux_dir/mkinstalldirs "$dirpart/$fdir" > /dev/null 2>&1
+    # echo "creating $dirpart/$file"
+    echo '# dummy' > "$dirpart/$file"
+  done
+done
+], [AMDEP="$AMDEP"
+ac_aux_dir="$ac_aux_dir"])])
 
 # Like AC_CONFIG_HEADER, but automatically create stamp file.
 
@@ -566,4 +749,437 @@ else
   $1_TRUE='#'
   $1_FALSE=
 fi])
+
+
+# serial 1 AC_LIB_LTDL
+
+AC_DEFUN(AC_LIB_LTDL,
+[AC_PREREQ(2.13)dnl
+AC_REQUIRE([AC_PROG_CC])dnl
+AC_REQUIRE([AC_C_CONST])dnl
+AC_REQUIRE([AC_C_INLINE])dnl
+
+dnl AC_LIB_LTDL must perform all the checks necessary for compilation
+dnl of the ltdl objects -- including compiler checks (above) and header
+dnl checks (below).
+AC_REQUIRE([AC_HEADER_STDC])dnl
+
+AC_CHECK_HEADERS(malloc.h memory.h stdlib.h stdio.h ctype.h dlfcn.h dl.h dld.h)
+AC_CHECK_HEADERS(string.h strings.h, break)
+AC_CHECK_FUNCS(strchr index, break)
+AC_CHECK_FUNCS(strrchr rindex, break)
+AC_CHECK_FUNCS(strcmp)
+
+AC_REQUIRE([AC_LTDL_ENABLE_INSTALL])dnl
+AC_REQUIRE([AC_LTDL_SHLIBEXT])dnl
+AC_REQUIRE([AC_LTDL_SHLIBPATH])dnl
+AC_REQUIRE([AC_LTDL_SYSSEARCHPATH])dnl
+AC_REQUIRE([AC_LTDL_OBJDIR])dnl
+AC_REQUIRE([AC_LTDL_DLPREOPEN])dnl
+AC_REQUIRE([AC_LTDL_DLLIB])dnl
+AC_REQUIRE([AC_LTDL_SYMBOL_USCORE])dnl
+])
+
+AC_DEFUN(AC_LTDL_ENABLE_INSTALL,
+[AC_ARG_ENABLE(ltdl-install,
+[  --enable-ltdl-install   install libltdl])
+
+AM_CONDITIONAL(INSTALL_LTDL, test x"${enable_ltdl_install-no}" != xno)
+AM_CONDITIONAL(CONVENIENCE_LTDL, test x"${enable_ltdl_convenience-no}" != xno)
+])])
+
+
+AC_DEFUN(AC_LTDL_SNARF_CONFIG,
+[# Read the libtool configuration
+rm -f conftest
+./libtool --config > conftest
+. ./conftest
+rm -f conftest
+])
+
+AC_DEFUN(AC_LTDL_SHLIBEXT,
+[AC_REQUIRE([AC_LTDL_SNARF_CONFIG])dnl
+AC_CACHE_CHECK([which extension is used for shared libraries],
+  libltdl_cv_shlibext, [dnl
+(
+  last=
+  for spec in $library_names_spec; do
+    last="$spec"
+  done
+changequote(, )
+  echo "$last" | sed 's/\[.*\]//;s/^[^.]*//;s/\$.*$//;s/\.$//' > conftest
+changequote([, ])
+)
+libltdl_cv_shlibext=`cat conftest`
+rm -f conftest
+])
+if test -n "$libltdl_cv_shlibext"; then
+  AC_DEFINE_UNQUOTED(LTDL_SHLIB_EXT, "$libltdl_cv_shlibext",
+    [Define to the extension used for shared libraries, say, ".so". ])
+fi
+])
+
+AC_DEFUN(AC_LTDL_SHLIBPATH,
+[AC_REQUIRE([AC_LTDL_SNARF_CONFIG])dnl
+AC_CACHE_CHECK([which variable specifies run-time library path],
+  libltdl_cv_shlibpath_var, [libltdl_cv_shlibpath_var="$shlibpath_var"])
+if test -n "$libltdl_cv_shlibpath_var"; then
+  AC_DEFINE_UNQUOTED(LTDL_SHLIBPATH_VAR, "$libltdl_cv_shlibpath_var",
+    [Define to the name of the environment variable that determines the dynamic library search path. ])
+fi
+])
+
+AC_DEFUN(AC_LTDL_SYSSEARCHPATH,
+[AC_REQUIRE([AC_LTDL_SNARF_CONFIG])dnl
+AC_CACHE_CHECK([for the default library search path],
+  libltdl_cv_sys_search_path, [libltdl_cv_sys_search_path="$sys_lib_dlsearch_path_spec"])
+if test -n "$libltdl_cv_sys_search_path"; then
+  case "$lt_target" in
+  *-*-mingw*) pathsep=";" ;;
+  *) pathsep=":" ;;
+  esac
+  sys_search_path=
+  for dir in $libltdl_cv_sys_search_path; do
+    if test -z "$sys_search_path"; then
+      sys_search_path="$dir"
+    else
+      sys_search_path="$sys_search_path$pathsep$dir"
+    fi
+  done
+  AC_DEFINE_UNQUOTED(LTDL_SYSSEARCHPATH, "$sys_search_path",
+    [Define to the system default library search path. ])
+fi
+])
+
+AC_DEFUN(AC_LTDL_OBJDIR,
+[AC_CACHE_CHECK([for objdir],
+  libltdl_cv_objdir, [libltdl_cv_objdir="$objdir"
+if test -n "$objdir"; then
+  :
+else
+  rm -f .libs 2>/dev/null
+  mkdir .libs 2>/dev/null
+  if test -d .libs; then
+    libltdl_cv_objdir=.libs
+  else
+    # MS-DOS does not allow filenames that begin with a dot.
+    libltdl_cv_objdir=_libs
+  fi
+rmdir .libs 2>/dev/null
+fi])
+AC_DEFINE_UNQUOTED(LTDL_OBJDIR, "$libltdl_cv_objdir/",
+  [Define to the sub-directory in which libtool stores uninstalled libraries. ])
+])
+
+AC_DEFUN(AC_LTDL_DLPREOPEN,
+[AC_REQUIRE([AC_LTDL_GLOBAL_SYMBOL_PIPE])dnl
+AC_CACHE_CHECK([whether libtool supports -dlopen/-dlpreopen],
+       libltdl_cv_preloaded_symbols, [dnl
+  if test -n "$global_symbol_pipe"; then
+    libltdl_cv_preloaded_symbols=yes
+  else
+    libltdl_cv_preloaded_symbols=no
+  fi
+])
+if test x"$libltdl_cv_preloaded_symbols" = x"yes"; then
+  AC_DEFINE(HAVE_PRELOADED_SYMBOLS, 1,
+    [Define if libtool can extract symbol lists from object files. ])
+fi
+])
+
+AC_DEFUN(AC_LTDL_DLLIB,
+[LIBADD_DL=
+AC_CHECK_LIB(dl, dlopen, [AC_DEFINE(HAVE_LIBDL, 1,
+   [Define if you have the libdl library or equivalent. ]) LIBADD_DL="-ldl"],
+[AC_CHECK_FUNC(dlopen, [AC_DEFINE(HAVE_LIBDL, 1,
+   [Define if you have the libdl library or equivalent.])])])
+AC_CHECK_FUNC(shl_load, [AC_DEFINE(HAVE_SHL_LOAD, 1,
+   [Define if you have the shl_load function.])],
+[AC_CHECK_LIB(dld, shl_load,
+  [AC_DEFINE(HAVE_SHL_LOAD, 1,
+     [Define if you have the shl_load function.])
+   LIBADD_DL="$LIBADD_DL -ldld"])
+])
+AC_CHECK_LIB(dld, dld_link, [AC_DEFINE(HAVE_DLD, 1,
+  [Define if you have the GNU dld library.])dnl
+test "x$ac_cv_lib_dld_shl_load" = yes || LIBADD_DL="$LIBADD_DL -ldld"])
+AC_SUBST(LIBADD_DL)
+
+if test "x$ac_cv_func_dlopen" = xyes || test "x$ac_cv_lib_dl_dlopen" = xyes; then
+ LIBS_SAVE="$LIBS"
+ LIBS="$LIBS $LIBADD_DL"
+ AC_CHECK_FUNCS(dlerror)
+ LIBS="$LIBS_SAVE"
+fi
+])
+
+AC_DEFUN(AC_LTDL_GLOBAL_SYMBOL_PIPE,
+[dnl Check for command to grab the raw symbol name followed
+dnl by C symbol name from nm.
+AC_REQUIRE([AC_CANONICAL_HOST])dnl
+AC_REQUIRE([AC_PROG_NM])dnl
+# Check for command to grab the raw symbol name followed by C symbol from nm.
+AC_MSG_CHECKING([command to parse $NM output])
+AC_CACHE_VAL(ac_cv_sys_global_symbol_pipe,
+[# These are sane defaults that work on at least a few old systems.
+# {They come from Ultrix.  What could be older than Ultrix?!! ;)}
+
+changequote(,)dnl
+# Character class describing NM global symbol codes.
+ac_symcode='[BCDEGRST]'
+
+# Regexp to match symbols that can be accessed directly from C.
+ac_sympat='\([_A-Za-z][_A-Za-z0-9]*\)'
+
+# Transform the above into a raw symbol and a C symbol.
+ac_symxfrm='\1 \2\3 \3'
+
+# Transform an extracted symbol line into a proper C declaration
+ac_global_symbol_to_cdecl="sed -n -e 's/^. .* \(.*\)$/extern char \1;/p'"
+
+# Define system-specific variables.
+case "$host_os" in
+aix*)
+  ac_symcode='[BCDT]'
+  ;;
+cygwin* | mingw*)
+  ac_symcode='[ABCDGISTW]'
+  ;;
+hpux*)
+  ac_global_symbol_to_cdecl="sed -n -e 's/^T .* \(.*\)$/extern char \1();/p' -e 's/^. .* \(.*\)$/extern char \1;/p'"
+  ;;
+irix*)
+  ac_symcode='[BCDEGRST]'
+  ;;
+solaris*)
+  ac_symcode='[BDT]'
+  ;;
+esac
+
+# If we're using GNU nm, then use its standard symbol codes.
+if $NM -V 2>&1 | egrep '(GNU|with BFD)' > /dev/null; then
+  ac_symcode='[ABCDGISTW]'
+fi
+changequote([,])dnl
+
+# Try without a prefix undercore, then with it.
+for ac_symprfx in "" "_"; do
+
+  ac_cv_sys_global_symbol_pipe="sed -n -e 's/^.*[ 	]\($ac_symcode\)[ 	][ 	]*\($ac_symprfx\)$ac_sympat$/$ac_symxfrm/p'"
+
+  # Check to see that the pipe works correctly.
+  ac_pipe_works=no
+  rm -f conftest.$ac_ext
+  cat > conftest.$ac_ext <<EOF
+#ifdef __cplusplus
+extern "C" {
+#endif
+char nm_test_var;
+void nm_test_func(){}
+#ifdef __cplusplus
+}
+#endif
+int main(){nm_test_var='a';nm_test_func;return 0;}
+EOF
+
+  if AC_TRY_EVAL(ac_compile); then
+    # Now try to grab the symbols.
+    ac_nlist=conftest.nm
+
+    if AC_TRY_EVAL(NM conftest.$ac_objext \| $ac_cv_sys_global_symbol_pipe \> $ac_nlist) && test -s "$ac_nlist"; then
+
+      # Try sorting and uniquifying the output.
+      if sort "$ac_nlist" | uniq > "$ac_nlist"T; then
+	mv -f "$ac_nlist"T "$ac_nlist"
+      else
+	rm -f "$ac_nlist"T
+      fi
+
+      # Make sure that we snagged all the symbols we need.
+      if egrep ' nm_test_var$' "$ac_nlist" >/dev/null; then
+	if egrep ' nm_test_func$' "$ac_nlist" >/dev/null; then
+	  cat <<EOF > conftest.c
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+EOF
+	  # Now generate the symbol file.
+	  eval "$ac_global_symbol_to_cdecl"' < "$ac_nlist" >> conftest.c'
+
+	  cat <<EOF >> conftest.c
+#if defined (__STDC__) && __STDC__
+# define lt_ptr_t void *
+#else
+# define lt_ptr_t char *
+# define const
+#endif
+
+/* The mapping between symbol names and symbols. */
+const struct {
+  const char *name;
+  lt_ptr_t address;
+}
+changequote(,)dnl
+lt_preloaded_symbols[] =
+changequote([,])dnl
+{
+EOF
+	sed 's/^. \(.*\) \(.*\)$/  {"\2", (lt_ptr_t) \&\2},/' < "$ac_nlist" >> conftest.c
+	cat <<\EOF >> conftest.c
+  {0, (lt_ptr_t) 0}
+};
+
+#ifdef __cplusplus
+}
+#endif
+EOF
+	  # Now try linking the two files.
+	  mv conftest.$ac_objext conftstm.$ac_objext
+	  ac_save_LIBS="$LIBS"
+	  ac_save_CFLAGS="$CFLAGS"
+	  LIBS="conftstm.$ac_objext"
+	  CFLAGS="$CFLAGS$no_builtin_flag"
+	  if AC_TRY_EVAL(ac_link) && test -s conftest; then
+	    ac_pipe_works=yes
+	  else
+	    echo "configure: failed program was:" >&AC_FD_CC
+	    cat conftest.c >&AC_FD_CC
+	  fi
+	  LIBS="$ac_save_LIBS"
+	  CFLAGS="$ac_save_CFLAGS"
+	else
+	  echo "cannot find nm_test_func in $ac_nlist" >&AC_FD_CC
+	fi
+      else
+	echo "cannot find nm_test_var in $ac_nlist" >&AC_FD_CC
+      fi
+    else
+      echo "cannot run $ac_cv_sys_global_symbol_pipe" >&AC_FD_CC
+    fi
+  else
+    echo "$progname: failed program was:" >&AC_FD_CC
+    cat conftest.c >&AC_FD_CC
+  fi
+  rm -rf conftest* conftst*
+
+  # Do not use the global_symbol_pipe unless it works.
+  if test "$ac_pipe_works" = yes; then
+    if test x"$ac_symprfx" = x"_"; then
+      ac_cv_sys_symbol_underscore=yes
+    else
+      ac_cv_sys_symbol_underscore=no
+    fi
+    break
+  else
+    ac_cv_sys_global_symbol_pipe=
+  fi
+done
+])
+
+ac_result=yes
+if test -z "$ac_cv_sys_global_symbol_pipe"; then
+   ac_result=no
+fi
+AC_MSG_RESULT($ac_result)
+])
+
+AC_DEFUN(AC_LTDL_SYMBOL_USCORE,
+[dnl does the compiler prefix global symbols with an underscore?
+AC_REQUIRE([AC_LTDL_GLOBAL_SYMBOL_PIPE])dnl
+AC_MSG_CHECKING([for _ prefix in compiled symbols])
+AC_CACHE_VAL(ac_cv_sys_symbol_underscore,
+[ac_cv_sys_symbol_underscore=no
+cat > conftest.$ac_ext <<EOF
+void nm_test_func(){}
+int main(){nm_test_func;return 0;}
+EOF
+if AC_TRY_EVAL(ac_compile); then
+  # Now try to grab the symbols.
+  ac_nlist=conftest.nm
+  if AC_TRY_EVAL(NM conftest.$ac_objext \| $ac_cv_sys_global_symbol_pipe \> $ac_nlist) && test -s "$ac_nlist"; then
+    # See whether the symbols have a leading underscore.
+    if egrep '^. _nm_test_func' "$ac_nlist" >/dev/null; then
+      ac_cv_sys_symbol_underscore=yes
+    else
+      if egrep '^. nm_test_func ' "$ac_nlist" >/dev/null; then
+	:
+      else
+	echo "configure: cannot find nm_test_func in $ac_nlist" >&AC_FD_CC
+      fi
+    fi
+  else
+    echo "configure: cannot run $ac_cv_sys_global_symbol_pipe" >&AC_FD_CC
+  fi
+else
+  echo "configure: failed program was:" >&AC_FD_CC
+  cat conftest.c >&AC_FD_CC
+fi
+rm -rf conftest*
+])
+AC_MSG_RESULT($ac_cv_sys_symbol_underscore)
+AC_LTDL_DLSYM_USCORE
+])
+
+AC_DEFUN(AC_LTDL_DLSYM_USCORE,
+[AC_REQUIRE([AC_LTDL_SYMBOL_USCORE])dnl
+if test x"$ac_cv_sys_symbol_underscore" = xyes; then
+  if test x"$ac_cv_func_dlopen" = xyes ||
+     test x"$ac_cv_lib_dl_dlopen" = xyes ; then
+	AC_CACHE_CHECK([whether we have to add an underscore for dlsym],
+		libltdl_cv_need_uscore, [dnl
+		AC_TRY_RUN([
+#if HAVE_DLFCN_H
+#include <dlfcn.h>
+#endif
+
+#include <stdio.h>
+
+#ifdef RTLD_GLOBAL
+# define LTDL_GLOBAL	RTLD_GLOBAL
+#else
+# ifdef DL_GLOBAL
+#  define LTDL_GLOBAL	DL_GLOBAL
+# else
+#  define LTDL_GLOBAL	0
+# endif
+#endif
+
+/* We may have to define LTDL_LAZY_OR_NOW in the command line if we
+   find out it does not work in some platform. */
+#ifndef LTDL_LAZY_OR_NOW
+# ifdef RTLD_LAZY
+#  define LTDL_LAZY_OR_NOW	RTLD_LAZY
+# else
+#  ifdef DL_LAZY
+#   define LTDL_LAZY_OR_NOW	DL_LAZY
+#  else
+#   ifdef RTLD_NOW
+#    define LTDL_LAZY_OR_NOW	RTLD_NOW
+#   else
+#    ifdef DL_NOW
+#     define LTDL_LAZY_OR_NOW	DL_NOW
+#    else
+#     define LTDL_LAZY_OR_NOW	0
+#    endif
+#   endif
+#  endif
+# endif
+#endif
+
+fnord() { int i=42;}
+main() { void *self, *ptr1, *ptr2; self=dlopen(0,LTDL_GLOBAL|LTDL_LAZY_OR_NOW);
+    if(self) { ptr1=dlsym(self,"fnord"); ptr2=dlsym(self,"_fnord");
+	       if(ptr1 && !ptr2) { dlclose(self); exit(0); } } exit(1); }
+],	libltdl_cv_need_uscore=no, libltdl_cv_need_uscore=yes,
+	libltdl_cv_need_uscore=cross
+)])
+  fi
+fi
+
+if test x"$libltdl_cv_need_uscore" = xyes; then
+  AC_DEFINE(NEED_USCORE, 1,
+    [Define if dlsym() requires a leading underscode in symbol names. ])
+fi
+])
 
