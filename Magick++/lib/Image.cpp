@@ -214,8 +214,20 @@ void Magick::Image::annotate ( const std::string &text_,
   
   annotateInfo->text = const_cast<char *>(text_.c_str());
 
+  ostrstream boundingArea;
+  annotateInfo->geometry = 0;
   if ( boundingArea_.isValid() ){
-    annotateInfo->geometry = const_cast<char *>(string(boundingArea_).c_str());
+    if ( boundingArea_.width() == 0 || boundingArea_.height() == 0 )
+      {
+        boundingArea << "+" << boundingArea_.xOff()
+                     << "+" << boundingArea_.yOff() << ends;
+      }
+    else
+      {
+        boundingArea << string(boundingArea_) << ends;
+      }
+    annotateInfo->geometry = boundingArea.str();
+    // cout << "Annotation geometry: \"" << annotateInfo->geometry << "\"" << endl;
   }
 
   annotateInfo->gravity = gravity_;
