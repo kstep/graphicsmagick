@@ -1,5 +1,15 @@
 2003-06-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* VisualMagick/installer/inc/files-configs.isx: For a static
+	build, install the configuration files directly into the
+	application directory.
+	* VisualMagick/installer/inc/uninstallrun-unregister-com.isx
+	(Filename): Change ImageMagickObject.dll path.
+	* VisualMagick/installer/inc/run-register-com.isx (Filename):
+	Change ImageMagickObject.dll path.
+	* VisualMagick/installer/inc/files-com.isx (Source): Install
+	ImageMagickObject.dll and MagickCMD.exe in the application
+	directory alongside gm.exe and the CORE DLLs.
 	* INSTALL-unix.txt: Add additional information regarding LZW.
 	* VisualMagick/magick/magick_config.h.in: Add additional notes
 	regarding UNISYS LZW patent.

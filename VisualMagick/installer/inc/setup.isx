@@ -18,7 +18,7 @@ AppPublisher=GraphicsMagick Group
 AppPublisherURL=http://www.{#MagickPackageName}.org/
 AppSupportURL=http://www.{#MagickPackageName}.org/
 AppUpdatesURL=http://www.{#MagickPackageName}.org/www/download.html
-; Default install is under "C:\Program Files\GraphicsMagick-1.0-Q16":
+; Default install is similar to "C:\Program Files\GraphicsMagick-1.1-Q16":
 DefaultDirName={pf}\{#MagickPackageName}-{#MagickPackageVersion}-Q{#QuantumDepth}
 DefaultGroupName={#MagickPackageName} {#MagickPackageVersion} Q{#QuantumDepth}
 Compression=bzip/9

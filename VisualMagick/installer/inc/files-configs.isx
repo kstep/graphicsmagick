@@ -8,11 +8,21 @@
 ;
 #endif
 
+#ifdef MagickStaticPackage
+  #define MagickConfigDirectory "{app}"
+#else
+  #define MagickConfigDirectory "{app}\config"
+  #define MagickModulesDirectory "{app}\modules\coders"
+#endif
+
 ; Configuration files
-Source: "..\..\magick\colors.mgk"; DestDir: "{app}\config"; Flags: confirmoverwrite
-Source: "..\..\magick\log.mgk"; DestDir: "{app}\config"; Flags: confirmoverwrite
-Source: "..\bin\delegates.mgk"; DestDir: "{app}\config"; Flags: confirmoverwrite
-Source: "..\..\magick\magic.mgk"; DestDir: "{app}\config"; Flags: confirmoverwrite
-Source: "..\..\coders\modules.mgk"; DestDir: "{app}\modules\coders"; Flags: confirmoverwrite
-Source: "..\bin\type-ghostscript.mgk"; DestDir: "{app}\config"; Flags: confirmoverwrite
-Source: "..\bin\type.mgk"; DestDir: "{app}\config"; Flags: confirmoverwrite
+Source: "..\..\magick\colors.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+Source: "..\..\magick\log.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+Source: "..\bin\delegates.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+Source: "..\..\magick\magic.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+Source: "..\bin\type-ghostscript.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+Source: "..\bin\type.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+
+#ifdef MagickModulesDirectory
+Source: "..\..\coders\modules.mgk"; DestDir: {#MagickModulesDirectory}; Flags: confirmoverwrite
+#endif
