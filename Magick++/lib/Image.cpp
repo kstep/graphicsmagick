@@ -537,13 +537,12 @@ void Magick::Image::draw ( const Magick::Drawable &drawable_ )
   DrawInfo *drawInfo
     = options()->drawInfo();
 
-  char buffer[MaxTextExtent + 1];
-  ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << drawable_ << ends;
+  ostrstream primitive;
+  primitive << drawable_ << ends;
+  drawInfo->primitive = primitive.str();
 
-  drawInfo->primitive = buffer;
-  // cout << "Primitive:" << drawInfo->primitive << endl;
   DrawImage( image(), drawInfo );
+
   drawInfo->primitive = 0;
 
   throwImageException();
@@ -557,21 +556,20 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
   DrawInfo *drawInfo
     = options()->drawInfo();
 
-  char buffer[256000]; //FIXME -- this is rediculous.
-  ostrstream buffstr( buffer, sizeof(buffer));
+  ostrstream primitive;
+  bool firstPrimitive = true;
 
   std::list<Magick::Drawable>::const_iterator p = drawable_.begin();
   while ( p != drawable_.end() )
     {
-//       cout << "\"" << *p << "\"" << endl;
-      if (buffer[0] != '\0' )
-	buffstr << endl;
-      buffstr << *p;
+      if ( !firstPrimitive )
+	primitive << endl;
+      primitive << *p;
+      firstPrimitive = false;
       ++p;
     }
 
-  drawInfo->primitive = buffer;
-  //cout << "Primitive:" << drawInfo->primitive << endl;
+  drawInfo->primitive = primitive.str();
   DrawImage( image(), drawInfo );
   drawInfo->primitive = 0;
 
