@@ -311,6 +311,7 @@ static void CompositeUsage(void)
       "-dispose method      GIF disposal method",
       "-dissolve value      dissolve the two images a given percent",
       "-dither              apply Floyd/Steinberg error diffusion to image",
+      "-encoding type       type of font encoding",
       "-endian type         LSB or MSB",
       "-filter type         use this filter when resizing an image",
       "-font name           font for rendering text",
@@ -795,6 +796,16 @@ unsigned int CompositeUtility(int argc,char **argv)
       }
       case 'e':
       {
+        if (LocaleCompare("encoding",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"Missing encoding type",option);
+              }
+            break;
+          }
         if (LocaleCompare("endian",option+1) == 0)
           {
             image_info->endian=UndefinedEndian;

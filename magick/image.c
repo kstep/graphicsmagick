@@ -4149,6 +4149,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=emboss_image;
             continue;
           }
+        if (LocaleCompare("-encoding",option) == 0)
+          {
+            (void) CloneString(&draw_info->encoding,argv[++i]);
+            continue;
+          }
         if (LocaleCompare("endian",option+1) == 0)
           {
             EndianType

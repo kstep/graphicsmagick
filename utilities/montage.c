@@ -103,6 +103,7 @@ static void MontageUsage(void)
       "-dispose method      GIF disposal method",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-draw string         annotate the image with a graphic primitive",
+      "-encoding type       type of font encoding",
       "-endian type         LSB or MSB",
       "-fill color          color to use when filling a graphic primitive",
       "-filter type         use this filter when resizing an image",
@@ -644,6 +645,16 @@ static unsigned int MontageUtility(int argc,char **argv)
       }
       case 'e':
       {
+        if (LocaleCompare("encoding",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"Missing encoding type",option);
+              }
+            break;
+          }
         if (LocaleCompare("endian",option+1) == 0)
           {
             image_info->endian=UndefinedEndian;

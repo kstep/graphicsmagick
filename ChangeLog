@@ -1,5 +1,8 @@
+2002-06-05  Cristy  <cristy@mystic.es.dupont.com>
+	* Added -encoding option to command line utilities.
+
 2002-06-02  Cristy  <cristy@mystic.es.dupont.com>
-  * ImageMagick, version 5.4.6 released.
+	* ImageMagick, version 5.4.6 released.
 
 2002-05-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * ImageMagick may now be built (static build only) using the

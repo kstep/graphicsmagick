@@ -182,6 +182,7 @@ static void ConvertUsage(void)
       "-draw string         annotate the image with a graphic primitive",
       "-edge radius         apply a filter to detect edges in the image",
       "-emboss radius       emboss an image",
+      "-encoding type       type of font encoding",
       "-endian type         LSB or MSB",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-equalize            perform histogram equalization to an image",
@@ -814,6 +815,16 @@ static unsigned int ConvertUtility(int argc,char **argv)
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                   MagickFatalError(OptionFatalError,"Missing radius",option);
+              }
+            break;
+          }
+        if (LocaleCompare("encoding",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"Missing encoding type",option);
               }
             break;
           }

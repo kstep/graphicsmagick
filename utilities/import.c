@@ -108,6 +108,7 @@ static void ImportUsage(void)
       "-dispose method      GIF disposal method",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-frame               include window manager frame",
+      "-encoding type       type of font encoding",
       "-endian type         LSB or MSB",
       "-geometry geometry   perferred size or location of the image",
       "-interlace type      None, Line, Plane, or Partition",
@@ -576,6 +577,16 @@ int main(int argc,char **argv)
       }
       case 'e':
       {
+        if (LocaleCompare("encoding",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"Missing encoding type",option);
+              }
+            break;
+          }
         if (LocaleCompare("endian",option+1) == 0)
           {
             image_info->endian=UndefinedEndian;
