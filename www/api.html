@@ -34,7 +34,7 @@ Methods to Constitute an Image</a></dd>
 Image Methods</a></dd>
 
 <dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/zoom.html">Methods
+<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/resize.html">Methods
 to Resize an Image</a></dd>
 
 <dd>
@@ -150,7 +150,7 @@ format.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Image
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *image,
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *zoom_image;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *resize_image;
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ImageInfo
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *image_info;
@@ -168,11 +168,11 @@ format.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turn the image into a thumbnail.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; zoom_image=ZoomImage(image,106,80,&amp;exception);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (zoom_image == (Image *) NULL)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; resize_image=ResizeImage(image,106,80,LanczosFilter,1.0,&amp;exception);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (resize_image == (Image *) NULL)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.reason,exception.description);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(image);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=zoom_image;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=resize_image;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Write the image as PNG and destroy it.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
