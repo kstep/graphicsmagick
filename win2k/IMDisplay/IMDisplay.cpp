@@ -57,12 +57,6 @@ BOOL CIMDisplayApp::InitInstance()
 	//  of your final executable, you should remove from the following
 	//  the specific initialization routines you do not need.
 
-#ifdef _AFXDLL
-	Enable3dControls();			// Call this when using MFC in a shared DLL
-#else
-	Enable3dControlsStatic();	// Call this when linking to MFC statically
-#endif
-
 	// Change the registry key under which our settings are stored.
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization.
@@ -74,13 +68,56 @@ BOOL CIMDisplayApp::InitInstance()
 	//  serve as the connection between documents, frame windows and views.
 
 	CMultiDocTemplate* pDocTemplate;
+
+        // JPEG (default)
 	pDocTemplate = new CMultiDocTemplate(
-		IDR_IMDISPTYPE,
+		IDR_IMJPEGTYPE,
 		RUNTIME_CLASS(CIMDisplayDoc),
 		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
 		RUNTIME_CLASS(CIMDisplayView));
 	AddDocTemplate(pDocTemplate);
 
+        // BMP
+	pDocTemplate = new CMultiDocTemplate(
+		IDR_IMBMPTYPE,
+		RUNTIME_CLASS(CIMDisplayDoc),
+		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
+		RUNTIME_CLASS(CIMDisplayView));
+	AddDocTemplate(pDocTemplate);
+
+        // EPS
+        pDocTemplate = new CMultiDocTemplate(
+	        IDR_IMEPSTYPE,
+	        RUNTIME_CLASS(CIMDisplayDoc),
+	        RUNTIME_CLASS(CChildFrame), // custom MDI child frame
+	        RUNTIME_CLASS(CIMDisplayView));
+	AddDocTemplate(pDocTemplate);
+
+        // GIF
+        pDocTemplate = new CMultiDocTemplate(
+	        IDR_IMGIFTYPE,
+	        RUNTIME_CLASS(CIMDisplayDoc),
+	        RUNTIME_CLASS(CChildFrame), // custom MDI child frame
+	        RUNTIME_CLASS(CIMDisplayView));
+	AddDocTemplate(pDocTemplate);
+
+        // JPEG
+	pDocTemplate = new CMultiDocTemplate(
+		IDR_IMJPEGTYPE,
+		RUNTIME_CLASS(CIMDisplayDoc),
+		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
+		RUNTIME_CLASS(CIMDisplayView));
+	AddDocTemplate(pDocTemplate);
+
+        // MIFF
+        pDocTemplate = new CMultiDocTemplate(
+	        IDR_IMMIFFTYPE,
+	        RUNTIME_CLASS(CIMDisplayDoc),
+	        RUNTIME_CLASS(CChildFrame), // custom MDI child frame
+	        RUNTIME_CLASS(CIMDisplayView));
+	AddDocTemplate(pDocTemplate);
+
+        // PNG
 	pDocTemplate = new CMultiDocTemplate(
 		IDR_IMPNGTYPE,
 		RUNTIME_CLASS(CIMDisplayDoc),
@@ -88,6 +125,7 @@ BOOL CIMDisplayApp::InitInstance()
 		RUNTIME_CLASS(CIMDisplayView));
 	AddDocTemplate(pDocTemplate);
 
+        // TIFF
 	pDocTemplate = new CMultiDocTemplate(
 		IDR_IMTIFFTYPE,
 		RUNTIME_CLASS(CIMDisplayDoc),
@@ -95,11 +133,20 @@ BOOL CIMDisplayApp::InitInstance()
 		RUNTIME_CLASS(CIMDisplayView));
 	AddDocTemplate(pDocTemplate);
 
+        // SVG
 	pDocTemplate = new CMultiDocTemplate(
-		IDR_IMBMPTYPE,
+		IDR_IMSVGTYPE,
 		RUNTIME_CLASS(CIMDisplayDoc),
 		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
 		RUNTIME_CLASS(CIMDisplayView));
+	AddDocTemplate(pDocTemplate);
+
+        // WMF
+        pDocTemplate = new CMultiDocTemplate(
+	        IDR_IMWMFTYPE,
+	        RUNTIME_CLASS(CIMDisplayDoc),
+	        RUNTIME_CLASS(CChildFrame), // custom MDI child frame
+	        RUNTIME_CLASS(CIMDisplayView));
 	AddDocTemplate(pDocTemplate);
 
 	// create main MDI Frame window
@@ -113,12 +160,14 @@ BOOL CIMDisplayApp::InitInstance()
 	ParseCommandLine(cmdInfo);
 
 	// BOGUS: find a way to generalize this!
-	char	exePath[2048];
-	DWORD	pathSize = GetModuleFileName( NULL, exePath, 2048 );
-	exePath[ pathSize ] = 0;
-	char*	ps = (char*)(exePath + pathSize - 1);
-	while ( *ps != '\\' )	{ *ps = 0; ps--; }	// shrink it!
-    MagickLib::InitializeMagick( exePath );
+	//char	exePath[2048];
+	//DWORD	pathSize = GetModuleFileName( NULL, exePath, 2048 );
+	//exePath[ pathSize ] = 0;
+	//char*	ps = (char*)(exePath + pathSize - 1);
+	//while ( *ps != '\\' )	{ *ps = 0; ps--; }	// shrink it!
+        //MagickLib::InitializeMagick( exePath );
+
+        MagickLib::InitializeMagick( NULL );
 
 	// we do this to init the coder list, but will use it
 	// more seriously in the future when we actually build up

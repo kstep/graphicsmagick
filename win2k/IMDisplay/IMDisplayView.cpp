@@ -103,6 +103,7 @@ void CIMDisplayView::OnInitialUpdate()
     CIMDisplayDoc* pDoc = GetDocument();
     ASSERT_VALID(pDoc);
 
+    // Save initial image geometry
     mBaseGeo.width( pDoc->GetImage().columns() );
     mBaseGeo.height( pDoc->GetImage().rows() );
 
@@ -780,7 +781,11 @@ void CIMDisplayView::DoDisplayImage( Image &inImage, CDC* pDC )
   // make sure we have a valid destination DC
   if (pDC != NULL)
     {
+      // if we don't already have a ready offscreen, then prepare one
+      if ( !mOffscreenDC ) {
+        //
         // Set up the Windows bitmap header
+        //
         BITMAPINFOHEADER bmi;
         bmi.biSize = sizeof(BITMAPINFOHEADER);	// Size of structure
         bmi.biWidth = inImage.columns();	// Bitmaps width in pixels
@@ -808,7 +813,10 @@ void CIMDisplayView::DoDisplayImage( Image &inImage, CDC* pDC )
 
         if ( !hBitmap )
         {
-          DoDisplayError("DoDisplayImage","Windows failed to allocate bitmap.");
+          CString message;
+          message.FormatMessage("Windows failed to allocate bitmap of size %1!d!x%2!d!!", 
+          inImage.rows(), inImage.columns());
+          DoDisplayError("DoDisplayImage",message);
           return;
         }
 
@@ -843,16 +851,14 @@ void CIMDisplayView::DoDisplayImage( Image &inImage, CDC* pDC )
 #endif
           }
 
-      // if we don't already have a ready offscreen, then create it!
-      if ( !mOffscreenDC ) {
+        // Create a display surface
         mOffscreenDC = new CDC();
         mOffscreenDC->CreateCompatibleDC( pDC );
 
-        CRect rectClient;
-        GetClientRect(rectClient);
-
-        // Clear the background
-        mOffscreenDC->FillSolidRect(rectClient,mOffscreenDC->GetBkColor());
+        // Clear the background (Is this really necessary?)
+        //CRect rectClient;
+        //GetClientRect(rectClient);
+        //mOffscreenDC->FillSolidRect(rectClient,mOffscreenDC->GetBkColor());
 
         // Now copy the bitmap to device
         mOffscreenDC->SelectObject( hBitmap );

@@ -1,10 +1,11 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by IMDisplay.rc
 //
 #define IDD_ABOUTBOX                    100
 #define IDR_MAINFRAME                   128
 #define IDR_IMDISPTYPE                  129
+#define IDR_IMJPEGTYPE                  129
 #define IDD_DIALOG_RESIZE               130
 #define IDR_IMPNGTYPE                   131
 #define IDD_DIALOG_ROTATE               131
@@ -12,6 +13,11 @@
 #define IDD_DIALOG_SHEAR                132
 #define IDR_IMBMPTYPE                   133
 #define IDD_DIALOG_ROLL                 133
+#define IDR_IMWMFTYPE                   134
+#define IDR_IMMIFFTYPE                  135
+#define IDR_IMSVGTYPE                   136
+#define IDR_IMEPSTYPE                   137
+#define IDR_IMGIFTYPE                   138
 #define IDC_WIDTH                       1001
 #define IDC_HEIGHT                      1002
 #define IDC_PERCENT                     1003
@@ -41,7 +47,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        132
+#define _APS_NEXT_RESOURCE_VALUE        137
 #define _APS_NEXT_COMMAND_VALUE         32786
 #define _APS_NEXT_CONTROL_VALUE         1009
 #define _APS_NEXT_SYMED_VALUE           101
