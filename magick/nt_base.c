@@ -1964,7 +1964,8 @@ MagickExport DIR *opendir(char *path)
     *entry;
 
   assert(path != (char *) NULL);
-  (void) strncpy(file_specification,path,MaxTextExtent-1);
+  (void) strncpy(file_specification,path,MaxTextExtent-7);
+  file_specification[MaxTextExtent-7]='\0';
   (void) strcat(file_specification,DirectorySeparator);
   entry=MagickAllocateMemory(DIR *,sizeof(DIR));
   if (entry != (DIR *) NULL)
@@ -2026,6 +2027,7 @@ MagickExport struct dirent *readdir(DIR *entry)
   entry->firsttime=FALSE;
   (void) strncpy(entry->file_info.d_name,entry->Win32FindData.cFileName,
     MaxTextExtent-1);
+  entry->file_info.d_name[MaxTextExtent-1]='\0';
   entry->file_info.d_namlen=strlen(entry->file_info.d_name);
   return(&entry->file_info);
 }

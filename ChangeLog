@@ -1,3 +1,9 @@
+2004-12-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/nt_base.c (opendir): Ensure that data may not overwrite
+	the stack.
+	(readdir): Ensure that data may not overwrite the stack.
+
 2004-11-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Pick up font search code from CVS head so that
