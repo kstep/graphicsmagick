@@ -1407,7 +1407,7 @@ MagickExport unsigned int GetImageQuantizeError(Image *image)
       pixel.green=p->green-(double) image->colormap[index].green;
       pixel.blue=p->blue-(double) image->colormap[index].blue;
       for (count=1; (x+count) < (long) image->columns; count++)
-        if (!ColorMatch(p,p+count) || !ColorMatch(q,q+count))
+        if (!ColorMatch(p,p+count))
           break;
       distance=count*pixel.red*pixel.red+count*pixel.green*pixel.green+
         count*pixel.blue*pixel.blue;
