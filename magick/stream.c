@@ -429,12 +429,12 @@ MagickExport unsigned int ReadStream(const ImageInfo *image_info,
 static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
-  StreamInfo
-    *stream_info;
-
-  size_t
+  off_t
     length,
     number_pixels;
+
+  StreamInfo
+    *stream_info;
 
   /*
     Validate pixel cache geometry.
@@ -472,7 +472,7 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
   if (stream_info->pixels == (PixelPacket *) NULL)
     stream_info->pixels=(PixelPacket *) AcquireMemory(length);
   else
-    if (number_pixels != (size_t) (columns*rows))
+    if (number_pixels != (off_t) (columns*rows))
       ReacquireMemory((void **) &stream_info->pixels,length);
   if (stream_info->pixels == (void *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",

@@ -108,6 +108,11 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     } \
 }
 
+  Image
+    *clone_image,
+    *image,
+    *stegano_image;
+
   ImageInfo
     *clone_info;
 
@@ -129,11 +134,6 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   size_t
     i,
     j;
-
-  Image
-    *clone_image,
-    *image,
-    *stegano_image;
 
   /*
     Initialize Image structure.

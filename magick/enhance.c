@@ -683,6 +683,9 @@ MagickExport unsigned int NormalizeImage(Image *image)
     gray_value,
     *normalize_map;
 
+  off_t
+    threshold_intensity;
+
   register int
     i,
     intensity,
@@ -691,9 +694,6 @@ MagickExport unsigned int NormalizeImage(Image *image)
   register PixelPacket
     *p,
     *q;
-
-  size_t
-    threshold_intensity;
 
   unsigned int
     high,
@@ -729,7 +729,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
   /*
     Find the histogram boundaries by locating the 1 percent levels.
   */
-  threshold_intensity=(size_t) (image->columns*image->rows)/100;
+  threshold_intensity=(off_t) (image->columns*image->rows)/100;
   intensity=0;
   for (low=0; low < MaxRGB; low++)
   {

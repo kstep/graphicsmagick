@@ -621,15 +621,15 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows,const char *map,
   const StorageType type,void *pixels)
 {
-  register PixelPacket
-    *p;
+  off_t
+    number_pixels;
 
-  register size_t
+  register off_t
     i,
     j;
 
-  size_t
-    number_pixels;
+  register PixelPacket
+    *p;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

@@ -227,7 +227,7 @@ static unsigned int CompressCache(Cache cache)
   int
     y;
 
-  size_t
+  off_t
     count;
 
   assert(cache != (Cache) NULL);
@@ -256,7 +256,7 @@ static unsigned int CompressCache(Cache cache)
   for (y=0; y < (int) cache_info->rows; y++)
   {
     count=read(cache_info->file,pixels,cache_info->columns*sizeof(PixelPacket));
-    if ((size_t) gzwrite(file,pixels,count) != count)
+    if ((off_t) gzwrite(file,pixels,count) != count)
       break;
   }
   if (y == (int) cache_info->rows)
@@ -266,7 +266,7 @@ static unsigned int CompressCache(Cache cache)
       {
         count=read(cache_info->file,pixels,
           cache_info->columns*sizeof(IndexPacket));
-        if ((size_t) gzwrite(file,pixels,count) != count)
+        if ((off_t) gzwrite(file,pixels,count) != count)
           break;
       }
   LiberateMemory((void **) &pixels);
@@ -335,12 +335,12 @@ static void DestroyCacheInfo(Cache cache)
   CacheInfo
     *cache_info;
 
-  register int
-    id;
-
-  size_t
+  off_t
     length,
     number_pixels;
+
+  register int
+    id;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -1017,7 +1017,7 @@ MagickExport unsigned int OpenCache(Image *image)
   char
     null = 0;
 
-  size_t
+  off_t
     length,
     number_pixels,
     offset;
@@ -1113,7 +1113,7 @@ MagickExport unsigned int OpenCache(Image *image)
           /*
             Create in-memory pixel cache.
           */
-          (void) GetCacheMemory(-(off_t) length);
+          (void) GetCacheMemory(-length);
           cache_info->storage_class=image->storage_class;
           cache_info->colorspace=image->colorspace;
           cache_info->type=MemoryCache;
@@ -1211,6 +1211,7 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 
   off_t
     count,
+    number_pixels,
     offset;
 
   register NexusInfo
@@ -1221,9 +1222,6 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 
   register int
     y;
-
-  size_t
-    number_pixels;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -1450,12 +1448,12 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const unsigned int id,
   CacheInfo
     *cache_info;
 
-  register NexusInfo
-    *nexus_info;
-
-  size_t
+  off_t
     length,
     number_pixels;
+
+  register NexusInfo
+    *nexus_info;
 
   assert(image != (Image *) NULL);
   cache_info=(CacheInfo *) image->cache;
@@ -1697,27 +1695,29 @@ static unsigned int SyncPixelCache(Image *image)
         nexus_info->columns,nexus_info->rows);
       if ((p != (PixelPacket *) NULL) && (q != (PixelPacket *) NULL))
         {
+          int
+            y;
+
           register PixelPacket
             *r;
 
-          register size_t
-            i;
-
-          size_t
-            number_pixels;
+          register int
+            x;
 
           /*
             Apply clip mask.
           */
           r=nexus_info->pixels;
-          number_pixels=nexus_info->columns*nexus_info->rows;
-          for (i=0;  i < number_pixels; i++)
+          for (y=0; y < (int) nexus_info->rows; y++)
           {
-            if (q->opacity == TransparentOpacity)
-              *r=(*p);
-            p++;
-            q++;
-            r++;
+            for (x=0; x < (int) nexus_info->columns; x++)
+            {
+              if (q->opacity == TransparentOpacity)
+                *r=(*p);
+              p++;
+              q++;
+              r++;
+            }
           }
         }
       CloseCacheView(mask_view);
@@ -1772,7 +1772,7 @@ static unsigned int UncompressCache(Cache cache)
   int
     y;
 
-  size_t
+  off_t
     count;
 
   assert(cache != (Cache) NULL);
@@ -1802,7 +1802,7 @@ static unsigned int UncompressCache(Cache cache)
   for (y=0; y < (int) cache_info->rows; y++)
   {
     count=gzread(file,pixels,cache_info->columns*sizeof(PixelPacket));
-    if ((size_t) write(cache_info->file,pixels,count) != count)
+    if ((off_t) write(cache_info->file,pixels,count) != count)
       break;
   }
   if (y == (int) cache_info->rows)
@@ -1811,7 +1811,7 @@ static unsigned int UncompressCache(Cache cache)
       for (y=0; y < (int) cache_info->rows; y++)
       {
         count=gzread(file,pixels,cache_info->columns*sizeof(IndexPacket));
-        if ((size_t) write(cache_info->file,pixels,count) != count)
+        if ((off_t) write(cache_info->file,pixels,count) != count)
           break;
       }
   LiberateMemory((void **) &pixels);
@@ -1859,6 +1859,7 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 
   off_t
     count,
+    number_pixels,
     offset;
 
   register NexusInfo
@@ -1869,9 +1870,6 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 
   register int
     y;
-
-  size_t
-    number_pixels;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;

@@ -1030,7 +1030,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 */
 MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
 {
-  off_t
+  size_t
     count;
 
   assert(image != (Image *) NULL);
@@ -1043,7 +1043,7 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
       */
       count=Min(length,image->blob.length-image->blob.offset);
       if (count > 0)
-        memcpy(data,image->blob.data+image->blob.offset,(size_t) count);
+        memcpy(data,image->blob.data+image->blob.offset,count);
       image->blob.offset+=count;
       if (count < length)
         image->blob.eof=True;
@@ -1131,7 +1131,7 @@ MagickExport size_t ReadBlobBlock(Image *image,unsigned char *data)
 */
 MagickExport int ReadBlobByte(Image *image)
 {
-  int
+  size_t
     count;
 
   unsigned char
@@ -1692,7 +1692,7 @@ MagickExport unsigned int UnmapBlob(void *map,const size_t length)
 */
 MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 {
-  off_t
+  size_t
     count;
 
   assert(image != (Image *) NULL);

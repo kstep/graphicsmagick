@@ -2946,9 +2946,6 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
     *p,
     *q;
 
-  size_t
-    number_pixels;
-
   /*
     Initialize measurement.
   */
@@ -2999,8 +2996,8 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
   normalize=3.0*(MaxRGB+1)*(MaxRGB+1);
   if (image->matte)
     normalize=4.0*(MaxRGB+1)*(MaxRGB+1);
-  number_pixels=image->columns*image->rows;
-  image->mean_error_per_pixel=(unsigned int) (total_error/number_pixels);
+  image->mean_error_per_pixel=(unsigned int)
+    (total_error/image->columns/image->rows);
   image->normalized_mean_error=image->mean_error_per_pixel/normalize;
   image->normalized_maximum_error=maximum_error_per_pixel/normalize;
   return(image->normalized_mean_error == 0.0);

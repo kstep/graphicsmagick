@@ -2565,6 +2565,7 @@ MagickExport void TemporaryFilename(char *filename)
 #endif
 #if defined(macintosh)
   (void) getcwd(filename,MaxTextExtent >> 1);
+  (void) tmpnam(filename+strlen(filename));
 #endif
 #if defined(vms)
   (void) tmpnam(filename+strlen(filename));

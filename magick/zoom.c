@@ -1079,8 +1079,8 @@ MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
     Resize image.
   */
   quantum=0;
-  if ((size_t) (columns*(image->rows+rows)) <
-      (size_t) (rows*(image->columns+columns)))
+  if ((off_t) (columns*(image->rows+rows)) <
+      (off_t) (rows*(image->columns+columns)))
     {
       source_image=CloneImage(image,columns,image->rows,True,exception);
       if (source_image == (Image *) NULL)

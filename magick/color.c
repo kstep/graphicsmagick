@@ -91,7 +91,7 @@ typedef struct _ColorPacket
   unsigned short
     index;
 
-  size_t
+  off_t
     count;
 } ColorPacket;
 
@@ -100,7 +100,7 @@ typedef struct _NodeInfo
   unsigned char
     level;
 
-  size_t
+  off_t
     number_unique;
 
   ColorPacket
@@ -127,7 +127,7 @@ typedef struct _CubeInfo
   unsigned int
     progress;
 
-  size_t
+  off_t
     colors;
 
   unsigned int
@@ -527,7 +527,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
 %
 %  The format of the GetNumberColors method is:
 %
-%      number_colors=GetNumberColors(image,file)
+%      number_colors=GetNumberColors(Image *image,FILE *file)
 %
 %  A description of each parameter follows.
 %
@@ -545,7 +545,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
 %
 %
 */
-MagickExport size_t GetNumberColors(Image *image,FILE *file)
+MagickExport off_t GetNumberColors(Image *image,FILE *file)
 {
 #define ComputeImageColorsText  "  Compute image colors...  "
 
@@ -558,6 +558,9 @@ MagickExport size_t GetNumberColors(Image *image,FILE *file)
   NodeInfo
     *node_info;
 
+  off_t
+    number_colors;
+
   register int
     i,
     x;
@@ -569,9 +572,6 @@ MagickExport size_t GetNumberColors(Image *image,FILE *file)
     id,
     index,
     level;
-
-  size_t
-    number_colors;
 
   /*
     Initialize color description tree.
