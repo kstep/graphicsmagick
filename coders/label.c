@@ -391,9 +391,10 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
       ThrowReaderException(DelegateWarning,"Unable to read font",image);
     }
   (void) FT_Set_Char_Size(face,
-    64.0*image_info->pointsize,64.0*image_info->pointsize,
-    image->x_resolution == 0.0 ? 72.0 : image->x_resolution,
-    image->y_resolution == 0.0 ? 72.0 : image->y_resolution);
+    (long int) (64.0*image_info->pointsize),
+    (long int) (64.0*image_info->pointsize),
+    (unsigned int) (image->x_resolution == 0.0 ? 72.0 : image->x_resolution),
+    (unsigned int) (image->y_resolution == 0.0 ? 72.0 : image->y_resolution));
   /*
     Convert to Unicode.
   */
@@ -414,10 +415,10 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   bounds.x2=(-32000);
   bounds.y1=32000;
   bounds.y2=(-32000);
-  affine.xx=65536.0*image_info->affine[0];
-  affine.yx=(-65536.0*image_info->affine[1]);
-  affine.xy=(-65536.0*image_info->affine[2]);
-  affine.yy=65536.0*image_info->affine[3];
+  affine.xx=(FT_Fixed) (65536.0*image_info->affine[0]);
+  affine.yx=(FT_Fixed) (-65536.0*image_info->affine[1]);
+  affine.xy=(FT_Fixed) (-65536.0*image_info->affine[2]);
+  affine.yy=(FT_Fixed) (65536.0*image_info->affine[3]);
   for (i=0; i < length; i++)
   {
     glyphs[i].id=FT_Get_Char_Index(face,unicode[i]);
@@ -452,13 +453,13 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
       bounds.y2=bounding_box.yMax;
     origin.x+=face->glyph->advance.x;
   }
-  image->columns=bounds.x2-bounds.x1+1.0;
-  image->rows=bounds.y2-bounds.y1+1.0;
+  image->columns=(unsigned int) (bounds.x2-bounds.x1+1.0);
+  image->rows=(unsigned int) (bounds.y2-bounds.y1+1.0);
   if ((image_info->affine[0] != 0.0) && (image_info->affine[1] != 0.0) &&
       (image_info->affine[2] != 0.0) && (image_info->affine[4] != 0.0))
     {
-      image->columns+=3.0;
-      image->rows+=3.0;
+      image->columns+=3;
+      image->rows+=3;
     }
   SetImage(image,TransparentOpacity);
   if (face->family_name != (char *) NULL)
@@ -482,8 +483,8 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     glyph=(&bitmap->bitmap);
     if ((glyph->width == 0) || (glyph->rows == 0))
       continue;
-    x=bitmap->left-bounds.x1+0.5;
-    y=image->rows-bitmap->top+bounds.y1+0.5;
+    x=(unsigned int) (bitmap->left-bounds.x1+0.5);
+    y=(unsigned int) (image->rows-bitmap->top+bounds.y1+0.5);
     q=GetImagePixels(image,x,y,glyph->width,glyph->rows);
     if (q == (PixelPacket *) NULL)
       continue;
@@ -973,9 +974,9 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
         *p;
 
       crop_info.width=0;
-      crop_info.height=ceil(extent.y/2.0);
+      crop_info.height=(unsigned int) ceil(extent.y/2.0);
       crop_info.x=0;
-      crop_info.y=floor(extent.y/8.0);
+      crop_info.y=(int) floor(extent.y/8.0);
       if (image == (Image *) NULL)
         return(image);
       target=GetOnePixel(image,0,0);
@@ -1004,7 +1005,7 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->opacity=Intensity(*q);
+      q->opacity=(Quantum) Intensity(*q);
       q->red=image_info->fill.red;
       q->green=image_info->fill.green;
       q->blue=image_info->fill.blue;
@@ -1174,7 +1175,7 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->opacity=Intensity(*q);
+      q->opacity=(Quantum) Intensity(*q);
       q->red=image_info->fill.red;
       q->green=image_info->fill.green;
       q->blue=image_info->fill.blue;
@@ -1200,8 +1201,8 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
             height,
             width;
 
-          width=image_info->affine[0]*image->columns;
-          height=image_info->affine[3]*image->rows;
+          width=(unsigned int) (image_info->affine[0]*image->columns);
+          height=(unsigned int) (image_info->affine[3]*image->rows);
           scale_image=ZoomImage(image,width,height,exception);
           if (scale_image != (Image *) NULL)
             {

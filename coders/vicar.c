@@ -494,7 +494,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
     q=pixels;
     for (x=0; x < (int) image->columns; x++)
     {
-      *q++=DownScale(Intensity(*p));
+      *q++=(unsigned char) DownScale(Intensity(*p));
       p++;
     }
     (void) WriteBlob(image,q-pixels,(char *) pixels);

@@ -286,9 +286,9 @@ MagickExport void HSLTransform(const double hue,const double saturation,
     (luminosity+saturation-luminosity*saturation);
   if ((saturation == 0.0) || (hue == -1.0))
     {
-      *red=MaxRGB*luminosity+0.5;
-      *green=MaxRGB*luminosity+0.5;
-      *blue=MaxRGB*luminosity+0.5;
+      *red=(unsigned char) (MaxRGB*luminosity+0.5);
+      *green=(unsigned char) (MaxRGB*luminosity+0.5);
+      *blue=(unsigned char) (MaxRGB*luminosity+0.5);
       return;
     }
   y=2.0*luminosity-v;
@@ -304,9 +304,9 @@ MagickExport void HSLTransform(const double hue,const double saturation,
     case 5: r=v; g=y; b=z; break;
     default: r=v; g=x; b=y; break;
   }
-  *red=MaxRGB*r+0.5;
-  *green=MaxRGB*g+0.5;
-  *blue=MaxRGB*b+0.5;
+  *red=(unsigned char) (MaxRGB*r+0.5);
+  *green=(unsigned char) (MaxRGB*g+0.5);
+  *blue=(unsigned char) (MaxRGB*b+0.5);
 }
 
 /*
@@ -508,11 +508,14 @@ MagickExport PixelPacket InterpolateColor(Image *image,const double x_offset,
   y-=floor(y);
   alpha=1.0-x;
   beta=1.0-y;
-  color.red=beta*(alpha*p.red+x*q.red)+y*(alpha*r.red+x*s.red)+0.5;
-  color.green=beta*(alpha*p.green+x*q.green)+y*(alpha*r.green+x*s.green)+0.5;
-  color.blue=beta*(alpha*p.blue+x*q.blue)+y*(alpha*r.blue+x*s.blue)+0.5;
-  color.opacity=
-    beta*(alpha*p.opacity+x*q.opacity)+y*(alpha*r.opacity+x*s.opacity)+0.5;
+  color.red=(Quantum)
+    (beta*(alpha*p.red+x*q.red)+y*(alpha*r.red+x*s.red)+0.5);
+  color.green=(Quantum)
+    (beta*(alpha*p.green+x*q.green)+y*(alpha*r.green+x*s.green)+0.5);
+  color.blue=(Quantum)
+    (beta*(alpha*p.blue+x*q.blue)+y*(alpha*r.blue+x*s.blue)+0.5);
+  color.opacity=(Quantum)
+    (beta*(alpha*p.opacity+x*q.opacity)+y*(alpha*r.opacity+x*s.opacity)+0.5);
   return(color);
 }
 

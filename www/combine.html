@@ -574,44 +574,18 @@ To use a TrueType font, precede the TrueType filename with a <tt>@</tt>
 <table BORDER=0 WIDTH="65%" >
 <tr>
 <td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=-2>-geometry
-<i>&lt;width>x&lt;height>{+-}&lt;x
-offset>{+-}&lt;y offset>{%}{!}{&lt;}{>}</i></font></font></font></b></td>
+<i>{+-}&lt;x offset>{+-}&lt;y offset>{%}{!}{&lt;}{>}</i></font></font>
+</font></b></td>
 </tr>
 </table>
 
 <dd>
-the width and height of the image.</dd>
+location of the composite image.</dd>
 
 <dd>
-By default, the width and height are maximum values. That is, the image
-is expanded or contracted to fit the width and height value while maintaining
-the aspect ratio of the image. Append an exclamation point to the geometry
-to force the image size to exactly the size you specify. For example, if
-you specify <b>640x480!</b> the image width is set to 640 pixels and height
-to 480. If only one factor is specified, both the width and height assume
-the value.</dd>
-
-<dd>
-To specify a percentage width or height instead, append
-<b>%</b>. The image
-size is multiplied by the width and height percentages to obtain the final
-image dimensions. To increase the size of an image, use a value greater
-than 100 (e.g. 125%). To decrease an image's size, use a percentage less
-than 100.</dd>
-
-<dd>
-Use <b>></b> to change the dimensions of the image
-<i>only</i> if its size
-exceeds the geometry specification. <b>&lt;</b> resizes the image <i>only</i>
-if its dimensions is less than the geometry specification. For example,
-if you specify <b>640x480></b> and the image size is 512x512, the image
-size does not change. However, if the image is 1024x1024, it is resized
-to 640x480.</dd>
-
-<dd>
-By default the images are combined relative to the image gravity (see <b>-gravity</b>).
-Use &lt;<b>x</b> <i>offset</i>> and &lt;<b>y</b> <i>offset</i>> to specify
-a particular location to combine the images.</dd>
+By default the images are combined relative to the image gravity (see
+<b>-gravity</b>).  Use &lt;<b>x</b> <i>offset</i>> and &lt;<b>y</b>
+<i>offset</i>> to specify a particular location to combine the images.</dd>
 
 <table BORDER=0 WIDTH="65%" >
 <tr>

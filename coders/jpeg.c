@@ -249,7 +249,98 @@ static void JPEGErrorHandler(j_common_ptr jpeg_info)
   longjmp(error_recovery,1);
 }
 
-static boolean ReadColorProfile(j_decompress_ptr jpeg_info)
+static boolean ReadComment(j_decompress_ptr jpeg_info)
+{
+  char
+    *comment;
+
+  Image
+    *image;
+
+  long int
+    length;
+
+  register char
+    *p;
+
+  /*
+    Determine length of comment.
+  */
+  image=(Image *) jpeg_info->client_data;
+  length=GetCharacter(jpeg_info) << 8;
+  length+=GetCharacter(jpeg_info);
+  length-=2;
+  comment=(char *) AcquireMemory(length+1);
+  if (comment == (char *) NULL)
+    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      (char *) NULL);
+  /*
+    Read comment.
+  */
+  p=comment;
+  while (--length >= 0)
+    *p++=GetCharacter(jpeg_info);
+  *p='\0';
+  (void) SetImageAttribute(image,"Comment",comment);
+  LiberateMemory((void **) &comment);
+  return(True);
+}
+
+static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
+{
+  Image
+    *image;
+
+  long int
+    length;
+
+  register int
+    i;
+
+  register unsigned char
+    *p;
+
+  /*
+    Allocate generic profile.
+  */
+  image=(Image *) jpeg_info->client_data;
+  i=image->generic_profiles;
+  if (image->generic_profile == (ProfileInfo *) NULL)
+    image->generic_profile=(ProfileInfo *) AcquireMemory(sizeof(ProfileInfo));
+  else
+    ReacquireMemory((void **) &image->generic_profile,
+      (i+1)*sizeof(ProfileInfo));
+  if (image->generic_profile == (ProfileInfo *) NULL)
+    {
+      image->generic_profiles=0;
+      ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+        (char *) NULL);
+    }
+  /*
+    Determine length of generic profile.
+  */
+  image->generic_profile[i].name=AllocateString("");
+  FormatString(image->generic_profile[i].name,"APP%d",
+    jpeg_info->unread_marker-JPEG_APP0);
+  length=GetCharacter(jpeg_info) << 8;
+  length+=GetCharacter(jpeg_info);
+  length-=2;
+  image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);
+  if (image->generic_profile[i].info == (unsigned char *) NULL)
+    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      (char *) NULL);
+  /*
+    Read generic profile.
+  */
+  image->generic_profile[i].length=length;
+  p=image->generic_profile[i].info;
+  while (--length >= 0)
+    *p++=GetCharacter(jpeg_info);
+  image->generic_profiles++;
+  return(True);
+}
+
+static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
 {
   char
     magick[12];
@@ -305,97 +396,7 @@ static boolean ReadColorProfile(j_decompress_ptr jpeg_info)
   return(True);
 }
 
-static boolean ReadComment(j_decompress_ptr jpeg_info)
-{
-  char
-    *comment;
-
-  Image
-    *image;
-
-  long int
-    length;
-
-  register char
-    *p;
-
-  /*
-    Determine length of comment.
-  */
-  image=(Image *) jpeg_info->client_data;
-  length=GetCharacter(jpeg_info) << 8;
-  length+=GetCharacter(jpeg_info);
-  length-=2;
-  comment=(char *) AcquireMemory(length+1);
-  if (comment == (char *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-      (char *) NULL);
-  /*
-    Read comment.
-  */
-  p=comment;
-  while (--length >= 0)
-    *p++=GetCharacter(jpeg_info);
-  *p='\0';
-  (void) SetImageAttribute(image,"Comment",comment);
-  LiberateMemory((void **) &comment);
-  return(True);
-}
-
-static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
-{
-  Image
-    *image;
-
-  register int
-    i,
-    j;
-
-  register unsigned char
-    *p;
-
-  /*
-    Allocate generic profile.
-  */
-  image=(Image *) jpeg_info->client_data;
-  i=image->generic_profiles;
-  if (image->generic_profile == (ProfileInfo *) NULL)
-    image->generic_profile=(ProfileInfo *) AcquireMemory(sizeof(ProfileInfo));
-  else
-    ReacquireMemory((void **) &image->generic_profile,
-      (i+1)*sizeof(ProfileInfo));
-  if (image->generic_profile == (ProfileInfo *) NULL)
-    {
-      image->generic_profiles=0;
-      ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-    }
-  /*
-    Determine length of generic profile.
-  */
-  image->generic_profile[i].name=AllocateString("");
-  FormatString(image->generic_profile[i].name,"APP%d",
-    jpeg_info->unread_marker-JPEG_APP0);
-  image->generic_profile[i].length=GetCharacter(jpeg_info) << 8;
-  image->generic_profile[i].length+=GetCharacter(jpeg_info);
-  image->generic_profile[i].length-=2;
-  image->generic_profile[i].info=(unsigned char *)
-    AcquireMemory(image->generic_profile[i].length+1);
-  if (image->generic_profile[i].info == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-      (char *) NULL);
-  /*
-    Read generic profile.
-  */
-  p=image->generic_profile[i].info;
-  for (j=0; j < image->generic_profile[i].length; j++)
-    *p++=GetCharacter(jpeg_info);
-  *p='\0';
-  image->generic_profiles++;
-  return(True);
-}
-
-static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
+static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
 {
   Image
     *image;
@@ -480,8 +481,8 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
   /*
     Read the payload of this binary data.
   */
-  p=image->iptc_profile.info;
   image->iptc_profile.length=length+tag_length;
+  p=image->iptc_profile.info;
 #ifdef GET_ONLY_IPTC_DATA
   *p++=0x1c;
   *p++=0x02;
@@ -601,8 +602,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_create_decompress(&jpeg_info);
   JPEGSourceManager(&jpeg_info,image);
   jpeg_set_marker_processor(&jpeg_info,JPEG_COM,ReadComment);
-  jpeg_set_marker_processor(&jpeg_info,ICC_MARKER,ReadColorProfile);
-  jpeg_set_marker_processor(&jpeg_info,IPTC_MARKER,ReadNewsProfile);
+  jpeg_set_marker_processor(&jpeg_info,ICC_MARKER,ReadICCProfile);
+  jpeg_set_marker_processor(&jpeg_info,IPTC_MARKER,ReadIPTCProfile);
   for (i=1; i < 16; i++)
     if ((i != 2) && (i != 13) && (i != 14))
       jpeg_set_marker_processor(&jpeg_info,JPEG_APP0+i,ReadGenericProfile);
@@ -638,7 +639,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       scale_factor=(double) jpeg_info.output_width/image->columns;
       if (scale_factor > ((double) jpeg_info.output_height/image->rows))
         scale_factor=(double) jpeg_info.output_height/image->rows;
-      jpeg_info.scale_denom=scale_factor;
+      jpeg_info.scale_denom=(unsigned int) scale_factor;
       jpeg_calc_output_dimensions(&jpeg_info);
     }
   if (image_info->subrange != 0)
@@ -945,7 +946,7 @@ static void TerminateDestination(j_compress_ptr cinfo)
     ERREXIT(cinfo,JERR_FILE_WRITE);
 }
 
-static void WriteColorProfile(j_compress_ptr jpeg_info,Image *image)
+static void WriteICCProfile(j_compress_ptr jpeg_info,Image *image)
 {
   register int
     i,
@@ -976,7 +977,7 @@ static void WriteColorProfile(j_compress_ptr jpeg_info,Image *image)
   }
 }
 
-static void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
+static void WriteIPTCProfile(j_compress_ptr jpeg_info,Image *image)
 {
   int
     roundup;
@@ -1160,9 +1161,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) attribute->value+
         i,(unsigned int) Min(Extent(attribute->value+i),65533));
   if (image->color_profile.length > 0)
-    WriteColorProfile(&jpeg_info,image);
+    WriteICCProfile(&jpeg_info,image);
   if (image->iptc_profile.length > 0)
-    WriteNewsProfile(&jpeg_info,image);
+    WriteIPTCProfile(&jpeg_info,image);
   for (i=0; i < image->generic_profiles; i++)
   {
     register int

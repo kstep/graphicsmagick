@@ -1161,7 +1161,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (int) image->columns; x++)
               {
-                *q++=Intensity(*p);
+                *q++=(unsigned char) Intensity(*p);
                 p++;
               }
               if (image->previous == (Image *) NULL)

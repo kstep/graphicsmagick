@@ -805,12 +805,12 @@ static void DefineColormap(CubeInfo *cube_info,NodeInfo *node_info)
         Colormap entry is defined by the mean color in this cube.
       */
       number_unique=node_info->number_unique;
-      cube_info->colormap[cube_info->colors].red=
-        (node_info->total_red+number_unique/2)/number_unique;
-      cube_info->colormap[cube_info->colors].green=
-        (node_info->total_green+number_unique/2)/number_unique;
-      cube_info->colormap[cube_info->colors].blue=
-        (node_info->total_blue+number_unique/2)/number_unique;
+      cube_info->colormap[cube_info->colors].red=(Quantum)
+        ((node_info->total_red+number_unique/2)/number_unique);
+      cube_info->colormap[cube_info->colors].green=(Quantum)
+        ((node_info->total_green+number_unique/2)/number_unique);
+      cube_info->colormap[cube_info->colors].blue=(Quantum)
+        ((node_info->total_blue+number_unique/2)/number_unique);
       node_info->color_number=cube_info->colors++;
     }
 }
@@ -969,11 +969,12 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
         green_error+=p->error[i].green*p->weights[i];
         blue_error+=p->error[i].blue*p->weights[i];
       }
-      red=(red_error < 0) ? 0 : (red_error > MaxRGB) ? MaxRGB : red_error+0.5;
-      green=(green_error < 0) ? 0 :
-        (green_error > MaxRGB) ? MaxRGB : green_error+0.5;
-      blue=(blue_error < 0) ? 0 :
-        (blue_error > MaxRGB) ? MaxRGB : blue_error+0.5;
+      red=(Quantum)
+        ((red_error < 0) ? 0 : (red_error > MaxRGB) ? MaxRGB : red_error+0.5);
+      green=(Quantum) ((green_error < 0) ? 0 :
+        (green_error > MaxRGB) ? MaxRGB : green_error+0.5);
+      blue=(Quantum) ((blue_error < 0) ? 0 :
+        (blue_error > MaxRGB) ? MaxRGB : blue_error+0.5);
       i=(blue >> CacheShift) << 12 | (green >> CacheShift) << 6 |
         (red >> CacheShift);
       if (p->cache[i] < 0)
@@ -1932,7 +1933,8 @@ MagickExport unsigned int QuantizationError(Image *image)
   /*
     Compute final error statistics.
   */
-  image->mean_error_per_pixel=total_error/(image->columns*image->rows);
+  image->mean_error_per_pixel=(unsigned int)
+    (total_error/(image->columns*image->rows));
   image->normalized_mean_error=image->mean_error_per_pixel/
     (3.0*(MaxRGB+1)*(MaxRGB+1));
   image->normalized_maximum_error=maximum_error_per_pixel/

@@ -3816,7 +3816,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         background.red=DownScale(image->background_color.red);
         background.green=DownScale(image->background_color.green);
         background.blue=DownScale(image->background_color.blue);
-        background.gray=DownScale(Intensity(image->background_color));
+        background.gray=(png_uint_16)
+          DownScale(Intensity(image->background_color));
         background.index=background.gray;
         png_set_bKGD(ping,ping_info,&background);
       }
@@ -3881,7 +3882,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.red=p->red;
             ping_info->trans_values.green=p->green;
             ping_info->trans_values.blue=p->blue;
-            ping_info->trans_values.gray=Intensity(*p);
+            ping_info->trans_values.gray=(png_uint_16) Intensity(*p);
             ping_info->trans_values.index=DownScale(MaxRGB-p->opacity);
           }
         if (ping_info->valid & PNG_INFO_tRNS)

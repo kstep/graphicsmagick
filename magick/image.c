@@ -750,10 +750,10 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
       break;
     for (x=0; x < (int) average_image->columns; x++)
     {
-      q->red=(sum[i].red+number_scenes/2.0)/number_scenes;
-      q->green=(sum[i].green+number_scenes/2.0)/number_scenes;
-      q->blue=(sum[i].blue+number_scenes/2.0)/number_scenes;
-      q->opacity=(sum[i].opacity+number_scenes/2.0)/number_scenes;
+      q->red=(Quantum) ((sum[i].red+number_scenes/2.0)/number_scenes);
+      q->green=(Quantum) ((sum[i].green+number_scenes/2.0)/number_scenes);
+      q->blue=(Quantum) ((sum[i].blue+number_scenes/2.0)/number_scenes);
+      q->opacity=(Quantum) ((sum[i].opacity+number_scenes/2.0)/number_scenes);
       q++;
       i++;
     }
@@ -852,10 +852,10 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
       memcpy(clone_image->colormap,image->colormap,length);
     }
   clone_image->color_profile.name=AllocateString(image->color_profile.name);
-  if (image->color_profile.length > 0)
+  if (image->color_profile.length != 0)
     {
       /*
-        Allocate and copy the image ICC profile.
+        Allocate and clone any ICC profile.
       */
       length=image->color_profile.length;
       clone_image->color_profile.info=(unsigned char *) AcquireMemory(length);
@@ -865,10 +865,10 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
       memcpy(clone_image->color_profile.info,image->color_profile.info,length);
     }
   clone_image->iptc_profile.name=AllocateString(image->iptc_profile.name);
-  if (image->iptc_profile.length > 0)
+  if (image->iptc_profile.length != 0)
     {
       /*
-        Allocate and copy the image IPTC profile.
+        Allocate and clone any IPTC profile.
       */
       length=image->iptc_profile.length;
       clone_image->iptc_profile.info=(unsigned char *) AcquireMemory(length);
@@ -879,11 +879,16 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
     }
   if (image->generic_profiles != 0)
     {
+      /*
+        Allocate and clone any generic profiles.
+      */
       clone_image->generic_profile=(ProfileInfo *)
         AcquireMemory(image->generic_profiles*sizeof(ProfileInfo));
       if (clone_image->generic_profile == (ProfileInfo *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
+      length=image->generic_profiles*sizeof(ProfileInfo);
+      memcpy(clone_image->generic_profile,image->generic_profile,length);
       for (i=0; i < image->generic_profiles; i++)
       {
         clone_image->generic_profile[i].name=
@@ -1548,7 +1553,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           int
             offset;
 
-          offset=Intensity(*p)-midpoint;
+          offset=(int) (Intensity(*p)-midpoint);
           if (offset != 0)
             {
               double
@@ -1584,10 +1589,14 @@ MagickExport unsigned int CompositeImage(Image *image,
       if (image->storage_class == PseudoClass)
         if (image->storage_class == composite_image->storage_class)
           indexes[x]=composite_indexes[x-x_offset];
-      q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
-      q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
-      q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
-      q->opacity=(opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5;
+      q->red=(Quantum)
+        ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+      q->green=(Quantum)
+        ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
+      q->blue=(Quantum)
+        ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+      q->opacity=(Quantum)
+        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
       q++;
     }
     if (!SyncImagePixels(image))
@@ -1943,10 +1952,10 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       (void) fprintf(file,"    white point: (%g,%g)\n",
         image->chromaticity.white_point.x,image->chromaticity.white_point.y);
     }
-  if (image->color_profile.length > 0)
+  if (image->color_profile.length != 0)
     (void) fprintf(file,"  Profile-icc: %u bytes\n",
       image->color_profile.length);
-  if (image->iptc_profile.length > 0)
+  if (image->iptc_profile.length != 0)
     {
       char
         *tag,
@@ -2051,10 +2060,10 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     }
   for (i=0; i < image->generic_profiles; i++)
   {
-    if (image->generic_profile[i].length <= 0)
+    if (image->generic_profile[i].length == 0)
       continue;
     (void) fprintf(file,"  Profile-%s: %u bytes\n",
-      image->generic_profile[i].name == (char *) NULL ? "Generic" :
+      image->generic_profile[i].name == (char *) NULL ? "generic" :
       image->generic_profile[i].name,image->generic_profile[i].length);
   }
   if ((image->tile_info.width*image->tile_info.height) != 0)
@@ -2275,14 +2284,14 @@ MagickExport void DestroyImage(Image *image)
   */
   if (image->color_profile.name != (char *) NULL)
     LiberateMemory((void **) &image->color_profile.name);
-  if (image->color_profile.length > 0)
+  if (image->color_profile.length != 0)
     LiberateMemory((void **) &image->color_profile.info);
   /*
     Deallocate the image IPTC profile.
   */
   if (image->iptc_profile.name != (char *) NULL)
     LiberateMemory((void **) &image->iptc_profile.name);
-  if (image->iptc_profile.length > 0)
+  if (image->iptc_profile.length != 0)
     LiberateMemory((void **) &image->iptc_profile.info);
   if (image->generic_profiles != 0)
     {
@@ -2293,7 +2302,7 @@ MagickExport void DestroyImage(Image *image)
       {
         if (image->generic_profile[i].name != (char *) NULL)
           LiberateMemory((void **) &image->generic_profile[i].name);
-        if (image->generic_profile[i].length > 0)
+        if (image->generic_profile[i].length != 0)
           LiberateMemory((void **) &image->generic_profile[i].info);
       }
       LiberateMemory((void **) &image->generic_profile);
@@ -3809,28 +3818,28 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
     if (LocaleNCompare("gravity",option+1,2) == 0)
       {
-        draw_info->gravity=NorthWestGravity;
+        draw_info->gravity=(GravityType) NorthWestGravity;
         if (*option == '-')
           {
             option=argv[++i];
             if (LocaleCompare("NorthWest",option) == 0)
-              draw_info->gravity=NorthWestGravity;
+              draw_info->gravity=(GravityType) NorthWestGravity;
             if (LocaleCompare("North",option) == 0)
-              draw_info->gravity=NorthGravity;
+              draw_info->gravity=(GravityType) NorthGravity;
             if (LocaleCompare("NorthEast",option) == 0)
-              draw_info->gravity=NorthEastGravity;
+              draw_info->gravity=(GravityType) NorthEastGravity;
             if (LocaleCompare("West",option) == 0)
-              draw_info->gravity=WestGravity;
+              draw_info->gravity=(GravityType) WestGravity;
             if (LocaleCompare("Center",option) == 0)
-              draw_info->gravity=CenterGravity;
+              draw_info->gravity=(GravityType) CenterGravity;
             if (LocaleCompare("East",option) == 0)
-              draw_info->gravity=EastGravity;
+              draw_info->gravity=(GravityType) EastGravity;
             if (LocaleCompare("SouthWest",option) == 0)
-              draw_info->gravity=SouthWestGravity;
+              draw_info->gravity=(GravityType) SouthWestGravity;
             if (LocaleCompare("South",option) == 0)
-              draw_info->gravity=SouthGravity;
+              draw_info->gravity=(GravityType) SouthGravity;
             if (LocaleCompare("SouthEast",option) == 0)
-              draw_info->gravity=SouthEastGravity;
+              draw_info->gravity=(GravityType) SouthEastGravity;
           }
         continue;
       }
@@ -4841,8 +4850,8 @@ MagickExport int ParseImageGeometry(const char *geometry,int *x,int *y,
             else
               scale_factor=(double) *height/former_height;
         }
-      *width=Max(scale_factor*former_width,1);
-      *height=Max(scale_factor*former_height,1);
+      *width=(unsigned int) Max(scale_factor*former_width,1);
+      *height=(unsigned int) Max(scale_factor*former_height,1);
     }
   if ((flags & XValue) == 0)
     *width-=(*x) << 1;
@@ -5337,9 +5346,12 @@ MagickExport unsigned int RGBTransformImage(Image *image,
           red=x_map[q->red+X]+y_map[q->green+X]+z_map[q->blue+X]+tx;
           green=x_map[q->red+Y]+y_map[q->green+Y]+z_map[q->blue+Y]+ty;
           blue=x_map[q->red+Z]+y_map[q->green+Z]+z_map[q->blue+Z]+tz;
-          q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
-          q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
-          q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
+          q->red=(Quantum)
+            ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+          q->green=(Quantum)
+            ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
+          q->blue=(Quantum)
+            ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
           q++;
         }
         if (!SyncImagePixels(image))
@@ -5362,12 +5374,12 @@ MagickExport unsigned int RGBTransformImage(Image *image,
           z_map[image->colormap[i].blue+Y]+ty;
         blue=x_map[image->colormap[i].red+Z]+y_map[image->colormap[i].green+Z]+
           z_map[image->colormap[i].blue+Z]+tz;
-        image->colormap[i].red=
-          (red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
-        image->colormap[i].green=
-          (green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
-        image->colormap[i].blue=
-          (blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
+        image->colormap[i].red=(Quantum)
+          ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+        image->colormap[i].green=(Quantum)
+          ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
+        image->colormap[i].blue=(Quantum)
+          ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
       }
       SyncImage(image);
       break;
@@ -5724,7 +5736,7 @@ static int IntensityCompare(const void *x,const void *y)
 
   color_1=(PixelPacket *) x;
   color_2=(PixelPacket *) y;
-  return(Intensity(*color_2)-Intensity(*color_1));
+  return((int) Intensity(*color_2)-Intensity(*color_1));
 }
 
 MagickExport unsigned int SortColormapByIntensity(Image *image)
@@ -6414,16 +6426,19 @@ MagickExport unsigned int TransformRGBImage(Image *image,
                   q->blue=sRGBMap[(int) DownScale(blue)];
                   break;
                 }
-              q->red=YCCMap[(int) DownScale(red)];
-              q->green=YCCMap[(int) DownScale(green)];
-              q->blue=YCCMap[(int) DownScale(blue)];
+              q->red=(Quantum) YCCMap[(int) DownScale(red)];
+              q->green=(Quantum) YCCMap[(int) DownScale(green)];
+              q->blue=(Quantum) YCCMap[(int) DownScale(blue)];
               break;
             }
             default:
             {
-              q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
-              q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
-              q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
+              q->red=(Quantum)
+                ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+              q->green=(Quantum)
+                ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
+              q->blue=(Quantum)
+                ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
               break;
             }
           }
@@ -6476,12 +6491,12 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           }
           default:
           {
-            image->colormap[i].red=
-              (red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
-            image->colormap[i].green=
-              (green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
-            image->colormap[i].blue=
-              (blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
+            image->colormap[i].red=(Quantum)
+              ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+            image->colormap[i].green=(Quantum)
+              ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
+            image->colormap[i].blue=(Quantum)
+              ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
             break;
           }
         }

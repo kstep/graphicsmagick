@@ -349,7 +349,7 @@ typedef struct _XWindowInfo
     *visual;
 
   int
-    class,
+    storage_class,
     depth;
 
   XVisualInfo

@@ -891,37 +891,37 @@ MagickExport XVisualInfo *XBestVisualInfo(Display *display,
       if (LocaleCompare("staticgray",visual_type) == 0)
         {
           visual_mask|=VisualClassMask;
-          visual_template.class=StaticGray;
+          visual_template.storage_class=StaticGray;
         }
       else
         if (LocaleCompare("grayscale",visual_type) == 0)
           {
             visual_mask|=VisualClassMask;
-            visual_template.class=GrayScale;
+            visual_template.storage_class=GrayScale;
           }
         else
           if (LocaleCompare("staticcolor",visual_type) == 0)
             {
               visual_mask|=VisualClassMask;
-              visual_template.class=StaticColor;
+              visual_template.storage_class=StaticColor;
             }
           else
             if (LocaleCompare("pseudocolor",visual_type) == 0)
               {
                 visual_mask|=VisualClassMask;
-                visual_template.class=PseudoColor;
+                visual_template.storage_class=PseudoColor;
               }
             else
               if (LocaleCompare("truecolor",visual_type) == 0)
                 {
                   visual_mask|=VisualClassMask;
-                  visual_template.class=TrueColor;
+                  visual_template.storage_class=TrueColor;
                 }
               else
                 if (LocaleCompare("directcolor",visual_type) == 0)
                   {
                     visual_mask|=VisualClassMask;
-                    visual_template.class=DirectColor;
+                    visual_template.storage_class=DirectColor;
                   }
                 else
                   if (LocaleCompare("default",visual_type) == 0)
@@ -1593,7 +1593,7 @@ MagickExport void XDisplayImageInfo(Display *display,
     Write info about the X image to a file.
   */
   (void) fprintf(file,"X\n  visual: %.1024s\n",
-    XVisualClassName(windows->image.class));
+    XVisualClassName(windows->image.storage_class));
   (void) fprintf(file,"  depth: %d\n",windows->image.ximage->depth);
   if (windows->visual_info->colormap_size != 0)
     (void) fprintf(file,"  colormap size: %d\n",
@@ -3197,7 +3197,7 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
   resource_value=XGetResourceClass(database,client_name,"iconic","False");
   resource_info->iconic=IsTrue(resource_value);
   resource_value=XGetResourceClass(database,client_name,"immutable",
-    LocaleCompare(client_name,"PerlMagick") == 0 ? "True" : "False");
+    (char *) (LocaleCompare(client_name,"PerlMagick") == 0 ? "True" : "False"));
   resource_info->immutable=IsTrue(resource_value);
   resource_value=XGetResourceClass(database,client_name,"magnify","3");
   resource_info->magnify=atoi(resource_value);
@@ -7003,7 +7003,7 @@ static int IntensityCompare(const void *x,const void *y)
 
   color_1=(DiversityPacket *) x;
   color_2=(DiversityPacket *) y;
-  return(Intensity(*color_2)-Intensity(*color_1));
+  return((int) (Intensity(*color_2)-Intensity(*color_1)));
 }
 
 static int PopularityCompare(const void *x,const void *y)
@@ -7194,7 +7194,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       else
         for (i=0; i < (int) image->colors; i++)
         {
-          gray_value=
+          gray_value=(short unsigned int)
             Intensity(gamma_map[(int) Intensity(image->colormap[i])]);
           color.red=XUpScale(gray_value);
           color.green=XUpScale(gray_value);
@@ -7321,7 +7321,7 @@ MagickExport void XMakeStandardColormap(Display *display,
             for (i=0; i < (int) image->colors; i++)
             {
               index=diversity[i].index;
-              gray_value=
+              gray_value=(short unsigned int)
                 Intensity(gamma_map[(int) Intensity(image->colormap[index])]);
               color.red=XUpScale(gray_value);
               color.green=XUpScale(gray_value);
@@ -7364,7 +7364,7 @@ MagickExport void XMakeStandardColormap(Display *display,
             for (; i < (int) image->colors; i++)
             {
               index=diversity[i].index;
-              gray_value=
+              gray_value=(short unsigned int)
                 Intensity(gamma_map[(int) Intensity(image->colormap[index])]);
               color.red=XUpScale(gray_value);
               color.green=XUpScale(gray_value);
@@ -7453,7 +7453,8 @@ MagickExport void XMakeStandardColormap(Display *display,
       else
         for (i=0; i < (int) image->colors; i++)
         {
-          gray_value=Intensity(gamma_map[(int) Intensity(image->colormap[i])]);
+          gray_value=(short unsigned int)
+            Intensity(gamma_map[(int) Intensity(image->colormap[i])]);
           color.red=XUpScale(gray_value);
           color.green=XUpScale(gray_value);
           color.blue=XUpScale(gray_value);
@@ -8581,7 +8582,9 @@ MagickExport void XUserPreferences(XResourceInfo *resource_info)
     cache[MaxTextExtent],
     *client_name,
     filename[MaxTextExtent],
-    specifier[MaxTextExtent],
+    specifier[MaxTextExtent];
+
+  const char
     *value;
 
   XrmDatabase

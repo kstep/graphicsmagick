@@ -316,9 +316,9 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->red=(p->red*(100.0-red)+target.red*red)/100.0;
-      q->green=(p->green*(100.0-green)+target.green*green)/100.0;
-      q->blue=(p->blue*(100.0-blue)+target.blue*blue)/100.0;
+      q->red=(Quantum) ((p->red*(100.0-red)+target.red*red)/100.0);
+      q->green=(Quantum) ((p->green*(100.0-green)+target.green*green)/100.0);
+      q->blue=(Quantum) ((p->blue*(100.0-blue)+target.blue*blue)/100.0);
       q->opacity=p->opacity;
       p++;
       q++;
@@ -483,10 +483,13 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
           blue/=normalize;
           opacity/=normalize;
         }
-      q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
-      q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
-      q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
-      q->opacity=(opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5;
+      q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+      q->green=(Quantum)
+        ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
+      q->blue=(Quantum)
+        ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+      q->opacity=(Quantum)
+	((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
       q++;
     }
     if (!SyncImagePixels(convolve_image))
@@ -991,9 +994,9 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
       Enhance(8);  Enhance(20); Enhance(40); Enhance(20); Enhance(8);
       s=p+4*image->columns;
       Enhance(5);  Enhance(8);  Enhance(10); Enhance(8);  Enhance(5);
-      q->red=(total_red+(total_weight/2)-1)/total_weight;
-      q->green=(total_green+(total_weight/2)-1)/total_weight;
-      q->blue=(total_blue+(total_weight/2)-1)/total_weight;
+      q->red=(Quantum) ((total_red+(total_weight/2)-1)/total_weight);
+      q->green=(Quantum) ((total_green+(total_weight/2)-1)/total_weight);
+      q->blue=(Quantum) ((total_blue+(total_weight/2)-1)/total_weight);
       q->opacity=(p+2*image->columns)->opacity;
       q++;
     }
@@ -1139,7 +1142,7 @@ MagickExport Image *GaussianBlurImage(Image *image,const double width,
   /*
     Build convolution kernel.
   */
-  radius=ceil(width);
+  radius=(int) ceil(width);
   kernel=(double *) AcquireMemory((radius+1)*sizeof(double));
   scanline=(PixelPacket *) AcquireMemory(radius*sizeof(PixelPacket));
   if ((kernel == (double *) NULL) || (scanline == (PixelPacket *) NULL))
@@ -1201,9 +1204,9 @@ MagickExport Image *GaussianBlurImage(Image *image,const double width,
       j++;
       if (j >= radius)
         j-=radius;
-      p->red=red+0.5;
-      p->green=green+0.5;
-      p->blue=blue+0.5;
+      p->red=(Quantum) (red+0.5);
+      p->green=(Quantum) (green+0.5);
+      p->blue=(Quantum) (blue+0.5);
       p++;
     }
     if (!SyncImagePixels(blur_image))
@@ -1254,9 +1257,9 @@ MagickExport Image *GaussianBlurImage(Image *image,const double width,
       j++;
       if (j >= radius)
         j-=radius;
-      p->red=red+0.5;
-      p->green=green+0.5;
-      p->blue=blue+0.5;
+      p->red=(Quantum) (red+0.5);
+      p->green=(Quantum) (green+0.5);
+      p->blue=(Quantum) (blue+0.5);
       p++;
     }
     if (!SyncImagePixels(blur_image))
@@ -1704,10 +1707,10 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
           break;
         for (x=0; x < (int) morph_images->columns; x++)
         {
-          q->red=(alpha*q->red+beta*p->red+0.5);
-          q->green=(alpha*q->green+beta*p->green+0.5);
-          q->blue=(alpha*q->blue+beta*p->blue+0.5);
-          q->opacity=(alpha*q->opacity+beta*p->opacity+0.5);
+          q->red=(Quantum) (alpha*q->red+beta*p->red+0.5);
+          q->green=(Quantum) (alpha*q->green+beta*p->green+0.5);
+          q->blue=(Quantum) (alpha*q->blue+beta*p->blue+0.5);
+          q->opacity=(Quantum) (alpha*q->opacity+beta*p->opacity+0.5);
           p++;
           q++;
         }
@@ -1852,7 +1855,7 @@ MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
         s=p-(radius-i)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
         {
-          k=Intensity(*s);
+          k=(int) Intensity(*s);
           histogram[k]++;
           if ((int) histogram[k] > count)
             {
@@ -1864,7 +1867,7 @@ MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
         s=p+(radius-i)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
         {
-          k=Intensity(*s);
+          k=(int) Intensity(*s);
           histogram[k]++;
           if ((int) histogram[k] > count)
             {
@@ -1877,7 +1880,7 @@ MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
       s=p-radius;
       for (j=0; j < (int) (radius+radius+1); j++)
       {
-        k=Intensity(*s);
+        k=(int) Intensity(*s);
         histogram[k]++;
         if ((int) histogram[k] > count)
           {
@@ -2425,15 +2428,15 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
         }
       if (!color_shading)
         {
-          q->red=shade;
-          q->green=shade;
-          q->blue=shade;
+          q->red=(Quantum) shade;
+          q->green=(Quantum) shade;
+          q->blue=(Quantum) shade;
         }
       else
         {
-          q->red=(shade*s1->red)/(MaxRGB+1);
-          q->green=(shade*s1->green)/(MaxRGB+1);
-          q->blue=(shade*s1->blue)/(MaxRGB+1);
+          q->red=(Quantum) ((shade*s1->red)/(MaxRGB+1));
+          q->green=(Quantum) ((shade*s1->green)/(MaxRGB+1));
+          q->blue=(Quantum) ((shade*s1->blue)/(MaxRGB+1));
         }
       q->opacity=s1->opacity;
       s0++;

@@ -296,29 +296,8 @@ from an X server (e.g. -*-helvetica-medium-r-*-*-12-*-*-*-*-*-iso8859-*).  To
 use a TrueType font, precede the TrueType filename with a \fB@\fP (e.g.
 @times.ttf).  Otherwise, specify a Postscript font (e.g. helvetica).
 .TP
-.B "-geometry \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{!}{<}{>}\fP"
-the width and height of the image.
-
-By default, the width and height are maximum values.  That is, the
-image is expanded or contracted to fit the width and height value while
-maintaining the aspect ratio of the image.  Append an exclamation point
-to the geometry to force the image size to exactly the size you
-specify.  For example, if you specify \fB640x480!\fP the image width is
-set to 640 pixels and height to 480.  If only one factor is
-specified, both the width and height assume the value.
-
-To specify a percentage width or height instead, append \fB%\fP.  The
-image size is multiplied by the width and height percentages to obtain
-the final image dimensions.  To increase the size of an image, use a
-value greater than 100 (e.g. 125%).  To decrease an image's size, use a
-percentage less than 100.
-
-Use \fB>\fP to change the dimensions of the image \fIonly\fP
-if its size exceeds the geometry specification.  \fB>\fP resizes
-the image \fIonly\fP if its dimensions is less than the geometry
-specification.  For example, if you specify \fB640x480>\fP and the
-image size is 512x512, the image size does not change.  However, if
-the image is 1024x1024, it is resized to 640x480.
+.B "-geometry \fI{\+-}<x offset>{\+-}<y offset>{%}{!}{<}{>}\fP"
+location of the composite image.
 
 By default the images are combined relative to the image gravity
 (see \fB-gravity\fP).  Use \fI<x offset>\fP and

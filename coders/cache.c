@@ -471,13 +471,11 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                       ReacquireMemory((void **) &image->generic_profile,
                         (i+1)*sizeof(ProfileInfo));
                     if (image->generic_profile == (ProfileInfo *) NULL)
-                      {
-                        image->generic_profiles=0;
-                        ThrowReaderException(ResourceLimitWarning,
-                          "Memory allocation failed",image);
-                      }
+                      ThrowReaderException(ResourceLimitWarning,
+                        "Memory allocation failed",image);
                     image->generic_profile[i].name=AllocateString(keyword+8);
                     image->generic_profile[i].length=atoi(values);
+                    image->generic_profile[i].info=(unsigned char *) NULL;
                     image->generic_profiles++;
                     break;
                   }
@@ -667,7 +665,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
             AcquireMemory(image->generic_profile[i].length);
           if (image->generic_profile[i].info == (unsigned char *) NULL)
             ThrowReaderException(CorruptImageWarning,
-              "Unable to read IPTC profile",image);
+              "Unable to read generic profile",image);
           (void) ReadBlob(image,image->generic_profile[i].length,
             image->generic_profile[i].info);
         }
@@ -1087,8 +1085,9 @@ static unsigned int WriteCACHEImage(const ImageInfo *image_info,Image *image)
         */
         for (i=0; i < image->generic_profiles; i++)
         {
-          FormatString(buffer,"Profile-%s=%u\n",image->generic_profile[i].name,
-            image->generic_profile[i].length);
+          FormatString(buffer,"Profile-%s=%u\n",
+            image->generic_profile[i].name == (char *) NULL ? "generic" :
+            image->generic_profile[i].name,image->generic_profile[i].length);
           (void) WriteBlob(image,strlen(buffer),buffer);
         }
       }

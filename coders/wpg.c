@@ -604,10 +604,12 @@ typedef struct {
 		 BitmapHeader2.VertRes=LSBFirstReadShort(image);
 
 		 image->units=PixelsPerCentimeterResolution;
-		 image->page.width=(BitmapHeader2.LowLeftX-BitmapHeader2.UpRightX)/470.0;
-		 image->page.height=(BitmapHeader2.LowLeftX-BitmapHeader2.UpRightY)/470.0;
-		 image->page.x=BitmapHeader2.LowLeftX/470.0;
-		 image->page.y=BitmapHeader2.LowLeftX/470.0;
+		 image->page.width=(unsigned int)
+                  ((BitmapHeader2.LowLeftX-BitmapHeader2.UpRightX)/470.0);
+		 image->page.height=(unsigned int)
+                   ((BitmapHeader2.LowLeftX-BitmapHeader2.UpRightY)/470.0);
+		 image->page.x=(int) (BitmapHeader2.LowLeftX/470.0);
+		 image->page.y=(int) (BitmapHeader2.LowLeftX/470.0);
 		 if(BitmapHeader2.HorzRes && BitmapHeader2.VertRes)
 		   {
 		   image->x_resolution=BitmapHeader2.HorzRes/470.0;

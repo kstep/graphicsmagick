@@ -258,7 +258,8 @@ MagickExport unsigned int EqualizeImage(Image *image)
   low=map[0];
   high=map[MaxRGB];
   for (i=0; i <= MaxRGB; i++)
-    equalize_map[i]=(((double) (map[i]-low))*MaxRGB)/Max(high-low,1);
+    equalize_map[i]=(unsigned char)
+      ((((double) (map[i]-low))*MaxRGB)/Max(high-low,1));
   LiberateMemory((void **) &map);
   /*
     Stretch the histogram.
@@ -742,7 +743,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      gray_value=Intensity(*p);
+      gray_value=(Quantum) Intensity(*p);
       histogram[gray_value]++;
       p++;
     }

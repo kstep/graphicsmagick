@@ -1805,7 +1805,7 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
       /*
         Parse width.
       */
-      bounds.width=strtod(p,&p);
+      bounds.width=(unsigned int)strtod(p,&p);
       mask|=WidthValue;
     }
   if ((*p == 'x') || (*p == 'X'))
@@ -1814,7 +1814,7 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
         Parse height.
       */
       p++;
-      bounds.height=strtod(p,&p);
+      bounds.height=(unsigned int) strtod(p,&p);
       mask|=HeightValue;
     }
   if ((*p == '+') || (*p == '-'))
@@ -1825,13 +1825,13 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
       if (*p == '-')
         {
           p++;
-          bounds.x=(-strtod(p,&p));
+          bounds.x=(int) (-strtod(p,&p));
           mask|=XNegative;
         }
       else
         {
           p++;
-          bounds.x=strtod(p,&p);
+          bounds.x=(int) strtod(p,&p);
         }
       mask|=XValue;
       if ((*p == '+') || (*p == '-'))
@@ -1842,13 +1842,13 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
           if (*p == '-')
             {
               p++;
-              bounds.y=(-strtod(p,&p));
+              bounds.y=(int) (-strtod(p,&p));
               mask|=YNegative;
             }
           else
             {
               p++;
-              bounds.y=strtod(p,&p);
+              bounds.y=(int) strtod(p,&p);
             }
           mask|=YValue;
         }

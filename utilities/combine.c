@@ -65,7 +65,7 @@
 %    -dispose method     GIF disposal method
 %    -dither             apply Floyd/Steinberg error diffusion to image
 %    -font name          X11 font for displaying text
-%    -geometry geometry  perferred size or location of the image
+%    -geometry geometry  location of the composite image
 %    -gravity type       which direction to gravitate towards
 %    -interlace type     None, Line, Plane, or Partition
 %    -label name         assign a label to an image
@@ -131,7 +131,7 @@ static void Usage()
       "-dispose method     GIF disposal method",
       "-dither             apply Floyd/Steinberg error diffusion to image",
       "-font name          X11 font for displaying text",
-      "-geometry geometry  perferred size or location of the image",
+      "-geometry geometry  location of the composite image",
       "-gravity type       which direction to gravitate towards",
       "-interlace type     None, Line, Plane, or Partition",
       "-label name         ssign a label to an image",
@@ -913,9 +913,9 @@ int main(int argc,char **argv)
         for (x=0; x < (int) composite_image->columns; x++)
         {
           if (composite_image->matte)
-            q->opacity=((MaxRGB-q->opacity)*blend)/100;
+            q->opacity=(Quantum) (((MaxRGB-q->opacity)*blend)/100);
           else
-            q->opacity=(MaxRGB*blend)/100;
+            q->opacity=(Quantum) ((MaxRGB*blend)/100);
           q++;
         }
         if (!SyncImagePixels(composite_image))

@@ -228,7 +228,8 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     text_size=0;
     attribute=GetImageAttribute(image,"Label");
     if (attribute != (ImageAttribute *) NULL)
-      text_size=MultilineCensus(attribute->value)*image_info->pointsize+12;
+      text_size=(unsigned int)
+        (MultilineCensus(attribute->value)*image_info->pointsize+12);
     width=image->columns;
     height=image->rows;
     x=0;

@@ -694,7 +694,7 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
         /*
           Read a scan line.
         */
-        j=y_offset[y];
+        j=(int) (y_offset[y]+0.5);
         p=GetImagePixels(image,0,j,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
@@ -705,7 +705,7 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
     */
     for (x=0; x < (int) sample_image->columns; x++)
     {
-      k=x_offset[x];
+      k=(int) (x_offset[x]+0.5);
       *q++=pixels[k];
     }
     if (sample_image->storage_class == PseudoClass)
@@ -722,7 +722,7 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
         sample_indexes=GetIndexes(sample_image);
         for (x=0; x < (int) sample_image->columns; x++)
         {
-          k=x_offset[x];
+          k=(int) (x_offset[x]+0.5);
           sample_indexes[x]=index[k];
         }
       }
@@ -993,10 +993,10 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
         s=scanline;
         for (x=0; x < (int) scale_image->columns; x++)
         {
-          q->red=s->red;
-          q->green=s->green;
-          q->blue=s->blue;
-          q->opacity=s->opacity;
+          q->red=(Quantum) s->red;
+          q->green=(Quantum) s->green;
+          q->blue=(Quantum) s->blue;
+          q->opacity=(Quantum) s->opacity;
           q++;
           s++;
         }
@@ -1079,10 +1079,10 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
       t=scale_scanline;
       for (x=0; x < (int) scale_image->columns; x++)
       {
-        q->red=t->red;
-        q->green=t->green;
-        q->blue=t->blue;
-        q->opacity=t->opacity;
+        q->red=(Quantum) t->red;
+        q->green=(Quantum) t->green;
+        q->blue=(Quantum) t->blue;
+        q->opacity=(Quantum) t->opacity;
         q++;
         t++;
       }
@@ -1362,7 +1362,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     center=(double) x/x_factor;
     start=center-support+0.5;
     end=center+support+0.5;
-    for (i=Max(start,0); i < (int) Min(end,source->columns); i++)
+    for (i=(int) Max(start,0); i < (int) Min(end,source->columns); i++)
     {
       contribution[n].pixel=i;
       contribution[n].weight=
@@ -1394,10 +1394,14 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
         blue+=contribution[i].weight*(p+j)->blue;
         opacity+=contribution[i].weight*(p+j)->opacity;
       }
-      q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
-      q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
-      q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
-      q->opacity=(opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5;
+      q->red=(Quantum)
+        ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+      q->green=(Quantum) 
+        ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
+      q->blue=(Quantum) 
+        ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+      q->opacity=(Quantum) 
+        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
       q++;
     }
     if (destination->storage_class == PseudoClass)
@@ -1500,7 +1504,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     center=(double) y/y_factor;
     start=center-support+0.5;
     end=center+support+0.5;
-    for (i=Max(start,0); i < (int) Min(end,source->rows); i++)
+    for (i=(int) Max(start,0); i < (int) Min(end,source->rows); i++)
     {
       contribution[n].pixel=i;
       contribution[n].weight=
@@ -1531,10 +1535,14 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
         blue+=contribution[i].weight*(p+j)->blue;
         opacity+=contribution[i].weight*(p+j)->opacity;
       }
-      q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
-      q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
-      q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
-      q->opacity=(opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5;
+      q->red=(Quantum)
+        ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+      q->green=(Quantum)
+        ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
+      q->blue=(Quantum)
+        ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+      q->opacity=(Quantum)
+        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
       q++;
     }
     if (destination->storage_class == PseudoClass)

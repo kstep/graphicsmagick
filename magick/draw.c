@@ -426,14 +426,14 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
                 *q=color;
               else
                 {
-                  q->red=alpha*(color.red*(MaxRGB-color.opacity)+
-                    q->red*color.opacity);
-                  q->green=alpha*(color.green*(MaxRGB-color.opacity)+
-                    q->green*color.opacity);
-                  q->blue=alpha*(color.blue*(MaxRGB-color.opacity)+
-                    q->blue*color.opacity);
-                  q->opacity=alpha*(color.opacity*(MaxRGB-color.opacity)+
-                    q->opacity*color.opacity);
+                  q->red=(Quantum) (alpha*(color.red*(MaxRGB-color.opacity)+
+                    q->red*color.opacity));
+                  q->green=(Quantum) (alpha*(color.green*(MaxRGB-color.opacity)+
+                    q->green*color.opacity));
+                  q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-color.opacity)+
+                    q->blue*color.opacity));
+                  q->opacity=(Quantum) (alpha*(color.opacity*
+                    (MaxRGB-color.opacity)+q->opacity*color.opacity));
                 }
             }
           q++;
@@ -668,7 +668,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (LocaleCompare("antialias",keyword) == 0)
       {
-        clone_info->antialias=strtod(p,&p);
+        clone_info->antialias=(unsigned int) strtod(p,&p);
         continue;
       }
     if (LocaleCompare("decorate",keyword) == 0)
@@ -1139,8 +1139,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                   height,
                   width;
 
-                width=clone_info->affine[0]*composite_image->columns;
-                height=clone_info->affine[3]*composite_image->rows;
+                width=(unsigned int)
+                  (clone_info->affine[0]*composite_image->columns);
+                height=(unsigned int)
+                  (clone_info->affine[3]*composite_image->rows);
                 scale_image=
                   ZoomImage(composite_image,width,height,&image->exception);
                 if (scale_image != (Image *) NULL)
@@ -1228,7 +1230,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       /*
         Fill the primitive on the image.
       */
-      n=bounds.x2-bounds.x1+1.0;
+      n=(int) (bounds.x2-bounds.x1+1.0);
       target.y=y;
       q=GetImagePixels(image,(int) bounds.x1,y,n,1);
       if (q == (PixelPacket *) NULL)
@@ -1258,11 +1260,15 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             if ((int) opacity == TransparentOpacity)
               break;
             if (!clone_info->antialias)
-              opacity=OpaqueOpacity*clone_info->opacity/100.0;
-            q->red=alpha*(color.red*(MaxRGB-opacity)+q->red*opacity);
-            q->green=alpha*(color.green*(MaxRGB-opacity)+q->green*opacity);
-            q->blue=alpha*(color.blue*(MaxRGB-opacity)+q->blue*opacity);
-            q->opacity=alpha*(opacity*(MaxRGB-opacity)+q->opacity*opacity);
+              opacity=(Quantum) (OpaqueOpacity*clone_info->opacity/100.0);
+            q->red=(Quantum)
+              (alpha*(color.red*(MaxRGB-opacity)+q->red*opacity));
+            q->green=(Quantum)
+              (alpha*(color.green*(MaxRGB-opacity)+q->green*opacity));
+            q->blue=(Quantum)
+              (alpha*(color.blue*(MaxRGB-opacity)+q->blue*opacity));
+            q->opacity=(Quantum)
+              (alpha*(opacity*(MaxRGB-opacity)+q->opacity*opacity));
             break;
           }
           default:
@@ -1278,11 +1284,15 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             continue;
           }
         if (!clone_info->antialias)
-          opacity=OpaqueOpacity*clone_info->opacity/100.0;
-        q->red=alpha*(color.red*(MaxRGB-opacity)+q->red*opacity);
-        q->green=alpha*(color.green*(MaxRGB-opacity)+q->green*opacity);
-        q->blue=alpha*(color.blue*(MaxRGB-opacity)+q->blue*opacity);
-        q->opacity=alpha*(opacity*(MaxRGB-opacity)+q->opacity*opacity);
+          opacity=(Quantum) (OpaqueOpacity*clone_info->opacity/100.0);
+        q->red=(Quantum)
+          (alpha*(color.red*(MaxRGB-opacity)+q->red*opacity));
+        q->green=(Quantum)
+          (alpha*(color.green*(MaxRGB-opacity)+q->green*opacity));
+        q->blue=(Quantum)
+          (alpha*(color.blue*(MaxRGB-opacity)+q->blue*opacity));
+        q->opacity=(Quantum)
+          (alpha*(opacity*(MaxRGB-opacity)+q->opacity*opacity));
         q++;
       }
       if (!SyncImagePixels(image))

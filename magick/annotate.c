@@ -258,8 +258,8 @@ MagickExport unsigned int AnnotateImage(Image *image,
     /*
       Composite text onto the image.
     */
-    font_height=clone_info->affine[0]*annotate_info->pointsize+
-      clone_info->affine[2]*annotate_info->pointsize;
+    font_height=(int) (clone_info->affine[0]*annotate_info->pointsize+
+      clone_info->affine[2]*annotate_info->pointsize);
     point.x=clone_info->affine[2]*annotate_info->pointsize;
     point.y=clone_info->affine[3]*annotate_info->pointsize;
     switch (clone_info->gravity)

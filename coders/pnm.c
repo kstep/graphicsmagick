@@ -926,7 +926,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            index=Intensity(*p);
+            index=(short unsigned int) Intensity(*p);
             FormatString(buffer,"%d ",index);
             (void) WriteBlob(image,strlen(buffer),buffer);
             i++;
@@ -1032,7 +1032,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            index=DownScale(Intensity(*p)+0.5);
+            index=(short unsigned int) DownScale(Intensity(*p)+0.5);
             (void) WriteByte(image,index);
             p++;
           }

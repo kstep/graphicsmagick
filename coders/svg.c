@@ -1033,13 +1033,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
           keyword=(char *) attributes[i];
           value=(char *) attributes[i+1];
           if (LocaleCompare(keyword,"height") == 0)
-            svg_info->height=svg_info->page.height;
+            svg_info->height=(int) svg_info->page.height;
           if (LocaleCompare(keyword,"width") == 0)
-            svg_info->width=svg_info->page.width;
+            svg_info->width=(int) svg_info->page.width;
           if (LocaleCompare(keyword,"viewBox") == 0)
             {
-              svg_info->height=svg_info->page.height;
-              svg_info->width=svg_info->page.width;
+              svg_info->height=(int) svg_info->page.height;
+              svg_info->width=(int) svg_info->page.width;
             }
         }
     }

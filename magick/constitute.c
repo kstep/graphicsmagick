@@ -382,7 +382,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               case 'c':
               case 'C':
               {
-                q->red=MaxRGB*(*p++);
+                q->red=(Quantum) (MaxRGB*(*p++));
                 break;
               }
               case 'g':
@@ -390,7 +390,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               case 'y':
               case 'Y':
               {
-                q->green=MaxRGB*(*p++);
+                q->green=(Quantum) (MaxRGB*(*p++));
                 break;
               }
               case 'b':
@@ -398,7 +398,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               case 'm':
               case 'M':
               {
-                q->blue=MaxRGB*(*p++);
+                q->blue=(Quantum) (MaxRGB*(*p++));
                 break;
               }
               case 'a':
@@ -406,7 +406,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               case 'k':
               case 'K':
               {
-                q->opacity=MaxRGB*(*p++);
+                q->opacity=(Quantum) (MaxRGB*(*p++));
                 break;
               }
               default:
@@ -445,7 +445,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               case 'c':
               case 'C':
               {
-                q->red=MaxRGB*(*p++);
+                q->red=(Quantum) (MaxRGB*(*p++));
                 break;
               }
               case 'g':
@@ -453,7 +453,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               case 'y':
               case 'Y':
               {
-                q->green=MaxRGB*(*p++);
+                q->green=(Quantum) (MaxRGB*(*p++));
                 break;
               }
               case 'b':
@@ -461,7 +461,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               case 'm':
               case 'M':
               {
-                q->blue=MaxRGB*(*p++);
+                q->blue=(Quantum) (MaxRGB*(*p++));
                 break;
               }
               case 'a':
@@ -469,7 +469,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               case 'k':
               case 'K':
               {
-                q->opacity=MaxRGB*(*p++);
+                q->opacity=(Quantum) (MaxRGB*(*p++));
                 break;
               }
               default:
@@ -1023,15 +1023,15 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (int) image->columns; x++)
           {
-            *q++=Intensity(*p);
+            *q++=(unsigned char) Intensity(*p);
             p++;
           }
           break;
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        *q++=Intensity(*p)/256;
-        *q++=Intensity(*p);
+        *q++=(unsigned char) (Intensity(*p)/256);
+        *q++=(unsigned char) Intensity(*p);
         p++;
       }
       break;
@@ -1042,7 +1042,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (int) image->columns; x++)
           {
-            *q++=Intensity(*p);
+            *q++=(unsigned char) Intensity(*p);
             *q++=MaxRGB-p->opacity;
             p++;
           }
@@ -1050,8 +1050,8 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        *q++=Intensity(*p)/256;
-        *q++=Intensity(*p);
+        *q++=(unsigned char) (Intensity(*p)/256);
+        *q++=(unsigned char) Intensity(*p);
         *q++=(MaxRGB-p->opacity) >> 8;
         *q++=MaxRGB-p->opacity;
         p++;

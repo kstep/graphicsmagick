@@ -487,13 +487,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                       ReacquireMemory((void **) &image->generic_profile,
                         (i+1)*sizeof(ProfileInfo));
                     if (image->generic_profile == (ProfileInfo *) NULL)
-                      {
-                        image->generic_profiles=0;
-                        ThrowReaderException(ResourceLimitWarning,
-                          "Memory allocation failed",image);
-                      }
+                      ThrowReaderException(ResourceLimitWarning,
+                        "Memory allocation failed",image);
                     image->generic_profile[i].name=AllocateString(keyword+8);
                     image->generic_profile[i].length=atoi(values);
+                    image->generic_profile[i].info=(unsigned char *) NULL;
                     image->generic_profiles++;
                     break;
                   }
@@ -683,7 +681,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
             AcquireMemory(image->generic_profile[i].length);
           if (image->generic_profile[i].info == (unsigned char *) NULL)
             ThrowReaderException(CorruptImageWarning,
-              "Unable to read IPTC profile",image);
+              "Unable to read generic profile",image);
           (void) ReadBlob(image,image->generic_profile[i].length,
             image->generic_profile[i].info);
         }
@@ -790,7 +788,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
             if (zip_info.avail_in == 0)
               {
                 zip_info.next_in=compressed_pixels;
-                length=1.01*packet_size*image->columns+12;
+                length=(int) (1.01*packet_size*image->columns+12);
                 zip_info.avail_in=ReadBlob(image,length,zip_info.next_in);
               }
             if (inflate(&zip_info,Z_NO_FLUSH) == Z_STREAM_END)
@@ -823,7 +821,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
               if (bzip_info.avail_in == 0)
                 {
                   bzip_info.next_in=(char *) compressed_pixels;
-                  length=1.01*packet_size*image->columns+12;
+                  length=(int) (1.01*packet_size*image->columns+12);
                   bzip_info.avail_in=ReadBlob(image,length,bzip_info.next_in);
                 }
               if (BZ2_bzDecompress(&bzip_info) == BZ_STREAM_END)
@@ -1283,8 +1281,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         */
         for (i=0; i < image->generic_profiles; i++)
         {
-          FormatString(buffer,"Profile-%s=%u\n",image->generic_profile[i].name,
-            image->generic_profile[i].length);
+          FormatString(buffer,"Profile-%s=%u\n",
+            image->generic_profile[i].name == (char *) NULL ? "generic" :
+            image->generic_profile[i].name,image->generic_profile[i].length);
           (void) WriteBlob(image,strlen(buffer),buffer);
         }
       }
@@ -1496,7 +1495,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             do
             {
               zip_info.next_out=compressed_pixels;
-              zip_info.avail_out=1.01*packet_size*image->columns+12;
+              zip_info.avail_out=(uInt) (1.01*packet_size*image->columns+12);
               status=!deflate(&zip_info,Z_NO_FLUSH);
               length=zip_info.next_out-compressed_pixels;
               if (zip_info.next_out != compressed_pixels)
@@ -1507,7 +1506,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                 for ( ; ; )
                 {
                   zip_info.next_out=compressed_pixels;
-                  zip_info.avail_out=1.01+packet_size*image->columns+12;
+                  zip_info.avail_out=(uInt)
+                    (1.01+packet_size*image->columns+12);
                   status=!deflate(&zip_info,Z_FINISH);
                   if (zip_info.next_out == compressed_pixels)
                     break;

@@ -250,8 +250,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
       return((Image *) NULL);
     }
-  if ((visual_info->class != DirectColor) &&
-      (visual_info->class != TrueColor))
+  if ((visual_info->storage_class != DirectColor) &&
+      (visual_info->storage_class != TrueColor))
     for (i=0; i < visual_info->colormap_size; i++)
     {
       colors[i].pixel=i;
@@ -296,8 +296,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Convert X image to MIFF format.
   */
-  if ((visual_info->class != TrueColor) &&
-      (visual_info->class != DirectColor))
+  if ((visual_info->storage_class != TrueColor) &&
+      (visual_info->storage_class != DirectColor))
     image->storage_class=PseudoClass;
   image->columns=dps_image->width;
   image->rows=dps_image->height;
@@ -346,7 +346,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Convert X image to DirectClass packets.
       */
       if ((visual_info->colormap_size > 0) &&
-          (visual_info->class == DirectColor))
+          (visual_info->storage_class == DirectColor))
         for (y=0; y < (int) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
