@@ -1065,11 +1065,18 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
   Image
     *image;
 
+  ImageInfo
+    *clone_info;
+
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   GetExceptionInfo(exception);
-  image=ReadStream(image_info,&StreamHandler,exception);
+  clone_info=CloneImageInfo(image_info);
+  if (clone_info->size == (char *) NULL)
+    clone_info->size=AllocateString(DefaultTileGeometry);
+  image=ReadStream(clone_info,&StreamHandler,exception);
+  DestroyImageInfo(clone_info);
   return(image);
 }
 
