@@ -801,15 +801,14 @@ int main(int argc,char **argv)
       /*
         Create mattes for blending.
       */
-      opacity=(unsigned short)
-        (DownScale(MaxRGB)-(((int) DownScale(MaxRGB)*blend)/100));
+      opacity=Opaque-(Opaque*blend)/100;
       image->class=DirectClass;
       image->matte=True;
       for (y=0; y < (int) image->rows; y++)
       {
-        if (!GetPixelCache(image,0,y,image->columns,1))
+        q=GetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
           break;
-        q=image->pixels;
         for (x=0; x < (int) image->columns; x++)
         {
           q->opacity=opacity;
@@ -818,17 +817,16 @@ int main(int argc,char **argv)
         if (!SyncPixelCache(image))
           break;
       }
-      opacity=(unsigned short) (DownScale(MaxRGB)-opacity);
       composite_image->class=DirectClass;
       composite_image->matte=True;
       for (y=0; y < (int) composite_image->rows; y++)
       {
-        if (!GetPixelCache(composite_image,0,y,composite_image->columns,1))
+        q=GetPixelCache(composite_image,0,y,composite_image->columns,1);
+        if (q == (PixelPacket *) NULL)
           break;
-        q=image->pixels;
         for (x=0; x < (int) composite_image->columns; x++)
         {
-          q->opacity=opacity;
+          q->opacity=Opaque-opacity;
           q++;
         }
         if (!SyncPixelCache(composite_image))
