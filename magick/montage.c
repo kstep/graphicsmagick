@@ -303,6 +303,9 @@ MagickExport Image *MontageImages(const Image *image,
     bounds,
     tile_info;
 
+  size_t
+    number_images;
+
   unsigned int
     concatenate;
 
@@ -314,7 +317,6 @@ MagickExport Image *MontageImages(const Image *image,
     height,
     images_per_page,
     max_height,
-    number_images,
     number_lines,
     tile,
     tiles,
@@ -334,7 +336,8 @@ MagickExport Image *MontageImages(const Image *image,
   assert(montage_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  next_list=ListToGroupImage(image,&number_images);
+	number_images=GetImageListSize(image);
+  next_list=ImageListToGroup(image,exception);
   master_list=next_list;
   for (tile=0; tile < number_images; tile++)
   {

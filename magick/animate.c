@@ -470,12 +470,14 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   register long
     i;
 
+  size_t
+    number_scenes;
+
   unsigned int
     status;
 
   unsigned long
     height,
-    number_scenes,
     width;
 
   Window
@@ -625,7 +627,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   /*
     Sort images by increasing scene number.
   */
-  images=ListToGroupImage(image,&number_scenes);
+  number_scenes=GetImageListSize(image);
+  images=ImageListToGroup(image,&image->exception);
   if (images == (Image **) NULL)
     MagickError(ResourceLimitError,"Unable to animate images",
       "Memory allocation failed");
@@ -1038,6 +1041,9 @@ MagickExport Image *XAnimateImages(Display *display,
   register long
     i;
 
+  size_t
+    number_scenes;
+
   static char
     working_directory[MaxTextExtent];
 
@@ -1053,9 +1059,6 @@ MagickExport Image *XAnimateImages(Display *display,
   unsigned int
     context_mask,
     state;
-
-  unsigned long
-    number_scenes;
 
   WarningHandler
     warning_handler;
@@ -1234,7 +1237,8 @@ MagickExport Image *XAnimateImages(Display *display,
   /*
     Sort images by increasing scene number.
   */
-  images=ListToGroupImage(image,&number_scenes);
+  number_scenes=GetImageListSize(image);
+  images=ImageListToGroup(image,&image->exception);
   if (images == (Image **) NULL)
     MagickError(ResourceLimitError,"Unable to animate images",
       "Memory allocation failed");

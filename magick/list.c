@@ -232,7 +232,7 @@ MagickExport Image *GetImageList(const Image *images,const unsigned long n,
 %
 %  The format of the GetImageListSize method is:
 %
-%      unsigned long GetImageListSize(const Image *images)
+%      size_t GetImageListSize(const Image *images)
 %
 %  A description of each parameter follows:
 %
@@ -246,9 +246,9 @@ MagickExport unsigned int GetNumberScenes(const Image *image)
   return(GetImageListSize(image));
 }
 
-MagickExport unsigned long GetImageListSize(const Image *images)
+MagickExport size_t GetImageListSize(const Image *images)
 {
-  register long
+  register size_t
     i;
 
   if (images == (Image *) NULL)
@@ -299,68 +299,49 @@ MagickExport Image *GetNextImage(Image *images)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     L i s t T o G r o u p I m a g e                                         %
+%     I m a g e L i s t T o G r o u p                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ListToGroupImage() is a convenience method that converts an image list to
+%  ImageListToGroup() is a convenience method that converts an image list to
 %  a sequential array.  For example,
 %
-%    images = ListToGroupImage(image_list,&n);
+%    group = ImageListToGroup(images, exception);
 %    for (i = 0; i < n; i++)
-%      puts(images[i]->filename);
+%      puts(group[i]->filename);
 %
-%  The format of the ListToGroupImage method is:
+%  The format of the ImageListToGroup method is:
 %
-%      Image **ListToGroupImage(const Image *image,
-%        unsigned long *number_images)
+%      Image **ImageListToGroup(const Image *images,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image list.
 %
-%    o number_images:  The length of the image array is returned here.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-MagickExport Image **ListToGroupImage(const Image *image,
-  unsigned long *number_images)
+MagickExport Image **ImageListToGroup(const Image *images,
+  ExceptionInfo *exception)
 {
-  const Image
-    *next;
-
   Image
-    **images;
+    **group;
 
   register long
-    i;
+	  i;
 
-  /*
-    Determine the number of images in the list.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(number_images != (unsigned long *) NULL);
-  next=image;
-  for (i=0; next != (const Image *) NULL; i++)
-    next=next->next;
-  images=(Image **) AcquireMemory(i*sizeof(Image *));
-  if (images == (Image **) NULL)
+  assert(images != (Image *) NULL);
+  assert(images->signature == MagickSignature);
+  group=(Image **) AcquireMemory(GetImageListSize(images)*sizeof(Image *));
+  if (group == (Image **) NULL)
     MagickError(ResourceLimitWarning,"Unable to convert image list",
       "Memory allocation failed");
-  *number_images=i;
-  /*
-    Add each image in the linked list to the group.
-  */
-  next=image;
-  for (i=0; next != (Image *) NULL; i++)
-  {
-    images[i]=(Image *) next;
-    next=next->next;
-  }
-  return(images);
+  for (i=0; i < (long) GetImageListSize(images); i++)
+    group[i]=GetImageList(images,i,exception);
+  return(group);
 }
 
 /*
@@ -512,7 +493,7 @@ MagickExport Image *ReverseImageList(const Image *images,
     *image;
 
   register long
-	  i;
+    i;
 
   assert(images != (Image *) NULL);
   if (images == (Image *) NULL)
@@ -688,7 +669,7 @@ MagickExport unsigned int UnshiftImageList(Image **images,const Image *image,
   while ((*images)->previous != (Image *) NULL)
     (*images)=(*images)->previous;
   (*images)->previous=CloneImage(image,0,0,True,exception);
-	(*images)->previous->next=(*images);
+  (*images)->previous->next=(*images);
   (*images)=(*images)->previous;
   return(True);
 }

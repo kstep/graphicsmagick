@@ -12,19 +12,19 @@ extern MagickExport Image
   *CloneImageList(const Image *,ExceptionInfo *),
   *GetImageList(const Image *,const unsigned long,ExceptionInfo *),
 	*GetNextImage(Image *),
-  **ListToGroupImage(const Image *,unsigned long *),
+  **ImageListToGroup(const Image *,ExceptionInfo *),
   *NewImageList(void),
   *PopImageList(Image **),
   *ReverseImageList(const Image *,ExceptionInfo *),
   *ShiftImageList(Image **);
 
+extern MagickExport size_t
+  GetImageListSize(const Image *);
+
 extern MagickExport unsigned int
   PushImageList(Image **,const Image *,ExceptionInfo *),
   SetImageList(Image **,const Image *,const unsigned long,ExceptionInfo *),
   UnshiftImageList(Image **,const Image *,ExceptionInfo *);
-
-extern MagickExport unsigned long
-  GetImageListSize(const Image *);
 
 extern MagickExport void
   DestroyImageList(Image *);
