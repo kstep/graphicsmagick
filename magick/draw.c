@@ -1060,7 +1060,7 @@ MagickExport void DrawComposite(DrawContext context,
       char
         buffer[MaxTextExtent];
 
-      FormatString(buffer,"%ld bytes", (4*blob_length/3+4));
+      FormatString(buffer,"%ld bytes", (4L*blob_length/3L+4L));
       ThrowDrawException(ResourceLimitWarning, "allocating Base64 memory",buffer);
     }
 
