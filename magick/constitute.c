@@ -2395,6 +2395,7 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   }
   length=q-blob;
   image=BlobToImage(image_info,blob,q-blob,exception);
+  LiberateMemory((void **) &blob);
   return(image);
 }
 
