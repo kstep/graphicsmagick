@@ -59,8 +59,10 @@ typedef unsigned int Quantum;
 #define Intensity(color)  ScaleIntensityToQuantum(color)
 #define MaxColormapSize  65536U
 #define OpaqueOpacity  0
-#define ScaleIntensityToQuantum(pixel) \
-  ((Quantum) (0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue))
+#define ScaleIntensityToQuantum(pixel) ((Quantum) \
+  ((9798L*(color)->red+19235L*(color)->green+3735L*(color)->blue)/32768L))
+#define ScaleIntensityToAny(pixel) ((unsigned long) \
+  ((9798L*(color)->red+19235L*(color)->green+3735L*(color)->blue)/32768L))
 #define TransparentOpacity  MaxRGB
 #define Upscale(value)  ScaleCharToQuantum(value)
 #define XDownscale(value)  ScaleShortToQuantum(value)
