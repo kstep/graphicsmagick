@@ -42,6 +42,7 @@ magick_libGraphicsMagick_la_LDFLAGS = -no-undefined \
 
 # Library base sources
 MAGICK_BASE_SRCS = \
+	magick/alpha_composite.h \
 	magick/animate.c \
 	magick/animate.h \
 	magick/annotate.c \

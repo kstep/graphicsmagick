@@ -39,6 +39,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/alpha_composite.h"
 #include "magick/cache.h"
 #include "magick/color.h"
 #include "magick/composite.h"

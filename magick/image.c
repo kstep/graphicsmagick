@@ -37,6 +37,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/alpha_composite.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/cache.h"

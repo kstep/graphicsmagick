@@ -668,10 +668,11 @@ ltdl_libltdl_la_OBJECTS = $(am_ltdl_libltdl_la_OBJECTS)
 @WITH_MODULES_FALSE@	$(am__DEPENDENCIES_3)
 @WITH_MODULES_TRUE@magick_libGraphicsMagick_la_DEPENDENCIES =  \
 @WITH_MODULES_TRUE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3)
-am__magick_libGraphicsMagick_la_SOURCES_DIST = magick/animate.c \
-	magick/animate.h magick/annotate.c magick/api.h \
-	magick/attribute.c magick/attribute.h magick/bit_stream.h \
-	magick/blob.c magick/blob.h magick/cache.c magick/cache.h \
+am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
+	magick/alpha_composite.h magick/animate.c magick/animate.h \
+	magick/annotate.c magick/api.h magick/attribute.c \
+	magick/attribute.h magick/bit_stream.h magick/blob.c \
+	magick/blob.h magick/cache.c magick/cache.h \
 	magick/cache_view.c magick/cache_view.h magick/channel.c \
 	magick/channel.h magick/color.c magick/color.h \
 	magick/command.c magick/command.h magick/composite.c \
@@ -2444,6 +2445,7 @@ magick_libGraphicsMagick_la_LDFLAGS = -no-undefined \
 
 # Library base sources
 MAGICK_BASE_SRCS = \
+	magick/alpha_composite.h \
 	magick/animate.c \
 	magick/animate.h \
 	magick/annotate.c \

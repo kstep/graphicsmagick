@@ -1,5 +1,8 @@
 2005-03-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/alpha_composite.h (AlphaComposite): Moved AlphaComposite
+	to new alpha_composite.h header since it was causing porting
+	problems.
 	* magick/constitute.h (enum QuantumType): Added CIEYQuantum and
 	CIEXYZQuantum quantum import options.
 	* coders/tiff.c (ReadTIFFImage): Import LogLuv image data within
