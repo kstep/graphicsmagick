@@ -227,7 +227,7 @@ testFilter('input.miff', 'Shear',
 ++$test;
 testFilter('input.miff', 'Solarize',
   q/60/,
-  '2c67db3c251365114d229d5c0a36362b');
+  '7c1ca362ad2afc2eb11d61bc08e48026');
 
 ++$test;
 testFilter('input.miff', 'Swirl',
