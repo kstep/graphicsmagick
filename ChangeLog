@@ -1,3 +1,8 @@
+2003-10-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (DescribeImage): Added -verbose support for
+	displaying individual channel depths.
+
 2003-10-06  Lars Ruben Skyum  <lars.skyum@stibo.com>
 
 	* magick/image.c (SetImageInfo): cleaned up parsing of sub-image

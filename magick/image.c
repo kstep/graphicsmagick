@@ -1657,6 +1657,33 @@ MagickExport unsigned int DescribeImage(Image *image,FILE *file,
   (void) fprintf(file,"\n");
   (void) fprintf(file,"  Depth: %lu bits-per-pixel component\n",
     GetImageDepth(image,&image->exception));
+  (void) fprintf(file,"  Channel Depths:\n");
+  if (image->colorspace == CMYKColorspace)
+    {
+      (void) fprintf(file,"    Cyan:     %u bits\n",
+                     GetImageChannelDepth(image,CyanChannel,&image->exception));
+      (void) fprintf(file,"    Magenta:  %u bits\n",
+                     GetImageChannelDepth(image,MagentaChannel,&image->exception));
+      (void) fprintf(file,"    Yellow:   %u bits\n",
+                     GetImageChannelDepth(image,YellowChannel,&image->exception));
+      (void) fprintf(file,"    Black:    %u bits\n",
+                     GetImageChannelDepth(image,BlackChannel,&image->exception));
+      if (image->matte)
+        (void) fprintf(file,"    Opacity:  %u bits\n",
+                       GetImageChannelDepth(image,OpacityChannel,&image->exception));
+    }
+  else
+    {
+      (void) fprintf(file,"    Red:      %u bits\n",
+                     GetImageChannelDepth(image,RedChannel,&image->exception));
+      (void) fprintf(file,"    Green:    %u bits\n",
+                     GetImageChannelDepth(image,GreenChannel,&image->exception));
+      (void) fprintf(file,"    Blue:     %u bits\n",
+                     GetImageChannelDepth(image,BlueChannel,&image->exception));
+      if (image->matte)
+        (void) fprintf(file,"    Opacity:  %u bits\n",
+                       GetImageChannelDepth(image,OpacityChannel,&image->exception));
+    }
   x=0;
   p=(Image *) NULL;
   if ((image->matte && (strcmp(image->magick,"GIF") != 0)) || image->taint)
