@@ -7648,6 +7648,8 @@ Transform(ref,...)
     {
       clone=CloneImage(next,0,0,True,&next->exception);
       (void) CatchImageException(next);
+      if (clone == (Image *) NULL)
+        goto MethodException;
       TransformImage(&clone,crop_geometry,geometry);
       for (image=clone; image; image=image->next)
       {
