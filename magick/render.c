@@ -2033,8 +2033,9 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 graphic_context[n]->decorate=LineThroughDecoration;
                 break;
               }
-            (void) QueryColorDatabase(token,&graphic_context[n]->box,
-              &image->exception);
+            if (QueryColorDatabase(token,&graphic_context[n]->box,
+                                   &image->exception) != False)
+              break;
             status=False;
             break;
           }
