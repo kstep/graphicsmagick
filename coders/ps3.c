@@ -533,7 +533,6 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     attribute=GetImageAttribute(image,"label");
     if (attribute != (const ImageAttribute *) NULL)
       (void) WriteBlobString(image,"%%PageResources: font Times-Roman\n");
-(void) WriteBlobString(image,"/DeviceRGB setcolorspace\n");
     /*
       Output image data.
     */
