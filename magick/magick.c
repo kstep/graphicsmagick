@@ -255,13 +255,13 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
           LiberateMemory((void **) &search_path);
           return(path);
         }
-      /*
-        Search executable directory if directory is known.
-      */
-      if ( *SetClientPath((char *) NULL) != '\0')
+      if (*SetClientPath((char *) NULL) != '\0')
         {
+          /*
+            Search executable directory if directory is known.
+          */
           FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
-                       DirectorySeparator,filename);
+            DirectorySeparator,filename);
           if (IsAccessible(path))
             {
               LiberateMemory((void **) &search_path);
@@ -385,7 +385,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     }
   ConcatenateString(&search_path,"; MagickLibPath:");
   ConcatenateString(&search_path,path);
-#endif /* MagickLibPath */
+#endif
 #if defined(MagickModulesPath)
   FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
   if (IsAccessible(path))
@@ -395,7 +395,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     }
   ConcatenateString(&search_path,"; MagickModulesPath:");
   ConcatenateString(&search_path,path);
-#endif /* MagickModulesPath */
+#endif
 #if defined(MagickSharePath)
   FormatString(path,"%.1024s%.1024s",MagickSharePath,filename);
   if (IsAccessible(path))
@@ -405,7 +405,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     }
   ConcatenateString(&search_path,"; MagickSharePath:");
   ConcatenateString(&search_path,path);
-#endif /* MagickSharePath */
+#endif
   ThrowException(exception,ConfigurationError,
     "Unable to open configuration file",search_path);
   LiberateMemory((void **) &search_path);

@@ -3023,7 +3023,7 @@ MagickExport XrmDatabase XGetResourceDatabase(Display *display,
 #if defined(ApplicationDefaults)
   FormatString(filename,"%.1024s%c%.1024s",ApplicationDefaults,c,client_name+1);
   (void) XrmCombineFileDatabase(filename,&resource_database,False);
-#endif /* ApplicationDefaults */
+#endif
   if (XResourceManagerString(display) != (char *) NULL)
     {
       /*
@@ -3039,7 +3039,7 @@ MagickExport XrmDatabase XGetResourceDatabase(Display *display,
   FormatString(filename,"%.1024s%.1024src",PreferencesDefaults,client_name);
   ExpandFilename(filename);
   (void) XrmCombineFileDatabase(filename,&resource_database,False);
-#endif /* PreferencesDefaults */
+#endif
   return(resource_database);
 }
 
@@ -8647,7 +8647,7 @@ MagickExport void XUserPreferences(XResourceInfo *resource_info)
   FormatString(filename,"%.1024s%.1024src",PreferencesDefaults,client_name);
   ExpandFilename(filename);
   XrmPutFileDatabase(preferences_database,filename);
-#endif /* PreferencesDefaults */
+#endif
 }
 
 /*
