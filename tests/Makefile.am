@@ -153,6 +153,7 @@ CHECK_BLOB_FORMATS = \
 	VICAR \
 	VIFF \
 	VST \
+	WBMP \
 	XBM \
 	XPM \
 	$(XWD) \
@@ -208,6 +209,7 @@ CHECK_FILE_FORMATS = \
 	VICAR \
 	VIFF \
 	VST \
+	WBMP \
 	XBM \
 	XPM \
 	$(XWD) \
