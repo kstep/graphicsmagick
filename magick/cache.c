@@ -147,7 +147,7 @@ static SyncPixelHandler
 %
 %  Method AcquireCacheNexus() acquires pixels from the in-memory or disk
 %  pixel cache as defined by the geometry parameters.   A pointer to the
-%  pixels isreturned if the pixels are transferred, otherwise a NULL is
+%  pixels is returned if the pixels are transferred, otherwise a NULL is
 %  returned.
 %
 %  The format of the AcquireCacheNexus() method is:
@@ -158,7 +158,7 @@ static SyncPixelHandler
 %
 %  A description of each parameter follows:
 %
-%    o status: Method GetCacheNexus() returns a pointer to the pixels if
+%    o status: Method AcquireCacheNexus() returns a pointer to the pixels if
 %      they are transferred, otherwise a NULL is returned.
 %
 %    o image: The image.
@@ -177,6 +177,10 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   CacheInfo
     *cache_info;
 
+  IndexPacket
+    *nexus_indexes,
+    *indexes;
+
   off_t
     offset;
 
@@ -186,14 +190,23 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   RectangleInfo
     region;
 
-  unsigned int
-    status;
+  register const PixelPacket
+    *p;
+
+  register long
+    u,
+    v;
+
+  register PixelPacket
+    *q;
 
   unsigned long
-    number_pixels;
+    image_nexus,
+    number_pixels,
+    quantum;
 
   /*
-    Transfer pixels from the cache.
+    Acquire pixels.
   */
   assert(image != (const Image *) NULL);
   assert(image->cache != (Cache) NULL);
@@ -205,19 +218,6 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
         image->filename);
       return((PixelPacket *) NULL);
     }
-  /*
-    Validate pixel cache geometry.
-  */
-  offset=y*cache_info->columns+x;
-  if (offset < 0)
-    return((PixelPacket *) NULL);
-  number_pixels=cache_info->columns*cache_info->rows;
-  offset+=(rows-1)*cache_info->columns+columns-1;
-  if (offset > (off_t) number_pixels)
-    return((PixelPacket *) NULL);
-  /*
-    Return pixel cache.
-  */
   region.x=x;
   region.y=y;
   region.width=columns;
@@ -225,16 +225,58 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   pixels=SetNexus(image,&region,id);
   if (IsNexusInCore(image->cache,id))
     return(pixels);
-  status=ReadCachePixels(image->cache,id);
-  if ((image->storage_class == PseudoClass) ||
-      (image->colorspace == CMYKColorspace))
-    status|=ReadCacheIndexes(image->cache,id);
-  if (status == False)
+  offset=y*cache_info->columns+x;
+  quantum=(rows-1)*cache_info->columns+columns-1;
+  number_pixels=cache_info->columns*cache_info->rows;
+  if ((offset >= 0) && (offset+quantum) <= (off_t) number_pixels)
     {
-      ThrowException(exception,CacheWarning,
-        "Unable to acquire pixels from cache",image->filename);
-      return((PixelPacket *) NULL);
+      unsigned int
+        status;
+
+      /*
+        Pixel request is inside cache extents.
+      */
+      status=ReadCachePixels(image->cache,id);
+      if ((image->storage_class == PseudoClass) ||
+          (image->colorspace == CMYKColorspace))
+        status|=ReadCacheIndexes(image->cache,id);
+      if (status == False)
+        {
+          ThrowException(exception,CacheWarning,
+            "Unable to acquire pixels from cache",image->filename);
+          return((PixelPacket *) NULL);
+        }
+      return(pixels);
     }
+  /*
+    Pixel request is outside cache extents.
+  */
+  image_nexus=GetNexus(image->cache);
+  if (image_nexus == 0)
+    return(False);
+  q=pixels;
+  indexes=GetNexusIndexes(image->cache,id);
+  for (v=0; v < (long) rows; v++)
+  {
+    for (u=0; u < (long) columns; u++)
+    {
+      p=AcquireCacheNexus(image,
+        x+u >= 0 ? x+u < cache_info->columns ? x+u : cache_info->columns-1 : 0,
+        y+v >= 0 ? y+v < cache_info->rows ? y+v : cache_info->rows-1 : 0,1,1,
+        image_nexus,exception);
+      if (p != (const PixelPacket *) NULL)
+        *q=(*p);
+      if (indexes != (IndexPacket *) NULL)
+        {
+          nexus_indexes=GetNexusIndexes(image->cache,image_nexus);
+          if (nexus_indexes != (IndexPacket *) NULL)
+            *indexes=(*nexus_indexes);
+          indexes++;
+        }
+      q++;
+    }
+  }
+  DestroyCacheNexus(image->cache,image_nexus);
   return(pixels);
 }
 
@@ -2162,24 +2204,33 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   nexus_info->x=region->x;
   nexus_info->y=region->y;
   if ((cache_info->type != DiskCache) && (image->clip_mask == (Image *) NULL))
-    if ((((nexus_info->x+nexus_info->columns) <= cache_info->columns) &&
-        (nexus_info->rows == 1)) || ((nexus_info->x == 0) &&
-        ((nexus_info->columns % cache_info->columns) == 0)))
-      {
-        off_t
-          offset;
+    {
+      off_t
+        offset;
 
-        /*
-          Pixels are accessed directly from memory.
-        */
-        offset=nexus_info->y*cache_info->columns+nexus_info->x;
-        nexus_info->pixels=cache_info->pixels+offset;
-        nexus_info->indexes=(IndexPacket *) NULL;
-        if ((cache_info->storage_class == PseudoClass) ||
-            (cache_info->colorspace == CMYKColorspace))
-          nexus_info->indexes=cache_info->indexes+offset;
-        return(nexus_info->pixels);
-      }
+      unsigned long
+        number_pixels,
+        quantum;
+
+      offset=nexus_info->y*cache_info->columns+nexus_info->x;
+      quantum=(nexus_info->rows-1)*cache_info->columns+nexus_info->columns-1;
+      number_pixels=cache_info->columns*cache_info->rows;
+      if ((offset >= 0) && ((offset+quantum) <= (off_t) number_pixels))
+        if ((((nexus_info->x+nexus_info->columns) <= cache_info->columns) &&
+            (nexus_info->rows == 1)) || ((nexus_info->x == 0) &&
+            ((nexus_info->columns % cache_info->columns) == 0)))
+          {
+            /*
+              Pixels are accessed directly from memory.
+            */
+            nexus_info->pixels=cache_info->pixels+offset;
+            nexus_info->indexes=(IndexPacket *) NULL;
+            if ((cache_info->storage_class == PseudoClass) ||
+                (cache_info->colorspace == CMYKColorspace))
+              nexus_info->indexes=cache_info->indexes+offset;
+            return(nexus_info->pixels);
+          }
+    }
   /*
     Pixels are stored in a staging area until they are synced to the cache.
   */
