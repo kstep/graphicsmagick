@@ -462,12 +462,9 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case SubtractCompositeOp:
         {
-          destination.red=(Quantum)
-            ((QuantumPrecision) source.red-destination.red);
-          destination.green=(Quantum)
-            ((QuantumPrecision) source.green-destination.green);
-          destination.blue=(Quantum)
-            ((QuantumPrecision) source.blue-destination.blue);
+          destination.red=(Quantum) (source.red-(double) destination.red);
+          destination.green=(Quantum) (source.green-(double) destination.green);
+          destination.blue=(Quantum) (source.blue-(double) destination.blue);
           destination.opacity=OpaqueOpacity;
           break;
         }
@@ -486,13 +483,13 @@ MagickExport unsigned int CompositeImage(Image *image,
         case DifferenceCompositeOp:
         {
           destination.red=(Quantum)
-            (AbsoluteValue((QuantumPrecision) source.red-destination.red));
+            (AbsoluteValue(source.red-(double) destination.red));
           destination.green=(Quantum)
-            (AbsoluteValue((QuantumPrecision) source.green-destination.green));
+            (AbsoluteValue(source.green-(double) destination.green));
           destination.blue=(Quantum)
-            (AbsoluteValue((QuantumPrecision) source.blue-destination.blue));
-          destination.opacity=(Quantum) (AbsoluteValue((QuantumPrecision)
-            source.opacity-destination.opacity));
+            (AbsoluteValue(source.blue-(double) destination.blue));
+          destination.opacity=(Quantum)
+            (AbsoluteValue(source.opacity-(double) destination.opacity));
           break;
         }
         case BumpmapCompositeOp:
