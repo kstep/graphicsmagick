@@ -40,8 +40,10 @@
 
 #if defined(_DLL) && !defined(_LIB)
 #  define ModuleExport  __declspec(dllexport)
+#  pragma message( "Module compiled as DLL" ) 
 #else
 #  define ModuleExport
+#  pragma message( "Module compiled as library" ) 
 #endif
 
 #define MagickGlobal __declspec(thread)
