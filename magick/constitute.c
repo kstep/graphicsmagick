@@ -1299,7 +1299,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
             *q++=(Quantum) indexes[x];
           break;
         }
-      if (image->colors <= 65535L)
+      if (image->colors <= 65536L)
         {
           for (x=0; x < (long) number_pixels; x++)
           {
@@ -1330,7 +1330,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      if (image->colors <= 65535L)
+      if (image->colors <= 65536L)
         {
           for (x=0; x < (long) number_pixels; x++)
           {
@@ -1990,7 +1990,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           }
           break;
         }
-      if (image->colors <= 65535L)
+      if (image->colors <= 65536L)
         {
           for (x=0; x < (long) number_pixels; x++)
           {
@@ -2025,7 +2025,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           }
           break;
         }
-      if (image->colors <= 65535L)
+      if (image->colors <= 65536L)
         {
           for (x=0; x < (long) number_pixels; x++)
           {
