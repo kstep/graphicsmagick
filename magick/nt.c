@@ -688,6 +688,74 @@ char *NTGetLastError(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   N T R e s o u r c e T o B l o b                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method NTResourceToBlob returns a blob containing the contents of the
+%   resource in the current executable specified by the id parameter. This
+%   is currently used to retrieve MGK files tha have been embedded into
+%   the various command line utilities.
+%
+%  The format of the telldir method is:
+%
+%      char *NTResourceToBlob(const char *id)
+%
+%  A description of each parameter follows:
+%
+%    o id: Specifies a string that identifies the resource.
+%
+%
+*/
+MagickExport char *NTResourceToBlob(const char *id)
+{
+  char
+    *blob;
+
+  HRSRC
+    hRsrc;
+
+  HMODULE
+    hModule;
+
+  blob=(char *) NULL;
+  if (id && (hModule = GetModuleHandle(0)) &&
+    (hRsrc = FindResource(hModule, id, "IMAGEMAGICK")))
+    {
+      HGLOBAL hGlobal = LoadResource(hModule, hRsrc);
+      if (hGlobal)
+        {
+          char
+            *resource;
+
+          DWORD
+            length;
+
+          length = SizeofResource(hModule, hRsrc);
+          resource = (char *)LockResource(hGlobal);    
+          if (resource && (length > 0))
+            {
+              blob = (char *) AcquireMemory(length+1);
+              if (blob)
+                {
+                  (void) memcpy((char *) blob,(char *) resource,length);
+                  blob[length]='\0';
+                }
+              UnlockResource(hGlobal);
+            }
+          FreeResource(hGlobal);
+        }
+    }
+  return(blob);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   N T S y s t e m C o m m a n d                                             %
 %                                                                             %
 %                                                                             %

@@ -10,6 +10,8 @@ extern "C" {
 
 #define MagickCopyright  "Copyright (C) 2001 ImageMagick Studio"
 #define MagickLibVersion  0x0538
+#define MagickLibVersionText  "5.3.8"
+#define MagickLibVersionNumber  5,3,8,0
 #if defined(QuantumLeap)
 #define MagickVersion \
   "@(#)ImageMagick 5.3.8 09/01/01 Q:16 http://www.imagemagick.org"

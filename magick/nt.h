@@ -68,7 +68,8 @@ struct dirent
 extern MagickExport char
   *NTGetExecutionPath(void),
   *SetClientName(const char *),
-  *NTGetLastError(void);
+  *NTGetLastError(void),
+  *NTResourceToBlob(const char *);
 
 extern MagickExport int
   Exit(int),
