@@ -595,6 +595,23 @@ static unsigned int ReadConfigurationFile(const char *basename,
           GetToken(q,&q,token);
         continue;
       }
+    if (LocaleCompare(keyword,"<include") == 0)
+      {
+        /*
+          Include.
+        */
+        while ((*token != '>') && (*q != '\0'))
+        {
+          strncpy(keyword,token,MaxTextExtent-1);
+          GetToken(q,&q,token);
+          if (*token != '=')
+            continue;
+          GetToken(q,&q,token);
+          if (LocaleCompare(keyword,"file") == 0)
+            (void) ReadConfigurationFile(token,exception);
+        }
+        continue;
+      }
     if (LocaleCompare(keyword,"<delegate") == 0)
       {
         DelegateInfo
@@ -613,6 +630,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
             delegate_list=delegate_info;
             continue;
           }
+        delegate_list->filename=AllocateString(filename);
         delegate_list->next=delegate_info;
         delegate_info->previous=delegate_list;
         delegate_list=delegate_list->next;
@@ -699,7 +717,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
     return(False);
   while (delegate_list->previous != (DelegateInfo *) NULL)
     delegate_list=delegate_list->previous;
-  CloneString(&delegate_list->filename,filename);
   return(True);
 }
 

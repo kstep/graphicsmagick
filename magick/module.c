@@ -843,6 +843,23 @@ static unsigned int ReadConfigurationFile(const char *basename,
           GetToken(q,&q,token);
         continue;
       }
+    if (LocaleCompare(keyword,"<include") == 0)
+      {
+        /*
+          Include.
+        */
+        while ((*token != '>') && (*q != '\0'))
+        {
+          strncpy(keyword,token,MaxTextExtent-1);
+          GetToken(q,&q,token);
+          if (*token != '=')
+            continue;
+          GetToken(q,&q,token);
+          if (LocaleCompare(keyword,"file") == 0)
+            (void) ReadConfigurationFile(token,exception);
+        }
+        continue;
+      }
     if (LocaleCompare(keyword,"<module") == 0)
       {
         ModuleAlias
@@ -861,6 +878,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
             module_aliases=alias_info;
             continue;
           }
+        module_aliases->filename=AllocateString(filename);
         module_aliases->next=alias_info;
         alias_info->previous=module_aliases;
         module_aliases=module_aliases->next;
@@ -905,7 +923,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
     return(False);
   while (module_aliases->previous != (ModuleAlias *) NULL)
     module_aliases=module_aliases->previous;
-  CloneString(&module_aliases->filename,filename);
 #endif
   return(True);
 }

@@ -358,6 +358,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
             type_list=type_info;
             continue;
           }
+        type_list->filename=AllocateString(filename);
         type_list->next=type_info;
         type_info->previous=type_list;
         type_list=type_list->next;
@@ -487,6 +488,5 @@ static unsigned int ReadConfigurationFile(const char *basename,
     return(False);
   while (type_list->previous != (TypeInfo *) NULL)
     type_list=type_list->previous;
-  CloneString(&type_list->filename,filename);
   return(True);
 }

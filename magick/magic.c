@@ -317,6 +317,23 @@ static unsigned int ReadConfigurationFile(const char *basename,
           GetToken(q,&q,token);
         continue;
       }
+    if (LocaleCompare(keyword,"<include") == 0)
+      {
+        /*
+          Include.
+        */
+        while ((*token != '>') && (*q != '\0'))
+        {
+          strncpy(keyword,token,MaxTextExtent-1);
+          GetToken(q,&q,token);
+          if (*token != '=')
+            continue;
+          GetToken(q,&q,token);
+          if (LocaleCompare(keyword,"file") == 0)
+            (void) ReadConfigurationFile(token,exception);
+        }
+        continue;
+      }
     if (LocaleCompare(keyword,"<magic") == 0)
       {
         MagicInfo
@@ -335,6 +352,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
             magic_list=magic_info;
             continue;
           }
+        magic_list->filename=AllocateString(filename);
         magic_list->next=magic_info;
         magic_info->previous=magic_list;
         magic_list=magic_list->next;
@@ -438,6 +456,5 @@ static unsigned int ReadConfigurationFile(const char *basename,
     return(False);
   while (magic_list->previous != (MagicInfo *) NULL)
     magic_list=magic_list->previous;
-  CloneString(&magic_list->filename,filename);
   return(True);
 }

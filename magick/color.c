@@ -1516,6 +1516,23 @@ static unsigned int ReadConfigurationFile(const char *basename,
           GetToken(q,&q,token);
         continue;
       }
+    if (LocaleCompare(keyword,"<include") == 0)
+      {
+        /*
+          Include.
+        */
+        while ((*token != '>') && (*q != '\0'))
+        {
+          strncpy(keyword,token,MaxTextExtent-1);
+          GetToken(q,&q,token);
+          if (*token != '=')
+            continue;
+          GetToken(q,&q,token);
+          if (LocaleCompare(keyword,"file") == 0)
+            (void) ReadConfigurationFile(token,exception);
+        }
+        continue;
+      }
     if (LocaleCompare(keyword,"<color") == 0)
       {
         ColorInfo
@@ -1534,6 +1551,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
             color_list=color_info;
             continue;
           }
+        color_list->filename=AllocateString(filename);
         color_list->next=color_info;
         color_info->previous=color_list;
         color_list=color_list->next;
@@ -1634,7 +1652,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
     return(False);
   while (color_list->previous != (ColorInfo *) NULL)
     color_list=color_list->previous;
-  CloneString(&color_list->filename,filename);
   return(True);
 }
 
