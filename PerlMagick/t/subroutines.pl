@@ -337,6 +337,7 @@ sub testReadWrite {
 	    print "     if 16-bit: $md5_16\n";
           }
           print "not ok $test\n";
+          $image->Display();
         } else {
           print "ok $test\n";
           ($file = $outfile) =~ s/.*://g;

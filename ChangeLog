@@ -1,3 +1,10 @@
+2003-02-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/fpx.c (RegisterFPXImage): FlashPIX does not
+	provide direct BLOB I/O support.
+	* magick/blob.c (BlobToImage): Add logging.
+	(BlobToFile): Add logging.
+
 2003-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/fpx.c (ReadFPXImage): Removing the input file is

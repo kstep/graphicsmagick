@@ -518,6 +518,7 @@ ModuleExport void RegisterFPXImage(void)
   entry->encoder=(EncoderHandler) WriteFPXImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
+  entry->blob_support=False;
   entry->magick=(MagickHandler) IsFPX;
   entry->description=AcquireString("FlashPix Format");
   entry->module=AcquireString("FPX");

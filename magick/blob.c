@@ -229,6 +229,8 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
 
   assert(filename != (const char *) NULL);
   assert(blob != (const void *) NULL);
+  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+    "Copying BLOB to file %s\n",filename);
   file=open(filename,O_WRONLY | O_CREAT | O_BINARY | O_EXCL,0777);
   if (file == -1)
     file=open(filename,O_WRONLY | O_CREAT | O_BINARY,0777);
@@ -302,11 +304,13 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
+  (void) LogMagickEvent(BlobEvent,GetMagickModule(), "Entering BlobToImage");
   SetExceptionInfo(exception,UndefinedException);
   if ((blob == (const void *) NULL) || (length == 0))
     {
       ThrowException(exception,BlobError,"ZeroLengthBlobNotPermitted",
         image_info->magick);
+      (void) LogMagickEvent(BlobEvent,GetMagickModule(), "Leaving BlobToImage");
       return((Image *) NULL);
     }
   clone_info=CloneImageInfo(image_info);
@@ -317,6 +321,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   if (magick_info == (const MagickInfo *) NULL)
     {
       DestroyImageInfo(clone_info);
+      (void) LogMagickEvent(BlobEvent,GetMagickModule(), "Leaving BlobToImage");
       return((Image *) NULL);
     }
   if (magick_info->blob_support)
@@ -324,12 +329,14 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       /*
         Native blob support for this image format.
       */
+      (void) LogMagickEvent(BlobEvent,GetMagickModule(), "Using native BLOB support");
       (void) strncpy(clone_info->filename,image_info->filename,MaxTextExtent-1);
       (void) strncpy(clone_info->magick,image_info->magick,MaxTextExtent-1);
       image=ReadImage(clone_info,exception);
       if (image != (Image *) NULL)
         DetachBlob(image->blob);
       DestroyImageInfo(clone_info);
+      (void) LogMagickEvent(BlobEvent,GetMagickModule(), "Leaving BlobToImage");
       return(image);
     }
   /*
@@ -342,11 +349,15 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   if (status == False)
     {
       DestroyImageInfo(clone_info);
+      (void) LogMagickEvent(BlobEvent,GetMagickModule(), "Leaving BlobToImage");
       return((Image *) NULL);
     }
   image=ReadImage(clone_info,exception);
+  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+    "Removing temporary file \"%s\"\n",clone_info->filename);
   (void) remove(clone_info->filename);
   DestroyImageInfo(clone_info);
+  (void) LogMagickEvent(BlobEvent,GetMagickModule(), "Leaving BlobToImage");
   return(image);
 }
 
