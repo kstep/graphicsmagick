@@ -95,7 +95,6 @@ extern "C" {
 #define MagickSignature  0xabacadabUL
 
 #if !defined(vms) && !defined(macintosh)
-# include "magick/classify.h"
 # include "magick/semaphore.h"
 # include "magick/error.h"
 # include "magick/timer.h"
@@ -121,7 +120,6 @@ extern "C" {
 # include "magick/log.h"
 # include "magick/version.h"
 #else
-# include "classify.h"
 # include "semaphore.h"
 # include "timer.h"
 # include "error.h"

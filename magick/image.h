@@ -11,7 +11,6 @@ extern "C" {
 /*
   Include declarations.
 */
-#include "classify.h"
 #include "semaphore.h"
 #include "error.h"
 #include "timer.h"
@@ -82,7 +81,322 @@ typedef unsigned int Quantum;
 #define Upscale(value)  ScaleCharToQuantum(value)
 #define XDownscale(value)  ScaleShortToQuantum(value)
 #define XUpscale(quantum)  ScaleQuantumToShort(quantum)
-
+
+/*
+  Enum declarations.
+*/
+typedef enum
+{
+  UndefinedChannel,
+  RedChannel,
+  CyanChannel,
+  GreenChannel,
+  MagentaChannel,
+  BlueChannel,
+  YellowChannel,
+  OpacityChannel,
+  BlackChannel,
+  MatteChannel
+} ChannelType;
+
+typedef enum
+{
+  UndefinedClass,
+  DirectClass,
+  PseudoClass
+} ClassType;
+
+typedef enum
+{
+  UndefinedColorspace,
+  RGBColorspace,
+  GRAYColorspace,
+  TransparentColorspace,
+  OHTAColorspace,
+  XYZColorspace,
+  YCbCrColorspace,
+  YCCColorspace,
+  YIQColorspace,
+  YPbPrColorspace,
+  YUVColorspace,
+  CMYKColorspace,
+  sRGBColorspace
+} ColorspaceType;
+
+typedef enum
+{
+  UndefinedCompliance = 0x0000,
+  SVGCompliance = 0x0001,
+  X11Compliance = 0x0002,
+  XPMCompliance = 0x0004
+} ComplianceType;
+
+typedef enum
+{
+  UndefinedCompositeOp = 0,
+  OverCompositeOp,
+  InCompositeOp,
+  OutCompositeOp,
+  AtopCompositeOp,
+  XorCompositeOp,
+  PlusCompositeOp,
+  MinusCompositeOp,
+  AddCompositeOp,
+  SubtractCompositeOp,
+  DifferenceCompositeOp,
+  MultiplyCompositeOp,
+  BumpmapCompositeOp,
+  CopyCompositeOp,
+  CopyRedCompositeOp,
+  CopyGreenCompositeOp,
+  CopyBlueCompositeOp,
+  CopyOpacityCompositeOp,
+  ClearCompositeOp,
+  DissolveCompositeOp,
+  DisplaceCompositeOp,
+  ModulateCompositeOp,
+  ThresholdCompositeOp,
+  NoCompositeOp,
+  DarkenCompositeOp,
+  LightenCompositeOp,
+  HueCompositeOp,
+  SaturateCompositeOp,
+  ColorizeCompositeOp,
+  LuminizeCompositeOp,
+  ScreenCompositeOp,
+  OverlayCompositeOp
+} CompositeOperator;
+
+typedef enum
+{
+  UndefinedCompression,
+  NoCompression,
+  BZipCompression,
+  FaxCompression,
+  Group4Compression,
+  JPEGCompression,
+  LosslessJPEGCompression,
+  LZWCompression,
+  RLECompression,
+  ZipCompression
+} CompressionType;
+
+typedef enum
+{
+  UndefinedEndian,
+  LSBEndian,
+  MSBEndian
+} EndianType;
+
+typedef enum
+{
+  UndefinedFilter,
+  PointFilter,
+  BoxFilter,
+  TriangleFilter,
+  HermiteFilter,
+  HanningFilter,
+  HammingFilter,
+  BlackmanFilter,
+  GaussianFilter,
+  QuadraticFilter,
+  CubicFilter,
+  CatromFilter,
+  MitchellFilter,
+  LanczosFilter,
+  BesselFilter,
+  SincFilter
+} FilterTypes;
+
+typedef enum
+{
+#undef NoValue
+  NoValue = 0x0000,
+#undef XValue
+  XValue = 0x0001,
+#undef YValue
+  YValue = 0x0002,
+#undef WidthValue
+  WidthValue = 0x0004,
+#undef HeightValue
+  HeightValue = 0x0008,
+#undef AllValues
+  AllValues = 0x000F,
+#undef XNegative
+  XNegative = 0x0010,
+#undef YNegative
+  YNegative = 0x0020,
+  PercentValue = 0x1000,
+  AspectValue = 0x2000,
+  LessValue = 0x4000,
+  GreaterValue = 0x8000,
+  AreaValue = 0x10000
+} GeometryFlags;
+
+typedef enum
+{
+#undef ForgetGravity
+  ForgetGravity,
+#undef NorthWestGravity
+  NorthWestGravity,
+#undef NorthGravity
+  NorthGravity,
+#undef NorthEastGravity
+  NorthEastGravity,
+#undef WestGravity
+  WestGravity,
+#undef CenterGravity
+  CenterGravity,
+#undef EastGravity
+  EastGravity,
+#undef SouthWestGravity
+  SouthWestGravity,
+#undef SouthGravity
+  SouthGravity,
+#undef SouthEastGravity
+  SouthEastGravity,
+#undef StaticGravity
+  StaticGravity
+} GravityType;
+
+typedef enum
+{
+  UndefinedType,
+  BilevelType,
+  GrayscaleType,
+  GrayscaleMatteType,
+  PaletteType,
+  PaletteMatteType,
+  TrueColorType,
+  TrueColorMatteType,
+  ColorSeparationType,
+  ColorSeparationMatteType,
+  OptimizeType
+} ImageType;
+
+typedef enum
+{
+  UndefinedInterlace,
+  NoInterlace,
+  LineInterlace,
+  PlaneInterlace,
+  PartitionInterlace
+} InterlaceType;
+
+typedef enum
+{
+  UndefinedMode,
+  FrameMode,
+  UnframeMode,
+  ConcatenateMode
+} MontageMode;
+
+typedef enum
+{
+  UniformNoise,
+  GaussianNoise,
+  MultiplicativeGaussianNoise,
+  ImpulseNoise,
+  LaplacianNoise,
+  PoissonNoise
+} NoiseType;
+
+typedef enum
+{
+  UndefinedProfile,
+  ICMProfile,
+  IPTCProfile
+} ProfileType;
+
+typedef enum
+{
+  UndefinedPreview = 0,
+  RotatePreview,
+  ShearPreview,
+  RollPreview,
+  HuePreview,
+  SaturationPreview,
+  BrightnessPreview,
+  GammaPreview,
+  SpiffPreview,
+  DullPreview,
+  GrayscalePreview,
+  QuantizePreview,
+  DespecklePreview,
+  ReduceNoisePreview,
+  AddNoisePreview,
+  SharpenPreview,
+  BlurPreview,
+  ThresholdPreview,
+  EdgeDetectPreview,
+  SpreadPreview,
+  SolarizePreview,
+  ShadePreview,
+  RaisePreview,
+  SegmentPreview,
+  SwirlPreview,
+  ImplodePreview,
+  WavePreview,
+  OilPaintPreview,
+  CharcoalDrawingPreview,
+  JPEGPreview
+} PreviewType;
+
+typedef enum
+{
+  IndexQuantum,
+  GrayQuantum,
+  IndexAlphaQuantum,
+  GrayAlphaQuantum,
+  RedQuantum,
+  CyanQuantum,
+  GreenQuantum,
+  YellowQuantum,
+  BlueQuantum,
+  MagentaQuantum,
+  AlphaQuantum,
+  BlackQuantum,
+  RGBQuantum,
+  RGBAQuantum,
+  CMYKQuantum,
+  CMYKAQuantum
+} QuantumType;
+
+typedef enum
+{
+  UndefinedIntent,
+  SaturationIntent,
+  PerceptualIntent,
+  AbsoluteIntent,
+  RelativeIntent
+} RenderingIntent;
+
+typedef enum
+{
+  UndefinedResolution,
+  PixelsPerInchResolution,
+  PixelsPerCentimeterResolution
+} ResolutionType;
+
+typedef enum
+{
+  CharPixel,
+  ShortPixel,
+  IntegerPixel,
+  LongPixel,
+  FloatPixel,
+  DoublePixel
+} StorageType;
+
+typedef enum
+{
+  UndefinedTransmitType,
+  FileTransmitType,
+  BlobTransmitType,
+  StreamTransmitType,
+  ImageTransmitType
+} TransmitType;
+
 /*
   Typedef declarations.
 */

@@ -14,11 +14,11 @@
 # all copies or substantial portions of ImageMagick.
 #
 # Licensor ("ImageMagick Studio LLC") warrants that the copyright in and to
-# the Software ("ImageMagick") is owned by ImageMagick Studio LLC or is
-# distributed by ImageMagick Studio LLC under a valid current license.
-# Except as expressly stated in the immediately preceding sentence,
-# ImageMagick is provided by ImageMagick Studio LLC, distributors, and
-# copyright owners "AS IS", without warranty of any kind, express or
+# the Software ("ImageMagick") is owned by ImageMagick Studio LLC or that
+# ImageMagick is distributed by ImageMagick Studio LLC under a valid current
+# license.  Except as expressly stated in the immediately preceding
+# sentence, ImageMagick is provided by ImageMagick Studio LLC, contributors,
+# and copyright owners "AS IS", without warranty of any kind, express or
 # implied, including but not limited to the warranties of merchantability,
 # fitness for a particular purpose and non-infringement.  In no event shall
 # ImageMagick Studio LLC, contributors or copyright owners be liable for
@@ -90,7 +90,7 @@ bin_SCRIPTS = Magick-config
 
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h \
-  cache_view.h classify.h command.h compress.h magick_config.h delegate.h \
+  cache_view.h command.h compress.h magick_config.h delegate.h \
   draw.h render.h error.h gem.h image.h list.h log.h magic.h magick.h \
   module.h monitor.h quantize.h registry.h semaphore.h timer.h utility.h \
   version.h widget.h xwindow.h

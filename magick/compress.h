@@ -8,6 +8,9 @@
 extern "C" {
 #endif
 
+/*
+  Typedef declaration.
+*/
 typedef struct _Ascii85Info
 {
   long
@@ -17,7 +20,7 @@ typedef struct _Ascii85Info
   unsigned char
     buffer[10];
 } Ascii85Info;
-
+
 /*
   Compress methods.
 */

@@ -1,22 +1,22 @@
 <?xml version="1.0"?>
 <locale name="iso8859-1">
-  <cache>
-    <error>
-      <message name="pixel-cache-is-not-open">
+  <Cache>
+    <Error>
+      <Message name="PixelCacheIsNotOpen">
         Pixel cache is not open
-      </message>
-    </error>
-  </cache>
-  <resource>
-    <limit>
-      <error>
-        <message name="memory-allocation-failed">
+      </Message>
+    </Error>
+  </Cache>
+  <Resource>
+    <Limit>
+      <Error>
+        <Message name="MemoryAllocationFailed">
           Memory allocation failed
-        </message>
-        <message name="unable-to-clone-image">
+        </Message>
+        <Message name="UnableToCloneImage">
           Unable to clone image
-        </message>
-      </error>
-    </limit>
-  </resource>
+        </Message>
+      </Error>
+    </Limit>
+  </Resource>
 </locale>

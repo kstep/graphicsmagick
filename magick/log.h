@@ -8,7 +8,18 @@
 extern "C" {
 #endif
 
-
+typedef enum
+{ 
+  NoEvents = 0x0000,
+  ConfigureEvent = 0x0001,
+  RenderEvent = 0x0002,
+  LocaleEvent = 0x0004,
+  CoderEvent = 0x0008,
+  X11Event = 0x0010,
+  BlobEvent = 0x0020,
+  AllEvents = 0xFFFF
+} LogEventType;
+
 /*
   Method declarations.
 */

@@ -59,6 +59,7 @@
 #include "studio.h"
 #include "attribute.h"
 #include "blob.h"
+#include "log.h"
 #include "magick.h"
 #include "utility.h"
 
@@ -795,13 +796,10 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   if (attribute != (const ImageAttribute *) NULL)
     WriteBlobString(image,attribute->value);
   /*
-	  Write locale messages.
-  */
-  for (i=0; i < count; i++)
-		(void) fprintf(stdout,"%.1024s\n",locale[i]);
-  /*
     Write finite-state-machine.
   */
+  for (i=0; i < count; i++)
+		LogMagickEvent(LocaleEvent,"%.1024s",locale[i]);
   locales=(struct locale_str *) NULL;
   accumulate((const char **) locale,count,&locales);
   WriteBlobString(image,prologue);

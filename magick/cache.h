@@ -8,6 +8,28 @@
 extern "C" {
 #endif
 
+#include "blob.h"
+
+/*
+  Enum declaractions.
+*/
+typedef enum
+{
+  UndefinedCache,
+  MemoryCache,
+  DiskCache,
+  MemoryMappedCache
+} CacheType;
+
+typedef enum
+{
+  UndefinedVirtualPixelMethod,
+  ConstantVirtualPixelMethod,
+  EdgeVirtualPixelMethod,
+  MirrorVirtualPixelMethod,
+  TileVirtualPixelMethod
+} VirtualPixelMethod;
+
 /*
   Typedef declaractions.
 */

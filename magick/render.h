@@ -9,6 +9,107 @@ extern "C" {
 #endif
 
 /*
+  Enum declarations.
+*/
+typedef enum
+{
+  UndefinedAlign,
+  LeftAlign,
+  CenterAlign,
+  RightAlign
+} AlignType;
+
+typedef enum
+{ 
+	UserSpace,
+  UserSpaceOnUse,
+  ObjectBoundingBox
+} ClipPathUnits;
+
+typedef enum
+{
+  NoDecoration,
+  UnderlineDecoration,
+  OverlineDecoration,
+  LineThroughDecoration
+} DecorationType;
+
+typedef enum
+{
+  UndefinedRule,
+#undef EvenOddRule
+  EvenOddRule,
+  NonZeroRule
+} FillRule;
+
+typedef enum
+{
+  UndefinedCap,
+  ButtCap,
+  RoundCap,
+  SquareCap
+} LineCap;
+
+typedef enum
+{ 
+  UndefinedJoin,
+  MiterJoin,
+  RoundJoin,
+  BevelJoin
+} LineJoin;
+
+typedef enum
+{
+  PointMethod = 0,
+  ReplaceMethod,
+  FloodfillMethod,
+  FillToBorderMethod,
+  ResetMethod
+} PaintMethod;
+
+typedef enum
+{
+  UndefinedPrimitive = 0,
+  PointPrimitive,
+  LinePrimitive,
+  RectanglePrimitive,
+  RoundRectanglePrimitive,
+  ArcPrimitive,
+  EllipsePrimitive,
+  CirclePrimitive,
+  PolylinePrimitive,
+  PolygonPrimitive,
+  BezierPrimitive,
+  ColorPrimitive,
+  MattePrimitive,
+  TextPrimitive,
+  ImagePrimitive,
+  PathPrimitive
+} PrimitiveType;
+  
+typedef enum
+{
+  NormalStretch,
+  UltraCondensedStretch,
+  ExtraCondensedStretch,
+  CondensedStretch,
+  SemiCondensedStretch,
+  SemiExpandedStretch,
+  ExpandedStretch,
+  ExtraExpandedStretch,
+  UltraExpandedStretch,
+  AnyStretch
+} StretchType;
+
+typedef enum
+{
+  NormalStyle,
+  ItalicStyle,
+  ObliqueStyle,
+  AnyStyle
+} StyleType;
+
+/*
   Typedef declarations.
 */
 typedef struct _DrawInfo

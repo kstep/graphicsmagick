@@ -8,7 +8,18 @@
 extern "C" {
 #endif
 
-
+/*
+  Enum declarations.
+*/
+typedef enum
+{
+  RootPath,
+  HeadPath,
+  TailPath,
+  BasePath,
+  ExtensionPath
+} PathType;
+
 /*
   Typedef declarations.
 */

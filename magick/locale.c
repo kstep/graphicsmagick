@@ -114,11 +114,11 @@ const char *GetLocaleMessage(const char *tag)
       return tag;
 
     case 'c':  case 'C':
-      if (p - tp == 5 && !strncasecmp(tp, "cache", 5))
-        if (strncasecmp(NEXT_FIELD, "error", 5) || p - tp != 5)
+      if (p - tp == 5 && !strncasecmp(tp, "Cache", 5))
+        if (strncasecmp(NEXT_FIELD, "Error", 5) || p - tp != 5)
           return tag;
         else
-        if (strncasecmp(NEXT_FIELD, "pixel-cache-is-not-open", 23) || p - tp != 23)
+        if (strncasecmp(NEXT_FIELD, "PixelCacheIsNotOpen", 19) || p - tp != 19)
           return tag;
         else
           return *np ? tag : "Pixel cache is not open";
@@ -126,11 +126,11 @@ const char *GetLocaleMessage(const char *tag)
         return tag;
 
     case 'r':  case 'R':
-      if (p - tp == 8 && !strncasecmp(tp, "resource", 8))
-        if (strncasecmp(NEXT_FIELD, "limit", 5) || p - tp != 5)
+      if (p - tp == 8 && !strncasecmp(tp, "Resource", 8))
+        if (strncasecmp(NEXT_FIELD, "Limit", 5) || p - tp != 5)
           return tag;
         else
-        if (strncasecmp(NEXT_FIELD, "error", 5) || p - tp != 5)
+        if (strncasecmp(NEXT_FIELD, "Error", 5) || p - tp != 5)
           return tag;
         else
           switch (*NEXT_FIELD)
@@ -139,13 +139,13 @@ const char *GetLocaleMessage(const char *tag)
             return tag;
 
           case 'm':  case 'M':
-            if (p - tp == 24 && !strncasecmp(tp, "memory-allocation-failed", 24))
+            if (p - tp == 22 && !strncasecmp(tp, "MemoryAllocationFailed", 22))
               return *np ? tag : "Memory allocation failed";
             else
               return tag;
 
           case 'u':  case 'U':
-            if (p - tp == 21 && !strncasecmp(tp, "unable-to-clone-image", 21))
+            if (p - tp == 18 && !strncasecmp(tp, "UnableToCloneImage", 18))
               return *np ? tag : "Unable to clone image";
             else
               return tag;

@@ -8,6 +8,19 @@
 extern "C" {
 #endif
 
+/*
+  Enum declarations.
+*/
+typedef enum
+{
+  UndefinedTimerState,
+  StoppedTimerState,
+  RunningTimerState
+} TimerState;
+
+/*
+  Typedef declarations.
+*/
 typedef struct _Timer
 {
   double

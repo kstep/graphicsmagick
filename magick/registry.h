@@ -9,6 +9,16 @@ extern "C" {
 #endif
 
 /*
+  Enum declarations.
+*/
+typedef enum
+{
+  UndefinedRegistryType,
+  ImageRegistryType,
+  ImageInfoRegistryType
+} RegistryType;
+
+/*
   Typedef declarations.
 */
 typedef struct _RegistryInfo

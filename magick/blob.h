@@ -8,8 +8,33 @@
 extern "C" {
 #endif
 
+/*
+  Define declarations.
+*/
 #define MinBlobExtent  32767L
 
+/*
+  Enum declarations.
+*/
+typedef enum
+{
+  UndefinedBlobMode,
+  ReadBlobMode,
+  ReadBinaryBlobMode,
+  WriteBlobMode,
+  WriteBinaryBlobMode
+} BlobMode;
+
+typedef enum
+{
+  ReadMode,
+  WriteMode,
+  IOMode
+} MapMode;
+
+/*
+  Typedef declarations.
+*/
 typedef struct _BlobInfo
 {
   size_t

@@ -59,6 +59,7 @@
 */
 #include "studio.h"
 #include "blob.h"
+#include "log.h"
 #include "utility.h"
 
 /*

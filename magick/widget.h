@@ -9,6 +9,20 @@ extern "C" {
 #endif
 
 /*
+  Enum declarations.
+*/
+typedef enum
+{
+  ControlState = 0x0001,
+  InactiveWidgetState = 0x0004,
+  JumpListState = 0x0008,
+  RedrawActionState = 0x0010,
+  RedrawListState = 0x0020,
+  RedrawWidgetState = 0x0040,
+  UpdateListState = 0x0100
+} WidgetState;
+
+/*
   Typedef declarations.
 */
 typedef struct _XWidgetInfo

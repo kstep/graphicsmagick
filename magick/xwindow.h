@@ -58,17 +58,28 @@ extern "C" {
 #else
 #define XFD_SET  fd_set
 #endif
-
+
 /*
   Define declarations.
 */
 #define MaxNumberPens  11
 #define MaxNumberFonts  11
 #define MaxIconSize  96
-
+
 /*
   Enumeration declarations.
 */
+typedef enum
+{
+#undef DoRed
+  DoRed = 0x0001,
+#undef DoGreen
+  DoGreen = 0x0002,
+#undef DoBlue
+  DoBlue = 0x0004,
+  DoMatte = 0x0008
+} XColorFlags;
+
 typedef enum
 {
   ForegroundStencil,
@@ -102,7 +113,22 @@ typedef enum
   PrivateColormap,
   SharedColormap
 } XColormapType;
-
+
+typedef enum
+{
+  DefaultState = 0x0000,
+  EscapeState = 0x0001,
+  ExitState = 0x0002,
+  FormerImageState = 0x0004,
+  ModifierState = 0x0008,
+  MontageImageState = 0x0010,
+  NextImageState = 0x0020,
+  RetainColorsState = 0x0040,
+  SuspendTime = 50,
+  UpdateConfigurationState = 0x0080,
+  UpdateRegionState = 0x0100
+} XState;
+
 /*
   Typedef declarations.
 */
