@@ -24,6 +24,7 @@
 		<li><a href="#getimagelistindex">GetImageListIndex</a></li>
 		<li><a href="#getimagelistsize">GetImageListSize</a></li>
 		<li><a href="#getnextimage">GetNextImage</a></li>
+		<li><a href="#getpreviousimage">GetPreviousImage</a></li>
 		<li><a href="#imagelisttoarray">ImageListToArray</a></li>
 		<li><a href="#newimagelist">NewImageList</a></li>
 		<li><a href="#popimagelist">PopImageList</a></li>
@@ -54,6 +55,7 @@
 <p>long  <strong>GetImageListIndex</strong>( const Image *images );</p>
 <p>unsigned long  <strong>GetImageListSize</strong>( const Image *images );</p>
 <p>Image * <strong>GetNextImage</strong>( const Image *images );</p>
+<p>Image * <strong>GetPreviousImage</strong>( const Image *images );</p>
 <p>Image **  <strong>ImageListToArray</strong>( const Image *images, ExceptionInfo *exception );</p>
 <p>Image * <strong>NewImageList</strong>( void );</p>
 <p>Image * <strong>PopImageList</strong>( Image ** images );</p>
@@ -168,6 +170,18 @@ The image list.
 <h2><a name="getnextimage">GetNextImage</a></h2>
 <blockquote>GetNextImage() returns the next image in a list. </blockquote><p>The format of the GetNextImage method is:</p>
 <blockquote><A HREF="types/Image.html">Image</A> *GetNextImage ( const <A HREF="types/Image.html">Image</A> *images ); </blockquote><p>A description of each parameter follows:</p>
+<dl>
+<dt><strong>o images:</strong><br />
+</dt>
+<dd>
+The image list.
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="getpreviousimage">GetPreviousImage</a></h2>
+<blockquote>GetPreviousImage() returns the previous image in a list. </blockquote><p>The format of the GetPreviousImage method is:</p>
+<blockquote><A HREF="types/Image.html">Image</A> *GetPreviousImage ( const <A HREF="types/Image.html">Image</A> *images ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />
 </dt>

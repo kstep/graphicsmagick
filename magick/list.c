@@ -400,11 +400,6 @@ MagickExport Image *GetPreviousImage(const Image *images)
   assert(images->signature == MagickSignature);
   if (images->previous == (Image *) NULL)
     return((Image *) NULL);
-  if (images->blob != images->previous->blob)
-    {
-      DestroyBlobInfo(images->previous->blob);
-      images->previous->blob=ReferenceBlob(images->blob);
-    }
   return(images->previous);
 }
 
