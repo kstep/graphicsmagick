@@ -11,8 +11,8 @@ extern "C" {
 /*
   System include declarations.
 */
-#define _POSIX_C_SOURCE  199506L
 #define _XOPEN_SOURCE  500
+#define _POSIX_C_SOURCE  199506L
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,12 +38,6 @@ extern "C" {
 #else
 #  include <types.h>
 #  include <stat.h>
-#endif
-
-#if !defined(macintosh)
-#  include "magick/api.h"
-#else
-#  include "api.h"
 #endif
 
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
@@ -74,6 +68,12 @@ extern "C" {
 #endif
 #undef index
 #undef pipe
+
+#if !defined(macintosh)
+#  include "magick/api.h"
+#else
+#  include "api.h"
+#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
