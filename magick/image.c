@@ -1264,6 +1264,8 @@ MagickExport unsigned int CompositeImage(Image *image,
       */
       amount=0.5;
       threshold=0.05;
+      image->storage_class=DirectClass;
+      composite_image->storage_class=DirectClass;
       if (composite_image->geometry != (char *) NULL)
         (void) sscanf(composite_image->geometry,"%lfx%lf\n",
           &amount,&threshold);
