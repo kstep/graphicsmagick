@@ -19,7 +19,7 @@ chdir 't/ttf' || die 'Cd failed';
 #
 print("Default ImageMagick read ...\n");
 testRead( 'input.ttf', '96c6e57e59ca292e57de2e292fc00434',
-	  '91e56922ca91ad486d316bfa8679b510' );
+	  '492e56e00065ddd6779ba1e31350985c' );
 
 #
 # 2) Test drawing text using font
@@ -28,7 +28,7 @@ testRead( 'input.ttf', '96c6e57e59ca292e57de2e292fc00434',
 print("Draw text using font ...\n");
 $infile = 'input.ttf';
 $md5    = '52f43e5a395aa7f67457e54f1361402a';
-$md5_16 = 'e8a3fa42c19085e04ae2a31b819ddc4b';
+$md5_16 = 'df41d2a022b6b0cc79923a52ba33d834';
 
 $image=Image::Magick->new;
 $status=$image->Set(font=>"\@$infile", pen=>'#0000FF', pointsize=>14);
@@ -49,6 +49,7 @@ if( "$status" ) {
       if ( $md5 ne $md5_16 ) {
 	print "      if 16-bit: $md5_16\n";
       }
+      #$image->Display();
       print "not ok $test\n";
     } else {
       print "ok $test\n";
@@ -64,7 +65,7 @@ undef $image;
 print("Draw text using annotate ...\n");
 $infile = 'input.ttf';
 $md5    = 'f5d323e8545a86abea2e80d5ae124528';
-$md5_16 = '588550a551d50f22897cf181cf0cdca1';
+$md5_16 = '36a6511d5c25f420a1caeba190552489';
 
 $image=Image::Magick->new;
 $status = $image->Set(size=>'330x30');
@@ -94,6 +95,7 @@ if( "$status" ) {
 	if ( $md5 ne $md5_16 ) {
 	  print "      if 16-bit: $md5_16\n";
 	}
+	#$image->Display();
 	print "not ok $test\n";
       } else {
 	#$image->Display();
