@@ -1612,6 +1612,9 @@ MagickExport unsigned int QueryColorName(const PixelPacket *color,char *name)
   min_distance=0;
   for (p=Colorlist; p->name != (char *) NULL; p++)
   {
+    /* Users prefer to see white rather than gray100 */
+    if(*p->name == 'g' && strcmp("gray100",p->name) == 0)
+      continue;
     distance=color->red-(int) p->red;
     distance_squared=distance*distance;
     distance=color->green-(int) p->green;
