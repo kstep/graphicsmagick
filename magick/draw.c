@@ -1621,11 +1621,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             affine.ty=atof(token);
             break;
           }
-        if (LocaleCompare("angle",keyword) == 0)
-          {
-            GetToken(q,&q,token);
-            break;
-          }
         if (LocaleCompare("arc",keyword) == 0)
           {
             primitive_type=ArcPrimitive;
