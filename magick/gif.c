@@ -1024,6 +1024,31 @@ Export void RegisterGIFImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r G I F I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterGIFImage removes format registrations made by the
+%  GIF module from the list of supported formats.
+%
+%  The format of the UnregisterGIFImage method is:
+%
+%      UnregisterGIFImage(void)
+%
+*/
+Export void UnregisterGIFImage(void)
+{
+  UnregisterMagickInfo("GIF");
+  UnregisterMagickInfo("GIF87");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e G I F I m a g e                                                 %
 %                                                                             %
 %                                                                             %

@@ -3377,3 +3377,27 @@ Export void RegisterDCMImage(void)
     AllocateString("Digital Imaging and Communications in Medicine image");
   RegisterMagickInfo(entry);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r D C M I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterDCMImage removes format registrations made by the
+%  DCM module from the list of supported formats.
+%
+%  The format of the UnregisterDCMImage method is:
+%
+%      UnregisterDCMImage(void)
+%
+*/
+Export void UnregisterDCMImage(void)
+{
+  UnregisterMagickInfo("DCM");
+}

@@ -773,6 +773,31 @@ Export void RegisterVIFFImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r V I F F I m a g e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterVIFFImage removes format registrations made by the
+%  VIFF module from the list of supported formats.
+%
+%  The format of the UnregisterVIFFImage method is:
+%
+%      UnregisterVIFFImage(void)
+%
+*/
+Export void UnregisterVIFFImage(void)
+{
+  UnregisterMagickInfo("VIFF");
+  UnregisterMagickInfo("XV");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e V I F F I m a g e                                               %
 %                                                                             %
 %                                                                             %

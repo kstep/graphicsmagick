@@ -249,6 +249,30 @@ Export void RegisterMTVImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r M T V I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterMTVImage removes format registrations made by the
+%  MTV module from the list of supported formats.
+%
+%  The format of the UnregisterMTVImage method is:
+%
+%      UnregisterMTVImage(void)
+%
+*/
+Export void UnregisterMTVImage(void)
+{
+  UnregisterMagickInfo("MTV");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e M T V I m a g e                                                 %
 %                                                                             %
 %                                                                             %

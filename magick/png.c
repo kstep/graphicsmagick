@@ -2789,6 +2789,31 @@ Export void RegisterPNGImage(void)
 #endif
 }
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r P N G I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterPNGImage removes format registrations made by the
+%  PNG module from the list of supported formats.
+%
+%  The format of the UnregisterPNGImage method is:
+%
+%      UnregisterPNGImage(void)
+%
+*/
+Export void UnregisterPNGImage(void)
+{
+  UnregisterMagickInfo("MNG");
+  UnregisterMagickInfo("PNG");
+}
+
 #if defined(HasPNG)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

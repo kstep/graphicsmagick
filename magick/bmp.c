@@ -925,6 +925,32 @@ Export void RegisterBMPImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r B M P I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterBMPImage removes format registrations made by the
+%  BMP module from the list of supported formats.
+%
+%  The format of the UnregisterBMPImage method is:
+%
+%      UnregisterBMPImage(void)
+%
+*/
+Export void UnregisterBMPImage(void)
+{
+  UnregisterMagickInfo("BMP");
+  UnregisterMagickInfo("BMP24");
+  UnregisterMagickInfo("DIB");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e B M P I m a g e                                                 %
 %                                                                             %
 %                                                                             %

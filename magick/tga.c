@@ -487,6 +487,33 @@ Export void RegisterTGAImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r T G A I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterTGAImage removes format registrations made by the
+%  TGA module from the list of supported formats.
+%
+%  The format of the UnregisterTGAImage method is:
+%
+%      UnregisterTGAImage(void)
+%
+*/
+Export void UnregisterTGAImage(void)
+{
+  UnregisterMagickInfo("ICB");
+  UnregisterMagickInfo("TGA");
+  UnregisterMagickInfo("VDA");
+  UnregisterMagickInfo("VST");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e T G A I m a g e                                                 %
 %                                                                             %
 %                                                                             %

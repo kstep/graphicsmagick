@@ -351,9 +351,9 @@ by gravity.</font></td>
 <center><a NAME="blurImage"></a><font size=-1>blurImage</font></center>
 </td>
 
-<td><font size=-1>double factor_</font></td>
+<td><font size=-1>unsigned int order_</font></td>
 
-<td><font size=-1>Blur image with specified blur factor</font></td>
+<td><font size=-1>Blur image with specified order of the pixel neighborhood</font></td>
 </tr>
 
 <tr>
@@ -373,7 +373,7 @@ the border is specified by the <i>borderColor</i> attribute.</font></td>
 <center><a NAME="charcoalImage"></a><font size=-1>charcoalImage</font></center>
 </td>
 
-<td><font size=-1>double factor_ = 50</font></td>
+<td><font size=-1>unsigned int order_ = 3</font></td>
 
 <td><font size=-1>Charcoal effect image (looks like charcoal sketch)</font></td>
 </tr>
@@ -509,19 +509,24 @@ and allows batching draw objects together in a list for repeated use.</font></td
 <center><a NAME="edgeImage"></a><font size=-1>edgeImage</font></center>
 </td>
 
-<td><font size=-1>double factor_</font></td>
+<td><font size=-1>unsigned int order_ = 3</font></td>
 
 <td><font size=-1>Edge image (hilight edges in image)</font></td>
 </tr>
 
 <tr NOSAVE>
-<td NOSAVE>
+<td ROWSPAN="2" NOSAVE>
 <center><a NAME="embossImage"></a><font size=-1>embossImage</font></center>
 </td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1>Emboss image (hilight edges with 3D effect)</font></td>
+<td ROWSPAN="2" NOSAVE><font size=-1>Emboss image (hilight edges with 3D
+effect)</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>unsigned int order_</font></td>
 </tr>
 
 <tr>
@@ -850,16 +855,20 @@ measureError_ to true in order to calculate error attributes.</font></td>
 to give a 3-D raised or lowered effect)</font></td>
 </tr>
 
-<tr>
-<td>
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
 <center><a NAME="reduceNoiseImage"></a><font size=-1>reduceNoise-</font>
 <br><font size=-1>Image</font></center>
 </td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1>Reduce noise in image using a noise peak elimination
-filter.</font></td>
+<td ROWSPAN="2" NOSAVE><font size=-1>Reduce noise in image using a noise
+peak elimination filter.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>unsigned int order_</font></td>
 </tr>
 
 <tr>
@@ -943,10 +952,10 @@ to <i>true</i> to shade the red, green, and blue components of the image.</font>
 <center><a NAME="sharpenImage"></a><font size=-1>sharpenImage</font></center>
 </td>
 
-<td><font size=-1>double factor_</font></td>
+<td><font size=-1>unsigned int order_</font></td>
 
-<td><font size=-1>Sharpen pixels in image. Specify factor as the percent
-enhancement (0.0 - 99.9%).</font></td>
+<td><font size=-1>Sharpen pixels in image. Order_ represents the order
+of the pixel neighborhood.</font></td>
 </tr>
 
 <tr>

@@ -394,3 +394,27 @@ Export void RegisterTIMImage(void)
   entry->description=AllocateString("PSX TIM");
   RegisterMagickInfo(entry);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r T I M I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterTIMImage removes format registrations made by the
+%  TIM module from the list of supported formats.
+%
+%  The format of the UnregisterTIMImage method is:
+%
+%      UnregisterTIMImage(void)
+%
+*/
+Export void UnregisterTIMImage(void)
+{
+  UnregisterMagickInfo("TIM");
+}

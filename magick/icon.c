@@ -456,9 +456,34 @@ Export void RegisterICONImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Microsoft icon");
   RegisterMagickInfo(entry);
-  entry=SetMagickInfo("Icon");
+  entry=SetMagickInfo("ICON");
   entry->decoder=ReadIconImage;
   entry->adjoin=False;
   entry->description=AllocateString("Microsoft icon");
   RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r I C O N I m a g e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterICONImage removes format registrations made by the
+%  ICON module from the list of supported formats.
+%
+%  The format of the UnregisterICONImage method is:
+%
+%      UnregisterICONImage(void)
+%
+*/
+Export void UnregisterICONImage(void)
+{
+  UnregisterMagickInfo("ICO");
+  UnregisterMagickInfo("ICON");
 }

@@ -66,18 +66,18 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadGradationImage creates a gradation image and initializes it to
+%  Method ReadGRADATIONImage creates a gradation image and initializes it to
 %  the X server color range as specified by the filename.  It allocates the
 %  memory necessary for the new Image structure and returns a pointer to the
 %  new image.
 %
-%  The format of the ReadGradationImage method is:
+%  The format of the ReadGRADATIONImage method is:
 %
-%      Image *ReadGradationImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadGRADATIONImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method ReadGradationImage returns a pointer to the image after
+%    o image:  Method ReadGRADATIONImage returns a pointer to the image after
 %      creating it. A null image is returned if there is a memory shortage
 %      or if the image cannot be read.
 %
@@ -87,7 +87,7 @@
 %
 %
 */
-static Image *ReadGradationImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadGRADATIONImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     colorname[MaxTextExtent];
@@ -178,27 +178,51 @@ static Image *ReadGradationImage(const ImageInfo *image_info,ExceptionInfo *exce
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterGradationImage adds attributes for the Gradation image format
+%  Method RegisterGRADATIONImage adds attributes for the GRADATION image format
 %  to the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterGradationImage method is:
+%  The format of the RegisterGRADATIONImage method is:
 %
-%      RegisterGradationImage(void)
+%      RegisterGRADATIONImage(void)
 %
 */
-Export void RegisterGradationImage(void)
+Export void RegisterGRADATIONImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("Gradation");
-  entry->decoder=ReadGradationImage;
+  entry=SetMagickInfo("GRADATION");
+  entry->decoder=ReadGRADATIONImage;
   entry->adjoin=False;
   entry->description=
     AllocateString("Gradual passing from one shade to another");
   RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r G R A D A T I O N I m a g e                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterGRADATIONImage removes format registrations made by the
+%  GRADATION module from the list of supported formats.
+%
+%  The format of the UnregisterGRADATIONImage method is:
+%
+%      UnregisterGRADATIONImage(void)
+%
+*/
+Export void UnregisterGRADATIONImage(void)
+{
+  UnregisterMagickInfo("GRADATION");
 }

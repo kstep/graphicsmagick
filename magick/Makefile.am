@@ -1,30 +1,30 @@
 #  Makefile for building ImageMagick library
 #
-#  Copyright 1999 E. I. du Pont de Nemours and Company
+# Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated
+# to making software imaging solutions freely available.
 #
-#  Permission is hereby granted, free of charge, to any person obtaining a
-#  copy of this software and associated documentation files ("ImageMagick"),
-#  to deal in ImageMagick without restriction, including without limitation 
-#  the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-#  and/or sell copies of ImageMagick, and to permit persons to whom the 
-#  ImageMagick is furnished to do so, subject to the following conditions:
-#   
-#  The above copyright notice and this permission notice shall be included in 
-#  all copies or substantial portions of ImageMagick. 
-#   
-#  The software is provided "as is", without warranty of any kind, express or 
-#  implied, including but not limited to the warranties of merchantability, 
-#  fitness for a particular purpose and noninfringement.In no event shall 
-#  E. I. du Pont de Nemours and Company be liable for any claim, damages or 
-#  other liability, whether in an action of contract, tort or otherwise,
-#  arising from, out of or in connection with ImageMagick or the use or other 
-#  dealings in ImageMagick. 
-#   
-#  Except as contained in this notice, the name of the E. I. du Pont de 
-#  Nemours and Company shall not be used in advertising or otherwise to 
-#  promote the sale, use or other dealings in ImageMagick without prior 
-#  written authorization from the E. I. du Pont de Nemours and Company. 
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files ("ImageMagick"),
+# to deal in ImageMagick without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense
+# and/or sell copies of ImageMagick, and to permit persons to whom the
+# ImageMagick is furnished to do so, subject to the following conditions:
 #
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of ImageMagick.
+#
+# The software is provided "as is", without warranty of any kind, express or
+# implied, including but not limited to the warranties of merchantability,
+# fitness for a particular purpose and noninfringement.  In no event shall
+# ImageMagick Studio be liable for any claim, damages or other liability,
+# whether in an action of contract, tort or otherwise, arising from, out of
+# or in connection with ImageMagick or the use or other dealings in
+# ImageMagick.
+#
+# Except as contained in this notice, the name of the ImageMagick Studio
+# shall not be used in advertising or otherwise to promote the sale, use or
+# other dealings in ImageMagick without prior written authorization from the
+# ImageMagick Studio.
 #
 
 # Don't require all the GNU mandated files
@@ -45,24 +45,25 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 
 # Library base sources
 MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
-  cache.c cache_view.c colors.c compress.c constitute.c decorate.c delegates.c \
-  display.c draw.c effects.c enhance.c error.c gems.c gradation.c histogram.c \
-  html.c image.c label.c magick.c map.c matte.c memory.c monitor.c montage.c \
-  quantize.c segment.c shear.c signature.c stegano.c stream.c \
-  timer.c transform.c ttf.c utility.c widget.c xwindows.c zoom.c
+  cache.c cache_view.c colors.c compress.c constitute.c decorate.c \
+  delegates.c display.c draw.c effects.c enhance.c error.c gems.c image.c \
+  magick.c memory.c modules.c monitor.c montage.c quantize.c segment.c \
+  shear.c signature.c stream.c timer.c transform.c utility.c widget.c \
+  xwindows.c zoom.c
 
 # Library coder sources
 MAGICK_CODER_SRCS=avs.c bim.c bmp.c cmyk.c dcm.c dps.c ept.c fax.c fits.c \
-  fpx.c gif.c gray.c hdf.c icc.c icon.c iptc.c jbig.c jpeg.c logo.c \
-  miff.c mono.c mtv.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c \
-  plasma.c pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c \
-  sct.c sfw.c sgi.c sun.c svg.c tga.c tiff.c tile.c tim.c txt.c uil.c uyvy.c \
-  vicar.c vid.c viff.c wbmp.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
+  fpx.c gif.c gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c \
+  iptc.c jbig.c jpeg.c label.c logo.c map.c matte.c miff.c mono.c mtv.c \
+  pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c plasma.c pnm.c preview.c \
+  ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c \
+  sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c uyvy.c vicar.c \
+  vid.c viff.c wbmp.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
 
 # Library sources
 if WITH_MODULES
 libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
-libMagick_la_LIBADD = @LIB_TIFF@ @LIB_JPEG@ @LIB_TTF@ @LIB_XEXT@ @LIB_XT@ \
+libMagick_la_LIBADD = @LIB_TIFF@ @LIB_JPEG@ @LIB_XEXT@ @LIB_XT@ \
   @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@ @LIB_SFIO@ @LIB_THREAD@ @LIB_LF@ \
   @LIB_MATH@ $(top_builddir)/ltdl/libltdlc.la
 else
@@ -97,12 +98,13 @@ pkgdir            = $(libdir)/ImageMagick/modules/coders
 # Modules which are to be built
 if WITH_MODULES
 pkg_LTLIBRARIES   = avs.la bmp.la cmyk.la dcm.la dps.la ept.la fax.la fpx.la \
-  fits.la gif.la gray.la hdf.la icc.la icon.la iptc.la jbig.la jpeg.la \
-  logo.la miff.la mono.la mtv.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la \
-  png.la pix.la plasma.la pnm.la preview.la ps.la ps2.la ps3.la psd.la \
-  pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la sun.la svg.la tga.la \
-  tiff.la tile.la tim.la txt.la uil.la uyvy.la vicar.la vid.la viff.la wbmp.la \
-  x.la xbm.la xc.la xpm.la xwd.la yuv.la bim.la
+  fits.la gif.la gray.la gradation.la hdf.la histogram.la html.la icc.la \
+  icon.la iptc.la jbig.la jpeg.la label.la logo.la map.la matte.la miff.la \
+  mono.la mtv.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la png.la pix.la \
+  plasma.la pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la rgb.la \
+  rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la tga.la \
+  tiff.la tile.la tim.la ttf.la txt.la uil.la uyvy.la vicar.la vid.la \
+  viff.la wbmp.la x.la xbm.la xc.la xpm.la xwd.la yuv.la bim.la
 else
 pkg_LTLIBRARIES   =
 endif # WITH_MODULES
@@ -167,10 +169,25 @@ gray_la_SOURCES     = gray.c
 gray_la_LDFLAGS     = -no-undefined -module -avoid-version
 gray_la_LIBADD      = libMagick.la
 
+# GRADATION module
+gradation_la_SOURCES = gradation.c
+gradation_la_LDFLAGS = -no-undefined -module -avoid-version
+gradation_la_LIBADD  = libMagick.la
+
 # HDF module
 hdf_la_SOURCES      = hdf.c
 hdf_la_LDFLAGS      = -no-undefined -module -avoid-version
 hdf_la_LIBADD       = libMagick.la @LIB_HDF@ @LIB_JPEG@ @LIB_ZLIB@
+
+# HISTOGRAM module
+histogram_la_SOURCES = histogram.c
+histogram_la_LDFLAGS = -no-undefined -module -avoid-version
+histogram_la_LIBADD  = libMagick.la
+
+# HTML module
+html_la_SOURCES      = html.c
+html_la_LDFLAGS      = -no-undefined -module -avoid-version
+html_la_LIBADD       = libMagick.la
 
 # ICC module
 icc_la_SOURCES      = icc.c
@@ -197,10 +214,25 @@ jpeg_la_SOURCES     = jpeg.c
 jpeg_la_LDFLAGS     = -no-undefined -module -avoid-version
 jpeg_la_LIBADD      = libMagick.la @LIB_JPEG@
 
+# LABEL module
+label_la_SOURCES     = label.c
+label_la_LDFLAGS     = -no-undefined -module -avoid-version
+label_la_LIBADD      = libMagick.la @LIB_TTF@ @LIB_X11@
+
 # LOGO module
 logo_la_SOURCES     = logo.c
 logo_la_LDFLAGS     = -no-undefined -module -avoid-version
 logo_la_LIBADD      = libMagick.la
+
+# MAP module
+map_la_SOURCES      = map.c
+map_la_LDFLAGS      = -no-undefined -module -avoid-version
+map_la_LIBADD       = libMagick.la
+
+# MATTE module
+matte_la_SOURCES    = matte.c
+matte_la_LDFLAGS    = -no-undefined -module -avoid-version
+matte_la_LIBADD     = libMagick.la
 
 # MIFF module
 miff_la_SOURCES     = miff.c
@@ -327,6 +359,11 @@ sgi_la_SOURCES      = sgi.c
 sgi_la_LDFLAGS      = -no-undefined -module -avoid-version
 sgi_la_LIBADD       = libMagick.la
 
+# STEGANO module
+stegano_la_SOURCES  = stegano.c
+stegano_la_LDFLAGS  = -no-undefined -module -avoid-version
+stegano_la_LIBADD   = libMagick.la
+
 # SUN module
 sun_la_SOURCES      = sun.c
 sun_la_LDFLAGS      = -no-undefined -module -avoid-version
@@ -356,6 +393,11 @@ tile_la_LIBADD      = libMagick.la
 tim_la_SOURCES      = tim.c
 tim_la_LDFLAGS      = -no-undefined -module -avoid-version
 tim_la_LIBADD       = libMagick.la
+
+# TTF module
+ttf_la_SOURCES      = ttf.c
+ttf_la_LDFLAGS      = -no-undefined -module -avoid-version
+ttf_la_LIBADD       = libMagick.la @LIB_TTF@
 
 # TXT module
 txt_la_SOURCES      = txt.c

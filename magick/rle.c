@@ -596,3 +596,27 @@ Export void RegisterRLEImage(void)
   entry->description=AllocateString("Utah Run length encoded image");
   RegisterMagickInfo(entry);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r R L E I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterRLEImage removes format registrations made by the
+%  RLE module from the list of supported formats.
+%
+%  The format of the UnregisterRLEImage method is:
+%
+%      UnregisterRLEImage(void)
+%
+*/
+Export void UnregisterRLEImage(void)
+{
+  UnregisterMagickInfo("RLE");
+}

@@ -5187,6 +5187,8 @@ Export void SetImage(Image *image,Quantum opacity)
   assert(image != (Image *) NULL);
   background_color=image->background_color;
   background_color.opacity=opacity;
+  if (opacity != Opaque)
+    image->matte=True;
   for (y=0; y < (int) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);

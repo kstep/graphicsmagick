@@ -242,6 +242,30 @@ Export void RegisterIPTCImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r I P T C I m a g e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterIPTCImage removes format registrations made by the
+%  IPTC module from the list of supported formats.
+%
+%  The format of the UnregisterIPTCImage method is:
+%
+%      UnregisterIPTCImage(void)
+%
+*/
+Export void UnregisterIPTCImage(void)
+{
+  UnregisterMagickInfo("IPTC");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e I P T C I m a g e                                               %
 %                                                                             %
 %                                                                             %

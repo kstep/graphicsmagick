@@ -182,3 +182,28 @@ Export void RegisterXCImage(void)
   entry->description=AllocateString("Constant image of X server color");
   RegisterMagickInfo(entry);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r X C I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterXCImage removes format registrations made by the
+%  XC module from the list of supported formats.
+%
+%  The format of the UnregisterXCImage method is:
+%
+%      UnregisterXCImage(void)
+%
+*/
+Export void UnregisterXCImage(void)
+{
+  UnregisterMagickInfo("NULL");
+  UnregisterMagickInfo("XC");
+}

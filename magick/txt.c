@@ -291,6 +291,31 @@ Export void RegisterTXTImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r T X T I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterTXTImage removes format registrations made by the
+%  TXT module from the list of supported formats.
+%
+%  The format of the UnregisterTXTImage method is:
+%
+%      UnregisterTXTImage(void)
+%
+*/
+Export void UnregisterTXTImage(void)
+{
+  UnregisterMagickInfo("TEXT");
+  UnregisterMagickInfo("TXT");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e T X T I m a g e                                                 %
 %                                                                             %
 %                                                                             %

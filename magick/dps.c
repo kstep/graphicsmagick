@@ -532,3 +532,27 @@ Export void RegisterDPSImage(void)
   entry->description=AllocateString("Display Postscript");
   RegisterMagickInfo(entry);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r D P S I m a g e                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterDPSImage removes format registrations made by the
+%  DPS module from the list of supported formats.
+%
+%  The format of the UnregisterDPSImage method is:
+%
+%      UnregisterDPSImage(void)
+%
+*/
+Export void UnregisterDPSImage(void)
+{
+  UnregisterMagickInfo("DPS");
+}

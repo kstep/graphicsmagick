@@ -105,6 +105,30 @@ Export void RegisterPS3Image(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r P S 3 I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterPS3Image removes format registrations made by the
+%  PS3 module from the list of supported formats.
+%
+%  The format of the UnregisterPS3Image method is:
+%
+%      UnregisterPS3Image(void)
+%
+*/
+Export void UnregisterPS3Image(void)
+{
+  UnregisterMagickInfo("PS3");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e P S 3 I m a g e                                                 %
 %                                                                             %
 %                                                                             %

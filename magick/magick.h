@@ -57,9 +57,6 @@
 #if defined(HasPTHREADS)
 #  include <pthread.h>
 #endif
-#if defined(HasLTDL)
-#  include <ltdl.h>
-#endif
 #if defined(sysv)
 #  include <sys/poll.h>
 #endif

@@ -97,7 +97,7 @@ typedef struct _PrimitiveInfo
 /*
   Forward declarations
 */
-static unsigned int
+static Quantum
   InsidePrimitive(PrimitiveInfo *,const DrawInfo *,const PointInfo *,Image *);
 
 /*
@@ -487,7 +487,7 @@ Export void DestroyDrawInfo(DrawInfo *draw_info)
 %
 */
 
-double Permutate(int n,int k)
+static double Permutate(int n,int k)
 {
   double
     r;
@@ -503,9 +503,267 @@ double Permutate(int n,int k)
   return(r);
 }
 
-Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
+static void GenerateBezier(PrimitiveInfo *primitive_info)
 {
 #define BezierQuantum  25
+
+  double
+    alpha,
+    *coefficients,
+    weight;
+
+  PointInfo
+    pixel,
+    *points;
+
+  register int
+    i,
+    j;
+
+  register PrimitiveInfo
+    *p;
+
+  unsigned
+    control_points;
+
+  /*
+    Allocate coeficients.
+  */
+  control_points=BezierQuantum*primitive_info->coordinates;
+  p=primitive_info;
+  coefficients=(double *)
+    AllocateMemory(primitive_info->coordinates*sizeof(double));
+  points=(PointInfo *) AllocateMemory(control_points*sizeof(PointInfo));
+  if ((coefficients == (double *) NULL) || (points == (PointInfo *) NULL))
+    MagickError(ResourceLimitWarning,"Unable to draw image",
+      "Memory allocation failed");
+  /*
+    Compute bezier points.
+  */
+  weight=0.0;
+  for (i=0; i < primitive_info->coordinates; i++)
+    coefficients[i]=Permutate(primitive_info->coordinates-1,i);
+  for (i=0; i < (int) control_points; i++)
+  {
+    p=primitive_info;
+    pixel.x=0;
+    pixel.y=0;
+    alpha=pow(1.0-weight,primitive_info->coordinates-1);
+    for (j=0; j < primitive_info->coordinates; j++)
+    {
+      pixel.x+=alpha*coefficients[j]*p->pixel.x;
+      pixel.y+=alpha*coefficients[j]*p->pixel.y;
+      alpha*=weight/(1.0-weight);
+      p++;
+    }
+    points[i]=pixel;
+    weight+=1.0/BezierQuantum/primitive_info->coordinates;
+  }
+  /*
+    Bezier curves are just short segmented polys.
+  */
+  p=primitive_info;
+  for (i=0; i < (int) control_points; i++)
+  {
+    pixel=points[i];
+    if ((p > primitive_info) && ((int) pixel.x == (int) (p-1)->pixel.x) &&
+        ((int) pixel.y == (int) (p-1)->pixel.y))
+      continue;
+    p->primitive=primitive_info->primitive;
+    p->coordinates=0;
+    p->pixel=pixel;
+    p++;
+  }
+  primitive_info->coordinates=i;
+  FreeMemory((void *) &points);
+  FreeMemory((void *) &coefficients);
+}
+
+static double GenerateCircle(PrimitiveInfo *primitive_info,PointInfo start,
+  PointInfo end)
+{
+  double
+    alpha,
+    beta;
+
+  register PrimitiveInfo
+    *p,
+    *q;
+
+  p=primitive_info;
+  p->coordinates=2;
+  p->pixel=start;
+  q=p+1;
+  q->primitive=p->primitive;
+  q->pixel=end;
+  alpha=q->pixel.x-p->pixel.x;
+  beta=q->pixel.y-p->pixel.y;
+  return(sqrt(alpha*alpha+beta*beta));
+}
+
+static void GenerateEllipse(PrimitiveInfo *primitive_info,PointInfo start,
+  PointInfo end,PointInfo degrees)
+{
+  double
+    i;
+
+  PointInfo
+    pixel;
+
+  register PrimitiveInfo
+    *p;
+
+  /*
+    Arc's are just short segmented polys.
+  */
+  end.x/=2;
+  end.y/=2;
+  while (degrees.y < degrees.x)
+    degrees.y+=360;
+  p=primitive_info;
+  if ((primitive_info->primitive == FillEllipsePrimitive) &&
+      (fmod(degrees.y-degrees.x,360.0) != 0.0))
+    primitive_info->coordinates++;
+  p=primitive_info;
+  for (i=(degrees.x+1.0); i <= degrees.y; i+=1.0)
+  {
+    pixel.x=cos(DegreesToRadians(fmod(i,360.0)))*end.x+start.x;
+    pixel.y=sin(DegreesToRadians(fmod(i,360.0)))*end.y+start.y;
+    if ((p > primitive_info) && ((int) pixel.x == (int) (p-1)->pixel.x) &&
+        ((int) pixel.y == (int) (p-1)->pixel.y))
+      continue;
+    p->primitive=primitive_info->primitive;
+    p->coordinates=0;
+    p->pixel=pixel;
+    p++;
+    primitive_info->coordinates++;
+  }
+}
+
+static void GenerateLine(PrimitiveInfo *primitive_info,PointInfo start,
+  PointInfo end)
+{
+  register PrimitiveInfo
+    *p,
+    *q;
+
+  p=primitive_info;
+  p->coordinates=2;
+  p->pixel=start;
+  q=p+1;
+  q->primitive=p->primitive;
+  q->pixel=end;
+}
+
+static void GeneratePoint(PrimitiveInfo *primitive_info,PointInfo start)
+{
+  primitive_info->coordinates=1;
+  primitive_info->pixel=start;
+}
+
+static void GenerateRectangle(PrimitiveInfo *primitive_info,PointInfo start,
+  PointInfo end)
+{
+  register PrimitiveInfo
+    *p,
+    *q;
+
+  p=primitive_info;
+  p->coordinates=2;
+  p->pixel=start;
+  q=p+1;
+  q->primitive=p->primitive;
+  q->pixel=end;
+}
+
+static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
+  PointInfo start,PointInfo end,PointInfo arc)
+{
+  PointInfo
+    degrees,
+    u,
+    v;
+
+  register PrimitiveInfo
+    *p;
+
+  p=primitive_info;
+  start.x-=end.x/2;
+  start.y-=end.y/2;
+  end.x+=start.x-1;
+  end.y+=start.y-1;
+  u.x=start.x+arc.x;
+  u.y=start.y;
+  v.x=end.x-arc.x;
+  v.y=start.y;
+  GenerateLine(p,u,v);
+  p+=p->coordinates;
+  p->primitive=primitive_info->primitive;
+  u.x= end.x-arc.x;
+  u.y=start.y+arc.y;
+  v.x=2.0*arc.x;
+  v.y=2.0*arc.y;
+  degrees.x=270.0;
+  degrees.y=360.0;
+  GenerateEllipse(p,u,v,degrees);
+  p+=p->coordinates;
+  p->primitive=primitive_info->primitive;
+  u.x=end.x;
+  u.y=start.y+arc.y;
+  v.x=end.x;
+  v.y=end.y-arc.y;
+  GenerateLine(p,u,v);
+  p+=p->coordinates;
+  p->primitive=primitive_info->primitive;
+  u.x=end.x-arc.x;
+  u.y=end.y-arc.y;
+  v.x=2.0*arc.x;
+  v.y=2.0*arc.y;
+  degrees.x=0.0;
+  degrees.y=90.0;
+  GenerateEllipse(p,u,v,degrees);
+  p+=p->coordinates;
+  p->primitive=primitive_info->primitive;
+  u.x=end.x-arc.x;
+  u.y=end.y;
+  v.x=start.x+arc.x;
+  v.y=end.y;
+  GenerateLine(p,u,v);
+  u.x=start.x+arc.x;
+  u.y=end.y-arc.y;
+  v.x=2.0*arc.x;
+  v.y=2.0*arc.y;
+  degrees.x=90.0;
+  degrees.y=180.0;
+  GenerateEllipse(p,u,v,degrees);
+  p+=p->coordinates;
+  p->primitive=primitive_info->primitive;
+  u.x=start.x;
+  u.y=end.y-arc.y;
+  v.x=start.x;
+  v.y=start.y+arc.y;
+  GenerateLine(p,u,v);
+  p+=p->coordinates;
+  p->primitive=primitive_info->primitive;
+  u.x=start.x+arc.x;
+  u.y=start.y+arc.y;
+  v.x=2.0*arc.x;
+  v.y=2.0*arc.y;
+  degrees.x=180.0;
+  degrees.y=270.0;
+  GenerateEllipse(p,u,v,degrees);
+  p+=p->coordinates;
+  p->primitive=primitive_info->primitive;
+  u.x=start.x+arc.x;
+  u.y=start.y;
+  GeneratePoint(p,u);
+  p+=p->coordinates;
+  p->primitive=primitive_info->primitive;
+  primitive_info->coordinates=p-primitive_info;
+}
+
+Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
+{
 #define DrawImageText  "  Drawing on image...  "
 
   DrawInfo
@@ -516,7 +774,8 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     *primitive;
 
   double
-    mid;
+    mid,
+    radius;
 
   Image
     *tile;
@@ -539,8 +798,8 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   PrimitiveType
     primitive_type;
 
-  SegmentInfo
-    bounds;
+  Quantum
+    opacity;
 
   register char
     *p;
@@ -552,13 +811,13 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   register PixelPacket
     *q;
 
+  SegmentInfo
+    bounds;
+
   unsigned int
     indirection,
     length,
     number_coordinates;
-
-  unsigned int
-    opacity;
 
   /*
     Ensure the annotation info is valid.
@@ -649,6 +908,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     Parse the primitive attributes.
   */
   primitive_type=UndefinedPrimitive;
+  radius=0.0;
   bounds.x1=image->columns-1;
   bounds.y1=image->rows-1;
   bounds.x2=0;
@@ -675,6 +935,10 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       primitive_type=RectanglePrimitive;
     if (Latin1Compare("FillRectangle",keyword) == 0)
       primitive_type=FillRectanglePrimitive;
+    if (Latin1Compare("RoundRectangle",keyword) == 0)
+      primitive_type=RoundRectanglePrimitive;
+    if (Latin1Compare("FillRoundRectangle",keyword) == 0)
+      primitive_type=FillRoundRectanglePrimitive;
     if (Latin1Compare("Circle",keyword) == 0)
       primitive_type=CirclePrimitive;
     if (Latin1Compare("FillCircle",keyword) == 0)
@@ -685,6 +949,8 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       primitive_type=FillEllipsePrimitive;
     if (Latin1Compare("Polyline",keyword) == 0)
       primitive_type=PolylinePrimitive;
+    if (Latin1Compare("FillPolyline",keyword) == 0)
+      primitive_type=FillPolylinePrimitive;
     if (Latin1Compare("Polygon",keyword) == 0)
       primitive_type=PolygonPrimitive;
     if (Latin1Compare("FillPolygon",keyword) == 0)
@@ -724,14 +990,6 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (n == 0)
         ThrowBinaryException(OptionWarning,
           "Non-conforming drawing primitive definition",p);
-      if (pixel.x < bounds.x1)
-        bounds.x1=pixel.x;
-      if (pixel.y < bounds.y1)
-        bounds.y1=pixel.y;
-      if (pixel.x > bounds.x2)
-        bounds.x2=pixel.x;
-      if (pixel.y > bounds.y2)
-        bounds.y2=pixel.y;
       primitive_info[i].primitive=primitive_type;
       primitive_info[i].coordinates=0;
       primitive_info[i].pixel=pixel;
@@ -762,122 +1020,110 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       default:
       {
         if (primitive_info[j].coordinates != 1)
-          primitive_type=UndefinedPrimitive;
+          {
+            primitive_type=UndefinedPrimitive;
+            break;
+          }
+        primitive_info[j].primitive=PointPrimitive;
+        GeneratePoint(primitive_info+j,primitive_info[j].pixel);
+        i=j+primitive_info[j].coordinates;
         break;
       }
       case LinePrimitive:
-      case RectanglePrimitive:
-      case FillRectanglePrimitive:
       {
-        if (primitive_info[j].coordinates != 2)
-          primitive_type=UndefinedPrimitive;
-        break;
-      }
-      case CirclePrimitive:
-      case FillCirclePrimitive:
-      {
-        double
-          radius;
-
         if (primitive_info[j].coordinates != 2)
           {
             primitive_type=UndefinedPrimitive;
             break;
           }
-        /*
-          Determine circle bounding box.
-        */
-        x=(int) (primitive_info[j+1].pixel.x-primitive_info[j].pixel.x);
-        y=(int) (primitive_info[j+1].pixel.y-primitive_info[j].pixel.y);
-        radius=sqrt((double) (x*x+y*y))+clone_info->linewidth/2.0+0.5;
-        pixel.x=Max(primitive_info[j].pixel.x-radius,0);
-        pixel.y=Max(primitive_info[j].pixel.y-radius,0);
-        if (pixel.x < bounds.x1)
-          bounds.x1=pixel.x;
-        if (pixel.y < bounds.y1)
-          bounds.y1=pixel.y;
-        pixel.x=Min(primitive_info[j].pixel.x+radius,image->columns-1);
-        pixel.y=Min(primitive_info[j].pixel.y+radius,image->rows-1);
-        if (pixel.x > bounds.x2)
-          bounds.x2=pixel.x;
-        if (pixel.y > bounds.y2)
-          bounds.y2=pixel.y;
+        primitive_info[j].primitive=LinePrimitive;
+        GenerateLine(primitive_info+j,primitive_info[j].pixel,
+          primitive_info[j+1].pixel);
+        i=j+primitive_info[j].coordinates;
         break;
       }
-      case EllipsePrimitive:
-      case FillEllipsePrimitive:
+      case RectanglePrimitive:
+      case FillRectanglePrimitive:
       {
-        double
-          n;
-
-        PointInfo
-          degrees,
-          end,
-          start;
-
+        if (primitive_info[j].coordinates != 2)
+          {
+            primitive_type=UndefinedPrimitive;
+            break;
+          }
+        primitive_info[j].primitive=RectanglePrimitive;
+        if (primitive_type == FillRectanglePrimitive)
+          primitive_info[j].primitive=FillRectanglePrimitive;
+        GenerateRectangle(primitive_info+j,primitive_info[j].pixel,
+          primitive_info[j+1].pixel);
+        i=j+primitive_info[j].coordinates;
+        break;
+      }
+      case RoundRectanglePrimitive:
+      case FillRoundRectanglePrimitive:
+      {
         if (primitive_info[j].coordinates != 3)
           {
             primitive_type=UndefinedPrimitive;
             break;
           }
-        /*
-          Arc's are just short segmented polys.
-        */
+        primitive_info[j].primitive=PolygonPrimitive;
+        if (primitive_type == FillRoundRectanglePrimitive)
+          primitive_info[j].primitive=FillPolygonPrimitive;
+        GenerateRoundRectangle(primitive_info+j,primitive_info[j].pixel,
+          primitive_info[j+1].pixel,primitive_info[j+2].pixel);
+        i=j+primitive_info[j].coordinates;
+        break;
+      }
+      case CirclePrimitive:
+      case FillCirclePrimitive:
+      {
+        if (primitive_info[j].coordinates != 2)
+          {
+            primitive_type=UndefinedPrimitive;
+            break;
+          }
+        primitive_info[j].primitive=CirclePrimitive;
+        if (primitive_type == FillCirclePrimitive)
+          primitive_info[j].primitive=FillCirclePrimitive;
+        radius=GenerateCircle(primitive_info+j,primitive_info[j].pixel,
+          primitive_info[j+1].pixel);
+        i=j+primitive_info[j].coordinates;
+        break;
+      }
+      case EllipsePrimitive:
+      case FillEllipsePrimitive:
+      {
+        if (primitive_info[j].coordinates != 3)
+          {
+            primitive_type=UndefinedPrimitive;
+            break;
+          }
         primitive_info[j].primitive=PolygonPrimitive;
         if (primitive_type == FillEllipsePrimitive)
           primitive_info[j].primitive=FillPolygonPrimitive;
-        start=primitive_info[j].pixel;
-        end=primitive_info[j+1].pixel;
-        end.x/=2;
-        end.y/=2;
-        degrees=primitive_info[j+2].pixel;
-        while (degrees.y < degrees.x)
-          degrees.y+=360;
-        i=j;
-        if ((primitive_type == FillEllipsePrimitive) &&
-            (fmod(degrees.y-degrees.x,360.0) != 0.0))
-          {
-            if (start.x < bounds.x1)
-              bounds.x1=start.x;
-            if (start.y < bounds.y1)
-              bounds.y1=start.y;
-            if (end.x > bounds.x2)
-              bounds.x2=end.x;
-            if (end.y > bounds.y2)
-              bounds.y2=end.y;
-            primitive_info[j].coordinates++;
-            i++;
-          }
-        for (n=(degrees.x+1.0); n <= degrees.y; n+=1.0)
-        {
-          pixel.x=cos(DegreesToRadians(fmod(n,360.0)))*end.x+start.x;
-          pixel.y=sin(DegreesToRadians(fmod(n,360.0)))*end.y+start.y;
-          if (pixel.x < bounds.x1)
-            bounds.x1=pixel.x;
-          if (pixel.y < bounds.y1)
-            bounds.y1=pixel.y;
-          if (pixel.x > bounds.x2)
-            bounds.x2=pixel.x;
-          if (pixel.y > bounds.y2)
-            bounds.y2=pixel.y;
-          primitive_info[i].coordinates=0;
-          primitive_info[i].pixel=pixel;
-          primitive_info[j].coordinates++;
-          i++;
-        }
+        GenerateEllipse(primitive_info+j,primitive_info[j].pixel,
+          primitive_info[j+1].pixel,primitive_info[j+2].pixel);
+        i=j+primitive_info[j].coordinates;
         break;
       }
       case PolylinePrimitive:
+      case FillPolylinePrimitive:
       {
         if (primitive_info[j].coordinates < 3)
-          primitive_type=LinePrimitive;
+          {
+            primitive_type=UndefinedPrimitive;
+            break;
+          }
         break;
       }
       case PolygonPrimitive:
       case FillPolygonPrimitive:
       {
         if (primitive_info[j].coordinates < 3)
-          primitive_type=LinePrimitive;
+          {
+            primitive_type=UndefinedPrimitive;
+            break;
+          }
         primitive_info[i]=primitive_info[j];
         primitive_info[i].coordinates=0;
         primitive_info[j].coordinates++;
@@ -886,79 +1132,14 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
       case BezierPrimitive:
       {
-        double
-          alpha,
-          *coefficients,
-          weight;
-
-        int
-          control_points;
-
-        PointInfo
-          *points;
-
-        register int
-          k,
-          l;
-
         if (primitive_info[j].coordinates < 3)
           {
             primitive_type=UndefinedPrimitive;
             break;
           }
-        /*
-          Allocate coeficients.
-        */
-        control_points=primitive_info[j].coordinates;
-        coefficients=(double *) AllocateMemory(control_points*sizeof(double));
-        points=(PointInfo *)
-          AllocateMemory(BezierQuantum*control_points*sizeof(PointInfo));
-        if ((coefficients == (double *) NULL) || (points == (PointInfo *) NULL))
-          ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
-            "Memory allocation failed");
-        /*
-          Compute bezier points.
-        */
-        for (l=0; l < control_points; l++)
-          coefficients[l]=Permutate(control_points-1,l);
-        weight=0.0;
-        for (l=0; l < (BezierQuantum*control_points); l++)
-        {
-          pixel.x=0;
-          pixel.y=0;
-          alpha=pow(1.0-weight,control_points-1);
-          for(k=j; k < i; k++)
-          {
-            pixel.x+=alpha*coefficients[k]*primitive_info[k].pixel.x;
-            pixel.y+=alpha*coefficients[k]*primitive_info[k].pixel.y;
-            alpha*=weight/(1.0-weight);
-          }
-          points[l]=pixel;
-          weight+=1.0/BezierQuantum/control_points;
-        }
-        FreeMemory((void *) &coefficients);
-        /*
-          Bezier curves are just short segmented polys.
-        */
-        i=j;
-        for (l=0; l < (BezierQuantum*control_points); l++)
-        {
-          pixel=points[l];
-          if (pixel.x < bounds.x1)
-            bounds.x1=pixel.x;
-          if (pixel.y < bounds.y1)
-            bounds.y1=pixel.y;
-          if (pixel.x > bounds.x2)
-            bounds.x2=pixel.x;
-          if (pixel.y > bounds.y2)
-            bounds.y2=pixel.y;
-          primitive_info[i].coordinates=0;
-          primitive_info[i].pixel=pixel;
-          i++;
-        }
         primitive_info[j].primitive=PolygonPrimitive;
-        primitive_info[j].coordinates=BezierQuantum*control_points;
-        FreeMemory((void *) &points);
+        GenerateBezier(primitive_info+j);
+        i=j+primitive_info[j].coordinates;
         break;
       }
       case ColorPrimitive:
@@ -1095,6 +1276,21 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       ThrowBinaryException(OptionWarning,
         "Non-conforming drawing primitive definition",keyword);
     }
+  /*
+    Compute bounding box.
+  */
+  for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
+  {
+    pixel=primitive_info[i].pixel;
+    if (pixel.x < bounds.x1)
+      bounds.x1=pixel.x;
+    if (pixel.y < bounds.y1)
+      bounds.y1=pixel.y;
+    if (pixel.x > bounds.x2)
+      bounds.x2=pixel.x;
+    if (pixel.y > bounds.y2)
+      bounds.y2=pixel.y;
+  }
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
     if ((primitive_info[i].method == ReplaceMethod) ||
         (primitive_info[i].method == ResetMethod))
@@ -1108,9 +1304,9 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         bounds.y2=image->rows-1;
       }
   /*
-    Account for linewidth.
+    Account for linewidth/radius.
   */
-  mid=clone_info->linewidth/2.0;
+  mid=radius+clone_info->linewidth/2.0;
   if ((bounds.x1 != bounds.x2) || (bounds.y1 != bounds.y2))
     {
       bounds.x1=Max(bounds.x1-mid,0);
@@ -1310,7 +1506,7 @@ static double DistanceToLine(const PointInfo *pixel,const PointInfo *p,
   return(alpha*alpha+beta*beta);
 }
 
-static unsigned int PixelOnLine(const PointInfo *pixel,const PointInfo *p,
+static Quantum PixelOnLine(const PointInfo *pixel,const PointInfo *p,
   const PointInfo *q,const double mid,const unsigned int opacity)
 {
   register double
@@ -1329,12 +1525,12 @@ static unsigned int PixelOnLine(const PointInfo *pixel,const PointInfo *p,
   if (distance <= (alpha*alpha))
     {
       alpha=sqrt(distance)-mid-0.5;
-      return((unsigned int) Max(opacity,Opaque*alpha*alpha));
+      return((Quantum) Max(opacity,Opaque*alpha*alpha));
     }
   return(opacity);
 }
 
-static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
+static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
   const DrawInfo *draw_info,const PointInfo *pixel,Image *image)
 {
   PixelPacket
@@ -1351,7 +1547,7 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
     *p,
     *q;
 
-  register unsigned int
+  register Quantum
     opacity;
 
   PixelPacket
@@ -1455,6 +1651,7 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
         opacity=Max(opacity,poly_opacity);
         break;
       }
+      case FillPolylinePrimitive:
       case FillPolygonPrimitive:
       {
         double

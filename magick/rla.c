@@ -401,3 +401,27 @@ Export void RegisterRLAImage(void)
   entry->description=AllocateString("Alias/Wavefront image");
   RegisterMagickInfo(entry);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r R L A I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterRLAImage removes format registrations made by the
+%  RLA module from the list of supported formats.
+%
+%  The format of the UnregisterRLAImage method is:
+%
+%      UnregisterRLAImage(void)
+%
+*/
+Export void UnregisterRLAImage(void)
+{
+  UnregisterMagickInfo("RLA");
+}

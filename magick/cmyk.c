@@ -407,6 +407,30 @@ Export void RegisterCMYKImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r C M Y K I m a g e                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterCMYKImage removes format registrations made by the
+%  CMYK module from the list of supported formats.
+%
+%  The format of the UnregisterCMYKImage method is:
+%
+%      UnregisterCMYKImage(void)
+%
+*/
+Export void UnregisterCMYKImage(void)
+{
+  UnregisterMagickInfo("CMYK");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e C M Y K I m a g e                                               %
 %                                                                             %
 %                                                                             %

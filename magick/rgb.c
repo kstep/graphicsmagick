@@ -429,6 +429,31 @@ Export void RegisterRGBImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r R G B I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterRGBImage removes format registrations made by the
+%  RGB module from the list of supported formats.
+%
+%  The format of the UnregisterRGBImage method is:
+%
+%      UnregisterRGBImage(void)
+%
+*/
+Export void UnregisterRGBImage(void)
+{
+  UnregisterMagickInfo("RGB");
+  UnregisterMagickInfo("RGBA");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e R G B I m a g e                                                 %
 %                                                                             %
 %                                                                             %

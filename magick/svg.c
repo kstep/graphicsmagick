@@ -528,8 +528,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) CloneString(&draw_info->pen,"black");
         if (Latin1Compare(graphic_context[n].stroke,"none") != 0)
           (void) CloneString(&draw_info->pen,graphic_context[n].stroke);
-        if ((Latin1Compare(graphic_context[n].fill,"none") != 0) ||
-            (strncmp(command,"fill",4) == 0))
+        if ((Latin1Compare(primitive,"text") == 0) ||
+            (strncmp(command,"fill",4) == 0) ||
+            (Latin1Compare(graphic_context[n].stroke,"none") == 0))
           (void) CloneString(&draw_info->pen,graphic_context[n].fill);
         (void) QueryColorDatabase(draw_info->pen,&tile->background_color);
         SetImage(tile,graphic_context[n].opacity*Opaque/100.0);
@@ -692,13 +693,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (Latin1Compare(keyword,"verts") == 0)
       (void) CloneString(&vertices,value);
     if (Latin1Compare(keyword,"viewBox") == 0)
-      {
-        (void) sscanf(value,"%d %d %u %u",&page.x,&page.y,
-          &page.width,&page.height);
-        FormatString(geometry,"%ux%u!",page.width,page.height);
-        if ((canvas->columns < page.width) || (canvas->rows < page.height))
-          TransformImage(&canvas,(char *) NULL,geometry);
-      }
+      (void) sscanf(value,"%d %d %u %u",&page.x,&page.y,
+        &page.width,&page.height);
     if (Latin1Compare(keyword,"width") == 0)
       {
         (void) sscanf(value,"%u",&page.width);

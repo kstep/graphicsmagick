@@ -173,3 +173,27 @@ Export void RegisterTILEImage(void)
   entry->description=AllocateString("Tile image with a texture");
   RegisterMagickInfo(entry);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r T I L E I m a g e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterTILEImage removes format registrations made by the
+%  TILE module from the list of supported formats.
+%
+%  The format of the UnregisterTILEImage method is:
+%
+%      UnregisterTILEImage(void)
+%
+*/
+Export void UnregisterTILEImage(void)
+{
+  UnregisterMagickInfo("TILE");
+}

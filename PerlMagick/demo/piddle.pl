@@ -17,11 +17,12 @@ for ($i=0; $i < 300; $i+=10)
   $image->Draw(primitive=>'line',points=>"0,$i 300,$i",pen=>"#ccf");
 }
 #
-# Draw rectangle.
+# Draw rounded rectangle.
 #
-$image->Draw(primitve=>'fillrectangle',points=>'30,30 100,100',pen=>blue);
-$image->Draw(primitve=>'rectangle',points=>'30,30 100,100',pen=>maroon,
-  linewidth=>4);
+$image->Draw(primitve=>'fillRoundRectangle',points=>'65,65 70,70 10,10',
+  pen=>blue);
+$image->Draw(primitve=>'roundRectangle',points=>'65,65 70,70 10,10',
+  pen=>maroon,linewidth=>4);
 #
 # Draw curve.
 #
@@ -73,5 +74,5 @@ $image->Draw(primitve=>'line',points=>'260,200 260,260',pen=>red,linewidth=>5);
 # Draw text.
 #
 $image->Annotate(text=>'This is a test!',geometry=>'+30+130',
-  font=>'@Generic.ttf',pen=>'green',degrees=>45.0);
+  font=>'@Generic.ttf',pen=>'green',pointsize=>18,degrees=>45.0);
 $image->Display();

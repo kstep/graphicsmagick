@@ -464,6 +464,34 @@ Export void RegisterPSImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r P S I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterPSImage removes format registrations made by the
+%  PS module from the list of supported formats.
+%
+%  The format of the UnregisterPSImage method is:
+%
+%      UnregisterPSImage(void)
+%
+*/
+Export void UnregisterPSImage(void)
+{
+  UnregisterMagickInfo("EPI");
+  UnregisterMagickInfo("EPS");
+  UnregisterMagickInfo("EPSF");
+  UnregisterMagickInfo("EPSI");
+  UnregisterMagickInfo("PS");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e P S I m a g e                                                   %
 %                                                                             %
 %                                                                             %
