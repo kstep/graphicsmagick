@@ -127,6 +127,10 @@ format.
 &nbsp;&nbsp;&nbsp; #include &lt;sys/types.h>
 &nbsp;&nbsp;&nbsp; #include &lt;magick/api.h>
 
+&nbsp;&nbsp;&nbsp; #if defined(__cplusplus) || defined(c_plusplus)
+&nbsp;&nbsp;&nbsp; #undef class
+&nbsp;&nbsp;&nbsp; #endif
+
 &nbsp;&nbsp;&nbsp; int main(int argc,char **argv)
 &nbsp;&nbsp;&nbsp; {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Image
@@ -162,23 +166,9 @@ format.
 &nbsp;&nbsp;&nbsp; }</pre>
 Now we need to compile. On Unix, the command would look something like
 this:
-<pre>&nbsp;&nbsp;&nbsp; cc -o example -O -I/usr/local/include/magick example.c \
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -L/usr/local/lib -lMagick -ltiff -ljpeg -lX11 -lz -lm</pre>
+<pre>&nbsp;&nbsp;&nbsp; cc `Magick-config --cflags --cppflags --ldflags --libs` example.c </pre>
 Another example is <a href="smile.c">smile.c</a>. Compile and excute it
 to display a smiley face on your X server.
-<p>If you compile with C++ you must undefine <tt>class</tt> (since it is
-a C++ reserved word). The <tt>class</tt> element of the <tt>Image</tt>
-structure in C++ is defined as <tt>c_class</tt>. Both of these requirements
-are illustrated here:
-<pre>&nbsp;&nbsp;&nbsp; #include &lt;magick.h>
-&nbsp;&nbsp;&nbsp; #if defined(__cplusplus) || defined(c_plusplus)
-&nbsp;&nbsp;&nbsp; #undef class
-&nbsp;&nbsp;&nbsp; #endif
-
-&nbsp;&nbsp;&nbsp; ...
-
-&nbsp;&nbsp;&nbsp; if (image->c_class == DirectClass)</pre>
-
 <hr>
 <p><a href="../ImageMagick.html"><img SRC="../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>&nbsp;&nbsp;
 Image manipulation software that works like magic.</font>

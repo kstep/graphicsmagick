@@ -1,7 +1,15 @@
 /*
   Display a smilely on your X server.
 */
-#include "magick.h"
+#include <stdio.h>
+#include <time.h>
+#include <sys/types.h>
+#include <magick/api.h>
+#include "magick/xwindows.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+#undef class
+#endif
 
 #define smile_width 48
 #define smile_height 48
@@ -112,13 +120,20 @@ int main(int argc,char **argv)
     *image;
 
   ImageInfo
-    image_info;
+    *image_info;
 
-  QuantizeInfo
-    quantize_info;
+  int
+    y;
 
   register int
-    i;
+    i,
+    x;
+
+  register PixelPacket
+    *q;
+
+  register unsigned char
+    *p;
 
   unsigned long
     state;
@@ -132,9 +147,8 @@ int main(int argc,char **argv)
   /*
     Allocate image structure.
   */
-  GetImageInfo(&image_info);
-  GetQuantizeInfo(&quantize_info);
-  image=AllocateImage(&image_info);
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     MagickError(ResourceLimitError,"Unable to display image",
       "Memory allocation failed");
@@ -143,19 +157,22 @@ int main(int argc,char **argv)
   */
   image->columns=smile_width;
   image->rows=smile_height;
-  image->packets=image->columns*image->rows;
-  image->pixels=(RunlengthPacket *)
-    malloc(image->packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    MagickError(ResourceLimitError,"Unable to display image",
-      "Memory allocation failed");
-  for (i=0; i < image->packets; i++)
+  p=smile_bits;
+  for (y=0; y < image->rows; y++)
   {
-    image->pixels[i].red=MaxRGB*smile_bits[i];
-    image->pixels[i].green=MaxRGB*smile_bits[i];
-    image->pixels[i].blue=MaxRGB*smile_bits[i];
-    image->pixels[i].index=0;
-    image->pixels[i].length=0;
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < image->columns; x++)
+    {
+      q->red=MaxRGB*(*p);
+      q->green=MaxRGB*(*p);
+      q->blue=MaxRGB*(*p);
+      p++;
+      q++;
+    }
+    if (!SyncPixelCache(image))
+      break;
   }
   /*
     Open X11 server.
@@ -166,12 +183,12 @@ int main(int argc,char **argv)
   XSetErrorHandler(XError);
   resource_database=XGetResourceDatabase(display,argv[0]);
   XGetResourceInfo(resource_database,argv[0],&resource);
-  resource.image_info=(&image_info);
-  resource.quantize_info=(&quantize_info);
   /*
     Display smilely image.
   */
   state=DefaultState;
   (void) XDisplayImage(display,&resource,(char **) NULL,0,&image,&state);
   XCloseDisplay(display);
+  DestroyImage(image);
+  DestroyImageInfo(image_info);
 }
