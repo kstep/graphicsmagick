@@ -592,14 +592,13 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
     status;
 
   image_info=CloneImageInfo((ImageInfo *) NULL);
+  type_info=GetTypeInfoByFamily(draw_info->family,draw_info->style,
+    draw_info->weight,&image->exception);
   if (draw_info->font != (char *) NULL)
-    (void) strncpy(image_info->filename,draw_info->font,MaxTextExtent-1);
-  type_info=GetTypeInfo(draw_info->font,&image->exception);
-  if ((draw_info->family != (char *) NULL) &&
-      (draw_info->style != (char *) NULL) &&
-      (draw_info->weight != (char *) NULL))
-    type_info=GetTypeInfoByFamily(draw_info->family,draw_info->style,
-      draw_info->weight,&image->exception);
+    {
+      (void) strncpy(image_info->filename,draw_info->font,MaxTextExtent-1);
+      type_info=GetTypeInfo(draw_info->font,&image->exception);
+    }
   if ((type_info != (const TypeInfo *) NULL) &&
       (type_info->glyphs != (char *) NULL))
     (void) strncpy(image_info->filename,type_info->glyphs,MaxTextExtent-1);

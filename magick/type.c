@@ -229,35 +229,43 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
 MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   const char *style,const char *weight,ExceptionInfo *exception)
 {
+  const char
+	  *type_family,
+		*type_style,
+		*type_weight;
+
   register const TypeInfo
     *p;
-
-  unsigned long
-    intensity;
 
   /*
     Search for requested type.
   */
-  assert(family != (const char *) NULL);
-  assert(style != (const char *) NULL);
-  assert(weight != (const char *) NULL);
   (void) GetTypeInfo("*",exception);
-  intensity=0;
+  type_family="Helvetica";
+  if (family != (const char *) NULL)
+    type_family=family;
+	type_style="normal";
+  if (style != (const char *) NULL)
+    type_style=style;
+	type_weight="400";
   if (weight != (const char *) NULL)
     {
-      intensity=atol(weight);
+      type_weight=weight;
       if (LocaleCompare(weight,"normal") == 0)
-        intensity=400;
+        type_weight="400";
       if (LocaleCompare(weight,"bold") == 0)
-        intensity=700;
+        type_weight="700";
     }
-  if (intensity == 0)
-    intensity=400;
   for (p=type_list; p != (TypeInfo *) NULL; p=p->next)
-    if ((p->family != (char *) NULL) && (LocaleCompare(p->family,family) == 0))
-      if ((p->style != (char *) NULL) && (LocaleCompare(p->style,style) == 0))
-        if ((p->weight != (char *) NULL) && (atol(p->weight) == intensity))
-          break;
+  {
+    if ((p->family == (char *) NULL) || (p->style == (char *) NULL) ||
+        (p->weight == (char *) NULL))
+      continue;
+    if ((LocaleCompare(p->family,type_family) == 0) &&
+        (LocaleCompare(p->style,type_style) == 0) &&
+        (LocaleCompare(p->weight,type_weight) == 0))
+      break;
+  }
   return(p);
 }
 
