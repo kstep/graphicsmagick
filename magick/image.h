@@ -55,10 +55,10 @@ typedef unsigned int Quantum;
 
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
-#define MaxColormapSize  65536U
+#define MaxColormapSize  65536
 #define OpaqueOpacity  0
-#define PixelIntensity(pixel) \
-  ((9798L*(pixel)->red+19235L*(pixel)->green+3735L*(pixel)->blue)/32768L)
+#define PixelIntensity(pixel) ((unsigned long) \
+  ((9798L*(pixel)->red+19235L*(pixel)->green+3735L*(pixel)->blue)/32768L))
 #define PixelIntensityToQuantum(pixel) ((Quantum) \
   ((9798L*(pixel)->red+19235L*(pixel)->green+3735L*(pixel)->blue)/32768L))
 #define TransparentOpacity  MaxRGB
