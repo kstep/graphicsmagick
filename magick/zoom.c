@@ -576,7 +576,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 %  The format of the ResizeImage method is:
 %
 %      Image *ResizeImage(Image *image,const unsigned long columns,
-%        const unsigned long rows,const FilterType filter,const double blur,
+%        const unsigned long rows,const FilterTypes filter,const double blur,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
