@@ -107,15 +107,20 @@ extern MagickExport IndexPacket
   *GetNexusIndexes(const Cache,const unsigned int);
 
 extern MagickExport PixelPacket
+  *GetCacheNexus(Image *,const int,const int,const unsigned int,
+    const unsigned int,const unsigned int),
   *GetNexusPixels(const Cache,const unsigned int),
-  *SetCacheNexus(Image *,const unsigned int,const RectangleInfo *);
+  *SetCacheNexus(Image *,const int,const int,const unsigned int,
+    const unsigned int,const unsigned int),
+  *SetNexus(Image *,const unsigned int,const RectangleInfo *);
 
 extern MagickExport unsigned int
-  GetCacheNexus(Cache),
+  GetNexus(Cache),
   IsNexusInCore(const Cache,const unsigned int),
   OpenCache(Image *),
   ReadCachePixels(Cache,const unsigned int),
   ReadCacheIndexes(Cache,const unsigned int),
+  SyncCacheNexus(Image *,const unsigned int),
   WriteCacheInfo(Image *),
   WriteCachePixels(Cache,const unsigned int),
   WriteCacheIndexes(Cache,const unsigned int);

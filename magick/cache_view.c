@@ -85,13 +85,9 @@
 */
 MagickExport void CloseCacheView(ViewInfo *view)
 {
-  Image
-    *image;
-
   assert(view != (ViewInfo *) NULL);
   assert(view->signature == MagickSignature);
-  image=view->image;
-  DestroyCacheNexus(image->cache,view->id);
+  DestroyCacheNexus(view->image->cache,view->id);
   LiberateMemory((void **) &view);
 }
 
@@ -130,37 +126,9 @@ MagickExport void CloseCacheView(ViewInfo *view)
 MagickExport PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
-  Image
-    *image;
-
-  PixelPacket
-    *pixels;
-
-  unsigned int
-    status;
-
-  /*
-    Read pixels from the cache.
-  */
   assert(view != (ViewInfo *) NULL);
   assert(view->signature == MagickSignature);
-  pixels=SetCacheView(view,x,y,columns,rows);
-  if (pixels == (PixelPacket *) NULL)
-    return((PixelPacket *) NULL);
-  image=view->image;
-  if (IsNexusInCore(image->cache,view->id))
-    return(pixels);
-  status=ReadCachePixels(image->cache,view->id);
-  if ((image->storage_class == PseudoClass) ||
-      (image->colorspace == CMYKColorspace))
-    status|=ReadCacheIndexes(image->cache,view->id);
-  if (status == False)
-    {
-      ThrowException(&image->exception,CacheWarning,
-        "Unable to read pixels from cache",image->filename);
-      return((PixelPacket *) NULL);
-    }
-  return(pixels);
+  return(GetCacheNexus(view->image,x,y,columns,rows,view->id));
 }
 
 /*
@@ -192,13 +160,9 @@ MagickExport PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
 */
 MagickExport IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
 {
-  Image
-    *image;
-
   assert(view != (ViewInfo *) NULL);
   assert(view->signature == MagickSignature);
-  image=view->image;
-  return(GetNexusIndexes(image->cache,view->id));
+  return(GetNexusIndexes(view->image->cache,view->id));
 }
 
 /*
@@ -230,13 +194,9 @@ MagickExport IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
 */
 MagickExport PixelPacket *GetCacheViewPixels(const ViewInfo *view)
 {
-  Image
-    *image;
-
   assert(view != (ViewInfo *) NULL);
   assert(view->signature == MagickSignature);
-  image=view->image;
-  return(GetNexusPixels(image->cache,view->id));
+  return(GetNexusPixels(view->image->cache,view->id));
 }
 
 /*
@@ -272,27 +232,12 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->cache == (Cache) NULL)
-    GetCacheInfo(&image->cache);
-  if ((image->storage_class != GetCacheClass(image->cache)) ||
-      (image->colorspace != GetCacheColorspace(image->cache)))
-    {
-      /*
-        Allocate pixel cache.
-      */
-      status=OpenCache(image);
-      if (status == False)
-        {
-          ThrowException(&image->exception,CacheWarning,
-            "Unable to allocate pixel cache",image->filename);
-          return((ViewInfo *) NULL);
-        }
-    }
   view=(ViewInfo *) AcquireMemory(sizeof(ViewInfo));
   if (view == (ViewInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate cache view",
       "Memory allocation failed");
-  view->id=GetCacheNexus(image->cache);
+  memset(view,0,sizeof(ViewInfo));
+  view->id=GetNexus(image->cache);
   view->image=image;
   view->signature=MagickSignature;
   if (view->id == 0)
@@ -338,33 +283,9 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
 MagickExport PixelPacket *SetCacheView(ViewInfo *view,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
-  Image
-    *image;
-
-  RectangleInfo
-    region;
-
-  /*
-    Validate pixel cache geometry.
-  */
   assert(view != (ViewInfo *) NULL);
   assert(view->signature == MagickSignature);
-  image=view->image;
-  if (image->cache == (Cache) NULL)
-    ThrowBinaryException(CacheWarning,"pixel cache is undefined",
-      image->filename);
-  if ((x < 0) || (y < 0) || ((x+(int) columns) > (int) image->columns) ||
-      ((y+(int) rows) > (int) image->rows) || (columns == 0) || (rows == 0))
-    {
-      ThrowException(&image->exception,CacheWarning,"Unable to set pixel cache",
-        "image does not contain the cache geometry");
-      return((PixelPacket *) NULL);
-    }
-  region.x=x;
-  region.y=y;
-  region.width=columns;
-  region.height=rows;
-  return(SetCacheNexus(image,view->id,&region));
+  return(SetCacheNexus(view->image,x,y,columns,rows,view->id));
 }
 
 /*
@@ -396,30 +317,7 @@ MagickExport PixelPacket *SetCacheView(ViewInfo *view,const int x,const int y,
 */
 MagickExport unsigned int SyncCacheView(ViewInfo *view)
 {
-  Image
-    *image;
-
-  unsigned int
-    status;
-
-  /*
-    Transfer pixels to the cache.
-  */
   assert(view != (ViewInfo *) NULL);
   assert(view->signature == MagickSignature);
-  image=view->image;
-  if (image->cache == (Cache) NULL)
-    ThrowBinaryException(CacheWarning,"pixel cache is undefined",
-      image->filename);
-  image->taint=True;
-  if (IsNexusInCore(image->cache,view->id))
-    return(True);
-  status=WriteCachePixels(image->cache,view->id);
-  if ((image->storage_class == PseudoClass) ||
-      (image->colorspace == CMYKColorspace))
-    status|=WriteCacheIndexes(image->cache,view->id);
-  if (status == False)
-    ThrowBinaryException(CacheWarning,"Unable to sync pixel cache",
-      image->filename);
-  return(True);
+  return(SyncCacheNexus(view->image,view->id));
 }

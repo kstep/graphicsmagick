@@ -93,10 +93,10 @@ static void
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ClosePixelStream closes the pixel stream.  For streams, this method
+%  Method ClosePixelStream() closes the pixel stream.  For streams, this method
 %  is a no-op.
 %
-%  The format of the ClosePixelStream method is:
+%  The format of the ClosePixelStream() method is:
 %
 %      void ClosePixelStream(Image *image)
 %
@@ -123,10 +123,10 @@ static void ClosePixelStream(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyPixelStream deallocates memory associated with the pixel
+%  Method DestroyPixelStream() deallocates memory associated with the pixel
 %  stream.
 %
-%  The format of the DestroyPixelStream method is:
+%  The format of the DestroyPixelStream() method is:
 %
 %      void DestroyPixelStream(Image *image)
 %
@@ -147,7 +147,8 @@ static void DestroyPixelStream(Image *image)
     return;
   stream_info=(StreamInfo *) image->cache;
   assert(stream_info->signature == MagickSignature);
-  LiberateMemory((void **) &stream_info->pixels);
+  if (stream_info->pixels != (PixelPacket *) NULL)
+    LiberateMemory((void **) &stream_info->pixels);
   LiberateMemory((void **) &stream_info);
 }
 
@@ -162,18 +163,17 @@ static void DestroyPixelStream(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetIndexesFromStream returns the colormap indexes associated with
-%  the last call to the SetPixelStream() or GetPixelStream() methods.
+%  Method GetIndexesFromStream() returns the indexes associated with the last
+%  call to SetPixelStream() or GetPixelStream().
 %
-%  The format of the GetIndexesFromStream method is:
+%  The format of the GetIndexesFromStream() method is:
 %
 %      IndexPacket *GetIndexesFromStream(const Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o indexes: Method GetIndexesFromStream returns the colormap indexes
-%      associated with the last call to the SetPixelStream() or GetPixelStream()
-%      methods.
+%    o indexes: Method GetIndexesFromStream() returns the indexes associated
+%      with the last call to SetPixelStream() or GetPixelStream().
 %
 %    o image: The image.
 %
@@ -202,11 +202,10 @@ static IndexPacket *GetIndexesFromStream(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetOnePixelFromStream returns a single pixel at the specified (x,y)
-%  location.  The image background color is returned if an error occurs.  For
-%  streams we just return the background color.
+%  Method GetOnePixelFromStream() returns a single pixel at the specified (x,y)
+%  location.  The image background color is returned if an error occurs.
 %
-%  The format of the GetOnePixelFromStream method is:
+%  The format of the GetOnePixelFromStream() method is:
 %
 %      PixelPacket *GetOnePixelFromStream(const Image image,const int x,
 %        const int y)
@@ -245,20 +244,20 @@ static PixelPacket GetOnePixelFromStream(Image *image,const int x,const int y)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetPixelStream gets pixels from the in-memory or disk pixel cache as
+%  Method GetPixelStream() gets pixels from the in-memory or disk pixel cache as
 %  defined by the geometry parameters.   A pointer to the pixels is returned if
 %  the pixels are transferred, otherwise a NULL is returned.  For streams
 %  this method is a no-op.
 %
-%  The format of the GetPixelStream method is:
+%  The format of the GetPixelStream() method is:
 %
 %      PixelPacket *GetPixelStream(Image *image,const int x,const int y,
 %        const unsigned int columns,const unsigned int rows)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method GetPixelStream returns a pointer to the pixels is
-%      returned if the pixels are transferred, otherwise a NULL is returned.
+%    o status: Method GetPixelStream() returns a pointer to the pixels if they
+%      are transferred, otherwise a NULL is returned.
 %
 %    o image: The image.
 %
@@ -290,17 +289,17 @@ static PixelPacket *GetPixelStream(Image *image,const int x,const int y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetPixelsFromStream returns the pixels associated with the last call
-%  to the SetPixelStream() or GetPixelStream() methods.
+%  Method GetPixelsFromStream() returns the pixels associated with the last
+%  call to SetPixelStream() or GetPixelStream().
 %
-%  The format of the GetPixelsFromStream method is:
+%  The format of the GetPixelsFromStream() method is:
 %
 %      PixelPacket *GetPixelsFromStream(const Image image)
 %
 %  A description of each parameter follows:
 %
 %    o pixels: Method GetPixelsFromStream returns the pixels associated with
-%      the last call to the SetPixelStream() or GetPixelStream() methods.
+%      the last call to SetPixelStream() or GetPixelStream().
 %
 %    o image: The image.
 %
@@ -329,11 +328,11 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadStream makes the image pixels available to a user supplied
+%  Method ReadStream() makes the image pixels available to a user supplied
 %  callback method immediately upon reading a scanline with the ReadImage()
 %  method.
 %
-%  The format of the ReadStream method is:
+%  The format of the ReadStream() method is:
 %
 %      Image *ReadStream(const ImageInfo *image_info,
 %        void (*Stream)(const Image *,const void *,const size_t),
@@ -392,13 +391,13 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetPixelStream allocates an area to store image pixels as defined
+%  Method SetPixelStream() allocates an area to store image pixels as defined
 %  by the region rectangle and returns a pointer to the area.  This area is
-%  subsequently transferred from the pixel cache with method SyncPixelStream.
+%  subsequently transferred from the pixel cache with method SyncPixelStream().
 %  A pointer to the pixels is returned if the pixels are transferred,
 %  otherwise a NULL is returned.
 %
-%  The format of the SetPixelStream method is:
+%  The format of the SetPixelStream() method is:
 %
 %      PixelPacket *SetPixelStream(Image *image,const int x,const int y,
 %        const unsigned int columns,const unsigned int rows)
@@ -466,7 +465,10 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
   if (stream_info->pixels == (void *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache info");
-  stream_info->indexes=(IndexPacket *) (stream_info->pixels+number_pixels);
+  stream_info->indexes=(IndexPacket *) NULL;
+  if ((image->storage_class == PseudoClass) ||
+      (image->colorspace == CMYKColorspace))
+    stream_info->indexes=(IndexPacket *) (stream_info->pixels+number_pixels);
   return(stream_info->pixels);
 }
 
@@ -481,7 +483,7 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SyncPixelStream calls the user supplied callback method with the
+%  Method SyncPixelStream() calls the user supplied callback method with the
 %  latest stream of pixels.
 %
 %  The format of the SyncPixelStream method is:
@@ -490,7 +492,7 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
 %
 %  A description of each parameter follows:
 %
-%    o status: Method SyncPixelStream returns True if the image pixels are
+%    o status: Method SyncPixelStream() returns True if the image pixels are
 %      transferred to the in-memory or disk cache otherwise False.
 %
 %    o image: The image.
@@ -520,11 +522,11 @@ static unsigned int SyncPixelStream(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteStream makes the image pixels available to a user supplied
+%  Method WriteStream() makes the image pixels available to a user supplied
 %  callback method immediately upon writing pixel data with the WriteImage()
 %  method.
 %
-%  The format of the WriteStream method is:
+%  The format of the WriteStream() method is:
 %
 %      unsigned int WriteStream(const ImageInfo *image_info,Image *,
 %        int (*Stream)(const Image *,const void *,const size_t))
