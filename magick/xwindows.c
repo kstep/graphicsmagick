@@ -372,18 +372,6 @@ MagickExport unsigned int XAnnotateImage(Display *display,
   /*
     Composite text onto the image.
   */
-  for (y=0; y < (int) annotate_image->rows; y++)
-  {
-    q=GetImagePixels(annotate_image,0,y,annotate_image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (int) annotate_image->columns; x++)
-    {
-      if (q->opacity != TransparentOpacity)
-        q->opacity=OpaqueOpacity;
-      q++;
-    }
-  }
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
   matte=image->matte;
   CompositeImage(image,annotate_image->matte ? OverCompositeOp :
