@@ -5982,12 +5982,12 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
     PNGErrorHandler,PNGWarningHandler);
 #endif
   if (ping == (png_struct *) NULL)
-    ThrowWriterException((ExceptionType) ResourceLimitError,MemoryAllocationFailed,image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   ping_info=png_create_info_struct(ping);
   if (ping_info == (png_info *) NULL)
     {
       png_destroy_write_struct(&ping,(png_info **) NULL);
-      ThrowWriterException((ExceptionType) ResourceLimitError,MemoryAllocationFailed,image)
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image)
     }
   png_set_write_fn(ping,image,png_put_data,png_flush_data);
   png_pixels=(unsigned char *) NULL;
@@ -6165,7 +6165,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
           palette=MagickAllocateMemory(png_color *,
             number_colors*sizeof(png_color));
           if (palette == (png_color *) NULL)
-            ThrowWriterException((ExceptionType) ResourceLimitError,MemoryAllocationFailed,image);
+            ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
           if (logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  Setting up PLTE chunk");
@@ -6193,7 +6193,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
           */
           ping_info->trans=MagickAllocateMemory(unsigned char *,number_colors);
           if (ping_info->trans == (unsigned char *) NULL)
-            ThrowWriterException((ExceptionType) ResourceLimitError,MemoryAllocationFailed,image);
+            ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
           assert(number_colors <= 256);
           for (i=0; i < (long) number_colors; i++)
              ping_info->trans[i]=255;
@@ -6515,7 +6515,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                 palette=MagickAllocateMemory(png_color *,
                   number_colors*sizeof(png_color));
                 if (palette == (png_color *) NULL)
-                  ThrowWriterException((ExceptionType) ResourceLimitError,MemoryAllocationFailed,image);
+                  ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
                 for (i=0; i < (long) number_colors; i++)
                 {
                   palette[i].red=ScaleQuantumToChar(image->colormap[i].red);
@@ -6538,7 +6538,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
             */
             ping_info->trans=MagickAllocateMemory(unsigned char *,number_colors);
             if (ping_info->trans == (unsigned char *) NULL)
-              ThrowWriterException((ExceptionType) ResourceLimitError,MemoryAllocationFailed,image);
+              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
             assert(number_colors <= 256);
             for (i=0; i < (long) number_colors; i++)
                ping_info->trans[i]=255;
@@ -6872,7 +6872,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       }
   png_pixels=MagickAllocateMemory(unsigned char *,rowbytes);
   if (png_pixels == (unsigned char *) NULL)
-    ThrowWriterException((ExceptionType) ResourceLimitError,MemoryAllocationFailed,image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Initialize image scanlines.
   */
