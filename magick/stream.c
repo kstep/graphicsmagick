@@ -455,8 +455,7 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,
   int (*fifo)(const Image *,const void *,const size_t),ExceptionInfo *exception)
 {
   Image
-    *image,
-    *next;
+    *image;
 
   ImageInfo
     *clone_info;
