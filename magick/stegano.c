@@ -66,18 +66,18 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadSteganoImage reads a steganographic image hidden within another
+%  Method ReadSTEGANOImage reads a steganographic image hidden within another
 %  image type.  It allocates the memory necessary for the new Image structure
 %  and returns a pointer to the new image.
 %
-%  The format of the ReadSteganoImage method is:
+%  The format of the ReadSTEGANOImage method is:
 %
-%      Image *ReadSteganoImage(const ImageInfo *image_info,
+%      Image *ReadSTEGANOImage(const ImageInfo *image_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method ReadSteganoImage returns a pointer to the image
+%    o image:  Method ReadSTEGANOImage returns a pointer to the image
 %      after reading.  A null image is returned if there is a memory shortage
 %      of if the image cannot be read.
 %
@@ -87,7 +87,7 @@
 %
 %
 */
-static Image *ReadSteganoImage(const ImageInfo *image_info,
+static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
 #define UnembedBit(byte) \
@@ -214,25 +214,25 @@ static Image *ReadSteganoImage(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterSteganoImage adds attributes for the Stegano image format to
+%  Method RegisterSTEGANOImage adds attributes for the STEGANO image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterSteganoImage method is:
+%  The format of the RegisterSTEGANOImage method is:
 %
-%      RegisterSteganoImage(void)
+%      RegisterSTEGANOImage(void)
 %
 */
-Export void RegisterSteganoImage(void)
+Export void RegisterSTEGANOImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("Stegano");
-  entry->decoder=ReadSteganoImage;
+  entry=SetMagickInfo("STEGANO");
+  entry->decoder=ReadSTEGANOImage;
   entry->description=AllocateString("Steganographic image");
   RegisterMagickInfo(entry);
 }
