@@ -1169,8 +1169,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
     /*
       Read another scan line.
     */
-    p=AcquireImagePixels(image,0,Min(Max(y-2,0),(long) image->rows-5),
-      image->columns,5,exception);
+    p=AcquireImagePixels(image,0,y-2,image->columns,5,exception);
     q=SetImagePixels(enhance_image,0,y,enhance_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -1464,9 +1463,9 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 typedef struct _MedianListNode
 {
   unsigned long
+    next[QuantumDepth/2+1],
     count,
-    signature,
-    next[QuantumDepth/2+1];
+    signature;
 } MedianListNode;
 
 typedef struct _MedianSkipList
@@ -1475,7 +1474,7 @@ typedef struct _MedianSkipList
     level;
 
   MedianListNode
-    nodes[MaxRGB+2];
+    nodes[MaxRGB+2L];
 } MedianSkipList;
 
 typedef struct _MedianPixelList
@@ -1500,7 +1499,7 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
 
   unsigned long
     search,
-    update[QuantumDepth/2+1];
+    update[(QuantumDepth/2+1)];
 
   /*
     Initialize the node.
@@ -1511,7 +1510,7 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
   /*
     Determine where it belongs in the list.
   */
-  search=MaxRGB+1;
+  search=(MaxRGB+1L);
   for (level=list->level; level >= 0; level--)
   {
     while (list->nodes[search].next[level] < color)
@@ -1523,13 +1522,12 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
   */
   for (level=0; ; level++)
   {
-    pixel_list->seed*=42893621L;
-    pixel_list->seed++;
+    pixel_list->seed*=42893621L+1L;
     if ((pixel_list->seed & 0x300) != 0x300)
       break;
   }
-  if (level > (QuantumDepth/2))
-    level=QuantumDepth/2;
+  if (level > ((QuantumDepth/2+1)-1))
+    level=(QuantumDepth/2+1)-1;
   if (level > (list->level+2))
     level=list->level+2;
   /*
@@ -1538,7 +1536,7 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
   while (level > list->level)
   {
     list->level++;
-    update[list->level]=MaxRGB+1;
+    update[list->level]=(MaxRGB+1L);
   }
   /*
     Link the node into the skip-list.
@@ -1548,7 +1546,7 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
     list->nodes[color].next[level]=list->nodes[update[level]].next[level];
     list->nodes[update[level]].next[level]=color;
   }
-  while (level-- != 0);
+  while (level-- > 0);
 }
 
 static PixelPacket GetMedianList(MedianPixelList *pixel_list)
@@ -1575,7 +1573,7 @@ static PixelPacket GetMedianList(MedianPixelList *pixel_list)
   for (channel=0; channel < 4; channel++)
   {
     list=pixel_list->lists+channel;
-    color=MaxRGB+1;
+    color=MaxRGB+1L;
     count=0;
     do
     {
@@ -1649,8 +1647,8 @@ static void ResetMedianList(MedianPixelList *pixel_list)
     list=pixel_list->lists+channel;
     root=list->nodes+MaxRGB+1;
     list->level=0;
-    for (level=0; level <= (QuantumDepth/2); level++)
-      root->next[level]=MaxRGB+1;
+    for (level=0; level < (QuantumDepth/2+1); level++)
+      root->next[level]=MaxRGB+1L;
   }
   pixel_list->seed=pixel_list->signature++;
 }
@@ -1720,8 +1718,8 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
       break;
     for (x=0; x < (long) median_image->columns; x++)
     {
-      ResetMedianList(skiplist);
       r=p;
+      ResetMedianList(skiplist);
       for (v=0; v < width; v++)
       {
         for (u=0; u < width; u++)
@@ -2470,12 +2468,12 @@ static PixelPacket GetNonpeakMedianList(MedianPixelList *pixel_list)
     *list;
 
   unsigned long
-    center,
     channels[4],
+    center,
     color,
     count,
-    next,
-    previous;
+    previous,
+    next;
 
   /*
     Finds the median value for each of the color.
@@ -2483,8 +2481,8 @@ static PixelPacket GetNonpeakMedianList(MedianPixelList *pixel_list)
   center=pixel_list->center;
   for (channel=0; channel < 4; channel++)
   {
-    color=MaxRGB+1;
     list=pixel_list->lists+channel;
+    color=MaxRGB+1L;
     next=list->nodes[color].next[0];
     count=0;
     do
@@ -2495,10 +2493,10 @@ static PixelPacket GetNonpeakMedianList(MedianPixelList *pixel_list)
       count+=list->nodes[color].count;
     }
     while (count <= center);
-    if ((previous == (MaxRGB+1)) && (next != (MaxRGB+1)))
+    if ((previous == (MaxRGB+1L)) && (next != (MaxRGB+1L)))
       color=next;
     else
-      if ((previous != (MaxRGB+1)) && (next == (MaxRGB+1)))
+      if ((previous != (MaxRGB+1L)) && (next == (MaxRGB+1L)))
         color=previous;
     channels[channel]=color;
   }
@@ -2574,8 +2572,8 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
       break;
     for (x=0; x < (long) noise_image->columns; x++)
     {
-      ResetMedianList(skiplist);
       r=p;
+      ResetMedianList(skiplist);
       for (v=0; v < width; v++)
       {
         for (u=0; u < width; u++)
@@ -2687,8 +2685,7 @@ MagickExport Image *ShadeImage(const Image *image,
   */
   for (y=0; y < (long) image->rows; y++)
   {
-    p=AcquireImagePixels(image,0,Min(Max(y-1,0),(long) image->rows-3),
-      image->columns,3,exception);
+    p=AcquireImagePixels(image,0,y-1,image->columns,3,exception);
     q=SetImagePixels(shade_image,0,y,shade_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
