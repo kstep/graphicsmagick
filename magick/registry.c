@@ -119,7 +119,7 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
           }
           case ImageInfoRegistryType:
           {
-            DestroyImageInfo((Image *) registry_info->blob);
+            DestroyImageInfo((ImageInfo *) registry_info->blob);
             break;
           }
           default:
