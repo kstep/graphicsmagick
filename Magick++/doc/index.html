@@ -156,6 +156,18 @@ Installation</h3></center>
 Once you have the sources available, follow these detailed <a href="Install.html">installation
 instructions</a> for UNIX and Windows.
 <center>
+<p><b><font size=+1>Usage</font></b></center>
+
+<p>A helper script named Magick++-config is installed under Unix which
+assists with recalling compilation options required to compile and link
+programs which use Magick++.&nbsp; For example, the following command will
+compile the source file <i>example.cpp</i> to produce the executable <i>example</i>:
+<blockquote>c++ `Magick++-config --cxxflags --cppflags --ldflags --libs`
+-o example example.cpp</blockquote>
+Windows users may get started by manually editing a project file for one
+of the Magick++ demo programs.
+<br>&nbsp;
+<center>
 <h3>
 Reporting Bugs</h3></center>
 Please report any bugs via the <a href="http://www.simplesystems.org/Magick++/bugs">Magick++
