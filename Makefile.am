@@ -1,5 +1,5 @@
 #
-#  Makefile for building ImageMagick utilities
+#  Top-Level Makefile for building ImageMagick
 #
 # Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated
 # to making software imaging solutions freely available.
@@ -36,55 +36,15 @@
 # traditional 'make'
 AUTOMAKE_OPTIONS = 1.4 foreign # no-dependencies
 
-MAGICK_LIB	= magick/libMagick.la # libtool library name
-INCLUDES	= -I$(srcdir) $(INCLTDL) $(X_CFLAGS)
-
 # Subdirectories to build
 if WITH_MODULES
-SUBDIRS = delegates ltdl magick coders tests
+SUBDIRS = delegates ltdl magick coders utilities tests
 else
-SUBDIRS = delegates ltdl coders magick tests
+SUBDIRS = delegates ltdl coders magick utilities tests
 endif # WITH_MODULES
-
-STDMANPAGES = ImageMagick.1  combine.1 convert.1  identify.1 \
-   miff.4 mogrify.1 montage.1 quantize.5
-X11MANPAGES = animate.1 display.1 import.1
-ALLMANPAGES = $(STDMANPAGES) $(X11MANPAGES)
-
-# Executables to build
-if HasX11
-X11PROGRAMS = animate display import
-MANPAGES = $(ALLMANPAGES)
-else
-X11PROGRAMS =
-MANPAGES = $(STDMANPAGES)
-endif
-bin_PROGRAMS = combine convert identify mogrify montage $(X11PROGRAMS)
-
-# Per-executable sources
-display_SOURCES  = display.c
-animate_SOURCES  = animate.c
-import_SOURCES   = import.c
-montage_SOURCES  = montage.c
-convert_SOURCES  = convert.c
-mogrify_SOURCES  = mogrify.c
-identify_SOURCES = identify.c
-combine_SOURCES  = combine.c
-
-# Libtool libraries, dependencies, and linker flags used by all executables
-if WITH_MODULES
-LDADD		 = $(MAGICK_LIB) $(top_builddir)/ltdl/libltdlc.la
-LDFLAGS          = @LDFLAGS@ @DLLDFLAGS@
-else
-LDADD		 = $(MAGICK_LIB)
-LDFLAGS	         = @LDFLAGS@
-endif # WITH_MODULES
-
-# Manual pages to install
-man_MANS = $(MANPAGES)
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) Magick.tmpl Manifest.ps ImageMagick.html Imakefile \
+EXTRA_DIST = Magick.tmpl Manifest.ps ImageMagick.html Imakefile \
 	Magickshr.opt Make.com README.txt Copyright.txt acconfig.h \
 	QuickStart.txt lndir.sh ltcf-c.sh ltcf-cxx.sh
 

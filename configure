@@ -9872,7 +9872,8 @@ cat >$CONFIG_STATUS <<EOF
 # Files that config.status was made for.
 config_files="\\
   Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile
-  coders/Makefile tests/Makefile magick/Magick-config PerlMagick/Makefile.PL"
+  coders/Makefile utilities/Makefile tests/Makefile magick/Magick-config
+  PerlMagick/Makefile.PL"
 config_headers="\\
   magick/config.h"
 config_commands="\\
@@ -9961,6 +9962,7 @@ Try \\\`$CONFIG_STATUS --help' for more information."; exit 1 ;;
   'delegates/Makefile' ) CONFIG_FILES="\$CONFIG_FILES delegates/Makefile" ;;
   'magick/Makefile' ) CONFIG_FILES="\$CONFIG_FILES magick/Makefile" ;;
   'coders/Makefile' ) CONFIG_FILES="\$CONFIG_FILES coders/Makefile" ;;
+  'utilities/Makefile' ) CONFIG_FILES="\$CONFIG_FILES utilities/Makefile" ;;
   'tests/Makefile' ) CONFIG_FILES="\$CONFIG_FILES tests/Makefile" ;;
   'magick/Magick-config' ) CONFIG_FILES="\$CONFIG_FILES magick/Magick-config" ;;
   'PerlMagick/Makefile.PL' ) CONFIG_FILES="\$CONFIG_FILES PerlMagick/Makefile.PL" ;;

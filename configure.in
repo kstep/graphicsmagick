@@ -1286,7 +1286,7 @@ AC_SUBST(X_CFLAGS)
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
-AC_OUTPUT(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile coders/Makefile tests/Makefile magick/Magick-config PerlMagick/Makefile.PL)
+AC_OUTPUT(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile coders/Makefile utilities/Makefile tests/Makefile magick/Magick-config PerlMagick/Makefile.PL)
 
 echo ""
 
