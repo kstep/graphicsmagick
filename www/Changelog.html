@@ -23,6 +23,38 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-05-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Added progress monitor support to DrawImage().
+
+2002-05-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Added progress monitor support to wmf.c.
+
+2002-05-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Added EscapeText() to utility.c to support escaping text.
+
+2002-05-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Text escaping for -draw and DrawAnnotation was not working properly.
+    Now it does.  Backslash should act as a escape for the the active
+    quote character (', ", or }) as well as backslash.  The backslash
+    should be discarded if it was used as an escape character.  In order
+    to reliably pass a backslash, two successive backslashes are required
+    (e.g. "\\").
+
+2002-05-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Modified Base64Encode() of utility.c so that it returns the number of
+    characters encoded. This avoids having to invoke strlen() on possibly
+    megabytes of data.
+
+2002-05-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Fixed compilation error with Sun Workshop compiler (wmf.c).
+
+2002-05-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Implement polypolygon support in WMF renderer.  Requires libwmf
+    0.2.4 with draw_polypolygon IPA callback.
+
+2002-05-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Added --enable-ccmalloc configure option.
+
 2002-05-09  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * DCM patch provided by Shane Blackett.
 
