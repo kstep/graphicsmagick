@@ -1,3 +1,8 @@
+2004-07-16  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* BCBMagick\coders\libCoders.bpr; BCBMagick\magick\GM_magick.bpr: include
+	  file jbig.h could not be found during compilation. Solved.
+	
 2004-07-15  Mike Chiarappa  <mikechiarappa@libero.it>
 
 	* BCBMagick\magick\magick_config.h.: enabled LZW compression by default.
