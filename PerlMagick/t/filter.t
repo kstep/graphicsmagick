@@ -153,7 +153,7 @@ testFilter('input.miff', 'Normalize',
 ++$test;
 testFilter('input.miff', 'OilPaint',
   q/3/,
-  '37880bdf76cb9ae064e60223b74ea802',
+  '1db2b56a7a33507c693860b698058250',
   'e16d40c46206f6c3dc682139de76f76d');
 
 ++$test;
