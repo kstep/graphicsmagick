@@ -688,8 +688,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
       int
         count;
 
-      count=sscanf(draw_info->density,"%lfx%lf",&resolution.x,
-        &resolution.y);
+      count=sscanf(draw_info->density,"%lfx%lf",&resolution.x,&resolution.y);
       if (count != 2)
         resolution.y=resolution.x;
     }
