@@ -50,20 +50,6 @@
 %  Identify describes the format and characteristics of one or more image
 %  files.  It will also report if an image is incomplete or corrupt.
 %
-%  The identify program syntax is:
-%
-%  Usage: identify [ -option value ... ] file [ file ... ]
-%
-%  Where options include:
-%    -cache threshold  megabytes of memory available to the pixel cache
-%    -debug            display copious debugging information
-%    -density geometry vertical and horizontal density of the image
-%    -depth value      depth of the image
-%    -format "string"  output formatted image characteristics
-%    -help             print program options
-%    -size geometry    width and height of image
-%    -verbose          print detailed information about the image
-%
 %
 */
 
@@ -116,8 +102,8 @@ static void IdentifyUsage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [ -option value ... ] file [ file ... ]\n",
-    SetClientName((char *) NULL));
+  (void) printf("Usage: %.1024s [options ...] file [ [options ...] "
+    "file ... ]\n",SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);

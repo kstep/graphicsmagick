@@ -47,102 +47,9 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Montage creates a composite image by combining several separate
-%  images.  The images are tiled on the composite image with the name of
-%  the image appearing just above the individual tile.
-%
-%  The composite image is constructed in the following manner.  First,
-%  each image specified on the command line, except for the last, is
-%  scaled to fit the maximum tile size.  The maximum tile size by default
-%  is 256x256.  It can be modified with the -geometry command line
-%  argument or X resource.  Note that the maximum tile size need not be a
-%  square.  To respect the aspect ratio of each image append ~ to the
-%  geometry specification.
-%
-%  Next the composite image is initialized with the color specified by the
-%  -background command line argument or X resource.  The width and height
-%  of the composite image is determined by the maximum tile size, the
-%  number of tiles per row, the tile border width and height, the image
-%  border width, and the label height.  The number of tiles per row specifies
-%  how many images are to appear in each row of the composite image.  The
-%  default is to have an equal number of images in each row and column of the
-%  composite.  This value can be specified with -tiles.  The tile border
-%  width and height, and the image border width defaults to the value of the
-%  X resource -borderwidth.  It can be changed with the -borderwidth or
-%  -geometry command line argument or X resource.  The label height is
-%  determined by the font you specify with the -font command line argument or
-%  X resource.  If you do not specify a font, a font is chosen that allows
-%  the name of the image to fit the maximum width of a tiled area.  The label
-%  colors is determined by the -background and -stroke command line
-%  argument or X resource.  Note, that if the background and fill colors
-%  are the same, labels will not appear.
-%
-%  Finally, each image is set onto the composite image, surrounded by its
-%  border color, with its name centered just below it.  The individual images
-%  are centered within the width of the tiled area.  The final argument on the
-%  command line is the name assigned to the composite image.  The image is
-%  written in the MIFF format and may by viewed or printed with `display'.
-%
-%  The Montage program command syntax is:
-%
-%  Usage: montage [ -option value ... ] file [ [ -option value ... ] file ... ] 
-%
-%  Where options include:
-%    -adjoin             join images into a single multi-image file
-%    -blur geometry      blur the image
-%    -cache threshold    megabytes of memory available to the pixel cache
-%    -colors value       preferred number of colors in the image
-%    -colorspace type    alternate image colorspace
-%    -comment string     annotate image with comment
-%    -compose operator   composite operator
-%    -compress type      type of image compression
-%    -crop geometry      preferred size and location of the cropped image
-%    -debug              display copious debugging information
-%    -density geometry   vertical and horizontal density of the image
-%    -depth value        depth of the image
-%    -display server     query fonts from this X server
-%    -dispose method     GIF disposal method
-%    -dither             apply Floyd/Steinberg error diffusion to image
-%    -draw string        annotate the image with a graphic primitive
-%    -fill color         color to use when filling a graphic primitive
-%    -filter type        use this filter when resizing an image
-%    -frame geometry     surround image with an ornamental border
-%    -gamma value        level of gamma correction
-%    -geometry geometry  preferred tile and border sizes
-%    -gravity direction  which direction to gravitate towards
-%    -interlace type     None, Line, Plane, or Partition
-%    -help               print program options
-%    -label name         assign a label to an image
-%    -matte              store matte channel if the image has one
-%    -mode type          Frame, Unframe, or Concatenate
-%    -monochrome         transform image to black and white
-%    -page geometry      size and location of an image canvas
-%    -pointsize value    pointsize of Postscript font
-%    -quality value      JPEG/MIFF/PNG compression level
-%    -resize geometry    resize the image
-%    -rotate degrees     apply Paeth rotation to the image
-%    -scenes range       image scene range
-%    -shadow             add a shadow beneath a tile to simulate depth
-%    -sharpen geometry   sharpen the image
-%    -size geometry      width and height of image
-%    -stroke color       color to use when stroking a graphic primitive
-%    -texture filename   name of texture to tile onto the image background
-%    -tile geometry      number of tiles per row and column
-%    -transparent color  make this color transparent within the image
-%    -treedepth value    depth of the color tree
-%    -trim               trim image edges
-%    -type type          image type
-%    -verbose            print detailed information about the image
-%
-%  In addition to those listed above, you can specify these standard X
-%  resources as command line options:  -background, -bordercolor -borderwidth,
-%  -font, -mattecolor, or -title.
-%
-%  By default, the image format of `file' is determined by its magic
-%  number.  To specify a particular image format, precede the filename
-%  with an image format name and a colon (i.e. ps:image) or specify the
-%  image type as the filename suffix (i.e. image.ps).  Specify 'file' as
-%  '-' for standard input or output.
+%  Montage creates a composite by combining several separate images. The
+%  images are tiled on the composite image with the name of the image
+%  optionally appearing just below the individual tile.
 %
 %
 */
@@ -232,8 +139,8 @@ static void MontageUsage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [ -option value ...] file [ [ -options value "
-    "... ] file ... ]\n",SetClientName((char *) NULL));
+  (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
+    SetClientName((char *) NULL));
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -304,8 +211,8 @@ static unsigned int MontageUtility(int argc,char **argv)
 
   long
     first_scene,
-		j,
-		k,
+  	j,
+  	k,
     last_scene,
     scene,
     x;
@@ -317,7 +224,7 @@ static unsigned int MontageUtility(int argc,char **argv)
     quantize_info;
 
   register Image
-	  *p;
+    *p;
 
   register long
     i;
@@ -344,8 +251,8 @@ static unsigned int MontageUtility(int argc,char **argv)
   /*
     Parse command line.
   */
-	j=1;
-	k=0;
+  j=1;
+  k=0;
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];

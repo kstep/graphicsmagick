@@ -62,22 +62,6 @@
 %      <write filename="image.png" />
 %      </image>
 %
-%  The conjure program syntax is:
-%
-%  Usage: conjure [ -option value ... ] file [ [ -option value ... ] file ... ]
-%
-%  Where options include:
-%    -debug    display copious debugging information
-%    -help     print program options
-%    -verbose  print detailed information about the image
-%  
-%  In addition, define any key value pairs required by your script.  For
-%  example,
-%  
-%       conjure -dimensions 400x400 incantation.msl
-%
-%  All operations will closely follow the key/value pairs defined in
-%  PerlMagick, unless otherwise noted.
 %
 */
 
@@ -124,8 +108,8 @@ static void ConjureUsage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("ConjureUsage: %.1024s [ -option value ... ] file [ [ -option value "
-    "... ] file ... ]\n",SetClientName((char *) NULL));
+  (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
+    SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -181,7 +165,7 @@ int main(int argc,char **argv)
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   image_info->attributes=AllocateImage(image_info);
-	status=True;
+  status=True;
   for (i=1; i < argc; i++)
   {
     option=argv[i];

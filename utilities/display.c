@@ -61,81 +61,6 @@
 %  monochrome or pseudo-color image can display on a continuous-tone 24
 %  bits-per-pixel device.
 %
-%  The Display program command syntax is:
-%
-%  Usage: display [ -option value ... ] file [ [ -option value ... ] file ... ]
-%
-%  Where options include:
-%    -backdrop          display image centered on a backdrop
-%    -border geometry   surround image with a border of color
-%    -cache threshold   megabytes of memory available to the pixel cache
-%    -colormap type     Shared or Private
-%    -colors value      preferred number of colors in the image
-%    -colorspace type   alternate image colorspace
-%    -comment string    annotate image with comment",
-%    -compress type     type of image compression
-%    -contrast          enhance or reduce the image contrast
-%    -crop geometry     preferred size and location of the cropped image
-%    -debug             display copious debugging information
-%    -delay value       display the next image after pausing
-%    -density geometry  vertical and horizontal density of the image
-%    -depth value       depth of the image
-%    -despeckle         reduce the speckles within an image
-%    -display server    display image to this X server
-%    -dispose method    GIF disposal method
-%    -dither            apply Floyd/Steinberg error diffusion to image
-%    -edge factor       apply a filter to detect edges in the image
-%    -enhance           apply a digital filter to enhance a noisy image
-%    -filter type       use this filter when resizing an image
-%    -flip              flip image in the vertical direction
-%    -flop              flop image in the horizontal direction
-%    -frame geometry    surround image with an ornamental border
-%    -gamma value       level of gamma correction
-%    -geometry geometry preferred size and location of the Image window
-%    -help              print program options
-%    -immutable         displayed image cannot be modified
-%    -interlace type    None, Line, Plane, or Partition
-%    -label name        assign a label to an image
-%    -map type          display image using this Standard Colormap
-%    -matte             store matte channel if the image has one
-%    -monochrome        transform image to black and white
-%    -negate            replace every pixel with its complementary color
-%    -page geometry     size and location of an image canvas
-%    -quality value     JPEG/MIFF/PNG compression level
-%    -raise value       lighten/darken image edges to create a 3-D effect
-%    -remote command    execute a command in an remote display process
-%    -roll geometry     roll an image vertically or horizontally
-%    -rotate degrees    apply Paeth rotation to the image
-%    -sample geometry   scale image with pixel sampling
-%    -scenes range      image scene range
-%    -segment value     segment an image
-%    -sharpen geometry  sharpen the image
-%    -size geometry     width and height of image
-%    -texture filename  name of texture to tile onto the image background
-%    -treedepth value   depth of the color tree
-%    -trim              trim image edges
-%    -update seconds    detect when image file is modified and redisplay
-%    -verbose           print detailed information about the image
-%    -visual type       display image using this visual type
-%    -window id         display image to background of this window
-%    -window_group id   exit program when this window id is destroyed
-%    -write filename    write image to a file
-%
-%  In addition to those listed above, you can specify these standard X
-%  resources as command line options:  -background, -bordercolor,
-%  -borderwidth, -font, -foreground, -iconGeometry, -iconic, -mattecolor,
-%  -name, -shared_memory, -usePixmap, or -title.
-%
-%  By default, the image format of `file' is determined by its magic
-%  number.  To specify a particular image format, precede the filename
-%  with an image format name and a colon (i.e. ps:image) or specify the
-%  image type as the filename suffix (i.e. image.ps).  Specify 'file' as
-%  '-' for standard input or output.
-%
-%  Buttons:
-%    1    press to map or unmap the Command widget
-%    2    press and drag to magnify a region of an image
-%    3    press to load an image from a visual image directory
 %
 %
 */
@@ -244,8 +169,9 @@ static void DisplayUsage(void)
     version;
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
-  (void) printf("DisplayUsage: %.1024s [ option value ... ] file [ [ -option value "
-    "... ] file ... ]\n",SetClientName((char *) NULL));
+  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
+  (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
+    SetClientName((char *) NULL));
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -451,8 +377,8 @@ int main(int argc,char **argv)
     Parse command line.
   */
   status=True;
-	j=1;
-	k=0;
+  j=1;
+  k=0;
   for (i=1; ((i <= argc) && !(state & ExitState)); i++)
   {
     if (i < argc)

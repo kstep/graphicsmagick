@@ -47,52 +47,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The composite program syntax is:
-%
-%  Usage: composite [ -option value ... ] image composite [ mask ] composite
-%
-%  Where options include:
-%    -cache threshold    number of megabytes available to the pixel cache
-%    -colors value       preferred number of colors in the image
-%    -compose operator   composite operator
-%    -colorspace type    alternate image colorspace
-%    -comment string     annotate image with comment
-%    -compress type      type of image compression
-%    -debug              display copious debugging information
-%    -density geometry   vertical and horizontal density of the image
-%    -depth value        depth of the image
-%    -displace geometry  shift image pixels as defined by a displacement map
-%    -display server     obtain image or font from this X server
-%    -dispose method     GIF disposal method
-%    -dissolve value     dissolve the two images a given percent
-%    -dither             apply Floyd/Steinberg error diffusion to image
-%    -filter type        use this filter when resizing an image
-%    -font name          font for rendering text
-%    -geometry geometry  location of the composite image
-%    -gravity type       which direction to gravitate towards
-%    -help               print program options
-%    -interlace type     None, Line, Plane, or Partition
-%    -label name         assign a label to an image
-%    -matte              store matte channel if the image has one
-%    -monochrome         transform image to black and white
-%    -negate             replace every pixel with its complementary color
-%    -page geometry      size and location of an image canvas
-%    -profile filename   add ICM or IPTC information profile to image
-%    -quality value      JPEG/MIFF/PNG compression level
-%    -resize geometry    resize the image
-%    -rotate degrees     apply Paeth rotation to the image
-%    -scene value        image scene number
-%    -sharpen geometry    sharpen the image
-%    -size geometry      width and height of image
-%    -stegano offset     hide watermark within an image
-%    -stereo             combine two image to create a stereo anaglyph
-%    -tile               repeat composite operation across image
-%    -treedepth value    depth of the color tree
-%    -type type          image type
-%    -units type         PixelsPerInch, PixelsPerCentimeter, or Undefined
-%    -unsharp geometry   sharpen the image
-%    -verbose            print detailed information about the image
-%    -watermark geometry percent brightness and saturation of a watermark
+%  Program Composite composites images to create new images.
 %
 %
 */
@@ -392,8 +347,8 @@ static void CompositeUsage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf(
-    "Usage: %.1024s [ -option value ... ] image composite [ mask ] composite\n",
+  (void) printf("Usage: %.1024s [options ...] image [options ...] composite\n"
+    "  [ [options ...] mask ] [options ...] composite\n",
     SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)

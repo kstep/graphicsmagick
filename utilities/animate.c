@@ -60,55 +60,6 @@
 %  monochrome or pseudo-color image can display on a continuous-tone 24
 %  bits-per-pixel device.
 %
-%  The Animate program command syntax is:
-%
-%  Usage: animate [ -option value ... ] file [ [ -option value ... ] file ... ]
-%
-%  Where options include:
-%    -backdrop            display image centered on a backdrop
-%    -cache threshold     megabytes of memory available to the pixel cache
-%    -colormap type       Shared or Private
-%    -colors value        preferred number of colors in the image
-%    -colorspace type     alternate image colorspace
-%    -crop geometry       preferred size and location of the cropped image
-%    -debug               display copious debugging information
-%    -delay value         display the next image after pausing
-%    -density geometry    vertical and horizontal density of the image
-%    -depth value         depth of the image
-%    -display server      display image to this X server
-%    -dither              apply Floyd/Steinberg error diffusion to image
-%    -gamma value         level of gamma correction
-%    -geometry geometry   preferred size and location of the Image window
-%    -help                print program options
-%    -interlace type      None, Line, Plane, or Partition
-%    -map type            display image using this Standard Colormap
-%    -matte               store matte channel if the image has one
-%    -monochrome          transform image to black and white
-%    -pause               seconds to pause before reanimating
-%    -remote command      execute a command in an remote display process
-%    -rotate degrees      apply Paeth rotation to the image
-%    -scenes range        image scene range
-%    -size geometry       width and height of image
-%    -treedepth value     depth of the color tree
-%    -trim                trim image edges
-%    -verbose             print detailed information about the image
-%    -visual type         display image using this visual type
-%    -window id           display image to background of this window
-%
-%  In addition to those listed above, you can specify these standard X
-%  resources as command line options:  -background, -bordercolor,
-%  -borderwidth, -font, -foreground, -iconGeometry, -iconic, -name,
-%  -mattecolor, -shared_memory, or -title.
-%
-%  By default, the image format of `file' is determined by its magic
-%  number.  To specify a particular image format, precede the filename
-%  with an image format name and a colon (i.e. ps:image) or specify the
-%  image type as the filename suffix (i.e. image.ps).  Specify 'file' as
-%  '-' for standard input or output.
-%
-%  Buttons:
-%    Press any button to map or unmap the Command widget.
-%
 %
 */
 
@@ -190,8 +141,8 @@ static void AnimateUsage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("AnimateUsage: %.1024s [ -option value ... ] file [ [ -option value "
-    "... ] file ... ]\n",SetClientName((char *) NULL));
+  (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
+    SetClientName((char *) NULL));
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -316,7 +267,7 @@ int main(int argc,char **argv)
   image=(Image *) NULL;
   last_scene=0;
   server_name=(char *) NULL;
-	status=True;
+  status=True;
   /*
     Check for server name specified on the command line.
   */
