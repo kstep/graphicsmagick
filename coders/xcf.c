@@ -1185,7 +1185,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         QuantizeImage( &qi, image );
       }
     } else {
-      if ( 0 ) {
+#if 0
+        {
         /* NOTE: XCF layers are REVERSED from composite order! */
         signed int  j;
         for (j=number_layers-1; j>=0; j--) {
@@ -1205,8 +1206,9 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           }
         }
-
-      } else {
+      }
+#else
+      {
         /* NOTE: XCF layers are REVERSED from composite order! */
         signed int  j;
 
@@ -1249,6 +1251,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         }
       }
+#endif
     }
 
     LiberateMemory((void **) &layer_info);

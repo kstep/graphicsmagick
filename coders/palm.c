@@ -445,11 +445,11 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     nextDepthOffset,
     transparentIndex,
     compressionType,
-    pad,
-    size,
     byte,
     count,
     mask,
+    pad,
+    size,
     bit;
 
   /*
@@ -526,7 +526,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         {
         count = ReadBlobByte(image);
         byte = ReadBlobByte(image);
-        memset(one_row + i, byte, count);
+        memset(one_row + i, (int) byte, count);
         i += count;
         }
       }
@@ -832,7 +832,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
       break;
     indexes=GetIndexes(image);
     byte = 0x00;
-    bit = 8 - bpp;
+    bit = (unsigned char) (8 - bpp);
     for (x=0; x < (int) image->columns; x++)
       {
       if(bpp < 8) /* Make sure we use the entire colorspace for bpp */
@@ -845,7 +845,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
         {
         *ptr++ = byte;
         byte = 0x00;
-        bit = 8 - bpp;
+        bit = (unsigned char) (8 - bpp);
         }
       else
         {
@@ -898,7 +898,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
 
   if(bpp < 8 && flags & PALM_IS_COMPRESSED_FLAG)
     {
-    count = SizeBlob(image);  /* compressed size */
+    count = (unsigned long) SizeBlob(image);  /* compressed size */
     SeekBlob(image, 16, SEEK_SET);
     if(flags & PALM_HAS_FOUR_BYTE_FIELD)
       (void) WriteBlobMSBLong(image, count - 16);

@@ -322,7 +322,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"    \"");
     for (x=0; x < (long) image->columns; x++)
     {
-      k=indexes[x] % MaxCixels;
+      k=(long) (indexes[x] % MaxCixels);
       symbol[0]=Cixel[k];
       for (j=1; j < (int) characters_per_pixel; j++)
       {
