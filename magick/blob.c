@@ -1723,7 +1723,7 @@ MagickExport off_t TellBlob(Image *image)
 %    o status:  Method UnmapBlob returns True on success; otherwise,  it
 %      returns False and sets errno to indicate the error.
 %
-%    o map: The address  of the binary large object.
+%    o map: The address of the binary large object.
 %
 %    o length: The length of the binary large object.
 %
