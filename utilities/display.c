@@ -1599,6 +1599,9 @@ int main(int argc,char **argv)
   DestroyMagick();
   LiberateMemory((void **) &argv);
   Exit(!status);
+#else
+  MagickFatalError(MissingDelegateError,"X11 library is not available",
+    (char *) NULL);
 #endif
   return(False);
 }
