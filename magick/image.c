@@ -60,15 +60,15 @@
 */
 const char
   *AppendBinaryType = "ab",
-  *BackgroundColor = "#ffffff",  /* white */
-  *BorderColor = "#dfdfdf",  /* gray */
+  *BackgroundColor = "#ffffffffffff",  /* white */
+  *BorderColor = "#dfdfdfdfdfdf",  /* gray */
   *DefaultTileFrame = "15x15+3+3",
   *DefaultTileGeometry = "120x120+4+3>",
   *DefaultTileLabel = "%f\n%wx%h\n%b",
-  *ForegroundColor = "#000000",  /* black */
+  *ForegroundColor = "#000000000000",  /* black */
   *LoadImageText = "  Loading image...  ",
   *LoadImagesText = "  Loading images...  ",
-  *MatteColor = "#bdbdbd",  /* gray */
+  *MatteColor = "#bdbdbdbdbdbd",  /* gray */
   *PSDensityGeometry = "72.0x72.0",
   *PSPageGeometry = "612x792>",
   *ReadBinaryType = "rb",

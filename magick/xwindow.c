@@ -2596,17 +2596,17 @@ MagickExport void XGetPixelPacket(Display *display,
   static const char
     *PenColors[MaxNumberPens]=
     {
-      "#000000",  /* black */
-      "#0000ff",  /* blue */
-      "#00ffff",  /* cyan */
-      "#00ff00",  /* green */
-      "#bdbdbd",  /* gray */
-      "#ff0000",  /* red */
-      "#ff00ff",  /* magenta */
-      "#ffff00",  /* yellow */
-      "#ffffff",  /* white */
-      "#bdbdbd",  /* gray */
-      "#bdbdbd"   /* gray */
+      "#000000000000",  /* black */
+      "#00000000ffff",  /* blue */
+      "#0000ffffffff",  /* cyan */
+      "#0000ffff0000",  /* green */
+      "#bdbdbdbdbdbd",  /* gray */
+      "#ffff00000000",  /* red */
+      "#ffff0000ffff",  /* magenta */
+      "#ffffffff0000",  /* yellow */
+      "#ffffffffffff",  /* white */
+      "#bdbdbdbdbdbd",  /* gray */
+      "#bdbdbdbdbdbd"   /* gray */
     };
 
   Colormap
@@ -2633,8 +2633,7 @@ MagickExport void XGetPixelPacket(Display *display,
   if (image != (Image *) NULL)
     if (image->storage_class == PseudoClass)
       pixel->colors=image->colors;
-  packets=Max((int) pixel->colors,visual_info->colormap_size)+
-    MaxNumberPens;
+  packets=Max((int) pixel->colors,visual_info->colormap_size)+MaxNumberPens;
   if (pixel->pixels != (unsigned long *) NULL)
     LiberateMemory((void **) &pixel->pixels);
   pixel->pixels=(unsigned long *) AcquireMemory(packets*sizeof(unsigned long));
@@ -2658,7 +2657,7 @@ MagickExport void XGetPixelPacket(Display *display,
   /*
     Set background color.
   */
-  (void) XParseColor(display,colormap,"#ffffff",&pixel->background_color);
+  (void) XParseColor(display,colormap,"#d6d6d6d6d6d6",&pixel->background_color);
   status=XParseColor(display,colormap,resource_info->background_color,
     &pixel->background_color);
   if (status == 0)
@@ -3048,7 +3047,7 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
     (char *) "False");
   resource_info->backdrop=IsTrue(resource_value);
   resource_info->background_color=XGetResourceInstance(database,client_name,
-    (char *) "background","#ffffff");
+    (char *) "background","#d6d6d6d6d6d6");
   resource_info->border_color=XGetResourceInstance(database,client_name,
     (char *) "borderColor",BorderColor);
   resource_value=XGetResourceClass(database,client_name,(char *) "borderWidth",
@@ -7844,7 +7843,7 @@ MagickExport unsigned int XQueryColorDatabase(const char *target,XColor *color)
   color->blue=0;
   color->flags=DoRed | DoGreen | DoBlue;
   if ((target == (char *) NULL) || (*target == '\0'))
-    target="#ffffff";
+    target="#ffffffffffff";
   /*
     Let the X server define the color for us.
   */

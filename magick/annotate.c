@@ -1652,8 +1652,8 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       resource_info.close_server=False;
       resource_info.colormap=PrivateColormap;
       resource_info.font=AllocateString(draw_info->font);
-      resource_info.background_color=AllocateString("#ffffff");
-      resource_info.foreground_color=AllocateString("#000000");
+      resource_info.background_color=AllocateString("#ffffffffffff");
+      resource_info.foreground_color=AllocateString("#000000000000");
       map_info=XAllocStandardColormap();
       if (map_info == (XStandardColormap *) NULL)
         ThrowBinaryException(ResourceLimitError,"Unable to allocate colormap",
