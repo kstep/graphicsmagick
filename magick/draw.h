@@ -123,6 +123,7 @@ typedef struct _TypeInfo
     *format,
 		*style,
     *weight,
+    *stretch,
     *glyphs,
     *metrics,
     *version,

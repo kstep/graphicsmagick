@@ -4429,6 +4429,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             Image
               *profile;
 
+            register int
+              j;
+
             if (*option == '+')
               {
                 /*
@@ -4451,12 +4454,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (profile->color_profile.length != 0)
               (void) ProfileImage(*image,"IPTC",profile->color_profile.info,
                 profile->color_profile.length);
-            for (i=0; i < (long) profile->generic_profiles; i++)
+            for (j=0; j < (long) profile->generic_profiles; j++)
             {
               ProfileInfo
                 *generic;
 
-              generic=profile->generic_profile+i;
+              generic=profile->generic_profile+j;
               (void) ProfileImage(*image,generic->name,generic->info,
                 generic->length);
             }
