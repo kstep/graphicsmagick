@@ -981,6 +981,7 @@ void Magick::Image::zoom( const Geometry &geometry_ )
 // Join images into a single multi-image file
 void Magick::Image::adjoin ( bool flag_ )
 {
+  modifyImage();
   _imgRef->options()->adjoin( flag_ );
 }
 bool Magick::Image::adjoin ( void ) const
@@ -991,6 +992,7 @@ bool Magick::Image::adjoin ( void ) const
 // Remove pixel aliasing
 void Magick::Image::antiAlias( bool flag_ )
 {
+  modifyImage();
   _imgRef->options()->antiAlias( static_cast<unsigned int>(flag_) );
 }
 bool Magick::Image::antiAlias( void )
@@ -1382,12 +1384,14 @@ void Magick::Image::filterType ( Magick::FilterType filterType_ )
   if ( _imgRef->_image )
     _imgRef->_image->filter = filterType_;
 
-  _imgRef->options()->filterType ( filterType_ );
+  // FIXME: No longer supported in ImageInfo
+//   _imgRef->options()->filterType ( filterType_ );
 }
 Magick::FilterType Magick::Image::filterType ( void ) const
 {
-  return _imgRef->options()->filterType ( );
-  //  return _imgRef->image()->filter;
+  // FIXME: No longer supported in ImageInfo
+//   return _imgRef->options()->filterType ( );
+  return _imgRef->image()->filter;
 }
 
 void Magick::Image::font ( const std::string &font_ )
@@ -1464,6 +1468,38 @@ unsigned int Magick::Image::gifDisposeMethod ( void ) const
 //   return(_imgRef->image()->dispose);
 }
 
+// ICC color profile (BLOB)
+// FIXME: should this really be string?  What about NULL?
+// void Magick::Image::iccColorProfile( const std::string colorProfile_ )
+// {
+//   MagickLib::ProfileInfo * color_profile = &(_imgRef->image()->color_profile);
+//   if ( color_profile->info )
+//     {
+//       MagickLib::FreeMemory( color_profile->info );
+//       color_profile->info = 0;
+//       color_profile->length = 0;
+//     }
+
+//   if ( colorProfile_.length() != 0 )
+//     {
+//       color_profile->info = (unsigned char*)MagickLib::AllocateMemory( colorProfile_.length() );
+//       color_profile->length = colorProfile_.copy( (char*)color_profile->info,
+// 						  colorProfile_.length() );
+//     }
+// }
+// std::string Magick::Image::iccColorProfile( void ) const
+// {
+//   MagickLib::ProfileInfo * color_profile = &(_imgRef->image()->color_profile);
+//   if ( color_profile->info )
+//     {
+//       std::string value;
+//       value.assign( (char*)color_profile->info, 
+// 		    color_profile->length );
+//       return value;
+//     }
+//   return string();
+// }
+
 void Magick::Image::interlaceType ( Magick::InterlaceType interlace_ )
 {
   modifyImage();
@@ -1478,6 +1514,10 @@ Magick::InterlaceType Magick::Image::interlaceType ( void ) const
   return _imgRef->options()->interlaceType ( );
   //  return _imgRef->image()->interlace;
 }
+
+// IPTC profile (BLOB)
+// void Magick::Image::iptcProfile( const std::string iptcProfile_ );
+// string Magick::Image::iptcProfile( void ) const;
 
 // Does object contain valid image?
 void Magick::Image::isValid ( bool isValid_ )
@@ -1614,17 +1654,17 @@ bool Magick::Image::monochrome ( void ) const
   return _imgRef->options()->monochrome( );
 }
 
-std::string Magick::Image::montageGeometry ( void ) const
+Magick::Geometry Magick::Image::montageGeometry ( void ) const
 {
   MagickLib::Image * image = _imgRef->image();
   if ( image->montage )
-    return std::string(image->montage);
+    return Magick::Geometry(image->montage);
 
   LastError err( MagickLib::CorruptImageWarning,
 		 "Image does not contain a montage." );
   err.throwException();
 
-  return std::string();
+  return Magick::Geometry();
 }
 
 double Magick::Image::normalizedMaxError ( void ) const
@@ -1678,7 +1718,6 @@ Magick::Image  Magick::Image::penTexture ( void  ) const
 //   return _imgRef->options()->penTexture( );
 }
 
-// FIXME: Need support for setting color->index (opacity)
 void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
 				 const Color &color_ )
 {
@@ -1689,27 +1728,33 @@ void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
       MagickLib::Image * image = _imgRef->image();
       if ( !MagickLib::UncondenseImage( image ) )
 	return;
+
+      // FIXME: should throw exception rather than truncating rows/columns
       if ( y_ > image->rows )
 	y_ %= image->rows;
+
       if ( x_ > image->columns )
 	x_ %= image->columns;
+
       MagickLib::RunlengthPacket *color = image->pixels +
 	( y_ *image->columns + x_);
       image->c_class = MagickLib::DirectClass;
-      
+
+      // Set RGB
       color->red   = color_.redQuantum();
       color->green = color_.greenQuantum();
       color->blue  = color_.blueQuantum();
-      //       color->index = (unsigned short)
-      // 	( (index < Transparent) ?
-      // 	  Transparent : (index > Opaque) ? Opaque : index );
+
+      // Set alpha
+      if ( classType() == DirectClass )
+	color->index = color_.alphaQuantum();
+
       return;
     }
 
   LastError err( MagickLib::OptionError, "Color argument is invalid" );
   err.throwException();
 }
-// FIXME: Need support for retrieving color->index (opacity)
 Magick::Color Magick::Image::pixelColor ( unsigned int x_,
 					  unsigned int y_ ) const
 {
@@ -1728,16 +1773,23 @@ Magick::Color Magick::Image::pixelColor ( unsigned int x_,
       return Color();
     }
 
+  // FIXME: should throw exception rather than truncating rows/columns
   if ( y_ > image->rows )
     y_ %= image->rows;
 
   if ( x_ > image->columns )
     x_ %= image->columns;
 
+  // If DirectClass and support a matte plane, then alpha is supported.
+  if ( matte() && classType() == DirectClass )
+    return Color ( image->pixels[ y_ * image->columns+x_ ].red,
+		   image->pixels[ y_ * image->columns+x_ ].green,
+		   image->pixels[ y_ * image->columns+x_ ].blue,
+		   image->pixels[ y_ * image->columns+x_ ].index );
+
   return Color ( image->pixels[ y_ * image->columns+x_ ].red,
-		       image->pixels[ y_ * image->columns+x_ ].green,
-		       image->pixels[ y_ * image->columns+x_ ].blue );
-  // (image->pixels[ y_*_imgRef->image()->columns+x_ ].index );
+		 image->pixels[ y_ * image->columns+x_ ].green,
+		 image->pixels[ y_ * image->columns+x_ ].blue );
 }
 
 void Magick::Image::psPageSize ( const Magick::Geometry &pageSize_ )
@@ -1749,31 +1801,10 @@ void Magick::Image::psPageSize ( const Magick::Geometry &pageSize_ )
     Magick::CloneString( &_imgRef->_image->page,
 			 _imgRef->options()->psPageSize() );
 
-//   std::string geometry = ::PostscriptGeometry( pageSize_ );
-
-//   if ( geometry.length() != 0 )
-//     {
-//       modifyImage();
-//       Magick::CloneString( &_imgRef->image()->page, geometry );
-//       return;
-//     }
-
-//   LastError err( MagickLib::OptionError, "Invalid Postscript geometry." );
-//   err.throwException();
 }
 Magick::Geometry Magick::Image::psPageSize ( void ) const
 {
   return _imgRef->options()->psPageSize();
-
-//   Image * image = _imgRef->image();
-//   if ( image->page )
-//     return(image->page);
-
-//   LastError err( MagickLib::OptionWarning,
-//                  "Image does not contain a Postscript page size" );
-//   err.throwException();
-
-//   return std::string();
 }
 
 void Magick::Image::quality ( unsigned int quality_ )
@@ -2029,23 +2060,6 @@ Magick::Image::Image ( MagickLib::Image* image_, Magick::Options* options_ )
 {
 }
 
-
-//
-// Retrieve MagickLib::Image*
-//
-MagickLib::Image*& Magick::Image::image( void )
-{
-  return _imgRef->image();
-}
-
-//
-// Retrieve Magick::Options*
-//
-Magick::Options* Magick::Image::options( void )
-{
-  return _imgRef->options();
-}
-
 //
 // Replace current image
 //
@@ -2150,46 +2164,18 @@ Magick::ImageRef::~ImageRef( void )
   _options = (Options *)NULL;
 }
 
-// Set image pointer
-void Magick::ImageRef::image ( MagickLib::Image * image_ )
+// Report Image missing error (throws exception)
+void Magick::ImageRef::imageMissing ( void ) const
 {
-  if ( _refCount > 1 )
-    {
-      LastError err( MagickLib::UndefinedError,
-		     "Internal error, update to image with _refCount > 1" );
-      err.throwException();
-    }
-  _image = image_;
+  LastError err( MagickLib::UndefinedError,
+		 "Object does not contain image." );
+  err.throwException();
 }
 
-// Access image pointer
-MagickLib::Image *& Magick::ImageRef::image ( void )
+// Report options missing error (throws exception)
+void Magick::ImageRef::optionsMissing( void ) const
 {
-  if ( !_image )
-    {
-      LastError err( MagickLib::UndefinedError,
-		     "Object does not contain image." );
-      err.throwException();
-    }
-
-  return _image;
-}
-
-// Set options pointer
-void  Magick::ImageRef::options ( Options * options_ )
-{
-  _options = options_;
-}
-
-// Get options pointer
-Magick::Options * Magick::ImageRef::options ( void )
-{
-  if ( !_options )
-    {
       Magick::LastError err( MagickLib::UndefinedError,
 			     "Object does not contain options." );
       err.throwException();
-    }
-
-  return _options;
 }

@@ -1,182 +1,125 @@
-Basic Installation
-==================
 
-   These are generic installation instructions.
 
-   The `configure' shell script attempts to guess correct values for
-various system-dependent variables used during compilation.  It uses
-those values to create a `Makefile' in each directory of the package.
-It may also create one or more `.h' files containing system-dependent
-definitions.  Finally, it creates a shell script `config.status' that
-you can run in the future to recreate the current configuration, a file
-`config.cache' that saves the results of its tests to speed up
-reconfiguring, and a file `config.log' containing compiler output
-(useful mainly for debugging `configure').
+                             Installing Magick++
 
-   If you need to do unusual things to compile the package, please try
-to figure out how `configure' could check whether to do them, and mail
-diffs or instructions to the address given in the `README' so they can
-be considered for the next release.  If at some point `config.cache'
-contains results you don't want to keep, you may remove or edit it.
+General
 
-   The file `configure.in' is used to create `configure' by a program
-called `autoconf'.  You only need `configure.in' if you want to change
-it or regenerate `configure' using a newer version of `autoconf'.
+In order to compile Magic++ you must have access to a standard C++
+implementation and have ImageMagick installed
+(ftp://ftp.wizards.dupont.com/pub/ImageMagick/). Magick++ is co-packaged as
+a subdirectory of ImageMagick as of ImageMagick version 4.2.2 and later. The
+author uses the egcs 1.1.2 version of GNU C++ which is available under UNIX
+and under the Cygwin UNIX-emulation environment for Windows. Standards
+compliant commercial C++ compilers should also work fine. Most modern C++
+compilers for PCs should also work (project files are provided for Microsoft
+Visual C++ 6.0). If your compiler does not provide an implementation of the
+STL, you may be interested in trying a port of the SGI STL implementation to
+your compiler available from the STL Adaptation Page.
 
-The simplest way to compile this package is:
+The compiler must support the following recent C++ standard features:
 
-  1. `cd' to the directory containing the package's source code and type
-     `./configure' to configure the package for your system.  If you're
-     using `csh' on an old version of System V, you might need to type
-     `sh ./configure' instead to prevent `csh' from trying to execute
-     `configure' itself.
+   * bool type
+   * string class (<string>)
+   * exceptions (<exception>)
+   * namespaces
+   * C++ versions of standard C headers (e.g. <cstring>)
+   * Standard Template Library (STL) (e.g. <list>, <vector>)
 
-     Running `configure' takes awhile.  While running, it prints some
-     messages telling which features it is checking for.
+I have personally verified that Magick++ compiles and runs using the
+following compiler/platform combinations:
 
-  2. Type `make' to compile the package.
+                            Tested Configurations
 
-  3. Optionally, type `make check' to run any self-tests that come with
-     the package.
+   Operating System        Architecture                Compiler
+ Solaris 2.6           SPARC               egcs 1.1.1
+ Solaris 2.6           SPARC               egcs 1.1.2
+ FreeBSD 2.2.7         Intel Pentium II    egcs 1.1.2
+ Windows NT 4.0 SP3    Intel Pentium II    Visual C++ Standard Edition
 
-  4. Type `make install' to install the programs and any data files and
-     documentation.
+Please let me know if you have successfully built and executed Magick++
+using a different configuration so that I can add to the table of verified
+configurations.
 
-  5. You can remove the program binaries and object files from the
-     source code directory by typing `make clean'.  To also remove the
-     files that `configure' created (so you can compile the package for
-     a different kind of computer), type `make distclean'.  There is
-     also a `make maintainer-clean' target, but that is intended mainly
-     for the package's developers.  If you use it, you may have to get
-     all sorts of other programs in order to regenerate files that came
-     with the distribution.
+UNIX
 
-Compilers and Options
-=====================
+To install the package under Unix, installation should be similar to
 
-   Some systems require unusual options for compilation or linking that
-the `configure' script does not know about.  You can give `configure'
-initial values for variables by setting them in the environment.  Using
-a Bourne-compatible shell, you can do that on the command line like
-this:
-     CC=c89 CFLAGS=-O2 LIBS=-lposix ./configure
+./configure [ --prefix=/prefix ]
+make
+make install
 
-Or on systems that have the `env' program, you can do it like this:
-     env CPPFLAGS=-I/usr/local/include LDFLAGS=-s ./configure
+The configure script uses the compiler/linker flags it obtains from the
+installed 'Magick-config' script when performing the build. The library is
+currently named similar to 'libMagick++.a' and is installed under prefix/lib
+while the headers are installed under prefix/include.
 
-Compiling For Multiple Architectures
-====================================
+To influence the options the configure script chooses, you may specify
+environment variables when running the script. For example, the command
 
-   You can compile the package for more than one kind of computer at the
-same time, by placing the object files for each architecture in their
-own directory.  To do this, you must use a version of `make' that
-supports the `VPATH' variable, such as GNU `make'.  `cd' to the
-directory where you want the object files and executables to go and run
-the `configure' script.  `configure' automatically checks for the
-source code in the directory that `configure' is in and in `..'.
 
-   If you have to use a `make' that does not supports the `VPATH'
-variable, you have to compile the package for one architecture at a time
-in the source code directory.  After you have installed the package for
-one architecture, use `make distclean' before reconfiguring for another
-architecture.
+     CXX=CC CXXFLAGS=-O2 LIBS=-lposix ./configure
 
-Installation Names
-==================
+specifies additional options to the configure script.  The following table
+shows the available options.
 
-   By default, `make install' will install the package's files in
-`/usr/local/bin', `/usr/local/man', etc.  You can specify an
-installation prefix other than `/usr/local' by giving `configure' the
-option `--prefix=PATH'.
+             Environment Variables That Effect Configure
 
-   You can specify separate installation prefixes for
-architecture-specific files and architecture-independent files.  If you
-give `configure' the option `--exec-prefix=PATH', the package will use
-PATH as the prefix for installing programs and libraries.
-Documentation and other data files will still use the regular prefix.
+ Environment Variable                  Description
 
-   In addition, if you use an unusual directory layout you can give
-options like `--bindir=PATH' to specify different values for particular
-kinds of files.  Run `configure --help' for a list of the directories
-you can set and what kinds of files go in them.
+         CXX         Name of C++ compiler (e.g. 'CC -Xa') to use
+                     compiler 'CC -Xa'
+       CXXFLAGS      Compiler flags (e.g. '-g -O2') to compile with
 
-   If the package supports it, you can cause programs to be installed
-with an extra prefix or suffix on their names by giving `configure' the
-option `--program-prefix=PREFIX' or `--program-suffix=SUFFIX'.
+       CPPFLAGS      Include paths (-I/somedir) to look for header
+                     files
+                     Library paths (-L/somedir) to look for
+                     libraries. Systems that support the notion of
+       LDFLAGS       a library run-path may additionally require
+                     -R/somedir or '-rpath /somedir' in order to
+                     find shared libraries at run time.
+         LIBS        Extra libraries (-lsomelib) required to link
 
-Optional Features
-=================
+Windows '9X, and Windows NT
 
-   Some packages pay attention to `--enable-FEATURE' options to
-`configure', where FEATURE indicates an optional part of the package.
-They may also pay attention to `--with-PACKAGE' options, where PACKAGE
-is something like `gnu-as' or `x' (for the X Window System).  The
-`README' should mention any `--enable-' and `--with-' options that the
-package recognizes.
+Visual C++
 
-   For packages that use the X Window System, `configure' can usually
-find the X include and library files automatically, but if it doesn't,
-you can use the `configure' options `--x-includes=DIR' and
-`--x-libraries=DIR' to specify their locations.
+To build using Visual C++, extract the contents of Magick++-version.zip
+(preserving sub-directories) in the ImageMagick distribution directory. This
+will create the directory Magick++-version containing the sub-directories
+'demo', 'doc', 'lib', and 'tests'. Open the workspace file Magick++.dsw and
+build the project Magick++ in order to build the library. The library is
+output to the same directory as the ImageMagick libraries.
+The available projects are:
 
-Specifying the System Type
-==========================
+     Magick++
+         the Magick++ library
+     attributes
+         test setting image attributes
+     manipulate
+         test manipulating images
+     button
+         program to create a simple rectangular button with an
+     annotation
+     flip
+         program to invert and morph images in an existing GIF
+     animation.
+     demo
+         program to demonstrate the image manipulation primitives
+     shapes
+         program to demonstrate use of the drawing primitives
 
-   There may be some features `configure' can not figure out
-automatically, but needs to determine by the type of host the package
-will run on.  Usually `configure' can figure that out, but if it prints
-a message saying it can not guess the host type, give it the
-`--host=TYPE' option.  TYPE can either be a short name for the system
-type, such as `sun4', or a canonical name with three fields:
-     CPU-COMPANY-SYSTEM
+Test and demonstration programs are built in the directory which contains
+their sources. The Magick++ library is placed in the ImageMagick/lib
+directory alongside the ImageMagick library.
 
-See the file `config.sub' for the possible values of each field.  If
-`config.sub' isn't included in this package, then this package doesn't
-need to know the host type.
+Cygwin & EGCS
 
-   If you are building compiler tools for cross-compiling, you can also
-use the `--target=TYPE' option to select the type of system they will
-produce code for and the `--build=TYPE' option to select the type of
-system on which you are compiling the package.
-
-Sharing Defaults
-================
-
-   If you want to set default values for `configure' scripts to share,
-you can create a site shell script called `config.site' that gives
-default values for variables like `CC', `cache_file', and `prefix'.
-`configure' looks for `PREFIX/share/config.site' if it exists, then
-`PREFIX/etc/config.site' if it exists.  Or, you can set the
-`CONFIG_SITE' environment variable to the location of the site script.
-A warning: not all `configure' scripts look for a site script.
-
-Operation Controls
-==================
-
-   `configure' recognizes the following options to control how it
-operates.
-
-`--cache-file=FILE'
-     Use and save the results of the tests in FILE instead of
-     `./config.cache'.  Set FILE to `/dev/null' to disable caching, for
-     debugging `configure'.
-
-`--help'
-     Print a summary of the options to `configure', and exit.
-
-`--quiet'
-`--silent'
-`-q'
-     Do not print messages saying which checks are being made.  To
-     suppress all normal output, redirect it to `/dev/null' (any error
-     messages will still be shown).
-
-`--srcdir=DIR'
-     Look for the package's source code in directory DIR.  Usually
-     `configure' can determine that directory automatically.
-
-`--version'
-     Print the version of Autoconf used to generate the `configure'
-     script, and exit.
-
-`configure' also accepts some other, not widely useful, options.
+It is possible to build both ImageMagick and Magick++ under the Cygwin
+Unix-emulation environment for Windows NT. Obtain and install Cgywin from
+http://sourceware.cygnus.com/cygwin/ and update to the latest EGCS compiler
+from http://www.xraylith.wisc.edu/~khan/software/gnu-win32/egcs.html.
+X11R6.4 libraries are available from
+http://dao.gsfc.nasa.gov/software/grads/win32/X11R6.4/.  To build using
+Cygwin and EGCS, follow the instructions for building under Unix.
+ImageMagick and Magick++ do not yet include support for building Windows
+DLLs so do not enable dynamic libraries when building ImageMagick.

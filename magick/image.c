@@ -9825,8 +9825,8 @@ Export unsigned int PingImage(ImageInfo *image_info,unsigned int *columns,
   ping_info->subimage=0;
   ping_info->subrange=0;
   image=ReadImage(ping_info);
-  DestroyImageInfo(ping_info);
   (void) strcpy(image_info->magick,ping_info->magick);
+  DestroyImageInfo(ping_info);
   if (image == (Image *) NULL)
     return(0);
   if (image_info->verbose)
@@ -13125,7 +13125,13 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   assert(image != (Image *) NULL);
   assert((image->filter >= 0) && (image->filter <= SincFilter));
   if ((columns == 0) || (rows == 0))
-    return((Image *) NULL);
+    {
+      MagickWarning(OptionWarning,"Unable to resize image",
+        "image dimensions are zero");
+      return((Image *) NULL);
+    }
+  if ((columns == image->columns) && (rows == image->rows))
+    return(CloneImage(image,columns,rows,True));
   /*
     Image must be uncompressed.
   */

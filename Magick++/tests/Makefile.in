@@ -86,15 +86,18 @@ INCLUDES = -I../lib
 #
 # Execute 'make check' to compile and run a test program
 #
-check_PROGRAMS = attributes manipulate
+check_PROGRAMS = color attributes manipulate
+
+LDADD = ../lib/libMagick++.a
 
 attributes_SOURCES = attributes.cpp
-attributes_LDADD = ../lib/libMagick++.a
+
+color_SOURCES = color.cpp
 
 manipulate_SOURCES = manipulate.cpp
-manipulate_LDADD = ../lib/libMagick++.a
 
-EXTRA_DIST = Generic.ttf test_image.jpg test_image_anim.gif attributes.dsp manipulate.dsp
+EXTRA_DIST = Generic.ttf test_image.jpg test_image_anim.gif 	attributes.dsp color.dsp manipulate.dsp
+
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
 
@@ -102,10 +105,16 @@ DEFS = @DEFS@ -I. -I$(srcdir)
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
+color_OBJECTS =  color.o
+color_LDADD = $(LDADD)
+color_DEPENDENCIES =  ../lib/libMagick++.a
+color_LDFLAGS = 
 attributes_OBJECTS =  attributes.o
+attributes_LDADD = $(LDADD)
 attributes_DEPENDENCIES =  ../lib/libMagick++.a
 attributes_LDFLAGS = 
 manipulate_OBJECTS =  manipulate.o
+manipulate_LDADD = $(LDADD)
 manipulate_DEPENDENCIES =  ../lib/libMagick++.a
 manipulate_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
@@ -119,8 +128,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(attributes_SOURCES) $(manipulate_SOURCES)
-OBJECTS = $(attributes_OBJECTS) $(manipulate_OBJECTS)
+SOURCES = $(color_SOURCES) $(attributes_SOURCES) $(manipulate_SOURCES)
+OBJECTS = $(color_OBJECTS) $(attributes_OBJECTS) $(manipulate_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -160,6 +169,10 @@ distclean-compile:
 	-rm -f *.tab.c
 
 maintainer-clean-compile:
+
+color: $(color_OBJECTS) $(color_DEPENDENCIES)
+	@rm -f color
+	$(CXXLINK) $(color_LDFLAGS) $(color_OBJECTS) $(color_LDADD) $(LIBS)
 
 attributes: $(attributes_OBJECTS) $(attributes_DEPENDENCIES)
 	@rm -f attributes
@@ -216,6 +229,12 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 attributes.o: attributes.cpp ../lib/Magick++.h ../lib/MagickImage.h \
+	../lib/MagickColor.h ../lib/MagickInclude.h \
+	../lib/MagickDrawable.h ../lib/MagickGeometry.h \
+	../lib/MagickException.h ../lib/MagickOptions.h \
+	../lib/MagickLastError.h ../lib/MagickSTL.h \
+	../lib/MagickMontage.h ../lib/MagickFunctions.h
+color.o: color.cpp ../lib/Magick++.h ../lib/MagickImage.h \
 	../lib/MagickColor.h ../lib/MagickInclude.h \
 	../lib/MagickDrawable.h ../lib/MagickGeometry.h \
 	../lib/MagickException.h ../lib/MagickOptions.h \
@@ -312,6 +331,7 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 check:
+	./color
 	./attributes
 	./manipulate
 

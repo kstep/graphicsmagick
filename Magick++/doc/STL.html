@@ -51,12 +51,12 @@ may be appended horizontally with the resulting image written to the file
 <p><tt><font color="#000066">#include &lt;list></font></tt>
 <br><tt><font color="#000066">#include &lt;Magick++.h></font></tt>
 <br><tt><font color="#000066">using namespace std;</font></tt>
-<br><tt><font color="#000066">using namespace Magick;</font></tt><tt><font color="#000066"></font></tt>
+<br><tt><font color="#000066">using namespace Magick;</font></tt>
 <p><tt><font color="#000066">int main(int /*argc*/,char **/*argv*/)</font></tt>
 <br><tt><font color="#000066">{</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp; list&lt;Image> imageList;</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp; readImages( &amp;imageList,
-"test_image_anim.gif" );</font></tt><tt><font color="#000066"></font></tt>
+"test_image_anim.gif" );</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp; Image appended;</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp; appendImages( &amp;appended,
 imageList.begin(), imageList.end() );</font></tt>
@@ -149,9 +149,9 @@ are modified in-place.</font></td>
 pop-up menu, image frames may be selected in succession. This feature is
 fully supported under X11 but may have only limited support in other environments.</font>
 <br><font size=-1><b><font color="#FF0000">Caution: </font></b>if an image
-format is is not compatable with the display visual (e.g. JPEG&nbsp;on
-a colormapped display) then the original image will be altered. Use a copy
-of the original if this is a problem.</font></td>
+format is is not compatable with the display visual (e.g. JPEG on a colormapped
+display) then the original image will be altered. Use a copy of the original
+if this is a problem.</font></td>
 </tr>
 
 <tr>
@@ -164,11 +164,13 @@ last_, const <a href="Montage.html">Montage</a> &amp;montageOpts_</font></td>
 
 <td><font size=-1>Create a composite image by combining several separate
 image frames. Multiple frames may be generated in the output container
-<i>montageImages_ </i>depending on the tile setting and the number of image
-frames montaged. Montage options are provided via the parameter <i>montageOpts_</i>.
-Options set in the first image frame (<a href="Image.html#backgroundColor">backgroundColor,</a>
-<a href="Image.html#borderColor">borderColor</a>, <a href="Image.html#matteColor">matteColor</a>,
-<a href="Image.html#penColor">penColor,</a> <a href="Image.html#font">font,</a>
+<i>montageImages_
+</i>depending
+on the tile setting and the number of image frames montaged. Montage options
+are provided via the parameter <i>montageOpts_</i>. Options set in the
+first image frame (<a href="Image.html#backgroundColor">backgroundColor,</a><a href="Image.html#borderColor">borderColor</a>,
+<a href="Image.html#matteColor">matteColor</a>,
+<a href="Image.html#penColor">penColor,</a><a href="Image.html#font">font,</a>
 and <a href="Image.html#fontPointsize">fontPointsize</a>) are also used
 as options by montageImages().</font></td>
 </tr>
@@ -209,16 +211,18 @@ the string <i>imageSpec_</i>.</font></td>
 &amp;imageSpec_, bool adjoin_ = true</font></td>
 
 <td><font size=-1>Write images in container to file specified by string
-<i>imageSpec_</i>. Set <i>adjoin_ </i>to false to write a set of image
-frames via a wildcard <i>imageSpec_ </i>(e.g. image%02d.miff).</font>
+<i>imageSpec_</i>.
+Set <i>adjoin_ </i>to false to write a set of image frames via a wildcard
+<i>imageSpec_
+</i>(e.g. image%02d.miff).</font>
 <br><font size=-1><b><font color="#FF0000">Caution: </font></b>if an image
 format is selected which is capable of supporting fewer colors than the
 original image or quantization has been requested, the original image will
 be quantized to fewer colors. Use a copy of the original if this is a problem.</font></td>
 </tr>
 </table>
-<font size=-1></font>
-<br><font size=-1></font>&nbsp;
+
+<br>&nbsp;
 <center>
 <h3>
 Magick++ Unary Function Objects</h3></center>
@@ -236,21 +240,21 @@ with a typical implementation looking similar to:
 <br><tt>&nbsp; {</tt>
 <br><tt>&nbsp;&nbsp;&nbsp; image_.contrast( _sharpen );</tt>
 <br><tt>&nbsp; }</tt></blockquote>
-where contrast is an Image method and _sharpen is an argument stored within
-the function object by its contructor. Since constructors may be polymorphic,
-a given function object may have several constructors and selects the appropriate
-Image method based on the arguments supplied.
+where <i>contrast</i> is an Image method and <i>_sharpen </i>is an argument
+stored within the function object by its contructor. Since constructors
+may be polymorphic, a given function object may have several constructors
+and selects the appropriate Image method based on the arguments supplied.
 <p>In essence, unary function objects (as provided by Magick++) simply
 provide the means to construct an object which caches arguments for later
 use by an algorithm designed for use with unary function objects. There
 is a unary function object corresponding each algorithm provided by the
 Image class and there is a contructor available compatable with each synonymous
 method in the Image class.
-<p>The unary function objects that Magick++ provides are shown in the following
-table:
-<br><font size=-1></font>&nbsp;
+<p>The unary function objects that Magick++ provides to support manipulating
+images are shown in the following table:
+<br>&nbsp;
 <table BORDER NOSAVE >
-<caption><b>Magick++ Unary Function Objects</b></caption>
+<caption><b>Magick++ Unary Function Objects For Image Manipulation</b></caption>
 
 <tr ALIGN=CENTER NOSAVE>
 <td NOSAVE><b>Function Object</b></td>
@@ -265,8 +269,7 @@ table:
 <center><a NAME="addNoiseImage"></a><font size=-1>addNoiseImage</font></center>
 </td>
 
-<td><font size=-1><a href="MagickEnumerations.html#NoiseType">NoiseType</a>
-noiseType_</font></td>
+<td><font size=-1><a href="Enumerations.html#NoiseType">NoiseType</a> noiseType_</font></td>
 
 <td><font size=-1>Add noise to image with specified noise type.</font></td>
 </tr>
@@ -277,15 +280,15 @@ noiseType_</font></td>
 </td>
 
 <td><font size=-1>string text_, const <a href="Geometry.html">Geometry</a>
-&amp;location_, <a href="MagickEnumerations.html#GravityType">unsigned
-int</a> gravity_ = NorthWestGravity</font></td>
+&amp;location_, <a href="Enumerations.html#GravityType">unsigned int</a>
+gravity_ = NorthWestGravity</font></td>
 
 <td><font size=-1>Annotate image (render text on image) at specified location
 and influenced by gravity.</font></td>
 </tr>
 
 <tr>
-<td><font size=-1>const std::string &amp;text_, <a href="MagickEnumerations.html#GravityType">unsigned
+<td><font size=-1>const std::string &amp;text_, <a href="Enumerations.html#GravityType">unsigned
 int</a> gravity_ = NorthWestGravity</font></td>
 
 <td><font size=-1>Annotate image (render text on image) at location implied
@@ -357,7 +360,7 @@ const <a href="Color.html">Color</a> &amp;penColor_</font></td>
 default, each image is commented with its file name. Use&nbsp; this&nbsp;
 method to&nbsp; assign a specific comment to the image.&nbsp; Optionally
 you can include the image filename, type, width, height, or other&nbsp;
-image&nbsp; attributes by embedding <a href="ImageFormatCharacters.html">special
+image&nbsp; attributes by embedding <a href="FormatCharacters.html">special
 format characters.</a></font></td>
 </tr>
 
@@ -367,7 +370,7 @@ format characters.</a></font></td>
 </td>
 
 <td><font size=-1>const Image &amp;compositeImage_, int xOffset_, int yOffset_,
-<a href="MagickEnumerations.html#CompositeOperator">CompositeOperator</a>
+<a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Compose an image onto another at specified
@@ -376,7 +379,7 @@ offset and using specified algorithm</font></td>
 
 <tr>
 <td><font size=-1>const Image &amp;compositeImage_, const Geometry &amp;offset_,
-<a href="MagickEnumerations.html#CompositeOperator">CompositeOperator</a>
+<a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
 </tr>
 
@@ -628,7 +631,7 @@ y_, int innerBevel_ = 0, int outerBevel_ = 0</font></td>
 <td><font size=-1>Assign a label to an image. Use this option to&nbsp;
 assign&nbsp; a&nbsp; specific label to the image. Optionally you can include
 the image filename, type, width, height, or scene number in the label by
-embedding&nbsp; <a href="ImageFormatCharacters.html">special format characters.</a>
+embedding&nbsp; <a href="FormatCharacters.html">special format characters.</a>
 If the first character of string is @, the image label is read from a file
 titled by the remaining characters in the string. When converting to Postscript,
 use this&nbsp; option to specify a header string to print above the image.</font></td>
@@ -639,8 +642,7 @@ use this&nbsp; option to specify a header string to print above the image.</font
 <center><a NAME="layerImage"></a><font size=-1>layerImage</font></center>
 </td>
 
-<td><font size=-1><a href="MagickEnumerations.html#LayerType">LayerType</a>
-layer_</font></td>
+<td><font size=-1><a href="Enumerations.html#LayerType">LayerType</a> layer_</font></td>
 
 <td><font size=-1>Extract layer from image. Use this option to extract
 a particular layer from&nbsp; the image.&nbsp; <i>MatteLayer</i>,&nbsp;
@@ -680,7 +682,7 @@ an image file with this option.</font></td>
 </td>
 
 <td><font size=-1>const <a href="Color.html">Color</a> &amp;target_, unsigned
-int matte_, int x_, int y_, <a href="MagickEnumerations.html#PaintMethod">PaintMethod</a>
+int matte_, int x_, int y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a>
 method_</font></td>
 
 <td><font size=-1>Floodfill designated area with a matte value</font></td>
@@ -1026,6 +1028,820 @@ to transparent.</font></td>
 <td><font size=-1>Zoom image to specified size.</font></td>
 </tr>
 </table>
-<font size=-1></font>
+
+<p>Function objects are available to set attributes on image frames which
+are equivalent to methods in the Image object. These function objects allow
+setting an option across a range of image frames using f<tt>or_each()</tt>.
+<p>The following code is an example of how the color 'red' may be set to
+transparent in a GIF animation:
+<p><tt><font color="#000066">list&lt;image> images;</font></tt>
+<br><tt><font color="#000066">readImages( &amp;images, "animation.gif"
+);</font></tt>
+<br><tt><font color="#000066">for_each ( images.begin(), images.end(),
+transparentImage( "red" )&nbsp; );</font></tt>
+<br><tt><font color="#000066">writeImages( images.begin(), images.end(),
+"animation.gif" );</font></tt>
+<p>The available function objects for setting image attributes are
+<br>&nbsp;
+<table BORDER NOSAVE >
+<caption>Image Image Attributes</caption>
+
+<tr>
+<td>
+<center><b>Attribute</b></center>
+</td>
+
+<td>
+<center><b>Property</b>
+<br><b>Of</b></center>
+</td>
+
+<td>
+<center><b>Type</b></center>
+</td>
+
+<td>
+<center><b>Constructor Signature(s)</b></center>
+</td>
+
+<td>
+<center><b>Description</b></center>
+</td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="adjoinImage"></a><font size=-1>adjoinImage</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>bool</font></td>
+
+<td><font size=-1>bool flag_</font></td>
+
+<td><font size=-1>Join images into a single multi-image file.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="antiAlias"></a><font size=-1>antiAliasImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>bool</font></td>
+
+<td><font size=-1>bool flag_</font></td>
+
+<td><font size=-1>Control antialiasing of rendered Postscript and Postscript
+or TrueType fonts. Enabled by default.</font></td>
+</tr>
+
+<tr NOSAVE>
+<td>
+<center><a NAME="animationDelay"></a><font size=-1>animation-</font>
+<br><font size=-1>DelayImage</font></center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td NOSAVE><font size=-1>unsigned int (0 to 65535)</font></td>
+
+<td NOSAVE><font size=-1>unsigned int delay_</font></td>
+
+<td><font size=-1>Time in 1/100ths of a second (0 to 65535) which must
+expire before displaying the next image in an animated sequence. This option
+is useful for regulating the animation of a sequence&nbsp; of GIF images
+within Netscape.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="animationIterations"></a><font size=-1>animation-</font>
+<br><font size=-1>IterationsImage</font></center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>unsigned int iterations_</font></td>
+
+<td><font size=-1>Number of iterations to loop an animation (e.g. Netscape
+loop extension) for.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="backgroundColor"></a><font size=-1>background-</font>
+<br><font size=-1>ColorImage</font></center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1><a href="Color.html">Color</a></font></td>
+
+<td><font size=-1>const <a href="Color.html">Color</a> &amp;color_</font></td>
+
+<td><font size=-1>Image background color</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="backgroundTexture"></a><font size=-1>background-</font>
+<br><font size=-1>TextureImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>string</font></td>
+
+<td><font size=-1>const string &amp;texture_</font></td>
+
+<td><font size=-1>Image to use as background texture.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="borderColor"></a><font size=-1>borderColor-</font>
+<br><font size=-1>Image</font></center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1><a href="Color.html">Color</a></font></td>
+
+<td><font size=-1>&nbsp;const <a href="Color.html">Color</a> &amp;color_</font></td>
+
+<td><font size=-1>Image border color</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="boxColor"></a><font size=-1>boxColorImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1><a href="Color.html">Color</a></font></td>
+
+<td><font size=-1>const <a href="Color.html">Color</a> &amp;boxColor_</font></td>
+
+<td><font size=-1>Base color that annotation text is rendered on.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="chromaBluePrimary"></a><font size=-1>chroma-</font>
+<br><font size=-1>BluePrimaryImage</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>float x &amp; y</font></td>
+
+<td><font size=-1>float x_, float y_</font></td>
+
+<td><font size=-1>Chromaticity blue primary point (e.g. x=0.15, y=0.06)</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="chromaGreenPrimary"></a><font size=-1>chroma-</font>
+<br><font size=-1>GreenPrimaryImage</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>float x &amp; y</font></td>
+
+<td><font size=-1>float x_, float y_</font></td>
+
+<td><font size=-1>Chromaticity green primary point (e.g. x=0.3, y=0.6)</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="chromaRedPrimary"></a><font size=-1>chroma-</font>
+<br><font size=-1>RedPrimaryImage</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>float x &amp; y</font></td>
+
+<td><font size=-1>float x_, float y_</font></td>
+
+<td><font size=-1>Chromaticity red primary point (e.g. x=0.64, y=0.33)</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="chromaWhitePoint"></a><font size=-1>chroma-</font>
+<br><font size=-1>WhitePointImage</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>float x &amp; y</font></td>
+
+<td><font size=-1>float x_, float y_</font></td>
+
+<td><font size=-1>Chromaticity white point (e.g. x=0.3127, y=0.329)</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="colorFuzz"></a><font size=-1>colorFuzzImage</font></center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>unsigned int fuzz_</font></td>
+
+<td><font size=-1>Colors within this distance are considered equal. A number
+of algorithms search for a target&nbsp; color. By default the color must
+be exact. Use this option to match colors that are close to the target
+color in RGB space.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="colorMap"></a><font size=-1>colorMapImage</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1><a href="Color.html">Color</a></font></td>
+
+<td><font size=-1>unsigned int index_, const <a href="Color.html">Color</a>
+&amp;color_</font></td>
+
+<td><font size=-1>Color at color-pallet index.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="compressType"></a><font size=-1>compressType-</font>
+<br><font size=-1>Image</font></center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1><a href="Enumerations.html#CompressionType">CompressionType</a></font></td>
+
+<td><font size=-1><a href="Enumerations.html#CompressionType">CompressionType</a>
+compressType_</font></td>
+
+<td><font size=-1>Image compresion type. The default is the compression
+type of the specified image file.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="density"></a><font size=-1>densityImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1><a href="Geometry.html">Geometry</a>&nbsp; (default 72x72)</font></td>
+
+<td><font size=-1>const <a href="Geometry.html">Geometry</a> &amp;density_</font></td>
+
+<td><font size=-1>Vertical and horizontal resolution in pixels of the image.
+This option specifies an image density when decoding a Postscript or Portable
+Document page. Often used with <i>psPageSize</i>.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="depth"></a><font size=-1>depthImage</font></center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1>&nbsp;unsigned int (8 or 16)</font></td>
+
+<td><font size=-1>unsigned int depth_</font></td>
+
+<td><font size=-1>Image depth. Used to specify the bit depth when reading
+or writing&nbsp; raw images. Defaults to the quantum depth that ImageMagick
+is compiled with.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="fileName"></a><font size=-1>fileNameImage</font></center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1>string</font></td>
+
+<td><font size=-1>const string &amp;fileName_</font></td>
+
+<td><font size=-1>Image file name.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="filterType"></a><font size=-1>filterTypeImage</font></center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1><a href="Enumerations.html#FilterType">FilterType</a></font></td>
+
+<td><font size=-1><a href="Enumerations.html#FilterType">FilterType</a>
+filterType_</font></td>
+
+<td><font size=-1>Filter to use when resizing image. The reduction filter
+employed has a sigificant effect on the time required to resize an image
+and the resulting quality. The default filter is <i>Lanczos</i> which has
+been shown to produce good results when reducing images.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="font"></a><font size=-1>fontImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>string</font></td>
+
+<td><font size=-1>const string &amp;font_</font></td>
+
+<td><font size=-1>Text rendering font. If the font is a fully qualified
+X server font name, the font is obtained from an X&nbsp; server. To use
+a TrueType font, precede the TrueType filename with an @. Otherwise, specify&nbsp;
+a&nbsp; Postscript font name (e.g. "helvetica").</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="fontPointsize"></a><font size=-1>fontPointsize-</font>
+<br><font size=-1>Image</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>unsigned int pointSize_</font></td>
+
+<td><font size=-1>Text rendering font point size</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="gifDisposeMethod"></a><font size=-1>gifDispose-</font>
+<br><font size=-1>MethodImage</font></center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1>unsigned int</font>
+<br><font size=-1>{ 0 = Disposal not specified,</font>
+<br><font size=-1>1 = Do not dispose of graphic,</font>
+<br><font size=-1>3 = Overwrite graphic with background color,</font>
+<br><font size=-1>4 = Overwrite graphic with previous graphic. }</font></td>
+
+<td><font size=-1>unsigned int disposeMethod_</font></td>
+
+<td><font size=-1>GIF disposal method. This option is used to control how
+successive frames are rendered (how the preceding frame is disposed of)
+when creating a GIF animation.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="interlaceType"></a><font size=-1>interlace-</font>
+<br><font size=-1>TypeImage</font></center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1><a href="Enumerations.html#InterlaceType">InterlaceType</a></font></td>
+
+<td><font size=-1><a href="Enumerations.html#InterlaceType">InterlaceType</a>
+interlace_</font></td>
+
+<td><font size=-1>The type of interlacing scheme (default <i>NoInterlace</i>).
+This option is used to specify the type of&nbsp; interlacing scheme&nbsp;
+for&nbsp; raw&nbsp; image formats such as RGB or YUV. <i>NoInterlace</i>
+means do not&nbsp; interlace, <i>LineInterlace</i> uses scanline interlacing,
+and <i>PlaneInterlace</i> uses plane interlacing. <i>PartitionInterlace</i>
+is like <i>PlaneInterlace</i> except the&nbsp; different planes&nbsp; are
+saved&nbsp; to individual files (e.g.&nbsp; image.R, image.G, and image.B).
+Use <i>LineInterlace</i> or <i>PlaneInterlace</i> to create an interlaced
+GIF or progressive JPEG image.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="label"></a><font size=-1>labelImage</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>string</font></td>
+
+<td><font size=-1>const string &amp;label_</font></td>
+
+<td><font size=-1>Image label</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="lineWidth"></a><font size=-1>lineWidthImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>unsigned int lineWidth_</font></td>
+
+<td><font size=-1>Line width for drawing lines, circles, ellipses, etc.
+See <a href="Drawable.html">Drawable</a>.</font></td>
+</tr>
+
+<tr NOSAVE>
+<td>
+<center><a NAME="magick"></a><font size=-1>magickImage</font></center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1>string</font></td>
+
+<td NOSAVE><font size=-1>&nbsp;const string &amp;magick_</font></td>
+
+<td><font size=-1>Get image format (e.g. "GIF")</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="matte"></a><font size=-1>matteImage</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>bool</font></td>
+
+<td><font size=-1>bool matteFlag_</font></td>
+
+<td><font size=-1>True if the image has transparency. If set True, store
+matte channel if&nbsp; the image has one otherwise create an opaque one.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="matteColor"></a><font size=-1>matteColorImage</font></center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1><a href="Color.html">Color</a></font></td>
+
+<td><font size=-1>const <a href="Color.html">Color</a> &amp;matteColor_</font></td>
+
+<td><font size=-1>Image matte (transparent) color</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="monochrome"></a><font size=-1>monochrome-</font>
+<br><font size=-1>Image</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>bool</font></td>
+
+<td><font size=-1>bool flag_</font></td>
+
+<td><font size=-1>Transform the image to black and white</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="penColor"></a><font size=-1>penColorImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1><a href="Color.html">Color</a></font></td>
+
+<td><font size=-1>const <a href="Color.html">Color</a> &amp;penColor_</font></td>
+
+<td><font size=-1>Pen color to use when annotating on or drawing on image.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="penTexture"></a><font size=-1>penTextureImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>const Image &amp; penTexture_</font></td>
+
+<td><font size=-1>Texture image to paint with (similar to penColor).</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="pixelColor"></a><font size=-1>pixelColorImage</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1><a href="Color.html">Color</a></font></td>
+
+<td><font size=-1>unsigned int x_, unsigned int y_, const <a href="Color.html">Color</a>
+&amp;color_</font></td>
+
+<td><font size=-1>Get/set pixel color at location x &amp; y.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="psPageSize"></a><font size=-1>psPageSizeImage</font></center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1><a href="Geometry.html#PostscriptPageSize">Geometry</a></font></td>
+
+<td><font size=-1>const <a href="Geometry.html#PostscriptPageSize">Geometry</a>
+&amp;pageSize_</font></td>
+
+<td><font size=-1>Postscript page size. Use this&nbsp; option to specify
+the dimensions&nbsp; of the Postscript page in dots per inch or a TEXT
+page in pixels. This option is typically used in concert with <i>density</i>.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="quality"></a><font size=-1>qualityImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>unsigned int (0 to 100)</font></td>
+
+<td><font size=-1>unsigned int quality_</font></td>
+
+<td><font size=-1>JPEG/MIFF/PNG compression level (default 75).</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="quantizeColors"></a><font size=-1>quantize-</font>
+<br><font size=-1>ColorsImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>unsigned int colors_</font></td>
+
+<td><font size=-1>Preferred number of colors in the image. The actual number
+of colors in the image may be less than your request, but never more. Images
+with less unique colors than specified with this option will have any duplicate
+or unused colors removed.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="quantizeColorSpace"></a><font size=-1>quantize-</font>
+<br><font size=-1>ColorSpaceImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a></font></td>
+
+<td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a>
+colorSpace_</font></td>
+
+<td><font size=-1>Colorspace to quantize colors in (default RGB). Empirical
+evidence suggests that distances in color spaces such as YUV or YIQ correspond
+to perceptual color differences more closely than do distances in RGB space.
+These color spaces may give better results when color reducing an image.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="quantizeDither"></a><font size=-1>quantize-</font>
+<br><font size=-1>DitherImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>bool</font></td>
+
+<td><font size=-1>bool flag_</font></td>
+
+<td><font size=-1>Apply Floyd/Steinberg error diffusion to the image. The
+basic strategy of dithering is to&nbsp; trade&nbsp; intensity resolution&nbsp;
+for&nbsp; spatial&nbsp; resolution&nbsp; by&nbsp; averaging the intensities&nbsp;
+of&nbsp; several&nbsp; neighboring&nbsp; pixels. Images which&nbsp; suffer&nbsp;
+from&nbsp; severe&nbsp; contouring&nbsp; when&nbsp; reducing colors can
+be improved with this option. The quantizeColors or monochrome option must
+be set for this option to take effect.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="quantizeTreeDepth"></a><font size=-1>quantize-</font>
+<br><font size=-1>TreeDepthImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>unsigned int (0 to 8)</font></td>
+
+<td><font size=-1>unsigned int treeDepth_</font></td>
+
+<td><font size=-1>Depth of the quantization color classification tree.
+Values of 0 or 1 allow selection of the optimal tree depth for the color
+reduction algorithm. Values between 2 and 8 may be used to manually adjust
+the tree depth.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="renderingIntent"></a><font size=-1>rendering-</font>
+<br><font size=-1>IntentImage</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1><a href="Enumerations.html#RenderingIntent">RenderingIntent</a></font></td>
+
+<td><font size=-1><a href="Enumerations.html#RenderingIntent">RenderingIntent</a>
+render_</font></td>
+
+<td><font size=-1>The type of rendering intent</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="resolutionUnits"></a><font size=-1>resolution-</font>
+<br><font size=-1>UnitsImage</font></center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1><a href="Enumerations.html#ResolutionType">ResolutionType</a></font></td>
+
+<td><font size=-1><a href="Enumerations.html#ResolutionType">ResolutionType</a>
+units_</font></td>
+
+<td><font size=-1>Units of image resolution</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="scene"></a><font size=-1>sceneImage</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>unsigned int scene_</font></td>
+
+<td><font size=-1>Image scene number</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="size"></a><font size=-1>sizeImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1><a href="Geometry.html">Geometry</a></font></td>
+
+<td><font size=-1>const <a href="Geometry.html">Geometry</a> &amp;geometry_</font></td>
+
+<td><font size=-1>Width and height of a raw image (an image which does
+not support width and height information).&nbsp; Size may also be used
+to affect the image size read from a multi-resolution format (e.g. Photo
+CD, JBIG, or JPEG.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="subImage"></a><font size=-1>subImageImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>unsigned int subImage_</font></td>
+
+<td><font size=-1>Subimage of an image sequence</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="subRange"></a><font size=-1>subRangeImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>unsigned int subRange_</font></td>
+
+<td><font size=-1>Number of images relative to the base image</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="tileName"></a><font size=-1>tileNameImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>string</font></td>
+
+<td><font size=-1>const string &amp;tileName_</font></td>
+
+<td><font size=-1>Tile name</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="verbose"></a><font size=-1>verboseImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>bool</font></td>
+
+<td><font size=-1>bool verboseFlag_</font></td>
+
+<td><font size=-1>Print detailed information about the image</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="view"></a><font size=-1>viewImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>string</font></td>
+
+<td><font size=-1>const string &amp;view_</font></td>
+
+<td><font size=-1>FlashPix viewing parameters.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="x11Display"></a><font size=-1>x11DisplayImage</font></center>
+</td>
+
+<td><font size=-1>Options</font></td>
+
+<td><font size=-1>string (e.g. "hostname:0.0")</font></td>
+
+<td><font size=-1>const string &amp;display_</font></td>
+
+<td><font size=-1>X11 display to display to, obtain fonts from, or to capture
+image from</font></td>
+</tr>
+</table>
+
+<br>&nbsp;
 </body>
 </html>

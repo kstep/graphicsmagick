@@ -91,9 +91,10 @@ namespace Magick
     
     void            fileName ( const std::string &fileName_ );
     std::string     fileName ( void ) const;
-    
-    void            filterType ( FilterType filterType_ );
-    FilterType      filterType ( void ) const;
+
+    // ImageInfo filter is no longer used by ImageMagick
+//     void            filterType ( FilterType filterType_ );
+//     FilterType      filterType ( void ) const;
     
     void            font ( const std::string &font_ );
     std::string     font ( void ) const;
@@ -192,4 +193,201 @@ namespace Magick
     MagickLib::Image* _penTexture;
   };
 } // namespace Magick
+
+//
+// Inlines
+//
+
+inline void Magick::Options::antiAlias( bool flag_ )
+{
+  _imageInfo->antialias = static_cast<unsigned int>( flag_ );
+}
+inline bool Magick::Options::antiAlias( void )
+{
+  // Manually cast to bool to avoid warnings
+  // and in case bool is only emulated.
+  if ( _imageInfo->antialias )
+    return true;
+
+  return false;
+}
+
+inline void Magick::Options::adjoin ( bool flag_ )
+{
+  _imageInfo->adjoin = (unsigned int) flag_;
+}
+inline bool Magick::Options::adjoin ( void ) const
+{
+  if ( _imageInfo->adjoin )
+    return true;
+  else
+    return false;
+}
+
+inline void Magick::Options::colorFuzz ( unsigned int fuzz_ )
+{
+  _imageInfo->fuzz = fuzz_;
+}
+inline unsigned int Magick::Options::colorFuzz ( void ) const
+{
+  return _imageInfo->fuzz;
+}
+
+inline void Magick::Options::compressType ( CompressionType compressType_ )
+{
+  _imageInfo->compression = compressType_;
+}
+inline Magick::CompressionType Magick::Options::compressType ( void ) const
+{
+  return (Magick::CompressionType)_imageInfo->compression;
+}
+
+inline void Magick::Options::depth ( unsigned int depth_ )
+{
+  _imageInfo->depth = depth_;
+}
+inline unsigned int Magick::Options::depth ( void ) const
+{
+  return _imageInfo->depth;
+}
+
+inline void Magick::Options::fileDescriptor ( FILE *file_ )
+{
+  _imageInfo->file = file_;
+}
+inline FILE * Magick::Options::fileDescriptor ( void ) const
+{
+  return _imageInfo->file;
+}
+
+inline void Magick::Options::fontPointsize ( unsigned int pointSize_ )
+{
+  _imageInfo->pointsize = pointSize_;
+}
+inline unsigned int Magick::Options::fontPointsize ( void ) const
+{
+  return _imageInfo->pointsize;
+}
+
+inline void Magick::Options::interlaceType ( Magick::InterlaceType interlace_ )
+{
+  _imageInfo->interlace = interlace_;
+}
+inline Magick::InterlaceType Magick::Options::interlaceType ( void ) const
+{
+  return (Magick::InterlaceType)_imageInfo->interlace;
+}
+
+
+// Linewidth for drawing lines, circles, ellipses, etc.
+inline void Magick::Options::lineWidth ( unsigned int lineWidth_ )
+{
+  _imageInfo->linewidth = lineWidth_;
+}
+inline unsigned int Magick::Options::lineWidth ( void ) const
+{
+  return _imageInfo->linewidth;
+}
+
+inline void Magick::Options::monochrome ( bool monochromeFlag_ )
+{
+  _imageInfo->monochrome = monochromeFlag_;
+}
+inline bool Magick::Options::monochrome ( void ) const
+{
+  if ( _imageInfo->monochrome )
+    return true;
+
+    return false;
+}
+
+inline void Magick::Options::quantizeColors ( unsigned int colors_ )
+{
+  _quantizeInfo->number_colors = colors_;
+}
+inline unsigned int Magick::Options::quantizeColors ( void ) const
+{
+  return _quantizeInfo->number_colors;
+}
+
+inline void Magick::Options::quantizeColorSpace ( Magick::ColorspaceType colorSpace_ )
+{
+  _quantizeInfo->colorspace = colorSpace_;
+}
+inline Magick::ColorspaceType Magick::Options::quantizeColorSpace ( void ) const
+{
+  return (Magick::ColorspaceType)_quantizeInfo->colorspace;
+}
+
+inline void Magick::Options::quantizeDither ( bool ditherFlag_ )
+{
+  _imageInfo->dither = ditherFlag_;
+  _quantizeInfo->dither = ditherFlag_;
+}
+inline bool Magick::Options::quantizeDither ( void ) const
+{
+  if ( _imageInfo->dither )
+    return true;
+
+    return false;
+}
+
+inline void Magick::Options::quantizeTreeDepth ( unsigned int treeDepth_ )
+{
+  _quantizeInfo->tree_depth = treeDepth_;
+}
+inline unsigned int Magick::Options::quantizeTreeDepth ( void ) const
+{
+  return _quantizeInfo->tree_depth;
+}
+
+inline void Magick::Options::quality ( unsigned int quality_ )
+{
+  _imageInfo->quality = quality_;
+}
+inline unsigned int Magick::Options::quality ( void ) const
+{
+  return _imageInfo->quality;
+}
+
+inline void Magick::Options::subImage ( unsigned int subImage_ )
+{
+  _imageInfo->subimage = subImage_;
+}
+inline unsigned int Magick::Options::subImage ( void ) const
+{
+  return _imageInfo->subimage;
+}
+
+inline void Magick::Options::subRange ( unsigned int subRange_ )
+{
+  _imageInfo->subrange = subRange_;
+}
+inline unsigned int Magick::Options::subRange ( void ) const
+{
+  return _imageInfo->subrange;
+}
+
+inline void Magick::Options::verbose ( bool verboseFlag_ )
+{
+  _imageInfo->verbose = verboseFlag_;
+}
+inline bool Magick::Options::verbose ( void ) const
+{
+  if ( _imageInfo->verbose )
+    return true;
+
+  return false;
+}
+
+inline MagickLib::ImageInfo * Magick::Options::imageInfo( void )
+{
+  return _imageInfo;
+}
+
+inline MagickLib::QuantizeInfo * Magick::Options::quantizeInfo( void )
+{
+  return _quantizeInfo;
+}
+
 #endif // Options_header

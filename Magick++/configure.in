@@ -9,8 +9,8 @@ dnl Written by Bob Friesenhahn, bfriesen@simple.dallas.tx.us
 AC_INIT(lib/Magick++.h)
 AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE(Magick++, 0.8, ' ')
-TESTED_MAGICK_VERSION="4.2.2"
+AM_INIT_AUTOMAKE(Magick++, 0.8.1, ' ')
+TESTED_MAGICK_VERSION="4.2.3"
 
 # Check for ImageMagick release and warn if not what we expect
 AC_MSG_CHECKING(ImageMagick version)
@@ -52,14 +52,6 @@ AM_WITH_DMALLOC
 #
 # Obtain ImageMagick compilation options from installed Magick-config script.
 #
-
-AC_MSG_CHECKING(C compiler flags)
-CFLAGS=`Magick-config --cflags`" $CFLAGS"
-AC_MSG_RESULT("$CFLAGS")
-
-AC_MSG_CHECKING(C++ compiler flags)
-CXXFLAGS=`Magick-config --cflags`" $CXXFLAGS"
-AC_MSG_RESULT("$CXXFLAGS")
 
 AC_MSG_CHECKING(pre-processor flags)
 CPPFLAGS="-DHAVE_CONFIG_H "`Magick-config --cppflags`" $CPPFLAGS"

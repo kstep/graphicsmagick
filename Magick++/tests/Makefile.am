@@ -10,16 +10,20 @@ INCLUDES = -I../lib
 #
 # Execute 'make check' to compile and run a test program
 #
-check_PROGRAMS = attributes manipulate
+check_PROGRAMS = color attributes manipulate
+
+LDADD = ../lib/libMagick++.a
 
 attributes_SOURCES = attributes.cpp
-attributes_LDADD = ../lib/libMagick++.a
+
+color_SOURCES = color.cpp
 
 manipulate_SOURCES = manipulate.cpp
-manipulate_LDADD = ../lib/libMagick++.a
 
-EXTRA_DIST = Generic.ttf test_image.jpg test_image_anim.gif attributes.dsp manipulate.dsp
+EXTRA_DIST = Generic.ttf test_image.jpg test_image_anim.gif \
+	attributes.dsp color.dsp manipulate.dsp
 
 check:
+	./color
 	./attributes
 	./manipulate

@@ -1,0 +1,39 @@
+1999-04-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/MagickImage.cpp (montageGeometry): Return Magick::Geometry
+ 	rather than std::string.
+
+1999-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/MagickColor.cpp (alpha): Added support for setting alpha via
+ 	scaled-double to the Color class.  The new method name is 'alpha'.
+
+1999-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/MagickColor.cpp: Added support for setting an alpha value
+ 	(unscaled Quantum only) for use on DirectColor images that have
+ 	matte enabled.  This requires ImageMagick 4.2.2 dated April 13,
+ 	1999 or later to compile since Cristy added a special flag to
+ 	allow testing to see if the user has specified an opacity value:
+ 	"I added XColorFlags to magick/classify.h.  If DoMatte is set in
+ 	color->flags then the opacity value is valid in color->pixel."
+
+1999-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* demo/flip.cpp (main): New file.  Demonstrates use of flipImage
+ 	function object as well as morphImages algorithm.
+
+1999-04-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/color.cpp : New file to support testing the Magick::Color
+ 	classes.
+
+	* lib/MagickOptions.cpp: The ImageInfo filter member is now
+ 	ignored by ImageMagick (as of ImageMagick 4.2.2 April 10, 1998) so
+ 	support for setting it is removed. The Image filter member is
+ 	still updated. According to Cristy, this ImageMagick version
+ 	removes automatic sharpening of resized images.  The blur member
+ 	is added to the Image structure. A blur value < 1 causes the image
+ 	to be sharpened when resizing while a value > 1 leaves the image
+ 	blurry.  Magick++ does not yet support the blur member.
+

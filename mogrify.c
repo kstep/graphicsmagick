@@ -57,6 +57,7 @@
 %    -antialias           remove pixel-aliasing
 %    -blur factor         apply a filter to blur the image
 %    -border geometry     surround image with a border of color
+%    -bordercolor color   border color
 %    -box color           color for annotation bounding box
 %    -charcoal factor     simulate a charcoal drawing
 %    -colorize value      colorize the image with the pen color
@@ -179,6 +180,7 @@ static void Usage(const char *client_name)
       "-antialias           remove pixel-aliasing",
       "-blur factor         apply a filter to blur the image",
       "-border geometry     surround image with a border of color",
+      "-bordercolor color   border color",
       "-box color           color for annotation bounding box",
       "-charcoal factor     simulate a charcoal drawing",
       "-colorize value      colorize the image with the pen color",

@@ -33,17 +33,19 @@ and <i><a href="#Magick::MontageFramed">Magick::MontageFramed</a></i>.
 <a NAME="PlainMontages"></a>Plain Montages</h3></center>
 <a NAME="Magick::Montage"></a><i>Magick::Montage</i> is the base class
 to provide montage options and provides methods to set all options required
-to render simple (un-framed) montages. See <a href="#Magick::MontageFramed"><i>Magick::MontageFramed</i>
-</a>if you would like to create a framed montage.
+to render simple (un-framed) montages. See <i><a href="#Magick::MontageFramed">Magick::MontageFramed</a></i>if
+you would like to create a framed montage.
 <p>Un-framed thumbnails consist of four components: the thumbnail image,
 the thumbnail border, an optional thumbnail shadow, and an optional thumbnail
 label area.
 <br>&nbsp;
-<p><br>
+<br>&nbsp;
+<br>
+<br>
 <center>
 <p><img SRC="thumbnail-anatomy-plain.jpg" height=327 width=309 align=CENTER></center>
 
-<br>&nbsp;
+<p><br>
 <table BORDER WIDTH="100%" NOSAVE >
 <caption><b>Montage Methods</b></caption>
 
@@ -103,7 +105,7 @@ thumbnails are imaged upon.</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1><a href="MagickEnumerations.html#CompositeOperator">CompositeOperator</a>
+<td><font size=-1><a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_</font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Specifies the image composition algorithm
@@ -114,7 +116,7 @@ for images without transparency.</font></td>
 </tr>
 
 <tr>
-<td><font size=-1><a href="MagickEnumerations.html#CompositeOperator">CompositeOperator</a></font></td>
+<td><font size=-1><a href="Enumerations.html#CompositeOperator">CompositeOperator</a></font></td>
 
 <td><font size=-1>void</font></td>
 </tr>
@@ -173,7 +175,7 @@ thumbnail.</font></td>
 </tr>
 
 <tr>
-<td><font size=-1>Geometry</font></td>
+<td><font size=-1><a href="Geometry.html">Geometry</a></font></td>
 
 <td><font size=-1>void</font></td>
 </tr>
@@ -208,7 +210,7 @@ dimension than the geometry, then it is placed according to this specification.<
 <td><font size=-1>std::string label_</font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Specifies the format used for the
-image label.&nbsp; Special <a href="ImageFormatCharacters.html">format
+image label.&nbsp; Special <a href="FormatCharacters.html">format
 characters</a> may be embedded in the format string to include information
 about the image.</font></td>
 </tr>
@@ -346,8 +348,9 @@ in the rendered thumbnail colors.</font></td>
 the means to specify montage options when it is desired to have decorative
 frames around the image thumbnails.
 <i>MontageFramed</i> inherits from
-<i>Montage</i> and therefore provides all the methods of <i>Montage</i>
-as well as those shown in the table "MontageFramed Methods".
+<i>Montage</i>
+and therefore provides all the methods of <i>Montage</i> as well as those
+shown in the table "MontageFramed Methods".
 <p>Framed thumbnails consist of four components: the thumbnail image, the
 thumbnail frame, the thumbnail border, an optional thumbnail shadow, and
 an optional thumbnail label area.
@@ -357,7 +360,7 @@ an optional thumbnail label area.
 <center>
 <p><img SRC="thumbnail-anatomy-framed.jpg" height=345 width=350 align=CENTER></center>
 
-<br>&nbsp;
+<p><br>
 <table BORDER WIDTH="100%" NOSAVE >
 <caption><b>MontageFramed Methods</b></caption>
 

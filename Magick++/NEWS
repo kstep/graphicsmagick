@@ -1,3 +1,6 @@
+(0.8.1)
+  * Added support for setting alpha in Magick::Color
+  * Set/get color alpha in Magick::Image::pixelColor() for DirectClass images.
 (0.8)
   * Transitioned to Beta
   * Improved Microsoft Visual C++ build environment.

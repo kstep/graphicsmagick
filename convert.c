@@ -60,6 +60,7 @@
 %    -average             average an image sequence
 %    -blur factor         apply a filter to blur the image
 %    -border geometry     surround image with a border of color
+%    -bordercolor color   border color
 %    -box color           color for annotation bounding box
 %    -charcoal factor     simulate a charcoal drawing
 %    -coalesce            merge a sequence of images
@@ -250,6 +251,7 @@ static void Usage(const char *client_name)
       "-average             average an image sequence",
       "-blur factor         apply a filter to blur the image",
       "-border geometry     surround image with a border of color",
+      "-bordercolor color   border color",
       "-box color           color for annotation bounding box",
       "-charcoal factor     simulate a charcoal drawing",
       "-coalesce            merge a sequence of images",

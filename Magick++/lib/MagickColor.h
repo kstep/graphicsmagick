@@ -32,7 +32,10 @@ namespace Magick
   {
     friend class MagickImage;
   public:
-    Color ( Quantum red_, Quantum green_, Quantum blue_ );
+    Color ( Quantum red_,
+	    Quantum green_,
+	    Quantum blue_,
+	    Quantum alpha_ = MaxRGB );
     Color ( const std::string x11color_ );
     Color ( const char * x11color_ );
     Color ( void );
@@ -49,6 +52,24 @@ namespace Magick
     // Blue color (0 to MaxRGB)
     void           blueQuantum ( Quantum blue_ );
     Quantum        blueQuantum ( void ) const;
+
+    // Alpha level (0 = transparent, 1 = opaque)
+    // Meaning of index in RunlengthPacket
+    // Q: Is the normal setting of this parameter Opaque?
+    // A: The values in index are colormapped indexes if the class
+    // value is PseudoClass.  It is considered opacity values if the
+    // class value is DirectClass *and* the matte variable is set to
+    // true.  Index is K if the colorspace is CMYK. In the case of
+    // PseudoClass images, The index variable points to an entry of
+    // the colormap member to get it's color.  If index is 201, the
+    // color is obtained from entry 201 of the colormap member.
+
+    void           alphaQuantum ( Quantum alpha_ );
+    Quantum        alphaQuantum ( void ) const;
+
+    // Scaled version of alpha for use in sub-classes
+    void           alpha ( double alpha_ );
+    double         alpha ( void ) const;
         
     // Does object contain valid color?
     void           isValid ( bool valid_ );
@@ -67,6 +88,7 @@ namespace Magick
     Quantum        _red;
     Quantum        _green;
     Quantum        _blue;
+    Quantum	   _alpha;
     bool           _isValid; // Set true if usable object
   };
 
@@ -169,5 +191,163 @@ namespace Magick
     double         y ( void ) const;
   };
 } // namespace Magick
+
+//
+// Inlines
+//
+
+
+//
+// Color
+//
+
+inline Magick::Color::Color ( Quantum red_,
+		       Quantum green_,
+		       Quantum blue_,
+		       Quantum alpha_ )
+  : _red(0),
+    _green(0),
+    _blue(0),
+    _alpha(MaxRGB),
+    _isValid(false)
+{
+  redQuantum   ( red_   );
+  greenQuantum ( green_ );
+  blueQuantum  ( blue_  );
+  alphaQuantum ( alpha_ );
+}
+
+inline Magick::Color::Color ( const std::string x11color_ )
+  : _red(0),
+    _green(0),
+    _blue(0),
+    _alpha(MaxRGB),
+    _isValid(false)
+{
+  // Use operator = implementation
+  *this = x11color_;
+}
+
+inline Magick::Color::Color ( const char * x11color_ )
+  : _red(0),
+    _green(0),
+    _blue(0),
+    _alpha(MaxRGB),
+    _isValid(false)
+{
+  // Use operator = implementation
+  *this = x11color_;
+}
+
+inline Magick::Color::Color ( void )
+  : _red(0),
+    _green(0),
+    _blue(0),
+    _alpha(MaxRGB),
+    _isValid(false)
+{
+}
+
+inline Magick::Color::~Color( void )
+{
+  // Nothing to do
+}
+
+inline void Magick::Color::redQuantum ( Quantum red_ )
+{
+  _red = (Quantum) (red_ > MaxRGB ? MaxRGB : red_);
+  _isValid = true;
+}
+
+inline Magick::Quantum Magick::Color::redQuantum ( void ) const
+{
+  return _red;
+}
+
+inline void Magick::Color::greenQuantum ( Quantum green_ )
+{
+  _green = (Quantum) (green_ > MaxRGB ? MaxRGB : green_);
+  _isValid = true;
+}
+
+inline Magick::Quantum  Magick::Color::greenQuantum ( void ) const
+{
+  return _green;
+}
+
+inline void  Magick::Color::blueQuantum ( Quantum blue_ )
+{
+  _blue = (Quantum) (blue_ > MaxRGB ? MaxRGB : blue_);
+  _isValid = true;
+}
+
+inline Magick::Quantum Magick::Color::blueQuantum ( void ) const
+{
+  return _blue;
+}
+
+inline void  Magick::Color::alphaQuantum ( Quantum alpha_ )
+{
+  _alpha = (Quantum) (alpha_ > MaxRGB ? MaxRGB : alpha_);
+  _isValid = true;
+}
+
+inline Magick::Quantum Magick::Color::alphaQuantum ( void ) const
+{
+  return _alpha;
+}
+
+// Scaled version of alpha for use in sub-classes
+inline void  Magick::Color::alpha ( double alpha_ )
+{
+  alphaQuantum( ScaleDoubleToQuantum(alpha_) );
+}
+inline double Magick::Color::alpha ( void ) const
+{
+  return ScaleQuantumToDouble( alphaQuantum() );
+}
+
+// Does object contain valid color?
+inline void Magick::Color::isValid ( bool valid_ )
+{
+  _isValid = valid_;
+}
+inline bool Magick::Color::isValid ( void ) const
+{
+  return _isValid;
+}
+
+//
+// ColorRGB
+//
+inline void Magick::ColorRGB::red ( double red_ )
+{
+  redQuantum( ScaleDoubleToQuantum(red_) );
+}
+
+inline double Magick::ColorRGB::red ( void ) const
+{
+  return ScaleQuantumToDouble( redQuantum() );
+}
+
+inline void Magick::ColorRGB::green ( double green_ )
+{
+  greenQuantum( ScaleDoubleToQuantum(green_) );
+}
+
+inline double Magick::ColorRGB::green ( void ) const
+{
+  return ScaleQuantumToDouble( greenQuantum() );
+}
+
+inline void Magick::ColorRGB::blue ( double blue_ )
+{
+  blueQuantum( ScaleDoubleToQuantum(blue_) );
+}
+
+inline double Magick::ColorRGB::blue ( void ) const
+{
+  return ScaleQuantumToDouble( blueQuantum() );
+}
 
 #endif // Color_header

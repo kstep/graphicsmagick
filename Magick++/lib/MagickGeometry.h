@@ -111,4 +111,121 @@ namespace Magick
   };
 } // namespace Magick
 
+//
+// Inlines
+//
+
+// Width
+inline void Magick::Geometry::width ( unsigned int width_ )
+{
+  _width = width_;
+  isValid( true );
+}
+inline unsigned int Magick::Geometry::width ( void ) const
+{
+  return _width;
+}
+
+// Height
+inline void Magick::Geometry::height ( unsigned int height_ )
+{
+  _height = height_;
+}
+inline unsigned int Magick::Geometry::height ( void ) const
+{
+  return _height;
+}
+
+// X offset from origin
+inline void Magick::Geometry::xOff ( unsigned int xOff_ )
+{
+  _xOff = xOff_;
+}
+inline int Magick::Geometry::xOff ( void ) const
+{
+  return _xOff;
+}
+
+// Y offset from origin
+inline void Magick::Geometry::yOff ( unsigned int yOff_ )
+{
+  _yOff = yOff_;
+}
+inline int Magick::Geometry::yOff ( void ) const
+{
+  return _yOff;
+}
+
+// Sign of X offset negative? (X origin at right)
+inline void Magick::Geometry::xNegative ( bool xNegative_ )
+{
+  _xNegative = xNegative_;
+}
+inline bool Magick::Geometry::xNegative ( void ) const
+{
+  return _xNegative;
+}
+
+// Sign of Y offset negative? (Y origin at bottom)
+inline void Magick::Geometry::yNegative ( bool yNegative_ )
+{
+  _yNegative = yNegative_;
+}
+inline bool Magick::Geometry::yNegative ( void ) const
+{
+  return _yNegative;
+}
+
+// Interpret width & height as percentages (%)
+inline void Magick::Geometry::percent ( bool percent_ )
+{
+  _percent = percent_;
+}
+inline bool Magick::Geometry::percent ( void ) const
+{
+  return _percent;
+}
+
+// Resize without preserving aspect ratio (!)
+inline void Magick::Geometry::aspect ( bool aspect_ )
+{
+  _aspect = aspect_;
+}
+inline bool Magick::Geometry::aspect ( void ) const
+{
+  return _aspect;
+}
+
+// Resize if image is greater than size (>)
+inline void Magick::Geometry::greater ( bool greater_ )
+{
+  _greater = greater_;
+}
+inline bool Magick::Geometry::greater ( void ) const
+{
+  return _greater;
+}
+
+// Resize if image is less than size (<)
+inline void Magick::Geometry::less ( bool less_ )
+{
+  _less = less_;
+}
+inline bool Magick::Geometry::less ( void ) const
+{
+  return _less;
+}
+
+// Does object contain valid geometry?
+inline void Magick::Geometry::isValid ( bool isValid_ )
+{
+  _isValid = isValid_;
+}
+
+inline bool Magick::Geometry::isValid ( void ) const
+{
+  return _isValid;
+}
+
+
 #endif // Geometry_header

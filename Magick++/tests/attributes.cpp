@@ -22,6 +22,7 @@ int main( int /*argc*/, char ** /*argv*/)
   int failures=0;
 
   try {
+
     unsigned int columns = 640;
     unsigned int rows = 480;
     Geometry geometry(columns,rows);
@@ -157,10 +158,13 @@ int main( int /*argc*/, char ** /*argv*/)
 	cout << "Line: " << __LINE__ << ", backgroundColor is incorrectly invalid" << endl;
       }
     else
-      if ( string(image.backgroundColor()) != "#0000FF" )
+      if ( string(image.backgroundColor()) != "#0000FF" &&
+	   string(image.backgroundColor()) != "#00000000FFFF" )
 	{
 	  ++failures;
-	  cout << "Line: " << __LINE__ << ", backgroundColor is incorrect" << endl;
+	  cout << "Line: " << __LINE__ << ", backgroundColor ("
+	       <<  string(image.backgroundColor()) << ") is incorrect"
+	       << endl;
 	}
 
     // Test setting using hex color
@@ -171,10 +175,13 @@ int main( int /*argc*/, char ** /*argv*/)
 	cout << "Line: " << __LINE__ << ", backgroundColor is incorrectly invalid" << endl;
       }
     else
-      if ( string(image.backgroundColor()) != "#00AAFF" )
+      if ( string(image.backgroundColor()) != "#00AAFF" && 
+	   string(image.backgroundColor()) != "#0000AAAAFFFF" )
 	{
 	  ++failures;
-	  cout << "Line: " << __LINE__ << ", backgroundColor is incorrect" << endl;
+	  cout << "Line: " << __LINE__ << ", backgroundColor ("
+	       << string(image.backgroundColor()) << ") is incorrect"
+	       << endl;
 	}
 
     // Test setting to invalid value
@@ -226,10 +233,12 @@ int main( int /*argc*/, char ** /*argv*/)
     // baseFilename
     //
     // Base filename is color for xc images
-    if ( image.baseFilename() != "#FF0000" )
+    if ( image.baseFilename() != "#FF0000" &&
+	 image.baseFilename() != "#FFFF00000000")
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", baseFilename is incorrect" << endl;
+	cout << "Line: " << __LINE__ << ", baseFilename ("
+	     << image.baseFilename() << ") is incorrect" << endl;
       }
 
     //
@@ -254,7 +263,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.borderColor() != Color("#FF0000") )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", failed to set borderColor" << endl;
+	cout << "Line: " << __LINE__ << ", failed to set borderColor ("
+	     << string(image.borderColor()) << ")" << endl;
       }
 
     image.borderColor("black");
@@ -284,7 +294,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.boxColor() != Color("#FF0000") )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", failed to set boxColor" << endl;
+	cout << "Line: " << __LINE__ << ", failed to set boxColor ("
+	     << string(image.boxColor()) << ")" << endl;
       }
 
     image.boxColor("black");
@@ -429,7 +440,9 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.colorMap(0) != canvasColor )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", colorMap(0) is not canvas base color " << endl;
+	cout << "Line: " << __LINE__ << ", colorMap(0) ("
+	     << string(image.colorMap(0))
+	     << ") is not canvas base color " << endl;
       }
 
     // Test setting/getting colorMap
@@ -592,10 +605,11 @@ int main( int /*argc*/, char ** /*argv*/)
     // filterType
     //
     // Test default
-    if ( image.filterType() != MitchellFilter )
+    if ( image.filterType() != MitchellFilter && // < ImageMagick 4.2.3
+	 image.filterType() != LanczosFilter )   // >= ImageMagick 4.2.3
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", filterType is not MitchellFilter as expected" << endl;
+	cout << "Line: " << __LINE__ << ", filterType default is incorrect" << endl;
       }
 
     // Test set/get
@@ -672,20 +686,20 @@ int main( int /*argc*/, char ** /*argv*/)
     // geometry
     //
     {
-     bool caughtException = false;
-     try
-       {
-	 image.geometry();
-       }
-     catch ( Exception )
-       {
-	 caughtException = true;
-       }
-     if ( caughtException != true )
-       {
-	 ++failures;
-	 cout << "Line: " << __LINE__ << ", geometry failed to report missing image geometry";
-       }
+      bool caughtException = false;
+      try
+	{
+	  image.geometry();
+	}
+      catch ( Exception )
+	{
+	  caughtException = true;
+	}
+      if ( caughtException != true )
+	{
+	  ++failures;
+	  cout << "Line: " << __LINE__ << ", geometry failed to report missing image geometry";
+	}
     }
 
     //
@@ -845,20 +859,20 @@ int main( int /*argc*/, char ** /*argv*/)
     // montageGeometry
     //
     {
-     bool caughtException = false;
-     try
-       {
-	 image.montageGeometry();
-       }
-     catch ( Exception )
-       {
-	 caughtException = true;
-       }
-     if ( caughtException != true )
-       {
-	++failures;
-	cout << "Line: " << __LINE__ << ", montageGeometry failed to report missing montage geometry";
-       }
+      bool caughtException = false;
+      try
+	{
+	  image.montageGeometry();
+	}
+      catch ( Exception )
+	{
+	  caughtException = true;
+	}
+      if ( caughtException != true )
+	{
+	  ++failures;
+	  cout << "Line: " << __LINE__ << ", montageGeometry failed to report missing montage geometry";
+	}
     }
 
     //
@@ -901,10 +915,13 @@ int main( int /*argc*/, char ** /*argv*/)
     //
     // packets
     //
-    if ( image.packets() != 1200 )
+    image.condense(); // Ensure run-length encoding
+    if ( image.packets() != 1200 &&
+	 image.packets() != 5 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", packets is not 1200 as expected" << endl;
+	cout << "Line: " << __LINE__ << ", packets ("
+	     << image.packets() << ") is not 5 as expected" << endl;
       }
 
     //
@@ -929,7 +946,9 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.penColor() != ColorRGB(0.5,0.5,1) )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", penColor set/get failed" << endl;
+	cout << "Line: " << __LINE__ << ", penColor ("
+	     << string(image.penColor())
+	     << ") set/get failed" << endl;
       }
 
     // Test unset
@@ -947,7 +966,11 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.pixelColor(40,60) != canvasColor )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", pixelColor default is not canvas color as expected" << endl;
+	cout << "Line: " << __LINE__ << ", pixelColor default ("
+	     << string(image.pixelColor(40,60))
+	     << ") is not canvas color ("
+	     << string(canvasColor)
+	     << ") as expected" << endl;
       }
 
     // Test set/get
@@ -1150,10 +1173,13 @@ int main( int /*argc*/, char ** /*argv*/)
     // signature
     //
 
-    if ( image.signature() != "25c5a13ea4a3573a38a29c03739296f3" )
+    if ( image.signature() != "25c5a13ea4a3573a38a29c03739296f3" &&
+	 image.signature() != "e6f5ef5cb5409b59b4ef7fb9855ed6ea" )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", signature is not 25c5a13ea4a3573a38a29c03739296f3 as expected" << endl;
+	cout << "Line: " << __LINE__ << ", signature ("
+	     << image.signature()
+	     << ") is incorrect" << endl;
       }
 
     //

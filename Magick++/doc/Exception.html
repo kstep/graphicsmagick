@@ -70,116 +70,169 @@ errors which may effect the completeness or quality of the result (e.g.
 one image provided as an argument to montage is defective). In most cases,
 a <i>Warning</i> exception may be ignored by catching it immediately, processing
 it (e.g. printing a diagnostic) and continuing on. Exceptions derived from
-<i>Error</i> are thrown to represent fatal errors that can not produce
-a valid result (e.g. attempting to read a file which does not exist).
+<i>Error</i>
+are thrown to represent fatal errors that can not produce a valid result
+(e.g. attempting to read a file which does not exist).
 <p>The specific derived exception classes are shown in the following tables:
 <br>&nbsp;
 <table BORDER WIDTH="100%" NOSAVE >
-<caption>Warning Sub-Classes</caption>
+<caption><b>Warning Sub-Classes</b></caption>
 
 <tr NOSAVE>
-<td NOSAVE>WarningUndefined</td>
+<td WIDTH="25%" NOSAVE>
+<center><b><font size=-1>Warning</font></b></center>
+</td>
 
-<td>Unspecified warning type.</td>
+<td>
+<center><b><font size=-1>Warning Description</font></b></center>
+</td>
+</tr>
+
+<tr NOSAVE>
+<td NOSAVE>
+<center><font size=-1>WarningUndefined</font></center>
+</td>
+
+<td><font size=-1>Unspecified warning type.</font></td>
 </tr>
 
 <tr>
-<td>WarningResourceLimit</td>
+<td>
+<center><font size=-1>WarningResourceLimit</font></center>
+</td>
 
-<td>A program resource is exhausted (e.g. not enough memory)</td>
+<td><font size=-1>A program resource is exhausted (e.g. not enough memory)</font></td>
 </tr>
 
 <tr>
-<td>WarningXServer</td>
+<td>
+<center><font size=-1>WarningXServer</font></center>
+</td>
 
-<td>An X resource is unavailable</td>
+<td><font size=-1>An X resource is unavailable</font></td>
 </tr>
 
 <tr>
-<td>WarningOption</td>
+<td>
+<center><font size=-1>WarningOption</font></center>
+</td>
 
-<td>An option was malformed or out of range</td>
+<td><font size=-1>An option was malformed or out of range</font></td>
 </tr>
 
 <tr>
-<td>WarningDelegate</td>
+<td>
+<center><font size=-1>WarningDelegate</font></center>
+</td>
 
-<td>An ImageMagick delegate returned an error</td>
+<td><font size=-1>An ImageMagick delegate returned an error</font></td>
 </tr>
 
 <tr>
-<td>WarningMissingDelegate</td>
+<td>
+<center><font size=-1>WarningMissingDelegate</font></center>
+</td>
 
-<td>The image type can not be read or written because the appropriate Delegate
-is missing</td>
+<td><font size=-1>The image type can not be read or written because the
+appropriate Delegate is missing</font></td>
 </tr>
 
 <tr>
-<td>WarningCorruptImage</td>
+<td>
+<center><font size=-1>WarningCorruptImage</font></center>
+</td>
 
-<td>The image file is corrupt (or otherwise can't be read)</td>
+<td><font size=-1>The image file is corrupt (or otherwise can't be read)</font></td>
 </tr>
 
 <tr>
-<td>WarningFileOpen</td>
+<td>
+<center><font size=-1>WarningFileOpen</font></center>
+</td>
 
-<td>The image file could not be opened (permission problem, wrong file
-type, or does not exist).</td>
+<td><font size=-1>The image file could not be opened (permission problem,
+wrong file type, or does not exist).</font></td>
 </tr>
 </table>
 
 <br>&nbsp;
 <table BORDER WIDTH="100%" NOSAVE >
-<caption>Error Sub-Classes</caption>
+<caption><b>Error Sub-Classes</b></caption>
 
 <tr NOSAVE>
-<td NOSAVE>ErrorUndefined</td>
+<td WIDTH="25%" NOSAVE>
+<center><b><font size=-1>Error</font></b></center>
+</td>
 
-<td>Unspecified error type.</td>
+<td>
+<center><b><font size=-1>Error Description</font></b></center>
+</td>
+</tr>
+
+<tr NOSAVE>
+<td NOSAVE>
+<center><font size=-1>ErrorUndefined</font></center>
+</td>
+
+<td><font size=-1>Unspecified error type.</font></td>
 </tr>
 
 <tr>
-<td>ErrorResourceLimit</td>
+<td>
+<center><font size=-1>ErrorResourceLimit</font></center>
+</td>
 
-<td>A program resource is exhausted (e.g. not enough memory)</td>
+<td><font size=-1>A program resource is exhausted (e.g. not enough memory)</font></td>
 </tr>
 
 <tr>
-<td>ErrorXServer</td>
+<td>
+<center><font size=-1>ErrorXServer</font></center>
+</td>
 
-<td>An X resource is unavailable</td>
+<td><font size=-1>An X resource is unavailable</font></td>
 </tr>
 
 <tr>
-<td>ErrorOption</td>
+<td>
+<center><font size=-1>ErrorOption</font></center>
+</td>
 
-<td>An option was malformed or out of range</td>
+<td><font size=-1>An option was malformed or out of range</font></td>
 </tr>
 
 <tr>
-<td>ErrorDelegate</td>
+<td>
+<center><font size=-1>ErrorDelegate</font></center>
+</td>
 
-<td>An ImageMagick delegate returned an error</td>
+<td><font size=-1>An ImageMagick delegate returned an error</font></td>
 </tr>
 
 <tr>
-<td>ErrorMissingDelegate</td>
+<td>
+<center><font size=-1>ErrorMissingDelegate</font></center>
+</td>
 
-<td>The image type can not be read or written because the appropriate Delegate
-is missing</td>
+<td><font size=-1>The image type can not be read or written because the
+appropriate Delegate is missing</font></td>
 </tr>
 
 <tr>
-<td>ErrorCorruptImage</td>
+<td>
+<center><font size=-1>ErrorCorruptImage</font></center>
+</td>
 
-<td>The image file is corrupt (or otherwise can't be read)</td>
+<td><font size=-1>The image file is corrupt (or otherwise can't be read)</font></td>
 </tr>
 
 <tr>
-<td>ErrorFileOpen</td>
+<td>
+<center><font size=-1>ErrorFileOpen</font></center>
+</td>
 
-<td>The image file could not be opened (permission problem, wrong file
-type, or does not exist).</td>
+<td><font size=-1>The image file could not be opened (permission problem,
+wrong file type, or does not exist).</font></td>
 </tr>
 </table>
 

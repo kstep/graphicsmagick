@@ -13,14 +13,16 @@
 <h1>
 Magick::Image Class</h1></center>
 Image is the primary object in Magick++ and represents a single image frame
-(see <a href="ImageDesign.html">design</a>). Various image manipulation
+(see <a href="ImageDesign.html">design</a>). The <a href="STL.html">STL
+interface</a> must be used to operate on image sequences or image formats
+which are comprized of multiple image frames. Various image manipulation
 operations may be applied to the image. Attributes may be set on the image
 to influence the operation of the manipulation operations. As a convenience,
-including &lt;Magick++.h> is sufficient in order to use the complete Magick++
-API. The Magick++ API is enclosed within the <i>Magick</i> namespace so
-you must either add the prefix "<tt>Magick::</tt>" to each class/enumeration
+including <tt>&lt;Magick++.h></tt> is sufficient in order to use the complete
+Magick++ API. The Magick++ API is enclosed within the <i>Magick</i> namespace
+so you must either add the prefix "<tt>Magick::</tt>" to each class/enumeration
 name or add the statement "<tt>using namespace Magick;</tt>" after including
-the Magick++.h header.
+the <tt>Magick++.h </tt>header.
 <p>Image is very easy to use. For example, here is a the source to a program
 which reads an image, crops it, and writes it to a new file (the exception
 handling is optional):
@@ -139,7 +141,7 @@ are shown in the following table:</tt>
 <center><a NAME="addNoise"></a><font size=-1>addNoise</font></center>
 </td>
 
-<td><font size=-1><a href="MagickEnumerations.html#NoiseType">NoiseType</a>
+<td><font size=-1><a href="Enumerations.html#NoiseType">NoiseType</a>
 noiseType_</font></td>
 
 <td><font size=-1>Add noise to image with specified noise type.</font></td>
@@ -151,7 +153,7 @@ noiseType_</font></td>
 </td>
 
 <td><font size=-1>string text_, const <a href="Geometry.html">Geometry</a>
-&amp;location_, <a href="MagickEnumerations.html#GravityType">unsigned
+&amp;location_, <a href="Enumerations.html#GravityType">unsigned
 int</a> gravity_ = NorthWestGravity</font></td>
 
 <td><font size=-1>Annotate image (render text on image) at specified location
@@ -159,7 +161,7 @@ and influenced by gravity.</font></td>
 </tr>
 
 <tr>
-<td><font size=-1>const std::string &amp;text_, <a href="MagickEnumerations.html#GravityType">unsigned
+<td><font size=-1>const std::string &amp;text_, <a href="Enumerations.html#GravityType">unsigned
 int</a> gravity_ = NorthWestGravity</font></td>
 
 <td><font size=-1>Annotate image (render text on image) at location implied
@@ -231,7 +233,7 @@ const <a href="Color.html">Color</a> &amp;penColor_</font></td>
 default, each image is commented with its file name. Use&nbsp; this&nbsp;
 method to&nbsp; assign a specific comment to the image.&nbsp; Optionally
 you can include the image filename, type, width, height, or other&nbsp;
-image&nbsp; attributes by embedding <a href="ImageFormatCharacters.html">special
+image&nbsp; attributes by embedding <a href="FormatCharacters.html">special
 format characters.</a></font></td>
 </tr>
 
@@ -241,7 +243,7 @@ format characters.</a></font></td>
 </td>
 
 <td><font size=-1>const Image &amp;compositeImage_, int xOffset_, int yOffset_,
-<a href="MagickEnumerations.html#CompositeOperator">CompositeOperator</a>
+<a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Compose an image onto another at specified
@@ -250,7 +252,7 @@ offset and using specified algorithm</font></td>
 
 <tr>
 <td><font size=-1>const Image &amp;compositeImage_, const Geometry &amp;offset_,
-<a href="MagickEnumerations.html#CompositeOperator">CompositeOperator</a>
+<a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
 </tr>
 
@@ -313,9 +315,9 @@ compose_ = <i>InCompositeOp</i></font></td>
 
 <td><font size=-1>Display image on screen.</font>
 <br><font size=-1><b><font color="#FF0000">Caution: </font></b>if an image
-format is is not compatable with the display visual (e.g. JPEG&nbsp;on
-a colormapped display) then the original image will be altered. Use a copy
-of the original if this is a problem.</font></td>
+format is is not compatable with the display visual (e.g. JPEG on a colormapped
+display) then the original image will be altered. Use a copy of the original
+if this is a problem.</font></td>
 </tr>
 
 <tr NOSAVE>
@@ -515,7 +517,7 @@ y_, int innerBevel_ = 0, int outerBevel_ = 0</font></td>
 <td><font size=-1>Assign a label to an image. Use this option to&nbsp;
 assign&nbsp; a&nbsp; specific label to the image. Optionally you can include
 the image filename, type, width, height, or scene number in the label by
-embedding&nbsp; <a href="ImageFormatCharacters.html">special format characters.</a>
+embedding&nbsp; <a href="FormatCharacters.html">special format characters.</a>
 If the first character of string is @, the image label is read from a file
 titled by the remaining characters in the string. When converting to Postscript,
 use this&nbsp; option to specify a header string to print above the image.</font></td>
@@ -526,7 +528,7 @@ use this&nbsp; option to specify a header string to print above the image.</font
 <center><a NAME="layer"></a><font size=-1>layer</font></center>
 </td>
 
-<td><font size=-1><a href="MagickEnumerations.html#LayerType">LayerType</a>
+<td><font size=-1><a href="Enumerations.html#LayerType">LayerType</a>
 layer_</font></td>
 
 <td><font size=-1>Extract layer from image. Use this option to extract
@@ -566,7 +568,7 @@ an image file with this option.</font></td>
 </td>
 
 <td><font size=-1>const <a href="Color.html">Color</a> &amp;target_, unsigned
-int matte_, int x_, int y_, <a href="MagickEnumerations.html#PaintMethod">PaintMethod</a>
+int matte_, int x_, int y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a>
 method_</font></td>
 
 <td><font size=-1>Floodfill designated area with a matte value</font></td>
@@ -999,6 +1001,22 @@ obtain them are shown in the following table:
 
 <tr>
 <td>
+<center><a NAME="adjoin"></a><font size=-1>adjoin</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>bool</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>bool flag_</font></td>
+
+<td><font size=-1>Join images into a single multi-image file.</font></td>
+</tr>
+
+<tr>
+<td>
 <center><a NAME="antiAlias"></a><font size=-1>antiAlias</font></center>
 </td>
 
@@ -1245,7 +1263,7 @@ loop extension) for.</font></td>
 
 <td><font size=-1>Image</font></td>
 
-<td><font size=-1><a href="MagickEnumerations.html#ClassType">ClassType</a></font></td>
+<td><font size=-1><a href="Enumerations.html#ClassType">ClassType</a></font></td>
 
 <td><font size=-1>void</font></td>
 
@@ -1332,11 +1350,11 @@ color in RGB space.</font></td>
 <td><font size=-1>Image &amp;</font>
 <br><font size=-1>Options</font></td>
 
-<td><font size=-1><a href="MagickEnumerations.html#CompressionType">CompressionType</a></font></td>
+<td><font size=-1><a href="Enumerations.html#CompressionType">CompressionType</a></font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1><a href="MagickEnumerations.html#CompressionType">CompressionType</a>
+<td><font size=-1><a href="Enumerations.html#CompressionType">CompressionType</a>
 compressType_</font></td>
 
 <td><font size=-1>Image compresion type. The default is the compression
@@ -1437,17 +1455,17 @@ is compiled with.</font></td>
 <td><font size=-1>Image &amp;</font>
 <br><font size=-1>Options</font></td>
 
-<td><font size=-1><a href="MagickEnumerations.html#FilterType">FilterType</a></font></td>
+<td><font size=-1><a href="Enumerations.html#FilterType">FilterType</a></font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1><a href="MagickEnumerations.html#FilterType">FilterType</a>
+<td><font size=-1><a href="Enumerations.html#FilterType">FilterType</a>
 filterType_</font></td>
 
 <td><font size=-1>Filter to use when resizing image. The reduction filter
 employed has a sigificant effect on the time required to resize an image
-and the resulting quality. The default filter is <i>Mitchell</i> (highest
-quality).</font></td>
+and the resulting quality. The default filter is <i>Lanczos</i> which has
+been shown to produce high quality results when reducing most images.</font></td>
 </tr>
 
 <tr>
@@ -1569,11 +1587,11 @@ when creating a GIF animation.</font></td>
 <td><font size=-1>Image &amp;</font>
 <br><font size=-1>Options</font></td>
 
-<td><font size=-1><a href="MagickEnumerations.html#InterlaceType">InterlaceType</a></font></td>
+<td><font size=-1><a href="Enumerations.html#InterlaceType">InterlaceType</a></font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1><a href="MagickEnumerations.html#InterlaceType">InterlaceType</a>
+<td><font size=-1><a href="Enumerations.html#InterlaceType">InterlaceType</a>
 interlace_</font></td>
 
 <td><font size=-1>The type of interlacing scheme (default <i>NoInterlace</i>).
@@ -1714,7 +1732,7 @@ image has just been quantized.</font></td>
 
 <td><font size=-1>Image</font></td>
 
-<td><font size=-1>string</font></td>
+<td><font size=-1><a href="Geometry.html">Geometry</a></font></td>
 
 <td><font size=-1>void</font></td>
 
@@ -1908,11 +1926,11 @@ or unused colors removed.</font></td>
 
 <td><font size=-1>Options</font></td>
 
-<td><font size=-1><a href="MagickEnumerations.html#ColorspaceType">ColorspaceType</a></font></td>
+<td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a></font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1><a href="MagickEnumerations.html#ColorspaceType">ColorspaceType</a>
+<td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a>
 colorSpace_</font></td>
 
 <td><font size=-1>Colorspace to quantize colors in (default RGB). Empirical
@@ -1990,11 +2008,11 @@ the tree depth.</font></td>
 
 <td><font size=-1>Image</font></td>
 
-<td><font size=-1><a href="MagickEnumerations.html#RenderingIntent">RenderingIntent</a></font></td>
+<td><font size=-1><a href="Enumerations.html#RenderingIntent">RenderingIntent</a></font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1><a href="MagickEnumerations.html#RenderingIntent">RenderingIntent</a>
+<td><font size=-1><a href="Enumerations.html#RenderingIntent">RenderingIntent</a>
 render_</font></td>
 
 <td><font size=-1>The type of rendering intent</font></td>
@@ -2009,11 +2027,11 @@ render_</font></td>
 <td><font size=-1>Image &amp;</font>
 <br><font size=-1>Options</font></td>
 
-<td><font size=-1><a href="MagickEnumerations.html#ResolutionType">ResolutionType</a></font></td>
+<td><font size=-1><a href="Enumerations.html#ResolutionType">ResolutionType</a></font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1><a href="MagickEnumerations.html#ResolutionType">ResolutionType</a>
+<td><font size=-1><a href="Enumerations.html#ResolutionType">ResolutionType</a>
 units_</font></td>
 
 <td><font size=-1>Units of image resolution</font></td>
@@ -2174,7 +2192,7 @@ CD, JBIG, or JPEG.</font></td>
 
 <td><font size=-1>Image</font></td>
 
-<td><font size=-1><a href="MagickEnumerations.html#ImageType">ImageType</a></font></td>
+<td><font size=-1><a href="Enumerations.html#ImageType">ImageType</a></font></td>
 
 <td><font size=-1>void</font></td>
 

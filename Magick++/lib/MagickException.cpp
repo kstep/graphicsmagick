@@ -22,7 +22,8 @@ const char* Magick::Exception::what( ) const
   return _what.c_str();
 }
 
-std::ostream& Magick::operator<<( std::ostream& stream_, const Magick::Exception& exception_)
+std::ostream& Magick::operator<<( std::ostream& stream_,
+				  const Magick::Exception& exception_)
 {
   stream_ << exception_.what();
   return stream_;

@@ -469,9 +469,19 @@ namespace Magick
     void            gifDisposeMethod ( unsigned int disposeMethod_ );
     unsigned int    gifDisposeMethod ( void ) const;
 
+    // ICC color profile (BLOB)
+    // FIXME: Implement
+//     void            iccColorProfile( const std::string colorProfile_ );
+//     string          iccColorProfile( void ) const;
+
     // Type of interlacing to use
     void            interlaceType ( InterlaceType interlace_ );
     InterlaceType   interlaceType ( void ) const;
+
+    // IPTC profile (BLOB)
+    // FIXME: Implement
+//     void            iptcProfile( const std::string iptcProfile_ );
+//     std::string     iptcProfile( void ) const;
 
     // Does object contain valid image?
     void            isValid ( bool isValid_ );
@@ -488,7 +498,7 @@ namespace Magick
     void            magick ( const std::string &magick_ );
     std::string     magick ( void ) const;
     
-    // Image supports transparent color
+    // Image supports transparency (matte layer)
     void            matte ( bool matteFlag_ );
     bool            matte ( void ) const;
     
@@ -500,7 +510,7 @@ namespace Magick
     double          meanErrorPerPixel ( void ) const;
 
     // Tile size and offset within an image montage
-    std::string     montageGeometry ( void ) const;
+    Geometry        montageGeometry ( void ) const;
 
     // Transform image to black and white
     void            monochrome ( bool monochromeFlag_ );
@@ -676,9 +686,11 @@ namespace Magick
     
     void                 image ( MagickLib::Image * image_ );
     MagickLib::Image *&  image ( void );
+    void                 imageMissing ( void ) const;
     
     void                 options ( Options * options_ );
     Options *            options ( void );
+    void                 optionsMissing( void ) const;
     
     MagickLib::Image *   _image;    // ImageMagick Image
     Options *            _options;  // User-specified options
@@ -686,6 +698,58 @@ namespace Magick
   };
 
 } // end of namespace Magick
+
+//
+// Inlines
+//
+
+//
+// ImageRef
+//
+
+// Set image pointer
+inline void Magick::ImageRef::image ( MagickLib::Image * image_ )
+{
+  _image = image_;
+}
+// Get image pointer
+inline MagickLib::Image *& Magick::ImageRef::image ( void )
+{
+  if ( !_image )
+    imageMissing(); // Throw exception
+
+  return _image;
+}
+
+// Set options pointer
+inline void  Magick::ImageRef::options ( Options * options_ )
+{
+  _options = options_;
+}
+// Get options pointer
+inline Magick::Options * Magick::ImageRef::options ( void )
+{
+  if ( !_options )
+    optionsMissing();
+
+  return _options;
+}
+
+//
+// Image
+//
+
+// Get MagickLib::Image*
+inline MagickLib::Image*& Magick::Image::image( void )
+{
+  return _imgRef->image();
+}
+
+// Get Magick::Options*
+inline Magick::Options* Magick::Image::options( void )
+{
+  return _imgRef->options();
+}
 
 
 
