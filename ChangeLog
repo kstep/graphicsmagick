@@ -1,3 +1,7 @@
+2002-02-08  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* www/GraphicsMagick.html: add "gm " prefix to examples.
+
 2002-02-07  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* index.html: Update to distinguish between ImageMagick and

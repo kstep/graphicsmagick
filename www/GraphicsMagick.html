@@ -82,36 +82,36 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>animate</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file</em> <strong>[ [</strong>
+<strong>gm animate</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file</em> <strong>[ [</strong>
 <em>options ...</em> <strong>]</strong> <em>file ...</em> <strong>]</strong>
 <br>&nbsp;<br>
 <p>
-<strong>composite</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>image composite</em>
+<strong>gm composite</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>image composite</em>
 <strong>[</strong> <em>mask</em> <strong>]</strong> <em>composited</em>
 <br>&nbsp;<br>
 <p>
-<strong>conjure</strong> <strong>[</strong> <em>options</em> <strong>]</strong> <em>script.msl</em>
+<strong>gm conjure</strong> <strong>[</strong> <em>options</em> <strong>]</strong> <em>script.msl</em>
 <strong>[ [</strong> <em>options</em> <strong>]</strong> <em>script.msl</em> <strong>]</strong>
 <br>&nbsp;<br>
 <p>
-<strong>convert</strong> <strong>[ [</strong> <em>options ...</em> <strong>] [</strong> <em>input_file ...</em>
+<strong>gm convert</strong> <strong>[ [</strong> <em>options ...</em> <strong>] [</strong> <em>input_file ...</em>
 <strong>]</strong> <em>...</em> <strong>[</strong> <em>output_file</em> <strong>] ]</strong>
 <br>&nbsp;<br>
 <p>
-<strong>display</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file ...</em>
+<strong>gm display</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file ...</em>
 <strong>[ [</strong><em>options ...</em> <strong>]</strong><em>file ...</em> <strong>]</strong>
 <br>&nbsp;<br>
 <p>
-<strong>identify</strong> <em>file</em> <strong>[</strong> <em>file ...</em> <strong>]</strong>
+<strong>gm identify</strong> <em>file</em> <strong>[</strong> <em>file ...</em> <strong>]</strong>
 <br>&nbsp;<br>
 <p>
-<strong>import</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file</em>
+<strong>gm import</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file</em>
 <br>&nbsp;<br>
 <p>
-<strong>mogrify</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file ...</em>
+<strong>gm mogrify</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file ...</em>
 <br>&nbsp;<br>
 <p>
-<strong>montage</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file</em> <strong>[ [</strong>
+<strong>gm montage</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file</em> <strong>[ [</strong>
 <em>options ...</em> <strong>]</strong> <em>file ...</em> <strong>]</strong> <em>output_file</em>
 <br>&nbsp;<br>
 </td></tr></table>
@@ -794,7 +794,7 @@ If a clipping path is present, it will be applied to subsequent operations.</fon
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example, if you type the following command:</font></td></tr></table>
 <pre>
-     convert -clip -negate cockatoo.tif negated.tif
+     gm convert -clip -negate cockatoo.tif negated.tif
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 only the pixels within the clipping path are negated.</font></td></tr></table>
@@ -1094,7 +1094,7 @@ consisting of one or more of the following domains: <tt>Annotate</tt>,
 <tt>X11</tt>, or <tt>User</tt>.
 For example, to log cache and blob events, use</font></td></tr></table>
 <pre>
-    convert -debug "Cache,Blob" rose: rose.png
+    gm convert -debug "Cache,Blob" rose: rose.png
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The "User" domain is normally empty, but developers can log "User" events
@@ -2377,7 +2377,7 @@ special format characters:</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example:</font></td></tr></table>
 <pre>
-    convert -debug coders -log "%u %m:%l %e" in.gif out.png
+    gm convert -debug coders -log "%u %m:%l %e" in.gif out.png
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The default behavior is to print all of the components.</font></td></tr></table>
@@ -2989,7 +2989,7 @@ For example, to extract the Exif data (which is stored in JPEG files
 in the <em>APP1</em> profile), use
 </font></td></tr></table>
 <pre>
-    convert cockatoo.jpg exifdata.app1
+    gm convert cockatoo.jpg exifdata.app1
 </pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -3270,12 +3270,12 @@ number.  You
 can change this behavior by embedding a <strong>%d, %0Nd, %o, %0No, %x, or %0Nx
 printf</strong> format specification in the file name. For example,</font></td></tr></table>
 <pre>
-    montage -scenes 5-7 image.miff
+    gm montage -scenes 5-7 image.miff
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and</font></td></tr></table>
 <pre>
-    animate -scenes 0-12 image%02d.miff
+    gm animate -scenes 0-12 image%02d.miff
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 animates files image00.miff, image01.miff, through image12.miff.</font></td></tr></table>
@@ -3719,7 +3719,7 @@ This option applies the transformation matrix from a previous
 <strong>-affine</strong> option.
 </font></td></tr></table>
 <pre>
-    convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
+    gm convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
 </pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -3801,7 +3801,7 @@ example, to prevent a JPEG from being written in grayscale format even
 though only gray pixels are present, use
 </font></td></tr></table>
 <pre>
-    convert bird.pgm -type TrueColor bird.jpg
+    gm convert bird.pgm -type TrueColor bird.jpg
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Similarly, using <tt>-type TrueColorMatte</tt> will force the encoder
