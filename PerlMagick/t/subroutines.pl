@@ -823,7 +823,7 @@ sub testFilterSignature {
 
   my($image);
 
-  print( $filter, " ...\n" );
+#  print( $filter, " ...\n" );
 
   # Create temporary image
   $image=Image::Magick->new;
@@ -831,6 +831,7 @@ sub testFilterSignature {
   $status=$image->ReadImage("$srcimage");
   warn "Readimage: $status" if "$status";
 
+  print("$filter\($filter_options\) ...\n");
   $image->$filter($filter_options);
 #$image->write(filename=>"reference/filter/$filter.miff", compression=>'None');
 
@@ -871,18 +872,21 @@ sub testFilterCompare {
   $errorinfo='';
   $status='';
 
-  print( $filter, " ...\n" );
+  #print( $filter, " ...\n" );
 
   # Create images
   $srcimage=Image::Magick->new;
   $refimage=Image::Magick->new;
 
-  eval "\$status=\$srcimage->Set($src_read_options);";
-  if ("$status")
-    {
-      $errorinfo = "Set($src_read_options): $status";
-      goto COMPARE_RUNTIME_ERROR;
-    }
+  if ( "$src_read_options" ne "" ) {
+    print("Set($src_read_options) ...\n");
+    eval "\$status=\$srcimage->Set($src_read_options);";
+    if ("$status")
+      {
+        $errorinfo = "Set($src_read_options): $status";
+        goto COMPARE_RUNTIME_ERROR;
+      }
+  }
 
   $status=$srcimage->ReadImage($srcimage_name);
   #eval "\$status=\$srcimage->ReadImage($srcimage_name);";
@@ -892,6 +896,7 @@ sub testFilterCompare {
       goto COMPARE_RUNTIME_ERROR;
     }
 
+  print("$filter\($filter_options\) ...\n");
   eval "\$status=\$srcimage->$filter($filter_options);";
   if ("$status")
     {
@@ -900,8 +905,8 @@ sub testFilterCompare {
     }
 
   $srcimage->set(depth=>8);
-  #$srcimage->Display();
-#  if ("$filter" eq "Emboss") {
+#  $srcimage->Display();
+#  if ("$filter" eq "Segment") {
 #    $srcimage->write(filename=>"$refimage_name", compression=>'None');
 #  }
 
@@ -924,6 +929,8 @@ sub testFilterCompare {
   if ("$status")
     {
       $errorinfo = "Compare($refimage_name): $status";
+      print("  Computed:  ", $srcimage->Get('columns'), "x", $srcimage->Get('rows'), "\n");
+      print("  Reference: ", $refimage->Get('columns'), "x", $refimage->Get('rows'), "\n");
       goto COMPARE_RUNTIME_ERROR;
     }
 
@@ -944,7 +951,7 @@ sub testFilterCompare {
   if ( ($normalized_mean_error > $normalized_mean_error_max) ||
        ($normalized_maximum_error > $normalized_maximum_error_max) )
     {
-      print("mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
+      print("  mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
       print "not ok $test\n";
       return 1
     }
@@ -953,7 +960,7 @@ sub testFilterCompare {
   return 0;
 
  COMPARE_RUNTIME_ERROR:
-  warn("$errorinfo");
+  print("  $errorinfo\n");
   print "not ok $test\n";
   return 1
 }

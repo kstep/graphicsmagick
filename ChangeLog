@@ -1,8 +1,15 @@
 2002-12-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* Re-wrote PerlMagick filter.t tests so that they all compare
+	results with reference images rather than compare signatures.
+	This makes the tests easier to maintain and also makes it
+	easier to find errors in ImageMagick.
+
+2002-12-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/command.c: Warnings reduction
 	* magick/list.c: Warnings reduction
 
 2002-12-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
 	* Updated PerlMagick tests for Emboss, Equalize, Gamma,
 	Normalize, OilPaint, and Gradient so that they pass at Q:8
 	under Windows.
