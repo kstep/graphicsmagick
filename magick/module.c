@@ -536,6 +536,166 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *name,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  G e t M o d u l e P a t h                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetModulePath() searches a number of pre-defined locations for the
+%  specified module file and returns the path.
+%
+%  The format of the GetModulePath method is:
+%
+%      char *GetModulePath(const char *filename,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o path:  Method GetModulePath returns the path if the
+%      file is found, otherwise NULL is returned.
+%
+%    o filename: A character string representing the desired module
+%      file.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport char *GetModulePath(const char *filename,ExceptionInfo *exception)
+{
+  char
+    *path;
+
+  unsigned int
+    debug;
+
+  assert(filename != (const char *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  debug=getenv("MAGICK_DEBUG") != (char *) NULL;
+  path=AllocateString(filename);
+  if (debug)
+    (void) fprintf(stdout,"Searching for module file \"%s\" ...\n", filename);
+#if defined(UseInstalledImageMagick)
+#  if defined(WIN32)
+  /*
+    Locate path via registry key.
+  */
+  {
+    char
+      *key_value;
+
+    key_value=NTRegistryKeyLookup("ModulesPath");
+    if (key_value != (char *) NULL)
+      {
+        FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
+          filename);
+        if (!CheckFileAccessability(path,debug))
+          {
+            ThrowException(exception,ConfigurationError,
+              "Unable to access module file",path);
+            LiberateMemory((void **) &path);
+          }
+        return(path);
+      }
+  }
+#  endif /* WIN32 */
+#  if defined(MagickLibPath)
+  /*
+    Search hard coded paths.
+  */
+#    if defined(MagickModulesPath)
+  FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
+  if (!CheckFileAccessability(path,debug))
+    {
+      if (debug)
+        (void) fprintf(stdout,"  !%s",path);
+      ThrowException(exception,ConfigurationError,
+        "Unable to access module file",path);
+      LiberateMemory((void **) &path);
+    }
+  return(path);
+#    endif /* MagickModulesPath */
+#  endif /* MagickLibPath */
+#  else
+  /*
+    Search based on executable directory if directory is known.
+  */
+  if (*SetClientPath((char *) NULL) != '\0')
+    {
+#if defined POSIX
+      char
+        prefix[MaxTextExtent];
+
+      (void) strcpy(prefix,SetClientPath((char *) NULL));
+      TruncatePathElements(prefix,1,debug);
+      FormatString(path,"%.1024s/lib/ImageMagick/modules/coders/%.1024s",
+        prefix,filename);
+#else
+      FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
+        DirectorySeparator,filename);
+#endif
+      if (CheckFileAccessability(path,debug))
+        return(path);
+    }
+  /*
+    Search MAGICK_HOME.
+  */
+  if (getenv("MAGICK_HOME") != (char *) NULL)
+    {
+#if defined POSIX
+      FormatString(path,"%.1024s/lib/ImageMagick/modules/coders/%.1024s",
+        getenv("MAGICK_HOME"),filename);
+#else
+      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
+        DirectorySeparator,filename);
+#endif
+      if (CheckFileAccessability(path,debug))
+        return(path);
+    }
+  /*
+    Search $HOME/.magick.
+  */
+  if (getenv("HOME") != (char *) NULL)
+    {
+      FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
+        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
+      if (CheckFileAccessability(path,debug))
+        return(path);
+    }
+  /*
+    Search current directory.
+  */
+  if (CheckFileAccessability(path,debug))
+    return(path);
+#  if defined(WIN32)
+  {
+    /*
+      Look for a named resource
+    */
+    void
+      *blob;
+
+    FormatString(path,"%.1024s",filename);
+    blob=NTResourceToBlob(path);
+    if (blob != (unsigned char *) NULL)
+      {
+        LiberateMemory((void **) &blob);
+        return(path);
+      }
+  }
+#  endif /* WIN32 */
+#endif /* UseInstalledImageMagick */
+  LiberateMemory((void **) &path);
+  ThrowException(exception,ConfigurationError,"Unable to find module file",
+    filename);
+  return((char *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  L i s t M o d u l e I n f o                                                %
 %                                                                             %
 %                                                                             %

@@ -487,6 +487,55 @@ MagickExport char *Base64Encode(const unsigned char *blob,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  C h e c k F i l e A s s e s s i b i l i t y                                %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CheckFileAssibility() returns True if the file as defined by filename is
+%  accessible.
+%
+%  The format of the CheckFileAssibility method is:
+%
+%      unsigned int CheckFileAssibility(const char *filename,
+%        const unsigned int debug)
+%
+%  A description of each parameter follows.
+%
+%    o status:  Method CheckFileAssibility returns True is the file as defined by
+%      filename is accessible, otherwise False is returned.
+%
+%    o filename:  Specifies a pointer to an array of characters.  The unique
+%      file name is returned in this array.
+%
+%    o debug: display copious debugging information.
+%
+%
+*/
+MagickExport unsigned int CheckFileAccessability(const char *filename,
+  const unsigned int debug)
+{
+  unsigned int
+    accessible;
+
+  accessible=IsAccessible(filename);
+  if (debug)
+    {
+      if (accessible)
+        (void) fprintf(stdout,"  %s\n",filename);
+      else
+        (void) fprintf(stdout,"  !%s\n",filename);
+    }
+  return(accessible);
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C l o n e S t r i n g                                                     %
 %                                                                             %
 %                                                                             %
@@ -964,53 +1013,6 @@ MagickExport void FormatString(char *string,const char *format,...)
 %
 %
 */
-
-static unsigned int CheckFileAccessability(const char *path,
-  const unsigned int debug)
-{
-  unsigned int
-    accessible;
-
-  accessible=IsAccessible(path);
-  if (debug)
-    {
-      if (accessible)
-        (void) fprintf(stdout,"  %s\n",path);
-      else
-        (void) fprintf(stdout,"  !%s\n",path);
-    }
-  return(accessible);
-}
-
-static void TruncatePathElements(char *path,const unsigned long elements,
-  const unsigned int debug)
-{
-  register char
-    *p;
-
-  size_t
-    length;
-
-  unsigned long
-    count;
-
-  count=0;
-  length=strlen(path);
-  p=path+length;
-  if (debug)
-    (void) fprintf(stdout,"original path  \"%s\"\n", path);
-  if (*p == *DirectorySeparator)
-    *p='\0';
-  for (count=0; (count < elements) && (p > path); p--)
-    if (*p == *DirectorySeparator)
-      {
-        *p='\0';
-        count++;
-      }
-  if (debug)
-    (void) fprintf(stdout,"truncated path \"%s\"\n", path);
-}
-
 MagickExport char *GetConfigurePath(const char *filename,
   ExceptionInfo *exception)
 {
@@ -1587,166 +1589,6 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
         }
     }
   return(flags);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  G e t M o d u l e P a t h                                                  %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetModulePath() searches a number of pre-defined locations for the
-%  specified module file and returns the path.
-%
-%  The format of the GetModulePath method is:
-%
-%      char *GetModulePath(const char *filename,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o path:  Method GetModulePath returns the path if the
-%      file is found, otherwise NULL is returned.
-%
-%    o filename: A character string representing the desired module
-%      file.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-%
-*/
-MagickExport char *GetModulePath(const char *filename,ExceptionInfo *exception)
-{
-  char
-    *path;
-
-  unsigned int
-    debug;
-
-  assert(filename != (const char *) NULL);
-  assert(exception != (ExceptionInfo *) NULL);
-  debug=getenv("MAGICK_DEBUG") != (char *) NULL;
-  path=AllocateString(filename);
-  if (debug)
-    (void) fprintf(stdout,"Searching for module file \"%s\" ...\n", filename);
-#if defined(UseInstalledImageMagick)
-#  if defined(WIN32)
-  /*
-    Locate path via registry key.
-  */
-  {
-    char
-      *key_value;
-
-    key_value=NTRegistryKeyLookup("ModulesPath");
-    if (key_value != (char *) NULL)
-      {
-        FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
-          filename);
-        if (!CheckFileAccessability(path,debug))
-          {
-            ThrowException(exception,ConfigurationError,
-              "Unable to access module file",path);
-            LiberateMemory((void **) &path);
-          }
-        return(path);
-      }
-  }
-#  endif /* WIN32 */
-#  if defined(MagickLibPath)
-  /*
-    Search hard coded paths.
-  */
-#    if defined(MagickModulesPath)
-  FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
-  if (!CheckFileAccessability(path,debug))
-    {
-      if (debug)
-        (void) fprintf(stdout,"  !%s",path);
-      ThrowException(exception,ConfigurationError,
-        "Unable to access module file",path);
-      LiberateMemory((void **) &path);
-    }
-  return(path);
-#    endif /* MagickModulesPath */
-#  endif /* MagickLibPath */
-#  else
-  /*
-    Search based on executable directory if directory is known.
-  */
-  if (*SetClientPath((char *) NULL) != '\0')
-    {
-#if defined POSIX
-      char
-        prefix[MaxTextExtent];
-
-      (void) strcpy(prefix,SetClientPath((char *) NULL));
-      TruncatePathElements(prefix,1,debug);
-      FormatString(path,"%.1024s/lib/ImageMagick/modules/coders/%.1024s",
-        prefix,filename);
-#else
-      FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
-        DirectorySeparator,filename);
-#endif
-      if (CheckFileAccessability(path,debug))
-        return(path);
-    }
-  /*
-    Search MAGICK_HOME.
-  */
-  if (getenv("MAGICK_HOME") != (char *) NULL)
-    {
-#if defined POSIX
-      FormatString(path,"%.1024s/lib/ImageMagick/modules/coders/%.1024s",
-        getenv("MAGICK_HOME"),filename);
-#else
-      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
-        DirectorySeparator,filename);
-#endif
-      if (CheckFileAccessability(path,debug))
-        return(path);
-    }
-  /*
-    Search $HOME/.magick.
-  */
-  if (getenv("HOME") != (char *) NULL)
-    {
-      FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
-        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
-      if (CheckFileAccessability(path,debug))
-        return(path);
-    }
-  /*
-    Search current directory.
-  */
-  if (CheckFileAccessability(path,debug))
-    return(path);
-#  if defined(WIN32)
-  {
-    /*
-      Look for a named resource
-    */
-    void
-      *blob;
-
-    FormatString(path,"%.1024s",filename);
-    blob=NTResourceToBlob(path);
-    if (blob != (unsigned char *) NULL)
-      {
-        LiberateMemory((void **) &blob);
-        return(path);
-      }
-  }
-#  endif /* WIN32 */
-#endif /* UseInstalledImageMagick */
-  LiberateMemory((void **) &path);
-  ThrowException(exception,ConfigurationError,"Unable to find module file",
-    filename);
-  return((char *) NULL);
 }
 
 /*
@@ -2363,7 +2205,7 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsAccessible returns True if the file as defined by filename is
+%  IsAccessible() returns True if the file as defined by filename is
 %  accessible.
 %
 %  The format of the IsAccessible method is:
@@ -4343,4 +4185,62 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
   if (text != (char *) formatted_text)
     LiberateMemory((void **) &text);
   return(translated_text);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   T r u n c a t e P a t h E l e m e n t s                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  TruncatePathElements truncates the path by the specified number of
+%  directory elements.
+%
+%  The format of the TruncatePathElements function is:
+%
+%      TruncatePathElements(char *path,
+%        const unsigned long number_elements,const unsigned int debug)
+%
+%  A description of each parameter follows:
+%
+%    o path: Specifies a pointer to a character array that contains the
+%      file path.
+%
+%    o numebr_elements: The number of directory elements to truncate.
+%
+%    o debug: display copious debugging information.
+%
+*/
+MagickExport void TruncatePathElements(char *path,
+  const unsigned long number_elements,const unsigned int debug)
+{
+  register char
+    *p;
+
+  size_t
+    length;
+
+  unsigned long
+    count;
+
+  count=0;
+  length=strlen(path);
+  p=path+length;
+  if (debug)
+    (void) fprintf(stdout,"original path  \"%s\"\n", path);
+  if (*p == *DirectorySeparator)
+    *p='\0';
+  for (count=0; (count < number_elements) && (p > path); p--)
+    if (*p == *DirectorySeparator)
+      {
+        *p='\0';
+        count++;
+      }
+  if (debug)
+    (void) fprintf(stdout,"truncated path \"%s\"\n", path);
 }
