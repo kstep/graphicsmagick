@@ -779,7 +779,7 @@ Export void *MapBlob(int file,const MapMode mode,size_t *length)
       break;
     }
   }
-  if (map == MAP_FAILED)
+  if (map == (void *) MAP_FAILED)
     return((void *) NULL);
   return((void *) map);
 #else
