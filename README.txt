@@ -737,6 +737,131 @@ Windows NT/95 VISUAL C++ 6.0 COMPILATION
 
   NOTE #2:
 
+  The 5.2.x distribution is much more modular then any previous
+  release of ImageMagick. The default configuration is there to
+  get you rolling, but you need to make some serious choices when
+  you wish to change things around.
+
+  The binary distribution and default options are all targeted
+  at having all the components in one place - the "bin" directory
+  of the VisualMagick build tree AND the C:\ImageMagick folder.
+
+  The C:\ImageMagick folder should contain the following files:
+
+  1) magic.mgk
+  2) delegates.mgk (derived from nt.mgk)
+  3) modules.mgk
+  4) rgb.txt
+
+  The "bin" folder should contains all EXE's and DLL's as well as
+  the very important "modules.mgk" file.
+
+  With this default setup, you can use any of the command line
+  tools and run scripts as normal. You can actually get by quite
+  nicely this way by doing something like "pushd e:\xxx\yyy\bin"
+  in any scripts you write to execute "out of" this directory.
+
+  ALSO, By default the core of ImageMagick on Win32 always looks
+  in the place were the exe program is run from in order to find
+  all of the files as well as the DLL's it needs.
+
+  Of course - all of this is configurable and there are certain
+  environment variables and compiler switches that allow you to
+  do whatever you want. Some of these are Windows things and the
+  rest are looked at by the core ImageMagick code.
+
+  ENVIRONMENT VARIABLES:
+
+  You can use the "System" control panel to allow you to add and
+  delete what is in any of the environment variables. You can even
+  have user specific environment variables if you wish.
+
+  PATH
+
+   This sets the default list of places were Windows looks for
+   EXE's and DLL's. Windows CMD shell seems to look in the
+   "current" directory first - no matter what, so that is why
+   you really don't have to muck. If you wish to run any of
+   utilities from another location then you must add the path
+   to your "bin" directory in. For instance, you might add:
+
+      D:\CVS\ImageMagick\VisualMagick\bin
+
+   to do this for the default build environment like I do.
+   One slight problem with this is that fact that Windows has
+   another program called "convert". I usually rename this
+   to something else since it is only used to convert disks
+   from FAT to NTFS.
+
+  MAGICK_MODULE_PATH
+
+   If all you do is modify the PATH variable, the first problem
+   you will run into is that ImageMagick may not be able to
+   find any of its "modules. We did not have modules until 5.2
+   so this is a NEW problems. Modules are all the IM_MOD*.DLL
+   files you see in the distribution. There is one of these for
+   each and every file format that ImageMagick supports. This
+   environment variable tells the system were to look for these
+   DLL's. The compiled in "default" is "." - which says - look
+   in the same place that the application is running "in". If
+   you are running from somewhere other then "bin" - this will
+   no longer work and you must use this variable. If you elect to
+   leave the modules in the same place as the EXE's (a good idea)
+   then you can simply set this to the same place as you did the
+   PATH variable. In my case:
+
+      D:\CVS\ImageMagick\VisualMagick\bin
+
+   This is also the place were ImageMagick expects to find the
+   all important "modules.mgk" file.
+
+   One cool thing about 5.2 is that you can now leave out file
+   formats and lighten you load. If all you ever need is GIF and
+   JPEG, then simply drop all the other DLL's into the local
+   trash can and get on with your life.
+
+   WARNING: Always keep the "xc" format, since IM seems to need
+   and "assume" that this one exists and gets real "unhappy" if
+   it does not. We are still tracking down some of these issues.
+
+  MAGICK_DELEGATE_PATH
+
+   This puppy has previously been to declare where the delegates
+   configuration file is located (delegates.mkg). This guys tells
+   ImageMagick what to do with any "formats" that it does not
+   know about internally. This is a very powerful capability in
+   of itself. In 5.2 this also is the place were ImageMagick looks
+   for the "magic.mgk" file. This one contains a list of file types
+   and "magick numbers" that it uses to identify an image without
+   using the file extension. If this guy is missing you will notice
+   that ImageMagick tools can not do this anymore and can only see
+   JPEG's that have a JPEG extension. Why? - because it matches the
+   file extension against the IM_MOD_XX_JPEG_.DLL file name as its
+   only mapping method if it can not find "magick.mgk". If you use
+   a file extension on a JPEG file this is something else you will
+   get the "now famous"...
+
+   no delegate for this image format (house1.xxx) [No such file or
+   directory].
+
+   ...error. One final point. The file "modules.mgk" discussed in
+   the previous environment variable section tells ImageMagick how
+   various files extensions and types map (or alias) to one another.
+   This is the place were it can figure out that a "JPG" file is
+   really a "JPEG" format and picks the right DLL when the magick
+   number identification system is not being used. This is mostly
+   used for when you need to force a format like BMP24:xxxxx.bmp.
+
+  ALSO. You can elect to changes these things the good old "hard-
+  coded" way. Two #defines are applicable.
+
+  defines.h has 
+
+  #define DelegatePath  "c:\\ImageMagick\\"
+  #define RGBColorDatabase  "c:\\ImageMagick\\rgb.txt"
+
+  NOTE #3:
+
   The two utilities "display" and "animate" will only be usable when
   the real X11 libraries are included. The other build environments uses
   the X11 stubs to supply non-functional stubs for the X-Window
