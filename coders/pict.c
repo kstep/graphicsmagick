@@ -1406,7 +1406,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     *p;
 
   size_t
-    count;
+    count,
+    offset;
 
   unsigned char
     *buffer,
@@ -1501,7 +1502,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   WriteBlobMSBShort(image,size_rectangle.bottom);
   WriteBlobMSBShort(image,size_rectangle.right);
   WriteBlobMSBShort(image,PictVersion);
-  WriteBlobMSBShort(image,0x02ff);
+  WriteBlobMSBShort(image,0x02ff);  /* version #2 */
   WriteBlobMSBShort(image,PictInfoOp);
   WriteBlobMSBLong(image,0xFFFE0000UL);
   /*
@@ -1531,11 +1532,11 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       WriteBlobMSBShort(image,image->color_profile.length+4);
       WriteBlobMSBLong(image,0x00000000UL);
       WriteBlob(image,image->color_profile.length,image->color_profile.info);
+      WriteBlobMSBShort(image,0xa1);
+      WriteBlobMSBShort(image,0xe0);
+      WriteBlobMSBShort(image,4);
+      WriteBlobMSBLong(image,0x00000002UL);
     }
-  WriteBlobMSBShort(image,0xa1);
-  WriteBlobMSBShort(image,0xe0);
-  WriteBlobMSBShort(image,4);
-  WriteBlobMSBLong(image,0x00000002UL);
   /*
     Write crop region opcode and crop bounding box.
   */
@@ -1595,11 +1596,11 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       WriteBlobMSBShort(image,0x0000);
       WriteBlobMSBShort(image,y_resolution);
       WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x82B60001UL);
-      WriteBlobMSBLong(image,0x0C50685FUL);
-      WriteBlobMSBLong(image,0x746F202DUL);
-      WriteBlobMSBLong(image,0x204A5045UL);
-      WriteBlobMSBLong(image,0x47000000UL);
+      WriteBlobMSBLong(image,0x87AC0001UL);
+      WriteBlobMSBLong(image,0x0B466F74UL);
+      WriteBlobMSBLong(image,0x6F202D20UL);
+      WriteBlobMSBLong(image,0x4A504547UL);
+      WriteBlobMSBLong(image,0x00000000UL);
       WriteBlobMSBLong(image,0x00000000UL);
       WriteBlobMSBLong(image,0x00000000UL);
       WriteBlobMSBLong(image,0x00000000UL);
@@ -1748,6 +1749,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   if (count & 0x1)
     (void) WriteBlobByte(image,'\0');
   WriteBlobMSBShort(image,PictEndOfPictureOp);
+  offset=TellBlob(image);
+  (void) SeekBlob(image,512,SEEK_SET);
+  WriteBlobMSBShort(image,offset);
   LiberateMemory((void **) &scanline);
   LiberateMemory((void **) &packed_scanline);
   LiberateMemory((void **) &buffer);
