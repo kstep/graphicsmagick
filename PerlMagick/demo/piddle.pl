@@ -1,12 +1,12 @@
 #!/usr/local/bin/perl
 # Piddle example using PerlMagick methods.
 
-use Image::Magick;
+use Graphics::Magick;
 
 #
 # Create white canvas.
 #
-$image=Image::Magick->new(size=>'300x300');
+$image=Graphics::Magick->new(size=>'300x300');
 $image->Read('xc:white');
 #
 # Draw blue grid

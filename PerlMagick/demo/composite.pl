@@ -1,13 +1,13 @@
 #!/usr/local/bin/perl
 
-use Image::Magick;
+use Graphics::Magick;
 
 #$font = '-adobe-helvetica-medium-r-normal--25-180-100-100-p-130-iso8729-1';
 #$font = 'Times';
 $font = 'Generic.ttf';
 
-$image = Image::Magick->new();
-$smile = Image::Magick->new();
+$image = Graphics::Magick->new();
+$smile = Graphics::Magick->new();
 $smile->Read('smile.gif');
 $smile->Set(background=>'none');
 $x = 100;
@@ -17,7 +17,7 @@ for ($angle=0; $angle < 360; $angle+=30)
   my ($thumbnail);
 
   print "angle $angle\n";
-  $thumbnail=Image::Magick->new(size=>"600x600",pointsize=>24,font=>$font,
+  $thumbnail=Graphics::Magick->new(size=>"600x600",pointsize=>24,font=>$font,
     fill=>'black');
   $thumbnail->Read("xc:white");
   $thumbnail->Draw(primitive=>'line',points=>"300,100 300,500",stroke=>'#600');

@@ -2,25 +2,25 @@
 #
 # Overall demo of the major PerlMagick methods.
 #
-use Image::Magick;
+use Graphics::Magick;
 
 #
 # Read model & smile image.
 #
 print "Read...\n";
-$null=Image::Magick->new;
+$null=Graphics::Magick->new;
 $null->Set(size=>'70x70');
 $x=$null->ReadImage('NULL:black');
 warn "$x" if "$x";
 
-$model=Image::Magick->new();
+$model=Graphics::Magick->new();
 $x=$model->ReadImage('model.gif');
 warn "$x" if "$x";
 $model->Label('Magick');
 $model->Set(bordercolor=>'black');
 $model->Set(background=>'black');
 
-$smile=Image::Magick->new;
+$smile=Graphics::Magick->new;
 $x=$smile->ReadImage('smile.gif');
 warn "$x" if "$x";
 $smile->Label('Smile');
@@ -29,7 +29,7 @@ $smile->Set(bordercolor=>'black');
 # Create image stack.
 #
 print "Transform image...\n";
-$images=Image::Magick->new();
+$images=Graphics::Magick->new();
 $example=$null->Clone();
 push(@$images,$example);
 $example=$null->Clone();
@@ -171,7 +171,7 @@ $example->GaussianBlur('0.0x1.5');
 push(@$images,$example);
 
 print "Gradient...\n";
-$gradient=Image::Magick->new;
+$gradient=Graphics::Magick->new;
 $gradient->Set(size=>'130x194');
 $x=$gradient->ReadImage('gradient:#20a0ff-#ffff00');
 warn "$x" if "$x";
@@ -227,7 +227,7 @@ $example->OilPaint();
 push(@$images,$example);
 
 print "Plasma...\n";
-$plasma=Image::Magick->new;
+$plasma=Graphics::Magick->new;
 $plasma->Set(size=>'130x194');
 $x=$plasma->ReadImage('plasma:fractal');
 warn "$x" if "$x";
@@ -348,7 +348,7 @@ $montage=$images->Montage(geometry=>'130x194+10+5>',gravity=>'Center',
   background=>'#ffffff',font=>'Generic.ttf',pointsize=>18,fill=>'#600',
   stroke=>'none');
 
-$logo=Image::Magick->new();
+$logo=Graphics::Magick->new();
 $logo->Read('logo:');
 $logo->Zoom('40%');
 $montage->Composite(image=>$logo,gravity=>'North');

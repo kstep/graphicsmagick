@@ -7,7 +7,7 @@
 BEGIN { $| = 1; $test=1; print "1..1\n"; }
 END {print "not \n" unless $loaded;}
 
-use Image::Magick;
+use Graphics::Magick;
 $loaded=1;
 
 require 't/subroutines.pl';

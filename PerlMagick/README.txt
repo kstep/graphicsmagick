@@ -95,9 +95,9 @@ Example Perl Magick Script
     Here is an example script to get you started: 
 
         #!/usr/bin/perl
-        use Image::Magick;
+        use Graphics::Magick;
 
-        $q = Image::Magick->new;
+        $q = Graphics::Magick->new;
         $x = $q->Read("model.gif", "logo.gif", "rose.gif");
         warn "$x" if $x;
 

@@ -4,17 +4,17 @@
 #
 BEGIN { $| = 1; $test=1, print "1..1\n"; }
 END {print "not ok 1\n" unless $loaded;}
-use Image::Magick;
+use Graphics::Magick;
 $loaded=1;
 
 chdir 't' || die 'Cd failed';
 
-$image = new Image::Magick;
+$image = new Graphics::Magick;
 $image->Read( 'input.miff' );
 @blob = $image->ImageToBlob();
 undef $image;
 
-$image=Image::Magick->new( magick=>'MIFF' );
+$image=Graphics::Magick->new( magick=>'MIFF' );
 $image->BlobToImage( @blob );
 
 if ($image->Get('signature') ne 

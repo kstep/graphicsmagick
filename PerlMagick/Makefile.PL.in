@@ -71,8 +71,8 @@ WriteMakefile
    # Perl binary name (if a Perl binary is built)
    'MAP_TARGET'	=> 'PerlMagick',
 
-   # Perl module name is Image::Magick
-   'NAME'	=> 'Image::Magick',
+   # Perl module name is Graphics::Magick
+   'NAME'	=> 'Graphics::Magick',
 
    # Let CFLAGS drive optimization flags by setting OPTIMIZE to empty
    # 'OPTIMIZE'	=> '',

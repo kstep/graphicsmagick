@@ -6,7 +6,7 @@
 #
 BEGIN { $| = 1; $test=1, print "1..19\n"; }
 END {print "not ok 1\n" unless $loaded;}
-use Image::Magick;
+use Graphics::Magick;
 $loaded=1;
 
 require 't/subroutines.pl';

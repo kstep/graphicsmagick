@@ -58,6 +58,7 @@
 #include "color.h"
 #include "constitute.h"
 #include "delegate.h"
+#include "log.h"
 #include "magick.h"
 #include "monitor.h"
 #include "stream.h"
@@ -1940,19 +1941,6 @@ MagickExport unsigned int PopImagePixels(const Image *image,
 %    o source:  The pixel components are transferred from this buffer.
 %
 */
-
-static inline IndexPacket PushColormapIndex(Image *image,
-  const unsigned long index)
-{
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (index < image->colors)
-    return((IndexPacket) index);
-  ThrowException(&image->exception,CorruptImageError,"InvalidColormapIndex",
-    image->filename);
-  return(0);
-}
-
 MagickExport unsigned int PushImagePixels(Image *image,
   const QuantumType quantum,const unsigned char *source)
 {
@@ -1981,578 +1969,593 @@ MagickExport unsigned int PushImagePixels(Image *image,
   q=GetPixels(image);
   indexes=GetIndexes(image);
   switch (quantum)
-  {
+    {
     case IndexQuantum:
-    {
-      if (image->colors <= 256)
-        {
-          for (x = (long) number_pixels; x > 0; --x)
-          {
-            index=(IndexPacket) (*p++);
-            VerifyColormapIndex(image,index);
-            *indexes++=index;
-            *q++=image->colormap[index];
-          }
-          break;
-        }
-      if (image->colors <= 65536L)
-        {
-          for ( x= (long) number_pixels; x > 0; --x)
-          {
-            index=(*p << 8) | *(p+1);
-            p+=2;
-            VerifyColormapIndex(image,index);
-            *indexes++=index;
-            *q++=image->colormap[index];
-          }
-          break;
-        }
-      for (x = (long) number_pixels; x > 0; --x)
       {
-        index=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        VerifyColormapIndex(image,index);
-        *indexes++=index;
-        *q++=image->colormap[index];
-      }
-      break;
-    }
-    case IndexAlphaQuantum:
-    {
-      if (image->colors <= 256)
-        {
-          for (x=0; x < (long) number_pixels; x++)
+        assert(image->colors <= MaxColormapSize);
+        if (image->colors <= 256)
           {
-            pixel=(*p++);
-            indexes[x]=PushColormapIndex(image,pixel);
-            *q=image->colormap[indexes[x]];
-            pixel=(*p++);
-            q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(pixel));
-            q++;
-          }
-          break;
-        }
-      if (image->colors <= 65536L)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            indexes[x]=PushColormapIndex(image,pixel);
-            *q=image->colormap[indexes[x]];
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->opacity=ScaleShortToQuantum(65535L-pixel);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (long) number_pixels; x++)
-      {
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        indexes[x]=PushColormapIndex(image,pixel);
-        *q=image->colormap[indexes[x]];
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->opacity=ScaleLongToQuantum(ScaleQuantumToLong(MaxRGB)-pixel);
-        q++;
-      }
-      break;
-    }
-    case GrayQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p++);
-            indexes[x]=PushColormapIndex(image,pixel);
-            *q++=image->colormap[indexes[x]];
-          }
-          break;
-        }
-      if (image->depth <= 16)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            indexes[x]=PushColormapIndex(image,pixel);
-            *q++=image->colormap[indexes[x]];
-          }
-          break;
-        }
-      for (x=0; x < (long) number_pixels; x++)
-      {
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        indexes[x]=PushColormapIndex(image,pixel);
-        *q++=image->colormap[indexes[x]];
-      }
-      break;
-    }
-    case GrayAlphaQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p++);
-            indexes[x]=PushColormapIndex(image,pixel);
-            *q=image->colormap[indexes[x]];
-            pixel=(*p++);
-            q->opacity=(Quantum) (MaxRGB-pixel);
-            q++;
-          }
-          break;
-        }
-      if (image->depth <= 16)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            indexes[x]=PushColormapIndex(image,pixel);
-            *q=image->colormap[indexes[x]];
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->opacity=ScaleShortToQuantum(65535L-pixel);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (long) number_pixels; x++)
-      {
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        indexes[x]=PushColormapIndex(image,pixel);
-        *q=image->colormap[indexes[x]];
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->opacity=ScaleLongToQuantum(ScaleQuantumToLong(MaxRGB)-pixel);
-        q++;
-      }
-      break;
-    }
-    case RedQuantum:
-    case CyanQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p++);
-            q->red=ScaleCharToQuantum(pixel);
-            q++;
-          }
-          break;
-        }
-      if (image->depth <= 16)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->red=ScaleShortToQuantum(pixel);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (long) number_pixels; x++)
-      {
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->red=ScaleLongToQuantum(pixel);
-        q++;
-      }
-      break;
-    }
-    case GreenQuantum:
-    case MagentaQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p++);
-            q->green=ScaleCharToQuantum(pixel);
-            q++;
-          }
-          break;
-        }
-      if (image->depth <= 16)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->green=ScaleShortToQuantum(pixel);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (long) number_pixels; x++)
-      {
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->green=ScaleLongToQuantum(pixel);
-        q++;
-      }
-      break;
-    }
-    case BlueQuantum:
-    case YellowQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p++);
-            q->blue=ScaleCharToQuantum(pixel);
-            q++;
-          }
-          break;
-        }
-      if (image->depth <= 16)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->blue=ScaleShortToQuantum(pixel);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (long) number_pixels; x++)
-      {
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->blue=ScaleLongToQuantum(pixel);
-        q++;
-      }
-      break;
-    }
-    case AlphaQuantum:
-    {
-      if (image->colorspace == CMYKColorspace)
-        {
-          if (image->depth <= 8)
-            {
-              for (x=0; x < (long) number_pixels; x++)
+            for (x = (long) number_pixels; x > 0; --x)
               {
-                pixel=(*p++);
-                indexes[x]=ScaleCharToQuantum(pixel);
+                index=(IndexPacket) (*p++);
+                VerifyColormapIndex(image,index);
+                *indexes++=index;
+                *q++=image->colormap[index];
               }
-              break;
-            }
-          if (image->depth <= 16)
-            {
-              for (x=0; x < (long) number_pixels; x++)
+            break;
+          }
+#if MaxColormapSize > 256
+        if (image->colors <= 65536L)
+          {
+            for ( x= (long) number_pixels; x > 0; --x)
               {
+                index=(*p << 8) | *(p+1);
+                p+=2;
+                VerifyColormapIndex(image,index);
+                *indexes++=index;
+                *q++=image->colormap[index];
+              }
+            break;
+          }
+#endif /* MaxColormapSize > 256 */
+#if MaxColormapSize > 65536
+        for (x = (long) number_pixels; x > 0; --x)
+          {
+            index=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+            p+=4;
+            VerifyColormapIndex(image,index);
+            *indexes++=index;
+            *q++=image->colormap[index];
+          }
+        break;
+#endif /* MaxColormapSize > 65536 */
+      }
+    case IndexAlphaQuantum:
+      {
+        assert(image->colors <= MaxColormapSize);
+        if (image->colors <= 256)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                index=(IndexPacket) (*p++);
+                VerifyColormapIndex(image,index);
+                *indexes++=index;
+                *q=image->colormap[index];
+                pixel=(*p++);
+                q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(pixel));
+                q++;
+              }
+            break;
+          }
+#if MaxColormapSize > 256
+        if (image->colors <= 65536L)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                index=(IndexPacket) (*p << 8) | *(p+1);
+                p+=2;
+                VerifyColormapIndex(image,index);
+                *indexes++=index;
+                *q=image->colormap[index];
                 pixel=(*p << 8) | *(p+1);
                 p+=2;
-                indexes[x]=ScaleShortToQuantum(pixel);
+                q->opacity=ScaleShortToQuantum(65535L-pixel);
+                q++;
               }
-              break;
-            }
-          for (x=0; x < (long) number_pixels; x++)
+            break;
+          }
+#endif /* MaxColormapSize > 256 */
+#if MaxColormapSize > 65536
+        for (x = (long) number_pixels; x > 0; --x)
           {
+            index=(IndexPacket)
+              (*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+            p+=4;
+            VerifyColormapIndex(image,index);
+            *indexes++=index;
+            *q=image->colormap[index];
             pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
             p+=4;
-            indexes[x]=ScaleLongToQuantum(pixel);
-          }
-          break;
-        }
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p++);
-            q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(pixel));
+            q->opacity=ScaleLongToQuantum(ScaleQuantumToLong(MaxRGB)-pixel);
             q++;
           }
-          break;
-        }
-      if (image->depth <= 16)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->opacity=ScaleShortToQuantum(65535L-pixel);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (long) number_pixels; x++)
-      {
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->opacity=ScaleLongToQuantum(ScaleQuantumToLong(MaxRGB)-pixel);
-        q++;
-      }
       break;
-    }
+#endif /* MaxColormapSize > 65536 */
+      }
+    case GrayQuantum:
+      {
+        if (image->depth <= 8)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                index=(IndexPacket) (*p++);
+                VerifyColormapIndex(image,index);
+                *indexes++=index;
+                *q++=image->colormap[index];
+              }
+            break;
+          }
+        if (image->depth <= 16)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                index=(IndexPacket) ((*p << 8) | *(p+1));
+                p+=2;
+                VerifyColormapIndex(image,index);
+                *indexes++=index;
+                *q++=image->colormap[index];
+              }
+            break;
+          }
+        for (x = (long) number_pixels; x > 0; --x)
+          {
+            index=(IndexPacket)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3));
+            p+=4;
+            VerifyColormapIndex(image,index);
+            *indexes++=index;
+            *q++=image->colormap[index];
+          }
+        break;
+      }
+    case GrayAlphaQuantum:
+      {
+        if (image->depth <= 8)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                index=(IndexPacket) (*p++);
+                VerifyColormapIndex(image,index);
+                *indexes++=index;
+                *q=image->colormap[index];
+                pixel=(*p++);
+                q->opacity=(Quantum) (MaxRGB-pixel);
+                q++;
+              }
+            break;
+          }
+        if (image->depth <= 16)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                index=(IndexPacket) ((*p << 8) | *(p+1));
+                p+=2;
+                VerifyColormapIndex(image,index);
+                *indexes++=index;
+                *q=image->colormap[index];
+                pixel=(*p << 8) | *(p+1);
+                p+=2;
+                q->opacity=ScaleShortToQuantum(65535L-pixel);
+                q++;
+              }
+            break;
+          }
+        for (x = (long) number_pixels; x > 0; --x)
+          {
+            index=(IndexPacket)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3));
+            p+=4;
+            VerifyColormapIndex(image,index);
+            *indexes++=index;
+            *q=image->colormap[index];
+            pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+            p+=4;
+            q->opacity=ScaleLongToQuantum(ScaleQuantumToLong(MaxRGB)-pixel);
+            q++;
+          }
+        break;
+      }
+    case RedQuantum:
+    case CyanQuantum:
+      {
+        if (image->depth <= 8)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                q->red=ScaleCharToQuantum((unsigned char) (*p++));
+                q++;
+              }
+            break;
+          }
+        if (image->depth <= 16)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                q->red=ScaleShortToQuantum((unsigned short)
+                   ((*p << 8) | *(p+1)));
+                p+=2;
+                q++;
+              }
+            break;
+          }
+        for (x = (long) number_pixels; x > 0; --x)
+          {
+            q->red=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            q++;
+          }
+        break;
+      }
+    case GreenQuantum:
+    case MagentaQuantum:
+      {
+        if (image->depth <= 8)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                q->green=ScaleCharToQuantum((unsigned char) ((*p++)));
+                q++;
+              }
+            break;
+          }
+        if (image->depth <= 16)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                q->green=ScaleShortToQuantum((unsigned short)
+                  ((*p << 8) | *(p+1)));
+                p+=2;
+                q++;
+              }
+            break;
+          }
+        for (x = (long) number_pixels; x > 0; --x)
+          {
+            q->green=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            q++;
+          }
+        break;
+      }
+    case BlueQuantum:
+    case YellowQuantum:
+      {
+        if (image->depth <= 8)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                q->blue=ScaleCharToQuantum((unsigned char) (*p++));
+                q++;
+              }
+            break;
+          }
+        if (image->depth <= 16)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                q->blue=ScaleShortToQuantum((unsigned short)
+                  ((*p << 8) | *(p+1)));
+                p+=2;
+                q++;
+              }
+            break;
+          }
+        for (x = (long) number_pixels; x > 0; --x)
+          {
+            q->blue=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            q++;
+          }
+        break;
+      }
+    case AlphaQuantum:
+      {
+        if (image->colorspace == CMYKColorspace)
+          {
+            if (image->depth <= 8)
+              {
+                for (x = (long) number_pixels; x > 0; --x)
+                  {
+                    *indexes++=ScaleCharToQuantum((unsigned char) (*p++));
+                  }
+                break;
+              }
+            if (image->depth <= 16)
+              {
+                for (x = (long) number_pixels; x > 0; --x)
+                  {
+                    *indexes++=ScaleShortToQuantum((unsigned short)
+                      ((*p << 8) | *(p+1)));
+                    p+=2;
+                  }
+                break;
+              }
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                *indexes++=ScaleLongToQuantum((unsigned int)
+                  ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+                p+=4;
+              }
+            break;
+          }
+        if (image->depth <= 8)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                /* FIXME: Huh? */
+                q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum((unsigned char)
+                  (*p++)));
+                q++;
+              }
+            break;
+          }
+        if (image->depth <= 16)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                /* FIXME: Huh? */
+                q->opacity=ScaleShortToQuantum(65535-((unsigned short)
+                  ((*p << 8) | *(p+1))));
+                p+=2;
+                q++;
+              }
+            break;
+          }
+        for (x = (long) number_pixels; x > 0; --x)
+          {
+            /* FIXME: Huh? */
+            q->opacity=ScaleLongToQuantum(ScaleQuantumToLong(MaxRGB)-
+              ((unsigned int)((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) |
+                *(p+3))));
+            p+=4;
+            q++;
+          }
+        break;
+      }
     case BlackQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p++);
-            q->opacity=ScaleCharToQuantum(pixel);
-            q++;
-          }
-          break;
-        }
-      if (image->depth <= 16)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->opacity=ScaleShortToQuantum(pixel);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (long) number_pixels; x++)
       {
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->opacity=ScaleLongToQuantum(pixel);
-        q++;
+        if (image->depth <= 8)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                q->opacity=ScaleCharToQuantum((unsigned char) (*p++));
+                q++;
+              }
+            break;
+          }
+        if (image->depth <= 16)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                q->opacity=ScaleShortToQuantum((unsigned short)
+                                               ((*p << 8) | *(p+1)));
+                p+=2;
+                q++;
+              }
+            break;
+          }
+        for (x = (long) number_pixels; x > 0; --x)
+          {
+            q->opacity=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            q++;
+          }
+        break;
       }
-      break;
-    }
     case RGBQuantum:
     default:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p++);
-            q->red=ScaleCharToQuantum(pixel);
-            pixel=(*p++);
-            q->green=ScaleCharToQuantum(pixel);
-            pixel=(*p++);
-            q->blue=ScaleCharToQuantum(pixel);
-            q++;
-          }
-          break;
-        }
-      if (image->depth <= 16)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->red=ScaleShortToQuantum(pixel);
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->green=ScaleShortToQuantum(pixel);
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->blue=ScaleShortToQuantum(pixel);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (long) number_pixels; x++)
       {
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->red=ScaleLongToQuantum(pixel);
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->green=ScaleLongToQuantum(pixel);
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->blue=ScaleLongToQuantum(pixel);
-        q++;
+        if (image->depth <= 8)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                q->red=ScaleCharToQuantum((unsigned char) (*p++));
+                q->green=ScaleCharToQuantum((unsigned char) (*p++));
+                q->blue=ScaleCharToQuantum((unsigned char) (*p++));
+                q++;
+              }
+            break;
+          }
+        if (image->depth <= 16)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                q->red=ScaleShortToQuantum((unsigned short)
+                  ((*p << 8) | *(p+1)));
+                p+=2;
+                q->green=ScaleShortToQuantum((unsigned short)
+                  ((*p << 8) | *(p+1)));
+                p+=2;
+                q->blue=ScaleShortToQuantum((unsigned short)
+                  ((*p << 8) | *(p+1)));
+                p+=2;
+                q++;
+              }
+            break;
+          }
+        for (x = (long) number_pixels; x > 0; --x)
+          {
+            q->red=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            q->green=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            q->blue=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            q++;
+          }
+        break;
       }
-      break;
-    }
     case RGBAQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p++);
-            q->red=ScaleCharToQuantum(pixel);
-            pixel=(*p++);
-            q->green=ScaleCharToQuantum(pixel);
-            pixel=(*p++);
-            q->blue=ScaleCharToQuantum(pixel);
-            pixel=(*p++);
-            q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(pixel));
-            q++;
-          }
-          break;
-        }
-      if (image->depth <= 16)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->red=ScaleShortToQuantum(pixel);
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->green=ScaleShortToQuantum(pixel);
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->blue=ScaleShortToQuantum(pixel);
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->opacity=ScaleShortToQuantum(65535L-pixel);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (long) number_pixels; x++)
       {
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->red=ScaleLongToQuantum(pixel);
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->green=ScaleLongToQuantum(pixel);
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->blue=ScaleLongToQuantum(pixel);
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->opacity=ScaleLongToQuantum(ScaleQuantumToLong(MaxRGB)-pixel);
-        q++;
+        if (image->depth <= 8)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                q->red=ScaleCharToQuantum((unsigned char) (*p++));
+                q->green=ScaleCharToQuantum((unsigned char) (*p++));
+                q->blue=ScaleCharToQuantum((unsigned char) (*p++));
+                /* FIXME: Huh? */
+                q->opacity=(Quantum) (MaxRGB-
+                  ScaleCharToQuantum((unsigned char) (*p++)));
+                q++;
+              }
+            break;
+          }
+        if (image->depth <= 16)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                q->red=ScaleShortToQuantum((unsigned short)
+                  ((*p << 8) | *(p+1)));
+                p+=2;
+                q->green=ScaleShortToQuantum((unsigned short)
+                  ((*p << 8) | *(p+1)));
+                p+=2;
+                q->blue=ScaleShortToQuantum((unsigned short)
+                  ((*p << 8) | *(p+1)));
+                p+=2;
+                /* FIXME: Huh? */
+                q->opacity=ScaleShortToQuantum(65535-
+                  ((unsigned short) ((*p << 8) | *(p+1))));
+                p+=2;
+                q++;
+              }
+            break;
+          }
+        for (x = (long) number_pixels; x > 0; --x)
+          {
+            q->red=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            q->green=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            q->blue=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            /* FIXME: Huh? */
+            q->opacity=ScaleLongToQuantum(ScaleQuantumToLong(MaxRGB)-
+              ((unsigned int) ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) |
+                *(p+3))));
+            p+=4;
+            q++;
+          }
+        break;
       }
-      break;
-    }
     case CMYKQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p++);
-            q->red=ScaleCharToQuantum(pixel);
-            pixel=(*p++);
-            q->green=ScaleCharToQuantum(pixel);
-            pixel=(*p++);
-            q->blue=ScaleCharToQuantum(pixel);
-            pixel=(*p++);
-            q->opacity=ScaleCharToQuantum(pixel);
-            q++;
-          }
-          break;
-        }
-      if (image->depth <= 16)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->red=ScaleShortToQuantum(pixel);
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->green=ScaleShortToQuantum(pixel);
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->blue=ScaleShortToQuantum(pixel);
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->opacity=ScaleShortToQuantum(pixel);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (long) number_pixels; x++)
       {
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->red=ScaleLongToQuantum(pixel);
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->green=ScaleLongToQuantum(pixel);
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->blue=ScaleLongToQuantum(pixel);
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->opacity=ScaleLongToQuantum(pixel);
-        q++;
+        if (image->depth <= 8)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                q->red=ScaleCharToQuantum((unsigned char) (*p++));
+                q->green=ScaleCharToQuantum((unsigned char) (*p++));
+                q->blue=ScaleCharToQuantum((unsigned char) (*p++));
+                q->opacity=ScaleCharToQuantum((unsigned char) (*p++));
+                q++;
+              }
+            break;
+          }
+        if (image->depth <= 16)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                q->red=ScaleShortToQuantum((unsigned short)
+                  ((*p << 8) | *(p+1)));
+                p+=2;
+                q->green=ScaleShortToQuantum((unsigned short)
+                  ((*p << 8) | *(p+1)));
+                p+=2;
+                q->blue=ScaleShortToQuantum((unsigned short)
+                  ((*p << 8) | *(p+1)));
+                p+=2;
+                q->opacity=ScaleShortToQuantum((unsigned short)
+                  ((*p << 8) | *(p+1)));
+                p+=2;
+                q++;
+              }
+            break;
+          }
+        for (x = (long) number_pixels; x > 0; --x)
+          {
+            q->red=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            q->green=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            q->blue=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            q->opacity=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            q++;
+          }
+        break;
       }
-      break;
-    }
     case CMYKAQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p++);
-            q->red=ScaleCharToQuantum(pixel);
-            pixel=(*p++);
-            q->green=ScaleCharToQuantum(pixel);
-            pixel=(*p++);
-            q->blue=ScaleCharToQuantum(pixel);
-            pixel=(*p++);
-            q->opacity=ScaleCharToQuantum(pixel);
-            pixel=(*p++);
-            indexes[x]=(Quantum) (MaxRGB-ScaleCharToQuantum(pixel));
-            q++;
-          }
-          break;
-        }
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (long) number_pixels; x++)
-          {
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->red=ScaleShortToQuantum(pixel);
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->green=ScaleShortToQuantum(pixel);
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->blue=ScaleShortToQuantum(pixel);
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            q->opacity=ScaleShortToQuantum(pixel);
-            pixel=(*p << 8) | *(p+1);
-            p+=2;
-            indexes[x]=ScaleShortToQuantum(65535L-pixel);
-            q++;
-          }
-          break;
-        }
-      for (x=0; x < (long) number_pixels; x++)
       {
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->red=ScaleLongToQuantum(pixel);
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->green=ScaleLongToQuantum(pixel);
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->blue=ScaleLongToQuantum(pixel);
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        q->opacity=ScaleLongToQuantum(pixel);
-        pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-        p+=4;
-        indexes[x]=ScaleLongToQuantum(ScaleQuantumToLong(MaxRGB)-pixel);
-        q++;
+        if (image->depth <= 8)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                q->red=ScaleCharToQuantum((unsigned char) (*p++));
+                q->green=ScaleCharToQuantum((unsigned char) (*p++));
+                q->blue=ScaleCharToQuantum((unsigned char) (*p++));
+                q->opacity=ScaleCharToQuantum((unsigned char) (*p++));
+                /* FIXME: Huh? */
+                *indexes++=(Quantum) (MaxRGB-ScaleCharToQuantum((unsigned char)
+                  (*p++)));
+                q++;
+              }
+            break;
+          }
+        if (image->depth <= 8)
+          {
+            for (x = (long) number_pixels; x > 0; --x)
+              {
+                q->red=ScaleShortToQuantum((unsigned short)
+                  ((*p << 8) | *(p+1)));
+                p+=2;
+                q->green=ScaleShortToQuantum((unsigned short)
+                  ((*p << 8) | *(p+1)));
+                p+=2;
+                q->blue=ScaleShortToQuantum((unsigned short)
+                  ((*p << 8) | *(p+1)));
+                p+=2;
+                q->opacity=ScaleShortToQuantum((unsigned short)
+                  ((*p << 8) | *(p+1)));
+                p+=2;
+                /* FIXME: Huh? */
+                *indexes++=ScaleShortToQuantum(65535-((unsigned short)
+                  ((*p << 8) | *(p+1))));
+                p+=2;
+                q++;
+              }
+            break;
+          }
+        for (x = (long) number_pixels; x > 0; --x)
+          {
+            q->red=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            q->green=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            q->blue=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            q->opacity=ScaleLongToQuantum((unsigned int)
+              ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3)));
+            p+=4;
+            /* FIXME: Huh? */
+            *indexes++=ScaleLongToQuantum(ScaleQuantumToLong(MaxRGB)-
+              ((unsigned int) ((*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) |
+                *(p+3))));
+            p+=4;
+            q++;
+          }
+        break;
       }
-      break;
     }
-  }
   return(True);
 }
 
@@ -2656,7 +2659,12 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     {
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Invoking decoder for \"%.1024s\" (%.1024s)",magick_info->name,
+        magick_info->description);
       image=(magick_info->decoder)(clone_info,exception);
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Returned from decoder for \"%.1024s\"",magick_info->name);
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);
     }
@@ -2708,7 +2716,12 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         }
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Invoking decoder for \"%.1024s\" (%.1024s)",magick_info->name,
+        magick_info->description);
       image=(magick_info->decoder)(clone_info,exception);
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Returned from decoder for \"%.1024s\"",magick_info->name);
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);
     }
@@ -3068,7 +3081,12 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     {
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Invoking encoder for \"%.1024s\" (%.1024s)",magick_info->name,
+        magick_info->description);
       status=(magick_info->encoder)(clone_info,image);
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Returned from encoder for \"%.1024s\"",magick_info->name);
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);
     }

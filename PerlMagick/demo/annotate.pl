@@ -1,12 +1,12 @@
 #!/usr/local/bin/perl
 
-use Image::Magick;
+use Graphics::Magick;
 
 #$font = '-adobe-helvetica-medium-r-normal--25-180-100-100-p-130-iso8729-1';
 #$font = 'Times';
 $font = 'Generic.ttf';
 
-$image = Image::Magick->new();
+$image = Graphics::Magick->new();
 $x = 100;
 $y = 100;
 for ($angle=0; $angle < 360; $angle+=30)
@@ -14,7 +14,7 @@ for ($angle=0; $angle < 360; $angle+=30)
   my ($label);
 
   print "angle $angle\n";
-  $label=Image::Magick->new(size=>"600x600",pointsize=>24,font=>$font);
+  $label=Graphics::Magick->new(size=>"600x600",pointsize=>24,font=>$font);
   $label->Read("xc:white");
   $label->Draw(primitive=>'line',points=>"300,100 300,500",stroke=>'#600');
   $label->Draw(primitive=>'line',points=>"100,300 500,300",stroke=>'#600');

@@ -6,7 +6,7 @@
 #
 BEGIN { $| = 1; $test=1, print "1..71)\n"; }
 END {print "not ok 1\n" unless $loaded;}
-use Image::Magick;
+use Graphics::Magick;
 $loaded=1;
 
 require 't/subroutines.pl';
@@ -14,7 +14,7 @@ require 't/subroutines.pl';
 chdir 't' || die 'Cd failed';
 
 # Determine if QuantumMagick is defined
-$image=Image::Magick->new;
+$image=Graphics::Magick->new;
 my $depth = $image->Get('depth');
 
 testSetAttribute('input.miff','adjoin','True');

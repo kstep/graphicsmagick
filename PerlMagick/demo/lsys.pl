@@ -2,7 +2,7 @@
 
 # Written by jreed@itis.com, adapted by John Cristy.
 
-use Image::Magick;
+use Graphics::Magick;
 use Turtle;
 
 sub flower
@@ -43,18 +43,18 @@ sub lsys_init
   );
 
   # Create the main image
-  $im = new Image::Magick;
+  $im = new Graphics::Magick;
   $im->Set(size=>$imagesize . 'x' . $imagesize);
   $im->Read('xc:white');
   
   # Create the flower images
-  $pink_flower = new Image::Magick;
+  $pink_flower = new Graphics::Magick;
   $pink_flower->Read('pink_flower.gif');
   
-  $red_flower = new Image::Magick;
+  $red_flower = new Graphics::Magick;
   $red_flower->Read('red_flower.gif');
   
-  $yellow_flower = new Image::Magick;
+  $yellow_flower = new Graphics::Magick;
   $yellow_flower->Read('yellow_flower.gif');
   
   # Turtle:  the midpoint of the bottom edge of the image, pointing up.

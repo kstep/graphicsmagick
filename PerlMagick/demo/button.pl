@@ -2,9 +2,9 @@
 #
 # Make simple beveled button.
 #
-use Image::Magick;
+use Graphics::Magick;
 
-$q=Image::Magick->new;
+$q=Graphics::Magick->new;
 $q->Set(size=>'30x106');
 $q->Read('gradient:#00f685-#0083f8');
 $q->Rotate(-90);

@@ -7,7 +7,7 @@
 
 BEGIN { $| = 1; $test=1; print "1..1\n"; }
 END {print "not ok $test\n" unless $loaded;}
-use Image::Magick;
+use Graphics::Magick;
 $loaded=1;
 
 require 't/subroutines.pl';
@@ -24,7 +24,7 @@ $font   = '-*-courier-medium-*-*--14-*-*-*-*-*-*-*';
 $SAVEDPATH=$ENV{'PATH'};
 $ENV{'PATH'}='';
 
-$image=Image::Magick->new;
+$image=Graphics::Magick->new;
 $x=$image->Set(font=>"$font", pen=>'#0000FF', dither=>'False');
 if( "$x" ) {
   print "$x\n";

@@ -1,18 +1,18 @@
 #!/usr/local/bin/perl
 # GD example using PerlMagick methods.
 
-use Image::Magick;
+use Graphics::Magick;
 
 #
 # Create a 300x300 white canvas.
 #
-$image=Image::Magick->new;
+$image=Graphics::Magick->new;
 $image->Set(size=>'300x300');
 $image->Read('xc:white');
 #
 # Draw shapes.
 #
-$tile=Image::Magick->new;
+$tile=Graphics::Magick->new;
 $tile->Read('tile.gif');
 $image->Draw(primitive=>'Polygon',tile=>$tile,fill=>'none',
   points=>'30,30 100,10 190,290 30,290');

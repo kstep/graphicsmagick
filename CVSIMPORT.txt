@@ -7,40 +7,45 @@ CVS user name and package version.
 
 bzlib:
 
-  cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+  cvs -d :pserver:bfriesen@cvs.simplesystems.org:/GraphicsMagick \
     import -m 'Import bzip2 1.0.2' delegates/bzlib \
     INITIAL BZIP2_1_0_2
 
-cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+cvs -d :pserver:bfriesen@cvs.simplesystems.org:/GraphicsMagick \
     import -m 'Import freetype 2.1.2' delegates/ttf \
     FREETYPE2 FREETYPE_2_1_2
 
 jasper
-  cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+  cvs -d :pserver:bfriesen@cvs.simplesystems.org:/GraphicsMagick \
     import -m 'Import jasper 1.600.0' delegates/jp2 \
     JASPER_DIST JASPER_1_600_0
 
 jbig:
 
-  cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+  cvs -d :pserver:bfriesen@cvs.simplesystems.org:/GraphicsMagick \
     import -m 'Import jbigkit 1.4' delegates/jbig \
     INITIAL JBIGKIT_1_4
 
 lcms:
   
-  cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+  cvs -d :pserver:bfriesen@cvs.simplesystems.org:/GraphicsMagick \
     import -m 'Import lcms 1.08' delegates/lcms \
     LCMS_DIST LCMS_1_08
 
 png:
 
-  cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+  cvs -d :pserver:bfriesen@cvs.simplesystems.org:/GraphicsMagick \
     import -m 'Import libpng 1.2.4' delegates/png \
     INITIAL LIBPNG_1_2_4
 
+ralcgm:
+  cvs -d :pserver:bfriesen@cvs.simplesystems.org:/GraphicsMagick \
+    import -m 'Import ralcgm 3.50' delegates/ralcgm \
+    RALCGM_DIST RALCGM_3_50
+
 wmf:
 
-  cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+  cvs -d :pserver:bfriesen@cvs.simplesystems.org:/GraphicsMagick \
     import -m 'Import CVS libwmf 0.2.5' delegates/wmf \
     LIBWMF_DIST LIBWMF_0_2_5
 
@@ -49,14 +54,14 @@ wmf:
 
 xml: Note, this one may be bogus!
 
-  cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+  cvs -d :pserver:bfriesen@cvs.simplesystems.org:/GraphicsMagick \
     import -m 'Import libxml2 2.4.19' delegates/libxml \
     LIBXML_DIST LIBXML_2_4_19
 
 
 zlib:
 
-  cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+  cvs -d :pserver:bfriesen@cvs.simplesystems.org:/GraphicsMagick \
     import -m 'Import latest zlib' delegates/zlib \
     INITIAL ZLIB_1_1_4
 

@@ -1,4 +1,4 @@
-package Image::Magick;
+package Graphics::Magick;
 
 # Released Feb. 17, 1997  by Kyle Shorter (magick@wizards.dupont.com)
 # Public Domain
@@ -54,14 +54,14 @@ sub AUTOLOAD {
     goto &$AUTOLOAD;
 }
 
-bootstrap Image::Magick $VERSION;
+bootstrap Graphics::Magick $VERSION;
 
 # Preloaded methods go here.
 
 sub new
 {
     my $this = shift;
-    my $class = ref($this) || $this || "Image::Magick";
+    my $class = ref($this) || $this || "Graphics::Magick";
     my $self = [ ];
     bless $self, $class;
     $self->set(@_) if @_;
@@ -71,7 +71,7 @@ sub new
 sub New
 {
     my $this = shift;
-    my $class = ref($this) || $this || "Image::Magick";
+    my $class = ref($this) || $this || "Graphics::Magick";
     my $self = [ ];
     bless $self, $class;
     $self->set(@_) if @_;
@@ -85,12 +85,12 @@ __END__
 
 =head1 NAME
 
-Image::Magick - Perl extension for calling ImageMagick's libmagick routines
+Graphics::Magick - Perl extension for calling GraphicsMagick's libmagick routines
 
 =head1 SYNOPSIS
 
-  use Image::Magick;
-  p = new Image::Magick;
+  use Graphics::Magick;
+  p = new Graphics::Magick;
   p->Read("imagefile");
   p->Set(attribute => value, ...)
   ($a, ...) = p->Get("attribute", ...)
@@ -101,9 +101,8 @@ Image::Magick - Perl extension for calling ImageMagick's libmagick routines
 =head1 DESCRIPTION
 
 This Perl extension allows the reading, manipulation and writing of
-a large number of image file formats using the magick library from
-ImageMagick by John Cristy (magick-users@imagemagick.org).  It was originally
-developed to be used by CGI scripts for Web pages.
+a large number of image file formats using the GraphicsMagick library.
+It was originally developed to be used by CGI scripts for Web pages.
 
 A Web page has been set up for this extension. See:
 
@@ -115,7 +114,7 @@ Kyle Shorter	magick@wizards.dupont.com
 
 =head1 BUGS
 
-Has all the bugs of ImageMagick and much, much more!
+Has all the bugs of GraphicsMagick and much, much more!
 
 =head1 SEE ALSO
 

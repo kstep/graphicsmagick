@@ -15,7 +15,7 @@
 %                  M   M  A   A   GGGG  IIIII   CCCC  K   K                   %
 %                                                                             %
 %                                                                             %
-%                Object-oriented Perl interface to ImageMagick                %
+%              Object-oriented Perl interface to GraphicsMagick               %
 %                                                                             %
 %                                                                             %
 %                            Software Design                                  %
@@ -57,7 +57,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% PerlMagick is an objected-oriented Perl interface to ImageMagick.  Use
+% PerlMagick is an objected-oriented Perl interface to GraphicsMagick.  Use
 % the module to read, manipulate, or write an image or image sequence from
 % within a Perl script.  This makes PerlMagick suitable for Web CGI scripts.
 %
@@ -118,7 +118,7 @@ extern "C" {
 #define na  PL_na
 #endif
 #define NumberOf(array)  (sizeof(array)/sizeof(*array))
-#define PackageName   "Image::Magick"
+#define PackageName   "Graphics::Magick"
 #ifndef PerlIO_findFILE
 #define PerlIO_findFILE(f)  (FILE *) (f)
 #endif
@@ -181,7 +181,7 @@ struct PackageInfo
 };
 
 typedef void
-  *Image__Magick;  /* data type for the Image::Magick package */
+  *Graphics__Magick;  /* data type for the Graphics::Magick package */
 
 /*
   Static declarations.
@@ -756,7 +756,7 @@ static void DestroyPackageInfo(struct PackageInfo *info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method GetList is recursively called by SetupList to traverse the
-%  Image__Magick reference.  If building an reference_vector (see SetupList),
+%  Graphics__Magick reference.  If building an reference_vector (see SetupList),
 %  *current is the current position in *reference_vector and *last is the final
 %  entry in *reference_vector.
 %
@@ -878,7 +878,7 @@ static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,int *current,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method GetPackageInfo looks up or creates an info structure for the given
-%  Image__Magick reference.  If it does create a new one, the information in
+%  Graphics__Magick reference.  If it does create a new one, the information in
 %  package_info is used to initialize it.
 %
 %  The format of the GetPackageInfo routine is:
@@ -985,7 +985,7 @@ static int LookupStr(char **list,const char *string)
 %  stores the message in a Perl variable,and longjmp's to return the error to
 %  Perl.  If the error_flag variable is set, it also calls the Perl warn
 %  routine.  Note that this doesn't exit but returns control to Perl; the
-%  Image::Magick handle may be left in a bad state.
+%  Graphics::Magick handle may be left in a bad state.
 %
 %  The format of the MagickErrorHandler routine is:
 %
@@ -2055,7 +2055,7 @@ static int strEQcase(const char *p,const char *q)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I m a g e : : M a g i c k                                                 %
+%   G r a p h i c s : : M a g i c k                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2063,7 +2063,7 @@ static int strEQcase(const char *p,const char *q)
 %
 %
 */
-MODULE = Image::Magick PACKAGE = Image::Magick
+MODULE = Graphics::Magick PACKAGE = Graphics::Magick
 
 PROTOTYPES: ENABLE
 
@@ -2092,7 +2092,7 @@ constant(name,argument)
 #
 void
 Animate(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     AnimateImage  = 1
     animate       = 2
@@ -2174,7 +2174,7 @@ Animate(ref,...)
 #
 void
 Append(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     AppendImage  = 1
     append       = 2
@@ -2319,7 +2319,7 @@ Append(ref,...)
 #
 void
 Average(ref)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     AverageImage   = 1
     average        = 2
@@ -2422,7 +2422,7 @@ Average(ref)
 #
 void
 BlobToImage(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     BlobToImage  = 1
     blobtoimage  = 2
@@ -2565,7 +2565,7 @@ BlobToImage(ref,...)
 #
 void
 Coalesce(ref)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     CoalesceImage   = 1
     coalesce        = 2
@@ -2668,7 +2668,7 @@ Coalesce(ref)
 #
 void
 Copy(ref)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     CopyImage   = 1
     copy        = 2
@@ -2772,7 +2772,7 @@ Copy(ref)
 #
 void
 DESTROY(ref)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   PPCODE:
   {
     SV
@@ -2846,7 +2846,7 @@ DESTROY(ref)
 #
 void
 Display(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     DisplayImage  = 1
     display       = 2
@@ -2927,7 +2927,7 @@ Display(ref,...)
 #
 void
 Flatten(ref)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     FlattenImage   = 1
     flatten        = 2
@@ -3030,7 +3030,7 @@ Flatten(ref)
 #
 void
 Get(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     GetAttributes = 1
     GetAttribute  = 2
@@ -4044,7 +4044,7 @@ Get(ref,...)
 #
 void
 ImageToBlob(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     ImageToBlob  = 1
     imagetoblob  = 2
@@ -4152,7 +4152,7 @@ ImageToBlob(ref,...)
 #
 void
 Mogrify(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     Comment            =   1
     CommentImage       =   2
@@ -6072,7 +6072,7 @@ Mogrify(ref,...)
 #
 void
 Montage(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     MontageImage  = 1
     montage       = 2
@@ -6461,7 +6461,7 @@ Montage(ref,...)
 #
 void
 Morph(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     MorphImage  = 1
     morph       = 2
@@ -6601,7 +6601,7 @@ Morph(ref,...)
 #
 void
 Mosaic(ref)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     MosaicImage   = 1
     mosaic        = 2
@@ -6701,7 +6701,7 @@ Mosaic(ref)
 #
 void
 Ping(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     PingImage  = 1
     ping       = 2
@@ -6861,7 +6861,7 @@ Ping(ref,...)
 #
 void
 QueryColor(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     querycolor = 1
   PPCODE:
@@ -6939,7 +6939,7 @@ QueryColor(ref,...)
 #
 void
 QueryColorname(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     querycolorname = 1
   PPCODE:
@@ -7002,7 +7002,7 @@ QueryColorname(ref,...)
 #
 void
 QueryFont(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     queryfont = 1
   PPCODE:
@@ -7111,7 +7111,7 @@ QueryFont(ref,...)
 #
 void
 QueryFontMetrics(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     queryfontmetrics = 1
   PPCODE:
@@ -7372,7 +7372,7 @@ QueryFontMetrics(ref,...)
 #
 void
 QueryFormat(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     queryformat = 1
   PPCODE:
@@ -7470,7 +7470,7 @@ QueryFormat(ref,...)
 #
 void
 Read(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     ReadImage  = 1
     read       = 2
@@ -7638,7 +7638,7 @@ Read(ref,...)
 #
 void
 Remote(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     RemoteCommand  = 1
     remote         = 2
@@ -7690,7 +7690,7 @@ Remote(ref,...)
 #
 void
 Set(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     SetAttributes  = 1
     SetAttribute   = 2
@@ -7748,7 +7748,7 @@ Set(ref,...)
 #
 void
 Transform(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     TransformImage = 1
     transform      = 2
@@ -7907,7 +7907,7 @@ Transform(ref,...)
 #
 void
 Write(ref,...)
-  Image::Magick ref=NO_INIT
+  Graphics::Magick ref=NO_INIT
   ALIAS:
     WriteImage    = 1
     write         = 2

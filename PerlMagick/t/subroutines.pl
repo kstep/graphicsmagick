@@ -9,7 +9,7 @@
 #
 sub quantumDepth ( ) {
   my($depth,$image);
-  $image=Image::Magick->new;
+  $image=Graphics::Magick->new;
   $depth=$image->Get('depth');
   undef $image;
   return $depth;
@@ -60,7 +60,7 @@ sub testRead {
     my($image, $signature, $status);
 
     print( "  testing reading from file \"", $infile, "\" ...\n");
-    $image=Image::Magick->new;
+    $image=Graphics::Magick->new;
     $image->Set(size=>'512x512');
     $status=$image->ReadImage("$infile");
     if( "$status" ) {
@@ -96,7 +96,7 @@ sub testRead {
         $blob_length = read( FILE, $blob, 10000000 );
         close( FILE );
         if( defined( $blob ) ) {
-          $image=Image::Magick->new(magick=>$magick);
+          $image=Graphics::Magick->new(magick=>$magick);
           $status=$image->BlobToImage( $blob );
           undef $blob;
           if( "$status" ) {
@@ -147,8 +147,8 @@ sub testReadCompare {
   $errorinfo='';
 
   # Create images
-  $srcimage=Image::Magick->new;
-  $refimage=Image::Magick->new;  
+  $srcimage=Graphics::Magick->new;
+  $refimage=Graphics::Magick->new;  
 
   if ( "$read_options" ne "" ) {
     eval "\$status=\$srcimage->Set($read_options);";
@@ -240,7 +240,7 @@ sub testReadSized {
   
   my($image);
 
-  $image=Image::Magick->new;
+  $image=Graphics::Magick->new;
 
   # Set size attribute
   $status=$image->SetAttribute(size=>"$size");
@@ -298,7 +298,7 @@ sub testReadWrite {
       $md5_16 = $md5;
     }
 
-  $image=Image::Magick->new;
+  $image=Graphics::Magick->new;
   $status=$image->ReadImage("$infile");
   $signature=$image->Get('signature');
   if( "$status" ) {
@@ -321,7 +321,7 @@ sub testReadWrite {
       my($image);
 
       # Read image just written
-      $image=Image::Magick->new;
+      $image=Graphics::Magick->new;
       $status=$image->ReadImage("$outfile");
       if( "$status" ) {
         print "ReadImage $outfile: $status\n";
@@ -364,8 +364,8 @@ sub testReadWriteCompare {
 
   $errorinfo='';
 
-  $image=Image::Magick->new;
-  $refimage=Image::Magick->new;  
+  $image=Graphics::Magick->new;
+  $refimage=Graphics::Magick->new;  
 
   #
   # Read the initial image
@@ -398,7 +398,7 @@ sub testReadWriteCompare {
     }
 
   undef $image;
-  $image=Image::Magick->new;
+  $image=Graphics::Magick->new;
 
   #
   # Read image from output file
@@ -510,7 +510,7 @@ sub testReadWriteNoVerify {
   
   my($image, $images);
   
-  $image=Image::Magick->new;
+  $image=Graphics::Magick->new;
   $status=$image->ReadImage("$infile");
   if( "$status" ) {
     print "$status\n";
@@ -532,7 +532,7 @@ sub testReadWriteNoVerify {
       my($image);
 
       # Read image just written
-      $image=Image::Magick->new;
+      $image=Graphics::Magick->new;
       $status=$image->ReadImage("$outfile");
       if( "$status" ) {
         print "ReadImage $outfile: $status\n";
@@ -570,7 +570,7 @@ sub testReadWriteSized {
   
   my($image);
   
-  $image=Image::Magick->new;
+  $image=Graphics::Magick->new;
 
   # Set size attribute
   $status=$image->SetAttribute(size=>"$size");
@@ -602,7 +602,7 @@ sub testReadWriteSized {
     } else {
       my($image);
 
-      $image=Image::Magick->new;
+      $image=Graphics::Magick->new;
 
       if ( $readdepth != 0 ) {
         $status=$image->SetAttribute(depth=>$readdepth);
@@ -651,7 +651,7 @@ sub testSetAttribute {
   my($image);
   
   # Create temporary image
-  $image=Image::Magick->new;
+  $image=Graphics::Magick->new;
 
   $status=$image->ReadImage("$srcimage");
   warn "Readimage: $status" if "$status";
@@ -696,7 +696,7 @@ sub testGetAttribute {
   my($image);
 
   # Create temporary image
-  $image=Image::Magick->new;
+  $image=Graphics::Magick->new;
 
   $status=$image->ReadImage("$srcimage");
   warn "Readimage: $status" if "$status";
@@ -731,10 +731,10 @@ sub testMontage {
   my($image);
 
   # Create image for image list
-  $images=Image::Magick->new;
+  $images=Graphics::Magick->new;
 
   # Create temporary image
-  $image=Image::Magick->new;
+  $image=Graphics::Magick->new;
 
   my @colors = ( '#000000', '#008000', '#C0C0C0', '#00FF00',
                  '#808080', '#808000', '#FFFFFF', '#FFFF00',
@@ -837,7 +837,7 @@ sub testFilterSignature {
 #  print( $filter, " ...\n" );
 
   # Create temporary image
-  $image=Image::Magick->new;
+  $image=Graphics::Magick->new;
 
   $status=$image->ReadImage("$srcimage");
   warn "Readimage: $status" if "$status";
@@ -886,8 +886,8 @@ sub testFilterCompare {
   #print( $filter, " ...\n" );
 
   # Create images
-  $srcimage=Image::Magick->new;
-  $refimage=Image::Magick->new;
+  $srcimage=Graphics::Magick->new;
+  $refimage=Graphics::Magick->new;
 
   if ( "$src_read_options" ne "" ) {
     print("Set($src_read_options) ...\n");

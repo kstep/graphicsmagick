@@ -6,7 +6,7 @@
 #
 BEGIN { $| = 1; $test=1, print "1..44\n"; }
 END {print "not ok 1\n" unless $loaded;}
-use Image::Magick;
+use Graphics::Magick;
 $loaded=1;
 
 require 't/subroutines.pl';
@@ -16,7 +16,7 @@ use FileHandle;
 autoflush STDOUT 1;
 autoflush STDERR 1;
 
-$QuantumDepth=quantumDepth();
+#$QuantumDepth=quantumDepth();
 $fuzz=int($MaxRGB*0.05);
 
 testFilterCompare('input.miff', q//, 'reference/filter/Blur.miff', 'Blur',

@@ -7,7 +7,7 @@
 
 BEGIN { $| = 1; $test=1; print "1..3\n"; }
 END {print "not ok $test\n" unless $loaded;}
-use Image::Magick;
+use Graphics::Magick;
 $loaded=1;
 
 require 't/subroutines.pl';
@@ -17,7 +17,7 @@ chdir 't/ps' || die 'Cd failed';
 #
 # 1) Test reading Postscript
 #
-$image=Image::Magick->new;
+$image=Graphics::Magick->new;
 $x=$image->ReadImage('input.ps');
 if( "$x" ) {
   print "ReadImage: $x\n";
@@ -32,7 +32,7 @@ undef $image;
 # 2) Test reading Encapsulated Postscript
 #
 ++$test;
-$image=Image::Magick->new;
+$image=Graphics::Magick->new;
 $x=$image->ReadImage('input.eps');
 if( "$x" ) {
   print "ReadImage: $x\n";
@@ -48,7 +48,7 @@ undef $image;
 ++$test;
 $font   = 'helvetica';
 
-$image=Image::Magick->new;
+$image=Graphics::Magick->new;
 $x=$image->Set(font=>"$font", pen=>'#0000FF', dither=>'False');
 if( "$x" ) {
   print "$x\n";
