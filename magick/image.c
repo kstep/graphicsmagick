@@ -5064,13 +5064,13 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   mogrify_images=NewImageList();
   for (i=0; i < (long) number_images; i++)
   {
-    image=PopImageList(images);
+    image=ShiftImageList(images);
     handler=SetMonitorHandler((MonitorHandler) NULL);
     status&=MogrifyImage(image_info,argc,argv,&image);
     (void) SetMonitorHandler(handler);
     if (image_info->verbose)
       DescribeImage(image,stdout,False);
-    UnshiftImageList(&mogrify_images,image,&image->exception);
+    PushImageList(&mogrify_images,image,&image->exception);
     DestroyImage(image);
     MagickMonitor(MogrifyImageText,i,number_images);
   }
