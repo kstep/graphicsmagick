@@ -100,7 +100,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
     number_pixels;
 
   register IndexPacket
-    *indexes;
+    indexes[x];
 
   register long
     i,
@@ -143,7 +143,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
               q->red=ScaleCharToQuantum(pixel);
               if (image->storage_class == PseudoClass)
                 {
-                  *indexes=pixel;
+                  indexes[x]=(IndexPacket) pixel;
                   *q=image->colormap[pixel];
                 }
               break;
@@ -169,7 +169,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
             case 4:
             {
               if (image->colorspace == CMYKColorspace)
-                *indexes=ScaleCharToQuantum(pixel);
+                indexes[x]=ScaleCharToQuantum(pixel);
               break;
             }
             default:
@@ -203,7 +203,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
           q->red=ScaleCharToQuantum(pixel);
           if (image->storage_class == PseudoClass)
             {
-              *indexes=pixel;
+              indexes[x]=(IndexPacket) pixel;
               *q=image->colormap[pixel];
             }
           break;
@@ -229,7 +229,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
         case 4:
         {
           if (image->colorspace == CMYKColorspace)
-            *indexes=ScaleCharToQuantum(pixel);
+            indexes[x]=ScaleCharToQuantum(pixel);
           break;
         }
         default:
@@ -491,7 +491,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   IndexPacket
-    *indexes;
+    indexes[x];
 
   LayerInfo
     *layer_info;
@@ -850,7 +850,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
                 case 0:  /* first component (Red, Cyan, Gray or Index) */
                 {
-                  q->red=pixel;
+                  q->red=(Quantum) pixel;
                   if (layer_info[i].image->storage_class == PseudoClass)
                     {
                       indexes[x]=(IndexPacket) ScaleQuantumToChar(pixel);
@@ -861,25 +861,25 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case 1:  /* second component (Green, Magenta, or opacity) */
                 {
                   if (layer_info[i].image->storage_class == PseudoClass)
-                    q->opacity=pixel;
+                    q->opacity=(Quantum) pixel;
                   else
-                    q->green=pixel;
+                    q->green=(Quantum) pixel;
                   break;
                 }
                 case 2:  /* third component (Blue or Yellow) */
                 {
-                  q->blue=pixel;
+                  q->blue=(Quantum) pixel;
                   break;
                 }
                 case 3:  /* fourth component (Opacity or Black) */
                 {
-                  q->opacity=pixel;
+                  q->opacity=(Quantum) pixel;
                   break;
                 }
                 case 4:  /* fifth component (opacity) */
                 {
                   if (image->colorspace == CMYKColorspace)
-                    indexes[x]=pixel;
+                    indexes[x]=(Quantum) pixel;
                   break;
                 }
                 default:
@@ -1009,7 +1009,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
               case 0:
               {
-                q->red=pixel;
+                q->red=(Quantum) pixel;
                 if (image->storage_class == PseudoClass)
                   {
                     indexes[x]=(IndexPacket) ScaleQuantumToChar(pixel);
@@ -1020,25 +1020,25 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               case 1:
               {
                 if (image->storage_class == PseudoClass)
-                  q->opacity=pixel;
+                  q->opacity=(Quantum) pixel;
                 else
-                  q->green=pixel;
+                  q->green=(Quantum) pixel;
                 break;
               }
               case 2:
               {
-                q->blue=pixel;
+                q->blue=(Quantum) pixel;
                 break;
               }
               case 3:
               {
-                q->opacity=pixel;
+                q->opacity=(Quantum) pixel;
                 break;
               }
               case 4:
               {
                 if (image->colorspace == CMYKColorspace)
-                  *indexes=pixel;
+                  indexes[x]=(IndexPacket) pixel;
                 break;
               }
               default:

@@ -403,6 +403,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 
   unsigned char
     bit,
+    byte,
     *pixels,
     polarity;
 
@@ -410,7 +411,6 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     status;
 
   unsigned long
-    byte,
     number_packets,
     scene;
 
