@@ -7,16 +7,12 @@
 const LCID lcidDefault = 0;
 const DWORD dwErrorBase = 5000;
 
-/* #define DO_DEBUG 1 */
-
 /////////////////////////////////////////////////////////////////////////////
 // CMagickImage
 
 CMagickImage::CMagickImage()
 {
-#ifdef DO_DEBUG
-  DebugString("CMagickImage - new\n");
-#endif
+  DebugString("ImageMagickObject - new\n");
   SetWarningHandler(warninghandler);
   SetErrorHandler(errorhandler);
   SetFatalErrorHandler(fatalerrorhandler);
@@ -27,9 +23,7 @@ CMagickImage::CMagickImage()
 
 CMagickImage::~CMagickImage() 
 {
-#ifdef DO_DEBUG
-	DebugString("CMagickImage - delete\n");
-#endif
+	DebugString("ImageMagickObject - delete\n");
   DeleteArgs();
 }
 
@@ -49,6 +43,7 @@ STDMETHODIMP CMagickImage::InterfaceSupportsErrorInfo(REFIID riid)
 
 STDMETHODIMP CMagickImage::OnStartPage (IUnknown* pUnk)  
 {
+  DebugString("ImageMagickObject - OnStartPage\n");
 	if(!pUnk)
 		return E_POINTER;
 
@@ -64,61 +59,106 @@ STDMETHODIMP CMagickImage::OnStartPage (IUnknown* pUnk)
 	hr = spContext->get_Request(&m_piRequest);
 	if(FAILED(hr))
 	{
-		spContext.Release();
-		return hr;
+    DebugString("ImageMagickObject - OnStartPage get Request failed\n");
+		//spContext.Release();
+		//return hr;
 	}
 
 	// Get Response Object Pointer
 	hr = spContext->get_Response(&m_piResponse);
 	if(FAILED(hr))
 	{
-		m_piRequest.Release();
-		return hr;
+    DebugString("ImageMagickObject - OnStartPage get Response failed\n");
+		//m_piRequest.Release();
+		//return hr;
 	}
 	
 	// Get Server Object Pointer
 	hr = spContext->get_Server(&m_piServer);
 	if(FAILED(hr))
 	{
-		m_piRequest.Release();
-		m_piResponse.Release();
-		return hr;
+    DebugString("ImageMagickObject - OnStartPage get Server failed\n");
+		//m_piRequest.Release();
+		//m_piResponse.Release();
+		//return hr;
 	}
 	
 	// Get Session Object Pointer
 	hr = spContext->get_Session(&m_piSession);
 	if(FAILED(hr))
 	{
-		m_piRequest.Release();
-		m_piResponse.Release();
-		m_piServer.Release();
-		return hr;
+    DebugString("ImageMagickObject - OnStartPage get Session failed\n");
+		//m_piRequest.Release();
+		//m_piResponse.Release();
+		//m_piServer.Release();
+		//return hr;
 	}
 
 	// Get Application Object Pointer
 	hr = spContext->get_Application(&m_piApplication);
 	if(FAILED(hr))
 	{
-		m_piRequest.Release();
-		m_piResponse.Release();
-		m_piServer.Release();
-		m_piSession.Release();
-		return hr;
+    DebugString("ImageMagickObject - OnStartPage get Application failed\n");
+		//m_piRequest.Release();
+		//m_piResponse.Release();
+		//m_piServer.Release();
+		//m_piSession.Release();
+		//eturn hr;
 	}
 	m_bOnStartPageCalled = TRUE;
+
+  {
+	  CComPtr<IRequestDictionary>pReadDictionary;
+	  CComPtr<IReadCookie>pCookieDictionary;
+	  	  
+		hr=m_piRequest->get_Cookies(&pReadDictionary);
+		if(SUCCEEDED(hr))
+    {
+		  CComVariant vtIn(_T("MAGICK_DEBUG"));
+		  CComVariant vtKey(_T("level"));
+		  CComVariant vtOut;
+		  CComVariant vtCookieValue;
+
+		  hr=pReadDictionary->get_Item(vtIn,&vtOut);
+		  if(SUCCEEDED(hr) && (V_VT(&vtOut)==VT_DISPATCH))
+      {
+        pCookieDictionary = (IReadCookie*)(vtOut.pdispVal);
+		    hr=pCookieDictionary->get_Item(vtKey,&vtCookieValue);
+		    if(SUCCEEDED(hr) && (V_VT(&vtCookieValue)==VT_BSTR))
+        {
+          USES_CONVERSION;
+          LPTSTR lpstrVal = W2T(vtCookieValue.bstrVal);
+          int level = atoi(lpstrVal);
+          DebugLevel(level);
+	        DebugString("OnStartPage debug level: %d\n",level);
+        }
+        else
+	        DebugString("OnStartPage - parse error\n");
+      }
+      else
+	      DebugString("OnStartPage - no MAGICK_DEBUG\n");
+    }
+    else
+	    DebugString("OnStartPage - no cookies\n");
+  }
 	return S_OK;
 }
 
 STDMETHODIMP CMagickImage::OnEndPage ()  
 {
+  DebugString("ImageMagickObject - OnEndPage\n");
 	m_bOnStartPageCalled = FALSE;
 	// Release all interfaces
-	m_piRequest.Release();
-	m_piResponse.Release();
-	m_piServer.Release();
-	m_piSession.Release();
-	m_piApplication.Release();
-
+  if (m_piRequest)
+	  m_piRequest.Release();
+  if (m_piResponse)
+	  m_piResponse.Release();
+  if (m_piServer)
+	  m_piServer.Release();
+  if (m_piSession)
+	  m_piSession.Release();
+  if (m_piApplication)
+	  m_piApplication.Release();
 	return S_OK;
 }
 
@@ -515,6 +555,59 @@ HRESULT CMagickImage::FormatRequest(BSTR *pVal)
 }
 #endif
 
+static char *translate_exception(DWORD code)
+{
+  switch (code)
+  {
+    case EXCEPTION_ACCESS_VIOLATION:
+      return "access violation";
+    case EXCEPTION_DATATYPE_MISALIGNMENT:
+      return "data misalignment";
+    case EXCEPTION_BREAKPOINT:
+      return "debug breakpoint";
+    case EXCEPTION_SINGLE_STEP:
+      return "debug single step";
+    case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:
+      return "array out of bounds";
+    case EXCEPTION_FLT_DENORMAL_OPERAND:
+      return "float denormal operand";
+    case EXCEPTION_FLT_DIVIDE_BY_ZERO:
+      return "float devide by zero";
+    case EXCEPTION_FLT_INEXACT_RESULT:
+      return "float inexact result";
+    case EXCEPTION_FLT_INVALID_OPERATION:
+      return "float invalid operation";
+    case EXCEPTION_FLT_OVERFLOW:
+      return "float overflow";
+    case EXCEPTION_FLT_STACK_CHECK:
+      return "float stack check";
+    case EXCEPTION_FLT_UNDERFLOW:
+      return "float underflow";
+    case EXCEPTION_INT_DIVIDE_BY_ZERO:
+      return "integer divide by zero";
+    case EXCEPTION_INT_OVERFLOW:
+      return "integer overflow";
+    case EXCEPTION_PRIV_INSTRUCTION:
+      return "privleged instruction";
+    case EXCEPTION_IN_PAGE_ERROR:
+      return "page error";
+    case EXCEPTION_ILLEGAL_INSTRUCTION:
+      return "illegal instruction";
+    case EXCEPTION_NONCONTINUABLE_EXCEPTION:
+      return "noncontinuable instruction";
+    case EXCEPTION_STACK_OVERFLOW:
+      return "stack overflow";
+    case EXCEPTION_INVALID_DISPOSITION:
+      return "invalid disosition";
+    case EXCEPTION_GUARD_PAGE:
+      return "guard page";
+    case EXCEPTION_INVALID_HANDLE:
+      return "invalid handle";
+    default:
+      return "operating system exception";
+  }
+}
+
 STDMETHODIMP CMagickImage::Convert(SAFEARRAY **pArrayVar, VARIANT *pVar)
 {
   USES_CONVERSION;
@@ -525,19 +618,37 @@ STDMETHODIMP CMagickImage::Convert(SAFEARRAY **pArrayVar, VARIANT *pVar)
     exception;
 
   char
+    *reason,
+    *description,
     message_text[MaxTextExtent];
 
-  EmptyArgs();
-  AddArgs(L"-convert");
-  GetExceptionInfo(&exception);
-  hr = Perform(ConvertImageCommand,pArrayVar,pVar,&exception);
+  __try
+  {
+    EmptyArgs();
+    AddArgs(L"-convert");
+    GetExceptionInfo(&exception);
+    reason = "unknown";
+    description = "unknown";
+    hr = Perform(ConvertImageCommand,pArrayVar,pVar,&exception);
+    if (FAILED(hr))
+    {
+      if (exception.reason)
+        reason = exception.reason;
+      if (exception.description)
+        description = exception.description;
+    }
+  }
+  __except(1)
+  {
+    hr = E_UNEXPECTED;
+    reason = "exception";
+    description = translate_exception(_exception_code());
+  }
 	if (FAILED(hr))
     {
       hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1001);
       FormatString(message_text,"convert: %d: %.1024s: %.1024s",
-        exception.severity,
-        exception.reason ? exception.reason : "unknown",
-        exception.description ? exception.description : "unknown");
+        exception.severity,reason, description);
       Error(A2W(message_text),IID_IMagickImage,hr);
     }
   DestroyExceptionInfo(&exception);
@@ -554,19 +665,37 @@ STDMETHODIMP CMagickImage::Composite(SAFEARRAY **pArrayVar, VARIANT *pVar)
     exception;
 
   char
+    *reason,
+    *description,
     message_text[MaxTextExtent];
 
-  EmptyArgs();
-  AddArgs(L"-composite");
-  GetExceptionInfo(&exception);
-  hr = Perform(CompositeImageCommand,pArrayVar,pVar,&exception);
+  __try
+  {
+    EmptyArgs();
+    AddArgs(L"-convert");
+    GetExceptionInfo(&exception);
+    reason = "unknown";
+    description = "unknown";
+    hr = Perform(CompositeImageCommand,pArrayVar,pVar,&exception);
+    if (FAILED(hr))
+    {
+      if (exception.reason)
+        reason = exception.reason;
+      if (exception.description)
+        description = exception.description;
+    }
+  }
+  __except(1)
+  {
+    hr = E_UNEXPECTED;
+    reason = "exception";
+    description = translate_exception(_exception_code());
+  }
 	if (FAILED(hr))
     {
-      hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1002);
+      hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1001);
       FormatString(message_text,"composite: %d: %.1024s: %.1024s",
-        exception.severity,
-        exception.reason ? exception.reason : "unknown",
-        exception.description ? exception.description : "unknown");
+        exception.severity,reason, description);
       Error(A2W(message_text),IID_IMagickImage,hr);
     }
   DestroyExceptionInfo(&exception);
@@ -583,19 +712,37 @@ STDMETHODIMP CMagickImage::Mogrify(SAFEARRAY **pArrayVar, VARIANT *pVar)
     exception;
 
   char
+    *reason,
+    *description,
     message_text[MaxTextExtent];
 
-  EmptyArgs();
-  AddArgs(L"-mogrify");
-  GetExceptionInfo(&exception);
-  hr = Perform(MogrifyImageCommand,pArrayVar,pVar,&exception);
+  __try
+  {
+    EmptyArgs();
+    AddArgs(L"-convert");
+    GetExceptionInfo(&exception);
+    reason = "unknown";
+    description = "unknown";
+    hr = Perform(MogrifyImageCommand,pArrayVar,pVar,&exception);
+    if (FAILED(hr))
+    {
+      if (exception.reason)
+        reason = exception.reason;
+      if (exception.description)
+        description = exception.description;
+    }
+  }
+  __except(1)
+  {
+    hr = E_UNEXPECTED;
+    reason = "exception";
+    description = translate_exception(_exception_code());
+  }
 	if (FAILED(hr))
     {
-      hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1003);
+      hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1001);
       FormatString(message_text,"mogrify: %d: %.1024s: %.1024s",
-        exception.severity,
-        exception.reason ? exception.reason : "unknown",
-        exception.description ? exception.description : "unknown");
+        exception.severity,reason, description);
       Error(A2W(message_text),IID_IMagickImage,hr);
     }
   DestroyExceptionInfo(&exception);
@@ -612,19 +759,37 @@ STDMETHODIMP CMagickImage::Montage(SAFEARRAY **pArrayVar, VARIANT *pVar)
     exception;
 
   char
+    *reason,
+    *description,
     message_text[MaxTextExtent];
 
-  EmptyArgs();
-  AddArgs(L"-montage");
-  GetExceptionInfo(&exception);
-  hr = Perform(MontageImageCommand,pArrayVar,pVar,&exception);
+  __try
+  {
+    EmptyArgs();
+    AddArgs(L"-convert");
+    GetExceptionInfo(&exception);
+    reason = "unknown";
+    description = "unknown";
+    hr = Perform(MontageImageCommand,pArrayVar,pVar,&exception);
+    if (FAILED(hr))
+    {
+      if (exception.reason)
+        reason = exception.reason;
+      if (exception.description)
+        description = exception.description;
+    }
+  }
+  __except(1)
+  {
+    hr = E_UNEXPECTED;
+    reason = "exception";
+    description = translate_exception(_exception_code());
+  }
 	if (FAILED(hr))
     {
-      hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1004);
+      hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1001);
       FormatString(message_text,"montage: %d: %.1024s: %.1024s",
-        exception.severity,
-        exception.reason ? exception.reason : "unknown",
-        exception.description ? exception.description : "unknown");
+        exception.severity,reason, description);
       Error(A2W(message_text),IID_IMagickImage,hr);
     }
   DestroyExceptionInfo(&exception);
@@ -641,24 +806,58 @@ STDMETHODIMP CMagickImage::Identify(SAFEARRAY **pArrayVar, VARIANT *pVar)
     exception;
 
   char
+    *reason,
+    *description,
     message_text[MaxTextExtent];
 
-  EmptyArgs();
-  AddArgs(L"-identify");
-  GetExceptionInfo(&exception);
-  hr = Perform(IdentifyImageCommand,pArrayVar,pVar,&exception);
+  __try
+  {
+    EmptyArgs();
+    AddArgs(L"-convert");
+    GetExceptionInfo(&exception);
+    reason = "unknown";
+    description = "unknown";
+    hr = Perform(IdentifyImageCommand,pArrayVar,pVar,&exception);
+    if (FAILED(hr))
+    {
+      if (exception.reason)
+        reason = exception.reason;
+      if (exception.description)
+        description = exception.description;
+    }
+  }
+  __except(1)
+  {
+    hr = E_UNEXPECTED;
+    reason = "exception";
+    description = translate_exception(_exception_code());
+  }
 	if (FAILED(hr))
     {
-      hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1005);
+      hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1001);
       FormatString(message_text,"identify: %d: %.1024s: %.1024s",
-        exception.severity,
-        exception.reason ? exception.reason : "unknown",
-        exception.description ? exception.description : "unknown");
+        exception.severity,reason, description);
       Error(A2W(message_text),IID_IMagickImage,hr);
     }
   DestroyExceptionInfo(&exception);
   return hr;
 }
+
+const char *objName = "ImageMagickObject";
+
+#define ThrowPerformException(exception,code,reason,description) \
+{ \
+	DebugString("%s - %s %s\n",objName,reason,description); \
+  ThrowException(exception,code,reason,description); \
+  return E_INVALIDARG; \
+}
+
+#define LogInformation(reason,description) \
+{ \
+	DebugString("%s - %s %s\n",objName,reason,description); \
+}
+
+const char *methodName = "Perform";
 
 HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
   const int argc,LPTSTR *argv,LPTSTR *text,ExceptionInfo *exception),
@@ -666,6 +865,7 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
 {
   USES_CONVERSION;
 
+  bool bDebug = false;
   HRESULT hr = E_INVALIDARG;
   char *text;
 
@@ -673,22 +873,28 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
   //_DbgBreak();
 #endif
 
-#ifdef DO_DEBUG
-	DebugString("CMagickImage - Perform enter\n");
-#endif
+	LogInformation(methodName,"enter");
+
+  //text = (char *) 0xffffffffL;
+  //char c = *text;  // causes and access violation
+
   text = (char *)NULL;
   m_coll.clear();
 #ifdef SUPPORT_OBJECTS
   CComObject<CMagickImage>* pMagickImage;
 #endif
 
+  if( !pArrayVar ) 
+  {
+    ThrowPerformException(exception,ErrorException,
+      "Perform","Argument list is NULL");
+  }
+
   CComVectorData<VARIANT> rg(*pArrayVar);
   if( !rg ) 
   {
-#ifdef DO_DEBUG
-	  DebugString("CMagickImage - Perform exit BAD1\n");
-#endif
-    return E_UNEXPECTED;
+    ThrowPerformException(exception,ErrorException,
+      "Perform","Argument list is bad");
   }
 
   int iLastVal = rg.Length();
@@ -704,14 +910,18 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
 	    pvarIndex = V_VARIANTREF(pvarIndex);
 	    vt = V_VT(pvarIndex);
     }
+//->
     if (V_ISARRAY(pvarIndex))
     {
       TCHAR sz[128];
+      SAFEARRAY *psa;
 
       if (V_ISBYREF(pvarIndex))
-        {
+	        psa = *V_ARRAYREF(pvarIndex);
+      else
+	        psa = V_ARRAY(pvarIndex);
 //----->
-	        SAFEARRAY *psa = *V_ARRAYREF(pvarIndex);
+        {
 //------->
           if (psa)
             {
@@ -719,10 +929,8 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
               int ndim = SafeArrayGetDim(psa);
               if (ndim != 1)
               {
-#ifdef DO_DEBUG
-	              DebugString("CMagickImage - Perform exit BAD2\n");
-#endif
-                return E_INVALIDARG;
+                ThrowPerformException(exception,ErrorException,
+                  "Perform","Multi-dimensional arrays not supported");
               }
               if (i < (iLastVal-1))
 //------------>
@@ -766,10 +974,8 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
                                         int ndim2 = SafeArrayGetDim(psax);
                                         if (ndim2 != 1)
                                         {
-#ifdef DO_DEBUG
-	                                        DebugString("CMagickImage - Perform exit BAD3\n");
-#endif
-                                          return E_INVALIDARG;
+                                          ThrowPerformException(exception,ErrorException,
+                                            "Perform","Input blob support requires a 1d array (1)");
                                         }
                                         LPTSTR lpszVal2 = W2T(pvarFirst->bstrVal);
                                         wsprintf(sz, _T("xtrnarray:0x%lx,%s"),
@@ -786,10 +992,8 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
                                         int ndim2 = SafeArrayGetDim(psax);
                                         if (ndim2 != 1)
                                         {
-#ifdef DO_DEBUG
-	                                        DebugString("CMagickImage - Perform exit BAD4\n");
-#endif
-                                          return E_INVALIDARG;
+                                          ThrowPerformException(exception,ErrorException,
+                                            "Perform","Input blob support requires a 1d array (2)");
                                         }
                                         LPTSTR lpszVal2 = W2T(pvarFirst->bstrVal);
                                         wsprintf(sz, _T("xtrnarray:0x%lx,%s"),
@@ -832,9 +1036,6 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
                       hr = SafeArrayAccessData(psa, (void**)&pReturnBuffer);
 	                    if(SUCCEEDED(hr))
                         {
-#ifdef DO_DEBUG
-	                        DebugString("CMagickImage - before w2a\n");
-#endif
                           sizeneeded = WideCharToMultiByte(
                             CP_ACP, 0, pReturnBuffer, size/2, (LPSTR)NULL, 0, NULL, NULL);
                           if (sizeneeded)
@@ -843,9 +1044,6 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
                               WideCharToMultiByte(
                                 CP_ACP, 0, pReturnBuffer, size, (LPSTR)ptrANSI, sizeneeded, NULL, NULL);
                               ptrANSI[sizeneeded]='\0';
-#ifdef DO_DEBUG
-	                            DebugString("CMagickImage - after w2a\n");
-#endif
                               hr = SafeArrayUnaccessData(psa);
                               SafeArrayDestroy(psa);
 
@@ -855,23 +1053,27 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
                               hr = AddArgs(sz);
                               if (ptrANSI)
                                 delete ptrANSI;
-                              V_VT(pvarIndex) = VT_ARRAY | VT_UI1 | VT_BYREF;		
-                              *V_ARRAYREF(pvarIndex) = pSafeArray;
+                              if (V_ISBYREF(pvarIndex))
+                                {
+                                  V_VT(pvarIndex) = VT_ARRAY | VT_UI1 | VT_BYREF;		
+                                  *V_ARRAYREF(pvarIndex) = pSafeArray;
+                                }
+                              else
+                                {
+                                  V_VT(pvarIndex) = VT_ARRAY | VT_UI1;		
+                                  V_ARRAY(pvarIndex) = pSafeArray;
+                                }
                             }
                           else
                             {
-#ifdef DO_DEBUG
-	                            DebugString("CMagickImage - Perform exit BADA\n");
-#endif
-                              return E_INVALIDARG;
+                              ThrowPerformException(exception,ErrorException,
+                                "Perform","Output array for blob did not specify image format");
                             }
                         }
                       else
                       {
-#ifdef DO_DEBUG
-	                      DebugString("CMagickImage - Perform exit BAD5\n");
-#endif
-                        return E_INVALIDARG;
+                        ThrowPerformException(exception,ErrorException,
+                          "Perform","Output array for blob must be 1d");
                       }
                     }
                   else
@@ -893,16 +1095,22 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
                               wsprintf(sz, _T("xtrnarray:0x%lx,%s"),
                                 (unsigned long)(pSafeArray),lpszVal);
                               hr = AddArgs(sz);
-                              V_VT(pvarIndex) = VT_ARRAY | VT_UI1 | VT_BYREF;		
-                              *V_ARRAYREF(pvarIndex) = pSafeArray;
+                              if (V_ISBYREF(pvarIndex))
+                                {
+                                  V_VT(pvarIndex) = VT_ARRAY | VT_UI1 | VT_BYREF;		
+                                  *V_ARRAYREF(pvarIndex) = pSafeArray;
+                                }
+                              else
+                                {
+                                  V_VT(pvarIndex) = VT_ARRAY | VT_UI1;		
+                                  V_ARRAY(pvarIndex) = pSafeArray;
+                                }
                             }
                         }
                       else
                       {
-#ifdef DO_DEBUG
-	                      DebugString("CMagickImage - Perform exit BAD6\n");
-#endif
-                        return E_INVALIDARG;
+                        ThrowPerformException(exception,ErrorException,
+                          "Perform","Output array for blob is invalid");
                       }
                     }
                 }
@@ -910,29 +1118,13 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
           else
           {
 //------->
-#ifdef DO_DEBUG
-	          DebugString("CMagickImage - Perform exit BAD7\n");
-#endif
-            return E_INVALIDARG;
+            ThrowPerformException(exception,ErrorException,
+              "Perform","A passed array is not a vlid array");
           }
         }
-      else
 //----->
-        {
-	        SAFEARRAY *psa = V_ARRAY(pvarIndex);
-          if (psa)
-            {
-              int ndim = SafeArrayGetDim(psa);
-              SafeArrayDestroy(psa);
-            }
-          psa = SafeArrayCreateVector(VT_UI1,0,0);		
-          V_VT(pvarIndex) = VT_ARRAY | VT_UI1;		
-          V_ARRAY(pvarIndex) = psa;
-          wsprintf(sz, _T("xtrnarray:0x%lx,"),(unsigned long)(psa));
-          hr = AddArgs(sz);
-        }
-
     }
+//->  // V_ISARRAY
     else
     {
       switch(vt)
@@ -980,9 +1172,15 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
 #endif
 
         case VT_BSTR:
+        case VT_BSTR | VT_BYREF:
         {
-          LPTSTR lpszVal = W2T(pvarIndex->bstrVal);
+          LPTSTR lpszVal;
 				  LPTSTR lpszNext;
+
+          if (V_ISBYREF(pvarIndex))
+	          lpszVal = W2T(*V_BSTRREF(pvarIndex));
+          else
+	          lpszVal = W2T(V_BSTR(pvarIndex));
 
           bFoundOption = false;
           // is this a command line option argument?
@@ -1007,16 +1205,22 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
             }
           }
           else
-            hr = AddArgs(V_BSTR(pvarIndex));
+            hr = AddArgs(lpszVal);
           break;
         }
 
         case VT_UI1:
+        case VT_UI1 | VT_BYREF:
         case VT_I2:
+        case VT_I2 | VT_BYREF:
         case VT_I4:
+        case VT_I4 | VT_BYREF:
         case VT_R4:
+        case VT_R4 | VT_BYREF:
         case VT_R8:
+        case VT_R8 | VT_BYREF:
         case VT_DECIMAL:
+        case VT_DECIMAL | VT_BYREF:
         {
           VARIANT variant;
 
@@ -1032,20 +1236,23 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
         }
 
         default:
-#ifdef DO_DEBUG
-          DebugString("CMagickImage - Perform exit BAD8\n");
-#endif
-          return E_INVALIDARG;
+          ThrowPerformException(exception,ErrorException,
+            "Perform","Unsupported argument type");
       }
     }
   }
-#ifdef DO_DEBUG
-	DebugString("CMagickImage - Perform before execute\n");
-#endif
-  hr = Execute(func,&text,exception);
-#ifdef DO_DEBUG
-	DebugString("CMagickImage - Perform after execute\n");
-#endif
+
+	LogInformation(methodName,"before execute");
+
+  ImageInfo
+    *image_info;
+
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  hr = Execute(func,&text,image_info,exception);
+  DestroyImageInfo(image_info);
+
+	LogInformation(methodName,"after execute");
+
   if (text != (char *) NULL)
     {
       CComVariant var;
@@ -1060,10 +1267,8 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
     if( !v )
     {
       //m_coll.clear();
-#ifdef DO_DEBUG
-      DebugString("CMagickImage - Perform exit BAD9\n");
-#endif
-      return E_OUTOFMEMORY;
+      ThrowPerformException(exception,ErrorException,
+        "Perform","Problems sending back array messages (1)");
     }
     else
     {
@@ -1076,7 +1281,8 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
       if( !msgs )
       {
         //m_coll.clear();
-        return E_OUTOFMEMORY;
+        ThrowPerformException(exception,ErrorException,
+          "Perform","Problems sending back array messages (2)");
       }
       else
       {
@@ -1091,9 +1297,7 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
     V_ARRAY(pVar) = v.Detach();
     //m_coll.clear();
   }
-#ifdef DO_DEBUG
-  DebugString("CMagickImage - Perform return\n");
-#endif
+	LogInformation(methodName,"return");
   return hr;
 }
 
@@ -1116,10 +1320,10 @@ void CMagickImage::warninghandler(const ExceptionType warning,const char *messag
 
   if (!message)
   {
-	  DebugString("CMagickImage - warning with no message\n");
+	  LogInformation("warninghandler","called with no message");
     return;
   }
-  FormatString(warning_text,"CMagickImage - warning %d: %.1024s%s%.1024s%s%s%.64s%s\n",warning,
+  FormatString(warning_text,"ImageMagickObject - warning %d: %.1024s%s%.1024s%s%s%.64s%s\n",warning,
     message,qualifier ? " (" : "",qualifier ? qualifier : "",
     qualifier? ")" : "",errno ? " [" : "",
     errno ? strerror(errno) : "",errno ? "]" : "");
@@ -1133,10 +1337,10 @@ void CMagickImage::errorhandler(const ExceptionType warning,const char *message,
 
   if (!message)
   {
-	  DebugString("CMagickImage - error with no message\n");
+	  LogInformation("errorhandler","called with no message");
     return;
   }
-  FormatString(error_text,"CMagickImage - error %d: %.1024s%s%.1024s%s%s%.64s%s\n",warning,
+  FormatString(error_text,"ImageMagickObject - error %d: %.1024s%s%.1024s%s%s%.64s%s\n",warning,
     message,qualifier ? " (" : "",qualifier ? qualifier : "",
     qualifier? ")" : "",errno ? " [" : "",
     errno ? strerror(errno) : "",errno ? "]" : "");
@@ -1150,10 +1354,10 @@ void CMagickImage::fatalerrorhandler(const ExceptionType error,const char *messa
 
   if (!message)
   {
-	  DebugString("CMagickImage - fatal error with no message\n");
+	  LogInformation("fatalhandler","called with no message");
     return;
   }
-  FormatString(fatalerror_text,"CMagickImage - fatal error %d: %.1024s%s%.1024s%s%s%.64s%s",error,
+  FormatString(fatalerror_text,"ImageMagickObject - fatal error %d: %.1024s%s%.1024s%s%s%.64s%s",error,
     (message ? message : "ERROR"),
     qualifier ? " (" : "",qualifier ? qualifier : "",qualifier ? ")" : "",
     errno ? " [" : "",errno ? strerror(errno) : "",
@@ -1162,21 +1366,15 @@ void CMagickImage::fatalerrorhandler(const ExceptionType error,const char *messa
   _DbgBreak();
 }
 
-HRESULT CMagickImage::Execute(unsigned int (*func)(ImageInfo *image_info,
-  const int argc,char **argv,char **text,ExceptionInfo *exception),char **s,
-    ExceptionInfo *exception)
+HRESULT CMagickImage::Execute(
+  unsigned int (*func)(ImageInfo *image_info,const int argc,char **argv,char **text,ExceptionInfo *exception),
+    char **s,
+      ImageInfo *image_info,
+        ExceptionInfo *exception)
 {
   unsigned int retcode = 0;
 
-  ImageInfo
-    *image_info;
-
-  /*
-    Set defaults.
-  */
-  image_info=CloneImageInfo((ImageInfo *) NULL);
   retcode = (func)(image_info, GetArgc(), GetArgv(), s, exception);
-  DestroyImageInfo(image_info);
   if (!retcode)
     return E_UNEXPECTED;
   return S_OK;
@@ -1364,9 +1562,6 @@ HRESULT CMagickImage::AddArgs(VARIANTARG *rgvarg)
 HRESULT CMagickImage::AddArgs(BSTR widestr)
 {
   HRESULT hr = E_OUTOFMEMORY;
-#ifdef DO_DEBUG
-  char debug_text[MaxTextExtent];
-#endif
 
   if (m_argvIndex >= m_argc)
     return hr;
@@ -1375,10 +1570,7 @@ HRESULT CMagickImage::AddArgs(BSTR widestr)
   MAKE_ANSIPTR_FROMWIDE(ptrANSI, widestr);
   m_argv[m_argvIndex++] = ptrANSI;
 
-#ifdef DO_DEBUG
-  FormatString(debug_text,"CMagickImage - arg: %s\n",ptrANSI);
-	DebugString(debug_text);
-#endif
+	DebugString("ImageMagickObject - arg: %s\n",ptrANSI);
 
   if (m_argvIndex >= m_argc)
     hr = ReAllocateArgs( nDefaultArgumentSize );
@@ -1389,9 +1581,6 @@ HRESULT CMagickImage::AddArgs(BSTR widestr)
 HRESULT CMagickImage::AddArgs(LPTSTR lpstr)
 {
   HRESULT hr = E_OUTOFMEMORY;
-#ifdef DO_DEBUG
-  char debug_text[MaxTextExtent];
-#endif
 
   if (m_argvIndex >= m_argc)
     return hr;
@@ -1404,10 +1593,7 @@ HRESULT CMagickImage::AddArgs(LPTSTR lpstr)
 #endif
   m_argv[m_argvIndex++] = ptrANSI;
 
-#ifdef DO_DEBUG
-  FormatString(debug_text,"CMagickImage - arg: %s\n",ptrANSI);
-	DebugString(debug_text);
-#endif
+	DebugString("ImageMagickObject - arg: %s\n",ptrANSI);
 
   if (m_argvIndex >= m_argc)
     hr = ReAllocateArgs( nDefaultArgumentSize );

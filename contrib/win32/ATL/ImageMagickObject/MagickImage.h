@@ -5,6 +5,7 @@
 
 #include "resource.h"       // main symbols
 #include <asptlb.h>         // Active Server Pages Definitions
+#include <mtx.h>
 
 // Needed for stdio FILE
 #include <stdio.h>
@@ -118,7 +119,7 @@ public:
   HRESULT UnknownToImage(IUnknown* pdisp,CComObject<CMagickImage>** ppMagickImage);
   HRESULT Execute(unsigned int (*func)(ImageInfo *image_info,
     const int argc,char **argv,char **text,ExceptionInfo *exception),
-      char **text,ExceptionInfo *exception);
+      char **text,ImageInfo *info,ExceptionInfo *exception);
 	HRESULT Perform(unsigned int (*func)(ImageInfo *image_info,
     const int argc,char **argv,char **text,ExceptionInfo *exception),
       SAFEARRAY **pArrayVar,VARIANT *pVar2,ExceptionInfo *exception);
