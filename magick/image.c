@@ -4231,7 +4231,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               Transform image colors to match this set of colors.
             */
             (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
-            map_image=ReadImage(clone_info,&(*image)->exception));
+            map_image=ReadImage(clone_info,&(*image)->exception);
             continue;
           }
         if (LocaleCompare("matte",option+1) == 0)
@@ -4439,7 +4439,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               Add a ICM, IPTC, or generic profile to the image.
             */
             (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
-            profile=ReadImage(clone_info,&(*image)->exception));
+            profile=ReadImage(clone_info,&(*image)->exception);
             if (profile == (Image *) NULL)
               continue;
             if (profile->iptc_profile.length != 0)
@@ -4852,11 +4852,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               *fill_pattern;
 
             (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
-            fill_pattern=ReadImage(clone_info,&(*image)->exception));
+            fill_pattern=ReadImage(clone_info,&(*image)->exception);
             if (fill_pattern == (Image *) NULL)
               continue;
             draw_info->fill_pattern=
-              CloneImage(fill_pattern,0,0,True,&&(*image)->exception));
+              CloneImage(fill_pattern,0,0,True,&(*image)->exception);
             DestroyImage(fill_pattern);
             continue;
           }
