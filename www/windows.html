@@ -1,0 +1,308 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<TITLE>ImageMagick For Windows</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
+	<META NAME="CREATED" CONTENT="20020718;12063600">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20020719;19390100">
+	<META NAME="CLASSIFICATION" CONTENT="Describes ImageMagick features which are peculiar to Microsoft Windows">
+	<META NAME="KEYWORDS" CONTENT="ImageMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, WebMagick, Web Magic, visualization, image processing, software development, image, software, Magick++">
+	<STYLE>
+	<!--
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		H2 { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif }
+		H3 { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif }
+		BLOCKQUOTE { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		DD { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		DT { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		P.text-body-indent { margin-left: 0.2in; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		A:link { color: #0085c0 }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0>
+</P>
+<BLOCKQUOTE><I>This page provides information specific to ImageMagick
+installed via a &ldquo;setup.exe&rdquo; style installation wizard
+under Microsoft Windows. It applies only to the pre-built &ldquo;binaries&rdquo;
+package, and not to versions compiled from source code. If you would
+like to install <SPAN LANG="en-US">ImageMagick</SPAN> from source
+code, then please refer to the <A HREF="install.html">ImageMagick
+installation guide</A>.</I></BLOCKQUOTE>
+<H2>Installation</H2>
+<H3>Normal Installation</H3>
+<DL>
+	<DL>
+		<DL>
+			<DT><B>Prerequisites</B></DT></DL>
+		<DD>
+		While multiple versions of ImageMagick may be installed at one
+		time, if your intention is to replace a prior installation of
+		ImageMagick with a newer version, then it may be wise to uninstall
+		the existing ImageMagick (see uninstall procedure) prior to
+		installing the newer version.</DD><DD>
+		<BR>
+		</DD></DL>
+</DL>
+<P CLASS="text-body-indent" STYLE="margin-left: 0.79in">
+While it is not a requirement, it is strongly recommended that the
+<A HREF="http://www.cs.wisc.edu/~ghost/"><SPAN LANG="en-US">Ghostscript</SPAN></A>
+package be installed. ImageMagick uses Ghostscript to render
+Postscript and PDF files, as well as formats where a translator to
+Postscript is available. ImageMagick will also use the fonts
+delivered with Ghostscript to support the standard set of Postscript
+fonts.</P>
+<DL>
+	<DL>
+		<DD>The installation package includes the ImageMagick Perl
+		extension (PerlMagick) as an installation option. If you would like
+		to use this extension, then you must install <A HREF="http://www.activestate.com/">ActiveState
+		ActivePerl</A> prior to commencing with installation of
+		ImageMagick.</DD><DL>
+			<DT>
+			<BR>
+			</DT><DT>
+			<B>Retrieve Install Package</B></DT></DL>
+		<DD>
+		Retrieve the ImageMagick Windows binary install package from a ftp
+		site listed at the <A HREF="http://www.imagemagick.org/www/archives.html">ImageMagick
+		Download Sites</A> page. The file will be named similar to
+		ImageMagick-5.4.8-win2k.exe and will be found in the 'binaries'
+		subdirectory of the ftp site.</DD><DL>
+			<DT>
+			<BR>
+			</DT><DT>
+			<B>Start Installation Wizard</B></DT></DL>
+		<DD>
+		Execute the downloaded file from your browser or by double-clicking
+		on the filename from within Windows Explorer. The ImageMagick Setup
+		Wizard will appear. Click on &ldquo;Next&gt;&rdquo; to continue.</DD><DL>
+			<DT>
+			<BR>
+			</DT><DT>
+			<B>Select Destination Directory</B></DT></DL>
+		<DD>
+		Specify what drive and directory to install ImageMagick into.
+		Approximately 13MB of free disk space is required to install
+		ImageMagick. The default installation directory is similar to
+		&ldquo;C:\Program Files\ImageMagick-5.4.8-Q16&rdquo;. Once you have
+		entered the desired installation directory, then select &ldquo;Next&gt;&rdquo;
+		to continue.</DD><DL>
+			<DT>
+			<BR>
+			</DT><DT>
+			<B>Select Start Menu Folder</B></DT></DL>
+		<DD>
+		Select the folder where you would like the program's shortcuts to
+		appear. The default should normally be satisfactory.  Click on
+		&ldquo;Next&gt;&rdquo; to continue.</DD><DL>
+			<DT>
+			<BR>
+			</DT><DT>
+			<B>Select Additional Tasks</B></DT></DL>
+		<DD>
+		A screen is displayed which provides the option to create a desktop
+		shortcut icon to the imdisplay program and to update the executable
+		search path so that ImageMagick is available without</DD><DD>
+		specifying the full path to the programs. The default is to enable
+		both of these. Once you have made your selections, click on &ldquo;Next&gt;&rdquo;
+		to continue.</DD><DD>
+		<BR>
+		</DD><DL>
+			<DT>
+			<B>Ready to Install</B></DT></DL>
+		<DD>
+		A screen is displayed which displays the selected options. If you
+		are not satisfied with a selected option, then click on &ldquo;&lt;Back&rdquo;
+		to go back to a previous screen so that the option may be adjusted.
+		If you are<SPAN LANG="en-US"> satisfied </SPAN>with the options and
+		are ready to install, then select &ldquo;Install&rdquo;. To abort
+		the installation entirely, select &ldquo;Cancel&rdquo;.</DD><DL>
+			<DT>
+			<BR>
+			</DT><DT>
+			<B>Installation Progress</B></DT></DL>
+		<DD>
+		While the install program is performing the installation, it will
+		display what it is doing in an installation progress window.</DD><DL>
+			<DT>
+			<BR>
+			</DT><DT>
+			<B>Finishing Up</B></DT></DL>
+		<DD>
+		By default &ldquo;View ImageMagick.html&rdquo; is check-marked.
+		This causes the ImageMagick web pages to be displayed in a browser
+		when &ldquo;Finish&rdquo; is selected. If you do not want to view
+		the web pages, then de-select &ldquo;View ImageMagick.html&rdquo;.
+		Select &ldquo;Finish&rdquo; to exit the installation program.</DD><DD>
+		<BR>
+		</DD><DD>
+		Under Windows '95 and Windows '98 it will be necessary to reboot
+		the system in order for some settings to take effect (such as
+		executable search path) since these are set in autoexec.bat.</DD><DL>
+			<DT>
+			<BR>
+			</DT><DT>
+			<B>Testing The Installation</B></DT></DL>
+		<DD>
+		Select &ldquo;Command Prompt&rdquo; from the Windows Start menu.
+		Within the window type</DD><DD>
+		<BR>
+		</DD><DL>
+			<DL>
+				<DD>
+				convert logo: logo.miff</DD><DD>
+				imdisplay logo.miff</DD></DL>
+		</DL>
+		<DD>
+		<BR>
+		</DD><DD>
+		and the ImageMagick logo should be displayed in a window.</DD></DL>
+</DL>
+<H3>
+Advanced Installation</H3>
+<P STYLE="margin-left: 0.79in">[ The following is transcribed from
+the <A HREF="http://www.jrsoftware.org/isinfo.php">Inno Setup</A>
+documentation. Inno Setup is used to create the binary install
+package. This information may be of value if the ImageMagick
+installation must be automated (e.g. If it is installed as part of
+another package). ]</P>
+<P STYLE="margin-left: 0.79in">The Setup program accepts optional
+command line parameters. These can be useful to system
+administrators, and to other programs calling the Setup program. 
+</P>
+<DL>
+	<DL>
+		<DL>
+			<DT>/SP</DT></DL>
+		<DD>
+		Disables the &ldquo;This will install... Do you wish to continue?&rdquo;
+		prompt at the beginning of Setup. Of course, this will have no
+		effect if the DisableStartupPrompt [Setup] section directive was
+		set to yes. 
+		</DD><DD>
+		<BR>
+		</DD><DL>
+			<DT>
+			/SILENT, /VERYSILENT</DT></DL>
+		<DD>
+		Instructs Setup to be silent or very silent. When Setup is silent
+		the wizard and the background window are not displayed but the
+		installation progress window is. When a setup is very silent this
+		installation progress window is not displayed. Everything else is
+		normal so for example error messages during installation are
+		displayed and the startup prompt is (if you haven't disabled it
+		with DisableStartupPrompt or the '/SP-' command line option
+		explained above) 
+		</DD><DD>
+		<BR>
+		</DD><DD>
+		If a restart is necessary and the '/NORESTART' command isn't used
+		(see below) and Setup is silent, it will display a Reboot now?
+		messagebox. If it's very silent it will reboot without asking. 
+		</DD><DD>
+		<BR>
+		</DD><DL>
+			<DT>
+			/NORESTART</DT></DL>
+		<DD>
+		Instructs Setup not to reboot even if it's necessary. 
+		</DD><DD>
+		<BR>
+		</DD><DL>
+			<DT>
+			/LOADINF=&quot;filename&quot;</DT></DL>
+		<DD>
+		Instructs Setup to load the settings from the specified file after
+		having checked the command line. This file can be prepared using
+		the '/SAVEINF=' command as explained below.  Don't forget to use
+		quotes if the filename contains spaces.</DD><DD>
+		<BR>
+		</DD><DL>
+			<DT>
+			/SAVEINF=&quot;filename&quot;</DT></DL>
+		<DD>
+		Instructs Setup to save installation settings to the specified
+		file.  Don't forget to use quotes if the filename contains spaces.</DD><DD>
+		<BR>
+		</DD><DL>
+			<DT>
+			/DIR=&ldquo;x:\dirname&rdquo;</DT></DL>
+		<DD>
+		Overrides the default directory name displayed on the Select
+		Destination Directory wizard page. A fully qualified pathname must
+		be specified. If the [Setup] section directive DisableDirPage was
+		set to yes, this command line parameter is ignored. 
+		</DD><DD>
+		<BR>
+		</DD><DL>
+			<DT>
+			/GROUP=&quot;folder name&quot;</DT></DL>
+		<DD>
+		Overrides the default folder name displayed on the Select Start
+		Menu Folder wizard page. If the [Setup] section directive
+		DisableProgramGroupPage was set to yes, this command line parameter
+		is ignored.</DD><DD>
+		<BR>
+		</DD><DL>
+			<DT>
+			/NOICONS</DT></DL>
+		<DD>
+		Instructs Setup to initially disable the Don't create any icons
+		check box on the Select Start Menu Folder wizard page.</DD><DD>
+		<BR>
+		</DD><DL>
+			<DT>
+			/COMPONENTS=&quot;comma separated list of component names&quot;</DT></DL>
+		<DD>
+		Overrides the default components settings. Using this command line
+		parameter causes Setup to automatically select a custom type. 
+		</DD></DL>
+</DL>
+<H2>
+Configure Environment</H2>
+<P STYLE="margin-left: 0.79in">If you have installed Ghostscript,
+then you should add the directory containing the gswin32c.exe
+executable to the systems executable search path so that it is found
+when ImageMagick executes it.</P>
+<P STYLE="margin-left: 0.79in">Windows '95 &amp; Windows '98 users
+must edit C:\autoexec.bat using notepad (or another text editor) and
+extend the existing path statement. Users of more recent versions of
+Windows may set environment variables via the Control Panel &ldquo;System&rdquo;
+icon.  Under Windows XP, when Control Panel is set to &ldquo;Category
+View&rdquo; (new style), the &ldquo;System&rdquo; icon is hidden
+under in the &ldquo;Performance and Maintenance&rdquo; area. Under
+Windows XP, setting of environment variables is further hidden as the
+button &ldquo;Environment Variables&rdquo; under the &ldquo;Advanced&rdquo;
+tab of the System Properties window.</P>
+<P STYLE="margin-left: 0.79in">On NT 4.X &amp; 5.X based systems,
+path may be set at either the User or System levels. Setting the path
+at the System level requires administrator<SPAN LANG="en-US">
+privileges </SPAN>since it effects all users.</P>
+<H2>Uninstall</H2>
+<P STYLE="margin-left: 0.79in">The ImageMagick package incorporates
+its own uninstall functionality. Always remove an installed
+ImageMagick via its uninstall function since manually removing it
+(such as by removing its installation directory) will leave behind
+the registry entries and path settings established at install time.</P>
+<P STYLE="margin-left: 0.79in">Under Windows '95 and Windows '95, use
+the &ldquo;Uninstall&rdquo; entry in the ImageMagick portion of the
+Windows start menu to initiate the uninstall.</P>
+<P ALIGN=LEFT STYLE="margin-left: 0.79in">On NT 4.0 and 5.X -based
+systems, ImageMagick should be removed via the &ldquo;Add or Remove
+Programs&rdquo; area of the Windows Control Panel. Select the
+ImageMagick package from the list, and click on &ldquo;Change/Remove&rdquo;
+to uninstall it.</P>
+<H2>Use From Another Package</H2>
+<P><BR><BR>
+</P>
+<HR>
+<P><A HREF="../ImageMagick.html"><IMG SRC="../images/home.png" NAME="Graphic43" ALT="Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="../ImageMagick.html">
+</A><FONT SIZE=1>Image manipulation software that works like magic.</FONT>
+</P>
+</BODY>
+</HTML>
