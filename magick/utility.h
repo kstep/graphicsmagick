@@ -70,7 +70,7 @@ extern MagickExport unsigned long
 extern MagickExport void
   *AcquireMemory(const size_t),
   AppendImageFormat(const char *,char *),
-  *CopyMemory(void *,const void *,const size_t),
+  *CloneMemory(void *,const void *,const size_t),
   ExpandFilename(char *),
   GetPathComponent(const char *,PathType,char *),
   GetToken(const char *,char **,char *),
