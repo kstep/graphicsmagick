@@ -53,6 +53,26 @@
 </tr>
 </table>
 <p>
+Major changes associated with GraphicsMagick  ....
+
+<p>
+Last updated on March 23, 2004
+
+<p>
+  Bug Fixes
+
+<UL>
+  <LI> Temporary file names were not using the full range of characters,
+      limiting the number of available names.
+  <LI> Fixed Multiply composite operator (broken in Q:32 build).
+  <LI> Fixed a rare crash in the TrueType renderer.
+  <LI> DrawGetFillOpacity() was returning inverted opacity.
+  <LI> Add quotes to delegates.mgk so filenames may contain spaces.
+  <LI> Windows: Use MsgWaitForMultipleObjects() for locking in order to avoid
+      deadlock when dependent application code indirectly creates windows.
+
+</UL>
+<p>
 Major changes associated with GraphicsMagick 1.0.5 (Released February 26, 2004)
 
 <p>
