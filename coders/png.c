@@ -4898,9 +4898,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
        {
          (void) WriteBlobMSBULong(image,6L);
          PNGType(chunk,mng_BACK);
-         red=Upscale(image->background_color.red);
-         green=Upscale(image->background_color.green);
-         blue=Upscale(image->background_color.blue);
+         red=XUpscale(image->background_color.red);
+         green=XUpscale(image->background_color.green);
+         blue=XUpscale(image->background_color.blue);
          PNGShort(chunk+4,red);
          PNGShort(chunk+6,green);
          PNGShort(chunk+8,blue);
