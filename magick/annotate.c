@@ -449,7 +449,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   E n c o d e S J I S                                                       %
++   E n c o d e S J I S                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -554,7 +554,7 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   E n c o d e T e x t                                                       %
++   E n c o d e T e x t                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -609,7 +609,7 @@ static unsigned short *EncodeText(const char *text,size_t *count)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   E n c o d e U n i c o d e                                                 %
++   E n c o d e U n i c o d e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
