@@ -344,10 +344,10 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
       Pop segment off stack.
     */
     s--;
-    x1=(int) s->x1;
-    x2=(int) s->x2;
+    x1=(long) s->x1;
+    x2=(long) s->x2;
     offset=(int) s->y2;
-    y=(int) s->y1+offset;
+    y=(long) s->y1+offset;
     /*
       Recolor neighboring pixels.
     */
@@ -3984,10 +3984,10 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
       Pop segment off stack.
     */
     s--;
-    x1=(int) s->x1;
-    x2=(int) s->x2;
+    x1=(long) s->x1;
+    x2=(long) s->x2;
     offset=(int) s->y2;
-    y=(int) s->y1+offset;
+    y=(long) s->y1+offset;
     /*
       Recolor neighboring points.
     */
