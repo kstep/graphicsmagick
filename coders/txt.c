@@ -182,31 +182,28 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  draw_info->fill=image_info->pen;
-  (void) CloneString(&draw_info->text,
-    "The quick brown fox jumps over the lazy dog");
+  (void) CloneString(&draw_info->text,image_info->filename);
   FormatString(geometry,"0x0%+ld%+ld",page.x,page.y);
   (void) CloneString(&draw_info->geometry,geometry);
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
     ThrowReaderException(DelegateError,"Unable to get type metrics",image);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
-  CloneString(&draw_info->text,"");
   p=ReadBlobString(image,text);
   for (offset=2*page.y; p != (char *) NULL; )
   {
     /*
       Annotate image with text.
     */
-    text[sizeof(text)-1]='\0';
+    text[strlen(text)]='\0';
     (void) ConcatenateString(&draw_info->text,text);
     (void) ConcatenateString(&draw_info->text,"\\n");
-    offset+=metrics.ascent-metrics.descent;
+    offset+=(long) (metrics.ascent-metrics.descent);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(offset,image->rows))
         MagickMonitor(LoadImageText,offset,image->rows);
     p=ReadBlobString(image,text);
-    if ((offset < image->rows) && (p != (char *) NULL))
+    if ((offset < (long) image->rows) && (p != (char *) NULL))
       continue;
     if (texture != (Image *) NULL)
       {

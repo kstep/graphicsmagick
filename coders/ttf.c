@@ -184,7 +184,8 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns = 800;
   image->rows = 480;
   draw_info=CloneDrawInfo(image_info, (DrawInfo *) NULL);
-  draw_info->fill=image_info->pen;
+  if (draw_info == (DrawInfo *) NULL)
+    ThrowReaderException(ResourceLimitError,"Unable to allocate image",image);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
@@ -213,16 +214,16 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) DrawSetViewbox(context,0,0,image->columns,image->rows);
   (void) DrawSetFont(context,image_info->filename);
   (void) DrawSetFontSize(context,18);
-  (void) DrawAnnotation(context,10,y,Text);
+  (void) DrawAnnotation(context,10,y,(const unsigned char *) Text);
   y+=20*MultilineCensus(Text)+20;
   for (i=12; i <= 72; i+=6)
   {
     y+=i+12;
     (void) DrawSetFontSize(context,18);
     (void) FormatString(buffer,"'%ld'",i);
-    (void) DrawAnnotation(context,10,y,buffer);
+    (void) DrawAnnotation(context,10,y,(const unsigned char *) buffer);
     (void) DrawSetFontSize(context,i);
-    (void) DrawAnnotation(context,50,y,
+    (void) DrawAnnotation(context,50,y,(const unsigned char *)
       "That which does not destroy me, only makes me stronger.");
     if (i >= 24)
       i+=6;
