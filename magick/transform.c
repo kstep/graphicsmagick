@@ -836,7 +836,8 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
 %  Method ProfileImage removes or adds a ICM, IPTC, or generic profile to an
 %  image.  If the profile name is specified it is deleted from the image.  If
 %  a filename is specified, one or more profiles are read and added to the
-%  image.
+%  image.  If the profile name is "*" then all profiles are deleted from
+%  the image.
 %
 %  The format of the ProfileImage method is:
 %
@@ -874,9 +875,9 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
   if (filename == (const char *) NULL)
     {
       /*
-        Remove a ICM, IPTC, or generic profile from the image.
+        Remove an ICM, IPTC, or generic profile from the image.
       */
-      if (LocaleCompare("icm",profile_name) == 0)
+      if ((LocaleCompare("icm",profile_name) == 0) || (*profile_name == '*'))
         {
           if (image->color_profile.length != 0)
             LiberateMemory((void **) &image->color_profile.info);
@@ -884,7 +885,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
           image->color_profile.info=(unsigned char *) NULL;
         }
       if ((LocaleCompare("8bim",profile_name) == 0) ||
-          (LocaleCompare("iptc",profile_name) == 0))
+          (LocaleCompare("iptc",profile_name) == 0) || (*profile_name == '*'))
         {
           if (image->iptc_profile.length != 0)
             LiberateMemory((void **) &image->iptc_profile.info);
@@ -893,7 +894,8 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
         }
       for (i=0; i < image->generic_profiles; i++)
       {
-        if (LocaleCompare(image->generic_profile[i].name,profile_name) != 0)
+        if ((LocaleCompare(image->generic_profile[i].name,profile_name) != 0) &&
+            (*profile_name != '*')
           continue;
         if (image->generic_profile[i].name != (char *) NULL)
           LiberateMemory((void **) &image->generic_profile[i].name);
