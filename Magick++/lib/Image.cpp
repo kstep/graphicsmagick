@@ -720,7 +720,11 @@ void Magick::Image::implode ( double factor_ )
 void Magick::Image::label ( const std::string &label_ )
 {
   modifyImage();
+#ifdef OLD_API
   MagickLib::LabelImage ( image(), label_.c_str() );
+#else
+  MagickLib::SetImageAttribute( image(),"Label",label_.c_str() );
+#endif
   throwMagickError();
 }
 
