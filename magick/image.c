@@ -3983,9 +3983,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 #endif
     if (LocaleNCompare("profile",option+1,4) == 0)
       {
-        Image
-          *profile;
-
         if (*option == '+')
           {
             /*
@@ -3993,54 +3990,15 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             option=argv[++i];
             if (LocaleCompare("icm",option) == 0)
-              {
-                if ((*image)->color_profile.length != 0)
-                  FreeMemory((void **) &(*image)->color_profile.info);
-                (*image)->color_profile.length=0;
-                (*image)->color_profile.info=(unsigned char *) NULL;
-              }
-            if (LocaleCompare("8bim",option) == 0)
-              {
-                if ((*image)->iptc_profile.length != 0)
-                  FreeMemory((void **) &(*image)->iptc_profile.info);
-                (*image)->iptc_profile.length=0;
-                (*image)->iptc_profile.info=(unsigned char *) NULL;
-              }
+              ProfileImage(*image,ICMProfile,(const char *) NULL);
             if (LocaleCompare("iptc",option) == 0)
-              {
-                if ((*image)->iptc_profile.length != 0)
-                  FreeMemory((void **) &(*image)->iptc_profile.info);
-                (*image)->iptc_profile.length=0;
-                (*image)->iptc_profile.info=(unsigned char *) NULL;
-              }
+              ProfileImage(*image,IPTCProfile,(const char *) NULL);
             continue;
           }
         /*
           Add a ICC or IPTC profile to the image.
         */
-        (void) strcpy(clone_info->filename,argv[++i]);
-        profile=ReadImage(clone_info,&(*image)->exception);
-        if (profile == (Image *) NULL)
-          continue;
-        if (LocaleCompare("icm",profile->magick) == 0)
-          {
-            if ((*image)->color_profile.length != 0)
-              FreeMemory((void **) &(*image)->color_profile.info);
-            (*image)->color_profile.length=profile->color_profile.length;
-            (*image)->color_profile.info=profile->color_profile.info;
-            profile->color_profile.length=0;
-            profile->color_profile.info=(unsigned char *) NULL;
-          }
-        if (LocaleCompare("iptc",profile->magick) == 0)
-          {
-            if ((*image)->iptc_profile.length != 0)
-              FreeMemory((void **) &(*image)->iptc_profile.info);
-            (*image)->iptc_profile.length=profile->iptc_profile.length;
-            (*image)->iptc_profile.info=profile->iptc_profile.info;
-            profile->iptc_profile.length=0;
-            profile->iptc_profile.info=(unsigned char *) NULL;
-          }
-        DestroyImage(profile);
+        ProfileImage(*image,UndefinedProfile,argv[++i]);
         continue;
       }
     if (LocaleNCompare("raise",option+1,2) == 0)

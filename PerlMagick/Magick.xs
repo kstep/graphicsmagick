@@ -234,6 +234,10 @@ static char
     "Uniform", "Gaussian", "Multiplicative", "Impulse", "Laplacian",
     "Poisson", (char *) NULL
   },
+  *ProfileTypes[] =
+  {
+    "Undefined", "ICM", "IPTC", (char *) NULL
+  },
   *PreviewTypes[] =
   {
     "Undefined", "Rotate", "Shear", "Roll", "Hue", "Saturation",
@@ -390,6 +394,7 @@ static struct
     { "GaussianBlur", { {"geom", StringReference}, {"width", DoubleReference},
       {"sigma", DoubleReference} } },
     { "Convolve", { {"coefficients", ArrayReference} } },
+    { "Profile", { {"filen", StringReference}, {"profile", ProfileTypes} } },
   };
 
 /*
@@ -3575,6 +3580,8 @@ Mogrify(ref,...)
     GaussianBlurImage  = 134
     Convolve           = 135
     ConvolveImage      = 136
+    Profile            = 137
+    ProfileImage       = 138
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -4960,6 +4967,15 @@ Mogrify(ref,...)
           FreeMemory((void **) &kernel);
           break;
         }
+        case 69:  /* Profile */
+        {
+          if (!attribute_flag[0])
+            argument_list[0].string_reference=(char *) NULL;
+          if (!attribute_flag[1])
+            argument_list[1].int_reference=UndefinedProfile;
+          (void) ProfileImage(image,(ProfileType)
+            argument_list[1].int_reference,argument_list[0].string_reference);
+        }
       }
       if (image == (Image *) NULL)
         MagickWarning(exception.severity,exception.message,exception.qualifier);
@@ -5728,6 +5744,7 @@ Ping(ref,...)
         }
       PUSHs(s);
     }
+    info->image_info->file=(FILE *) NULL;
     SvREFCNT_dec(error_list);  /* throw away all errors */
     error_list=NULL;
   }
@@ -6129,6 +6146,7 @@ Write(ref,...)
       if (package_info->image_info->adjoin)
         break;
     }
+    package_info->image_info->file=(FILE *) NULL;
 
   MethodException:
     if (package_info)

@@ -55,6 +55,9 @@
 */
 #include "magick.h"
 #include "defines.h"
+#if defined(HasLCMS)
+#include "lcms.h"
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -858,6 +861,195 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
       ProgressMonitor(FlopImageText,y,flop_image->rows);
   }
   return(flop_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P r o f i l e I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ProfileImage removes or adds a ICC or IPTC profile to an image.
+%
+%  The format of the ProfileImage method is:
+%
+%      unsigned int ProfileImage(Image *image,const ProfileType type,
+%        const char *filename)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method ProfileImage returns True if the profile is successfully
+%      added or removed from the image, otherwise False.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o type: Specifies the type of profile to add or remove.
+%
+%    o filename: Specifies the filename of the ICC or IPTC profile.
+%
+%
+*/
+MagickExport unsigned int ProfileImage(Image *image,const ProfileType type,
+  const char *filename)
+{
+  Image
+    *profile;
+
+  ImageInfo
+    *image_info;
+
+  register int
+    i;
+
+  assert(image != (Image *) NULL);
+  if (filename == (const char *) NULL)
+    {
+      /*
+        Remove a ICC or IPTC profile from the image.
+      */
+      switch (type)
+      {
+        ICMProfile:
+        {
+          if (image->color_profile.length != 0)
+            FreeMemory((void **) &image->color_profile.info);
+          image->color_profile.length=0;
+          image->color_profile.info=(unsigned char *) NULL;
+          break;
+        }
+        IPTCProfile:
+        {
+          if (image->iptc_profile.length != 0)
+            FreeMemory((void **) &image->iptc_profile.info);
+          image->iptc_profile.length=0;
+          image->iptc_profile.info=(unsigned char *) NULL;
+          break;
+        }
+        default:
+          break;
+      }
+      return(True);
+    }
+  /*
+    Add a ICC or IPTC profile to the image.
+  */
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  (void) strcpy(image_info->filename,filename);
+  profile=ReadImage(image_info,&image->exception);
+  DestroyImageInfo(image_info);
+  if (profile == (Image *) NULL)
+    return(False);
+  if (LocaleCompare("iptc",profile->magick) == 0)
+    {
+      if (image->iptc_profile.length != 0)
+        FreeMemory((void **) &image->iptc_profile.info);
+      image->iptc_profile.length=profile->iptc_profile.length;
+      image->iptc_profile.info=profile->iptc_profile.info;
+      profile->iptc_profile.length=0;
+      profile->iptc_profile.info=(unsigned char *) NULL;
+    }
+  if (LocaleCompare("icm",profile->magick) == 0)
+    {
+      if (image->color_profile.length != 0)
+        {
+#if defined(HasLCMS)
+          typedef struct _ProfilePacket
+          {
+            unsigned short
+              red,
+              green,
+              blue,
+              opacity;
+          } ProfilePacket;
+
+          cmsHPROFILE
+            image_profile,
+            transform_profile;
+
+          cmsHTRANSFORM
+            transform;
+
+          int
+            intent,
+            y;
+
+          ProfilePacket
+            alpha,
+            beta;
+
+          register int
+            x;
+
+          register PixelPacket
+            *q;
+
+          /*
+            Transform pixel colors as defined by the color profiles.
+          */
+          image_profile=cmsOpenProfileFromMem(image->color_profile.info,
+            image->color_profile.length);
+          transform_profile=cmsOpenProfileFromMem(profile->color_profile.info,
+            profile->color_profile.length);
+          if ((image_profile == (cmsHPROFILE) NULL) ||
+              (transform_profile == (cmsHPROFILE) NULL))
+            ThrowBinaryException(ResourceLimitWarning,"Unable to manage color",
+              "failed to open color profiles");
+          switch (image->rendering_intent)
+          {
+            case AbsoluteIntent: intent=INTENT_ABSOLUTE_COLORIMETRIC; break;
+            case PerceptualIntent: intent=INTENT_PERCEPTUAL;
+            case RelativeIntent: intent=INTENT_RELATIVE_COLORIMETRIC;
+            case SaturationIntent: intent=INTENT_SATURATION;
+            default: intent=INTENT_PERCEPTUAL;
+          }
+          if (image->colorspace == CMYKColorspace)
+            transform=cmsCreateTransform(image_profile,TYPE_CMYK_16,
+              transform_profile,TYPE_CMYK_16,intent,0);
+          else
+            transform=cmsCreateTransform(image_profile,TYPE_RGBA_16,
+              transform_profile,TYPE_RGBA_16,intent,0);
+          if (transform == (cmsHTRANSFORM) NULL)
+            ThrowBinaryException(ResourceLimitWarning,"Unable to manage color",
+              "failed to create color transform");
+          for (y=0; y < (int) image->rows; y++)
+          {
+            q=GetImagePixels(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
+            {
+              alpha.red=XUpScale(q->red);
+              alpha.green=XUpScale(q->green);
+              alpha.blue=XUpScale(q->blue);
+              alpha.opacity=image->matte ? XUpScale(q->opacity) : OpaqueOpacity;
+              cmsDoTransform(transform,&alpha,&beta,1);
+              q->red=XDownScale(beta.red);
+              q->green=XDownScale(beta.green);
+              q->blue=XDownScale(beta.blue);
+              q->opacity=XDownScale(beta.opacity);
+              q++;
+            }
+            if (!SyncImagePixels(image))
+              break;
+          }
+          cmsDeleteTransform(transform);
+          cmsCloseProfile(image_profile);
+          cmsCloseProfile(transform_profile);     
+#endif
+          FreeMemory((void **) &image->color_profile.info);
+        }
+      image->color_profile.length=profile->color_profile.length;
+      image->color_profile.info=profile->color_profile.info;
+      profile->color_profile.length=0;
+      profile->color_profile.info=(unsigned char *) NULL;
+    }
+  DestroyImage(profile);
+  return(True);
 }
 
 /*

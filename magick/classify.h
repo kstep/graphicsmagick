@@ -241,6 +241,13 @@ typedef enum
 
 typedef enum
 {
+  UndefinedProfile,
+  ICMProfile,
+  IPTCProfile
+} ProfileType;
+
+typedef enum
+{
   UndefinedPreview = 0,
   RotatePreview,
   ShearPreview,
