@@ -619,29 +619,39 @@ static double Blackman(const double x)
 
 static double Catrom(const double x)
 {
-  double
-    v;
-
-  v=x < 0.0 ? -x : x;
-  if (v < 1.0)
-    return(0.5*(2.0+v*v*(3.0*v-5.0)));
-  if (v < 2.0)
-    return(0.5*(4.0+v*(-8.0+(5.0-v)*v)));
+  if (x < -2.0)
+    return(0.0);
+  if (x < -1.0)
+    return(0.5*(4.0+x*(8.0+x*(5.0+x))));
+  if (x < 0.0)
+    return(0.5*(2.0+x*x*(-5.0-3.0*x)));
+  if (x < 1.0)
+    return(0.5*(2.0+x*x*(-5.0+3.0*x)));
+  if (x < 2.0)
+    return(0.5*(4.0+x*(-8.0+x*(5.0-x))));
   return(0.0);
 }
 
 static double Cubic(const double x)
 {
   double
-    v;
+    t;
 
-  v=x < 0.0 ? -x : x;
-  if (v < 1.0)
-    return((0.5*v*v*v)-v*v+(2.0/3.0));
-  if (v < 2.0)
+  if (x < -2.0)
+    return(0.0);
+  if (x < -1.0)
     {
-      v=2.0-v;
-      return((1.0/6.0)*v*v*v);
+      t=2.0+x;
+      return(t*t*t/6.0);
+    }
+  if (x < 0.0)
+    return((4.0+x*x*(-6.0-3.0*x))/6.0);
+  if (x < 1.0)
+    return((4.0+x*x*(-6.0+3.0*x))/6.0);
+  if (x < 2.0)
+    {
+      t=2.0-x;
+      return(t*t*t/6.0);
     }
   return(0.0);
 }
@@ -674,72 +684,77 @@ static double Hermite(const double x)
 
 static double Sinc(const double x)
 {
-  if (x != 0.0)
-    return(sin(MagickPI*x)/(MagickPI*x));
-  return(1.0);
+  if (x == 0.0)
+    return(1.0);
+  return(sin(MagickPI*x)/(MagickPI*x));
 }
 
 static double Lanczos(const double x)
 {
-  double
-    v;
-
-  v=x < 0.0 ? -x : x;
-  if (v < 3.0)
-    return(Sinc(v)*Sinc(v/3.0));
+  if (x < -3.0)
+    return(0.0);
+  if (x < 0.0)
+    return(Sinc(-x)*Sinc(-x/3.0));
+  if (x < 3.0)
+    return(Sinc(x)*Sinc(x/3.0));
   return(0.0);
 }
 
 static double Mitchell(const double x)
 {
-  double
-    b,
-    c,
-    v;
+#define b   (1.0/3.0)
+#define c   (1.0/3.0)
+#define p0  ((  6.0- 2.0*b       )/6.0)
+#define p2  ((-18.0+12.0*b+ 6.0*c)/6.0)
+#define p3  (( 12.0- 9.0*b- 6.0*c)/6.0)
+#define q0  ((       8.0*b+24.0*c)/6.0)
+#define q1  ((     -12.0*b-48.0*c)/6.0)
+#define q2  ((       6.0*b+30.0*c)/6.0)
+#define q3  ((     - 1.0*b- 6.0*c)/6.0)
 
-  b=1.0/3.0;
-  c=1.0/3.0;
-  v=x < 0.0 ? -x : x;
-  if (v < 1.0)
-    {
-      v=((12.0-9.0*b-6.0*c)*(v*v*v))+((-18.0+12.0*b+6.0*c)*v*v)+(6.0-2.0*b);
-      return(v/6.0);
-    }
- if (v < 2.0)
-   {
-     v=((-1.0*b-6.0*c)*(v*v*v))+((6.0*b+30.0*c)*v*v)+((-12.0*b-48.0*c)*v)+
-       (8.0*b+24.0*c);
-     return(v/6.0);
-   }
+  if (x < -2.0)
+    return(0.0);
+  if (x < -1.0)
+    return(q0-x*(q1-x*(q2-x*q3)));
+  if (x < 0.0)
+    return(p0+x*x*(p2-x*p3));
+  if (x < 1.0)
+    return(p0+x*x*(p2+x*p3));
+  if (x < 2.0)
+   return(q0+x*(q1+x*(q2+x*q3)));
   return(0.0);
 }
 
 static double Quadratic(const double x)
 {
   double
-    v;
+    t;
 
-  v=x < 0.0 ? -x : x;
-  if (v < 0.5)
-    return(0.75-v*v);
-  if (v < 1.5)
+  if (x < -1.5)
+    return(0.0);
+  if (x < -0.5)
     {
-      v-=1.5;
-      return(0.5*v*v);
+      t=x+1.5;
+      return(0.5*t*t);
+    }
+  if (x < 0.5)
+    return(0.75-x*x);
+  if (x < 1.5)
+    {
+      t=x-1.5;
+      return(0.5*t*t);
     }
   return(0.0);
 }
 
 static double Triangle(const double x)
 {
-  double
-    v;
-
-  v=x < 0.0 ? -x : x;
-  if (v < 0.0)
-    v=(-v);
-  if (v < 1.0)
-    return(1.0-v);
+  if (x < -1.0)
+    return(0.0);
+  if (x < 0.0)
+    return(1.0+x);
+  if (x < 1.0)
+    return(1.0-x);
   return(0.0);
 }
 
