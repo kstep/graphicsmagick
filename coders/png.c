@@ -4767,7 +4767,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       */
       initial_delay=(long) image->delay;
       need_iterations=False;
-      equal_chrms=image->chromaticity.white_point.x != 0.0;
+      equal_chrms=image->chromaticity.red_primary.x != 0.0;
       equal_gammas=True;
       equal_srgbs=True;
       image_count=0;
@@ -5785,7 +5785,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             png_set_gAMA(ping,ping_info,image->gamma);
           }
         if (!have_write_global_chrm &&
-            (image->chromaticity.white_point.x != 0.0))
+            (image->chromaticity.red_primary.x != 0.0))
           {
             /*
               Note image chromaticity.
