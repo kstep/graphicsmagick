@@ -455,7 +455,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) MagickMonitor(RenderPostscriptText,0,8,&image->exception);
   status=InvokePostscriptDelegate(clone_info->verbose,command);
   (void) MagickMonitor(RenderPostscriptText,7,8,&image->exception);
-  if (status)
+  if ((status) || (!IsAccessibleAndNotEmpty(clone_info->filename)))
     {
       DestroyImageInfo(clone_info);
       LiberateTemporaryFile(postscript_filename);

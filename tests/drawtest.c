@@ -363,11 +363,11 @@ int main ( int argc, char **argv )
 
   if ( argc != 2 )
     {
-      printf ( "Usage: %s filename\n", argv[0] );
+      (void) printf ( "Usage: %s filename\n", argv[0] );
       exit( 1 );
     }
 
-  strncpy( outfile, argv[1], MaxTextExtent-1 );
+  (void) strncpy( outfile, argv[1], MaxTextExtent-1 );
 
   if (LocaleNCompare("drawtest",argv[0],7) == 0)
     InitializeMagick((char *) NULL);
@@ -383,7 +383,7 @@ int main ( int argc, char **argv )
   GetExceptionInfo( &exception );
   FormatString(size, "%dx%d", columns, rows);
   CloneString(&image_info->size, size);
-  strcpy( image_info->filename, "xc:white");
+  (void) strcpy( image_info->filename, "xc:white");
   canvas = ReadImage ( image_info, &exception );
   if (exception.severity != UndefinedException)
     CatchException(&exception);
@@ -401,7 +401,7 @@ int main ( int argc, char **argv )
   /*
    * Save image to file
    */
-  strncpy( canvas->filename, outfile, sizeof(image_info->filename)-1);
+  (void) strncpy( canvas->filename, outfile, sizeof(image_info->filename)-1);
   WriteImage ( image_info, canvas );
 
   DestroyExceptionInfo( &exception );
