@@ -558,7 +558,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
     image->matte=bmp_header.bits_per_pixel == 32;
     image->columns=(unsigned int) bmp_header.width;
     image->rows=(unsigned int) AbsoluteValue(bmp_header.height);
-    if ((bmp_header.number_colors != 0) || (bmp_header.bits_per_pixel < 16))
+    if ((bmp_header.number_colors != 0) && (bmp_header.bits_per_pixel < 16))
       {
         image->class=PseudoClass;
         image->colors=(unsigned int) bmp_header.number_colors;
@@ -572,6 +572,12 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
       }
     if (image->class == PseudoClass)
       {
+        unsigned char
+          *bmp_colormap;
+
+        unsigned int
+          packet_size;
+
         /*
           Allocate image colormap.
         */
@@ -579,46 +585,28 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
           AllocateMemory(image->colors*sizeof(PixelPacket));
         if (image->colormap == (PixelPacket *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+        /*
+          Read BMP raster colormap.
+        */
+        bmp_colormap=(unsigned char *)
+          AllocateMemory(4*image->colors*sizeof(unsigned char));
+        if (bmp_colormap == (unsigned char *) NULL)
+          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+        packet_size=4;
+        if (bmp_header.size == 12)
+          packet_size=3;
+        (void) ReadBlob(image,packet_size*image->colors,
+          (char *) bmp_colormap);
+        p=bmp_colormap;
         for (i=0; i < (int) image->colors; i++)
         {
-          image->colormap[i].red=(Quantum)
-            ((unsigned long) (MaxRGB*i)/(image->colors-1));
-          image->colormap[i].green=(Quantum)
-            ((unsigned long) (MaxRGB*i)/(image->colors-1));
-          image->colormap[i].blue=(Quantum)
-            ((unsigned long) (MaxRGB*i)/(image->colors-1));
+          image->colormap[i].blue=UpScale(*p++);
+          image->colormap[i].green=UpScale(*p++);
+          image->colormap[i].red=UpScale(*p++);
+          if (bmp_header.size != 12)
+            p++;
         }
-        if (bmp_header.bits_per_pixel < 16)
-          {
-            unsigned char
-              *bmp_colormap;
-
-            unsigned int
-              packet_size;
-
-            /*
-              Read BMP raster colormap.
-            */
-            bmp_colormap=(unsigned char *)
-              AllocateMemory(4*image->colors*sizeof(unsigned char));
-            if (bmp_colormap == (unsigned char *) NULL)
-              ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-            packet_size=4;
-            if (bmp_header.size == 12)
-              packet_size=3;
-            (void) ReadBlob(image,packet_size*image->colors,
-              (char *) bmp_colormap);
-            p=bmp_colormap;
-            for (i=0; i < (int) image->colors; i++)
-            {
-              image->colormap[i].blue=UpScale(*p++);
-              image->colormap[i].green=UpScale(*p++);
-              image->colormap[i].red=UpScale(*p++);
-              if (bmp_header.size != 12)
-                p++;
-            }
-            FreeMemory(bmp_colormap);
-          }
+        FreeMemory(bmp_colormap);
       }
     while (TellBlob(image) < (int) (start_position+bmp_header.offset_bits))
       (void) ReadByte(image);

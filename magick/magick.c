@@ -157,7 +157,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->encoder=WriteJBIGImage;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Joint Bi-level Image experts Group interchange format");
+        AllocateString("Joint Bi-level Image experts Group interchange format");
       RegisterMagickInfo(entry);
 #endif
       entry=SetMagickInfo("BMP");
@@ -170,7 +170,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->decoder=ReadBMPImage;
       entry->encoder=WriteBMPImage;
       entry->description=
-	AllocateString("Microsoft Windows 24-bit bitmap image");
+        AllocateString("Microsoft Windows 24-bit bitmap image");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("CMYK");
       entry->decoder=ReadCMYKImage;
@@ -178,40 +178,40 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->adjoin=False;
       entry->raw=True;
       entry->description=
-	AllocateString("Raw cyan, magenta, yellow, and black bytes");
+        AllocateString("Raw cyan, magenta, yellow, and black bytes");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("DCM");
       entry->decoder=ReadDCMImage;
       entry->magick=IsDCM;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Digital Imaging and Communications in Medicine image");
+        AllocateString("Digital Imaging and Communications in Medicine image");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("DCX");
       entry->decoder=ReadPCXImage;
       entry->encoder=WritePCXImage;
       entry->magick=IsDCX;
       entry->description=
-	AllocateString("ZSoft IBM PC multi-page Paintbrush");
+        AllocateString("ZSoft IBM PC multi-page Paintbrush");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("DIB");
       entry->decoder=ReadBMPImage;
       entry->encoder=WriteBMPImage;
       entry->description=
-	AllocateString("Microsoft Windows bitmap image");
+        AllocateString("Microsoft Windows bitmap image");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("EPDF");
       entry->decoder=ReadPDFImage;
       entry->encoder=WritePDFImage;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Encapsulated Portable Document Format");
+        AllocateString("Encapsulated Portable Document Format");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("EPI");
       entry->decoder=ReadPSImage;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Adobe Encapsulated PostScript Interchange format");
+        AllocateString("Adobe Encapsulated PostScript Interchange format");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("EPS");
       entry->decoder=ReadPSImage;
@@ -224,7 +224,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->encoder=WritePS2Image;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Adobe Level II Encapsulated PostScript");
+        AllocateString("Adobe Level II Encapsulated PostScript");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("EPSF");
       entry->decoder=ReadPSImage;
@@ -237,7 +237,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->encoder=WritePSImage;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Adobe Encapsulated PostScript Interchange format");
+        AllocateString("Adobe Encapsulated PostScript Interchange format");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("EPT");
       entry->decoder=ReadPSImage;
@@ -245,7 +245,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->magick=IsEPT;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Adobe Encapsulated PostScript with TIFF preview");
+        AllocateString("Adobe Encapsulated PostScript with TIFF preview");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("FAX");
       entry->decoder=ReadFAXImage;
@@ -259,7 +259,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->magick=IsFITS;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Flexible Image Transport System");
+        AllocateString("Flexible Image Transport System");
       RegisterMagickInfo(entry);
 #if defined(HasFPX)
       entry=SetMagickInfo("FPX");
@@ -279,20 +279,20 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->encoder=WriteGIFImage;
       entry->magick=IsGIF;
       entry->description=
-	AllocateString("CompuServe graphics interchange format");
+        AllocateString("CompuServe graphics interchange format");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("GIF87");
       entry->decoder=ReadGIFImage;
       entry->encoder=WriteGIFImage;
       entry->adjoin=False;
       entry->description=
-	AllocateString("CompuServe graphics interchange format (version 87a)");
+        AllocateString("CompuServe graphics interchange format (version 87a)");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("GRADATION");
       entry->decoder=ReadGRADATIONImage;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Gradual passing from one shade to another");
+        AllocateString("Gradual passing from one shade to another");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("GRANITE");
       entry->decoder=ReadLOGOImage;
@@ -332,13 +332,13 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->magick=IsHTML;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Hypertext Markup Language and a client-side image map");
+        AllocateString("Hypertext Markup Language and a client-side image map");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("HTML");
       entry->encoder=WriteHTMLImage;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Hypertext Markup Language and a client-side image map");
+        AllocateString("Hypertext Markup Language and a client-side image map");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("ICB");
       entry->decoder=ReadTGAImage;
@@ -371,13 +371,13 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->decoder=ReadJBIGImage;
       entry->encoder=WriteJBIGImage;
       entry->description=
-	AllocateString("Joint Bi-level Image experts Group interchange format");
+        AllocateString("Joint Bi-level Image experts Group interchange format");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("JBIG");
       entry->decoder=ReadJBIGImage;
       entry->encoder=WriteJBIGImage;
       entry->description=
-	AllocateString("Joint Bi-level Image experts Group interchange format");
+        AllocateString("Joint Bi-level Image experts Group interchange format");
       RegisterMagickInfo(entry);
 #endif
 #if defined(HasJPEG)
@@ -386,7 +386,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->encoder=WriteJPEGImage;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Joint Photographic Experts Group JFIF format");
+        AllocateString("Joint Photographic Experts Group JFIF format");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("JPEG");
       entry->decoder=ReadJPEGImage;
@@ -394,14 +394,14 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->magick=IsJPEG;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Joint Photographic Experts Group JFIF format");
+        AllocateString("Joint Photographic Experts Group JFIF format");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("JPEG24");
       entry->decoder=ReadJPEGImage;
       entry->encoder=WriteJPEGImage;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Joint Photographic Experts Group JFIF format");
+        AllocateString("Joint Photographic Experts Group JFIF format");
       RegisterMagickInfo(entry);
 #endif
       entry=SetMagickInfo("LABEL");
@@ -421,7 +421,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->adjoin=False;
       entry->raw=True;
       entry->description=
-	AllocateString("Colormap intensities and indices");
+        AllocateString("Colormap intensities and indices");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("MATTE");
       entry->decoder=ReadMIFFImage;
@@ -448,7 +448,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->encoder=WriteMONOImage;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Bi-level bitmap in least-significant-byte first order");
+        AllocateString("Bi-level bitmap in least-significant-byte first order");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("MTV");
       entry->decoder=ReadMTVImage;
@@ -475,7 +475,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->decoder=ReadPNMImage;
       entry->encoder=WritePNMImage;
       entry->description=
-	AllocateString("Portable bitmap format (black and white)");
+        AllocateString("Portable bitmap format (black and white)");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("PCD");
       entry->decoder=ReadPCDImage;
@@ -532,12 +532,12 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->encoder=WritePICTImage;
       entry->adjoin=False;
       entry->description=
-	AllocateString("24-bit Apple Macintosh QuickDraw/PICT");
+        AllocateString("24-bit Apple Macintosh QuickDraw/PICT");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("PIX");
       entry->decoder=ReadPIXImage;
       entry->description=
-	AllocateString("Alias/Wavefront RLE image format");
+        AllocateString("Alias/Wavefront RLE image format");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("PLASMA");
       entry->decoder=ReadPLASMAImage;
@@ -548,7 +548,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->decoder=ReadPNMImage;
       entry->encoder=WritePNMImage;
       entry->description=
-	AllocateString("Portable graymap format (gray scale)");
+        AllocateString("Portable graymap format (gray scale)");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("PM");
       entry->decoder=ReadXPMImage;
@@ -580,7 +580,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->encoder=WritePREVIEWImage;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Show a preview an image enhancement, effect, or f/x");
+        AllocateString("Show a preview an image enhancement, effect, or f/x");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("PS");
       entry->decoder=ReadPSImage;
@@ -633,7 +633,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->encoder=WriteRGBImage;
       entry->raw=True;
       entry->description=
-	AllocateString("Raw red, green, blue, and matte bytes");
+        AllocateString("Raw red, green, blue, and matte bytes");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("RLA");
       entry->decoder=ReadRLAImage;
@@ -668,7 +668,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->encoder=WriteHTMLImage;
       entry->adjoin=False;
       entry->description=
-	AllocateString("Hypertext Markup Language and a client-side image map");
+        AllocateString("Hypertext Markup Language and a client-side image map");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("STEGANO");
       entry->decoder=ReadSTEGANOImage;
@@ -787,14 +787,14 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->magick=IsXBM;
       entry->adjoin=False;
       entry->description=
-	AllocateString("X Windows system bitmap (black and white)");
+        AllocateString("X Windows system bitmap (black and white)");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("XC");
       entry->decoder=ReadXCImage;
       entry->adjoin=False;
       entry->raw=True;
       entry->description=
-	AllocateString("Constant image of X server color");
+        AllocateString("Constant image of X server color");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("XPM");
       entry->decoder=ReadXPMImage;
@@ -815,7 +815,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->magick=IsXWD;
       entry->adjoin=False;
       entry->description=
-	AllocateString("X Windows system window dump (color)");
+        AllocateString("X Windows system window dump (color)");
       RegisterMagickInfo(entry);
 #endif
       entry=SetMagickInfo("YUV");
@@ -917,14 +917,19 @@ Export MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   */
   p=(MagickInfo*) NULL;
   if (magick_info != (MagickInfo *) NULL)
-    for (p=magick_info; p->next != (MagickInfo *) NULL; p=p->next)
     {
-      if (Latin1Compare(p->tag,entry->tag) >= 0)
-        {
-          if (Latin1Compare(p->tag,entry->tag) == 0)
-            UnregisterMagickInfo(entry->tag);
-          break;
-        }
+      for (p=magick_info; p->next != (MagickInfo *) NULL; p=p->next)
+      {
+        if (Latin1Compare(p->tag,entry->tag) >= 0)
+          {
+            if (Latin1Compare(p->tag,entry->tag) == 0)
+              {
+                p=p->previous;
+                UnregisterMagickInfo(entry->tag);
+              }
+            break;
+          }
+      }
     }
   if (magick_info == (MagickInfo *) NULL)
     {

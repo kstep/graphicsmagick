@@ -1389,6 +1389,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
       break;
     for (y=0; y < (int) destination->rows; y++)
     {
+      j=0;
       blue_weight=0.0;
       green_weight=0.0;
       red_weight=0.0;
@@ -1492,6 +1493,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
       break;
     for (x=0; x < (int) destination->columns; x++)
     {
+      j=0;
       blue_weight=0.0;
       green_weight=0.0;
       red_weight=0.0;

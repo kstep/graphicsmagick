@@ -438,7 +438,7 @@ MAGICK DELEGATES
       FTP as
 
           ftp://ftp.informatik.uni-erlangen.de/pub/doc/ISO/JBIG/
-            jbigkit-1.0.tar.gz
+            jbigkit-1.1.tar.gz
 
       to read the JBIG image format.
 
@@ -583,7 +583,7 @@ HOW TO COMPILE
 
     JBIG:
       cd ImageMagick
-      gunzip -c jbigkit-1.0.tar.gz | tar xvof -
+      gunzip -c jbigkit-1.1.tar.gz | tar xvof -
       mv jbigkit jbig
       cd jbig
       make

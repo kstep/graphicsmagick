@@ -1162,7 +1162,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   break;
                 for (x=0; x < (int) image->columns; x++)
                 {
-                  (void) sprintf(buffer,"%02lx",Intensity(*p));
+                  (void) sprintf(buffer,"%02x",Intensity(*p));
                   (void) WriteBlob(image,strlen(buffer),buffer);
                   i++;
                   if (i == 36)

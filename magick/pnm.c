@@ -286,7 +286,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
     if ((format != '3') && (format != '6'))
       {
         image->class=PseudoClass;
-        image->colors=Min(max_value,MaxRGB)+1;
+        image->colors=max_value+1;
       }
     if (image_info->ping)
       {
@@ -309,11 +309,11 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
         if (format != '7')
           for (i=0; i < (int) image->colors; i++)
           {
-            image->colormap[i].red=(Quantum)
+            image->colormap[i].red=
               ((unsigned long) (MaxRGB*i)/(image->colors-1));
-            image->colormap[i].green=(Quantum)
+            image->colormap[i].green=
               ((unsigned long) (MaxRGB*i)/(image->colors-1));
-            image->colormap[i].blue=(Quantum)
+            image->colormap[i].blue=
               ((unsigned long) (MaxRGB*i)/(image->colors-1));
           }
         else

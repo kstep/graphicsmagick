@@ -71,6 +71,27 @@
 %  defined by the geometry parameters.   A pointer to the pixels is returned if
 %  the pixels are transferred, otherwise a NULL is returned.
 %
+%  This example illustrates the use of the GetPixelCache() method:
+%
+%    for (y=0; y < (int) image->rows; y++)
+%    {
+%      q=GetPixelCache(image,0,y,image->columns,1);
+%      if (q == (PixelPacket *) NULL)
+%        break;
+%      for (x=0; x < (int) image->columns; x++)
+%      {
+%        if (image->class == PseudoClass)
+%          index=image->indexes[x];
+%        red=q->red;
+%        green=q->green;
+%        blue=q->blue;
+%        q++;
+%      }
+%      if (image->previous == (Image *) NULL)
+%        if (QuantumTick(y,image->rows))
+%          ProgressMonitor(LoadImageText,y,image->rows);
+%    }
+%
 %  The format of the GetPixelCache method is:
 %
 %      PixelPacket *GetPixelCache(Image *image,const int x,const int y,
@@ -724,9 +745,32 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
 %
 %  Method SetPixelCache allocates an area to store image pixels as defined
 %  by the region rectangle and returns a pointer to the area.  This area is
-%  subsequently transferred from the pixel cache with the GetCacheInfo() method
-%  or to the cache with SyncPixelCache(). A pointer to the pixels is returned
-%  if the pixels are transferred, otherwise a NULL is returned.
+%  subsequently transferred from the pixel cache with the SyncPixelCache.
+%  A pointer to the pixels is returned if the pixels are transferred,
+%  otherwise a NULL is returned.
+%
+%  This example illustrates the use of the SetPixelCache method:
+%
+%    for (y=0; y < (int) image->rows; y++)
+%    {
+%      q=SetPixelCache(image,0,y,image->columns,1);
+%      if (q == (PixelPacket *) NULL)
+%        break;
+%      for (x=0; x < (int) image->columns; x++)
+%      {
+%        if (image->class == PseudoClass)
+%          image->indexes[x]=0;
+%        q->red=0;
+%        q->green=0;
+%        q->blue=0;
+%        q++;
+%      }
+%      if (!SyncPixelCache(image))
+%        break;
+%      if (image->previous == (Image *) NULL)
+%        if (QuantumTick(y,image->rows))
+%          ProgressMonitor(LoadImageText,y,image->rows);
+%    }
 %
 %  The format of the SetPixelCache method is:
 %
@@ -735,7 +779,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method SyncPixelCache returns a pointer to the pixels is
+%    o status: Method SetPixelCache returns a pointer to the pixels is
 %      returned if the pixels are transferred, otherwise a NULL is returned.
 %
 %    o image: The address of a structure of type Image.
@@ -830,6 +874,7 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
 %
 %  Method SyncPixelCache saves the image pixels to the in-memory or disk
 %  cache.  The method returns True if the pixel region is set, otherwise False.
+%  See the SetPixelCache method for an example usage of SyncPixelCache.
 %
 %  The format of the SyncPixelCache method is:
 %

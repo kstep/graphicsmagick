@@ -25,6 +25,7 @@ $call Make avs.c
 $call Make blob.c
 $call Make bmp.c
 $call Make cache.c
+$call Make cache_io.c
 $call Make cmyk.c
 $call Make colors.c
 $call Make compress.c
@@ -119,9 +120,9 @@ $call Make yuv.c
 $call Make zoom.c
 $call Make 8bim.c
 $library/create libmagick.olb PreRvIcccm.obj,animate.obj,annotate.obj, -
-  avs.obj,blob.obj,bmp.obj,cache.obj,cmyk.obj,colors.obj,compress.obj,dcm.obj, -
-  decorate.obj,delegates.obj,display.obj,dps.obj,draw.obj, -
-  effects.obj,enhance.obj,ept.obj,error.obj,fax.obj,fits.obj, -
+  avs.obj,blob.obj,bmp.obj,cache.obj,cache_io.obj,cmyk.obj,colors.obj, -
+  compress.obj,dcm.obj,decorate.obj,delegates.obj,display.obj,dps.obj, -
+  draw.obj,effects.obj,enhance.obj,ept.obj,error.obj,fax.obj,fits.obj, -
   fpx.obj,gems.obj,gif.obj,gradation.obj,gray.obj,hdf.obj, -
   histogram.obj,html.obj,icc.obj,icon.obj,image.obj,iptc.obj, -
   jbig.obj,jpeg.obj,label.obj,logo.obj,magick.obj, -

@@ -415,6 +415,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
     bits,
     byte_count,
     displacement,
+    k,
     next_pixel,
     number_bits,
     y;
@@ -424,7 +425,6 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
 
   register int
     i,
-    k,
     x;
 
   register PixelPacket
