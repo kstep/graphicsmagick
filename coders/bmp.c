@@ -1591,7 +1591,13 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
               }
            }
          if (bit != 0)
-           *q++=byte << (8-bit);
+           {
+             *q++=byte << (8-bit);
+             x++;
+           }
+         /* initialize padding bytes */
+         for (; x < (long) bytes_per_line; x++)
+           *q++=0x00;
          if (image->previous == (Image *) NULL)
            if (QuantumTick(y,image->rows))
              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
@@ -1630,7 +1636,13 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
               }
            }
          if (nibble != 0)
-           *q++=byte << 4;
+           {
+             *q++=byte << 4;
+             x++;
+           }
+         /* initialize padding bytes */
+         for (; x < (long) bytes_per_line; x++)
+           *q++=0x00;
          if (image->previous == (Image *) NULL)
            if (QuantumTick(y,image->rows))
              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
@@ -1820,7 +1832,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobLSBLong(image,0x0000ff00L);  /* Green mask */
         (void) WriteBlobLSBLong(image,0x000000ffL);  /* Blue mask */
         (void) WriteBlobLSBLong(image,0xff000000UL);  /* Alpha mask */
-        (void) WriteBlobLSBLong(image,0x00000001L);  /* CSType==Calib. RGB */
+        (void) WriteBlobLSBLong(image,0x00000001L);   /* CSType==Calib. RGB */
         (void) WriteBlobLSBLong(image,
           (long) image->chromaticity.red_primary.x*0x3ffffff);
         (void) WriteBlobLSBLong(image,
@@ -1842,6 +1854,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobLSBLong(image,
           (long) (1.000f-(image->chromaticity.blue_primary.x
           +image->chromaticity.blue_primary.y)*0x3ffffff));
+
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.x*0xffff);
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.y*0xffff);
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.z*0xffff);
@@ -1921,7 +1934,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           if (type > 2)
             *q++=(Quantum) 0x0;
         }
-        if (type == 2)
+        if (type <= 2)
           (void) WriteBlob(image,3*(1L << bmp_info.bits_per_pixel),
              (char *) bmp_colormap);
           else
