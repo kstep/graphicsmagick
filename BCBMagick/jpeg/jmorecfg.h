@@ -188,10 +188,52 @@ typedef unsigned int JDIMENSION;
 #define METHODDEF(type)		static type
 /* a function used only in its module: */
 #define LOCAL(type)		static type
-/* a function referenced thru EXTERNs: */
-#define GLOBAL(type)		type
-/* a reference to a GLOBAL function: */
-#define EXTERN(type)		extern type
+
+
+/**
+ ** Borland C++ Builder defines
+ **/
+#if defined(__BORLANDC__)
+#    if defined(_DLL)
+#        define _JPEGDLL_
+#        define _JPEGLIB_
+#    else
+#        undef _JPEGDLL_
+#    endif
+#endif
+
+/**
+ * Under VISUALC we have single threaded static libraries, or
+ * multi-threaded DLLs using the multithreaded runtime DLLs.
+ **/
+ 
+#if defined(_MT) && defined(_DLL) && !defined(_JPEGDLL_) && !defined(_LIB)
+#    define _JPEGDLL_
+#endif
+#if defined(_JPEGDLL_)
+#    if defined(_VISUALC_)
+#        pragma warning( disable : 4273 )	/* Disable the stupid dll linkage warnings */
+#        pragma warning( disable : 4018 )
+#        pragma warning( disable : 4244 )
+#        pragma warning( disable : 4142 )
+#    endif
+#    if !defined(_JPEGLIB_)
+         /* a function referenced thru EXTERNs: */
+#        define GLOBAL(type) __declspec(dllimport) type
+         /* a reference to a GLOBAL function: */
+#        define EXTERN(type) extern __declspec(dllimport) type
+#    else
+         /* a function referenced thru EXTERNs: */
+#        define GLOBAL(type) __declspec(dllexport) type
+         /* a reference to a GLOBAL function: */
+#        define EXTERN(type) extern __declspec(dllexport) type
+#    endif
+#else
+     /* a function referenced thru EXTERNs: */
+#    define GLOBAL(type) type
+     /* a reference to a GLOBAL function: */
+#    define EXTERN(type) extern type
+#endif
 
 
 /* This macro is used to declare a "method", that is, a function pointer.
@@ -370,3 +412,5 @@ typedef int boolean;
 #endif
 
 #endif /* JPEG_INTERNAL_OPTIONS */
+
+

@@ -9,7 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = lcms110.lib lcmsdll.dll testcms.exe
+PROJECTS = lcms110.lib bcbGM_lcms.dll testcms.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ default: $(PROJECTS)
 lcms110.lib: lcms.bpr
   $(MAKE)
 
-lcmsdll.dll: lcmsdll.bpr
+bcbGM_lcms.dll: bcbGM_lcms.bpr
   $(MAKE)
 
 testcms.exe: testcms.bpr

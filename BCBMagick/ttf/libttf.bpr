@@ -111,7 +111,7 @@ Comments=
 
 [HistoryLists\hlIncludePath]
 Count=1
-Item0=include;src\winfonts;src\type42;src\type1;src\truetype;src\smooth;src\sfnt;src\raster;src\psnames;src\pshinter;src\psaux;src\pfr;src\pcf;src\gzip;src\cid;src\cff;src\cache;src\bdf;src\autohint;src\base;$(BCB)\include;$(BCB)\include\vcl
+Item0=src\winfonts;src\type42;src\type1;src\truetype;src\smooth;src\sfnt;src\raster;src\psnames;src\pshinter;src\psaux;src\pfr;src\pcf;src\gzip;src\cid;src\cff;src\cache;src\bdf;src\autohint;src\base;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
 Count=1

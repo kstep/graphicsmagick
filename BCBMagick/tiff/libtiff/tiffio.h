@@ -204,39 +204,41 @@ typedef struct {
 #include <stdarg.h>
 
 /**
- * Under VISUALC we have single threaded static libraries, or
- * mutli-threaded DLLs using the multithreaded runtime DLLs.
+ ** Borland C++ Builder defines
  **/
-#if defined(_VISUALC_)
-#  if defined(_MT) && defined(_DLL) && !defined(_LIB)
-#    pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
+#if defined(__BORLANDC__)
+#  if defined(_DLL)
+#    define _TIFFDLL_
+#    define _TIFFLIB_
+#  else
+#    undef _TIFFDLL_
+#  endif   
+#endif
+
+/**
+ * Under VISUALC we have single threaded static libraries, or
+ * multi-threaded DLLs using the multithreaded runtime DLLs.
+ **/
+
+#if defined(_MT) && defined(_DLL) && !defined(_TIFFDLL_) && !defined(_LIB)
+#    define _TIFFDLL_
+#endif
+#if defined(_TIFFDLL_)
+#    if defined(_VISUALC_)
+#        pragma warning( disable : 4273 )	/* Disable the stupid dll linkage warnings */
+#        pragma warning( disable : 4018 )
+#        pragma warning( disable : 4244 )
+#        pragma warning( disable : 4142 )
+#    endif
 #    if !defined(_TIFFLIB_)
 #      define TIFFEXPORT __declspec(dllimport)
 #    else
 #      define TIFFEXPORT __declspec(dllexport)
 #    endif
-#  else
+#else
 #    define TIFFEXPORT
-#  endif
- 
-#  pragma warning(disable : 4018)
-#  pragma warning(disable : 4244)
-#  pragma warning(disable : 4142)
 #endif
 
-/**
- ** Borland C++ Builder compilation
- **/
-#if defined(__BORLANDC__)
-#  if defined(__DLL__)
-#    define TIFFEXPORT __declspec(dllexport)
-#  else
-#    define TIFFEXPORT
-#  endif   
-#  pragma warn -8004	
-#  pragma warn -8012   
-#  pragma warn -8060  
-#endif
 
 #if defined(__cplusplus)
 extern "C" {

@@ -16,4 +16,4 @@ REM **     mikechiarappa@libero.it                           **
 REM ***********************************************************
 REM
 
-make -fstartup.mak
+make -fBCBMagick.mak copy-all

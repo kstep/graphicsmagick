@@ -4,7 +4,8 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="libCoders.lib"/>
-    <OBJFILES value="art.obj avi.obj avs.obj bmp.obj caption.obj clipboard.obj cmyk.obj cut.obj 
+    <OBJFILES value="art.obj avi.obj avs.obj bmp.obj caption.obj cineon.obj
+      clipboard.obj cmyk.obj cut.obj 
       dcm.obj dib.obj dps.obj dpx.obj emf.obj ept.obj fax.obj fits.obj fpx.obj 
       gif.obj gradient.obj gray.obj hdf.obj histogram.obj html.obj icon.obj 
       jbig.obj jp2.obj jpeg.obj label.obj locale.obj logo.obj map.obj mat.obj 
@@ -55,6 +56,7 @@
       <FILE FILENAME="avs.c" FORMNAME="" UNITNAME="avs.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="bmp.c" FORMNAME="" UNITNAME="bmp.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="caption.c" FORMNAME="" UNITNAME="caption.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="cineon.c" FORMNAME="" UNITNAME="cineon.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="clipboard.c" FORMNAME="" UNITNAME="clipboard.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="cmyk.c" FORMNAME="" UNITNAME="cmyk.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="cut.c" FORMNAME="" UNITNAME="cut.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
