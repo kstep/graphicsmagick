@@ -169,6 +169,7 @@ UNIX/Cygwin COMPILATION
    --without-tiff          disable TIFF support
    --without-ttf           disable TrueType support
    --without-wmf           disable WMF support
+   --with-gs-font-dir      directory containing Ghostscript fonts
    --with-windows-font-dir directory containing MS-Windows fonts
    --without-xml           disable XML support
    --without-zlib          disable ZLIB support
@@ -327,6 +328,15 @@ UNIX/Cygwin COMPILATION
       or installed. The remaining programs have reduced functionality
       such as no access to X11 fonts (consider using Postscript or
       TrueType fonts instead).
+
+    o --with-gs-font-dir: Specify the directory containing the
+      Ghostscript Postscript Type 1 font files (e.g. "n022003l.pfb") so
+      that they can be rendered using the FreeType library. If the font
+      files are installed using the default Ghostscript installation
+      paths (prefix/share/ghostscript/fonts), they should be discovered
+      automatically by configure and specifying this option is not
+      necessary. Specify this option if the Ghostscript fonts fail to be
+      located automatically, or the location needs to be overridden.
 
     o --with-windows-font-dir: If configured under a Unix emulation
       environment like Cygwin or mingw, configure should automatically

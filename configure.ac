@@ -326,6 +326,12 @@ AC_ARG_WITH(wmf,
 	      [with_wmf=$withval],
 	      [with_wmf='yes'])
 
+# Set Ghostscript font directory
+AC_ARG_WITH(gs-font-dir,
+	      [  --with-gs-font-dir      directory containing Ghostscript fonts],
+	      [with_gs_font_dir=$withval],
+	      [with_gs_font_dir='no'])
+
 # Set Windows font directory
 AC_ARG_WITH(windows-font-dir,
 	      [  --with-windows-font-dir directory containing MS-Windows fonts],
@@ -1457,10 +1463,16 @@ case $host_os in
 esac
 
 # Ghostscript
-ghostscript_font_dir="$prefix/share/ghostscript/fonts"
-if test "$PSDelegate" != 'gs'
+if test "$with_gs_font_dir" != 'no'
 then
-  ghostscript_font_dir=`echo "$PSDelegate" | sed -e 's:/bin/gs:/share/ghostscript/fonts:'`
+  ghostscript_font_dir="$with_gs_font_dir"
+else
+  ghostscript_font_dir="$prefix/share/ghostscript/fonts"
+  if test "$PSDelegate" != 'gs'
+  then
+    ghostscript_font_dir=`echo "$PSDelegate" | sed -e 's:/bin/gs:/share/ghostscript/fonts:'`
+  fi
+  with_gs_font_dir="''"
 fi
 type_include_files="$type_include_files "'file="type-ghostscript.mgk"'
 AC_SUBST(ghostscript_font_dir)
@@ -1827,6 +1839,7 @@ echo "Shared libraries  --enable-shared=$enable_shared    	$libtool_build_shared
 echo "Static libraries  --enable-static=$enable_static    	$libtool_build_static_libs"
 echo "GNU ld            --with-gnu-ld=$with_gnu_ld        	$lt_cv_prog_gnu_ld"
 echo "Ghostscript       None                   	$PSDelegate"
+echo "Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir         $ghostscript_font_dir"
 echo "LZW support       --enable-lzw=$with_lzw            	$with_lzw"
 echo "16 bit pixels     --enable-16bit-pixel=$with_16_bit_pixel 	$with_16_bit_pixel"
 echo "Magick++          --with-magick-plus-plus=$with_magick_plus_plus 	$have_magick_plus_plus"
