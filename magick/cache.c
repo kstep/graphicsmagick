@@ -214,7 +214,7 @@ Export unsigned int AllocateCache(Cache cache,const ClassType class_type,
       if (cache_info->vista == (VistaInfo *) NULL)
         MagickError(ResourceLimitError,"Memory allocation failed",
           "unable to allocate cache vistas");
-      for (id=0; id < cache_info->rows; id++)
+      for (id=0; id <= cache_info->rows; id++)
       {
         cache_info->vista[id].available=True;
         cache_info->vista[id].columns=0;
@@ -398,7 +398,7 @@ Export void DestroyCacheInfo(Cache cache)
     default:
       break;
   }
-  for (id=0; id < cache_info->rows; id++)
+  for (id=0; id <= cache_info->rows; id++)
     if (cache_info->vista[id].stash != (void *) NULL)
       FreeMemory(cache_info->vista[id].stash);
   FreeMemory(cache_info->vista);
