@@ -284,10 +284,10 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,buffer);
   density=72;
   if (image_info->density != (char *) NULL)
-    (void) ParseImageGeometry(image_info->density,&sans_offset,&sans_offset,
+    (void) ParseGeometry(image_info->density,&sans_offset,&sans_offset,
       &density,&density);
   else
-    (void) ParseImageGeometry("75x75",&sans_offset,&sans_offset,&density,&density);
+    (void) ParseGeometry("75x75",&sans_offset,&sans_offset,&density,&density);
   FormatString(buffer,"\033*p%dx%dY",x,y);
   (void) WriteBlobString(image,buffer);
   attribute=GetImageAttribute(image,"Label");

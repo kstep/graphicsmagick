@@ -229,8 +229,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   page.height=792;
   page.x=0;
   page.y=0;
-  (void) ParseImageGeometry(PSPageGeometry,&page.x,&page.y,&page.width,
-    &page.height);
+  (void) ParseGeometry(PSPageGeometry,&page.x,&page.y,&page.width,&page.height);
   portrait=True;
   /*
     Determine page geometry from the PDF media box.
@@ -280,7 +279,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     box=page;
   }
   if (image_info->page != (char *) NULL)
-    (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
+    (void) ParseGeometry(image_info->page,&page.x,&page.y,
       &page.width,&page.height);
   FormatString(geometry,"%ux%u",
     (unsigned int) ceil(page.width*image->x_resolution/dx_resolution-0.5),

@@ -202,10 +202,10 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   width=image->columns;
   height=image->rows;
   if (image_info->density != (char *) NULL)
-    (void) ParseImageGeometry(image_info->density,&sans_offset,&sans_offset,
+    (void) ParseGeometry(image_info->density,&sans_offset,&sans_offset,
       &width,&height);
   else
-    (void) ParseImageGeometry(HistogramDensity,&sans_offset,&sans_offset,
+    (void) ParseGeometry(HistogramDensity,&sans_offset,&sans_offset,
       &width,&height);
   histogram_image=CloneImage(image,width,height,True,&image->exception);
   if (histogram_image == (Image *) NULL)

@@ -478,7 +478,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
         x_resolution=640;
         y_resolution=480;
         if (image_info->density != (char *) NULL)
-          (void) ParseImageGeometry(image_info->density,&sans_offset,&sans_offset,
+          (void) ParseGeometry(image_info->density,&sans_offset,&sans_offset,
             &x_resolution,&y_resolution);
         jbg_enc_lrlmax(&jbig_info,x_resolution,y_resolution);
       }
