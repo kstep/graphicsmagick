@@ -551,12 +551,6 @@ static CubeInfo *GetCubeInfo(void)
   CubeInfo
     *cube_info;
 
-  double
-    weight;
-
-  register int
-    i;
-
   /*
     Initialize tree to describe color cube.
   */
@@ -673,9 +667,6 @@ MagickExport size_t GetNumberColors(Image *image,FILE *file)
 
   NodeInfo
     *node_info;
-
-  Nodes
-    *nodes;
 
   register int
     i,
@@ -838,7 +829,7 @@ static void Histogram(CubeInfo *cube_info,const NodeInfo *node_info,FILE *file)
       p=node_info->list;
       for (i=0; i < (int) node_info->number_unique; i++)
       {
-        (void) fprintf(file,"%10lu: (%5d,%5d,%5d)  #%04x%04x%04x",
+        (void) fprintf(file,"%10llu: (%5d,%5d,%5d)  #%04x%04x%04x",
           p->count,p->red,p->green,p->blue,(unsigned int) p->red,
           (unsigned int) p->green,(unsigned int) p->blue);
         (void) fprintf(file,"  ");
@@ -1049,9 +1040,6 @@ MagickExport unsigned int IsPseudoClass(Image *image)
 
   int
     y;
-
-  Nodes
-    *nodes;
 
   register IndexPacket
     *indexes;
