@@ -155,6 +155,7 @@ int main(int argc,char **argv)
   unsigned int
     status;
 
+  InitializeMagick(*argv);
   ReadCommandlLine(argc,&argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
@@ -162,7 +163,6 @@ int main(int argc,char **argv)
       (char *) NULL);
   if (argc < 2)
     ConjureUsage();
-  InitializeMagick(*argv);
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   image_info->attributes=AllocateImage(image_info);

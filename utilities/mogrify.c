@@ -253,6 +253,7 @@ int main(int argc,char **argv)
   unsigned int
     status;
 
+  InitializeMagick(*argv);
   ReadCommandlLine(argc,&argv);
   for (i=1; i < argc; i++)
   {
@@ -280,7 +281,6 @@ int main(int argc,char **argv)
       (char *) NULL);
   if (argc < 3)
     MogrifyUsage();
-  InitializeMagick(*argv);
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   status=MogrifyImageCommand(image_info,argc,argv,(char **) NULL,&exception);
