@@ -1,5 +1,6 @@
 2003-04-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/windows.html: Updated to match current installer.
 	* VisualMagick/installer/inc/tasks-install-devel.isx (Name): 
 	Added an installation checkbox so the user can select to install
 	development headers and libraries for C & C++.

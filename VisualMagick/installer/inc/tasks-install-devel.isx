@@ -8,4 +8,4 @@
 ;
 #endif
 
-Name: install_Devel; Description: "Install development headers for C and C++"; Flags: unchecked
+Name: install_Devel; Description: "Install development headers and libraries for C and C++"; Flags: unchecked

@@ -8,4 +8,4 @@
 ;
 #endif
 
-Name: install_Magick_DLL; Description: "Register ImageMagickObject OLE Control for VBscript, Visual Basic, and WSH"; Flags: unchecked
+Name: install_Magick_DLL; Description: "Install ImageMagickObject OLE Control for VBscript, Visual Basic, and WSH"; Flags: unchecked
