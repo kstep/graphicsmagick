@@ -58,12 +58,6 @@
 /*
   ImageMagick Macintosh PICT Methods.
 */
-#ifndef _PICT_H
-#define _PICT_H
-
-/*
-  Macintosh PICT definitions.
-*/
 #define ReadPixmap(pixmap) \
 { \
   pixmap.version=MSBFirstReadShort(image->file); \
@@ -299,9 +293,6 @@ const PICTCode
     /* 0xa1 */  { "LongComment",    0, "kind (word), size (word), data" }
   };
 
-#endif
-
-#if !defined(macintosh)
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -673,6 +664,8 @@ static unsigned int EncodeImage(Image *image,const unsigned char *scanline,
   }
   return(packets);
 }
+
+#if !defined(macintosh)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

@@ -1544,10 +1544,11 @@ Export unsigned int QueryColorDatabase(const char *target,ColorPacket *color)
   /*
     Let the X server define the color for us.
   */
-#if defined(HasFPX)
+#if defined(HasX11)
   return(XQueryColorDatabase(target,color));
-#endif
+#else
   return(False);
+#endif
 }
 
 /*

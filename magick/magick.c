@@ -251,7 +251,9 @@ static const MagickInfo
     { "VIFF", ReadVIFFImage, WriteVIFFImage, True,
       "Khoros Visualization image file" },
     { "VST", ReadTGAImage, WriteTGAImage, True, "Truevision Targa image file" },
+#if defined(HasX11)
     { "X", ReadXImage, WriteXImage, False, "X Image" },
+#endif
     { "XBM", ReadXBMImage, WriteXBMImage, False,
       "X Windows system bitmap (black and white)" },
     { "XC", ReadXCImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
@@ -260,8 +262,10 @@ static const MagickInfo
       "X Windows system pixmap file (color)" },
     { "XV", ReadVIFFImage, WriteVIFFImage, True,
       "Khoros Visualization image file" },
+#if defined(HasX11)
     { "XWD", ReadXWDImage, WriteXWDImage, False,
       "X Windows system window dump file (color)" },
+#endif
     { "YUV", ReadYUVImage, WriteYUVImage, False, "CCIR 601 4:1:1 file" },
     { (char *) NULL, (Image *(*)(const ImageInfo *)) NULL,
       (unsigned int (*)(const ImageInfo *,Image *)) NULL, 0,

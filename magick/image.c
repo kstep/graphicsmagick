@@ -1260,6 +1260,8 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
   */
   if (!UncondenseImage(image))
     return;
+  if (!UncondenseImage(composite_image))
+    return;
   switch (compose)
   {
     case XorCompositeOp:

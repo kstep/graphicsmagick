@@ -242,7 +242,7 @@ int WINAPI WinMain(HINSTANCE instance,HINSTANCE last,LPSTR command,int state)
 
 int main(int argc,char **argv)
 {
-#if defined(HasFPX)
+#if defined(HasX11)
   char
     *client_name,
     *option,

@@ -87,9 +87,6 @@
 */
 Export Image *ReadHDFImage(const ImageInfo *image_info)
 {
-#include "hdf.h"
-#undef BSD
-#undef LOCAL
 
   ClassType
     class;
@@ -363,10 +360,6 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
 */
 Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
-#include "hdf.h"
-#undef BSD
-#undef LOCAL
-
   int
     status;
 

@@ -21,6 +21,11 @@
 #if defined(HasFPX)
 #include "Fpxlib.h"
 #endif
+#if defined(HasHDF)
+#include "hdf.h"
+#undef BSD
+#undef LOCAL
+#endif
 #if defined(HasJBIG)
 #include "jbig.h"
 #endif
