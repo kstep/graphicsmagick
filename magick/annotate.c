@@ -850,21 +850,17 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
 static inline PixelPacket AlphaComposite(const PixelPacket *p,
   const double alpha,const PixelPacket *q,const double beta)
 {
-  register double
-    scale;
-
   PixelPacket
     composite;
 
-  scale=1.0/MaxRGB;
-  composite.red=(Quantum)
-    (scale*((MaxRGB-alpha)*p->red+scale*alpha*(MaxRGB-beta)*q->red)+0.5);
-  composite.green=(Quantum)
-    (scale*((MaxRGB-alpha)*p->green+scale*alpha*(MaxRGB-beta)*q->green)+0.5);
-  composite.blue=(Quantum)
-    (scale*((MaxRGB-alpha)*p->blue+scale*alpha*(MaxRGB-beta)*q->blue)+0.5);
-  composite.opacity=(Quantum)
-    (MaxRGB-((MaxRGB-alpha)+scale*alpha*(MaxRGB-beta))+0.5);
+  composite.red=(Quantum) ((((double) MaxRGB-alpha)*p->red+alpha*
+    ((double) MaxRGB-beta)*q->red/MaxRGB)/MaxRGB+0.5);
+  composite.green=(Quantum) ((((double) MaxRGB-alpha)*p->green+alpha*
+    ((double) MaxRGB-beta)*q->green/MaxRGB)/MaxRGB+0.5);
+  composite.blue=(Quantum) ((((double) MaxRGB-alpha)*p->blue+alpha*
+    ((double) MaxRGB-beta)*q->blue/MaxRGB)/MaxRGB+0.5);
+  composite.opacity=(Quantum) ((double) MaxRGB-(((double) MaxRGB-alpha)+
+    alpha*((double) MaxRGB-beta)/MaxRGB)+0.5);
   return(composite);
 }
 
