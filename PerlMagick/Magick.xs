@@ -3433,7 +3433,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"icm") == 0)
             {
               if (image)
-                s=newSVpv((void *) image->color_profile.info,
+                s=newSVpv((const char *) image->color_profile.info,
                   image->color_profile.length);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -3476,7 +3476,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"iptc") == 0)
             {
               if (image)
-                s=newSVpv((void *) image->iptc_profile.info,
+                s=newSVpv((const char *) image->iptc_profile.info,
                   image->iptc_profile.length);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -4019,7 +4019,7 @@ ImageToBlob(ref,...)
         CatchException(&exception);
       if (blob != (char *) NULL)
         {
-          PUSHs(sv_2mortal(newSVpv(blob,length)));
+          PUSHs(sv_2mortal(newSVpv((const char *) blob,length)));
           LiberateMemory((void **) &blob);
         }
       if (package_info->image_info->adjoin)
