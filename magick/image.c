@@ -6314,7 +6314,6 @@ MagickExport unsigned int TransformRGBImage(Image *image,
         if (!SyncImagePixels(image))
           break;
       }
-      (void) ModulateImage(image,"140"); 
       return(True);
     }
   if ((colorspace == RGBColorspace) || (colorspace == GRAYColorspace) ||
