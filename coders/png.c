@@ -4996,7 +4996,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize compression level and filtering.
     */
+#if (PNG_LIBPNG_VER > 10008)
     png_set_compression_buffer_size(ping,32768L);
+#endif
     png_set_compression_mem_level(ping, 9);
     if (image_info->quality > 9)
        png_set_compression_level(ping,Min(image_info->quality/10,9));
