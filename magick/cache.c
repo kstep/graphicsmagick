@@ -373,7 +373,7 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   offset=region.y*(magick_off_t) cache_info->columns+region.x;
   length=(region.height-1)*cache_info->columns+region.width-1;
   number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
-  if ((offset >= 0) && ((offset+length) < number_pixels))
+  if ((offset >= 0) && (((magick_uint64_t) offset+length) < number_pixels))
     if ((x >= 0) && ((x+columns) <= cache_info->columns) &&
         (y >= 0) && ((y+rows) <= cache_info->rows))
       {
@@ -817,8 +817,8 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
     cache_file,
     clone_file;
 
-  register size_t
-    i;
+  register magick_off_t
+    offset;
 
   size_t
     length;
@@ -892,16 +892,16 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
       if (clone_info->type != DiskCache)
         {
           (void) LogMagickEvent(CacheEvent,GetMagickModule(),"disk => memory");
-          for (i=0; i < cache_info->length; i+=count)
+          for (offset=0; offset < cache_info->length; offset+=count)
           {
-            count=read(cache_file,(char *) clone_info->pixels+i,
-              (size_t) (cache_info->length-i));
+            count=read(cache_file,(char *) clone_info->pixels+offset,
+              (size_t) (cache_info->length-offset));
             if (count <= 0)
               break;
           }
           if (cache_info->file == -1)
             (void) close(cache_file);
-          if (i < cache_info->length)
+          if (offset < cache_info->length)
             ThrowBinaryException(CacheError,UnableToCloneCache,
               image->filename);
           return(True);
@@ -929,16 +929,16 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
       if (cache_info->type != DiskCache)
         {
           (void) LogMagickEvent(CacheEvent,GetMagickModule(),"memory => disk");
-          for (i=0; i < clone_info->length; i+=count)
+          for (offset=0L; offset < clone_info->length; offset+=count)
           {
-            count=write(clone_file,(char *) cache_info->pixels+i,
-              (size_t) (clone_info->length-i));
+            count=write(clone_file,(char *) cache_info->pixels+offset,
+              (size_t) (clone_info->length-offset));
             if (count <= 0)
               break;
           }
           if (clone_info->file == -1)
             (void) close(clone_file);
-          if (i < clone_info->length)
+          if (offset < clone_info->length)
             ThrowBinaryException(CacheError,UnableToCloneCache,
               image->filename);
           return(True);
@@ -957,15 +957,15 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
     }
   (void) MagickSeek(cache_file,cache_info->offset,SEEK_SET);
   (void) MagickSeek(clone_file,cache_info->offset,SEEK_SET);
-  for (i=0; (length=read(cache_file,buffer,MaxBufferSize)) > 0; )
+  for (offset=0; (length=read(cache_file,buffer,MaxBufferSize)) > 0; )
   {
-    for (i=0; i < length; i+=count)
+    for (offset=0; offset < (magick_off_t) length; offset+=count)
     {
-      count=write(clone_file,buffer+i,length-i);
+      count=write(clone_file,buffer+offset,length-offset);
       if (count <= 0)
         break;
     }
-    if (i < length)
+    if (offset < (magick_off_t) length)
       break;
   }
   if (cache_info->file == -1)
@@ -973,7 +973,7 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
   if (clone_info->file == -1)
     (void) close(clone_file);
   MagickFreeMemory(buffer);
-  if (i < length)
+  if (offset < (magick_off_t) length)
     ThrowBinaryException(CacheError,UnableToCloneCache,image->filename);
   return(True);
 }
@@ -2291,7 +2291,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;
   if ((cache_info->length > MinBlobExtent) &&
-      (cache_info->length == (size_t) cache_info->length) &&
+      (cache_info->length == (magick_off_t) ((size_t) cache_info->length)) &&
       AcquireMagickResource(MapResource,cache_info->length))
     {
       pixels=(PixelPacket *) MapBlob(file,mode,(off_t) cache_info->offset,
@@ -2704,7 +2704,7 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
   for (y=0; y < (long) rows; y++)
   {
     if ((FilePositionRead(file,pixels,length,
-       cache_info->offset+offset*sizeof(PixelPacket))) < length)
+       cache_info->offset+offset*sizeof(PixelPacket))) < (long) length)
       break;
     pixels+=nexus_info->columns;
     offset+=cache_info->columns;
@@ -2824,7 +2824,7 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
     return((PixelPacket *) NULL);
   number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
   offset+=(rows-1)*(magick_off_t) cache_info->columns+columns-1;
-  if (offset >= number_pixels)
+  if ((magick_uint64_t) offset >= number_pixels)
     return((PixelPacket *) NULL);
   /*
     Return pixel cache.
@@ -3005,7 +3005,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
       offset=nexus_info->y*(magick_off_t) cache_info->columns+nexus_info->x;
       length=(nexus_info->rows-1)*cache_info->columns+nexus_info->columns-1;
       number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
-      if ((offset >= 0) && ((offset+length) < number_pixels))
+      if ((offset >= 0) && (((magick_uint64_t) offset+length) < number_pixels))
         if ((((nexus_info->x+nexus_info->columns) <= cache_info->columns) &&
             (nexus_info->rows == 1)) || ((nexus_info->x == 0) &&
             ((nexus_info->columns % cache_info->columns) == 0)))
@@ -3036,7 +3036,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
       nexus_info->length=length;
     }
   else
-    if (nexus_info->length < length)
+    if (nexus_info->length < (magick_off_t) length)
       {
         MagickReallocMemory(nexus_info->staging,length);
         nexus_info->length=length;
@@ -3436,7 +3436,8 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
   for (y=0; y < (long) rows; y++)
   {
     if ((FilePositionWrite(file,indexes,length,cache_info->offset+
-       number_pixels*sizeof(PixelPacket)+offset*sizeof(IndexPacket))) < length)
+       number_pixels*sizeof(PixelPacket)+offset*sizeof(IndexPacket))) <
+        (long) length)
        break;
     indexes+=nexus_info->columns;
     offset+=cache_info->columns;
@@ -3552,7 +3553,7 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
   for (y=0; y < (long) rows; y++)
   {
     if ((FilePositionWrite(file,pixels,length,
-        cache_info->offset+offset*sizeof(PixelPacket))) < length)
+        cache_info->offset+offset*sizeof(PixelPacket))) < (long) length)
        break;
     pixels+=nexus_info->columns;
     offset+=cache_info->columns;

@@ -980,7 +980,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
       return((void *) NULL);
     }
   offset=MagickSeek(file,0,SEEK_END);
-  if ((offset < 0) || (offset != (size_t) offset))
+  if ((offset < 0) || (offset != (magick_off_t) ((size_t) offset)))
     {
       (void) close(file);
       ThrowException3(exception,BlobError,UnableToSeekToOffset,
@@ -2408,7 +2408,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                 magick_info->blob_support)
               if ((fstat(fileno(image->blob->file),&attributes) >= 0) &&
                   (attributes.st_size > MinBlobExtent) &&
-                  (attributes.st_size == (size_t) attributes.st_size))
+                  (attributes.st_size == (off_t) ((size_t) attributes.st_size)))
                 {
                   size_t
                     length;
@@ -2739,7 +2739,7 @@ MagickExport int ReadBlobByte(Image *image)
       }
     case BlobStream:
       {
-        if (image->blob->offset < image->blob->length)
+        if (image->blob->offset < (magick_off_t) image->blob->length)
           {
             c=*((unsigned char *)image->blob->data+image->blob->offset);
             image->blob->offset++;

@@ -126,7 +126,7 @@ typedef struct _EventInfo
  */
 static const EventInfo eventmask_map[] =
   {
-    { "none", NoEventsMask, 0 },
+    { "none", NoEventsMask, 0, 0 },
     { "information", InformationEventMask, EventException, EventException+99 },
     { "warning", WarningEventMask, WarningException, WarningException+99 },
     { "error", ErrorEventMask, ErrorException, ErrorException+99 },
@@ -147,8 +147,8 @@ static const EventInfo eventmask_map[] =
     /* this one is actually not used anymore */
     { "exception", ExceptionEventMask, ExceptionBase, ExceptionBase },
     { "option", OptionEventMask, OptionBase, OptionBase },
-    { "all", AllEventsMask, 0 },
-    { 0, NoEventsMask }
+    { "all", AllEventsMask, 0, 0 },
+    { 0, NoEventsMask, 0, 0 }
   };
 
 static const OutputInfo output_map[] =
@@ -379,7 +379,7 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
 
   if (log_info->events != AllEventsMask)
     {
-      int
+      unsigned int
         i;
       
       unsigned int
@@ -395,8 +395,8 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
           */
           if (eventmask_map[i].start_type > 99)
             {
-              if ((type >= eventmask_map[i].start_type) &&
-                  (type <= eventmask_map[i].end_type))
+              if (((int) type >= eventmask_map[i].start_type) &&
+                  ((int) type <= eventmask_map[i].end_type))
                 {
                   if (log_info->events & eventmask_map[i].mask)
                     {
@@ -410,8 +410,8 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
               /* these ranges are for id's with the severity stripped
                  off and represent a category instead.
               */
-              if (((type % 100) >= eventmask_map[i].start_type) &&
-                  ((type % 100) <= eventmask_map[i].end_type))
+              if ((((int) type % 100) >= eventmask_map[i].start_type) &&
+                  (((int) type % 100) <= eventmask_map[i].end_type))
                 {
                   if (log_info->events & eventmask_map[i].mask)
                     {

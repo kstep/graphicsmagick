@@ -472,7 +472,7 @@ MagickExport MagickPassFail GammaImage(Image *image,const char *level)
     ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
       UnableToGammaCorrectImage);
   (void) memset(gamma_map,0,(MaxMap+1)*sizeof(PixelPacket));
-  for (i=0; i <= MaxMap; i++)
+  for (i=0; i <= (long) MaxMap; i++)
   {
     if (gamma.red != 0.0)
       gamma_map[i].red=
@@ -633,7 +633,7 @@ MagickExport MagickPassFail LevelImage(Image *image,const char *levels)
   if (levels_map == (double *) NULL)
     ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
       UnableToLevelImage);
-  for (i=0; i <= MaxMap; i++)
+  for (i=0; i <= (long) MaxMap; i++)
   {
     if (i < black_point)
       {
@@ -779,7 +779,7 @@ MagickExport MagickPassFail LevelImageChannel(Image *image,
       UnableToLevelImage);
   black=ScaleQuantumToMap(black_point);
   white=ScaleQuantumToMap(white_point);
-  for (i=0; i <= MaxMap; i++)
+  for (i=0; i <= (long) MaxMap; i++)
     {
       if (i < black)
         {
@@ -1453,7 +1453,7 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
     Stretch the histogram to create the normalized image mapping.
   */
   (void) memset(normalize_map,0,(MaxMap+1)*sizeof(PixelPacket));
-  for (i=0; i <= MaxMap; i++)
+  for (i=0; i <= (long) MaxMap; i++)
   {
     if (i < (long) low.red)
       normalize_map[i].red=0;

@@ -263,7 +263,8 @@ Magick::DrawableBezier::DrawableBezier ( const CoordinateList &coordinates_ )
 }
 // Copy constructor
 Magick::DrawableBezier::DrawableBezier( const Magick::DrawableBezier& original_ )
-  : _coordinates(original_._coordinates)
+  : DrawableBase (original_),
+    _coordinates(original_._coordinates)
 {
 }
 // Destructor
@@ -319,7 +320,8 @@ Magick::DrawablePushClipPath::DrawablePushClipPath( const std::string &id_)
 }
 Magick::DrawablePushClipPath::DrawablePushClipPath
 ( const Magick::DrawablePushClipPath& original_ ) //multithread safe const char*
-  : _id(original_._id.c_str())
+  : DrawableBase (original_),
+    _id(original_._id.c_str())
 {
 }
 Magick::DrawablePushClipPath::~DrawablePushClipPath( void )
@@ -344,7 +346,8 @@ Magick::DrawableClipPath::DrawableClipPath( const std::string &id_ )
 }
 
 Magick::DrawableClipPath::DrawableClipPath ( const Magick::DrawableClipPath& original_ )
-  : _id(original_._id.c_str())
+  : DrawableBase (original_),
+    _id(original_._id.c_str())
 {
 }
 Magick::DrawableClipPath::~DrawableClipPath( void )
@@ -559,7 +562,8 @@ Magick::DrawableFillColor::DrawableFillColor( const Magick::Color &color_ )
 }
 Magick::DrawableFillColor::DrawableFillColor
 ( const Magick::DrawableFillColor& original_ )
-  : _color(original_._color)
+  : DrawableBase (original_),
+    _color(original_._color)
 {
 }
 Magick::DrawableFillColor::~DrawableFillColor( void )
@@ -625,7 +629,8 @@ Magick::DrawableFont::DrawableFont ( const std::string &family_,
 {
 }
 Magick::DrawableFont::DrawableFont ( const Magick::DrawableFont& original_ )
-  : _font(original_._font),
+  : DrawableBase (original_),
+    _font(original_._font),
     _family(original_._family),
     _style(original_._style),
     _weight(original_._weight),
@@ -709,7 +714,8 @@ Magick::DrawablePath::DrawablePath ( const VPathList &path_ )
 {
 }
 Magick::DrawablePath::DrawablePath ( const Magick::DrawablePath& original_ )
-  : _path(original_._path)
+  : DrawableBase (original_),
+    _path(original_._path)
 {
 }
 Magick::DrawablePath::~DrawablePath ( void )
@@ -764,7 +770,8 @@ Magick::DrawablePolygon::DrawablePolygon ( const CoordinateList &coordinates_ )
 }
 Magick::DrawablePolygon::DrawablePolygon
 ( const Magick::DrawablePolygon& original_ )
-  : _coordinates(original_._coordinates)
+  : DrawableBase (original_),
+    _coordinates(original_._coordinates)
 {
 }
 Magick::DrawablePolygon::~DrawablePolygon ( void )
@@ -803,7 +810,8 @@ Magick::DrawablePolyline::DrawablePolyline
 }
 Magick::DrawablePolyline::DrawablePolyline
 ( const Magick::DrawablePolyline& original_ )
-  : _coordinates(original_._coordinates)
+  : DrawableBase (original_),
+    _coordinates(original_._coordinates)
 {
 }
 Magick::DrawablePolyline::~DrawablePolyline ( void )
@@ -889,7 +897,8 @@ Magick::DrawablePushPattern::DrawablePushPattern
 }
 Magick::DrawablePushPattern::DrawablePushPattern
 ( const Magick::DrawablePushPattern& original_ )
-  : _id(original_._id),
+  : DrawableBase (original_),
+    _id(original_._id),
     _x(original_._x),
     _y(original_._y),
     _width(original_._width),
@@ -1011,7 +1020,8 @@ Magick::DrawableDashArray::DrawableDashArray( const unsigned int* dasharray_ )
 }
 Magick::DrawableDashArray::DrawableDashArray
 (const Magick::DrawableDashArray& original_)
-  : _size(0),
+  : DrawableBase (original_),
+    _size(0),
     _dasharray(0)
 {
   dasharray( original_._dasharray );
@@ -1175,7 +1185,8 @@ Magick::DrawableStrokeColor::DrawableStrokeColor
 }
 Magick::DrawableStrokeColor::DrawableStrokeColor
 ( const Magick::DrawableStrokeColor& original_ )
-  : _color(original_._color)
+  : DrawableBase (original_),
+    _color(original_._color)
 {
 }
 Magick::DrawableStrokeColor::~DrawableStrokeColor ( void )
@@ -1238,7 +1249,8 @@ Magick::DrawableText::DrawableText ( const double x_, const double y_,
 {
 }
 Magick::DrawableText::DrawableText( const Magick::DrawableText& original_ )
-  : _x(original_._x),
+  : DrawableBase (original_),
+    _x(original_._x),
     _y(original_._y),
     _text(original_._text),
     _encoding(original_._encoding)
@@ -1265,7 +1277,8 @@ Magick::DrawableTextAntialias::DrawableTextAntialias ( bool flag_ )
 {
 }
 Magick::DrawableTextAntialias::DrawableTextAntialias( const Magick::DrawableTextAntialias &original_ )
-  : _flag(original_._flag)
+  : DrawableBase (original_),
+    _flag(original_._flag)
 {
 }
 Magick::DrawableTextAntialias::~DrawableTextAntialias ( void )
@@ -1289,7 +1302,8 @@ Magick::DrawableTextDecoration::DrawableTextDecoration
 }
 Magick::DrawableTextDecoration::DrawableTextDecoration
   ( const Magick::DrawableTextDecoration &original_ )
-    : _decoration(original_._decoration)
+    : DrawableBase (original_),
+      _decoration(original_._decoration)
 {
 }
 Magick::DrawableTextDecoration::~DrawableTextDecoration( void )
@@ -1313,7 +1327,8 @@ Magick::DrawableTextUnderColor::DrawableTextUnderColor
 }
 Magick::DrawableTextUnderColor::DrawableTextUnderColor
 ( const Magick::DrawableTextUnderColor& original_ )
-  : _color(original_._color)
+  : DrawableBase (original_),
+    _color(original_._color)
 {
 }
 Magick::DrawableTextUnderColor::~DrawableTextUnderColor ( void )
@@ -1445,7 +1460,8 @@ Magick::PathArcAbs::PathArcAbs ( const PathArcArgsList &coordinates_ )
 {
 }
 Magick::PathArcAbs::PathArcAbs ( const Magick::PathArcAbs& original_ )
-  : _coordinates(original_._coordinates)
+  : VPathBase (original_),
+    _coordinates(original_._coordinates)
 {
 }
 Magick::PathArcAbs::~PathArcAbs ( void )
@@ -1475,7 +1491,8 @@ Magick::PathArcRel::PathArcRel ( const PathArcArgsList &coordinates_ )
 {
 }
 Magick::PathArcRel::PathArcRel ( const Magick::PathArcRel& original_ )
-  : _coordinates(original_._coordinates)
+  : VPathBase (original_),
+    _coordinates(original_._coordinates)
 {
 }
 Magick::PathArcRel::~PathArcRel ( void )
@@ -1590,8 +1607,9 @@ Magick::PathCurvetoAbs::PathCurvetoAbs ( const PathCurveToArgsList &args_ )
 {
 }
 Magick::PathCurvetoAbs::PathCurvetoAbs
-( const Magick::PathCurvetoAbs& original_ )
- : _args(original_._args)
+ ( const Magick::PathCurvetoAbs& original_ )
+   : VPathBase (original_),
+     _args(original_._args)
 {
 }
 Magick::PathCurvetoAbs::~PathCurvetoAbs ( void )
@@ -1621,7 +1639,8 @@ Magick::PathCurvetoRel::PathCurvetoRel ( const PathCurveToArgsList &args_ )
 }
 Magick::PathCurvetoRel::PathCurvetoRel
 ( const Magick::PathCurvetoRel& original_ )
-  : _args(original_._args)
+  : VPathBase (original_),
+    _args(original_._args)
 {
 }
 Magick::PathCurvetoRel::~PathCurvetoRel ( void )
@@ -1653,7 +1672,8 @@ Magick::PathSmoothCurvetoAbs::PathSmoothCurvetoAbs
 }
 Magick::PathSmoothCurvetoAbs::PathSmoothCurvetoAbs
 ( const Magick::PathSmoothCurvetoAbs& original_ )
-  : _coordinates(original_._coordinates)
+  : VPathBase (original_),
+    _coordinates(original_._coordinates)
 {
 }
 Magick::PathSmoothCurvetoAbs::~PathSmoothCurvetoAbs ( void )
@@ -1688,7 +1708,8 @@ Magick::PathSmoothCurvetoRel::PathSmoothCurvetoRel
 }
 Magick::PathSmoothCurvetoRel::PathSmoothCurvetoRel
 ( const Magick::PathSmoothCurvetoRel& original_ )
-  : _coordinates(original_._coordinates)
+  : VPathBase (original_),
+    _coordinates(original_._coordinates)
 {
 }
 Magick::PathSmoothCurvetoRel::~PathSmoothCurvetoRel ( void )
@@ -1795,7 +1816,8 @@ Magick::PathQuadraticCurvetoAbs::PathQuadraticCurvetoAbs
 }
 Magick::PathQuadraticCurvetoAbs::PathQuadraticCurvetoAbs
 ( const Magick::PathQuadraticCurvetoAbs& original_ )
-  : _args(original_._args)
+  : VPathBase (original_),
+    _args(original_._args)
 {
 }
 Magick::PathQuadraticCurvetoAbs::~PathQuadraticCurvetoAbs ( void )
@@ -1827,7 +1849,8 @@ Magick::PathQuadraticCurvetoRel::PathQuadraticCurvetoRel
 }
 Magick::PathQuadraticCurvetoRel::PathQuadraticCurvetoRel
 ( const Magick::PathQuadraticCurvetoRel& original_ )
-  : _args(original_._args)
+  : VPathBase (original_),
+    _args(original_._args)
 {
 }
 Magick::PathQuadraticCurvetoRel::~PathQuadraticCurvetoRel ( void )
@@ -1859,7 +1882,8 @@ Magick::PathSmoothQuadraticCurvetoAbs::PathSmoothQuadraticCurvetoAbs
 }
 Magick::PathSmoothQuadraticCurvetoAbs::PathSmoothQuadraticCurvetoAbs
 ( const Magick::PathSmoothQuadraticCurvetoAbs& original_ )
-  : _coordinates(original_._coordinates)
+  : VPathBase (original_),
+    _coordinates(original_._coordinates)
 {
 }
 Magick::PathSmoothQuadraticCurvetoAbs::~PathSmoothQuadraticCurvetoAbs ( void )
@@ -1890,7 +1914,8 @@ Magick::PathSmoothQuadraticCurvetoRel::PathSmoothQuadraticCurvetoRel
 }
 Magick::PathSmoothQuadraticCurvetoRel::PathSmoothQuadraticCurvetoRel
 ( const PathSmoothQuadraticCurvetoRel& original_ )
-  : _coordinates(original_._coordinates)
+  : VPathBase (original_),
+    _coordinates(original_._coordinates)
 {
 }
 Magick::PathSmoothQuadraticCurvetoRel::~PathSmoothQuadraticCurvetoRel ( void )
@@ -1922,7 +1947,8 @@ Magick::PathLinetoAbs::PathLinetoAbs ( const CoordinateList &coordinates_ )
 {
 }
 Magick::PathLinetoAbs::PathLinetoAbs ( const Magick::PathLinetoAbs& original_ )
-  : _coordinates(original_._coordinates)
+  : VPathBase (original_),
+    _coordinates(original_._coordinates)
 {
 }
 Magick::PathLinetoAbs::~PathLinetoAbs ( void )
@@ -1949,7 +1975,8 @@ Magick::PathLinetoRel::PathLinetoRel ( const CoordinateList &coordinates_ )
 {
 }
 Magick::PathLinetoRel::PathLinetoRel ( const Magick::PathLinetoRel& original_ )
-  : _coordinates(original_._coordinates)
+  : VPathBase (original_),
+    _coordinates(original_._coordinates)
 {
 }
 Magick::PathLinetoRel::~PathLinetoRel ( void )
@@ -2038,7 +2065,8 @@ Magick::PathMovetoAbs::PathMovetoAbs ( const CoordinateList &coordinates_ )
 {
 }
 Magick::PathMovetoAbs::PathMovetoAbs ( const Magick::PathMovetoAbs& original_ )
-  : _coordinates(original_._coordinates)
+  : VPathBase (original_),
+    _coordinates(original_._coordinates)
 {
 }
 Magick::PathMovetoAbs::~PathMovetoAbs ( void )
@@ -2065,7 +2093,8 @@ Magick::PathMovetoRel::PathMovetoRel ( const CoordinateList &coordinates_ )
 {
 }
 Magick::PathMovetoRel::PathMovetoRel ( const Magick::PathMovetoRel& original_ )
-  : _coordinates(original_._coordinates)
+  : VPathBase (original_),
+    _coordinates(original_._coordinates)
 {
 }
 Magick::PathMovetoRel::~PathMovetoRel ( void )

@@ -172,7 +172,7 @@ AddDefinitions(ImageInfo *image_info,const char *definitions,
   unsigned int
     status;
 
-  int
+  unsigned int
     i,
     j;
 
@@ -3280,7 +3280,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
   register const PixelPacket
     *q;
 
-  register int
+  register unsigned int
     i;
 
   int
@@ -3405,7 +3405,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
       /*
         Assign index values to colormap entries.
       */
-      for (i=0; i < (long) image->colors; i++)
+      for (i=0; i < image->colors; i++)
         image->colormap[i].opacity=(unsigned short) i;
       /*
         Sort image colormap by increasing intensity.
@@ -3433,7 +3433,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
 
         j=0;
         new_colormap[j]=image->colormap[0];
-        for (i=0; i < (long) image->colors; i++)
+        for (i=0; i < image->colors; i++)
           {
             if (!ColorMatch(&new_colormap[j],&image->colormap[i]))
               {
@@ -4554,7 +4554,7 @@ RemoveDefinitions(const ImageInfo *image_info,const char *keys)
   unsigned int
     status;
 
-  int
+  unsigned int
     i,
     j;
 
@@ -4717,17 +4717,17 @@ static inline void XYZTransformPacket(PixelPacket *pixel,
 
   red=(x_p->x+y_p->x+z_p->x+primary_info->x);
   if(red < 0) red = 0;
-  if(red > MaxMap) red = MaxMap;
+  if(red > (int) MaxMap) red = (int) MaxMap;
   pixel->red=ScaleMapToQuantum(red);
 
   green=(x_p->y+y_p->y+z_p->y+primary_info->y);
   if(green < 0) green = 0;
-  if(green > MaxMap) green = MaxMap;
+  if(green > (int) MaxMap) green = (int) MaxMap;
   pixel->green=ScaleMapToQuantum(green);
 
   blue=(x_p->z+y_p->z+z_p->z+primary_info->z);
   if(blue < 0) blue = 0;
-  if(blue > MaxMap) blue = MaxMap;
+  if(blue > (int) MaxMap) blue = (int) MaxMap;
   pixel->blue=ScaleMapToQuantum(blue);
 }
 MagickExport MagickPassFail RGBTransformImage(Image *image,
@@ -4751,7 +4751,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
   XYZColorTransformPacket
     primary_info;
 
-  register long
+  register unsigned int
     i,
     x;
 
@@ -4883,7 +4883,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
                     status=MagickFail;
                     break;
                   }
-                for (x=(long) image->columns; x > 0; x--)
+                for (x=image->columns; x > 0; x--)
                   {
                     double
                       p1, /* H */
@@ -6668,9 +6668,9 @@ static void RGBTransformPacket(PixelPacket *pixel,
     }
   else
     {
-      if(red > MaxMap) red=MaxMap;
-      if(green > MaxMap) green=MaxMap;
-      if(blue > MaxMap) blue=MaxMap;
+      if(red > (int) MaxMap) red=(int) MaxMap;
+      if(green > (int) MaxMap) green=(int) MaxMap;
+      if(blue > (int) MaxMap) blue=(int) MaxMap;
 
       pixel->red=ScaleMapToQuantum((unsigned int) red);
       pixel->green=ScaleMapToQuantum((unsigned int) green);
@@ -6754,7 +6754,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
   register long
     x;
 
-  register long
+  register unsigned int
     i;
 
   unsigned int

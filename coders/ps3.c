@@ -241,7 +241,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   size_t
     length;
 
-  register long
+  register unsigned long
     i;
 
   unsigned char
@@ -604,7 +604,7 @@ static unsigned int SerializeMultiChannelImage(const ImageInfo *image_info,
 static unsigned int SerializeSingleChannelImage(const ImageInfo *image_info,
   Image *image, unsigned char **pixels, size_t *length)
 {
-  long
+  unsigned long
     x,
     y;
 
@@ -638,14 +638,14 @@ static unsigned int SerializeSingleChannelImage(const ImageInfo *image_info,
       image);
 
   q=(*pixels);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
     if (pack == 1)
     {
-      for (x=0; x < (long) image->columns; x++)
+      for (x=0; x < image->columns; x++)
       {
         *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
         p++;
@@ -654,7 +654,7 @@ static unsigned int SerializeSingleChannelImage(const ImageInfo *image_info,
     else
     {
       code=0;
-      for (x=0; x < (long) padded_columns; x++)
+      for (x=0; x < padded_columns; x++)
       {
         bit=0x00;
         if (x < image->columns)
@@ -1201,7 +1201,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   RectangleInfo
     geometry;
 
-  register long
+  register unsigned int
     i,
     j;
 
@@ -1438,14 +1438,17 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         attribute=GetImageAttribute(image,"label");
         if (attribute != (const ImageAttribute *) NULL)
           {
+            long
+              si;
+
             (void) WriteBlobString(image,"\n  % LABELS\n  /Helvetica "
               "findfont pointsize scalefont setfont\n");
-            for (i=(long) MultilineCensus(attribute->value)-1; i >= 0; i--)
+            for (si=(long) MultilineCensus(attribute->value)-1; si >= 0; si--)
               {
                 (void) WriteBlobString(image,
                   "  currentfile buffer readline pop token pop\n");
                 FormatString(buffer,"  0 y %g add moveto show pop\n",
-                  i*image_info->pointsize+12);
+                  si*image_info->pointsize+12);
                 (void) WriteBlobString(image,buffer);
               }
           }
@@ -1801,7 +1804,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 
           /* Color map - uncompressed, ascii85 encoded */
           Ascii85Initialize(image);
-          for (i=0; i < (long) image->colors; i++)
+          for (i=0; i < image->colors; i++)
           {
             Ascii85Encode(image, (unsigned long)image->colormap[i].red);
             Ascii85Encode(image, (unsigned long)image->colormap[i].green);

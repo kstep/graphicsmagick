@@ -786,9 +786,28 @@ AC_C_INLINE
 # Motorola and SPARC CPUs), define `WORDS_BIGENDIAN'.
 AC_C_BIGENDIAN
 
+# If the system does not provide a 'mode_t' type, use 'unsigned int' instead
+AC_CHECK_TYPE(mode_t, unsigned int)
+
+# If the system does not provide a 'off_t' type, use 'long' instead
+AC_CHECK_TYPE(off_t, long)
+
+# If the system does not provide a 'pid_t' type, use 'int' instead
+AC_CHECK_TYPE(pid_t, int)
+
+# If the system does not provide a 'size_t', use 'unsigned int' instead
+AC_CHECK_TYPE(size_t, unsigned int)
+
+# If the system does not provide a 'ssize_t', use 'int' instead
+AC_CHECK_TYPE(ssize_t, int)
+
 # If the C compiler supports a working long double type with more range
 # or precision than the double type, define HAVE_LONG_DOUBLE.
 AC_C_LONG_DOUBLE
+
+# If the C type char is unsigned, define __CHAR_UNSIGNED__, unless the
+# C compiler predefines it.
+AC_C_CHAR_UNSIGNED
 
 # Obtain size of an 'signed short' and define as SIZEOF_SHORT
 AC_CHECK_SIZEOF(signed short)
@@ -816,21 +835,6 @@ AC_CHECK_SIZEOF(signed long long)
 # SIZEOF_UNSIGNED_LONG_LONG.  If 'unsigned long long' is not
 # supported then the value defined is zero.
 AC_CHECK_SIZEOF(unsigned long long)
-
-# If the system does not provide a 'mode_t' type, use 'unsigned int' instead
-AC_CHECK_TYPE(mode_t, unsigned int)
-
-# If the system does not provide a 'off_t' type, use 'long' instead
-AC_CHECK_TYPE(off_t, long)
-
-# If the system does not provide a 'pid_t' type, use 'int' instead
-AC_CHECK_TYPE(pid_t, int)
-
-# If the system does not provide a 'size_t', use 'unsigned int' instead
-AC_CHECK_TYPE(size_t, unsigned int)
-
-# If the system does not provide a 'ssize_t', use 'int' instead
-AC_CHECK_TYPE(ssize_t, int)
 
 # If `signal.h' declares signal as returning a pointer to a function
 # returning void, define RETSIGTYPE to be void; otherwise, define it
@@ -2308,8 +2312,10 @@ else
     fi
 
   else
+    # Check ${prefix}/share/ghostscript/fonts first
     # Red Hat Linux puts Ghostscript fonts in /usr/share/fonts/default/Type1
-    for font_dir in '/usr/share/fonts/default/Type1/' "${prefix}/share/ghostscript/fonts/"
+    # Recent Cygwin puts Ghostscript fonts in /usr/share/ghostscript/fonts
+    for font_dir in "${prefix}/share/ghostscript/fonts/" '/usr/share/fonts/default/Type1/' '/usr/share/ghostscript/fonts/'
     do
       if test -f "${font_dir}a010013l.pfb"
       then

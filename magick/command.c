@@ -7135,7 +7135,7 @@ MagickExport void IdentifyUsage(void)
 */
 static void LiberateArgumentList(const int argc,char **argv)
 {
-  unsigned int
+  int
     i;
 
   for (i=0; i< argc; i++)

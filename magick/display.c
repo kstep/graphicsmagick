@@ -13406,8 +13406,12 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           Selectively install colormap.
         */
         if (map_info->colormap != XDefaultColormap(display,visual_info->screen))
-          if (event.xcrossing.mode != NotifyUngrab)
-            XInductColormap(display,map_info->colormap);
+          {
+            if (event.xcrossing.mode != NotifyUngrab)
+              {
+                XInductColormap(display,map_info->colormap);
+              }
+          }
         break;
       }
       case Expose:
@@ -13506,8 +13510,12 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           Selectively uninstall colormap.
         */
         if (map_info->colormap != XDefaultColormap(display,visual_info->screen))
-          if (event.xcrossing.mode != NotifyUngrab)
-            XUninductColormap(display,map_info->colormap);
+          {
+            if (event.xcrossing.mode != NotifyUngrab)
+              {
+                XUninductColormap(display,map_info->colormap);
+              }
+          }
         break;
       }
       case MapNotify:

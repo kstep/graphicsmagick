@@ -2568,9 +2568,10 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         {
           ThrowWriterException(FileOpenError,UnableToOpenFile,image);
         }
+      /* st_size has type off_t */
       if ((fstat(file,&attributes) < 0) ||
-          (attributes.st_size != (size_t) attributes.st_size) ||
-            (attributes.st_size <= (size_t) 0))
+          (attributes.st_size != (off_t) ((size_t) attributes.st_size)) ||
+            (attributes.st_size <= (off_t) ((size_t) 0)))
         {
           (void) close(file);
           ThrowWriterException(FileOpenError,UnableToOpenFile,image);
@@ -2584,8 +2585,10 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         }
       else
         {
-          off_t
-            count,
+          size_t
+            count;
+
+          ssize_t
             result;
 
           register size_t

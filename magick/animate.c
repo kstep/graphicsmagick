@@ -1031,9 +1031,11 @@ MagickExport Image *XAnimateImages(Display *display,
   int
     status;
 
+  unsigned int
+    iterations;
+
   long
     first_scene,
-    iterations,
     scene,
     x,
     y;
@@ -2158,8 +2160,12 @@ MagickExport Image *XAnimateImages(Display *display,
           Selectively install colormap.
         */
         if (map_info->colormap != XDefaultColormap(display,visual_info->screen))
-          if (event.xcrossing.mode != NotifyUngrab)
-            XInductColormap(display,map_info->colormap);
+          {
+            if (event.xcrossing.mode != NotifyUngrab)
+              {
+                XInductColormap(display,map_info->colormap);
+              }
+          }
         break;
       }
       case Expose:
@@ -2280,8 +2286,12 @@ MagickExport Image *XAnimateImages(Display *display,
           Selectively uninstall colormap.
         */
         if (map_info->colormap != XDefaultColormap(display,visual_info->screen))
-          if (event.xcrossing.mode != NotifyUngrab)
-            XUninductColormap(display,map_info->colormap);
+          {
+            if (event.xcrossing.mode != NotifyUngrab)
+              {
+                XUninductColormap(display,map_info->colormap);
+              }
+          }
         break;
       }
       case MapNotify:

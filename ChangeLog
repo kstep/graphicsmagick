@@ -1,3 +1,17 @@
+2004-08-14  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+
+	* magick/cache.c (ClonePixelCache): It appeared that cloning a
+	disk-based pixel cache was limited to the maximum value of
+	size_t. This would result in a truncated cache.  The offset type
+	is changed from size_t to magick_off_t in order to avoid this.
+	* configure.ac: Check to see if the 'char' type is unsigned,
+	mostly out of curiosity since the code does not currently make use
+	of the result.
+	* Fixed many compilation warnings when the compiler warning level
+	is set as high as possible.
+	* configure.ac: Check /usr/share/ghostscript/fonts for Ghostscript Type1
+	fonts.
+
 2004-08-13  Glenn Randers-Pehrson <glennrp@glennrp.com>
 	* tEXt and zTXt were inadvertently included in list of unused chunks.
 

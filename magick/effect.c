@@ -2511,12 +2511,12 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
   int
     offsets_index;
 
-  long
+  int
     x_distance,
     y,
     y_distance;
 
-  register long
+  register int
     x;
 
   long
@@ -2568,7 +2568,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
     if (q == (PixelPacket *) NULL)
       break;
 
-    if (radius > y)
+    if (radius > (unsigned int) y)
       y_min=0;
     else
       y_min=y-radius;
