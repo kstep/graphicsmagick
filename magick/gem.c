@@ -148,13 +148,19 @@ MagickExport unsigned int ColorMatch(const PixelPacket *p,const PixelPacket *q,
   if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
       (p->blue == q->blue))
     return(True);
-  red=(double) p->red-(double) q->red;
-  green=(double) p->green-(double) q->green;
-  blue=(double) p->blue-(double) q->blue;
-  distance=red*red+green*green+blue*blue;
-  if (distance <= (fuzz*fuzz))
-    return(True);
-  return(False);
+  red=(double) (p->red-q->red);
+  distance=red*red;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  green=(double) (p->green-q->green);
+  distance+=green*green;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  blue=(double) (p->blue-q->blue);
+  distance+=blue*blue;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  return(True);
 }
 
 /*
