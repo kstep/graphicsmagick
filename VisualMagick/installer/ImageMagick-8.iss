@@ -61,7 +61,7 @@ AppSupportURL=http://www.imagemagick.org/www/magick-list.html
 AppUpdatesURL=http://www.imagemagick.org/www/archives.html
 ; Default install is under "C:\Program Files\ImageMagick-5.5.2-Q8":
 DefaultDirName={pf}\ImageMagick-5.5.2-Q8
-DefaultGroupName=ImageMagick 5.5.2
+DefaultGroupName=ImageMagick 5.5.2 Q8
 Compression=zip/9
 ChangesAssociations=1
 AllowRootDirectory=no
@@ -833,6 +833,7 @@ Source: "..\..\magick\quantize.h"; DestDir: "{app}\include\magick"; CopyMode: al
 Source: "..\..\magick\registry.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\render.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\resource.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\..\magick\random.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\semaphore.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\signature.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\timer.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
