@@ -172,7 +172,7 @@ install_sh = @install_sh@
 #
 # Makefile for Magick++ demo programs
 #
-# Copyright Bob Friesenhahn, 1999, 2000
+# Copyright Bob Friesenhahn, 1999, 2000, 2001
 #
 
 
@@ -180,7 +180,7 @@ AUTOMAKE_OPTIONS = 1.4
 
 INCLUDES = -I$(srcdir)/../lib -I../.. -I$(top_srcdir)
 
-check_PROGRAMS = button demo detrans flip gravity piddle shapes
+check_PROGRAMS = button demo detrans flip gravity piddle shapes zoom
 
 LDADD = ../lib/libMagick++.la ../../magick/libMagick.la
 
@@ -191,16 +191,22 @@ flip_SOURCES = flip.cpp
 gravity_SOURCES = gravity.cpp
 piddle_SOURCES = piddle.cpp
 shapes_SOURCES = shapes.cpp
+zoom_SOURCES = zoom.cpp
 
 EXTRA_DIST = Generic.ttf model.miff smile.miff smile_anim.miff tile.miff
 
 CLEANFILES = *_out.miff
+
+FILTERS = point box triangle hermite hanning hamming blackman gaussian \
+	quadratic cubic catrom mitchell lanczos bessel sinc
+
 subdir = Magick++/demo
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../magick/config.h
 CONFIG_CLEAN_FILES = 
 check_PROGRAMS =  button$(EXEEXT) demo$(EXEEXT) detrans$(EXEEXT) \
-flip$(EXEEXT) gravity$(EXEEXT) piddle$(EXEEXT) shapes$(EXEEXT)
+flip$(EXEEXT) gravity$(EXEEXT) piddle$(EXEEXT) shapes$(EXEEXT) \
+zoom$(EXEEXT)
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../../magick
 CPPFLAGS = @CPPFLAGS@
@@ -244,25 +250,31 @@ shapes_OBJECTS =  $(am_shapes_OBJECTS)
 shapes_LDADD = $(LDADD)
 shapes_DEPENDENCIES =  ../lib/libMagick++.la ../../magick/libMagick.la
 shapes_LDFLAGS = 
+am_zoom_OBJECTS =  zoom.$(OBJEXT)
+zoom_OBJECTS =  $(am_zoom_OBJECTS)
+zoom_LDADD = $(LDADD)
+zoom_DEPENDENCIES =  ../lib/libMagick++.la ../../magick/libMagick.la
+zoom_LDFLAGS = 
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXFLAGS = @CXXFLAGS@
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES =  $(button_SOURCES) $(demo_SOURCES) $(detrans_SOURCES) \
-$(flip_SOURCES) $(gravity_SOURCES) $(piddle_SOURCES) $(shapes_SOURCES)
+$(flip_SOURCES) $(gravity_SOURCES) $(piddle_SOURCES) $(shapes_SOURCES) \
+$(zoom_SOURCES)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 DEP_FILES =  @AMDEP@ $(DEPDIR)/button.Po $(DEPDIR)/demo.Po \
 $(DEPDIR)/detrans.Po $(DEPDIR)/flip.Po $(DEPDIR)/gravity.Po \
-$(DEPDIR)/piddle.Po $(DEPDIR)/shapes.Po
+$(DEPDIR)/piddle.Po $(DEPDIR)/shapes.Po $(DEPDIR)/zoom.Po
 DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-SOURCES = $(button_SOURCES) $(demo_SOURCES) $(detrans_SOURCES) $(flip_SOURCES) $(gravity_SOURCES) $(piddle_SOURCES) $(shapes_SOURCES)
-OBJECTS = $(am_button_OBJECTS) $(am_demo_OBJECTS) $(am_detrans_OBJECTS) $(am_flip_OBJECTS) $(am_gravity_OBJECTS) $(am_piddle_OBJECTS) $(am_shapes_OBJECTS)
+SOURCES = $(button_SOURCES) $(demo_SOURCES) $(detrans_SOURCES) $(flip_SOURCES) $(gravity_SOURCES) $(piddle_SOURCES) $(shapes_SOURCES) $(zoom_SOURCES)
+OBJECTS = $(am_button_OBJECTS) $(am_demo_OBJECTS) $(am_detrans_OBJECTS) $(am_flip_OBJECTS) $(am_gravity_OBJECTS) $(am_piddle_OBJECTS) $(am_shapes_OBJECTS) $(am_zoom_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -333,6 +345,10 @@ shapes$(EXEEXT): $(shapes_OBJECTS) $(shapes_DEPENDENCIES)
 	@rm -f shapes$(EXEEXT)
 	$(CXXLINK) $(shapes_LDFLAGS) $(shapes_OBJECTS) $(shapes_LDADD) $(LIBS)
 
+zoom$(EXEEXT): $(zoom_OBJECTS) $(zoom_DEPENDENCIES)
+	@rm -f zoom$(EXEEXT)
+	$(CXXLINK) $(zoom_LDFLAGS) $(zoom_OBJECTS) $(zoom_LDADD) $(LIBS)
+
 tags: TAGS
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
@@ -373,6 +389,7 @@ maintainer-clean-tags:
 @AMDEP@include $(DEPDIR)/gravity.Po
 @AMDEP@include $(DEPDIR)/piddle.Po
 @AMDEP@include $(DEPDIR)/shapes.Po
+@AMDEP@include $(DEPDIR)/zoom.Po
 
 mostlyclean-depend:
 
@@ -504,6 +521,10 @@ check:
 	env srcdir=$(srcdir) ./gravity
 	env srcdir=$(srcdir) ./piddle
 	env srcdir=$(srcdir) ./shapes
+	for filter in $(FILTERS) ; do  \
+	  echo "$$filter ..." ; \
+	  env srcdir=$(srcdir) ./zoom $$filter 600x600 $(srcdir)/model.miff zoom_$$filter_out.miff ; \
+	done
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

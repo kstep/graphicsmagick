@@ -1,13 +1,13 @@
 #
 # Makefile for Magick++ demo programs
 #
-# Copyright Bob Friesenhahn, 1999, 2000
+# Copyright Bob Friesenhahn, 1999, 2000, 2001
 #
 AUTOMAKE_OPTIONS = 1.4
 
 INCLUDES = -I$(srcdir)/../lib -I../.. -I$(top_srcdir)
 
-check_PROGRAMS = button demo detrans flip gravity piddle shapes
+check_PROGRAMS = button demo detrans flip gravity piddle shapes zoom
 
 LDADD = ../lib/libMagick++.la ../../magick/libMagick.la
 
@@ -18,10 +18,14 @@ flip_SOURCES    = flip.cpp
 gravity_SOURCES = gravity.cpp
 piddle_SOURCES  = piddle.cpp
 shapes_SOURCES  = shapes.cpp
+zoom_SOURCES	= zoom.cpp
 
 EXTRA_DIST = Generic.ttf model.miff smile.miff smile_anim.miff tile.miff
 
 CLEANFILES = *_out.miff
+
+FILTERS = point box triangle hermite hanning hamming blackman gaussian \
+	quadratic cubic catrom mitchell lanczos bessel sinc
 
 check:
 	env srcdir=$(srcdir) ./button
@@ -30,4 +34,8 @@ check:
 	env srcdir=$(srcdir) ./gravity
 	env srcdir=$(srcdir) ./piddle
 	env srcdir=$(srcdir) ./shapes
+	for filter in $(FILTERS) ; do  \
+	  echo "$$filter ..." ; \
+	  env srcdir=$(srcdir) ./zoom $$filter 600x600 $(srcdir)/model.miff zoom_$$filter_out.miff ; \
+	done
 
