@@ -907,7 +907,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,source->columns*sizeof(PixelPacket));
-        indexes=GetIndexes(image);
+        indexes=GetIndexes(source);
         if (indexes != (IndexPacket *) NULL)
           memcpy(GetIndexes(destination),indexes,
             source->columns*sizeof(IndexPacket));

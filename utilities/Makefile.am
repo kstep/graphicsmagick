@@ -50,7 +50,7 @@ else
 X11PROGRAMS =
 MANPAGES = $(STDMANPAGES)
 endif
-bin_PROGRAMS = cgimagick composite convert identify iptcutil mogrify montage $(X11PROGRAMS)
+bin_PROGRAMS = composite convert identify iptcutil mogrify montage $(X11PROGRAMS)
 
 # Libtool libraries, dependencies, and linker flags used by most executables
 if WITH_MODULES
@@ -64,10 +64,6 @@ endif # WITH_MODULES
 animate_LDADD     = $(COMMONLDADD)
 animate_LDFLAGS   = $(COMMONLDFLAGS)
 animate_SOURCES   = animate.c
-
-cgimagick_LDADD    = $(COMMONLDADD)
-cgimagick_LDFLAGS  = $(COMMONLDFLAGS)
-cgimagick_SOURCES  = cgimagick.c
 
 composite_LDADD     = $(COMMONLDADD)
 composite_LDFLAGS   = $(COMMONLDFLAGS)
