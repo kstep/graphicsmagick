@@ -3,6 +3,8 @@
 	* lib/Image.cpp (getConstIndexes): Add method to obtain read-only
  	pixel indexes.
 	(getIndexes): Add method to obtain read-write pixel indexes.
+	(Image::Image): Send warnings from Image constructor to cerr
+ 	rather than throwing.
 
 	* lib/Color.cpp (Color(PixelPacket&)): Change argument to const
  	PixelPacket& as it should have been from the beginning.

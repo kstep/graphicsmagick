@@ -70,8 +70,15 @@ int Magick::operator <= ( const Magick::Image& left_, const Magick::Image& right
 Magick::Image::Image( const std::string &imageSpec_ )
   : _imgRef(new ImageRef)
 {
-  // Initialize, Allocate and Read images
-  read( imageSpec_ );
+  try
+    {
+      // Initialize, Allocate and Read images
+      read( imageSpec_ );
+    }
+  catch ( Warning &warning_ )
+    {
+      cerr << warning_.what() << endl;
+    }
 }
 
 // Construct a blank image canvas of specified size and color
@@ -83,19 +90,33 @@ Magick::Image::Image( const Geometry &size_,
   std::string imageSpec("xc:");
   imageSpec += color_;
 
-  // Set image size
-  size( size_ );
+  try
+    {
+      // Set image size
+      size( size_ );
 
-  // Initialize, Allocate and Read images
-  read( imageSpec );
+      // Initialize, Allocate and Read images
+      read( imageSpec );
+    }
+  catch ( Warning &warning_ )
+    {
+      cerr << warning_.what() << endl;
+    }
 }
 
 // Construct Image from in-memory BLOB
 Magick::Image::Image ( const Blob &blob_ )
   : _imgRef(new ImageRef)
 {
-  // Initialize, Allocate and Read images
-  read( blob_ );
+  try
+    {
+      // Initialize, Allocate and Read images
+      read( blob_ );
+    }
+  catch ( Warning &warning_ )
+    {
+      cerr << warning_.what() << endl;
+    }
 }
 
 // Construct Image of specified size from in-memory BLOB
@@ -103,8 +124,15 @@ Magick::Image::Image ( const Blob &blob_,
 		       const Geometry &size_ )
   : _imgRef(new ImageRef)
 {
-  // Read from Blob
-  read( blob_, size_ );
+  try
+    {
+      // Read from Blob
+      read( blob_, size_ );
+    }
+  catch ( Warning &warning_ )
+    {
+      cerr << warning_.what() << endl;
+    }
 }
 
 // Construct Image of specified size and depth from in-memory BLOB
@@ -113,8 +141,15 @@ Magick::Image::Image ( const Blob &blob_,
 		       unsigned int depth_ )
   : _imgRef(new ImageRef)
 {
-  // Read from Blob
-  read( blob_, size_, depth_ );
+  try
+    {
+      // Read from Blob
+      read( blob_, size_, depth_ );
+    }
+  catch ( Warning &warning_ )
+    {
+      cerr << warning_.what() << endl;
+    }
 }
 
 // Construct Image of specified size, depth, and format from in-memory BLOB
@@ -124,8 +159,15 @@ Magick::Image::Image ( const Blob &blob_,
 		       const std::string &magick_ )
   : _imgRef(new ImageRef)
 {
-  // Read from Blob
-  read( blob_, size_, depth_, magick_ );
+  try
+    {
+      // Read from Blob
+      read( blob_, size_, depth_, magick_ );
+    }
+  catch ( Warning &warning_ )
+    {
+      cerr << warning_.what() << endl;
+    }
 }
 
 // Construct Image of specified size, and format from in-memory BLOB
@@ -134,8 +176,15 @@ Magick::Image::Image ( const Blob &blob_,
 		       const std::string &magick_ )
   : _imgRef(new ImageRef)
 {
-  // Read from Blob
-  read( blob_, size_, magick_ );
+  try
+    {
+      // Read from Blob
+      read( blob_, size_, magick_ );
+    }
+  catch ( Warning &warning_ )
+    {
+      cerr << warning_.what() << endl;
+    }
 }
 
 // Construct an image based on an array of raw pixels, of specified
@@ -147,7 +196,14 @@ Magick::Image::Image ( const unsigned int width_,
                        const void *pixels_ )
   : _imgRef(new ImageRef)
 {
-  read( width_, height_, map_.c_str(), type_, pixels_ );
+  try
+    {
+      read( width_, height_, map_.c_str(), type_, pixels_ );
+    }
+  catch ( Warning &warning_ )
+    {
+      cerr << warning_.what() << endl;
+    }
 }
 
 // Default constructor

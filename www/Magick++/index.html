@@ -11,21 +11,18 @@
 
 <center><img SRC="Magick++.png" height=134 width=464></center>
 
-<p>This is Magick++, the object-oriented C++ API to the <a href="../../ImageMagick.html">ImageMagick</a>
+<p>Magick++ is the object-oriented C++ API to the <a href="../../ImageMagick.html">ImageMagick</a>
 image-processing library, the most comprehensive open-source image processing
-solution available. Read the <a href="NEWS.html">release notes</a> for
-Magick++.
+package available. Read the <a href="NEWS.html">release notes</a> for Magick++.
 <p><img SRC="ImageMagick.png" height=259 width=250 align=RIGHT>Magick++
 supports an object model which is inspired by <a href="../perl.html">PerlMagick</a>.
-Magick++ executes faster than PerlMagick since it is accessed from a compiled
-language rather than from a scripting language. This makes it more suitable
-for Web CGI programs which must start-up and execute quickly. Images support
-implicit reference counting so that copy constructors and assignment incur
-almost no cost. The cost of actually copying an image (if necessary) is
-done just before modification and this copy is managed automatically by
-Magick++. De-referenced copies are automatically deleted. The image objects
-support value (rather than pointer)&nbsp; semantics so it is trivial to
-support multiple generations of an image in memory at one time.
+Images support implicit reference counting so that copy constructors and
+assignment incur almost no cost. The cost of actually copying an image
+(if necessary) is done just before modification and this copy is managed
+automatically by Magick++. De-referenced copies are automatically deleted.
+The image objects support value (rather than pointer)&nbsp; semantics so
+it is trivial to support multiple generations of an image in memory at
+one time.
 <p>Magick++ provides integrated support for the <a href="http://www.sgi.com/tech/stl/">Standard
 Template Library</a> (STL) so that the powerful containers available (e.g.
 <a href="http://www.sgi.com/tech/stl/Deque.html">deque</a>,
