@@ -37,6 +37,9 @@ typedef struct _QuantizeInfo
 /*
   Quantization utilities methods.
 */
+extern MagickExport char
+  **ListColors(const char *,int *);
+
 extern MagickExport QuantizeInfo
   *CloneQuantizeInfo(const QuantizeInfo *);
 

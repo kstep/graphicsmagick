@@ -164,10 +164,6 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     name[MaxTextExtent],
     symbol[MaxTextExtent];
 
-  double
-    distance_squared,
-    min_distance;
-
   int
     distance,
     j,
@@ -186,9 +182,6 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
 
   register PixelPacket
     *p;
-
-  register const ColorlistInfo
-    *q;
 
   unsigned int
     characters_per_pixel,
@@ -284,29 +277,10 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,strlen(buffer),buffer);
   for (i=0; i < (int) colors; i++)
   {
-    PixelPacket
-      *p;
-
     /*
       Define UIL color.
     */
-    min_distance=0;
-    p=image->colormap+i;
-    for (q=XPMColorlist; q->name != (char *) NULL; q++)
-    {
-      mean=(p->red+q->red)/2;
-      distance=p->red-(int) q->red;
-      distance_squared=(2.0*256.0+mean)*distance*distance/256.0;
-      distance=p->green-(int) q->green;
-      distance_squared+=4.0*distance*distance;
-      distance=p->blue-(int) q->blue;
-      distance_squared+=(3.0*256.0-1.0-mean)*distance*distance/256.0;
-      if ((q == XPMColorlist) || (distance_squared <= min_distance))
-        {
-          min_distance=distance_squared;
-          (void) strcpy(name,q->name);
-        }
-    }
+    (void) QueryColorName(image->colormap+i,name);
     if (transparent)
       if (i == (int) (colors-1))
         (void) strcpy(name,"None");

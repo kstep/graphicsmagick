@@ -1368,13 +1368,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         default:
         {
           if (composite_image->matte && (p->opacity == TransparentOpacity))
-            {
-              red=q->red;
-              green=q->green;
-              blue=q->blue;
-              opacity=q->opacity;
-              break;
-            }
+            break;
           if (composite_image->matte && (p->opacity == OpaqueOpacity))
             {
               red=p->red;
@@ -1523,29 +1517,20 @@ MagickExport unsigned int CompositeImage(Image *image,
         case ReplaceRedCompositeOp:
         {
           red=Intensity(*p);
-          green=q->green;
-          blue=q->blue;
           break;
         }
         case ReplaceGreenCompositeOp:
         {
-          red=q->red;
           green=Intensity(*p);
-          blue=q->blue;
           break;
         }
         case ReplaceBlueCompositeOp:
         {
-          red=q->red;
-          green=q->green;
           blue=Intensity(*p);
           break;
         }
         case ReplaceMatteCompositeOp:
         {
-          red=q->red;
-          green=q->green;
-          blue=q->blue;
           opacity=Intensity(*p);
           break;
         }
@@ -1633,7 +1618,8 @@ MagickExport unsigned int CompositeImage(Image *image,
   }
   if (compose == DisplaceCompositeOp)
     DestroyImage(composite_image);
-  (void) IsMatteImage(image);
+  if (compose != ReplaceMatteCompositeOp)
+    (void) IsMatteImage(image);
   return(True);
 }
 

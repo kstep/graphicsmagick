@@ -145,17 +145,6 @@ typedef struct _ChromaticityInfo
     white_point;
 } ChromaticityInfo;
 
-typedef struct _ColorlistInfo
-{
-  char
-    *name;
-
-  Quantum
-    red,
-    green,
-    blue;
-} ColorlistInfo;
-
 typedef struct _ExceptionInfo
 {
   ExceptionType
@@ -626,10 +615,6 @@ extern MagickExport const char
   *SaveImageText,
   *SaveImagesText,
   *WriteBinaryType;
-
-extern MagickExport const ColorlistInfo
-  XPMColorlist[236],
-  XColorlist[764];
 
 /*
   Image utilities methods.

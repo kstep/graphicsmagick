@@ -609,12 +609,6 @@ static unsigned int RenderTruetype(Image *image,
   FT_Error
     status;
 
-  FT_Face
-    face;
-
-  FT_Library
-    library;
-
   FT_Matrix
     affine;
 
@@ -644,6 +638,15 @@ static unsigned int RenderTruetype(Image *image,
   register PixelPacket
     *q;
 
+  static char
+    font[MaxTextExtent];
+
+  static FT_Face
+    face = (FT_Face) NULL;
+
+  static FT_Library
+    library = (FT_Library) NULL;
+
   TGlyph
     *glyph,
     *glyphs;
@@ -654,8 +657,15 @@ static unsigned int RenderTruetype(Image *image,
   /*
     Initialize Truetype library.
   */
-  status=FT_Init_FreeType(&library);
-  if (!status)
+  if (library == (FT_Library) NULL)
+    {
+      status=FT_Init_FreeType(&library);
+      if (status)
+        ThrowBinaryException(DelegateWarning,"Unable to open freetype library",
+          annotate_info->font);
+    }
+  if ((face == (FT_Face) NULL) ||
+      (LocaleCompare(annotate_info->font,font) != 0))
     {
       register char
         *p,
@@ -664,6 +674,8 @@ static unsigned int RenderTruetype(Image *image,
       /*
         Search for Truetype font filename.
       */
+      if (face != (FT_Face) NULL)
+        FT_Done_Face(face);
       status=True;
       p=getenv("TT_FONT_PATH");
       if (p != (char *) NULL)
@@ -719,12 +731,9 @@ static unsigned int RenderTruetype(Image *image,
 #endif
       if (status)
         status=FT_New_Face(library,annotate_info->font,0,&face);
-    }
-  if (status)
-    {
-      FT_Done_FreeType(library);
-      ThrowBinaryException(DelegateWarning,"Unable to read font",
-        annotate_info->font);
+      if (status)
+        ThrowBinaryException(DelegateWarning,"Unable to read font",
+          annotate_info->font);
     }
   resolution.x=72.0;
   resolution.y=72.0;
@@ -804,8 +813,6 @@ static unsigned int RenderTruetype(Image *image,
       for (glyph=glyphs; glyph->id != 0; glyph++)
         FT_Done_Glyph(glyph->image);
       LiberateMemory((void **) &glyphs);
-      FT_Done_Face(face);
-      FT_Done_FreeType(library);
       return(True);
     }
   /*
@@ -863,15 +870,9 @@ static unsigned int RenderTruetype(Image *image,
         p++;
       }
     }
-  }
-  /*
-    Free resources.
-  */
-  for (glyph=glyphs; glyph->id != 0; glyph++)
     FT_Done_Glyph(glyph->image);
+  }
   LiberateMemory((void **) &glyphs);
-  FT_Done_Face(face);
-  FT_Done_FreeType(library);
   return(True);
 }
 #else
