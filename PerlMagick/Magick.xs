@@ -6003,6 +6003,7 @@ Ping(ref,...)
     reference=SvRV(ST(0));
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
+    EXTEND(sp,4*items-1);
     for (i=1; i < items; i++)
     {
       (void) strcpy(info->image_info->filename,(char *) SvPV(ST(i),na));
@@ -6018,16 +6019,19 @@ Ping(ref,...)
         {
           MagickWarning(exception.severity,exception.reason,
             exception.description);
-          s=(&sv_undef);
+          PUSHs(&sv_undef);
         }
       else
         {
-          FormatString(message,"%u,%u,%u,%.1024s",image->columns,image->rows,
-            image->filesize,image->magick);
-          s=sv_2mortal(newSVpv(message,0));
+          FormatString(message,"%u",image->columns);
+          PUSHs(sv_2mortal(newSVpv(message,0)));
+          FormatString(message,"%u",image->rows);
+          PUSHs(sv_2mortal(newSVpv(message,0)));
+          FormatString(message,"%u",image->filesize);
+          PUSHs(sv_2mortal(newSVpv(message,0)));
+          PUSHs(sv_2mortal(newSVpv(image->magick,0)));
           DestroyImage(image);
         }
-      PUSHs(s);
     }
     info->image_info->file=(FILE *) NULL;
     SvREFCNT_dec(error_list);  /* throw away all errors */
