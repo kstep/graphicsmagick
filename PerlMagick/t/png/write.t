@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1; print "1..4\n"; }
+BEGIN { $| = 1; $test=1; print "1..5\n"; }
 END {print "not ok $test\n" unless $loaded;}
 
 use Image::Magick;
@@ -47,5 +47,15 @@ testReadWrite( 'input.mng',
 	       'output.mng',
 	       q/quality=>55/,
 	       '2ab9b274742f981c30ff745cfc355ad8' );
+
+#
+# 5) Test 16-bit Portable Network Graphics
+# 
+++$test;
+testReadWrite( 'input_16.png',
+	       'output_16.png',
+	       q/quality=>55/,
+               '7a3e933e0130b1fff2b1884f6e65a50f',
+               'a08e3ae861d23394ca1645e1f1557305' );
 
 

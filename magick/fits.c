@@ -409,7 +409,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
       Convert FITS pixels to pixel packets.
     */
     scale=1.0;
-    if (fits_header.min_data != fits_header.max_data)
+    if ((fits_header.max_data-fits_header.min_data) <= 1.0)
       scale=MaxRGB/(fits_header.max_data-fits_header.min_data);
     p=fits_pixels;
     for (y=image->rows-1; y >= 0; y--)

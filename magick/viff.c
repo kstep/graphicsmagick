@@ -345,12 +345,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
         (viff_header.color_space_model != VFF_CM_genericRGB))
       ReaderExit(CorruptImageWarning,"Colorspace model is not supported",image);
     if (viff_header.location_type != VFF_LOC_IMPLICIT)
-      {
-        MagickWarning(CorruptImageWarning,
-          "Location type is not supported",image->filename);
-        DestroyImages(image);
-        return((Image *) NULL);
-      }
+      ReaderExit(CorruptImageWarning,"Location type is not supported",image);
     if (viff_header.number_of_images != 1)
       ReaderExit(CorruptImageWarning,"Number of images is not supported",image);
     if (viff_header.map_rows == 0)
@@ -548,6 +543,11 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
             }
           else
             scale_factor=(double) MaxRGB/(max_value-min_value);
+        if ((max_value-min_value) > 1.0)
+          {
+            min_value=0.0;
+            scale_factor=1.0;
+          }
       }
     /*
       Convert pixels to Quantum size.
@@ -1069,7 +1069,7 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (int) image->columns; x++)
               {
-                *q++=p->red;
+                *q++=Intensity(*p);
                 p++;
               }
               if (image->previous == (Image *) NULL)
