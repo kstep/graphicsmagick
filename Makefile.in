@@ -231,7 +231,7 @@ DISTDIRS = contrib images scenes scripts www PerlMagick
 
 # Install HTML files
 pkgdocdir = $(DESTDIR)$(pkgdatadir)
-DOCDIRS = images www www/api www/api/types
+DOCDIRS = images www www/api www/api/types www/Magick++
 
 @WITH_PERL_TRUE@PERLMAGICK = @WITH_PERL_TRUE@PerlMagick
 @WITH_PERL_TRUE@PERLMAKEMAKER = @WITH_PERL_TRUE@$(PERLMAGICK)/Makefile.PL
