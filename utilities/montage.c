@@ -108,6 +108,8 @@ static void MontageUsage(void)
       "-endian type         LSB or MSB",
       "-fill color          color to use when filling a graphic primitive",
       "-filter type         use this filter when resizing an image",
+      "-flip                flip image in the vertical direction",
+      "-flop                flop image in the horizontal direction",
       "-frame geometry      surround image with an ornamental border",
       "-gamma value         level of gamma correction",
       "-geometry geometry   preferred tile and border sizes",

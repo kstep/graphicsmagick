@@ -5379,6 +5379,10 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("flip",option+1) == 0)
+          break;
+        if (LocaleCompare("flop",option+1) == 0)
+          break;
         if (LocaleCompare("font",option+1) == 0)
           {
             (void) CloneString(&image_info->font,(char *) NULL);
