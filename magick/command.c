@@ -302,8 +302,8 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   DestroyImageList(image); \
   DestroyImageList(composite_image); \
   DestroyImageList(mask_image); \
-  LiberateArgumentList(argc,argv); \
   ThrowException(exception,code,reason,description); \
+  LiberateArgumentList(argc,argv); \
   return(False); \
 }
 
@@ -1487,8 +1487,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 { \
   DestroyImageList(image); \
   DestroyImageList(image_list); \
-  LiberateArgumentList(argc,argv); \
   ThrowException(exception,code,reason,description); \
+  LiberateArgumentList(argc,argv); \
   return(False); \
 }
 
@@ -3351,8 +3351,8 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   if (format != (char *) NULL) \
     LiberateMemory((void **) &format); \
   DestroyImageList(image); \
-  LiberateArgumentList(argc,argv); \
   ThrowException(exception,code,reason,description); \
+  LiberateArgumentList(argc,argv); \
   return(False); \
 }
 
@@ -7800,8 +7800,8 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   DestroyImageList(image); \
   DestroyImageList(image_list); \
   DestroyImageList(montage_image); \
-  LiberateArgumentList(argc,argv); \
   ThrowException(exception,code,reason,description); \
+  LiberateArgumentList(argc,argv); \
   return(False); \
 }
   char
