@@ -1,0 +1,1198 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="Author" content="Bob Friesenhahn">
+   <meta name="Description" content="Documentation for Magick::Drawable class">
+   <title>Magick::Drawable Class</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+
+<center>
+<h1>
+Magick::Drawable</h1></center>
+Drawable provides a convenient interface for preparing vector, image, or
+text arguments for the Image::draw() method. Each instance of a Drawable
+sub-class represents a single drawable object. Drawable objects may be
+drawn "one-by-one" via multiple invocations of the Image <a href="Image.html#draw">draw</a>()
+method, or may be drawn "all-at-once" by passing a list of Drawable objects
+to the Image <a href="Image.html#draw">draw</a>() method. The one-by-one
+approach is convenient for simple drawings, while the list-based approach
+is appropriate for drawings which require more sophistication.
+<p>The following is an example of using the Drawable subclasses with the
+one-by-one approach to draw the following figure:
+<p><img SRC="Drawable_example_1.png" BORDER=3 height=200 width=300>
+<p><tt><font color="#000066">#include &lt;string></font></tt>
+<br><tt><font color="#000066">#include &lt;iostream></font></tt>
+<br><tt><font color="#000066">#include &lt;Magick++.h></font></tt>
+<p><tt><font color="#000066">using namespace std;</font></tt>
+<br><tt><font color="#000066">using namespace Magick;</font></tt>
+<p><tt><font color="#000066">int main(int /*argc*/,char **/*argv*/)</font></tt>
+<br><tt><font color="#000066">{</font></tt>
+<br><tt><font color="#000066">&nbsp; try {</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Create base image (white
+image of 300 by 200 pixels)</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image image( Geometry(300,200),
+Color("white") );</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Set draw options</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.strokeColor("red");
+// Outline color</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.fillColor("green");
+// Fill color</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.strokeWidth(5);</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Draw a circle</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.draw( DrawableCircle(100,100,
+50,100) );</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Draw a rectangle</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.draw( DrawableRectangle(200,200,
+270,170) );</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Display the result</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.display( );</font></tt>
+<br><tt><font color="#000066">&nbsp; }</font></tt>
+<br><tt><font color="#000066">&nbsp; catch( exception &amp;error_ )</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; {</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+"Caught exception: " &lt;&lt; error_.what() &lt;&lt; endl;</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 1;</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; }</font></tt>
+<p><tt><font color="#000066">&nbsp; return 0;</font></tt>
+<br><tt><font color="#000066">}</font></tt>
+<p><font color="#000000">Since Drawable is an object it may be saved in
+an array or a list for later (perhaps repeated) use. The following example
+shows how to draw the same figure using the </font>list-based approach
+<p><tt><font color="#000066">#include &lt;string></font></tt>
+<br><tt><font color="#000066">#include &lt;iostream></font></tt>
+<br><tt><font color="#000066">#include &lt;list></font></tt>
+<br><tt><font color="#000066">#include &lt;Magick++.h></font></tt>
+<p><tt><font color="#000066">using namespace std;</font></tt>
+<br><tt><font color="#000066">using namespace Magick;</font></tt>
+<p><tt><font color="#000066">int main(int /*argc*/,char **/*argv*/)</font></tt>
+<br><tt><font color="#000066">{</font></tt>
+<br><tt><font color="#000066">&nbsp; try {</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Create base image (white
+image of 300 by 200 pixels)</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image image( Geometry(300,200),
+Color("white") );</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Construct drawing list</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; std::list&lt;Magick::Drawable>
+drawList;</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Add some drawing options
+to drawing list</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; drawList.push_back(DrawableStrokeColor("red"));
+// Outline color</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; drawList.push_back(DrawableStrokeWidth(5));
+// Stroke width</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; drawList.push_back(DrawableFillColor("green"));
+// Fill color</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Add a Circle to drawing
+list</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; drawList.push_back(DrawableCircle(100,100,
+50,100));</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Add a Rectangle to drawing
+list</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; drawList.push_back(DrawableRectangle(200,100,
+270,170));</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Draw everything using
+completed drawing list</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.draw(drawList);</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Display the result</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.display( );</font></tt>
+<br><tt><font color="#000066">&nbsp; }</font></tt>
+<br><tt><font color="#000066">&nbsp; catch( exception &amp;error_ )</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; {</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+"Caught exception: " &lt;&lt; error_.what() &lt;&lt; endl;</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 1;</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; }</font></tt>
+<p><tt><font color="#000066">&nbsp; return 0;</font></tt>
+<br><tt><font color="#000066">}</font></tt>
+<p><font color="#000000">Drawable depends on the simple Coordinate structure
+which represents a pair of x,y coodinates.&nbsp; The methods provided by
+the Coordinate structure are shown in the following table:</font>
+<br>&nbsp;
+<table BORDER WIDTH="100%" NOSAVE >
+<caption>Coordinate Structure Methods</caption>
+
+<tr NOSAVE>
+<td NOSAVE>
+<center><b>Method/Member</b></center>
+</td>
+
+<td>
+<center><b>Signature</b></center>
+</td>
+
+<td>
+<center><b>Description</b></center>
+</td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
+<center><font size=-1>Coordinate</font></center>
+</td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Default Constructor</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>double x_, double y_</font></td>
+
+<td><font size=-1>Constructor, setting <i>first</i> &amp; <i>second</i></font></td>
+</tr>
+
+<tr NOSAVE>
+<td NOSAVE>
+<center><font size=-1>x</font></center>
+</td>
+
+<td><font size=-1>double x_</font></td>
+
+<td NOSAVE><font size=-1>x coordinate member</font></td>
+</tr>
+
+<tr NOSAVE>
+<td NOSAVE>
+<center><font size=-1>y</font></center>
+</td>
+
+<td><font size=-1>double y_</font></td>
+
+<td><font size=-1>y coordinate member</font></td>
+</tr>
+</table>
+
+<p><font color="#000000">The Drawable classes are shown in the following
+table:</font>
+<br>&nbsp;
+<table BORDER WIDTH="100%" NOSAVE >
+<caption><b>Drawable Classes</b></caption>
+
+<tr>
+<td>
+<center><b>Sub-Class</b></center>
+</td>
+
+<td>
+<center><b>Constructor Signature</b></center>
+</td>
+
+<td>
+<center><b>Description</b></center>
+</td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableAffine"></a><font size=-1>DrawableAffine</font></center>
+</td>
+
+<td><font size=-1>double sx_, double sy_, double rx_, double ry_, double
+tx_, double ty_</font></td>
+
+<td><font size=-1>Set scaling, rotation, and translation (coordinate transformation).</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableAngle"></a><font size=-1>DrawableAngle</font></center>
+</td>
+
+<td><font size=-1>double angle_</font></td>
+
+<td><font size=-1>Set drawing angle</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableArc"></a><font size=-1>DrawableArc</font></center>
+</td>
+
+<td><font size=-1>double startX_, double startY_, double endX_, double
+endY_, double startDegrees, double endDegrees_</font></td>
+
+<td><font size=-1>Draw an arc using the <i>stroke</i> color and based on
+the circle starting at coordinates <i>startX_</i>,<i>startY_,</i> and ending
+with coordinates <i>endX_,</i>endY_, and bounded by the rotational arc
+<i>startDegrees_,endDegrees_</i></font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableBezier"></a><font size=-1>DrawableBezier</font></center>
+</td>
+
+<td><font size=-1>const std::list&lt;Magick::Coordinate> &amp;coordinates_</font></td>
+
+<td><font size=-1>Draw a bezier curve using the <i>stroke</i> color and
+based on the coordinates specified by the <i>coordinates_ </i>list.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableCircle"></a><font size=-1>DrawableCircle</font></center>
+</td>
+
+<td><font size=-1>double originX_, double originY_, double perimX_, double
+perimY_</font></td>
+
+<td><font size=-1>Draw a circle using the <i>stroke</i> color and thickness
+using specified origin and perimeter coordinates. If a <i>fill</i> color
+is specified, then the object is filled.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableColor"></a><font size=-1>DrawableColor</font></center>
+</td>
+
+<td><font size=-1>double x_, double y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a>
+paintMethod_</font></td>
+
+<td><font size=-1>Color image according to paintMethod. The point method
+recolors the target pixel.&nbsp; The replace method recolors any pixel
+that matches the color of the target pixel.&nbsp; Floodfill recolors any
+pixel that matches the color of the target pixel and is a neighbor,&nbsp;
+whereas filltoborder recolors any neighbor pixel that is not the border
+color. Finally, reset recolors all pixels.</font></td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="3" NOSAVE>
+<center><a NAME="DrawableCompositeImage"></a><font size=-1>DrawableCompositeImage</font></center>
+</td>
+
+<td><font size=-1>double x_, double y_, const std::string &amp;image_</font></td>
+
+<td><font size=-1>Composite current image with contents of specified image
+file, at specified coordinates. If the <i>matte</i> attribute is set to
+<i>true</i>,
+then the image composition will consider an alpha channel, or transparency,
+present in the image file so that non-opaque portions allow part (or all)
+of the composite image to show through.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>double x_, double y_, double width_, double height_,
+const std::string &amp;image_</font></td>
+
+<td><font size=-1>Composite current image with contents of specified image
+file, rendered with specified width and height, at specified coordinates.
+If the <i>matte</i> attribute is set to <i>true</i>, then the image composition
+will consider an alpha channel, or transparency, present in the image file
+so that non-opaque portions allow part (or all) of the composite image
+to show through. If the specified <i>width</i> or <i>height</i> is zero,
+then the image is composited at its natural size, without enlargement or
+reduction.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>double x_, double y_, double width_, double height_,
+const std::string &amp;image_, CompositeOperator composition_</font></td>
+
+<td><font size=-1>Composite current image with contents of specified image
+file, rendered with specified width and height, using specified composition
+algorithm, at specified coordinates. If the <i>matte</i> attribute is set
+to <i>true</i>, then the image composition will consider an alpha channel,
+or transparency, present in the image file so that non-opaque portions
+allow part (or all) of the composite image to show through. If the specified
+<i>width</i>
+or <i>height</i> is zero, then the image is composited at its natural size,
+without enlargement or reduction.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableTextDecoration"></a><font size=-1>DrawableTextDecoration</font></center>
+</td>
+
+<td><font size=-1>DecorationType decoration_</font></td>
+
+<td><font size=-1>Set decoration to apply to text.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableDashArray"></a><font size=-1>DrawableDashArray</font></center>
+</td>
+
+<td><font size=-1>const unsigned int* dasharray_</font></td>
+
+<td><font size=-1>Specify the pattern of dashes and gaps used to stroke
+paths. The strokeDashArray represents a zero-terminated array of numbers
+that specify the lengths of alternating dashes and gaps in pixels. If an
+odd number of values is provided, then the list of values is repeated to
+yield an even number of values.&nbsp; A typical strokeDashArray_ array
+might contain the members 5 3 2 0, where the zero value indicates the end
+of the pattern array.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableDashOffset"></a><font size=-1>DrawableDashOffset</font></center>
+</td>
+
+<td><font size=-1>unsigned int offset_</font></td>
+
+<td><font size=-1>Specify the distance into the dash pattern to start the
+dash. See documentation on SVG's <a href="http://www.w3.org/TR/SVG/painting.html#StrokeDashoffsetProperty">stroke-dashoffset</a>
+property for usage details.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableEllipse"></a><font size=-1>DrawableEllipse</font></center>
+</td>
+
+<td><font size=-1>double originX_, double originY_, double radiusX_, double
+radiusY_, double arcStart_, double arcEnd_</font></td>
+
+<td><font size=-1>Draw an ellipse using the <i>stroke</i> color and thickness,
+specified origin, x &amp; y radius, as well as specified start and end
+of arc in degrees. If a <i>fill</i> color is specified, then the object
+is filled.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableFillColor"></a><font size=-1>DrawableFillColor</font></center>
+</td>
+
+<td><font size=-1>const Magick::Color &amp;color_</font></td>
+
+<td><font size=-1>Set drawing object fill color.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableFillRule"></a><font size=-1>DrawableFillRule</font></center>
+</td>
+
+<td><font size=-1>FillRule fillRule_</font></td>
+
+<td><font size=-1>Specify the algorithm which is to be used to determine
+what parts of the canvas are included inside the shape. See documentation
+on SVG's <a href="http://www.w3.org/TR/SVG/painting.html#FillRuleProperty">fill-rule</a>&nbsp;
+property for usage details.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableFillOpacity"></a><font size=-1>DrawableFillOpacity</font></center>
+</td>
+
+<td><font size=-1>double opacity_</font></td>
+
+<td><font size=-1>Set opacity to use when drawing using fill color.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableFont"></a><font size=-1>DrawableFont</font></center>
+</td>
+
+<td><font size=-1>const std::string &amp;font_</font></td>
+
+<td><font size=-1>Set font to use when drawing text.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableGravity"></a><font size=-1>DrawableGravity</font></center>
+</td>
+
+<td><font size=-1>GravityType gravity_</font></td>
+
+<td><font size=-1>Set text positioning gravity.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableLine"></a><font size=-1>DrawableLine</font></center>
+</td>
+
+<td><font size=-1>double startX_, double startY_, double endX_, double
+endY_</font></td>
+
+<td><font size=-1>Draw a line using <i>stroke</i> color and thickness using
+starting and ending coordinates</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableMatte"></a><font size=-1>DrawableMatte</font></center>
+</td>
+
+<td><font size=-1>double x_, double y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a>
+paintMethod_</font></td>
+
+<td><font size=-1>Change the pixel matte value to transparent. The point
+method changes the matte value of the target pixel.&nbsp; The replace method
+changes the matte value of any pixel that matches the color of the target
+pixel. Floodfill changes the matte value of any pixel that matches the
+color of the target pixel and is a neighbor, whereas filltoborder changes
+the matte value of any neighbor pixel that is not the border color, Finally
+reset changes the matte value of all pixels.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableMiterLimit"></a><font size=-1>DrawableMiterLimit</font></center>
+</td>
+
+<td><font size=-1>unsigned int miterLimit_</font></td>
+
+<td><font size=-1>Specify miter limit. When two line segments meet at a
+sharp angle and miter joins have been specified for 'lineJoin', it is possible
+for the miter to extend far beyond the thickness of the line stroking the
+path. The miterLimit' imposes a limit on the ratio of the miter length
+to the 'lineWidth'. The default value of this parameter is 4.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawablePath"></a><font size=-1>DrawablePath</font></center>
+</td>
+
+<td><font size=-1>const std::list&lt;Magick::VPath> &amp;path_</font></td>
+
+<td><font size=-1>Draw on image using vector path.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawablePoint"></a><font size=-1>DrawablePoint</font></center>
+</td>
+
+<td><font size=-1>double x_, double y_</font></td>
+
+<td><font size=-1>Draw a point using <i>stroke</i> color and thickness
+at coordinate</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawablePointSize"></a><font size=-1>DrawablePointSize</font></center>
+</td>
+
+<td><font size=-1>double pointSize_</font></td>
+
+<td><font size=-1>Set font point size.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawablePolygon"></a><font size=-1>DrawablePolygon</font></center>
+</td>
+
+<td><font size=-1>const std::list&lt;Magick::Coordinate> &amp;coordinates_</font></td>
+
+<td><font size=-1>Draw an arbitrary polygon using <i>stroke</i> color and
+thickness consisting of three or more coordinates contained in an STL list.
+If a <i>fill</i> color is specified, then the object is filled.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawablePolyline"></a><font size=-1>DrawablePolyline</font></center>
+</td>
+
+<td><font size=-1>const std::list&lt;Magick::Coordinate> &amp;coordinates_</font></td>
+
+<td><font size=-1>Draw an arbitrary polyline using <i>stroke</i> color
+and thickness consisting of three or more coordinates contained in an STL
+list. If a <i>fill</i> color is specified, then the object is filled.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawablePopGraphicContext"></a><font size=-1>DrawablePopGraphicContext</font></center>
+</td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Pop Graphic Context. Removing the current graphic context
+from the graphic context stack returns the options to the values they had
+prior to the preceding <i><a href="#DrawablePushGraphicContext">DrawablePushGraphicContext</a></i>
+operation.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawablePushGraphicContext"></a><font size=-1>DrawablePushGraphicContext</font></center>
+</td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Push Graphic Context.&nbsp; When a graphic context is
+pushedcdc, options set after the context is pushed (such as coordinate
+transformations, color settings, etc.) are saved to a new graphic context.
+This allows related options to be saved on a graphic context "stack" in
+order to support heirarchical nesting of options. When <i><a href="#DrawablePopGraphicContext">DrawablePopGraphicContext</a></i>
+is used to pop the current graphic context, the options in effect during
+the last <i>DrawablePushGraphicContext</i> operation.</font></td>
+</tr>
+
+<tr NOSAVE>
+<td NOSAVE>
+<center><a NAME="DrawableRectangle"></a><font size=-1>DrawableRectangle</font></center>
+</td>
+
+<td><font size=-1>double upperLeftX_, double upperLeftY_, double lowerRightX_,
+double lowerRightY</font></td>
+
+<td NOSAVE><font size=-1>Draw a rectangle using <i>stroke</i> color and
+thickness from upper-left coordinates to lower-right coordinates.&nbsp;
+If a <i>fill</i> color is specified, then the object is filled.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableRotation"></a><font size=-1>DrawableRotation</font></center>
+</td>
+
+<td><font size=-1>double angle_</font></td>
+
+<td><font size=-1>Set rotation to use when drawing (coordinate transformation).</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableRoundRectangle"></a><font size=-1>DrawableRoundRectangle</font></center>
+</td>
+
+<td><font size=-1>double centerX_, double centerY_, double width_, double
+hight_, double cornerWidth_, double cornerHeight_</font></td>
+
+<td><font size=-1>Draw a rounded rectangle using <i>stroke</i> color and
+thickness, with specified center coordinate, specified width and height,
+and specified corner width and height.&nbsp; If a <i>fill</i> color is
+specified, then the object is filled.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableScaling"></a><font size=-1>DrawableScaling</font></center>
+</td>
+
+<td><font size=-1>double x_, double y_</font></td>
+
+<td><font size=-1>Apply scaling in x and y direction while drawing objects
+(coordinate transformation).</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableSkewX"></a><font size=-1>DrawableSkewX</font></center>
+</td>
+
+<td><font size=-1>double angle_</font></td>
+
+<td><font size=-1>Apply Skew in X direction (coordinate transformation)</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableSkewY"></a><font size=-1>DrawableSkewY</font></center>
+</td>
+
+<td><font size=-1>double angle_</font></td>
+
+<td><font size=-1>Apply Skew in Y direction</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableStrokeAntialias"></a><font size=-1>DrawableStrokeAntialias</font></center>
+</td>
+
+<td><font size=-1>bool flag_</font></td>
+
+<td><font size=-1>Antialias while drawing lines or object outlines.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableStrokeColor"></a><font size=-1>DrawableStrokeColor</font></center>
+</td>
+
+<td><font size=-1>const Color &amp;color_</font></td>
+
+<td><font size=-1>Set color to use when drawing lines or object outlines.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableStrokeLineCap"></a><font size=-1>DrawableStrokeLineCap</font></center>
+</td>
+
+<td><font size=-1>LineCap linecap_</font></td>
+
+<td><font size=-1>Specify the shape to be used at the end of open subpaths
+when they are stroked. Values of LineCap are UndefinedCap, ButtCap, RoundCap,
+and SquareCap.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableStrokeLineJoin"></a><font size=-1>DrawableStrokeLineJoin</font></center>
+</td>
+
+<td><font size=-1>Linejoin linejoin_</font></td>
+
+<td><font size=-1>Specify the shape to be used at the corners of paths
+(or other vector shapes) when they are stroked. Values of LineJoin are
+UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableStrokeOpacity"></a><font size=-1>DrawableStrokeOpacity</font></center>
+</td>
+
+<td><font size=-1>double opacity_</font></td>
+
+<td><font size=-1>Opacity to use when drawing lines or object outlines.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableStrokeWidth"></a><font size=-1>DrawableStrokeWidth</font></center>
+</td>
+
+<td><font size=-1>double width_</font></td>
+
+<td><font size=-1>Set width to use when drawing lines or object outlines.</font></td>
+</tr>
+
+<tr NOSAVE>
+<td NOSAVE>
+<center><a NAME="DrawableText"></a><font size=-1>DrawableText</font></center>
+</td>
+
+<td><font size=-1>double x_, double y_, std::string text_</font></td>
+
+<td NOSAVE><font size=-1>Annotate image with text using <i>stroke</i> color,
+font, font pointsize, and <i>box</i> color (text background color), at
+specified coordinates. If text contains <a href="FormatCharacters.html">special
+format characters</a> the image filename, type, width, height, or other
+image attributes may be incorporated in the text (see label()).</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableTranslation"></a><font size=-1>DrawableTranslation</font></center>
+</td>
+
+<td><font size=-1>double x_, double y_</font></td>
+
+<td><font size=-1>Apply coordinate translation (set new coordinate origin).</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableTextAntialias"></a><font size=-1>DrawableTextAntialias</font></center>
+</td>
+
+<td><font size=-1>bool flag_</font></td>
+
+<td><font size=-1>Antialias while drawing text.</font></td>
+</tr>
+</table>
+
+<br>&nbsp;
+<center>
+<h2>
+Vector Path Classes</h2></center>
+The vector paths supported by Magick++ are based on those supported by
+the <a href="http://www.w3.org/TR/SVG/paths.html">SVG
+XML specification</a>. Vector paths are not directly drawable, they must
+first be supplied as a constructor argument to the <a href="#DrawablePath">DrawablePath</a>
+class in order to create a drawable object. The <a href="#DrawablePath">DrawablePath</a>
+class effectively creates a drawable compound component which may be replayed
+as desired. If the drawable compound component consists only of vector
+path objects using relative coordinates then the object may be positioned
+on the image by preceding it with a <i>DrawablePath</i> which sets the
+current drawing coordinate. Alternatively coordinate transforms may be
+used to <a href="#DrawableTranslation">translate the origin</a> in order
+to position the object, <a href="#DrawableRotation">rotate</a> it, <a href="#DrawableSkewX">skew</a>
+it, or <a href="#DrawableScaling">scale</a> it.
+<h3>
+The "moveto" commands</h3>
+The "moveto" commands establish a new current point. The effect is as if
+the "pen" were lifted and moved to a new location. A path data segment
+must begin with either one of the "moveto" commands or one of the "arc"
+commands. Subsequent "moveto" commands (i.e., when the "moveto" is not
+the first command) represent the start of a new subpath:
+<br>&nbsp;
+<table BORDER WIDTH="100%" NOSAVE >
+<caption><b>Moveto Classes</b></caption>
+
+<tr>
+<td>
+<center><b>Sub-Class</b></center>
+</td>
+
+<td>
+<center><b>Constructor Signature</b></center>
+</td>
+
+<td>
+<center><b>Description</b></center>
+</td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
+<center><a NAME="PathMovetoAbs"></a><font size=-1>PathMovetoAbs</font></center>
+</td>
+
+<td><font size=-1>const Magick::Coordinate &amp;coordinate_</font></td>
+
+<td ROWSPAN="4" NOSAVE><font size=-1>Start a new sub-path at the given
+coordinate.&nbsp; <i>PathMovetoAbs</i> indicates that absolute coordinates
+will follow; <i>PathMovetoRel</i> indicates that relative coordinates will
+follow. If a relative moveto appears as the first element of the path,
+then it is treated as a pair of absolute coordinates. If a moveto is followed
+by multiple pairs of coordinates, the subsequent pairs are treated as implicit
+lineto commands.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const std::list&lt;Magick::Coordinate> &amp;coordinates_</font></td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
+<center><a NAME="PathMovetoRel"></a><font size=-1>PathMovetoRel</font></center>
+</td>
+
+<td><font size=-1>const Magick::Coordinate &amp;coordinate_</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const std::list&lt;Magick::Coordinate> &amp;coordinates_</font></td>
+</tr>
+</table>
+
+<h3>
+The "closepath" command</h3>
+The "closepath" command causes an automatic straight line to be drawn from
+the current point to the initial point of the current subpath:
+<br>&nbsp;
+<table BORDER WIDTH="100%" NOSAVE >
+<caption><b>Closepath Classes</b></caption>
+
+<tr>
+<td>
+<center><b>Sub-Class</b></center>
+</td>
+
+<td>
+<center><b>Constructor Signature</b></center>
+</td>
+
+<td>
+<center><b>Description</b></center>
+</td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="PathClosePath"></a><font size=-1>PathClosePath</font></center>
+</td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Close the current subpath by drawing a straight line
+from the current point to current subpath's most recent starting point
+(usually, the most recent moveto point).</font></td>
+</tr>
+</table>
+
+<h3>
+The "lineto" commands</h3>
+The various "lineto" commands draw straight lines from the current point
+to a new point:
+<br>&nbsp;
+<table BORDER WIDTH="100%" NOSAVE >
+<caption><b>Lineto Classes</b></caption>
+
+<tr>
+<td>
+<center><b>Sub-Class</b></center>
+</td>
+
+<td>
+<center><b>Constructor Signature</b></center>
+</td>
+
+<td>
+<center><b>Description</b></center>
+</td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
+<center><a NAME="PathLinetoAbs"></a><font size=-1>PathLinetoAbs</font></center>
+</td>
+
+<td><font size=-1>const Magick::Coordinate&amp; coordinate_</font></td>
+
+<td ROWSPAN="4" NOSAVE><font size=-1>Draw a line from the current point
+to the given coordinate which becomes the new current point.&nbsp; <i>PathLinetoAbs</i>
+indicates that absolute coordinates are used; <i>PathLinetoRel</i> indicates
+that relative coordinates are used. A number of coordinates pairs may be
+specified in a list to draw a polyline. At the end of the command, the
+new current point is set to the final set of coordinates provided.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const std::list&lt;Magick::Coordinate> &amp;coordinates_</font></td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
+<center><a NAME="PathLinetoRel"></a><font size=-1>PathLinetoRel</font></center>
+</td>
+
+<td><font size=-1>const Magick::Coordinate&amp; coordinate_</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const std::list&lt;Magick::Coordinate> &amp;coordinates_</font></td>
+</tr>
+
+<tr NOSAVE>
+<td>
+<center><a NAME="PathLinetoHorizontalAbs"></a><font size=-1>PathLinetoHorizontalAbs</font></center>
+</td>
+
+<td><font size=-1>double x_</font></td>
+
+<td ROWSPAN="2" NOSAVE><font size=-1>Draws a horizontal line from the current
+point (cpx, cpy) to (x, cpy). <i>PathLinetoHorizontalAbs</i> indicates
+that absolute coordinates are supplied; <i>PathLinetoHorizontalRel</i>
+indicates that relative coordinates are supplied. At the end of the command,
+the new current point becomes (x, cpy) for the final value of x.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="PathLinetoHorizontalRel"></a><font size=-1>PathLinetoHorizontalRel</font></center>
+</td>
+
+<td><font size=-1>double x_</font></td>
+</tr>
+
+<tr NOSAVE>
+<td>
+<center><a NAME="PathLinetoVerticalAbs"></a><font size=-1>PathLinetoVerticalAbs</font></center>
+</td>
+
+<td><font size=-1>double y_</font></td>
+
+<td ROWSPAN="2" NOSAVE><font size=-1>Draws a vertical line from the current
+point (cpx, cpy) to (cpx, y). <i>PathLinetoVerticalAbs</i> indicates that
+absolute coordinates are supplied; <i>PathLinetoVerticalRel</i> indicates
+that relative coordinates are supplied.&nbsp; At the end of the command,
+the new current point becomes (cpx, y) for the final value of y.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="PathLinetoVerticalRel"></a><font size=-1>PathLinetoVerticalRel</font></center>
+</td>
+
+<td><font size=-1>double y_</font></td>
+</tr>
+</table>
+
+<h3>
+The curve commands</h3>
+These three groups of commands draw curves:
+<ul>
+<li>
+<a href="#cubic Bezier">Cubic B&eacute;zier commands.</a> A cubic B&eacute;zier
+segment is defined by a start point, an end point, and two control points.</li>
+
+<li>
+<a href="#quadratic Bezier">Quadratic B&eacute;zier commands.</a> A quadratic
+B&eacute;zier segment is defined by a start point, an end point, and one
+control point.</li>
+
+<li>
+<a href="#elliptical arc">Elliptical arc commands.</a> An elliptical arc
+segment draws a segment of an ellipse.</li>
+</ul>
+
+<h3>
+The&nbsp;<a NAME="cubic Bezier"></a>cubic B&eacute;zier curve commands</h3>
+The cubic B&eacute;zier commands depend on the <i>PathCurvetoArgs</i> argument
+class, which has the constructor signature
+<p><tt>&nbsp; PathCurvetoArgs( double x1_, double y1_,</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+double x2_, double y2_,</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+double x_, double y_ );</tt>
+<p>The commands are as follows:
+<br>&nbsp;
+<table BORDER WIDTH="100%" NOSAVE >
+<caption>
+<center><b>Cubic B&eacute;zier Curve Classes</b></center>
+</caption>
+
+<tr>
+<td>
+<center><b>Sub-Class</b></center>
+</td>
+
+<td>
+<center><b>Constructor Signature</b></center>
+</td>
+
+<td>
+<center><b>Description</b></center>
+</td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
+<center><a NAME="PathCurvetoAbs"></a><font size=-1>PathCurvetoAbs</font></center>
+</td>
+
+<td><font size=-1>const Magick::PathCurvetoArgs &amp;args_</font></td>
+
+<td ROWSPAN="4" NOSAVE><font size=-1>Draws a cubic B&eacute;zier curve
+from the current point to (x,y) using (x1,y1) as the control point at the
+beginning of the curve and (x2,y2) as the control point at the end of the
+curve. <i>PathCurvetoAbs</i> indicates that absolutecoordinates will follow;
+<i>PathCurvetoRel</i>
+indicates that relative coordinates will follow. Multiple sets of coordinates
+may be specified to draw a polybezier. At the end of the command, the new
+current point becomes the final (x,y) coordinate pair used in the polybezier.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const std::list&lt;Magick::PathCurvetoArgs> &amp;args_</font></td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
+<center><a NAME="PathCurvetoRel"></a><font size=-1>PathCurvetoRel</font></center>
+</td>
+
+<td><font size=-1>const Magick::PathCurvetoArgs &amp;args_</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const std::list&lt;Magick::PathCurvetoArgs> &amp;args_</font></td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
+<center><a NAME="PathSmoothCurvetoAbs"></a><font size=-1>PathSmoothCurvetoAbs</font></center>
+</td>
+
+<td><font size=-1>const Magick::Coordinate &amp;coordinates_</font></td>
+
+<td ROWSPAN="4" NOSAVE><font size=-1>Draws a cubic B&eacute;zier curve
+from the current point to (x,y). The first control point is assumed to
+be the reflection of the second control point on the previous command relative
+to the current point. (If there is no previous command or if the previous
+command was not an <i>PathCurvetoAbs</i>, <i>PathCurvetoRel</i>, <i>PathSmoothCurvetoAbs</i>
+or <i>PathSmoothCurvetoRel</i>, assume the first control point is coincident
+with the current point.) (x2,y2) is the second control point (i.e., the
+control point at the end of the curve).&nbsp; <i>PathSmoothCurvetoAbs</i>
+indicates that absolute coordinates will follow;&nbsp; <i>PathSmoothCurvetoRel</i>
+indicates that relative coordinates will follow. Multiple sets of coordinates
+may be specified to draw a polybezier. At the end of the command, the new
+current point becomes the final (x,y) coordinate pair used in the polybezier.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const std::list&lt;Magick::Coordinate> &amp;coordinates_</font></td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
+<center><a NAME="PathSmoothCurvetoRel"></a><font size=-1>PathSmoothCurvetoRel</font></center>
+</td>
+
+<td><font size=-1>const Magick::Coordinate &amp;coordinates_</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const std::list&lt;Magick::Coordinate> &amp;coordinates_</font></td>
+</tr>
+</table>
+
+<h3>
+The&nbsp;<a NAME="quadratic Bezier"></a>quadratic B&eacute;zier curve commands</h3>
+The quadratic B&eacute;zier commands depend on the <i>PathQuadraticCurvetoArgs</i>
+argument class, which has the constructor signature:
+<p><tt>&nbsp; PathQuadraticCurvetoArgs( double x1_, double y1_,</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+double x_, double y_ );</tt>
+<p>The quadratic B&eacute;zier commands are as follows:
+<br>&nbsp;
+<br>&nbsp;
+<table BORDER WIDTH="100%" NOSAVE >
+<caption><b>Quadratic B&eacute;zier Curve Classes</b></caption>
+
+<tr>
+<td>
+<center><b>Sub-Class</b></center>
+</td>
+
+<td>
+<center><b>Constructor Signature</b></center>
+</td>
+
+<td>
+<center><b>Description</b></center>
+</td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
+<center><a NAME="PathQuadraticCurvetoAbs"></a>PathQuadraticCurvetoAbs</center>
+</td>
+
+<td>const Magick::PathQuadraticCurvetoArgs &amp;args_</td>
+
+<td ROWSPAN="4" NOSAVE>Draws a quadratic B&eacute;zier curve from the current
+point to (x,y) using (x1,y1) as the control point. <i>PathQuadraticCurvetoAbs</i>
+indicates that absolute coordinates will follow; <i>PathQuadraticCurvetoRel</i>
+indicates that relative coordinates will follow. Multiple sets of coordinates
+may be specified to draw a polybezier. At the end of the command, the new
+current point becomes the final (x,y) coordinate pair used in the polybezier.</td>
+</tr>
+
+<tr>
+<td>const std::list&lt;Magick::PathQuadraticCurvetoArgs> &amp;args_</td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
+<center><a NAME="PathQuadraticCurvetoRel"></a>PathQuadraticCurvetoRel</center>
+</td>
+
+<td>const Magick::PathQuadraticCurvetoArgs &amp;args_</td>
+</tr>
+
+<tr>
+<td>const std::list&lt;Magick::PathQuadraticCurvetoArgs> &amp;args_</td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
+<center><a NAME="PathSmoothQuadraticCurvetoAbs"></a>PathSmoothQuadraticCurvetoAbs</center>
+</td>
+
+<td>const Magick::Coordinate &amp;coordinate_</td>
+
+<td ROWSPAN="4" NOSAVE>Draws a quadratic B&eacute;zier curve from the current
+point to (x,y). The control point is assumed to be the reflection of the
+control point on the previous
+<br>command relative to the current point. (If there is no previous command
+or if the previous command was not a <i>PathQuadraticCurvetoAbs</i>, <i>PathQuadraticCurvetoRel</i>,
+<i>PathSmoothQuadraticCurvetoAbs</i>
+or <i>PathSmoothQuadraticCurvetoRel</i>, assume the control point is coincident
+with the current point.) <i>PathSmoothQuadraticCurvetoAbs</i> indicates
+that absolute coordinates will follow; <i>PathSmoothQuadraticCurvetoRel</i>
+indicates that relative coordinates will follow. At the end of the command,
+the new current point becomes the final (x,y) coordinate pair used in the
+polybezier.</td>
+</tr>
+
+<tr>
+<td>const std::list&lt;Magick::Coordinate> &amp;coordinates_</td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
+<center><a NAME="PathSmoothQuadraticCurvetoRel"></a>PathSmoothQuadraticCurvetoRel</center>
+</td>
+
+<td>const Magick::Coordinate &amp;coordinate_</td>
+</tr>
+
+<tr>
+<td>const std::list&lt;Magick::Coordinate> &amp;coordinates_</td>
+</tr>
+</table>
+
+<h3>
+The&nbsp;<a NAME="elliptical arc"></a>elliptical arc curve commands</h3>
+The elliptical arc curve commands depend on the <i>PathArcArgs</i> argument
+class, which has the constructor signature:
+<p><tt>&nbsp;&nbsp; PathArcArgs( double radiusX_, double radiusY_,</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+double xAxisRotation_, bool largeArcFlag_,</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+bool sweepFlag_, double x_, double y_ );</tt>
+<p>The elliptical arc commands are as follows:
+<br>&nbsp;
+<table BORDER WIDTH="100%" NOSAVE >
+<caption>
+<center><b>Elliptical Arc Curve Classes</b></center>
+</caption>
+
+<tr>
+<td>
+<center><b>Sub-Class</b></center>
+</td>
+
+<td>
+<center><b>Constructor Signature</b></center>
+</td>
+
+<td>
+<center><b>Description</b></center>
+</td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
+<center><a NAME="PathArcAbs"></a><font size=-1>PathArcAbs</font></center>
+</td>
+
+<td><font size=-1>const Magick::PathArcArgs &amp;coordinates_</font></td>
+
+<td ROWSPAN="4" NOSAVE><font size=-1>Draws an elliptical arc from the current
+point to (x, y). The size and orientation of the ellipse are defined by
+two radii (<i>radiusX</i>, <i>radiusY</i>) and an <i>xAxisRotation</i>,
+which indicates how the ellipse as a whole is rotated relative to the current
+coordinate system. The center (cx, cy) of the ellipse is calculated automatically
+to satisfy the constraints imposed by the other parameters. <i>largeArcFlag</i>
+and <i>sweepFlag</i> contribute to the automatic calculations and help
+determine how the arc is drawn. If <i>largeArcFlag</i> is true then draw
+the larger of the available arcs. If <i>sweepFlag</i> is true, then draw
+the arc matching a clock-wise rotation.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const std::list&lt;Magick::PathArcArgs> &amp;coordinates_</font></td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
+<center><a NAME="PathArcRel"></a><font size=-1>PathArcRel</font></center>
+</td>
+
+<td><font size=-1>const Magick::PathArcArgs &amp;coordinates_</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const std::list&lt;Magick::PathArcArgs> &amp;coordinates_</font></td>
+</tr>
+</table>
+
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>
