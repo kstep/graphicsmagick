@@ -687,7 +687,6 @@ MagickExport off_t GetBlobSize(const Image *image)
     return(image->blob->length);
   if (image->blob->file == (FILE *) NULL)
     return(image->blob->size);
-  (void) fflush(image->blob->file);
   offset=
     fstat(fileno(image->blob->file),&attributes) < 0 ?  0 : attributes.st_size;
   return(offset);
