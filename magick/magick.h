@@ -31,6 +31,10 @@
 # include <string.h>
 #endif
 
+#if defined(_LARGEFILE_SOURCE)
+#define fseek  fseeko
+#define ftell  ftello
+#endif
 #if defined(_VISUALC_)
 # include <direct.h>
 #else
