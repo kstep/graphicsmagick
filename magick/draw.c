@@ -239,9 +239,8 @@ static unsigned int ClipImage(Image *image,const DrawInfo *draw_info)
       q++;
       r++;
     }
-    if (sync)
-      if (!SyncImagePixels(image))
-        break;
+    if (sync && !SyncImagePixels(image))
+      break;
   }
   DestroyImage(mask);
   if (draw_info->debug)
