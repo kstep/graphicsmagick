@@ -6,9 +6,9 @@ use Config;
 WriteMakefile(
     'NAME'	=> 'Image::Magick',
     'VERSION_FROM' => 'Magick.pm', # finds $VERSION
-    'LIBS'	=> ['-L/usr/local/lib -R/usr/local/lib -L/usr/openwin/lib -R/usr/openwin/lib -L/usr/local/lib -L/usr/openwin/lib -L/home/bfriesen/src/graphics/ImageMagick/magick -lMagick -ljbig -ldf  -ltiff -lfreetype -ljpeg -lpng  -ldpstk -ldps -lXext -lXt  -lSM -lICE -lX11 -lsocket  -lnsl -lbz2 -lxml -lz    -lm'],
+    'LIBS'	=> ['-L/usr/local/lib -L/usr/openwin/lib -R/usr/local/lib -R/usr/openwin/lib -L/usr/local/lib -L/usr/openwin/lib -L/usr/local/lib -lMagick -ljbig -ldf  -ltiff -lfreetype -ljpeg -lpng  -ldpstk -ldps -lXext -lXt  -lSM -lICE -lX11 -lsocket  -lnsl -lbz2 -lxml -lz  -lpthread  -lm'],
     'DEFINE'	=> '-DHAVE_CONFIG_H',     # e.g., '-DHAVE_SOMETHING' 
-    'INC'	=> '-I../ -I.. -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -I/usr/local/include -I/usr/openwin/include -I/usr/openwin/include/X11',
+    'INC'	=> '-I../ -I.. -D_REENTRANT -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -I/usr/local/include -I/usr/openwin/include -I/usr/openwin/include/X11',
     ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
 );
 

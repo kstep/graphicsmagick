@@ -1,3 +1,9 @@
+2000-09-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Drawable.h: Reverted Coordinate implemenation back
+ 	from and STL pair based implementation to a simple class.  Maybe
+ 	this will improve portability.  It is more understandable anyway.
+
 2000-09-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Options.cpp : Bugfix.  Some DrawInfo attributes were not

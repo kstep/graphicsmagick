@@ -4372,7 +4372,7 @@ EOF
     DLLDFLAGS=-export-dynamic
 
   fi
-   eval "eval im_cv_x_coder_modules=${libdir}/ImageMagick/modules/"
+   eval "eval im_cv_x_coder_modules=${libdir}/ImageMagick/modules/coders/"
 
 cat >>confdefs.h <<EOF
 #define MagickModulesPath "$im_cv_x_coder_modules"

@@ -181,7 +181,7 @@ progname=`$echo "X$0" | $Xsed -e 's%^.*/%%'`
 PROGRAM=ltconfig
 PACKAGE=libtool
 VERSION=1.4a
-TIMESTAMP=" (1.641.2.117 2000/09/15 16:49:03)"
+TIMESTAMP=" (1.641.2.119 2000/09/21 00:28:28)"
 ac_compile='${CC-cc} -c $CFLAGS $CPPFLAGS conftest.$ac_ext 1>&5'
 ac_link='${CC-cc} -o conftest $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS 1>&5'
 rm="rm -f"
@@ -1795,7 +1795,7 @@ else
   if test "$cross_compiling" = yes; then
     lt_cv_dlopen_self=cross
   else
-    cat > conftest.c <<EOF
+    cat > conftest.$ac_ext <<EOF
 #line 1799 "ltconfig"
 
 #if HAVE_DLFCN_H
@@ -1868,7 +1868,7 @@ else
   if test "$cross_compiling" = yes; then
     lt_cv_dlopen_self_static=cross
   else
-    cat > conftest.c <<EOF
+    cat > conftest.$ac_ext <<EOF
 #line 1872 "ltconfig"
 
 #if HAVE_DLFCN_H

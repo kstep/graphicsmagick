@@ -45,6 +45,7 @@ int main( int /*argc*/, char ** argv)
     model.label( "Magick++" );
     model.borderColor( "black" );
     model.backgroundColor( "black" );
+model.display();
 
     Image smile( srcdir + "smile.miff" );
     smile.label( "Smile" );
