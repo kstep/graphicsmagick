@@ -612,34 +612,11 @@ option to take effect.
 .B "-comment \fI<string>"\fP
 \fRannotate an image with a comment
 
-Use this option to assign a specific comment to the image. You can include the
+Use this option to assign a specific comment to the image, when writing
+to an image format that supports comments. You can include the
 image filename, type, width, height, or other image attribute by embedding
-special format characters:
+special format characters listed under the \fB-format\fP option.
 
-
-     %b   file size
-     %c   comment
-     %d   directory
-     %e   filename extension
-     %f   filename
-     %h   height
-     %i   input filename
-     %k   number of unique colors
-     %l   label
-     %m   magick
-     %n   number of scenes
-     %o   output filename
-     %p   page number
-     %q   quantum depth
-     %s   scene number
-     %t   top of filename
-     %u   unique temporary filename
-     %w   width
-     %x   x resolution
-     %y   y resolution
-     %#   signature
-     \\n   newline
-     \\r   carriage return
 
 For example,
 
@@ -1385,7 +1362,8 @@ filename is \fIimage.gif\fP, the output image filename becomes
 
 Use this option to print information about the image in a format of your
 choosing.  You can include the image filename, type, width, height,
-or other image attributes by embedding special format characters:
+Exif data, or other image attributes by embedding special format
+characters:
 
      %b   file size
      %c   comment
@@ -1420,6 +1398,102 @@ titled \fBbird.miff\fP and whose width is 512 and height is 480.
 
 If the first character of \fIstring\fP is \fB@\fP, the format
 is read from a file titled by the remaining characters in the string.
+
+You can also use the following special formatting syntax to print Exif
+information contained in the file:
+
+     %[EXIF:<tag>]
+
+Where "<tag>" can be one of the following:
+
+     *  (print all Exif tags, in keyword=data format)
+     !  (print all Exif tags, in tag_number data format)
+     #hhhh (print data for Exif tag #hhhh)
+     ImageWidth
+     ImageLength
+     BitsPerSample
+     Compression
+     PhotometricInterpretation
+     FillOrder
+     DocumentName
+     ImageDescription
+     Make
+     Model
+     StripOffsets
+     Orientation
+     SamplesPerPixel
+     RowsPerStrip
+     StripByteCounts
+     XResolution
+     YResolution
+     PlanarConfiguration
+     ResolutionUnit
+     TransferFunction
+     Software
+     DateTime
+     Artist
+     WhitePoint
+     PrimaryChromaticities
+     TransferRange
+     JPEGProc
+     JPEGInterchangeFormat
+     JPEGInterchangeFormatLength
+     YCbCrCoefficients
+     YCbCrSubSampling
+     YCbCrPositioning
+     ReferenceBlackWhite
+     CFARepeatPatternDim
+     CFAPattern
+     BatteryLevel
+     Copyright
+     ExposureTime
+     FNumber
+     IPTC/NAA
+     ExifOffset
+     InterColorProfile
+     ExposureProgram
+     SpectralSensitivity
+     GPSInfo
+     ISOSpeedRatings
+     OECF
+     ExifVersion
+     DateTimeOriginal
+     DateTimeDigitized
+     ComponentsConfiguration
+     CompressedBitsPerPixel
+     ShutterSpeedValue
+     ApertureValue
+     BrightnessValue
+     ExposureBiasValue
+     MaxApertureValue
+     SubjectDistance
+     MeteringMode
+     LightSource
+     Flash
+     FocalLength
+     MakerNote
+     UserComment
+     SubSecTime
+     SubSecTimeOriginal
+     SubSecTimeDigitized
+     FlashPixVersion
+     ColorSpace
+     ExifImageWidth
+     ExifImageLength
+     InteroperabilityOffset
+     FlashEnergy
+     SpatialFrequencyResponse
+     FocalPlaneXResolution
+     FocalPlaneYResolution
+     FocalPlaneResolutionUnit
+     SubjectLocation
+     ExposureIndex
+     SensingMethod
+     FileSource
+     SceneType
+
+Surround the format specification with quotation marks to prevent your shell
+from misinterpreting any spaces and square brackets.
 .TP
 .B "-frame \fI<width>x<height>+<outer bevel width>+<inner bevel width>"\fP
 \fRsurround the image with an ornamental border
@@ -2509,32 +2583,10 @@ minimum intensity.
 
 Use this option to assign a specific title to the image. This is assigned
 to the image window and is typically displayed in the window title bar.
-Optionally you can include the image filename, type, width, height, or
-other image attribute by embedding special format characters:
-
-     %b   file size
-     %c   comment
-     %d   directory
-     %e   filename extension
-     %f   filename
-     %h   height
-     %i   input filename
-     %k   number of unique colors
-     %l   label
-     %m   magick
-     %n   number of scenes
-     %o   output filename
-     %p   page number
-     %q   quantum depth
-     %s   scene number
-     %t   top of filename
-     %u   unique temporary filename
-     %w   width
-     %x   x resolution
-     %y   y resolution
-     %#   signature
-     \\n   newline
-     \\r   carriage return
+Optionally you can include the image filename, type, width, height,
+Exif data, or
+other image attribute by embedding special format characters described
+under the \fB-format\fP option.
 
 For example,
 

@@ -927,35 +927,11 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>annotate an image with a comment</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use this option to assign a specific comment to the image. You can include the
+Use this option to assign a specific comment to the image, when writing
+to an image format that supports comments. You can include the
 image filename, type, width, height, or other image attribute by embedding
-special format characters:
+special format characters listed under the <strong>-format</strong> option.
 </font></td></tr></table>
-<pre>
-     %b   file size
-     %c   comment
-     %d   directory
-     %e   filename extension
-     %f   filename
-     %h   height
-     %i   input filename
-     %k   number of unique colors
-     %l   label
-     %m   magick
-     %n   number of scenes
-     %o   output filename
-     %p   page number
-     %q   quantum depth
-     %s   scene number
-     %t   top of filename
-     %u   unique temporary filename
-     %w   width
-     %x   x resolution
-     %y   y resolution
-     %#   signature
-     \n   newline
-     \r   carriage return
-</pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example,
 </font></td></tr></table>
@@ -1766,7 +1742,8 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use this option to print information about the image in a format of your
 choosing.  You can include the image filename, type, width, height,
-or other image attributes by embedding special format characters:</font></td></tr></table>
+Exif data, or other image attributes by embedding special format
+characters:</font></td></tr></table>
 <pre>
      %b   file size
      %c   comment
@@ -1803,6 +1780,104 @@ titled <strong>bird.miff</strong> and whose width is 512 and height is 480.</fon
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 If the first character of <em>string</em> is <strong>@</strong>, the format
 is read from a file titled by the remaining characters in the string.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+You can also use the following special formatting syntax to print Exif
+information contained in the file:</font></td></tr></table>
+<pre>
+     %[EXIF:&lt;tag&gt;]
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Where "&lt;tag&gt;" can be one of the following:</font></td></tr></table>
+<pre>
+     *  (print all Exif tags, in keyword=data format)
+     !  (print all Exif tags, in tag_number data format)
+     #hhhh (print data for Exif tag #hhhh)
+     ImageWidth
+     ImageLength
+     BitsPerSample
+     Compression
+     PhotometricInterpretation
+     FillOrder
+     DocumentName
+     ImageDescription
+     Make
+     Model
+     StripOffsets
+     Orientation
+     SamplesPerPixel
+     RowsPerStrip
+     StripByteCounts
+     XResolution
+     YResolution
+     PlanarConfiguration
+     ResolutionUnit
+     TransferFunction
+     Software
+     DateTime
+     Artist
+     WhitePoint
+     PrimaryChromaticities
+     TransferRange
+     JPEGProc
+     JPEGInterchangeFormat
+     JPEGInterchangeFormatLength
+     YCbCrCoefficients
+     YCbCrSubSampling
+     YCbCrPositioning
+     ReferenceBlackWhite
+     CFARepeatPatternDim
+     CFAPattern
+     BatteryLevel
+     Copyright
+     ExposureTime
+     FNumber
+     IPTC/NAA
+     ExifOffset
+     InterColorProfile
+     ExposureProgram
+     SpectralSensitivity
+     GPSInfo
+     ISOSpeedRatings
+     OECF
+     ExifVersion
+     DateTimeOriginal
+     DateTimeDigitized
+     ComponentsConfiguration
+     CompressedBitsPerPixel
+     ShutterSpeedValue
+     ApertureValue
+     BrightnessValue
+     ExposureBiasValue
+     MaxApertureValue
+     SubjectDistance
+     MeteringMode
+     LightSource
+     Flash
+     FocalLength
+     MakerNote
+     UserComment
+     SubSecTime
+     SubSecTimeOriginal
+     SubSecTimeDigitized
+     FlashPixVersion
+     ColorSpace
+     ExifImageWidth
+     ExifImageLength
+     InteroperabilityOffset
+     FlashEnergy
+     SpatialFrequencyResponse
+     FocalPlaneXResolution
+     FocalPlaneYResolution
+     FocalPlaneResolutionUnit
+     SubjectLocation
+     ExposureIndex
+     SensingMethod
+     FileSource
+     SceneType
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Surround the format specification with quotation marks to prevent your shell
+from misinterpreting any spaces and square brackets.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -3616,33 +3691,10 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use this option to assign a specific title to the image. This is assigned
 to the image window and is typically displayed in the window title bar.
-Optionally you can include the image filename, type, width, height, or
-other image attribute by embedding special format characters:</font></td></tr></table>
-<pre>
-     %b   file size
-     %c   comment
-     %d   directory
-     %e   filename extension
-     %f   filename
-     %h   height
-     %i   input filename
-     %k   number of unique colors
-     %l   label
-     %m   magick
-     %n   number of scenes
-     %o   output filename
-     %p   page number
-     %q   quantum depth
-     %s   scene number
-     %t   top of filename
-     %u   unique temporary filename
-     %w   width
-     %x   x resolution
-     %y   y resolution
-     %#   signature
-     \n   newline
-     \r   carriage return
-</pre>
+Optionally you can include the image filename, type, width, height,
+Exif data, or
+other image attribute by embedding special format characters described
+under the <strong>-format</strong> option.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example,
 </font></td></tr></table>
