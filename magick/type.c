@@ -379,6 +379,11 @@ static unsigned int ReadConfigurationFile(const char *basename,
       case 'F':
       case 'f':
       {
+        if (LocaleCompare((char *) keyword,"familyname") == 0)
+          {
+            type_list->family=AllocateString(token);
+            break;
+          }
         if (LocaleCompare((char *) keyword,"format") == 0)
           {
             type_list->format=AllocateString(token);
