@@ -660,7 +660,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
     for (y=0; y < (long) next->rows; y++)
     {
       p=AcquireImagePixels(next,0,y,next->columns,1,exception);
-      if (p == (PixelPacket *) NULL)
+      if (p == (const PixelPacket *) NULL)
         break;
       for (x=0; x < (long) next->columns; x++)
       {
