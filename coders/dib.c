@@ -424,7 +424,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   (void) memset(&dib_info,0,sizeof(DIBInfo));
   dib_info.size=ReadBlobLSBLong(image);
-  if(dib_info.size!=40)
+  if (dib_info.size!=40)
     ThrowReaderException(CorruptImageWarning,"Not a DIB image",image);
   /*
     Microsoft Windows DIB image file.
