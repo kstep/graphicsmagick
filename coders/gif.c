@@ -770,18 +770,12 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   flag=ReadBlobByte(image);
   background=ReadBlobByte(image);
   c=ReadBlobByte(image);  /* reserved */
+  global_colors=1 << ((flag & 0x07)+1);
+  global_colormap=(unsigned char *) AcquireMemory(3*Max(global_colors,256));
+  if (global_colormap == (unsigned char *) NULL)
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   if (BitSet(flag,0x80))
-    {
-      /*
-        Global colormap.
-      */
-      global_colors=1 << ((flag & 0x07)+1);
-      global_colormap=(unsigned char *) AcquireMemory(3*global_colors);
-      if (global_colormap == (unsigned char *) NULL)
-        ThrowReaderException(ResourceLimitWarning,
-          "Unable to read image colormap file",image);
-      (void) ReadBlob(image,3*global_colors,(char *) global_colormap);
-    }
+    (void) ReadBlob(image,3*global_colors,(char *) global_colormap);
   delay=0;
   dispose=0;
   iterations=1;
@@ -906,7 +900,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->depth=8;
     flag=ReadBlobByte(image);
     image->interlace=BitSet(flag,0x40) ? PlaneInterlace : NoInterlace;
-    image->colors=BitSet(flag,0x80) ? global_colors : 1 << ((flag & 0x07)+1);
+    image->colors=!BitSet(flag,0x80) ? global_colors : 1 << ((flag & 0x07)+1);
     if (opacity >= (int) image->colors)
       image->colors=opacity+1;
     image->page.width=page.width;
@@ -928,7 +922,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (!AllocateImageColormap(image,image->colors))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
-    if (BitSet(flag,0x80))
+    if (!BitSet(flag,0x80))
       {
         /*
           Use global colormap.

@@ -1,6 +1,3 @@
-2001-09-13  Cristy  <cristy@mystic.es.dupont.com>
-	* GIF global colormap was used but not allocated.
-
 2001-09-12  Cristy  <cristy@mystic.es.dupont.com>
 	* Text drawing now handles UTF8-encoding.
 	* Off-by-one GetImagePixels() fix in draw.c
