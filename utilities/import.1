@@ -262,9 +262,14 @@ By default, the width and height are maximum values. That is, the image
 is expanded or contracted to fit the width and height value while maintaining
 the aspect ratio of the image. \fIAppend an exclamation point to the geometry
 to force the image size to exactly the size you specify\fP. For example,
-if you specify \fB640x480!\fP the image width is set to 640 pixels and
-height to 480. If only one factor is specified, both the width and height
-assume the value.
+if you specify 640x480! the image width is set to 640 pixels and
+height to 480.
+
+
+If only the width is specified, the width assumes the
+value and the height is chosen to maintain the aspect ratio of the image.
+Similarly, if only the height is specified (e.g., -geometry x256),
+the width is chosen to maintain the aspect ratio. 
 
 
 To specify a percentage width or height instead, append %. The image size
@@ -274,19 +279,18 @@ dimensions. To increase the size of an image, use a value greater than
 100.
 
 
-Use \fB@\fP to specify the maximum area in pixels of an image.
+Use @ to specify the maximum area in pixels of an image.
 
 
-Use \fB>\fP to change the dimensions of the image \fIonly\fP if
-its size exceeds the geometry specification. \fB<\fP resizes the image
+Use > to change the dimensions of the image \fIonly\fP if
+its size exceeds the geometry specification. < resizes the image
 \fIonly\fP
 if its dimensions is less than the geometry specification. For example,
-if you specify \fB'640x480>'\fP and the image size is 512x512, the image
+if you specify '640x480>' and the image size is 512x512, the image
 size does not change. However, if the image is 1024x1024, it is resized
-to 640x480.
-
-
-There are 72 pixels per inch in PostScript coordinates.
+to 640x480.  Enclose the geometry specification in quotation marks to
+prevent the > or > from being interpreted by your shell
+as a file redirection.
 
 .TP
 .B "-help"
