@@ -11,7 +11,9 @@
  * enough) in order for the test to pass.
  * */
 
+#if !defined(_VISUALC_)
 #include <config.h>
+#endif
 #include <sys/types.h>
 #include <stdio.h>
 #if defined(_VISUALC_)
