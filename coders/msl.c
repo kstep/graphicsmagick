@@ -1633,7 +1633,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               if (LocaleCompare(keyword, "fill") == 0)
               {
                 (void) QueryColorDatabase(value,
-                  &msl_info->image[n]->border_color,&exception);
+                  &msl_info->image[n]->matte_color,&exception);
                 break;
               }
               ThrowException(msl_info->exception,OptionError,
