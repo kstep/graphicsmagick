@@ -774,11 +774,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             layer_info[i].image->matte=True;
 
         /* set up some hidden attributes for folks that need them */
-		sprintf( s, "%ld", layer_info[i].page.x );
+		sprintf( (char *) s, "%ld", layer_info[i].page.x );
 		(void) SetImageAttribute(layer_info[i].image,"[layer-xpos]",s);
-		sprintf( s, "%ld", layer_info[i].page.y );
+		sprintf( (char *) s, "%ld", layer_info[i].page.y );
 		(void) SetImageAttribute(layer_info[i].image,"[layer-ypos]",s);
-		sprintf( s, "%d", layer_info[i].opacity );
+		sprintf( (char *) s, "%d", layer_info[i].opacity );
 		(void) SetImageAttribute(layer_info[i].image,"[layer-opacity]",s);
 		(void) SetImageAttribute(layer_info[i].image,"[layer-name]",layer_info[i].name);
       }

@@ -124,7 +124,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   if (image->columns == 0)
     ThrowReaderException(OptionWarning,"Must specify image size",image);
   if (*image_info->filename != '@')
-    caption=GetString(image_info->filename);
+    caption=AllocateString(image_info->filename);
   else
     {
       unsigned long
@@ -161,7 +161,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     Format caption.
   */
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  draw_info->text=GetString(caption);
+  draw_info->text=AllocateString(caption);
   p=caption;
   q=draw_info->text;
   for (i=0; *p != '\0'; p++)
@@ -186,7 +186,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   */
   (void) strcpy(draw_info->text,caption);
   FormatString(geometry,"+%g+%g",metrics.max_advance/4,metrics.ascent);
-  draw_info->geometry=GetString(geometry);
+  draw_info->geometry=AllocateString(geometry);
   (void) AnnotateImage(image,draw_info);
   DestroyDrawInfo(draw_info);
   LiberateMemory((void **) &caption);

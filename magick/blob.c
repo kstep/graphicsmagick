@@ -783,7 +783,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   /*
     Read image from disk as blob.
   */
-  blob=FileToBlob(image->filename,length,exception);
+  blob=(unsigned char *) FileToBlob(image->filename,length,exception);
   (void) remove(image->filename);
   (void) strncpy(image->filename,filename,MaxTextExtent-1);
   if (blob == (unsigned char ) NULL)
