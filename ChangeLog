@@ -2,6 +2,7 @@
   * Updated to Automake 1.7.1.
 
 2002-10-18  Cristy  <cristy@mystic.es.dupont.com>
+  * PingBlob() improperly set the length memory of BlobInfo to zero.
   * Fixed Ping() memory leak in PerlMagick.
   * Fixed -map problem in convert/mogrify utilities.
   * Fixed -remote problem with display utility (returns correct error

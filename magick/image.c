@@ -3945,11 +3945,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       {
         if (LocaleCompare("map",option+1) == 0)
           {
-            if (*option == '+')
-              continue;
             /*
               Transform image colors to match this set of colors.
             */
+            if (*option == '+')
+              continue;
             (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
             map_image=ReadImage(clone_info,&(*image)->exception);
             continue;
