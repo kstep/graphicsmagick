@@ -224,7 +224,7 @@ check_PROGRAMS = \
 	readWriteImages
 
 
-LDADD = ../lib/libMagick++.la ../../magick/libMagick.la
+LDADD = ../lib/libMagick++.la
 
 appendImages_SOURCES = appendImages.cpp
 attributes_SOURCES = attributes.cpp
@@ -254,60 +254,52 @@ check_PROGRAMS = appendImages$(EXEEXT) attributes$(EXEEXT) \
 am_appendImages_OBJECTS = appendImages.$(OBJEXT)
 appendImages_OBJECTS = $(am_appendImages_OBJECTS)
 appendImages_LDADD = $(LDADD)
-appendImages_DEPENDENCIES = ../lib/libMagick++.la \
-	../../magick/libMagick.la
+appendImages_DEPENDENCIES = ../lib/libMagick++.la
 appendImages_LDFLAGS =
 am_attributes_OBJECTS = attributes.$(OBJEXT)
 attributes_OBJECTS = $(am_attributes_OBJECTS)
 attributes_LDADD = $(LDADD)
-attributes_DEPENDENCIES = ../lib/libMagick++.la \
-	../../magick/libMagick.la
+attributes_DEPENDENCIES = ../lib/libMagick++.la
 attributes_LDFLAGS =
 am_averageImages_OBJECTS = averageImages.$(OBJEXT)
 averageImages_OBJECTS = $(am_averageImages_OBJECTS)
 averageImages_LDADD = $(LDADD)
-averageImages_DEPENDENCIES = ../lib/libMagick++.la \
-	../../magick/libMagick.la
+averageImages_DEPENDENCIES = ../lib/libMagick++.la
 averageImages_LDFLAGS =
 am_coalesceImages_OBJECTS = coalesceImages.$(OBJEXT)
 coalesceImages_OBJECTS = $(am_coalesceImages_OBJECTS)
 coalesceImages_LDADD = $(LDADD)
-coalesceImages_DEPENDENCIES = ../lib/libMagick++.la \
-	../../magick/libMagick.la
+coalesceImages_DEPENDENCIES = ../lib/libMagick++.la
 coalesceImages_LDFLAGS =
 am_coderInfo_OBJECTS = coderInfo.$(OBJEXT)
 coderInfo_OBJECTS = $(am_coderInfo_OBJECTS)
 coderInfo_LDADD = $(LDADD)
-coderInfo_DEPENDENCIES = ../lib/libMagick++.la ../../magick/libMagick.la
+coderInfo_DEPENDENCIES = ../lib/libMagick++.la
 coderInfo_LDFLAGS =
 am_color_OBJECTS = color.$(OBJEXT)
 color_OBJECTS = $(am_color_OBJECTS)
 color_LDADD = $(LDADD)
-color_DEPENDENCIES = ../lib/libMagick++.la ../../magick/libMagick.la
+color_DEPENDENCIES = ../lib/libMagick++.la
 color_LDFLAGS =
 am_montageImages_OBJECTS = montageImages.$(OBJEXT)
 montageImages_OBJECTS = $(am_montageImages_OBJECTS)
 montageImages_LDADD = $(LDADD)
-montageImages_DEPENDENCIES = ../lib/libMagick++.la \
-	../../magick/libMagick.la
+montageImages_DEPENDENCIES = ../lib/libMagick++.la
 montageImages_LDFLAGS =
 am_morphImages_OBJECTS = morphImages.$(OBJEXT)
 morphImages_OBJECTS = $(am_morphImages_OBJECTS)
 morphImages_LDADD = $(LDADD)
-morphImages_DEPENDENCIES = ../lib/libMagick++.la \
-	../../magick/libMagick.la
+morphImages_DEPENDENCIES = ../lib/libMagick++.la
 morphImages_LDFLAGS =
 am_readWriteBlob_OBJECTS = readWriteBlob.$(OBJEXT)
 readWriteBlob_OBJECTS = $(am_readWriteBlob_OBJECTS)
 readWriteBlob_LDADD = $(LDADD)
-readWriteBlob_DEPENDENCIES = ../lib/libMagick++.la \
-	../../magick/libMagick.la
+readWriteBlob_DEPENDENCIES = ../lib/libMagick++.la
 readWriteBlob_LDFLAGS =
 am_readWriteImages_OBJECTS = readWriteImages.$(OBJEXT)
 readWriteImages_OBJECTS = $(am_readWriteImages_OBJECTS)
 readWriteImages_LDADD = $(LDADD)
-readWriteImages_DEPENDENCIES = ../lib/libMagick++.la \
-	../../magick/libMagick.la
+readWriteImages_DEPENDENCIES = ../lib/libMagick++.la
 readWriteImages_LDFLAGS =
 
 DEFS = @DEFS@

@@ -16,23 +16,6 @@ using namespace std;
 
 using namespace Magick;
 
-#if defined(EXPLICIT_TEMPLATE_INSTANTIATION)
-template class std::list <Magick::Image>;
-
-template void Magick::appendImages<std::list<Magick::Image>::iterator >
-  (Magick::Image*, std::list<Magick::Image>::iterator, std::list<Magick::Image>::iterator, bool);
-
-template void Magick::insertImages<std::list<Magick::Image> > (std::list<Magick::Image>*, MagickLib::Image*, Options &);
-
-// template void Magick::LinkImages<std::list<Magick::Image>::iterator >
-//   (std::list<Magick::Image>::iterator, std::list<Magick::Image>::iterator);
-
-template void Magick::readImages<std::list<Magick::Image> > (std::list<Magick::Image>*, const std::string &);
-
-// template void Magick::unlinkImages<std::list<Magick::Image>::iterator >
-//   (std::list<Magick::Image>::iterator, std::list<Magick::Image>::iterator);
-#endif
-
 int main( int /*argc*/, char ** argv)
 {
 

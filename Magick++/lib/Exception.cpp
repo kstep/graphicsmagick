@@ -22,8 +22,24 @@ Magick::Exception::Exception( const std::string& what_ )
 {
 }
 
+// Copy constructor
+Magick::Exception::Exception( const Magick::Exception& original_ )
+  : _what(original_._what)
+{
+}
+
+// Assignment operator
+Magick::Exception& Magick::Exception::operator= (const Magick::Exception& original_ )
+{
+  if(this != &original_)
+    {
+      this->_what = original_._what;
+    }
+  return *this;
+}
+
 // Return message string
-const char* Magick::Exception::what( ) const throw()
+/*virtual*/ const char* Magick::Exception::what( ) const throw()
 {
   return _what.c_str();
 }

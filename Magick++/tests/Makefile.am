@@ -22,7 +22,7 @@ check_PROGRAMS =  \
 	readWriteBlob \
 	readWriteImages
 
-LDADD = ../lib/libMagick++.la ../../magick/libMagick.la
+LDADD = ../lib/libMagick++.la
 
 appendImages_SOURCES	= appendImages.cpp
 attributes_SOURCES	= attributes.cpp
