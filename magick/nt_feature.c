@@ -425,6 +425,102 @@ MagickExport TypeInfo* NTGetTypeList( void )
 
   return type_list;
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I m a g e T o H B i t m a p                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ImageToHBITMAP creates a Windows HBITMAP from an IM Image
+%
+%  The format of the ImageToHBITMAP method is:
+%
+%      HBITMAP ImageToHBITMAP(Image* image)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image to convert.
+%
+%
+*/
+MagickExport void *ImageToHBITMAP(Image* image)
+{
+  unsigned long 
+    nPixels;
 
+  long
+    memSize;
+
+  const PixelPacket
+    *pPixels;
+
+  BITMAP
+    bitmap;
+
+  HBITMAP
+    bitmapH;
+
+  HANDLE
+    theBitsH;
+
+  nPixels = image->columns * image->rows;
+
+  bitmap.bmType         = 0;
+  bitmap.bmWidth        = image->columns;
+  bitmap.bmHeight       = image->rows;
+  bitmap.bmWidthBytes   = bitmap.bmWidth * 4;
+  bitmap.bmPlanes       = 1;
+  bitmap.bmBitsPixel    = 32;
+  bitmap.bmBits         = NULL;
+
+  memSize = nPixels * bitmap.bmBitsPixel;
+  theBitsH = (HANDLE) GlobalAlloc (GMEM_MOVEABLE | GMEM_DDESHARE, memSize);
+  if (theBitsH == NULL)
+    return( NULL ); 
+  else {
+    RGBQUAD * theBits = (RGBQUAD *) GlobalLock((HGLOBAL) theBitsH);
+    RGBQUAD *pDestPixel = theBits;
+    if ( bitmap.bmBits == NULL )
+      bitmap.bmBits = theBits;
+
+    pPixels = AcquireImagePixels(image,0,0,image->columns,image->rows,&image->exception);
+
+#if QuantumDepth == 8
+
+    /* Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8 */
+    memcpy((void*)pDestPixel,(const void*)pPixels,sizeof(PixelPacket)*nPixels);
+
+#else	/* 16 or 32 bit Quantum */
+    {
+      unsigned long nPixelCount;
+
+      /* Transfer pixels, scaling to Quantum */
+      for( nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
+        {
+          pDestPixel->rgbRed = ScaleQuantumToChar(pPixels->red);
+          pDestPixel->rgbGreen = ScaleQuantumToChar(pPixels->green);
+          pDestPixel->rgbBlue = ScaleQuantumToChar(pPixels->blue);
+          pDestPixel->rgbReserved = 0;
+          ++pDestPixel;
+          ++pPixels;
+        }
+    }
+
+#endif
+
+    bitmap.bmBits = theBits;
+    bitmapH = CreateBitmapIndirect( &bitmap );
+
+    GlobalUnlock((HGLOBAL) theBitsH);
+
+    return (void *)bitmapH;
+  }
+}
 
 #endif
