@@ -13,6 +13,7 @@ void OpenStaticModules(void)
   RegisterCUTImage();
   RegisterDCMImage();
   RegisterDIBImage();
+  RegisterDPSImage();
   RegisterDPXImage();
   RegisterEPTImage();
   RegisterFAXImage();
@@ -64,6 +65,7 @@ void OpenStaticModules(void)
   RegisterRLAImage();
   RegisterRLEImage();
   RegisterSCTImage();
+  RegisterSFWImage();
   RegisterSGIImage();
   RegisterSTEGANOImage();
   RegisterSUNImage();
