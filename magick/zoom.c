@@ -1404,13 +1404,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   next_row=True;
   y_span=1.0;
   y_scale=(double) scale_image->rows/image->rows;
-  for (x=0; x < (long) image->columns; x++)
-  {
-    y_vector[x].red=0;
-    y_vector[x].green=0;
-    y_vector[x].blue=0;
-    y_vector[x].opacity=0;
-  }
+	memset(y_vector,0,image->columns*sizeof(ScalePacket));
   i=0;
   for (y=0; y < (long) scale_image->rows; y++)
   {
