@@ -3,6 +3,30 @@ belong in README.txt. Usually ImageMagick compiles fine according to the
 procedures described in README.txt, but sometimes a platform related
 oddity causes a failure.
 
+SGI Irix
+=========
+
+  Problem
+
+    How to successfully configure ImageMagick using SGI' commercial
+    compiler (e.g. IRIX C/C++ v7.3.1.X)?
+
+  Indications
+
+    None
+
+  Solution
+
+    Configure like
+
+      CC=cc CFLAGS="-O2 -OPT:Olimit=0" CXX=CC \
+      CXXFLAGS="-LANG:std -Wl,-woff,84 -O2" CXXCPP="CC -LANG:std -E" \
+      ./configure --with-modules --with-threads ...
+
+    with the following in /etc/compiler.defaults
+
+      -DEFAULT:abi=n32:isa=mips3
+
 Linux 6.1
 =========
 
