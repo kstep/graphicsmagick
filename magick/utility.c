@@ -1174,7 +1174,6 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
       */
       q=p;
       bounds.width=(unsigned long) floor(strtol(p,&q,10)+0.5);
-      bounds.height=bounds.width;
       if (p != q)
         flags|=WidthValue;
       if ((*q == 'x') || (*q == 'X'))
@@ -1182,6 +1181,7 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
       else
         {
           bounds.width=(unsigned long) floor(strtod(p,&p)+0.5);
+          bounds.height=bounds.width;
           flags|=HeightValue;
         }
     }
