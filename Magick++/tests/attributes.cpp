@@ -611,6 +611,7 @@ int main( int /*argc*/, char ** argv)
     //
     {
       // Since this is not a montage image, simply verify error report
+      cout << "Checking for working exceptions (may crash) ... ";
       bool caughtException = false;
       try
 	{
@@ -623,9 +624,13 @@ int main( int /*argc*/, char ** argv)
       if ( caughtException != true )
 	{
 	  ++failures;
-	  cout << "Line: " << __LINE__
-               << ", failed to report missing image directory";
+          cout << "failed to catch exception!" << endl;
 	}
+      else
+        {
+          cout << "exceptions are working!" << endl;
+        }
+
     }
 
     //
