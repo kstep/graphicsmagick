@@ -614,7 +614,7 @@ MagickExport Image *MontageImages(const Image *images,
       tile_image->columns=width;
       tile_image->rows=height;
       tile_image->gravity=image->gravity;
-      FormatString(tile_geometry,"%dx%d+0+0",image->columns,image->rows);
+      FormatString(tile_geometry,"%lux%lu+0+0",image->columns,image->rows);
       flags=GetImageGeometry(tile_image,tile_geometry,False,&geometry);
       x=geometry.x+border_width;
       y=geometry.y+border_width;
@@ -641,8 +641,6 @@ MagickExport Image *MontageImages(const Image *images,
               DestroyImage(image);
               image=frame_image;
             }
-          x=0;
-          y=0;
         }
       if (LocaleCompare(image->magick,"NULL") != 0)
         {

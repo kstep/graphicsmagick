@@ -1420,8 +1420,6 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
       */
       crop_image=(Image *) NULL;
       flags=GetImageGeometry(transform_image,crop_geometry,False,&geometry);
-printf("%ldx%ld%+ld%+ld\n",geometry.width,geometry.height,
-	geometry.x,geometry.y);
       if ((geometry.width == 0) || (geometry.height == 0) ||
           ((flags & XValue) != 0) || ((flags & YValue) != 0) ||
           (flags & PercentValue))
