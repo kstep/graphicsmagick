@@ -848,8 +848,12 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
   FreeMemory((void **) &scanline);
   return(True);
 }
-#if !defined(HasTIFF)
 
+#if defined(HasTIFF)
+#if defined(HAVE_TIFFCONF_H)
+#include "tiffconf.h"
+#endif
+#include "tiffio.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -878,6 +882,114 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
 %    o image: The address of a structure of type Image.
 %
 */
+Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
+{
+  char
+    filename[MaxTextExtent];
+
+  Image
+    *huffman_image;
+
+  ImageInfo
+    *clone_info;
+
+  int
+    count;
+
+  register int
+    i,
+    j;
+
+  TIFF
+    *tiff;
+
+  uint16
+    fillorder;
+
+  unsigned char
+    *buffer;
+
+  unsigned int
+    *byte_count,
+    status,
+    strip_size;
+
+  /*
+    Write image as CCITTFax4 TIFF image to a temporary file.
+  */
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image != (Image *) NULL);
+  huffman_image=CloneImage(image,image->columns,image->rows,True,
+    &image->exception);
+  if (huffman_image == (Image *) NULL)
+    return(False);
+  if (!IsMonochromeImage(huffman_image))
+    {
+      QuantizeInfo
+        quantize_info;
+
+      /*
+        Convert image to monochrome.
+      */
+      GetQuantizeInfo(&quantize_info);
+      quantize_info.number_colors=2;
+      quantize_info.dither=image_info->dither;
+      quantize_info.colorspace=GRAYColorspace;
+      (void) QuantizeImage(&quantize_info,huffman_image);
+    }
+  TemporaryFilename(filename);
+  (void) strcpy(huffman_image->filename,filename);
+  (void) strcpy(huffman_image->magick,"TIFF");
+  clone_info=CloneImageInfo(image_info);
+  clone_info->compression=Group4Compression;
+  status=WriteImage(clone_info,huffman_image);
+  DestroyImageInfo(clone_info);
+  DestroyImage(huffman_image);
+  if (status == False)
+    return(False);
+  tiff=TIFFOpen(filename,ReadBinaryType);
+  if (tiff == (TIFF *) NULL)
+    {
+      (void) remove(filename);
+      ThrowBinaryException(FileOpenWarning,"Unable to open file",
+        image_info->filename);
+    }
+  /*
+    Allocate raw strip buffer.
+  */
+  TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
+  strip_size=byte_count[0];
+  for (i=1; i < (int) TIFFNumberOfStrips(tiff); i++)
+    if (byte_count[i] > strip_size)
+      strip_size=byte_count[i];
+  buffer=(unsigned char *) AllocateMemory(strip_size);
+  if (buffer == (unsigned char *) NULL)
+    {
+      TIFFClose(tiff);
+      (void) remove(filename);
+      ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+        (char *) NULL);
+    }
+  /*
+    Compress runlength encoded to 2D Huffman pixels.
+  */
+  TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
+  for (i=0; i < (int) TIFFNumberOfStrips(tiff); i++)
+  {
+    Ascii85Initialize();
+    count=TIFFReadRawStrip(tiff,i,buffer,byte_count[i]);
+    if (fillorder == FILLORDER_LSB2MSB)
+      TIFFReverseBits(buffer,count);
+    for (j=0; j < count; j++)
+      Ascii85Encode(image,(unsigned int) buffer[j]);
+    Ascii85Flush(image);
+  }
+  FreeMemory((void **) &buffer);
+  TIFFClose(tiff);
+  (void) remove(filename);
+  return(True);
+}
+#else
 Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 {
   assert(image != (Image *) NULL);
