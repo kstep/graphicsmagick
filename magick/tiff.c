@@ -56,6 +56,9 @@
 #include "defines.h"
 
 #if defined(HasTIFF)
+#if defined(HAVE_TIFFCONF_H)
+#include "tiffconf.h"
+#endif
 #include "tiffio.h"
 
 /*
@@ -134,7 +137,7 @@ Export unsigned int IsTIFF(const unsigned char *magick,
 extern "C" {
 #endif
 
-#if defined(ICCPROFILE)
+#if defined(ICC_SUPPORT)
 static unsigned int ReadColorProfile(char *text,long int length,Image *image)
 {
   register unsigned char
@@ -162,7 +165,7 @@ static unsigned int ReadColorProfile(char *text,long int length,Image *image)
 }
 #endif
 
-#if defined(TIFFTAG_RICHTIFFIPTC)
+#if defined(IPTC_SUPPORT)
 static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
   int type)
 {
@@ -422,14 +425,14 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
       }
     length=0;
     text=(char *) NULL;
-#if defined(ICCPROFILE)
+#if defined(ICC_SUPPORT)
     TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&text);
     ReadColorProfile(text,length,image);
 #endif
-#if defined(TIFFTAG_RICHTIFFIPTC)
+#if defined(IPTC_SUPPORT)
     length=0;
     text=(char *) NULL;
-#if defined(TIFFTAG_PHOTOSHOP)
+#if defined(PHOTOSHOP_SUPPORT)
     TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&text);
     if (length > 0)
       ReadNewsProfile(text,length,image,TIFFTAG_PHOTOSHOP);
@@ -912,7 +915,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
 %
 */
 
-#if defined(TIFFTAG_RICHTIFFIPTC)
+#if defined(IPTC_SUPPORT)
 static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 {
   register int
@@ -1343,13 +1346,13 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         chromaticity[1]=image->chromaticity.white_point.y;
         TIFFSetField(tiff,TIFFTAG_WHITEPOINT,chromaticity);
       }
-#if defined(ICCPROFILE)
+#if defined(ICC_SUPPORT)
     if (image->color_profile.length > 0)
       TIFFSetField(tiff,TIFFTAG_ICCPROFILE,(uint32) image->color_profile.length,
         (void *) image->color_profile.info);
 #endif
-#if defined(TIFFTAG_RICHTIFFIPTC)
-#if defined(TIFFTAG_PHOTOSHOP)
+#if defined(IPTC_SUPPORT)
+#if defined(PHOTOSHOP_SUPPORT)
     if (image->iptc_profile.length > 0)
       WriteNewsProfile(tiff,TIFFTAG_PHOTOSHOP,image);
 #else
