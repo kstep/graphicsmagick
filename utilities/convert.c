@@ -376,7 +376,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
         *flatten_image;
 
       /*
-        Flatten an image sequence - IF we have a sequence!
+        Flatten an image sequence.
       */
       flatten_image=FlattenImages(*image,&(*image)->exception);
       if (flatten_image != (Image *) NULL)
