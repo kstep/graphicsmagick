@@ -1843,6 +1843,9 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
               graphic_context[n]->stretch=ExtraCondensedStretch;
             if (LocaleCompare(token,"extra-expanded") == 0)
               graphic_context[n]->stretch=ExtraExpandedStretch;
+            if (LocaleCompare(token,"narrower") == 0)
+              if (graphic_context[n]->stretch != UltraCondensedStretch)
+                graphic_context[n]->stretch-=1;
             if (LocaleCompare(token,"normal") == 0)
               graphic_context[n]->stretch=NormalStretch;
             if (LocaleCompare(token,"semi-condensed") == 0)
@@ -1853,6 +1856,9 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
               graphic_context[n]->stretch=UltraCondensedStretch;
             if (LocaleCompare(token,"ultra-expanded") == 0)
               graphic_context[n]->stretch=UltraExpandedStretch;
+            if (LocaleCompare(token,"wider") == 0)
+              if (graphic_context[n]->stretch != UltraExpandedStretch)
+                graphic_context[n]->stretch+=1;
             break;
           }
         if (LocaleCompare("font-style",keyword) == 0)
@@ -1873,9 +1879,11 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             if (LocaleCompare(token,"bold") == 0)
               graphic_context[n]->weight=700;
             if (LocaleCompare(token,"bolder") == 0)
-              graphic_context[n]->weight+=100;
+              if (graphic_context[n]->weight <= 800)
+                graphic_context[n]->weight+=100;
             if (LocaleCompare(token,"lighter") == 0)
-              graphic_context[n]->weight-=100;
+              if (graphic_context[n]->weight >= 100)
+                graphic_context[n]->weight-=100;
             if (LocaleCompare(token,"normal") == 0)
               graphic_context[n]->weight=400;
             break;
