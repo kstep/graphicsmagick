@@ -1771,7 +1771,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
             *green++=ScaleQuantumToChar(p->green);
             *blue++=ScaleQuantumToChar(p->blue);
             if (image->matte)
-              *opacity++=MaxRGB-ScaleQuantumToChar(p->opacity);
+              *opacity++=255-ScaleQuantumToChar(p->opacity);
             p++;
           }
           count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);

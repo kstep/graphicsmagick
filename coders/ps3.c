@@ -603,7 +603,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=MaxRGB-ScaleQuantumToChar(p->opacity);
+            *q++=255-ScaleQuantumToChar(p->opacity);
             *q++=ScaleQuantumToChar(p->red);
             *q++=ScaleQuantumToChar(p->green);
             *q++=ScaleQuantumToChar(p->blue);
@@ -649,7 +649,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            Ascii85Encode(image,MaxRGB-ScaleQuantumToChar(p->opacity));
+            Ascii85Encode(image,255-ScaleQuantumToChar(p->opacity));
             Ascii85Encode(image,ScaleQuantumToChar(p->red));
             Ascii85Encode(image,ScaleQuantumToChar(p->green));
             Ascii85Encode(image,ScaleQuantumToChar(p->blue));

@@ -1064,7 +1064,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             *(q+number_pixels)=ScaleQuantumToChar(p->green);
             *(q+number_pixels*2)=ScaleQuantumToChar(p->blue);
             if (image->matte)
-              *(q+number_pixels*3)=MaxRGB-ScaleQuantumToChar(p->opacity);
+              *(q+number_pixels*3)=255-ScaleQuantumToChar(p->opacity);
             p++;
             q++;
           }

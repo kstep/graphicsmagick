@@ -1445,10 +1445,10 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             /*
               Convert DirectClass packets to contiguous CMYK scanlines.
             */
-            *q++=(JSAMPLE) (MaxRGB-ScaleQuantumToChar(p->red));
-            *q++=(JSAMPLE) (MaxRGB-ScaleQuantumToChar(p->green));
-            *q++=(JSAMPLE) (MaxRGB-ScaleQuantumToChar(p->blue));
-            *q++=(JSAMPLE) (MaxRGB-ScaleQuantumToChar(p->opacity));
+            *q++=(JSAMPLE) (255-ScaleQuantumToChar(p->red));
+            *q++=(JSAMPLE) (255-ScaleQuantumToChar(p->green));
+            *q++=(JSAMPLE) (255-ScaleQuantumToChar(p->blue));
+            *q++=(JSAMPLE) (255-ScaleQuantumToChar(p->opacity));
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);

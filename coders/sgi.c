@@ -835,7 +835,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         *q++=ScaleQuantumToChar(p->red);
         *q++=ScaleQuantumToChar(p->green);
         *q++=ScaleQuantumToChar(p->blue);
-        *q++=MaxRGB-ScaleQuantumToChar(p->opacity);
+        *q++=255-ScaleQuantumToChar(p->opacity);
         p++;
       }
       if (image->previous == (Image *) NULL)
