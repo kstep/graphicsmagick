@@ -1,8 +1,8 @@
 2002-11-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * coders/wmf.c: Set white background of embedded bitmaps to
-    transparent if the image background is a texture image,
-    not-white, or non-opaque.  This improves the output when
-    the WMF is rendered on a non-default background.
+  * coders/wmf.c: Set white background of embedded bitmaps to transparent
+    if the image background is a texture image, not-white, or non-opaque.
+    This improves the output when the WMF is rendered on a non-default
+    background.
 
 2002-11-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Updated Windows CVS to FreeType 2.1.2.
