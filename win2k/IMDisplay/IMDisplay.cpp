@@ -113,18 +113,25 @@ BOOL CIMDisplayApp::InitInstance()
 	ParseCommandLine(cmdInfo);
 
 	// BOGUS: find a way to generalize this!
-        MagickLib::InitializeMagick("C:\\ImageMagickStudio\\ImageMagick\\VisualMagick\\bin\\" /*__targv[0]*/);
+	char	exePath[2048];
+	DWORD	pathSize = GetModuleFileName( NULL, exePath, 2048 );
+	exePath[ pathSize ] = 0;
+	char*	ps = (char*)(exePath + pathSize - 1);
+	while ( *ps != '\\' )	{ *ps = 0; ps--; }	// shrink it!
+    MagickLib::InitializeMagick( exePath );
 
-#if 1
+	// we do this to init the coder list, but will use it
+	// more seriously in the future when we actually build up
+	// the list of support modules dynamically!
 	try {
 	    std::list<CoderInfo> coderList;
-	    coderInfoList( &coderList, TrueMatch, AnyMatch, AnyMatch);
+		coderInfoList( &coderList, CoderInfo::TrueMatch, CoderInfo::AnyMatch, CoderInfo::AnyMatch);
 	    int numCoders = coderList.size();
 	}
 	catch(Exception e) {
 	    e.what();
 	};
-#endif
+
 	// Dispatch commands specified on the command line
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
