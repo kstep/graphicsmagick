@@ -1,3 +1,8 @@
+2004-08-05  Glenn Randers-Pehrson <glennrp@glennrp.com>
+
+	* coders/png.c: Fixes for CERT security alert TA04-217A described
+	at "http://www.us-cert.gov/cas/techalerts/TA04-217A.html".
+
 2004-08-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.h (Image): Changed type of 'colors' and 'depth'

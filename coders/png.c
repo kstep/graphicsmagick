@@ -1371,6 +1371,8 @@ static void PNGWarningHandler(png_struct *ping,png_const_charp message)
   Image
     *image;
 
+  if (LocaleCompare(message, "Missing PLTE before tRNS") == 0)
+    png_error(ping, message);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  libpng-%.1024s warning: %.1024s", PNG_LIBPNG_VER_STRING,
       message);
@@ -1605,6 +1607,20 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     length,
     row_offset;
 
+#if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
+  png_byte unused_chunks[]=
+       {
+        104,  73,  83,  84, '\0',   /* hIST */
+        105,  84,  88, 116, '\0',   /* iTXt */
+        112,  67,  65,  76, '\0',   /* pCAL */
+        115,  67,  65,  76, '\0',   /* sCAL */
+        115,  80,  76,  84, '\0',   /* sPLT */
+        116,  69,  88, 116, '\0',   /* tEXt */
+        116,  73,  77,  69, '\0',   /* tIME */
+        122,  84,  88, 116, '\0',   /* zTXt */
+        };
+#endif
+
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
       "  enter ReadOnePNGImage()");
 
@@ -1689,6 +1705,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     }
   else
     png_set_read_fn(ping,image,png_get_data);
+
+#if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
+  /* Ignore unused chunks */
+  png_set_keep_unknown_chunks(ping, 0, unused_chunks,
+     (int)sizeof(unused_chunks)/5);
+#endif
 
 #if defined(PNG_USE_PNGGCCRD) && defined(PNG_ASSEMBLER_CODE_SUPPORTED) \
 && (PNG_LIBPNG_VER >= 10200)
@@ -2643,6 +2665,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               "Cloning image for object buffer failed",image->filename);
           png_get_IHDR(ping,ping_info,&width,&height,&bit_depth,&color_type,
             &interlace_method,&compression_method,&filter_method);
+          if (width > 250000L || height > 250000L)
+             png_error(ping,"PNG Image dimensions are too large.");
           mng_info->ob[object_id]->width=width;
           mng_info->ob[object_id]->height=height;
           mng_info->ob[object_id]->color_type=color_type;

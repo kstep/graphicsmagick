@@ -194,7 +194,7 @@ static void AllocateLogInfo( void )
       if (log_info == (LogInfo *) NULL)
         MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                           UnableToAllocateLogInfo);
-      memset((void *) log_info,0,sizeof(LogInfo));
+      (void) memset((void *) log_info,0,sizeof(LogInfo));
       log_info->path=AcquireString("(default)");
       log_info->filename=AcquireString("Magick-%d.log");
       log_info->generations=3;

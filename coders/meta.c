@@ -1932,7 +1932,7 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, long len)
     str=MagickAllocateMemory(unsigned char *,(unsigned int) (taglen+1));
     if (str == (unsigned char *) NULL)
       {
-        printf("MemoryAllocationFailed");
+        (void) printf("MemoryAllocationFailed");
         return 0;
       }
     for (tagindx=0; tagindx<taglen; tagindx++)
