@@ -51,7 +51,7 @@ int main ( int argc, char **argv )
   const char
     *key;
 
-  const static KeyValMap
+  static const KeyValMap
     KeyVal[] =
     {
       { "0", "number 0" },

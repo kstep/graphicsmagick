@@ -1,3 +1,7 @@
+2004-02-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/xpm.c (UnregisterXPMImage): Unregister PICON registration.
+
 2004-02-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/Makefile.am (label_la_LDFLAGS): Add a dependency on the
