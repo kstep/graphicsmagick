@@ -2628,7 +2628,7 @@ Magick::PixelPacket* Magick::Image::getPixels ( int x_, int y_,
 						unsigned int rows_ )
 {
   modifyImage();
-  Magick::PixelPacket* p = GetImagePixels( image(),
+  Magick::PixelPacket* p = (*GetImagePixels)( image(),
                                            x_, y_,
                                            columns_, rows_ );
   throwImageException();
@@ -2643,7 +2643,7 @@ Magick::PixelPacket* Magick::Image::setPixels ( int x_, int y_,
 						unsigned int rows_ )
 {
   modifyImage();
-  Magick::PixelPacket* p = SetImagePixels( image(),
+  Magick::PixelPacket* p = (*SetImagePixels)( image(),
                                            x_, y_,
                                            columns_, rows_ );
   throwImageException();
@@ -2653,7 +2653,7 @@ Magick::PixelPacket* Magick::Image::setPixels ( int x_, int y_,
 // Transfers the image cache pixels to the image.
 void Magick::Image::syncPixels ( void )
 {
-  SyncImagePixels( image() );
+  (*SyncImagePixels)( image() );
   throwImageException();
 }
 
