@@ -2632,17 +2632,13 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   SAXHandler=(&SAXModules);
   svg_info.parser=xmlCreatePushParserCtxt(SAXHandler,&svg_info,(char *) NULL,0,
     image->filename);
-  while (ReadBlobString(image,message) != (char *) NULL)
+  while ((n=ReadBlob(image,MaxTextExtent,message)) != 0)
   {
-    n=(long) strlen(message);
-    if (n == 0)
-      continue;
     status=xmlParseChunk(svg_info.parser,message,(int) n,False);
     if (status != 0)
       break;
-    (void) xmlParseChunk(svg_info.parser," ",1,False);
   }
-  (void) xmlParseChunk(svg_info.parser," ",1,True);
+  (void) xmlParseChunk(svg_info.parser,message,0,True);
   xmlFreeParserCtxt(svg_info.parser);
   LogMagickEvent(CoderEvent,"end SAX");
   xmlCleanupParser();
