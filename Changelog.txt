@@ -1,3 +1,6 @@
+2001-10-01  Cristy  <cristy@mystic.es.dupont.com>
+	* Added blob test to the PerlMagick test suite.
+
 2001-09-30  Cristy  <cristy@mystic.es.dupont.com>
 	* switched strcpy to strncpy to help protect against buffer
 	  overflow.
