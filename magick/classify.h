@@ -459,6 +459,26 @@ typedef enum
 
 typedef enum
 {
+  NormalStretch,
+  UltraCondensedStretch,
+	ExtraCondensedStretch,
+	CondensedStretch,
+	SemiCondensedStretch,
+	SemiExpandedStretch,
+	ExpandedStretch,
+	ExtraExpandedStretch,
+	UltraExpandedStretch
+} StretchType;
+
+typedef enum
+{
+  NormalStyle,
+  ItalicStyle,
+  ObliqueStyle
+} StyleType;
+
+typedef enum
+{
   ControlState = 0x0001,
   InactiveWidgetState = 0x0004,
   JumpListState = 0x0008,

@@ -221,12 +221,6 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     clone_info->font=AllocateString(draw_info->font);
   if (draw_info->family != (char *) NULL)
     clone_info->family=AllocateString(draw_info->family);
-  if (draw_info->style != (char *) NULL)
-    clone_info->style=AllocateString(draw_info->style);
-  if (draw_info->stretch != (char *) NULL)
-    clone_info->stretch=AllocateString(draw_info->stretch);
-  if (draw_info->weight != (char *) NULL)
-    clone_info->weight=AllocateString(draw_info->weight);
   if (draw_info->encoding != (char *) NULL)
     clone_info->encoding=AllocateString(draw_info->encoding);
   if (draw_info->density != (char *) NULL)
@@ -983,12 +977,6 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     LiberateMemory((void **) &draw_info->font);
   if (draw_info->family != (char *) NULL)
     LiberateMemory((void **) &draw_info->family);
-  if (draw_info->style != (char *) NULL)
-    LiberateMemory((void **) &draw_info->style);
-  if (draw_info->stretch != (char *) NULL)
-    LiberateMemory((void **) &draw_info->stretch);
-  if (draw_info->weight != (char *) NULL)
-    LiberateMemory((void **) &draw_info->weight);
   if (draw_info->encoding != (char *) NULL)
     LiberateMemory((void **) &draw_info->encoding);
   if (draw_info->density != (char *) NULL)
@@ -1847,19 +1835,49 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         if (LocaleCompare("font-stretch",keyword) == 0)
           {
             GetToken(q,&q,token);
-            (void) CloneString(&graphic_context[n]->stretch,token);
+            if (LocaleCompare(token,"condensed") == 0)
+              graphic_context[n]->stretch=CondensedStretch;
+            if (LocaleCompare(token,"expanded") == 0)
+              graphic_context[n]->stretch=ExpandedStretch;
+            if (LocaleCompare(token,"extra-condensed") == 0)
+              graphic_context[n]->stretch=ExtraCondensedStretch;
+            if (LocaleCompare(token,"extra-expanded") == 0)
+              graphic_context[n]->stretch=ExtraExpandedStretch;
+            if (LocaleCompare(token,"normal") == 0)
+              graphic_context[n]->stretch=NormalStretch;
+            if (LocaleCompare(token,"semi-condensed") == 0)
+              graphic_context[n]->stretch=SemiCondensedStretch;
+            if (LocaleCompare(token,"semi-expanded") == 0)
+              graphic_context[n]->stretch=SemiExpandedStretch;
+            if (LocaleCompare(token,"ultra-condensed") == 0)
+              graphic_context[n]->stretch=UltraCondensedStretch;
+            if (LocaleCompare(token,"ultra-expanded") == 0)
+              graphic_context[n]->stretch=UltraExpandedStretch;
             break;
           }
         if (LocaleCompare("font-style",keyword) == 0)
           {
             GetToken(q,&q,token);
-            (void) CloneString(&graphic_context[n]->style,token);
+            if (LocaleCompare(token,"italic") == 0)
+              graphic_context[n]->style=ItalicStyle;
+            if (LocaleCompare(token,"normal") == 0)
+              graphic_context[n]->style=NormalStyle;
+            if (LocaleCompare(token,"oblique") == 0)
+              graphic_context[n]->style=ObliqueStyle;
             break;
           }
         if (LocaleCompare("font-weight",keyword) == 0)
           {
             GetToken(q,&q,token);
-            (void) CloneString(&graphic_context[n]->weight,token);
+            graphic_context[n]->weight=atol(token);
+            if (LocaleCompare(token,"bold") == 0)
+              graphic_context[n]->weight=700;
+            if (LocaleCompare(token,"bolder") == 0)
+              graphic_context[n]->weight+=100;
+            if (LocaleCompare(token,"lighter") == 0)
+              graphic_context[n]->weight-=100;
+            if (LocaleCompare(token,"normal") == 0)
+              graphic_context[n]->weight=400;
             break;
           }
         status=False;

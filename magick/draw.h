@@ -74,17 +74,23 @@ typedef struct _DrawInfo
   double
     stroke_width;
 
-  char
-    *font,
-    *family,
-    *style,
-    *stretch,
-    *weight,
-    *encoding,
-    *density;
-
   double
     pointsize;
+
+  char
+    *density,
+    *encoding,
+    *font,
+    *family;
+
+  StyleType
+    style;
+
+  StretchType
+    stretch;
+
+  unsigned long
+    weight;
 
   PixelPacket
     box,
@@ -121,17 +127,23 @@ typedef struct _TypeInfo
     *filename,
     *foundry,
     *name,
-    *family,
     *alias,
     *description,
     *format,
-    *style,
-    *weight,
-    *stretch,
     *glyphs,
     *metrics,
     *version,
-    *encoding;
+    *encoding,
+    *family;
+
+  StyleType
+    style;
+
+  StretchType
+    stretch;
+
+  unsigned long
+    weight;
 
   unsigned int
     stealth;
@@ -187,8 +199,8 @@ typedef struct _TypeMetric
 */
 extern MagickExport const TypeInfo
   *GetTypeInfo(const char *,ExceptionInfo *),
-  *GetTypeInfoByFamily(const char *,const char *,const char *,const char *,
-	  ExceptionInfo *);
+  *GetTypeInfoByFamily(const char *,const StyleType,const StretchType,
+    const unsigned long,ExceptionInfo *);
 
 extern MagickExport DrawInfo
   *CloneDrawInfo(const ImageInfo *,const DrawInfo *);

@@ -128,8 +128,6 @@ MagickExport void DestroyTypeInfo(void)
       LiberateMemory((void **) &type_info->description);
     if (type_info->format != (char *) NULL)
       LiberateMemory((void **) &type_info->format);
-    if (type_info->weight != (char *) NULL)
-      LiberateMemory((void **) &type_info->weight);
     if (type_info->metrics != (char *) NULL)
       LiberateMemory((void **) &type_info->metrics);
     if (type_info->glyphs != (char *) NULL)
@@ -209,8 +207,8 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
 %  The format of the GetTypeInfoByFamily method is:
 %
 %      const TypeInfo *GetTypeInfoByFamily(const char *family,
-%        const char *style,const char *stretch,const char *weight,
-%        ExceptionInfo *exception)
+%        const StyleType style,const StretchType stretch,
+%        const unsigned long weight,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -230,7 +228,7 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
 %
 */
 MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
-  const char *style,const char *stretch,const char *weight,
+  const StyleType style,const StretchType stretch,const unsigned long weight,
   ExceptionInfo *exception)
 {
   register const TypeInfo
@@ -252,65 +250,12 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
     else
       if (LocaleCompare(p->family,family) != 0)
         continue;
-    if (p->style == (char *) NULL)
-      {
-        if (style != (char *) NULL)
-          if (LocaleCompare(style,"normal") != 0)
-            continue;
-      }
-    else
-      {
-        if (style == (char *) NULL)
-          {
-            if (LocaleCompare(p->style,"normal") != 0)
-              continue;
-          }
-        else
-          if (LocaleCompare(p->style,style) != 0)
-            continue;
-      }
-    if (p->stretch == (char *) NULL)
-      {
-        if (stretch != (char *) NULL)
-          if (LocaleCompare(stretch,"normal") != 0)
-            continue;
-      }
-    else
-      {
-        if (stretch == (char *) NULL)
-          {
-            if (LocaleCompare(p->stretch,"normal") != 0)
-              continue;
-          }
-        else
-          if (LocaleCompare(p->stretch,stretch) != 0)
-            continue;
-      }
-    if (p->weight == (char *) NULL)
-      {
-        if (weight != (char *) NULL)
-          if (LocaleCompare(weight,"400") != 0)
-            continue;
-      }
-    else
-      {
-        if (weight == (char *) NULL)
-          {
-            if (LocaleCompare(p->weight,"400") != 0)
-              continue;
-          }
-        else
-          {
-            if ((LocaleCompare(weight,"normal") == 0) &&
-                (LocaleCompare(p->weight,"400") == 0))
-              break;
-            if ((LocaleCompare(weight,"bold") == 0) &&
-                (LocaleCompare(p->weight,"700") != 0))
-              break;
-            if (LocaleCompare(p->weight,weight) != 0)
-              continue;
-          }
-      }
+    if (p->style != style)
+      continue;
+    if (p->stretch != stretch)
+      continue;
+    if (p->weight != weight)
+      continue;
     break;
   }
   return(p);
@@ -595,12 +540,34 @@ static unsigned int ReadConfigurationFile(const char *basename,
           }
         if (LocaleCompare((char *) keyword,"stretch") == 0)
           {
-            type_list->stretch=AllocateString(token);
+            if (LocaleCompare(token,"condensed") == 0)
+              type_list->stretch=CondensedStretch;
+            if (LocaleCompare(token,"expanded") == 0)
+              type_list->stretch=ExpandedStretch;
+            if (LocaleCompare(token,"extra-condensed") == 0)
+              type_list->stretch=ExtraCondensedStretch;
+            if (LocaleCompare(token,"extra-expanded") == 0)
+              type_list->stretch=ExtraExpandedStretch;
+            if (LocaleCompare(token,"normal") == 0)
+              type_list->stretch=NormalStretch;
+            if (LocaleCompare(token,"semi-condensed") == 0)
+              type_list->stretch=SemiCondensedStretch;
+            if (LocaleCompare(token,"semi-expanded") == 0)
+              type_list->stretch=SemiExpandedStretch;
+            if (LocaleCompare(token,"ultra-condensed") == 0)
+              type_list->stretch=UltraCondensedStretch;
+            if (LocaleCompare(token,"ultra-expanded") == 0)
+              type_list->stretch=UltraExpandedStretch;
             break;
           }
         if (LocaleCompare((char *) keyword,"style") == 0)
           {
-            type_list->style=AllocateString(token);
+            if (LocaleCompare(token,"italic") == 0)
+              type_list->style=ItalicStyle;
+            if (LocaleCompare(token,"normal") == 0)
+              type_list->style=NormalStyle;
+            if (LocaleCompare(token,"oblique") == 0)
+              type_list->style=ObliqueStyle;
             break;
           }
         break;
@@ -620,7 +587,11 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"weight") == 0)
           {
-            type_list->weight=AllocateString(token);
+            type_list->weight=atol(token);
+            if (LocaleCompare(token,"bold") == 0)
+              type_list->weight=700;
+            if (LocaleCompare(token,"normal") == 0)
+              type_list->weight=400;
             break;
           }
         break;
