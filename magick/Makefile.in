@@ -288,7 +288,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 @WITH_MODULES_TRUE@libMagick_la_DEPENDENCIES = \
 @WITH_MODULES_TRUE@	$(top_builddir)/ltdl/libltdlc.la
 @WITH_MODULES_FALSE@libMagick_la_DEPENDENCIES = ../coders/libCoders.la
-am__objects_2 = memory.lo blob.lo cache.lo error.lo monitor.lo \
+am__objects_1 = memory.lo blob.lo cache.lo error.lo monitor.lo \
 	constitute.lo image.lo list.lo color.lo quantize.lo segment.lo \
 	zoom.lo transform.lo shear.lo enhance.lo effect.lo decorate.lo \
 	annotate.lo type.lo draw.lo render.lo montage.lo semaphore.lo \
@@ -296,8 +296,8 @@ am__objects_2 = memory.lo blob.lo cache.lo error.lo monitor.lo \
 	magic.lo magick.lo delegate.lo module.lo static.lo timer.lo \
 	utility.lo cache_view.lo stream.lo animate.lo display.lo \
 	widget.lo xwindow.lo PreRvIcccm.lo
-@WITH_MODULES_TRUE@am_libMagick_la_OBJECTS = $(am__objects_2)
-@WITH_MODULES_FALSE@am_libMagick_la_OBJECTS = $(am__objects_2)
+@WITH_MODULES_TRUE@am_libMagick_la_OBJECTS = $(am__objects_1)
+@WITH_MODULES_FALSE@am_libMagick_la_OBJECTS = $(am__objects_1)
 libMagick_la_OBJECTS = $(am_libMagick_la_OBJECTS)
 SCRIPTS = $(bin_SCRIPTS)
 
@@ -314,20 +314,21 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/color.Plo ./$(DEPDIR)/compress.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/constitute.Plo ./$(DEPDIR)/decorate.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/delegate.Plo ./$(DEPDIR)/display.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/draw.Plo ./$(DEPDIR)/render.Plo ./$(DEPDIR)/effect.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/draw.Plo ./$(DEPDIR)/effect.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/enhance.Plo ./$(DEPDIR)/error.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/gem.Plo ./$(DEPDIR)/image.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/list.Plo ./$(DEPDIR)/magic.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/magick.Plo ./$(DEPDIR)/memory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/module.Plo ./$(DEPDIR)/monitor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/montage.Plo ./$(DEPDIR)/quantize.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/registry.Plo ./$(DEPDIR)/segment.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/semaphore.Plo ./$(DEPDIR)/shear.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/signature.Plo ./$(DEPDIR)/static.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/stream.Plo ./$(DEPDIR)/timer.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/transform.Plo ./$(DEPDIR)/type.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/utility.Plo ./$(DEPDIR)/widget.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/xwindow.Plo ./$(DEPDIR)/zoom.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/registry.Plo ./$(DEPDIR)/render.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/segment.Plo ./$(DEPDIR)/semaphore.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/shear.Plo ./$(DEPDIR)/signature.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/static.Plo ./$(DEPDIR)/stream.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/timer.Plo ./$(DEPDIR)/transform.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/type.Plo ./$(DEPDIR)/utility.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/widget.Plo ./$(DEPDIR)/xwindow.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/zoom.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -452,7 +453,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/delegate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/display.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/draw.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/render.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effect.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enhance.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/error.Plo@am__quote@
@@ -467,6 +467,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/montage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quantize.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/registry.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/render.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/segment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/semaphore.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shear.Plo@am__quote@
