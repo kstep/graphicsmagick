@@ -1535,7 +1535,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
   /*
     Allocate primitive info memory.
   */
-  image->storage_class=DirectClass;
   graphic_context=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
   if (graphic_context == (DrawInfo **) NULL)
     {
@@ -3450,6 +3449,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       DrawInfo
         *clone_info;
 
+      image->storage_class=DirectClass;
       if (draw_info->debug)
         PrintPrimitiveInfo(primitive_info);
       scale=ExpandAffine(&draw_info->affine);
