@@ -756,14 +756,14 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
 #define ResizeImageText  "  Resize image...  "
 
   double
-    blue,
     center,
     density,
-    green,
-    opacity,
-    red,
     scale,
     support;
+
+  DoublePixelPacket
+    pixel,
+    zero;
 
   long
     j,
@@ -803,6 +803,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
+  memset(&zero,0,sizeof(DoublePixelPacket));
   for (x=0; x < (long) destination->columns; x++)
   {
     center=(double) (x+0.5)/x_factor;
@@ -834,18 +835,15 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     indexes=GetIndexes(destination);
     for (y=0; y < (long) destination->rows; y++)
     {
-      blue=0.0;
-      green=0.0;
-      red=0.0;
-      opacity=0.0;
+      pixel=zero;
       for (i=0; i < n; i++)
       {
         j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
           (contribution[i].pixel-contribution[0].pixel);
-        red+=contribution[i].weight*(p+j)->red;
-        green+=contribution[i].weight*(p+j)->green;
-        blue+=contribution[i].weight*(p+j)->blue;
-        opacity+=contribution[i].weight*(p+j)->opacity;
+        pixel.red+=contribution[i].weight*(p+j)->red;
+        pixel.green+=contribution[i].weight*(p+j)->green;
+        pixel.blue+=contribution[i].weight*(p+j)->blue;
+        pixel.opacity+=contribution[i].weight*(p+j)->opacity;
       }
       if ((indexes != (IndexPacket *) NULL) &&
           (source_indexes != (IndexPacket *) NULL))
@@ -855,12 +853,14 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
             (contribution[i-start].pixel-contribution[0].pixel);
           indexes[y]=source_indexes[j];
         }
-      q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-      q->green=(Quantum)
-        ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-      q->blue=(Quantum) ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-      q->opacity=(Quantum)
-        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+      q->red=(Quantum) ((pixel.red < 0) ? 0 :
+        (pixel.red > MaxRGB) ? MaxRGB : pixel.red+0.5);
+      q->green=(Quantum) ((pixel.green < 0) ? 0 :
+        (pixel.green > MaxRGB) ? MaxRGB : pixel.green+0.5);
+      q->blue=(Quantum) ((pixel.blue < 0) ? 0 :
+        (pixel.blue > MaxRGB) ? MaxRGB : pixel.blue+0.5);
+      q->opacity=(Quantum) ((pixel.opacity < 0) ? 0 :
+        (pixel.opacity > MaxRGB) ? MaxRGB : pixel.opacity+0.5);
       q++;
     }
     if (!SyncImagePixels(destination))
@@ -879,14 +879,14 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
   ExceptionInfo *exception)
 {
   double
-    blue,
     center,
     density,
-    green,
-    opacity,
-    red,
     scale,
     support;
+
+  DoublePixelPacket
+    pixel,
+    zero;
 
   long
     j,
@@ -926,6 +926,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
+  memset(&zero,0,sizeof(DoublePixelPacket));
   for (y=0; y < (long) destination->rows; y++)
   {
     center=(double) (y+0.5)/y_factor;
@@ -957,18 +958,15 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     indexes=GetIndexes(destination);
     for (x=0; x < (long) destination->columns; x++)
     {
-      blue=0.0;
-      green=0.0;
-      red=0.0;
-      opacity=0.0;
+      pixel=zero;
       for (i=0; i < n; i++)
       {
         j=(long) ((contribution[i].pixel-contribution[0].pixel)*
           source->columns+x);
-        red+=contribution[i].weight*(p+j)->red;
-        green+=contribution[i].weight*(p+j)->green;
-        blue+=contribution[i].weight*(p+j)->blue;
-        opacity+=contribution[i].weight*(p+j)->opacity;
+        pixel.red+=contribution[i].weight*(p+j)->red;
+        pixel.green+=contribution[i].weight*(p+j)->green;
+        pixel.blue+=contribution[i].weight*(p+j)->blue;
+        pixel.opacity+=contribution[i].weight*(p+j)->opacity;
       }
       if ((indexes != (IndexPacket *) NULL) &&
           (source_indexes != (IndexPacket *) NULL))
@@ -978,12 +976,14 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
             source->columns+x);
           indexes[x]=source_indexes[j];
         }
-      q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-      q->green=(Quantum)
-        ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-      q->blue=(Quantum) ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-      q->opacity=(Quantum)
-        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+      q->red=(Quantum) ((pixel.red < 0) ? 0 :
+        (pixel.red > MaxRGB) ? MaxRGB : pixel.red+0.5);
+      q->green=(Quantum) ((pixel.green < 0) ? 0 :
+        (pixel.green > MaxRGB) ? MaxRGB : pixel.green+0.5);
+      q->blue=(Quantum) ((pixel.blue < 0) ? 0 :
+        (pixel.blue > MaxRGB) ? MaxRGB : pixel.blue+0.5);
+      q->opacity=(Quantum) ((pixel.opacity < 0) ? 0 :
+        (pixel.opacity > MaxRGB) ? MaxRGB : pixel.opacity+0.5);
       q++;
     }
     if (!SyncImagePixels(destination))
@@ -1313,24 +1313,19 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
 {
 #define ScaleImageText  "  Scale image...  "
 
-  typedef struct ScalePacket
-  {
-    double
-      red,
-      green,
-      blue,
-      opacity;
-  } ScalePacket;
-
   double
-    blue,
-    green,
-    opacity,
-    red,
     x_scale,
     x_span,
     y_scale,
     y_span;
+
+  DoublePixelPacket
+    pixel,
+    *scale_scanline,
+    *scanline,
+    *x_vector,
+    *y_vector,
+    zero;
 
   Image
     *scale_image;
@@ -1349,15 +1344,9 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   register PixelPacket
     *q;
 
-  register ScalePacket
+  register DoublePixelPacket
     *s,
     *t;
-
-  ScalePacket
-    *scale_scanline,
-    *scanline,
-    *x_vector,
-    *y_vector;
 
   unsigned int
     next_column,
@@ -1379,17 +1368,20 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   /*
     Allocate memory.
   */
-  x_vector=(ScalePacket *) AcquireMemory(image->columns*sizeof(ScalePacket));
+  x_vector=(DoublePixelPacket *)
+    AcquireMemory(image->columns*sizeof(DoublePixelPacket));
   scanline=x_vector;
   if (image->rows != scale_image->rows)
-    scanline=(ScalePacket *)
-      AcquireMemory(image->columns*sizeof(ScalePacket));
-  scale_scanline=(ScalePacket *)
-    AcquireMemory(scale_image->columns*sizeof(ScalePacket));
-  y_vector=(ScalePacket *) AcquireMemory(image->columns*sizeof(ScalePacket));
-  if ((scanline == (ScalePacket *) NULL) ||
-      (scale_scanline == (ScalePacket *) NULL) ||
-      (x_vector == (ScalePacket *) NULL) || (y_vector == (ScalePacket *) NULL))
+    scanline=(DoublePixelPacket *)
+      AcquireMemory(image->columns*sizeof(DoublePixelPacket));
+  scale_scanline=(DoublePixelPacket *)
+    AcquireMemory(scale_image->columns*sizeof(DoublePixelPacket));
+  y_vector=(DoublePixelPacket *)
+    AcquireMemory(image->columns*sizeof(DoublePixelPacket));
+  if ((scanline == (DoublePixelPacket *) NULL) ||
+      (scale_scanline == (DoublePixelPacket *) NULL) ||
+      (x_vector == (DoublePixelPacket *) NULL) ||
+      (y_vector == (DoublePixelPacket *) NULL))
     {
       DestroyImage(scale_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
@@ -1402,7 +1394,8 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   next_row=True;
   y_span=1.0;
   y_scale=(double) scale_image->rows/image->rows;
-  memset(y_vector,0,image->columns*sizeof(ScalePacket));
+  memset(y_vector,0,image->columns*sizeof(DoublePixelPacket));
+  memset(&zero,0,sizeof(DoublePixelPacket));
   i=0;
   for (y=0; y < (long) scale_image->rows; y++)
   {
@@ -1484,14 +1477,14 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
         s=scanline;
         for (x=0; x < (long) image->columns; x++)
         {
-          red=y_vector[x].red+y_span*x_vector[x].red;
-          green=y_vector[x].green+y_span*x_vector[x].green;
-          blue=y_vector[x].blue+y_span*x_vector[x].blue;
-          opacity=y_vector[x].opacity+y_span*x_vector[x].opacity;
-          s->red=red > MaxRGB ? MaxRGB : red+0.5;
-          s->green=green > MaxRGB ? MaxRGB : green+0.5;
-          s->blue=blue > MaxRGB ? MaxRGB : blue+0.5;
-          s->opacity=opacity > MaxRGB ? MaxRGB : opacity+0.5;
+          pixel.red=y_vector[x].red+y_span*x_vector[x].red;
+          pixel.green=y_vector[x].green+y_span*x_vector[x].green;
+          pixel.blue=y_vector[x].blue+y_span*x_vector[x].blue;
+          pixel.opacity=y_vector[x].opacity+y_span*x_vector[x].opacity;
+          s->red=pixel.red > MaxRGB ? MaxRGB : pixel.red+0.5;
+          s->green=pixel.green > MaxRGB ? MaxRGB : pixel.green+0.5;
+          s->blue=pixel.blue > MaxRGB ? MaxRGB : pixel.blue+0.5;
+          s->opacity=pixel.opacity > MaxRGB ? MaxRGB : pixel.opacity+0.5;
           s++;
           y_vector[x].red=0;
           y_vector[x].green=0;
@@ -1527,10 +1520,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
         /*
           Scale X direction.
         */
-        red=0;
-        green=0;
-        blue=0;
-        opacity=0;
+        pixel=zero;
         next_column=False;
         x_span=1.0;
         s=scanline;
@@ -1542,20 +1532,17 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
           {
             if (next_column)
               {
-                red=0;
-                green=0;
-                blue=0;
-                opacity=0;
+                pixel=zero;
                 t++;
               }
-            red+=x_span*s->red;
-            green+=x_span*s->green;
-            blue+=x_span*s->blue;
-            opacity+=x_span*s->opacity;
-            t->red=red > MaxRGB ? MaxRGB : red+0.5;
-            t->green=green > MaxRGB ? MaxRGB : green+0.5;
-            t->blue=blue > MaxRGB ? MaxRGB : blue+0.5;
-            t->opacity=opacity > MaxRGB ? MaxRGB : opacity+0.5;
+            pixel.red+=x_span*s->red;
+            pixel.green+=x_span*s->green;
+            pixel.blue+=x_span*s->blue;
+            pixel.opacity+=x_span*s->opacity;
+            t->red=pixel.red > MaxRGB ? MaxRGB : pixel.red+0.5;
+            t->green=pixel.green > MaxRGB ? MaxRGB : pixel.green+0.5;
+            t->blue=pixel.blue > MaxRGB ? MaxRGB : pixel.blue+0.5;
+            t->opacity=pixel.opacity > MaxRGB ? MaxRGB : pixel.opacity+0.5;
             x_scale-=x_span;
             x_span=1.0;
             next_column=True;
@@ -1564,17 +1551,14 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
           {
             if (next_column)
               {
-                red=0;
-                green=0;
-                blue=0;
-                opacity=0;
+                pixel=zero;
                 next_column=False;
                 t++;
               }
-            red+=x_scale*s->red;
-            green+=x_scale*s->green;
-            blue+=x_scale*s->blue;
-            opacity+=x_scale*s->opacity;
+            pixel.red+=x_scale*s->red;
+            pixel.green+=x_scale*s->green;
+            pixel.blue+=x_scale*s->blue;
+            pixel.opacity+=x_scale*s->opacity;
             x_span-=x_scale;
           }
         s++;
@@ -1582,17 +1566,17 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
       if (x_span > 0)
         {
           s--;
-          red+=x_span*s->red;
-          green+=x_span*s->green;
-          blue+=x_span*s->blue;
-          opacity+=x_span*s->opacity;
+          pixel.red+=x_span*s->red;
+          pixel.green+=x_span*s->green;
+          pixel.blue+=x_span*s->blue;
+          pixel.opacity+=x_span*s->opacity;
         }
       if (!next_column && ((t-scale_scanline) < (long) scale_image->columns))
         {
-          t->red=red > MaxRGB ? MaxRGB : red+0.5;
-          t->green=green > MaxRGB ? MaxRGB : green+0.5;
-          t->blue=blue > MaxRGB ? MaxRGB : blue+0.5;
-          t->opacity=opacity > MaxRGB ? MaxRGB : opacity+0.5;
+          t->red=pixel.red > MaxRGB ? MaxRGB : pixel.red+0.5;
+          t->green=pixel.green > MaxRGB ? MaxRGB : pixel.green+0.5;
+          t->blue=pixel.blue > MaxRGB ? MaxRGB : pixel.blue+0.5;
+          t->opacity=pixel.opacity > MaxRGB ? MaxRGB : pixel.opacity+0.5;
         }
       /*
         Transfer scanline to scaled image.
@@ -1692,12 +1676,12 @@ MagickExport Image *ThumbnailImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ZoomImage creates a new image that is a scaled size of an
-%  existing one.  It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.  The Point filter gives
-%  fast pixel replication, Triangle is equivalent to bi-linear interpolation,
-%  and Mitchel giver slower, very high-quality results.  See Graphic Gems III
-%  for details on this algorithm.
+%  ZoomImage() creates a new image that is a scaled size of an existing one.
+%  It allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.  The Point filter gives fast pixel replication,
+%  Triangle is equivalent to bi-linear interpolation, and Mitchel giver slower,
+%  very high-quality results.  See Graphic Gems III for details on this
+%  algorithm.
 %
 %  The filter member of the Image structure specifies which image filter to
 %  use. Blur specifies the blur factor where > 1 is blurry, < 1 is sharp.
