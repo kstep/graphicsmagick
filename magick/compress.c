@@ -76,15 +76,6 @@ typedef struct HuffmanTable
     length,
     count;
 } HuffmanTable;
-
-typedef struct _ScanlinePacket
-{
-  unsigned char
-    pixel;
-
-  int
-    state;
-} ScanlinePacket;
 
 /*
   Huffman coding declarations.
@@ -1161,7 +1152,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
   OutputCode(last_code);
   OutputCode(LZWEod);
   if (number_bits != 0)
-    WriteBlobByte(image,accumulator >> 24);
+    (void) WriteBlobByte(image,accumulator >> 24);
   LiberateMemory((void **) &table);
   return(True);
 }
@@ -1258,8 +1249,8 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
         i-=3;
         if ((*pixels == *(pixels+1)) && (*(pixels+1) == *(pixels+2)))
           {
-            WriteBlobByte(image,(256-3)+1);
-            WriteBlobByte(image,*pixels);
+            (void) WriteBlobByte(image,(256-3)+1);
+            (void) WriteBlobByte(image,*pixels);
             break;
           }
         (void) WriteBlobByte(image,2);
@@ -1405,7 +1396,7 @@ MagickExport unsigned int ZLIBEncodeImage(Image *image,const size_t length,
 }
 #else
 MagickExport unsigned int ZLIBEncodeImage(Image *image,const size_t length,
-  const unsigned long quality,unsigned char *pixels)
+  const unsigned int quality,unsigned char *pixels)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

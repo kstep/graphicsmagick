@@ -124,12 +124,12 @@ static void FinalizeSignature(SignatureInfo *signature_info)
   count=((low_order >> 3) & 0x3f);
   signature_info->message[count++]=0x80;
   if (count <= (SignatureSize-8))
-    (void) memset(signature_info->message+count,0,SignatureSize-8-count);
+    memset(signature_info->message+count,0,SignatureSize-8-count);
   else
     {
-      (void) memset(signature_info->message+count,0,SignatureSize-count);
+      memset(signature_info->message+count,0,SignatureSize-count);
       TransformSignature(signature_info);
-      (void) memset(signature_info->message,0,SignatureSize-8);
+      memset(signature_info->message,0,SignatureSize-8);
     }
   signature_info->message[56]=(high_order >> 24) & 0xff;
   signature_info->message[57]=(high_order >> 16) & 0xff;
@@ -178,7 +178,7 @@ static void GetSignatureInfo(SignatureInfo *signature_info)
   signature_info->low_order=0L;
   signature_info->high_order=0L;
   signature_info->offset=0;
-  (void) memset(signature_info->message,0,SignatureSize);
+  memset(signature_info->message,0,SignatureSize);
 }
 
 /*
@@ -380,13 +380,13 @@ static void UpdateSignature(SignatureInfo *signature_info,
   if (length < signature_info->low_order)
     signature_info->high_order++;
   signature_info->low_order=count;
-  signature_info->high_order+=(unsigned char) length >> 29;
+  signature_info->high_order+=(unsigned char) (length >> 29);
   if (signature_info->offset)
     {
       i=SignatureSize-signature_info->offset;
       if (i > (long) length)
         i=length;
-      (void) memcpy(signature_info->message+signature_info->offset,message,i);
+      memcpy(signature_info->message+signature_info->offset,message,i);
       length-=i;
       message+=i;
       signature_info->offset+=i;
@@ -396,12 +396,12 @@ static void UpdateSignature(SignatureInfo *signature_info,
     }
   while (length >= SignatureSize)
   {
-    (void) memcpy(signature_info->message,message,SignatureSize);
+    memcpy(signature_info->message,message,SignatureSize);
     message+=SignatureSize;
     length-=SignatureSize;
     TransformSignature(signature_info);
   }
-  (void) memcpy(signature_info->message,message,length);
+  memcpy(signature_info->message,message,length);
   signature_info->offset=length;
 }
 

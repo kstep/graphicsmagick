@@ -122,7 +122,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   if (allocate_image == (Image *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
-  (void) memset(allocate_image,0,sizeof(Image));
+  memset(allocate_image,0,sizeof(Image));
   /*
     Initialize Image structure.
   */
@@ -197,7 +197,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
         *geometry;
 
       geometry=PostscriptGeometry(image_info->page);
-      (void) ParseImageGeometry(geometry,&allocate_image->page.x,
+      ParseImageGeometry(geometry,&allocate_image->page.x,
         &allocate_image->page.y,&allocate_image->page.width,
         &allocate_image->page.height);
       LiberateMemory((void **) &geometry);
@@ -375,14 +375,14 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
   display=XOpenDisplay((char *) NULL);
   if (display == (Display *) NULL)
     return(False);
-  (void) XSetErrorHandler(XError);
+  XSetErrorHandler(XError);
   client_name=SetClientName((char *) NULL);
   resource_database=XGetResourceDatabase(display,client_name);
   XGetResourceInfo(resource_database,client_name,&resource);
   *resource.image_info=(*image_info);
   resource.immutable=True;
   (void) XAnimateImages(display,&resource,&client_name,1,image);
-  (void) XCloseDisplay(display);
+  XCloseDisplay(display);
   return(image->exception.severity == UndefinedException);
 }
 #else
@@ -496,7 +496,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
       {
         if (next->storage_class == DirectClass)
           append_image->storage_class=DirectClass;
-        (void) CompositeImage(append_image,CopyCompositeOp,next,x,0);
+        CompositeImage(append_image,CopyCompositeOp,next,x,0);
         x+=next->columns;
         MagickMonitor(AppendImageText,scene++,GetNumberScenes(image));
       }
@@ -514,7 +514,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
       {
         if (next->storage_class == DirectClass)
           append_image->storage_class=DirectClass;
-        (void) CompositeImage(append_image,CopyCompositeOp,next,0,y);
+        CompositeImage(append_image,CopyCompositeOp,next,0,y);
         y+=next->rows;
         MagickMonitor(AppendImageText,scene,GetNumberScenes(image));
         scene++;
@@ -644,7 +644,7 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
   if (sum == (SumPacket *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to average image sequence",
       "Memory allocation failed");
-  (void) memset(sum,0,number_pixels*sizeof(SumPacket));
+  memset(sum,0,number_pixels*sizeof(SumPacket));
   /*
     Initialize average next attributes.
   */
@@ -881,7 +881,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
       length=image->colors*sizeof(PixelPacket);
-      (void) memcpy(clone_image->colormap,image->colormap,length);
+      memcpy(clone_image->colormap,image->colormap,length);
     }
   clone_image->color_profile.name=AllocateString(image->color_profile.name);
   if (image->color_profile.length != 0)
@@ -894,7 +894,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
       if (clone_image->color_profile.info == (unsigned char *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
-      (void) memcpy(clone_image->color_profile.info,image->color_profile.info,length);
+      memcpy(clone_image->color_profile.info,image->color_profile.info,length);
     }
   clone_image->iptc_profile.name=AllocateString(image->iptc_profile.name);
   if (image->iptc_profile.length != 0)
@@ -907,7 +907,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
       if (clone_image->iptc_profile.info == (unsigned char *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
-      (void) memcpy(clone_image->iptc_profile.info,image->iptc_profile.info,length);
+      memcpy(clone_image->iptc_profile.info,image->iptc_profile.info,length);
     }
   if (image->generic_profiles != 0)
     {
@@ -920,7 +920,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
       length=image->generic_profiles*sizeof(ProfileInfo);
-      (void) memcpy(clone_image->generic_profile,image->generic_profile,length);
+      memcpy(clone_image->generic_profile,image->generic_profile,length);
       for (i=0; i < (long) image->generic_profiles; i++)
       {
         clone_image->generic_profile[i].name=
@@ -933,7 +933,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         if (clone_image->generic_profile[i].info == (unsigned char *) NULL)
           ThrowImageException(ResourceLimitWarning,"Unable to clone image",
             "Memory allocation failed");
-        (void) memcpy(clone_image->generic_profile[i].info,
+        memcpy(clone_image->generic_profile[i].info,
           image->generic_profile[i].info,length);
       }
     }
@@ -974,10 +974,10 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+        memcpy(q,p,image->columns*sizeof(PixelPacket));
         indexes=GetIndexes(image);
         if (indexes != (IndexPacket *) NULL)
-          (void) memcpy(GetIndexes(clone_image),indexes,
+          memcpy(GetIndexes(clone_image),indexes,
             image->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(clone_image))
           break;
@@ -1715,7 +1715,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   assert(file != (FILE *) NULL);
   elapsed_time=GetElapsedTime(&image->timer);
   user_time=GetUserTime(&image->timer);
-  (void) ContinueTimer(&image->timer);
+  ContinueTimer(&image->timer);
   if (!verbose)
     {
       /*
@@ -1785,7 +1785,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   /*
     Display verbose info about the image.
   */
-  (void) SignatureImage(image);
+  SignatureImage(image);
   (void) GetNumberColors(image,(FILE *) NULL);
   (void) fprintf(file,"Image: %.1024s\n",image->filename);
   GetExceptionInfo(&exception);
@@ -2176,7 +2176,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           }
         (void) fprintf(file," %ux%u %.1024s\n",tile->magick_columns,
           tile->magick_rows,tile->magick);
-        (void) SignatureImage(tile);
+        SignatureImage(tile);
         attribute=GetImageAttribute(tile,(char *) NULL);
         for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
         {
@@ -2486,7 +2486,7 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
     if (state & ExitState)
       break;
   }
-  (void) XCloseDisplay(display);
+  XCloseDisplay(display);
   return(image->exception.severity != UndefinedException);
 }
 #else
@@ -2703,7 +2703,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
     File and image dimension members.
   */
   assert(image_info != (ImageInfo *) NULL);
-  (void) memset(image_info,0,sizeof(ImageInfo));
+  memset(image_info,0,sizeof(ImageInfo));
   image_info->blob=CloneBlobInfo((BlobInfo *) NULL);
   image_info->adjoin=True;
   image_info->depth=QuantumDepth;
@@ -3485,8 +3485,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   channel=MatteChannel;
               }
             if ((*image)->colorspace != clone_info->colorspace)
-              RGBTransformImage(*image,clone_info->colorspace);
-            (void) ChannelImage(*image,channel);
+              (void) RGBTransformImage(*image,clone_info->colorspace);
+            ChannelImage(*image,channel);
             continue;
           }
         if (LocaleNCompare("-charcoal",option,4) == 0)
@@ -3574,7 +3574,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             option=argv[++i];
             if (LocaleCompare("cmyk",option) == 0)
               {
-                (void) RGBTransformImage(*image,CMYKColorspace);
+                RGBTransformImage(*image,CMYKColorspace);
                 quantize_info.colorspace=CMYKColorspace;
               }
             if (LocaleCompare("gray",option) == 0)
@@ -3588,7 +3588,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               quantize_info.colorspace=OHTAColorspace;
             if (LocaleCompare("rgb",option) == 0)
               {
-                (void) TransformRGBImage(*image,RGBColorspace);
+                TransformRGBImage(*image,RGBColorspace);
                 quantize_info.colorspace=RGBColorspace;
               }
             if (LocaleCompare("srgb",option) == 0)
@@ -3622,7 +3622,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleNCompare("contrast",option+1,3) == 0)
           {
-            (void) ContrastImage(*image,(unsigned int) (*option == '-'));
+            ContrastImage(*image,(unsigned int) (*option == '-'));
             continue;
           }
         if (LocaleNCompare("-crop",option,3) == 0)
@@ -3683,7 +3683,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleNCompare("-depth",option,4) == 0)
           {
-            (void) SetImageDepth(*image,atoi(argv[++i]));
+            SetImageDepth(*image,atoi(argv[++i]));
             continue;
           }
         if (LocaleNCompare("-despeckle",option,4) == 0)
@@ -3727,7 +3727,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               Draw image.
             */
             (void) CloneString(&draw_info->primitive,argv[++i]);
-            (void) DrawImage(*image,draw_info);
+            DrawImage(*image,draw_info);
             continue;
           }
         break;
@@ -3796,7 +3796,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Equalize image.
             */
-            (void) EqualizeImage(*image);
+            EqualizeImage(*image);
             continue;
           }
         break;
@@ -3936,7 +3936,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (*option == '+')
               (*image)->gamma=atof(argv[++i]);
             else
-              GammaImage(*image,argv[++i]);
+              (void) GammaImage(*image,argv[++i]);
             continue;
           }
         if (LocaleCompare("gaussian",option+1) == 0)
@@ -4130,7 +4130,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleNCompare("-modulate",option,4) == 0)
           {
-            (void) ModulateImage(*image,argv[++i]);
+            ModulateImage(*image,argv[++i]);
             continue;
           }
         if (LocaleNCompare("-monochrome",option,4) == 0)
@@ -4147,7 +4147,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       {
         if (LocaleNCompare("negate",option+1,3) == 0)
           {
-            (void) NegateImage(*image,*option == '+');
+            NegateImage(*image,*option == '+');
             continue;
           }
         if (LocaleNCompare("noise",option+1,4) == 0)
@@ -4189,7 +4189,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleNCompare("-normalize",option,4) == 0)
           {
-            (void) NormalizeImage(*image);
+            NormalizeImage(*image);
             continue;
           }
         break;
@@ -4203,7 +4203,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 
             target=GetOnePixel(*image,0,0);
             (void) QueryColorDatabase(argv[++i],&target);
-            (void) OpaqueImage(*image,target,draw_info->fill);
+            OpaqueImage(*image,target,draw_info->fill);
             continue;
           }
         break;
@@ -4281,13 +4281,13 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 /*
                   Remove a ICM, IPTC, or generic profile from the image.
                 */
-                (void) ProfileImage(*image,argv[++i],(char *) NULL);
+                ProfileImage(*image,argv[++i],(char *) NULL);
                 continue;
               }
             /*
               Add a ICM, IPTC, or generic profile to the image.
             */
-            (void) ProfileImage(*image,(char *) NULL,argv[++i]);
+            ProfileImage(*image,(char *) NULL,argv[++i]);
             continue;
           }
         break;
@@ -4310,7 +4310,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               &raise_info.width,&raise_info.height);
             if ((flags & HeightValue) == 0)
               raise_info.height=raise_info.width;
-            (void) RaiseImage(*image,&raise_info,*option == '-');
+            RaiseImage(*image,&raise_info,*option == '-');
             continue;
           }
         if (LocaleNCompare("region",option+1,3) == 0)
@@ -4323,8 +4323,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 /*
                   Composite region.
                 */
-                (void) CompositeImage(region_image,
-                  (*image)->matte ? OverCompositeOp :
+                CompositeImage(region_image,(*image)->matte ? OverCompositeOp :
                   CopyCompositeOp,*image,region_info.x,region_info.y);
                 DestroyImage(*image);
                 *image=region_image;
@@ -4657,7 +4656,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               Threshold image.
             */
             threshold=atof(argv[++i]);
-            (void) ThresholdImage(*image,threshold);
+            ThresholdImage(*image,threshold);
             continue;
           }
         if (LocaleCompare("-tile",option) == 0)
@@ -4680,7 +4679,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 
             target=GetOnePixel(*image,0,0);
             (void) QueryColorDatabase(argv[++i],&target);
-            TransparentImage(*image,target,TransparentOpacity);
+            (void) TransparentImage(*image,target,TransparentOpacity);
             continue;
           }
         if (LocaleNCompare("-treedepth",option,4) == 0)
@@ -4810,7 +4809,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         Composite transformed region onto image.
       */
       matte=region_image->matte;
-      (void) CompositeImage(region_image,
+      CompositeImage(region_image,
         (*image)->matte ? OverCompositeOp : CopyCompositeOp,*image,
         region_info.x,region_info.y);
       DestroyImage(*image);
@@ -6038,13 +6037,13 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     case ColorSeparationType:
     {
       if (image->colorspace != CMYKColorspace)
-        (void) RGBTransformImage(image,CMYKColorspace);
+        RGBTransformImage(image,CMYKColorspace);
       break;
     }
     case ColorSeparationMatteType:
     {
       if (image->colorspace != CMYKColorspace)
-        (void) RGBTransformImage(image,CMYKColorspace);
+        RGBTransformImage(image,CMYKColorspace);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
       image->matte=True;
@@ -6272,7 +6271,7 @@ MagickExport void TextureImage(Image *image,Image *texture)
   for (y=0; y < (int) image->rows; y+=texture->rows)
   {
     for (x=0; x < (int) image->columns; x+=texture->columns)
-      (void) CompositeImage(image,CopyCompositeOp,texture,x,y);
+      CompositeImage(image,CopyCompositeOp,texture,x,y);
     if (QuantumTick(y,image->rows))
       MagickMonitor(TextureImageText,y,image->rows);
   }

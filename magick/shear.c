@@ -144,10 +144,10 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         q=SetImagePixels(rotate_image,0,y,rotate_image->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+        memcpy(q,p,image->columns*sizeof(PixelPacket));
         indexes=GetIndexes(image);
         if (indexes != (IndexPacket *) NULL)
-          (void) memcpy(GetIndexes(rotate_image),indexes,
+          memcpy(GetIndexes(rotate_image),indexes,
             image->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(rotate_image))
           break;
@@ -167,10 +167,10 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         q=SetImagePixels(rotate_image,image->rows-y-1,0,1,rotate_image->rows);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+        memcpy(q,p,image->columns*sizeof(PixelPacket));
         indexes=GetIndexes(image);
         if (indexes != (IndexPacket *) NULL)
-          (void) memcpy(GetIndexes(rotate_image),indexes,
+          memcpy(GetIndexes(rotate_image),indexes,
             image->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(rotate_image))
           break;
@@ -342,7 +342,7 @@ static void XShearImage(Image *image,const double degrees,
               break;
             p+=x_offset;
             q=p-step;
-            (void) memcpy(q,p,width*sizeof(PixelPacket));
+            memcpy(q,p,width*sizeof(PixelPacket));
             /*
               Set old row to border color.
             */
@@ -602,7 +602,7 @@ static void YShearImage(Image *image,const double degrees,
               break;
             p+=y_offset;
             q=p-step;
-            (void) memcpy(q,p,height*sizeof(PixelPacket));
+            memcpy(q,p,height*sizeof(PixelPacket));
             /*
               Set old column to border color.
             */
@@ -886,7 +886,7 @@ MagickExport Image *RotateImage(Image *image,const double degrees,
   XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,
     (rotate_image->columns-y_width+1)/2,0);
   TransformImage(&rotate_image,"0x0",(char *) NULL);
-  (void) memset(&rotate_image->page,0,sizeof(RectangleInfo));
+  memset(&rotate_image->page,0,sizeof(RectangleInfo));
   return(rotate_image);
 }
 
@@ -1002,6 +1002,6 @@ MagickExport Image *ShearImage(Image *image,const double x_shear,
   YShearImage(shear_image,shear.y,y_width,image->rows,
     (shear_image->columns-y_width+1)/2,y_offset);
   TransformImage(&shear_image,"0x0",(char *) NULL);
-  (void) memset(&shear_image->page,0,sizeof(RectangleInfo));
+  memset(&shear_image->page,0,sizeof(RectangleInfo));
   return(shear_image);
 }

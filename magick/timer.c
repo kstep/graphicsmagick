@@ -210,7 +210,7 @@ MagickExport void GetTimerInfo(TimerInfo *time_info)
     Create a stopwatch and start it.
   */
   assert(time_info != (TimerInfo *) NULL);
-  (void) memset(time_info,0,sizeof(TimerInfo));
+  memset(time_info,0,sizeof(TimerInfo));
   time_info->state=UndefinedTimerState;
   time_info->signature=MagickSignature;
   StartTimer(time_info,True);
@@ -391,7 +391,7 @@ static double UserTime(void)
   struct tms
     timer;
 
-  times(&timer);
+  (void) times(&timer);
   return((double) (timer.tms_utime+timer.tms_stime)/CLK_TCK);
 #else
 #if defined(WIN32)

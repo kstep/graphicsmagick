@@ -181,8 +181,8 @@ static void XDrawBevel(Display *display,const XWindowInfo *window_info,
   points[5].x=x1-bevel_width;
   points[5].y=y1+bevel_width;
   XSetBevelColor(display,window_info,bevel_info->raised);
-  XFillPolygon(display,window_info->id,window_info->widget_context,points,6,
-    Complex,CoordModeOrigin);
+  (void) XFillPolygon(display,window_info->id,window_info->widget_context,
+    points,6,Complex,CoordModeOrigin);
   /*
     Draw lower and right beveled border.
   */
@@ -199,9 +199,9 @@ static void XDrawBevel(Display *display,const XWindowInfo *window_info,
   points[5].x=x1-bevel_width;
   points[5].y=y1+bevel_width;
   XSetBevelColor(display,window_info,(unsigned int) !bevel_info->raised);
-  XFillPolygon(display,window_info->id,window_info->widget_context,points,6,
-    Complex,CoordModeOrigin);
-  XSetFillStyle(display,window_info->widget_context,FillSolid);
+  (void) XFillPolygon(display,window_info->id,window_info->widget_context,
+    points,6,Complex,CoordModeOrigin);
+  (void) XSetFillStyle(display,window_info->widget_context,FillSolid);
 }
 
 /*
@@ -256,14 +256,14 @@ static void XDrawBeveledButton(Display *display,const XWindowInfo *window_info,
   */
   XDrawBevel(display,window_info,button_info);
   XSetMatteColor(display,window_info,button_info->raised);
-  XFillRectangle(display,window_info->id,window_info->widget_context,
+  (void) XFillRectangle(display,window_info->id,window_info->widget_context,
     button_info->x,button_info->y,button_info->width,button_info->height);
   x=button_info->x-button_info->bevel_width-1;
   y=button_info->y-button_info->bevel_width-1;
-  XSetForeground(display,window_info->widget_context,
+  (void) XSetForeground(display,window_info->widget_context,
     window_info->pixel_info->trough_color.pixel);
   if (button_info->raised || (window_info->depth == 1))
-    (void) XDrawRectangle(display,window_info->id,window_info->widget_context,x,y,
+    XDrawRectangle(display,window_info->id,window_info->widget_context,x,y,
       button_info->width+(button_info->bevel_width << 1)+1,button_info->height+
       (button_info->bevel_width << 1)+1);
   if (button_info->text == (char *) NULL)
@@ -293,14 +293,14 @@ static void XDrawBeveledButton(Display *display,const XWindowInfo *window_info,
       XSetTextColor(display,window_info,True);
       x=button_info->x+button_info->width+button_info->bevel_width+
         (QuantumMargin >> 1);
-      XDrawString(display,window_info->id,window_info->widget_context,x,y,
-        button_info->text,Extent(button_info->text));
+      (void) XDrawString(display,window_info->id,window_info->widget_context,
+        x,y,button_info->text,Extent(button_info->text));
       return;
     }
-  XSetClipRectangles(display,window_info->widget_context,0,0,&crop_info,1,
-    Unsorted);
+  (void) XSetClipRectangles(display,window_info->widget_context,0,0,&crop_info,
+    1,Unsorted);
   XSetTextColor(display,window_info,button_info->raised);
-  XDrawString(display,window_info->id,window_info->widget_context,x,y,
+  (void) XDrawString(display,window_info->id,window_info->widget_context,x,y,
     button_info->text,Extent(button_info->text));
   XSetClipMask(display,window_info->widget_context,None);
   if (!button_info->raised)
@@ -384,13 +384,14 @@ static void XDrawMatte(Display *display,const XWindowInfo *window_info,
     Draw matte.
   */
   if (!matte_info->trough || (window_info->depth == 1))
-    XFillRectangle(display,window_info->id,window_info->highlight_context,
-      matte_info->x,matte_info->y,matte_info->width,matte_info->height);
+    (void) XFillRectangle(display,window_info->id,
+      window_info->highlight_context,matte_info->x,matte_info->y,
+      matte_info->width,matte_info->height);
   else
     {
-      XSetForeground(display,window_info->widget_context,
+      (void) XSetForeground(display,window_info->widget_context,
         window_info->pixel_info->trough_color.pixel);
-      XFillRectangle(display,window_info->id,window_info->widget_context,
+      (void) XFillRectangle(display,window_info->id,window_info->widget_context,
         matte_info->x,matte_info->y,matte_info->width,matte_info->height);
     }
 }
@@ -454,7 +455,7 @@ static void XDrawMatteText(Display *display,const XWindowInfo *window_info,
     Clear the text area.
   */
   XSetMatteColor(display,window_info,False);
-  XFillRectangle(display,window_info->id,window_info->widget_context,
+  (void) XFillRectangle(display,window_info->id,window_info->widget_context,
     text_info->x,text_info->y,text_info->width,text_info->height);
   if (text_info->text == (char *) NULL)
     return;
@@ -507,24 +508,25 @@ static void XDrawMatteText(Display *display,const XWindowInfo *window_info,
   */
   if (!text_info->highlight)
     {
-      XSetClipRectangles(display,window_info->widget_context,0,0,&crop_info,1,
-        Unsorted);
-      XDrawString(display,window_info->id,window_info->widget_context,x,y,
-        text_info->marker,Extent(text_info->marker));
+      (void) XSetClipRectangles(display,window_info->widget_context,0,0,
+        &crop_info,1,Unsorted);
+      (void) XDrawString(display,window_info->id,window_info->widget_context,
+        x,y,text_info->marker,Extent(text_info->marker));
       XSetClipMask(display,window_info->widget_context,None);
     }
   else
     {
-      XSetClipRectangles(display,window_info->annotate_context,0,0,&crop_info,
-        1,Unsorted);
+      (void) XSetClipRectangles(display,window_info->annotate_context,0,0,
+        &crop_info,1,Unsorted);
       width=XTextWidth(font_info,text_info->marker,Extent(text_info->marker));
-      XFillRectangle(display,window_info->id,window_info->annotate_context,x,
-        y-font_info->ascent,width,height);
+      (void) XFillRectangle(display,window_info->id,
+        window_info->annotate_context,x,y-font_info->ascent,width,height);
       XSetClipMask(display,window_info->annotate_context,None);
-      XSetClipRectangles(display,window_info->highlight_context,0,0,&crop_info,
-        1,Unsorted);
-      XDrawString(display,window_info->id,window_info->highlight_context,x,y,
-        text_info->marker,Extent(text_info->marker));
+      (void) XSetClipRectangles(display,window_info->highlight_context,0,0,
+        &crop_info,1,Unsorted);
+      (void) XDrawString(display,window_info->id,
+        window_info->highlight_context,x,y,text_info->marker,
+        Extent(text_info->marker));
       XSetClipMask(display,window_info->highlight_context,None);
     }
   x+=XTextWidth(font_info,text_info->marker,(int)
@@ -601,8 +603,8 @@ static void XDrawTriangleEast(Display *display,const XWindowInfo *window_info,
   points[2].x=x3;
   points[2].y=y3;
   XSetMatteColor(display,window_info,triangle_info->raised);
-  XFillPolygon(display,window_info->id,window_info->widget_context,points,3,
-    Complex,CoordModeOrigin);
+  (void) XFillPolygon(display,window_info->id,window_info->widget_context,
+    points,3,Complex,CoordModeOrigin);
   /*
     Draw bottom bevel.
   */
@@ -615,8 +617,8 @@ static void XDrawTriangleEast(Display *display,const XWindowInfo *window_info,
   points[3].x=x2+bevel_width;
   points[3].y=y2;
   XSetBevelColor(display,window_info,(unsigned int) !triangle_info->raised);
-  XFillPolygon(display,window_info->id,window_info->widget_context,points,4,
-    Complex,CoordModeOrigin);
+  (void) XFillPolygon(display,window_info->id,window_info->widget_context,
+    points,4,Complex,CoordModeOrigin);
   /*
     Draw Left bevel.
   */
@@ -629,8 +631,8 @@ static void XDrawTriangleEast(Display *display,const XWindowInfo *window_info,
   points[3].x=x3-bevel_width+1;
   points[3].y=y3+bevel_width;
   XSetBevelColor(display,window_info,triangle_info->raised);
-  XFillPolygon(display,window_info->id,window_info->widget_context,points,4,
-    Complex,CoordModeOrigin);
+  (void) XFillPolygon(display,window_info->id,window_info->widget_context,
+    points,4,Complex,CoordModeOrigin);
   /*
     Draw top bevel.
   */
@@ -642,9 +644,9 @@ static void XDrawTriangleEast(Display *display,const XWindowInfo *window_info,
   points[2].y=y2;
   points[3].x=x1-bevel_width;
   points[3].y=y1-bevel_width;
-  XFillPolygon(display,window_info->id,window_info->widget_context,points,4,
-    Complex,CoordModeOrigin);
-  XSetFillStyle(display,window_info->widget_context,FillSolid);
+  (void) XFillPolygon(display,window_info->id,window_info->widget_context,
+    points,4,Complex,CoordModeOrigin);
+  (void) XSetFillStyle(display,window_info->widget_context,FillSolid);
   if (triangle_info->text == (char *) NULL)
     return;
   /*
@@ -656,7 +658,7 @@ static void XDrawTriangleEast(Display *display,const XWindowInfo *window_info,
     (QuantumMargin >> 1);
   y1=triangle_info->y+((triangle_info->height-
     (font_info->ascent+font_info->descent)) >> 1)+font_info->ascent;
-  XDrawString(display,window_info->id,window_info->widget_context,x1,y1,
+  (void) XDrawString(display,window_info->id,window_info->widget_context,x1,y1,
     triangle_info->text,Extent(triangle_info->text));
 }
 
@@ -725,8 +727,8 @@ static void XDrawTriangleNorth(Display *display,const XWindowInfo *window_info,
   points[2].x=x3;
   points[2].y=y3;
   XSetMatteColor(display,window_info,triangle_info->raised);
-  XFillPolygon(display,window_info->id,window_info->widget_context,points,3,
-    Complex,CoordModeOrigin);
+  (void) XFillPolygon(display,window_info->id,window_info->widget_context,
+    points,3,Complex,CoordModeOrigin);
   /*
     Draw left bevel.
   */
@@ -739,8 +741,8 @@ static void XDrawTriangleNorth(Display *display,const XWindowInfo *window_info,
   points[3].x=x1-bevel_width-1;
   points[3].y=y1+bevel_width;
   XSetBevelColor(display,window_info,triangle_info->raised);
-  XFillPolygon(display,window_info->id,window_info->widget_context,points,4,
-    Complex,CoordModeOrigin);
+  (void) XFillPolygon(display,window_info->id,window_info->widget_context,
+    points,4,Complex,CoordModeOrigin);
   /*
     Draw right bevel.
   */
@@ -753,8 +755,8 @@ static void XDrawTriangleNorth(Display *display,const XWindowInfo *window_info,
   points[3].x=x2;
   points[3].y=y2-bevel_width;
   XSetBevelColor(display,window_info,(unsigned int) !triangle_info->raised);
-  XFillPolygon(display,window_info->id,window_info->widget_context,points,4,
-    Complex,CoordModeOrigin);
+  (void) XFillPolygon(display,window_info->id,window_info->widget_context,
+    points,4,Complex,CoordModeOrigin);
   /*
     Draw lower bevel.
   */
@@ -766,9 +768,9 @@ static void XDrawTriangleNorth(Display *display,const XWindowInfo *window_info,
   points[2].y=y1+bevel_width;
   points[3].x=x3+bevel_width;
   points[3].y=y3+bevel_width;
-  XFillPolygon(display,window_info->id,window_info->widget_context,points,4,
-    Complex,CoordModeOrigin);
-  XSetFillStyle(display,window_info->widget_context,FillSolid);
+  (void) XFillPolygon(display,window_info->id,window_info->widget_context,
+    points,4,Complex,CoordModeOrigin);
+  (void) XSetFillStyle(display,window_info->widget_context,FillSolid);
 }
 
 /*
@@ -836,8 +838,8 @@ static void XDrawTriangleSouth(Display *display,const XWindowInfo *window_info,
   points[2].x=x3;
   points[2].y=y3;
   XSetMatteColor(display,window_info,triangle_info->raised);
-  XFillPolygon(display,window_info->id,window_info->widget_context,points,3,
-    Complex,CoordModeOrigin);
+  (void) XFillPolygon(display,window_info->id,window_info->widget_context,
+    points,3,Complex,CoordModeOrigin);
   /*
     Draw top bevel.
   */
@@ -850,8 +852,8 @@ static void XDrawTriangleSouth(Display *display,const XWindowInfo *window_info,
   points[3].x=x3+bevel_width;
   points[3].y=y3-bevel_width;
   XSetBevelColor(display,window_info,triangle_info->raised);
-  XFillPolygon(display,window_info->id,window_info->widget_context,points,4,
-    Complex,CoordModeOrigin);
+  (void) XFillPolygon(display,window_info->id,window_info->widget_context,
+    points,4,Complex,CoordModeOrigin);
   /*
     Draw right bevel.
   */
@@ -864,8 +866,8 @@ static void XDrawTriangleSouth(Display *display,const XWindowInfo *window_info,
   points[3].x=x2;
   points[3].y=y2+bevel_width;
   XSetBevelColor(display,window_info,(unsigned int) !triangle_info->raised);
-  XFillPolygon(display,window_info->id,window_info->widget_context,points,4,
-    Complex,CoordModeOrigin);
+  (void) XFillPolygon(display,window_info->id,window_info->widget_context,
+    points,4,Complex,CoordModeOrigin);
   /*
     Draw left bevel.
   */
@@ -878,9 +880,9 @@ static void XDrawTriangleSouth(Display *display,const XWindowInfo *window_info,
   points[3].x=x1-bevel_width;
   points[3].y=y1-bevel_width;
   XSetBevelColor(display,window_info,triangle_info->raised);
-  XFillPolygon(display,window_info->id,window_info->widget_context,points,4,
-    Complex,CoordModeOrigin);
-  XSetFillStyle(display,window_info->widget_context,FillSolid);
+  (void) XFillPolygon(display,window_info->id,window_info->widget_context,
+    points,4,Complex,CoordModeOrigin);
+  (void) XSetFillStyle(display,window_info->widget_context,FillSolid);
 }
 
 /*
@@ -942,7 +944,7 @@ static void XDrawWidgetText(Display *display,const XWindowInfo *window_info,
       text_info->width,text_info->height,False);
   else
     {
-      XFillRectangle(display,window_info->id,widget_context,text_info->x,
+      (void) XFillRectangle(display,window_info->id,widget_context,text_info->x,
         text_info->y,text_info->width,text_info->height);
       widget_context=window_info->highlight_context;
     }
@@ -970,8 +972,8 @@ static void XDrawWidgetText(Display *display,const XWindowInfo *window_info,
       x+=(text_info->width-QuantumMargin-width);
   height=font_info->ascent+font_info->descent;
   y=text_info->y+((text_info->height-height) >> 1)+font_info->ascent;
-  XSetClipRectangles(display,widget_context,0,0,&crop_info,1,Unsorted);
-  XDrawString(display,window_info->id,widget_context,x,y,text_info->text,
+  (void) XSetClipRectangles(display,widget_context,0,0,&crop_info,1,Unsorted);
+  (void) XDrawString(display,window_info->id,widget_context,x,y,text_info->text,
     Extent(text_info->text));
   XSetClipMask(display,widget_context,None);
   if (x < text_info->x)
@@ -1079,7 +1081,7 @@ static void XEditText(Display *display,XWidgetInfo *text_info,
       if (*text == '\0')
         break;
       if ((Extent(text_info->text)+1) >= MaxTextExtent)
-        (void) XBell(display,0);
+        XBell(display,0);
       else
         {
           if (text_info->highlight)
@@ -1199,14 +1201,14 @@ static void XHighlightWidget(Display *display,const XWindowInfo *window_info,
     Draw the widget highlighting rectangle.
   */
   XSetBevelColor(display,window_info,True);
-  (void) XDrawRectangle(display,window_info->id,window_info->widget_context,x,y,
+  XDrawRectangle(display,window_info->id,window_info->widget_context,x,y,
     window_info->width-(x << 1),window_info->height-(y << 1));
-  (void) XDrawRectangle(display,window_info->id,window_info->widget_context,x-1,y-1,
+  XDrawRectangle(display,window_info->id,window_info->widget_context,x-1,y-1,
     window_info->width-(x << 1)+1,window_info->height-(y << 1)+1);
   XSetBevelColor(display,window_info,False);
-  (void) XDrawRectangle(display,window_info->id,window_info->widget_context,x-1,y-1,
+  XDrawRectangle(display,window_info->id,window_info->widget_context,x-1,y-1,
     window_info->width-(x << 1),window_info->height-(y << 1));
-  XSetFillStyle(display,window_info->widget_context,FillSolid);
+  (void) XSetFillStyle(display,window_info->widget_context,FillSolid);
 }
 
 /*
@@ -1308,7 +1310,8 @@ static int XScreenEvent(Display *display,XEvent *event,char *data)
         Set input focus for backdrop window.
       */
       if (event->xfocus.window == windows->image.id)
-        XSetInputFocus(display,windows->image.id,RevertToNone,CurrentTime);
+        (void) XSetInputFocus(display,windows->image.id,RevertToNone,
+          CurrentTime);
       return(True);
     }
     case ButtonRelease:
@@ -1368,22 +1371,23 @@ static void XSetBevelColor(Display *display,const XWindowInfo *window_info,
       /*
         Monochrome window.
       */
-      XSetBackground(display,window_info->widget_context,
+      (void) XSetBackground(display,window_info->widget_context,
         XBlackPixel(display,window_info->screen));
-      XSetForeground(display,window_info->widget_context,
+      (void) XSetForeground(display,window_info->widget_context,
         XWhitePixel(display,window_info->screen));
-      XSetFillStyle(display,window_info->widget_context,FillOpaqueStippled);
+      (void) XSetFillStyle(display,window_info->widget_context,
+        FillOpaqueStippled);
       stipple=window_info->highlight_stipple;
       if (!raised)
         stipple=window_info->shadow_stipple;
-      XSetStipple(display,window_info->widget_context,stipple);
+      (void) XSetStipple(display,window_info->widget_context,stipple);
     }
   else
     if (raised)
-      XSetForeground(display,window_info->widget_context,
+      (void) XSetForeground(display,window_info->widget_context,
         window_info->pixel_info->highlight_color.pixel);
     else
-      XSetForeground(display,window_info->widget_context,
+      (void) XSetForeground(display,window_info->widget_context,
         window_info->pixel_info->shadow_color.pixel);
 }
 
@@ -1424,18 +1428,18 @@ static void XSetMatteColor(Display *display,const XWindowInfo *window_info,
         Monochrome window.
       */
       if (raised)
-        XSetForeground(display,window_info->widget_context,
+        (void) XSetForeground(display,window_info->widget_context,
           XWhitePixel(display,window_info->screen));
       else
-        XSetForeground(display,window_info->widget_context,
+        (void) XSetForeground(display,window_info->widget_context,
           XBlackPixel(display,window_info->screen));
     }
   else
     if (raised)
-      XSetForeground(display,window_info->widget_context,
+      (void) XSetForeground(display,window_info->widget_context,
         window_info->pixel_info->matte_color.pixel);
     else
-      XSetForeground(display,window_info->widget_context,
+      (void) XSetForeground(display,window_info->widget_context,
         window_info->pixel_info->depth_color.pixel);
 }
 
@@ -1482,10 +1486,10 @@ static void XSetTextColor(Display *display,const XWindowInfo *window_info,
         Monochrome window.
       */
       if (raised)
-        XSetForeground(display,window_info->widget_context,
+        (void) XSetForeground(display,window_info->widget_context,
           XBlackPixel(display,window_info->screen));
       else
-        XSetForeground(display,window_info->widget_context,
+        (void) XSetForeground(display,window_info->widget_context,
           XWhitePixel(display,window_info->screen));
       return;
     }
@@ -1493,10 +1497,10 @@ static void XSetTextColor(Display *display,const XWindowInfo *window_info,
     XDownScale(Intensity(window_info->pixel_info->foreground_color));
   matte=(int) XDownScale(Intensity(window_info->pixel_info->matte_color));
   if (AbsoluteValue(foreground-matte) > (MaxRGB >> 3))
-    XSetForeground(display,window_info->widget_context,
+    (void) XSetForeground(display,window_info->widget_context,
       window_info->pixel_info->foreground_color.pixel);
   else
-    XSetForeground(display,window_info->widget_context,
+    (void) XSetForeground(display,window_info->widget_context,
       window_info->pixel_info->background_color.pixel);
 }
 
@@ -1673,7 +1677,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
     {
       XSetWMName(display,windows->widget.id,&window_name);
       XSetWMIconName(display,windows->widget.id,&window_name);
-      (void) XFree((void *) window_name.value);
+      XFree((void *) window_name.value);
     }
   window_changes.width=windows->widget.width;
   window_changes.height=windows->widget.height;
@@ -1820,8 +1824,9 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         */
         x=QuantumMargin;
         y=text_info.y+((text_info.height-height) >> 1)+font_info->ascent;
-        XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,ColorPatternText,Extent(ColorPatternText));
+        (void) XDrawString(display,windows->widget.id,
+          windows->widget.annotate_context,x,y,ColorPatternText,
+          Extent(ColorPatternText));
         FormatString(text_info.text,"%.1024s",glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawBeveledButton(display,&windows->widget,&grab_info);
@@ -1833,8 +1838,9 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         XDrawTriangleSouth(display,&windows->widget,&south_info);
         x=QuantumMargin;
         y=reply_info.y+((reply_info.height-height) >> 1)+font_info->ascent;
-        XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,ColornameText,Extent(ColornameText));
+        (void) XDrawString(display,windows->widget.id,
+          windows->widget.annotate_context,x,y,ColornameText,
+          Extent(ColornameText));
         XDrawBeveledMatte(display,&windows->widget,&reply_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
         XDrawBeveledButton(display,&windows->widget,&action_info);
@@ -1873,7 +1879,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         if (number_colors == 0)
           {
             (void) strcpy(glob_pattern,reset_pattern);
-            (void) XBell(display,0);
+            XBell(display,0);
           }
         else
           {
@@ -2012,7 +2018,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
       Wait for next event.
     */
     if (north_info.raised && south_info.raised)
-      XIfEvent(display,&event,XScreenEvent,(char *) windows);
+      (void) XIfEvent(display,&event,XScreenEvent,(char *) windows);
     else
       {
         /*
@@ -2020,7 +2026,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         */
         XDelay(display,delay);
         delay=SuspendTime;
-        XCheckIfEvent(display,&event,XScreenEvent,(char *) windows);
+        (void) XCheckIfEvent(display,&event,XScreenEvent,(char *) windows);
         if (!north_info.raised)
           if (slider_info.id > 0)
             {
@@ -2141,7 +2147,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
             */
             (void) strcpy(reply_info.text,mode_info.text);
             (void) strcpy(primary_selection,reply_info.text);
-            XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
+            (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
               event.xbutton.time);
             reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
               windows->widget.id;
@@ -2191,7 +2197,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
                   Become the XA_PRIMARY selection owner.
                 */
                 (void) strcpy(primary_selection,reply_info.text);
-                XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
+                (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
                   event.xbutton.time);
                 reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
                   windows->widget.id;
@@ -2203,7 +2209,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         /*
           Request primary selection.
         */
-        XConvertSelection(display,XA_PRIMARY,XA_STRING,XA_STRING,
+        (void) XConvertSelection(display,XA_PRIMARY,XA_STRING,XA_STRING,
           windows->widget.id,event.xbutton.time);
         break;
       }
@@ -2272,7 +2278,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
                 if (MatteIsActive(action_info,event.xbutton))
                   {
                     if (*reply_info.text == '\0')
-                      (void) XBell(display,0);
+                      XBell(display,0);
                     else
                       state|=ExitState;
                   }
@@ -2304,7 +2310,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
           break;
         if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
-            XSetInputFocus(display,event.xclient.window,RevertToParent,
+            (void) XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
@@ -2589,7 +2595,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
             (length == 0))
           break;
         if ((Extent(reply_info.text)+length) >= MaxTextExtent)
-          (void) XBell(display,0);
+          XBell(display,0);
         else
           {
             /*
@@ -2602,7 +2608,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
             state|=JumpListState;
             state|=RedrawActionState;
           }
-        (void) XFree((void *) data);
+        XFree((void *) data);
         break;
       }
       case SelectionRequest:
@@ -2619,9 +2625,9 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
           Set primary selection.
         */
         request=(&(event.xselectionrequest));
-        XChangeProperty(request->display,request->requestor,request->property,
-          request->target,8,PropModeReplace,(unsigned char *) primary_selection,
-          Extent(primary_selection));
+        (void) XChangeProperty(request->display,request->requestor,
+          request->property,request->target,8,PropModeReplace,
+          (unsigned char *) primary_selection,Extent(primary_selection));
         notify.type=SelectionNotify;
         notify.send_event=True;
         notify.display=request->display;
@@ -2641,7 +2647,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
     }
   } while (!(state & ExitState));
   XSetCursorState(display,windows,False);
-  XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
+  (void) XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
   XCheckRefreshWindows(display,windows);
   /*
     Free color list.
@@ -2862,7 +2868,7 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
             {
               XSetWMName(display,windows->command.id,&window_name);
               XSetWMIconName(display,windows->command.id,&window_name);
-              (void) XFree((void *) window_name.value);
+              XFree((void *) window_name.value);
             }
           window_changes.width=windows->command.width;
           window_changes.height=windows->command.height;
@@ -2907,7 +2913,8 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
           toggle_info.y=
             submenu_info.y+(submenu_info.height >> 1)-(toggle_info.height >> 1);
           id=i;
-          XCheckWindowEvent(display,windows->widget.id,LeaveWindowMask,event);
+          (void) XCheckWindowEvent(display,windows->widget.id,LeaveWindowMask,
+            event);
           break;
         }
         break;
@@ -2938,7 +2945,8 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
           break;
         if (*event->xclient.data.l != (int) windows->wm_delete_window)
           break;
-        XWithdrawWindow(display,windows->command.id,windows->command.screen);
+        (void) XWithdrawWindow(display,windows->command.id,
+          windows->command.screen);
         break;
       }
       case ConfigureNotify:
@@ -3071,7 +3079,7 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
           XCopyPlane(display,tile_pixmap,windows->command.id,
             windows->command.annotate_context,0,0,tile_width,tile_height,
             (windows->command.width-tile_width) >> 1,10,1L);
-          (void) XFreePixmap(display,tile_pixmap);
+          XFreePixmap(display,tile_pixmap);
         }
       for (i=0; i < (int) number_selections; i++)
       {
@@ -3206,7 +3214,7 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
     {
       XSetWMName(display,windows->widget.id,&window_name);
       XSetWMIconName(display,windows->widget.id,&window_name);
-      (void) XFree((void *) window_name.value);
+      XFree((void *) window_name.value);
     }
   window_changes.width=windows->widget.width;
   window_changes.height=windows->widget.height;
@@ -3261,8 +3269,8 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
         width=XTextWidth(font_info,(char *) reason,Extent(reason));
         x=(windows->widget.width >> 1)-(width >> 1);
         y=(windows->widget.height >> 1)-(height << 1);
-        XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,(char *) reason,Extent(reason));
+        (void) XDrawString(display,windows->widget.id,
+          windows->widget.annotate_context,x,y,(char *) reason,Extent(reason));
         if (description != (char *) NULL)
           {
             char
@@ -3273,7 +3281,7 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
             width=XTextWidth(font_info,question,Extent(question));
             x=(windows->widget.width >> 1)-(width >> 1);
             y+=height;
-            XDrawString(display,windows->widget.id,
+            (void) XDrawString(display,windows->widget.id,
               windows->widget.annotate_context,x,y,question,Extent(question));
           }
         XDrawBeveledButton(display,&windows->widget,&cancel_info);
@@ -3285,7 +3293,7 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
     /*
       Wait for next event.
     */
-    XIfEvent(display,&event,XScreenEvent,(char *) windows);
+    (void) XIfEvent(display,&event,XScreenEvent,(char *) windows);
     switch (event.type)
     {
       case ButtonPress:
@@ -3367,7 +3375,7 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
           break;
         if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
-            XSetInputFocus(display,event.xclient.window,RevertToParent,
+            (void) XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
@@ -3487,7 +3495,7 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
     }
   } while (!(state & ExitState));
   XSetCursorState(display,windows,False);
-  XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
+  (void) XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
   XCheckRefreshWindows(display,windows);
   return(confirm);
 }
@@ -3613,7 +3621,7 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
     {
       XSetWMName(display,windows->widget.id,&window_name);
       XSetWMIconName(display,windows->widget.id,&window_name);
-      (void) XFree((void *) window_name.value);
+      XFree((void *) window_name.value);
     }
   window_changes.width=windows->widget.width;
   window_changes.height=windows->widget.height;
@@ -3713,7 +3721,7 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
     /*
       Wait for next event.
     */
-    XIfEvent(display,&event,XScreenEvent,(char *) windows);
+    (void) XIfEvent(display,&event,XScreenEvent,(char *) windows);
     switch (event.type)
     {
       case ButtonPress:
@@ -3769,7 +3777,7 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
                   Become the XA_PRIMARY selection owner.
                 */
                 (void) strcpy(primary_selection,reply_info.text);
-                XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
+                (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
                   event.xbutton.time);
                 reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
                   windows->widget.id;
@@ -3781,7 +3789,7 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
         /*
           Request primary selection.
         */
-        XConvertSelection(display,XA_PRIMARY,XA_STRING,XA_STRING,
+        (void) XConvertSelection(display,XA_PRIMARY,XA_STRING,XA_STRING,
           windows->widget.id,event.xbutton.time);
         break;
       }
@@ -3819,7 +3827,7 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
           break;
         if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
-            XSetInputFocus(display,event.xclient.window,RevertToParent,
+            (void) XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
@@ -4006,7 +4014,7 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
             (length == 0))
           break;
         if ((Extent(reply_info.text)+length) >= MaxTextExtent)
-          (void) XBell(display,0);
+          XBell(display,0);
         else
           {
             /*
@@ -4017,7 +4025,7 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
               state);
             XDrawMatteText(display,&windows->widget,&reply_info);
           }
-        (void) XFree((void *) data);
+        XFree((void *) data);
         break;
       }
       case SelectionRequest:
@@ -4034,9 +4042,9 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
           Set primary selection.
         */
         request=(&(event.xselectionrequest));
-        XChangeProperty(request->display,request->requestor,request->property,
-          request->target,8,PropModeReplace,(unsigned char *) primary_selection,
-          Extent(primary_selection));
+        (void) XChangeProperty(request->display,request->requestor,
+          request->property,request->target,8,PropModeReplace,
+          (unsigned char *) primary_selection,Extent(primary_selection));
         notify.type=SelectionNotify;
         notify.display=request->display;
         notify.requestor=request->requestor;
@@ -4055,7 +4063,7 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
     }
   } while (!(state & ExitState));
   XSetCursorState(display,windows,False);
-  XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
+  (void) XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
   XCheckRefreshWindows(display,windows);
   if (anomaly)
     if (special_info.raised)
@@ -4303,7 +4311,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
     {
       XSetWMName(display,windows->widget.id,&window_name);
       XSetWMIconName(display,windows->widget.id,&window_name);
-      (void) XFree((void *) window_name.value);
+      XFree((void *) window_name.value);
     }
   window_changes.width=windows->widget.width;
   window_changes.height=windows->widget.height;
@@ -4459,8 +4467,9 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
         */
         x=QuantumMargin;
         y=text_info.y+((text_info.height-height) >> 1)+font_info->ascent;
-        XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,DirectoryText,Extent(DirectoryText));
+        (void) XDrawString(display,windows->widget.id,
+          windows->widget.annotate_context,x,y,DirectoryText,
+          Extent(DirectoryText));
         FormatString(text_info.text,"%.1024s%.1024s%.1024s",working_directory,
           DirectorySeparator,glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
@@ -4473,8 +4482,9 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
         XDrawTriangleSouth(display,&windows->widget,&south_info);
         x=QuantumMargin;
         y=reply_info.y+((reply_info.height-height) >> 1)+font_info->ascent;
-        XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,FilenameText,Extent(FilenameText));
+        (void) XDrawString(display,windows->widget.id,
+          windows->widget.annotate_context,x,y,FilenameText,
+          Extent(FilenameText));
         XDrawBeveledMatte(display,&windows->widget,&reply_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
         XDrawBeveledButton(display,&windows->widget,&special_info);
@@ -4620,7 +4630,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
       Wait for next event.
     */
     if (north_info.raised && south_info.raised)
-      XIfEvent(display,&event,XScreenEvent,(char *) windows);
+      (void) XIfEvent(display,&event,XScreenEvent,(char *) windows);
     else
       {
         /*
@@ -4628,7 +4638,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
         */
         XDelay(display,delay);
         delay=SuspendTime;
-        XCheckIfEvent(display,&event,XScreenEvent,(char *) windows);
+        (void) XCheckIfEvent(display,&event,XScreenEvent,(char *) windows);
         if (!north_info.raised)
           if (slider_info.id > 0)
             {
@@ -4791,7 +4801,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                   Become the XA_PRIMARY selection owner.
                 */
                 (void) strcpy(primary_selection,reply_info.text);
-                XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
+                (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
                   event.xbutton.time);
                 reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
                   windows->widget.id;
@@ -4803,7 +4813,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
         /*
           Request primary selection.
         */
-        XConvertSelection(display,XA_PRIMARY,XA_STRING,XA_STRING,
+        (void) XConvertSelection(display,XA_PRIMARY,XA_STRING,XA_STRING,
           windows->widget.id,event.xbutton.time);
         break;
       }
@@ -4866,7 +4876,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 /*
                   Let user select image format.
                 */
-                (void) XDefineCursor(display,windows->widget.id,
+                XDefineCursor(display,windows->widget.id,
                   windows->widget.busy_cursor);
                 windows->popup.x=windows->widget.x+60;
                 windows->popup.y=windows->widget.y+60;
@@ -4874,7 +4884,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                   ImageOutputFormats,"Select","Select image format type:",
                   format);
                 XSetCursorState(display,windows,True);
-                (void) XDefineCursor(display,windows->widget.id,
+                XDefineCursor(display,windows->widget.id,
                   windows->widget.cursor);
                 AppendImageFormat(format,reply_info.text);
                 reply_info.cursor=reply_info.text+Extent(reply_info.text);
@@ -4899,7 +4909,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 if (MatteIsActive(action_info,event.xbutton))
                   {
                     if (*reply_info.text == '\0')
-                      (void) XBell(display,0);
+                      XBell(display,0);
                     else
                       state|=ExitState;
                   }
@@ -4929,7 +4939,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
           break;
         if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
-            XSetInputFocus(display,event.xclient.window,RevertToParent,
+            (void) XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
@@ -5226,7 +5236,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
             (length == 0))
           break;
         if ((Extent(reply_info.text)+length) >= MaxTextExtent)
-          (void) XBell(display,0);
+          XBell(display,0);
         else
           {
             /*
@@ -5239,7 +5249,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
             state|=JumpListState;
             state|=RedrawActionState;
           }
-        (void) XFree((void *) data);
+        XFree((void *) data);
         break;
       }
       case SelectionRequest:
@@ -5256,9 +5266,9 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
           Set primary selection.
         */
         request=(&(event.xselectionrequest));
-        XChangeProperty(request->display,request->requestor,request->property,
-          request->target,8,PropModeReplace,(unsigned char *) primary_selection,
-          Extent(primary_selection));
+        (void) XChangeProperty(request->display,request->requestor,
+          request->property,request->target,8,PropModeReplace,
+          (unsigned char *) primary_selection,Extent(primary_selection));
         notify.type=SelectionNotify;
         notify.display=request->display;
         notify.requestor=request->requestor;
@@ -5277,7 +5287,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
     }
   } while (!(state & ExitState));
   XSetCursorState(display,windows,False);
-  XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
+  (void) XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
   XCheckRefreshWindows(display,windows);
   /*
     Free file list.
@@ -5502,7 +5512,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
     {
       XSetWMName(display,windows->widget.id,&window_name);
       XSetWMIconName(display,windows->widget.id,&window_name);
-      (void) XFree((void *) window_name.value);
+      XFree((void *) window_name.value);
     }
   window_changes.width=windows->widget.width;
   window_changes.height=windows->widget.height;
@@ -5648,8 +5658,9 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         */
         x=QuantumMargin;
         y=text_info.y+((text_info.height-height) >> 1)+font_info->ascent;
-        XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,FontPatternText,Extent(FontPatternText));
+        (void) XDrawString(display,windows->widget.id,
+          windows->widget.annotate_context,x,y,FontPatternText,
+          Extent(FontPatternText));
         FormatString(text_info.text,"%.1024s",glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawBeveledButton(display,&windows->widget,&back_info);
@@ -5661,8 +5672,9 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         XDrawTriangleSouth(display,&windows->widget,&south_info);
         x=QuantumMargin;
         y=reply_info.y+((reply_info.height-height) >> 1)+font_info->ascent;
-        XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,FontnameText,Extent(FontnameText));
+        (void) XDrawString(display,windows->widget.id,
+          windows->widget.annotate_context,x,y,FontnameText,
+          Extent(FontnameText));
         XDrawBeveledMatte(display,&windows->widget,&reply_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
         XDrawBeveledButton(display,&windows->widget,&action_info);
@@ -5700,7 +5712,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
                 break;
               }
             (void) strcpy(glob_pattern,back_pattern);
-            (void) XBell(display,0);
+            XBell(display,0);
           }
         else
           if (number_fonts == 1)
@@ -5710,14 +5722,14 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
               */
               (void) strcpy(reply,checklist[0]);
               (void) strcpy(glob_pattern,back_pattern);
-              (void) XFreeFontNames(checklist);
+              XFreeFontNames(checklist);
               action_info.raised=False;
               XDrawBeveledButton(display,&windows->widget,&action_info);
               break;
             }
           else
             {
-              (void) XFreeFontNames(listhead);
+              XFreeFontNames(listhead);
               LiberateMemory((void **) &fontlist);
               fontlist=checklist;
               fonts=number_fonts;
@@ -5854,7 +5866,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
           {
             XSetFont(display,windows->widget.widget_context,
               windows->widget.font_info->fid);
-            (void) XFreeFont(display,font_info);
+            XFreeFont(display,font_info);
           }
         XHighlightWidget(display,&windows->widget,BorderOffset,BorderOffset);
         XDrawMatteText(display,&windows->widget,&reply_info);
@@ -5864,7 +5876,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
       Wait for next event.
     */
     if (north_info.raised && south_info.raised)
-      XIfEvent(display,&event,XScreenEvent,(char *) windows);
+      (void) XIfEvent(display,&event,XScreenEvent,(char *) windows);
     else
       {
         /*
@@ -5872,7 +5884,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         */
         XDelay(display,delay);
         delay=SuspendTime;
-        XCheckIfEvent(display,&event,XScreenEvent,(char *) windows);
+        (void) XCheckIfEvent(display,&event,XScreenEvent,(char *) windows);
         if (!north_info.raised)
           if (slider_info.id > 0)
             {
@@ -6027,7 +6039,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
                   Become the XA_PRIMARY selection owner.
                 */
                 (void) strcpy(primary_selection,reply_info.text);
-                XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
+                (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
                   event.xbutton.time);
                 reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
                   windows->widget.id;
@@ -6039,7 +6051,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         /*
           Request primary selection.
         */
-        XConvertSelection(display,XA_PRIMARY,XA_STRING,XA_STRING,
+        (void) XConvertSelection(display,XA_PRIMARY,XA_STRING,XA_STRING,
           windows->widget.id,event.xbutton.time);
         break;
       }
@@ -6103,7 +6115,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
                 if (MatteIsActive(action_info,event.xbutton))
                   {
                     if (*reply_info.text == '\0')
-                      (void) XBell(display,0);
+                      XBell(display,0);
                     else
                       state|=ExitState;
                   }
@@ -6133,7 +6145,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
           break;
         if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
-            XSetInputFocus(display,event.xclient.window,RevertToParent,
+            (void) XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
@@ -6415,7 +6427,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
             (length == 0))
           break;
         if ((Extent(reply_info.text)+length) >= MaxTextExtent)
-          (void) XBell(display,0);
+          XBell(display,0);
         else
           {
             /*
@@ -6428,7 +6440,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
             state|=JumpListState;
             state|=RedrawActionState;
           }
-        (void) XFree((void *) data);
+        XFree((void *) data);
         break;
       }
       case SelectionRequest:
@@ -6443,9 +6455,9 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
           Set XA_PRIMARY selection.
         */
         request=(&(event.xselectionrequest));
-        XChangeProperty(request->display,request->requestor,request->property,
-          request->target,8,PropModeReplace,(unsigned char *) primary_selection,
-          Extent(primary_selection));
+        (void) XChangeProperty(request->display,request->requestor,
+          request->property,request->target,8,PropModeReplace,
+          (unsigned char *) primary_selection,Extent(primary_selection));
         notify.type=SelectionNotify;
         notify.display=request->display;
         notify.requestor=request->requestor;
@@ -6464,12 +6476,12 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
     }
   } while (!(state & ExitState));
   XSetCursorState(display,windows,False);
-  XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
+  (void) XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
   XCheckRefreshWindows(display,windows);
   /*
     Free font list.
   */
-  (void) XFreeFontNames(listhead);
+  XFreeFontNames(listhead);
   LiberateMemory((void **) &fontlist);
 }
 
@@ -6718,7 +6730,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
     {
       XSetWMName(display,window_info->id,&window_name);
       XSetWMIconName(display,windows->widget.id,&window_name);
-      (void) XFree((void *) window_name.value);
+      XFree((void *) window_name.value);
     }
   window_changes.width=window_info->width;
   window_changes.height=window_info->height;
@@ -6920,7 +6932,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
       Wait for next event.
     */
     if (north_info.raised && south_info.raised)
-      XIfEvent(display,&event,XScreenEvent,(char *) windows);
+      (void) XIfEvent(display,&event,XScreenEvent,(char *) windows);
     else
       {
         /*
@@ -6928,7 +6940,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
         */
         XDelay(display,delay);
         delay=SuspendTime;
-        XCheckIfEvent(display,&event,XScreenEvent,(char *) windows);
+        (void) XCheckIfEvent(display,&event,XScreenEvent,(char *) windows);
         if (!north_info.raised)
           if (slider_info.id > 0)
             {
@@ -7065,7 +7077,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
                   Become the XA_PRIMARY selection owner.
                 */
                 (void) strcpy(primary_selection,reply_info.text);
-                XSetSelectionOwner(display,XA_PRIMARY,window_info->id,
+                (void) XSetSelectionOwner(display,XA_PRIMARY,window_info->id,
                   event.xbutton.time);
                 reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
                   window_info->id;
@@ -7077,7 +7089,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
         /*
           Request primary selection.
         */
-        XConvertSelection(display,XA_PRIMARY,XA_STRING,XA_STRING,
+        (void) XConvertSelection(display,XA_PRIMARY,XA_STRING,XA_STRING,
           window_info->id,event.xbutton.time);
         break;
       }
@@ -7118,7 +7130,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
                 if (MatteIsActive(action_info,event.xbutton))
                   {
                     if (*reply_info.text == '\0')
-                      (void) XBell(display,0);
+                      XBell(display,0);
                     else
                       state|=ExitState;
                   }
@@ -7150,7 +7162,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
           break;
         if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
-            XSetInputFocus(display,event.xclient.window,RevertToParent,
+            (void) XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
@@ -7413,7 +7425,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
             (length == 0))
           break;
         if ((Extent(reply_info.text)+length) >= MaxTextExtent)
-          (void) XBell(display,0);
+          XBell(display,0);
         else
           {
             /*
@@ -7425,7 +7437,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
             XDrawMatteText(display,window_info,&reply_info);
             state|=RedrawActionState;
           }
-        (void) XFree((void *) data);
+        XFree((void *) data);
         break;
       }
       case SelectionRequest:
@@ -7442,9 +7454,9 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
           Set primary selection.
         */
         request=(&(event.xselectionrequest));
-        XChangeProperty(request->display,request->requestor,request->property,
-          request->target,8,PropModeReplace,(unsigned char *) primary_selection,
-          Extent(primary_selection));
+        (void) XChangeProperty(request->display,request->requestor,
+          request->property,request->target,8,PropModeReplace,
+          (unsigned char *) primary_selection,Extent(primary_selection));
         notify.type=SelectionNotify;
         notify.send_event=True;
         notify.display=request->display;
@@ -7464,7 +7476,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
     }
   } while (!(state & ExitState));
   XSetCursorState(display,windows,False);
-  XWithdrawWindow(display,window_info->id,window_info->screen);
+  (void) XWithdrawWindow(display,window_info->id,window_info->screen);
   XCheckRefreshWindows(display,windows);
 }
 
@@ -7608,9 +7620,9 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
   */
   selection_info.height=height;
   cursor=XCreateFontCursor(display,XC_right_ptr);
-  (void) XDefineCursor(display,windows->image.id,cursor);
-  (void) XDefineCursor(display,windows->command.id,cursor);
-  (void) XDefineCursor(display,windows->widget.id,cursor);
+  XDefineCursor(display,windows->image.id,cursor);
+  XDefineCursor(display,windows->command.id,cursor);
+  XDefineCursor(display,windows->widget.id,cursor);
   state=UpdateConfigurationState;
   do
   {
@@ -7651,7 +7663,8 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
             XSetBevelColor(display,&windows->widget,True);
             XDrawLine(display,windows->widget.id,windows->widget.widget_context,
               selection_info.x,y,(int) selection_info.width,y);
-            XSetFillStyle(display,windows->widget.widget_context,FillSolid);
+            (void) XSetFillStyle(display,windows->widget.widget_context,
+              FillSolid);
           }
         /*
           Draw menu selections.
@@ -7687,12 +7700,12 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
         XSetBevelColor(display,&windows->widget,True);
         XDrawLine(display,windows->widget.id,windows->widget.widget_context,
           selection_info.x,y,(int) selection_info.width,y);
-        XSetFillStyle(display,windows->widget.widget_context,FillSolid);
+        (void) XSetFillStyle(display,windows->widget.widget_context,FillSolid);
       }
     /*
       Wait for next event.
     */
-    XIfEvent(display,&event,XScreenEvent,(char *) windows);
+    (void) XIfEvent(display,&event,XScreenEvent,(char *) windows);
     switch (event.type)
     {
       case ButtonPress:
@@ -7879,11 +7892,11 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
         break;
     }
   } while (!(state & ExitState));
-  (void) XFreeCursor(display,cursor);
+  XFreeCursor(display,cursor);
   window_attributes.override_redirect=False;
   XChangeWindowAttributes(display,windows->widget.id,CWOverrideRedirect,
     &window_attributes);
-  XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
+  (void) XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
   XCheckRefreshWindows(display,windows);
   if (submenu_info.active)
     {
@@ -7974,7 +7987,7 @@ MagickExport void XMonitorWidget(Display *display,XWindows *windows,
     }
   monitor_info.width=width;
   XDrawWidgetText(display,&windows->info,&monitor_info);
-  (void) XFlush(display);
+  XFlush(display);
 }
 
 /*
@@ -8086,7 +8099,7 @@ MagickExport void XNoticeWidget(Display *display,XWindows *windows,
     {
       XSetWMName(display,windows->widget.id,&window_name);
       XSetWMIconName(display,windows->widget.id,&window_name);
-      (void) XFree((void *) window_name.value);
+      XFree((void *) window_name.value);
     }
   window_changes.width=windows->widget.width;
   window_changes.height=windows->widget.height;
@@ -8096,7 +8109,7 @@ MagickExport void XNoticeWidget(Display *display,XWindows *windows,
     CWWidth | CWHeight | CWX | CWY,&window_changes);
   XMapRaised(display,windows->widget.id);
   windows->widget.mapped=False;
-  (void) XBell(display,0);
+  XBell(display,0);
   /*
     Respond to X events.
   */
@@ -8127,14 +8140,15 @@ MagickExport void XNoticeWidget(Display *display,XWindows *windows,
         width=XTextWidth(font_info,(char *) reason,Extent(reason));
         x=(windows->widget.width >> 1)-(width >> 1);
         y=(windows->widget.height >> 1)-(height << 1);
-        XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,(char *) reason,Extent(reason));
+        (void) XDrawString(display,windows->widget.id,
+          windows->widget.annotate_context,x,y,(char *) reason,Extent(reason));
         if (description != (char *) NULL)
           {
-            width=XTextWidth(font_info,(char *) description,Extent(description));
+            width=XTextWidth(font_info,(char *) description,
+              Extent(description));
             x=(windows->widget.width >> 1)-(width >> 1);
             y+=height;
-            XDrawString(display,windows->widget.id,
+            (void) XDrawString(display,windows->widget.id,
               windows->widget.annotate_context,x,y,(char *) description,
               Extent(description));
           }
@@ -8191,7 +8205,7 @@ MagickExport void XNoticeWidget(Display *display,XWindows *windows,
           break;
         if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
-            XSetInputFocus(display,event.xclient.window,RevertToParent,
+            (void) XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
@@ -8292,7 +8306,7 @@ MagickExport void XNoticeWidget(Display *display,XWindows *windows,
     }
   } while (!(state & ExitState));
   XSetCursorState(display,windows,False);
-  XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
+  (void) XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
   XCheckRefreshWindows(display,windows);
 }
 
@@ -8422,7 +8436,7 @@ MagickExport unsigned int XPreferencesWidget(Display *display,
     {
       XSetWMName(display,windows->widget.id,&window_name);
       XSetWMIconName(display,windows->widget.id,&window_name);
-      (void) XFree((void *) window_name.value);
+      XFree((void *) window_name.value);
     }
   window_changes.width=windows->widget.width;
   window_changes.height=windows->widget.height;
@@ -8498,7 +8512,7 @@ MagickExport unsigned int XPreferencesWidget(Display *display,
     /*
       Wait for next event.
     */
-    XIfEvent(display,&event,XScreenEvent,(char *) windows);
+    (void) XIfEvent(display,&event,XScreenEvent,(char *) windows);
     switch (event.type)
     {
       case ButtonPress:
@@ -8588,7 +8602,7 @@ MagickExport unsigned int XPreferencesWidget(Display *display,
           break;
         if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
-            XSetInputFocus(display,event.xclient.window,RevertToParent,
+            (void) XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
@@ -8698,7 +8712,7 @@ MagickExport unsigned int XPreferencesWidget(Display *display,
     }
   } while (!(state & ExitState));
   XSetCursorState(display,windows,False);
-  XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
+  (void) XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
   XCheckRefreshWindows(display,windows);
   if (apply_info.raised)
     return(False);
@@ -8863,7 +8877,7 @@ MagickExport void XTextViewWidget(Display *display,
     {
       XSetWMName(display,windows->widget.id,&window_name);
       XSetWMIconName(display,windows->widget.id,&window_name);
-      (void) XFree((void *) window_name.value);
+      XFree((void *) window_name.value);
     }
   window_changes.width=windows->widget.width;
   window_changes.height=windows->widget.height;
@@ -9034,7 +9048,7 @@ MagickExport void XTextViewWidget(Display *display,
       Wait for next event.
     */
     if (north_info.raised && south_info.raised)
-      XIfEvent(display,&event,XScreenEvent,(char *) windows);
+      (void) XIfEvent(display,&event,XScreenEvent,(char *) windows);
     else
       {
         /*
@@ -9042,7 +9056,7 @@ MagickExport void XTextViewWidget(Display *display,
         */
         XDelay(display,delay);
         delay=SuspendTime;
-        XCheckIfEvent(display,&event,XScreenEvent,(char *) windows);
+        (void) XCheckIfEvent(display,&event,XScreenEvent,(char *) windows);
         if (!north_info.raised)
           if (slider_info.id > 0)
             {
@@ -9151,7 +9165,7 @@ MagickExport void XTextViewWidget(Display *display,
               Become the XA_PRIMARY selection owner.
             */
             (void) strcpy(primary_selection,textlist[list_info.id]);
-            XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
+            (void) XSetSelectionOwner(display,XA_PRIMARY,windows->widget.id,
               event.xbutton.time);
             if (XGetSelectionOwner(display,XA_PRIMARY) != windows->widget.id)
               break;
@@ -9211,7 +9225,7 @@ MagickExport void XTextViewWidget(Display *display,
           break;
         if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
-            XSetInputFocus(display,event.xclient.window,RevertToParent,
+            (void) XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
@@ -9405,9 +9419,9 @@ MagickExport void XTextViewWidget(Display *display,
           Set primary selection.
         */
         request=(&(event.xselectionrequest));
-        XChangeProperty(request->display,request->requestor,request->property,
-          request->target,8,PropModeReplace,(unsigned char *) primary_selection,
-          Extent(primary_selection));
+        (void) XChangeProperty(request->display,request->requestor,
+          request->property,request->target,8,PropModeReplace,
+          (unsigned char *) primary_selection,Extent(primary_selection));
         notify.type=SelectionNotify;
         notify.send_event=True;
         notify.display=request->display;
@@ -9427,9 +9441,9 @@ MagickExport void XTextViewWidget(Display *display,
     }
   } while (!(state & ExitState));
   if (text_info != windows->widget.font_info)
-    (void) XFreeFont(display,text_info);
+    XFreeFont(display,text_info);
   XSetCursorState(display,windows,False);
-  XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
+  (void) XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
   XCheckRefreshWindows(display,windows);
 }
 #endif

@@ -444,7 +444,7 @@ static CubeInfo *GetCubeInfo(void)
   cube_info=(CubeInfo *) AcquireMemory(sizeof(CubeInfo));
   if (cube_info == (CubeInfo *) NULL)
     return((CubeInfo *) NULL);
-  (void) memset(cube_info,0,sizeof(CubeInfo));
+  memset(cube_info,0,sizeof(CubeInfo));
   /*
     Initialize root node.
   */
@@ -503,7 +503,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
     }
   cube_info->free_nodes--;
   node_info=cube_info->node_info++;
-  (void) memset(node_info,0,sizeof(NodeInfo));
+  memset(node_info,0,sizeof(NodeInfo));
   node_info->level=level;
   return(node_info);
 }
@@ -1195,7 +1195,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,PixelPacket *color
     Initialize color return value.
   */
   assert(color != (PixelPacket *) NULL);
-  (void) memset(color,0,sizeof(PixelPacket));
+  memset(color,0,sizeof(PixelPacket));
   color->opacity=TransparentOpacity;
   if ((name == (char *) NULL) || (*name == '\0'))
     name=BackgroundColor;
@@ -1490,7 +1490,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
         if (color_info == (ColorInfo *) NULL)
           MagickError(ResourceLimitError,"Unable to allocate colors",
             "Memory allocation failed");
-        (void) memset(color_info,0,sizeof(ColorInfo));
+        memset(color_info,0,sizeof(ColorInfo));
         if (color_list == (ColorInfo *) NULL)
           {
             color_info->filename=AllocateString(filename);

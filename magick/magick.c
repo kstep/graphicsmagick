@@ -304,7 +304,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
     *p;
 
   if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
-    (void) OpenModules(exception);
+    OpenModules(exception);
   AcquireSemaphoreInfo(&magick_semaphore);
   if (magick_list != (MagickInfo *) NULL)
     LiberateSemaphoreInfo(&magick_semaphore);
@@ -413,13 +413,13 @@ MagickExport void InitializeMagick(const char *path)
   (void) getcwd(directory,MaxTextExtent);
   (void) SetClientPath(directory);
   GetPathComponent(path,HeadPath,filename);
-  (void) SetClientPath(filename);
+  SetClientPath(filename);
 #if defined(WIN32)
   GetPathComponent(path,TailPath,filename);
 #else
   GetPathComponent(path,BasePath,filename);
 #endif
-  (void) SetClientName(filename);
+  SetClientName(filename);
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
 }
@@ -559,7 +559,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
   */
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  (void) UnregisterMagickInfo(magick_info->name);
+  UnregisterMagickInfo(magick_info->name);
   AcquireSemaphoreInfo(&magick_semaphore);
   magick_info->previous=(MagickInfo *) NULL;
   magick_info->next=(MagickInfo *) NULL;
@@ -671,7 +671,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   *magic='\0';
-  p=image_info->filename+Max((int) strlen(image_info->filename)-1,0);
+  p=image_info->filename+Max(strlen(image_info->filename)-1,0);
   if (*p == ']')
     for (q=p-1; q > image_info->filename; q--)
     {
@@ -915,7 +915,7 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
   if (magick_info == (MagickInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
-  (void) memset(magick_info,0,sizeof(MagickInfo));
+  memset(magick_info,0,sizeof(MagickInfo));
   magick_info->name=AllocateString(name);
   magick_info->adjoin=True;
   magick_info->blob_support=True;

@@ -1472,7 +1472,7 @@ MagickExport unsigned int SegmentImage(Image *image,
       }
   }
   if (colorspace != RGBColorspace)
-    (void) RGBTransformImage(image,colorspace);
+    RGBTransformImage(image,colorspace);
   /*
     Initialize histogram.
   */
@@ -1488,7 +1488,7 @@ MagickExport unsigned int SegmentImage(Image *image,
   */
   status=Classify(image,extrema,cluster_threshold,WeightingExponent,verbose);
   if (colorspace != RGBColorspace)
-    (void) TransformRGBImage(image,colorspace);
+    TransformRGBImage(image,colorspace);
   /*
     Free memory.
   */

@@ -342,7 +342,7 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
     q=SetImagePixels(magnify_image,0,y,magnify_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+    memcpy(q,p,image->columns*sizeof(PixelPacket));
     if (!SyncImagePixels(magnify_image))
       break;
   }
@@ -354,7 +354,7 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
     p=GetImagePixels(magnify_image,0,image->rows-1-y,magnify_image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    (void) memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
+    memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
     q=GetImagePixels(magnify_image,0,2*(image->rows-1-y),
       magnify_image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -424,10 +424,10 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
   }
   p=GetImagePixels(magnify_image,0,2*image->rows-2,magnify_image->columns,1);
   if (p != (PixelPacket *) NULL)
-    (void) memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
+    memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
   q=GetImagePixels(magnify_image,0,2*image->rows-1,magnify_image->columns,1);
   if (q != (PixelPacket *) NULL)
-    (void) memcpy(q,scanline,magnify_image->columns*sizeof(PixelPacket));
+    memcpy(q,scanline,magnify_image->columns*sizeof(PixelPacket));
   (void) SyncImagePixels(magnify_image);
   LiberateMemory((void **) &scanline);
   return(magnify_image);
@@ -772,10 +772,10 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
         q=SetImagePixels(destination,0,y,destination->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        (void) memcpy(q,p,source->columns*sizeof(PixelPacket));
+        memcpy(q,p,source->columns*sizeof(PixelPacket));
         indexes=GetIndexes(source);
         if (indexes != (IndexPacket *) NULL)
-          (void) memcpy(GetIndexes(destination),indexes,
+          memcpy(GetIndexes(destination),indexes,
             source->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(destination))
           break;
@@ -906,10 +906,10 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
         q=SetImagePixels(destination,0,y,destination->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        (void) memcpy(q,p,source->columns*sizeof(PixelPacket));
+        memcpy(q,p,source->columns*sizeof(PixelPacket));
         indexes=GetIndexes(source);
         if (indexes != (IndexPacket *) NULL)
-          (void) memcpy(GetIndexes(destination),indexes,
+          memcpy(GetIndexes(destination),indexes,
             source->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(destination))
           break;
@@ -1240,7 +1240,7 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
         p=GetImagePixels(image,0,j,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
-        (void) memcpy(pixels,p,image->columns*sizeof(PixelPacket));
+        memcpy(pixels,p,image->columns*sizeof(PixelPacket));
       }
     /*
       Sample each column.

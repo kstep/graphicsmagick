@@ -156,8 +156,8 @@ MagickExport void DestroyModuleInfo(void)
   {
     module_info=p;
     p=p->next;
-    (void) UnloadDynamicModule(module_info->tag);
-    (void) UnregisterModuleInfo(module_info->tag);
+    UnloadDynamicModule(module_info->tag);
+    UnregisterModuleInfo(module_info->tag);
   }
   /*
     Free module list and aliases.
@@ -283,7 +283,7 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
     lt_dlsym(handle,module_name);
   if (method != NULL)
     status=(*method)(image,argc,argv);
-  (void) lt_dlclose(handle);
+  lt_dlclose(handle);
   LiberateMemory((void **) &module_name);
   return(status);
 }
@@ -676,11 +676,11 @@ MagickExport unsigned int OpenModule(const char *module,
   module_info=SetModuleInfo(module_name);
   if (module_info == (ModuleInfo*) NULL)
     {
-      (void) lt_dlclose(handle);
+      lt_dlclose(handle);
       return(False);
     }
   module_info->handle=handle;
-  (void) time(&module_info->load_time);
+  time(&module_info->load_time);
   if (!RegisterModuleInfo(module_info))
     return(False);
   /*
@@ -742,7 +742,7 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
   if (modules == (char **) NULL)
     return(False);
   for (p=modules; *p != (char *) NULL; p++)
-    (void) OpenModule(*p,exception);
+    OpenModule(*p,exception);
   /*
     Free resources.
   */
@@ -841,7 +841,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
         if (alias_info == (ModuleAlias *) NULL)
           MagickError(ResourceLimitError,"Unable to allocate module aliases",
             "Memory allocation failed");
-        (void) memset(alias_info,0,sizeof(ModuleAlias));
+        memset(alias_info,0,sizeof(ModuleAlias));
         if (module_aliases == (ModuleAlias *) NULL)
           {
             alias_info->filename=AllocateString(filename);
@@ -931,7 +931,7 @@ static ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
   */
   assert(entry != (ModuleInfo *) NULL);
   assert(entry->signature == MagickSignature);
-  UnregisterModuleInfo(entry->tag);
+  (void) UnregisterModuleInfo(entry->tag);
   entry->previous=(ModuleInfo *) NULL;
   entry->next=(ModuleInfo *) NULL;
   if (module_list == (ModuleInfo *) NULL)
@@ -1011,7 +1011,7 @@ static ModuleInfo *SetModuleInfo(const char *tag)
   if (entry == (ModuleInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate module info",
       "Memory allocation failed");
-  (void) memset(entry,0,sizeof(ModuleInfo));
+  memset(entry,0,sizeof(ModuleInfo));
   entry->tag=AllocateString(tag);
   entry->signature=MagickSignature;
   return(entry);
@@ -1152,7 +1152,7 @@ static int UnloadDynamicModule(const char *module)
     Locate and execute UnregisterFORMATImage function
   */
   ModuleToTag(module,"Unregister%sImage",name);
-  method=(void (*)(void)) lt_dlsym((ModuleHandle) module_info->handle,name);
+  method=lt_dlsym((ModuleHandle) module_info->handle,name);
   if (method == (void (*)(void)) NULL)
     MagickWarning(DelegateWarning,"failed to find symbol",lt_dlerror());
   else
@@ -1160,7 +1160,7 @@ static int UnloadDynamicModule(const char *module)
   /*
     Close and remove module from list.
   */
-  (void) lt_dlclose((ModuleHandle) module_info->handle);
+  lt_dlclose((ModuleHandle) module_info->handle);
   return(True);
 }
 

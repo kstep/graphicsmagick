@@ -1657,7 +1657,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
       }
       if (font_family != (char *) NULL)
         {
-          (void) fprintf(svg_info->file,"font '%s'",font_family);
+          (void) fprintf(svg_info->file,"font '%s",font_family);
           if ((font_weight != (char *) NULL) && (font_style != (char *) NULL))
             (void) fprintf(svg_info->file,"-%s%s",font_weight,font_style);
           else
@@ -1666,7 +1666,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             else
               if (font_style != (char *) NULL)
                 (void) fprintf(svg_info->file,"-%s",font_style);
-          (void) fprintf(svg_info->file,"\n");
+          (void) fprintf(svg_info->file,"'\n");
         }
       if (font_family != (char *) NULL)
         LiberateMemory((void **) &font_family);
@@ -2292,7 +2292,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Parse SVG file.
   */
-  (void) memset(&svg_info,0,sizeof(SVGInfo));
+  memset(&svg_info,0,sizeof(SVGInfo));
   svg_info.file=file;
   svg_info.debug=image_info->debug;
   svg_info.exception=exception;
@@ -2413,13 +2413,13 @@ ModuleExport void RegisterSVGImage(void)
   entry->encoder=WriteSVGImage;
   entry->description=AllocateString("Scalable Vector Gaphics");
   entry->module=AllocateString("SVG");
-  (void) RegisterMagickInfo(entry);
+  RegisterMagickInfo(entry);
   entry=SetMagickInfo("XML");
   entry->magick=IsSVG;
   entry->decoder=ReadSVGImage;
   entry->description=AllocateString("Scalable Vector Gaphics");
   entry->module=AllocateString("SVG");
-  (void) RegisterMagickInfo(entry);
+  RegisterMagickInfo(entry);
 }
 
 /*
@@ -2443,8 +2443,8 @@ ModuleExport void RegisterSVGImage(void)
 */
 ModuleExport void UnregisterSVGImage(void)
 {
-  (void) UnregisterMagickInfo("SVG");
-  (void) UnregisterMagickInfo("XML");
+  UnregisterMagickInfo("SVG");
+  UnregisterMagickInfo("XML");
 }
 
 #if defined(HasAUTOTRACE)

@@ -123,7 +123,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   clone_info->blob->offset=0;
   clone_info->blob->length=length;
   clone_info->blob->extent=length;
-  SetImageInfo(clone_info,False,exception);
+  (void) SetImageInfo(clone_info,False,exception);
   magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick,exception);
   if (magick_info == (MagickInfo *) NULL)
     {
@@ -471,7 +471,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
 MagickExport void GetBlobInfo(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
-  (void) memset(blob,0,sizeof(BlobInfo));
+  memset(blob,0,sizeof(BlobInfo));
   blob->quantum=BlobQuantum;
   blob->signature=MagickSignature;
 }
@@ -1086,8 +1086,8 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
         Read bytes from blob.
       */
       count=Min(length,image->blob->length-image->blob->offset);
-      if (count != 0)
-        (void) memcpy(data,image->blob->data+image->blob->offset,count);
+      if (count > 0)
+        memcpy(data,image->blob->data+image->blob->offset,count);
       image->blob->offset+=count;
       if (count < length)
         image->blob->eof=True;
@@ -1621,7 +1621,7 @@ MagickExport off_t SizeBlob(Image *image)
     return(image->blob->maximum_extent);
   if (image->file == (FILE *) NULL)
     return(image->blob->length);
-  (void) SyncBlob(image);
+  SyncBlob(image);
   return(fstat(fileno(image->file),&attributes) < 0 ? 0 : attributes.st_size);
 }
 
@@ -1795,7 +1795,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
           return(0);
         }
     }
-  (void) memcpy(image->blob->data+image->blob->offset,data,length);
+  memcpy(image->blob->data+image->blob->offset,data,length);
   image->blob->offset+=length;
   if (image->blob->offset > image->blob->length)
     image->blob->length=image->blob->offset;

@@ -269,7 +269,7 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
   coalesce_image=CloneImage(image,0,0,True,exception);
   if (coalesce_image == (Image *) NULL)
     return((Image *) NULL);
-  (void) memset(&coalesce_image->page,0,sizeof(RectangleInfo));
+  memset(&coalesce_image->page,0,sizeof(RectangleInfo));
   /*
     Coalesce image.
   */
@@ -285,9 +285,9 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
     coalesce_image=GetNextImage(coalesce_image);
     coalesce_image->delay=next->delay;
     coalesce_image->start_loop=next->start_loop;
-    (void) CompositeImage(coalesce_image,next->matte ? OverCompositeOp :
+    CompositeImage(coalesce_image,next->matte ? OverCompositeOp :
       CopyCompositeOp,next,next->page.x,next->page.y);
-    (void) memset(&coalesce_image->page,0,sizeof(RectangleInfo));
+    memset(&coalesce_image->page,0,sizeof(RectangleInfo));
   }
   while (coalesce_image->previous != (Image *) NULL)
     coalesce_image=coalesce_image->previous;
@@ -422,10 +422,10 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
     q=SetImagePixels(crop_image,0,y,crop_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    (void) memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
+    memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(image);
     if (indexes != (IndexPacket *) NULL)
-      (void) memcpy(GetIndexes(crop_image),indexes,
+      memcpy(GetIndexes(crop_image),indexes,
         crop_image->columns*sizeof(IndexPacket));
     if (!SyncImagePixels(crop_image))
       break;
@@ -676,7 +676,7 @@ MagickExport Image *FlattenImages(Image *image,ExceptionInfo *exception)
     Flatten image.
   */
   for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
-    (void) CompositeImage(flatten_image,next->matte ? OverCompositeOp :
+    CompositeImage(flatten_image,next->matte ? OverCompositeOp :
       CopyCompositeOp,next,next->page.x,next->page.y);
   (void) IsOpaqueImage(flatten_image);
   return(flatten_image);
@@ -748,10 +748,10 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
     q=SetImagePixels(flip_image,0,flip_image->rows-y-1,flip_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    (void) memcpy(q,p,flip_image->columns*sizeof(PixelPacket));
+    memcpy(q,p,flip_image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(image);
     if (indexes != (IndexPacket *) NULL)
-      (void) memcpy(GetIndexes(flip_image),indexes,
+      memcpy(GetIndexes(flip_image),indexes,
         image->columns*sizeof(IndexPacket));
     status=SyncImagePixels(flip_image);
     if (status == False)
@@ -956,7 +956,7 @@ MagickExport Image *MosaicImages(Image *image,ExceptionInfo *exception)
   scene=0;
   for (next=image; next != (Image *) NULL; next=next->next)
   {
-    (void) CompositeImage(mosaic_image,CopyCompositeOp,next,next->page.x,
+    CompositeImage(mosaic_image,CopyCompositeOp,next,next->page.x,
       next->page.y);
     MagickMonitor(MosaicImageText,scene++,GetNumberScenes(image));
   }

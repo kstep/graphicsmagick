@@ -399,7 +399,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
         LiberateMemory((void **) &magick);
         (void) strcpy(filename,image->filename);
         FormatString(clone_info->filename,"%.1024s:",delegate_info->decode);
-        (void) SetImageInfo(clone_info,True,&image->exception);
+        SetImageInfo(clone_info,True,&image->exception);
         for (p=image; p != (Image *) NULL; p=p->next)
         {
           FormatString(p->filename,"%.1024s:%.1024s",delegate_info->decode,
@@ -438,7 +438,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
       Execute delegate.
     */
     if (delegate_info->spawn)
-      (void) ConcatenateString(&command," &");
+      ConcatenateString(&command," &");
     status=SystemCommand(clone_info->verbose,command);
     LiberateMemory((void **) &command);
     (void) remove(clone_info->zero);
@@ -624,7 +624,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
         if (delegate_info == (DelegateInfo *) NULL)
           MagickError(ResourceLimitError,"Unable to allocate delegates",
             "Memory allocation failed");
-        (void) memset(delegate_info,0,sizeof(DelegateInfo));
+        memset(delegate_info,0,sizeof(DelegateInfo));
         if (delegate_list == (DelegateInfo *) NULL)
           {
             delegate_info->filename=AllocateString(filename);
@@ -882,7 +882,7 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
   /*
     Write parameter file (see mpeg2encode documentation for details).
   */
-  (void) CoalesceImages(image,&image->exception);
+  CoalesceImages(image,&image->exception);
   file=fopen(image_info->unique,"w");
   if (file == (FILE *) NULL)
     return(False);

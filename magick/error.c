@@ -265,7 +265,7 @@ MagickExport void DestroyExceptionInfo(ExceptionInfo *exception)
 MagickExport void GetExceptionInfo(ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
-  (void) memset(exception,0,sizeof(ExceptionInfo));
+  memset(exception,0,sizeof(ExceptionInfo));
   exception->severity=UndefinedException;
   exception->signature=MagickSignature;
 }
@@ -497,6 +497,6 @@ MagickExport void ThrowException(ExceptionInfo *exception,
   if (severity < exception->severity)
     return;
   exception->severity=(ExceptionType) severity;
-  (void) CloneString(&exception->reason,reason);
-  (void) CloneString(&exception->description,description);
+  CloneString(&exception->reason,reason);
+  CloneString(&exception->description,description);
 }

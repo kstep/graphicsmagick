@@ -172,7 +172,7 @@ static int GenerateIPTCAttribute(Image *image,const char *key)
       continue;
     (void) strncpy(attribute,(char *) image->iptc_profile.info+i+5,length);
     attribute[length]='\0';
-    (void) SetImageAttribute(image,key,(const char *) attribute);
+    SetImageAttribute(image,key,(const char *) attribute);
     LiberateMemory((void **) &attribute);
     break;
   }
@@ -275,7 +275,7 @@ static char *TraceClippingPath(char *blob,size_t length,unsigned int columns,
   if (path == (char *) NULL)
     return((char *) NULL);
   message=AllocateString((char *) NULL);
-  while (length != 0)
+  while (length > 0)
   {
     selector=ReadMSBShort(&blob,&length);
     if (selector != 6)
@@ -290,14 +290,14 @@ static char *TraceClippingPath(char *blob,size_t length,unsigned int columns,
     blob+=24;
     length-=24;
     FormatString(message,"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
-    (void) ConcatenateString(&path,message);
+    ConcatenateString(&path,message);
     FormatString(message,"<svg width=\"%d\" height=\"%d\">\n",columns,rows);
-    (void) ConcatenateString(&path,message);
+    ConcatenateString(&path,message);
     FormatString(message,"<g>\n");
-    (void) ConcatenateString(&path,message);
+    ConcatenateString(&path,message);
     FormatString(message,"<path style=\"fill:#ffffff;stroke:none\" d=\"\n");
-    (void) ConcatenateString(&path,message);
-    while (length != 0)
+    ConcatenateString(&path,message);
+    while (length > 0)
     {
       selector=ReadMSBShort(&blob,&length);
       if (selector > 8)
@@ -336,7 +336,7 @@ static char *TraceClippingPath(char *blob,size_t length,unsigned int columns,
                 for (i=0; i < 3; i++)
                   last[i]=point[i];
               }
-          (void) ConcatenateString(&path,message);
+          ConcatenateString(&path,message);
           status=False;
           count--;
         }
@@ -345,15 +345,15 @@ static char *TraceClippingPath(char *blob,size_t length,unsigned int columns,
         {
           FormatString(message,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f Z\n",last[2].x,
             last[2].y,first[0].x,first[0].y,first[1].x,first[1].y);
-          (void) ConcatenateString(&path,message);
+          ConcatenateString(&path,message);
         }
     }
     FormatString(message,"\"/>\n");
-    (void) ConcatenateString(&path,message);
+    ConcatenateString(&path,message);
     FormatString(message,"</g>\n");
-    (void) ConcatenateString(&path,message);
+    ConcatenateString(&path,message);
     FormatString(message,"</svg>\n");
-    (void) ConcatenateString(&path,message);
+    ConcatenateString(&path,message);
     break;
   }
   LiberateMemory((void **) &message);
@@ -394,7 +394,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
   status=False;
   length=image->iptc_profile.length;
   info=image->iptc_profile.info;
-  while (length != 0)
+  while (length > 0)
   {
     if (ReadByte((char **) &info,&length) != '8')
       continue;
@@ -433,14 +433,14 @@ static int Generate8BIMAttribute(Image *image,const char *key)
         info+=count;
         length-=count;
         if ((id <= 1999) || (id >= 2999))
-          (void) SetImageAttribute(image,key,(const char *) attribute);
+          SetImageAttribute(image,key,(const char *) attribute);
         else
           {
             char
               *path;
 
             path=TraceClippingPath(attribute,count,image->columns,image->rows);
-            (void) SetImageAttribute(image,key,(const char *) path);
+            SetImageAttribute(image,key,(const char *) path);
             LiberateMemory((void **) &path);
           }
         LiberateMemory((void **) &attribute);
@@ -585,7 +585,7 @@ static long Read32s(int morder, void *ilong)
 
 static unsigned long Read32u(int morder, void *ilong)
 {
-  return Read32s(morder,ilong) & 0xffffffff;
+  return(Read32s(morder,ilong) & 0xffffffff);
 }
 
 #define DE_STACK_SIZE 16
@@ -634,7 +634,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
   for (i=0; i < (int) image->generic_profiles; i++)
   {
     if ((LocaleCompare(image->generic_profile[i].name,"APP1") == 0) &&
-      (image->generic_profile[i].length > 0))
+      (image->generic_profile[i].length != 0))
       {
         index=i;
         break;
@@ -725,7 +725,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
     return(False);
   length=image->generic_profile[index].length;
   info=image->generic_profile[index].info;
-  while (length != 0)
+  while (length > 0)
   {
     if (ReadByte((char **) &info,&length) != 0x45)
       continue;
@@ -891,7 +891,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
                 *desc;
 
               if (strlen(final) != 0)
-                (void) ConcatenateString(&final,EXIF_DELIMITER);
+                ConcatenateString(&final,EXIF_DELIMITER);
               desc=(char *) NULL;
               switch (all)
               {
@@ -909,17 +909,17 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
                         }
                   }
                   FormatString(s,"%.1024s=",desc);
-                  (void) ConcatenateString(&final,s);
+                  ConcatenateString(&final,s);
                   break;
                 }
                 case 2:
                 {
                   FormatString(s,"#%04x=",t);
-                  (void) ConcatenateString(&final,s);
+                  ConcatenateString(&final,s);
                   break;
                 }
               }
-              (void) ConcatenateString(&final,value);
+              ConcatenateString(&final,value);
               LiberateMemory((void **) &value);
             }
         }
@@ -948,8 +948,8 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
     }
   } while (level>0);
   if (strlen(final) == 0)
-    (void) ConcatenateString(&final,"unknown");
-  (void) SetImageAttribute(image,spec,(const char *) final);
+    ConcatenateString(&final,"unknown");
+  SetImageAttribute(image,spec,(const char *) final);
   LiberateMemory((void **) &final);
   return(True);
 }
@@ -1250,7 +1250,7 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,Image *image,
   }
   if (strlen(image->magick_filename) > 0)
     {
-      (void) SetImageAttribute(image,key,(const char *) attribute);
+      SetImageAttribute(image,key,(const char *) attribute);
       return(GetImageAttribute(image,key));
     }
   return((ImageAttribute *) NULL);
@@ -1359,7 +1359,7 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
   {
     if (LocaleCompare(attribute->key,p->key) == 0)
       {
-        (void) ConcatenateString(&p->value,attribute->value);
+        ConcatenateString(&p->value,attribute->value);
         LiberateMemory((void **) &attribute->value);
         LiberateMemory((void **) &attribute->key);
         return(True);
@@ -1444,7 +1444,7 @@ void StoreImageAttribute(Image *image,char *text)
     state++;
   }
   if ((state > 1) && (key != (char *) NULL) && (value != (char *) NULL))
-    (void) SetImageAttribute(image,key,value);
+    SetImageAttribute(image,key,value);
   if (token != (char *) NULL)
     LiberateMemory((void **) &token);
   if (key != (char *) NULL)

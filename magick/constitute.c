@@ -654,7 +654,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
       {
         if (image->colorspace == CMYKColorspace)
           break;
-        (void) RGBTransformImage(image,CMYKColorspace);
+        RGBTransformImage(image,CMYKColorspace);
         break;
       }
       case 'i':
@@ -698,7 +698,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
               case 'c':
               case 'C':
               {
-                *q++=(unsigned char) DownScale(p->red);
+                *q++=DownScale(p->red);
                 break;
               }
               case 'g':
@@ -706,7 +706,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
               case 'm':
               case 'M':
               {
-                *q++=(unsigned char) DownScale(p->green);
+                *q++=DownScale(p->green);
                 break;
               }
               case 'b':
@@ -714,7 +714,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
               case 'y':
               case 'Y':
               {
-                *q++=(unsigned char) DownScale(p->blue);
+                *q++=DownScale(p->blue);
                 break;
               }
               case 'a':
@@ -722,13 +722,13 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
               case 'k':
               case 'K':
               {
-                *q++=(unsigned char) DownScale(p->opacity);
+                *q++=DownScale(p->opacity);
                 break;
               }
               case 'i':
               case 'I':
               {
-                *q++=(unsigned char) indexes[x];
+                *q++=indexes[x];
                 break;
               }
               default:
@@ -763,7 +763,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
               case 'c':
               case 'C':
               {
-                *q++=(unsigned short) p->red;
+                *q++=p->red;
                 break;
               }
               case 'g':
@@ -771,7 +771,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
               case 'm':
               case 'M':
               {
-                *q++=(unsigned short) p->green;
+                *q++=p->green;
                 break;
               }
               case 'b':
@@ -779,7 +779,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
               case 'y':
               case 'Y':
               {
-                *q++=(unsigned short) p->blue;
+                *q++=p->blue;
                 break;
               }
               case 'a':
@@ -787,7 +787,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
               case 'k':
               case 'K':
               {
-                *q++=(unsigned short) p->opacity;
+                *q++=p->opacity;
                 break;
               }
               case 'i':
@@ -1883,7 +1883,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   if (*image_info->filename == '@')
     return(ReadImages(image_info,exception));
   clone_info=CloneImageInfo(image_info);
-  SetImageInfo(clone_info,False,exception);
+  (void) SetImageInfo(clone_info,False,exception);
   (void) strcpy(filename,clone_info->filename);
   /*
     Call appropriate image reader based on image type.
@@ -1936,7 +1936,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       image=(Image *) NULL;
       if (status != False)
         clone_info->temporary=True;
-      SetImageInfo(clone_info,False,exception);
+      (void) SetImageInfo(clone_info,False,exception);
       magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick,exception);
       if ((magick_info == (MagickInfo *) NULL) ||
           (magick_info->decoder ==
@@ -2251,7 +2251,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   clone_info=CloneImageInfo(image_info);
   (void) strcpy(clone_info->filename,image->filename);
   (void) strcpy(clone_info->magick,image->magick);
-  SetImageInfo(clone_info,True,&image->exception);
+  (void) SetImageInfo(clone_info,True,&image->exception);
   (void) strcpy(image->filename,clone_info->filename);
   if (((image->next == (Image *) NULL) || clone_info->adjoin) &&
       (image->previous == (Image *) NULL) &&

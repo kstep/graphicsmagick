@@ -190,7 +190,7 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(montage_info != (MontageInfo *) NULL);
-  (void) memset(montage_info,0,sizeof(MontageInfo));
+  memset(montage_info,0,sizeof(MontageInfo));
   (void) strcpy(montage_info->filename,image_info->filename);
   montage_info->geometry=AllocateString(DefaultTileGeometry);
   montage_info->tile=AllocateString("6x4");
@@ -570,7 +570,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
           font_height << 1,0,font_height+tile_info.y+4);
         (void) CloneString(&draw_info->geometry,geometry);
         (void) CloneString(&draw_info->text,title);
-        (void) AnnotateImage(montage_next,draw_info);
+        AnnotateImage(montage_next,draw_info);
       }
     (void) SetMonitorHandler(handler);
     /*
@@ -711,8 +711,8 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
           /*
             Composite background next with tile next.
           */
-          (void) CompositeImage(montage_next,montage_info->compose,next,
-            x_offset+x,y_offset+y);
+          CompositeImage(montage_next,montage_info->compose,next,x_offset+x,
+            y_offset+y);
           if (montage_info->shadow)
             {
               register int
@@ -765,7 +765,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
                 2*border_width+(montage_info->shadow ? 4 : 0)));
               (void) CloneString(&draw_info->geometry,geometry);
               (void) CloneString(&draw_info->text,attribute->value);
-              (void) AnnotateImage(montage_next,draw_info);
+              AnnotateImage(montage_next,draw_info);
             }
         }
       x_offset+=width+(tile_info.x+border_width)*2;

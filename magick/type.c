@@ -334,7 +334,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
         if (type_info == (TypeInfo *) NULL)
           MagickError(ResourceLimitError,"Unable to allocate fonts",
             "Memory allocation failed");
-        (void) memset(type_info,0,sizeof(TypeInfo));
+        memset(type_info,0,sizeof(TypeInfo));
         if (type_list == (TypeInfo *) NULL)
           {
             type_info->filename=AllocateString(filename);

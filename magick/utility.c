@@ -688,7 +688,7 @@ MagickExport int GetGeometry(const char *image_geometry,int *x,int *y,
   (void) strcpy(geometry,image_geometry);
   flags=NoValue;
   p=geometry;
-  while (strlen(p) > 0)
+  while (strlen(p) != 0)
   {
     if (isspace((int) (*p)))
       (void) strcpy(p,p+1);
@@ -1002,7 +1002,7 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
       */
       image_info=CloneImageInfo((ImageInfo *) NULL);
       (void) strcpy(image_info->filename,pattern);
-      SetImageInfo(image_info,True,&exception);
+      (void) SetImageInfo(image_info,True,&exception);
       exempt=(LocaleCompare(image_info->magick,"VID") == 0) ||
         (image_info->subimage &&
         (LocaleCompare(expression,image_info->filename) == 0));
@@ -2341,7 +2341,7 @@ MagickExport void Strip(char *data)
     q--;
   count=q-p+1;
   q=data;
-  (void) memcpy(q,p,count);
+  memcpy(q,p,count);
   *(q+count)='\0';
 }
 
