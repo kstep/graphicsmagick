@@ -49,12 +49,12 @@ SUBDIRS = delegates coders magick utilities tests $(MAGICK_PLUS_PLUS)
 endif # WITH_MODULES
 
 # Architecture independent data files installed in the package's data directory
-pkgdata_DATA = Copyright.txt PLATFORMS.txt QuickStart.txt
+pkgdata_DATA = Copyright.txt QuickStart.txt
 
 # Additional files to distribute
-EXTRA_DIST = Manifest.ps ImageMagick.html Magickshr.opt Make.com README.txt \
-	Copyright.txt acconfig.h QuickStart.txt lndir.sh ltcf-c.sh ltcf-cxx.sh \
-	ltcf-gcj.sh ltconfig
+EXTRA_DIST = Copyright.txt TODO.txt ImageMagick.html Magickshr.opt Make.com \
+	Manifest.ps PLATFORMS.txt QuickStart.txt README.txt acconfig.h \
+	lndir.sh ltcf-c.sh ltcf-cxx.sh ltcf-gcj.sh ltconfig
 
 # Non-Automake subdirectories to distribute
 DISTDIRS = contrib images scenes scripts www PerlMagick
