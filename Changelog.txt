@@ -1,3 +1,7 @@
+2002-01-03  Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
+        * Fixed an out-of-bounds memset when decoding 1-bit
+        AVI, BMP, and DIB images.
+
 2002-01-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* coders/wmf.c (magick_brush): Fixed bug with setting
 	fill color.
