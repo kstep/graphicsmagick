@@ -2,16 +2,16 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Description of Image structure members.">
-   <title>ImageMagick Image Structure</title>
+   <title>ImageMagick Image</title>
 </head>
 <body text="#000000" link="#0000EE" vlink="#551A8B" alink="#FF0000" background="../../../images/background.gif">
 
 <center>
 <h1>
-ImageMagick Image Structure</h1></center>
+ImageMagick Image</h1></center>
 The Image structure represents an ImageMagick image. It is initially allocated
 by <a href="../image.html#AllocateImage">AllocateImage()</a> and deallocated
 by <a href="../image.html#DestroyImage">DestroyImage()</a>. The functions
@@ -20,7 +20,33 @@ by <a href="../image.html#DestroyImage">DestroyImage()</a>. The functions
 <a href="../blob.html#BlobToImage">BlobToImage()</a>
 and <a href="../image.html#CreateImage">CreateImage()</a> return a new
 image. Use <a href="../image.html#CloneImage">CloneImage()</a> to copy
-an image.
+an image. An image consists of a structure containing image attributes
+as well as the image pixels.
+<p>The image pixels are represented by the structure <a href="PixelPacket.html">PixelPacket</a>
+and are cached in-memory, or on disk, depending on the cache threshold
+setting. This cache is known as the "pixel cache". Pixels in the cache
+may not be edited directly. They must first be made visible from the cache.
+After an image has been read (and is therefore in the cache), the pixels
+are made visible and accessable by using the <a href="../cache.html#GetPixelCache">GetPixelCache()</a>
+method which allows importing a specified region of the image. The pixels
+may then be accessed via the pointer returned from <a href="../cache.html#GetPixelCache">GetPixelCache()</a>
+or the <a href="#pixels">pixels</a> member (identical values). After the
+pixels have been updated, they may be saved back to the cache in their
+original positions via <a href="../cache.html#SyncPixelCache">SyncPixelCache()</a>.
+<p>In order to create an image with new contents, or to blindly overwrite
+existing contents, the method&nbsp; <a href="../cache.html#SetPixelCache">SetPixelCache()</a>
+is used to reserve a pixel memory region corresponding to the pixel cache.
+Once the memory region has been updated, it may be written to the cache
+via <a href="../cache.html#SyncPixelCache">SyncPixelCache()</a>.
+<p>When writing encoders and decoders for new image formats, it is convenient
+to have a high-level interface available which supports converting between
+external pixel representations and ImageMagick's own representation. Pixel
+components (red, green, blue, opacity, RGB, or RGBA) may be transferred
+from a user-supplied buffer into the image pixel buffer by using <a href="../cache.html#ReadPixelCache">ReadPixelCache()</a>.
+Pixel components may be transferred from the image pixel buffer into a
+user-supplied buffer by using <a href="../cache.html#WritePixelCache">WritePixelCache()</a>.
+Use of this high-level interface helps protect image coders from changes
+to ImageMagick's pixel representation and simplifies the implementation.
 <p>The members of the Image structure are shown in the following table:
 <br>&nbsp;
 <table BORDER CELLSPACING=0 CELLPADDING=5 WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
@@ -452,7 +478,8 @@ The pipe is automatically closed via pclose() when the operation completes.</fon
 
 <td><font size=-1><a href="PixelPacket.html">PixelPacket</a> *</font></td>
 
-<td><font size=-1>Image pixels</font></td>
+<td><font size=-1>Image pixels retrieved via <a href="../cache.html#GetPixelCache">GetPixelCache()</a>
+or initialized via <a href="../cache.html#SetPixelCache">SetPixelCache()</a>.</font></td>
 </tr>
 
 <tr>
@@ -558,10 +585,9 @@ verbose flag was set before the call. Calculated by <a href="../colors.html#GetN
 </tr>
 </table>
 
-<p><hr>
-<p><a href="../../../ImageMagick.html"><img SRC="../../../images/home.gif"
-  ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
-  Image manipulation software that works like magic.</font></dl>
-
+<p>
+<hr>
+<p><a href="../../../ImageMagick.html"><img SRC="../../../images/home.gif" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
+Image manipulation software that works like magic.</font>
 </body>
 </html>
