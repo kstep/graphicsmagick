@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick 1.0.3 ChangeLog</TITLE>
+<TITLE>GraphicsMagick 1.0.4 ChangeLog</TITLE>
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
@@ -49,13 +49,30 @@
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.0.3 ChangeLog</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.0.4 ChangeLog</font></font></font></b></td>
 </tr>
 </table>
+<p>
+2003-09-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> Makefile.am (DOCDIRS): www/api/types does not exist anymore.
+
+</UL>
+<p>
+2003-09-04  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/png.c: removed unused "loops_active" variable.
+
+</UL>
 <p>
 2003-08-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> version.sh (LIBRARY_REVISION): Ensure that library does not
+        overwrite released library from 1.0.3.  Change release date back
+        to "unreleased".<BR>
   <LI> GraphicsMagick 1.0.3 released.
   <LI> index.html: Changed version to 1.0.3.
   <LI> NEWS: Updated NEWS to reflect fixes since 1.0.2.

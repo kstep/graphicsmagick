@@ -1,9 +1,16 @@
+2003-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (DOCDIRS): www/api/types does not exist anymore.
+
 2003-09-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/png.c: removed unused "loops_active" variable.
 
 2003-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* version.sh (LIBRARY_REVISION): Ensure that library does not
+	overwrite released library from 1.0.3.  Change release date back
+	to "unreleased".
 	* GraphicsMagick 1.0.3 released.
 	* index.html: Changed version to 1.0.3.
 	* NEWS: Updated NEWS to reflect fixes since 1.0.2.
