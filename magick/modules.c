@@ -508,6 +508,11 @@ MagickExport char **ListModules(void)
       */
       module_list[j]=BaseFilename(entry->d_name);
       LocaleUpper(module_list[j]);
+      if (LocaleNCompare("IM_MOD_",module_list[j],7) == 0)
+        {
+          (void) strcpy(module_list[j],module_list[j]+10);
+          module_list[j][Extent(module_list[j])-1]='\0';
+        }
       module_list[++j]=(char *) NULL;
       entry=readdir(directory);
     }
@@ -850,6 +855,7 @@ char *TagToModule(const char *tag)
   (void) FormatString(module_name,"%s.la",tag);
   (void) LocaleLower(module_name);
 #else
+  puts(tag);
   if (LocaleNCompare("IM_MOD_",tag,6) == 0)
     (void) strcpy(module_name,tag);
   else
