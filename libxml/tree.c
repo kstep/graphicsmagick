@@ -4,6 +4,11 @@
  * See Copyright for the status of this software.
  *
  * Daniel.Veillard@w3.org
+ *
+ * 14 Nov 2000 ht - Changed the name of function xmlBufferWriteChar under VMS
+ * as it was similar to xmlBufferWriteCHAR when compiling without case
+ * sensitivity.
+ *  
  */
 
 #ifdef WIN32
@@ -4057,7 +4062,7 @@ xmlGetNsProp(xmlNodePtr node, const xmlChar *name, const xmlChar *namespace) {
 	    if ((attrDecl == NULL) && (doc->extSubset != NULL))
 		attrDecl = xmlGetDtdAttrDesc(doc->extSubset, node->name, name);
 		
-	    if (attrDecl->prefix != NULL) {
+	    if ((attrDecl != NULL) && (attrDecl->prefix != NULL)) {
 	        /*
 		 * The DTD declaration only allows a prefix search
 		 */
@@ -4342,7 +4347,7 @@ xmlBufferShrink(xmlBufferPtr buf, unsigned int len) {
 /**
  * xmlBufferGrow:
  * @buf:  the buffer
- * @len:  the minimum free sie to allocate
+ * @len:  the minimum free size to allocate
  *
  * Grow the available space of an XML buffer.
  *
@@ -4353,7 +4358,7 @@ xmlBufferGrow(xmlBufferPtr buf, unsigned int len) {
     int size;
     xmlChar *newbuf;
 
-    if (len <= buf->use) return(0);
+    if (len + buf->use < buf->size) return(0);
 
     size = buf->use + len + 100;
 
@@ -4623,11 +4628,16 @@ xmlBufferCCat(xmlBufferPtr buf, const char *str) {
  * @buf:  the XML buffer
  * @string:  the string to add
  *
- * routine which manage and grows an output buffer. This one add
+ * routine which manages and grows an output buffer. This one adds
  * xmlChars at the end of the buffer.
  */
 void
-xmlBufferWriteCHAR(xmlBufferPtr buf, const xmlChar *string) {
+#ifdef VMS
+xmlBufferWriteXmlCHAR
+#else
+xmlBufferWriteCHAR
+#endif
+(xmlBufferPtr buf, const xmlChar *string) {
     xmlBufferCat(buf, string);
 }
 
@@ -4807,7 +4817,7 @@ xmlAttrDump(xmlBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur) {
     }
     xmlBufferWriteCHAR(buf, cur->name);
     value = xmlNodeListGetString(doc, cur->children, 0);
-    if (value) {
+    if (value != NULL) {
 	xmlBufferWriteChar(buf, "=");
 	xmlBufferWriteQuotedString(buf, value);
 	xmlFree(value);
@@ -5086,44 +5096,6 @@ xmlElemDump(FILE *f, xmlDocPtr doc, xmlNodePtr cur) {
         xmlNodeDump(buf, doc, cur, 0, 1);
     xmlBufferDump(f, buf);
     xmlBufferFree(buf);
-}
-
-/**
- * xmlDocContentDump:
- * @buf:  the XML buffer output
- * @cur:  the document
- *
- * Dump an XML document.
- */
-static void
-xmlDocContentDump(xmlBufferPtr buf, xmlDocPtr cur) {
-    xmlBufferWriteChar(buf, "<?xml version=");
-    if (cur->version != NULL) 
-	xmlBufferWriteQuotedString(buf, cur->version);
-    else
-	xmlBufferWriteChar(buf, "\"1.0\"");
-    if (cur->encoding != NULL) {
-        xmlBufferWriteChar(buf, " encoding=");
-	xmlBufferWriteQuotedString(buf, cur->encoding);
-    }
-    switch (cur->standalone) {
-        case 0:
-	    xmlBufferWriteChar(buf, " standalone=\"no\"");
-	    break;
-        case 1:
-	    xmlBufferWriteChar(buf, " standalone=\"yes\"");
-	    break;
-    }
-    xmlBufferWriteChar(buf, "?>\n");
-    if (cur->children != NULL) {
-        xmlNodePtr child = cur->children;
-
-	while (child != NULL) {
-	    xmlNodeDump(buf, cur, child, 0, 0);
-	    xmlBufferWriteChar(buf, "\n");
-	    child = child->next;
-	}
-    }
 }
 
 /************************************************************************
@@ -5512,12 +5484,13 @@ xmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur,
  * @buf:  the XML buffer output
  * @cur:  the document
  * @encoding:  an optional encoding string
+ * @format:  should formatting spaces been added
  *
  * Dump an XML document.
  */
 static void
 xmlDocContentDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr cur,
-	                const char *encoding) {
+	                const char *encoding, int format) {
     xmlOutputBufferWriteString(buf, "<?xml version=");
     if (cur->version != NULL) 
 	xmlBufferWriteQuotedString(buf->buffer, cur->version);
@@ -5546,7 +5519,7 @@ xmlDocContentDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr cur,
         xmlNodePtr child = cur->children;
 
 	while (child != NULL) {
-	    xmlNodeDumpOutput(buf, cur, child, 0, 1, encoding);
+	    xmlNodeDumpOutput(buf, cur, child, 0, format, encoding);
 	    xmlOutputBufferWriteString(buf, "\n");
 	    child = child->next;
 	}
@@ -5560,6 +5533,105 @@ xmlDocContentDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr cur,
  ************************************************************************/
 
 /**
+ * xmlDocDumpMemoryEnc:
+ * @out_doc:  Document to generate XML text from
+ * @doc_txt_ptr:  Memory pointer for allocated XML text
+ * @doc_txt_len:  Length of the generated XML text
+ * @txt_encoding:  Character encoding to use when generating XML text
+ * @format:  should formatting spaces been added
+ *
+ * Dump the current DOM tree into memory using the character encoding specified
+ * by the caller.  Note it is up to the caller of this function to free the
+ * allocated memory.
+ */
+
+void
+xmlDocDumpFormatMemoryEnc(xmlDocPtr out_doc, xmlChar **doc_txt_ptr,
+		int * doc_txt_len, const char * txt_encoding, int format) {
+    int                         dummy = 0;
+
+    xmlCharEncoding             doc_charset;
+    xmlOutputBufferPtr          out_buff = NULL;
+    xmlCharEncodingHandlerPtr   conv_hdlr = NULL;
+
+    if (doc_txt_len == NULL) {
+        doc_txt_len = &dummy;   /*  Continue, caller just won't get length */
+    }
+
+    if (doc_txt_ptr == NULL) {
+        *doc_txt_len = 0;
+        xmlGenericError(xmlGenericErrorContext,
+                    "xmlDocDumpFormatMemoryEnc:  Null return buffer pointer.");
+        return;
+    }
+
+    *doc_txt_ptr = NULL;
+    *doc_txt_len = 0;
+
+    if (out_doc == NULL) {
+        /*  No document, no output  */
+        xmlGenericError(xmlGenericErrorContext,
+                "xmlDocDumpFormatMemoryEnc:  Null DOM tree document pointer.\n");
+        return;
+    }
+
+    /*
+     *  Validate the encoding value, if provided.
+     *  This logic is copied from xmlSaveFileEnc.
+     */
+
+    if (txt_encoding == NULL)
+	txt_encoding = (const char *) out_doc->encoding;
+    if (txt_encoding != NULL) {
+        doc_charset = xmlParseCharEncoding(txt_encoding);
+
+        if (out_doc->charset != XML_CHAR_ENCODING_UTF8) {
+            xmlGenericError(xmlGenericErrorContext,
+                    "xmlDocDumpFormatMemoryEnc: Source document not in UTF8\n");
+            return;
+
+        } else if (doc_charset != XML_CHAR_ENCODING_UTF8) {
+            conv_hdlr = xmlFindCharEncodingHandler(txt_encoding);
+            if ( conv_hdlr == NULL ) {
+                xmlGenericError(xmlGenericErrorContext,
+                                "%s:  %s %s '%s'\n",
+                                "xmlDocDumpFormatMemoryEnc",
+                                "Failed to identify encoding handler for",
+                                "character set",
+                                txt_encoding);
+                return;
+            }
+        }
+    }
+
+    if ((out_buff = xmlAllocOutputBuffer(conv_hdlr)) == NULL ) {
+        xmlGenericError(xmlGenericErrorContext,
+	    "xmlDocDumpFormatMemoryEnc: Failed to allocate output buffer.\n");
+        return;
+    }
+
+    xmlDocContentDumpOutput(out_buff, out_doc, txt_encoding, 1);
+    xmlOutputBufferFlush(out_buff);
+    if (out_buff->conv != NULL) {
+	*doc_txt_len = out_buff->conv->use;
+	*doc_txt_ptr = xmlStrndup(out_buff->conv->content, *doc_txt_len);
+    } else {
+	*doc_txt_len = out_buff->buffer->use;
+	*doc_txt_ptr = xmlStrndup(out_buff->buffer->content, *doc_txt_len);
+    }
+    (void)xmlOutputBufferClose(out_buff);
+
+    if ((*doc_txt_ptr == NULL) && (*doc_txt_len > 0)) {
+        *doc_txt_len = 0;
+        xmlGenericError(xmlGenericErrorContext,
+                "xmlDocDumpFormatMemoryEnc:  %s\n",
+                "Failed to allocate memory for document text representation.");
+    }
+
+    return;
+}
+
+/**
  * xmlDocDumpMemory:
  * @cur:  the document
  * @mem:  OUT: the memory pointer
@@ -5570,27 +5642,42 @@ xmlDocContentDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr cur,
  */
 void
 xmlDocDumpMemory(xmlDocPtr cur, xmlChar**mem, int *size) {
-    xmlBufferPtr buf;
+    xmlDocDumpFormatMemoryEnc(cur, mem, size, NULL, 0);
+}
 
-    if (cur == NULL) {
-#ifdef DEBUG_TREE
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlDocDumpMemory : document == NULL\n");
-#endif
-	*mem = NULL;
-	*size = 0;
-	return;
-    }
-    buf = xmlBufferCreate();
-    if (buf == NULL) {
-	*mem = NULL;
-	*size = 0;
-	return;
-    }
-    xmlDocContentDump(buf, cur);
-    *mem = xmlStrndup(buf->content, buf->use);
-    *size = buf->use;
-    xmlBufferFree(buf);
+/**
+ * xmlDocDumpFormatMemory:
+ * @cur:  the document
+ * @mem:  OUT: the memory pointer
+ * @size:  OUT: the memory lenght
+ * @format:  should formatting spaces been added
+ *
+ *
+ * Dump an XML document in memory and return the xmlChar * and it's size.
+ * It's up to the caller to free the memory.
+ */
+void
+xmlDocDumpFormatMemory(xmlDocPtr cur, xmlChar**mem, int *size, int format) {
+    xmlDocDumpFormatMemoryEnc(cur, mem, size, NULL, format);
+}
+
+/**
+ * xmlDocDumpMemoryEnc:
+ * @out_doc:  Document to generate XML text from
+ * @doc_txt_ptr:  Memory pointer for allocated XML text
+ * @doc_txt_len:  Length of the generated XML text
+ * @txt_encoding:  Character encoding to use when generating XML text
+ *
+ * Dump the current DOM tree into memory using the character encoding specified
+ * by the caller.  Note it is up to the caller of this function to free the
+ * allocated memory.
+ */
+
+void
+xmlDocDumpMemoryEnc(xmlDocPtr out_doc, xmlChar **doc_txt_ptr,
+	            int * doc_txt_len, const char * txt_encoding) {
+    xmlDocDumpFormatMemoryEnc(out_doc, doc_txt_ptr, doc_txt_len,
+	                      txt_encoding, 1);
 }
 
 /**
@@ -5692,7 +5779,7 @@ xmlDocDump(FILE *f, xmlDocPtr cur) {
     }
     buf = xmlOutputBufferCreateFile(f, handler);
     if (buf == NULL) return(-1);
-    xmlDocContentDumpOutput(buf, cur, NULL);
+    xmlDocContentDumpOutput(buf, cur, NULL, 1);
 
     ret = xmlOutputBufferClose(buf);
     return(ret);
@@ -5713,7 +5800,7 @@ xmlSaveFileTo(xmlOutputBuffer *buf, xmlDocPtr cur, const char *encoding) {
     int ret;
 
     if (buf == NULL) return(0);
-    xmlDocContentDumpOutput(buf, cur, encoding);
+    xmlDocContentDumpOutput(buf, cur, encoding, 1);
     ret = xmlOutputBufferClose(buf);
     return(ret);
 }
@@ -5757,7 +5844,7 @@ xmlSaveFileEnc(const char *filename, xmlDocPtr cur, const char *encoding) {
     buf = xmlOutputBufferCreateFilename(filename, handler, 0);
     if (buf == NULL) return(0);
 
-    xmlDocContentDumpOutput(buf, cur, encoding);
+    xmlDocContentDumpOutput(buf, cur, encoding, 1);
 
     ret = xmlOutputBufferClose(buf);
     return(ret);
@@ -5812,7 +5899,7 @@ xmlSaveFile(const char *filename, xmlDocPtr cur) {
     buf = xmlOutputBufferCreateFilename(filename, handler, cur->compression);
     if (buf == NULL) return(0);
 
-    xmlDocContentDumpOutput(buf, cur, NULL);
+    xmlDocContentDumpOutput(buf, cur, NULL, 1);
 
     ret = xmlOutputBufferClose(buf);
     return(ret);

@@ -88,7 +88,13 @@ static char *encoding = NULL;
 static int xinclude = 0;
 #endif
 
+
+#ifdef VMS
+extern int xmlDoValidityCheckingDefaultVal;
+#define xmlDoValidityCheckingDefaultValue xmlDoValidityCheckingDefaultVal
+#else
 extern int xmlDoValidityCheckingDefaultValue;
+#endif
 extern int xmlGetWarningsDefaultValue;
 
 /************************************************************************
@@ -366,7 +372,9 @@ int myRead(FILE *f, char * buffer, int len) {
     return(fread(buffer, 1, len, f));
 }
 void myClose(FILE *f) {
+  if (f != stdin) {
     fclose(f);
+  }
 }
 
 /************************************************************************
@@ -388,7 +396,12 @@ void parseAndPrintFile(char *filename) {
 	if (push) {
 	    FILE *f;
 
-	    f = fopen(filename, "r");
+	    /* '-' Usually means stdin -<sven@zen.org> */
+	    if ((filename[0] == '-') && (filename[1] == 0)) {
+	      f = stdin;
+	    } else {
+	      f = fopen(filename, "r");
+	    }
 	    if (f != NULL) {
 		int ret;
 	        int res, size = 3;
@@ -418,7 +431,12 @@ void parseAndPrintFile(char *filename) {
 	    int ret;
 	    FILE *f;
 
-	    f = fopen(filename, "r");
+	    /* '-' Usually means stdin -<sven@zen.org> */
+	    if ((filename[0] == '-') && (filename[1] == 0)) {
+	      f = stdin;
+	    } else {
+	      f = fopen(filename, "r");
+	    }
 	    if (f != NULL) {
                 xmlParserCtxtPtr ctxt;
 
@@ -559,15 +577,31 @@ void parseAndPrintFile(char *filename) {
 #ifdef LIBXML_DEBUG_ENABLED
 	if (!debug) {
 #endif
-	    if (compress)
+	    if (memory) {
+		xmlChar *result;
+		int len;
+
+		if (encoding != NULL) {
+		    xmlDocDumpMemoryEnc(doc, &result, &len, encoding);
+		} else {
+		    xmlDocDumpMemory(doc, &result, &len);
+		}
+		if (result == NULL) {
+		    fprintf(stderr, "Failed to save\n");
+		} else {
+		    write(1, result, len);
+		    xmlFree(result);
+		}
+	    } else if (compress)
 		xmlSaveFile("-", doc);
 	    else if (encoding != NULL)
 	        xmlSaveFileEnc("-", doc, encoding);
 	    else
 		xmlDocDump(stdout, doc);
 #ifdef LIBXML_DEBUG_ENABLED
-	} else
+	} else {
 	    xmlDebugDumpDocument(stdout, doc);
+	}
 #endif
     }
 
@@ -611,7 +645,8 @@ void parseAndPrintFile(char *filename) {
     xmlFreeDoc(doc);
 }
 
-int main(int argc, char **argv) {
+int
+main(int argc, char **argv) {
     int i, count;
     int files = 0;
 
@@ -744,7 +779,8 @@ int main(int argc, char **argv) {
 	    i++;
 	    continue;
         }
-	if (argv[i][0] != '-') {
+	/* Remember file names.  "-" means stding.  <sven@zen.org> */
+	if ((argv[i][0] != '-') || (strcmp(argv[i], "-") == 0)) {
 	    if (repeat) {
 		for (count = 0;count < 100 * repeat;count++)
 		    parseAndPrintFile(argv[i]);

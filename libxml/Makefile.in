@@ -166,7 +166,7 @@ confexecdir = $(libdir)
 confexec_DATA = xmlConf.sh
 
 CLEANFILES = xmlConf.sh
-EXTRA_DIST = xmlConf.sh.in libxml.spec.in libxml.spec libxml.m4              example/Makefile.am example/gjobread.c example/gjobs.xml 	     $(man_MANS) libxml-2.0.pc.in xmlversion.h.in 	     win32/README.MSDev win32/Makefile.mingw win32/libxml2/libxml2.dsp
+EXTRA_DIST = xmlConf.sh.in libxml.spec.in libxml.spec libxml.m4              example/Makefile.am example/gjobread.c example/gjobs.xml 	     $(man_MANS) libxml-2.0.pc.in xmlversion.h.in 	     win32/README.MSDev win32/Makefile.mingw win32/libxml2/libxml2.dsp 	     vms/build_libxml.com vms/config.vms
 
 
 pkgconfigdir = $(libdir)/pkgconfig
@@ -667,7 +667,7 @@ distdir: $(DISTFILES)
 	-rm -rf $(distdir)
 	mkdir $(distdir)
 	-chmod 777 $(distdir)
-	$(mkinstalldirs) $(distdir)/example $(distdir)/win32 \
+	$(mkinstalldirs) $(distdir)/example $(distdir)/vms $(distdir)/win32 \
 	   $(distdir)/win32/libxml2
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
@@ -758,9 +758,6 @@ testXPath.o: testXPath.c config.h libxml/xmlversion.h libxml/xpath.h \
 	libxml/xmlIO.h libxml/encoding.h libxml/entities.h \
 	libxml/debugXML.h libxml/xmlmemory.h libxml/parserInternals.h \
 	libxml/xpathInternals.h libxml/xmlerror.h libxml/xpointer.h
-tester.o: tester.c config.h xmlmemory.h parser.h tree.h valid.h xmlIO.h \
-	encoding.h entities.h parserInternals.h HTMLparser.h HTMLtree.h \
-	xpath.h debugXML.h
 tree.lo tree.o : tree.c config.h libxml/xmlmemory.h libxml/xmlversion.h \
 	libxml/tree.h libxml/parser.h libxml/valid.h libxml/xmlIO.h \
 	libxml/encoding.h libxml/entities.h libxml/xmlerror.h
@@ -807,7 +804,8 @@ xpointer.lo xpointer.o : xpointer.c config.h libxml/xpointer.h \
 	libxml/tree.h libxml/xmlversion.h libxml/xpath.h libxml/hash.h \
 	libxml/parser.h libxml/valid.h libxml/xmlIO.h libxml/encoding.h \
 	libxml/entities.h libxml/xmlmemory.h libxml/parserInternals.h \
-	libxml/xpathInternals.h libxml/debugXML.h libxml/xmlerror.h
+	libxml/uri.h libxml/xpathInternals.h libxml/debugXML.h \
+	libxml/xmlerror.h
 
 info-am:
 info: info-recursive
@@ -1025,6 +1023,24 @@ XMLtests : xmllint
 	      $(top_builddir)/xmllint $$i > result.$$name ; \
 	      diff $(srcdir)/result/$$name result.$$name ; \
 	      $(top_builddir)/xmllint result.$$name > result2.$$name ; \
+	      diff result.$$name result2.$$name ; \
+	      rm result.$$name result2.$$name ; \
+	  fi ; fi ; done)
+	@echo "##"
+	@echo "## XML regression tests on memory"
+	@echo "##"
+	@(for i in $(srcdir)/test/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/$$name ] ; then \
+	      echo New test file $$name ; \
+	      $(top_builddir)/xmllint --memory $$i > $(srcdir)/result/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      $(top_builddir)/xmllint --memory $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/$$name result.$$name ; \
+	      $(top_builddir)/xmllint --memory result.$$name > result2.$$name ; \
 	      diff result.$$name result2.$$name ; \
 	      rm result.$$name result2.$$name ; \
 	  fi ; fi ; done)

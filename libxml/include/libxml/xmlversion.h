@@ -18,10 +18,10 @@ extern "C" {
  * your library and includes mismatch
  */
 extern void xmlCheckVersion(int version);
-#define LIBXML_DOTTED_VERSION "2.2.9"
-#define LIBXML_VERSION 20209
-#define LIBXML_VERSION_STRING "20209"
-#define LIBXML_TEST_VERSION xmlCheckVersion(20209);
+#define LIBXML_DOTTED_VERSION "2.2.11"
+#define LIBXML_VERSION 20211
+#define LIBXML_VERSION_STRING "20211"
+#define LIBXML_TEST_VERSION xmlCheckVersion(20211);
 
 /*
  * Whether the FTP support is configured in

@@ -1,3 +1,91 @@
+Thu Jan  4 19:07:49 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* configure.in: preparing 2.2.11
+	* doc/html/*: rebuild the HTML files
+	* doc/xml.html : updated
+
+Thu Jan  4 14:09:58 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* tree.c: fixed a stupid bug
+	* valid.c: applied "Paul D. Smith" <pausmith@nortelnetworks.com>
+	  patches related to validation of an XInclude processing result
+	* TODO: updated
+
+Thu Jan  4 11:46:40 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* encoding.c xmlIO.c: Fixing the problem reported by Marc Sanfacon
+	  on large files
+
+Wed Jan  3 21:51:13 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xmlIO.c: fixed xmlParserInputBufferCreateMem doc
+
+Wed Jan  3 18:56:00 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* HTMLparser.c: htmlCheckParagraph to check htmlOmittedDefaultValue,
+	  reported by Jonas Borgström
+	* nanohttp.c: Applied Bjorn Reese' IPV6 first patch
+
+Wed Jan  3 16:19:39 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* testXPath.c xpath.c: fixing the XPath union expressions problem
+	  reported by  Martin Vidner <martin@artax.karlin.mff.cuni.cz>
+
+Wed Jan  3 14:22:33 CET 2001 Daniel Veillard <Daniel.Veillard@imag.fr>
+
+	* xmllint.c: Made is so if the file name is "-" is will read form
+	  standard input. Sven Heinicke  <sven@zen.org>
+	* tree.c: fixed a problem when growing buffer
+	* tree.h: fixed the comment of the node types following andersca
+	  comment
+	* TODO: updated
+
+Wed Dec 27 12:35:49 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.[ch]: added a way to avoid adding automatically
+	  omitted tags. htmlHandleOmittedElem() allows to change the
+	  default handling.
+	* tree.[ch] xmllint.c: added xmlDocDumpFormatMemory() and 
+	  xmlDocDumpFormatMemoryEnc(), uses memory functions for output
+	  of xmllint too when using --memory flag, added a memory test
+	  suite at the Makefile level.
+	* xpathInternals.h xpath.[ch] xpointer.c: fixed problems
+	  with namespace use when encountering QNames in XPath evalation,
+	  added xmlns() scheme in XPointer.
+	* nanoftp.c : incorporated a fix
+	* parser.c xmlIO.c: fixed problems raised with encoding when using
+	  the memory I/O
+	* parserInternals.c: closed bug 25934 reported by 
+	  torsten.landschoff@innominate.de
+	* TODO: updated
+
+Sat Nov 25 11:46:27 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* configure.in doc/html/* doc/xml.html: made a 2.2.9 release
+	  on a non-updated tree :-(, made a 2.2.10 release to correct the
+	  situation
+
+Sat Nov 25 10:41:37 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* nanohttp.c parser.[ch] tree.[ch] xmlIO.[ch] xmllint.c xpath.c
+	  parserInternals.h vms/build_libxml.com vms/config.vms Makefile.am:
+	  integrated a set of OpenVMS changes from Howard Taylor
+	  <Howard.Taylor@pacoast.com>
+
+Sat Nov 25 01:21:01 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* tree.[ch] xmlIO.c: added xmlDocDumpMemoryEnc() from John Kroll
+	* error.c: applied fix suggested by "Leo Davidson" <leo@ox.compsoc.net>
+
+Sat Nov 25 00:24:49 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
+
+	* HTMLparser.c: some fixes on auto-open of html/head/body
+	* encoding.c: fixed a compilation error on some gcc env
+	* xpath.c xpointer.[ch] xpathInternals.h: improved the
+	  XPointer implementation
+	* test/XPath/xptr/strpoint test/XPath/xptr/strrange3: added
+	  related XPointer tests and associated results
+
 Fri Nov 24 14:01:44 CET 2000 Daniel Veillard <Daniel.Veillard@w3.org>
 
 	* doc/xmldtd.html doc/xml.html: following a short step by step

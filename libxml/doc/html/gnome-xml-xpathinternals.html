@@ -4,7 +4,7 @@
 >xpathInternals</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.33"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
 HREF="book1.html"><LINK
@@ -20,6 +20,9 @@ HREF="gnome-xml-xpointer.html"></HEAD
 ><BODY
 BGCOLOR="#FFFFFF"
 TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -111,19 +114,22 @@ SIZE="3"
 ></TABLE
 ></DIV
 ><H1
->xpathInternals</H1
+><A
+NAME="GNOME-XML-XPATHINTERNALS"
+>xpathInternals</A
+></H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN10993"
+NAME="AEN10987"
 ></A
 ><H2
 >Name</H2
->xpathInternals &#8212; </DIV
+>xpathInternals&nbsp;--&nbsp;</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN10996"
+NAME="AEN10990"
 ></A
 ><H2
 >Synopsis</H2
@@ -139,39 +145,39 @@ CLASS="SYNOPSIS"
 >&#13;
 
 #define     <A
-HREF="gnome-xml-xpathinternals.html#CHECK-ERROR"
+HREF="gnome-xml-xpathinternals.html#CHECK-ERROR-CAPS"
 >CHECK_ERROR</A
 >
 #define     <A
-HREF="gnome-xml-xpathinternals.html#CHECK-ERROR0"
+HREF="gnome-xml-xpathinternals.html#CHECK-ERROR0-CAPS"
 >CHECK_ERROR0</A
 >
 #define     <A
-HREF="gnome-xml-xpathinternals.html#XP-ERROR"
+HREF="gnome-xml-xpathinternals.html#XP-ERROR-CAPS"
 >XP_ERROR</A
 >                        (X)
 #define     <A
-HREF="gnome-xml-xpathinternals.html#XP-ERROR0"
+HREF="gnome-xml-xpathinternals.html#XP-ERROR0-CAPS"
 >XP_ERROR0</A
 >                       (X)
 #define     <A
-HREF="gnome-xml-xpathinternals.html#CHECK-TYPE"
+HREF="gnome-xml-xpathinternals.html#CHECK-TYPE-CAPS"
 >CHECK_TYPE</A
 >                      (typeval)
 #define     <A
-HREF="gnome-xml-xpathinternals.html#CHECK-ARITY"
+HREF="gnome-xml-xpathinternals.html#CHECK-ARITY-CAPS"
 >CHECK_ARITY</A
 >                     (x)
 #define     <A
-HREF="gnome-xml-xpathinternals.html#CAST-TO-STRING"
+HREF="gnome-xml-xpathinternals.html#CAST-TO-STRING-CAPS"
 >CAST_TO_STRING</A
 >
 #define     <A
-HREF="gnome-xml-xpathinternals.html#CAST-TO-NUMBER"
+HREF="gnome-xml-xpathinternals.html#CAST-TO-NUMBER-CAPS"
 >CAST_TO_NUMBER</A
 >
 #define     <A
-HREF="gnome-xml-xpathinternals.html#CAST-TO-BOOLEAN"
+HREF="gnome-xml-xpathinternals.html#CAST-TO-BOOLEAN-CAPS"
 >CAST_TO_BOOLEAN</A
 >
 void        <A
@@ -188,7 +194,7 @@ void        <A
 HREF="gnome-xml-xpathinternals.html#XMLXPATHDEBUGDUMPOBJECT"
 >xmlXPathDebugDumpObject</A
 >         (<GTKDOCLINK
-HREF="FILE"
+HREF="FILE-CAPS"
 >FILE</GTKDOCLINK
 > *output,
                                              <A
@@ -196,6 +202,42 @@ HREF="gnome-xml-xpath.html#XMLXPATHOBJECTPTR"
 >xmlXPathObjectPtr</A
 > cur,
                                              int depth);
+int         <A
+HREF="gnome-xml-xpathinternals.html#XMLXPATHREGISTERNS"
+>xmlXPathRegisterNs</A
+>              (<A
+HREF="gnome-xml-xpath.html#XMLXPATHCONTEXTPTR"
+>xmlXPathContextPtr</A
+> ctxt,
+                                             const <A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+> *prefix,
+                                             const <A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+> *ns_uri);
+const <A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+>* <A
+HREF="gnome-xml-xpathinternals.html#XMLXPATHNSLOOKUP"
+>xmlXPathNsLookup</A
+>             (<A
+HREF="gnome-xml-xpath.html#XMLXPATHCONTEXTPTR"
+>xmlXPathContextPtr</A
+> ctxt,
+                                             const <A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+> *ns_uri);
+void        <A
+HREF="gnome-xml-xpathinternals.html#XMLXPATHREGISTEREDNSCLEANUP"
+>xmlXPathRegisteredNsCleanup</A
+>     (<A
+HREF="gnome-xml-xpath.html#XMLXPATHCONTEXTPTR"
+>xmlXPathContextPtr</A
+> ctxt);
 int         <A
 HREF="gnome-xml-xpathinternals.html#XMLXPATHREGISTERFUNC"
 >xmlXPathRegisterFunc</A
@@ -473,6 +515,16 @@ HREF="gnome-xml-xpathinternals.html#XMLXPATHPARSENAME"
 HREF="gnome-xml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
 >xmlXPathParserContextPtr</A
 > ctxt);
+<A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+>*    <A
+HREF="gnome-xml-xpathinternals.html#XMLXPATHPARSENCNAME"
+>xmlXPathParseNCName</A
+>             (<A
+HREF="gnome-xml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt);
 <GTKDOCLINK
 HREF="DOUBLE"
 >double</GTKDOCLINK
@@ -483,6 +535,17 @@ HREF="gnome-xml-xpathinternals.html#XMLXPATHSTRINGEVALNUMBER"
 HREF="gnome-xml-tree.html#XMLCHAR"
 >xmlChar</A
 > *str);
+int         <A
+HREF="gnome-xml-xpathinternals.html#XMLXPATHEVALUATEPREDICATERESULT"
+>xmlXPathEvaluatePredicateResult</A
+> (<A
+HREF="gnome-xml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt,
+                                             <A
+HREF="gnome-xml-xpath.html#XMLXPATHOBJECTPTR"
+>xmlXPathObjectPtr</A
+> res);
 void        <A
 HREF="gnome-xml-xpath.html#XMLXPATHINIT"
 >xmlXPathInit</A
@@ -852,7 +915,7 @@ HREF="gnome-xml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN11189"
+NAME="AEN11199"
 ></A
 ><H2
 >Description</H2
@@ -862,18 +925,18 @@ NAME="AEN11189"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN11192"
+NAME="AEN11202"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11194"
+NAME="AEN11204"
 ></A
 ><H3
 ><A
-NAME="CHECK-ERROR"
+NAME="CHECK-ERROR-CAPS"
 ></A
 >CHECK_ERROR</H3
 ><TABLE
@@ -895,11 +958,11 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11199"
+NAME="AEN11209"
 ></A
 ><H3
 ><A
-NAME="CHECK-ERROR0"
+NAME="CHECK-ERROR0-CAPS"
 ></A
 >CHECK_ERROR0</H3
 ><TABLE
@@ -921,11 +984,11 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11204"
+NAME="AEN11214"
 ></A
 ><H3
 ><A
-NAME="XP-ERROR"
+NAME="XP-ERROR-CAPS"
 ></A
 >XP_ERROR()</H3
 ><TABLE
@@ -969,7 +1032,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -979,11 +1042,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11218"
+NAME="AEN11228"
 ></A
 ><H3
 ><A
-NAME="XP-ERROR0"
+NAME="XP-ERROR0-CAPS"
 ></A
 >XP_ERROR0()</H3
 ><TABLE
@@ -1027,7 +1090,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1037,11 +1100,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11232"
+NAME="AEN11242"
 ></A
 ><H3
 ><A
-NAME="CHECK-TYPE"
+NAME="CHECK-TYPE-CAPS"
 ></A
 >CHECK_TYPE()</H3
 ><TABLE
@@ -1085,7 +1148,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1095,11 +1158,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11246"
+NAME="AEN11256"
 ></A
 ><H3
 ><A
-NAME="CHECK-ARITY"
+NAME="CHECK-ARITY-CAPS"
 ></A
 >CHECK_ARITY()</H3
 ><TABLE
@@ -1143,7 +1206,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1153,11 +1216,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11260"
+NAME="AEN11270"
 ></A
 ><H3
 ><A
-NAME="CAST-TO-STRING"
+NAME="CAST-TO-STRING-CAPS"
 ></A
 >CAST_TO_STRING</H3
 ><TABLE
@@ -1179,11 +1242,11 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11265"
+NAME="AEN11275"
 ></A
 ><H3
 ><A
-NAME="CAST-TO-NUMBER"
+NAME="CAST-TO-NUMBER-CAPS"
 ></A
 >CAST_TO_NUMBER</H3
 ><TABLE
@@ -1205,11 +1268,11 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11270"
+NAME="AEN11280"
 ></A
 ><H3
 ><A
-NAME="CAST-TO-BOOLEAN"
+NAME="CAST-TO-BOOLEAN-CAPS"
 ></A
 >CAST_TO_BOOLEAN</H3
 ><TABLE
@@ -1231,7 +1294,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11275"
+NAME="AEN11285"
 ></A
 ><H3
 ><A
@@ -1336,7 +1399,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1346,7 +1409,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11302"
+NAME="AEN11312"
 ></A
 ><H3
 ><A
@@ -1363,7 +1426,7 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        xmlXPathDebugDumpObject         (<GTKDOCLINK
-HREF="FILE"
+HREF="FILE-CAPS"
 >FILE</GTKDOCLINK
 > *output,
                                              <A
@@ -1436,7 +1499,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1446,7 +1509,297 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11326"
+NAME="AEN11336"
+></A
+><H3
+><A
+NAME="XMLXPATHREGISTERNS"
+></A
+>xmlXPathRegisterNs ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlXPathRegisterNs              (<A
+HREF="gnome-xml-xpath.html#XMLXPATHCONTEXTPTR"
+>xmlXPathContextPtr</A
+> ctxt,
+                                             const <A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+> *prefix,
+                                             const <A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+> *ns_uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Register a new namespace. If <TT
+CLASS="PARAMETER"
+><I
+>ns_uri</I
+></TT
+> is NULL it unregisters
+the namespace</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the XPath context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>prefix</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the namespace prefix</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ns_uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the namespace name</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>0 in case of success, -1 in case of error</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN11367"
+></A
+><H3
+><A
+NAME="XMLXPATHNSLOOKUP"
+></A
+>xmlXPathNsLookup ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const <A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+>* xmlXPathNsLookup             (<A
+HREF="gnome-xml-xpath.html#XMLXPATHCONTEXTPTR"
+>xmlXPathContextPtr</A
+> ctxt,
+                                             const <A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+> *ns_uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Search in the namespace declaration array of the context for the given
+namespace name associated to the given prefix</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the XPath context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ns_uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the value or NULL if not found</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN11393"
+></A
+><H3
+><A
+NAME="XMLXPATHREGISTEREDNSCLEANUP"
+></A
+>xmlXPathRegisteredNsCleanup ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        xmlXPathRegisteredNsCleanup     (<A
+HREF="gnome-xml-xpath.html#XMLXPATHCONTEXTPTR"
+>xmlXPathContextPtr</A
+> ctxt);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&#13;</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN11408"
 ></A
 ><H3
 ><A
@@ -1571,7 +1924,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11357"
+NAME="AEN11439"
 ></A
 ><H3
 ><A
@@ -1717,7 +2070,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11393"
+NAME="AEN11475"
 ></A
 ><H3
 ><A
@@ -1843,7 +2196,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11424"
+NAME="AEN11506"
 ></A
 ><H3
 ><A
@@ -1990,7 +2343,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11460"
+NAME="AEN11542"
 ></A
 ><H3
 ><A
@@ -2093,7 +2446,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11486"
+NAME="AEN11568"
 ></A
 ><H3
 ><A
@@ -2217,7 +2570,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11517"
+NAME="AEN11599"
 ></A
 ><H3
 ><A
@@ -2280,7 +2633,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11533"
+NAME="AEN11615"
 ></A
 ><H3
 ><A
@@ -2383,7 +2736,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11559"
+NAME="AEN11641"
 ></A
 ><H3
 ><A
@@ -2507,7 +2860,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11590"
+NAME="AEN11672"
 ></A
 ><H3
 ><A
@@ -2571,7 +2924,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11606"
+NAME="AEN11688"
 ></A
 ><H3
 ><A
@@ -2674,7 +3027,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11632"
+NAME="AEN11714"
 ></A
 ><H3
 ><A
@@ -2737,7 +3090,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11648"
+NAME="AEN11730"
 ></A
 ><H3
 ><A
@@ -2806,7 +3159,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -2816,7 +3169,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11668"
+NAME="AEN11750"
 ></A
 ><H3
 ><A
@@ -2903,7 +3256,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -2913,7 +3266,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11692"
+NAME="AEN11774"
 ></A
 ><H3
 ><A
@@ -2999,7 +3352,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11714"
+NAME="AEN11796"
 ></A
 ><H3
 ><A
@@ -3082,7 +3435,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11735"
+NAME="AEN11817"
 ></A
 ><H3
 ><A
@@ -3168,7 +3521,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11757"
+NAME="AEN11839"
 ></A
 ><H3
 ><A
@@ -3251,7 +3604,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11778"
+NAME="AEN11860"
 ></A
 ><H3
 ><A
@@ -3338,7 +3691,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11800"
+NAME="AEN11882"
 ></A
 ><H3
 ><A
@@ -3422,7 +3775,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11821"
+NAME="AEN11903"
 ></A
 ><H3
 ><A
@@ -3507,7 +3860,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -3517,7 +3870,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11842"
+NAME="AEN11924"
 ></A
 ><H3
 ><A
@@ -3580,7 +3933,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11858"
+NAME="AEN11940"
 ></A
 ><H3
 ><A
@@ -3647,7 +4000,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11875"
+NAME="AEN11957"
 ></A
 ><H3
 ><A
@@ -3733,7 +4086,93 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11898"
+NAME="AEN11980"
+></A
+><H3
+><A
+NAME="XMLXPATHPARSENCNAME"
+></A
+>xmlXPathParseNCName ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+>*    xmlXPathParseNCName             (<A
+HREF="gnome-xml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt);</PRE
+></TD
+></TR
+></TABLE
+><P
+>parse an XML namespace non qualified name.</P
+><P
+>[NS 3] NCName ::= (Letter | '_') (NCNameChar)*</P
+><P
+>[NS 4] NCNameChar ::= Letter | Digit | '.' | '-' | '_' |
+CombiningChar | Extender</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the XPath Parser context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the namespace name or NULL</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12003"
 ></A
 ><H3
 ><A
@@ -3820,7 +4259,113 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11920"
+NAME="AEN12025"
+></A
+><H3
+><A
+NAME="XMLXPATHEVALUATEPREDICATERESULT"
+></A
+>xmlXPathEvaluatePredicateResult ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlXPathEvaluatePredicateResult (<A
+HREF="gnome-xml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt,
+                                             <A
+HREF="gnome-xml-xpath.html#XMLXPATHOBJECTPTR"
+>xmlXPathObjectPtr</A
+> res);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Evaluate a predicate result for the current node.
+A PredicateExpr is evaluated by evaluating the Expr and converting
+the result to a boolean. If the result is a number, the result will
+be converted to true if the number is equal to the position of the
+context node in the context node list (as returned by the position
+function) and will be converted to false otherwise; if the result
+is not a number, then the result will be converted as if by a call
+to the boolean function.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the XPath Parser context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>res</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the Predicate Expression evaluation result</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&#13;</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN12050"
 ></A
 ><H3
 ><A
@@ -3848,7 +4393,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11926"
+NAME="AEN12056"
 ></A
 ><H3
 ><A
@@ -3951,7 +4496,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -3961,7 +4506,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11948"
+NAME="AEN12078"
 ></A
 ><H3
 ><A
@@ -4012,7 +4557,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -4022,7 +4567,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11963"
+NAME="AEN12093"
 ></A
 ><H3
 ><A
@@ -4083,7 +4628,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  an initial xmlNodePtr, or NULL</TD
 ></TR
 ><TR
 ><TD
@@ -4098,7 +4643,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>the newly created object.</TD
 ></TR
 ></TABLE
 ><P
@@ -4108,7 +4653,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11985"
+NAME="AEN12115"
 ></A
 ><H3
 ><A
@@ -4231,7 +4776,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12015"
+NAME="AEN12145"
 ></A
 ><H3
 ><A
@@ -4315,7 +4860,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12036"
+NAME="AEN12166"
 ></A
 ><H3
 ><A
@@ -4396,7 +4941,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12056"
+NAME="AEN12186"
 ></A
 ><H3
 ><A
@@ -4449,7 +4994,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the xmlNodeSetPtr to free</TD
 ></TR
 ></TABLE
 ><P
@@ -4459,7 +5004,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12072"
+NAME="AEN12202"
 ></A
 ><H3
 ><A
@@ -4546,7 +5091,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12094"
+NAME="AEN12224"
 ></A
 ><H3
 ><A
@@ -4632,7 +5177,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12116"
+NAME="AEN12246"
 ></A
 ><H3
 ><A
@@ -4694,7 +5239,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  an existing NodeSetList object</TD
 ></TR
 ></TABLE
 ><P
@@ -4704,7 +5249,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12134"
+NAME="AEN12264"
 ></A
 ><H3
 ><A
@@ -4757,7 +5302,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the object to free</TD
 ></TR
 ></TABLE
 ><P
@@ -4767,7 +5312,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12150"
+NAME="AEN12280"
 ></A
 ><H3
 ><A
@@ -4823,7 +5368,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the XML document</TD
 ></TR
 ><TR
 ><TD
@@ -4838,7 +5383,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>the xmlXPathContext just allocated.</TD
 ></TR
 ></TABLE
 ><P
@@ -4848,7 +5393,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12171"
+NAME="AEN12301"
 ></A
 ><H3
 ><A
@@ -4901,7 +5446,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the context to free</TD
 ></TR
 ></TABLE
 ><P
@@ -4911,7 +5456,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12187"
+NAME="AEN12317"
 ></A
 ><H3
 ><A
@@ -4999,7 +5544,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12209"
+NAME="AEN12339"
 ></A
 ><H3
 ><A
@@ -5157,7 +5702,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -5167,7 +5712,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12246"
+NAME="AEN12376"
 ></A
 ><H3
 ><A
@@ -5232,7 +5777,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12262"
+NAME="AEN12392"
 ></A
 ><H3
 ><A
@@ -5297,7 +5842,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12278"
+NAME="AEN12408"
 ></A
 ><H3
 ><A
@@ -5362,7 +5907,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12294"
+NAME="AEN12424"
 ></A
 ><H3
 ><A
@@ -5427,7 +5972,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12310"
+NAME="AEN12440"
 ></A
 ><H3
 ><A
@@ -5492,7 +6037,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12326"
+NAME="AEN12456"
 ></A
 ><H3
 ><A
@@ -5567,7 +6112,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12344"
+NAME="AEN12474"
 ></A
 ><H3
 ><A
@@ -5646,7 +6191,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -5656,7 +6201,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12366"
+NAME="AEN12496"
 ></A
 ><H3
 ><A
@@ -5740,7 +6285,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -5750,7 +6295,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12389"
+NAME="AEN12519"
 ></A
 ><H3
 ><A
@@ -5825,7 +6370,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -5835,7 +6380,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12410"
+NAME="AEN12540"
 ></A
 ><H3
 ><A
@@ -5915,7 +6460,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -5925,7 +6470,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12431"
+NAME="AEN12561"
 ></A
 ><H3
 ><A
@@ -6006,7 +6551,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -6016,7 +6561,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12452"
+NAME="AEN12582"
 ></A
 ><H3
 ><A
@@ -6095,7 +6640,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -6105,7 +6650,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12473"
+NAME="AEN12603"
 ></A
 ><H3
 ><A
@@ -6181,7 +6726,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -6191,7 +6736,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12494"
+NAME="AEN12624"
 ></A
 ><H3
 ><A
@@ -6268,7 +6813,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -6278,7 +6823,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12515"
+NAME="AEN12645"
 ></A
 ><H3
 ><A
@@ -6355,7 +6900,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -6365,7 +6910,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12536"
+NAME="AEN12666"
 ></A
 ><H3
 ><A
@@ -6460,7 +7005,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -6470,7 +7015,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12557"
+NAME="AEN12687"
 ></A
 ><H3
 ><A
@@ -6550,7 +7095,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -6560,7 +7105,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12578"
+NAME="AEN12708"
 ></A
 ><H3
 ><A
@@ -6641,7 +7186,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -6651,7 +7196,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12599"
+NAME="AEN12729"
 ></A
 ><H3
 ><A
@@ -6732,7 +7277,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -6742,7 +7287,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12620"
+NAME="AEN12750"
 ></A
 ><H3
 ><A
@@ -6826,7 +7371,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -6836,7 +7381,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12641"
+NAME="AEN12771"
 ></A
 ><H3
 ><A
@@ -6913,7 +7458,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -6923,7 +7468,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12662"
+NAME="AEN12792"
 ></A
 ><H3
 ><A
@@ -7001,7 +7546,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -7011,7 +7556,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12684"
+NAME="AEN12814"
 ></A
 ><H3
 ><A
@@ -7089,7 +7634,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -7099,7 +7644,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12706"
+NAME="AEN12836"
 ></A
 ><H3
 ><A
@@ -7182,7 +7727,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -7192,7 +7737,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12727"
+NAME="AEN12857"
 ></A
 ><H3
 ><A
@@ -7267,7 +7812,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -7277,7 +7822,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12748"
+NAME="AEN12878"
 ></A
 ><H3
 ><A
@@ -7354,7 +7899,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -7364,7 +7909,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12769"
+NAME="AEN12899"
 ></A
 ><H3
 ><A
@@ -7441,7 +7986,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -7451,7 +7996,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12790"
+NAME="AEN12920"
 ></A
 ><H3
 ><A
@@ -7528,7 +8073,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -7538,7 +8083,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12811"
+NAME="AEN12941"
 ></A
 ><H3
 ><A
@@ -7616,7 +8161,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P

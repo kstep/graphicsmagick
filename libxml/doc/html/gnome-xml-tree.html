@@ -4,7 +4,7 @@
 >tree</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.33"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
 HREF="book1.html"><LINK
@@ -20,6 +20,9 @@ HREF="gnome-xml-entities.html"></HEAD
 ><BODY
 BGCOLOR="#FFFFFF"
 TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -111,19 +114,22 @@ SIZE="3"
 ></TABLE
 ></DIV
 ><H1
->tree</H1
+><A
+NAME="GNOME-XML-TREE"
+>tree</A
+></H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN3634"
+NAME="AEN3640"
 ></A
 ><H2
 >Name</H2
->tree &#8212; </DIV
+>tree&nbsp;--&nbsp;</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN3637"
+NAME="AEN3643"
 ></A
 ><H2
 >Synopsis</H2
@@ -147,11 +153,11 @@ HREF="gnome-xml-tree.html#XMLCHAR"
 >xmlChar</A
 >;
 #define     <A
-HREF="gnome-xml-tree.html#CHAR"
+HREF="gnome-xml-tree.html#CHAR-CAPS"
 >CHAR</A
 >
 #define     <A
-HREF="gnome-xml-tree.html#BAD-CAST"
+HREF="gnome-xml-tree.html#BAD-CAST-CAPS"
 >BAD_CAST</A
 >
 struct      <A
@@ -215,7 +221,7 @@ HREF="gnome-xml-tree.html#XMLELEMENTPTR"
 >xmlElementPtr</A
 >;
 #define     <A
-HREF="gnome-xml-tree.html#XML-LOCAL-NAMESPACE"
+HREF="gnome-xml-tree.html#XML-LOCAL-NAMESPACE-CAPS"
 >XML_LOCAL_NAMESPACE</A
 >
 typedef     <A
@@ -326,7 +332,7 @@ int         <A
 HREF="gnome-xml-tree.html#XMLBUFFERDUMP"
 >xmlBufferDump</A
 >                   (<GTKDOCLINK
-HREF="FILE"
+HREF="FILE-CAPS"
 >FILE</GTKDOCLINK
 > *file,
                                              <A
@@ -1491,6 +1497,17 @@ HREF="gnome-xml-tree.html#XMLNODEPTR"
 >xmlNodePtr</A
 > node);
 void        <A
+HREF="gnome-xml-tree.html#XMLBUFFERWRITEXMLCHAR"
+>xmlBufferWriteXmlCHAR</A
+>           (<A
+HREF="gnome-xml-tree.html#XMLBUFFERPTR"
+>xmlBufferPtr</A
+> buf,
+                                             const <A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+> *string);
+void        <A
 HREF="gnome-xml-tree.html#XMLBUFFERWRITECHAR"
 >xmlBufferWriteCHAR</A
 >              (<A
@@ -1532,6 +1549,19 @@ HREF="gnome-xml-tree.html#XMLNODEPTR"
 >xmlNodePtr</A
 > tree);
 void        <A
+HREF="gnome-xml-tree.html#XMLDOCDUMPFORMATMEMORY"
+>xmlDocDumpFormatMemory</A
+>          (<A
+HREF="gnome-xml-tree.html#XMLDOCPTR"
+>xmlDocPtr</A
+> cur,
+                                             <A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+> **mem,
+                                             int *size,
+                                             int format);
+void        <A
 HREF="gnome-xml-tree.html#XMLDOCDUMPMEMORY"
 >xmlDocDumpMemory</A
 >                (<A
@@ -1543,11 +1573,38 @@ HREF="gnome-xml-tree.html#XMLCHAR"
 >xmlChar</A
 > **mem,
                                              int *size);
+void        <A
+HREF="gnome-xml-tree.html#XMLDOCDUMPMEMORYENC"
+>xmlDocDumpMemoryEnc</A
+>             (<A
+HREF="gnome-xml-tree.html#XMLDOCPTR"
+>xmlDocPtr</A
+> out_doc,
+                                             <A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+> **doc_txt_ptr,
+                                             int *doc_txt_len,
+                                             const char *txt_encoding);
+void        <A
+HREF="gnome-xml-tree.html#XMLDOCDUMPFORMATMEMORYENC"
+>xmlDocDumpFormatMemoryEnc</A
+>       (<A
+HREF="gnome-xml-tree.html#XMLDOCPTR"
+>xmlDocPtr</A
+> out_doc,
+                                             <A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+> **doc_txt_ptr,
+                                             int *doc_txt_len,
+                                             const char *txt_encoding,
+                                             int format);
 int         <A
 HREF="gnome-xml-tree.html#XMLDOCDUMP"
 >xmlDocDump</A
 >                      (<GTKDOCLINK
-HREF="FILE"
+HREF="FILE-CAPS"
 >FILE</GTKDOCLINK
 > *f,
                                              <A
@@ -1558,7 +1615,7 @@ void        <A
 HREF="gnome-xml-tree.html#XMLELEMDUMP"
 >xmlElemDump</A
 >                     (<GTKDOCLINK
-HREF="FILE"
+HREF="FILE-CAPS"
 >FILE</GTKDOCLINK
 > *f,
                                              <A
@@ -1633,7 +1690,7 @@ HREF="gnome-xml-tree.html#XMLSETCOMPRESSMODE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4048"
+NAME="AEN4066"
 ></A
 ><H2
 >Description</H2
@@ -1643,14 +1700,14 @@ NAME="AEN4048"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4051"
+NAME="AEN4069"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4053"
+NAME="AEN4071"
 ></A
 ><H3
 ><A
@@ -1700,7 +1757,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4058"
+NAME="AEN4076"
 ></A
 ><H3
 ><A
@@ -1726,11 +1783,11 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4063"
+NAME="AEN4081"
 ></A
 ><H3
 ><A
-NAME="CHAR"
+NAME="CHAR-CAPS"
 ></A
 >CHAR</H3
 ><TABLE
@@ -1752,11 +1809,11 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4068"
+NAME="AEN4086"
 ></A
 ><H3
 ><A
-NAME="BAD-CAST"
+NAME="BAD-CAST-CAPS"
 ></A
 >BAD_CAST</H3
 ><TABLE
@@ -1778,7 +1835,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4073"
+NAME="AEN4091"
 ></A
 ><H3
 ><A
@@ -1808,7 +1865,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4078"
+NAME="AEN4096"
 ></A
 ><H3
 ><A
@@ -1834,7 +1891,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4083"
+NAME="AEN4101"
 ></A
 ><H3
 ><A
@@ -1871,7 +1928,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4088"
+NAME="AEN4106"
 ></A
 ><H3
 ><A
@@ -1902,7 +1959,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4093"
+NAME="AEN4111"
 ></A
 ><H3
 ><A
@@ -1931,7 +1988,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4098"
+NAME="AEN4116"
 ></A
 ><H3
 ><A
@@ -1957,7 +2014,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4103"
+NAME="AEN4121"
 ></A
 ><H3
 ><A
@@ -2003,7 +2060,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4108"
+NAME="AEN4126"
 ></A
 ><H3
 ><A
@@ -2029,7 +2086,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4113"
+NAME="AEN4131"
 ></A
 ><H3
 ><A
@@ -2060,7 +2117,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4118"
+NAME="AEN4136"
 ></A
 ><H3
 ><A
@@ -2091,7 +2148,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4123"
+NAME="AEN4141"
 ></A
 ><H3
 ><A
@@ -2123,7 +2180,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4128"
+NAME="AEN4146"
 ></A
 ><H3
 ><A
@@ -2149,7 +2206,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4133"
+NAME="AEN4151"
 ></A
 ><H3
 ><A
@@ -2180,7 +2237,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4138"
+NAME="AEN4156"
 ></A
 ><H3
 ><A
@@ -2223,7 +2280,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4143"
+NAME="AEN4161"
 ></A
 ><H3
 ><A
@@ -2249,11 +2306,11 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4148"
+NAME="AEN4166"
 ></A
 ><H3
 ><A
-NAME="XML-LOCAL-NAMESPACE"
+NAME="XML-LOCAL-NAMESPACE-CAPS"
 ></A
 >XML_LOCAL_NAMESPACE</H3
 ><TABLE
@@ -2275,7 +2332,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4153"
+NAME="AEN4171"
 ></A
 ><H3
 ><A
@@ -2301,7 +2358,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4158"
+NAME="AEN4176"
 ></A
 ><H3
 ><A
@@ -2332,7 +2389,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4163"
+NAME="AEN4181"
 ></A
 ><H3
 ><A
@@ -2358,7 +2415,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4168"
+NAME="AEN4186"
 ></A
 ><H3
 ><A
@@ -2405,7 +2462,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4173"
+NAME="AEN4191"
 ></A
 ><H3
 ><A
@@ -2431,7 +2488,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4178"
+NAME="AEN4196"
 ></A
 ><H3
 ><A
@@ -2471,7 +2528,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4183"
+NAME="AEN4201"
 ></A
 ><H3
 ><A
@@ -2497,7 +2554,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4188"
+NAME="AEN4206"
 ></A
 ><H3
 ><A
@@ -2527,7 +2584,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4193"
+NAME="AEN4211"
 ></A
 ><H3
 ><A
@@ -2553,7 +2610,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4198"
+NAME="AEN4216"
 ></A
 ><H3
 ><A
@@ -2583,7 +2640,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4203"
+NAME="AEN4221"
 ></A
 ><H3
 ><A
@@ -2609,7 +2666,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4208"
+NAME="AEN4226"
 ></A
 ><H3
 ><A
@@ -2638,7 +2695,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4213"
+NAME="AEN4231"
 ></A
 ><H3
 ><A
@@ -2669,7 +2726,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4218"
+NAME="AEN4236"
 ></A
 ><H3
 ><A
@@ -2695,7 +2752,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4223"
+NAME="AEN4241"
 ></A
 ><H3
 ><A
@@ -2743,7 +2800,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4228"
+NAME="AEN4246"
 ></A
 ><H3
 ><A
@@ -2769,7 +2826,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4233"
+NAME="AEN4251"
 ></A
 ><H3
 ><A
@@ -2821,7 +2878,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4238"
+NAME="AEN4256"
 ></A
 ><H3
 ><A
@@ -2847,7 +2904,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4243"
+NAME="AEN4261"
 ></A
 ><H3
 ><A
@@ -2873,7 +2930,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4248"
+NAME="AEN4266"
 ></A
 ><H3
 ><A
@@ -2899,7 +2956,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4253"
+NAME="AEN4271"
 ></A
 ><H3
 ><A
@@ -2960,7 +3017,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4269"
+NAME="AEN4287"
 ></A
 ><H3
 ><A
@@ -3041,7 +3098,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4290"
+NAME="AEN4308"
 ></A
 ><H3
 ><A
@@ -3104,7 +3161,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4306"
+NAME="AEN4324"
 ></A
 ><H3
 ><A
@@ -3121,7 +3178,7 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 >int         xmlBufferDump                   (<GTKDOCLINK
-HREF="FILE"
+HREF="FILE-CAPS"
 >FILE</GTKDOCLINK
 > *file,
                                              <A
@@ -3203,7 +3260,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4331"
+NAME="AEN4349"
 ></A
 ><H3
 ><A
@@ -3306,7 +3363,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4356"
+NAME="AEN4374"
 ></A
 ><H3
 ><A
@@ -3414,7 +3471,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4382"
+NAME="AEN4400"
 ></A
 ><H3
 ><A
@@ -3498,7 +3555,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4403"
+NAME="AEN4421"
 ></A
 ><H3
 ><A
@@ -3579,7 +3636,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4423"
+NAME="AEN4441"
 ></A
 ><H3
 ><A
@@ -3675,7 +3732,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4447"
+NAME="AEN4465"
 ></A
 ><H3
 ><A
@@ -3746,7 +3803,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->  the minimum free sie to allocate</TD
+>  the minimum free size to allocate</TD
 ></TR
 ><TR
 ><TD
@@ -3771,7 +3828,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4471"
+NAME="AEN4489"
 ></A
 ><H3
 ><A
@@ -3834,7 +3891,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4487"
+NAME="AEN4505"
 ></A
 ><H3
 ><A
@@ -3915,7 +3972,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4508"
+NAME="AEN4526"
 ></A
 ><H3
 ><A
@@ -3981,7 +4038,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -3991,7 +4048,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4527"
+NAME="AEN4545"
 ></A
 ><H3
 ><A
@@ -4075,7 +4132,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4548"
+NAME="AEN4566"
 ></A
 ><H3
 ><A
@@ -4153,7 +4210,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4568"
+NAME="AEN4586"
 ></A
 ><H3
 ><A
@@ -4297,7 +4354,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4604"
+NAME="AEN4622"
 ></A
 ><H3
 ><A
@@ -4445,7 +4502,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4641"
+NAME="AEN4659"
 ></A
 ><H3
 ><A
@@ -4526,7 +4583,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4662"
+NAME="AEN4680"
 ></A
 ><H3
 ><A
@@ -4589,7 +4646,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4678"
+NAME="AEN4696"
 ></A
 ><H3
 ><A
@@ -4714,7 +4771,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4709"
+NAME="AEN4727"
 ></A
 ><H3
 ><A
@@ -4841,7 +4898,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4740"
+NAME="AEN4758"
 ></A
 ><H3
 ><A
@@ -4904,7 +4961,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4756"
+NAME="AEN4774"
 ></A
 ><H3
 ><A
@@ -4985,7 +5042,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4777"
+NAME="AEN4795"
 ></A
 ><H3
 ><A
@@ -5049,7 +5106,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4793"
+NAME="AEN4811"
 ></A
 ><H3
 ><A
@@ -5172,7 +5229,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4824"
+NAME="AEN4842"
 ></A
 ><H3
 ><A
@@ -5295,7 +5352,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4855"
+NAME="AEN4873"
 ></A
 ><H3
 ><A
@@ -5439,7 +5496,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4891"
+NAME="AEN4909"
 ></A
 ><H3
 ><A
@@ -5502,7 +5559,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4907"
+NAME="AEN4925"
 ></A
 ><H3
 ><A
@@ -5565,7 +5622,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4923"
+NAME="AEN4941"
 ></A
 ><H3
 ><A
@@ -5667,7 +5724,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4949"
+NAME="AEN4967"
 ></A
 ><H3
 ><A
@@ -5769,7 +5826,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4975"
+NAME="AEN4993"
 ></A
 ><H3
 ><A
@@ -5850,7 +5907,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4996"
+NAME="AEN5014"
 ></A
 ><H3
 ><A
@@ -5950,7 +6007,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5021"
+NAME="AEN5039"
 ></A
 ><H3
 ><A
@@ -6120,7 +6177,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5062"
+NAME="AEN5080"
 ></A
 ><H3
 ><A
@@ -6275,7 +6332,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5100"
+NAME="AEN5118"
 ></A
 ><H3
 ><A
@@ -6382,7 +6439,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5127"
+NAME="AEN5145"
 ></A
 ><H3
 ><A
@@ -6558,7 +6615,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5169"
+NAME="AEN5187"
 ></A
 ><H3
 ><A
@@ -6719,7 +6776,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5208"
+NAME="AEN5226"
 ></A
 ><H3
 ><A
@@ -6821,7 +6878,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5234"
+NAME="AEN5252"
 ></A
 ><H3
 ><A
@@ -6902,7 +6959,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5255"
+NAME="AEN5273"
 ></A
 ><H3
 ><A
@@ -7004,7 +7061,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5281"
+NAME="AEN5299"
 ></A
 ><H3
 ><A
@@ -7125,7 +7182,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5311"
+NAME="AEN5329"
 ></A
 ><H3
 ><A
@@ -7224,7 +7281,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5336"
+NAME="AEN5354"
 ></A
 ><H3
 ><A
@@ -7326,7 +7383,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5362"
+NAME="AEN5380"
 ></A
 ><H3
 ><A
@@ -7407,7 +7464,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5383"
+NAME="AEN5401"
 ></A
 ><H3
 ><A
@@ -7527,7 +7584,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5413"
+NAME="AEN5431"
 ></A
 ><H3
 ><A
@@ -7629,7 +7686,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5439"
+NAME="AEN5457"
 ></A
 ><H3
 ><A
@@ -7731,7 +7788,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5465"
+NAME="AEN5483"
 ></A
 ><H3
 ><A
@@ -7830,7 +7887,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5490"
+NAME="AEN5508"
 ></A
 ><H3
 ><A
@@ -7911,7 +7968,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5511"
+NAME="AEN5529"
 ></A
 ><H3
 ><A
@@ -7992,7 +8049,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5532"
+NAME="AEN5550"
 ></A
 ><H3
 ><A
@@ -8074,7 +8131,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5553"
+NAME="AEN5571"
 ></A
 ><H3
 ><A
@@ -8155,7 +8212,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5574"
+NAME="AEN5592"
 ></A
 ><H3
 ><A
@@ -8233,7 +8290,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5594"
+NAME="AEN5612"
 ></A
 ><H3
 ><A
@@ -8312,7 +8369,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5614"
+NAME="AEN5632"
 ></A
 ><H3
 ><A
@@ -8415,7 +8472,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5640"
+NAME="AEN5658"
 ></A
 ><H3
 ><A
@@ -8499,7 +8556,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5661"
+NAME="AEN5679"
 ></A
 ><H3
 ><A
@@ -8612,7 +8669,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5689"
+NAME="AEN5707"
 ></A
 ><H3
 ><A
@@ -8720,7 +8777,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5716"
+NAME="AEN5734"
 ></A
 ><H3
 ><A
@@ -8824,7 +8881,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5742"
+NAME="AEN5760"
 ></A
 ><H3
 ><A
@@ -8944,7 +9001,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5771"
+NAME="AEN5789"
 ></A
 ><H3
 ><A
@@ -9064,7 +9121,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5800"
+NAME="AEN5818"
 ></A
 ><H3
 ><A
@@ -9184,7 +9241,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5829"
+NAME="AEN5847"
 ></A
 ><H3
 ><A
@@ -9247,7 +9304,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5845"
+NAME="AEN5863"
 ></A
 ><H3
 ><A
@@ -9349,7 +9406,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5871"
+NAME="AEN5889"
 ></A
 ><H3
 ><A
@@ -9456,7 +9513,7 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5897"
+NAME="AEN5915"
 ></A
 ><H3
 ><A
@@ -9520,7 +9577,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5913"
+NAME="AEN5931"
 ></A
 ><H3
 ><A
@@ -9587,7 +9644,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5930"
+NAME="AEN5948"
 ></A
 ><H3
 ><A
@@ -9671,7 +9728,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5951"
+NAME="AEN5969"
 ></A
 ><H3
 ><A
@@ -9755,7 +9812,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5972"
+NAME="AEN5990"
 ></A
 ><H3
 ><A
@@ -9889,7 +9946,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6004"
+NAME="AEN6022"
 ></A
 ><H3
 ><A
@@ -10013,7 +10070,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6035"
+NAME="AEN6053"
 ></A
 ><H3
 ><A
@@ -10117,7 +10174,7 @@ namespace if defined</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6061"
+NAME="AEN6079"
 ></A
 ><H3
 ><A
@@ -10201,7 +10258,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6082"
+NAME="AEN6100"
 ></A
 ><H3
 ><A
@@ -10282,7 +10339,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6103"
+NAME="AEN6121"
 ></A
 ><H3
 ><A
@@ -10363,7 +10420,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6124"
+NAME="AEN6142"
 ></A
 ><H3
 ><A
@@ -10486,7 +10543,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6155"
+NAME="AEN6173"
 ></A
 ><H3
 ><A
@@ -10520,7 +10577,7 @@ HREF="gnome-xml-tree.html#XMLCHAR"
 >Search and get the value of an attribute associated to a node
 This does the entity substitution.
 This function looks in DTD attribute declaration for <GTKDOCLINK
-HREF="FIXED"
+HREF="FIXED-CAPS"
 >FIXED</GTKDOCLINK
 > or
 default declaration values unless DTD use has been turned off.</P
@@ -10595,7 +10652,7 @@ It's up to the caller to free the memory.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6182"
+NAME="AEN6200"
 ></A
 ><H3
 ><A
@@ -10628,7 +10685,7 @@ HREF="gnome-xml-tree.html#XMLCHAR"
 ><P
 >Search an attribute associated to a node
 This function also looks in DTD attribute declaration for <GTKDOCLINK
-HREF="FIXED"
+HREF="FIXED-CAPS"
 >FIXED</GTKDOCLINK
 > or
 default declaration values unless DTD use has been turned off.</P
@@ -10703,7 +10760,7 @@ neither was found.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6209"
+NAME="AEN6227"
 ></A
 ><H3
 ><A
@@ -10742,7 +10799,7 @@ HREF="gnome-xml-tree.html#XMLCHAR"
 This attribute has to be anchored in the namespace specified.
 This does the entity substitution.
 This function looks in DTD attribute declaration for <GTKDOCLINK
-HREF="FIXED"
+HREF="FIXED-CAPS"
 >FIXED</GTKDOCLINK
 > or
 default declaration values unless DTD use has been turned off.</P
@@ -10834,7 +10891,7 @@ It's up to the caller to free the memory.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6241"
+NAME="AEN6259"
 ></A
 ><H3
 ><A
@@ -10937,7 +10994,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6267"
+NAME="AEN6285"
 ></A
 ><H3
 ><A
@@ -11058,7 +11115,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6297"
+NAME="AEN6315"
 ></A
 ><H3
 ><A
@@ -11179,7 +11236,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6327"
+NAME="AEN6345"
 ></A
 ><H3
 ><A
@@ -11304,7 +11361,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6358"
+NAME="AEN6376"
 ></A
 ><H3
 ><A
@@ -11388,7 +11445,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6379"
+NAME="AEN6397"
 ></A
 ><H3
 ><A
@@ -11495,7 +11552,7 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6405"
+NAME="AEN6423"
 ></A
 ><H3
 ><A
@@ -11579,7 +11636,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6426"
+NAME="AEN6444"
 ></A
 ><H3
 ><A
@@ -11686,7 +11743,7 @@ CLASS="PARAMETER"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6452"
+NAME="AEN6470"
 ></A
 ><H3
 ><A
@@ -11771,7 +11828,7 @@ It's up to the caller to free the memory.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6473"
+NAME="AEN6491"
 ></A
 ><H3
 ><A
@@ -11854,7 +11911,7 @@ It's up to the caller to free the memory.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6494"
+NAME="AEN6512"
 ></A
 ><H3
 ><A
@@ -11939,7 +11996,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6515"
+NAME="AEN6533"
 ></A
 ><H3
 ><A
@@ -12019,7 +12076,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6535"
+NAME="AEN6553"
 ></A
 ><H3
 ><A
@@ -12094,7 +12151,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -12104,7 +12161,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6556"
+NAME="AEN6574"
 ></A
 ><H3
 ><A
@@ -12217,7 +12274,7 @@ It's up to the caller to free the memory.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6583"
+NAME="AEN6601"
 ></A
 ><H3
 ><A
@@ -12302,7 +12359,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6604"
+NAME="AEN6622"
 ></A
 ><H3
 ><A
@@ -12381,7 +12438,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6624"
+NAME="AEN6642"
 ></A
 ><H3
 ><A
@@ -12447,7 +12504,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -12457,7 +12514,89 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6643"
+NAME="AEN6661"
+></A
+><H3
+><A
+NAME="XMLBUFFERWRITEXMLCHAR"
+></A
+>xmlBufferWriteXmlCHAR ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        xmlBufferWriteXmlCHAR           (<A
+HREF="gnome-xml-tree.html#XMLBUFFERPTR"
+>xmlBufferPtr</A
+> buf,
+                                             const <A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+> *string);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>buf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>string</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&#13;</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6681"
 ></A
 ><H3
 ><A
@@ -12485,7 +12624,7 @@ HREF="gnome-xml-tree.html#XMLCHAR"
 ></TR
 ></TABLE
 ><P
->routine which manage and grows an output buffer. This one add
+>routine which manages and grows an output buffer. This one adds
 xmlChars at the end of the buffer.</P
 ><P
 ></P
@@ -12542,7 +12681,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6664"
+NAME="AEN6702"
 ></A
 ><H3
 ><A
@@ -12624,7 +12763,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6684"
+NAME="AEN6722"
 ></A
 ><H3
 ><A
@@ -12710,7 +12849,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6705"
+NAME="AEN6743"
 ></A
 ><H3
 ><A
@@ -12820,7 +12959,128 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6731"
+NAME="AEN6769"
+></A
+><H3
+><A
+NAME="XMLDOCDUMPFORMATMEMORY"
+></A
+>xmlDocDumpFormatMemory ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        xmlDocDumpFormatMemory          (<A
+HREF="gnome-xml-tree.html#XMLDOCPTR"
+>xmlDocPtr</A
+> cur,
+                                             <A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+> **mem,
+                                             int *size,
+                                             int format);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Dump an XML document in memory and return the xmlChar * and it's size.
+It's up to the caller to free the memory.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cur</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the document</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mem</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  OUT: the memory pointer</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>size</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  OUT: the memory lenght</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>format</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  should formatting spaces been added</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6798"
 ></A
 ><H3
 ><A
@@ -12923,7 +13183,265 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6756"
+NAME="AEN6823"
+></A
+><H3
+><A
+NAME="XMLDOCDUMPMEMORYENC"
+></A
+>xmlDocDumpMemoryEnc ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        xmlDocDumpMemoryEnc             (<A
+HREF="gnome-xml-tree.html#XMLDOCPTR"
+>xmlDocPtr</A
+> out_doc,
+                                             <A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+> **doc_txt_ptr,
+                                             int *doc_txt_len,
+                                             const char *txt_encoding);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Dump the current DOM tree into memory using the character encoding specified
+by the caller.  Note it is up to the caller of this function to free the
+allocated memory.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>out_doc</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  Document to generate XML text from</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>doc_txt_ptr</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  Memory pointer for allocated XML text</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>doc_txt_len</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  Length of the generated XML text</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>txt_encoding</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  Character encoding to use when generating XML text</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6852"
+></A
+><H3
+><A
+NAME="XMLDOCDUMPFORMATMEMORYENC"
+></A
+>xmlDocDumpFormatMemoryEnc ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        xmlDocDumpFormatMemoryEnc       (<A
+HREF="gnome-xml-tree.html#XMLDOCPTR"
+>xmlDocPtr</A
+> out_doc,
+                                             <A
+HREF="gnome-xml-tree.html#XMLCHAR"
+>xmlChar</A
+> **doc_txt_ptr,
+                                             int *doc_txt_len,
+                                             const char *txt_encoding,
+                                             int format);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>out_doc</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>doc_txt_ptr</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>doc_txt_len</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>txt_encoding</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>format</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&#13;</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6884"
 ></A
 ><H3
 ><A
@@ -12940,7 +13458,7 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 >int         xmlDocDump                      (<GTKDOCLINK
-HREF="FILE"
+HREF="FILE-CAPS"
 >FILE</GTKDOCLINK
 > *f,
                                              <A
@@ -13022,7 +13540,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6781"
+NAME="AEN6909"
 ></A
 ><H3
 ><A
@@ -13039,7 +13557,7 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        xmlElemDump                     (<GTKDOCLINK
-HREF="FILE"
+HREF="FILE-CAPS"
 >FILE</GTKDOCLINK
 > *f,
                                              <A
@@ -13127,7 +13645,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6807"
+NAME="AEN6935"
 ></A
 ><H3
 ><A
@@ -13230,7 +13748,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6832"
+NAME="AEN6960"
 ></A
 ><H3
 ><A
@@ -13371,7 +13889,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6866"
+NAME="AEN6994"
 ></A
 ><H3
 ><A
@@ -13485,7 +14003,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6894"
+NAME="AEN7022"
 ></A
 ><H3
 ><A
@@ -13563,7 +14081,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6914"
+NAME="AEN7042"
 ></A
 ><H3
 ><A
@@ -13645,7 +14163,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6934"
+NAME="AEN7062"
 ></A
 ><H3
 ><A
@@ -13703,7 +14221,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6949"
+NAME="AEN7077"
 ></A
 ><H3
 ><A

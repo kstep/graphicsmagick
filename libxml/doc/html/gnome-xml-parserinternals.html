@@ -4,7 +4,7 @@
 >parserInternals</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.33"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
 HREF="book1.html"><LINK
@@ -20,6 +20,9 @@ HREF="gnome-xml-encoding.html"></HEAD
 ><BODY
 BGCOLOR="#FFFFFF"
 TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -111,19 +114,22 @@ SIZE="3"
 ></TABLE
 ></DIV
 ><H1
->parserInternals</H1
+><A
+NAME="GNOME-XML-PARSERINTERNALS"
+>parserInternals</A
+></H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN14759"
+NAME="AEN14936"
 ></A
 ><H2
 >Name</H2
->parserInternals &#8212; </DIV
+>parserInternals&nbsp;--&nbsp;</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN14762"
+NAME="AEN14939"
 ></A
 ><H2
 >Synopsis</H2
@@ -139,59 +145,59 @@ CLASS="SYNOPSIS"
 >&#13;
 
 #define     <A
-HREF="gnome-xml-parserinternals.html#XML-MAX-NAMELEN"
+HREF="gnome-xml-parserinternals.html#XML-MAX-NAMELEN-CAPS"
 >XML_MAX_NAMELEN</A
 >
 #define     <A
-HREF="gnome-xml-parserinternals.html#INPUT-CHUNK"
+HREF="gnome-xml-parserinternals.html#INPUT-CHUNK-CAPS"
 >INPUT_CHUNK</A
 >
 #define     <A
-HREF="gnome-xml-parserinternals.html#IS-CHAR"
+HREF="gnome-xml-parserinternals.html#IS-CHAR-CAPS"
 >IS_CHAR</A
 >                         (c)
 #define     <A
-HREF="gnome-xml-parserinternals.html#IS-BLANK"
+HREF="gnome-xml-parserinternals.html#IS-BLANK-CAPS"
 >IS_BLANK</A
 >                        (c)
 #define     <A
-HREF="gnome-xml-parserinternals.html#IS-BASECHAR"
+HREF="gnome-xml-parserinternals.html#IS-BASECHAR-CAPS"
 >IS_BASECHAR</A
 >                     (c)
 #define     <A
-HREF="gnome-xml-parserinternals.html#IS-DIGIT"
+HREF="gnome-xml-parserinternals.html#IS-DIGIT-CAPS"
 >IS_DIGIT</A
 >                        (c)
 #define     <A
-HREF="gnome-xml-parserinternals.html#IS-COMBINING"
+HREF="gnome-xml-parserinternals.html#IS-COMBINING-CAPS"
 >IS_COMBINING</A
 >                    (c)
 #define     <A
-HREF="gnome-xml-parserinternals.html#IS-EXTENDER"
+HREF="gnome-xml-parserinternals.html#IS-EXTENDER-CAPS"
 >IS_EXTENDER</A
 >                     (c)
 #define     <A
-HREF="gnome-xml-parserinternals.html#IS-IDEOGRAPHIC"
+HREF="gnome-xml-parserinternals.html#IS-IDEOGRAPHIC-CAPS"
 >IS_IDEOGRAPHIC</A
 >                  (c)
 #define     <A
-HREF="gnome-xml-parserinternals.html#IS-LETTER"
+HREF="gnome-xml-parserinternals.html#IS-LETTER-CAPS"
 >IS_LETTER</A
 >                       (c)
 #define     <A
-HREF="gnome-xml-parserinternals.html#IS-PUBIDCHAR"
+HREF="gnome-xml-parserinternals.html#IS-PUBIDCHAR-CAPS"
 >IS_PUBIDCHAR</A
 >                    (c)
 #define     <A
-HREF="gnome-xml-parserinternals.html#SKIP-EOL"
+HREF="gnome-xml-parserinternals.html#SKIP-EOL-CAPS"
 >SKIP_EOL</A
 >                        (p)
 #define     <A
-HREF="gnome-xml-parserinternals.html#MOVETO-ENDTAG"
+HREF="gnome-xml-parserinternals.html#MOVETO-ENDTAG-CAPS"
 >MOVETO_ENDTAG</A
 >                   (p)
 #define     <A
-HREF="gnome-xml-parserinternals.html#MOVETO-STARTTAG"
+HREF="gnome-xml-parserinternals.html#MOVETO-STARTTAG-CAPS"
 >MOVETO_STARTTAG</A
 >                 (p)
 int         <A
@@ -662,6 +668,17 @@ HREF="gnome-xml-parser.html#XMLPARSERCTXTPTR"
 HREF="gnome-xml-tree.html#XMLELEMENTCONTENTPTR"
 >xmlElementContentPtr</A
 > <A
+HREF="gnome-xml-parserinternals.html#XMLPARSEELEMENTCHILDRENCONTENTD"
+>xmlParseElementChildrenContentD</A
+>
+                                            (<A
+HREF="gnome-xml-parser.html#XMLPARSERCTXTPTR"
+>xmlParserCtxtPtr</A
+> ctxt);
+<A
+HREF="gnome-xml-tree.html#XMLELEMENTCONTENTPTR"
+>xmlElementContentPtr</A
+> <A
 HREF="gnome-xml-parserinternals.html#XMLPARSEELEMENTCHILDRENCONTENTDECL"
 >xmlParseElementChildrenContentDecl</A
 >
@@ -872,19 +889,19 @@ HREF="gnome-xml-tree.html#XMLCHAR"
 >xmlChar</A
 > *SystemID);
 #define     <A
-HREF="gnome-xml-parserinternals.html#XML-SUBSTITUTE-NONE"
+HREF="gnome-xml-parserinternals.html#XML-SUBSTITUTE-NONE-CAPS"
 >XML_SUBSTITUTE_NONE</A
 >
 #define     <A
-HREF="gnome-xml-parserinternals.html#XML-SUBSTITUTE-REF"
+HREF="gnome-xml-parserinternals.html#XML-SUBSTITUTE-REF-CAPS"
 >XML_SUBSTITUTE_REF</A
 >
 #define     <A
-HREF="gnome-xml-parserinternals.html#XML-SUBSTITUTE-PEREF"
+HREF="gnome-xml-parserinternals.html#XML-SUBSTITUTE-PEREF-CAPS"
 >XML_SUBSTITUTE_PEREF</A
 >
 #define     <A
-HREF="gnome-xml-parserinternals.html#XML-SUBSTITUTE-BOTH"
+HREF="gnome-xml-parserinternals.html#XML-SUBSTITUTE-BOTH-CAPS"
 >XML_SUBSTITUTE_BOTH</A
 >
 <A
@@ -1072,7 +1089,7 @@ HREF="gnome-xml-parserinternals.html#HTMLINITAUTOCLOSE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN15023"
+NAME="AEN15203"
 ></A
 ><H2
 >Description</H2
@@ -1082,18 +1099,18 @@ NAME="AEN15023"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN15026"
+NAME="AEN15206"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15028"
+NAME="AEN15208"
 ></A
 ><H3
 ><A
-NAME="XML-MAX-NAMELEN"
+NAME="XML-MAX-NAMELEN-CAPS"
 ></A
 >XML_MAX_NAMELEN</H3
 ><TABLE
@@ -1115,11 +1132,11 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15033"
+NAME="AEN15213"
 ></A
 ><H3
 ><A
-NAME="INPUT-CHUNK"
+NAME="INPUT-CHUNK-CAPS"
 ></A
 >INPUT_CHUNK</H3
 ><TABLE
@@ -1141,11 +1158,11 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15038"
+NAME="AEN15218"
 ></A
 ><H3
 ><A
-NAME="IS-CHAR"
+NAME="IS-CHAR-CAPS"
 ></A
 >IS_CHAR()</H3
 ><TABLE
@@ -1189,7 +1206,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1199,11 +1216,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15052"
+NAME="AEN15232"
 ></A
 ><H3
 ><A
-NAME="IS-BLANK"
+NAME="IS-BLANK-CAPS"
 ></A
 >IS_BLANK()</H3
 ><TABLE
@@ -1247,7 +1264,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1257,11 +1274,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15066"
+NAME="AEN15246"
 ></A
 ><H3
 ><A
-NAME="IS-BASECHAR"
+NAME="IS-BASECHAR-CAPS"
 ></A
 >IS_BASECHAR()</H3
 ><TABLE
@@ -1305,7 +1322,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1315,11 +1332,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15080"
+NAME="AEN15260"
 ></A
 ><H3
 ><A
-NAME="IS-DIGIT"
+NAME="IS-DIGIT-CAPS"
 ></A
 >IS_DIGIT()</H3
 ><TABLE
@@ -1363,7 +1380,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1373,11 +1390,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15094"
+NAME="AEN15274"
 ></A
 ><H3
 ><A
-NAME="IS-COMBINING"
+NAME="IS-COMBINING-CAPS"
 ></A
 >IS_COMBINING()</H3
 ><TABLE
@@ -1421,7 +1438,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1431,11 +1448,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15108"
+NAME="AEN15288"
 ></A
 ><H3
 ><A
-NAME="IS-EXTENDER"
+NAME="IS-EXTENDER-CAPS"
 ></A
 >IS_EXTENDER()</H3
 ><TABLE
@@ -1479,7 +1496,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1489,11 +1506,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15122"
+NAME="AEN15302"
 ></A
 ><H3
 ><A
-NAME="IS-IDEOGRAPHIC"
+NAME="IS-IDEOGRAPHIC-CAPS"
 ></A
 >IS_IDEOGRAPHIC()</H3
 ><TABLE
@@ -1537,7 +1554,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1547,11 +1564,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15136"
+NAME="AEN15316"
 ></A
 ><H3
 ><A
-NAME="IS-LETTER"
+NAME="IS-LETTER-CAPS"
 ></A
 >IS_LETTER()</H3
 ><TABLE
@@ -1595,7 +1612,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1605,11 +1622,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15150"
+NAME="AEN15330"
 ></A
 ><H3
 ><A
-NAME="IS-PUBIDCHAR"
+NAME="IS-PUBIDCHAR-CAPS"
 ></A
 >IS_PUBIDCHAR()</H3
 ><TABLE
@@ -1653,7 +1670,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1663,11 +1680,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15164"
+NAME="AEN15344"
 ></A
 ><H3
 ><A
-NAME="SKIP-EOL"
+NAME="SKIP-EOL-CAPS"
 ></A
 >SKIP_EOL()</H3
 ><TABLE
@@ -1711,7 +1728,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1721,11 +1738,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15178"
+NAME="AEN15358"
 ></A
 ><H3
 ><A
-NAME="MOVETO-ENDTAG"
+NAME="MOVETO-ENDTAG-CAPS"
 ></A
 >MOVETO_ENDTAG()</H3
 ><TABLE
@@ -1769,7 +1786,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1779,11 +1796,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15192"
+NAME="AEN15372"
 ></A
 ><H3
 ><A
-NAME="MOVETO-STARTTAG"
+NAME="MOVETO-STARTTAG-CAPS"
 ></A
 >MOVETO_STARTTAG()</H3
 ><TABLE
@@ -1827,7 +1844,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -1837,7 +1854,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15206"
+NAME="AEN15386"
 ></A
 ><H3
 ><A
@@ -1927,7 +1944,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15229"
+NAME="AEN15409"
 ></A
 ><H3
 ><A
@@ -1963,7 +1980,7 @@ HREF="XA"
 >xA</GTKDOCLINK
 >)+
 Also available as a macro <A
-HREF="gnome-xml-parserinternals.html#IS-BLANK"
+HREF="gnome-xml-parserinternals.html#IS-BLANK-CAPS"
 >IS_BLANK</A
 >()</P
 ><P
@@ -2019,7 +2036,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15253"
+NAME="AEN15433"
 ></A
 ><H3
 ><A
@@ -2104,7 +2121,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15275"
+NAME="AEN15455"
 ></A
 ><H3
 ><A
@@ -2180,7 +2197,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15294"
+NAME="AEN15474"
 ></A
 ><H3
 ><A
@@ -2256,7 +2273,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15313"
+NAME="AEN15493"
 ></A
 ><H3
 ><A
@@ -2347,7 +2364,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15337"
+NAME="AEN15517"
 ></A
 ><H3
 ><A
@@ -2423,7 +2440,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15356"
+NAME="AEN15536"
 ></A
 ><H3
 ><A
@@ -2543,7 +2560,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15389"
+NAME="AEN15569"
 ></A
 ><H3
 ><A
@@ -2596,7 +2613,7 @@ HREF="X10FFFF"
 >]
 any Unicode character, excluding the surrogate blocks, FFFE, and FFFF.
 Also available as a macro <A
-HREF="gnome-xml-parserinternals.html#IS-CHAR"
+HREF="gnome-xml-parserinternals.html#IS-CHAR-CAPS"
 >IS_CHAR</A
 >()</P
 ><P
@@ -2652,7 +2669,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15418"
+NAME="AEN15598"
 ></A
 ><H3
 ><A
@@ -2723,7 +2740,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -2733,7 +2750,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15439"
+NAME="AEN15619"
 ></A
 ><H3
 ><A
@@ -2813,7 +2830,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15459"
+NAME="AEN15639"
 ></A
 ><H3
 ><A
@@ -2909,7 +2926,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15483"
+NAME="AEN15663"
 ></A
 ><H3
 ><A
@@ -2970,7 +2987,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15499"
+NAME="AEN15679"
 ></A
 ><H3
 ><A
@@ -3095,7 +3112,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15530"
+NAME="AEN15710"
 ></A
 ><H3
 ><A
@@ -3195,7 +3212,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15555"
+NAME="AEN15735"
 ></A
 ><H3
 ><A
@@ -3295,7 +3312,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15580"
+NAME="AEN15760"
 ></A
 ><H3
 ><A
@@ -3349,7 +3366,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -3359,7 +3376,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15596"
+NAME="AEN15776"
 ></A
 ><H3
 ><A
@@ -3446,7 +3463,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15618"
+NAME="AEN15798"
 ></A
 ><H3
 ><A
@@ -3548,7 +3565,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15644"
+NAME="AEN15824"
 ></A
 ><H3
 ><A
@@ -3633,7 +3650,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15665"
+NAME="AEN15845"
 ></A
 ><H3
 ><A
@@ -3715,7 +3732,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15686"
+NAME="AEN15866"
 ></A
 ><H3
 ><A
@@ -3778,7 +3795,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15702"
+NAME="AEN15882"
 ></A
 ><H3
 ><A
@@ -3877,7 +3894,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15727"
+NAME="AEN15907"
 ></A
 ><H3
 ><A
@@ -3958,7 +3975,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15748"
+NAME="AEN15928"
 ></A
 ><H3
 ><A
@@ -4088,7 +4105,7 @@ to get the Prefix if any.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15782"
+NAME="AEN15962"
 ></A
 ><H3
 ><A
@@ -4177,7 +4194,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15806"
+NAME="AEN15986"
 ></A
 ><H3
 ><A
@@ -4289,7 +4306,7 @@ to get the Prefix if any.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15836"
+NAME="AEN16016"
 ></A
 ><H3
 ><A
@@ -4377,7 +4394,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15860"
+NAME="AEN16040"
 ></A
 ><H3
 ><A
@@ -4460,7 +4477,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15882"
+NAME="AEN16062"
 ></A
 ><H3
 ><A
@@ -4531,7 +4548,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15901"
+NAME="AEN16081"
 ></A
 ><H3
 ><A
@@ -4623,7 +4640,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15926"
+NAME="AEN16106"
 ></A
 ><H3
 ><A
@@ -4711,7 +4728,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15950"
+NAME="AEN16130"
 ></A
 ><H3
 ><A
@@ -4796,7 +4813,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN15973"
+NAME="AEN16153"
 ></A
 ><H3
 ><A
@@ -4901,7 +4918,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16000"
+NAME="AEN16180"
 ></A
 ><H3
 ><A
@@ -5039,7 +5056,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16034"
+NAME="AEN16214"
 ></A
 ><H3
 ><A
@@ -5122,7 +5139,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16056"
+NAME="AEN16236"
 ></A
 ><H3
 ><A
@@ -5205,7 +5222,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16078"
+NAME="AEN16258"
 ></A
 ><H3
 ><A
@@ -5294,7 +5311,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16100"
+NAME="AEN16280"
 ></A
 ><H3
 ><A
@@ -5425,7 +5442,7 @@ it is possible to return NULL and have publicID set.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16133"
+NAME="AEN16313"
 ></A
 ><H3
 ><A
@@ -5492,7 +5509,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16150"
+NAME="AEN16330"
 ></A
 ><H3
 ><A
@@ -5575,7 +5592,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16172"
+NAME="AEN16352"
 ></A
 ><H3
 ><A
@@ -5642,7 +5659,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16190"
+NAME="AEN16370"
 ></A
 ><H3
 ><A
@@ -5717,7 +5734,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16210"
+NAME="AEN16390"
 ></A
 ><H3
 ><A
@@ -5795,7 +5812,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16233"
+NAME="AEN16413"
 ></A
 ><H3
 ><A
@@ -5826,19 +5843,19 @@ HREF="gnome-xml-tree.html#XMLCHAR"
 >Parse an attribute default declaration</P
 ><P
 >[60] DefaultDecl ::= '<GTKDOCLINK
-HREF="REQUIRED"
+HREF="REQUIRED-CAPS"
 >REQUIRED</GTKDOCLINK
 >' | '<GTKDOCLINK
-HREF="IMPLIED"
+HREF="IMPLIED-CAPS"
 >IMPLIED</GTKDOCLINK
 >' | (('<GTKDOCLINK
-HREF="FIXED"
+HREF="FIXED-CAPS"
 >FIXED</GTKDOCLINK
 >' S)? AttValue)</P
 ><P
 >[ VC: Required Attribute ]
 if the default declaration is the keyword <GTKDOCLINK
-HREF="REQUIRED"
+HREF="REQUIRED-CAPS"
 >REQUIRED</GTKDOCLINK
 >, then the
 attribute must be specified for all elements of the type in the
@@ -5853,7 +5870,7 @@ HREF="gnome-xml-valid.html#XMLVALIDATEATTRIBUTEDECL"
 ><P
 >[ VC: Fixed Attribute Default ]
 if an attribute has a default value declared with the <GTKDOCLINK
-HREF="FIXED"
+HREF="FIXED-CAPS"
 >FIXED</GTKDOCLINK
 >
 keyword, instances of that attribute must match the default value. </P
@@ -5934,7 +5951,7 @@ or XML_ATTRIBUTE_FIXED. </TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16270"
+NAME="AEN16450"
 ></A
 ><H3
 ><A
@@ -6023,7 +6040,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16294"
+NAME="AEN16474"
 ></A
 ><H3
 ><A
@@ -6110,7 +6127,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16317"
+NAME="AEN16497"
 ></A
 ><H3
 ><A
@@ -6213,7 +6230,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16344"
+NAME="AEN16524"
 ></A
 ><H3
 ><A
@@ -6266,10 +6283,10 @@ No element type may have more than one ID attribute specified.</P
 ><P
 >[ VC: ID Attribute Default ]
 An ID attribute must have a declared default of <GTKDOCLINK
-HREF="IMPLIED"
+HREF="IMPLIED-CAPS"
 >IMPLIED</GTKDOCLINK
 > or <GTKDOCLINK
-HREF="REQUIRED"
+HREF="REQUIRED-CAPS"
 >REQUIRED</GTKDOCLINK
 >.</P
 ><P
@@ -6357,7 +6374,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16382"
+NAME="AEN16562"
 ></A
 ><H3
 ><A
@@ -6424,7 +6441,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16400"
+NAME="AEN16580"
 ></A
 ><H3
 ><A
@@ -6456,11 +6473,11 @@ HREF="gnome-xml-parser.html#XMLPARSERCTXTPTR"
 The leading '(' and spaces have been skipped in xmlParseElementContentDecl</P
 ><P
 >[51] Mixed ::= '(' S? '<GTKDOCLINK
-HREF="PCDATA"
+HREF="PCDATA-CAPS"
 >PCDATA</GTKDOCLINK
 >' (S? '|' S? Name)* S? ')*' |
 '(' S? '<GTKDOCLINK
-HREF="PCDATA"
+HREF="PCDATA-CAPS"
 >PCDATA</GTKDOCLINK
 >' S? ')'</P
 ><P
@@ -6522,7 +6539,87 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16426"
+NAME="AEN16606"
+></A
+><H3
+><A
+NAME="XMLPARSEELEMENTCHILDRENCONTENTD"
+></A
+>xmlParseElementChildrenContentD ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-xml-tree.html#XMLELEMENTCONTENTPTR"
+>xmlElementContentPtr</A
+> xmlParseElementChildrenContentD
+                                            (<A
+HREF="gnome-xml-parser.html#XMLPARSERCTXTPTR"
+>xmlParserCtxtPtr</A
+> ctxt);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&#13;</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN16626"
 ></A
 ><H3
 ><A
@@ -6625,7 +6722,7 @@ hierarchy.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16452"
+NAME="AEN16652"
 ></A
 ><H3
 ><A
@@ -6748,7 +6845,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16483"
+NAME="AEN16683"
 ></A
 ><H3
 ><A
@@ -6831,7 +6928,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16505"
+NAME="AEN16705"
 ></A
 ><H3
 ><A
@@ -6910,7 +7007,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16524"
+NAME="AEN16724"
 ></A
 ><H3
 ><A
@@ -6998,7 +7095,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16547"
+NAME="AEN16747"
 ></A
 ><H3
 ><A
@@ -7099,7 +7196,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16571"
+NAME="AEN16771"
 ></A
 ><H3
 ><A
@@ -7173,7 +7270,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16590"
+NAME="AEN16790"
 ></A
 ><H3
 ><A
@@ -7259,7 +7356,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16611"
+NAME="AEN16811"
 ></A
 ><H3
 ><A
@@ -7329,7 +7426,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16629"
+NAME="AEN16829"
 ></A
 ><H3
 ><A
@@ -7454,7 +7551,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16663"
+NAME="AEN16863"
 ></A
 ><H3
 ><A
@@ -7554,7 +7651,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16691"
+NAME="AEN16891"
 ></A
 ><H3
 ><A
@@ -7623,7 +7720,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16710"
+NAME="AEN16910"
 ></A
 ><H3
 ><A
@@ -7694,7 +7791,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16730"
+NAME="AEN16930"
 ></A
 ><H3
 ><A
@@ -7759,7 +7856,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16747"
+NAME="AEN16947"
 ></A
 ><H3
 ><A
@@ -7841,7 +7938,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16766"
+NAME="AEN16966"
 ></A
 ><H3
 ><A
@@ -7924,7 +8021,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16788"
+NAME="AEN16988"
 ></A
 ><H3
 ><A
@@ -8009,7 +8106,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16811"
+NAME="AEN17011"
 ></A
 ><H3
 ><A
@@ -8092,7 +8189,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16833"
+NAME="AEN17033"
 ></A
 ><H3
 ><A
@@ -8177,7 +8274,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16856"
+NAME="AEN17056"
 ></A
 ><H3
 ><A
@@ -8272,7 +8369,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16878"
+NAME="AEN17078"
 ></A
 ><H3
 ><A
@@ -8337,7 +8434,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16895"
+NAME="AEN17095"
 ></A
 ><H3
 ><A
@@ -8404,7 +8501,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16913"
+NAME="AEN17113"
 ></A
 ><H3
 ><A
@@ -8469,7 +8566,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16930"
+NAME="AEN17130"
 ></A
 ><H3
 ><A
@@ -8578,11 +8675,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16958"
+NAME="AEN17158"
 ></A
 ><H3
 ><A
-NAME="XML-SUBSTITUTE-NONE"
+NAME="XML-SUBSTITUTE-NONE-CAPS"
 ></A
 >XML_SUBSTITUTE_NONE</H3
 ><TABLE
@@ -8604,11 +8701,11 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16963"
+NAME="AEN17163"
 ></A
 ><H3
 ><A
-NAME="XML-SUBSTITUTE-REF"
+NAME="XML-SUBSTITUTE-REF-CAPS"
 ></A
 >XML_SUBSTITUTE_REF</H3
 ><TABLE
@@ -8630,11 +8727,11 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16968"
+NAME="AEN17168"
 ></A
 ><H3
 ><A
-NAME="XML-SUBSTITUTE-PEREF"
+NAME="XML-SUBSTITUTE-PEREF-CAPS"
 ></A
 >XML_SUBSTITUTE_PEREF</H3
 ><TABLE
@@ -8656,11 +8753,11 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16973"
+NAME="AEN17173"
 ></A
 ><H3
 ><A
-NAME="XML-SUBSTITUTE-BOTH"
+NAME="XML-SUBSTITUTE-BOTH-CAPS"
 ></A
 >XML_SUBSTITUTE_BOTH</H3
 ><TABLE
@@ -8682,7 +8779,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN16978"
+NAME="AEN17178"
 ></A
 ><H3
 ><A
@@ -8870,7 +8967,7 @@ must deallocate it !</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17025"
+NAME="AEN17225"
 ></A
 ><H3
 ><A
@@ -9058,7 +9155,7 @@ must deallocate it !</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17072"
+NAME="AEN17272"
 ></A
 ><H3
 ><A
@@ -9145,7 +9242,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -9155,7 +9252,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17096"
+NAME="AEN17296"
 ></A
 ><H3
 ><A
@@ -9224,7 +9321,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -9234,7 +9331,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17116"
+NAME="AEN17316"
 ></A
 ><H3
 ><A
@@ -9321,7 +9418,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -9331,7 +9428,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17140"
+NAME="AEN17340"
 ></A
 ><H3
 ><A
@@ -9400,7 +9497,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -9410,7 +9507,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17160"
+NAME="AEN17360"
 ></A
 ><H3
 ><A
@@ -9489,7 +9586,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17180"
+NAME="AEN17380"
 ></A
 ><H3
 ><A
@@ -9607,7 +9704,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17209"
+NAME="AEN17409"
 ></A
 ><H3
 ><A
@@ -9699,7 +9796,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17231"
+NAME="AEN17431"
 ></A
 ><H3
 ><A
@@ -9789,7 +9886,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17255"
+NAME="AEN17455"
 ></A
 ><H3
 ><A
@@ -9858,7 +9955,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -9868,7 +9965,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17275"
+NAME="AEN17475"
 ></A
 ><H3
 ><A
@@ -9934,7 +10031,7 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>&#13;</TD
 ></TR
 ></TABLE
 ><P
@@ -9944,7 +10041,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17294"
+NAME="AEN17494"
 ></A
 ><H3
 ><A
@@ -10063,7 +10160,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17323"
+NAME="AEN17523"
 ></A
 ><H3
 ><A
@@ -10177,7 +10274,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17351"
+NAME="AEN17551"
 ></A
 ><H3
 ><A
@@ -10240,7 +10337,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17367"
+NAME="AEN17567"
 ></A
 ><H3
 ><A
@@ -10303,7 +10400,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN17383"
+NAME="AEN17583"
 ></A
 ><H3
 ><A

@@ -28,6 +28,9 @@
  * See Copyright for the status of this software.
  *
  * Daniel.Veillard@w3.org
+ *
+ * 14 Nov 2000 ht - truncated definitions of xmlSubstituteEntitiesDefaultValue
+ * and xmlDoValidityCheckingDefaultValue for VMS
  */
 
 #ifdef WIN32
@@ -80,8 +83,15 @@
  */
 int xmlGetWarningsDefaultValue = 1;
 int xmlParserDebugEntities = 0;
+#ifdef VMS
+int xmlSubstituteEntitiesDefaultVal = 0;
+#define xmlSubstituteEntitiesDefaultValue xmlSubstituteEntitiesDefaultVal 
+int xmlDoValidityCheckingDefaultVal = 0;
+#define xmlDoValidityCheckingDefaultValue xmlDoValidityCheckingDefaultVal
+#else
 int xmlSubstituteEntitiesDefaultValue = 0;
 int xmlDoValidityCheckingDefaultValue = 0;
+#endif
 int xmlPedanticParserDefaultValue = 0;
 int xmlKeepBlanksDefaultValue = 1;
 
@@ -3882,7 +3892,12 @@ xmlParseElementMixedContentDecl(xmlParserCtxtPtr ctxt) {
  *          hierarchy.
  */
 xmlElementContentPtr
-xmlParseElementChildrenContentDecl(xmlParserCtxtPtr ctxt) {
+#ifdef VMS
+xmlParseElementChildrenContentD
+#else
+xmlParseElementChildrenContentDecl
+#endif
+(xmlParserCtxtPtr ctxt) {
     xmlElementContentPtr ret = NULL, cur = NULL, last = NULL, op = NULL;
     xmlChar *elem;
     xmlChar type = 0;
@@ -8174,17 +8189,23 @@ xmlParseChunk(xmlParserCtxtPtr ctxt, const char *chunk, int size,
 
 	if ((terminate) || (ctxt->input->buf->buffer->use > 80))
 	    xmlParseTryOrFinish(ctxt, terminate);
-    } else if (ctxt->instate != XML_PARSER_EOF)
-      if ((ctxt->input != NULL) && ctxt->input->buf != NULL) {
-      xmlParserInputBufferPtr in = ctxt->input->buf;
-      int nbchars = xmlCharEncInFunc(in->encoder, in->buffer, in->raw);
-      if (nbchars < 0) {
-          xmlGenericError(xmlGenericErrorContext,
-                  "xmlParseChunk: encoder error\n");
-          return(XML_ERR_INVALID_ENCODING);
-      }
-      }
-        xmlParseTryOrFinish(ctxt, terminate);
+    } else if (ctxt->instate != XML_PARSER_EOF) {
+	if ((ctxt->input != NULL) && ctxt->input->buf != NULL) {
+	    xmlParserInputBufferPtr in = ctxt->input->buf;
+	    if ((in->encoder != NULL) && (in->buffer != NULL) &&
+		    (in->raw != NULL)) {
+		int nbchars;
+		    
+		nbchars = xmlCharEncInFunc(in->encoder, in->buffer, in->raw);
+		if (nbchars < 0) {
+		    xmlGenericError(xmlGenericErrorContext,
+				    "xmlParseChunk: encoder error\n");
+		    return(XML_ERR_INVALID_ENCODING);
+		}
+	    }
+	}
+    }
+    xmlParseTryOrFinish(ctxt, terminate);
     if (terminate) {
 	/*
 	 * Check for termination
@@ -9219,6 +9240,7 @@ xmlCreateEntityParserCtxt(const xmlChar *URL, const xmlChar *ID,
     } else {
 	inputStream = xmlLoadExternalEntity((char *)uri, (char *)ID, ctxt);
 	if (inputStream == NULL) {
+	    xmlFree(uri);
 	    xmlFreeParserCtxt(ctxt);
 	    return(NULL);
 	}

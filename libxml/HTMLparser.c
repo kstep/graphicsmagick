@@ -53,6 +53,8 @@
 /* #define DEBUG */
 /* #define DEBUG_PUSH */
 
+int htmlOmittedDefaultValue = 1;
+
 /************************************************************************
  *									*
  * 		Parser stacks related functions and macros		*
@@ -837,12 +839,14 @@ htmlIsAutoClosed(htmlDocPtr doc, htmlNodePtr elem) {
  * @ctxt:  an HTML parser context
  * @newtag:  The new tag name
  *
- * The HTmL DtD allows a tag to exists only implicitely
+ * The HTML DtD allows a tag to exists only implicitely
  * called when a new tag has been detected and generates the
  * appropriates implicit tags if missing
  */
 void
 htmlCheckImplied(htmlParserCtxtPtr ctxt, const xmlChar *newtag) {
+    if (!htmlOmittedDefaultValue)
+	return;
     if (xmlStrEqual(newtag, BAD_CAST"html"))
 	return;
     if (ctxt->nameNr <= 0) {
@@ -855,13 +859,13 @@ htmlCheckImplied(htmlParserCtxtPtr ctxt, const xmlChar *newtag) {
     }
     if ((xmlStrEqual(newtag, BAD_CAST"body")) || (xmlStrEqual(newtag, BAD_CAST"head")))
         return;
-    if (ctxt->nameNr <= 1) {
-	if ((xmlStrEqual(newtag, BAD_CAST"script")) ||
-	    (xmlStrEqual(newtag, BAD_CAST"style")) ||
-	    (xmlStrEqual(newtag, BAD_CAST"meta")) ||
-	    (xmlStrEqual(newtag, BAD_CAST"link")) ||
-	    (xmlStrEqual(newtag, BAD_CAST"title")) ||
-	    (xmlStrEqual(newtag, BAD_CAST"base"))) {
+    if ((ctxt->nameNr <= 1) && 
+        ((xmlStrEqual(newtag, BAD_CAST"script")) ||
+	 (xmlStrEqual(newtag, BAD_CAST"style")) ||
+	 (xmlStrEqual(newtag, BAD_CAST"meta")) ||
+	 (xmlStrEqual(newtag, BAD_CAST"link")) ||
+	 (xmlStrEqual(newtag, BAD_CAST"title")) ||
+	 (xmlStrEqual(newtag, BAD_CAST"base")))) {
 	    /* 
 	     * dropped OBJECT ... i you put it first BODY will be
 	     * assumed !
@@ -872,14 +876,25 @@ htmlCheckImplied(htmlParserCtxtPtr ctxt, const xmlChar *newtag) {
 	    htmlnamePush(ctxt, xmlStrdup(BAD_CAST"head"));
 	    if ((ctxt->sax != NULL) && (ctxt->sax->startElement != NULL))
 		ctxt->sax->startElement(ctxt->userData, BAD_CAST"head", NULL);
-	} else {
-#ifdef DEBUG
-	    xmlGenericError(xmlGenericErrorContext,"Implied element body: pushed body\n");
-#endif    
-	    htmlnamePush(ctxt, xmlStrdup(BAD_CAST"body"));
-	    if ((ctxt->sax != NULL) && (ctxt->sax->startElement != NULL))
-		ctxt->sax->startElement(ctxt->userData, BAD_CAST"body", NULL);
+    } else if ((!xmlStrEqual(newtag, BAD_CAST"noframes")) &&
+	       (!xmlStrEqual(newtag, BAD_CAST"frame")) &&
+	       (!xmlStrEqual(newtag, BAD_CAST"frameset"))) {
+	int i;
+	for (i = 0;i < ctxt->nameNr;i++) {
+	    if (xmlStrEqual(ctxt->nameTab[i], BAD_CAST"body")) {
+		return;
+	    }
+	    if (xmlStrEqual(ctxt->nameTab[i], BAD_CAST"head")) {
+		return;
+	    }
 	}
+	    
+#ifdef DEBUG
+	xmlGenericError(xmlGenericErrorContext,"Implied element body: pushed body\n");
+#endif    
+	htmlnamePush(ctxt, xmlStrdup(BAD_CAST"body"));
+	if ((ctxt->sax != NULL) && (ctxt->sax->startElement != NULL))
+	    ctxt->sax->startElement(ctxt->userData, BAD_CAST"body", NULL);
     }
 }
 
@@ -910,6 +925,8 @@ htmlCheckParagraph(htmlParserCtxtPtr ctxt) {
 	    ctxt->sax->startElement(ctxt->userData, BAD_CAST"p", NULL);
 	return(1);
     }
+    if (!htmlOmittedDefaultValue)
+	return;
     for (i = 0; htmlNoContentElements[i] != NULL; i++) {
 	if (xmlStrEqual(tag, BAD_CAST htmlNoContentElements[i])) {
 #ifdef DEBUG
@@ -2776,6 +2793,10 @@ htmlCheckEncoding(htmlParserCtxtPtr ctxt, const xmlChar *attvalue) {
     if ((ctxt == NULL) || (attvalue == NULL))
 	return;
 
+    /* do not change encoding */	
+    if (ctxt->input->encoding != NULL)
+        return;
+
     encoding = xmlStrcasestr(attvalue, BAD_CAST"charset=");
     if (encoding != NULL) {
 	encoding += 8;
@@ -2931,6 +2952,41 @@ htmlParseStartTag(htmlParserCtxtPtr ctxt) {
      * Check for implied HTML elements.
      */
     htmlCheckImplied(ctxt, name);
+
+    /*
+     * Avoid html at any level > 0, head at any level != 1
+     * or any attempt to recurse body
+     */
+    if ((ctxt->nameNr > 0) && (xmlStrEqual(name, BAD_CAST"html"))) {
+	if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
+	    ctxt->sax->error(ctxt->userData, 
+	     "htmlParseStartTag: misplaced <html> tag\n");
+	ctxt->wellFormed = 0;
+	xmlFree(name);
+	return;
+    }
+    if ((ctxt->nameNr != 1) && 
+	(xmlStrEqual(name, BAD_CAST"head"))) {
+	if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
+	    ctxt->sax->error(ctxt->userData, 
+	     "htmlParseStartTag: misplaced <head> tag\n");
+	ctxt->wellFormed = 0;
+	xmlFree(name);
+	return;
+    }
+    if (xmlStrEqual(name, BAD_CAST"body")) {
+	int i;
+	for (i = 0;i < ctxt->nameNr;i++) {
+	    if (xmlStrEqual(ctxt->nameTab[i], BAD_CAST"body")) {
+		if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
+		    ctxt->sax->error(ctxt->userData, 
+		     "htmlParseStartTag: misplaced <body> tag\n");
+		ctxt->wellFormed = 0;
+		xmlFree(name);
+		return;
+	    }
+	}
+    }
 
     /*
      * Now parse the attributes, it ends up with the ending
@@ -4776,6 +4832,7 @@ htmlCreateFileParserCtxt(const char *filename, const char *encoding)
     htmlParserInputPtr inputStream;
     xmlParserInputBufferPtr buf;
     /* htmlCharEncoding enc; */
+    xmlChar *content, *content_line = (xmlChar *) "charset=";
 
     buf = xmlParserInputBufferCreateFilename(filename, XML_CHAR_ENCODING_NONE);
     if (buf == NULL) return(NULL);
@@ -4806,6 +4863,18 @@ htmlCreateFileParserCtxt(const char *filename, const char *encoding)
     inputStream->free = NULL;
 
     inputPush(ctxt, inputStream);
+    
+    /* set encoding */
+    if (encoding) {
+        content = xmlMalloc (xmlStrlen(content_line) + strlen(encoding) + 1);
+	if (content) {  
+	    strcpy ((char *)content, (char *)content_line);
+            strcat ((char *)content, (char *)encoding);
+            htmlCheckEncoding (ctxt, content);
+	    xmlFree (content);
+	}
+    }
+    
     return(ctxt);
 }
 
@@ -4865,6 +4934,23 @@ htmlSAXParseFile(const char *filename, const char *encoding, htmlSAXHandlerPtr s
 htmlDocPtr
 htmlParseFile(const char *filename, const char *encoding) {
     return(htmlSAXParseFile(filename, encoding, NULL, NULL));
+}
+
+/**
+ * htmlHandleOmittedElem:
+ * @val:  int 0 or 1 
+ *
+ * Set and return the previous value for handling HTML omitted tags.
+ *
+ * Returns the last value for 0 for no handling, 1 for auto insertion.
+ */
+
+int
+htmlHandleOmittedElem(int val) {
+    int old = htmlOmittedDefaultValue;
+
+    htmlOmittedDefaultValue = val;
+    return(old);
 }
 
 #endif /* LIBXML_HTML_ENABLED */

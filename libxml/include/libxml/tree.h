@@ -5,6 +5,9 @@
  * See Copyright for the status of this software.
  *
  * Daniel.Veillard@w3.org
+ *
+ * 14 Nov 2000 ht - added redefinition of xmlBufferWriteChar for VMS
+ *
  */
 
 #ifndef __XML_TREE_H__
@@ -22,6 +25,9 @@ extern "C" {
  *
  * NOTE: This is synchronized with DOM Level1 values
  *       See http://www.w3.org/TR/REC-DOM-Level-1/
+ *
+ * Actually this had diverged a bit, and now XML_DOCUMENT_TYPE_NODE should
+ * be deprecated to use an XML_DTD_NODE.
  */
 typedef enum {
     XML_ELEMENT_NODE=		1,
@@ -609,8 +615,14 @@ int		xmlRemoveNode		(xmlNodePtr node); /* TODO */
 /*
  * Internal, don't use
  */
+#ifdef VMS
+void		xmlBufferWriteXmlCHAR	(xmlBufferPtr buf,
+					 const xmlChar *string);
+#define 	xmlBufferWriteCHAR 	xmlBufferWriteXmlCHAR
+#else
 void		xmlBufferWriteCHAR	(xmlBufferPtr buf,
 					 const xmlChar *string);
+#endif
 void		xmlBufferWriteChar	(xmlBufferPtr buf,
 					 const char *string);
 void		xmlBufferWriteQuotedString(xmlBufferPtr buf,
@@ -625,9 +637,22 @@ int		xmlReconciliateNs	(xmlDocPtr doc,
 /*
  * Saving
  */
+void		xmlDocDumpFormatMemory	(xmlDocPtr cur,
+					 xmlChar**mem,
+					 int *size,
+					 int format);
 void		xmlDocDumpMemory	(xmlDocPtr cur,
 					 xmlChar**mem,
 					 int *size);
+void		xmlDocDumpMemoryEnc	(xmlDocPtr out_doc,
+					 xmlChar **doc_txt_ptr,
+					 int * doc_txt_len,
+					 const char *txt_encoding);
+void		xmlDocDumpFormatMemoryEnc(xmlDocPtr out_doc,
+					 xmlChar **doc_txt_ptr,
+					 int * doc_txt_len,
+					 const char *txt_encoding,
+					 int format);
 int		xmlDocDump		(FILE *f,
 					 xmlDocPtr cur);
 void		xmlElemDump		(FILE *f,
