@@ -13,6 +13,24 @@
 </tr>
 </table>
 <p>
+2003-03-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/cache.c (OpenCache): Add some Windows-specific
+        open options.<BR>
+  <LI> magick/resource.c (InitializeMagickResources): Increase
+        the number of "lowio" file handles available for use under
+        Windows.<BR>
+  <LI> ltdl/ltdl.c: Incorporate more Darwin fixes from CVS libtool.
+  <LI> coders/pcx.c (ReadPCXImage): Incorporate bugfix from
+        ImageMagick -- Not enough memory allocated for reading PCX
+        (bug report by Trevor Willis).<BR>
+  <LI> magick/magick.c (InitializeMagick): Only invoke
+        SetLogEventMask() to set debug options based on
+        getenv("MAGICK_DEBUG") if the environment variable is set.
+
+</UL>
+<p>
 2003-03-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

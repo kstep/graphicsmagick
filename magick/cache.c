@@ -60,6 +60,23 @@
 #else
 # define S_MODE      0644 
 #endif
+
+/*
+ Windows open extensions
+*/
+#if !defined(_O_RANDOM)
+# define _O_RANDOM 0
+#endif
+#if !defined(_O_SEQUENTIAL)
+# define _O_SEQUENTIAL 0
+#endif
+#if !defined(_O_SHORT_LIVED)
+# define _O_SHORT_LIVED 0
+#endif
+#if !defined(_O_TEMPORARY)
+# define _O_TEMPORARY 0
+#endif
+
 
 /*
   Declare pixel cache interfaces.
@@ -2201,7 +2218,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   {
     case ReadMode:
     {
-      file=open(cache_info->cache_filename,O_RDONLY | O_BINARY);
+      file=open(cache_info->cache_filename,O_RDONLY | O_BINARY | _O_SEQUENTIAL);
       break;
     }
     case WriteMode:
@@ -2216,9 +2233,10 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
     default:
     {
       file=open(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY |
-        O_EXCL,S_MODE);
+        O_EXCL | _O_RANDOM, S_MODE);
       if (file == -1)
-        file=open(cache_info->cache_filename,O_RDWR | O_BINARY,S_MODE);
+        file=open(cache_info->cache_filename,O_RDWR | O_BINARY | _O_RANDOM,
+          S_MODE);
       break;
     }
   }

@@ -395,11 +395,17 @@ MagickExport int ftruncate(int filedes, off_t length)
 
   status=0;
   current_pos=_telli64(filedes);
+
   /*
     Truncate file to size, filling any extension with nulls.
     Notice that this interface is limited to 2GB due to its
     use of a 'long' offset. Ftruncate also has this shortcoming
     if off_t is a 'long'.
+
+    A way to support more than 2GB is to use SetFilePointerEx()
+    to set the file position followed by SetEndOfFile() to set
+    the file EOF to the current file position. This approach does
+    not ensure that bytes in the extended portion are null
   */ 
   status=_chsize(filedes,length);
 

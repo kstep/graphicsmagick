@@ -72,6 +72,12 @@ int main( int /*argc*/, char ** argv)
       unsigned char* blobData = new unsigned char[100000];
       in.read( reinterpret_cast<char*>(blobData), 100000 );
       size_t blobLen =  in.gcount();
+      if ((!in.eof()) || (blobLen == 0))
+        {
+          cout << "Failed to read file " << testimage << " for input!" << endl;
+          exit(1);
+        }
+
       in.close();
 
       // Construct Magick++ Blob

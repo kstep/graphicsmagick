@@ -328,7 +328,13 @@ MagickExport void InitializeMagick(const char *path)
     Set logging flags using value of MAGICK_DEBUG if it is set in
     the environment.
   */
-  (void) SetLogEventMask(getenv("MAGICK_DEBUG"));
+  {
+    const char
+      *magick_debug=getenv("MAGICK_DEBUG");
+    
+    if (magick_debug)
+      (void) SetLogEventMask(magick_debug);
+  }
 
   /*
     Compute memory allocation and memory map resource limits based

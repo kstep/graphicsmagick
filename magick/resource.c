@@ -366,6 +366,12 @@ MagickExport void InitializeMagickResources(void)
     (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
       "Total physical memory %ld MB, Total virtual memory %ld MB",
         total_physical_memory, total_virtual_memory);
+
+    /*
+      Windows lowio level supports up to 2048 open files.
+      Reserve 512 handles for other uses.
+    */
+    max_files=2048-512;
   }
 #endif /* defined(WIN32) */
 

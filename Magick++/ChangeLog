@@ -1,3 +1,8 @@
+2003-03-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/readWriteBlob.cpp (main): Added check for
+	stream read failure when reading blob data.
+
 2003-03-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/attributes.cpp : Change in the way that Magick++

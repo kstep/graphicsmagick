@@ -338,7 +338,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     pcx_packets=image->rows*pcx_info.bytes_per_line*pcx_info.planes;
     pcx_pixels=(unsigned char *) AcquireMemory(pcx_packets);
-    scanline=(unsigned char *) AcquireMemory(image->columns*pcx_info.planes);
+    scanline=(unsigned char *) AcquireMemory(Max(image->columns,
+      pcx_info.bytes_per_line)*pcx_info.planes);
     if ((pcx_pixels == (unsigned char *) NULL) ||
         (scanline == (unsigned char *) NULL))
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
