@@ -2753,7 +2753,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            FormatString(buffer,"decorate:%s;",value);
+            FormatString(buffer,"text-decoration:%s;",value);
             WriteBlobString(image,buffer);
             break;
           }
@@ -2828,6 +2828,12 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
+            if (LocaleCompare("NorthWest",value) == 0)
+              WriteBlobString(image,"text-align:left;");
+            if (LocaleCompare("NorthEast",value) == 0)
+              WriteBlobString(image,"text-align:right;");
+            if (LocaleCompare("North",value) == 0)
+              WriteBlobString(image,"text-align:center;");
             break;
           }
         status=False;
