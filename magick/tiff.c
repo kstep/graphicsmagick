@@ -1127,12 +1127,9 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         next_image=ZoomImage(image,width,height);
         if (next_image == (Image *) NULL)
           WriterExit(FileOpenWarning,"Unable to pyramid encode image",image);
-        next_image->exempt=True;
+        next_image->next=(Image *) NULL;
         if (pyramid_image == (Image *) NULL)
-          {
-            pyramid_image=next_image;
-            pyramid_image->next=(Image *) NULL;
-          }
+          pyramid_image=next_image;
         else
           {
             register Image
