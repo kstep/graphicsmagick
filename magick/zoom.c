@@ -604,7 +604,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 
 static double Blackman(const double x,const double support)
 {
-  return(0.42+0.5*cos(MagickPI*x)+0.08*cos(2.0*MagickPI*x));
+  return(0.42+0.5*cos(MagickPI*x)+0.08*cos(2*MagickPI*x));
 }
 
 static double Bessel(const double x,const double support)
@@ -617,7 +617,7 @@ static double Bessel(const double x,const double support)
 static double Sinc(const double x,const double support)
 {
   if (x == 0.0)
-    return(0.0);
+    return(Blackman(x/support,support));
   return(Blackman(x/support,support)*sin(MagickPI*x)/(MagickPI*x));
 }
 
