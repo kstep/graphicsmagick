@@ -1,0 +1,141 @@
+Date: Fri, 14 May 1999 10:15:12 -0400 (EDT)
+From: Cristy <cristy@mystic.es.dupont.com>
+To: bfriesen@simple.dallas.tx.us
+Subject: Re: Image->colorspace
+
+> Is Image->colorspace always maintained to be accurate
+
+Upon reading an image, colorspace is either RGB or CMYK.  This is maintained
+throughout it's life unless TransformRGBImage is called.  If you look an
+WriteImage routines you'll see calls to TransformRGBImage in methods that
+require the RGB colorspace.  I've been working CMYK support into ImageMagick.
+I just finished CMYK support for PS2 and PDF.
+
+The ImageInfo colorspace attribute applies to the color reduction
+algorithm.
+
+From: Cristy <cristy@mystic.es.dupont.com>
+To: bfriesen@simple.dallas.tx.us
+Subject: Re: PingImage
+
+> It seems like there should be functions available to convert between all the
+> various in-memory formats (whatever those may be) to make things easier for
+
+In most cases it's just changes to image attributes or pixels.  Most of it
+you should know already.  PseudoClass is the index value pointing to a
+colormap index.  Here the RGB values match that of the colormap so the
+pixels can be used in a dual mode.  DirectClass is RGB pixels.  image->matte
+when set to true uses RGB and the index as opacity.  CMYK uses CMY
+index as the K value.  Where CMY is just the inverse of RGB.  Grayscale is
+just PsuedoClass where all the colormap entries have R=G=B.
+
+Date: Sat, 29 May 1999 03:32:16 -0400 (EDT)
+From: Cristy <cristy@mystic.es.dupont.com>
+To: bfriesen@simple.dallas.tx.us
+Subject: Re: colorspace and image format
+
+> Does the colorspace setting in Image effect the definitions of the red, green,
+> and blue members in RunlengthPacket so they mean something different than RGB
+> (such as the specifiers for a color in that colorspace)?
+
+If the colorspace is RGB the pixels are red, green, blue.  If matte is
+true, then red, green, blue, and index.  If it is CMYK, the pixels are cyan,
+yellow, magenta, black.  Otherwise the colorspace is ignored.
+
+> Also, the colorspace transformations are a bit non-standard.  I assume that
+> this is to fit exactly to the range of Quantum.  If so, would you recommend
+
+I got most of these from authorative sources such as the Color FAQ.  There
+is some transforms on the equations to make them fit in [0-255].
+
+> that Magick++ use the exact transformations that ImageMagick does since
+> Magick++ also scales color values to Quantum?
+
+Is there something you are looking for in the color transform methods that
+is not already there?
+
+More on PsuedoColor images:
+==========================
+
+Method SyncImage initializes the red, green, and blue intensities of
+each pixel as defined by the colormap index.
+
+Method IsPseudoClass returns True if the image is PseudoClass and has
+256 unique colors or less. If the image is DirectClass and has less 256
+colors or less, the image is demoted to PseudoClass.
+
+From: Cristy <cristy@mystic.es.dupont.com>
+To: bfriesen@simple.dallas.tx.us
+Subject: Re: Handling of PsuedoColor?
+
+An image can always be treated as DirectClass (RGB).  However, if the
+image class == PseudoClass then the index values are pointers to
+the colormap.  If SyncImage has been called then the RGB values equal
+that of colormap[pixel->index].  To force a DirectClass image to PseudoClass
+just call QuantizeImage.  You must follow QuantizeImage with SyncImage if
+you want the RGB values of a pixel to equal that of colormap[pixel->index].
+
+From: Cristy <cristy@mystic.es.dupont.com>
+To: bfriesen@simple.dallas.tx.us
+Subject: Re: Handling of PsuedoColor?
+
+>  Or is quantization limitedto 256 colors?
+
+You can quantize to any number of colors, however, IsPseudoClass() only
+converts an image to PsuedoClass automatically if it has 256 colors or
+less.  You can have a PsuedoClass image with more colors if you want
+but most image formats don't support it.  MIFF certainly does.
+
+Image members
+=============
+
+ClassType class/c_class
+	DirectClass
+		image packets contain valid RGB or CMYK colors.
+	PseudoClass
+		image has a colormap referenced by pixel's index member.
+
+ColorspaceType colorspace
+	If the colorspace is RGB the pixels are red, green, blue. If
+	matte is true, then red, green, blue, and index. If it is CMYK,
+	the pixels are cyan, yellow, magenta, black. Otherwise the
+	colorspace is ignored.
+
+unsigned int matte
+	If non-zero, then RunlengthPacket.index contains alpha channel.
+
+unsigned int columns
+	Columns in image (image width)
+
+unsigned int rows
+	Rows in image (image height)
+
+unsigned int depth
+	Image depth (8 or 16).  QuantumLeap must be defined before
+	a depth of 16 may be specified.
+
+ColorPacket* colormap;
+	PseudoColor palette.
+
+RunlengthPacket pixels
+	Image pixels
+
+unsigned long packets
+	Number of packets in pixels
+
+unsigned int packet_size
+
+unsigned char* packed_pixels
+	The packed_pixels are used only for the RunlengthEncode methods
+	for writing MIFF or MAP image types.
+
+unsigned int colors
+	The desired number of colors.
+
+unsigned long total_colors
+	The number of colors in the image after QuantizeImage(), or
+	QuantizeImages() if the verbose flag was set before the call.
+	Calculated by GetNumberColors();
+
+
+

@@ -1,7 +1,7 @@
 #
 # Makefile for Magick++ library
 #
-# Copyright Bob Friesenhahn, 1999, 2000
+# Copyright Bob Friesenhahn, 1999, 2000, 2001
 #
 AUTOMAKE_OPTIONS = 1.4
 
@@ -21,8 +21,8 @@ MICRO_VERSION      = @MICRO_VERSION@
 
 libMagick___la_SOURCES = \
 	Blob.cpp Coder.cpp Color.cpp Drawable.cpp Exception.cpp \
-	Functions.cpp Geometry.cpp Options.cpp Thread.cpp \
-	Image.cpp Montage.cpp Pixels.cpp
+	Functions.cpp Geometry.cpp Image.cpp Montage.cpp Options.cpp \
+	Pixels.cpp Thread.cpp TypeMetric.cpp
 
 libMagick___la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 

@@ -401,6 +401,7 @@ namespace Magick
   using MagickLib::GetNumberColors;
   using MagickLib::GetPixels;
   using MagickLib::GetQuantizeInfo;
+  using MagickLib::GetTypeMetrics;
   using MagickLib::GreaterValue;
   using MagickLib::HSLTransform;
   using MagickLib::HeightValue;

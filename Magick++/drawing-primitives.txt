@@ -1,0 +1,54 @@
+
+Drawing Primitives
+==================
+
+"affine is just a compact way to represent a 3x3 translation matrix.
+Locations 0 & 3 are scaling for x,y; 1 & 2 are rotation for x,y; 4 & 5
+are translation. Affine is equivalent to the SVG matrix command."
+
+affine scaleX,rotationX,rotationY,scaleY,translationX,translationY
+angle angle
+arc startX,startY endX,endY startDegrees,endDegrees
+bezier x1,y1, x2,y2, x3,y3, ..., xN,yN
+circle originX,originY perimX,perimY
+*clip-path %s  (%s is the name of the clip path)
+color x,y (point|replace|floodfill|filltoborder|reset)
+decorate (none|underline|overline|line-through)
+ellipse centerX,centerY radiusX,radiusY arcStart,arcEnd
+fill colorspec
+fill-rule (evenodd|nonzero)
+fill-opacity opacity
+font fontname
+gravity (NorthWest|North|NorthEast|West|Center|East|SouthWest|South|SouthEast)
+image (Over|In|Out|Atop|Xor|Plus|Minus|Add|Subtract|Difference|Multiply|Bumpmap|Copy|CopyRed|CopyGreen|CopyBlue|CopyOpacity) x,y width,height filename
+line startX,startY endX,endY
+matte x,y (point|replace|floodfill|filltoborder|reset)
+opacity fill stroke
+path 'SVG-compatible path arguments'
+point x,y
+font-size pointsize  (used to be 'pointsize')
+polygon x1,y1, x2,y2, x3,y3, ..., xN,yN
+polyline x1,y1, x2,y2, x3,y3, ..., xN,yN
+*pop clip-path
+pop graphic-context
+*push clip-path-%s  (%s is the name of the clip path)
+push graphic-context
+rectangle upperLeftX,upperLeftY lowerRightX,lowerRightY
+rotate angle
+roundrectangle upperLeftX,upperLeftY lowerRightX,lowerRightY cornerWidth,cornerHeight
+scale x,y
+skewX angle
+skewY angle
+stroke colorspec
+stroke-antialias truth-value (0 or 1)
+stroke-dasharray (none|comma-delimited-numeric-list)
+stroke-dashoffset dashoffset
+stroke-linecap (butt|round|square)
+stroke-linejoin (miter|round|bevel)
+stroke-miterlimit limit (default 4)
+stroke-opacity opacity
+stroke-width linewidth
+text x,y "some text"
+text-antialias text_antialias (0 or 1)
+translate x,y
+*viewbox (e.g. "viewbox 0 0 640 480")

@@ -19,6 +19,7 @@
 #include "Magick++/Options.h"
 #include "Magick++/Include.h"
 #include "Magick++/Thread.h"
+#include "Magick++/TypeMetric.h"
 
 namespace Magick
 {
@@ -508,7 +509,7 @@ namespace Magick
 
     //////////////////////////////////////////////////////////////////////
     //
-    // Image Options
+    // Image Attributes and Options
     //
     //////////////////////////////////////////////////////////////////////
 
@@ -650,6 +651,10 @@ namespace Magick
     // Font point size
     void            fontPointsize ( double pointSize_ );
     double          fontPointsize ( void ) const;
+
+    // Font type metrics
+    void            fontTypeMetrics( const std::string &text_,
+                                     TypeMetric *metrics );
 
     // Long image format description
     std::string     format ( void ) const;

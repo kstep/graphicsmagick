@@ -268,12 +268,10 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../magick/config.h
 CONFIG_CLEAN_FILES = 
 @HasX11_FALSE@bin_PROGRAMS =  composite$(EXEEXT) convert$(EXEEXT) \
-@HasX11_FALSE@identify$(EXEEXT) mogrify$(EXEEXT) \
-@HasX11_FALSE@montage$(EXEEXT)
+@HasX11_FALSE@identify$(EXEEXT) mogrify$(EXEEXT) montage$(EXEEXT)
 @HasX11_TRUE@bin_PROGRAMS =  composite$(EXEEXT) convert$(EXEEXT) \
-@HasX11_TRUE@identify$(EXEEXT) mogrify$(EXEEXT) \
-@HasX11_TRUE@montage$(EXEEXT) animate$(EXEEXT) display$(EXEEXT) \
-@HasX11_TRUE@import$(EXEEXT)
+@HasX11_TRUE@identify$(EXEEXT) mogrify$(EXEEXT) montage$(EXEEXT) \
+@HasX11_TRUE@animate$(EXEEXT) display$(EXEEXT) import$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
@@ -331,8 +329,7 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES =  $(animate_SOURCES) $(composite_SOURCES) \
 $(convert_SOURCES) $(display_SOURCES) $(identify_SOURCES) \
-$(import_SOURCES) $(mogrify_SOURCES) \
-$(montage_SOURCES)
+$(import_SOURCES) $(mogrify_SOURCES) $(montage_SOURCES)
 man1dir = $(mandir)/man1
 man4dir = $(mandir)/man4
 man5dir = $(mandir)/man5
@@ -342,8 +339,7 @@ NROFF = nroff
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 DEP_FILES =  @AMDEP@ $(DEPDIR)/animate.Po $(DEPDIR)/composite.Po \
 $(DEPDIR)/convert.Po $(DEPDIR)/display.Po $(DEPDIR)/identify.Po \
-$(DEPDIR)/import.Po $(DEPDIR)/mogrify.Po \
-$(DEPDIR)/montage.Po
+$(DEPDIR)/import.Po $(DEPDIR)/mogrify.Po $(DEPDIR)/montage.Po
 DIST_COMMON =  Makefile.am Makefile.in
 
 

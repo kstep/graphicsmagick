@@ -168,7 +168,7 @@ install_sh = @install_sh@
 #
 # Makefile for Magick++ library
 #
-# Copyright Bob Friesenhahn, 1999, 2000
+# Copyright Bob Friesenhahn, 1999, 2000, 2001
 #
 
 
@@ -190,8 +190,8 @@ MICRO_VERSION = @MICRO_VERSION@
 
 libMagick___la_SOURCES = \
 	Blob.cpp Coder.cpp Color.cpp Drawable.cpp Exception.cpp \
-	Functions.cpp Geometry.cpp Options.cpp Thread.cpp \
-	Image.cpp Montage.cpp Pixels.cpp
+	Functions.cpp Geometry.cpp Image.cpp Montage.cpp Options.cpp \
+	Pixels.cpp Thread.cpp TypeMetric.cpp
 
 
 libMagick___la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
@@ -216,8 +216,8 @@ X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 libMagick___la_LIBADD = 
 am_libMagick___la_OBJECTS =  Blob.lo Coder.lo Color.lo Drawable.lo \
-Exception.lo Functions.lo Geometry.lo Options.lo Thread.lo Image.lo \
-Montage.lo Pixels.lo
+Exception.lo Functions.lo Geometry.lo Image.lo Montage.lo Options.lo \
+Pixels.lo Thread.lo TypeMetric.lo
 libMagick___la_OBJECTS =  $(am_libMagick___la_OBJECTS)
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -232,7 +232,7 @@ DEP_FILES =  @AMDEP@ $(DEPDIR)/Blob.Plo $(DEPDIR)/Coder.Plo \
 $(DEPDIR)/Color.Plo $(DEPDIR)/Drawable.Plo $(DEPDIR)/Exception.Plo \
 $(DEPDIR)/Functions.Plo $(DEPDIR)/Geometry.Plo $(DEPDIR)/Image.Plo \
 $(DEPDIR)/Montage.Plo $(DEPDIR)/Options.Plo $(DEPDIR)/Pixels.Plo \
-$(DEPDIR)/Thread.Plo
+$(DEPDIR)/Thread.Plo $(DEPDIR)/TypeMetric.Plo
 DIST_COMMON =  $(include_HEADERS) Makefile.am Makefile.in
 
 
@@ -425,6 +425,7 @@ maintainer-clean-tags:
 @AMDEP@include $(DEPDIR)/Options.Plo
 @AMDEP@include $(DEPDIR)/Pixels.Plo
 @AMDEP@include $(DEPDIR)/Thread.Plo
+@AMDEP@include $(DEPDIR)/TypeMetric.Plo
 
 mostlyclean-depend:
 

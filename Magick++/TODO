@@ -2,11 +2,6 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
-* Add support for AllocateImageColormap(), or develop some other
-  useful colormap support.
-
-* Add support for SetImageClipMask();
-
 * Come up with a way to allow the user to iterate through a list
   of the supported image formats.
 

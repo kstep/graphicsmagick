@@ -2181,6 +2181,7 @@ Magick::FillRule Magick::Image::fillRule ( void ) const
   return constOptions()->fillRule();
 }
 
+// Filter used by zoom
 void Magick::Image::filterType ( Magick::FilterTypes filterType_ )
 {
   modifyImage();
@@ -2191,6 +2192,7 @@ Magick::FilterTypes Magick::Image::filterType ( void ) const
   return constImage()->filter;
 }
 
+// Font name
 void Magick::Image::font ( const std::string &font_ )
 {
   modifyImage();
@@ -2201,6 +2203,7 @@ std::string Magick::Image::font ( void ) const
   return constOptions()->font( );
 }
 
+// Font point size
 void Magick::Image::fontPointsize ( double pointSize_ )
 {
   modifyImage();
@@ -2211,6 +2214,17 @@ double Magick::Image::fontPointsize ( void ) const
   return constOptions()->fontPointsize( );
 }
 
+// Font type metrics
+void Magick::Image::fontTypeMetrics( const std::string &text_,
+                                     TypeMetric *metrics )
+{
+  DrawInfo *drawInfo = options()->drawInfo();
+  drawInfo->text = const_cast<char *>(text_.c_str());
+  GetTypeMetrics( image(), drawInfo, &(metrics->_typeMetric) );
+  drawInfo->text = 0;
+};
+
+// Image format string
 std::string Magick::Image::format ( void ) const
 {
   ExceptionInfo exception;

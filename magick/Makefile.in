@@ -222,10 +222,10 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 # Library base sources
 MAGICK_BASE_SRCS = PreRvIcccm.c animate.c annotate.c attribute.c blob.c \
   cache.c cache_view.c color.c compress.c constitute.c decorate.c delegate.c \
-  display.c draw.c effect.c enhance.c error.c type.c gem.c image.c  \
+  display.c draw.c effect.c enhance.c error.c gem.c image.c  \
   semaphore.c magic.c magick.c memory.c module.c monitor.c montage.c \
   quantize.c segment.c shear.c signature.c stream.c timer.c transform.c \
-  utility.c widget.c xwindow.c zoom.c
+  type.c utility.c widget.c xwindow.c zoom.c
 
 @WITH_MODULES_TRUE@libMagick_la_SOURCES = @WITH_MODULES_TRUE@$(MAGICK_BASE_SRCS)
 @WITH_MODULES_FALSE@libMagick_la_SOURCES = @WITH_MODULES_FALSE@$(MAGICK_BASE_SRCS)
@@ -255,10 +255,10 @@ EXTRA_DIST = $(ALLMANPAGES) colors.mgk magic.mgk Magick-config.in \
   Magick-config.in Make.com mac.c nt.c vms.c $(MAGICK_BASE_SRCS)
 
 
-# Where module are installed
+# Where modules are installed
 pkgdir = $(libdir)/ImageMagick/modules/coders
 
-# Architecture-dependent data files installed with module
+# Architecture-dependent data files installed with modules
 pkg_DATA = 
 
 # Architecture independent data files installed in the package's data directory
@@ -287,22 +287,21 @@ X_PRE_LIBS = @X_PRE_LIBS@
 @WITH_MODULES_FALSE@annotate.lo attribute.lo blob.lo cache.lo \
 @WITH_MODULES_FALSE@cache_view.lo color.lo compress.lo constitute.lo \
 @WITH_MODULES_FALSE@decorate.lo delegate.lo display.lo draw.lo \
-@WITH_MODULES_FALSE@effect.lo enhance.lo error.lo type.lo gem.lo \
-@WITH_MODULES_FALSE@image.lo semaphore.lo magic.lo magick.lo memory.lo \
-@WITH_MODULES_FALSE@module.lo monitor.lo montage.lo quantize.lo \
-@WITH_MODULES_FALSE@segment.lo shear.lo signature.lo stream.lo timer.lo \
-@WITH_MODULES_FALSE@transform.lo utility.lo widget.lo xwindow.lo \
-@WITH_MODULES_FALSE@zoom.lo
+@WITH_MODULES_FALSE@effect.lo enhance.lo error.lo gem.lo image.lo \
+@WITH_MODULES_FALSE@semaphore.lo magic.lo magick.lo memory.lo module.lo \
+@WITH_MODULES_FALSE@monitor.lo montage.lo quantize.lo segment.lo \
+@WITH_MODULES_FALSE@shear.lo signature.lo stream.lo timer.lo \
+@WITH_MODULES_FALSE@transform.lo type.lo utility.lo widget.lo \
+@WITH_MODULES_FALSE@xwindow.lo zoom.lo
 @WITH_MODULES_TRUE@am_libMagick_la_OBJECTS =  PreRvIcccm.lo animate.lo \
 @WITH_MODULES_TRUE@annotate.lo attribute.lo blob.lo cache.lo \
 @WITH_MODULES_TRUE@cache_view.lo color.lo compress.lo constitute.lo \
-@WITH_MODULES_TRUE@decorate.lo delegate.lo display.lo draw.lo \
-@WITH_MODULES_TRUE@effect.lo enhance.lo error.lo type.lo gem.lo \
-@WITH_MODULES_TRUE@image.lo semaphore.lo magic.lo magick.lo memory.lo \
-@WITH_MODULES_TRUE@module.lo monitor.lo montage.lo quantize.lo \
-@WITH_MODULES_TRUE@segment.lo shear.lo signature.lo stream.lo timer.lo \
-@WITH_MODULES_TRUE@transform.lo utility.lo widget.lo xwindow.lo \
-@WITH_MODULES_TRUE@zoom.lo
+@WITH_MODULES_TRUE@decorate.lo delegate.lo display.lo draw.lo effect.lo \
+@WITH_MODULES_TRUE@enhance.lo error.lo gem.lo image.lo semaphore.lo \
+@WITH_MODULES_TRUE@magic.lo magick.lo memory.lo module.lo monitor.lo \
+@WITH_MODULES_TRUE@montage.lo quantize.lo segment.lo shear.lo \
+@WITH_MODULES_TRUE@signature.lo stream.lo timer.lo transform.lo type.lo \
+@WITH_MODULES_TRUE@utility.lo widget.lo xwindow.lo zoom.lo
 libMagick_la_OBJECTS =  $(am_libMagick_la_OBJECTS)
 SCRIPTS =  $(bin_SCRIPTS)
 
@@ -327,12 +326,12 @@ $(DEPDIR)/cache.Plo $(DEPDIR)/cache_view.Plo $(DEPDIR)/color.Plo \
 $(DEPDIR)/compress.Plo $(DEPDIR)/constitute.Plo $(DEPDIR)/decorate.Plo \
 $(DEPDIR)/delegate.Plo $(DEPDIR)/display.Plo $(DEPDIR)/draw.Plo \
 $(DEPDIR)/effect.Plo $(DEPDIR)/enhance.Plo $(DEPDIR)/error.Plo \
-$(DEPDIR)/type.Plo $(DEPDIR)/gem.Plo $(DEPDIR)/image.Plo \
-$(DEPDIR)/magic.Plo $(DEPDIR)/magick.Plo $(DEPDIR)/memory.Plo \
-$(DEPDIR)/module.Plo $(DEPDIR)/monitor.Plo $(DEPDIR)/montage.Plo \
-$(DEPDIR)/quantize.Plo $(DEPDIR)/segment.Plo $(DEPDIR)/semaphore.Plo \
-$(DEPDIR)/shear.Plo $(DEPDIR)/signature.Plo $(DEPDIR)/stream.Plo \
-$(DEPDIR)/timer.Plo $(DEPDIR)/transform.Plo $(DEPDIR)/utility.Plo \
+$(DEPDIR)/gem.Plo $(DEPDIR)/image.Plo $(DEPDIR)/magic.Plo \
+$(DEPDIR)/magick.Plo $(DEPDIR)/memory.Plo $(DEPDIR)/module.Plo \
+$(DEPDIR)/monitor.Plo $(DEPDIR)/montage.Plo $(DEPDIR)/quantize.Plo \
+$(DEPDIR)/segment.Plo $(DEPDIR)/semaphore.Plo $(DEPDIR)/shear.Plo \
+$(DEPDIR)/signature.Plo $(DEPDIR)/stream.Plo $(DEPDIR)/timer.Plo \
+$(DEPDIR)/transform.Plo $(DEPDIR)/type.Plo $(DEPDIR)/utility.Plo \
 $(DEPDIR)/widget.Plo $(DEPDIR)/xwindow.Plo $(DEPDIR)/zoom.Plo
 DIST_COMMON =  $(include_HEADERS) $(noinst_HEADERS) ./stamp-h.in \
 Magick-config.in Makefile.am Makefile.in config.h.in
