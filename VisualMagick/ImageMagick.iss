@@ -36,8 +36,11 @@
 AppName=ImageMagick
 AppVerName=ImageMagick version 5.4.7
 AppCopyright=Copyright (C) 2002 ImageMagick Studio
-DefaultDirName={pf}\ImageMagick
+; To install under "C:\Program Files ImageMagick":
+; DefaultDirName={pf}\ImageMagick
+DefaultDirName={sd}\ImageMagick
 DefaultGroupName=ImageMagick
+AllowRootDirectory=yes
 UninstallDisplayIcon={app}\ImageMagick.ico
 OutputDir=bin
 OutputBaseFilename=ImageMagick-win2k
@@ -87,7 +90,7 @@ Source: "..\www\*.html"; DestDir: "{app}\www"
 Source: "..\www\Magick++\*.html"; DestDir: "{app}\www\Magick++"
 Source: "..\www\Magick++\*.jpg"; DestDir: "{app}\www\Magick++"
 Source: "..\www\Magick++\*.png"; DestDir: "{app}\www\Magick++"
-Source: "..\www\Magick++\COPYING"; DestDir: "{app}\www\Magick++"
+Source: "..\www\Magick++\COPYING"; DestDir: "{app}\www\Magick++"; DestName: "COPYING.txt"
 Source: "..\www\Magick++\README.txt"; DestDir: "{app}\www\Magick++"
 Source: "..\www\api\*.html"; DestDir: "{app}\www\api"
 Source: "..\www\api\*.html"; DestDir: "{app}\www\api"
@@ -108,9 +111,11 @@ Name: "{group}\ImageMagick Web Pages"; Filename: "{app}\ImageMagick.html"
 Name: "{group}\ImageMagick Display"; Filename: "{app}\IMDisplay.exe"; IconFilename: "{app}\ImageMagick.ico"
 
 [Run]
-Filename: "{app}\PathTool.exe"; Parameters: "-a:""{app}"" -debug"; StatusMsg: "Updating environment variables..."
+; Add -debug to parameters to enable debugging
+Filename: "{app}\PathTool.exe"; Parameters: "-a:""{app}"""; StatusMsg: "Updating environment variables..."
 
 [UninstallRun]
-Filename: "{app}\PathTool.exe"; Parameters: "-r:""{app}"" -debug"; StatusMsg: "Restoring environment variables..."
+; Add -debug to parameters to enable debugging
+Filename: "{app}\PathTool.exe"; Parameters: "-r:""{app}"""; StatusMsg: "Restoring environment variables..."
 
 
