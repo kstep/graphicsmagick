@@ -1108,13 +1108,9 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
       break;
     }
     case ft_encoding_unicode:
-    {
-      encoding=EncodeUnicode(draw_info->text,&length);
-      break;
-    }
     default:
     {
-      encoding=EncodeText(draw_info->text,&length);
+      encoding=EncodeUnicode(draw_info->text,&length);
       break;
     }
   }
