@@ -97,6 +97,8 @@ const char *GetLocaleMessage(const char *tag)
    if (!tag || *tag == '\0')
       return "";
 
+#ifdef NON_HARDCODED_LOCALE
+   /* no need to do any of this, since the locale is hard coded below */
    if ( (!locale &&
          ( (!(locale = setlocale(LC_CTYPE, 0)) || *locale == '\0') &&
            (!(locale = getenv("LC_ALL"))       || *locale == '\0') &&
@@ -108,7 +110,9 @@ const char *GetLocaleMessage(const char *tag)
 
    if (!LocaleNCompare(locale,"en_US",5))
       locale = "C";
+#endif
 
+   locale = "C";
    tp = locale;
    p = locale + strlen(locale);
    np = tag;
