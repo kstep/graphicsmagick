@@ -661,7 +661,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             for (bit=0; bit < 8; bit++)
             {
-              index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+              index=((*p) & (0x80 >> bit) ? 0x00 : 0x01);
               indexes[x+bit]=index;
               *q++=image->colormap[index];
             }
@@ -671,7 +671,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               for (bit=0; bit < (long) (image->columns % 8); bit++)
               {
-                index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+                index=((*p) & (0x80 >> bit) ? 0x00 : 0x01);
                 indexes[x+bit]=index;
                 *q++=image->colormap[index];
               }
