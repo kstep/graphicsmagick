@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020821;20445100">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20020821;22185300">
+	<META NAME="CHANGED" CONTENT="20030406;15572300">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick FAQ">
 	<STYLE>
@@ -23,8 +23,41 @@
 	</STYLE>
 </HEAD>
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
-
-<P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+<FORM ACTION="http://www.google.com/search">
+	<INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+	<INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+	<TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+		<COL WIDTH=208*>
+		<COL WIDTH=48*>
+		<TR>
+			<TD WIDTH=81%>
+				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="mission.html">Mission Statement</A>]
+				[<A HREF="download.html">Download</A>] [<A HREF="install.html">Installation</A>]
+				[<A HREF="cvs.html">CVS</A>] [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="formats.html">Formats</A>]
+				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
+				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+				Bugs</A>] [<A HREF="utilities.html">Utilities</A>]
+				[<A HREF="programming.html">Programming</A>] [<A HREF="books.html">Books</A>]
+				[<A HREF="links.html">Links</A>]</P>
+			</TD>
+			<TD ROWSPAN=2 WIDTH=19%>
+				<P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=81%>
+				<DIV ALIGN=CENTER>
+					<P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
+					<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
+					</P>
+				</DIV>
+			</TD>
+		</TR>
+	</TABLE>
+</FORM>
+<P ALIGN=LEFT>
+</P>
 <OL>
 	<LI><P STYLE="margin-bottom: 0.08in"><A HREF="#C1">I received the
 	following message, &quot;?????? delegation failed ...&quot;. What
@@ -143,13 +176,13 @@
 	What does it mean?</B> 
 	</DT></DL>
 <DD STYLE="margin-left: 0in">
-<B>GraphicsMagick</B> uses several freely available packages to perform
-the translation of certain image formats (<I>PostScript</I>, <I>MPEG</I>,
-etc.). Make sure these packages are available as described in the
-<A HREF="install.html">README</A> file. Also verify that you have
-plenty of temporary disk space. If not, set the TMPDIR environment
-variable to an area where space is available. Finally, for
-<I>PostScript</I>, verify that Ghostscript supports the <B>pnmraw</B>
+<B>GraphicsMagick</B> uses several freely available packages to
+perform the translation of certain image formats (<I>PostScript</I>,
+<I>MPEG</I>, etc.). Make sure these packages are available as
+described in the <A HREF="install.html">README</A> file. Also verify
+that you have plenty of temporary disk space. If not, set the TMPDIR
+environment variable to an area where space is available. Finally,
+for <I>PostScript</I>, verify that Ghostscript supports the <B>pnmraw</B>
 or <B>ppmraw</B> device (<TT>gs -h</TT>) and that the document
 contains valid <I>PostScript</I> statements (<TT>gs image.ps</TT>). 
 </DD><HR SIZE=5>
@@ -295,26 +328,26 @@ in <I>magick/image.h</I> and recompile.
 	</DT></DL>
 <DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
 Memory allocation is a complex topic in GraphicsMagick and image
-processing requires a lot of memory. GraphicsMagick tries to take best
-advantage of the resources available by optimizing its use of <I>virtual</I>
-memory. Virtual memory is normally the amount of RAM (Random Access
-Memory) available to the process plus the amount of free space in the
-system paging area (known as &quot;swap&quot; under Unix, or a &quot;page
-file&quot; under Windows). In addition to the RAM and the paging
-area, GraphicsMagick is able to expand the amount of virtual memory
-available by using memory-mapped files which cause the file to be
-treated as extra memory. A piece of hardware known as the Memory
-Management Unit (MMU) performs the magic which allows the system
-paging area and memory-mapped files to be treated as more memory by
-your system's CPU.</DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
+processing requires a lot of memory. GraphicsMagick tries to take
+best advantage of the resources available by optimizing its use of
+<I>virtual</I> memory. Virtual memory is normally the amount of RAM
+(Random Access Memory) available to the process plus the amount of
+free space in the system paging area (known as &quot;swap&quot; under
+Unix, or a &quot;page file&quot; under Windows). In addition to the
+RAM and the paging area, GraphicsMagick is able to expand the amount
+of virtual memory available by using memory-mapped files which cause
+the file to be treated as extra memory. A piece of hardware known as
+the Memory Management Unit (MMU) performs the magic which allows the
+system paging area and memory-mapped files to be treated as more
+memory by your system's CPU.</DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
 Usually when a memory allocation error occurs, it is because the
 system's paging area is full, or the programs memory (heap) is
 fragmented badly enough that there is no large-enough block of memory
 available to satisfy the request. In some cases the operating system
 may artificially limit the memory available to the program.</DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
 Failures of small memory allocations are generally considered fatal
-by GraphicsMagick. If it is impossible to allocate even a little bit of
-memory, then there is no point in continuing. When large memory
+by GraphicsMagick. If it is impossible to allocate even a little bit
+of memory, then there is no point in continuing. When large memory
 allocations associated with allocating memory for image pixels fail,
 GraphicsMagick uses that as a key to know that it should start using
 memory-mapped temporary files to increase virtual memory. Under Unix
@@ -382,26 +415,27 @@ using the supported QuantumDepth settings:</DD><DL>
 image processing operation may require that several images be in
 memory at one time. In the case of animations, hundreds of images may
 be in memory at one time.</DD><P>
-<B>GraphicsMagick</B> is designed to be general purpose. It can display
-many image storage formats (<I>Monochrome</I>, <I>PseudoColor</I>, or
-<I>TrueColor</I>) on many different types of <I>X visuals</I>
+<B>GraphicsMagick</B> is designed to be general purpose. It can
+display many image storage formats (<I>Monochrome</I>, <I>PseudoColor</I>,
+or <I>TrueColor</I>) on many different types of <I>X visuals</I>
 (<I>StaticGray, StaticColor, PseudoColor, GrayScale, DirectColor,</I>
 or <I>TrueColor</I>). To support all these combinations of image
 storage formats and X visuals, extra memory is required.
 Additionally, <A HREF="animate.html">animate</A> and <A HREF="montage.html">montage</A>
 store an entire image sequence in memory.</P>
 <DD STYLE="margin-left: 0in; margin-bottom: 0.2in">It is recommended
-that systems used to run <B>GraphicsMagick</B> have at least 96MB of RAM
-and 140MB free in their paging area. Systems used to process large
-images (do the math!) may require considerably more memory to operate
-efficiently. RAM is typically 1000 times faster than disk, so it is
-important to keep as much data in RAM as possible (buy lots of RAM).
-The temporary file area should have plenty of free space. The size of
-the temporary file area is usually the deciding factor as to whether
-GraphicsMagick is able to complete an operation. With sufficient free
-disk space, GraphicsMagick is primarily limited by your CPU and
-operating system's ability to address memory. GraphicsMagick has been
-used to process images 20K by 20K pixels in size!</DD><HR SIZE=5>
+that systems used to run <B>GraphicsMagick</B> have at least 96MB of
+RAM and 140MB free in their paging area. Systems used to process
+large images (do the math!) may require considerably more memory to
+operate efficiently. RAM is typically 1000 times faster than disk, so
+it is important to keep as much data in RAM as possible (buy lots of
+RAM). The temporary file area should have plenty of free space. The
+size of the temporary file area is usually the deciding factor as to
+whether GraphicsMagick is able to complete an operation. With
+sufficient free disk space, GraphicsMagick is primarily limited by
+your CPU and operating system's ability to address memory.
+GraphicsMagick has been used to process images 20K by 20K pixels in
+size!</DD><HR SIZE=5>
 <DL>
 	<DT STYLE="margin-bottom: 0.2in"><A NAME="C10"></A><B>10. How do I
 	concatenate three images left-to-right with no borders, frames, or
@@ -463,8 +497,8 @@ use <B>+adjoin</B>:
 	like to display the entire page, including any white space.</B> 
 	</DT></DL>
 <DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-<B>GraphicsMagick</B> automatically trims any <I>PostScript</I> image as
-defined by the bounding box. To preempt this behavior, remove the
+<B>GraphicsMagick</B> automatically trims any <I>PostScript</I> image
+as defined by the bounding box. To preempt this behavior, remove the
 bounding box statement from the Postscrpt or explicitly set the page
 size. For example, 
 </DD><PRE STYLE="margin-bottom: 0.2in"> display -page letter image.ps</PRE>
@@ -601,8 +635,8 @@ You can
 		</DT></DL>
 <DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
 There are four types of ornamental borders you can add to your image
-with GraphicsMagick. Each is listed below with the procedure to use them
-with your image. 
+with GraphicsMagick. Each is listed below with the procedure to use
+them with your image. 
 </DD>
 <UL><LI><P>
 	<I>Surround the image with a border of color</I>: Use <TT>-border</TT>
@@ -801,25 +835,21 @@ Your JPEG files may contain embedded &quot;profiles&quot; such as
 Exif or IPTC, or they may contain uncompressed thumbnails. You can
 use the <FONT FACE="Cumberland">+profile &quot;*&quot;</FONT>
 commandline option or an equivalent API method to remove them. 
-<BR>
 </DD><HR SIZE=5>
 <DL>
 	<DT STYLE="margin-bottom: 0.2in"><A NAME="C32"></A><B>32. How do I
-extract a single image from a multi-image file?</B></DT></DL>
-<DD STYLE="margin-left: 0in; font-weight: medium">
-Use a square-bracket syntax to indicate which frame or frames you want.
-For example,
-</DD><PRE> convert "Image.gif[0]" first.gif</PRE><P>
-Will extract the first image (scene 0) from a GIF animation.  Be sure
+	extract a single image from a multi-image file?</B></DT></DL>
+<DD STYLE="margin-left: 0in; margin-bottom: 0.2in; font-weight: medium">
+Use a square-bracket syntax to indicate which frame or frames you
+want. For example, 
+</DD><PRE STYLE="margin-bottom: 0.2in"> convert &quot;Image.gif[0]&quot; first.gif</PRE><P STYLE="margin-bottom: 0in">
+Will extract the first image (scene 0) from a GIF animation. Be sure
 to surround the file specification with quotation marks, to prevent
-the shell from interpreting the square brackets.
-</DD><HR>
-<p><a href="../index.html"><img SRC="../images/home.png"
-ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
-align=MIDDLE></a><a 
-href="mailto:webmaster@graphicsmagick.org"><img SRC="../images/mail.png"
-ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
-align=MIDDLE></a><font size="-2">
-Image manipulation software that works like magic.</font>
-</body>
-</html>
+the shell from interpreting the square brackets. 
+</P>
+<HR>
+<P><A HREF="../index.html"><IMG SRC="../images/home.png" NAME="Graphic2" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@graphicsmagick.org"><IMG SRC="../images/mail.png" NAME="Graphic3" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=1>
+Image manipulation software that works like magic.</FONT> 
+</P>
+</BODY>
+</HTML>

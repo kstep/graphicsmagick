@@ -1,1789 +1,3584 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
 <HEAD>
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <title>GraphicsMagick Color Selections</title>
-   <meta name="description" content="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
-   <meta name="keywords" content="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
-   <link rel="StyleSheet" href="magick.css" type="text/css">
-</head>
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
-
-<center>
-<img src="../images/magick_small.png" alt="" align=bottom width="114" height="118">
-</center>
-<p><hr><p>
-Here are some example color selections to choose from or define your own.
-GraphicsMagick understands color names or hex values (.e.g. white or #ffffff).
-<p>
-<table width="90%" cellpadding="5" border="0">
-<tr>
-  <th align=right>Name</th>
-  <th>Color</th>
-  <th>RGB</th>
-  <th align=left>Hex</th>
-</tr>
-
-<tr>
-  <td align=right>aliceblue</td>
-  <td align=center bgcolor="#f0f8ff">aliceblue</td>
-  <td align=center>240, 248, 255</td>
-  <td>#f0f8ff</td>
-<tr>
-
-<tr>
-  <td align=right>antiquewhite</td>
-  <td align=center bgcolor="#faebd7">antiquewhite</td>
-  <td align=center>250, 235, 215</td>
-  <td>#faebd7</td>
-<tr>
-
-<tr>
-  <td align=right>aqua</td>
-  <td align=center bgcolor="#00ffff">aqua</td>
-  <td align=center>  0, 255, 255</td>
-  <td>#00ffff</td>
-<tr>
-
-<tr>
-  <td align=right>aquamarine</td>
-  <td align=center bgcolor="#7fffd4">aquamarine</td>
-  <td align=center>127, 255, 212</td>
-  <td>#7fffd4</td>
-<tr>
-
-<tr>
-  <td align=right>azure</td>
-  <td align=center bgcolor="#f0ffff">azure</td>
-  <td align=center>240, 255, 255</td>
-  <td>#f0ffff</td>
-<tr>
-
-<tr>
-  <td align=right>beige</td>
-  <td align=center bgcolor="#f5f5dc">beige</td>
-  <td align=center>245, 245, 220</td>
-  <td>#f5f5dc</td>
-<tr>
-
-<tr>
-  <td align=right>bisque</td>
-  <td align=center bgcolor="#ffe4c4">bisque</td>
-  <td align=center>255, 228, 196</td>
-  <td>#ffe4c4</td>
-<tr>
-
-<tr>
-  <td align=right>black</td>
-  <td align=center bgcolor="#000000">black</td>
-  <td align=center>  0,   0,   0</td>
-  <td>#000000</td>
-<tr>
-
-<tr>
-  <td align=right>blanchedalmond</td>
-  <td align=center bgcolor="#ffebcd">blanchedalmond</td>
-  <td align=center>255, 235, 205</td>
-  <td>#ffebcd</td>
-<tr>
-
-<tr>
-  <td align=right>blue</td>
-  <td align=center bgcolor="#0000ff">blue</td>
-  <td align=center>  0,   0, 255</td>
-  <td>#0000ff</td>
-<tr>
-
-<tr>
-  <td align=right>blueviolet</td>
-  <td align=center bgcolor="#8a2be2">blueviolet</td>
-  <td align=center>138,  43, 226</td>
-  <td>#8a2be2</td>
-<tr>
-
-<tr>
-  <td align=right>brown</td>
-  <td align=center bgcolor="#a52a2a">brown</td>
-  <td align=center>165,  42,  42</td>
-  <td>#a52a2a</td>
-<tr>
-
-<tr>
-  <td align=right>burlywood</td>
-  <td align=center bgcolor="#deb887">burlywood</td>
-  <td align=center>222, 184, 135</td>
-  <td>#deb887</td>
-<tr>
-
-<tr>
-  <td align=right>cadetblue</td>
-  <td align=center bgcolor="#5f9ea0">cadetblue</td>
-  <td align=center> 95, 158, 160</td>
-  <td>#5f9ea0</td>
-<tr>
-
-<tr>
-  <td align=right>chartreuse</td>
-  <td align=center bgcolor="#7fff00">chartreuse</td>
-  <td align=center>127, 255,   0</td>
-  <td>#7fff00</td>
-<tr>
-
-<tr>
-  <td align=right>chocolate</td>
-  <td align=center bgcolor="#d2691e">chocolate</td>
-  <td align=center>210, 105,  30</td>
-  <td>#d2691e</td>
-<tr>
-
-<tr>
-  <td align=right>coral</td>
-  <td align=center bgcolor="#ff7f50">coral</td>
-  <td align=center>255, 127,  80</td>
-  <td>#ff7f50</td>
-<tr>
-
-<tr>
-  <td align=right>cornflowerblue</td>
-  <td align=center bgcolor="#6495ed">cornflowerblue</td>
-  <td align=center>100, 149, 237</td>
-  <td>#6495ed</td>
-<tr>
-
-<tr>
-  <td align=right>cornsilk</td>
-  <td align=center bgcolor="#fff8dc">cornsilk</td>
-  <td align=center>255, 248, 220</td>
-  <td>#fff8dc</td>
-<tr>
-
-<tr>
-  <td align=right>crimson</td>
-  <td align=center bgcolor="#dc143c">crimson</td>
-  <td align=center>220,  20,  60</td>
-  <td>#dc143c</td>
-<tr>
-
-<tr>
-  <td align=right>cyan</td>
-  <td align=center bgcolor="#00ffff">cyan</td>
-  <td align=center>  0, 255, 255</td>
-  <td>#00ffff</td>
-<tr>
-
-<tr>
-  <td align=right>darkblue</td>
-  <td align=center bgcolor="#00008b">darkblue</td>
-  <td align=center>  0,   0, 139</td>
-  <td>#00008b</td>
-<tr>
-
-<tr>
-  <td align=right>darkcyan</td>
-  <td align=center bgcolor="#008b8b">darkcyan</td>
-  <td align=center>  0, 139, 139</td>
-  <td>#008b8b</td>
-<tr>
-
-<tr>
-  <td align=right>darkgoldenrod</td>
-  <td align=center bgcolor="#b8860b">darkgoldenrod</td>
-  <td align=center>184, 134,  11</td>
-  <td>#b8860b</td>
-<tr>
-
-<tr>
-  <td align=right>darkgray</td>
-  <td align=center bgcolor="#a9a9a9">darkgray</td>
-  <td align=center>169, 169, 169</td>
-  <td>#a9a9a9</td>
-<tr>
-
-<tr>
-  <td align=right>darkgreen</td>
-  <td align=center bgcolor="#006400">darkgreen</td>
-  <td align=center>  0, 100,   0</td>
-  <td>#006400</td>
-<tr>
-
-<tr>
-  <td align=right>darkgrey</td>
-  <td align=center bgcolor="#a9a9a9">darkgrey</td>
-  <td align=center>169, 169, 169</td>
-  <td>#a9a9a9</td>
-<tr>
-
-<tr>
-  <td align=right>darkkhaki</td>
-  <td align=center bgcolor="#bdb76b">darkkhaki</td>
-  <td align=center>189, 183, 107</td>
-  <td>#bdb76b</td>
-<tr>
-
-<tr>
-  <td align=right>darkmagenta</td>
-  <td align=center bgcolor="#8b008b">darkmagenta</td>
-  <td align=center>139,   0, 139</td>
-  <td>#8b008b</td>
-<tr>
-
-<tr>
-  <td align=right>darkolivegreen</td>
-  <td align=center bgcolor="#556b2f">darkolivegreen</td>
-  <td align=center> 85, 107,  47</td>
-  <td>#556b2f</td>
-<tr>
-
-<tr>
-  <td align=right>darkorange</td>
-  <td align=center bgcolor="#ff8c00">darkorange</td>
-  <td align=center>255, 140,   0</td>
-  <td>#ff8c00</td>
-<tr>
-
-<tr>
-  <td align=right>darkorchid</td>
-  <td align=center bgcolor="#9932cc">darkorchid</td>
-  <td align=center>153,  50, 204</td>
-  <td>#9932cc</td>
-<tr>
-
-<tr>
-  <td align=right>darkred</td>
-  <td align=center bgcolor="#8b0000">darkred</td>
-  <td align=center>139,   0,   0</td>
-  <td>#8b0000</td>
-<tr>
-
-<tr>
-  <td align=right>darksalmon</td>
-  <td align=center bgcolor="#e9967a">darksalmon</td>
-  <td align=center>233, 150, 122</td>
-  <td>#e9967a</td>
-<tr>
-
-<tr>
-  <td align=right>darkseagreen</td>
-  <td align=center bgcolor="#8fbc8f">darkseagreen</td>
-  <td align=center>143, 188, 143</td>
-  <td>#8fbc8f</td>
-<tr>
-
-<tr>
-  <td align=right>darkslateblue</td>
-  <td align=center bgcolor="#483d8b">darkslateblue</td>
-  <td align=center> 72,  61, 139</td>
-  <td>#483d8b</td>
-<tr>
-
-<tr>
-  <td align=right>darkslategray</td>
-  <td align=center bgcolor="#2f4f4f">darkslategray</td>
-  <td align=center> 47,  79,  79</td>
-  <td>#2f4f4f</td>
-<tr>
-
-<tr>
-  <td align=right>darkslategrey</td>
-  <td align=center bgcolor="#2f4f4f">darkslategrey</td>
-  <td align=center> 47,  79,  79</td>
-  <td>#2f4f4f</td>
-<tr>
-
-<tr>
-  <td align=right>darkturquoise</td>
-  <td align=center bgcolor="#00ced1">darkturquoise</td>
-  <td align=center>  0, 206, 209</td>
-  <td>#00ced1</td>
-<tr>
-
-<tr>
-  <td align=right>darkviolet</td>
-  <td align=center bgcolor="#9400d3">darkviolet</td>
-  <td align=center>148,   0, 211</td>
-  <td>#9400d3</td>
-<tr>
-
-<tr>
-  <td align=right>deeppink</td>
-  <td align=center bgcolor="#ff1493">deeppink</td>
-  <td align=center>255,  20, 147</td>
-  <td>#ff1493</td>
-<tr>
-
-<tr>
-  <td align=right>deepskyblue</td>
-  <td align=center bgcolor="#00bfff">deepskyblue</td>
-  <td align=center>  0, 191, 255</td>
-  <td>#00bfff</td>
-<tr>
-
-<tr>
-  <td align=right>dimgray</td>
-  <td align=center bgcolor="#696969">dimgray</td>
-  <td align=center>105, 105, 105</td>
-  <td>#696969</td>
-<tr>
-
-<tr>
-  <td align=right>dimgrey</td>
-  <td align=center bgcolor="#696969">dimgrey</td>
-  <td align=center>105, 105, 105</td>
-  <td>#696969</td>
-<tr>
-
-<tr>
-  <td align=right>dodgerblue</td>
-  <td align=center bgcolor="#1e90ff">dodgerblue</td>
-  <td align=center> 30, 144, 255</td>
-  <td>#1e90ff</td>
-<tr>
-
-<tr>
-  <td align=right>firebrick</td>
-  <td align=center bgcolor="#b22222">firebrick</td>
-  <td align=center>178,  34,  34</td>
-  <td>#b22222</td>
-<tr>
-
-<tr>
-  <td align=right>floralwhite</td>
-  <td align=center bgcolor="#fffaf0">floralwhite</td>
-  <td align=center>255, 250, 240</td>
-  <td>#fffaf0</td>
-<tr>
-
-<tr>
-  <td align=right>forestgreen</td>
-  <td align=center bgcolor="#228b22">forestgreen</td>
-  <td align=center> 34, 139,  34</td>
-  <td>#228b22</td>
-<tr>
-
-<tr>
-  <td align=right>fractal</td>
-  <td align=center bgcolor="#808080">fractal</td>
-  <td align=center>128, 128, 128</td>
-  <td>#808080</td>
-<tr>
-
-<tr>
-  <td align=right>fuchsia</td>
-  <td align=center bgcolor="#ff00ff">fuchsia</td>
-  <td align=center>255,   0, 255</td>
-  <td>#ff00ff</td>
-<tr>
-
-<tr>
-  <td align=right>gainsboro</td>
-  <td align=center bgcolor="#dcdcdc">gainsboro</td>
-  <td align=center>220, 220, 220</td>
-  <td>#dcdcdc</td>
-<tr>
-
-<tr>
-  <td align=right>ghostwhite</td>
-  <td align=center bgcolor="#f8f8ff">ghostwhite</td>
-  <td align=center>248, 248, 255</td>
-  <td>#f8f8ff</td>
-<tr>
-
-<tr>
-  <td align=right>gold</td>
-  <td align=center bgcolor="#ffd700">gold</td>
-  <td align=center>255, 215,   0</td>
-  <td>#ffd700</td>
-<tr>
-
-<tr>
-  <td align=right>goldenrod</td>
-  <td align=center bgcolor="#daa520">goldenrod</td>
-  <td align=center>218, 165,  32</td>
-  <td>#daa520</td>
-<tr>
-
-<tr>
-  <td align=right>gray</td>
-  <td align=center bgcolor="#7e7e7e">gray</td>
-  <td align=center>126, 126, 126</td>
-  <td>#7e7e7e</td>
-<tr>
-
-<tr>
-  <td align=right>gray0</td>
-  <td align=center bgcolor="#000000">gray0</td>
-  <td align=center>  0,   0,   0</td>
-  <td>#000000</td>
-<tr>
-
-<tr>
-  <td align=right>gray1</td>
-  <td align=center bgcolor="#030303">gray1</td>
-  <td align=center>  3,   3,   3</td>
-  <td>#030303</td>
-<tr>
-
-<tr>
-  <td align=right>gray10</td>
-  <td align=center bgcolor="#1a1a1a">gray10</td>
-  <td align=center> 26,  26,  26</td>
-  <td>#1a1a1a</td>
-<tr>
-
-<tr>
-  <td align=right>gray100</td>
-  <td align=center bgcolor="#ffffff">gray100</td>
-  <td align=center>255, 255, 255</td>
-  <td>#ffffff</td>
-<tr>
-
-<tr>
-  <td align=right>gray11</td>
-  <td align=center bgcolor="#1c1c1c">gray11</td>
-  <td align=center> 28,  28,  28</td>
-  <td>#1c1c1c</td>
-<tr>
-
-<tr>
-  <td align=right>gray12</td>
-  <td align=center bgcolor="#1f1f1f">gray12</td>
-  <td align=center> 31,  31,  31</td>
-  <td>#1f1f1f</td>
-<tr>
-
-<tr>
-  <td align=right>gray13</td>
-  <td align=center bgcolor="#212121">gray13</td>
-  <td align=center> 33,  33,  33</td>
-  <td>#212121</td>
-<tr>
-
-<tr>
-  <td align=right>gray14</td>
-  <td align=center bgcolor="#242424">gray14</td>
-  <td align=center> 36,  36,  36</td>
-  <td>#242424</td>
-<tr>
-
-<tr>
-  <td align=right>gray15</td>
-  <td align=center bgcolor="#262626">gray15</td>
-  <td align=center> 38,  38,  38</td>
-  <td>#262626</td>
-<tr>
-
-<tr>
-  <td align=right>gray16</td>
-  <td align=center bgcolor="#292929">gray16</td>
-  <td align=center> 41,  41,  41</td>
-  <td>#292929</td>
-<tr>
-
-<tr>
-  <td align=right>gray17</td>
-  <td align=center bgcolor="#2b2b2b">gray17</td>
-  <td align=center> 43,  43,  43</td>
-  <td>#2b2b2b</td>
-<tr>
-
-<tr>
-  <td align=right>gray18</td>
-  <td align=center bgcolor="#2e2e2e">gray18</td>
-  <td align=center> 46,  46,  46</td>
-  <td>#2e2e2e</td>
-<tr>
-
-<tr>
-  <td align=right>gray19</td>
-  <td align=center bgcolor="#303030">gray19</td>
-  <td align=center> 48,  48,  48</td>
-  <td>#303030</td>
-<tr>
-
-<tr>
-  <td align=right>gray2</td>
-  <td align=center bgcolor="#050505">gray2</td>
-  <td align=center>  5,   5,   5</td>
-  <td>#050505</td>
-<tr>
-
-<tr>
-  <td align=right>gray20</td>
-  <td align=center bgcolor="#333333">gray20</td>
-  <td align=center> 51,  51,  51</td>
-  <td>#333333</td>
-<tr>
-
-<tr>
-  <td align=right>gray21</td>
-  <td align=center bgcolor="#363636">gray21</td>
-  <td align=center> 54,  54,  54</td>
-  <td>#363636</td>
-<tr>
-
-<tr>
-  <td align=right>gray22</td>
-  <td align=center bgcolor="#383838">gray22</td>
-  <td align=center> 56,  56,  56</td>
-  <td>#383838</td>
-<tr>
-
-<tr>
-  <td align=right>gray23</td>
-  <td align=center bgcolor="#3b3b3b">gray23</td>
-  <td align=center> 59,  59,  59</td>
-  <td>#3b3b3b</td>
-<tr>
-
-<tr>
-  <td align=right>gray24</td>
-  <td align=center bgcolor="#3d3d3d">gray24</td>
-  <td align=center> 61,  61,  61</td>
-  <td>#3d3d3d</td>
-<tr>
-
-<tr>
-  <td align=right>gray25</td>
-  <td align=center bgcolor="#404040">gray25</td>
-  <td align=center> 64,  64,  64</td>
-  <td>#404040</td>
-<tr>
-
-<tr>
-  <td align=right>gray26</td>
-  <td align=center bgcolor="#424242">gray26</td>
-  <td align=center> 66,  66,  66</td>
-  <td>#424242</td>
-<tr>
-
-<tr>
-  <td align=right>gray27</td>
-  <td align=center bgcolor="#454545">gray27</td>
-  <td align=center> 69,  69,  69</td>
-  <td>#454545</td>
-<tr>
-
-<tr>
-  <td align=right>gray28</td>
-  <td align=center bgcolor="#474747">gray28</td>
-  <td align=center> 71,  71,  71</td>
-  <td>#474747</td>
-<tr>
-
-<tr>
-  <td align=right>gray29</td>
-  <td align=center bgcolor="#4a4a4a">gray29</td>
-  <td align=center> 74,  74,  74</td>
-  <td>#4a4a4a</td>
-<tr>
-
-<tr>
-  <td align=right>gray3</td>
-  <td align=center bgcolor="#080808">gray3</td>
-  <td align=center>  8,   8,   8</td>
-  <td>#080808</td>
-<tr>
-
-<tr>
-  <td align=right>gray30</td>
-  <td align=center bgcolor="#4d4d4d">gray30</td>
-  <td align=center> 77,  77,  77</td>
-  <td>#4d4d4d</td>
-<tr>
-
-<tr>
-  <td align=right>gray31</td>
-  <td align=center bgcolor="#4f4f4f">gray31</td>
-  <td align=center> 79,  79,  79</td>
-  <td>#4f4f4f</td>
-<tr>
-
-<tr>
-  <td align=right>gray32</td>
-  <td align=center bgcolor="#525252">gray32</td>
-  <td align=center> 82,  82,  82</td>
-  <td>#525252</td>
-<tr>
-
-<tr>
-  <td align=right>gray33</td>
-  <td align=center bgcolor="#545454">gray33</td>
-  <td align=center> 84,  84,  84</td>
-  <td>#545454</td>
-<tr>
-
-<tr>
-  <td align=right>gray34</td>
-  <td align=center bgcolor="#575757">gray34</td>
-  <td align=center> 87,  87,  87</td>
-  <td>#575757</td>
-<tr>
-
-<tr>
-  <td align=right>gray35</td>
-  <td align=center bgcolor="#595959">gray35</td>
-  <td align=center> 89,  89,  89</td>
-  <td>#595959</td>
-<tr>
-
-<tr>
-  <td align=right>gray36</td>
-  <td align=center bgcolor="#5c5c5c">gray36</td>
-  <td align=center> 92,  92,  92</td>
-  <td>#5c5c5c</td>
-<tr>
-
-<tr>
-  <td align=right>gray37</td>
-  <td align=center bgcolor="#5e5e5e">gray37</td>
-  <td align=center> 94,  94,  94</td>
-  <td>#5e5e5e</td>
-<tr>
-
-<tr>
-  <td align=right>gray38</td>
-  <td align=center bgcolor="#616161">gray38</td>
-  <td align=center> 97,  97,  97</td>
-  <td>#616161</td>
-<tr>
-
-<tr>
-  <td align=right>gray39</td>
-  <td align=center bgcolor="#636363">gray39</td>
-  <td align=center> 99,  99,  99</td>
-  <td>#636363</td>
-<tr>
-
-<tr>
-  <td align=right>gray4</td>
-  <td align=center bgcolor="#0a0a0a">gray4</td>
-  <td align=center> 10,  10,  10</td>
-  <td>#0a0a0a</td>
-<tr>
-
-<tr>
-  <td align=right>gray40</td>
-  <td align=center bgcolor="#666666">gray40</td>
-  <td align=center>102, 102, 102</td>
-  <td>#666666</td>
-<tr>
-
-<tr>
-  <td align=right>gray41</td>
-  <td align=center bgcolor="#696969">gray41</td>
-  <td align=center>105, 105, 105</td>
-  <td>#696969</td>
-<tr>
-
-<tr>
-  <td align=right>gray42</td>
-  <td align=center bgcolor="#6b6b6b">gray42</td>
-  <td align=center>107, 107, 107</td>
-  <td>#6b6b6b</td>
-<tr>
-
-<tr>
-  <td align=right>gray43</td>
-  <td align=center bgcolor="#6e6e6e">gray43</td>
-  <td align=center>110, 110, 110</td>
-  <td>#6e6e6e</td>
-<tr>
-
-<tr>
-  <td align=right>gray44</td>
-  <td align=center bgcolor="#707070">gray44</td>
-  <td align=center>112, 112, 112</td>
-  <td>#707070</td>
-<tr>
-
-<tr>
-  <td align=right>gray45</td>
-  <td align=center bgcolor="#737373">gray45</td>
-  <td align=center>115, 115, 115</td>
-  <td>#737373</td>
-<tr>
-
-<tr>
-  <td align=right>gray46</td>
-  <td align=center bgcolor="#757575">gray46</td>
-  <td align=center>117, 117, 117</td>
-  <td>#757575</td>
-<tr>
-
-<tr>
-  <td align=right>gray47</td>
-  <td align=center bgcolor="#787878">gray47</td>
-  <td align=center>120, 120, 120</td>
-  <td>#787878</td>
-<tr>
-
-<tr>
-  <td align=right>gray48</td>
-  <td align=center bgcolor="#7a7a7a">gray48</td>
-  <td align=center>122, 122, 122</td>
-  <td>#7a7a7a</td>
-<tr>
-
-<tr>
-  <td align=right>gray49</td>
-  <td align=center bgcolor="#7d7d7d">gray49</td>
-  <td align=center>125, 125, 125</td>
-  <td>#7d7d7d</td>
-<tr>
-
-<tr>
-  <td align=right>gray5</td>
-  <td align=center bgcolor="#0d0d0d">gray5</td>
-  <td align=center> 13,  13,  13</td>
-  <td>#0d0d0d</td>
-<tr>
-
-<tr>
-  <td align=right>gray50</td>
-  <td align=center bgcolor="#7f7f7f">gray50</td>
-  <td align=center>127, 127, 127</td>
-  <td>#7f7f7f</td>
-<tr>
-
-<tr>
-  <td align=right>gray51</td>
-  <td align=center bgcolor="#828282">gray51</td>
-  <td align=center>130, 130, 130</td>
-  <td>#828282</td>
-<tr>
-
-<tr>
-  <td align=right>gray52</td>
-  <td align=center bgcolor="#858585">gray52</td>
-  <td align=center>133, 133, 133</td>
-  <td>#858585</td>
-<tr>
-
-<tr>
-  <td align=right>gray53</td>
-  <td align=center bgcolor="#878787">gray53</td>
-  <td align=center>135, 135, 135</td>
-  <td>#878787</td>
-<tr>
-
-<tr>
-  <td align=right>gray54</td>
-  <td align=center bgcolor="#8a8a8a">gray54</td>
-  <td align=center>138, 138, 138</td>
-  <td>#8a8a8a</td>
-<tr>
-
-<tr>
-  <td align=right>gray55</td>
-  <td align=center bgcolor="#8c8c8c">gray55</td>
-  <td align=center>140, 140, 140</td>
-  <td>#8c8c8c</td>
-<tr>
-
-<tr>
-  <td align=right>gray56</td>
-  <td align=center bgcolor="#8f8f8f">gray56</td>
-  <td align=center>143, 143, 143</td>
-  <td>#8f8f8f</td>
-<tr>
-
-<tr>
-  <td align=right>gray57</td>
-  <td align=center bgcolor="#919191">gray57</td>
-  <td align=center>145, 145, 145</td>
-  <td>#919191</td>
-<tr>
-
-<tr>
-  <td align=right>gray58</td>
-  <td align=center bgcolor="#949494">gray58</td>
-  <td align=center>148, 148, 148</td>
-  <td>#949494</td>
-<tr>
-
-<tr>
-  <td align=right>gray59</td>
-  <td align=center bgcolor="#969696">gray59</td>
-  <td align=center>150, 150, 150</td>
-  <td>#969696</td>
-<tr>
-
-<tr>
-  <td align=right>gray6</td>
-  <td align=center bgcolor="#0f0f0f">gray6</td>
-  <td align=center> 15,  15,  15</td>
-  <td>#0f0f0f</td>
-<tr>
-
-<tr>
-  <td align=right>gray60</td>
-  <td align=center bgcolor="#999999">gray60</td>
-  <td align=center>153, 153, 153</td>
-  <td>#999999</td>
-<tr>
-
-<tr>
-  <td align=right>gray61</td>
-  <td align=center bgcolor="#9c9c9c">gray61</td>
-  <td align=center>156, 156, 156</td>
-  <td>#9c9c9c</td>
-<tr>
-
-<tr>
-  <td align=right>gray62</td>
-  <td align=center bgcolor="#9e9e9e">gray62</td>
-  <td align=center>158, 158, 158</td>
-  <td>#9e9e9e</td>
-<tr>
-
-<tr>
-  <td align=right>gray63</td>
-  <td align=center bgcolor="#a1a1a1">gray63</td>
-  <td align=center>161, 161, 161</td>
-  <td>#a1a1a1</td>
-<tr>
-
-<tr>
-  <td align=right>gray64</td>
-  <td align=center bgcolor="#a3a3a3">gray64</td>
-  <td align=center>163, 163, 163</td>
-  <td>#a3a3a3</td>
-<tr>
-
-<tr>
-  <td align=right>gray65</td>
-  <td align=center bgcolor="#a6a6a6">gray65</td>
-  <td align=center>166, 166, 166</td>
-  <td>#a6a6a6</td>
-<tr>
-
-<tr>
-  <td align=right>gray66</td>
-  <td align=center bgcolor="#a8a8a8">gray66</td>
-  <td align=center>168, 168, 168</td>
-  <td>#a8a8a8</td>
-<tr>
-
-<tr>
-  <td align=right>gray67</td>
-  <td align=center bgcolor="#ababab">gray67</td>
-  <td align=center>171, 171, 171</td>
-  <td>#ababab</td>
-<tr>
-
-<tr>
-  <td align=right>gray68</td>
-  <td align=center bgcolor="#adadad">gray68</td>
-  <td align=center>173, 173, 173</td>
-  <td>#adadad</td>
-<tr>
-
-<tr>
-  <td align=right>gray69</td>
-  <td align=center bgcolor="#b0b0b0">gray69</td>
-  <td align=center>176, 176, 176</td>
-  <td>#b0b0b0</td>
-<tr>
-
-<tr>
-  <td align=right>gray7</td>
-  <td align=center bgcolor="#121212">gray7</td>
-  <td align=center> 18,  18,  18</td>
-  <td>#121212</td>
-<tr>
-
-<tr>
-  <td align=right>gray70</td>
-  <td align=center bgcolor="#b3b3b3">gray70</td>
-  <td align=center>179, 179, 179</td>
-  <td>#b3b3b3</td>
-<tr>
-
-<tr>
-  <td align=right>gray71</td>
-  <td align=center bgcolor="#b5b5b5">gray71</td>
-  <td align=center>181, 181, 181</td>
-  <td>#b5b5b5</td>
-<tr>
-
-<tr>
-  <td align=right>gray72</td>
-  <td align=center bgcolor="#b8b8b8">gray72</td>
-  <td align=center>184, 184, 184</td>
-  <td>#b8b8b8</td>
-<tr>
-
-<tr>
-  <td align=right>gray73</td>
-  <td align=center bgcolor="#bababa">gray73</td>
-  <td align=center>186, 186, 186</td>
-  <td>#bababa</td>
-<tr>
-
-<tr>
-  <td align=right>gray74</td>
-  <td align=center bgcolor="#bdbdbd">gray74</td>
-  <td align=center>189, 189, 189</td>
-  <td>#bdbdbd</td>
-<tr>
-
-<tr>
-  <td align=right>gray75</td>
-  <td align=center bgcolor="#bfbfbf">gray75</td>
-  <td align=center>191, 191, 191</td>
-  <td>#bfbfbf</td>
-<tr>
-
-<tr>
-  <td align=right>gray76</td>
-  <td align=center bgcolor="#c2c2c2">gray76</td>
-  <td align=center>194, 194, 194</td>
-  <td>#c2c2c2</td>
-<tr>
-
-<tr>
-  <td align=right>gray77</td>
-  <td align=center bgcolor="#c4c4c4">gray77</td>
-  <td align=center>196, 196, 196</td>
-  <td>#c4c4c4</td>
-<tr>
-
-<tr>
-  <td align=right>gray78</td>
-  <td align=center bgcolor="#c7c7c7">gray78</td>
-  <td align=center>199, 199, 199</td>
-  <td>#c7c7c7</td>
-<tr>
-
-<tr>
-  <td align=right>gray79</td>
-  <td align=center bgcolor="#c9c9c9">gray79</td>
-  <td align=center>201, 201, 201</td>
-  <td>#c9c9c9</td>
-<tr>
-
-<tr>
-  <td align=right>gray8</td>
-  <td align=center bgcolor="#141414">gray8</td>
-  <td align=center> 20,  20,  20</td>
-  <td>#141414</td>
-<tr>
-
-<tr>
-  <td align=right>gray80</td>
-  <td align=center bgcolor="#cccccc">gray80</td>
-  <td align=center>204, 204, 204</td>
-  <td>#cccccc</td>
-<tr>
-
-<tr>
-  <td align=right>gray81</td>
-  <td align=center bgcolor="#cfcfcf">gray81</td>
-  <td align=center>207, 207, 207</td>
-  <td>#cfcfcf</td>
-<tr>
-
-<tr>
-  <td align=right>gray82</td>
-  <td align=center bgcolor="#d1d1d1">gray82</td>
-  <td align=center>209, 209, 209</td>
-  <td>#d1d1d1</td>
-<tr>
-
-<tr>
-  <td align=right>gray83</td>
-  <td align=center bgcolor="#d4d4d4">gray83</td>
-  <td align=center>212, 212, 212</td>
-  <td>#d4d4d4</td>
-<tr>
-
-<tr>
-  <td align=right>gray84</td>
-  <td align=center bgcolor="#d6d6d6">gray84</td>
-  <td align=center>214, 214, 214</td>
-  <td>#d6d6d6</td>
-<tr>
-
-<tr>
-  <td align=right>gray85</td>
-  <td align=center bgcolor="#d9d9d9">gray85</td>
-  <td align=center>217, 217, 217</td>
-  <td>#d9d9d9</td>
-<tr>
-
-<tr>
-  <td align=right>gray86</td>
-  <td align=center bgcolor="#dbdbdb">gray86</td>
-  <td align=center>219, 219, 219</td>
-  <td>#dbdbdb</td>
-<tr>
-
-<tr>
-  <td align=right>gray87</td>
-  <td align=center bgcolor="#dedede">gray87</td>
-  <td align=center>222, 222, 222</td>
-  <td>#dedede</td>
-<tr>
-
-<tr>
-  <td align=right>gray88</td>
-  <td align=center bgcolor="#e0e0e0">gray88</td>
-  <td align=center>224, 224, 224</td>
-  <td>#e0e0e0</td>
-<tr>
-
-<tr>
-  <td align=right>gray89</td>
-  <td align=center bgcolor="#e3e3e3">gray89</td>
-  <td align=center>227, 227, 227</td>
-  <td>#e3e3e3</td>
-<tr>
-
-<tr>
-  <td align=right>gray9</td>
-  <td align=center bgcolor="#171717">gray9</td>
-  <td align=center> 23,  23,  23</td>
-  <td>#171717</td>
-<tr>
-
-<tr>
-  <td align=right>gray90</td>
-  <td align=center bgcolor="#e5e5e5">gray90</td>
-  <td align=center>229, 229, 229</td>
-  <td>#e5e5e5</td>
-<tr>
-
-<tr>
-  <td align=right>gray91</td>
-  <td align=center bgcolor="#e8e8e8">gray91</td>
-  <td align=center>232, 232, 232</td>
-  <td>#e8e8e8</td>
-<tr>
-
-<tr>
-  <td align=right>gray92</td>
-  <td align=center bgcolor="#ebebeb">gray92</td>
-  <td align=center>235, 235, 235</td>
-  <td>#ebebeb</td>
-<tr>
-
-<tr>
-  <td align=right>gray93</td>
-  <td align=center bgcolor="#ededed">gray93</td>
-  <td align=center>237, 237, 237</td>
-  <td>#ededed</td>
-<tr>
-
-<tr>
-  <td align=right>gray94</td>
-  <td align=center bgcolor="#f0f0f0">gray94</td>
-  <td align=center>240, 240, 240</td>
-  <td>#f0f0f0</td>
-<tr>
-
-<tr>
-  <td align=right>gray95</td>
-  <td align=center bgcolor="#f2f2f2">gray95</td>
-  <td align=center>242, 242, 242</td>
-  <td>#f2f2f2</td>
-<tr>
-
-<tr>
-  <td align=right>gray96</td>
-  <td align=center bgcolor="#f5f5f5">gray96</td>
-  <td align=center>245, 245, 245</td>
-  <td>#f5f5f5</td>
-<tr>
-
-<tr>
-  <td align=right>gray97</td>
-  <td align=center bgcolor="#f7f7f7">gray97</td>
-  <td align=center>247, 247, 247</td>
-  <td>#f7f7f7</td>
-<tr>
-
-<tr>
-  <td align=right>gray98</td>
-  <td align=center bgcolor="#fafafa">gray98</td>
-  <td align=center>250, 250, 250</td>
-  <td>#fafafa</td>
-<tr>
-
-<tr>
-  <td align=right>gray99</td>
-  <td align=center bgcolor="#fcfcfc">gray99</td>
-  <td align=center>252, 252, 252</td>
-  <td>#fcfcfc</td>
-<tr>
-
-<tr>
-  <td align=right>green</td>
-  <td align=center bgcolor="#008000">green</td>
-  <td align=center>  0, 128,   0</td>
-  <td>#008000</td>
-<tr>
-
-<tr>
-  <td align=right>greenyellow</td>
-  <td align=center bgcolor="#adff2f">greenyellow</td>
-  <td align=center>173, 255,  47</td>
-  <td>#adff2f</td>
-<tr>
-
-<tr>
-  <td align=right>grey</td>
-  <td align=center bgcolor="#808080">grey</td>
-  <td align=center>128, 128, 128</td>
-  <td>#808080</td>
-<tr>
-
-<tr>
-  <td align=right>honeydew</td>
-  <td align=center bgcolor="#f0fff0">honeydew</td>
-  <td align=center>240, 255, 240</td>
-  <td>#f0fff0</td>
-<tr>
-
-<tr>
-  <td align=right>hotpink</td>
-  <td align=center bgcolor="#ff69b4">hotpink</td>
-  <td align=center>255, 105, 180</td>
-  <td>#ff69b4</td>
-<tr>
-
-<tr>
-  <td align=right>indianred</td>
-  <td align=center bgcolor="#cd5c5c">indianred</td>
-  <td align=center>205,  92,  92</td>
-  <td>#cd5c5c</td>
-<tr>
-
-<tr>
-  <td align=right>indigo</td>
-  <td align=center bgcolor="#4b0082">indigo</td>
-  <td align=center> 75,   0, 130</td>
-  <td>#4b0082</td>
-<tr>
-
-<tr>
-  <td align=right>ivory</td>
-  <td align=center bgcolor="#fffff0">ivory</td>
-  <td align=center>255, 255, 240</td>
-  <td>#fffff0</td>
-<tr>
-
-<tr>
-  <td align=right>khaki</td>
-  <td align=center bgcolor="#f0e68c">khaki</td>
-  <td align=center>240, 230, 140</td>
-  <td>#f0e68c</td>
-<tr>
-
-<tr>
-  <td align=right>lavender</td>
-  <td align=center bgcolor="#e6e6fa">lavender</td>
-  <td align=center>230, 230, 250</td>
-  <td>#e6e6fa</td>
-<tr>
-
-<tr>
-  <td align=right>lavenderblush</td>
-  <td align=center bgcolor="#fff0f5">lavenderblush</td>
-  <td align=center>255, 240, 245</td>
-  <td>#fff0f5</td>
-<tr>
-
-<tr>
-  <td align=right>lawngreen</td>
-  <td align=center bgcolor="#7cfc00">lawngreen</td>
-  <td align=center>124, 252,   0</td>
-  <td>#7cfc00</td>
-<tr>
-
-<tr>
-  <td align=right>lemonchiffon</td>
-  <td align=center bgcolor="#fffacd">lemonchiffon</td>
-  <td align=center>255, 250, 205</td>
-  <td>#fffacd</td>
-<tr>
-
-<tr>
-  <td align=right>lightblue</td>
-  <td align=center bgcolor="#add8e6">lightblue</td>
-  <td align=center>173, 216, 230</td>
-  <td>#add8e6</td>
-<tr>
-
-<tr>
-  <td align=right>lightcoral</td>
-  <td align=center bgcolor="#f08080">lightcoral</td>
-  <td align=center>240, 128, 128</td>
-  <td>#f08080</td>
-<tr>
-
-<tr>
-  <td align=right>lightcyan</td>
-  <td align=center bgcolor="#e0ffff">lightcyan</td>
-  <td align=center>224, 255, 255</td>
-  <td>#e0ffff</td>
-<tr>
-
-<tr>
-  <td align=right>lightgoldenrodyellow</td>
-  <td align=center bgcolor="#fafad2">lightgoldenrodyellow</td>
-  <td align=center>250, 250, 210</td>
-  <td>#fafad2</td>
-<tr>
-
-<tr>
-  <td align=right>lightgray</td>
-  <td align=center bgcolor="#d3d3d3">lightgray</td>
-  <td align=center>211, 211, 211</td>
-  <td>#d3d3d3</td>
-<tr>
-
-<tr>
-  <td align=right>lightgreen</td>
-  <td align=center bgcolor="#90ee90">lightgreen</td>
-  <td align=center>144, 238, 144</td>
-  <td>#90ee90</td>
-<tr>
-
-<tr>
-  <td align=right>lightgrey</td>
-  <td align=center bgcolor="#d3d3d3">lightgrey</td>
-  <td align=center>211, 211, 211</td>
-  <td>#d3d3d3</td>
-<tr>
-
-<tr>
-  <td align=right>lightpink</td>
-  <td align=center bgcolor="#ffb6c1">lightpink</td>
-  <td align=center>255, 182, 193</td>
-  <td>#ffb6c1</td>
-<tr>
-
-<tr>
-  <td align=right>lightsalmon</td>
-  <td align=center bgcolor="#ffa07a">lightsalmon</td>
-  <td align=center>255, 160, 122</td>
-  <td>#ffa07a</td>
-<tr>
-
-<tr>
-  <td align=right>lightseagreen</td>
-  <td align=center bgcolor="#20b2aa">lightseagreen</td>
-  <td align=center> 32, 178, 170</td>
-  <td>#20b2aa</td>
-<tr>
-
-<tr>
-  <td align=right>lightskyblue</td>
-  <td align=center bgcolor="#87cefa">lightskyblue</td>
-  <td align=center>135, 206, 250</td>
-  <td>#87cefa</td>
-<tr>
-
-<tr>
-  <td align=right>lightslategray</td>
-  <td align=center bgcolor="#778899">lightslategray</td>
-  <td align=center>119, 136, 153</td>
-  <td>#778899</td>
-<tr>
-
-<tr>
-  <td align=right>lightslategrey</td>
-  <td align=center bgcolor="#778899">lightslategrey</td>
-  <td align=center>119, 136, 153</td>
-  <td>#778899</td>
-<tr>
-
-<tr>
-  <td align=right>lightsteelblue</td>
-  <td align=center bgcolor="#b0c4de">lightsteelblue</td>
-  <td align=center>176, 196, 222</td>
-  <td>#b0c4de</td>
-<tr>
-
-<tr>
-  <td align=right>lightyellow</td>
-  <td align=center bgcolor="#ffffe0">lightyellow</td>
-  <td align=center>255, 255, 224</td>
-  <td>#ffffe0</td>
-<tr>
-
-<tr>
-  <td align=right>lime</td>
-  <td align=center bgcolor="#00ff00">lime</td>
-  <td align=center>  0, 255,   0</td>
-  <td>#00ff00</td>
-<tr>
-
-<tr>
-  <td align=right>limegreen</td>
-  <td align=center bgcolor="#32cd32">limegreen</td>
-  <td align=center> 50, 205,  50</td>
-  <td>#32cd32</td>
-<tr>
-
-<tr>
-  <td align=right>linen</td>
-  <td align=center bgcolor="#faf0e6">linen</td>
-  <td align=center>250, 240, 230</td>
-  <td>#faf0e6</td>
-<tr>
-
-<tr>
-  <td align=right>magenta</td>
-  <td align=center bgcolor="#ff00ff">magenta</td>
-  <td align=center>255,   0, 255</td>
-  <td>#ff00ff</td>
-<tr>
-
-<tr>
-  <td align=right>maroon</td>
-  <td align=center bgcolor="#800000">maroon</td>
-  <td align=center>128,   0,   0</td>
-  <td>#800000</td>
-<tr>
-
-<tr>
-  <td align=right>mediumaquamarine</td>
-  <td align=center bgcolor="#66cdaa">mediumaquamarine</td>
-  <td align=center>102, 205, 170</td>
-  <td>#66cdaa</td>
-<tr>
-
-<tr>
-  <td align=right>mediumblue</td>
-  <td align=center bgcolor="#0000cd">mediumblue</td>
-  <td align=center>  0,   0, 205</td>
-  <td>#0000cd</td>
-<tr>
-
-<tr>
-  <td align=right>mediumorchid</td>
-  <td align=center bgcolor="#ba55d3">mediumorchid</td>
-  <td align=center>186,  85, 211</td>
-  <td>#ba55d3</td>
-<tr>
-
-<tr>
-  <td align=right>mediumpurple</td>
-  <td align=center bgcolor="#9370db">mediumpurple</td>
-  <td align=center>147, 112, 219</td>
-  <td>#9370db</td>
-<tr>
-
-<tr>
-  <td align=right>mediumseagreen</td>
-  <td align=center bgcolor="#3cb371">mediumseagreen</td>
-  <td align=center> 60, 179, 113</td>
-  <td>#3cb371</td>
-<tr>
-
-<tr>
-  <td align=right>mediumslateblue</td>
-  <td align=center bgcolor="#7b68ee">mediumslateblue</td>
-  <td align=center>123, 104, 238</td>
-  <td>#7b68ee</td>
-<tr>
-
-<tr>
-  <td align=right>mediumspringgreen</td>
-  <td align=center bgcolor="#00fa9a">mediumspringgreen</td>
-  <td align=center>  0, 250, 154</td>
-  <td>#00fa9a</td>
-<tr>
-
-<tr>
-  <td align=right>mediumturquoise</td>
-  <td align=center bgcolor="#48d1cc">mediumturquoise</td>
-  <td align=center> 72, 209, 204</td>
-  <td>#48d1cc</td>
-<tr>
-
-<tr>
-  <td align=right>mediumvioletred</td>
-  <td align=center bgcolor="#c71585">mediumvioletred</td>
-  <td align=center>199,  21, 133</td>
-  <td>#c71585</td>
-<tr>
-
-<tr>
-  <td align=right>midnightblue</td>
-  <td align=center bgcolor="#191970">midnightblue</td>
-  <td align=center> 25,  25, 112</td>
-  <td>#191970</td>
-<tr>
-
-<tr>
-  <td align=right>mintcream</td>
-  <td align=center bgcolor="#f5fffa">mintcream</td>
-  <td align=center>245, 255, 250</td>
-  <td>#f5fffa</td>
-<tr>
-
-<tr>
-  <td align=right>mistyrose</td>
-  <td align=center bgcolor="#ffe4e1">mistyrose</td>
-  <td align=center>255, 228, 225</td>
-  <td>#ffe4e1</td>
-<tr>
-
-<tr>
-  <td align=right>moccasin</td>
-  <td align=center bgcolor="#ffe4b5">moccasin</td>
-  <td align=center>255, 228, 181</td>
-  <td>#ffe4b5</td>
-<tr>
-
-<tr>
-  <td align=right>navajowhite</td>
-  <td align=center bgcolor="#ffdead">navajowhite</td>
-  <td align=center>255, 222, 173</td>
-  <td>#ffdead</td>
-<tr>
-
-<tr>
-  <td align=right>navy</td>
-  <td align=center bgcolor="#000080">navy</td>
-  <td align=center>  0,   0, 128</td>
-  <td>#000080</td>
-<tr>
-
-<tr>
-  <td align=right>none</td>
-  <td align=center bgcolor="#000000">none</td>
-  <td align=center>  0,   0,   0</td>
-  <td>#000000</td>
-<tr>
-
-<tr>
-  <td align=right>oldlace</td>
-  <td align=center bgcolor="#fdf5e6">oldlace</td>
-  <td align=center>253, 245, 230</td>
-  <td>#fdf5e6</td>
-<tr>
-
-<tr>
-  <td align=right>olive</td>
-  <td align=center bgcolor="#808000">olive</td>
-  <td align=center>128, 128,   0</td>
-  <td>#808000</td>
-<tr>
-
-<tr>
-  <td align=right>olivedrab</td>
-  <td align=center bgcolor="#6b8e23">olivedrab</td>
-  <td align=center>107, 142,  35</td>
-  <td>#6b8e23</td>
-<tr>
-
-<tr>
-  <td align=right>orange</td>
-  <td align=center bgcolor="#ffa500">orange</td>
-  <td align=center>255, 165,   0</td>
-  <td>#ffa500</td>
-<tr>
-
-<tr>
-  <td align=right>orangered</td>
-  <td align=center bgcolor="#ff4500">orangered</td>
-  <td align=center>255,  69,   0</td>
-  <td>#ff4500</td>
-<tr>
-
-<tr>
-  <td align=right>orchid</td>
-  <td align=center bgcolor="#da70d6">orchid</td>
-  <td align=center>218, 112, 214</td>
-  <td>#da70d6</td>
-<tr>
-
-<tr>
-  <td align=right>palegoldenrod</td>
-  <td align=center bgcolor="#eee8aa">palegoldenrod</td>
-  <td align=center>238, 232, 170</td>
-  <td>#eee8aa</td>
-<tr>
-
-<tr>
-  <td align=right>palegreen</td>
-  <td align=center bgcolor="#98fb98">palegreen</td>
-  <td align=center>152, 251, 152</td>
-  <td>#98fb98</td>
-<tr>
-
-<tr>
-  <td align=right>paleturquoise</td>
-  <td align=center bgcolor="#afeeee">paleturquoise</td>
-  <td align=center>175, 238, 238</td>
-  <td>#afeeee</td>
-<tr>
-
-<tr>
-  <td align=right>palevioletred</td>
-  <td align=center bgcolor="#db7093">palevioletred</td>
-  <td align=center>219, 112, 147</td>
-  <td>#db7093</td>
-<tr>
-
-<tr>
-  <td align=right>papayawhip</td>
-  <td align=center bgcolor="#ffefd5">papayawhip</td>
-  <td align=center>255, 239, 213</td>
-  <td>#ffefd5</td>
-<tr>
-
-<tr>
-  <td align=right>peachpuff</td>
-  <td align=center bgcolor="#ffdab9">peachpuff</td>
-  <td align=center>255, 218, 185</td>
-  <td>#ffdab9</td>
-<tr>
-
-<tr>
-  <td align=right>peru</td>
-  <td align=center bgcolor="#cd853f">peru</td>
-  <td align=center>205, 133,  63</td>
-  <td>#cd853f</td>
-<tr>
-
-<tr>
-  <td align=right>pink</td>
-  <td align=center bgcolor="#ffc0cb">pink</td>
-  <td align=center>255, 192, 203</td>
-  <td>#ffc0cb</td>
-<tr>
-
-<tr>
-  <td align=right>plum</td>
-  <td align=center bgcolor="#dda0dd">plum</td>
-  <td align=center>221, 160, 221</td>
-  <td>#dda0dd</td>
-<tr>
-
-<tr>
-  <td align=right>powderblue</td>
-  <td align=center bgcolor="#b0e0e6">powderblue</td>
-  <td align=center>176, 224, 230</td>
-  <td>#b0e0e6</td>
-<tr>
-
-<tr>
-  <td align=right>purple</td>
-  <td align=center bgcolor="#800080">purple</td>
-  <td align=center>128,   0, 128</td>
-  <td>#800080</td>
-<tr>
-
-<tr>
-  <td align=right>red</td>
-  <td align=center bgcolor="#ff0000">red</td>
-  <td align=center>255,   0,   0</td>
-  <td>#ff0000</td>
-<tr>
-
-<tr>
-  <td align=right>rosybrown</td>
-  <td align=center bgcolor="#bc8f8f">rosybrown</td>
-  <td align=center>188, 143, 143</td>
-  <td>#bc8f8f</td>
-<tr>
-
-<tr>
-  <td align=right>royalblue</td>
-  <td align=center bgcolor="#4169e1">royalblue</td>
-  <td align=center> 65, 105, 225</td>
-  <td>#4169e1</td>
-<tr>
-
-<tr>
-  <td align=right>saddlebrown</td>
-  <td align=center bgcolor="#8b4513">saddlebrown</td>
-  <td align=center>139,  69,  19</td>
-  <td>#8b4513</td>
-<tr>
-
-<tr>
-  <td align=right>salmon</td>
-  <td align=center bgcolor="#fa8072">salmon</td>
-  <td align=center>250, 128, 114</td>
-  <td>#fa8072</td>
-<tr>
-
-<tr>
-  <td align=right>sandybrown</td>
-  <td align=center bgcolor="#f4a460">sandybrown</td>
-  <td align=center>244, 164,  96</td>
-  <td>#f4a460</td>
-<tr>
-
-<tr>
-  <td align=right>seagreen</td>
-  <td align=center bgcolor="#2e8b57">seagreen</td>
-  <td align=center> 46, 139,  87</td>
-  <td>#2e8b57</td>
-<tr>
-
-<tr>
-  <td align=right>seashell</td>
-  <td align=center bgcolor="#fff5ee">seashell</td>
-  <td align=center>255, 245, 238</td>
-  <td>#fff5ee</td>
-<tr>
-
-<tr>
-  <td align=right>sienna</td>
-  <td align=center bgcolor="#a0522d">sienna</td>
-  <td align=center>160,  82,  45</td>
-  <td>#a0522d</td>
-<tr>
-
-<tr>
-  <td align=right>silver</td>
-  <td align=center bgcolor="#c0c0c0">silver</td>
-  <td align=center>192, 192, 192</td>
-  <td>#c0c0c0</td>
-<tr>
-
-<tr>
-  <td align=right>skyblue</td>
-  <td align=center bgcolor="#87ceeb">skyblue</td>
-  <td align=center>135, 206, 235</td>
-  <td>#87ceeb</td>
-<tr>
-
-<tr>
-  <td align=right>slateblue</td>
-  <td align=center bgcolor="#6a5acd">slateblue</td>
-  <td align=center>106,  90, 205</td>
-  <td>#6a5acd</td>
-<tr>
-
-<tr>
-  <td align=right>slategray</td>
-  <td align=center bgcolor="#708090">slategray</td>
-  <td align=center>112, 128, 144</td>
-  <td>#708090</td>
-<tr>
-
-<tr>
-  <td align=right>slategrey</td>
-  <td align=center bgcolor="#708090">slategrey</td>
-  <td align=center>112, 128, 144</td>
-  <td>#708090</td>
-<tr>
-
-<tr>
-  <td align=right>snow</td>
-  <td align=center bgcolor="#fffafa">snow</td>
-  <td align=center>255, 250, 250</td>
-  <td>#fffafa</td>
-<tr>
-
-<tr>
-  <td align=right>springgreen</td>
-  <td align=center bgcolor="#00ff7f">springgreen</td>
-  <td align=center>  0, 255, 127</td>
-  <td>#00ff7f</td>
-<tr>
-
-<tr>
-  <td align=right>steelblue</td>
-  <td align=center bgcolor="#4682b4">steelblue</td>
-  <td align=center> 70, 130, 180</td>
-  <td>#4682b4</td>
-<tr>
-
-<tr>
-  <td align=right>tan</td>
-  <td align=center bgcolor="#d2b48c">tan</td>
-  <td align=center>210, 180, 140</td>
-  <td>#d2b48c</td>
-<tr>
-
-<tr>
-  <td align=right>teal</td>
-  <td align=center bgcolor="#008080">teal</td>
-  <td align=center>  0, 128, 128</td>
-  <td>#008080</td>
-<tr>
-
-<tr>
-  <td align=right>thistle</td>
-  <td align=center bgcolor="#d8bfd8">thistle</td>
-  <td align=center>216, 191, 216</td>
-  <td>#d8bfd8</td>
-<tr>
-
-<tr>
-  <td align=right>tomato</td>
-  <td align=center bgcolor="#ff6347">tomato</td>
-  <td align=center>255,  99,  71</td>
-  <td>#ff6347</td>
-<tr>
-
-<tr>
-  <td align=right>turquoise</td>
-  <td align=center bgcolor="#40e0d0">turquoise</td>
-  <td align=center> 64, 224, 208</td>
-  <td>#40e0d0</td>
-<tr>
-
-<tr>
-  <td align=right>violet</td>
-  <td align=center bgcolor="#ee82ee">violet</td>
-  <td align=center>238, 130, 238</td>
-  <td>#ee82ee</td>
-<tr>
-
-<tr>
-  <td align=right>wheat</td>
-  <td align=center bgcolor="#f5deb3">wheat</td>
-  <td align=center>245, 222, 179</td>
-  <td>#f5deb3</td>
-<tr>
-
-<tr>
-  <td align=right>white</td>
-  <td align=center bgcolor="#ffffff">white</td>
-  <td align=center>255, 255, 255</td>
-  <td>#ffffff</td>
-<tr>
-
-<tr>
-  <td align=right>whitesmoke</td>
-  <td align=center bgcolor="#f5f5f5">whitesmoke</td>
-  <td align=center>245, 245, 245</td>
-  <td>#f5f5f5</td>
-<tr>
-
-<tr>
-  <td align=right>yellow</td>
-  <td align=center bgcolor="#ffff00">yellow</td>
-  <td align=center>255, 255,   0</td>
-  <td>#ffff00</td>
-<tr>
-
-<tr>
-  <td align=right>yellowgreen</td>
-  <td align=center bgcolor="#9acd32">yellowgreen</td>
-  <td align=center>154, 205,  50</td>
-  <td>#9acd32</td>
-<tr>
-
-</table>
-<p>
-<hr>
-<p><a href="../index.html"><img SRC="../images/home.png"
-ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
-align=MIDDLE></a><a 
-href="mailto:webmaster@graphicsmagick.org"><img SRC="../images/mail.png"
-ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
-align=MIDDLE></a><font size="-2">
-Image manipulation software that works like magic.</font>
-</body>
-</html>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<TITLE>GraphicsMagick Color Selections</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
+	<META NAME="CREATED" CONTENT="20030406;15300800">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20030406;15302300">
+	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
+	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
+	<STYLE>
+	<!--
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		TH P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		A:link { color: #0085c0 }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<FORM ACTION="http://www.google.com/search">
+	<INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+	<INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+	<TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+		<COL WIDTH=208*>
+		<COL WIDTH=48*>
+		<TR>
+			<TD WIDTH=81%>
+				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="mission.html">Mission Statement</A>]
+				[<A HREF="download.html">Download</A>] [<A HREF="install.html">Installation</A>]
+				[<A HREF="cvs.html">CVS</A>] [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="formats.html">Formats</A>]
+				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
+				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+				Bugs</A>] [<A HREF="utilities.html">Utilities</A>]
+				[<A HREF="programming.html">Programming</A>] [<A HREF="books.html">Books</A>]
+				[<A HREF="links.html">Links</A>]</P>
+			</TD>
+			<TD ROWSPAN=2 WIDTH=19%>
+				<P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=81%>
+				<DIV ALIGN=CENTER>
+					<P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
+					<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
+					</P>
+				</DIV>
+			</TD>
+		</TR>
+	</TABLE>
+</FORM>
+<P ALIGN=LEFT> 
+</P>
+<HR>
+<P>Here are some example color selections to choose from or define
+your own. GraphicsMagick understands color names or hex values (.e.g.
+white or #ffffff). 
+</P>
+<TABLE WIDTH=90% BORDER=0 CELLPADDING=5 CELLSPACING=2>
+	<TR>
+		<TH>
+			<P ALIGN=RIGHT>Name</P>
+		</TH>
+		<TH>
+			<P>Color</P>
+		</TH>
+		<TH>
+			<P>RGB</P>
+		</TH>
+		<TH>
+			<P ALIGN=LEFT>Hex</P>
+		</TH>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>aliceblue</P>
+		</TD>
+		<TD BGCOLOR="#f0f8ff">
+			<P ALIGN=CENTER>aliceblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>240, 248, 255</P>
+		</TD>
+		<TD>
+			<P>#f0f8ff</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>antiquewhite</P>
+		</TD>
+		<TD BGCOLOR="#faebd7">
+			<P ALIGN=CENTER>antiquewhite</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>250, 235, 215</P>
+		</TD>
+		<TD>
+			<P>#faebd7</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>aqua</P>
+		</TD>
+		<TD BGCOLOR="#00ffff">
+			<P ALIGN=CENTER>aqua</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 255, 255</P>
+		</TD>
+		<TD>
+			<P>#00ffff</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>aquamarine</P>
+		</TD>
+		<TD BGCOLOR="#7fffd4">
+			<P ALIGN=CENTER>aquamarine</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>127, 255, 212</P>
+		</TD>
+		<TD>
+			<P>#7fffd4</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>azure</P>
+		</TD>
+		<TD BGCOLOR="#f0ffff">
+			<P ALIGN=CENTER>azure</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>240, 255, 255</P>
+		</TD>
+		<TD>
+			<P>#f0ffff</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>beige</P>
+		</TD>
+		<TD BGCOLOR="#f5f5dc">
+			<P ALIGN=CENTER>beige</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>245, 245, 220</P>
+		</TD>
+		<TD>
+			<P>#f5f5dc</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>bisque</P>
+		</TD>
+		<TD BGCOLOR="#ffe4c4">
+			<P ALIGN=CENTER>bisque</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 228, 196</P>
+		</TD>
+		<TD>
+			<P>#ffe4c4</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>black</P>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN=CENTER>black</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 0, 0</P>
+		</TD>
+		<TD>
+			<P>#000000</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>blanchedalmond</P>
+		</TD>
+		<TD BGCOLOR="#ffebcd">
+			<P ALIGN=CENTER>blanchedalmond</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 235, 205</P>
+		</TD>
+		<TD>
+			<P>#ffebcd</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>blue</P>
+		</TD>
+		<TD BGCOLOR="#0000ff">
+			<P ALIGN=CENTER>blue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 0, 255</P>
+		</TD>
+		<TD>
+			<P>#0000ff</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>blueviolet</P>
+		</TD>
+		<TD BGCOLOR="#8a2be2">
+			<P ALIGN=CENTER>blueviolet</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>138, 43, 226</P>
+		</TD>
+		<TD>
+			<P>#8a2be2</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>brown</P>
+		</TD>
+		<TD BGCOLOR="#a52a2a">
+			<P ALIGN=CENTER>brown</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>165, 42, 42</P>
+		</TD>
+		<TD>
+			<P>#a52a2a</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>burlywood</P>
+		</TD>
+		<TD BGCOLOR="#deb887">
+			<P ALIGN=CENTER>burlywood</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>222, 184, 135</P>
+		</TD>
+		<TD>
+			<P>#deb887</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>cadetblue</P>
+		</TD>
+		<TD BGCOLOR="#5f9ea0">
+			<P ALIGN=CENTER>cadetblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>95, 158, 160</P>
+		</TD>
+		<TD>
+			<P>#5f9ea0</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>chartreuse</P>
+		</TD>
+		<TD BGCOLOR="#7fff00">
+			<P ALIGN=CENTER>chartreuse</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>127, 255, 0</P>
+		</TD>
+		<TD>
+			<P>#7fff00</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>chocolate</P>
+		</TD>
+		<TD BGCOLOR="#d2691e">
+			<P ALIGN=CENTER>chocolate</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>210, 105, 30</P>
+		</TD>
+		<TD>
+			<P>#d2691e</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>coral</P>
+		</TD>
+		<TD BGCOLOR="#ff7f50">
+			<P ALIGN=CENTER>coral</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 127, 80</P>
+		</TD>
+		<TD>
+			<P>#ff7f50</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>cornflowerblue</P>
+		</TD>
+		<TD BGCOLOR="#6495ed">
+			<P ALIGN=CENTER>cornflowerblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>100, 149, 237</P>
+		</TD>
+		<TD>
+			<P>#6495ed</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>cornsilk</P>
+		</TD>
+		<TD BGCOLOR="#fff8dc">
+			<P ALIGN=CENTER>cornsilk</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 248, 220</P>
+		</TD>
+		<TD>
+			<P>#fff8dc</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>crimson</P>
+		</TD>
+		<TD BGCOLOR="#dc143c">
+			<P ALIGN=CENTER>crimson</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>220, 20, 60</P>
+		</TD>
+		<TD>
+			<P>#dc143c</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>cyan</P>
+		</TD>
+		<TD BGCOLOR="#00ffff">
+			<P ALIGN=CENTER>cyan</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 255, 255</P>
+		</TD>
+		<TD>
+			<P>#00ffff</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkblue</P>
+		</TD>
+		<TD BGCOLOR="#00008b">
+			<P ALIGN=CENTER>darkblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 0, 139</P>
+		</TD>
+		<TD>
+			<P>#00008b</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkcyan</P>
+		</TD>
+		<TD BGCOLOR="#008b8b">
+			<P ALIGN=CENTER>darkcyan</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 139, 139</P>
+		</TD>
+		<TD>
+			<P>#008b8b</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkgoldenrod</P>
+		</TD>
+		<TD BGCOLOR="#b8860b">
+			<P ALIGN=CENTER>darkgoldenrod</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>184, 134, 11</P>
+		</TD>
+		<TD>
+			<P>#b8860b</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkgray</P>
+		</TD>
+		<TD BGCOLOR="#a9a9a9">
+			<P ALIGN=CENTER>darkgray</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>169, 169, 169</P>
+		</TD>
+		<TD>
+			<P>#a9a9a9</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkgreen</P>
+		</TD>
+		<TD BGCOLOR="#006400">
+			<P ALIGN=CENTER>darkgreen</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 100, 0</P>
+		</TD>
+		<TD>
+			<P>#006400</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkgrey</P>
+		</TD>
+		<TD BGCOLOR="#a9a9a9">
+			<P ALIGN=CENTER>darkgrey</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>169, 169, 169</P>
+		</TD>
+		<TD>
+			<P>#a9a9a9</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkkhaki</P>
+		</TD>
+		<TD BGCOLOR="#bdb76b">
+			<P ALIGN=CENTER>darkkhaki</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>189, 183, 107</P>
+		</TD>
+		<TD>
+			<P>#bdb76b</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkmagenta</P>
+		</TD>
+		<TD BGCOLOR="#8b008b">
+			<P ALIGN=CENTER>darkmagenta</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>139, 0, 139</P>
+		</TD>
+		<TD>
+			<P>#8b008b</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkolivegreen</P>
+		</TD>
+		<TD BGCOLOR="#556b2f">
+			<P ALIGN=CENTER>darkolivegreen</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>85, 107, 47</P>
+		</TD>
+		<TD>
+			<P>#556b2f</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkorange</P>
+		</TD>
+		<TD BGCOLOR="#ff8c00">
+			<P ALIGN=CENTER>darkorange</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 140, 0</P>
+		</TD>
+		<TD>
+			<P>#ff8c00</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkorchid</P>
+		</TD>
+		<TD BGCOLOR="#9932cc">
+			<P ALIGN=CENTER>darkorchid</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>153, 50, 204</P>
+		</TD>
+		<TD>
+			<P>#9932cc</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkred</P>
+		</TD>
+		<TD BGCOLOR="#8b0000">
+			<P ALIGN=CENTER>darkred</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>139, 0, 0</P>
+		</TD>
+		<TD>
+			<P>#8b0000</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darksalmon</P>
+		</TD>
+		<TD BGCOLOR="#e9967a">
+			<P ALIGN=CENTER>darksalmon</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>233, 150, 122</P>
+		</TD>
+		<TD>
+			<P>#e9967a</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkseagreen</P>
+		</TD>
+		<TD BGCOLOR="#8fbc8f">
+			<P ALIGN=CENTER>darkseagreen</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>143, 188, 143</P>
+		</TD>
+		<TD>
+			<P>#8fbc8f</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkslateblue</P>
+		</TD>
+		<TD BGCOLOR="#483d8b">
+			<P ALIGN=CENTER>darkslateblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>72, 61, 139</P>
+		</TD>
+		<TD>
+			<P>#483d8b</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkslategray</P>
+		</TD>
+		<TD BGCOLOR="#2f4f4f">
+			<P ALIGN=CENTER>darkslategray</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>47, 79, 79</P>
+		</TD>
+		<TD>
+			<P>#2f4f4f</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkslategrey</P>
+		</TD>
+		<TD BGCOLOR="#2f4f4f">
+			<P ALIGN=CENTER>darkslategrey</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>47, 79, 79</P>
+		</TD>
+		<TD>
+			<P>#2f4f4f</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkturquoise</P>
+		</TD>
+		<TD BGCOLOR="#00ced1">
+			<P ALIGN=CENTER>darkturquoise</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 206, 209</P>
+		</TD>
+		<TD>
+			<P>#00ced1</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>darkviolet</P>
+		</TD>
+		<TD BGCOLOR="#9400d3">
+			<P ALIGN=CENTER>darkviolet</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>148, 0, 211</P>
+		</TD>
+		<TD>
+			<P>#9400d3</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>deeppink</P>
+		</TD>
+		<TD BGCOLOR="#ff1493">
+			<P ALIGN=CENTER>deeppink</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 20, 147</P>
+		</TD>
+		<TD>
+			<P>#ff1493</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>deepskyblue</P>
+		</TD>
+		<TD BGCOLOR="#00bfff">
+			<P ALIGN=CENTER>deepskyblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 191, 255</P>
+		</TD>
+		<TD>
+			<P>#00bfff</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>dimgray</P>
+		</TD>
+		<TD BGCOLOR="#696969">
+			<P ALIGN=CENTER>dimgray</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>105, 105, 105</P>
+		</TD>
+		<TD>
+			<P>#696969</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>dimgrey</P>
+		</TD>
+		<TD BGCOLOR="#696969">
+			<P ALIGN=CENTER>dimgrey</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>105, 105, 105</P>
+		</TD>
+		<TD>
+			<P>#696969</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>dodgerblue</P>
+		</TD>
+		<TD BGCOLOR="#1e90ff">
+			<P ALIGN=CENTER>dodgerblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>30, 144, 255</P>
+		</TD>
+		<TD>
+			<P>#1e90ff</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>firebrick</P>
+		</TD>
+		<TD BGCOLOR="#b22222">
+			<P ALIGN=CENTER>firebrick</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>178, 34, 34</P>
+		</TD>
+		<TD>
+			<P>#b22222</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>floralwhite</P>
+		</TD>
+		<TD BGCOLOR="#fffaf0">
+			<P ALIGN=CENTER>floralwhite</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 250, 240</P>
+		</TD>
+		<TD>
+			<P>#fffaf0</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>forestgreen</P>
+		</TD>
+		<TD BGCOLOR="#228b22">
+			<P ALIGN=CENTER>forestgreen</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>34, 139, 34</P>
+		</TD>
+		<TD>
+			<P>#228b22</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>fractal</P>
+		</TD>
+		<TD BGCOLOR="#808080">
+			<P ALIGN=CENTER>fractal</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>128, 128, 128</P>
+		</TD>
+		<TD>
+			<P>#808080</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>fuchsia</P>
+		</TD>
+		<TD BGCOLOR="#ff00ff">
+			<P ALIGN=CENTER>fuchsia</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 0, 255</P>
+		</TD>
+		<TD>
+			<P>#ff00ff</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gainsboro</P>
+		</TD>
+		<TD BGCOLOR="#dcdcdc">
+			<P ALIGN=CENTER>gainsboro</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>220, 220, 220</P>
+		</TD>
+		<TD>
+			<P>#dcdcdc</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>ghostwhite</P>
+		</TD>
+		<TD BGCOLOR="#f8f8ff">
+			<P ALIGN=CENTER>ghostwhite</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>248, 248, 255</P>
+		</TD>
+		<TD>
+			<P>#f8f8ff</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gold</P>
+		</TD>
+		<TD BGCOLOR="#ffd700">
+			<P ALIGN=CENTER>gold</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 215, 0</P>
+		</TD>
+		<TD>
+			<P>#ffd700</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>goldenrod</P>
+		</TD>
+		<TD BGCOLOR="#daa520">
+			<P ALIGN=CENTER>goldenrod</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>218, 165, 32</P>
+		</TD>
+		<TD>
+			<P>#daa520</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray</P>
+		</TD>
+		<TD BGCOLOR="#7e7e7e">
+			<P ALIGN=CENTER>gray</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>126, 126, 126</P>
+		</TD>
+		<TD>
+			<P>#7e7e7e</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray0</P>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN=CENTER>gray0</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 0, 0</P>
+		</TD>
+		<TD>
+			<P>#000000</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray1</P>
+		</TD>
+		<TD BGCOLOR="#030303">
+			<P ALIGN=CENTER>gray1</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>3, 3, 3</P>
+		</TD>
+		<TD>
+			<P>#030303</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray10</P>
+		</TD>
+		<TD BGCOLOR="#1a1a1a">
+			<P ALIGN=CENTER>gray10</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>26, 26, 26</P>
+		</TD>
+		<TD>
+			<P>#1a1a1a</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray100</P>
+		</TD>
+		<TD BGCOLOR="#ffffff">
+			<P ALIGN=CENTER>gray100</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 255, 255</P>
+		</TD>
+		<TD>
+			<P>#ffffff</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray11</P>
+		</TD>
+		<TD BGCOLOR="#1c1c1c">
+			<P ALIGN=CENTER>gray11</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>28, 28, 28</P>
+		</TD>
+		<TD>
+			<P>#1c1c1c</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray12</P>
+		</TD>
+		<TD BGCOLOR="#1f1f1f">
+			<P ALIGN=CENTER>gray12</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>31, 31, 31</P>
+		</TD>
+		<TD>
+			<P>#1f1f1f</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray13</P>
+		</TD>
+		<TD BGCOLOR="#212121">
+			<P ALIGN=CENTER>gray13</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>33, 33, 33</P>
+		</TD>
+		<TD>
+			<P>#212121</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray14</P>
+		</TD>
+		<TD BGCOLOR="#242424">
+			<P ALIGN=CENTER>gray14</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>36, 36, 36</P>
+		</TD>
+		<TD>
+			<P>#242424</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray15</P>
+		</TD>
+		<TD BGCOLOR="#262626">
+			<P ALIGN=CENTER>gray15</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>38, 38, 38</P>
+		</TD>
+		<TD>
+			<P>#262626</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray16</P>
+		</TD>
+		<TD BGCOLOR="#292929">
+			<P ALIGN=CENTER>gray16</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>41, 41, 41</P>
+		</TD>
+		<TD>
+			<P>#292929</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray17</P>
+		</TD>
+		<TD BGCOLOR="#2b2b2b">
+			<P ALIGN=CENTER>gray17</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>43, 43, 43</P>
+		</TD>
+		<TD>
+			<P>#2b2b2b</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray18</P>
+		</TD>
+		<TD BGCOLOR="#2e2e2e">
+			<P ALIGN=CENTER>gray18</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>46, 46, 46</P>
+		</TD>
+		<TD>
+			<P>#2e2e2e</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray19</P>
+		</TD>
+		<TD BGCOLOR="#303030">
+			<P ALIGN=CENTER>gray19</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>48, 48, 48</P>
+		</TD>
+		<TD>
+			<P>#303030</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray2</P>
+		</TD>
+		<TD BGCOLOR="#050505">
+			<P ALIGN=CENTER>gray2</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>5, 5, 5</P>
+		</TD>
+		<TD>
+			<P>#050505</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray20</P>
+		</TD>
+		<TD BGCOLOR="#333333">
+			<P ALIGN=CENTER>gray20</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>51, 51, 51</P>
+		</TD>
+		<TD>
+			<P>#333333</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray21</P>
+		</TD>
+		<TD BGCOLOR="#363636">
+			<P ALIGN=CENTER>gray21</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>54, 54, 54</P>
+		</TD>
+		<TD>
+			<P>#363636</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray22</P>
+		</TD>
+		<TD BGCOLOR="#383838">
+			<P ALIGN=CENTER>gray22</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>56, 56, 56</P>
+		</TD>
+		<TD>
+			<P>#383838</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray23</P>
+		</TD>
+		<TD BGCOLOR="#3b3b3b">
+			<P ALIGN=CENTER>gray23</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>59, 59, 59</P>
+		</TD>
+		<TD>
+			<P>#3b3b3b</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray24</P>
+		</TD>
+		<TD BGCOLOR="#3d3d3d">
+			<P ALIGN=CENTER>gray24</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>61, 61, 61</P>
+		</TD>
+		<TD>
+			<P>#3d3d3d</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray25</P>
+		</TD>
+		<TD BGCOLOR="#404040">
+			<P ALIGN=CENTER>gray25</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>64, 64, 64</P>
+		</TD>
+		<TD>
+			<P>#404040</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray26</P>
+		</TD>
+		<TD BGCOLOR="#424242">
+			<P ALIGN=CENTER>gray26</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>66, 66, 66</P>
+		</TD>
+		<TD>
+			<P>#424242</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray27</P>
+		</TD>
+		<TD BGCOLOR="#454545">
+			<P ALIGN=CENTER>gray27</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>69, 69, 69</P>
+		</TD>
+		<TD>
+			<P>#454545</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray28</P>
+		</TD>
+		<TD BGCOLOR="#474747">
+			<P ALIGN=CENTER>gray28</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>71, 71, 71</P>
+		</TD>
+		<TD>
+			<P>#474747</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray29</P>
+		</TD>
+		<TD BGCOLOR="#4a4a4a">
+			<P ALIGN=CENTER>gray29</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>74, 74, 74</P>
+		</TD>
+		<TD>
+			<P>#4a4a4a</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray3</P>
+		</TD>
+		<TD BGCOLOR="#080808">
+			<P ALIGN=CENTER>gray3</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>8, 8, 8</P>
+		</TD>
+		<TD>
+			<P>#080808</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray30</P>
+		</TD>
+		<TD BGCOLOR="#4d4d4d">
+			<P ALIGN=CENTER>gray30</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>77, 77, 77</P>
+		</TD>
+		<TD>
+			<P>#4d4d4d</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray31</P>
+		</TD>
+		<TD BGCOLOR="#4f4f4f">
+			<P ALIGN=CENTER>gray31</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>79, 79, 79</P>
+		</TD>
+		<TD>
+			<P>#4f4f4f</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray32</P>
+		</TD>
+		<TD BGCOLOR="#525252">
+			<P ALIGN=CENTER>gray32</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>82, 82, 82</P>
+		</TD>
+		<TD>
+			<P>#525252</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray33</P>
+		</TD>
+		<TD BGCOLOR="#545454">
+			<P ALIGN=CENTER>gray33</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>84, 84, 84</P>
+		</TD>
+		<TD>
+			<P>#545454</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray34</P>
+		</TD>
+		<TD BGCOLOR="#575757">
+			<P ALIGN=CENTER>gray34</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>87, 87, 87</P>
+		</TD>
+		<TD>
+			<P>#575757</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray35</P>
+		</TD>
+		<TD BGCOLOR="#595959">
+			<P ALIGN=CENTER>gray35</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>89, 89, 89</P>
+		</TD>
+		<TD>
+			<P>#595959</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray36</P>
+		</TD>
+		<TD BGCOLOR="#5c5c5c">
+			<P ALIGN=CENTER>gray36</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>92, 92, 92</P>
+		</TD>
+		<TD>
+			<P>#5c5c5c</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray37</P>
+		</TD>
+		<TD BGCOLOR="#5e5e5e">
+			<P ALIGN=CENTER>gray37</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>94, 94, 94</P>
+		</TD>
+		<TD>
+			<P>#5e5e5e</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray38</P>
+		</TD>
+		<TD BGCOLOR="#616161">
+			<P ALIGN=CENTER>gray38</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>97, 97, 97</P>
+		</TD>
+		<TD>
+			<P>#616161</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray39</P>
+		</TD>
+		<TD BGCOLOR="#636363">
+			<P ALIGN=CENTER>gray39</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>99, 99, 99</P>
+		</TD>
+		<TD>
+			<P>#636363</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray4</P>
+		</TD>
+		<TD BGCOLOR="#0a0a0a">
+			<P ALIGN=CENTER>gray4</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>10, 10, 10</P>
+		</TD>
+		<TD>
+			<P>#0a0a0a</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray40</P>
+		</TD>
+		<TD BGCOLOR="#666666">
+			<P ALIGN=CENTER>gray40</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>102, 102, 102</P>
+		</TD>
+		<TD>
+			<P>#666666</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray41</P>
+		</TD>
+		<TD BGCOLOR="#696969">
+			<P ALIGN=CENTER>gray41</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>105, 105, 105</P>
+		</TD>
+		<TD>
+			<P>#696969</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray42</P>
+		</TD>
+		<TD BGCOLOR="#6b6b6b">
+			<P ALIGN=CENTER>gray42</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>107, 107, 107</P>
+		</TD>
+		<TD>
+			<P>#6b6b6b</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray43</P>
+		</TD>
+		<TD BGCOLOR="#6e6e6e">
+			<P ALIGN=CENTER>gray43</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>110, 110, 110</P>
+		</TD>
+		<TD>
+			<P>#6e6e6e</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray44</P>
+		</TD>
+		<TD BGCOLOR="#707070">
+			<P ALIGN=CENTER>gray44</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>112, 112, 112</P>
+		</TD>
+		<TD>
+			<P>#707070</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray45</P>
+		</TD>
+		<TD BGCOLOR="#737373">
+			<P ALIGN=CENTER>gray45</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>115, 115, 115</P>
+		</TD>
+		<TD>
+			<P>#737373</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray46</P>
+		</TD>
+		<TD BGCOLOR="#757575">
+			<P ALIGN=CENTER>gray46</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>117, 117, 117</P>
+		</TD>
+		<TD>
+			<P>#757575</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray47</P>
+		</TD>
+		<TD BGCOLOR="#787878">
+			<P ALIGN=CENTER>gray47</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>120, 120, 120</P>
+		</TD>
+		<TD>
+			<P>#787878</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray48</P>
+		</TD>
+		<TD BGCOLOR="#7a7a7a">
+			<P ALIGN=CENTER>gray48</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>122, 122, 122</P>
+		</TD>
+		<TD>
+			<P>#7a7a7a</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray49</P>
+		</TD>
+		<TD BGCOLOR="#7d7d7d">
+			<P ALIGN=CENTER>gray49</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>125, 125, 125</P>
+		</TD>
+		<TD>
+			<P>#7d7d7d</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray5</P>
+		</TD>
+		<TD BGCOLOR="#0d0d0d">
+			<P ALIGN=CENTER>gray5</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>13, 13, 13</P>
+		</TD>
+		<TD>
+			<P>#0d0d0d</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray50</P>
+		</TD>
+		<TD BGCOLOR="#7f7f7f">
+			<P ALIGN=CENTER>gray50</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>127, 127, 127</P>
+		</TD>
+		<TD>
+			<P>#7f7f7f</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray51</P>
+		</TD>
+		<TD BGCOLOR="#828282">
+			<P ALIGN=CENTER>gray51</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>130, 130, 130</P>
+		</TD>
+		<TD>
+			<P>#828282</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray52</P>
+		</TD>
+		<TD BGCOLOR="#858585">
+			<P ALIGN=CENTER>gray52</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>133, 133, 133</P>
+		</TD>
+		<TD>
+			<P>#858585</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray53</P>
+		</TD>
+		<TD BGCOLOR="#878787">
+			<P ALIGN=CENTER>gray53</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>135, 135, 135</P>
+		</TD>
+		<TD>
+			<P>#878787</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray54</P>
+		</TD>
+		<TD BGCOLOR="#8a8a8a">
+			<P ALIGN=CENTER>gray54</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>138, 138, 138</P>
+		</TD>
+		<TD>
+			<P>#8a8a8a</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray55</P>
+		</TD>
+		<TD BGCOLOR="#8c8c8c">
+			<P ALIGN=CENTER>gray55</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>140, 140, 140</P>
+		</TD>
+		<TD>
+			<P>#8c8c8c</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray56</P>
+		</TD>
+		<TD BGCOLOR="#8f8f8f">
+			<P ALIGN=CENTER>gray56</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>143, 143, 143</P>
+		</TD>
+		<TD>
+			<P>#8f8f8f</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray57</P>
+		</TD>
+		<TD BGCOLOR="#919191">
+			<P ALIGN=CENTER>gray57</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>145, 145, 145</P>
+		</TD>
+		<TD>
+			<P>#919191</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray58</P>
+		</TD>
+		<TD BGCOLOR="#949494">
+			<P ALIGN=CENTER>gray58</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>148, 148, 148</P>
+		</TD>
+		<TD>
+			<P>#949494</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray59</P>
+		</TD>
+		<TD BGCOLOR="#969696">
+			<P ALIGN=CENTER>gray59</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>150, 150, 150</P>
+		</TD>
+		<TD>
+			<P>#969696</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray6</P>
+		</TD>
+		<TD BGCOLOR="#0f0f0f">
+			<P ALIGN=CENTER>gray6</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>15, 15, 15</P>
+		</TD>
+		<TD>
+			<P>#0f0f0f</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray60</P>
+		</TD>
+		<TD BGCOLOR="#999999">
+			<P ALIGN=CENTER>gray60</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>153, 153, 153</P>
+		</TD>
+		<TD>
+			<P>#999999</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray61</P>
+		</TD>
+		<TD BGCOLOR="#9c9c9c">
+			<P ALIGN=CENTER>gray61</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>156, 156, 156</P>
+		</TD>
+		<TD>
+			<P>#9c9c9c</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray62</P>
+		</TD>
+		<TD BGCOLOR="#9e9e9e">
+			<P ALIGN=CENTER>gray62</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>158, 158, 158</P>
+		</TD>
+		<TD>
+			<P>#9e9e9e</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray63</P>
+		</TD>
+		<TD BGCOLOR="#a1a1a1">
+			<P ALIGN=CENTER>gray63</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>161, 161, 161</P>
+		</TD>
+		<TD>
+			<P>#a1a1a1</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray64</P>
+		</TD>
+		<TD BGCOLOR="#a3a3a3">
+			<P ALIGN=CENTER>gray64</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>163, 163, 163</P>
+		</TD>
+		<TD>
+			<P>#a3a3a3</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray65</P>
+		</TD>
+		<TD BGCOLOR="#a6a6a6">
+			<P ALIGN=CENTER>gray65</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>166, 166, 166</P>
+		</TD>
+		<TD>
+			<P>#a6a6a6</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray66</P>
+		</TD>
+		<TD BGCOLOR="#a8a8a8">
+			<P ALIGN=CENTER>gray66</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>168, 168, 168</P>
+		</TD>
+		<TD>
+			<P>#a8a8a8</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray67</P>
+		</TD>
+		<TD BGCOLOR="#ababab">
+			<P ALIGN=CENTER>gray67</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>171, 171, 171</P>
+		</TD>
+		<TD>
+			<P>#ababab</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray68</P>
+		</TD>
+		<TD BGCOLOR="#adadad">
+			<P ALIGN=CENTER>gray68</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>173, 173, 173</P>
+		</TD>
+		<TD>
+			<P>#adadad</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray69</P>
+		</TD>
+		<TD BGCOLOR="#b0b0b0">
+			<P ALIGN=CENTER>gray69</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>176, 176, 176</P>
+		</TD>
+		<TD>
+			<P>#b0b0b0</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray7</P>
+		</TD>
+		<TD BGCOLOR="#121212">
+			<P ALIGN=CENTER>gray7</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>18, 18, 18</P>
+		</TD>
+		<TD>
+			<P>#121212</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray70</P>
+		</TD>
+		<TD BGCOLOR="#b3b3b3">
+			<P ALIGN=CENTER>gray70</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>179, 179, 179</P>
+		</TD>
+		<TD>
+			<P>#b3b3b3</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray71</P>
+		</TD>
+		<TD BGCOLOR="#b5b5b5">
+			<P ALIGN=CENTER>gray71</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>181, 181, 181</P>
+		</TD>
+		<TD>
+			<P>#b5b5b5</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray72</P>
+		</TD>
+		<TD BGCOLOR="#b8b8b8">
+			<P ALIGN=CENTER>gray72</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>184, 184, 184</P>
+		</TD>
+		<TD>
+			<P>#b8b8b8</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray73</P>
+		</TD>
+		<TD BGCOLOR="#bababa">
+			<P ALIGN=CENTER>gray73</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>186, 186, 186</P>
+		</TD>
+		<TD>
+			<P>#bababa</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray74</P>
+		</TD>
+		<TD BGCOLOR="#bdbdbd">
+			<P ALIGN=CENTER>gray74</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>189, 189, 189</P>
+		</TD>
+		<TD>
+			<P>#bdbdbd</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray75</P>
+		</TD>
+		<TD BGCOLOR="#bfbfbf">
+			<P ALIGN=CENTER>gray75</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>191, 191, 191</P>
+		</TD>
+		<TD>
+			<P>#bfbfbf</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray76</P>
+		</TD>
+		<TD BGCOLOR="#c2c2c2">
+			<P ALIGN=CENTER>gray76</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>194, 194, 194</P>
+		</TD>
+		<TD>
+			<P>#c2c2c2</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray77</P>
+		</TD>
+		<TD BGCOLOR="#c4c4c4">
+			<P ALIGN=CENTER>gray77</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>196, 196, 196</P>
+		</TD>
+		<TD>
+			<P>#c4c4c4</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray78</P>
+		</TD>
+		<TD BGCOLOR="#c7c7c7">
+			<P ALIGN=CENTER>gray78</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>199, 199, 199</P>
+		</TD>
+		<TD>
+			<P>#c7c7c7</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray79</P>
+		</TD>
+		<TD BGCOLOR="#c9c9c9">
+			<P ALIGN=CENTER>gray79</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>201, 201, 201</P>
+		</TD>
+		<TD>
+			<P>#c9c9c9</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray8</P>
+		</TD>
+		<TD BGCOLOR="#141414">
+			<P ALIGN=CENTER>gray8</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>20, 20, 20</P>
+		</TD>
+		<TD>
+			<P>#141414</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray80</P>
+		</TD>
+		<TD BGCOLOR="#cccccc">
+			<P ALIGN=CENTER>gray80</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>204, 204, 204</P>
+		</TD>
+		<TD>
+			<P>#cccccc</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray81</P>
+		</TD>
+		<TD BGCOLOR="#cfcfcf">
+			<P ALIGN=CENTER>gray81</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>207, 207, 207</P>
+		</TD>
+		<TD>
+			<P>#cfcfcf</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray82</P>
+		</TD>
+		<TD BGCOLOR="#d1d1d1">
+			<P ALIGN=CENTER>gray82</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>209, 209, 209</P>
+		</TD>
+		<TD>
+			<P>#d1d1d1</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray83</P>
+		</TD>
+		<TD BGCOLOR="#d4d4d4">
+			<P ALIGN=CENTER>gray83</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>212, 212, 212</P>
+		</TD>
+		<TD>
+			<P>#d4d4d4</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray84</P>
+		</TD>
+		<TD BGCOLOR="#d6d6d6">
+			<P ALIGN=CENTER>gray84</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>214, 214, 214</P>
+		</TD>
+		<TD>
+			<P>#d6d6d6</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray85</P>
+		</TD>
+		<TD BGCOLOR="#d9d9d9">
+			<P ALIGN=CENTER>gray85</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>217, 217, 217</P>
+		</TD>
+		<TD>
+			<P>#d9d9d9</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray86</P>
+		</TD>
+		<TD BGCOLOR="#dbdbdb">
+			<P ALIGN=CENTER>gray86</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>219, 219, 219</P>
+		</TD>
+		<TD>
+			<P>#dbdbdb</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray87</P>
+		</TD>
+		<TD BGCOLOR="#dedede">
+			<P ALIGN=CENTER>gray87</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>222, 222, 222</P>
+		</TD>
+		<TD>
+			<P>#dedede</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray88</P>
+		</TD>
+		<TD BGCOLOR="#e0e0e0">
+			<P ALIGN=CENTER>gray88</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>224, 224, 224</P>
+		</TD>
+		<TD>
+			<P>#e0e0e0</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray89</P>
+		</TD>
+		<TD BGCOLOR="#e3e3e3">
+			<P ALIGN=CENTER>gray89</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>227, 227, 227</P>
+		</TD>
+		<TD>
+			<P>#e3e3e3</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray9</P>
+		</TD>
+		<TD BGCOLOR="#171717">
+			<P ALIGN=CENTER>gray9</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>23, 23, 23</P>
+		</TD>
+		<TD>
+			<P>#171717</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray90</P>
+		</TD>
+		<TD BGCOLOR="#e5e5e5">
+			<P ALIGN=CENTER>gray90</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>229, 229, 229</P>
+		</TD>
+		<TD>
+			<P>#e5e5e5</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray91</P>
+		</TD>
+		<TD BGCOLOR="#e8e8e8">
+			<P ALIGN=CENTER>gray91</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>232, 232, 232</P>
+		</TD>
+		<TD>
+			<P>#e8e8e8</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray92</P>
+		</TD>
+		<TD BGCOLOR="#ebebeb">
+			<P ALIGN=CENTER>gray92</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>235, 235, 235</P>
+		</TD>
+		<TD>
+			<P>#ebebeb</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray93</P>
+		</TD>
+		<TD BGCOLOR="#ededed">
+			<P ALIGN=CENTER>gray93</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>237, 237, 237</P>
+		</TD>
+		<TD>
+			<P>#ededed</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray94</P>
+		</TD>
+		<TD BGCOLOR="#f0f0f0">
+			<P ALIGN=CENTER>gray94</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>240, 240, 240</P>
+		</TD>
+		<TD>
+			<P>#f0f0f0</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray95</P>
+		</TD>
+		<TD BGCOLOR="#f2f2f2">
+			<P ALIGN=CENTER>gray95</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>242, 242, 242</P>
+		</TD>
+		<TD>
+			<P>#f2f2f2</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray96</P>
+		</TD>
+		<TD BGCOLOR="#f5f5f5">
+			<P ALIGN=CENTER>gray96</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>245, 245, 245</P>
+		</TD>
+		<TD>
+			<P>#f5f5f5</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray97</P>
+		</TD>
+		<TD BGCOLOR="#f7f7f7">
+			<P ALIGN=CENTER>gray97</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>247, 247, 247</P>
+		</TD>
+		<TD>
+			<P>#f7f7f7</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray98</P>
+		</TD>
+		<TD BGCOLOR="#fafafa">
+			<P ALIGN=CENTER>gray98</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>250, 250, 250</P>
+		</TD>
+		<TD>
+			<P>#fafafa</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>gray99</P>
+		</TD>
+		<TD BGCOLOR="#fcfcfc">
+			<P ALIGN=CENTER>gray99</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>252, 252, 252</P>
+		</TD>
+		<TD>
+			<P>#fcfcfc</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>green</P>
+		</TD>
+		<TD BGCOLOR="#008000">
+			<P ALIGN=CENTER>green</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 128, 0</P>
+		</TD>
+		<TD>
+			<P>#008000</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>greenyellow</P>
+		</TD>
+		<TD BGCOLOR="#adff2f">
+			<P ALIGN=CENTER>greenyellow</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>173, 255, 47</P>
+		</TD>
+		<TD>
+			<P>#adff2f</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>grey</P>
+		</TD>
+		<TD BGCOLOR="#808080">
+			<P ALIGN=CENTER>grey</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>128, 128, 128</P>
+		</TD>
+		<TD>
+			<P>#808080</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>honeydew</P>
+		</TD>
+		<TD BGCOLOR="#f0fff0">
+			<P ALIGN=CENTER>honeydew</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>240, 255, 240</P>
+		</TD>
+		<TD>
+			<P>#f0fff0</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>hotpink</P>
+		</TD>
+		<TD BGCOLOR="#ff69b4">
+			<P ALIGN=CENTER>hotpink</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 105, 180</P>
+		</TD>
+		<TD>
+			<P>#ff69b4</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>indianred</P>
+		</TD>
+		<TD BGCOLOR="#cd5c5c">
+			<P ALIGN=CENTER>indianred</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>205, 92, 92</P>
+		</TD>
+		<TD>
+			<P>#cd5c5c</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>indigo</P>
+		</TD>
+		<TD BGCOLOR="#4b0082">
+			<P ALIGN=CENTER>indigo</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>75, 0, 130</P>
+		</TD>
+		<TD>
+			<P>#4b0082</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>ivory</P>
+		</TD>
+		<TD BGCOLOR="#fffff0">
+			<P ALIGN=CENTER>ivory</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 255, 240</P>
+		</TD>
+		<TD>
+			<P>#fffff0</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>khaki</P>
+		</TD>
+		<TD BGCOLOR="#f0e68c">
+			<P ALIGN=CENTER>khaki</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>240, 230, 140</P>
+		</TD>
+		<TD>
+			<P>#f0e68c</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lavender</P>
+		</TD>
+		<TD BGCOLOR="#e6e6fa">
+			<P ALIGN=CENTER>lavender</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>230, 230, 250</P>
+		</TD>
+		<TD>
+			<P>#e6e6fa</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lavenderblush</P>
+		</TD>
+		<TD BGCOLOR="#fff0f5">
+			<P ALIGN=CENTER>lavenderblush</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 240, 245</P>
+		</TD>
+		<TD>
+			<P>#fff0f5</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lawngreen</P>
+		</TD>
+		<TD BGCOLOR="#7cfc00">
+			<P ALIGN=CENTER>lawngreen</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>124, 252, 0</P>
+		</TD>
+		<TD>
+			<P>#7cfc00</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lemonchiffon</P>
+		</TD>
+		<TD BGCOLOR="#fffacd">
+			<P ALIGN=CENTER>lemonchiffon</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 250, 205</P>
+		</TD>
+		<TD>
+			<P>#fffacd</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lightblue</P>
+		</TD>
+		<TD BGCOLOR="#add8e6">
+			<P ALIGN=CENTER>lightblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>173, 216, 230</P>
+		</TD>
+		<TD>
+			<P>#add8e6</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lightcoral</P>
+		</TD>
+		<TD BGCOLOR="#f08080">
+			<P ALIGN=CENTER>lightcoral</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>240, 128, 128</P>
+		</TD>
+		<TD>
+			<P>#f08080</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lightcyan</P>
+		</TD>
+		<TD BGCOLOR="#e0ffff">
+			<P ALIGN=CENTER>lightcyan</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>224, 255, 255</P>
+		</TD>
+		<TD>
+			<P>#e0ffff</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lightgoldenrodyellow</P>
+		</TD>
+		<TD BGCOLOR="#fafad2">
+			<P ALIGN=CENTER>lightgoldenrodyellow</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>250, 250, 210</P>
+		</TD>
+		<TD>
+			<P>#fafad2</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lightgray</P>
+		</TD>
+		<TD BGCOLOR="#d3d3d3">
+			<P ALIGN=CENTER>lightgray</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>211, 211, 211</P>
+		</TD>
+		<TD>
+			<P>#d3d3d3</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lightgreen</P>
+		</TD>
+		<TD BGCOLOR="#90ee90">
+			<P ALIGN=CENTER>lightgreen</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>144, 238, 144</P>
+		</TD>
+		<TD>
+			<P>#90ee90</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lightgrey</P>
+		</TD>
+		<TD BGCOLOR="#d3d3d3">
+			<P ALIGN=CENTER>lightgrey</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>211, 211, 211</P>
+		</TD>
+		<TD>
+			<P>#d3d3d3</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lightpink</P>
+		</TD>
+		<TD BGCOLOR="#ffb6c1">
+			<P ALIGN=CENTER>lightpink</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 182, 193</P>
+		</TD>
+		<TD>
+			<P>#ffb6c1</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lightsalmon</P>
+		</TD>
+		<TD BGCOLOR="#ffa07a">
+			<P ALIGN=CENTER>lightsalmon</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 160, 122</P>
+		</TD>
+		<TD>
+			<P>#ffa07a</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lightseagreen</P>
+		</TD>
+		<TD BGCOLOR="#20b2aa">
+			<P ALIGN=CENTER>lightseagreen</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>32, 178, 170</P>
+		</TD>
+		<TD>
+			<P>#20b2aa</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lightskyblue</P>
+		</TD>
+		<TD BGCOLOR="#87cefa">
+			<P ALIGN=CENTER>lightskyblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>135, 206, 250</P>
+		</TD>
+		<TD>
+			<P>#87cefa</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lightslategray</P>
+		</TD>
+		<TD BGCOLOR="#778899">
+			<P ALIGN=CENTER>lightslategray</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>119, 136, 153</P>
+		</TD>
+		<TD>
+			<P>#778899</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lightslategrey</P>
+		</TD>
+		<TD BGCOLOR="#778899">
+			<P ALIGN=CENTER>lightslategrey</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>119, 136, 153</P>
+		</TD>
+		<TD>
+			<P>#778899</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lightsteelblue</P>
+		</TD>
+		<TD BGCOLOR="#b0c4de">
+			<P ALIGN=CENTER>lightsteelblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>176, 196, 222</P>
+		</TD>
+		<TD>
+			<P>#b0c4de</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lightyellow</P>
+		</TD>
+		<TD BGCOLOR="#ffffe0">
+			<P ALIGN=CENTER>lightyellow</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 255, 224</P>
+		</TD>
+		<TD>
+			<P>#ffffe0</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>lime</P>
+		</TD>
+		<TD BGCOLOR="#00ff00">
+			<P ALIGN=CENTER>lime</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 255, 0</P>
+		</TD>
+		<TD>
+			<P>#00ff00</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>limegreen</P>
+		</TD>
+		<TD BGCOLOR="#32cd32">
+			<P ALIGN=CENTER>limegreen</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>50, 205, 50</P>
+		</TD>
+		<TD>
+			<P>#32cd32</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>linen</P>
+		</TD>
+		<TD BGCOLOR="#faf0e6">
+			<P ALIGN=CENTER>linen</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>250, 240, 230</P>
+		</TD>
+		<TD>
+			<P>#faf0e6</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>magenta</P>
+		</TD>
+		<TD BGCOLOR="#ff00ff">
+			<P ALIGN=CENTER>magenta</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 0, 255</P>
+		</TD>
+		<TD>
+			<P>#ff00ff</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>maroon</P>
+		</TD>
+		<TD BGCOLOR="#800000">
+			<P ALIGN=CENTER>maroon</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>128, 0, 0</P>
+		</TD>
+		<TD>
+			<P>#800000</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>mediumaquamarine</P>
+		</TD>
+		<TD BGCOLOR="#66cdaa">
+			<P ALIGN=CENTER>mediumaquamarine</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>102, 205, 170</P>
+		</TD>
+		<TD>
+			<P>#66cdaa</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>mediumblue</P>
+		</TD>
+		<TD BGCOLOR="#0000cd">
+			<P ALIGN=CENTER>mediumblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 0, 205</P>
+		</TD>
+		<TD>
+			<P>#0000cd</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>mediumorchid</P>
+		</TD>
+		<TD BGCOLOR="#ba55d3">
+			<P ALIGN=CENTER>mediumorchid</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>186, 85, 211</P>
+		</TD>
+		<TD>
+			<P>#ba55d3</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>mediumpurple</P>
+		</TD>
+		<TD BGCOLOR="#9370db">
+			<P ALIGN=CENTER>mediumpurple</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>147, 112, 219</P>
+		</TD>
+		<TD>
+			<P>#9370db</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>mediumseagreen</P>
+		</TD>
+		<TD BGCOLOR="#3cb371">
+			<P ALIGN=CENTER>mediumseagreen</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>60, 179, 113</P>
+		</TD>
+		<TD>
+			<P>#3cb371</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>mediumslateblue</P>
+		</TD>
+		<TD BGCOLOR="#7b68ee">
+			<P ALIGN=CENTER>mediumslateblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>123, 104, 238</P>
+		</TD>
+		<TD>
+			<P>#7b68ee</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>mediumspringgreen</P>
+		</TD>
+		<TD BGCOLOR="#00fa9a">
+			<P ALIGN=CENTER>mediumspringgreen</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 250, 154</P>
+		</TD>
+		<TD>
+			<P>#00fa9a</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>mediumturquoise</P>
+		</TD>
+		<TD BGCOLOR="#48d1cc">
+			<P ALIGN=CENTER>mediumturquoise</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>72, 209, 204</P>
+		</TD>
+		<TD>
+			<P>#48d1cc</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>mediumvioletred</P>
+		</TD>
+		<TD BGCOLOR="#c71585">
+			<P ALIGN=CENTER>mediumvioletred</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>199, 21, 133</P>
+		</TD>
+		<TD>
+			<P>#c71585</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>midnightblue</P>
+		</TD>
+		<TD BGCOLOR="#191970">
+			<P ALIGN=CENTER>midnightblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>25, 25, 112</P>
+		</TD>
+		<TD>
+			<P>#191970</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>mintcream</P>
+		</TD>
+		<TD BGCOLOR="#f5fffa">
+			<P ALIGN=CENTER>mintcream</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>245, 255, 250</P>
+		</TD>
+		<TD>
+			<P>#f5fffa</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>mistyrose</P>
+		</TD>
+		<TD BGCOLOR="#ffe4e1">
+			<P ALIGN=CENTER>mistyrose</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 228, 225</P>
+		</TD>
+		<TD>
+			<P>#ffe4e1</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>moccasin</P>
+		</TD>
+		<TD BGCOLOR="#ffe4b5">
+			<P ALIGN=CENTER>moccasin</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 228, 181</P>
+		</TD>
+		<TD>
+			<P>#ffe4b5</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>navajowhite</P>
+		</TD>
+		<TD BGCOLOR="#ffdead">
+			<P ALIGN=CENTER>navajowhite</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 222, 173</P>
+		</TD>
+		<TD>
+			<P>#ffdead</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>navy</P>
+		</TD>
+		<TD BGCOLOR="#000080">
+			<P ALIGN=CENTER>navy</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 0, 128</P>
+		</TD>
+		<TD>
+			<P>#000080</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>none</P>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN=CENTER>none</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 0, 0</P>
+		</TD>
+		<TD>
+			<P>#000000</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>oldlace</P>
+		</TD>
+		<TD BGCOLOR="#fdf5e6">
+			<P ALIGN=CENTER>oldlace</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>253, 245, 230</P>
+		</TD>
+		<TD>
+			<P>#fdf5e6</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>olive</P>
+		</TD>
+		<TD BGCOLOR="#808000">
+			<P ALIGN=CENTER>olive</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>128, 128, 0</P>
+		</TD>
+		<TD>
+			<P>#808000</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>olivedrab</P>
+		</TD>
+		<TD BGCOLOR="#6b8e23">
+			<P ALIGN=CENTER>olivedrab</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>107, 142, 35</P>
+		</TD>
+		<TD>
+			<P>#6b8e23</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>orange</P>
+		</TD>
+		<TD BGCOLOR="#ffa500">
+			<P ALIGN=CENTER>orange</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 165, 0</P>
+		</TD>
+		<TD>
+			<P>#ffa500</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>orangered</P>
+		</TD>
+		<TD BGCOLOR="#ff4500">
+			<P ALIGN=CENTER>orangered</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 69, 0</P>
+		</TD>
+		<TD>
+			<P>#ff4500</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>orchid</P>
+		</TD>
+		<TD BGCOLOR="#da70d6">
+			<P ALIGN=CENTER>orchid</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>218, 112, 214</P>
+		</TD>
+		<TD>
+			<P>#da70d6</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>palegoldenrod</P>
+		</TD>
+		<TD BGCOLOR="#eee8aa">
+			<P ALIGN=CENTER>palegoldenrod</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>238, 232, 170</P>
+		</TD>
+		<TD>
+			<P>#eee8aa</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>palegreen</P>
+		</TD>
+		<TD BGCOLOR="#98fb98">
+			<P ALIGN=CENTER>palegreen</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>152, 251, 152</P>
+		</TD>
+		<TD>
+			<P>#98fb98</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>paleturquoise</P>
+		</TD>
+		<TD BGCOLOR="#afeeee">
+			<P ALIGN=CENTER>paleturquoise</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>175, 238, 238</P>
+		</TD>
+		<TD>
+			<P>#afeeee</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>palevioletred</P>
+		</TD>
+		<TD BGCOLOR="#db7093">
+			<P ALIGN=CENTER>palevioletred</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>219, 112, 147</P>
+		</TD>
+		<TD>
+			<P>#db7093</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>papayawhip</P>
+		</TD>
+		<TD BGCOLOR="#ffefd5">
+			<P ALIGN=CENTER>papayawhip</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 239, 213</P>
+		</TD>
+		<TD>
+			<P>#ffefd5</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>peachpuff</P>
+		</TD>
+		<TD BGCOLOR="#ffdab9">
+			<P ALIGN=CENTER>peachpuff</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 218, 185</P>
+		</TD>
+		<TD>
+			<P>#ffdab9</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>peru</P>
+		</TD>
+		<TD BGCOLOR="#cd853f">
+			<P ALIGN=CENTER>peru</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>205, 133, 63</P>
+		</TD>
+		<TD>
+			<P>#cd853f</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>pink</P>
+		</TD>
+		<TD BGCOLOR="#ffc0cb">
+			<P ALIGN=CENTER>pink</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 192, 203</P>
+		</TD>
+		<TD>
+			<P>#ffc0cb</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>plum</P>
+		</TD>
+		<TD BGCOLOR="#dda0dd">
+			<P ALIGN=CENTER>plum</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>221, 160, 221</P>
+		</TD>
+		<TD>
+			<P>#dda0dd</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>powderblue</P>
+		</TD>
+		<TD BGCOLOR="#b0e0e6">
+			<P ALIGN=CENTER>powderblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>176, 224, 230</P>
+		</TD>
+		<TD>
+			<P>#b0e0e6</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>purple</P>
+		</TD>
+		<TD BGCOLOR="#800080">
+			<P ALIGN=CENTER>purple</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>128, 0, 128</P>
+		</TD>
+		<TD>
+			<P>#800080</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>red</P>
+		</TD>
+		<TD BGCOLOR="#ff0000">
+			<P ALIGN=CENTER>red</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 0, 0</P>
+		</TD>
+		<TD>
+			<P>#ff0000</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>rosybrown</P>
+		</TD>
+		<TD BGCOLOR="#bc8f8f">
+			<P ALIGN=CENTER>rosybrown</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>188, 143, 143</P>
+		</TD>
+		<TD>
+			<P>#bc8f8f</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>royalblue</P>
+		</TD>
+		<TD BGCOLOR="#4169e1">
+			<P ALIGN=CENTER>royalblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>65, 105, 225</P>
+		</TD>
+		<TD>
+			<P>#4169e1</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>saddlebrown</P>
+		</TD>
+		<TD BGCOLOR="#8b4513">
+			<P ALIGN=CENTER>saddlebrown</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>139, 69, 19</P>
+		</TD>
+		<TD>
+			<P>#8b4513</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>salmon</P>
+		</TD>
+		<TD BGCOLOR="#fa8072">
+			<P ALIGN=CENTER>salmon</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>250, 128, 114</P>
+		</TD>
+		<TD>
+			<P>#fa8072</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>sandybrown</P>
+		</TD>
+		<TD BGCOLOR="#f4a460">
+			<P ALIGN=CENTER>sandybrown</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>244, 164, 96</P>
+		</TD>
+		<TD>
+			<P>#f4a460</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>seagreen</P>
+		</TD>
+		<TD BGCOLOR="#2e8b57">
+			<P ALIGN=CENTER>seagreen</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>46, 139, 87</P>
+		</TD>
+		<TD>
+			<P>#2e8b57</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>seashell</P>
+		</TD>
+		<TD BGCOLOR="#fff5ee">
+			<P ALIGN=CENTER>seashell</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 245, 238</P>
+		</TD>
+		<TD>
+			<P>#fff5ee</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>sienna</P>
+		</TD>
+		<TD BGCOLOR="#a0522d">
+			<P ALIGN=CENTER>sienna</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>160, 82, 45</P>
+		</TD>
+		<TD>
+			<P>#a0522d</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>silver</P>
+		</TD>
+		<TD BGCOLOR="#c0c0c0">
+			<P ALIGN=CENTER>silver</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>192, 192, 192</P>
+		</TD>
+		<TD>
+			<P>#c0c0c0</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>skyblue</P>
+		</TD>
+		<TD BGCOLOR="#87ceeb">
+			<P ALIGN=CENTER>skyblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>135, 206, 235</P>
+		</TD>
+		<TD>
+			<P>#87ceeb</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>slateblue</P>
+		</TD>
+		<TD BGCOLOR="#6a5acd">
+			<P ALIGN=CENTER>slateblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>106, 90, 205</P>
+		</TD>
+		<TD>
+			<P>#6a5acd</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>slategray</P>
+		</TD>
+		<TD BGCOLOR="#708090">
+			<P ALIGN=CENTER>slategray</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>112, 128, 144</P>
+		</TD>
+		<TD>
+			<P>#708090</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>slategrey</P>
+		</TD>
+		<TD BGCOLOR="#708090">
+			<P ALIGN=CENTER>slategrey</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>112, 128, 144</P>
+		</TD>
+		<TD>
+			<P>#708090</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>snow</P>
+		</TD>
+		<TD BGCOLOR="#fffafa">
+			<P ALIGN=CENTER>snow</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 250, 250</P>
+		</TD>
+		<TD>
+			<P>#fffafa</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>springgreen</P>
+		</TD>
+		<TD BGCOLOR="#00ff7f">
+			<P ALIGN=CENTER>springgreen</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 255, 127</P>
+		</TD>
+		<TD>
+			<P>#00ff7f</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>steelblue</P>
+		</TD>
+		<TD BGCOLOR="#4682b4">
+			<P ALIGN=CENTER>steelblue</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>70, 130, 180</P>
+		</TD>
+		<TD>
+			<P>#4682b4</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>tan</P>
+		</TD>
+		<TD BGCOLOR="#d2b48c">
+			<P ALIGN=CENTER>tan</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>210, 180, 140</P>
+		</TD>
+		<TD>
+			<P>#d2b48c</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>teal</P>
+		</TD>
+		<TD BGCOLOR="#008080">
+			<P ALIGN=CENTER>teal</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>0, 128, 128</P>
+		</TD>
+		<TD>
+			<P>#008080</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>thistle</P>
+		</TD>
+		<TD BGCOLOR="#d8bfd8">
+			<P ALIGN=CENTER>thistle</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>216, 191, 216</P>
+		</TD>
+		<TD>
+			<P>#d8bfd8</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>tomato</P>
+		</TD>
+		<TD BGCOLOR="#ff6347">
+			<P ALIGN=CENTER>tomato</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 99, 71</P>
+		</TD>
+		<TD>
+			<P>#ff6347</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>turquoise</P>
+		</TD>
+		<TD BGCOLOR="#40e0d0">
+			<P ALIGN=CENTER>turquoise</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>64, 224, 208</P>
+		</TD>
+		<TD>
+			<P>#40e0d0</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>violet</P>
+		</TD>
+		<TD BGCOLOR="#ee82ee">
+			<P ALIGN=CENTER>violet</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>238, 130, 238</P>
+		</TD>
+		<TD>
+			<P>#ee82ee</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>wheat</P>
+		</TD>
+		<TD BGCOLOR="#f5deb3">
+			<P ALIGN=CENTER>wheat</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>245, 222, 179</P>
+		</TD>
+		<TD>
+			<P>#f5deb3</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>white</P>
+		</TD>
+		<TD BGCOLOR="#ffffff">
+			<P ALIGN=CENTER>white</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 255, 255</P>
+		</TD>
+		<TD>
+			<P>#ffffff</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>whitesmoke</P>
+		</TD>
+		<TD BGCOLOR="#f5f5f5">
+			<P ALIGN=CENTER>whitesmoke</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>245, 245, 245</P>
+		</TD>
+		<TD>
+			<P>#f5f5f5</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>yellow</P>
+		</TD>
+		<TD BGCOLOR="#ffff00">
+			<P ALIGN=CENTER>yellow</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>255, 255, 0</P>
+		</TD>
+		<TD>
+			<P>#ffff00</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P ALIGN=RIGHT>yellowgreen</P>
+		</TD>
+		<TD BGCOLOR="#9acd32">
+			<P ALIGN=CENTER>yellowgreen</P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER>154, 205, 50</P>
+		</TD>
+		<TD>
+			<P>#9acd32</P>
+		</TD>
+	</TR>
+</TABLE>
+<HR>
+<P><A HREF="../index.html"><IMG SRC="../images/home.png" NAME="Graphic2" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@graphicsmagick.org"><IMG SRC="../images/mail.png" NAME="Graphic3" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=1>
+Image manipulation software that works like magic.</FONT> 
+</P>
+</BODY>
+</HTML>

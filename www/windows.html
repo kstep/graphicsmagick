@@ -3,10 +3,10 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
 	<TITLE>GraphicsMagick For Windows</TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020718;12063600">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20021113;21435909">
+	<META NAME="CHANGED" CONTENT="20030406;15455200">
 	<META NAME="CLASSIFICATION" CONTENT="Describes GraphicsMagick features which are peculiar to Microsoft Windows">
 	<META NAME="DESCRIPTION" CONTENT="Describes how to install GraphicsMagick for Windows.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, WebMagick, Web Magic, visualization, image processing, software development, image, software, Magick++">
@@ -29,17 +29,48 @@
 	</STYLE>
 </HEAD>
 <BODY LANG="en-US" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
-<P CLASS="western"><BR><BR>
-</P>
-<IMG SRC="../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0>
+<FORM ACTION="http://www.google.com/search">
+	<INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+	<INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+	<TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+		<COL WIDTH=208*>
+		<COL WIDTH=48*>
+		<TR>
+			<TD WIDTH=81%>
+				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="mission.html">Mission Statement</A>]
+				[<A HREF="download.html">Download</A>] [<A HREF="install.html">Installation</A>]
+				[<A HREF="cvs.html">CVS</A>] [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="formats.html">Formats</A>]
+				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
+				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+				Bugs</A>] [<A HREF="utilities.html">Utilities</A>]
+				[<A HREF="programming.html">Programming</A>] [<A HREF="books.html">Books</A>]
+				[<A HREF="links.html">Links</A>]</P>
+			</TD>
+			<TD ROWSPAN=2 WIDTH=19%>
+				<P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=81%>
+				<DIV ALIGN=CENTER>
+					<P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
+					<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
+					</P>
+				</DIV>
+			</TD>
+		</TR>
+	</TABLE>
+</FORM>
+<P CLASS="western"> 
 </P>
 <BLOCKQUOTE CLASS="western"><I>This page provides information
-specific to GraphicsMagick installed via a &quot;setup.exe&quot; style
-installation wizard under Microsoft Windows. It applies only to the
-pre-built &quot;binaries&quot; package, and not to versions compiled
-from source code. If you would like to install GraphicsMagick from
-source code, then please refer to the <A HREF="install.html">GraphicsMagick
-installation guide</A> . </I>
+specific to GraphicsMagick installed via a &quot;setup.exe&quot;
+style installation wizard under Microsoft Windows. It applies only to
+the pre-built &quot;binaries&quot; package, and not to versions
+compiled from source code. If you would like to install
+GraphicsMagick from source code, then please refer to the
+<A HREF="install.html">GraphicsMagick installation guide</A> . </I>
 </BLOCKQUOTE>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
 	<COL WIDTH=256*>
@@ -53,29 +84,30 @@ installation guide</A> . </I>
 <H4 CLASS="western">Prerequisites</H4>
 <P CLASS="western">While multiple versions of GraphicsMagick may be
 installed at one time, if your intention is to replace a prior
-installation of GraphicsMagick with a newer version, then it may be wise
-to uninstall the existing GraphicsMagick (see uninstall procedure) prior
-to installing the newer version.<BR><BR>While it is not a
-requirement, it is strongly recommended that the <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
+installation of GraphicsMagick with a newer version, then it may be
+wise to uninstall the existing GraphicsMagick (see uninstall
+procedure) prior to installing the newer version.<BR><BR>While it is
+not a requirement, it is strongly recommended that the <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
 package be installed. GraphicsMagick uses Ghostscript to render
 Postscript and PDF files, as well as formats where a translator to
 Postscript is available. GraphicsMagick will also use the fonts
 delivered with Ghostscript to support the standard set of Postscript
-fonts. <BR><BR>The installation package includes the GraphicsMagick Perl
-extension ( <A HREF="perl.html">PerlMagick</A>) as an installation
-option. If you would like to use this extension, then you must
-install <A HREF="http://www.activestate.com/Products/ActivePerl/Download.html">ActiveState
-ActivePerl</A> prior to commencing with installation of GraphicsMagick. 
+fonts. <BR><BR>The installation package includes the GraphicsMagick
+Perl extension ( <A HREF="perl.html">PerlMagick</A>) as an
+installation option. If you would like to use this extension, then
+you must install <A HREF="http://www.activestate.com/Products/ActivePerl/Download.html">ActiveState
+ActivePerl</A> prior to commencing with installation of
+GraphicsMagick. 
 </P>
 <H4 CLASS="western">Retrieve Install Package</H4>
 <P CLASS="western">Retrieve the GraphicsMagick Windows binary install
 package from a one of the ftp sites listed at the <A HREF="archives.html">GraphicsMagick
 Download Sites</A> page. The file will be named similar to
 GraphicsMagick-i686-pc-windows.exe (QuantumDepth=16 version) or
-GraphicsMagick-i686-Q8-windows.exe (QuantumDepth=8 version),and should
-be found in the 'binaries' subdirectory of the ftp site. Note that
-the QuantumDepth=8 version consumes much less memory and CPU than the
-QuantumDepth=16 version, but provides less color resolution.</P>
+GraphicsMagick-i686-Q8-windows.exe (QuantumDepth=8 version),and
+should be found in the 'binaries' subdirectory of the ftp site. Note
+that the QuantumDepth=8 version consumes much less memory and CPU
+than the QuantumDepth=16 version, but provides less color resolution.</P>
 <H4 CLASS="western">Start Installation Wizard 
 </H4>
 <P CLASS="western">Execute the downloaded file from your browser or
@@ -85,11 +117,12 @@ to continue.
 </P>
 <H4 CLASS="western">Select Destination Directory</H4>
 <P CLASS="western">Specify what drive and directory to install
-GraphicsMagick into. Approximately 13MB of free disk space is required
-to install GraphicsMagick. The default installation directory is similar
-to &ldquo;C:\Program Files\GraphicsMagick-1.0.0-Q16&rdquo;. Once you
-have entered the desired installation directory, then select &ldquo;Next&gt;&rdquo;
-to continue. 
+GraphicsMagick into. Approximately 13MB of free disk space is
+required to install GraphicsMagick. The default installation
+directory is similar to &ldquo;C:\Program
+Files\GraphicsMagick-1.0.0-Q16&rdquo;. Once you have entered the
+desired installation directory, then select &ldquo;Next&gt;&rdquo; to
+continue. 
 </P>
 <H4 CLASS="western">Select Start Menu Folder</H4>
 <P CLASS="western">Select the folder where you would like the
@@ -99,10 +132,10 @@ satisfactory. Click on &ldquo;Next&gt;&rdquo; to continue.
 <H4 CLASS="western">Select Additional Tasks</H4>
 <P CLASS="western">A screen is displayed which provides the option to
 create a desktop shortcut icon to the imdisplay program and to update
-the executable search path so that GraphicsMagick is available without
-specifying the full path to the programs. The default is to enable
-both of these. Once you have made your selections, click on &ldquo;Next&gt;&rdquo;
-to continue. 
+the executable search path so that GraphicsMagick is available
+without specifying the full path to the programs. The default is to
+enable both of these. Once you have made your selections, click on
+&ldquo;Next&gt;&rdquo; to continue. 
 </P>
 <H4 CLASS="western">Ready to Install</H4>
 <P CLASS="western">A screen is displayed which displays the selected
@@ -118,10 +151,10 @@ installation, it will display what it is doing in an installation
 progress window. 
 </P>
 <H4 CLASS="western">Finishing Up</H4>
-<P CLASS="western">By default &ldquo;View GraphicsMagick.html&rdquo; is
-check-marked. This causes the GraphicsMagick web pages to be displayed
-in a browser when &ldquo;Finish&rdquo; is selected. If you do not
-want to view the web pages, then de-select &ldquo;View
+<P CLASS="western">By default &ldquo;View GraphicsMagick.html&rdquo;
+is check-marked. This causes the GraphicsMagick web pages to be
+displayed in a browser when &ldquo;Finish&rdquo; is selected. If you
+do not want to view the web pages, then de-select &ldquo;View
 GraphicsMagick.html&rdquo;. Select &ldquo;Finish&rdquo; to exit the
 installation program. <BR>Under Windows '95 and Windows '98 it will
 be necessary to reboot the system in order for some settings to take
@@ -133,10 +166,10 @@ autoexec.bat.
 Windows Start menu. Within the window type</P>
 <P CLASS="western" STYLE="margin-left: 0.79in"><FONT FACE="Courier New">convert
 logo: logo.miff<BR>imdisplay logo.miff</FONT></P>
-<P CLASS="western">and the GraphicsMagick logo should be displayed in a
-window. Note that NT-based Windows systems come with a program named
-'convert' and if your path is set incorrectly, the wrong convert
-program will be executed!</P>
+<P CLASS="western">and the GraphicsMagick logo should be displayed in
+a window. Note that NT-based Windows systems come with a program
+named 'convert' and if your path is set incorrectly, the wrong
+convert program will be executed!</P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
 	<COL WIDTH=256*>
 	<TR>
@@ -150,9 +183,9 @@ program will be executed!</P>
 </P>
 <P CLASS="western">[ The following is transcribed from the <A HREF="http://www.jrsoftware.org/isinfo.php">Inno
 Setup</A> documentation. Inno Setup is used to create the binary
-install package. This information may be of value if the GraphicsMagick
-installation must be automated (e.g. If it is installed as part of
-another package). ]</P>
+install package. This information may be of value if the
+GraphicsMagick installation must be automated (e.g. If it is
+installed as part of another package). ]</P>
 <P CLASS="western">The Setup program accepts optional command line
 parameters. These can be useful to system administrators, and to
 other programs calling the Setup program. 
@@ -257,8 +290,8 @@ parameter causes Setup to automatically select a custom type.
 <P CLASS="western" STYLE="margin-bottom: 0in"><BR>
 </P>
 <P CLASS="western">The GraphicsMagick package incorporates its own
-uninstall functionality. Always remove an installed GraphicsMagick via
-its uninstall function since manually removing it (such as by
+uninstall functionality. Always remove an installed GraphicsMagick
+via its uninstall function since manually removing it (such as by
 removing its installation directory) will leave behind the registry
 entries and path settings established at install time.</P>
 <P CLASS="western">Under Windows '95 and Windows '95, use the
@@ -266,8 +299,8 @@ entries and path settings established at install time.</P>
 Windows start menu to initiate the uninstall.</P>
 <P CLASS="western">On NT 4.0 and 5.X -based systems, GraphicsMagick
 should be removed via the &ldquo;Add or Remove Programs&rdquo; area
-of the Windows Control Panel. Select the GraphicsMagick package from the
-list, and click on &ldquo;Change/Remove&rdquo; to uninstall it.</P>
+of the Windows Control Panel. Select the GraphicsMagick package from
+the list, and click on &ldquo;Change/Remove&rdquo; to uninstall it.</P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
 	<COL WIDTH=256*>
 	<TR>
@@ -279,24 +312,25 @@ list, and click on &ldquo;Change/Remove&rdquo; to uninstall it.</P>
 </TABLE>
 <P CLASS="western" STYLE="margin-bottom: 0in"><BR>
 </P>
-<P CLASS="western">The GraphicsMagick utilities (e.g. convert, mogrify,
-composite, ...) may be executed as a sub-process by other programs.
-If the utilities are not in the systems executable search path (they
-should be since the GraphicsMagick install extends the path), then the
-utility should be executed via the complete path to the executable.
-Note that systems other than Windows '9X/ME provide a &ldquo;convert.exe&rdquo;
-as part of the operating system. Care must be taken to avoid
-executing the wrong &ldquo;convert.exe&rdquo; by mistake.</P>
-<P CLASS="western">A package which is linked against the GraphicsMagick
-core DLLs may use the DLLs from an installed GraphicsMagick, provided
-that the GraphicsMagick release versions are identical, and the value of
-QuantumDepth matches the value used when building the package. One
-way to ensure this is to include a matching GraphicsMagick installation
-package along with your own package.</P>
+<P CLASS="western">The GraphicsMagick utilities (e.g. convert,
+mogrify, composite, ...) may be executed as a sub-process by other
+programs. If the utilities are not in the systems executable search
+path (they should be since the GraphicsMagick install extends the
+path), then the utility should be executed via the complete path to
+the executable. Note that systems other than Windows '9X/ME provide a
+&ldquo;convert.exe&rdquo; as part of the operating system. Care must
+be taken to avoid executing the wrong &ldquo;convert.exe&rdquo; by
+mistake.</P>
+<P CLASS="western">A package which is linked against the
+GraphicsMagick core DLLs may use the DLLs from an installed
+GraphicsMagick, provided that the GraphicsMagick release versions are
+identical, and the value of QuantumDepth matches the value used when
+building the package. One way to ensure this is to include a matching
+GraphicsMagick installation package along with your own package.</P>
 <P CLASS="western">In order to facilitate building C and C++ programs
-that use GraphicsMagick without requiring building GraphicsMagick from
-source code, the header files and link libraries required to build
-programs using Visual C++ 7.0 are provided in &ldquo;include&rdquo;
+that use GraphicsMagick without requiring building GraphicsMagick
+from source code, the header files and link libraries required to
+build programs using Visual C++ 7.0 are provided in &ldquo;include&rdquo;
 and &ldquo;lib&rdquo; subdirectories under the installation
 directory. Using these headers and libraries to build your dependent
 application ensures that they will be compatible with the release
@@ -306,8 +340,8 @@ Visual C++ 7.0 (.net). In order to use Magick++, you must either use
 the same compiler version used to build the distribution, or download
 the Windows source package and build everything yourself. While it
 should be possible to use the MinGW gcc compiler with the
-CORE_RL_magick_.dll (GraphicsMagick C library), it will certainly not be
-possible to use it with CORE_RL_Magick++_.dll (GraphicsMagick C++
+CORE_RL_magick_.dll (GraphicsMagick C library), it will certainly not
+be possible to use it with CORE_RL_Magick++_.dll (GraphicsMagick C++
 library) due to name mangling differences.</P>
 <P CLASS="western">The following project build options (change
 &ldquo;C:\GraphicsMagick&rdquo; to whever you have chosen to install)
@@ -371,10 +405,10 @@ delivered:</P>
 		</TD>
 	</TR>
 </TABLE>
-<P CLASS="western">When GraphicsMagick is installed, entries are added
-to the Windows Registry so that other programs may obtain information
-regarding the most recently installed GraphicsMagick. These entries are
-available under the registry path 
+<P CLASS="western">When GraphicsMagick is installed, entries are
+added to the Windows Registry so that other programs may obtain
+information regarding the most recently installed GraphicsMagick.
+These entries are available under the registry path 
 </P>
 <P CLASS="western"><FONT FACE="Courier New, Courier, monospace"><FONT SIZE=3>HKEY_LOCAL_MACHINE\SOFTWARE\GraphicsMagick\Current</FONT></FONT></P>
 <P CLASS="western">These keys are currently available:</P>
@@ -427,8 +461,8 @@ available under the registry path
 			<P CLASS="western"><FONT SIZE=3>REG_SZ</FONT></P>
 		</TD>
 		<TD WIDTH=47% BGCOLOR="#e6e6e6">
-			<P CLASS="western"><FONT SIZE=3>Directory where GraphicsMagick core
-			DLLs are installed</FONT></P>
+			<P CLASS="western"><FONT SIZE=3>Directory where GraphicsMagick
+			core DLLs are installed</FONT></P>
 		</TD>
 	</TR>
 	<TR VALIGN=TOP>
@@ -481,17 +515,17 @@ available under the registry path
 	</TR>
 </TABLE>
 <P CLASS="western">In addition to registry entries which provide
-information on the most recently installed GraphicsMagick (which is not
-necessarily the newest version installed), registry entries are
+information on the most recently installed GraphicsMagick (which is
+not necessarily the newest version installed), registry entries are
 available for specific versions of installed GraphicsMagick packages.
 These registry entries are available under a registry path of the
 form:</P>
 <P CLASS="western"><FONT FACE="Courier New"><FONT SIZE=3>HKEY_LOCAL_MACHINE\SOFTWARE\GraphicsMagick\<I>VERSION</I>\Q:<I>DEPTH</I></FONT></FONT></P>
-<P CLASS="western">where VERSION represents the GraphicsMagick version
-and DEPTH (which may have the values 8 or 16) represents the number
-of bits per pixel quantum. Packages which require a particular
-version of GraphicsMagick built with a specific QuantumDepth may find a
-matching installation via these registry entries.</P>
+<P CLASS="western">where VERSION represents the GraphicsMagick
+version and DEPTH (which may have the values 8 or 16) represents the
+number of bits per pixel quantum. Packages which require a particular
+version of GraphicsMagick built with a specific QuantumDepth may find
+a matching installation via these registry entries.</P>
 <P CLASS="western">These keys are currently available:</P>
 <TABLE WIDTH=90% BORDER=1 CELLPADDING=4 CELLSPACING=3>
 	<COL WIDTH=68*>
@@ -540,8 +574,8 @@ matching installation via these registry entries.</P>
 			<P CLASS="western"><FONT SIZE=3>REG_SZ</FONT></P>
 		</TD>
 		<TD WIDTH=54% BGCOLOR="#e6e6e6">
-			<P CLASS="western"><FONT SIZE=3>Directory where GraphicsMagick core
-			DLLs are installed</FONT></P>
+			<P CLASS="western"><FONT SIZE=3>Directory where GraphicsMagick
+			core DLLs are installed</FONT></P>
 		</TD>
 	</TR>
 	<TR VALIGN=TOP>

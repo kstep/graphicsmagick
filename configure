@@ -258,9 +258,7 @@ if test "X$1" = X--no-reexec; then
 elif test "X$1" = X--fallback-echo; then
   # Avoid inline document here, it may be left over
   :
-elif test "X`($echo '\t') 2>/dev/null`" = 'X\t' &&
-     eval echo_test_var=`$echo '\\\t'` &&
-          test "X$echo_test_var" = "X\t"; then
+elif test "X`($echo '\t') 2>/dev/null`" = 'X\t' ; then
   # Yippee, $echo works!
   :
 else
@@ -296,8 +294,6 @@ if test "X${echo_test_string+set}" != Xset; then
 fi
 
 if test "X`($echo '\t') 2>/dev/null`" = 'X\t' &&
-     eval echo_test_var=`$echo '\\\t'` &&
-          test "X$echo_test_var" = "X\t" &&
    echo_testing_string=`($echo "$echo_test_string") 2>/dev/null` &&
    test "X$echo_testing_string" = "X$echo_test_string"; then
   :
@@ -313,8 +309,6 @@ else
     IFS="$lt_save_ifs"
     if (test -f $dir/echo || test -f $dir/echo$ac_exeext) &&
        test "X`($dir/echo '\t') 2>/dev/null`" = 'X\t' &&
-     eval echo_test_var=`$dir/echo '\\\t'` &&
-          test "X$echo_test_var" = "X\t" &&
        echo_testing_string=`($dir/echo "$echo_test_string") 2>/dev/null` &&
        test "X$echo_testing_string" = "X$echo_test_string"; then
       echo="$dir/echo"
@@ -326,8 +320,6 @@ else
   if test "X$echo" = Xecho; then
     # We didn't find a better echo, so look for alternatives.
     if test "X`(print -r '\t') 2>/dev/null`" = 'X\t' &&
-          eval echo_test_var=`print -r '\\\t'` &&
-          test "X$echo_test_var" = "X\t" &&
        echo_testing_string=`(print -r "$echo_test_string") 2>/dev/null` &&
        test "X$echo_testing_string" = "X$echo_test_string"; then
       # This shell has a builtin print -r that does the trick.
@@ -344,16 +336,12 @@ else
       # Try using printf.
       echo='printf %s\n'
       if test "X`($echo '\t') 2>/dev/null`" = 'X\t' &&
-     eval echo_test_var=`$echo '\\\t'` &&
-          test "X$echo_test_var" = "X\t" &&
 	 echo_testing_string=`($echo "$echo_test_string") 2>/dev/null` &&
 	 test "X$echo_testing_string" = "X$echo_test_string"; then
 	# Cool, printf works
 	:
       elif echo_testing_string=`($ORIGINAL_CONFIG_SHELL "$0" --fallback-echo '\t') 2>/dev/null` &&
 	   test "X$echo_testing_string" = 'X\t' &&
-	   eval echo_test_var=`($ORIGINAL_CONFIG_SHELL "$0" --fallback-echo '\\\t') 2>/dev/null` &&
-	   test "X$echo_test_var" = "X\t" &&
 	   echo_testing_string=`($ORIGINAL_CONFIG_SHELL "$0" --fallback-echo "$echo_test_string") 2>/dev/null` &&
 	   test "X$echo_testing_string" = "X$echo_test_string"; then
 	CONFIG_SHELL=$ORIGINAL_CONFIG_SHELL
@@ -363,8 +351,6 @@ else
 	echo="$CONFIG_SHELL $0 --fallback-echo"
       elif echo_testing_string=`($CONFIG_SHELL "$0" --fallback-echo '\t') 2>/dev/null` &&
 	   test "X$echo_testing_string" = 'X\t' &&
-	   eval echo_test_var=`($CONFIG_SHELL "$0" --fallback-echo '\\\t') 2>/dev/null` &&
-	   test "X$echo_test_var" = "X\t" &&
 	   echo_testing_string=`($CONFIG_SHELL "$0" --fallback-echo "$echo_test_string") 2>/dev/null` &&
 	   test "X$echo_testing_string" = "X$echo_test_string"; then
 	echo="$CONFIG_SHELL $0 --fallback-echo"
@@ -6000,7 +5986,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 6003 "configure"
+#line 5989 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7708,7 +7694,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 7711 "configure"' > conftest.$ac_ext
+  echo '#line 7697 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8826,7 +8812,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:8829:" \
+echo "$as_me:8815:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -9831,11 +9817,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9834: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9820: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9838: \$? = $ac_status" >&5
+   echo "$as_me:9824: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -9977,7 +9963,7 @@ echo $ECHO_N "checking for $compiler option to produce PIC... $ECHO_C" >&6
       ;;
 
     linux*)
-      case $cc_basename in
+      case $CC in
       icc|ecc)
 	lt_prog_compiler_wl='-Wl,'
 	lt_prog_compiler_pic='-KPIC'
@@ -10063,11 +10049,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10066: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10052: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:10070: \$? = $ac_status" >&5
+   echo "$as_me:10056: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -10130,11 +10116,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10133: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10119: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:10137: \$? = $ac_status" >&5
+   echo "$as_me:10123: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -10638,18 +10624,12 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       fi
       module_cmds='$CC -bundle ${wl}-bind_at_load $allow_undefined_flag -o $lib $libobjs $deplibs$compiler_flags'
       # Don't fix this by using the ld -exported_symbols_list flag, it doesn't exist in older darwin ld's
-      if test -z ${ZSH_VERSION} ; then
         if test "X$lt_int_apple_cc_single_mod" = Xyes ; then
           archive_expsym_cmds='sed -e "s,#.*,," -e "s,^[    ]*,," -e "s,^\(..*\),_&," < $export_symbols > $output_objdir/${libname}-symbols.expsym~$CC -dynamiclib -single_module $allow_undefined_flag -o $lib $libobjs $deplibs $compiler_flags -install_name $rpath/$soname $verstring~nmedit -s $output_objdir/${libname}-symbols.expsym ${lib}'
         else
           archive_expsym_cmds='sed -e "s,#.*,," -e "s,^[    ]*,," -e "s,^\(..*\),_&," < $export_symbols > $output_objdir/${libname}-symbols.expsym~$CC -r ${wl}-bind_at_load -keep_private_externs -nostdlib -o ${lib}-master.o $libobjs~$CC -dynamiclib $allow_undefined_flag -o $lib ${lib}-master.o $deplibs $compiler_flags -install_name $rpath/$soname $verstring~nmedit -s $output_objdir/${libname}-symbols.expsym ${lib}'
         fi
           module_expsym_cmds='sed -e "s,#.*,," -e "s,^[    ]*,," -e "s,^\(..*\),_&," < $export_symbols > $output_objdir/${libname}-symbols.expsym~$CC -bundle $allow_undefined_flag  -o $lib $libobjs $deplibs$compiler_flags~nmedit -s $output_objdir/${libname}-symbols.expsym ${lib}'
-      else
-        #just in case a default was set somewhere
-        archive_expsym_cmds=''
-        module_expsym_cmds=''
-      fi
       hardcode_direct=no
       hardcode_automatic=yes
       hardcode_shlibpath_var=unsupported
@@ -12148,7 +12128,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 12151 "configure"
+#line 12131 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12246,7 +12226,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 12249 "configure"
+#line 12229 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12395,14 +12375,8 @@ aix4*)
     archive_cmds='$CC -dynamiclib $allow_undefined_flag -o $lib $libobjs $deplibs$compiler_flags -install_name $rpath/$soname $verstring'
     module_cmds='$CC -bundle $allow_undefined_flag -o $lib $libobjs $deplibs$compiler_flags'
     # Don't fix this by using the ld -exported_symbols_list flag, it doesn't exist in older darwin ld's
-    if test -z ${ZSH_VERSION} ; then
 		  archive_expsym_cmds='sed -e "s,#.*,," -e "s,^[    ]*,," -e "s,^\(..*\),_&," < $export_symbols > $output_objdir/${libname}-symbols.expsym~$CC -dynamiclib $allow_undefined_flag  -o $lib $libobjs $deplibs$compiler_flags -install_name $rpath/$soname $verstring~nmedit -s $output_objdir/${libname}-symbols.expsym ${lib}'
 		  module_expsym_cmds='sed -e "s,#.*,," -e "s,^[    ]*,," -e "s,^\(..*\),_&," < $export_symbols > $output_objdir/${libname}-symbols.expsym~$CC -bundle $allow_undefined_flag  -o $lib $libobjs $deplibs$compiler_flags~nmedit -s $output_objdir/${libname}-symbols.expsym ${lib}'
-    else
-      #just in case a default was set somewhere
-      archive_expsym_cmds=''
-      module_expsym_cmds=''
-    fi
     hardcode_direct=no
     hardcode_automatic=yes
     hardcode_shlibpath_var=unsupported
@@ -12426,6 +12400,11 @@ echo "${ECHO_T}$enable_static" >&6
 # with your package, and you will get complaints that there are
 # no rules to generate ltmain.sh.
 if test -f "$ltmain"; then
+  # See if we are running on zsh, and set the options which allow our commands through
+  # without removal of \ escapes.
+  if test -n "${ZSH_VERSION+set}" ; then
+    setopt NO_GLOB_SUBST
+  fi
   # Now quote all the things that may contain metacharacters while being
   # careful not to overquote the AC_SUBSTed values.  We take copies of the
   # variables and quote the copies for generation of the libtool script.
@@ -13448,18 +13427,12 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       module_cmds_CXX='$CC -bundle ${wl}-bind_at_load $allow_undefined_flag -o $lib $libobjs $deplibs$compiler_flags'
 
     # Don't fix this by using the ld -exported_symbols_list flag, it doesn't exist in older darwin ld's
-    if test -z ${ZSH_VERSION} ; then
       if test "X$lt_int_apple_cc_single_mod" = Xyes ; then
         archive_expsym_cmds_CXX='sed -e "s,#.*,," -e "s,^[    ]*,," -e "s,^\(..*\),_&," < $export_symbols > $output_objdir/${libname}-symbols.expsym~$CC -dynamiclib -single_module $allow_undefined_flag -o $lib $libobjs $deplibs $compiler_flags -install_name $rpath/$soname $verstring~nmedit -s $output_objdir/${libname}-symbols.expsym ${lib}'
       else
         archive_expsym_cmds_CXX='sed -e "s,#.*,," -e "s,^[    ]*,," -e "s,^\(..*\),_&," < $export_symbols > $output_objdir/${libname}-symbols.expsym~$CC -r ${wl}-bind_at_load -keep_private_externs -nostdlib -o ${lib}-master.o $libobjs~$CC -dynamiclib $allow_undefined_flag -o $lib ${lib}-master.o $deplibs $compiler_flags -install_name $rpath/$soname $verstring~nmedit -s $output_objdir/${libname}-symbols.expsym ${lib}'
       fi
         module_expsym_cmds_CXX='sed -e "s,#.*,," -e "s,^[    ]*,," -e "s,^\(..*\),_&," < $export_symbols > $output_objdir/${libname}-symbols.expsym~$CC -bundle $allow_undefined_flag  -o $lib $libobjs $deplibs$compiler_flags~nmedit -s $output_objdir/${libname}-symbols.expsym ${lib}'
-    else
-      #just in case a default was set somewhere
-      archive_expsym_cmds_CXX=''
-      module_expsym_cmds_CXX=''
-    fi
     hardcode_direct_CXX=no
     hardcode_automatic_CXX=yes
     hardcode_shlibpath_var_CXX=unsupported
@@ -14385,11 +14358,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14388: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14361: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:14392: \$? = $ac_status" >&5
+   echo "$as_me:14365: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -14452,11 +14425,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14455: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14428: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:14459: \$? = $ac_status" >&5
+   echo "$as_me:14432: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15695,7 +15668,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 15698 "configure"
+#line 15671 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -15793,7 +15766,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 15796 "configure"
+#line 15769 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -15902,6 +15875,11 @@ fi
 # with your package, and you will get complaints that there are
 # no rules to generate ltmain.sh.
 if test -f "$ltmain"; then
+  # See if we are running on zsh, and set the options which allow our commands through
+  # without removal of \ escapes.
+  if test -n "${ZSH_VERSION+set}" ; then
+    setopt NO_GLOB_SUBST
+  fi
   # Now quote all the things that may contain metacharacters while being
   # careful not to overquote the AC_SUBSTed values.  We take copies of the
   # variables and quote the copies for generation of the libtool script.
@@ -16524,7 +16502,7 @@ echo $ECHO_N "checking for $compiler option to produce PIC... $ECHO_C" >&6
       ;;
 
     linux*)
-      case $cc_basename in
+      case $CC in
       icc|ecc)
 	lt_prog_compiler_wl_F77='-Wl,'
 	lt_prog_compiler_pic_F77='-KPIC'
@@ -16610,11 +16588,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16613: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16591: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16617: \$? = $ac_status" >&5
+   echo "$as_me:16595: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -16677,11 +16655,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16680: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16658: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16684: \$? = $ac_status" >&5
+   echo "$as_me:16662: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -17163,18 +17141,12 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       fi
       module_cmds_F77='$CC -bundle ${wl}-bind_at_load $allow_undefined_flag -o $lib $libobjs $deplibs$compiler_flags'
       # Don't fix this by using the ld -exported_symbols_list flag, it doesn't exist in older darwin ld's
-      if test -z ${ZSH_VERSION} ; then
         if test "X$lt_int_apple_cc_single_mod" = Xyes ; then
           archive_expsym_cmds_F77='sed -e "s,#.*,," -e "s,^[    ]*,," -e "s,^\(..*\),_&," < $export_symbols > $output_objdir/${libname}-symbols.expsym~$CC -dynamiclib -single_module $allow_undefined_flag -o $lib $libobjs $deplibs $compiler_flags -install_name $rpath/$soname $verstring~nmedit -s $output_objdir/${libname}-symbols.expsym ${lib}'
         else
           archive_expsym_cmds_F77='sed -e "s,#.*,," -e "s,^[    ]*,," -e "s,^\(..*\),_&," < $export_symbols > $output_objdir/${libname}-symbols.expsym~$CC -r ${wl}-bind_at_load -keep_private_externs -nostdlib -o ${lib}-master.o $libobjs~$CC -dynamiclib $allow_undefined_flag -o $lib ${lib}-master.o $deplibs $compiler_flags -install_name $rpath/$soname $verstring~nmedit -s $output_objdir/${libname}-symbols.expsym ${lib}'
         fi
           module_expsym_cmds_F77='sed -e "s,#.*,," -e "s,^[    ]*,," -e "s,^\(..*\),_&," < $export_symbols > $output_objdir/${libname}-symbols.expsym~$CC -bundle $allow_undefined_flag  -o $lib $libobjs $deplibs$compiler_flags~nmedit -s $output_objdir/${libname}-symbols.expsym ${lib}'
-      else
-        #just in case a default was set somewhere
-        archive_expsym_cmds_F77=''
-        module_expsym_cmds_F77=''
-      fi
       hardcode_direct_F77=no
       hardcode_automatic_F77=yes
       hardcode_shlibpath_var_F77=unsupported
@@ -18160,6 +18132,11 @@ test "$dynamic_linker" = no && can_build_shared=no
 # with your package, and you will get complaints that there are
 # no rules to generate ltmain.sh.
 if test -f "$ltmain"; then
+  # See if we are running on zsh, and set the options which allow our commands through
+  # without removal of \ escapes.
+  if test -n "${ZSH_VERSION+set}" ; then
+    setopt NO_GLOB_SUBST
+  fi
   # Now quote all the things that may contain metacharacters while being
   # careful not to overquote the AC_SUBSTed values.  We take copies of the
   # variables and quote the copies for generation of the libtool script.
@@ -18618,11 +18595,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18621: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18598: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:18625: \$? = $ac_status" >&5
+   echo "$as_me:18602: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -18764,7 +18741,7 @@ echo $ECHO_N "checking for $compiler option to produce PIC... $ECHO_C" >&6
       ;;
 
     linux*)
-      case $cc_basename in
+      case $CC in
       icc|ecc)
 	lt_prog_compiler_wl_GCJ='-Wl,'
 	lt_prog_compiler_pic_GCJ='-KPIC'
@@ -18850,11 +18827,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18853: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18830: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:18857: \$? = $ac_status" >&5
+   echo "$as_me:18834: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -18917,11 +18894,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18920: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18897: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18924: \$? = $ac_status" >&5
+   echo "$as_me:18901: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -19425,18 +19402,12 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
       fi
       module_cmds_GCJ='$CC -bundle ${wl}-bind_at_load $allow_undefined_flag -o $lib $libobjs $deplibs$compiler_flags'
       # Don't fix this by using the ld -exported_symbols_list flag, it doesn't exist in older darwin ld's
-      if test -z ${ZSH_VERSION} ; then
         if test "X$lt_int_apple_cc_single_mod" = Xyes ; then
           archive_expsym_cmds_GCJ='sed -e "s,#.*,," -e "s,^[    ]*,," -e "s,^\(..*\),_&," < $export_symbols > $output_objdir/${libname}-symbols.expsym~$CC -dynamiclib -single_module $allow_undefined_flag -o $lib $libobjs $deplibs $compiler_flags -install_name $rpath/$soname $verstring~nmedit -s $output_objdir/${libname}-symbols.expsym ${lib}'
         else
           archive_expsym_cmds_GCJ='sed -e "s,#.*,," -e "s,^[    ]*,," -e "s,^\(..*\),_&," < $export_symbols > $output_objdir/${libname}-symbols.expsym~$CC -r ${wl}-bind_at_load -keep_private_externs -nostdlib -o ${lib}-master.o $libobjs~$CC -dynamiclib $allow_undefined_flag -o $lib ${lib}-master.o $deplibs $compiler_flags -install_name $rpath/$soname $verstring~nmedit -s $output_objdir/${libname}-symbols.expsym ${lib}'
         fi
           module_expsym_cmds_GCJ='sed -e "s,#.*,," -e "s,^[    ]*,," -e "s,^\(..*\),_&," < $export_symbols > $output_objdir/${libname}-symbols.expsym~$CC -bundle $allow_undefined_flag  -o $lib $libobjs $deplibs$compiler_flags~nmedit -s $output_objdir/${libname}-symbols.expsym ${lib}'
-      else
-        #just in case a default was set somewhere
-        archive_expsym_cmds_GCJ=''
-        module_expsym_cmds_GCJ=''
-      fi
       hardcode_direct_GCJ=no
       hardcode_automatic_GCJ=yes
       hardcode_shlibpath_var_GCJ=unsupported
@@ -20935,7 +20906,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 20938 "configure"
+#line 20909 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -21033,7 +21004,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 21036 "configure"
+#line 21007 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -21142,6 +21113,11 @@ fi
 # with your package, and you will get complaints that there are
 # no rules to generate ltmain.sh.
 if test -f "$ltmain"; then
+  # See if we are running on zsh, and set the options which allow our commands through
+  # without removal of \ escapes.
+  if test -n "${ZSH_VERSION+set}" ; then
+    setopt NO_GLOB_SUBST
+  fi
   # Now quote all the things that may contain metacharacters while being
   # careful not to overquote the AC_SUBSTed values.  We take copies of the
   # variables and quote the copies for generation of the libtool script.
@@ -21578,6 +21554,11 @@ lt_cv_prog_compiler_c_o_RC=yes
 # with your package, and you will get complaints that there are
 # no rules to generate ltmain.sh.
 if test -f "$ltmain"; then
+  # See if we are running on zsh, and set the options which allow our commands through
+  # without removal of \ escapes.
+  if test -n "${ZSH_VERSION+set}" ; then
+    setopt NO_GLOB_SUBST
+  fi
   # Now quote all the things that may contain metacharacters while being
   # careful not to overquote the AC_SUBSTed values.  We take copies of the
   # variables and quote the copies for generation of the libtool script.

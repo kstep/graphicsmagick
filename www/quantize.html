@@ -1,350 +1,405 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
 <HEAD>
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <title>Quantize: GraphicsMagick - Image Processing and Display Package</title>
-   <meta name="description" content="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
-   <meta name="keywords" content="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
-   <link rel="StyleSheet" href="magick.css" type="text/css">
-</head>
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<TITLE>Quantize: GraphicsMagick - Image Processing and Display Package</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
+	<META NAME="CREATED" CONTENT="20030406;15423900">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20030406;15425700">
+	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
+	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
+	<STYLE>
+	<!--
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		DD { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		DT { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		PRE { color: #000000 }
+		A:link { color: #0085c0 }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<FORM ACTION="http://www.google.com/search">
+	<INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+	<INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+	<TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+		<COL WIDTH=208*>
+		<COL WIDTH=48*>
+		<TR>
+			<TD WIDTH=81%>
+				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="mission.html">Mission Statement</A>]
+				[<A HREF="download.html">Download</A>] [<A HREF="install.html">Installation</A>]
+				[<A HREF="cvs.html">CVS</A>] [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="formats.html">Formats</A>]
+				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
+				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+				Bugs</A>] [<A HREF="utilities.html">Utilities</A>]
+				[<A HREF="programming.html">Programming</A>] [<A HREF="books.html">Books</A>]
+				[<A HREF="links.html">Links</A>]</P>
+			</TD>
+			<TD ROWSPAN=2 WIDTH=19%>
+				<P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=81%>
+				<DIV ALIGN=CENTER>
+					<P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
+					<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
+					</P>
+				</DIV>
+			</TD>
+		</TR>
+	</TABLE>
+</FORM>
+<P ALIGN=LEFT>
+</P>
+<P>This document describes how <A HREF="../index.html">GraphicsMagick</A>
+performs color reduction on an image. To fully understand this
+document, you should have a knowledge of basic imaging techniques and
+the tree data structure and terminology. 
+</P>
+<P STYLE="margin-bottom: 0in">&nbsp; 
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Description</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DL>
+	<DD STYLE="margin-bottom: 0.2in">For purposes of color allocation,
+	an image is a set of <I>n</I> pixels, where each pixel is a point in
+	<B>RGB</B> space. <B>RGB</B> space is a 3-dimensional vector space,
+	and each pixel, <I>p(i)</I>, is defined by an ordered triple of red,
+	green, and blue coordinates, (<I>r(i)</I>,<I>g(i)</I>,<I>b(i)</I>). 
+	</DD></DL>
+<P>
+Each primary color component (<I>red</I>, <I>green</I>, or <I>blue</I>)
+represents an intensity which varies linearly from 0 to a maximum
+value, <I>Cmax</I>, which corresponds to full saturation of that
+color. Color allocation is defined over a domain consisting of the
+cube in <B>RGB</B> space with opposite vertices at (0,0,0) and
+(<I>Cmax</I>,<I>Cmax</I>,<I>Cmax</I>). <B>GraphicsMagick</B> requires
+<I>Cmax</I>= <I>255</I>. 
+</P>
+<P>The algorithm maps this domain onto a tree in which each node
+represents a cube within that domain. In the following discussion,
+these cubes are defined by the coordinate of two opposite vertices:
+The vertex nearest the origin in <B>RGB</B> space and the vertex
+farthest from the origin. 
+</P>
+<P>The tree's root node represents the the entire domain, (0,0,0)
+through (<I>Cmax</I>,<I>Cmax</I>,<I>Cmax</I>). Each lower level in
+the tree is generated by subdividing one node's cube into eight
+smaller cubes of equal size. This corresponds to bisecting the parent
+cube with planes passing through the midpoints of each edge. 
+</P>
+<P STYLE="margin-bottom: 0in">The basic algorithm operates in three
+phases: 
+</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in"><B>Classification,</B> 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><B>Reduction</B>, and 
+	</P>
+	<LI><P><B>Assignment</B>. 
+	</P>
+</UL>
+<P><B>Classification</B> builds a color description tree for the
+image. <B>Reduction</B> collapses the tree until the number it
+represents, at most, is the number of colors desired in the output
+image. <B>Assignment</B> defines the output image's color map and
+sets each pixel's color by reclassification in the reduced tree. <I>Our
+goal is to minimize the numerical discrepancies between the original
+colors and quantized colors</I>. To learn more about quantization
+error, see <B>Measuring Color Reduction Error</B> later in this
+document. 
+</P>
+<P><B>Classification</B> begins by initializing a color description
+tree of sufficient depth to represent each possible input color in a
+leaf. However, it is impractical to generate a fully-formed color
+description tree in the classification phase for realistic values of
+<I>Cmax</I>. If color components in the input image are quantized to
+<I>k</I>-bit precision, so that <I>Cmax</I> = <I>2^k-1</I>, the tree
+would need <I>k</I> levels below the root node to allow representing
+each possible input color in a leaf. This becomes <B>prohibitive</B>
+because the tree's: 
+</P>
+<PRE> total number of nodes = 1+Sum(8^i), i=1,k
 
+ For k=8,
+ Number of nodes= 1 + (8^1+8^2+....+8^8)
+ 8^8 - 1
+ = 1 + 8.-----------
+ 8 - 1
+ = 19,173,961</PRE><P STYLE="margin-bottom: 0in">
+Therefore, to avoid building a fully populated tree, <B>GraphicsMagick</B>:
+</P>
+<OL>
+	<LI><P STYLE="margin-bottom: 0in">Initializes data structures for
+	nodes only as they are needed; 
+	</P>
+	<LI><P>Chooses a maximum depth for the tree as a function of the
+	desired number of colors in the output image (<B>currently <I>based-two</I>
+	logarithm of <I>Cmax</I></B>). 
+	</P>
+</OL>
+<PRE> For Cmax=255,
 
-<center><img SRC="../images/magick_small.png" alt="" width="114" height="118"></center>
+ Maximum tree depth = log (256)
+ 2
 
-<p><br>
-<p>This document describes how <a href="../index.html">GraphicsMagick</a>
-performs color reduction on an image. To fully understand this document,
-you should have a knowledge of basic imaging techniques and the tree data
-structure and terminology.
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Description</font></font></font></b></td>
-</tr>
-</table>
+ = log (256) / log (2)
+ e e
 
-<dd>
-For purposes of color allocation, an image is a set of <i>n</i> pixels,
-where each pixel is a point in <b>RGB</b> space. <b>RGB</b> space is a
-3-dimensional vector space, and each pixel, <i>p(i)</i>, is defined by
-an ordered triple of red, green, and blue coordinates, (<i>r(i)</i>,<i>g(i)</i>,<i>b(i)</i>).</dd>
-
-<p>Each primary color component (<i>red</i>, <i>green</i>, or <i>blue</i>)
-represents an intensity which varies linearly from 0 to a maximum value,
-<i>Cmax</i>,
-which corresponds to full saturation of that color. Color allocation is
-defined over a domain consisting of the cube in <b>RGB</b> space with opposite
-vertices at (0,0,0) and (<i>Cmax</i>,<i>Cmax</i>,<i>Cmax</i>).
-<b>GraphicsMagick</b>
-requires <i>Cmax</i>= <i>255</i>.
-<p>The algorithm maps this domain onto a tree in which each node represents
-a cube within that domain. In the following discussion, these cubes are
-defined by the coordinate of two opposite vertices: The vertex nearest
-the origin in <b>RGB</b> space and the vertex farthest from the origin.
-<p>The tree's root node represents the the entire domain, (0,0,0) through
-(<i>Cmax</i>,<i>Cmax</i>,<i>Cmax</i>). Each lower level in the tree is
-generated by subdividing one node's cube into eight smaller cubes of equal
-size. This corresponds to bisecting the parent cube with planes passing
-through the midpoints of each edge.
-<p>The basic algorithm operates in three phases:
-<ul>
-<li>
-<b>Classification,</b></li>
-
-<li>
-<b>Reduction</b>, and</li>
-
-<li>
-<b>Assignment</b>.</li>
-</ul>
-<p>
-<b>Classification</b> builds a color description tree for the image. <b>Reduction</b>
-collapses the tree until the number it represents, at most, is the number
-of colors desired in the output image.
-<b>Assignment</b> defines the output
-image's color map and sets each pixel's color by reclassification in the
-reduced tree.
-<i>Our goal is to minimize the numerical discrepancies between
-the original colors and quantized colors</i>. To learn more about quantization
-error, see <b>Measuring Color Reduction Error</b> later in this document.
-<p><b>Classification</b> begins by initializing a color description tree
-of sufficient depth to represent each possible input color in a leaf. However,
-it is impractical to generate a fully-formed color description tree in
-the classification phase for realistic values of <i>Cmax</i>. If color
-components in the input image are quantized to <i>k</i>-bit precision,
-so that
-<i>Cmax</i> = <i>2^k-1</i>, the tree would need <i>k</i> levels
-below the root node to allow representing each possible input color in
-a leaf. This becomes <b>prohibitive</b> because the tree's:
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; total number of nodes = 1+Sum(8^i), i=1,k
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For k=8,&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Number of nodes= 1 + (8^1+8^2+....+8^8)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8^8 - 1&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 1 + 8.-----------
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8 - 1
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 19,173,961</pre>
-Therefore, to avoid building a fully populated tree, <b>GraphicsMagick</b>:
-<ol>
-<li>
-Initializes data structures for nodes only as they are needed;</li>
-
-<li>
-Chooses a maximum depth for the tree as a function of the desired number
-of colors in the output image (<b>currently <i>based-two</i> logarithm
-of <i>Cmax</i></b>).</li>
-</ol>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Cmax=255,&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Maximum tree depth = log (256)&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = log (256) / log (2)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 8</pre>
-A tree of this depth generally allows the best representation of the source
-image with the fastest computational speed and the least amount of memory.
-However, the default depth is inappropriate for some images. Therefore,
-the caller can request a specific tree depth.
-<p>For each pixel in the input image, classification scans downward from
-the root of the color description tree. At each level of the tree, it identifies
-the single node which represents a cube in <b>RGB</b> space containing
-the pixel's color. It updates the following data for each such node:
-<dl>
-<dl>
-<dt>
-<b>n1:</b></dt>
-
-<dd>
-Number of pixels whose color is contained in the <b>RGB</b> cube which
-this node represents;</dd>
-
-<dt>
-<b>n2:</b></dt>
-
-<dd>
-Number of pixels whose color is not represented in a node at lower depth
-in the tree; initially, <b>n2=0</b> for all nodes except leaves of the
-tree.</dd>
-
-<dt>
-<b>Sr,Sg,Sb:</b></dt>
-
-<dd>
-Sums of the <i>red</i>, <i>green</i>, and <i>blue</i> component values
-for all pixels not classified at a lower depth. The combination of these
-sums and <i>n2</i> will ultimately characterize the mean color of a set
-of pixels represented by this node.</dd>
-
-<dt>
-<b>E:</b></dt>
-
-<dd>
-The distance squared in <b>RGB</b> space between each pixel contained within
-a node and the nodes' center. This represents the quantization error for
-a node.</dd>
-<p></dl>
-</dl>
-<b>Reduction</b> repeatedly prunes the tree until the number of nodes with
-<i>n2</i>
-> <i>0</i> is less than or equal to the maximum number of colors allowed
-in the output image. On any given iteration over the tree, it selects those
-nodes whose <i>E</i> value is minimal for pruning and merges their color
-statistics upward. It uses a pruning threshold, <i>Ep</i>, to govern node
-selection as follows:
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ep = 0
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while number of nodes with (n2 > 0) > required maximum number of colors
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; prune all nodes such that E &lt;= Ep
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set Ep&nbsp; to minimum E in remaining nodes</pre>
-This has the effect of minimizing any quantization error when merging two
-nodes together.
-<p>When a node to be pruned has offspring, the pruning procedure invokes
-itself recursively in order to prune the tree from the leaves upward. The
-values of <i>n2</i>,<i>Sr</i>, <i>Sg</i> and
-<i>Sb</i> in a node being
-pruned are always added to the corresponding data in that node's parent.
-This retains the pruned node's color characteristics for later averaging.
-<p>For each node, <i>n2</i> pixels exist for which that node represents
-the smallest volume in <b>RGB</b> space containing those pixel's colors.
-When <i>n2</i> > <i>0</i> the node will uniquely define a color in the
-output image. At the beginning of reduction,
-<i>n2</i> = <i>0</i> for all
-nodes except the leaves of the tree which represent colors present in the
-input image.
-<p>The other pixel count, <i>n1</i>, indicates the total number of colors
-within the cubic volume which the node represents. This includes <i>n1</i>
-- <i>n2</i> pixels whose colors should be defined by nodes at a lower level
-in the tree.
-<p><b>Assignment</b> generates the output image from the pruned tree. The
-output image consists of two parts:
-<ol>
-<li>
-A color map, which is an array of color descriptions (<b>RGB</b> triples)
-for each color present in the output image.</li>
-
-<li>
-A pixel array, which represents each pixel as an index into the color map
-array.</li>
-</ol>
-<p>
-First, the assignment phase makes one pass over the pruned color description
-tree to establish the image's color map. For each node with <i>n2</i> >
-<i>0</i>,
-it divides <i>Sr</i>,
-<i>Sg</i>, and <i>Sb</i> by <i>n2</i>. This produces
-the mean color of all pixels that classify no lower than this node. Each
-of these colors becomes an entry in the color map.
-<p>Finally, the assignment phase reclassifies each pixel in the pruned
-tree to identify the deepest node containing the pixel's color. The pixel's
-value in the pixel array becomes the index of this node's mean color in
-the color map.
-<p>Empirical evidence suggests that the distances in color spaces such
-as <b>YUV</b>, or <b>YIQ</b> correspond to perceptual color differences
-more closely than do distances in <b>RGB</b> space. These color spaces
-may give better results when color reducing an image. Here the algorithm
-is as described except each pixel is a point in the alternate color space.
-For convenience, the color components are normalized to the range 0 to
-a maximum value, <i>Cmax</i>. The color reduction can then proceed as described.</dl>
-
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Measuring
-Color Reduction Error</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-Depending on the image, the color reduction error may be obvious or invisible.
-Images with high spatial frequencies (such as hair or grass) will show
-error much less than pictures with large smoothly shaded areas (such as
-faces). This is because the high-frequency contour edges introduced by
-the color reduction process are masked by the high frequencies in the image.</dd>
-
-<p>To measure the difference between the original and color reduced
-images (the total color reduction error),
-<b>GraphicsMagick</b> sums over
-all pixels in an image the distance squared in <b>RGB</b> space between
-each original pixel value and its color reduced value. <b>GraphicsMagick</b>
-prints several error measurements including the mean error per pixel, the
-normalized mean error, and the normalized maximum error.
-<p>The normalized error measurement can be used to compare images. In general,
-the closer the mean error is to zero the more the quantized image resembles
-the source image. Ideally, the error should be perceptually-based, since
-the human eye is the final judge of quantization quality.
-<p>These errors are measured and printed when <b>-verbose</b> and
-<b>-colors</b><i>are
-specified on the command line</i>:
-<dl>
-<dl>
-<dt>
-<b>mean error per pixel:</b></dt>
-
-<dd>
-is the mean error for any single pixel in the image.</dd>
-
-<dt>
-<b>normalized mean square error:</b></dt>
-
-<dd>
-is the normalized mean square quantization error for any single pixel in
-the image.</dd>
-
-<dd>
-This distance measure is normalized to a range between 0 and 1. It is independent
-of the range of red, green, and blue values in the image.</dd>
-
-<dt>
-<b>normalized maximum square error:</b></dt>
-
-<dd>
-is the largest normalized square quantization error for any single pixel
-in the image.</dd>
-
-<dd>
-This distance measure is normalized to a range between and blue values
-in the image.</dd>
-</dl>
-</dl>
-</dl>
-
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Authors</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-<i>John Cristy</i>, <a href="mailto:magick@imagemagick.org"><i>magick@imagemagick.org</i>,</a><b>GraphicsMagick
-Studio</b>.</dd>
-</dl>
-
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Acknowledgements</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-<i>Paul Raveling</i>, <b>USC Information Sciences Institute</b>, for the
-original idea of using space subdivision for the color reduction algorithm.
-With Paul's permission, this document is an adaptation from a document
-he wrote.</dd>
-</dl>
-
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Copyright</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-<b>Copyright (C) 2002 GraphicsMagick Group</b></dd>
-<p>
-<dd>
-<b>Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files ("GraphicsMagick"),
-to deal in GraphicsMagick without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of GraphicsMagick, and to permit persons to whom the GraphicsMagick
-is furnished to do so, subject to the following conditions:</b></dd>
-<p>
-
-<dd>
-<b>The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of GraphicsMagick.</b></dd>
-<p>
-
-<dd>
-<b>The software is provided "as is", without warranty of any kind, express
-or implied, including but not limited to the warranties of merchantability,
-fitness for a particular purpose and noninfringement.In no event shall
-GraphicsMagick Group be liable for any claim, damages or other liability,
-whether in an action of contract, tort or otherwise, arising from, out
-of or in connection with GraphicsMagick or the use or other dealings in GraphicsMagick.</b></dd>
-
-<p>
-<dd>
-<b>Except as contained in this notice, the name of the
-GraphicsMagick Group shall not be used in advertising or otherwise to promote
-the sale, use or other dealings in GraphicsMagick without prior written authorization
-from the GraphicsMagick Group.</b></dd>
-</dl>
-
-<hr>
-<p><a href="../index.html"><img SRC="../images/home.png"
-ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
-align=MIDDLE></a><a 
-href="mailto:webmaster@graphicsmagick.org"><img SRC="../images/mail.png"
-ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
-align=MIDDLE></a><font size="-2">
-Image manipulation software that works like magic.</font>
-</body>
-</html>
+ = 8</PRE><P>
+A tree of this depth generally allows the best representation of the
+source image with the fastest computational speed and the least
+amount of memory. However, the default depth is inappropriate for
+some images. Therefore, the caller can request a specific tree depth.
+</P>
+<P>For each pixel in the input image, classification scans downward
+from the root of the color description tree. At each level of the
+tree, it identifies the single node which represents a cube in <B>RGB</B>
+space containing the pixel's color. It updates the following data for
+each such node: 
+</P>
+<DL>
+	<DL>
+		<DL>
+			<DT><B>n1:</B> 
+			</DT><DD>
+			Number of pixels whose color is contained in the <B>RGB</B> cube
+			which this node represents; 
+			</DD><DT>
+			<B>n2:</B> 
+			</DT><DD>
+			Number of pixels whose color is not represented in a node at lower
+			depth in the tree; initially, <B>n2=0</B> for all nodes except
+			leaves of the tree. 
+			</DD><DT>
+			<B>Sr,Sg,Sb:</B> 
+			</DT><DD>
+			Sums of the <I>red</I>, <I>green</I>, and <I>blue</I> component
+			values for all pixels not classified at a lower depth. The
+			combination of these sums and <I>n2</I> will ultimately
+			characterize the mean color of a set of pixels represented by this
+			node. 
+			</DD><DT>
+			<B>E:</B> 
+			</DT><DD STYLE="margin-bottom: 0.2in">
+			The distance squared in <B>RGB</B> space between each pixel
+			contained within a node and the nodes' center. This represents the
+			quantization error for a node. 
+			</DD></DL>
+	</DL>
+</DL>
+<P>
+<B>Reduction</B> repeatedly prunes the tree until the number of nodes
+with <I>n2</I> &gt; <I>0</I> is less than or equal to the maximum
+number of colors allowed in the output image. On any given iteration
+over the tree, it selects those nodes whose <I>E</I> value is minimal
+for pruning and merges their color statistics upward. It uses a
+pruning threshold, <I>Ep</I>, to govern node selection as follows: 
+</P>
+<PRE> Ep = 0
+ while number of nodes with (n2 &gt; 0) &gt; required maximum number of colors
+ prune all nodes such that E &lt;= Ep
+ Set Ep to minimum E in remaining nodes</PRE><P>
+This has the effect of minimizing any quantization error when merging
+two nodes together. 
+</P>
+<P>When a node to be pruned has offspring, the pruning procedure
+invokes itself recursively in order to prune the tree from the leaves
+upward. The values of <I>n2</I>,<I>Sr</I>, <I>Sg</I> and <I>Sb</I> in
+a node being pruned are always added to the corresponding data in
+that node's parent. This retains the pruned node's color
+characteristics for later averaging. 
+</P>
+<P>For each node, <I>n2</I> pixels exist for which that node
+represents the smallest volume in <B>RGB</B> space containing those
+pixel's colors. When <I>n2</I> &gt; <I>0</I> the node will uniquely
+define a color in the output image. At the beginning of reduction, <I>n2</I>
+= <I>0</I> for all nodes except the leaves of the tree which
+represent colors present in the input image. 
+</P>
+<P>The other pixel count, <I>n1</I>, indicates the total number of
+colors within the cubic volume which the node represents. This
+includes <I>n1</I> - <I>n2</I> pixels whose colors should be defined
+by nodes at a lower level in the tree. 
+</P>
+<P STYLE="margin-bottom: 0in"><B>Assignment</B> generates the output
+image from the pruned tree. The output image consists of two parts: 
+</P>
+<OL>
+	<LI><P STYLE="margin-bottom: 0in">A color map, which is an array of
+	color descriptions (<B>RGB</B> triples) for each color present in
+	the output image. 
+	</P>
+	<LI><P>A pixel array, which represents each pixel as an index into
+	the color map array. 
+	</P>
+</OL>
+<P>First, the assignment phase makes one pass over the pruned color
+description tree to establish the image's color map. For each node
+with <I>n2</I> &gt; <I>0</I>, it divides <I>Sr</I>, <I>Sg</I>, and <I>Sb</I>
+by <I>n2</I>. This produces the mean color of all pixels that
+classify no lower than this node. Each of these colors becomes an
+entry in the color map. 
+</P>
+<P>Finally, the assignment phase reclassifies each pixel in the
+pruned tree to identify the deepest node containing the pixel's
+color. The pixel's value in the pixel array becomes the index of this
+node's mean color in the color map. 
+</P>
+<P>Empirical evidence suggests that the distances in color spaces
+such as <B>YUV</B>, or <B>YIQ</B> correspond to perceptual color
+differences more closely than do distances in <B>RGB</B> space. These
+color spaces may give better results when color reducing an image.
+Here the algorithm is as described except each pixel is a point in
+the alternate color space. For convenience, the color components are
+normalized to the range 0 to a maximum value, <I>Cmax</I>. The color
+reduction can then proceed as described.</P>
+<P STYLE="margin-bottom: 0in">&nbsp; 
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic3" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Measuring
+			Color Reduction Error</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DL>
+	<DD STYLE="margin-bottom: 0.2in">Depending on the image, the color
+	reduction error may be obvious or invisible. Images with high
+	spatial frequencies (such as hair or grass) will show error much
+	less than pictures with large smoothly shaded areas (such as faces).
+	This is because the high-frequency contour edges introduced by the
+	color reduction process are masked by the high frequencies in the
+	image. 
+	</DD></DL>
+<P>
+To measure the difference between the original and color reduced
+images (the total color reduction error), <B>GraphicsMagick</B> sums
+over all pixels in an image the distance squared in <B>RGB</B> space
+between each original pixel value and its color reduced value.
+<B>GraphicsMagick</B> prints several error measurements including the
+mean error per pixel, the normalized mean error, and the normalized
+maximum error. 
+</P>
+<P>The normalized error measurement can be used to compare images. In
+general, the closer the mean error is to zero the more the quantized
+image resembles the source image. Ideally, the error should be
+perceptually-based, since the human eye is the final judge of
+quantization quality. 
+</P>
+<P>These errors are measured and printed when <B>-verbose</B> and
+<B>-colors</B><I>are specified on the command line</I>: 
+</P>
+<DL>
+	<DL>
+		<DL>
+			<DT><B>mean error per pixel:</B> 
+			</DT><DD>
+			is the mean error for any single pixel in the image. 
+			</DD><DT>
+			<B>normalized mean square error:</B> 
+			</DT><DD>
+			is the normalized mean square quantization error for any single
+			pixel in the image. 
+			</DD><DD>
+			This distance measure is normalized to a range between 0 and 1. It
+			is independent of the range of red, green, and blue values in the
+			image. 
+			</DD><DT>
+			<B>normalized maximum square error:</B> 
+			</DT><DD>
+			is the largest normalized square quantization error for any single
+			pixel in the image. 
+			</DD><DD STYLE="margin-bottom: 0.2in">
+			This distance measure is normalized to a range between and blue
+			values in the image. 
+			</DD></DL>
+	</DL>
+</DL>
+<P STYLE="margin-bottom: 0in">
+&nbsp; 
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic4" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Authors</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DL>
+	<DD STYLE="margin-bottom: 0.2in"><I>John Cristy</I>,
+	<A HREF="mailto:magick@imagemagick.org"><I>magick@imagemagick.org</I>,</A><B>GraphicsMagick
+	Studio</B>. 
+	</DD></DL>
+<P STYLE="margin-bottom: 0in">
+&nbsp; 
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic5" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Acknowledgements</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DL>
+	<DD STYLE="margin-bottom: 0.2in"><I>Paul Raveling</I>, <B>USC
+	Information Sciences Institute</B>, for the original idea of using
+	space subdivision for the color reduction algorithm. With Paul's
+	permission, this document is an adaptation from a document he wrote.
+		</DD></DL>
+<P STYLE="margin-bottom: 0in">
+&nbsp; 
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic6" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Copyright</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DL>
+	<DD STYLE="margin-bottom: 0.2in"><B>Copyright (C) 2002
+	GraphicsMagick Group</B> 
+	</DD><DD STYLE="margin-bottom: 0.2in">
+	<B>Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation files
+	(&quot;GraphicsMagick&quot;), to deal in GraphicsMagick without
+	restriction, including without limitation the rights to use, copy,
+	modify, merge, publish, distribute, sublicense, and/or sell copies
+	of GraphicsMagick, and to permit persons to whom the GraphicsMagick
+	is furnished to do so, subject to the following conditions:</B> 
+	</DD><DD STYLE="margin-bottom: 0.2in">
+	<B>The above copyright notice and this permission notice shall be
+	included in all copies or substantial portions of GraphicsMagick.</B>
+		</DD><DD STYLE="margin-bottom: 0.2in">
+	<B>The software is provided &quot;as is&quot;, without warranty of
+	any kind, express or implied, including but not limited to the
+	warranties of merchantability, fitness for a particular purpose and
+	noninfringement.In no event shall GraphicsMagick Group be liable for
+	any claim, damages or other liability, whether in an action of
+	contract, tort or otherwise, arising from, out of or in connection
+	with GraphicsMagick or the use or other dealings in GraphicsMagick.</B>
+		</DD><DD STYLE="margin-bottom: 0.2in">
+	<B>Except as contained in this notice, the name of the
+	GraphicsMagick Group shall not be used in advertising or otherwise
+	to promote the sale, use or other dealings in GraphicsMagick without
+	prior written authorization from the GraphicsMagick Group.</B> 
+	</DD><HR>
+</DL>
+<P><A HREF="../index.html"><IMG SRC="../images/home.png" NAME="Graphic7" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@graphicsmagick.org"><IMG SRC="../images/mail.png" NAME="Graphic8" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=1>
+Image manipulation software that works like magic.</FONT> 
+</P>
+</BODY>
+</HTML>

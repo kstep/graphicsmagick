@@ -1,3 +1,9 @@
+2003-04-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* (index.html, www/*.html): Update to new web page style.
+	* scripts/txt2html: Update to output new web page style.
+	* ltmain.sh: Updated to latest CVS libtool.
+
 2003-04-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/delegates.mgk.in: Ralcgm was appending ".ps" to the
