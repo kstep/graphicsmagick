@@ -24,7 +24,7 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#if !defined(_VISUALC_)
+#if !defined(WIN32)
 #  include <unistd.h>
 #else
 #  include <direct.h>
@@ -87,7 +87,7 @@ extern "C" {
 #  include "api.h"
 #endif
 
-#if defined(HAVE_MMAP) && !defined(_VISUALC_)
+#if defined(HAVE_MMAP) && !defined(WIN32)
 #  include <sys/mman.h>
 #endif
 #if defined(HasPTHREADS)

@@ -65,7 +65,7 @@ typedef void *ModuleHandle;
 /*
   Define declarations.
 */
-#if !defined(_VISUALC_)
+#if !defined(WIN32)
 # if !defined(CoderModuleDirectory)
 #  define CoderModuleDirectory  ""
 # endif
@@ -225,7 +225,7 @@ MagickExport void DestroyModuleInfo(void)
 */
 
 #if !defined(HasMODULES)
-#if !defined(_VISUALC_)
+#if !defined(WIN32)
 int lt_dlinit(void)
 {
   return(0);

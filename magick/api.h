@@ -33,7 +33,7 @@ extern "C" {
 #endif
 
 #if defined(WIN32) || defined(__CYGWIN__)
-#if defined(_VISUALC_)
+#if defined(WIN32)
 #  if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
 #    define _MAGICKDLL_
 #  endif
