@@ -179,8 +179,7 @@ int main ( int argc, char **argv )
       fflush(stdout);
       return 1;
     }
-  FreeMemory( blob );
-  blob = 0;
+  FreeMemory( (void**)&blob );
 
   /*
    * Save image to BLOB
@@ -213,8 +212,7 @@ int main ( int argc, char **argv )
       fflush(stdout);
       return 1;
     }
-  FreeMemory( blob );
-  blob = 0;
+  FreeMemory( (void**)&blob );
 
   /*
    * Check final output
