@@ -218,7 +218,9 @@ Export char **StringToTokens(const char *text,int *number_tokens)
       for (p++; (*p != '"') && (*p != '\0'); p++);
     if (*p == '\'')
       for (p++; (*p != '\'') && (*p != '\0'); p++);
-    while (!isspace((int) (*p)) && (*p != '\0'))
+    if (*p == '(')
+      for (p++; (*p != ')') && (*p != '\0'); p++);
+    while (!isspace((int) (*p)) && (*p != '(') && (*p != '\0'))
     {
       p++;
       if (!isspace((int) *p) && ((*(p-1) == ':') || (*(p-1) == ';')))
@@ -244,18 +246,24 @@ Export char **StringToTokens(const char *text,int *number_tokens)
         for (q++; (*q != '"') && (*q != '\0'); q++);
       }
     else
-      if (*p == '\'')
+      if (*q == '\'')
         {
           for (q++; (*q != '\'') && (*q != '\0'); q++);
           q++;
         }
       else
-        while (!isspace((int) (*q)) && (*q != '\0'))
-        {
-          q++;
-          if (!isspace((int) *q) && ((*(q-1) == ':') || (*(q-1) == ';')))
-            break;
-        }
+        if (*q == '(')
+          {
+            for (q++; (*q != ')') && (*q != '\0'); q++);
+            q++;
+          }
+        else
+          while (!isspace((int) (*q)) && (*q != '(') && (*q != '\0'))
+          {
+            q++;
+            if (!isspace((int) *q) && ((*(q-1) == ':') || (*(q-1) == ';')))
+              break;
+          }
     tokens[i]=(char *) AllocateMemory(q-p+1);
     if (tokens[i] == (char *) NULL)
       MagickError(ResourceLimitError,"Unable to convert string to tokens",
@@ -263,7 +271,7 @@ Export char **StringToTokens(const char *text,int *number_tokens)
     (void) strncpy(tokens[i],p,q-p);
     tokens[i][q-p]='\0';
     p=q;
-    if ((*(q-1) == ':') || (*(q-1) == ';'))
+    if ((*(q-1) == ':') || (*(q-1) == ';') || (*q == '('))
       continue;
     while (!isspace((int) (*p)) && (*p != '\0'))
       p++;
@@ -528,9 +536,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) CloneString(&draw_info->pen,"black");
         if (Latin1Compare(graphic_context[n].stroke,"none") != 0)
           (void) CloneString(&draw_info->pen,graphic_context[n].stroke);
-        if ((Latin1Compare(primitive,"text") == 0) ||
-            (strncmp(command,"fill",4) == 0) ||
-            (Latin1Compare(graphic_context[n].stroke,"none") == 0))
+        if ((Latin1Compare(graphic_context[n].fill,"none") != 0) ||
+            (strncmp(command,"fill",4) == 0))
           (void) CloneString(&draw_info->pen,graphic_context[n].fill);
         (void) QueryColorDatabase(draw_info->pen,&tile->background_color);
         SetImage(tile,graphic_context[n].opacity*Opaque/100.0);
@@ -538,8 +545,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           DestroyImage(draw_info->tile);
         draw_info->tile=tile;
         draw_info->linewidth=graphic_context[n].linewidth;
-        draw_info->pointsize=graphic_context[n].pointsize;
         draw_info->antialias=graphic_context[n].antialias;
+        draw_info->pointsize=graphic_context[n].pointsize;
+        draw_info->degrees=ellipse.angle;
         (void) CloneString(&draw_info->primitive,command);
         (void) printf("draw: %d %s %s\n",n,draw_info->pen,draw_info->primitive);
         status=DrawImage(canvas,draw_info);
@@ -690,11 +698,30 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (Latin1Compare(keyword,"text") == 0)
       CloneString(&primitive,"text");
+    if (Latin1Compare(keyword,"transform") == 0)
+      {
+        tokens=StringToTokens(value,&number_tokens);
+        for (i=0; i < (number_tokens-1); i++)
+        {
+          (void) printf("  %d: %s %s\n",i,tokens[i],tokens[i+1]);
+          if (Latin1Compare(tokens[i],"translate") == 0)
+            (void) sscanf(tokens[++i]+1,"%lf %lf",&ellipse.cx,&ellipse.cy);
+          if (Latin1Compare(tokens[i],"rotate") == 0)
+            (void) sscanf(tokens[++i]+1,"%lf",&ellipse.angle);
+          FreeMemory((void *) &tokens[i]);
+        }
+        FreeMemory((void *) &tokens);
+      }
     if (Latin1Compare(keyword,"verts") == 0)
       (void) CloneString(&vertices,value);
     if (Latin1Compare(keyword,"viewBox") == 0)
-      (void) sscanf(value,"%d %d %u %u",&page.x,&page.y,
-        &page.width,&page.height);
+      {
+        (void) sscanf(value,"%d %d %u %u",&page.x,&page.y,
+          &page.width,&page.height);
+        FormatString(geometry,"%ux%u!",page.width,page.height);
+        if ((canvas->columns < page.width) || (canvas->rows < page.height))
+          TransformImage(&canvas,(char *) NULL,geometry);
+      }
     if (Latin1Compare(keyword,"width") == 0)
       {
         (void) sscanf(value,"%u",&page.width);
@@ -770,4 +797,28 @@ Export void RegisterSVGImage(void)
   entry->decoder=ReadSVGImage;
   entry->description=AllocateString("Scalable Vector Gaphics");
   RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r S V G I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterSVGImage removes format registrations made by the
+%  SVG module from the list of supported formats.
+%
+%  The format of the UnregisterSVGImage method is:
+%
+%      UnregisterSVGImage(void)
+%
+*/
+Export void UnregisterSVGImage(void)
+{
+  UnregisterMagickInfo("SVG");
 }

@@ -206,7 +206,7 @@ Export Image *BlurImage(Image *image,const unsigned int order,
       i++;
     }
   }
-  kernel[i/2]=1.5*order;
+  kernel[i/2]=0.5*order;
   blur_image=ConvolveImage(image,order,kernel,exception);
   FreeMemory((void *) &kernel);
   return(blur_image);
@@ -356,6 +356,10 @@ Export Image *ConvolveImage(Image *image,const unsigned int order,
   const double *kernel,ExceptionInfo *exception)
 {
 #define ConvolveImageText  "  Convolving image...  "
+#define Cx(x) \
+  (x) < 0 ? (x)+image->columns : (x) >= image->columns ? (x)-image->columns : x
+#define Cy(y) \
+  (y) < 0 ? (y)+image->rows : (y) >= image->rows ? (y)-image->rows : y
 
   double
     blue,
@@ -372,7 +376,8 @@ Export Image *ConvolveImage(Image *image,const unsigned int order,
     y;
 
   PixelPacket
-    *p;
+    *p,
+    pixel;
 
   register const double
     *k;
@@ -408,10 +413,9 @@ Export Image *ConvolveImage(Image *image,const unsigned int order,
     normalize+=kernel[i];
   for (y=0; y < (int) convolve_image->rows; y++)
   {
-    i=Min(Max(y-(int) order/2,0),image->rows-order);
-    p=GetImagePixels(image,0,i,image->columns,order);
+    p=(PixelPacket *) NULL;
     q=SetImagePixels(convolve_image,0,y,convolve_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) convolve_image->columns; x++)
     {
@@ -420,19 +424,40 @@ Export Image *ConvolveImage(Image *image,const unsigned int order,
       blue=0.0;
       opacity=0.0;
       k=kernel;
-      s=p+Min(Max(x-(int) order/2,0),image->columns-order);
-      for (v=0; v < order; v++)
-      {
-        for (u=0; u < order; u++)
+      if ((x < ((int) order/2)) || (x >= (image->columns-(int) order/2)) ||
+          (y < ((int) order/2)) || (y >= (image->rows-(int) order/2)))
         {
-          red+=(*k)*s[u].red;
-          green+=(*k)*s[u].green;
-          blue+=(*k)*s[u].blue;
-          opacity+=(*k)*s[u].opacity;
-          k++;
+          for (v=(-(int) order/2); v <= (int) order/2; v++)
+          {
+            for (u=(-(int) order/2); u <= (int) order/2; u++)
+            {
+              pixel=GetOnePixel(image,Cx(x+u),Cy(y+v));
+              red+=(*k)*pixel.red;
+              green+=(*k)*pixel.green;
+              blue+=(*k)*pixel.blue;
+              opacity+=(*k)*pixel.opacity;
+              k++;
+            }
+          }
         }
-        s+=image->columns;
-      }
+      else
+        {
+          if (p == (PixelPacket *) NULL)
+            p=GetImagePixels(image,0,y-(int) order/2,image->columns,order);
+          s=p+x;
+          for (v=(-(int) order/2); v <= (int) order/2; v++)
+          {
+            for (u=(-(int) order/2); u <= (int) order/2; u++)
+            {
+              red+=(*k)*s[u].red;
+              green+=(*k)*s[u].green;
+              blue+=(*k)*s[u].blue;
+              opacity+=(*k)*s[u].opacity;
+              k++;
+            }
+            s+=image->columns;
+          }
+        }
       if ((normalize != 0.0) && (normalize != 1.0))
         {
           red/=normalize;
@@ -2446,7 +2471,7 @@ Export Image *SharpenImage(Image *image,const unsigned int order,
       i++;
     }
   }
-  kernel[i/2]=1.5*order;
+  kernel[i/2]=0.5*order;
   sharpen_image=ConvolveImage(image,order,kernel,exception);
   FreeMemory((void *) &kernel);
   return(sharpen_image);

@@ -2076,7 +2076,7 @@ Export char **StringToArgv(const char *text,int *argc)
         for (q++; (*q != '"') && (*q != '\0'); q++);
       }
     else
-      if (*p == '\'')
+      if (*q == '\'')
         {
           for (q++; (*q != '\'') && (*q != '\0'); q++);
           q++;

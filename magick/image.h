@@ -433,7 +433,8 @@ typedef struct _DrawInfo
     gravity;
 
   double
-    pointsize;
+    pointsize,
+    degrees;
 
   PixelPacket
     border_color;

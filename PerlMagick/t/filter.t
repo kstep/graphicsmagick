@@ -15,7 +15,7 @@ chdir 't' || die 'Cd failed';
 
 testFilter('input.miff', 'Blur',
   q/3/,
-  '024b727b3cb77a87a97c4613e012ffff',
+  'bcd98e631df56da3c378c9c958c65d2d',
   'b96d206387adfbd8a3a9d6b0f7fc109c');
 
 ++$test;
@@ -50,7 +50,7 @@ testFilter('input.miff', 'Contrast',
 ++$test;
 testFilter('input.miff', 'Convolve',
   [1, 2, 1, 2, 4, 2, 1, 2, 1],
-  '64f541fe5c3141caac6ead973cbcde3a',
+  '7b8a78e07c46b64396a2dc9955996c82',
   'e4d90d8d2af844650864c4e193acb270');
 
 ++$test;
@@ -67,13 +67,13 @@ testFilter('input.miff', 'Despeckle',
 ++$test;
 testFilter('input.miff', 'Edge',
   q/3/,
-  '2fa7ec71a552d3c538433ca7150b50ed',
+  'f666933a66ea0ef3ed431cb1a3ba6dcd',
   '89457006d11b4d9ea348d90f2fa75ec7');
 
 ++$test;
 testFilter('input.miff', 'Emboss',
   q/3/,
-  '195eb2be9c2373547f47b9a7a825a0f5',
+  '08f4ee64dcf16fb7ce9be112d535379c',
   '9d45e8fce500ab54db41d2d48ebfe1a6');
 
 ++$test;
@@ -209,7 +209,7 @@ testFilter('input.miff', 'Shade',
 ++$test;
 testFilter('input.miff', 'Sharpen',
   q/3/,
-  'efa78817348137acbb23d1c12421479e',
+  '8f861d5692c2531fc67d2095aab4dcad',
   'b96d206387adfbd8a3a9d6b0f7fc109c');
 
 ++$test;

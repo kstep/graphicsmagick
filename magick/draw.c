@@ -616,10 +616,10 @@ static void GenerateEllipse(PrimitiveInfo *primitive_info,PointInfo start,
   /*
     Arc's are just short segmented polys.
   */
-  end.x/=2;
-  end.y/=2;
+  end.x/=2.0;
+  end.y/=2.0;
   while (degrees.y < degrees.x)
-    degrees.y+=360;
+    degrees.y+=360.0;
   p=primitive_info;
   if ((primitive_info->primitive == FillEllipsePrimitive) &&
       (fmod(degrees.y-degrees.x,360.0) != 0.0))
@@ -1424,6 +1424,7 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->linewidth=1;
   draw_info->gravity=NorthWestGravity;
   draw_info->pointsize=image_info->pointsize;
+  draw_info->degrees=0.0;
   draw_info->border_color=image_info->border_color;
   /*
     Get tile.
