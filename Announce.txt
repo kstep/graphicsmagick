@@ -26,7 +26,7 @@ for details):
 
     - Palm pixmap support contributed by Christopher R. Hawks.
 
-    - Bugfixes to AVI, BMP, DIB, MPC, PGM, PPM, PSD, WMF, & XCF coders.
+    - Bug fixes to AVI, BMP, DIB, MPC, PGM, PPM, PSD, WMF, & XCF coders.
 
     - ASCII Postscript Type 1 (PFA) fonts rendered via FreeType.
 
