@@ -3,10 +3,10 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
 	<TITLE>ImageMagick For Windows</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
 	<META NAME="CREATED" CONTENT="20020718;12063600">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20021031;12411600">
+	<META NAME="CHANGED" CONTENT="20021113;21435909">
 	<META NAME="CLASSIFICATION" CONTENT="Describes ImageMagick features which are peculiar to Microsoft Windows">
 	<META NAME="DESCRIPTION" CONTENT="Describes how to install ImageMagick for Windows.">
 	<META NAME="KEYWORDS" CONTENT="ImageMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, WebMagick, Web Magic, visualization, image processing, software development, image, software, Magick++">
@@ -296,17 +296,16 @@ package along with your own package.</P>
 <P CLASS="western">In order to facilitate building C and C++ programs
 that use ImageMagick without requiring building ImageMagick from
 source code, the header files and link libraries required to build
-programs using Visual C++ 6.0 are provided in &ldquo;include&rdquo;
+programs using Visual C++ 7.0 are provided in &ldquo;include&rdquo;
 and &ldquo;lib&rdquo; subdirectories under the installation
 directory. Using these headers and libraries to build your dependent
 application ensures that they will be compatible with the release
 DLLs.</P>
-<P CLASS="western">Note that the DLLs and libraries may have been
-built using Visual C++ 6.0, or Visual C++ 7.0 (.net) depending on who
-built the release. In order to use Magick++, you must either use the
-same compiler version used to build the distribution, or download the
-Windows source package and build everything yourself. While it should
-be possible to use the MinGW gcc compiler with the
+<P CLASS="western">Note that the DLLs and libraries are built using
+Visual C++ 7.0 (.net). In order to use Magick++, you must either use
+the same compiler version used to build the distribution, or download
+the Windows source package and build everything yourself. While it
+should be possible to use the MinGW gcc compiler with the
 CORE_RL_magick_.dll (ImageMagick C library), it will certainly not be
 possible to use it with CORE_RL_Magick++_.dll (ImageMagick C++
 library) due to name mangling differences.</P>
