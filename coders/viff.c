@@ -375,7 +375,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         "Number of images is not supported",image);
     if (viff_info.map_rows == 0)
       viff_info.map_scheme=VFF_MS_NONE;
-    switch (viff_info.map_scheme)
+    switch ((int) viff_info.map_scheme)
     {
       case VFF_MS_NONE:
       {
@@ -403,7 +403,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         /*
           Allocate VIFF colormap.
         */
-        switch (viff_info.map_storage_type)
+        switch ((int) viff_info.map_storage_type)
         {
           case VFF_MAPTYP_1_BYTE: bytes_per_pixel=1; break;
           case VFF_MAPTYP_2_BYTE: bytes_per_pixel=2; break;
@@ -430,7 +430,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         if (*(char *) &lsb_first &&
             ((viff_info.machine_dependency != VFF_DEP_DECORDER) &&
              (viff_info.machine_dependency != VFF_DEP_NSORDER)))
-          switch (viff_info.map_storage_type)
+          switch ((int) viff_info.map_storage_type)
           {
             case VFF_MAPTYP_2_BYTE:
             {
@@ -449,7 +449,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           }
         for (i=0; i < (long) (viff_info.map_rows*image->colors); i++)
         {
-          switch (viff_info.map_storage_type)
+          switch ((int) viff_info.map_storage_type)
           {
             case VFF_MAPTYP_2_BYTE: value=((short *) viff_colormap)[i]; break;
             case VFF_MAPTYP_4_BYTE: value=((int *) viff_colormap)[i]; break;
@@ -493,7 +493,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     /*
       Allocate VIFF pixels.
     */
-    switch (viff_info.data_storage_type)
+    switch ((int) viff_info.data_storage_type)
     {
       case VFF_TYP_2_BYTE: bytes_per_pixel=2; break;
       case VFF_TYP_4_BYTE: bytes_per_pixel=4; break;
@@ -515,7 +515,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     if (*(char *) &lsb_first &&
         ((viff_info.machine_dependency != VFF_DEP_DECORDER) &&
          (viff_info.machine_dependency != VFF_DEP_NSORDER)))
-      switch (viff_info.data_storage_type)
+      switch ((int) viff_info.data_storage_type)
       {
         case VFF_TYP_2_BYTE:
         {
@@ -541,7 +541,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         /*
           Determine scale factor.
         */
-        switch (viff_info.data_storage_type)
+        switch ((int) viff_info.data_storage_type)
         {
           case VFF_TYP_2_BYTE: value=((short *) viff_pixels)[0]; break;
           case VFF_TYP_4_BYTE: value=((int *) viff_pixels)[0]; break;
@@ -553,7 +553,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         min_value=value;
         for (i=0; i < (long) max_packets; i++)
         {
-          switch (viff_info.data_storage_type)
+          switch ((int) viff_info.data_storage_type)
           {
             case VFF_TYP_2_BYTE: value=((short *) viff_pixels)[i]; break;
             case VFF_TYP_4_BYTE: value=((int *) viff_pixels)[i]; break;
