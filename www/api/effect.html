@@ -48,7 +48,7 @@
 </p>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<p>Image * <strong>AdaptiveThresholdImage</strong>( Image *image, const double radius, const double sigma, const double offset, ExceptionInfo *exception );</p>
+<p>Image * <strong>AdaptiveThresholdImage</strong>( Image *image, const unsigned long width, const unsigned long height, const unsigned long unsigned long, ExceptionInfo *exception );</p>
 <p>Image * <strong>AddNoiseImage</strong>( const Image *image, const NoiseType noise_type, ExceptionInfo *exception );</p>
 <p>Image * <strong>BlurImage</strong>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</p>
 <p>unsigned int  <strong>ChannelThresholdImage</strong>( Image *image, const char *threshold );</p>
@@ -73,7 +73,7 @@
 </p>
 <h2><a name="adaptivethresholdimage">AdaptiveThresholdImage</a></h2>
 <blockquote>AdaptiveThresholdImage() selects an individual threshold for each pixel based on the range of intensity values in its local neighborhood. This allows for thresholding of an image whose global intensity histogram doesn't contain distinctive peaks. </blockquote><p>The format of the AdaptiveThresholdImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *AdaptiveThresholdImage ( <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, const double offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote><A HREF="types/Image.html">Image</A> *AdaptiveThresholdImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned long width, const unsigned long height, const unsigned long unsigned long, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong><a name="item_o_image%3a">o image:</a></strong><br />
 </dt>
@@ -81,16 +81,22 @@
 The image.
 </dd>
 <p></p>
-<dt><strong><a name="item_o_radius%3a">o radius:</a></strong><br />
+<dt><strong><a name="item_o_width%3a">o width:</a></strong><br />
 </dt>
 <dd>
-The radius of the Gaussian, in pixels, not counting the center pixel.
+The width of the local neighborhood.
 </dd>
 <p></p>
-<dt><strong><a name="item_o_sigma%3a">o sigma:</a></strong><br />
+<dt><strong><a name="item_o_height%3a">o height:</a></strong><br />
 </dt>
 <dd>
-The standard deviation of the Gaussian, in pixels.
+The height of the local neighborhood.
+</dd>
+<p></p>
+<dt><strong><a name="item_o_offset%3a">o offset:</a></strong><br />
+</dt>
+<dd>
+The mean offset.
 </dd>
 <p></p>
 <dt><strong><a name="item_o_exception%3a">o exception:</a></strong><br />
@@ -129,13 +135,13 @@ Return any errors or warnings in this structure.
 <blockquote>BlurImage() blurs an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, the radius should be larger than sigma. Use a radius of 0 and BlurImage ( ) selects a suitable radius for you. </blockquote><p>The format of the BlurImage method is:</p>
 <blockquote><A HREF="types/Image.html">Image</A> *BlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
-<dt><strong>o radius:</strong><br />
+<dt><strong><a name="item_o_radius%3a">o radius:</a></strong><br />
 </dt>
 <dd>
 The radius of the Gaussian, in pixels, not counting the center pixel.
 </dd>
 <p></p>
-<dt><strong>o sigma:</strong><br />
+<dt><strong><a name="item_o_sigma%3a">o sigma:</a></strong><br />
 </dt>
 <dd>
 The standard deviation of the Gaussian, in pixels.
