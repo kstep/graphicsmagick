@@ -3101,17 +3101,6 @@ Get(ref,...)
         case 'C':
         case 'c':
         {
-          if (LocaleCompare(attribute,"comment") == 0)
-            {
-              const ImageAttribute
-                *attribute;
-
-              attribute=GetImageAttribute(image,"comment");
-              if (attribute != (ImageAttribute *) NULL)
-                s=newSVpv(attribute->value,0);
-              PUSHs(s ? sv_2mortal(s) : &sv_undef);
-              continue;
-            }
           if (LocaleCompare(attribute,"class") == 0)
             {
               if (!image)
@@ -3126,6 +3115,21 @@ Get(ref,...)
                 {
                   (void) sv_setpv(s,ClassTypes[j]);
                   SvIOK_on(s);
+                }
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
+          if (LocaleCompare(attribute,"clip-mask") == 0)
+            {
+              if (image)
+                {
+                  SV
+                    *sv;
+
+                  if (image->clip_mask == (Image *) NULL)
+                    ClipImage(image);
+                  sv=newSViv((IV) image->clip_mask);
+                  s=sv_bless(newRV(sv),SvSTASH(reference));
                 }
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -3184,6 +3188,17 @@ Get(ref,...)
             {
               if (image)
                 s=newSViv((long) image->columns);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
+          if (LocaleCompare(attribute,"comment") == 0)
+            {
+              const ImageAttribute
+                *attribute;
+
+              attribute=GetImageAttribute(image,"comment");
+              if (attribute != (ImageAttribute *) NULL)
+                s=newSVpv(attribute->value,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
