@@ -12,7 +12,9 @@ extern "C" {
 # include "ltdl/ltdl.h"
   typedef lt_dlhandle ModuleHandle;
 #endif /* HasLTDL */
-
+#if defined(_MAGICKMOD_)
+  typedef void* ModuleHandle;
+#endif
   /* Information on loaded modules */
 typedef struct _ModuleInfo
 {
@@ -51,9 +53,9 @@ extern Export void
 
 extern Export int
   LoadAllModules(void),
-  LoadModule(const char* module),
+  LoadDynamicModule(const char* module),
   UnregisterModuleInfo(const char *tag),
-  UnloadModule(const char* module);
+  UnloadDynamicModule(const char* module);
 
 extern Export char
   **ListModules(void);

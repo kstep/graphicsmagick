@@ -146,7 +146,7 @@ Export void ExitModules(void)
     {
       /* Unload and unregister all loaded modules */
       while((p = GetModuleInfo((char *)NULL)) != (ModuleInfo*) NULL)
-	UnloadModule(p->tag);
+	UnloadDynamicModule(p->tag);
 
       /* Free memory associated with ModuleAliases list */
       for(alias=module_aliases; alias != (ModuleAliases*)NULL; )
@@ -227,7 +227,7 @@ Export ModuleInfo *GetModuleInfo(const char *tag)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method InitializeModules initializes the modules subsystem. It must be
-%  invoked before the LoadModule method may be used.
+%  invoked before the LoadDynamicModule method may be used.
 %
 %  The format of the InitializeModules method is:
 %
@@ -440,7 +440,7 @@ Export int LoadAllModules(void)
 
   p = module_list;
   while(*p)
-    LoadModule(*p++);
+    LoadDynamicModule(*p++);
 
   /* Free list memory */
   for( i=0; module_list[i]; ++i)
@@ -552,25 +552,25 @@ Export char **ListModules(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L o a d M o d u l e                                                       %
+%   L o a d D y n a m i c M o d u l e                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method LoadModule loads a module, and invokes its registration function.
+%  Method LoadDynamicModule loads a module, and invokes its registration function.
 %  Returns True on success, and False if there is an error.
 %
-%  The format of the LoadModule method is:
+%  The format of the LoadDynamicModule method is:
 %
-%      int LoadModule(const char *module)
+%      int LoadDynamicModule(const char *module)
 %
 %  A description of each parameter follows:
 %
 %    o module: a character string that indicates the module to load.
 %
 */
-Export int LoadModule(const char* module)
+Export int LoadDynamicModule(const char* module)
 {
   char
     *dest,
@@ -775,25 +775,25 @@ Export ModuleInfo *SetModuleInfo(const char *tag)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n l o a d M o d u l e                                                   %
+%   U n l o a d D y n a m i c M o d u l e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnloadModule unloads a module, and invokes its de-registration
+%  Method UnloadDynamicModule unloads a module, and invokes its de-registration
 %  function. Returns True on success, and False if there is an error.
 %
-%  The format of the UnloadModule method is:
+%  The format of the UnloadDynamicModule method is:
 %
-%      int UnloadModule(const char *module)
+%      int UnloadDynamicModule(const char *module)
 %
 %  A description of each parameter follows:
 %
 %    o module: a character string that indicates the module to unload.
 %
 */
-Export int UnloadModule(const char* module)
+Export int UnloadDynamicModule(const char* module)
 {
   char
     func_name[MaxTextExtent];
