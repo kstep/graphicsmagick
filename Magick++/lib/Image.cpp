@@ -20,9 +20,9 @@ using namespace std;
 
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 
-extern MagickDLLDecl const std::string Magick::borderGeometryDefault = "6x6+0+0";
-extern MagickDLLDecl const std::string Magick::frameGeometryDefault  = "25x25+6+6";
-extern MagickDLLDecl const std::string Magick::raiseGeometryDefault  = "6x6+0+0";
+MagickDLLDecl const std::string Magick::borderGeometryDefault = "6x6+0+0";
+MagickDLLDecl const std::string Magick::frameGeometryDefault  = "25x25+6+6";
+MagickDLLDecl const std::string Magick::raiseGeometryDefault  = "6x6+0+0";
 
 //
 // Explicit template instantiations
@@ -32,7 +32,8 @@ extern MagickDLLDecl const std::string Magick::raiseGeometryDefault  = "6x6+0+0"
 // Friend functions to compare Image objects
 //
 
-MagickDLLDecl int Magick::operator == ( const Magick::Image& left_, const Magick::Image& right_ )
+MagickDLLDecl int Magick::operator == ( const Magick::Image& left_,
+                                        const Magick::Image& right_ )
 {
   // If image pixels and signature are the same, then the image is identical
   return ( ( left_.rows() == right_.rows() ) &&
@@ -40,26 +41,31 @@ MagickDLLDecl int Magick::operator == ( const Magick::Image& left_, const Magick
 	   ( left_.signature() == right_.signature() )
 	   );
 }
-MagickDLLDecl int Magick::operator != ( const Magick::Image& left_, const Magick::Image& right_ )
+MagickDLLDecl int Magick::operator != ( const Magick::Image& left_,
+                                        const Magick::Image& right_ )
 {
   return ( ! (left_ == right_) );
 }
-MagickDLLDecl int Magick::operator >  ( const Magick::Image& left_, const Magick::Image& right_ )
+MagickDLLDecl int Magick::operator >  ( const Magick::Image& left_,
+                                        const Magick::Image& right_ )
 {
   return ( !( left_ < right_ ) && ( left_ != right_ ) );
 }
-MagickDLLDecl int Magick::operator <  ( const Magick::Image& left_, const Magick::Image& right_ )
+MagickDLLDecl int Magick::operator <  ( const Magick::Image& left_,
+                                        const Magick::Image& right_ )
 {
   // If image pixels are less, then image is smaller
   return ( ( left_.rows() * left_.columns() ) <
 	   ( right_.rows() * right_.columns() )
 	   );
 }
-MagickDLLDecl int Magick::operator >= ( const Magick::Image& left_, const Magick::Image& right_ )
+MagickDLLDecl int Magick::operator >= ( const Magick::Image& left_,
+                                        const Magick::Image& right_ )
 {
   return ( ( left_ > right_ ) || ( left_ == right_ ) );
 }
-MagickDLLDecl int Magick::operator <= ( const Magick::Image& left_, const Magick::Image& right_ )
+MagickDLLDecl int Magick::operator <= ( const Magick::Image& left_,
+                                        const Magick::Image& right_ )
 {
   return ( ( left_ < right_ ) || ( left_ == right_ ) );
 }
@@ -556,7 +562,8 @@ void Magick::Image::contrast ( const unsigned int sharpen_ )
 // Convolve image.  Applies a general image convolution kernel to the image.
 //  order_ represents the number of columns and rows in the filter kernel.
 //  kernel_ is an array of doubles representing the convolution kernel.
-void Magick::Image::convolve ( const unsigned int order_, const double *kernel_ )
+void Magick::Image::convolve ( const unsigned int order_,
+                               const double *kernel_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -715,7 +722,8 @@ void Magick::Image::flip ( void )
 // Flood-fill color across pixels that match the color of the
 // target pixel and are neighbors of the target pixel.
 // Uses current fuzz setting when determining color match.
-void Magick::Image::floodFillColor( const unsigned int x_, const unsigned int y_,
+void Magick::Image::floodFillColor( const unsigned int x_,
+                                    const unsigned int y_,
 				    const Magick::Color &fillColor_ )
 {
   floodFillTexture( x_, y_, Image( Geometry( 1, 1), fillColor_ ) );
@@ -729,22 +737,26 @@ void Magick::Image::floodFillColor( const Geometry &point_,
 // Flood-fill color across pixels starting at target-pixel and
 // stopping at pixels matching specified border color.
 // Uses current fuzz setting when determining color match.
-void Magick::Image::floodFillColor( const unsigned int x_, const unsigned int y_,
+void Magick::Image::floodFillColor( const unsigned int x_,
+                                    const unsigned int y_,
 				    const Magick::Color &fillColor_,
 				    const Magick::Color &borderColor_ )
 {
-  floodFillTexture( x_, y_, Image( Geometry( 1, 1), fillColor_), borderColor_ );
+  floodFillTexture( x_, y_, Image( Geometry( 1, 1), fillColor_),
+                    borderColor_ );
 }
 void Magick::Image::floodFillColor( const Geometry &point_,
 				    const Magick::Color &fillColor_,
 				    const Magick::Color &borderColor_ )
 {
-  floodFillTexture( point_, Image( Geometry( 1, 1), fillColor_), borderColor_ );
+  floodFillTexture( point_, Image( Geometry( 1, 1), fillColor_),
+                    borderColor_ );
 }
 
 // Floodfill pixels matching color (within fuzz factor) of target
 // pixel(x,y) with replacement opacity value using method.
-void Magick::Image::floodFillOpacity( const unsigned int x_, const unsigned int y_,
+void Magick::Image::floodFillOpacity( const unsigned int x_,
+                                      const unsigned int y_,
                                       const unsigned int opacity_,
                                       const PaintMethod method_ )
 {
@@ -752,14 +764,16 @@ void Magick::Image::floodFillOpacity( const unsigned int x_, const unsigned int 
   MatteFloodfillImage ( image(),
                         static_cast<PixelPacket>(pixelColor(x_,y_)),
                         opacity_,
-			static_cast<long>(x_), static_cast<long>(y_), method_ );
+			static_cast<long>(x_), static_cast<long>(y_),
+                        method_ );
   throwImageException();
 }
 
 // Flood-fill texture across pixels that match the color of the
 // target pixel and are neighbors of the target pixel.
 // Uses current fuzz setting when determining color match.
-void Magick::Image::floodFillTexture( const unsigned int x_, const unsigned int y_,
+void Magick::Image::floodFillTexture( const unsigned int x_,
+                                      const unsigned int y_,
 				      const Magick::Image &texture_ )
 {
   modifyImage();
@@ -791,7 +805,8 @@ void Magick::Image::floodFillTexture( const Magick::Geometry &point_,
 // Flood-fill texture across pixels starting at target-pixel and
 // stopping at pixels matching specified border color.
 // Uses current fuzz setting when determining color match.
-void Magick::Image::floodFillTexture( const unsigned int x_, const unsigned int y_,
+void Magick::Image::floodFillTexture( const unsigned int x_,
+                                      const unsigned int y_,
 				      const Magick::Image &texture_,
 				      const Magick::Color &borderColor_ )
 {
@@ -800,12 +815,12 @@ void Magick::Image::floodFillTexture( const unsigned int x_, const unsigned int 
   // Set drawing fill pattern
   options()->fillPattern(texture_.constImage());
 
-  ColorFloodfillImage ( image(), // Image *image
-                        options()->drawInfo(), // const DrawInfo *draw_info
-                        static_cast<PixelPacket>(borderColor_), // const PixelPacket target
-                        static_cast<long>(x_), // const long x_offset
-                        static_cast<long>(y_), // const long y_offset
-                        FillToBorderMethod // const PaintMethod method
+  ColorFloodfillImage ( image(),
+                        options()->drawInfo(),
+                        static_cast<PixelPacket>(borderColor_),
+                        static_cast<long>(x_),
+                        static_cast<long>(y_),
+                        FillToBorderMethod
                         );
 
   throwImageException();
@@ -847,7 +862,8 @@ void Magick::Image::frame ( const Geometry &geometry_ )
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
-void Magick::Image::frame ( const unsigned int width_, const unsigned int height_,
+void Magick::Image::frame ( const unsigned int width_,
+                            const unsigned int height_,
 			    const int innerBevel_, const int outerBevel_ )
 {
   FrameInfo info;
@@ -1211,7 +1227,8 @@ void Magick::Image::read ( const unsigned int width_,
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* image =
-    ConstituteImage( width_, height_, map_.c_str(), type_, pixels_, &exceptionInfo );
+    ConstituteImage( width_, height_, map_.c_str(), type_, pixels_,
+                     &exceptionInfo );
   replaceImage( image );
   throwException( exceptionInfo );
   if ( image )
@@ -1246,7 +1263,8 @@ void Magick::Image::roll ( const Geometry &roll_ )
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
-void Magick::Image::roll ( const unsigned int columns_, const unsigned int rows_ )
+void Magick::Image::roll ( const unsigned int columns_,
+                           const unsigned int rows_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1620,7 +1638,8 @@ void Magick::Image::write ( const int x_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  DispatchImage( image(), x_, y_, columns_, rows_, map_.c_str(), type_, pixels_,
+  DispatchImage( image(), x_, y_, columns_, rows_, map_.c_str(), type_,
+                 pixels_,
     &exceptionInfo);
   throwException( exceptionInfo );
 }
@@ -1958,7 +1977,8 @@ void Magick::Image::colorMap ( const unsigned int index_,
         {
           // Allocate colormap
           imageptr->colormap =
-            static_cast<PixelPacket*>(AcquireMemory((index_+1)*sizeof(PixelPacket)));
+            static_cast<PixelPacket*>(AcquireMemory((index_+1)*
+                                                    sizeof(PixelPacket)));
           imageptr->colors = 0;
         }
       else
@@ -2647,11 +2667,12 @@ Magick::Geometry Magick::Image::page ( void ) const
                    constImage()->page.y < 0 ? true : false);
 }
 
-// Add a named profile to an an image or remove a named profile by passing an
-// empty Blob (use default Blob constructor).
+// Add a named profile to an an image or remove a named profile by
+// passing an empty Blob (use default Blob constructor).
 // Valid names are:
 // "*", "8BIM", "ICM", "IPTC", or a generic profile name.
-void Magick::Image::profile( const std::string name_, const Magick::Blob &profile_ )
+void Magick::Image::profile( const std::string name_,
+                             const Magick::Blob &profile_ )
 {
   modifyImage();
   int result = ProfileImage( image(), name_.c_str(),
@@ -2664,8 +2685,8 @@ void Magick::Image::profile( const std::string name_, const Magick::Blob &profil
 
 // Retrieve a named profile from the image.
 // Valid names are:
-// "8BIM", "8BIMTEXT", "APP1", "APP1JPEG", "ICC", "ICM", & "IPTC" or an existing
-// generic profile name.
+// "8BIM", "8BIMTEXT", "APP1", "APP1JPEG", "ICC", "ICM", & "IPTC" or
+// an existing generic profile name.
 Magick::Blob Magick::Image::profile( const std::string name_ ) const
 {
   const MagickLib::Image* image = constImage();
@@ -2705,7 +2726,8 @@ unsigned int Magick::Image::quantizeColors ( void ) const
   return constOptions()->quantizeColors( );
 }
 
-void Magick::Image::quantizeColorSpace ( const Magick::ColorspaceType colorSpace_ )
+void Magick::Image::quantizeColorSpace
+  ( const Magick::ColorspaceType colorSpace_ )
 {
   modifyImage();
   options()->quantizeColorSpace( colorSpace_ );
@@ -2735,7 +2757,8 @@ unsigned int Magick::Image::quantizeTreeDepth ( void ) const
   return constOptions()->quantizeTreeDepth( );
 }
 
-void Magick::Image::renderingIntent ( const Magick::RenderingIntent renderingIntent_ )
+void Magick::Image::renderingIntent
+  ( const Magick::RenderingIntent renderingIntent_ )
 {
   modifyImage();
   image()->rendering_intent = renderingIntent_;
@@ -2745,7 +2768,8 @@ Magick::RenderingIntent Magick::Image::renderingIntent ( void ) const
   return static_cast<Magick::RenderingIntent>(constImage()->rendering_intent);
 }
 
-void Magick::Image::resolutionUnits ( const Magick::ResolutionType resolutionUnits_ )
+void Magick::Image::resolutionUnits
+  ( const Magick::ResolutionType resolutionUnits_ )
 {
   modifyImage();
   image()->units = resolutionUnits_;
@@ -2768,16 +2792,12 @@ unsigned int Magick::Image::scene ( void ) const
 
 std::string Magick::Image::signature ( const bool force_ ) const
 {
-  // Unlike most operations that modify image attributes, this the
-  // signature operation is not considered a modification of image
-  // data so we do not force a copy of the image if we calculate its
-  // signature.
-
-  // Re-calculate image signature
+  // Re-calculate image signature if necessary
   if ( force_ ||
        !GetImageAttribute(constImage(), "Signature") ||
        constImage()->taint )
     {
+      modifyImage();
       SignatureImage( const_cast<MagickLib::Image *>(constImage()) );
     }
 
@@ -3121,9 +3141,10 @@ Magick::Image& Magick::Image::operator=( const Magick::Image &image_ )
 
 // Transfers read-only pixels from the image to the pixel cache as
 // defined by the specified region
-const Magick::PixelPacket* Magick::Image::getConstPixels ( const int x_, const int y_,
-                                                           const unsigned int columns_,
-                                                           const unsigned int rows_ ) const
+const Magick::PixelPacket* Magick::Image::getConstPixels
+  ( const int x_, const int y_,
+    const unsigned int columns_,
+    const unsigned int rows_ ) const
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -3237,7 +3258,8 @@ Magick::Image::Image ( MagickLib::Image* image_,
 //
 // Replace current image
 //
-MagickLib::Image * Magick::Image::replaceImage( MagickLib::Image* replacement_ )
+MagickLib::Image * Magick::Image::replaceImage
+  ( MagickLib::Image* replacement_ )
 {
   MagickLib::Image* image;
   
