@@ -303,7 +303,8 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                     (void) QueryColorDatabase(values,&image->border_color);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'c':
@@ -358,7 +359,8 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                     image->columns=(unsigned int) atoi(values);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'd':
@@ -381,7 +383,8 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                       image->dispose=atoi(values);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'g':
@@ -399,7 +402,8 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                       &image->chromaticity.green_primary.y);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'i':
@@ -416,7 +420,8 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                       image->iterations=atoi(values);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'm':
@@ -438,7 +443,8 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                     (void) CloneString(&image->montage,values);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'p':
@@ -479,7 +485,8 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                     image->generic_profiles++;
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'r':
@@ -520,7 +527,8 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                     image->rows=(unsigned int) atoi(values);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 's':
@@ -531,7 +539,8 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                     image->scene=(unsigned int) atoi(values);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'u':
@@ -549,7 +558,8 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                           image->units=PixelsPerCentimeterResolution;
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'w':
@@ -562,7 +572,8 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                       &image->chromaticity.white_point.y);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               default:

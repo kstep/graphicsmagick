@@ -324,7 +324,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                     (void) QueryColorDatabase(values,&image->border_color);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'c':
@@ -374,7 +375,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                     image->columns=(unsigned int) atoi(values);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'd':
@@ -397,7 +399,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                       image->dispose=atoi(values);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'g':
@@ -415,7 +418,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                       &image->chromaticity.green_primary.y);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'i':
@@ -432,7 +436,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                       image->iterations=atoi(values);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'm':
@@ -454,7 +459,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                     (void) CloneString(&image->montage,values);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'p':
@@ -495,7 +501,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                     image->generic_profiles++;
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'r':
@@ -536,7 +543,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                     image->rows=(unsigned int) atoi(values);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 's':
@@ -547,7 +555,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                     image->scene=(unsigned int) atoi(values);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'u':
@@ -565,7 +574,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                           image->units=PixelsPerCentimeterResolution;
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               case 'w':
@@ -578,7 +588,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                       &image->chromaticity.white_point.y);
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
               default:
