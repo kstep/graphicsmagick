@@ -34,7 +34,7 @@ typedef struct _RegistryInfo
   Magick registry methods.
 */
 extern MagickExport Image
-  *GetImageFromMagickRegistry(const char *,ExceptionInfo *);
+  *GetImageFromMagickRegistry(const char *,long *id,ExceptionInfo *);
 
 extern MagickExport long
   SetMagickRegistry(const RegistryType,const void *,const size_t,

@@ -230,6 +230,7 @@ MagickExport Image *GetImageFromMagickRegistry(const char *name,long *id,
   register RegistryInfo
     *p;
 
+  *id=(-1);
   image=(Image *) NULL;
   AcquireSemaphoreInfo(&registry_semaphore);
   for (p=registry_list; p != (RegistryInfo *) NULL; p=p->next)
