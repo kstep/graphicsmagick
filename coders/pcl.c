@@ -260,7 +260,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     else
       if (LocaleCompare(image_info->magick,"PCL") == 0)
         (void) strcpy(geometry,PSPageGeometry);
-  (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+  (void) ParseGeometry(geometry,&x,&y,&width,&height);
   (void) GetGeometry(geometry,&media_info.x,&media_info.y,
     &media_info.width,&media_info.height);
   page_size=2;

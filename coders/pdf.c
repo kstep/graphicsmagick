@@ -229,8 +229,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   page.height=792;
   page.x=0;
   page.y=0;
-  (void) ParseImageGeometry(PSPageGeometry,&page.x,&page.y,&page.width,
-    &page.height);
+  (void) ParseGeometry(PSPageGeometry,&page.x,&page.y,&page.width,&page.height);
   portrait=True;
   /*
     Determine page geometry from the PDF media box.
@@ -280,7 +279,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     box=page;
   }
   if (image_info->page != (char *) NULL)
-    (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
+    (void) ParseGeometry(image_info->page,&page.x,&page.y,
       &page.width,&page.height);
   FormatString(geometry,"%ux%u",
     (unsigned int) ceil(page.width*image->x_resolution/dx_resolution-0.5),
@@ -680,7 +679,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       else
         if (LocaleCompare(image_info->magick,"PDF") == 0)
           (void) strcpy(geometry,PSPageGeometry);
-    (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+    (void) ParseGeometry(geometry,&x,&y,&width,&height);
     (void) GetGeometry(geometry,&media_info.x,&media_info.y,
       &media_info.width,&media_info.height);
     /*
@@ -1181,7 +1180,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     height=image->rows;
     x=0;
     y=0;
-    (void) ParseImageGeometry("106x106+0+0>",&x,&y,&width,&height);
+    (void) ParseGeometry("106x106+0+0>",&x,&y,&width,&height);
     image->orphan=True;
     if (image->storage_class == PseudoClass)
       tile_image=SampleImage(image,width,height,&image->exception);

@@ -480,9 +480,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"page") == 0)
                   {
-                    ParseImageGeometry(PostscriptGeometry(values),
-                      &image->page.x,&image->page.y,
-                      &image->page.width,&image->page.height);
+                    ParseGeometry(PostscriptGeometry(values),&image->page.x,
+                      &image->page.y,&image->page.width,&image->page.height);
                     break;
                   }
                 if (LocaleNCompare(keyword,"profile-",8) == 0)

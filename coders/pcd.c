@@ -887,7 +887,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   height=image->rows;
   x=0;
   y=0;
-  (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+  (void) ParseGeometry(geometry,&x,&y,&width,&height);
   if ((width % 2) != 0)
     width--;
   if ((height % 2) != 0)
