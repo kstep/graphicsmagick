@@ -20,14 +20,6 @@ typedef enum
   MemoryMapResource
 } ResourceType;
 
-typedef struct _ResourceInfo
-{
-  off_t
-    memory,
-    disk,
-    memory_map;
-} ResourceInfo;
-
 /*
   Method declarations.
 */
