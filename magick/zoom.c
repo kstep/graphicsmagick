@@ -769,6 +769,10 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
   register const PixelPacket
     *p;
 
+  register IndexPacket
+    *indexes;
+
+
   register long
     i,
     x;
@@ -781,7 +785,10 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
   */
   scale=blur*Max(1.0/x_factor,1.0);
   support=scale*filter_info->support;
-  if (support < 0.5)
+  destination->storage_class=source->storage_class;
+  if (support > 0.5)
+    SetImageType(destination,TrueColorType);
+  else
     {
       /*
         Reduce to point sampling.
@@ -822,6 +829,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     q=SetImagePixels(destination,x,0,1,destination->rows);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
+    indexes=GetIndexes(destination);
     for (y=0; y < (long) destination->rows; y++)
     {
       blue=0.0;
@@ -837,6 +845,12 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
         blue+=contribution[i].weight*(p+j)->blue;
         opacity+=contribution[i].weight*(p+j)->opacity;
       }
+      if (indexes != (IndexPacket *) NULL)
+        {
+          j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+            (contribution[n/2].pixel-contribution[0].pixel);
+          indexes[y]=(GetIndexes(source))[j];
+        }
       q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
       q->green=(Quantum)
         ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
@@ -880,6 +894,9 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
   register const PixelPacket
     *p;
 
+  register IndexPacket
+    *indexes;
+
   register long
     i,
     y;
@@ -892,7 +909,10 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
   */
   scale=blur*Max(1.0/y_factor,1.0);
   support=scale*filter_info->support;
-  if (support < 0.5)
+  destination->storage_class=source->storage_class;
+  if (support > 0.5)
+    SetImageType(destination,TrueColorType);
+  else
     {
       /*
         Reduce to point sampling.
@@ -933,6 +953,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     q=SetImagePixels(destination,0,y,destination->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
+    indexes=GetIndexes(destination);
     for (x=0; x < (long) destination->columns; x++)
     {
       blue=0.0;
@@ -947,6 +968,11 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
         blue+=contribution[i].weight*(p+j)->blue;
         opacity+=contribution[i].weight*(p+j)->opacity;
       }
+      if (indexes != (IndexPacket *) NULL)
+        {
+          j=(contribution[n/2].pixel-contribution[0].pixel)*source->columns+x;
+          indexes[x]=(GetIndexes(source))[j];
+        }
       q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
       q->green=(Quantum)
         ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
@@ -1026,7 +1052,6 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   resize_image=CloneImage(image,columns,rows,False,exception);
   if (resize_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(resize_image,TrueColorType);
   /*
     Allocate filter contribution info.
   */
