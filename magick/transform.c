@@ -1297,7 +1297,7 @@ MagickExport Image *RollImage(const Image *image,const long x_offset,
   register PixelPacket
     *q;
 
-  PointInfo
+  RectangleInfo
     offset;
 
   /*
@@ -1313,12 +1313,16 @@ MagickExport Image *RollImage(const Image *image,const long x_offset,
   /*
     Roll image.
   */
-  while (offset.x < 0.0)
+  offset.x=x_offset;
+  offset.y=y_offset;
+  while (offset.x < 0)
     offset.x+=image->columns;
-  while (offset.y < 0.0)
+  while (offset.x >= image->columns)
+    offset.x-=image->columns;
+  while (offset.y < 0)
     offset.y+=image->rows;
-  offset.x=x_offset % image->columns;
-  offset.y=y_offset % image->rows;
+  while (offset.y >= image->rows)
+    offset.y-=image->rows;
   for (y=0; y < (long) image->rows; y++)
   {
     /*
@@ -1330,9 +1334,8 @@ MagickExport Image *RollImage(const Image *image,const long x_offset,
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      q=SetImagePixels(roll_image,
-        (long) ((unsigned long) (offset.x+x) % image->columns),
-        (long) ((unsigned long) (offset.y+y) % image->rows),1,1);
+      q=SetImagePixels(roll_image,(offset.x+x) % image->columns,
+        (offset.y+y) % image->rows,1,1);
       if (q == (PixelPacket *) NULL)
         break;
       roll_indexes=GetIndexes(roll_image);
