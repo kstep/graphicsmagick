@@ -187,8 +187,8 @@ WandExport unsigned int PixelGetException(PixelWand *wand,char **description)
   assert(description != (char **) NULL);
   *description=(char *) malloc(2*MaxTextExtent);
   if (*description == (char *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateString");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateString);
   **description='\0';
   if (wand->exception.reason != (char *) NULL)
     (void) strncpy(*description,GetLocaleExceptionMessage(

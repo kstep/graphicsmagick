@@ -696,11 +696,11 @@ WandExport MagickWand *MagickCloneWand(const MagickWand *wand)
   assert(wand->signature == MagickSignature);
   clone_wand=(MagickWand *) AcquireMagickMemory(sizeof(MagickWand));
   if (clone_wand == (MagickWand *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateImage");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateImage);
   (void) memset(clone_wand,0,sizeof(MagickWand));
   GetExceptionInfo(&clone_wand->exception);
-  ThrowException(&clone_wand->exception,wand->exception.severity,
+  ThrowException2(&clone_wand->exception,wand->exception.severity,
     wand->exception.reason,wand->exception.description);
   clone_wand->image_info=CloneImageInfo(wand->image_info);
   clone_wand->quantize_info=CloneQuantizeInfo(wand->quantize_info);
@@ -790,13 +790,13 @@ WandExport MagickWand *MagickCoalesceImages(MagickWand *wand)
   if (clone_wand == (MagickWand *) NULL)
     {
       DestroyImage(coalesce_image);
-      MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-        "UnableToAllocateImage");
+      MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+        UnableToAllocateImage);
     }
   (void) memset(clone_wand,0,sizeof(MagickWand));
   clone_wand->images=coalesce_image;
   clone_wand->image=clone_wand->images;
-  ThrowException(&clone_wand->exception,wand->exception.severity,
+  ThrowException2(&clone_wand->exception,wand->exception.severity,
     wand->exception.reason,wand->exception.description);
   clone_wand->image_info=CloneImageInfo(wand->image_info);
   clone_wand->quantize_info=CloneQuantizeInfo(wand->quantize_info);
@@ -1317,13 +1317,13 @@ WandExport MagickWand *MagickDeconstructImages(MagickWand *wand)
   if (clone_wand == (MagickWand *) NULL)
     {
       DestroyImage(deconstruct_image);
-      MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-        "UnableToAllocateImage");
+      MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+        UnableToAllocateImage);
     }
   (void) memset(clone_wand,0,sizeof(MagickWand));
   clone_wand->images=deconstruct_image;
   clone_wand->image=clone_wand->images;
-  ThrowException(&clone_wand->exception,wand->exception.severity,
+  ThrowException2(&clone_wand->exception,wand->exception.severity,
     wand->exception.reason,wand->exception.description);
   clone_wand->image_info=CloneImageInfo(wand->image_info);
   clone_wand->quantize_info=CloneQuantizeInfo(wand->quantize_info);
@@ -1734,13 +1734,13 @@ WandExport MagickWand *MagickFlattenImages(MagickWand *wand)
   if (clone_wand == (MagickWand *) NULL)
     {
       DestroyImage(flatten_image);
-      MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-        "UnableToAllocateImage");
+      MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+        UnableToAllocateImage);
     }
   (void) memset(clone_wand,0,sizeof(MagickWand));
   clone_wand->images=flatten_image;
   clone_wand->image=clone_wand->images;
-  ThrowException(&clone_wand->exception,wand->exception.severity,
+  ThrowException2(&clone_wand->exception,wand->exception.severity,
     wand->exception.reason,wand->exception.description);
   clone_wand->image_info=CloneImageInfo(wand->image_info);
   clone_wand->quantize_info=CloneQuantizeInfo(wand->quantize_info);
@@ -1993,8 +1993,8 @@ WandExport unsigned int MagickGetException(MagickWand *wand,
   assert(description != (char **) NULL);
   *description=(char *) malloc(2*MaxTextExtent);
   if (*description == (char *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateString");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateString);
   **description='\0';
   if (wand->exception.reason != (char *) NULL)
     (void) strncpy(*description,GetLocaleExceptionMessage(
