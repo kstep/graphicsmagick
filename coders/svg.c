@@ -334,6 +334,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *value,
     *vertices;
 
+  double
+    unit;
+
   DrawInfo
     *draw_info;
 
@@ -595,8 +598,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (LocaleCompare(keyword,"height") == 0)
       {
-        (void) sscanf(value,"%u",&page.height);
-        page.height*=UnitOfMeasure(value);
+        (void) sscanf(value,"%lf",&unit);
+        page.height=unit*UnitOfMeasure(value);
         if (height < page.height)
           height=page.height;
       }
@@ -660,6 +663,12 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (void) sscanf(tokens[++i],"%lf",&graphic_context[n].pointsize);
               graphic_context[n].linewidth*=UnitOfMeasure(tokens[i]);
             }
+          if (LocaleCompare(tokens[i],"opacity:") == 0)
+            {
+              (void) sscanf(tokens[++i],"%lf",&graphic_context[n].opacity);
+              if (strchr(tokens[i],'%') == (char *) NULL)
+                graphic_context[n].opacity*=100.0;
+            }
           if (LocaleCompare(tokens[i],"stroke:") == 0)
             {
               (void) CloneString(&value,tokens[++i]);
@@ -710,15 +719,15 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (LocaleCompare(keyword,"width") == 0)
       {
-        (void) sscanf(value,"%u",&page.width);
-        page.width*=UnitOfMeasure(value);
+        (void) sscanf(value,"%lf",&unit);
+        page.width=unit*UnitOfMeasure(value);
         if (width < page.width)
           width=page.width;
       }
     if (LocaleCompare(keyword,"x") == 0)
       {
-        (void) sscanf(value,"%d",&page.x);
-        page.x*=UnitOfMeasure(value);
+        (void) sscanf(value,"%lf",&unit);
+        page.x=unit*UnitOfMeasure(value);
       }
     if (LocaleCompare(keyword,"x1") == 0)
       (void) sscanf(value,"%lf",&segment.x1);
@@ -726,8 +735,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) sscanf(value,"%lf",&segment.x2);
     if (LocaleCompare(keyword,"y") == 0)
       {
-        (void) sscanf(value,"%d",&page.y);
-        page.y*=UnitOfMeasure(value);
+        (void) sscanf(value,"%lf",&unit);
+        page.y=unit*UnitOfMeasure(value);
       }
     if (LocaleCompare(keyword,"y1") == 0)
       (void) sscanf(value,"%lf",&segment.y1);
