@@ -893,9 +893,9 @@ MagickExport unsigned int NormalizeImage(Image *image)
     }
   }
   /*
-    Find the histogram boundaries by locating the 1 percent levels.
+    Find the histogram boundaries by locating the 0.1 percent levels.
   */
-  threshold_intensity=(long) (image->columns*image->rows)/100;
+  threshold_intensity=(long) (image->columns*image->rows)/1000;
   memset(&intensity,0,sizeof(DoublePixelPacket));
   for (low.red=0; low.red < 65535L; low.red++)
   {
