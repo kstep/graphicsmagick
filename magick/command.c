@@ -7055,7 +7055,7 @@ MagickExport unsigned int MagickCommand(ImageInfo *image_info,
     *option;
 
   unsigned int
-    status=True;
+    status=False;
 
   int
     i;
@@ -7079,6 +7079,7 @@ MagickExport unsigned int MagickCommand(ImageInfo *image_info,
             commands[i].pass_metadata ? metadata : (char **) NULL,exception);
         }
     }
+  ThrowException(exception,OptionError,UnrecognizedCommand,option);
   return status;
 }
 

@@ -1,3 +1,10 @@
+2003-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* locale/C.mgk: Added message for "UnrecognizedCommand".
+	* magick/command.c (MagickCommand): No error was reported when a
+	subcommand failed to be matched so 'gm foo' would silently return.
+	Now an error message is properly reported.
+
 2003-10-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am: Updated to Automake 1.7.8.

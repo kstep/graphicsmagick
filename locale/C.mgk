@@ -897,6 +897,9 @@
       <Message name="UnrecognizedColorspace">
         Unrecognized image colorspace
       </Message>
+      <Message name="UnrecognizedCommand">
+        Unrecognized command '%s'. Use -help for a usage summary or see manual.
+      </Message>
       <Message name="UnrecognizedComposeOperator">
         Unrecognized compose operator
       </Message>

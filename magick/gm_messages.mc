@@ -1607,6 +1607,12 @@ Unrecognized image colorspace
 .
 
 MessageId       = +1
+SymbolicName    = OptionErrorUnrecognizedCommand
+Language        = English
+Unrecognized command '%s'. Use -help for a usage summary or see manual.
+.
+
+MessageId       = +1
 SymbolicName    = OptionErrorUnrecognizedComposeOperator
 Language        = English
 Unrecognized compose operator
