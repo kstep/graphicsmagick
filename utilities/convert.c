@@ -1200,6 +1200,15 @@ int main(int argc,char **argv)
               break;
             }
           if (LocaleCompare("matte",option+1) == 0)
+            {
+              if (*option == '+')
+                {
+                  if (append > 0)
+                    append++;
+                  if (append < 0)
+                    append--;
+                }
+            }
             break;
           if (LocaleNCompare("mattecolor",option+1,6) == 0)
             {
@@ -1905,12 +1914,14 @@ int main(int argc,char **argv)
       /*
         Append an image sequence.
       */
-      append_image=AppendImages(image,append == 1,&exception);
+      append_image=AppendImages(image,(append > 0),&exception);
       if (append_image != (Image *) NULL)
         {
           DestroyImages(image);
           image=append_image;
         }
+      if ((append > 1) || (append < -1))
+          image->matte=False;
     }
   if (average)
     {
