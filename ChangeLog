@@ -3,6 +3,9 @@
 	* magick/constitute.c (DispatchImage): Support 8-bit output to
 	common formats BGR, BGRO, BGRP, RGB, RGBO, and I as special cases
 	in order to improve performance.
+	(ConstituteImage): Support 8-bit input from common formats BGR,
+	BGRO, BGRP, RGB, RGBO, and I as special cases in order to improve
+	performance.
 
 2004-05-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

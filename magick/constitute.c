@@ -61,6 +61,17 @@ typedef enum
   RedMapQuantum,
   OpacityMapQuantum
 } MapQuantumType;
+
+typedef enum {
+  UndefinedDispatchType,
+  BGRDispatchType,
+  BGRODispatchType,
+  BGRPDispatchType,
+  RGBDispatchType,
+  RGBODispatchType,
+  IDispatchType
+} DispatchType;
+
 
 static SemaphoreInfo
   *constitute_semaphore = (SemaphoreInfo *) NULL;
@@ -178,6 +189,136 @@ MagickExport Image *ConstituteImage(const unsigned long width,
       NonzeroWidthAndHeightRequired);
   image->columns=width;
   image->rows=height;
+
+  /*
+    Handle a few common special cases in order to improve performance.
+  */
+  if (type == CharPixel)
+    {
+      DispatchType
+        dispatch_type=UndefinedDispatchType;
+
+      if (LocaleCompare(map,"BGR") == 0)
+        dispatch_type=BGRDispatchType;
+      else if (LocaleCompare(map,"BGRO") == 0)
+        dispatch_type=BGRODispatchType;
+      else if (LocaleCompare(map,"BGRP") == 0)
+        dispatch_type=BGRPDispatchType;
+      else if (LocaleCompare(map,"RGB") == 0)
+        dispatch_type=RGBDispatchType;
+      else if (LocaleCompare(map,"RGBO") == 0)
+        dispatch_type=RGBODispatchType;
+      else if (LocaleCompare(map,"I") == 0)
+        {
+          if (!AllocateImageColormap(image,MaxColormapSize))
+            ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+                                 UnableToConstituteImage);
+          dispatch_type=IDispatchType;
+        }
+
+      if (dispatch_type != UndefinedDispatchType)
+        {
+          register const unsigned char
+            *p = pixels;
+
+          for (y=0; y < (long) image->rows; y++)
+            {
+              q=SetImagePixels(image,0,y,image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              indexes=GetIndexes(image);
+
+              switch (dispatch_type)
+                {
+                case BGRDispatchType:
+                  {
+                    for (x=(long) image->columns; x != 0; x--)
+                      {
+                        q->blue=ScaleCharToQuantum(*p++);
+                        q->green=ScaleCharToQuantum(*p++);
+                        q->red=ScaleCharToQuantum(*p++);
+                        q->opacity=OpaqueOpacity;
+                        q++;
+                      }
+                    break;
+                  }
+                case BGRODispatchType:
+                  { 
+                    for (x=(long) image->columns; x != 0; x--)
+                      {
+                        q->blue=ScaleCharToQuantum(*p++);
+                        q->green=ScaleCharToQuantum(*p++);
+                        q->red=ScaleCharToQuantum(*p++);
+                        q->opacity=MaxRGB-ScaleCharToQuantum(*p++);
+                        q++;
+                      }
+                    break;
+                  }
+                case BGRPDispatchType:
+                  {
+                    for (x=(long) image->columns; x != 0; x--)
+                      {
+                        q->blue=ScaleCharToQuantum(*p++);
+                        q->green=ScaleCharToQuantum(*p++);
+                        q->red=ScaleCharToQuantum(*p++);
+                        p++;
+                        q->opacity=OpaqueOpacity;
+                        q++;
+                      }
+                    break;
+                  }
+                case RGBDispatchType:
+                  {
+                    for (x=(long) image->columns; x != 0; x--)
+                      {
+                        q->red=ScaleCharToQuantum(*p++);
+                        q->green=ScaleCharToQuantum(*p++);
+                        q->blue=ScaleCharToQuantum(*p++);
+                        q->opacity=OpaqueOpacity;
+                        q++;
+                      }
+                    break;
+                  }
+                case RGBODispatchType:
+                  {
+                    for (x=(long) image->columns; x != 0; x--)
+                      {
+                        q->red=ScaleCharToQuantum(*p++);
+                        q->green=ScaleCharToQuantum(*p++);
+                        q->blue=ScaleCharToQuantum(*p++);
+                        q->opacity=MaxRGB-ScaleCharToQuantum(*p++);
+                        q++;
+                      }
+                    break;
+                  }
+                case IDispatchType:
+                  {
+                    for (x=(long) image->columns; x != 0; x--)
+                      {
+                        *indexes=ScaleQuantumToIndex(ScaleCharToQuantum(*p++));
+                        q->red=q->green=q->blue=image->colormap[*indexes].red;
+                        q->opacity=OpaqueOpacity;;
+                        indexes++;
+                        q++;
+                      }
+                    break;
+                  }
+                case UndefinedDispatchType:
+                  {
+                    break;
+                  }
+                } /* end switch */
+              if (!SyncImagePixels(image))
+                break;
+            } /* end for (y=0; y < (long) image->rows; y++) */
+          if (dispatch_type == IDispatchType)
+            {
+              (void) IsMonochromeImage(image,exception);
+              image->is_grayscale=True;
+            }
+          return (image);
+        } /* end if (dispatch_type != UndefinedDispatchType) */
+    } /* end if (type == CharPixel) */
 
   /*
     Prepare a validated and more efficient version of the map.
@@ -371,10 +512,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                 case IntensityMapQuantum:
                   {
                     *indexes=ScaleQuantumToIndex(quantum);
-                    VerifyColormapIndex(image,*indexes);
-                    q->red=image->colormap[*indexes].red;
-                    q->green=image->colormap[*indexes].green;
-                    q->blue=image->colormap[*indexes].blue;
+                    q->red=q->green=q->blue=image->colormap[*indexes].red;
                     break;
                   }
                 case PadMapQuantum:
@@ -533,16 +671,6 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
   */
   if (type == CharPixel)
     {
-      typedef enum {
-        UndefinedDispatchType,
-        BGRDispatchType,
-        BGRODispatchType,
-        BGRPDispatchType,
-        RGBDispatchType,
-        RGBODispatchType,
-        IDispatchType
-      } DispatchType;
-
       DispatchType
         dispatch_type=UndefinedDispatchType;
 
