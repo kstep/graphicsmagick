@@ -996,7 +996,10 @@ void CConfigureApp::process_module(ofstream &dsw,
     extra = "..\\bzlib";
     add_includes(includes_list, extra, levels-2);
   }
-  if ((name.compare("svg") == 0) || (name.compare("url") == 0))
+  if ((name.compare("svg") == 0)
+      || (name.compare("url") == 0)
+          || (name.compare("msl") == 0)
+    )
   {
     extra = "..\\libxml";
     add_includes(includes_list, extra, levels-2);
@@ -1173,7 +1176,10 @@ void CConfigureApp::process_module(ofstream &dsw,
         if (useX11Stubs)
 		      add_project_dependency(dsw, "CORE_xlib");
       }
-      if ((name.compare("svg") == 0) || (name.compare("url") == 0))
+      if ((name.compare("svg") == 0)
+            || (name.compare("url") == 0)
+                || (name.compare("msl") == 0)
+        )
       {
 		    add_project_dependency(dsw, "CORE_libxml");
 #ifdef USETHIS
