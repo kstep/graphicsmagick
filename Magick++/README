@@ -39,6 +39,9 @@ Magick++ Source Packages
 
 [ These packages are retrieved from ftp.simplesystems.org. ]
 
+   * Version 5.2.3 (compatible with ImageMagick 5.2.3)
+        o Magick++-5.2.3.tar.gz (gzip'ed tar format, 496K)
+        o Magick++-5.2.3.zip (PK-ZIP format, 536K)
    * Version 0.9.5 (compatible with ImageMagick 5.2.2)
         o Magick++-0.9.5.tar.gz (gzip'ed tar format, 496K)
         o Magick++-0.9.5.zip (PK-ZIP format, 536K)

@@ -266,7 +266,7 @@ void Magick::Image::border( const Geometry &geometry_ )
 }
 
 // Charcoal-effect image
-void Magick::Image::charcoal( const double radius_ = 1, const double sigma_ = 0.5 )
+void Magick::Image::charcoal( const double radius_, const double sigma_ )
 {
   quantizeDither( true );
   quantizeColorSpace( GRAYColorspace );

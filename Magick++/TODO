@@ -1,18 +1,16 @@
-Items large and small which remain to be done before Magick++ 1.0
+Items large and small which remain to be completed
 --------------------------------------------------------------------
 
 * Support manipulating IPTC profiles directly. Bill Radcliffe
   <BillR@corbis.com> has agreed to write a container class to support
   this.
 
-* Support conversion from Color base class to subordinate classes.
-
 * Port to Sun Workshop 5.0 under Solaris
 
 Items which will require the aid of volunteers.  Volunteers?
 --------------------------------------------------------------------
 
-* Port to CodeWarrior Professional 5.0 (released in June) under NT
+* Port to CodeWarrior Professional 5.0 (released in June 2000) under NT
 
 * Port to Borland C++ Builder 4.0 (http://www.borland.com/)
 
