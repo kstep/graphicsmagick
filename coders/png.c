@@ -1009,32 +1009,6 @@ static long mng_get_long(unsigned char *p)
   return((long) ((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]));
 }
 
-static void MNGCoalesce(Image *image)
-{
-/* I have been unable to get this working after version 4.2.9 */
-#if 0
-  long
-    delay;
-
-  register Image
-    *p;
-
-  if (image->previous == (Image *) NULL)
-    return;
-  p=image->previous;
-  assert(p->next != (Image *) NULL);
-  if (p->delay != 0)
-    return;
-  delay=(long) image->delay;
-  CoalesceImages(p);
-  p->file=(FILE *) NULL;
-  p->blob.mapped=False;
-  p->orphan=False;
-  DestroyImage(p);
-  image->delay=delay;
-#endif
-}
-
 static void PNGErrorHandler(png_struct *ping,png_const_charp message)
 {
   Image
@@ -1687,8 +1661,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Insert a background layer behind the frame if framing_mode is 4.
             */
-            if (image_info->insert_backdrops && (framing_mode == 4) &&
-                (subframe_width > 0) && (subframe_height > 0))
+            if ((framing_mode == 4) && (subframe_width > 0) &&
+                (subframe_height > 0))
               {
                 /*
                   Allocate next image structure.
@@ -1717,8 +1691,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->background_color=mng_background_color;
                 image->matte=False;
                 image->delay=0;
-                if (image_info->coalesce_frames)
-                  MNGCoalesce(image);
               }
             LiberateMemory((void **) &chunk);
             continue;
@@ -2008,12 +1980,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         mng_info->viewable[object_id]=True;
         if (!mng_info->visible[object_id])
           {
-            if (!image_info->decode_all_MNG_objects)
-              {
-                skip_to_iend=True;
-                LiberateMemory((void **) &chunk);
-                continue;
-              }
+            skip_to_iend=True;
+            LiberateMemory((void **) &chunk);
+            continue;
           }
         /*
           Insert a background layer behind the upcoming image if
@@ -2022,9 +1991,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image_width=(unsigned int) mng_get_long(p);
         image_height=(unsigned int) mng_get_long(&p[4]);
         LiberateMemory((void **) &chunk);
-        if (image_info->insert_backdrops && (framing_mode == 3) &&
-            ((first_mng_object == 0) || ((clip.left == 0) && (clip.top == 0) &&
-              (image_width == mng_width) && (image_height == mng_height))))
+        if ((framing_mode == 3) && ((first_mng_object == 0) ||
+            ((clip.left == 0) && (clip.top == 0) &&
+            (image_width == mng_width) && (image_height == mng_height))))
           {
             if (simplicity == 0 || (simplicity & 0x08) == 0x08)
               {
@@ -2067,7 +2036,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Insert a background layer behind the entire animation if it
           is not full screen or transparency might be present.
         */
-        if (mng_type && image_info->insert_backdrops && first_mng_object)
+        if (mng_type && first_mng_object)
           {
             if ((simplicity == 0) || ((simplicity & 0x08) == 0x08) ||
                 ((clip.left != 0) || (clip.top != 0) ||
@@ -2982,18 +2951,12 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->page.y=0;
               }
           }
-        if (image_info->coalesce_frames)
-          {
-            image->background_color = mng_background_color;
-            MNGCoalesce(image);
-          }
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
         image=mng_info->image;
 #endif
       }
   } while (LocaleCompare(image_info->magick,"MNG") == 0);
-  if (image_info->insert_backdrops && !image_found && (mng_width > 0) &&
-      (mng_height > 0))
+  if (!image_found && (mng_width > 0) && (mng_height > 0))
     {
       /*
         Insert a background layer if nothing else was found.

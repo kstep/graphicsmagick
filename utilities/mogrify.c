@@ -709,13 +709,11 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("fill",option+1) == 0)
             {
-              (void) QueryColorDatabase("none",&image_info->fill);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing fill color",option);
-                  (void) QueryColorDatabase(argv[i],&image_info->fill);
                 }
               break;
             }
@@ -1126,15 +1124,11 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("pen",option+1) == 0)
             {
-              (void) QueryColorDatabase("none",&image_info->fill);
-              (void) QueryColorDatabase("none",&image_info->stroke);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing fill color",option);
-                  (void) QueryColorDatabase(argv[i],&image_info->fill);
-                  (void) QueryColorDatabase(argv[i],&image_info->stroke);
                 }
               break;
             }
@@ -1325,13 +1319,11 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("stroke",option+1) == 0)
             {
-              (void) QueryColorDatabase("none",&image_info->stroke);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  (void) QueryColorDatabase(argv[i],&image_info->stroke);
                 }
               break;
             }

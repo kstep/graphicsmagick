@@ -338,8 +338,6 @@ int main(int argc,char **argv)
   resource_database=XGetResourceDatabase(display,client_name);
   XGetResourceInfo(resource_database,client_name,&resource_info);
   image_info=resource_info.image_info;
-  image_info->insert_backdrops=True;
-  image_info->coalesce_frames=True;
   quantize_info=resource_info.quantize_info;
   resource_info.delay=0;
   resource_info.pause=0;

@@ -3723,11 +3723,11 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   assert(draw_info != (DrawInfo *) NULL);
   memset(draw_info,0,sizeof(DrawInfo));
   clone_info=CloneImageInfo(image_info);
-  draw_info->affine=clone_info->affine;
+  IdentityAffine(&draw_info->affine);
   draw_info->gravity=NorthWestGravity;
   draw_info->opacity=OpaqueOpacity;
-  draw_info->fill=clone_info->fill;
-  draw_info->stroke=clone_info->stroke;
+  draw_info->fill=clone_info->pen;
+  draw_info->stroke=clone_info->pen;
   draw_info->stroke_antialias=clone_info->antialias;
   draw_info->stroke_width=1.0;
   draw_info->fill_rule=EvenOddRule;

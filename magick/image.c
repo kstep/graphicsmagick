@@ -2717,9 +2717,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   */
   image_info->antialias=True;
   image_info->pointsize=12;
-  IdentityAffine(&image_info->affine);
-  (void) QueryColorDatabase("none",&image_info->stroke);
-  (void) QueryColorDatabase("none",&image_info->fill);
+  (void) QueryColorDatabase("none",&image_info->pen);
   (void) QueryColorDatabase("#ffffff",&image_info->background_color);
   (void) QueryColorDatabase(BorderColor,&image_info->border_color);
   (void) QueryColorDatabase(MatteColor,&image_info->matte_color);
@@ -3561,7 +3559,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Colorize the image.
             */
-            colorize_image=ColorizeImage(*image,argv[++i],clone_info->fill,
+            colorize_image=ColorizeImage(*image,argv[++i],draw_info->fill,
               &(*image)->exception);
             if (colorize_image == (Image *) NULL)
               break;
@@ -3811,8 +3809,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       {
         if (LocaleCompare("-fill",option) == 0)
           {
-            (void) QueryColorDatabase(argv[++i],&clone_info->fill);
-            draw_info->fill=clone_info->fill;
+            (void) QueryColorDatabase(argv[++i],&draw_info->fill);
             continue;
           }
         if (LocaleNCompare("filter",option+1,4) == 0)
@@ -4239,12 +4236,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=paint_image;
             continue;
           }
-        if (LocaleCompare("-pen",option) == 0)  /* anachronism */
+        if (LocaleCompare("-pen",option) == 0)
           {
-            (void) QueryColorDatabase(argv[++i],&clone_info->stroke);
-            draw_info->stroke=clone_info->stroke;
-            clone_info->fill=clone_info->stroke;
-            draw_info->fill=clone_info->fill;
+            (void) QueryColorDatabase(argv[++i],&clone_info->pen);
             continue;
           }
         if (LocaleNCompare("pointsize",option+1,2) == 0)
@@ -4609,8 +4603,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("-stroke",option) == 0)
           {
-            (void) QueryColorDatabase(argv[++i],&clone_info->stroke);
-            draw_info->stroke=clone_info->stroke;
+            (void) QueryColorDatabase(argv[++i],&draw_info->stroke);
             continue;
           }
         if (LocaleNCompare("-stroke_width",option,9) == 0)

@@ -763,7 +763,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       "  token pop /y exch def pop",
       "  currentfile buffer readline pop",
       "  token pop /pointsize exch def pop",
-      "  /Helvetica findfont pointsize scalefont setfont",
+      "  /Times findfont pointsize scalefont setfont",
       (char *) NULL
     },
     *PostscriptEpilog[]=
@@ -928,7 +928,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         if (attribute != (ImageAttribute *) NULL)
           {
             (void) strcpy(buffer,
-              "%%%%DocumentNeededResources: font Helvetica\n");
+              "%%%%DocumentNeededResources: font Times\n");
             (void) WriteBlob(image,strlen(buffer),buffer);
           }
         (void) strcpy(buffer,"%%DocumentData: Clean7Bit\n");
@@ -1102,7 +1102,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     attribute=GetImageAttribute(image,"Label");
     if (attribute != (ImageAttribute *) NULL)
       {
-        (void) strcpy(buffer,"%%%%PageResources: font Helvetica\n");
+        (void) strcpy(buffer,"%%%%PageResources: font Times\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
     if (LocaleCompare(image_info->magick,"PS") != 0)

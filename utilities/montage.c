@@ -314,7 +314,6 @@ int main(int argc,char **argv)
   image=(Image *) NULL;
   last_scene=0;
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  image_info->coalesce_frames=True;
   (void) strcpy(image_info->filename,argv[argc-1]);
   SetImageInfo(image_info,True);
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
@@ -627,15 +626,14 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("fill",option+1) == 0)
             {
-              (void) QueryColorDatabase("none",&image_info->fill);
+              (void) QueryColorDatabase("none",&montage_info->fill);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing fill color",option);
-                  (void) QueryColorDatabase(argv[i],&image_info->fill);
+                  (void) QueryColorDatabase(argv[i],&montage_info->fill);
                 }
-              montage_info->fill=image_info->fill;
               break;
             }
           if (LocaleNCompare("filter",option+1,3) == 0)
@@ -914,18 +912,16 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("pen",option+1) == 0)
             {
-              (void) QueryColorDatabase("none",&image_info->fill);
-              (void) QueryColorDatabase("none",&image_info->stroke);
+              (void) QueryColorDatabase("none",&montage_info->fill);
+              (void) QueryColorDatabase("none",&montage_info->stroke);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing fill color",option);
-                  (void) QueryColorDatabase(argv[i],&image_info->fill);
-                  (void) QueryColorDatabase(argv[i],&image_info->stroke);
+                  (void) QueryColorDatabase(argv[i],&montage_info->fill);
+                  (void) QueryColorDatabase(argv[i],&montage_info->stroke);
                 }
-              montage_info->fill=image_info->fill;
-              montage_info->stroke=image_info->stroke;
               break;
             }
           if (LocaleNCompare("pointsize",option+1,2) == 0)
@@ -1023,15 +1019,14 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("stroke",option+1) == 0)
             {
-              (void) QueryColorDatabase("none",&image_info->stroke);
+              (void) QueryColorDatabase("none",&montage_info->stroke);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  (void) QueryColorDatabase(argv[i],&image_info->stroke);
+                  (void) QueryColorDatabase(argv[i],&montage_info->stroke);
                 }
-              montage_info->stroke=image_info->stroke;
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);

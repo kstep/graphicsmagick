@@ -503,15 +503,11 @@ typedef struct _ImageInfo
   double
     pointsize;
 
-  AffineMatrix
-    affine;
-
   double
     fuzz;
 
   PixelPacket
-    fill,
-    stroke,
+    pen,
     background_color,
     border_color,
     matte_color;
@@ -533,11 +529,6 @@ typedef struct _ImageInfo
     *dispose,
     *delay,
     *iterations;
-
-  unsigned int
-    decode_all_MNG_objects,
-    coalesce_frames,
-    insert_backdrops;
 
   /*
     Miscellaneous members.

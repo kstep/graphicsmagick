@@ -198,8 +198,8 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
   montage_info->pointsize=image_info->pointsize;
   montage_info->gravity=CenterGravity;
   montage_info->compose=ReplaceCompositeOp;
-  montage_info->fill=image_info->fill;
-  montage_info->stroke=image_info->stroke;
+  montage_info->fill=image_info->pen;
+  montage_info->stroke=image_info->pen;
   montage_info->background_color=image_info->background_color;
   montage_info->border_color=image_info->border_color;
   montage_info->matte_color=image_info->matte_color;
@@ -282,7 +282,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     *attribute;
 
   ImageInfo
-    *clone_info;
+    *image_info;
 
   int
     x,
@@ -450,26 +450,26 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   /*
     Initialize annotate info.
   */
-  clone_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) CloneString(&clone_info->font,montage_info->font);
-  clone_info->pointsize=montage_info->pointsize;
-  clone_info->stroke=montage_info->stroke;
-  clone_info->fill=montage_info->fill;
-  clone_info->background_color=montage_info->background_color;
-  clone_info->border_color=montage_info->border_color;
-  draw_info=CloneDrawInfo(clone_info,(DrawInfo *) NULL);
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  image_info->background_color=montage_info->background_color;
+  image_info->border_color=montage_info->border_color;
+  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  (void) CloneString(&draw_info->font,montage_info->font);
+  draw_info->pointsize=montage_info->pointsize;
   draw_info->gravity=CenterGravity;
+  draw_info->stroke=montage_info->stroke;
+  draw_info->fill=montage_info->fill;
   font_height=ExpandAffine(&draw_info->affine)*draw_info->pointsize;
   texture=(Image *) NULL;
   if (montage_info->texture != (char *) NULL)
     {
-      (void) strcpy(clone_info->filename,montage_info->texture);
-      texture=ReadImage(clone_info,exception);
+      (void) strcpy(image_info->filename,montage_info->texture);
+      texture=ReadImage(image_info,exception);
     }
   /*
     Determine the number of lines in an next label.
   */
-  title=TranslateText(clone_info,image,montage_info->title);
+  title=TranslateText(image_info,image,montage_info->title);
   title_offset=0;
   if (montage_info->title != (char *) NULL)
     title_offset=2*font_height*MultilineCensus(title)+2*tile_info.y;
@@ -485,7 +485,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   /*
     Allocate next structure.
   */
-  montage_next=AllocateImage(clone_info);
+  montage_next=AllocateImage(image_info);
   montage_next->scene=1;
   image_per_page=(number_images-1)/(tiles_per_row*tiles_per_column)+1;
   tiles=0;
@@ -788,7 +788,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
         /*
           Allocate next next structure.
         */
-        AllocateNextImage(clone_info,montage_next);
+        AllocateNextImage(image_info,montage_next);
         if (montage_next->next == (Image *) NULL)
           {
             DestroyImages(montage_next);
@@ -803,7 +803,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     LiberateMemory((void **) &texture);
   LiberateMemory((void **) &master_list);
   DestroyDrawInfo(draw_info);
-  DestroyImageInfo(clone_info);
+  DestroyImageInfo(image_info);
   while (montage_next->previous != (Image *) NULL)
     montage_next=montage_next->previous;
   return(montage_next);

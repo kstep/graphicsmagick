@@ -953,10 +953,7 @@ MagickExport unsigned int IsMonochromeImage(Image *image)
 %    o status:  Method IsPseudoClass returns True is the image is
 %      PseudoClass or has 256 color or less.
 %
-%    o image: The address of a byte (8 bits) array of run-length
-%      encoded pixel data of your source image.  The sum of the
-%      run-length counts in the source image must be equal to or exceed
-%      the number of pixels.
+%    o image: The address of a structure of type Image.
 %
 %
 */
@@ -1468,7 +1465,7 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
     color->opacity=OpaqueOpacity;
     return(status);
   }
-#endif
+#else
   /*
     Match color against the X color database.
   */
@@ -1493,6 +1490,7 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
     return(True);
   }
   (void) fclose(file);
+#endif
   return(False);
 }
 

@@ -53,10 +53,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % PerlMagick is an objected-oriented Perl interface to ImageMagick.  Use
-% the module to read,manipulate,or write an image or image sequence from
-% within a Perl script.  This makes it very suitable for Web CGI scripts.
-% You must have ImageMagick 4.1.5 or above and Perl version 5.002 or greater
-% installed on your system for either of these utilities to work.
+% the module to read, manipulate, or write an image or image sequence from
+% within a Perl script.  This makes PerlMagick suitable for Web CGI scripts.
 %
 */
 
@@ -1208,12 +1206,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             info->image_info->file=IoIFP(sv_2io(sval));
           return;
         }
-      if (strEQcase(attribute,"fill"))
-        {
-          if (info)
-            (void) QueryColorDatabase(SvPV(sval,na),&info->image_info->fill);
-          return;
-        }
       if (strEQcase(attribute,"font"))
         {
           if (info)
@@ -1326,8 +1318,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           if (info)
             {
-              FormatString(info->image_info->filename,"%.1024s:",
-                SvPV(sval,na));
+              FormatString(info->image_info->filename,"%.1024s:",SvPV(sval,na));
               SetImageInfo(info->image_info,True);
               if (*info->image_info->magick == '\0')
                 MagickWarning(OptionWarning,"Unrecognized image format",
@@ -1395,6 +1386,12 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               &image->page.x,&image->page.y,
               &image->page.width,&image->page.height);
           DestroyPostscriptGeometry(p);
+          return;
+        }
+      if (strEQcase(attribute,"pen"))
+        {
+          if (info)
+            (void) QueryColorDatabase(SvPV(sval,na),&info->image_info->pen);
           return;
         }
       if (strEQcase(attribute,"pixel"))
@@ -1528,12 +1525,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                 }
               (void) CloneString(&info->image_info->size,SvPV(sval,na));
             }
-          return;
-        }
-      if (strEQcase(attribute,"stroke"))
-        {
-          if (info)
-            (void) QueryColorDatabase(SvPV(sval,na),&info->image_info->stroke);
           return;
         }
       break;
@@ -2940,15 +2931,6 @@ Get(ref,...)
                   s=newSVpv(info->image_info->filename,0);
               break;
             }
-          if (strEQcase(attribute,"fill"))
-            {
-              if (info)
-                {
-                  (void) QueryColorName(&info->image_info->fill,color);
-                  s=newSVpv(color,0);
-                }
-              break;
-            }
           if (strEQcase(attribute,"filter"))
             {
               j=image->filter;
@@ -3336,15 +3318,6 @@ Get(ref,...)
               attribute=GetImageAttribute(image,"Signature");
               if (attribute != (ImageAttribute *) NULL)
                 s=newSVpv(attribute->value,0);
-              break;
-            }
-          if (strEQcase(attribute,"stroke"))
-            {
-              if (info)
-                {
-                  (void) QueryColorName(&info->image_info->stroke,color);
-                  s=newSVpv(color,0);
-                }
               break;
             }
           break;
@@ -5452,9 +5425,6 @@ Montage(ref,...)
             }
           if (strEQcase(attribute,"fill"))
             {
-              if (info)
-                (void) QueryColorDatabase(SvPV(ST(i),na),
-                  &info->image_info->fill);
               (void) QueryColorDatabase(SvPV(ST(i),na),&montage_info->fill);
               break;
             }
@@ -5591,11 +5561,7 @@ Montage(ref,...)
             }
           if (strEQcase(attribute,"stroke"))
             {
-              if (info)
-                (void) QueryColorDatabase(SvPV(ST(i),na),
-                  &info->image_info->stroke);
-              (void) QueryColorDatabase(SvPV(ST(i),na),
-                &montage_info->stroke);
+              (void) QueryColorDatabase(SvPV(ST(i),na),&montage_info->stroke);
               break;
             }
           break;
@@ -6261,6 +6227,7 @@ QueryFontMetrics(ref,...)
         PUSHs(s);
       }
     DestroyDrawInfo(draw_info);
+
   MethodException:
     SvREFCNT_dec(error_list);
     error_list=NULL;
