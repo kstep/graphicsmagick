@@ -56,7 +56,12 @@
     ((color).green == (target).green) && \
     ((color).blue == (target).blue))
 #endif
-#define MAXRGB MaxRGB
+
+#if (QuantumDepth == 32)
+#  define LONG long long
+#else
+#  define LONG long
+#endif
 
 /*
   Include declarations.
@@ -719,7 +724,7 @@ static unsigned int ImageIsMonochrome(Image *image)
       for (i=0; i < (long) image->colors; i++)
       {
         if (!IsGray(image->colormap[i]) || ((image->colormap[i].red != 0)
-            && (image->colormap[i].red != MAXRGB)))
+            && (image->colormap[i].red != MaxRGB)))
           return(False);
       }
       return(True);
@@ -731,7 +736,7 @@ static unsigned int ImageIsMonochrome(Image *image)
       return(False);
     for (x=0; x < (long) image->columns; x++)
     {
-      if ((p->red != 0) && (p->red != MAXRGB))
+      if ((p->red != 0) && (p->red != MaxRGB))
         return(False);
       if (!IsGray(*p))
         return(False);
@@ -2953,7 +2958,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         int
           scale;
 
-        scale=(int) (MAXRGB/((1L<<ping_info->bit_depth)-1L));
+        scale=(int) (MaxRGB/((1L<<ping_info->bit_depth)-1L));
         if (scale < 1)
            scale=1;
         /*
@@ -3008,8 +3013,13 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         image->storage_class=PseudoClass;
         image->colors=1 << ping_info->bit_depth;
-        if (image->colors>MaxColormapSize)
-          image->colors=MaxColormapSize;
+#if (QuantumDepth==8)
+        if (image->colors>256)
+          image->colors=256;
+#else
+        if (image->colors>65536)
+          image->colors=65536;
+#endif
         if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           {
             int
@@ -3049,10 +3059,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         else
           {
-            long
+            unsigned long
               scale;
 
-            scale=(long) ((int) MAXRGB/((int) ((1<<ping_info->bit_depth)-1)));
+            scale=(MaxRGB/((1<<ping_info->bit_depth)-1));
             if (scale < 1)
                scale=1;
             for (i=0; i < (long) image->colors; i++)
@@ -3069,7 +3079,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->delay != 0)
       scenes_found++;
     if (image_info->ping && (image_info->subrange != 0) &&
-        scenes_found > (long) (image_info->subimage+image_info->subrange))
+        scenes_found > image_info->subimage+image_info->subrange)
       {
         png_destroy_read_struct(&ping,&ping_info,&end_info);
         break;
@@ -3087,7 +3097,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     png_read_image(ping,scanlines);
     png_read_end(ping,ping_info);
 
-    if (image_info->subrange != 0 && scenes_found-1 < (long) image_info->subimage)
+    if (image_info->subrange != 0 && scenes_found-1 < image_info->subimage)
       {
         png_destroy_read_struct(&ping,&ping_info,&end_info);
         LiberateMemory((void **) &png_pixels);
@@ -3128,9 +3138,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
               r=scanlines[y];
               p=r;
-              for (x=0; x < (long) image->columns; x++)
-              {
-                if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
+              if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
+                {
+                  for (x=0; x < (long) image->columns; x++)
                   {
                     *r++=*p++;
                     p++;
@@ -3143,7 +3153,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     else
                          *r++=OpaqueOpacity;
                   }
-                if (ping_info->color_type == PNG_COLOR_TYPE_RGB)
+                }
+              else if (ping_info->color_type == PNG_COLOR_TYPE_RGB)
+                {
+                if (ping_info->valid & PNG_INFO_tRNS)
+                  for (x=0; x < (long) image->columns; x++)
                   {
                     *r++=*p++;
                     p++;
@@ -3151,8 +3165,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     p++;
                     *r++=*p++;
                     p++;
-                    if ((ping_info->valid & PNG_INFO_tRNS) &&
-                         (((*(p-6)<<8)|*(p-5))==transparent_color.red) &&
+                    if ((((*(p-6)<<8)|*(p-5))==transparent_color.red) &&
                          (((*(p-4)<<8)|*(p-3))==transparent_color.green) &&
                          (((*(p-2)<<8)|*(p-1))==transparent_color.blue))
                       {
@@ -3162,7 +3175,20 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     else
                          *r++=OpaqueOpacity;
                   }
-                if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+                else
+                  for (x=0; x < (long) image->columns; x++)
+                  {
+                    *r++=*p++;
+                    p++;
+                    *r++=*p++;
+                    p++;
+                    *r++=*p++;
+                    p++;
+                    *r++=OpaqueOpacity;
+                  }
+                }
+              else if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+                for (x=0; x < (long) image->columns; x++)
                 {
                   *r++=*p++;
                   p++;
@@ -3170,14 +3196,15 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   p++;
                   *r++=*p++;
                   p++;
+                  *r++=*p++;
+                  p++;
                 }
-                if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA ||
-                    ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+              else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+                for (x=0; x < (long) image->columns; x++)
                 {
                   *r++=*p++;
                   p++;
                 }
-              }
             }
           if (depth == 8 && ping_info->color_type == PNG_COLOR_TYPE_GRAY)
             (void) PushImagePixels(image,(QuantumType) GrayQuantum,
@@ -3204,7 +3231,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           else if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
               (void) PushImagePixels(image,(QuantumType) IndexQuantum,
                 scanlines[y]);
-#else
+#else /* (QuantumDepth != 8) */
+
           if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
             (void) PushImagePixels(image,(QuantumType) GrayQuantum,
                 scanlines[y]);
@@ -3302,20 +3330,23 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             case 8:
             {
-              for (x=0; x < (long) image->columns; x++)
-              {
-                *r++=*p++;
-                if (ping_info->color_type == 4)
-                  {
-                    /* In image.h, OpaqueOpacity is 0
-                     * TransparentOpacity is MaxRGB
-                     * In a PNG datastream, Opaque is MaxRGB
-                     * and Transparent is 0.
-                     */
-                    q->opacity=ScaleCharToQuantum(255-(*p++));
-                    q++;
-                  }
-              }
+              if (ping_info->color_type == 4)
+                for (x=0; x < (long) image->columns; x++)
+                {
+                  *r++=*p++;
+                    {
+                      /* In image.h, OpaqueOpacity is 0
+                       * TransparentOpacity is MaxRGB
+                       * In a PNG datastream, Opaque is MaxRGB
+                       * and Transparent is 0.
+                       */
+                      q->opacity=ScaleCharToQuantum(255-(*p++));
+                      q++;
+                    }
+                }
+              else
+                for (x=0; x < (long) image->columns; x++)
+                  *r++=*p++;
               break;
             }
             case 16:
@@ -3323,34 +3354,42 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               for (x=0; x < (long) image->columns; x++)
               {
 #if (QuantumDepth == 16)
-                *r=((*p++) << 8);
-                *r++|=(*p++);
+                if (image->colors > 256)
+                  *r=((*p++) << 8);
+                else
+                  *r=0;
+                *r|=(*p++);
+                r++;
                 if (ping_info->color_type == 4)
                   {
                     q->opacity=((*p++) << 8);
                     q->opacity|=(*p++);
-                    q->opacity=(Quantum) (MAXRGB-q->opacity);
+                    q->opacity*=65537;
+                    q->opacity=(Quantum) (MaxRGB-q->opacity);
                     q++;
                   }
 #else
 #  if (QuantumDepth == 32)
-                *r=((*p++) << 8);
+                if (image->colors > 256)
+                  *r=((*p++) << 8);
+                else
+                  *r=0;
                 *r|=(*p++);
-                *r++*=65537;
+                r++;
                 if (ping_info->color_type == 4)
                   {
                     q->opacity=((*p++) << 8);
                     q->opacity|=(*p++);
-                    q->opacity=(Quantum) (MAXRGB-q->opacity);
                     q->opacity*=65537;
+                    q->opacity=(Quantum) (MaxRGB-q->opacity);
                     q++;
                   }
-#  else
+#  else /* QuantumDepth==8 */
                 *r++=(*p++);
                 p++; /* strip low byte */
                 if (ping_info->color_type == 4)
                   {
-                    q->opacity=(Quantum) (MAXRGB-(*p++));
+                    q->opacity=(Quantum) (MaxRGB-(*p++));
                     p++;
                     q++;
                   }
@@ -3395,13 +3434,14 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (long) image->columns; x++)
-          {
-            IndexPacket
-              index;
 
-            q->opacity=OpaqueOpacity;
-            if (storage_class == PseudoClass)
+          q->opacity=OpaqueOpacity;
+          if (storage_class == PseudoClass)
+            {
+              IndexPacket
+                index;
+
+              for (x=0; x < (long) image->columns; x++)
               {
                 index=indexes[x];
                 if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
@@ -3418,18 +3458,22 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     if (q->red == transparent_color.opacity)
                       q->opacity=TransparentOpacity;
                   }
+                q++;
               }
-            else
+            }
+          else
+            for (x=0; x < (long) image->columns; x++)
+            {
               if (q->red == transparent_color.red &&
                   q->green == transparent_color.green &&
                   q->blue == transparent_color.blue)
                  q->opacity=TransparentOpacity;
-            q++;
+              q++;
+            }
           }
           image->storage_class=DirectClass;
           if (!SyncImagePixels(image))
             break;
-        }
       }
 #if (QuantumDepth == 8)
     if (image->depth > 8)
@@ -3737,16 +3781,16 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           else
                             {
                               /* Interpolate */
-                              (*q).red=(Quantum) (((long) (2*i*((*n).red
-                                 -(*p).red)+m))/((long) (m*2))+(*p).red);
-                              (*q).green=(Quantum) (((long) (2*i*((*n).green
-                                 -(*p).green)+m))/((long) (m*2))+(*p).green);
-                              (*q).blue=(Quantum) (((long) (2*i*((*n).blue
-                                 -(*p).blue)+m))/((long) (m*2))+(*p).blue);
+                              (*q).red=(Quantum) (((LONG) (2*i*((*n).red
+                                 -(*p).red)+m))/((LONG) (m*2))+(*p).red);
+                              (*q).green=(Quantum) (((LONG) (2*i*((*n).green
+                                 -(*p).green)+m))/((LONG) (m*2))+(*p).green);
+                              (*q).blue=(Quantum) (((LONG) (2*i*((*n).blue
+                                 -(*p).blue)+m))/((LONG) (m*2))+(*p).blue);
                               if (image->matte)
-                                 (*q).opacity=(Quantum) (((long)
+                                 (*q).opacity=(Quantum) (((LONG)
                                  (2*i*((*n).opacity-(*p).opacity)+m))
-                                 /((long) (m*2))+(*p).opacity);
+                                 /((LONG) (m*2))+(*p).opacity);
                             }
                           if (magn_methy == 4)
                             {
@@ -3766,8 +3810,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                              *q=(*n);
                           if (magn_methy == 5)
                             {
-                              (*q).opacity=(Quantum) (((long) (2*i*((*n).opacity
-                                 -(*p).opacity)+m))/((long) (m*2))+(*p).opacity);
+                              (*q).opacity=(Quantum) (((LONG) (2*i*((*n).opacity
+                                 -(*p).opacity)+m))/((LONG) (m*2))+(*p).opacity);
                             }
                         }
                       n++;
@@ -3824,11 +3868,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             {
                               /* Interpolate */
                               (*q).red=(Quantum) ((2*i*((*n).red-(*p).red)+m)
-                                 /((long) (m*2))+(*p).red);
+                                 /((LONG) (m*2))+(*p).red);
                               (*q).green=(Quantum) ((2*i*((*n).green-(*p).green)
-                                 +m)/((long) (m*2))+(*p).green);
+                                 +m)/((LONG) (m*2))+(*p).green);
                               (*q).blue=(Quantum) ((2*i*((*n).blue-(*p).blue)+m)
-                                 /((long) (m*2))+(*p).blue);
+                                 /((LONG) (m*2))+(*p).blue);
                               if (image->matte)
                                  (*q).opacity=(Quantum) ((2*i*((*n).opacity
                                    -(*p).opacity)+m)/((long) (m*2))
@@ -3854,7 +3898,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             {
                               /* Interpolate */
                               (*q).opacity=(Quantum) ((2*i*((*n).opacity
-                                 -(*p).opacity)+m) /((long) (m*2))
+                                 -(*p).opacity)+m) /((LONG) (m*2))
                                  +(*p).opacity);
                             }
                         }
@@ -4010,7 +4054,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       CatchImageException(image);
       if (image_info->subrange != 0)
         {
-          if (scenes_found > (long) (image_info->subimage+image_info->subrange))
+          if (scenes_found > image_info->subimage+image_info->subrange)
             break;
         }
   } while (LocaleCompare(image_info->magick,"MNG") == 0);
@@ -5205,13 +5249,13 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
             maxval=(1<<image->depth)-1;
             background.red=(png_uint_16)
-              (maxval*image->background_color.red/MAXRGB);
+              (maxval*image->background_color.red/MaxRGB);
             background.green=(png_uint_16)
-              (maxval*image->background_color.green/MAXRGB);
+              (maxval*image->background_color.green/MaxRGB);
             background.blue=(png_uint_16)
-              (maxval*image->background_color.blue/MAXRGB);
+              (maxval*image->background_color.blue/MaxRGB);
             background.gray=(png_uint_16)
-              (maxval*PixelIntensityToQuantum(&image->background_color)/MAXRGB);
+              (maxval*PixelIntensity(&image->background_color)/MaxRGB);
           }
         else
           {
@@ -5219,7 +5263,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             background.green=image->background_color.green;
             background.blue=image->background_color.blue;
             background.gray=
-              (png_uint_16) PixelIntensityToQuantum(&image->background_color);
+              (png_uint_16) PixelIntensity(&image->background_color);
           }
         background.index=(png_byte) background.gray;
         png_set_bKGD(ping,ping_info,&background);
@@ -5289,12 +5333,24 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           }
         else
           {
+            unsigned int
+              mask;
+
+            mask=0xffff;
+            if (ping_info->bit_depth == 8)
+               mask=0x00ff;
+            if (ping_info->bit_depth == 4)
+               mask=0x000f;
+            if (ping_info->bit_depth == 2)
+               mask=0x0003;
+            if (ping_info->bit_depth == 1)
+               mask=0x0001;
             ping_info->valid|=PNG_INFO_tRNS;
-            ping_info->trans_values.red=p->red;
-            ping_info->trans_values.green=p->green;
-            ping_info->trans_values.blue=p->blue;
+            ping_info->trans_values.red=ScaleQuantumToShort(p->red)&mask;
+            ping_info->trans_values.green=ScaleQuantumToShort(p->green)&mask;
+            ping_info->trans_values.blue=ScaleQuantumToShort(p->blue)&mask;
             ping_info->trans_values.gray=
-              (png_uint_16) PixelIntensityToQuantum(p);
+               (png_uint_16) ScaleQuantumToShort(PixelIntensity(p))&mask;
             ping_info->trans_values.index=(unsigned char)
                (255-ScaleQuantumToChar(p->opacity));
           }
@@ -5366,7 +5422,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           }
         if (image->depth > QuantumDepth)
           image->depth=QuantumDepth;
-        if (image->colors == 0 || image->colors > MAXRGB+1)
+        if (image->colors == 0 || image->colors-1 > MaxRGB)
           image->colors=1<<image->depth;
         if (image->depth > 8)
           ping_info->bit_depth=16;
@@ -5545,12 +5601,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
 
            background.gray=(png_uint_16)
-             (maxval*(PixelIntensityToQuantum(&image->background_color))/MAXRGB);
+             (maxval*(PixelIntensity(&image->background_color))/MaxRGB);
 
            png_set_bKGD(ping,ping_info,&background);
 
            ping_info->trans_values.gray=(png_uint_16)(maxval*
-             ping_info->trans_values.gray/MAXRGB);
+             ping_info->trans_values.gray/MaxRGB);
         }
 
     /*
