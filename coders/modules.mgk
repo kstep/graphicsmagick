@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <modulemap>
   <module magick="8BIM" name="META" />
+  <module magick="8BIMTEXT" name="META" />
   <module magick="AFM" name="TTF" />
   <module magick="APP1" name="META" />
+  <module magick="APP1JPEG" name="META" />
   <module magick="B" name="GRAY" />
   <module magick="BIE" name="JBIG" />
   <module magick="C" name="GRAY" />
@@ -66,5 +68,6 @@
   <module magick="VST" name="TGA" />
   <module magick="WMFWIN32" name="EMF" />
   <module magick="XV" name="VIFF" />
+  <module magick="XTRNARRAY" name="XTRN" />
   <module magick="Y" name="GRAY" />
 </modulemap>
