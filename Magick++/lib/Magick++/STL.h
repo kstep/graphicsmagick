@@ -342,7 +342,7 @@ namespace Magick
     embossImage( void )
       : _radius( 1 ),
         _sigma( 0.5 ) { }
-    embossImage( const double radius_ = 1, const double sigma_ = 0.5 )
+    embossImage( const double radius_, const double sigma_ )
       : _radius( radius_ ),
         _sigma( sigma_ ) { }
 
