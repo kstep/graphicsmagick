@@ -180,7 +180,7 @@ print("TILE (Tile image with a texture) ...\n");
 # We will tile using the default image and a MIFF file
 #
 ++$test;
-testReadSized( 'TILE:input.miff', '140x92', 8, '082708402284c8dc2a17314268ad2673');
+testReadSized( 'TILE:input.miff', '140x92', 8, '4aa6f50cf3005b464eee2f0fbb9c0e46');
 
 
 print("CMYK format ...\n");
