@@ -82,7 +82,7 @@ static unsigned int
 %
 %  The format of the IsPDF method is:
 %
-%      unsigned int IsPDF(const unsigned char *magick,const size_t length)
+%      unsigned int IsPDF(const unsigned char *magick,const size_t offset)
 %
 %  A description of each parameter follows:
 %
@@ -91,13 +91,13 @@ static unsigned int
 %    o magick: This string is generally the first few bytes of an image file
 %      or blob.
 %
-%    o length: Specifies the length of the magick string.
+%    o offset: Specifies the offset of the magick string.
 %
 %
 */
-static unsigned int IsPDF(const unsigned char *magick,const size_t length)
+static unsigned int IsPDF(const unsigned char *magick,const size_t offset)
 {
-  if (length < 5)
+  if (offset < 5)
     return(False);
   if (LocaleNCompare((char *) magick,"%PDF-",5) == 0)
     return(True);
@@ -516,6 +516,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     encode_image,
     *tile_image;
 
+  off_t
+    offset;
+
   RectangleInfo
     media_info;
 
@@ -530,6 +533,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 
   register long
     i;
+
+  size_t
+    length;
 
   struct tm
     *time_meridian;
@@ -549,7 +555,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 
   unsigned long
     info_id,
-    length,
     number_pixels,
     object,
     pages_id,
@@ -792,7 +797,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"stream\n");
-    length=TellBlob(image);
+    offset=TellBlob(image);
     (void) WriteBlobString(image,"q\n");
     labels=(char **) NULL;
     attribute=GetImageAttribute(image,"label");
@@ -821,7 +826,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     FormatString(buffer,"/Im%u Do\n",image->scene);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"Q\n");
-    length=TellBlob(image)-length;
+    offset=TellBlob(image)-offset;
     (void) WriteBlobString(image,"endstream\n");
     (void) WriteBlobString(image,"endobj\n");
     /*
@@ -830,7 +835,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%u 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"%lu\n",length);
+    FormatString(buffer,"%lu\n",offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
     /*
@@ -906,7 +911,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"stream\n");
-    length=TellBlob(image);
+    offset=TellBlob(image);
+    number_pixels=image->columns*image->rows;
     if (compression == FaxCompression)
       {
         if (LocaleCompare(CCITTParam,"0") == 0)
@@ -961,14 +967,13 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             /*
               Allocate pixel array.
             */
-            number_pixels=(image->colorspace == CMYKColorspace ? 4 : 3)*
-              image->columns*image->rows;
-            pixels=(unsigned char *) AcquireMemory(number_pixels);
+            length=(image->colorspace == CMYKColorspace ? 4 : 3)*number_pixels;
+            pixels=(unsigned char *) AcquireMemory(length);
             if (pixels == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitWarning,
                 "Memory allocation failed",image);
             /*
-              Dump runlength encoded pixels.
+              Dump runoffset encoded pixels.
             */
             q=pixels;
             for (y=0; y < (int) image->rows; y++)
@@ -998,13 +1003,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   MagickMonitor(SaveImageText,y,image->rows);
             }
             if (compression == ZipCompression)
-              status=ZLIBEncodeImage(image,number_pixels,image_info->quality,
-                pixels);
+              status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
             else
               if (compression == LZWCompression)
-                status=LZWEncodeImage(image,number_pixels,pixels);
+                status=LZWEncodeImage(image,length,pixels);
               else
-                status=PackbitsEncodeImage(image,number_pixels,pixels);
+                status=PackbitsEncodeImage(image,length,pixels);
             LiberateMemory((void **) &pixels);
             if (!status)
               {
@@ -1061,8 +1065,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               /*
                 Allocate pixel array.
               */
-              number_pixels=image->columns*image->rows;
-              pixels=(unsigned char *) AcquireMemory(number_pixels);
+              length=number_pixels;
+              pixels=(unsigned char *) AcquireMemory(length);
               if (pixels == (unsigned char *) NULL)
                 ThrowWriterException(ResourceLimitWarning,
                   "Memory allocation failed",image);
@@ -1083,13 +1087,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                     MagickMonitor(SaveImageText,y,image->rows);
               }
               if (compression == ZipCompression)
-                status=ZLIBEncodeImage(image,number_pixels,image_info->quality,
-                  pixels);
+                status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
               else
                 if (compression == LZWCompression)
-                  status=LZWEncodeImage(image,number_pixels,pixels);
+                  status=LZWEncodeImage(image,length,pixels);
                 else
-                  status=PackbitsEncodeImage(image,number_pixels,pixels);
+                  status=PackbitsEncodeImage(image,length,pixels);
               LiberateMemory((void **) &pixels);
               if (!status)
                 {
@@ -1121,7 +1124,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             }
           }
         }
-    length=TellBlob(image)-length;
+    offset=TellBlob(image)-offset;
     (void) WriteBlobString(image,"\nendstream\n");
     (void) WriteBlobString(image,"endobj\n");
     /*
@@ -1130,7 +1133,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%u 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"%lu\n",length);
+    FormatString(buffer,"%lu\n",offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
     /*
@@ -1202,7 +1205,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"stream\n");
-    length=TellBlob(image);
+    offset=TellBlob(image);
+    number_pixels=tile_image->columns*tile_image->rows;
     if (compression == FaxCompression)
       {
         *tile_image->blob=(*image->blob);
@@ -1261,9 +1265,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             /*
               Allocate pixel array.
             */
-            number_pixels=(image->colorspace == CMYKColorspace ? 4 : 3)*
-              image->columns*image->rows;
-            pixels=(unsigned char *) AcquireMemory(number_pixels);
+            length=(image->colorspace == CMYKColorspace ? 4 : 3)*number_pixels;
+            pixels=(unsigned char *) AcquireMemory(length);
             if (pixels == (unsigned char *) NULL)
               {
                 DestroyImage(tile_image);
@@ -1271,7 +1274,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   "Memory allocation failed",image)
               }
             /*
-              Dump runlength encoded pixels.
+              Dump runoffset encoded pixels.
             */
             q=pixels;
             for (y=0; y < (int) tile_image->rows; y++)
@@ -1297,13 +1300,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               }
             }
             if (compression == ZipCompression)
-              status=ZLIBEncodeImage(image,number_pixels,image_info->quality,
-                pixels);
+              status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
             else
               if (compression == LZWCompression)
-                status=LZWEncodeImage(image,number_pixels,pixels);
+                status=LZWEncodeImage(image,length,pixels);
               else
-                status=PackbitsEncodeImage(image,number_pixels,pixels);
+                status=PackbitsEncodeImage(image,length,pixels);
             LiberateMemory((void **) &pixels);
             if (!status)
               {
@@ -1357,8 +1359,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               /*
                 Allocate pixel array.
               */
-              number_pixels=tile_image->columns*tile_image->rows;
-              pixels=(unsigned char *) AcquireMemory(number_pixels);
+              length=number_pixels;
+              pixels=(unsigned char *) AcquireMemory(length);
               if (pixels == (unsigned char *) NULL)
                 {
                   DestroyImage(tile_image);
@@ -1379,13 +1381,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   *q++=indexes[x];
               }
               if (compression == ZipCompression)
-                status=ZLIBEncodeImage(image,number_pixels,image_info->quality,
-                  pixels);
+                status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
               else
                 if (compression == LZWCompression)
-                  status=LZWEncodeImage(image,number_pixels,pixels);
+                  status=LZWEncodeImage(image,length,pixels);
                 else
-                  status=PackbitsEncodeImage(image,number_pixels,pixels);
+                  status=PackbitsEncodeImage(image,length,pixels);
               LiberateMemory((void **) &pixels);
               if (!status)
                 {
@@ -1415,7 +1416,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           }
         }
     DestroyImage(tile_image);
-    length=TellBlob(image)-length;
+    offset=TellBlob(image)-offset;
     (void) WriteBlobString(image,"\nendstream\n");
     (void) WriteBlobString(image,"endobj\n");
     /*
@@ -1424,7 +1425,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%u 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"%lu\n",length);
+    FormatString(buffer,"%lu\n",offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
     if ((image->storage_class == DirectClass) ||
@@ -1448,7 +1449,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,">>\n");
         (void) WriteBlobString(image,"stream\n");
-        length=TellBlob(image);
+        offset=TellBlob(image);
         if (compression == NoCompression)
           Ascii85Initialize(image);
         for (i=0; i < (long) image->colors; i++)
@@ -1466,7 +1467,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         }
         if (compression == NoCompression)
           Ascii85Flush(image);
-        length=TellBlob(image)-length;
+        offset=TellBlob(image)-offset;
         (void) WriteBlobString(image,"\nendstream\n");
         (void) WriteBlobString(image,"endobj\n");
         /*
@@ -1475,7 +1476,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         xref[object++]=TellBlob(image);
         FormatString(buffer,"%u 0 obj\n",object);
         (void) WriteBlobString(image,buffer);
-        FormatString(buffer,"%lu\n",length);
+        FormatString(buffer,"%lu\n",offset);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"endobj\n");
       }
@@ -1490,7 +1491,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   /*
     Write Xref object.
   */
-  length=TellBlob(image)-xref[0]+10;
+  offset=TellBlob(image)-xref[0]+10;
   (void) WriteBlobString(image,"xref\n");
   FormatString(buffer,"0 %u\n",object+1);
   (void) WriteBlobString(image,buffer);
@@ -1510,7 +1511,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"startxref\n");
-  FormatString(buffer,"%lu\n",length);
+  FormatString(buffer,"%lu\n",offset);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"%%EOF\n");
   LiberateMemory((void **) &xref);
