@@ -60,11 +60,9 @@
 #define DRAW_BINARY_IMPLEMENTATION 0
 
 #define ThrowDrawException(code,reason,description) \
-{ \
   if (context->image->exception.severity > (long)code) \
     ThrowException(&context->image->exception,code,reason,description); \
-  return; \
-}
+  return
 #define CurrentContext (context->graphic_context[context->index])
 #define PixelPacketMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue) && \
@@ -86,16 +84,14 @@ typedef enum
   PathLineToOperation,                          /* L|l (x y)+ */
   PathLineToVerticalOperation,                  /* V|v y+ */
   PathMoveToOperation                           /* M|m (x y)+ */
-}
-PathOperation;
+} PathOperation;
 
 typedef enum
 {
   DefaultPathMode,
   AbsolutePathMode,
   RelativePathMode
-}
-PathMode;
+} PathMode;
 
 struct _DrawContext
 {
@@ -125,7 +121,7 @@ struct _DrawContext
     pattern_offset;
 
   /* Graphic context */
-  long
+  unsigned int
     index;              /* array index */
 
   DrawInfo
@@ -292,7 +288,7 @@ struct _DrawVTable
   void (*DrawSetFontStyle)
     (DrawContext context, const StyleType font_style);
   void (*DrawSetFontWeight)
-    (DrawContext context, const double font_weight);
+    (DrawContext context, const unsigned long font_weight);
   void (*DrawSetGravity)
     (DrawContext context, const GravityType gravity);
   void (*DrawSetRotate)
@@ -303,10 +299,10 @@ struct _DrawVTable
     (DrawContext context, const double degrees);
   void (*DrawSetSkewY)
     (DrawContext context, const double degrees);
-  void (*DrawSetStopColor)
-    (DrawContext context, const PixelPacket * color, const double offset);
+/*   void (*DrawSetStopColor) */
+/*     (DrawContext context, const PixelPacket * color, const double offset); */
   void (*DrawSetStrokeAntialias)
-    (DrawContext context, const int true_false);
+    (DrawContext context, const unsigned int true_false);
   void (*DrawSetStrokeColor)
     (DrawContext context, const PixelPacket * stroke_color);
   void (*DrawSetStrokeDashArray)
@@ -326,7 +322,7 @@ struct _DrawVTable
   void (*DrawSetStrokeWidth)
     (DrawContext context, const double width);
   void (*DrawSetTextAntialias)
-    (DrawContext context, const int true_false);
+    (DrawContext context, const unsigned int true_false);
   void (*DrawSetTextDecoration)
     (DrawContext context, const DecorationType decoration);
   void (*DrawSetTextUnderColor)
@@ -398,7 +394,7 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
 
   /* Write to end of existing MVG string */
   {
-    int
+    size_t
       str_length;
 
     va_list
@@ -578,6 +574,7 @@ MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
     MagickFatalError(ResourceLimitFatalError,
                      "Unable to allocate initial drawing context",
                      "Memory allocation failed");
+  assert(context != (DrawContext)NULL); /* This helps lint */
 
   /* Support structures */
   context->image = image;
@@ -1006,7 +1003,8 @@ MagickExport void DrawSetFontSize(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->filter_off || (CurrentContext->pointsize != pointsize))
+  if(context->filter_off ||
+     (AbsoluteValue(CurrentContext->pointsize-pointsize) > MagickEpsilon))
     {
       CurrentContext->pointsize=pointsize;
 
@@ -1101,7 +1099,7 @@ MagickExport void DrawSetFontStyle(DrawContext context,
 }
 
 MagickExport void DrawSetFontWeight(DrawContext context,
-                                    const double font_weight)
+                                    const unsigned long font_weight)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
@@ -1109,7 +1107,7 @@ MagickExport void DrawSetFontWeight(DrawContext context,
   if(context->filter_off || (CurrentContext->weight != font_weight))
     {
       CurrentContext->weight=font_weight;
-      MvgPrintf(context, "font-weight %.4g\n", font_weight);
+      MvgPrintf(context, "font-weight %lu\n", font_weight);
     }
 }
 
@@ -1331,7 +1329,7 @@ MagickExport void DrawComposite(DrawContext context,
 
   if( media_type != NULL )
     {
-      long
+      size_t
         remaining;
 
       char
@@ -2065,6 +2063,8 @@ MagickExport void DrawSetSkewY(DrawContext context, const double degrees)
   MvgPrintf(context, "skewY %.4g\n", degrees);
 }
 
+#if 0
+/* This is gradient stuff so it shouldn't be supported yet */
 MagickExport void DrawSetStopColor(DrawContext context,
                                    const PixelPacket * stop_color,
                                    const double offset)
@@ -2073,12 +2073,12 @@ MagickExport void DrawSetStopColor(DrawContext context,
   assert(context->signature == MagickSignature);
   assert(stop_color != (const PixelPacket *) NULL);
 
-  /* This is gradient stuff so maybe it shouldn't be supported yet */
 
   MvgPrintf(context, "stop-color ");
   MvgAppendColor(context, stop_color);
   MvgPrintf(context, "\n");
 }
+#endif
 
 MagickExport void DrawSetStrokeColor(DrawContext context,
                                      const PixelPacket * stroke_color)
@@ -2148,7 +2148,7 @@ MagickExport void DrawSetStrokePatternURL(DrawContext context, const char* strok
 }
 
 MagickExport void DrawSetStrokeAntialias(DrawContext context,
-                                         const int stroke_antialias)
+                                         const unsigned int stroke_antialias)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
@@ -2166,28 +2166,28 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
 {
   register const double
     *p;
-
+  
   register double
     *q;
-
+  
   unsigned int
     updated = False,
     n_new = 0,
     n_old = 0;
-
+  
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
-
+  
   p = dasharray;
   if( p != (const double *) NULL )
     while( *p++ != 0)
       n_new++;
-
+  
   q = CurrentContext->dash_pattern;
   if( q != (const double *) NULL )
     while( *q++ != 0)
       n_old++;
-
+  
   if( (n_old == 0) && (n_new == 0) )
     {
       updated = False;
@@ -2202,28 +2202,23 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
       p = dasharray;
       q = CurrentContext->dash_pattern;
       while( *p && *q )
-        if( *p != *q )
+        if(AbsoluteValue(*p - *q) > MagickEpsilon)
           {
             updated = True;
             break;
           }
     }
-
+  
   if( context->filter_off || updated )
     {
       if(CurrentContext->dash_pattern != (double*)NULL)
         LiberateMemory((void **) &CurrentContext->dash_pattern);
-
+      
       if( n_new != 0)
         {
           CurrentContext->dash_pattern = (double *)
             AcquireMemory((n_new+1)*sizeof(double));
-          if(CurrentContext->dash_pattern == (double*)NULL)
-            {
-              ThrowDrawException(ResourceLimitError, "Unable to draw image",
-                                 "Memory allocation failed");
-            }
-          else
+          if(CurrentContext->dash_pattern)
             {
               q=CurrentContext->dash_pattern;
               p=dasharray;
@@ -2231,8 +2226,13 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
                 *q++=*p++;
               *q=0;
             }
+          else
+            {
+              ThrowDrawException(ResourceLimitError, "Unable to draw image",
+                                 "Memory allocation failed");
+            }
         }
-
+      
       MvgPrintf(context, "stroke-dasharray ");
       if ( n_new == 0 )
         MvgPrintf(context, "none");
@@ -2253,7 +2253,8 @@ MagickExport void DrawSetStrokeDashOffset(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->filter_off || (CurrentContext->dash_offset != dash_offset))
+  if(context->filter_off ||
+     (AbsoluteValue(CurrentContext->dash_offset-dash_offset) > MagickEpsilon))
     {
       CurrentContext->dash_offset = dash_offset;
 
@@ -2354,7 +2355,7 @@ MagickExport void DrawSetStrokeOpacity(DrawContext context,
 
   if (context->filter_off || (CurrentContext->stroke.opacity != opacity))
     {
-      CurrentContext->stroke.opacity = opacity;
+      CurrentContext->stroke.opacity = (Quantum) ceil(opacity);
       MvgPrintf(context, "stroke-opacity %.4g\n", stroke_opacity);
     }
 }
@@ -2364,7 +2365,8 @@ MagickExport void DrawSetStrokeWidth(DrawContext context, const double stroke_wi
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if (context->filter_off || (CurrentContext->stroke_width != stroke_width))
+  if (context->filter_off ||
+      (AbsoluteValue(CurrentContext->stroke_width-stroke_width) > MagickEpsilon))
     {
       CurrentContext->stroke_width = stroke_width;
 
@@ -2373,7 +2375,7 @@ MagickExport void DrawSetStrokeWidth(DrawContext context, const double stroke_wi
 }
 
 MagickExport void DrawSetTextAntialias(DrawContext context,
-                                       const int text_antialias)
+                                       const unsigned int text_antialias)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
