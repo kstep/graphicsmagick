@@ -105,6 +105,9 @@ public:
 #ifdef _DEBUG
     //DebugBreak();
 #endif
+    MagickLib::SetWarningHandler(warninghandler);
+    MagickLib::SetErrorHandler(errorhandler);
+    MagickLib::SetFatalErrorHandler(fatalerrorhandler);
     MagickLib::DebugString("MagickImage constructor\n");
     m_bOnStartPageCalled = FALSE;
   }
