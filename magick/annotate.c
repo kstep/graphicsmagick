@@ -65,17 +65,31 @@
 #include "freetype/ftglyph.h"
 #include "freetype/ftoutln.h"
 #endif
+#if defined(HasXML)
+#ifdef WIN32
+#include <win32config.h>
+#endif
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
+#include <libxml/parserInternals.h>
+#if defined(HAVE_LIBXML_XML_ERROR_H)
+#include <libxml/xml-error.h>
+#elif defined(HAVE_LIBXML_XMLERROR_H)
+#include <libxml/xmlerror.h>
+#endif
+#endif
 
 /*
   Typedef declarations.
 */
 typedef struct _FontInfo
-{  
+{
   char
     *format,
     *metrics,
     *glyphs,
     *name,
+    *description,
     *family,
     *weight,
     *version,
@@ -90,7 +104,7 @@ typedef struct _FontInfo
   Static declarations.
 */
 static FontInfo
-  *font_info = (FontInfo *) NULL;
+  *fontmap = (FontInfo *) NULL;
 
 static SemaphoreInfo *
   font_semaphore = (SemaphoreInfo *) NULL;
@@ -398,8 +412,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyFontInfo deallocates memory associated with the font_info
-%  list.
+%  Method DestroyFontInfo deallocates memory associated with fontmap list.
 %
 %  The format of the DestroyFontInfo method is:
 %
@@ -415,13 +428,13 @@ extern "C" {
 MagickExport void DestroyFontInfo(void)
 {
   FontInfo
-    *font_info;
+    *fontmap;
 
   register FontInfo
     *p;
 
   AcquireSemaphore(&font_semaphore);
-  for (p=font_info; p != (FontInfo *) NULL; )
+  for (p=fontmap; p != (FontInfo *) NULL; )
   {
     if (p->format != (char *) NULL)
       LiberateMemory((void **) &p->format);
@@ -439,11 +452,11 @@ MagickExport void DestroyFontInfo(void)
       LiberateMemory((void **) &p->version);
     if (p->alias != (char *) NULL)
       LiberateMemory((void **) &p->alias);
-    font_info=p;
+    fontmap=p;
     p=p->next;
-    LiberateMemory((void **) &font_info);
+    LiberateMemory((void **) &fontmap);
   }
-  font_info=(FontInfo *) NULL;
+  fontmap=(FontInfo *) NULL;
   LiberateSemaphore(&font_semaphore);
 }
 
@@ -478,16 +491,232 @@ MagickExport void DestroyFontInfo(void)
 %
 %
 */
+
+static void ParseFontmap(void *context,const xmlChar *name,
+  const xmlChar **attributes)
+{
+  const char
+    *keyword,
+    *value;
+
+  FontInfo
+    *font_info;
+
+  register FontInfo
+    *p;
+
+  register int
+    i;
+
+  if (LocaleCompare(name,"font") != 0)
+    return;
+  font_info=(FontInfo *) AcquireMemory(sizeof(FontInfo));
+  if (font_info == (FontInfo *) NULL)
+    MagickError(ResourceLimitError,"Unable to allocate fontmap",
+      "Memory allocation failed");
+  memset(font_info,0,sizeof(FontInfo));
+  if (attributes != (const xmlChar **) NULL)
+    for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
+    {
+      keyword=(const char *) attributes[i];
+      value=(const char *) attributes[i+1];
+      switch (*keyword)
+      {
+        case 'a':
+        case 'A':
+        {
+          if (LocaleCompare(keyword,"alias") == 0)
+            {
+              font_info->alias=AllocateString(value);
+              break;
+            }
+          break;
+        }
+        case 'f':
+        case 'F':
+        {
+          if (LocaleCompare(keyword,"familyname") == 0)
+            {
+              font_info->family=AllocateString(value);
+              break;
+            }
+          if (LocaleCompare(keyword,"format") == 0)
+            {
+              font_info->format=AllocateString(value);
+              break;
+            }
+          if (LocaleCompare(keyword,"fullname") == 0)
+            {
+              font_info->description=AllocateString(value);
+              break;
+            }
+          break;
+        }
+        case 'g':
+        case 'G':
+        {
+          if (LocaleCompare(keyword,"glyphs") == 0)
+            {
+              font_info->glyphs=AllocateString(value);
+              break;
+            }
+          break;
+        }
+        case 'm':
+        case 'M':
+        {
+          if (LocaleCompare(keyword,"metrics") == 0)
+            {
+              font_info->metrics=AllocateString(value);
+              break;
+            }
+          break;
+        }
+        case 'n':
+        case 'N':
+        {
+          if (LocaleCompare(keyword,"name") == 0)
+            {
+              font_info->name=AllocateString(value);
+              break;
+            }
+          break;
+        }
+        case 'v':
+        case 'V':
+        {
+          if (LocaleCompare(keyword,"version") == 0)
+            {
+              font_info->version=AllocateString(value);
+              break;
+            }
+          break;
+        }
+        case 'w':
+        case 'W':
+        {
+          if (LocaleCompare(keyword,"weight") == 0)
+            {
+              font_info->weight=AllocateString(value);
+              break;
+            }
+          break;
+        }
+        default:
+          break;
+      }
+    }
+  if (font_info->name == (char *) NULL)
+    return;
+  for (p=(FontInfo *) context; p->next != (FontInfo *) NULL; p=p->next);
+  font_info->previous=p;
+  p->next=font_info;
+}
+
 MagickExport FontInfo *GetFontInfo(char *name)
 {
-  /*
-  AcquireSemaphore(&font_semaphore);
-  if (font_info == (FontInfo *) NULL)
+#if defined(HasXML)
+
+#define FontmapPath  "/usr/share/fonts/fontmap"
+
+  xmlSAXHandler
+    SAXHandlerStruct =
     {
-      atexit(DestroyFontInfo);
+      NULL, /* internalSubset */
+      NULL, /* isStandalone */
+      NULL, /* hasInternalSubset */
+      NULL, /* hasExternalSubset */
+      NULL, /* resolveEntity */
+      NULL, /* getEntity */
+      NULL, /* entityDecl */
+      NULL, /* notationDecl */
+      NULL, /* attributeDecl */
+      NULL, /* elementDecl */
+      NULL, /* unparsedEntityDecl */
+      NULL, /* setDocumentLocator */
+      NULL, /* startDocument */
+      NULL, /* endDocument */
+      ParseFontmap, /* startElement */
+      NULL, /* endElement */
+      NULL, /* reference */
+      NULL, /* characters */
+      NULL, /* ignorableWhitespace */
+      NULL, /* processingInstruction */
+      NULL, /* comment */
+      NULL, /* xmlParserWarning */
+      NULL, /* xmlParserError */
+      NULL, /* xmlParserError */
+      NULL, /* xmlParserError */
+      NULL, /* getParameterEntity */
+      NULL, /* cdataBlock; */
+    };
+
+  char
+    buffer[MaxTextExtent];
+
+  FILE
+    *file;
+
+  int
+    n;
+
+  register FontInfo
+    *p;
+
+  unsigned int
+    status;
+
+  xmlParserCtxtPtr
+    parser;
+
+  xmlSAXHandlerPtr
+    SAXHandler;
+
+  AcquireSemaphore(&font_semaphore);
+  if (fontmap != (FontInfo *) NULL)
+    {
+      /*
+        Search font map.
+      */
+      LiberateSemaphore(&font_semaphore);
+      for (p=fontmap; p != (FontInfo *) NULL; p=p->next)
+        if (LocaleCompare(p->name,name) == 0)
+          break;
+      return(p);
     }
-  LiberateSemaphore(&font_semaphore);
+  /*
+    Create font map.
   */
+  fontmap=(FontInfo *) AcquireMemory(sizeof(FontInfo));
+  if (fontmap == (FontInfo *) NULL)
+    MagickError(ResourceLimitError,"Unable to allocate fontmap",
+      "Memory allocation failed");
+  memset(fontmap,0,sizeof(FontInfo));
+  fontmap->name=AllocateString("*");
+  file=fopen(FontmapPath,"r");
+  if (file == (FILE *) NULL)
+    return((FontInfo *) NULL);
+  xmlSubstituteEntitiesDefault(1);
+  SAXHandler=(&SAXHandlerStruct);
+  parser=xmlCreatePushParserCtxt(SAXHandler,fontmap,(char *) NULL,0,
+    FontmapPath);
+  while (fgets(buffer,MaxTextExtent,file) != (char *) NULL)
+  {
+    n=Extent(buffer);
+    if (n == 0)
+      continue;
+    status=xmlParseChunk(parser,buffer,n,False);
+    if (status != 0)
+      break;
+    (void) xmlParseChunk(parser," ",1,False);
+  }
+  (void) xmlParseChunk(parser," ",1,True);
+  xmlFreeParserCtxt(parser);
+  xmlCleanupParser();
+  (void) fclose(file);
+  atexit(DestroyFontInfo);
+  LiberateSemaphore(&font_semaphore);
+#endif
   return((FontInfo *) NULL);
 }
 

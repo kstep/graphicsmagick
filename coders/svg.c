@@ -953,6 +953,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"font-style") == 0)
             {
+              if (LocaleCompare(value,"Normal") == 0)
+                break;
               font_style=AllocateString(value);
               *font_style=toupper((int) *font_style);
               break;
@@ -966,6 +968,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"font-weight") == 0)
             {
+              if (LocaleCompare(value,"Normal") == 0)
+                break;
               font_weight=AllocateString(value);
               *font_weight=toupper((int) *font_weight);
               break;
@@ -1198,6 +1202,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       }
                     if (LocaleCompare(keyword,"font-style") == 0)
                       {
+                        if (LocaleCompare(value,"Normal") == 0)
+                          break;
                         font_style=AllocateString(value);
                         *font_style=toupper((int) *font_style);
                         break;
@@ -1212,6 +1218,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       }
                     if (LocaleCompare(keyword,"font-weight") == 0)
                       {
+                        if (LocaleCompare(value,"Normal") == 0)
+                          break;
                         font_weight=AllocateString(value);
                         *font_weight=toupper((int) *font_weight);
                         break;
@@ -1592,15 +1600,14 @@ static void SVGStartElement(void *context,const xmlChar *name,
       if (font_family != (char *) NULL)
         {
           (void) fprintf(svg_info->file,"font %s",font_family);
-          if ((font_style != (char *) NULL) && (font_weight != (char *) NULL))
-            (void) fprintf(svg_info->file,"-%s-%s",font_weight,
-              font_style);
+          if ((font_weight != (char *) NULL) && (font_style != (char *) NULL))
+            (void) fprintf(svg_info->file,"-%s%s",font_weight,font_style);
           else
-            if (font_style != (char *) NULL)
-              (void) fprintf(svg_info->file,"-%s",font_style);
+            if (font_weight != (char *) NULL)
+              (void) fprintf(svg_info->file,"-%s",font_weight);
             else
-              if (font_weight != (char *) NULL)
-                (void) fprintf(svg_info->file,"-%s",font_weight);
+              if (font_style != (char *) NULL)
+                (void) fprintf(svg_info->file,"-%s",font_style);
           (void) fprintf(svg_info->file,"\n");
         }
       if (font_family != (char *) NULL)
