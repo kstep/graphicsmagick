@@ -1,3 +1,7 @@
+2003-02-14  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* www/archives.html: commented out sites not mirroring GM yet.
+
 2003-02-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/annotate.c (RenderFreetype): Used smarter code to prepare
