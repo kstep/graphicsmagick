@@ -1984,7 +1984,8 @@ static unsigned int ZLIBEncode2Image(Image *image,const size_t length,
 }
 #else
 static unsigned int ZLIBEncode2Image(Image *image,const size_t length,
-  const unsigned long quality,unsigned char *pixels,WriteByteHook,void *)
+  const unsigned long quality,unsigned char *pixels,WriteByteHook write_byte,
+  void *info)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
