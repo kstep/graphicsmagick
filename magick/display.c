@@ -12981,11 +12981,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               }
             if ((event.xconfigure.width == (long) windows->image.width) &&
                 (event.xconfigure.height == (long) windows->image.height))
-              {
-                if (windows->image.mapped)
-                  XRefreshWindow(display,&windows->image,(XEvent *) NULL);
-                break;
-              }
+              break;
             windows->image.width=event.xconfigure.width;
             windows->image.height=event.xconfigure.height;
             windows->image.x=0;
