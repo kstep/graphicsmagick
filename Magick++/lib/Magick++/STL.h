@@ -2173,12 +2173,14 @@ namespace Magick
 
     montageInfo->matte_color = first_->matteColor();
 
-    if ( first_->penColor().isValid() )
-      Magick::CloneString ( &montageInfo->pen,
-			    first_->penColor() );
+    montageInfo->stroke = first_->strokeColor();
+
+    montageInfo->fill = first_->fillColor();
+
     if ( first_->font().length() != 0 )
       Magick::CloneString ( &montageInfo->font,
 			    first_->font() );
+
     if ( first_->fontPointsize() != 0 )
       montageInfo->pointsize = first_->fontPointsize();
 

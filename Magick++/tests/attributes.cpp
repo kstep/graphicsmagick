@@ -64,7 +64,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.adjoin() != true )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", adjoin default not 'true' as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", adjoin default not 'true' as expected" << endl;
       }
 
     // Test setting false
@@ -101,7 +102,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.animationDelay() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", failed to set animationDelay to 0" << endl;
+	cout << "Line: " << __LINE__
+             << ", failed to set animationDelay to 0" << endl;
       }
 
     // Test setting to 100
@@ -109,7 +111,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.animationDelay() != 100 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", failed to set animationDelay to 100" << endl;
+	cout << "Line: " << __LINE__
+             << ", failed to set animationDelay to 100" << endl;
       }
     image.animationDelay(0);
 
@@ -121,7 +124,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.animationIterations() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", animationIterations default ("
+	cout << "Line: " << __LINE__
+             << ", animationIterations default ("
 	     << image.animationIterations()
 	     << ") not 0 as expected" << endl;
       }
@@ -131,7 +135,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.animationIterations() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", failed to set animationIterations to 0" << endl;
+	cout << "Line: " << __LINE__
+             << ", failed to set animationIterations to 0" << endl;
       }
 
     // Test setting to 100
@@ -139,7 +144,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.animationIterations() != 100 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", failed to set animationIterations to 100" << endl;
+	cout << "Line: " << __LINE__
+             << ", failed to set animationIterations to 100" << endl;
       }
     image.animationIterations( 0 );
 
@@ -312,15 +318,6 @@ int main( int /*argc*/, char ** /*argv*/)
     //
     // boxColor
     //
-    if ( image.boxColor().isValid() )
-      {
-	++failures;
-	cout << "Line: " << __LINE__
-	     << ",  boxColor default ("
-	     << string(image.boxColor())
-	     << ") is incorrectly valid"
-	     << endl;
-      }
     image.boxColor("#FF0000");
     if ( image.boxColor() != Color("#FF0000") )
       {
@@ -340,17 +337,6 @@ int main( int /*argc*/, char ** /*argv*/)
 	     << ", failed to set boxColor ("
 	     << string(image.boxColor())
 	     << ") to #000000"
-	     << endl;
-      }
-
-    image.boxColor( Color() );
-    if ( image.boxColor().isValid() )
-      {
-	++failures;
-	cout << "Line: " << __LINE__
-	     << ",  boxColor ("
-	     << string(image.boxColor())
-	     << ") failed set to inValid"
 	     << endl;
       }
 
@@ -375,7 +361,8 @@ int main( int /*argc*/, char ** /*argv*/)
       if ( x != 50 || y != 100 )
 	{
 	  ++failures;
-	  cout << "Line: " << __LINE__ << ",  chromaBluePrimary x/y failed set/get" << endl;
+	  cout << "Line: " << __LINE__
+               << ",  chromaBluePrimary x/y failed set/get" << endl;
 	}
     }
 
@@ -389,7 +376,8 @@ int main( int /*argc*/, char ** /*argv*/)
       if ( x != 0 || y != 0 )
 	{
 	  ++failures;
-	  cout << "Line: " << __LINE__ << ",  chromaGreenPrimary x/y defaults are non-zero" << endl;
+	  cout << "Line: " << __LINE__
+               << ",  chromaGreenPrimary x/y defaults are non-zero" << endl;
 	}
 
       // Test set/get
@@ -398,7 +386,8 @@ int main( int /*argc*/, char ** /*argv*/)
       if ( x != 50 || y != 100 )
 	{
 	  ++failures;
-	  cout << "Line: " << __LINE__ << ",  chromaGreenPrimary x/y failed set/get" << endl;
+	  cout << "Line: " << __LINE__
+               << ",  chromaGreenPrimary x/y failed set/get" << endl;
 	}
     }
 
@@ -412,7 +401,8 @@ int main( int /*argc*/, char ** /*argv*/)
       if ( x != 0 || y != 0 )
 	{
 	  ++failures;
-	  cout << "Line: " << __LINE__ << ",  chromaRedPrimary x/y defaults are non-zero" << endl;
+	  cout << "Line: " << __LINE__
+               << ",  chromaRedPrimary x/y defaults are non-zero" << endl;
 	}
 
       // Test set/get
@@ -421,7 +411,8 @@ int main( int /*argc*/, char ** /*argv*/)
       if ( x != 50 || y != 100 )
 	{
 	  ++failures;
-	  cout << "Line: " << __LINE__ << ",  chromaRedPrimary x/y failed set/get" << endl;
+	  cout << "Line: " << __LINE__
+               << ",  chromaRedPrimary x/y failed set/get" << endl;
 	}
     }
 
@@ -435,7 +426,8 @@ int main( int /*argc*/, char ** /*argv*/)
       if ( x != 0 || y != 0 )
 	{
 	  ++failures;
-	  cout << "Line: " << __LINE__ << ",  chromaWhitePoint x/y defaults are non-zero" << endl;
+	  cout << "Line: " << __LINE__
+               << ",  chromaWhitePoint x/y defaults are non-zero" << endl;
 	}
 
       // Test set/get
@@ -444,7 +436,8 @@ int main( int /*argc*/, char ** /*argv*/)
       if ( x != 50 || y != 100 )
 	{
 	  ++failures;
-	  cout << "Line: " << __LINE__ << ",  chromaWhitePoint x/y failed set/get" << endl;
+	  cout << "Line: " << __LINE__
+               << ",  chromaWhitePoint x/y failed set/get" << endl;
 	}
     }
 
@@ -494,7 +487,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.colorMap(0) != Color("#00AAFF") )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", failed to set/get colorMap(0)" << endl;
+	cout << "Line: " << __LINE__
+             << ", failed to set/get colorMap(0)" << endl;
       }
     image.colorMap(0,canvasColor);
 
@@ -504,7 +498,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.columns() != columns )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", columns is not equal to canvas image columns" << endl;
+	cout << "Line: " << __LINE__
+             << ", columns is not equal to canvas image columns" << endl;
       }
 
     //
@@ -514,7 +509,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.comment().length() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", comment default non-zero length" << endl;
+	cout << "Line: " << __LINE__
+             << ", comment default non-zero length" << endl;
       }
 
     // Test set/get
@@ -543,7 +539,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.compressType() != UndefinedCompression )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", compressType default is incorrect" << endl;
+	cout << "Line: " << __LINE__
+             << ", compressType default is incorrect" << endl;
       }
 
     // Test set/get
@@ -563,7 +560,8 @@ int main( int /*argc*/, char ** /*argv*/)
       if ( image.density().isValid() )
 	{
 	  ++failures;
-	  cout << "Line: " << __LINE__ << ", density default is incorrectly valid" << endl;
+	  cout << "Line: " << __LINE__
+               << ", density default is incorrectly valid" << endl;
 	}
       
       // Test set/get
@@ -601,7 +599,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.depth() != QuantumDepth )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", depth is not equal to QuantumDepth" << endl;
+	cout << "Line: " << __LINE__
+             << ", depth is not equal to QuantumDepth" << endl;
       }
 
     //
@@ -621,7 +620,8 @@ int main( int /*argc*/, char ** /*argv*/)
       if ( caughtException != true )
 	{
 	  ++failures;
-	  cout << "Line: " << __LINE__ << ", failed to report missing image directory";
+	  cout << "Line: " << __LINE__
+               << ", failed to report missing image directory";
 	}
     }
 
@@ -670,11 +670,11 @@ int main( int /*argc*/, char ** /*argv*/)
     // filterType
     //
     // Test default
-    if ( image.filterType() != MitchellFilter && // < ImageMagick 4.2.3
-	 image.filterType() != LanczosFilter )   // >= ImageMagick 4.2.3
+    if ( image.filterType() != LanczosFilter )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", filterType default is incorrect" << endl;
+	cout << "Line: " << __LINE__
+             << ", filterType default is incorrect" << endl;
       }
 
     // Test set/get
@@ -682,7 +682,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.filterType() != TriangleFilter )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", filterType set/get failed" << endl;
+	cout << "Line: " << __LINE__ << ", filterType set/get failed"
+             << endl;
       }
 
     //
@@ -692,7 +693,9 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.font().length() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", font does not have default length of zero as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", font does not have default length of zero as expected"
+             << endl;
       }
 
     // Test set/get
@@ -717,7 +720,9 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.fontPointsize() != 12 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", fontPointsize does not report default of 12 as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", fontPointsize does not report default of 12 as expected"
+             << endl;
       }
 
     // Test set/get
@@ -725,7 +730,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.fontPointsize() != 10 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", fontPointsize set/get failed" << endl;
+	cout << "Line: " << __LINE__
+             << ", fontPointsize set/get failed" << endl;
       }
     image.fontPointsize(12);
 
@@ -735,7 +741,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.format() != "Constant image of X server color" )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", format does not report expected value" << endl;
+	cout << "Line: " << __LINE__
+             << ", format does not report expected value" << endl;
       }
 
     //
@@ -744,7 +751,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.gamma() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", gamma correction is not zero as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", gamma correction is not zero as expected" << endl;
       }
 
     //
@@ -763,7 +771,8 @@ int main( int /*argc*/, char ** /*argv*/)
       if ( caughtException != true )
 	{
 	  ++failures;
-	  cout << "Line: " << __LINE__ << ", geometry failed to report missing image geometry";
+	  cout << "Line: " << __LINE__
+               << ", geometry failed to report missing image geometry";
 	}
     }
 
@@ -774,7 +783,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.gifDisposeMethod() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", gifDisposeMethod default is not zero as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", gifDisposeMethod default is not zero as expected" << endl;
       }
 
     // Test set/get
@@ -782,7 +792,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.gifDisposeMethod() != 4 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", gifDisposeMethod set/get failed" << endl;
+	cout << "Line: " << __LINE__
+             << ", gifDisposeMethod set/get failed" << endl;
       }
     image.gifDisposeMethod(0);
 
@@ -793,7 +804,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.interlaceType() != NoInterlace )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", interlaceType default is not NoInterlace as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", interlaceType default is not NoInterlace as expected" << endl;
       }
 
     // Test set/get
@@ -812,7 +824,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.label().length() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", label default is not empty string as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", label default is not empty string as expected" << endl;
       }
 
     // Test set/get
@@ -837,7 +850,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.lineWidth() != 1 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", lineWidth default is not 1 as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", lineWidth default is not 1 as expected" << endl;
       }
 
     // Test set/get
@@ -856,7 +870,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.magick() != "XC" )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", magick canvas default is not XC as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", magick canvas default is not XC as expected" << endl;
       }
 
     // Test set/get
@@ -876,7 +891,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.matte() != false )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", matte default is not false as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", matte default is not false as expected" << endl;
       }
 
     // Test set/get
@@ -895,7 +911,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.matteColor() != Color("#BDBDBD") )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", matteColor default is not #BDBDBD as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", matteColor default is not #BDBDBD as expected" << endl;
       }
 
     // Test set/get
@@ -917,7 +934,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.meanErrorPerPixel() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", meanErrorPerPixel is not zero as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", meanErrorPerPixel is not zero as expected" << endl;
       }
 
     //
@@ -936,7 +954,8 @@ int main( int /*argc*/, char ** /*argv*/)
       if ( caughtException != true )
 	{
 	  ++failures;
-	  cout << "Line: " << __LINE__ << ", montageGeometry failed to report missing montage geometry";
+	  cout << "Line: " << __LINE__
+               << ", montageGeometry failed to report missing montage geometry";
 	}
     }
 
@@ -947,7 +966,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.monochrome() != false )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", monochrome is not false as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", monochrome is not false as expected" << endl;
       }
 
     // Test set/get
@@ -965,7 +985,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.normalizedMaxError() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", normalizedMaxError is not zero as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ",normalizedMaxError is not zero as expected" << endl;
       }
 
     //
@@ -974,17 +995,13 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.normalizedMeanError() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", normalizedMeanError is not zero as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", normalizedMeanError is not zero as expected" << endl;
       }
 
     //
     // penColor
     //
-    if ( image.penColor().isValid() )
-      {
-	++failures;
-	cout << "Line: " << __LINE__ << ", penColor default is not invalid as expected" << endl;
-      }
 
     image.penColor(ColorRGB(0.5,0.5,1));
     if ( image.penColor() != ColorRGB(0.5,0.5,1) )
@@ -993,14 +1010,6 @@ int main( int /*argc*/, char ** /*argv*/)
 	cout << "Line: " << __LINE__ << ", penColor ("
 	     << string(image.penColor())
 	     << ") set/get failed" << endl;
-      }
-
-    // Test unset
-    image.penColor( Color() );
-    if ( image.penColor().isValid() )
-      {
-	++failures;
-	cout << "Line: " << __LINE__ << ", penColor failed to unset" << endl;
       }
 
     //
@@ -1042,7 +1051,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.page() != "612x792+43+43" )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", page set/get failed (" << string(image.page()) << ")" << endl;
+	cout << "Line: " << __LINE__
+             << ", page set/get failed (" << string(image.page()) << ")" << endl;
       }
 
     //
@@ -1052,7 +1062,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.quality() != 75 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", quality default is not 75 as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", quality default is not 75 as expected" << endl;
       }
 
     // Test set/get
@@ -1071,7 +1082,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.quantizeColors() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", quantizeColors is not zero as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", quantizeColors is not zero as expected" << endl;
       }
 
     // Test set/get
@@ -1090,7 +1102,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.quantizeColorSpace() != RGBColorspace )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", quantizeColorSpace is not RGBColorspace as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", quantizeColorSpace is not RGBColorspace as expected" << endl;
       }
 
     // Test set/get
@@ -1098,7 +1111,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.quantizeColorSpace() != YIQColorspace )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", quantizeColorSpace set/get failed" << endl;
+	cout << "Line: " << __LINE__
+             << ", quantizeColorSpace set/get failed" << endl;
       }
     image.quantizeColorSpace(RGBColorspace);
 
@@ -1109,7 +1123,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.quantizeDither() != true )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", quantizeDither is not true as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", quantizeDither is not true as expected" << endl;
       }
 
     // Test set/get
@@ -1117,7 +1132,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.quantizeDither() != false )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", quantizeDither get/set failed" << endl;
+	cout << "Line: " << __LINE__
+             << ", quantizeDither get/set failed" << endl;
       }
     image.quantizeDither(true);
 
@@ -1136,7 +1152,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.quantizeTreeDepth() != 7 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", quantizeTreeDepth set/get failed" << endl;
+	cout << "Line: " << __LINE__
+             << ", quantizeTreeDepth set/get failed" << endl;
       }
     image.quantizeTreeDepth(8);
 
@@ -1146,14 +1163,17 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.renderingIntent() != UndefinedIntent )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", renderingIntent default is not UndefinedIntent as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", renderingIntent default is not UndefinedIntent as expected"
+             << endl;
       }
 
     image.renderingIntent(PerceptualIntent);
     if ( image.renderingIntent() != PerceptualIntent )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", renderingIntent set/get failed" << endl;
+	cout << "Line: " << __LINE__
+             << ", renderingIntent set/get failed" << endl;
       }
     image.renderingIntent(UndefinedIntent);
 
@@ -1163,14 +1183,17 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.resolutionUnits() != UndefinedResolution )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", resolutionUnits default is not UndefinedResolution as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", resolutionUnits default is not UndefinedResolution as expected"
+             << endl;
       }
 
     image.resolutionUnits(PixelsPerCentimeterResolution);
     if ( image.resolutionUnits() != PixelsPerCentimeterResolution )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", resolutionUnits set/get failed" << endl;
+	cout << "Line: " << __LINE__
+             << ", resolutionUnits set/get failed" << endl;
       }
     image.resolutionUnits(UndefinedResolution);
 
@@ -1180,7 +1203,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.rows() != rows )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", rows is canvas rows as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", rows is canvas rows as expected" << endl;
       }
 
     //
@@ -1189,14 +1213,16 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.scene() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", scene default is not zero as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", scene default is not zero as expected" << endl;
       }
 
     image.scene(5);
     if ( image.scene() != 5 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", scene set/get failed" << endl;
+	cout << "Line: " << __LINE__
+             << ", scene set/get failed" << endl;
       }
     image.scene(0);
 
@@ -1242,14 +1268,16 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.subImage() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", subImage default is not zero as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", subImage default is not zero as expected" << endl;
       }
 
     image.subImage(5);
     if ( image.subImage() != 5 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", subImage set/get failed" << endl;
+	cout << "Line: " << __LINE__
+             << ", subImage set/get failed" << endl;
       }
     image.subImage(0);
 
@@ -1259,14 +1287,16 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.subRange() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", subRange default is not zero as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", subRange default is not zero as expected" << endl;
       }
 
     image.subRange(5);
     if ( image.subRange() != 5 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", subRange set/get failed" << endl;
+	cout << "Line: " << __LINE__
+             << ", subRange set/get failed" << endl;
       }
     image.subRange(0);
 
@@ -1276,21 +1306,24 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.tileName().length() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", tileName default is not empty string as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", tileName default is not empty string as expected" << endl;
       }
     
     image.tileName("How now brown cow?");
     if ( image.tileName() != "How now brown cow?" )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", tileName set/get failed" << endl;
+	cout << "Line: " << __LINE__
+             << ", tileName set/get failed" << endl;
       }
 
     image.tileName( string() );
     if ( image.tileName().length() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", tileName failed to unset" << endl;
+	cout << "Line: " << __LINE__
+             << ", tileName failed to unset" << endl;
       }
 
     //
@@ -1309,7 +1342,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.type() != PaletteType )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", type is not PaletteType as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", type is not PaletteType as expected" << endl;
       }
 
     //
@@ -1318,7 +1352,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.verbose() != false )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", verbose is not false as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", verbose is not false as expected" << endl;
       }
 
     //
@@ -1327,21 +1362,24 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.view().length() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", view default is not empty string as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", view default is not empty string as expected" << endl;
       }
     
     image.view("How now brown cow?");
     if ( image.view() != "How now brown cow?" )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", view set/get failed" << endl;
+	cout << "Line: " << __LINE__
+             << ", view set/get failed" << endl;
       }
 
     image.view( string() );
     if ( image.view().length() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", view failed to unset" << endl;
+	cout << "Line: " << __LINE__
+             << ", view failed to unset" << endl;
       }
 
     //
@@ -1350,21 +1388,24 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.x11Display().length() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", x11Display default is not empty string as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", x11Display default is not empty string as expected" << endl;
       }
     
     image.x11Display(":0.0");
     if ( image.x11Display() != ":0.0" )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", x11Display set/get failed" << endl;
+	cout << "Line: " << __LINE__
+             << ", x11Display set/get failed" << endl;
       }
 
     image.x11Display( string() );
     if ( image.x11Display().length() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", x11Display failed to unset" << endl;
+	cout << "Line: " << __LINE__
+             << ", x11Display failed to unset" << endl;
       }
 
     //
@@ -1373,7 +1414,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.xResolution() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", xResolution default is not zero as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", xResolution default is not zero as expected" << endl;
       }
 
     //
@@ -1382,7 +1424,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.yResolution() != 0 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", yResolution default is not zero as expected" << endl;
+	cout << "Line: " << __LINE__
+             << ", yResolution default is not zero as expected" << endl;
       }
 
   }

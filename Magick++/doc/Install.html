@@ -287,15 +287,18 @@ Windows '9X, and Windows NT</h3></center>
 
 <h4>
 Visual C++</h4>
-Windows NT is supported by an ImageMagick source package known as VisualMagick.&nbsp;
-The VisualMagick source package provides sources to ImageMagick, Magick++,
-add-on libraries (e.g. JPEG), and a ready-made Visual C++ build environment.
-The easiest way to build Magick++ for Windows NT is to use the copy of
-Magick++ provided with VisualMagick. However, the copy of Magick++ provided
-with VisualMagick may be replaced with a newer Magick++ package if necessary.
-<p>Obtain and extract the VisualMagick source package, making sure to preserver
-subdirectories.
-<p>VisualMagick provides three ready-made build envionments:
+Windows NT is supported by an ImageMagick source package for NT available
+in the 'nt' subdirectory of the ImageMagick ftp site (and mirrors).&nbsp;
+The ImageMagick source package for NT provides sources to ImageMagick,
+Magick++, add-on libraries (e.g. JPEG), and a ready-made Visual C++ build
+environment. The easiest way to build Magick++ for Windows NT is to use
+the copy of Magick++ provided with ImageMagick. However, the copy of Magick++
+provided with ImageMagick may be replaced with a newer Magick++ package
+if necessary.
+<p>Obtain and extract the ImageMagick source package for NT (e.g. ImageMagick-5.1.1.zip),
+making sure to preserver subdirectories.
+<p>ImageMagick for NT provides three ready-made build envionments which
+may be found in the <i>VisualMagick</i> subdirectory:
 <blockquote><i>VisualMagick</i> (<tt>ImageMagick\VisualMagick\VisualMagick.dsw</tt>)
 <br>&nbsp;&nbsp; Builds Debug and Release versions based on DLLs
 <br><i>VisualMagickStatic</i> (<tt>ImageMagick\VisualMagick\VisualMagickStatic.dsw</tt>)
@@ -307,19 +310,19 @@ These build environments are based on similarly named workspaces in the
 VisualMagick subdirectory.
 <p>Open the desired workspace in Visual C++, select the menu named "Build",
 the menu entry "Batch Build", and then click on the "Rebuild All" button
-in order to build the complete VisualMagick package, including the Magick++
+in order to build the complete ImageMagick package, including the Magick++
 library.
 <p>Executables and DLLs are output to the directory <i>ImageMagick\VisualMagick\bin.</i>
 Linkable libraries are output to the directory <i>ImageMagick\VisualMagick\lib</i>.
-<p>The VisualMagick build does not build the Magick++ demos or tests. These
+<p>The ImageMagick build does not build the Magick++ demos or tests. These
 are built by seperate workspaces.
 <h5>
 Magick++ Demos</h5>
 In order to build the Magick++ demos, open the workspace <i>ImageMagick\VisualMagick\Magick++Demos.dsw
 </i>and
-do a Batch Build, using the same options as used for VisualMagick. The
-executables for the demos are output to the <i>ImageMagick\VisualMagick\bin</i>
-directory. The demos may be executed by running the batch script <i>Magick++Demo.bat
+do a Batch Build, using the same options as used for ImageMagick. The executables
+for the demos are output to the <i>ImageMagick\VisualMagick\bin</i> directory.
+The demos may be executed by running the batch script <i>Magick++Demo.bat
 </i>in
 the directory <i>ImageMagick\VisualMagick</i>, with output files written
 to the directory <i>ImageMagick\Magick++\demo</i>. An alternative way to
@@ -341,7 +344,7 @@ animation
 <h5>
 Magick++ Tests</h5>
 In order to build the Magick++ tests, open the workspace <i>ImageMagick\VisualMagick\Magick++Tests.dsw</i>
-and do a Batch Build, using the same options as used&nbsp; for VisualMagick.&nbsp;
+and do a Batch Build, using the same options as used&nbsp; for ImageMagick.&nbsp;
 The executables for the tests are output to the <i>ImageMagick\VisualMagick\bin</i>
 directory. The tests may be executed by running the batch script <i>Magick++Tests.bat
 </i>in

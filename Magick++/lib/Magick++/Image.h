@@ -170,7 +170,7 @@ namespace Magick
     
     // Equalize image (histogram equalization)
     void            equalize ( void );
-    
+
     // Flip image (reflect each scanline in the vertical direction)
     void            flip ( void );
 
@@ -531,6 +531,10 @@ namespace Magick
     // Number of bytes of the image on disk
     unsigned int    fileSize ( void ) const;
 
+    // Color to use when filling drawn objects
+    void            fillColor ( const Color &fillColor_ );
+    Color           fillColor ( void ) const;
+
     // Filter to use when resizing image
     void            filterType ( FilterType filterType_ );
     FilterType      filterType ( void ) const;
@@ -669,6 +673,10 @@ namespace Magick
     // Width and height of a raw image 
     void            size ( const Geometry &geometry_ );
     Geometry        size ( void ) const;
+
+    // Color to use when drawing object outlines
+    void            strokeColor ( const Color &strokeColor_ );
+    Color           strokeColor ( void ) const;
 
     // Subimage of an image sequence
     void            subImage ( unsigned int subImage_ );

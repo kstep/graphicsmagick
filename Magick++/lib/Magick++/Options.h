@@ -89,6 +89,10 @@ namespace Magick
     void            fileName ( const std::string &fileName_ );
     std::string     fileName ( void ) const;
 
+    // Color to use when filling drawn objects
+    void            fillColor ( const Color &fillColor_ );
+    Color           fillColor ( void ) const;
+
     // Font name
     void            font ( const std::string &font_ );
     std::string     font ( void ) const;
@@ -127,10 +131,6 @@ namespace Magick
     void            page ( const Geometry &pageSize_ );
     Geometry        page ( void ) const;
 
-    // Pen drawing color
-    void            penColor ( const Color &penColor_ );
-    Color           penColor ( void  ) const;
-
     // Pen texture image.
     void            penTexture ( const MagickLib::Image *penTexture_ );
     const MagickLib::Image* penTexture ( void  ) const;
@@ -162,6 +162,10 @@ namespace Magick
     // Image size (required for raw formats)
     void            size ( const Geometry &geometry_ );
     Geometry        size ( void ) const;
+
+    // Color to use when drawing object outlines
+    void            strokeColor ( const Color &strokeColor_ );
+    Color           strokeColor ( void ) const;
     
     void            subImage ( unsigned int subImage_ );
     unsigned int    subImage ( void ) const;

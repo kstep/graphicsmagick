@@ -37,7 +37,10 @@ void Magick::Montage::updateMontageInfo ( MontageInfo &montageInfo_ ) const
     montageInfo_.gravity = _gravity;
 
   if ( _pen.isValid() )
-    Magick::CloneString( &montageInfo_.pen, _pen );
+    {
+      montageInfo_.stroke = _pen;
+      montageInfo_.fill = _pen;
+    }
 
   if ( _pointSize != 0 )
     montageInfo_.pointsize = _pointSize;

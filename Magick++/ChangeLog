@@ -1,3 +1,13 @@
+2000-04-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (fillColor): New method to specify fill color when
+ 	drawing objects.
+	(strokeColor): New method to specify outline color when drawing
+ 	objects.
+	(penColor): Setting penColor now sets fillColor and
+ 	strokeColor. Getting penColor retrieves the value of
+ 	strokeColor. This supports backwards compatability.
+
 2000-03-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (lineWidth): Type changed from unsigned int to double.

@@ -643,15 +643,21 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
 		      "Access outside of image boundary" );
     }
 
+  // Set drawing texture
+  options()->penTexture(texture_.constImage());
+
   // Get pixel view
   Pixels pixels(*this);
   // Fill image
-  PixelPacket *packet = pixels.get(x_, y_, 1, 1 );
-  if (packet)
-    ColorFloodfillImage ( image(),
-			*packet,
-			const_cast<Image &>(texture_).image(),
-			x_, y_, FloodfillMethod );
+  PixelPacket *target = pixels.get(x_, y_, 1, 1 );
+  if (target)
+    ColorFloodfillImage ( image(), // Image *image
+                          options()->drawInfo(), // const DrawInfo *draw_info
+                          *target, // const PixelPacket target
+                          x_, // const int x_offset
+                          y_, // const int y_offset
+                          FloodfillMethod // const PaintMethod method
+                          );
   throwImageException();
 }
 void Magick::Image::floodFillTexture( const Magick::Geometry &point_,
@@ -668,10 +674,18 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
 				      const Magick::Color &borderColor_ )
 {
   modifyImage();
+
+  // Set drawing texture
+  options()->penTexture(texture_.constImage());
+
   PixelPacket target = borderColor_;
-  ColorFloodfillImage ( image(), target,
-			const_cast<Image &>(texture_).image(),
-			x_, y_, FillToBorderMethod );
+  ColorFloodfillImage ( image(), // Image *image
+                        options()->drawInfo(), // const DrawInfo *draw_info
+                        target, // const PixelPacket target
+                        x_, // const int x_offset
+                        y_, // const int y_offset
+                        FillToBorderMethod // const PaintMethod method
+                        );
   throwImageException();
 }
 void  Magick::Image::floodFillTexture( const Magick::Geometry &point_,
@@ -1871,6 +1885,17 @@ unsigned int Magick::Image::fileSize ( void ) const
   return constImage()->filesize;
 }
 
+// Color to use when drawing inside an object
+void Magick::Image::fillColor ( const Magick::Color &fillColor_ )
+{
+  modifyImage();
+  options()->fillColor(fillColor_);
+}
+Magick::Color Magick::Image::fillColor ( void ) const
+{
+  return constOptions()->fillColor();
+}
+
 void Magick::Image::filterType ( Magick::FilterType filterType_ )
 {
   modifyImage();
@@ -2165,11 +2190,12 @@ double Magick::Image::normalizedMeanError ( void ) const
 void Magick::Image::penColor ( const Color &penColor_ )
 {
   modifyImage();
-  options()->penColor( penColor_ );
+  options()->fillColor(penColor_);
+  options()->strokeColor(penColor_);
 }
 Magick::Color Magick::Image::penColor ( void  ) const
 {
-  return constOptions()->penColor( );
+  return constOptions()->strokeColor();
 }
 
 void Magick::Image::penTexture ( const Image &penTexture_ )
@@ -2377,6 +2403,17 @@ Magick::Geometry Magick::Image::size ( void ) const
 {
   return Magick::Geometry( constImage()->columns, constImage()->rows );
   //  return constOptions()->size( );
+}
+
+// Color to use when drawing object outlines
+void Magick::Image::strokeColor ( const Magick::Color &strokeColor_ )
+{
+  modifyImage();
+  options()->strokeColor(strokeColor_);
+}
+Magick::Color Magick::Image::strokeColor ( void ) const
+{
+  return constOptions()->strokeColor();
 }
 
 void Magick::Image::subImage ( unsigned int subImage_ )

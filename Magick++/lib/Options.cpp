@@ -131,21 +131,12 @@ Magick::Color Magick::Options::borderColor ( void ) const
 // Text bounding-box base color
 void Magick::Options::boxColor ( const Magick::Color &boxColor_ )
 {
-  FreeMemory( (void**)&_drawInfo->box );
-  FreeMemory( (void**)&_annotateInfo->box );
-
-  if ( boxColor_.isValid() )
-    {
-      Magick::CloneString( &_drawInfo->box, boxColor_ );
-      Magick::CloneString( &_annotateInfo->box, boxColor_ );
-    }
+  _drawInfo->box = boxColor_;
+  _annotateInfo->box = boxColor_;
 }
 Magick::Color Magick::Options::boxColor ( void ) const
 {
-  if ( _annotateInfo->box )
-    return Magick::Color( _annotateInfo->box );
-
-  return Magick::Color();
+  return Magick::Color( _annotateInfo->box );
 }
 
 void Magick::Options::density ( const Magick::Geometry &density_ )
@@ -165,7 +156,6 @@ Magick::Geometry Magick::Options::density ( void ) const
   return Geometry();
 }
 
-
 void Magick::Options::fileName ( const std::string &fileName_ )
 {
   fileName_.copy( _imageInfo->filename, MaxTextExtent-1 );
@@ -174,6 +164,18 @@ void Magick::Options::fileName ( const std::string &fileName_ )
 std::string Magick::Options::fileName ( void ) const
 {
   return std::string( _imageInfo->filename );
+}
+
+// Color to use when drawing inside an object
+void Magick::Options::fillColor ( const Magick::Color &fillColor_ )
+{
+  _annotateInfo->fill = fillColor_;
+  _drawInfo->fill = fillColor_;
+  _imageInfo->fill = fillColor_;
+}
+Magick::Color Magick::Options::fillColor ( void ) const
+{
+  return _drawInfo->fill;
 }
 
 void Magick::Options::font ( const std::string &font_ )
@@ -262,41 +264,6 @@ Magick::Geometry Magick::Options::page ( void ) const
     return Geometry();
 }
 
-void Magick::Options::penColor ( const Color &penColor_ )
-{
-  ImageInfo *clone_info = CloneImageInfo( _imageInfo );
-
-  if ( !penColor_.isValid() )
-    {
-      FreeMemory( (void**)&_imageInfo->pen );
-      FreeMemory( (void**)&_annotateInfo->pen );
-      FreeMemory( (void**)&_drawInfo->pen );
-      strcpy( clone_info->filename,"xc:black" );
-    }
-  else
-    {
-      Magick::CloneString( &_imageInfo->pen, penColor_ );
-      CloneString( &_annotateInfo->pen, _imageInfo->pen );
-      CloneString( &_drawInfo->pen,  _imageInfo->pen );
-      FormatString(clone_info->filename,"xc:%.1024s",_drawInfo->pen);
-    }
-
-  ExceptionInfo error;
-  GetExceptionInfo( &error );
-  CloneString( &clone_info->size, "1x1");
-  if ( _drawInfo->tile )
-    DestroyImage( _drawInfo->tile );
-  _drawInfo->tile=ReadImage(clone_info,&error);
-  DestroyImageInfo(clone_info);
-}
-Magick::Color Magick::Options::penColor ( void  ) const
-{
-  if ( _imageInfo->pen )
-    return Color( _imageInfo->pen );
-
-  return Color( );
-}
-
 void Magick::Options::penTexture ( const MagickLib::Image *penTexture_ )
 {
   if ( _drawInfo->tile )
@@ -342,6 +309,18 @@ Magick::Geometry Magick::Options::size ( void ) const
     return Geometry( _imageInfo->size );
 
   return Geometry();
+}
+
+// Color to use when drawing object outlines
+void Magick::Options::strokeColor ( const Magick::Color &strokeColor_ )
+{
+  _annotateInfo->stroke = strokeColor_;
+  _drawInfo->stroke = strokeColor_;
+  _imageInfo->stroke = strokeColor_;
+}
+Magick::Color Magick::Options::strokeColor ( void ) const
+{
+  return _drawInfo->stroke;
 }
 
 void Magick::Options::tileName ( const std::string &tileName_ )
