@@ -474,11 +474,11 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
     q++;
   if (*q == '.')
     *q='\0';
-  (void) sprintf(buffer,"#define %.1024s_width %u\n",name,image->columns);
+  FormatString(buffer,"#define %.1024s_width %u\n",name,image->columns);
   (void) WriteBlob(image,strlen(buffer),buffer);
-  (void) sprintf(buffer,"#define %.1024s_height %u\n",name,image->rows);
+  FormatString(buffer,"#define %.1024s_height %u\n",name,image->rows);
   (void) WriteBlob(image,strlen(buffer),buffer);
-  (void) sprintf(buffer,"static char %.1024s_bits[] = {\n",name);
+  FormatString(buffer,"static char %.1024s_bits[] = {\n",name);
   (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer," ");
   (void) WriteBlob(image,strlen(buffer),buffer);
@@ -523,7 +523,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
           /*
             Write a bitmap byte to the image file.
           */
-          (void) sprintf(buffer,"0x%02x, ",(unsigned int) (byte & 0xff));
+          FormatString(buffer,"0x%02x, ",(unsigned int) (byte & 0xff));
           (void) WriteBlob(image,strlen(buffer),buffer);
           count++;
           if (count == 12)
@@ -543,7 +543,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
           Write a bitmap byte to the image file.
         */
         byte>>=(8-bit);
-        (void) sprintf(buffer,"0x%02x, ",(unsigned int) (byte & 0xff));
+        FormatString(buffer,"0x%02x, ",(unsigned int) (byte & 0xff));
         (void) WriteBlob(image,strlen(buffer),buffer);
         count++;
         if (count == 12)

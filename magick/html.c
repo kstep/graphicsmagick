@@ -264,9 +264,9 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,strlen(buffer),buffer);
       attribute=GetImageAttribute(image,"Label");
       if (attribute != (ImageAttribute *) NULL)
-        (void) sprintf(buffer,"<title>%.1024s</title>\n",attribute->value);
+        FormatString(buffer,"<title>%.1024s</title>\n",attribute->value);
       else
-        (void) sprintf(buffer,"<title>%.1024s</title>\n",
+        FormatString(buffer,"<title>%.1024s</title>\n",
           BaseFilename(image->filename));
       (void) WriteBlob(image,strlen(buffer),buffer);
       (void) strcpy(buffer,"</head>\n");
@@ -275,13 +275,13 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,strlen(buffer),buffer);
       (void) strcpy(buffer,"<center>\n");
       (void) WriteBlob(image,strlen(buffer),buffer);
-      (void) sprintf(buffer,"<h1>%.1024s</h1>\n",image->filename);
+      FormatString(buffer,"<h1>%.1024s</h1>\n",image->filename);
       (void) WriteBlob(image,strlen(buffer),buffer);
       (void) strcpy(buffer,"<br><br>\n");
       (void) WriteBlob(image,strlen(buffer),buffer);
       (void) strcpy(filename,image->filename);
       AppendImageFormat("gif",filename);
-      (void) sprintf(buffer,
+      FormatString(buffer,
         "<img ismap usemap=#%.1024s src=\"%.1024s\" border=0>\n",
         mapname,filename);
       (void) WriteBlob(image,strlen(buffer),buffer);
@@ -297,13 +297,13 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       /*
         Write an image map.
       */
-      (void) sprintf(buffer,"<map name=%.1024s>\n",mapname);
+      FormatString(buffer,"<map name=%.1024s>\n",mapname);
       (void) WriteBlob(image,strlen(buffer),buffer);
-      (void) sprintf(buffer,"  <area href=""%.1024s""",url);
+      FormatString(buffer,"  <area href=""%.1024s""",url);
       (void) WriteBlob(image,strlen(buffer),buffer);
       if (image->directory == (char *) NULL)
         {
-          (void) sprintf(buffer,"%.1024s shape=rect coords=0,0,%u,%u>\n",
+          FormatString(buffer,"%.1024s shape=rect coords=0,0,%u,%u>\n",
             image->filename,width-1,height-1);
           (void) WriteBlob(image,strlen(buffer),buffer);
         }
@@ -313,12 +313,12 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
             (void) WriteByte(image,*p);
           else
             {
-              (void) sprintf(buffer," shape=rect coords=%d,%d,%d,%d>\n",
+              FormatString(buffer," shape=rect coords=%d,%d,%d,%d>\n",
                 x,y,x+(int) width-1,y+(int) height-1);
               (void) WriteBlob(image,strlen(buffer),buffer);
               if (*(p+1) != '\0')
                 {
-                  (void) sprintf(buffer,"  <area href=""%.1024s""",url);
+                  FormatString(buffer,"  <area href=""%.1024s""",url);
                   (void) WriteBlob(image,strlen(buffer),buffer);
                 }
               x+=width;
@@ -382,13 +382,13 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   /*
     Write an image map.
   */
-  (void) sprintf(buffer,"<map name=%.1024s>\n",mapname);
+  FormatString(buffer,"<map name=%.1024s>\n",mapname);
   (void) WriteBlob(image,strlen(buffer),buffer);
-  (void) sprintf(buffer,"  <area href=""%.1024s""",url);
+  FormatString(buffer,"  <area href=""%.1024s""",url);
   (void) WriteBlob(image,strlen(buffer),buffer);
   if (image->directory == (char *) NULL)
     {
-      (void) sprintf(buffer,"%.1024s shape=rect coords=0,0,%u,%u>\n",
+      FormatString(buffer,"%.1024s shape=rect coords=0,0,%u,%u>\n",
         image->filename,width-1,height-1);
       (void) WriteBlob(image,strlen(buffer),buffer);
     }
@@ -398,12 +398,12 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
         (void) WriteByte(image,*p);
       else
         {
-          (void) sprintf(buffer," shape=rect coords=%d,%d,%d,%d>\n",x,y,
+          FormatString(buffer," shape=rect coords=%d,%d,%d,%d>\n",x,y,
             x+(int) width-1,y+(int) height-1);
           (void) WriteBlob(image,strlen(buffer),buffer);
           if (*(p+1) != '\0')
             {
-              (void) sprintf(buffer,"  <area href=""%.1024s""",url);
+              FormatString(buffer,"  <area href=""%.1024s""",url);
               (void) WriteBlob(image,strlen(buffer),buffer);
             }
           x+=width;

@@ -319,7 +319,7 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize raster file header.
     */
-    (void) sprintf(buffer,"%u %u\n",image->columns,image->rows);
+    FormatString(buffer,"%u %u\n",image->columns,image->rows);
     (void) WriteBlob(image,strlen(buffer),buffer);
     for (y=0; y < (int) image->rows; y++)
     {

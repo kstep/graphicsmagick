@@ -74,7 +74,7 @@ typedef struct _NexusInfo
     length;
 
   void
-    *stash;
+    *line;
 
   PixelPacket
     *pixels;
@@ -105,6 +105,9 @@ typedef struct _CacheInfo
   IndexPacket
     *indexes;
 
+  unsigned int
+    persist;
+
   char
     filename[MaxTextExtent];
 
@@ -127,7 +130,7 @@ static off_t
 static IndexPacket
   *GetIndexesFromCache(const Image *);
 
-extern Export off_t
+static off_t
   GetCacheMemory(const off_t);
 
 static PixelPacket
@@ -299,7 +302,8 @@ static void DestroyCacheInfo(Cache cache)
     case DiskCache:
     {
       CloseCache(cache);
-      (void) remove(cache_info->filename);
+      if (!cache_info->persist)
+        (void) remove(cache_info->filename);
       break;
     }
     default:
@@ -351,9 +355,9 @@ Export void DestroyCacheNexus(Cache cache,const unsigned int id)
   cache_info=(CacheInfo *) cache;
   nexus=cache_info->nexus+id;
   nexus->available=True;
-  if (nexus->stash != (void *) NULL)
-    FreeMemory((void *) &nexus->stash);
-  nexus->stash=(void *) NULL;
+  if (nexus->line != (void *) NULL)
+    FreeMemory((void *) &nexus->line);
+  nexus->line=(void *) NULL;
 }
 
 /*
@@ -462,6 +466,7 @@ Export void GetCacheInfo(Cache *cache)
   cache_info->columns=0;
   cache_info->pixels=(PixelPacket *) NULL;
   cache_info->indexes=(IndexPacket *) NULL;
+  cache_info->persist=False;
   *cache_info->filename='\0';
   cache_info->file=(-1);
   cache_info->nexus=(NexusInfo *) NULL;
@@ -511,72 +516,6 @@ static off_t GetCacheMemory(const off_t memory)
   free_memory+=memory;
 #endif
   return(free_memory);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G e t C a c h e T h e s h o l d                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetCacheThreshold returns the current cache memory threshold.  Once
-%  this threshold is exceeded, all subsequent pixels cache operations are
-%  to/from disk.
-%
-%  The format of the GetCacheThreshold method is:
-%
-%      off_t GetCacheThreshold(void)
-%
-%  A description of each parameter follows:
-%
-%    o threshold: The number of megabytes of memory available to the pixel
-%      cache.
-%
-%
-*/
-static off_t GetCacheThreshold(void)
-{
-  return(cache_threshold);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G e t C a c h e T y p e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetCacheType returns the class type of the pixel cache.
-%
-%  The format of the GetCacheType method is:
-%
-%      CacheType GetCacheType(const Cache cache)
-%
-%  A description of each parameter follows:
-%
-%    o type: Method GetCacheType returns Direct or Pseudo.
-%
-%    o cache: Specifies a pointer to a Cache structure.
-%
-%
-*/
-static CacheType GetCacheType(const Cache cache)
-{
-  CacheInfo
-    *cache_info;
-
-  assert(cache != (Cache) NULL);
-  cache_info=(CacheInfo *) cache;
-  return(cache_info->type);
 }
 
 /*
@@ -1054,28 +993,27 @@ Export unsigned int OpenCache(Cache cache,const ClassType class_type,
   else
     {
       register int
-        id;
+        i;
 
       /*
-        Allocate cache nexuss.
+        Allocate cache nexus.
       */
-      id=0;
       cache_info->nexus=(NexusInfo *)
         AllocateMemory((cache_info->rows+1)*sizeof(NexusInfo));
       if (cache_info->nexus == (NexusInfo *) NULL)
         MagickError(ResourceLimitError,"Memory allocation failed",
           "unable to allocate cache nexus");
-      for (id=0; id <= cache_info->rows; id++)
+      for (i=0; i <= cache_info->rows; i++)
       {
-        cache_info->nexus[id].available=True;
-        cache_info->nexus[id].columns=0;
-        cache_info->nexus[id].rows=0;
-        cache_info->nexus[id].x=0;
-        cache_info->nexus[id].y=0;
-        cache_info->nexus[id].length=0;
-        cache_info->nexus[id].stash=(void *) NULL;
-        cache_info->nexus[id].pixels=(PixelPacket *) NULL;
-        cache_info->nexus[id].indexes=(IndexPacket *) NULL;
+        cache_info->nexus[i].available=True;
+        cache_info->nexus[i].columns=0;
+        cache_info->nexus[i].rows=0;
+        cache_info->nexus[i].x=0;
+        cache_info->nexus[i].y=0;
+        cache_info->nexus[i].length=0;
+        cache_info->nexus[i].line=(void *) NULL;
+        cache_info->nexus[i].pixels=(PixelPacket *) NULL;
+        cache_info->nexus[i].indexes=(IndexPacket *) NULL;
       }
       cache_info->nexus[0].available=False;
     }
@@ -1192,40 +1130,30 @@ static Image *ReadCacheImage(const ImageInfo *image_info,
     keyword[MaxTextExtent],
     *values;
 
+  CacheInfo
+    *cache_info;
+
   Image
     *image;
 
-  IndexPacket
-    index;
-
   int
     c,
-    length,
-    y;
-
-  PixelPacket
-    pixel;
-
-  register IndexPacket
-    *indexes;
+    length;
 
   register int
-    i,
-    x;
-
-  register PixelPacket
-    *q;
+    i;
 
   register unsigned char
     *p;
 
-  unsigned char
-    *compressed_pixels,
-    *pixels;
+  size_t
+    offset;
 
   unsigned int
-    packet_size,
     status;
+
+  void
+    *allocation;
 
   /*
     Open image file.
@@ -1254,6 +1182,8 @@ static Image *ReadCacheImage(const ImageInfo *image_info,
     if (values == (char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
         image);
+    GetCacheInfo(&image->cache);
+    cache_info=(CacheInfo *) image->cache;
     image->depth=8;
     image->compression=NoCompression;
     while (isgraph(c) && (c != ':'))
@@ -1345,6 +1275,15 @@ static Image *ReadCacheImage(const ImageInfo *image_info,
                 &image->chromaticity.blue_primary.y);
             if (Latin1Compare(keyword,"Border-color") == 0)
               (void) QueryColorDatabase(values,&image->border_color);
+            if (Latin1Compare(keyword,"Cache") == 0)
+              {
+                (void) strcpy(cache_info->filename,values);
+                cache_info->file=
+                  open(cache_info->filename,O_RDWR | O_BINARY,0777);
+                if (cache_info->file == -1)
+                  ThrowReaderException(CacheWarning,
+                    "failed to open persistent cache",image);
+              }
             if (Latin1Compare(keyword,"Class") == 0)
               {
                 if (Latin1Compare(values,"PseudoClass") == 0)
@@ -1473,7 +1412,7 @@ static Image *ReadCacheImage(const ImageInfo *image_info,
     */
     if ((strcmp(id,"MagickCache") != 0) || (image->class == UndefinedClass) ||
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
-        (image->rows == 0))
+        (image->rows == 0) || (*cache_info->filename == '\0'))
       ThrowReaderException(CorruptImageWarning,
         "Incorrect image header in file",image);
     if (image_info->ping)
@@ -1584,116 +1523,46 @@ static Image *ReadCacheImage(const ImageInfo *image_info,
           }
       }
     /*
-      Allocate image pixels.
+      Initialize cache.
     */
-    if (image->class == DirectClass)
-      packet_size=image->depth > 8 ? 6 : 3;
-    else
-      packet_size=image->colors > 256 ? 2 : 1;
-    if (image->matte || (image->colorspace == CMYKColorspace))
-      packet_size+=image->depth > 8 ? 2 : 1;
-    if (image->compression == RunlengthEncodedCompression)
-      packet_size+=image->depth > 8 ? 2 : 1;
-    pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
-    compressed_pixels=(unsigned char *)
-      AllocateMemory(1.01*packet_size*image->columns+600);
-    if ((pixels == (unsigned char *) NULL) ||
-        (compressed_pixels == (unsigned char *) NULL))
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-        image);
-    /*
-      Read image pixels.
-    */
-    index=0;
-    length=0;
-    for (y=0; y < (int) image->rows; y++)
-    {
-      q=SetImagePixels(image,0,y,image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      indexes=GetIndexes(image);
-          if (image->compression != RunlengthEncodedCompression)
-            (void) ReadBlob(image,packet_size*image->columns,pixels);
-      if (image->compression != RunlengthEncodedCompression)
-        {
-          if (image->class == PseudoClass)
-            {
-              if (!image->matte)
-                (void) PushImagePixels(image,IndexQuantum,pixels);
-              else
-                (void) PushImagePixels(image,IndexOpacityQuantum,pixels);
-            }
-          else
-            if (image->colorspace == CMYKColorspace)
-              (void) PushImagePixels(image,CMYKQuantum,pixels);
-            else
-              if (!image->matte)
-                (void) PushImagePixels(image,RGBQuantum,pixels);
-              else
-                (void) PushImagePixels(image,RGBAQuantum,pixels);
-        }
-      else
-        {
-          if (y == 0)
-            GetPixelPacket(&pixel);
-          p=pixels;
-          for (x=0; x < (int) image->columns; x++)
-          {
-            if (length == 0)
-              {
-                if (image->class != DirectClass)
-                  {
-                    index=ReadByte(image);
-                    if (image->colors > 256)
-                      index=(index << 8)+ReadByte(image);
-                    if (index >= image->colors)
-                      ThrowReaderException(CorruptImageWarning,
-                        "invalid colormap index",image);
-                    pixel=image->colormap[index];
-                  }
-                else
-                  {
-                    if (image->depth <= 8)
-                      {
-                        pixel.red=UpScale(ReadByte(image));
-                        pixel.green=UpScale(ReadByte(image));
-                        pixel.blue=UpScale(ReadByte(image));
-                        if (image->matte ||
-                            (image->colorspace == CMYKColorspace))
-                          pixel.opacity=UpScale(ReadByte(image));
-                      }
-                    else
-                      {
-                        pixel.red=MSBFirstReadShort(image) >>
-                          (image->depth-QuantumDepth);
-                        pixel.green=MSBFirstReadShort(image) >>
-                          (image->depth-QuantumDepth);
-                        pixel.blue=MSBFirstReadShort(image) >>
-                          (image->depth-QuantumDepth);
-                        if (image->matte ||
-                            (image->colorspace == CMYKColorspace))
-                          pixel.opacity=MSBFirstReadShort(image) >>
-                            (image->depth-QuantumDepth);
-                      }
-                  }
-                length=ReadByte(image)+1;
-              }
-            length--;
-            if (image->class == PseudoClass)
-              indexes[x]=index;
-            *q++=pixel;
-          }
-        }
-      if (!SyncImagePixels(image))
-        break;
-    }
-    FreeMemory((void *) &pixels);
-    FreeMemory((void *) &compressed_pixels);
-    if (status == False)
+    cache_info->class=image->class;
+    cache_info->type=DiskCache;
+    cache_info->rows=image->rows;
+    cache_info->columns=image->columns;
+    cache_info->persist=True;
+    allocation=MapBlob(cache_info->file,IOMode,&offset);
+    if (allocation != (void *) NULL)
       {
-        DestroyImages(image);
-        return((Image *) NULL);
+        /*
+          Create memory-mapped pixel cache.
+        */
+        cache_info->type=MemoryMappedCache;
+        cache_info->pixels=(PixelPacket *) allocation;
+        if (cache_info->class == PseudoClass)
+          cache_info->indexes=(IndexPacket *)
+            (cache_info->pixels+cache_info->columns*cache_info->rows);
       }
+    /*
+      Initialize cache nexus.
+    */
+    cache_info->nexus=(NexusInfo *)
+      AllocateMemory((cache_info->rows+1)*sizeof(NexusInfo));
+    if (cache_info->nexus == (NexusInfo *) NULL)
+      MagickError(ResourceLimitError,"Memory allocation failed",
+        "unable to allocate cache nexus");
+    for (i=0; i <= cache_info->rows; i++)
+    {
+      cache_info->nexus[i].available=True;
+      cache_info->nexus[i].columns=0;
+      cache_info->nexus[i].rows=0;
+      cache_info->nexus[i].x=0;
+      cache_info->nexus[i].y=0;
+      cache_info->nexus[i].length=0;
+      cache_info->nexus[i].line=(void *) NULL;
+      cache_info->nexus[i].pixels=(PixelPacket *) NULL;
+      cache_info->nexus[i].indexes=(IndexPacket *) NULL;
+    }
+    cache_info->nexus[0].available=False;
     /*
       Proceed to next image.
     */
@@ -1991,42 +1860,6 @@ Export void SetCacheThreshold(const off_t threshold)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   S e t C a c h e T y p e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method SetCacheType sets the cache type:  MemoryCache or DiskCache.
-%
-%  The format of the SetCacheType method is:
-%
-%      void SetCacheType(Cache cache,const CacheType type)
-%
-%  A description of each parameter follows:
-%
-%    o cache: Specifies a pointer to a Cache structure.
-%
-%    o type: The pixel cache type MemoryCache or DiskCache.
-%
-%
-*/
-static void SetCacheType(Cache cache,const CacheType type)
-{
-  CacheInfo
-    *cache_info;
-
-  assert(cache != (Cache) NULL);
-  cache_info=(CacheInfo *) cache;
-  if (cache_info->type == UndefinedCache)
-    cache_info->type=type;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   S e t C a c h e N e x u s                                                 %
 %                                                                             %
 %                                                                             %
@@ -2097,16 +1930,16 @@ Export PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
   length=number_pixels*sizeof(PixelPacket);
   if (cache_info->class == PseudoClass)
     length+=number_pixels*sizeof(IndexPacket);
-  if (nexus->stash == (void *) NULL)
-    nexus->stash=AllocateMemory(length);
+  if (nexus->line == (void *) NULL)
+    nexus->line=AllocateMemory(length);
   else
     if (nexus->length != length)
-      nexus->stash=ReallocateMemory(nexus->stash,length);
-  if (nexus->stash == (void *) NULL)
+      nexus->line=ReallocateMemory(nexus->line,length);
+  if (nexus->line == (void *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache nexus");
   nexus->length=length;
-  nexus->pixels=(PixelPacket *) nexus->stash;
+  nexus->pixels=(PixelPacket *) nexus->line;
   nexus->indexes=(IndexPacket *) (nexus->pixels+nexus->columns*nexus->rows);
   return(nexus->pixels);
 }
@@ -2302,6 +2135,9 @@ static unsigned int SyncPixelCache(Image *image)
 */
 static unsigned int WriteCacheImage(const ImageInfo *image_info,Image *image)
 {
+  CacheInfo
+    *cache_info;
+
   char
     buffer[MaxTextExtent],
     color[MaxTextExtent];
@@ -2312,38 +2148,16 @@ static unsigned int WriteCacheImage(const ImageInfo *image_info,Image *image)
   ImageAttribute
     *attribute;
 
-  IndexPacket
-    index;
-
-  int
-    length,
-    y;
-
-  PixelPacket
-    pixel;
-
-  register IndexPacket
-    *indexes;
-
-  register PixelPacket
-    *p;
-
   register int
-    i,
-    x;
+    i;
 
   register unsigned char
     *q;
 
-  unsigned char
-    *compressed_pixels,
-    *pixels;
-
   unsigned int
     packet_size,
     scene,
-    status,
-    value;
+    status;
 
   /*
     Open output image file.
@@ -2360,26 +2174,12 @@ static unsigned int WriteCacheImage(const ImageInfo *image_info,Image *image)
   do
   {
     /*
-      Allocate image pixels.
-    */
-    if (image->class == DirectClass)
-      packet_size=image->depth > 8 ? 6 : 3;
-    else
-      packet_size=image->colors > 256 ? 2 : 1;
-    if (image->matte || (image->colorspace == CMYKColorspace))
-      packet_size+=image->depth > 8 ? 2 : 1;
-    if (compression == RunlengthEncodedCompression)
-      packet_size+=image->depth > 8 ? 2 : 1;
-    pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
-    compressed_pixels=(unsigned char *)
-      AllocateMemory(1.01*packet_size*image->columns+600);
-    if ((pixels == (unsigned char *) NULL) ||
-        (compressed_pixels == (unsigned char *) NULL))
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-        image);
-    /*
       Write Cache header.
     */
+    cache_info=(CacheInfo *) image->cache;
+    if (cache_info->type == MemoryCache)
+      ThrowWriterException(CacheWarning,"Cache must be out-of-core",image);
+    cache_info->persist=True;
     if (((image_info->colorspace != UndefinedColorspace) ||
          (image->colorspace != CMYKColorspace)) &&
          (image_info->colorspace != CMYKColorspace))
@@ -2389,28 +2189,30 @@ static unsigned int WriteCacheImage(const ImageInfo *image_info,Image *image)
         RGBTransformImage(image,CMYKColorspace);
     (void) strcpy(buffer,"Id=MagickCache\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
+    FormatString(buffer,"cache=%.1024s\n",cache_info->filename);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if (image->class == PseudoClass)
-      (void) sprintf(buffer,"Class=PseudoClass  Colors=%u  Matte=%s\n",
+      FormatString(buffer,"Class=PseudoClass  Colors=%u  Matte=%s\n",
         image->colors,image->matte ? "True" : "False");
     else
       if (image->colorspace != CMYKColorspace)
-        (void) sprintf(buffer,"Class=DirectClass  Matte=%s\n",
+        FormatString(buffer,"Class=DirectClass  Matte=%s\n",
           image->matte ? "True" : "False");
       else
         (void) strcpy(buffer,"Class=DirectClass  Colorspace=CMYK\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
     *buffer='\0';
     if (compression == RunlengthEncodedCompression)
-      (void) sprintf(buffer,"Compression=RunlengthEncoded\n");
+      FormatString(buffer,"Compression=RunlengthEncoded\n");
     else
       if (compression == BZipCompression)
-        (void) sprintf(buffer,"Compression=BZip\n");
+        FormatString(buffer,"Compression=BZip\n");
       else
         if (compression == ZipCompression)
-          (void) sprintf(buffer,"Compression=Zip\n");
+          FormatString(buffer,"Compression=Zip\n");
     if (*buffer != '\0')
       (void) WriteBlob(image,strlen(buffer),buffer);
-    (void) sprintf(buffer,"Columns=%u  Rows=%u  Depth=%u\n",image->columns,
+    FormatString(buffer,"Columns=%u  Rows=%u  Depth=%u\n",image->columns,
       image->rows,image->depth);
     (void) WriteBlob(image,strlen(buffer),buffer);
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
@@ -2426,28 +2228,28 @@ static unsigned int WriteCacheImage(const ImageInfo *image_info,Image *image)
           (void) strcpy(units,"pixels-per-inch");
         if (image->units == PixelsPerCentimeterResolution)
           (void) strcpy(units,"pixels-per-centimeter");
-        (void) sprintf(buffer,"Resolution=%gx%g  units=%.1024s\n",
+        FormatString(buffer,"Resolution=%gx%g  units=%.1024s\n",
           image->x_resolution,image->y_resolution,units);
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
     if ((image->page.width != 0) && (image->page.height != 0))
       {
-        (void) sprintf(buffer,"Page=%ux%u%+d%+d\n",image->page.width,
+        FormatString(buffer,"Page=%ux%u%+d%+d\n",image->page.width,
           image->page.height,image->page.x,image->page.y);
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
     (void) QueryColorName(&image->background_color,color);
-    (void) sprintf(buffer,"Background-color=%.1024s  ",color);
+    FormatString(buffer,"Background-color=%.1024s  ",color);
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) QueryColorName(&image->border_color,color);
-    (void) sprintf(buffer,"Border-color=%.1024s  ",color);
+    FormatString(buffer,"Border-color=%.1024s  ",color);
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) QueryColorName(&image->matte_color,color);
-    (void) sprintf(buffer,"Matte-color=%.1024s\n",color);
+    FormatString(buffer,"Matte-color=%.1024s\n",color);
     (void) WriteBlob(image,strlen(buffer),buffer);
     if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
       {
-        (void) sprintf(buffer,"Scene=%u  Iterations=%u  Delay=%u  Dispose=%u\n",
+        FormatString(buffer,"Scene=%u  Iterations=%u  Delay=%u  Dispose=%u\n",
           image->scene,image->iterations,image->delay,image->dispose);
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
@@ -2455,22 +2257,22 @@ static unsigned int WriteCacheImage(const ImageInfo *image_info,Image *image)
       {
         if (image->scene != 0)
           {
-            (void) sprintf(buffer,"Scene=%u\n",image->scene);
+            FormatString(buffer,"Scene=%u\n",image->scene);
             (void) WriteBlob(image,strlen(buffer),buffer);
           }
         if (image->iterations != 1)
           {
-            (void) sprintf(buffer,"Iterations=%u\n",image->iterations);
+            FormatString(buffer,"Iterations=%u\n",image->iterations);
             (void) WriteBlob(image,strlen(buffer),buffer);
           }
         if (image->delay != 0)
           {
-            (void) sprintf(buffer,"Delay=%u\n",image->delay);
+            FormatString(buffer,"Delay=%u\n",image->delay);
             (void) WriteBlob(image,strlen(buffer),buffer);
           }
         if (image->dispose != 0)
           {
-            (void) sprintf(buffer,"Dispose=%u\n",image->dispose);
+            FormatString(buffer,"Dispose=%u\n",image->dispose);
             (void) WriteBlob(image,strlen(buffer),buffer);
           }
       }
@@ -2490,7 +2292,7 @@ static unsigned int WriteCacheImage(const ImageInfo *image_info,Image *image)
       }
     if (image->gamma != 0.0)
       {
-        (void) sprintf(buffer,"Gamma=%g\n",image->gamma);
+        FormatString(buffer,"Gamma=%g\n",image->gamma);
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
     if (image->chromaticity.white_point.x != 0.0)
@@ -2498,7 +2300,7 @@ static unsigned int WriteCacheImage(const ImageInfo *image_info,Image *image)
         /*
           Note chomaticity points.
         */
-        (void) sprintf(buffer,
+        FormatString(buffer,
           "Red-primary=%g,%g  Green-primary=%g,%g  Blue-primary=%g,%g\n",
           image->chromaticity.red_primary.x,image->chromaticity.red_primary.y,
           image->chromaticity.green_primary.x,
@@ -2506,28 +2308,28 @@ static unsigned int WriteCacheImage(const ImageInfo *image_info,Image *image)
           image->chromaticity.blue_primary.x,
           image->chromaticity.blue_primary.y);
         (void) WriteBlob(image,strlen(buffer),buffer);
-        (void) sprintf(buffer,"White-point=%g,%g\n",
+        FormatString(buffer,"White-point=%g,%g\n",
           image->chromaticity.white_point.x,image->chromaticity.white_point.y);
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
     if (image->color_profile.length > 0)
       {
-        (void) sprintf(buffer,"Color-profile=%u\n",image->color_profile.length);
+        FormatString(buffer,"Color-profile=%u\n",image->color_profile.length);
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
     if (image->montage != (char *) NULL)
       {
-        (void) sprintf(buffer,"Montage=%.1024s\n",image->montage);
+        FormatString(buffer,"Montage=%.1024s\n",image->montage);
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
     SignatureImage(image);
     attribute=GetImageAttribute(image,(char *) NULL);
     while (attribute != (ImageAttribute *) NULL)
     {
-      (void) sprintf(buffer,"%.1024s=",attribute->key);
+      FormatString(buffer,"%.1024s=",attribute->key);
       (void) WriteBlob(image,strlen(buffer),buffer);
       for (i=0; i < strlen(attribute->value); i++)
-        if (isspace(attribute->value[i]))
+        if (isspace((int) attribute->value[i]))
           break;
       if (i < strlen(attribute->value))
         (void) WriteByte(image,'{');
@@ -2553,14 +2355,8 @@ static unsigned int WriteCacheImage(const ImageInfo *image_info,Image *image)
         (char *) image->color_profile.info);
     if (image->class == PseudoClass)
       {
-        register unsigned char
-          *q;
-
         unsigned char
           *colormap;
-
-        unsigned int
-          packet_size;
 
         /*
           Allocate colormap.
@@ -2594,114 +2390,6 @@ static unsigned int WriteCacheImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlob(image,packet_size*image->colors,colormap);
         FreeMemory((void *) &colormap);
       }
-    /*
-      Write image pixels to file.
-    */
-    status=True;
-    for (y=0; y < (int) image->rows; y++)
-    {
-      p=GetImagePixels(image,0,y,image->columns,1);
-      if (p == (PixelPacket *) NULL)
-        break;
-      indexes=GetIndexes(image);
-      q=pixels;
-      if (compression != RunlengthEncodedCompression)
-        {
-          if (image->class == PseudoClass)
-            {
-              if (!image->matte)
-                (void) PopImagePixels(image,IndexQuantum,pixels);
-              else
-                (void) PopImagePixels(image,IndexOpacityQuantum,pixels);
-            }
-          else
-            if (image->colorspace == CMYKColorspace)
-              (void) PopImagePixels(image,CMYKQuantum,pixels);
-            else
-              if (!image->matte)
-                (void) PopImagePixels(image,RGBQuantum,pixels);
-              else
-                (void) PopImagePixels(image,RGBAQuantum,pixels);
-        }
-      else
-        {
-          pixel=(*p);
-          index=0;
-          if (image->class == PseudoClass)
-            index=(*indexes);
-          length=0;
-          for (x=0; x < (int) image->columns; x++)
-          {
-            if ((p->red == pixel.red) && (p->green == pixel.green) && 
-                (p->blue == pixel.blue) && (p->opacity == pixel.opacity) &&
-                (length < 255) && (x < (image->columns-1)))
-              length++;
-            else
-              {
-                if (image->class != DirectClass)
-                  {
-                    if (image->colors > 256)
-                      *q++=index >> 8;
-                    *q++=index;
-                  }
-                else
-                  {
-                    if (image->depth <= 8)
-                      {
-                        *q++=DownScale(pixel.red);
-                        *q++=DownScale(pixel.green);
-                        *q++=DownScale(pixel.blue);
-                        if (image->matte ||
-                            (image->colorspace == CMYKColorspace))
-                          *q++=DownScale(pixel.opacity);
-                      }
-                    else
-                      {
-                        value=pixel.red;
-                        if ((QuantumDepth-image->depth) > 0)
-                          value*=257;
-                        *q++=value >> 8;
-                        *q++=value & 0xff;
-                        value=pixel.green;
-                        if ((QuantumDepth-image->depth) > 0)
-                          value*=257;
-                        *q++=value >> 8;
-                        *q++=value & 0xff;
-                        value=pixel.blue;
-                        if ((QuantumDepth-image->depth) > 0)
-                          value*=257;
-                        *q++=value >> 8;
-                        *q++=value & 0xff;
-                        if (image->matte ||
-                            (image->colorspace == CMYKColorspace))
-                          {
-                            value=pixel.opacity;
-                            if ((QuantumDepth-image->depth) > 0)
-                              value*=257;
-                            *q++=value >> 8;
-                            *q++=value & 0xff;
-                          }
-                      }
-                  }
-                *q++=length;
-                length=0;
-              }
-            if (image->class == PseudoClass)
-              index=indexes[x];
-            pixel=(*p);
-            p++;
-          }
-        }
-          if (compression == RunlengthEncodedCompression)
-            status=WriteBlob(image,q-pixels,pixels);
-          else
-            status=WriteBlob(image,packet_size*image->columns,pixels);
-      if (image->previous == (Image *) NULL)
-        if (QuantumTick(y,image->rows))
-          ProgressMonitor(SaveImageText,y,image->rows);
-    }
-    FreeMemory((void *) &pixels);
-    FreeMemory((void *) &compressed_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

@@ -1839,9 +1839,6 @@ Export unsigned int OpaqueImage(Image *image,const PixelPacket target,
   register PixelPacket
     *q;
 
-  unsigned int
-    status;
-
   /*
     Make image color opaque.
   */
@@ -1930,9 +1927,6 @@ Export unsigned int TransparentImage(Image *image,const PixelPacket target)
 
   register PixelPacket
     *q;
-
-  unsigned int
-    status;
 
   /*
     Make image color transparent.

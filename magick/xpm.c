@@ -859,7 +859,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"/* columns rows colors chars-per-pixel */\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
-  (void) sprintf(buffer,"\"%u %u %u %d\",\n",image->columns,
+  FormatString(buffer,"\"%u %u %u %d\",\n",image->columns,
     image->rows,colors,characters_per_pixel);
   (void) WriteBlob(image,strlen(buffer),buffer);
   for (i=0; i < (int) colors; i++)
@@ -904,7 +904,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       symbol[j]=Cixel[k];
     }
     symbol[j]='\0';
-    (void) sprintf(buffer,"\"%.1024s c %.1024s\",\n",symbol,name);
+    FormatString(buffer,"\"%.1024s c %.1024s\",\n",symbol,name);
     (void) WriteBlob(image,strlen(buffer),buffer);
   }
   /*
@@ -930,11 +930,11 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
-      (void) sprintf(buffer,"%.1024s",symbol);
+      FormatString(buffer,"%.1024s",symbol);
       (void) WriteBlob(image,strlen(buffer),buffer);
       p++;
     }
-    (void) sprintf(buffer,"\"%.1024s\n",
+    FormatString(buffer,"\"%.1024s\n",
       (y == (int) (image->rows-1) ? "" : ","));
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (QuantumTick(y,image->rows))

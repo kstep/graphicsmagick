@@ -355,16 +355,16 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
       {
         if (image->matte)
           {
-            (void) sprintf(buffer,"%d,%d: %d,%d,%d,%d\n",x,y,
+            FormatString(buffer,"%d,%d: %d,%d,%d,%d\n",x,y,
               p->red,p->green,p->blue,p->opacity);
             (void) WriteBlob(image,strlen(buffer),buffer);
           }
         else
           {
-            (void) sprintf(buffer,"%d,%d: %d,%d,%d  ",x,y,
+            FormatString(buffer,"%d,%d: %d,%d,%d  ",x,y,
               p->red,p->green,p->blue);
             (void) WriteBlob(image,strlen(buffer),buffer);
-            (void) sprintf(buffer,HexColorFormat,p->red,p->green,p->blue);
+            FormatString(buffer,HexColorFormat,p->red,p->green,p->blue);
             (void) WriteBlob(image,strlen(buffer),buffer);
           }
         (void) WriteByte(image,'\n');

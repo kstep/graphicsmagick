@@ -825,7 +825,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         (void) strcpy(buffer,"P7 332\n");
       }
     else
-      (void) sprintf(buffer,"P%c\n",format);
+      FormatString(buffer,"P%c\n",format);
     (void) WriteBlob(image,strlen(buffer),buffer);
     attribute=GetImageAttribute(image,"Label");
     if (attribute != (ImageAttribute *) NULL)
@@ -847,7 +847,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       }
     if (format != '7')
       {
-        (void) sprintf(buffer,"%u %u\n",image->columns,image->rows);
+        FormatString(buffer,"%u %u\n",image->columns,image->rows);
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
     /*
@@ -876,7 +876,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
           {
-            (void) sprintf(buffer,"%d ",(int) (indexes[x] == polarity));
+            FormatString(buffer,"%d ",(int) (indexes[x] == polarity));
             (void) WriteBlob(image,strlen(buffer),buffer);
             i++;
             if (i == 36)
@@ -896,7 +896,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        (void) sprintf(buffer,"%ld\n",MaxRGB);
+        FormatString(buffer,"%ld\n",MaxRGB);
         (void) WriteBlob(image,strlen(buffer),buffer);
         i=0;
         for (y=0; y < (int) image->rows; y++)
@@ -907,7 +907,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (int) image->columns; x++)
           {
             index=Intensity(*p);
-            (void) sprintf(buffer,"%d ",index);
+            FormatString(buffer,"%d ",index);
             (void) WriteBlob(image,strlen(buffer),buffer);
             i++;
             if (i == 12)
@@ -928,7 +928,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        (void) sprintf(buffer,"%ld\n",MaxRGB);
+        FormatString(buffer,"%ld\n",MaxRGB);
         (void) WriteBlob(image,strlen(buffer),buffer);
         i=0;
         for (y=0; y < (int) image->rows; y++)
@@ -938,7 +938,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            (void) sprintf(buffer,"%d %d %d ",p->red,p->green,p->blue);
+            FormatString(buffer,"%d %d %d ",p->red,p->green,p->blue);
             (void) WriteBlob(image,strlen(buffer),buffer);
             i++;
             if (i == 4)
@@ -1003,7 +1003,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        (void) sprintf(buffer,"%lu\n",DownScale(MaxRGB));
+        FormatString(buffer,"%lu\n",DownScale(MaxRGB));
         (void) WriteBlob(image,strlen(buffer),buffer);
         for (y=0; y < (int) image->rows; y++)
         {
@@ -1041,7 +1041,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        (void) sprintf(buffer,"%lu\n",DownScale(MaxRGB));
+        FormatString(buffer,"%lu\n",DownScale(MaxRGB));
         (void) WriteBlob(image,strlen(buffer),buffer);
         for (y=0; y < (int) image->rows; y++)
         {
@@ -1141,7 +1141,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         */
         (void) strcpy(buffer,"#END_OF_COMMENTS\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
-        (void) sprintf(buffer,"%u %u 255\n",image->columns,image->rows);
+        FormatString(buffer,"%u %u 255\n",image->columns,image->rows);
         (void) WriteBlob(image,strlen(buffer),buffer);
         i=0;
         j=0;

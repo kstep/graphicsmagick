@@ -248,13 +248,13 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,"%%Creator: (ImageMagick)\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
-        (void) sprintf(buffer,"%%%%Title: (%.1024s)\n",image->filename);
+        FormatString(buffer,"%%%%Title: (%.1024s)\n",image->filename);
         (void) WriteBlob(image,strlen(buffer),buffer);
         timer=time((time_t *) NULL);
         (void) localtime(&timer);
         (void) strcpy(date,ctime(&timer));
         date[Extent(date)-1]='\0';
-        (void) sprintf(buffer,"%%%%CreationDate: (%.1024s)\n",date);
+        FormatString(buffer,"%%%%CreationDate: (%.1024s)\n",date);
         (void) WriteBlob(image,strlen(buffer),buffer);
         bounding_box.x1=x;
         bounding_box.y1=y;
@@ -263,7 +263,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         if (image_info->adjoin && (image->next != (Image *) NULL))
           (void) strcpy(buffer,"%%BoundingBox: (atend)\n");
         else
-          (void) sprintf(buffer,"%%%%BoundingBox: %g %g %g %g\n",
+          FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",
             bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
         (void) WriteBlob(image,strlen(buffer),buffer);
         attribute=GetImageAttribute(image,"Label");
@@ -279,14 +279,14 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,"%%PageOrder: Ascend\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
-        (void) sprintf(buffer,"%%%%Pages: %u\n",GetNumberScenes(image));
+        FormatString(buffer,"%%%%Pages: %u\n",GetNumberScenes(image));
         (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,"%%EndComments\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
-    (void) sprintf(buffer,"%%%%Page:  1 %u\n",page++);
+    FormatString(buffer,"%%%%Page:  1 %u\n",page++);
     (void) WriteBlob(image,strlen(buffer),buffer);
-    (void) sprintf(buffer,"%%%%PageBoundingBox: %d %d %d %d\n",x,y,
+    FormatString(buffer,"%%%%PageBoundingBox: %d %d %d %d\n",x,y,
       x+(int) width-1,y+(int) (height+text_size)-1);
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (x < bounding_box.x1)
@@ -451,9 +451,9 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"  /ImageType 1 def\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
-    (void) sprintf(buffer,"  /Width %u def\n",image->columns);
+    FormatString(buffer,"  /Width %u def\n",image->columns);
     (void) WriteBlob(image,strlen(buffer),buffer);
-    (void) sprintf(buffer,"  /Height %u def\n",image->rows);
+    FormatString(buffer,"  /Height %u def\n",image->rows);
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"  /BitsPerComponent 8 def\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
@@ -461,7 +461,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"  /MultipleDataSources false def\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
-    (void) sprintf(buffer,"  /ImageMatrix [ %d 0 0 %d neg 0 %d ] def\n",
+    FormatString(buffer,"  /ImageMatrix [ %d 0 0 %d neg 0 %d ] def\n",
       image->columns,image->rows,image->rows);
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"  /Decode [ 0 1 0 1 0 1 ] def\n");
@@ -475,15 +475,15 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"  /ImageType 1 def\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
-    (void) sprintf(buffer,"  /Width %u def\n",image->columns);
+    FormatString(buffer,"  /Width %u def\n",image->columns);
     (void) WriteBlob(image,strlen(buffer),buffer);
-    (void) sprintf(buffer,"  /Height %u def\n",image->rows);
+    FormatString(buffer,"  /Height %u def\n",image->rows);
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"  /BitsPerComponent 8 def\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"  /MultipleDataSources false def\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
-    (void) sprintf(buffer,"  /ImageMatrix [ %d 0 0 %d neg 0 %d ] def\n",
+    FormatString(buffer,"  /ImageMatrix [ %d 0 0 %d neg 0 %d ] def\n",
       image->columns,image->rows,image->rows);
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"  /Decode [ 0 1 ] def\n");
@@ -508,9 +508,9 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteByte(image,'\n');
     (void) strcpy(buffer,"gsave\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
-    (void) sprintf(buffer,"%d %d translate\n",x,y);
+    FormatString(buffer,"%d %d translate\n",x,y);
     (void) WriteBlob(image,strlen(buffer),buffer);
-    (void) sprintf(buffer,"%g %g scale\n",x_scale,y_scale);
+    FormatString(buffer,"%g %g scale\n",x_scale,y_scale);
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"ImageMaskDictionary /Decode [ 1 0 ] put\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
@@ -533,7 +533,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       image=image->previous;
   if (page > 1)
     {
-      (void) sprintf(buffer,"%%%%BoundingBox: %g %g %g %g\n",
+      FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",
         bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
       (void) WriteBlob(image,strlen(buffer),buffer);
     }

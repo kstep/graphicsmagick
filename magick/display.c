@@ -1813,7 +1813,7 @@ static unsigned int XColorEditImage(Display *display,
                 (*image)->fuzz=atoi(FuzzMenu[entry]);
                 break;
               }
-            (void) sprintf(fuzz,"%d",(*image)->fuzz);
+            FormatString(fuzz,"%d",(*image)->fuzz);
             (void) XDialogWidget(display,windows,"Ok","Enter fuzz factor:",
               fuzz);
             if (*fuzz == '\0')
@@ -7510,7 +7510,7 @@ static unsigned int XMatteEditImage(Display *display,
                 (*image)->fuzz=atoi(FuzzMenu[entry]);
                 break;
               }
-            (void) sprintf(fuzz,"%d",(*image)->fuzz);
+            FormatString(fuzz,"%d",(*image)->fuzz);
             (void) XDialogWidget(display,windows,"Ok","Enter fuzz factor:",
               fuzz);
             if (*fuzz == '\0')

@@ -254,7 +254,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   */
   (void) strcpy(buffer,"/* UIL */\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
-  (void) sprintf(buffer,"value\n  %.1024s_ct : color_table(\n",
+  FormatString(buffer,"value\n  %.1024s_ct : color_table(\n",
     BaseFilename(image->filename));
   (void) WriteBlob(image,strlen(buffer),buffer);
   for (i=0; i < (int) colors; i++)
@@ -297,19 +297,19 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     }
     symbol[j]='\0';
     if (Latin1Compare(name,"None") == 0)
-      (void) sprintf(buffer,"    background color = '%.1024s'",symbol);
+      FormatString(buffer,"    background color = '%.1024s'",symbol);
     else
-      (void) sprintf(buffer,"    color('%.1024s',%.1024s) = '%.1024s'",
+      FormatString(buffer,"    color('%.1024s',%.1024s) = '%.1024s'",
         name,Intensity(*p) < ((MaxRGB+1)/2) ? "background" : "foreground",
         symbol);
     (void) WriteBlob(image,strlen(buffer),buffer);
-    (void) sprintf(buffer,"%.1024s",(i == (int) (colors-1) ? ");\n" : ",\n"));
+    FormatString(buffer,"%.1024s",(i == (int) (colors-1) ? ");\n" : ",\n"));
     (void) WriteBlob(image,strlen(buffer),buffer);
   }
   /*
     Define UIL pixels.
   */
-  (void) sprintf(buffer,
+  FormatString(buffer,
     "  %.1024s_icon : icon(color_table = %.1024s_ct,\n",
     BaseFilename(image->filename),BaseFilename(image->filename));
   (void) WriteBlob(image,strlen(buffer),buffer);
@@ -331,11 +331,11 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
-      (void) sprintf(buffer,"%.1024s",symbol);
+      FormatString(buffer,"%.1024s",symbol);
       (void) WriteBlob(image,strlen(buffer),buffer);
       p++;
     }
-    (void) sprintf(buffer,"\"%.1024s\n",
+    FormatString(buffer,"\"%.1024s\n",
       (y == (int) (image->rows-1) ? ");" : ","));
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (QuantumTick(y,image->rows))

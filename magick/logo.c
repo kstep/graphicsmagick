@@ -3977,7 +3977,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"*/\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
-  (void) sprintf(buffer,"#define LogoImageExtent  %lu\n\n",filesize);
+  FormatString(buffer,"#define LogoImageExtent  %lu\n\n",filesize);
   (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"static unsigned char\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
@@ -3992,7 +3992,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
     c=fgetc(file);
     if (c < 0)
       break;
-    (void) sprintf(buffer,"0x%02x, ",c);
+    FormatString(buffer,"0x%02x, ",c);
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (((i+1) % 12) == 0)
       {

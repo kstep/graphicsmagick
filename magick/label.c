@@ -563,7 +563,7 @@ static Image *ReadLabelImage(const ImageInfo *image_info,ExceptionInfo *exceptio
         if ((image->columns % 2) != 0)
           p++;
       }
-      (void) sprintf(geometry,"%ux%u+0+0",crop_info.width+1,crop_info.height);
+      FormatString(geometry,"%ux%u+0+0",crop_info.width+1,crop_info.height);
       TransformImage(&image,geometry,(char *) NULL);
       /*
         Free TrueType resources.
@@ -707,7 +707,7 @@ static Image *ReadLabelImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       annotate_info.text=text;
       annotate_info.width=XTextWidth(font_info,text,Extent(text));
       annotate_info.height=font_info->ascent+font_info->descent;
-      (void) sprintf(annotate_info.geometry,"%ux%u+0+0",annotate_info.width,
+      FormatString(annotate_info.geometry,"%ux%u+0+0",annotate_info.width,
         annotate_info.height);
       cache_info=(*clone_info);
       /*
@@ -754,7 +754,7 @@ static Image *ReadLabelImage(const ImageInfo *image_info,ExceptionInfo *exceptio
     Render label with a Postscript font.
   */
   clone_info->density=(char *) NULL;
-  (void) sprintf(page,"%ux%u+0+0!",
+  FormatString(page,"%ux%u+0+0!",
     (unsigned int) ceil(clone_info->pointsize*Extent(text)),
     (unsigned int) ceil(2*clone_info->pointsize));
   (void) CloneString(&clone_info->page,page);
@@ -813,7 +813,7 @@ static Image *ReadLabelImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       p++;
     }
   }
-  (void) sprintf(geometry,"%ux%u%+d%+d",crop_info.width+1,crop_info.height,
+  FormatString(geometry,"%ux%u%+d%+d",crop_info.width+1,crop_info.height,
     crop_info.x,crop_info.y);
   TransformImage(&image,geometry,(char *) NULL);
   image->matte=True;
