@@ -467,27 +467,27 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
       case NorthWestGravity:
       {
         annotate_info->bounds.x=x;
-        annotate_info->bounds.y=i*annotate_info->bounds.height+y;
+        annotate_info->bounds.y=i*(annotate_info->bounds.height+2)+y;
         break;
       }
       case NorthGravity:
       {
         annotate_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
-        annotate_info->bounds.y=y+i*annotate_info->bounds.height;
+        annotate_info->bounds.y=y+i*(annotate_info->bounds.height+2);
         break;
       }
       case NorthEastGravity:
       {
         annotate_info->bounds.x=x+width-annotate_image->columns;
-        annotate_info->bounds.y=y+i*annotate_info->bounds.height;
+        annotate_info->bounds.y=y+i*(annotate_info->bounds.height+2);
         break;
       }
       case WestGravity:
       {
         annotate_info->bounds.x=x;
         annotate_info->bounds.y=y+(height >> 1)-
-          (number_lines*annotate_info->bounds.height >> 1)+
-          i*annotate_info->bounds.height;
+          (number_lines*(annotate_info->bounds.height+2) >> 1)+
+          i*(annotate_info->bounds.height+2);
         break;
       }
       case ForgetGravity:
@@ -497,34 +497,34 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
       {
         annotate_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
         annotate_info->bounds.y=y+(height >> 1)-
-          (number_lines*annotate_info->bounds.height >> 1)+
-          i*annotate_info->bounds.height;
+          (number_lines*(annotate_info->bounds.height+2) >> 1)+
+          i*(annotate_info->bounds.height+2);
         break;
       }
       case EastGravity:
       {
         annotate_info->bounds.x=x+width-annotate_image->columns;
         annotate_info->bounds.y=y+(height >> 1)-
-          (number_lines*annotate_info->bounds.height >> 1)+
-          i*annotate_info->bounds.height;
+          (number_lines*(annotate_info->bounds.height+2) >> 1)+
+          i*(annotate_info->bounds.height+2);
         break;
       }
       case SouthWestGravity:
       {
         annotate_info->bounds.x=x;
-        annotate_info->bounds.y=y+height-(i+1)*annotate_info->bounds.height;
+        annotate_info->bounds.y=y+height-(i+1)*(annotate_info->bounds.height+2);
         break;
       }
       case SouthGravity:
       {
         annotate_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
-        annotate_info->bounds.y=y+height-(i+1)*annotate_info->bounds.height;
+        annotate_info->bounds.y=y+height-(i+1)*(annotate_info->bounds.height+2);
         break;
       }
       case SouthEastGravity:
       {
         annotate_info->bounds.x=x+width-annotate_image->columns;
-        annotate_info->bounds.y=y+height-(i+1)*annotate_info->bounds.height;
+        annotate_info->bounds.y=y+height-(i+1)*(annotate_info->bounds.height+2);
         break;
       }
     }
@@ -2644,10 +2644,6 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   *cloned_info=(*image_info);
   if (image_info->server_name != (char *) NULL)
     cloned_info->server_name=AllocateString(image_info->server_name);
-  if (image_info->font != (char *) NULL)
-    cloned_info->font=AllocateString(image_info->font);
-  if (image_info->pen != (char *) NULL)
-    cloned_info->pen=AllocateString(image_info->pen);
   if (image_info->size != (char *) NULL)
     cloned_info->size=AllocateString(image_info->size);
   if (image_info->tile != (char *) NULL)
@@ -2664,6 +2660,12 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     cloned_info->iterations=AllocateString(image_info->iterations);
   if (image_info->texture != (char *) NULL)
     cloned_info->texture=AllocateString(image_info->texture);
+  if (image_info->box != (char *) NULL)
+    cloned_info->box=AllocateString(image_info->box);
+  if (image_info->font != (char *) NULL)
+    cloned_info->font=AllocateString(image_info->font);
+  if (image_info->pen != (char *) NULL)
+    cloned_info->pen=AllocateString(image_info->pen);
   if (image_info->background_color != (char *) NULL)
     cloned_info->background_color=AllocateString(image_info->background_color);
   if (image_info->border_color != (char *) NULL)
@@ -3625,12 +3627,6 @@ Export void DestroyImageInfo(ImageInfo *image_info)
   if (image_info->server_name != (char *) NULL)
     FreeMemory((char *) image_info->server_name);
   image_info->server_name=(char *) NULL;
-  if (image_info->font != (char *) NULL)
-    FreeMemory((char *) image_info->font);
-  image_info->font=(char *) NULL;
-  if (image_info->pen != (char *) NULL)
-    FreeMemory((char *) image_info->pen);
-  image_info->pen=(char *) NULL;
   if (image_info->size != (char *) NULL)
     FreeMemory((char *) image_info->size);
   image_info->size=(char *) NULL;
@@ -3655,6 +3651,15 @@ Export void DestroyImageInfo(ImageInfo *image_info)
   if (image_info->texture != (char *) NULL)
     FreeMemory((char *) image_info->texture);
   image_info->texture=(char *) NULL;
+  if (image_info->box != (char *) NULL)
+    FreeMemory((char *) image_info->box);
+  image_info->box=(char *) NULL;
+  if (image_info->font != (char *) NULL)
+    FreeMemory((char *) image_info->font);
+  image_info->font=(char *) NULL;
+  if (image_info->pen != (char *) NULL)
+    FreeMemory((char *) image_info->pen);
+  image_info->pen=(char *) NULL;
   if (image_info->view != (char *) NULL)
     FreeMemory((char *) image_info->view);
   image_info->view=(char *) NULL;
@@ -5147,9 +5152,9 @@ Export void GetAnnotateInfo(const ImageInfo *image_info,
   annotate_info->border_color=AllocateString(image_info->border_color);
   annotate_info->geometry=(char *) NULL;
   annotate_info->text=(char *) NULL;
-  annotate_info->box=(char *) NULL;
+  annotate_info->box=AllocateString(image_info->box);
   annotate_info->primitive=(char *) NULL;
-  annotate_info->linewidth=1;
+  annotate_info->linewidth=image_info->linewidth;
   annotate_info->gravity=NorthWestGravity;
   annotate_info->bounds.width=annotate_info->pointsize;
   annotate_info->bounds.height=annotate_info->pointsize;
@@ -5210,17 +5215,19 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->subimage=0;
   image_info->subrange=0;
   image_info->server_name=(char *) NULL;
-  image_info->font=(char *) NULL;
-  image_info->pen=(char *) NULL;
   image_info->size=(char *) NULL;
   image_info->tile=(char *) NULL;
-  image_info->density=(char *) NULL;
   image_info->page=(char *) NULL;
   image_info->dispose=(char *) NULL;
   image_info->delay=(char *) NULL;
   image_info->iterations=(char *) NULL;
   image_info->texture=(char *) NULL;
   image_info->view=(char *) NULL;
+  image_info->box=(char *) NULL;
+  image_info->font=(char *) NULL;
+  image_info->pen=(char *) NULL;
+  image_info->density=(char *) NULL;
+  image_info->linewidth=1;
   image_info->adjoin=True;
   image_info->depth=QuantumDepth;
   image_info->dither=True;
@@ -5329,7 +5336,7 @@ Export void GetMontageInfo(MontageInfo *montage_info)
   montage_info->font=(char *) NULL;
   montage_info->pointsize=atoi(DefaultPointSize);
   montage_info->border_width=DefaultTileBorderWidth;
-  montage_info->gravity=SouthGravity;
+  montage_info->gravity=CenterGravity;
   montage_info->shadow=False;
   montage_info->compose=ReplaceCompositeOp;
 }
@@ -6732,7 +6739,8 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (Latin1Compare("-box",option) == 0)
       {
-        CloneString(&annotate_info.box,argv[++i]);
+        CloneString(&image_info->box,argv[++i]);
+        CloneString(&annotate_info.box,image_info->box);
         continue;
       }
     if (strncmp("-charcoal",option,3) == 0)
@@ -7152,7 +7160,8 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-linewidth",option,3) == 0)
       {
-        annotate_info.linewidth=atoi(argv[++i]);
+        image_info->linewidth=atoi(argv[++i]);
+        annotate_info.linewidth=image_info->linewidth;
         continue;
       }
     if (Latin1Compare("-map",option) == 0)
@@ -7890,6 +7899,7 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
     **images,
     **masterlist,
     *montage_image,
+    *texture,
     *tiled_image;
 
   ImageInfo
@@ -8091,6 +8101,12 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
   CloneString(&local_info->border_color,montage_info->border_color);
   GetAnnotateInfo(local_info,&annotate_info);
   annotate_info.gravity=NorthGravity;
+  texture=(Image *) NULL;
+  if (montage_info->texture != (char *) NULL)
+    {
+      (void) strcpy(local_info->filename,montage_info->texture);
+      texture=ReadImage(local_info);
+    }
   /*
     Initialize font info.
   */
@@ -8206,8 +8222,8 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
     */
     SetImage(montage_image);
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    if (montage_info->texture != (char *) NULL)
-      TextureImage(montage_image,montage_info->texture);
+    if (texture != (Image *) NULL)
+      TextureImage(montage_image,texture);
     if (montage_info->title != (char *) NULL)
       {
         /*
@@ -8445,6 +8461,8 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
         number_images-=tiles_per_page;
       }
   }
+  if (texture != (Image *) NULL)
+    FreeMemory((char *) texture);
   FreeMemory((char *) masterlist);
   while (montage_image->previous != (Image *) NULL)
     montage_image=montage_image->previous;
@@ -11356,53 +11374,38 @@ Export void SyncImage(Image *image)
 %
 %  The format of the TextureImage routine is:
 %
-%      TextureImage(image,filename)
+%      TextureImage(image,texture)
 %
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o filename: This file contains the texture to layer on the background.
+%    o texture: This image contains the texture to layer on the background.
 %
 %
 */
-Export void TextureImage(Image *image,const char *filename)
+Export void TextureImage(Image *image,Image *texture)
 {
 #define TextureImageText  "  Appling image texture...  "
-
-  Image
-    *texture_image;
-
-  ImageInfo
-    texture_info;
 
   int
     x,
     y;
 
   assert(image != (Image *) NULL);
-  if (filename == (const char *) NULL)
-    return;
-  /*
-    Read the texture image.
-  */
-  GetImageInfo(&texture_info);
-  (void) strcpy(texture_info.filename,filename);
-  texture_image=ReadImage(&texture_info);
-  if (texture_image == (Image *) NULL)
+  if (texture == (const Image *) NULL)
     return;
   /*
     Tile texture onto the image background.
   */
-  for (y=0; y < (int) image->rows; y+=texture_image->rows)
+  for (y=0; y < (int) image->rows; y+=texture->rows)
   {
-    for (x=0; x < (int) image->columns; x+=texture_image->columns)
-      CompositeImage(image,ReplaceCompositeOp,texture_image,x,y);
+    for (x=0; x < (int) image->columns; x+=texture->columns)
+      CompositeImage(image,ReplaceCompositeOp,texture,x,y);
     if (QuantumTick(y,image->rows))
       ProgressMonitor(TextureImageText,y,image->rows);
   }
-  DestroyImage(texture_image);
 }
 
 /*

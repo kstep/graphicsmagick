@@ -477,24 +477,28 @@ static Quantum InsideLinePrimitive(const PrimitiveInfo *p,
   const PrimitiveInfo *q,const int x,const int y,const Quantum opacity,
   const double mid)
 {
-  double
+  register double
     distance,
-    dot,
-    v;
+    dot;
 
   if ((mid == 0) || (opacity == Opaque))
     return(opacity);
   if ((p->x == q->x) && (p->y == q->y))
     return((x == p->x) && (y == p->y) ? Opaque : opacity);
-  v=(q->x-p->x)*(q->x-p->x)+(q->y-p->y)*(q->y-p->y);
   dot=(x-p->x)*(q->x-p->x)+(y-p->y)*(q->y-p->y);
-  if ((dot >= 0) && ((dot*dot/v) <= v))
-    distance=sqrt((x-p->x)*(x-p->x)+(y-p->y)*(y-p->y)-dot*dot/v);
+  if (dot < 0)
+    distance=sqrt((x-p->x)*(x-p->x)+(y-p->y)*(y-p->y));
   else
-    if (dot < 0)
-      distance=sqrt((x-p->x)*(x-p->x)+(y-p->y)*(y-p->y));
-    else
-      distance=sqrt((x-q->x)*(x-q->x)+(y-q->y)*(y-q->y));
+    {
+      register double
+        v;
+
+      v=(q->x-p->x)*(q->x-p->x)+(q->y-p->y)*(q->y-p->y);
+      if ((dot*dot/v) > v)
+        distance=sqrt((x-q->x)*(x-q->x)+(y-q->y)*(y-q->y));
+      else
+        distance=sqrt((x-p->x)*(x-p->x)+(y-p->y)*(y-p->y)-dot*dot/v);
+    }
   if (distance < (mid-0.5))
     return(Opaque);
   if (distance <= (mid+0.5))
@@ -602,9 +606,9 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
           poly_opacity;
 
          poly_opacity=Transparent;
-         for (r=p; r < q; r++)
-            poly_opacity=
-              InsideLinePrimitive(r,r+1,x,y,Max(opacity,poly_opacity),mid);
+         for (r=p; (r < q) && (poly_opacity != Opaque); r++)
+           poly_opacity=
+             InsideLinePrimitive(r,r+1,x,y,Max(opacity,poly_opacity),mid);
          poly_opacity=InsideLinePrimitive(q,p,x,y,poly_opacity,mid);
          opacity=Max(opacity,poly_opacity);
         break;

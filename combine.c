@@ -901,6 +901,7 @@ int main(int argc,char **argv)
   (void) WriteImage(&image_info,combined_image);
   if (image_info.verbose)
     DescribeImage(combined_image,stdout,False);
+  DestroyDelegateInfo();
   Exit(0);
   return(False);
 }

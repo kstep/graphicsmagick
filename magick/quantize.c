@@ -1204,7 +1204,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
 %
 %  A description of each parameter follows:
 %
-%    o quantize_info: Specifies a pointer to a MontageInfo structure.
+%    o quantize_info: Specifies a pointer to a QuantizeInfo structure.
 %
 %
 */

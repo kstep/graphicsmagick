@@ -405,24 +405,26 @@ typedef struct _ImageInfo
 
   char
     *server_name,
-    *font,
-    *pen,
     *size,
     *tile,
-    *density,
     *page,
     *dispose,
     *delay,
     *iterations,
     *texture,
-    *view;
+    *view,
+    *box,
+    *font,
+    *pen,
+    *density;
 
   unsigned int
+    linewidth,
+    pointsize,
     adjoin,
     depth,
     dither,
     monochrome,
-    pointsize,
     quality,
     verbose;
 
@@ -971,7 +973,7 @@ extern Export void
   SolarizeImage(Image *,const double),
   SortColormapByIntensity(Image *),
   SyncImage(Image *),
-  TextureImage(Image *,const char *),
+  TextureImage(Image *,Image *),
   ThresholdImage(Image *,const double),
   TransformHSL(const Quantum,const Quantum,const Quantum,double *,double *,
     double *),

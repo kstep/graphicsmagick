@@ -1120,7 +1120,7 @@ int main(int argc,char **argv)
         }
         case 't':
         {
-          if (strncmp("text_font",option+1,3) == 0)
+          if (strncmp("text_font",option+1,5) == 0)
             {
               resource_info.text_font=(char *) NULL;
               if (*option == '-')
@@ -1468,6 +1468,7 @@ int main(int argc,char **argv)
       XRetainWindowColors(display,XRootWindow(display,XDefaultScreen(display)));
       XSync(display,False);
     }
+  DestroyDelegateInfo();
   Exit(0);
   return(False);
 }

@@ -840,6 +840,7 @@ int main(int argc,char **argv)
   }
   if (image_info.verbose)
     DescribeImage(image,stdout,False);
+  DestroyDelegateInfo();
   Exit(0);
   return(False);
 }

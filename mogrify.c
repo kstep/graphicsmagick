@@ -423,11 +423,13 @@ int main(int argc,char **argv)
             }
           if (strncmp("box",option+1,3) == 0)
             {
+              image_info.box=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing box color",option);
+                  CloneString(&image_info.box,argv[i]);
                 }
               break;
             }
@@ -917,11 +919,13 @@ int main(int argc,char **argv)
             }
           if (strncmp("linewidth",option+1,2) == 0)
             {
+              image_info.linewidth=0;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing size",option);
+                  image_info.linewidth=atoi(argv[i]);
                 }
               break;
             }
@@ -1461,6 +1465,7 @@ int main(int argc,char **argv)
     }
   if (image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
+  DestroyDelegateInfo();
   Exit(0);
   return(False);
 }

@@ -11075,7 +11075,6 @@ static Image *XVisualDirectoryImage(Display *display,
   (void) strcpy(montage_info.filename,filename);
   CloneString(&montage_info.font,resource_info->image_info->font);
   montage_info.pointsize=resource_info->image_info->pointsize;
-  CloneString(&montage_info.texture,"Granite:");
   montage_image=MontageImages(image,&montage_info);
   DestroyMontageInfo(&montage_info);
   DestroyImages(image);

@@ -7268,6 +7268,11 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       PNGTextChunk(image_info,ping_info,"Comment",image->comments);
     png_write_end(ping,ping_info);
     png_destroy_write_struct(&ping,&ping_info);
+    /*
+      Free PNG resources.
+    */
+    FreeMemory((char *) scanlines);
+    FreeMemory((char *) png_pixels);
     if (image->next == (Image *) NULL)
       break;
     image->next->file=image->file;
@@ -8220,7 +8225,6 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   montage_info.pointsize=image_info->pointsize;
   CloneString(&montage_info.frame,DefaultTileFrame);
   montage_info.shadow=True;
-  CloneString(&montage_info.texture,"Granite:");
   montage_image=MontageImages(*images,&montage_info);
   DestroyMontageInfo(&montage_info);
   for (i=0;  i < i; i++)

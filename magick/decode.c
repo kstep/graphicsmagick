@@ -405,8 +405,9 @@ Image *ReadBMPImage(const ImageInfo *image_info)
         bmp_header.colors_important=LSBFirstReadLong(image->file);
         for (i=0; i < ((int) bmp_header.size-40); i++)
           (void) fgetc(image->file);
-        if ((bmp_header.bits_per_pixel == 16) ||
-            (bmp_header.bits_per_pixel == 32))
+        if ((bmp_header.compression == 3) &&
+            ((bmp_header.bits_per_pixel == 16) ||
+             (bmp_header.bits_per_pixel == 32)))
           {
             bmp_header.red_mask=LSBFirstReadShort(image->file);
             bmp_header.green_mask=LSBFirstReadShort(image->file);
@@ -7332,10 +7333,9 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
   */
   GetMontageInfo(&montage_info);
   (void) strcpy(montage_info.filename,image_info->filename);
-  montage_image=MontageImages(image,&montage_info);
   CloneString(&montage_info.font,image_info->font);
   montage_info.pointsize=image_info->pointsize;
-  CloneString(&montage_info.texture,"Granite:");
+  montage_image=MontageImages(image,&montage_info);
   DestroyMontageInfo(&montage_info);
   if (montage_image == (Image *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
@@ -10004,6 +10004,7 @@ Image *ReadPNGImage(const ImageInfo *image_info)
     */
     png_destroy_read_struct(&ping,&ping_info,&end_info);
     FreeMemory((char *) png_pixels);
+    FreeMemory((char *) scanlines);
   } while (Latin1Compare(image_info->magick,"MNG") == 0);
   while (image->previous != (Image *) NULL)
     image=image->previous;
@@ -15297,7 +15298,8 @@ Image *ReadTXTImage(const ImageInfo *image_info)
     dy_resolution;
 
   Image
-    *image;
+    *image,
+    *texture;
 
   int
     count,
@@ -15368,8 +15370,21 @@ Image *ReadTXTImage(const ImageInfo *image_info)
   image->background_color.green=XDownScale(color.green);
   image->background_color.blue=XDownScale(color.blue);
   SetImage(image);
+  texture=(Image *) NULL;
   if (image_info->texture != (char *) NULL)
-    TextureImage(image,image_info->texture);
+    {
+      ImageInfo
+        *local_info;
+
+      local_info=CloneImageInfo(image_info);
+      if (local_info == (ImageInfo *) NULL)
+        return((Image *) NULL);
+      (void) strcpy(local_info->filename,image_info->texture);
+      texture=ReadImage(local_info);
+      if (texture != (Image *) NULL)
+        TextureImage(image,texture);
+      DestroyImageInfo(local_info);
+    }
   /*
     Annotate the text image.
   */
@@ -15394,7 +15409,7 @@ Image *ReadTXTImage(const ImageInfo *image_info)
     if (image->previous == (Image *) NULL)
       if (QuantumTick(bounding_box.y+offset,image->rows))
         ProgressMonitor(LoadImageText,bounding_box.y+offset,image->rows);
-    if (((bounding_box.y << 1)+offset+annotate_info.bounds.height) < image->rows)
+    if (((2*bounding_box.y)+offset+annotate_info.bounds.height) < image->rows)
       continue;
     /*
       Page is full-- allocate next image structure.
@@ -15431,17 +15446,19 @@ Image *ReadTXTImage(const ImageInfo *image_info)
       q->length=0;
       q++;
     }
-    if (image_info->texture != (char *) NULL)
+    if (texture != (Image *) NULL)
       {
         MonitorHandler
           handler;
 
         handler=SetMonitorHandler((MonitorHandler) NULL);
-        TextureImage(image,image_info->texture);
+        TextureImage(image,texture);
         (void) SetMonitorHandler(handler);
       }
     offset=0;
   }
+  if (texture != (Image *) NULL)
+    DestroyImage(texture);
   DestroyAnnotateInfo(&annotate_info);
   (void) IsPseudoClass(image);
   while (image->previous != (Image *) NULL)
@@ -15956,7 +15973,6 @@ Image *ReadVIDImage(const ImageInfo *image_info)
   (void) strcpy(montage_info.filename,image_info->filename);
   CloneString(&montage_info.font,image_info->font);
   montage_info.pointsize=image_info->pointsize;
-  CloneString(&montage_info.texture,"Granite:");
   montage_image=MontageImages(image,&montage_info);
   DestroyMontageInfo(&montage_info);
   if (montage_image == (Image *) NULL)
@@ -18191,10 +18207,8 @@ Export Image *ReadImage(ImageInfo *image_info)
     (void) strcpy(next_image->magick_filename,image_info->filename);
     if (image->temporary)
       (void) strcpy(next_image->filename,image_info->filename);
-    if (next_image->magick_columns == 0)
-      next_image->magick_columns=next_image->columns;
-    if (next_image->magick_rows == 0)
-      next_image->magick_rows=next_image->rows;
+    next_image->magick_columns=next_image->columns;
+    next_image->magick_rows=next_image->rows;
     if (next_image->class == PseudoClass)
       if (IsMonochromeImage(next_image))
         {

@@ -348,7 +348,7 @@ static struct
     { "Signature", },
     { "Solarize", { {"factor", DoubleReference} } },
     { "Sync", },
-    { "Texture", { {"filen", StringReference} } },
+    { "Texture", { {"texture", ImageReference} } },
     { "Transform", { {"crop", StringReference}, {"geom", StringReference},
       {"filter", FilterTypes} } },
     { "Transparent", { {"color", StringReference} } },
@@ -4506,8 +4506,8 @@ Mogrify(ref,...)
         case 54:  /* Texture */
         {
           if (!attribute_flag[0])
-            argument_list[0].string_reference=(char *) NULL;
-          TextureImage(image,argument_list[0].string_reference);
+            break;
+          TextureImage(image,argument_list[0].image_reference);
           break;
         }
         case 55:  /* Transform */

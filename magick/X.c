@@ -3151,7 +3151,7 @@ Export void XGetResourceInfo(XrmDatabase database,char *client_name,
   resource_info->gamma_correct=IsTrue(resource_value);
   resource_info->image_geometry=XGetResourceClass(database,client_name,
     "geometry",(char *) NULL);
-  resource_value=XGetResourceClass(database,client_name,"gravity","South");
+  resource_value=XGetResourceClass(database,client_name,"gravity","Center");
   resource_info->gravity=(-1);
   if (Latin1Compare("Forget",resource_value) == 0)
     resource_info->gravity=ForgetGravity;

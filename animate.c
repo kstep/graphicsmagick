@@ -951,6 +951,7 @@ int main(int argc,char **argv)
         DestroyImages(image);
       }
     }
+  DestroyDelegateInfo();
   Exit(0);
   return(False);
 }

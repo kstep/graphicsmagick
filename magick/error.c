@@ -108,6 +108,7 @@ static ErrorHandler
 static void DefaultErrorHandler(const unsigned int error,const char *message,
   const char *qualifier)
 {
+  DestroyDelegateInfo();
   if (message == (char *) NULL)
     Exit(error % 100);
   (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),
