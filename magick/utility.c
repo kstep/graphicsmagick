@@ -545,7 +545,7 @@ MagickExport unsigned int CheckFileAccessability(const char *filename,
 %
 %  The format of the ChopPathComponents function is:
 %
-%      ChopPathComponents(char *path,const unsigned long number_components)
+%      ChopPathComponents(char *path,const unsigned long components)
 %
 %  A description of each parameter follows:
 %
@@ -555,8 +555,7 @@ MagickExport unsigned int CheckFileAccessability(const char *filename,
 %    o numebr_components: The number of directory components to truncate.
 %
 */
-MagickExport void ChopPathComponents(char *path,
-  const unsigned long number_components)
+MagickExport void ChopPathComponents(char *path,const unsigned long components)
 {
   register char
     *p;
@@ -572,7 +571,7 @@ MagickExport void ChopPathComponents(char *path,
   p=path+length;
   if (*p == *DirectorySeparator)
     *p='\0';
-  for (count=0; (count < (long) number_components) && (p > path); p--)
+  for (count=0; (count < (long) components) && (p > path); p--)
     if (*p == *DirectorySeparator)
       {
         *p='\0';
