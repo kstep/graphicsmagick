@@ -2147,19 +2147,19 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 GetToken(q,&q,token);
                 (void) strncpy(name,token,MaxTextExtent-1);
                 GetToken(q,&q,token);
-                bounds.x=ceil(atof(token)-0.5);
+                bounds.x=(long) ceil(atof(token)-0.5);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                bounds.y=ceil(atof(token)-0.5);
+                bounds.y=(long) ceil(atof(token)-0.5);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                bounds.width=floor(atof(token)+0.5);
+                bounds.width=(unsigned long) floor(atof(token)+0.5);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                bounds.height=floor(atof(token)+0.5);
+                bounds.height=(unsigned long) floor(atof(token)+0.5);
                 for (p=q; *q != '\0'; )
                 {
                   GetToken(q,&q,token);

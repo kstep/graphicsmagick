@@ -2604,7 +2604,8 @@ static void StoreToken(TokenInfo *token_info,char *string,
   register long
     i;
 
-  if ((token_info->offset < 0) || (token_info->offset >= (max_token_length-1)))
+  if ((token_info->offset < 0) ||
+      ((size_t) token_info->offset >= (max_token_length-1)))
     return;
   i=token_info->offset++;
   string[i]=c;
