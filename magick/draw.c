@@ -2239,9 +2239,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             affine.tx=atof(token);
+            GetToken(q,&q,token);
             if (*token == ',')
               GetToken(q,&q,token);
-            GetToken(q,&q,token);
             affine.ty=atof(token);
             break;
           }
