@@ -1,0 +1,16 @@
+
+<p>Warning, this is my XML workbench, code in there may not be as
+stable as you would like. If you're interested in the stable version,
+use the code coming with the <a href="http://www.gnome.org/">Gnome</a>
+distributions.
+<p>The packages are usually called
+<a href="http://xmlsoft.org">libxml</a>, while
+the gnome CVS module is called gnome-xml.
+<p>For complete informations about this source code check the
+<a href="http://xmlsoft.org">Home Page on xmlsoft.org</a>
+
+<p>
+$Id$
+
+<p>
+<a href="mailto:Daniel.Veillard@w3.org">Daniel.Veillard@w3.org</a>
