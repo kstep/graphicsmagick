@@ -87,7 +87,7 @@
 MagickExport double AffineExpansion(const AffineInfo *affine)
 {
   assert(affine != (AffineInfo *) NULL);
-  return(sqrt(affine->sx*affine->sy-affine->rx*affine->ry));
+  return(sqrt(fabs(affine->sx*affine->sy)-fabs(affine->rx*affine->ry)));
 }
 
 /*
