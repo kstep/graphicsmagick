@@ -4,13 +4,13 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="GM_lcms.dll"/>
-    <OBJFILES value="GM_lcms.obj ..\src\cmscam02.obj ..\src\cmscam97.obj 
-      ..\src\cmscnvrt.obj ..\src\cmserr.obj ..\src\cmsgamma.obj 
-      ..\src\cmsgmt.obj ..\src\cmsintrp.obj ..\src\cmsio1.obj 
-      ..\src\cmslut.obj ..\src\cmsmatsh.obj ..\src\cmsmtrx.obj 
-      ..\src\cmsnamed.obj ..\src\cmspack.obj ..\src\cmspcs.obj 
-      ..\src\cmsps2.obj ..\src\cmssamp.obj ..\src\cmsvirt.obj 
-      ..\src\cmswtpnt.obj ..\src\cmsxform.obj"/>
+    <OBJFILES value="GM_lcms.obj ..\src\cmscnvrt.obj ..\src\cmserr.obj
+      ..\src\cmsgamma.obj ..\src\cmsgmt.obj ..\src\cmsintrp.obj 
+      ..\src\cmsio1.obj ..\src\cmslut.obj ..\src\cmsmatsh.obj 
+      ..\src\cmsmtrx.obj ..\src\cmspack.obj  ..\src\cmspcs.obj 
+      ..\src\cmswtpnt.obj ..\src\cmsxform.obj ..\src\cmssamp.obj
+      ..\src\cmscam97.obj ..\src\cmsnamed.obj ..\src\cmsps2.obj 
+      ..\src\cmscam02.obj ..\src\cmsvirt.obj ..\src\cmsgats.obj"/>
     <RESFILES value="GM_lcms.res"/>
     <IDLFILES value=""/>
     <DEFFILE value=""/>
@@ -52,8 +52,6 @@
   <FILELIST>
       <FILE FILENAME="GM_lcms.cpp" FORMNAME="" UNITNAME="GM_lcms" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="GM_lcms.res" FORMNAME="" UNITNAME="GM_lcms.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\cmscam02.c" FORMNAME="" UNITNAME="cmscam02" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\cmscam97.c" FORMNAME="" UNITNAME="cmscam97" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmscnvrt.c" FORMNAME="" UNITNAME="cmscnvrt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmserr.c" FORMNAME="" UNITNAME="cmserr" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmsgamma.c" FORMNAME="" UNITNAME="cmsgamma" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -63,14 +61,17 @@
       <FILE FILENAME="..\src\cmslut.c" FORMNAME="" UNITNAME="cmslut" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmsmatsh.c" FORMNAME="" UNITNAME="cmsmatsh" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmsmtrx.c" FORMNAME="" UNITNAME="cmsmtrx" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\cmsnamed.c" FORMNAME="" UNITNAME="cmsnamed" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmspack.c" FORMNAME="" UNITNAME="cmspack" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmspcs.c" FORMNAME="" UNITNAME="cmspcs" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\cmsps2.c" FORMNAME="" UNITNAME="cmsps2" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\cmssamp.c" FORMNAME="" UNITNAME="cmssamp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\cmsvirt.c" FORMNAME="" UNITNAME="cmsvirt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmswtpnt.c" FORMNAME="" UNITNAME="cmswtpnt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmsxform.c" FORMNAME="" UNITNAME="cmsxform" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmssamp.c" FORMNAME="" UNITNAME="cmssamp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmscam97.c" FORMNAME="" UNITNAME="cmscam97" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmsnamed.c" FORMNAME="" UNITNAME="cmsnamed" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmsps2.c" FORMNAME="" UNITNAME="cmsps2" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmscam02.c" FORMNAME="" UNITNAME="cmscam02" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmsvirt.c" FORMNAME="" UNITNAME="cmsvirt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmscgats.c" FORMNAME="" UNITNAME="cmscgats" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -94,13 +95,13 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Little CMS
 FileDescription=Little CMS color engine
-FileVersion=1.12.0.1
+FileVersion=1.13.0.0
 InternalName=lcms - Borland C++ Builder 6.0 porting by Mike Chiarappa, mikechiarappa@libero.it
 LegalCopyright=No copyright, use freely
 LegalTrademarks=Marti' Maria
 OriginalFilename=lcms
 ProductName=Little CMS color engine
-ProductVersion=1.12
+ProductVersion=1.13
 Comments=www.littlecms.com, http://www.lcms.coloraid.de
 
 [HistoryLists\hlIncludePath]

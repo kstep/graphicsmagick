@@ -4,54 +4,46 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="lcms.lib"/>
-    <OBJFILES value="lcms.obj ..\src\cmscnvrt.obj ..\src\cmserr.obj 
-      ..\src\cmsgamma.obj ..\src\cmsgmt.obj ..\src\cmsintrp.obj 
-      ..\src\cmsio1.obj ..\src\cmslut.obj ..\src\cmsmatsh.obj 
-      ..\src\cmsmtrx.obj ..\src\cmspack.obj ..\src\cmspcs.obj 
-      ..\src\cmswtpnt.obj ..\src\cmsxform.obj ..\src\cmssamp.obj 
-      ..\src\cmscam97.obj ..\src\cmsnamed.obj ..\src\cmsps2.obj 
-      ..\src\cmscam02.obj ..\src\cmsvirt.obj"/>
+    <OBJFILES value="..\src\cmscnvrt.obj ..\src\cmserr.obj ..\src\cmsgamma.obj 
+      ..\src\cmsgmt.obj ..\src\cmsintrp.obj ..\src\cmsio1.obj ..\src\cmslut.obj 
+      ..\src\cmsmatsh.obj ..\src\cmsmtrx.obj ..\src\cmspack.obj 
+      ..\src\cmspcs.obj ..\src\cmswtpnt.obj ..\src\cmsxform.obj 
+      ..\src\cmssamp.obj ..\src\cmscam97.obj ..\src\cmsnamed.obj 
+      ..\src\cmsps2.obj ..\src\cmscam02.obj ..\src\cmsvirt.obj ..\src\cmscgats.obj"/>
     <RESFILES value=""/>
-    <IDLFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value=""/>
     <PACKAGES value=""/>
     <PATHCPP value=".;..\src"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
-    <DEBUGLIBPATH value=""/>
-    <RELEASELIBPATH value=""/>
     <LINKER value="TLib"/>
-    <USERDEFINES value=""/>
+    <USERDEFINES value="WIN32"/>
     <SYSDEFINES value="NO_STRICT"/>
-    <MAINSOURCE value="lcms.cpp"/>
+    <MAINSOURCE value="lcms.bpf"/>
     <INCLUDEPATH value="..\src;..\include;$(BCB)\include;$(BCB)\include\vcl"/>
     <LIBPATH value="..\src"/>
-    <WARNINGS value="-w-par -w-8027 -w-8026"/>
-    <WARNOPTSTR value=""/>
+    <WARNINGS value="-w-rvl -w-rch -w-par -w-8027 -w-8026 -w-aus"/>
     <LISTFILE value="lcms"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
     <CFLAG1 value="-O2 -Vx -Ve -x- -RT- -X- -a8 -5 -b- -d -k- -vi -c -tWM"/>
     <PFLAGS value="-$Y- -$L- -$D- -$A8 -v -JPHN -M"/>
-    <RFLAGS value=""/>
     <AFLAGS value="/mu /w2 /zn"/>
     <LFLAGS value="/0 /E /C"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="$(OBJFILES)"/>
-    <ALLRES value=""/>
     <ALLLIB value=""/>
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
-      <FILE FILENAME="lcms.cpp" FORMNAME="" UNITNAME="lcms" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="lcms.bpf" FORMNAME="" UNITNAME="lcms" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmscnvrt.c" FORMNAME="" UNITNAME="cmscnvrt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmserr.c" FORMNAME="" UNITNAME="cmserr" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmsgamma.c" FORMNAME="" UNITNAME="cmsgamma" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -71,6 +63,7 @@
       <FILE FILENAME="..\src\cmsps2.c" FORMNAME="" UNITNAME="cmsps2" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmscam02.c" FORMNAME="" UNITNAME="cmscam02" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmsvirt.c" FORMNAME="" UNITNAME="cmsvirt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmscgats.c" FORMNAME="" UNITNAME="cmscgats" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -80,7 +73,7 @@
 IncludeVerInfo=0
 AutoIncBuild=0
 MajorVer=1
-MinorVer=0
+MinorVer=13
 Release=0
 Build=0
 Debug=0
@@ -94,13 +87,13 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=
 FileDescription=
-FileVersion=1.1.0.0
+FileVersion=1.13.0.0
 InternalName=
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=
 ProductName=
-ProductVersion=1.1.0.0
+ProductVersion=1.13.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]
@@ -115,10 +108,9 @@ Item0=..\src
 Count=1
 Item0=$(BCB)\source\vcl
 
-[HistoryLists\hlFinalOutputDir]
+[HistoryLists\hlConditionals]
 Count=1
-Item0=..\
-
+Item0=WIN32
 
 [HistoryLists\hlTlibPageSize]
 Count=1
@@ -145,12 +137,12 @@ RemoteDebug=0
 
 [Compiler]
 ShowInfoMsgs=0
-LinkDebugVcl=1
+LinkDebugVcl=0
 LinkCGLIB=0
 
 [Language]
 ActiveLang=
 ProjectLang=
-RootDir=
+RootDir=coders
   </IDEOPTIONS>
 </PROJECT>

@@ -4,16 +4,15 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="..\testbed\testcms.exe"/>
-    <OBJFILES value="testcms.obj"/>
+    <OBJFILES value="..\testbed\testcms.obj"/>
     <RESFILES value=""/>
     <IDLFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
-    <LIBFILES value="..\Lib\BC\lcms.lib"/>
+    <LIBFILES value="lcms.lib"/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi vcl.bpi"/>
-    <PATHCPP value=".;"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
@@ -22,9 +21,9 @@
     <LINKER value="ilink32"/>
     <USERDEFINES value=""/>
     <SYSDEFINES value="_NO_VCL;_VIS_NOLIB"/>
-    <MAINSOURCE value="testcms.cpp"/>
-    <INCLUDEPATH value="..\src;..\include;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="$(BCB)\lib"/>
+    <MAINSOURCE value="..\testbed\testcms.c"/>
+    <INCLUDEPATH value="..\testbed;..\src;..\include;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\testbed;$(BCB)\lib"/>
     <WARNINGS value=""/>
     <WARNOPTSTR value=""/>
     <OTHERFILES value=""/>
@@ -45,8 +44,8 @@
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
-      <FILE FILENAME="testcms.cpp" FORMNAME="" UNITNAME="testcms" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\Lib\BC\lcms.lib" FORMNAME="" UNITNAME="lcms110" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\testbed\testcms.c" FORMNAME="" UNITNAME="testcms" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="lcms.lib" FORMNAME="" UNITNAME="lcms.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -70,23 +69,23 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=
 FileDescription=Executable (Console)
-FileVersion=1.0.0.0
+FileVersion=1.13.0.0
 InternalName=
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=
 ProductName=
-ProductVersion=1.0.0.0
+ProductVersion=1.13.0.0
 Comments=
+
 
 [HistoryLists\hlIncludePath]
 Count=1
-Item0=..\src;..\include;$(BCB)\include;$(BCB)\include\vcl
+Item0=..\testbed;..\src;..\include;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
 Count=1
-Item0=$(BCB)\lib
-
+Item0=..\testbed;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
@@ -115,10 +114,5 @@ RemoteDebug=0
 ShowInfoMsgs=0
 LinkDebugVcl=1
 LinkCGLIB=0
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
   </IDEOPTIONS>
 </PROJECT>

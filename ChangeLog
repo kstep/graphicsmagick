@@ -1,3 +1,12 @@
+2004-07-20  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* BCBMagick: Updated lcms to version 1.13.
+	  Modified files: BCBMagick\All\bcbMagick.mak; BCBMagick\lcms\BCB6\GM_lcms.bpr;
+	  BCBMagick\lcms\BCB6\lcms.bpg; BCBMagick\lcms\BCB6\lcms.bpr; 
+	  BCBMagick\lcms\BCB6\testcms.bpr
+	  Deleted files: BCBMagick\lcms\BCB6\lcms.cpp; BCBMagick\lcms\BCB6\testcms.cpp
+	  Added file: BCBMagick\lcms\BCB6\lcms.bpf
+
 2004-07-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/options.imdoc: Fix typo regarding -define tiff:samples-per-pixel.

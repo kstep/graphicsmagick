@@ -1,6 +1,6 @@
 # 
 # ***************************************************************
-# **  GraphicsMagick library - v.1.2 - 15 July 2004            **
+# **  GraphicsMagick library - v.1.2 - 20 July 2004            **
 # **                                                           **
 # **  Porting for compilation with Borland C++Builder 6.0      **
 # **-----------------------------------------------------------**
@@ -65,11 +65,10 @@ copy-all:
     
   copy $(GMBCB)\lcms\BCB6\lcms.bpg $(GMDIR)\lcms\BCB6
   copy $(GMBCB)\lcms\BCB6\lcms.bpr $(GMDIR)\lcms\BCB6
-  copy $(GMBCB)\lcms\BCB6\lcms.cpp $(GMDIR)\lcms\BCB6
+  copy $(GMBCB)\lcms\BCB6\lcms.bpf $(GMDIR)\lcms\BCB6
   copy $(GMBCB)\lcms\BCB6\GM_lcms.bpr $(GMDIR)\lcms\BCB6
   copy $(GMBCB)\lcms\BCB6\GM_lcms.cpp $(GMDIR)\lcms\BCB6
   copy $(GMBCB)\lcms\BCB6\testcms.bpr $(GMDIR)\lcms\BCB6
-  copy $(GMBCB)\lcms\BCB6\testcms.cpp $(GMDIR)\lcms\BCB6
 
 # magick	<<<<<<<<<<<<<<<<<<<<
   copy $(GMBCB)\magick\libMagick.bpr $(GMDIR)\magick
