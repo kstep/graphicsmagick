@@ -1232,7 +1232,7 @@ unsigned int CompositeUtility(int argc,char **argv)
           if (LocaleCompare("sharpen",option+1) == 0)
             {
               i++;
-              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+              if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                 MagickError(OptionError,"Missing geometry",option);
               break;
             }
