@@ -47,44 +47,39 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="acquirememory">AcquireMemory</A></H2>
-<P>Method AcquireMemory returns a pointer to a block of at least size bytes suitably aligned for any use.</P>
-<P>The format of the AcquireMemory method is:</P>
+<blockquote>AcquireMemory ( ) returns a pointer to a block of memory at least sizebytes suitably aligned for any use.; </blockquote><P>The format of the AcquireMemory method is:</P>
 <blockquote>void *AcquireMemory ( const size_t size ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_memory%3A">memory:</A></STRONG><BR>
-<DD>
-Method AcquireMemory returns a pointer to a block of at least size bytes suitably aligned for any use.
-<P></P>
 <p><dt><STRONG><A NAME="item_o_size%3A">size:</A></STRONG><BR>
 <DD>
-Specifies the size of the memory to return.
+The size of the memory in bytes to allocate.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="liberatememory">LiberateMemory</A></H2>
-<P>Method LiberateMemory frees memory that has already been allocated.</P>
-<P>The format of the LiberateMemory method is:</P>
+<blockquote>LiberateMemory ( ) frees memory that has already been allocated.; </blockquote><P>The format of the LiberateMemory method is:</P>
 <blockquote>void LiberateMemory ( void **memory ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_span%3A">span:</A></STRONG><BR>
 <DD>
-Specifies the pointer to a block memory to free for reuse.
+
+<FONT SIZE=-1>A</FONT> pointer to a block memory to free for reuse.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="reacquirememory">ReacquireMemory</A></H2>
-<P>Method ReacquireMemory changes the size of the memory and returns a pointer to the (possibly moved) block.  The contents will be unchanged up to the lesser of the new and old sizes.</P>
-<P>The format of the ReacquireMemory method is:</P>
+<blockquote>ReacquireMemory ( ) changes the size of the memory and returns apointer to the ( possibly moved ) block. The contents will be unchangedup to the lesser of the new and old sizes.; </blockquote><P>The format of the ReacquireMemory method is:</P>
 <blockquote>void ReacquireMemory ( void **memory, const size_t size ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>memory:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_memory%3A">memory:</A></STRONG><BR>
 <DD>
-Method ReacquireMemory returns a pointer to a block of at least size bytes suitably aligned for any use.
+
+<FONT SIZE=-1>A</FONT> pointer to a memory allocation.  On return the pointer may change but the contents of the original allocation will not.
 <P></P>
 <p><dt><STRONG>size:</STRONG><BR>
 <DD>
-Specifies the size of the memory to return.
+The new size of the allocated memory.
 </DL></DL>
 
 </BODY>

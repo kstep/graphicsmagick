@@ -70,23 +70,16 @@
 <P>The format of the DestroyMagick function is:</P>
 <blockquote>DestroyMagick ( void ); </blockquote><P>
 <H2><A NAME="destroymagickinfo">DestroyMagickInfo</A></H2>
-<P>Method DestroyMagickInfo deallocates memory associated MagickInfo list.</P>
-<P>The format of the DestroyMagickInfo method is:</P>
+<blockquote>DestroyMagickInfo ( ) deallocates memory associated <A HREF="types/MagickInfo.html">MagickInfo</A> list.; </blockquote><P>The format of the DestroyMagickInfo method is:</P>
 <blockquote>void DestroyMagickInfo ( void ); </blockquote><P>
 <H2><A NAME="getimagemagick">GetImageMagick</A></H2>
-<P>Method GetImageMagick searches for an image format that matches the specified magick string.  If one is found the name is returned otherwise 
-<FONT SIZE=-1>NULL.</FONT></P>
-<P>The format of the GetImageMagick method is:</P>
+<blockquote>GetImageMagick ( ) searches for an image format that matches thespecified magick string. If one is found the name is returned otherwiseNULL.; </blockquote><P>The format of the GetImageMagick method is:</P>
 <blockquote>const char *GetImageMagick ( const unsigned char *magick, const size_t length ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
-<DD>
-Method GetImageMagick returns a name that matches the specified magick string.
-<P></P>
 <p><dt><STRONG><A NAME="item_o_magick%3A">magick:</A></STRONG><BR>
 <DD>
-a character string that represents the image format we are looking for.
+The image format we are searching for.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
 <DD>
@@ -94,8 +87,7 @@ The length of the binary string.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getmagickconfigurepath">GetMagickConfigurePath</A></H2>
-<P>Method GetMagickConfigurePath searches a number of pre-defined locations for the specified ImageMagick configuration file and returns the path.  The search order follows:</P>
-<PRE>
+<blockquote>GetMagickConfigurePath ( ) searches a number of pre-defined locationsfor the specified ImageMagick configuration file and returns the path.The search order follows:; </blockquote><PRE>
            &lt;current directory&gt;/
            &lt;client path&gt;/
            $MAGICK_HOME/
@@ -119,19 +111,13 @@ Method GetMagickConfigurePath returns the path if the configuration file is foun
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getmagickinfo">GetMagickInfo</A></H2>
-<P>Method GetMagickInfo returns a pointer MagickInfo structure that matches the specified name.  If name is 
-<FONT SIZE=-1>NULL,</FONT> the head of the image format list is returned.</P>
-<P>The format of the GetMagickInfo method is:</P>
+<blockquote>GetMagickInfo ( ) returns a pointer <A HREF="types/MagickInfo.html">MagickInfo</A> structure that matchesthe specified name. If name is NULL, the head of the image format listis returned.; </blockquote><P>The format of the GetMagickInfo method is:</P>
 <blockquote>const <A HREF="types/MagickInfo.html">MagickInfo</A> *GetMagickInfo ( const char *name, Exception *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_magick_info%3A">magick_info:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
 <DD>
-Method GetMagickInfo returns a pointer MagickInfo structure that matches the specified name.
-<P></P>
-<p><dt><STRONG>name:</STRONG><BR>
-<DD>
-a character string that represents the image format we are looking for.
+The image format we are looking for.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>
@@ -139,30 +125,23 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getmagickversion">GetMagickVersion</A></H2>
-<P>Method GetMagickVersion returns the ImageMagick 
-<FONT SIZE=-1>API</FONT> version as a string and as a number.</P>
-<P>The format of the GetMagickVersion method is:</P>
+<blockquote>GetMagickVersion ( ) returns the ImageMagick API version as a string andas a number.; </blockquote><P>The format of the GetMagickVersion method is:</P>
 <blockquote>const char *GetMagickVersion ( unsigned int *version ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_string%3A">string:</A></STRONG><BR>
-<DD>
-Method GetMagickVersion returns the ImageMagick version string.
-<P></P>
 <p><dt><STRONG><A NAME="item_o_version%3A">version:</A></STRONG><BR>
 <DD>
 The ImageMagick version is returned as a number.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="initializemagick">InitializeMagick</A></H2>
-<P>Method InitializeMagick initializes the ImageMagick environment.</P>
-<P>The format of the InitializeMagick function is:</P>
+<blockquote>InitializeMagick ( ) initializes the ImageMagick environment.; </blockquote><P>The format of the InitializeMagick function is:</P>
 <blockquote>InitializeMagick ( const char *path ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>path:</STRONG><BR>
 <DD>
-Specifies a pointer to the execution path of the current ImageMagick client.
+The execution path of the current ImageMagick client.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="ismagickconflict">IsMagickConflict</A></H2>
@@ -182,16 +161,14 @@ Specifies the image format.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="listmagickinfo">ListMagickInfo</A></H2>
-<P>Method ListMagickInfo lists the image formats to a file.</P>
-<P>The format of the ListMagickInfo method is:</P>
+<blockquote>ListMagickInfo ( ) lists the image formats to a file.; </blockquote><P>The format of the ListMagickInfo method is:</P>
 <blockquote>unsigned int ListMagickInfo ( FILE *file, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_file%3A">file:</A></STRONG><BR>
 <DD>
 
-<FONT SIZE=-1>A</FONT> pointer to a 
-<FONT SIZE=-1>FILE</FONT> structure.
+<FONT SIZE=-1>A</FONT> file handle.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -199,20 +176,13 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="registermagickinfo">RegisterMagickInfo</A></H2>
-<P>Method RegisterMagickInfo adds attributes for a particular image format to the list of supported formats.  The attributes include the image format name, a method to read and/or write the format, whether the format supports the saving of more than one frame to the same file or blob, whether the format supports native in-memory 
-<FONT SIZE=-1>I/O,</FONT> and a brief description of the format.</P>
-<P>The format of the RegisterMagickInfo method is:</P>
+<blockquote>RegisterMagickInfo ( ) adds attributes for a particular image format to thelist of supported formats. The attributes include the image format name, a method to read and/or write the format, whether the format supports thesaving of more than one frame to the same file or blob, whether the formatsupports native in-memory I/O, and a brief description of the format.; </blockquote><P>The format of the RegisterMagickInfo method is:</P>
 <blockquote><A HREF="types/MagickInfo.html">MagickInfo</A> *RegisterMagickInfo ( <A HREF="types/MagickInfo.html">MagickInfo</A> *magick_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>magick_info:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_magick_info%3A">magick_info:</A></STRONG><BR>
 <DD>
-Method RegisterMagickInfo returns a pointer MagickInfo structure that contains the specified name info.
-<P></P>
-<p><dt><STRONG>magick_info:</STRONG><BR>
-<DD>
-
-<FONT SIZE=-1>A</FONT> pointer to a structure of type MagickInfo.
+The magick info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setmagickinfo">SetMagickInfo</A></H2>

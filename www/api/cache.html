@@ -52,7 +52,7 @@
 <P>status: Method  <STRONG>GetImagePixels</STRONG>( )returns a pointer to the pixels if they are transferred, otherwise a 
 <FONT SIZE=-1>NULL</FONT> is returned.;</P>
 <P>indexes: Method  <STRONG>GetIndexes</STRONG>( )returns the indexes associated with the last call to SetImagePixels( )or GetImagePixels( ).;</P>
-<P>pixels: Method  <STRONG>GetOnePixel</STRONG>( )returns a pixel at the specified( x, y );</P>
+<P>PixelPacket * <STRONG>GetOnePixel</STRONG>( const Image image, const long x, const long y );</P>
 <P>pixels: Method  <STRONG>GetPixels</STRONG>( )returns the pixels associated with the last call to SetImagePixels( )or GetImagePixels( ).;</P>
 <P>unsigned int  <STRONG>ModifyCache</STRONG>( Image *image );</P>
 <P>Cache  <STRONG>ReferenceCache</STRONG>( Cache cache_info );</P>
@@ -134,11 +134,8 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getonepixel">GetOnePixel</A></H2>
-<blockquote>Method GetOnePixel ( ) returns a single pixel at the specified ( x, y ) location.The image background color is returned if an error occurs.; </blockquote><blockquote>The format of the GetOnePixel ( ) method is:; </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetOnePixel ( const <A HREF="types/Image.html">Image</A> image, const long x, const long y ); </blockquote><P>
+<blockquote>GetOnePixel ( ) returns a single pixel at the specified ( x, y ) location.The image background color is returned if an error occurs.; </blockquote><blockquote>The format of the GetOnePixel ( ) method is:; </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetOnePixel ( const <A HREF="types/Image.html">Image</A> image, const long x, const long y ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<blockquote>pixels: Method GetOnePixel ( ) returns a pixel at the specified ( x, y ); </blockquote><PRE>
-    location.
-=over 4</PRE>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>

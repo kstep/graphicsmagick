@@ -23,7 +23,6 @@
 		<LI><A HREF="#destroyimageattributes">DestroyImageAttributes</A></LI>
 		<LI><A HREF="#getimageattribute">GetImageAttribute</A></LI>
 		<LI><A HREF="#getimageclippingpathattribute">GetImageClippingPathAttribute</A></LI>
-		<LI><A HREF="#getimageinfoattribute">GetImageInfoAttribute</A></LI>
 		<LI><A HREF="#setimageattribute">SetImageAttribute</A></LI>
 		<LI><A HREF="#storeimageattribute">StoreImageAttribute</A></LI>
 	</UL>
@@ -52,8 +51,7 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="destroyimageattributes">DestroyImageAttributes</A></H2>
-<P>Method DestroyImageAttributes deallocates memory associated with the image attribute list.</P>
-<P>The format of the DestroyImageAttributes method is:</P>
+<blockquote>DestroyImageAttributes ( ) deallocates memory associated with the imageattribute list.; </blockquote><P>The format of the DestroyImageAttributes method is:</P>
 <blockquote>DestroyImageAttributes ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -63,17 +61,10 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimageattribute">GetImageAttribute</A></H2>
-<P>Method GetImageAttribute searches the list of image attributes and returns a pointer to the attribute if it exists otherwise 
-<FONT SIZE=-1>NULL.</FONT></P>
-<P>The format of the GetImageAttribute method is:</P>
+<blockquote>GetImageAttribute ( ) searches the list of image attributes and returnsa pointer to the attribute if it exists otherwise NULL.; </blockquote><P>The format of the GetImageAttribute method is:</P>
 <blockquote>const ImageAttribute *GetImageAttribute ( const <A HREF="types/Image.html">Image</A> *image, const char *key ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_attribute%3A">attribute:</A></STRONG><BR>
-<DD>
-Method GetImageAttribute returns the attribute if it exists otherwise 
-<FONT SIZE=-1>NULL.</FONT>
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
@@ -90,7 +81,7 @@ These character strings are the name of an image attribute to return.
 <blockquote>const ImageAttribute *GetImageClippingPathAttribute ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>attribute:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_attribute%3A">attribute:</A></STRONG><BR>
 <DD>
 Method GetImageClippingPathAttribute returns the clipping path if it exists otherwise 
 <FONT SIZE=-1>NULL.</FONT>
@@ -100,44 +91,11 @@ Method GetImageClippingPathAttribute returns the clipping path if it exists othe
 The image.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="getimageinfoattribute">GetImageInfoAttribute</A></H2>
-<P>Method GetImageInfoAttribute returns a ``fake'' attribute based on data in the image info or image structures.</P>
-<P>The format of the GetImageInfoAttribute method is:</P>
-<PRE>
-    const ImageAttribute *GetImageAttribute(const ImageInfo *image_info,
-      const Image *image,const char *key)</PRE>
-<P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>attribute:</STRONG><BR>
-<DD>
-Method GetImageInfoAttribute returns the attribute if it exists otherwise 
-<FONT SIZE=-1>NULL.</FONT>
-<P></P>
-<p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
-<DD>
-The imageInfo.
-<P></P>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P>
-<p><dt><STRONG>key:</STRONG><BR>
-<DD>
-These character strings are the name of an image attribute to return.
-<P></P></DL></DL>
-<P>
 <H2><A NAME="setimageattribute">SetImageAttribute</A></H2>
-<P>Method SetImageAttribute searches the list of image attributes and replaces the attribute value.  If it is not found in the list, the attribute name and value is added to the list.  If the attribute exists in the list, the value is concatenated to the attribute.  SetImageAttribute returns True if the attribute is successfully concatenated or added to the list, otherwise False.  If the value is 
-<FONT SIZE=-1>NULL,</FONT> the matching key is deleted from the list.</P>
-<P>The format of the SetImageAttribute method is:</P>
+<blockquote>SetImageAttribute ( ) searches the list of image attributes and replaces theattribute value. If it is not found in the list, the attribute nameand value is added to the list. If the attribute exists in the list, the value is concatenated to the attribute. SetImageAttribute returnsTrue if the attribute is successfully concatenated or added to the list, otherwise False. If the value is NULL, the matching key is deletedfrom the list.; </blockquote><P>The format of the SetImageAttribute method is:</P>
 <blockquote>unsigned int SetImageAttribute ( <A HREF="types/Image.html">Image</A> *image, const char *key, const char *value ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
-<DD>
-Method SetImageAttribute returns True if the attribute is successfully replaced or added to the list, otherwise False.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
@@ -148,9 +106,7 @@ These character strings are the name and value of an image attribute to replace 
 <P></P></DL></DL>
 <P>
 <H2><A NAME="storeimageattribute">StoreImageAttribute</A></H2>
-<P>Method StoreImageAttribute is used to store an image attribute from a text string with the syntax: 
-<FONT SIZE=-1>NAME=VALUE.</FONT></P>
-<P>The format of the StoreImageAttribute method is:</P>
+<blockquote>StoreImageAttribute ( ) is used to store an image attribute from a textstring with the syntax: NAME=VALUE.; </blockquote><P>The format of the StoreImageAttribute method is:</P>
 <blockquote>StoreImageAttribute ( <A HREF="types/Image.html">Image</A> *image, char *text ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>

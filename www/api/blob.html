@@ -76,19 +76,15 @@ This size_t integer reflects the length in bytes of the blob.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="blobtoimage">BlobToImage</A></H2>
-<P>Method BlobToImage implements direct to memory image formats.  It returns the blob as an image.</P>
+<PRE>
+ BlobToImage( 0 implements direct to memory image formats. It returnsthe blob as an image.;</PRE>
 <P>The format of the BlobToImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *BlobToImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const void *blob, const size_t length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
-<DD>
-Method BlobToImage returns an image from the supplied blob.  If an error occurs 
-<FONT SIZE=-1>NULL</FONT> is returned.
-<P></P>
 <p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
 <DD>
-The image info..
+The image info.
 <P></P>
 <p><dt><STRONG>blob:</STRONG><BR>
 <DD>
@@ -121,8 +117,7 @@ a structure of type info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyblobinfo">DestroyBlobInfo</A></H2>
-<P>Method DestroyBlobInfo deallocates memory associated with an BlobInfo structure.</P>
-<P>The format of the DestroyBlobInfo method is:</P>
+<blockquote>DestroyBlobInfo ( ) deallocates memory associated with an <A HREF="types/BlobInfo.html">BlobInfo</A> structure.; </blockquote><P>The format of the DestroyBlobInfo method is:</P>
 <blockquote>void DestroyBlobInfo ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -167,8 +162,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getblobinfo">GetBlobInfo</A></H2>
-<P>Method GetBlobInfo initializes the BlobInfo structure.</P>
-<P>The format of the GetBlobInfo method is:</P>
+<blockquote>GetBlobInfo ( ) initializes the <A HREF="types/BlobInfo.html">BlobInfo</A> structure.; </blockquote><P>The format of the GetBlobInfo method is:</P>
 <blockquote>void GetBlobInfo ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -178,26 +172,15 @@ Specifies a pointer to a BlobInfo structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="imagetoblob">ImageToBlob</A></H2>
-<P>Method ImageToBlob implements direct to memory image formats.  It returns the image as a blob and its length.  The magick member of the Image structure determines the format of the returned blob 
-<FONT SIZE=-1>(GIG,</FONT> 
-<FONT SIZE=-1>JPEG,</FONT> 
-<FONT SIZE=-1>PNG,</FONT> etc.).</P>
-<P>The format of the ImageToBlob method is:</P>
+<blockquote>ImageToBlob ( ) implements direct to memory image formats. It returns theimage as a blob and its length. The magick member of the <A HREF="types/Image.html">Image</A> structuredetermines the format of the returned blob ( GIG, JPEG, PNG, etc. ); </blockquote><P>The format of the ImageToBlob method is:</P>
 <blockquote>void *ImageToBlob ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image, size_t *length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>blob:</STRONG><BR>
-<DD>
-Method ImageToBlob returns a chunk of memory written in the desired image format (e.g.  
-<FONT SIZE=-1>JPEG,</FONT> 
-<FONT SIZE=-1>GIF,</FONT> etc.). If an error occurs 
-<FONT SIZE=-1>NULL</FONT> is returned.
-<P></P>
 <p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
 The image info..
 <P></P>
-<p><dt><STRONG>image:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
 The image.
 <P></P>

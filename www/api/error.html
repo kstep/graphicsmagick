@@ -46,7 +46,7 @@
 <P><STRONG>CatchImageException</STRONG>( Image *image );</P>
 <P>void  <STRONG>DestroyExceptionInfo</STRONG>( ExceptionInfo *exception );</P>
 <P><STRONG>GetExceptionInfo</STRONG>( ExceptionInfo *exception );</P>
-<P><STRONG>GetImageException</STRONG>( Image *image, ExceptionInfo *exception );</P>
+<P>void  <STRONG>GetImageException</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>void  <STRONG>MagickError</STRONG>( const ExceptionType error, const char *reason, const char *description );</P>
 <P>void  <STRONG>MagickWarning</STRONG>( const ExceptionType warning, const char *reason, const char *description );</P>
 <P>ErrorHandler  <STRONG>SetErrorHandler</STRONG>( ErrorHandler handler );</P>
@@ -59,42 +59,38 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="catchimageexception">CatchImageException</A></H2>
-<P>Method CatchImageException returns if no exceptions are found in the image sequence, otherwise it determines the most severe exception and reports it as a warning or error depending on the severity.</P>
-<P>The format of the CatchImageException method is:</P>
+<blockquote>CatchImageException ( ) returns if no exceptions are found in the imagesequence, otherwise it determines the most severe exception and reportsit as a warning or error depending on the severity.; </blockquote><P>The format of the CatchImageException method is:</P>
 <blockquote>CatchImageException ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
-Specifies a pointer to a list of one or more images.
+An image sequence.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyexceptioninfo">DestroyExceptionInfo</A></H2>
-<P>Method DestroyExceptionInfo deallocates memory associated with an ExceptionInfo structure.</P>
-<P>The format of the DestroyExceptionInfo method is:</P>
+<blockquote>DestroyExceptionInfo ( ) deallocates memory associated with exception.; </blockquote><P>The format of the DestroyExceptionInfo method is:</P>
 <blockquote>void DestroyExceptionInfo ( <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>
-Specifies a pointer to an ExceptionInfo structure.
+The exception info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getexceptioninfo">GetExceptionInfo</A></H2>
-<P>Method GetExceptionInfo initializes the ExceptionInfo structure.</P>
-<P>The format of the GetExceptionInfo method is:</P>
+<blockquote>GetExceptionInfo ( ) initializes exception to default values.; </blockquote><P>The format of the GetExceptionInfo method is:</P>
 <blockquote>GetExceptionInfo ( <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_error_info%3A">error_info:</A></STRONG><BR>
+<p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-Specifies a pointer to a ExceptionInfo structure.
+The exception info
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimageexception">GetImageException</A></H2>
-<P>Method GetImageException traverses an image sequence and returns any error more severe than noted by the exception parameter.</P>
-<P>The format of the GetImageException method is:</P>
-<blockquote>GetImageException ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>GetImageException ( ) traverses an image sequence and returns anyerror more severe than noted by the exception parameter.; </blockquote><P>The format of the GetImageException method is:</P>
+<blockquote>void GetImageException ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -133,60 +129,57 @@ Specifies any description to the reason.
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_warning%3A">warning:</A></STRONG><BR>
 <DD>
-Specifies the numeric warning category.
+The warning severity.
 <P></P>
 <p><dt><STRONG>reason:</STRONG><BR>
 <DD>
-Specifies the reason to display before terminating the program.
+Define the reason for the warning.
 <P></P>
 <p><dt><STRONG>description:</STRONG><BR>
 <DD>
-Specifies any description to the reason.
+Describe the warning.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="seterrorhandler">SetErrorHandler</A></H2>
-<P>Method SetErrorHandler sets the error handler to the specified method and returns the previous error handler.</P>
-<P>The format of the SetErrorHandler method is:</P>
+<blockquote>SetErrorHandler ( ) sets the error handler to the specified methodand returns the previous error handler.; </blockquote><P>The format of the SetErrorHandler method is:</P>
 <blockquote>ErrorHandler SetErrorHandler ( ErrorHandler handler ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_handler%3A">handler:</A></STRONG><BR>
 <DD>
-Specifies a pointer to a method to handle errors.
+The method to handle errors.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setwarninghandler">SetWarningHandler</A></H2>
-<P>Method SetWarningHandler sets the warning handler to the specified method and returns the previous warning handler.</P>
-<P>The format of the SetWarningHandler method is:</P>
+<blockquote>SetWarningHandler ( ) sets the warning handler to the specified methodand returns the previous warning handler.; </blockquote><P>The format of the SetWarningHandler method is:</P>
 <blockquote>ErrorHandler SetWarningHandler ( ErrorHandler handler ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>handler:</STRONG><BR>
 <DD>
-Specifies a pointer to a method to handle warnings.
+The method to handle warnings.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="throwexception">ThrowException</A></H2>
-<P>Method ThrowException throws an exception with the specified severity code, reason, and optional description.</P>
-<P>The format of the ThrowException method is:</P>
+<blockquote>ThrowException ( ) throws an exception with the specified severity code, reason, and optional description.; </blockquote><P>The format of the ThrowException method is:</P>
 <blockquote>void ThrowException ( <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception, const <A HREF="types/Enumerations.html#ExceptionType">ExceptionType</A> severity, const char *reason, const char *description ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-Specifies a pointer to the ExceptionInfo structure.
+The exception.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_severity%3A">severity:</A></STRONG><BR>
 <DD>
-This ExceptionType declares the severity of the exception.
+Define the severity of the exception.
 <P></P>
 <p><dt><STRONG>reason:</STRONG><BR>
 <DD>
-Specifies the reason to display before terminating the program.
+Define the reason of the exception.
 <P></P>
 <p><dt><STRONG>description:</STRONG><BR>
 <DD>
-Specifies any description to the reason.
+Describe the exception.
 </DL></DL>
 
 </BODY>

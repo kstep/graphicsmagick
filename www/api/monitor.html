@@ -45,23 +45,21 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="magickmonitor">MagickMonitor</A></H2>
-<P>Method MagickMonitor calls the monitor handler methods with a text string that describes the task and a measure of completion.</P>
-<P>The format of the MagickMonitor method is:</P>
+<blockquote>MagickMonitor ( ) calls the monitor handler method with a text string thatdescribes the task and a measure of completion.; </blockquote><P>The format of the MagickMonitor method is:</P>
 <blockquote>void MagickMonitor ( const char *text, const off_t quantum, const off_t span ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_quantum%3A">quantum:</A></STRONG><BR>
 <DD>
-Specifies the quantum position within the span which represents how much progress has been made in completing a task.
+The position relative to the span parameter which represents how much progress has been made toward completing a task.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_span%3A">span:</A></STRONG><BR>
 <DD>
-Specifies the span relative to completing a task.
+The span relative to completing a task.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setmonitorhandler">SetMonitorHandler</A></H2>
-<P>Method SetMonitorHandler sets the monitor handler to the specified method and returns the previous monitor handler.</P>
-<P>The format of the SetMonitorHandler method is:</P>
+<blockquote>SetMonitorHandler ( ) sets the monitor handler to the specified methodand returns the previous monitor handler.; </blockquote><P>The format of the SetMonitorHandler method is:</P>
 <blockquote>MonitorHandler SetMonitorHandler ( MonitorHandler handler ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>

@@ -3174,6 +3174,13 @@ Get(ref,...)
         case 'I':
         case 'i':
         {
+          if (LocaleCompare(attribute,"id") == 0)
+            {
+              if (image)
+                s=newSViv(SetMagickRegistry(ImageRegistryType,image,0));
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
           if (LocaleNCompare(attribute,"index",5) == 0)
             {
               char
