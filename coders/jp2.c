@@ -470,25 +470,23 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   jas_init();
   jp2_stream=jas_stream_fopen(filename,WriteBinaryType);
   if (jp2_stream == (jas_stream_t *) NULL)
-    return(False);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   number_components=image->matte ? 4 : 3;
   if (IsGrayImage(image))
     number_components=1;
   for (i=0; i < number_components; i++)
   {
-    component_info[i].tlx=0;
-    component_info[i].tly=0;
+    memset(component_info[i],0,sizeof(jas_image_cmptparm_t));
     component_info[i].hstep=1;
     component_info[i].vstep=1;
     component_info[i].width=image->columns;
     component_info[i].height=image->rows;
     component_info[i].prec=image->depth;
-    component_info[i].sgnd=False;
   }
   jp2_image=jas_image_create(number_components,component_info,
     number_components == 1 ? JAS_IMAGE_CM_GRAY : JAS_IMAGE_CM_RGB);
   if (jp2_image == (jas_image_t *) NULL)
-    return(False);
+    ThrowWriterException(FileOpenWarning,"Unable to create image",image);
   /*
     Convert to JPEG 2000 pixels.
   */
