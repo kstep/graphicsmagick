@@ -150,6 +150,9 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     rank;
 
+  unsigned int
+    status;
+
   /*
     Open image file.
   */
