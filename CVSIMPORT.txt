@@ -19,8 +19,8 @@ jasper
 jbig:
 
   cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
-    import -m 'Import jbigkit 1.2' delegates/jbig \
-    INITIAL JBIGKIT_1_2
+    import -m 'Import jbigkit 1.4' delegates/jbig \
+    INITIAL JBIGKIT_1_4
 
 lcms:
   
