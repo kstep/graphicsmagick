@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                           M   M  PPPP   RRRR                                %
-%                           MM MM  P   P  R   R                               %
-%                           M M M  PPPP   RRRR                                %
-%                           M   M  P      R R                                 %
-%                           M   M  P      R  R                                %
+%                           M   M   GGGG  K   K                               %
+%                           MM MM  G      K  K                                %
+%                           M M M  G  GG  KKK                                 %
+%                           M   M  G   G  K  K                                %
+%                           M   M   GGG   K   K                               %
 %                                                                             %
 %                                                                             %
 %                    Read/Write ImageMagick Image Format.                     %
@@ -55,34 +55,29 @@
 #include "studio.h"
 
 /*
-  Forward declarations.
-*/
-static unsigned int
-  WriteMPRImage(const ImageInfo *,Image *);
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d M P R I m a g e                                                   %
+%   R e a d M G K I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadMPRImage reads a Magick Persistent Registry image as a blob from
-%  memory.  It allocates the memory necessary for the new Image structure and
-%  returns a pointer to the new image.
+%  Method ReadMGKImage reads a Magick Configure File as a blob an attaches
+%  it as an image attribute to a proxy image.  It allocates the memory
+%  necessary for the new Image structure and returns a pointer to the new
+%  image.
 %
-%  The format of the ReadMPRImage method is:
+%  The format of the ReadMGKImage method is:
 %
-%      Image *ReadMPRImage(const ImageInfo *image_info,
+%      Image *ReadMGKImage(const ImageInfo *image_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method ReadMPRImage returns a pointer to the image after
+%    o image:  Method ReadMGKImage returns a pointer to the image after
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
@@ -92,29 +87,14 @@ static unsigned int
 %
 %
 */
-static Image *ReadMPRImage(const ImageInfo *image_info,
+static Image *ReadMGKImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  char
-    *p;
-
-  long
-    id;
-
-  RegistryType
-    type;
-
-  size_t
-    length;
-
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (LocaleCompare(image_info->magick,"MPRI") != 0)
-    return(GetImageFromMagickRegistry(image_info->filename,&id,exception));
-  id=strtol(image_info->filename,&p,0);
-  return((Image *) GetMagickRegistry(id,&type,&length,exception));
+  return((Image *) NULL);
 }
 
 /*
@@ -122,45 +102,35 @@ static Image *ReadMPRImage(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r M P R I m a g e                                           %
+%   R e g i s t e r M G K I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterMPRImage adds attributes for the MPR image format to
+%  Method RegisterMGKImage adds attributes for the MGK image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterMPRImage method is:
+%  The format of the RegisterMGKImage method is:
 %
-%      RegisterMPRImage(void)
+%      RegisterMGKImage(void)
 %
 */
-ModuleExport void RegisterMPRImage(void)
+ModuleExport void RegisterMGKImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("MPR");
-  entry->decoder=ReadMPRImage;
-  entry->encoder=WriteMPRImage;
+  entry=SetMagickInfo("MGK");
+  entry->decoder=ReadMGKImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AcquireString("Magick Persistent Registry");
-  entry->module=AcquireString("MPR");
-  (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("MPRI");
-  entry->decoder=ReadMPRImage;
-  entry->encoder=WriteMPRImage;
-  entry->stealth=True;
-  entry->adjoin=False;
-  entry->stealth=True;
-  entry->description=AcquireString("Magick Persistent Registry");
-  entry->module=AcquireString("MPRI");
+  entry->description=AcquireString("Magick Configure File");
+  entry->module=AcquireString("MGK");
   (void) RegisterMagickInfo(entry);
 }
 
@@ -169,80 +139,21 @@ ModuleExport void RegisterMPRImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r M P R I m a g e                                       %
+%   U n r e g i s t e r M G K I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnregisterMPRImage removes format registrations made by the
-%  MPR module from the list of supported formats.
+%  Method UnregisterMGKImage removes format registrations made by the
+%  MGK module from the list of supported formats.
 %
-%  The format of the UnregisterMPRImage method is:
+%  The format of the UnregisterMGKImage method is:
 %
-%      UnregisterMPRImage(void)
+%      UnregisterMGKImage(void)
 %
 */
-ModuleExport void UnregisterMPRImage(void)
+ModuleExport void UnregisterMGKImage(void)
 {
-  (void) UnregisterMagickInfo("MPR");
-  (void) UnregisterMagickInfo("MPRI");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   W r i t e M P R I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  WriteMPRImage() writes an image into the Magick Persistent Registry
-%  image as a blob from memory.  It allocates the memory necessary for the
-%  new Image structure and returns a pointer to the new image.
-%
-%  The format of the WriteMPRImage method is:
-%
-%      unsigned int WriteMPRImage(const ImageInfo *image_info,Image *image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WritePRImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteMPRImage(const ImageInfo *image_info,Image *image)
-{
-  ExceptionInfo
-    exception;
-
-  Image
-    *registry_image;
-
-  long
-    id;
-
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  GetExceptionInfo(&exception);
-  registry_image=GetImageFromMagickRegistry(image->filename,&id,&exception);
-  DestroyExceptionInfo(&exception);
-  if (registry_image != (Image *) NULL)
-    {
-      DeleteMagickRegistry(id);
-      DestroyImage(registry_image);
-    }
-  id=SetMagickRegistry(ImageRegistryType,image,sizeof(Image),&image->exception);
-  return(id >= 0);
+  (void) UnregisterMagickInfo("MGK");
 }

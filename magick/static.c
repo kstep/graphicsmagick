@@ -9,6 +9,7 @@ void OpenStaticModules(void)
   RegisterAVSImage();
   RegisterBMPImage();
   RegisterCAPTIONImage();
+  RegisterCImage();
   RegisterCLIPBOARDImage();
   RegisterCMYKImage();
   RegisterCUTImage();
@@ -37,6 +38,7 @@ void OpenStaticModules(void)
   RegisterMATImage();
   RegisterMATTEImage();
   RegisterMETAImage();
+  RegisterMGKImage();
   RegisterMIFFImage();
   RegisterMONOImage();
   RegisterMPCImage();

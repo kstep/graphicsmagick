@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                           M   M  PPPP   RRRR                                %
-%                           MM MM  P   P  R   R                               %
-%                           M M M  PPPP   RRRR                                %
-%                           M   M  P      R R                                 %
-%                           M   M  P      R  R                                %
+%                                   CCCC                                      %
+%                                  C                                          %
+%                                  C                                          %
+%                                  C                                          %
+%                                   CCCC                                      %
 %                                                                             %
 %                                                                             %
 %                    Read/Write ImageMagick Image Format.                     %
@@ -58,109 +58,42 @@
   Forward declarations.
 */
 static unsigned int
-  WriteMPRImage(const ImageInfo *,Image *);
+  WriteCImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d M P R I m a g e                                                   %
+%   R e g i s t e r C I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadMPRImage reads a Magick Persistent Registry image as a blob from
-%  memory.  It allocates the memory necessary for the new Image structure and
-%  returns a pointer to the new image.
-%
-%  The format of the ReadMPRImage method is:
-%
-%      Image *ReadMPRImage(const ImageInfo *image_info,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method ReadMPRImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a memory shortage or
-%      if the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-%
-*/
-static Image *ReadMPRImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
-{
-  char
-    *p;
-
-  long
-    id;
-
-  RegistryType
-    type;
-
-  size_t
-    length;
-
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  if (LocaleCompare(image_info->magick,"MPRI") != 0)
-    return(GetImageFromMagickRegistry(image_info->filename,&id,exception));
-  id=strtol(image_info->filename,&p,0);
-  return((Image *) GetMagickRegistry(id,&type,&length,exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e g i s t e r M P R I m a g e                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method RegisterMPRImage adds attributes for the MPR image format to
+%  Method RegisterCImage adds attributes for the C image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterMPRImage method is:
+%  The format of the RegisterCImage method is:
 %
-%      RegisterMPRImage(void)
+%      RegisterCImage(void)
 %
 */
-ModuleExport void RegisterMPRImage(void)
+ModuleExport void RegisterCImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("MPR");
-  entry->decoder=ReadMPRImage;
-  entry->encoder=WriteMPRImage;
+  entry=SetMagickInfo("C");
+  entry->encoder=WriteCImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AcquireString("Magick Persistent Registry");
-  entry->module=AcquireString("MPR");
-  (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("MPRI");
-  entry->decoder=ReadMPRImage;
-  entry->encoder=WriteMPRImage;
-  entry->stealth=True;
-  entry->adjoin=False;
-  entry->stealth=True;
-  entry->description=AcquireString("Magick Persistent Registry");
-  entry->module=AcquireString("MPRI");
+  entry->description=AcquireString("C source");
+  entry->module=AcquireString("C");
   (void) RegisterMagickInfo(entry);
 }
 
@@ -169,24 +102,24 @@ ModuleExport void RegisterMPRImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r M P R I m a g e                                       %
+%   U n r e g i s t e r C I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnregisterMPRImage removes format registrations made by the
-%  MPR module from the list of supported formats.
+%  Method UnregisterCImage removes format registrations made by the
+%  C module from the list of supported formats.
 %
-%  The format of the UnregisterMPRImage method is:
+%  The format of the UnregisterCImage method is:
 %
-%      UnregisterMPRImage(void)
+%      UnregisterCImage(void)
 %
 */
-ModuleExport void UnregisterMPRImage(void)
+ModuleExport void UnregisterCImage(void)
 {
-  (void) UnregisterMagickInfo("MPR");
-  (void) UnregisterMagickInfo("MPRI");
+  (void) UnregisterMagickInfo("C");
+  (void) UnregisterMagickInfo("CI");
 }
 
 /*
@@ -194,19 +127,17 @@ ModuleExport void UnregisterMPRImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e M P R I m a g e                                                 %
+%   W r i t e C I m a g e                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteMPRImage() writes an image into the Magick Persistent Registry
-%  image as a blob from memory.  It allocates the memory necessary for the
-%  new Image structure and returns a pointer to the new image.
+%  WriteCImage() writes a Magick Configure File as C source.
 %
-%  The format of the WriteMPRImage method is:
+%  The format of the WriteCImage method is:
 %
-%      unsigned int WriteMPRImage(const ImageInfo *image_info,Image *image)
+%      unsigned int WriteCImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %
@@ -220,29 +151,11 @@ ModuleExport void UnregisterMPRImage(void)
 %
 %
 */
-static unsigned int WriteMPRImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteCImage(const ImageInfo *image_info,Image *image)
 {
-  ExceptionInfo
-    exception;
-
-  Image
-    *registry_image;
-
-  long
-    id;
-
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  GetExceptionInfo(&exception);
-  registry_image=GetImageFromMagickRegistry(image->filename,&id,&exception);
-  DestroyExceptionInfo(&exception);
-  if (registry_image != (Image *) NULL)
-    {
-      DeleteMagickRegistry(id);
-      DestroyImage(registry_image);
-    }
-  id=SetMagickRegistry(ImageRegistryType,image,sizeof(Image),&image->exception);
-  return(id >= 0);
+  return(False);
 }

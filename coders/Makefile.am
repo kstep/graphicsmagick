@@ -39,10 +39,10 @@ MAGICK_GDI32_MODULES =
 endif
 
 MAGICK_CODER_SRCS = \
-  art.c avi.c avs.c bmp.c caption.c clipboard.c cmyk.c cut.c dcm.c \
+  art.c avi.c avs.c bmp.c c.c caption.c clipboard.c cmyk.c cut.c dcm.c \
   dib.c dps.c dpx.c emf.c ept.c fax.c fits.c fpx.c gif.c gradient.c \
   gray.c hdf.c histogram.c html.c icon.c jbig.c jp2.c jpeg.c label.c \
-  logo.c map.c mat.c matte.c meta.c miff.c mono.c mpc.c mpeg.c mpr.c \
+  logo.c map.c mat.c matte.c meta.c mgk.c miff.c mono.c mpc.c mpeg.c mpr.c \
   msl.c mtv.c mvg.c null.c otb.c palm.c pcd.c pcl.c pcx.c pdb.c pdf.c \
   pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c \
   pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c sun.c svg.c \
@@ -85,13 +85,13 @@ pkg_LTLIBRARIES = \
   art.la avi.la avs.la bmp.la caption.la cmyk.la cut.la dcm.la dib.la dps.la \
   dpx.la ept.la fax.la fits.la fpx.la gif.la gradient.la gray.la hdf.la \
   histogram.la html.la icon.la jbig.la jp2.la jpeg.la label.la logo.la \
-  map.la mat.la matte.la meta.la miff.la mono.la mpc.la mpeg.la mpr.la msl.la \
-  mtv.la mvg.la null.la otb.la palm.la pcd.la pcl.la pcx.la pdb.la pdf.la \
-  pict.la pix.la plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la psd.la \
-  pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la \
-  tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la url.la uyvy.la vicar.la \
-  vid.la viff.la wbmp.la wmf.la wpg.la x.la xbm.la xc.la xcf.la xpm.la xwd.la \
-  yuv.la $(MAGICK_GDI32_MODULES)
+  map.la mat.la matte.la meta.la mgk.la miff.la mono.la mpc.la mpeg.la mpr.la \
+	msl.la mtv.la mvg.la null.la otb.la palm.la pcd.la pcl.la pcx.la pdb.la \
+	pdf.la pict.la pix.la plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la \
+	psd.la pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la \
+	svg.la tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la url.la uyvy.la \
+	vicar.la vid.la viff.la wbmp.la wmf.la wpg.la x.la xbm.la xc.la xcf.la \
+	xpm.la xwd.la yuv.la $(MAGICK_GDI32_MODULES)
 MODULECOMMONFLAGS = -no-undefined -module -avoid-version
 else
 pkg_LTLIBRARIES =
