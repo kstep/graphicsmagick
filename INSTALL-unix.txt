@@ -355,10 +355,10 @@ UNIX/Cygwin/MinGW COMPILATION
 
     o --without-x: By default, GraphicsMagick will use X11 libraries if
       they are available. When --without-x is specified, use of X11 is
-      disabled. The display, animate, and import programs are not built or
-      installed. The remaining programs have reduced functionality such
-      as no access to X11 fonts (consider using Postscript or TrueType
-      fonts instead).
+      disabled. The display, animate, and import sub-commands are not
+      included. The remaining sub-commands have reduced functionality
+      such as no access to X11 fonts (consider using Postscript or
+      TrueType fonts instead).
 
     o --with-gs-font-dir: Specify the directory containing the
       Ghostscript Postscript Type 1 font files (e.g. "n022003l.pfb") so
@@ -386,9 +386,9 @@ UNIX/Cygwin/MinGW COMPILATION
 
     It is strongly recommended that the X11R6 package be installed since
     this enables GraphicsMagick's X11 support (animate, display, and
-    import will work) and it includes the Freetype v2 DLL required to
-    support TrueType and Postscript Type 1 fonts. Make sure that
-    /usr/X11R6/bin is in your PATH prior to running configure.
+    import sub-commands will work) and it includes the Freetype v2 DLL
+    required to support TrueType and Postscript Type 1 fonts. Make sure
+    that /usr/X11R6/bin is in your PATH prior to running configure.
 
     If you are using Cygwin version 1.3.9 or later, you may specify the
     configure option '--enable-shared' to build Cygwin DLLs. Specifying
@@ -529,15 +529,16 @@ UNIX/Cygwin/MinGW COMPILATION
   Verifying The Build:
 
     To confirm your installation of the GraphicsMagick distribution was
-    successful, type:
+    successful, ensure that the installation directory is in your executable
+    search path and type:
   
-        ./utilities/display
+        gm display
 
-    The GraphicsMagick logo is displayed.
+    The GraphicsMagick logo should be displayed on your X11 display.
   
     If the image colors are not correct use this command:
   
-        ./utilities/display -visual default
+        gm display -visual default
   
     For a more serious test, you may run the GraphicsMagick test suite by
     typing

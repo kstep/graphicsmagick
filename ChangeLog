@@ -1,3 +1,7 @@
+2004-12-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* TODO.txt: Organized todo list for 1.2 release.
+
 2004-12-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/bmp.c (WriteBMPImage): Handle the case where the image
