@@ -224,7 +224,7 @@ testFilter('input.miff', 'Shave',
 testFilter('input.miff', 'Shear',
   q/10/,
   '8a02928f4f3dad2a670847a4147a1672795a58294375a49211d7271cf9a268be',
-  '23761e60f3df58a05346050061abe26b2b3db5e83b24669c748b36aee8f70451');
+  '04a47e8e7af69f94c2ce226511ce1b9b6b926ed4d27f9ee471655a9dcbf51a89');
 
 ++$test;
 testFilter('input.miff', 'Solarize',

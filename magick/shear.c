@@ -93,15 +93,15 @@
 */
 static void CropToFitImage(Image **image,const double x_shear,
   const double y_shear,const double width,const double height,
-	const unsigned int rotate,ExceptionInfo *exception)
+  const unsigned int rotate,ExceptionInfo *exception)
 {
-	Image
-		*crop_image;
+  Image
+    *crop_image;
 
   PointInfo
     extent[4],
-		min,
-		max;
+    min,
+    max;
 
   RectangleInfo
     geometry;
@@ -143,15 +143,15 @@ static void CropToFitImage(Image **image,const double x_shear,
       max.y=extent[i].y;
   }
   geometry.width=(unsigned long) floor(max.x-min.x+0.5);
-	geometry.height=(unsigned long) floor(max.y-min.y+0.5);
+  geometry.height=(unsigned long) floor(max.y-min.y+0.5);
   geometry.x=(long) ceil(min.x-0.5);
   geometry.y=(long) ceil(min.y-0.5);
   crop_image=CropImage(*image,&geometry,exception);
   if (crop_image != (Image *) NULL)
-		{
-		  DestroyImage(*image);
-		  *image=crop_image;
-		}
+    {
+      DestroyImage(*image);
+      *image=crop_image;
+    }
 }
 
 /*
@@ -386,7 +386,7 @@ static void XShearImage(Image *image,const double degrees,
     opacity,
     red;
 
-  enum {LEFT,RIGHT}
+  enum {LEFT, RIGHT}
     direction;
 
   long
@@ -418,7 +418,7 @@ static void XShearImage(Image *image,const double degrees,
         displacement*=(-1.0);
         direction=LEFT;
       }
-    step=(int) floor(displacement+0.5);
+    step=(long) floor(displacement+0.5);
     alpha=MaxRGB*(displacement-step);
     if (alpha == 0.0)
       {
@@ -493,10 +493,12 @@ static void XShearImage(Image *image,const double degrees,
         q=p-step;
         for (i=0; i < (long) width; i++)
         {
+if (0)
           if ((x_offset+i) < step)
             {
               p++;
               q++;
+          pixel=(*p);
               continue;
             }
           red=(double) (pixel.red*(MaxRGB-alpha)+p->red*alpha)/MaxRGB;
@@ -650,7 +652,7 @@ static void YShearImage(Image *image,const double degrees,
     opacity,
     red;
 
-  enum {UP,DOWN}
+  enum {UP, DOWN}
     direction;
 
   long
@@ -682,7 +684,7 @@ static void YShearImage(Image *image,const double degrees,
         displacement*=(-1.0);
         direction=UP;
       }
-    step=(int) floor(displacement+0.5);
+    step=(long) floor(displacement+0.5);
     alpha=MaxRGB*(displacement-step);
     if (alpha == 0.0)
       {
@@ -757,6 +759,14 @@ static void YShearImage(Image *image,const double degrees,
         q=p-step;
         for (i=0; i < (long) height; i++)
         {
+if (0)
+          if ((y_offset+i) < step)
+            {
+              p++;
+              q++;
+          pixel=(*p);
+              continue;
+            }
           red=(double) (pixel.red*(MaxRGB-alpha)+p->red*alpha)/MaxRGB;
           green=(double) (pixel.green*(MaxRGB-alpha)+p->green*alpha)/MaxRGB;
           blue=(double) (pixel.blue*(MaxRGB-alpha)+p->blue*alpha)/MaxRGB;
@@ -1086,8 +1096,8 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   */
   y_width=(unsigned long) (image->columns+ceil(fabs(shear.x)*image->rows-0.5));
   x_offset=(long)
-    (image->columns+ceil(2*fabs(shear.y)*image->rows-0.5)-image->columns)/2;
-  y_offset=(long) (image->rows+ceil(fabs(shear.y)*y_width-0.5)-image->rows)/2;
+    (image->columns+ceil(2*fabs(shear.y)*image->rows-0.5)-image->columns);
+  y_offset=(long) (image->rows+ceil(fabs(shear.y)*y_width-0.5)-image->rows);
   /*
     Surround image with border.
   */
@@ -1108,6 +1118,6 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
     (long) (shear_image->columns-y_width)/2,y_offset);
   (void) memset(&shear_image->page,0,sizeof(RectangleInfo));
   CropToFitImage(&shear_image,shear.x,shear.y,image->columns,image->rows,
-	  False,exception);
+    False,exception);
   return(shear_image);
 }
