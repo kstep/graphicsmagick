@@ -1,5 +1,6 @@
 2002-08-25  Cristy  <cristy@mystic.es.dupont.com>
   * Arcs are now rendered properly.
+  * Use -authenticate to specifiy a password when viewing encrypted PDF's.
   * -page was previouly being ignored.
   * Configure files are returned as blobs now (suggested by William
     Radcliffe).

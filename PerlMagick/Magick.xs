@@ -1136,8 +1136,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
-              MagickError(OptionError,"Invalid antialias type",
-                SvPV(sval,na));
+              MagickError(OptionError,"Invalid antialias type",SvPV(sval,na));
               return;
             }
           if (info)
@@ -1145,6 +1144,12 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               info->image_info->antialias=sp != 0;
               info->draw_info->text_antialias=sp != 0;
             }
+          return;
+        }
+      if (LocaleCompare(attribute,"authenticate") == 0)
+        {
+          if (info)
+            (void) CloneString(&info->image_info->authenticate,SvPV(sval,na));
           return;
         }
       MagickError(OptionError,"Invalid attribute",attribute);
@@ -3020,6 +3025,13 @@ Get(ref,...)
             {
               if (info)
                 s=newSViv((long) info->image_info->antialias);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
+          if (LocaleCompare(attribute,"authenticate") == 0)
+            {
+              if (info)
+                s=newSVpv(info->image_info->authenticate,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
