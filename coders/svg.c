@@ -1107,14 +1107,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
   (void) fprintf(svg_info->file,"linewidth %g\n",p->linewidth);
   (void) fprintf(svg_info->file,"pointsize %g\n",p->pointsize);
   (void) fprintf(svg_info->file,"opacity %g\n",p->opacity);
-  if ((LocaleCompare(p->fill,"none") == 0) &&
-      (LocaleCompare(p->stroke,"none") == 0))
-    (void) fprintf(svg_info->file,"fill black\n");
-  else
-    {
-      (void) fprintf(svg_info->file,"fill %s\n",p->fill);
-      (void) fprintf(svg_info->file,"stroke %s\n",p->stroke);
-    }
+  (void) fprintf(svg_info->file,"fill %s\n",p->fill);
+  (void) fprintf(svg_info->file,"stroke %s\n",p->stroke);
   if (LocaleCompare(p->font,"none") != 0)
     (void) fprintf(svg_info->file,"font %s\n",p->font);
   (void) fprintf(svg_info->file,"angle %f\n",p->angle);
