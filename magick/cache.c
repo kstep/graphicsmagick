@@ -58,7 +58,7 @@
 #if defined(HasZLIB)
 #include "zlib.h"
 #endif
-^L
+
 /*
   Define declarations.
 */
@@ -674,7 +674,8 @@ MagickExport void GetCacheInfo(Cache *cache)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method GetCacheMemory() acquires memory from, or returns memory to, the
-%  cache memory pool.  The method returns the available memory in cache pool.
+%  cache memory pool.  The method returns the available memory in the cache
+%  pool.
 %
 %  The format of the GetCacheMemory() method is:
 %
