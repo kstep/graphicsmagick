@@ -134,12 +134,12 @@ typedef struct _PathInfo
 */
 static unsigned int
   DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *),
+  DrawRoundLinecap(Image *,const DrawInfo *,const PrimitiveInfo *),
   DrawStrokePolygon(Image *,const DrawInfo *,const PrimitiveInfo *),
   TracePath(PrimitiveInfo *,const char *);
 
 static void
   DrawBoundingRectangles(Image *,const DrawInfo *,const PolygonInfo *),
-  DrawRoundLinecap(Image *,const DrawInfo *,const PrimitiveInfo *),
   TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
     const double,const unsigned int,const unsigned int),
   TraceBezier(PrimitiveInfo *,const unsigned int),
@@ -3472,7 +3472,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
 %
 %
 */
-static void DrawRoundLinecap(Image *image,const DrawInfo *draw_info,
+static unsigned int DrawRoundLinecap(Image *image,const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info)
 {
   PrimitiveInfo
