@@ -780,19 +780,6 @@ void CIMDisplayView::DoDisplayImage( Image &inImage, CDC* pDC )
   // make sure we have a valid destination DC
   if (pDC != NULL)
     {
-      bool isPrinting = pDC->IsPrinting();
-
-      // if we don't already have a ready offscreen, then create it!
-      if ( !mOffscreenDC ) {
-        mOffscreenDC = new CDC();
-        mOffscreenDC->CreateCompatibleDC( pDC );
-
-        CRect rectClient;
-        GetClientRect(rectClient);
-
-        // Clear the background
-        mOffscreenDC->FillSolidRect(rectClient,mOffscreenDC->GetBkColor());
-
         // Set up the Windows bitmap header
         BITMAPINFOHEADER bmi;
         bmi.biSize = sizeof(BITMAPINFOHEADER);	// Size of structure
@@ -856,7 +843,18 @@ void CIMDisplayView::DoDisplayImage( Image &inImage, CDC* pDC )
 #endif
           }
 
-        // Now copy the bitmap to devi.
+      // if we don't already have a ready offscreen, then create it!
+      if ( !mOffscreenDC ) {
+        mOffscreenDC = new CDC();
+        mOffscreenDC->CreateCompatibleDC( pDC );
+
+        CRect rectClient;
+        GetClientRect(rectClient);
+
+        // Clear the background
+        mOffscreenDC->FillSolidRect(rectClient,mOffscreenDC->GetBkColor());
+
+        // Now copy the bitmap to device
         mOffscreenDC->SelectObject( hBitmap );
       }
 
@@ -864,6 +862,8 @@ void CIMDisplayView::DoDisplayImage( Image &inImage, CDC* pDC )
       mViewDirty = false; // not any more!
 
       // draw the marching ants, if any
+      bool isPrinting = pDC->IsPrinting();
+
       if ( !isPrinting && m_tracker.m_rect.Width() && m_tracker.m_rect.Height() )
         m_tracker.Draw( pDC );
     }
