@@ -620,9 +620,9 @@ static double Catrom(double x)
   if (x < 0)
     x=(-x);
   if (x < 1.0)
-    return(0.5*(2.0+x*x*(-5.0+x*3.0)));
+    return(0.5*(2.0+x*x*(-5.0+x*3.0))+MagickEpsilon);
   if (x < 2.0)
-    return(0.5*(4.0+x*(-8.0+x*(5.0-x))));
+    return(0.5*(4.0+x*(-8.0+x*(5.0-x)))+MagickEpsilon);
   return(0.0);
 }
 
@@ -647,7 +647,7 @@ static double Gaussian(const double x)
 
 static double Hanning(const double x)
 {
-  return(0.5+0.5*cos(MagickPI*x));
+  return(0.5+0.5*cos(MagickPI*x+MagickEpsilon)+MagickEpsilon);
 }
 
 static double Hamming(const double x)
@@ -660,7 +660,7 @@ static double Hermite(double x)
   if (x < 0)
     x=(-x);
   if (x < 1.0)
-    return((2.0*x-3.0)*x*x+1.0);
+    return((2.0*x-3.0)*x*x+1.0+MagickEpsilon);
   return(0.0);
 }
 
@@ -794,8 +794,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
   /*
     Apply filter to resize horizontally from source to destination.
   */
-  support=Max(blur*filter_info->support/x_factor,0.5);
-  scale=x_factor/blur;
+  scale=blur/x_factor;
+  support=Max(scale*filter_info->support,0.5);
   if (support > 0.5)
     SetImageType(destination,TrueColorType);
   else
@@ -806,6 +806,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       support=0.5;
       scale=1.0;
     }
+  scale=1.0/scale;
   for (x=0; x < (long) destination->columns; x++)
   {
     density=0.0;
@@ -931,8 +932,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
   /*
     Apply filter to resize vertically from source to destination.
   */
-  support=Max(blur*filter_info->support/y_factor,0.5);
-  scale=y_factor/blur;
+  scale=blur/y_factor;
+  support=Max(filter_info->support,0.5);
   if (support > 0.5)
     SetImageType(destination,TrueColorType);
   else
@@ -943,6 +944,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       support=0.5;
       scale=1.0;
     }
+  scale=1.0/scale;
   for (y=0; y < (long) destination->rows; y++)
   {
     density=0.0;
