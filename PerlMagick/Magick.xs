@@ -6261,7 +6261,7 @@ Ping(ref,...)
             length;
 
           blob=(char *) (SvPV(ST(i),length));
-          AttachBlob(info->image_info,blob,length);
+          AttachBlob(info->image_info->blob,blob,length);
         }
       image=PingImage(info->image_info,&exception);
       if (image == (Image *) NULL)
