@@ -4463,8 +4463,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   *argv;
 
                 argv=&(arguments[next]);
-                (void) ExecuteModuleProcess((const char *) token,image,1,
-                  &argv);
+                (void) ExecuteModuleProcess((const char *) token,image,1,&argv);
               }
             LiberateMemory((void **) &token);
             continue;
