@@ -104,7 +104,7 @@
 %    -intent type         Absolute, Perceptual, Relative, or Saturation
 %    -interlace type      None, Line, Plane, or Partition
 %    -label name          assign a label to an image
-%    -levels value        adjust the image contrast levels
+%    -level value         adjust the level of image contrast
 %    -list type           Color, Delegate, Format, Magic, Module, or Type
 %    -loop iterations     add Netscape loop extension to your GIF animation
 %    -map filename        transform image colors to match this set of colors
@@ -518,7 +518,7 @@ static void Usage(void)
       "-intent type         Absolute, Perceptual, Relative, or Saturation",
       "-interlace type      None, Line, Plane, or Partition",
       "-label name          assign a label to an image",
-      "-levels value        adjust the image contrast levels",
+      "-level value         adjust the level of image contrast",
       "-list type           Color, Delegate, Format, Magic, Module, or Type",
       "-loop iterations     add Netscape loop extension to your GIF animation",
       "-map filename        transform image colors to match this set of colors",
@@ -1376,7 +1376,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleCompare("levels",option+1) == 0)
+          if (LocaleCompare("level",option+1) == 0)
             {
               i++;
               if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
