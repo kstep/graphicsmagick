@@ -72,19 +72,19 @@ mirrors.
 ImageMagick is developed by the members of the ImageMagick Studio
 team:
 
-John Cristy           - Principal designer and author
+John Cristy           - Principal designer and author.
 Bob Friesenhahn       - Magick++, Unix modules, magic, configure, CVS,
-                        tests, bug tracking, WMF.
+                        tests, bug tracking, and WMF.
 William Radcliffe     - VisualMagick, FlashPix, TIFF, timers, watermarking,
-                        Windows modules, fast polygon renderer.
+                        Windows modules, and fast polygon renderer.
 Glenn Randers-Pehrson - PNG, MNG, and test script improvements
-Leonard Rosenthol     - Mac support. Drawing enhancements.
+Leonard Rosenthol     - Mac support and drawing enhancements.
 
 We would like to give special thanks to several people who assist with
 ImageMagick:
 
-Alexander Zimmermann  - Builds the Linux distributions
-Jaroslav Fojtik       - Has contributed several coder modules.
+Alexander Zimmermann  - Linux binary distributions.
+Jaroslav Fojtik       - CUT, ART, and MATLAB coder modules.
 
 There are many other individual contributors, some of whom made
 contributions to ImageMagick but shall remain nameless anyway.
