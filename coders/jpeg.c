@@ -999,7 +999,7 @@ static void WriteICCProfile(j_compress_ptr jpeg_info,Image *image)
   /*
     Save color profile as a APP marker.
   */
-  for (i=0; i < image->color_profile.length; i+=65519)
+  for (i=0; i < (long) image->color_profile.length; i+=65519)
   {
     length=Min(image->color_profile.length-i,65519);
     profile=(unsigned char *) AcquireMemory(length+14);
@@ -1008,7 +1008,7 @@ static void WriteICCProfile(j_compress_ptr jpeg_info,Image *image)
     (void) strcpy((char *) profile,"ICC_PROFILE");
     profile[12]=(unsigned char) ((i/65519)+1);
     profile[13]=(image->color_profile.length/65519)+1;
-    for (j=0; j < length; j++)
+    for (j=0; j < (long) length; j++)
       profile[j+14]=image->color_profile.info[i+j];
     jpeg_write_marker(jpeg_info,ICC_MARKER,profile,(unsigned int) length+14);
     LiberateMemory((void **) &profile);
@@ -1038,7 +1038,7 @@ static void WriteIPTCProfile(j_compress_ptr jpeg_info,Image *image)
 #else
   tag_length=14;
 #endif
-  for (i=0; i < image->iptc_profile.length; i+=65500)
+  for (i=0; i < (long) image->iptc_profile.length; i+=65500)
   {
     length=Min(image->iptc_profile.length-i,65500);
     roundup=(length & 0x01); /* round up for Photoshop */
@@ -1245,15 +1245,16 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     Write JPEG profiles.
   */
   attribute=GetImageAttribute(image,"comment");
-  if ((attribute != (const ImageAttribute *) NULL) && (attribute->value != NULL))
-    for (i=0; i < strlen(attribute->value); i+=65533)
+  if ((attribute != (const ImageAttribute *) NULL) &&
+    (attribute->value != (char *) NULL))
+    for (i=0; i < (long) strlen(attribute->value); i+=65533)
       jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) attribute->value+
         i,(int) Min(strlen(attribute->value+i),65533));
   if (image->color_profile.length != 0)
     WriteICCProfile(&jpeg_info,image);
   if (image->iptc_profile.length != 0)
     WriteIPTCProfile(&jpeg_info,image);
-  for (i=0; i < image->generic_profiles; i++)
+  for (i=0; i < (long) image->generic_profiles; i++)
   {
     register long
       j;
@@ -1261,7 +1262,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     if (LocaleNCompare(image->generic_profile[i].name,"APP",3) != 0)
       continue;
     x=atol(image->generic_profile[i].name+3);
-    for (j=0; j < image->generic_profile[i].length; j+=65533)
+    for (j=0; j < (long) image->generic_profile[i].length; j+=65533)
       jpeg_write_marker(&jpeg_info,JPEG_APP0+(int) x,
         image->generic_profile[i].info+j,(int)
         Min(image->generic_profile[i].length-j,65533));

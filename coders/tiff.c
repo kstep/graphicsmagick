@@ -1139,9 +1139,9 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
     (image->columns+image->tile_info.width-1)/image->tile_info.height;
   for (i=0; i < (long) number_tiles; i++)
   {
-    tile_width=(i == number_tiles-1) ?
+    tile_width=(i == (long) (number_tiles-1)) ?
       image->columns-(i*image->tile_info.width) : image->tile_info.width;
-    for (j=0; j < ((row % image->tile_info.height)+1); j++)
+    for (j=0; j < (long) ((row % image->tile_info.height)+1); j++)
       for (k=0; k < (long) tile_width; k++)
       {
         register unsigned char
