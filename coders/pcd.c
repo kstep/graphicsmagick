@@ -773,7 +773,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->chromaticity.white_point.x=0.3127f;
   image->chromaticity.white_point.y=0.3290f;
   image->chromaticity.white_point.z=1.0000f-(0.3127f+0.3290f);
-  image->gamma=0.5;
+  image->gamma=1.000f/2.200f;
   CloseBlob(image);
   return(image);
 }
