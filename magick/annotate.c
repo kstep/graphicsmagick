@@ -713,7 +713,8 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
     *file;
 
   Image
-    *annotate_image;
+    *annotate_image,
+    *pattern;
 
   ImageInfo
     *clone_info;
@@ -862,6 +863,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
       */
       SetImageType(annotate_image,TrueColorMatteType);
       fill_color=draw_info->fill;
+      pattern=draw_info->fill_pattern;
       for (y=0; y < (long) annotate_image->rows; y++)
       {
         q=GetImagePixels(annotate_image,0,y,annotate_image->columns,1);
@@ -869,10 +871,10 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
           break;
         for (x=0; x < (long) annotate_image->columns; x++)
         {
-          if (draw_info->fill_pattern != (Image *) NULL)
-            fill_color=GetOnePixel(draw_info->fill_pattern,
-              (long) (x % draw_info->fill_pattern->columns),
-              (long) (y % draw_info->fill_pattern->rows));
+          if (pattern != (Image *) NULL)
+            fill_color=GetOnePixel(pattern,
+              (x-pattern->tile_info.x) % pattern->columns,
+              (y-pattern->tile_info.y) % pattern->rows);
           q->opacity=(Quantum) (MaxRGB-((unsigned long) ((MaxRGB-Intensity(q))*
             (MaxRGB-fill_color.opacity))/MaxRGB));
           q->red=fill_color.red;
@@ -1040,7 +1042,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     last_glyph;
 
   Image
-    *fill_pattern;
+    *pattern;
 
   long
     y;
@@ -1176,6 +1178,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   (void) QueryColorDatabase("#000000ff",&clone_info->fill);
   (void) CloneString(&clone_info->primitive,"path '");
+  pattern=draw_info->fill_pattern;
   for (i=0; i < (long) length; i++)
   {
     glyph.id=FT_Get_Char_Index(face,unicode[i]);
@@ -1221,7 +1224,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     if (render)
       {
         if ((draw_info->fill.opacity != TransparentOpacity) ||
-            (draw_info->fill_pattern != (Image *) NULL))
+            (pattern != (Image *) NULL))
           {
             /*
               Rasterize the glyph.
@@ -1232,7 +1235,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
               continue;
             bitmap=(FT_BitmapGlyph) glyph.image;
             SetImageType(image,TrueColorMatteType);
-            fill_pattern=draw_info->fill_pattern;
             point.x=offset->x+bitmap->left;
             point.y=offset->y-bitmap->top;
             p=bitmap->bitmap.buffer;
@@ -1262,10 +1264,10 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                   opacity=(Quantum)
                     ((*p) >= 64 ? TransparentOpacity : OpaqueOpacity);
                 fill_color=draw_info->fill;
-                if (fill_pattern != (Image *) NULL)
-                  fill_color=GetOnePixel(fill_pattern,
-                    ((long) ceil(point.x+x-0.5) % (long) fill_pattern->columns),
-                    ((long) ceil(point.y+y-0.5) % (long) fill_pattern->rows));
+                if (pattern != (Image *) NULL)
+                  fill_color=GetOnePixel(pattern,
+                    (long) (point.x+x-pattern->tile_info.x) % pattern->columns,
+                    (long) (point.y+y-pattern->tile_info.y) % pattern->rows);
                 opacity=(Quantum) ((unsigned long) ((MaxRGB-opacity)*
                   (MaxRGB-fill_color.opacity))/MaxRGB);
                 if (!active)

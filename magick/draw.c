@@ -290,6 +290,9 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   const DrawInfo *draw_info,const PixelPacket target,const long x_offset,
   const long y_offset,const PaintMethod method)
 {
+  Image
+    *pattern;
+
   int
     offset,
     skip;
@@ -448,7 +451,8 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
       start=x;
     } while (x <= x2);
   }
-  if (draw_info->fill_pattern == (Image *) NULL)
+  pattern=draw_info->fill_pattern;
+  if (pattern == (Image *) NULL)
     for (y=0; y < (long) image->rows; y++)
     {
       /*
@@ -480,10 +484,10 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
         {
           if (floodplane[y*image->columns+x])
             {
-              color=GetOnePixel(draw_info->fill_pattern,
-                (long) (x % draw_info->fill_pattern->columns),
-                (long) (y % draw_info->fill_pattern->rows));
-              if (!draw_info->fill_pattern->matte)
+              color=GetOnePixel(pattern,
+                (x-pattern->tile_info.x) % pattern->columns,
+                (y-pattern->tile_info.y) % pattern->rows);
+              if (!pattern->matte)
                 color.opacity=OpaqueOpacity;
               if (color.opacity != TransparentOpacity)
                 *q=AlphaComposite(&color,color.opacity,q,q->opacity);
@@ -2184,8 +2188,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 (void) SetImageAttribute(image,key,token);
                 FormatString(key,"[%.1024s-geometry]",name);
                 FormatString(geometry,"%gx%g%+g%+g",
-                  Max(AbsoluteValue(bounds.x2-bounds.x1),1.0),
-                  Max(AbsoluteValue(bounds.y2-bounds.y1),1.0),
+                  Max(AbsoluteValue(bounds.x2-bounds.x1+1),1),
+                  Max(AbsoluteValue(bounds.y2-bounds.y1+1),1),
                   bounds.x1,bounds.y1);
                 (void) SetImageAttribute(image,key,geometry);
                 GetToken(q,&q,token);
@@ -3273,18 +3277,18 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
         }
       pattern=draw_info->fill_pattern;
       if (pattern != (Image *) NULL)
-        fill_color=GetOnePixel(draw_info->fill_pattern,
-          (((long) ceil(x-bounds.x1-0.5)) % (long) pattern->columns),
-          (((long) ceil(y-bounds.y1-0.5)) % (long) pattern->rows));
+        fill_color=GetOnePixel(pattern,
+          ((x-pattern->tile_info.x)) % pattern->columns,
+          ((y-pattern->tile_info.y)) % pattern->rows);
       fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
       if (fill_opacity != TransparentOpacity)
         *q=AlphaComposite(&fill_color,fill_opacity,q,
           (q->opacity == TransparentOpacity) ? OpaqueOpacity : q->opacity);
       pattern=draw_info->stroke_pattern;
       if (pattern != (Image *) NULL)
-        stroke_color=GetOnePixel(draw_info->stroke_pattern,
-          (((long) ceil(x-bounds.x1-0.5)) % (long) pattern->columns),
-          (((long) ceil(y-bounds.y1-0.5)) % (long) pattern->rows));
+        stroke_color=GetOnePixel(pattern,
+          ((x-pattern->tile_info.x)) % pattern->columns,
+          ((y-pattern->tile_info.y)) % pattern->rows);
       stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
       if (stroke_opacity != TransparentOpacity)
         *q=AlphaComposite(&stroke_color,stroke_opacity,q,
@@ -3479,12 +3483,16 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
         }
         case ReplaceMethod:
         {
+          Image
+            *pattern;
+
           PixelPacket
             color,
             target;
 
           color=draw_info->fill;
           target=GetOnePixel(image,x,y);
+          pattern=draw_info->fill_pattern;
           for (y=0; y < (long) image->rows; y++)
           {
             q=GetImagePixels(image,0,y,image->columns,1);
@@ -3497,12 +3505,12 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
                   q++;
                   continue;
                 }
-              if (draw_info->fill_pattern != (Image *) NULL)
+              if (pattern != (Image *) NULL)
                 {
-                  color=GetOnePixel(draw_info->fill_pattern,
-                    (long) (x % draw_info->fill_pattern->columns),
-                    (long) (y % draw_info->fill_pattern->rows));
-                  if (!draw_info->fill_pattern->matte)
+                  color=GetOnePixel(pattern,
+                    (x-pattern->tile_info.x) % pattern->columns,
+                    (y-pattern->tile_info.y) % pattern->rows);
+                  if (!pattern->matte)
                     color.opacity=OpaqueOpacity;
                 }
               if (color.opacity != TransparentOpacity)
