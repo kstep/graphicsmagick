@@ -27,6 +27,18 @@ unsigned char *testpic;
 long testbuf_len;
 
 
+static void *checkedmalloc(size_t n)
+{
+  void *p;
+  
+  if ((p = malloc(n)) == NULL) {
+    fprintf(stderr, "Sorry, not enough memory available!\n");
+    exit(1);
+  }
+  
+  return p;
+}
+
 static void testbuf_write(int v, void *dummy)
 {
   if (testbuf_len < TESTBUF_SIZE)
@@ -148,17 +160,9 @@ static int test_cycle(unsigned char **orig_image, int width, int height,
   unsigned char **image;
 
   plane_size = ((width + 7) / 8) * height;
-  image = malloc(planes * sizeof(unsigned char *));
-  if (!image) {
-    printf("Sorry, not enough memory available!\n");
-    exit(1);
-  }
+  image = checkedmalloc(planes * sizeof(unsigned char *));
   for (i = 0; i < planes; i++) {
-    image[i] = malloc(plane_size);
-    if (!image[i]) {
-      printf("Sorry, not enough memory available!\n");
-      exit(1);
-    }
+    image[i] = checkedmalloc(plane_size);
     memcpy(image[i], orig_image[i], plane_size);
   }
 
@@ -331,14 +335,10 @@ int main(void)
 	 " -- This test will take a few minutes.\n\n\n");
 
   /* allocate test buffer memory */
-  testbuf = malloc(TESTBUF_SIZE);
-  testpic = malloc(TESTPIC_SIZE);
-  se = malloc(sizeof(struct jbg_arenc_state));
-  sd = malloc(sizeof(struct jbg_ardec_state));
-  if (!testbuf || !testpic || !se || !sd) {
-    printf("Sorry, not enough memory available!\n");
-    exit(1);
-  }
+  testbuf = checkedmalloc(TESTBUF_SIZE);
+  testpic = checkedmalloc(TESTPIC_SIZE);
+  se = checkedmalloc(sizeof(struct jbg_arenc_state));
+  sd = checkedmalloc(sizeof(struct jbg_ardec_state));
 
   /* test a few properties of the machine architecture */
   testbuf[0] = 42;

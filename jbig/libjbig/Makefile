@@ -16,7 +16,7 @@ tstcodec: tstcodec.c jbig.c jbig.h jbig_tab.o
 libjbig.a: jbig.o jbig_tab.o
 	rm -f libjbig.a
 	ar rc libjbig.a jbig.o jbig_tab.o
-	ranlib libjbig.a
+	-ranlib libjbig.a
 
 jbig.o: jbig.c jbig.h
 

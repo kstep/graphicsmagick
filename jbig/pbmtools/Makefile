@@ -20,7 +20,7 @@ jbgtopbm: jbgtopbm.o ../libjbig/libjbig.a
 jbgtopbm.o: jbgtopbm.c ../libjbig/jbig.h
 pbmtojbg.o: pbmtojbg.c ../libjbig/jbig.h
 
-../libjbig/libjbig.a:
+../libjbig/libjbig.a: ../libjbig/jbig.c ../libjbig/jbig.h
 	cd ../libjbig ; make libjbig.a
 
 test: pbmtojbg jbgtopbm
@@ -33,6 +33,8 @@ test: pbmtojbg jbgtopbm
 	make IMG=sandra  OPTIONSP=-q    OPTIONSJ=      dotest2
 	make IMG=sandra "OPTIONSP=-o 0" OPTIONSJ=      dotest2
 	make IMG=sandra "OPTIONSP=-o 2" OPTIONSJ=      dotest2
+	make IMG=multi   OPTIONSP=      OPTIONSJ=      dotest2
+	make IMG=multi   OPTIONSP=-b    OPTIONSJ=-b    dotest2
 	rm -f test-*.jbg test-*.pbm test-*.pgm
 	@echo
 	@echo "The pbmtools have PASSED the functional tests. Good!"

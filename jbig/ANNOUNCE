@@ -1,17 +1,13 @@
 
-Version 1.2 of the JBIG-KIT lossless image compression library available
-------------------------------------------------------------------------
+JBIG-KIT lossless image compression library
+-------------------------------------------
 
-Markus Kuhn -- 2000-04-08
+by Markus Kuhn
 
 
-The latest release of JBIG-KIT can be downloaded over the Internet
-with anonymous ftp from
+The latest release of JBIG-KIT can be downloaded from
 
-  ftp://ftp.informatik.uni-erlangen.de/pub/doc/ISO/JBIG/jbigkit-1.2.tar.gz
-  http://www.cl.cam.ac.uk/~mgk25/download/jbigkit-1.2.tar.gz
-
-and from a number of other servers.
+  http://www.cl.cam.ac.uk/~mgk25/jbigkit/
 
 JBIG-KIT implements a highly effective data compression algorithm for
 bi-level high-resolution images such as fax pages or scanned
@@ -29,9 +25,9 @@ JBIG-KIT implements the specification
   International Standard ISO/IEC 11544:1993 and ITU-T Recommendation
   T.82(1993), "Information technology - Coded representation of picture
   and audio information - progressive bi-level image compression",
-  <http://www.itu.ch/itudoc/itu-t/rec/t/t82_23822.html>,
+  <http://www.itu.int/rec/recommendation.asp?type=folders&parent=T-REC-T.82>,
 
-which is commonly referred to as the "JBIG standard". JBIG (Joint
+which is commonly referred to as the "JBIG1 standard". JBIG (Joint
 Bi-level Image experts Group) is the committee which developed this
 international standard for the lossless compression of images using
 arithmetic coding. Like the well-known compression algorithms JPEG and
@@ -39,9 +35,9 @@ MPEG, also JBIG has been developed and published by the International
 Organization for Standardization (ISO) and the International
 Telecommunication Union (ITU). See also
 
-  http://www.jpeg.org/public/jbighomepage.htm
+  http://www.jbig.org/public/jbighomepage.htm
   http://www.iso.ch/
-  http://www.itu.ch/
+  http://www.itu.int/
 
 The JBIG compression algorithm offers the following features:
 
@@ -84,9 +80,9 @@ The JBIG compression algorithm offers the following features:
     well as the integrity of thin lines and dithered images.
 
   - JBIG supports multiple bit planes and can this way also be used
-    for greyscale and color images, although the main field of
+    for grayscale and color images, although the main field of
     application is compression of bi-level images, i.e. images with
-    only two different pixel values. For greyscale images with up to
+    only two different pixel values. For grayscale images with up to
     6 bit per pixel, JBIG performs superior to JPEG's lossless
     mode.
 
@@ -132,89 +128,9 @@ Special features of the JBIG-KIT implementation are:
   - Very easy to use documented C library interface.
 
   - Included Gray code conversion routines for efficient encoding
-    of greyscale images.
+    of grayscale images.
 
   - Ready-to-use pbmtojbg and jbgtopbm converters.
-
-
-Changes in version 1.2 (2000-04-08):
-
-  - bug in the decoder fixed, which caused the rest of the input file
-    to be skipped whenever a comment marker was encountered (special
-    thanks to Ben Rudiak-Gould <benrg@math.berkeley.edu> for
-    reporting this one)
-
-Changes in version 1.1 (1999-11-16):
-
-  - serious bug in the encoder fixed, which for a very small
-    percentage of images has caused an unterminated linked list to be
-    created internally that could have been responsible for
-    segmentation violations or non-terminating encoders
-    (special thanks to Hisashi Saiga <saiga@itl.tnr.sharp.co.jp> for
-    tracking that one down)
-
-  - minor bug in the "jbgtopbm -d" diagnostic output fixed
-
-Changes in version 1.0 (1998-04-11):
-
-  - two bugs fixed that caused the encoder and decoder to fail
-    under certain modes of operation with several bit planes
-
-  - added new functions jbg_split_planes(), jbg_dec_merge_planes(),
-    and jbg_dec_getsize_merged() for easy handling of greyscale
-    images
-
-  - added support for compressing greyscale PGM files to pbmtojbg
-    and jbgtopbm
-
-  - more changes to avoid paranoid compiler warnings
-
-Changes in version 0.9 (1996-01-09):
-
-  - encoder won't break any more on input bitmap data with incorrect
-    zero padding
-
-  - pbmtojbg displays a warning if input file has incorrect zero
-    padding
-
-  - various minor improvements suggested by Stefan Willer
-    <Stefan.Willer@unnet.wupper.DE>
-
-  - many minor changes in order to avoid warnings from paranoid
-    compilers
-
-Changes in version 0.8 (1995-09-20):
-
-  - namespace cleared up, all names externally visible from the library
-    start now with jbg_ or JBG_
-
-  - minor non-critical bug fixed which caused library to fail compatibility
-    test and showed up especially on DEC Alpha systems
-
-  - jbg_dec_gethight() is now called jbg_dec_getheight()
-
-  - filenames conform now to MS-DOS limits
-
-  - Bug in pbmtojbg fixed (handling of ASCII PBM files)
-
-Changes in version 0.7 (1995-06-10):
-
-  - more problems on 16-bit int systems and on Macintosh systems fixed
-    (special thanks to Jean-Pierre Gachen <jpg11@calvanet.calvacom.fr>)
-
-  - global Makefile
-
-Changes in version 0.6 (1995-06-08):
-
-  - memory leak fixed
-
-  - should now also work on systems where int is only 16-bit large
-
-  - changes of the JBIG "Technical Corrigendum 1" included (special
-    thanks to Dr. Sebestyen from Siemens AG for sending me a copy
-    of the draft)
-
-First release: version 0.5 (1995-05-28)
 
 
 Please send all questions, problem reports, patches, suggestions,
@@ -223,21 +139,12 @@ success stories, comments, etc. to
   mkuhn at acm.org
 
 I will try to provide free support and maintenance for this software
-at least for the next few months depending on my available time.
-
-Y2K statement: JBIG-KIT does not handle any date and time related
-data, therefore if JBIG-KIT causes you any problems related to date
-and time overflows, this would indeed be most surprising.
-
-This library has been published in the hope that it will encourage the
-development of good freely available scanned document handling and
-transmission systems for the Internet so that large amounts of scanned
-text can be made available to the global village easily.
+for the foreseeable future depending on my available time.
 
 Happy compressing ...
 
 Markus Kuhn
 
 --
-Markus G. Kuhn, Security Group, Computer Lab, Cambridge University, UK
-email: mkuhn at acm.org,  home page: <http://www.cl.cam.ac.uk/~mgk25/>
+Markus G. Kuhn, Computer Laboratory, University of Cambridge, UK
+Email: mkuhn at acm.org,  WWW: <http://www.cl.cam.ac.uk/~mgk25/>

@@ -237,7 +237,7 @@ int main (int argc, char **argv)
     max = getint(fin);
   else
     max = 1;
-  for (planes = 0; 1UL << planes <= max; planes++);
+  for (planes = 0, v = max; v; planes++, v >>= 1);
   bpp = (planes + 7) / 8;
   if (encode_planes < 0 || encode_planes > planes)
     encode_planes = planes;

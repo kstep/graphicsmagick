@@ -706,6 +706,12 @@ limitations:
 
   - HITOLO and SEQ bits must not be set in the order value.
 
+  - The image size initially indicated in the BIE header is used to
+    allocate memory for a bitmap of this size. This means that BIEs
+    that set initially Y_D = 0xffffffff (as suggested in ITU-T T.85
+    for fax machines that do not know the height of the page at the
+    start of the transmission) cannot be decoded by this version.
+
 A more detailed description of the JBIG-KIT implementation is
 
   Markus Kuhn: Effiziente Kompression von bi-level Bilddaten durch

@@ -107,7 +107,7 @@ int main (int argc, char **argv)
   char *buffer;
   unsigned char *p;
   size_t len, cnt;
-  unsigned long xmax = 4294967295UL, ymax = 4294967295UL;
+  unsigned long xmax = 4294967295UL, ymax = 4294967295UL, max;
   int plane = -1, use_graycode = 1, diagnose = 0;
 
   buffer = malloc(BUFSIZE);
@@ -233,8 +233,20 @@ int main (int argc, char **argv)
 	   jbg_dec_getsize(&s), fout);
   } else {
     /* write PGM output file */
-    fprintf(fout, "P5\n%ld %ld\n%d\n", jbg_dec_getwidth(&s),
-	    jbg_dec_getheight(&s), (1<<jbg_dec_getplanes(&s)) - 1);
+    if ((size_t) jbg_dec_getplanes(&s) > sizeof(unsigned long) * 8) {
+      fprintf(stderr, "Image has too many planes (%d)!\n",
+	      jbg_dec_getplanes(&s));
+      if (fout != stdout) {
+	fclose(fout);
+	remove(fnout);
+      }
+      exit(1);
+    }
+    max = 0;
+    for (i = jbg_dec_getplanes(&s); i > 0; i--)
+      max = (max << 1) | 1;
+    fprintf(fout, "P5\n%ld %ld\n%lu\n", jbg_dec_getwidth(&s),
+	    jbg_dec_getheight(&s), max);
     jbg_dec_merge_planes(&s, use_graycode, write_it, fout);
   }
 

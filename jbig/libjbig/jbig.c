@@ -1682,7 +1682,7 @@ void jbg_enc_out(struct jbg_enc_state *s)
 
   /* calculate number of stripes that will be required */
   s->stripes = ((s->yd >> s->d) + 
-		((((1UL << s->d) - 1) & s->xd) != 0) + s->l0 - 1) / s->l0;
+		((((1UL << s->d) - 1) & s->yd) != 0) + s->l0 - 1) / s->l0;
 
   /* allocate buffers for SDE pointers */
   if (s->sde == NULL) {
@@ -1786,7 +1786,7 @@ void jbg_enc_free(struct jbg_enc_state *s)
   int layer, plane;
 
 #ifdef DEBUG
-  fprintf(stderr, "jbg_enc_free(%p)\n", s);
+  fprintf(stderr, "jbg_enc_free(%p)\n", (void *) s);
 #endif
 
   /* clear buffers for SDEs */
@@ -1950,7 +1950,7 @@ static size_t decode_pscd(struct jbg_dec_state *s, unsigned char *data,
 #ifdef DEBUG
   if (s->x == 0 && s->i == 0 && s->pseudo)
     fprintf(stderr, "decode_pscd(%p, %p, %ld): s/d/p = %2lu/%2u/%2u\n",
-	    s, data, (long) len, stripe, layer, plane);
+	    (void *) s, (void *) data, (long) len, stripe, layer, plane);
 #endif
 
   if (layer == 0) {
@@ -2382,6 +2382,9 @@ int jbg_dec_in(struct jbg_dec_state *s, unsigned char *data, size_t len,
     s->yd = y;
     s->l0 = (((long) s->buffer[12] << 24) | ((long) s->buffer[13] << 16) |
 	     ((long) s->buffer[14] <<  8) | (long) s->buffer[15]);
+    /* ITU-T T.85 trick currently not yet supported */
+    if (s->yd == 0xffffffff)
+      return JBG_EIMPL;
     if (!s->planes || !s->xd || !s->yd || !s->l0)
       return JBG_EINVAL;
     s->mx = s->buffer[16];
@@ -2400,7 +2403,7 @@ int jbg_dec_in(struct jbg_dec_state *s, unsigned char *data, size_t len,
 
     /* calculate number of stripes that will be required */
     s->stripes = ((s->yd >> s->d) +
-		  ((((1UL << s->d) - 1) & s->xd) != 0) + s->l0 - 1) / s->l0;
+		  ((((1UL << s->d) - 1) & s->yd) != 0) + s->l0 - 1) / s->l0;
 
     /* some initialization */
     s->ii[index[s->order & 7][STRIPE]] = 0;
@@ -2547,7 +2550,7 @@ int jbg_dec_in(struct jbg_dec_state *s, unsigned char *data, size_t len,
 	/* calculate again number of stripes that will be required */
 	s->stripes = 
 	  ((s->yd >> s->d) +
-	   ((((1UL << s->d) - 1) & s->xd) != 0) + s->l0 - 1) / s->l0;
+	   ((((1UL << s->d) - 1) & s->yd) != 0) + s->l0 - 1) / s->l0;
 	break;
       case MARKER_ABORT:
 	return JBG_EABORT;
@@ -2820,7 +2823,7 @@ void jbg_split_planes(unsigned long x, unsigned long y, int has_planes,
 	  bits = (prev | *src) >> bitno;
 	  /* go to next *src byte, but keep old */
 	  if (bitno == 0)
-	    prev = *src++;
+	    prev = *src++ << 8;
 	  /* make space for inserting new bit */
 	  dest[p][bpl * line + i] <<= 1;
 	  /* insert bit, if requested apply Gray encoding */
@@ -2833,7 +2836,7 @@ void jbg_split_planes(unsigned long x, unsigned long y, int has_planes,
 	}
 	/* skip unused *src bytes */
 	for (;p < has_planes; p++)
-	  if (((has_planes - 1 - p) & 7) == 0)
+	  if (((msb - p) & 7) == 0)
 	    src++;
       }
     }
@@ -2856,7 +2859,7 @@ void jbg_dec_merge_planes(const struct jbg_dec_state *s, int use_graycode,
   int bpp, bpl;
   unsigned long line;
   unsigned i, k = 8;
-  int p, q;
+  int p;
   unsigned char buf[BUFLEN];
   unsigned char *bp = buf;
   unsigned char **src;
@@ -2884,12 +2887,13 @@ void jbg_dec_merge_planes(const struct jbg_dec_state *s, int use_graycode,
   for (line = 0; line < y; line++) {                    /* lines loop */
     for (i = 0; i * 8 < x; i++) {                       /* src bytes loop */
       for (k = 0; k < 8 && i * 8 + k < x; k++) {        /* pixel loop */
-	for (p = (s->planes-1) & ~7; p >= 0; p -= 8) {  /* dest bytes loop */
-	  v = 0;
-	  for (q = 0; q < 8 && p+q < s->planes; q++)    /* pixel bit loop */
+	v = 0;
+	for (p = 0; p < s->planes;) {                   /* dest bytes loop */
+	  do {
 	    v = (v << 1) |
-	      (((src[p+q][bpl * line + i] >> (7 - k)) & 1) ^
+	      (((src[p][bpl * line + i] >> (7 - k)) & 1) ^
 	       (use_graycode & v));
+	  } while ((s->planes - ++p) & 7);
 	  *bp++ = v;
 	  if (bp - buf == BUFLEN) {
 	    data_out(buf, BUFLEN, file);
