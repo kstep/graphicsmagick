@@ -488,67 +488,59 @@ Export PixelPacket InterpolateColor(Image *image,const double x_offset,
   if ((x < -1) || (x >= image->columns) || (y < -1) || (y >= image->rows))
     return(image->background_color);
   p=image->background_color;
-  q=image->background_color;
-  r=image->background_color;
-  s=image->background_color;
-  if ((x >= 0) && (y >= 0))
+  q=p;
+  r=p;
+  s=p;
+  if ((x >= 0) && (y >= 0) && (x < (image->columns-1)) && (y < (image->rows-1)))
     {
-      if (GetPixelCache(image,x,y,1,1))
-        p=(*image->pixels);
-      if ((x+1) < image->columns)
+      register PixelPacket
+        *t;
+
+      t=GetPixelCache(image,x,y,2,2);
+      if (t != (PixelPacket *) NULL)
         {
-          if (GetPixelCache(image,x+1,y,1,1))
-            q=(*image->pixels);
-        }
-      if ((y+1) < image->rows)
-        {
-          if (GetPixelCache(image,x,y+1,1,1))
-            r=(*image->pixels);
-        }
-      if (((x+1) < image->columns) && ((y+1) < image->rows))
-        {
-          if (GetPixelCache(image,x+1,y+1,1,1))
-            s=(*image->pixels);
+          p=(*t++);
+          q=(*t++);
+          r=(*t++);
+          s=(*t++);
         }
     }
   else
     {
-      if (x == 0)
+      if ((x >= 0) && (y >= 0) && (x < image->columns) && (y < image->rows))
         {
-          if (GetPixelCache(image,x,0,1,1))
-            r=(*image->pixels);
-          if (GetPixelCache(image,x+1,0,1,1))
-            s=(*image->pixels);
+          if (GetPixelCache(image,x,y,1,1))
+            p=(*image->pixels);
         }
-      if ((x >= -1) && (x < 0))
+      if (((x+1) >= 0) && (y >= 0) && ((x+1) < image->columns) &&
+          (y < image->rows))
         {
-          if (y == 0)
-            {
-              if (GetPixelCache(image,0,y,1,1))
-                q=(*image->pixels);
-              r=image->background_color;
-              if (GetPixelCache(image,0,y+1,1,1))
-                s=(*image->pixels);
-            }
-          if ((y >= -1) && (y < 0))
-            {
-              q=image->background_color;
-              if (GetPixelCache(image,0,0,1,1))
-                s=(*image->pixels);
-            }
+          if (GetPixelCache(image,x+1,y,1,1))
+            q=(*image->pixels);
+        }
+      if ((x >= 0) && ((y+1) >= 0) && (x < image->columns) &&
+         ((y+1) < image->rows))
+        {
+          if (GetPixelCache(image,x,y+1,1,1))
+            r=(*image->pixels);
+        }
+      if (((x+1) >= 0) && ((y+1) >= 0) && ((x+1) < image->columns) &&
+          ((y+1) < image->rows))
+        {
+          if (GetPixelCache(image,x+1,y+1,1,1))
+            s=(*image->pixels);
         }
     }
   x-=floor(x);
   y-=floor(y);
   alpha=1.0-x;
   beta=1.0-y;
-  interpolated_pixel.red=(Quantum)
-    (beta*(alpha*p.red+x*q.red)+y*(alpha*r.red+x*s.red));
-  interpolated_pixel.green=(Quantum)
+  interpolated_pixel.red=(beta*(alpha*p.red+x*q.red)+y*(alpha*r.red+x*s.red));
+  interpolated_pixel.green=
     (beta*(alpha*p.green+x*q.green)+y*(alpha*r.green+x*s.green));
-  interpolated_pixel.blue=(Quantum)
+  interpolated_pixel.blue=
     (beta*(alpha*p.blue+x*q.blue)+y*(alpha*r.blue+x*s.blue));
-  interpolated_pixel.opacity=(Quantum)
+  interpolated_pixel.opacity=
     (beta*(alpha*p.opacity+x*q.opacity)+y*(alpha*r.opacity+x*s.opacity));
   return(interpolated_pixel);
 }
