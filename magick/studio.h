@@ -60,6 +60,9 @@ extern "C" {
 #include <signal.h>
 #include <assert.h>
 
+#if defined(HAVE_INTTYPES_H)
+# include <inttypes.h>
+#endif
 #if !defined(vms) && !defined(macintosh)
 # include <sys/types.h>
 # include <sys/stat.h>
@@ -101,9 +104,6 @@ extern "C" {
 # include "api.h"
 #endif
 
-#if defined(HAVE_INTTYPES_H)
-#  include <inttypes.h>
-#endif
 #if defined(WIN32)
 # include "ntbase.h"
 #endif

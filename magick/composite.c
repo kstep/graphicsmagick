@@ -339,7 +339,7 @@ MagickExport unsigned int CompositeImage(Image *image,
             }
           if (destination.opacity == TransparentOpacity)
             break;
-          opacity=(double) ((QuantumPrecision) MaxRGB-source.opacity)*
+          opacity=(double) (((double) MaxRGB-source.opacity)*
             (MaxRGB-destination.opacity)/MaxRGB);
           destination.red=(Quantum) (((double) MaxRGB-source.opacity)*
             (MaxRGB-destination.opacity)*source.red/MaxRGB/opacity+0.5);
