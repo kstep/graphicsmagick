@@ -232,6 +232,7 @@ static void BlurScanline(const double *kernel,const int width,
   double
     blue,
     green,
+    opacity,
     red,
     scale;
 
@@ -252,6 +253,7 @@ static void BlurScanline(const double *kernel,const int width,
         red=0.0;
         green=0.0;
         blue=0.0;
+        opacity=0.0;
         scale=0.0;
         p=kernel;
         q=source;
@@ -262,6 +264,7 @@ static void BlurScanline(const double *kernel,const int width,
               red+=(*p)*q->red;
               green+=(*p)*q->green;
               blue+=(*p)*q->blue;
+              opacity+=(*p)*q->opacity;
             }
           if (((i+width/2-x) >= 0) && ((i+width/2-x) < width))
             scale+=kernel[i+width/2-x];
@@ -271,6 +274,7 @@ static void BlurScanline(const double *kernel,const int width,
         destination[x].red=(Quantum) ((red+0.5)/scale);
         destination[x].green=(Quantum) ((green+0.5)/scale);
         destination[x].blue=(Quantum) ((blue+0.5)/scale);
+        destination[x].opacity=(Quantum) ((opacity+0.5)/scale);
       }
       return;
     }
@@ -282,6 +286,7 @@ static void BlurScanline(const double *kernel,const int width,
     red=0.0;
     green=0.0;
     blue=0.0;
+    opacity=0.0;
     scale=0.0;
     p=kernel+width/2-x;
     q=source;
@@ -290,6 +295,7 @@ static void BlurScanline(const double *kernel,const int width,
       red+=(*p)*q->red;
       green+=(*p)*q->green;
       blue+=(*p)*q->blue;
+      opacity+=(*p)*q->opacity;
       scale+=(*p);
       p++;
       q++;
@@ -297,12 +303,14 @@ static void BlurScanline(const double *kernel,const int width,
     destination[x].red=(Quantum) ((red+0.5)/scale);
     destination[x].green=(Quantum) ((green+0.5)/scale);
     destination[x].blue=(Quantum) ((blue+0.5)/scale);
+    destination[x].opacity=(Quantum) ((opacity+0.5)/scale);
   }
   for ( ; x < (columns-width/2); x++)
   {
     red=0.0;
     green=0.0;
     blue=0.0;
+    opacity=0.0;
     p=kernel;
     q=source+(x-width/2);
     for (i=0; i < width; i++)
@@ -310,18 +318,21 @@ static void BlurScanline(const double *kernel,const int width,
       red+=(*p)*q->red;
       green+=(*p)*q->green;
       blue+=(*p)*q->blue;
+      opacity+=(*p)*q->opacity;
       p++;
       q++;
     }
     destination[x].red=(Quantum) (red+0.5);
     destination[x].green=(Quantum) (green+0.5);
     destination[x].blue=(Quantum) (blue+0.5);
+    destination[x].opacity=(Quantum) (opacity+0.5);
   }
   for ( ; x < columns; x++)
   {
     red=0.0;
     green=0.0;
     blue=0.0;
+    opacity=0.0;
     scale=0;
     p=kernel;
     q=source+(x-width/2);
@@ -330,6 +341,7 @@ static void BlurScanline(const double *kernel,const int width,
       red+=(*p)*q->red;
       green+=(*p)*q->green;
       blue+=(*p)*q->blue;
+      opacity+=(*p)*q->opacity;
       scale+=(*p);
       p++;
       q++;
@@ -337,6 +349,7 @@ static void BlurScanline(const double *kernel,const int width,
     destination[x].red=(Quantum) ((red+0.5)/scale);
     destination[x].green=(Quantum) ((green+0.5)/scale);
     destination[x].blue=(Quantum) ((blue+0.5)/scale);
+    destination[x].opacity=(Quantum) ((opacity+0.5)/scale);
   }
 }
 
@@ -383,8 +396,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
 #define BlurImageText  "  Blur image...  "
 
   double
-    *kernel,
-    *last_kernel;
+    *kernel;
 
   Image
     *blur_image;
@@ -408,12 +420,15 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  last_kernel=(double *) NULL;
   kernel=(double *) NULL;
   if (radius > 0)
-    width=(int) (2.0*ceil(radius)+1.0);
+    width=GetKernelWidth(2.0*ceil(radius)+1.0,sigma,&kernel);
   else
     {
+      double
+        *last_kernel;
+
+      last_kernel=(double *) NULL;
       width=3;
       width=GetKernelWidth(width,sigma,&kernel);
       while ((int) (MaxRGB*kernel[0]) > 0)
@@ -3320,6 +3335,7 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
   double
     blue,
     green,
+    opacity,
     red;
 
   Image
@@ -3361,10 +3377,17 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
         blue=p->blue;
       else
         blue=p->blue+(blue*amount);
+      opacity=p->opacity-(int) q->blue;
+      if (AbsoluteValue(2.0*opacity) < (MaxRGB*threshold))
+        opacity=p->opacity;
+      else
+        opacity=p->opacity+(opacity*amount);
       q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
       q->green=(Quantum)
         ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
       q->blue=(Quantum) ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+      q->opacity=(Quantum)
+        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
       p++;
       q++;
     }

@@ -6062,14 +6062,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case EmbossCommand:
     {
       static char
-        order[MaxTextExtent] = "3";
+        radius[MaxTextExtent] = "0.0x1.0";
 
       /*
-        Query user for emboss order.
+        Query user for emboss radius.
       */
       (void) XDialogWidget(display,windows,"Emboss",
-        "Enter the emboss order (choose odd numbers from 3 to 31):",order);
-      if (*order == '\0')
+        "Enter the emboss radius and standard deviation:",radius);
+      if (*radius == '\0')
         break;
       /*
         Reduce noise in the image.
@@ -6077,7 +6077,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]="-emboss";
-      argv[2]=order;
+      argv[2]=radius;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -6089,14 +6089,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case ReduceNoiseCommand:
     {
       static char
-        order[MaxTextExtent] = "3";
+        radius[MaxTextExtent] = "3";
 
       /*
-        Query user for noise order.
+        Query user for noise radius.
       */
       (void) XDialogWidget(display,windows,"Reduce Noise",
-        "Enter the noise order (choose odd numbers from 3 to 31):",order);
-      if (*order == '\0')
+        "Enter the noise radius:",radius);
+      if (*radius == '\0')
         break;
       /*
         Reduce noise in the image.
@@ -6104,7 +6104,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]="-noise";
-      argv[2]=order;
+      argv[2]=radius;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -6140,14 +6140,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case SharpenCommand:
     {
       static char
-        order[MaxTextExtent] = "3";
+        radius[MaxTextExtent] = "0.0x1.0";
 
       /*
-        Query user for sharpen order.
+        Query user for sharpen radius.
       */
       (void) XDialogWidget(display,windows,"Sharpen",
-        "Enter the sharpen order (choose odd numbers from 3 to 31):",order);
-      if (*order == '\0')
+        "Enter the sharpen radius and standard deviation:",radius);
+      if (*radius == '\0')
         break;
       /*
         Sharpen image scanlines.
@@ -6155,7 +6155,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]="-sharpen";
-      argv[2]=order;
+      argv[2]=radius;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -6167,14 +6167,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case BlurCommand:
     {
       static char
-        order[MaxTextExtent] = "3";
+        radius[MaxTextExtent] = "0.0x1.0";
 
       /*
-        Query user for blur order.
+        Query user for blur radius.
       */
       (void) XDialogWidget(display,windows,"Blur",
-        "Enter the blur order (choose odd numbers from 3 to 31):",order);
-      if (*order == '\0')
+        "Enter the blur radius and standard deviation:",radius);
+      if (*radius == '\0')
         break;
       /*
         Blur an image.
@@ -6182,7 +6182,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]="-blur";
-      argv[2]=order;
+      argv[2]=radius;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -6221,14 +6221,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case EdgeDetectCommand:
     {
       static char
-        order[MaxTextExtent] = "3";
+        radius[MaxTextExtent] = "3";
 
       /*
         Query user for edge factor.
       */
       (void) XDialogWidget(display,windows,"Detect Edges",
-        "Enter the edge detect factor (choose odd numbers from 3 to 31):",order);
-      if (*order == '\0')
+        "Enter the edge detect radius:",radius);
+      if (*radius == '\0')
         break;
       /*
         Detect edge in image.
@@ -6236,7 +6236,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]="-edge";
-      argv[2]=order;
+      argv[2]=radius;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -6491,14 +6491,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case CharcoalDrawingCommand:
     {
       static char
-        order[MaxTextExtent] = "3";
+        radius[MaxTextExtent] = "3";
 
       /*
-        Query user for charcoal order.
+        Query user for charcoal radius.
       */
       (void) XDialogWidget(display,windows,"Charcoal Drawing",
-        "Enter the charcoal order (choose odd numbers from 3 to 31):",order);
-      if (*order == '\0')
+        "Enter the charcoal radius:",radius);
+      if (*radius == '\0')
         break;
       /*
         Charcoal the image.
@@ -6507,7 +6507,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]="-charcoal";
-      argv[2]=order;
+      argv[2]=radius;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
