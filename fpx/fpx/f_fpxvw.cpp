@@ -611,8 +611,11 @@ HRESULT OleRegGetUserType(REFCLSID clsid, DWORD whatever, LPOLESTR FAR* pszUserT
     if (*pszUserType == NULL) {
         *pszUserType = new OLECHAR[512];
     }
-    // *pszUserType = OLESTR("Flashpix Toolkit Application"); FIXME
-    wcscpy(*pszUserType,OLESTR("Flashpix Toolkit Application"));
+
+    const OLECHAR *src=OLESTR("Flashpix Toolkit Application");
+    OLECHAR *dest=*pszUserType;
+    while(*src) *dest++=*src++;
+
     return S_OK;
 }
 
