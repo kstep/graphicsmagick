@@ -885,8 +885,7 @@ MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
 %
 %  The format of the MSBOrderLong method is:
 %
-%      void MSBOrderLong(register unsigned char *buffer,
-%        const unsigned int length)
+%      void MSBOrderLong(unsigned char *buffer,const size_t length)
 %
 %  A description of each parameter follows.
 %
@@ -896,8 +895,7 @@ MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
 %
 %
 */
-MagickExport void MSBOrderLong(register unsigned char *buffer,
-	const size_t length)
+MagickExport void MSBOrderLong(unsigned char *buffer,const size_t length)
 {
   int
     c;
@@ -938,7 +936,7 @@ MagickExport void MSBOrderLong(register unsigned char *buffer,
 %
 %  The format of the MSBOrderShort method is:
 %
-%      void MSBOrderShort(register unsigned char *p,const size_t length)
+%      void MSBOrderShort(unsigned char *p,const size_t length)
 %
 %  A description of each parameter follows.
 %
@@ -948,7 +946,7 @@ MagickExport void MSBOrderLong(register unsigned char *buffer,
 %
 %
 */
-MagickExport void MSBOrderShort(register unsigned char *p,const size_t length)
+MagickExport void MSBOrderShort(unsigned char *p,const size_t length)
 {
 	int
     c;
