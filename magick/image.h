@@ -52,11 +52,15 @@ typedef unsigned int Quantum;
 
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
+#define Downscale(quantum) ScaleQuantumToByte(quantum)
 #define Intensity(color)  \
   ((9798L*(color)->red+19235L*(color)->green+3735L*(color)->blue)/32768L)
 #define MaxRGB  ((1 << QuantumDepth)-1)
 #define OpaqueOpacity  0
 #define TransparentOpacity  MaxRGB
+#define Upscale(value) ScaleByteToQuantum(value)
+#define XDownscale(quantum) ScaleQuantumToShort(quantum)
+#define XUpscale(value) ScaleShortToQuantum(value)
 
 /*
   Typedef declarations.
