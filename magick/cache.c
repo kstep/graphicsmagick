@@ -2014,10 +2014,10 @@ static unsigned int SyncPixelCache(Image *image)
           image->filename);
       cache_info=(CacheInfo *) image->cache;
       nexus_info=cache_info->nexus_info;
-      p=GetCacheView(image_view,nexus_info->x,nexus_info->y,
-        nexus_info->columns,nexus_info->rows);
-      q=GetCacheView(mask_view,nexus_info->x,nexus_info->y,
-        nexus_info->columns,nexus_info->rows);
+      p=GetCacheView(image_view,nexus_info->x,nexus_info->y,nexus_info->columns,
+        nexus_info->rows);
+      q=GetCacheView(mask_view,nexus_info->x,nexus_info->y,nexus_info->columns,
+        nexus_info->rows);
       if ((p != (PixelPacket *) NULL) && (q != (PixelPacket *) NULL))
         {
           int
