@@ -6901,13 +6901,13 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
   rowbytes=image->columns;
   if (image->depth == 8)
     {
-      if (!mng_info->write_png8 && ((mng_info->optimize || mng_info->IsPalette) &&
-          ImageIsGray(image)))
-        rowbytes*=(image->matte ? 2 : 1);
-      else if (mng_info->write_png24)
+      if (mng_info->write_png24)
         rowbytes*=3;
       else if (mng_info->write_png32)
         rowbytes*=4;
+      else if (!mng_info->write_png8 &&
+          ((mng_info->optimize || mng_info->IsPalette) && ImageIsGray(image)))
+        rowbytes*=(image->matte ? 2 : 1);
       else
         {
           if (!mng_info->IsPalette)

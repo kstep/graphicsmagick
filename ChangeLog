@@ -1,3 +1,8 @@
+2003-05-27  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/png.c: png.c would dump core when writing a grayscale
+	image in png24 or png32 format.
+
 2003-05-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/ept.c (WriteEPTImage): Fixed writing EPT preview image and
