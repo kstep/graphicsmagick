@@ -9,8 +9,11 @@
 
 // Have standard <iosfwd>
 #define HAVE_IOSFWD 1
+
 // Have <sys/types.h>
-#define HAVE_SYS_TYPES_H 1
+#if defined(WIN32)
+# define HAVE_SYS_TYPES_H 1
+#endif
 
 //
 // Include ImageMagick headers into namespace "MagickLib". If
@@ -40,7 +43,7 @@
 
 // Needed for off_t on Unix and Windows
 #if defined(HAVE_SYS_TYPES_H)
-#include <sys/types.h>
+# include <sys/types.h>
 #endif
 
 // Forward declarations for iostream classes

@@ -1075,6 +1075,20 @@ void Magick::Image::ping ( const std::string &imageSpec_ )
   throwException( exceptionInfo );
 }
 
+// Ping is similar to read except only enough of the image is read
+// to determine the image columns, rows, and filesize.  Access the
+// columns(), rows(), and fileSize() attributes after invoking
+// ping.  The image data is not valid after calling ping.
+void Magick::Image::ping ( const Blob& blob_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickLib::Image* image =
+    PingBlob( imageInfo(), blob_.data(), blob_.length(), &exceptionInfo );
+  replaceImage( image );
+  throwException( exceptionInfo );
+}
+
 // Quantize colors in image using current quantization settings
 // Set measureError_ to true in order to measure quantization error
 void Magick::Image::quantize ( const bool measureError_  )

@@ -367,7 +367,7 @@ interface</a>, which provides a multi-image abstraction on top of <i>Image</i>,
 must be used.
 <p>The operations supported by Image are shown in the following table:
 <br>&nbsp;
-<table BORDER >
+<table BORDER NOSAVE >
 <caption>Image Image Manipulation Methods</caption>
 
 <tr ALIGN=CENTER>
@@ -1010,18 +1010,23 @@ const <a href="Color.html">Color</a> &amp;penColor_</font></td>
 penColor_.</font></td>
 </tr>
 
-<tr>
-<td>
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
 <center><a NAME="ping"></a><font size=-1>ping</font></center>
 </td>
 
 <td><font size=-1>const std::string &amp;imageSpec_</font></td>
 
-<td><font size=-1>Ping is similar to read except only enough of the image
-is read to determine the image columns, rows, and filesize.&nbsp; The <a href="#columns">columns</a></font>,
+<td ROWSPAN="2" NOSAVE><font size=-1>Ping is similar to read except only
+enough of the image is read to determine the image columns, rows, and filesize.&nbsp;
+The <a href="#columns">columns</a></font>,
 <font size=-1><a href="#rows">rows</a>,
 and <a href="#fileSize">fileSize</a> attributes are valid after invoking
 ping.&nbsp; The image data is not valid after calling ping.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const Blob &amp;blob_</font></td>
 </tr>
 
 <tr>

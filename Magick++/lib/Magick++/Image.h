@@ -349,6 +349,12 @@ namespace Magick
     // ping.  The image data is not valid after calling ping.
     void            ping ( const std::string &imageSpec_ );
     
+    // Ping is similar to read except only enough of the image is read
+    // to determine the image columns, rows, and filesize.  Access the
+    // columns(), rows(), and fileSize() attributes after invoking
+    // ping.  The image data is not valid after calling ping.
+    void            ping ( const Blob &blob_ );
+
     // Quantize image (reduce number of colors)
     void            quantize ( const bool measureError_ = false );
     

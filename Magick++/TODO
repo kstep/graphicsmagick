@@ -2,6 +2,8 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
+* Add support for LevelImage().
+
 * Extend ColorRGB constructor so that it it supports setting alpha.
 
 * Add a pixelIndex method to Image class (similar to pixelColor) which
