@@ -47,8 +47,8 @@ MICRO_VERSION=@MICRO_VERSION@
 if WITH_MODULES
 noinst_LTLIBRARIES =
 else
-noinst_LTLIBRARIES = libCoders.la
-libCoders_la_SOURCES = $(MAGICK_CODER_SRCS)
+noinst_LTLIBRARIES = libCoder.la
+libCoder_la_SOURCES = $(MAGICK_CODER_SRCS)
 endif # WITH_MODULES
 
 # Additional files to distribute

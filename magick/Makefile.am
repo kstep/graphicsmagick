@@ -61,7 +61,7 @@ libMagick_la_LIBADD = @LIB_LCMS@ @LIB_TIFF@ @LIB_XML@ @LIB_TTF@ @LIB_JPEG@ @LIB_
   @LIB_MATH@ $(top_builddir)/ltdl/libltdlc.la
 else
 libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
-libMagick_la_LIBADD = ../coder/libCoders.la @LIB_JBIG@ @LIB_HDF@ \
+libMagick_la_LIBADD = ../coder/libCoder.la @LIB_JBIG@ @LIB_HDF@ \
   @LIB_LCMS@ @LIB_TIFF@ @LIB_TTF@ @LIB_JP2@ @LIB_JPEG@ @LIB_GS@ @LIB_PNG@ \
   @LIB_FPX@ @LIB_WMF@ @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@ @LIB_BZLIB@ \
   @LIB_XML@ @LIB_ZLIB@ @LIB_THREAD@ @LIB_LF@ @LIB_MATH@
