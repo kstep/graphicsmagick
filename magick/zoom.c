@@ -775,7 +775,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     *p;
 
   register IndexPacket
-    *indexes;
+    *indexes,
+    *source_indexes;
 
   register long
     i,
@@ -834,6 +835,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     q=SetImagePixels(destination,x,0,1,destination->rows);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
+    source_indexes=GetIndexes(source);
     indexes=GetIndexes(destination);
     for (y=0; y < (long) destination->rows; y++)
     {
@@ -854,8 +856,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
         {
           i=Min(Max((long) (center+0.5),start),stop-1);
           j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
-            (contribution[i].pixel-contribution[0].pixel);
-          indexes[y]=(GetIndexes(source))[j];
+            (contribution[i-start].pixel-contribution[0].pixel);
+          indexes[y]=source_indexes[j];
         }
       q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
       q->green=(Quantum)
@@ -901,7 +903,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     *p;
 
   register IndexPacket
-    *indexes;
+    *indexes,
+    *source_indexes;
 
   register long
     i,
@@ -960,6 +963,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     q=SetImagePixels(destination,0,y,destination->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
+    source_indexes=GetIndexes(source);
     indexes=GetIndexes(destination);
     for (x=0; x < (long) destination->columns; x++)
     {
@@ -979,9 +983,9 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       if (indexes != (IndexPacket *) NULL)
         {
           i=Min(Max((long) (center+0.5),start),stop-1);
-          j=(long) (contribution[i].pixel-contribution[0].pixel)*
+          j=(long) (contribution[i-start].pixel-contribution[0].pixel)*
             source->columns+x;
-          indexes[x]=(GetIndexes(source))[j];
+          indexes[x]=source_indexes[j];
         }
       q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
       q->green=(Quantum)
@@ -1072,8 +1076,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   support=Max(x_support,y_support);
   if (support < filters[filter].support)
     support=filters[filter].support;
-  contribution=(ContributionInfo *)
-    AcquireMemory((size_t) ceil(2.0*Max(support,0.5))*sizeof(ContributionInfo));
+  contribution=(ContributionInfo *) AcquireMemory((size_t)
+    ceil(2.0*Max(support,0.5)+3)*sizeof(ContributionInfo));
   if (contribution == (ContributionInfo *) NULL)
     {
       DestroyImage(resize_image);
