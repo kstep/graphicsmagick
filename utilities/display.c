@@ -159,13 +159,13 @@
 %
 %  The format of the Usage method is:
 %
-%      void Usage()
+%      void Usage(void)
 %
 %  A description of each parameter follows:
 %
 %
 */
-static void Usage()
+static void Usage(void)
 {
   const char
     **p;
@@ -410,7 +410,7 @@ int main(int argc,char **argv)
   if (display == (Display *) NULL)
     MagickError(XServerError,"Unable to connect to X server",
       XDisplayName(server_name));
-  XSetErrorHandler(XError);
+  (void) XSetErrorHandler(XError);
   client_name=SetClientName((char *) NULL);
   resource_database=XGetResourceDatabase(display,client_name);
   XGetResourceInfo(resource_database,client_name,&resource_info);
@@ -687,7 +687,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("density",option+1,3) == 0)
             {
-              CloneString(&image_info->density,(char *) NULL);
+              (void) CloneString(&image_info->density,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -713,7 +713,7 @@ int main(int argc,char **argv)
             break;
           if (LocaleCompare("display",option+1) == 0)
             {
-              CloneString(&image_info->server_name,(char *) NULL);
+              (void) CloneString(&image_info->server_name,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -813,7 +813,7 @@ int main(int argc,char **argv)
             break;
           if (LocaleNCompare("font",option+1,3) == 0)
             {
-              CloneString(&image_info->font,(char *) NULL);
+              (void) CloneString(&image_info->font,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -823,7 +823,7 @@ int main(int argc,char **argv)
                 }
               if ((image_info->font == (char *) NULL) ||
                   (*image_info->font != '@'))
-                CloneString(&resource_info.font,image_info->font);
+                (void) CloneString(&resource_info.font,image_info->font);
               break;
             }
           if ((LocaleNCompare("foreground",option+1,3) == 0) ||
@@ -862,13 +862,13 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("geometry",option+1,2) == 0)
             {
-              CloneString(&resource_info.image_geometry,(char *) NULL);
+              (void) CloneString(&resource_info.image_geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  CloneString(&resource_info.image_geometry,argv[i]);
+                  (void) CloneString(&resource_info.image_geometry,argv[i]);
                 }
               break;
             }
@@ -886,13 +886,13 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("iconGeometry",option+1,5) == 0)
             {
-              CloneString(&resource_info.icon_geometry,(char *) NULL);
+              (void) CloneString(&resource_info.icon_geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  CloneString(&resource_info.icon_geometry,argv[i]);
+                  (void) CloneString(&resource_info.icon_geometry,argv[i]);
                 }
               break;
             }
@@ -1007,13 +1007,13 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("name",option+1,2) == 0)
             {
-              CloneString(&resource_info.name,(char *) NULL);
+              (void) CloneString(&resource_info.name,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing name",option);
-                  CloneString(&resource_info.name,argv[i]);
+                  (void) CloneString(&resource_info.name,argv[i]);
                 }
               break;
             }
@@ -1026,7 +1026,7 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("page",option+1,3) == 0)
             {
-              CloneString(&image_info->page,(char *) NULL);
+              (void) CloneString(&image_info->page,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -1150,13 +1150,13 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("size",option+1,2) == 0)
             {
-              CloneString(&image_info->size,(char *) NULL);
+              (void) CloneString(&image_info->size,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  CloneString(&image_info->size,argv[i]);
+                  (void) CloneString(&image_info->size,argv[i]);
                 }
               break;
             }
@@ -1167,37 +1167,37 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("text_font",option+1,5) == 0)
             {
-              CloneString(&resource_info.text_font,(char *) NULL);
+              (void) CloneString(&resource_info.text_font,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing font name",option);
-                  CloneString(&resource_info.text_font,argv[i]);
+                  (void) CloneString(&resource_info.text_font,argv[i]);
                 }
               break;
             }
           if (LocaleNCompare("texture",option+1,5) == 0)
             {
-              CloneString(&image_info->texture,(char *) NULL);
+              (void) CloneString(&image_info->texture,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing filename",option);
-                  CloneString(&image_info->texture,argv[i]);
+                  (void) CloneString(&image_info->texture,argv[i]);
                 }
               break;
             }
           if (LocaleNCompare("title",option+1,4) == 0)
             {
-              CloneString(&resource_info.title,(char *) NULL);
+              (void) CloneString(&resource_info.title,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing title",option);
-                  CloneString(&resource_info.title,argv[i]);
+                  (void) CloneString(&resource_info.title,argv[i]);
                 }
               break;
             }
@@ -1247,13 +1247,13 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("visual",option+1,3) == 0)
             {
-              CloneString(&resource_info.visual_type,(char *) NULL);
+              (void) CloneString(&resource_info.visual_type,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing visual class",option);
-                  CloneString(&resource_info.visual_type,argv[i]);
+                  (void) CloneString(&resource_info.visual_type,argv[i]);
                 }
               break;
             }
@@ -1264,39 +1264,39 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("window",option+1) == 0)
             {
-              CloneString(&resource_info.window_id,(char *) NULL);
+              (void) CloneString(&resource_info.window_id,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing id, name, or 'root'",
                       option);
-                  CloneString(&resource_info.window_id,argv[i]);
+                  (void) CloneString(&resource_info.window_id,argv[i]);
                 }
               break;
             }
           if (LocaleNCompare("window_group",option+1,7) == 0)
             {
-              CloneString(&resource_info.window_group,(char *) NULL);
+              (void) CloneString(&resource_info.window_group,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing id, name, or 'root'",
                       option);
-                  CloneString(&resource_info.window_group,argv[i]);
+                  (void) CloneString(&resource_info.window_group,argv[i]);
                 }
               break;
             }
           if (LocaleNCompare("write",option+1,2) == 0)
             {
-              CloneString(&resource_info.write_filename,(char *) NULL);
+              (void) CloneString(&resource_info.write_filename,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing file name",option);
-                  CloneString(&resource_info.write_filename,argv[i]);
+                  (void) CloneString(&resource_info.write_filename,argv[i]);
                   if (IsAccessible(resource_info.write_filename))
                     {
                       char
@@ -1433,7 +1433,7 @@ int main(int argc,char **argv)
                   Write image.
                 */
                 (void) strcpy(image->filename,resource_info.write_filename);
-                SetImageInfo(image_info,True,&image->exception);
+                (void) SetImageInfo(image_info,True,&image->exception);
                 status=WriteImage(image_info,image);
                 if (status == False)
                   CatchImageException(image);

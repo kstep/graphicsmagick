@@ -113,7 +113,7 @@
 %
 %
 */
-static void Usage()
+static void Usage(void)
 {
   const char
     **p;
@@ -270,7 +270,7 @@ int main(int argc,char **argv)
   image=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strcpy(image_info->filename,argv[argc-1]);
-  SetImageInfo(image_info,True,&exception);
+  (void) SetImageInfo(image_info,True,&exception);
   mask_image=(Image *) NULL;
   stegano=0;
   stereo=False;
@@ -502,7 +502,7 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("density",option+1,3) == 0)
             {
-              CloneString(&image_info->density,(char *) NULL);
+              (void) CloneString(&image_info->density,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -526,7 +526,7 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("displace",option+1) == 0)
             {
-              CloneString(&displace_geometry,(char *) NULL);
+              (void) CloneString(&displace_geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -539,7 +539,7 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("display",option+1) == 0)
             {
-              CloneString(&image_info->server_name,(char *) NULL);
+              (void) CloneString(&image_info->server_name,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -582,7 +582,7 @@ int main(int argc,char **argv)
         }
         case 'f':
         {
-          CloneString(&image_info->font,(char *) NULL);
+          (void) CloneString(&image_info->font,(char *) NULL);
           if (*option == '-')
             {
               i++;
@@ -596,7 +596,7 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("geometry",option+1,2) == 0)
             {
-              CloneString(&geometry,(char *) NULL);
+              (void) CloneString(&geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -716,7 +716,7 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("page",option+1,3) == 0)
             {
-              CloneString(&image_info->page,(char *) NULL);
+              (void) CloneString(&image_info->page,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -775,7 +775,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("size",option+1,2) == 0)
             {
-              CloneString(&image_info->size,(char *) NULL);
+              (void) CloneString(&image_info->size,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -864,7 +864,7 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("unsharp",option+1) == 0)
             {
-              CloneString(&unsharp_geometry,(char *) NULL);
+              (void) CloneString(&unsharp_geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -892,7 +892,7 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("watermark",option+1) == 0)
             {
-              CloneString(&watermark_geometry,(char *) NULL);
+              (void) CloneString(&watermark_geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -952,11 +952,11 @@ int main(int argc,char **argv)
       composite_image->matte=True;
     }
   if (compose == DisplaceCompositeOp)
-    CloneString(&composite_image->geometry,displace_geometry);
+    (void) CloneString(&composite_image->geometry,displace_geometry);
   if (compose == ModulateCompositeOp)
-    CloneString(&composite_image->geometry,watermark_geometry);
+    (void) CloneString(&composite_image->geometry,watermark_geometry);
   if (compose == ThresholdCompositeOp)
-    CloneString(&composite_image->geometry,unsharp_geometry);
+    (void) CloneString(&composite_image->geometry,unsharp_geometry);
   /*
     Combine image.
   */
@@ -1079,7 +1079,7 @@ int main(int argc,char **argv)
     Write image.
   */
   (void) strcpy(combine_image->filename,write_filename);
-  SetImageInfo(image_info,True,&combine_image->exception);
+  (void) SetImageInfo(image_info,True,&combine_image->exception);
   status=WriteImage(image_info,combine_image);
   if (status == False)
     CatchImageException(combine_image);

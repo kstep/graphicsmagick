@@ -129,7 +129,7 @@
 %
 %
 */
-static void Usage()
+static void Usage(void)
 {
   const char
     **p;
@@ -302,7 +302,7 @@ int main(int argc,char **argv)
   if (display == (Display *) NULL)
     MagickError(OptionError,"Unable to connect to X server",
       XDisplayName(server_name));
-  XSetErrorHandler(XError);
+ (void) XSetErrorHandle(XError);
   client_name=SetClientName((char *) NULL);
   resource_database=XGetResourceDatabase(display,client_name);
   XGetImportInfo(&ximage_info);
@@ -544,7 +544,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("density",option+1,3) == 0)
             {
-              CloneString(&image_info->density,(char *) NULL);
+              (void) CloneString(&image_info->density,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -573,7 +573,7 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("display",option+1) == 0)
             {
-              CloneString(&image_info->server_name,(char *) NULL);
+              (void) CloneString(&image_info->server_name,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -707,7 +707,7 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("page",option+1,3) == 0)
             {
-              CloneString(&image_info->page,(char *) NULL);
+              (void) CloneString(&image_info->page,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -919,7 +919,7 @@ int main(int argc,char **argv)
   status=MogrifyImages(image_info,argc,argv,&image);
   if (status == False)
     CatchImageException(image);
-  SetImageInfo(image_info,True,&image->exception);
+  (void) SetImageInfo(image_info,True,&image->exception);
   status=0;
   for (p=image; p != (Image *) NULL; p=p->next)
   {

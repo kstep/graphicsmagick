@@ -7772,7 +7772,7 @@ static unsigned int XMatteEditImage(Display *display,
                 target.green=XDownScale(border_color.green);
                 target.blue=XDownScale(border_color.blue);
               }
-            MatteFloodfillImage(*image,target,atoi(matte),x_offset,y_offset,
+            (void) MatteFloodfillImage(*image,target,atoi(matte),x_offset,y_offset,
               method);
             break;
           }

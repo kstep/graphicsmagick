@@ -947,7 +947,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
   /*
     Allocate raw strip buffer.
   */
-  TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
+  (void) TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
   strip_size=byte_count[0];
   for (i=1; i < TIFFNumberOfStrips(tiff); i++)
     if (byte_count[i] > strip_size)
@@ -963,7 +963,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
   /*
     Compress runlength encoded to 2D Huffman pixels.
   */
-  TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
+  (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
   for (i=0; i < TIFFNumberOfStrips(tiff); i++)
   {
     Ascii85Initialize(image);

@@ -1525,7 +1525,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobMSBShort(image,0x1f2);
       (void) WriteBlobMSBShort(image,(int) (image->iptc_profile.length+4));
       (void) WriteBlobString(image,"8BIM");
-      WriteBlob(image,image->iptc_profile.length,image->iptc_profile.info);
+      (void) WriteBlob(image,image->iptc_profile.length,image->iptc_profile.info);
     }
   if (image->color_profile.info != (unsigned char *) NULL)
     {
@@ -1533,7 +1533,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobMSBShort(image,0xe0);
       (void) WriteBlobMSBShort(image,(int) (image->color_profile.length+4));
       (void) WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlob(image,image->color_profile.length,image->color_profile.info);
+      (void) WriteBlob(image,image->color_profile.length,
+        image->color_profile.info);
       (void) WriteBlobMSBShort(image,0xa1);
       (void) WriteBlobMSBShort(image,0xe0);
       (void) WriteBlobMSBShort(image,4);
@@ -1608,7 +1609,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobMSBLong(image,0x00000000UL);
       (void) WriteBlobMSBLong(image,0x00000000UL);
       (void) WriteBlobMSBLong(image,0x0018FFFFUL);
-      WriteBlob(image,length,blob);
+      (void) WriteBlob(image,length,blob);
       if (length & 0x01)
         (void) WriteBlobByte(image,'\0');
       LiberateMemory((void **) &blob);

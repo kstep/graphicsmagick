@@ -848,7 +848,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             loop=False;
             if (ReadBlobBlock(image,header) != 0)
               loop=!LocaleNCompare((char *) header,"NETSCAPE2.0",11);
-            while (ReadBlobBlock(image,header) > 0)
+            while (ReadBlobBlock(image,header) != 0)
             if (loop)
               iterations=(header[2] << 8) | header[1];
             break;

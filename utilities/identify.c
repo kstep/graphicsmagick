@@ -90,7 +90,7 @@
 %
 %
 */
-static void Usage()
+static void Usage(void)
 {
   const char
     **p;
@@ -180,7 +180,7 @@ int main(int argc,char **argv)
         i++;
         if (i == argc)
           MagickError(OptionError,"Missing format string",option);
-        CloneString(&format,argv[i]);
+        (void) CloneString(&format,argv[i]);
         argv[i]=(char *) "";
         break;
       }
@@ -234,7 +234,7 @@ int main(int argc,char **argv)
               }
             if (LocaleNCompare("density",option+1,3) == 0)
               {
-                CloneString(&image_info->density,(char *) NULL);
+                (void) CloneString(&image_info->density,(char *) NULL);
                 if (*option == '-')
                   {
                   i++;
@@ -298,7 +298,7 @@ int main(int argc,char **argv)
           {
             if (LocaleNCompare("size",option+1,2) == 0)
               {
-                CloneString(&image_info->size,(char *) NULL);
+                (void) CloneString(&image_info->size,(char *) NULL);
                 if (*option == '-')
                   {
                     i++;

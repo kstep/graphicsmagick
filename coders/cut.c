@@ -315,7 +315,7 @@ CUT_KO:  ThrowReaderException(CorruptImageWarning,"Not a CUT image file",image);
   RunCount=ReadBlobByte(image);
   RunCountMasked=RunCount & 0x7F;
   ldblk=0;
-  while(RunCountMasked>0)	/*end of line?*/
+  while(RunCountMasked!=0)	/*end of line?*/
 	{
 	i=1;
 	if(RunCount<0x80) i=RunCountMasked;
@@ -361,7 +361,7 @@ CUT_KO:  ThrowReaderException(CorruptImageWarning,"Not a CUT image file",image);
 	       }
 	}
 	
- strcpy(clone_info->filename+i,".PAL");
+ (void) strcpy(clone_info->filename+i,".PAL");
  if((clone_info->file=fopen(clone_info->filename,"rb"))==NULL)
      {
      (void) strcpy(clone_info->filename+i,".pal");
@@ -415,7 +415,7 @@ ErasePalette:
    for(i=0;i<=(int) PalHeader.MaxIndex;i++)
            {      /*this may be wrong- I don't know why is palette such strange*/
 	   j=(int) TellBlob(palette);
-	   if((j % 512)>512-/*sizeof(pal)*/6)
+	   if((j % 512)>512-6)
 	       {
 	       j=((j / 512)+1)*512;
 	       (void) SeekBlob(palette,j,SEEK_SET);
@@ -479,7 +479,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
       RunCount=ReadBlobByte(image);
       RunCountMasked=RunCount & 0x7F;
 
-      while(RunCountMasked>0)  	
+      while(RunCountMasked!=0)  	
     		{
     		if(RunCountMasked>j)
 			{		/*Wrong Data*/
@@ -493,7 +493,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 		if(RunCount>0x80)
 			{
 			RunValue=ReadBlobByte(image);
-			memset(ptrB,RunValue,RunCountMasked);
+			(void) memset(ptrB,RunValue,RunCountMasked);
 			}
 		else {
 		     (void) ReadBlob(image,RunCountMasked,ptrB);

@@ -394,7 +394,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
   status=False;
   length=image->iptc_profile.length;
   info=image->iptc_profile.info;
-  while (length > 0)
+  while (length != 0)
   {
     if (ReadByte((char **) &info,&length) != '8')
       continue;

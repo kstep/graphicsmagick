@@ -195,7 +195,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) CloneString(&draw_info->text,text);
     FormatString(geometry,"%+d%+d",page.x,page.y+offset);
     (void) CloneString(&draw_info->geometry,geometry);
-    AnnotateImage(image,draw_info);
+    (void) AnnotateImage(image,draw_info);
     height=(unsigned int) (draw_info->pointsize*
       AbsoluteValue(Max(draw_info->affine.sx,draw_info->affine.rx)));
     offset+=height;

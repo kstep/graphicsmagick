@@ -642,8 +642,8 @@ static void SVGUnparsedEntityDeclaration(void *context,const xmlChar *name,
       "  SAX.unparsedEntityDecl(%.1024s, %.1024s, %.1024s, %.1024s)\n",
       (char *) name,public_id ? (char *) public_id : "none",
       system_id ? (char *) system_id : "none",(char *) notation);
-  xmlAddDocEntity(svg_info->document,name,XML_EXTERNAL_GENERAL_UNPARSED_ENTITY,
-    public_id,system_id,notation);
+  (void) xmlAddDocEntity(svg_info->document,name,
+    XML_EXTERNAL_GENERAL_UNPARSED_ENTITY,public_id,system_id,notation);
 
 }
 
@@ -2002,9 +2002,9 @@ static void SVGReference(void *context,const xmlChar *name)
     (void) fprintf(stdout,"  SAX.reference(%.1024s)\n",name);
   parser=svg_info->parser;
   if (*name == '#')
-    xmlAddChild(parser->node,xmlNewCharRef(svg_info->document,name));
+    (void) xmlAddChild(parser->node,xmlNewCharRef(svg_info->document,name));
   else
-    xmlAddChild(parser->node,xmlNewReference(svg_info->document,name));
+    (void) xmlAddChild(parser->node,xmlNewReference(svg_info->document,name));
 }
 
 static void SVGIgnorableWhitespace(void *context,const xmlChar *c,int length)
@@ -2102,7 +2102,7 @@ static void SVGError(void *context,const char *format,...)
   if (svg_info->debug)
     {
       (void) fprintf(stdout,"  SAX.error: ");
-      vfprintf(stdout,format,operands);
+      (void) vfprintf(stdout,format,operands);
     }
   svg_info->exception->severity=DelegateError;
 #if !defined(HAVE_VSNPRINTF)
