@@ -84,7 +84,7 @@ static SemaphoreInfo
 %
 %  The format of the DeleteMagickRegistry method is:
 %
-%      unsigned int void DeleteMagickRegistry(const long id)
+%      unsigned int DeleteMagickRegistry(const long id)
 %
 %  A description of each parameter follows:
 %
@@ -144,7 +144,7 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y M a g i c k R e g i s t r y                                 %
++   D e s t r o y M a g i c k R e g i s t r y                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %

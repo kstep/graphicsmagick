@@ -21,7 +21,7 @@
 	<UL>
 
 		<LI><A HREF="#deletemagickregistry">DeleteMagickRegistry</A></LI>
-		<LI><A HREF="#destroymagickregistry">DestroyMagickRegistry</A></LI>
+		<LI><A HREF="#getmagickregistry">GetMagickRegistry</A></LI>
 		<LI><A HREF="#setmagickregistry">SetMagickRegistry</A></LI>
 	</UL>
 
@@ -37,8 +37,7 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P>unsigned int void  <STRONG>DeleteMagickRegistry</STRONG>( const long id );</P>
-<P><STRONG>DestroyMagickRegistry</STRONG>( )deallocates memory associated the magick registry.;</P>
+<P>unsigned int  <STRONG>DeleteMagickRegistry</STRONG>( const long id );</P>
 <P>const void * <STRONG>GetMagickRegistry</STRONG>( const long id, RegistryType *type, size_t *length );</P>
 <P>long  <STRONG>SetMagickRegistry</STRONG>( const void *blob, const size_t length, ExceptionInfo *exception );</P>
 <P>
@@ -49,7 +48,7 @@
 <P>
 <H2><A NAME="deletemagickregistry">DeleteMagickRegistry</A></H2>
 <blockquote>DeleteMagickRegistry ( ) deletes an entry in the registry as defined by the id.It returns True if the entry is deleted otherwise False if no entry is foundin the registry that matches the id.; </blockquote><P>The format of the DeleteMagickRegistry method is:</P>
-<blockquote>unsigned int void DeleteMagickRegistry ( const long id ); </blockquote><P>
+<blockquote>unsigned int DeleteMagickRegistry ( const long id ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_id%3A">id:</A></STRONG><BR>
@@ -57,11 +56,7 @@
 The registry id.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="destroymagickregistry">DestroyMagickRegistry</A></H2>
-<blockquote>DestroyMagickRegistry ( ) deallocates memory associated the magick registry.; </blockquote><P>The format of the DestroyMagickRegistry method is:</P>
-<PRE>
-     void DestroyMagickInfo(void)
-=head2 GetMagickRegistry</PRE>
+<H2><A NAME="getmagickregistry">GetMagickRegistry</A></H2>
 <blockquote>GetMagickRegistry ( ) gets a blob from the registry as defined by the id. Ifthe blob that matches the id is not found, NULL is returned.; </blockquote><P>The format of the getMagickRegistry method is:</P>
 <blockquote>const void *GetMagickRegistry ( const long id, RegistryType *type, size_t *length ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
