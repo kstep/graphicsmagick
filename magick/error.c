@@ -233,7 +233,7 @@ static void DefaultWarningHandler(const ExceptionType warning,
 %
 %  The format of the GetExceptionInfo method is:
 %
-%      GetExceptionInfo(ExceptionInfo *exception_info)
+%      GetExceptionInfo(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %

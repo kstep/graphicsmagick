@@ -760,7 +760,7 @@ extern Export void
   RegisterHTMLImage(void),
   RegisterICBImage(void),
   RegisterICCImage(void),
-  RegisterICOImage(void),
+  RegisterICONImage(void),
   RegisterIMPLICITImage(void),
   RegisterIPTCImage(void),
   RegisterJBGImage(void),
