@@ -185,8 +185,6 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    ThrowReaderException(ResourceLimitError,"Unable to allocate image",image);
   image->columns=800;
   image->rows=480;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);

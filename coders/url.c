@@ -192,7 +192,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   (void) fclose(file);
   if (!IsAccessible(clone_info->filename))
-    ThrowException(exception,FileOpenError,"No data returned from:",filename);
+    ThrowException(exception,CoderError,"NoDataReturned",filename);
   else
     {
       *clone_info->magick='\0';

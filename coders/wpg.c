@@ -600,9 +600,9 @@ typedef struct {
    Header.Reserved=ReadBlobLSBShort(image);
 
   if (Header.FileId!=0x435057FF || (Header.ProductType>>8)!=0x16 )
-    ThrowReaderException(CorruptImageError,"Not a WPG image file",image);
+    ThrowReaderException(CorruptImageError,"NotAWPGImageFile",image);
   if (Header.EncryptKey!=0 )
-    ThrowReaderException(CorruptImageError,"Encrypted WPG image file",image);
+    ThrowReaderException(CoderError,"EncryptedWPGImageFileNotSupported",image);
 
   image->colors = 0;
 
@@ -722,7 +722,8 @@ NoMemory:    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
 
      if(UnpackWPGRaster(image)<0) /* The raster cannot be unpacked */
          {
-DecompressionFailed: ThrowReaderException(ResourceLimitError,"Cannot decompress WPG raster",image)
+DecompressionFailed: ThrowReaderException(CoderError,"UnableToDecompressImage",
+  image)
          }
 
      /* Allocate next image structure. */
@@ -851,7 +852,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitError,"Cannot decompress 
       break;
 
    default:
-     ThrowReaderException(CorruptImageError,"Unsupported level of WPG image",image)
+     ThrowReaderException(CoderError,"Unsupportedlevel",image)
    }
 
 

@@ -548,8 +548,8 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
         description[MaxTextExtent];
 
       FormatString(description,"packed DIB at offset %ld", bmp_read->offset);
-      ThrowException(&ddata->image->exception,CorruptImageError,exception.reason,
-        exception.description);
+      ThrowException(&ddata->image->exception,CorruptImageError,
+        exception.reason,exception.description);
     }
   else
     {
@@ -2337,7 +2337,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     {
       if (API)
         wmf_api_destroy(API);
-      ThrowReaderException(CoderError, "Failed to intialize libwmf", image);
+      ThrowReaderException(DelegateError,"UnableToInitializeWMFLibrary",image);
     }
 
   /* Register progress monitor */
@@ -2363,7 +2363,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
-      ThrowReaderException(FileOpenError, "Unable to open file", image);
+      ThrowReaderException(FileOpenError,"UnableToOpenFile", image);
     }
 
   /*
@@ -2374,7 +2374,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
-      ThrowReaderException(CorruptImageError, "Failed to scan file", image);
+      ThrowReaderException(DelegateError,"FailedToScanFile",image);
     }
 
   /*
@@ -2406,8 +2406,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
-      ThrowReaderException(CorruptImageError,
-        "Failed to compute output size", image);
+      ThrowReaderException(DelegateError,"FailedToComputeOutputSize",image);
     }
 
   /* Obtain (or guess) metafile units */
@@ -2566,7 +2565,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
-      ThrowReaderException(CorruptImageError, "Failed to render file", image);
+      ThrowReaderException(DelegateError,"FailedToRenderFile",image);
     }
 
   /*

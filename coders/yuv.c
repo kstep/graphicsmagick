@@ -161,7 +161,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         vertical_factor=horizontal_factor;
       if ((horizontal_factor != 1) && (horizontal_factor != 2) &&
           (vertical_factor != 1) && (vertical_factor != 2))
-        ThrowReaderException(CorruptImageError,"Unexpected sampling factor",
+        ThrowReaderException(CorruptImageError,"UnexpectedSamplingFactor",
           image);
     }
   if ((interlace == UndefinedInterlace) ||
@@ -519,7 +519,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         vertical_factor=horizontal_factor;
       if ((horizontal_factor != 1) && (horizontal_factor != 2) &&
           (vertical_factor != 1) && (vertical_factor != 2))
-        ThrowWriterException(ResourceLimitError,"Unexpected sampling factor",
+        ThrowWriterException(CorruptImageError,"UnexpectedSamplingFactor",
           image);
     }
   if ((interlace == UndefinedInterlace) ||

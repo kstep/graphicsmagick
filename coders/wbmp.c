@@ -160,19 +160,18 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   if (status == False)
     ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   if (!ReadBlob(image,2,(char *) &header)) 
-    ThrowReaderException(CorruptImageError,"Not a WBMP image file",image);
+    ThrowReaderException(CorruptImageError,"NotAWBMPImageFile",image);
   if (header != 0)
-    ThrowReaderException(CorruptImageError,
-      "Only WBMP level 0 files supported",image);
+    ThrowReaderException(CoderError,"OnlyLevelZerofilesSupported",image);
   /*
     Initialize image structure.
   */
   if (WBMPReadInteger(image,&image->columns) == False) 
-    ThrowReaderException(CorruptImageError,"Corrupt WBMP image",image);
+    ThrowReaderException(CorruptImageError,"CorruptWBMPimage",image);
   if (WBMPReadInteger(image,&image->rows) == False) 
-    ThrowReaderException(CorruptImageError,"Corrupt WBMP image",image);
+    ThrowReaderException(CorruptImageError,"CorruptWBMPimage",image);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(CorruptImageError,"Not a WBMP image file",image);
+    ThrowReaderException(CorruptImageError,"NotAWBMPImageFile",image);
   for (i=0; i < image->offset; i++)
     (void) ReadBlobByte(image);
   if (!AllocateImageColormap(image,2))
@@ -199,7 +198,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
         {
           byte=ReadBlobByte(image);
           if (byte == EOF)
-            ThrowReaderException(CorruptImageError,"Corrupt WBMP image",image);
+            ThrowReaderException(CorruptImageError,"CorruptWBMPImage",image);
         }
       indexes[x]=(byte & (0x01 << (7-bit))) ? 1 : 0;
       bit++;

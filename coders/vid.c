@@ -181,7 +181,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   DestroyImageInfo(clone_info);
   LiberateMemory((void **) &filelist);
   if (image == (Image *) NULL)
-    ThrowReaderException(CorruptImageError,"unable to read VID image",image);
+    ThrowReaderException(CorruptImageError,"UnableToReadVIDImage",image);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   /*
@@ -191,7 +191,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   montage_image=MontageImages(image,montage_info,exception);
   DestroyMontageInfo(montage_info);
   if (montage_image == (Image *) NULL)
-    ThrowReaderException(CorruptImageError,"unable to read VID image",image);
+    ThrowReaderException(CorruptImageError,"UnableToReadVIDImage",image);
   DestroyImageList(image);
   LiberateMemory((void **) &list[0]);
   LiberateMemory((void **) &list);
@@ -309,7 +309,7 @@ static unsigned int WriteVIDImage(const ImageInfo *image_info,Image *image)
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   montage_image=MontageImages(image,montage_info,&image->exception);
   if (montage_image == (Image *) NULL)
-    ThrowWriterException(CorruptImageError,"unable to write VID image",image);
+    ThrowWriterException(CorruptImageError,image->exception.reason,image);
   FormatString(montage_image->filename,"miff:%.1024s",image->filename);
   status=WriteImage(image_info,montage_image);
   DestroyImageList(montage_image);

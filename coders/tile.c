@@ -124,7 +124,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
   if (*image_info->filename == '\0')
-    ThrowReaderException(OptionError,"must specify an image name",image);
+    ThrowReaderException(OptionError,"MustSpecifyAnImageName",image);
   /*
     Tile texture onto image.
   */

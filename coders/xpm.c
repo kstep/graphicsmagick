@@ -271,7 +271,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   if ((count != 4) || (width > 2) || (image->columns == 0) ||
       (image->rows == 0) || (image->colors == 0))
-    ThrowReaderException(CorruptImageError,"Not a XPM image file",image)
+    ThrowReaderException(CorruptImageError,"NotAXPMImageFile",image)
   image->depth=16;
   /*
     Remove unquoted characters.
@@ -356,7 +356,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; textlist[i] != (char *) NULL; i++)
         LiberateMemory((void **) &textlist[i]);
       LiberateMemory((void **) &textlist);
-      ThrowReaderException(CorruptImageError,"Corrupt XPM image file",image)
+      ThrowReaderException(CorruptImageError,"CorruptXPMImage",image)
     }
   j=0;
   key[width]='\0';
@@ -393,7 +393,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
       if (y < (long) image->rows)
-        ThrowReaderException(CorruptImageError,"Not enough pixel data",image);
+        ThrowReaderException(CorruptImageError,"NotenoughPixelData",image);
     }
   /*
     Free resources.

@@ -220,8 +220,7 @@ static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   */
   display=XOpenDisplay(image_info->server_name);
   if (display == (Display *) NULL)
-    ThrowWriterException(ResourceLimitError,"Unable to connect to X server",
-      image);
+    ThrowWriterException(ResourceLimitError,"UnableToOpenXServer",image);
   /*
     Set our forgiving error handler.
   */

@@ -64,8 +64,26 @@
       <Message name="ColormapTypeNotSupported">
         Colormap type not supported
       </Message>
+      <Message name="ColorspaceModelIsNotSupported">
+        Colorspace model is not supported
+      </Message>
+      <Message name="DataEncodingSchemeIsNotSupported">
+        Data encoding scheme is not supported
+      </Message>
+      <Message name="DataStorageTypeIsNotSupported">
+        Data storage type is not supported
+      </Message>
       <Message name="DeltaPNGNotSupported">
         Delta-PNG is not supported
+      </Message>
+      <Message name="EncryptedWPGImageFileNotSupported">
+        Encrypted WPG image file not supported
+      </Message>
+      <Message name="FractalCompressionNotSupported">
+        Fractal compression not supported
+      </Message>
+      <Message name="ImageColumnOrRowSizeIsNotSupported">
+        Image column or row size is not supported
       </Message>
       <Message name="ImageDoesNotHaveAMatteChannel">
         Image does not have a matte channel
@@ -84,6 +102,12 @@
       </Message>
       <Message name="JPEGEmbeddingFailed">
         JPEG embedding failed
+      </Message>
+      <Message name="LocationTypeIsNotSupported">
+        Location type is not supported
+      </Message>
+      <Message name="MapStorageTypeIsNotSupported">
+        Map storage type is not supported
       </Message>
       <Message name="MSBByteOrderNotSupported">
         MSB order not supported bitmap
@@ -106,6 +130,9 @@
       <Message name="NoColorProfileIsAvailable">
         No color profile is available
       </Message>
+      <Message name="NoDataReturned">
+        No data returned
+      </Message>
       <Message name="NoIPTCProfileAvailable">
         No IPTC profile available
       </Message>
@@ -114,6 +141,9 @@
       </Message>
       <Message name="NotASupportedImageFile">
         Not a support image file
+      </Message>
+      <Message name="NumberOfImagesIsNotSupported">
+        Number of images is not supported
       </Message>
       <Message name="OnlyContinuousTonePictureSupported">
         Only continuous tone picture supported
@@ -136,6 +166,9 @@
       <Message name="UnableToCreateADC">
         Unable to create a DC
       </Message>
+      <Message name="UnableToDecompressImage">
+        Unable to decompress image
+      </Message>
       <Message name="UnableToReadCIELABImages">
         Unable to read CIELAB images
       </Message>
@@ -148,11 +181,17 @@
       <Message name="UnableToZipCompressImage">
         Unable to zip-compress image
       </Message>
+      <Message name="UnsupportedLevel">
+        Unsupported level
+      </Message>
       <Message name="UnsupportedRLEImagefile">
         Unsupported RLE image file
       </Message>
       <Message name="UnsupportedCellTypeInTheMatrix">
         Unsupported cell type in the matrix
+      </Message>
+      <Message name="ZipCompressionNotSupported">
+        Zip compression not supported
       </Message>
     </Error>
     <Warning>
@@ -210,6 +249,21 @@
         </Message>
         <Message name="CorruptPDBImage">
           Corrupt PDB image
+        </Message>
+        <Message name="CorruptWBMPImage">
+          Corrupt WBMP image
+        </Message>
+        <Message name="CorruptXCFImage">
+          Corrupt XCF image
+        </Message>
+        <Message name="CorruptXPMImage">
+          Corrupt XPM image
+        </Message>
+        <Message name="CorruptXWDImage">
+          Corrupt XWD image
+        </Message>
+        <Message name="FileFormatVersionMismatch">
+          file format version mismatch
         </Message>
         <Message name="ImageFileDoesNotContainAnyImageData">
           Image file or does not contain any image data
@@ -328,6 +382,33 @@
         <Message name="NotATGAImageFile">
           Not a TGA image file
         </Message>
+        <Message name="NotATIMImageFile">
+          Not a TIM image file
+        </Message>
+        <Message name="NotAVIFFImageFile">
+          Not a VIFF image file
+        </Message>
+        <Message name="NotAWBMPImageFile">
+          Not a WBMP image file
+        </Message>
+        <Message name="NotAWPGImageFile">
+          Not a WPG image file
+        </Message>
+        <Message name="NotAXBMImageFile">
+          Not a XBM image file
+        </Message>
+        <Message name="NotAXCFImageFile">
+          Not a XCF image file
+        </Message>
+        <Message name="NotAXPMImageFile">
+          Not a XPM image file
+        </Message>
+        <Message name="NotEnoughPixelData">
+          Not enough pixel data
+        </Message>
+        <Message name="NotEnoughTiles">
+          Not enough tiles found in level
+        </Message>
         <Message name="TooMuchImageDataInFile">
           Too much image data in file
         </Message>
@@ -343,11 +424,17 @@
         <Message name="UnableToReadGenericProfile">
           Unable to read generic profile
         </Message>
+        <Message name="UnableToReadImageHeader">
+          Unable to read image header
+        </Message>
         <Message name="UnableToReadIPTCProfile">
           Unable to read IPTC profile
         </Message>
         <Message name="UnableToReadImageData">
           Unable to read image data
+        </Message>
+        <Message name="UnableToReadVIDImage">
+          Unable to read VID image
         </Message>
         <Message name="UnableToRunlengthDecodeImage">
           Unable to runlength decode image
@@ -357,6 +444,9 @@
         </Message>
         <Message name="UnexpectedEndOfFile">
           Unexpected end-of-file
+        </Message>
+        <Message name="UnexpectedSamplingFactor">
+          Unexpected sampling factor
         </Message>
         <Message name="UnknownPatternType">
           Unknown pattern type
@@ -375,7 +465,16 @@
   <Delegate>
     <Error>
       <Message name="DelegateFailed">
-        DelegateFailed
+        Delegate failed
+      </Message>
+      <Message name="FailedToComputeOutputSize">
+        Failed to compute output size
+      </Message>
+      <Message name="FailedToRenderFile">
+        Failed to render file
+      </Message>
+      <Message name="FailedToScanFile">
+        Failed to scan file
       </Message>
       <Message name="NoTagFound">
         No tag found
@@ -394,6 +493,9 @@
       </Message>
       <Message name="UnableToInitializeFPXLibrary">
         Unable to initialize FPX library
+      </Message>
+      <Message name="UnableToInitializeWMFLibrary">
+        Unable to initialize WMF library
       </Message>
       <Message name="UnableToManageJP2Stream">
         Unable to manage JP2 stream
@@ -716,6 +818,9 @@
       </Message>
       <Message name="MissingWidth">
         Missing width
+      </Message>
+      <Message name="MustSpecifyAnImageName">
+        Must specify a image name
       </Message>
       <Message name="MustSpecifyImageSize">
         Must specify image size

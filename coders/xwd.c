@@ -205,8 +205,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   count=ReadBlob(image,sz_XWDheader,(char *) &header);
   if (count == 0)
-    ThrowReaderException(CorruptImageError,"Unable to read dump file header",
-      image);
+    ThrowReaderException(CorruptImageError,"UnableToReadImageHeader",image);
   image->columns=header.pixmap_width;
   image->rows=header.pixmap_height;
   image->depth=8;
@@ -220,10 +219,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Check to see if the dump file is in the proper format.
   */
   if (header.file_version != XWD_FILE_VERSION)
-    ThrowReaderException(CorruptImageError,"XWD file format version mismatch",
-      image);
+    ThrowReaderException(CorruptImageError,"FileFormatVersionMismatch",image);
   if (header.header_size < sz_XWDheader)
-    ThrowReaderException(CorruptImageError,"XWD header size is too small",image);
+    ThrowReaderException(CorruptImageError,"CorruptXWDImage",image);
   length=header.header_size-sz_XWDheader;
   comment=(char *) AcquireMemory(length+1);
   if (comment == (char *) NULL)

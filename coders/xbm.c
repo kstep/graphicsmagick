@@ -260,8 +260,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
   }
   if ((image->columns == 0) || (image->rows == 0) || EOFBlob(image))
-    ThrowReaderException(CorruptImageError,
-      "XBM file is not in the correct format",image);
+    ThrowReaderException(CorruptImageError,"NotAXBMImageFile",image);
   /*
     Initialize image structure.
   */

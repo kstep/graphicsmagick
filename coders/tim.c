@@ -166,7 +166,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify TIM identifier.
     */
     if (tim_info.id != 0x00000010)
-      ThrowReaderException(CorruptImageError,"Not a TIM image file",image);
+      ThrowReaderException(CorruptImageError,"NotATIMImageFile",image);
     tim_info.flag=ReadBlobLSBLong(image);
     has_clut=!!(tim_info.flag & (1 << 3));
     pixel_mode=tim_info.flag & 0x07;
@@ -363,7 +363,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       default:
-        ThrowReaderException(CorruptImageError,"Not a TIM image file",image)
+        ThrowReaderException(CorruptImageError,"NotATIMImageFile",image)
     }
     if (image->storage_class == PseudoClass)
       SyncImage(image);

@@ -273,7 +273,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       Verify VIFF identifier.
     */
     if ((count == 0) || ((unsigned char) viff_info.identifier != 0xab))
-      ThrowReaderException(CorruptImageError,"Not a VIFF raster",image);
+      ThrowReaderException(CorruptImageError,"NotAVIFFImage",image);
     /*
       Initialize VIFF image.
     */
@@ -345,38 +345,32 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     */
     number_pixels=viff_info.columns*viff_info.rows;
     if (number_pixels == 0)
-      ThrowReaderException(CorruptImageError,
-        "Image column or row size is not supported",image);
+      ThrowReaderException(CoderError,"ImageColumnOrRowSizeIsNotSupported",
+        image);
     if ((viff_info.data_storage_type != VFF_TYP_BIT) &&
         (viff_info.data_storage_type != VFF_TYP_1_BYTE) &&
         (viff_info.data_storage_type != VFF_TYP_2_BYTE) &&
         (viff_info.data_storage_type != VFF_TYP_4_BYTE) &&
         (viff_info.data_storage_type != VFF_TYP_FLOAT) &&
         (viff_info.data_storage_type != VFF_TYP_DOUBLE))
-      ThrowReaderException(CorruptImageError,
-        "Data storage type is not supported",image);
+      ThrowReaderException(CoderError,"DataStorageTypeIsNotSupported",image);
     if (viff_info.data_encode_scheme != VFF_DES_RAW)
-      ThrowReaderException(CorruptImageError,
-        "Data encoding scheme is not supported",image);
+      ThrowReaderException(CoderError,"DataEncodingSchemeIsNotSupported",image);
     if ((viff_info.map_storage_type != VFF_MAPTYP_NONE) &&
         (viff_info.map_storage_type != VFF_MAPTYP_1_BYTE) &&
         (viff_info.map_storage_type != VFF_MAPTYP_2_BYTE) &&
         (viff_info.map_storage_type != VFF_MAPTYP_4_BYTE) &&
         (viff_info.map_storage_type != VFF_MAPTYP_FLOAT) &&
         (viff_info.map_storage_type != VFF_MAPTYP_DOUBLE))
-      ThrowReaderException(CorruptImageError,
-        "Map storage type is not supported",image);
+      ThrowReaderException(CoderError,"MapStorageTypeIsNotSupported",image);
     if ((viff_info.color_space_model != VFF_CM_NONE) &&
         (viff_info.color_space_model != VFF_CM_ntscRGB) &&
         (viff_info.color_space_model != VFF_CM_genericRGB))
-      ThrowReaderException(CorruptImageError,
-        "Colorspace model is not supported",image);
+      ThrowReaderException(CoderError,"ColorspaceModelIsNotSupported",image);
     if (viff_info.location_type != VFF_LOC_IMPLICIT)
-      ThrowReaderException(CorruptImageError,
-        "Location type is not supported",image);
+      ThrowReaderException(CoderError,"LocationTypeIsNotSupported",image);
     if (viff_info.number_of_images != 1)
-      ThrowReaderException(CorruptImageError,
-        "Number of images is not supported",image);
+      ThrowReaderException(CoderError,"NumberOfImagesIsNotSupported",image);
     if (viff_info.map_rows == 0)
       viff_info.map_scheme=VFF_MS_NONE;
     switch ((int) viff_info.map_scheme)
@@ -479,8 +473,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         break;
       }
       default:
-        ThrowReaderException(CorruptImageError,"Colormap type is not supported",
-          image)
+        ThrowReaderException(CoderError,"ColormapTypeIsNotSupported",image)
     }
     /*
       Initialize image structure.

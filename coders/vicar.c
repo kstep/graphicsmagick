@@ -258,7 +258,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     count++;
   }
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(CorruptImageError,"image size is zero",image);
+    ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize",image);
   image->depth=8;
   if (!AllocateImageColormap(image,256))
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
