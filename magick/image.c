@@ -191,14 +191,11 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   *allocated_image->magick_filename='\0';
   allocated_image->magick_columns=0;
   allocated_image->magick_rows=0;
-  allocated_image->tainted=False;
+  allocated_image->taint=False;
   allocated_image->restart_animation_here=False;
   GetExceptionInfo(&allocated_image->exception);
   GetTimerInfo(&allocated_image->timer);
   GetCacheInfo(&allocated_image->cache);
-  allocated_image->view=0;
-  allocated_image->pixels=(PixelPacket *) NULL;
-  allocated_image->indexes=(IndexPacket *) NULL;
   allocated_image->orphan=False;
   allocated_image->previous=(Image *) NULL;
   allocated_image->list=(Image *) NULL;
@@ -789,9 +786,6 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
     }
   GetBlobInfo(&clone_image->blob);
   GetCacheInfo(&clone_image->cache);
-  clone_image->view=0;
-  clone_image->pixels=(PixelPacket *) NULL;
-  clone_image->indexes=(IndexPacket *) NULL;
   if ((image->columns != columns) || (image->rows != rows))
     {
       clone_image->columns=columns;
@@ -821,8 +815,8 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
-        indexes=GetIndexes(image);
-        clone_indexes=GetIndexes(clone_image);
+        indexes=GetIndexes(image->cache);
+        clone_indexes=GetIndexes(clone_image->cache);
         if (image->class == PseudoClass)
           (void) memcpy(clone_indexes,indexes,
             image->columns*sizeof(IndexPacket));
@@ -1236,8 +1230,8 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
       q=GetPixelCache(image,x,y,1,1);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
-      composite_indexes=GetIndexes(composite_image);
-      indexes=GetIndexes(image);
+      composite_indexes=GetIndexes(composite_image->cache);
+      indexes=GetIndexes(image->cache);
       opacity=q->opacity;
       switch (compose)
       {
@@ -1998,7 +1992,7 @@ Export void CycleColormapImage(Image *image,const int amount)
     q=GetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=GetIndexes(image->cache);
     for (x=0; x < (int) image->columns; x++)
     {
       index=((int) indexes[x]+amount) % image->colors;
@@ -2177,7 +2171,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   if (!image->matte)
     (void) fprintf(file,"  Matte: False\n");
   else
-    if ((strcmp(image->magick,"GIF") != 0) || image->tainted)
+    if ((strcmp(image->magick,"GIF") != 0) || image->taint)
       (void) fprintf(file,"  Matte: True\n");
     else
       {
@@ -2535,7 +2529,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"%s\n",attribute->value);
     attribute=attribute->next;
   }
-  if (image->tainted)
+  if (image->taint)
     (void) fprintf(file,"  Tainted: True\n");
   else
     (void) fprintf(file,"  Tainted: False\n");
@@ -3621,7 +3615,7 @@ Export unsigned int IsTainted(const Image *image)
   (void) strcpy(filename,image->filename);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
-    if (p->tainted)
+    if (p->taint)
       return(True);
     if (Latin1Compare(p->magick,magick) != 0)
       return(True);
@@ -5761,7 +5755,7 @@ Export Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
   for (next=image; next; next=next->next)
   {
     GetBlobInfo(&next->blob);
-    next->tainted=False;
+    next->taint=False;
     (void) strcpy(next->magick_filename,image_info->filename);
     if (image->temporary)
       (void) strcpy(next->filename,image_info->filename);
@@ -6413,7 +6407,7 @@ Export void SetImage(Image *image,Quantum opacity)
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=GetIndexes(image->cache);
     for (x=0; x < (int) image->columns; x++)
     {
       if (image->class == PseudoClass)
@@ -6780,7 +6774,7 @@ Export unsigned int SortColormapByIntensity(Image *image)
     q=GetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=GetIndexes(image->cache);
     for (x=0; x < (int) image->columns; x++)
     {
       index=pixels[indexes[x]];
@@ -6841,7 +6835,7 @@ Export void SyncImage(Image *image)
     q=GetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=GetIndexes(image->cache);
     for (x=0; x < (int) image->columns; x++)
     {
       index=indexes[x];

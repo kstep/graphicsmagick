@@ -403,7 +403,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=SetPixelCache(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=GetIndexes(image->cache);
         for (x=0; x < ((int) image->columns-7); x+=8)
         {
           for (bit=0; bit < 8; bit++)
@@ -431,7 +431,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=SetPixelCache(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=GetIndexes(image->cache);
         for (x=0; x < image->columns; x+=4)
         {
           index=3-((*p >> 6) & 0x03);
@@ -465,7 +465,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=SetPixelCache(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=GetIndexes(image->cache);
         for (x=0; x < image->columns; x+=2)
         {
           index=15-((*p >> 4) & 0x0f);

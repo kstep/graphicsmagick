@@ -11,21 +11,16 @@ extern "C" {
 /*
   Export pixel cache interfaces.
 */
-extern Export IndexPacket
-  *GetIndexes(Image *);
-
 extern Export PixelPacket
   *GetPixelCache(Image *,const int,const int,const unsigned int,
     const unsigned int),
-  *GetPixels(Image *),
   *SetPixelCache(Image *,const int,const int,const unsigned int,
     const unsigned int);
 
 extern Export unsigned int
-  ReadPixelCache(Image *,const QuantumTypes,const unsigned char *),
+  ReadPixelCache(const Image *,const QuantumTypes,const unsigned char *),
   SyncPixelCache(Image *),
-  WritePixelCache(Image *,const QuantumTypes,unsigned char *);
-
+  WritePixelCache(const Image *,const QuantumTypes,unsigned char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -484,7 +484,7 @@ typedef struct _Image
 
   int
     restart_animation_here,
-    tainted;
+    taint;
 
   ExceptionInfo
     exception;
@@ -497,15 +497,6 @@ typedef struct _Image
 
   Cache
     cache;
-
-  unsigned int
-    view;
-
-  PixelPacket
-    *pixels;
-
-  unsigned short
-    *indexes;
 
   unsigned int
     orphan;

@@ -94,7 +94,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   q=GetPixelCache(image,j % image->columns,j/image->columns,1,1); \
   if (q == (PixelPacket *) NULL) \
     break; \
-  indexes=GetIndexes(image); \
+  indexes=GetIndexes(image->cache); \
   (*indexes)|=((byte) & 0x01) << shift; \
   (void) SyncPixelCache(image); \
   j++; \
@@ -182,7 +182,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
         i/stegano_image->columns,1,1);
       if (p == (PixelPacket *) NULL)
         break;
-      stegano_indexes=GetIndexes(stegano_image);
+      stegano_indexes=GetIndexes(stegano_image->cache);
       if (stegano_image->class == PseudoClass)
         UnembedBit(*stegano_indexes)
       else

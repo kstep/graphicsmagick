@@ -1762,7 +1762,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           p=GetPixelCache(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=GetIndexes(image->cache);
           bit=0;
           byte=0;
           q=scanline;

@@ -67,39 +67,6 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I n d e x e s                                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetIndexes returns the colormap indexes associated with the last
-%  GetPixelCache() or SetPixelCache() methods.
-%
-%  The format of the GetIndexes method is:
-%
-%      IndexPacket *GetIndexes(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o indexes: Method GetIndexes returns the indexes associated with the
-%      last GetPixelCache() or SetPixelCache() methods.
-%
-%    o image: Specifies a pointer to a Image structure.
-%
-%
-*/
-Export IndexPacket *GetIndexes(Image *image)
-{
-  assert(image != (Image *) NULL);
-  return(image->indexes);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t P i x e l C a c h e                                                 %
 %                                                                             %
 %                                                                             %
@@ -137,51 +104,18 @@ Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
     Transfer pixels from the cache.
   */
   assert(image != (Image *) NULL);
-  if (!SetPixelCache(image,x,y,columns,rows))
+  if (SetPixelCache(image,x,y,columns,rows) == (PixelPacket *) NULL)
     return((PixelPacket *) NULL);
-  status=ReadCachePixels(image->cache,image->pixels);
+  status=ReadCachePixels(image->cache);
   if (image->class == PseudoClass)
-    status|=ReadCacheIndexes(image->cache,image->indexes);
+    status|=ReadCacheIndexes(image->cache);
   if (status == False)
     {
       ThrowException(&image->exception,CacheWarning,
-        "Unable to read pixels from cache",(char *) NULL);
+        "Unable to read pixels from cache",image->filename);
       return((PixelPacket *) NULL);
     }
-  return(image->pixels);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t P i x e l s                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetIndexes returns the pixels associated with the lastGetPixelCache()
-%  or SetPixelCache() methods.
-%
-%  The format of the GetPixels method is:
-%
-%      PixelPacket *GetPixels(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o indexes: Method GetPixels returns the indexes associated with the
-%      last GetPixelCache() or SetPixelCache() methods.
-%
-%    o image: Specifies a pointer to a Image structure.
-%
-%
-*/
-Export PixelPacket *GetPixels(Image *image)
-{
-  assert(image != (Image *) NULL);
-  return(image->pixels);
+  return(GetPixels(image->cache));
 }
 
 /*
@@ -201,8 +135,8 @@ Export PixelPacket *GetPixels(Image *image)
 %
 %  The format of the ReadPixelCache method is:
 %
-%      unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
-%        const unsigned char *source)
+%      unsigned int ReadPixelCache(const Image *image,
+%        const QuantumTypes quantum,const unsigned char *source)
 %
 %  A description of each parameter follows:
 %
@@ -217,7 +151,7 @@ Export PixelPacket *GetPixels(Image *image)
 %    o source:  The pixel components are transferred from this buffer.
 %
 */
-unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
+unsigned int ReadPixelCache(const Image *image,const QuantumTypes quantum,
   const unsigned char *source)
 {
   IndexPacket
@@ -238,8 +172,8 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
   assert(image != (Image *) NULL);
   assert(source != (const unsigned char *) NULL);
   p=source;
-  q=GetPixels(image);
-  indexes=GetIndexes(image);
+  q=GetPixels(image->cache);
+  indexes=GetIndexes(image->cache);
   switch (quantum)
   {
     case IndexQuantum:
@@ -488,7 +422,7 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
 %
 %  Method SetPixelCache allocates an area to store image pixels as defined
 %  by the region rectangle and returns a pointer to the area.  This area is
-%  subsequently transferred from the pixel cache with the SyncPixelCache.
+%  subsequently transferred from the pixel cache with method SyncPixelCache.
 %  A pointer to the pixels is returned if the pixels are transferred,
 %  otherwise a NULL is returned.
 %
@@ -513,7 +447,7 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
   RectangleInfo
-    view;
+    region;
 
   unsigned int
     status;
@@ -536,37 +470,16 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   if (status == False)
     {
       ThrowException(&image->exception,CacheWarning,
-        "Unable to allocate pixel cache",(char *) NULL);
+        "Unable to allocate pixel cache",image->filename);
       return((PixelPacket *) NULL);
     }
-  view.x=x;
-  view.y=y;
-  view.width=columns;
-  view.height=rows;
-  SetCacheView(image->cache,image->view,&view);
-  if ((((x+columns) <= image->columns) && (rows == 1)) ||
-      ((x == 0) && ((columns % image->columns) == 0)))
-    {
-      /*
-        Direct access to the pixel cache-- no intermediate buffer.
-      */
-      image->pixels=GetCachePixels(image->cache,x,y);
-      image->indexes=GetCacheIndexes(image->cache,x,y);
-      if (image->pixels != (PixelPacket *) NULL)
-        return(image->pixels);
-    }
-  /*
-    Allocate buffer to get/put pixels/indexes to/from the pixel cache.
-  */
-  image->pixels=(PixelPacket *) GetCacheStash(image->cache);
-  if (image->pixels == (PixelPacket *) NULL)
-    {
-      ThrowException(&image->exception,CacheWarning,"Unable to set pixel cache",
-        "Memory allocation failed");
-      return((PixelPacket *) NULL);
-    }
-  image->indexes=(IndexPacket *) (image->pixels+columns*rows);
-  return(image->pixels);
+  region.x=x;
+  region.y=y;
+  region.width=columns;
+  region.height=rows;
+  SetCacheVista(image->cache,0);
+  SetCacheVistaRegion(image->cache,&region);
+  return(GetPixels(image->cache));
 }
 
 /*
@@ -581,7 +494,7 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method SyncPixelCache saves the image pixels to the in-memory or disk cache.
-%  The method returns True if the pixel region is set, otherwise False.
+%  The method returns True if the pixel region is synced, otherwise False.
 %
 %  The format of the SyncPixelCache method is:
 %
@@ -602,23 +515,20 @@ Export unsigned int SyncPixelCache(Image *image)
     status;
 
   /*
-    Allocate pixel cache.
-  */
-  assert(image != (Image *) NULL);
-  status=AllocateCache(image->cache,image->class,image->columns,image->rows);
-  if (status == False)
-    ThrowBinaryException(CacheWarning,"Unable to allocate pixel cache",
-      (char *) NULL);
-  /*
     Transfer pixels to the cache.
   */
-  status=WriteCachePixels(image->cache,image->pixels);
+  assert(image != (Image *) NULL);
+  if (image->cache == (Cache) NULL)
+    ThrowBinaryException(CacheWarning,"pixel cache is not allocated",
+      image->filename);
+  SetCacheVista(image->cache,0);
+  status=WriteCachePixels(image->cache);
   if (image->class == PseudoClass)
-    status|=WriteCacheIndexes(image->cache,image->indexes);
+    status|=WriteCacheIndexes(image->cache);
   if (status == False)
     ThrowBinaryException(CacheWarning,"Unable to sync pixel cache",
-      (char *) NULL);
-  image->tainted=True;
+      image->filename);
+  image->taint=True;
   return(True);
 }
 
@@ -639,7 +549,7 @@ Export unsigned int SyncPixelCache(Image *image)
 %
 %  The format of the WritePixelCache method is:
 %
-%      unsigned int WritePixelCache(Image *,const QuantumTypes quantum,
+%      unsigned int WritePixelCache(const Image *,const QuantumTypes quantum,
 %        unsigned char *destination)
 %
 %  A description of each parameter follows:
@@ -656,7 +566,7 @@ Export unsigned int SyncPixelCache(Image *image)
 %
 %
 */
-unsigned int WritePixelCache(Image *image,const QuantumTypes quantum,
+unsigned int WritePixelCache(const Image *image,const QuantumTypes quantum,
   unsigned char *destination)
 {
   register IndexPacket
@@ -673,8 +583,8 @@ unsigned int WritePixelCache(Image *image,const QuantumTypes quantum,
 
   assert(image != (Image *) NULL);
   assert(destination != (unsigned char *) NULL);
-  p=GetPixels(image);
-  indexes=GetIndexes(image);
+  p=GetPixels(image->cache);
+  indexes=GetIndexes(image->cache);
   q=destination;
   switch (quantum)
   {

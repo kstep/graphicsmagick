@@ -1,6 +1,6 @@
 <HTML>
 <HEAD>
-<TITLE>cache - ImageMagick Pixel Cache Methods</TITLE>
+<TITLE>pixel_cache - ImageMagick Pixel Cache Methods</TITLE>
 <LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
 </HEAD>
 
@@ -23,7 +23,6 @@
 		<LI><A HREF="#getpixelcache">GetPixelCache</A></LI>
 		<LI><A HREF="#readpixelcache">ReadPixelCache</A></LI>
 		<LI><A HREF="#setpixelcache">SetPixelCache</A></LI>
-		<LI><A HREF="#setpixelcacheview">SetPixelCacheView</A></LI>
 		<LI><A HREF="#syncpixelcache">SyncPixelCache</A></LI>
 		<LI><A HREF="#writepixelcache">WritePixelCache</A></LI>
 	</UL>
@@ -35,7 +34,7 @@
 <P>
 <H1><A NAME="name">
 <FONT SIZE=-1>NAME</FONT></A></H1>
-<P>cache - ImageMagick Pixel Cache Methods</P>
+<P>pixel_cache - ImageMagick Pixel Cache Methods</P>
 <P>
 <A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
@@ -44,7 +43,6 @@
 <P>PixelPacket * <STRONG>GetPixelCache</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
 <P>unsigned int  <STRONG>ReadPixelCache</STRONG>( Image *image, const QuantumTypes quantum, const unsigned char *source );</P>
 <P>PixelPacket * <STRONG>SetPixelCache</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
-<P>void  <STRONG>SetPixelCacheView</STRONG>( Cache cache, const unsigned int id, const RectangleInfo *view );</P>
 <P>unsigned int  <STRONG>SyncPixelCache</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>WritePixelCache</STRONG>( Image *, const QuantumTypes quantum, unsigned char *destination );</P>
 <P>
@@ -102,7 +100,7 @@ The pixel components are transferred from this buffer.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setpixelcache">SetPixelCache</A></H2>
-<P>Method SetPixelCache allocates an area to store image pixels as defined by the region rectangle and returns a pointer to the area.  This area is subsequently transferred from the pixel cache with the SyncPixelCache.  
+<P>Method SetPixelCache allocates an area to store image pixels as defined by the region rectangle and returns a pointer to the area.  This area is subsequently transferred from the pixel cache with method SyncPixelCache.  
 <FONT SIZE=-1>A</FONT> pointer to the pixels is returned if the pixels are transferred, otherwise a 
 <FONT SIZE=-1>NULL</FONT> is returned.</P>
 <P>The format of the SetPixelCache method is:</P>
@@ -123,23 +121,8 @@ The address of a structure of type Image.
 These values define the perimeter of a region of pixels.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="setpixelcacheview">SetPixelCacheView</A></H2>
-<P>Method SetPixelCacheView sets the current cache view.</P>
-<P>The format of the SetPixelCacheView method is:</P>
-<blockquote>void SetPixelCacheView ( Cache cache, const unsigned int id, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *view ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_cache%3A">cache:</A></STRONG><BR>
-<DD>
-Specifies a pointer to a Cache structure.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_id%3A">id:</A></STRONG><BR>
-<DD>
-Specifies the current cache view.
-<P></P></DL></DL>
-<P>
 <H2><A NAME="syncpixelcache">SyncPixelCache</A></H2>
-<P>Method SyncPixelCache saves the image pixels to the in-memory or disk cache.  The method returns True if the pixel region is set, otherwise False.</P>
+<P>Method SyncPixelCache saves the image pixels to the in-memory or disk cache.  The method returns True if the pixel region is synced, otherwise False.</P>
 <P>The format of the SyncPixelCache method is:</P>
 <blockquote>unsigned int SyncPixelCache ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>

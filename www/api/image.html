@@ -38,7 +38,7 @@
 		<LI><A HREF="#getnextimage">GetNextImage</A></LI>
 		<LI><A HREF="#getnumberscenes">GetNumberScenes</A></LI>
 		<LI><A HREF="#getpageinfo">GetPageInfo</A></LI>
-		<LI><A HREF="#getpixels">GetPixels</A></LI>
+		<LI><A HREF="#getimagepixels">GetImagePixels</A></LI>
 		<LI><A HREF="#getpixelpacket">GetPixelPacket</A></LI>
 		<LI><A HREF="#isgeometry">IsGeometry</A></LI>
 		<LI><A HREF="#issubimage">IsSubimage</A></LI>
@@ -91,12 +91,12 @@
 <P>void  <STRONG>DestroyImages</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>DisplayImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>void  <STRONG>GetImageInfo</STRONG>( ImageInfo *image_info );</P>
+<P>unsigned int  <STRONG>GetImagePixels</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows, const char *map, const StorageType type, void *pixels );</P>
 <P>ImageType  <STRONG>GetImageType</STRONG>( Image *image );</P>
 <P>Image * <STRONG>GetNextImage</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>GetNumberScenes</STRONG>( const Image *image );</P>
 <P>void  <STRONG>GetPageInfo</STRONG>( RectangleInfo *page );</P>
 <P>void  <STRONG>GetPixelPacket</STRONG>( PixelPacket *pixel );</P>
-<P>unsigned int  <STRONG>GetPixels</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows, const char *map, const StorageType type, void *pixels );</P>
 <P>unsigned int  <STRONG>IsGeometry</STRONG>( const char *geometry );</P>
 <P>unsigned int  <STRONG>IsSubimage</STRONG>( const char *geometry, const unsigned int pedantic );</P>
 <P>unsigned int  <STRONG>IsTainted</STRONG>( const Image *image );</P>
@@ -458,10 +458,10 @@ The address of a structure of type Image.
 Specifies a pointer to a RectangleInfo structure.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="getpixels">GetPixels</A></H2>
-<P>Method GetPixels is a convenience routine.  Use it to extract pixel data from an image and place it in a buffer you supply.  The data is saved either as char, short int, integer, float or double format in the order specified by the type parameter.  For example, we want to extract scanline 1 of a 640x480 image as character data in red-green-blue order:</P>
-<blockquote>GetPixels ( image, 0, 0, 640, 1, "RGB", 0, pixels );; </blockquote><P>The format of the GetPixels method is:</P>
-<blockquote>unsigned int GetPixels ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows, const char *map, const StorageType type, void *pixels ); </blockquote><P>
+<H2><A NAME="getimagepixels">GetImagePixels</A></H2>
+<P>Method GetImagePixels is a convenience routine.  Use it to extract pixel data from an image and place it in a buffer you supply.  The data is saved either as char, short int, integer, float or double format in the order specified by the type parameter.  For example, we want to extract scanline 1 of a 640x480 image as character data in red-green-blue order:</P>
+<blockquote>GetImagePixels ( image, 0, 0, 640, 1, "RGB", 0, pixels );; </blockquote><P>The format of the GetImagePixels method is:</P>
+<blockquote>unsigned int GetImagePixels ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows, const char *map, const StorageType type, void *pixels ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>

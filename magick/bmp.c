@@ -665,7 +665,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=GetIndexes(image->cache);
           for (x=0; x < ((int) image->columns-7); x+=8)
           {
             for (bit=0; bit < 8; bit++)
@@ -705,7 +705,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=GetIndexes(image->cache);
           for (x=0; x < ((int) image->columns-1); x+=2)
           {
             index=(*p >> 4) & 0xf;
@@ -744,7 +744,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=GetIndexes(image->cache);
           for (x=0; x < (int) image->columns; x++)
           {
             index=(*p++);
@@ -1099,7 +1099,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           p=GetPixelCache(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=GetIndexes(image->cache);
           q=pixels+(image->rows-y-1)*bytes_per_line;
           bit=0;
           byte=0;
@@ -1135,7 +1135,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           p=GetPixelCache(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image);
+          indexes=GetIndexes(image->cache);
           q=pixels+(image->rows-y-1)*bytes_per_line;
           for (x=0; x < (int) image->columns; x++)
           {

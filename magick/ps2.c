@@ -749,7 +749,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 p=GetPixelCache(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
-                indexes=GetIndexes(image);
+                indexes=GetIndexes(image->cache);
                 bit=0;
                 byte=0;
                 for (x=0; x < (int) image->columns; x++)
@@ -817,7 +817,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 p=GetPixelCache(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
-                indexes=GetIndexes(image);
+                indexes=GetIndexes(image->cache);
                 for (x=0; x < (int) image->columns; x++)
                 {
                   *q++=indexes[x];
@@ -854,7 +854,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 p=GetPixelCache(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
-                indexes=GetIndexes(image);
+                indexes=GetIndexes(image->cache);
                 for (x=0; x < (int) image->columns; x++)
                   Ascii85Encode(image,indexes[x]);
                 if (image->previous == (Image *) NULL)

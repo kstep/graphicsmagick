@@ -181,7 +181,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=GetIndexes(image->cache);
     (void) ReadBlob(image,packet_size*image->columns,(char *) pixels);
     for (x=0; x < (int) image->columns; x++)
     {
@@ -356,7 +356,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=GetIndexes(image->cache);
     q=pixels;
     for (x=0; x < (int) image->columns; x++)
     {

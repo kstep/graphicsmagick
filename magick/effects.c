@@ -2610,7 +2610,7 @@ Export Image *SteganoImage(Image *image,Image *watermark,
             q=GetPixelCache(stegano_image,0,y,stegano_image->columns,1);
             if (q == (PixelPacket *) NULL);
               break;
-            indexes=GetIndexes(stegano_image);
+            indexes=GetIndexes(stegano_image->cache);
             for (x=0; x < (int) stegano_image->columns; x++)
               indexes[x]*=2;
             if (!SyncPixelCache(stegano_image))
@@ -2634,7 +2634,7 @@ Export Image *SteganoImage(Image *image,Image *watermark,
         i/stegano_image->columns,1,1);
       if (p == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image);
+      indexes=GetIndexes(image->cache);
       if (stegano_image->class == PseudoClass)
         EmbedBit(*indexes)
       else
@@ -2954,7 +2954,7 @@ Export unsigned int ThresholdImage(Image *image,const double threshold)
     q=GetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=GetIndexes(image->cache);
     for (x=0; x < (int) image->columns; x++)
     {
       index=Intensity(*q) < threshold ? 0 : 1;

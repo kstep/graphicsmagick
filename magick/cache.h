@@ -16,36 +16,40 @@ extern "C" {
   Exported interfaces.
 */
 extern Export CacheType
-  GetCacheType(Cache);
+  GetCacheType(const Cache);
 
 extern Export ClassType
-  GetCacheClassType(Cache);
+  GetCacheClassType(const Cache);
 
 extern Export IndexPacket
-  *GetCacheIndexes(Cache,const unsigned int,const unsigned int);
+  *GetCacheIndexes(Cache,const unsigned int,const unsigned int),
+  *GetIndexes(const Cache);
 
 extern Export off_t
   GetCacheMemory(const off_t),
   GetCacheThreshold(void);
 
 extern Export PixelPacket
-  *GetCachePixels(Cache,const unsigned int,const unsigned int);
+  *GetCachePixels(const Cache,const unsigned int,const unsigned int),
+  *GetPixels(const Cache);
 
 extern Export unsigned int
   AllocateCache(Cache,const ClassType,const unsigned int,const unsigned int),
-  ReadCachePixels(Cache,PixelPacket *),
-  ReadCacheIndexes(Cache,IndexPacket *),
-  WriteCachePixels(Cache,const PixelPacket *),
-  WriteCacheIndexes(Cache,const IndexPacket *);
+  GetCacheVista(Cache),
+  ReadCachePixels(Cache),
+  ReadCacheIndexes(Cache),
+  WriteCachePixels(Cache),
+  WriteCacheIndexes(Cache);
 
 extern Export void
   CloseCache(Cache),
   DestroyCacheInfo(Cache),
+  DestroyCacheVista(Cache),
   GetCacheInfo(Cache *),
-  *GetCacheStash(Cache),
   SetCacheThreshold(const off_t),
   SetCacheType(Cache,const CacheType),
-  SetCacheView(Cache,const unsigned int,const RectangleInfo *);
+  SetCacheVista(Cache,const unsigned int),
+  SetCacheVistaRegion(Cache,const RectangleInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -313,7 +313,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=GetIndexes(image->cache);
     for (x=0; x < (int) image->columns; x++)
     {
       index=(*p++);

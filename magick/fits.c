@@ -426,7 +426,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       q=SetPixelCache(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image);
+      indexes=GetIndexes(image->cache);
       for (x=0; x < (int) image->columns; x++)
       {
         long_quantum[0]=(*p);

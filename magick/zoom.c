@@ -688,7 +688,7 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
     q=SetPixelCache(sample_image,0,y,sample_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    sample_indexes=GetIndexes(sample_image);
+    sample_indexes=GetIndexes(sample_image->cache);
     if (j != y_offset[y])
       {
         /*
@@ -698,7 +698,7 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
         p=GetPixelCache(image,0,j,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=GetIndexes(image->cache);
         if (image->class == PseudoClass)
           (void) memcpy(index,indexes,image->columns*sizeof(IndexPacket));
         (void) memcpy(pixels,p,image->columns*sizeof(PixelPacket));
@@ -1348,8 +1348,8 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     q=SetPixelCache(destination,x,0,1,destination->rows);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    source_indexes=GetIndexes(source);
-    destination_indexes=GetIndexes(destination);
+    source_indexes=GetIndexes(source->cache);
+    destination_indexes=GetIndexes(destination->cache);
     for (y=0; y < (int) destination->rows; y++)
     {
       j=0;
@@ -1461,8 +1461,8 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     q=SetPixelCache(destination,0,y,destination->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    source_indexes=GetIndexes(source);
-    destination_indexes=GetIndexes(destination);
+    source_indexes=GetIndexes(source->cache);
+    destination_indexes=GetIndexes(destination->cache);
     for (x=0; x < (int) destination->columns; x++)
     {
       j=0;

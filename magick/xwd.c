@@ -424,7 +424,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=SetPixelCache(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=GetIndexes(image->cache);
         for (x=0; x < (int) image->columns; x++)
         {
           index=XGetPixel(ximage,x,y);
@@ -670,7 +670,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
+    indexes=GetIndexes(image->cache);
     q=pixels;
     for (x=0; x < (int) image->columns; x++)
     {

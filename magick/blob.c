@@ -203,7 +203,7 @@ Export void CloseBlob(Image *image)
   */
   assert(image != (Image *) NULL);
   CloseCache(image->cache);
-  image->tainted=False;
+  image->taint=False;
   image->filesize=SizeBlob(image);
   if (image->blob.data != (char *) NULL)
     {
@@ -1059,7 +1059,7 @@ Export size_t MSBFirstWriteShort(Image *image,const unsigned int value)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method OpenBlob open a file associated with the image.  A file name of
+%  Method OpenBlob opens a file associated with the image.  A file name of
 %  '-' sets the file to stdin for type 'r' and stdout for type 'w'.  If the
 %  filename suffix is '.gz' or '.Z', the image is decompressed for type 'r'
 %  and compressed for type 'w'.  If the filename prefix is '|', it is piped

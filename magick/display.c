@@ -10203,7 +10203,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
   (void) strcpy(save_image->filename,filename);
   status=WriteImage(image_info,save_image);
   if (status == True)
-    image->tainted=False;
+    image->taint=False;
   DestroyImage(save_image);
   DestroyImageInfo(image_info);
   XSetCursorState(display,windows,False);
@@ -12114,7 +12114,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     }
   XMakeStandardColormap(display,visual_info,resource_info,displayed_image,
     map_info,pixel);
-  displayed_image->tainted=False;
+  displayed_image->taint=False;
   /*
     Initialize graphic context.
   */
@@ -13330,17 +13330,17 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         if (event.xmap.window == windows->icon.id)
           {
             unsigned int
-              tainted;
+              taint;
 
             /*
               Create an icon image.
             */
-            tainted=displayed_image->tainted;
+            taint=displayed_image->taint;
             XMakeStandardColormap(display,icon_visual,icon_resources,
               displayed_image,icon_map,icon_pixel);
             (void) XMakeImage(display,icon_resources,&windows->icon,
               displayed_image,windows->icon.width,windows->icon.height);
-            displayed_image->tainted=tainted;
+            displayed_image->taint=taint;
             XSetWindowBackgroundPixmap(display,windows->icon.id,
               windows->icon.pixmap);
             XClearWindow(display,windows->icon.id);
@@ -13496,7 +13496,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         Query user if image has changed.
       */
       SignatureImage(displayed_image);
-      if (!resource_info->immutable && displayed_image->tainted)
+      if (!resource_info->immutable && displayed_image->taint)
         {
           status=XConfirmWidget(display,windows,"Your image changed.",
             "Do you want to save it");

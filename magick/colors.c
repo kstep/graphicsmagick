@@ -1581,7 +1581,7 @@ Export unsigned int IsPseudoClass(Image *image)
         q=GetPixelCache(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
+        indexes=GetIndexes(image->cache);
         for (x=0; x < (int) image->columns; x++)
         {
           /*
