@@ -17,7 +17,11 @@ typedef struct _MagicInfo
     *name,
     *target;
 
+  unsigned char
+    *magick;
+
   unsigned int
+    length,
     offset;
 
   struct _MagicInfo

@@ -105,6 +105,8 @@ MagickExport void DestroyMagicInfo(void)
       LiberateMemory((void **) &p->name);
     if (p->target != (char *) NULL)
       LiberateMemory((void **) &p->target);
+    if (p->magick != (unsigned char *) NULL)
+      LiberateMemory((void **) &p->magick);
     magic_list=p;
     p=p->next;
     LiberateMemory((void **) &magic_list);
@@ -181,7 +183,7 @@ MagickExport MagicInfo *GetMagicInfo(const unsigned char *magick,
     Search for requested magic.
   */
   for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
-    if (memcmp(magick+p->offset,p->target,Extent(p->target)) == 0)
+    if (memcmp(magick+p->offset,p->magick,p->length) == 0)
       break;
   return(p);
 }
@@ -389,7 +391,45 @@ static unsigned int ReadConfigurationFile(const char *filename)
       {
         if (LocaleCompare((char *) keyword,"target") == 0)
           {
+            char
+              *p;
+
+            register unsigned char
+              *q;
+
             magic_list->target=AllocateString(value);
+            magic_list->magick=AllocateString(value);
+            q=magic_list->magick;
+            for (p=magic_list->target; *p != '\0'; )
+            {
+              if (*p == '\\')
+                {
+                  p++;
+                  if (isdigit((int) *p))
+                    {
+                      *q++=(unsigned char) strtol(p,&p,8);
+                      magic_list->length++;
+                      continue;
+                    }
+                  switch (*p)
+                  {
+                    case 'b': *q='\b'; break;
+                    case 'f': *q='\f'; break;
+                    case 'n': *q='\n'; break;
+                    case 'r': *q='\r'; break;
+                    case 't': *q='\t'; break;
+                    case 'v': *q='\v'; break;
+                    case 'a': *q='a'; break;
+                    case '?': *q='\?'; break;
+                    default: *q=(*p); break;
+                  }
+                  p++;
+                  q++;
+                  magic_list->length++;
+                }
+              *q++=(*p++);
+              magic_list->length++;
+            }
             break;
           }
         break;
