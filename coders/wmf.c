@@ -1144,7 +1144,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       draw_info = (DrawInfo*)AcquireMemory(sizeof(DrawInfo));
       GetDrawInfo( local_info, draw_info );
       draw_info->primitive=(char*)cstruct->userdata;
-puts(draw_info->primitive);
       DrawImage(image,draw_info);
       draw_info->primitive = (char*)NULL;
       DestroyDrawInfo(draw_info);
