@@ -590,7 +590,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               DestroyImage(draw_info->tile);
             draw_info->tile=tile;
             (void) CloneString(&draw_info->primitive,command+4);
-              draw_info->primitive);
             status=DrawImage(canvas,draw_info);
             if (status == False)
               ThrowReaderException(ResourceLimitWarning,
