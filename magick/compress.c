@@ -1405,7 +1405,7 @@ MagickExport unsigned int ZLIBEncodeImage(Image *image,const size_t length,
 }
 #else
 MagickExport unsigned int ZLIBEncodeImage(Image *image,const size_t length,
-  const unsigned int quality,unsigned char *pixels)
+  const unsigned long quality,unsigned char *pixels)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
