@@ -2317,8 +2317,8 @@ Export char *SetClientName(const char *name)
   if (name != (char *) NULL)
     {
       (void) strcpy(client_name,BaseFilename(name));
-      setlocale(LC_ALL,"");
-      setlocale(LC_NUMERIC,"C");
+      (void) setlocale(LC_ALL,"");
+      (void) setlocale(LC_NUMERIC,"C");
     }
   return(client_name);
 }

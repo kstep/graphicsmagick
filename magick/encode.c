@@ -6716,6 +6716,14 @@ static void PNGError(png_struct *ping,png_const_charp message)
   longjmp(ping->jmpbuf,1);
 }
 
+void PNGLong(png_bytep p,png_uint_32 value)
+{
+  *p++=(png_byte) ((value >> 24) & 0xff);
+  *p++=(png_byte) ((value >> 16) & 0xff);
+  *p++=(png_byte) ((value >> 8) & 0xff);
+  *p++=(png_byte) (value & 0xff);
+}
+
 static void PNGTextChunk(const ImageInfo *image_info,png_info *ping_info,
   char *keyword,char *value)
 {
@@ -6762,11 +6770,12 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     *ping;
 
   unsigned char
-    chunk[16],
+    chunk[32],
     *png_pixels,
     **scanlines;
 
   unsigned int
+    delay,
     matte,
     scene;
 
@@ -6782,27 +6791,40 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     {
       /*
-        Write the MNG signature and MHDR chunk.
+        Write the MNG version 0.91 signature and MHDR chunk.
       */
       (void) fwrite("\212MNG\r\n\032\n",1,8,image->file);
-      MSBFirstWriteLong(0x0000000CL,image->file);
+      MSBFirstWriteLong(28L,image->file);  /* chunk data length = 28 */
       (void) strcpy((char *) chunk,"MHDR");
-      chunk[4]=(image->columns >> 24) & 0xff;
-      chunk[5]=(image->columns >> 16) & 0xff;
-      chunk[6]=(image->columns >> 8) & 0xff;
-      chunk[7]=image->columns & 0xff;
-      chunk[8]=(image->rows >> 24) & 0xff;
-      chunk[9]=(image->rows >> 16) & 0xff;
-      chunk[10]=(image->rows >> 8) & 0xff;
-      chunk[11]=image->rows & 0xff;
-      chunk[12]=0;  /* tick length */
-      chunk[13]=0;
-      chunk[14]=0;
-      chunk[15]=1;
-      (void) fwrite(chunk,1,16,image->file);
-      MSBFirstWriteLong(crc32(0,chunk,16),image->file);
+      PNGLong(chunk+4,image->columns);
+      PNGLong(chunk+8,image->rows);
+      PNGLong(chunk+12,1000L); /* tick length = 1/1000 s */
+      PNGLong(chunk+16,0L);    /* layer count = unknown */
+      PNGLong(chunk+20,0L);    /* frame count = unknown */
+      PNGLong(chunk+24,0L);    /* play time = unknown   */
+      PNGLong(chunk+28,3L);    /* simplicity = simplest */
+      (void) fwrite(chunk,1,32,image->file);
+      MSBFirstWriteLong(crc32(0,chunk,32),image->file);
+      if (image->delay == 0)
+        {
+          /*
+            Write a MNG FRAM chunk with a default 1000 ms delay.
+          */
+          MSBFirstWriteLong(10L,image->file);  /* data length = 10 */
+          (void) strcpy((char *) chunk,"FRAM");
+          chunk[4]=0;  /* framing mode */
+          chunk[5]=0;  /* frame name separator */
+          chunk[6]=2;  /* flag for changing default delay */
+          chunk[7]=0;  /* flag for changing frame timeout */
+          chunk[8]=0;  /* flag for changing frame clipping */
+          chunk[9]=0;  /* flag for changing frame sync_id */
+          PNGLong(chunk+10,1000L);  /* tick length = 1000 ms */
+          (void) fwrite(chunk,1,14,image->file);
+          MSBFirstWriteLong(crc32(0,chunk,14),image->file);
+        }
     }
   scene=0;
+  delay=0;
   do
   {
     /*
@@ -7014,20 +7036,26 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_NO_FILTERS);
         else
           png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
-    if (image_info->adjoin)
+    if (image_info->adjoin && (image->delay != delay))
       {
         /*
-          Write the DEFI chunk.
+          Write a MNG FRAM chunk with the delay.
         */
-        png_set_sig_bytes(ping,8);
-        MSBFirstWriteLong(0x00000003L,image->file);
-        (void) strcpy((char *) chunk,"DEFI");
-        chunk[4]=scene >> 8;  /* scene */
-        chunk[5]=scene & 0xff;
-        chunk[6]=1;  /* visibility */
-        (void) fwrite(chunk,1,7,image->file);
-        MSBFirstWriteLong(crc32(0,chunk,7),image->file);
+        MSBFirstWriteLong(10L,image->file);  /* data length = 10 */
+        (void) strcpy((char *) chunk,"FRAM");
+        chunk[4]=0;  /* framing mode (no change)*/
+        chunk[5]=0;  /* frame name separator (no name) */
+        chunk[6]=2;  /* flag for changing default delay */
+        chunk[7]=0;  /* flag for changing frame timeout */
+        chunk[8]=0;  /* flag for changing frame clipping */
+        chunk[9]=0;  /* flag for changing frame sync_id */
+        PNGLong(chunk+10,(png_uint_32) (10*image->delay));
+        (void) fwrite(chunk,1,14,image->file);
+        MSBFirstWriteLong(crc32(0,chunk,14),image->file);
+        delay=image->delay;
       }
+    if (image_info->adjoin)
+      png_set_sig_bytes(ping,8);
     png_write_info(ping,ping_info);
     png_set_packing(ping);
     /*
@@ -7171,7 +7199,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         FormatString(scene,"%u",image->scene);
         PNGTextChunk(image_info,ping_info,"Scene",scene);
       }
-    if (image->delay != 0)
+    if (!image_info->adjoin && image->delay != 0)
       {
         char
           delay[MaxTextExtent];
@@ -11161,7 +11189,7 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
     Fill scanlines to tile height.
   */
   i=(row % image->tile_info.height)*TIFFScanlineSize(tiff);
-  memcpy(scanlines+i,(unsigned char *) scanline,TIFFScanlineSize(tiff));
+  (void) memcpy(scanlines+i,(unsigned char *) scanline,TIFFScanlineSize(tiff));
   if (((row % image->tile_info.height) != (image->tile_info.height-1)) &&
       (row != image->rows-1))
     return(0);

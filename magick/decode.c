@@ -9554,6 +9554,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     **scanlines;
 
   unsigned int
+    delay,
     status;
 
   unsigned long
@@ -9563,6 +9564,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   unsigned short
     index,
     value;
+
+  png_uint_32
+    ticks_per_second;
 
   /*
     Allocate image structure.
@@ -9588,12 +9592,17 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       if (strncmp(magic_number,"\212MNG\r\n\032\n",8) != 0)
         PrematureExit(CorruptImageWarning,"Not a MNG image file",image);
     }
+  delay=0;
+  ticks_per_second=1000;
   do
   {
     if (Latin1Compare(image_info->magick,"MNG") == 0)
       {
         char
           type[MaxTextExtent];
+
+        unsigned char
+          *chunk;
 
         /*
           Read a new chunk.
@@ -9608,9 +9617,43 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           }
         if (strncmp(type,"MEND",4) == 0)
           break;
+        chunk=(unsigned char *) AllocateMemory(length*sizeof(unsigned char));
+        if (chunk == (unsigned char *) NULL)
+          PrematureExit(ResourceLimitWarning,"Memory allocation failed",
+            image);
         for (i=0; i < (int) length; i++)
-          (void) fgetc(image->file);
+          chunk[i]=fgetc(image->file);
+        p=chunk;
         (void) MSBFirstReadLong(image->file);  /* read crc word */
+        if (strncmp(type,"MHDR",4) == 0)
+          {
+            p+=8;
+            ticks_per_second=(unsigned int)
+              (p[0] << 24)+(p[1] << 16)+(p[2] << 8)+p[3];
+            FreeMemory((char *) chunk);
+            continue;
+          }
+        if (strncmp(type,"FRAM",4) == 0)
+          {
+            if (length <= 6)
+              continue;
+            /*
+              Note the delay.
+            */
+            p++; /* framing mode */
+            while (*p && ((p-chunk) < length))
+              p++;
+            if ((p-chunk) < (length-4))
+              {
+                p+=5;
+                if (*(p-4))
+                  delay=(unsigned int) 100*((p[0] << 24)+(p[1] << 16)+
+                    (p[2] << 8)+p[3])/ticks_per_second;
+              }
+            FreeMemory((char *) chunk);
+            continue;
+          }
+        FreeMemory((char *) chunk);
         if (strncmp(type,"IHDR",4) != 0)
           continue;
         (void) fseek(image->file,-((int) length+12),SEEK_CUR);
@@ -9629,6 +9672,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
               (unsigned int) image->filesize);
           }
+        image->delay=delay;
       }
     /*
       Allocate the PNG structures
@@ -14348,7 +14392,7 @@ static unsigned int TIFFColorProfileHandler(char *text,long int length,
       return(False);
     }
   image->color_profile.length=length;
-  memcpy(image->color_profile.info,p,length);
+  (void) memcpy(image->color_profile.info,p,length);
   return(True);
 }
 #endif
@@ -14384,7 +14428,7 @@ static unsigned int TIFFNewsProfileHandler(char *text,long int length,
           return(False);
         }
       image->iptc_profile.length=length;
-      memcpy(image->iptc_profile.info,p,length);
+      (void) memcpy(image->iptc_profile.info,p,length);
       return(True);
     }
   /*
@@ -14424,7 +14468,7 @@ static unsigned int TIFFNewsProfileHandler(char *text,long int length,
       return(False);
     }
   image->iptc_profile.length=length;
-  memcpy(image->iptc_profile.info,p+4,length);
+  (void) memcpy(image->iptc_profile.info,p+4,length);
   return(True);
 }
 #endif

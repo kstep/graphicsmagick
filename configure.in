@@ -522,7 +522,7 @@ else
 	CPPFLAGS="$CPPFLAGS -I$srcdirfull/xlib"
 	X11STUBSDIR="$srcdir/xlib"
 	X11STUBSLANAME="libX11_stubs.la"
-	X11STUBSLA="$srcdir/xlib/$X11STUBSLANAME"
+	X11STUBSLA="xlib/$X11STUBSLANAME"
 	X11STUBSLIB="-lX11_stubs"
 	AC_MSG_RESULT(yes)
     else

@@ -12714,21 +12714,21 @@ Export unsigned int UncondenseImage(Image *image)
 extern "C" {
 #endif
 
-static double Box(const double x)
+static double Box(double x)
 {
   if ((x > -0.5) && (x <= 0.5))
     return(1.0);
   return(0.0);
 }
 
-static double Bessel(const double x)
+static double Bessel(double x)
 {
   if (x == 0.0)
     return(M_PI/4.0);
   return(M_PI*x/2.0*x);
 }
 
-static double Blackman(const double x)
+static double Blackman(double x)
 {
   return(0.42+0.50*cos(M_PI*x)+0.08*cos(2.0*M_PI*x));
 }
@@ -12758,17 +12758,17 @@ static double Cubic(double x)
   return(0.0);
 }
 
-static double Gaussian(const double x)
+static double Gaussian(double x)
 {
   return(exp(-2.0*x*x)*sqrt(2.0/M_PI));
 }
 
-static double Hanning(const double x)
+static double Hanning(double x)
 {
   return(0.5+0.5*cos(M_PI*x));
 }
 
-static double Hamming(const double x)
+static double Hamming(double x)
 {
   return(0.54+0.46*cos(M_PI*x));
 }
