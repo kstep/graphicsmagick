@@ -1301,18 +1301,6 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           image->page.height,image->page.x,image->page.y);
         (void) WriteBlobString(image,buffer);
       }
-    FormatString(buffer,"background-color=rgba(%u,%u,%u,%u)  ",
-      image->background_color.red,image->background_color.green,
-      image->background_color.blue,image->background_color.opacity);
-    (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"border-color=rgba(%u,%u,%u,%u)  ",
-      image->border_color.red,image->border_color.green,
-      image->border_color.blue,image->border_color.opacity);
-    (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"matte-color=rgba(%u,%u,%u,%u)  ",
-      image->matte_color.red,image->matte_color.green,
-      image->matte_color.blue,image->matte_color.opacity);
-    (void) WriteBlobString(image,buffer);
     if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
       {
         FormatString(buffer,"scene=%u  iterations=%u  delay=%u  dispose=%u\n",

@@ -2194,32 +2194,30 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(clone_info->magick,image->magick);
   SetImageInfo(clone_info,True,&image->exception);
   (void) strcpy(image->filename,clone_info->filename);
-  if ((image->next == (Image *) NULL) || clone_info->adjoin)
-    if ((image->previous == (Image *) NULL) && !IsImageTainted(image))
-      if (IsAccessible(image->magick_filename))
+  if (((image->next == (Image *) NULL) || clone_info->adjoin) &&
+      (image->previous == (Image *) NULL) &&
+      (clone_info->page == (char *) NULL) &&
+      !IsImageTainted(image) && IsAccessible(image->magick_filename))
+    {
+      delegate_info=GetDelegateInfo(image->magick,clone_info->magick,
+        &image->exception);
+      if ((delegate_info != (DelegateInfo *) NULL) && (delegate_info->mode == 0))
         {
-          delegate_info=GetDelegateInfo(image->magick,clone_info->magick,
-            &image->exception);
-          if ((delegate_info != (DelegateInfo *) NULL) &&
-              (clone_info->page == (char *) NULL))
-            if (delegate_info->mode == 0)
-              {
-                /*
-                  Let our bi-modal delegate process the image.
-                */
-                (void) strcpy(image->filename,image->magick_filename);
-                status=InvokeDelegate(clone_info,image,image->magick,
-                  clone_info->magick);
-                DestroyImageInfo(clone_info);
-                return(!status);
-              }
+          /*
+            Let our bi-modal delegate process the image.
+          */
+          (void) strcpy(image->filename,image->magick_filename);
+          status=InvokeDelegate(clone_info,image,image->magick,
+            clone_info->magick);
+          DestroyImageInfo(clone_info);
+          return(!status);
         }
+      }
   /*
     Call appropriate image writer based on image type.
   */
   status=False;
-  magick_info=(MagickInfo *)
-    GetMagickInfo(clone_info->magick,&image->exception);
+  magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick,&image->exception);
   if ((magick_info != (MagickInfo *) NULL) &&
       (magick_info->encoder !=
         (unsigned int (*)(const ImageInfo *,Image *)) NULL))

@@ -1345,7 +1345,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
 %
 */
 MagickExport unsigned int QueryColorname(Image *image,const PixelPacket *color,
-  ComplianceType compliance,char *name)
+  const ComplianceType compliance,char *name)
 {
   double
     distance,

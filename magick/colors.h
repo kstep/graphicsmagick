@@ -50,7 +50,7 @@ extern MagickExport unsigned int
   IsPseudoClass(Image *),
   ListColorInfo(FILE *,ExceptionInfo *),
   QueryColorDatabase(const char *,PixelPacket *),
-  QueryColorname(Image *,const PixelPacket *,ComplianceType,char *);
+  QueryColorname(Image *,const PixelPacket *,const ComplianceType,char *);
 
 extern MagickExport void
   DestroyColorInfo(void);

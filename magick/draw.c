@@ -1099,7 +1099,7 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
 
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->debug=False;
-  QueryColorDatabase("none",&clone_info->fill);
+  QueryColorDatabase("#000000ff",&clone_info->fill);
   resolution.x=72.0;
   resolution.y=72.0;
   if (clone_info->density != (char *) NULL)
@@ -1594,7 +1594,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            if (LocaleCompare("none",value) == 0)
+            if (LocaleCompare("#000000ff",value) == 0)
               graphic_context[n]->decorate=NoDecoration;
             if (LocaleCompare("underline",value) == 0)
               graphic_context[n]->decorate=UnderlineDecoration;
@@ -1957,7 +1957,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            if (LocaleCompare(value,"none") != 0)
+            if (LocaleCompare(value,"#000000ff") != 0)
               break;
             if (graphic_context[n]->dash_pattern != (unsigned int *) NULL)
               LiberateMemory((void **) &graphic_context[n]->dash_pattern);
@@ -3942,7 +3942,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->gravity=NorthWestGravity;
   draw_info->opacity=OpaqueOpacity;
   draw_info->fill=clone_info->pen;
-  (void) QueryColorDatabase("none",&draw_info->stroke);
+  (void) QueryColorDatabase("#000000ff",&draw_info->stroke);
   draw_info->stroke_antialias=clone_info->antialias;
   draw_info->stroke_width=1.0;
   draw_info->fill_rule=EvenOddRule;
@@ -3956,7 +3956,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
     draw_info->density=AllocateString(clone_info->density);
   draw_info->text_antialias=clone_info->antialias;
   draw_info->pointsize=clone_info->pointsize;
-  (void) QueryColorDatabase("none",&draw_info->box);
+  (void) QueryColorDatabase("#000000ff",&draw_info->box);
   draw_info->border_color=clone_info->border_color;
   draw_info->compose=CopyCompositeOp;
   if (clone_info->server_name != (char *) NULL)
