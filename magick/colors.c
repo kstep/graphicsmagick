@@ -1112,16 +1112,16 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
   if (file == (const FILE *) NULL)
     file=stdout;
   (void) fprintf(file,"ImageMagick understands these color strings.\n");
-  (void) GetColorInfo("*",exception);
-  if (color_list == (ColorInfo *) NULL)
+  p=GetColorInfo("*",exception);
+  if (p == (ColorInfo *) NULL)
     return(False);
-  if (color_list->filename != (char *) NULL)
-    (void) fprintf(file,"\nFilename: %.1024s\n\n",color_list->filename);
+  if (p->filename != (char *) NULL)
+    (void) fprintf(file,"\nFilename: %.1024s\n\n",p->filename);
   (void) fprintf(file,
     "Name                   Color                   Compliance\n");
   (void) fprintf(file,"-------------------------------------------------------"
     "------------------------\n");
-  for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
+  for ( ; p != (ColorInfo *) NULL; p=p->next)
   {
     (void) fprintf(file,"%.1024s",p->name);
     for (i=Extent(p->name); i <= 22; i++)

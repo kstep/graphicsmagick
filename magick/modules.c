@@ -265,6 +265,70 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t M o d u l e A l i a s                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetModuleAlias returns a pointer to a ModuleAlias structure that
+%  matches the specified tag.  If tag is NULL, the head of the module alias
+%  list is returned. If no modules aliases are loaded, or the requested alias
+%  is not found, NULL is returned.
+%
+%  The format of the GetModuleAlias method is:
+%
+%      ModuleAlias *GetModuleAlias(const char *name,ExceptionAlias *exception)
+%
+%  A description of each parameter follows:
+%
+%    o module_alias: Method GetModuleAlias returns a pointer ModuleAlias
+%      structure that matches the specified tag.
+%
+%    o name: a character string that represents the module alias we are
+%      looking for.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport ModuleAlias *GetModuleAlias(const char *name,
+  ExceptionInfo *exception)
+{
+  register ModuleAlias
+    *p;
+
+  AcquireSemaphore(&module_semaphore);
+  if (module_aliases == (ModuleAlias *) NULL)
+    {
+      unsigned int
+        status;
+
+      /*
+        Read modules.
+      */
+      status=ReadConfigurationFile("modules.mgk");
+      if (status == False)
+        ThrowException(exception,FileOpenWarning,
+          "Unable to read module configuration file","modules.mgk");
+      atexit(DestroyModuleInfo);
+    }
+  LiberateSemaphore(&module_semaphore);
+  if (module_aliases == (ModuleAlias *) NULL)
+    return((ModuleAlias *) NULL);
+  if (name == (const char *) NULL)
+    return(module_aliases);
+  for (p=module_aliases; p != (ModuleAlias *) NULL; p=p->next)
+    if (LocaleCompare(p->name,name) == 0)
+      return(p);
+  return((ModuleAlias *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t M o d u l e I n f o                                                 %
 %                                                                             %
 %                                                                             %
@@ -450,15 +514,15 @@ MagickExport unsigned int ListModuleAliases(FILE *file,ExceptionInfo *exception)
   if (file == (const FILE *) NULL)
     file=stdout;
   (void) fprintf(file,"ImageMagick understands these module aliases.\n");
-  (void) GetModuleInfo((const char *) NULL,exception);
-  if (module_aliases == (ModuleAlias *) NULL)
+  p=GetModuleAlias((const char *) NULL,exception);
+  if (p == (ModuleAlias *) NULL)
     return(False);
-  if (module_aliases->filename != (char *) NULL)
-    (void) fprintf(file,"\nFilename: %.1024s\n\n",module_aliases->filename);
+  if (p->filename != (char *) NULL)
+    (void) fprintf(file,"\nFilename: %.1024s\n\n",p->filename);
   (void) fprintf(file,"Name      Alias\n");
   (void) fprintf(file,"-------------------------------------------------------"
     "------------------------\n");
-  for (p=module_aliases; p != (ModuleAlias *) NULL; p=p->next)
+  for ( ; p != (ModuleAlias *) NULL; p=p->next)
   {
     (void) fprintf(file,"%.1024s",p->name);
     for (i=Extent(p->name); i <= 9; i++)

@@ -236,15 +236,15 @@ MagickExport unsigned int ListFontInfo(FILE *file,ExceptionInfo *exception)
   if (file == (const FILE *) NULL)
     file=stdout;
   (void) fprintf(file,"ImageMagick supports these built-in fonts.\n");
-  (void) GetFontInfo("*",exception);
-  if (font_list == (FontInfo *) NULL)
+  p=GetFontInfo("*",exception);
+  if (p == (FontInfo *) NULL)
     return(False);
-  if (font_list->filename != (char *) NULL)
-    (void) fprintf(file,"\nFilename: %.1024s\n\n",font_list->filename);
+  if (p->filename != (char *) NULL)
+    (void) fprintf(file,"\nFilename: %.1024s\n\n",p->filename);
   (void) fprintf(file,"Name                         Description\n");
   (void) fprintf(file,"-------------------------------------------------------"
     "------------------------\n");
-  for (p=font_list; p != (FontInfo *) NULL; p=p->next)
+  for ( ; p != (FontInfo *) NULL; p=p->next)
   {
     (void) fprintf(file,"%.1024s",p->name);
     for (i=Extent(p->name); i <= 28; i++)

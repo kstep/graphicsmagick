@@ -563,15 +563,15 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
     file=stdout;
   (void) fprintf(file,"ImageMagick defines these delegates to read orwrite "
     "image formats it does not\ndirectly support.\n");
-  (void) GetDelegateInfo("*","*",exception);
-  if (delegate_list == (DelegateInfo *) NULL)
+  p=GetDelegateInfo("*","*",exception);
+  if (p == (DelegateInfo *) NULL)
     return(False);
-  if (delegate_list->filename != (char *) NULL)
-    (void) fprintf(file,"\nFilename: %.1024s\n\n",delegate_list->filename);
+  if (p->filename != (char *) NULL)
+    (void) fprintf(file,"\nFilename: %.1024s\n\n",p->filename);
   (void) fprintf(file,"Decode-Tag   Encode-Tag  Delegate\n");
   (void) fprintf(file,"-------------------------------------------------------"
     "------------------------\n");
-  for (p=delegate_list; p != (DelegateInfo *) NULL; p=p->next)
+  for ( ; p != (DelegateInfo *) NULL; p=p->next)
   {
     if (p->restrain)
       continue;

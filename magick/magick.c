@@ -525,11 +525,11 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 #if defined(HasMODULES)
   OpenModules(exception);
 #endif
-  (void) GetMagickInfo((char *) NULL,exception);
-  if (magick_list == (MagickInfo *) NULL)
+  p=GetMagickInfo((char *) NULL,exception);
+  if (p == (MagickInfo *) NULL)
     return(False);
   AcquireSemaphore(&magick_semaphore);
-  for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
+  for ( ; p != (MagickInfo *) NULL; p=p->next)
     if (p->stealth != True)
       (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->tag ? p->tag : "",
         p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',
