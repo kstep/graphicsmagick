@@ -932,7 +932,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           (void) strcpy(buffer,"%%%%BoundingBox: (atend)\n");
         else
           FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",
-            bounds.x1,bounds.y1,bounds.x2,bounds.y2);
+            floor(bounds.x1),floor(bounds.y1),ceil(bounds.x2),ceil(bounds.y2));
         (void) WriteBlobString(image,buffer);
         attribute=GetImageAttribute(image,"Label");
         if (attribute != (ImageAttribute *) NULL)
@@ -1422,7 +1422,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   if (page > 2)
     {
       FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",
-        bounds.x1,bounds.y1,bounds.x2,bounds.y2);
+        floor(bounds.x1),floor(bounds.y1),ceil(bounds.x2),ceil(bounds.y2));
       (void) WriteBlobString(image,buffer);
     }
   (void) WriteBlobString(image,"%%EOF\n");
