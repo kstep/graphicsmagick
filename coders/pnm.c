@@ -838,7 +838,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           SetImageType(image,BilevelType);
         }
       else
-        if ((image_info->type != TrueColorType) &&
+        if ((LocaleCompare(image_info->magick,"PNM") == 0) &&
+            (image_info->type != TrueColorType) &&
             IsGrayImage(image,&image->exception))
           {
             format=5;
