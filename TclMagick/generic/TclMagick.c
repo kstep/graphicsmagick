@@ -15,9 +15,9 @@
 #include "TclMagick.h"
 #include <wand/magick_wand.h>
 
-#define TCLMAGICK_VERSION_STR "0.41"
+#define TCLMAGICK_VERSION_STR "0.43"
 #define TCLMAGICK_VERSION_HI  0
-#define TCLMAGICK_VERSION_LO  41
+#define TCLMAGICK_VERSION_LO  43
 
 /**********************************************************************/
 /* Workaround for bugs: */
