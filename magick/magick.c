@@ -192,7 +192,6 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
   unsigned int
     initialize;
 
-  assert(tag != (const char *) NULL);
   AcquireSemaphore(magick_semaphore);
   initialize=magick_list == (MagickInfo *) NULL;
   LiberateSemaphore(magick_semaphore);
