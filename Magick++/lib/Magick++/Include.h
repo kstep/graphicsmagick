@@ -199,13 +199,13 @@ namespace Magick
   using MagickLib::PlaneInterlace;
   using MagickLib::PartitionInterlace;
   
-  // Layer types
-  using MagickLib::LayerType;
-  using MagickLib::UndefinedLayer;
-  using MagickLib::RedLayer;
-  using MagickLib::GreenLayer;
-  using MagickLib::BlueLayer;
-  using MagickLib::MatteLayer;
+  // Channel types
+  using MagickLib::ChannelType;
+  using MagickLib::UndefinedChannel;
+  using MagickLib::RedChannel;
+  using MagickLib::GreenChannel;
+  using MagickLib::BlueChannel;
+  using MagickLib::MatteChannel;
 
   // Line cap types
   using MagickLib::LineCap;
@@ -411,7 +411,7 @@ namespace Magick
   using MagickLib::ImageToBlob;
   using MagickLib::ImplodeImage;
   using MagickLib::IsGeometry;
-  using MagickLib::LayerImage;
+  using MagickLib::ChannelImage;
   using MagickLib::LessValue;
   using MagickLib::MagickInfo;
   using MagickLib::MagnifyImage;

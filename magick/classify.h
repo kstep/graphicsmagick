@@ -21,6 +21,15 @@ typedef enum
 
 typedef enum
 {
+  UndefinedChannel,
+  RedChannel,
+  GreenChannel,
+  BlueChannel,
+  MatteChannel
+} ChannelType;
+
+typedef enum
+{
   UndefinedClass,
   DirectClass,
   PseudoClass
@@ -216,15 +225,6 @@ typedef enum
   PlaneInterlace,
   PartitionInterlace
 } InterlaceType;
-
-typedef enum
-{
-  UndefinedLayer,
-  RedLayer,
-  GreenLayer,
-  BlueLayer,
-  MatteLayer
-} LayerType;
 
 typedef enum
 {

@@ -63,6 +63,7 @@
 %    -bordercolor color   border color
 %    -box color           color for annotation bounding box
 %    -cache threshold     number of megabytes available to the pixel cache
+%    -channel type        Red, Green, Blue, Matte
 %    -charcoal radius     simulate a charcoal drawing
 %    -coalesce            merge a sequence of images
 %    -colorize value      colorize the image with the fill color
@@ -101,7 +102,6 @@
 %    -intent type         Absolute, Perceptual, Relative, or Saturation
 %    -interlace type      None, Line, Plane, or Partition
 %    -label name          assign a label to an image
-%    -layer type          Red, Green, Blue, Matte
 %    -loop iterations     add Netscape loop extension to your GIF animation
 %    -map filename        transform image colors to match this set of colors
 %    -matte               store matte channel if the image has one
@@ -261,6 +261,7 @@ static void Usage()
       "-bordercolor color   border color",
       "-box color           color for annotation bounding box",
       "-cache threshold     megabytes of memory available to the pixel cache",
+      "-channel type        Red, Green, Blue, Matte",
       "-charcoal radius     simulate a charcoal drawing",
       "-coalesce            merge a sequence of images",
       "-colorize value      colorize the image with the fill color",
@@ -299,7 +300,6 @@ static void Usage()
       "-intent type         Absolute, Perceptual, Relative, or Saturation",
       "-interlace type      None, Line, Plane, or Partition",
       "-label name          assign a label to an image",
-      "-layer type          Red, Green, Blue, Matte",
       "-label name          assign a label to an image",
       "-loop iterations     add Netscape loop extension to your GIF animation",
       "-map filename        transform image colors to match this set of colors",
@@ -617,7 +617,32 @@ int main(int argc,char **argv)
               SetCacheThreshold(atoi(argv[i]));
               break;
             }
-          if (LocaleNCompare("charcoal",option+1,2) == 0)
+          if (LocaleNCompare("channel",option+1,4) == 0)
+            {
+              if (*option == '-')
+                {
+                  ChannelType
+                    channel;
+
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing type",option);
+                  option=argv[i];
+                  channel=UndefinedLayer;
+                  if (LocaleCompare("Red",option) == 0)
+                    channel=RedLayer;
+                  if (LocaleCompare("Green",option) == 0)
+                    channel=GreenLayer;
+                  if (LocaleCompare("Blue",option) == 0)
+                    channel=BlueLayer;
+                  if (LocaleCompare("Matte",option) == 0)
+                    channel=MatteLayer;
+                  if (channel == UndefinedChannel)
+                    MagickError(OptionError,"Invalid channel type",option);
+                }
+              break;
+            }
+          if (LocaleNCompare("charcoal",option+1,4) == 0)
             {
               if (*option == '-')
                 {
@@ -1121,31 +1146,6 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing label name",option);
-                }
-              break;
-            }
-          if (LocaleNCompare("layer",option+1,3) == 0)
-            {
-              if (*option == '-')
-                {
-                  LayerType
-                    layer;
-
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing type",option);
-                  option=argv[i];
-                  layer=UndefinedLayer;
-                  if (LocaleCompare("Red",option) == 0)
-                    layer=RedLayer;
-                  if (LocaleCompare("Green",option) == 0)
-                    layer=GreenLayer;
-                  if (LocaleCompare("Blue",option) == 0)
-                    layer=BlueLayer;
-                  if (LocaleCompare("Matte",option) == 0)
-                    layer=MatteLayer;
-                  if (layer == UndefinedLayer)
-                    MagickError(OptionError,"Invalid layer type",option);
                 }
               break;
             }

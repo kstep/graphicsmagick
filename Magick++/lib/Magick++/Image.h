@@ -283,8 +283,8 @@ namespace Magick
     // Label image
     void            label ( const std::string &label_ );
     
-    // Extract layer from image
-    void            layer ( LayerType layer_ );
+    // Extract channel from image
+    void            channel ( ChannelType channel_ );
     
     // Magnify image by integral size
     void            magnify ( void );
@@ -436,7 +436,7 @@ namespace Magick
     // Swirl image (image pixels are rotated by degrees)
     void            swirl ( double degrees_ );
     
-    // Layer a texture on image background
+    // Channel a texture on image background
     void            texture ( const Image &texture_ );
     
     // Threshold image
@@ -675,7 +675,7 @@ namespace Magick
     void            magick ( const std::string &magick_ );
     std::string     magick ( void ) const;
     
-    // Image supports transparency (matte layer)
+    // Image supports transparency (matte channel)
     void            matte ( bool matteFlag_ );
     bool            matte ( void ) const;
     

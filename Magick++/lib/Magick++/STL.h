@@ -642,19 +642,19 @@ namespace Magick
     const std::string _label;
   };
 
-  // Extract layer from image
-  class layerImage : public std::unary_function<Image&,void>
+  // Extract channel from image
+  class channelImage : public std::unary_function<Image&,void>
   {
   public:
-    layerImage( LayerType layer_ )
-      : _layer( layer_ ) { }
+    channelImage( ChannelType channel_ )
+      : _channel( channel_ ) { }
 
     void operator()( Image &image_ )
       {
-	image_.layer( _layer );
+	image_.channel( _channel );
       }
   private:
-    const LayerType _layer;
+    const ChannelType _channel;
   };
 
   // Magnify image by integral size
@@ -1095,7 +1095,7 @@ namespace Magick
     const double _degrees;
   };
 
-  // Layer a texture on image background
+  // Channel a texture on image background
   class textureImage : public std::unary_function<Image&,void>
   {
   public:

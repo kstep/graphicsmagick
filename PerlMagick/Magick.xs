@@ -168,6 +168,10 @@ static char
   {
     "False", "True", (char *) NULL
   },
+  *ChannelTypes[] =
+  {
+    "Undefined", "Red", "Green", "Blue", "Matte", (char *) NULL
+  },
   *ClassTypes[] =
   {
     "Undefined", "DirectClass", "PseudoClass", (char *) NULL
@@ -214,10 +218,6 @@ static char
   *InterlaceTypes[] =
   {
     "Undefined", "None", "Line", "Plane", "Partition", (char *) NULL
-  },
-  *LayerTypes[] =
-  {
-    "Undefined", "Red", "Green", "Blue", "Matte", (char *) NULL
   },
   *MethodTypes[] =
   {
@@ -393,7 +393,7 @@ static struct
     { "Trim", },
     { "Wave", { {"geom", StringReference}, {"ampli", DoubleReference},
       {"wave", DoubleReference} } },
-    { "Layer", { {"layer", LayerTypes} } },
+    { "Channel", { {"channel", ChannelTypes} } },
     { "Condense", },
     { "Stereo", { {"image", ImageReference} } },
     { "Stegano", { {"image", ImageReference}, {"offset", IntegerReference} } },
@@ -3670,8 +3670,8 @@ Mogrify(ref,...)
     TrimImage          = 118
     Wave               = 119
     WaveImage          = 120
-    Layer              = 121
-    LayerImage         = 122
+    Channel            = 121
+    ChannelImage       = 122
     Stereo             = 125
     StereoImage        = 126
     Stegano            = 127
@@ -5075,11 +5075,11 @@ Mogrify(ref,...)
           image=WaveImage(image,amplitude,wavelength,&exception);
           break;
         }
-        case 61:  /* Layer */
+        case 61:  /* Channel */
         {
           if (!attribute_flag[0])
             argument_list[0].int_reference=0;
-          LayerImage(image,(LayerType) argument_list[0].int_reference);
+          ChannelImage(image,(ChannelType) argument_list[0].int_reference);
           break;
         }
         case 63:  /* Stereo */

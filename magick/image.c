@@ -701,6 +701,102 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     C h a n n e l I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ChannelImage extracts the specified channel from the referenced image.
+%
+%  The format of the ChannelImage method is:
+%
+%      unsigned int ChannelImage(Image *image,const ChannelType channel)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image;  returned from
+%      ReadImage.
+%
+%    o channel: A value of type ChannelType that identifies which channel to
+%      extract.
+%
+%
+*/
+MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
+{
+#define ChannelImageText  "  Extract a channel from the image...  "
+
+  int
+    y;
+
+  register int
+    x;
+
+  register PixelPacket
+    *q;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if ((channel == MatteChannel) && !image->matte)
+    ThrowBinaryException(OptionWarning,"Unable to extract channel",
+      "image does not have a matte channel");
+  /*
+    Channel DirectClass packets.
+  */
+  image->storage_class=DirectClass;
+  image->matte=False;
+  for (y=0; y < (int) image->rows; y++)
+  {
+    q=GetImagePixels(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      switch (channel)
+      {
+        case RedChannel:
+        {
+          q->green=q->red;
+          q->blue=q->red;
+          break;
+        }
+        case GreenChannel:
+        {
+          q->red=q->green;
+          q->blue=q->green;
+          break;
+        }
+        case BlueChannel:
+        {
+          q->red=q->blue;
+          q->green=q->blue;
+          break;
+        }
+        case MatteChannel:
+        default:
+        {
+          q->red=q->opacity;
+          q->green=q->opacity;
+          q->blue=q->opacity;
+          break;
+        }
+      }
+      q++;
+    }
+    if (!SyncImagePixels(image))
+      break;
+    if (QuantumTick(y,image->rows))
+      MagickMonitor(ChannelImageText,y,image->rows);
+  }
+  (void) IsGrayImage(image);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %                                                                             %
 %   C l o n e I m a g e                                                       %
 %                                                                             %
@@ -2709,101 +2805,6 @@ MagickExport unsigned int IsImageTainted(const Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     L a y e r I m a g e                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method LayerImage extracts the specified layer from the references image.
-%
-%  The format of the LayerImage method is:
-%
-%      unsigned int LayerImage(Image *image,const LayerType layer)
-%
-%  A description of each parameter follows:
-%
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
-%
-%    o layer: A value of type LayerType that identifies which layer to extract.
-%
-%
-*/
-MagickExport unsigned int LayerImage(Image *image,const LayerType layer)
-{
-#define LayerImageText  "  Extract a layer from the image...  "
-
-  int
-    y;
-
-  register int
-    x;
-
-  register PixelPacket
-    *q;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if ((layer == MatteLayer) && !image->matte)
-    ThrowBinaryException(OptionWarning,"Unable to extract layer",
-      "image does not have a matte layer");
-  /*
-    Layer DirectClass packets.
-  */
-  image->storage_class=DirectClass;
-  image->matte=False;
-  for (y=0; y < (int) image->rows; y++)
-  {
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (int) image->columns; x++)
-    {
-      switch (layer)
-      {
-        case RedLayer:
-        {
-          q->green=q->red;
-          q->blue=q->red;
-          break;
-        }
-        case GreenLayer:
-        {
-          q->red=q->green;
-          q->blue=q->green;
-          break;
-        }
-        case BlueLayer:
-        {
-          q->red=q->blue;
-          q->green=q->blue;
-          break;
-        }
-        case MatteLayer:
-        default:
-        {
-          q->red=q->opacity;
-          q->green=q->opacity;
-          q->blue=q->opacity;
-          break;
-        }
-      }
-      q++;
-    }
-    if (!SyncImagePixels(image))
-      break;
-    if (QuantumTick(y,image->rows))
-      MagickMonitor(LayerImageText,y,image->rows);
-  }
-  (void) IsGrayImage(image);
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
 %     L i s t T o G r o u p I m a g e                                         %
 %                                                                             %
 %                                                                             %
@@ -3089,7 +3090,30 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'c':
       {
-        if (LocaleNCompare("-charcoal",option,3) == 0)
+        if (LocaleNCompare("channel",option+1,4) == 0)
+          {
+            ChannelType
+              channel;
+
+            channel=UndefinedChannel;
+            if (*option == '-')
+              {
+                option=argv[++i];
+                if (LocaleCompare("Red",option) == 0)
+                  channel=RedChannel;
+                if (LocaleCompare("Green",option) == 0)
+                  channel=GreenChannel;
+                if (LocaleCompare("Blue",option) == 0)
+                  channel=BlueChannel;
+                if (LocaleCompare("Matte",option) == 0)
+                  channel=MatteChannel;
+              }
+            if ((*image)->colorspace != clone_info->colorspace)
+              RGBTransformImage(*image,clone_info->colorspace);
+            ChannelImage(*image,channel);
+            continue;
+          }
+        if (LocaleNCompare("-charcoal",option,4) == 0)
           {
             char
               *commands[7];
@@ -3664,29 +3688,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               (void) SetImageAttribute(*image,"Label",argv[++i]);
             else
               (void) SetImageAttribute(*image,"Label",(char *) NULL);
-            continue;
-          }
-        if (LocaleNCompare("layer",option+1,3) == 0)
-          {
-            LayerType
-              layer;
-
-            layer=UndefinedLayer;
-            if (*option == '-')
-              {
-                option=argv[++i];
-                if (LocaleCompare("Red",option) == 0)
-                  layer=RedLayer;
-                if (LocaleCompare("Green",option) == 0)
-                  layer=GreenLayer;
-                if (LocaleCompare("Blue",option) == 0)
-                  layer=BlueLayer;
-                if (LocaleCompare("Matte",option) == 0)
-                  layer=MatteLayer;
-              }
-            if ((*image)->colorspace != clone_info->colorspace)
-              RGBTransformImage(*image,clone_info->colorspace);
-            LayerImage(*image,layer);
             continue;
           }
         if (LocaleCompare("-linewidth",option) == 0)

@@ -707,6 +707,7 @@ extern MagickExport RectangleInfo
 extern MagickExport unsigned int
   AllocateImageColormap(Image *,const unsigned int),
   AnimateImages(const ImageInfo *image_info,Image *image),
+  ChannelImage(Image *,const ChannelType),
   CompositeImage(Image *,const CompositeOperator,Image *,const int,const int),
   ContrastImage(Image *,const unsigned int),
   DispatchImage(Image *,const int,const int,const unsigned int,
@@ -722,7 +723,6 @@ extern MagickExport unsigned int
   IsPseudoClass(Image *),
   IsSubimage(const char *,const unsigned int),
   IsImageTainted(const Image *),
-  LayerImage(Image *,const LayerType),
   ModulateImage(Image *,const char *),
   MogrifyImage(const ImageInfo *,const int,char **,Image **),
   MogrifyImages(const ImageInfo *,const int,char **,Image **),

@@ -879,11 +879,11 @@ void Magick::Image::implode ( double factor_ )
 }
 
 
-// Extract layer from image
-void Magick::Image::layer ( LayerType layer_ )
+// Extract channel from image
+void Magick::Image::channel ( ChannelType channel_ )
 {
   modifyImage();
-  LayerImage ( image(), layer_ );
+  ChannelImage ( image(), channel_ );
   throwImageException();
 }
 
