@@ -1831,7 +1831,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     }
 
   primitive_extent=strlen(primitive);
-  MagickMonitor(RenderVectorsText,0.0,primitive_extent);
   (void) SetImageAttribute(image,"[MVG]",primitive);
   n=0;
   /*
