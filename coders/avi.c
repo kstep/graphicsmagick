@@ -145,13 +145,15 @@ typedef struct _StreamInfo
 %    o compression:  A value of 1 means the compressed pixels are runlength
 %      encoded for a 256-color bitmap.  A value of 2 means a 16-color bitmap.
 %
+%    o bytes_per_line: The number of bytes in a scanline of compressed pixels
+%
 %    o pixels:  The address of a byte (8 bits) array of pixel data created by
 %      the decoding process.
 %
 %
 */
 static unsigned int DecodeImage(Image *image,const unsigned int compression,
-  unsigned char *pixels)
+  unsigned long bytes_per_line,unsigned char *pixels)
 {
   long
     byte,
@@ -165,7 +167,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
   register unsigned char
     *q;
 
-  (void) memset(pixels,0,image->columns*image->rows);
+  (void) memset(pixels,0,bytes_per_line*image->rows);
   byte=0;
   x=0;
   q=pixels;
@@ -452,7 +454,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) ReadBlob(image,bytes_per_line*image->rows,(char *) pixels);
         else
           {
-            status=DecodeImage(image,1,pixels);
+            status=DecodeImage(image,1,bytes_per_line,pixels);
             if (status == False)
               ThrowReaderException(CorruptImageWarning,
                 "unable to runlength decode",image);
