@@ -143,6 +143,7 @@ typedef enum
   CacheWarning = 340,
   StreamWarning = 345,
   RegistryWarning = 350,
+  ConfigurationWarning = 395,
   FatalException = 400,
   ResourceLimitError = 400,
   XServerError = 405,
@@ -154,7 +155,8 @@ typedef enum
   BlobError = 435,
   CacheError = 440,
   StreamError = 445,
-  RegistryError = 450
+  RegistryError = 450,
+  ConfigurationError = 495
 } ExceptionType;
 
 typedef enum

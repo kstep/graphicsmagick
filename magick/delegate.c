@@ -567,13 +567,17 @@ static unsigned int ReadConfigurationFile(const char *basename,
     Read the delegates configuration file.
   */
   FormatString(filename,"%.1024s",basename);
-  path=GetMagickConfigurePath(basename,(FILE *) NULL);
+  path=GetMagickConfigurePath(basename,exception);
   if (path != (char *) NULL)
     {
       FormatString(filename,"%.1024s",path);
       LiberateMemory((void **) &path);
     }
+if (exception->reason) puts(exception->reason);
+if (exception->description) puts(exception->description);
   xml=(char *) FileToBlob(filename,&length,exception);
+if (exception->reason) puts(exception->reason);
+if (exception->description) puts(exception->description);
   if (xml == (char *) NULL)
     xml=AllocateString(DelegateMap);
   token=AllocateString(xml);

@@ -3492,6 +3492,9 @@ MagickExport unsigned int XGetWindowColor(Display *display,char *name)
     *path,
     text[MaxTextExtent];
 
+  ExceptionInfo
+    exception;
+
   FILE
     *file;
 
@@ -3567,7 +3570,8 @@ MagickExport unsigned int XGetWindowColor(Display *display,char *name)
     Match color against the X color database.
   */
   (void) XQueryColor(display,window_attributes.colormap,&color);
-  path=GetMagickConfigurePath("rgb.txt",(FILE *) NULL);
+  GetExceptionInfo(&exception);
+  path=GetMagickConfigurePath("rgb.txt",&exception);
   if (path == (char *) NULL)
     return(False);
   file=fopen(path,"r");

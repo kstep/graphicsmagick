@@ -42,6 +42,9 @@ typedef struct _ModuleInfo
 /*
   Modules declarations.
 */
+extern MagickExport char
+  *TagToModule(const char *);
+
 extern MagickExport const ModuleAlias
   *GetModuleAlias(const char *,ExceptionInfo *);
 

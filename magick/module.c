@@ -105,7 +105,6 @@ static SemaphoreInfo
   Forward declarations.
 */
 static char
-  *TagToModule(const char *),
   *TagToProcess(const char *);
 
 static int
@@ -420,15 +419,17 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *tag,
 %
 %  The format of the GetModuleList function is:
 %
-%      char **GetModuleList()
+%      char **GetModuleList(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o modulelist: Method GetModuleList returns a list of available modules. If
 %      an error occurs a NULL list is returned.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 */
-static char **GetModuleList(void)
+static char **GetModuleList(ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent],
@@ -452,7 +453,7 @@ static char **GetModuleList(void)
   if (modules == (char **) NULL)
     return((char **) NULL);
   *modules=(char *) NULL;
-  path=GetMagickConfigurePath(ModuleFilename,(FILE *) NULL);
+  path=GetMagickConfigurePath(ModuleFilename,exception);
   if (path == (char *) NULL)
     return((char **) NULL);
   GetPathComponent(path,HeadPath,filename);
@@ -662,7 +663,7 @@ MagickExport unsigned int OpenModule(const char *module,
   */
   handle=(ModuleHandle) NULL;
   module_file=TagToModule(module_name);
-  path=GetMagickConfigurePath(module_file,(FILE *) NULL);
+  path=GetMagickConfigurePath(module_file,exception);
   if (path != (char *) NULL)
     {
       handle=lt_dlopen(path);
@@ -744,7 +745,7 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
     Load all modules.
   */
   (void) GetMagickInfo((char *) NULL,exception);
-  modules=GetModuleList();
+  modules=GetModuleList(exception);
   if (modules == (char **) NULL)
     return(False);
   for (p=modules; *p != (char *) NULL; p++)
@@ -807,7 +808,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     Read the module configuration file.
   */
   FormatString(filename,"%.1024s",basename);
-  path=GetMagickConfigurePath(filename,(FILE *) NULL);
+  path=GetMagickConfigurePath(filename,exception);
   if (path != (char *) NULL)
     {
       FormatString(filename,"%.1024s",path);
@@ -1087,7 +1088,7 @@ static char *TagToProcess(const char *tag)
 %      module.
 %
 */
-static char *TagToModule(const char *tag)
+MagickExport char *TagToModule(const char *tag)
 {
   char
     *module_name;

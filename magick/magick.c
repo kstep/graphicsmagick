@@ -211,7 +211,8 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %
 %  The format of the GetMagickConfigurePath method is:
 %
-%      char *GetMagickConfigurePath(const char *filename)
+%      char *GetMagickConfigurePath(const char *filename,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -221,39 +222,43 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %    o filename: A character string representing the desired configuration
 %      file.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
-MagickExport char *GetMagickConfigurePath(const char *filename,FILE *file)
+MagickExport char *GetMagickConfigurePath(const char *filename,
+  ExceptionInfo *exception)
 {
   char
-    *path;
+    *path,
+    *search_path;
 
+  assert(filename != (const char *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
   path=AllocateString(filename);
-  FormatString(path,"%.1024s",filename);
   if (IsAccessible(path))
-    {
-      if (file != (const FILE *) NULL)
-        (void) fprintf(file,"no path: %.1024s\n",path);
-      return(path);
-    }
+    return(path);
+  search_path=AllocateString(path);
   FormatString(path,"%.1024s%.1024s%.1024s",SetClientPath((char *) NULL),
     DirectorySeparator,filename);
   if (IsAccessible(path))
     {
-      if (file != (const FILE *) NULL)
-        (void) fprintf(file,"client: %.1024s\n",path);
+      LiberateMemory((void **) &search_path);
       return(path);
     }
+  ConcatenateString(&search_path,":");
+  ConcatenateString(&search_path,path);
   if (getenv("MAGICK_HOME") != (char *) NULL)
     {
       FormatString(path,"%.1024s%.1024s%.1024s",getenv("MAGICK_HOME"),
         DirectorySeparator,filename);
       if (IsAccessible(path))
         {
-          if (file != (const FILE *) NULL)
-            (void) fprintf(file,"MAGICK_HOME: %.1024s\n",path);
+          LiberateMemory((void **) &search_path);
           return(path);
         }
+      ConcatenateString(&search_path,":");
+      ConcatenateString(&search_path,path);
     }
   if (getenv("HOME") != (char *) NULL)
     {
@@ -262,35 +267,40 @@ MagickExport char *GetMagickConfigurePath(const char *filename,FILE *file)
         DirectorySeparator,filename);
       if (IsAccessible(path))
         {
-          if (file != (const FILE *) NULL)
-            (void) fprintf(file,"HOME: %.1024s\n",path);
+          LiberateMemory((void **) &search_path);
           return(path);
         }
+      ConcatenateString(&search_path,":");
+      ConcatenateString(&search_path,path);
     }
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
   if (IsAccessible(path))
     {
-      if (file != (const FILE *) NULL)
-        (void) fprintf(file,"MagickLibPath: %.1024s\n",path);
+      LiberateMemory((void **) &search_path);
       return(path);
     }
+  ConcatenateString(&search_path,":");
+  ConcatenateString(&search_path,path);
   FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
   if (IsAccessible(path))
     {
-      if (file != (const FILE *) NULL)
-        (void) fprintf(file,"MagickModulesPath: %.1024s\n",path);
+      LiberateMemory((void **) &search_path);
       return(path);
     }
+  ConcatenateString(&search_path,":");
+  ConcatenateString(&search_path,path);
   FormatString(path,"%.1024s%.1024s",MagickSharePath,filename);
   if (IsAccessible(path))
     {
-      if (file != (const FILE *) NULL)
-        (void) fprintf(file,"MagickSharePath: %.1024s\n",path);
+      LiberateMemory((void **) &search_path);
       return(path);
     }
+  ConcatenateString(&search_path,":");
+  ConcatenateString(&search_path,path);
+  ThrowException(exception,ConfigurationWarning,
+    "Unable to open configuration file",search_path);
+  LiberateMemory((void **) &search_path);
   LiberateMemory((void **) &path);
-  if (file != (const FILE *) NULL)
-    (void) fprintf(file,"failed: NULL\n");
   return((char *) NULL);
 }
 
@@ -355,7 +365,8 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
       return(p);
     }
   LiberateSemaphoreInfo(&magick_semaphore);
-  (void) OpenModule(name,exception);
+  if (*name != '\0')
+    (void) OpenModule(name,exception);
   AcquireSemaphoreInfo(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->name,name) == 0)
@@ -528,17 +539,35 @@ MagickExport int unsigned IsMagickConflict(const char *magick)
 */
 MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 {
+  char
+    filename[MaxTextExtent],
+    *module_file,
+    *path;
+
+  ExceptionInfo
+    path_exception;
+
   register const MagickInfo
     *p;
 
   if (file == (FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"   Format  Mode  Description\n");
-  (void) fprintf(file,"--------------------------------------------------------"
-    "-----------------------\n");
   p=GetMagickInfo("*",exception);
   if (p == (const MagickInfo *) NULL)
     return(False);
+  GetExceptionInfo(&path_exception);
+  module_file=TagToModule("MIFF");
+  path=GetMagickConfigurePath(module_file,&path_exception);
+  if (path != (char *) NULL)
+    {
+      GetPathComponent(path,HeadPath,filename);
+      (void) fprintf(file,"Module path: %.1024s\n\n",filename);
+      LiberateMemory((void **) &path);
+    }
+  LiberateMemory((void **) &module_file);
+  (void) fprintf(file,"   Format  Mode  Description\n");
+  (void) fprintf(file,"--------------------------------------------------------"
+    "-----------------------\n");
   AcquireSemaphoreInfo(&magick_semaphore);
   for ( ; p != (MagickInfo *) NULL; p=p->next)
     if (p->stealth != True)

@@ -1450,39 +1450,6 @@ int main(int argc,char **argv)
                       MagickError(OptionError,"Invalid list type",option);
                       break;
                     }
-                    case 'X':
-                    case 'x':
-                    {
-                      if (LocaleCompare("Xtra",option) == 0)
-                        {
-                          char
-                            *path;
-
-                          if (argv[0] != (char *) NULL)
-                            (void) printf("argv[0]: %.1024s\n",argv[0]);
-                          path=GetMagickConfigurePath(TypeFilename,stdout);
-                          if (path != (char *) NULL)
-                            LiberateMemory((void **) &path);
-                          else
-                            {
-#if defined(WIN32)
-                              unsigned char
-                                *blob;
-
-                              blob=NTResourceToBlob(TypeFilename);
-                              if (blob != (unsigned char *) NULL)
-                                {
-                                  (void) printf("windows resource: %.1024s\n",
-                                    TypeFilename);
-                                  LiberateMemory((void **) &blob);
-                                }
-#endif
-                            }
-                          break;
-                        }
-                      MagickError(OptionError,"Invalid list type",option);
-                      break;
-                    }
                     default:
                       MagickError(OptionError,"Invalid list type",option);
                   }
