@@ -11,10 +11,58 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
+dnl @synopsis AC_CHECK_CC_OPT(flag, cachevarname)
+dnl 
+dnl AC_CHECK_CC_OPT(-fvomit-frame,vomitframe)
+dnl would show a message as like 
+dnl "checking wether gcc accepts -fvomit-frame ... no"
+dnl and sets the shell-variable $vomitframe to either "-fvomit-frame"
+dnl or (in this case) just a simple "". In many cases you would then call 
+dnl AC_SUBST(_fvomit_frame_,$vomitframe) to create a substitution that
+dnl could be fed as "CFLAGS = @_funsigned_char_@ @_fvomit_frame_@
+dnl
+dnl in consequence this function is much more general than their 
+dnl specific counterparts like ac_cxx_rtti.m4 that will test for
+dnl -fno-rtti -fno-exceptions
+dnl 
+dml @author  Guido Draheim <guidod@gmx.de>
+
+AC_DEFUN(AC_CHECK_CC_OPT,
+[AC_CACHE_CHECK(whether ${CC-cc} accepts [$1], [$2],
+[AC_SUBST($2)
+echo 'void f(){}' > conftest.c
+if test -z "`${CC-cc} -c $1 conftest.c 2>&1`"; then
+  $2="$1"
+else
+  $2=""
+fi
+rm -f conftest*
+])])
+
+dnl @synopsis AC_C_LONG_LONG
+dnl
+dnl Provides a test for the existance of the long long int type and
+dnl defines HAVE_LONG_LONG if it is found.
+dnl
+dnl @author Caolan McNamara <caolan@skynet.ie>
+dnl
+AC_DEFUN([AC_C_LONG_LONG],
+[AC_CACHE_CHECK(for long long int, ac_cv_c_long_long,
+[if test "$GCC" = yes; then
+  ac_cv_c_long_long=yes
+  else
+        AC_TRY_COMPILE(,[long long int i;],
+   ac_cv_c_long_long=yes,
+   ac_cv_c_long_long=no)
+   fi])
+   if test $ac_cv_c_long_long = yes; then
+     AC_DEFINE(HAVE_LONG_LONG)
+   fi
+])
 
 # RSSH_CHECK_SUNPROC_CC([ACTION-IF-YES], [ACTION-IF-NOT])
 # ------------------------------------------------------
-# check : are we using SUN workshop C++ compiler.
+# check : are we using SUN C++ compiler.
 #  Corresponding cache value: rssh_cv_check_sunpro_cc is set to yes or no
 #
 #@author  Ruslan Shevchenko <Ruslan@Shevchenko.Kiev.UA>, 1998, 2000
@@ -23,14 +71,14 @@
 #  RSSH_CHECK_SUNPRO_CC([ACTION-IF-YES],[ACTION-IF-NOT])
 #
 AC_DEFUN([RSSH_CHECK_SUNPRO_CC],
-[AC_CACHE_CHECK([whether using Sun Workshop C++ compiler],
+[AC_CACHE_CHECK([whether using Sun C++ compiler],
                 [rssh_cv_check_sunpro_cc],
 
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
  AC_TRY_COMPILE([],
 [#ifndef __SUNPRO_CC
-# include "error: this is not Sun Workshop."
+# include "error: this is not Sun C++ Compiler."
 #endif
 ],
                rssh_cv_check_sunpro_cc=yes,
@@ -45,6 +93,40 @@ else
   :
 fi
 ])# RSSH_CHECK_SUNPROC_CC
+
+# RSSH_CHECK_SUNPROC_C([ACTION-IF-YES], [ACTION-IF-NOT])
+# ------------------------------------------------------
+# check : are we using SUN C compiler.
+#  Corresponding cache value: rssh_cv_check_sunpro_c is set to yes or no
+#
+#@author  Ruslan Shevchenko <Ruslan@Shevchenko.Kiev.UA>, 1998, 2000
+#@version $Id$
+#
+#  RSSH_CHECK_SUNPRO_C([ACTION-IF-YES],[ACTION-IF-NOT])
+#
+AC_DEFUN([RSSH_CHECK_SUNPRO_C],
+[AC_CACHE_CHECK([whether using Sun C compiler],
+                [rssh_cv_check_sunpro_c],
+
+[AC_LANG_SAVE
+ AC_LANG_C
+ AC_TRY_COMPILE([],
+[#ifndef __SUNPRO_C
+# include "error: this is not Sun C Compiler."
+#endif
+],
+               rssh_cv_check_sunpro_c=yes,
+               rssh_cv_check_sunpro_c=no)
+AC_LANG_RESTORE])
+if test ${rssh_cv_check_sunpro_c} = yes
+then
+  $2
+  :
+else 
+  $3
+  :
+fi
+])# RSSH_CHECK_SUNPRO_C
 
 
 dnl @synopsis AC_CXX_BOOL
