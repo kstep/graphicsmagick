@@ -178,7 +178,6 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     threshold;
 
   Image
-    *clone_image,
 		*images,
     *montage_image,
     *preview_image;
@@ -509,10 +508,13 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case JPEGPreview:
       {
+        char
+          filename[MaxTextExtent];
+
         clone_info->quality=(unsigned int) (percentage+13.0);
         FormatString(factor,"%u",clone_info->quality);
-        (void) strcpy(preview_image->filename,"jpeg:");
-        TemporaryFilename(preview_image->filename+5);
+        TemporaryFilename(filename);
+        FormatString(preview_image->filename,"jpeg:%.1024s",filename);
         status=WriteImage(clone_info,preview_image);
         if (status != False)
           {
