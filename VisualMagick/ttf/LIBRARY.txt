@@ -1,7 +1,30 @@
 #ECF - this file contains additional configuration info.
 DEFINE = _TTFLIB_
 DEFINE = HAVE_FREETYPE_FREETYPE_H
+DEFINE = FT_DEBUG_LEVEL_ERROR
+DEFINE = FT_DEBUG_LEVEL_TRACE
 SOURCE = ttf.rc
+EXCLUDE = ftapi.c
+EXCLUDE = ftexcept.c
+EXCLUDE = ftgloadr.c
+EXCLUDE = fthash.c
+EXCLUDE = ftobject.c
+EXCLUDE = ftsynth.c
+EXCLUDE = ftsysio.c
+EXCLUDE = ftsysmem.c
+EXCLUDE = ftutil.c
+EXCLUDE = t1cmap.c
+EXCLUDE = ttcmap0.c
+EXCLUDE = bdfdrivr.c
+EXCLUDE = bdflib.c
+EXCLUDE = pfrcmap.c
+EXCLUDE = pfrdrivr.c
+EXCLUDE = pfrgload.c
+EXCLUDE = pfrload.c
+EXCLUDE = pfrobjs.c
+EXCLUDE = t42drivr.c
+EXCLUDE = t42objs.c
+EXCLUDE = t42parse.c
 # autohint
 EXCLUDE = ahangles.c
 EXCLUDE = ahglobal.c
