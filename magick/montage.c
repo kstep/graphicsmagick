@@ -518,7 +518,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   font_height=(unsigned int) (clone_info->affine[0]*annotate_info->pointsize+
     clone_info->affine[2]*annotate_info->pointsize);
   title=TranslateText(clone_info,image,montage_info->title);
-  FormatLabel(clone_info,title,0.5*tile_info.width+2*border_width*
+  FormatLabel(clone_info,title,tile_info.width/2+2*border_width*
     Min(number_images,tiles_per_column),&font_height);
   for (tile=0; tile < number_images; tile++)
   {
