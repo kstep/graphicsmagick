@@ -23,6 +23,21 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-07-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Added the Windows utility functions NTGhostscriptDLL(),
+    NTGhostscriptEXE(), and NTGhostscriptFonts(), to find the
+    DLL, executable, and font directory corresponding to the
+    newest Ghostscript install on the system.
+
+2002-07-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Split nt.c into ntbase.c and ntfeature.c
+  * Split nt.h into ntbase.h and ntfeature.h
+  * Invoke NTIsMagickConflict() under Cygwin to ensure that
+    drive letters in file specifications are not confused with
+    magick strings.
+  * Invoke NTGetTypeList() under Cygwin to read the list of
+    Windows fonts.
+
 2002-07-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Created Windows "setup.exe" style installation package for
     ImageMagick.
@@ -34,8 +49,9 @@ ImageMagick Changes</font></font></font></b></td>
     for ImageMagick.
 
 2002-07-17  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
-  * PPM files were being written in P4 or P5 format if all pixels were gray.
-    This is correct behavior for the PNM format but not for the PPM format.
+  * PPM files were being written in P4 or P5 format if all pixels
+    were gray.  This is correct behavior for the PNM format but not for
+    the PPM format.
 
 2002-07-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Load font information from Windows rather than depending on hand
@@ -102,8 +118,8 @@ ImageMagick Changes</font></font></font></b></td>
 
 2002-05-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * ImageMagick may now be built (static build only) using the
-    free MinGW development package from http://www.mingw.org.
-    Leonard's "clipboard" coder is included in the build.
+    free MinGW development package from http://www.mingw.org.  Leonard's
+    "clipboard" coder is included in the build.
 
 2002-05-28  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
   * Added new "clipboard" coder for reading/writing the system's
@@ -111,8 +127,8 @@ ImageMagick Changes</font></font></font></b></td>
     For example:  'convert logo: clipboard:', 'convert clipboard: foo.png'
 
 2002-05-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
-  * Support autotrace via delegates.mgk.
-    For example:  'convert autotrace:file.png file.mvg'
+  * Support autotrace via delegates.mgk.  For example:  'convert
+    autotrace:file.png file.mvg'
 
 2002-05-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Added progress monitor support to DrawImage().

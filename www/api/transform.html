@@ -189,7 +189,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="profileimage">ProfileImage</A></H2>
-<blockquote>ProfileImage() adds or removes a ICM, IPTC, or generic profile from an image. If the profile is NULL, it is removed from the image otherwise added. Use a name of ' *' and a profile of NULL to remove all profiles from the image. </blockquote><P>The format of the ProfileImage method is:</P>
+<blockquote>ProfileImage() adds or removes a ICM, IPTC, or generic profile from an image. If the profile is NULL, it is removed from the image otherwise added. Use a name of ' *' and a profile of NULL to remove all profiles from the image. Ownership of the profile is transferred to ImageMagick ( it should not be altered or deallocated ) unless the clone option is set to True. </blockquote><P>The format of the ProfileImage method is:</P>
 <blockquote>unsigned int ProfileImage ( <A HREF="types/Image.html">Image</A> *image, const char *name, const unsigned char *profile, const size_t length, unsigned int clone ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
@@ -210,6 +210,10 @@ The profile.
 <dd><p></p><dt><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
 <DD>
 The length of the profile.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_clone%3A">clone:</A></STRONG><BR>
+<DD>
+If set True, then copy the profile rather than taking ownership of it.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="rollimage">RollImage</A></H2>
