@@ -1654,6 +1654,8 @@ MagickExport int DrawRender(const DrawContext context)
   assert(context->signature == MagickSignature);
 
   CurrentContext->primitive = context->mvg;
+  if(CurrentContext->debug)
+    (void) fprintf(stdout,"MVG:\n'%s'\n",context->mvg);
   DrawImage(context->image, CurrentContext);
   CurrentContext->primitive = (char *) NULL;
 
@@ -2080,11 +2082,9 @@ MagickExport void DrawSetTextUnderColor(DrawContext context,
   if (context->filter_off || !(PixelPacketMatch(&CurrentContext->box, under_color)))
     {
       CurrentContext->box = *under_color;
-#if 0
-      MvgPrintf(context, "decorate ");
+      MvgPrintf(context, "text-undercolor ");
       MvgAppendColor(context, under_color);
       MvgPrintf(context, "\n");
-#endif
     }
 }
 
