@@ -560,7 +560,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  The Average() method takes a set of images and averages them together.
-%  Each image in the set must have the same width and height.  Average() 
+%  Each image in the set must have the same width and height.  Average()
 %  returns a single image with each corresponding pixel component of
 %  each image averaged.   On failure, a NULL image is returned and
 %  exception describes the reason for the failure.
@@ -3320,7 +3320,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);
-  for (i=1; i < argc; i++)
+  for (i=0; i < argc; i++)
     if (strlen(argv[i]) > (MaxTextExtent/2-1))
       MagickError(OptionWarning,"Option length exceeds limit",argv[i]);
   /*
@@ -3349,7 +3349,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   /*
     Transmogrify the image.
   */
-  for (i=1; i < argc; i++)
+  for (i=0; i < argc; i++)
   {
     option=argv[i];
     if ((strlen(option) <= 1) || ((*option != '-') && (*option != '+')))
@@ -5240,9 +5240,6 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   long
     y;
 
-  register const PixelPacket
-    *p;
-
   register long
     x;
 
@@ -5299,28 +5296,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       return(True);
     }
   x=0;
-  if (colorspace == GRAYColorspace)
-    {
-      /*
-        Return if the image is already grayscale.
-      */
-      for (y=0; y < (long) image->rows; y++)
-      {
-        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) image->columns; x++)
-        {
-          if ((p->red != p->green) || (p->green != p->blue))
-            break;
-          p++;
-        }
-        if (x < (long) image->columns)
-          break;
-      }
-      if ((x == (long) image->columns) && (y == (long) image->rows))
-        return(True);
-    }
+  if ((colorspace == GRAYColorspace) && IsGrayImage(image,&image->exception))
+    return(True);
   /*
     Allocate the tables.
   */
@@ -5993,92 +5970,109 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
   {
     case BilevelType:
     {
+      if ((image->colorspace == RGBColorspace) &&
+          (image->storage_class == PseudoClass) &&
+          IsMonochromeImage(image,&image->exception))
+        break;
       if (image->colorspace != RGBColorspace)
         (void) RGBTransformImage(image,RGBColorspace);
       GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=2;
-      quantize_info.tree_depth=8;
       quantize_info.colorspace=GRAYColorspace;
+      quantize_info.tree_depth=8;
+      quantize_info.number_colors=2;
       (void) QuantizeImage(&quantize_info,image);
       break;
     }
     case GrayscaleType:
     {
+      if ((image->colorspace == RGBColorspace) &&
+          (image->storage_class == PseudoClass) &&
+          IsGrayImage(image,&image->exception))
       if (image->colorspace != RGBColorspace)
         (void) RGBTransformImage(image,RGBColorspace);
       GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=256;
-      quantize_info.tree_depth=8;
       quantize_info.colorspace=GRAYColorspace;
+      quantize_info.tree_depth=8;
       (void) QuantizeImage(&quantize_info,image);
       break;
     }
     case GrayscaleMatteType:
     {
+      if ((image->colorspace == RGBColorspace) &&
+          (image->storage_class == PseudoClass) &&
+          IsGrayImage(image,&image->exception) && image->matte)
       if (image->colorspace != RGBColorspace)
         (void) RGBTransformImage(image,RGBColorspace);
       GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=256;
-      quantize_info.tree_depth=8;
       quantize_info.colorspace=GRAYColorspace;
+      quantize_info.tree_depth=8;
       (void) QuantizeImage(&quantize_info,image);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
-      image->matte=True;
       break;
     }
     case PaletteType:
     {
+      if ((image->colorspace == RGBColorspace) &&
+          (image->storage_class == PseudoClass))
+        break;
       if (image->colorspace != RGBColorspace)
         (void) RGBTransformImage(image,RGBColorspace);
       GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=256;
       (void) QuantizeImage(&quantize_info,image);
       break;
     }
     case PaletteMatteType:
     {
+      if ((image->colorspace == RGBColorspace) &&
+          (image->storage_class == PseudoClass) && image->matte)
+        break;
       if (image->colorspace != RGBColorspace)
         (void) RGBTransformImage(image,RGBColorspace);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
-      image->matte=True;
       GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=256;
       quantize_info.colorspace=TransparentColorspace;
       (void) QuantizeImage(&quantize_info,image);
       break;
     }
     case TrueColorType:
     {
-      image->storage_class=DirectClass;
+      if ((image->colorspace == RGBColorspace) &&
+          (image->storage_class == DirectClass))
+        break;
       if (image->colorspace != RGBColorspace)
         (void) RGBTransformImage(image,RGBColorspace);
+      image->storage_class=DirectClass;
       break;
     }
     case TrueColorMatteType:
     {
-      image->storage_class=DirectClass;
+      if ((image->colorspace == RGBColorspace) &&
+          (image->storage_class == DirectClass) && image->matte)
+        break;
       if (image->colorspace != RGBColorspace)
         (void) RGBTransformImage(image,RGBColorspace);
+      image->storage_class=DirectClass;
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
-      image->matte=True;
       break;
     }
     case ColorSeparationType:
     {
-      if (image->colorspace != CMYKColorspace)
-        (void) RGBTransformImage(image,CMYKColorspace);
+      if (image->colorspace == CMYKColorspace)
+        break;
+      (void) RGBTransformImage(image,CMYKColorspace);
       break;
     }
     case ColorSeparationMatteType:
     {
+      if ((image->colorspace == CMYKColorspace) && image->matte)
+        break;
       if (image->colorspace != CMYKColorspace)
         (void) RGBTransformImage(image,CMYKColorspace);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
-      image->matte=True;
       break;
     }
     default:

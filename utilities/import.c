@@ -374,7 +374,7 @@ int main(int argc,char **argv)
     if ((strlen(option) < 2) || ((*option != '-') && (*option != '+')))
       {
         filename=argv[i];
-        j=i+1;
+        j=i;
       }
     else
       switch(*(option+1))

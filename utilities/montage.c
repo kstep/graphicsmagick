@@ -1193,7 +1193,7 @@ int main(int argc,char **argv)
         /*
           Option is a file name: begin by reading image from specified file.
         */
-        j=i+1;
+        j=i;
         (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
         if (first_scene != last_scene)
           {

@@ -294,7 +294,7 @@ int main(int argc,char **argv)
         /*
           Read input images.
         */
-        j=i+1;
+        j=i;
         filename=argv[i];
         (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
         if (composite_image == (Image *) NULL)

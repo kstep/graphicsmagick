@@ -764,7 +764,8 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
 %
 %
 */
-MagickExport unsigned int IsGrayImage(const Image *image,ExceptionInfo *exception)
+MagickExport unsigned int IsGrayImage(const Image *image,
+  ExceptionInfo *exception)
 {
   long
     y;

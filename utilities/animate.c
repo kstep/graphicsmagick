@@ -985,7 +985,7 @@ int main(int argc,char **argv)
               p->next=next_image;
             }
         }
-        j=i+1;
+        j=i;
       }
   }
   if ((i != argc) || (image == (Image *) NULL))
