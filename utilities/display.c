@@ -1367,8 +1367,7 @@ int main(int argc,char **argv)
             */
             resource_info.quantum=1;
             status=MogrifyImage(image_info,i,argv,&image);
-            if (status == False)
-              CatchImageException(image);
+            CatchImageException(image);
             if (first_scene != last_scene)
               image->scene=scene;
             /*
@@ -1408,8 +1407,7 @@ int main(int argc,char **argv)
                       break;
                     }
                   status=MogrifyImage(image_info,i,argv,&nexus);
-                  if (status == False)
-                    CatchImageException(nexus);
+                  CatchImageException(nexus);
                   if (first_scene != last_scene)
                     image->scene=scene;
                   next=XDisplayImage(display,&resource_info,argv,argc,
@@ -1438,8 +1436,7 @@ int main(int argc,char **argv)
                   MaxTextExtent-1);
                 (void) SetImageInfo(image_info,True,&image->exception);
                 status=WriteImage(image_info,image);
-                if (status == False)
-                  CatchImageException(image);
+                CatchImageException(image);
               }
             if (image_info->verbose)
               DescribeImage(image,stderr,False);

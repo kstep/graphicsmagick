@@ -929,8 +929,7 @@ int main(int argc,char **argv)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   status=MogrifyImages(image_info,argc-j-1,argv+j,&image);
-  if (status == False)
-    CatchImageException(image);
+  CatchImageException(image);
   if (mask_image != (Image *) NULL)
     SetImageClipMask(image,mask_image);
   if (compose == DissolveCompositeOp)
@@ -987,8 +986,7 @@ int main(int argc,char **argv)
             for (x=0; x < (long) image->columns; x+=composite_image->columns)
             {
               status=CompositeImage(image,compose,composite_image,x,y);
-              if (status == False)
-                CatchImageException(image);
+              CatchImageException(image);
             }
           combine_image=image;
         }
@@ -1070,8 +1068,7 @@ int main(int argc,char **argv)
             }
           }
           status=CompositeImage(image,compose,composite_image,x,y);
-          if (status == False)
-            CatchImageException(image);
+          CatchImageException(image);
           combine_image=image;
         }
   if (combine_image == (Image *) NULL)
@@ -1083,8 +1080,7 @@ int main(int argc,char **argv)
   (void) strncpy(combine_image->filename,write_filename,MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,&combine_image->exception);
   status=WriteImage(image_info,combine_image);
-  if (status == False)
-    CatchImageException(combine_image);
+  CatchImageException(combine_image);
   if (image_info->verbose)
     DescribeImage(combine_image,stderr,False);
   attribute=GetImageAttribute(image,"ReceiveMode");

@@ -517,8 +517,7 @@ int main(int argc,char **argv)
         if (next_image == (Image *) NULL)
           continue;
         status=MogrifyImages(image_info,i,argv,&next_image);
-        if (status == False)
-          CatchImageException(next_image);
+        CatchImageException(next_image);
         if (image == (Image *) NULL)
           image=next_image;
         else
@@ -1930,8 +1929,7 @@ int main(int argc,char **argv)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   status=MogrifyImages(image_info,argc-j-1,argv+j,&image);
-  if (status == False)
-    CatchImageException(image);
+  CatchImageException(image);
   if (append != 0)
     {
       Image
@@ -2052,8 +2050,7 @@ int main(int argc,char **argv)
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     status=WriteImage(image_info,p);
-    if (status == False)
-      CatchImageException(p);
+    CatchImageException(p);
     if (image_info->adjoin)
       break;
   }

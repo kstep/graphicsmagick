@@ -927,8 +927,7 @@ int main(int argc,char **argv)
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     status=WriteImage(image_info,p);
-    if (status == False)
-      CatchImageException(p);
+    CatchImageException(p);
     if (image_info->adjoin)
       break;
   }

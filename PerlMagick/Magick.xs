@@ -4807,8 +4807,7 @@ Mogrify(ref,...)
                     status=CompositeImage(image,compose,rotate_image,x,y);
                   else
                     status=CompositeImage(image,compose,composite_image,x,y);
-                  if (status == False)
-                    CatchImageException(image);
+                  CatchImageException(image);
                 }
               if (attribute_flag[8])
                 DestroyImage(rotate_image);
@@ -5539,8 +5538,7 @@ Mogrify(ref,...)
           */
           status=CompositeImage(region_image,CopyCompositeOp,image,
             region_info.x,region_info.y);
-          if (status == False)
-            CatchImageException(region_image);
+          CatchImageException(region_image);
           image->orphan=True;
           DestroyImage(image);
           image=region_image;
@@ -7349,8 +7347,7 @@ Write(ref,...)
     for (next=image; next; next=next->next)
     {
       status=WriteImage(package_info->image_info,next);
-      if (status == False)
-        CatchImageException(next);
+      CatchImageException(next);
       number_images++;
       if (package_info->image_info->adjoin)
         break;
