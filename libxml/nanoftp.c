@@ -4,6 +4,7 @@
  *  Reference: RFC 959
  */
 
+#define INCLUDE_WINSOCK
 #ifdef TESTING
 #define STANDALONE
 #define HAVE_STDLIB_H
