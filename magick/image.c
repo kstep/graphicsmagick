@@ -2624,34 +2624,6 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 %
 %
 */
-
-static inline unsigned int FuzzyColorMatch(const PixelPacket *p,
-  const PixelPacket *q,const double fuzz)
-{
-  register double
-    blue,
-    distance,
-    green,
-    red;
-
-  if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
-      (p->blue == q->blue))
-    return(True);
-  red=(double) (p->red-q->red);
-  distance=red*red;
-  if (distance > (fuzz*fuzz))
-    return(False);
-  green=(double) (p->green-q->green);
-  distance+=green*green;
-  if (distance > (fuzz*fuzz))
-    return(False);
-  blue=(double) (p->blue-q->blue);
-  distance+=blue*blue;
-  if (distance > (fuzz*fuzz))
-    return(False);
-  return(True);
-}
-
 MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   ExceptionInfo *exception)
 {

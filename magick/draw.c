@@ -65,7 +65,8 @@
 */
 #define BezierQuantum  200
 #define MatteMatch(color,target,delta) \
-  (FuzzyColorMatch(color,target,delta) && ((color)->opacity == (target)->opacity))
+  (FuzzyColorMatch(color,target,delta) && \
+	 ((color)->opacity == (target)->opacity))
 #define MaxStacksize  (1 << 15)
 #define Push(up,left,right,delta) \
   if ((s < (segment_stack+MaxStacksize)) && (((up)+(delta)) >= 0) && \
@@ -311,33 +312,6 @@ static inline PixelPacket AlphaComposite(const PixelPacket *p,
     (((MaxRGB-alpha)*p->blue+alpha*(MaxRGB-beta)*q->blue/MaxRGB)/opacity+0.5);
   composite.opacity=(Quantum) (MaxRGB-opacity+0.5);
   return(composite);
-}
-
-static inline unsigned int FuzzyColorMatch(const PixelPacket *p,
-  const PixelPacket *q,const double fuzz)
-{
-  register double
-    blue,
-    distance,
-    green,
-    red;
-
-  if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
-      (p->blue == q->blue))
-    return(True);
-  red=(double) (p->red-q->red);
-  distance=red*red;
-  if (distance > (fuzz*fuzz))
-    return(False);
-  green=(double) (p->green-q->green);
-  distance+=green*green;
-  if (distance > (fuzz*fuzz))
-    return(False);
-  blue=(double) (p->blue-q->blue);
-  distance+=blue*blue;
-  if (distance > (fuzz*fuzz))
-    return(False);
-  return(True);
 }
 
 MagickExport unsigned int ColorFloodfillImage(Image *image,
