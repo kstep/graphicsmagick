@@ -5671,6 +5671,8 @@ Montage(ref,...)
               montage_info->border_width=SvIV(ST(i));
               break;
             }
+          MagickWarning(OptionWarning,"Invalid attribute",attribute);
+          break;
         }
         case 'C':
         case 'c':
@@ -5688,6 +5690,7 @@ Montage(ref,...)
               montage_info->compose=(CompositeOperator) sp;
               break;
             }
+          MagickWarning(OptionWarning,"Invalid attribute",attribute);
           break;
         }
         case 'F':
@@ -5719,6 +5722,7 @@ Montage(ref,...)
               (void) CloneString(&montage_info->font,SvPV(ST(i),na));
               break;
             }
+          MagickWarning(OptionWarning,"Invalid attribute",attribute);
           break;
         }
         case 'G':
@@ -5756,7 +5760,8 @@ Montage(ref,...)
              montage_info->gravity=(GravityType) in;
              break;
            }
-         break;
+          MagickWarning(OptionWarning,"Invalid attribute",attribute);
+          break;
         }
         case 'L':
         case 'l':
@@ -5767,6 +5772,7 @@ Montage(ref,...)
                 (void) SetImageAttribute(next,"Label",SvPV(ST(i),na));
               break;
             }
+          MagickWarning(OptionWarning,"Invalid attribute",attribute);
           break;
         }
         case 'M':
@@ -5817,6 +5823,7 @@ Montage(ref,...)
               }
               break;
             }
+          MagickWarning(OptionWarning,"Invalid attribute",attribute);
           break;
         }
         case 'P':
@@ -5827,6 +5834,7 @@ Montage(ref,...)
               montage_info->pointsize=SvIV(ST(i));
               break;
             }
+          MagickWarning(OptionWarning,"Invalid attribute",attribute);
           break;
         }
         case 'S':
@@ -5850,6 +5858,7 @@ Montage(ref,...)
               (void) QueryColorDatabase(SvPV(ST(i),na),&montage_info->stroke);
               break;
             }
+          MagickWarning(OptionWarning,"Invalid attribute",attribute);
           break;
         }
         case 'T':
@@ -5886,10 +5895,12 @@ Montage(ref,...)
                 TransparentImage(next,transparent_color,TransparentOpacity);
               break;
             }
+          MagickWarning(OptionWarning,"Invalid attribute",attribute);
           break;
         }
+        default:
+          MagickWarning(OptionWarning,"Invalid attribute",attribute);
       }
-      MagickWarning(OptionWarning,"Invalid attribute",attribute);
     }
     GetExceptionInfo(&exception);
     image=MontageImages(image,montage_info,&exception);
