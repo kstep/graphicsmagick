@@ -302,6 +302,8 @@ static void Usage()
     MagickWarning(exception.severity,exception.reason,exception.description);
   if (!ListDelegateInfo((FILE *) NULL,&exception))
     MagickWarning(exception.severity,exception.reason,exception.description);
+  if (!ListFontInfo((FILE *) NULL,&exception))
+    MagickWarning(exception.severity,exception.reason,exception.description);
   Exit(0);
 }
 

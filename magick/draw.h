@@ -29,25 +29,6 @@ typedef struct _EdgeInfo
     highwater;
 } EdgeInfo;
 
-typedef struct _FontInfo
-{  
-  char
-    *name,
-    *family,
-    *alias,
-    *description,
-    *format,
-    *weight,
-    *glyphs,
-    *metrics,
-    *version;
-
-  struct _FontInfo
-    *previous,
-    *next;
-} FontInfo;
-
-
 typedef struct _PolygonInfo
 {
   EdgeInfo
@@ -133,21 +114,6 @@ typedef struct _DrawInfo
     signature;
 } DrawInfo;
 
-typedef struct _FontMetric
-{
-  PointInfo
-    pixels_per_em;
-
-  int
-    ascent,
-    descent;
-
-  unsigned int
-    width,
-    height,
-    max_advance;
-} FontMetric;
-
 typedef struct _PrimitiveInfo
 {
   PointInfo
@@ -172,18 +138,11 @@ typedef struct _PrimitiveInfo
 extern MagickExport DrawInfo
   *CloneDrawInfo(const ImageInfo *,const DrawInfo *);
 
-extern MagickExport DrawInfo
-  *CloneDrawInfo(const ImageInfo *,const DrawInfo *);
-
-extern MagickExport FontInfo
-  *GetFontInfo(const char *,ExceptionInfo *);
-
 extern MagickExport unsigned int
   AnnotateImage(Image *,const DrawInfo *),
   ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const int x,
     const int y,const PaintMethod),
   DrawImage(Image *,const DrawInfo *),
-  GetFontMetrics(Image *,const DrawInfo *,FontMetric *),
   MatteFloodfillImage(Image *,const PixelPacket,const unsigned int,const int x,
     const int y,const PaintMethod);
 
