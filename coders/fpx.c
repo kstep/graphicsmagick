@@ -67,6 +67,44 @@
 static unsigned int
   WriteFPXImage(const ImageInfo *,Image *);
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s F P X                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsFPX returns True if the image format type, identified by the
+%  magick string, is FPX.
+%
+%  The format of the IsFPX method is:
+%
+%      unsigned int IsFPX(const unsigned char *magick,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsFPX returns True if the image format type is FPX.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+static unsigned int IsFPX(const unsigned char *magick,const size_t length)
+{
+  if (length < 4)
+    return(False);
+  if (memcmp(magick,"\320\317\021\340",4) == 0)
+    return(True);
+  return(False);
+}
+
 #if defined(HasFPX)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -492,6 +530,7 @@ ModuleExport void RegisterFPXImage(void)
   entry->decoder=ReadFPXImage;
   entry->encoder=WriteFPXImage;
   entry->adjoin=False;
+  entry->magick=IsFPX;
   entry->description=AcquireString("FlashPix Format");
   entry->module=AcquireString("FPX");
   (void) RegisterMagickInfo(entry);

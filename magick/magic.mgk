@@ -19,6 +19,7 @@
   <magic name="FIG" offset="0" target="#FIG" />
   <magic name="FITS" offset="0" target="IT0" />
   <magic name="FITS" offset="0" target="SIMPLE" />
+  <magic name="FPX" offset="0" target="\320\317\021\340" />
   <magic name="GIF" offset="0" target="GIF8" />
   <magic name="GPLT" offset="0" target="#!/usr/local/bin/gnuplot" />
   <magic name="HDF" offset="1" target="HDF" />
