@@ -300,7 +300,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((format != '3') && (format != '6'))
       {
         image->storage_class=PseudoClass;
-        image->colors=max_value > MaxRGB ? MaxRGB+1 : max_value+1;
+        image->colors=
+          max_value >= MaxColormapSize ? MaxColormapSize : max_value+1;
       }
     number_pixels=image->columns*image->rows;
     if (number_pixels == 0)
@@ -504,7 +505,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PGM raw image to pixel packets.
         */
-        packets=2*image->depth/8;
+        packets=image->depth/8;
         pixels=(unsigned char *) AcquireMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
