@@ -40,35 +40,44 @@ MICRO_VERSION=@MICRO_VERSION@
 INCLUDES = -I$(top_srcdir)
 
 libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
-
-# Library sources
-if WITH_MODULES
-libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
+MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
   cache.c cache_view.c colors.c compress.c decorate.c delegates.c display.c \
   draw.c effects.c enhance.c error.c gems.c gradation.c histogram.c html.c \
   image.c label.c magick.c map.c matte.c memory.c monitor.c montage.c \
   pixel_cache.c quantize.c segment.c shear.c signature.c stegano.c timer.c \
   transform.c ttf.c utility.c widget.c xwindows.c zoom.c
+MAGICK_CODER_SRCS=avs.c bim.c bmp.c cmyk.c dcm.c dps.c ept.c fax.c fits.c \
+  fpx.c gif.c gray.c hdf.c icc.c icon.c iptc.c jbig.c jpeg.c logo.c miff.c \
+  mono.c mtv.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c plasma.c \
+  pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c sfw.c \
+  sgi.c sun.c tga.c tiff.c tile.c tim.c txt.c uil.c uyvy.c vicar.c vid.c \
+  viff.c wbmp.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
+# Library sources
+if WITH_MODULES
+libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
 libMagick_la_LIBADD = @LIB_TIFF@ @LIB_JPEG@ @LIB_TTF@ @LIB_XEXT@ @LIB_XT@ \
   @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@ $(top_builddir)/ltdl/libltdlc.la
 else
-libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c attributes.c avs.c \
-  bim.c blob.c bmp.c cache.c cache_view.c cmyk.c colors.c compress.c dcm.c \
-  decorate.c delegates.c display.c dps.c draw.c effects.c enhance.c ept.c \
-  error.c fax.c fits.c fpx.c gems.c gif.c gradation.c gray.c hdf.c histogram.c \
-  html.c icc.c icon.c image.c iptc.c jbig.c jpeg.c label.c logo.c magick.c \
-  map.c matte.c memory.c miff.c monitor.c mono.c montage.c mtv.c pcd.c pcl.c \
-  pcx.c pdb.c pdf.c pict.c pix.c pixel_cache.c plasma.c png.c pnm.c preview.c \
-  ps.c ps2.c ps3.c psd.c pwp.c quantize.c rgb.c rla.c rle.c segment.c sct.c \
-  sfw.c sgi.c shear.c signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c \
-  timer.c transform.c ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c \
-  wbmp.c widget.c x.c xbm.c xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c
+libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_CODER_SRCS)
 libMagick_la_LIBADD = @LIB_TIFF@ @LIB_JPEG@ @LIB_TTF@ @LIB_XEXT@ @LIB_XT@ \
   @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@
 endif # WITH_MODULES
 
-# Source files not used for Unix library but which are distributed
-EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c
+# Binary scripts
+bin_SCRIPTS = Magick-config
+
+# Headers which are installed
+include_HEADERS = attributes.h magick.h api.h classify.h image.h quantize.h \
+	gems.h blob.h compress.h utility.h pixel_cache.h cache_view.h cache.h \
+	monitor.h error.h memory.h delegates.h timer.h version.h xwindows.h \
+	config.h PreRvIcccm.h widget.h
+
+# Headers which are not installed but which are distributed
+noinst_HEADERS = animate.h defines.h display.h mac.h mng.h nt.h vms.h
+
+# Additional files to distribute
+EXTRA_DIST = Imakefile Magick-config.in Make.com mac.c nt.c vms.c \
+  $(MAGICK_BASE_SRCS)
 
 #
 # Libtool Modules
@@ -399,21 +408,6 @@ xwd_la_LIBADD       = libMagick.la @LIB_X11@
 yuv_la_SOURCES      = yuv.c
 yuv_la_LDFLAGS      = -no-undefined -module -avoid-version
 yuv_la_LIBADD       = libMagick.la
-
-# Binary scripts
-bin_SCRIPTS = Magick-config
-
-# Headers which are installed
-include_HEADERS = attributes.h magick.h api.h classify.h image.h quantize.h \
-	gems.h blob.h compress.h utility.h pixel_cache.h cache_view.h cache.h \
-	monitor.h error.h memory.h delegates.h timer.h version.h xwindows.h \
-	config.h PreRvIcccm.h widget.h
-
-# Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h defines.h display.h mac.h mng.h nt.h vms.h
-
-# Additional files to distribute
-EXTRA_DIST = Imakefile Magick-config.in Make.com
 
 # Ensure that configuration header is not distributed
 dist-hook:
