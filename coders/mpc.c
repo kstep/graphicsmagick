@@ -351,7 +351,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     if (LocaleCompare("LZW",values) == 0)
                       compression=LZWCompression;
                     if (LocaleCompare("RLE",values) == 0)
-                      compression=RunlengthEncodedCompression;
+                      compression=RLECompression;
                     if (LocaleCompare("Zip",values) == 0)
                       compression=ZipCompression;
                     image->compression=compression;
@@ -1008,7 +1008,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,"compression=LZW\n");
         break;
       }
-      case RunlengthEncodedCompression:
+      case RLECompression:
       {
         (void) WriteBlobString(image,"compression=RLE\n");
         break;

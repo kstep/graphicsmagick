@@ -163,7 +163,7 @@ namespace Magick
   using MagickLib::Group4Compression;
   using MagickLib::JPEGCompression;
   using MagickLib::LZWCompression;
-  using MagickLib::RunlengthEncodedCompression;
+  using MagickLib::RLECompression;
   using MagickLib::ZipCompression;
 
   // Endian options

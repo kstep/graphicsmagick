@@ -756,7 +756,7 @@ int main(int argc,char **argv)
                 if (LocaleCompare("LZW",option) == 0)
                   image_info->compression=LZWCompression;
                 if (LocaleCompare("RLE",option) == 0)
-                  image_info->compression=RunlengthEncodedCompression;
+                  image_info->compression=RLECompression;
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)

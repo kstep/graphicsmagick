@@ -67,6 +67,7 @@ typedef unsigned int Quantum;
 */
 #define Downscale(quantum)  ScaleQuantumToChar(quantum)
 #define Intensity(color)  PixelIntensityToQuantum(color)
+#define RunlengthEncodedCompression RLECompression
 #define Upscale(value)  ScaleCharToQuantum(value)
 #define XDownscale(value)  ScaleShortToQuantum(value)
 #define XUpscale(quantum)  ScaleQuantumToShort(quantum)
@@ -269,7 +270,6 @@ typedef struct _Image
     compression;
 
   unsigned int
-    orphan,  /* deprecated */
     taint,
     matte;
 

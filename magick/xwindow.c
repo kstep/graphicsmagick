@@ -5060,7 +5060,6 @@ MagickExport unsigned int XMakeImage(Display *display,
           /*
             Resize image.
           */
-          window->image->orphan=True;
           if (window->pixel_info->colors != 0)
             resize_image=ResizeImage(window->image,width,height,PointFilter,
               1.0,&image->exception);

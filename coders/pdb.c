@@ -403,7 +403,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     case 1:
     {
-      image->compression=RunlengthEncodedCompression;
+      image->compression=RLECompression;
       (void) DecodeImage(image,pixels,packets);
       break;
     }

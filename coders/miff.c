@@ -380,7 +380,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       else
                         if ((LocaleCompare(values,"RLE") == 0) ||
                             (LocaleCompare(values,"RunlengthEncoded") == 0))
-                          image->compression=RunlengthEncodedCompression;
+                          image->compression=RLECompression;
                         else
                           image->compression=UndefinedCompression;
                     break;
@@ -800,7 +800,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       packet_size+=image->depth/8;
     if (image->matte)
       packet_size+=image->depth/8;
-    if (image->compression == RunlengthEncodedCompression)
+    if (image->compression == RLECompression)
       packet_size+=image->depth/8;
     pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
     compress_pixels=(unsigned char *)
@@ -908,9 +908,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           }
         else
 #endif
-          if (image->compression != RunlengthEncodedCompression)
+          if (image->compression != RLECompression)
             (void) ReadBlob(image,packet_size*image->columns,pixels);
-      if (image->compression != RunlengthEncodedCompression)
+      if (image->compression != RLECompression)
         (void) PushImagePixels(image,quantum_type,pixels);
       else
         {
@@ -1391,7 +1391,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       packet_size+=image->depth/8;
     if (image->matte)
       packet_size+=image->depth/8;
-    if (compression == RunlengthEncodedCompression)
+    if (compression == RLECompression)
       packet_size+=image->depth/8;
     length=packet_size*image->columns;
     pixels=(unsigned char *) AcquireMemory(length);
@@ -1420,7 +1420,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           image->matte ? "True" : "False");
     (void) WriteBlobString(image,buffer);
     *buffer='\0';
-    if (compression == RunlengthEncodedCompression)
+    if (compression == RLECompression)
       FormatString(buffer,"compression=RLE\n");
     else
       if (compression == BZipCompression)
@@ -1696,7 +1696,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         break;
       indexes=GetIndexes(image);
       q=pixels;
-      if (compression != RunlengthEncodedCompression)
+      if (compression != RLECompression)
         (void) PopImagePixels(image,quantum_type,pixels);
       else
         {
@@ -1805,7 +1805,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           }
         else
 #endif
-          if (compression == RunlengthEncodedCompression)
+          if (compression == RLECompression)
             (void) WriteBlob(image,q-pixels,pixels);
           else
             (void) WriteBlob(image,packet_size*image->columns,pixels);

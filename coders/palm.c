@@ -521,7 +521,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     {
     if (compressionType == PALM_COMPRESSION_RLE)
       {
-      image->compression = RunlengthEncodedCompression;
+      image->compression = RLECompression;
       for (i = 0; i < (long) bytes_per_row; )
         {
         count = ReadBlobByte(image);
@@ -748,7 +748,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   /* bytes per row - always a word boundary */
   bytes_per_row = ((image->columns + (16 / bpp - 1)) / (16 / bpp)) * 2;
   (void) WriteBlobMSBShort(image, bytes_per_row);
-  if(image->compression == RunlengthEncodedCompression
+  if(image->compression == RLECompression
       || image->compression == FaxCompression)
     flags |= PALM_IS_COMPRESSED_FLAG;
   if(bytes_per_row * image->rows > 48000 && flags & PALM_IS_COMPRESSED_FLAG)
@@ -757,13 +757,13 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobByte(image, bpp);
   if(bpp > 1)
     version = 1;
-  if(image->compression == RunlengthEncodedCompression
+  if(image->compression == RLECompression
       || image->compression == FaxCompression)
     version = 2;
   (void) WriteBlobByte(image,version);
   (void) WriteBlobMSBShort(image, 0);  /* offset */
   (void) WriteBlobByte(image,0);  /* trans index */
-  if(image->compression == RunlengthEncodedCompression)
+  if(image->compression == RLECompression)
     (void) WriteBlobByte(image, PALM_COMPRESSION_RLE);
   else
   if(image->compression == FaxCompression)
@@ -855,7 +855,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     if ((image->columns % (8 / bpp)) != 0) /* Handle case of partial byte */
       *ptr++ = byte;
 
-    if(image->compression == RunlengthEncodedCompression)
+    if(image->compression == RLECompression)
       {
       x = 0;
       while(x < (long) bytes_per_row)

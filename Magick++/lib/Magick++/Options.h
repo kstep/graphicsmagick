@@ -62,7 +62,7 @@ namespace Magick
     
     // Compression type ( NoCompression, BZipCompression,
     // FaxCompression, JPEGCompression, LZWCompression,
-    // RunlengthEncodedCompression, or ZipCompression )
+    // RLECompression, or ZipCompression )
     void            compressType ( CompressionType compressType_ );
     CompressionType compressType ( void ) const;
 

@@ -504,7 +504,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       case COMPRESSION_LZW: image->compression=LZWCompression; break;
       case COMPRESSION_DEFLATE: image->compression=ZipCompression; break;
       case COMPRESSION_ADOBE_DEFLATE: image->compression=ZipCompression; break;
-      default: image->compression=RunlengthEncodedCompression; break;
+      default: image->compression=RLECompression; break;
     }
     image->columns= width;
     image->rows= height;
@@ -1429,7 +1429,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         break;
       }
 #endif
-      case RunlengthEncodedCompression:
+      case RLECompression:
       {
         compress_tag=COMPRESSION_PACKBITS;
         break;
@@ -1525,7 +1525,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       case LZWCompression: compress_tag=COMPRESSION_LZW; break;
 #endif
 #ifdef PACKBITS_SUPPORT
-      case RunlengthEncodedCompression:
+      case RLECompression:
         compress_tag=COMPRESSION_PACKBITS; break;
 #endif
 #ifdef ZIP_SUPPORT

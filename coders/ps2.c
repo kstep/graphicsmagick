@@ -423,7 +423,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       "  %%   image columns & rows.",
       "  %%   class: 0-DirectClass or 1-PseudoClass.",
       "  %%   colorspace: 0-RGB or 1-CMYK.",
-      "  %%   compression: 0-RunlengthEncodedCompression or 1-NoCompression.",
+      "  %%   compression: 0-RLECompression or 1-NoCompression.",
       "  %%   hex color packets.",
       "  %%",
       "  gsave",
@@ -546,7 +546,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
 #if !defined(HasJPEG)
     case JPEGCompression:
     {
-      compression=RunlengthEncodedCompression;
+      compression=RLECompression;
       ThrowException(&image->exception,MissingDelegateError,
         "JPEG compression is not available",image->filename);
       break;
@@ -555,7 +555,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
 #if !defined(HasLZW)
     case LZWCompression:
     {
-      compression=RunlengthEncodedCompression;
+      compression=RLECompression;
       ThrowException(&image->exception,MissingDelegateError,
         "LZW compression is not available",image->filename);
       break;
@@ -564,7 +564,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
 #if !defined(HasZLIB)
     case ZipCompression:
     {
-      compression=RunlengthEncodedCompression;
+      compression=RLECompression;
       ThrowException(&image->exception,MissingDelegateError,
         "ZLIB compression is not available",image->filename);
       break;
@@ -799,7 +799,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             LiberateMemory((void **) &blob);
             break;
           }
-          case RunlengthEncodedCompression:
+          case RLECompression:
           default:
           {
             register unsigned char
@@ -906,7 +906,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               LiberateMemory((void **) &blob);
               break;
             }
-            case RunlengthEncodedCompression:
+            case RLECompression:
             default:
             {
               register unsigned char
@@ -1038,7 +1038,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           }
           switch (compression)
           {
-            case RunlengthEncodedCompression:
+            case RLECompression:
             default:
             {
               register unsigned char

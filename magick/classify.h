@@ -135,7 +135,7 @@ typedef enum
   JPEGCompression,
   LosslessJPEGCompression,
   LZWCompression,
-  RunlengthEncodedCompression,
+  RLECompression,
   ZipCompression
 } CompressionType;
 

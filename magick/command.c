@@ -567,7 +567,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("LZW",option) == 0)
                   image_info->compression=LZWCompression;
                 if (LocaleCompare("RLE",option) == 0)
-                  image_info->compression=RunlengthEncodedCompression;
+                  image_info->compression=RLECompression;
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
@@ -1657,7 +1657,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("LZW",option) == 0)
                   image_info->compression=LZWCompression;
                 if (LocaleCompare("RLE",option) == 0)
-                  image_info->compression=RunlengthEncodedCompression;
+                  image_info->compression=RLECompression;
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
@@ -3630,7 +3630,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("LZW",option) == 0)
                   image_info->compression=LZWCompression;
                 if (LocaleCompare("RLE",option) == 0)
-                  image_info->compression=RunlengthEncodedCompression;
+                  image_info->compression=RLECompression;
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
@@ -5093,7 +5093,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("LZW",option) == 0)
                   image_info->compression=LZWCompression;
                 if (LocaleCompare("RLE",option) == 0)
-                  image_info->compression=RunlengthEncodedCompression;
+                  image_info->compression=RLECompression;
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)

@@ -377,7 +377,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 #if !defined(HasJPEG)
     case JPEGCompression:
     {
-      compression=RunlengthEncodedCompression;
+      compression=RLECompression;
       ThrowException(&image->exception,MissingDelegateError,
         "JPEG compression is not available",image->filename);
       break;
@@ -386,7 +386,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 #if !defined(HasLZW)
     case LZWCompression:
     {
-      compression=RunlengthEncodedCompression;
+      compression=RLECompression;
       ThrowException(&image->exception,MissingDelegateError,
         "LZW compression is not available",image->filename);
       break;
@@ -395,7 +395,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 #if !defined(HasZLIB)
     case ZipCompression:
     {
-      compression=RunlengthEncodedCompression;
+      compression=RLECompression;
       ThrowException(&image->exception,MissingDelegateError,
         "ZLIB compression is not available",image->filename);
       break;
@@ -409,7 +409,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   do
   {
     if ((compression != NoCompression) &&
-        (compression != RunlengthEncodedCompression))
+        (compression != RLECompression))
       image->storage_class=DirectClass;
     if (compression == FaxCompression)
       SetImageType(image,BilevelType);
@@ -569,7 +569,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         LiberateMemory((void **) &blob);
         break;
       }
-      case RunlengthEncodedCompression:
+      case RLECompression:
       default:
       {
         register unsigned char

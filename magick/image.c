@@ -917,7 +917,6 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->storage_class=image->storage_class;
   clone_image->colorspace=image->colorspace;
   clone_image->compression=image->compression;
-  clone_image->orphan=image->orphan;
   clone_image->taint=image->taint;
   clone_image->matte=image->matte;
   clone_image->columns=image->columns;
@@ -1729,11 +1728,9 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     case FaxCompression: (void) fprintf(file,"Fax\n"); break;
     case Group4Compression: (void) fprintf(file,"Group 4\n"); break;
     case JPEGCompression: (void) fprintf(file,"JPEG\n"); break;
-    case LosslessJPEGCompression: (void) fprintf(file,"Lossless JPEG\n");
-         break;
+    case LosslessJPEGCompression: (void) fprintf(file,"Lossless JPEG\n"); break;
     case LZWCompression: (void) fprintf(file,"LZW\n"); break;
-    case RunlengthEncodedCompression:
-      (void) fprintf(file,"Runlength Encoded\n"); break;
+    case RLECompression: (void) fprintf(file,"Runlength Encoded\n"); break;
     case ZipCompression: (void) fprintf(file,"Zip\n"); break;
     default: (void) fprintf(file,"\n");  break;
   }
@@ -3318,7 +3315,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (LocaleCompare("LZW",option) == 0)
               compression=LZWCompression;
             if (LocaleCompare("RLE",option) == 0)
-              compression=RunlengthEncodedCompression;
+              compression=RLECompression;
             if (LocaleCompare("Zip",option) == 0)
               compression=ZipCompression;
             (*image)->compression=compression;
