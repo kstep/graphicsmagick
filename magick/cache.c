@@ -867,12 +867,12 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
   CacheInfo
     *cache_info;
 
+  char
+    null = 0;
+
   off_t
     length,
     number_pixels;
-
-  register int
-    y;
 
   void
     *allocation;
@@ -983,46 +983,10 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
       if (cache_info->file == -1)
         return(False);
     }
-  if (cache_info->storage_class == UndefinedClass)
-    {
-      allocation=AcquireMemory(cache_info->columns*sizeof(PixelPacket));
-      if (allocation != (void *) NULL)
-        {
-          /*
-            Preallocate pixels on disk.
-          */
-          memset(allocation,0,cache_info->columns*sizeof(PixelPacket));
-          for (y=0; y < cache_info->rows; y++)
-            (void) write(cache_info->file,(char *) allocation,
-              cache_info->columns*sizeof(PixelPacket));
-          LiberateMemory((void **) &allocation);
-        }
-    }
-  length=number_pixels*sizeof(PixelPacket);
   if (lseek(cache_info->file,length,SEEK_SET) == -1)
     return(False);
-  if (storage_class == PseudoClass)
-    {
-      if ((cache_info->storage_class == UndefinedClass) ||
-          (cache_info->storage_class == DirectClass))
-        {
-          allocation=AcquireMemory(cache_info->columns*sizeof(IndexPacket));
-          if (allocation != (void *) NULL)
-            {
-              /*
-                Preallocate indexes on disk.
-              */
-              memset(allocation,0,cache_info->columns*sizeof(IndexPacket));
-              for (y=0; y < cache_info->rows; y++)
-                (void) write(cache_info->file,(char *) allocation,
-                  cache_info->columns*sizeof(IndexPacket));
-              LiberateMemory((void **) &allocation);
-            }
-        }
-      length+=number_pixels*sizeof(IndexPacket);
-      if (lseek(cache_info->file,length,SEEK_SET) == -1)
-        return(False);
-    }
+  if (write(cache_info->file,&null,sizeof(null)) == -1)
+    return(False);
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
   (void) ftruncate(cache_info->file,length);
 #endif
