@@ -206,7 +206,7 @@ Magick::DrawableColor::DrawableColor ( double x_, double y_,
 }
 
 // Decoration (text decoration)
-Magick::DrawableDecoration::DrawableDecoration ( DecorationType decoration_ )
+Magick::DrawableDecoration::DrawableDecoration ( Magick::DecorationType decoration_ )
 {
   char buffer[MaxTextExtent + 1];
   ostrstream buffstr( buffer, sizeof(buffer));
@@ -289,7 +289,7 @@ Magick::DrawableFont::DrawableFont ( const std::string &font_ )
 }
 
 // Specify text positioning gravity
-Magick::DrawableGravity::DrawableGravity ( GravityType gravity_ )
+Magick::DrawableGravity::DrawableGravity ( Magick::GravityType gravity_ )
 {
   char buffer[MaxTextExtent + 1];
   ostrstream buffstr( buffer, sizeof(buffer));
