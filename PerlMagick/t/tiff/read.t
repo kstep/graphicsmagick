@@ -101,7 +101,8 @@ testRead( 'input_gray_8bit.tiff',
 print("Grayscale (12-bit) ...\n");
 testRead( 'input_gray_12bit.tiff',
   'c644742ce63461958e441f0f7e5fae596bb5381b2c5d41f6c524b3f68f5d0d97',
-  'd401344f52d6e85f63aa98467fef7c5c1408905322b56fed20aa982417537d36');
+  'd401344f52d6e85f63aa98467fef7c5c1408905322b56fed20aa982417537d36',
+  '43e45a7fa6ac0166e689eefde058354a23cc2cf5d80c985ace279391bdb1b64c');
 
 #
 # 11) Test Reading Grayscale 16-bit

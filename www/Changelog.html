@@ -56,6 +56,13 @@
 2003-04-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> PerlMagick/t/tiff/read.t: Added signature for 12-bit
+        TIFF test and a Q:32 build.<BR>
+  <LI> PerlMagick/t/subroutines.pl: Extended routines
+        which are signature based to accept signatures for
+        Q:32 as well.<BR>
+  <LI> PerlMagick/t/wmf/read.t: Relax error values slightly
+        to pass at Q:32.<BR>
   <LI> coders/miff.c (PushImageRLEPixels): Fix reading
         RLE MIFF at Q:32.  A fragment of old code was being
         used to obtain the length.<BR>
