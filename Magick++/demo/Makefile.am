@@ -24,8 +24,9 @@ EXTRA_DIST = Generic.ttf model.miff smile.miff smile_anim.miff tile.miff
 
 CLEANFILES = *_out.miff
 
-FILTERS = point box triangle hermite hanning hamming blackman gaussian \
-	quadratic cubic catrom mitchell lanczos bessel sinc
+ZOOM_FILTERS = point box triangle hermite hanning hamming blackman gaussian \
+	       quadratic cubic catrom mitchell lanczos bessel sinc
+ZOOM_GEOMETRY = 600x600
 
 check:
 	env srcdir=$(srcdir) ./button
@@ -34,8 +35,8 @@ check:
 	env srcdir=$(srcdir) ./gravity
 	env srcdir=$(srcdir) ./piddle
 	env srcdir=$(srcdir) ./shapes
-	for filter in $(FILTERS) ; do  \
+	for filter in $(ZOOM_FILTERS) ; do  \
 	  echo "$$filter ..." ; \
-	  env srcdir=$(srcdir) ./zoom $$filter 600x600 $(srcdir)/model.miff zoom_$$filter_out.miff ; \
+	  env srcdir=$(srcdir) ./zoom $$filter $(ZOOM_GEOMETRY) $(srcdir)/model.miff zoom_$$filter_out.miff ; \
 	done
 
