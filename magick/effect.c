@@ -2706,10 +2706,14 @@ MagickExport Image *ShadeImage(const Image *image,
       /*
         Determine the surface normal and compute shading.
       */
-      normal.x=ScaleIntensityToQuantum(s0-1)+ScaleIntensityToQuantum(s1-1)+ScaleIntensityToQuantum(s2-1)-
-        (long) ScaleIntensityToQuantum(s0+1)-(long) ScaleIntensityToQuantum(s1+1)-(long) ScaleIntensityToQuantum(s2+1);
-      normal.y=ScaleIntensityToQuantum(s2-1)+ScaleIntensityToQuantum(s2)+ScaleIntensityToQuantum(s2+1)-
-        (long) ScaleIntensityToQuantum(s0-1)-(long) ScaleIntensityToQuantum(s0)-(long) ScaleIntensityToQuantum(s0+1);
+      normal.x=ScaleIntensityToQuantum(s0-1)+ScaleIntensityToQuantum(s1-1)+
+        ScaleIntensityToQuantum(s2-1)-(long) ScaleIntensityToQuantum(s0+1)-
+        (long) ScaleIntensityToQuantum(s1+1)-
+        (long) ScaleIntensityToQuantum(s2+1);
+      normal.y=ScaleIntensityToQuantum(s2-1)+ScaleIntensityToQuantum(s2)+
+        ScaleIntensityToQuantum(s2+1)-(long) ScaleIntensityToQuantum(s0-1)-
+        (long) ScaleIntensityToQuantum(s0)-
+        (long) ScaleIntensityToQuantum(s0+1);
       if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else
