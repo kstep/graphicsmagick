@@ -116,6 +116,7 @@
 %    -roll geometry       roll an image vertically or horizontally
 %    -rotate degrees      apply Paeth rotation to the image
 %    -sample geometry     scale image with pixel sampling
+%    -scale geometry      resize image
 %    -scene value         image scene number
 %    -seed value          pseudo-random number generator seed value
 %    -segment values      segment an image
@@ -241,6 +242,7 @@ static void Usage(const char *client_name)
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sample geometry     scale image with pixel sampling",
+      "-scale geometry      resize image",
       "-scene number        image scene number",
       "-seed value          pseudo-random number generator seed value",
       "-segment values      segment an image",
@@ -1146,6 +1148,16 @@ int main(int argc,char **argv)
         case 's':
         {
           if (strncmp("sample",option+1,2) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !IsGeometry(argv[i]))
+                    MagickError(OptionError,"Missing geometry",option);
+                }
+              break;
+            }
+          if (strncmp("scale",option+1,3) == 0)
             {
               if (*option == '-')
                 {
