@@ -19,14 +19,14 @@ struct win32_mutex {
 
 // This is a binary semphore -- increase for a counting semaphore
 #define MAXSEMLEN	1
-#endif
-#endif
+#endif // defined(_MT)
+#endif // defined(_VISUALC_)
 
 #include "Magick++/Include.h"
 
 #if defined(HasPTHREADS)
 # include <pthread.h>
-#endif
+#endif // defined(HasPTHREADS)
 
 namespace Magick
 {

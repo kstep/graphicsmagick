@@ -8,7 +8,6 @@
 #define MAGICK_IMPLEMENTATION
 
 #include <string>
-#include <cstdarg>
 #include <iostream>
 #include <strstream>
 

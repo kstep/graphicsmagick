@@ -294,6 +294,46 @@ inline void Magick::Color::initPixel()
   _pixel->opacity = Transparent;
 }
 
+inline void Magick::Color::redQuantum ( Quantum red_ )
+{
+  _pixel->red = (Quantum) (red_ > MaxRGB ? MaxRGB : red_);
+}
+
+inline Magick::Quantum Magick::Color::redQuantum ( void ) const
+{
+  return _pixel->red;
+}
+
+inline void Magick::Color::greenQuantum ( Quantum green_ )
+{
+  _pixel->green = (Quantum) (green_ > MaxRGB ? MaxRGB : green_);
+}
+
+inline Magick::Quantum  Magick::Color::greenQuantum ( void ) const
+{
+  return _pixel->green;
+}
+
+inline void  Magick::Color::blueQuantum ( Quantum blue_ )
+{
+  _pixel->blue = (Quantum) (blue_ > MaxRGB ? MaxRGB : blue_);
+}
+
+inline Magick::Quantum Magick::Color::blueQuantum ( void ) const
+{
+  return _pixel->blue;
+}
+
+inline void  Magick::Color::alphaQuantum ( Quantum alpha_ )
+{
+  _pixel->opacity = (Quantum) (alpha_ > Opaque ? Opaque : alpha_);
+}
+
+inline Magick::Quantum Magick::Color::alphaQuantum ( void ) const
+{
+  return _pixel->opacity;
+}
+
 inline Magick::Color::Color ( Quantum red_,
 			      Quantum green_,
 			      Quantum blue_ )
@@ -361,45 +401,6 @@ inline Magick::Color::~Color( void )
     delete _pixel;
 }
 
-inline void Magick::Color::redQuantum ( Quantum red_ )
-{
-  _pixel->red = (Quantum) (red_ > MaxRGB ? MaxRGB : red_);
-}
-
-inline Magick::Quantum Magick::Color::redQuantum ( void ) const
-{
-  return _pixel->red;
-}
-
-inline void Magick::Color::greenQuantum ( Quantum green_ )
-{
-  _pixel->green = (Quantum) (green_ > MaxRGB ? MaxRGB : green_);
-}
-
-inline Magick::Quantum  Magick::Color::greenQuantum ( void ) const
-{
-  return _pixel->green;
-}
-
-inline void  Magick::Color::blueQuantum ( Quantum blue_ )
-{
-  _pixel->blue = (Quantum) (blue_ > MaxRGB ? MaxRGB : blue_);
-}
-
-inline Magick::Quantum Magick::Color::blueQuantum ( void ) const
-{
-  return _pixel->blue;
-}
-
-inline void  Magick::Color::alphaQuantum ( Quantum alpha_ )
-{
-  _pixel->opacity = (Quantum) (alpha_ > Opaque ? Opaque : alpha_);
-}
-
-inline Magick::Quantum Magick::Color::alphaQuantum ( void ) const
-{
-  return _pixel->opacity;
-}
 
 // Scaled version of alpha for use in sub-classes
 inline void  Magick::Color::alpha ( double alpha_ )

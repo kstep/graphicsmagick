@@ -7,8 +7,8 @@
 
 #define MAGICK_IMPLEMENTATION
 
-#include "Magick++/Thread.h"
 #include "Magick++/Exception.h"
+#include "Magick++/Thread.h"
 
 // Default constructor
 Magick::MutexLock::MutexLock(void)
