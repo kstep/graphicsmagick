@@ -1908,14 +1908,6 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
 {
 #define ShadeImageText  "  Shading image...  "
 
-   typedef struct _VectorPacket
-   {
-     int
-       x,
-       y,
-       z;
-   } VectorPacket;
-
   double
     distance,
     normal_distance,
@@ -1930,6 +1922,10 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
   int
     y;
 
+  PointInfo
+    light,
+    normal;
+
   register int
     i,
     x;
@@ -1940,10 +1936,6 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
     *s1,
     *s2,
     *q;
-
-  VectorPacket
-    light,
-    normal;
 
   /*
     Initialize shaded image attributes.
@@ -1977,9 +1969,9 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
         }
       for (i=0; i < (int) shade_image->colors; i++)
       {
-        shade_image->colormap[i].red=(Quantum) i;
-        shade_image->colormap[i].green=(Quantum) i;
-        shade_image->colormap[i].blue=(Quantum) i;
+        shade_image->colormap[i].red=i;
+        shade_image->colormap[i].green=i;
+        shade_image->colormap[i].blue=i;
       }
     }
   /*
@@ -2033,9 +2025,9 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
         }
       if (shade_image->class == DirectClass)
         {
-          q->red=(s1->red*shade)/(MaxRGB+1);
-          q->green=(s1->green*shade)/(MaxRGB+1);
-          q->blue=(s1->blue*shade)/(MaxRGB+1);
+          q->red=(shade*s1->red)/(MaxRGB+1);
+          q->green=(shade*s1->green)/(MaxRGB+1);
+          q->blue=(shade*s1->blue)/(MaxRGB+1);
           q->opacity=s1->opacity;
         }
       else
