@@ -376,7 +376,7 @@ jpeg_la_LIBADD = ../magick/libMagick.la @LIB_JPEG@
 # JPEG 2000 module
 jp2_la_SOURCES = jp2.c
 jp2_la_LDFLAGS = -no-undefined -module -avoid-version
-jp2_la_LIBADD = ../magick/libMagick.la @LIB_JP2@
+jp2_la_LIBADD = ../magick/libMagick.la @LIB_JP2@ $(LIB_MATH)
 
 # LABEL module
 label_la_SOURCES = label.c
@@ -466,7 +466,7 @@ pix_la_LIBADD = ../magick/libMagick.la
 # PNG module
 png_la_SOURCES = png.c
 png_la_LDFLAGS = -no-undefined -module -avoid-version
-png_la_LIBADD = ../magick/libMagick.la @LIB_PNG@ @LIB_ZLIB@
+png_la_LIBADD = ../magick/libMagick.la @LIB_PNG@ @LIB_ZLIB@ $(LIB_MATH)
 
 # PLASMA module
 plasma_la_SOURCES = plasma.c
@@ -551,7 +551,7 @@ sun_la_LIBADD = ../magick/libMagick.la
 # SVG module
 svg_la_SOURCES = svg.c
 svg_la_LDFLAGS = -no-undefined -module -avoid-version
-svg_la_LIBADD = ../magick/libMagick.la @LIB_XML@ @LIB_ZLIB@ $(LIB_MATH)
+svg_la_LIBADD = ../magick/libMagick.la @LIB_XML@ @LIB_ZLIB@ @LIB_X11@ $(LIB_MATH)
 
 # TGA module
 tga_la_SOURCES = tga.c
@@ -588,10 +588,10 @@ uil_la_SOURCES = uil.c
 uil_la_LDFLAGS = -no-undefined -module -avoid-version
 uil_la_LIBADD = ../magick/libMagick.la
 
-# SVG module
+# URL module
 url_la_SOURCES = url.c
 url_la_LDFLAGS = -no-undefined -module -avoid-version
-url_la_LIBADD = ../magick/libMagick.la @LIB_XML@ @LIB_ZLIB@
+url_la_LIBADD = ../magick/libMagick.la @LIB_XML@ @LIB_ZLIB@ @LIB_X11@ $(LIB_MATH)
 
 # UYVY module
 uyvy_la_SOURCES = uyvy.c
