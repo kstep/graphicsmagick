@@ -566,7 +566,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       *image->filename='\0';
       clone_info->blob->extent=Max(*length,image->blob->quantum);
       clone_info->blob->data=(unsigned char *)
-        AcquireMemory(clone_info->blob->extent);
+        AcquireMemory(clone_info->blob->extent+1);
       if (clone_info->blob->data == (unsigned char *) NULL)
         {
           DestroyImageInfo(clone_info);
@@ -623,7 +623,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       return((void *) NULL);
     }
   *length=fstat(file,&attributes) < 0 ? 0 : attributes.st_size;
-  blob=(unsigned char *) AcquireMemory(*length);
+  blob=(unsigned char *) AcquireMemory(*length+1);
   if (blob == (unsigned char *) NULL)
     {
       (void) remove(image->filename);
@@ -1539,12 +1539,12 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
       break;
     }
   }
-  if (image->blob->offset <= image->blob->length)
+  if (image->blob->offset < image->blob->length)
     image->blob->eof=False;
   else
     {
       image->blob->length=image->blob->offset;
-      ReacquireMemory((void **) &image->blob->data,image->blob->length);
+      ReacquireMemory((void **) &image->blob->data,image->blob->length+1);
       if (image->blob->data == (unsigned char *) NULL)
         {
           image->blob->length=0;
@@ -1792,7 +1792,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
   if (length > (image->blob->extent-image->blob->offset))
     {
       image->blob->extent+=length+image->blob->quantum;
-      ReacquireMemory((void **) &image->blob->data,image->blob->extent);
+      ReacquireMemory((void **) &image->blob->data,image->blob->extent+1);
       if (image->blob->data == (unsigned char *) NULL)
         {
           image->blob->extent=0;

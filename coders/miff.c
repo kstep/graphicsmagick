@@ -959,6 +959,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         DestroyImages(image);
         return((Image *) NULL);
       }
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */
