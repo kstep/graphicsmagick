@@ -269,13 +269,21 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
   handle=lt_dlopen(module_name);
   if (handle == (ModuleHandle) NULL)
     {
-      char
-        message[MaxTextExtent];
+      /* if we can not find it using the simple naming then try
+         the more complex naming of the modules */
+      module_name=TagToModule(tag);
+      handle=lt_dlopen(module_name);
+      if (handle == (ModuleHandle) NULL)
+        {
+          char
+            message[MaxTextExtent];
 
-      FormatString(message,"failed to load module \"%.1024s\"",module_name);
-      MagickWarning(MissingDelegateWarning,message,lt_dlerror());
-      LiberateMemory((void **) &module_name);
-      return(status);
+          FormatString(message,"failed to load module \"%.1024s\"",
+            module_name);
+          MagickWarning(MissingDelegateWarning,message,lt_dlerror());
+          LiberateMemory((void **) &module_name);
+          return(status);
+        }
     }
   (void) strncpy(module_name,tag,MaxTextExtent-1);
   (void) strcat(module_name,"Image");
