@@ -1956,6 +1956,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           break;
       }
     }
+#ifdef BROKEN_SIZE_OPTION
   if (LocaleCompare((char *) name,"svg") == 0)
     {
       if (svg_info->document->encoding != (const xmlChar *) NULL)
@@ -1996,6 +1997,69 @@ static void SVGStartElement(void *context,const xmlChar *name,
             -sx*svg_info->view_box.x,-sy*svg_info->view_box.y);
         }
     }
+#else
+  if (LocaleCompare((char *) name,"svg") == 0)
+    {
+      if (svg_info->document->encoding != (const xmlChar *) NULL)
+        (void) fprintf(svg_info->file,"encoding %.1024s\n",
+          (char *) svg_info->document->encoding);
+      if (attributes != (const xmlChar **) NULL)
+        {
+          char
+            *geometry,
+            *p;
+
+          RectangleInfo
+            page;
+
+          double
+            sx,
+            sy;
+
+          if ((svg_info->view_box.width == 0.0) ||
+              (svg_info->view_box.height == 0.0))
+            svg_info->view_box=svg_info->bounds;
+          SetGeometry(svg_info->image,&page);
+          page.width=(unsigned long) svg_info->bounds.width;
+          page.height=(unsigned long) svg_info->bounds.height;
+          geometry=(char *) NULL;
+          /* at one point we use to try to use either page geometry
+             or size to set the dimensions of the output page, but
+             now we only look for size
+           */
+#ifdef PARSE_PAGE_FIRST
+          if (svg_info->page != (char *) NULL)
+            geometry=GetPageGeometry(svg_info->page);
+          else
+#endif
+            if (svg_info->size != (char *) NULL)
+              geometry=GetPageGeometry(svg_info->size);
+          if (geometry != (char *) NULL)
+            {
+              p=strchr(geometry,'>');
+              if (p != (char *) NULL)
+                *p='\0';
+              (void) GetMagickGeometry(geometry,&page.x,&page.y,
+                &page.width,&page.height);
+              LiberateMemory((void **) &geometry);
+            }
+          if (svg_info->affine.sx != 1.0)
+            page.width=(unsigned long)
+              ceil(ExpandAffine(&svg_info->affine)*page.width-0.5);
+          if (svg_info->affine.sy != 0.0)
+            page.height=(unsigned long)
+              ceil(ExpandAffine(&svg_info->affine)*page.height-0.5);
+          (void) MVGPrintf(svg_info->file,"viewbox 0 0 %g %g\n",
+            svg_info->view_box.width,svg_info->view_box.height);
+          sx=(double) page.width/svg_info->view_box.width;
+          sy=(double) page.height/svg_info->view_box.height;
+          MVGPrintf(svg_info->file,"affine %g 0 0 %g %g %g\n",sx,sy,
+            -sx*svg_info->view_box.x,-sy*svg_info->view_box.y);
+          svg_info->width=page.width;
+          svg_info->height=page.height;
+        }
+    }
+#endif
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  )");
   LiberateMemory((void **) &units);
   if (color != (char *) NULL)
