@@ -209,21 +209,21 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   */
   matte=image->matte_color;
   accentuate.red=(Quantum) ((unsigned long) (matte.red*(MaxRGB-
-    AccentuateModulate)+MaxRGB*AccentuateModulate)/MaxRGB);
+    AccentuateModulate)+(double) MaxRGB*AccentuateModulate)/MaxRGB);
   accentuate.green=(Quantum) ((unsigned long) (matte.green*(MaxRGB-
-    AccentuateModulate)+MaxRGB*AccentuateModulate)/MaxRGB);
+    AccentuateModulate)+(double) MaxRGB*AccentuateModulate)/MaxRGB);
   accentuate.blue=(Quantum) ((unsigned long) (matte.blue*(MaxRGB-
-    AccentuateModulate)+MaxRGB*AccentuateModulate)/MaxRGB);
+    AccentuateModulate)+(double) MaxRGB*AccentuateModulate)/MaxRGB);
   accentuate.opacity=(Quantum) ((unsigned long) (matte.opacity*(MaxRGB-
-    AccentuateModulate)+MaxRGB*AccentuateModulate)/MaxRGB);
+    AccentuateModulate)+(double) MaxRGB*AccentuateModulate)/MaxRGB);
   highlight.red=(Quantum) ((unsigned long) (matte.red*(MaxRGB-
-    HighlightModulate)+MaxRGB*HighlightModulate)/MaxRGB);
+    HighlightModulate)+(double) MaxRGB*HighlightModulate)/MaxRGB);
   highlight.green=(Quantum) ((unsigned long) (matte.green*(MaxRGB-
-    HighlightModulate)+MaxRGB*HighlightModulate)/MaxRGB);
+    HighlightModulate)+(double) MaxRGB*HighlightModulate)/MaxRGB);
   highlight.blue=(Quantum) ((unsigned long) (matte.blue*(MaxRGB-
-    HighlightModulate)+MaxRGB*HighlightModulate)/MaxRGB);
+    HighlightModulate)+(double) MaxRGB*HighlightModulate)/MaxRGB);
   highlight.opacity=(Quantum) ((unsigned long) (matte.opacity*(MaxRGB-
-    HighlightModulate)+MaxRGB*HighlightModulate)/MaxRGB);
+    HighlightModulate)+(double) MaxRGB*HighlightModulate)/MaxRGB);
   shadow.red=(Quantum) ((unsigned long) (matte.red*ShadowModulate)/MaxRGB);
   shadow.green=(Quantum) ((unsigned long) (matte.green*ShadowModulate)/MaxRGB);
   shadow.blue=(Quantum) ((unsigned long) (matte.blue*ShadowModulate)/MaxRGB);

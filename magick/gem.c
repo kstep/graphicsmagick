@@ -326,7 +326,7 @@ MagickExport int GetOptimalKernelWidth1D(const double radius,const double sigma)
       normalize+=exp(-(double) (u*u)/(2.0*sigma*sigma));
     u=width/2;
     value=exp(-(double) (u*u)/(2.0*sigma*sigma))/normalize;
-    if ((long) (MaxRGB*value) <= 0)
+    if (((double) MaxRGB*value) <= 0.0)
       break;
     width+=2;
   }
@@ -358,7 +358,7 @@ MagickExport int GetOptimalKernelWidth2D(const double radius,const double sigma)
     }
     v=width/2;
     value=exp(-(double) (v*v)/(sigma*sigma))/normalize;
-    if ((long) (MaxRGB*value) <= 0)
+    if (((double) MaxRGB*value) <= 0.0)
       break;
     width+=2;
   }
@@ -420,9 +420,9 @@ MagickExport void HSLTransform(const double hue,const double saturation,
     (luminosity+saturation-luminosity*saturation);
   if (saturation == 0.0)
     {
-      *red=(Quantum) (MaxRGB*luminosity+0.5);
-      *green=(Quantum) (MaxRGB*luminosity+0.5);
-      *blue=(Quantum) (MaxRGB*luminosity+0.5);
+      *red=(Quantum) ((double) MaxRGB*luminosity+0.5);
+      *green=(Quantum) ((double) MaxRGB*luminosity+0.5);
+      *blue=(Quantum) ((double) MaxRGB*luminosity+0.5);
       return;
     }
   y=2.0*luminosity-v;
@@ -438,9 +438,9 @@ MagickExport void HSLTransform(const double hue,const double saturation,
     case 5: r=v; g=y; b=z; break;
     default: r=v; g=x; b=y; break;
   }
-  *red=(Quantum) (MaxRGB*r+0.5);
-  *green=(Quantum) (MaxRGB*g+0.5);
-  *blue=(Quantum) (MaxRGB*b+0.5);
+  *red=(Quantum) ((double) MaxRGB*r+0.5);
+  *green=(Quantum) ((double) MaxRGB*g+0.5);
+  *blue=(Quantum) (MaxRGB(double) *b+0.5);
 }
 
 /*
@@ -494,9 +494,9 @@ MagickExport void HWBTransform(const double hue,const double whiteness,
   v=1.0-blackness;
   if (hue == 0.0)
     {
-      *red=(Quantum) (MaxRGB*v+0.5);
-      *green=(Quantum) (MaxRGB*v+0.5);
-      *blue=(Quantum) (MaxRGB*v+0.5);
+      *red=(Quantum) ((double) MaxRGB*v+0.5);
+      *green=(Quantum) ((double) MaxRGB*v+0.5);
+      *blue=(Quantum) ((double) MaxRGB*v+0.5);
       return;
     }
   i=(long) floor(hue);
@@ -515,9 +515,9 @@ MagickExport void HWBTransform(const double hue,const double whiteness,
     case 4: r=n; g=whiteness; b=v; break;
     case 5: r=v; g=whiteness; b=n; break;
   }
-  *red=(Quantum) (MaxRGB*r+0.5);
-  *green=(Quantum) (MaxRGB*g+0.5);
-  *blue=(Quantum) (MaxRGB*b+0.5);
+  *red=(Quantum) ((double) MaxRGB*r+0.5);
+  *green=(Quantum) ((double) MaxRGB*g+0.5);
+  *blue=(Quantum) ((double) MaxRGB*b+0.5);
 }
 
 /*

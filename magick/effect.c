@@ -384,7 +384,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 
       last_kernel=(double *) NULL;
       width=GetBlurKernel(3,sigma,&kernel);
-      while ((long) (MaxRGB*kernel[0]) > 0)
+      while ((long) ((double) MaxRGB*kernel[0]) > 0)
       {
         if (last_kernel != (double *)NULL)
           LiberateMemory((void **) &last_kernel);
@@ -2035,7 +2035,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 
       last_kernel=(double *) NULL;
       width=GetMotionBlurKernel(3,sigma,&kernel);
-      while ((long) (MaxRGB*kernel[width-1]) > 0)
+      while (((double) MaxRGB*kernel[width-1]) > 0.0)
       {
         if (last_kernel != (double *)NULL)
           LiberateMemory((void **) &last_kernel);
@@ -3532,22 +3532,22 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
     for (x=0; x < (long) image->columns; x++)
     {
       red=p->red-(double) q->red;
-      if (AbsoluteValue(2.0*red) < (MaxRGB*threshold))
+      if (AbsoluteValue(2.0*red) < ((double) MaxRGB*threshold))
         red=p->red;
       else
         red=p->red+(red*amount);
       green=p->green-(double) q->green;
-      if (AbsoluteValue(2.0*green) < (MaxRGB*threshold))
+      if (AbsoluteValue(2.0*green) < ((double) MaxRGB*threshold))
         green=p->green;
       else
         green=p->green+(green*amount);
       blue=p->blue-(double) q->blue;
-      if (AbsoluteValue(2.0*blue) < (MaxRGB*threshold))
+      if (AbsoluteValue(2.0*blue) < ((double) MaxRGB*threshold))
         blue=p->blue;
       else
         blue=p->blue+(blue*amount);
       opacity=p->opacity-(double) q->opacity;
-      if (AbsoluteValue(2.0*opacity) < (MaxRGB*threshold))
+      if (AbsoluteValue(2.0*opacity) < ((double) MaxRGB*threshold))
         opacity=p->opacity;
       else
         opacity=p->opacity+(opacity*amount);

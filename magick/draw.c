@@ -939,7 +939,7 @@ MagickExport void DrawSetFillOpacity(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  opacity = (Quantum)(MaxRGB*(1.0-(fill_opacity <= 1.0 ? fill_opacity : 1.0 )));
+  opacity = (Quantum)((double) MaxRGB*(1.0-(fill_opacity <= 1.0 ? fill_opacity : 1.0 )));
 
   if (context->filter_off || (CurrentContext->opacity != opacity))
     {
@@ -2375,7 +2375,7 @@ MagickExport void DrawSetStrokeOpacity(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  opacity = (Quantum)(MaxRGB*(1.0-(stroke_opacity <= 1.0 ? stroke_opacity : 1.0 )));
+  opacity = (Quantum)((double) MaxRGB*(1.0-(stroke_opacity <= 1.0 ? stroke_opacity : 1.0 )));
 
   if (context->filter_off || (CurrentContext->stroke.opacity != opacity))
     {
