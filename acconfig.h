@@ -105,6 +105,9 @@
 /* Define if you have the SFIO mmap-based stdio library emulation */
 #undef HasSFIO
 
+/* Define if you have XML library */
+#undef HasXML
+
 /* Define if you have zlib compression library */
 #undef HasZLIB
 

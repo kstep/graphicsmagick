@@ -89,7 +89,7 @@ MagickExport char *AllocateString(const char *source)
 
   if (source == (char *) NULL)
     return((char *) NULL);
-  destination=(char *) AllocateMemory(Max(Extent(source)+1,MaxTextExtent));
+  destination=(char *) AllocateMemory(Extent(source)+MaxTextExtent);
   if (destination == (char *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate string",
       "Memory allocation failed");

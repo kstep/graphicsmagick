@@ -289,6 +289,12 @@ else
   AC_DEFINE_UNQUOTED(TT_FONT_PATH,"$with_ttf_fontpath",Define to specify default TrueType font path.)
 fi
 
+# Disable XML.
+AC_ARG_WITH(xml,
+	      [  --without-xml           disable XML support],
+	      [with_xml=$withval],
+	      [with_xml='yes'])
+
 AC_ARG_WITH(zlib,
 	      [  --without-zlib          disable ZLIB support],
 	      [with_zlib=$withval],
@@ -359,7 +365,7 @@ fi
 #
 # Most delegates have includes in the same directory as the library
 #
-for dir in bzlib hdf/hdf/src jbig/libjbig jpeg zlib png tiff/libtiff ttf ttf/lib ttf/lib/.libs
+for dir in bzlib hdf/hdf/src jbig/libjbig jpeg xml zlib png tiff/libtiff ttf ttf/lib ttf/lib/.libs
 do
   if test -d "$builddir/$dir"
   then
@@ -915,6 +921,39 @@ fi
 AM_CONDITIONAL(HasJBIG, test "$have_jbig" != 'no')
 AC_SUBST(LIB_JBIG)
 
+#
+# Check for XML
+#
+have_xml='no'
+LIB_XML=''
+if test "$with_xml" != 'no'
+then
+    AC_CHECKING(for XML support ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(libxml/parser.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(xml,xmlCreatePushParserCtxt,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if XML package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+        have_xml='no (failed tests)'
+    else
+	LIB_XML='-lxml'
+	LIBS="$LIB_XML $LIBS"
+	AC_DEFINE(HasXML,,Define if you have XML library)
+	AC_MSG_RESULT(yes)
+        have_xml='yes'
+    fi
+    else
+        AC_MSG_RESULT(no)
+    fi
+fi
+AM_CONDITIONAL(HasXML, test "$have_xml" != 'no')
+AC_SUBST(LIB_XML)
+
 # Check standard headers
 AC_HEADER_STDC
 AC_HEADER_STAT
@@ -1322,6 +1361,7 @@ echo "PNG               --with-png=$with_png		$have_png"
 echo "TIFF              --with-tiff=$with_tiff		$have_tiff"
 echo "TrueType (TTF)    --with-ttf=$with_ttf		$have_ttf"
 echo "TTF Path          --with-ttf-fontpath=          \"$with_ttf_fontpath\""
+echo "XML               --with-xml=$with_xml		$have_xml"
 echo "ZLIB              --with-zlib=$with_zlib		$have_zlib"
 echo "X11               --with-x=$with_x			$have_x"
 echo ""

@@ -4413,7 +4413,7 @@ Mogrify(ref,...)
           if (attribute_flag[9])
             draw_info->translate.y=argument_list[9].double_reference;
           if (attribute_flag[10])
-            draw_info->rotate=argument_list[10].double_reference;
+            draw_info->angle=argument_list[10].double_reference;
           if (attribute_flag[11])
             draw_info->tile=argument_list[11].image_reference;
           DrawImage(image,draw_info);

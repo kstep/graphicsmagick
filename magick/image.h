@@ -453,10 +453,12 @@ typedef struct _DrawInfo
     pointsize;
 
   PointInfo
-    translate;
+    translate,
+    skew;
 
   double
-    rotate;
+    scale,
+    angle;
 
   PixelPacket
     fill,

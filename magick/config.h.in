@@ -117,6 +117,9 @@
 /* Define if you have the `Xext' library (-lXext). */
 #undef HAVE_LIBXEXT
 
+/* Define if you have the `xml' library (-lxml). */
+#undef HAVE_LIBXML
+
 /* Define if you have the `Xt' library (-lXt). */
 #undef HAVE_LIBXT
 
@@ -248,6 +251,9 @@
 
 /* Define if you have X11 library */
 #undef HasX11
+
+/* Define if you have XML library */
+#undef HasXML
 
 /* Define if you have zlib compression library */
 #undef HasZLIB

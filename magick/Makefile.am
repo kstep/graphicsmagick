@@ -61,7 +61,7 @@ else
 libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
 libMagick_la_LIBADD = ../coders/libCoders.la @LIB_JBIG@ @LIB_HDF@ \
   @LIB_TIFF@ @LIB_TTF@ @LIB_JPEG@ @LIB_PNG@ @LIB_FPX@ @LIB_DPS@ \
-  @LIB_XEXT@ @LIB_XT@ @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@ @LIB_SFIO@ \
+  @LIB_XEXT@ @LIB_XT@ @LIB_X11@ @LIB_BZLIB@ @LIB_XML@ @LIB_ZLIB@ @LIB_SFIO@ \
   @LIB_THREAD@ @LIB_LF@ @LIB_MATH@
 endif # WITH_MODULES
 

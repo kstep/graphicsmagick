@@ -158,6 +158,7 @@ UNIX/Cygwin COMPILATION
     --without-tiff          disable TIFF support
     --without-ttf           disable TrueType support
     --with-ttf-fontpath     set default TrueType font path (default none)
+    --without-xml           disable XML support
     --without-zlib          disable ZLIB support
     --with-x                use the X Window System
 
@@ -508,6 +509,12 @@ MAGICK DELEGATES
       Macintosh at
 
         http://www.microimages.com/freestuf/mix/
+
+    o ImageMagick requires libxml available from
+
+          http://xmlsoft.org/
+
+      to read the SVG image format.
 
     o ImageMagick requires the ZLIB library from
 

@@ -635,7 +635,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     /*
       Define primitive.
     */
-    primitive_type=UndefinedPrimitive;
     while (isspace((int) (*p)) && (*p != '\0'))
       p++;
     for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
@@ -680,7 +679,20 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (LocaleCompare("rotate",keyword) == 0)
       {
-        (void) sscanf(p,"%lf%n",&clone_info->rotate,&n);
+        (void) sscanf(p,"%lf%n",&clone_info->angle,&n);
+        p+=n;
+        continue;
+      }
+    if (LocaleCompare("scale",keyword) == 0)
+      {
+        (void) sscanf(p,"%lf%n",&clone_info->scale,&n);
+        p+=n;
+        continue;
+      }
+    if (LocaleCompare("skew",keyword) == 0)
+      {
+        (void) sscanf(p,"%lf%*[ ,]%lf%n",&clone_info->skew.x,
+          &clone_info->skew.y,&n);
         p+=n;
         continue;
       }
@@ -694,14 +706,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (LocaleCompare("translate",keyword) == 0)
       {
-        (void) sscanf(p,"%lf%lf%n",&clone_info->translate.x,
+        (void) sscanf(p,"%lf%*[ ,]%lf%n",&clone_info->translate.x,
           &clone_info->translate.y,&n);
-        if (n == 0)
-          (void) sscanf(p,"%lf,%lf%n",&clone_info->translate.x,
-            &clone_info->translate.y,&n);
         p+=n;
         continue;
       }
+    primitive_type=UndefinedPrimitive;
     if (LocaleNCompare("fill",keyword,4) == 0)
       (void) strcpy(keyword,keyword+4);
     if (LocaleCompare("Point",keyword) == 0)
@@ -758,9 +768,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       pixel.x=0;
       pixel.y=0;
       n=0;
-      (void) sscanf(p,"%lf%lf%n",&pixel.x,&pixel.y,&n);
-      if (n == 0)
-        (void) sscanf(p,"%lf,%lf%n",&pixel.x,&pixel.y,&n);
+      (void) sscanf(p,"%lf%*[ ,]%lf%n",&pixel.x,&pixel.y,&n);
       if (n == 0)
         {
           primitive_type=UndefinedPrimitive;
@@ -1097,7 +1105,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     if (primitive_type == UndefinedPrimitive)
       break;
     primitive_info[i].primitive=UndefinedPrimitive;
-    if (clone_info->rotate != 0.0)
+    if (clone_info->angle != 0.0)
       {
         double
           alpha,
@@ -1106,13 +1114,13 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         /*
           Rotate transform.
         */
-        alpha=cos(DegreesToRadians(fmod(clone_info->rotate,360.0)));
-        beta=sin(DegreesToRadians(fmod(clone_info->rotate,360.0)));
+        alpha=cos(DegreesToRadians(fmod(clone_info->angle,360.0)));
+        beta=sin(DegreesToRadians(fmod(clone_info->angle,360.0)));
         for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
         {
           pixel=primitive_info[i].pixel;
-          primitive_info[i].pixel.x=alpha*pixel.x+beta*pixel.y;
-          primitive_info[i].pixel.y=(-beta*pixel.x+alpha*pixel.y);
+          primitive_info[i].pixel.x=alpha*pixel.x-beta*pixel.y;
+          primitive_info[i].pixel.y=beta*pixel.x+alpha*pixel.y;
         }
       }
     /*
@@ -1525,11 +1533,9 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           Compute arc points.
         */
         n=0;
-        (void) sscanf(p+1,"%lf%lf%lf%lf%lf%lf%lf%n",&arc.x,&arc.y,&rotate,
-          &large_arc,&sweep,&x,&y,&n);
-        if (n == 0)
-          (void) sscanf(p+1,"%lf,%lf,%lf,%lf,%lf,%lf,%lf%n",&arc.x,&arc.y,&x,
-            &large_arc,&sweep,&x,&y,&n);
+        (void) sscanf(p+1,
+          "%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf%n",
+          &arc.x,&arc.y,&rotate,&large_arc,&sweep,&x,&y,&n);
         p+=n;
         last.x=attribute == 'A' ? x : point.x+x;
         last.y=attribute == 'A' ? y : point.y+y;
@@ -1550,9 +1556,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           n=0;
           if ((*p == ',') || isspace(*p))
             p++;
-          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
-          if (n == 0)
-            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
+          (void) sscanf(p,"%lf%*[ ,]%lf%n",&x,&y,&n);
           if (n == 0)
             break;
           p+=n;
@@ -1583,9 +1587,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       {
         for (n=0; ; n=0)
         {
-          (void) sscanf(p+1,"%lf%lf%n",&x,&y,&n);
-          if (n == 0)
-            (void) sscanf(p+1,"%lf,%lf%n",&x,&y,&n);
+          (void) sscanf(p+1,"%lf%*[ ,]%lf%n",&x,&y,&n);
           if (n == 0)
             break;
           p+=n;
@@ -1599,9 +1601,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       case 'M':
       {
         n=0;
-        (void) sscanf(p+1,"%lf%lf%n",&point.x,&point.y,&n);
-        if (n == 0)
-          (void) sscanf(p+1,"%lf,%lf%n",&point.x,&point.y,&n);
+        (void) sscanf(p+1,"%lf%*[ ,]%lf%n",&point.x,&point.y,&n);
         p+=n;
         GeneratePoint(q,point);
         q+=q->coordinates;
@@ -1621,9 +1621,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           n=0;
           if ((*p == ',') || isspace(*p))
             p++;
-          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
-          if (n == 0)
-            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
+          (void) sscanf(p,"%lf%*[ ,]%lf%n",&x,&y,&n);
           if (n == 0)
             break;
           p+=n;
@@ -1653,9 +1651,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           n=0;
           if ((*p == ',') || isspace(*p))
             p++;
-          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
-          if (n == 0)
-            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
+          (void) sscanf(p,"%lf%*[ ,]%lf%n",&x,&y,&n);
           if (n == 0)
             break;
           p+=n;
@@ -1706,9 +1702,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           n=0;
           if ((*p == ',') || isspace(*p))
             p++;
-          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
-          if (n == 0)
-            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
+          (void) sscanf(p,"%lf%*[ ,]%lf%n",&x,&y,&n);
           if (n == 0)
             break;
           p+=n;
@@ -1927,7 +1921,10 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->pointsize=image_info->pointsize;
   draw_info->translate.x=0.0;
   draw_info->translate.y=0.0;
-  draw_info->rotate=0.0;
+  draw_info->skew.x=0.0;
+  draw_info->skew.y=0.0;
+  draw_info->scale=0.0;
+  draw_info->angle=0.0;
   draw_info->fill=image_info->fill;
   draw_info->stroke=image_info->stroke;
   (void) QueryColorDatabase("none",&draw_info->box);
@@ -2390,7 +2387,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
         annotate->font=AllocateString(draw_info->font);
         annotate->antialias=draw_info->antialias;
         annotate->pointsize=draw_info->pointsize;
-        annotate->degrees=draw_info->rotate;
+        annotate->degrees=draw_info->angle;
         annotate->gravity=draw_info->gravity;
         annotate->text=AllocateString(p->text);
         annotate->geometry=AllocateString("                                  ");
