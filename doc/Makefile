@@ -1,7 +1,23 @@
+# Copyright (C) 2003 GraphicsMagick Group
+#
+# This program is covered by multiple licenses, which are described in
+# Copyright.txt. You should have received a copy of Copyright.txt with this
+# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+#
+# Makefile for building GraphicsMagick documentation.
+# Written by Bob Friesenhahn based on previous work by Glenn Randers-Pehrson
+#
 
 UTILITIES = \
 	animate composite conjure convert display identify import \
 	mogrify montage GraphicsMagick
+
+UTILSUBDIR=expanded/$(UTILITY)
+UTILBASE=$(UTILITY)
+UTILSUBWILDCARD=expanded/*
+INSTALLWWW=../www
+INSTALLUTILITIES=../utilities
+GMSUBDIR=Gm
 
 all:	gm.1 gm.html gm.tex
 
@@ -11,29 +27,47 @@ html:	gm.html
 
 tex:	gm.tex
 
+install: targets-install $(INSTALLWWW)/gm.html $(INSTALLUTILITIES)/gm.1
+
 clean: targets-clean
 	rm -f gm.1 gm.html gm.tex
-	rm -f gm-Gm/*
-	if test -d 'gm-Gm' ; then rmdir 'gm-Gm' ; fi
+	rm -f $(GMSUBDIR)/*
+	if test -d $(GMSUBDIR) ; then rmdir $(GMSUBDIR) ; fi
+	if test -d expanded; then rmdir expanded; fi
 
-gm.1: targets-man
-	if test ! -d 'gm-Gm'; then mkdir 'gm-Gm'; fi
-	cat gm-*/man.imdoc > gm-Gm/man.imdoc
-	./imdoc2man gm gm-Gm/man.imdoc > gm.1
+gm.1: targets-man $(GMSUBDIR)/man.imdoc
+	./imdoc2man gm $(GMSUBDIR)/man.imdoc > $@
 
-gm.html: targets-html
-	if test ! -d 'gm-Gm'; then mkdir 'gm-Gm'; fi
-	cat gm-*/html.imdoc > gm-Gm/html.imdoc
-	./gmdoc2html gm gm-Gm/html.imdoc > gm.html
+gm.html: targets-html $(GMSUBDIR)/html.imdoc
+	./gmdoc2html gm $(GMSUBDIR)/man.imdoc > $@
 
-gm.tex: targets-tex
-	if test ! -d 'gm-Gm'; then mkdir 'gm-Gm'; fi
-	cat gm-*/tex.imdoc > gm-Gm/tex.imdoc
-	./imdoc2tex < gm-Gm/tex.imdoc > gm.tex
+gm.tex: targets-tex $(GMSUBDIR)/tex.imdoc
+	./imdoc2tex < $(GMSUBDIR)/man.imdoc > $@
 
 brief_options.imdoc:	options.imdoc
 	imdoc_select_brief options.imdoc brief_options.imdoc
 
+$(INSTALLWWW)/gm.html: gm.html
+	cp gm.html $@
+
+$(INSTALLUTILITIES)/gm.1: gm.1
+	cp gm.1 $@
+
+$(GMSUBDIR):
+	mkdir -p $@
+
+$(GMSUBDIR)/man.imdoc: targets-man $(GMSUBDIR)
+	cat $(UTILSUBWILDCARD)/man.imdoc > $@
+
+$(GMSUBDIR)/html.imdoc: targets-html $(GMSUBDIR)
+	cat $(UTILSUBWILDCARD)/html.imdoc > $@
+
+$(GMSUBDIR)/tex.imdoc: targets-tex $(GMSUBDIR)
+	cat $(UTILSUBWILDCARD)/tex.imdoc > $@
+
+#
+# Invoke per-utility targets
+#
 targets:
 	for utility in $(UTILITIES) ; \
 	do \
@@ -58,7 +92,7 @@ targets-tex:
 	  $(MAKE) UTILITY=$$utility utility-tex; \
 	done
 
-targets-install:
+targets-install: targets-man targets-html
 	for utility in $(UTILITIES) ; \
 	do \
 	  $(MAKE) UTILITY=$$utility utility-install; \
@@ -75,47 +109,44 @@ targets-clean:
 #
 utility: utility-man utility-html utility-tex
 
-utility-man:	gm-$(UTILITY).1
+utility-man:	$(UTILBASE).1
 
-utility-html:	gm-$(UTILITY).html
+utility-html:	$(UTILBASE).html
 
-utility-tex:	gm-$(UTILITY).tex
+utility-tex:	$(UTILBASE).tex
 
-gm-$(UTILITY):
-	mkdir gm-$(UTILITY)
+utility-install: $(INSTALLWWW)/$(UTILBASE).html $(INSTALLUTILITIES)/$(UTILBASE).1
 
-gm-$(UTILITY)/Expanded.imdoc: gm-$(UTILITY) $(UTILITY).imdoc brief_options.imdoc copyright.imdoc
-	imdocinclude $(UTILITY).imdoc > gm-$(UTILITY)/Expanded.imdoc
+$(UTILSUBDIR):
+	mkdir -p $(UTILSUBDIR)
 
-gm-$(UTILITY)/man.imdoc: gm-$(UTILITY) gm-$(UTILITY)/Expanded.imdoc
-	gmdocselect $(UTILITY) man gm-$(UTILITY)/Expanded.imdoc > \
-	gm-$(UTILITY)/man.imdoc
+$(UTILSUBDIR)/Expanded.imdoc: $(UTILSUBDIR) $(UTILITY).imdoc brief_options.imdoc copyright.imdoc
+	imdocinclude $(UTILITY).imdoc > $@
 
-gm-$(UTILITY)/html.imdoc: gm-$(UTILITY) gm-$(UTILITY)/Expanded.imdoc
-	gmdocselect $(UTILITY) html gm-$(UTILITY)/Expanded.imdoc > \
-	gm-$(UTILITY)/html.imdoc
+$(UTILSUBDIR)/man.imdoc: $(UTILSUBDIR) $(UTILSUBDIR)/Expanded.imdoc
+	gmdocselect $(UTILITY) man $(UTILSUBDIR)/Expanded.imdoc > $@
 
-gm-$(UTILITY)/tex.imdoc: gm-$(UTILITY) gm-$(UTILITY)/Expanded.imdoc
-	gmdocselect $(UTILITY) tex gm-$(UTILITY)/Expanded.imdoc > \
-	gm-$(UTILITY)/tex.imdoc
+$(UTILSUBDIR)/html.imdoc: $(UTILSUBDIR) $(UTILSUBDIR)/Expanded.imdoc
+	gmdocselect $(UTILITY) html $(UTILSUBDIR)/Expanded.imdoc > $@
 
-gm-$(UTILITY).1:  gm-$(UTILITY) gm-$(UTILITY)/man.imdoc
-	imdoc2man $(UTILITY) gm-$(UTILITY)/man.imdoc > gm-$(UTILITY).1
+$(UTILSUBDIR)/tex.imdoc: $(UTILSUBDIR) $(UTILSUBDIR)/Expanded.imdoc
+	gmdocselect $(UTILITY) tex $(UTILSUBDIR)/Expanded.imdoc > $@
 
-gm-$(UTILITY).html:  gm-$(UTILITY) gm-$(UTILITY)/html.imdoc
-	gmdoc2html $(UTILITY) gm-$(UTILITY)/html.imdoc > gm-$(UTILITY).html
+$(UTILBASE).1:  $(UTILSUBDIR) $(UTILSUBDIR)/man.imdoc
+	imdoc2man $(UTILITY) $(UTILSUBDIR)/man.imdoc > $@
 
-gm-$(UTILITY).tex:  gm-$(UTILITY) gm-$(UTILITY)/tex.imdoc
-	imdoc2tex < gm-$(UTILITY)/tex.imdoc > gm-$(UTILITY).tex
+$(UTILBASE).html:  $(UTILSUBDIR) $(UTILSUBDIR)/html.imdoc
+	gmdoc2html $(UTILITY) $(UTILSUBDIR)/html.imdoc > $@
 
-utility-install: www/gm-$(UTILITY).html targets/gm-$(UTILITY).1
+$(UTILBASE).tex:  $(UTILSUBDIR) $(UTILSUBDIR)/tex.imdoc
+	imdoc2tex < $(UTILSUBDIR)/tex.imdoc > $@
 
-www/gm-$(UTILITY).html: gm-$(UTILITY).html
-	cp gm-$(UTILITY).html gm-www/$(UTILITY).html
+$(INSTALLWWW)/$(UTILITY).html: $(UTILBASE).html
+	cp $(UTILBASE).html $@
 
-utilities/gm-$(UTILITY).1: gm-$(UTILITY).1
-	cp gm-$(UTILITY).1 utilities/gm-$(UTILITY).1
+$(INSTALLUTILITIES)/$(UTILITY).1: $(UTILBASE).1
+	cp $(UTILBASE).1 $@
 
 utility-clean:
-	/bin/rm -f gm-$(UTILITY).1 gm-$(UTILITY).html gm-$(UTILITY).tex gm-$(UTILITY)/*
-	if test -d gm-$(UTILITY); then rmdir gm-$(UTILITY); fi
+	/bin/rm -f $(UTILBASE).1 $(UTILBASE).html $(UTILBASE).tex $(UTILSUBDIR)/*
+	if test -d $(UTILSUBDIR); then rmdir $(UTILSUBDIR); fi
