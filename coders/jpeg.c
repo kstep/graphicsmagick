@@ -190,7 +190,7 @@ static unsigned int EmitMessage(j_common_ptr jpeg_info,int level)
     *image;
 
   (jpeg_info->err->format_message)(jpeg_info,message);
-  image=jpeg_info->client_data;
+  image=(Image *) jpeg_info->client_data;
   if (level < 0)
     {
       if ((jpeg_info->err->num_warnings == 0) ||
@@ -286,7 +286,7 @@ static boolean ReadColorProfile(j_decompress_ptr jpeg_info)
   (void) GetCharacter(jpeg_info);  /* id */
   (void) GetCharacter(jpeg_info);  /* markers */
   length-=14;
-  image=jpeg_info->client_data;
+  image=(Image *) jpeg_info->client_data;
   if (image->color_profile.length == 0)
     image->color_profile.info=(unsigned char *) AllocateMemory(length);
   else
@@ -322,7 +322,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   /*
     Determine length of comment.
   */
-  image=jpeg_info->client_data;
+  image=(Image *) jpeg_info->client_data;
   length=GetCharacter(jpeg_info) << 8;
   length+=GetCharacter(jpeg_info);
   length-=2;
@@ -411,7 +411,7 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
 #endif
   if (length <= 0)
     return(True);
-  image=jpeg_info->client_data;
+  image=(Image *) jpeg_info->client_data;
   if (image->iptc_profile.length != 0)
     image->iptc_profile.info=(unsigned char *)
       ReallocateMemory((char *) image->iptc_profile.info,length+tag_length);
@@ -875,7 +875,7 @@ static unsigned int JPEGWarningHandler(j_common_ptr jpeg_info,int level)
     *image;
 
   (jpeg_info->err->format_message)(jpeg_info,message);
-  image=jpeg_info->client_data;
+  image=(Image *) jpeg_info->client_data;
   if (level < 0)
     {
       if ((jpeg_info->err->num_warnings == 0) ||
