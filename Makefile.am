@@ -110,6 +110,8 @@ install-exec-perl: $(PERLMAKEFILE)
 	$(MAKE) CC='@CC@' install && \
 	$(MAKE) clean && rm -f  Makefile.old )
 
+all-perl:
+
 uninstall-exec-perl: $(PERLMAKEFILE)
 	echo "Uninstall not supported for PerlMagick"
 
@@ -127,11 +129,11 @@ $(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
 $(PERLMAGICK)/$(PERLMAGICK): $(PERLMAKEFILE)
 	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME) )
 
+all-perl: $(PERLMAGICK)/$(PERLMAGICK)
+
 install-exec-perl: $(PERLMAGICK)/$(PERLMAGICK)
 	( cd $(PERLMAGICK) && \
-	$(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) && \
-	$(MAKE) -f Makefile.aperl map_clean && \
-	$(MAKE) clean && rm -f  Makefile.old )
+	$(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) )
 
 uninstall-exec-perl:
 	rm -f '@BIN_DIR@/$(PERLSTATICNAME)'
@@ -171,7 +173,7 @@ TXT2HTMLTARGETS= \
 	$(top_srcdir)/www/README.html
 endif # WITH_PERL
 
-all-local: @MAINTAINER_MODE_TRUE@ $(TXT2HTMLTARGETS)
+all-local: all-perl @MAINTAINER_MODE_TRUE@ $(TXT2HTMLTARGETS)
 
 # Install PerlMagick
 install-exec-local: install-exec-perl

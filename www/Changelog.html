@@ -56,6 +56,10 @@
 2003-04-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> Makefile.am: When building a static PerlMagick,
+        build PerlMagick as part of the 'all' target and
+        don't do a 'make clean' of PerlMagick at install
+        time.<BR>
   <LI> configure.ac (LIB_DPS): Add check to see if -lXt
         is required by -ldps.  XFree86 -ldps requires -lXt.
   <LI> FlashPIX: FlashPIX library now compiles under
