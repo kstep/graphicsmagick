@@ -574,7 +574,6 @@ static unsigned int ConvertUtility(int argc,char **argv)
         status&=next_image != (Image *) NULL;
         if (next_image == (Image *) NULL)
           continue;
-        status&=MogrifyImages(image_info,i,argv,&next_image);
         (void) CatchImageException(next_image);
         if (image == (Image *) NULL)
           image=next_image;
@@ -883,6 +882,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
                   if (clone_image == (Image *) NULL)
                     MagickError(OptionError,"Missing an image file name",
                       (char *) NULL);
+                  status&=MogrifyImages(image_info,i,argv,&clone_image);
                   status&=ConvertImageList(clone_info,&clone_image,i-j+2,
                     argv+j-1,&exception);
                   if (*option == '-')
@@ -1708,6 +1708,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
                   if (image == (Image *) NULL)
                     MagickError(OptionError,"Missing source image",
                       (char *) NULL);
+                  status&=MogrifyImages(image_info,i,argv,&image);
                   status&=ConvertImageList(image_info,&image,i-j+2,argv+j-1,
                     &exception);
                   j=i+1;
@@ -2053,8 +2054,8 @@ static unsigned int ConvertUtility(int argc,char **argv)
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  status&=ConvertImageList(image_info,&image,argc-j+1,argv+j-1,
-    &exception);
+  status&=MogrifyImages(image_info,i,argv,&image);
+  status&=ConvertImageList(image_info,&image,argc-j+1,argv+j-1,&exception);
   DestroyImageList(image);
   DestroyImageInfo(image_info);
   return(status);
