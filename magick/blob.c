@@ -418,8 +418,13 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
 */
 MagickExport void GetBlobInfo(BlobInfo *blob)
 {
+  off_t
+    filesize;
+
   assert(blob != (BlobInfo *) NULL);
+  filesize=blob->filesize;
   memset(blob,0,sizeof(BlobInfo));
+  blob->filesize=filesize;
   blob->quantum=BlobQuantum;
   blob->signature=MagickSignature;
 }
