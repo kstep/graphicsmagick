@@ -1049,7 +1049,8 @@ then
        if test -n "$freetype_config"
        then
           freetype_prefix=`freetype-config --prefix`
-          LDFLAGS="-L${freetype_prefix}/lib $LDFLAGS" 2> /dev/null
+          freetype_exec_prefix=`freetype-config --exec-prefix`
+          LDFLAGS="-L${freetype_exec_prefix}/lib $LDFLAGS" 2> /dev/null
           CPPFLAGS="-I${freetype_prefix}/include/freetype2 $CPPFLAGS" 2> /dev/null
        fi
     fi
