@@ -84,9 +84,8 @@ typedef struct _PrimitiveInfo
   unsigned int
     coordinates;
 
-  double
-    x,
-    y;
+  PointInfo
+    pixel;
 
   PaintMethod
     method;
@@ -98,7 +97,7 @@ typedef struct _PrimitiveInfo
 /*
   Forward declarations
 */
-static unsigned short
+static unsigned int
   InsidePrimitive(PrimitiveInfo *,const AnnotateInfo *,const PointInfo *,
     Image *);
 
@@ -393,7 +392,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
     y;
 
   PointInfo
-    point,
+    pixel,
     target;
 
   PrimitiveInfo
@@ -420,7 +419,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
     length,
     number_coordinates;
 
-  unsigned short
+  unsigned int
     opacity;
 
   /*
@@ -574,31 +573,30 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
         p++;
       if (!IsGeometry(p))
         break;
-      point.x=0;
-      point.y=0;
+      pixel.x=0;
+      pixel.y=0;
       n=0;
-      (void) sscanf(p,"%lf%lf%n",&point.x,&point.y,&n);
+      (void) sscanf(p,"%lf%lf%n",&pixel.x,&pixel.y,&n);
       if (n == 0)
-        (void) sscanf(p,"%lf,%lf%n",&point.x,&point.y,&n);
+        (void) sscanf(p,"%lf,%lf%n",&pixel.x,&pixel.y,&n);
       if (n == 0)
-        (void) sscanf(p,"%lf, %lf%n",&point.x,&point.y,&n);
+        (void) sscanf(p,"%lf, %lf%n",&pixel.x,&pixel.y,&n);
       if (n == 0)
-        (void) sscanf(p,"%lf %lf%n",&point.x,&point.y,&n);
+        (void) sscanf(p,"%lf %lf%n",&pixel.x,&pixel.y,&n);
       if (n == 0)
         ThrowBinaryException(OptionWarning,
           "Non-conforming drawing primitive definition",p);
-      if (point.x < bounds.x1)
-        bounds.x1=point.x;
-      if (point.y < bounds.y1)
-        bounds.y1=point.y;
-      if (point.x > bounds.x2)
-        bounds.x2=point.x;
-      if (point.y > bounds.y2)
-        bounds.y2=point.y;
+      if (pixel.x < bounds.x1)
+        bounds.x1=pixel.x;
+      if (pixel.y < bounds.y1)
+        bounds.y1=pixel.y;
+      if (pixel.x > bounds.x2)
+        bounds.x2=pixel.x;
+      if (pixel.y > bounds.y2)
+        bounds.y2=pixel.y;
       primitive_info[i].primitive=primitive_type;
       primitive_info[i].coordinates=0;
-      primitive_info[i].x=point.x;
-      primitive_info[i].y=point.y;
+      primitive_info[i].pixel=pixel;
       primitive_info[i].method=FloodfillMethod;
       p+=n;
       while (isspace((int) (*p)) || (*p == ','))
@@ -651,22 +649,22 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
         /*
           Determine circle bounding box.
         */
-        x=(int) (primitive_info[j+1].x-primitive_info[j].x);
-        y=(int) (primitive_info[j+1].y-primitive_info[j].y);
+        x=(int) (primitive_info[j+1].pixel.x-primitive_info[j].pixel.x);
+        y=(int) (primitive_info[j+1].pixel.y-primitive_info[j].pixel.y);
         radius=
           sqrt((double) (x*x+y*y))+clone_info->image_info->linewidth/2.0+0.5;
-        point.x=Max(primitive_info[j].x-radius,0);
-        point.y=Max(primitive_info[j].y-radius,0);
-        if (point.x < bounds.x1)
-          bounds.x1=point.x;
-        if (point.y < bounds.y1)
-          bounds.y1=point.y;
-        point.x=Min(primitive_info[j].x+radius,image->columns-1);
-        point.y=Min(primitive_info[j].y+radius,image->rows-1);
-        if (point.x > bounds.x2)
-          bounds.x2=point.x;
-        if (point.y > bounds.y2)
-          bounds.y2=point.y;
+        pixel.x=Max(primitive_info[j].pixel.x-radius,0);
+        pixel.y=Max(primitive_info[j].pixel.y-radius,0);
+        if (pixel.x < bounds.x1)
+          bounds.x1=pixel.x;
+        if (pixel.y < bounds.y1)
+          bounds.y1=pixel.y;
+        pixel.x=Min(primitive_info[j].pixel.x+radius,image->columns-1);
+        pixel.y=Min(primitive_info[j].pixel.y+radius,image->rows-1);
+        if (pixel.x > bounds.x2)
+          bounds.x2=pixel.x;
+        if (pixel.y > bounds.y2)
+          bounds.y2=pixel.y;
         break;
       }
       case EllipsePrimitive:
@@ -691,12 +689,11 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
         primitive_info[j].primitive=PolygonPrimitive;
         if (primitive_type == FillEllipsePrimitive)
           primitive_info[j].primitive=FillPolygonPrimitive;
-        start.x=primitive_info[j].x;
-        start.y=primitive_info[j].y;
-        end.x=primitive_info[j+1].x/2;
-        end.y=primitive_info[j+1].y/2;
-        degrees.x=primitive_info[j+2].x;
-        degrees.y=primitive_info[j+2].y;
+        start=primitive_info[j].pixel;
+        end=primitive_info[j+1].pixel;
+        end.x/=2;
+        end.y/=2;
+        degrees=primitive_info[j+2].pixel;
         while (degrees.y < degrees.x)
           degrees.y+=360;
         i=j;
@@ -716,19 +713,18 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
           }
         for (n=(degrees.x+1.0); n <= degrees.y; n+=1.0)
         {
-          point.x=cos(DegreesToRadians(fmod(n,360.0)))*end.x+start.x;
-          point.y=sin(DegreesToRadians(fmod(n,360.0)))*end.y+start.y;
-          if (point.x < bounds.x1)
-            bounds.x1=point.x;
-          if (point.y < bounds.y1)
-            bounds.y1=point.y;
-          if (point.x > bounds.x2)
-            bounds.x2=point.x;
-          if (point.y > bounds.y2)
-            bounds.y2=point.y;
+          pixel.x=cos(DegreesToRadians(fmod(n,360.0)))*end.x+start.x;
+          pixel.y=sin(DegreesToRadians(fmod(n,360.0)))*end.y+start.y;
+          if (pixel.x < bounds.x1)
+            bounds.x1=pixel.x;
+          if (pixel.y < bounds.y1)
+            bounds.y1=pixel.y;
+          if (pixel.x > bounds.x2)
+            bounds.x2=pixel.x;
+          if (pixel.y > bounds.y2)
+            bounds.y2=pixel.y;
           primitive_info[i].coordinates=0;
-          primitive_info[i].x=point.x;
-          primitive_info[i].y=point.y;
+          primitive_info[i].pixel=pixel;
           primitive_info[j].coordinates++;
           i++;
         }
@@ -856,7 +852,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
         if (composite_image == (Image *) NULL)
           break;
         CompositeImage(image,ReplaceCompositeOp,composite_image,
-          (int) point.x,(int) point.y);
+          (int) pixel.x,(int) pixel.y);
         DestroyImage(composite_image);
         DestroyImageInfo(composite_info);
         break;
@@ -987,7 +983,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
 %
 %  The format of the InsidePrimitive method is:
 %
-%      unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
+%      unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
 %        const AnnotateInfo *annotate_info,const PointInfo *pixel,Image *image)
 %
 %  A description of each parameter follows:
@@ -1006,32 +1002,34 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
 %
 */
 
-static double DistanceToLine(const PointInfo *pixel,const SegmentInfo *line)
+static double DistanceToLine(const PointInfo *pixel,const PointInfo *p,
+  const PointInfo *q)
 {
-  register double
-    alpha,
-    beta,
+  double
     dot_product,
     gamma,
     v;
 
-  alpha=pixel->x-line->x1;
-  beta=pixel->y-line->y1;
-  dot_product=alpha*(line->x2-line->x1)+beta*(line->y2-line->y1);
+  register double
+    alpha,
+    beta;
+
+  alpha=pixel->x-p->x;
+  beta=pixel->y-p->y;
+  dot_product=alpha*(q->x-p->x)+beta*(q->y-p->y);
   if (dot_product <= 0)
     return(alpha*alpha+beta*beta);
-  v=(line->x2-line->x1)*(line->x2-line->x1)+
-    (line->y2-line->y1)*(line->y2-line->y1);
+  v=(q->x-p->x)*(q->x-p->x)+(q->y-p->y)*(q->y-p->y);
   gamma=dot_product*dot_product/v;
   if (gamma <= v)
     return(alpha*alpha+beta*beta-gamma);
-  alpha=pixel->x-line->x2;
-  beta=pixel->y-line->y2;
+  alpha=pixel->x-q->x;
+  beta=pixel->y-q->y;
   return(alpha*alpha+beta*beta);
 }
 
-static unsigned short PixelOnLine(const PointInfo *pixel,
-  const SegmentInfo *line,const double mid,const unsigned short opacity)
+static unsigned int PixelOnLine(const PointInfo *pixel,const PointInfo *p,
+  const PointInfo *q,const double mid,const unsigned int opacity)
 {
   register double
     alpha,
@@ -1039,9 +1037,9 @@ static unsigned short PixelOnLine(const PointInfo *pixel,
 
   if ((mid == 0) || (opacity == Opaque))
     return(opacity);
-  if ((line->x1 == line->x2) && (line->y1 == line->y2))
-    return((pixel->x == line->x1) && (pixel->y == line->y1) ? Opaque : opacity);
-  distance=DistanceToLine(pixel,line);
+  if ((p->x == q->x) && (p->y == q->y))
+    return((pixel->x == p->x) && (pixel->y == p->y) ? Opaque : opacity);
+  distance=DistanceToLine(pixel,p,q);
   alpha=mid-0.5;
   if (distance <= (alpha*alpha))
     return(Opaque);
@@ -1049,12 +1047,12 @@ static unsigned short PixelOnLine(const PointInfo *pixel,
   if (distance <= (alpha*alpha))
     {
       alpha=sqrt(distance)-mid-0.5;
-      return((unsigned short) Max((int) opacity,Opaque*alpha*alpha));
+      return(Max(opacity,Opaque*alpha*alpha));
     }
   return(opacity);
 }
 
-static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
+static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
   const AnnotateInfo *annotate_info,const PointInfo *pixel,Image *image)
 {
   PixelPacket
@@ -1071,14 +1069,11 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
     *p,
     *q;
 
-  register unsigned short
+  register unsigned int
     opacity;
 
   PixelPacket
     target;
-
-  SegmentInfo
-    line;
 
   assert(primitive_info != (PrimitiveInfo *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
@@ -1094,48 +1089,45 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
       case PointPrimitive:
       default:
       {
-        if ((pixel->x == (int) (p->x+0.5)) && (pixel->y == (int) (p->y+0.5)))
+        if ((pixel->x == (int) (p->pixel.x+0.5)) &&
+            (pixel->y == (int) (p->pixel.y+0.5)))
           opacity=Opaque;
         break;
       }
       case LinePrimitive:
       {
-        line.x1=p->x;
-        line.y1=p->y;
-        line.x2=q->x;
-        line.y2=q->y;
-        opacity=PixelOnLine(pixel,&line,mid,opacity);
+        opacity=PixelOnLine(pixel,&p->pixel,&q->pixel,mid,opacity);
         break;
       }
       case RectanglePrimitive:
       {
-        if (((pixel->x >= (int) (Min(p->x-mid,q->x+mid)+0.5)) &&
-             (pixel->x < (int) (Max(p->x-mid,q->x+mid)+0.5)) &&
-             (pixel->y >= (int) (Min(p->y-mid,q->y+mid)+0.5)) &&
-             (pixel->y < (int) (Max(p->y-mid,q->y+mid)+0.5))) &&
-           !((pixel->x >= (int) (Min(p->x+mid,q->x-mid)+0.5)) &&
-             (pixel->x < (int) (Max(p->x+mid,q->x-mid)+0.5)) &&
-             (pixel->y >= (int) (Min(p->y+mid,q->y-mid)+0.5)) &&
-             (pixel->y < (int) (Max(p->y+mid,q->y-mid)+0.5))))
+        if (((pixel->x >= (int) (Min(p->pixel.x-mid,q->pixel.x+mid)+0.5)) &&
+             (pixel->x < (int) (Max(p->pixel.x-mid,q->pixel.x+mid)+0.5)) &&
+             (pixel->y >= (int) (Min(p->pixel.y-mid,q->pixel.y+mid)+0.5)) &&
+             (pixel->y < (int) (Max(p->pixel.y-mid,q->pixel.y+mid)+0.5))) &&
+           !((pixel->x >= (int) (Min(p->pixel.x+mid,q->pixel.x-mid)+0.5)) &&
+             (pixel->x < (int) (Max(p->pixel.x+mid,q->pixel.x-mid)+0.5)) &&
+             (pixel->y >= (int) (Min(p->pixel.y+mid,q->pixel.y-mid)+0.5)) &&
+             (pixel->y < (int) (Max(p->pixel.y+mid,q->pixel.y-mid)+0.5))))
           opacity=Opaque;
         break;
       }
       case FillRectanglePrimitive:
       {
-        if ((pixel->x >= (int) (Min(p->x,q->x)+0.5)) &&
-            (pixel->x <= (int) (Max(p->x,q->x)+0.5)) &&
-            (pixel->y >= (int) (Min(p->y,q->y)+0.5)) &&
-            (pixel->y <= (int) (Max(p->y,q->y)+0.5)))
+        if ((pixel->x >= (int) (Min(p->pixel.x,q->pixel.x)+0.5)) &&
+            (pixel->x <= (int) (Max(p->pixel.x,q->pixel.x)+0.5)) &&
+            (pixel->y >= (int) (Min(p->pixel.y,q->pixel.y)+0.5)) &&
+            (pixel->y <= (int) (Max(p->pixel.y,q->pixel.y)+0.5)))
           opacity=Opaque;
         break;
       }
       case CirclePrimitive:
       {
-        alpha=p->x-pixel->x;
-        beta=p->y-pixel->y;
+        alpha=p->pixel.x-pixel->x;
+        beta=p->pixel.y-pixel->y;
         distance=sqrt(alpha*alpha+beta*beta);
-        alpha=p->x-q->x;
-        beta=p->y-q->y;
+        alpha=p->pixel.x-q->pixel.x;
+        beta=p->pixel.y-q->pixel.y;
         radius=sqrt(alpha*alpha+beta*beta);
         beta=fabs(distance-radius);
         if (beta < (mid+0.5))
@@ -1145,18 +1137,18 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
             else
               {
                 alpha=mid-beta+0.5;
-                opacity=(Quantum) Max((int) opacity,Opaque*alpha*alpha);
+                opacity=Max(opacity,Opaque*alpha*alpha);
               }
           }
         break;
       }
       case FillCirclePrimitive:
       {
-        alpha=p->x-pixel->x;
-        beta=p->y-pixel->y;
+        alpha=p->pixel.x-pixel->x;
+        beta=p->pixel.y-pixel->y;
         distance=sqrt(alpha*alpha+beta*beta);
-        alpha=p->x-q->x;
-        beta=p->y-q->y;
+        alpha=p->pixel.x-q->pixel.x;
+        beta=p->pixel.y-q->pixel.y;
         radius=sqrt(alpha*alpha+beta*beta);
         if (distance <= (radius-1.0))
           opacity=Opaque;
@@ -1164,101 +1156,81 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
           if (distance < (radius+1.0))
             {
               alpha=(radius-distance+1.0)/2.0;
-              opacity=(Quantum) Max((int) opacity,Opaque*alpha*alpha);
+              opacity=Max(opacity,Opaque*alpha*alpha);
             }
         break;
       }
       case PolygonPrimitive:
       {
-        unsigned short
+        unsigned int
           poly_opacity;
 
         poly_opacity=Transparent;
         for ( ; (p < q) && (poly_opacity != Opaque); p++)
-        {
-          line.x1=p->x;
-          line.y1=p->y;
-          line.x2=(p+1)->x;
-          line.y2=(p+1)->y;
-          poly_opacity=PixelOnLine(pixel,&line,mid,(unsigned short)
+          poly_opacity=PixelOnLine(pixel,&p->pixel,&(p+1)->pixel,mid,
             Max(opacity,poly_opacity));
-        }
         opacity=Max(opacity,poly_opacity);
         break;
       }
       case FillPolygonPrimitive:
       {
         double
-          distance,
           minimum_distance;
 
         int
           crossing,
           crossings;
 
-        PrimitiveInfo
-          *r;
-
-        unsigned short
+        unsigned int
           poly_opacity;
 
-        r=p;
+        minimum_distance=DistanceToLine(pixel,&p->pixel,&q->pixel);
         crossings=0;
-        if ((pixel->y < q->y) != (pixel->y < p->y))
+        if ((pixel->y < q->pixel.y) != (pixel->y < p->pixel.y))
           {
-            crossing=pixel->x < q->x;
-            if (crossing != (pixel->x < p->x))
-              crossings+=pixel->x <
-                (q->x-(q->y-pixel->y)*(p->x-q->x)/(p->y-q->y));
+            crossing=pixel->x < q->pixel.x;
+            if (crossing != (pixel->x < p->pixel.x))
+              crossings+=pixel->x < (q->pixel.x-(q->pixel.y-pixel->y)*
+                (p->pixel.x-q->pixel.x)/(p->pixel.y-q->pixel.y));
             else
               if (crossing)
                 crossings++;
           }
         for (p++; p <= q; p++)
         {
-          if (pixel->y < (p-1)->y)
+          distance=DistanceToLine(pixel,&(p-1)->pixel,&p->pixel);
+          if (distance < minimum_distance)
+            minimum_distance=distance;
+          if (pixel->y < (p-1)->pixel.y)
             {
-              while ((p <= q) && (pixel->y < p->y))
+              while ((p <= q) && (pixel->y < p->pixel.y))
                 p++;
               if (p > q)
                 break;
-              crossing=pixel->x < (p-1)->x;
-              if (crossing != (pixel->x < p->x))
-                crossings+=pixel->x < ((p-1)->x-((p-1)->y-pixel->y)*
-                  (p->x-(p-1)->x)/(p->y-(p-1)->y));
+              crossing=pixel->x < (p-1)->pixel.x;
+              if (crossing != (pixel->x < p->pixel.x))
+                crossings+=pixel->x < ((p-1)->pixel.x-((p-1)->pixel.y-pixel->y)*
+                  (p->pixel.x-(p-1)->pixel.x)/(p->pixel.y-(p-1)->pixel.y));
               else
                 if (crossing)
                   crossings++;
               continue;
             }
-          while ((p <= q) && (pixel->y >= p->y))
+          while ((p <= q) && (pixel->y >= p->pixel.y))
             p++;
           if (p > q)
             break;
-          crossing=pixel->x < (p-1)->x;
-          if (crossing != (pixel->x < p->x))
-            crossings+=pixel->x < ((p-1)->x-((p-1)->y-pixel->y)*
-              (p->x-(p-1)->x)/(p->y-(p-1)->y));
+          crossing=pixel->x < (p-1)->pixel.x;
+          if (crossing != (pixel->x < p->pixel.x))
+            crossings+=pixel->x < ((p-1)->pixel.x-((p-1)->pixel.y-pixel->y)*
+              (p->pixel.x-(p-1)->pixel.x)/(p->pixel.y-(p-1)->pixel.y));
           else
             if (crossing)
               crossings++;
         }
-        /*
-          Now find distance to polygon.
-        */
-        p=r;
-        line.x1=p->x;
-        line.y1=p->y;
-        line.x2=q->x;
-        line.y2=q->y;
-        minimum_distance=DistanceToLine(pixel,&line);
-        for ( ; p < q; p++)
+        for (p++ ; p <= q; p++)
         {
-          line.x1=p->x;
-          line.y1=p->y;
-          line.x2=(p+1)->x;
-          line.y2=(p+1)->y;
-          distance=DistanceToLine(pixel,&line);
+          distance=DistanceToLine(pixel,&(p-1)->pixel,&p->pixel);
           if (distance < minimum_distance)
             minimum_distance=distance;
         }
@@ -1269,7 +1241,7 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
             if (minimum_distance < 0.5)
               {
                 alpha=0.5+minimum_distance;
-                poly_opacity=(Quantum) (Opaque*alpha*alpha);
+                poly_opacity=Opaque*alpha*alpha;
               }
             opacity=Max(opacity,poly_opacity);
             break;
@@ -1278,7 +1250,7 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
         if (minimum_distance < 0.5)
           {
             alpha=0.5-minimum_distance;
-            poly_opacity=(Quantum) (Opaque*alpha*alpha);
+            poly_opacity=Opaque*alpha*alpha;
           }
         opacity=Max(opacity,poly_opacity);
         break;
@@ -1293,8 +1265,8 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
           case PointMethod:
           default:
           {
-            if ((pixel->x != (int) (p->x+0.5)) &&
-                (pixel->y != (int) (p->y+0.5)))
+            if ((pixel->x != (int) (p->pixel.x+0.5)) &&
+                (pixel->y != (int) (p->pixel.y+0.5)))
               break;
             opacity=Opaque;
             break;
@@ -1309,7 +1281,7 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
 
             if ((pixel->x == 0) && (pixel->y == 0))
               {
-                q=GetPixelCache(image,(int) p->x,(int) p->y,1,1);
+                q=GetPixelCache(image,(int) p->pixel.x,(int) p->pixel.y,1,1);
                 if (q != (PixelPacket *) NULL)
                   target=(*q);
               }
@@ -1323,8 +1295,8 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
           case FloodfillMethod:
           case FillToBorderMethod:
           {
-            if ((pixel->x != (int) (p->x+0.5)) &&
-                (pixel->y != (int) (p->y+0.5)))
+            if ((pixel->x != (int) (p->pixel.x+0.5)) &&
+                (pixel->y != (int) (p->pixel.y+0.5)))
               break;
             q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
             if (q != (PixelPacket *) NULL)
@@ -1360,8 +1332,8 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
           case PointMethod:
           default:
           {
-            if ((pixel->x != (int) (p->x+0.5)) &&
-                (pixel->y != (int) (p->y+0.5)))
+            if ((pixel->x != (int) (p->pixel.x+0.5)) &&
+                (pixel->y != (int) (p->pixel.y+0.5)))
               break;
             q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
             if (q != (PixelPacket *) NULL)
@@ -1381,7 +1353,7 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
 
             if ((pixel->x == 0) && (pixel->y == 0))
               {
-                q=GetPixelCache(image,(int) p->x,(int) p->y,1,1);
+                q=GetPixelCache(image,(int) p->pixel.x,(int) p->pixel.y,1,1);
                 if (q != (PixelPacket *) NULL)
                   target=(*q);
               }
@@ -1398,8 +1370,8 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
           case FloodfillMethod:
           case FillToBorderMethod:
           {
-            if ((pixel->x != (int) (p->x+0.5)) &&
-                (pixel->y != (int) (p->y+0.5)))
+            if ((pixel->x != (int) (p->pixel.x+0.5)) &&
+                (pixel->y != (int) (p->pixel.y+0.5)))
               break;
             q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
             if (q != (PixelPacket *) NULL)
@@ -1433,7 +1405,7 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
         register char
           *r;
 
-        if ((pixel->x != (int) (p->x+0.5)) && (pixel->y != (int) (p->y+0.5)))
+        if ((pixel->x != (int) (p->pixel.x+0.5)) && (pixel->y != (int) (p->pixel.y+0.5)))
           break;
         if (p->text == (char *) NULL)
           break;
@@ -1459,7 +1431,7 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
                 break;
         (void) strncpy(annotate_info->text,p->text,r-p->text);
         annotate_info->text[r-p->text]='\0';
-        FormatString(annotate_info->geometry,"%+d%+d",(int) p->x,(int) p->y);
+        FormatString(annotate_info->geometry,"%+d%+d",(int) p->pixel.x,(int) p->pixel.y);
         AnnotateImage(image,annotate_info);
         break;
       }
@@ -1543,7 +1515,7 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
     return(False);
   if ((y_offset < 0) || (y_offset >= (int) image->rows))
     return(False);
-  if (target->opacity == (unsigned short) matte)
+  if (target->opacity == matte)
     return(False);
   q=GetPixelCache(image,x_offset,y_offset,1,1);
   if (q == (PixelPacket *) NULL)
@@ -1594,10 +1566,9 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
             break;
         }
       else
-        if (MatteMatch(*q,*target,image->fuzz) ||
-            (q->opacity == (unsigned short) matte))
+        if (MatteMatch(*q,*target,image->fuzz) || (q->opacity == matte))
           break;
-      q->opacity=(Quantum) matte;
+      q->opacity=matte;
       q--;
     }
     if (!SyncPixelCache(image))
@@ -1626,10 +1597,9 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
                   break;
               }
             else
-              if (MatteMatch(*q,*target,image->fuzz) ||
-                  (q->opacity == (unsigned short) matte))
+              if (MatteMatch(*q,*target,image->fuzz) || (q->opacity == matte))
                 break;
-            q->opacity=(Quantum) matte;
+            q->opacity=matte;
             q++;
           }
           if (!SyncPixelCache(image))
@@ -1652,8 +1622,7 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
               break;
           }
         else
-          if (!MatteMatch(*q,*target,image->fuzz) &&
-              (q->opacity != (unsigned short) matte))
+          if (!MatteMatch(*q,*target,image->fuzz) && (q->opacity != matte))
             break;
       }
       start=x;
