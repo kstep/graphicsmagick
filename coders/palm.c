@@ -14,8 +14,8 @@
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
-%                           Christopher R. Hawks                              %
-%                                 Dec 2001                                    % 
+%                            Christopher R. Hawks                             %
+%                               December 2001                                 % 
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
@@ -46,7 +46,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Based on pnmtopalm by Bill Janssen and ppmtoTbmp by Ian Goldberg.
+%  Based on pnmtopalm by Bill Janssen and ppmtobmp by Ian Goldberg.
 %
 */
 
@@ -56,7 +56,6 @@
 #include "magick.h"
 #include "define.h"
 
-#define MIN(a,b) (a<b?a:b)
 #define PALM_IS_COMPRESSED_FLAG    0x8000
 #define PALM_HAS_COLORMAP_FLAG    0x4000
 #define PALM_HAS_TRANSPARENCY_FLAG  0x2000
@@ -64,7 +63,6 @@
 #define PALM_IS_FOR_SCREEN      0x0800
 #define PALM_IS_DIRECT_COLOR    0x0400
 #define PALM_HAS_FOUR_BYTE_FIELD  0x0200
-
 #define PALM_COMPRESSION_SCANLINE  0x00
 #define PALM_COMPRESSION_RLE    0x01
 #define PALM_COMPRESSION_NONE    0xFF
@@ -344,7 +342,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       for (i = 0; i < bytes_per_row; i += 8)
         {
         count = ReadBlobByte(image);
-        byte = MIN(bytes_per_row - i, 8);
+        byte = Min(bytes_per_row - i, 8);
         for (bit = 0; bit < byte; bit++)
           {
           if (y == 0 || count & (1 << (7 - bit)))
@@ -682,7 +680,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
       for (x = 0;  x < bytes_per_row;  x += 8)
         {
         tptr = tmpbuf;
-        for(bit = 0, byte = 0; bit < MIN(8, bytes_per_row - x); bit++)
+        for(bit = 0, byte = 0; bit < Min(8, bytes_per_row - x); bit++)
           {
           if((y == 0) || (lastrow[x + bit] != one_row[x + bit]))
             {
