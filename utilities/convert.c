@@ -160,71 +160,18 @@
 */
 
 /*
+  Forward reference
+*/
+void ConcatenateImages(int argc,char **argv);
+/*
   Include declarations.
 */
+#if defined(CONVERT_MAIN)
+static int convert_main(int argc,char **argv,
+  const char *header_data,const int header_length)
+#else
 #include "magick/magick.h"
 #include "magick/defines.h"
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U s a g e                                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ConcatentateImages reads each file in sequence and writes it to a
-%  single file.  It is required by the delegates subsystem.
-%
-%  The format of the ConcatentateImages method is:
-%
-%      void ConcatenateImages(int argc,char **argv)
-%
-%  A description of each parameter follows:
-%
-%    o argc: Specifies a pointer to an integer describing the number of
-%      elements in the argument vector.
-%
-%    o argv: Specifies a pointer to a text array containing the command line
-%      arguments.
-%
-%
-*/
-static void ConcatenateImages(int argc,char **argv)
-{
-  FILE
-    *input,
-    *output;
-
-  register int
-    c,
-    i;
-
-  /*
-    Open output file.
-  */
-  output=fopen(argv[argc-1],"wb");
-  if (output == (FILE *) NULL)
-    MagickError(FileOpenError,"Unable to open file",argv[argc-1]);
-  for (i=2; i < (argc-1); i++)
-  {
-    input=fopen(argv[i],"rb");
-    if (input == (FILE *) NULL)
-      {
-        MagickWarning(FileOpenWarning,"Unable to open file",argv[i]);
-        continue;
-      }
-    for (c=fgetc(input); c != EOF; c=fgetc(input))
-      (void) fputc((char) c,output);
-    (void) fclose(input);
-    (void) remove(argv[i]);
-  }
-  (void) fclose(output);
-  Exit(0);
-}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -389,11 +336,11 @@ static void Usage(const char *client_name)
 %
 */
 int main(int argc,char **argv)
+#endif
 {
 #define NotInitialized  (unsigned int) (~0)
 
   char
-    *cgi,
     *client_name,
     *filename,
     *option;
@@ -434,13 +381,12 @@ int main(int argc,char **argv)
   /*
     Initialize command line arguments.
   */
+#if !defined(CONVERT_MAIN)
   ReadCommandlLine(argc,&argv);
   MagickIncarnate(*argv);
+#endif
   client_name=SetClientName((char *) NULL);
-	if (getenv("GATEWAY_INTERFACE"))
-    status=CGIToArgv(getenv("QUERY_STRING"),&argc,&argv);
-  else
-    status=ExpandFilenames(&argc,&argv);
+  status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
   if (argc < 3)
@@ -450,7 +396,6 @@ int main(int argc,char **argv)
   */
   append=0;
   average=False;
-  cgi=(char *) NULL;
   coalesce=False;
   deconstruct=False;
   GetExceptionInfo(&exception);
@@ -619,17 +564,6 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing order",option);
-                }
-              break;
-            }
-          if (LocaleNCompare("cgi",option+1,3) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing mime type",option);
-                  cgi=argv[i];
                 }
               break;
             }
@@ -1884,11 +1818,10 @@ int main(int argc,char **argv)
   SetImageInfo(image_info,True);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
-    if (cgi != (char *) NULL)
-      {
-        puts ("HTTP/1.0 200 Ok");
-        printf ("Content-Type: %s\n\n", cgi);
-      }
+#if defined(CONVERT_MAIN)
+    if (header_data != (char *) NULL)
+      fwrite((char *) header_data,1,header_length,stdout);
+#endif
     status=WriteImage(image_info,p);
     if (status == False)
       CatchImageException(p);
@@ -1899,7 +1832,73 @@ int main(int argc,char **argv)
     DescribeImage(image,stderr,False);
   DestroyImages(image);
   DestroyImageInfo(image_info);
+#if !defined(CONVERT_MAIN)
   FreeMemory((void **) &argv);
   Exit(0);
   return(False);
+#else
+  return(True);
+#endif
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o n c a t e n t a t e I m a g e s                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ConcatentateImages reads each file in sequence and writes it to a
+%  single file.  It is required by the delegates subsystem.
+%
+%  The format of the ConcatentateImages method is:
+%
+%      void ConcatenateImages(int argc,char **argv)
+%
+%  A description of each parameter follows:
+%
+%    o argc: Specifies a pointer to an integer describing the number of
+%      elements in the argument vector.
+%
+%    o argv: Specifies a pointer to a text array containing the command line
+%      arguments.
+%
+%
+*/
+void ConcatenateImages(int argc,char **argv)
+{
+  FILE
+    *input,
+    *output;
+
+  register int
+    c,
+    i;
+
+  /*
+    Open output file.
+  */
+  output=fopen(argv[argc-1],"wb");
+  if (output == (FILE *) NULL)
+    MagickError(FileOpenError,"Unable to open file",argv[argc-1]);
+  for (i=2; i < (argc-1); i++)
+  {
+    input=fopen(argv[i],"rb");
+    if (input == (FILE *) NULL)
+      {
+        MagickWarning(FileOpenWarning,"Unable to open file",argv[i]);
+        continue;
+      }
+    for (c=fgetc(input); c != EOF; c=fgetc(input))
+      (void) fputc((char) c,output);
+    (void) fclose(input);
+    (void) remove(argv[i]);
+  }
+  (void) fclose(output);
+  Exit(0);
+}
+
