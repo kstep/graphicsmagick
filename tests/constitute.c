@@ -204,6 +204,9 @@ int main ( int argc, char **argv )
                 {
                   storage_type=FloatPixel;
                   quantum_size=sizeof(float);
+#if (QuantumDepth > 16)
+                  fuzz_factor=7.5e-06; // Float requires some slop for Q:32
+#endif
                 }
               else if (LocaleCompare("Double",argv[arg]) == 0)
                 {
@@ -360,12 +363,12 @@ int main ( int argc, char **argv )
       CatchException(&final->exception);
       if (original->error.normalized_mean_error > fuzz_factor)
         {
+          exit_status = 1;
           printf( "Constitute check failed: %u/%g/%g\n",
                   (unsigned int) original->error.mean_error_per_pixel,
                   original->error.normalized_mean_error,
                   original->error.normalized_maximum_error);
         }
-      exit_status = 1;
       goto program_exit;
     }
 

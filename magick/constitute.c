@@ -320,15 +320,19 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                   }
                 case FloatPixel:
                   {
+                    double quantum_float;
                     register const float *p = pixels;
-                    quantum=(Quantum) ((double) MaxRGB*(*p++)+0.5);
+                    quantum_float=(double) MaxRGB*(*p++);
+                    quantum=RoundSignedToQuantum(quantum_float);
                     pixels = (const void *) p;
                     break;
                   }
                 case DoublePixel:
                   {
+                    double quantum_float;
                     register const double *p = pixels;
-                    quantum=(Quantum) ((double) MaxRGB*(*p++)+0.5);
+                    quantum_float=(double) MaxRGB*(*p++);
+                    quantum=RoundSignedToQuantum(quantum_float);
                     pixels = (const void *) p;
                     break;
                   }
@@ -642,7 +646,15 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
                   }
                 case IntensityMapQuantum:
                   {
-                    quantum=PixelIntensityToQuantum(p);
+                    if (image->is_grayscale)
+                      {
+                        quantum=p->red;
+                      }
+                    else
+                      {
+                        double intensity = PixelIntensity(p);
+                        quantum=RoundToQuantum(intensity);
+                      }
                     break;
                   }
                 case OpacityInvertedMapQuantum:
@@ -701,7 +713,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
                 case FloatPixel:
                   {
                     register float *q = pixels;
-                    *q++=(double) quantum/MaxRGB;
+                    *q++=(float) ((double) quantum/MaxRGB);
                     pixels=(void *) q;
                     break;
                   }

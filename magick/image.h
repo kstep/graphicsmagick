@@ -120,14 +120,16 @@ typedef unsigned int Quantum;
 
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
-#define PixelIntensityToQuantum(pixel) ((Quantum)PixelIntensity(pixel))
-#define PixelIntensityToDouble(pixel) ((double)PixelIntensity(pixel))
 #define OpaqueOpacity  0UL
 #define TransparentOpacity  MaxRGB
 #define RoundSignedToQuantum(value) ((Quantum) (value < 0 ? 0 : \
   (value > MaxRGB) ? MaxRGB : value + 0.5))
 #define RoundToQuantum(value) ((Quantum) (value > MaxRGB ? MaxRGB : \
   value + 0.5))
+
+#define PixelIntensityToDouble(pixel) ((double)PixelIntensity(pixel))
+#define PixelIntensityToQuantum(pixel) ((Quantum)PixelIntensity(pixel))
+
 /*
   Deprecated defines.
 */

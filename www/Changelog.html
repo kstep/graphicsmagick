@@ -56,6 +56,19 @@
 2004-03-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> tests/constitute.c (main): Float type seems to require allowing
+        a bit of error for Q:32.<BR>
+  <LI> magick/constitute.c (DispatchImage): Be more careful when
+        rounding pixel intensity.<BR>
+        (ConstituteImage): Be more careful when converting float and
+        double to Quantum.<BR>
+  <LI> magick/composite.c (CompositeImage): Fix Multiply composite
+        operator for Q:32 build (was all black image).
+        (CompositeImage): Tidied up the documented composite operators so
+        the implementation is easier to understand.
+  <LI> PerlMagick/t/ttf/read.t: Set a desired label size so output
+        image should be the same size as the reference image even if the
+        FreeType type hinter is disabled.
   <LI> magick/annotate.c (RenderFreetype): Improve outline bounding box
         computation accuracy.
 
