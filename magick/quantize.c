@@ -299,6 +299,7 @@ static void
   DefineImageColormap(Image *,NodeInfo *),
   HilbertCurve(CubeInfo *,Image *,const unsigned long,const unsigned int),
   PruneLevel(CubeInfo *,const NodeInfo *),
+  PruneToCubeDepth(CubeInfo *,const NodeInfo *),
   ReduceImageColors(CubeInfo *,const unsigned long,ExceptionInfo *);
 
 /*
@@ -560,6 +561,9 @@ static unsigned int ClassifyImageColors(CubeInfo *cube_info,const Image *image,
     level,
     id;
 
+  /*
+    Classify the first 256 colors to a tree depth of 8.
+  */
   for (y=0; (y < (long) image->rows) && (cube_info->colors < 256); y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,exception);
@@ -635,6 +639,12 @@ static unsigned int ClassifyImageColors(CubeInfo *cube_info,const Image *image,
       if (!MagickMonitor(ClassifyImageText,y,image->rows,exception))
         break;
   }
+  if (y == (long) image->rows)
+    return(True);
+  /*
+    More than 256 colors;  classify to the cube_info->depth tree depth.
+  */
+  PruneToCubeDepth(cube_info,cube_info->root);
   for ( ; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,exception);
@@ -2010,6 +2020,49 @@ static void PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
       if (node_info->census & (1 << id))
         PruneLevel(cube_info,node_info->child[id]);
   if (node_info->level == cube_info->depth)
+    PruneChild(cube_info,node_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  P r u n e T o C u b e D e p t h                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PruneToCubeDepth() deletes any nodes ar a depth greater than
+%  cube_info->depth while merging their color statistics into their parent
+%  node.
+%
+%  The format of the PruneToCubeDepth method is:
+%
+%      PruneToCubeDepth(CubeInfo *cube_info,const NodeInfo *node_info)
+%
+%  A description of each parameter follows.
+%
+%    o cube_info: A pointer to the Cube structure.
+%
+%    o node_info: pointer to node in color cube tree that is to be pruned.
+%
+%
+*/
+static void PruneToCubeDepth(CubeInfo *cube_info,const NodeInfo *node_info)
+{
+  register long
+    id;
+
+  /*
+    Traverse any children.
+  */
+  if (node_info->census != 0)
+    for (id=0; id < MaxTreeDepth; id++)
+      if (node_info->census & (1 << id))
+        PruneToCubeDepth(cube_info,node_info->child[id]);
+  if (node_info->level > cube_info->depth)
     PruneChild(cube_info,node_info);
 }
 

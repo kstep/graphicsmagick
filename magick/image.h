@@ -991,8 +991,7 @@ extern MagickExport ImageType
 
 extern MagickExport IndexPacket
   ConstrainColormapIndex(Image *,const unsigned long),
-  *GetIndexes(const Image *),
-  ValidateColormapIndex(Image *,const unsigned long);
+  *GetIndexes(const Image *);
 
 extern MagickExport int
   GetImageGeometry(const Image *,const char *,const unsigned int,

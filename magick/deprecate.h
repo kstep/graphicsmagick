@@ -14,6 +14,9 @@ extern MagickExport char
 extern MagickExport ExtendedSignedIntegralType
   SizeBlob(const Image *image);
 
+extern MagickExport IndexPacket
+  ValidateColormapIndex(Image *,const unsigned long);
+
 extern MagickExport int
   ParseImageGeometry(const char *,long *,long *,unsigned long *,
     unsigned long *);
