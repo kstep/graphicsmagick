@@ -520,6 +520,10 @@ static void wmf_magick_device_begin (wmfAPI* API)
 #endif /* WMF_USE_NATIVE_READ */
 
   wmf_stream_printf (API,out,"viewbox 0 0 %u %u\n",ddata->image->columns,ddata->image->rows);
+
+  /* Make SVG output happy */
+  wmf_stream_printf (API,out,"push graphic-context\n");
+
   /* Scale width and height to image */
   ddata->scale_x = ((double)ddata->image->columns)/(ddata->bbox.BR.x - ddata->bbox.TL.x);
   ddata->scale_y = ((double)ddata->image->rows)/(ddata->bbox.BR.y - ddata->bbox.TL.y);
@@ -550,7 +554,10 @@ static void wmf_magick_device_end (wmfAPI* API)
   WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]device_end");
 
   if (out == 0) return;
-	
+
+  /* Make SVG output happy */
+  wmf_stream_printf (API,out,"pop graphic-context\n");
+
 }
 
 static void wmf_magick_flood_interior (wmfAPI* API,wmfFlood_t* flood)
