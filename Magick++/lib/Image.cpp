@@ -160,25 +160,24 @@ void Magick::Image::annotate ( const std::string &text_,
 {
   modifyImage();
 
-  MagickLib::AnnotateInfo annotateInfo;
-  MagickLib::GetAnnotateInfo( imageInfo(),
-			      &annotateInfo );
+  MagickLib::AnnotateInfo *annotateInfo;
+  annotateInfo = MagickLib::CloneAnnotateInfo(imageInfo(),0);
 
-  Magick::CloneString ( &annotateInfo.text, text_ );
+  Magick::CloneString ( &(annotateInfo->text), text_ );
 
   if ( location_.isValid() ){
     // For some reason width and height parameters in the geometry 
     // causes AnnotateImage to place text incorrectly.
     char buffer[MaxTextExtent];
     MagickLib::FormatString(buffer,"%+d%+d", location_.xOff(), location_.yOff() );
-    Magick::CloneString ( &annotateInfo.geometry, buffer );
+    Magick::CloneString ( &(annotateInfo->geometry), buffer );
   }
 
-  annotateInfo.gravity = gravity_;
-  annotateInfo.degrees = degrees_;
+  annotateInfo->gravity = gravity_;
+  annotateInfo->degrees = degrees_;
 
-  MagickLib::AnnotateImage( image(), &annotateInfo );
-  MagickLib::DestroyAnnotateInfo( &annotateInfo );
+  MagickLib::AnnotateImage( image(), annotateInfo );
+  MagickLib::DestroyAnnotateInfo( annotateInfo );
 
   throwMagickError();
 }
@@ -189,16 +188,15 @@ void Magick::Image::annotate ( const std::string &text_,
 {
   modifyImage();
 
-  MagickLib::AnnotateInfo annotateInfo;
-  MagickLib::GetAnnotateInfo( imageInfo(),
-			      &annotateInfo );
+  MagickLib::AnnotateInfo* annotateInfo;
+  annotateInfo = MagickLib::CloneAnnotateInfo(imageInfo(),0);
 
-  Magick::CloneString ( &annotateInfo.text, text_ );
+  Magick::CloneString ( &(annotateInfo->text), text_ );
 
-  annotateInfo.gravity = gravity_;
+  annotateInfo->gravity = gravity_;
 
-  MagickLib::AnnotateImage( image(), &annotateInfo );
-  MagickLib::DestroyAnnotateInfo( &annotateInfo );
+  MagickLib::AnnotateImage( image(), annotateInfo );
+  MagickLib::DestroyAnnotateInfo( annotateInfo );
 
   throwMagickError();
 }
@@ -448,23 +446,23 @@ void Magick::Image::display( void )
 void Magick::Image::draw ( const Drawable &drawable_ )
 {
   modifyImage();
-  MagickLib::AnnotateInfo annotateInfo;
-  MagickLib::GetAnnotateInfo( imageInfo(), &annotateInfo );
+  MagickLib::AnnotateInfo *annotateInfo;
+  annotateInfo = MagickLib::CloneAnnotateInfo(imageInfo(),0);
 
   // Update texture image if we have one
   if ( penTexture().isValid() )
     {
-      if ( annotateInfo.tile )
-	MagickLib::DestroyImage( annotateInfo.tile );
-      annotateInfo.tile = MagickLib::CloneImage( penTexture().image(),
+      if ( annotateInfo->tile )
+	MagickLib::DestroyImage( annotateInfo->tile );
+      annotateInfo->tile = MagickLib::CloneImage( penTexture().image(),
 						 penTexture().columns(),
 						 penTexture().rows(),
 						 (int)true);
     }
 
-  Magick::CloneString( &annotateInfo.primitive, drawable_.primitive() );
-  MagickLib::DrawImage( image(), &annotateInfo );
-  MagickLib::DestroyAnnotateInfo( &annotateInfo );
+  Magick::CloneString( &(annotateInfo->primitive), drawable_.primitive() );
+  MagickLib::DrawImage( image(), annotateInfo );
+  MagickLib::DestroyAnnotateInfo( annotateInfo );
   throwMagickError();
 }
 
@@ -483,23 +481,23 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
     }
 
   modifyImage();
-  MagickLib::AnnotateInfo annotateInfo;
-  MagickLib::GetAnnotateInfo( imageInfo(), &annotateInfo );
+  MagickLib::AnnotateInfo *annotateInfo;
+  annotateInfo = MagickLib::CloneAnnotateInfo(imageInfo(),0);
 
   // Update texture image if we have one
   if ( penTexture().isValid() )
     {
-      if ( annotateInfo.tile )
-	MagickLib::DestroyImage( annotateInfo.tile );
-      annotateInfo.tile = MagickLib::CloneImage( penTexture().image(),
-						 penTexture().columns(),
-						 penTexture().rows(),
-						 (int)true);
+      if ( annotateInfo->tile )
+	MagickLib::DestroyImage( annotateInfo->tile );
+      annotateInfo->tile = MagickLib::CloneImage( penTexture().image(),
+						  penTexture().columns(),
+						  penTexture().rows(),
+						  (int)true);
     }
 
-  Magick::CloneString( &annotateInfo.primitive, primitives );
-  MagickLib::DrawImage( image(), &annotateInfo );
-  MagickLib::DestroyAnnotateInfo( &annotateInfo );
+  Magick::CloneString( &(annotateInfo->primitive), primitives );
+  MagickLib::DrawImage( image(), annotateInfo );
+  MagickLib::DestroyAnnotateInfo( annotateInfo );
   throwMagickError();
 }
 
