@@ -43,6 +43,7 @@
 #include "magick/monitor.h"
 #include "magick/resize.h"
 #include "magick/transform.h"
+#include "magick/quantize.h"
 #include "magick/utility.h"
 #include "magick/log.h"
 #if defined(HasLCMS)
@@ -1115,21 +1116,32 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
               red,
               green,
               blue,
-              opacity;
+              black;
           } ProfilePacket;
 
           ColorspaceType
-            colorspace;
+            source_colorspace,
+            target_colorspace;
 
           cmsHPROFILE
-            image_profile,
-            transform_profile;
+            source_profile,
+            target_profile;
+
+          DWORD
+            source_type,
+            target_type;
+
+          ClassType
+            storage_class;
 
           cmsHTRANSFORM
             transform;
 
+          IndexPacket
+            *indexes;
+
           int
-            errstate,
+            error_action,
             intent;
 
           long
@@ -1138,6 +1150,9 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
           ProfilePacket
             alpha,
             beta;
+
+          QuantizeInfo
+            quantize_info;
 
           register long
             x;
@@ -1148,25 +1163,126 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
           /*
             Transform pixel colors as defined by the color profiles.
           */
-          /* Safeguard against early abortion */
-          errstate = cmsErrorAction(LCMS_ERROR_SHOW);
-          image_profile=cmsOpenProfileFromMem(image->color_profile.info,
+          error_action=cmsErrorAction(LCMS_ERROR_SHOW);
+          source_profile=cmsOpenProfileFromMem(image->color_profile.info,
             image->color_profile.length);
-          transform_profile=
-            cmsOpenProfileFromMem((unsigned char *) profile,length);
-          if ((image_profile == (cmsHPROFILE) NULL) ||
-              (transform_profile == (cmsHPROFILE) NULL))
+          target_profile=cmsOpenProfileFromMem((unsigned char *) profile,
+            length);
+          if ((source_profile == (cmsHPROFILE) NULL) ||
+              (target_profile == (cmsHPROFILE) NULL))
             ThrowBinaryException3(ResourceLimitError,UnableToManageColor,
               UnableToOpenColorProfile);
-          switch (cmsGetColorSpace(transform_profile))
+          switch (cmsGetColorSpace(source_profile))
           {
-            case icSigCmykData: colorspace=CMYKColorspace; break;
-            case icSigYCbCrData: colorspace=YCbCrColorspace; break;
-            case icSigLuvData: colorspace=YUVColorspace; break;
-            case icSigGrayData: colorspace=GRAYColorspace; break;
-            case icSigRgbData: colorspace=RGBColorspace; break;
-            default: colorspace=RGBColorspace; break;
+            case icSigCmykData:
+            {
+              source_colorspace=CMYKColorspace;
+              source_type=TYPE_CMYK_16;
+              break;
+            }
+            case icSigYCbCrData:
+            {
+              source_colorspace=YCbCrColorspace;
+              source_type=TYPE_YCbCr_16;
+              break;
+            }
+            case icSigLuvData:
+            {
+              source_colorspace=YUVColorspace;
+              source_type=TYPE_YUV_16;
+              break;
+            }
+            case icSigGrayData:
+            {
+              source_colorspace=GRAYColorspace;
+              source_type=TYPE_GRAY_16;
+              break;
+            }
+            case icSigRgbData:
+            {
+              source_colorspace=RGBColorspace;
+              source_type=TYPE_RGB_16;
+              break;
+            }
+            default:
+            {
+              source_colorspace=UndefinedColorspace;
+              source_type=TYPE_RGB_16;
+              break;
+            }
           }
+          switch (cmsGetColorSpace(target_profile))
+          {
+            case icSigCmykData:
+            {
+              target_colorspace=CMYKColorspace;
+              target_type=TYPE_CMYK_16;
+              break;
+            }
+            case icSigYCbCrData:
+            {
+              target_colorspace=YCbCrColorspace;
+              target_type=TYPE_YCbCr_16;
+              break;
+            }
+            case icSigLuvData:
+            {
+              target_colorspace=YUVColorspace;
+              target_type=TYPE_YUV_16;
+              break;
+            }
+            case icSigGrayData:
+            {
+              target_colorspace=GRAYColorspace;
+              target_type=TYPE_GRAY_16;
+              break;
+            }
+            case icSigRgbData:
+            {
+              target_colorspace=RGBColorspace;
+              target_type=TYPE_RGB_16;
+              break;
+            }
+            default:
+            {
+              target_colorspace=UndefinedColorspace;
+              target_type=TYPE_RGB_16;
+              break;
+            }
+          }
+          if ((source_colorspace == UndefinedColorspace) ||
+              (target_colorspace == UndefinedColorspace))
+            {
+              cmsCloseProfile(source_profile);
+              cmsCloseProfile(target_profile);
+              ThrowBinaryException3(ImageError,UnableToAssignProfile,
+                ColorspaceColorProfileMismatch);
+            }
+          if ((source_colorspace == GRAYColorspace) &&
+              (!IsGrayImage(image,&image->exception)))
+            {
+              cmsCloseProfile(source_profile);
+              cmsCloseProfile(target_profile);
+              ThrowBinaryException3(ImageError,UnableToAssignProfile,
+                ColorspaceColorProfileMismatch);
+            }
+          if ((source_colorspace == CMYKColorspace) &&
+              (image->colorspace != CMYKColorspace))
+            {
+              cmsCloseProfile(source_profile);
+              cmsCloseProfile(target_profile);
+              ThrowBinaryException3(ImageError,UnableToAssignProfile,
+                ColorspaceColorProfileMismatch);
+            }
+          if ((source_colorspace != GRAYColorspace) &&
+              (source_colorspace != CMYKColorspace) &&
+              (image->colorspace != RGBColorspace))
+            {
+              cmsCloseProfile(source_profile);
+              cmsCloseProfile(target_profile);
+              ThrowBinaryException3(ImageError,UnableToAssignProfile,
+                ColorspaceColorProfileMismatch);
+            }
           switch (image->rendering_intent)
           {
             case AbsoluteIntent: intent=INTENT_ABSOLUTE_COLORIMETRIC; break;
@@ -1175,70 +1291,83 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
             case SaturationIntent: intent=INTENT_SATURATION; break;
             default: intent=INTENT_PERCEPTUAL; break;
           }
-          if (image->colorspace == CMYKColorspace)
-            {
-              if (colorspace == CMYKColorspace)
-                transform=cmsCreateTransform(image_profile,TYPE_CMYK_16,
-                  transform_profile,TYPE_CMYK_16,intent,0);
-              else
-                transform=cmsCreateTransform(image_profile,TYPE_CMYK_16,
-                  transform_profile,TYPE_RGBA_16,intent,0);
-            }
-          else
-            {
-              if (colorspace == CMYKColorspace)
-                transform=cmsCreateTransform(image_profile,TYPE_RGBA_16,
-                  transform_profile,TYPE_CMYK_16,intent,0);
-              else
-                transform=cmsCreateTransform(image_profile,TYPE_RGBA_16,
-                  transform_profile,TYPE_RGBA_16,intent,0);
-            }
-          /* we dump these at this point since we do not need them and do no want to have a
-             memory leak if something goes wrong from this point forward */
-          cmsCloseProfile(image_profile);
-          cmsCloseProfile(transform_profile);
+          transform=cmsCreateTransform(source_profile,source_type,
+            target_profile,target_type,intent,0);
+          cmsCloseProfile(source_profile);
+          cmsCloseProfile(target_profile);
           if (transform == (cmsHTRANSFORM) NULL)
             {
-              /* Restores error handler previous state */
-              cmsErrorAction(errstate);
+              cmsErrorAction(error_action);
               ThrowBinaryException3(ResourceLimitError,UnableToManageColor,
                 UnableToCreateColorTransform);
             }
           (void) LogMagickEvent(TransformEvent,GetMagickModule(),"Performing color conversion");
+          storage_class=image->storage_class;
+          if (image->storage_class == PseudoClass)
+            {
+              SyncImage(image);
+              image->storage_class=DirectClass;
+            }
+          if (target_colorspace == CMYKColorspace)
+            image->colorspace=target_colorspace;
           for (y=0; y < (long) image->rows; y++)
           {
             q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
+            indexes=GetIndexes(image);
             for (x=0; x < (long) image->columns; x++)
             {
               alpha.red=ScaleQuantumToShort(q->red);
-              alpha.green=ScaleQuantumToShort(q->green);
-              alpha.blue=ScaleQuantumToShort(q->blue);
-              alpha.opacity=ScaleQuantumToShort(q->opacity);
+              if (source_colorspace != GRAYColorspace)
+                {
+                  alpha.green=ScaleQuantumToShort(q->green);
+                  alpha.blue=ScaleQuantumToShort(q->blue);
+                  if (source_colorspace == CMYKColorspace)
+                    alpha.black=ScaleQuantumToShort(indexes[x]);
+                }
               cmsDoTransform(transform,&alpha,&beta,1);
               q->red=ScaleShortToQuantum(beta.red);
-              q->green=ScaleShortToQuantum(beta.green);
-              q->blue=ScaleShortToQuantum(beta.blue);
-              q->opacity=ScaleShortToQuantum(beta.opacity);
+              if (target_colorspace == GRAYColorspace)
+                {
+                  q->green=q->red;
+                  q->blue=q->red;
+                }
+              else
+                {
+                  q->green=ScaleShortToQuantum(beta.green);
+                  q->blue=ScaleShortToQuantum(beta.blue);
+                }
+              if (target_colorspace == CMYKColorspace)
+                indexes[x]=ScaleShortToQuantum(beta.black);
               q++;
             }
             if (!SyncImagePixels(image))
               break;
           }
           cmsDeleteTransform(transform);
-#ifdef PREVIOUS_RELEASE_LOGIC
-          cmsCloseProfile(image_profile);
-          cmsCloseProfile(transform_profile);
-#endif
-          if (colorspace == CMYKColorspace)
-            image->colorspace=CMYKColorspace;
-          else
-            image->colorspace=RGBColorspace;
-          /* Restores error handler previous state */
-          cmsErrorAction(errstate);
+          image->colorspace=target_colorspace;
+          if ((storage_class == PseudoClass) &&
+              ((source_colorspace != GRAYColorspace) ||
+               (source_colorspace == target_colorspace)))
+            {
+              /*
+                Create new image colormap.
+              */
+              GetQuantizeInfo(&quantize_info);
+              quantize_info.tree_depth=8;
+              quantize_info.dither=False;
+              quantize_info.colorspace=target_colorspace;
+              quantize_info.number_colors=image->colors;
+              (void) QuantizeImage(&quantize_info,image);
+            }
+          cmsErrorAction(error_action);
+#else
+          ThrowBinaryException(MissingDelegateError,"LCMSLibraryIsNotAvailable",
+            image->filename);
 #endif
           MagickFreeMemory(image->color_profile.info);
+          image->color_profile.info=(unsigned char *) NULL;
         }
       if (clone)
         {

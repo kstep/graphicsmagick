@@ -694,6 +694,9 @@
       <Message name="AngleIsDiscontinuous">
         angle is discontinuous
       </Message>
+      <Message name="ColorspaceColorProfileMismatch">
+        Colorspace color profile mismatch
+      </Message>
       <Message name="ImageColorspaceDiffers">
         image colorspace differs
       </Message>
@@ -723,6 +726,9 @@
       </Message>
       <Message name="UnableToAppendImage">
         unable to append image
+      </Message>
+      <Message name="UnableToAssignProfile">
+        Unable to assign profile
       </Message>
       <Message name="UnableToAverageImage">
         unable to average image
