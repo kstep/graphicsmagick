@@ -140,9 +140,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   hid_t
     dataset,
     dataspace,
-    datatype,
-    file,
-    space;
+    file;
 
   Image
     *image;
@@ -301,7 +299,6 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     y;
 
   register int
-    i,
     x;
 
   register PixelPacket
