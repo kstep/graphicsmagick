@@ -30,17 +30,17 @@ for details):
     - ImageMagick image registry format added (magick string "mpr").
       This format provides a means for in-memory images to be registered
       and passed to the drawing module (without use of temporary file)
-      via the filename "mpr:id". Registration of images is managed via
-      the SetMagickRegistry(), GetMagickRegistry(), and
-      DeleteMagickRegistry() C APIs.
+      via the filename "mpr:id". Registration of images is managed via the
+      SetMagickRegistry(), GetMagickRegistry(), and DeleteMagickRegistry()
+      C APIs.
 
     - Support added for reading the GIMP's native XCF image format
       (thanks to Leonard Rosenthol).
 
     - WMF rendering is improved. Dashed lines are now supported. Text
       scaling and placement is significantly improved. Scaling and
-      translation of coordinates to fit the image are done by the
-      drawing module rather than within the WMF renderer.
+      translation of coordinates to fit the image are done by the drawing
+      module rather than within the WMF renderer.
 
     - Pattern definition, and filling with pattern, are now supported by
       the SVG renderer, and by ImageMagick's native drawing format
@@ -63,12 +63,15 @@ for details):
 
     - Added PingBlob() function to test a BLOB based on its header.
 
-    - AcquireImagePixels() now supports "virtual pixels" which represent
-      pixels which are located outside of the image. This allows image
-      processing algorithms to request rectangular regions of pixels,
-      without regard to whether some of the region is outside of the image.
-      The pixels returned from outside of the image are set to be similar
-      to the edge pixels.
+    - AcquireImagePixels() now supports "virtual pixels" by replicating
+      any edge pixel toward infinity.  This helps eliminate the need
+      for special case edge operations for kernel-based image processing
+      operations such as median filtering.  This means you can negative
+      offsets as well as widths or heights that exceed the boundaries
+      of an image:
+
+	p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,
+	  width,&exception).
 
   o C++ API enhancements:
 

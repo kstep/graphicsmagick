@@ -811,8 +811,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     density=0.0;
     n=0;
     center=(double) x/x_factor;
-    start=(int) Max(center-support+0.5,0);
-    end=(int) Min(center+support+0.5,source->columns);
+    start=(long) Max(ceil(center-support-0.5),0);
+    end=(long) Min(floor(center+support+0.5),source->columns);
     for (i=start; i < end; i++)
     {
       contribution[n].pixel=i;
@@ -839,8 +839,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       opacity=0.0;
       for (i=0; i < n; i++)
       {
-        j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
-          (contribution[i].pixel-contribution[0].pixel);
+        j=(long) ceil(y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+          (contribution[i].pixel-contribution[0].pixel+1)-0.5);
         red+=contribution[i].weight*(p+j)->red;
         green+=contribution[i].weight*(p+j)->green;
         blue+=contribution[i].weight*(p+j)->blue;
@@ -948,8 +948,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     density=0.0;
     n=0;
     center=(double) y/y_factor;
-    start=(int) Max(center-support+0.5,0);
-    end=(int) Min(center+support+0.5,source->rows);
+    start=(long) Max(ceil(center-support-0.5),0);
+    end=(long) Min(floor(center+support+0.5),source->rows);
     for (i=start; i < end; i++)
     {
       contribution[n].pixel=i;
@@ -976,8 +976,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       opacity=0.0;
       for (i=0; i < n; i++)
       {
-        j=(long)
-          ((contribution[i].pixel-contribution[0].pixel)*source->columns+x);
+        j=(long) ceil(((contribution[i].pixel-contribution[0].pixel+1)*
+          source->columns+x)-0.5);
         red+=contribution[i].weight*(p+j)->red;
         green+=contribution[i].weight*(p+j)->green;
         blue+=contribution[i].weight*(p+j)->blue;
