@@ -55,6 +55,49 @@
 #include "magick.h"
 #include "define.h"
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s T T F                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsTTF returns True if the image format type, identified by the
+%  magick string can be handled by this module.
+%
+%  The format of the IsTTF method is:
+%
+%      unsigned int IsTTF(const unsigned char *magick,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsTTF returns True if the image format type can be
+%               handled by this module.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+static unsigned int IsTTF(const unsigned char *magick,const size_t length)
+{
+  if (length < 23)
+    return(False);
+  /* PFB */
+  if (LocaleNCompare((char *) magick,"%!PS-AdobeFont-1.0",0) == 0)
+    return(True);
+  /* TTF */
+  if(magick[0] == 0x0 && magick[1] == 0x1 && magick[2] == 0x0 &&
+     magick[3] == 0x0 && magick[4] == 0x0)
+    return(True);
+  return(False);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -200,30 +243,28 @@ ModuleExport void RegisterTTFImage(void)
 
   entry=SetMagickInfo("TTF");
   entry->decoder=ReadTTFImage;
+  entry->magick=IsTTF;
   entry->adjoin=False;
   entry->description=AllocateString("TrueType font");
   entry->module=AllocateString("TTF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("AFM");
   entry->decoder=ReadTTFImage;
-  entry->adjoin=False;
-  entry->description=AllocateString("TrueType font");
-  entry->module=AllocateString("TTF");
-  (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("PFA");
-  entry->decoder=ReadTTFImage;
+  entry->magick=IsTTF;
   entry->adjoin=False;
   entry->description=AllocateString("TrueType font");
   entry->module=AllocateString("TTF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PFB");
   entry->decoder=ReadTTFImage;
+  entry->magick=IsTTF;
   entry->adjoin=False;
   entry->description=AllocateString("TrueType font");
   entry->module=AllocateString("TTF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PFM");
   entry->decoder=ReadTTFImage;
+  entry->magick=IsTTF;
   entry->adjoin=False;
   entry->description=AllocateString("TrueType font");
   entry->module=AllocateString("TTF");
