@@ -476,7 +476,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     number_components=1;
   for (i=0; i < number_components; i++)
   {
-    memset(component_info[i],0,sizeof(jas_image_cmptparm_t));
+    memset(component_info+i,0,sizeof(jas_image_cmptparm_t));
     component_info[i].hstep=1;
     component_info[i].vstep=1;
     component_info[i].width=image->columns;
