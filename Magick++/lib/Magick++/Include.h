@@ -50,11 +50,9 @@ namespace MagickLib
 #undef class
 }
 
-
-/**
- * Under Visual C++ we have single threaded static libraries, or
- * mutli-threaded DLLs using the multithreaded runtime DLLs.
- **/
+//
+// Provide appropriate DLL imports/exports for Visual C++ and MinGW builds
+//
 #if defined(WIN32) && !defined(__CYGWIN__)
 #  if defined(_MT) && defined(_DLL) && !defined(_LIB)
 #    pragma warning( disable: 4273 )      /* Disable the stupid dll linkage warnings */
