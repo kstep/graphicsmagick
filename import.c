@@ -832,6 +832,7 @@ int main(int argc,char **argv)
     Transmogrify image as defined by the image processing options.
   */
   MogrifyImages(image_info,argc,argv,&image);
+  SetImageInfo(image_info,True);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     (void) WriteImage(image_info,p);
@@ -839,7 +840,7 @@ int main(int argc,char **argv)
       break;
   }
   if (image_info->verbose)
-    DescribeImage(image,stdout,False);
+    DescribeImage(image,stderr,False);
   DestroyDelegateInfo();
   Exit(0);
   return(False);

@@ -1158,6 +1158,7 @@ int main(int argc,char **argv)
       }
     (void) strcpy(p->filename,argv[argc-1]);
   }
+  SetImageInfo(&image_info,True);
   for (p=montage_image; p != (Image *) NULL; p=p->next)
   {
     (void) WriteImage(&image_info,p);

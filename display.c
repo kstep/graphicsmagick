@@ -1396,10 +1396,11 @@ int main(int argc,char **argv)
                   Write image.
                 */
                 (void) strcpy(image->filename,resource_info.write_filename);
+                SetImageInfo(image_info,True);
                 (void) WriteImage(image_info,image);
               }
             if (image_info->verbose)
-              DescribeImage(image,stdout,False);
+              DescribeImage(image,stderr,False);
             /*
               Proceed to next/previous image.
             */

@@ -1418,6 +1418,7 @@ int main(int argc,char **argv)
           (void) strcpy(p->filename,image->filename);
           p->scene=scene++;
         }
+        SetImageInfo(&image_info,True);
         for (p=image; p != (Image *) NULL; p=p->next)
         {
           status=WriteImage(&image_info,p);
@@ -1427,7 +1428,7 @@ int main(int argc,char **argv)
         for (p=image; p != (Image *) NULL; p=p->next)
           scene--;
         if (image_info.verbose)
-          DescribeImage(image,stdout,False);
+          DescribeImage(image,stderr,False);
         if ((format == (char *) NULL) && (status != False))
           if (Latin1Compare(image_info.filename,"-") != 0)
             {

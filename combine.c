@@ -901,9 +901,10 @@ int main(int argc,char **argv)
     Write image.
   */
   (void) strcpy(combined_image->filename,write_filename);
+  SetImageInfo(&image_info,True);
   (void) WriteImage(&image_info,combined_image);
   if (image_info.verbose)
-    DescribeImage(combined_image,stdout,False);
+    DescribeImage(combined_image,stderr,False);
   DestroyDelegateInfo();
   Exit(0);
   return(False);

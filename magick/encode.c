@@ -13611,8 +13611,7 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     */
     TransformRGBImage(image,RGBColorspace);
     image->orphan=True;
-    yuv_image=ZoomImage(image,
-      image->columns+(image->columns & 0x01 ? 1 : 0),
+    yuv_image=ZoomImage(image,image->columns+(image->columns & 0x01 ? 1 : 0),
       image->rows+(image->rows & 0x01 ? 1 : 0));
     image->orphan=False;
     if (yuv_image == (Image *) NULL)

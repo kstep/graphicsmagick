@@ -6006,18 +6006,18 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
         PrematureExit(DelegateWarning,"Memory allocation failed",image);
       for (i=0; i < length; i++)
       {
-        if (glyphs[(unsigned char) unicode[i]].z != (TT_Glyph *) NULL)
+        if (glyphs[unicode[i]].z != (TT_Glyph *) NULL)
           continue;
         if (character_map)
-          code=TT_Char_Index(char_map,(unsigned char) unicode[i]);
+          code=TT_Char_Index(char_map,unicode[i]);
         else
           {
-            code=((int) unicode[i]-' '+1) < 0 ? 0 : (unicode[i]-' '+1);
+            code=((int) unicode[i]-' '+1) < 0 ? 0 : ((int) unicode[i]-' '+1);
             if ((int) code >= number_glyphs)
               code=0;
           }
-        error=TT_New_Glyph(face,&glyphs[(unsigned char) unicode[i]]);
-        error|=TT_Load_Glyph(instance,glyphs[(unsigned char) unicode[i]],code,
+        error=TT_New_Glyph(face,&glyphs[unicode[i]]);
+        error|=TT_Load_Glyph(instance,glyphs[unicode[i]],code,
           TTLOAD_SCALE_GLYPH | TTLOAD_HINT_GLYPH);
         if (error)
           PrematureExit(DelegateWarning,"Cannot initialize TTF glyph",image);
@@ -6031,9 +6031,9 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
         (int) face_properties.header->Units_Per_EM)+1;
       for (i=0; i < length; i++)
       {
-        if (glyphs[(unsigned char) unicode[i]].z == (TT_Glyph *) NULL)
+        if (glyphs[unicode[i]].z == (TT_Glyph *) NULL)
           continue;
-        TT_Get_Glyph_Metrics(glyphs[(unsigned char) unicode[i]],&glyph_metrics);
+        TT_Get_Glyph_Metrics(glyphs[unicode[i]],&glyph_metrics);
         width+=glyph_metrics.advance/64;
       }
       canvas.rows=height;
@@ -6060,11 +6060,10 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
         (int) face_properties.header->Units_Per_EM);
       for (i=0; i < length; i++)
       {
-        if (glyphs[(unsigned char) unicode[i]].z == (TT_Glyph *) NULL)
+        if (glyphs[unicode[i]].z == (TT_Glyph *) NULL)
           continue;
-        TT_Get_Glyph_Metrics(glyphs[(unsigned char) unicode[i]],&glyph_metrics);
-        RenderGlyph(&canvas,&character,glyphs[(unsigned char) unicode[i]],x,y,
-          &glyph_metrics);
+        TT_Get_Glyph_Metrics(glyphs[unicode[i]],&glyph_metrics);
+        RenderGlyph(&canvas,&character,glyphs[unicode[i]],x,y,&glyph_metrics);
         x+=glyph_metrics.advance/64;
       }
       /*
@@ -15890,7 +15889,7 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
     (void) CloneString(&annotate_info.text,text);
     AnnotateImage(image,&annotate_info);
     annotate_info.image_info->pointsize=i;
-    FormatString(geometry,"+40%+d",y);
+    FormatString(geometry,"+50%+d",y);
     (void) CloneString(&annotate_info.geometry,geometry);
     (void) CloneString(&annotate_info.text,
       "That which does not kill us, makes us stronger");

@@ -5566,6 +5566,7 @@ Write(ref,...)
       (void) strcpy(next->filename,filename);
       next->scene=scene++;
     }
+    SetImageInfo(package_info->image_info,True);
     for (next=image; next; next=next->next)
     {
       if (WriteImage(package_info->image_info,next))

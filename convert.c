@@ -1631,6 +1631,7 @@ int main(int argc,char **argv)
     (void) strcpy(p->filename,argv[i]);
     p->scene=scene++;
   }
+  SetImageInfo(&image_info,True);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     (void) WriteImage(&image_info,p);
@@ -1638,7 +1639,7 @@ int main(int argc,char **argv)
       break;
   }
   if (image_info.verbose)
-    DescribeImage(image,stdout,False);
+    DescribeImage(image,stderr,False);
   DestroyDelegateInfo();
   Exit(0);
   return(False);
