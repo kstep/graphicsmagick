@@ -108,21 +108,17 @@ invoked with
 </pre>
 </dd>
 
-<dd>All operations will closely follow the key/value pairs defined in PerlMagick, unless otherwise noted.</dd>
-			<dd>
-			<dd>You can also define your own keyword/value pairs on the command line. The script can then use this information when setting values by including %[keyword] in the string.  For example, if you included &quot;-geometry 400x400&quot; on the command line, then any string containing &quot;%[geometry]&quot; would have 400x400 substituted.  This can be either an entire string, such as geometry=&quot;%[geometry]&quot; or part of a string such as filename=&quot;%[basename].png&quot;.</dd>
-			<dd>
-			<dd>
-			<dd>
-			<dd>
-			<dd>
-			<dd>
-			<dd>
-			<dd>
-			<dd>
-			<dd>
-			<dd>
-			<dd>
+<dd>All operations will closely follow the key/value pairs defined in
+PerlMagick, unless otherwise noted.</dd>
+<dd>You can also define your own keyword/value pairs on the command line.
+The script can then use this information when setting values by including
+%[keyword] in the string.  For example, if you included
+&quot;-geometry 400x400&quot; on the command line, then any string
+containing &quot;%[geometry]&quot; would have 400x400 substituted.
+This can be either an entire string, such as
+geometry=&quot;%[geometry]&quot; or part of a string such as
+filename=&quot;%[basename].png&quot;.</dd>
+<dd>
 <strong>Conjure</strong> is in the early stages of development as of
 December 2001.
 </dd>
@@ -157,70 +153,6 @@ in the scripting language.
 </dl>
 
 <p>&nbsp;
-
-     <table BORDER=0 WIDTH="94%">
-     <tr>
-     <td width="3%"><br></td> 
-     <td ALIGN=LEFT BGCOLOR="#9EBAC6">
-     <img SRC="../images/right_triangle_option.png"
-     ALT=">" BORDER=0 height=14
-     width=15><b><font face="Helvetica, Arial"
-     ><font color="#FFFFFF"><font size="+1">
-<a name="-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}{@}{!}{&lt;}{&gt;}</i>
-     </font></font></font></b></td></tr></table>
-
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-See <em>X(1)</em> for details
-about the geometry specification. By default, the window size is the image
-size and the location is chosen by you when it is mapped.
-</font></td></tr></table>
-
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-By default, the width and height are maximum values. That is, the image
-is expanded or contracted to fit the width and height value while maintaining
-the aspect ratio of the image. <em>Append an exclamation point to the geometry
-to force the image size to exactly the size you specify</em>. For example,
-if you specify <strong>640x480!</strong> the image width is set to 640 pixels and
-height to 480. If only one factor is specified, both the width and height
-assume the value.
-</font></td></tr></table>
-
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-To specify a percentage width or height instead, append %. The image size
-is multiplied by the width and height percentages to obtain the final image
-dimensions. To increase the size of an image, use a value greater than
-100 (e.g. 125%). To decrease an image's size, use a percentage less than
-100.
-</font></td></tr></table>
-
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <strong>@</strong> to specify the maximum area in pixels of an image.
-</font></td></tr></table>
-
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <strong>&gt;</strong> to change the dimensions of the image <em>only</em> if
-its size exceeds the geometry specification. <strong>&lt;</strong> resizes the image
-<em>only</em>
-if its dimensions is less than the geometry specification. For example,
-if you specify <strong>'640x480&gt;'</strong> and the image size is 512x512, the image
-size does not change. However, if the image is 1024x1024, it is resized
-to 640x480.
-</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <strong>&lt;</strong> to change the dimensions of the image <em>only</em> if
-its size exceeds the geometry specification. <strong>&gt;</strong> resizes the image
-<em>only</em>
-if its dimensions is less than the geometry specification. For example,
-if you specify <strong>640x480&gt;</strong> and the image size is 512x512, the image
-size does not change. However, if the image is 1024x1024, it is resized
-to 640x480.
-</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-There are 72 pixels per inch in PostScript coordinates.
-</font></td></tr></table>
-
-<p>&nbsp;
 <i><a href="#top">Back to Contents</a></i>
 <br>&nbsp;
 <a NAME="msl"></a>
@@ -232,118 +164,122 @@ color="#FFFFFF"><font size="+1"
 >Magick Scripting Language</font></font></font></b></td>
 </table>
 
+<table width="90%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="9%"><br></td><td>
+<p>The Magick Scripting Language (MSL) presently defines the following
+elements and their attributes:
 <dl>
-<dd>The Magick Scripting Language (MSL) presently defines the following elements and their attributes:</dd>
-				<dd>
-			<dd><strong>&lt;image&gt;</strong>
-			<dd><strong>&lt;image&gt;</strong> defines a new image object and <strong>&lt;/image&gt;</strong> destroys it. Because of this, if you wish to reference multiple &quot;subimages&quot;&nbsp;(aka pages or layers), you can embed one &lt;<strong>image</strong>&gt; element inside of another. For example:
-				<dd>
-				<pre>  &lt;image&gt;
-					    &lt;read filename=&quot;input.png&quot; /&gt;
-					    &lt;get width=&quot;base-width&quot; height=&quot;base-height&quot; /&gt;
-					    &lt;image height=&quot;base-height&quot; width=&quot;base-width&quot;&gt;
-					       &lt;label&gt;this is a simple label&lt;label/&gt;
-					    &lt;image /&gt;
-					    &lt;write filename=&quot;output.mng&quot; /&gt;
-					  &lt;/image&gt;
+<dt><strong>&lt;image&gt;</strong>
+<dd><strong>&lt;image&gt;</strong> defines a new image object and
+<strong>&lt;/image&gt;</strong> destroys it. Because of this, if you wish
+to reference multiple &quot;subimages&quot;&nbsp;(aka pages or layers),
+you can embed one &lt;<strong>image</strong>&gt; element inside of
+another. For example:
+<dd>
+<pre>
+    &lt;image&gt;
+    &lt;read filename=&quot;input.png&quot; /&gt;
+    &lt;get width=&quot;base-width&quot; height=&quot;base-height&quot; /&gt;
+    &lt;image height=&quot;base-height&quot; width=&quot;base-width&quot;&gt;
+    &lt;label&gt;this is a simple label&lt;label/&gt;
+    &lt;image /&gt;
+    &lt;write filename=&quot;output.mng&quot; /&gt;
+    &lt;/image&gt;
 </pre>
-			<dd>It is intended that any keyword recognized by PerlMagick's SetAttribute() is recognized, although only <em>size</em> is currently recognized:
-
-			<pre>
-    &lt;image size=&quot;400x400&quot;&gt;
-
+</dd>
+<dd>
+<pre>
+    &lt;image size=&quot;400x400&quot; /&gt;
 </pre>
-			<dd><strong>&lt;read&gt;</strong>
-			<dd><strong>&lt;read&gt; </strong>reads a new image from a disk file.
-
-			<pre>    &lt;read filename=image.gife&quot;/&gt;
+</dd>
+<dt><strong>&lt;read&gt;</strong>
+<dd><strong>&lt;read&gt; </strong>reads a new image from a disk file.
+<pre>
+    &lt;read filename=image.gif&quot; /&gt;
 </pre>
-			<dd>To read two images use
-			<pre>   &lt;read filename=&quot;image.gif&quot;&gt;
-    &lt;read filename=&quot;image.png&gt;&lt;
+</dd>
+<dd>To read two images use
+<pre>
+    &lt;read filename=&quot;image.gif&quot; /&gt;
+    &lt;read filename=&quot;image.png /&gt;
 </pre>
-			<dd>
-			<dd>
-			<dd><strong>&lt;write&gt;</strong>
-			<dd><strong>&lt;write&gt; </strong>writes the image(s) to disk, either as a single file or multiple ones if necessary.
-			<dl>
-				<pre>    writed filename=image.tiffe&quot;/&gt;
+</dd>
+<dt><strong>&lt;write&gt;</strong>
+<dd><strong>&lt;write&gt; </strong>writes the image(s) to disk, either as
+a single file or multiple ones if necessary.
+</dd>
+<dd>
+<pre>
+     &lt;write filename=image.tiff&quot; /&gt;
 </pre>
-				<dd>
-			</dl>
-			<dd><strong>&lt;get&gt;</strong>
-			<dd><strong>&lt;get&gt;</strong>gets any attribute recognized by PerlMagick's GetAttribute() and stores it as an image attribute for later use. Currently only <em>width</em> and <em>height</em> are supported.
+<dt><strong>&lt;get&gt;</strong>
+<dd><strong>&lt;get&gt;</strong>gets any attribute recognized by
+PerlMagick's GetAttribute() and stores it as an image attribute for later
+use. Currently only <em>width</em> and <em>height</em> are supported.
 
-			<pre>
-     &lt;get width=&quot;base-width&quot; height=&quot;base-height&quot; &gt;&lt;
-     &lt;print output=&quot;Image size is %[base-width]x%[base-height].\n&quot; &gt;&lt;
-
+<pre>
+    &lt;get width=&quot;base-width&quot; height=&quot;base-height&quot; /&gt;
+    &lt;print output=&quot;Image size is %[base-width]x%[base-height].\n&quot; /&gt;
 </pre>
-			<dd>
-			<dd><strong>&lt;border&gt;</strong>
-			<dd>fill, geometry, height, width
-			<dd><strong>&lt;blur&gt;</strong>
-			<dd>radius, sigma
-			<dd><strong>&lt;charcoal&gt;</strong>
-			<dd>radius, sigma
-			<dd><strong>&lt;chop&gt;</strong>
-			<dd>geometry, height, width, x, y
-			<dd><strong>&lt;crop&gt;</strong>
-			<dd>geometry, height, width, x, y
-			<dd><strong>&lt;despeckle&gt;</strong>
-			<dd><strong>&lt;emboss&gt;</strong>
-			<dd>radius, sigma
-			<dd><strong>&lt;enhance&gt;</strong>
-			<dd><strong>&lt;equalize&gt;</strong>
-			<dd><strong>&lt;flip&gt;</strong>
-			<dd><strong>&lt;flop&gt;</strong>
-			<dd><strong>&lt;frame&gt;</strong>
-			<dd>fill, geometry, height, width, x, y, inner, outer
-			<dd><strong>&lt;get&gt;</strong>
-			<dd><strong>&lt;image&gt;</strong>
-			<dd><strong>&lt;magnify&gt;</strong>
-			<dd><strong>&lt;minify&gt;</strong>
-			<dd><strong>&lt;normalize&gt;</strong>
-			<dd><strong>&lt;print&gt;</strong>
-			<dd>output
-			<dd><strong>&lt;read&gt;</strong>
-			<dd><strong>&lt;resize&gt;</strong>
-			<dd>blur, filter, height, width
-			<dd><strong>&lt;roll&gt;</strong>
-			<dd>geometry, x, y
-			<dd><strong>&lt;rotate&gt;</strong>
-			<dd>degrees
-			<dd><strong>&lt;sample&gt;</strong>
-			<dd>geometry, height, width
-			<dd><strong>&lt;scale&gt;</strong>
-			<dd>geometry, height, width
-			<dd><strong>&lt;sharpen&gt;</strong>
-			<dd>radius, sigma
-			<dd><strong>&lt;shave&gt;</strong>
-			<dd>geometry, height, width
-			<dd><strong>&lt;shear&gt;</strong>
-			<dd>x, y
-			<dd><strong>&lt;solarize&gt;</strong>
-			<dd>threshold
-			<dd><strong>&lt;spread&gt;</strong>
-			<dd>radius
-			<dd><strong>&lt;swirl&gt;</strong>
-			<dd>degrees
-			<dd><strong>&lt;threshold&gt;</strong>
-			<dd>threshold
-			<dd><strong>&lt;trim&gt;</strong>
-			<dd><strong>&lt;write&gt;</strong>
-			<dl>
-				
-			</dl>
-			<dl>
-				
-			</dl>
-			<dd>
-		</dl>
-
-<p>&nbsp;&nbsp;<br>
-			<a NAME="auth"></a>
+</dd>
+<dt><strong>&lt;border&gt;</strong>
+    <dd>fill, geometry, height, width
+<dt><strong>&lt;blur&gt;</strong>
+    <dd>radius, sigma
+<dt><strong>&lt;charcoal&gt;</strong>
+    <dd>radius, sigma
+<dt><strong>&lt;chop&gt;</strong>
+    <dd>geometry, height, width, x, y
+<dt><strong>&lt;crop&gt;</strong>
+    <dd>geometry, height, width, x, y
+<dt><strong>&lt;despeckle&gt;</strong>
+<dt><strong>&lt;emboss&gt;</strong>
+    <dd>radius, sigma
+<dt><strong>&lt;enhance&gt;</strong>
+<dt><strong>&lt;equalize&gt;</strong>
+<dt><strong>&lt;flip&gt;</strong>
+<dt><strong>&lt;flop&gt;</strong>
+<dt><strong>&lt;frame&gt;</strong>
+    <dd>fill, geometry, height, width, x, y, inner, outer
+<dt><strong>&lt;get&gt;</strong>
+<dt><strong>&lt;image&gt;</strong>
+<dt><strong>&lt;magnify&gt;</strong>
+<dt><strong>&lt;minify&gt;</strong>
+<dt><strong>&lt;normalize&gt;</strong>
+<dt><strong>&lt;print&gt;</strong>
+    <dd>output
+<dt><strong>&lt;read&gt;</strong>
+<dt><strong>&lt;resize&gt;</strong>
+    <dd>blur, filter, height, width
+<dt><strong>&lt;roll&gt;</strong>
+    <dd>geometry, x, y
+<dt><strong>&lt;rotate&gt;</strong>
+    <dd>degrees
+<dt><strong>&lt;sample&gt;</strong>
+    <dd>geometry, height, width
+<dt><strong>&lt;scale&gt;</strong>
+    <dd>geometry, height, width
+<dt><strong>&lt;sharpen&gt;</strong>
+    <dd>radius, sigma
+<dt><strong>&lt;shave&gt;</strong>
+    <dd>geometry, height, width
+<dt><strong>&lt;shear&gt;</strong>
+    <dd>x, y
+<dt><strong>&lt;solarize&gt;</strong>
+    <dd>threshold
+<dt><strong>&lt;spread&gt;</strong>
+    <dd>radius
+<dt><strong>&lt;swirl&gt;</strong>
+    <dd>degrees
+<dt><strong>&lt;threshold&gt;</strong>
+    <dd>threshold
+<dt><strong>&lt;trim&gt;</strong>
+</dl>
+</td></tr>
+</table>
+<br>&nbsp;
+<br>
+<a NAME="auth"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png"
@@ -352,11 +288,13 @@ ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"
 </tr>
 </table>
 
-<dl><dd></dd>
-			<dd><i>John Cristy</i>, <i><a href="mailto:magick-users@imagemagick.org">magick-users@imagemagick.org</a>, ImageMagick Studio</i>.
-			<dd><i>Leonard Rosenthol</i>, <i><a href="mailto:magick-users@imagemagick.org"
+<dl><dd>
+<i>John Cristy</i>, <i><a href="mailto:magick-users@imagemagick.org"
+>magick-users@imagemagick.org</a>, ImageMagick Studio</i>.</dd>
+<dd>
+<i>Leonard Rosenthol</i>, <i><a href="mailto:magick-users@imagemagick.org"
 >leonardr@lazerware.com</a>, ImageMagick Studio</i>.
-		</dl>
+</dl>
 <i><a href="#top">Back to Contents</a></i>
 <br>&nbsp;
 <br>
@@ -370,7 +308,7 @@ ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"
 </table>
 
 <dl><dd>
-<b>Copyright (C) 2001-2002 ImageMagick Studio</b></dd>
+<b>Copyright (C) 2002 ImageMagick Studio</b></dd>
 <dd>
 <p>
 <b>Permission is hereby granted, free of charge, to any person obtaining
@@ -379,12 +317,10 @@ to deal in ImageMagick without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
 and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
 is furnished to do so, subject to the following conditions:</b></dd>
-
 <dd>
 <p>
 <b>The above copyright notice and this permission notice shall be included
 in all copies or substantial portions of ImageMagick.</b></dd>
-
 <dd>
 <p>
 <b>The software is provided "as is", without warranty of any kind, express
