@@ -54,7 +54,7 @@ MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
 # Library sources
 if WITH_MODULES
 libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
-libMagick_la_LIBADD = @LIB_TIFF@ @LIB_JPEG@ @LIB_XEXT@ @LIB_XT@ \
+libMagick_la_LIBADD = @LIB_LCMS@ @LIB_TIFF@ @LIB_JPEG@ @LIB_XEXT@ @LIB_XT@ \
   @LIB_X11@ @LIB_ZLIB@ @LIB_SFIO@ @LIB_THREAD@ @LIB_LF@ \
   @LIB_MATH@ $(top_builddir)/ltdl/libltdlc.la
 else
