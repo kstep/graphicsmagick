@@ -74,8 +74,8 @@ call :_dorwtest both PPM
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both PSD
 if not %COUNT% EQU 6 goto :_failed
-call :_dorwtest file PTIF
-if not %COUNT% EQU 3 goto :_failed
+call :_dorwtest both PTIF
+if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both RAS
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both RGB
@@ -88,8 +88,8 @@ call :_dorwtest both SUN
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both TGA
 if not %COUNT% EQU 6 goto :_failed
-call :_dorwtest file TIFF
-if not %COUNT% EQU 3 goto :_failed
+call :_dorwtest both TIFF
+if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both UYVY
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both VDA
