@@ -81,7 +81,7 @@ noinst_HEADERS = animate.h defines.h display.h mac.h magic.h modules.h nt.h \
   vms.h
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) colors.mgk fonts.mgk.in magic.mgk Magick-config.in \
+EXTRA_DIST = $(ALLMANPAGES) colors.mgk magic.mgk Magick-config.in \
   Magick-config.in Make.com mac.c nt.c vms.c $(MAGICK_BASE_SRCS)
 
 # Where modules are installed
