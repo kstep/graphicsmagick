@@ -53,9 +53,29 @@
 </tr>
 </table>
 <p>
+2003-04-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> www/development.html: New file to describe development
+        process.<BR>
+  <LI> index.html, www/*.html: Added link to development.html
+        and improved formatting.
+
+</UL>
+<p>
+2003-04-21  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> Fixed bug with compiling png.c with libpng versions
+        older than libpng-0.95.
+
+</UL>
+<p>
 2003-04-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> www/programming.html: Added links to Delphi and Scheme
+        programming interfaces.<BR>
   <LI> configure.ac : Removed outdated test for jp2conf.h.
 
 </UL>
@@ -119,7 +139,12 @@
         (SourceForge patch ID 722655) from Derry Bryson to
         correctly use the switch_map array rather than the
         map array.  Without this patch, DispatchImage does
-        not work at all.
+        not work at all.<BR>
+  <LI> GraphicsMagick 1.0.0-beta0 release.
+  <LI> version.sh: Updated for beta0 release.
+  <LI> *.c magick/*.h: Update header inclusion to include
+        "magick/" prefix in order to ensure that there is no
+        confusion with headers from another package.
 
 </UL>
 <p>
@@ -128,17 +153,6 @@
 <UL>
   <LI> magick/effect.c: 4x4 ordered dither threshold was
         incorrect.
-
-</UL>
-<p>
-2003-04-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
-
-<UL>
-  <LI> GraphicsMagick 1.0.0-beta0 release.
-  <LI> version.sh: Updated for beta0 release.
-  <LI> *.c magick/*.h: Update header inclusion to include
-        "magick/" prefix in order to ensure that there is no
-        confusion with headers from another package.
 
 </UL>
 <p>

@@ -1,3 +1,10 @@
+2003-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/development.html: New file to describe development
+	process.
+	* index.html, www/*.html: Added link to development.html
+	and improved formatting a bit.
+
 2003-04-21  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* Fixed bug with compiling png.c with libpng versions
@@ -62,20 +69,16 @@
 	correctly use the switch_map array rather than the
 	map array.  Without this patch, DispatchImage does
 	not work at all.
-
->>>>>>> 1.484.2.9
-2003-04-16  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
-
-	* magick/effect.c: 4x4 ordered dither threshold was
-	incorrect.
-
-2003-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-
 	* GraphicsMagick 1.0.0-beta0 release.
 	* version.sh: Updated for beta0 release.
 	* *.c magick/*.h: Update header inclusion to include
 	"magick/" prefix in order to ensure that there is no
 	confusion with headers from another package.
+
+2003-04-16  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* magick/effect.c: 4x4 ordered dither threshold was
+	incorrect.
 
 2003-04-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
