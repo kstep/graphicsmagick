@@ -1,0 +1,14 @@
+
+ New in ver 1.11
+ ===============
+
+
+  Overall speedup and much more precission. 
+
+  [Added] CIECAM02 Appearance model
+  [Added] more ICC4 compatibility
+  [Added] Error handlers
+  [Added] Black point compensation
+
+   Improved TIFFICC, JPEGICC and ICCLINK utilities.   
+   New samples on how to build profiles
