@@ -52,9 +52,9 @@
 #include "define.h"
 
 /* Auto coloring method, sorry this creates some artefact inside data
-minReal+j*maxComplex = red	maxReal+j*maxComplex = black
-minReal+j*0 = white	        maxReal+j*0 = black
-minReal+j*minComplex = blue	maxReal+j*minComplex = black
+MinReal+j*MaxComplex = red	MaxReal+j*MaxComplex = black
+MinReal+j*0 = white	        MaxReal+j*0 = black
+MinReal+j*MinComplex = blue	MaxReal+j*MinComplex = black
 */
 
 
@@ -134,20 +134,20 @@ register IndexPacket *indexes;
 }
 
 
-static void InsertFloatRow(double *p,int y,Image *image,double min,double max)
+static void InsertFloatRow(double *p,int y,Image *image,double Min,double Max)
 {
 double f;
 int x;
 register PixelPacket *q;
 
-   if(min>=max) max=min+1;
+   if(Min>=Max) Max=Min+1;
 
    q=SetImagePixels(image,0,y,image->columns,1);
    if (q == (PixelPacket *) NULL)
         return;
    for (x=0; x < (long) image->columns; x++)
           {
-	  f=(double)MaxRGB* (*p-min)/(max-min);
+	  f=(double)MaxRGB* (*p-Min)/(Max-Min);
           q->red=XDownscale(f);
 	  q->green=XDownscale(f);
 	  q->blue=XDownscale(f);
@@ -163,14 +163,14 @@ register PixelPacket *q;
 }
 
 
-static void InsertComplexFloatRow(double *p,int y,Image *image,double min,double max)
+static void InsertComplexFloatRow(double *p,int y,Image *image,double Min,double Max)
 {
 double f;
 int x;
 register PixelPacket *q;
 
-   if(min==0) min=-1;
-   if(max==0) max=1;
+   if(Min==0) Min=-1;
+   if(Max==0) Max=1;
 
    q=SetImagePixels(image,0,y,image->columns,1);
    if (q == (PixelPacket *) NULL)
@@ -179,7 +179,7 @@ register PixelPacket *q;
           {
 	  if(*p>0)
 	    {
-	    f=(*p/max)*(MaxRGB-q->red);
+	    f=(*p/Max)*(MaxRGB-q->red);
 	    if(f+q->red>MaxRGB) q->red=MaxRGB;
 	                   else q->red+=f;
             if(f/2.0>q->green) q->green=q->blue=0;
@@ -187,7 +187,7 @@ register PixelPacket *q;
 	    }
 	  if(*p<0)
 	    {
-	    f=(*p/max)*(MaxRGB-q->blue);
+	    f=(*p/Max)*(MaxRGB-q->blue);
 	    if(f+q->blue>MaxRGB) q->blue=MaxRGB;
 	                    else q->blue+=f;
             if(f/2.0>q->green) q->green=q->red=0;
@@ -212,6 +212,43 @@ while(len>=2)
    {
    *data++=ReadBlobLSBShort(I);
    len-=2;
+   }
+if(len>0) (void) SeekBlob(I,len,SEEK_CUR);   
+}
+
+
+MagickExport double ReadBlobLSBdouble(Image *image)
+{
+ typedef union
+   {
+   double d;
+   char chars[8]; 
+   } dbl;
+  static unsigned long lsb_first=1;    
+  dbl buffer;
+  char c;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  
+  if(ReadBlob(image,8,(unsigned char *)&buffer)==0)
+	return(0);	
+  if(*(char *)&lsb_first==1) return(buffer.d);
+
+  c=buffer.chars[0]; buffer.chars[0]=buffer.chars[7]; buffer.chars[7]=c;
+  c=buffer.chars[1]; buffer.chars[1]=buffer.chars[6]; buffer.chars[6]=c; 
+  c=buffer.chars[2]; buffer.chars[2]=buffer.chars[5]; buffer.chars[5]=c;
+  c=buffer.chars[3]; buffer.chars[3]=buffer.chars[4]; buffer.chars[4]=c; 
+  return(buffer.d);
+}
+
+
+void ReadBlobDoublesLSB(Image *I,size_t len,double *data)
+{
+while(len>=8)
+   {
+   *data++=ReadBlobLSBdouble(I);
+   len-=sizeof(double);
    }
 if(len>0) (void) SeekBlob(I,len,SEEK_CUR);   
 }
@@ -259,7 +296,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int i,x;
   long ldblk;
   unsigned char *BImgBuff=NULL;
-  double min,max,*dblrow;
+  double Min,Max,*dblrow;
 
   /*
     Open image file.
@@ -354,9 +391,9 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
    
      for (i=0; i < (long)image->colors; i++)
            {
-           image->colormap[i].red=Upscale(i);
-           image->colormap[i].green=Upscale(i);
-           image->colormap[i].blue=Upscale(i);
+           image->colormap[i].red=UpScale(i);
+           image->colormap[i].green=UpScale(i);
+           image->colormap[i].blue=UpScale(i);
            }
      }	    
 
@@ -366,20 +403,20 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
    if(BImgBuff==NULL) goto NoMemory;
 
 
-   min=0;
-   max=0;
-   if(CellType==9) /*Find min and max Values for floats*/
+   Min=0;
+	 Max=0;
+   if(CellType==9) /*Find Min and Max Values for floats*/
      {
      filepos=TellBlob(image);
      for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
         {
-        (void) ReadBlob(image,ldblk,(char *)BImgBuff);
+	ReadBlobDoublesLSB(image,ldblk,(double *)BImgBuff);
 	dblrow=(double *)BImgBuff;
-	if(i==0) {min=max=*dblrow;}
+	if(i==0) {Min=Max=*dblrow;}
 	for(x=0;x<(long)MATLAB_HDR.SizeX;x++)
             {
-	    if(min>*dblrow) min=*dblrow;
-	    if(max<*dblrow) max=*dblrow;
+	    if(Min>*dblrow) Min=*dblrow;
+	    if(Max<*dblrow) Max=*dblrow;
 	    dblrow++;            
 	    }
 	}       
@@ -394,8 +431,8 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 	    case 4:ReadBlobWordLSB(image,ldblk,(WORD *)BImgBuff);
 		   InsertRow(BImgBuff,i,image);
 		   break;
-	    case 9:(void) ReadBlob(image,ldblk,(char *)BImgBuff);
-		   InsertFloatRow((double *)BImgBuff,i,image,min,max);
+	    case 9:ReadBlobDoublesLSB(image,ldblk,(double *)BImgBuff);
+		   InsertFloatRow((double *)BImgBuff,i,image,Min,Max);
 		   break;
 	    default:(void) ReadBlob(image,ldblk,(char *)BImgBuff);
 		    InsertRow(BImgBuff,i,image);
@@ -405,18 +442,18 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 	/*Read complex part of numbers here*/
   if(MATLAB_HDR.StructureFlag==0x806)
 	{
-	if(CellType==9) /*Find min and max Values for floats*/
+	if(CellType==9) /*Find Min and Max Values for complex parts of floats*/
           {
 	  filepos=TellBlob(image);
           for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
 	    {
-            (void) ReadBlob(image,ldblk,(char *)BImgBuff);
+	    ReadBlobDoublesLSB(image,ldblk,(double *)BImgBuff);
 	    dblrow=(double *)BImgBuff;
-	    if(i==0) {min=max=*dblrow;}
+	    if(i==0) {Min=Max=*dblrow;}
 	    for(x=0;x<(long)MATLAB_HDR.SizeX;x++)
                 {
-	        if(min>*dblrow) min=*dblrow;
-		if(max<*dblrow) max=*dblrow;
+	        if(Min>*dblrow) Min=*dblrow;
+		if(Max<*dblrow) Max=*dblrow;
 		dblrow++;            
 	        }
 	    }       
@@ -424,8 +461,8 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 	  
 	  for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
             {
-            (void) ReadBlob(image,ldblk,(char *)BImgBuff);
-	    InsertComplexFloatRow((double *)BImgBuff,i,image,min,max);
+	    ReadBlobDoublesLSB(image,ldblk,(double *)BImgBuff);
+	    InsertComplexFloatRow((double *)BImgBuff,i,image,Min,Max);
 	    }	
           }
         }
