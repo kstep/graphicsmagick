@@ -143,9 +143,6 @@ EXPORTS
 	xmlBufferWriteChar
 	xmlBufferWriteQuotedString
 	xmlBuildURI
-	xmlC14NDocDumpMemory
-	xmlC14NDocSave
-	xmlC14NDocSaveTo
 	xmlCatalogAdd
 	xmlCatalogAddLocal
 	xmlCatalogCleanup
