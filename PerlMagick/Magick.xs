@@ -1078,6 +1078,16 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             }
           if (info)
             (void) CloneString(&info->image_info->density,SvPV(sval,na));
+          for ( ; image; image=image->next)
+          {
+            int
+              count;
+
+            count=sscanf(info->image_info->density,"%lfx%lf",
+              &image->x_resolution,&image->y_resolution);
+            if (count != 2)
+              image->y_resolution=image->x_resolution;
+          }
           return;
         }
       if (strEQcase(attribute,"depth"))
