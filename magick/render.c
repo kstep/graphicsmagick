@@ -4694,7 +4694,7 @@ MagickExport void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
     return;
   radii.x=fabs(arc.x);
   radii.y=fabs(arc.y);
-  if ((radii.x == 0.0) && (radii.y == 0.0))
+  if ((radii.x == 0.0) || (radii.y == 0.0))
     {
       TraceLine(primitive_info,start,end);
       return;
