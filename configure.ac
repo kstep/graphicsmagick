@@ -31,15 +31,17 @@
 AC_PREREQ(2.57)
 AC_INIT(magick/magick.h)
 
-# Set version
-MAJOR_VERSION=1
-MINOR_VERSION=0
-MICRO_VERSION=0
-echo "configuring GraphicsMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
+# Source file containing package/library versioning information.
+. ${srcdir}/version.sh
+
+echo "configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}"
 AC_CANONICAL_SYSTEM
-AC_SUBST(MAJOR_VERSION)dnl
-AC_SUBST(MINOR_VERSION)dnl
-AC_SUBST(MICRO_VERSION)dnl
+AC_SUBST(LIBRARY_CURRENT)dnl
+AC_SUBST(LIBRARY_REVISION)dnl
+AC_SUBST(LIBRARY_AGE)dnl
+AC_SUBST(PACKAGE_NAME)dnl
+AC_SUBST(PACKAGE_VERSION)dnl
+AC_SUBST(PACKAGE_VERSION_ADDENDUM)dnl
 
 # Ensure that make can run correctly
 AM_SANITY_CHECK
@@ -47,7 +49,7 @@ AM_SANITY_CHECK
 # Generate configure header.
 AC_CONFIG_HEADERS([magick/magick_config.h])
 
-AM_INIT_AUTOMAKE(GraphicsMagick,$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION, ' ')
+AM_INIT_AUTOMAKE($PACKAGE_NAME,"${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}", ' ')
 
 #
 # Save initial user-tunable values
@@ -1674,7 +1676,7 @@ AC_SUBST(LIB_WMF_DEPS)
 #
 
 # Subdirectory under lib to place GraphicsMagick lib files
-MagickLibSubdir="GraphicsMagick-$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
+MagickLibSubdir="${PACKAGE_NAME}-${PACKAGE_VERSION}"
 AC_DEFINE_UNQUOTED(MagickLibSubdir,"$MagickLibSubdir",Subdirectory of lib where GraphicsMagick architecture dependent files are installed)
 
 # Path to GraphicsMagick lib
@@ -1702,7 +1704,7 @@ AC_DEFINE_UNQUOTED(MagickModulesPath,"$MagickModulesPathDefine",Location of code
 AC_SUBST(MagickModulesPath)
 
 # Path to GraphicsMagick share files]
-MagickShareSubdir="GraphicsMagick-$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
+MagickShareSubdir="${PACKAGE_NAME}-${PACKAGE_VERSION}"
 MagickSharePath="${DATA_DIR}/${MagickShareSubdir}"
 MagickSharePathDefine="${MagickSharePath}/"
 if test "$native_win32_build" = 'yes'

@@ -1,7 +1,7 @@
 #
 # Makefile for Magick++ library
 #
-# Copyright Bob Friesenhahn, 1999, 2000
+# Copyright Bob Friesenhahn, 1999, 2000, 2002
 #
 AUTOMAKE_OPTIONS = 1.7
 
@@ -11,10 +11,6 @@ includedir = ${prefix}/include
 pkgdatadir = $(datadir)/Magick++
 pkglibdir = $(libdir)/Magick++
 pkgincludedir = $(includedir)/Magick++
-
-MAJOR_VERSION      = @MAJOR_VERSION@
-MINOR_VERSION      = @MINOR_VERSION@
-MICRO_VERSION      = @MICRO_VERSION@
 
 # Binary scripts
 bin_SCRIPTS = GraphicsMagick++-config

@@ -37,9 +37,9 @@ pkgincludedir = $(includedir)/GraphicsMagick/magick
 # Shared libraries built in this directory
 lib_LTLIBRARIES = libGraphicsMagick.la
 
-MAJOR_VERSION=@MAJOR_VERSION@
-MINOR_VERSION=@MINOR_VERSION@
-MICRO_VERSION=@MICRO_VERSION@
+LIBRARY_CURRENT    = @LIBRARY_CURRENT@
+LIBRARY_REVISION   = @LIBRARY_REVISION@
+LIBRARY_AGE        = @LIBRARY_AGE@
 
 BUILT_SOURCES = magick_config.h
 
@@ -48,8 +48,7 @@ INCLUDES = -I$(top_srcdir) $(INCLTDL)
 ALLMANPAGES = GraphicsMagick-config.1
 
 libGraphicsMagick_la_LDFLAGS = -no-undefined \
-	-release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION) \
-	-version-info 0:0:0
+	-version-info $(LIBRARY_CURRENT):$(LIBRARY_REVISION):$(LIBRARY_AGE)
 
 #AM_CFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
 AM_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@

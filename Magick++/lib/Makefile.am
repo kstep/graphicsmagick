@@ -1,7 +1,7 @@
 #
 # Makefile for Magick++ library
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+# Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 #
 AUTOMAKE_OPTIONS = 1.7 nostdinc
 
@@ -15,9 +15,10 @@ pkglibdir = $(libdir)/Magick++
 pkgincludedir = $(includedir)/Magick++
 
 lib_LTLIBRARIES    = libGraphicsMagick++.la
-MAJOR_VERSION      = @MAJOR_VERSION@
-MINOR_VERSION      = @MINOR_VERSION@
-MICRO_VERSION      = @MICRO_VERSION@
+
+LIBRARY_CURRENT    = @LIBRARY_CURRENT@
+LIBRARY_REVISION   = @LIBRARY_REVISION@
+LIBRARY_AGE        = @LIBRARY_AGE@
 
 libGraphicsMagick___la_SOURCES = \
 	Blob.cpp BlobRef.cpp CoderInfo.cpp Color.cpp Drawable.cpp \
@@ -26,8 +27,7 @@ libGraphicsMagick___la_SOURCES = \
 
 # Add -no-undefined once Cygwin supports throwing C++ exceptions from DLLs.
 libGraphicsMagick___la_LDFLAGS = \
-	-release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION) \
-	-version-info 0:0:0
+	-version-info $(LIBRARY_CURRENT):$(LIBRARY_REVISION):$(LIBRARY_AGE)
 
 libGraphicsMagick___la_LIBADD = ../../magick/libGraphicsMagick.la
 

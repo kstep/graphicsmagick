@@ -54,9 +54,6 @@ MAGICK_CODER_SRCS = \
   vid.c viff.c wbmp.c wmf.c wpg.c x.c xbm.c xc.c xcf.c xpm.c xwd.c \
   yuv.c
 
-MAJOR_VERSION=@MAJOR_VERSION@
-MINOR_VERSION=@MINOR_VERSION@
-MICRO_VERSION=@MICRO_VERSION@
 if WITH_MODULES
 noinst_LTLIBRARIES =
 else

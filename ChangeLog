@@ -1,5 +1,10 @@
 2003-02-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac: Use definitions from version.sh to drive
+	package versioning and naming. These definitions support
+	libtool's recommended approach to library versioning.
+	* version.sh: New file for managing release versioning.
+	Edit this file to change the release number, etc.
 	* PerlMagick/t/tiff/read.t: Added read tests for stripped,
 	planar contiguous, and planar seperated TIFFs.
 	* coders/tiff.c (ReadTIFFImage): Transferred stripped-TIFF
