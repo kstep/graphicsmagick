@@ -3084,7 +3084,7 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
     (char *) "displayWarnings",(char *) "True");
   resource_info->display_warnings=IsTrue(resource_value);
   resource_info->font=XGetResourceClass(database,client_name,(char *) "font",
-    "-*-helvetica-medium-r-normal-*-14-*-*-*-*-*-*-*");
+    "-*-helvetica-medium-r-normal--12-*-*-*-*-*-iso8859-1");
   resource_info->font=XGetResourceClass(database,client_name,
     (char *) "fontList",resource_info->font);
   resource_info->font_name[0]=XGetResourceClass(database,client_name,
@@ -3194,7 +3194,7 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
     (char *) "1");
   resource_info->quantum=atoi(resource_value);
   resource_info->text_font=XGetResourceClass(database,client_name,
-    (char *) "font","-*-fixed-medium-r-normal-*-14-*-*-*-*-*-*-*");
+    (char *) "font","-*-fixed-medium-r-normal-*-12-*-*-*-*-*-iso8859-1");
   resource_info->text_font=XGetResourceClass(database,client_name,
     (char *) "textFontList",resource_info->text_font);
   resource_info->title=XGetResourceClass(database,client_name,(char *) "title",
