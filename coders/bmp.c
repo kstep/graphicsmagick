@@ -670,7 +670,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             for (bit=0; bit < 8; bit++)
             {
-              index=((*p) & (0x80 >> bit) ? 0x00 : 0x01);
+              index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
               indexes[x+bit]=index;
               *q++=image->colormap[index];
             }
@@ -680,7 +680,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               for (bit=0; bit < (int) (image->columns % 8); bit++)
               {
-                index=((*p) & (0x80 >> bit) ? 0x00 : 0x01);
+                index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
                 indexes[x+bit]=index;
                 *q++=image->colormap[index];
               }
@@ -1122,7 +1122,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
         if (image->colors == 2)
           polarity=
-            Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
+            Intensity(image->colormap[1]) > Intensity(image->colormap[0]);
         for (y=0; y < (int) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
