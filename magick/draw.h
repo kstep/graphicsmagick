@@ -167,7 +167,7 @@ extern MagickExport void
   DrawSetViewbox(DrawContext context,
                  unsigned long x1, unsigned long y1,
                  unsigned long x2, unsigned long y2),
-  DrawText(DrawContext context,
+  DrawAnnotation(DrawContext context,
            const double x, const double y,
            const char *text);
 

@@ -1293,7 +1293,7 @@ MagickExport void DrawSetStrokeWidth(DrawContext context, const double width)
 {
   DrawPrintf(context, "stroke-width %.10g\n", width);
 }
-MagickExport void DrawText(DrawContext context, const double x,
+MagickExport void DrawAnnotation(DrawContext context, const double x,
                            const double y, const char *text)
 {
   char escaped_string[MaxTextExtent];
