@@ -456,7 +456,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
         False,True,"Adobe Encapsulated PostScript Interchange format");
       (void) RegisterMagickInfo("EPT",ReadPSImage,WriteEPTImage,IsEPT,False,
-        True,"Adobe Encapsulated PostScript with TIFF preview");
+        False,"Adobe Encapsulated PostScript with TIFF preview");
       (void) RegisterMagickInfo("FAX",ReadFAXImage,WriteFAXImage,IsFAX,True,
         True,"Group 3 FAX");
       (void) RegisterMagickInfo("FITS",ReadFITSImage,WriteFITSImage,IsFITS,
@@ -689,12 +689,12 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 #if defined(HasTIFF)
       (void) RegisterMagickInfo("TIF",ReadTIFFImage,WriteTIFFImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,Flase,"Tagged Image File Format");
+        True,False,"Tagged Image File Format");
       (void) RegisterMagickInfo("TIFF",ReadTIFFImage,WriteTIFFImage,IsTIFF,
-        True,Flase,"Tagged Image File Format");
+        True,False,"Tagged Image File Format");
       (void) RegisterMagickInfo("TIFF24",ReadTIFFImage,WriteTIFFImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,Flase,"24-bit Tagged Image File Format");
+        True,False,"24-bit Tagged Image File Format");
 #endif
       (void) RegisterMagickInfo("TILE",ReadTILEImage,
         (unsigned int (*)(const ImageInfo *,Image *)) NULL,
