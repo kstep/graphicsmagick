@@ -392,13 +392,13 @@ MagickExport const MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
   /*
     Allocate array memory
   */
-  array=MagickAllocateMemory(const MagickInfo **,sizeof(MagickInfo *)*entries+1);
+  array=MagickAllocateMemory(const MagickInfo **,sizeof(MagickInfo *)*(entries+1));
   if (!array)
     {
       ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",0);
       return False;
     }
-  memset((void **)array,0,entries+1);
+  memset((void **)array,0,sizeof(MagickInfo *)*(entries+1));
 
   /*
     Add entries to array
