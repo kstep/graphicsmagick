@@ -1,3 +1,6 @@
+2002-10-31  Leonard Rosenthol <leonardr@lazerware.com>
+  * CMYK + alpha layered PSD files now correctly read!
+
 2002-10-30  Leonard Rosenthol <leonardr@lazerware.com>
   * ReadPSDImage() is now fully instrumented with logging
   * Fixed long standing bug in ReadPSDImage, so it no longer 
