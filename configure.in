@@ -635,28 +635,31 @@ AC_SUBST(LIB_BZLIB)
 LIB_X11=''
 LIB_XEXT=''
 LIB_XT=''
-if test "$with_x" != 'no'
+AC_PATH_XTRA
+if test "$no_x" != 'yes'
 then
-    with_x='yes'dnl Ensure value is set
+  LDFLAGS="$LDFLAGS $X_LIBS"
+  LIB_X11="$X_PRE_LIBS -lX11 $X_EXTRA_LIBS"
+  LIBS="$LIB_X11 $LIBS"
+  CPPFLAGS="$CPPFLAGS $X_CFLAGS"dnl
 
-    AC_PATH_X
-    AC_PATH_XTRA
+  AC_DEFINE(HasX11,,Define if you have X11 library)dnl
 
-    LDFLAGS="$LDFLAGS $X_LIBS"
-    LIB_X11="-lX11 $X_EXTRA_LIBS"
-    LIBS="$LIB_X11 $LIBS"
-    CPPFLAGS="$CPPFLAGS $X_CFLAGS"
-    AC_DEFINE(HasX11,,Define if you have X11 library)
+  AC_CHECK_LIB(Xext,XShmAttach,LIB_XEXT='-lXext',,)
+  AC_CHECK_LIB(Xext,XShmAttach,AC_DEFINE(HasSharedMemory,,X11 server supports shared memory extension),,)
+  AC_CHECK_LIB(Xext,XShapeCombineMask,LIB_XEXT='-lXext',,)
+  AC_CHECK_LIB(Xext,XShapeCombineMask,AC_DEFINE(HasShape,,X11 server supports shape extension),,)
 
-    AC_CHECK_LIB(Xext,XShmAttach,LIB_XEXT='-lXext',,)
-    AC_CHECK_LIB(Xext,XShmAttach,AC_DEFINE(HasSharedMemory,,X11 server supports shared memory extension),,)
-    AC_CHECK_LIB(Xext,XShapeCombineMask,LIB_XEXT='-lXext',,)
-    AC_CHECK_LIB(Xext,XShapeCombineMask,AC_DEFINE(HasShape,,X11 server supports shape extension),,)
-
-    AC_CHECK_LIB(Xt,XtSetEventDispatcher,LIB_XT='-lXt',,)
-    LIBS="$LIB_XEXT $LIB_XT $LIBS"
+  AC_CHECK_LIB(Xt,XtSetEventDispatcher,LIB_XT='-lXt',,)
+  LIBS="$LIB_XEXT $LIB_XT $LIBS"
 fi
-AM_CONDITIONAL(HasX11, test "$with_x" != 'no')
+if test "$no_x" != 'yes'
+then
+  have_x='yes'
+else
+  have_x='no'
+fi
+AM_CONDITIONAL(HasX11, test "$have_x" != 'no')
 AC_SUBST(LIB_X11)
 AC_SUBST(LIB_XEXT)
 AC_SUBST(LIB_XT)
@@ -1329,6 +1332,6 @@ echo "  CC       = $CC"
 echo "  CFLAGS   = $CFLAGS"
 echo "  CPPFLAGS = $CPPFLAGS"
 echo "  LDFLAGS  = $LDFLAGS"
-echo "  LIBS     = $LIBS"
+#echo "  LIBS     = $LIBS"
 echo ""
 
