@@ -535,7 +535,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         if (image->colorspace != CMYKColorspace)
           break;
         (void) WriteBlobString(image,buffer);
-        (void) strcpy(buffer,"/Decode[1 0 1 0 1 0 1 0]\n");
+        (void) strcpy(buffer,"/Decode [1 0 1 0 1 0 1 0]\n");
         break;
       }
       case LZWCompression: FormatString(buffer,CFormat,"LZWDecode"); break;
