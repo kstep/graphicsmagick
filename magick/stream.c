@@ -533,7 +533,7 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   StreamInfo
     *stream_info;
 
-  const StreamHandler
+  StreamHandler
     stream;
 
   magick_uint64_t

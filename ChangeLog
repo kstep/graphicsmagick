@@ -1,3 +1,9 @@
+2004-01-26  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* magick/stream.c: (SetPixelStream) removed "const" from definition of 
+	local variable [StreamHandler stream]. Borland C++Builder compiler signal
+	error "Cannot modify a const object".
+	
 2004-01-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (TIFFMapBlob): Allow libtiff to access memory
