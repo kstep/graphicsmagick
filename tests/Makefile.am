@@ -108,20 +108,19 @@ else
 XWD=
 endif
 
+# Formats that currently don't work: EPDF EPT $(HDF) $(FPX)
 CHECK_BLOB_FORMATS = \
 	AVS \
 	BMP \
 	CMYK \
 	DIB \
-	EPT \
+	DPX \
 	FAX \
 	G3 \
 	FITS \
-	$(FPX) \
 	GIF \
 	GIF87 \
 	GRAY \
-	$(HDF) \
 	$(JBIG) \
 	$(JPEG) \
 	$(JP2) \
@@ -136,6 +135,7 @@ CHECK_BLOB_FORMATS = \
 	PCDS \
 	PCX \
 	PGM \
+	PICON \
 	PICT \
 	$(PNG) \
 	PNM \
@@ -159,12 +159,13 @@ CHECK_BLOB_FORMATS = \
 	$(XWD) \
 	YUV
 
+# Formats that currently don't work: EPDF $(HDF) $(FPX)
 CHECK_FILE_FORMATS = \
 	AVS \
 	BMP \
 	CMYK \
 	DIB \
-	EPDF \
+	DPX \
 	EPSF \
 	EPSI \
 	EPI \
@@ -172,10 +173,8 @@ CHECK_FILE_FORMATS = \
 	EPT \
 	FAX \
 	FITS \
-	$(FPX) \
 	GIF \
 	GRAY \
-	$(HDF) \
 	ICB \
 	$(JBIG) \
 	$(JPEG) \
@@ -192,6 +191,7 @@ CHECK_FILE_FORMATS = \
 	PCX \
 	PGM \
 	PICT \
+	PICON \
 	$(PNG) \
 	PNM \
 	PPM \
@@ -216,9 +216,11 @@ CHECK_FILE_FORMATS = \
 	YUV
 
 check-rwblob:
-	status=0; \
+	@status=0 ; \
+	format='' ; \
 	for format in $(CHECK_BLOB_FORMATS) ; \
 	do \
+	  format_failed=0 ; \
 	  for file in $(CHECK_FILES) ; \
 	  do \
 	    if MAGICK_DELEGATE_PATH=$(top_srcdir)/delegates ./rwblob $$file $$format ; \
@@ -226,16 +228,26 @@ check-rwblob:
 	      : ; \
 	    else \
 	      status=1 ; \
+	      format_failed=1 ; \
 	    fi \
-	  done \
+	  done ; \
+	  if test $$format_failed -gt 0 ; \
+	  then \
+	    failed="$$failed$$format " ; \
+	  fi ; \
 	done ; \
+	if test -n "$$failed" ; \
+	then \
+	  echo "Failed rwblob for formats: $$failed" ; \
+	fi ; \
 	exit $$status
 
-
 check-rwfile:
-	status=0; \
+	@status=0 ; \
+	format='' ; \
 	for format in $(CHECK_FILE_FORMATS) ; \
 	do \
+	  format_failed=0 ; \
 	  for file in $(CHECK_FILES) ; \
 	  do \
 	    if MAGICK_DELEGATE_PATH=$(top_srcdir)/delegates ./rwfile $$file $$format ; \
@@ -243,9 +255,18 @@ check-rwfile:
 	      : ; \
 	    else \
 	      status=1 ; \
+	      format_failed=1 ; \
 	    fi \
-	  done \
+	  done ; \
+	  if test $$format_failed -gt 0 ; \
+	  then \
+	    failed="$$failed$$format " ; \
+	  fi ; \
 	done ; \
+	if test -n "$$failed" ; \
+	then \
+	  echo "Failed rwfile for formats: $$failed" ; \
+	fi ; \
 	exit $$status
 
 check: check-rwfile check-rwblob
