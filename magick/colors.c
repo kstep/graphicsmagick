@@ -1489,6 +1489,8 @@ Export unsigned int IsPseudoClass(Image *image)
   assert(image != (Image *) NULL);
   if ((image->class == PseudoClass) && (image->colors <= 256))
     return(True);
+  if (image->matte)
+    return(False);
   if (image->colorspace == CMYKColorspace)
     return(False);
   /*
