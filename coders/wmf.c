@@ -290,7 +290,7 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
       id;
 
     GetExceptionInfo(&exception);
-    id = SetMagickRegistry(ImageRegistryType,bmp_draw->bmp.data,sizeof(Image*),&exception);
+    id = SetMagickRegistry(ImageRegistryType,bmp_draw->bmp.data,sizeof(Image),&exception);
   (ddata->temp_images)[ddata->cur_temp_file_index] = id;
   ++ddata->cur_temp_file_index;
   if(ddata->cur_temp_file_index == ddata->max_temp_file_index)
