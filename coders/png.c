@@ -86,7 +86,7 @@
 */
 #undef MNG_OBJECT_BUFFERS
 #undef MNG_BASI_SUPPORTED
-#define MNG_INSERT_LAYERS /* identify crashes in 5.4.4 */
+#define MNG_INSERT_LAYERS
 #define PNG_BUILD_PALETTE /* This works as of 5.4.3 */
 #define PNG_SORT_PALETTE  /* This works as of 5.4.0 */
 
@@ -5420,6 +5420,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                   palette[i].blue=Downscale(image->colormap[i].blue);
                 }
                 png_set_PLTE(ping,ping_info,palette,(int) number_colors);
+#if (PNG_LIBPNG_VER > 10008)
+                LiberateMemory((void **) &palette);
+#endif
               }
             ping_info->bit_depth=1;
             while ((1UL << ping_info->bit_depth) < number_colors)
@@ -5928,11 +5931,13 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Free PNG resources.
     */
+#if (PNG_LIBPNG_VER < 10007)
     if (ping_info->valid & PNG_INFO_PLTE)
       {
         LiberateMemory((void **) &ping_info->palette);
         ping_info->valid&=(~PNG_INFO_PLTE);
       }
+#endif
     png_destroy_write_struct(&ping,&ping_info);
     LiberateMemory((void **) &scanlines);
     LiberateMemory((void **) &png_pixels);
