@@ -45,7 +45,7 @@ static Tcl_ObjCmdProc    pixelObjCmd;
 static Tcl_ObjCmdProc    drawObjCmd;
 
 /*----------------------------------------------------------------------
- * Return ImageMagick error description as a TCL result
+ * Return Magick error description as a TCL result
  *----------------------------------------------------------------------
  */
 int myMagickError(Tcl_Interp  *interp, MagickWand *wandPtr )
@@ -57,9 +57,9 @@ int myMagickError(Tcl_Interp  *interp, MagickWand *wandPtr )
 
     description = MagickGetException(wandPtr, &severity);
     if( (description == NULL) || (strlen(description) == 0) ) {
-        Tcl_AppendResult(interp, "ImageMagick: Unknown error", NULL);
+        Tcl_AppendResult(interp, MagickGetPackageName(), ": Unknown error", NULL);
     } else {
-        sprintf(msg, "ImageMagick #%d:", severity);
+        sprintf(msg, "%s: #%d:", MagickGetPackageName(), severity);
         Tcl_AppendResult(interp, description, NULL);
     }
     if( description != NULL ) {
@@ -1289,7 +1289,7 @@ static int wandObjCmd(
                     return stat;
 		}
             }
-            name = Tcl_GetString(objv[objc-1]);
+	    txt = Tcl_GetString(objv[objc-1]);
 
             result = MagickAnnotateImage(wandPtr, drawPtr, x, y, angle, txt);
             if (!result) {
@@ -3572,7 +3572,8 @@ static int wandObjCmd(
 	    /*
 	     * Set image type
 	     */
-            if (Tcl_GetIndexFromObj(interp, objv[2], typeNames, "typeType", 0, &typeIdx) != TCL_OK) {
+            if (Tcl_GetIndexFromObj(interp, objv[2], typeNames,
+				    "typeType", 0, &typeIdx) != TCL_OK) {
 	        return TCL_ERROR;
 	    }
 	    result = MagickSetImageType(wandPtr, typeTypes[typeIdx]);
