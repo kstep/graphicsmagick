@@ -294,7 +294,7 @@ char *HttpUnescape(char *string,char *result)
   while (*string)
   {
     if (*string == '%'  /* Unescape %xx sequence */
-          && string [1] && string [2])
+          && isxdigit(string [1]) && isxdigit(string [2]))
       {
         string++;
         *target = DecodeHex ((const char **) &string, 2);

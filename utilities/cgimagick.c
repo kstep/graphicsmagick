@@ -211,7 +211,7 @@ char *HttpUnescape(char *string,char *result)
   while (*string)
   {
     if (*string == '%'  /* Unescape %xx sequence */
-          && string [1] && string [2])
+          && isxdigit(string [1]) && isxdigit(string [2]))
       {
         string++;
         *target = DecodeHex ((const char **) &string, 2);
@@ -394,7 +394,7 @@ unsigned int CGIToArgv(const char *text,int *argc,char ***argv)
   /*
     Convert string to an ASCII list.
   */
-  vector[0]=AllocateString("isapimagick");
+  vector[0]=AllocateString("cgimagick");
   vector[count+1]=(char *) NULL;
   q=text;
   i=1;
@@ -595,6 +595,8 @@ void GetFileMimeType(const char *pszPath, char *pszType, unsigned long cbMax)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 */
+#define IMAGELIST_SIZE  8
+
 int main(int argc,char **argv)
 {
   char
@@ -604,11 +606,18 @@ int main(int argc,char **argv)
 
   int
     argc_hw,
-    i;
+    i,
+    list_position;
 
   unsigned int
     impersonating,
     status;
+
+  Image
+    *imag_list[IMAGELIST_SIZE];
+
+  ImageInfo
+    *info_list[IMAGELIST_SIZE];
 
   /*
     Initialize command line arguments.
@@ -616,6 +625,14 @@ int main(int argc,char **argv)
   impersonating=False;
   ReadCommandlLine(argc,&argv);
   MagickIncarnate(*argv);
+
+  for (i=0; i < IMAGELIST_SIZE; i++)
+  {
+    imag_list[i]=(Image *) NULL;
+    info_list[i]=(ImageInfo *) NULL;
+  }
+  list_position=0;
+
 #if defined(_VISUALC_)
   _setmode(_fileno(stdout),_O_BINARY);
 #endif
@@ -655,19 +672,13 @@ int main(int argc,char **argv)
             size_t
               blob_length;
 
-            Image
-              *image;
-
-            ImageInfo
-              *image_info;
-
             int
               mode=0;
 
             argv_hw = &argv[argc_hw];
             if (LocaleNCompare("-login",argv[argc_hw],8) == 0)
               {
-                for (i=argc_hw; i < argc; i++)
+                for (i=argc_hw+1; i < argc; i++)
                 {
                   if (LocaleNCompare("login-",argv[i],8) == 0)
                     break;
@@ -700,45 +711,83 @@ int main(int argc,char **argv)
                       errmsg = ntgetlasterror();
                   }
 #endif
-                argc_hw = i+1;
+                argc_hw = i;
                 argv_hw = &argv[argc_hw];
               }
             if (LocaleNCompare("-convert",argv[argc_hw],8) == 0)
               {
-                for (i=argc_hw; i < argc; i++)
+                char
+                  *option;
+
+                Image
+                  *image;
+
+                ImageInfo
+                  *image_info;
+
+                image=(Image *) NULL;
+                image_info=(ImageInfo *) NULL;
+
+                for (i=argc_hw+1; i < argc; i++)
                 {
-                  if (LocaleNCompare("-xbdat",argv[i],6) == 0)
-                    {
-                      argv[i+1]=(char *)(&blob_data);
-                      mode=1;
-                    }
-                  else if (LocaleNCompare("-xblen",argv[i],6) == 0)
-                    {
-                      argv[i+1]=(char *)(&blob_length);
-                      mode=1;
-                    }
-                  else if (LocaleNCompare("-xfunc",argv[i],6) == 0)
-                    {
-                      argv[i+1]=(char *)CGIFifo;
-                      mode=2;
-                    }
-                  else if (LocaleNCompare("-xctxt",argv[i],6) == 0)
-                    {
-                      argv[i+1]=(char *)NULL;
-                      mode=2;
-                    }
-                  else if (LocaleNCompare("-xinfo",argv[i],6) == 0)
-                    {
-                      argv[i+1]=(char *)(&image_info);
-                      mode=3;
-                    }
-                  else if (LocaleNCompare("-ximag",argv[i],6) == 0)
-                    {
-                      argv[i+1]=(char *)(&image);
-                      mode=3;
-                    }
-                  else if (LocaleNCompare("convert-",argv[i],8) == 0)
+                  option=argv[i];
+                  if (LocaleNCompare("convert-",option,8) == 0)
                     break;
+                  if ((list_position > 0) && (*option != '-') && (*option != '+'))
+                    {
+                      char
+                        *text;
+
+                      text=TranslateText(info_list[list_position-1],
+                                        imag_list[list_position-1],option);
+                      if (text != (char *) NULL)
+                        {
+                          LiberateMemory((void **) &(argv[i]));
+                          argv[i]=text;
+                        }
+                    }
+                  else if (LocaleNCompare("-xbdat",option,6) == 0)
+                    {
+                      i++;
+                      LiberateMemory((void **) &(argv[i]));
+                      argv[i]=(char *)(&blob_data);
+                      mode=1;
+                    }
+                  else if (LocaleNCompare("-xblen",option,6) == 0)
+                    {
+                      i++;
+                      LiberateMemory((void **) &(argv[i]));
+                      argv[i]=(char *)(&blob_length);
+                      mode=1;
+                    }
+                  else if (LocaleNCompare("-xfunc",option,6) == 0)
+                    {
+                      i++;
+                      LiberateMemory((void **) &(argv[i]));
+                      argv[i]=(char *)CGIFifo;
+                      mode=2;
+                    }
+                  else if (LocaleNCompare("-xctxt",option,6) == 0)
+                    {
+                      i++;
+                      LiberateMemory((void **) &(argv[i]));
+                      argv[i]=(char *)NULL;
+                      mode=2;
+                    }
+                  else if (LocaleNCompare("-xinfo",option,6) == 0)
+                    {
+                      i++;
+                      LiberateMemory((void **) &(argv[i]));
+                      argv[i]=(char *)(&image_info);
+                      mode=3;
+                    }
+                  else if (LocaleNCompare("-ximag",option,6) == 0)
+                    {
+                      i++;
+                      LiberateMemory((void **) &(argv[i]));
+                      argv[i]=(char *)(&image);
+                      mode=3;
+                    }
                 }
                 if (mode==0)
                   {
@@ -768,46 +817,100 @@ int main(int argc,char **argv)
                   {
                     convert_main(i-argc_hw,argv_hw);
                     /* returns an image_info and image structure */
+
+                    if ((list_position >= 0) &&
+                         (list_position < IMAGELIST_SIZE) &&
+                            (image != (Image *) NULL) &&
+                              (image_info != (ImageInfo *) NULL))
+                      {
+                        status=WriteImage(image_info,image);
+                        if (status == True)
+                          {
+                            imag_list[list_position]=image;
+                            image=(Image *) NULL;
+                            info_list[list_position]=image_info;
+                            image_info=(ImageInfo *) NULL;
+                            list_position++;
+                          }
+                      }
                   }
-                argc_hw = i+1;
+                argc_hw = i;
                 argv_hw = &argv[argc_hw];
               }
             if (LocaleNCompare("-combine",argv[argc_hw],8) == 0)
               {
-                for (i=argc_hw; i < argc; i++)
+                char
+                  *option;
+
+                Image
+                  *image;
+
+                ImageInfo
+                  *image_info;
+
+                image=(Image *) NULL;
+                image_info=(ImageInfo *) NULL;
+
+                for (i=argc_hw+1; i < argc; i++)
                 {
-                  if (LocaleNCompare("-xbdat",argv[i],6) == 0)
-                    {
-                      argv[i+1]=(char *)(&blob_data);
-                      mode=1;
-                    }
-                  else if (LocaleNCompare("-xblen",argv[i],6) == 0)
-                    {
-                      argv[i+1]=(char *)(&blob_length);
-                      mode=1;
-                    }
-                  else if (LocaleNCompare("-xfunc",argv[i],6) == 0)
-                    {
-                      argv[i+1]=(char *)CGIFifo;
-                      mode=2;
-                    }
-                  else if (LocaleNCompare("-xctxt",argv[i],6) == 0)
-                    {
-                      argv[i+1]=(char *)NULL;
-                      mode=2;
-                    }
-                  else if (LocaleNCompare("-xinfo",argv[i],6) == 0)
-                    {
-                      argv[i+1]=(char *)(&image_info);
-                      mode=3;
-                    }
-                  else if (LocaleNCompare("-ximag",argv[i],6) == 0)
-                    {
-                      argv[i+1]=(char *)(&image);
-                      mode=3;
-                    }
-                  else if (LocaleNCompare("combine-",argv[i],8) == 0)
+                  option=argv[i];
+                  if (LocaleNCompare("combine-",argv[i],8) == 0)
                     break;
+                  if ((list_position > 0) && (*option != '-') && (*option != '+'))
+                    {
+                      char
+                        *text;
+
+                      text=TranslateText(info_list[list_position-1],
+                                        imag_list[list_position-1],option);
+                      if (text != (char *) NULL)
+                        {
+                          LiberateMemory((void **) &(argv[i]));
+                          argv[i]=text;
+                        }
+                    }
+                  else if (LocaleNCompare("-xbdat",option,6) == 0)
+                    {
+                      i++;
+                      LiberateMemory((void **) &(argv[i]));
+                      argv[i]=(char *)(&blob_data);
+                      mode=1;
+                    }
+                  else if (LocaleNCompare("-xblen",option,6) == 0)
+                    {
+                      i++;
+                      LiberateMemory((void **) &(argv[i]));
+                      argv[i]=(char *)(&blob_length);
+                      mode=1;
+                    }
+                  else if (LocaleNCompare("-xfunc",option,6) == 0)
+                    {
+                      i++;
+                      LiberateMemory((void **) &(argv[i]));
+                      argv[i]=(char *)CGIFifo;
+                      mode=2;
+                    }
+                  else if (LocaleNCompare("-xctxt",option,6) == 0)
+                    {
+                      i++;
+                      LiberateMemory((void **) &(argv[i]));
+                      argv[i]=(char *)NULL;
+                      mode=2;
+                    }
+                  else if (LocaleNCompare("-xinfo",option,6) == 0)
+                    {
+                      i++;
+                      LiberateMemory((void **) &(argv[i]));
+                      argv[i]=(char *)(&image_info);
+                      mode=3;
+                    }
+                  else if (LocaleNCompare("-ximag",option,6) == 0)
+                    {
+                      i++;
+                      LiberateMemory((void **) &(argv[i]));
+                      argv[i]=(char *)(&image);
+                      mode=3;
+                    }
                 }
                 if (mode==0)
                   {
@@ -837,13 +940,36 @@ int main(int argc,char **argv)
                   {
                     combine_main(i-argc_hw,argv_hw);
                     /* returns an image_info and image structure */
+
+                    if ((list_position >= 0) &&
+                         (list_position < IMAGELIST_SIZE) &&
+                            (image != (Image *) NULL) &&
+                              (image_info != (ImageInfo *) NULL))
+                      {
+                        status=WriteImage(image_info,image);
+                        if (status == True)
+                          {
+                            imag_list[list_position]=image;
+                            image=(Image *) NULL;
+                            info_list[list_position]=image_info;
+                            image_info=(ImageInfo *) NULL;
+                            list_position++;
+                          }
+                      }
                   }
-                argc_hw = i+1;
+                argc_hw = i;
                 argv_hw = &argv[argc_hw];
               }
           }
         }
     }
+  for (i=0; i < IMAGELIST_SIZE; i++)
+  {
+    if (imag_list[i] != (Image *) NULL)
+      DestroyImage(imag_list[i]);
+    if (info_list[i] != (ImageInfo *) NULL)
+      DestroyImageInfo(info_list[i]);
+  }
   if (impersonating==True)
     {
 #if defined(WIN32)
