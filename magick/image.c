@@ -2467,7 +2467,7 @@ MagickExport int GetImageGeometry(const Image *image,const char *geometry,
     }
     case WestGravity:
     {
-      region_info->y+=(long) (image->rows/2-region_info->width/2);
+      region_info->y+=(long) (image->rows/2-region_info->height/2);
       break;
     }
     case StaticGravity:
@@ -2481,7 +2481,7 @@ MagickExport int GetImageGeometry(const Image *image,const char *geometry,
     case EastGravity:
     {
       region_info->x=(long) (image->columns-region_info->width-region_info->x);
-      region_info->y+=(long) (image->rows/2-region_info->width/2);
+      region_info->y+=(long) (image->rows/2-region_info->height/2);
       break;
     }
     case SouthWestGravity:
