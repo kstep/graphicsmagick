@@ -1077,11 +1077,11 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                 (void) sscanf(SvPV(sval,na),"%lf %lf %lf",&red,&green,&blue);
                 (void) sscanf(SvPV(sval,na),"%lf,%lf,%lf",&red,&green,&blue);
                 color->red=(Quantum)
-                  ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red);
+                  ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
                 color->green=(Quantum)
-                  ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green);
+                  ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
                 color->blue=(Quantum)
-                  ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue);
+                  ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
               }
           }
           return;
@@ -1437,13 +1437,13 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                 (void) sscanf(SvPV(sval,na),"%lf,%lf,%lf,%lf",&red,&green,&blue,
                   &opacity);
                 pixel->red=(Quantum)
-                  ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red);
+                  ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
                 pixel->green=(Quantum)
-                  ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green);
+                  ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
                 pixel->blue=(Quantum)
-                  ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue);
+                  ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
                 pixel->opacity=(Quantum)
-                  ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity);
+                  ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
               }
             (void) SyncImagePixels(image);
           }
