@@ -43,6 +43,7 @@ $call Make icm.c
 $call Make icon.c
 $call Make iptc.c
 $call Make jbig.c
+$call Make jp2.c
 $call Make jpeg.c
 $call Make label.c
 $call Make logo.c
@@ -102,7 +103,7 @@ $call Make xpm.c
 $call Make xwd.c
 $call Make yuv.c
 $library/create libCoders.olb 8bim,art,avi,avs,bmp,cmyk,cut,dcm,dps,dpx,ept, -
- fax,fits,fpx,gif,gradient,gray,hdf,histogram,html,icm,icon,iptc,jbig, -
+ fax,fits,fpx,gif,gradient,gray,hdf,histogram,html,icm,icon,iptc,jbig,jp2, -
   jpeg,label,logo,map,mat,matte,miff,mpc,mono,mtv,mvg,null,pcd,pcl,pcx,pdb, -
   pdf,pict,pix,plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,rgb, -
   rla,rle,sct,sfw,sgi,stegano,sun,svg,tga,tiff,tile,tim,ttf, -
