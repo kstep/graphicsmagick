@@ -73,13 +73,13 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "attribute.h"
-#include "command.h"
-#include "list.h"
-#include "log.h"
-#include "version.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/attribute.h"
+#include "magick/command.h"
+#include "magick/list.h"
+#include "magick/log.h"
+#include "magick/version.h"
+#include "magick/utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
