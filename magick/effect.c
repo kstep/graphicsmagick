@@ -465,7 +465,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
     {
       DestroyImage(blur_image);
       ThrowImageException(ResourceLimitWarning,"Unable to blur image",
-        "Memory allocation failed");
+        "Memory allocation failed")
     }
   /*
     Blur the image rows.
@@ -939,7 +939,7 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     {
       DestroyImage(despeckle_image);
       ThrowImageException(ResourceLimitWarning,"Unable to despeckle image",
-        "Memory allocation failed");
+        "Memory allocation failed")
     }
   /*
     Reduce speckle in the image.
@@ -1679,7 +1679,7 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
     {
       DestroyImage(median_image);
       ThrowImageException(ResourceLimitWarning,"Unable to median filter image",
-        "Memory allocation failed");
+        "Memory allocation failed")
     }
   /*
     Median filter each image row.
@@ -1803,7 +1803,7 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
       /*
         Morph single image.
       */
-      for (i=1; i < (int) number_frames; i++)
+      for (i=1; i < number_frames; i++)
       {
         morph_images->next=CloneImage(image,0,0,True,exception);
         if (morph_images->next == (Image *) NULL)
@@ -1826,7 +1826,7 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
   for (next=image; next->next != (Image *) NULL; next=next->next)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    for (i=0; i < (int) number_frames; i++)
+    for (i=0; i < number_frames; i++)
     {
       beta=(double) (i+1.0)/(number_frames+1.0);
       alpha=1.0-beta;
@@ -2142,9 +2142,11 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
   int
     count,
     j,
-    k,
     width,
     y;
+
+  long
+    k;
 
   register int
     i,
@@ -2181,7 +2183,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
     {
       DestroyImage(paint_image);
       ThrowImageException(ResourceLimitWarning,"Unable to oil paint",
-        "Memory allocation failed");
+        "Memory allocation failed")
     }
   /*
     Paint each row of the image.
@@ -2201,14 +2203,14 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
         Determine most frequent color.
       */
       count=0;
-      for (i=0; i < (int) (MaxRGB+1); i++)
+      for (i=0; i < (MaxRGB+1); i++)
         histogram[i]=0;
       for (i=0; i < (int) width; i++)
       {
         s=p-(width-i)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
         {
-          k=(int) Intensity(*s);
+          k=Intensity(*s);
           histogram[k]++;
           if ((int) histogram[k] > count)
             {
@@ -2220,7 +2222,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
         s=p+(width-i)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
         {
-          k=(int) Intensity(*s);
+          k=Intensity(*s);
           histogram[k]++;
           if ((int) histogram[k] > count)
             {
@@ -2233,7 +2235,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
       s=p-width;
       for (j=0; j < (int) (width+width+1); j++)
       {
-        k=(int) Intensity(*s);
+        k=Intensity(*s);
         histogram[k]++;
         if ((int) histogram[k] > count)
           {
@@ -2539,7 +2541,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
     {
       DestroyImage(noise_image);
       ThrowImageException(ResourceLimitWarning,"Unable to noise filter image",
-        "Memory allocation failed");
+        "Memory allocation failed")
     }
   /*
     Median filter each image row.
@@ -2917,11 +2919,13 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
     y;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2957,7 +2961,7 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
       /*
         Solarize PseudoClass packets.
       */
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
       {
         image->colormap[i].red=image->colormap[i].red > threshold ?
           MaxRGB-image->colormap[i].red : image->colormap[i].red;
@@ -3020,7 +3024,7 @@ MagickExport Image *SpreadImage(Image *image,const unsigned int amount,
     quantum,
     y;
 
-  long
+  int
     x_distance,
     y_distance;
 
@@ -3108,14 +3112,14 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
 {
 #define EmbedBit(byte) \
 { \
-  p=GetImagePixels(watermark,j % (int) watermark->columns, \
-    j/(int) watermark->columns,1,1); \
+  p=GetImagePixels(watermark,(int) (j % watermark->columns), \
+    (int) (j/watermark->columns),1,1); \
   if (p == (PixelPacket *) NULL) \
     break;  \
   (byte)&=(~0x01); \
   (byte)|=((unsigned int) Intensity(*p) >> shift) & 0x01; \
   j++; \
-  if (j == (watermark->columns*watermark->rows)) \
+  if (j == (size_t) (watermark->columns*watermark->rows)) \
     { \
       j=0; \
       shift--; \
@@ -3176,7 +3180,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
               DestroyImage(stegano_image);
               ThrowImageException(ResourceLimitWarning,
                 "Unable to create steganograph image",
-                "Memory allocation failed");
+                "Memory allocation failed")
             }
           for (i=stegano_image->colors-1; i >= 0; i--)
             stegano_image->colormap[i]=stegano_image->colormap[i >> 1];
@@ -3203,10 +3207,10 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   {
     for (x=0; x < (int) image->columns; x++)
     {
-      if (i == (stegano_image->columns*stegano_image->rows))
+      if (i == (size_t) (stegano_image->columns*stegano_image->rows))
         i=0;
-      q=GetImagePixels(stegano_image,i % stegano_image->columns,
-        i/stegano_image->columns,1,1);
+      q=GetImagePixels(stegano_image,(int) (i % stegano_image->columns),
+        (int) (i/stegano_image->columns),1,1);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
@@ -3728,7 +3732,7 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
     {
       DestroyImage(wave_image);
       ThrowImageException(ResourceLimitWarning,"Unable to wave image",
-        "Memory allocation failed");
+        "Memory allocation failed")
     }
   for (x=0; x < (int) wave_image->columns; x++)
     sine_map[x]=fabs(amplitude)+amplitude*sin((2*MagickPI*x)/wave_length);
