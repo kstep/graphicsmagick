@@ -95,7 +95,7 @@ testReadWrite( 'P7:input_p7.p7',
                'P7:output_p7.p7',
                q//,
                '8ac1386b0ec8dc9bcdcef80379eb3551',
-               'bf5884d4a711e3f7a66d53b92bba301f' );
+               '3e539a3d9b2054805f2231a952bf70a7' );
 
 
 print("Portable bitmap format (black and white), ASCII format ...\n");
