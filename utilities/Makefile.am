@@ -29,7 +29,7 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.6 foreign
+AUTOMAKE_OPTIONS = 1.7 foreign
 
 MAGICK_LIB	= ../magick/libMagick.la # libtool library name
 INCLUDES	= -I../ -I$(top_srcdir)/magick $(INCLTDL) $(X_CFLAGS)

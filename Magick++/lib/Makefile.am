@@ -3,7 +3,7 @@
 #
 # Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 #
-AUTOMAKE_OPTIONS = 1.6
+AUTOMAKE_OPTIONS = 1.7
 
 SUBDIRS = Magick++
 
@@ -34,4 +34,4 @@ include_HEADERS = Magick++.h
 
 EXTRA_DIST =
 
-LDFLAGS = @LDFLAGS@ $(LIBSTDCLDFLAGS)
+AM_LDFLAGS = @LDFLAGS@ $(LIBSTDCLDFLAGS)

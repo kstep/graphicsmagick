@@ -3,7 +3,7 @@
 #
 # Copyright Bob Friesenhahn, 1999, 2000, 2002
 #
-AUTOMAKE_OPTIONS = 1.6 dist-zip
+AUTOMAKE_OPTIONS = 1.7 dist-zip
 
 # Additional files to distribute
 EXTRA_DIST = 

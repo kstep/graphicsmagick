@@ -102,7 +102,6 @@ magick/cache.c
 magick/cache.h
 magick/cache_view.c
 magick/cache_view.h
-magick/classify.h
 magick/color.c
 magick/command.c
 magick/command.h
@@ -150,6 +149,7 @@ magick/nt_feature.c
 magick/nt_feature.h
 magick/PreRvIcccm.c
 magick/PreRvIcccm.h
+magick/ps.h
 magick/quantize.c
 magick/quantize.h
 magick/registry.c

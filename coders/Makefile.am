@@ -28,7 +28,7 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.6 foreign
+AUTOMAKE_OPTIONS = 1.7 foreign
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 
@@ -70,9 +70,10 @@ noinst_HEADERS =
 # Location of libMagick.la
 LIBMAGICK = ../magick/libMagick.la
 
-if WITH_MODULES
 # Where modules are installed
 pkgdir = $(libdir)/ImageMagick/modules/coders
+
+if WITH_MODULES
 
 # Architecture-dependent data files installed with modules
 pkg_DATA = modules.mgk
