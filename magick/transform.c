@@ -382,9 +382,15 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
       if ((page.y+(int) page.height) > (int) image->rows)
         page.height=image->rows-page.y;
       if (page.x < 0)
-        page.x=image->columns-page.width+page.x;
+        {
+          page.width+=page.x;
+          page.x=0;
+        }
       if (page.y < 0)
-        page.y=image->rows-page.height+page.y;
+        {
+          page.height+=page.y;
+          page.y=0;
+        }
     }
   else
     {
@@ -1244,13 +1250,6 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
         width=(unsigned int) ((int) transform_image->columns-crop_info.x);
       if ((flags & HeightValue) == 0)
         height=(unsigned int) ((int) transform_image->rows-crop_info.y);
-      if ((width != 0) || (height != 0))
-        {
-          if ((flags & XNegative) != 0)
-            crop_info.x+=transform_image->columns-width;
-          if ((flags & YNegative) != 0)
-            crop_info.y+=transform_image->rows-height;
-        }
       if (strchr(crop_geometry,'%') != (char *) NULL)
         {
           /*
