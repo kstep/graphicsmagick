@@ -3875,7 +3875,6 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
 
           x_shear=(180.0/MagickPI)*atan(draw_info->affine.rx);
           y_shear=(180.0/MagickPI)*atan(draw_info->affine.ry);
-          rotate_image=RotateImage(composite_image,theta,&image->exception);
           shear_image=
             ShearImage(composite_image,x_shear,y_shear,&image->exception);
           if (shear_image != (Image *) NULL)
