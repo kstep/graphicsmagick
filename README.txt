@@ -565,7 +565,7 @@ MAGICK DELEGATES
       to read the TIFF image format.  It in turn optionally requires
       the JPEG and ZLIB libraries.
 
-    o ImageMagick requires libwmf 0.2.3 (a component of wvWare) available
+    o ImageMagick requires libwmf 0.2.2 (a component of wvWare) available
       from
 
           http://sourceforge.net/projects/wvware/
