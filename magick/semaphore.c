@@ -421,6 +421,7 @@ MagickExport unsigned int UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
   assert(semaphore_info->signature == MagickSignature);
   if (semaphore_info->locked != True)
     return (False);
+  semaphore_info->locked=False;
 #if defined(HasPTHREADS)
   /* Enforce that unlocking thread is the same as the locking thread */
   assert(pthread_equal(semaphore_info->thread_id,pthread_self()));
@@ -432,6 +433,5 @@ MagickExport unsigned int UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
   assert(GetCurrentThreadId() == semaphore_info->thread_id);
   LeaveCriticalSection(&semaphore_info->mutex);
 #endif
-  semaphore_info->locked=False;
   return(True);
 }
