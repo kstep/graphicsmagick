@@ -88,7 +88,30 @@ typedef struct _BMPInfo
 
   long
     intent,
+  /*
+    BMP Version 5:
+    0: Absolute,   LCS_GM_ABS_COLORIMETRIC (ICC intent == 3)
+    1: Saturation, LCS_GM_BUSINESS         (ICC intent == 2)
+    2: Relative,   LCS_GM_GRAPHICS         (ICC intent == 1)
+    3: Perceptual, LCS_GM_IMAGES           (ICC intent == 0)
+    Query submitted to Microsoft, 13 Dec 2001, about the apparantly
+    reversed enumeration order -- glennrp.
+  */
     colorspace;
+  /*
+    BMP Version 3:
+    0: Calibrated RGB
+    BMP Version 4:
+    0: Calibrated RGB
+    1: Device-dependent RGB
+    2: Device-dependent CMYK
+    BMP Version 5:
+    0: Calibrated RGB
+    1: sRGB
+    2: sRGB (Windows default)
+    3: external profile
+    4: embedded profile
+  */
 
   PointInfo
     red_primary,
@@ -551,20 +574,24 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.y_pixels=ReadBlobLSBLong(image);
         bmp_info.number_colors=ReadBlobLSBLong(image);
         bmp_info.colors_important=ReadBlobLSBLong(image);
-        bmp_info.red_mask=ReadBlobLSBLong(image);
-        bmp_info.green_mask=ReadBlobLSBLong(image);
-        bmp_info.blue_mask=ReadBlobLSBLong(image);
+        for (i=0; i < (long) (bmp_info.size-40); i++)
+          (void) ReadBlobByte(image);
+        if ((bmp_info.compression == 3) && ((bmp_info.bits_per_pixel == 16) ||
+            (bmp_info.bits_per_pixel == 32)))
+          {
+            bmp_info.red_mask=ReadBlobLSBLong(image);
+            bmp_info.green_mask=ReadBlobLSBLong(image);
+            bmp_info.blue_mask=ReadBlobLSBLong(image);
         if (bmp_info.size > 40)
           {
             /*
               Read color management information.
+              To do: store this info.
             */
             bmp_info.alpha_mask=ReadBlobLSBLong(image);
             bmp_info.colorspace=(long) ReadBlobLSBLong(image);
             bmp_info.red_primary.x=ReadBlobLSBLong(image);
-            /*
-              The primaries are formatted in 2^30 fixed point.
-            */
+            /* The primaries are formatted in 2^30 fixed point */
             bmp_info.red_primary.y=(double) ReadBlobLSBLong(image)/0x3ffffff;
             bmp_info.red_primary.z=(double) ReadBlobLSBLong(image)/0x3ffffff;
             bmp_info.green_primary.x=(double) ReadBlobLSBLong(image)/0x3ffffff;
@@ -573,9 +600,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bmp_info.blue_primary.x=(double) ReadBlobLSBLong(image)/0x3ffffff;
             bmp_info.blue_primary.y=(double) ReadBlobLSBLong(image)/0x3ffffff;
             bmp_info.blue_primary.z=(double) ReadBlobLSBLong(image)/0x3ffffff;
-            /*
-              The gamma_scales are formatted in 16^16 fixed point
-            */
+            /* The gamma_scales are formatted in 16^16 fixed point */
             bmp_info.gamma_scale.x=(double) ReadBlobLSBLong(image)/0xffff;
             bmp_info.gamma_scale.y=(double) ReadBlobLSBLong(image)/0xffff;
             bmp_info.gamma_scale.z=(double) ReadBlobLSBLong(image)/0xffff;
@@ -584,9 +609,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             /*
               Skip BMP Version 5 color management information.
+              To do: read and store this info.
             */
             for (i=0; i<4; i++)
               ReadBlobLSBLong(image);
+                (void) ReadBlobByte(image);
           }
         if (bmp_info.size > 124)
           {
@@ -596,29 +623,34 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (i=124; i<bmp_info.size; i++)
               ReadBlobByte(image);
           }
+        }
       }
+
     switch (bmp_info.compression)
     {
       case 0:
       case 1:
       case 2:
       case 3:
-        break;
+        {
+          break;
+        }
       case 4:
-      {
-        ThrowReaderException(CorruptImageWarning,
-          "JPEG compression not supported",image);
-      }
+        {
+          ThrowReaderException(CorruptImageWarning,
+            "JPEG compression not supported",image);
+        }
+
       case 5:
-      {
-        ThrowReaderException(CorruptImageWarning,
-          "PNG compression not supported",image);
-      }
+        {
+          ThrowReaderException(CorruptImageWarning,
+            "PNG compression not supported",image);
+        }
       default:
-      {
-        ThrowReaderException(CorruptImageWarning,
-          "Unrecognized compression method",image);
-      }
+        {
+          ThrowReaderException(CorruptImageWarning,
+            "Unrecognized compression method",image);
+        }
     }
     image->columns=bmp_info.width;
     image->rows=AbsoluteValue(bmp_info.height);
@@ -649,9 +681,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (bmp_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
-        packet_size=4;
         if ((bmp_info.size == 12) || (bmp_info.size == 64))
           packet_size=3;
+        else
+          packet_size=4;
         (void) ReadBlob(image,packet_size*image->colors,(char *) bmp_colormap);
         p=bmp_colormap;
         for (i=0; i < (long) image->colors; i++)
@@ -700,7 +733,25 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert BMP raster image to pixel packets.
     */
-    if (bmp_info.compression == 3)
+    if (bmp_info.compression == 0)
+      {
+        bmp_info.alpha_mask=0;
+        if (bmp_info.bits_per_pixel==16)
+          {
+            /* RGB555 */
+            bmp_info.red_mask  =0x00007c00L;
+            bmp_info.green_mask=0x000003e0L;
+            bmp_info.blue_mask =0x0000001fL;
+          }
+        else
+          {
+            /* RGB888 */
+            bmp_info.red_mask  =0x00ff0000L;
+            bmp_info.green_mask=0x0000ff00L;
+            bmp_info.blue_mask =0x000000ffL;
+          }
+      }
+    if (bmp_info.bits_per_pixel == 16 || bmp_info.bits_per_pixel == 32)
       {
         /*
           Get shift and quantum_bits info from bitfield masks.
@@ -754,7 +805,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             for (bit=0; bit < 8; bit++)
             {
-              index=((*p) & (0x80 >> bit) ? 0x00 : 0x01);
+              index=((*p) & (0x80 >> bit)) ? 0x00 : 0x01;
               indexes[x+bit]=index;
               *q++=image->colormap[index];
             }
@@ -764,7 +815,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               for (bit=0; bit < (long) (image->columns % 8); bit++)
               {
-                index=((*p) & (0x80 >> bit) ? 0x00 : 0x01);
+                index=((*p) & (0x80 >> bit)) ? 0x00 : 0x01;
                 indexes[x+bit]=index;
                 *q++=image->colormap[index];
               }
@@ -853,9 +904,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert bitfield encoded 16-bit PseudoColor scanline.
         */
-        if (bmp_info.compression != 3)
+        if (bmp_info.compression != 0 && bmp_info.compression != 3)
           ThrowReaderException(CorruptImageWarning,
-            "Compression mode != 3 in 16-bit BMP image file",image)
+            "Compression mode != 0 or 3 in 16-bit BMP image file",image)
 
         bytes_per_line=2*(image->columns+image->columns%2);
         image->storage_class=DirectClass;
@@ -938,9 +989,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert bitfield encoded DirectColor scanline.
         */
-        if (bmp_info.compression != 3)
+        if (bmp_info.compression != 0 && bmp_info.compression != 3)
           ThrowReaderException(CorruptImageWarning,
-            "Compression mode != 3 in 32-bit BMP image file",image)
+            "Compression mode != 0 or 3 in 32-bit BMP image file",image)
 
         bytes_per_line=4*(image->columns);
 
