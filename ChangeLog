@@ -1,3 +1,11 @@
+2004-02-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/memory.c (LiberateMemory): Use MagickFreeMemory macro for
+	implementation.
+	(ReacquireMemory): Use MagickReallocMemory macro for
+	implementation.
+	(AcquireMemory): Use MagickAllocateMemory for implementation.
+
 2004-02-26  Vladimir  <lvm@integrum.ru>
 
 	* magick/memory.c (CloneMemory): Fixes to compile under Microsoft

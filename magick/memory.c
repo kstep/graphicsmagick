@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -50,7 +50,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireMemory() returns a pointer to a block of memory at least size
+%  AcquireMemory() returns a pointer to a block of memory of at least size
 %  bytes suitably aligned for any use.
 %
 %  The format of the AcquireMemory method is:
@@ -65,12 +65,8 @@
 */
 MagickExport void *AcquireMemory(const size_t size)
 {
-  void
-    *allocation;
-
   assert(size != 0);
-  allocation=malloc(size);
-  return(allocation);
+  return (MagickAllocateMemory(void *,size));
 }
 
 /*
@@ -101,13 +97,18 @@ MagickExport void *AcquireMemory(const size_t size)
 MagickExport void *CloneMemory(void *destination,const void *source,
   const size_t size)
 {
+  unsigned char
+    *d=(unsigned char*) destination;
+
+  const unsigned char
+    *s=(const unsigned char*) source;
+
   assert(destination != (void *) NULL);
   assert(source != (const void *) NULL);
 
-  if ((((unsigned char*) destination+size) < (const unsigned char*) source) ||
-      ((unsigned char*) destination > ((const unsigned char*) source+size)))
-
+  if (((d+size) < s) || (d > (s+size)))
     return(memcpy(destination,source,size));
+
   return(memmove(destination,source,size));
 }
 
@@ -138,10 +139,7 @@ MagickExport void *CloneMemory(void *destination,const void *source,
 MagickExport void LiberateMemory(void **memory)
 {
   assert(memory != (void **) NULL);
-  if (*memory == (void *) NULL)
-    return;
-  free(*memory);
-  *memory=(void *) NULL;
+  MagickFreeMemory(*memory);
 }
 
 /*
@@ -174,17 +172,6 @@ MagickExport void LiberateMemory(void **memory)
 */
 MagickExport void ReacquireMemory(void **memory,const size_t size)
 {
-  void
-    *allocation;
-
   assert(memory != (void **) NULL);
-  if (*memory == (void *) NULL)
-    {
-      *memory=AcquireMemory(size);
-      return;
-    }
-  allocation=realloc(*memory,size);
-  if (allocation == (void *) NULL)
-    LiberateMemory(memory);
-  *memory=allocation;
+  MagickReallocMemory(*memory,size);
 }
