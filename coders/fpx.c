@@ -875,8 +875,6 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
   if (image->blob->type != FileStream)
     TemporaryFilename(filename);
-  else
-    CloseBlob(image);
   {
 #if defined(macintosh)
     FSSpec
@@ -1154,8 +1152,8 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,c);
       (void) fclose(file);
       (void) remove(filename);
-      CloseBlob(image);
     }
+  CloseBlob(image);
   return(True);
 }
 #else

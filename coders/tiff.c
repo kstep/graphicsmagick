@@ -1459,8 +1459,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
   if (image->blob->type != FileStream)
     TemporaryFilename(filename);
-  else
-    CloseBlob(image);
   tiff=TIFFOpen(filename,"wb");
   if (tiff == (TIFF *) NULL)
     return(False);
@@ -2039,10 +2037,10 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,c);
       (void) fclose(file);
       (void) remove(filename);
-      CloseBlob(image);
     }
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
+  CloseBlob(image);
   return(True);
 }
 #else
