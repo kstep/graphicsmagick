@@ -5849,7 +5849,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       (void) strcpy(modulate_factors,"100.0/100.0/");
-      (void) strncat(modulate_factors,hue_percent,MaxTextExtent-1);
+      (void) strncat(modulate_factors,hue_percent,MaxTextExtent-
+        strlen(modulate_factors)-1);
       argv[1]=(char *) "-modulate";
       argv[2]=modulate_factors;
       (void) MogrifyImage(resource_info->image_info,3,argv,image);
@@ -5878,7 +5879,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       (void) strcpy(modulate_factors,"100.0/");
-      (void) strncat(modulate_factors,saturation_percent,MaxTextExtent-1);
+      (void) strncat(modulate_factors,saturation_percent,MaxTextExtent-
+        strlen(modulate_factors)-1);
       argv[1]=(char *) "-modulate";
       argv[2]=modulate_factors;
       (void) MogrifyImage(resource_info->image_info,3,argv,image);

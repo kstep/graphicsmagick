@@ -323,9 +323,9 @@ void *lt_dlopen(char *filename)
     q=strchr(p,DirectoryListSeparator);
     if (q == (char *) NULL)
       {
-        (void) strncpy(buffer,p,MaxTextExtent-1);
+        (void) strncpy(buffer,p,MaxTextExtent-strlen(buffer)-1);
         (void) strcat(buffer,"\\");
-        (void) strncat(buffer,filename,MaxTextExtent-1);
+        (void) strncat(buffer,filename,MaxTextExtent-strlen(buffer)-1);
         handle=(void *) LoadLibrary(buffer);
         break;
       }
@@ -333,7 +333,7 @@ void *lt_dlopen(char *filename)
     (void) strncpy(buffer,p,i);
     buffer[i]='\0';
     (void) strcat(buffer,"\\");
-    (void) strncat(buffer,filename,MaxTextExtent-1);
+    (void) strncat(buffer,filename,MaxTextExtent-strlen(buffer)-1);
     handle=(void *) LoadLibrary(buffer);
     if (handle)
       break;

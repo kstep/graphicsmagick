@@ -378,7 +378,8 @@ MagickExport void ExpandFilename(char *filename)
       if (p == (char *) NULL)
         p=(char *) ".";
       (void) strncpy(expanded_filename,p,MaxTextExtent-1);
-      (void) strncat(expanded_filename,filename+1,MaxTextExtent-1);
+      (void) strncat(expanded_filename,filename+1,MaxTextExtent-
+        strlen(expanded_filename)-1);
     }
   else
     {
@@ -403,7 +404,8 @@ MagickExport void ExpandFilename(char *filename)
       if (p != (char *) NULL)
         {
           (void) strcat(expanded_filename,"/");
-          (void) strncat(expanded_filename,p+1,MaxTextExtent-1);
+          (void) strncat(expanded_filename,p+1,MaxTextExtent-
+            strlen(expanded_filename)-1);
         }
 #endif
     }
@@ -1989,7 +1991,8 @@ MagickExport char *PostscriptGeometry(const char *page)
           Replace mneumonic with the equivalent size in dots-per-inch.
         */
         (void) strncpy(geometry,PageSizes[i][1],MaxTextExtent-1);
-        (void) strncat(geometry,page+strlen(PageSizes[i][0]),MaxTextExtent-1);
+        (void) strncat(geometry,page+strlen(PageSizes[i][0]),MaxTextExtent-
+          strlen(geometry)-1);
         break;
       }
   return(geometry);

@@ -558,7 +558,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     for (tile=0; tile < tiles_per_page; tile++)
     {
       (void) strncat(montage_next->directory,next_list[tile]->filename,
-        MaxTextExtent-1);
+        MaxTextExtent-strlen(montage_next->directory)-1);
       (void) strcat(montage_next->directory,"\n");
     }
     handler=SetMonitorHandler((MonitorHandler) NULL);
