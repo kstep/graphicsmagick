@@ -918,11 +918,16 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     Clone pixel cache.
   */
   cache_info=(CacheInfo *) clone_image->cache;
+  cache_info->storage_class=image->storage_class;
+  cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;
   cache_info->persist=True;
   (void) strcpy(cache_info->meta_filename,image->filename);
   (void) strcpy(cache_info->cache_filename,image->filename);
   AppendImageFormat("cache",cache_info->cache_filename);
+  status=OpenCache(clone_image);
+  if (status == False)
+    ThrowWriterException(CacheWarning,"Unable to open pixel cache",image);
   for (y=0; y < (int) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
@@ -932,7 +937,8 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     memcpy(q,p,image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(image);
     clone_indexes=GetIndexes(clone_image);
-    if (image->storage_class == PseudoClass)
+    if ((indexes != (IndexPacket *) NULL) &&
+        (clone_indexes != (IndexPacket *) NULL))
       memcpy(clone_indexes,indexes,image->columns*sizeof(IndexPacket));
     if (!SyncImagePixels(clone_image))
       break;

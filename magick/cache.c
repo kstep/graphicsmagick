@@ -1120,10 +1120,12 @@ MagickExport unsigned int OpenCache(Image *image)
     TemporaryFilename(cache_info->cache_filename);
   if (cache_info->file == -1)
     {
-      cache_info->file=open(cache_info->cache_filename,O_RDWR | O_CREAT |
-        O_BINARY,0777);
+      cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
       if (cache_info->file == -1)
         (void) UncompressCache(image->cache);
+      if (cache_info->file == -1)
+        cache_info->file=open(cache_info->cache_filename,O_RDWR | O_CREAT |
+          O_BINARY,0777);
       if (cache_info->file == -1)
         return(False);
     }
@@ -1891,11 +1893,12 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
     (void) fprintf(file,"class=PseudoClass  colors=%u  matte=%s\n",
       image->colors,image->matte ? "True" : "False");
   else
-    if (image->colorspace != CMYKColorspace)
-      (void) fprintf(file,"class=DirectClass  matte=%s\n",
+    if (image->colorspace == CMYKColorspace)
+      (void) fprintf(file,"class=DirectClass  colorspace=CMYK  matte=%s\n",
         image->matte ? "True" : "False");
     else
-      (void) fprintf(file,"class=DirectClass  colorspace=CMYK\n");
+      (void) fprintf(file,"class=DirectClass  matte=%s\n",
+        image->matte ? "True" : "False");
   (void) fprintf(file,"compression=");
   switch (image->compression)
   {
