@@ -827,7 +827,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
           *composite_image;
 
         ImageInfo
-          composite_info;
+          *composite_info;
 
         if (primitive_info[j].coordinates != 1)
           {
@@ -857,14 +857,15 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
             if (*p != '\0')
               p++;
           }
-        GetImageInfo(&composite_info);
-        (void) strcpy(composite_info.filename,primitive_info[j].text);
-        composite_image=ReadImage(&composite_info);
+        composite_info=CloneImageInfo((ImageInfo *) NULL);
+        (void) strcpy(composite_info->filename,primitive_info[j].text);
+        composite_image=ReadImage(composite_info);
         if (composite_image == (Image *) NULL)
           break;
         CompositeImage(image,ReplaceCompositeOp,composite_image,
           (int) point.x,(int) point.y);
         DestroyImage(composite_image);
+        DestroyImageInfo(composite_info);
         break;
       }
     }

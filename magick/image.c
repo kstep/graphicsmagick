@@ -2540,7 +2540,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         *tile;
 
       ImageInfo
-        image_info;
+        *image_info;
 
       register char
         *p,
@@ -2549,20 +2549,20 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       /*
         Display visual image directory.
       */
-      GetImageInfo(&image_info);
-      (void) CloneString(&image_info.size,"64x64");
+      image_info=CloneImageInfo((ImageInfo *) NULL);
+      (void) CloneString(&image_info->size,"64x64");
       (void) fprintf(file,"  directory:\n");
       for (p=image->directory; *p != '\0'; p++)
       {
         q=p;
         while ((*q != '\n') && (*q != '\0'))
           q++;
-        (void) strncpy(image_info.filename,p,q-p);
-        image_info.filename[q-p]='\0';
+        (void) strncpy(image_info->filename,p,q-p);
+        image_info->filename[q-p]='\0';
         p=q;
-        (void) fprintf(file,"    %.1024s",image_info.filename);
+        (void) fprintf(file,"    %.1024s",image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
-        tile=ReadImage(&image_info);
+        tile=ReadImage(image_info);
         (void) SetWarningHandler(handler);
         if (tile == (Image *) NULL)
           {
@@ -2589,6 +2589,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
           }
         DestroyImage(tile);
       }
+      DestroyImageInfo(image_info);
     }
   (void) fflush(file);
 }

@@ -142,7 +142,7 @@ int main(int argc,char **argv)
     *p;
 
   ImageInfo
-    image_info;
+    *image_info;
 
   int
     number_images;
@@ -165,7 +165,7 @@ int main(int argc,char **argv)
     Set defaults.
   */
   count=0;
-  GetImageInfo(&image_info);
+  image_info=CloneImageInfo((ImageInfo *) NULL);
   number_images=0;
   /*
     Identify an image.
@@ -207,7 +207,7 @@ int main(int argc,char **argv)
           {
             if (strncmp("ping",option+1,2) == 0)
               {
-                image_info.ping=(*option == '-');
+                image_info->ping=(*option == '-');
                 break;
               }
             MagickError(OptionError,"Unrecognized option",option);
@@ -217,13 +217,13 @@ int main(int argc,char **argv)
           {
             if (strncmp("size",option+1,2) == 0)
               {
-                image_info.size=(char *) NULL;
+                image_info->size=(char *) NULL;
                 if (*option == '-')
                   {
                     i++;
                     if ((i == argc) || !IsGeometry(argv[i]))
                       MagickError(OptionError,"Missing geometry",option);
-                    (void) CloneString(&image_info.size,argv[i]);
+                    (void) CloneString(&image_info->size,argv[i]);
                   }
                 break;
               }
@@ -234,7 +234,7 @@ int main(int argc,char **argv)
           {
             if (strncmp("verbose",option+1,2) == 0)
               {
-                image_info.verbose=(*option == '-');
+                image_info->verbose=(*option == '-');
                 break;
               }
             MagickError(OptionError,"Unrecognized option",option);
@@ -256,28 +256,29 @@ int main(int argc,char **argv)
     /*
       Identify image.
     */
-    (void) strcpy(image_info.filename,argv[i]);
-    if (image_info.ping)
+    (void) strcpy(image_info->filename,argv[i]);
+    if (image_info->ping)
       {
-        image_info.verbose=True;
-        image=PingImage(&image_info);
+        image_info->verbose=True;
+        image=PingImage(image_info);
         number_images++;
         continue;
       }
-    image=ReadImage(&image_info);
+    image=ReadImage(image_info);
     if (image == (Image *) NULL)
       continue;
     for (p=image; p != (Image *) NULL; p=p->next)
     {
       if (p->scene == 0)
         p->scene=count++;
-      DescribeImage(p,stdout,image_info.verbose);
+      DescribeImage(p,stdout,image_info->verbose);
     }
     DestroyImages(image);
     number_images++;
   }
   if (number_images == 0)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
+  DestroyImageInfo(image_info);
   DestroyDelegateInfo();
   DestroyMagickInfo();
   FreeMemory(argv);

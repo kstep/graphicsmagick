@@ -2255,19 +2255,19 @@ static unsigned int XCompositeImage(Display *display,
             *mask_image;
 
           ImageInfo
-            image_info;
+            *image_info;
 
           /*
             Read image.
           */
           XSetCursorState(display,windows,True);
           XCheckRefreshWindows(display,windows);
-          GetImageInfo(&image_info);
-          (void) strcpy(image_info.filename,filename);
-          (void) CloneString(&image_info.size,size);
-          FormatString(image_info.size,"%ux%u",composite_image->columns,
+          image_info=CloneImageInfo((ImageInfo *) NULL);
+          (void) strcpy(image_info->filename,filename);
+          (void) CloneString(&image_info->size,size);
+          FormatString(image_info->size,"%ux%u",composite_image->columns,
             composite_image->rows);
-          mask_image=ReadImage(&image_info);
+          mask_image=ReadImage(image_info);
           XSetCursorState(display,windows,False);
           if (mask_image == (Image *) NULL)
             {
@@ -2277,7 +2277,7 @@ static unsigned int XCompositeImage(Display *display,
           CompositeImage(composite_image,ReplaceMatteCompositeOp,mask_image,
             0,0);
           DestroyImage(mask_image);
-          DestroyImageInfo(&image_info);
+          DestroyImageInfo(image_info);
         }
     }
   /*
@@ -3831,7 +3831,7 @@ static unsigned int XDrawEditImage(Display *display,
                 *stipple_image;
 
               ImageInfo
-                image_info;
+                *image_info;
 
               static char
                 filename[MaxTextExtent] = "\0";
@@ -3916,9 +3916,9 @@ static unsigned int XDrawEditImage(Display *display,
               */
               XSetCursorState(display,windows,True);
               XCheckRefreshWindows(display,windows);
-              GetImageInfo(&image_info);
-              (void) strcpy(image_info.filename,filename);
-              stipple_image=ReadImage(&image_info);
+              image_info=CloneImageInfo((ImageInfo *) NULL);
+              (void) strcpy(image_info->filename,filename);
+              stipple_image=ReadImage(image_info);
               XSetCursorState(display,windows,False);
               if (stipple_image == (Image *) NULL)
                 {
@@ -3928,9 +3928,9 @@ static unsigned int XDrawEditImage(Display *display,
                 }
               TemporaryFilename(filename);
               FormatString(stipple_image->filename,"xbm:%.1024s",filename);
-              status=WriteImage(&image_info,stipple_image);
+              status=WriteImage(image_info,stipple_image);
               DestroyImage(stipple_image);
-              DestroyImageInfo(&image_info);
+              DestroyImageInfo(image_info);
               status=XReadBitmapFile(display,root_window,filename,&width,
                 &height,&stipple,&x,&y);
               (void) remove(filename);
@@ -5274,7 +5274,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     *loaded_image;
 
   ImageInfo
-    image_info;
+    *image_info;
 
   int
     status,
@@ -5297,7 +5297,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   loaded_image=(Image *) NULL;
   windows->image.window_changes.width=windows->image.ximage->width;
   windows->image.window_changes.height=windows->image.ximage->height;
-  GetImageInfo(&image_info);
+  image_info=CloneImageInfo((ImageInfo *) NULL);
   switch (command)
   {
     case OpenCommand:
@@ -5401,9 +5401,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Create canvas.
       */
-      FormatString(image_info.filename,"%.1024s:%.1024s",format,color);
-      (void) CloneString(&image_info.size,geometry);
-      loaded_image=ReadImage(&image_info);
+      FormatString(image_info->filename,"%.1024s:%.1024s",format,color);
+      (void) CloneString(&image_info->size,geometry);
+      loaded_image=ReadImage(image_info);
       XClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
       break;
@@ -6652,7 +6652,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Edit image comment.
       */
-      TemporaryFilename(image_info.filename);
+      TemporaryFilename(image_info->filename);
       if ((*image)->comments != (char *) NULL)
         {
           FILE
@@ -6661,11 +6661,11 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           register char
             *p;
 
-          file=fopen(image_info.filename,WriteBinaryType);
+          file=fopen(image_info->filename,WriteBinaryType);
           if (file == (FILE *) NULL)
             {
               XNoticeWidget(display,windows,"Unable to edit image comment",
-                image_info.filename);
+                image_info->filename);
               break;
             }
           for (p=(*image)->comments; *p != '\0'; p++)
@@ -6675,7 +6675,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         }
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      status=InvokeDelegate(&image_info,*image,"edit",(char *) NULL);
+      status=InvokeDelegate(image_info,*image,"edit",(char *) NULL);
       if (status != False)
         XNoticeWidget(display,windows,"Unable to edit image comment",
           (char *) NULL);
@@ -6684,10 +6684,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           char
             command[MaxTextExtent];
 
-          FormatString(command,"@%.1024s",image_info.filename);
+          FormatString(command,"@%.1024s",image_info->filename);
           CommentImage(*image,command);
         }
-      (void) remove(image_info.filename);
+      (void) remove(image_info->filename);
       XSetCursorState(display,windows,False);
       break;
     }
@@ -6700,7 +6700,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       (void) strcpy((*image)->magick,"LAUNCH");
       TemporaryFilename((*image)->filename);
-      status=WriteImage(&image_info,*image);
+      status=WriteImage(image_info,*image);
       if (status != False)
         XNoticeWidget(display,windows,"Unable to launch image editor",
           (char *) NULL);
@@ -6770,13 +6770,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      image_info.preview_type=(PreviewType) (i+1);
-      image_info.group=windows->image.id;
+      image_info->preview_type=(PreviewType) (i+1);
+      image_info->group=windows->image.id;
       LabelImage(*image,"Preview");
       TemporaryFilename((*image)->filename);
-      status=WritePREVIEWImage(&image_info,*image);
+      status=WritePREVIEWImage(image_info,*image);
       (void) strcpy((*image)->magick,"SHOW");
-      status=WriteImage(&image_info,*image);
+      status=WriteImage(image_info,*image);
       if (status)
         XNoticeWidget(display,windows,"Unable to show image preview",
           (*image)->filename);
@@ -6791,12 +6791,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      image_info.group=windows->image.id;
+      image_info->group=windows->image.id;
       LabelImage(*image,"Histogram");
       TemporaryFilename((*image)->filename);
-      status=WriteHISTOGRAMImage(&image_info,*image);
+      status=WriteHISTOGRAMImage(image_info,*image);
       (void) strcpy((*image)->magick,"SHOW");
-      status=WriteImage(&image_info,*image);
+      status=WriteImage(image_info,*image);
       if (status)
         XNoticeWidget(display,windows,"Unable to show histogram",
           (*image)->filename);
@@ -6817,12 +6817,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      image_info.group=windows->image.id;
+      image_info->group=windows->image.id;
       LabelImage(*image,"Matte");
       TemporaryFilename((*image)->filename);
-      status=WriteMATTEImage(&image_info,*image);
+      status=WriteMATTEImage(image_info,*image);
       (void) strcpy((*image)->magick,"SHOW");
-      status=WriteImage(&image_info,*image);
+      status=WriteImage(image_info,*image);
       if (status)
         XNoticeWidget(display,windows,"Unable to show histogram",
           (*image)->filename);
@@ -6918,7 +6918,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         }
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      status=InvokeDelegate(&image_info,*image,"browse",(char *) NULL);
+      status=InvokeDelegate(image_info,*image,"browse",(char *) NULL);
       if (status != False)
         XNoticeWidget(display,windows,"Unable to browse documentation",
           (char *) NULL);
@@ -6939,6 +6939,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       break;
     }
   }
+  DestroyImageInfo(image_info);
   return(loaded_image);
 }
 
