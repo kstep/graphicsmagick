@@ -9,9 +9,7 @@
 %               C      O   O  N  NN   V V   E      R R      T                 %
 %                CCCC   OOO   N   N    V    EEEEE  R  R     T                 %
 %                                                                             %
-%                                                                             %
 %                Convert an image from one format to another.                 %
-%                                                                             %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

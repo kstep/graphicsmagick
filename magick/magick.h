@@ -14,9 +14,9 @@
 #define _XOPEN_SOURCE_EXTENDED  1
 #endif
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
 
 #if defined _FILE_OFFSET_BITS && _FILE_OFFSET_BITS == 64
 #define fseek  fseeko

@@ -5969,7 +5969,7 @@ Ping(ref,...)
         }
       else
         {
-          FormatString(message,"%u,%u,%u,%s",image->columns,image->rows,
+          FormatString(message,"%u,%u,%u,%.1024s",image->columns,image->rows,
             image->filesize,image->magick);
           s=sv_2mortal(newSVpv(message,0));
           DestroyImage(image);
