@@ -2041,7 +2041,7 @@ MagickExport unsigned int IsAccessible(const char *filename)
       (void) fprintf(stdout,"  %.1024s",filename);
       if (status == False)
         (void) fprintf(stdout," [%.1024s]",strerror(errno));
-      (void) fprintf(stdout,"\n");
+      (void) fprintf(stdout,".\n");
     }
   return(status);
 }
