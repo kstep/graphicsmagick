@@ -129,18 +129,19 @@ ModuleExport unsigned int AnalyzeImage(Image *image,
     for (x=0; x < image->columns; x++)
     {
       TransformHSL(p->red,p->green,p->blue,&hue,&saturation,&brightness);
-      brightness *= OpaqueOpacity;
+      brightness *= MaxRGB;
 	    bsumX += brightness;
 	    bsumX2 += brightness * brightness;
-      saturation *= OpaqueOpacity;
+      saturation *= MaxRGB;
 	    ssumX += saturation;
 	    ssumX2 += saturation * saturation;
       total_pixels++;
       p++;
     }
+    p--; /* backup one pixel to allow us to sample */
     if (y == 0)
       {
-        FormatString(text,"#%2x%2x%2x",p->red,p->green,p->blue);
+        FormatString(text,"#%02x%02x%02x",p->red,p->green,p->blue);
         (void) SetImageAttribute(image,"TopRightColor",text);
       }
     if (y == (image->rows-1))
