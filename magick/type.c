@@ -271,8 +271,14 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   {
     if (p->family == (char *) NULL)
       continue;
-    if (LocaleCompare(p->family,family) != 0)
-      continue;
+    if (family == (const char *) NULL)
+      {
+        if (LocaleCompare(p->family,"helvetica") != 0)
+          continue;
+      }
+    else
+      if (LocaleCompare(p->family,family) != 0)
+        continue;
     if ((style != AnyStyle) && (p->style != style))
       continue;
     if ((stretch != AnyStretch) && (p->stretch != stretch))
@@ -290,8 +296,14 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   {
     if (p->family == (char *) NULL)
       continue;
-    if (LocaleCompare(p->family,family) != 0)
-      continue;
+    if (family == (const char *) NULL)
+      {
+        if (LocaleCompare(p->family,"helvetica") != 0)
+          continue;
+      }
+    else
+      if (LocaleCompare(p->family,family) != 0)
+        continue;
     score=0;
     if ((style == AnyStyle) || (p->style == style))
       score+=32;
