@@ -114,7 +114,7 @@
 %    -morph value         morph an image sequence
 %    -mosaic              create an mosaic from an image sequence
 %    -negate              replace every pixel with its complementary color
-%    -noise               add or reduce noise in an image
+%    -noise radius        add or reduce noise in an image
 %    -normalize           transform image to span the full range of colors
 %    -opaque color        change this color to the fill color
 %    -page geometry       size and location of an image canvas
@@ -315,7 +315,7 @@ static void Usage(void)
       "-morph value         morph an image sequence",
       "-mosaic              create an mosaic from an image sequence",
       "-negate              replace every pixel with its complementary color ",
-      "-noise               add or reduce noise in an image",
+      "-noise radius        add or reduce noise in an image",
       "-normalize           transform image to span the full range of colors",
       "-opaque color        change this color to the fill color",
       "-page geometry       size and location of an image canvas",

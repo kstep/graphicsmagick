@@ -107,7 +107,7 @@
 %    -modulate value      vary the brightness, saturation, and hue
 %    -monochrome          transform image to black and white
 %    -negate              replace every pixel with its complementary color 
-%    -noise value         add or reduce noise in an image
+%    -noise radius        add or reduce noise in an image
 %    -normalize           transform image to span the full range of colors
 %    -opaque color        change this color to the fill color
 %    -page geometry       size and location of an image canvas
@@ -236,7 +236,7 @@ static void Usage(void)
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color ",
-      "-noise value         add or reduce noise in an image.",
+      "-noise radius        add or reduce noise in an image.",
       "-normalize           transform image to span the full range of colors",
       "-opaque color        change this color to the fill color",
       "-page geometry       size and location of an image canvas",
