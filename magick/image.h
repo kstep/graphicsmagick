@@ -678,7 +678,7 @@ extern MagickExport unsigned int
   GetNumberScenes(const Image *),
   GradientImage(Image *,const PixelPacket *,const PixelPacket *),
   IsGrayImage(const Image *,ExceptionInfo *),
-  IsImagesEqual(const Image *,const Image *,ErrorInfo *,ExceptionInfo *),
+  IsImagesEqual(Image *,const Image *),
   IsTaintImage(const Image *),
   IsMagickConflict(const char *),
   IsMonochromeImage(const Image *,ExceptionInfo *),

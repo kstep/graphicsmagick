@@ -48,9 +48,6 @@ int main ( int argc, char **argv )
   double
     fuzz_factor = 0;
 
-	ErrorInfo
-	  error_info;
-
   ImageInfo
     imageInfo;
 
@@ -254,12 +251,12 @@ int main ( int argc, char **argv )
        !strcmp( "YUV", format ) )
     fuzz_factor = 0.008;
   
-  if ( !IsImagesEqual(original, final, &error_info, &exception ) &&
-       (error_info.normalized_mean_error > fuzz_factor) )
+  if ( !IsImagesEqual(original, final ) &&
+       (original->error.normalized_mean_error > fuzz_factor) )
     {
       printf( "R/W file check for format \"%s\" failed: %u/%.6f/%.6fe\n",
-        format,(unsigned int) error_info.mean_error_per_pixel,error_info.normalized_mean_error,
-        error_info.normalized_maximum_error);
+        format,(unsigned int) original->error.mean_error_per_pixel,original->error.normalized_mean_error,
+        original->error.normalized_maximum_error);
       fflush(stdout);
     }
 

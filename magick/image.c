@@ -2666,7 +2666,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
   assert(reference != (const Image *) NULL);
   assert(reference->signature == MagickSignature);
   memset(&image->error,0,sizeof(ErrorInfo));
-  (void) GetNumberColors(image,(FILE *) NULL,exception);
+  (void) GetNumberColors(image,(FILE *) NULL,&image->exception);
   if ((image->rows != reference->rows) ||
       (image->columns != reference->columns) ||
       (image->interlace != reference->interlace) ||
