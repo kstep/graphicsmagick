@@ -617,18 +617,18 @@ static double Blackman(double x)
 
 static double Catrom(double x)
 {
-  if (x < 0)
+  if (x < 0.0)
     x=(-x);
   if (x < 1.0)
-    return(0.5*(2.0+x*x*(-5.0+x*3.0))+MagickEpsilon);
+    return(0.5*(2.0+x*x*(-5.0+x*3.0)));
   if (x < 2.0)
-    return(0.5*(4.0+x*(-8.0+x*(5.0-x)))+MagickEpsilon);
+    return(0.5*(4.0+x*(-8.0+x*(5.0-x))));
   return(0.0);
 }
 
 static double Cubic(double x)
 {
-  if (x < 0)
+  if (x < 0.0)
     x=(-x);
   if (x < 1.0)
     return((0.5*x*x*x)-x*x+(2.0/3.0));
@@ -647,7 +647,7 @@ static double Gaussian(double x)
 
 static double Hanning(double x)
 {
-  return(0.5+0.5*cos(MagickPI*x+MagickEpsilon)+MagickEpsilon);
+  return(0.5+0.5*cos(MagickPI*x));
 }
 
 static double Hamming(double x)
@@ -657,24 +657,23 @@ static double Hamming(double x)
 
 static double Hermite(double x)
 {
-  if (x < 0)
+  if (x < 0.0)
     x=(-x);
   if (x < 1.0)
-    return((2.0*x-3.0)*x*x+1.0+MagickEpsilon);
+    return((2.0*x-3.0)*x*x+1.0);
   return(0.0);
 }
 
 static double Sinc(double x)
 {
-  x*=MagickPI;
   if (x != 0.0)
-    return(sin(x)/x);
+    return(sin(MagickPI*x)/(MagickPI*x));
   return(1.0);
 }
 
 static double Lanczos(double x)
 {
-  if (x < 0)
+  if (x < 0.0)
     x=(-x);
   if (x < 3.0)
     return(Sinc(x)*Sinc(x/3.0));
@@ -689,7 +688,7 @@ static double Mitchell(double x)
 
   b=1.0/3.0;
   c=1.0/3.0;
-  if (x < 0)
+  if (x < 0.0)
     x=(-x);
   if (x < 1.0)
     {
@@ -729,7 +728,7 @@ static double Triangle(double x)
 }
 
 static unsigned int HorizontalFilter(const Image *source,Image *destination,
-  double x_factor,const FilterInfo *filter_info,const double blur,
+  const double x_factor,const FilterInfo *filter_info,const double blur,
   ContributionInfo *contribution,const size_t span,unsigned int *quantum,
   ExceptionInfo *exception)
 {
@@ -747,18 +746,18 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     support;
 
   long
-    end,
     j,
     n,
     start,
-    y;
+    stop,
+    x;
 
   register const PixelPacket
     *p;
 
   register long
     i,
-    x;
+    y;
 
   register IndexPacket
     *indexes;
@@ -766,35 +765,10 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
   register PixelPacket
     *q;
 
-  destination->storage_class=source->storage_class;
-  if ((source->columns == destination->columns) &&
-      (source->rows == destination->rows))
-    {
-      /*
-        Equal width and height-- just copy pixels.
-      */
-      for (y=0; y < (long) destination->rows; y++)
-      {
-        p=AcquireImagePixels(source,0,y,source->columns,1,exception);
-        q=SetImagePixels(destination,0,y,destination->columns,1);
-        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-          break;
-        (void) memcpy(q,p,source->columns*sizeof(PixelPacket));
-        indexes=GetIndexes(source);
-        if (indexes != (IndexPacket *) NULL)
-          (void) memcpy(GetIndexes(destination),indexes,
-            source->columns*sizeof(IndexPacket));
-        if (!SyncImagePixels(destination))
-          break;
-        if (QuantumTick(*quantum,span))
-          MagickMonitor(ResizeImageText,*quantum,span);
-        (*quantum)++;
-      }
-      return(y == (long) destination->rows);
-    }
   /*
     Apply filter to resize horizontally from source to destination.
   */
+  destination->storage_class=source->storage_class;
   scale=blur/x_factor;
   support=scale*filter_info->support;
   if (support > 0.5)
@@ -804,25 +778,24 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       /*
         Reduce to point sampling.
       */
-      scale*=0.5/support;
       support=0.5;
+      scale=1.0;
     }
   scale=1.0/scale;
-  offset=scale >= 1.0 ? 0.5 : -0.5;
+  center=MagickEpsilon;
   for (x=0; x < (long) destination->columns; x++)
   {
-    density=0.0;
-    n=0;
-    center=(double) x/x_factor+MagickEpsilon;
     start=(long) Max(ceil(center-support-0.5),0);
-    end=(long) Min(floor(center+support+0.5),source->columns);
-    for (i=start; i <= end; i++)
+    stop=(long) Min(floor(center+support+0.5),source->columns);
+    offset=scale*(start-center+(scale >= 1.0 ? 0.5 : -0.5));
+    density=0.0;
+    for (n=0; start <= stop; n++)
     {
-      contribution[n].pixel=i;
-      contribution[n].weight=filter_info->function(scale*(i-center+offset));
-      contribution[n].weight*=scale;
+      contribution[n].pixel=start;
+      contribution[n].weight=scale*filter_info->function(offset);
       density+=contribution[n].weight;
-      n++;
+      offset+=scale;
+      start+=1.0;
     }
     density=density == 0.0 ? 1.0 : 1.0/density;
     for (i=0; i < n; i++)
@@ -842,7 +815,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       opacity=0.0;
       for (i=0; i < n; i++)
       {
-        j=(long) (y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+        j=(y*(contribution[n-1].pixel-contribution[0].pixel+1)+
           (contribution[i].pixel-contribution[0].pixel));
         red+=contribution[i].weight*(p+j)->red;
         green+=contribution[i].weight*(p+j)->green;
@@ -851,12 +824,10 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       }
       if (indexes != (IndexPacket *) NULL)
         indexes[y]=(GetIndexes(source))[j];
-      q->red=(Quantum)
-        ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+      q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
       q->green=(Quantum)
         ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-      q->blue=(Quantum)
-        ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+      q->blue=(Quantum) ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
       q->opacity=(Quantum)
         ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
       q++;
@@ -866,12 +837,13 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     if (QuantumTick(*quantum,span))
       MagickMonitor(ResizeImageText,*quantum,span);
     (*quantum)++;
+    center+=1.0/x_factor;;
   }
   return(x == (long) destination->columns);
 }
 
 static unsigned int VerticalFilter(const Image *source,Image *destination,
-  double y_factor,const FilterInfo *filter_info,const double blur,
+  const double y_factor,const FilterInfo *filter_info,const double blur,
   ContributionInfo *contribution,const size_t span,unsigned int *quantum,
   ExceptionInfo *exception)
 {
@@ -887,18 +859,18 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     support;
 
   long
-    end,
     j,
     n,
     start,
-    x;
+    stop,
+    y;
 
   register const PixelPacket
     *p;
 
   register long
     i,
-    y;
+    x;
 
   register IndexPacket
     *indexes;
@@ -906,35 +878,10 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
   register PixelPacket
     *q;
 
-  destination->storage_class=source->storage_class;
-  if ((source->columns == destination->columns) &&
-      (source->rows == destination->rows))
-    {
-      /*
-        Equal width and height-- just copy pixels.
-      */
-      for (y=0; y < (long) destination->rows; y++)
-      {
-        p=AcquireImagePixels(source,0,y,source->columns,1,exception);
-        q=SetImagePixels(destination,0,y,destination->columns,1);
-        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-          break;
-        (void) memcpy(q,p,source->columns*sizeof(PixelPacket));
-        indexes=GetIndexes(source);
-        if (indexes != (IndexPacket *) NULL)
-          (void) memcpy(GetIndexes(destination),indexes,
-            source->columns*sizeof(IndexPacket));
-        if (!SyncImagePixels(destination))
-          break;
-        if (QuantumTick(*quantum,span))
-          MagickMonitor(ResizeImageText,*quantum,span);
-        (*quantum)++;
-      }
-      return(y == (long) destination->rows);
-    }
   /*
     Apply filter to resize vertically from source to destination.
   */
+  destination->storage_class=source->storage_class;
   scale=blur/y_factor;
   support=scale*filter_info->support;
   if (support > 0.5)
@@ -944,25 +891,24 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       /*
         Reduce to point sampling.
       */
-      scale*=0.5/support;
       support=0.5;
+      scale=1.0;
     }
   scale=1.0/scale;
-  offset=scale >= 1.0 ? 0.5 : -0.5;
+  center=MagickEpsilon;
   for (y=0; y < (long) destination->rows; y++)
   {
-    density=0.0;
-    n=0;
-    center=(double) y/y_factor+MagickEpsilon;
     start=(long) Max(ceil(center-support-0.5),0);
-    end=(long) Min(floor(center+support+0.5),source->rows);
-    for (i=start; i <= end; i++)
+    stop=(long) Min(floor(center+support+0.5),source->rows);
+    offset=scale*(start-center+(scale >= 1.0 ? 0.5 : -0.5));
+    density=0.0;
+    for (n=0; start <= stop; n++)
     {
-      contribution[n].pixel=i;
-      contribution[n].weight=filter_info->function(scale*(i-center+offset));
-      contribution[n].weight*=scale;
+      contribution[n].pixel=start;
+      contribution[n].weight=scale*filter_info->function(offset);
       density+=contribution[n].weight;
-      n++;
+      offset+=scale;
+      start+=1.0;
     }
     density=density == 0.0 ? 1.0 : 1.0/density;
     for (i=0; i < n; i++)
@@ -982,8 +928,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       opacity=0.0;
       for (i=0; i < n; i++)
       {
-        j=(long)
-          (source->columns*(contribution[i].pixel-contribution[0].pixel)+x);
+        j=(source->columns*(contribution[i].pixel-contribution[0].pixel)+x);
         red+=contribution[i].weight*(p+j)->red;
         green+=contribution[i].weight*(p+j)->green;
         blue+=contribution[i].weight*(p+j)->blue;
@@ -991,12 +936,10 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       }
       if (indexes != (IndexPacket *) NULL)
         indexes[x]=(GetIndexes(source))[j];
-      q->red=(Quantum)
-        ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+      q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
       q->green=(Quantum)
         ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-      q->blue=(Quantum)
-        ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+      q->blue=(Quantum) ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
       q->opacity=(Quantum)
         ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
       q++;
@@ -1006,6 +949,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     if (QuantumTick(*quantum,span))
       MagickMonitor(ResizeImageText,*quantum,span);
     (*quantum)++;
+    center+=1.0/y_factor;
   }
   return(y == (long) destination->rows);
 }
@@ -1076,14 +1020,14 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
     Allocate filter contribution info.
   */
   x_factor=(double) resize_image->columns/image->columns;
-  x_support=Max(blur*filters[filter].support/x_factor,0.5);
+  x_support=blur*filters[filter].support/x_factor;
   y_factor=(double) resize_image->rows/image->rows;
-  y_support=Max(blur*filters[filter].support/y_factor,0.5);
+  y_support=blur*filters[filter].support/y_factor;
   support=Max(x_support,y_support);
   if (support < filters[filter].support)
     support=filters[filter].support;
   contribution=(ContributionInfo *)
-    AcquireMemory((int) (support*2+3)*sizeof(ContributionInfo));
+    AcquireMemory((int) (2*Max(support,0.5)+3)*sizeof(ContributionInfo));
   if (contribution == (ContributionInfo *) NULL)
     {
       DestroyImage(resize_image);
