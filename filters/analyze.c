@@ -146,7 +146,7 @@ ModuleExport unsigned int AnalyzeImage(Image *image,
     if (y == (image->rows-1))
       {
         FormatString(text,"#%02x%02x%02x",p->red,p->green,p->blue);
-        (void) SetImageAttribute(image,"BottomLeftColor",text);
+        (void) SetImageAttribute(image,"BottomRightColor",text);
       }
   }
   if (total_pixels > 0.0)
