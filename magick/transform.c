@@ -275,7 +275,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
   /*
     Coalesce image.
   */
-  for (next=image->next; next != (Image *) NULL; next=next->next)
+  for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
   {
     coalesce_image->next=CloneImage(coalesce_image,0,0,True,exception);
     if (coalesce_image->next == (Image *) NULL)
@@ -508,7 +508,7 @@ MagickExport Image *DeconstructImages(const Image *image,
   /*
     Ensure the image are the same size.
   */
-  for (next=image; next != (Image *) NULL; next=next->next)
+  for (next=image; next != (Image *) NULL; next=GetNextImage(next))
   {
     if ((next->columns != image->columns) || (next->rows != image->rows))
       ThrowImageException(OptionWarning,"Unable to deconstruct image sequence",
@@ -526,7 +526,7 @@ MagickExport Image *DeconstructImages(const Image *image,
     Compute the bounding box for each next in the sequence.
   */
   i=0;
-  for (next=image->next; next != (const Image *) NULL; next=next->next)
+  for (next=image->next; next != (const Image *) NULL; next=GetNextImage(next))
   {
     /*
       Set bounding box to the next dimensions.
@@ -614,7 +614,7 @@ MagickExport Image *DeconstructImages(const Image *image,
     Deconstruct the image sequence.
   */
   i=0;
-  for (next=image->next; next != (Image *) NULL; next=next->next)
+  for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
   {
     crop_image=CloneImage(next,0,0,True,exception);
     if (crop_image == (Image *) NULL)
@@ -689,7 +689,7 @@ MagickExport Image *FlattenImages(const Image *image,ExceptionInfo *exception)
   /*
     Flatten image.
   */
-  for (next=image->next; next != (Image *) NULL; next=next->next)
+  for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
     (void) CompositeImage(flatten_image,next->matte ? OverCompositeOp :
       CopyCompositeOp,next,next->page.x,next->page.y);
   return(flatten_image);
@@ -928,7 +928,7 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
   page.height=image->rows;
   page.x=0;
   page.y=0;
-  for (next=image; next != (Image *) NULL; next=next->next)
+  for (next=image; next != (Image *) NULL; next=GetNextImage(next))
   {
     page.x=next->page.x;
     page.y=next->page.y;
@@ -950,7 +950,7 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
     Initialize colormap.
   */
   scene=0;
-  for (next=image; next != (Image *) NULL; next=next->next)
+  for (next=image; next != (Image *) NULL; next=GetNextImage(next))
   {
     (void) CompositeImage(mosaic_image,CopyCompositeOp,next,next->page.x,
       next->page.y);

@@ -2205,7 +2205,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
             (image->scene <= (clone_info->subimage+clone_info->subrange-1));
           if (image->next != (Image *) NULL)
             {
-              image=image->next;
+              image=GetNextImage(image);
               if (!retain)
                 DestroyImage(image->previous);
               continue;

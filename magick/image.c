@@ -4943,7 +4943,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     mogrify_images=mogrify_images->next;
     if (image_info->verbose)
       DescribeImage(image,stdout,False);
-    image=image->next;
+    image=GetNextImage(image);
     MagickMonitor(MogrifyImageText,scene,number_images);
   }
   return(status);
