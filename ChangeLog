@@ -1,5 +1,10 @@
 2004-04-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/utility.c (SetClientPath): Ensure that client path is
+	null terminated.
+	(SetClientFilename): Initialize default client filename to ""
+	rather than "gm.exe" and ensure that filename is null terminated.
+	(SetClientName): Ensure that client path is null terminated.
 	* magick/blob.c (GetConfigureBlob): Enable logging the load of
 	log.mgk
 	* magick/log.c: Re-designed logging initialization in order to

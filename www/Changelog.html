@@ -53,6 +53,22 @@
 </tr>
 </table>
 <p>
+2004-04-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.c (SetClientPath): Ensure that client path is
+        null terminated.<BR>
+        (SetClientFilename): Initialize default client filename to ""
+        rather than "gm.exe" and ensure that filename is null terminated.
+        (SetClientName): Ensure that client path is null terminated.
+  <LI> magick/blob.c (GetConfigureBlob): Enable logging the load of
+        log.mgk<BR>
+  <LI> magick/log.c: Re-designed logging initialization in order to
+        avoid the "chicken and the egg" snafu.  This allows logging the
+        initialization of the logging subsystem.
+
+</UL>
+<p>
 2004-04-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -3061,11 +3061,12 @@ MagickExport const char *GetClientFilename(void)
 MagickExport const char *SetClientFilename(const char *name)
 {
   static char
-    client_filename[MaxTextExtent] = "gm.exe";
+    client_filename[MaxTextExtent] = "";
 
   if ((name != (char *) NULL) && (*name != '\0'))
     {
-      (void) strncpy(client_filename,name,MaxTextExtent-1);
+      (void) strncpy(client_filename,name,sizeof(client_filename)-1);
+      client_filename[sizeof(client_filename)-1]='\0';
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
         "Client Filename was set to: %s",client_filename);
     }
@@ -3110,7 +3111,8 @@ MagickExport char *SetClientName(const char *name)
 
   if ((name != (char *) NULL) && (*name != '\0'))
     {
-      (void) strncpy(client_name,name,MaxTextExtent-1);
+      (void) strncpy(client_name,name,sizeof(client_name)-1);
+      client_name[sizeof(client_name)-1]='\0';
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
         "Client Name was set to: %s",client_name);
     }
@@ -3156,7 +3158,8 @@ MagickExport const char *SetClientPath(const char *path)
 
   if ((path != (char *) NULL) && (*path != '\0'))
     {
-      (void) strncpy(client_path,path,MaxTextExtent-1);
+      (void) strncpy(client_path,path,sizeof(client_path)-1);
+      client_path[sizeof(client_path)-1]='\0';
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
         "Client Path was set to: %s",path);
     }
