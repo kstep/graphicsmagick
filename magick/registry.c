@@ -215,6 +215,8 @@ MagickExport void DestroyMagickRegistry(void)
 %
 %  A description of each parameter follows:
 %
+%    o name: The name of the image to retrieve from the registry.
+%
 %    o id: The registry id.
 %
 %    o exception: Return any errors or warnings in this structure.
