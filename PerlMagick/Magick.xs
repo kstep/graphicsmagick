@@ -5078,7 +5078,7 @@ Mogrify(ref,...)
         case 61:  /* Channel */
         {
           if (!attribute_flag[0])
-            argument_list[0].int_reference=0;
+            argument_list[0].int_reference=1;
           ChannelImage(image,(ChannelType) argument_list[0].int_reference);
           break;
         }
