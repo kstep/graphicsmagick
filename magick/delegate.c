@@ -627,21 +627,24 @@ static unsigned int ReadConfigureFile(const char *basename,
             continue;
           GetToken(q,&q,token);
           if (LocaleCompare(keyword,"file") == 0)
-            if (depth > 200)
-              ThrowException(exception,ConfigureError,
-                "<include /> nested too deeply",path);
-						else
-              {
-                char
-                  filename[MaxTextExtent];
-
-                GetPathComponent(path,HeadPath,filename);
-                (void) strcat(filename,DirectorySeparator);
-                (void) strncat(filename,token,MaxTextExtent-strlen(filename)-1);
-                (void) ReadConfigureFile(filename,depth+1,exception);
-                while (delegate_list->next != (DelegateInfo *) NULL)
-                  delegate_list=delegate_list->next;
-              }
+            {
+              if (depth > 200)
+                ThrowException(exception,ConfigureError,
+                  "<include /> nested too deeply",path);
+	  					else
+                {
+                  char
+                    filename[MaxTextExtent];
+  
+                  GetPathComponent(path,HeadPath,filename);
+                  (void) strcat(filename,DirectorySeparator);
+                  (void) strncat(filename,token,MaxTextExtent-
+                    strlen(filename)-1);
+                  (void) ReadConfigureFile(filename,depth+1,exception);
+                  while (delegate_list->next != (DelegateInfo *) NULL)
+                    delegate_list=delegate_list->next;
+                }
+            }
         }
         continue;
       }
