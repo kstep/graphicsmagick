@@ -23,6 +23,32 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-06-09  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+	* Label color could not be set (bug report by Ron Savage).
+
+2002-06-06  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+	* ImageMagick, version 5.4.6-1 released.
+
+2002-06-05  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+	* Added -encoding option to command line utilities.
+
+2002-06-02  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+	* ImageMagick, version 5.4.6 released.
+
+2002-05-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * ImageMagick may now be built (static build only) using the
+    free MinGW development package from http://www.mingw.org.
+    Leonard's "clipboard" coder is included in the build.
+
+2002-05-28  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
+  * Added new "clipboard" coder for reading/writing the system's
+    clipboard.  Currently this is only implemented on Windows.
+    For example:  'convert logo: clipboard:', 'convert clipboard: foo.png'
+
+2002-05-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Support autotrace via delegates.mgk.
+    For example:  'convert autotrace:file.png file.mvg'
+
 2002-05-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Added progress monitor support to DrawImage().
 

@@ -1372,8 +1372,12 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (LocaleCompare(attribute,"fill") == 0)
         {
           if (info)
-            (void) QueryColorDatabase(SvPV(sval,na),&info->draw_info->fill,
+            {
+              (void) QueryColorDatabase(SvPV(sval,na),&info->draw_info->fill,
                 image ? &image->exception : &exception);
+              (void) QueryColorDatabase(SvPV(sval,na),&info->image_info->pen,
+                image ? &image->exception : &exception);
+            }
           return;
         }
       if (LocaleCompare(attribute,"font") == 0)

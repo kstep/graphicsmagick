@@ -117,6 +117,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  draw_info->fill=image_info->pen;
   draw_info->text=TranslateText(image_info,image,image_info->filename);
   if (draw_info->text == (char *) NULL)
     ThrowReaderException(FileOpenError,"Unable to translate text",image);

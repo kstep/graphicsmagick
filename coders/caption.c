@@ -160,6 +160,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     Format caption.
   */
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  draw_info->fill=image_info->pen;
   draw_info->text=AllocateString(caption);
   p=caption;
   q=draw_info->text;
