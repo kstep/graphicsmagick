@@ -203,7 +203,7 @@ MagickExport void DestroyModuleInfo(void)
 %
 %  The format of the ExecuteModuleProcess method is:
 %
-%      unsigned int ExecuteModuleProcess(const char *tag,Image *image,
+%      unsigned int ExecuteModuleProcess(const char *tag,Image **image,
 %        const int argc,char **argv)
 %
 %  A description of each parameter follows:
@@ -262,8 +262,8 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
     (*method)(Image **,const int,char **),
     status;
 
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(image != (Image **) NULL);
+  assert((*image)->signature == MagickSignature);
   status=False;
   module_name=TagToProcess(tag);
   handle=lt_dlopen(module_name);
