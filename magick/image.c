@@ -1635,7 +1635,7 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      index=(indexes[x]+amount) % image->colors;
+      index=(long) (indexes[x]+amount) % image->colors;
       if (index < 0)
         index+=image->colors;
       indexes[x]=(IndexPacket) index;
@@ -2556,11 +2556,11 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   assert(image->signature == MagickSignature);
   bounds.width=0;
   bounds.height=0;
-  bounds.x=image->columns;
-  bounds.y=image->rows;
+  bounds.x=(long) image->columns;
+  bounds.y=(long) image->rows;
   corners[0]=AcquireOnePixel(image,0,0,exception);
-  corners[1]=AcquireOnePixel(image,image->columns-1,0,exception);
-  corners[2]=AcquireOnePixel(image,0,image->rows-1,exception);
+  corners[1]=AcquireOnePixel(image,(long) image->columns-1,0,exception);
+  corners[2]=AcquireOnePixel(image,0,(long) image->rows-1,exception);
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,exception);
@@ -3935,9 +3935,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if ((flags & HeightValue) == 0)
               frame_info.height=frame_info.width;
             if ((flags & XValue) == 0)
-              frame_info.outer_bevel=(frame_info.width >> 2)+1;
+              frame_info.outer_bevel=(long) (frame_info.width >> 2)+1;
             if ((flags & YValue) == 0)
-              frame_info.inner_bevel=frame_info.outer_bevel;
+              frame_info.inner_bevel=(long) frame_info.outer_bevel;
             frame_info.x=frame_info.width;
             frame_info.y=frame_info.height;
             frame_info.width=(*image)->columns+(frame_info.width << 1);
@@ -4413,8 +4413,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   width=(*image)->columns;
                 if (height > (*image)->rows)
                   height=(*image)->rows;
-                region_info.x=width >> 1;
-                region_info.y=height >> 1;
+                region_info.x=(long) (width >> 1);
+                region_info.y=(long) (height >> 1);
                 width=(*image)->columns-width;
                 height=(*image)->rows-height;
                 flags|=XValue | YValue;
@@ -5109,8 +5109,8 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
         count=sscanf(geometry,"%lfx%lf",&x_scale,&y_scale);
       if (count == 1)
         y_scale=x_scale;
-      *width=Max((unsigned int) ((x_scale*former_width)/100.0)+0.5,1.0);
-      *height=Max((unsigned int) ((y_scale*former_height)/100.0)+0.5,1.0);
+      *width=Max((unsigned long) ((x_scale*former_width)/100.0)+0.5,1.0);
+      *height=Max((unsigned long) ((y_scale*former_height)/100.0)+0.5,1.0);
       former_width=(*width);
       former_height=(*height);
     }
@@ -5192,7 +5192,7 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
       /*
         Center image in the X direction.
       */
-      delta=media_info.width-(*width);
+      delta=(long) (media_info.width-(*width));
       if (delta >= 0)
         *x=delta >> 1;
     }
@@ -5204,7 +5204,7 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
       /*
         Center image in the Y direction.
       */
-      delta=media_info.height-(*height);
+      delta=(long) (media_info.height-(*height));
       if (delta >= 0)
         *y=delta >> 1;
     }

@@ -2509,7 +2509,7 @@ MagickExport void TemporaryFilename(char *filename)
 %  The format of the Tokenizer method is:
 %
 %      int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
-%        int max_token_length,char *line,char *white,char *break_set,
+%        size_t max_token_length,char *line,char *white,char *break_set,
 %        char *quote,char escape,char *breaker,int *next,char *quoted)
 %
 %  A description of each parameter follows:
@@ -2628,7 +2628,7 @@ static void StoreToken(TokenInfo *token_info,char *string,long max_token_length,
 }
 
 MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
-  long max_token_length,char *line,char *white,char *break_set,char *quote,
+  size_t max_token_length,char *line,char *white,char *break_set,char *quote,
   char escape,char *breaker,int *next,char *quoted)
 {
   char

@@ -51,7 +51,7 @@ extern MagickExport int
   LocaleCompare(const char *,const char *),
   ParseGeometry(const char *,long *,long *,unsigned long *,unsigned long *),
   SystemCommand(const unsigned int,const char *),
-  Tokenizer(TokenInfo *,unsigned,char *,long,char *,char *,char *,char *,
+  Tokenizer(TokenInfo *,unsigned,char *,size_t,char *,char *,char *,char *,
     char,char *,int *,char *);
 
 extern MagickExport unsigned int

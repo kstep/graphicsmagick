@@ -1883,10 +1883,10 @@ MagickExport size_t WriteBlobLSBLong(Image *image,const unsigned long value)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  buffer[0]=value;
-  buffer[1]=value >> 8;
-  buffer[2]=value >> 16;
-  buffer[3]=value >> 24;
+  buffer[0]=(unsigned char) value;
+  buffer[1]=(unsigned char) (value >> 8);
+  buffer[2]=(unsigned char) (value >> 16);
+  buffer[3]=(unsigned char) (value >> 24);
   return(WriteBlob(image,4,buffer));
 }
 
@@ -1926,8 +1926,8 @@ MagickExport size_t WriteBlobLSBShort(Image *image,const unsigned long value)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  buffer[0]=value;
-  buffer[1]=(value) >> 8;
+  buffer[0]=(unsigned char) value;
+  buffer[1]=(unsigned char) (value >> 8);
   return(WriteBlob(image,2,buffer));
 }
 
@@ -1967,10 +1967,10 @@ MagickExport size_t WriteBlobMSBLong(Image *image,const unsigned long value)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  buffer[0]=value >> 24;
-  buffer[1]=value >> 16;
-  buffer[2]=value >> 8;
-  buffer[3]=value;
+  buffer[0]=(unsigned char) (value >> 24);
+  buffer[1]=(unsigned char) (value >> 16);
+  buffer[2]=(unsigned char) (value >> 8);
+  buffer[3]=(unsigned char) value;
   return(WriteBlob(image,4,buffer));
 }
 
@@ -2007,8 +2007,8 @@ MagickExport size_t WriteBlobMSBShort(Image *image,const unsigned long value)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  buffer[0]=(value) >> 8;
-  buffer[1]=value;
+  buffer[0]=(unsigned char) (value >> 8);
+  buffer[1]=(unsigned char) value;
   return(WriteBlob(image,2,buffer));
 }
 
