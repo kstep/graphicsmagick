@@ -1,3 +1,10 @@
+2004-11-06  David N. Welton  <davidw@dedasys.com>
+
+	* generic/TkMagick.c: phototomagick's error message had the photo
+	and wand arguments backwards.  Thanks to Sheila Miguez for
+	catching this.  Also, make sure we have a wand before attempting
+	to use it.
+
 2004-09-20  David N. Welton  <davidw@dedasys.com>
 
 	* doc/index.html: Update outdated information on

@@ -48,11 +48,10 @@ static int MagickToPhoto(
 
     magickname = Tcl_GetStringFromObj(objv[1], NULL);
     tclmagick = findMagickObj(interp, TM_TYPE_WAND, magickname);
-    wand = tclmagick->wandPtr;
     if (tclmagick == NULL) {
-	Tcl_AddErrorInfo(interp, "Not a magick wand.");
 	return TCL_ERROR;
     }
+    wand = tclmagick->wandPtr;
 
     photoname = Tcl_GetStringFromObj(objv[2], NULL);
     photohandle = Tk_FindPhoto(interp, photoname);
@@ -131,7 +130,7 @@ static int PhotoToMagick(
     char map[5] = { 0x0, 0x0, 0x0, 0x0, 0x0 };
 
     if( objc != 3 ) {
-        Tcl_WrongNumArgs( interp, 1, objv, "magickwand image" );
+        Tcl_WrongNumArgs( interp, 1, objv, "image magickwand" );
         return TCL_ERROR;
     }
 
@@ -146,11 +145,10 @@ static int PhotoToMagick(
 
     magickname = Tcl_GetStringFromObj(objv[2], NULL);
     tclmagick = findMagickObj(interp, TM_TYPE_WAND, magickname);
-    wand = tclmagick->wandPtr;
     if (tclmagick == NULL) {
-	Tcl_AddErrorInfo(interp, "Not a magick wand.");
 	return TCL_ERROR;
     }
+    wand = tclmagick->wandPtr;
     MagickSetSize (wand, (unsigned)photoblock.width, (unsigned)photoblock.height);
     result = MagickReadImage(wand, "xc:white");
     if (!result) {
