@@ -49,7 +49,7 @@ libMagick_la_LDFLAGS = -no-undefined \
 # Library base sources
 MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
   image.c list.c color.c quantize.c segment.c zoom.c transform.c shear.c \
-  enhance.c effect.c decorate.c annotate.c type.c draw.c montage.c \
+  enhance.c effect.c decorate.c annotate.c type.c draw.c render.c montage.c \
   semaphore.c attribute.c signature.c compress.c gem.c registry.c magic.c \
   magick.c delegate.c module.c static.c timer.c utility.c cache_view.c \
   stream.c animate.c display.c widget.c xwindow.c PreRvIcccm.c
@@ -69,7 +69,7 @@ bin_SCRIPTS = Magick-config
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h \
   cache_view.h classify.h compress.h magick_config.h delegate.h draw.h \
-  error.h gem.h image.h list.h magic.h magick.h module.h monitor.h \
+  render.h error.h gem.h image.h list.h magic.h magick.h module.h monitor.h \
   quantize.h registry.h semaphore.h timer.h utility.h version.h widget.h \
   xwindow.h
 

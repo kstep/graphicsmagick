@@ -235,7 +235,7 @@ libMagick_la_LDFLAGS = -no-undefined \
 # Library base sources
 MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
   image.c list.c color.c quantize.c segment.c zoom.c transform.c shear.c \
-  enhance.c effect.c decorate.c annotate.c type.c draw.c montage.c \
+  enhance.c effect.c decorate.c annotate.c type.c draw.c render.c montage.c \
   semaphore.c attribute.c signature.c compress.c gem.c registry.c magic.c \
   magick.c delegate.c module.c static.c timer.c utility.c cache_view.c \
   stream.c animate.c display.c widget.c xwindow.c PreRvIcccm.c
@@ -253,7 +253,7 @@ bin_SCRIPTS = Magick-config
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h \
   cache_view.h classify.h compress.h magick_config.h delegate.h draw.h \
-  error.h gem.h image.h list.h magic.h magick.h module.h monitor.h \
+  render.h error.h gem.h image.h list.h magic.h magick.h module.h monitor.h \
   quantize.h registry.h semaphore.h timer.h utility.h version.h widget.h \
   xwindow.h
 
@@ -291,7 +291,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 am__objects_2 = memory.lo blob.lo cache.lo error.lo monitor.lo \
 	constitute.lo image.lo list.lo color.lo quantize.lo segment.lo \
 	zoom.lo transform.lo shear.lo enhance.lo effect.lo decorate.lo \
-	annotate.lo type.lo draw.lo montage.lo semaphore.lo \
+	annotate.lo type.lo draw.lo render.lo montage.lo semaphore.lo \
 	attribute.lo signature.lo compress.lo gem.lo registry.lo \
 	magic.lo magick.lo delegate.lo module.lo static.lo timer.lo \
 	utility.lo cache_view.lo stream.lo animate.lo display.lo \
@@ -314,7 +314,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/color.Plo ./$(DEPDIR)/compress.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/constitute.Plo ./$(DEPDIR)/decorate.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/delegate.Plo ./$(DEPDIR)/display.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/draw.Plo ./$(DEPDIR)/effect.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/draw.Plo ./$(DEPDIR)/render.Plo ./$(DEPDIR)/effect.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/enhance.Plo ./$(DEPDIR)/error.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/gem.Plo ./$(DEPDIR)/image.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/list.Plo ./$(DEPDIR)/magic.Plo \
@@ -452,6 +452,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/delegate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/display.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/draw.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/render.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effect.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enhance.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/error.Plo@am__quote@
