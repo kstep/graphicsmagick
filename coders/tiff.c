@@ -1232,7 +1232,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     *scanline;
 
   unsigned int
-    depth,
     scene,
     status;
 
@@ -1339,7 +1338,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           quantize_info.colorspace=GRAYColorspace;
           (void) QuantizeImage(&quantize_info,image);
         }
-    depth=GetImageDepth(image);
     switch (image->compression)
     {
       case FaxCompression:
@@ -1358,7 +1356,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       {
 	compress_tag=COMPRESSION_JPEG;
         image->storage_class=DirectClass;
-        depth=8;
+        image->depth=8;
         break;
       }
       case LZWCompression: compress_tag=COMPRESSION_LZW; break;
@@ -1372,7 +1370,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
          (image_info->colorspace == CMYKColorspace))
       {
         photometric=PHOTOMETRIC_SEPARATED;
-        if (depth > 8)
+        if (image->depth > 8)
           TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
         TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,4);
         TIFFSetField(tiff,TIFFTAG_INKSET,INKSET_CMYK);
@@ -1385,7 +1383,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           */
           TransformRGBImage(image,RGBColorspace);
           photometric=PHOTOMETRIC_RGB;
-          if (depth > 8)
+          if (image->depth > 8)
             TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
           TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,(image->matte ? 4 : 3));
           if (image->matte)
@@ -1423,7 +1421,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           else
             if (IsGrayImage(image))
               {
-                if (depth > 8)
+                if (image->depth > 8)
                   TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
                 photometric=PHOTOMETRIC_MINISBLACK;
               }
@@ -1661,11 +1659,11 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           Colormapped TIFF image.
         */
         blue=(unsigned short *)
-          AcquireMemory((1 << depth)*sizeof(unsigned short));
+          AcquireMemory((1 << image->depth)*sizeof(unsigned short));
         green=(unsigned short *)
-          AcquireMemory((1 << depth)*sizeof(unsigned short));
+          AcquireMemory((1 << image->depth)*sizeof(unsigned short));
         red=(unsigned short *)
-          AcquireMemory((1 << depth)*sizeof(unsigned short));
+          AcquireMemory((1 << image->depth)*sizeof(unsigned short));
         if ((blue == (unsigned short *) NULL) ||
             (green == (unsigned short *) NULL) ||
             (red == (unsigned short *) NULL))
@@ -1680,7 +1678,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           green[i]=((unsigned long) (65535L*image->colormap[i].green)/MaxRGB);
           blue[i]=((unsigned long) (65535L*image->colormap[i].blue)/MaxRGB);
         }
-        for ( ; i < (1 << depth); i++)
+        for ( ; i < (1 << image->depth); i++)
         {
           red[i]=0;
           green[i]=0;

@@ -4479,7 +4479,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            (((image->background_color.blue >> 8) & 0xff)
           == (image->background_color.blue & 0xff)));
         if (ok_to_reduce)
-          /* Note: GetImageDepth() could be used here. */
           for (y=0; y < (int) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);

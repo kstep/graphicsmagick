@@ -1160,7 +1160,6 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
-    depth,
     packet_size,
     scene,
     status,
@@ -1194,15 +1193,14 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     else
       if (image->colorspace != CMYKColorspace)
         RGBTransformImage(image,CMYKColorspace);
-    depth=GetImageDepth(image);
     if (image->storage_class == DirectClass)
-      packet_size=depth > 8 ? 6 : 3;
+      packet_size=image->depth > 8 ? 6 : 3;
     else
-      packet_size=depth > 8 ? 2 : 1;
+      packet_size=image->depth > 8 ? 2 : 1;
     if (image->matte || (image->colorspace == CMYKColorspace))
-      packet_size+=depth > 8 ? 2 : 1;
+      packet_size+=image->depth > 8 ? 2 : 1;
     if (compression == RunlengthEncodedCompression)
-      packet_size+=depth > 8 ? 2 : 1;
+      packet_size+=image->depth > 8 ? 2 : 1;
     pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
     compressed_pixels=(unsigned char *)
       AcquireMemory((size_t) 1.01*packet_size*image->columns+600);
@@ -1236,7 +1234,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     if (*buffer != '\0')
       (void) WriteBlobString(image,buffer);
     FormatString(buffer,"columns=%u  rows=%u  depth=%u\n",image->columns,
-      image->rows,depth);
+      image->rows,image->depth);
     (void) WriteBlobString(image,buffer);
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
@@ -1424,7 +1422,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Allocate colormap.
         */
-        packet_size=depth > 8 ? 6 : 3;
+        packet_size=image->depth > 8 ? 6 : 3;
         colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
         if (colormap == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
@@ -1433,7 +1431,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           Write colormap to file.
         */
         q=colormap;
-        if (depth <= 8)
+        if (image->depth <= 8)
           for (i=0; i < (int) image->colors; i++)
           {
             *q++=DownScale(image->colormap[i].red);
