@@ -79,6 +79,7 @@ static void GMUsage(void)
       "import [options]     run the \"import\" utility",
       "mogrify [options]    run the \"mogrify\" utility",
       "montage [options]    run the \"montage\" utility",
+      (char *) NULL
     };
 
   const char
