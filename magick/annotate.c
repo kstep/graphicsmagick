@@ -1670,7 +1670,6 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
           draw_info->server_name);
       map_info->colormap=(Colormap) NULL;
       pixel.pixels=(unsigned long *) NULL;
-      pixel.gamma_map=(PixelPacket *) NULL;
       /*
         Initialize Standard Colormap info.
       */

@@ -219,9 +219,6 @@ typedef struct _XPixelInfo
     pen_color,
     pen_colors[MaxNumberPens];
 
-  PixelPacket
-    *gamma_map;
-
   GC
     annotate_context,
     highlight_context,

@@ -541,7 +541,6 @@ MagickExport void XAnimateBackgroundImage(Display *display,
           "Memory allocation failed");
       map_info->colormap=(Colormap) NULL;
       pixel.pixels=(unsigned long *) NULL;
-      pixel.gamma_map=(PixelPacket *) NULL;
       /*
         Initialize visual info.
       */
@@ -788,7 +787,6 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   window_info.pixmaps[0]=window_info.pixmap;
   window_info.matte_pixmaps[0]=window_info.pixmap;
   scene_info.pixels=(unsigned long *) NULL;
-  scene_info.gamma_map=(PixelPacket *) NULL;
   for (scene=1; scene < (int) number_scenes; scene++)
   {
     /*
@@ -1649,7 +1647,6 @@ MagickExport Image *XAnimateImages(Display *display,
   windows->image.pixmaps[0]=windows->image.pixmap;
   windows->image.matte_pixmaps[0]=windows->image.matte_pixmap;
   scene_info.pixels=(unsigned long *) NULL;
-  scene_info.gamma_map=(PixelPacket *) NULL;
   for (scene=1; scene < (long) number_scenes; scene++)
   {
     /*
