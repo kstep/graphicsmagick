@@ -2,6 +2,7 @@
 	* magick/magick.c, magick/magick.h: Add "note" member of magick_info.
 	* coders/art.c, coders/fax.c, coders/dcm.c, coders/png.c: add notes
 	to format registrations.
+	* fx.c: changed default "colorize" behaviour to preserve image opacity.
 
 2003-01-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/svg.c: Allow the user to specify the initial background
@@ -374,8 +375,8 @@
 	warnings.
 
 2002-12-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
-  * Optimized ConvolveImage() by normalizing the kernel values instead of
-    normalizing the pixels.
+	* Optimized ConvolveImage() by normalizing the kernel values instead of
+	normalizing the pixels.
 
 2002-12-01  Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
 	* www/formats.html: Add JNG and fix libpng links.
@@ -993,14 +994,13 @@
 	Mike Edmonds.
 
 2002-02-14  Cristy  <cristy@mystic.es.dupont.com>
-	* Command line options now stay in effect for any image in command
-	line order until a another option is encountered or if -noop is specified.
+	* Command line options now stay in effect for any image in command line
+	order until a another option is encountered or if -noop is specified.
 
 2002-02-07  Cristy  <cristy@mystic.es.dupont.com>
 	* SVG coders understands inline images.
 
-2002-02-06  Cristy  <cristy@mystic.es.dupont.com>,
-	    Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
+2002-02-06  Cristy  <cristy@mystic.es.dupont.com>, Glenn Randers-Pehrson
 	* Made -scene consistent across all utilities.  -snaps replaces previous
 	functionality of -scene for import program.
 
@@ -1008,8 +1008,7 @@
 	* Correctly draw arc when arc end/start are not integer
 	(patch contributed by Giuliano Pochini).
 
-2002-01-28  Cristy  <cristy@mystic.es.dupont.com>,
-	    Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
+2002-01-28  Cristy  <cristy@mystic.es.dupont.com>, Glenn Randers-Pehrson
 	* Geometry strings respect -gravity (e.g. -gravity SouthWest -crop
 	100x100).
 	* Postive offsets in geometry strings move within the image canvas

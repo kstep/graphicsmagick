@@ -205,7 +205,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   pixel.red=100.0;
   pixel.green=100.0;
   pixel.blue=100.0;
-  pixel.opacity=100.0;
+  pixel.opacity=0.0;
   count=sscanf(opacity,"%lf%*[/,]%lf%*[/,]%lf%*[/,]%lf",
     &pixel.red,&pixel.green,&pixel.blue,&pixel.opacity);
   if (count == 1)
