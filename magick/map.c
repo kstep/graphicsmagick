@@ -136,7 +136,7 @@ Export Image *ReadMAPImage(const ImageInfo *image_info)
   /*
     Read image colormap.
   */
-  (void) ReadBlob(image,packet_size,image->colors,(char *) colormap);
+  (void) ReadBlob(image,packet_size*image->colors,(char *) colormap);
   p=colormap;
   for (i=0; i < (int) image->colors; i++)
   {
@@ -157,7 +157,7 @@ Export Image *ReadMAPImage(const ImageInfo *image_info)
     AllocateMemory(image->packets*packet_size);
   if (image->packed_pixels == (unsigned char *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  (void) ReadBlob(image,packet_size,image->packets,
+  (void) ReadBlob(image,packet_size*image->packets,
     (char *) image->packed_pixels);
   status=RunlengthDecodeImage(image);
   if (status == False)
@@ -256,14 +256,14 @@ Export unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
     WriteQuantum(image->colormap[i].green,q);
     WriteQuantum(image->colormap[i].blue,q);
   }
-  (void) WriteBlob(image,packet_size,(int) image->colors,(char *) colormap);
+  (void) WriteBlob(image,packet_size*(int) image->colors,(char *) colormap);
   FreeMemory((char *) colormap);
   /*
     Write image pixels to file.
   */
   image->compression=NoCompression;
   packets=RunlengthEncodeImage(image);
-  (void) WriteBlob(image,(int) image->packet_size,(int) packets,
+  (void) WriteBlob(image,image->packet_size*packets,
     (char *) image->packed_pixels);
   CloseImage(image);
   return(True);

@@ -753,17 +753,17 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           (void) strcpy(buffer,"%!PS-Adobe-3.0\n");
         else
           (void) strcpy(buffer,"%!PS-Adobe-3.0 EPSF-3.0\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,"%%Creator: (ImageMagick)\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         (void) sprintf(buffer,"%%%%Title: (%.1024s)\n",image->filename);
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         timer=time((time_t *) NULL);
         (void) localtime(&timer);
         (void) strcpy(date,ctime(&timer));
         date[Extent(date)-1]='\0';
         (void) sprintf(buffer,"%%%%CreationDate: (%.1024s)\n",date);
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         bounding_box.x1=x;
         bounding_box.y1=y;
         bounding_box.x2=x+x_scale-1;
@@ -773,21 +773,21 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         else
           (void) sprintf(buffer,"%%%%BoundingBox: %g %g %g %g\n",
             bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         if (image->label != (char *) NULL)
           {
             (void) strcpy(buffer,
               "%%%%DocumentNeededResources: font Helvetica\n");
-            (void) WriteBlob(image,1,strlen(buffer),buffer);
+            (void) WriteBlob(image,strlen(buffer),buffer);
           }
         (void) strcpy(buffer,"%%DocumentData: Clean7Bit\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,"%%LanguageLevel: 1\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         if (Latin1Compare(image_info->magick,"PS") != 0)
           {
             (void) strcpy(buffer,"%%Pages: 0\n");
-            (void) WriteBlob(image,1,strlen(buffer),buffer);
+            (void) WriteBlob(image,strlen(buffer),buffer);
           }
         else
           {
@@ -801,9 +801,9 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               Compute the number of pages.
             */
             (void) strcpy(buffer,"%%Orientation: Portrait\n");
-            (void) WriteBlob(image,1,strlen(buffer),buffer);
+            (void) WriteBlob(image,strlen(buffer),buffer);
             (void) strcpy(buffer,"%%PageOrder: Ascend\n");
-            (void) WriteBlob(image,1,strlen(buffer),buffer);
+            (void) WriteBlob(image,strlen(buffer),buffer);
             pages=1;
             if (image_info->adjoin)
               for (next_image=image->next; next_image != (Image *) NULL; )
@@ -812,16 +812,16 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 pages++;
               }
             (void) sprintf(buffer,"%%%%Pages: %u\n",pages);
-            (void) WriteBlob(image,1,strlen(buffer),buffer);
+            (void) WriteBlob(image,strlen(buffer),buffer);
           }
         (void) strcpy(buffer,"%%EndComments\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,"\n%%BeginDefaults\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,"%%PageOrientation: Portrait\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,"%%EndDefaults\n\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         if ((Latin1Compare(image_info->magick,"EPI") == 0) ||
             (Latin1Compare(image_info->magick,"EPT") == 0) ||
             (Latin1Compare(image_info->magick,"EPSI") == 0))
@@ -865,7 +865,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             (void) sprintf(buffer,"%%%%BeginPreview: %u %u %u %u\n%%  ",
               preview_image->columns,preview_image->rows,(unsigned int) 1,
               (((preview_image->columns+7) >> 3)*preview_image->rows+35)/36);
-            (void) WriteBlob(image,1,strlen(buffer),buffer);
+            (void) WriteBlob(image,strlen(buffer),buffer);
             for (i=0; i < (int) preview_image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
@@ -877,12 +877,12 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 if (bit == 8)
                   {
                     (void) sprintf(buffer,"%02x",byte & 0xff);
-                    (void) WriteBlob(image,1,strlen(buffer),buffer);
+                    (void) WriteBlob(image,strlen(buffer),buffer);
                     count++;
                     if (count == 36)
                       {
                         (void) strcpy(buffer,"\n%%  ");
-                        (void) WriteBlob(image,1,strlen(buffer),buffer);
+                        (void) WriteBlob(image,strlen(buffer),buffer);
                         count=0;
                       };
                     bit=0;
@@ -895,12 +895,12 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                       {
                         byte<<=(8-bit);
                         (void) sprintf(buffer,"%02x",byte & 0xff);
-                        (void) WriteBlob(image,1,strlen(buffer),buffer);
+                        (void) WriteBlob(image,strlen(buffer),buffer);
                         count++;
                         if (count == 36)
                           {
                             (void) strcpy(buffer,"\n%%  ");
-                            (void) WriteBlob(image,1,strlen(buffer),buffer);
+                            (void) WriteBlob(image,strlen(buffer),buffer);
                             count=0;
                           };
                         bit=0;
@@ -912,7 +912,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 p++;
               }
               (void) strcpy(buffer,"\n%%EndPreview\n");
-              (void) WriteBlob(image,1,strlen(buffer),buffer);
+              (void) WriteBlob(image,strlen(buffer),buffer);
               DestroyImage(preview_image);
             }
         /*
@@ -921,38 +921,38 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         for (q=PostscriptProlog; *q; q++)
         {
           (void) sprintf(buffer,"%.255s\n",*q);
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
         }
         for (i=MultilineCensus(image->label)-1; i >= 0; i--)
         {
           (void) strcpy(buffer,"  /label 512 string def\n");
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
           (void) strcpy(buffer,"  currentfile label readline pop\n");
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
           (void) sprintf(buffer,"  0 y %d add moveto label show pop\n",
             i*image_info->pointsize+12);
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
         }
         for (q=PostscriptEpilog; *q; q++)
         {
           (void) sprintf(buffer,"%.255s\n",*q);
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
         }
         if (Latin1Compare(image_info->magick,"PS") == 0)
           {
             (void) strcpy(buffer,"  showpage\n");
-            (void) WriteBlob(image,1,strlen(buffer),buffer);
+            (void) WriteBlob(image,strlen(buffer),buffer);
           }
         (void) strcpy(buffer,"} bind def\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,"%%EndProlog\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
       }
     (void) sprintf(buffer,"%%%%Page:  1 %u\n",page++);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"%%%%PageBoundingBox: %d %d %d %d\n",x,y,
       x+(int) width,y+(int) (height+text_size));
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if (x < bounding_box.x1)
       bounding_box.x1=x;
     if (y < bounding_box.y1)
@@ -964,30 +964,30 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     if (image->label != (char *) NULL)
       {
         (void) strcpy(buffer,"%%%%PageResources: font Helvetica\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
       }
     if (Latin1Compare(image_info->magick,"PS") != 0)
       {
         (void) strcpy(buffer,"userdict begin\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
       }
     (void) strcpy(buffer,"%%BeginData:\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"DisplayImage\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     /*
       Output image data.
     */
     labels=StringToList(image->label);
     (void) sprintf(buffer,"%d %d\n%f %f\n%u\n",x,y,x_scale,y_scale,
       image_info->pointsize);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if (labels != (char **) NULL)
       {
         for (i=0; labels[i] != (char *) NULL; i++)
         {
           (void) sprintf(buffer,"%.1024s \n",labels[i]);
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
           FreeMemory(labels[i]);
         }
         FreeMemory(labels);
@@ -1002,7 +1002,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         (void) sprintf(buffer,"%u %u\n%d\n%d\n",
           image->columns,image->rows,(int) (image->class == PseudoClass),
           (int) (image_info->compression == NoCompression));
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         switch (image_info->compression)
         {
           case RunlengthEncodedCompression:
@@ -1022,7 +1022,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   (void) sprintf(buffer,"%02lx%02lx%02lx%02lx",
                     DownScale(p->red),DownScale(p->green),DownScale(p->blue),
                     (unsigned long) Min(length,0xff));
-                (void) WriteBlob(image,1,strlen(buffer),buffer);
+                (void) WriteBlob(image,strlen(buffer),buffer);
                 x++;
                 if (x == 9)
                   {
@@ -1051,7 +1051,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 else
                   (void) sprintf(buffer,"%02lx%02lx%02lx",
                     DownScale(p->red),DownScale(p->green),DownScale(p->blue));
-                (void) WriteBlob(image,1,strlen(buffer),buffer);
+                (void) WriteBlob(image,strlen(buffer),buffer);
                 x++;
                 if (x == 12)
                   {
@@ -1074,7 +1074,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         {
           (void) sprintf(buffer,"%u %u\n1\n1\n1\n%d\n",
             image->columns,image->rows,IsMonochromeImage(image) ? 1 : 8);
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
           if (!IsMonochromeImage(image))
             {
               /*
@@ -1125,7 +1125,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   if (bit == 8)
                     {
                       (void) sprintf(buffer,"%02x",byte & 0xff);
-                      (void) WriteBlob(image,1,strlen(buffer),buffer);
+                      (void) WriteBlob(image,strlen(buffer),buffer);
                       count++;
                       if (count == 36)
                         {
@@ -1145,7 +1145,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                         {
                           byte<<=(8-bit);
                           (void) sprintf(buffer,"%02x",byte & 0xff);
-                          (void) WriteBlob(image,1,strlen(buffer),buffer);
+                          (void) WriteBlob(image,strlen(buffer),buffer);
                           count++;
                           if (count == 36)
                             {
@@ -1176,19 +1176,19 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           (void) sprintf(buffer,"%u %u\n%d\n%d\n0\n",
             image->columns,image->rows,(int) (image->class == PseudoClass),
             (int) (image_info->compression == NoCompression));
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
           /*
             Dump number of colors and colormap.
           */
           (void) sprintf(buffer,"%u\n",image->colors);
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
           for (i=0; i < (int) image->colors; i++)
           {
             (void) sprintf(buffer,"%02lx%02lx%02lx\n",
               DownScale(image->colormap[i].red),
               DownScale(image->colormap[i].green),
               DownScale(image->colormap[i].blue));
-            (void) WriteBlob(image,1,strlen(buffer),buffer);
+            (void) WriteBlob(image,strlen(buffer),buffer);
           }
           switch (image_info->compression)
           {
@@ -1204,7 +1204,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 {
                   (void) sprintf(buffer,"%02x%02x",(unsigned int) p->index,
                     (unsigned int) Min(length,0xff));
-                  (void) WriteBlob(image,1,strlen(buffer),buffer);
+                  (void) WriteBlob(image,strlen(buffer),buffer);
                   x++;
                   if (x == 18)
                     {
@@ -1229,7 +1229,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 for (j=0; j <= ((int) p->length); j++)
                 {
                   (void) sprintf(buffer,"%02x",(unsigned int) p->index);
-                  (void) WriteBlob(image,1,strlen(buffer),buffer);
+                  (void) WriteBlob(image,strlen(buffer),buffer);
                   x++;
                   if (x == 36)
                     {
@@ -1248,14 +1248,14 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           (void) WriteByte(image,'\n');
         }
     (void) strcpy(buffer,"%%EndData\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if (Latin1Compare(image_info->magick,"PS") != 0)
       {
         (void) strcpy(buffer,"end\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
       }
     (void) strcpy(buffer,"%%PageTrailer\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if (image->next == (Image *) NULL)
       break;
     image->next->file=image->file;
@@ -1266,15 +1266,15 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     while (image->previous != (Image *) NULL)
       image=image->previous;
   (void) strcpy(buffer,"%%Trailer\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   if (page > 1)
     {
       (void) sprintf(buffer,"%%%%BoundingBox: %g %g %g %g\n",
         bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
     }
   (void) strcpy(buffer,"%%EOF\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   CloseImage(image);
   return(True);
 }

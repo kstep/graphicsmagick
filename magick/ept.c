@@ -112,7 +112,7 @@ Export unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
         Read existing Encapsulated Postscript.
       */
       (void) fseek(ps_file,0L,SEEK_END);
-      eps_length=TellBlob(ps_file);
+      eps_length=ftell(ps_file);
       (void) fseek(ps_file,0L,SEEK_SET);
     }
   else

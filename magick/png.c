@@ -401,7 +401,7 @@ png_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
   if (length)
     {
       png_size_t check;
-      check = (png_size_t)ReadBlob(image, (png_size_t)1, length, (char *)data);
+      check = (png_size_t)ReadBlob(image,length,(char *)data);
       if (check != length)
           png_error(png_ptr, "Read Error");
     }
@@ -437,8 +437,7 @@ mng_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
 #endif
   if (length)
     {
-      check = (png_size_t)ReadBlob(image, (png_size_t)1, length,
-         (char *)data+1);
+      check = (png_size_t)ReadBlob(image,length,(char *)data+1);
       if (check != length)
         png_error(png_ptr,"Read Error");
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
@@ -446,8 +445,7 @@ mng_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
         {
           if (data[0]==0 && data[1]==0 && data[2]==0 && data[3]==0)
             {
-              check = (png_size_t)ReadBlob(image, (png_size_t)1, length,
-                 (char *)m->read_buffer);
+              check = (png_size_t)ReadBlob(image,length,(char *)m->read_buffer);
               m->read_buffer[4]=0;
               m->bytes_in_read_buffer = 4;
               if (!png_memcmp(m->read_buffer, mng_PLTE, 4))
@@ -460,19 +458,16 @@ mng_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
             }
           if (data[0]==0 && data[1]==0 && data[2]==0 && data[3]==1)
             {
-              check = (png_size_t)ReadBlob(image, (png_size_t)1, length,
-                 (char *)m->read_buffer);
+              check = (png_size_t)ReadBlob(image,length,(char *)m->read_buffer);
               m->read_buffer[4]=0;
               m->bytes_in_read_buffer = 4;
               if (!png_memcmp(m->read_buffer, mng_bKGD, 4))
                 if(m->found_empty_plte)
                   {
                     /* skip the bKGD data byte and CRC */
-                    check = (png_size_t)ReadBlob(image, (png_size_t)1, 5,
-                       (char *)m->read_buffer);
+                    check = (png_size_t)ReadBlob(image,5,(char *)m->read_buffer);
                     /* read the next length */
-                    check = (png_size_t)ReadBlob(image, (png_size_t)1,
-                       length, (char *)m->read_buffer);
+                    check = (png_size_t)ReadBlob(image,length,(char *)m->read_buffer);
                     m->saved_bkgd_index = m->read_buffer[0];
                     m->have_saved_bkgd_index=True;
                     m->bytes_in_read_buffer = 0;
@@ -496,7 +491,7 @@ png_put_data(png_structp png_ptr, png_bytep data, png_size_t length)
   if (length)
     {
       png_size_t check;
-      check = (png_size_t)WriteBlob(image, (png_size_t)1, length, (char *)data);
+      check = (png_size_t)WriteBlob(image,length, (char *)data);
       if (check != length)
           png_error(png_ptr, "Write Error");
     }
@@ -863,7 +858,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       /*
         Verify MNG signature.
       */
-      (void) ReadBlob(image,1,8,magic_number);
+      (void) ReadBlob(image,8,magic_number);
       if (strncmp(magic_number,"\212MNG\r\n\032\n",8) != 0)
         ReaderExit(CorruptImageWarning,"Not a MNG image file",image);
 #ifndef MNG_ALWAYS_VERBOSE
@@ -943,7 +938,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         type[0]='\0';
         strcat(type,"errr");
         length=MSBFirstReadLong(image);
-        status=ReadBlob(image,1,4,type);
+        status=ReadBlob(image,4,type);
         if (length > 0x3ffffffL)
            status=False;
         if (m->verbose)
@@ -3241,7 +3236,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
      /*
         Write the MNG version 0.95 signature and MHDR chunk.
      */
-     (void) WriteBlob(image,1,8,"\212MNG\r\n\032\n");
+     (void) WriteBlob(image,8,"\212MNG\r\n\032\n");
      MSBFirstWriteLong(image,28L);  /* chunk data length = 28 */
      PNGType(chunk,mng_MHDR);
      PNGLong(chunk+4,page_info.width);
@@ -3265,7 +3260,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            PNGLong(chunk+28,1L);    /* simplicity = VLC, no transparency */
        }
 
-     (void) WriteBlob(image,1,32,(char *) chunk);
+     (void) WriteBlob(image,32,(char *) chunk);
      MSBFirstWriteLong(image,crc32(0,chunk,32));
      if ((image->previous == (Image *) NULL) &&
          (image->next != (Image *) NULL) && (image->iterations != 1))
@@ -3286,7 +3281,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            PNGLong(chunk+10, 0x7fffffffL);
          else
            PNGLong(chunk+10, (png_uint_32)image->iterations);
-         (void) WriteBlob(image,1,14,(char *) chunk);
+         (void) WriteBlob(image,14,(char *) chunk);
          MSBFirstWriteLong(image,crc32(0,chunk,14));
        }
 
@@ -3300,7 +3295,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          MSBFirstWriteLong(image,4L);
          PNGType(chunk,mng_gAMA);
          PNGLong(chunk+4, (unsigned long) (100000*image->gamma+0.5));
-         (void) WriteBlob(image,1,8,(char *) chunk);
+         (void) WriteBlob(image,8,(char *) chunk);
          MSBFirstWriteLong(image,crc32(0,chunk,8));
          have_write_global_gama=True;
        }
@@ -3313,7 +3308,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          MSBFirstWriteLong(image,1L);
          PNGType(chunk,mng_sRGB);
          chunk[4]=image->rendering_intent+1;
-         (void) WriteBlob(image,1,5,(char *) chunk);
+         (void) WriteBlob(image,5,(char *) chunk);
          MSBFirstWriteLong(image,crc32(0,chunk,5));
          have_write_global_srgb=True;
        }
@@ -3337,7 +3332,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          PNGShort(chunk+4, red);
          PNGShort(chunk+6, green);
          PNGShort(chunk+8, blue);
-         (void) WriteBlob(image,1,10,(char *) chunk);
+         (void) WriteBlob(image,10,(char *) chunk);
          MSBFirstWriteLong(image,crc32(0,chunk,10));
 
          if (mng_level > 9502)
@@ -3345,7 +3340,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
              /* proposed MNG-0.95c feature */
              MSBFirstWriteLong(image,6L);
              PNGType(chunk,mng_bKGD);
-             (void) WriteBlob(image,1,10,(char *) chunk);
+             (void) WriteBlob(image,10,(char *) chunk);
              MSBFirstWriteLong(image,crc32(0,chunk,10));
            }
        }
@@ -3368,7 +3363,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            chunk[6+i*3]=
              (unsigned char) DownScale(image->colormap[i].blue)&0xff;
          }
-         (void) WriteBlob(image,1,data_length+4,(char *) chunk);
+         (void) WriteBlob(image,data_length+4,(char *) chunk);
          MSBFirstWriteLong(image,crc32(0,chunk,data_length+4));
          have_write_global_plte=True;
        }
@@ -3410,7 +3405,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               chunk[6+i*3]=
                 (unsigned char) DownScale(image->colormap[i].blue) & 0xff;
             }
-            (void) WriteBlob(image,1,data_length+4,(char *) chunk);
+            (void) WriteBlob(image,data_length+4,(char *) chunk);
             MSBFirstWriteLong(image,crc32(0,chunk,data_length+4));
             have_write_global_plte=True;
           }
@@ -3457,7 +3452,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             chunk[7]=0; /* abstract */
             PNGLong(chunk+8,page_info.x);
             PNGLong(chunk+12,page_info.y);
-            (void) WriteBlob(image,1,16,(char *) chunk);
+            (void) WriteBlob(image,16,(char *) chunk);
             MSBFirstWriteLong(image,crc32(0,chunk,16));
           }
       }
@@ -3717,7 +3712,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            MSBFirstWriteLong(image,1L);  /* data length = 1 */
            PNGType(chunk,mng_FRAM);
            chunk[4]=framing_mode;
-           (void) WriteBlob(image,1,5,(char *) chunk);
+           (void) WriteBlob(image,5,(char *) chunk);
            MSBFirstWriteLong(image,crc32(0,chunk,5));
         }
         else
@@ -3734,7 +3729,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            chunk[8]=0;  /* flag for changing frame clipping */
            chunk[9]=0;  /* flag for changing frame sync_id */
            PNGLong(chunk+10,(png_uint_32)((ticks_per_second*image->delay)/100));
-           (void) WriteBlob(image,1,14,(char *) chunk);
+           (void) WriteBlob(image,14,(char *) chunk);
            MSBFirstWriteLong(image,crc32(0,chunk,14));
            delay=image->delay;
         }
@@ -3932,7 +3927,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
              PNGLong(chunk+19,(png_uint_32) (page_info.x + ping_info->width));
              PNGLong(chunk+23,(png_uint_32) (page_info.y)); /* top cb */
              PNGLong(chunk+27,(png_uint_32) (page_info.y + ping_info->height));
-             (void) WriteBlob(image,1,31,(char *) chunk);
+             (void) WriteBlob(image,31,(char *) chunk);
              MSBFirstWriteLong(image,crc32(0,chunk,31));
              old_framing_mode=4;
              framing_mode=1;
@@ -3970,7 +3965,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       */
       MSBFirstWriteLong(image,0x00000000L);
       PNGType(chunk,mng_MEND);
-      (void) WriteBlob(image,1,4,(char *) chunk);
+      (void) WriteBlob(image,4,(char *) chunk);
       MSBFirstWriteLong(image,crc32(0,chunk,4));
     }
   /*

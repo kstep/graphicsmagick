@@ -226,7 +226,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
   /*
     Read PNM image.
   */
-  status=ReadBlob(image,1,1,(char *) &format);
+  status=ReadBlob(image,1,(char *) &format);
   do
   {
     /*
@@ -557,11 +557,11 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
         /*
           Skip to end of line.
         */
-        status=ReadBlob(image,1,1,&format);
+        status=ReadBlob(image,1,&format);
         if (status == False)
           break;
       } while (format != '\n');
-    status=ReadBlob(image,1,1,(char *) &format);
+    status=ReadBlob(image,1,(char *) &format);
     if ((status == True) && (format == 'P'))
       {
         /*
@@ -721,7 +721,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       }
     else
       (void) sprintf(buffer,"P%c\n",format);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if (image->comments != (char *) NULL)
       {
         register char
@@ -742,7 +742,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     if (format != '7')
       {
         (void) sprintf(buffer,"%u %u\n",image->columns,image->rows);
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
       }
     /*
       Convert runlength encoded to PNM raster pixels.
@@ -769,7 +769,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (j=0; j <= ((int) p->length); j++)
           {
             (void) sprintf(buffer,"%d ",(int) (p->index == polarity));
-            (void) WriteBlob(image,1,strlen(buffer),buffer);
+            (void) WriteBlob(image,strlen(buffer),buffer);
             x++;
             if (x == 36)
               {
@@ -790,14 +790,14 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PGM image.
         */
         (void) sprintf(buffer,"%d\n",MaxRGB);
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         for (i=0; i < (int) image->packets; i++)
         {
           index=DownScale(Intensity(*p));
           for (j=0; j <= ((int) p->length); j++)
           {
             (void) sprintf(buffer,"%d ",index);
-            (void) WriteBlob(image,1,strlen(buffer),buffer);
+            (void) WriteBlob(image,strlen(buffer),buffer);
             x++;
             if (x == 12)
               {
@@ -818,13 +818,13 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PNM image.
         */
         (void) sprintf(buffer,"%d\n",MaxRGB);
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
             (void) sprintf(buffer,"%d %d %d ",p->red,p->green,p->blue);
-            (void) WriteBlob(image,1,strlen(buffer),buffer);
+            (void) WriteBlob(image,strlen(buffer),buffer);
             x++;
             if (x == 4)
               {
@@ -896,7 +896,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PGM image.
         */
         (void) sprintf(buffer,"%lu\n",DownScale(MaxRGB));
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         for (i=0; i < (int) image->packets; i++)
         {
           index=DownScale(Intensity(*p));
@@ -928,7 +928,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PNM image.
         */
         (void) sprintf(buffer,"%lu\n",DownScale(MaxRGB));
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         q=pixels;
         for (i=0; i < (int) image->packets; i++)
         {
@@ -940,7 +940,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             x++;
             if (x == (int) image->columns)
               {
-                (void) WriteBlob(image,1,q-pixels,(char *) pixels);
+                (void) WriteBlob(image,q-pixels,(char *) pixels);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     ProgressMonitor(SaveImageText,y,image->rows);
@@ -1034,9 +1034,9 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a P7 image.
         */
         (void) strcpy(buffer,"#END_OF_COMMENTS\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         (void) sprintf(buffer,"%u %u %d\n",image->columns,image->rows,MaxRGB);
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         i=0;
         j=0;
         p=image->pixels;

@@ -167,7 +167,7 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
   /*
     Read TGA header information.
   */
-  status=ReadBlob(image,1,1,(char *) &tga_header.id_length);
+  status=ReadBlob(image,1,(char *) &tga_header.id_length);
   tga_header.colormap_type=ReadByte(image);
   tga_header.image_type=ReadByte(image);
   do
@@ -217,7 +217,7 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
           AllocateMemory((tga_header.id_length+1)*sizeof(char));
         if (image->comments == (char *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-        (void) ReadBlob(image,1,tga_header.id_length,image->comments);
+        (void) ReadBlob(image,tga_header.id_length,image->comments);
         image->comments[tga_header.id_length]='\0';
       }
     red=0;
@@ -317,7 +317,7 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
               }
             else
               {
-                status=ReadBlob(image,1,1,(char *) &runlength);
+                status=ReadBlob(image,1,(char *) &runlength);
                 if (status == False)
                   ReaderExit(CorruptImageWarning,"Unable to read image data",
                     image);
@@ -417,7 +417,7 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    status=ReadBlob(image,1,1,(char *) &tga_header.id_length);
+    status=ReadBlob(image,1,(char *) &tga_header.id_length);
     tga_header.colormap_type=ReadByte(image);
     tga_header.image_type=ReadByte(image);
     status&=((tga_header.image_type != 0) && (tga_header.image_type <= 11));
@@ -619,7 +619,7 @@ Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     (void) WriteByte(image,(char) targa_header.bits_per_pixel);
     (void) WriteByte(image,(char) targa_header.attributes);
     if (targa_header.id_length != 0)
-      (void) WriteBlob(image,1,targa_header.id_length,
+      (void) WriteBlob(image,targa_header.id_length,
         (char *) flopped_image->comments);
     /*
       Convert MIFF to TGA raster pixels.
@@ -726,7 +726,7 @@ Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
             *q++=DownScale(flopped_image->colormap[i].green);
             *q++=DownScale(flopped_image->colormap[i].red);
           }
-          (void) WriteBlob(image,1,(int) 3*targa_header.colormap_length,
+          (void) WriteBlob(image,(int) 3*targa_header.colormap_length,
             (char *) targa_colormap);
           /*
             Convert PseudoClass packet to TGA colormapped pixel.
@@ -822,7 +822,7 @@ Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
                 ProgressMonitor(SaveImageText,i,flopped_image->packets);
             }
         }
-    (void) WriteBlob(image,1,q-targa_pixels,(char *) targa_pixels);
+    (void) WriteBlob(image,q-targa_pixels,(char *) targa_pixels);
     DestroyImage(flopped_image);
     FreeMemory((char *) targa_pixels);
     if (image->next == (Image *) NULL)

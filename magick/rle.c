@@ -144,7 +144,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
   /*
     Determine if this is a RLE file.
   */
-  status=ReadBlob(image,1,2,(char *) magick);
+  status=ReadBlob(image,2,(char *) magick);
   if ((status == False) || (strncmp(magick,"\122\314",2) != 0))
     ReaderExit(CorruptImageWarning,"Not a RLE image file",image);
   do
@@ -218,7 +218,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
         image->comments=(char *) AllocateMemory(length*sizeof(char));
         if (image->comments == (char *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-        (void) ReadBlob(image,1,length-1,(char *) image->comments);
+        (void) ReadBlob(image,length-1,(char *) image->comments);
         image->comments[length-1]='\0';
         if ((length & 0x01) == 0)
           (void) ReadByte(image);
@@ -490,7 +490,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
     (void) ReadByte(image);
-    status=ReadBlob(image,1,2,(char *) magick);
+    status=ReadBlob(image,2,(char *) magick);
     if ((status == True) && (strncmp(magick,"\122\314",2) == 0))
       {
         /*

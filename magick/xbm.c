@@ -402,13 +402,13 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   if (*q == '.')
     *q='\0';
   (void) sprintf(buffer,"#define %.1024s_width %u\n",name,image->columns);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) sprintf(buffer,"#define %.1024s_height %u\n",name,image->rows);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) sprintf(buffer,"static char %.1024s_bits[] = {\n",name);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer," ");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   /*
     Convert MIFF to X bitmap pixels.
   */
@@ -434,7 +434,7 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   y=0;
   p=image->pixels;
   (void) strcpy(buffer," ");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   for (i=0; i < (int) image->packets; i++)
   {
     for (j=0; j <= ((int) p->length); j++)
@@ -449,12 +449,12 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
             Write a bitmap byte to the image file.
           */
           (void) sprintf(buffer,"0x%02x, ",(unsigned int) (byte & 0xff));
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
           count++;
           if (count == 12)
             {
               (void) strcpy(buffer,"\n  ");
-              (void) WriteBlob(image,1,strlen(buffer),buffer);
+              (void) WriteBlob(image,strlen(buffer),buffer);
               count=0;
             };
           bit=0;
@@ -470,12 +470,12 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
               */
               byte>>=(8-bit);
               (void) sprintf(buffer,"0x%02x, ",(unsigned int) (byte & 0xff));
-              (void) WriteBlob(image,1,strlen(buffer),buffer);
+              (void) WriteBlob(image,strlen(buffer),buffer);
               count++;
               if (count == 12)
                 {
                   (void) strcpy(buffer,"\n  ");
-                  (void) WriteBlob(image,1,strlen(buffer),buffer);
+                  (void) WriteBlob(image,strlen(buffer),buffer);
                   count=0;
                 };
               bit=0;
@@ -490,7 +490,7 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
     p++;
   }
   (void) strcpy(buffer,"};\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   CloseImage(image);
   return(True);
 }

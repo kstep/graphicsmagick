@@ -200,7 +200,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
   /*
     Read VIFF header (1024 bytes).
   */
-  status=ReadBlob(image,1,1,(char *) &viff_header.identifier);
+  status=ReadBlob(image,1,(char *) &viff_header.identifier);
   do
   {
     /*
@@ -211,12 +211,12 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
     /*
       Initialize VIFF image.
     */
-    (void) ReadBlob(image,1,7,(char *) buffer);
+    (void) ReadBlob(image,7,(char *) buffer);
     viff_header.file_type=buffer[0];
     viff_header.release=buffer[1];
     viff_header.version=buffer[2];
     viff_header.machine_dependency=buffer[3];
-    (void) ReadBlob(image,1,512,(char *) viff_header.comment);
+    (void) ReadBlob(image,512,(char *) viff_header.comment);
     viff_header.comment[511]='\0';
     if (Extent(viff_header.comment) > 4)
       (void) CloneString(&image->comments,viff_header.comment);
@@ -370,7 +370,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
         /*
           Read VIFF raster colormap.
         */
-        (void) ReadBlob(image,bytes_per_pixel,
+        (void) ReadBlob(image,bytes_per_pixel*
           image->colors*viff_header.map_rows,(char *) viff_colormap);
         if ((viff_header.machine_dependency == VFF_DEP_DECORDER) ||
             (viff_header.machine_dependency == VFF_DEP_NSORDER))
@@ -443,7 +443,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
       AllocateMemory(bytes_per_pixel*max_packets*sizeof(Quantum));
     if (viff_pixels == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    (void) ReadBlob(image,bytes_per_pixel,max_packets,(char *) viff_pixels);
+    (void) ReadBlob(image,bytes_per_pixel*max_packets,(char *) viff_pixels);
     if ((viff_header.machine_dependency == VFF_DEP_DECORDER) ||
         (viff_header.machine_dependency == VFF_DEP_NSORDER))
       switch (viff_header.data_storage_type)
@@ -663,7 +663,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    status=ReadBlob(image,1,1,(char *) &viff_header.identifier);
+    status=ReadBlob(image,1,(char *) &viff_header.identifier);
     if ((status == True) && (viff_header.identifier == 0xab))
       {
         /*
@@ -883,8 +883,8 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     buffer[5]=viff_header.reserve[0];
     buffer[6]=viff_header.reserve[1];
     buffer[7]=viff_header.reserve[2];
-    (void) WriteBlob(image,1,8,(char *) buffer);
-    (void) WriteBlob(image,1,512,(char *) viff_header.comment);
+    (void) WriteBlob(image,8,(char *) buffer);
+    (void) WriteBlob(image,512,(char *) viff_header.comment);
     MSBFirstWriteLong(image,viff_header.rows);
     MSBFirstWriteLong(image,viff_header.columns);
     MSBFirstWriteLong(image,viff_header.subrows);
@@ -965,7 +965,7 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             *q++=DownScale(image->colormap[i].green);
           for (i=0; i < (int) image->colors; i++)
             *q++=DownScale(image->colormap[i].blue);
-          (void) WriteBlob(image,1,3*image->colors,(char *) viff_colormap);
+          (void) WriteBlob(image,3*image->colors,(char *) viff_colormap);
           FreeMemory((char *) viff_colormap);
           /*
             Convert PseudoClass packet to VIFF colormapped pixels.
@@ -1053,7 +1053,7 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                   ProgressMonitor(SaveImageText,i,image->packets);
             }
           }
-    (void) WriteBlob(image,1,packets,(char *) viff_pixels);
+    (void) WriteBlob(image,packets,(char *) viff_pixels);
     FreeMemory((char *) viff_pixels);
     if (image->next == (Image *) NULL)
       break;

@@ -282,7 +282,7 @@ Export unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
       Initialize raster file header.
     */
     (void) sprintf(buffer,"%u %u\n",image->columns,image->rows);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     x=0;
     y=0;
     p=image->pixels;
@@ -297,7 +297,7 @@ Export unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
         x++;
         if (x == (int) image->columns)
           {
-            (void) WriteBlob(image,1,q-pixels,(char *) pixels);
+            (void) WriteBlob(image,q-pixels,(char *) pixels);
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);

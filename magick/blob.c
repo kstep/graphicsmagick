@@ -99,7 +99,26 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
   ImageInfo
     *local_info;
 
+  MagickInfo
+    *magick_info;
+
   local_info=CloneImageInfo(image_info);
+  magick_info=(MagickInfo *) GetMagickInfo(image->magick);
+  if (magick_info->blob_support)
+    {
+      /*
+        Native blob support for this image format.
+      */
+      local_info->blob.data=(char *) blob;
+      local_info->blob.offset=0;
+      local_info->blob.length=length;
+      image=ReadImage(local_info);
+      DestroyImageInfo(local_info);
+      return(image);
+    }
+  /*
+    Write blob to a temporary file on disk.
+  */
   TemporaryFilename(local_info->filename);
   file=fopen(local_info->filename,"w");
   if (file == (FILE *) NULL)
@@ -250,11 +269,11 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method ReadBlob reads data from the blob or image file and returns it.  It
-%  returns the number of items read.
+%  returns the number of bytes read.
 %
 %  The format of the ReadBlob routine is:
 %
-%      count=ReadBlob(image,size,number_items,data);
+%      count=ReadBlob(image,number_bytes,data);
 %
 %  A description of each parameter follows:
 %
@@ -262,10 +281,7 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
 %
 %    o image: The address of a structure of type Image.
 %
-%    o size:  Specifies an integer representing the length of an
-%      individual item to be read from the file.
-%
-%    o number_items:  Specifies an integer representing the number of items
+%    o number_bytes:  Specifies an integer representing the number of bytes
 %      to read from the file.
 %
 %    o data:  Specifies an area to place the information requested from
@@ -273,20 +289,36 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
 %
 %
 */
-Export unsigned long ReadBlob(Image *image,const unsigned long size,
-  const unsigned long number_items,char *data)
+Export unsigned long ReadBlob(Image *image,const unsigned long number_bytes,
+  char *data)
 {
+  register int
+    i;
+
   unsigned long
-    bytes,
     count,
     offset;
 
   assert(image != (Image *) NULL);
   assert(data != (char *) NULL);
+  if (image->blob.data != (char *) NULL)
+    {
+      /*
+        Read bytes from blob.
+      */
+      offset=Min(number_bytes,image->blob.length-image->blob.offset);
+      if (number_bytes > 0)
+        (void) memcpy(data,image->blob.data+image->blob.offset,offset);
+      image->blob.offset+=offset;
+      return(offset);
+    }
+  /*
+    Read bytes from a file handle.
+  */
   offset=0;
-  for (bytes=size*number_items; bytes > 0; bytes-=count)
+  for (i=number_bytes; i > 0; i-=count)
   {
-    count=fread(data+offset,1,bytes,image->file);
+    count=fread(data+offset,1,number_bytes,image->file);
     if (count <= 0)
       break;
     offset+=count;
@@ -330,8 +362,7 @@ Export unsigned long ReadBlob(Image *image,const unsigned long size,
 %
 %
 */
-Export int SeekBlob(Image *image,const unsigned long offset,
-  const unsigned long whence)
+Export int SeekBlob(Image *image,const long offset,const unsigned long whence)
 {
   return(fseek(image->file,offset,whence));
 }
@@ -402,14 +433,14 @@ Export int TellBlob(Image *image)
 %
 %
 */
-Export unsigned long WriteBlob(Image *image,const unsigned long size,
-  const unsigned long number_items,const char *data)
+Export unsigned long WriteBlob(Image *image,const unsigned long number_bytes,
+  const char *data)
 {
   unsigned long
     count;
 
   assert(image != (Image *) NULL);
   assert(data != (const char *) NULL);
-  count=(long) fwrite((char *) data,size,number_items,image->file);
+  count=(long) fwrite((char *) data,1,number_bytes,image->file);
   return(count);
 }

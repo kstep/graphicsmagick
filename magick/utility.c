@@ -1602,7 +1602,7 @@ Export unsigned long LSBFirstReadLong(Image *image)
     value;
 
   assert(image != (Image *) NULL);
-  value=ReadBlob(image,1,4,(char *) buffer);
+  value=ReadBlob(image,4,(char *) buffer);
   if (value == 0)
     return((unsigned long) ~0);
   value=(unsigned long) (buffer[3] << 24);
@@ -1648,7 +1648,7 @@ Export unsigned short LSBFirstReadShort(Image *image)
     value;
 
   assert(image != (Image *) NULL);
-  value=ReadBlob(image,1,2,(char *) buffer);
+  value=ReadBlob(image,2,(char *) buffer);
   if (value == 0)
     return((unsigned short) ~0);
   value=(unsigned short) (buffer[1] << 8);
@@ -1695,7 +1695,7 @@ Export unsigned long LSBFirstWriteLong(Image *image,const unsigned long value)
   buffer[1]=(unsigned char) ((value) >> 8);
   buffer[2]=(unsigned char) ((value) >> 16);
   buffer[3]=(unsigned char) ((value) >> 24);
-  return(WriteBlob(image,1,4,(char *) buffer));
+  return(WriteBlob(image,4,(char *) buffer));
 }
 
 /*
@@ -1735,7 +1735,7 @@ Export unsigned long LSBFirstWriteShort(Image *image,const unsigned short value)
   assert(image != (Image *) NULL);
   buffer[0]=(unsigned char) (value);
   buffer[1]=(unsigned char) ((value) >> 8);
-  return(WriteBlob(image,1,2,(char *) buffer));
+  return(WriteBlob(image,2,(char *) buffer));
 }
 
 /*
@@ -1866,7 +1866,7 @@ Export unsigned short MSBFirstReadShort(Image *image)
     value;
 
   assert(image != (Image *) NULL);
-  value=ReadBlob(image,1,2,(char *) buffer);
+  value=ReadBlob(image,2,(char *) buffer);
   if (value == 0)
     return((unsigned short) ~0);
   value=(unsigned int) (buffer[0] << 8);
@@ -1911,7 +1911,7 @@ Export unsigned long MSBFirstReadLong(Image *image)
     value;
 
   assert(image != (Image *) NULL);
-  value=ReadBlob(image,1,4,(char *) buffer);
+  value=ReadBlob(image,4,(char *) buffer);
   if (value == 0)
     return((unsigned long) ~0);
   value=(unsigned int) (buffer[0] << 24);
@@ -1961,7 +1961,7 @@ Export unsigned long MSBFirstWriteLong(Image *image,const unsigned long value)
   buffer[1]=(unsigned char) ((value) >> 16);
   buffer[2]=(unsigned char) ((value) >> 8);
   buffer[3]=(unsigned char) (value);
-  return(WriteBlob(image,1,4,(char *) buffer));
+  return(WriteBlob(image,4,(char *) buffer));
 }
 
 /*
@@ -1998,7 +1998,7 @@ Export unsigned long MSBFirstWriteShort(Image *image,const unsigned short value)
   assert(image != (Image *) NULL);
   buffer[0]=(unsigned char) ((value) >> 8);
   buffer[1]=(unsigned char) (value);
-  return(WriteBlob(image,1,2,(char *) buffer));
+  return(WriteBlob(image,2,(char *) buffer));
 }
 
 /*
@@ -2395,7 +2395,7 @@ Export int ReadByte(Image *image)
     value;
 
   assert(image != (Image *) NULL);
-  count=ReadBlob(image,1,1,(char *) &value);
+  count=ReadBlob(image,1,(char *) &value);
   if (count == 0)
     return((int) ~0);
   return(value);
@@ -2441,10 +2441,10 @@ Export unsigned long ReadBlobBlock(Image *image,char *data)
 
   assert(image != (Image *) NULL);
   assert(data != (char *) NULL);
-  count=ReadBlob(image,1,1,(char *) &block_count);
+  count=ReadBlob(image,1,(char *) &block_count);
   if (count == 0)
     return(0);
-  count=ReadBlob(image,1,(unsigned long) block_count,data);
+  count=ReadBlob(image,(unsigned long) block_count,data);
   return(count);
 }
 
@@ -3299,6 +3299,6 @@ Export unsigned long WriteByte(Image *image,const char value)
     count;
 
   assert(image != (Image *) NULL);
-  count=WriteBlob(image,1,1,(char *) &value);
+  count=WriteBlob(image,1,(char *) &value);
   return(count);
 }

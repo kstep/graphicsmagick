@@ -180,7 +180,7 @@ Export unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     WriterExit(FileOpenWarning,"Unable to open file",image);
-  (void) WriteBlob(image,1,(int) image->color_profile.length,
+  (void) WriteBlob(image,(int) image->color_profile.length,
     (char *) image->color_profile.info);
   CloseImage(image);
   return(True);

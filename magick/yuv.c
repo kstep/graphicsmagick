@@ -161,7 +161,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
     for (y=0; y < (int) (image->rows << 1); y++)
     {
       if ((y > 0) || (image->previous == (Image *) NULL))
-        (void) ReadBlob(image,1,image->columns << 1,(char *) scanline);
+        (void) ReadBlob(image,image->columns << 1,(char *) scanline);
       p=scanline;
       for (x=0; x < (int) (image->columns << 1); x++)
       {
@@ -185,7 +185,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
     q=image->pixels;
     for (y=0; y < (int) image->rows; y++)
     {
-      (void) ReadBlob(image,1,image->columns,(char *) scanline);
+      (void) ReadBlob(image,image->columns,(char *) scanline);
       p=scanline;
       for (x=0; x < (int) image->columns; x++)
       {
@@ -207,7 +207,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
     q=image->pixels;
     for (y=0; y < (int) image->rows; y++)
     {
-      (void) ReadBlob(image,1,image->columns,(char *) scanline);
+      (void) ReadBlob(image,image->columns,(char *) scanline);
       p=scanline;
       for (x=0; x < (int) image->columns; x++)
       {
@@ -249,7 +249,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    count=ReadBlob(image,1,image->columns,(char *) scanline);
+    count=ReadBlob(image,image->columns,(char *) scanline);
     if (count > 0)
       {
         /*

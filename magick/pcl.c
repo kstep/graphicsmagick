@@ -159,11 +159,11 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     Initialize the printer.
   */
   (void) strcpy(buffer,"\033E");  /* portrait orientation */
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"\033&l0O");  /* portrait orientation */
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"\033&l0E");  /* top margin 0 */
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   /*
     Center image on PCL page.
   */
@@ -202,7 +202,7 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   if ((media_info.width == 516) && (media_info.height == 729))
     page_size=46;  /* B4 */
   (void) sprintf(buffer,"\033&l%uA",page_size);  /* papersize */
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   density=72;
   if (image_info->density != (char *) NULL)
     (void) ParseGeometry(image_info->density,&sans_offset,&sans_offset,
@@ -211,23 +211,23 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     (void) ParseGeometry("75x75",&sans_offset,&sans_offset,
       &density,&density);
   (void) sprintf(buffer,"\033*p%dx%dY",x,y);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   if (image->label != (char *) NULL)
     {
       /*
         Print label.
       */
       (void) strcpy(buffer,"\033&k2G");
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
       (void) sprintf(buffer,"\033(s1p%uv5t3b",image_info->pointsize);
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
       (void) sprintf(buffer,"\n%.1024s\n",image->label);
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
       (void) strcpy(buffer,"\033(s0B");
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
     }
   (void) sprintf(buffer,"\033*t%uR",density);  /* graphic resolution */
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   width=(density*width)/75;
   height=(density*height)/75;
   if (!IsGrayImage(image))
@@ -236,11 +236,11 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
         Write PCL color image.
       */
       (void) sprintf(buffer,"\033*r%us%uT",image->columns,image->rows);
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
       (void) sprintf(buffer,"\033*t%uh%uV",width,height);
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
       (void) strcpy(buffer,"\033*v6W");
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
       (void) WriteByte(image,'\000');  /* color model */
       (void) WriteByte(image,'\003');  /* direct pixel encoding */
       (void) WriteByte(image,'\000');  /* bits per index */
@@ -248,11 +248,11 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       (void) WriteByte(image,'\010');  /* bits green*/
       (void) WriteByte(image,'\010');  /* bits blue */
       (void) strcpy(buffer,"\033*r2A");  /* start graphics */
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
       (void) strcpy(buffer,"\033*b0M");  /* no compression */
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
       (void) sprintf(buffer,"\033*b%uW",3*image->columns);
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
       x=0;
       y=0;
       p=image->pixels;
@@ -262,13 +262,13 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
         {
           (void) sprintf(buffer,"%c%c%c",(int) DownScale(p->red),
             (int) DownScale(p->green),(int) DownScale(p->blue));
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
         }
         x++;
         if (x == (int) image->columns)
           {
             (void) sprintf(buffer,"\033*b%uW",3*image->columns);
-            (void) WriteBlob(image,1,strlen(buffer),buffer);
+            (void) WriteBlob(image,strlen(buffer),buffer);
             if (QuantumTick(y,image->rows))
               ProgressMonitor(SaveImageText,y,image->rows);
             x=0;
@@ -277,7 +277,7 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
         p++;
       }
       (void) strcpy(buffer,"\033*rC");  /* end graphics */
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
     }
   else
     {
@@ -327,13 +327,13 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       y=0;
       (void) sprintf(buffer,"\033*r%us%uT",monochrome_image->columns,
         monochrome_image->rows);
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
       (void) strcpy(buffer,"\033*r1A");  /* start graphics */
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
       (void) strcpy(buffer,"\033*b0M");  /* no compression */
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
       (void) sprintf(buffer,"\033*b%uW",(image->columns+7)/8);
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
       for (i=0; i < (int) monochrome_image->packets; i++)
       {
         for (j=0; j <= ((int) p->length); j++)
@@ -366,21 +366,21 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
                 {
                   (void) sprintf(buffer,"\033*b%uW",
                     (monochrome_image->columns+7)/8);
-                  (void) WriteBlob(image,1,strlen(buffer),buffer);
+                  (void) WriteBlob(image,strlen(buffer),buffer);
                 }
            }
         }
         p++;
       }
       (void) strcpy(buffer,"\033*rB");  /* end graphics */
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
       if (image != monochrome_image)
         DestroyImage(monochrome_image);
     }
   (void) strcpy(buffer,"\033&l0H");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"\033E");  /* portrait orientation */
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   CloseImage(image);
   return(True);
 }

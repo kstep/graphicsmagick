@@ -104,7 +104,7 @@ static unsigned int PCDDecodeImage(Image *image,unsigned char *luma,
   { \
     if (p >= (buffer+0x800)) \
       { \
-        (void) ReadBlob(image,1,0x800,(char *) buffer); \
+        (void) ReadBlob(image,0x800,(char *) buffer); \
         p=buffer; \
       } \
     accumulator|=((unsigned int) (*p) << (24-bits)); \
@@ -446,7 +446,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
   header=(unsigned char *) AllocateMemory(3*0x800*sizeof(unsigned char));
   if (header == (unsigned char *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  status=ReadBlob(image,1,3*0x800,(char *) header);
+  status=ReadBlob(image,3*0x800,(char *) header);
   overview=strncmp((char *) header,"PCD_OPA",7) == 0;
   if ((status == False) ||
       ((strncmp((char *) header+0x800,"PCD",3) != 0) && !overview))
@@ -559,13 +559,13 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
         c2=chroma2;
         for (i=0; i < (int) height; i+=2)
         {
-          (void) ReadBlob(image,1,width,(char *) y0);
+          (void) ReadBlob(image,width,(char *) y0);
           y+=image->columns;
-          (void) ReadBlob(image,1,width,(char *) y0);
+          (void) ReadBlob(image,width,(char *) y0);
           y+=image->columns;
-          (void) ReadBlob(image,1,width >> 1,(char *) c1);
+          (void) ReadBlob(image,width >> 1,(char *) c1);
           c1+=image->columns;
-          (void) ReadBlob(image,1,width >> 1,(char *) c2);
+          (void) ReadBlob(image,width >> 1,(char *) c2);
           c2+=image->columns;
         }
         Upsample(image->columns >> 1,image->rows >> 1,image->columns,chroma1);
@@ -631,13 +631,13 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
   c2=chroma2;
   for (i=0; i < (int) height; i+=2)
   {
-    (void) ReadBlob(image,1,width,(char *) y);
+    (void) ReadBlob(image,width,(char *) y);
     y+=image->columns;
-    (void) ReadBlob(image,1,width,(char *) y);
+    (void) ReadBlob(image,width,(char *) y);
     y+=image->columns;
-    (void) ReadBlob(image,1,width >> 1,(char *) c1);
+    (void) ReadBlob(image,width >> 1,(char *) c1);
     c1+=image->columns;
-    (void) ReadBlob(image,1,width >> 1,(char *) c2);
+    (void) ReadBlob(image,width >> 1,(char *) c2);
     c2+=image->columns;
   }
   if (subimage >= 4)
@@ -930,7 +930,7 @@ Export unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
     (void) WriteByte(image,0x01);
   for (i=0; i < 1944; i++)
     (void) WriteByte(image,'\0');
-  (void) WriteBlob(image,1,7,"PCD_IPI");
+  (void) WriteBlob(image,7,"PCD_IPI");
   (void) WriteByte(image,0x06);
   for (i=0; i < 1530; i++)
     (void) WriteByte(image,'\0');

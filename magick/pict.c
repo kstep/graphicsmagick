@@ -458,7 +458,7 @@ static unsigned char* DecodeImage(Image *image,int bytes_per_line,
       {
         q=pixels+i*width;
         number_pixels=bytes_per_line;
-        (void) ReadBlob(image,1,number_pixels,(char *) scanline);
+        (void) ReadBlob(image,number_pixels,(char *) scanline);
         p=ExpandBuffer(scanline,&number_pixels,bits_per_pixel);
         for (j=0; j < number_pixels; j++)
           *q++=(*p++);
@@ -476,7 +476,7 @@ static unsigned char* DecodeImage(Image *image,int bytes_per_line,
       scanline_length=MSBFirstReadShort(image);
     else
       scanline_length=ReadByte(image);
-    (void) ReadBlob(image,1,scanline_length,(char *) scanline);
+    (void) ReadBlob(image,scanline_length,(char *) scanline);
     for (j=0; j < scanline_length; )
       if ((scanline[j] & 0x80) == 0)
         {
@@ -1381,7 +1381,7 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   */
   for (i=0; i < PictHeaderSize; i++)
     buffer[i]=0;
-  (void) WriteBlob(image,1,PictHeaderSize,(char *) buffer);
+  (void) WriteBlob(image,PictHeaderSize,(char *) buffer);
   MSBFirstWriteShort(image,0);
   MSBFirstWriteShort(image,size_rectangle.top);
   MSBFirstWriteShort(image,size_rectangle.left);

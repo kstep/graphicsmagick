@@ -230,6 +230,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   /*
     Transfer image info.
   */
+  allocated_image->blob=image_info->blob;
   (void) strcpy(allocated_image->filename,image_info->filename);
   (void) strcpy(allocated_image->magick_filename,image_info->filename);
   (void) strcpy(allocated_image->magick,image_info->magick);
@@ -2710,6 +2711,7 @@ Export void GetImageInfo(ImageInfo *image_info)
     File and image dimension members.
   */
   assert(image_info != (ImageInfo *) NULL);
+  GetBlobInfo(&image_info->blob);
   image_info->file=(FILE *) NULL;
   *image_info->filename='\0';
   *image_info->magick='\0';
@@ -6209,7 +6211,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
   if (image.file == (FILE *) NULL)
     return;
   if (!image.exempt)
-    (void) ReadBlob(&image,1,MaxTextExtent,magick);
+    (void) ReadBlob(&image,MaxTextExtent,magick);
   else
     {
       FILE

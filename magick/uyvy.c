@@ -129,7 +129,7 @@ Export Image *ReadUYVYImage(const ImageInfo *image_info)
       (image->pixels == (RunlengthPacket *) NULL))
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   SetImage(image);
-  (void) ReadBlob(image,1,2*image->packets,(char *) uyvy_pixels);
+  (void) ReadBlob(image,2*image->packets,(char *) uyvy_pixels);
   /*
     Accumulate UYVY, then unpack into two pixels.
   */

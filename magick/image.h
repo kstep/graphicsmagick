@@ -123,6 +123,11 @@ typedef struct _FrameInfo
 typedef struct _ImageInfo
 {
   /*
+    Blob member.
+  */
+  BlobInfo
+    blob;
+  /*
     File and image dimension members.
   */
   FILE

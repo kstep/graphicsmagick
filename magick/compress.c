@@ -289,7 +289,7 @@ Export void Ascii85Flush(Image *image)
       ascii85_buffer[offset+1]=0;
       ascii85_buffer[offset+2]=0;
       tuple=Ascii85Tuple(ascii85_buffer);
-      (void) WriteBlob(image,1,offset+1,*tuple == 'z' ? "!!!!" : tuple);
+      (void) WriteBlob(image,offset+1,*tuple == 'z' ? "!!!!" : tuple);
     }
   (void) WriteByte(image,'~');
   (void) WriteByte(image,'>');

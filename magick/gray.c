@@ -147,7 +147,7 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
       */
       image->scene++;
       for (y=0; y < (int) image->rows; y++)
-        (void) ReadBlob(image,packet_size,image->tile_info.width,
+        (void) ReadBlob(image,packet_size*image->tile_info.width,
           (char *) scanline);
     }
   do
@@ -179,14 +179,14 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
       Convert raster image to runlength-encoded packets.
     */
     for (y=0; y < image->tile_info.y; y++)
-      (void) ReadBlob(image,packet_size,image->tile_info.width,
+      (void) ReadBlob(image,packet_size*image->tile_info.width,
         (char *) scanline);
     q=image->pixels;
     SetRunlengthEncoder(q);
     for (y=0; y < (int) image->rows; y++)
     {
       if ((y > 0) || (image->previous == (Image *) NULL))
-        (void) ReadBlob(image,packet_size,image->tile_info.width,
+        (void) ReadBlob(image,packet_size*image->tile_info.width,
           (char *) scanline);
       p=scanline+packet_size*image->tile_info.x;
       for (x=0; x < (int) image->columns; x++)
@@ -209,7 +209,7 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
     }
     count=image->tile_info.height-image->rows-image->tile_info.y;
     for (y=0; y < count; y++)
-      (void) ReadBlob(image,packet_size,image->tile_info.width,
+      (void) ReadBlob(image,packet_size*image->tile_info.width,
         (char *) scanline);
     if (feof(image->file))
       MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
@@ -221,7 +221,7 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    count=ReadBlob(image,packet_size,image->tile_info.width,
+    count=ReadBlob(image,packet_size*image->tile_info.width,
       (char *) scanline);
     if (count > 0)
       {
@@ -337,7 +337,7 @@ Export unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
         x++;
         if (x == (int) image->columns)
           {
-            (void) WriteBlob(image,1,q-pixels,(char *) pixels);
+            (void) WriteBlob(image,q-pixels,(char *) pixels);
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);

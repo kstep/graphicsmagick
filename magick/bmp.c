@@ -414,7 +414,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
   /*
     Determine if this is a BMP file.
   */
-  status=ReadBlob(image,1,2,(char *) magick);
+  status=ReadBlob(image,2,(char *) magick);
   do
   {
     /*
@@ -544,7 +544,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
             packet_size=4;
             if (bmp_header.size == 12)
               packet_size=3;
-            (void) ReadBlob(image,packet_size,image->colors,
+            (void) ReadBlob(image,packet_size*image->colors,
               (char *) bmp_colormap);
             p=bmp_colormap;
             for (i=0; i < (int) image->colors; i++)
@@ -572,7 +572,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
     if (bmp_pixels == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     if ((bmp_header.compression == 0) || (bmp_header.compression == 3))
-      (void) ReadBlob(image,1,image_size,(char *) bmp_pixels);
+      (void) ReadBlob(image,image_size,(char *) bmp_pixels);
     else
       {
         /*
@@ -764,7 +764,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    status=ReadBlob(image,1,2,(char *) magick);
+    status=ReadBlob(image,2,(char *) magick);
     if ((status == True) && (strncmp((char *) magick,"BM",2) == 0))
       {
         /*
@@ -1088,7 +1088,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     /*
       Write BMP header.
     */
-    (void) WriteBlob(image,1,2,"BM");
+    (void) WriteBlob(image,2,"BM");
     (void) LSBFirstWriteLong(image,bmp_header.file_size);
     (void) LSBFirstWriteShort(image,bmp_header.reserved[0]);
     (void) LSBFirstWriteShort(image,bmp_header.reserved[1]);
@@ -1131,11 +1131,11 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           *q++=(Quantum) 0x0;
           *q++=(Quantum) 0x0;
         }
-        (void) WriteBlob(image,4,1 << bmp_header.bit_count,
+        (void) WriteBlob(image,4*(1 << bmp_header.bit_count),
           (char *) bmp_colormap);
         FreeMemory((char *) bmp_colormap);
       }
-    (void) WriteBlob(image,1,bmp_header.image_size,(char *) bmp_pixels);
+    (void) WriteBlob(image,bmp_header.image_size,(char *) bmp_pixels);
     FreeMemory((char *) bmp_pixels);
     if (image->next == (Image *) NULL)
       break;

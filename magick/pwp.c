@@ -129,7 +129,7 @@ Export Image *ReadPWPImage(const ImageInfo *image_info)
   OpenImage(image_info,pwp_image,ReadBinaryType);
   if (pwp_image->file == (FILE *) NULL)
     ReaderExit(FileOpenWarning,"Unable to open file",pwp_image);
-  status=ReadBlob(pwp_image,1,5,(char *) magick);
+  status=ReadBlob(pwp_image,5,(char *) magick);
   if ((status == False) || (strncmp((char *) magick,"SFW95",5) != 0))
     ReaderExit(CorruptImageWarning,"Not a PWP image file",pwp_image);
   local_info=CloneImageInfo(image_info);

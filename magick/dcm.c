@@ -2703,8 +2703,8 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
   /*
     Read DCM preamble.
   */
-  status=ReadBlob(image,1,128,(char *) magick);
-  status|=ReadBlob(image,1,4,(char *) magick);
+  status=ReadBlob(image,128,(char *) magick);
+  status|=ReadBlob(image,4,(char *) magick);
   if ((status == False) || (strncmp((char *) magick,"DICM",4) != 0))
     (void) SeekBlob(image,0L,SEEK_SET);
   /*
@@ -2741,7 +2741,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
           (element == dicom_info[i].element))
         break;
     (void) strcpy(implicit_vr,dicom_info[i].vr);
-    status=ReadBlob(image,1,2,(char *) explicit_vr);
+    status=ReadBlob(image,2,(char *) explicit_vr);
     if (strcmp(implicit_vr,"xs") == 0)
       if (isupper((int) *explicit_vr) && isupper((int) *(explicit_vr+1)))
         (void) strcpy(implicit_vr,explicit_vr);
@@ -2866,7 +2866,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
             if (data == (unsigned char *) NULL)
               ReaderExit(ResourceLimitWarning,"Memory allocation failed",
                 image);
-            (void) ReadBlob(image,quantum,length,(char *) data);
+            (void) ReadBlob(image,quantum*length,(char *) data);
             data[length*quantum]=0;
           }
     switch (group)

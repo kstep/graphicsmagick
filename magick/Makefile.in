@@ -234,27 +234,6 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/PreRvIcccm.P .deps/animate.P .deps/annotate.P \
-.deps/avs.P .deps/blob.P .deps/bmp.P .deps/cmyk.P .deps/colors.P \
-.deps/compress.P .deps/dcm.P .deps/decorate.P .deps/delegates.P \
-.deps/display.P .deps/dps.P .deps/draw.P .deps/effects.P \
-.deps/enhance.P .deps/ept.P .deps/error.P .deps/fax.P .deps/fits.P \
-.deps/fpx.P .deps/gems.P .deps/gif.P .deps/gradation.P .deps/gray.P \
-.deps/hdf.P .deps/histogram.P .deps/html.P .deps/icc.P .deps/icon.P \
-.deps/image.P .deps/iptc.P .deps/jbig.P .deps/jpeg.P .deps/label.P \
-.deps/logo.P .deps/mac.P .deps/magick.P .deps/map.P .deps/matte.P \
-.deps/memory.P .deps/miff.P .deps/monitor.P .deps/mono.P \
-.deps/montage.P .deps/mtv.P .deps/nt.P .deps/null.P .deps/pcd.P \
-.deps/pcl.P .deps/pcx.P .deps/pdf.P .deps/pict.P .deps/pix.P \
-.deps/plasma.P .deps/png.P .deps/pnm.P .deps/preview.P .deps/ps.P \
-.deps/ps2.P .deps/ps3.P .deps/psd.P .deps/pwp.P .deps/quantize.P \
-.deps/rgb.P .deps/rla.P .deps/rle.P .deps/sct.P .deps/segment.P \
-.deps/sfw.P .deps/sgi.P .deps/shear.P .deps/signature.P .deps/stegano.P \
-.deps/sun.P .deps/tga.P .deps/tiff.P .deps/tile.P .deps/tim.P \
-.deps/transform.P .deps/ttf.P .deps/txt.P .deps/uil.P .deps/utility.P \
-.deps/uyvy.P .deps/vicar.P .deps/vid.P .deps/viff.P .deps/vms.P \
-.deps/widget.P .deps/x.P .deps/xbm.P .deps/xc.P .deps/xpm.P .deps/xwd.P \
-.deps/xwindows.P .deps/yuv.P .deps/zoom.P
 SOURCES = $(libMagick_la_SOURCES) $(EXTRA_libMagick_la_SOURCES)
 OBJECTS = $(libMagick_la_OBJECTS)
 
@@ -262,9 +241,9 @@ all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign magick/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign --include-deps magick/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -324,6 +303,9 @@ uninstall-libLTLIBRARIES:
 	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
+.c.o:
+	$(COMPILE) -c $<
+
 # FIXME: We should only use cygpath when building on Windows,
 # and only if it is available.
 .c.obj:
@@ -345,6 +327,9 @@ distclean-compile:
 	-rm -f *.tab.c
 
 maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
 
 .s.lo:
 	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
@@ -433,11 +418,6 @@ distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 subdir = magick
 
 distdir: $(DISTFILES)
-	here=`cd $(top_builddir) && pwd`; \
-	top_distdir=`cd $(top_distdir) && pwd`; \
-	distdir=`cd $(distdir) && pwd`; \
-	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign magick/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -449,38 +429,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-
-DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
-
--include $(DEP_FILES)
-
-mostlyclean-depend:
-
-clean-depend:
-
-distclean-depend:
-	-rm -rf .deps
-
-maintainer-clean-depend:
-
-%.o: %.c
-	@echo '$(COMPILE) -c $<'; \
-	$(COMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
-	@-cp .deps/$(*F).pp .deps/$(*F).P; \
-	tr ' ' '\012' < .deps/$(*F).pp \
-	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
-	    >> .deps/$(*F).P; \
-	rm .deps/$(*F).pp
-
-%.lo: %.c
-	@echo '$(LTCOMPILE) -c $<'; \
-	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
-	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
-	  < .deps/$(*F).pp > .deps/$(*F).P; \
-	tr ' ' '\012' < .deps/$(*F).pp \
-	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
-	    >> .deps/$(*F).P; \
-	rm -f .deps/$(*F).pp
 info-am:
 info: info-am
 dvi-am:
@@ -524,18 +472,18 @@ distclean-generic:
 maintainer-clean-generic:
 mostlyclean-am:  mostlyclean-hdr mostlyclean-libLTLIBRARIES \
 		mostlyclean-compile mostlyclean-libtool \
-		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+		mostlyclean-tags mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
 clean-am:  clean-hdr clean-libLTLIBRARIES clean-compile clean-libtool \
-		clean-tags clean-depend clean-generic mostlyclean-am
+		clean-tags clean-generic mostlyclean-am
 
 clean: clean-am
 
 distclean-am:  distclean-hdr distclean-libLTLIBRARIES distclean-compile \
-		distclean-libtool distclean-tags distclean-depend \
-		distclean-generic clean-am
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
 	-rm -f libtool
 
 distclean: distclean-am
@@ -543,8 +491,8 @@ distclean: distclean-am
 maintainer-clean-am:  maintainer-clean-hdr \
 		maintainer-clean-libLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-tags maintainer-clean-depend \
-		maintainer-clean-generic distclean-am
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -558,12 +506,10 @@ distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool uninstall-binSCRIPTS install-binSCRIPTS \
 uninstall-includeHEADERS install-includeHEADERS tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir \
-mostlyclean-depend distclean-depend clean-depend \
-maintainer-clean-depend info-am info dvi-am dvi check check-am \
-installcheck-am installcheck all-recursive-am install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck all-recursive-am \
+install-exec-am install-exec install-data-am install-data install-am \
+install uninstall-am uninstall all-redirect all-am all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 

@@ -238,10 +238,10 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     UIL header.
   */
   (void) strcpy(buffer,"/* UIL */\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) sprintf(buffer,"value\n  %.1024s_ct : color_table(\n",
     BaseFilename(image->filename));
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   for (i=0; i < (int) colors; i++)
   {
     ColorPacket
@@ -287,9 +287,9 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
       (void) sprintf(buffer,"    color('%.1024s',%.1024s) = '%.1024s'",
         name,Intensity(*p) < ((MaxRGB+1)/2) ? "background" : "foreground",
         symbol);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"%.1024s",(i == (int) (colors-1) ? ");\n" : ",\n"));
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
   }
   /*
     Define UIL pixels.
@@ -297,13 +297,13 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   (void) sprintf(buffer,
     "  %.1024s_icon : icon(color_table = %.1024s_ct,\n",
     BaseFilename(image->filename),BaseFilename(image->filename));
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   p=image->pixels;
   runlength=p->length+1;
   for (y=0; y < (int) image->rows; y++)
   {
     (void) strcpy(buffer,"    \"");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
@@ -322,11 +322,11 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
       }
       symbol[j]='\0';
       (void) sprintf(buffer,"%.1024s",symbol);
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
     }
     (void) sprintf(buffer,"\"%.1024s\n",
       (y == (int) (image->rows-1) ? ");" : ","));
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if (QuantumTick(y,image->rows))
       ProgressMonitor(SaveImageText,y,image->rows);
   }

@@ -773,14 +773,14 @@ Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     XPM header.
   */
   (void) strcpy(buffer,"/* XPM */\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"static char *magick[] = {\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"/* columns rows colors chars-per-pixel */\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) sprintf(buffer,"\"%u %u %u %d\",\n",image->columns,
     image->rows,colors,characters_per_pixel);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   for (i=0; i < (int) colors; i++)
   {
     ColorPacket
@@ -824,19 +824,19 @@ Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     }
     symbol[j]='\0';
     (void) sprintf(buffer,"\"%.1024s c %.1024s\",\n",symbol,name);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
   }
   /*
     Define XPM pixels.
   */
   (void) strcpy(buffer,"/* pixels */\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   p=image->pixels;
   runlength=p->length+1;
   for (y=0; y < (int) image->rows; y++)
   {
     (void) strcpy(buffer,"\"");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
@@ -855,16 +855,16 @@ Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       }
       symbol[j]='\0';
       (void) sprintf(buffer,"%.1024s",symbol);
-      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) WriteBlob(image,strlen(buffer),buffer);
     }
     (void) sprintf(buffer,"\"%.1024s\n",
       (y == (int) (image->rows-1) ? "" : ","));
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if (QuantumTick(y,image->rows))
       ProgressMonitor(SaveImageText,y,image->rows);
   }
   (void) strcpy(buffer,"};\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   CloseImage(image);
   return(True);
 }

@@ -187,7 +187,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
         if ((image->colormap == (ColorPacket *) NULL) ||
             (tim_colormap == (unsigned char *) NULL))
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-        (void) ReadBlob(image,2,image->colors,(char *) tim_colormap);
+        (void) ReadBlob(image,2*image->colors,(char *) tim_colormap);
         p=tim_colormap;
         for (i=0; i < (int) image->colors; i++)
         {
@@ -213,7 +213,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
     tim_data=(unsigned char *) AllocateMemory(image_size*sizeof(unsigned char));
     if (tim_data == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Unable to allocate memory",image);
-    (void) ReadBlob(image,1,image_size,(char *) tim_data);
+    (void) ReadBlob(image,image_size,(char *) tim_data);
     tim_pixels=tim_data;
     /*
       Initialize image structure.

@@ -206,7 +206,7 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
       }
     iris_header.minimum_value=MSBFirstReadLong(image);
     iris_header.maximum_value=MSBFirstReadLong(image);
-    (void) ReadBlob(image,1,(unsigned int) sizeof(iris_header.filler),
+    (void) ReadBlob(image,(unsigned int) sizeof(iris_header.filler),
       (char *) iris_header.filler);
     /*
       Allocate SGI pixels.
@@ -232,7 +232,7 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
           p=iris_pixels+z;
           for (y=0; y < (int) iris_header.rows; y++)
           {
-            (void) ReadBlob(image,1,iris_header.columns,(char *) scanline);
+            (void) ReadBlob(image,iris_header.columns,(char *) scanline);
             for (x=0; x < (int) iris_header.columns; x++)
             {
               *p=scanline[x];
@@ -297,7 +297,7 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
                     offset=offsets[y+z*iris_header.rows];
                     (void) SeekBlob(image,(long) offset,SEEK_SET);
                   }
-                (void) ReadBlob(image,1,(unsigned int)
+                (void) ReadBlob(image,(unsigned int)
                   runlength[y+z*iris_header.rows],(char *) max_packets);
                 offset+=runlength[y+z*iris_header.rows];
                 SGIDecode(max_packets,p+z);
@@ -317,7 +317,7 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
                     offset=offsets[y+z*iris_header.rows];
                     (void) SeekBlob(image,(long) offset,SEEK_SET);
                   }
-                (void) ReadBlob(image,1,(unsigned int)
+                (void) ReadBlob(image,(unsigned int)
                   runlength[y+z*iris_header.rows],(char *) max_packets);
                 offset+=runlength[y+z*iris_header.rows];
                 SGIDecode(max_packets,p+z);
@@ -608,7 +608,7 @@ Export unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     MSBFirstWriteShort(image,iris_header.depth);
     MSBFirstWriteLong(image,iris_header.minimum_value);
     MSBFirstWriteLong(image,iris_header.maximum_value);
-    (void) WriteBlob(image,1,sizeof(iris_header.filler),
+    (void) WriteBlob(image,sizeof(iris_header.filler),
       (char *) iris_header.filler);
     /*
       Allocate SGI pixels.
@@ -667,7 +667,7 @@ Export unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
               scanline[x]=(*q);
               q+=4;
             }
-            (void) WriteBlob(image,1,iris_header.columns,(char *) scanline);
+            (void) WriteBlob(image,iris_header.columns,(char *) scanline);
           }
         }
         FreeMemory(scanline);
@@ -717,8 +717,7 @@ Export unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
           MSBFirstWriteLong(image,offsets[i]);
         for (i=0; i < (int) (iris_header.rows*iris_header.depth); i++)
           MSBFirstWriteLong(image,runlength[i]);
-        (void) WriteBlob(image,sizeof(unsigned char),number_packets,
-          (char *) packets);
+        (void) WriteBlob(image,number_packets,(char *) packets);
         /*
           Free memory.
         */

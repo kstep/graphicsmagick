@@ -233,7 +233,7 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
       AllocateMemory(4*image->colors*sizeof(unsigned char));
     if (icon_colormap == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    (void) ReadBlob(image,4,image->colors,(char *) icon_colormap);
+    (void) ReadBlob(image,4*image->colors,(char *) icon_colormap);
     p=icon_colormap;
     for (x=0; x < (int) image->colors; x++)
     {
@@ -250,7 +250,7 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
       AllocateMemory(icon_file.directory[i].size*sizeof(unsigned char));
     if (icon_pixels == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    (void) ReadBlob(image,1,icon_file.directory[i].size,(char *) icon_pixels);
+    (void) ReadBlob(image,icon_file.directory[i].size,(char *) icon_pixels);
     /*
       Initialize image structure.
     */

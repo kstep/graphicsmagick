@@ -313,8 +313,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
     /*
       Convert FITS pixels to runlength-encoded packets.
     */
-    status=ReadBlob(image,(unsigned int) packet_size,image->packets,
-      (char *) fits_pixels);
+    status=ReadBlob(image,packet_size*image->packets,(char *) fits_pixels);
     if (status == False)
       MagickWarning(CorruptImageWarning,"Insufficient image data in file",
         image->filename);
@@ -526,7 +525,7 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   (void) strncpy(fits_header+400,buffer,Extent(buffer));
   (void) strcpy(buffer,"END");
   (void) strncpy(fits_header+480,buffer,Extent(buffer));
-  (void) WriteBlob(image,1,2880,(char *) fits_header);
+  (void) WriteBlob(image,2880,(char *) fits_header);
   FreeMemory((char *) fits_header);
   /*
     Convert image to fits scale PseudoColor class.
@@ -540,7 +539,7 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
       *q++=DownScale(Intensity(*p));
       p++;
     }
-    (void) WriteBlob(image,1,q-pixels,(char *) pixels);
+    (void) WriteBlob(image,q-pixels,(char *) pixels);
     if (QuantumTick(image->rows-y-1,image->rows))
       ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
   }

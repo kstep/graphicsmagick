@@ -443,7 +443,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
         if (image->color_profile.info == (unsigned char *) NULL)
           ReaderExit(CorruptImageWarning,"Unable to read color profile",
             image);
-        (void) ReadBlob(image,1,image->color_profile.length,
+        (void) ReadBlob(image,image->color_profile.length,
           (char *) image->color_profile.info);
       }
     if (image->class == PseudoClass)
@@ -492,7 +492,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
             if (colormap == (unsigned char *) NULL)
               ReaderExit(ResourceLimitWarning,"Memory allocation failed",
                 image);
-            (void) ReadBlob(image,1,packet_size*image->colors,
+            (void) ReadBlob(image,packet_size*image->colors,
               (char *) colormap);
             p=colormap;
             for (i=0; i < (int) image->colors; i++)
@@ -541,7 +541,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
     */
     if ((image->compression != RunlengthEncodedCompression) ||
         (image->packets != 0))
-      (void) ReadBlob(image,1,(unsigned int) max_packets*packet_size,
+      (void) ReadBlob(image,(unsigned int) max_packets*packet_size,
         (char *) image->packed_pixels);
     else
       {
@@ -552,7 +552,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
         p=image->packed_pixels;
         do
         {
-          (void) ReadBlob(image,1,packet_size,(char *) p);
+          (void) ReadBlob(image,packet_size,(char *) p);
           image->packets++;
           p+=(packet_size-1);
           count+=(*p+1);
@@ -945,7 +945,7 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         (void) WriteByte(image,'\0');
       }
     if (image->color_profile.length > 0)
-      (void) WriteBlob(image,1,(int) image->color_profile.length,
+      (void) WriteBlob(image,(int) image->color_profile.length,
         (char *) image->color_profile.info);
     if (image->class == PseudoClass)
       {
@@ -979,14 +979,14 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Write colormap to file.
         */
-        (void) WriteBlob(image,1,(int) image->colors*packet_size,
+        (void) WriteBlob(image,(int) image->colors*packet_size,
           (char *) colormap);
         FreeMemory((char *) colormap);
       }
     /*
       Write image pixels to file.
     */
-    (void) WriteBlob(image,image->packet_size,packets,
+    (void) WriteBlob(image,image->packet_size*packets,
       (char *) image->packed_pixels);
     if (image->next == (Image *) NULL)
       break;

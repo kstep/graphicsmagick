@@ -448,55 +448,55 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   */
   object=0;
   (void) strcpy(buffer,"%PDF-1.1 \n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   xref[object++]=TellBlob(image);
   info_id=object;
   (void) sprintf(buffer,"%u 0 obj\n",object);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"<<\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   timer=time((time_t *) NULL);
   (void) localtime(&timer);
   (void) strcpy(date,ctime(&timer));
   date[Extent(date)-1]='\0';
   (void) sprintf(buffer,"/CreationDate (%.1024s)\n",date);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) sprintf(buffer,"/Producer (%.1024s)\n",MagickVersion);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,">>\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"endobj\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   /*
     Write Catalog object.
   */
   xref[object++]=TellBlob(image);
   root_id=object;
   (void) sprintf(buffer,"%u 0 obj\n",object);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"<<\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"/Type /Catalog\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) sprintf(buffer,"/Pages %u 0 R\n",object+1);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,">>\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"endobj\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   /*
     Write Pages object.
   */
   xref[object++]=TellBlob(image);
   pages_id=object;
   (void) sprintf(buffer,"%u 0 obj\n",object);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"<<\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"/Type /Pages\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) sprintf(buffer,"/Kids [ %u 0 R ",object+1);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   count=pages_id+ObjectsPerImage+1;
   if (image_info->adjoin)
     {
@@ -510,7 +510,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       for ( ; kid_image->next != (Image *) NULL; count+=ObjectsPerImage)
       {
         (void) sprintf(buffer,"%d 0 R ",count);
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         kid_image=kid_image->next;
       }
       xref=(unsigned long *)
@@ -519,13 +519,13 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     }
   (void) strcpy(buffer,"]\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) sprintf(buffer,"/Count %u\n",(count-pages_id)/ObjectsPerImage);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,">>\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"endobj\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   scene=0;
   do
   {
@@ -576,99 +576,99 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     */
     xref[object++]=TellBlob(image);
     (void) sprintf(buffer,"%u 0 obj\n",object);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"<<\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"/Type /Page\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/Parent %u 0 R\n",pages_id);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"/Resources <<\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/Font << /F%u %u 0 R >>\n",image->scene,
       object+4);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/XObject << /Im%u %u 0 R >>\n",image->scene,
       object+5);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/ProcSet %u 0 R >>\n",object+3);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/MediaBox [ %d %d %d %d ]\n",0,0,
       media_info.width,media_info.height);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/Contents %u 0 R\n",object+1);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/Thumb %u 0 R\n",object+8);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,">>\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"endobj\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     /*
       Write Contents object.
     */
     xref[object++]=TellBlob(image);
     (void) sprintf(buffer,"%u 0 obj\n",object);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"<<\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/Length %u 0 R\n",object+1);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,">>\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"stream\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     length=TellBlob(image);
     (void) strcpy(buffer,"q\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     labels=StringToList(image->label);
     if (labels != (char **) NULL)
       {
         for (i=0; labels[i] != (char *) NULL; i++)
         {
           (void) strcpy(buffer,"BT\n");
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
           (void) sprintf(buffer,"/F%u %u Tf\n",image->scene,
             image_info->pointsize);
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
           (void) sprintf(buffer,"%d %u Td\n",x,y+height+
             i*image_info->pointsize+12);
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
           (void) sprintf(buffer,"(%.1024s) Tj\n",labels[i]);
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
           (void) strcpy(buffer,"ET\n");
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
           FreeMemory(labels[i]);
         }
         FreeMemory((char *) labels);
       }
     (void) sprintf(buffer,"%f 0 0 %f %d %d cm\n",x_scale,y_scale,x,y);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/Im%u Do\n",image->scene);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"Q\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     length=TellBlob(image)-length;
     (void) strcpy(buffer,"endstream\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"endobj\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     /*
       Write Length object.
     */
     xref[object++]=TellBlob(image);
     (void) sprintf(buffer,"%u 0 obj\n",object);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"%lu\n",length);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"endobj\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     /*
       Write Procset object.
     */
     xref[object++]=TellBlob(image);
     (void) sprintf(buffer,"%u 0 obj\n",object);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       (void) strcpy(buffer,"[ /PDF /Text /ImageC");
     else
@@ -676,47 +676,47 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) strcpy(buffer,"[ /PDF /Text /ImageB");
       else
         (void) strcpy(buffer,"[ /PDF /Text /ImageI");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer," ]\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"endobj\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     /*
       Write Font object.
     */
     xref[object++]=TellBlob(image);
     (void) sprintf(buffer,"%u 0 obj\n",object);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"<<\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"/Type /Font\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"/Subtype /Type1\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/Name /F%u\n",image->scene);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"/BaseFont /Helvetica\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"/Encoding /MacRomanEncoding\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,">>\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"endobj\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     /*
       Write XObject object.
     */
     xref[object++]=TellBlob(image);
     (void) sprintf(buffer,"%u 0 obj\n",object);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"<<\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"/Type /XObject\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"/Subtype /Image\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/Name /Im%u\n",image->scene);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if (compression == NoCompression)
       (void) strcpy(buffer,"/Filter /ASCII85Decode\n");
     else
@@ -725,33 +725,33 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           (void) sprintf(buffer,"/Filter [ /ASCII85Decode /%.1024s ]\n",
             compression == ZipCompression ? "FlateDecode" :
             compression == LZWCompression ? "LZWDecode" : "RunLengthDecode");
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
         }
       else
         {
           (void) strcpy(buffer,
             "/Filter [ /ASCII85Decode /CCITTFaxDecode ]\n");
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
           (void) sprintf(buffer,
             "/DecodeParms [ << >> << /K %.1024s /Columns %d /Rows %d >> ]\n",
             CCITTParam,image->columns,image->rows);
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
         }
     (void) sprintf(buffer,"/Width %u\n",image->columns);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/Height %u\n",image->rows);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/ColorSpace %u 0 R\n",object+2);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/BitsPerComponent %d\n",
       IsFaxImage(image) ? 1 : 8);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/Length %u 0 R\n",object+1);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,">>\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"stream\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     length=TellBlob(image);
     p=image->pixels;
     if (!IsPseudoClass(image) && !IsGrayImage(image))
@@ -1000,25 +1000,25 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         }
     length=TellBlob(image)-length;
     (void) strcpy(buffer,"\nendstream\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"endobj\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     /*
       Write Length object.
     */
     xref[object++]=TellBlob(image);
     (void) sprintf(buffer,"%u 0 obj\n",object);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"%lu\n",length);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"endobj\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     /*
       Write Colorspace object.
     */
     xref[object++]=TellBlob(image);
     (void) sprintf(buffer,"%u 0 obj\n",object);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if (image->colorspace == CMYKColorspace)
       (void) strcpy(buffer,"/DeviceCMYK\n");
     else
@@ -1030,9 +1030,9 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         else
           (void) sprintf(buffer,"[ /Indexed /DeviceRGB %u %u 0 R ]\n",
             image->colors-1,object+3);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"endobj\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     /*
       Write Thumb object.
     */
@@ -1051,9 +1051,9 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     xref[object++]=TellBlob(image);
     (void) sprintf(buffer,"%u 0 obj\n",object);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"<<\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if (compression == NoCompression)
       (void) strcpy(buffer,"/Filter /ASCII85Decode\n");
     else
@@ -1062,33 +1062,33 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           (void) sprintf(buffer,"/Filter [ /ASCII85Decode /%.1024s ]\n",
             compression == ZipCompression ? "FlateDecode" :
             compression == LZWCompression ? "LZWDecode" : "RunLengthDecode");
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
         }
       else
         {
           (void) strcpy(buffer,
             "/Filter [ /ASCII85Decode /CCITTFaxDecode ]\n");
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
           (void) sprintf(buffer,
             "/DecodeParms [ << >> << /Columns %d /Rows %d >> ]\n",
             tile_image->columns,tile_image->rows);
-          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteBlob(image,strlen(buffer),buffer);
         }
     (void) sprintf(buffer,"/Width %u\n",tile_image->columns);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/Height %u\n",tile_image->rows);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/ColorSpace %u 0 R\n",object-1);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/BitsPerComponent %d\n",
       IsFaxImage(tile_image) ? 1 : 8);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"/Length %u 0 R\n",object+1);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,">>\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"stream\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     length=TellBlob(image);
     p=tile_image->pixels;
     if (!IsPseudoClass(tile_image) && !IsGrayImage(tile_image))
@@ -1379,19 +1379,19 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     DestroyImage(tile_image);
     length=TellBlob(image)-length;
     (void) strcpy(buffer,"\nendstream\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"endobj\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     /*
       Write Length object.
     */
     xref[object++]=TellBlob(image);
     (void) sprintf(buffer,"%u 0 obj\n",object);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) sprintf(buffer,"%lu\n",length);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"endobj\n");
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if ((image->class == DirectClass) || IsFaxImage(image))
       {
         xref[object++]=0;
@@ -1404,17 +1404,17 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         */
         xref[object++]=TellBlob(image);
         (void) sprintf(buffer,"%u 0 obj\n",object);
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,"<<\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,"/Filter /ASCII85Decode \n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         (void) sprintf(buffer,"/Length %u 0 R\n",object+1);
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,">>\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,"stream\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         length=TellBlob(image);
         Ascii85Initialize();
         for (i=0; i < (int) image->colors; i++)
@@ -1426,19 +1426,19 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         Ascii85Flush(image);
         length=TellBlob(image)-length;
         (void) strcpy(buffer,"\nendstream\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,"endobj\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         /*
           Write Length object.
         */
         xref[object++]=TellBlob(image);
         (void) sprintf(buffer,"%u 0 obj\n",object);
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         (void) sprintf(buffer,"%lu\n",length);
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,"endobj\n");
-        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) WriteBlob(image,strlen(buffer),buffer);
       }
     if (image->next == (Image *) NULL)
       break;
@@ -1454,34 +1454,34 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   */
   length=TellBlob(image)-xref[0]+10;
   (void) strcpy(buffer,"xref\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) sprintf(buffer,"0 %u\n",object+1);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"0000000000 65535 f \n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   for (i=0; i < (int) object; i++)
   {
     (void) sprintf(buffer,"%010lu 00000 n \n",xref[i]);
-    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteBlob(image,strlen(buffer),buffer);
   }
   (void) strcpy(buffer,"trailer\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"<<\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) sprintf(buffer,"/Size %u\n",object+1);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) sprintf(buffer,"/Info %u 0 R\n",info_id);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) sprintf(buffer,"/Root %u 0 R\n",root_id);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,">>\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"startxref\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) sprintf(buffer,"%lu\n",length);
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"%%EOF\n");
-  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) WriteBlob(image,strlen(buffer),buffer);
   FreeMemory((char *) xref);
   CloseImage(image);
   if (image->temporary)

@@ -343,12 +343,12 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
   /*
     Read image header.
   */
-  status=ReadBlob(image,1,4,(char *) psd_header.signature);
+  status=ReadBlob(image,4,(char *) psd_header.signature);
   psd_header.version=MSBFirstReadShort(image);
   if ((status == False) || (strncmp(psd_header.signature,"8BPS",4) != 0) ||
       (psd_header.version != 1))
     ReaderExit(CorruptImageWarning,"Not a PSD image file",image);
-  (void) ReadBlob(image,1,6,(char *) psd_header.reserved);
+  (void) ReadBlob(image,6,(char *) psd_header.reserved);
   psd_header.channels=MSBFirstReadShort(image);
   psd_header.rows=MSBFirstReadLong(image);
   psd_header.columns=MSBFirstReadLong(image);
@@ -403,7 +403,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
     /*
       Read image resource block.
     */
-    status=ReadBlob(image,1,4,(char *) type);
+    status=ReadBlob(image,4,(char *) type);
     if ((status == False) || (strncmp(type,"8BIM",4) != 0))
       ReaderExit(CorruptImageWarning,"Not a PSD image file",image);
     (void) MSBFirstReadShort(image);
@@ -459,10 +459,10 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
           layer_info[i].channel_info[j].type=MSBFirstReadShort(image);
           layer_info[i].channel_info[j].size=MSBFirstReadLong(image);
         }
-        status=ReadBlob(image,1,4,(char *) type);
+        status=ReadBlob(image,4,(char *) type);
         if ((status == False) || (strncmp(type,"8BIM",4) != 0))
           ReaderExit(CorruptImageWarning,"Not a PSD image file",image);
-        (void) ReadBlob(image,1,4,(char *) layer_info[i].blendkey);
+        (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);
         layer_info[i].opacity=ReadByte(image);
         layer_info[i].clipping=ReadByte(image);
         layer_info[i].flags=ReadByte(image);
@@ -747,9 +747,9 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     WriterExit(FileOpenWarning,"Unable to open file",image);
-  (void) WriteBlob(image,1,4,"8BPS");
+  (void) WriteBlob(image,4,"8BPS");
   MSBFirstWriteShort(image,1);  /* version */
-  (void) WriteBlob(image,1,6,"      ");  /* reserved */
+  (void) WriteBlob(image,6,"      ");  /* reserved */
   if (image->class == PseudoClass)
     MSBFirstWriteShort(image,1);
   else

@@ -200,7 +200,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
     }
   if (page_table != (unsigned long *) NULL)
     (void) SeekBlob(image,(long) page_table[0],SEEK_SET);
-  status=ReadBlob(image,1,1,(char *) &pcx_header.identifier);
+  status=ReadBlob(image,1,(char *) &pcx_header.identifier);
   for (id=1; id < 1024; id++)
   {
     /*
@@ -232,7 +232,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
     pcx_colormap=(unsigned char *) AllocateMemory(3*256*sizeof(unsigned char));
     if (pcx_colormap == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    (void) ReadBlob(image,3,image->colors,(char *) pcx_colormap);
+    (void) ReadBlob(image,3*image->colors,(char *) pcx_colormap);
     pcx_header.reserved=ReadByte(image);
     pcx_header.planes=ReadByte(image);
     if ((pcx_header.bits_per_pixel != 8) || (pcx_header.planes == 1))
@@ -343,7 +343,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
                   256 color images have their color map at the end of the file.
                 */
                 pcx_header.colormap_signature=ReadByte(image);
-                (void) ReadBlob(image,3,image->colors,(char *) pcx_colormap);
+                (void) ReadBlob(image,3*image->colors,(char *) pcx_colormap);
                 p=pcx_colormap;
                 for (i=0; i < (int) image->colors; i++)
                 {
@@ -532,7 +532,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
     if (page_table[id] == 0)
       break;
     (void) SeekBlob(image,(long) page_table[id],SEEK_SET);
-    status=ReadBlob(image,1,1,(char *) &pcx_header.identifier);
+    status=ReadBlob(image,1,(char *) &pcx_header.identifier);
     if ((status == True) && (pcx_header.identifier == 0x0a))
       {
         /*
@@ -736,7 +736,7 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         *q++=DownScale(image->colormap[i].green);
         *q++=DownScale(image->colormap[i].blue);
       }
-    (void) WriteBlob(image,3,16,(char *) pcx_colormap);
+    (void) WriteBlob(image,3*16,(char *) pcx_colormap);
     (void) WriteByte(image,pcx_header.reserved);
     (void) WriteByte(image,pcx_header.planes);
     LSBFirstWriteShort(image,(unsigned int) pcx_header.bytes_per_line);
@@ -909,7 +909,7 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       }
     }
     (void) WriteByte(image,pcx_header.colormap_signature);
-    (void) WriteBlob(image,3,256,(char *) pcx_colormap);
+    (void) WriteBlob(image,3*256,(char *) pcx_colormap);
     FreeMemory((char *) pcx_pixels);
     FreeMemory((char *) pcx_colormap);
     if (image->next == (Image *) NULL)

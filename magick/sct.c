@@ -116,8 +116,8 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
   /*
     Read control block.
   */
-  (void) ReadBlob(image,1,80,(char *) buffer);
-  (void) ReadBlob(image,1,2,(char *) magick);
+  (void) ReadBlob(image,80,(char *) buffer);
+  (void) ReadBlob(image,2,(char *) magick);
   if ((strncmp((char *) magick,"CT",2) != 0) &&
       (strncmp((char *) magick,"LW",2) != 0) &&
       (strncmp((char *) magick,"BM",2) != 0) &&
@@ -130,18 +130,18 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
       (strncmp((char *) magick,"TX",2) == 0))
     ReaderExit(CorruptImageWarning,"only Continuous Tone Picture supported",
       image);
-  (void) ReadBlob(image,1,174,(char *) buffer);
-  (void) ReadBlob(image,1,768,(char *) buffer);
+  (void) ReadBlob(image,174,(char *) buffer);
+  (void) ReadBlob(image,768,(char *) buffer);
   /*
     Read paramter block.
   */
-  (void) ReadBlob(image,1,32,(char *) buffer);
-  (void) ReadBlob(image,1,14,(char *) buffer);
+  (void) ReadBlob(image,32,(char *) buffer);
+  (void) ReadBlob(image,14,(char *) buffer);
   image->rows=atoi(buffer);
-  (void) ReadBlob(image,1,14,(char *) buffer);
+  (void) ReadBlob(image,14,(char *) buffer);
   image->columns=atoi(buffer);
-  (void) ReadBlob(image,1,196,(char *) buffer);
-  (void) ReadBlob(image,1,768,(char *) buffer);
+  (void) ReadBlob(image,196,(char *) buffer);
+  (void) ReadBlob(image,768,(char *) buffer);
   if (image_info->ping)
     {
       CloseImage(image);

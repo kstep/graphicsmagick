@@ -18,12 +18,12 @@ extern Export Image
   *BlobToImage(const ImageInfo *,const char *,const unsigned long);
 
 extern Export int
-  SeekBlob(Image *,const unsigned long,const unsigned long),
+  SeekBlob(Image *,const long,const unsigned long),
   TellBlob(Image *image);
 
 extern Export unsigned long
-  ReadBlob(Image *,const unsigned long,const unsigned long,char *),
-  WriteBlob(Image *,const unsigned long,const unsigned long,const char *);
+  ReadBlob(Image *,const unsigned long,char *),
+  WriteBlob(Image *,const unsigned long,const char *);
 
 extern Export void
   GetBlobInfo(BlobInfo *);

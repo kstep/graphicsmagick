@@ -298,13 +298,13 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
         if ((image->colormap == (ColorPacket *) NULL) ||
             (sun_colormap == (unsigned char *) NULL))
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-        (void) ReadBlob(image,1,image->colors,(char *) sun_colormap);
+        (void) ReadBlob(image,image->colors,(char *) sun_colormap);
         for (i=0; i < (int) image->colors; i++)
           image->colormap[i].red=UpScale(sun_colormap[i]);
-        (void) ReadBlob(image,1,image->colors,(char *) sun_colormap);
+        (void) ReadBlob(image,image->colors,(char *) sun_colormap);
         for (i=0; i < (int) image->colors; i++)
           image->colormap[i].green=UpScale(sun_colormap[i]);
-        (void) ReadBlob(image,1,image->colors,(char *) sun_colormap);
+        (void) ReadBlob(image,image->colors,(char *) sun_colormap);
         for (i=0; i < (int) image->colors; i++)
           image->colormap[i].blue=UpScale(sun_colormap[i]);
         FreeMemory((char *) sun_colormap);
@@ -322,7 +322,7 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
           AllocateMemory(sun_header.maplength*sizeof(unsigned char));
         if (sun_colormap == (unsigned char *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-        (void) ReadBlob(image,1,(unsigned int) sun_header.maplength,
+        (void) ReadBlob(image,(unsigned int) sun_header.maplength,
           (char *) sun_colormap);
         FreeMemory((char *) sun_colormap);
         break;
@@ -335,7 +335,7 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
       AllocateMemory(sun_header.length*sizeof(unsigned char));
     if (sun_data == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    status=ReadBlob(image,1,(unsigned int) sun_header.length,(char *) sun_data);
+    status=ReadBlob(image,(unsigned int) sun_header.length,(char *) sun_data);
     if ((status == False) && (sun_header.type != RT_ENCODED))
       ReaderExit(CorruptImageWarning,"Unable to read image data",image);
     sun_pixels=sun_data;
@@ -664,7 +664,7 @@ Export unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
               {
                 if (image->columns & 0x01)
                   WriteQuantum(0,q);  /* pad scanline */
-                (void) WriteBlob(image,1,q-pixels,(char *) pixels);
+                (void) WriteBlob(image,q-pixels,(char *) pixels);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     ProgressMonitor(SaveImageText,y,image->rows);

@@ -138,7 +138,7 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
   /*
      Read in header information.
   */
-  status=ReadBlob(image,1,sz_XWDheader,(char *) &header);
+  status=ReadBlob(image,sz_XWDheader,(char *) &header);
   if (status == False)
     ReaderExit(CorruptImageWarning,"Unable to read dump file header",image);
   image->columns=header.pixmap_width;
@@ -160,7 +160,7 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
   image->comments=(char *) AllocateMemory((max_packets+1)*sizeof(char));
   if (image->comments == (char *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  status=ReadBlob(image,1,max_packets,(char *) image->comments);
+  status=ReadBlob(image,max_packets,(char *) image->comments);
   image->comments[max_packets]='\0';
   if (status == False)
     ReaderExit(CorruptImageWarning,
@@ -204,7 +204,7 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
         ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       for (i=0; i < (int) header.ncolors; i++)
       {
-        status=ReadBlob(image,1,sz_XWDColor,(char *) &color);
+        status=ReadBlob(image,sz_XWDColor,(char *) &color);
         if (status == False)
           ReaderExit(CorruptImageWarning,
             "Unable to read color map from dump file",image);
@@ -235,7 +235,7 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
   ximage->data=(char *) AllocateMemory(max_packets*sizeof(unsigned char));
   if (ximage->data == (char *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  status=ReadBlob(image,1,max_packets,ximage->data);
+  status=ReadBlob(image,max_packets,ximage->data);
   if (status == False)
     ReaderExit(CorruptImageWarning,"Unable to read dump pixmap",image);
   /*
@@ -575,8 +575,8 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   lsb_first=1;
   if (*(char *) &lsb_first)
     MSBFirstOrderLong((char *) &xwd_header,sizeof(xwd_header));
-  (void) WriteBlob(image,1,sz_XWDheader,(char *) &xwd_header);
-  (void) WriteBlob(image,1,Extent(image->filename)+1,(char *) image->filename);
+  (void) WriteBlob(image,sz_XWDheader,(char *) &xwd_header);
+  (void) WriteBlob(image,Extent(image->filename)+1,(char *) image->filename);
   if (image->class == PseudoClass)
     {
       XColor
@@ -612,7 +612,7 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
         color.green=colors[i].green;
         color.blue=colors[i].blue;
         color.flags=colors[i].flags;
-        (void) WriteBlob(image,1,sz_XWDColor,(char *) &color);
+        (void) WriteBlob(image,sz_XWDColor,(char *) &color);
       }
       FreeMemory((char *) colors);
     }
@@ -649,7 +649,7 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
         {
           for (x=0; x < (int) scanline_pad; x++)
             WriteQuantum(0,q);
-          (void) WriteBlob(image,1,q-pixels,(char *) pixels);
+          (void) WriteBlob(image,q-pixels,(char *) pixels);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(SaveImageText,y,image->rows);

@@ -180,7 +180,7 @@ Export unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     WriterExit(FileOpenWarning,"Unable to open file",image);
-  (void) WriteBlob(image,1,(int) image->iptc_profile.length,
+  (void) WriteBlob(image,(int) image->iptc_profile.length,
     (char *) image->iptc_profile.info);
   CloseImage(image);
   return(True);

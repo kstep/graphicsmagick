@@ -301,7 +301,7 @@ Export unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
         x++;
         if (x == (int) image->columns)
           {
-            (void) WriteBlob(image,1,q-pixels,(char *) pixels);
+            (void) WriteBlob(image,q-pixels,(char *) pixels);
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);
