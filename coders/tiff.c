@@ -1291,7 +1291,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize TIFF fields.
     */
-printf("%x\n",image->file);
     if (LocaleCompare(image_info->magick,"PTIF") == 0)
       if (image->previous != (Image *) NULL)
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_REDUCEDIMAGE);
