@@ -2808,7 +2808,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlobString(image,"\">\n");
         active=False;
         (void) WriteBlobString(image,"<desc>");
-        for (q++; (*q != '\n') && (*q != '\0'); q++)
+        (void) WriteBlobString(image,keyword+1);
+        for ( ; (*q != '\n') && (*q != '\0'); q++)
           switch (*q)
           {
             case '<': (void) WriteBlobString(image,"&lt;"); break;
