@@ -2,6 +2,7 @@
 
 	* coders/png.c: Write proper JNG image_interlace_method.
 	* coders/png.c: Read and write proper MNG and JNG sRGB intent.
+	* PerlMagick/t/jng: Add ten test files in JNG format.
 
 2003-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
