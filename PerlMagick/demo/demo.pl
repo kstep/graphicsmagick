@@ -175,7 +175,7 @@ $example->Quantize();
 push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Raise');
-$example->Raise();
+$example->Raise('6x2');
 push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Reduce Noise');

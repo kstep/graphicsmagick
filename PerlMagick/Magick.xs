@@ -1894,11 +1894,11 @@ Animate(ref,...)
     animateimage  = 3
   PPCODE:
   {
-    jmp_buf
-      error_jmp;
-
     Image
       *image;
+
+    jmp_buf
+      error_jmp;
 
     register int
       i;
@@ -1984,15 +1984,15 @@ Append(ref,...)
     HV
       *hv;
 
-    jmp_buf
-      error_jmp;
-
     Image
       *image,
       *next;
 
     int
       stack;
+
+    jmp_buf
+      error_jmp;
 
     register int
       i;
@@ -2124,12 +2124,12 @@ Average(ref)
     HV
       *hv;
 
-    jmp_buf
-      error_jmp;
-
     Image
       *image,
       *next;
+
+    jmp_buf
+      error_jmp;
 
     struct PackageInfo
       *info;
@@ -2370,11 +2370,11 @@ Coalesce(ref)
     HV
       *hv;
 
-    jmp_buf
-      error_jmp;
-
     Image
       *image;
+
+    jmp_buf
+      error_jmp;
 
     struct PackageInfo
       *info;
@@ -2638,11 +2638,11 @@ Display(ref,...)
     displayimage  = 3
   PPCODE:
   {
-    jmp_buf
-      error_jmp;
-
     Image
       *image;
+
+    jmp_buf
+      error_jmp;
 
     register int
       i;
@@ -2729,11 +2729,11 @@ Flatten(ref)
     HV
       *hv;
 
-    jmp_buf
-      error_jmp;
-
     Image
       *image;
+
+    jmp_buf
+      error_jmp;
 
     struct PackageInfo
       *info;
@@ -2769,7 +2769,8 @@ Flatten(ref)
     image=FlattenImages(image,&exception);
     if (!image)
       {
-        MagickWarning(exception.severity,exception.reason,exception.description);
+        MagickWarning(exception.severity,exception.reason,
+          exception.description);
         goto MethodException;
       }
     /*
@@ -3391,7 +3392,8 @@ Get(ref,...)
               if ((info->image_info->preview_type >= 0) &&
                   (info->image_info->preview_type < NumberOf(PreviewTypes)-1))
                 {
-                  (void) sv_setpv(s,PreviewTypes[info->image_info->preview_type]);
+                  (void) sv_setpv(s,
+                    PreviewTypes[info->image_info->preview_type]);
                   SvIOK_on(s);
                 }
               break;
@@ -3652,11 +3654,11 @@ ImageToBlob(ref,...)
     int
       scene;
 
-    register int
-      i;
-
     jmp_buf
       error_jmp;
+
+    register int
+      i;
 
     struct PackageInfo
       *info,
@@ -3904,9 +3906,6 @@ Mogrify(ref,...)
     FrameInfo
       frame_info;
 
-    jmp_buf
-      error_jmp;
-
     Image
       *image,
       *next,
@@ -3916,6 +3915,9 @@ Mogrify(ref,...)
       base,
       first,
       flags;
+
+    jmp_buf
+      error_jmp;
 
     PixelPacket
       fill_color;
@@ -3957,6 +3959,9 @@ Mogrify(ref,...)
         goto ReturnIt;
       }
     reference=SvRV(ST(0));
+    error_jump=(&error_jmp);
+    if (setjmp(error_jmp))
+      goto ReturnIt;
     region_info.width=0;
     region_info.height=0;
     region_info.x=0;
@@ -4086,9 +4091,6 @@ Mogrify(ref,...)
       attribute_flag[pp-rp->arguments]++;
       continue_outer_loop: ;
     }
-    error_jump=(&error_jmp);
-    if (setjmp(error_jmp))
-      goto ReturnIt;
     (void) memset((char *) &fill_color,0,sizeof(PixelPacket));
     first=True;
     pv=reference_vector;
@@ -5960,11 +5962,11 @@ Morph(ref,...)
       *next,
       *image;
 
-    jmp_buf
-      error_jmp;
-
     int
       number_frames;
+
+    jmp_buf
+      error_jmp;
 
     register int
       i;
@@ -5994,13 +5996,13 @@ Morph(ref,...)
       }
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
-    av=newAV();
-    av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
-    SvREFCNT_dec(av);
     error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
+    av=newAV();
+    av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
+    SvREFCNT_dec(av);
     image=SetupList(reference,&info,&reference_vector);
     if (!image)
       {
@@ -6093,11 +6095,11 @@ Mosaic(ref)
     HV
       *hv;
 
-    jmp_buf
-      error_jmp;
-
     Image
       *image;
+
+    jmp_buf
+      error_jmp;
 
     struct PackageInfo
       *info;
@@ -6195,6 +6197,9 @@ Ping(ref,...)
     Image
       *image;
 
+    jmp_buf
+      error_jmp;
+
     register int
       i;
 
@@ -6205,9 +6210,16 @@ Ping(ref,...)
       *reference,  /* reference is the SV* of ref=SvIV(reference) */
       *s;
 
+    volatile int
+      status;
+
     EXTEND(sp,items-1);
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
+    error_jump=(&error_jmp);
+    status=setjmp(error_jmp);
+    if (status)
+      goto MethodException;
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     EXTEND(sp,4*items-1);
@@ -6241,6 +6253,8 @@ Ping(ref,...)
         }
     }
     info->image_info->file=(FILE *) NULL;
+
+  MethodException:
     SvREFCNT_dec(error_list);  /* throw away all errors */
     error_list=NULL;
   }
@@ -6328,6 +6342,9 @@ QueryColorname(ref,...)
     Image
       *image;
 
+    jmp_buf
+      error_jmp;
+
     PixelPacket
       target_color;
 
@@ -6341,9 +6358,16 @@ QueryColorname(ref,...)
       *reference,  /* reference is the SV* of ref=SvIV(reference) */
       *s;
 
+    volatile int
+      status;
+
     EXTEND(sp,items-1);
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
+    error_jump=(&error_jmp);
+    status=setjmp(error_jmp);
+    if (status)
+      goto MethodException;
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     image=SetupList(reference,&info,(SV ***) NULL);
@@ -6356,6 +6380,8 @@ QueryColorname(ref,...)
         s=sv_2mortal(newSVpv(message,0));
       PUSHs(s);
     }
+
+  MethodException:
     SvREFCNT_dec(error_list);
     error_list=NULL;
   }
@@ -6403,6 +6429,9 @@ QueryFontMetrics(ref,...)
     Image
       *image;
 
+    jmp_buf
+      error_jmp;
+
     register int
       i;
 
@@ -6419,6 +6448,10 @@ QueryFontMetrics(ref,...)
     EXTEND(sp,items-1);
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
+    error_jump=(&error_jmp);
+    status=setjmp(error_jmp);
+    if (status)
+      goto MethodException;
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     EXTEND(sp,7*items-1);
@@ -6772,6 +6805,9 @@ Remote(ref,...)
     AV
       *av;
 
+    jmp_buf
+      error_jmp;
+
     SV
       *reference;
 
@@ -6781,6 +6817,9 @@ Remote(ref,...)
     EXTEND(sp,items-1);
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
+    error_jump=(&error_jmp);
+    if (setjmp(error_jmp))
+      goto MethodException;
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
 #if defined(XlibSpecificationRelease)
@@ -6796,6 +6835,8 @@ Remote(ref,...)
         XRemoteCommand(display,(char *) NULL,(char *) SvPV(ST(i),na));
     }
 #endif
+
+  MethodException:
     SvREFCNT_dec(error_list);    /* throw away all errors */
     error_list=NULL;
   }
@@ -6826,6 +6867,9 @@ Set(ref,...)
     Image
       *image;
 
+    jmp_buf
+      error_jmp;
+
     register int
       i;
 
@@ -6842,6 +6886,9 @@ Set(ref,...)
         goto MethodException;
       }
     reference=SvRV(ST(0));
+    error_jump=(&error_jmp);
+    if (setjmp(error_jmp))
+      goto MethodException;
     image=SetupList(reference,&info,(SV ***) NULL);
     for (i=2; i < items; i+=2)
       SetAttribute(info,image,SvPV(ST(i-1),na),ST(i));
@@ -6925,13 +6972,13 @@ Transform(ref,...)
       }
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
-    av=newAV();
-    av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
-    SvREFCNT_dec(av);
     error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
+    av=newAV();
+    av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
+    SvREFCNT_dec(av);
     image=SetupList(reference,&info,&reference_vector);
     if (!image)
       {
@@ -7040,11 +7087,11 @@ Write(ref,...)
     int
       scene;
 
-    register int
-      i;
-
     jmp_buf
       error_jmp;
+
+    register int
+      i;
 
     struct PackageInfo
       *info,
