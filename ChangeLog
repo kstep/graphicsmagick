@@ -3,6 +3,8 @@
 	* configure.ac: Test for libtiff functions (TIFFClientOpen &
 	TIFFIsByteSwapped), which are required by GraphicsMagick, but
 	not found in older libtiff versions.
+	* magick/blob.c: Added logging for Blob open/close and memory
+	mapping operations.
 
 2003-03-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

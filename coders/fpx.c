@@ -816,7 +816,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     tile_width;
 
   /*
-    Open input file.
+    Open output file.
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
