@@ -38,8 +38,20 @@ in this Software without prior written authorization from the X Consortium.
 #if !defined(WIN32)
 #include <unistd.h>
 #else
-#pragma warning( disable : 4035 )
-#pragma warning( disable : 4716 )
+#if defined(_VISUALC_)
+#	if defined(_MT) && defined(_DLL)
+#		define Export __declspec(dllexport)
+#	else
+#		define Export
+#	endif
+#pragma warning(disable : 4035)
+#pragma warning(disable : 4018)
+#pragma warning(disable : 4244)
+#pragma warning(disable : 4142)
+#pragma warning(disable : 4716)
+#else
+#	define Export
+#endif
 #endif
 
 #ifdef USG
@@ -1343,22 +1355,33 @@ typedef struct {
 
 int _Xdebug;
 
+#if defined(_VISUALC_)
+extern Export XFontStruct *XLoadQueryFont(
+#else
 XFontStruct *XLoadQueryFont(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     _Xconst char* b	/* name */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFontStruct *XQueryFont(
+#else
 XFontStruct *XQueryFont(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XID	b		/* font_ID */
 #endif
 ){}
 
-
+#if defined(_VISUALC_)
+extern Export XTimeCoord *XGetMotionEvents(
+#else
 XTimeCoord *XGetMotionEvents(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -1368,7 +1391,11 @@ XTimeCoord *XGetMotionEvents(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XModifierKeymap *XDeleteModifiermapEntry(
+#else
 XModifierKeymap *XDeleteModifiermapEntry(
+#endif
 #if NeedFunctionPrototypes
     XModifierKeymap* a	/* modmap */,
 #if NeedWidePrototypes
@@ -1380,13 +1407,21 @@ XModifierKeymap *XDeleteModifiermapEntry(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XModifierKeymap	*XGetModifierMapping(
+#else
 XModifierKeymap	*XGetModifierMapping(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XModifierKeymap	*XInsertModifiermapEntry(
+#else
 XModifierKeymap	*XInsertModifiermapEntry(
+#endif
 #if NeedFunctionPrototypes
     XModifierKeymap* b	/* modmap */,
 #if NeedWidePrototypes
@@ -1398,13 +1433,21 @@ XModifierKeymap	*XInsertModifiermapEntry(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XModifierKeymap *XNewModifiermap(
+#else
 XModifierKeymap *XNewModifiermap(
+#endif
 #if NeedFunctionPrototypes
     int	a		/* max_keys_per_mod */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XImage *XCreateImage(
+#else
 XImage *XCreateImage(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Visual*	b	/* visual */,
@@ -1418,12 +1461,20 @@ XImage *XCreateImage(
     int	j		/* bytes_per_line */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Status XInitImage(
+#else
 Status XInitImage(
+#endif
 #if NeedFunctionPrototypes
     XImage*	a	/* image */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export XImage *XGetImage(
+#else
 XImage *XGetImage(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable b		/* d */,
@@ -1435,7 +1486,11 @@ XImage *XGetImage(
     int	h		/* format */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export XImage *XGetSubImage(
+#else
 XImage *XGetSubImage(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable b		/* d */,
@@ -1455,7 +1510,7 @@ XImage *XGetSubImage(
  * X function declarations.
  */
 #if defined(_VISUALC_)
-__declspec(dllexport) extern Display *XOpenDisplay(server_name)
+extern Export Display *XOpenDisplay(server_name)
 #else
 Display *XOpenDisplay(server_name)
 #endif
@@ -1465,32 +1520,52 @@ const char
   return((Display *) NULL);
 }
 
+#if defined(_VISUALC_)
+extern Export void XrmInitialize(
+#else
 void XrmInitialize(
+#endif
 #if NeedFunctionPrototypes
     void * a
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export char *XFetchBytes(
+#else
 char *XFetchBytes(
+#endif
 #if NeedFunctionPrototypes
     Display* b		/* display */,
     int* c		/* nbytes_return */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export char *XFetchBuffer(
+#else
 char *XFetchBuffer(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int* b		/* nbytes_return */,
     int	c		/* buffer */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export char *XGetAtomName(
+#else
 char *XGetAtomName(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Atom b		/* atom */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Status XGetAtomNames(
+#else
 Status XGetAtomNames(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* dpy */,
     Atom* b		/* atoms */,
@@ -1498,7 +1573,11 @@ Status XGetAtomNames(
     char** d		/* names_return */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export char *XGetDefault(
+#else
 char *XGetDefault(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     _Xconst char* b	/* program */,
@@ -1506,27 +1585,36 @@ char *XGetDefault(
 #endif
 ){}
 #if defined(_VISUALC_)
-__declspec(dllexport) extern char *XDisplayName(
+extern Export char *XDisplayName(_Xconst char* a)
 #else
-char *XDisplayName(
+char *XDisplayName(_Xconst char* a)
 #endif
-#if NeedFunctionPrototypes
-    _Xconst char* a	/* string */
-#endif
-){}
+{}
+#if defined(_VISUALC_)
+extern Export char *XKeysymToString(
+#else
 char *XKeysymToString(
+#endif
 #if NeedFunctionPrototypes
     KeySym	a	/* keysym */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int (*XSynchronize(
+#else
 int (*XSynchronize(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Bool b		/* onoff */
 #endif
 )){};
+#if defined(_VISUALC_)
+extern Export int (*XSetAfterFunction(
+#else
 int (*XSetAfterFunction(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int (* b) (
@@ -1536,14 +1624,22 @@ int (*XSetAfterFunction(
             )		/* procedure */
 #endif
 )){};
+#if defined(_VISUALC_)
+extern Export Atom XInternAtom(
+#else
 Atom XInternAtom(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     _Xconst char* b	/* atom_name */,
     Bool c		/* only_if_exists */		 
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Status XInternAtoms(
+#else
 Status XInternAtoms(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* dpy */,
     char** b		/* names */,
@@ -1552,13 +1648,21 @@ Status XInternAtoms(
     Atom* e		/* atoms_return */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Colormap XCopyColormapAndFree(
+#else
 Colormap XCopyColormapAndFree(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Colormap b		/* colormap */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Colormap XCreateColormap(
+#else
 Colormap XCreateColormap(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -1566,7 +1670,11 @@ Colormap XCreateColormap(
     int	d		/* alloc */			 
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Cursor XCreatePixmapCursor(
+#else
 Cursor XCreatePixmapCursor(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Pixmap b		/* source */,
@@ -1577,7 +1685,11 @@ Cursor XCreatePixmapCursor(
     unsigned int g	/* y */			   
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Cursor XCreateGlyphCursor(
+#else
 Cursor XCreateGlyphCursor(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Font b		/* source_font */,
@@ -1588,19 +1700,31 @@ Cursor XCreateGlyphCursor(
     XColor*	g	/* background_color */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Cursor XCreateFontCursor(
+#else
 Cursor XCreateFontCursor(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     unsigned int b	/* shape */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Font XLoadFont(
+#else
 Font XLoadFont(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     _Xconst char* b	/* name */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export GC XCreateGC(
+#else
 GC XCreateGC(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable b		/* d */,
@@ -1608,18 +1732,30 @@ GC XCreateGC(
     XGCValues* d		/* values */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export GContext XGContextFromGC(
+#else
 GContext XGContextFromGC(
+#endif
 #if NeedFunctionPrototypes
     GC a			/* gc */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export void XFlushGC(
+#else
 void XFlushGC(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC	b		/* gc */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Pixmap XCreatePixmap(
+#else
 Pixmap XCreatePixmap(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable b		/* d */,
@@ -1628,7 +1764,11 @@ Pixmap XCreatePixmap(
     unsigned int e	/* depth */		        
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Pixmap XCreateBitmapFromData(
+#else
 Pixmap XCreateBitmapFromData(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable b		/* d */,
@@ -1637,7 +1777,11 @@ Pixmap XCreateBitmapFromData(
     unsigned int e	/* height */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Pixmap XCreatePixmapFromBitmapData(
+#else
 Pixmap XCreatePixmapFromBitmapData(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable b		/* d */,
@@ -1649,7 +1793,11 @@ Pixmap XCreatePixmapFromBitmapData(
     unsigned int h	/* depth */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Window XCreateSimpleWindow(
+#else
 Window XCreateSimpleWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* parent */,
@@ -1662,13 +1810,21 @@ Window XCreateSimpleWindow(
     unsigned long i	/* background */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Window XGetSelectionOwner(
+#else
 Window XGetSelectionOwner(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Atom b		/* selection */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Window XCreateWindow(
+#else
 Window XCreateWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* parent */,
@@ -1684,14 +1840,22 @@ Window XCreateWindow(
     XSetWindowAttributes* l	/* attributes */
 #endif
 ){} 
+#if defined(_VISUALC_)
+extern Export Colormap *XListInstalledColormaps(
+#else
 Colormap *XListInstalledColormaps(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
     int* c		/* num_return */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export char **XListFonts(
+#else
 char **XListFonts(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     _Xconst char* b	/* pattern */,
@@ -1699,7 +1863,11 @@ char **XListFonts(
     int* d		/* actual_count_return */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export char **XListFontsWithInfo(
+#else
 char **XListFontsWithInfo(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     _Xconst char* b	/* pattern */,
@@ -1708,33 +1876,53 @@ char **XListFontsWithInfo(
     XFontStruct** e	/* info_return */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export char **XGetFontPath(
+#else
 char **XGetFontPath(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int* b		/* npaths_return */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export char **XListExtensions(
+#else
 char **XListExtensions(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int* b		/* nextensions_return */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Atom *XListProperties(
+#else
 Atom *XListProperties(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
     int* c		/* num_prop_return */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export XHostAddress *XListHosts(
+#else
 XHostAddress *XListHosts(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int* b		/* nhosts_return */,
     Bool* c		/* state_return */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export KeySym XKeycodeToKeysym(
+#else
 KeySym XKeycodeToKeysym(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
 #if NeedWidePrototypes
@@ -1745,13 +1933,21 @@ KeySym XKeycodeToKeysym(
     int	d		/* index */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export KeySym XLookupKeysym(
+#else
 KeySym XLookupKeysym(
+#endif
 #if NeedFunctionPrototypes
     XKeyEvent* a		/* key_event */,
     int	b		/* index */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export KeySym *XGetKeyboardMapping(
+#else
 KeySym *XGetKeyboardMapping(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
 #if NeedWidePrototypes
@@ -1763,37 +1959,65 @@ KeySym *XGetKeyboardMapping(
     int* e		/* keysyms_per_keycode_return */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export KeySym XStringToKeysym(
+#else
 KeySym XStringToKeysym(
+#endif
 #if NeedFunctionPrototypes
     _Xconst char* a	/* string */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export long XMaxRequestSize(
+#else
 long XMaxRequestSize(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export long XExtendedMaxRequestSize(
+#else
 long XExtendedMaxRequestSize(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export char *XResourceManagerString(
+#else
 char *XResourceManagerString(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export char *XScreenResourceString(
+#else
 char *XScreenResourceString(
+#endif
 #if NeedFunctionPrototypes
 	Screen*	a	/* screen */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export unsigned long XDisplayMotionBufferSize(
+#else
 unsigned long XDisplayMotionBufferSize(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export VisualID XVisualIDFromVisual(
+#else
 VisualID XVisualIDFromVisual(
+#endif
 #if NeedFunctionPrototypes
     Visual*	a	/* visual */
 #endif
@@ -1801,19 +2025,31 @@ VisualID XVisualIDFromVisual(
 
 /* multithread routines */
 
+#if defined(_VISUALC_)
+extern Export Status XInitThreads(
+#else
 Status XInitThreads(
+#endif
 #if NeedFunctionPrototypes
     void *a
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XLockDisplay(
+#else
 void XLockDisplay(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XUnlockDisplay(
+#else
 void XUnlockDisplay(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
@@ -1821,150 +2057,251 @@ void XUnlockDisplay(
 
 /* routines for dealing with extensions */
 
+#if defined(_VISUALC_)
+extern Export XExtCodes *XInitExtension(
+#else
 XExtCodes *XInitExtension(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     _Xconst char* b	/* name */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XExtCodes *XAddExtension(
+#else
 XExtCodes *XAddExtension(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export XExtData *XFindOnExtensionList(
+#else
 XExtData *XFindOnExtensionList(
+#endif
 #if NeedFunctionPrototypes
     XExtData** a		/* structure */,
     int	b		/* number */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export XExtData **XEHeadOfExtensionList(
+#else
 XExtData **XEHeadOfExtensionList(
+#endif
 #if NeedFunctionPrototypes
     XEDataObject a	/* object */
 #endif
 ){}
 
 /* these are routines for which there are also macros */
-Window XRootWindow(
-#if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen_number */
+#if defined(_VISUALC_)
+extern Export Window XRootWindow(Display* a,int b)
+#else
+Window XRootWindow(Display* a,int b)
 #endif
-){}
+{}
+#if defined(_VISUALC_)
+extern Export Window XDefaultRootWindow(
+#else
 Window XDefaultRootWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Window XRootWindowOfScreen(
+#else
 Window XRootWindowOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen*	a	/* screen */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Visual *XDefaultVisual(
+#else
 Visual *XDefaultVisual(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen_number */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Visual *XDefaultVisualOfScreen(
+#else
 Visual *XDefaultVisualOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen*	a	/* screen */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export GC XDefaultGC(
+#else
 GC XDefaultGC(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen_number */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export GC XDefaultGCOfScreen(
+#else
 GC XDefaultGCOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen*	a	/* screen */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export unsigned long XBlackPixel(
+#else
 unsigned long XBlackPixel(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen_number */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export unsigned long XWhitePixel(
+#else
 unsigned long XWhitePixel(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen_number */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export unsigned long XAllPlanes(
+#else
 unsigned long XAllPlanes(
+#endif
 #if NeedFunctionPrototypes
     void *a
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export unsigned long XBlackPixelOfScreen(
+#else
 unsigned long XBlackPixelOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen*	a	/* screen */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export unsigned long XWhitePixelOfScreen(
+#else
 unsigned long XWhitePixelOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen*	a	/* screen */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export unsigned long XNextRequest(
+#else
 unsigned long XNextRequest(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export unsigned long XLastKnownRequestProcessed(
+#else
 unsigned long XLastKnownRequestProcessed(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export char *XServerVendor(
+#else
 char *XServerVendor(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export char *XDisplayString(
+#else
 char *XDisplayString(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Colormap XDefaultColormap(
+#else
 Colormap XDefaultColormap(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen_number */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Colormap XDefaultColormapOfScreen(
+#else
 Colormap XDefaultColormapOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen*	a	/* screen */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Display *XDisplayOfScreen(
+#else
 Display *XDisplayOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen*	a	/* screen */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Screen *XScreenOfDisplay(
+#else
 Screen *XScreenOfDisplay(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen_number */
 #endif
 ){}
-Screen *XDefaultScreenOfDisplay(
-#if NeedFunctionPrototypes
-    Display* a		/* display */
+#if defined(_VISUALC_)
+extern Export Screen *XDefaultScreenOfDisplay(Display* a)
+#else
+Screen *XDefaultScreenOfDisplay(Display* a)
 #endif
-){}
+{}
+#if defined(_VISUALC_)
+extern Export long XEventMaskOfScreen(
+#else
 long XEventMaskOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen*	a	/* screen */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XScreenNumberOfScreen(
+#else
 int XScreenNumberOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen*	a	/* screen */
 #endif
@@ -1979,7 +2316,7 @@ typedef int (*XErrorHandler) (	    /* WARNING, this type not in Xlib spec */
 
 
 #if defined(_VISUALC_)
-__declspec(dllexport) extern XErrorHandler XSetErrorHandler (
+extern Export XErrorHandler XSetErrorHandler (
 #else
 XErrorHandler XSetErrorHandler (
 #endif
@@ -1995,20 +2332,32 @@ typedef int (*XIOErrorHandler) (    /* WARNING, this type not in Xlib spec */
 #endif
 );
 
+#if defined(_VISUALC_)
+extern Export XIOErrorHandler XSetIOErrorHandler (
+#else
 XIOErrorHandler XSetIOErrorHandler (
+#endif
 #if NeedFunctionPrototypes
     XIOErrorHandler	a/* handler */
 #endif
 ){}
 
 
+#if defined(_VISUALC_)
+extern Export XPixmapFormatValues *XListPixmapFormats(
+#else
 XPixmapFormatValues *XListPixmapFormats(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int* b		/* count_return */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export int *XListDepths(
+#else
 int *XListDepths(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen_number */,
@@ -2018,7 +2367,11 @@ int *XListDepths(
 
 /* ICCCM routines for things that don't require special include files; */
 /* other declarations are given in Xutil.h                             */
+#if defined(_VISUALC_)
+extern Export Status XReconfigureWMWindow(
+#else
 Status XReconfigureWMWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2028,7 +2381,11 @@ Status XReconfigureWMWindow(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetWMProtocols(
+#else
 Status XGetWMProtocols(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2036,7 +2393,11 @@ Status XGetWMProtocols(
     int* d		/* count_return */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Status XSetWMProtocols(
+#else
 Status XSetWMProtocols(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2044,21 +2405,33 @@ Status XSetWMProtocols(
     int	d		/* count */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Status XIconifyWindow(
+#else
 Status XIconifyWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
     int	c		/* screen_number */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Status XWithdrawWindow(
+#else
 Status XWithdrawWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
     int	c		/* screen_number */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Status XGetCommand(
+#else
 Status XGetCommand(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2066,7 +2439,11 @@ Status XGetCommand(
     int* d		/* argc_return */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Status XGetWMColormapWindows(
+#else
 Status XGetWMColormapWindows(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2074,7 +2451,11 @@ Status XGetWMColormapWindows(
     int* d		/* count_return */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export Status XSetWMColormapWindows(
+#else
 Status XSetWMColormapWindows(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2082,12 +2463,20 @@ Status XSetWMColormapWindows(
     int	d		/* count */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export void XFreeStringList(
+#else
 void XFreeStringList(
+#endif
 #if NeedFunctionPrototypes
     char** a		/* list */
 #endif
 ){}
+#if defined(_VISUALC_)
+extern Export XSetTransientForHint(
+#else
 XSetTransientForHint(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2097,20 +2486,32 @@ XSetTransientForHint(
 
 /* The following are given in alphabetical order */
 
+#if defined(_VISUALC_)
+extern Export XActivateScreenSaver(
+#else
 XActivateScreenSaver(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XAddHost(
+#else
 XAddHost(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XHostAddress* b	/* host */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XAddHosts(
+#else
 XAddHosts(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XHostAddress* b	/* hosts */,
@@ -2118,21 +2519,33 @@ XAddHosts(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XAddToExtensionList(
+#else
 XAddToExtensionList(
+#endif
 #if NeedFunctionPrototypes
     struct _XExtData** a	/* structure */,
     XExtData* b		/* ext_data */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XAddToSaveSet(
+#else
 XAddToSaveSet(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XAllocColor(
+#else
 Status XAllocColor(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Colormap b		/* colormap */,
@@ -2140,7 +2553,11 @@ Status XAllocColor(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XAllocColorCells(
+#else
 Status XAllocColorCells(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Colormap b		/* colormap */,
@@ -2152,7 +2569,11 @@ Status XAllocColorCells(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XAllocColorPlanes(
+#else
 Status XAllocColorPlanes(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Colormap b		/* colormap */,
@@ -2168,7 +2589,11 @@ Status XAllocColorPlanes(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XAllocNamedColor(
+#else
 Status XAllocNamedColor(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Colormap b		/* colormap */,
@@ -2178,7 +2603,11 @@ Status XAllocNamedColor(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XAllowEvents(
+#else
 XAllowEvents(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* event_mode */,
@@ -2186,50 +2615,82 @@ XAllowEvents(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XAutoRepeatOff(
+#else
 XAutoRepeatOff(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XAutoRepeatOn(
+#else
 XAutoRepeatOn(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XBell(
+#else
 XBell(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* percent */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XBitmapBitOrder(
+#else
 int XBitmapBitOrder(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XBitmapPad(
+#else
 int XBitmapPad(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XBitmapUnit(
+#else
 int XBitmapUnit(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XCellsOfScreen(
+#else
 int XCellsOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen*	a	/* screen */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XChangeActivePointerGrab(
+#else
 XChangeActivePointerGrab(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     unsigned int b	/* event_mask */,
@@ -2238,7 +2699,11 @@ XChangeActivePointerGrab(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XChangeGC(
+#else
 XChangeGC(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC b			/* gc */,
@@ -2247,7 +2712,11 @@ XChangeGC(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XChangeKeyboardControl(
+#else
 XChangeKeyboardControl(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     unsigned long b	/* value_mask */,
@@ -2255,7 +2724,11 @@ XChangeKeyboardControl(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XChangeKeyboardMapping(
+#else
 XChangeKeyboardMapping(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* first_keycode */,
@@ -2265,7 +2738,11 @@ XChangeKeyboardMapping(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XChangePointerControl(
+#else
 XChangePointerControl(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Bool b		/* do_accel */,
@@ -2276,7 +2753,11 @@ XChangePointerControl(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XChangeProperty(
+#else
 XChangeProperty(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2289,7 +2770,11 @@ XChangeProperty(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XChangeSaveSet(
+#else
 XChangeSaveSet(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2297,7 +2782,11 @@ XChangeSaveSet(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XChangeWindowAttributes(
+#else
 XChangeWindowAttributes(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2306,7 +2795,11 @@ XChangeWindowAttributes(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XCheckIfEvent(
+#else
 Bool XCheckIfEvent(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XEvent* b		/* event_return */,
@@ -2321,7 +2814,11 @@ Bool XCheckIfEvent(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XCheckMaskEvent(
+#else
 Bool XCheckMaskEvent(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     long b		/* event_mask */,
@@ -2329,7 +2826,11 @@ Bool XCheckMaskEvent(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XCheckTypedEvent(
+#else
 Bool XCheckTypedEvent(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* event_type */,
@@ -2337,7 +2838,11 @@ Bool XCheckTypedEvent(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XCheckTypedWindowEvent(
+#else
 Bool XCheckTypedWindowEvent(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2346,7 +2851,11 @@ Bool XCheckTypedWindowEvent(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XCheckWindowEvent(
+#else
 Bool XCheckWindowEvent(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2355,7 +2864,11 @@ Bool XCheckWindowEvent(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XCirculateSubwindows(
+#else
 XCirculateSubwindows(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2363,21 +2876,33 @@ XCirculateSubwindows(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XCirculateSubwindowsDown(
+#else
 XCirculateSubwindowsDown(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XCirculateSubwindowsUp(
+#else
 XCirculateSubwindowsUp(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XClearArea(
+#else
 XClearArea(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2389,7 +2914,11 @@ XClearArea(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XClearWindow(
+#else
 XClearWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */
@@ -2397,16 +2926,20 @@ XClearWindow(
 ){}
 
 #if defined(_VISUALC_)
-__declspec(dllexport) extern int XCloseDisplay(
+extern Export XCloseDisplay(
 #else
-int XCloseDisplay(
+XCloseDisplay(
 #endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XConfigureWindow(
+#else
 XConfigureWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2415,13 +2948,21 @@ XConfigureWindow(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XConnectionNumber(
+#else
 int XConnectionNumber(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XConvertSelection(
+#else
 XConvertSelection(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Atom b		/* selection */,
@@ -2432,7 +2973,11 @@ XConvertSelection(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XCopyArea(
+#else
 XCopyArea(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable b		/* src */,
@@ -2447,7 +2992,11 @@ XCopyArea(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XCopyGC(
+#else
 XCopyGC(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC	b		/* src */,
@@ -2456,7 +3005,11 @@ XCopyGC(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XCopyPlane(
+#else
 XCopyPlane(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable b		/* src */,
@@ -2472,26 +3025,39 @@ XCopyPlane(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XDefaultDepth(
+#else
 int XDefaultDepth(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen_number */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XDefaultDepthOfScreen(
+#else
 int XDefaultDepthOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen*	a	/* screen */
 #endif
 ){}
 
-int XDefaultScreen(
-#if NeedFunctionPrototypes
-    Display* a		/* display */
+#if defined(_VISUALC_)
+extern Export int XDefaultScreen(Display* a)
+#else
+int XDefaultScreen(Display* a)
 #endif
-){}
+{}
 
+#if defined(_VISUALC_)
+extern Export XDefineCursor(
+#else
 XDefineCursor(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2499,7 +3065,11 @@ XDefineCursor(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDeleteProperty(
+#else
 XDeleteProperty(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window	b	/* w */,
@@ -2507,61 +3077,97 @@ XDeleteProperty(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDestroyWindow(
+#else
 XDestroyWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDestroySubwindows(
+#else
 XDestroySubwindows(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XDoesBackingStore(
+#else
 int XDoesBackingStore(
+#endif
 #if NeedFunctionPrototypes
     Screen* c		/* screen */    
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XDoesSaveUnders(
+#else
 Bool XDoesSaveUnders(
+#endif
 #if NeedFunctionPrototypes
     Screen* c		/* screen */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDisableAccessControl(
+#else
 XDisableAccessControl(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
 
+#if defined(_VISUALC_)
+extern Export int XDisplayCells(
+#else
 int XDisplayCells(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen_number */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XDisplayHeight(
+#else
 int XDisplayHeight(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen_number */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XDisplayHeightMM(
+#else
 int XDisplayHeightMM(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen_number */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDisplayKeycodes(
+#else
 XDisplayKeycodes(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int* b		/* min_keycodes_return */,
@@ -2569,28 +3175,44 @@ XDisplayKeycodes(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XDisplayPlanes(
+#else
 int XDisplayPlanes(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen_number */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XDisplayWidth(
+#else
 int XDisplayWidth(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen_number */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XDisplayWidthMM(
+#else
 int XDisplayWidthMM(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen_number */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDrawArc(
+#else
 XDrawArc(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable b		/* d */,
@@ -2604,7 +3226,11 @@ XDrawArc(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDrawArcs(
+#else
 XDrawArcs(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable b		/* d */,
@@ -2614,7 +3240,11 @@ XDrawArcs(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDrawImageString(
+#else
 XDrawImageString(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable b		/* d */,
@@ -2626,7 +3256,11 @@ XDrawImageString(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDrawImageString16(
+#else
 XDrawImageString16(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable b		/* d */,
@@ -2638,7 +3272,11 @@ XDrawImageString16(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDrawLine(
+#else
 XDrawLine(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable b		/* d */,
@@ -2650,7 +3288,11 @@ XDrawLine(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDrawLines(
+#else
 XDrawLines(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -2661,7 +3303,11 @@ XDrawLines(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDrawPoint(
+#else
 XDrawPoint(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -2671,7 +3317,11 @@ XDrawPoint(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDrawPoints(
+#else
 XDrawPoints(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -2682,7 +3332,11 @@ XDrawPoints(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDrawRectangle(
+#else
 XDrawRectangle(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -2694,7 +3348,11 @@ XDrawRectangle(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDrawRectangles(
+#else
 XDrawRectangles(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -2704,7 +3362,11 @@ XDrawRectangles(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDrawSegments(
+#else
 XDrawSegments(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -2714,7 +3376,11 @@ XDrawSegments(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDrawString(
+#else
 XDrawString(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -2726,7 +3392,11 @@ XDrawString(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDrawString16(
+#else
 XDrawString16(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -2738,7 +3408,11 @@ XDrawString16(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDrawText(
+#else
 XDrawText(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -2750,7 +3424,11 @@ XDrawText(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDrawText16(
+#else
 XDrawText16(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -2762,20 +3440,32 @@ XDrawText16(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XEnableAccessControl(
+#else
 XEnableAccessControl(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XEventsQueued(
+#else
 int XEventsQueued(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* mode */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XFetchName(
+#else
 Status XFetchName(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -2783,7 +3473,11 @@ Status XFetchName(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFillArc(
+#else
 XFillArc(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -2797,7 +3491,11 @@ XFillArc(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFillArcs(
+#else
 XFillArcs(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -2807,7 +3505,11 @@ XFillArcs(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFillPolygon(
+#else
 XFillPolygon(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -2819,7 +3521,11 @@ XFillPolygon(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFillRectangle(
+#else
 XFillRectangle(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -2831,7 +3537,11 @@ XFillRectangle(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFillRectangles(
+#else
 XFillRectangles(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -2841,33 +3551,53 @@ XFillRectangles(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFlush(
+#else
 XFlush(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XForceScreenSaver(
+#else
 XForceScreenSaver(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* mode */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFree(
+#else
 XFree(
+#endif
 #if NeedFunctionPrototypes
     void* a		/* data */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFreeColormap(
+#else
 XFreeColormap(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Colormap b		/* colormap */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFreeColors(
+#else
 XFreeColors(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Colormap b		/* colormap */,
@@ -2877,27 +3607,43 @@ XFreeColors(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFreeCursor(
+#else
 XFreeCursor(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Cursor b		/* cursor */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFreeExtensionList(
+#else
 XFreeExtensionList(
+#endif
 #if NeedFunctionPrototypes
     char** a		/* list */    
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFreeFont(
+#else
 XFreeFont(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XFontStruct* b	/* font_struct */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFreeFontInfo(
+#else
 XFreeFontInfo(
+#endif
 #if NeedFunctionPrototypes
     char** a		/* names */,
     XFontStruct* b	/* free_info */,
@@ -2905,39 +3651,63 @@ XFreeFontInfo(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFreeFontNames(
+#else
 XFreeFontNames(
+#endif
 #if NeedFunctionPrototypes
     char** a		/* list */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFreeFontPath(
+#else
 XFreeFontPath(
+#endif
 #if NeedFunctionPrototypes
     char** a		/* list */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFreeGC(
+#else
 XFreeGC(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFreeModifiermap(
+#else
 XFreeModifiermap(
+#endif
 #if NeedFunctionPrototypes
     XModifierKeymap* a	/* modmap */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFreePixmap(
+#else
 XFreePixmap(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Pixmap b		/* pixmap */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XGeometry(
+#else
 int XGeometry(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen */,
@@ -2955,7 +3725,11 @@ int XGeometry(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XGetErrorDatabaseText(
+#else
 XGetErrorDatabaseText(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     _Xconst char* b	/* name */,
@@ -2966,7 +3740,11 @@ XGetErrorDatabaseText(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XGetErrorText(
+#else
 XGetErrorText(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* code */,
@@ -2975,7 +3753,11 @@ XGetErrorText(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XGetFontProperty(
+#else
 Bool XGetFontProperty(
+#endif
 #if NeedFunctionPrototypes
     XFontStruct* a	/* font_struct */,
     Atom b		/* atom */,
@@ -2983,7 +3765,11 @@ Bool XGetFontProperty(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetGCValues(
+#else
 Status XGetGCValues(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -2992,7 +3778,11 @@ Status XGetGCValues(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetGeometry(
+#else
 Status XGetGeometry(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -3006,7 +3796,11 @@ Status XGetGeometry(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetIconName(
+#else
 Status XGetIconName(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -3014,7 +3808,11 @@ Status XGetIconName(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XGetInputFocus(
+#else
 XGetInputFocus(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window*	b	/* focus_return */,
@@ -3022,14 +3820,22 @@ XGetInputFocus(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XGetKeyboardControl(
+#else
 XGetKeyboardControl(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XKeyboardState*	b /* values_return */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XGetPointerControl(
+#else
 XGetPointerControl(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int* b		/* accel_numerator_return */,
@@ -3038,7 +3844,11 @@ XGetPointerControl(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XGetPointerMapping(
+#else
 int XGetPointerMapping(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     unsigned char* b	/* map_return */,
@@ -3046,7 +3856,11 @@ int XGetPointerMapping(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XGetScreenSaver(
+#else
 XGetScreenSaver(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int* b		/* timeout_return */,
@@ -3056,7 +3870,11 @@ XGetScreenSaver(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetTransientForHint(
+#else
 Status XGetTransientForHint(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window	b	/* w */,
@@ -3064,7 +3882,11 @@ Status XGetTransientForHint(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XGetWindowProperty(
+#else
 int XGetWindowProperty(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -3081,7 +3903,11 @@ int XGetWindowProperty(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetWindowAttributes(
+#else
 Status XGetWindowAttributes(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -3089,7 +3915,11 @@ Status XGetWindowAttributes(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XGrabButton(
+#else
 XGrabButton(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     unsigned int b	/* button */,
@@ -3104,7 +3934,11 @@ XGrabButton(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XGrabKey(
+#else
 XGrabKey(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* keycode */,
@@ -3116,7 +3950,11 @@ XGrabKey(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XGrabKeyboard(
+#else
 int XGrabKeyboard(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* grab_window */,
@@ -3127,7 +3965,11 @@ int XGrabKeyboard(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XGrabPointer(
+#else
 int XGrabPointer(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* grab_window */,
@@ -3141,25 +3983,41 @@ int XGrabPointer(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XGrabServer(
+#else
 XGrabServer(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XHeightMMOfScreen(
+#else
 int XHeightMMOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen* c		/* screen */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XHeightOfScreen(
+#else
 int XHeightOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen* c		/* screen */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XIfEvent(
+#else
 XIfEvent(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XEvent*	b	/* event_return */,
@@ -3174,40 +4032,64 @@ XIfEvent(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XImageByteOrder(
+#else
 int XImageByteOrder(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XInstallColormap(
+#else
 XInstallColormap(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Colormap b		/* colormap */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export KeyCode XKeysymToKeycode(
+#else
 KeyCode XKeysymToKeycode(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     KeySym b		/* keysym */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XKillClient(
+#else
 XKillClient(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XID	b		/* resource */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export unsigned long XXLastKnownRequestProcessed(
+#else
 unsigned long XXLastKnownRequestProcessed(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XLookupColor(
+#else
 Status XLookupColor(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Colormap b		/* colormap */,
@@ -3217,35 +4099,55 @@ Status XLookupColor(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XLowerWindow(
+#else
 XLowerWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window	b	/* w */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XMapRaised(
+#else
 XMapRaised(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XMapSubwindows(
+#else
 XMapSubwindows(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XMapWindow(
+#else
 XMapWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XMaskEvent(
+#else
 XMaskEvent(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     long b		/* event_mask */,
@@ -3253,19 +4155,31 @@ XMaskEvent(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XMaxCmapsOfScreen(
+#else
 int XMaxCmapsOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen* c		/* screen */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XMinCmapsOfScreen(
+#else
 int XMinCmapsOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen* c		/* screen */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XMoveResizeWindow(
+#else
 XMoveResizeWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -3276,7 +4190,11 @@ XMoveResizeWindow(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XMoveWindow(
+#else
 XMoveWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -3285,20 +4203,32 @@ XMoveWindow(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XNextEvent(
+#else
 XNextEvent(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XEvent*	b	/* event_return */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XNoOp(
+#else
 XNoOp(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XParseColor(
+#else
 Status XParseColor(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Colormap b		/* colormap */,
@@ -3345,7 +4275,7 @@ char **NextString;
 
 #if NeedFunctionPrototypes
 #if defined(_VISUALC_)
-__declspec(dllexport) extern int XParseGeometry (
+extern Export int XParseGeometry (
 #else
 int XParseGeometry (
 #endif
@@ -3445,14 +4375,22 @@ unsigned int *width, *height;    /* RETURN */
 	return (mask);
 }
 
+#if defined(_VISUALC_)
+extern Export XPeekEvent(
+#else
 XPeekEvent(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XEvent*	b	/* event_return */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XPeekIfEvent(
+#else
 XPeekIfEvent(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XEvent*	b	/* event_return */,
@@ -3467,40 +4405,64 @@ XPeekIfEvent(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XPending(
+#else
 int XPending(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XPlanesOfScreen(
+#else
 int XPlanesOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen* c		/* screen */
     
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XProtocolRevision(
+#else
 int XProtocolRevision(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XProtocolVersion(
+#else
 int XProtocolVersion(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
 
+#if defined(_VISUALC_)
+extern Export XPutBackEvent(
+#else
 XPutBackEvent(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XEvent*	b	/* event */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XPutImage(
+#else
 XPutImage(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -3515,13 +4477,21 @@ XPutImage(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XQLength(
+#else
 int XQLength(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XQueryBestCursor(
+#else
 Status XQueryBestCursor(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -3532,7 +4502,11 @@ Status XQueryBestCursor(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XQueryBestSize(
+#else
 Status XQueryBestSize(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* class */,
@@ -3544,7 +4518,11 @@ Status XQueryBestSize(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XQueryBestStipple(
+#else
 Status XQueryBestStipple(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* which_screen */,
@@ -3555,7 +4533,11 @@ Status XQueryBestStipple(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XQueryBestTile(
+#else
 Status XQueryBestTile(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* which_screen */,
@@ -3566,7 +4548,11 @@ Status XQueryBestTile(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XQueryColor(
+#else
 XQueryColor(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Colormap b		/* colormap */,
@@ -3574,7 +4560,11 @@ XQueryColor(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XQueryColors(
+#else
 XQueryColors(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Colormap b		/* colormap */,
@@ -3583,7 +4573,11 @@ XQueryColors(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XQueryExtension(
+#else
 Bool XQueryExtension(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     _Xconst char* b	/* name */,
@@ -3593,14 +4587,22 @@ Bool XQueryExtension(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XQueryKeymap(
+#else
 XQueryKeymap(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     char b[32]		/* keys_return */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XQueryPointer(
+#else
 Bool XQueryPointer(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -3614,7 +4616,11 @@ Bool XQueryPointer(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XQueryTextExtents(
+#else
 XQueryTextExtents(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XID	b		/* font_ID */,
@@ -3627,7 +4633,11 @@ XQueryTextExtents(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XQueryTextExtents16(
+#else
 XQueryTextExtents16(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XID	b		/* font_ID */,
@@ -3640,7 +4650,11 @@ XQueryTextExtents16(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XQueryTree(
+#else
 Status XQueryTree(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -3651,14 +4665,22 @@ Status XQueryTree(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XRaiseWindow(
+#else
 XRaiseWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window	b	/* w */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XReadBitmapFile(
+#else
 int XReadBitmapFile(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d 		/* d */,
@@ -3671,7 +4693,11 @@ int XReadBitmapFile(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XReadBitmapFileData(
+#else
 int XReadBitmapFileData(
+#endif
 #if NeedFunctionPrototypes
     _Xconst char* a	/* filename */,
     unsigned int* b	/* width_return */,
@@ -3682,7 +4708,11 @@ int XReadBitmapFileData(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XRebindKeysym(
+#else
 XRebindKeysym(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     KeySym b		/* keysym */,
@@ -3693,7 +4723,11 @@ XRebindKeysym(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XRecolorCursor(
+#else
 XRecolorCursor(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Cursor b		/* cursor */,
@@ -3702,27 +4736,43 @@ XRecolorCursor(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XRefreshKeyboardMapping(
+#else
 XRefreshKeyboardMapping(
+#endif
 #if NeedFunctionPrototypes
     XMappingEvent* a	/* event_map */    
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XRemoveFromSaveSet(
+#else
 XRemoveFromSaveSet(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XRemoveHost(
+#else
 XRemoveHost(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XHostAddress* b	/* host */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XRemoveHosts(
+#else
 XRemoveHosts(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XHostAddress* b	/* hosts */,
@@ -3730,7 +4780,11 @@ XRemoveHosts(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XReparentWindow(
+#else
 XReparentWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -3740,13 +4794,21 @@ XReparentWindow(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XResetScreenSaver(
+#else
 XResetScreenSaver(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XResizeWindow(
+#else
 XResizeWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window	b	/* w */,
@@ -3755,7 +4817,11 @@ XResizeWindow(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XRestackWindows(
+#else
 XRestackWindows(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window*	b	/* windows */,
@@ -3763,14 +4829,22 @@ XRestackWindows(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XRotateBuffers(
+#else
 XRotateBuffers(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* rotate */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XRotateWindowProperties(
+#else
 XRotateWindowProperties(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -3780,13 +4854,21 @@ XRotateWindowProperties(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XScreenCount(
+#else
 int XScreenCount(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSelectInput(
+#else
 XSelectInput(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window	b	/* w */,
@@ -3794,7 +4876,11 @@ XSelectInput(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XSendEvent(
+#else
 Status XSendEvent(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -3804,14 +4890,22 @@ Status XSendEvent(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetAccessControl(
+#else
 XSetAccessControl(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* mode */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetArcMode(
+#else
 XSetArcMode(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -3819,7 +4913,11 @@ XSetArcMode(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetBackground(
+#else
 XSetBackground(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -3827,7 +4925,11 @@ XSetBackground(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetClipMask(
+#else
 XSetClipMask(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -3835,7 +4937,11 @@ XSetClipMask(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetClipOrigin(
+#else
 XSetClipOrigin(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -3844,7 +4950,11 @@ XSetClipOrigin(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetClipRectangles(
+#else
 XSetClipRectangles(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -3856,14 +4966,22 @@ XSetClipRectangles(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetCloseDownMode(
+#else
 XSetCloseDownMode(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* close_mode */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetCommand(
+#else
 XSetCommand(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window	b	/* w */,
@@ -3872,7 +4990,11 @@ XSetCommand(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetDashes(
+#else
 XSetDashes(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -3882,7 +5004,11 @@ XSetDashes(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetFillRule(
+#else
 XSetFillRule(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -3890,7 +5016,11 @@ XSetFillRule(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetFillStyle(
+#else
 XSetFillStyle(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -3898,7 +5028,11 @@ XSetFillStyle(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetFont(
+#else
 XSetFont(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -3906,7 +5040,11 @@ XSetFont(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetFontPath(
+#else
 XSetFontPath(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     char**	b	/* directories */,
@@ -3914,7 +5052,11 @@ XSetFontPath(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetForeground(
+#else
 XSetForeground(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -3922,7 +5064,11 @@ XSetForeground(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetFunction(
+#else
 XSetFunction(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -3930,7 +5076,11 @@ XSetFunction(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetGraphicsExposures(
+#else
 XSetGraphicsExposures(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -3938,7 +5088,11 @@ XSetGraphicsExposures(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetIconName(
+#else
 XSetIconName(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window	b	/* w */,
@@ -3946,7 +5100,11 @@ XSetIconName(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetInputFocus(
+#else
 XSetInputFocus(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* focus */,
@@ -3955,7 +5113,11 @@ XSetInputFocus(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetLineAttributes(
+#else
 XSetLineAttributes(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -3966,14 +5128,22 @@ XSetLineAttributes(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XSetModifierMapping(
+#else
 int XSetModifierMapping(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XModifierKeymap* b	/* modmap */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetPlaneMask(
+#else
 XSetPlaneMask(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -3981,7 +5151,11 @@ XSetPlaneMask(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XSetPointerMapping(
+#else
 int XSetPointerMapping(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     _Xconst unsigned char* b	/* map */,
@@ -3989,7 +5163,11 @@ int XSetPointerMapping(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetScreenSaver(
+#else
 XSetScreenSaver(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* timeout */,
@@ -3999,7 +5177,11 @@ XSetScreenSaver(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetSelectionOwner(
+#else
 XSetSelectionOwner(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Atom b	        /* selection */,
@@ -4008,7 +5190,11 @@ XSetSelectionOwner(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetState(
+#else
 XSetState(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC x			/* gc */,
@@ -4019,7 +5205,11 @@ XSetState(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetStipple(
+#else
 XSetStipple(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -4027,7 +5217,11 @@ XSetStipple(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetSubwindowMode(
+#else
 XSetSubwindowMode(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -4035,7 +5229,11 @@ XSetSubwindowMode(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetTSOrigin(
+#else
 XSetTSOrigin(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -4044,7 +5242,11 @@ XSetTSOrigin(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetTile(
+#else
 XSetTile(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -4052,7 +5254,11 @@ XSetTile(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetWindowBackground(
+#else
 XSetWindowBackground(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window	b	/* w */,
@@ -4060,7 +5266,11 @@ XSetWindowBackground(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetWindowBackgroundPixmap(
+#else
 XSetWindowBackgroundPixmap(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -4068,7 +5278,11 @@ XSetWindowBackgroundPixmap(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetWindowBorder(
+#else
 XSetWindowBorder(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window c		/* w */,
@@ -4076,7 +5290,11 @@ XSetWindowBorder(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetWindowBorderPixmap(
+#else
 XSetWindowBorderPixmap(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -4084,7 +5302,11 @@ XSetWindowBorderPixmap(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetWindowBorderWidth(
+#else
 XSetWindowBorderWidth(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -4092,7 +5314,11 @@ XSetWindowBorderWidth(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetWindowColormap(
+#else
 XSetWindowColormap(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -4100,7 +5326,11 @@ XSetWindowColormap(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XStoreBuffer(
+#else
 XStoreBuffer(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     _Xconst char* b	/* bytes */,
@@ -4109,7 +5339,11 @@ XStoreBuffer(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XStoreBytes(
+#else
 XStoreBytes(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     _Xconst char* b	/* bytes */,
@@ -4117,7 +5351,11 @@ XStoreBytes(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XStoreColor(
+#else
 XStoreColor(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Colormap b		/* colormap */,
@@ -4125,7 +5363,11 @@ XStoreColor(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XStoreColors(
+#else
 XStoreColors(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Colormap b		/* colormap */,
@@ -4134,7 +5376,11 @@ XStoreColors(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XStoreName(
+#else
 XStoreName(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -4142,7 +5388,11 @@ XStoreName(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XStoreNamedColor(
+#else
 XStoreNamedColor(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Colormap b		/* colormap */,
@@ -4152,14 +5402,18 @@ XStoreNamedColor(
 #endif
 ){}
 
-XSync(
-#if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Bool b		/* discard */
+#if defined(_VISUALC_)
+extern Export XSync(Display* a,Bool b)
+#else
+XSync(Display* a,Bool b)
 #endif
-){}
+{}
 
+#if defined(_VISUALC_)
+extern Export XTextExtents(
+#else
 XTextExtents(
+#endif
 #if NeedFunctionPrototypes
     XFontStruct* a	/* font_struct */,
     _Xconst char* b	/* string */,
@@ -4171,7 +5425,11 @@ XTextExtents(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XTextExtents16(
+#else
 XTextExtents16(
+#endif
 #if NeedFunctionPrototypes
     XFontStruct* a	/* font_struct */,
     _Xconst XChar2b* b	/* string */,
@@ -4183,7 +5441,11 @@ XTextExtents16(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XTextWidth(
+#else
 int XTextWidth(
+#endif
 #if NeedFunctionPrototypes
     XFontStruct* a	/* font_struct */,
     _Xconst char* b	/* string */,
@@ -4191,7 +5453,11 @@ int XTextWidth(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XTextWidth16(
+#else
 int XTextWidth16(
+#endif
 #if NeedFunctionPrototypes
     XFontStruct* a	/* font_struct */,
     _Xconst XChar2b* b	/* string */,
@@ -4199,7 +5465,11 @@ int XTextWidth16(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XTranslateCoordinates(
+#else
 Bool XTranslateCoordinates(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* src_w */,
@@ -4212,14 +5482,22 @@ Bool XTranslateCoordinates(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XUndefineCursor(
+#else
 XUndefineCursor(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XUngrabButton(
+#else
 XUngrabButton(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     unsigned int b	/* button */,
@@ -4228,7 +5506,11 @@ XUngrabButton(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XUngrabKey(
+#else
 XUngrabKey(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* keycode */,
@@ -4237,61 +5519,97 @@ XUngrabKey(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XUngrabKeyboard(
+#else
 XUngrabKeyboard(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Time b		/* time */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XUngrabPointer(
+#else
 XUngrabPointer(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Time b		/* time */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XUngrabServer(
+#else
 XUngrabServer(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XUninstallColormap(
+#else
 XUninstallColormap(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Colormap b		/* colormap */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XUnloadFont(
+#else
 XUnloadFont(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Font b		/* font */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XUnmapSubwindows(
+#else
 XUnmapSubwindows(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XUnmapWindow(
+#else
 XUnmapWindow(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XVendorRelease(
+#else
 int XVendorRelease(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XWarpPointer(
+#else
 XWarpPointer(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* src_w */,
@@ -4305,19 +5623,31 @@ XWarpPointer(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XWidthMMOfScreen(
+#else
 int XWidthMMOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen* c		/* screen */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XWidthOfScreen(
+#else
 int XWidthOfScreen(
+#endif
 #if NeedFunctionPrototypes
     Screen*	c	/* screen */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XWindowEvent(
+#else
 XWindowEvent(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -4326,7 +5656,11 @@ XWindowEvent(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XWriteBitmapFile(
+#else
 int XWriteBitmapFile(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     _Xconst char* b	/* filename */,
@@ -4338,19 +5672,31 @@ int XWriteBitmapFile(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XSupportsLocale(
+#else
 Bool XSupportsLocale(
+#endif
 #if NeedFunctionPrototypes
     void *a
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export char *XSetLocaleModifiers(
+#else
 char *XSetLocaleModifiers(
+#endif
 #if NeedFunctionPrototypes
     _Xconst char* a	/* modifier_list */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XOM XOpenOM(
+#else
 XOM XOpenOM(
+#endif
 #if NeedFunctionPrototypes
     Display* a			/* display */,
     struct _XrmHashBucketRec* b	/* rdb */,
@@ -4359,72 +5705,116 @@ XOM XOpenOM(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XCloseOM(
+#else
 Status XCloseOM(
+#endif
 #if NeedFunctionPrototypes
     XOM a			/* om */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export char *XSetOMValues(
+#else
 char *XSetOMValues(
+#endif
 #if NeedVarargsPrototypes
     XOM a			/* om */,
     ...
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export char *XGetOMValues(
+#else
 char *XGetOMValues(
+#endif
 #if NeedVarargsPrototypes
     XOM a			/* om */,
     ...
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Display *XDisplayOfOM(
+#else
 Display *XDisplayOfOM(
+#endif
 #if NeedFunctionPrototypes
     XOM a			/* om */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export char *XLocaleOfOM(
+#else
 char *XLocaleOfOM(
+#endif
 #if NeedFunctionPrototypes
     XOM a			/* om */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XOC XCreateOC(
+#else
 XOC XCreateOC(
+#endif
 #if NeedVarargsPrototypes
     XOM a			/* om */,
     ...
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XDestroyOC(
+#else
 void XDestroyOC(
+#endif
 #if NeedFunctionPrototypes
     XOC a			/* oc */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XOM XOMOfOC(
+#else
 XOM XOMOfOC(
+#endif
 #if NeedFunctionPrototypes
     XOC a			/* oc */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export char *XSetOCValues(
+#else
 char *XSetOCValues(
+#endif
 #if NeedVarargsPrototypes
     XOC a			/* oc */,
     ...
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export char *XGetOCValues(
+#else
 char *XGetOCValues(
+#endif
 #if NeedVarargsPrototypes
     XOC a			/* oc */,
     ...
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFontSet XCreateFontSet(
+#else
 XFontSet XCreateFontSet(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     _Xconst char* b	/* base_font_name_list */,
@@ -4434,14 +5824,22 @@ XFontSet XCreateFontSet(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XFreeFontSet(
+#else
 void XFreeFontSet(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XFontSet b		/* font_set */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XFontsOfFontSet(
+#else
 int XFontsOfFontSet(
+#endif
 #if NeedFunctionPrototypes
     XFontSet a		/* font_set */,
     XFontStruct*** b	/* font_struct_list */,
@@ -4449,43 +5847,71 @@ int XFontsOfFontSet(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export char *XBaseFontNameListOfFontSet(
+#else
 char *XBaseFontNameListOfFontSet(
+#endif
 #if NeedFunctionPrototypes
     XFontSet a		/* font_set */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export char *XLocaleOfFontSet(
+#else
 char *XLocaleOfFontSet(
+#endif
 #if NeedFunctionPrototypes
     XFontSet a		/* font_set */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XContextDependentDrawing(
+#else
 Bool XContextDependentDrawing(
+#endif
 #if NeedFunctionPrototypes
     XFontSet a		/* font_set */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XDirectionalDependentDrawing(
+#else
 Bool XDirectionalDependentDrawing(
+#endif
 #if NeedFunctionPrototypes
     XFontSet a		/* font_set */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XContextualDrawing(
+#else
 Bool XContextualDrawing(
+#endif
 #if NeedFunctionPrototypes
     XFontSet a		/* font_set */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XFontSetExtents *XExtentsOfFontSet(
+#else
 XFontSetExtents *XExtentsOfFontSet(
+#endif
 #if NeedFunctionPrototypes
     XFontSet a		/* font_set */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XmbTextEscapement(
+#else
 int XmbTextEscapement(
+#endif
 #if NeedFunctionPrototypes
     XFontSet a		/* font_set */,
     _Xconst char* b	/* text */,
@@ -4493,7 +5919,11 @@ int XmbTextEscapement(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XwcTextEscapement(
+#else
 int XwcTextEscapement(
+#endif
 #if NeedFunctionPrototypes
     XFontSet a		/* font_set */,
     _Xconst wchar_t* b	/* text */,
@@ -4501,7 +5931,11 @@ int XwcTextEscapement(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XmbTextExtents(
+#else
 int XmbTextExtents(
+#endif
 #if NeedFunctionPrototypes
     XFontSet a		/* font_set */,
     _Xconst char* b	/* text */,
@@ -4511,7 +5945,11 @@ int XmbTextExtents(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XwcTextExtents(
+#else
 int XwcTextExtents(
+#endif
 #if NeedFunctionPrototypes
     XFontSet a		/* font_set */,
     _Xconst wchar_t* b	/* text */,
@@ -4521,7 +5959,11 @@ int XwcTextExtents(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XmbTextPerCharExtents(
+#else
 Status XmbTextPerCharExtents(
+#endif
 #if NeedFunctionPrototypes
     XFontSet a		/* font_set */,
     _Xconst char* b	/* text */,
@@ -4535,7 +5977,11 @@ Status XmbTextPerCharExtents(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XwcTextPerCharExtents(
+#else
 Status XwcTextPerCharExtents(
+#endif
 #if NeedFunctionPrototypes
     XFontSet a		/* font_set */,
     _Xconst wchar_t* b	/* text */,
@@ -4549,7 +5995,11 @@ Status XwcTextPerCharExtents(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XmbDrawText(
+#else
 void XmbDrawText(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -4561,7 +6011,11 @@ void XmbDrawText(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XwcDrawText(
+#else
 void XwcDrawText(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -4573,7 +6027,11 @@ void XwcDrawText(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XmbDrawString(
+#else
 void XmbDrawString(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -4586,7 +6044,11 @@ void XmbDrawString(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XwcDrawString(
+#else
 void XwcDrawString(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -4599,7 +6061,11 @@ void XwcDrawString(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XmbDrawImageString(
+#else
 void XmbDrawImageString(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -4612,7 +6078,11 @@ void XmbDrawImageString(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XwcDrawImageString(
+#else
 void XwcDrawImageString(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Drawable d		/* d */,
@@ -4625,7 +6095,11 @@ void XwcDrawImageString(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XIM XOpenIM(
+#else
 XIM XOpenIM(
+#endif
 #if NeedFunctionPrototypes
     Display* a			/* dpy */,
     struct _XrmHashBucketRec* b	/* rdb */,
@@ -4634,92 +6108,152 @@ XIM XOpenIM(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XCloseIM(
+#else
 Status XCloseIM(
+#endif
 #if NeedFunctionPrototypes
     XIM a /* im */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export char *XGetIMValues(
+#else
 char *XGetIMValues(
+#endif
 #if NeedVarargsPrototypes
     XIM a /* im */, ...
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Display *XDisplayOfIM(
+#else
 Display *XDisplayOfIM(
+#endif
 #if NeedFunctionPrototypes
     XIM a /* im */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export char *XLocaleOfIM(
+#else
 char *XLocaleOfIM(
+#endif
 #if NeedFunctionPrototypes
     XIM a /* im*/
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XIC XCreateIC(
+#else
 XIC XCreateIC(
+#endif
 #if NeedVarargsPrototypes
     XIM a /* im */, ...
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XDestroyIC(
+#else
 void XDestroyIC(
+#endif
 #if NeedFunctionPrototypes
     XIC a /* ic */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XSetICFocus(
+#else
 void XSetICFocus(
+#endif
 #if NeedFunctionPrototypes
     XIC a /* ic */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XUnsetICFocus(
+#else
 void XUnsetICFocus(
+#endif
 #if NeedFunctionPrototypes
     XIC a /* ic */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export wchar_t *XwcResetIC(
+#else
 wchar_t *XwcResetIC(
+#endif
 #if NeedFunctionPrototypes
     XIC a /* ic */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export char *XmbResetIC(
+#else
 char *XmbResetIC(
+#endif
 #if NeedFunctionPrototypes
     XIC a /* ic */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export char *XSetICValues(
+#else
 char *XSetICValues(
+#endif
 #if NeedVarargsPrototypes
     XIC a /* ic */, ...
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export char *XGetICValues(
+#else
 char *XGetICValues(
+#endif
 #if NeedVarargsPrototypes
     XIC a /* ic */, ...
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XIM XIMOfIC(
+#else
 XIM XIMOfIC(
+#endif
 #if NeedFunctionPrototypes
     XIC a /* ic */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XFilterEvent(
+#else
 Bool XFilterEvent(
+#endif
 #if NeedFunctionPrototypes
     XEvent*	a /* event */,
     Window b	/* window */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XmbLookupString(
+#else
 int XmbLookupString(
+#endif
 #if NeedFunctionPrototypes
     XIC a			/* ic */,
     XKeyPressedEvent* b	/* event */,
@@ -4730,7 +6264,11 @@ int XmbLookupString(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XwcLookupString(
+#else
 int XwcLookupString(
+#endif
 #if NeedFunctionPrototypes
     XIC a			/* ic */,
     XKeyPressedEvent* b	/* event */,
@@ -4741,7 +6279,11 @@ int XwcLookupString(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XVaNestedList XVaCreateNestedList(
+#else
 XVaNestedList XVaCreateNestedList(
+#endif
 #if NeedVarargsPrototypes
     int a /*unused*/, ...
 #endif
@@ -4749,7 +6291,11 @@ XVaNestedList XVaCreateNestedList(
 
 /* internal connections for IMs */
 
+#if defined(_VISUALC_)
+extern Export Bool XRegisterIMInstantiateCallback(
+#else
 Bool XRegisterIMInstantiateCallback(
+#endif
 #if NeedFunctionPrototypes
     Display* a			/* dpy */,
     struct _XrmHashBucketRec* b	/* rdb */,
@@ -4760,7 +6306,11 @@ Bool XRegisterIMInstantiateCallback(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XUnregisterIMInstantiateCallback(
+#else
 Bool XUnregisterIMInstantiateCallback(
+#endif
 #if NeedFunctionPrototypes
     Display* a			/* dpy */,
     struct _XrmHashBucketRec* x	/* rdb */,
@@ -4782,7 +6332,11 @@ typedef void (*XConnectionWatchProc)(
 );
     
 
+#if defined(_VISUALC_)
+extern Export Status XInternalConnectionNumbers(
+#else
 Status XInternalConnectionNumbers(
+#endif
 #if NeedFunctionPrototypes
     Display* a			/* dpy */,
     int** b			/* fd_return */,
@@ -4790,14 +6344,22 @@ Status XInternalConnectionNumbers(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XProcessInternalConnection(
+#else
 void XProcessInternalConnection(
+#endif
 #if NeedFunctionPrototypes
     Display* a			/* dpy */,
     int	b			/* fd */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XAddConnectionWatch(
+#else
 Status XAddConnectionWatch(
+#endif
 #if NeedFunctionPrototypes
     Display* a			/* dpy */,
     XConnectionWatchProc b	/* callback */,
@@ -4805,7 +6367,11 @@ Status XAddConnectionWatch(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XRemoveConnectionWatch(
+#else
 void XRemoveConnectionWatch(
+#endif
 #if NeedFunctionPrototypes
     Display* a			/* dpy */,
     XConnectionWatchProc b	/* callback */,
@@ -5017,7 +6583,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
   int c_class;					/* C++ */
 #else
-  int c_class;
+  int class;
 #endif
   unsigned long red_mask;
   unsigned long green_mask;
@@ -5086,56 +6652,92 @@ typedef int XContext;
 
 /* The following declarations are alphabetized. */
 
+#if defined(_VISUALC_)
+extern Export XClassHint *XAllocClassHint (
+#else
 XClassHint *XAllocClassHint (
+#endif
 #if NeedFunctionPrototypes
     void
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XIconSize *XAllocIconSize (
+#else
 XIconSize *XAllocIconSize (
+#endif
 #if NeedFunctionPrototypes
     void
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSizeHints *XAllocSizeHints (
+#else
 XSizeHints *XAllocSizeHints (
+#endif
 #if NeedFunctionPrototypes
     void
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XStandardColormap *XAllocStandardColormap (
+#else
 XStandardColormap *XAllocStandardColormap (
+#endif
 #if NeedFunctionPrototypes
     void
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XWMHints *XAllocWMHints (
+#else
 XWMHints *XAllocWMHints (
+#endif
 #if NeedFunctionPrototypes
     void
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XClipBox(
+#else
 XClipBox(
+#endif
 #if NeedFunctionPrototypes
     Region a		/* r */,
     XRectangle*	b	/* rect_return */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Region XCreateRegion(
+#else
 Region XCreateRegion(
+#endif
 #if NeedFunctionPrototypes
     void *a
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export char *XDefaultString(
+#else
 char *XDefaultString(
+#endif
 #if NeedFunctionPrototypes
     void *a
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XDeleteContext(
+#else
 int XDeleteContext(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XID	 b		/* rid */,
@@ -5143,26 +6745,42 @@ int XDeleteContext(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XDestroyRegion(
+#else
 XDestroyRegion(
+#endif
 #if NeedFunctionPrototypes
     Region a		/* r */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XEmptyRegion(
+#else
 XEmptyRegion(
+#endif
 #if NeedFunctionPrototypes
     Region a		/* r */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XEqualRegion(
+#else
 XEqualRegion(
+#endif
 #if NeedFunctionPrototypes
     Region a		/* r1 */,
     Region b		/* r2 */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XFindContext(
+#else
 int XFindContext(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XID	b		/* rid */,
@@ -5171,7 +6789,11 @@ int XFindContext(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetClassHint(
+#else
 Status XGetClassHint(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5179,7 +6801,11 @@ Status XGetClassHint(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetIconSizes(
+#else
 Status XGetIconSizes(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5188,7 +6814,11 @@ Status XGetIconSizes(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetNormalHints(
+#else
 Status XGetNormalHints(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5196,7 +6826,11 @@ Status XGetNormalHints(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetRGBColormaps(
+#else
 Status XGetRGBColormaps(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5206,7 +6840,11 @@ Status XGetRGBColormaps(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetSizeHints(
+#else
 Status XGetSizeHints(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5215,7 +6853,11 @@ Status XGetSizeHints(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetStandardColormap(
+#else
 Status XGetStandardColormap(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5224,7 +6866,11 @@ Status XGetStandardColormap(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetTextProperty(
+#else
 Status XGetTextProperty(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* window */,
@@ -5233,7 +6879,11 @@ Status XGetTextProperty(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XVisualInfo *XGetVisualInfo(
+#else
 XVisualInfo *XGetVisualInfo(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     long b		/* vinfo_mask */,
@@ -5242,7 +6892,11 @@ XVisualInfo *XGetVisualInfo(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetWMClientMachine(
+#else
 Status XGetWMClientMachine(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5250,14 +6904,22 @@ Status XGetWMClientMachine(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XWMHints *XGetWMHints(
+#else
 XWMHints *XGetWMHints(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */		      
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetWMIconName(
+#else
 Status XGetWMIconName(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5265,7 +6927,11 @@ Status XGetWMIconName(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetWMName(
+#else
 Status XGetWMName(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5273,7 +6939,11 @@ Status XGetWMName(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetWMNormalHints(
+#else
 Status XGetWMNormalHints(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5282,7 +6952,11 @@ Status XGetWMNormalHints(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetWMSizeHints(
+#else
 Status XGetWMSizeHints(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5292,7 +6966,11 @@ Status XGetWMSizeHints(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XGetZoomHints(
+#else
 Status XGetZoomHints(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5300,7 +6978,11 @@ Status XGetZoomHints(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XIntersectRegion(
+#else
 XIntersectRegion(
+#endif
 #if NeedFunctionPrototypes
     Region a		/* sra */,
     Region b		/* srb */,
@@ -5308,7 +6990,11 @@ XIntersectRegion(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XConvertCase(
+#else
 void XConvertCase(
+#endif
 #if NeedFunctionPrototypes
     KeySym	a	/* sym */,
     KeySym*	b	/* lower */,
@@ -5316,7 +7002,11 @@ void XConvertCase(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XLookupString(
+#else
 int XLookupString(
+#endif
 #if NeedFunctionPrototypes
     XKeyEvent* a		/* event_struct */,
     char* b		/* buffer_return */,
@@ -5326,7 +7016,11 @@ int XLookupString(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XMatchVisualInfo(
+#else
 Status XMatchVisualInfo(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen */,
@@ -5336,7 +7030,11 @@ Status XMatchVisualInfo(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XOffsetRegion(
+#else
 XOffsetRegion(
+#endif
 #if NeedFunctionPrototypes
     Region a		/* r */,
     int	b		/* dx */,
@@ -5344,7 +7042,11 @@ XOffsetRegion(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XPointInRegion(
+#else
 Bool XPointInRegion(
+#endif
 #if NeedFunctionPrototypes
     Region a		/* r */,
     int	b		/* x */,
@@ -5352,7 +7054,11 @@ Bool XPointInRegion(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Region XPolygonRegion(
+#else
 Region XPolygonRegion(
+#endif
 #if NeedFunctionPrototypes
     XPoint*	a	/* points */,
     int	b		/* n */,
@@ -5360,7 +7066,11 @@ Region XPolygonRegion(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XRectInRegion(
+#else
 int XRectInRegion(
+#endif
 #if NeedFunctionPrototypes
     Region a		/* r */,
     int	b		/* x */,
@@ -5370,7 +7080,11 @@ int XRectInRegion(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XSaveContext(
+#else
 int XSaveContext(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XID	b		/* rid */,
@@ -5379,7 +7093,11 @@ int XSaveContext(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetClassHint(
+#else
 XSetClassHint(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5387,7 +7105,11 @@ XSetClassHint(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetIconSizes(
+#else
 XSetIconSizes(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5396,7 +7118,11 @@ XSetIconSizes(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetNormalHints(
+#else
 XSetNormalHints(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5404,7 +7130,11 @@ XSetNormalHints(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XSetRGBColormaps(
+#else
 void XSetRGBColormaps(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5414,7 +7144,11 @@ void XSetRGBColormaps(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetSizeHints(
+#else
 XSetSizeHints(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5423,7 +7157,11 @@ XSetSizeHints(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetStandardProperties(
+#else
 XSetStandardProperties(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5436,7 +7174,11 @@ XSetStandardProperties(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XSetTextProperty(
+#else
 void XSetTextProperty(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5445,7 +7187,11 @@ void XSetTextProperty(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XSetWMClientMachine(
+#else
 void XSetWMClientMachine(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5453,7 +7199,11 @@ void XSetWMClientMachine(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetWMHints(
+#else
 XSetWMHints(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5461,7 +7211,11 @@ XSetWMHints(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XSetWMIconName(
+#else
 void XSetWMIconName(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5469,7 +7223,11 @@ void XSetWMIconName(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XSetWMName(
+#else
 void XSetWMName(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5477,7 +7235,11 @@ void XSetWMName(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XSetWMNormalHints(
+#else
 void XSetWMNormalHints(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5485,7 +7247,11 @@ void XSetWMNormalHints(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XSetWMProperties(
+#else
 void XSetWMProperties(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5499,7 +7265,11 @@ void XSetWMProperties(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XmbSetWMProperties(
+#else
 void XmbSetWMProperties(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5513,7 +7283,11 @@ void XmbSetWMProperties(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XSetWMSizeHints(
+#else
 void XSetWMSizeHints(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5522,7 +7296,11 @@ void XSetWMSizeHints(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetRegion(
+#else
 XSetRegion(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     GC e			/* gc */,
@@ -5530,7 +7308,11 @@ XSetRegion(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XSetStandardColormap(
+#else
 void XSetStandardColormap(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5539,7 +7321,11 @@ void XSetStandardColormap(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSetZoomHints(
+#else
 XSetZoomHints(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     Window b		/* w */,
@@ -5547,7 +7333,11 @@ XSetZoomHints(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XShrinkRegion(
+#else
 XShrinkRegion(
+#endif
 #if NeedFunctionPrototypes
     Region x		/* r */,
     int	y		/* dx */,
@@ -5555,7 +7345,11 @@ XShrinkRegion(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XStringListToTextProperty(
+#else
 Status XStringListToTextProperty(
+#endif
 #if NeedFunctionPrototypes
     char** a		/* list */,
     int	b		/* count */,
@@ -5563,7 +7357,11 @@ Status XStringListToTextProperty(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XSubtractRegion(
+#else
 XSubtractRegion(
+#endif
 #if NeedFunctionPrototypes
     Region x		/* sra */,
     Region y		/* srb */,
@@ -5571,7 +7369,11 @@ XSubtractRegion(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XmbTextListToTextProperty(
+#else
 int XmbTextListToTextProperty(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     char** b		/* list */,
@@ -5581,7 +7383,11 @@ int XmbTextListToTextProperty(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XwcTextListToTextProperty(
+#else
 int XwcTextListToTextProperty(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     wchar_t** b		/* list */,
@@ -5591,13 +7397,21 @@ int XwcTextListToTextProperty(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XwcFreeStringList(
+#else
 void XwcFreeStringList(
+#endif
 #if NeedFunctionPrototypes
     wchar_t** a		/* list */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XTextPropertyToStringList(
+#else
 Status XTextPropertyToStringList(
+#endif
 #if NeedFunctionPrototypes
     XTextProperty* a	/* text_prop */,
     char***	b	/* list_return */,
@@ -5605,7 +7419,11 @@ Status XTextPropertyToStringList(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XmbTextPropertyToTextList(
+#else
 int XmbTextPropertyToTextList(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XTextProperty* b	/* text_prop */,
@@ -5614,7 +7432,11 @@ int XmbTextPropertyToTextList(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XwcTextPropertyToTextList(
+#else
 int XwcTextPropertyToTextList(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XTextProperty* b	/* text_prop */,
@@ -5623,7 +7445,11 @@ int XwcTextPropertyToTextList(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XUnionRectWithRegion(
+#else
 XUnionRectWithRegion(
+#endif
 #if NeedFunctionPrototypes
     XRectangle*	a	/* rectangle */,
     Region b		/* src_region */,
@@ -5631,7 +7457,11 @@ XUnionRectWithRegion(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XUnionRegion(
+#else
 XUnionRegion(
+#endif
 #if NeedFunctionPrototypes
     Region c		/* sra */,
     Region d		/* srb */,
@@ -5639,7 +7469,11 @@ XUnionRegion(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export int XWMGeometry(
+#else
 int XWMGeometry(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     int	b		/* screen_number */,
@@ -5655,7 +7489,11 @@ int XWMGeometry(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XXorRegion(
+#else
 XXorRegion(
+#endif
 #if NeedFunctionPrototypes
     Region a		/* sra */,
     Region b		/* srb */,
@@ -5683,7 +7521,11 @@ _XFUNCPROTOBEGIN
  *
  ****************************************************************/
 
+#if defined(_VISUALC_)
+extern Export char *Xpermalloc(
+#else
 char *Xpermalloc(
+#endif
 #if NeedFunctionPrototypes
     unsigned int a	/* size */
 #endif
@@ -5702,26 +7544,42 @@ typedef char *XrmString;
 #define NULLSTRING ((XrmString) 0)
 
 /* find quark for string, create new quark if none already exists */
+#if defined(_VISUALC_)
+extern Export XrmQuark XrmStringToQuark(
+#else
 XrmQuark XrmStringToQuark(
+#endif
 #if NeedFunctionPrototypes
     _Xconst char* a	/* string */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XrmQuark XrmPermStringToQuark(
+#else
 XrmQuark XrmPermStringToQuark(
+#endif
 #if NeedFunctionPrototypes
     _Xconst char* a	/* string */
 #endif
 ){}
 
 /* find string for quark */
+#if defined(_VISUALC_)
+extern Export XrmString XrmQuarkToString(
+#else
 XrmString XrmQuarkToString(
+#endif
 #if NeedFunctionPrototypes
     XrmQuark a		/* quark */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XrmQuark XrmUniqueQuark(
+#else
 XrmQuark XrmUniqueQuark(
+#endif
 #if NeedFunctionPrototypes
     void *a
 #endif
@@ -5738,14 +7596,22 @@ XrmQuark XrmUniqueQuark(
 
 typedef enum {XrmBindTightly, XrmBindLoosely} XrmBinding, *XrmBindingList;
 
+#if defined(_VISUALC_)
+extern Export void XrmStringToQuarkList(
+#else
 void XrmStringToQuarkList(
+#endif
 #if NeedFunctionPrototypes
     _Xconst char* a	/* string */,
     XrmQuarkList b	/* quarks_return */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XrmStringToBindingQuarkList(
+#else
 void XrmStringToBindingQuarkList(
+#endif
 #if NeedFunctionPrototypes
     _Xconst char* a	/* string */,
     XrmBindingList b	/* bindings_return */,
@@ -5801,13 +7667,21 @@ typedef XrmHashTable XrmSearchList[];
 typedef struct _XrmHashBucketRec *XrmDatabase;
 
 
+#if defined(_VISUALC_)
+extern Export void XrmDestroyDatabase(
+#else
 void XrmDestroyDatabase(
+#endif
 #if NeedFunctionPrototypes
     XrmDatabase a		/* database */    
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XrmQPutResource(
+#else
 void XrmQPutResource(
+#endif
 #if NeedFunctionPrototypes
     XrmDatabase* a	/* database */,
     XrmBindingList b	/* bindings */,
@@ -5817,7 +7691,11 @@ void XrmQPutResource(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XrmPutResource(
+#else
 void XrmPutResource(
+#endif
 #if NeedFunctionPrototypes
     XrmDatabase* a	/* database */,
     _Xconst char* b	/* specifier */,
@@ -5826,7 +7704,11 @@ void XrmPutResource(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XrmQPutStringResource(
+#else
 void XrmQPutStringResource(
+#endif
 #if NeedFunctionPrototypes
     XrmDatabase* a	/* database */,
     XrmBindingList b     /* bindings */,
@@ -5835,7 +7717,11 @@ void XrmQPutStringResource(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XrmPutStringResource(
+#else
 void XrmPutStringResource(
+#endif
 #if NeedFunctionPrototypes
     XrmDatabase* a	/* database */,
     _Xconst char* b	/* specifier */,
@@ -5843,14 +7729,22 @@ void XrmPutStringResource(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XrmPutLineResource(
+#else
 void XrmPutLineResource(
+#endif
 #if NeedFunctionPrototypes
     XrmDatabase* a	/* database */,
     _Xconst char* b	/* line */
 #endif
 ){}
 
- XrmQGetResource(
+#if defined(_VISUALC_)
+extern Export XrmQGetResource(
+#else
+XrmQGetResource(
+#endif
 #if NeedFunctionPrototypes
     XrmDatabase	a	/* database */,
     XrmNameList	b	/* quark_name */,
@@ -5860,7 +7754,11 @@ void XrmPutLineResource(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XrmGetResource(
+#else
 Bool XrmGetResource(
+#endif
 #if NeedFunctionPrototypes
     XrmDatabase	a	/* database */,
     _Xconst char* b	/* str_name */,
@@ -5873,7 +7771,11 @@ Bool XrmGetResource(
   return(0);
 }
 
+#if defined(_VISUALC_)
+extern Export Bool XrmQGetSearchList(
+#else
 Bool XrmQGetSearchList(
+#endif
 #if NeedFunctionPrototypes
     XrmDatabase	a	/* database */,
     XrmNameList	b	/* names */,
@@ -5883,7 +7785,11 @@ Bool XrmQGetSearchList(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Bool XrmQGetSearchResource(
+#else
 Bool XrmQGetSearchResource(
+#endif
 #if NeedFunctionPrototypes
     XrmSearchList a	/* list */,
     XrmName	b	/* name */,
@@ -5899,26 +7805,42 @@ Bool XrmQGetSearchResource(
  *
  ****************************************************************/
 
+#if defined(_VISUALC_)
+extern Export void XrmSetDatabase(
+#else
 void XrmSetDatabase(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */,
     XrmDatabase	b	/* database */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XrmDatabase XrmGetDatabase(
+#else
 XrmDatabase XrmGetDatabase(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XrmDatabase XrmGetFileDatabase(
+#else
 XrmDatabase XrmGetFileDatabase(
+#endif
 #if NeedFunctionPrototypes
     _Xconst char* a	/* filename */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export Status XrmCombineFileDatabase(
+#else
 Status XrmCombineFileDatabase(
+#endif
 #if NeedFunctionPrototypes
     _Xconst char* b	/* filename */,
     XrmDatabase* a	/* target */,
@@ -5926,27 +7848,43 @@ Status XrmCombineFileDatabase(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export XrmDatabase XrmGetStringDatabase(
+#else
 XrmDatabase XrmGetStringDatabase(
+#endif
 #if NeedFunctionPrototypes
     _Xconst char* a	/* data */  /*  null terminated string */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XrmPutFileDatabase(
+#else
 void XrmPutFileDatabase(
+#endif
 #if NeedFunctionPrototypes
     XrmDatabase	a	/* database */,
     _Xconst char* b	/* filename */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XrmMergeDatabases(
+#else
 void XrmMergeDatabases(
+#endif
 #if NeedFunctionPrototypes
     XrmDatabase	b	/* source_db */,
     XrmDatabase* a	/* target_db */
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export void XrmCombineDatabase(
+#else
 void XrmCombineDatabase(
+#endif
 #if NeedFunctionPrototypes
     XrmDatabase	b	/* source_db */,
     XrmDatabase* a	/* target_db */,
@@ -5957,7 +7895,11 @@ void XrmCombineDatabase(
 #define XrmEnumAllLevels 0
 #define XrmEnumOneLevel  1
 
+#if defined(_VISUALC_)
+extern Export Bool XrmEnumerateDatabase(
+#else
 Bool XrmEnumerateDatabase(
+#endif
 #if NeedFunctionPrototypes
     XrmDatabase	a	/* db */,
     XrmNameList	b	/* name_prefix */,
@@ -5977,7 +7919,11 @@ Bool XrmEnumerateDatabase(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+extern Export char *XrmLocaleOfDatabase(
+#else
 char *XrmLocaleOfDatabase(
+#endif
 #if NeedFunctionPrototypes
     XrmDatabase a	/* database */
 #endif
@@ -6010,7 +7956,11 @@ typedef struct {
 } XrmOptionDescRec, *XrmOptionDescList;
 
 
+#if defined(_VISUALC_)
+extern Export void XrmParseCommand(
+#else
 void XrmParseCommand(
+#endif
 #if NeedFunctionPrototypes
     XrmDatabase* a	/* database */,
     XrmOptionDescList b	/* table */,

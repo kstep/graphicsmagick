@@ -145,7 +145,7 @@ typedef CARD32		BITS32;
 typedef CARD16		BITS16;
 typedef CARD8		BYTE;
 
-typedef CARD8           BOOL;
+/* typedef CARD8           BOOL; */
 
 
 /*
