@@ -755,7 +755,7 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
   blob=(unsigned char *) AcquireMemory(length+1);
   if (blob != (unsigned char *) NULL)
     {
-      (void) CloneMemory(blob,value,length);
+      (void) memcpy(blob,value,length);
       blob[length]='\0';
     }
   UnlockResource(global);

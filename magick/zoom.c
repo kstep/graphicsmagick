@@ -343,7 +343,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     q=SetImagePixels(magnify_image,0,y,magnify_image->columns,1);
     if ((pixels == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    (void) CloneMemory(q,pixels,image->columns*sizeof(PixelPacket));
+    (void) memcpy(q,pixels,image->columns*sizeof(PixelPacket));
     if (!SyncImagePixels(magnify_image))
       break;
   }
@@ -356,7 +356,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
       magnify_image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    (void) CloneMemory(scanline,p,magnify_image->columns*sizeof(PixelPacket));
+    (void) memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
     q=GetImagePixels(magnify_image,0,(long) (2*(image->rows-1-y)),
       magnify_image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -427,11 +427,11 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   p=GetImagePixels(magnify_image,0,(long) (2*image->rows-2),
     magnify_image->columns,1);
   if (p != (PixelPacket *) NULL)
-    (void) CloneMemory(scanline,p,magnify_image->columns*sizeof(PixelPacket));
+    (void) memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
   q=GetImagePixels(magnify_image,0,(long) (2*image->rows-1),
     magnify_image->columns,1);
   if (q != (PixelPacket *) NULL)
-    (void) CloneMemory(q,scanline,magnify_image->columns*sizeof(PixelPacket));
+    (void) memcpy(q,scanline,magnify_image->columns*sizeof(PixelPacket));
   (void) SyncImagePixels(magnify_image);
   LiberateMemory((void **) &scanline);
   return(magnify_image);
@@ -1245,7 +1245,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
         p=AcquireImagePixels(image,0,j,image->columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        (void) CloneMemory(pixels,p,image->columns*sizeof(PixelPacket));
+        (void) memcpy(pixels,p,image->columns*sizeof(PixelPacket));
       }
     /*
       Sample each column.
