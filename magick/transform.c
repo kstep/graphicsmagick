@@ -277,22 +277,22 @@ Export void CoalesceImages(Image *images)
       (void) ParseGeometry(image->previous->page,&x,&y,&sans,&sans);
     previous_box.x1=x;
     previous_box.y1=y;
-    previous_box.x2=x+image->previous->columns;
-    previous_box.y2=y+image->previous->rows;
+    previous_box.x2=image->previous->columns+x;
+    previous_box.y2=image->previous->rows+y;
     x=0;
     y=0;
     if (image->page != (char *) NULL)
       (void) ParseGeometry(image->page,&x,&y,&sans,&sans);
-    if ((x <= previous_box.x1) && (y <= previous_box.y1) && !image->matte &&
-        (x+image->columns >= (previous_box.x2)) &&
-        (y+image->rows >= (previous_box.y2)))
-      continue; /* because image completely obscures previous */
+    if (!image->matte && (x <= previous_box.x1) && (y <= previous_box.y1) &&
+        ((image->columns+x) >= previous_box.x2) &&
+        ((image->rows+y) >= previous_box.y2))
+       continue; /* image completely obscures previous image */
     bounding_box.x1=x < previous_box.x1 ? x : previous_box.x1;
     bounding_box.y1=y < previous_box.y1 ? y : previous_box.y1;
-    bounding_box.x2= (x+image->columns) > (previous_box.x2) ?
-      x+image->columns : previous_box.x2;
-    bounding_box.y2=(y+image->rows) > (previous_box.y2) ?
-      y+image->rows : previous_box.y2;
+    bounding_box.x2=(image->columns+x) > previous_box.x2 ?
+      (image->columns+x+0.5) : previous_box.x2;
+    bounding_box.y2=(image->rows+y) > (previous_box.y2) ?
+      (image->rows+y+0.5) : previous_box.y2;
     assert(!image->orphan);
     image->orphan=True;
     cloned_image=CloneImage(image,image->columns,image->rows,True);
@@ -303,9 +303,8 @@ Export void CoalesceImages(Image *images)
           "Memory allocation failed for cloned image");
         return;
       }
-    image->columns=(unsigned int) (bounding_box.x2-bounding_box.x1);
-    image->rows=(unsigned int) (bounding_box.y2-bounding_box.y1);
-    assert(image->columns > 0 && image->rows > 0);
+    image->columns=(unsigned int) (bounding_box.x2-bounding_box.x1+0.5);
+    image->rows=(unsigned int) (bounding_box.y2-bounding_box.y1+0.5);
     image->packets=image->columns*image->rows;
     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
       image->pixels,image->packets*sizeof(RunlengthPacket));
@@ -315,30 +314,31 @@ Export void CoalesceImages(Image *images)
           "Memory reallocation failed");
         return;
       }
-    if ((((bounding_box.x1 != x) && (bounding_box.y1 != y)) &&
-        ((bounding_box.x1 != previous_box.x1) &&
-         (bounding_box.y1 != previous_box.y1))) ||
-       (((bounding_box.x2 != (cloned_image->columns+x)) &&
-         (bounding_box.y2 != (cloned_image->rows+y))) &&
-        ((bounding_box.x2 != previous_box.x2) &&
-         (bounding_box.y2 != previous_box.y2))) ||
-       (((bounding_box.x1 != x) &&
-         (bounding_box.y2 != (cloned_image->rows+y))) &&
-        ((bounding_box.x1 != previous_box.x1) &&
-         (bounding_box.y2 != previous_box.y2))) ||
-       (((bounding_box.x2 != (cloned_image->columns+x)) &&
+    image->matte=
+      ((((bounding_box.x1 != x) ||
          (bounding_box.y1 != y)) &&
-        ((bounding_box.x2 != previous_box.x2) &&
-         (bounding_box.y1 != previous_box.y1))))
-      image->matte=True;
+        ((bounding_box.x1 != previous_box.x1) ||
+         (bounding_box.y1 != previous_box.y1))) ||
+       (((bounding_box.x2 != (image->columns+x)) ||
+         (bounding_box.y2 != (image->rows+y))) &&
+        ((bounding_box.x2 != previous_box.x2) ||
+         (bounding_box.y2 != previous_box.y2))) ||
+       (((bounding_box.x1 != x) ||
+         (bounding_box.y2 != (image->rows+y))) &&
+        ((bounding_box.x1 != previous_box.x1) ||
+         (bounding_box.y2 != previous_box.y2))) ||
+       (((bounding_box.x2 != (image->columns+x)) ||
+         (bounding_box.y1 != y)) &&
+        ((bounding_box.x2 != previous_box.x2) ||
+         (bounding_box.y1 != previous_box.y1))));
     matte=image->matte;
     SetImage(image);
     CompositeImage(image,ReplaceCompositeOp,image->previous,
-      (int) (previous_box.x1-bounding_box.x1),
-      (int) (previous_box.y1-bounding_box.y1));
+      (int) (previous_box.x1-bounding_box.x1+0.5),
+      (int) (previous_box.y1-bounding_box.y1+0.5));
     CompositeImage(image,
       cloned_image->matte ? OverCompositeOp : ReplaceCompositeOp,
-      cloned_image,(int) (x-bounding_box.x1),(int) (y-bounding_box.y1));
+      cloned_image,(int) (x-bounding_box.x1+0.5),(int) (y-bounding_box.y1+0.5));
     cloned_image->orphan=True;
     DestroyImage(cloned_image);
     FormatString(geometry,"%ux%u%+d%+d",image->columns,image->rows,
