@@ -459,6 +459,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
   pixels=(unsigned char *) AcquireMemory(row_bytes*image->rows);
   if (pixels == (unsigned char *) NULL)
     return((unsigned char *) NULL);
+  memset(pixels,0,row_bytes*image->rows);
   scanline=(unsigned char *) AcquireMemory(row_bytes);
   if (scanline == (unsigned char *) NULL)
     return((unsigned char *) NULL);
@@ -488,6 +489,12 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
       scanline_length=ReadBlobMSBShort(blob);
     else
       scanline_length=ReadBlobByte(blob);
+    if (scanline_length >= row_bytes)
+      {
+        ThrowException(&image->exception,CorruptImageWarning,
+          "Unable to uncompress image","scanline length exceeds row bytes");
+        break;
+      }
     (void) ReadBlob(blob,scanline_length,(char *) scanline);
     for (j=0; j < (long) scanline_length; )
       if ((scanline[j] & 0x80) == 0)
