@@ -2628,7 +2628,7 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
 %  returns a value other than 0 if successful.  Check the exception member
 %  of image to determine the reason for any failure.
 %
-%  The format of the AllocateNextImage method is:
+%  The format of the DisplayImages method is:
 %
 %      unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
 %
