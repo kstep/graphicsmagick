@@ -1797,7 +1797,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           byte,
           polarity;
 
-        if ((image_info->type == PaletteType) ||
+        if ((image->storage_class == DirectClass) ||
+            (image_info->type == PaletteType) ||
             !IsMonochromeImage(image,&image->exception))
           {
             /*
@@ -1833,8 +1834,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         else
           if (image->colors == 2)
             {
-              polarity=
-                Intensity(&image->colormap[0]) > Intensity(&image->colormap[1]);
+              polarity=Intensity(&image->colormap[0]) >
+                Intensity(&image->colormap[1]);
               if (photometric == PHOTOMETRIC_MINISBLACK)
                 polarity=!polarity;
             }
