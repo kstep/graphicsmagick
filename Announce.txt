@@ -1,6 +1,6 @@
 The ImageMagick Studio LLC development group announces the release of
-ImageMagick 5.5.2. Version 5.5.2 is primarily a bug-fix release but does
-provide a number of significant new features.
+ImageMagick 5.5.2. Version 5.5.2 provides a number of significant
+enhancements over earlier ImageMagick versions.
 
 ImageMagick is a robust collection of tools and libraries to read,
 write, and manipulate an image in many image formats (over 87 major
@@ -27,22 +27,53 @@ details):
 
     - Platform independent changes
 
-      + 
+      + Visual Directory (VID) creation is many times faster.
+
+      + Quantizing a DirectClass image with less than 256 unique colors is
+        no longer lossy.
+
+      + Local adaptive thresholding is now supported via the -lat option.
+
+      + ImageMagick now reads CMYK + alpha layered PSD files correctly.
+
+      + PNG coder now supports the PNG8, PNG24, and PNG32 magick tag
+        specifications in order to provide the user with more control over
+        the output sub-format.
+
+      + PDF coder now writes much smaller files when the source image
+        is a TIFF file.
+
+      + PS2 and PS3 coders now write valid Postscript files.
 
     - Windows specific changes
 
-     + 
+     + The image pixel cache now supports large images (>2GB of total
+       uncompressed pixel data) under Windows NT. Support for the large
+       pixel cache is enabled by default. Windows '95 is not supported
+       unless the large pixel cache support is disabled.
+
+     + Updated to use Jasper 1.600.0 for JPEG v2 support.
+
+     + Updated to use FreeType 2.1.2 for TrueType and Postscript font
+       support.
+
+     + IMdisplay program now lists more supported file types in its
+       "open file" dialog box.
   
   o Utilities enhancements/changes:
 
-     - 
+     - The 'display' utility is tremendously faster at loading large
+       images (larger than the display size), and is faster at loading
+       images, and at quitting, in general.
 
   o C API enhancements:
-     - No changes in this release.
+     - Added AdaptiveThresholdImage() function.
+     - List APIs improved.
 
   o C++ API enhancements:
 
-     - 
+     - Added adaptiveThreshold() method.
+     - Added colorMapSize() method.
 
   o Perl API enhancements:
      - No changes in this release.
@@ -58,6 +89,10 @@ The ImageMagick 5.5.2 source code is available via ftp as
 The ImageMagick 5.5.2 Windows install package is available via ftp as
 
   ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-i686-pc-windows.exe
+
+         or (QuantumDepth=8 version)
+
+  ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-i686-Q8-windows.exe
 
 If ftp.imagemagick.org is overloaded, check the list of mirrors at
 http://www.imagemagick.org/www/archives.html for other mirrors.
