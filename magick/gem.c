@@ -450,6 +450,83 @@ MagickExport void HSLTransform(const double hue,const double saturation,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   H W B T r a n s f o r m                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method HWBTransform converts a (hue, whiteness, blackness) to a
+%  (red, green, blue) triple.
+%
+%  The format of the HWBTransformImage method is:
+%
+%      void HWBTransform(const double hue,const double whiteness,
+%        const double blackness,Quantum *red,Quantum *green,Quantum *blue)
+%
+%  A description of each parameter follows:
+%
+%    o hue, whiteness, blackness: A double value representing a
+%      component of the HWB color space.
+%
+%    o red, green, blue: A pointer to a pixel component of type Quantum.
+%
+%
+*/
+MagickExport void HWBTransform(const double hue,const double whiteness,
+  const double blackness,Quantum *red,Quantum *green,Quantum *blue)
+{
+  double
+    b,
+    f,
+    g,
+    n,
+    r,
+    v;
+
+  register int
+    i;
+
+  /*
+    Convert HWB to RGB colorspace.
+  */
+  assert(red != (Quantum *) NULL);
+  assert(green != (Quantum *) NULL);
+  assert(blue != (Quantum *) NULL);
+  v=1.0-blackness;
+  if (hue == 0.0)
+    {
+      *red=(Quantum) (MaxRGB*v+0.5);
+      *green=(Quantum) (MaxRGB*v+0.5);
+      *blue=(Quantum) (MaxRGB*v+0.5);
+      return;
+    }
+  i=floor(hue);
+  f=hue-i;
+  if (i & 0x01)
+    f=1.0-f;
+  n=whiteness+f*(v-whiteness);  /* linear interpolation */
+  switch (i)
+  {
+    default:
+    case 6:
+    case 0: r=v; g=n; b=whiteness; break;
+    case 1: r=n; g=v; b=whiteness; break;
+    case 2: r=whiteness; g=v; b=n; break;
+    case 3: r=whiteness; g=n; b=v; break;
+    case 4: r=n; g=whiteness; b=v; break;
+    case 5: r=v; g=whiteness; b=n; break;
+  }
+  *red=(Quantum) (MaxRGB*r+0.5);
+  *green=(Quantum) (MaxRGB*g+0.5);
+  *blue=(Quantum) (MaxRGB*b+0.5);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   H u l l                                                                   %
 %                                                                             %
 %                                                                             %
@@ -861,6 +938,68 @@ MagickExport void TransformHSL(const Quantum red,const Quantum green,
     else
       *hue=(r == min ? 3.0+(max-g)/delta : 5.0-(max-r)/delta);
   *hue/=6.0;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   T r a n s f o r m H W B                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method TransformHWB converts a (red, green, blue) to a
+%  (hue, whiteness, blackness) triple.
+%
+%  The format of the TransformHWB method is:
+%
+%      void TransformHWB(const Quantum red,const Quantum green,
+%        const Quantum blue,double *hue,double *whiteness,double *blackness)
+%
+%  A description of each parameter follows:
+%
+%    o red, green, blue: A Quantum value representing the red, green, and
+%      blue component of a pixel.
+%
+%    o hue, whiteness, blackness: A pointer to a double value representing a
+%      component of the HWB color space.
+%
+%
+*/
+MagickExport void TransformHWB(const Quantum red,const Quantum green,
+  const Quantum blue,double *hue,double *whiteness,double *blackness)
+{
+  double
+    b,
+    f,
+    g,
+    r,
+    v;
+
+  register int
+    i;
+
+  /*
+    Convert RGB to HWB colorspace.
+  */
+  assert(hue != (double *) NULL);
+  assert(whiteness != (double *) NULL);
+  assert(blackness != (double *) NULL);
+  r=(double) red/MaxRGB;
+  g=(double) green/MaxRGB;
+  b=(double) blue/MaxRGB;
+  *hue=0.0;
+  *whiteness=Min(r,Min(g,b));
+  v=Max(r,Max(g,b));
+  *blackness=1.0-v;
+  if (v == *whiteness)
+    return;
+  f=(r == *whiteness) ? g-b : ((g == *whiteness) ? b-r : r-g);
+  i=(r == *whiteness) ? 3 : ((g == *whiteness) ? 5 : 1);
+  *hue=(double) i-f/(v-*whiteness);
 }
 
 /*

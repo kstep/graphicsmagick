@@ -3099,12 +3099,12 @@ MagickExport unsigned int GradientImage(Image *image,
   const PixelPacket *start_color,const PixelPacket *stop_color)
 {
   double
-    brightness,
-    brightness_step,
+    blackness,
+    blackness_step,
     hue,
     hue_step,
-    saturation,
-    saturation_step;
+    whiteness,
+    whiteness_step;
 
   long
     y;
@@ -3125,14 +3125,14 @@ MagickExport unsigned int GradientImage(Image *image,
   assert(image->signature == MagickSignature);
   assert(start_color != (const PixelPacket *) NULL);
   assert(stop_color != (const PixelPacket *) NULL);
-  (void) TransformHSL(start_color->red,start_color->green,start_color->blue,
-    &hue,&saturation,&brightness);
-  (void) TransformHSL(stop_color->red,stop_color->green,stop_color->blue,
-    &hue_step,&saturation_step,&brightness_step);
+  (void) TransformHWB(start_color->red,start_color->green,start_color->blue,
+    &hue,&whiteness,&blackness);
+  (void) TransformHWB(stop_color->red,stop_color->green,stop_color->blue,
+    &hue_step,&whiteness_step,&blackness_step);
   number_pixels=image->columns*image->rows;
   hue_step=(hue_step-hue)/number_pixels;
-  saturation_step=(saturation_step-saturation)/number_pixels;
-  brightness_step=(brightness_step-brightness)/number_pixels;
+  whiteness_step=(whiteness_step-whiteness)/number_pixels;
+  blackness_step=(blackness_step-blackness)/number_pixels;
   /*
     Initialize image pixels.
   */
@@ -3143,12 +3143,12 @@ MagickExport unsigned int GradientImage(Image *image,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
+      HWBTransform(hue,whiteness,blackness,&q->red,&q->green,&q->blue);
       q->opacity=OpaqueOpacity;
       q++;
       hue+=hue_step;
-      saturation+=saturation_step;
-      brightness+=brightness_step;
+      whiteness+=whiteness_step;
+      blackness+=blackness_step;
     }
     if (!SyncImagePixels(image))
       break;
