@@ -382,7 +382,6 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   size_t *length,ExceptionInfo *exception)
 {
   char
-    *blob,
     filename[MaxTextExtent];
 
   ImageInfo
@@ -399,6 +398,9 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
 
   struct stat
     attributes;
+
+  unsigned char
+    *blob;
 
   unsigned int
     status;
@@ -449,6 +451,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
           return((void *) NULL);
         }
       DestroyImageInfo(clone_info);
+      blob=(unsigned char *) null;
       for (p=image; p != (Image *) NULL; p=p->next)
       {
         *length=p->blob.length;

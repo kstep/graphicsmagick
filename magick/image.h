@@ -127,7 +127,7 @@ typedef struct _BlobInfo
   unsigned int
     mapped;
 
-  char
+  unsigned char
     *data;
 
   off_t
