@@ -297,7 +297,8 @@ push(@$images,$example);
 print "Montage image...\n";
 $montage=$images->Montage(geometry=>'130x194+10+5>',gravity=>'Center',
   bordercolor=>'green',borderwidth=>1,tile=>'5x1000',compose=>'over',
-  background=>'#ffffff',font=>'Generic.ttf',pointsize=>18,fill=>'#600');
+  background=>'#ffffff',font=>'Generic.ttf',pointsize=>18,fill=>'#600',
+  stroke=>'none');
 
 $logo=Image::Magick->new();
 $logo->Read('logo:');

@@ -196,7 +196,7 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
   montage_info->gravity=CenterGravity;
   montage_info->compose=OverCompositeOp;
   montage_info->fill=image_info->pen;
-  montage_info->stroke=image_info->pen;
+  (void) QueryColorDatabase("#000000ff",&montage_info->fill->stroke);
   montage_info->background_color=image_info->background_color;
   montage_info->border_color=image_info->border_color;
   montage_info->matte_color=image_info->matte_color;
