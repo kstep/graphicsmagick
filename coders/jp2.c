@@ -406,13 +406,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   CloseBlob(image);
   return(image);
 }
-#else
-static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
-{
-  ThrowException(exception,MissingDelegateError,
-    "JP2 library is not available",image_info->filename);
-  return((Image *) NULL);
-}
 #endif
 
 /*
@@ -449,8 +442,10 @@ ModuleExport void RegisterJP2Image(void)
   entry->magick=IsJP2;
   entry->adjoin=False;
   entry->thread_support=False;
+#if defined(HasJP2)
   entry->decoder=ReadJP2Image;
   entry->encoder=WriteJP2Image;
+#endif
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPC");
   entry->description=AcquireString("JPEG-2000 Code Stream Syntax");
@@ -458,8 +453,10 @@ ModuleExport void RegisterJP2Image(void)
   entry->magick=IsJPC;
   entry->adjoin=False;
   entry->thread_support=False;
+#if defined(HasJP2)
   entry->decoder=ReadJP2Image;
   entry->encoder=WriteJP2Image;
+#endif
   (void) RegisterMagickInfo(entry);
 }
 
@@ -681,11 +678,5 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   jas_image_destroy(jp2_image);
   CloseBlob(image);
   return(True);
-}
-#else
-static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
-{
-  ThrowBinaryException(MissingDelegateError,"JP2 library is not available",
-    image->filename);
 }
 #endif
