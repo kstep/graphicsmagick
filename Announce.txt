@@ -17,11 +17,52 @@ dedicated to making software imaging solutions freely available.
 ImageMagick is available for free, may be used to support both open and
 proprietary applications, and may be redistributed without fee.
 
-Significant changes from the 5.4.2 release (see release ChangeLog for
+Significant changes from the 5.4.5 release (see release ChangeLog for
 details):
 
   o General:
+    * ImageMagick may now be built (static build only) using the
+      free MinGW development package from http://www.mingw.org.
+      Leonard's "clipboard" coder is included in the build.
+  
+    * Added new "clipboard" coder for reading/writing the system's
+      clipboard.  Currently this is only implemented on Windows.
+      For example:  'convert logo: clipboard:', 'convert clipboard: foo.png'
+  
+    * Support autotrace via delegates.mgk.
+      For example:  'convert autotrace:file.png file.mvg'
+  
+    * Added progress monitor support to DrawImage().
+  
+    * Added progress monitor support to wmf.c.
+  
+    * Added EscapeText() to utility.c to support escaping text.
+  
+    * Text escaping for -draw and DrawAnnotation was not working properly.
+      Now it does.  Backslash should act as a escape for the the active
+      quote character (', ", or }) as well as backslash.  The backslash
+      should be discarded if it was used as an escape character.  In order
+      to reliably pass a backslash, two successive backslashes are required
+      (e.g. "\\").
+  
+    * Modified Base64Encode() of utility.c so that it returns the number of
+      characters encoded. This avoids having to invoke strlen() on possibly
+      megabytes of data.
+  
+    * Fixed compilation error with Sun Workshop compiler (wmf.c).
+  
+    * Implement polypolygon support in WMF renderer.  Requires libwmf
+      0.2.4 with draw_polypolygon IPA callback.
+  
+    * Added --enable-ccmalloc configure option.
+  
+    * DCM patch provided by Shane Blackett.
+  
+    * Lock mutex when destroying a SemaphoreInfo structure (patch provided
+      by William Radcliffe).
 
+    * Added mingw patches provided by Derry Bryson.
+  
   o Utilities enhancements/changes:
 
   o C API enhancements:
