@@ -37,15 +37,6 @@ typedef unsigned char Quantum;
 #define TransparentOpacity  MaxRGB
 
 /*
-  3D effects.
-*/
-#define AccentuateModulate  UpScale(80)
-#define HighlightModulate  UpScale(125)
-#define ShadowModulate  UpScale(135)
-#define DepthModulate  UpScale(185)
-#define TroughModulate  UpScale(110)
-
-/*
   Typedef declarations.
 */
 typedef struct _PointInfo

@@ -181,11 +181,15 @@ else \
 #define ScaleColor6to8(x)  ((x) << 2)
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
 #define True  1
-
-#if defined(HasLTDL) || defined(_MAGICKMOD_)
-#define HasMODULES
-#endif
-
+
+/*
+  3D effects.
+*/
+#define AccentuateModulate  UpScale(80)
+#define HighlightModulate  UpScale(125)
+#define ShadowModulate  UpScale(135)
+#define DepthModulate  UpScale(185)
+#define TroughModulate  UpScale(110)
 
 /*
   Define system symbols if not already defined.
@@ -200,6 +204,10 @@ else \
 
 #if !defined(MAP_FAILED)
 #define MAP_FAILED      ((void *) -1)
+#endif
+
+#if defined(HasLTDL) || defined(_MAGICKMOD_)
+#define HasMODULES
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
