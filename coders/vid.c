@@ -156,12 +156,43 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (i=0; i < number_files; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
+    if ( clone_info->size == (char *) NULL )
+      CloneString( &clone_info->size, DefaultTileGeometry );
     (void) strncpy(clone_info->filename,filelist[i],MaxTextExtent-1);
     next_image=ReadImage(clone_info,exception);
     LiberateMemory((void **) &filelist[i]);
     if (next_image != (Image *) NULL)
       {
         (void) SetImageAttribute(next_image,"label",DefaultTileLabel);
+        {
+          double
+            scale_factor;
+          
+          unsigned long
+            height,
+            width;
+          
+          long 
+            x,
+            y;
+          
+          width=next_image->columns;
+          height=next_image->rows;
+          GetMagickGeometry (clone_info->size, &x, &y, &width, &height );
+          scale_factor=((double)width*height)/((double)next_image->columns*next_image->rows);
+          if ( scale_factor < 0.01 )
+            {
+              Image
+                *sample_image;
+              
+              sample_image=SampleImage(next_image,width*4,height*4,exception);
+              if (sample_image != (Image *) NULL)
+                {
+                  DestroyImage(next_image);
+                  next_image=sample_image;
+                }
+            }
+        }
         (void) TransformImage(&next_image,(char *) NULL,
           clone_info->size == (char *) NULL ? DefaultTileGeometry :
           clone_info->size);
