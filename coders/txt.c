@@ -110,18 +110,17 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image,
     *texture;
 
-  int
+  long
     count,
-    offset;
+		offset;
 
   RectangleInfo
     page;
 
-  register char
-    *p;
+  TypeMetric
+    metrics;
 
   unsigned int
-    height,
     status;
 
   /*
@@ -175,8 +174,6 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       DetachBlob(clone_info->blob);
       (void) strncpy(clone_info->filename,image_info->texture,MaxTextExtent-1);
       texture=ReadImage(clone_info,exception);
-      if (texture != (Image *) NULL)
-        TextureImage(image,texture);
       DestroyImageInfo(clone_info);
     }
   /*
@@ -184,28 +181,40 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  (void) CloneString(&draw_info->text,image_info->filename);
+  FormatString(geometry,"0x0%+ld%+ld",page.x,page.y);
+  (void) CloneString(&draw_info->geometry,geometry);
+  status=GetTypeMetrics(image,draw_info,&metrics);
+	if (status == False)
+    ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
-  offset=0;
-  for ( ; ; )
+  (void) ReadBlobString(image,text);
+  for (offset=2*page.y; ReadBlobString(image,text) != (char *) NULL; )
   {
     /*
       Annotate image with text.
     */
-    p=ReadBlobString(image,text);
-    if (p == (char *) NULL)
-      break;
-    (void) CloneString(&draw_info->text,text);
-    FormatString(geometry,"%+ld%+ld",page.x,page.y+offset);
-    (void) CloneString(&draw_info->geometry,geometry);
-    (void) AnnotateImage(image,draw_info);
-    height=(unsigned int) (draw_info->pointsize*
-      AbsoluteValue(Max(draw_info->affine.sx,draw_info->affine.rx)));
-    offset+=height;
+    text[strlen(text)]='\0';
+    (void) ConcatenateString(&draw_info->text,text);
+    (void) ConcatenateString(&draw_info->text,"\\n");
+    offset+=metrics.height;
     if (image->previous == (Image *) NULL)
-      if (QuantumTick(page.y+offset,image->rows))
-        MagickMonitor(LoadImageText,page.y+offset,image->rows);
-    if (((2*page.y)+offset+height) < image->rows)
+      if (QuantumTick(offset,image->rows))
+        MagickMonitor(LoadImageText,offset,image->rows);
+    if (offset < image->rows)
       continue;
+    if (texture != (Image *) NULL)
+      {
+        MonitorHandler
+          handler;
+
+        handler=SetMonitorHandler((MonitorHandler) NULL);
+        TextureImage(image,texture);
+        (void) SetMonitorHandler(handler);
+      }
+    (void) AnnotateImage(image,draw_info);
+    *draw_info->text='\0';
+    offset=2*page.y;
     /*
       Page is full-- allocate next image structure.
     */
@@ -221,20 +230,17 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) strncpy(image->filename,filename,MaxTextExtent-1);
     SetImage(image,OpaqueOpacity);
     MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
-    /*
-      Initialize text image to background color.
-    */
-    if (texture != (Image *) NULL)
-      {
-        MonitorHandler
-          handler;
-
-        handler=SetMonitorHandler((MonitorHandler) NULL);
-        TextureImage(image,texture);
-        (void) SetMonitorHandler(handler);
-      }
-    offset=0;
   }
+  if (texture != (Image *) NULL)
+    {
+      MonitorHandler
+        handler;
+
+      handler=SetMonitorHandler((MonitorHandler) NULL);
+      TextureImage(image,texture);
+      (void) SetMonitorHandler(handler);
+    }
+  (void) AnnotateImage(image,draw_info);
   if (texture != (Image *) NULL)
     DestroyImage(texture);
   DestroyDrawInfo(draw_info);
