@@ -9,30 +9,8 @@ extern "C" {
 #endif
 
 /*
-  Define declaration.
-*/
-#define MagicInfoListExtent 256
-#define StringMethodArgumentExtent  64
-
-/*
   Typedef declaractions.
 */
-typedef enum
-{
-  UndefinedMagicMethod,
-  StringMagicMethod
-} MagicMethod;
-
-typedef struct _StringMethodArgument
-{
-  unsigned char
-    value[StringMethodArgumentExtent];
-
-  unsigned int
-    length,
-    offset;
-} StringMethodArgument;
-
 typedef struct _MagicInfoMember
 {
   MagicMethod
@@ -60,11 +38,8 @@ typedef struct _MagicInfo
 /*
   Magic method declarations.
 */
-extern MagickExport unsigned int
-  SetImageMagic(const unsigned char *,const unsigned int,char *);
-
-extern MagickExport void
-  DestroyMagicInfo(void);
+extern MagickExport MagicInfo
+  *GetMagicInfo(const unsigned char *,const unsigned int,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

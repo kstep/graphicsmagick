@@ -146,7 +146,6 @@ MagickExport void CatchImageException(Image *image)
 static void DefaultErrorHandler(const ExceptionType error,const char *reason,
   const char *description)
 {
-  DestroyDelegateInfo();
   if (reason == (char *) NULL)
     Exit(error);
   (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),

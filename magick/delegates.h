@@ -36,7 +36,7 @@ extern MagickExport char
   *GetDelegateCommand(const ImageInfo *,Image *,const char *,const char *);
 
 extern MagickExport DelegateInfo
-  *GetDelegateInfo(const char *,const char *),
+  *GetDelegateInfo(const char *,const char *,ExceptionInfo *exception),
   *SetDelegateInfo(DelegateInfo *);
 
 extern MagickExport unsigned int

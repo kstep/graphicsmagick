@@ -744,7 +744,7 @@ extern MagickExport unsigned int
     ExceptionInfo *),
   RGBTransformImage(Image *,const ColorspaceType),
   SetImageDepth(Image *,const unsigned int),
-  SetImageInfo(ImageInfo *,const unsigned int),
+  SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
   SignatureImage(Image *),
   SortColormapByIntensity(Image *),
   (*SyncImagePixels)(Image *),

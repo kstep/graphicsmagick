@@ -7915,7 +7915,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
     return((Image *) NULL);
   image_info=CloneImageInfo(resource_info->image_info);
   (void) strcpy(image_info->filename,filename);
-  SetImageInfo(image_info,False);
+  SetImageInfo(image_info,False,&exception);
   if (LocaleCompare(image_info->magick,"X") == 0)
     {
       char
@@ -10120,7 +10120,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
     }
   image_info=CloneImageInfo(resource_info->image_info);
   (void) strcpy(image_info->filename,filename);
-  SetImageInfo(image_info,False);
+  SetImageInfo(image_info,False,&image->exception);
   if ((LocaleCompare(image_info->magick,"JPEG") == 0) ||
       (LocaleCompare(image_info->magick,"JPG") == 0))
     {

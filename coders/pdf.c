@@ -192,13 +192,13 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if (image_info->monochrome)
     {
-      delegate_info=GetDelegateInfo("gs-mono",(char *) NULL);
+      delegate_info=GetDelegateInfo("gs-mono",(char *) NULL,exception);
       if (delegate_info == (DelegateInfo *) NULL)
         return((Image *) NULL);
     }
   else
     {
-      delegate_info=GetDelegateInfo("gs-color",(char *) NULL);
+      delegate_info=GetDelegateInfo("gs-color",(char *) NULL,exception);
       if (delegate_info == (DelegateInfo *) NULL)
         return((Image *) NULL);
     }

@@ -42,9 +42,6 @@ typedef struct _FontInfo
     *metrics,
     *version;
 
-  unsigned long
-    signature;
-
   struct _FontInfo
     *previous,
     *next;
@@ -179,7 +176,7 @@ extern MagickExport DrawInfo
   *CloneDrawInfo(const ImageInfo *,const DrawInfo *);
 
 extern MagickExport FontInfo
-  *GetFontInfo(char *);
+  *GetFontInfo(const char *,ExceptionInfo *);
 
 extern MagickExport unsigned int
   AnnotateImage(Image *,const DrawInfo *),

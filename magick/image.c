@@ -5834,7 +5834,7 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned int depth)
 %  The format of the SetImageInfo method is:
 %
 %      unsigned int SetImageInfo(ImageInfo *image_info,
-%        const unsigned int rectify)
+%        const unsigned int rectify,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -5844,16 +5844,21 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned int depth)
 %      multi-frame support (user may want multi-frame but image format may not
 %      support it).
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
 MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
-  const unsigned int rectify)
+  const unsigned int rectify,ExceptionInfo *exception)
 {
   char
     magic[MaxTextExtent];
 
   Image
     *image;
+
+  MagicInfo
+    *magic_info;
 
   register char
     *p,
@@ -6054,8 +6059,12 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       (void) fclose(file);
     }
   DestroyImage(image);
-  if (SetImageMagic(magick,2*MaxTextExtent,magic) == True)
-    (void) strcpy(image_info->magick,magic);
+  p=GetImageMagick(magick,2*MaxTextExtent);
+  if (p != (char *) NULL)
+    (void) strcpy(image_info->magick,p);
+  magic_info=GetMagicInfo(magick,2*MaxTextExtent,exception);
+  if (magic_info != (MagicInfo *) NULL)
+    (void) strcpy(image_info->magick,magic_info->tag);
   return(True);
 }
 

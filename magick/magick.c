@@ -528,9 +528,6 @@ MagickExport void MagickIncarnate(const char *path)
     filename[MaxTextExtent],
     magic[MaxTextExtent];
 
-  unsigned char
-    magick[MaxTextExtent];
-
   assert(path != (const char *) NULL);
   (void) getcwd(directory,MaxTextExtent);
   (void) SetClientPath(directory);
@@ -540,8 +537,6 @@ MagickExport void MagickIncarnate(const char *path)
   SetClientName(filename);
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
-  *magick='\0';
-  (void) SetImageMagic(magick,MaxTextExtent,magic);
 }
 
 /*

@@ -65,7 +65,7 @@
   Global declaractions.
 */
 static DelegateInfo
-  *delegates = (DelegateInfo *) NULL;
+  *delegate_list = (DelegateInfo *) NULL;
 
 static SemaphoreInfo
   *delegate_semaphore = (SemaphoreInfo *) NULL;
@@ -74,7 +74,7 @@ static SemaphoreInfo
   Forward declaractions.
 */
 static unsigned int
-  ReadDelegates(const char *);
+  ReadConfigurationFile(const char *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,7 +100,7 @@ static unsigned int
 extern "C" {
 #endif
 
-MagickExport void DestroyDelegateInfo(void)
+static void DestroyDelegateInfo(void)
 {
   DelegateInfo
     *delegate;
@@ -109,7 +109,7 @@ MagickExport void DestroyDelegateInfo(void)
     *p;
 
   AcquireSemaphore(&delegate_semaphore);
-  for (p=delegates; p != (DelegateInfo *) NULL; )
+  for (p=delegate_list; p != (DelegateInfo *) NULL; )
   {
     if (p->commands != (char *) NULL)
       LiberateMemory((void **) &p->commands);
@@ -117,7 +117,7 @@ MagickExport void DestroyDelegateInfo(void)
     p=p->next;
     LiberateMemory((void **) &delegate);
   }
-  delegates=(DelegateInfo *) NULL;
+  delegate_list=(DelegateInfo *) NULL;
   LiberateSemaphore(&delegate_semaphore);
 }
 
@@ -142,7 +142,7 @@ MagickExport void DestroyDelegateInfo(void)
 %  The format of the GetDelegateInfo method is:
 %
 %      DelegateInfo *GetDelegateInfo(const char *decode_tag,
-%        const char *encode_tag)
+%        const char *encode_tag,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -155,31 +155,39 @@ MagickExport void DestroyDelegateInfo(void)
 %    o encode_tag: Specifies the encode delegate we are searching for as a
 %      character string.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
 MagickExport DelegateInfo *GetDelegateInfo(const char *decode_tag,
-  const char *encode_tag)
+  const char *encode_tag,ExceptionInfo *exception)
 {
   register DelegateInfo
     *p;
 
   AcquireSemaphore(&delegate_semaphore);
-  if (delegates == (DelegateInfo *) NULL)
+  if (delegate_list == (DelegateInfo *) NULL)
     {
+      unsigned int
+        status;
+
       /*
         Read delegates.
       */
-      (void) ReadDelegates("delegates.mgk");
+      status=ReadConfigurationFile("delegates.mgk");
+      if (status == False)
+        ThrowException(exception,FileOpenWarning,
+          "Unable to read delegates configuration file","delegates.mgk");
       atexit(DestroyDelegateInfo);
     }
   LiberateSemaphore(&delegate_semaphore);
   if ((LocaleCompare(decode_tag,"*") == 0) &&
       (LocaleCompare(encode_tag,"*") == 0))
-    return(delegates);
+    return(delegate_list);
   /*
     Search for requested delegate.
   */
-  for (p=delegates; p != (DelegateInfo *) NULL; p=p->next)
+  for (p=delegate_list; p != (DelegateInfo *) NULL; p=p->next)
   {
     if (p->direction > 0)
       {
@@ -260,7 +268,7 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(decode_tag != (char *) NULL);
-  delegate_info=GetDelegateInfo(decode_tag,encode_tag);
+  delegate_info=GetDelegateInfo(decode_tag,encode_tag,&image->exception);
   if (delegate_info == (DelegateInfo *) NULL)
     {
       ThrowException(&image->exception,MissingDelegateWarning,"no tag found",
@@ -337,7 +345,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   (void) strcpy(filename,image->filename);
-  delegate_info=GetDelegateInfo(decode_tag,encode_tag);
+  delegate_info=GetDelegateInfo(decode_tag,encode_tag,&image->exception);
   if (delegate_info == (DelegateInfo *) NULL)
     ThrowBinaryException(MissingDelegateWarning,"no tag found",
       decode_tag ? decode_tag : encode_tag);
@@ -454,7 +462,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
           ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
             (char *) NULL);
         FormatString(clone_info->filename,"%.1024s:",delegate_info->decode_tag);
-        SetImageInfo(clone_info,True);
+        SetImageInfo(clone_info,True,&image->exception);
         for (p=image; p != (Image *) NULL; p=p->next)
         {
           FormatString(p->filename,"%.1024s:%.1024s",delegate_info->decode_tag,
@@ -530,6 +538,9 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
     delegate[MaxTextExtent],
     tag[MaxTextExtent];
 
+  ExceptionInfo
+    exception;
+
   register DelegateInfo
     *p;
 
@@ -543,8 +554,8 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
   (void) fprintf(file,"Decode-Tag   Encode-Tag  Delegate\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------\n");
-  (void) GetDelegateInfo("*","*");
-  for (p=delegates; p != (DelegateInfo *) NULL; p=p->next)
+  (void) GetDelegateInfo("*","*",&exception);
+  for (p=delegate_list; p != (DelegateInfo *) NULL; p=p->next)
   {
     i=0;
     if (p->commands != (char *) NULL)
@@ -569,28 +580,28 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d D e l e g a t e s                                                 %
++   R e a d C o n f i g u r a t i o n F i l e                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadDelegates reads the delegates configuration file.
+%  Method ReadConfigurationFile reads the delegates configuration file.
 %
-%  The format of the ReadDelegates method is:
+%  The format of the ReadConfigurationFile method is:
 %
-%      unsigned int ReadDelegates(const char *filename)
+%      unsigned int ReadConfigurationFile(const char *filename)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadDelegates returns True if at least one delegate
-%      is defined otherwise False.
+%    o status: Method ReadConfigurationFile returns True if at least one
+%      delegate is defined otherwise False.
 %
 %    o filename:  The delegate configuration filename.
 %
 %
 */
-static unsigned int ReadDelegates(const char *filename)
+static unsigned int ReadConfigurationFile(const char *filename)
 {
   char
     *path,
@@ -683,7 +694,7 @@ static unsigned int ReadDelegates(const char *filename)
       }
   }
   (void) fclose(file);
-  return(delegates != (DelegateInfo *) NULL);
+  return(delegate_list != (DelegateInfo *) NULL);
 }
 
 /*
@@ -729,7 +740,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   assert(delegate_info != (DelegateInfo *) NULL);
   delegate=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
   if (delegate == (DelegateInfo *) NULL)
-    return(delegates);
+    return(delegate_list);
   (void) strcpy(delegate->decode_tag,delegate_info->decode_tag);
   (void) strcpy(delegate->encode_tag,delegate_info->encode_tag);
   delegate->direction=delegate_info->direction;
@@ -742,18 +753,18 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
       delegate->commands=(char *)
         AcquireMemory(Extent(delegate_info->commands)+1);
       if (delegate->commands == (char *) NULL)
-        return(delegates);
+        return(delegate_list);
       (void) strcpy(delegate->commands,delegate_info->commands);
     }
   delegate->signature=MagickSignature;
   delegate->previous=(DelegateInfo *) NULL;
   delegate->next=(DelegateInfo *) NULL;
-  if (delegates == (DelegateInfo *) NULL)
+  if (delegate_list == (DelegateInfo *) NULL)
     {
-      delegates=delegate;
-      return(delegates);
+      delegate_list=delegate;
+      return(delegate_list);
     }
-  for (p=delegates; p != (DelegateInfo *) NULL; p=p->next)
+  for (p=delegate_list; p != (DelegateInfo *) NULL; p=p->next)
   {
     if ((LocaleCompare(p->decode_tag,delegate_info->decode_tag) == 0) &&
         (LocaleCompare(p->encode_tag,delegate_info->encode_tag) == 0) &&
@@ -765,7 +776,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
         LiberateMemory((void **) &p->commands);
         p->commands=delegate->commands;
         LiberateMemory((void **) &delegate);
-        return(delegates);
+        return(delegate_list);
       }
     if (p->next == (DelegateInfo *) NULL)
       break;
@@ -775,5 +786,5 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   */
   delegate->previous=p;
   p->next=delegate;
-  return(delegates);
+  return(delegate_list);
 }

@@ -246,6 +246,12 @@ typedef enum
 
 typedef enum
 {
+  UndefinedMagicMethod,
+  StringMagicMethod
+} MagicMethod;
+
+typedef enum
+{
   ReadMode,
   WriteMode,
   IOMode

@@ -76,7 +76,7 @@
   Static declarations.
 */
 static FontInfo
-  *fonts = (FontInfo *) NULL;
+  *font_list = (FontInfo *) NULL;
 
 static SemaphoreInfo *
   font_semaphore = (SemaphoreInfo *) NULL;
@@ -85,7 +85,7 @@ static SemaphoreInfo *
   Forward declarations.
 */
 static unsigned int
-  ReadFonts(const char *),
+  ReadConfigurationFile(const char *),
   RenderFont(Image *,const DrawInfo *,const PointInfo *,
     const unsigned int,FontMetric *),
   RenderPostscript(Image *,const DrawInfo *,const PointInfo *,
@@ -398,13 +398,13 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 extern "C" {
 #endif
 
-MagickExport void DestroyFontInfo(void)
+static void DestroyFontInfo(void)
 {
   register FontInfo
     *p;
 
   AcquireSemaphore(&font_semaphore);
-  for (p=fonts; p != (FontInfo *) NULL; )
+  for (p=font_list; p != (FontInfo *) NULL; )
   {
     if (p->name != (char *) NULL)
       LiberateMemory((void **) &p->name);
@@ -424,11 +424,11 @@ MagickExport void DestroyFontInfo(void)
       LiberateMemory((void **) &p->glyphs);
     if (p->version != (char *) NULL)
       LiberateMemory((void **) &p->version);
-    fonts=p;
+    font_list=p;
     p=p->next;
-    LiberateMemory((void **) &fonts);
+    LiberateMemory((void **) &font_list);
   }
-  fonts=(FontInfo *) NULL;
+  font_list=(FontInfo *) NULL;
   LiberateSemaphore(&font_semaphore);
 }
 
@@ -452,7 +452,7 @@ MagickExport void DestroyFontInfo(void)
 %
 %  The format of the GetFontInfo method is:
 %
-%      FontInfo *GetFontInfo(char *name)
+%      FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -461,27 +461,35 @@ MagickExport void DestroyFontInfo(void)
 %
 %    o name: The font name.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-MagickExport FontInfo *GetFontInfo(char *name)
+MagickExport FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
 {
   register FontInfo
     *p;
 
   AcquireSemaphore(&font_semaphore);
-  if (fonts == (FontInfo *) NULL)
+  if (font_list == (FontInfo *) NULL)
     {
+      unsigned int
+        status;
+
       /*
         Read fonts.
       */
-      (void) ReadFonts("fonts.mgk");
+      status=ReadConfigurationFile("fonts.mgk");
+      if (status == False)
+        ThrowException(exception,FileOpenWarning,
+          "Unable to read font configuration file","fonts.mgk");
       atexit(DestroyFontInfo);
     }
   LiberateSemaphore(&font_semaphore);
   /*
     Search for requested font.
   */
-  for (p=fonts; p != (FontInfo *) NULL; p=p->next)
+  for (p=font_list; p != (FontInfo *) NULL; p=p->next)
     if ((p->name != (char *) NULL) && (LocaleCompare(p->name,name) == 0))
       break;
   return(p);
@@ -551,23 +559,23 @@ MagickExport unsigned int GetFontMetrics(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d F o n t s                                                         %
++   R e a d C o n f i g u r a t i o n F i l e                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadFonts reads the font configuration file which maps font names
-%  with Type1 or TrueType glyph files on disk.
+%  Method ReadConfigurationFile reads the font configuration file which maps
+%  font names with Type1 or TrueType glyph files on disk.
 %
-%  The format of the ReadFonts method is:
+%  The format of the ReadConfigurationFile method is:
 %
-%      unsigned int ReadFonts(const char *filename)
+%      unsigned int ReadConfigurationFile(const char *filename)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadFonts returns True if at least one font is defined
-%      otherwise False.
+%    o status: Method ReadConfigurationFile returns True if at least one font
+%      is defined otherwise False.
 %
 %    o filename:  The font configuration filename.
 %
@@ -684,17 +692,17 @@ static void ParseFonts(void *context,const xmlChar *name,
         break;
     }
   }
-  if (fonts == (FontInfo *) NULL)
+  if (font_list == (FontInfo *) NULL)
     {
-      fonts=font_info;
+      font_list=font_info;
       return;
     }
-  for (p=fonts; p->next != (FontInfo *) NULL; p=p->next);
+  for (p=font_list; p->next != (FontInfo *) NULL; p=p->next);
   p->next=font_info;
   font_info->previous=p;
 }
 
-static unsigned int ReadFonts(const char *filename)
+static unsigned int ReadConfigurationFile(const char *filename)
 {
   xmlSAXHandler
     SAXHandlerStruct =
@@ -772,10 +780,10 @@ static unsigned int ReadFonts(const char *filename)
   xmlFreeParserCtxt(parser);
   xmlCleanupParser();
   (void) fclose(file);
-  return(fonts == (FontInfo *) NULL);
+  return(font_list == (FontInfo *) NULL);
 }
 #else
-static unsigned int ReadFonts(const char *filename)
+static unsigned int ReadConfigurationFile(const char *filename)
 {
   return(False);
 }
@@ -836,7 +844,7 @@ static unsigned int RenderFont(Image *image,const DrawInfo *draw_info,
   if (draw_info->font == (char *) NULL)
     return(RenderPostscript(image,draw_info,offset,render,metrics));
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  font_info=GetFontInfo(draw_info->font);
+  font_info=GetFontInfo(draw_info->font,&image->exception);
   if ((font_info != (FontInfo *) NULL) && (font_info->glyphs != (char *) NULL))
     (void) strcpy(image_info->filename,font_info->glyphs);
   else
@@ -846,7 +854,7 @@ static unsigned int RenderFont(Image *image,const DrawInfo *draw_info,
     (void) strcpy(image_info->magick,"TTF");
   if (*image_info->filename == '-')
     (void) strcpy(image_info->magick,"X");
-  (void) SetImageInfo(image_info,False);
+  (void) SetImageInfo(image_info,False,&image->exception);
   clone_info=CloneDrawInfo(image_info,draw_info);
   if (*image_info->filename != '@')
     CloneString(&clone_info->font,image_info->filename);

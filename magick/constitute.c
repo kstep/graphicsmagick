@@ -1747,7 +1747,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   clone_info=CloneImageInfo(image_info);
   if (*clone_info->filename == '@')
     return(ReadImages(clone_info,exception));
-  SetImageInfo(clone_info,False);
+  SetImageInfo(clone_info,False,exception);
   (void) strcpy(filename,clone_info->filename);
   /*
     Call appropriate image reader based on image type.
@@ -1766,7 +1766,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       unsigned int
         status;
 
-      delegate_info=GetDelegateInfo(clone_info->magick,(char *) NULL);
+      delegate_info=GetDelegateInfo(clone_info->magick,(char *) NULL,exception);
       if (delegate_info == (DelegateInfo *) NULL)
         {
           if (IsAccessible(clone_info->filename))
@@ -1797,7 +1797,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       image=(Image *) NULL;
       if (status != False)
         clone_info->temporary=True;
-      SetImageInfo(clone_info,False);
+      SetImageInfo(clone_info,False,exception);
       magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
       if ((magick_info == (MagickInfo *) NULL) ||
           (magick_info->decoder ==
@@ -2148,13 +2148,14 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   clone_info=CloneImageInfo(image_info);
   (void) strcpy(clone_info->filename,image->filename);
   (void) strcpy(clone_info->magick,image->magick);
-  SetImageInfo(clone_info,True);
+  SetImageInfo(clone_info,True,&image->exception);
   (void) strcpy(image->filename,clone_info->filename);
   if ((image->next == (Image *) NULL) || clone_info->adjoin)
     if ((image->previous == (Image *) NULL) && !IsImageTainted(image))
       if (IsAccessible(image->magick_filename))
         {
-          delegate_info=GetDelegateInfo(image->magick,clone_info->magick);
+          delegate_info=GetDelegateInfo(image->magick,clone_info->magick,
+            &image->exception);
           if ((delegate_info != (DelegateInfo *) NULL) &&
               (clone_info->page == (char *) NULL))
             if (delegate_info->direction == 0)
@@ -2183,7 +2184,8 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     }
   else
     {
-      delegate_info=GetDelegateInfo((char *) NULL,clone_info->magick);
+      delegate_info=GetDelegateInfo((char *) NULL,clone_info->magick,
+        &image->exception);
       if (delegate_info != (DelegateInfo *) NULL)
         {
           /*

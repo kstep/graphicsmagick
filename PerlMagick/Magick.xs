@@ -979,6 +979,9 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     opacity,
     red;
 
+  ExceptionInfo
+    exception;
+
   int
     sp;
 
@@ -1354,7 +1357,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           if (info)
             {
               FormatString(info->image_info->filename,"%.1024s:",SvPV(sval,na));
-              SetImageInfo(info->image_info,True);
+              SetImageInfo(info->image_info,True,&exception);
               if (*info->image_info->magick == '\0')
                 MagickWarning(OptionWarning,"Unrecognized image format",
                   info->image_info->filename);
@@ -2178,7 +2181,7 @@ Average(ref)
     FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) strcpy(image->filename,info->image_info->filename);
-    SetImageInfo(info->image_info,False);
+    SetImageInfo(info->image_info,False,&image->exception);
     SvREFCNT_dec(error_list);
     error_jump=NULL;
     XSRETURN(1);
@@ -2423,7 +2426,7 @@ Coalesce(ref)
     FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) strcpy(image->filename,info->image_info->filename);
-    SetImageInfo(info->image_info,False);
+    SetImageInfo(info->image_info,False,&image->exception);
     SvREFCNT_dec(error_list);
     error_jump=NULL;
     XSRETURN(1);
@@ -2782,7 +2785,7 @@ Flatten(ref)
     FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) strcpy(image->filename,info->image_info->filename);
-    SetImageInfo(info->image_info,False);
+    SetImageInfo(info->image_info,False,&image->exception);
     SvREFCNT_dec(error_list);
     error_jump=NULL;
     XSRETURN(1);
@@ -3686,7 +3689,7 @@ ImageToBlob(ref,...)
       (void) strcpy(next->filename,filename);
       next->scene=scene++;
     }
-    SetImageInfo(package_info->image_info,True);
+    SetImageInfo(package_info->image_info,True,&image->exception);
     for (next=image; next; next=next->next)
     {
       ExceptionInfo
@@ -5890,7 +5893,7 @@ Montage(ref,...)
     if (transparent_color.opacity != TransparentOpacity)
       for (next=image; next; next=next->next)
         TransparentImage(next,transparent_color,TransparentOpacity);
-    (void) SetImageInfo(info->image_info,False);
+    (void) SetImageInfo(info->image_info,False,&image->exception);
     for (next=image; next; next=next->next)
     {
       sv=newSViv((IV) next);
@@ -6138,7 +6141,7 @@ Mosaic(ref)
     SvREFCNT_dec(sv);
     info=GetPackageInfo((void *) av,info);
     (void) strcpy(image->filename,info->image_info->filename);
-    SetImageInfo(info->image_info,False);
+    SetImageInfo(info->image_info,False,&image->exception);
     SvREFCNT_dec(error_list);
     error_jump=NULL;
     XSRETURN(1);
@@ -7067,7 +7070,7 @@ Write(ref,...)
       (void) strcpy(next->filename,filename);
       next->scene=scene++;
     }
-    SetImageInfo(package_info->image_info,True);
+    SetImageInfo(package_info->image_info,True,&image->exception);
     for (next=image; next; next=next->next)
     {
       status=WriteImage(package_info->image_info,next);

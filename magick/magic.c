@@ -57,6 +57,25 @@
 #include "magic.h"
 
 /*
+  Define declaration.
+*/
+#define MagicInfoListExtent  256
+#define StringMethodArgumentExtent  64
+
+/*
+  Typedef declarations.
+*/
+typedef struct _StringMethodArgument
+{
+  unsigned char
+    value[StringMethodArgumentExtent];
+
+  unsigned int
+    length,
+    offset;
+} StringMethodArgument;
+
+/*
   Global declarations.
 */
 static MagicInfo
@@ -64,13 +83,18 @@ static MagicInfo
 
 static SemaphoreInfo
   *magic_semaphore = (SemaphoreInfo *) NULL;
+/*
+  Forward declarations.
+*/
+static int
+  ReadConfigurationFile(const char *filename);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y M a g i c I n f o                                           %
++   D e s t r o y M a g i c I n f o                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -88,7 +112,7 @@ static SemaphoreInfo
 extern "C" {
 #endif
 
-MagickExport void DestroyMagicInfo(void)
+static void DestroyMagicInfo(void)
 {
   MagicInfoMember
     *entry,
@@ -113,6 +137,7 @@ MagickExport void DestroyMagicInfo(void)
     LiberateMemory((void **) &magic_list[i]);
   }
   LiberateMemory((void **) &magic_list);
+  magic_list=(MagicInfo **) NULL;
   LiberateSemaphore(&magic_semaphore);
 }
 
@@ -125,13 +150,113 @@ MagickExport void DestroyMagicInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t M a g i c I n f o                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetMagicInfo searches the magic list for any image format tag that
+%  matches the specified image signature and if found returns attributes for
+%  that image format.
+%
+%  The format of the GetMagicInfo method is:
+%
+%      MagicInfo *GetMagicInfo(const unsigned char *magick,
+%        const unsigned int length,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o magic_info: Method GetMagicInfo searches the magic list for any image
+%      format tag that matches the specified image signature and if found
+%      returns attributes for that image format.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o magick: A binary string generally representing the first few characters
+%      of the image file or blob.
+%
+%    o length: The length of the binary signature.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport MagicInfo *GetMagicInfo(const unsigned char *magick,
+  const unsigned int length,ExceptionInfo *exception)
+{
+  MagicInfoMember
+    *member;
+
+  register int
+    i;
+
+  register StringMethodArgument
+    *p;
+
+  assert(magick != (const unsigned char *) NULL);
+  AcquireSemaphore(&magic_semaphore);
+  if (magic_list == (MagicInfo **) NULL)
+    {
+      unsigned int
+        status;
+
+      /*
+        Read magiclist.
+      */
+      status=ReadConfigurationFile("magic.mgk");
+      if (status == False)
+        ThrowException(exception,FileOpenWarning,
+          "Unable to read font configuration file","magic.mgk");
+      atexit(DestroyMagicInfo);
+    }
+  LiberateSemaphore(&magic_semaphore);
+  if (magic_list == (MagicInfo **) NULL)
+    return((MagicInfo *) NULL);
+  /*
+    Search for requested signature.
+  */
+  for (i=0; magic_list[i] != (MagicInfo *) NULL; i++)
+  {
+    switch (magic_list[i]->member->method)
+    {
+      case StringMagicMethod:
+      {
+        for (member=magic_list[i]->member; member != (MagicInfoMember *) NULL; )
+        {
+          p=(StringMethodArgument *) member->argument;
+          if ((p->offset+p->length) > length)
+            break;
+          if (memcmp(magick+p->offset,p->value,p->length) == 0)
+            {
+              if (member->status != True)
+                break;
+              if (member->next == (MagicInfoMember *) NULL)
+                return(magic_list[i]);
+             }
+          member=member->next;
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  }
+  return((MagicInfo *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d M a g i c C o n f i g u r e F i l e                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadMagicConfigureFile reads the magic configuration file.  It
+%  Method ReadConfigurationFile reads the magic configuration file.  This file
 %  contains one or tag and magic combinations to help identify which image
 %  format a particular image file or blob may be.  For example,
 %
@@ -139,24 +264,25 @@ MagickExport void DestroyMagicInfo(void)
 %    PNG     string(0,"\211PNG\r\n\032\n")
 %    TIFF    string(0,"\115\115\000\052")
 %
-%  The format of the ReadMagicConfigureFile method is:
+%  The format of the ReadConfigurationFile method is:
 %
-%      unsigned int ReadMagicConfigureFile(const char *filename)
+%      unsigned int ReadConfigurationFile(const char *filename)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method ReadMagicConfigureFile returns True if the
+%    o status:  Method ReadConfigurationFile returns True if the
 %      configuration file is parsed properly, otherwise False is returned.
 %
 %    o filename:  This character string is the filename of the magic
 %      configuration file.
 %
 */
-static int ReadMagicConfigureFile(const char *filename)
+static int ReadConfigurationFile(const char *filename)
 {
   char
     buffer[MaxTextExtent],
     *p,
+    *path,
     tag[MaxTextExtent];
 
   FILE
@@ -175,6 +301,7 @@ static int ReadMagicConfigureFile(const char *filename)
   register unsigned char
     *q;
 
+  assert(filename != (const char *) NULL);
   if (magic_list == (MagicInfo **) NULL)
     {
       /*
@@ -190,8 +317,11 @@ static int ReadMagicConfigureFile(const char *filename)
   /*
     Allocate and initialize the format list.
   */
-  assert(filename != (const char *) NULL);
-  file=fopen(filename,"r");
+  path=GetMagickConfigurePath(filename);
+  if (path == (char *) NULL)
+    return(False);
+  file=fopen(path,"r");
+  LiberateMemory((void **) &path);
   if (file == (FILE *) NULL)
     return(False);
   for (i=0; magic_list[i] != (MagicInfo *) NULL; i++);
@@ -379,183 +509,4 @@ static int ReadMagicConfigureFile(const char *filename)
   if (magic_list == (MagicInfo **) NULL)
     return(False);
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   R e a d M a g i c C o n f i g u r e F i l e s                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadMagicConfigureFiles searches a number of pre-defined locations
-%  for the specified ImageMagick configuration file and returns the path.
-%  The search order follows:
-%
-%             MagickModulesPath
-%             $HOME/.magick/
-%             $MAGICK_HOME/
-%             <program directory>/
-%             MagickLibPath
-%             MagickSharePath
-%             X11ConfigurePath
-%
-%  The format of the ReadMagicConfigureFiles method is:
-%
-%      char *ReadMagicConfigureFiles(const char *filename)
-%
-%  A description of each parameter follows:
-%
-%    o path:  Method ReadMagicConfigureFiles returns the path if the
-%      configuration file is found, otherwise NULL is returned.
-%
-%    o filename: A character string representing the desired configuration
-%      file.
-%
-%
-*/
-static unsigned int ReadMagicConfigureFiles(const char *filename)
-{
-  char
-    *path;
-
-  unsigned int
-    status;
-
-  path=AllocateString(filename);
-  FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
-  status=ReadMagicConfigureFile(path);
-  if (getenv("HOME") != (char *) NULL)
-    {
-      FormatString(path,"%.1024s%.1024s%.1024s%.1024s%.1024s",getenv("HOME"),
-        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,
-        DirectorySeparator,filename);
-      status|=ReadMagicConfigureFile(path);
-    }
-  if (getenv("MAGICK_HOME") != (char *) NULL)
-    {
-      FormatString(path,"%.1024s%.1024s%.1024s",getenv("MAGICK_HOME"),
-        DirectorySeparator,filename);
-      status|=ReadMagicConfigureFile(path);
-    }
-  FormatString(path,"%.1024s%.1024s%.1024s",SetClientPath((char *) NULL),
-    DirectorySeparator,filename);
-  status|=ReadMagicConfigureFile(path);
-  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
-  status|=ReadMagicConfigureFile(path);
-  FormatString(path,"%.1024s%.1024s",MagickSharePath,filename);
-  status|=ReadMagicConfigureFile(path);
-  FormatString(path,"%.1024s%.1024s",X11ConfigurePath,filename);
-  status|=ReadMagicConfigureFile(path);
-  FormatString(path,"%.1024s",filename);
-  status|=ReadMagicConfigureFile(path);
-  LiberateMemory((void **) &path);
-  return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t I m a g e M a g i c                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method SetImageMagic identifies the type of a image blob or file using,
-%  among other tests, a test for whether the image begins with a certain
-%  magic number.  If a match is found, the tag is returned that represents
-%  the image format (e.g. JPEG, TIFF, GIF, etc).
-%
-%  The format of the SetImageMagic method is:
-%
-%      unsigned int SetImageMagic(const unsigned char *magick,
-%        const unsigned int length,char *magic)
-%
-%  A description of each parameter follows:
-%
-%    o status:  Method SetImageMagic returns True if the magic number matches
-%      a string in the magic list otherwise False.
-%
-%    o magick: A binary string generally representing the first few characters
-%      of the image file or blob.
-%
-%    o length: The length of the binary string.
-%
-%    o magic: A pointer to a character string.  If a match is found, the image
-%      format is returned as this string.
-%
-%
-*/
-MagickExport unsigned int SetImageMagic(const unsigned char *magick,
-  const unsigned int length,char *magic)
-{
-  MagicInfoMember
-    *member;
-
-  register char
-    *q;
-
-  register int
-    i;
-
-  register StringMethodArgument
-    *p;
-
-  assert(magick != (const unsigned char *) NULL);
-  assert(magic != (char *) NULL);
-  *magic='\0';
-  q=GetImageMagick(magick,length);
-  if (q != (char *) NULL)
-    {
-      (void) strcpy(magic,q);
-      return(True);
-    }
-  AcquireSemaphore(&magic_semaphore);
-  if (magic_list == (MagicInfo **) NULL)
-    {
-      if (ReadMagicConfigureFiles("magic.mgk") == False)
-        MagickWarning(FileOpenWarning,"no magic configuration file found",
-          "magic.mgk");
-      atexit(DestroyMagicInfo);
-    }
-  LiberateSemaphore(&magic_semaphore);
-  if (magic_list == (MagicInfo **) NULL)
-    return(False);
-  for (i=0; magic_list[i] != (MagicInfo *) NULL; i++)
-  {
-    switch (magic_list[i]->member->method)
-    {
-      case StringMagicMethod:
-      {
-        for (member=magic_list[i]->member; member != (MagicInfoMember *) NULL; )
-        {
-          p=(StringMethodArgument *) member->argument;
-          if ((p->offset+p->length) > length)
-            break;
-          if (memcmp(magick+p->offset,p->value,p->length) == 0)
-            {
-              if (member->status != True)
-                break;
-              if (member->next == (MagicInfoMember *) NULL)
-                {
-                  (void) strcpy(magic,magic_list[i]->tag);
-                  return(True);
-                }
-             }
-          member=member->next;
-        }
-        break;
-      }
-      default:
-        break;
-    }
-  }
-  return(False);
 }

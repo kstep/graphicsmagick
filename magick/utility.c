@@ -971,6 +971,9 @@ MagickExport void GetPathComponent(const char *path,PathType type,
 */
 MagickExport int GlobExpression(const char *expression,const char *pattern)
 {
+  ExceptionInfo
+    exception;
+
   unsigned int
     done,
     exempt;
@@ -994,7 +997,7 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
       */
       image_info=CloneImageInfo((ImageInfo *) NULL);
       (void) strcpy(image_info->filename,pattern);
-      SetImageInfo(image_info,True);
+      SetImageInfo(image_info,True,&exception);
       exempt=(LocaleCompare(image_info->magick,"VID") == 0) ||
         (image_info->subimage &&
         (LocaleCompare(expression,image_info->filename) == 0));
