@@ -376,14 +376,17 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
         *flatten_image;
 
       /*
-        Flatten an image sequence.
+        Flatten an image sequence - IF we have a sequence!
       */
-      flatten_image=FlattenImages(*image,&(*image)->exception);
-      if (flatten_image != (Image *) NULL)
-        {
-          DestroyImages(*image);
-          *image=flatten_image;
-        }
+	  if ((*image)->next != (Image *) NULL)
+	  {
+		  flatten_image=FlattenImages(*image,&(*image)->exception);
+		  if (flatten_image != (Image *) NULL)
+			{
+			  DestroyImages(*image);
+			  *image=flatten_image;
+			}
+	  }
     }
   if (option_info->morph != 0)
     {
@@ -1178,7 +1181,7 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("flatten",option+1) == 0)
             {
-              option_info.flatten=(*option == '-');
+              option_info.flatten=image_info->flatten=(*option == '-');
               break;
             }
           if (LocaleCompare("flip",option+1) == 0)
