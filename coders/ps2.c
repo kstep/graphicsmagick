@@ -754,8 +754,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         LiberateMemory((void **) &labels);
       }
     number_pixels=image->columns*image->rows;
-    if ((image_info->type != TrueColorType) &&
-        IsGrayImage(image,&image->exception))
+    if ((compression == FaxCompression) ||
+        ((image_info->type != TrueColorType) &&
+         IsGrayImage(image,&image->exception)))
       {
         FormatString(buffer,"%lu %lu\n1\n%d\n",image->columns,image->rows,
           (int) (image->colorspace == CMYKColorspace));
