@@ -2224,8 +2224,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyImage() dereferences an image, deallocating memory associated
-%  with the image if the reference count becomes zero.
+%  DestroyImage() dereferences an image, deallocating memory associated with
+%  the image if the reference count becomes zero.
 %
 %  The format of the DestroyImage method is:
 %
