@@ -955,7 +955,7 @@ then
     then
       GSColorDevice=ppmraw
     else
-      GSColorDevice=nodevice
+      GSColorDevice=ppmraw
     fi
   fi
   AC_SUBST(GSColorDevice)
@@ -967,7 +967,7 @@ then
   then
     GSMonoDevice=pbmraw
   else
-    GSMonoDevice=nodevice
+    GSMonoDevice=ppmraw
   fi
   AC_SUBST(GSMonoDevice)
   AC_MSG_RESULT($GSMonoDevice)
@@ -978,7 +978,7 @@ then
   then
     GSPDFDevice=pdfwrite
   else
-    GSPDFDevice=nodevice
+    GSPDFDevice=ppmraw
   fi
   AC_SUBST(GSPDFDevice)
   AC_MSG_RESULT($GSPDFDevice)
@@ -989,7 +989,7 @@ then
   then
     GSPSDevice=pswrite
   else
-    GSPSDevice=nodevice
+    GSPSDevice=ppmraw
   fi
   AC_SUBST(GSPSDevice)
   AC_MSG_RESULT($GSPSDevice)
@@ -1000,7 +1000,7 @@ then
   then
     GSEPSDevice=epswrite
   else
-    GSEPSDevice=nodevice
+    GSEPSDevice=ppmraw
   fi
   AC_SUBST(GSEPSDevice)
   AC_MSG_RESULT($GSEPSDevice)

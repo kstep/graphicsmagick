@@ -8244,7 +8244,7 @@ echo "configure:8239: checking for gs color device" >&5
     then
       GSColorDevice=ppmraw
     else
-      GSColorDevice=nodevice
+      GSColorDevice=ppmraw
     fi
   fi
   
@@ -8257,7 +8257,7 @@ echo "configure:8256: checking for gs mono device" >&5
   then
     GSMonoDevice=pbmraw
   else
-    GSMonoDevice=nodevice
+    GSMonoDevice=ppmraw
   fi
   
   echo "$ac_t""$GSMonoDevice" 1>&6
@@ -8269,7 +8269,7 @@ echo "configure:8268: checking for gs PDF writing device" >&5
   then
     GSPDFDevice=pdfwrite
   else
-    GSPDFDevice=nodevice
+    GSPDFDevice=ppmraw
   fi
   
   echo "$ac_t""$GSPDFDevice" 1>&6
@@ -8281,7 +8281,7 @@ echo "configure:8280: checking for gs PS writing device" >&5
   then
     GSPSDevice=pswrite
   else
-    GSPSDevice=nodevice
+    GSPSDevice=ppmraw
   fi
   
   echo "$ac_t""$GSPSDevice" 1>&6
@@ -8293,7 +8293,7 @@ echo "configure:8292: checking for gs EPS writing device" >&5
   then
     GSEPSDevice=epswrite
   else
-    GSEPSDevice=nodevice
+    GSEPSDevice=ppmraw
   fi
   
   echo "$ac_t""$GSEPSDevice" 1>&6
