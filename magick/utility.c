@@ -1949,9 +1949,8 @@ MagickExport char *SetClientName(const char *name)
   static char
     client_name[MaxTextExtent] = "Magick";
 
-  if (name == (char *) NULL)
-    return(client_name);
-  (void) strncpy(client_name,name,MaxTextExtent-1);
+  if ((name != (char *) NULL) && (*name != '\0'))
+    (void) strncpy(client_name,name,MaxTextExtent-1);
   return(client_name);
 }
 
@@ -1986,9 +1985,8 @@ MagickExport char *SetClientPath(const char *path)
   static char
     client_path[MaxTextExtent] = MagickModulesPath;
 
-  if (path == (char *) NULL)
-    return(client_path);
-  (void) strncpy(client_path,path,MaxTextExtent-1);
+  if ((path != (char *) NULL) && (*path != '\0'))
+    (void) strncpy(client_path,path,MaxTextExtent-1);
   return(client_path);
 }
 

@@ -236,17 +236,17 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
     DirectorySeparator,filename);
   if (IsAccessible(path))
     return(path);
-  if (getenv("HOME") != (char *) NULL)
+  if (getenv("MAGICK_HOME") != (char *) NULL)
     {
-      FormatString(path,"%.1024s%.1024s%.1024s%.1024s%.1024s",getenv("HOME"),
-        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,
+      FormatString(path,"%.1024s%.1024s%.1024s",getenv("MAGICK_HOME"),
         DirectorySeparator,filename);
       if (IsAccessible(path))
         return(path);
     }
-  if (getenv("MAGICK_HOME") != (char *) NULL)
+  if (getenv("HOME") != (char *) NULL)
     {
-      FormatString(path,"%.1024s%.1024s%.1024s",getenv("MAGICK_HOME"),
+      FormatString(path,"%.1024s%.1024s%.1024s%.1024s%.1024s",getenv("HOME"),
+        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,
         DirectorySeparator,filename);
       if (IsAccessible(path))
         return(path);
