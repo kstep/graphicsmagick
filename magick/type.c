@@ -355,7 +355,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
         (void) memset(type_info,0,sizeof(TypeInfo));
         if (type_list == (TypeInfo *) NULL)
           {
-            type_info->filename=AllocateString(filename);
             type_list=type_info;
             continue;
           }
@@ -488,5 +487,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
     return(False);
   while (type_list->previous != (TypeInfo *) NULL)
     type_list=type_list->previous;
+  CloneString(&type_list->filename,filename);
   return(True);
 }

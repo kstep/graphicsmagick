@@ -610,7 +610,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
         (void) memset(delegate_info,0,sizeof(DelegateInfo));
         if (delegate_list == (DelegateInfo *) NULL)
           {
-            delegate_info->filename=AllocateString(filename);
             delegate_list=delegate_info;
             continue;
           }
@@ -700,6 +699,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     return(False);
   while (delegate_list->previous != (DelegateInfo *) NULL)
     delegate_list=delegate_list->previous;
+  CloneString(&delegate_list->filename,filename);
   return(True);
 }
 

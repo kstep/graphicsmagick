@@ -858,7 +858,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
         (void) memset(alias_info,0,sizeof(ModuleAlias));
         if (module_aliases == (ModuleAlias *) NULL)
           {
-            alias_info->filename=AllocateString(filename);
             module_aliases=alias_info;
             continue;
           }
@@ -906,6 +905,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     return(False);
   while (module_aliases->previous != (ModuleAlias *) NULL)
     module_aliases=module_aliases->previous;
+  CloneString(&module_aliases->filename,filename);
 #endif
   return(True);
 }

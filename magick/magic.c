@@ -332,7 +332,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
         (void) memset(magic_info,0,sizeof(MagicInfo));
         if (magic_list == (MagicInfo *) NULL)
           {
-            magic_info->filename=AllocateString(filename);
             magic_list=magic_info;
             continue;
           }
@@ -439,5 +438,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
     return(False);
   while (magic_list->previous != (MagicInfo *) NULL)
     magic_list=magic_list->previous;
+  CloneString(&magic_list->filename,filename);
   return(True);
 }

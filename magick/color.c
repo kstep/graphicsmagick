@@ -1531,7 +1531,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
         (void) memset(color_info,0,sizeof(ColorInfo));
         if (color_list == (ColorInfo *) NULL)
           {
-            color_info->filename=AllocateString(filename);
             color_list=color_info;
             continue;
           }
@@ -1635,6 +1634,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     return(False);
   while (color_list->previous != (ColorInfo *) NULL)
     color_list=color_list->previous;
+  CloneString(&color_list->filename,filename);
   return(True);
 }
 
