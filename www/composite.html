@@ -163,7 +163,7 @@ the option again with a different effect.</p>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-background">-background</a> <i>color</i>
+    <a name="-background">-background</a> <i>&lt;color&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the background color</td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -174,7 +174,7 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-cache">-cache</a> <i>threshold</i>
+    <a name="-cache">-cache</a> <i>&lt;threshold&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>megabytes of memory available to the pixel cache</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -191,7 +191,7 @@ amount of free memory you may want to adjust this threshold value.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-colors">-colors</a> <i>value</i>
+    <a name="-colors">-colors</a> <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred number of colors in the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -213,7 +213,7 @@ affect the color reduction algorithm.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-colorspace">-colorspace</a> <i>value</i>
+    <a name="-colorspace">-colorspace</a> <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of colorspace</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -246,7 +246,7 @@ option to take effect.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-comment">-comment</a> <i>string</i>
+    <a name="-comment">-comment</a> <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>annotate an image with a comment</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -300,7 +300,7 @@ is read from a file titled by the remaining characters in the string.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-compose">-compose</a> <i>operator</i>
+    <a name="-compose">-compose</a> <i>&lt;operator&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of image composition</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -442,7 +442,7 @@ with 0 for any pixel matching in color to pixel location (0,0), otherwise
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-compress">-compress</a> <i>type</i>
+    <a name="-compress">-compress</a> <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of image compression</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -456,8 +456,10 @@ Specify <strong>+compress</strong> to store the binary image in an uncompressed 
 The default is the compression type of the specified image file.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If LZW compression has not been enabled, the image data will be written
-in an uncompressed LZW format that can be read by LZW decoders.</font></td></tr></table>
+If LZW compression is specified but LZW compression has not been enabled,
+the image data will be written
+in an uncompressed LZW format that can be read by LZW decoders.  This
+may result in larger-than-expected GIF files.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -466,7 +468,7 @@ in an uncompressed LZW format that can be read by LZW decoders.</font></td></tr>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-copy">-copy</a> <i>filename</i>
+    <a name="-copy">-copy</a> <i>&lt;filename&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>copy a previously read image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -511,7 +513,7 @@ and vertical direction. This option is used in concert with <strong>-page</stron
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-depth">-depth</a> <i>value</i>
+    <a name="-depth">-depth</a> <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>depth of the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -548,7 +550,7 @@ in both the horizontal and vertical directions.  However, if you specify
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-display">-display</a> <i>host:display[.screen]</i>
+    <a name="-display">-display</a> <i>&lt;host:display[.screen]&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specifies the X server to contact</td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -559,7 +561,7 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-dispose">-dispose</a> <i>method</i>
+    <a name="-dispose">-dispose</a> <i>&lt;method&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>GIF disposal method</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -579,7 +581,7 @@ Here are the valid methods:
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-dissolve">-dissolve</a> <i>percent</i>
+    <a name="-dissolve">-dissolve</a> <i>&lt;percent&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>dissolve an image into another by the given percent</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -618,7 +620,7 @@ text or graphic aliasing.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-filter">-filter</a> <i>type</i>
+    <a name="-filter">-filter</a> <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>use this type of filter when resizing an image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -654,7 +656,7 @@ The default filter is <strong>Lanczos</strong>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-font">-font</a> <i>name</i>
+    <a name="-font">-font</a> <i>&lt;name&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>use this font when annotating the image with text</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -722,7 +724,7 @@ to the main image.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-gravity">-gravity</a> <i>type</i>
+    <a name="-gravity">-gravity</a> <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>direction text gravitates to when annotating the image.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -736,7 +738,7 @@ the image. For example <em>Center</em> gravity forces the text to be centered
 within the image. By default, the image gravity is <em>NorthWest</em>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-When used as an option to <strong>composite</strong>, <strong>-gravity</strong>
+When used as an option to <em>composite</em>, <strong>-gravity</strong>
 gives the direction that the image gravitates within the composite.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -758,7 +760,7 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-interlace">-interlace</a> <i>type</i>
+    <a name="-interlace">-interlace</a> <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of interlacing scheme</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -788,7 +790,7 @@ Use <strong>Line</strong> or <strong>Plane</strong> to create an
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-label">-label</a> <i>name</i>
+    <a name="-label">-label</a> <i>&lt;name&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>assign a label to an image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -830,6 +832,9 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 If the image does not have a matte channel, create an opaque one.
 </font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Use <strong>+matte</strong> to ignore the matte channel and to avoid writing a
+matte channel in the output file.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -950,7 +955,7 @@ This option is used in concert with <strong>-density</strong>.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-profile">-profile</a> <i>filename</i>
+    <a name="-profile">-profile</a> <i>&lt;filename&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>add ICM, IPTC, or generic profile  to image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -970,7 +975,7 @@ image file.  Use <tt>+profile "*"</tt> to remove all profiles.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-quality">-quality</a> <i>value</i>
+    <a name="-quality">-quality</a> <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>JPEG/MIFF/PNG compression level</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1015,7 +1020,7 @@ specification.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-replace">-replace</a> <i>filename</i>
+    <a name="-replace">-replace</a> <i>&lt;filename&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>replace an image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1046,7 +1051,7 @@ image.</font></td></tr></table>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-rotate">-rotate</a> <i>degrees</i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
+    <a name="-rotate">-rotate</a> <i>&lt;degrees</i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i>&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply Paeth image rotation to the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1069,12 +1074,11 @@ for details.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-scene">-scene</a> <i>value</i>{<i>-value</i>}<i></i>
+    <a name="-scene">-scene</a> <i>&lt;value</i>{<i>-value</i>}<i>&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>image scene number or range</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use this option to specify an image sequence with a single filename. See
-the discussion of <em>file</em> below for details.</font></td></tr></table>
+Use this option
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1116,7 +1120,7 @@ or JPEG image (e.g. -size 1024x768).
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-stegano">-stegano</a> <i>offset</i>
+    <a name="-stegano">-stegano</a> <i>&lt;offset&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>hide watermark within an image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1149,7 +1153,7 @@ glasses are required to properly view the stereo image.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-treedepth">-treedepth</a> <i>value</i>
+    <a name="-treedepth">-treedepth</a> <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>tree depth for the color reduction algorithm</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1175,7 +1179,7 @@ to take effect.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-type">-type</a> <i>type</i>
+    <a name="-type">-type</a> <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the image type</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1192,7 +1196,7 @@ Choose from:
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-units">-units</a> <i>type</i>
+    <a name="-units">-units</a> <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of image resolution</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">

@@ -53,10 +53,10 @@ See \fIX(1)\fP for details
 about the geometry specification.
 
 .TP
-.B "-bordercolor \fIcolor"\fP
+.B "-bordercolor \fI<color>"\fP
 \fRthe border color
 .TP
-.B "-cache \fIthreshold"\fP
+.B "-cache \fI<threshold>"\fP
 \fRmegabytes of memory available to the pixel cache
 
 Image pixels are stored in memory until 80 megabytes of memory have been
@@ -65,7 +65,7 @@ memory are significantly faster but if your computer does not have a sufficient
 amount of free memory you may want to adjust this threshold value.
 
 .TP
-.B "-colors \fIvalue"\fP
+.B "-colors \fI<value>"\fP
 \fRpreferred number of colors in the image
 
 The actual number of colors in the image may be less than your request,
@@ -79,7 +79,7 @@ Note, options \fB-dither\fP, \fB-colorspace\fP, and \fB-treedepth\fP
 affect the color reduction algorithm.
 
 .TP
-.B "-colorspace \fIvalue"\fP
+.B "-colorspace \fI<value>"\fP
 \fRthe type of colorspace
 
 Choices are: \fBGRAY\fP, \fBOHTA\fP, \fBRGB\fP,
@@ -104,7 +104,7 @@ The \fB-colors\fP or \fB-monochrome\fP option is required for this
 option to take effect.
 
 .TP
-.B "-comment \fIstring"\fP
+.B "-comment \fI<string>"\fP
 \fRannotate an image with a comment
 
 Use this option to assign a specific comment to the image. You can include the
@@ -204,7 +204,7 @@ or Portable Document page. The default is 72 dots per inch in the horizontal
 and vertical direction. This option is used in concert with \fB-page\fP.
 
 .TP
-.B "-depth \fIvalue"\fP
+.B "-depth \fI<value>"\fP
 \fRdepth of the image
 
 This is the number of bits in a color sample within a pixel. The only
@@ -216,10 +216,10 @@ the depth of any image after it has been read.
 .B "-descend"
 \fRobtain image by descending window hierarchy
 .TP
-.B "-display \fIhost:display[.screen]"\fP
+.B "-display \fI<host:display[.screen]>"\fP
 \fRspecifies the X server to contact
 .TP
-.B "-dispose \fImethod"\fP
+.B "-dispose \fI<method>"\fP
 \fRGIF disposal method
 
 Here are the valid methods:
@@ -292,7 +292,7 @@ There are 72 pixels per inch in PostScript coordinates.
 .B "-help"
 \fRprint usage instructions
 .TP
-.B "-interlace \fItype"\fP
+.B "-interlace \fI<type>"\fP
 \fRthe type of interlacing scheme
 
 Choices are: \fBNone, Line, Plane,\fP
@@ -314,7 +314,7 @@ Use \fBLine\fP or \fBPlane\fP to create an
 \fBprogressive JPEG\fP image.
 
 .TP
-.B "-label \fIname"\fP
+.B "-label \fI<name>"\fP
 \fRassign a label to an image
 
 Use this option to assign a specific label to the image. Optionally you
@@ -431,10 +431,10 @@ This option is used in concert with \fB-density\fP.
 .B "-ping"
 \fRefficiently determine image characteristics
 .TP
-.B "-pointsize \fIvalue"\fP
+.B "-pointsize \fI<value>"\fP
 \fRpointsize of the Postscript, OPTION1, or TrueType font
 .TP
-.B "-quality \fIvalue"\fP
+.B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG compression level
 
 For the JPEG image format, quality is 0 (worst) to 100 (best). The default
@@ -476,7 +476,7 @@ specification.
 This is an alias for the \fB-geometry\fP option and it behaves in the
 same manner.
 .TP
-.B "-rotate \fIdegrees{<}{>}"\fP
+.B "-rotate \fI<degrees{<}{>}>"\fP
 \fRapply Paeth image rotation to the image
 
 Use > to rotate the image only if its width exceeds the height.
@@ -490,11 +490,14 @@ Empty triangles left over from rotating the image are filled with the color
 defined as \fBbackground\fP (class \fBbackgroundColor\fP). See \fIX(1)\fP
 for details.
 
+to specify an image sequence with a single filename. See
+the discussion of \fIfile\fP below for details.
 .TP
-.B "-scene \fIvalue"\fP
+.B "-scene \fI<value>"\fP
 \fRnumber of screen snapshots
 
-Use this option to grab more than one image from the X server screen to create
+Use this option
+to grab more than one image from the X server screen, to create
 an animation sequence.
 .TP
 .B "-screen"
@@ -509,7 +512,7 @@ popups that are independent windows but appear over the specified window.
 .B "-silent"
 \fRoperate silently
 .TP
-.B "-transparent \fIcolor"\fP
+.B "-transparent \fI<color>"\fP
 \fRmake this color transparent within the image
 .TP
 .B "-verbose"

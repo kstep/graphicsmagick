@@ -39,7 +39,7 @@ Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
 the option again with a different effect.
 .TP
-.B "-cache \fIthreshold"\fP
+.B "-cache \fI<threshold>"\fP
 \fRmegabytes of memory available to the pixel cache
 
 Image pixels are stored in memory until 80 megabytes of memory have been
@@ -59,16 +59,16 @@ or Portable Document page. The default is 72 dots per inch in the horizontal
 and vertical direction. This option is used in concert with \fB-page\fP.
 
 .TP
-.B "-depth \fIvalue"\fP
+.B "-depth \fI<value>"\fP
 \fRdepth of the image
 
-This is the number of bits in a pixel. The only acceptable
-values are 8 or 16.  Use this option to specify the depth of raw images whose
-depth is unknown such as GRAY, RGB, or CMYK, or to change the depth of any
-image after it has been read.
+This is the number of bits in a color sample within a pixel. The only
+acceptable values are 8 or 16.  Use this option to specify the depth of
+raw images whose depth is unknown such as GRAY, RGB, or CMYK, or to change
+the depth of any image after it has been read.
 
 .TP
-.B "-format \fI\"string\""\fP
+.B "-format \fI<string>"\fP
 \fRoutput formatted image characteristics
 
 Use this option to print information about the image in a format of your
@@ -105,7 +105,7 @@ For example,
 displays \fBMIFF:bird.miff 512x480\fP for an image
 titled \fBbird.miff\fP and whose width is 512 and height is 480.
 
-If the first character of <em>string</em> is \fB@\fP, the format
+If the first character of \fIstring\fP is \fB@\fP, the format
 is read from a file titled by the remaining characters in the string.
 .TP
 .B "-help"

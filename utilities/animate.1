@@ -60,7 +60,7 @@ the option again with a different effect.
 file. See \fIX(1)\fP. Options on the command line supersede values specified
 in your X resources file.
 .TP
-.B "-backdrop \fIcolor"\fP
+.B "-backdrop \fI<color>"\fP
 \fRdisplay the image centered on a backdrop.
 
 This backdrop covers the entire workstation screen and is useful for hiding
@@ -69,7 +69,7 @@ is specified as the background color. Refer to X Resources
 for details.
 
 .TP
-.B "-background \fIcolor"\fP
+.B "-background \fI<color>"\fP
 \fRthe background color
 .TP
 .B "-border \fI<width>x<height>"\fP
@@ -79,13 +79,13 @@ See \fIX(1)\fP for details
 about the geometry specification.
 
 .TP
-.B "-bordercolor \fIcolor"\fP
+.B "-bordercolor \fI<color>"\fP
 \fRthe border color
 .TP
-.B "-borderwidth \fIcolor"\fP
+.B "-borderwidth \fI<color>"\fP
 \fRthe border width
 .TP
-.B "-cache \fIthreshold"\fP
+.B "-cache \fI<threshold>"\fP
 \fRmegabytes of memory available to the pixel cache
 
 Image pixels are stored in memory until 80 megabytes of memory have been
@@ -106,7 +106,7 @@ The \fB-chop\fP option removes entire rows and columns,
 and moves the remaining corner blocks leftward and upward to close the gaps.
 
 .TP
-.B "-colormap \fItype"\fP
+.B "-colormap \fI<type>"\fP
 \fRdefine the colormap type
 
 Choose between \fBshared\fP or \fBprivate\fP.
@@ -120,7 +120,7 @@ very different than intended. Choose \fBPrivate\fP and the image colors
 appear exactly as they are defined. However, other clients may
 go \fItechnicolor\fP when the image colormap is installed.
 .TP
-.B "-colors \fIvalue"\fP
+.B "-colors \fI<value>"\fP
 \fRpreferred number of colors in the image
 
 The actual number of colors in the image may be less than your request,
@@ -134,7 +134,7 @@ Note, options \fB-dither\fP, \fB-colorspace\fP, and \fB-treedepth\fP
 affect the color reduction algorithm.
 
 .TP
-.B "-colorspace \fIvalue"\fP
+.B "-colorspace \fI<value>"\fP
 \fRthe type of colorspace
 
 Choices are: \fBGRAY\fP, \fBOHTA\fP, \fBRGB\fP,
@@ -215,7 +215,7 @@ or Portable Document page. The default is 72 dots per inch in the horizontal
 and vertical direction. This option is used in concert with \fB-page\fP.
 
 .TP
-.B "-depth \fIvalue"\fP
+.B "-depth \fI<value>"\fP
 \fRdepth of the image
 
 This is the number of bits in a color sample within a pixel. The only
@@ -224,10 +224,10 @@ raw images whose depth is unknown such as GRAY, RGB, or CMYK, or to change
 the depth of any image after it has been read.
 
 .TP
-.B "-display \fIhost:display[.screen]"\fP
+.B "-display \fI<host:display[.screen]>"\fP
 \fRspecifies the X server to contact
 .TP
-.B "-dispose \fImethod"\fP
+.B "-dispose \fI<method>"\fP
 \fRGIF disposal method
 
 Here are the valid methods:
@@ -255,7 +255,7 @@ Use \fB+dither\fP to turn off dithering and to render Postscript without
 text or graphic aliasing.
 
 .TP
-.B "-font \fIname"\fP
+.B "-font \fI<name>"\fP
 \fRuse this font when annotating the image with text
 
 You can tag a font to specify whether it is a Postscript, Truetype, or OPTION1
@@ -263,10 +263,10 @@ font.  For example, Arial.ttf is a Truetype font, ps:helvetica
 is Postscript, and x:fixed is OPTION1. 
 
 .TP
-.B "-foreground \fIcolor"\fP
+.B "-foreground \fI<color>"\fP
 \fRdefine the foreground color
 .TP
-.B "-gamma \fIvalue"\fP
+.B "-gamma \fI<value>"\fP
 \fRlevel of gamma correction
 
 The same color image displayed on two different workstations may look different
@@ -328,13 +328,13 @@ There are 72 pixels per inch in PostScript coordinates.
 .B "-help"
 \fRprint usage instructions
 .TP
-.B "-iconGeometry \fIgeometry"\fP
+.B "-iconGeometry \fI<geometry>"\fP
 \fRspecify the icon geometry
 .TP
 .B "-iconic"
 \fRiconic animation
 .TP
-.B "-interlace \fItype"\fP
+.B "-interlace \fI<type>"\fP
 \fRthe type of interlacing scheme
 
 Choices are: \fBNone, Line, Plane,\fP
@@ -351,10 +351,10 @@ is like plane except the different planes are saved to individual files
 (e.g. image.R, image.G, and image.B).
 
 .TP
-.B "-map \fItype"\fP
+.B "-map \fI<type>"\fP
 \fR
 display image using this type.
-[animate or display]
+[\fIanimate\fP or \fIdisplay\fP]
 
 Choose from these \fIStandard Colormap\fP types:
 
@@ -376,8 +376,11 @@ Colormaps.
 
 If the image does not have a matte channel, create an opaque one.
 
+
+Use \fB+matte\fP to ignore the matte channel and to avoid writing a
+matte channel in the output file.
 .TP
-.B "-mattecolor \fIcolor"\fP
+.B "-mattecolor \fI<color>"\fP
 \fRspecify the matte color
 .TP
 .B "-monochrome"
@@ -386,7 +389,7 @@ If the image does not have a matte channel, create an opaque one.
 .B "-name"
 \fRname an image
 .TP
-.B "-pause \fIseconds"\fP
+.B "-pause \fI<seconds>"\fP
 \fRpause between animation loops
 
 Pause for the specified number of seconds before repeating the
@@ -399,7 +402,7 @@ The only command recognized at this time is the name of
 an image file to load.
 
 .TP
-.B "-rotate \fIdegrees{<}{>}"\fP
+.B "-rotate \fI<degrees{<}{>}>"\fP
 \fRapply Paeth image rotation to the image
 
 Use > to rotate the image only if its width exceeds the height.
@@ -414,19 +417,18 @@ defined as \fBbackground\fP (class \fBbackgroundColor\fP). See \fIX(1)\fP
 for details.
 
 .TP
-.B "-scene \fIvalue{-value}"\fP
+.B "-scene \fI<value{-value}>"\fP
 \fRimage scene number or range
 
-Use this option to specify an image sequence with a single filename. See
-the discussion of \fIfile\fP below for details.
+Use this option
 .TP
 .B "-shared_memory"
 \fRuse shared memory
 
-This resource specifies whether the utility should attempt use shared memory
+This option specifies whether the utility should attempt use shared memory
 for pixmaps.  ImageMagick must be compiled with shared memory support,
 and the display must support the \fIMIT-SHM\fP extension.  Otherwise, this
-resource is ignored.  The default is \fBTrue\fP.
+option is ignored.  The default is \fBTrue\fP.
 
 .TP
 .B "-size \fI<width>x<height>{+offset}"\fP
@@ -453,7 +455,7 @@ Finally, use this option to choose a particular resolution layer of a JBIG
 or JPEG image (e.g. -size 1024x768).
 
 .TP
-.B "-text_font \fIname"\fP
+.B "-text_font \fI<name>"\fP
 \fRfont for writing fixed-width text
 
 Specifies the name of the preferred font to use in fixed (typewriter style)
@@ -465,7 +467,7 @@ OPTION1 font.  For example, Courier.ttf is a Truetype font
 and x:fixed is OPTION1. 
 
 .TP
-.B "-title \fI\"string\""\fP
+.B "-title \fI<string>"\fP
 \fRassign a title to the displayed image
 
 Use this option to assign a specific title to the image. This is assigned
@@ -505,7 +507,7 @@ produces an image title of MIFF:bird.miff 512x480 for an image
 titled bird.miff and whose width is 512 and height is 480.
 
 .TP
-.B "-treedepth \fIvalue"\fP
+.B "-treedepth \fI<value>"\fP
 \fRtree depth for the color reduction algorithm
 
 Normally, this integer value is zero or one. A zero or one tells display
@@ -526,7 +528,7 @@ to take effect.
 .B "-verbose"
 \fRprint detailed information about the image
 .TP
-.B "-visual \fItype"\fP
+.B "-visual \fI<type>"\fP
 \fRanimate images using this X visual type
 
 Choose from these visual classes:
@@ -546,7 +548,7 @@ If a visual is not specified, the visual class that can display the most
 simultaneous colors on the default screen is chosen.
 
 .TP
-.B "-window \fIid"\fP
+.B "-window \fI<id>"\fP
 \fRmake image the background of a window
 
 \fIid\fP can be a window id or name.  Specify \fBroot\fP to

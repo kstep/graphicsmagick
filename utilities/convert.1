@@ -272,7 +272,7 @@ and are saved to separate files. Use \fB+adjoin\fP to force this
 behavior.
 
 .TP
-.B "-affine \fImatrix"\fP
+.B "-affine \fI<matrix>"\fP
 \fRdrawing transform matrix
 .TP
 .B "-antialias"
@@ -290,7 +290,7 @@ Use \fB+append\fP to stack images left-to-right.
 .B "-average"
 \fRaverage a set of images
 .TP
-.B "-background \fIcolor"\fP
+.B "-background \fI<color>"\fP
 \fRthe background color
 .TP
 .B "-blur \fI<radius>x<sigma>"\fP
@@ -307,17 +307,17 @@ See \fIX(1)\fP for details
 about the geometry specification.
 
 .TP
-.B "-bordercolor \fIcolor"\fP
+.B "-bordercolor \fI<color>"\fP
 \fRthe border color
 .TP
-.B "-box \fIcolor"\fP
+.B "-box \fI<color>"\fP
 \fRset the color of the annotation bounding box
 
 See \fB-draw\fP for further
 details.
 
 .TP
-.B "-cache \fIthreshold"\fP
+.B "-cache \fI<threshold>"\fP
 \fRmegabytes of memory available to the pixel cache
 
 Image pixels are stored in memory until 80 megabytes of memory have been
@@ -326,7 +326,7 @@ memory are significantly faster but if your computer does not have a sufficient
 amount of free memory you may want to adjust this threshold value.
 
 .TP
-.B "-channel \fItype"\fP
+.B "-channel \fI<type>"\fP
 \fRthe type of channel
 
 Choose from: \fBRed\fP, \fBGreen\fP, \fBBlue\fP, \fBOpacity\fP,
@@ -338,7 +338,7 @@ Use this option to extract a particular \fIchannel\fP from the image.
 for example, is useful for extracting the opacity values from an image.
 
 .TP
-.B "-charcoal \fIfactor"\fP
+.B "-charcoal \fI<factor>"\fP
 \fRsimulate a charcoal drawing
 .TP
 .B "-chop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}"\fP
@@ -373,7 +373,7 @@ is not present, the option is ignored.
 See \fBX(1)\fP for details about the color specification
 
 .TP
-.B "-colorize \fIvalue"\fP
+.B "-colorize \fI<value>"\fP
 \fRcolorize the image with the pen color
 
 Specify the amount of colorization as a percentage. You can apply separate
@@ -381,7 +381,7 @@ colorization values to the red, green, and blue channels of the image with
 a colorization value list delineated with slashes (e.g. 0/0/50).
 
 .TP
-.B "-colors \fIvalue"\fP
+.B "-colors \fI<value>"\fP
 \fRpreferred number of colors in the image
 
 The actual number of colors in the image may be less than your request,
@@ -395,7 +395,7 @@ Note, options \fB-dither\fP, \fB-colorspace\fP, and \fB-treedepth\fP
 affect the color reduction algorithm.
 
 .TP
-.B "-colorspace \fIvalue"\fP
+.B "-colorspace \fI<value>"\fP
 \fRthe type of colorspace
 
 Choices are: \fBGRAY\fP, \fBOHTA\fP, \fBRGB\fP,
@@ -420,7 +420,7 @@ The \fB-colors\fP or \fB-monochrome\fP option is required for this
 option to take effect.
 
 .TP
-.B "-comment \fIstring"\fP
+.B "-comment \fI<string>"\fP
 \fRannotate an image with a comment
 
 Use this option to assign a specific comment to the image. You can include the
@@ -464,7 +464,7 @@ If the first character of \fIstring\fP is \fI@\fP, the image comment
 is read from a file titled by the remaining characters in the string.
 
 .TP
-.B "-compose \fIoperator"\fP
+.B "-compose \fI<operator>"\fP
 \fRthe type of image composition
 [This option is not used by \fIconvert\fP but this section
 is included because it describes the composite operators that are used
@@ -687,7 +687,7 @@ with 0 for any pixel matching in color to pixel location (0,0), otherwise
 255 (to work properly \fBborderwidth\fP must be 0).
 
 .TP
-.B "-compress \fItype"\fP
+.B "-compress \fI<type>"\fP
 \fRthe type of image compression
 
 Choices are: \fINone\fP, \fIBZip\fP, \fIFax\fP,
@@ -700,8 +700,10 @@ Specify \fB+compress\fP to store the binary image in an uncompressed format.
 The default is the compression type of the specified image file.
 
 
-If LZW compression has not been enabled, the image data will be written
-in an uncompressed LZW format that can be read by LZW decoders.
+If LZW compression is specified but LZW compression has not been enabled,
+the image data will be written
+in an uncompressed LZW format that can be read by LZW decoders.  This
+may result in larger-than-expected GIF files.
 .TP
 .B "-contrast"
 \fRenhance or reduce the image contrast
@@ -712,7 +714,7 @@ the image
 or \fB+contrast\fP to reduce the image contrast.
 
 .TP
-.B "-copy \fIfilename"\fP
+.B "-copy \fI<filename>"\fP
 \fRcopy a previously read image
 
 After some options have been processed, a previously processed input image
@@ -754,7 +756,7 @@ to trim edges that are the background color. Add an x and y offset to leave
 a portion of the trimmed edges with the image.
 
 .TP
-.B "-cycle \fIamount"\fP
+.B "-cycle \fI<amount>"\fP
 \fRdisplace image colormap by amount
 
 \fIAmount\fP defines the number of positions each colormap entry is
@@ -788,7 +790,7 @@ or Portable Document page. The default is 72 dots per inch in the horizontal
 and vertical direction. This option is used in concert with \fB-page\fP.
 
 .TP
-.B "-depth \fIvalue"\fP
+.B "-depth \fI<value>"\fP
 \fRdepth of the image
 
 This is the number of bits in a color sample within a pixel. The only
@@ -800,14 +802,14 @@ the depth of any image after it has been read.
 .B "-despeckle"
 \fRreduce the speckles within an image
 .TP
-.B "-display \fIhost:display[.screen]"\fP
+.B "-display \fI<host:display[.screen]>"\fP
 \fRspecifies the X server to contact
 
 This option is used with convert for
 obtaining image or font from this X server.  See \fIX(1)\fP.
 
 .TP
-.B "-dispose \fImethod"\fP
+.B "-dispose \fI<method>"\fP
 \fRGIF disposal method
 
 Here are the valid methods:
@@ -835,7 +837,7 @@ Use \fB+dither\fP to turn off dithering and to render Postscript without
 text or graphic aliasing.
 
 .TP
-.B "-draw \fIstring"\fP
+.B "-draw \fI<string>"\fP
 \fRannotate an image with one or more graphic primitives
 
 Use this option to annotate an image with one or more graphic primitives.
@@ -962,7 +964,7 @@ are processed in command line order so be sure to use \fB-fill\fP \fIbefore\fP
 the \fB-draw\fP option.
 
 .TP
-.B "-edge \fIorder"\fP
+.B "-edge \fI<order>"\fP
 \fRdetect edges within an image
 
 Good order values are odd numbers from 3 to 31.
@@ -977,14 +979,14 @@ Good order values are odd numbers from 3 to 31.
 .B "-equalize"
 \fRperform histogram equalization to the image
 .TP
-.B "-fill \fIcolor"\fP
+.B "-fill \fI<color>"\fP
 \fRcolor to use when filling a graphic primitive
 
 See \fB-draw\fP for further
 details.
 
 .TP
-.B "-filter \fItype"\fP
+.B "-filter \fI<type>"\fP
 \fRuse this type of filter when resizing an image
 
 Use this option to affect the resizing operation of an image (see
@@ -1026,7 +1028,7 @@ reflect the scanlines in the vertical direction.
 reflect the scanlines in the horizontal direction.
 
 .TP
-.B "-font \fIname"\fP
+.B "-font \fI<name>"\fP
 \fRuse this font when annotating the image with text
 
 You can tag a font to specify whether it is a Postscript, Truetype, or OPTION1
@@ -1046,7 +1048,7 @@ The color of the border is specified with the
 line option.
 
 .TP
-.B "-fuzz \fIdistance{%}"\fP
+.B "-fuzz \fI<distance{%}>"\fP
 \fRcolors within this distance are considered equal
 
 A number of algorithms search for a target color. By default the color
@@ -1061,7 +1063,7 @@ The \fIdistance\fP can be in absolute intensity units or, by appending
 \fI"%"\fP, as a percentage of the maximum possible intensity (255 or 65535).
 
 .TP
-.B "-gamma \fIvalue"\fP
+.B "-gamma \fI<value>"\fP
 \fRlevel of gamma correction
 
 The same color image displayed on two different workstations may look different
@@ -1126,7 +1128,7 @@ to 640x480.
 There are 72 pixels per inch in PostScript coordinates.
 
 .TP
-.B "-gravity \fItype"\fP
+.B "-gravity \fI<type>"\fP
 \fRdirection text gravitates to when annotating the image.
 
 Choices are: NorthWest, North,
@@ -1142,10 +1144,10 @@ within the image. By default, the image gravity is \fINorthWest\fP.
 .B "-help"
 \fRprint usage instructions
 .TP
-.B "-implode \fIfactor"\fP
+.B "-implode \fI<factor>"\fP
 \fRimplode image pixels about the center
 .TP
-.B "-intent \fItype"\fP
+.B "-intent \fI<type>"\fP
 \fRuse this type of rendering intent when managing the image color
 
 Use this option to affect the the color management operation of an image (see
@@ -1157,7 +1159,7 @@ Choose from these intents:
 The default intent is undefined.
 
 .TP
-.B "-interlace \fItype"\fP
+.B "-interlace \fI<type>"\fP
 \fRthe type of interlacing scheme
 
 Choices are: \fBNone, Line, Plane,\fP
@@ -1179,7 +1181,7 @@ Use \fBLine\fP or \fBPlane\fP to create an
 \fBprogressive JPEG\fP image.
 
 .TP
-.B "-label \fIname"\fP
+.B "-label \fI<name>"\fP
 \fRassign a label to an image
 
 Use this option to assign a specific label to the image. Optionally you
@@ -1206,7 +1208,7 @@ string to print above the image. Specify the label font with
 \fB-font\fP.
 
 .TP
-.B "-level \fIvalue"\fP
+.B "-level \fI<value>"\fP
 \fRadjust the level of image contrast
 
 Give three point values delineated with commas: black, mid, and white
@@ -1214,7 +1216,7 @@ Give three point values delineated with commas: black, mid, and white
 and mid ranges from 0 to 10.
 
 .TP
-.B "-list \fItype"\fP
+.B "-list \fI<type>"\fP
 \fRthe type of list
 
 Choices are: \fBDelegate\fP, \fBFormat\fP, \fBMagic\fP,
@@ -1224,7 +1226,7 @@ Choices are: \fBDelegate\fP, \fBFormat\fP, \fBMagic\fP,
 This option lists entries from the ImageMagick configuration files.
 
 .TP
-.B "-loop \fIiterations"\fP
+.B "-loop \fI<iterations>"\fP
 \fRadd Netscape loop extension to your GIF animation
 
 A value other than zero forces the animation to repeat itself up to
@@ -1232,9 +1234,9 @@ A value other than zero forces the animation to repeat itself up to
 times.
 
 .TP
-.B "-map \fIfilename"\fP
+.B "-map \fI<filename>"\fP
 \fRchoose a particular set of colors from this image
-[convert or mogrify]
+[\fIconvert\fP or \fImogrify\fP]
 
 By default, color reduction chooses an optimal set of colors that best
 represent the original image. Alternatively, you can choose a particular
@@ -1253,13 +1255,13 @@ If the image does not have a matte channel, create an opaque one.
 Use \fB+matte\fP to ignore the matte channel and to avoid writing a
 matte channel in the output file.
 .TP
-.B "-median \fIorder"\fP
+.B "-median \fI<order>"\fP
 \fRapply a median filter to the image
 
 Good order values are odd numbers from 3 to 31
 
 .TP
-.B "-modulate \fIvalue"\fP
+.B "-modulate \fI<value>"\fP
 \fRvary the brightness, saturation, and hue of an image
 
 Specify the percent change in brightness, the color saturation, and the
@@ -1271,7 +1273,7 @@ use: \fB-modulate 120,90\fP.
 .B "-monochrome"
 \fRtransform the image to black and white
 .TP
-.B "-morph \fIframes"\fP
+.B "-morph \fI<frames>"\fP
 \fRmorphs an image sequence
 
 Both the image pixels and size are linearly interpolated to give the appearance
@@ -1291,7 +1293,7 @@ Use \fB+negate\fP
 to only negate the grayscale pixels of the image.
 
 .TP
-.B "-noise \fIvalue"\fP
+.B "-noise \fI<value>"\fP
 \fRadd or reduce noise in an image
 
 The principal function of noise peak elimination filter is to smooth the
@@ -1325,7 +1327,7 @@ from these noise types:
 This is a contrast enhancement technique.
 
 .TP
-.B "-opaque \fIcolor"\fP
+.B "-opaque \fI<color>"\fP
 \fRchange this color to the pen color within the image
 
 See \fB-fill\fP for more details.
@@ -1405,23 +1407,23 @@ The default page dimensions for a TEXT image is 612x792.
 This option is used in concert with \fB-density\fP.
 
 .TP
-.B "-paint \fIradius"\fP
+.B "-paint \fI<radius>"\fP
 \fRsimulate an oil painting
 
 Each pixel is replaced by the most frequent color in a circular neighborhood
 whose width is specified with \fIradius\fP.
 
 .TP
-.B "-pen \fIcolor"\fP
+.B "-pen \fI<color>"\fP
 \fRspecify the pen color for drawing operations
 .TP
 .B "-ping"
 \fRefficiently determine image characteristics
 .TP
-.B "-pointsize \fIvalue"\fP
+.B "-pointsize \fI<value>"\fP
 \fRpointsize of the Postscript, OPTION1, or TrueType font
 .TP
-.B "-preview \fItype"\fP
+.B "-preview \fI<type>"\fP
 \fRimage preview type
 
 Use this option to affect the preview operation of an image (e.g.
@@ -1465,7 +1467,7 @@ The default preview is \fBJPEG\fP.
 .B "-process"
 \fRprocess an image
 .TP
-.B "-profile \fIfilename"\fP
+.B "-profile \fI<filename>"\fP
 \fRadd ICM, IPTC, or generic profile  to image
 
 -profile filename adds an ICM (ICC color management), IPTC
@@ -1477,7 +1479,7 @@ profile.  Use identify -verbose to find out what profiles are in the
 image file.  Use +profile "*" to remove all profiles.
 
 .TP
-.B "-quality \fIvalue"\fP
+.B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG compression level
 
 For the JPEG image format, quality is 0 (worst) to 100 (best). The default
@@ -1526,7 +1528,7 @@ Use \fB-raise\fP to create a raised effect, otherwise use \fB+raise\fP.
 .B "-region \fI<width>x<height>{+-}<x offset>{+-}<y offset>"\fP
 \fRapply options to a portion of the image
 .TP
-.B "-replace \fIfilename"\fP
+.B "-replace \fI<filename>"\fP
 \fRreplace an image
 
 The image will be written out, and then processing will continue with the
@@ -1550,7 +1552,7 @@ A negative \fIx offset\fP rolls the image left-to-right. A negative \fIy
 offset\fP rolls the image top-to-bottom.
 
 .TP
-.B "-rotate \fIdegrees{<}{>}"\fP
+.B "-rotate \fI<degrees{<}{>}>"\fP
 \fRapply Paeth image rotation to the image
 
 Use > to rotate the image only if its width exceeds the height.
@@ -1565,27 +1567,26 @@ defined as \fBbackground\fP (class \fBbackgroundColor\fP). See \fIX(1)\fP
 for details.
 
 .TP
-.B "-sample \fIgeometry"\fP
+.B "-sample \fI<geometry>"\fP
 \fRscale image with pixel sampling
 
 See \fB-geometry\fP for details about
 the geometry specification.
 
 .TP
-.B "-scale \fIgeometry"\fP
+.B "-scale \fI<geometry>"\fP
 \fRscale the image.
 
 See \fB-geometry\fP for details about
 the geometry specification.
 
 .TP
-.B "-scene \fIvalue{-value}"\fP
+.B "-scene \fI<value{-value}>"\fP
 \fRimage scene number or range
 
-Use this option to specify an image sequence with a single filename. See
-the discussion of \fIfile\fP below for details.
+Use this option
 .TP
-.B "-seed \fIvalue"\fP
+.B "-seed \fI<value>"\fP
 \fRpseudo-random number generator seed value
 .TP
 .B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
@@ -1669,7 +1670,7 @@ Finally, use this option to choose a particular resolution layer of a JBIG
 or JPEG image (e.g. -size 1024x768).
 
 .TP
-.B "-solarize \fIfactor"\fP
+.B "-solarize \fI<factor>"\fP
 \fRnegate all pixels above the threshold level
 
 Specify \fIfactor\fP as the
@@ -1680,36 +1681,36 @@ This option produces a \fIsolarization\fP effect seen when exposing a
 photographic film to light during the development process.
 
 .TP
-.B "-spread \fIamount"\fP
+.B "-spread \fI<amount>"\fP
 \fRdisplace image pixels by a random amount
 
 \fIAmount\fP defines the size of the neighborhood around each pixel to
 choose a candidate pixel to swap.
 
 .TP
-.B "-stroke \fIcolor"\fP
+.B "-stroke \fI<color>"\fP
 \fRcolor to use when stroking a graphic primitive
 
 See \fB-draw\fP for further
 details.
 
 .TP
-.B "-strokewidth \fIvalue"\fP
+.B "-strokewidth \fI<value>"\fP
 \fRset the stroke width
 
 See \fB-draw\fP for further details.
 
 .TP
-.B "-swirl \fIdegrees"\fP
+.B "-swirl \fI<degrees>"\fP
 \fRswirl image pixels about the center
 
 \fIDegrees\fP defines the tightness of the swirl.
 
 .TP
-.B "-texture \fIfilename"\fP
+.B "-texture \fI<filename>"\fP
 \fRname of texture to tile onto the image background
 .TP
-.B "-threshold \fIvalue"\fP
+.B "-threshold \fI<value>"\fP
 \fRthreshold the image
 
 Create a bi-level image such that any pixel intensity that is equal or
@@ -1717,13 +1718,13 @@ exceeds the threshold is reassigned the maximum intensity otherwise the
 minimum intensity.
 
 .TP
-.B "-tile \fIfilename"\fP
+.B "-tile \fI<filename>"\fP
 \fRtile image when filling a graphic primitive
 .TP
-.B "-transparent \fIcolor"\fP
+.B "-transparent \fI<color>"\fP
 \fRmake this color transparent within the image
 .TP
-.B "-treedepth \fIvalue"\fP
+.B "-treedepth \fI<value>"\fP
 \fRtree depth for the color reduction algorithm
 
 Normally, this integer value is zero or one. A zero or one tells display
@@ -1741,7 +1742,7 @@ The \fB-colors\fP or \fB-monochrome\fP option is required for this option
 to take effect.
 
 .TP
-.B "-type \fItype"\fP
+.B "-type \fI<type>"\fP
 \fRthe image type
 
 Choose from:
@@ -1750,7 +1751,7 @@ Choose from:
 \fBColorSeparation\fP, \fBColorSeparationMatte\fP, or \fBOptimize\fP.
 
 .TP
-.B "-units \fItype"\fP
+.B "-units \fI<type>"\fP
 \fRthe type of image resolution
 
 Choose from: \fBUndefined\fP, \fBPixelsPerInch\fP, or
@@ -1769,7 +1770,7 @@ Use the given radius and standard deviation (sigma).
 .B "-verbose"
 \fRprint detailed information about the image
 .TP
-.B "-view \fIstring"\fP
+.B "-view \fI<string>"\fP
 \fRFlashPix viewing parameters
 .TP
 .B "-wave \fI<amplitude>x<wavelength>"\fP

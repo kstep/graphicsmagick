@@ -143,7 +143,7 @@ the option again with a different effect.</p>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-cache">-cache</a> <i>threshold</i>
+    <a name="-cache">-cache</a> <i>&lt;threshold&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>megabytes of memory available to the pixel cache</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -187,14 +187,14 @@ and vertical direction. This option is used in concert with <strong>-page</stron
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-depth">-depth</a> <i>value</i>
+    <a name="-depth">-depth</a> <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>depth of the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This is the number of bits in a pixel. The only acceptable
-values are 8 or 16.  Use this option to specify the depth of raw images whose
-depth is unknown such as GRAY, RGB, or CMYK, or to change the depth of any
-image after it has been read.
+This is the number of bits in a color sample within a pixel. The only
+acceptable values are 8 or 16.  Use this option to specify the depth of
+raw images whose depth is unknown such as GRAY, RGB, or CMYK, or to change
+the depth of any image after it has been read.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -204,7 +204,7 @@ image after it has been read.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-format">-format</a> <i>"string"</i>
+    <a name="-format">-format</a> <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>output formatted image characteristics</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -244,7 +244,7 @@ For example,</font></td></tr></table>
 displays <strong>MIFF:bird.miff 512x480</strong> for an image
 titled <strong>bird.miff</strong> and whose width is 512 and height is 480.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If the first character of &lt;em&gt;string&lt;/em&gt; is <strong>@</strong>, the format
+If the first character of <em>string</em> is <strong>@</strong>, the format
 is read from a file titled by the remaining characters in the string.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
