@@ -40,6 +40,7 @@
 #include "magick/studio.h"
 #include "magick/attribute.h"
 #include "magick/cache.h"
+#include "magick/channel.h"
 #include "magick/color.h"
 #include "magick/constitute.h"
 #include "magick/command.h"
