@@ -1,3 +1,6 @@
+2002-01-03  Cristy  <cristy@mystic.es.dupont.com>
+	* Postscript Level II is now DCS compliant.
+
 2001-12-28  Leonard Rosenthol  <leonardr@lazerware.com>
 	* Even more features and options were added to conjure
 	* Added CropBox support to PDF writer
