@@ -1,3 +1,7 @@
+2001-09-21  Cristy  <cristy@mystic.es.dupont.com>
+	* Replaced TemporaryFilename() with UniqueImageFilename().
+	* ImageMagick CORE API is not 64-bit clean.
+
 2001-09-20  Cristy  <cristy@mystic.es.dupont.com>
 	* Fixed svg.c to accept a viewbox with a negative offset.
 
