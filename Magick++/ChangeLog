@@ -1,3 +1,16 @@
+2003-06-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Exception.cpp (throwException): Add originating source
+	module, source line, and function name (if available) to exception
+	report. This is useful in order to determine the exact conditions
+	that lead to the exception being thrown.
+	* lib/Magick++/Exception.h: Added ErrorCoder, WarningCoder,
+	ErrorConfigure, WarningConfigure, ErrorDraw, WarningDraw,
+	ErrorImage, WarningImage, ErrorMonitor, WarningMonitor,
+	ErrorRegistry, WarningRegistry, ErrorStream, WarningStream,
+	ErrorType, and WarningType, exception classes to support the full
+	set of exceptions that GraphicsMagick can throw.
+
 2003-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/CoderInfo.cpp (CoderInfo): Applied compilation fix from

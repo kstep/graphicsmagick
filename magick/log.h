@@ -15,10 +15,12 @@
 extern "C" {
 #endif
 
-#if defined(HAS___func__)
-#  define GetMagickModule()  __FILE__,__func__,__LINE__
-#else
-#  define GetMagickModule()  __FILE__,"unknown",__LINE__
+#if !defined(GetMagickModule)
+#  if defined(HAS___func__)
+#    define GetMagickModule()  __FILE__,__func__,__LINE__
+#  else
+#    define GetMagickModule()  __FILE__,"unknown",__LINE__
+#  endif
 #endif
 
 typedef enum
@@ -38,6 +40,7 @@ typedef enum
   UserEvent = 0x0400,
   ResourceEvent = 0x0800,
   TemporaryFileEvent = 0x01000,
+  ExceptionEvent = 0x02000,
   AllEvents = 0xFFFFF
 } LogEventType;
 

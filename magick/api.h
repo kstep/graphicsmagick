@@ -101,6 +101,7 @@ extern "C" {
 #if !defined(vms) && !defined(macintosh)
 # include "magick/semaphore.h"
 # include "magick/error.h"
+# include "magick/log.h"
 # include "magick/timer.h"
 # include "magick/image.h"
 # include "magick/list.h"
@@ -137,13 +138,13 @@ extern "C" {
 # include "magick/module.h"
 # include "magick/monitor.h"
 # include "magick/resource.h"
-# include "magick/log.h"
 # include "magick/version.h"
 # include "magick/deprecate.h"
 #else
 # include "semaphore.h"
 # include "timer.h"
 # include "error.h"
+# include "log.h"
 # include "image.h"
 # include "list.h"
 # include "paint.h"
@@ -179,7 +180,6 @@ extern "C" {
 # include "module.h"
 # include "monitor.h"
 # include "resource.h"
-# include "log.h"
 # include "version.h"
 # include "deprecate.h"
 #endif

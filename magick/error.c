@@ -292,9 +292,13 @@ MagickExport void DestroyExceptionInfo(ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  exception->severity=UndefinedException;
   MagickFreeMemory(exception->reason);
   MagickFreeMemory(exception->description);
-  MagickFreeMemory(exception->whence);
+  MagickFreeMemory(exception->module);
+  MagickFreeMemory(exception->function);
+  exception->line=0UL;
+  exception->signature=0UL;
 }
 
 /*
@@ -323,8 +327,12 @@ MagickExport void DestroyExceptionInfo(ExceptionInfo *exception)
 MagickExport void GetExceptionInfo(ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
-  (void) memset(exception,0,sizeof(ExceptionInfo));
-  SetExceptionInfo(exception,UndefinedException);
+  exception->severity=UndefinedException;
+  exception->reason=0;
+  exception->description=0;
+  exception->module=0;
+  exception->function=0;
+  exception->line=0UL;
   exception->signature=MagickSignature;
 }
 
@@ -361,6 +369,7 @@ static const char *ExceptionSeverityToTag(const ExceptionType severity)
 {
   switch (severity)
   {
+    case UndefinedException: return("Unknown/Error/");
     case ResourceLimitWarning: return("Resource/Limit/Warning/");
     case TypeWarning: return("Type/Warning/");
     case OptionWarning: return("Option/Warning/");
@@ -713,23 +722,105 @@ MagickExport WarningHandler SetWarningHandler(WarningHandler handler)
 %
 %
 */
+#undef ThrowException
 MagickExport void ThrowException(ExceptionInfo *exception,
   const ExceptionType severity,const char *reason,const char *description)
 {
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   exception->severity=(ExceptionType) severity;
-  
   MagickFreeMemory(exception->reason);
   if (reason)
-    (void) CloneString(&exception->reason,
-      GetLocaleExceptionMessage(severity,reason));
-
+    exception->reason=
+      AcquireString(GetLocaleExceptionMessage(severity,reason));
   MagickFreeMemory(exception->description);
   if (description)
-    (void) CloneString(&exception->description,
-      GetLocaleExceptionMessage(severity,description));
-
-  MagickFreeMemory(exception->whence);
+    exception->description=
+      AcquireString(GetLocaleExceptionMessage(severity,description));
+  MagickFreeMemory(exception->module);
+  MagickFreeMemory(exception->function);
+  exception->line=0UL;
+  exception->signature=0UL;
+  return;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   T h r o w L o g g e d E x c e p t i o n                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ThrowLoggedException() throws an exception with the specified severity code,
+%  reason, optional description, source filename, function name, and line
+%  number. If logging is enabled, the exception is also logged.
+%
+%  The format of the ThrowLoggedException method is:
+%
+%      void ThrowLoggedException(ExceptionInfo *exception,
+%        const ExceptionType severity,const char *reason,
+%        const char *description,const char *module,
+%        const char *function,const unsigned long line
+%
+%  A description of each parameter follows:
+%
+%    o exception: The exception.
+%
+%    o severity: The severity of the exception.
+%
+%    o reason: The reason of the exception.
+%
+%    o description: The exception description.
+%
+%    o filename: The source module filename.
+%
+%    o function: The function name.
+%
+%    o line: The line number of the source module.
+%
+%
+*/
+MagickExport void ThrowLoggedException(ExceptionInfo *exception,
+  const ExceptionType severity,const char *reason,const char *description,
+  const char *module,const char *function,const unsigned long line)
+{
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  exception->severity=(ExceptionType) severity;
+  MagickFreeMemory(exception->reason);
+  if (reason)
+    exception->reason=
+      AcquireString(GetLocaleExceptionMessage(severity,reason));
+  MagickFreeMemory(exception->description);
+  if (description)
+    exception->description=
+      AcquireString(GetLocaleExceptionMessage(severity,description));
+  MagickFreeMemory(exception->module);
+  if (module)
+    exception->module=AcquireString(module);
+  MagickFreeMemory(exception->function);
+  if (function)
+    exception->function=AcquireString(function);
+  exception->line=line;
+  if (exception->reason)
+    {
+      if (exception->description)
+        LogMagickEvent(ExceptionEvent,module,function,line,"%s: %.1024s (%.1024s)",
+          ExceptionSeverityToTag(exception->severity),exception->reason,
+          exception->description );
+      else
+        LogMagickEvent(ExceptionEvent,module,function,line,"%s: %.1024s",
+          ExceptionSeverityToTag(exception->severity),exception->reason);
+    }
+  else
+    {
+      LogMagickEvent(ExceptionEvent,module,function,line,
+        "%s: exception contains no reason!",
+        ExceptionSeverityToTag(exception->severity));
+    }
   return;
 }

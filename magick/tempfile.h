@@ -37,8 +37,10 @@ MagickExport FILE *
 #define ThrowReaderTemporaryFileException(filename) \
 { \
   if ((image) == (Image *) NULL) \
+    { \
     ThrowException(exception,FileOpenError,"UnableToCreateTemporaryFile", \
       filename); \
+    } \
   else \
     { \
       ThrowException(exception,FileOpenError,"UnableToCreateTemporaryFile", \

@@ -112,6 +112,7 @@ static const EventInfo event_map[] =
     { "user", UserEvent },
     { "resource", ResourceEvent },
     { "temporaryfile", TemporaryFileEvent },
+    { "exception", ExceptionEvent },
     { "all", AllEvents },
     { 0, 0 }
   };
@@ -640,6 +641,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
     case UserEvent: domain=(char *) "User"; break;
     case ResourceEvent: domain=(char *) "Resource"; break;
     case TemporaryFileEvent: domain=(char *) "TemporaryFile"; break;
+    case ExceptionEvent: domain=(char *) "Exception"; break;
     default: domain=(char *) "UnknownEvent"; break;
   }
   va_start(operands,format);

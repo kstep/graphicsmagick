@@ -240,7 +240,7 @@ static char
   {
     "No", "Configure", "Annotate", "Render", "Transform", "Locale",
     "Coder", "X11", "Cache", "Blob", "Deprecate", "User", "Resource", 
-    "TemporaryFile", "All", (char *) NULL
+    "TemporaryFile", "Exception", "All", (char *) NULL
   },
   *MethodTypes[] =
   {

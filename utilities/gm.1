@@ -952,8 +952,9 @@ The events parameter specifies which events are to be logged.  It
 can be either None, All, or a comma-separated list
 consisting of one or more of the following domains: Annotate,
 Blob, Cache, Coder, Configure,
-Locale, Render, Resource, Transform,
-X11, or User.
+Deprecate, Exception, Locale, Render,
+Resource, TemporaryFile, Transform, X11,
+or User.
 For example, to log cache and blob events, use
 
     gm convert -debug "Cache,Blob" rose: rose.png
@@ -999,21 +1000,30 @@ minimum and maximum delay.
 .B "-density \fI<width>x<height>"\fP
 \fRhorizontal and vertical resolution in pixels of the image
 This option specifies the image resolution to store while encoding a
-raster image or the canvas resolution while rendering vector formats
-such as Postscript, PDF, WMF, and SVG into a raster image. Image
+raster image or the canvas resolution while rendering (reading) vector
+formats such as Postscript, PDF, WMF, and SVG into a raster image. Image
 resolution provides the unit of measure to apply when rendering to an
-output device or raster image.
+output device or raster image. The default unit of measure is in dots
+per inch (DPI). The \fB-units\fP option may be used to select dots per
+centimeter instead.
+ The default resolution is 72 dots per inch, which is equivalent to
+one point per pixel (Macintosh and Postscript standard). Computer
+screens are normally 72 or 96 dots per inch while printers typically
+support 150, 300, 600, or 1200 dots per inch. To determine the
+resolution of your display, use a ruler to measure the width of your
+screen in inches, and divide by the number of horizontal pixels (1024 on
+a 1024x768 display).
 If the file format supports it, this option may be used to update
 the stored image resolution. Note that Photoshop stores and obtains
 image resolution from a proprietary embedded profile. If this profile is
 not stripped from the image, then Photoshop will continue to treat the
 image using its former resolution, ignoring the image resolution
 specified in the standard file header.
-
-This option specifies an image density when decoding a \fIPostScript\fP
-or Portable Document page. The default is 72 dots per inch in the horizontal
-and vertical direction. This option may be used in concert with \fB-page\fP.
-
+The density option is an attribute and does not alter the underlying
+raster image. It may be used to adjust the rendered size for desktop
+publishing purposes by adjusting the scale applied to the pixels. To
+resize the image so that it is the same size at a different resolution,
+use the \fB-resample\fP option.
 .TP
 .B "-depth \fI<value>"\fP
 \fRdepth of the image

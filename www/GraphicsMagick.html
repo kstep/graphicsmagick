@@ -1272,8 +1272,9 @@ The <tt>events</tt> parameter specifies which events are to be logged.  It
 can be either <tt>None</tt>, <tt>All</tt>, or a comma-separated list
 consisting of one or more of the following domains: <tt>Annotate</tt>,
 <tt>Blob</tt>, <tt>Cache</tt>, <tt>Coder</tt>, <tt>Configure</tt>,
-<tt>Locale</tt>, <tt>Render</tt>, <tt>Resource</tt>, <tt>Transform</tt>,
-<tt>X11</tt>, or <tt>User</tt>.
+<tt>Deprecate</tt>, <tt>Exception</tt>, <tt>Locale</tt>, <tt>Render</tt>,
+<tt>Resource</tt>, <tt>TemporaryFile</tt>, <tt>Transform</tt>, <tt>X11</tt>,
+or <tt>User</tt>.
 For example, to log cache and blob events, use</font></td></tr></table>
 <pre>
     gm convert -debug "Cache,Blob" rose: rose.png
@@ -1344,21 +1345,30 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>horizontal and vertical resolution in pixels of the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">This option specifies the image resolution to store while encoding a
-raster image or the canvas resolution while rendering vector formats
-such as Postscript, PDF, WMF, and SVG into a raster image. Image
+raster image or the canvas resolution while rendering (reading) vector
+formats such as Postscript, PDF, WMF, and SVG into a raster image. Image
 resolution provides the unit of measure to apply when rendering to an
-output device or raster image.</font></td></tr></table>
+output device or raster image. The default unit of measure is in dots
+per inch (DPI). The <strong>-units</strong> option may be used to select dots per
+centimeter instead.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1"> The default resolution is 72 dots per inch, which is equivalent to
+one point per pixel (Macintosh and Postscript standard). Computer
+screens are normally 72 or 96 dots per inch while printers typically
+support 150, 300, 600, or 1200 dots per inch. To determine the
+resolution of your display, use a ruler to measure the width of your
+screen in inches, and divide by the number of horizontal pixels (1024 on
+a 1024x768 display).</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">If the file format supports it, this option may be used to update
 the stored image resolution. Note that Photoshop stores and obtains
 image resolution from a proprietary embedded profile. If this profile is
 not stripped from the image, then Photoshop will continue to treat the
 image using its former resolution, ignoring the image resolution
 specified in the standard file header.</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This option specifies an image density when decoding a <em>PostScript</em>
-or Portable Document page. The default is 72 dots per inch in the horizontal
-and vertical direction. This option may be used in concert with <strong>-page</strong>.
-</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">The density option is an attribute and does not alter the underlying
+raster image. It may be used to adjust the rendered size for desktop
+publishing purposes by adjusting the scale applied to the pixels. To
+resize the image so that it is the same size at a different resolution,
+use the <strong>-resample</strong> option.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

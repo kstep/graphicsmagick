@@ -17,49 +17,6 @@ extern "C" {
 #endif
 
 /*
-  Exception define definitions.
-*/
-#if defined(macintosh)
-#define ExceptionInfo MagickExceptionInfo
-#endif
-
-#define ThrowBinaryException(code,reason,description) \
-{ \
-  if (image != (Image *) NULL) \
-    ThrowException(&image->exception,code,reason,description); \
-  return(False); \
-}
-#define ThrowImageException(code,reason,description) \
-{ \
-  ThrowException(exception,code,reason,description); \
-  return((Image *) NULL); \
-}
-#define ThrowReaderException(code,reason,image) \
-{ \
-  if ((image) == (Image *) NULL) \
-    ThrowException(exception,code,reason,(char *) NULL); \
-  else \
-    { \
-      ThrowException(exception,code,reason,(image)->filename); \
-      if (image->blob->type != UndefinedStream) \
-        CloseBlob(image); \
-      DestroyImageList(image); \
-    } \
-  return((Image *) NULL); \
-}
-#define ThrowWriterException(code,reason,image) \
-{ \
-  assert(image != (Image *) NULL); \
-  ThrowException(&(image)->exception,code,reason,(image)->filename); \
-  if (image_info->adjoin) \
-    while ((image)->previous != (Image *) NULL) \
-      (image)=(image)->previous; \
-  if (image->blob->type != UndefinedStream) \
-    CloseBlob(image); \
-  return(False); \
-}
-
-/*
   Enum declarations.
 */
 typedef enum
@@ -127,16 +84,37 @@ typedef enum
 /*
   Typedef declarations.
 */
+
+/*
+  ExceptionInfo is used to report exceptions to higher level routines,
+  and to the user.
+*/
 typedef struct _ExceptionInfo
 {
-  char
-    *reason,
-    *description,
-    *whence;
-
+  /*
+    Exception severity, reason, and description
+  */
   ExceptionType
     severity;
 
+  char
+    *reason,
+    *description;
+
+  /*
+    Reporting source module, function (if available), and source
+    module line.
+  */
+  char
+    *module,
+    *function;
+
+  unsigned long
+    line;
+
+  /*
+    Structure sanity check
+  */
   unsigned long
     signature;
 } ExceptionInfo;
@@ -174,10 +152,68 @@ extern MagickExport void
   MagickFatalError(const ExceptionType,const char *,const char *),
   MagickWarning(const ExceptionType,const char *,const char *),
   SetExceptionInfo(ExceptionInfo *,ExceptionType),
-  ThrowException(ExceptionInfo *,const ExceptionType,const char *,const char *);
+  ThrowException(ExceptionInfo *,const ExceptionType,const char *,const char *),
+  ThrowLoggedException(ExceptionInfo *exception, const ExceptionType severity,
+    const char *reason,const char *description,const char *module,
+    const char *function,const unsigned long line);
 
 extern MagickExport WarningHandler
   SetWarningHandler(WarningHandler);
+
+/*
+  Exception define definitions.
+*/
+
+#include <magick/log.h>
+
+#if defined(macintosh)
+#define ExceptionInfo MagickExceptionInfo
+#endif
+
+#if defined(MAGICK_IMPLEMENTATION)
+#define ThrowException(exception_,severity_,reason_,description_) \
+  (ThrowLoggedException(exception_,severity_,reason_,description_,GetMagickModule()))
+#endif
+
+#define ThrowBinaryException(severity_,reason_,description_) \
+{ \
+  if (image != (Image *) NULL) \
+    { \
+      ThrowException(&image->exception,severity_,reason_,description_); \
+    } \
+  return(False); \
+}
+#define ThrowImageException(code_,reason_,description_) \
+{ \
+  ThrowException(exception,code_,reason_,description_); \
+  return((Image *) NULL); \
+}
+#define ThrowReaderException(code_,reason_,image_) \
+{ \
+  if ((image) == (Image *) NULL) \
+    { \
+      ThrowException(exception,code_,reason_,(char *) NULL); \
+    } \
+  else \
+    { \
+      ThrowException(exception,code_,reason_,(image)->filename); \
+      if (image->blob->type != UndefinedStream) \
+        CloseBlob(image); \
+      DestroyImageList(image); \
+    } \
+  return((Image *) NULL); \
+}
+#define ThrowWriterException(code_,reason_,image_) \
+{ \
+  assert(image_ != (Image *) NULL); \
+  ThrowException(&(image_)->exception,code_,reason_,(image_)->filename); \
+  if (image_info->adjoin) \
+    while ((image_)->previous != (Image *) NULL) \
+      (image_)=(image_)->previous; \
+  if (image_->blob->type != UndefinedStream) \
+    CloseBlob(image_); \
+  return(False); \
+}
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

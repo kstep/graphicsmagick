@@ -53,6 +53,25 @@
 </tr>
 </table>
 <p>
+2003-06-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/error.h (ExceptionInfo): Replaced recently-added 'whence'
+        member with module, function, and line members in order to keep
+        the information seperate, and match the parameters used by the
+        logging system.<BR>
+        (ThrowException): Log thrown exceptions.
+  <LI> magick/error.c (ThrowLoggedException): New function used to
+        throw an exception, while recording and logging the location
+        where the exception is thrown.<BR>
+  <LI> doc/options.imdoc (operation): Document TemporaryFile and
+        Exception events.<BR>
+  <LI> magick/log.c (LogMagickEvent): Support logging ExceptionEvent.
+  <LI> PerlMagick/Magick.xs: Added "Exception" event type.
+  <LI> magick/log.h (LogEventType): Added ExceptionEvent.
+
+</UL>
+<p>
 2003-06-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

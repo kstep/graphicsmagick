@@ -607,12 +607,18 @@ int main( int /*argc*/, char ** argv)
     {
       // Since this is not a montage image, simply verify error report
       bool caughtException = false;
+      cout << "Testing throwing and catching exceptions. A program crash or a message" << endl
+           << "that the exception was not caught indicates a test failure.  A properly" << endl
+           << "formatted exception message indicates success:" << endl;
       try
 	{
-	  image.directory();
+	  //image.directory();
+          Magick::Image bad_image("foo");
 	}
-      catch ( Exception )
+      catch ( Exception exception_)
 	{
+          cout << "Caught exception, good!:" << endl
+               << "  \"" << exception_.what() << "\"" << endl;
 	  caughtException = true;
 	}
       if ( caughtException != true )

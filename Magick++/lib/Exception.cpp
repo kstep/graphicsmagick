@@ -62,22 +62,47 @@ Magick::WarningUndefined::WarningUndefined ( const std::string& what_ )
 {
 }
 
-Magick::WarningResourceLimit::WarningResourceLimit ( const std::string& what_ )
+Magick::WarningBlob::WarningBlob ( const std::string& what_ )
   : Warning(what_)
 {
 }
 
-Magick::WarningXServer::WarningXServer ( const std::string& what_ )
+Magick::WarningCache::WarningCache ( const std::string& what_ )
   : Warning(what_)
 {
 }
 
-Magick::WarningOption::WarningOption ( const std::string& what_ )
+Magick::WarningCoder::WarningCoder ( const std::string& what_ )
+  : Warning(what_)
+{
+}
+
+Magick::WarningConfigure::WarningConfigure ( const std::string& what_ )
+  : Warning(what_)
+{
+}
+
+Magick::WarningCorruptImage::WarningCorruptImage ( const std::string& what_ )
   : Warning(what_)
 {
 }
 
 Magick::WarningDelegate::WarningDelegate ( const std::string& what_ )
+  : Warning(what_)
+{
+}
+
+Magick::WarningDraw::WarningDraw ( const std::string& what_ )
+  : Warning(what_)
+{
+}
+
+Magick::WarningFileOpen::WarningFileOpen ( const std::string& what_ )
+  : Warning(what_)
+{
+}
+
+Magick::WarningImage::WarningImage ( const std::string& what_ )
   : Warning(what_)
 {
 }
@@ -92,22 +117,37 @@ Magick::WarningModule::WarningModule ( const std::string& what_ )
 {
 }
 
-Magick::WarningCorruptImage::WarningCorruptImage ( const std::string& what_ )
+Magick::WarningMonitor::WarningMonitor ( const std::string& what_ )
   : Warning(what_)
 {
 }
 
-Magick::WarningFileOpen::WarningFileOpen ( const std::string& what_ )
+Magick::WarningOption::WarningOption ( const std::string& what_ )
   : Warning(what_)
 {
 }
 
-Magick::WarningBlob::WarningBlob ( const std::string& what_ )
+Magick::WarningRegistry::WarningRegistry ( const std::string& what_ )
   : Warning(what_)
 {
 }
 
-Magick::WarningCache::WarningCache ( const std::string& what_ )
+Magick::WarningResourceLimit::WarningResourceLimit ( const std::string& what_ )
+  : Warning(what_)
+{
+}
+
+Magick::WarningStream::WarningStream ( const std::string& what_ )
+  : Warning(what_)
+{
+}
+
+Magick::WarningType::WarningType ( const std::string& what_ )
+  : Warning(what_)
+{
+}
+
+Magick::WarningXServer::WarningXServer ( const std::string& what_ )
   : Warning(what_)
 {
 }
@@ -126,22 +166,47 @@ Magick::ErrorUndefined::ErrorUndefined ( const std::string& what_ )
 {
 }
 
-Magick::ErrorResourceLimit::ErrorResourceLimit ( const std::string& what_ )
+Magick::ErrorBlob::ErrorBlob ( const std::string& what_ )
   : Error(what_)
 {
 }
 
-Magick::ErrorXServer::ErrorXServer ( const std::string& what_ )
+Magick::ErrorCache::ErrorCache ( const std::string& what_ )
   : Error(what_)
 {
 }
 
-Magick::ErrorOption::ErrorOption ( const std::string& what_ )
+Magick::ErrorCoder::ErrorCoder ( const std::string& what_ )
+  : Error(what_)
+{
+}
+
+Magick::ErrorConfigure::ErrorConfigure ( const std::string& what_ )
+  : Error(what_)
+{
+}
+
+Magick::ErrorCorruptImage::ErrorCorruptImage ( const std::string& what_ )
   : Error(what_)
 {
 }
 
 Magick::ErrorDelegate::ErrorDelegate ( const std::string& what_ )
+  : Error(what_)
+{
+}
+
+Magick::ErrorDraw::ErrorDraw ( const std::string& what_ )
+  : Error(what_)
+{
+}
+
+Magick::ErrorFileOpen::ErrorFileOpen ( const std::string& what_ )
+  : Error(what_)
+{
+}
+
+Magick::ErrorImage::ErrorImage ( const std::string& what_ )
   : Error(what_)
 {
 }
@@ -156,22 +221,37 @@ Magick::ErrorModule::ErrorModule ( const std::string& what_ )
 {
 }
 
-Magick::ErrorCorruptImage::ErrorCorruptImage ( const std::string& what_ )
+Magick::ErrorMonitor::ErrorMonitor ( const std::string& what_ )
   : Error(what_)
 {
 }
 
-Magick::ErrorFileOpen::ErrorFileOpen ( const std::string& what_ )
+Magick::ErrorOption::ErrorOption ( const std::string& what_ )
   : Error(what_)
 {
 }
 
-Magick::ErrorBlob::ErrorBlob ( const std::string& what_ )
+Magick::ErrorRegistry::ErrorRegistry ( const std::string& what_ )
   : Error(what_)
 {
 }
 
-Magick::ErrorCache::ErrorCache ( const std::string& what_ )
+Magick::ErrorResourceLimit::ErrorResourceLimit ( const std::string& what_ )
+  : Error(what_)
+{
+}
+
+Magick::ErrorStream::ErrorStream ( const std::string& what_ )
+  : Error(what_)
+{
+}
+
+Magick::ErrorType::ErrorType ( const std::string& what_ )
+  : Error(what_)
+{
+}
+
+Magick::ErrorXServer::ErrorXServer ( const std::string& what_ )
   : Error(what_)
 {
 }
@@ -199,7 +279,7 @@ MagickDLLDecl void Magick::throwException( ExceptionInfo &exception_ )
   if ( exception_.severity == UndefinedException )
     return;
 
-  // Format error message ImageMagick-style
+  // Format error message GraphicsMagick-style
   std::string message = SetClientName(0);
   if ( exception_.reason != 0 )
     {
@@ -210,6 +290,16 @@ MagickDLLDecl void Magick::throwException( ExceptionInfo &exception_ )
   if ( exception_.description != 0 )
     message += " (" + std::string(exception_.description) + ")";
 
+  if ( exception_.module != 0)
+    {
+      char line_str[24];
+      sprintf( line_str, "%lu", exception_.line);
+      message += " reported by " + std::string(exception_.module);
+      message += ":" + std::string(line_str);
+      if ((exception_.function != 0) && strcmp("unknown",exception_.function))
+          message += " (" + std::string(exception_.function) + ")";
+    }
+
   ExceptionType severity = exception_.severity;
   DestroyExceptionInfo( &exception_ );
   GetExceptionInfo( &exception_ );
@@ -219,46 +309,95 @@ MagickDLLDecl void Magick::throwException( ExceptionInfo &exception_ )
       // Warnings
     case ResourceLimitWarning :
       throw WarningResourceLimit( message );
-    case XServerWarning :
-      throw WarningXServer( message );
+    case TypeWarning :
+      throw WarningType( message );
     case OptionWarning :
       throw WarningOption( message );
     case DelegateWarning :
       throw WarningDelegate( message );
     case MissingDelegateWarning :
       throw WarningMissingDelegate( message );
-    case ModuleWarning :
-      throw WarningModule( message );
     case CorruptImageWarning :
       throw WarningCorruptImage( message );
     case FileOpenWarning :
       throw WarningFileOpen( message );
     case BlobWarning :
       throw WarningBlob ( message );
+    case StreamWarning :
+      throw WarningStream ( message );
     case CacheWarning :
       throw WarningCache ( message );
+    case CoderWarning :
+      throw WarningCoder ( message );
+    case ModuleWarning :
+      throw WarningModule( message );
+    case DrawWarning :
+      throw WarningDraw( message );
+    case ImageWarning :
+      throw WarningImage( message );
+    case XServerWarning :
+      throw WarningXServer( message );
+    case MonitorWarning :
+      throw WarningMonitor( message );
+    case RegistryWarning :
+      throw WarningRegistry( message );
+    case ConfigureWarning :
+      throw WarningConfigure( message );
       // Errors
-      // FIXME: FatalException missing
     case ResourceLimitError :
+    case ResourceLimitFatalError :
       throw ErrorResourceLimit( message );
-    case XServerError :
-      throw ErrorXServer( message );
+    case TypeError :
+    case TypeFatalError :
+      throw ErrorType( message );
     case OptionError :
+    case OptionFatalError :
       throw ErrorOption( message );
     case DelegateError :
+    case DelegateFatalError :
       throw ErrorDelegate( message );
     case MissingDelegateError :
+    case MissingDelegateFatalError :
       throw ErrorMissingDelegate( message );
-    case ModuleError :
-      throw ErrorModule( message );
     case CorruptImageError :
+    case CorruptImageFatalError :
       throw ErrorCorruptImage( message );
     case FileOpenError :
+    case FileOpenFatalError :
       throw ErrorFileOpen( message );
     case BlobError :
+    case BlobFatalError :
       throw ErrorBlob ( message );
+    case StreamError :
+    case StreamFatalError :
+      throw ErrorStream ( message );
     case CacheError :
+    case CacheFatalError :
       throw ErrorCache ( message );
+    case CoderError :
+    case CoderFatalError :
+      throw ErrorCoder ( message );
+    case ModuleError :
+    case ModuleFatalError :
+      throw ErrorModule ( message );
+    case DrawError :
+    case DrawFatalError :
+      throw ErrorDraw ( message );
+    case ImageError :
+    case ImageFatalError :
+      throw ErrorImage ( message );
+    case XServerError :
+    case XServerFatalError :
+      throw ErrorXServer ( message );
+    case MonitorError :
+    case MonitorFatalError :
+      throw ErrorMonitor ( message );
+    case RegistryError :
+    case RegistryFatalError :
+      throw ErrorRegistry ( message );
+    case ConfigureError :
+    case ConfigureFatalError :
+      throw ErrorConfigure ( message );
     case UndefinedException :
     default :
       throw ErrorUndefined( message );
