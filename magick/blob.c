@@ -747,6 +747,8 @@ MagickExport void DestroyBlob(Image *image)
   assert(image != (Image *) NULL);
   assert(image->blob != (BlobInfo *) NULL);
   assert(image->blob->signature == MagickSignature);
+  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+    "Destroy blob, image=%p, filename=\"%s\"",image,image->filename);
   AcquireSemaphoreInfo((SemaphoreInfo **) &image->blob->semaphore);
   image->blob->reference_count--;
   if (image->blob->reference_count > 0)
@@ -2182,7 +2184,8 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-    "Opening Blob using %s mode ...",BlobModeToString(mode));
+    "Opening Blob for image %p using %s mode ...",image,
+       BlobModeToString(mode));
 
   if (image_info->blob != (void *) NULL)
     {

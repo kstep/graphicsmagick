@@ -1,3 +1,8 @@
+2005-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Handle extra samples in scanline
+	TIFFs.
+
 2005-01-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (DescribeImage): Report statistics for a virtual

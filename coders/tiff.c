@@ -588,6 +588,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     (void) TIFFGetField(tiff,TIFFTAG_IMAGEWIDTH,&width);
     (void) TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&height);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PLANARCONFIG,&interlace);
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,&samples_per_pixel);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MINSAMPLEVALUE,&min_sample_value);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MAXSAMPLEVALUE,&max_sample_value);
@@ -597,9 +598,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Geometry: %ux%u",
           (unsigned int) width,(unsigned int) height);
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Interlace: %s",
-                              interlace == PLANARCONFIG_CONTIG ? "contiguous" :
-                              interlace == PLANARCONFIG_SEPARATE ? "separate" :
-                              "unknown");
+                              interlace == PLANARCONFIG_CONTIG ? "CONTIGUOUS" :
+                              interlace == PLANARCONFIG_SEPARATE ? "SEPARATE" :
+                              "UNKNOWN");
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "Samples per pixel: %u", samples_per_pixel);
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Bits per sample: %u",bits_per_sample);
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -620,8 +623,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
     if (photometric == PHOTOMETRIC_SEPARATED)
       image->colorspace=CMYKColorspace;
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
-      &samples_per_pixel);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_RESOLUTIONUNIT,&units);
     x_resolution=image->x_resolution;
     y_resolution=image->y_resolution;
@@ -729,18 +730,25 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (logging)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %u",
         image->depth);
-    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
-      &sample_info);
-    image->matte=((extra_samples == 1) &&
-      (*sample_info == EXTRASAMPLE_ASSOCALPHA));
-    if (image->colorspace == CMYKColorspace)
+    /*
+      Obtain information about any extra samples.
+    */
+    extra_samples=0;
+    if (TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
+                              &sample_info) != -1)
       {
-        if (samples_per_pixel > 4)
-          image->matte=True;
+        int sample_index;
+        for (sample_index=0 ; sample_index < extra_samples; sample_index++)
+          {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "Extra sample %u contains %s alpha",sample_index+1,
+               ((sample_info[sample_index] == EXTRASAMPLE_ASSOCALPHA) ? "ASSOCIATED" :
+                (sample_info[sample_index] == EXTRASAMPLE_UNASSALPHA) ? "UNASSOCIATED" :
+                  "UNSPECIFIED"));
+            image->matte=(sample_info[sample_index] == EXTRASAMPLE_ASSOCALPHA);
+          }
       }
-    else
-      if (samples_per_pixel > 3)
-        image->matte=True;
+
     if ((samples_per_pixel <= 2) && !TIFFIsTiled(tiff) &&
         ((photometric == PHOTOMETRIC_MINISBLACK) ||
          (photometric == PHOTOMETRIC_MINISWHITE) ||
@@ -770,9 +778,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                                      image);
               }
           }
-        /* Extra samples are opacity samples */
-        if (samples_per_pixel == 2)
-          image->matte=True;
       }
     if (units == RESUNIT_INCH)
       image->units=PixelsPerInchResolution;
@@ -806,6 +811,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
+
+    /*
+      Determine which method to use for reading pixels.
+    */
     method=PseudoClassMethod;
     if (image->storage_class == DirectClass)
       {
@@ -816,7 +825,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           if ((samples_per_pixel >= 2) && (interlace == PLANARCONFIG_CONTIG))
             method=DirectClassScanLineMethod;
         if (image->colorspace == CMYKColorspace)
-          method=DirectClassScanLineMethod;
+            method=DirectClassScanLineMethod;
         if ((photometric == PHOTOMETRIC_MINISBLACK) ||
             (photometric == PHOTOMETRIC_MINISWHITE))
           method=DirectClassScanLineMethod;
@@ -962,6 +971,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
       case DirectClassScanLineMethod:
       {
+        int
+          quantum_samples;
+
         QuantumType
           quantum_type;
 
@@ -989,30 +1001,54 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (image->colorspace == CMYKColorspace)
           {
             if (image->matte)
-              quantum_type=CMYKAQuantum;
+              {
+                quantum_type=CMYKAQuantum;
+                quantum_samples=5;
+              }
             else
-              quantum_type=CMYKQuantum;
+              {
+                quantum_type=CMYKQuantum;
+                quantum_samples=4;
+              }
           }
         else if (photometric == PHOTOMETRIC_MINISBLACK)
           {
             if (image->matte)
-              quantum_type=GrayAlphaQuantum;
+              {
+                quantum_type=GrayAlphaQuantum;
+                quantum_samples=2;
+              }
             else
-              quantum_type=GrayQuantum;
+              {
+                quantum_type=GrayQuantum;
+                quantum_samples=1;
+              }
           }
         else if (photometric == PHOTOMETRIC_MINISWHITE)
           {
             if (image->matte)
-              quantum_type=GrayInvertedAlphaQuantum;
+              {
+                quantum_type=GrayInvertedAlphaQuantum;
+                quantum_samples=2;
+              }
             else
-              quantum_type=GrayInvertedQuantum;
+              {
+                quantum_type=GrayInvertedQuantum;
+                quantum_samples=1;
+              }
           }
         else
           {
             if (image->matte)
-              quantum_type=RGBAQuantum;
+              {
+                quantum_type=RGBAQuantum;
+                quantum_samples=4;
+              }
             else
-              quantum_type=RGBQuantum;
+              {
+                quantum_type=RGBQuantum;
+                quantum_samples=3;
+              }
           }
 
         for (y=0; y < image->rows; y++)
@@ -1028,12 +1064,46 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           if(ReadScanline(tiff,(char *) scanline,(uint32) y,0) == -1)
             break;
 
+          if (samples_per_pixel > quantum_samples)
+            {
+              /*
+                Compact scanline to only contain raster data.
+              */
+
+              BitStreamReadHandle
+                read_stream;
+
+              BitStreamWriteHandle
+                write_stream;
+
+              unsigned int
+                count,
+                quantum_value;
+
+              BitStreamInitializeRead(&read_stream,scanline);
+              BitStreamInitializeWrite(&write_stream,scanline);
+
+              for (x = image->columns; x > 0 ; x--)
+                {
+                  for (count = quantum_samples; count > 0 ; count--)
+                    {
+                      quantum_value=BitStreamMSBRead(&read_stream,bits_per_sample);
+                      BitStreamMSBWrite(&write_stream,bits_per_sample,quantum_value);
+                    }
+                  for (count = samples_per_pixel-quantum_samples; count > 0 ; count--)
+                    {
+                      (void) BitStreamMSBRead(&read_stream,bits_per_sample);
+                    }
+                }
+            }
+
           /*
             Import scanline into image.
           */
           if(ImportImagePixelArea(image,quantum_type,bits_per_sample,scanline)
              == MagickFail)
             break;
+
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)

@@ -14,6 +14,8 @@ For 1.2 Branch
 
   o Optimize lcms interface (0% complete).
 
+  o Update Windows libpng to version 1.2.8.
+
   o Update Windows libtiff to version 3.7.X.
 
   o Update Windows lcms to version 1.14. (done).

@@ -2951,7 +2951,7 @@ typedef struct _StatisticsContext {
 } StatisticsContext;
 static MagickPassFail GetImageStatisticsMean(void *user_context,
                                              const long ARGUNUSED(x),
-                                             const long ARGUNUSED(y),
+                                             const long y,
                                              const Image *image,
                                              const PixelPacket *pixel,
                                              ExceptionInfo *ARGUNUSED(exception))
@@ -2996,12 +2996,16 @@ static MagickPassFail GetImageStatisticsMean(void *user_context,
       if (normalized <  statistics->opacity.minimum)
         statistics->opacity.minimum=normalized;
     }
+  if (QuantumTick(y,image->rows))
+    if (!MagickMonitor("Compute image mean ...",y,image->rows,exception))
+      return (MagickFail);
+
   return MagickPass;
 }
 #define Square(x)  ((x)*(x))
 static MagickPassFail GetImageStatisticsVariance(void *user_context,
                                                  const long ARGUNUSED(x),
-                                                 const long ARGUNUSED(y),
+                                                 const long y,
                                                  const Image *image,
                                                  const PixelPacket *pixel,
                                                  ExceptionInfo *ARGUNUSED(exception))
@@ -3033,6 +3037,9 @@ static MagickPassFail GetImageStatisticsVariance(void *user_context,
       statistics->opacity.variance +=
         Square(normalized-statistics->opacity.mean)/context->variance_divisor;
     }
+  if (QuantumTick(y,image->rows))
+    if (!MagickMonitor("Compute image variance ...",y,image->rows,exception))
+      return (MagickFail);
 
   return MagickPass;
 }

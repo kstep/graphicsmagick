@@ -4563,6 +4563,7 @@ MagickExport MagickPassFail WriteImages(const ImageInfo *image_info,Image *image
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
+  image->logging=IsEventLogging();
   clone_info=CloneImageInfo(image_info);
   if (clone_info)
     {
@@ -4580,7 +4581,7 @@ MagickExport MagickPassFail WriteImages(const ImageInfo *image_info,Image *image
         }
       (void) SetImageInfo(clone_info,True,exception);
       for (p=image; p != (Image *) NULL; p=p->next)
-        {
+        {          
           status &= WriteImage(clone_info,p);
           if(p->exception.severity > exception->severity)
             CopyException(exception,&p->exception);
