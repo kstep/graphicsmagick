@@ -2474,7 +2474,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   png_read_end(ping,ping_info);
 
   if (image_info->number_scenes != 0 && mng_info->scenes_found-1 <
-      (long) image_info->first_scene)
+      (long) image_info->first_scene && image->delay != 0.)
     {
       png_destroy_read_struct(&ping,&ping_info,&end_info);
       LiberateMemory((void **) &png_pixels);

@@ -1,3 +1,8 @@
+2003-10-06  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/png.c (ReadOnePNGImage): PNG decoder would exit too
+	early when reading image.png[0].
+
 2003-10-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
         * Revised ScaleColor5to8 and ScaleColor6to8 macros to fill in
