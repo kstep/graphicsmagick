@@ -84,7 +84,7 @@ typedef struct _AggregatePacket
 %
 %  The format of the AddNoiseImage method is:
 %
-%      Image *AddNoiseImage(Image *image,const NoiseType noise_type,
+%      Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -102,7 +102,7 @@ typedef struct _AggregatePacket
 %
 %
 */
-MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
+MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   ExceptionInfo *exception)
 {
 #define AddNoiseImageText  "  Add noise to the image...  "
@@ -113,17 +113,19 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register long
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   /*
     Initialize noise image attributes.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -136,7 +138,7 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
   */
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     q=SetImagePixels(noise_image,0,y,noise_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -218,7 +220,7 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 %
 %  The format of the BlurImage method is:
 %
-%      Image *BlurImage(Image *image,const double radius,const double sigma,
+%      Image *BlurImage(const Image *image,const double radius,const double sigma,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -392,7 +394,7 @@ static int GetBlurKernel(int width,const double sigma,double **kernel)
   return(width);
 }
 
-MagickExport Image *BlurImage(Image *image,const double radius,
+MagickExport Image *BlurImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
 #define BlurImageText  "  Blur image...  "
@@ -410,12 +412,16 @@ MagickExport Image *BlurImage(Image *image,const double radius,
     y;
 
   PixelPacket
-    *p,
-    *q,
     *scanline;
+
+  register const PixelPacket
+    *p;
 
   register long
     x;
+
+  register PixelPacket
+    *q;
 
   /*
     Get convolution matrix for the specified standard-deviation.
@@ -474,7 +480,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   */
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     q=SetImagePixels(blur_image,0,y,image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -521,7 +527,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
 %
 %  The format of the CharcoalImage method is:
 %
-%      Image *CharcoalImage(Image *image,const double radius,
+%      Image *CharcoalImage(const Image *image,const double radius,
 %        const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -540,7 +546,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
 %
 %
 */
-MagickExport Image *CharcoalImage(Image *image,const double radius,
+MagickExport Image *CharcoalImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
   Image
@@ -586,7 +592,7 @@ MagickExport Image *CharcoalImage(Image *image,const double radius,
 %
 %  The format of the ColorizeImage method is:
 %
-%      Image *ColorizeImage(Image *image,const char *opacity,
+%      Image *ColorizeImage(const Image *image,const char *opacity,
 %        const PixelPacket target,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -602,7 +608,7 @@ MagickExport Image *CharcoalImage(Image *image,const double radius,
 %
 %
 */
-MagickExport Image *ColorizeImage(Image *image,const char *opacity,
+MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   const PixelPacket target,ExceptionInfo *exception)
 {
 #define ColorizeImageText  "  Colorize the image...  "
@@ -619,17 +625,19 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
     count,
     y;
 
+  register const PixelPacket
+    *p;
+
   register long
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   /*
     Allocate colorized image.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -656,9 +664,9 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
   */
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     q=SetImagePixels(colorize_image,0,y,colorize_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < (long) image->columns; x++)
     {
@@ -871,7 +879,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 %
 %  The format of the DespeckleImage method is:
 %
-%      Image *DespeckleImage(Image *image,ExceptionInfo *exception)
+%      Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -885,7 +893,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 %
 %
 */
-MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
+MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 {
 #define DespeckleImageText  "  Despeckle image...  "
 
@@ -903,12 +911,14 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     *buffer,
     *pixels;
 
+  register const PixelPacket
+    *p;
+
   register long
     i,
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   size_t
@@ -921,7 +931,7 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   /*
     Allocate despeckled image.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -951,8 +961,8 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     j=image->columns+2;
     for (y=0; y < (long) image->rows; y++)
     {
-      p=GetImagePixels(image,0,y,image->columns,1);
-      if (p == (PixelPacket *) NULL)
+      p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+      if (p == (const PixelPacket *) NULL)
         break;
       j++;
       for (x=0; x < (long) image->columns; x++)
@@ -1027,7 +1037,7 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
 %
 %  The format of the EdgeImage method is:
 %
-%      Image *EdgeImage(Image *image,const double radius,
+%      Image *EdgeImage(const Image *image,const double radius,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1045,7 +1055,7 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
 %
 %
 */
-MagickExport Image *EdgeImage(Image *image,const double radius,
+MagickExport Image *EdgeImage(const Image *image,const double radius,
   ExceptionInfo *exception)
 {
   double
@@ -1060,7 +1070,7 @@ MagickExport Image *EdgeImage(Image *image,const double radius,
   register int
     i;
 
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -1096,7 +1106,7 @@ MagickExport Image *EdgeImage(Image *image,const double radius,
 %
 %  The format of the EmbossImage method is:
 %
-%      Image *EmbossImage(Image *image,const double radius,
+%      Image *EmbossImage(const Image *image,const double radius,
 %        const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1115,7 +1125,7 @@ MagickExport Image *EdgeImage(Image *image,const double radius,
 %
 %
 */
-MagickExport Image *EmbossImage(Image *image,const double radius,
+MagickExport Image *EmbossImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
   double
@@ -1190,7 +1200,7 @@ MagickExport Image *EmbossImage(Image *image,const double radius,
 %
 %  The format of the EnhanceImage method is:
 %
-%      Image *EnhanceImage(Image *image,ExceptionInfo *exception)
+%      Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1204,33 +1214,33 @@ MagickExport Image *EmbossImage(Image *image,const double radius,
 %
 %
 */
-MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
+MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
 #define Enhance(weight) \
-  mean=(int) (s->red+pixel.red)/2; \
-  distance=s->red-(int) pixel.red; \
+  mean=(int) (r->red+pixel.red)/2; \
+  distance=r->red-(int) pixel.red; \
   distance_squared= \
     (double) (2.0*(MaxRGB+1)+mean)*distance*distance/MaxRGB; \
-  mean=(int) (s->green+pixel.green)/2; \
-  distance=s->green-(int) pixel.green; \
+  mean=(int) (r->green+pixel.green)/2; \
+  distance=r->green-(int) pixel.green; \
   distance_squared+=4.0*distance*distance; \
-  mean=(int) (s->blue+pixel.blue)/2; \
-  distance=s->blue-(int) pixel.blue; \
+  mean=(int) (r->blue+pixel.blue)/2; \
+  distance=r->blue-(int) pixel.blue; \
   distance_squared+= \
     (double) (3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
-  mean=(int) (s->opacity+pixel.opacity)/2; \
-  distance=s->opacity-(int) pixel.opacity; \
+  mean=(int) (r->opacity+pixel.opacity)/2; \
+  distance=r->opacity-(int) pixel.opacity; \
   distance_squared+= \
     (double) (3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
   if (distance_squared < Threshold) \
     { \
-      aggregate.red+=(weight)*s->red; \
-      aggregate.green+=(weight)*s->green; \
-      aggregate.blue+=(weight)*s->blue; \
-      aggregate.opacity+=(weight)*s->opacity; \
+      aggregate.red+=(weight)*r->red; \
+      aggregate.green+=(weight)*r->green; \
+      aggregate.blue+=(weight)*r->blue; \
+      aggregate.opacity+=(weight)*r->opacity; \
       total_weight+=(weight); \
     } \
-  s++;
+  r++;
 #define EnhanceImageText  "  Enhance image...  "
 #define Threshold  2500
 
@@ -1252,18 +1262,20 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
   PixelPacket
     pixel;
 
+  register const PixelPacket
+    *p,
+    *r;
+
   register long
     x;
 
   register PixelPacket
-    *p,
-    *q,
-    *s;
+    *q;
 
   /*
     Initialize enhanced image attributes.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -1281,10 +1293,10 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
     /*
       Read another scan line.
     */
-    p=GetImagePixels(image,0,Min(Max(y-2,0),(long) image->rows-5),
-      image->columns,5);
+    p=AcquireImagePixels(image,0,Min(Max(y-2,0),(long) image->rows-5),
+      image->columns,5,exception);
     q=SetImagePixels(enhance_image,0,y,enhance_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     /*
       Transfer first 2 pixels of the scanline.
@@ -1298,17 +1310,17 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
       */
       (void) memset(&aggregate,0,sizeof(AggregatePacket));
       total_weight=0.0;
-      s=p+2*image->columns+2;
-      pixel=(*s);
-      s=p;
+      r=p+2*image->columns+2;
+      pixel=(*r);
+      r=p;
       Enhance(5);  Enhance(8);  Enhance(10); Enhance(8);  Enhance(5);
-      s=p+image->columns;
+      r=p+image->columns;
       Enhance(8);  Enhance(20); Enhance(40); Enhance(20); Enhance(8);
-      s=p+2*image->columns;
+      r=p+2*image->columns;
       Enhance(10); Enhance(40); Enhance(80); Enhance(40); Enhance(10);
-      s=p+3*image->columns;
+      r=p+3*image->columns;
       Enhance(8);  Enhance(20); Enhance(40); Enhance(20); Enhance(8);
-      s=p+4*image->columns;
+      r=p+4*image->columns;
       Enhance(5);  Enhance(8);  Enhance(10); Enhance(8);  Enhance(5);
       q->red=(Quantum) ((aggregate.red+(total_weight/2)-1)/total_weight);
       q->green=(Quantum) ((aggregate.green+(total_weight/2)-1)/total_weight);
@@ -1423,7 +1435,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
 %
 %  The format of the ImplodeImage method is:
 %
-%      Image *ImplodeImage(Image *image,const double amount,
+%      Image *ImplodeImage(const Image *image,const double amount,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1440,7 +1452,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
 %
 %
 */
-MagickExport Image *ImplodeImage(Image *image,const double amount,
+MagickExport Image *ImplodeImage(const Image *image,const double amount,
   ExceptionInfo *exception)
 {
 #define ImplodeImageText  "  Implode image...  "
@@ -1474,8 +1486,6 @@ MagickExport Image *ImplodeImage(Image *image,const double amount,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (!image->matte)
-    SetImageOpacity(image,OpaqueOpacity);
   implode_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (implode_image == (Image *) NULL)
     return((Image *) NULL);
@@ -1513,7 +1523,7 @@ MagickExport Image *ImplodeImage(Image *image,const double amount,
       x_distance=x_scale*(x-x_center);
       distance=x_distance*x_distance+y_distance*y_distance;
       if (distance >= (radius*radius))
-        *q=GetOnePixel(image,x,y);
+        *q=AcquireOnePixel(image,x,y,exception);
       else
         {
           double
@@ -1555,7 +1565,7 @@ MagickExport Image *ImplodeImage(Image *image,const double amount,
 %
 %  The format of the MedianFilterImage method is:
 %
-%      Image *MedianFilterImage(Image *image,const double radius,
+%      Image *MedianFilterImage(const Image *image,const double radius,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1626,7 +1636,7 @@ static int RedCompare(const void *x,const void *y)
 }
 #endif
 
-MagickExport Image *MedianFilterImage(Image *image,const double radius,
+MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   ExceptionInfo *exception)
 {
 #define MedianFilterImageText  "  Filter image with neighborhood ranking...  "
@@ -1641,8 +1651,11 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
 
   PixelPacket
     *window,
-    *p,
     *w;
+
+  register const PixelPacket
+    *p,
+    *r;
 
   register long
     u,
@@ -1650,8 +1663,7 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
     x;
 
   register PixelPacket
-    *q,
-    *s;
+    *q;
 
   /*
     Initialize mediand image attributes.
@@ -1685,19 +1697,19 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
   for (y=0; y < (long) median_image->rows; y++)
   {
     v=Min(Max(y-width/2,0),(long) image->rows-width);
-    p=GetImagePixels(image,0,v,image->columns,width);
+    p=AcquireImagePixels(image,0,v,image->columns,width,exception);
     q=SetImagePixels(median_image,0,y,median_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < (long) median_image->columns; x++)
     {
       w=window;
-      s=p+Min(Max(x-width/2,0),(long) image->columns-width);
+      r=p+Min(Max(x-width/2,0),(long) image->columns-width);
       for (v=0; v < width; v++)
       {
         for (u=0; u < width; u++)
-          *w++=s[u];
-        s+=image->columns;
+          *w++=r[u];
+        r+=image->columns;
       }
       qsort((void *) window,width*width,sizeof(PixelPacket),RedCompare);
       q->red=window[center].red;

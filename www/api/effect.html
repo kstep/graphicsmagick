@@ -61,18 +61,18 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P>Image * <STRONG>AddNoiseImage</STRONG>( Image *image, const NoiseType noise_type, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>BlurImage</STRONG>( Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>CharcoalImage</STRONG>( Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>ColorizeImage</STRONG>( Image *image, const char *opacity, const PixelPacket target, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>AddNoiseImage</STRONG>( const Image *image, const NoiseType noise_type, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>BlurImage</STRONG>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>CharcoalImage</STRONG>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ColorizeImage</STRONG>( const Image *image, const char *opacity, const PixelPacket target, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ConvolveImage</STRONG>( const Image *image, const unsigned int order, const double *kernel, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>DespeckleImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>EdgeImage</STRONG>( Image *image, const double radius, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>EmbossImage</STRONG>( Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>EnhanceImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>DespeckleImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>EdgeImage</STRONG>( const Image *image, const double radius, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>EmbossImage</STRONG>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>EnhanceImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>GaussianBlurImage</STRONG>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>ImplodeImage</STRONG>( Image *image, const double amount, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>MedianFilterImage</STRONG>( Image *image, const double radius, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ImplodeImage</STRONG>( const Image *image, const double amount, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>MedianFilterImage</STRONG>( const Image *image, const double radius, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MorphImages</STRONG>( Image *image, const unsigned long number_frames, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MotionBlurImage</STRONG>( const Image *image, const double radius, const double sigma, const double amount, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>OilPaintImage</STRONG>( const Image *image, const double radius, ExceptionInfo *exception );</P>
@@ -97,7 +97,7 @@
 <H2><A NAME="addnoiseimage">AddNoiseImage</A></H2>
 <P>Method AddNoiseImage creates a new image that is a copy of an existing one with noise added.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the AddNoiseImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *AddNoiseImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#NoiseType">NoiseType</A> noise_type, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *AddNoiseImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#NoiseType">NoiseType</A> noise_type, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_noise_image%3A">noise_image:</A></STRONG><BR>
@@ -128,7 +128,7 @@ Return any errors or warnings in this structure.
 <P>We blur the image into a copy, and the original is left untouched.  We must process the image in two passes, in each pass we change the pixel based on its neighbors, but we need the pixel's original value for the next pixel's calculation.  For the first pass we could use the original image but that's no good for the second pass, and it would imply that the original image have to stay around in ram.  Instead we use a small (size=width) buffer to store the pixels we have overwritten.</P>
 <P>This method was contributed by <A HREF="mailto:runger@cs.mcgill.ca.">runger@cs.mcgill.ca.</A></P>
 <P>The format of the BlurImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *BlurImage ( <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *BlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_blur_image%3A">blur_image:</A></STRONG><BR>
@@ -152,7 +152,7 @@ Return any errors or warnings in this structure.
 <H2><A NAME="charcoalimage">CharcoalImage</A></H2>
 <P>Method CharcoalImage creates a new image that is a copy of an existing one with the edge highlighted.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the CharcoalImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *CharcoalImage ( <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *CharcoalImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_charcoal_image%3A">charcoal_image:</A></STRONG><BR>
@@ -180,7 +180,7 @@ Return any errors or warnings in this structure.
 <H2><A NAME="colorizeimage">ColorizeImage</A></H2>
 <P>Method ColorizeImage creates a new image that is a copy of an existing one with the image pixels colorized.  The colorization is controlled with the pen color and the opacity levels.</P>
 <P>The format of the ColorizeImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ColorizeImage ( <A HREF="types/Image.html">Image</A> *image, const char *opacity, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ColorizeImage ( const <A HREF="types/Image.html">Image</A> *image, const char *opacity, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -234,7 +234,7 @@ Return any errors or warnings in this structure.
 <P>Method DespeckleImage creates a new image that is a copy of an existing one with the speckle noise minified.  It uses the eight hull algorithm described in Applied Optics, Vol.  24, No.  10, 15 May 1985, ``Geometric filter for Speckle Reduction'', by Thomas 
 <FONT SIZE=-1>R</FONT> Crimmins.  Each pixel in the image is replaced by one of its eight of its surrounding pixels using a polarity and negative hull function.  DespeckleImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the DespeckleImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *DespeckleImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *DespeckleImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_despeckle_image%3A">despeckle_image:</A></STRONG><BR>
@@ -254,7 +254,7 @@ Return any errors or warnings in this structure.
 <H2><A NAME="edgeimage">EdgeImage</A></H2>
 <P>Method EdgeImage creates a new image that is a copy of an existing one with the edges enhanced.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the EdgeImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *EdgeImage ( <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *EdgeImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_edge_image%3A">edge_image:</A></STRONG><BR>
@@ -278,7 +278,7 @@ Return any errors or warnings in this structure.
 <H2><A NAME="embossimage">EmbossImage</A></H2>
 <P>Method EmbossImage creates a new image that is a copy of an existing one with the edge highlighted.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the EmbossImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *EmbossImage ( <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *EmbossImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_emboss_image%3A">emboss_image:</A></STRONG><BR>
@@ -310,7 +310,7 @@ Return any errors or warnings in this structure.
 <P>Weights assume that the importance of neighboring pixels is negately proportional to the square of their distance from the target pixel.</P>
 <P>The scan only processes pixels that have a full set of neighbors.  Pixels in the top, bottom, left, and right pairs of rows and columns are omitted from the scan.</P>
 <P>The format of the EnhanceImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *EnhanceImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *EnhanceImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_enhance_image%3A">enhance_image:</A></STRONG><BR>
@@ -354,7 +354,7 @@ Return any errors or warnings in this structure.
 <H2><A NAME="implodeimage">ImplodeImage</A></H2>
 <P>Method ImplodeImage creates a new image that is a copy of an existing one with the image pixels ``implode'' by the specified percentage.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the ImplodeImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ImplodeImage ( <A HREF="types/Image.html">Image</A> *image, const double amount, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ImplodeImage ( const <A HREF="types/Image.html">Image</A> *image, const double amount, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_implode_image%3A">implode_image:</A></STRONG><BR>
@@ -379,7 +379,7 @@ Return any errors or warnings in this structure.
 <H2><A NAME="medianfilterimage">MedianFilterImage</A></H2>
 <P>Method MedianFilterImage creates a new image that is a copy of an existing one with each pixel component replaced with the median color in a pixel neighborhood.</P>
 <P>The format of the MedianFilterImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *MedianFilterImage ( <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *MedianFilterImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_median_image%3A">median_image:</A></STRONG><BR>
