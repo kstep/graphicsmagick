@@ -1394,9 +1394,10 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
   if (attribute == (ImageAttribute *) NULL)
     return(False);
   attribute->key=AllocateString(key);
-  if ((LocaleNCompare(key,"IPTC",4) == 0) ||
-      (LocaleNCompare(key,"8BIM",4) == 0) ||
-      (LocaleNCompare(key,"EXIF",4) == 0))
+  if ((LocaleNCompare(key,"EXIF",4) == 0) ||
+      (LocaleNCompare(key,"IPTC",4) == 0) ||
+      (LocaleNCompare(key,"[Locale",7) == 0) ||
+      (LocaleNCompare(key,"8BIM",4) == 0))
     attribute->value=AllocateString(value);
   else
     attribute->value=TranslateText((ImageInfo *) NULL,image,value);

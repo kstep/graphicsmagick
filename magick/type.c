@@ -583,12 +583,12 @@ static unsigned int ReadConfigureFile(const char *basename,
     if (*token == '\0')
       break;
     (void) strncpy(keyword,token,MaxTextExtent-1);
-    if (LocaleCompare(keyword,"<!") == 0)
+    if (LocaleNCompare(keyword,"<!--",4) == 0)
       {
         /*
           Comment element.
         */
-        while ((*token != '>') && (*q != '\0'))
+        while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
           GetToken(q,&q,token);
         continue;
       }

@@ -148,13 +148,22 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
     if (*token == '\0')
       break;
     (void) strncpy(keyword,token,MaxTextExtent-1);
-    if (LocaleCompare(keyword,"<!") == 0)
+    if (LocaleNCompare(keyword,"<!--",4) == 0)
       {
+        char
+          comment[MaxTextExtent];
+
         /*
           Comment element.
         */
-        while ((*token != '>') && (*q != '\0'))
+        p=q;
+        while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
           GetToken(q,&q,token);
+        length=Min(q-p-2,MaxTextExtent-1);
+        (void) strncpy(comment,p+1,length);
+        comment[length]='\0';
+        SetImageAttribute(image,"[LocaleComment]",comment);
+        SetImageAttribute(image,"[LocaleComment]","\n");
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -459,7 +468,6 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
-  (void) WriteBlobString(image,"Not implemented yet!\n");
   attribute=GetImageAttribute(image,"[Locale]");
   if (attribute == (const ImageAttribute *) NULL)
     ThrowWriterException(FileOpenError,"No [LOCALE] image attribute",image);
@@ -479,8 +487,11 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
           locale[i]=locale[j];
           locale[j]=swap;
         }
+  attribute=GetImageAttribute(image,"[LocaleComment]");
+  if (attribute != (const ImageAttribute *) NULL)
+    WriteBlobString(image,attribute->value);
   for (i=0; i < count; i++)
-    printf("%d %s\n",i,locale[i]);
+    WriteBlobString(image,locale[i]);
   for (i=0; i <= count; i++)
     LiberateMemory((void **) &locale[i]);
   LiberateMemory((void **) &locale);
