@@ -333,8 +333,8 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
           Text box.
         */
         clone_info->fill=draw_info->box;
-        clone_info->affine.tx=offset.x-draw_info->affine.ry*metrics.ascent-
-          metrics.max_advance/4;
+        clone_info->affine.tx=offset.x-draw_info->affine.ry*(metrics.ascent-
+          metrics.max_advance/4);
         clone_info->affine.ty=offset.y-draw_info->affine.sy*metrics.ascent;
         FormatString(primitive,"rectangle 0,0 %g,%ld",metrics.width+
           metrics.max_advance/2.0,height);
