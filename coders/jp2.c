@@ -207,9 +207,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  static SemaphoreInfo
-    *jp2_semaphore = (SemaphoreInfo *) NULL;
-
   unsigned int
     number_components,
     status;
@@ -222,39 +219,38 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   /*
-    Copy image to temporary file.
-  */
-  TemporaryFilename((char *) image_info->filename);
-  file=fopen(image_info->filename,WriteBinaryType);
-  if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenWarning,"Unable to write file",image);
-  c=ReadBlobByte(image);
-  while (c != EOF)
-  {
-    (void) fputc(c,file);
-    c=ReadBlobByte(image);
-  }
-  (void) fclose(file);
-  /*
     Initialize JPEG 2000 API.
   */
-  AcquireSemaphore(&jp2_semaphore);
   jas_init();
-  (void) strcpy(image->filename,image_info->filename);
-  jp2_stream=jas_stream_fopen(image->filename,ReadBinaryType);
-  if (jp2_stream == (jas_stream_t *) NULL)
+  if (image->blob.data != (unsigned char *) NULL)
+    jp2_stream=jas_stream_memopen(image->blob.data,image->blob.length);
+  else
     {
-      LiberateSemaphore(&jp2_semaphore);
-      ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+      /*
+        Copy image to temporary file.
+      */
+      (void) strcpy(image->filename,image_info->filename);
+      TemporaryFilename((char *) image_info->filename);
+      file=fopen(image_info->filename,WriteBinaryType);
+      if (file == (FILE *) NULL)
+        ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+      c=ReadBlobByte(image);
+      while (c != EOF)
+      {
+        (void) fputc(c,file);
+        c=ReadBlobByte(image);
+      }
+      (void) fclose(file);
+      jp2_stream=jas_stream_fopen(image->filename,ReadBinaryType);
     }
+  if (jp2_stream == (jas_stream_t *) NULL)
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   jp2_image=jas_image_decode(jp2_stream,-1,0);
   if (jp2_image == (jas_image_t *) NULL)
-    {
-      LiberateSemaphore(&jp2_semaphore);
-      ThrowReaderException(FileOpenWarning,"Unable to decode image file",image);
-    }
+    ThrowReaderException(FileOpenWarning,"Unable to decode image file",image);
   (void) jas_stream_close(jp2_stream);
-  (void) remove(image->filename);
+  if (image->blob.data == (unsigned char *) NULL)
+    (void) remove(image->filename);
   /*
     Convert JPEG 2000 pixels.
   */
@@ -269,7 +265,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     if (pixels[i] == (jas_matrix_t *) NULL)
       {
         jas_image_destroy(jp2_image);
-        LiberateSemaphore(&jp2_semaphore);
         ThrowReaderException(CorruptImageWarning,"Unable to allocate memory",
           image);
       }
@@ -304,7 +299,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     jas_matrix_destroy(pixels[i]);
   jas_image_destroy(jp2_image);
   CloseBlob(image);
-  LiberateSemaphore(&jp2_semaphore);
   return(image);
 }
 #else
