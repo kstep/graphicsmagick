@@ -58,8 +58,8 @@
 /*
   Global declarations.
 */
-static Image
-  *image;
+static ExceptionInfo
+  *tiff_exception;
 
 /*
   Forward declarations.
@@ -255,19 +255,9 @@ static unsigned int TIFFErrors(const char *module,const char *format,
   char
     message[MaxTextExtent];
 
-  register char
-    *p;
-
-  p=message;
-  if (module != (char *) NULL)
-    {
-      FormatString(p,"%.1024s: ",module);
-      p+=Extent(message);
-    }
-  (void) vsprintf(p,format,warning);
-  (void) strcat(p,".");
-  if (image != (Image *) NULL)
-    ThrowBinaryException(DelegateError,message,image->filename);
+  (void) vsprintf(message,format,warning);
+  (void) strcat(message,".");
+  ThrowException(tiff_exception,DelegateError,message,module);
   return(True);
 }
 
@@ -277,19 +267,9 @@ static unsigned int TIFFWarnings(const char *module,const char *format,
   char
     message[MaxTextExtent];
 
-  register char
-    *p;
-
-  p=message;
-  if (module != (char *) NULL)
-    {
-      FormatString(p,"%.1024s: ",module);
-      p+=Extent(message);
-    }
-  (void) vsprintf(p,format,warning);
-  (void) strcat(p,".");
-  if (image != (Image *) NULL)
-    ThrowBinaryException(DelegateWarning,message,image->filename);
+  (void) vsprintf(message,format,warning);
+  (void) strcat(message,".");
+  ThrowException(tiff_exception,DelegateError,message,module);
   return(True);
 }
 
@@ -303,6 +283,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     *chromaticity,
     x_resolution,
     y_resolution;
+
+  Image
+    *image;
 
   int
     range,
@@ -391,6 +374,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) strcpy(image->filename,image_info->filename);
       image->temporary=True;
     }
+  tiff_exception=exception;
   TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   tiff=TIFFOpen(image->filename,ReadBinaryUnbufferedType);
