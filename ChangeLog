@@ -1,3 +1,13 @@
+2002-12-11  Cristy  <cristy@mystic.es.dupont.com>
+	* magick/ehnance.c: Fixed LevelImage() to accept percent
+	black/white points (.i.e. 90%).
+	* magick/enhance.c: Added LevelImageChannel().
+	* magick/ehnance.c: Improved Q:8 performance of color
+	transformations (e.g. for Gamma) which are based on a mapping
+	array.
+	* coders/pcl.c: Fixed PCL coder to output proper color PCL
+	instructions.
+
 2002-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/image.c: Disabled SetImageInfo() code which uses
 	GetImageMagick() to test file magic via Is* methods so that

@@ -57,6 +57,7 @@
 #include "blob.h"
 #include "magick.h"
 #include "monitor.h"
+#include "static.h"
 #include "utility.h"
 
 /*
@@ -98,10 +99,10 @@ static unsigned int IsPCL(const unsigned char *magick,const size_t length)
 {
   if (length < 4)
     return(False);
-  if (memcmp(magick,"\033E\033&",4) == 0)
-    return(False);
   if (memcmp(magick,"\033E\033",3) == 0)
     return(True);
+  if (memcmp(magick,"\033E\033&",4) == 0)
+    return(False);
   return(False);
 }
 
@@ -200,14 +201,10 @@ ModuleExport void UnregisterPCLImage(void)
 static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
 {
   char
-    buffer[MaxTextExtent],
-    page_geometry[MaxTextExtent];
-
-  const ImageAttribute
-    *attribute;
+    buffer[MaxTextExtent];
 
   long
-    sans_offset,
+    sans,
     y;
 
   register const PixelPacket
@@ -219,17 +216,14 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   register long
     x;
 
-  RectangleInfo
-    geometry,
-    media_info;
+  register unsigned char
+    *q;
 
   unsigned int
     status;
 
   unsigned long
-    density,
-    page_size,
-    text_size;
+    density;
 
   /*
     Open output image file.
@@ -245,122 +239,14 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   /*
     Initialize the printer.
   */
-  (void) WriteBlobString(image,"\033E");  /* portrait orientation */
-  (void) WriteBlobString(image,"\033&l0O");  /* portrait orientation */
+  (void) WriteBlobString(image,"\033E");  /* printer reset */
   (void) WriteBlobString(image,"\033&l0E");  /* top margin 0 */
-  /*
-    Center image on PCL page.
-  */
-  text_size=0;
-  attribute=GetImageAttribute(image,"label");
-  if (attribute != (const ImageAttribute *) NULL)
-    text_size=(unsigned int)
-      (MultilineCensus(attribute->value)*image_info->pointsize+12);
-  SetGeometry(image,&geometry);
-  geometry.y=(long) text_size;
-  FormatString(page_geometry,"%lux%lu",image->columns,image->rows);
-  if (image_info->page != (char *) NULL)
-    (void) strncpy(page_geometry,image_info->page,MaxTextExtent-1);
-  else
-    if ((image->page.width != 0) && (image->page.height != 0))
-      (void) FormatString(page_geometry,"%lux%lu%+ld%+ld",image->page.width,
-        image->page.height,image->page.x,image->page.y);
-    else
-      if (LocaleCompare(image_info->magick,"PCL") == 0)
-        (void) strcpy(page_geometry,PSPageGeometry);
-  (void) GetMagickGeometry(page_geometry,&geometry.x,&geometry.y,
-    &geometry.width,&geometry.height);
-  (void) GetGeometry(page_geometry,&media_info.x,&media_info.y,
-    &media_info.width,&media_info.height);
-  page_size=2;
-  if ((media_info.width == 540) && (media_info.height == 720))
-    page_size=1;  /* executive */
-  if ((media_info.width == 612) && (media_info.height == 792))
-    page_size=2;  /* letter */
-  if ((media_info.width == 612) && (media_info.height == 1008))
-    page_size=3;  /* legal */
-  if ((media_info.width == 1224) && (media_info.height == 792))
-    page_size=6;  /* ledger */
-  if ((media_info.width == 595) && (media_info.height == 842))
-    page_size=26;  /* A4 */
-  if ((media_info.width == 842) && (media_info.height == 1191))
-    page_size=27;  /* A3 */
-  if ((media_info.width == 729) && (media_info.height == 1032))
-    page_size=45;  /* B5 */
-  if ((media_info.width == 516) && (media_info.height == 729))
-    page_size=46;  /* B4 */
-  FormatString(buffer,"\033&l%luA",page_size);  /* papersize */
   (void) WriteBlobString(image,buffer);
-  (void) GetGeometry("75x75",&sans_offset,&sans_offset,&density,&density);
+  (void) GetGeometry("75x75",&sans,&sans,&density,&density);
   if (image_info->density != (char *) NULL)
-    (void) GetGeometry(image_info->density,&sans_offset,&sans_offset,&density,
-      &density);
-  FormatString(buffer,"\033*p%ldx%ldY",geometry.x,geometry.y);
-  (void) WriteBlobString(image,buffer);
-  attribute=GetImageAttribute(image,"label");
-  if (attribute != (const ImageAttribute *) NULL)
+    (void) GetGeometry(image_info->density,&sans,&sans,&density,&density);
+  if (IsMonochromeImage(image,&image->exception))
     {
-      /*
-        Print label.
-      */
-      (void) WriteBlobString(image,"\033&k2G");
-      FormatString(buffer,"\033(s1p%uv5t3b",(unsigned int)
-        image_info->pointsize);
-      (void) WriteBlobString(image,buffer);
-      FormatString(buffer,"\n%.1024s\n",attribute->value);
-      (void) WriteBlobString(image,buffer);
-      (void) WriteBlobString(image,"\033(s0B");
-    }
-  FormatString(buffer,"\033*t%luR",density);  /* graphic resolution */
-  (void) WriteBlobString(image,buffer);
-  geometry.width=(density*geometry.width)/75;
-  geometry.height=(density*geometry.height)/75;
-  if (!IsGrayImage(image,&image->exception))
-    {
-      /*
-        Write PCL color image.
-      */
-      FormatString(buffer,"\033*r%lus%luT",image->columns,image->rows);
-      (void) WriteBlobString(image,buffer);
-      FormatString(buffer,"\033*t%luh%luV",geometry.width,geometry.height);
-      (void) WriteBlobString(image,buffer);
-      (void) WriteBlobString(image,"\033*v6W");
-      (void) WriteBlobByte(image,'\000');  /* color model */
-      (void) WriteBlobByte(image,'\003');  /* direct pixel encoding */
-      (void) WriteBlobByte(image,'\000');  /* bits per index */
-      (void) WriteBlobByte(image,'\010');  /* bits red*/
-      (void) WriteBlobByte(image,'\010');  /* bits green*/
-      (void) WriteBlobByte(image,'\010');  /* bits blue */
-      (void) WriteBlobString(image,"\033*r2A");   /* start graphics */
-      (void) WriteBlobString(image,"\033*b0M");  /* no compression */
-      FormatString(buffer,"\033*b%luW",3*image->columns);
-      (void) WriteBlobString(image,buffer);
-      for (y=0; y < (long) image->rows; y++)
-      {
-        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) image->columns; x++)
-        {
-          FormatString(buffer,"%c%c%c",(unsigned char) ScaleQuantumToChar(p->red),
-            (unsigned char) ScaleQuantumToChar(p->green),(unsigned char)
-            ScaleQuantumToChar(p->blue));
-          (void) WriteBlobString(image,buffer);
-          p++;
-        }
-        FormatString(buffer,"\033*b%luW",3*image->columns);
-        (void) WriteBlobString(image,buffer);
-        if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-            break;
-      }
-      (void) WriteBlobString(image,"\033*rC");  /* end graphics */
-    }
-  else
-    {
-      Image
-        *monochrome_image;
-
       register unsigned char
         bit,
         byte;
@@ -368,22 +254,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       /*
         Write PCL monochrome image.
       */
-      monochrome_image=image;
-      if ((geometry.width != image->columns) ||
-          (geometry.height != image->rows))
-        {
-          /*
-            Scale image.
-          */
-          monochrome_image=ResizeImage(image,geometry.width,geometry.height,
-            TriangleFilter,1.0,&image->exception);
-          if (monochrome_image == (Image *) NULL)
-            ThrowWriterException(ResourceLimitError,image->exception.reason,
-              image);
-        }
-      SetImageType(monochrome_image,BilevelType);
-      FormatString(buffer,"\033*r%lus%luT",monochrome_image->columns,
-        monochrome_image->rows);
+      FormatString(buffer,"\033*t%ldR",density);  /* set resolution */
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image,"\033*r1A");  /* start graphics */
       (void) WriteBlobString(image,"\033*b0M");  /* no compression */
@@ -411,21 +282,71 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
         }
         if (bit != 0)
           (void) WriteBlobByte(image,byte << (8-bit));
-        if (y < (long) monochrome_image->rows)
+        if (y < (long) image->rows)
           {
-            FormatString(buffer,"\033*b%luW",(monochrome_image->columns+7)/8);
+            FormatString(buffer,"\033*b%luW",(image->columns+7)/8);
             (void) WriteBlobString(image,buffer);
           }
-        if (QuantumTick(y,monochrome_image->rows))
-          if (!MagickMonitor(SaveImageText,y,monochrome_image->rows,&image->exception))
+        if (QuantumTick(y,image->rows))
+          if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
             break;
       }
       (void) WriteBlobString(image,"\033*rB");  /* end graphics */
-      if (image != monochrome_image)
-        DestroyImage(monochrome_image);
     }
-  (void) WriteBlobString(image,"\033&l0H");
-  (void) WriteBlobString(image,"\033E");  /* portrait orientation */
+  else
+    {
+      static char
+        color_mode[6] = { 0, 3, 0, 8, 8, 8 };
+
+      unsigned char
+        *pixels;
+
+      /*
+        Allocate pixel buffers.
+      */
+      pixels=(unsigned char *)
+        AcquireMemory(3*image->columns*sizeof(unsigned char));
+      if (pixels == (unsigned char *) NULL)
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image)
+      /*
+        Write PCL color image.
+      */
+      (void) WriteBlobString(image,"\033*r3F");  /* set presentation mode */
+      FormatString(buffer,"\033*t%luR",density);  /* set resolution */
+      (void) WriteBlobString(image,buffer);
+      FormatString(buffer,"\033*r%luT",image->rows);
+      (void) WriteBlobString(image,buffer);
+      FormatString(buffer,"\033*r%luS",image->columns);
+      (void) WriteBlobString(image,buffer);
+      (void) WriteBlobString(image,"\033*v6W");  /* set color mode */
+      (void) WriteBlob(image,6,color_mode);
+      (void) WriteBlobString(image,"\033*r1A");  /* start raster graphics */
+      (void) WriteBlobString(image,"\033*b0Y");  /* set y offset */
+      (void) WriteBlobString(image,"\033*b0M");  /* no compression */
+      for (y=0; y < (long) image->rows; y++)
+      {
+        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        q=pixels;
+        for (x=0; x < (long) image->columns; x++)
+        {
+          *q++=ScaleQuantumToChar(p->red);
+          *q++=ScaleQuantumToChar(p->green);
+          *q++=ScaleQuantumToChar(p->blue);
+          p++;
+        }
+        FormatString(buffer,"\033*b%luW",3*image->columns);  /* send row */
+        (void) WriteBlobString(image,buffer);
+        (void) WriteBlob(image,3*image->columns,pixels);
+        if (QuantumTick(y,image->rows))
+          if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+            break;
+      }
+      (void) WriteBlobString(image,"\033*r0C");  /* end graphics */
+      LiberateMemory((void **) &pixels);
+    }
+  (void) WriteBlobString(image,"\033E");
   CloseBlob(image);
   return(True);
 }

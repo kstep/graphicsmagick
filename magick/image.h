@@ -25,12 +25,15 @@ extern "C" {
 
 #if (QuantumDepth == 8)
 #define MaxColormapSize  256UL
+#define MaxMap  255UL
 #define MaxRGB  255UL
 #define ScaleCharToQuantum(value)  ((Quantum) (value))
 #define ScaleLongToQuantum(value)  ((Quantum) ((value)/16843009UL))
+#define ScaleMapToQuantum(value)  ((Quantum) (value))
 #define ScaleQuantum(quantum)  ((unsigned long) (quantum))
 #define ScaleQuantumToChar(quantum)  ((unsigned char) (quantum))
 #define ScaleQuantumToLong(quantum)  ((unsigned long) (16843009UL*(quantum)))
+#define ScaleQuantumToMap(quantum)  ((unsigned char) (quantum))
 #define ScaleQuantumToShort(quantum)  ((unsigned short) (257UL*(quantum)))
 #define ScaleShortToQuantum(value)  ((Quantum) ((value)/257UL))
 #define ScaleToQuantum(value)  ((unsigned long) (value))
@@ -38,12 +41,15 @@ extern "C" {
 typedef unsigned char Quantum;
 #elif (QuantumDepth == 16)
 #define MaxColormapSize  65536UL
+#define MaxMap 65535UL
 #define MaxRGB  65535UL
 #define ScaleCharToQuantum(value)  ((Quantum) (257UL*(value)))
 #define ScaleLongToQuantum(value)  ((Quantum) ((value)/65537UL))
+#define ScaleMapToQuantum(value)  ((Quantum) (value))
 #define ScaleQuantum(quantum)  ((unsigned long) ((quantum)/257UL))
 #define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/257UL))
 #define ScaleQuantumToLong(quantum)  ((unsigned long) (65537UL*(quantum)))
+#define ScaleQuantumToMap(quantum)  ((unsigned short) (quantum))
 #define ScaleQuantumToShort(quantum)  ((unsigned short) (quantum))
 #define ScaleShortToQuantum(value)  ((Quantum) (value))
 #define ScaleToQuantum(value)  ((unsigned long) (257UL*(value)))
@@ -51,12 +57,15 @@ typedef unsigned char Quantum;
 typedef unsigned short Quantum;
 #elif (QuantumDepth == 32)
 #define MaxColormapSize  65536UL
+#define MaxMap 65535UL
 #define MaxRGB  4294967295UL
 #define ScaleCharToQuantum(value)  ((Quantum) (16843009UL*(value)))
 #define ScaleLongToQuantum(value)  ((Quantum) ((value)))
+#define ScaleMapToQuantum(value)  ((Quantum) (65537UL*(value)))
 #define ScaleQuantum(quantum)  ((unsigned long) ((quantum)/16843009UL))
 #define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/16843009UL))
 #define ScaleQuantumToLong(quantum)  ((unsigned long) (quantum))
+#define ScaleQuantumToMap(quantum)  ((unsigned short) ((quantum)/65537UL))
 #define ScaleQuantumToShort(quantum)  ((unsigned short) ((quantum)/65537UL))
 #define ScaleShortToQuantum(value)  ((Quantum) (65537UL*(value)))
 #define ScaleToQuantum(value)  ((unsigned long) (16843009UL*(value)))
@@ -1014,7 +1023,6 @@ extern MagickExport unsigned int
   AllocateImageColormap(Image *,const unsigned long),
   AnimateImages(const ImageInfo *image_info,Image *image),
   ChannelImage(Image *,const ChannelType),
-  ChannelThresholdImage(Image *,const char *),
   ClipImage(Image *),
   CompositeImage(Image *,const CompositeOperator,const Image *,const long,
     const long),
@@ -1035,6 +1043,8 @@ extern MagickExport unsigned int
   IsPaletteImage(const Image *,ExceptionInfo *),
   IsSubimage(const char *,const unsigned int),
   LevelImage(Image *,const char *),
+  LevelImageChannel(Image *,const ChannelType,const double,const double,
+    const double),
   ListColorInfo(FILE *,ExceptionInfo *),
   ListMagickInfo(FILE *,ExceptionInfo *),
   ModulateImage(Image *,const char *),
@@ -1059,6 +1069,7 @@ extern MagickExport unsigned int
   SortColormapByIntensity(Image *),
   SyncImagePixels(Image *),
   ThresholdImage(Image *,const double),
+  ThresholdImageChannel(Image *,const char *),
   TransformRGBImage(Image *,const ColorspaceType),
   UnregisterMagickInfo(const char *),
   WriteImage(const ImageInfo *,Image *),
