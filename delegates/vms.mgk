@@ -6,14 +6,14 @@
   <delegate decode="compress" restrict="True" command='|uncompress -c "%i"' />
   <delegate decode="dot" command='dot -Tps "%i" -o "%o"' />
   <delegate decode="dvi" command='dvips -q -o "%o" "%i"' />
-  <delegate decode="edit" command='/usr/X11R6/bin/xterm -title "Edit Image Comment" -e vi "%o"' />
+  <delegate decode="edit" restrict="True" command='/usr/X11R6/bin/xterm -title "Edit Image Comment" -e vi "%o"' />
   <delegate decode="emf" command='wmftopng "%i" "%o"' />
   <delegate decode="eps" encode="pdf" mode="bi" command='gs -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="eps" encode="ps" mode="bi" command='gs -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pswrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="fig" command='/usr/X11R6/bin/fig2dev -L ps "%i" "%o"' />
   <delegate decode="gplt" command='/bin/echo "set size 1.25,0.62\nset terminal postscript portrait color solid; set output "%o"; load "%i"" > %u;gnuplot %u' />
-  <delegate decode="gs-color" command='gs -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pnmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
-  <delegate decode="gs-mono" command='gs -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pbmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
+  <delegate decode="gs-color" restrict="True" command='gs -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pnmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
+  <delegate decode="gs-mono" restrict="True" command='gs -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pbmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
   <delegate decode="hpgl" command='hp2xx -q -m eps -f `basename "%o"` "%i"\nmv `basename "%o"` "%o' />
   <delegate decode="htm" command='html2ps -U -o "%o" "%i"' />
   <delegate decode="html" command='html2ps -U -o "%o" "%i"' />

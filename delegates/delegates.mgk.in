@@ -6,14 +6,14 @@
   <delegate decode="compress" restrict="True" command='|@LZWDecodeDelegate@ -c "%i"' />
   <delegate decode="dot" command='@DOTDecodeDelegate@ -Tps "%i" -o "%o"' />
   <delegate decode="dvi" command='@DVIDecodeDelegate@ -q -o "%o" "%i"' />
-  <delegate decode="edit" command='@EditorDelegate@ -title "Edit Image Comment" -e vi "%o"' />
+  <delegate decode="edit" restrict="True" command='@EditorDelegate@ -title "Edit Image Comment" -e vi "%o"' />
   <delegate decode="emf" command='@WMFDecodeDelegate@ "%i" "%o"' />
   <delegate decode="eps" encode="pdf" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSPDFDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="eps" encode="ps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="fig" command='@FIGDecodeDelegate@ -L ps "%i" "%o"' />
   <delegate decode="gplt" command='@EchoDelegate@ "set size 1.25,0.62\nset terminal postscript portrait color solid; set output "%o"; load "%i"" > %u;@GnuplotDecodeDelegate@ %u' />
-  <delegate decode="gs-color" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSColorDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
-  <delegate decode="gs-mono" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSMonoDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
+  <delegate decode="gs-color" restrict="True" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSColorDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
+  <delegate decode="gs-mono" restrict="True" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSMonoDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
   <delegate decode="hpgl" command='@HPGLDecodeDelegate@ -q -m eps -f `basename "%o"` "%i"\nmv `basename "%o"` "%o' />
   <delegate decode="htm" command='@HTMLDecodeDelegate@ -U -o "%o" "%i"' />
   <delegate decode="html" command='@HTMLDecodeDelegate@ -U -o "%o" "%i"' />
