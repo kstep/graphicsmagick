@@ -914,6 +914,7 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
         i;
 
       p=node_info->list;
+      (void) fprintf(file,"\n");
       for (i=0; i < (long) node_info->number_unique; i++)
       {
         GetColorTuple(&p->pixel,image->depth,image->matte,False,tuple);

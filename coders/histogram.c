@@ -226,7 +226,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Allocate histogram count arrays.
   */
-  length=Max(MaxRGB+1,histogram_image->columns);
+  length=Max(ScaleQuantumToChar(MaxRGB)+1,histogram_image->columns);
   red=(long *) AcquireMemory(length*sizeof(long));
   green=(long *) AcquireMemory(length*sizeof(long));
   blue=(long *) AcquireMemory(length*sizeof(long));
@@ -249,9 +249,9 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      red[(long) ScaleQuantumToChar(p->red)]++;
-      green[(long) ScaleQuantumToChar(p->green)]++;
-      blue[(long) ScaleQuantumToChar(p->blue)]++;
+      red[ScaleQuantumToChar(p->red)]++;
+      green[ScaleQuantumToChar(p->green)]++;
+      blue[ScaleQuantumToChar(p->blue)]++;
       p++;
     }
   }
