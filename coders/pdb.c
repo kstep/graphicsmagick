@@ -410,7 +410,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) DecodeImage(image,pixels,packets);
     break;
     default:
-      ThrowReaderException(CorruptImageWarning,"Unknown compression type",image);
+      ThrowReaderException(CorruptImageWarning,"Unknown compression type",image)
   }
 
   p=pixels;
@@ -659,7 +659,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
     *pdbImageEnd;
 
   unsigned int
-    bits_per_pixel,  // Override with -depth (1 | 2 | 4)
+    bits_per_pixel,
     packet_size,
     status,
     literal,
@@ -673,7 +673,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
     *comment;
 
   /*
-  Open output image file.
+    Open output image file.
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);

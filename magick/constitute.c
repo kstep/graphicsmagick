@@ -186,7 +186,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
       register unsigned char
         *p;
 
-      p=(char *) pixels;
+      p=(unsigned char *) pixels;
       for (y=0; y < (long) image->rows; y++)
       {
         q=SetImagePixels(image,0,y,image->columns,1);
