@@ -68,8 +68,8 @@ typedef struct _SignatureInfo
 {
   unsigned long
     digest[8],
-    low_count,
-    high_count;
+    low_order,
+    high_order;
 
   off_t
     offset;
@@ -113,15 +113,15 @@ static void FinalizeSignature(SignatureInfo *signature_info)
     count;
 
   unsigned long
-    high_count,
-    low_count;
+    high_order,
+    low_order;
 
   /*
     Finalize computing the SHA digest.
   */
-  low_count=signature_info->low_count;
-  high_count=signature_info->high_count;
-  count=(int) ((low_count >> 3) & 0x3f);
+  low_order=signature_info->low_order;
+  high_order=signature_info->high_order;
+  count=(int) ((low_order >> 3) & 0x3f);
   signature_info->data[count++]=0x80;
   if (count <= (SignatureSize-8))
     memset(signature_info->data+count,0,SignatureSize-8-count);
@@ -131,14 +131,14 @@ static void FinalizeSignature(SignatureInfo *signature_info)
       TransformSignature(signature_info);
       memset(signature_info->data,0,SignatureSize-8);
     }
-  signature_info->data[56]=(high_count >> 24) & 0xff;
-  signature_info->data[57]=(high_count >> 16) & 0xff;
-  signature_info->data[58]=(high_count >> 8) & 0xff;
-  signature_info->data[59]=(high_count >> 0) & 0xff;
-  signature_info->data[60]=(low_count >> 24) & 0xff;
-  signature_info->data[61]=(low_count >> 16) & 0xff;
-  signature_info->data[62]=(low_count >> 8) & 0xff;
-  signature_info->data[63]=(low_count >> 0) & 0xff;
+  signature_info->data[56]=(high_order >> 24) & 0xff;
+  signature_info->data[57]=(high_order >> 16) & 0xff;
+  signature_info->data[58]=(high_order >> 8) & 0xff;
+  signature_info->data[59]=(high_order >> 0) & 0xff;
+  signature_info->data[60]=(low_order >> 24) & 0xff;
+  signature_info->data[61]=(low_order >> 16) & 0xff;
+  signature_info->data[62]=(low_order >> 8) & 0xff;
+  signature_info->data[63]=(low_order >> 0) & 0xff;
   TransformSignature(signature_info);
 }
 
@@ -175,8 +175,8 @@ static void GetSignatureInfo(SignatureInfo *signature_info)
   signature_info->digest[5]=0x9b05688cL;
   signature_info->digest[6]=0x1f83d9abL;
   signature_info->digest[7]=0x5be0cd19L;
-  signature_info->low_count=0L;
-  signature_info->high_count=0L;
+  signature_info->low_order=0L;
+  signature_info->high_order=0L;
   signature_info->offset=0;
   memset(signature_info->data,0,SignatureSize);
 }
@@ -376,11 +376,11 @@ static void UpdateSignature(SignatureInfo *signature_info,
   /*
     Update the SHA digest.
   */
-  count=Trunc32(signature_info->low_count+((unsigned char) length << 3));
-  if (length < signature_info->low_count)
-    signature_info->high_count++;
-  signature_info->low_count=count;
-  signature_info->high_count+=(unsigned char) length >> 29;
+  count=Trunc32(signature_info->low_order+((unsigned char) length << 3));
+  if (length < signature_info->low_order)
+    signature_info->high_order++;
+  signature_info->low_order=count;
+  signature_info->high_order+=(unsigned char) length >> 29;
   if (signature_info->offset)
     {
       i=SignatureSize-signature_info->offset;
