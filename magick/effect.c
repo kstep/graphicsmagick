@@ -1461,55 +1461,32 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 %
 */
 
-/*
-  Add a pixel into the skip-lists.
-*/
-#define InsertMedianList(pixel_list,pixel) \
-{ \
-  if (pixel_list->lists[0].nodes[(pixel)->red].marker == pixel_list->marker) \
-    pixel_list->lists[0].nodes[(pixel)->red].count++; \
-  else \
-    AddNodeMedianList(pixel_list,0,(pixel)->red); \
-  if (pixel_list->lists[1].nodes[(pixel)->green].marker == pixel_list->marker) \
-    pixel_list->lists[1].nodes[(pixel)->green].count++; \
-  else \
-    AddNodeMedianList(pixel_list,1,(pixel)->green); \
-  if (pixel_list->lists[2].nodes[(pixel)->blue].marker == pixel_list->marker) \
-    pixel_list->lists[2].nodes[(pixel)->blue].count++; \
-  else \
-    AddNodeMedianList(pixel_list,2,(pixel)->blue); \
-  if (pixel_list->lists[3].nodes[(pixel)->opacity].marker == pixel_list->marker) \
-    pixel_list->lists[3].nodes[(pixel)->opacity].count++; \
-  else \
-    AddNodeMedianList(pixel_list,3,(pixel)->opacity); \
-}
-
 typedef struct _MedianListNode
 {
   unsigned long
     next[QuantumDepth/2+1],
     count,
-    marker;
+    signature;
 } MedianListNode;
 
 typedef struct _MedianSkipList
 {
-  MedianListNode
-    nodes[MaxRGB+2L];
-
   int
     level;
+
+  MedianListNode
+    nodes[MaxRGB+2L];
 } MedianSkipList;
 
 typedef struct _MedianPixelList
 {
-  MedianSkipList
-    lists[4];
-
   unsigned long
     center,
-    marker,
-    seed;
+    seed,
+    signature;
+
+  MedianSkipList
+    lists[4];
 } MedianPixelList;
 
 static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
@@ -1529,7 +1506,7 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
     Initialize the node.
   */
   list=pixel_list->lists+channel;
-  list->nodes[color].marker=pixel_list->marker;
+  list->nodes[color].signature=pixel_list->signature;
   list->nodes[color].count=1;
   /*
     Determine where it belongs in the list.
@@ -1617,8 +1594,36 @@ static PixelPacket GetMedianList(MedianPixelList *pixel_list)
 static void InitializeMedianList(MedianPixelList *pixel_list,long width)
 {
   pixel_list->center=width*width/2;
-  pixel_list->marker=0xDEADBEEFL;
+  pixel_list->signature=MagickSignature;
   (void) memset((void *) pixel_list->lists,0,4*sizeof(MedianSkipList));
+}
+
+static inline void InsertMedianList(MedianPixelList *pixel_list,
+	const PixelPacket *pixel)
+{
+	unsigned long
+		signature;
+
+  signature=pixel_list->lists[0].nodes[pixel->red].signature;
+  if (signature != pixel_list->signature)
+    AddNodeMedianList(pixel_list,0,pixel->red);
+  else
+    pixel_list->lists[0].nodes[pixel->red].count++;
+  signature=pixel_list->lists[1].nodes[pixel->green].signature;
+  if (signature != pixel_list->signature)
+    AddNodeMedianList(pixel_list,1,pixel->green);
+  else
+    pixel_list->lists[1].nodes[pixel->green].count++;
+  signature=pixel_list->lists[2].nodes[pixel->blue].signature;
+  if (signature != pixel_list->signature)
+    AddNodeMedianList(pixel_list,2,pixel->blue);
+  else
+    pixel_list->lists[2].nodes[pixel->blue].count++;
+  signature=pixel_list->lists[3].nodes[pixel->opacity].signature;
+  if (signature != pixel_list->signature)
+    AddNodeMedianList(pixel_list,3,pixel->opacity);
+  else
+    pixel_list->lists[3].nodes[pixel->opacity].count++;
 }
 
 static void ResetMedianList(MedianPixelList *pixel_list)
@@ -1646,7 +1651,7 @@ static void ResetMedianList(MedianPixelList *pixel_list)
     for (level=0; level < (QuantumDepth/2+1); level++)
       root->next[level]=MaxRGB+1L;
   }
-  pixel_list->seed=pixel_list->marker++;
+  pixel_list->seed=pixel_list->signature++;
 }
 
 MagickExport Image *MedianFilterImage(const Image *image,const double radius,
@@ -1719,7 +1724,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
       for (v=0; v < width; v++)
       {
         for (u=0; u < width; u++)
-          InsertMedianList(skiplist,&r[u]);
+          InsertMedianList(skiplist,r+u);
         r+=image->columns+width;
       }
       *q++=GetMedianList(skiplist);
@@ -2573,7 +2578,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
       for (v=0; v < width; v++)
       {
         for (u=0; u < width; u++)
-          InsertMedianList(skiplist,&r[u]);
+          InsertMedianList(skiplist,r+u);
         r+=image->columns+width;
       }
       *q++=GetNonpeakMedianList(skiplist);
