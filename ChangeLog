@@ -1,4 +1,8 @@
 2002-04-30  Cristy  <cristy@mystic.es.dupont.com>
+  * Subimage specification did not work for TIFF (e.g.
+    convert 'image.tiff[1]' image.png).
+
+2002-04-30  Cristy  <cristy@mystic.es.dupont.com>
   * ImageMagick, version 5.4.5, released.
 
 2002-04-20  Cristy  <cristy@mystic.es.dupont.com>
