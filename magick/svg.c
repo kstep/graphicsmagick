@@ -386,7 +386,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) strcpy(clone_info->filename,"xc:white");
   canvas=ReadImage(clone_info,exception);
   if (canvas == (Image *) NULL)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
+      image);
   (void) strcpy(canvas->filename,image->filename);
   SetImage(canvas,Opaque);
   canvas->filter=TriangleFilter;
@@ -428,7 +429,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Interpret the SVG tokens.
     */
-    (void) printf("token: %s\n",token);
     if (*token == '>')
       {
         quote=True;
@@ -479,8 +479,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           length+=strlen(vertices);
         command=(char *) AllocateMemory(length);
         if (command == (char *) NULL)
-          ThrowReaderException(ResourceLimitWarning,
-            "Unable to allocate memory",image);
+          ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
+            image);
         (void) strcpy(command,"    ");
         (void) strcat(command,primitive);
         (void) strcat(command," ");
@@ -572,7 +572,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         draw_info->translate=translate;
         draw_info->rotate=element.angle;
         (void) CloneString(&draw_info->primitive,command);
-        (void) printf("draw: %d %s %s\n",n,draw_info->pen,draw_info->primitive);
         status=DrawImage(canvas,draw_info);
         if (status == False)
           ThrowReaderException(ResourceLimitWarning,
@@ -591,7 +590,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               DestroyImage(draw_info->tile);
             draw_info->tile=tile;
             (void) CloneString(&draw_info->primitive,command+4);
-            (void) printf("      %d %s %s\n",n,draw_info->pen,
               draw_info->primitive);
             status=DrawImage(canvas,draw_info);
             if (status == False)
@@ -696,7 +694,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         tokens=StringToTokens(value,&number_tokens);
         for (i=0; i < (number_tokens-1); i++)
         {
-          (void) printf("  %d: %s %s\n",i,tokens[i],tokens[i+1]);
           if (Latin1Compare(tokens[i],"fill:") == 0)
             {
               (void) CloneString(&value,tokens[++i]);
@@ -744,7 +741,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         tokens=StringToTokens(value,&number_tokens);
         for (i=0; i < (number_tokens-1); i++)
         {
-          (void) printf("  %d: %s %s\n",i,tokens[i],tokens[i+1]);
           if (Latin1Compare(tokens[i],"translate") == 0)
             (void) sscanf(tokens[++i]+1,"%lf %lf",&translate.x,&translate.y);
           if (Latin1Compare(tokens[i],"rotate") == 0)

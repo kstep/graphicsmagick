@@ -5265,7 +5265,7 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
   */
   assert(image_info != (ImageInfo *) NULL);
   *magick='\0';
-  p=image_info->filename+Extent(image_info->filename)-1;
+  p=image_info->filename+Max(Extent(image_info->filename)-1,0);
   if (*p == ']')
     for (q=p-1; q > image_info->filename; q--)
     {
