@@ -477,6 +477,32 @@ Magick::DrawableCompositeImage::~DrawableCompositeImage( void )
 {
   delete _image;
 }
+    // Copy constructor
+Magick::DrawableCompositeImage::DrawableCompositeImage ( const Magick::DrawableCompositeImage& original_ )
+  :  Magick::DrawableBase(original_),
+     _composition(original_._composition),
+     _x(original_._x),
+     _y(original_._y),
+     _width(original_._width),
+     _height(original_._height),
+     _image(new Image(*original_._image))
+{
+}
+// Assignment operator
+Magick::DrawableCompositeImage& Magick::DrawableCompositeImage::operator= (const Magick::DrawableCompositeImage& original_ )
+{
+  // If not being set to ourself
+  if ( this != &original_ )
+  {
+    _composition = original_._composition;
+    _x = original_._x;
+    _y = original_._y;
+    _width = original_._width;
+    _height = original_._height;
+    _image = new Image(*original_._image);
+  }
+  return *this;
+}
 void Magick::DrawableCompositeImage::image( const std::string &image_ )
 {
   _image = new Image(image_);

@@ -579,7 +579,14 @@ public:
                            const Image &image_,
                            CompositeOperator composition_ );
 
+    // Destructor
   ~DrawableCompositeImage( void );
+
+    // Copy constructor
+    DrawableCompositeImage ( const DrawableCompositeImage& original_ );
+
+    // Assignment operator
+    DrawableCompositeImage& operator= (const DrawableCompositeImage& original_ );
 
   // Support a polymorphic print-to-stream operator
   /*virtual*/ void print (std::ostream& stream_) const;
