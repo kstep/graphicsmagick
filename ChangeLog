@@ -1,3 +1,8 @@
+2004-11-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/png.c (UnregisterPNGImage): Eliminate Warning: module
+	registration for "JNG" from module "PNG" still present!
+
 2004-11-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/constitute.c (DispatchImage): Fix documentation error
