@@ -113,7 +113,7 @@ check:
 	${GM} convert $(MODEL_MIFF) -equalize -ordered-dither intensity 2x2 -label Ordered2x2 Ordered2_out.miff
 	${GM} convert $(MODEL_MIFF) -equalize -ordered-dither intensity 3x3 -label Ordered3x3 Ordered3_out.miff
 	${GM} convert $(MODEL_MIFF) -equalize -ordered-dither intensity 4x4 -label Ordered4x4 Ordered4_out.miff
-	${GM} convert $(MODEL_MIFF) -equalize -random-threshold intensity '10%' -label 'Random10%' Random10_out.miff
+	${GM} convert $(MODEL_MIFF) -equalize -random-threshold intensity '10%' -label 'Random10%%' Random10_out.miff
 	${GM} montage -geometry '130x194+10+5>' -gravity 'Center' \
 	  -bordercolor 'green' -borderwidth 1x1 -tile '5x1000' -compose 'over' \
 	  -background '#ffffff' -font $(GENERIC_TTF) -pointsize 18 -fill '#600' \

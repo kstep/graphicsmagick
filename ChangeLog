@@ -1,3 +1,8 @@
+2003-04-30  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* utilities/Makefile.am (check) Change % to %% in -label parameter.
+	The use of %% to convey % in TranslateText() needs to be documented.
+
 2003-04-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* utilities/Makefile.am (check): Cleaned up the utilities
