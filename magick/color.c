@@ -423,6 +423,106 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t C o l o r I n f o A r r a y                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetColorInfoArray() returns a sorted null-terminated array of ColorInfo
+%  pointers corresponding to the available color definitions. This function
+%  should be used to access the entire list rather than GetColorInfo since
+%  the list returned by GetColorInfo may be re-ordered every time it is
+%  invoked. GetColorList may be used if only a list of color names is desired.
+%
+%  The format of the GetMagickList method is:
+%
+%      const ColorInfo **GetColorInfoArray(ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+/*
+  Compare two ColorInfo structures based on their name
+*/
+static int ColorInfoCompare(const void *x, const void *y)
+{
+  const ColorInfo
+    *xx=*((const ColorInfo **) x),
+    *yy=*((const ColorInfo **) y);
+
+  return (strcmp(xx->name, yy->name));
+}
+MagickExport const ColorInfo **GetColorInfoArray(ExceptionInfo *exception)
+{
+  const ColorInfo
+    **array;
+
+  ColorInfo
+    *p;
+
+  ColorInfo
+    *list;
+
+  size_t
+    entries=0;
+
+  int
+    i;
+
+  /*
+    Load color list
+  */
+  GetColorInfo("*",exception);
+  if ((!color_list) || (exception->severity > UndefinedException))
+    return 0;
+
+  AcquireSemaphoreInfo(&color_semaphore);
+
+  list=color_list;
+
+  /*
+    Count number of list entries
+  */
+  for (p=list; p != 0; p=p->next)
+    entries++;
+
+  /*
+    Allocate array memory
+  */
+  array=MagickAllocateMemory(const ColorInfo **,sizeof(ColorInfo *)*(entries+1));
+  if (!array)
+    {
+      ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",0);
+      return False;
+    }
+  memset((void **)array,0,sizeof(ColorInfo *)*(entries+1));
+
+  /*
+    Add entries to array
+  */
+  i=0;
+  for (p=list; p != 0; p=p->next)
+    array[i++]=p;
+
+  LiberateSemaphoreInfo(&color_semaphore);
+
+  /*
+    Sort array entries
+  */
+  qsort((void *) array, entries, sizeof(ColorInfo *), ColorInfoCompare);
+
+  return (array);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t C o l o r l i s t                                                   %
 %                                                                             %
 %                                                                             %
@@ -462,9 +562,7 @@ MagickExport char **GetColorList(const char *pattern,
   register const ColorInfo
     *p;
 
-  /*
-    Allocate color list.
-  */
+
   assert(pattern != (char *) NULL);
   assert(number_colors != (unsigned long *) NULL);
   *number_colors=0;
@@ -473,12 +571,27 @@ MagickExport char **GetColorList(const char *pattern,
   DestroyExceptionInfo(&exception);
   if (p == (const ColorInfo *) NULL)
     return((char **) NULL);
+
+  /*
+    Determine color list size
+  */
+  AcquireSemaphoreInfo(&color_semaphore);
   i=0;
   for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
     i++;
+  LiberateSemaphoreInfo(&color_semaphore);
+
+  /*
+    Allocate color list.
+  */
   colorlist=MagickAllocateMemory(char **,i*sizeof(char *));
   if (colorlist == (char **) NULL)
     return((char **) NULL);
+
+  /*
+    Add colors matching glob specification to list
+  */
+  AcquireSemaphoreInfo(&color_semaphore);
   i=0;
   for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
   {
@@ -487,6 +600,8 @@ MagickExport char **GetColorList(const char *pattern,
     if (GlobExpression(p->name,pattern))
       colorlist[i++]=AllocateString(p->name);
   }
+  LiberateSemaphoreInfo(&color_semaphore);
+
   *number_colors=i;
   return(colorlist);
 }

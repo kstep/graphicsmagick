@@ -50,6 +50,9 @@ extern MagickExport void
   GetColorTuple(const PixelPacket *,const unsigned int,const unsigned int,
     const unsigned int,char *);
 
+extern MagickExport
+  const ColorInfo **GetColorInfoArray(ExceptionInfo *exception);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif /* defined(__cplusplus) || defined(c_plusplus) */

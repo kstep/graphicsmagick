@@ -324,7 +324,7 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t M a g i c k A r r a y                                               %
+%   G e t M a g i c k I n f o A r r a y                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
