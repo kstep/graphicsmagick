@@ -649,7 +649,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
       }
@@ -667,7 +667,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
       else
@@ -701,7 +701,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+                if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                   break;
           }
         }

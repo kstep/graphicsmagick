@@ -201,7 +201,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
@@ -241,7 +241,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
@@ -439,7 +439,9 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=image->next;
-        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+        status=MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
+          exception);
+        if (status == False)
           break;
       }
   } while (count != 0);
@@ -683,7 +685,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           {
             CloseBlob(image);
             AppendImageFormat("M",image->filename);
-            status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+            status=OpenBlob(image_info,image,WriteBinaryBlobMode,
+              &image->exception);
             if (status == False)
               ThrowWriterException(FileOpenError,"Unable to open file",image);
           }
@@ -701,7 +704,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           {
             CloseBlob(image);
             AppendImageFormat("Y",image->filename);
-            status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+            status=OpenBlob(image_info,image,WriteBinaryBlobMode,
+              &image->exception);
             if (status == False)
               ThrowWriterException(FileOpenError,"Unable to open file",image);
           }
@@ -719,7 +723,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           {
             CloseBlob(image);
             AppendImageFormat("K",image->filename);
-            status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+            status=OpenBlob(image_info,image,WriteBinaryBlobMode,
+              &image->exception);
             if (status == False)
               ThrowWriterException(FileOpenError,"Unable to open file",image);
           }
@@ -767,7 +772,9 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+    status=MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),
+      &image->exception);
+    if (status == False)
       break;
   } while (image_info->adjoin);
   LiberateMemory((void **) &pixels);

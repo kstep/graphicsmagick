@@ -626,8 +626,12 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
-              break;
+            {
+              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
+                exception);
+              if (status == False)
+                break;
+            }
       }
       break;
     }
@@ -664,8 +668,12 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
-              break;
+            {
+              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
+                exception);
+              if (status == False)
+                break;
+            }
       }
       break;
     }
@@ -695,8 +703,12 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
-              break;
+            {
+              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
+                exception);
+              if (status == False)
+                break;
+            }
       }
       break;
     }
@@ -739,8 +751,12 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
-              break;
+            {
+              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
+                exception);
+              if (status == False)
+                break;
+            }
       }
       break;
     }
@@ -769,8 +785,12 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
-              break;
+            {
+              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
+                exception);
+              if (status == False)
+                break;
+            }
       }
       break;
     }

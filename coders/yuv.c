@@ -263,7 +263,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!SyncImagePixels(chroma_image))
           break;
       if (image->previous == (Image *) NULL)
-        if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+        if (!MagickMonitor(LoadImageText,y,image->rows,exception))
           break;
     }
     if (interlace == PartitionInterlace)

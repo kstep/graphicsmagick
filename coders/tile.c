@@ -133,7 +133,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   {
     for (x=0; x < (long) image->columns; x+=tile_image->columns)
       (void) CompositeImage(image,CopyCompositeOp,tile_image,x,y);
-    if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+    if (!MagickMonitor(LoadImageText,y,image->rows,exception))
       break;
   }
   DestroyImage(tile_image);

@@ -807,7 +807,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+      if (!MagickMonitor(LoadImageText,y,image->rows,exception))
         break;
   }
   if (image->colorspace == CMYKColorspace)

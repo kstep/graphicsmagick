@@ -184,7 +184,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+          if (!MagickMonitor(LoadImageText,y,image->rows,exception))
             break;
     }
     count=image->tile_info.height-image->rows-image->tile_info.y;

@@ -184,7 +184,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+          if (!MagickMonitor(LoadImageText,y,image->rows,exception))
             break;
     }
     LiberateMemory((void **) &pixels);
