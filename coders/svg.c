@@ -560,8 +560,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
     current[6];
 
   int
-    n,
     number_tokens;
+
+  register GraphicContext
+    *q;
 
   SVGInfo
     *svg_info;
@@ -575,21 +577,18 @@ static void SVGStartElement(void *context,const xmlChar *name,
     Called when an opening tag has been processed.
   */
   svg_info=(SVGInfo *) context;
-  svg_info->n++;
-  n=svg_info->n;
-  svg_info->graphic_context=(GraphicContext *)
-    ReallocateMemory(svg_info->graphic_context,(n+1)*sizeof(GraphicContext));
-  if (svg_info->graphic_context == (GraphicContext *) NULL)
-    return;
-  svg_info->graphic_context[n]=svg_info->graphic_context[n-1];
-  svg_info->graphic_context[n].fill=
-    AllocateString(svg_info->graphic_context[n-1].fill);
-  svg_info->graphic_context[n].stroke=
-    AllocateString(svg_info->graphic_context[n-1].stroke);
-  svg_info->graphic_context[n].font=
-    AllocateString(svg_info->graphic_context[n-1].font);
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.startElement(%s",(char *) name);
+  svg_info->n++;
+  svg_info->graphic_context=(GraphicContext *) ReallocateMemory(
+    svg_info->graphic_context,(svg_info->n+1)*sizeof(GraphicContext));
+  if (svg_info->graphic_context == (GraphicContext *) NULL)
+    return;
+  q=svg_info->graphic_context+svg_info->n;
+  *q=(*(q-1));
+  q->fill=AllocateString((q-1)->fill);
+  q->stroke=AllocateString((q-1)->stroke);
+  q->font=AllocateString((q-1)->font);
   if (attributes != (const xmlChar **) NULL)
     for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
     {
@@ -602,6 +601,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare(keyword,"angle") == 0)
         {
+          continue;
           svg_info->element.angle=atof(value);
         }
       if (LocaleCompare(keyword,"cx") == 0)
@@ -672,59 +672,51 @@ static void SVGStartElement(void *context,const xmlChar *name,
           {
             if ((LocaleCompare(tokens[j],"fill:") == 0) ||
                 (LocaleCompare(tokens[j],"fillcolor:") == 0))
-              (void) CloneString(&svg_info->graphic_context[n].fill,
-                tokens[++j]);
+              (void) CloneString(&q->fill,tokens[++j]);
             if (LocaleCompare(tokens[j],"font-family:") == 0)
-              (void) CloneString(&svg_info->graphic_context[n].font,
-                tokens[++j]);
+              (void) CloneString(&q->font,tokens[++j]);
             if (LocaleCompare(tokens[j],"fill-opacity:") == 0)
               {
-                svg_info->graphic_context[n].opacity=atof(tokens[++j]);
+                q->opacity=atof(tokens[++j]);
                 if (strchr(tokens[j],'%') == (char *) NULL)
-                  svg_info->graphic_context[n].opacity*=100.0;
+                  q->opacity*=100.0;
               }
             if (LocaleCompare(tokens[j],"font-size:") == 0)
               {
-                svg_info->graphic_context[n].pointsize=atof(tokens[++j]);
-                svg_info->graphic_context[n].pointsize*=
-                  UnitOfMeasure(tokens[j]);
+                q->pointsize=atof(tokens[++j]);
+                q->pointsize*=UnitOfMeasure(tokens[j]);
               }
             if (LocaleCompare(tokens[j],"opacity:") == 0)
               {
-                svg_info->graphic_context[n].opacity=atof(tokens[++j]);
+                q->opacity=atof(tokens[++j]);
                 if (strchr(tokens[j],'%') == (char *) NULL)
-                  svg_info->graphic_context[n].opacity*=100.0;
+                  q->opacity*=100.0;
               }
             if (LocaleCompare(tokens[j],"stroke:") == 0)
-              (void) CloneString(&svg_info->graphic_context[n].stroke,
-                tokens[++j]);
+              (void) CloneString(&q->stroke,tokens[++j]);
             if (LocaleCompare(tokens[j],"stroke-antialiasing:") == 0)
-              svg_info->graphic_context[n].antialias=
-                LocaleCompare(tokens[++j],"true");
+              q->antialias=LocaleCompare(tokens[++j],"true");
             if (LocaleCompare(tokens[j],"stroke-opacity:") == 0)
-              svg_info->graphic_context[n].opacity=atof(tokens[++j]);
+              q->opacity=atof(tokens[++j]);
             if (LocaleCompare(tokens[j],"stroke-width:") == 0)
-              {
-                svg_info->graphic_context[n].linewidth=
-                  atof(tokens[++j])*UnitOfMeasure(tokens[j]);
-              }
+              q->linewidth=atof(tokens[++j])*UnitOfMeasure(tokens[j]);
             if (LocaleCompare(tokens[j],"text-align:") == 0)
               {
                 j++;
                 if (LocaleCompare(tokens[j],"center") == 0)
-                  svg_info->graphic_context[n].gravity=NorthGravity;
+                  q->gravity=NorthGravity;
                 if (LocaleCompare(tokens[j],"left") == 0)
-                  svg_info->graphic_context[n].gravity=NorthWestGravity;
+                  q->gravity=NorthWestGravity;
                 if (LocaleCompare(tokens[j],"right") == 0)
-                  svg_info->graphic_context[n].gravity=NorthEastGravity;
+                  q->gravity=NorthEastGravity;
               }
             if (LocaleCompare(tokens[j],"text-antialiasing:") == 0)
-              svg_info->graphic_context[n].antialias=
-                LocaleCompare(tokens[++j],"true");
+              q->antialias=LocaleCompare(tokens[++j],"true");
           }
           for (j=0; j < number_tokens; j++)
             FreeMemory((void **) &tokens[j]);
           FreeMemory((void **) &tokens);
+          continue;
         }
       if (LocaleCompare(keyword,"transform") == 0)
         {
@@ -733,7 +725,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           {
             for (k=0; k < 6; k++)
             {
-              current[k]=svg_info->graphic_context[n].affine[k];
+              current[k]=q->affine[k];
               affine[k]=(k == 0) || (k == 3) ? 1.0 : 0.0;
             }
             if (LocaleCompare(tokens[j],"matrix") == 0)
@@ -752,7 +744,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   angle;
 
                 angle=atof(tokens[++j]+1);
-                svg_info->graphic_context[n].angle=angle;
+                q->angle=angle;
                 affine[0]=cos(DegreesToRadians(fmod(angle,360.0)));
                 affine[1]=sin(DegreesToRadians(fmod(angle,360.0)));
                 affine[2]=(-sin(DegreesToRadians(fmod(angle,360.0))));
@@ -789,22 +781,17 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 if (k == 1)
                   affine[5]=affine[4];
               }
-            svg_info->graphic_context[n].affine[0]=
-              current[0]*affine[0]+current[2]*affine[1];
-            svg_info->graphic_context[n].affine[1]=
-              current[1]*affine[0]+current[3]*affine[1];
-            svg_info->graphic_context[n].affine[2]=
-              current[0]*affine[2]+current[2]*affine[3];
-            svg_info->graphic_context[n].affine[3]=
-              current[1]*affine[2]+current[3]*affine[3];
-            svg_info->graphic_context[n].affine[4]=
-              current[0]*affine[4]+current[2]*affine[5]+current[4];
-            svg_info->graphic_context[n].affine[5]=
-              current[1]*affine[4]+current[3]*affine[5]+current[5];
+            q->affine[0]=current[0]*affine[0]+current[2]*affine[1];
+            q->affine[1]=current[1]*affine[0]+current[3]*affine[1];
+            q->affine[2]=current[0]*affine[2]+current[2]*affine[3];
+            q->affine[3]=current[1]*affine[2]+current[3]*affine[3];
+            q->affine[4]=current[0]*affine[4]+current[2]*affine[5]+current[4];
+            q->affine[5]=current[1]*affine[4]+current[3]*affine[5]+current[5];
           }
           for (j=0; j < number_tokens; j++)
             FreeMemory((void **) &tokens[j]);
           FreeMemory((void **) &tokens);
+          continue;
         }
       if (LocaleCompare(keyword,"verts") == 0)
         {
@@ -826,6 +813,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           svg_info->page.height=strtod(p,&p);
           if (*p == ',');
             p++;
+          continue;
         }
       if (LocaleCompare(keyword,"width") == 0)
         {
@@ -901,8 +889,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
   double
     angle;
 
-  int
-    n;
+  register GraphicContext
+    *p;
 
   register int
     i;
@@ -916,47 +904,41 @@ static void SVGEndElement(void *context,const xmlChar *name)
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.endElement(%s)\n",(char *) name);
-  n=svg_info->n;
-  (void) fprintf(svg_info->file,"antialias %d\n",
-    svg_info->graphic_context[n].antialias ? 1 : 0);
-  if (svg_info->graphic_context[n].gravity == NorthEastGravity)
+  p=svg_info->graphic_context+svg_info->n;
+  (void) fprintf(svg_info->file,"antialias %d\n",p->antialias);
+  if (p->gravity == NorthEastGravity)
     (void) fprintf(svg_info->file,"gravity NorthEast\n");
   else
-    if (svg_info->graphic_context[n].gravity == CenterGravity)
+    if (p->gravity == CenterGravity)
       (void) fprintf(svg_info->file,"gravity Center\n");
     else
       (void) fprintf(svg_info->file,"gravity NorthWest\n");
-  (void) fprintf(svg_info->file,"linewidth %g\n",
-    svg_info->graphic_context[n].linewidth);
-  (void) fprintf(svg_info->file,"pointsize %g\n",
-    svg_info->graphic_context[n].pointsize);
-  (void) fprintf(svg_info->file,"opacity %g\n",
-    svg_info->graphic_context[n].opacity);
-  if ((LocaleCompare(svg_info->graphic_context[n].fill,"none") == 0) &&
-      (LocaleCompare(svg_info->graphic_context[n].stroke,"none") == 0))
+  (void) fprintf(svg_info->file,"linewidth %g\n",p->linewidth);
+  (void) fprintf(svg_info->file,"pointsize %g\n",p->pointsize);
+  (void) fprintf(svg_info->file,"opacity %g\n",p->opacity);
+  if ((LocaleCompare(p->fill,"none") == 0) &&
+      (LocaleCompare(p->stroke,"none") == 0))
     (void) fprintf(svg_info->file,"fill black\n");
   else
     {
-      (void) fprintf(svg_info->file,"fill %s\n",
-        svg_info->graphic_context[n].fill);
-      (void) fprintf(svg_info->file,"stroke %s\n",
-        svg_info->graphic_context[n].stroke);
+      (void) fprintf(svg_info->file,"fill %s\n",p->fill);
+      (void) fprintf(svg_info->file,"stroke %s\n",p->stroke);
     }
-  if (0)
-    (void) fprintf(svg_info->file,"font %s\n",
-      svg_info->graphic_context[n].font);  /* future */
-  (void) fprintf(svg_info->file,"angle %f\n",
-    svg_info->graphic_context[n].angle);
+  (void) fprintf(svg_info->file,"font %s\n",p->font);
+  (void) fprintf(svg_info->file,"angle %f\n",p->angle);
   (void) fprintf(svg_info->file,"affine ");
   for (i=0; i < 6; i++)
-    (void) fprintf(svg_info->file,"%g ",svg_info->graphic_context[n].affine[i]);
+    (void) fprintf(svg_info->file,"%g ",p->affine[i]);
   (void) fprintf(svg_info->file,"\n");
+  FreeMemory((void **) &p->fill);
+  FreeMemory((void **) &p->stroke);
+  FreeMemory((void **) &p->font);
+  svg_info->n--;
   if (LocaleCompare((char *) name,"circle") == 0)
     {
       (void) fprintf(svg_info->file,"circle %g,%g %g,%g\n",
         svg_info->element.cx,svg_info->element.cy,svg_info->element.cx,
         svg_info->element.cy+svg_info->element.minor);
-      svg_info->n--;
       return;
     }
   if (LocaleCompare((char *) name,"ellipse") == 0)
@@ -966,14 +948,12 @@ static void SVGEndElement(void *context,const xmlChar *name)
         svg_info->element.cx,svg_info->element.cy,
         angle == 0.0 ? svg_info->element.major : svg_info->element.minor,
         angle == 0.0 ? svg_info->element.minor : svg_info->element.major);
-      svg_info->n--;
       return;
     }
   if (LocaleCompare((char *) name,"image") == 0)
     {
       (void) fprintf(svg_info->file,"image %f,%f %s\n",
         svg_info->page.x,svg_info->page.y,svg_info->url);
-      svg_info->n--;
       return;
     }
   if (LocaleCompare((char *) name,"line") == 0)
@@ -981,25 +961,21 @@ static void SVGEndElement(void *context,const xmlChar *name)
       (void) fprintf(svg_info->file,"line %g,%g %g,%g\n",
         svg_info->segment.x1,svg_info->segment.y1,svg_info->segment.x2,
         svg_info->segment.y2);
-      svg_info->n--;
       return;
     }
   if (LocaleCompare((char *) name,"path") == 0)
     {
       (void) fprintf(svg_info->file,"path '%s'\n",svg_info->vertices);
-      svg_info->n--;
       return;
     }
   if (LocaleCompare((char *) name,"polygon") == 0)
     {
       (void) fprintf(svg_info->file,"polygon %s\n",svg_info->vertices);
-      svg_info->n--;
       return;
     }
   if (LocaleCompare((char *) name,"polyline") == 0)
     {
       (void) fprintf(svg_info->file,"polyline %s\n",svg_info->vertices);
-      svg_info->n--;
       return;
     }
   if (LocaleCompare((char *) name,"rect") == 0)
@@ -1013,17 +989,14 @@ static void SVGEndElement(void *context,const xmlChar *name)
           svg_info->page.x+svg_info->page.width/2.0,svg_info->page.y+
           svg_info->page.height/2.0,svg_info->page.width,svg_info->page.height,
           svg_info->element.major/2.0,svg_info->element.minor/2.0);
-      svg_info->n--;
       return;
     }
   if (LocaleCompare((char *) name,"text") == 0)
     {
       (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->page.x,
         svg_info->page.y,svg_info->text);
-      svg_info->n--;
       return;
     }
-  svg_info->n--;
 }
 
 static void SVGCharacters(void *context,const xmlChar *c,int length)
@@ -1303,7 +1276,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitError,"Unable to allocate memory",image);
   svg_info.graphic_context[0].fill=AllocateString("none");
   svg_info.graphic_context[0].stroke=AllocateString("none");
-  svg_info.graphic_context[0].font=AllocateString("Times");
+  svg_info.graphic_context[0].font=
+    AllocateString(image_info->font ? image_info->font : "Times");
   svg_info.graphic_context[0].antialias=True;
   svg_info.graphic_context[0].gravity=NorthWestGravity;
   svg_info.graphic_context[0].linewidth=1.0;
@@ -1349,6 +1323,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     FreeMemory((void **) &svg_info.graphic_context[i].fill);
     FreeMemory((void **) &svg_info.graphic_context[i].stroke);
+    FreeMemory((void **) &svg_info.graphic_context[i].font);
   }
   if (svg_info.comment != (char *) NULL)
     FreeMemory((void **) &svg_info.comment);
