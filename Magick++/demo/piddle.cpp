@@ -133,8 +133,8 @@ int main( int /*argc*/, char ** argv)
     
     image.draw(drawList);
 
-    //     cout << "Writing image \"piddle.miff\" ..." << endl;
-    //     image.write( "piddle.miff" );
+    cout << "Writing image \"piddle.miff\" ..." << endl;
+    image.write( "piddle.miff" );
 
     cout << "Display image..." << endl;
     image.display( );
