@@ -1,3 +1,15 @@
+2001-07-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (medianFilterImage): Changed argument from
+ 	unsigned int to const double.
+
+	* lib/Magick++/Image.h (edge): Change argument from unsigned int to double.
+	(medianFilter): Changed argument from unsigned int to const double.
+
+	* lib/Magick++/STL.h (edgeImage): Change argument from unsigned int to double.
+
+	* demo/demo.cpp (main): Updated to match PerlMagick demo.
+
 2001-06-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (shaveImage): New function to shave edges from image.

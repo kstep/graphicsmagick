@@ -139,7 +139,10 @@ namespace Magick
     
     // Border image (add border to image)
     void            border ( const Geometry &geometry_ = borderGeometryDefault );
-    
+
+    // Extract channel from image
+    void            channel ( ChannelType channel_ );
+
     // Charcoal effect image (looks like charcoal sketch)
     // The radius_ parameter specifies the radius of the Gaussian, in
     // pixels, not counting the center pixel.  The sigma_ parameter
@@ -204,7 +207,7 @@ namespace Magick
     void            draw ( const std::list<Magick::Drawable> &drawable_ );
     
     // Edge image (hilight edges in image)
-    void            edge ( double order_ );
+    void            edge ( double radius_ = 0.0 );
     
     // Emboss image (hilight edges with 3D effect)
     // The radius_ parameter specifies the radius of the Gaussian, in
@@ -285,10 +288,7 @@ namespace Magick
     
     // Label image
     void            label ( const std::string &label_ );
-    
-    // Extract channel from image
-    void            channel ( ChannelType channel_ );
-    
+     
     // Magnify image by integral size
     void            magnify ( void );
     
@@ -303,7 +303,7 @@ namespace Magick
 
     // Filter image by replacing each pixel component with the median
     // color in a circular neighborhood
-    void            medianFilter ( unsigned int radius_ );
+    void            medianFilter ( const double radius_ = 0.0 );
     
     // Reduce image by integral size
     void            minify ( void );

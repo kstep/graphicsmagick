@@ -345,15 +345,15 @@ namespace Magick
   class edgeImage : public std::unary_function<Image&,void>
   {
   public:
-    edgeImage( unsigned int order_ = 3  )
-      : _order( order_ ) { }
+    edgeImage( double radius_ = 0.0  )
+      : _radius( radius_ ) { }
 
     void operator()( Image &image_ )
       {
-	image_.edge( _order );
+	image_.edge( _radius );
       }
   private:
-    const unsigned int _order;
+    const double _radius;
   };
 
   // Emboss image (hilight edges with 3D effect)
@@ -718,7 +718,7 @@ namespace Magick
   class medianFilterImage : public std::unary_function<Image&,void>
   {
   public:
-    medianFilterImage( unsigned int radius_ )
+    medianFilterImage( const double radius_ = 0.0 )
       : _radius( radius_ ) { }
 
     void operator()( Image &image_ )
@@ -726,7 +726,7 @@ namespace Magick
 	image_.medianFilter( _radius );
       }
   private:
-    const unsigned int _radius;
+    const double _radius;
   };
 
   // Reduce image by integral size

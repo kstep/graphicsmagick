@@ -315,6 +315,14 @@ void Magick::Image::border( const Geometry &geometry_ )
   throwException( exceptionInfo );
 }
 
+// Extract channel from image
+void Magick::Image::channel ( ChannelType channel_ )
+{
+  modifyImage();
+  ChannelImage ( image(), channel_ );
+  throwImageException();
+}
+
 // Charcoal-effect image
 void Magick::Image::charcoal( const double radius_, const double sigma_ )
 {
@@ -627,12 +635,12 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
 }
 
 // Hilight edges in image
-void Magick::Image::edge ( double factor_ )
+void Magick::Image::edge ( double radius_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
-    EdgeImage( image(), factor_, &exceptionInfo );
+    EdgeImage( image(), radius_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
@@ -889,15 +897,6 @@ void Magick::Image::implode ( double factor_ )
   throwException( exceptionInfo );
 }
 
-
-// Extract channel from image
-void Magick::Image::channel ( ChannelType channel_ )
-{
-  modifyImage();
-  ChannelImage ( image(), channel_ );
-  throwImageException();
-}
-
 // Magnify image by integral size
 void Magick::Image::magnify ( void )
 {
@@ -941,7 +940,7 @@ void Magick::Image::matteFloodfill ( const Color &target_ ,
 
 // Filter image by replacing each pixel component with the median
 // color in a circular neighborhood
-void Magick::Image::medianFilter ( unsigned int radius_ )
+void Magick::Image::medianFilter ( const double radius_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
