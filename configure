@@ -34303,13 +34303,13 @@ then
 fi
 if test -n "$windows_font_dir"
 then
-  type_include_files="$type_include_files "'file="type-windows.mgk"'
+  type_include_files="$type_include_files "'<include file="type-windows.mgk" />'
 fi
 
 
 # Adobe Postscript fonts on various systems
 case $host_os in
-  solaris*) type_include_files="$type_include_files "'file="type-solaris.mgk"';;
+  solaris*) type_include_files="$type_include_files "'<include file="type-solaris.mgk" />';;
 esac
 
 # Ghostscript
@@ -34352,7 +34352,7 @@ else
 fi
 if test "${ghostscript_font_dir}x" != 'x'
 then
-  type_include_files="${type_include_files} "'file="type-ghostscript.mgk"'
+  type_include_files="${type_include_files} "'<include file="type-ghostscript.mgk"/>'
   echo "$as_me:$LINENO: result: $ghostscript_font_dir" >&5
 echo "${ECHO_T}$ghostscript_font_dir" >&6
 else

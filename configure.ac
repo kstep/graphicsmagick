@@ -1740,13 +1740,13 @@ then
 fi
 if test -n "$windows_font_dir"
 then
-  type_include_files="$type_include_files "'file="type-windows.mgk"'
+  type_include_files="$type_include_files "'<include file="type-windows.mgk" />'
 fi
 AC_SUBST(windows_font_dir)
 
 # Adobe Postscript fonts on various systems
 case $host_os in
-  solaris*) type_include_files="$type_include_files "'file="type-solaris.mgk"';;
+  solaris*) type_include_files="$type_include_files "'<include file="type-solaris.mgk" />';;
 esac
 
 # Ghostscript
@@ -1788,7 +1788,7 @@ else
 fi
 if test "${ghostscript_font_dir}x" != 'x'
 then
-  type_include_files="${type_include_files} "'file="type-ghostscript.mgk"'
+  type_include_files="${type_include_files} "'<include file="type-ghostscript.mgk"/>'
   AC_MSG_RESULT($ghostscript_font_dir)
 else
   AC_MSG_RESULT(not found!);

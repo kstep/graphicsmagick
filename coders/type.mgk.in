@@ -1,4 +1,4 @@
 <?xml version="1.0"?>
 <typemap>
-  <include @type_include_files@ />
+  @type_include_files@
 </typemap>
