@@ -215,11 +215,22 @@ ModuleExport void RegisterFAXImage(void)
   MagickInfo
     *entry;
 
+  static const char
+    *FAXNote=
+    {
+      "See TIFF format.  Note that FAX machines use non-square pixels\n"
+      "which are 1.5 times wider than they are tall but computer displays\n"
+      "use square pixels, so FAX images may appear to be narrow unless\n"
+      "they are explicitly resized using a resize specification of\n"
+      "\"150x100%\"."
+    };
+
   entry=SetMagickInfo("FAX");
   entry->decoder=(DecoderHandler) ReadFAXImage;
   entry->encoder=(EncoderHandler) WriteFAXImage;
   entry->magick=(MagickHandler) IsFAX;
   entry->description=AcquireString("Group 3 FAX");
+  entry->note=AcquireString(FAXNote);
   entry->module=AcquireString("FAX");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("G3");

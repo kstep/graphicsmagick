@@ -5479,6 +5479,26 @@ ModuleExport void RegisterPNGImage(void)
   MagickInfo
     *entry;
 
+  static const char
+    *PNGNote=
+    {
+      "See http://www.libpng.org/ for details about the PNG format.\n"
+      "The PNG 1.2 specification is available there and at\n"
+      "ftp://swrinde.nde.swri.edu/pub/png/documents/."
+    },
+    *JNGNote=
+    {
+      "See http://www.libpng.org/pub/mng/ for details about the JNG\n"
+      "format. The JNG 1.0 specification is available there and at\n"
+      "ftp://swrinde.nde.swri.edu/pub/mng/documents/."
+    },
+    *MNGNote=
+    {
+      "See http://www.libpng.org/pub/mng/ for details about the MNG\n"
+      "format. The MNG 1.0 specification is available there and at\n"
+      "ftp://swrinde.nde.swri.edu/pub/mng/documents/."
+    };
+
   *version='\0';
 #if defined(PNG_LIBPNG_VER_STRING)
   (void) strcat(version,"libpng ");
@@ -5504,6 +5524,7 @@ ModuleExport void RegisterPNGImage(void)
   if (*version != '\0')
     entry->version=AcquireString(version);
   entry->module=AcquireString("PNG");
+  entry->note=AcquireString(MNGNote);
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PNG");
@@ -5518,6 +5539,7 @@ ModuleExport void RegisterPNGImage(void)
   entry->module=AcquireString("PNG");
   if (*version != '\0')
     entry->version=AcquireString(version);
+  entry->note=AcquireString(PNGNote);
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PNG8");
@@ -5580,6 +5602,7 @@ ModuleExport void RegisterPNGImage(void)
   entry->thread_support=True;
   entry->description=AcquireString("JPEG Network Graphics");
   entry->module=AcquireString("PNG");
+  entry->note=AcquireString(JNGNote);
   (void) RegisterMagickInfo(entry);
 #endif
 #endif
