@@ -2596,7 +2596,6 @@ ModuleExport void UnregisterSVGImage(void)
   (void) UnregisterMagickInfo("XML");
 }
 
-#if defined(HasAUTOTRACE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2627,6 +2626,8 @@ ModuleExport void UnregisterSVGImage(void)
 %
 %
 */
+
+#if defined(HasAUTOTRACE)
 static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
 {
   FILE
@@ -2729,7 +2730,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-
 static void AffineToTransform(Image *image,AffineMatrix *affine)
 {
   char
@@ -2784,6 +2784,15 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
   FormatString(transform,"\" transform=\"matrix(%g %g %g %g %g %g)\">\n",
     affine->sx,affine->rx,affine->ry,affine->sy,affine->tx,affine->ty);
   (void) WriteBlobString(image,transform);
+}
+
+static inline unsigned int IsPoint(const char *point)
+{
+  char
+    *p;
+
+  (void) strtol(point,&p,10);
+  return(p != point);
 }
 
 static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
@@ -3365,14 +3374,14 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("stroke-dasharray",keyword) == 0)
           {
-            if (IsGeometry(q))
+            if (IsPoint(q))
               {
                 long
                   k;
 
                 p=q;
                 GetToken(p,&p,token);
-                for (k=0; IsGeometry(token); k++)
+                for (k=0; IsPoint(token); k++)
                   GetToken(p,&p,token);
                 (void) WriteBlobString(image,"stroke-dasharray:");
                 for (j=0; j < k; j++)
@@ -3502,7 +3511,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       /*
         Define points.
       */
-      if (!IsGeometry(q))
+      if (!IsPoint(q))
         break;
       GetToken(q,&q,token);
       point.x=atof(token);
