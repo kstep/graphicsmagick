@@ -1009,6 +1009,30 @@ static int jpeg_nextmarker(FILE *ifile, FILE *ofile)
   return c;
 }
 
+static int jpeg_skip_till_marker(FILE *ifile, FILE *ofile, int marker)
+{ 
+  int c, i;
+
+  do {
+    /* skip anything until we hit 0xff */
+    i = 0;
+    do {
+      c = getc(ifile);
+      i++;
+	    if (c == EOF)
+        return M_EOI; /* we hit EOF */
+    } while (c != 0xff);
+
+    /* get marker byte, swallowing possible padding */
+    do {
+      c = getc(ifile);
+	    if (c == EOF)
+        return M_EOI; /* we hit EOF */
+    } while (c == 0xff);
+  } while (c != marker);
+  return c;
+}
+
 static char psheader[] = "\xFF\xED\0\0Photoshop 3.0\08BIM\x04\x04\0\0\0\0";
 
 /* Embed binary IPTC data into a JPEG image. */
@@ -1022,7 +1046,7 @@ int jpegembed(FILE *ifile, FILE *ofile, FILE *iptc)
 
 	if (jpeg_get1(ifile, ofile) != 0xFF)
 		return 0;
-	if (jpeg_get1(ifile, ofile) != 0xD8)
+	if (jpeg_get1(ifile, ofile) != M_SOI)
 		return 0;
 
 	while (!done) {
@@ -1044,18 +1068,19 @@ int jpegembed(FILE *ifile, FILE *ofile, FILE *iptc)
 				/* APP0 is in each and every JPEG, so when we hit APP0 we insert our new APP13! */
 				jpeg_skip_variable(ifile, ofile);
 
-        fstat(fileno(iptc),&sb);
-		    len = sb.st_size;
-				if (len & 1) len++; /* make the length even */
-				psheader[ 2 ] = (len+16)>>8;
-				psheader[ 3 ] = (len+16)&0xff;
-				for (inx = 0; inx < 18; inx++)
-					fputc(psheader[inx], ofile);
-
-				jpeg_read_remaining(iptc, ofile);
-		    len = sb.st_size;
-				if (len & 1)
-          fputc(0, ofile);
+        if (iptc != (FILE *)NULL) {
+          fstat(fileno(iptc),&sb);
+		      len = sb.st_size;
+				  if (len & 1) len++; /* make the length even */
+				  psheader[ 2 ] = (len+16)>>8;
+				  psheader[ 3 ] = (len+16)&0xff;
+				  for (inx = 0; inx < 18; inx++)
+					  fputc(psheader[inx], ofile);
+				  jpeg_read_remaining(iptc, ofile);
+		      len = sb.st_size;
+				  if (len & 1)
+            fputc(0, ofile);
+        }
 				break;
 
 			case M_SOS:								
@@ -1131,7 +1156,7 @@ int main(int argc, char *argv[])
 #endif
 	        break;
         case 'i':
-          if (mode == 0 || mode == 2)
+          if (mode == 0 || mode == 2 || mode == 3)
             ifile = fopen(argv[++i], "rb");
           else
             ifile = fopen(argv[++i], "rt");
@@ -1151,6 +1176,15 @@ int main(int argc, char *argv[])
 	            printf("Unable to open: %s\n", argv[i]);
               return 1;
             }
+	        break;
+        case 's':
+          mode = 3;
+#ifdef _VISUALC_
+          /* Set "stdout" to binary mode: */
+          _setmode( _fileno( ofile ), _O_BINARY );
+          /* Set "stdin" to binary mode: */
+          _setmode( _fileno( ifile ), _O_BINARY );
+#endif
 	        break;
         case 'x':
           mode = 2;
@@ -1198,6 +1232,18 @@ int main(int argc, char *argv[])
     }
   else if (mode == 2) /* handle writing iptc info into JPEG */
     jpegembed(ifile, ofile, xfile);
+  else if (mode == 3) /* handle writing iptc info into JPEG */
+    {
+	    unsigned int marker;
+
+		  marker = jpeg_skip_till_marker(ifile, ofile, M_SOI);
+      if (marker == M_SOI)
+      {
+        fputc(0xFF, ofile);
+        fputc(M_SOI, ofile);
+		    jpeg_read_remaining(ifile, ofile);
+      }
+    }
 
   fclose( ifile );
   fclose( ofile );
