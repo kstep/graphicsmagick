@@ -1290,6 +1290,9 @@ Magick::DrawableBase* Magick::DrawableViewbox::copy() const
 // Path Classes
 //
 
+//
+// PathArcArgs
+//
 MagickDLLDecl int Magick::operator == ( const Magick::PathArcArgs& /*left_*/,
                                         const Magick::PathArcArgs& /*right_*/ )
 {
@@ -1320,7 +1323,45 @@ MagickDLLDecl int Magick::operator <= ( const Magick::PathArcArgs& left_,
 {
   return ( ( left_ < right_ ) || ( left_ == right_ ) );
 }
-
+// Default constructor
+Magick::PathArcArgs::PathArcArgs( void )
+  :  _radiusX(0),
+     _radiusY(0),
+     _xAxisRotation(0),
+     _largeArcFlag(false),
+     _sweepFlag(false),
+     _x(0),
+     _y(0)
+{
+}
+// Normal constructor
+Magick::PathArcArgs::PathArcArgs( double radiusX_, double radiusY_,
+                                  double xAxisRotation_, bool largeArcFlag_,
+                                  bool sweepFlag_, double x_, double y_ )
+  : _radiusX(radiusX_),
+    _radiusY(radiusY_),
+    _xAxisRotation(xAxisRotation_),
+    _largeArcFlag(largeArcFlag_),
+    _sweepFlag(sweepFlag_),
+    _x(x_),
+    _y(y_)
+{
+}
+// Copy constructor
+Magick::PathArcArgs::PathArcArgs( const Magick::PathArcArgs &original_ )
+  :  _radiusX(original_._radiusX),
+     _radiusY(original_._radiusY),
+     _xAxisRotation(original_._xAxisRotation),
+     _largeArcFlag(original_._largeArcFlag),
+     _sweepFlag(original_._sweepFlag),
+     _x(original_._x),
+     _y(original_._y)
+{
+}
+// Destructor
+Magick::PathArcArgs::~PathArcArgs ( void )
+{
+}
 
 // Path Arc
 Magick::PathArcAbs::PathArcAbs ( const Magick::PathArcArgs &coordinates_ )
@@ -1431,7 +1472,42 @@ MagickDLLDecl int Magick::operator <= ( const Magick::PathCurvetoArgs& left_,
 {
   return ( ( left_ < right_ ) || ( left_ == right_ ) );
 }
-
+// Default constructor
+Magick::PathCurvetoArgs::PathCurvetoArgs( void )
+  : _x1(0),
+    _y1(0),
+    _x2(0),
+    _y2(0),
+    _x(0),
+    _y(0)
+{
+}
+// Normal constructor
+Magick::PathCurvetoArgs::PathCurvetoArgs( double x1_, double y1_,
+                                          double x2_, double y2_,
+                                          double x_, double y_ )
+  : _x1(x1_),
+    _y1(y1_),
+    _x2(x2_),
+    _y2(y2_),
+    _x(x_),
+    _y(y_)
+{
+}
+// Copy constructor
+Magick::PathCurvetoArgs::PathCurvetoArgs( const PathCurvetoArgs &original_ )
+  : _x1(original_._x1),
+    _y1(original_._y1),
+    _x2(original_._x2),
+    _y2(original_._y2),
+    _x(original_._x),
+    _y(original_._y)
+{
+}
+// Destructor
+Magick::PathCurvetoArgs::~PathCurvetoArgs ( void )
+{
+}
 
 Magick::PathCurvetoAbs::PathCurvetoAbs ( const Magick::PathCurvetoArgs &args_ )
   : _args(1,args_)
@@ -1602,6 +1678,37 @@ MagickDLLDecl int Magick::operator <=
   const Magick::PathQuadraticCurvetoArgs& right_ )
 {
   return ( ( left_ < right_ ) || ( left_ == right_ ) );
+}
+// Default Constructor
+Magick::PathQuadraticCurvetoArgs::PathQuadraticCurvetoArgs( void )
+  : _x1(0),
+    _y1(0),
+    _x(0),
+    _y(0)
+{
+}
+// Normal Constructor
+Magick::PathQuadraticCurvetoArgs::PathQuadraticCurvetoArgs( double x1_,
+                                                            double y1_,
+                                                            double x_,
+                                                            double y_ )
+  : _x1(x1_),
+    _y1(y1_),
+    _x(x_),
+    _y(y_)
+{
+}
+// Copy Constructor
+Magick::PathQuadraticCurvetoArgs::PathQuadraticCurvetoArgs( const PathQuadraticCurvetoArgs &original_ )
+  : _x1(original_._x1),
+    _y1(original_._y1),
+    _x(original_._x),
+    _y(original_._y)
+{
+}
+// Destructor
+Magick::PathQuadraticCurvetoArgs::~PathQuadraticCurvetoArgs ( void )
+{
 }
 
 Magick::PathQuadraticCurvetoAbs::PathQuadraticCurvetoAbs

@@ -2028,19 +2028,15 @@ private:
 class MagickDLLDecl PathArcArgs
 {
 public:
+  PathArcArgs( void );
+
   PathArcArgs( double radiusX_, double radiusY_,
                double xAxisRotation_, bool largeArcFlag_,
-               bool sweepFlag_, double x_, double y_ )
-    : _radiusX(radiusX_),
-      _radiusY(radiusY_),
-      _xAxisRotation(xAxisRotation_),
-      _largeArcFlag(largeArcFlag_),
-      _sweepFlag(sweepFlag_),
-      _x(x_),
-      _y(y_) { }
+               bool sweepFlag_, double x_, double y_ );
 
-  ~PathArcArgs ( void )
-    { }
+  PathArcArgs( const PathArcArgs &original_ );
+
+  ~PathArcArgs ( void );
 
   void radiusX( double radiusX_ )
     {
@@ -2211,20 +2207,15 @@ private:
 class MagickDLLDecl PathCurvetoArgs
 {
 public:
+  PathCurvetoArgs( void );
+
   PathCurvetoArgs( double x1_, double y1_,
                    double x2_, double y2_,
-                   double x_, double y_ )
-    : _x1(x1_),
-      _y1(y1_),
-      _x2(x2_),
-      _y2(y2_),
-      _x(x_),
-      _y(y_)
-    {
-    }
+                   double x_, double y_ );
 
-  ~PathCurvetoArgs ( void )
-    { }
+  PathCurvetoArgs( const PathCurvetoArgs &original_ );
+
+  ~PathCurvetoArgs ( void );
 
   void x1( double x1_ )
     {
@@ -2413,18 +2404,14 @@ private:
 class MagickDLLDecl PathQuadraticCurvetoArgs
 {
 public:
-  PathQuadraticCurvetoArgs( double x1_, double y1_,
-                            double x_, double y_ )
-    : _x1(x1_),
-      _y1(y1_),
-      _x(x_),
-      _y(y_)
-    {
-    }
+  PathQuadraticCurvetoArgs::PathQuadraticCurvetoArgs( void );
 
-  ~PathQuadraticCurvetoArgs ( void )
-    {
-    }
+  PathQuadraticCurvetoArgs( double x1_, double y1_,
+                            double x_, double y_ );
+
+  PathQuadraticCurvetoArgs( const PathQuadraticCurvetoArgs &original_ );
+
+  ~PathQuadraticCurvetoArgs ( void );
 
   void x1( double x1_ )
     {
