@@ -225,9 +225,9 @@ UNIX/Cygwin/MinGW COMPILATION
   (headers and built libraries are found by compiler) it will be included
   in the build.  The configure script is delivered with all features
   disabled and all packages enabled. In general, the only reason to
-  disable a package is if a package exists but it is unsuitable for the
-  build (perhaps an old version or not compiled with
-  the right compilation flags).
+  disable a package is if a package exists but it is unsuitable for
+  the build (perhaps an old version or not compiled with the right
+  compilation flags).
 
   Several configure options require special note:
 
@@ -241,29 +241,29 @@ UNIX/Cygwin/MinGW COMPILATION
       libraries if ImageMagick itself is to be dynamically loaded (such
       as for PerlMagick).
 
-      ImageMagick built with delegates (see MAGICK PLUG-INS below) can
-      pose additional challenges. If ImageMagick is built using static
-      libraries (the default without --enable-shared) then delegate
-      libraries may be built as either static libraries or shared
-      libraries. However, if ImageMagick is built using shared libraries,
-      then all delegate libraries must also be built as shared libraries.
-      Static libraries usually have the extension .a, while shared
-      libraries typically have extensions like .so, .sa, or .dll. Code in
-      shared libraries normally must compiled using a special compiler
-      option to produce Position Independent Code (PIC). The only time
-      this is not necessary is if the platform compiles code as PIC by
-      default.
+      ImageMagick built with delegates (see MAGICK PLUG-INS below)
+      can pose additional challenges. If ImageMagick is built using
+      static libraries (the default without --enable-shared) then
+      delegate libraries may be built as either static libraries or
+      shared libraries. However, if ImageMagick is built using shared
+      libraries, then all delegate libraries must also be built as
+      shared libraries.  Static libraries usually have the extension .a,
+      while shared libraries typically have extensions like .so, .sa,
+      or .dll. Code in shared libraries normally must compiled using
+      a special compiler option to produce Position Independent Code
+      (PIC). The only time this is not necessary is if the platform
+      compiles code as PIC by default.
 
       PIC compilation flags differ from vendor to vendor (gcc's is
       -fPIC). However, you must compile all shared library source with
       the same flag (for gcc use -fPIC rather than -fpic). While static
       libraries are normally created using an archive tool like 'ar',
-      shared libraries are built using special linker or compiler
-      options (e.g. -shared for gcc).
+      shared libraries are built using special linker or compiler options
+      (e.g. -shared for gcc).
 
-      Building shared libraries often requires subtantial hand-editing of
-      Makefiles and is only recommended for those who know what they are
-      doing.
+      Building shared libraries often requires subtantial hand-editing
+      of Makefiles and is only recommended for those who know what they
+      are doing.
 
       If --enable-shared is not specified, a new PERL interpreter
       (PerlMagick) is built which is statically linked against the
@@ -296,26 +296,29 @@ UNIX/Cygwin/MinGW COMPILATION
       LZW compression (e.g. used by GIF and TIFF). To avoid possibly
       infringing on this patent, support for LZW is disabled by default.
       With LZW support, GIF files written by ImageMagick will be much
-      larger than expected. Note that the TIFF library must be patched in
-      order to support LZW compression, and that this support must be
-      explicitly enabled in the libtiff Makefiles.
+      larger than expected. Note that the TIFF library must be patched
+      in order to support LZW compression, and that this support must
+      be explicitly enabled in the libtiff Makefiles.
 
     o --with-quantum-depth: This option allows the user to specify the
-      number of bits to use per pixel quantum (the size of the red,
-      green, blue, and alpha pixel components. For example,
-      "--with-quantum-depth=8" builds ImageMagick using eight-bit
-      quantums. Currently supported arguments are 8 or 16. The default
-      is 16.
+      number of bits to use per pixel quantum (the size of the
+      red, green, blue, and alpha pixel components. For example,
+      "--with-quantum-depth=8" builds ImageMagick using 8-bit
+      quantums. Currently supported arguments are 8, 16, or 32. The
+      default is 16.
 
-      A quantum depth of sixteen provides a range of 0 to 65535. A
-      quantum depth of eight provides a range of 0 to 255. Notice that
-      the eight-bit quantum is 256 times less accurate than the
-      sixteen-bit quantum size. Use of sixteen-bit pixel quantums
-      typically causes ImageMagick to run about 30% slower (and take
-      twice as much memory) than when it is built to support eight-bit
-      pixel quantums. Those who value performance over accuracy may
-      specify --with-quantum-depth=8.
-      
+      A quantum depth of 16 provides a range of 0 to 65535. A quantum
+      depth of eight provides a range of 0 to 255. Notice that the
+      eight-bit quantum is 256 times less accurate than the sixteen-bit
+      quantum size. Use of sixteen-bit pixel quantums typically causes
+      ImageMagick to run about 30% slower (and take twice as much memory)
+      than when it is built to support eight-bit pixel quantums. Those who
+      value performance over accuracy may specify --with-quantum-depth=8.
+
+      A quantum depth of 32 requires that sizeof(unsigned long) >= 8
+      available on 64-bit hardware such as Sun Sparc, Compaq Alpha, and
+      Intel Itanium.
+
     o --without-magick-plus-plus: Disable building Magick++, the C++
       application programming interface to ImageMagick. A suitable C++
       compiler is required in order to build Magick++. Specify the CXX
@@ -370,17 +373,17 @@ UNIX/Cygwin/MinGW COMPILATION
       delivered with the operating system or on Internet Service Provider
       (ISP) web servers. If you want PerlMagick to install elsewhere,
       then provide a PREFIX option to PERL's configuration step via
-      "--with-perl-options=PREFIX=/some/place". Other options
-      accepted by MakeMaker are 'LIB', 'LIBPERL_A', 'LINKTYPE', and
-      'OPTIMIZE'. See the ExtUtils::MakeMaker(3) manual page for more
-      information on configuring PERL extensions.
+      "--with-perl-options=PREFIX=/some/place". Other options accepted by
+      MakeMaker are 'LIB', 'LIBPERL_A', 'LINKTYPE', and 'OPTIMIZE'. See
+      the ExtUtils::MakeMaker(3) manual page for more information on
+      configuring PERL extensions.
 
     o --without-x: By default, ImageMagick will use X11 libraries if
       they are available. When --without-x is specified, use of X11 is
-      disabled. The display, animate, and import programs are not built
-      or installed. The remaining programs have reduced functionality
-      such as no access to X11 fonts (consider using Postscript or
-      TrueType fonts instead).
+      disabled. The display, animate, and import programs are not built or
+      installed. The remaining programs have reduced functionality such
+      as no access to X11 fonts (consider using Postscript or TrueType
+      fonts instead).
 
     o --with-gs-font-dir: Specify the directory containing the
       Ghostscript Postscript Type 1 font files (e.g. "n022003l.pfb") so
@@ -392,8 +395,8 @@ UNIX/Cygwin/MinGW COMPILATION
       be located automatically, or the location needs to be overridden.
 
     o --with-windows-font-dir: If configured under a Unix emulation
-      environment like Cygwin configure should automatically locate the
-      MS-Windows system font directory. If configure is not running
+      environment like Cygwin configure should automatically locate
+      the MS-Windows system font directory. If configure is not running
       under MS-Windows yet MS-Windows-compatible fonts are available
       use --with-windows-font-dir=/path to specify the directory where
       the fonts are installed.
