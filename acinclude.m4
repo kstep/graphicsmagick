@@ -14,7 +14,7 @@ dnl -fno-rtti -fno-exceptions
 dnl 
 dml @author  Guido Draheim <guidod@gmx.de>
 
-AC_DEFUN(AC_CHECK_CC_OPT,
+AC_DEFUN([AC_CHECK_CC_OPT],
 [AC_CACHE_CHECK(whether ${CC-cc} accepts [$1], [$2],
 [AC_SUBST($2)
 echo 'void f(){}' > conftest.c

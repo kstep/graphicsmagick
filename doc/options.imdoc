@@ -3101,8 +3101,13 @@ The default preview is <s>JPEG</s>.
 <utils apps=convert>
 <dopt>-process <command></opt>
 
-<abs>process a sequence of images</abs>
+<abs>process a sequence of images using a process module</abs>
 
+<pp>
+The command argument has the form <s>module=arg1,arg2,arg3,...,argN</s>
+where <s>module</s> is the name of the module to invoke (e.g. "analyze")
+and arg1,arg2,arg3,...,argN are an arbitrary number of arguments to
+pass to the process module.</pp>
 <pp>
 The sequence of images
 is terminated by the appearance of any option.</pp>

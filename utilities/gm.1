@@ -1008,6 +1008,40 @@ is terminated by the appearance of any option.
 If the \fB-deconstruct\fP
 option appears after all of the input images, all images are deconstructed.
 .TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+This option creates one or more definitions for coders and
+decoders to use while reading and writing image data. Definitions may
+be passed to coders and decoders to control options that are very
+specific to certain image formats. If \fIvalue\fP is missing for a
+definition, an empty-valued definition will be created for that
+key. This is used to control on/off options. Use +define
+<key>,... to remove definitions previously created. Use
++define "*" to remove all existing definitions.
+
+The following defintions may be created:
+
+
+    ps:imagemask
+        If the ps:imagemask key is defined, the PS3 and EPS3 coders will
+        create Postscript files that render bilevel images with the Postscript
+        imagemask operator instead of the image operator.
+    tiff:bits-per-sample=<value>
+        If the tiff:bits-per-sample key is defined to a value less than the
+        GraphicsMagick Quantum depth, the TIFF coder will write TIFF images
+        with the defined bits per sample, overriding any value stored in the
+        image.
+    tiff:samples-per-pixel=<value>
+        If the tiff:samples-per-pixel key is defined to a value, the TIFF
+        coder will write TIFF images with the defined samples per pixel,
+        overriding any value stored in the image.
+
+For example, to create a postscript file that will render only the black
+pixels of a bilevel image, use:
+
+
+    gm convert bilevel.tif -define ps:imagemask eps3:stencil.ps
+.TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
 
@@ -2295,7 +2329,12 @@ The default preview is \fBJPEG\fP.
 
 .TP
 .B "-process \fI<command>"\fP
-\fRprocess a sequence of images
+\fRprocess a sequence of images using a process module
+
+The command argument has the form \fBmodule=arg1,arg2,arg3,...,argN\fP
+where \fBmodule\fP is the name of the module to invoke (e.g. "analyze")
+and arg1,arg2,arg3,...,argN are an arbitrary number of arguments to
+pass to the process module.
 
 The sequence of images
 is terminated by the appearance of any option.
@@ -3095,6 +3134,9 @@ Options, above.
 .B "-debug \fI<events>"\fP
 \fRenable debug printout
 .TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+.TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
 .TP
@@ -3550,6 +3592,9 @@ Options, above.
 .B "-debug \fI<events>"\fP
 \fRenable debug printout
 .TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+.TP
 .B "-density \fI<width>x<height>"\fP
 \fRhorizontal and vertical resolution in pixels of the image
 .TP
@@ -3770,6 +3815,9 @@ Options, above.
 .TP
 .B "-debug \fI<events>"\fP
 \fRenable debug printout
+.TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
 .TP
 .B "-help"
 \fRprint usage instructions
@@ -4325,6 +4373,9 @@ Options, above.
 .B "-deconstruct"
 \fRbreak down an image sequence into constituent parts
 .TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+.TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
 .TP
@@ -4500,7 +4551,7 @@ Options, above.
 \fRimage preview type
 .TP
 .B "-process \fI<command>"\fP
-\fRprocess a sequence of images
+\fRprocess a sequence of images using a process module
 .TP
 .B "-profile \fI<filename>"\fP
 \fRadd ICM, IPTC, or generic profile  to image
@@ -4808,6 +4859,9 @@ Options, above.
 .TP
 .B "-debug \fI<events>"\fP
 \fRenable debug printout
+.TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
 .TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
@@ -6841,6 +6895,9 @@ Options, above.
 .B "-debug \fI<events>"\fP
 \fRenable debug printout
 .TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+.TP
 .B "-density \fI<width>x<height>"\fP
 \fRhorizontal and vertical resolution in pixels of the image
 .TP
@@ -6955,6 +7012,9 @@ Options, above.
 .TP
 .B "-debug \fI<events>"\fP
 \fRenable debug printout
+.TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
 .TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
@@ -7170,6 +7230,9 @@ Options, above.
 .TP
 .B "-debug \fI<events>"\fP
 \fRenable debug printout
+.TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
 .TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
@@ -7613,6 +7676,9 @@ Options, above.
 .TP
 .B "-debug \fI<events>"\fP
 \fRenable debug printout
+.TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
 .TP
 .B "-density \fI<width>x<height>"\fP
 \fRhorizontal and vertical resolution in pixels of the image

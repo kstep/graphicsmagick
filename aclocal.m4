@@ -27,7 +27,7 @@ dnl -fno-rtti -fno-exceptions
 dnl 
 dml @author  Guido Draheim <guidod@gmx.de>
 
-AC_DEFUN(AC_CHECK_CC_OPT,
+AC_DEFUN([AC_CHECK_CC_OPT],
 [AC_CACHE_CHECK(whether ${CC-cc} accepts [$1], [$2],
 [AC_SUBST($2)
 echo 'void f(){}' > conftest.c
@@ -882,6 +882,7 @@ if test $gm_cv_func_mmap_fileio = yes; then
 fi
 rm -f conftest.mmap
 ])# GM_FUNC_MMAP_FILEIO
+
 #
 # Check to make sure that the build environment is sane.
 #

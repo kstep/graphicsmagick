@@ -1,3 +1,10 @@
+2003-12-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/options.imdoc (use): Describe the syntax of the -process
+	argument.
+	* acinclude.m4 (AC_CHECK_CC_OPT): Add quoting in AC_CHECK_CC_OPT
+	definition.  Change suggested by Patrick Welche
+
 2003-12-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/magick.c (GetMagickInfo): Fix preprocessing logic error
