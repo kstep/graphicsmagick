@@ -1040,13 +1040,6 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
             case icSigLuvData: profile_image->colorspace=YUVColorspace; break;
             case icSigGrayData: profile_image->colorspace=GRAYColorspace; break;
             case icSigRgbData: profile_image->colorspace=RGBColorspace; break;
-            case icSigCmyData:
-            case icSigXYZData:
-            case icSigLabData:
-            case icSigLuvKData:
-            case icSigHsvData:
-            case icSigHlsData:
-            case icSigYxyData:
             default: profile_image->colorspace=RGBColorspace; break;
           }
           switch (image->rendering_intent)
