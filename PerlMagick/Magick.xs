@@ -6475,6 +6475,14 @@ QueryConfigration(ref,...)
               PUSHs(sv_2mortal(newSVpv(message,0)));
               FormatString(message,"%u",p->color.blue);
               PUSHs(sv_2mortal(newSVpv(message,0)));
+              if (p->compliance == AllCompliance)
+                (void) strcpy(message,"SVG, X11");
+              else
+                if (p->compliance == X11Compliance)
+                  (void) strcpy(message,"X11");
+                else
+                  (void) strcpy(message,"SVG");
+              PUSHs(sv_2mortal(newSVpv(message,0)));
               break;
             }
           break;
@@ -6516,10 +6524,6 @@ QueryConfigration(ref,...)
               *message='\0';
               if (p->format != (char *) NULL)
                 (void) strcpy(message,p->format);
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              *message='\0';
-              if (p->weight != (char *) NULL)
-                (void) strcpy(message,p->weight);
               PUSHs(sv_2mortal(newSVpv(message,0)));
               *message='\0';
               if (p->weight != (char *) NULL)

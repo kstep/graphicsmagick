@@ -2007,8 +2007,8 @@ width, height, size in bytes, and format (e.g. GIF, JPEG, etc.). For example,</d
 This is a more efficient and less memory intensive way to query if an image
 exists and what its characteristics are. Note, only information about the
 first image in a multi-frame image file is returned.
-<p>To have full control over text positioning you will need font metric
-information. Use
+<p>To have full control over text positioning you need font metric information.
+Use
 <pre>&nbsp;&nbsp;&nbsp; ($x_ppem, $y_ppem, $ascender, $descender, $width, $height, $max_advance) =
 &nbsp;&nbsp;&nbsp;&nbsp; $image->QueryFontMetrics(<i>parameters</i>);</pre>
 Where <i>parameters</i> is any parameter of the <a href="#mani">Annotate</a>
@@ -2035,6 +2035,7 @@ text height, expressed in 26.6 fixed point pixels.</li>
 <li>
 maximum horizontal advance, expressed in 26.6 fixed point pixels.</li>
 </ul>
+<p>
 For convenience, method <tt>QueryColor</tt> accepts one or more color names
 or hex value and returns their respective red, green, and blue color values:
 <pre>&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = $image->QueryColor('cyan');
@@ -2045,6 +2046,29 @@ or hex value and returns their respective red, green, and blue color values:
 name or hex value;</dd>
 
 <pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $name = $image->QueryColorName('rgba(80,60,0,0)');</pre>
+<p>
+PerlMagick relies on a number of external configuration files including:
+<i>color</i>, <i>font</i>, <i>format</i>, <i>magic</i>, and <i>module</i>.
+Use <tt>QueryConfiguration</tt> to get attributes associated with a 
+particular color, font, image format, image magic, or module alias like this:
+
+<pre>
+&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity, $compliance) = $image->QueryConfiguration(color => 'red');
+&nbsp;&nbsp;&nbsp; ($family, $alias, $description, $format, $weight, $glyphs, $metrics, $version) =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp $image->QueryConfiguration(font => 'Helvetica');
+&nbsp;&nbsp;&nbsp; ($adjoin, $blob_support, $raw, $description, $module) = $image->QueryConfiguration(format => 'gif');
+&nbsp;&nbsp;&nbsp; ($offset, $target) = $image->QueryConfiguration(magic => 'gif');
+&nbsp;&nbsp;&nbsp; ($alias) = $image->QueryConfiguration(module => 'jpeg');
+</pre>
+
+To get a list of the keys associated with a particular list use a value
+of '*':
+
+<pre>
+&nbsp;&nbsp;&nbsp; @keys = $image->QueryConfiguration(color => '*');
+</pre>
+
+<p>
 Use <tt>RemoteCommand</tt> to send a command to an already running <a href="display.html">display</a>
 or <a href="animate.html">animate</a> application. The only parameter is
 the name of the image file to display or animate.
@@ -2286,7 +2310,7 @@ is missing</td>
 
 <dd>
 <b>Copyright (C) 2001 ImageMagick Studio</b></dd>
-
+<p>
 <dd>
 <b>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files ("PerlMagick"),
@@ -2295,10 +2319,12 @@ the rights to use, copy, modify, merge, publish, distribute, sublicense,
 and/or sell copies of PerlMagick, and to permit persons to whom the PerlMagick
 is furnished to do so, subject to the following conditions:</b></dd>
 
+<p>
 <dd>
 <b>The above copyright notice and this permission notice shall be included
 in all copies or substantial portions of PerlMagick.</b></dd>
 
+<p>
 <dd>
 <b>The software is provided "as is", without warranty of any kind, express
 or implied, including but not limited to the warranties of merchantability,
@@ -2307,6 +2333,7 @@ ImageMagick Studio be liable for any claim, damages or other liability,
 whether in an action of contract, tort or otherwise, arising from, out
 of or in connection with PerlMagick or the use or other dealings in PerlMagick.</b></dd>
 
+<p>
 <dd>
 <b>Except as contained in this notice, the name of the E. I. du Pont de
 Nemours and Company shall not be used in advertising or otherwise to promote
