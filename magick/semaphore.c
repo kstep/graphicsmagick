@@ -344,9 +344,9 @@ MagickExport void InitializeSemaphore(void)
 MagickExport void LiberateSemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo **) NULL);
-  assert((*semaphore_info)->signature == MagickSignature);
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     return;
+  assert((*semaphore_info)->signature == MagickSignature);
   (void) UnlockSemaphoreInfo(*semaphore_info);
 }
 
