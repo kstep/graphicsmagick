@@ -6251,7 +6251,10 @@ Ping(ref,...)
       if ((items >= 3) && strEQcase(info->image_info->filename,"filename"))
         continue;
       if ((items >= 3) && strEQcase(info->image_info->filename,"file"))
-        info->image_info->file=(FILE *) IoIFP(sv_2io(ST(i)));
+        {
+          i++;
+          info->image_info->file=(FILE *) IoIFP(sv_2io(ST(i)));
+        }
       if ((items >= 3) && strEQcase(info->image_info->filename,"blob"))
         {
           char
@@ -6260,6 +6263,7 @@ Ping(ref,...)
           STRLEN
             length;
 
+          i++;
           blob=(char *) (SvPV(ST(i),length));
           AttachBlob(info->image_info->blob,blob,length);
         }
