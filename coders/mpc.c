@@ -172,9 +172,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  if (image->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
-    ThrowReaderException(CacheWarning,"Unable to stream persistent cache",
-      image);
   c=ReadBlobByte(image);
   if (c == EOF)
     {
@@ -784,14 +781,21 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (EOFBlob(image))
       ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
-    /*
-      Attach persistent pixel cache.
-    */
-    (void) strncpy(filename,image->filename,MaxTextExtent-1);
-    AppendImageFormat("cache",filename);
-    status=PersistCache(image,filename,True,&offset,exception);
-    if (status == False)
-      ThrowReaderException(CacheWarning,"Unable to perist pixel cache",image);
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
+    if (image->fifo == (int (*)(const Image *,const void *,const size_t)) NULL)
+      {
+        /*
+          Attach persistent pixel cache.
+        */
+        (void) strncpy(filename,image->filename,MaxTextExtent-1);
+        AppendImageFormat("cache",filename);
+        status=PersistCache(image,filename,True,&offset,exception);
+        if (status == False)
+          ThrowReaderException(CacheWarning,"Unable to perist pixel cache",
+            image);
+      }
     /*
       Proceed to next image.
     */
@@ -926,8 +930,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     offset;
 
   register long
-    i,
-    y;
+    i;
 
   unsigned int
     status;
