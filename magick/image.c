@@ -824,8 +824,8 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
                   q++;
                   indexes++;
                 }
+              break;
             }
-          break;
         }
       case MatteChannel:
       case BlackChannel:
@@ -4768,7 +4768,7 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
-  if (image->matte)
+  if (image->matte && (opacity != OpaqueOpacity))
     {
       /*
         Attenuate existing opacity channel
@@ -4805,7 +4805,7 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
       return;
     }
   /*
-    Add new opacity channel
+    Add new opacity channel or make existing opacity channel opaque
   */
   image->matte=True;
   for (y=0; y < (long) image->rows; y++)
