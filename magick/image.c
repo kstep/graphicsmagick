@@ -1282,9 +1282,11 @@ MagickExport unsigned int CompositeImage(Image *image,
           q++;
           continue;
         }
+      pixel=(*p++);
+      if ((x+x_offset) < 0)
+        continue;
       if ((x-x_offset) >= (long) composite_image->columns)
         break;
-      pixel=(*p);
       if (!composite_image->matte)
         pixel.opacity=OpaqueOpacity;
       if (!image->matte)
@@ -1559,7 +1561,6 @@ MagickExport unsigned int CompositeImage(Image *image,
       if ((indexes != (IndexPacket *) NULL) &&
           (composite_indexes != (IndexPacket *) NULL))
         indexes[x]=composite_indexes[x-x_offset];
-      p++;
       q++;
     }
     if (!SyncImagePixels(image))
