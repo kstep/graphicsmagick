@@ -1069,9 +1069,17 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
             /*
               Form filename for multi-part images.
             */
-            FormatString(filename,image->filename,image->scene);
+            (void) strncpy(filename,image->filename,MaxTextExtent-1);
             if (strchr(filename,'%') != (char *) NULL)
-              (void) strncpy(filename,image->filename,MaxTextExtent-1);
+              {
+                int
+                  scene;
+
+                FormatString(filename,image->filename,(int) image->scene);
+                (void) sscanf(filename,image->filename,&scene);
+                if (scene != image->scene)
+                  (void) strncpy(filename,image->filename,MaxTextExtent-1);
+              }
             if (!image_info->adjoin)
               if ((image->previous != (Image *) NULL) ||
                   (image->next != (Image *) NULL))
