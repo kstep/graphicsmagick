@@ -191,9 +191,6 @@ MagickExport unsigned int EqualizeImage(Image *image)
   long
     y;
 
-  PixelPacket
-    *equalize_map;
-
   register const PixelPacket
     *p;
 
@@ -204,24 +201,29 @@ MagickExport unsigned int EqualizeImage(Image *image)
   register PixelPacket
     *q;
 
+  ShortPixelPacket
+    *equalize_map;
+
   /*
     Allocate and initialize histogram arrays.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   histogram=(HistogramPacket *)
-    AcquireMemory((MaxRGB+1)*sizeof(HistogramPacket));
-  map=(HistogramPacket *) AcquireMemory((MaxRGB+1)*sizeof(HistogramPacket));
-  equalize_map=(PixelPacket *) AcquireMemory((MaxRGB+1)*sizeof(PixelPacket));
+    AcquireMemory((ScaleQuantumToShort(MaxRGB)+1)*sizeof(HistogramPacket));
+  map=(HistogramPacket *)
+    AcquireMemory((ScaleQuantumToShort(MaxRGB)+1)*sizeof(HistogramPacket));
+  equalize_map=(ShortPixelPacket *)
+    AcquireMemory((ScaleQuantumToShort(MaxRGB)+1)*sizeof(ShortPixelPacket));
   if ((histogram == (HistogramPacket *) NULL) ||
       (map == (HistogramPacket *) NULL) ||
-      (equalize_map == (PixelPacket *) NULL))
+      (equalize_map == (ShortPixelPacket *) NULL))
     ThrowBinaryException(ResourceLimitError,"Unable to equalize image",
       "Memory allocation failed");
   /*
     Form histogram.
   */
-  memset(histogram,0,(MaxRGB+1)*sizeof(HistogramPacket));
+  memset(histogram,0,(ScaleQuantumToShort(MaxRGB)+1)*sizeof(HistogramPacket));
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -229,10 +231,10 @@ MagickExport unsigned int EqualizeImage(Image *image)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      histogram[p->red].red++;
-      histogram[p->green].green++;
-      histogram[p->blue].blue++;
-      histogram[p->opacity].opacity++;
+      histogram[ScaleQuantumToShort(p->red)].red++;
+      histogram[ScaleQuantumToShort(p->green)].green++;
+      histogram[ScaleQuantumToShort(p->blue)].blue++;
+      histogram[ScaleQuantumToShort(p->opacity)].opacity++;
       p++;
     }
   }
@@ -240,7 +242,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
     Integrate the histogram to get the equalization map.
   */
   memset(&intensity,0,sizeof(HistogramPacket));
-  for (i=0; i <= MaxRGB; i++)
+  for (i=0; i <= ScaleQuantumToShort(MaxRGB); i++)
   {
     intensity.red+=histogram[i].red;
     intensity.green+=histogram[i].green;
@@ -249,22 +251,22 @@ MagickExport unsigned int EqualizeImage(Image *image)
     map[i]=intensity;
   }
   low=map[0];
-  high=map[MaxRGB];
-  memset(equalize_map,0,(MaxRGB+1)*sizeof(PixelPacket));
-  for (i=0; i <= MaxRGB; i++)
+  high=map[ScaleQuantumToShort(MaxRGB)];
+  memset(equalize_map,0,(ScaleQuantumToShort(MaxRGB)+1)*sizeof(PixelPacket));
+  for (i=0; i <= ScaleQuantumToShort(MaxRGB); i++)
   {
     if (high.red != low.red)
-      equalize_map[i].red=(Quantum) ((((double)
-        (map[i].red-low.red))*MaxRGB)/(high.red-low.red));
+      equalize_map[i].red=(Quantum) ((((double) (map[i].red-low.red))*
+        ScaleQuantumToShort(MaxRGB))/(high.red-low.red));
     if (high.green != low.green)
-      equalize_map[i].green=(Quantum) ((((double)
-        (map[i].green-low.green))*MaxRGB)/(high.green-low.green));
+      equalize_map[i].green=(Quantum) ((((double) (map[i].green-low.green))*
+        ScaleQuantumToShort(MaxRGB))/(high.green-low.green));
     if (high.blue != low.blue)
-      equalize_map[i].blue=(Quantum) ((((double)
-        (map[i].blue-low.blue))*MaxRGB)/(high.blue-low.blue));
+      equalize_map[i].blue=(Quantum) ((((double) (map[i].blue-low.blue))*
+        ScaleQuantumToShort(MaxRGB))/(high.blue-low.blue));
     if (high.opacity != low.opacity)
-      equalize_map[i].opacity=(Quantum) ((((double)
-        (map[i].opacity-low.opacity))*MaxRGB)/(high.opacity-low.opacity));
+      equalize_map[i].opacity=(Quantum) ((((double) (map[i].opacity-
+        low.opacity))*ScaleQuantumToShort(MaxRGB))/(high.opacity-low.opacity));
   }
   LiberateMemory((void **) &histogram);
   LiberateMemory((void **) &map);
@@ -287,13 +289,13 @@ MagickExport unsigned int EqualizeImage(Image *image)
         for (x=0; x < (long) image->columns; x++)
         {
           if (low.red != high.red)
-            q->red=equalize_map[q->red].red;
+            q->red=ScaleShortToQuantum(equalize_map[q->red].red);
           if (low.green != high.green)
-            q->green=equalize_map[q->green].green;
+            q->green=ScaleShortToQuantum(equalize_map[q->green].green);
           if (low.blue != high.blue)
-            q->blue=equalize_map[q->blue].blue;
+            q->blue=ScaleShortToQuantum(equalize_map[q->blue].blue);
           if (low.opacity != high.opacity)
-            q->opacity=equalize_map[q->opacity].opacity;
+            q->opacity=ScaleShortToQuantum(equalize_map[q->opacity].opacity);
           q++;
         }
         if (!SyncImagePixels(image))
@@ -311,11 +313,14 @@ MagickExport unsigned int EqualizeImage(Image *image)
       for (i=0; i < (long) image->colors; i++)
       {
         if (low.red != high.red)
-          image->colormap[i].red=equalize_map[image->colormap[i].red].red;
+          image->colormap[i].red=
+            ScaleShortToQuantum(equalize_map[image->colormap[i].red].red);
         if (low.green != high.green)
-          image->colormap[i].green=equalize_map[image->colormap[i].green].green;
+          image->colormap[i].green=
+            ScaleShortToQuantum(equalize_map[image->colormap[i].green].green);
         if (low.blue != high.blue)
-          image->colormap[i].blue=equalize_map[image->colormap[i].blue].blue;
+          image->colormap[i].blue=
+            ScaleShortToQuantum(equalize_map[image->colormap[i].blue].blue);
       }
       SyncImage(image);
       break;
@@ -360,9 +365,6 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
 {
 #define GammaImageText  "  Gamma correcting the image...  "
 
-  ColorPacket
-    *gamma_map;
-
   double
     blue_gamma,
     green_gamma,
@@ -380,6 +382,9 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
 
   register PixelPacket
     *q;
+
+  ShortPixelPacket
+    *gamma_map;
 
   size_t
     length;
@@ -403,9 +408,9 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
   /*
     Allocate and initialize gamma maps.
   */
-  length=(ScaleQuantumToShort(MaxRGB)+1)*sizeof(ColorPacket);
-  gamma_map=(ColorPacket *) AcquireMemory(length);
-  if (gamma_map == (ColorPacket *) NULL)
+  length=(ScaleQuantumToShort(MaxRGB)+1)*sizeof(ShortPixelPacket);
+  gamma_map=(ShortPixelPacket *) AcquireMemory(length);
+  if (gamma_map == (ShortPixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitError,"Unable to gamma correct image",
       "Memory allocation failed");
   (void) memset(gamma_map,0,length);
