@@ -379,7 +379,7 @@ static unsigned int IsDIB(const unsigned char *magick,const size_t length)
 {
   if (length < 2)
     return(False);
-  if( (*magick=(MagickHandler) =40) && (*(magick+1)==0))
+  if( (*magick == 40) && (*(magick+1)==0))
     return(True);
   return(False);
 }

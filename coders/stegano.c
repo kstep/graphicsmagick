@@ -136,7 +136,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
-  *clone_info->magick='\0';
+  *clone_info->magick=(MagickHandler) '\0';
   watermark=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   if (watermark == (Image *) NULL)
@@ -234,7 +234,7 @@ ModuleExport void RegisterSTEGANOImage(void)
     *entry;
 
   entry=SetMagickInfo("STEGANO");
-  entry->decoder=ReadSTEGANOImage;
+  entry->decoder=(DecoderHandler) ReadSTEGANOImage;
   entry->description=AcquireString("Steganographic image");
   entry->module=AcquireString("STEGANO");
   (void) RegisterMagickInfo(entry);

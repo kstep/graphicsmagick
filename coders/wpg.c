@@ -900,8 +900,8 @@ ModuleExport void RegisterWPGImage(void)
     *entry;
 
   entry=SetMagickInfo("WPG");
-  entry->decoder=ReadWPGImage;
-  entry->magick=IsWPG;
+  entry->decoder=(DecoderHandler) ReadWPGImage;
+  entry->magick=(MagickHandler) IsWPG;
   entry->description=AcquireString("Word Perfect Graphics");
   entry->module=AcquireString("WPG");
   (void) RegisterMagickInfo(entry);

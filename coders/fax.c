@@ -217,16 +217,16 @@ ModuleExport void RegisterFAXImage(void)
     *entry;
 
   entry=SetMagickInfo("FAX");
-  entry->decoder=ReadFAXImage;
-  entry->encoder=WriteFAXImage;
-  entry->magick=IsFAX;
+  entry->decoder=(DecoderHandler) ReadFAXImage;
+  entry->encoder=(EncoderHandler) WriteFAXImage;
+  entry->magick=(MagickHandler) IsFAX;
   entry->description=AcquireString("Group 3 FAX");
   entry->module=AcquireString("FAX");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("G3");
-  entry->decoder=ReadFAXImage;
-  entry->encoder=WriteFAXImage;
-  entry->magick=IsFAX;
+  entry->decoder=(DecoderHandler) ReadFAXImage;
+  entry->encoder=(EncoderHandler) WriteFAXImage;
+  entry->magick=(MagickHandler) IsFAX;
   entry->adjoin=False;
   entry->description=AcquireString("Group 3 FAX");
   entry->module=AcquireString("FAX");

@@ -1070,9 +1070,9 @@ ModuleExport void RegisterGIFImage(void)
     *entry;
 
   entry=SetMagickInfo("GIF");
-  entry->decoder=ReadGIFImage;
-  entry->encoder=WriteGIFImage;
-  entry->magick=IsGIF;
+  entry->decoder=(DecoderHandler) ReadGIFImage;
+  entry->encoder=(EncoderHandler) WriteGIFImage;
+  entry->magick=(MagickHandler) IsGIF;
   entry->description=AcquireString("CompuServe graphics interchange format");
 #if !defined(HasLZW)
   entry->version=AcquireString("LZW disabled");
@@ -1080,9 +1080,9 @@ ModuleExport void RegisterGIFImage(void)
   entry->module=AcquireString("GIF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("GIF87");
-  entry->decoder=ReadGIFImage;
-  entry->encoder=WriteGIFImage;
-  entry->magick=IsGIF;
+  entry->decoder=(DecoderHandler) ReadGIFImage;
+  entry->encoder=(EncoderHandler) WriteGIFImage;
+  entry->magick=(MagickHandler) IsGIF;
   entry->adjoin=False;
   entry->description=AcquireString("CompuServe graphics interchange format");
   entry->version=AcquireString("version 87a");

@@ -250,8 +250,8 @@ ModuleExport void RegisterMTVImage(void)
     *entry;
 
   entry=SetMagickInfo("MTV");
-  entry->decoder=ReadMTVImage;
-  entry->encoder=WriteMTVImage;
+  entry->decoder=(DecoderHandler) ReadMTVImage;
+  entry->encoder=(EncoderHandler) WriteMTVImage;
   entry->description=AcquireString("MTV Raytracing image format");
   entry->module=AcquireString("MTV");
   (void) RegisterMagickInfo(entry);

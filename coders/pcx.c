@@ -645,16 +645,16 @@ ModuleExport void RegisterPCXImage(void)
     *entry;
 
   entry=SetMagickInfo("DCX");
-  entry->decoder=ReadPCXImage;
-  entry->encoder=WritePCXImage;
-  entry->magick=IsDCX;
+  entry->decoder=(DecoderHandler) ReadPCXImage;
+  entry->encoder=(EncoderHandler) WritePCXImage;
+  entry->magick=(MagickHandler) IsDCX;
   entry->description=AcquireString("ZSoft IBM PC multi-page Paintbrush");
   entry->module=AcquireString("PCX");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PCX");
-  entry->decoder=ReadPCXImage;
-  entry->encoder=WritePCXImage;
-  entry->magick=IsPCX;
+  entry->decoder=(DecoderHandler) ReadPCXImage;
+  entry->encoder=(EncoderHandler) WritePCXImage;
+  entry->magick=(MagickHandler) IsPCX;
   entry->adjoin=False;
   entry->description=AcquireString("ZSoft IBM PC Paintbrush");
   entry->module=AcquireString("PCX");

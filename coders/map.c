@@ -241,8 +241,8 @@ ModuleExport void RegisterMAPImage(void)
     *entry;
 
   entry=SetMagickInfo("MAP");
-  entry->decoder=ReadMAPImage;
-  entry->encoder=WriteMAPImage;
+  entry->decoder=(DecoderHandler) ReadMAPImage;
+  entry->encoder=(EncoderHandler) WriteMAPImage;
   entry->adjoin=False;
   entry->raw=True;
   entry->description=AcquireString("Colormap intensities and indices");

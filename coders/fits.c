@@ -611,9 +611,9 @@ ModuleExport void RegisterFITSImage(void)
     *entry;
 
   entry=SetMagickInfo("FITS");
-  entry->decoder=ReadFITSImage;
-  entry->encoder=WriteFITSImage;
-  entry->magick=IsFITS;
+  entry->decoder=(DecoderHandler) ReadFITSImage;
+  entry->encoder=(EncoderHandler) WriteFITSImage;
+  entry->magick=(MagickHandler) IsFITS;
   entry->adjoin=False;
   entry->description=AcquireString("Flexible Image Transport System");
   entry->module=AcquireString("FITS");

@@ -228,8 +228,8 @@ ModuleExport void RegisterVIDImage(void)
     *entry;
 
   entry=SetMagickInfo("VID");
-  entry->decoder=ReadVIDImage;
-  entry->encoder=WriteVIDImage;
+  entry->decoder=(DecoderHandler) ReadVIDImage;
+  entry->encoder=(EncoderHandler) WriteVIDImage;
   entry->description=AcquireString("Visual Image Directory");
   entry->module=AcquireString("VID");
   (void) RegisterMagickInfo(entry);

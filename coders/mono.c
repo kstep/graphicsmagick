@@ -212,8 +212,8 @@ ModuleExport void RegisterMONOImage(void)
     *entry;
 
   entry=SetMagickInfo("MONO");
-  entry->decoder=ReadMONOImage;
-  entry->encoder=WriteMONOImage;
+  entry->decoder=(DecoderHandler) ReadMONOImage;
+  entry->encoder=(EncoderHandler) WriteMONOImage;
   entry->adjoin=False;
   entry->description=
     AcquireString("Bi-level bitmap in least-significant-byte first order");

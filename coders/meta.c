@@ -1019,70 +1019,70 @@ ModuleExport void RegisterMETAImage(void)
     *entry;
 
   entry=SetMagickInfo("8BIM");
-  entry->decoder=ReadMETAImage;
-  entry->encoder=WriteMETAImage;
-  entry->magick=IsMETA;
+  entry->decoder=(DecoderHandler) ReadMETAImage;
+  entry->encoder=(EncoderHandler) WriteMETAImage;
+  entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
   entry->description=AllocateString("Photoshop resource format");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("8BIMTEXT");
-  entry->decoder=ReadMETAImage;
-  entry->encoder=WriteMETAImage;
-  entry->magick=IsMETA;
+  entry->decoder=(DecoderHandler) ReadMETAImage;
+  entry->encoder=(EncoderHandler) WriteMETAImage;
+  entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
   entry->description=AllocateString("Photoshop resource format");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("APP1");
-  entry->decoder=ReadMETAImage;
-  entry->encoder=WriteMETAImage;
-  entry->magick=IsMETA;
+  entry->decoder=(DecoderHandler) ReadMETAImage;
+  entry->encoder=(EncoderHandler) WriteMETAImage;
+  entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
   entry->description=AllocateString("Raw application information");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("APP1JPEG");
-  entry->decoder=ReadMETAImage;
-  entry->encoder=WriteMETAImage;
-  entry->magick=IsMETA;
+  entry->decoder=(DecoderHandler) ReadMETAImage;
+  entry->encoder=(EncoderHandler) WriteMETAImage;
+  entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
   entry->description=AllocateString("Raw JPEG binary data");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("ICM");
-  entry->decoder=ReadMETAImage;
-  entry->encoder=WriteMETAImage;
+  entry->decoder=(DecoderHandler) ReadMETAImage;
+  entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->adjoin=False;
   entry->description=AllocateString("ICC Color Profile");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("ICC");
-  entry->decoder=ReadMETAImage;
-  entry->encoder=WriteMETAImage;
+  entry->decoder=(DecoderHandler) ReadMETAImage;
+  entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->adjoin=False;
   entry->description=AllocateString("ICC Color Profile");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("IPTC");
-  entry->decoder=ReadMETAImage;
-  entry->encoder=WriteMETAImage;
-  entry->magick=IsMETA;
+  entry->decoder=(DecoderHandler) ReadMETAImage;
+  entry->encoder=(EncoderHandler) WriteMETAImage;
+  entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
   entry->description=AllocateString("IPTC Newsphoto");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("IPTCTEXT");
-  entry->decoder=ReadMETAImage;
-  entry->encoder=WriteMETAImage;
-  entry->magick=IsMETA;
+  entry->decoder=(DecoderHandler) ReadMETAImage;
+  entry->encoder=(EncoderHandler) WriteMETAImage;
+  entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
   entry->description=AllocateString("IPTC Newsphoto");
   entry->module=AllocateString("META");

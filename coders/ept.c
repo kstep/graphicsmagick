@@ -412,9 +412,9 @@ ModuleExport void RegisterEPTImage(void)
     *entry;
 
   entry=SetMagickInfo("EPT");
-  entry->decoder=ReadEPTImage;
-  entry->encoder=WriteEPTImage;
-  entry->magick=IsEPT;
+  entry->decoder=(DecoderHandler) ReadEPTImage;
+  entry->encoder=(EncoderHandler) WriteEPTImage;
+  entry->magick=(MagickHandler) IsEPT;
   entry->adjoin=False;
   entry->blob_support=False;
   entry->description=

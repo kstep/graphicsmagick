@@ -1117,9 +1117,9 @@ ModuleExport void RegisterMIFFImage(void)
 #endif
 #endif
   entry=SetMagickInfo("MIFF");
-  entry->decoder=ReadMIFFImage;
-  entry->encoder=WriteMIFFImage;
-  entry->magick=IsMIFF;
+  entry->decoder=(DecoderHandler) ReadMIFFImage;
+  entry->encoder=(EncoderHandler) WriteMIFFImage;
+  entry->magick=(MagickHandler) IsMIFF;
   entry->description=AcquireString("Magick Image File Format");
   if (*version != '\0')
     entry->version=AcquireString(version);

@@ -165,7 +165,7 @@ ModuleExport void RegisterGRADIENTImage(void)
     *entry;
 
   entry=SetMagickInfo("GRADIENT");
-  entry->decoder=ReadGRADIENTImage;
+  entry->decoder=(DecoderHandler) ReadGRADIENTImage;
   entry->adjoin=False;
   entry->raw=True;
   entry->description=AcquireString("Gradual passing from one shade to another");

@@ -768,15 +768,15 @@ ModuleExport void RegisterVIFFImage(void)
     *entry;
 
   entry=SetMagickInfo("VIFF");
-  entry->decoder=ReadVIFFImage;
-  entry->encoder=WriteVIFFImage;
-  entry->magick=IsVIFF;
+  entry->decoder=(DecoderHandler) ReadVIFFImage;
+  entry->encoder=(EncoderHandler) WriteVIFFImage;
+  entry->magick=(MagickHandler) IsVIFF;
   entry->description=AcquireString("Khoros Visualization image");
   entry->module=AcquireString("VIFF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("XV");
-  entry->decoder=ReadVIFFImage;
-  entry->encoder=WriteVIFFImage;
+  entry->decoder=(DecoderHandler) ReadVIFFImage;
+  entry->encoder=(EncoderHandler) WriteVIFFImage;
   entry->description=AcquireString("Khoros Visualization image");
   (void) RegisterMagickInfo(entry);
 }

@@ -537,10 +537,10 @@ ModuleExport void RegisterFPXImage(void)
     *entry;
 
   entry=SetMagickInfo("FPX");
-  entry->decoder=ReadFPXImage;
-  entry->encoder=WriteFPXImage;
+  entry->decoder=(DecoderHandler) ReadFPXImage;
+  entry->encoder=(EncoderHandler) WriteFPXImage;
   entry->adjoin=False;
-  entry->magick=IsFPX;
+  entry->magick=(MagickHandler) IsFPX;
   entry->description=AcquireString("FlashPix Format");
   entry->module=AcquireString("FPX");
   (void) RegisterMagickInfo(entry);

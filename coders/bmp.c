@@ -1266,7 +1266,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    *magick=(MagickHandler) '\0';
+    *magick='\0';
     if (bmp_info.ba_offset != 0)
       (void) SeekBlob(image,bmp_info.ba_offset,SEEK_SET);
     (void) ReadBlob(image,2,(char *) magick);

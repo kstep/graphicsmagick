@@ -400,9 +400,9 @@ ModuleExport void RegisterXBMImage(void)
     *entry;
 
   entry=SetMagickInfo("XBM");
-  entry->decoder=ReadXBMImage;
-  entry->encoder=WriteXBMImage;
-  entry->magick=IsXBM;
+  entry->decoder=(DecoderHandler) ReadXBMImage;
+  entry->encoder=(EncoderHandler) WriteXBMImage;
+  entry->magick=(MagickHandler) IsXBM;
   entry->adjoin=False;
   entry->description=
     AcquireString("X Windows system bitmap (black and white)");

@@ -244,12 +244,12 @@ ModuleExport void RegisterPS3Image(void)
     *entry;
 
   entry=SetMagickInfo("EPS3");
-  entry->encoder=WritePS3Image;
+  entry->encoder=(EncoderHandler) WritePS3Image;
   entry->description=AcquireString("Adobe Level III Encapsulated PostScript");
   entry->module=AcquireString("PS3");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PS3");
-  entry->encoder=WritePS3Image;
+  entry->encoder=(EncoderHandler) WritePS3Image;
   entry->description=AcquireString("Adobe Level III PostScript");
   entry->module=AcquireString("PS3");
   (void) RegisterMagickInfo(entry);

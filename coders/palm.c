@@ -678,8 +678,8 @@ ModuleExport void RegisterPALMImage(void)
     *entry;
 
   entry=SetMagickInfo("PALM");
-  entry->decoder=ReadPALMImage;
-  entry->encoder=WritePALMImage;
+  entry->decoder=(DecoderHandler) ReadPALMImage;
+  entry->encoder=(EncoderHandler) WritePALMImage;
   entry->adjoin=False;
   entry->description=AcquireString("Palm pixmap");
   entry->module=AcquireString("PALM");

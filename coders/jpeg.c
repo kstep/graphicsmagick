@@ -1072,10 +1072,10 @@ ModuleExport void RegisterJPEGImage(void)
 
   entry=SetMagickInfo("JPEG");
 #if defined(HasJPEG)
-  entry->decoder=ReadJPEGImage;
-  entry->encoder=WriteJPEGImage;
+  entry->decoder=(DecoderHandler) ReadJPEGImage;
+  entry->encoder=(EncoderHandler) WriteJPEGImage;
 #endif
-  entry->magick=IsJPEG;
+  entry->magick=(MagickHandler) IsJPEG;
   entry->adjoin=False;
   entry->description=
     AcquireString("Joint Photographic Experts Group JFIF format");
@@ -1092,8 +1092,8 @@ ModuleExport void RegisterJPEGImage(void)
   entry=SetMagickInfo("JPG");
   entry->thread_support=False;
 #if defined(HasJPEG)
-  entry->decoder=ReadJPEGImage;
-  entry->encoder=WriteJPEGImage;
+  entry->decoder=(DecoderHandler) ReadJPEGImage;
+  entry->encoder=(EncoderHandler) WriteJPEGImage;
 #endif
   entry->adjoin=False;
   entry->description=

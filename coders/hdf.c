@@ -418,9 +418,9 @@ ModuleExport void RegisterHDFImage(void)
     *entry;
 
   entry=SetMagickInfo("HDF");
-  entry->decoder=ReadHDFImage;
-  entry->encoder=WriteHDFImage;
-  entry->magick=IsHDF;
+  entry->decoder=(DecoderHandler) ReadHDFImage;
+  entry->encoder=(EncoderHandler) WriteHDFImage;
+  entry->magick=(MagickHandler) IsHDF;
   entry->blob_support=False;
   entry->description=AcquireString("Hierarchical Data Format");
   entry->module=AcquireString("HDF");

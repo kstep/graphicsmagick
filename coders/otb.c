@@ -229,8 +229,8 @@ ModuleExport void RegisterOTBImage(void)
     *entry;
 
   entry=SetMagickInfo("OTB");
-  entry->decoder=ReadOTBImage;
-  entry->encoder=WriteOTBImage;
+  entry->decoder=(DecoderHandler) ReadOTBImage;
+  entry->encoder=(EncoderHandler) WriteOTBImage;
   entry->adjoin=False;
   entry->description=AcquireString("On-the-air bitmap");
   entry->module=AcquireString("OTB");

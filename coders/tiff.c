@@ -1011,24 +1011,24 @@ ModuleExport void RegisterTIFFImage(void)
   FormatString(version,"%d",TIFF_VERSION);
 #endif
   entry=SetMagickInfo("PTIF");
-  entry->decoder=ReadTIFFImage;
-  entry->encoder=WritePTIFImage;
+  entry->decoder=(DecoderHandler) ReadTIFFImage;
+  entry->encoder=(EncoderHandler) WritePTIFImage;
   entry->adjoin=False;
   entry->description=AcquireString("Pyramid encoded TIFF");
   entry->module=AcquireString("TIFF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("TIF");
-  entry->decoder=ReadTIFFImage;
-  entry->encoder=WriteTIFFImage;
+  entry->decoder=(DecoderHandler) ReadTIFFImage;
+  entry->encoder=(EncoderHandler) WriteTIFFImage;
   entry->description=AcquireString(TIFFDescription);
   if (*version != '\0')
     entry->version=AcquireString(version);
   entry->module=AcquireString("TIFF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("TIFF");
-  entry->decoder=ReadTIFFImage;
-  entry->encoder=WriteTIFFImage;
-  entry->magick=IsTIFF;
+  entry->decoder=(DecoderHandler) ReadTIFFImage;
+  entry->encoder=(EncoderHandler) WriteTIFFImage;
+  entry->magick=(MagickHandler) IsTIFF;
   entry->description=AcquireString(TIFFDescription);
   if (*version != '\0')
     entry->version=AcquireString(version);

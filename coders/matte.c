@@ -93,7 +93,7 @@ ModuleExport void RegisterMATTEImage(void)
     *entry;
 
   entry=SetMagickInfo("MATTE");
-  entry->encoder=WriteMATTEImage;
+  entry->encoder=(EncoderHandler) WriteMATTEImage;
   entry->raw=True;
   entry->description=AcquireString("MATTE format");
   entry->module=AcquireString("MATTE");

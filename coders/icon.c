@@ -512,13 +512,13 @@ ModuleExport void RegisterICONImage(void)
     *entry;
 
   entry=SetMagickInfo("ICO");
-  entry->decoder=ReadIconImage;
+  entry->decoder=(DecoderHandler) ReadIconImage;
   entry->adjoin=False;
   entry->description=AcquireString("Microsoft icon");
   entry->module=AcquireString("ICON");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("ICON");
-  entry->decoder=ReadIconImage;
+  entry->decoder=(DecoderHandler) ReadIconImage;
   entry->adjoin=False;
   entry->description=AcquireString("Microsoft icon");
   entry->module=AcquireString("ICON");

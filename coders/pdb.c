@@ -595,9 +595,9 @@ ModuleExport void RegisterPDBImage(void)
     *entry;
 
   entry=SetMagickInfo("PDB");
-  entry->decoder=ReadPDBImage;
-  entry->encoder=WritePDBImage;
-  entry->magick=IsPDB;
+  entry->decoder=(DecoderHandler) ReadPDBImage;
+  entry->encoder=(EncoderHandler) WritePDBImage;
+  entry->magick=(MagickHandler) IsPDB;
   entry->description=AcquireString("Palm Database ImageViewer Format");
   entry->module=AcquireString("PDB");
   (void) RegisterMagickInfo(entry);

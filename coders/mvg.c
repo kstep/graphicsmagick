@@ -230,9 +230,9 @@ ModuleExport void RegisterMVGImage(void)
     *entry;
 
   entry=SetMagickInfo("MVG");
-  entry->decoder=ReadMVGImage;
-  entry->encoder=WriteMVGImage;
-  entry->magick=IsMVG;
+  entry->decoder=(DecoderHandler) ReadMVGImage;
+  entry->encoder=(EncoderHandler) WriteMVGImage;
+  entry->magick=(MagickHandler) IsMVG;
   entry->adjoin=False;
   entry->description=AcquireString("Magick Vector Graphics");
   entry->module=AcquireString("MVG");

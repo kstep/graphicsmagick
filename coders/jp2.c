@@ -451,23 +451,23 @@ ModuleExport void RegisterJP2Image(void)
   entry=SetMagickInfo("JP2");
   entry->description=AcquireString("JPEG-2000 JP2 File Format Syntax");
   entry->module=AcquireString("JP2");
-  entry->magick=IsJP2;
+  entry->magick=(MagickHandler) IsJP2;
   entry->adjoin=False;
   entry->thread_support=False;
 #if defined(HasJP2)
-  entry->decoder=ReadJP2Image;
-  entry->encoder=WriteJP2Image;
+  entry->decoder=(DecoderHandler) ReadJP2Image;
+  entry->encoder=(EncoderHandler) WriteJP2Image;
 #endif
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPC");
   entry->description=AcquireString("JPEG-2000 Code Stream Syntax");
   entry->module=AcquireString("JPC");
-  entry->magick=IsJPC;
+  entry->magick=(MagickHandler) IsJPC;
   entry->adjoin=False;
   entry->thread_support=False;
 #if defined(HasJP2)
-  entry->decoder=ReadJP2Image;
-  entry->encoder=WriteJP2Image;
+  entry->decoder=(DecoderHandler) ReadJP2Image;
+  entry->encoder=(EncoderHandler) WriteJP2Image;
 #endif
   (void) RegisterMagickInfo(entry);
 }

@@ -115,7 +115,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
-  *clone_info->magick='\0';
+  *clone_info->magick=(MagickHandler) '\0';
   tile_image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   if (tile_image == (Image *) NULL)
@@ -169,7 +169,7 @@ ModuleExport void RegisterTILEImage(void)
     *entry;
 
   entry=SetMagickInfo("TILE");
-  entry->decoder=ReadTILEImage;
+  entry->decoder=(DecoderHandler) ReadTILEImage;
   entry->raw=True;
   entry->description=AcquireString("Tile image with a texture");
   entry->module=AcquireString("TILE");

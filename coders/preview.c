@@ -101,7 +101,7 @@ ModuleExport void RegisterPREVIEWImage(void)
     *entry;
 
   entry=SetMagickInfo("PREVIEW");
-  entry->encoder=WritePreviewImage;
+  entry->encoder=(EncoderHandler) WritePreviewImage;
   entry->adjoin=False;
   entry->description=
     AcquireString("Show a preview an image enhancement, effect, or f/x");

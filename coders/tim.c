@@ -428,7 +428,7 @@ ModuleExport void RegisterTIMImage(void)
     *entry;
 
   entry=SetMagickInfo("TIM");
-  entry->decoder=ReadTIMImage;
+  entry->decoder=(DecoderHandler) ReadTIMImage;
   entry->description=AcquireString("PSX TIM");
   entry->module=AcquireString("TIM");
   (void) RegisterMagickInfo(entry);

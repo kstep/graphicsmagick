@@ -288,8 +288,8 @@ ModuleExport void RegisterJBIGImage(void)
 #endif
   entry=SetMagickInfo("BIE");
 #if defined(HasJBIG)
-  entry->decoder=ReadJBIGImage;
-  entry->encoder=WriteJBIGImage;
+  entry->decoder=(DecoderHandler) ReadJBIGImage;
+  entry->encoder=(EncoderHandler) WriteJBIGImage;
 #endif
   entry->adjoin=False;
   entry->description=AcquireString(JBIGDescription);
@@ -299,8 +299,8 @@ ModuleExport void RegisterJBIGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JBG");
 #if defined(HasJBIG)
-  entry->decoder=ReadJBIGImage;
-  entry->encoder=WriteJBIGImage;
+  entry->decoder=(DecoderHandler) ReadJBIGImage;
+  entry->encoder=(EncoderHandler) WriteJBIGImage;
 #endif
   entry->description=AcquireString(JBIGDescription);
   if (*version != '\0')
@@ -309,8 +309,8 @@ ModuleExport void RegisterJBIGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JBIG");
 #if defined(HasJBIG)
-  entry->decoder=ReadJBIGImage;
-  entry->encoder=WriteJBIGImage;
+  entry->decoder=(DecoderHandler) ReadJBIGImage;
+  entry->encoder=(EncoderHandler) WriteJBIGImage;
 #endif
   entry->description=AcquireString(JBIGDescription);
   if (*version != '\0')

@@ -2690,9 +2690,9 @@ ModuleExport void RegisterSVGImage(void)
 #endif
   entry=SetMagickInfo("SVG");
 #if defined(HasXML)
-  entry->decoder=ReadSVGImage;
+  entry->decoder=(DecoderHandler) ReadSVGImage;
 #endif
-  entry->encoder=WriteSVGImage;
+  entry->encoder=(EncoderHandler) WriteSVGImage;
   entry->description=AcquireString("Scalable Vector Gaphics");
   if (*version != '\0')
     entry->version=AcquireString(version);

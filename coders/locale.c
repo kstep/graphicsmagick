@@ -391,8 +391,8 @@ ModuleExport void RegisterLOCALEImage(void)
     *entry;
 
   entry=SetMagickInfo("LOCALE");
-  entry->decoder=ReadLOCALEImage;
-  entry->encoder=WriteLOCALEImage;
+  entry->decoder=(DecoderHandler) ReadLOCALEImage;
+  entry->encoder=(EncoderHandler) WriteLOCALEImage;
   entry->adjoin=False;
   entry->stealth=True;
   entry->description=AcquireString("Locale Message File");

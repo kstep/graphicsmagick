@@ -624,9 +624,9 @@ ModuleExport void RegisterSGIImage(void)
     *entry;
 
   entry=SetMagickInfo("SGI");
-  entry->decoder=ReadSGIImage;
-  entry->encoder=WriteSGIImage;
-  entry->magick=IsSGI;
+  entry->decoder=(DecoderHandler) ReadSGIImage;
+  entry->encoder=(EncoderHandler) WriteSGIImage;
+  entry->magick=(MagickHandler) IsSGI;
   entry->description=AcquireString("Irix RGB image");
   entry->module=AcquireString("SGI");
   (void) RegisterMagickInfo(entry);

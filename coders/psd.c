@@ -1110,9 +1110,9 @@ ModuleExport void RegisterPSDImage(void)
     *entry;
 
   entry=SetMagickInfo("PSD");
-  entry->decoder=ReadPSDImage;
-  entry->encoder=WritePSDImage;
-  entry->magick=IsPSD;
+  entry->decoder=(DecoderHandler) ReadPSDImage;
+  entry->encoder=(EncoderHandler) WritePSDImage;
+  entry->magick=(MagickHandler) IsPSD;
   entry->description=AcquireString("Adobe Photoshop bitmap");
   entry->module=AcquireString("PSD");
   (void) RegisterMagickInfo(entry);

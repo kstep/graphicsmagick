@@ -565,15 +565,15 @@ ModuleExport void RegisterSUNImage(void)
     *entry;
 
   entry=SetMagickInfo("RAS");
-  entry->decoder=ReadSUNImage;
-  entry->encoder=WriteSUNImage;
-  entry->magick=IsSUN;
+  entry->decoder=(DecoderHandler) ReadSUNImage;
+  entry->encoder=(EncoderHandler) WriteSUNImage;
+  entry->magick=(MagickHandler) IsSUN;
   entry->description=AcquireString("SUN Rasterfile");
   entry->module=AcquireString("SUN");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("SUN");
-  entry->decoder=ReadSUNImage;
-  entry->encoder=WriteSUNImage;
+  entry->decoder=(DecoderHandler) ReadSUNImage;
+  entry->encoder=(EncoderHandler) WriteSUNImage;
   entry->description=AcquireString("SUN Rasterfile");
   entry->module=AcquireString("SUN");
   (void) RegisterMagickInfo(entry);

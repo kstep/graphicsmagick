@@ -411,8 +411,8 @@ ModuleExport void RegisterYUVImage(void)
     *entry;
 
   entry=SetMagickInfo("YUV");
-  entry->decoder=ReadYUVImage;
-  entry->encoder=WriteYUVImage;
+  entry->decoder=(DecoderHandler) ReadYUVImage;
+  entry->encoder=(EncoderHandler) WriteYUVImage;
   entry->adjoin=False;
   entry->raw=True;
   entry->description=AcquireString("CCIR 601 4:1:1 or 4:2:2");

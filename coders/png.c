@@ -4357,10 +4357,10 @@ ModuleExport void RegisterPNGImage(void)
   entry=SetMagickInfo("MNG");
   entry->thread_support=False;
 #if defined(HasPNG)
-  entry->decoder=ReadPNGImage;
-  entry->encoder=WritePNGImage;
+  entry->decoder=(DecoderHandler) ReadPNGImage;
+  entry->encoder=(EncoderHandler) WritePNGImage;
 #endif
-  entry->magick=IsMNG;
+  entry->magick=(MagickHandler) IsMNG;
   entry->description=AcquireString("Multiple-image Network Graphics");
   if (*version != '\0')
     entry->version=AcquireString(version);
@@ -4369,10 +4369,10 @@ ModuleExport void RegisterPNGImage(void)
   entry=SetMagickInfo("PNG");
   entry->thread_support=False;
 #if defined(HasPNG)
-  entry->decoder=ReadPNGImage;
-  entry->encoder=WritePNGImage;
+  entry->decoder=(DecoderHandler) ReadPNGImage;
+  entry->encoder=(EncoderHandler) WritePNGImage;
 #endif
-  entry->magick=IsPNG;
+  entry->magick=(MagickHandler) IsPNG;
   entry->adjoin=False;
   entry->description=AcquireString("Portable Network Graphics");
   entry->module=AcquireString("PNG");

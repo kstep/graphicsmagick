@@ -542,16 +542,16 @@ ModuleExport void RegisterPDFImage(void)
     *entry;
 
   entry=SetMagickInfo("EPDF");
-  entry->decoder=ReadPDFImage;
-  entry->encoder=WritePDFImage;
+  entry->decoder=(DecoderHandler) ReadPDFImage;
+  entry->encoder=(EncoderHandler) WritePDFImage;
   entry->adjoin=False;
   entry->description=AcquireString("Encapsulated Portable Document Format");
   entry->module=AcquireString("PDF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PDF");
-  entry->decoder=ReadPDFImage;
-  entry->encoder=WritePDFImage;
-  entry->magick=IsPDF;
+  entry->decoder=(DecoderHandler) ReadPDFImage;
+  entry->encoder=(EncoderHandler) WritePDFImage;
+  entry->magick=(MagickHandler) IsPDF;
   entry->description=AcquireString("Portable Document Format");
   entry->module=AcquireString("PDF");
   (void) RegisterMagickInfo(entry);

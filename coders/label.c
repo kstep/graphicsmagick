@@ -201,7 +201,7 @@ ModuleExport void RegisterLABELImage(void)
     *entry;
 
   entry=SetMagickInfo("LABEL");
-  entry->decoder=ReadLABELImage;
+  entry->decoder=(DecoderHandler) ReadLABELImage;
   entry->adjoin=False;
   entry->description=AcquireString("Image label");
   entry->module=AcquireString("LABEL");

@@ -134,8 +134,8 @@ ModuleExport void RegisterPCLImage(void)
     *entry;
 
   entry=SetMagickInfo("PCL");
-  entry->encoder=WritePCLImage;
-  entry->magick=IsPCL;
+  entry->encoder=(EncoderHandler) WritePCLImage;
+  entry->magick=(MagickHandler) IsPCL;
   entry->adjoin=False;
   entry->description=AcquireString("Page Control Language");
   entry->module=AcquireString("PCL");

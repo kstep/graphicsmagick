@@ -501,9 +501,9 @@ ModuleExport void RegisterXWDImage(void)
     *entry;
 
   entry=SetMagickInfo("XWD");
-  entry->decoder=ReadXWDImage;
-  entry->encoder=WriteXWDImage;
-  entry->magick=IsXWD;
+  entry->decoder=(DecoderHandler) ReadXWDImage;
+  entry->encoder=(EncoderHandler) WriteXWDImage;
+  entry->magick=(MagickHandler) IsXWD;
   entry->adjoin=False;
   entry->description=AcquireString("X Windows system window dump (color)");
   entry->module=AcquireString("XWD");

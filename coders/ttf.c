@@ -283,9 +283,9 @@ ModuleExport void RegisterTTFImage(void)
 #endif
   entry=SetMagickInfo("TTF");
 #if defined(HasTTF)
-  entry->decoder=ReadTTFImage;
+  entry->decoder=(DecoderHandler) ReadTTFImage;
 #endif
-  entry->magick=IsTTF;
+  entry->magick=(MagickHandler) IsTTF;
   entry->adjoin=False;
   entry->description=AcquireString("TrueType font");
   if (*version != '\0')
@@ -294,9 +294,9 @@ ModuleExport void RegisterTTFImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PFA");
 #if defined(HasTTF)
-  entry->decoder=ReadTTFImage;
+  entry->decoder=(DecoderHandler) ReadTTFImage;
 #endif
-  entry->magick=IsPFA;
+  entry->magick=(MagickHandler) IsPFA;
   entry->adjoin=False;
   entry->description=AcquireString("Postscript Type 1 font (ASCII)");
   if (*version != '\0')
@@ -305,9 +305,9 @@ ModuleExport void RegisterTTFImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PFB");
 #if defined(HasTTF)
-  entry->decoder=ReadTTFImage;
+  entry->decoder=(DecoderHandler) ReadTTFImage;
 #endif
-  entry->magick=IsPFA;
+  entry->magick=(MagickHandler) IsPFA;
   entry->adjoin=False;
   entry->description=AcquireString("Postscript Type 1 font (binary)");
   if (*version != '\0')

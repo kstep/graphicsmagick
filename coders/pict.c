@@ -1327,15 +1327,15 @@ ModuleExport void RegisterPICTImage(void)
     *entry;
 
   entry=SetMagickInfo("PCT");
-  entry->decoder=ReadPICTImage;
-  entry->encoder=WritePICTImage;
+  entry->decoder=(DecoderHandler) ReadPICTImage;
+  entry->encoder=(EncoderHandler) WritePICTImage;
   entry->adjoin=False;
   entry->description=AcquireString("Apple Macintosh QuickDraw/PICT");
   entry->module=AcquireString("PICT");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PICT");
-  entry->decoder=ReadPICTImage;
-  entry->encoder=WritePICTImage;
+  entry->decoder=(DecoderHandler) ReadPICTImage;
+  entry->encoder=(EncoderHandler) WritePICTImage;
   entry->adjoin=False;
   entry->description=AcquireString("Apple Macintosh QuickDraw/PICT");
   entry->module=AcquireString("PICT");

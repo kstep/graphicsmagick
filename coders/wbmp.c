@@ -249,8 +249,8 @@ ModuleExport void RegisterWBMPImage(void)
     *entry;
 
   entry=SetMagickInfo("WBMP");
-  entry->decoder=ReadWBMPImage;
-  entry->encoder=WriteWBMPImage;
+  entry->decoder=(DecoderHandler) ReadWBMPImage;
+  entry->encoder=(EncoderHandler) WriteWBMPImage;
   entry->adjoin=False;
   entry->description=AcquireString("Wireless Bitmap (level 0) image");
   entry->module=AcquireString("WBMP");
