@@ -931,10 +931,9 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       green=0.0;
       red=0.0;
       opacity=0.0;
-      j=0;
       for (i=0; i < n; i++)
       {
-        j=((contribution[i].pixel-contribution[0].pixel)*source->columns+x);
+        j=(contribution[i].pixel-contribution[0].pixel)*source->columns+x;
         red+=contribution[i].weight*(p+j)->red;
         green+=contribution[i].weight*(p+j)->green;
         blue+=contribution[i].weight*(p+j)->blue;
