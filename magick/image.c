@@ -5109,8 +5109,8 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
         count=sscanf(geometry,"%lfx%lf",&x_scale,&y_scale);
       if (count == 1)
         y_scale=x_scale;
-      *width=Max((unsigned int) ((x_scale*former_width)/100.0),1);
-      *height=Max((unsigned int) ((y_scale*former_height)/100.0),1);
+      *width=Max((unsigned int) ((x_scale*former_width)/100.0)+0.5,1.0);
+      *height=Max((unsigned int) ((y_scale*former_height)/100.0)+0.5,1.0);
       former_width=(*width);
       former_height=(*height);
     }
@@ -5132,8 +5132,8 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
       if (count == 1)
         y_area=x_area;
       distance=sqrt((double) former_width*former_height);
-      *width=(unsigned int) (former_width/(distance/x_area));
-      *height=(unsigned int) (former_height/(distance/y_area));
+      *width=(unsigned int) ((former_width/(distance/x_area))+0.5);
+      *height=(unsigned int) ((former_height/(distance/y_area))+0.5);
       former_width=(*width);
       former_height=(*height);
     }
@@ -5160,8 +5160,8 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
             else
               scale_factor=(double) *height/former_height;
         }
-      *width=(unsigned int) Max(scale_factor*former_width,1);
-      *height=(unsigned int) Max(scale_factor*former_height,1);
+      *width=(unsigned int) Max(scale_factor*former_width+0.5,1.0);
+      *height=(unsigned int) Max(scale_factor*former_height+0.5,1.0);
     }
   if ((flags & XValue) == 0)
     *width-=(*x) << 1;

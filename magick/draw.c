@@ -3526,7 +3526,8 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
         break;
       if (draw_info->opacity != OpaqueOpacity)
         SetImageOpacity(composite_image,draw_info->opacity);
-      if ((primitive_info[1].point.x != 0) && (primitive_info[1].point.y != 0))
+      if ((primitive_info[1].point.x != composite_image->columns) &&
+          (primitive_info[1].point.y != composite_image->rows))
         {
           char
             geometry[MaxTextExtent];
