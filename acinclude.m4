@@ -679,26 +679,30 @@ if test "x$acx_pthread_ok" = xyes; then
         LIBS="$save_LIBS"
         CFLAGS="$save_CFLAGS"
 
-        PTHREAD_CC="$CC"
-        PTHREAD_CXX="$CXX"
         # More AIX lossage: must compile with cc_r
         case "${host_os}" in
           aix* )
             case "$CC" in
-             *xlc )
-               AC_CHECK_PROG(PTHREAD_CC, xlc_r, xlc_r, ${CC}) ;;
-             *cc )
-               AC_CHECK_PROG(PTHREAD_CC, cc_r, cc_r, ${CC}) ;;
+              *xlc )
+                AC_CHECK_PROG(PTHREAD_CC, xlc_r, xlc_r, ${CC}) ;;
+              *cc )
+                AC_CHECK_PROG(PTHREAD_CC, cc_r, cc_r, ${CC}) ;;
             esac
             case "$CXX" in
               *xlC )
-              AC_CHECK_PROG(PTHREAD_CXX, xlC_r, xlC_r, ${CXX}) ;;
+                AC_CHECK_PROG(PTHREAD_CXX, xlC_r, xlC_r, ${CXX}) ;;
             esac
             ;;
         esac
-else
-        PTHREAD_CC="$CC"
-        PTHREAD_CXX="$CXX"
+fi
+
+if test "${PTHREAD_CC}x" = "x"
+then
+  PTHREAD_CC="$CC"
+fi
+if test "${PTHREAD_CXX}x" = "x"
+then
+  PTHREAD_CXX="$CXX"
 fi
 
 AC_SUBST(PTHREAD_LIBS)
