@@ -1069,7 +1069,7 @@ void Magick::Image::write( const std::string &imageSpec_ )
 // Write image to in-memory BLOB
 void Magick::Image::write ( Blob *blob_ )
 {
-  unsigned int length = 0;
+  unsigned long length = 0;
   void* data = MagickLib::ImageToBlob( _imgRef->options()->imageInfo(),
 				       _imgRef->image(),
 				       &length );

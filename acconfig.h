@@ -209,6 +209,12 @@
 /* Define location of the Postscript support program 'ps' */
 #undef PSDelegate
 
+/* Define location of the ILBM support program 'ilbmtoppm' */
+#undef ILBMDecodeDelegate
+
+/* Define location of the ILBM support program 'ppmtoilbm' */
+#undef ILBMEncodeDelegate
+
 /* Define location of the MPEG support program 'mpeg2decode' */
 #undef MPEGDecodeDelegate
 

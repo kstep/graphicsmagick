@@ -148,6 +148,9 @@ html=>
 http=>
 	GET %m:%i > %o 2>&1
 
+ilbm=>
+	ilbmtoppm %i > %o 
+
 man=>
 	groff -man -Tps %i > %o
 
@@ -169,6 +172,9 @@ pdf<=>ps
 
 pgp=>
 	pgpv -fq %i
+
+pnm<=ilbm
+	ppmtoilbm -24if %i > %o
 
 pnm<=launch
 	gimp %i

@@ -3282,7 +3282,7 @@ ImageToBlob(ref,...)
     SV
       *reference;
 
-    unsigned int
+    unsigned long
       length;
 
     void

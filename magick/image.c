@@ -5226,13 +5226,17 @@ Export int ParseImageGeometry(const char *geometry,int *x,int *y,
     {
       if ((*width+((*x) << 1)) > media_info.width)
         {
-          *width-=(*x) << 1;
-          *height-=(*x) << 1;
+          if (*width > ((*x) << 1))
+            *width-=(*x) << 1;
+          if (*height > ((*y) << 1))
+            *height-=(*y) << 1;
         }
       if ((*height+((*y) << 1)) > media_info.height)
         {
-          *width-=(*y) << 1;
-          *height-=(*y) << 1;
+          if (*width > ((*x) << 1))
+            *width-=(*x) << 1;
+          if (*height > ((*y) << 1))
+            *height-=(*y) << 1;
         }
     }
   return(flags);

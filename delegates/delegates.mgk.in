@@ -148,6 +148,9 @@ html=>
 http=>
 	@WWWDecodeDelegate@ %m:%i > %o 2>&1
 
+ilbm=>
+	@ILBMDecodeDelegate@ %i > %o 
+
 man=>
 	@MANDelegate@ -man -Tps %i > %o
 
@@ -169,6 +172,9 @@ pdf<=>ps
 
 pgp=>
 	@PGPDecodeDelegate@ -fq %i
+
+pnm<=ilbm
+	@ILBMEncodeDelegate@ -24if %i > %o
 
 pnm<=launch
 	@LaunchDelegate@ %i

@@ -822,6 +822,8 @@ AC_PATH_PROG(FIGDecodeDelegate, fig2dev, fig2dev)
 AC_PATH_PROG(GnuplotDecodeDelegate, gnuplot, gnuplot)
 AC_PATH_PROG(HPGLDecodeDelegate, hp2xx, hp2xx)
 AC_PATH_PROG(HTMLDecodeDelegate, html2ps, html2ps)
+AC_PATH_PROG(ILBMDecodeDelegate, ilbmtoppm, ilbmtoppm)
+AC_PATH_PROG(ILBMEncodeDelegate, ppmtoilbm, ppmtoilbm)
 AC_PATH_PROG(LPDelegate, lp, lp)
 AC_PATH_PROG(LZWDecodeDelegate, uncompress, uncompress)
 AC_PATH_PROG(LZWEncodeDelegate, compress, compress)
@@ -851,6 +853,8 @@ MogrifyDelegate=$BIN_DIR/mogrify
 have_fig2dev='no' ; if test "$FIGDecodeDelegate" != 'fig2dev' ; then have_fig2dev='yes' ; fi
 have_gs='no'      ; if test "$PSDelegate" != 'gs' ; then have_gs='yes' ; fi
 have_hp2xx='no'   ; if test "$HPGLDecodeDelegate" != 'hp2xx' ; then have_hp2xx='yes' ; fi
+have_ilbmtoppm='no' ; if test "$ILBMDecodeDelegate" != 'ilbmtoppm' ; then have_ilbmtoppm='yes' ; fi
+have_ppmtoilbm='no' ; if test "$ILBMEncodeDelegate" != 'ppmtoilbm' ; then have_ppmtoilbm='yes' ; fi
 have_mpeg2decode='no' ; if test "$MPEGDecodeDelegate" != 'mpeg2decode' ; then have_mpeg2decode='yes' ; fi
 have_mpeg2encode='no' ; if test "$MPEGEncodeDelegate" != 'mpeg2encode' ; then have_mpeg2encode='yes' ; fi
 have_ra_ppm='no'  ; if test "$RADDecodeDelegate" != 'ra_ppm' ; then have_ra_ppm='yes' ; fi
@@ -872,6 +876,8 @@ then
   GnuplotDecodeDelegate='gnuplot'
   HPGLDecodeDelegate='hp2xx'
   HTMLDecodeDelegate='html2ps'
+  ILBMDecodeDelegate='ilbmtoppm'
+  ILBMEncodeDelegate='ppmtoilbm'
   LPDelegate='lp'
   LZWDecodeDelegate='uncompress'
   LZWEncodeDelegate='compress'
@@ -909,6 +915,8 @@ AC_SUBST(FIGDecodeDelegate)
 AC_SUBST(GnuplotDecodeDelegate)
 AC_SUBST(HPGLDecodeDelegate)
 AC_SUBST(HTMLDecodeDelegate)
+AC_SUBST(ILBMDecodeDelegate)
+AC_SUBST(ILBMEncodeDelegate)
 AC_SUBST(LPDelegate)
 AC_SUBST(LZWDecodeDelegate)
 AC_SUBST(LZWEncodeDelegate)
