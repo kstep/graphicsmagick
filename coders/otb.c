@@ -337,7 +337,7 @@ static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
       quantize_info.colorspace=GRAYColorspace;
       (void) QuantizeImage(&quantize_info,image);
     }
-  polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
+  polarity=Intensity(image->colormap[0]) < (0.5*MaxRGB);
   if (image->colors == 2)
     polarity=Intensity(image->colormap[0]) < Intensity(image->colormap[1]);
   info=0;

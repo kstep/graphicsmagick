@@ -269,7 +269,8 @@ static void ConcatenateImages(int argc,char **argv)
 %  The format of the SnapshotImages method is:
 %
 %      unsigned int SnapshotImages(const ImageInfo *image_info,const int argc,
-%        char **argv,Image **image,OptionInfo *option_info)
+%        char **argv,Image **image,OptionInfo *option_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -286,14 +287,13 @@ static void ConcatenateImages(int argc,char **argv)
 %    o option_info: A pointer to a structure containing a set of flags that
 %      control how the images are written.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
 static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
-  char **argv,Image **image,OptionInfo *option_info)
+  char **argv,Image **image,OptionInfo *option_info,ExceptionInfo *exception)
 {
-  ExceptionInfo
-    exception;
-
   long
     scene;
 
@@ -322,7 +322,7 @@ static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
       /*
         Append an image sequence.
       */
-      append_image=AppendImages(*image,option_info->append == 1,&exception);
+      append_image=AppendImages(*image,option_info->append == 1,exception);
       if (append_image != (Image *) NULL)
         {
           DestroyImages(*image);
@@ -337,7 +337,7 @@ static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
       /*
         Average an image sequence.
       */
-      average_image=AverageImages(*image,&exception);
+      average_image=AverageImages(*image,exception);
       if (average_image != (Image *) NULL)
         {
           DestroyImages(*image);
@@ -352,7 +352,7 @@ static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
       /*
         Coalesce an image sequence.
       */
-      coalesce_image=CoalesceImages(*image,&exception);
+      coalesce_image=CoalesceImages(*image,exception);
       if (coalesce_image != (Image *) NULL)
         {
           DestroyImages(*image);
@@ -367,7 +367,7 @@ static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
       /*
         Deconstruct an image sequence.
       */
-      deconstruct_image=DeconstructImages(*image,&exception);
+      deconstruct_image=DeconstructImages(*image,exception);
       if (deconstruct_image != (Image *) NULL)
         {
           DestroyImages(*image);
@@ -382,7 +382,7 @@ static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
       /*
         Flatten an image sequence.
       */
-      flatten_image=FlattenImages(*image,&exception);
+      flatten_image=FlattenImages(*image,exception);
       if (flatten_image != (Image *) NULL)
         {
           DestroyImages(*image);
@@ -397,7 +397,7 @@ static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
       /*
         Morph an image sequence.
       */
-      morph_image=MorphImages(*image,option_info->morph,&exception);
+      morph_image=MorphImages(*image,option_info->morph,exception);
       if (morph_image != (Image *) NULL)
         {
           DestroyImages(*image);
@@ -412,7 +412,7 @@ static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
       /*
         Create an image mosaic.
       */
-      mosaic_image=MosaicImages(*image,&exception);
+      mosaic_image=MosaicImages(*image,exception);
       if (mosaic_image != (Image *) NULL)
         {
           DestroyImages(*image);
@@ -1943,7 +1943,7 @@ int main(int argc,char **argv)
                         MagickError(OptionError,"Missing an image file name",
                           (char *) NULL);
                       status=SnapshotImages(clone_info,i-j+2,argv+j-1,
-                        &clone_image,&option_info);
+                        &clone_image,&option_info,&exception);
                       DestroyImages(clone_image);
                       DestroyImageInfo(clone_info);
                       j=i+1;
@@ -1962,7 +1962,7 @@ int main(int argc,char **argv)
                           MagickError(OptionError,"Missing source image",
                             (char *) NULL);
                         status=SnapshotImages(image_info,i-j+2,argv+j-1,&image,
-                          &option_info);
+                          &option_info,&exception);
                         j=i+1;
                       }
                   }
@@ -2169,7 +2169,8 @@ int main(int argc,char **argv)
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  status=SnapshotImages(image_info,argc-j+1,argv+j-1,&image,&option_info);
+  status=SnapshotImages(image_info,argc-j+1,argv+j-1,&image,&option_info,
+    &exception);
   DestroyImages(image);
   DestroyImageInfo(image_info);
   if (LocaleCompare("-convert",argv[0]) == 0)
