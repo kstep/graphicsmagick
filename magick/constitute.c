@@ -2533,3 +2533,70 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
       "An error has occurred writing to file",image->filename);
   return(status);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e I m a g e s                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteImages() writes an image sequence.
+%
+%  The format of the WriteImages method is:
+%
+%      unsigned int WriteImages(const ImageInfo *image_info,Image *image,
+%        const char *filename,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o images: The image list.
+%
+%    o filename: The image filename.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport unsigned int WriteImages(ImageInfo *image_info,Image *image,
+  const char *filename,ExceptionInfo *exception)
+{
+  register Image
+    *p;
+
+  unsigned int
+    status;
+
+  /*
+    Write converted images.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  if (filename != (const char *) NULL)
+    {
+      (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
+      for (p=image; p != (Image *) NULL; p=p->next)
+        (void) strncpy(p->filename,filename,MaxTextExtent-1);
+    }
+  (void) SetImageInfo(image_info,True,exception);
+  status=True;
+  for (p=image; p != (Image *) NULL; p=p->next)
+  {
+    status&=WriteImage(image_info,p);
+    (void) CatchImageException(p);
+    if (image_info->adjoin)
+      break;
+  }
+  if (image_info->verbose)
+    DescribeImage(image,stderr,False);
+  return(status);
+}

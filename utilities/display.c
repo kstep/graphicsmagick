@@ -1407,8 +1407,8 @@ int main(int argc,char **argv)
                   (void) CatchImageException(nexus);
                   if (first_scene != last_scene)
                     image->scene=scene;
-                  next=XDisplayImage(display,&resource_info,argv,argc,
-                    &nexus,&state);
+                  next=XDisplayImage(display,&resource_info,argv,argc,&nexus,
+                    &state);
                   if ((next == (Image *) NULL) &&
                       (nexus->next != (Image *) NULL))
                     {

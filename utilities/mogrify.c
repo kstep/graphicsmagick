@@ -364,10 +364,8 @@ static unsigned int MogrifyUtility(int argc,char **argv)
     *image;
 
   long
+	  j,
     x;
-
-  register Image
-    *p;
 
   register long
     i;
@@ -1685,6 +1683,7 @@ static unsigned int MogrifyUtility(int argc,char **argv)
         /*
           Option is a file name: begin by reading image from specified file.
         */
+        j=i+1;
         (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
         image=ReadImage(image_info,&exception);
         if (exception.severity != UndefinedException)
@@ -1718,7 +1717,7 @@ static unsigned int MogrifyUtility(int argc,char **argv)
         /*
           Transmogrify image as defined by the image processing options.
         */
-        status&=MogrifyImages(image_info,i,argv,&image);
+        status&=MogrifyImages(image_info,i-j+2,argv+j-1,&image);
         (void) CatchImageException(image);
         if (global_colormap)
           (void) MapImages(image,(Image *) NULL,image_info->dither);
@@ -1740,18 +1739,7 @@ static unsigned int MogrifyUtility(int argc,char **argv)
                       filename);
                 }
             }
-        for (p=image; p != (Image *) NULL; p=p->next)
-          (void) strncpy(p->filename,image->filename,MaxTextExtent-1);
-        (void) SetImageInfo(image_info,True,&image->exception);
-        for (p=image; p != (Image *) NULL; p=p->next)
-        {
-          status&=WriteImage(image_info,p);
-          (void) CatchImageException(p);
-          if (image_info->adjoin)
-            break;
-        }
-        if (image_info->verbose)
-          DescribeImage(image,stderr,False);
+        status&=WriteImages(image_info,image,image->filename,&image->exception);
         if ((format == (char *) NULL) && (status != False))
           if (LocaleCompare(image_info->filename,"-") != 0)
             {

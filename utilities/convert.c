@@ -213,7 +213,7 @@ static void ConcatenateImages(int argc,char **argv)
     *output;
 
   int
-	  c;
+    c;
 
   register long
     i;
@@ -239,78 +239,6 @@ static void ConcatenateImages(int argc,char **argv)
   }
   (void) fclose(output);
   Exit(0);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C o n v e r t I m a g e L i s t                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ConvertImageList performs all the steps needed to take the images
-%  that have been read and send them to an output file.
-%
-%  The format of the ConvertImageList method is:
-%
-%      unsigned int ConvertImageList(const ImageInfo *image_info,Image **image,
-%        const int argc,char **argv,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image_info: The image info.
-%
-%    o images: The image.
-%
-%    o argc: The number of elements in the argument vector.
-%
-%    o argv: A text array containing the command line arguments.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-%
-*/
-static unsigned int ConvertImageList(ImageInfo *image_info,Image **image,
-  const int argc,char **argv,ExceptionInfo *exception)
-{
-  register Image
-    *p;
-
-  unsigned int
-    status;
-
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(image != (Image **) NULL);
-  assert((*image)->signature == MagickSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  if (argc < 2)
-    return(False);
-  while ((*image)->previous != (Image *) NULL)
-    (*image)=(*image)->previous;
-  status=MogrifyImages(image_info,argc-1,argv,image);
-  (void) CatchImageException(*image);
-  /*
-    Write converted images.
-  */
-  (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
-  for (p=(*image); p != (Image *) NULL; p=p->next)
-    (void) strncpy(p->filename,argv[argc-1],MaxTextExtent-1);
-  (void) SetImageInfo(image_info,True,exception);
-  for (p=(*image); p != (Image *) NULL; p=p->next)
-  {
-    status&=WriteImage(image_info,p);
-    (void) CatchImageException(p);
-    if (image_info->adjoin)
-      break;
-  }
-  if (image_info->verbose)
-    DescribeImage(*image,stderr,False);
-  return(status);
 }
 
 /*
@@ -574,6 +502,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
         status&=next_image != (Image *) NULL;
         if (next_image == (Image *) NULL)
           continue;
+        status&=MogrifyImages(image_info,i-j+2,argv+j-1,&next_image);
         (void) CatchImageException(next_image);
         if (image == (Image *) NULL)
           image=next_image;
@@ -871,6 +800,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
                     *clone_info;
 
                   i++;
+                  j=i+1;
                   if (i == argc)
                     MagickError(OptionError,"Missing output filename",
                       option);
@@ -882,9 +812,10 @@ static unsigned int ConvertUtility(int argc,char **argv)
                   if (clone_image == (Image *) NULL)
                     MagickError(OptionError,"Missing an image file name",
                       (char *) NULL);
-                  status&=MogrifyImages(image_info,i,argv,&clone_image);
-                  status&=ConvertImageList(clone_info,&clone_image,i-j+2,
-                    argv+j-1,&exception);
+                  status&=MogrifyImages(image_info,i-j+2,argv+j-1,&clone_image);
+                  (void) CatchImageException(clone_image);
+                  status&=WriteImages(clone_info,clone_image,argv[i],
+                    &exception);
                   if (*option == '-')
                     DestroyImageList(clone_image);
                   else
@@ -893,7 +824,6 @@ static unsigned int ConvertUtility(int argc,char **argv)
                       image=clone_image;
                     }
                   DestroyImageInfo(clone_info);
-                  j=i+1;
                 }
               break;
             }
@@ -1702,16 +1632,15 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
+                  j=i+1;
                   if (i == argc)
-                    MagickError(OptionError,"Missing output filename",
-                      option);
+                    MagickError(OptionError,"Missing output filename",option);
                   if (image == (Image *) NULL)
                     MagickError(OptionError,"Missing source image",
                       (char *) NULL);
-                  status&=MogrifyImages(image_info,i,argv,&image);
-                  status&=ConvertImageList(image_info,&image,i-j+2,argv+j-1,
-                    &exception);
-                  j=i+1;
+                  status&=MogrifyImages(image_info,i-j+2,argv+j-1,&image);
+                  (void) CatchImageException(image);
+                  status&=WriteImages(image_info,image,argv[i],&exception);
                 }
               break;
             }
@@ -2054,8 +1983,9 @@ static unsigned int ConvertUtility(int argc,char **argv)
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  status&=MogrifyImages(image_info,i,argv,&image);
-  status&=ConvertImageList(image_info,&image,argc-j+1,argv+j-1,&exception);
+  status&=MogrifyImages(image_info,i-j+2,argv+j-1,&image);
+  (void) CatchImageException(image);
+  status&=WriteImages(image_info,image,argv[argc-1],&exception);
   DestroyImageList(image);
   DestroyImageInfo(image_info);
   return(status);

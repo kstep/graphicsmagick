@@ -304,7 +304,7 @@ static unsigned int MontageUtility(int argc,char **argv)
 
   long
     first_scene,
-    j,
+		j,
     last_scene,
     scene,
     x;
@@ -343,7 +343,7 @@ static unsigned int MontageUtility(int argc,char **argv)
   /*
     Parse command line.
   */
-  j=0;
+	j=0;
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];
@@ -1218,7 +1218,7 @@ static unsigned int MontageUtility(int argc,char **argv)
         /*
           Option is a file name: begin by reading image from specified file.
         */
-        j=i;
+        j=i+1;
         (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
         if (first_scene != last_scene)
           {
@@ -1245,7 +1245,7 @@ static unsigned int MontageUtility(int argc,char **argv)
         status&=next_image != (Image *) NULL;
         if (next_image == (Image *) NULL)
           continue;
-        status&=MogrifyImages(image_info,i,argv,&next_image);
+        status&=MogrifyImages(image_info,i-j+2,argv+j-1,&next_image);
         (void) CatchImageException(next_image);
         if (image == (Image *) NULL)
           image=next_image;
@@ -1264,11 +1264,11 @@ static unsigned int MontageUtility(int argc,char **argv)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  status&=MogrifyImages(image_info,argc-j-1,argv+j,&image);
-  (void) CatchImageException(image);
   /*
     Create composite image.
   */
+  status&=MogrifyImages(image_info,i-j+2,argv+j-1,&image);
+  (void) CatchImageException(image);
   (void) strncpy(montage_info->filename,argv[argc-1],MaxTextExtent-1);
   montage_image=MontageImages(image,montage_info,&exception);
   if (montage_image == (Image *) NULL)
@@ -1304,17 +1304,8 @@ static unsigned int MontageUtility(int argc,char **argv)
       }
     (void) strncpy(p->filename,argv[argc-1],MaxTextExtent-1);
   }
-  (void) SetImageInfo(image_info,True,&image->exception);
-  for (p=montage_image; p != (Image *) NULL; p=p->next)
-  {
-    status&=WriteImage(image_info,p);
-    (void) CatchImageException(p);
-    if (image_info->adjoin)
-      break;
-  }
   (void) strncpy(montage_image->magick_filename,argv[argc-1],MaxTextExtent-1);
-  if (image_info->verbose)
-    DescribeImage(montage_image,stderr,False);
+  status&=WriteImages(image_info,montage_image,argv[argc-1],&image->exception);
   DestroyImageList(montage_image);
   DestroyMontageInfo(montage_info);
   DestroyImageInfo(image_info);

@@ -251,9 +251,6 @@ int main(int argc,char **argv)
   QuantizeInfo
     *quantize_info;
 
-  register Image
-    *p;
-
   register long
     i;
 
@@ -969,16 +966,7 @@ int main(int argc,char **argv)
     image=image->previous;
   status&=MogrifyImages(image_info,argc-1,argv,&image);
   (void) CatchImageException(image);
-  (void) SetImageInfo(image_info,True,&image->exception);
-  for (p=image; p != (Image *) NULL; p=p->next)
-  {
-    status&=WriteImage(image_info,p);
-    (void) CatchImageException(p);
-    if (image_info->adjoin)
-      break;
-  }
-  if (image_info->verbose)
-    DescribeImage(image,stderr,False);
+  status&=WriteImages(image_info,image,argv[argc-1],&image->exception);
   DestroyImageList(image);
   DestroyMagick();
   LiberateMemory((void **) &argv);
