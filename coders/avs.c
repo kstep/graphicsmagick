@@ -165,7 +165,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (int) image->columns; x++)
       {
-        q->opacity=MaxRGB-UpScale(*p++);
+        q->opacity=UpScale(MaxRGB-*p++);
         q->red=UpScale(*p++);
         q->green=UpScale(*p++);
         q->blue=UpScale(*p++);
@@ -350,7 +350,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
       q=pixels;
       for (x=0; x < (int) image->columns; x++)
       {
-        *q++=MaxRGB-DownScale(image->matte ? p->opacity : OpaqueOpacity);
+        *q++=DownScale(MaxRGB-image->matte ? p->opacity : OpaqueOpacity);
         *q++=DownScale(p->red);
         *q++=DownScale(p->green);
         *q++=DownScale(p->blue);

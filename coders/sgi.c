@@ -482,7 +482,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q->red=UpScale(*p);
               q->green=UpScale(*(p+1));
               q->blue=UpScale(*(p+2));
-              q->opacity=MaxRGB-UpScale(*(p+3));
+              q->opacity=UpScale(MaxRGB-*(p+3));
               p+=4;
               q++;
             }
@@ -778,7 +778,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         iris_info.depth=1;
       }
     iris_info.minimum_value=0;
-    iris_info.maximum_value=MaxRGB;
+    iris_info.maximum_value=DownScale(MaxRGB);
     for (i=0; i < (int) sizeof(iris_info.filler); i++)
       iris_info.filler[i]=0;
     /*
@@ -816,7 +816,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         *q++=DownScale(p->red);
         *q++=DownScale(p->green);
         *q++=DownScale(p->blue);
-        *q++=MaxRGB-DownScale(p->opacity);
+        *q++=DownScale(MaxRGB-p->opacity);
         p++;
       }
       if (image->previous == (Image *) NULL)

@@ -556,7 +556,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->green=UpScale(*r++);
             q->blue=UpScale(*r++);
             if (image->matte)
-              q->opacity=MaxRGB-UpScale(*r++);
+              q->opacity=UpScale(MaxRGB-*r++);
           }
         q++;
       }
@@ -881,7 +881,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
                 case 3:
                 default:
                 {
-                  *q++=MaxRGB-DownScale(p->opacity);
+                  *q++=DownScale(MaxRGB-p->opacity);
                   break;
                 }
               }

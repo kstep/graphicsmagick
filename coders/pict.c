@@ -1064,7 +1064,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                       }
                     else
                       {
-                        q->opacity=MaxRGB-UpScale(*p);
+                        q->opacity=UpScale(MaxRGB-*p);
                         q->red=UpScale(*(p+tile_image->columns));
                         q->green=UpScale(*(p+2*tile_image->columns));
                         q->blue=UpScale(*(p+3*tile_image->columns));
@@ -1595,7 +1595,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
           *green++=DownScale(p->green);
           *blue++=DownScale(p->blue);
           if (image->matte)
-            *opacity++=MaxRGB-DownScale(p->opacity);
+            *opacity++=DownScale(MaxRGB-p->opacity);
           p++;
         }
         count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);

@@ -423,7 +423,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->green=UpScale(*p++);
             q->blue=UpScale(*p++);
             if (image->matte)
-              q->opacity=MaxRGB-UpScale(*p++);
+              q->opacity=UpScale(MaxRGB-*p++);
             q++;
           }
           if (!SyncImagePixels(image))
@@ -500,7 +500,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 q->red=image->colormap[*p++].red;
                 q->green=image->colormap[*p++].green;
                 q->blue=image->colormap[*p++].blue;
-                q->opacity=MaxRGB-UpScale(*p++);
+                q->opacity=UpScale(MaxRGB-*p++);
                 q++;
               }
               if (!SyncImagePixels(image))

@@ -411,7 +411,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            *q++=MaxRGB-DownScale(p->opacity);
+            *q++=DownScale(MaxRGB-p->opacity);
             *q++=DownScale(p->red);
             *q++=DownScale(p->green);
             *q++=DownScale(p->blue);
@@ -450,7 +450,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            Ascii85Encode(image,MaxRGB-DownScale(p->opacity));
+            Ascii85Encode(image,DownScale(MaxRGB-p->opacity));
             Ascii85Encode(image,DownScale(p->red));
             Ascii85Encode(image,DownScale(p->green));
             Ascii85Encode(image,DownScale(p->blue));
