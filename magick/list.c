@@ -193,12 +193,6 @@ MagickExport unsigned int DeleteImageList(Image *images,const long offset)
 %
 %
 */
-
-MagickExport void DestroyImages(Image *image)
-{
-  DestroyImageList(image);
-}
-
 MagickExport void DestroyImageList(Image *images)
 {
   Image
