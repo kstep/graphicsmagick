@@ -1,3 +1,10 @@
+2004-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/nt_base.c (NTGhostscriptFonts): Properly determine
+	Ghostscript font location for Ghostscript 8.0 and later.
+	* GraphicsMagick.spec.in: Install *-config scripts with mode 755
+	rather than default 644.
+
 2004-05-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/module.c (InitializeModuleSearchPath): Evaluate and cache

@@ -15,7 +15,7 @@ Version: @PACKAGE_VERSION@@PACKAGE_VERSION_ADDENDUM@
 # we make a package and find it to be slightly broken and need to make
 # it again, the next package would be release number 2).
 Release: 1
-License: freeware
+License: MIT
 # This is a group that the package belongs to in a higher level
 # package tool or the Red Hat installer.
 Group: X11/Applications/Graphics
@@ -159,12 +159,6 @@ make DESTDIR=$RPM_BUILD_ROOT install
 rm -f `find $RPM_BUILD_ROOT%{_libdir}/perl*/ -name perllocal.pod -type f`
 rm -f `find $RPM_BUILD_ROOT%{_libdir}/perl*/ -name .packlist -type f`
 %endif
-# These have incorrect permissions set.
-chmod 655 $RPM_BUILD_ROOT%{_bindir}/%{name}-config
-chmod 655 $RPM_BUILD_ROOT%{_bindir}/%{name}Wand-config
-%if %{cplus}
-chmod 655 $RPM_BUILD_ROOT%{_bindir}/%{name}++-config
-%endif
 
 %post -p /sbin/ldconfig
 
@@ -175,7 +169,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644, root, root, 755)
-%doc README.txt NEWS
+%doc ChangeLog Copyright.txt README.txt NEWS
 %doc %{_datadir}/%{name}-%{base_version}
 %{_libdir}/lib%{name}.so.*
 %{_libdir}/lib%{name}Wand.so.*
@@ -202,7 +196,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/%{name}.pc
 %{_libdir}/pkgconfig/%{name}Wand.pc
 %{_bindir}/%{name}-config
+%attr(755, root, root) %{_bindir}/%{name}-config
 %{_bindir}/%{name}Wand-config
+%attr(755, root, root) %{_bindir}/%{name}Wand-config
 %attr(644, root, man) %{_mandir}/man1/%{name}-config.1.gz
 %attr(644, root, man) %{_mandir}/man1/%{name}Wand-config.1.gz
 
@@ -230,10 +226,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib%{name}++.so
 %{_libdir}/pkgconfig/%{name}++.pc
 %{_bindir}/%{name}++-config
+%attr(755, root, root) %{_bindir}/%{name}++-config
 %attr(644, root, man) %{_mandir}/man1/%{name}++-config.1.gz
 %endif
 
 %changelog
+* Wed Jun 02 2004 Bob Friesenhahn <bfriesen@graphicsmagick.org> 1.2
+- Install *-config scripts with mode 755 rather than default 644.
+
 * Sat Feb 21 2004 Bob Friesenhahn <bfriesen@graphicsmagick.org> 1.1-1
 - Added some comments.
 - Eliminated DATE variable.
@@ -241,6 +241,7 @@ rm -rf $RPM_BUILD_ROOT
 - Don't remove /usr/include/magick or %{_datadir}/%{name} since they
   are not created anymore.
 - Fixed location of .mgk files.
+
 * Mon Jul 28 2003 Bob Friesenhahn <bfriesen@graphicsmagick.org> 1.1-1
 - Changed default quantum depth to 8 bits.
 

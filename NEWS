@@ -1,4 +1,7 @@
-This file was last updated on April 10, 2004.
+This file was last updated on May 30, 2004.
+
+Please note that this file records news for the associated development
+branch and that each development branch has its own NEWS file.
 
 Significant changes associated with GraphicsMagick 1.2 (not yet released)
 
@@ -9,6 +12,10 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     returns a success error code to GraphicsMagick. Verify that
     Ghostscript has updated the output file before attempting to use it.
     * Fixed a configure script syntax error when testing for trio.
+    * When requesting a list of formats, all of the modules in the module
+    search path are considered. Previously only the modules in the same
+    directory as the LOGO module were listed.
+    * Ensure that an image clip mask is respected by the negate algorithm.
 
   Utilities enhancements:
     * If gm is executed under a traditional alternate name (e.g.
@@ -18,6 +25,19 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     compatibility.
     * Provide the --enable-magick-compat option when configuring to install
     ImageMagick utilities compatibility links.
+    * The display program now supports the +progress option to disable any
+    visual progress indication (and hourglass cursor) while loading images.
+
+  Performance improvments:
+
+    * The DispatchImage() and ConstituteImage() functions incorporate special
+    case code for BGR, BGRO, BGRP, RGB, RGBO, and I formats (8 bit only) in
+    order to improve performance dramatically.
+
+  Windows-specific improvements:
+
+    * For the MinGW and Cygwin builds, the Magick++ library is forced to
+    build as a static library since otherwise C++ exceptions don't work.
 
 Significant changes associated with GraphicsMagick 1.1 (Released April 4, 2004)
 

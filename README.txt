@@ -124,7 +124,7 @@ MAGICK DELEGATES
       include/freetype/config/ftoption.h will produce better glyph
       renderings but may violate an Apple patent.
 
-    o GraphicsMagick requires Ghostscript software (version 7.05 recommended)
+    o GraphicsMagick requires Ghostscript software (version 7.07 recommended)
       available from
 
         http://www.cs.wisc.edu/~ghost/
