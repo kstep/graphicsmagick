@@ -268,47 +268,49 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
           LiberateMemory((void **) &decode);
           return((unsigned char *) NULL);
         }
-      return(decode);
     }
-  p++;
-  switch (state)
-  {
-    case 0:
-    case 1:
+  else
     {
-      /*
-        Invalid '=' character.
-      */
-      LiberateMemory((void **) &decode);
-      return((unsigned char *) NULL);
-    }
-    case 2:
-    {
-      for ( ; *p != '\0'; p++)
-        if (!isspace((int) *p))
-          break;
-      if (*p != '=')
-        {
-          LiberateMemory((void **) &decode);
-          return((unsigned char *) NULL);
-        }
       p++;
-    }
-    case 3:
-    {
-      for ( ; *p != '\0'; p++)
-        if (!isspace((int) *p))
-          {
-            LiberateMemory((void **) &decode);
-            return((unsigned char *) NULL);
-          }
-      if (decode[i] != 0)
+      switch (state)
+      {
+        case 0:
+        case 1:
         {
+          /*
+            Invalid '=' character.
+          */
           LiberateMemory((void **) &decode);
           return((unsigned char *) NULL);
         }
+        case 2:
+        {
+          for ( ; *p != '\0'; p++)
+            if (!isspace((int) *p))
+              break;
+          if (*p != '=')
+            {
+              LiberateMemory((void **) &decode);
+              return((unsigned char *) NULL);
+            }
+          p++;
+        }
+        case 3:
+        {
+          for ( ; *p != '\0'; p++)
+            if (!isspace((int) *p))
+              {
+                LiberateMemory((void **) &decode);
+                return((unsigned char *) NULL);
+              }
+          if (decode[i] != 0)
+            {
+              LiberateMemory((void **) &decode);
+              return((unsigned char *) NULL);
+            }
+        }
+      }
     }
-  }
   ReacquireMemory((void **) &decode,i);
   *length=i;
   return(decode);
@@ -347,10 +349,7 @@ MagickExport char *Base64Encode(const unsigned char *source,const size_t length)
   char
     *encode;
 
-  int
-    j;
-
-  register const char
+  register const unsigned char
     *p;
 
   register size_t
@@ -359,45 +358,37 @@ MagickExport char *Base64Encode(const unsigned char *source,const size_t length)
   size_t
     remainder;
 
-  unsigned char
-    input[3],
-    output[4];
-
   assert(source != (unsigned char *) NULL);
   encode=(char *) AcquireMemory(4*length+1);
   if (encode == (char *) NULL)
     return((char *) NULL);
   i=0;
-  p=source;
-  for (remainder=length; remainder >= 2; remainder-=3)
+  for (p=source; p < (source+length-2); p+=3)
   {
-    input[0]=(*p++);
-    input[1]=(*p++);
-    input[2]=(*p++);
-    output[0]=input[0] >> 2;
-    output[1]=((input[0] & 0x03) << 4)+(input[1] >> 4);
-    output[2]=((input[1] & 0x0f) << 2)+(input[2] >> 6);
-    output[3]=input[2] & 0x3f;
-    encode[i++]=Base64[output[0]];
-    encode[i++]=Base64[output[1]];
-    encode[i++]=Base64[output[2]];
-    encode[i++]=Base64[output[3]];
+    encode[i++]=Base64[*p >> 2];
+    encode[i++]=Base64[((*p & 0x03) << 4)+(*(p+1) >> 4)];
+    encode[i++]=Base64[((*(p+1) & 0x0f) << 2)+(*(p+2) >> 6)];
+    encode[i++]=Base64[*(p+2) & 0x3f];
   }
+  remainder=length % 3;
   if (remainder != 0)
     {
+      int
+        j;
+
+      unsigned char
+        code[3];
+
       for (j=0; j < remainder; j++)
-        input[j]=(*p++);
+        code[j]=(*p++);
       for ( ; j < 2; j++)
-        input[j]='\0';
-      output[0]=input[0] >> 2;
-      output[1]=((input[0] & 0x03) << 4)+(input[1] >> 4);
-      output[2]=((input[1] & 0x0f) << 2)+(input[2] >> 6);
-      encode[i++]=Base64[output[0]];
-      encode[i++]=Base64[output[1]];
+        code[j]='\0';
+      encode[i++]=Base64[code[0] >> 2];
+      encode[i++]=Base64[((code[0] & 0x03) << 4)+(code[1] >> 4)];
       if (remainder == 1)
         encode[i++]='=';
       else
-        encode[i++]=Base64[output[2]];
+        encode[i++]=Base64[((code[1] & 0x0f) << 2)+(code[2] >> 6)];
       encode[i++]='=';
     }
   encode[i++]='\0';
