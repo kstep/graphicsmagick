@@ -1033,7 +1033,6 @@ static void wmf_magick_draw_text (wmfAPI* API,
   if (out == 0) return;
 
   font = WMF_DC_FONT (draw_text->dc);
-/*   printf("WMF_FONT_NAME: %s\n", WMF_FONT_NAME(font)); */
 
   /* Save graphic context */
   wmf_stream_printf (API,out,"push graphic-context\n");
@@ -1058,10 +1057,7 @@ static void wmf_magick_draw_text (wmfAPI* API,
 
   /* Output font file name */
   font_name = WMF_FONT_PSNAME (font);
-/*   printf("WMF_FONT_PSNAME: %s\n", font_name); */
   font_path = wmf_ipa_font_lookup (API,font_name);
-/*   if (font_path) */
-/*     printf("Font path: %s\n", font_path); */
   wmf_stream_printf (API,out,"font '%s'\n",font_name);
 
   /* Set underline */
@@ -1075,6 +1071,7 @@ static void wmf_magick_draw_text (wmfAPI* API,
   /* Set font size */
   pointsize = ceil(abs(WMF_FONT_HEIGHT(font)*draw_text->dc->pixel_height));
   
+/*   printf("WMF_FONT_NAME:        = %s\n", WMF_FONT_NAME(font)); */
 /*   printf("WMF_FONT_HEIGHT       = %i\n", (int)WMF_FONT_HEIGHT(font)); */
 /*   printf("WMF_FONT_WIDTH        = %i\n", (int)WMF_FONT_WIDTH(font)); */
 /*   printf("pointsize             = %i\n", (int)pointsize); */
@@ -1648,24 +1645,26 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
   image_height = ceil(((double)wmf_height/units_per_inch)*resolution_y);
 
   /* Compute scale factors */
-/*   ddata->scale_x = ((double)image_width)/(ddata->bbox.BR.x - ddata->bbox.TL.x); */
-/*   ddata->scale_y = ((double)image_height)/(ddata->bbox.BR.y - ddata->bbox.TL.y); */
-  ddata->scale_x = ((ddata->bbox.BR.x - ddata->bbox.TL.x)/(double)wmf_width);
-  ddata->scale_y = ((ddata->bbox.BR.y - ddata->bbox.TL.y)/(double)wmf_height);
+  ddata->scale_x = ((double)image_width)/(ddata->bbox.BR.x - ddata->bbox.TL.x);
+  ddata->scale_y = ((double)image_height)/(ddata->bbox.BR.y - ddata->bbox.TL.y);
 
   /* Compute translation to place bounding box at image origin */
   ddata->translate_x = -(ddata->bbox.TL.x);
   ddata->translate_y = -(ddata->bbox.TL.y);
 
-/*   printf("Size in metafile units: %.10gx%.10g\n", wmf_width, wmf_height); */
-/*   printf("Metafile units/inch:    %.10g\n", ddata->units_per_inch); */
-/*   printf("Bounding Box:           %.10g,%.10g %.10g,%.10g\n", bounding_box.TL.x, bounding_box.TL.y, */
-/*          bounding_box.BR.x,bounding_box.BR.y); */
-/*   printf("Output resolution:      %.10gx%.10g\n", resolution_x, resolution_y); */
-/*   printf("Image size:             %ix%i\n", image_width, image_height); */
-/*   printf("Scale factor:           %.10g,%.10g\n", ddata->scale_x, ddata->scale_y ); */
-/*   printf("Translation:            %.10g,%.10g\n", ddata->translate_x, ddata->translate_y ); */
-/*   printf("Pixel width:            %.10g\n", API->((wmfUserData_t*)user_data)->dc->pixel_width; */
+  /*   printf("Size in metafile units: %.10gx%.10g\n", wmf_width, wmf_height); */
+  /*   printf("Metafile units/inch:    %.10g\n", ddata->units_per_inch); */
+  /*   printf("Bounding Box:           %.10g,%.10g %.10g,%.10g\n", bounding_box.TL.x, bounding_box.TL.y, */
+  /*          bounding_box.BR.x,bounding_box.BR.y); */
+  /*   printf("Output resolution:      %.10gx%.10g\n", resolution_x, resolution_y); */
+  /*   printf("Image size:             %ix%i\n", image_width, image_height); */
+  /*   printf("Scale factor:           %.10g,%.10g\n", ddata->scale_x, ddata->scale_y ); */
+  /*   printf("Translation:            %.10g,%.10g\n", ddata->translate_x, ddata->translate_y ); */
+/*   { */
+
+/*     wmfPlayer_t* P = (wmfPlayer_t*) API->player_data; */
+/*     printf("Pixel width:            %.10g\n", P->dc->pixel_width); */
+/*   } */
 
   /*
    * Create canvas image
