@@ -226,7 +226,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
 %  The format of the AllocateImageColormap method is:
 %
 %      unsigned int AllocateImageColormap(Image *image,
-%        const unsigned int colors)
+%        const unsigned long colors)
 %
 %  A description of each parameter follows:
 %
@@ -237,9 +237,9 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
 %
 */
 MagickExport unsigned int AllocateImageColormap(Image *image,
-  const unsigned int colors)
+  const unsigned long colors)
 {
-  register int
+  register size_t
     i;
 
   size_t
@@ -260,7 +260,7 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
     ReacquireMemory((void **) &image->colormap,length);
   if (image->colormap == (PixelPacket *) NULL)
     return(False);
-  for (i=0; i < (int) image->colors; i++)
+  for (i=0; i < image->colors; i++)
   {
     image->colormap[i].red=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
     image->colormap[i].green=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
@@ -438,7 +438,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
   register Image
     *next;
 
-  register int
+  register size_t
     i;
 
   unsigned int
@@ -532,7 +532,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
             global_colormap=False;
             break;
           }
-        for (i=0; i < (int) image->colors; i++)
+        for (i=0; i < image->colors; i++)
           if (!ColorMatch(next->colormap[i],image->colormap[i],next->fuzz))
             {
               global_colormap=False;
@@ -845,7 +845,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
   ImageAttribute
     *attribute;
 
-  register int
+  register size_t
     i;
 
   size_t
@@ -919,7 +919,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
           "Memory allocation failed");
       length=image->generic_profiles*sizeof(ProfileInfo);
       memcpy(clone_image->generic_profile,image->generic_profile,length);
-      for (i=0; i < (int) image->generic_profiles; i++)
+      for (i=0; i < image->generic_profiles; i++)
       {
         clone_image->generic_profile[i].name=
           AllocateString(image->generic_profile[i].name);
@@ -1598,8 +1598,10 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
 #define CycleColormapImageText  "  Cycle image colormap...  "
 
   int
-    index,
     y;
+
+  long
+    index;
 
   register IndexPacket
     *indexes;
@@ -1629,7 +1631,7 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
     indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
     {
-      index=((int) indexes[x]+amount) % image->colors;
+      index=(indexes[x]+amount) % image->colors;
       if (index < 0)
         index+=image->colors;
       indexes[x]=(IndexPacket) index;
@@ -1698,8 +1700,10 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     *magick_info;
 
   register int
-    i,
     x;
+
+  register size_t
+    i;
 
   unsigned int
     count;
@@ -1750,10 +1754,10 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         }
       else
         if (image->total_colors <= image->colors)
-          (void) fprintf(file,"PseudoClass %uc ",image->colors);
+          (void) fprintf(file,"PseudoClass %luc ",image->colors);
         else
           {
-            (void) fprintf(file,"PseudoClass %lu=>%uc ",image->total_colors,
+            (void) fprintf(file,"PseudoClass %lu=>%luc ",image->total_colors,
               image->colors);
             (void) fprintf(file,"%d/%.6f/%.6fe ",
               (int) image->mean_error_per_pixel,image->normalized_mean_error,
@@ -1850,10 +1854,10 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     (void) fprintf(file,"  Colors: %lu\n",image->total_colors);
   else
     if (image->total_colors <= image->colors)
-      (void) fprintf(file,"  Colors: %u\n",image->colors);
+      (void) fprintf(file,"  Colors: %lu\n",image->colors);
     else
-      (void) fprintf(file,"  Colors: %u=>%u\n",
-        (unsigned int) image->total_colors,image->colors);
+      (void) fprintf(file,"  Colors: %lu=>%lu\n",image->total_colors,
+        image->colors);
   if (image->storage_class == DirectClass)
     {
       if (image->total_colors < 1024)
@@ -1871,7 +1875,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         Display image colormap.
       */
       p=image->colormap;
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
       {
         (void) fprintf(file,"    %d: (%5d,%5d,%5d)",i,p->red,p->green,p->blue);
         (void) fprintf(file,"\t");
@@ -1936,7 +1940,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       */
       (void) fprintf(file,"  Profile-iptc: %lu bytes\n",(unsigned long)
         image->iptc_profile.length);
-      for (i=0; i < (int) image->iptc_profile.length; )
+      for (i=0; i < image->iptc_profile.length; )
       {
         if (image->iptc_profile.info[i] != 0x1c)
           {
@@ -2031,7 +2035,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         i+=length;
       }
     }
-  for (i=0; i < (int) image->generic_profiles; i++)
+  for (i=0; i < image->generic_profiles; i++)
   {
     if (image->generic_profile[i].length == 0)
       continue;
@@ -2235,7 +2239,7 @@ MagickExport void DestroyImage(Image *image)
   int
     destroy;
 
-  register int
+  register size_t
     i;
 
   assert(image != (Image *) NULL);
@@ -2276,7 +2280,7 @@ MagickExport void DestroyImage(Image *image)
       /*
         Deallocate any generic profiles.
       */
-      for (i=0; i < (int) image->generic_profiles; i++)
+      for (i=0; i < image->generic_profiles; i++)
       {
         if (image->generic_profile[i].name != (char *) NULL)
           LiberateMemory((void **) &image->generic_profile[i].name);
@@ -4258,8 +4262,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               continue;
             next=0;
             arguments=argv[i];
-            status=Tokenizer(&token_info,0,token,length,arguments,(char *) "",
-              (char *) "=",(char *) "\"",0,&breaker,&next,&quote);
+            status=Tokenizer(&token_info,0,token,(int) length,arguments,
+              (char *) "",(char *) "=",(char *) "\"",0,&breaker,&next,&quote);
             if (status == 0)
               {
                 char
@@ -5222,12 +5226,14 @@ MagickExport unsigned int RGBTransformImage(Image *image,
     y;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *p,
     *q;
+
+  register size_t
+    i;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -5238,7 +5244,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       IndexPacket
         *indexes;
 
-      int
+      long
         black,
         cyan,
         magenta,
@@ -5621,7 +5627,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       /*
         Convert PseudoClass image.
       */
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
       {
         red=x_map[image->colormap[i].red+X]+y_map[image->colormap[i].green+X]+
           z_map[image->colormap[i].blue+X]+tx;
@@ -5828,11 +5834,11 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned int depth)
   }
   if (image->storage_class == PseudoClass)
     {
-      register int
+      register size_t
         i;
 
       p=image->colormap;
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
       {
         p->red=UpScale(DownScale(p->red));
         p->green=UpScale(DownScale(p->green));
@@ -6086,7 +6092,7 @@ static int IntensityCompare(const void *x,const void *y)
 
   color_1=(PixelPacket *) x;
   color_2=(PixelPacket *) y;
-  return((int) Intensity(*color_2)-Intensity(*color_1));
+  return((int) (Intensity(*color_2)-Intensity(*color_1)));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -6102,7 +6108,6 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
     y;
 
   register int
-    i,
     x;
 
   register IndexPacket
@@ -6110,6 +6115,9 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
 
   unsigned short
     *pixels;
@@ -6128,17 +6136,17 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
   /*
     Assign index values to colormap entries.
   */
-  for (i=0; i < (int) image->colors; i++)
+  for (i=0; i < image->colors; i++)
     image->colormap[i].opacity=(unsigned short) i;
   /*
     Sort image colormap by decreasing color popularity.
   */
-  qsort((void *) image->colormap,(int) image->colors,sizeof(PixelPacket),
+  qsort((void *) image->colormap,image->colors,sizeof(PixelPacket),
     IntensityCompare);
   /*
     Update image colormap indexes to sorted colormap order.
   */
-  for (i=0; i < (int) image->colors; i++)
+  for (i=0; i < image->colors; i++)
     pixels[image->colormap[i].opacity]=(unsigned short) i;
   for (y=0; y < (int) image->rows; y++)
   {
@@ -6473,8 +6481,10 @@ MagickExport unsigned int TransformRGBImage(Image *image,
     red;
 
   register int
-    i,
     x;
+
+  register size_t
+    i;
 
   register PixelPacket
     *q;
@@ -6799,7 +6809,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       /*
         Convert PseudoClass image.
       */
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
       {
         red=red_map[image->colormap[i].red+R]+
           green_map[image->colormap[i].green+R]+

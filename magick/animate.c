@@ -681,7 +681,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",images[0]->filename,
         images[0]->scene,images[0]->columns,images[0]->rows);
       if (images[0]->colors != 0)
-        (void) fprintf(stderr,"%uc ",images[0]->colors);
+        (void) fprintf(stderr,"%luc ",images[0]->colors);
       (void) fprintf(stderr,"%.1024s\n",images[0]->magick);
     }
   /*
@@ -792,7 +792,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
         (void) fprintf(stderr,"Image: [%u] %.1024s %ux%u ",images[scene]->scene,
           images[scene]->filename,images[scene]->columns,images[scene]->rows);
         if (images[scene]->colors != 0)
-          (void) fprintf(stderr,"%uc ",images[scene]->colors);
+          (void) fprintf(stderr,"%luc ",images[scene]->colors);
         (void) fprintf(stderr,"%.1024s\n",images[scene]->magick);
       }
     /*
@@ -1239,7 +1239,7 @@ MagickExport Image *XAnimateImages(Display *display,
         display_image->filename,display_image->scene,
         display_image->columns,display_image->rows);
       if (display_image->colors != 0)
-        (void) fprintf(stderr,"%uc ",display_image->colors);
+        (void) fprintf(stderr,"%luc ",display_image->colors);
       (void) fprintf(stderr,"%.1024s\n",display_image->magick);
     }
   XMakeStandardColormap(display,visual_info,resource_info,display_image,
@@ -1629,7 +1629,7 @@ MagickExport Image *XAnimateImages(Display *display,
         (void) fprintf(stderr,"Image: [%u] %.1024s %ux%u ",images[scene]->scene,
           images[scene]->filename,images[scene]->columns,images[scene]->rows);
         if (images[scene]->colors != 0)
-          (void) fprintf(stderr,"%uc ",images[scene]->colors);
+          (void) fprintf(stderr,"%luc ",images[scene]->colors);
         (void) fprintf(stderr,"%.1024s\n",images[scene]->magick);
       }
     /*

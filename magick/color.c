@@ -771,7 +771,7 @@ static void Histogram(Image *image,CubeInfo *cube_info,
 */
 MagickExport unsigned int IsGrayImage(Image *image)
 {
-  register int
+  register size_t
     i;
 
   /*
@@ -1031,7 +1031,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
         Create colormap.
       */
       image->storage_class=PseudoClass;
-      image->colors=(unsigned int) cube_info->colors;
+      image->colors=cube_info->colors;
       if (image->colormap == (PixelPacket *) NULL)
         image->colormap=(PixelPacket *)
           AcquireMemory(image->colors*sizeof(PixelPacket));
@@ -1611,7 +1611,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
 %
 %  The format of the ValidateColormapIndex method is:
 %
-%      IndexPacket ValidateColormapIndex(Image *image,const int index)
+%      IndexPacket ValidateColormapIndex(Image *image,const long index)
 %
 %  A description of each parameter follows:
 %
@@ -1624,12 +1624,12 @@ static unsigned int ReadConfigurationFile(const char *basename,
 %
 %
 */
-MagickExport IndexPacket ValidateColormapIndex(Image *image,const int index)
+MagickExport IndexPacket ValidateColormapIndex(Image *image,const long index)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if ((index >= 0) && (index < image->colors))
-    return(index);
+    return((IndexPacket) index);
   ThrowException(&image->exception,CorruptImageWarning,
     "invalid colormap index",image->filename);
   return(0);

@@ -282,7 +282,9 @@ typedef struct _Image
   unsigned int
     columns,
     rows,
-    depth,
+    depth;
+
+  unsigned long
     colors;
 
   PixelPacket
@@ -306,7 +308,7 @@ typedef struct _Image
     color_profile,
     iptc_profile;
 
-  unsigned int
+  unsigned long
     generic_profiles;
 
   ProfileInfo
@@ -664,7 +666,7 @@ extern MagickExport ImageType
 
 extern MagickExport IndexPacket
   *GetIndexes(const Image *),
-  ValidateColormapIndex(Image *,const int);
+  ValidateColormapIndex(Image *,const long);
 
 extern MagickExport int
   ParseGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
@@ -690,7 +692,7 @@ extern MagickExport RectangleInfo
   GetImageBoundingBox(Image *);
 
 extern MagickExport unsigned int
-  AllocateImageColormap(Image *,const unsigned int),
+  AllocateImageColormap(Image *,const unsigned long),
   AnimateImages(const ImageInfo *image_info,Image *image),
   ChannelImage(Image *,const ChannelType),
   CompositeImage(Image *,const CompositeOperator,Image *,const int,const int),

@@ -11400,7 +11400,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
       (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",image->filename,
         image->scene,image->columns,image->rows);
       if (image->colors != 0)
-        (void) fprintf(stderr,"%uc ",image->colors);
+        (void) fprintf(stderr,"%luc ",image->colors);
       (void) fprintf(stderr,"%.1024s\n",image->magick);
     }
   /*
@@ -12023,7 +12023,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",display_image->filename,
         display_image->scene,display_image->columns,display_image->rows);
       if (display_image->colors != 0)
-        (void) fprintf(stderr,"%uc ",display_image->colors);
+        (void) fprintf(stderr,"%luc ",display_image->colors);
       (void) fprintf(stderr,"%.1024s\n",display_image->magick);
     }
   XMakeStandardColormap(display,visual_info,resource_info,display_image,
