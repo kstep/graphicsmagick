@@ -601,6 +601,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       if (jpeg_pixels != (JSAMPLE *) NULL)
         LiberateMemory((void **) &jpeg_pixels);
       jpeg_destroy_decompress(&jpeg_info);
+      *exception=image->exception;
       return(image);
     }
   jpeg_create_decompress(&jpeg_info);
@@ -676,6 +677,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     {
       jpeg_destroy_decompress(&jpeg_info);
       CloseBlob(image);
+      *exception=image->exception;
       return(image);
     }
   if (jpeg_info.out_color_space == JCS_GRAYSCALE)
@@ -778,6 +780,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_destroy_decompress(&jpeg_info);
   LiberateMemory((void **) &jpeg_pixels);
   CloseBlob(image);
+  *exception=image->exception;
   return(image);
 }
 #else
@@ -1102,6 +1105,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   /*
     Initialize JPEG parameters.
   */
+  jpeg_info.client_data=(void *) image;
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
   jpeg_create_compress(&jpeg_info);
