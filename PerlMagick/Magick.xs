@@ -2495,7 +2495,7 @@ BlobToImage(ref,...)
     n=1;
     if (items <= 1)
       {
-        MagickError(OptionError,"NoBlobsDefined",NULL);
+        MagickError(OptionError,"NoBlobDefined",NULL);
         goto ReturnIt;
       }
     for (n=0, i=0; i < ac; i++)
