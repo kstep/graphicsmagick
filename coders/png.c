@@ -3176,7 +3176,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         LiberateMemory((void **) &quantum_scanline);
       }
     if (image->storage_class == PseudoClass)
-      SyncImage(image);
+      {
+        SyncImage(image);
+        if (image->colors == (MaxRGB+1))
+          CompressColormap(image);
+      }
     if (ping_info->valid & PNG_INFO_tRNS)
       {
         ClassType
