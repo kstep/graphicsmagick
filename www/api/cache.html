@@ -25,13 +25,14 @@
 		<LI><A HREF="#destroycacheinfo">DestroyCacheInfo</A>
 		<LI><A HREF="#destroyimagepixels">DestroyImagePixels</A>
 		<LI><A HREF="#getimagepixels">GetImagePixels</A>
+		<LI><A HREF="#getimagevirtualpixelmethod">GetImageVirtualPixelMethod</A>
 		<LI><A HREF="#getindexes">GetIndexes</A>
 		<LI><A HREF="#getonepixel">GetOnePixel</A>
 		<LI><A HREF="#getpixels">GetPixels</A>
 		<LI><A HREF="#modifycache">ModifyCache</A>
 		<LI><A HREF="#referencecache">ReferenceCache</A>
 		<LI><A HREF="#setimagepixels">SetImagePixels</A>
-		<LI><A HREF="#setimagevirtualpixeltype">SetImageVirtualPixelType</A>
+		<LI><A HREF="#setimagevirtualpixelmethod">SetImageVirtualPixelMethod</A>
 	</UL>
 
 </UL>
@@ -51,13 +52,14 @@
 <P>void  <STRONG>DestroyCacheInfo</STRONG>( Cache cache );</P>
 <P>void  <STRONG>DestroyImagePixels</STRONG>( Image *image );</P>
 <P>PixelPacket * <STRONG>GetImagePixels</STRONG>( Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
+<P>const VirtualPixelMethod  <STRONG>GetImageVirtualPixelMethod</STRONG>( Image *image );</P>
 <P>IndexPacket * <STRONG>GetIndexes</STRONG>( const Image *image );</P>
 <P>PixelPacket * <STRONG>GetOnePixel</STRONG>( const Image image, const long x, const long y );</P>
 <P>PixelPacket * <STRONG>GetPixels</STRONG>( const Image image );</P>
 <P>unsigned int  <STRONG>ModifyCache</STRONG>( Image *image );</P>
 <P>Cache  <STRONG>ReferenceCache</STRONG>( Cache cache_info );</P>
 <P>PixelPacket * <STRONG>SetImagePixels</STRONG>( Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
-<P><STRONG>SetImageVirtualPixelType</STRONG>( Image *image, const VirtualPixelType type );</P>
+<P><STRONG>SetImageVirtualPixelMethod</STRONG>( const Image *image, const VirtualPixelMethod method );</P>
 <P>unsigned int  <STRONG>SyncImagePixels</STRONG>( Image *image );</P>
 <P>
 <HR>
@@ -144,6 +146,15 @@ The image.
 These values define the perimeter of a region of pixels.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="getimagevirtualpixelmethod">GetImageVirtualPixelMethod</A></H2>
+<blockquote>GetImageVirtualPixelMethod() gets the "virtual pixels" method for the image. A virtual pixel is any pixel access that is outside the boundaries of the image cache. </blockquote><blockquote>The format of the GetImageVirtualPixelMethod() method is: </blockquote><blockquote>const VirtualPixelMethod GetImageVirtualPixelMethod ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="getindexes">GetIndexes</A></H2>
 <blockquote>Method GetIndexes() returns the indexes associated with the last call to SetImagePixels ( ) or GetImagePixels ( ) . </blockquote><blockquote>The format of the GetIndexes() method is: </blockquote><blockquote>IndexPacket *GetIndexes ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
@@ -221,8 +232,8 @@ The image.
 These values define the perimeter of a region of pixels.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="setimagevirtualpixeltype">SetImageVirtualPixelType</A></H2>
-<blockquote>SetImageVirtualPixelType() sets the type of "virtual" pixels for the image. A virtual pixel is any pixel access that is outside the boundaries of the image cache. </blockquote><blockquote>The format of the SetImageVirtualPixelType() method is: </blockquote><blockquote>SetImageVirtualPixelType ( <A HREF="types/Image.html">Image</A> *image, const VirtualPixelType type ); </blockquote><P>
+<H2><A NAME="setimagevirtualpixelmethod">SetImageVirtualPixelMethod</A></H2>
+<blockquote>SetImageVirtualPixelMethod() sets the "virtual pixels" method for the image. A virtual pixel is any pixel access that is outside the boundaries of the image cache. </blockquote><blockquote>The format of the SetImageVirtualPixelMethod() method is: </blockquote><blockquote>SetImageVirtualPixelMethod ( const <A HREF="types/Image.html">Image</A> *image, const VirtualPixelMethod method ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>image:</STRONG><BR>
@@ -234,14 +245,14 @@ The image.
 choose from these access types:
 <P></P></DL></DL>
 <PRE>
-      ConstantVPType:  every value outside the image is a constant as
-      defines by the pixel parameter.
       EdgeVPType:  the edge pixels of the image extend infinitely.
       Any pixel outside the image is assigned the same value as the
       pixel at the edge closest to it.
       TileVPType:  the image extends periodically or tiled.  The pixels
       wrap around the edges of the image.
       MirrorVPType:  mirror the image at the boundaries.
+      ConstantVPType:  every value outside the image is a constant as
+      defines by the pixel parameter.
 =head2 SyncImagePixels</PRE>
 <blockquote>Method SyncImagePixels() saves the image pixels to the in-memory or disk cache. The method returns True if the pixel region is synced, otherwise False. </blockquote><blockquote>The format of the SyncImagePixels() method is: </blockquote><blockquote>unsigned int SyncImagePixels ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>

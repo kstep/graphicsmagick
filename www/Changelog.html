@@ -23,11 +23,23 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-09-21  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * Added 'exception' parameter to the ImageMagick progress monitor API.
+
+2002-09-21  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+  * The xcf decoder would sometimes create artifacts when reading RLE-encoded
+    grayscale images, due to the green and blue samples not being defined.
+
+2002-09-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Update to Autoconf 2.54.
+
 2002-08-08  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Added logging capabilities to the CORE API.  This facility is useful
     for debugging.
   * AcquireImagePixels() did not always return the same pixel values
     for virtual pixels when the cache was stored on disk (very rare).
+  * new -virtual-pixel command line option.
+  * new PerlMagick virtual-pixel image attribute.
 
 2002-08-07  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * ImageMagick 5.4.9 released.
