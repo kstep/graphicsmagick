@@ -746,6 +746,7 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  image->storage_class=DirectClass;
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
