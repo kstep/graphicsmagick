@@ -1264,7 +1264,13 @@ MagickExport unsigned int CompositeImage(Image *image,
   /*
     Composite image.
   */
+#if QuantumDepth == 8
   midpoint=0x80;
+#elif QuantumDepth == 16
+  midpoint=0x8080;
+#else
+# error "Specified value of QuantumDepth is not supported"
+#endif
   for (y=0; y < (long) image->rows; y++)
   {
     if (y < y_offset)
