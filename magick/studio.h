@@ -50,6 +50,15 @@ extern "C" {
 #  define STDC
 #endif
 
+/**
+ ** Borland C++ Builder DLL compilation defines
+ **/
+#if defined(__BORLANDC__) && defined(_DLL)
+#  pragma message("BCBMagick lib DLL export interface")
+#  define _MAGICKDLL_
+#  define BuildMagickModules
+#endif 
+
 #if defined(WIN32) && !defined(__CYGWIN__)
 # if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
 #  define _MAGICKDLL_
