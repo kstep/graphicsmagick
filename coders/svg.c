@@ -1981,13 +1981,20 @@ static void SVGStartElement(void *context,const xmlChar *name,
           (char *) svg_info->document->encoding);
       if (attributes != (const xmlChar **) NULL)
         {
+          double
+            sx,
+            sy;
+
           if ((svg_info->view_box.width == 0.0) ||
               (svg_info->view_box.height == 0.0))
             svg_info->view_box=svg_info->bounds;
-          MVGPrintf(svg_info->file,"viewbox 0 0 %g %g\n",
-            svg_info->view_box.width,svg_info->view_box.height);
-
-          /* Set initial canvas background color to user specified value */
+          svg_info->width=(unsigned long) svg_info->bounds.width;
+          svg_info->height=(unsigned long) svg_info->bounds.height;
+          MVGPrintf(svg_info->file,"viewbox 0 0 %lu %lu\n",svg_info->width,
+                    svg_info->height);
+          /*
+            Set initial canvas background color to user specified value
+          */
           {
             char
               tuple[MaxTextExtent];
@@ -2001,13 +2008,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       svg_info->view_box.width,svg_info->view_box.height);
             MVGPrintf(svg_info->file,"pop graphic-context\n");
           }
-
-          svg_info->width=(unsigned long) svg_info->bounds.width;
-          svg_info->height=(unsigned long) svg_info->bounds.height;
-          MVGPrintf(svg_info->file,"affine %g 0 0 %g %g %g\n",
-            (double) svg_info->width/svg_info->view_box.width,
-            (double) svg_info->height/svg_info->view_box.height,
-            -svg_info->view_box.x,-svg_info->view_box.y);
+          sx=(double) svg_info->width/svg_info->view_box.width;
+          sy=(double) svg_info->height/svg_info->view_box.height;
+          MVGPrintf(svg_info->file,"affine %g 0 0 %g %g %g\n",sx,sy,
+            -sx*svg_info->view_box.x,-sy*svg_info->view_box.y);
         }
     }
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  )");

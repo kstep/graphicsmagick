@@ -55,8 +55,10 @@ pkgdatadir = @MagickSharePath@
 pkgdata_DATA = Copyright.txt QuickStart.txt
 
 # Additional files to distribute
-EXTRA_DIST = Copyright.txt TODO.txt index.html Magickshr.opt Make.com \
-	PLATFORMS.txt QuickStart.txt README.txt lndir.sh winpath.sh
+EXTRA_DIST = ChangeLog Copyright.txt INSTALL-mac.txt INSTALL-unix.txt \
+	INSTALL-vms.txt INSTALL-windows.txt TODO.txt index.html \
+	Magickshr.opt Make.com NEWS PLATFORMS.txt QuickStart.txt \
+	README.txt lndir.sh winpath.sh
 
 # Non-Automake subdirectories to distribute
 DISTDIRS = guide images locale scenes scripts www PerlMagick

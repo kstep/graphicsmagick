@@ -1014,8 +1014,9 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   compositeOp = LuminizeCompositeOp;
                 else if (LocaleCompare(value, "Screen") == 0)
                   compositeOp = ScreenCompositeOp;
-                  else if (LocaleCompare(value, "Overlay") == 0)
+                else if (LocaleCompare(value, "Overlay") == 0)
                   compositeOp = OverlayCompositeOp;
+                break;
               }
               ThrowException(msl_info->exception,OptionError,
                       "UnrecognizedAttribute",keyword);

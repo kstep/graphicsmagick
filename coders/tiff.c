@@ -1509,7 +1509,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         break;
       }
 #endif
-#ifdef JPEG_SUPPORT
+#ifdef YCBCR_SUPPORT
       case JPEGCompression:
       {
         compress_tag=COMPRESSION_JPEG;

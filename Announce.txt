@@ -113,7 +113,6 @@ Glenn Randers-Pehrson - Utilities, PNG, MNG, test scripts, documentation
                         enhancements.
 Leonard Rosenthol     - Mac support, XCF, PSD, conjure, drawing
                         enhancements.
-Tim Hunter            - Ruby (RMagick) development.
 
 We would like to give special thanks to several people who assist with
 GraphicsMagick:

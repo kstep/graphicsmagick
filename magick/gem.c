@@ -822,14 +822,14 @@ MagickExport void TransformHWB(const Quantum red,const Quantum green,
   const Quantum blue,double *hue,double *whiteness,double *blackness)
 {
   double
-    b,
-    f,
-    g,
-    r,
-    v;
+    f;
 
   register long
     i;
+
+  Quantum
+    v,
+    w;
 
   /*
     Convert RGB to HWB colorspace.
@@ -837,18 +837,20 @@ MagickExport void TransformHWB(const Quantum red,const Quantum green,
   assert(hue != (double *) NULL);
   assert(whiteness != (double *) NULL);
   assert(blackness != (double *) NULL);
-  r=(double) red/MaxRGB;
-  g=(double) green/MaxRGB;
-  b=(double) blue/MaxRGB;
-  *hue=0.0;
-  *whiteness=Min(r,Min(g,b));
-  v=Max(r,Max(g,b));
-  *blackness=1.0-v;
-  if (v == *whiteness)
-    return;
-  f=(r == *whiteness) ? g-b : ((g == *whiteness) ? b-r : r-g);
-  i=(r == *whiteness) ? 3 : ((g == *whiteness) ? 5 : 1);
-  *hue=(double) i-f/(v-*whiteness);
+  w=Min(red,Min(green,blue));
+  v=Max(red,Max(green,blue));
+  *blackness=(double) (MaxRGB-v)/MaxRGB;
+  if (v == w)
+    {
+      *hue=0.0;
+      *whiteness=1.0-(*blackness);
+      return;
+    }
+  f=(red == w) ? (double) green-blue : ((green == w) ? (double) blue-red :
+    (double) red-green);
+  i=(red == w) ? 3 : ((green == w) ? 5 : 1);
+  *hue=i-f/(v-w);
+  *whiteness=(double) w/MaxRGB;
 }
 
 /*

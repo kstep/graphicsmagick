@@ -1,4 +1,24 @@
+2003-01-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am: Distribute files ChangeLog, INSTALL-mac.txt,
+ 	INSTALL-unix.txt, INSTALL-vms.txt INSTALL-windows.txt, and NEWS.
+
 2003-01-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/svg.c (SVGStartElement): Applied fix from ImageMagick to
+ 	compute SVG +> MVG viewbox correctly.
+
+	* magick/image.c (CloneImage): Applied fix from ImageMagick which
+ 	is purported to solve the problem that "negative (x,y) page offsets
+ 	did not clone properly".
+
+	* magick/gem.c (TransformHWB): Replace implementation with
+ 	ImageMagick's new version which is supposed to fix a rounding
+ 	error problem.  Hard to say since implementation is totally
+ 	different.
+
+	* coders/msl.c (MSLStartElement): Applied fix for missing break
+ 	from ImageMagick.
 
 	* magick/integral_types.h: New header to include the integral
  	types typedefs.  Needed new header in order to include in both
