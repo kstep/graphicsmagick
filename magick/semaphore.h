@@ -1,30 +1,53 @@
+/*
+  Methods to lock and unlock semaphores.
+*/
+#ifndef _SEMAPHORE_H
+#define _SEMAPHORE_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+/*
+  Define declarations.
+*/
+#define EngageSemaphore(semaphore_info)	\
+{ \
+  if (semaphore_info == (SemaphoreInfo *) NULL) \
+    semaphore_info=AllocateSemaphoreInfo(); \
+  (void) LockSemaphore(semaphore_info); \
+}
+
+#define DisengageSemaphore(semaphore_info) \
+{ \
+  if (semaphore_info == (SemaphoreInfo *) NULL) \
+    semaphore_info=AllocateSemaphoreInfo(); \
+  (void) UnlockSemaphore(semaphore_info); \
+}
 
-/* The semaphore structure, defined in semaphore.c */
-struct SemaphoreInfo;
+/*
+  Typedef declarations.
+*/
+struct
+   SemaphoreInfo;
+
 typedef struct SemaphoreInfo SemaphoreInfo;
+
+/*
+  Semaphore methods.
+*/
+extern MagickExport int
+  LockSemaphore(SemaphoreInfo *),
+  UnlockSemaphore(SemaphoreInfo *);
 
-/* Create a semaphore, initialized unlocked */
-extern MagickExport SemaphoreInfo * CreateSemaphoreInfo(void);
+extern MagickExport SemaphoreInfo
+   *AllocateSemaphoreInfo(void);
 
-/* Lock the semaphore  (Returns 0, or -1 on error) */
-#define EngageSemaphore(semaphore)	\
-{ \
-  if (!semaphore) \
-    semaphore=CreateSemaphoreInfo(); \
-  LockSemaphore(semaphore); \
+extern MagickExport void
+   *DestroySemaphoreInfo(SemaphoreInfo *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
 }
-extern MagickExport int LockSemaphore(SemaphoreInfo *semaphore);
+#endif
 
-/* Unlock the semaphore  (Returns 0, or -1 on error) */
-#define DisengageSemaphore(semaphore) \
-{ \
-  if (!semaphore) \
-    semaphore=CreateSemaphoreInfo(); \
-  UnlockSemaphore(semaphore); \
-}
-extern MagickExport int UnlockSemaphore(SemaphoreInfo *semaphore);
-
-/* Destroy a semaphore */
-extern MagickExport void DestroySemaphoreInfo(SemaphoreInfo *semaphore);
-
-
+#endif

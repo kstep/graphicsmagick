@@ -2,15 +2,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%        SSSSS  EEEEE  M   M   AAA   PPPP   H   H   OOO   RRRR   EEEEE        %
+%        SS     E      MM MM  A   A  P   P  H   H  O   O  R   R  E            %
+%         SSS   EEE    M M M  AAAAA  PPPP   HHHHH  O   O  RRRR   EEE          %
+%           SS  E      M   M  A   A  P      H   H  O   O  R R    E            %
+%        SSSSS  EEEEE  M   M  A   A  P      H   H   OOO   R  R   EEEEE        %
 %                                                                             %
-%                        L      OOO    CCCC  K   K                            %
-%                        L     O   O  C      K  K                             %
-%                        L     O   O  C      KKK                              %
-%                        L     O   O  C      K  K                             %
-%                        LLLL   OOO    CCCC  K   K                            %
 %                                                                             %
-%                                                                             %
-%                        ImageMagick Mutex Methods                            %
+%                     ImageMagick Semaphore Methods                           %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -55,6 +54,16 @@
 */
 #include "magick.h"
 #include "defines.h"
+
+#if defined(HasPTHREADS)
+#include <pthread.h>
+
+struct SemaphoreInfo
+{
+  pthread_mutex_t
+    id;
+};
+#endif
 
 #if defined(_VISUALC_)
 #include <windows.h>
@@ -65,254 +74,184 @@ struct SemaphoreInfo
 };
 
 #if defined(_MT)
-
-/* This is a binary semphore -- increase for a counting semaphore */
-#define MAXSEMLEN	1
-
-/* Create a semaphore */
-SemaphoreInfo *CreateSemaphoreInfo(void)
-{
-  SECURITY_ATTRIBUTES security;
-  SemaphoreInfo *semaphore;
-
-  /* Allocate semaphore memory */
-  semaphore = (SemaphoreInfo *)AllocateMemory(sizeof(*semaphore));
-  if ( semaphore == NULL )
-    {
-      return(NULL);
-    }
-
-  /* Allow the semaphore to be inherited */
-  security.nLength = sizeof(security);
-  security.lpSecurityDescriptor = NULL;
-  security.bInheritHandle = TRUE;
-
-  /* Create the semaphore, with initial value signaled */
-  semaphore->id = CreateSemaphore(&security, 1, MAXSEMLEN, NULL);
-  if ( semaphore->id == NULL )
-    {
-      free(semaphore);
-      return(NULL);
-    }
-	return(semaphore);
-}
-
-/* Lock the semaphore */
-int LockSemaphore(SemaphoreInfo *semaphore)
-{
-  if ( WaitForSingleObject(semaphore->id, INFINITE) == WAIT_FAILED )
-    return(-1);
-  return(0);
-}
-
-/* Unlock the semaphore */
-int UnlockSemaphore(SemaphoreInfo *semaphore)
-{
-  if ( ReleaseSemaphore(semaphore->id, 1, NULL) == FALSE )
-    return(-1);
-  return(0);
-}
-
-/* Free the semaphore */
-void DestroySemaphoreInfo(SemaphoreInfo *semaphore)
-{
-  if ( semaphore )
-    {
-      CloseHandle(semaphore->id);
-      free(semaphore);
-    }
-}
-#else /* _MT */
-/* Create a semaphore */
-SemaphoreInfo *CreateSemaphoreInfo(void)
-{
-  SemaphoreInfo *semaphore;
-
-  /* Allocate semaphore memory */
-  semaphore = (SemaphoreInfo *)AllocateMemory(sizeof(*semaphore));
-  if ( semaphore == NULL )
-    return(NULL);
-  return(semaphore);
-}
-
-/* Lock the semaphore */
-int LockSemaphore(SemaphoreInfo *semaphore)
-{
-  return(0);
-}
-
-/* Unlock the semaphore */
-int UnlockSemaphore(SemaphoreInfo *semaphore)
-{
-  return(0);
-}
-
-/* Free the semaphore */
-void DestroySemaphoreInfo(SemaphoreInfo *semaphore)
-{
-  FreeMemory((void **) &semaphore);
-}
-#endif /* _MT */
-#else /* _VISUALC_ */
-
-/* Simple semaphore lock */
-#if defined(HasPTHREADS)
-
-#if (__GLIBC__ == 2) && (__GLIBC_MINOR__ == 0)
-#warning Working around a bug in glibc 2.0 pthreads
-#undef HasPTHREADS
-/* The bug is actually a problem where threads are suspended,
-   but don't wake up when the thread manager sends them a signal.
-   This is a problem with thread creation too, but it happens
-   less often. We avoid this by using System V IPC for semaphorees.
+#define MAXSEMLEN  1
+#endif
+#endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A l l o c a t e S e m a p h o r e I n f o                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AllocateSemaphoreInfo initializes the SemaphoreInfo structure.
+%
+%  The format of the AllocateSemaphoreInfo method is:
+%
+%      SemaphoreInfo *AllocateSemaphoreInfo(void)
+%
+%  A description of each parameter follows:
+%
+%    o semaphore_info: Method AllocateSemaphoreInfo returns a pointer to an
+%      initialized SemaphoreInfo structure.
+%
+%
 */
-#endif /* glibc 2.0 */
-#endif /* linux */
-
-#if defined(HasPTHREADS)
-
-#include <pthread.h>
-
-struct SemaphoreInfo
+MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 {
-  pthread_mutex_t id;
-};
+  SemaphoreInfo
+    *semaphore_info;
 
-/* Create a blockable semaphore */
-SemaphoreInfo * CreateSemaphoreInfo (void)
-{
-  SemaphoreInfo *semaphore;
-
-  /* Allocate the structure */
-  semaphore = (SemaphoreInfo *)AllocateMemory(sizeof(*semaphore));
-  if ( semaphore == NULL )
-    return(NULL);
-
-  if ( pthread_mutex_init(&semaphore->id, NULL) != 0 )
+  /*
+    Allocate semaphore.
+  */
+  semaphore_info=(SemaphoreInfo *) AllocateMemory(sizeof(*semaphore_info));
+  if (semaphore_info == (SemaphoreInfo *) NULL)
+    MagickError(ResourceLimitError,"Unable to allocate semaphore_info info",
+      "Memory allocation failed");
+#if defined(_VISUALC_) && !defined(_MT)
   {
-    FreeMemory((void **) &semaphore);
-    return(NULL);
-  }
-  return(semaphore);
-}
+    SECURITY_ATTRIBUTES
+      security;
 
-/* Lock the semaphore */
-int LockSemaphore (SemaphoreInfo *semaphore)
-{
-  if ( ! semaphore )
-    return(-1);
-  if ( pthread_mutex_lock(&semaphore->id) != 0 )
-    return(-1);
-  return(0);
-}
-
-/* Unlock the semaphore */
-int UnlockSemaphore (SemaphoreInfo *semaphore)
-{
-  if ( ! semaphore )
-    return(-1);
-  if ( pthread_mutex_unlock(&semaphore->id) != 0 )
-    return(-1);
-  return(0);
-}
-
-/* Free the semaphore */
-void DestroySemaphoreInfo (SemaphoreInfo *semaphore)
-{
-  if ( semaphore )
-    {
-      pthread_mutex_destroy(&semaphore->id);
-      FreeMemory((void **) &semaphore);
+    /*
+      Create the semaphore, with initial value signaled.
+    */
+    security.nLength=sizeof(security);
+    security.lpSecurityDescriptor=NULL;
+    security.bInheritHandle=TRUE;
+    semaphore_info->id=CreateSemaphore(&security,1,MAXSEMLEN,NULL);
+    if (semaphore_info->id == NULL)
+      {
+        FreeMemory((void **) &semaphore_info);
+        return((SemaphoreInfo *) NULL);
+      }
     }
-}
-
-#else /* System V IPC based implementation */
-
-#include <sys/ipc.h>
-#include <sys/sem.h>
-
-struct SemaphoreInfo
-{
-  int id;
-};
-
-/* Not defined by Solaris or later versions of Linux */
-#if defined(__SVR4) || defined(_SEM_SEMUN_UNDEFINED)
-union semun {
-  int val;
-  struct semid_ds *buf;
-  ushort *array;
-};
+#if defined(HasPTHREADS)
+    if (pthread_mutex_init(&semaphore_info->id,NULL) != 0)
+      {
+        FreeMemory((void **) &semaphore_info);
+        return((SemaphoreInfo *) NULL);
+      }
 #endif
-
-static struct sembuf op_lock[2] = {
-  { 0, 0, 0 },          /* Wait for semaphore to reach 0 */
-  { 0, 1, SEM_UNDO },   /* Increment semaphore */
-};
-static struct sembuf op_unlock[1] = {
-  { 0, -1, (IPC_NOWAIT|SEM_UNDO) }  /* Decrement semaphore */
-};
-
-/* Create a blockable semaphore */
-SemaphoreInfo * CreateSemaphoreInfo (void)
-{
-  SemaphoreInfo *semaphore;
-  union semun init;
-
-  semaphore = (SemaphoreInfo *)AllocateMemory(sizeof(*semaphore));
-  if ( semaphore == NULL )
-    return(NULL);
-  semaphore->id = semget(IPC_PRIVATE, 1, (0600|IPC_CREAT));
-  if ( semaphore->id < 0 )
-    {
-      FreeMemory((void **) &semaphore);
-      return(NULL);
-    }
-  init.val = 0;		/* Initialize semaphore */
-  semctl(semaphore->id, 0, SETVAL, init);
-  return(semaphore);
+  return(semaphore_info);
 }
-
-/* Lock the semaphore */
-int LockSemaphore (SemaphoreInfo *semaphore)
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e s t r o y S e m a p h o r e I n f o                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroySemaphore destroys a semaphore_info.
+%
+%  The format of the DestroySemaphore method is:
+%
+%      DestroySemaphore(SemaphoreInfo *semaphore_info)
+%
+%  A description of each parameter follows:
+%
+%    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
+%
+%
+*/
+void DestroySemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
-  if ( ! semaphore )
-    return(-1);
-tryagain:
-  if ( semop(semaphore->id, op_lock, 2) < 0 )
-    {
-      if ( errno == EINTR )
-        {
-          goto tryagain;
-        }
-      return(-1);
-    }
-  return(0);
-}
-
-/* Unlock the semaphore */
-int UnlockSemaphore (SemaphoreInfo *semaphore)
-{
-  if ( ! semaphore )
-    return(-1);
-  if ( semop(semaphore->id, op_unlock, 1) < 0 )
-    return(-1);
-  return(0);
-}
-
-/* Free the semaphore */
-void DestroySemaphoreInfo (SemaphoreInfo *semaphore)
-{
-  if ( semaphore )
-    {
-#ifdef _SGI_SOURCE
-      semctl(semaphore->id, 0, IPC_RMID);
-#else
-      semctl(semaphore->id, 0, IPC_RMID, (union semun)0);
+  if (semaphore_info == (SemaphoreInfo *) NULL)
+    return;
+#if defined(_VISUALC_) && !defined(_MT)
+  CloseHandle(semaphore_info->id);
 #endif
-      FreeMemory((void **) &semaphore);
-    }
+#if defined(HasPTHREADS)
+  pthread_mutex_destroy(&semaphore_info->id);
+#endif
+  FreeMemory((void **) &semaphore_info);
 }
-
-#endif /* HasPTHREADS */
-#endif /* _VISUALC_ */
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   L o c k S e m a p h o r e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method LockSemaphore locks a semaphore_info.
+%
+%  The format of the LockSemaphore method is:
+%
+%      int LockSemaphore(SemaphoreInfo *semaphore_info)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method LockSemaphore returns True on success otherwise
+%      False.
+%
+%    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
+%
+%
+*/
+MagickExport int LockSemaphore(SemaphoreInfo *semaphore_info)
+{
+#if defined(_VISUALC_) && !defined(_MT)
+  if (WaitForSingleObject(semaphore_info->id,INFINITE) == WAIT_FAILED)
+    return(False);
+#endif
+#if defined(HasPTHREADS)
+  if (pthread_mutex_lock(&semaphore_info->id) != 0)
+    return(False);
+#endif
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n l o c k S e m a p h o r e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnlockSemaphore unlocks a semaphore_info.
+%
+%  The format of the LockSemaphore method is:
+%
+%      int UnlockSemaphore(SemaphoreInfo *semaphore_info)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method UnlockSemaphore returns True on success otherwise
+%      False.
+%
+%    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
+%
+%
+*/
+MagickExport int UnlockSemaphore(SemaphoreInfo *semaphore_info)
+{
+#if defined(_VISUALC_) && !defined(_MT)
+  if (ReleaseSemaphore(semaphore_info->id,1,NULL) == FALSE)
+    return(False);
+#endif
+#if defined(HasPTHREADS)
+  if (pthread_mutex_unlock(&semaphore_info->id) != 0)
+    return(-1);
+#endif
+  return(True);
+}

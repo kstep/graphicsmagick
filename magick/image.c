@@ -950,7 +950,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
 %    o clone_info: Method CloneImageInfo returns a duplicate of the given
 %      image info, or if image info is NULL a new one.
 %
-%    o image_info: a structure of type info.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %
 */
