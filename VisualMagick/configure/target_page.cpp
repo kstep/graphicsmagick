@@ -23,6 +23,7 @@ CTargetPage::CTargetPage() : CPropertyPage(CTargetPage::IDD)
 	m_useX11Stubs = FALSE;
 	m_decorateFiles = FALSE;
 	m_optionalFiles = FALSE;
+	m_standalone = FALSE;
 	//}}AFX_DATA_INIT
 }
 
@@ -38,6 +39,7 @@ void CTargetPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_USE_X11_STUBS, m_useX11Stubs);
 	DDX_Check(pDX, IDC_DECORATE_FILES, m_decorateFiles);
 	DDX_Check(pDX, IDC_INCLUDE_OPTIONAL, m_optionalFiles);
+	DDX_Check(pDX, IDC_STANDALONE, m_standalone);
 	//}}AFX_DATA_MAP
 }
 

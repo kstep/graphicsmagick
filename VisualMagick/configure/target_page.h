@@ -26,6 +26,7 @@ public:
 	BOOL	m_useX11Stubs;
 	BOOL	m_decorateFiles;
 	BOOL	m_optionalFiles;
+	BOOL	m_standalone;
 	//}}AFX_DATA
 
 

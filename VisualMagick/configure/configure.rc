@@ -111,8 +111,8 @@ BEGIN
                     153,33,152,10
     CONTROL         "Decorate exe files with build options",
                     IDC_DECORATE_FILES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    15,135,129,10
-    GROUPBOX        "Build options",IDC_STATIC,7,122,304,47
+                    15,135,139,10
+    GROUPBOX        "Build options",IDC_STATIC,7,122,304,64
     CONTROL         "Static Multi-threaded DLL runtimes",IDC_PROJECT_TYPE3,
                     "Button",BS_AUTORADIOBUTTON,15,95,124,10
     LTEXT           "Static Builds",IDC_STATIC,13,50,40,8
@@ -120,6 +120,9 @@ BEGIN
     CONTROL         "Include all demo and test programs",
                     IDC_INCLUDE_OPTIONAL,"Button",BS_AUTOCHECKBOX | 
                     WS_TABSTOP,15,151,134,10
+    CONTROL         "Generate all utility projects with full paths rather then relative paths.",
+                    IDC_STANDALONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
+                    167,236,10
 END
 
 IDD_SYSTEM_PAGE DIALOG DISCARDABLE  0, 0, 318, 233

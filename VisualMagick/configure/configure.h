@@ -73,6 +73,7 @@ private:
     int project_type,
 		std::string staging,
 		std::string name,
+		std::string extn,
 		std::string prefix,
 		std::list<std::string> &libs_list_shared,
 		std::list<std::string> &libs_list_release,
@@ -100,7 +101,7 @@ private:
   void process_one_folder(ofstream &dsw,
           const char *root, WIN32_FIND_DATA	&data,
           int project_type, int projectType);
-  void generate_global_dependencies(ofstream &dsw, int runtime);
+  void generate_dependencies(ofstream &dsw, bool gen_cpp, bool gen_util);
   bool is_project_type(const char *root, const int project_type);
 };
 
