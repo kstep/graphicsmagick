@@ -93,8 +93,8 @@ void OpenStaticModules(void)
 #endif
 }
 
-unsigned int ExecuteStaticModuleProcess(const char *tag,
-    Image *image,const int argc,char **argv)
+unsigned int ExecuteStaticModuleProcess(const char *tag,Image *image,
+  const int argc,char **argv)
 {
   return(False);
 }

@@ -993,6 +993,7 @@ extern MagickExport void
   UnregisterMPCImage(void),
   UnregisterMPEGImage(void),
   UnregisterMPRImage(void),
+  UnregisterMSLImage(void),
   UnregisterMTVImage(void),
   UnregisterMVGImage(void),
   UnregisterNETSCAPEImage(void),
