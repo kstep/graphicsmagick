@@ -460,6 +460,11 @@ then
 fi
 
 # Evaluate shell variable equivalents to Makefile directory variables
+
+eval "eval PREFIX_DIR=${prefix}"
+AC_SUBST(PREFIX_DIR)
+eval "eval EXEC_PREFIX_DIR=${exec_prefix}"
+AC_SUBST(EXEC_PREFIX_DIR)
 eval "eval BIN_DIR=$bindir"
 AC_SUBST(BIN_DIR)
 eval "eval SBIN_DIR=$sbindir"

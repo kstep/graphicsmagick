@@ -486,10 +486,9 @@ MagickExport void DrawSetClipPath(DrawContext context, const char *clip_path)
       if(CurrentContext->clip_path == (char*)NULL)
         ThrowDrawException(ResourceLimitError, "Unable to draw image",
                            "Memory allocation failed");
-#if 0
-      (void) DrawClipPath(context->image,context->graphic_context[context->index,
-                                                                 CurrentContext->clip_path));
-#endif
+
+      (void) DrawClipPath(context->image,CurrentContext,CurrentContext->clip_path);
+
       MvgPrintf(context, "clip-path url(#%s)\n", clip_path);
     }
 }
@@ -536,6 +535,21 @@ MagickExport void DrawSetClipUnits(DrawContext context,
   if(context->filter_off || (CurrentContext->clip_units != clip_units))
     {
       CurrentContext->clip_units = clip_units;
+
+      if ( clip_units == ObjectBoundingBox )
+        {
+          AffineMatrix
+            affine;
+
+          IdentityAffine(&affine);
+
+          affine.sx=CurrentContext->bounds.x2;
+          affine.sy=CurrentContext->bounds.y2;
+          affine.tx=CurrentContext->bounds.x1;
+          affine.ty=CurrentContext->bounds.y1;
+
+          DrawSetAffine(context, &affine);
+        }
 
       switch (clip_units)
         {
@@ -673,7 +687,25 @@ MagickExport void DrawSetFillColorString(DrawContext context, const char* fill_c
 }
 MagickExport void DrawSetFillPatternURL(DrawContext context, const char* fill_url)
 {
-  MvgPrintf(context, "fill url(%s)\n",fill_url);
+  char
+    fill_spec[MaxTextExtent],
+    pattern[MaxTextExtent];
+
+  FormatString(fill_spec,"url(%.1024s)",fill_url);
+  FormatString(pattern,"[%.1024s]",fill_spec);
+
+  if (GetImageAttribute(context->image,pattern) == (ImageAttribute *) NULL)
+    {
+        ThrowDrawException(OptionWarning, "URL not found", fill_url);
+    }
+  else
+    {
+      DrawPatternPath(context->image,CurrentContext,fill_spec,&CurrentContext->fill_pattern);
+      if (CurrentContext->fill.opacity != TransparentOpacity)
+        CurrentContext->fill.opacity=CurrentContext->opacity;
+      
+      MvgPrintf(context, "fill %s\n",fill_spec);
+    }
 }
 
 MagickExport void DrawSetFillOpacity(DrawContext context,
@@ -760,16 +792,16 @@ MagickExport void DrawSetFontFamily(DrawContext context,
 }
 
 MagickExport void DrawSetFontSize(DrawContext context,
-                                  const double font_pointsize)
+                                  const double pointsize)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->filter_off || (CurrentContext->pointsize != font_pointsize))
+  if(context->filter_off || (CurrentContext->pointsize != pointsize))
     {
-      CurrentContext->pointsize=font_pointsize;
+      CurrentContext->pointsize=pointsize;
 
-      MvgPrintf(context, "font-size %.4g\n", font_pointsize);
+      MvgPrintf(context, "font-size %.4g\n", pointsize);
     }
 }
 
@@ -826,7 +858,7 @@ MagickExport void DrawSetFontStretch(DrawContext context,
 }
 
 MagickExport void DrawSetFontStyle(DrawContext context,
-                                   const StyleType font_style)
+                                   const StyleType style)
 {
   const char
     *p = NULL;
@@ -834,11 +866,11 @@ MagickExport void DrawSetFontStyle(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->filter_off || (CurrentContext->style != font_style))
+  if(context->filter_off || (CurrentContext->style != style))
     {
-      CurrentContext->style=font_style;
+      CurrentContext->style=style;
 
-      switch (font_style)
+      switch (style)
         {
         case NormalStyle:
           p = "normal";
@@ -1674,9 +1706,23 @@ MagickExport void DrawPushPattern(DrawContext context,
                                   const double x, const double y,
                                   const double width, const double height)
 {
+  RectangleInfo
+    bounds;
+
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
   assert(pattern_id != (const char *) NULL);
+
+  bounds.x = (long) ceil(x-0.5);
+  bounds.y = (long) ceil(y-0.5);
+  bounds.width = (unsigned long) floor(width+0.5);
+  bounds.height = (unsigned long) floor(height+0.5);
+
+  /* How to represent & store pattern ???  Probably record as MVG ...
+     DrawImage saves MVG as an image attibute with name "[pattern"
+     along with a geometry attribute in form "%lux%lu%+ld%+ld" named
+     like "[%.1024s-geometry]".
+  */
 
   context->filter_off = True;
 
@@ -1798,10 +1844,11 @@ MagickExport void DrawSetStopColor(DrawContext context,
                                    const PixelPacket * stop_color,
                                    const double offset)
 {
-
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
   assert(stop_color != (const PixelPacket *) NULL);
+
+  /* This is gradient stuff so maybe it shouldn't be supported yet */
 
   MvgPrintf(context, "stop-color ");
   MvgAppendColor(context, stop_color);

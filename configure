@@ -3586,7 +3586,6 @@ echo "$as_me:$LINENO: result: $lt_cv_deplibs_check_method" >&5
 echo "${ECHO_T}$lt_cv_deplibs_check_method" >&6
 file_magic_cmd=$lt_cv_file_magic_cmd
 deplibs_check_method=$lt_cv_deplibs_check_method
-deplibs_check_method=pass_all
 test -z "$deplibs_check_method" && deplibs_check_method=unknown
 
 
@@ -15092,6 +15091,11 @@ then
 fi
 
 # Evaluate shell variable equivalents to Makefile directory variables
+
+eval "eval PREFIX_DIR=${prefix}"
+
+eval "eval EXEC_PREFIX_DIR=${exec_prefix}"
+
 eval "eval BIN_DIR=$bindir"
 
 eval "eval SBIN_DIR=$sbindir"
@@ -29809,6 +29813,8 @@ s,@WITH_PERL_STATIC_FALSE@,$WITH_PERL_STATIC_FALSE,;t t
 s,@WITH_PERL_DYNAMIC_TRUE@,$WITH_PERL_DYNAMIC_TRUE,;t t
 s,@WITH_PERL_DYNAMIC_FALSE@,$WITH_PERL_DYNAMIC_FALSE,;t t
 s,@LIB_LF@,$LIB_LF,;t t
+s,@PREFIX_DIR@,$PREFIX_DIR,;t t
+s,@EXEC_PREFIX_DIR@,$EXEC_PREFIX_DIR,;t t
 s,@BIN_DIR@,$BIN_DIR,;t t
 s,@SBIN_DIR@,$SBIN_DIR,;t t
 s,@LIBEXEC_DIR@,$LIBEXEC_DIR,;t t

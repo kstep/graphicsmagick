@@ -8,7 +8,7 @@
 # effictively in configure scripts.
 #
 usage="\
-Usage: Magick-config [--prefix[=DIR]] [--exec-prefix[=DIR]] [--version] [--cflags] [--cppflags] [--ldflags] [--libs]"
+Usage: Magick-config [--cflags] [--cppflags] [--exec-prefix] [--ldflags] [--libs] [--prefix] [--version]"
 
 if test $# -eq 0; then
       echo "${usage}" 1>&2
@@ -22,6 +22,12 @@ while test $# -gt 0; do
   esac
 
   case $1 in
+    --prefix)
+      echo @PREFIX_DIR@
+      ;;
+    --exec-prefix)
+      echo @EXEC_PREFIX_DIR@
+      ;;
     --version)
       echo @MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@
       ;;

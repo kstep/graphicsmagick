@@ -118,6 +118,7 @@ DLLTOOL = @DLLTOOL@
 DOTDecodeDelegate = @DOTDecodeDelegate@
 DVIDecodeDelegate = @DVIDecodeDelegate@
 ECHO = @ECHO@
+EXEC_PREFIX_DIR = @EXEC_PREFIX_DIR@
 EchoDelegate = @EchoDelegate@
 EditorDelegate = @EditorDelegate@
 FIGDecodeDelegate = @FIGDecodeDelegate@
@@ -196,6 +197,7 @@ PERL = @PERL@
 PERL_MAKE_OPTIONS = @PERL_MAKE_OPTIONS@
 PGPDecodeDelegate = @PGPDecodeDelegate@
 POVDelegate = @POVDelegate@
+PREFIX_DIR = @PREFIX_DIR@
 PSDelegate = @PSDelegate@
 PrintDelegate = @PrintDelegate@
 RADDecodeDelegate = @RADDecodeDelegate@
@@ -300,7 +302,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 @WITH_MODULES_TRUE@libMagick_la_DEPENDENCIES = \
 @WITH_MODULES_TRUE@	$(top_builddir)/ltdl/libltdlc.la
 @WITH_MODULES_FALSE@libMagick_la_DEPENDENCIES = ../coders/libCoders.la
-am__objects_2 = memory.lo blob.lo cache.lo error.lo monitor.lo \
+am__objects_1 = memory.lo blob.lo cache.lo error.lo monitor.lo \
 	constitute.lo image.lo list.lo color.lo quantize.lo segment.lo \
 	zoom.lo transform.lo shear.lo enhance.lo effect.lo decorate.lo \
 	annotate.lo type.lo draw.lo render.lo montage.lo semaphore.lo \
@@ -308,8 +310,8 @@ am__objects_2 = memory.lo blob.lo cache.lo error.lo monitor.lo \
 	magic.lo magick.lo delegate.lo module.lo static.lo timer.lo \
 	utility.lo cache_view.lo stream.lo animate.lo display.lo \
 	widget.lo xwindow.lo PreRvIcccm.lo
-@WITH_MODULES_TRUE@am_libMagick_la_OBJECTS = $(am__objects_2)
-@WITH_MODULES_FALSE@am_libMagick_la_OBJECTS = $(am__objects_2)
+@WITH_MODULES_TRUE@am_libMagick_la_OBJECTS = $(am__objects_1)
+@WITH_MODULES_FALSE@am_libMagick_la_OBJECTS = $(am__objects_1)
 libMagick_la_OBJECTS = $(am_libMagick_la_OBJECTS)
 SCRIPTS = $(bin_SCRIPTS)
 

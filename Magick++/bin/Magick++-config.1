@@ -1,15 +1,17 @@
 .ad l
 .nh
-.TH Magick++-Config 1 "4 November 2000" "ImageMagick"
+.TH Magick++-Config 1 "2 May 2002" "ImageMagick"
 .SH NAME
 Magick++-config \- get information about the installed version of Magick++
 .SH SYNOPSIS
 .B Magick++-config 
-.B [--version]
 .B [--cppflags]
 .B [--cxxflags]
+.B [--exec-prefix]
 .B [--ldflags]
 .B [--libs]
+.B [--prefix]
+.B [--version]
 .SH DESCRIPTION
 .B Magick++-config
 prints the compiler and linker flags required to compile and link programs
@@ -20,7 +22,7 @@ C++ Application Programmer Interface (known as
 ).
 .SH EXAMPLES
 To print the version of the installed distribution of
-.BR ImageMagick ,
+.BR Magick++ ,
 use:
 
 .nf
@@ -37,29 +39,35 @@ C++ Application Programmer Interface, use:
 
 .SH OPTIONS
 .TP
-.B --version
-Print the version of the
-.B ImageMagick
-distribution to standard output.
-.TP
 .B --cppflags
-Print the precompiler flags that are needed to find the
+Print the preprocessor flags that are needed to find the
 .B ImageMagick
-C and C++ include files and ensures that the ImageMagick data structures match between
+C and C++ include files and defines to ensures that the ImageMagick data structures match between
 your program and the installed libraries.
 .TP
 .B --cxxflags
-Print the compiler flags that are needed to compile a program with 
+Print the compiler flags that were used to compile 
 .BR libMagick++ .
 .TP
-.B --libs
-Print the linker flags that are needed to link a program with
-.BR libMagick++ .
+.B --exec-prefix
+Print the directory under which target specific binaries and executables are installed.
 .TP
 .B --ldflags
 Print the linker flags that are needed to link with the
 .B libMagick++
 library.
+.TP
+.B --libs
+Print the linker flags that are needed to link a program with
+.BR libMagick++ .
+.TP
+.B --prefix
+Print the directory under which the package is installed.
+.TP
+.B --version
+Print the version of the
+.B ImageMagick
+distribution to standard output.
 .SH COPYRIGHT
 Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated
 to making software imaging solutions freely available.
