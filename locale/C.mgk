@@ -297,7 +297,7 @@
 					Negative or zero image size
         </Message>
         <Message name="NonOS2HeaderSizeError">
-          Non OS/2 BMP header size less than 40
+          Non OS2 BMP header size less than 40
         </Message>
         <Message name="NotAnARTImageFile">
           Not an ART image file
@@ -563,13 +563,13 @@
         Unable to print
       </Message>
       <Message name="UnbalancedGraphicContextPushPop">
-        unbalanced graphic context push/pop
+        unbalanced graphic context push-pop
       </Message>
       <Message name="URLNotFound">
         URL not found
       </Message>
-    </Draw>
-  </Delegate>
+    </Error>
+  </Draw>
   <File>
     <Open>
       <Error>
