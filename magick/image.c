@@ -936,7 +936,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
           image->generic_profile[i].info,length);
       }
     }
-  clone_image->blob=CloneBlobInfo(image->blob);
+  clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   GetCacheInfo(&clone_image->cache);
   if ((columns != 0) || (rows != 0))
     {
