@@ -2621,8 +2621,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     keyword[MaxTextExtent],
     message[MaxTextExtent],
     *q,
-    *token,
-    value[MaxTextExtent];
+    *token;
 
   ImageAttribute
     *attribute;
@@ -2998,7 +2997,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                 (void) WriteBlobString(image,message);
                 break;
               }
-            if (LocaleCompare("defs",value) == 0)
+            if (LocaleCompare("defs",token) == 0)
               {
                 (void) WriteBlobString(image,"<defs>\n");
                 break;
