@@ -902,9 +902,6 @@ MagickExport void GetToken(const char *start,char **end,char *token)
 */
 MagickExport int GlobExpression(const char *expression,const char *pattern)
 {
-  ExceptionInfo
-    exception;
-
   unsigned int
     done,
     exempt;
@@ -920,6 +917,9 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
     return(True);
   if (strchr(pattern,'['))
     {
+      ExceptionInfo
+        exception;
+
       ImageInfo
         *image_info;
 
@@ -928,7 +928,9 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
       */
       image_info=CloneImageInfo((ImageInfo *) NULL);
       (void) strncpy(image_info->filename,pattern,MaxTextExtent-1);
+      GetExceptionInfo(&exception);
       (void) SetImageInfo(image_info,True,&exception);
+      DestroyExceptionInfo(&exception);
       exempt=(LocaleCompare(image_info->magick,"VID") == 0) ||
         (image_info->subimage &&
         (LocaleCompare(expression,image_info->filename) == 0));
@@ -2798,7 +2800,7 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
 %
 %  The format of the TranslateText method is:
 %
-%      char *TranslateText(const ImageInfo *image_info,const Image *image,
+%      char *TranslateText(const ImageInfo *image_info,Image *image,
 %        const char *formatted_text)
 %
 %  A description of each parameter follows:
@@ -2815,8 +2817,8 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
 %
 %
 */
-MagickExport char *TranslateText(const ImageInfo *image_info,
-  const Image *image,const char *formatted_text)
+MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
+  const char *formatted_text)
 {
   char
     filename[MaxTextExtent],
@@ -2825,9 +2827,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,
 
   const ImageAttribute
     *attribute;
-
-  ExceptionInfo
-    exception;
 
   ImageInfo
     *clone_info;
@@ -2843,13 +2842,12 @@ MagickExport char *TranslateText(const ImageInfo *image_info,
     length;
 
   assert(image != (Image *) NULL);
-  GetExceptionInfo(&exception);
   if ((formatted_text == (const char *) NULL) || (*formatted_text == '\0'))
     return((char *) NULL);
   text=(char *) formatted_text;
   if ((*text == '@') && IsAccessible(text+1))
     {
-      text=(char *) FileToBlob(text+1,&length,&exception);
+      text=(char *) FileToBlob(text+1,&length,&image->exception);
       if (text == (char *) NULL)
         return((char *) NULL);
     }
@@ -2978,7 +2976,8 @@ MagickExport char *TranslateText(const ImageInfo *image_info,
       }
       case 'k':
       {
-        FormatString(q,"%lu",GetNumberColors(image,(FILE *) NULL,&exception));
+        FormatString(q,"%lu",GetNumberColors(image,(FILE *) NULL,
+          &image->exception));
         q=translated_text+strlen(translated_text);
         break;
       }
