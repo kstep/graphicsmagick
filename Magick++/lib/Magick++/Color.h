@@ -11,8 +11,8 @@
 
 #include "Magick++/Include.h"
 
-#define ScaleDoubleToQuantum(quantum) ((unsigned int)(quantum * MaxRGB))
-#define ScaleQuantumToDouble(quantum) (((double)quantum)/MaxRGB)
+#define ScaleDoubleToQuantum(quantum) (static_cast<unsigned int>(quantum * MaxRGB))
+#define ScaleQuantumToDouble(quantum) ((static_cast<double>(quantum)/MaxRGB))
 
 namespace Magick
 {
@@ -303,7 +303,7 @@ inline void Magick::Color::initPixel()
 
 inline void Magick::Color::redQuantum ( Quantum red_ )
 {
-  _pixel->red = (Quantum) (red_ > MaxRGB ? MaxRGB : red_);
+  _pixel->red = static_cast<Quantum>(red_ > MaxRGB ? MaxRGB : red_);
 }
 
 inline Magick::Quantum Magick::Color::redQuantum ( void ) const
@@ -313,7 +313,7 @@ inline Magick::Quantum Magick::Color::redQuantum ( void ) const
 
 inline void Magick::Color::greenQuantum ( Quantum green_ )
 {
-  _pixel->green = (Quantum) (green_ > MaxRGB ? MaxRGB : green_);
+  _pixel->green = static_cast<Quantum>(green_ > MaxRGB ? MaxRGB : green_);
 }
 
 inline Magick::Quantum  Magick::Color::greenQuantum ( void ) const
@@ -323,7 +323,7 @@ inline Magick::Quantum  Magick::Color::greenQuantum ( void ) const
 
 inline void  Magick::Color::blueQuantum ( Quantum blue_ )
 {
-  _pixel->blue = (Quantum) (blue_ > MaxRGB ? MaxRGB : blue_);
+  _pixel->blue = static_cast<Quantum>(blue_ > MaxRGB ? MaxRGB : blue_);
 }
 
 inline Magick::Quantum Magick::Color::blueQuantum ( void ) const
@@ -333,7 +333,7 @@ inline Magick::Quantum Magick::Color::blueQuantum ( void ) const
 
 inline void  Magick::Color::alphaQuantum ( Quantum alpha_ )
 {
-  _pixel->opacity = (Quantum) (alpha_ > OpaqueOpacity ? OpaqueOpacity : alpha_);
+  _pixel->opacity = static_cast<Quantum>(alpha_ > OpaqueOpacity ? OpaqueOpacity : alpha_);
 }
 
 inline Magick::Quantum Magick::Color::alphaQuantum ( void ) const

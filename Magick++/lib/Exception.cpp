@@ -160,7 +160,7 @@ void Magick::throwExceptionExplicit( ExceptionType severity_,
   if ( severity_ == UndefinedException )
     return;
   // Format error message ImageMagick-style
-  std::string message = SetClientName((char *) NULL);
+  std::string message = SetClientName(0);
   if ( message_ )
     {
       message += std::string(": ");

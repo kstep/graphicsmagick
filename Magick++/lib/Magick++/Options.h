@@ -242,16 +242,16 @@ inline void Magick::Options::antiAlias( bool flag_ )
 }
 inline bool Magick::Options::antiAlias( void )
 {
-  return (bool)_imageInfo->antialias;
+  return static_cast<bool>(_imageInfo->antialias);
 }
 
 inline void Magick::Options::adjoin ( bool flag_ )
 {
-  _imageInfo->adjoin = (unsigned int) flag_;
+  _imageInfo->adjoin = static_cast<unsigned int>(flag_);
 }
 inline bool Magick::Options::adjoin ( void ) const
 {
-  return (bool)_imageInfo->adjoin;
+  return static_cast<bool>(_imageInfo->adjoin);
 }
 
 inline void Magick::Options::colorFuzz ( double fuzz_ )
@@ -269,7 +269,7 @@ inline void Magick::Options::compressType ( CompressionType compressType_ )
 }
 inline Magick::CompressionType Magick::Options::compressType ( void ) const
 {
-  return (Magick::CompressionType)_imageInfo->compression;
+  return static_cast<Magick::CompressionType>(_imageInfo->compression);
 }
 
 inline void Magick::Options::depth ( unsigned int depth_ )
@@ -298,7 +298,7 @@ inline void Magick::Options::interlaceType ( Magick::InterlaceType interlace_ )
 }
 inline Magick::InterlaceType Magick::Options::interlaceType ( void ) const
 {
-  return (Magick::InterlaceType)_imageInfo->interlace;
+  return static_cast<Magick::InterlaceType>(_imageInfo->interlace);
 }
 
 
@@ -318,7 +318,7 @@ inline void Magick::Options::monochrome ( bool monochromeFlag_ )
 }
 inline bool Magick::Options::monochrome ( void ) const
 {
-  return (bool)_imageInfo->monochrome;
+  return static_cast<bool>(_imageInfo->monochrome);
 }
 
 inline void Magick::Options::quantizeColors ( unsigned int colors_ )
@@ -336,7 +336,7 @@ inline void Magick::Options::quantizeColorSpace ( Magick::ColorspaceType colorSp
 }
 inline Magick::ColorspaceType Magick::Options::quantizeColorSpace ( void ) const
 {
-  return (Magick::ColorspaceType)_quantizeInfo->colorspace;
+  return static_cast<Magick::ColorspaceType>(_quantizeInfo->colorspace);
 }
 
 inline void Magick::Options::quantizeDither ( bool ditherFlag_ )
@@ -346,7 +346,7 @@ inline void Magick::Options::quantizeDither ( bool ditherFlag_ )
 }
 inline bool Magick::Options::quantizeDither ( void ) const
 {
-  return (bool)_imageInfo->dither;
+  return static_cast<bool>(_imageInfo->dither);
 }
 
 inline void Magick::Options::quantizeTreeDepth ( unsigned int treeDepth_ )
@@ -391,7 +391,7 @@ inline void Magick::Options::verbose ( bool verboseFlag_ )
 }
 inline bool Magick::Options::verbose ( void ) const
 {
-  return (bool)_imageInfo->verbose;
+  return static_cast<bool>(_imageInfo->verbose);
 }
 
 inline MagickLib::AnnotateInfo * Magick::Options::annotateInfo( void )

@@ -20,7 +20,7 @@ int main( int /*argc*/, char ** argv)
   MagickIncarnate(*argv);
 
   string srcdir("");
-  if(getenv("srcdir") != (char*)NULL)
+  if(getenv("srcdir") != 0)
     srcdir = getenv("srcdir") + string("/");
 
   try {

@@ -140,5 +140,5 @@ Magick::BlobRef::BlobRef ( const void* data_,
 // Destructor (actually destroys data)
 Magick::BlobRef::~BlobRef ( void )
 {
-  delete (unsigned char*)_data;
+  delete static_cast<unsigned char*>(_data);
 }

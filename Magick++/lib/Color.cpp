@@ -46,7 +46,7 @@ int Magick::operator <  ( const Magick::Color& left_,
 {
   return (
 	  (
-	   (unsigned int)
+	   static_cast<unsigned int>
 	   ( left_.redQuantum()   * 77 +
 	     left_.greenQuantum() * 150 +
 	     left_.blueQuantum()  * 29
@@ -54,7 +54,7 @@ int Magick::operator <  ( const Magick::Color& left_,
 	   )
 	  <
 	  (
-	   (unsigned int)
+	   static_cast<unsigned int>
 	   ( right_.redQuantum()   * 77 +
 	     right_.greenQuantum() * 150 +
 	     right_.blueQuantum()  * 29
@@ -159,11 +159,11 @@ Magick::Color::operator std::string() const
 #else
   colorstr << "#"
 	   << hex
-	   << setw(2) << (unsigned int)redQuantum()
-	   << setw(2) << (unsigned int)greenQuantum()
-	   << setw(2) << (unsigned int)blueQuantum();
+	   << setw(2) << static_cast<unsigned int>(redQuantum())
+	   << setw(2) << static_cast<unsigned int>(greenQuantum())
+	   << setw(2) << static_cast<unsigned int>(blueQuantum());
   if ( _pixelType == RGBAPixel )
-    colorstr << hex << setw(2) << (unsigned int)alphaQuantum();
+    colorstr << hex << setw(2) << static_cast<unsigned int>(alphaQuantum());
 #endif
 
   colorstr << ends;

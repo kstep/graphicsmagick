@@ -25,7 +25,7 @@ int main( int /*argc*/, char ** argv)
   int failures=0;
 
   string srcdir("");
-  if(getenv("srcdir") != (char*)NULL)
+  if(getenv("srcdir") != 0)
     srcdir = getenv("srcdir") + string("/");
 
   try {

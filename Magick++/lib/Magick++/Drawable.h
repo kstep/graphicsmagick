@@ -34,7 +34,7 @@ namespace Magick
       : _x(x_),
         _y(y_)
       { }
-    ~Coordinate ()
+    virtual ~Coordinate ()
       { }
 
     void   x ( double x_ )
@@ -168,7 +168,7 @@ namespace Magick
       { }
 
     // Destructor
-    ~VPath ( void )
+    virtual ~VPath ( void )
       {
         delete dp;
       }

@@ -45,7 +45,7 @@ void Magick::Montage::updateMontageInfo ( MontageInfo &montageInfo_ ) const
     montageInfo_.pointsize = _pointSize;
 
   if ( _shadow == true )
-    montageInfo_.shadow = (int)true;
+    montageInfo_.shadow = static_cast<int>(true);
 
   if ( _texture.length() != 0 )
     Magick::CloneString( &montageInfo_.texture, _texture );

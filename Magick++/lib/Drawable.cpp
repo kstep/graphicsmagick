@@ -95,9 +95,9 @@ void Magick::DrawableAngle::print (std::ostream& stream_) const
 void Magick::DrawableArc::print (std::ostream& stream_) const
 {
   stream_ << "arc"
-          << " " << Coordinate(_startX,_startY)
-          << " " << Coordinate(_endX,_endY)
-          << " " << Coordinate(_startDegrees,_endDegrees);
+          << " " << Magick::Coordinate(_startX,_startY)
+          << " " << Magick::Coordinate(_endX,_endY)
+          << " " << Magick::Coordinate(_startDegrees,_endDegrees);
 }
 
 // Bezier curve (Coordinate list must contain at least three members)
@@ -118,16 +118,16 @@ void Magick::DrawableBezier::print (std::ostream& stream_) const
 void Magick::DrawableCircle::print (std::ostream& stream_) const
 {
   stream_ << "circle "
-          << Coordinate( _originX, _originY )
+          << Magick::Coordinate( _originX, _originY )
           << " "
-          << Coordinate( _perimX, _perimY );
+          << Magick::Coordinate( _perimX, _perimY );
 }
 
 // Colorize at point using PaintMethod
 void Magick::DrawableColor::print (std::ostream& stream_) const
 {
   stream_ << "color "
-          << Coordinate(_x,_y)
+          << Magick::Coordinate(_x,_y)
           << " ";
   
   switch ( _paintMethod )
@@ -198,7 +198,7 @@ void Magick::DrawableTextDecoration::print (std::ostream& stream_) const
 void Magick::DrawableEllipse::print (std::ostream& stream_) const
 {
   stream_ << "ellipse "
-          << Coordinate(_originX,_originY)
+          << Magick::Coordinate(_originX,_originY)
 	  << " " << _width << "," << _height
 	  << " " << _arcStart << "," << _arcEnd;
 }
@@ -298,8 +298,9 @@ void Magick::DrawableGravity::print (std::ostream& stream_) const
 void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
 {
   stream_ << "image "
-          << Coordinate( _x, _y)
-          << " " << Coordinate( _width, _height)
+          << Magick::Coordinate( _x, _y)
+          << " "
+          << Magick::Coordinate( _width, _height)
           << " \"";
   for ( unsigned int i = 0; i < _image.length(); ++i )
     {
@@ -314,16 +315,16 @@ void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
 void Magick::DrawableLine::print (std::ostream& stream_) const
 {
   stream_ << "line "
-          << Coordinate( _startX, _startY )
+          << Magick::Coordinate( _startX, _startY )
           << " "
-          << Coordinate( _endX, _endY );
+          << Magick::Coordinate( _endX, _endY );
 }
 
 // Change pixel matte value to transparent using PaintMethod
 void Magick::DrawableMatte::print (std::ostream& stream_) const
 {
   stream_ << "matte "
-          << Coordinate( _x, _y )
+          << Magick::Coordinate( _x, _y )
           << " ";
   
   switch ( _paintMethod )
@@ -354,7 +355,7 @@ void Magick::DrawableMatte::print (std::ostream& stream_) const
 void Magick::DrawablePoint::print (std::ostream& stream_) const
 {
   stream_ << "point "
-          << Coordinate( _x, _y );
+          << Magick::Coordinate( _x, _y );
 }
 
 // Text pointsize
@@ -408,9 +409,9 @@ void Magick::DrawablePushGraphicContext::print (std::ostream& stream_) const
 void Magick::DrawableRectangle::print (std::ostream& stream_) const
 {
   stream_ << "rectangle "
-          << Coordinate( _upperLeftX, _upperLeftY )
+          << Magick::Coordinate( _upperLeftX, _upperLeftY )
           << " "
-          << Coordinate( _lowerRightX, _lowerRightY );
+          << Magick::Coordinate( _lowerRightX, _lowerRightY );
 }
 
 // Apply Rotation
@@ -423,9 +424,9 @@ void Magick::DrawableRotation::print (std::ostream& stream_) const
 void Magick::DrawableRoundRectangle::print (std::ostream& stream_) const
 {
   stream_ << "roundRectangle"
-          << " " << Coordinate(_centerX,_centerY)
-          << " " << Coordinate(_width,_hight)
-          << " " << Coordinate(_cornerWidth,_cornerHeight);
+          << " " << Magick::Coordinate(_centerX,_centerY)
+          << " " << Magick::Coordinate(_width,_hight)
+          << " " << Magick::Coordinate(_cornerWidth,_cornerHeight);
 }
 
 // Apply Scaling
@@ -481,7 +482,7 @@ void Magick::DrawableStrokeWidth::print (std::ostream& stream_) const
 void Magick::DrawableText::print (std::ostream& stream_) const
 {
   stream_ << "text "
-          << Coordinate( _x, _y)
+          << Magick::Coordinate( _x, _y)
 	  << " \"";
   for ( unsigned int i = 0; i < _text.length(); ++i )
     {

@@ -169,7 +169,7 @@ Magick::Image::~Image()
   if ( doDelete )
     {
       delete _imgRef;
-      _imgRef = (ImageRef*)NULL;
+      _imgRef = 0;
     }
 }
 
@@ -191,14 +191,14 @@ void Magick::Image::addNoise( NoiseType noiseType_ )
 void Magick::Image::annotate ( const std::string &text_,
 			       const Geometry &location_ )
 {
-  annotate ( text_, location_,  NorthWestGravity, (double)0 );
+  annotate ( text_, location_,  NorthWestGravity, 0 );
 }
 // Text, location, & gravity
 void Magick::Image::annotate ( const std::string &text_,
 			       const Geometry &location_,
 			       GravityType gravity_ )
 {
-  annotate ( text_, location_, gravity_, (double)0 );
+  annotate ( text_, location_, gravity_, 0 );
 }
 // Text, location, degrees, gravity
 void Magick::Image::annotate ( const std::string &text_,
@@ -365,7 +365,7 @@ void Magick::Image::composite ( const Image &compositeImage_,
 
   Geometry offset( 0, 0, xOffset_, yOffset_ );
 
-  ParseImageGeometry (((std::string)offset).c_str(),
+  ParseImageGeometry ((static_cast<std::string>(offset)).c_str(),
 		      &x, &y,
 		      &width, &height );
 
@@ -386,7 +386,7 @@ void Magick::Image::composite ( const Image &compositeImage_,
   unsigned int width = columns();
   unsigned int height = rows();
 
-  ParseImageGeometry (((std::string)offset_).c_str(),
+  ParseImageGeometry (static_cast<std::string>(offset_).c_str(),
 		      &x, &y,
 		      &width, &height );
 
@@ -1184,7 +1184,7 @@ void Magick::Image::sample ( const Geometry &geometry_ )
   unsigned int width = columns();
   unsigned int height = rows();
 
-  ParseImageGeometry (((std::string)geometry_).c_str(),
+  ParseImageGeometry (static_cast<std::string>(geometry_).c_str(),
 		      &x, &y,
 		      &width, &height );
 
@@ -1204,7 +1204,7 @@ void Magick::Image::scale ( const Geometry &geometry_ )
   unsigned int width = columns();
   unsigned int height = rows();
 
-  ParseImageGeometry (((std::string)geometry_).c_str(),
+  ParseImageGeometry (static_cast<std::string>(geometry_).c_str(),
 		      &x, &y,
 		      &width, &height );
 
@@ -1359,7 +1359,7 @@ void Magick::Image::threshold ( double threshold_ )
 void Magick::Image::transform ( const Geometry &imageGeometry_ )
 {
   modifyImage();
-  TransformImage ( &(image()), (char *)0,
+  TransformImage ( &(image()), 0,
 		   std::string(imageGeometry_).c_str() );
   throwImageException();
 }
@@ -1492,7 +1492,7 @@ void Magick::Image::zoom( const Geometry &geometry_ )
   unsigned int width = columns();
   unsigned int height = rows();
 
-  ParseImageGeometry (((std::string)geometry_).c_str(),
+  ParseImageGeometry (static_cast<std::string>(geometry_).c_str(),
 		      &x, &y,
 		      &width, &height );
 
@@ -1716,8 +1716,8 @@ void Magick::Image::classType ( Magick::ClassType class_ )
       // color map and then set to DirectClass type.
       modifyImage();
       SyncImage( image() );
-      LiberateMemory( (void**)&(image()->colormap) );
-      image()->c_class = (MagickLib::ClassType)DirectClass;
+      LiberateMemory( reinterpret_cast<void**>(&(image()->colormap)) );
+      image()->c_class = static_cast<MagickLib::ClassType>(DirectClass);
       return;
     }
 
@@ -1727,12 +1727,12 @@ void Magick::Image::classType ( Magick::ClassType class_ )
       modifyImage();
       quantizeColors(MaxRGB + 1);
       quantize();
-      image()->c_class = (MagickLib::ClassType)PseudoClass;
+      image()->c_class = static_cast<MagickLib::ClassType>(PseudoClass);
     }
 }
 Magick::ClassType Magick::Image::classType ( void ) const
 {
-  return (Magick::ClassType)constImage()->c_class;
+  return static_cast<Magick::ClassType>(constImage()->c_class);
 }
 
 void Magick::Image::colorFuzz ( double fuzz_ )
@@ -2007,7 +2007,7 @@ std::string Magick::Image::format ( void ) const
   const MagickInfo * magick_info
   = GetMagickInfo( constImage()->magick );
 
-  if (( magick_info != (MagickInfo *)0 ) && 
+  if (( magick_info != 0 ) && 
       ( *magick_info->description != '\0' ))
     return std::string(magick_info->description);
 
@@ -2054,7 +2054,7 @@ unsigned int Magick::Image::gifDisposeMethod ( void ) const
 void Magick::Image::iccColorProfile( const Magick::Blob &colorProfile_ )
 {
   ProfileInfo * color_profile = &(image()->color_profile);
-  LiberateMemory( (void**)&color_profile->info );
+  LiberateMemory( reinterpret_cast<void**>(&color_profile->info) );
   color_profile->length = 0;
 
   if ( colorProfile_.data() != 0 )
@@ -2087,7 +2087,7 @@ Magick::InterlaceType Magick::Image::interlaceType ( void ) const
 void Magick::Image::iptcProfile( const Magick::Blob &iptcProfile_ )
 {
   ProfileInfo * iptc_profile = &(image()->iptc_profile);
-  LiberateMemory( (void**)&iptc_profile->info );
+  LiberateMemory( reinterpret_cast<void**>(&iptc_profile->info) );
   iptc_profile->length = 0;
 
   if ( iptcProfile_.data() != 0 )
@@ -2297,7 +2297,7 @@ Magick::Image  Magick::Image::penTexture ( void  ) const
 	CloneImage( const_cast<MagickLib::Image *>(tmpTexture),
 			       0,
 			       0,
-			       (int)true,
+			       static_cast<int>(true),
 			       &exceptionInfo);
       texture.replaceImage( image );
       throwException( exceptionInfo );
@@ -2419,7 +2419,7 @@ void Magick::Image::renderingIntent ( Magick::RenderingIntent renderingIntent_ )
 }
 Magick::RenderingIntent Magick::Image::renderingIntent ( void ) const
 {
-  return (Magick::RenderingIntent)constImage()->rendering_intent;
+  return static_cast<Magick::RenderingIntent>(constImage()->rendering_intent);
 }
 
 void Magick::Image::resolutionUnits ( Magick::ResolutionType resolutionUnits_ )
@@ -2526,7 +2526,7 @@ std::string Magick::Image::tileName ( void ) const
 
 unsigned long Magick::Image::totalColors ( void )
 {
-  return GetNumberColors( image(), (FILE *) NULL);
+  return GetNumberColors( image(), 0);
 }
 
 // Origin of coordinate system to use when annotating with text or drawing
@@ -2573,7 +2573,7 @@ void Magick::Image::transformSkewY ( double skewy_ )
 
 Magick::ImageType Magick::Image::type ( void ) const
 {
-  return (Magick::ImageType)MagickLib::GetImageType( const_cast<MagickLib::Image *>(constImage()) );
+  return static_cast<Magick::ImageType>(MagickLib::GetImageType(const_cast<MagickLib::Image *>(constImage())));
 }
 
 void Magick::Image::verbose ( bool verboseFlag_ )
@@ -2644,7 +2644,7 @@ Magick::Image Magick::Image::operator=( const Magick::Image &image_ )
     {
       // Delete old image reference with associated image and options.
       delete _imgRef;
-      _imgRef = (Magick::ImageRef*)0;
+      _imgRef = 0;
     }
   // Use new image reference
   _imgRef = image_._imgRef;
@@ -2857,11 +2857,11 @@ Magick::ImageRef::~ImageRef( void )
   if ( _image )
     {
       DestroyImages( _image );
-      _image = (MagickLib::Image *)NULL;
+      _image = 0;
     }
 
   delete _options;
-  _options = (Options *)NULL;
+  _options = 0;
 }
 
 //

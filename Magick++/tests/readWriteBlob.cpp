@@ -24,10 +24,10 @@ public:
     : Blob()
     {
       unsigned char* blobData = new unsigned char[100000];
-      stream_.read( (char*)blobData, 100000 );
+      stream_.read( reinterpret_cast<char*>(blobData), 100000 );
       size_t blobLen =  stream_.gcount();
       // Insert data into blob
-      updateNoCopy( (void*)blobData, blobLen );
+      updateNoCopy( reinterpret_cast<void*>(blobData), blobLen );
     }
 };
 
@@ -41,7 +41,7 @@ int main( int /*argc*/, char ** argv)
   int failures=0;
 
   string srcdir;
-  if(getenv("srcdir") != (char*)NULL)
+  if(getenv("srcdir") != 0)
     srcdir = getenv("srcdir") + string("/");
   else
     srcdir = "";
@@ -69,12 +69,12 @@ int main( int /*argc*/, char ** argv)
 	  exit(1);
 	}
       unsigned char* blobData = new unsigned char[100000];
-      in.read( (char*)blobData, 100000 );
+      in.read( reinterpret_cast<char*>(blobData), 100000 );
       size_t blobLen =  in.gcount();
       in.close();
 
       // Construct Magick++ Blob
-      Blob blob((const void*)blobData, blobLen);
+      Blob blob(static_cast<const void*>(blobData), blobLen);
       delete blobData;
 
       // If construction of image fails, an exception should be thrown

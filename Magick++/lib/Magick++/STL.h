@@ -2088,7 +2088,7 @@ namespace Magick
 		      const Montage &montageOpts_ ) {
 
     MagickLib::MontageInfo* montageInfo =
-      (MagickLib::MontageInfo*)MagickLib::AcquireMemory(sizeof(MagickLib::MontageInfo));
+      static_cast<MagickLib::MontageInfo*>(MagickLib::AcquireMemory(sizeof(MagickLib::MontageInfo)));
     MagickLib::ImageInfo* imageInfo = first_->imageInfo();
     MagickLib::GetMontageInfo( imageInfo, montageInfo );
 
@@ -2129,7 +2129,7 @@ namespace Magick
     MagickLib::Image *images = MagickLib::MontageImages( first_->image(),
 							 montageInfo,
 							 &exceptionInfo );
-    if ( images != (MagickLib::Image *)NULL )
+    if ( images != 0 )
       {
 	Magick::Options options;
 	insertImages( montageImages_, images, options );
@@ -2311,7 +2311,7 @@ namespace Magick
   void linkImages( InputIterator first_,
 		   InputIterator last_ ) {
 
-    MagickLib::Image* previous = (MagickLib::Image*) NULL;
+    MagickLib::Image* previous = 0;
     int scene = 0;
     for ( InputIterator iter = first_; iter != last_; ++iter )
       {
@@ -2323,10 +2323,10 @@ namespace Magick
 	MagickLib::Image* current = iter->image();
 
 	current->previous = previous;
-	current->next     = (MagickLib::Image*) NULL;
-	current->orphan   = (int)false; // In a list
+	current->next     = 0;
+	current->orphan   = static_cast<int>(false); // In a list
 
-	if ( previous != (MagickLib::Image*) NULL)
+	if ( previous != 0)
 	  previous->next = current;
 
 	current->scene=scene;
@@ -2342,9 +2342,9 @@ namespace Magick
     for( InputIterator iter = first_; iter != last_; ++iter )
       {
 	MagickLib::Image* image = iter->image();
-	image->previous = (MagickLib::Image*) NULL;
-	image->next = (MagickLib::Image*) NULL;
-	image->orphan = (int)true; // Stand-alone
+	image->previous = 0;
+	image->next = 0;
+	image->orphan = static_cast<int>(true); // Stand-alone
       }
   }
 
@@ -2358,10 +2358,10 @@ namespace Magick
 	do
 	  {
 	    MagickLib::Image* next_image = image->next;
-	    image->next = (MagickLib::Image *)NULL;
+	    image->next = 0;
 	  
-	    if (next_image != (MagickLib::Image *)NULL)
-	      next_image->previous=(MagickLib::Image *)NULL;
+	    if (next_image != 0)
+	      next_image->previous=0;
 	  
 	    sequence_->push_back( Magick::Image( image, &options_ ) );
 	  
