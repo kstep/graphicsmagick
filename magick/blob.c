@@ -132,7 +132,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
         clone_info->magick);
       return((Image *) NULL);
     }
-  DisengageBlob(clone_info->blob);
+  RewindBlob(clone_info->blob);
   if (magick_info->blob_support)
     {
       /*
@@ -145,7 +145,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       image=ReadImage(clone_info,exception);
       DestroyImageInfo(clone_info);
       if (image != (Image *) NULL)
-        DisengageBlob(image->blob);
+        RewindBlob(image->blob);
       return(image);
     }
   /*
@@ -256,14 +256,15 @@ MagickExport void CloseBlob(Image *image)
   image->blob->maximum_extent=SizeBlob(image);
   if (image->blob->data != (unsigned char *) NULL)
     {
-      image->blob->extent=image->blob->length;
-      image->blob->eof=False;
+      if (image->blob->mapped)
+        (void) UnmapBlob(image->blob->data,image->blob->length);
+      RewindBlob(image->blob);
       if (!image->orphan)
         {
           while (image->previous != (Image *) NULL)
             image=image->previous;
           for (image=image->next; image != (Image *) NULL; image=image->next)
-            DisengageBlob(image->blob);
+            RewindBlob(image->blob);
         }
       return;
     }
@@ -324,38 +325,6 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
   assert(blob != (BlobInfo *) NULL);
   assert(blob->signature == MagickSignature);
   LiberateMemory((void **) &blob);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D i s e n g a g e B l o b                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method DisengageBlob disengages the BlobInfo structure.
-%
-%  The format of the DisengageBlob method is:
-%
-%      void DisengageBlob(BlobInfo *blob)
-%
-%  A description of each parameter follows:
-%
-%    o blob: Specifies a pointer to a BlobInfo structure.
-%
-%
-*/
-MagickExport void DisengageBlob(BlobInfo *blob)
-{
-  assert(blob != (BlobInfo *) NULL);
-  blob->mapped=False;
-  blob->length=0;
-  blob->offset=0;
-  blob->data=(unsigned char *) NULL;
 }
 
 /*
@@ -622,7 +591,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       {
         *length=p->blob->length;
         blob=p->blob->data;
-        DisengageBlob(p->blob);
+        RewindBlob(p->blob);
       }
       return(blob);
     }
@@ -902,9 +871,10 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       *image->blob=(*image_info->blob);
       return(True);
     }
-  DisengageBlob(image->blob);
+  RewindBlob(image->blob);
   image->exempt=False;
-  if (image_info->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
+  if (image_info->fifo !=
+      (int (*)(const Image *,const void *,const size_t)) NULL)
     {
       /*
         Use stream fifo.
@@ -1469,6 +1439,39 @@ MagickExport char *ReadBlobString(Image *image,char *string)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e w i n d B l o b                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RewindBlob rewinds the BlobInfo structure.
+%
+%  The format of the RewindBlob method is:
+%
+%      void RewindBlob(BlobInfo *blob)
+%
+%  A description of each parameter follows:
+%
+%    o blob: Specifies a pointer to a BlobInfo structure.
+%
+%
+*/
+MagickExport void RewindBlob(BlobInfo *blob)
+{
+  assert(blob != (BlobInfo *) NULL);
+  blob->eof=False;
+  blob->mapped=False;
+  blob->length=0;
+  blob->offset=0;
+  blob->data=(unsigned char *) NULL;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  S e e k B l o b                                                            %
 %                                                                             %
 %                                                                             %
@@ -1723,7 +1726,7 @@ MagickExport off_t TellBlob(Image *image)
 %    o status:  Method UnmapBlob returns True on success; otherwise,  it
 %      returns False and sets errno to indicate the error.
 %
-%    o map: The address of the binary large object.
+%    o map: The address  of the binary large object.
 %
 %    o length: The length of the binary large object.
 %

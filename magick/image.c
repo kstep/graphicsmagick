@@ -2288,8 +2288,6 @@ MagickExport void DestroyImage(Image *image)
   DestroyExceptionInfo(&image->exception);
   if (image->clip_mask != (Image *) NULL)
     DestroyImage(image->clip_mask);
-  if (image->blob->mapped)
-    (void) UnmapBlob(image->blob->data,image->blob->length);
   DestroyBlobInfo(image->blob);
   DestroyImagePixels(image);
   DestroySemaphoreInfo(image->semaphore);

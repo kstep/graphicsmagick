@@ -57,13 +57,13 @@ extern MagickExport unsigned long
 extern MagickExport void
   CloseBlob(Image *),
   DestroyBlobInfo(BlobInfo *),
-  DisengageBlob(BlobInfo *),
   *FileToBlob(const char *,size_t *,ExceptionInfo *),
   GetBlobInfo(BlobInfo *),
   *ImageToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
   *MapBlob(int,const MapMode,size_t *),
   MSBOrderLong(char *,const size_t),
   MSBOrderShort(char *,const size_t),
+  RewindBlob(BlobInfo *),
   SetBlobQuantum(BlobInfo *,const size_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
