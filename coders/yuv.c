@@ -130,7 +130,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
+    ThrowReaderException(OptionError,MustSpecifyImageSize,image);
   image->depth=8;
   interlace=image_info->interlace;
   horizontal_factor=2;
@@ -146,7 +146,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         vertical_factor=horizontal_factor;
       if ((horizontal_factor != 1) && (horizontal_factor != 2) &&
           (vertical_factor != 1) && (vertical_factor != 2))
-        ThrowReaderException(CorruptImageError,"UnexpectedSamplingFactor",
+        ThrowReaderException(CorruptImageError,UnexpectedSamplingFactor,
           image);
     }
   if ((interlace == UndefinedInterlace) ||
@@ -163,7 +163,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
       if (status == False)
-        ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+        ThrowReaderException(FileOpenError,UnableToOpenFile,image);
       for (i=0; i < image->offset; i++)
         (void) ReadBlobByte(image);
     }
@@ -175,13 +175,13 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     scanline=MagickAllocateMemory(unsigned char *,image->columns);
   if (scanline == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   do
   {
     chroma_image=CloneImage(image,image->columns/horizontal_factor,
       image->rows/vertical_factor,True,exception);
     if (chroma_image == (Image *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     /*
       Convert raster image to pixel packets.
     */
@@ -193,7 +193,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         AppendImageFormat("Y",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
         if (status == False)
-          ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+          ThrowReaderException(FileOpenError,UnableToOpenFile,image);
       }
     for (y=0; y < (long) image->rows; y++)
     {
@@ -255,7 +255,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         AppendImageFormat("U",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
         if (status == False)
-          ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+          ThrowReaderException(FileOpenError,UnableToOpenFile,image);
       }
     if (interlace != NoInterlace)
       {
@@ -282,7 +282,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           AppendImageFormat("V",image->filename);
           status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
           if (status == False)
-            ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+            ThrowReaderException(FileOpenError,UnableToOpenFile,image);
         }
       for (y=0; y < (long) chroma_image->rows; y++)
       {
@@ -307,7 +307,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       TriangleFilter,1.0,exception);
     DestroyImage(chroma_image);
     if (resize_image == (Image *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     for (y=0; y < (long) image->rows; y++)
     {
       q=GetImagePixels(image,0,y,image->columns,1);
@@ -332,7 +332,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
     if (EOFBlob(image))
       {
-        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
           image->filename);
         break;
       }
@@ -509,7 +509,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         vertical_factor=horizontal_factor;
       if ((horizontal_factor != 1) && (horizontal_factor != 2) &&
           (vertical_factor != 1) && (vertical_factor != 2))
-        ThrowWriterException(CorruptImageError,"UnexpectedSamplingFactor",
+        ThrowWriterException(CorruptImageError,UnexpectedSamplingFactor,
           image);
     }
   if ((interlace == UndefinedInterlace) ||
@@ -526,14 +526,14 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       */
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+        ThrowWriterException(FileOpenError,UnableToOpenFile,image);
     }
   else
     {
       AppendImageFormat("Y",image->filename);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+        ThrowWriterException(FileOpenError,UnableToOpenFile,image);
     }
   scene=0;
   do
@@ -548,7 +548,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     yuv_image=ResizeImage(image,width,height,TriangleFilter,1.0,
       &image->exception);
     if (yuv_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitError,image->exception.reason,image);
+      ThrowWriterException2(ResourceLimitError,image->exception.reason,image);
     TransformColorspace(yuv_image,YCbCrColorspace);
     /*
       Downsample image.
@@ -556,7 +556,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     chroma_image=ResizeImage(image,width/horizontal_factor,
       height/vertical_factor,TriangleFilter,1.0,&image->exception);
     if (chroma_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitError,image->exception.reason,image);
+      ThrowWriterException2(ResourceLimitError,image->exception.reason,image);
     TransformColorspace(chroma_image,YCbCrColorspace);
     if (interlace == NoInterlace)
       {
@@ -623,7 +623,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,
               &image->exception);
             if (status == False)
-              ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+              ThrowWriterException(FileOpenError,UnableToOpenFile,image);
           }
         for (y=0; y < (long) chroma_image->rows; y++)
         {
@@ -647,7 +647,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,
               &image->exception);
             if (status == False)
-              ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+              ThrowWriterException(FileOpenError,UnableToOpenFile,image);
           }
         for (y=0; y < (long) chroma_image->rows; y++)
         {

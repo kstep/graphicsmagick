@@ -215,7 +215,7 @@ static void *GetTypeBlob(const char *filename,char *path,size_t *length,
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
   if (!IsAccessible(path))
     {
-      ThrowException(exception,ConfigureError,"UnableToAccessFontFile",path);
+      ThrowException(exception,ConfigureError,UnableToAccessFontFile,path);
       return 0;
     }
   return(FileToBlob(path,length,exception));
@@ -223,23 +223,24 @@ static void *GetTypeBlob(const char *filename,char *path,size_t *length,
 #  if defined(WIN32)
   {
     char
+      *key,
       *key_value;
 
     /*
       Locate file via registry key.
     */
-    key_value=NTRegistryKeyLookup("ConfigurePath");
+    key="ConfigurePath";
+    key_value=NTRegistryKeyLookup(key);
     if (!key_value)
       {
-        ThrowException(exception,ConfigureError,"RegistryKeyLookupFailed",
-          "ConfigurePath");
+        ThrowException(exception,ConfigureError,RegistryKeyLookupFailed,key);
         return 0;
       }
 
     FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,filename);
     if (!IsAccessible(path))
       {
-        ThrowException(exception,ConfigureError,"UnableToAccessFontFile",path);
+        ThrowException(exception,ConfigureError,UnableToAccessFontFile,path);
         return 0;
       }
     return(FileToBlob(path,length,exception));
@@ -305,7 +306,7 @@ static void *GetTypeBlob(const char *filename,char *path,size_t *length,
   }
 #endif
 #endif
-  ThrowException(exception,ConfigureError,"UnableToAccessFontFile",filename);
+  ThrowException(exception,ConfigureError,UnableToAccessFontFile,filename);
   return 0;
 }
 
@@ -575,7 +576,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   }
   if (type_info != (TypeInfo *) NULL)
     {
-      ThrowException(exception,TypeError,"FontSubstitutionRequired",
+      ThrowException(exception,TypeError,FontSubstitutionRequired,
         type_info->family);
       return((TypeInfo *) type_info);
     }
@@ -851,8 +852,7 @@ static unsigned int ReadConfigureFile(const char *basename,
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
-                ThrowException(exception,ConfigureError,
-                  "IncludeElementNestedTooDeeply",path);
+                ThrowException(exception,ConfigureError,IncludeElementNestedTooDeeply,path);
               else
                 {
                   char
@@ -882,8 +882,8 @@ static unsigned int ReadConfigureFile(const char *basename,
         */
         type_info=MagickAllocateMemory(TypeInfo *,sizeof(TypeInfo));
         if (type_info == (TypeInfo *) NULL)
-          MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "UnableToAllocateTypeInfo");
+          MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+            UnableToAllocateTypeInfo);
         (void) memset(type_info,0,sizeof(TypeInfo));
         type_info->path=AcquireString(path);
         type_info->signature=MagickSignature;

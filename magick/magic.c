@@ -338,8 +338,7 @@ static unsigned int ReadConfigureFile(const char *basename,
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
-                ThrowException(exception,ConfigureError,
-                  "IncludeElementNestedTooDeeply",path);
+                ThrowException(exception,ConfigureError,IncludeElementNestedTooDeeply,path);
               else
                 {
                   char
@@ -369,8 +368,8 @@ static unsigned int ReadConfigureFile(const char *basename,
         */
         magic_info=MagickAllocateMemory(MagicInfo *,sizeof(MagicInfo));
         if (magic_info == (MagicInfo *) NULL)
-          MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "UnableToAllocateMagicInfo");
+          MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+            UnableToAllocateMagicInfo);
         (void) memset(magic_info,0,sizeof(MagicInfo));
         magic_info->path=AcquireString(path);
         magic_info->signature=MagickSignature;

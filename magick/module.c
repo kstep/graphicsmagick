@@ -333,7 +333,7 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
           message[MaxTextExtent];
         
         FormatString(message,"\"%.256s: %.256s\"",module_path,lt_dlerror());
-        ThrowException(&(*image)->exception,ModuleError,"UnableToLoadModule",
+        ThrowException(&(*image)->exception,ModuleError,UnableToLoadModule,
           message);
         return(status);
       }
@@ -409,7 +409,7 @@ static const CoderInfo *GetCoderInfo(const char *tag,
     if (LocaleCompare(p->tag,tag) == 0)
       break;
   if (p == (CoderInfo *) NULL)
-    ThrowException(exception,ModuleError,"UnrecognizedModule",tag);
+    ThrowException(exception,ModuleError,UnrecognizedModule,tag);
   else
     if (p != coder_list)
       {
@@ -530,7 +530,7 @@ static unsigned int FindMagickModule(const char *filename,
     FormatString(path,"%.512s%.256s",module_directory,filename);
     if (!IsAccessible(path))
       {
-        ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",path);
+        ThrowException(exception,ConfigureError,UnableToAccessModuleFile,path);
         return (False);
       }
     return (True);
@@ -559,7 +559,7 @@ static unsigned int FindMagickModule(const char *filename,
     key_value=NTRegistryKeyLookup(key);
     if (key_value == (char *) NULL)
       {
-        ThrowException(exception,ConfigureError,"RegistryKeyLookupFailed",key);
+        ThrowException(exception,ConfigureError,RegistryKeyLookupFailed,key);
         return (False);
       }
 
@@ -567,7 +567,7 @@ static unsigned int FindMagickModule(const char *filename,
                  filename);
     if (!IsAccessible(path))
       {
-        ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",
+        ThrowException(exception,ConfigureError,UnableToAccessModuleFile,
                        path);
         return (False);
       }
@@ -657,7 +657,7 @@ static unsigned int FindMagickModule(const char *filename,
     return(True);
 #endif /* End defined(UseInstalledMagick) */
   if (exception->severity < ConfigureError)
-    ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",
+    ThrowException(exception,ConfigureError,UnableToAccessModuleFile,
       filename);
   return(False);
 }
@@ -823,8 +823,7 @@ static void *GetModuleBlob(const char *filename,char *path,size_t *length,
           */
           if (exception->severity < ConfigureError)
             {
-              ThrowException(exception,ConfigureError,
-                             "UnableToAccessModuleFile",filename);
+              ThrowException(exception,ConfigureError,UnableToAccessModuleFile,filename);
             }
         }
     }
@@ -884,7 +883,7 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *name,
             {
               if (lt_dlinit() != 0)
                 MagickFatalError(ModuleFatalError,
-                  "UnableToInitializeModuleLoader",lt_dlerror());
+                  UnableToInitializeModuleLoader,lt_dlerror());
               ltdl_initialized=True;
             }
           RegisterStaticModules();
@@ -1079,7 +1078,7 @@ MagickExport unsigned int OpenModule(const char *module,
     if (handle == (ModuleHandle) NULL)
       {
         FormatString(message,"\"%.1024s: %.1024s\"",path,lt_dlerror());
-        ThrowException(exception,ModuleError,"UnableToLoadModule",message);
+        ThrowException(exception,ModuleError,UnableToLoadModule,message);
         return(False);
       }
     /*
@@ -1103,7 +1102,7 @@ MagickExport unsigned int OpenModule(const char *module,
     if (method == (void (*)(void)) NULL)
       {
         FormatString(message,"\"%.1024s: %.1024s\"",module_name,lt_dlerror());
-        ThrowException(exception,ModuleError,"UnableToRegisterImageFormat",
+        ThrowException(exception,ModuleError,UnableToRegisterImageFormat,
           message);
         return(False);
       }
@@ -1261,8 +1260,7 @@ static unsigned int ReadConfigureFile(const char *basename,
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
-                ThrowException(exception,ConfigureError,
-                  "IncludeElementNestedTooDeeply",path);
+                ThrowException(exception,ConfigureError,IncludeElementNestedTooDeeply,path);
               else
                 {
                   char
@@ -1292,8 +1290,8 @@ static unsigned int ReadConfigureFile(const char *basename,
         */
         module_info=MagickAllocateMemory(ModuleInfo *,sizeof(ModuleInfo));
         if (module_info == (ModuleInfo *) NULL)
-          MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "UnableToAllocateModuleInfo");
+          MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+            UnableToAllocateModuleInfo);
         (void) memset(module_info,0,sizeof(ModuleInfo));
         module_info->path=AcquireString(path);
         module_info->signature=MagickSignature;
@@ -1490,8 +1488,8 @@ static CoderInfo *SetCoderInfo(const char *tag)
   assert(tag != (const char *) NULL);
   entry=MagickAllocateMemory(CoderInfo *,sizeof(CoderInfo));
   if (entry == (CoderInfo *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateModuleInfo");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateModuleInfo);
   (void) memset(entry,0,sizeof(CoderInfo));
   entry->tag=AcquireString(tag);
   entry->signature=MagickSignature;
@@ -1679,7 +1677,7 @@ static unsigned int UnloadModule(const CoderInfo *coder_info,
   if (method == (void (*)(void)) NULL)
     {
       FormatString(message,"\"%.1024s: %.1024s\"",name,lt_dlerror());
-      ThrowException(exception,ModuleError,"FailedToFindSymbol",message);
+      ThrowException(exception,ModuleError,FailedToFindSymbol,message);
       status=False;
     }
   else
@@ -1687,7 +1685,7 @@ static unsigned int UnloadModule(const CoderInfo *coder_info,
   if(lt_dlclose((ModuleHandle) coder_info->handle))
     {
       FormatString(message,"\"%.1024s: %.1024s\"",name,lt_dlerror());
-      ThrowException(exception,ModuleError,"FailedToCloseModule",message);
+      ThrowException(exception,ModuleError,FailedToCloseModule,message);
       status=False;
     }
   return (status);

@@ -196,8 +196,8 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
   */
   semaphore_info=MagickAllocateMemory(SemaphoreInfo *,sizeof(SemaphoreInfo));
   if (semaphore_info == (SemaphoreInfo *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateSemaphoreInfo");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateSemaphoreInfo);
   memset(semaphore_info,0,sizeof(SemaphoreInfo));
   /*
     Initialize the semaphore.

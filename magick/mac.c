@@ -1087,11 +1087,11 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   picture_handle=(PicHandle)
     NewHandle(Max(GetBlobSize(image)-PICTHeaderSize,PICTHeaderSize));
   if (picture_handle == nil)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   HLock((Handle) picture_handle);
   (void) ReadBlob(image,PICTHeaderSize,*(char **) picture_handle);
   status=
@@ -1099,7 +1099,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   if (status == False)
     {
       DisposeHandle((Handle) picture_handle);
-      ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
+      ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
     }
   GetGWorld(&port,&device);
   theErr=NewGWorld(&graphic_world,0,&(**picture_handle).picFrame,nil,nil,
@@ -1107,7 +1107,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   if ((theErr != noErr) && (graphic_world == nil))
     {
       DisposeHandle((Handle) picture_handle);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     }
   HUnlock((Handle) picture_handle);
   SetGWorld(graphic_world,nil);
@@ -1116,7 +1116,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
     {
       DisposeGWorld(graphic_world);
       DisposeHandle((Handle) picture_handle);
-      ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
+      ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
     }
   BottleneckTest(picture_handle,&codec,&depth,&colormap_id);
   switch (codec)
@@ -1163,7 +1163,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
             DisposeHandle((Handle) picture_info.theColorTable);
           DisposeGWorld(graphic_world);
           DisposeHandle((Handle) picture_handle);
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         }
       for (x=0; x < image->colors; x++)

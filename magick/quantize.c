@@ -380,8 +380,8 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
     Allocate image colormap.
   */
   if (!AllocateImageColormap(image,cube_info->colors))
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToQuantizeImage");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToQuantizeImage);
   image->colors=0;
   is_grayscale=image->is_grayscale;
   is_monochrome=image->is_monochrome;
@@ -614,8 +614,8 @@ static unsigned int ClassifyImageColors(CubeInfo *cube_info,const Image *image,
             node_info->census|=(1 << id);
             node_info->child[id]=GetNodeInfo(cube_info,id,level,node_info);
             if (node_info->child[id] == (NodeInfo *) NULL)
-              ThrowException(exception,ResourceLimitError,
-                "MemoryAllocationFailed","UnableToQuantizeImage");
+              ThrowException3(exception,ResourceLimitError,
+                MemoryAllocationFailed,UnableToQuantizeImage);
             if (level == 8)
               cube_info->colors++;
           }
@@ -692,8 +692,8 @@ static unsigned int ClassifyImageColors(CubeInfo *cube_info,const Image *image,
             node_info->census|=(1 << id);
             node_info->child[id]=GetNodeInfo(cube_info,id,level,node_info);
             if (node_info->child[id] == (NodeInfo *) NULL)
-              ThrowException(exception,ResourceLimitError,
-                "MemoryAllocationFailed","UnableToQuantizeImage");
+              ThrowException3(exception,ResourceLimitError,
+                MemoryAllocationFailed,UnableToQuantizeImage);
             if (level == cube_info->depth)
               cube_info->colors++;
           }
@@ -759,8 +759,8 @@ MagickExport QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
 
   clone_info=MagickAllocateMemory(QuantizeInfo *,sizeof(QuantizeInfo));
   if (clone_info == (QuantizeInfo *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateQuantizeInfo");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateQuantizeInfo);
   GetQuantizeInfo(clone_info);
   if (quantize_info == (QuantizeInfo *) NULL)
     return(clone_info);
@@ -1722,8 +1722,8 @@ MagickExport unsigned int MapImage(Image *image,const Image *map_image,
     image->matte ? TransparentColorspace : RGBColorspace;
   cube_info=GetCubeInfo(&quantize_info,8);
   if (cube_info == (CubeInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToMapImage");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToMapImage);
   status=ClassifyImageColors(cube_info,map_image,&image->exception);
   if (status != False)
     {
@@ -1804,8 +1804,8 @@ MagickExport unsigned int MapImages(Image *images,const Image *map_image,
   */
   cube_info=GetCubeInfo(&quantize_info,8);
   if (cube_info == (CubeInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToMapImageSequence");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToMapImageSequence);
   status=ClassifyImageColors(cube_info,map_image,&image->exception);
   if (status != False)
     {
@@ -1889,8 +1889,8 @@ MagickExport unsigned int OrderedDitherImage(Image *image)
   */
   (void) NormalizeImage(image);
   if (!AllocateImageColormap(image,2))
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToDitherImage");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToDitherImage);
   /*
     Dither image with the ordered dithering technique.
   */
@@ -2145,8 +2145,8 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
   */
   cube_info=GetCubeInfo(quantize_info,depth);
   if (cube_info == (CubeInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToQuantizeImage");
+    ThrowBinaryException3(ResourceLimitError,
+      MemoryAllocationFailed,UnableToQuantizeImage);
   if (quantize_info->colorspace != RGBColorspace)
     TransformColorspace(image,quantize_info->colorspace);
   status=ClassifyImageColors(cube_info,image,&image->exception);
@@ -2265,8 +2265,8 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
   */
   cube_info=GetCubeInfo(quantize_info,depth);
   if (cube_info == (CubeInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToQuantizeImageSequence");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToQuantizeImageSequence);
   image=images;
   for (i=0; image != (Image *) NULL; i++)
   {

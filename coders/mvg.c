@@ -142,7 +142,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   if ((image->columns == 0) || (image->rows == 0))
     {
       char
@@ -170,7 +170,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
+    ThrowReaderException(OptionError,MustSpecifyImageSize,image);
   /*
     Render drawing.
   */
@@ -298,10 +298,10 @@ static unsigned int WriteMVGImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   attribute=GetImageAttribute(image,"[MVG]");
   if (attribute == (ImageAttribute *) NULL)
-    ThrowWriterException(OptionError,"NoImageVectorGraphics",image);
+    ThrowWriterException(CoderError,NoImageVectorGraphics,image);
   status=OpenBlob(image_info,image,WriteBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   (void) WriteBlob(image,strlen(attribute->value),attribute->value);
   CloseBlob(image);
   return(True);

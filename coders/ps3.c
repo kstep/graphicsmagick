@@ -136,7 +136,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   if(!AcquireTemporaryFileName(filename))
     {
-      ThrowBinaryException(FileOpenError,"UnableToCreateTemporaryFile",
+      ThrowBinaryException(FileOpenError,UnableToCreateTemporaryFile,
         filename)
     }
   huffman_image=CloneImage(image,0,0,True,&image->exception);
@@ -158,7 +158,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (tiff == (TIFF *) NULL)
     {
       LiberateTemporaryFile(filename);
-      ThrowBinaryException(FileOpenError,"UnableToOpenFile",
+      ThrowBinaryException(FileOpenError,UnableToOpenFile,
         image_info->filename)
     }
   /*
@@ -174,7 +174,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
     {
       TIFFClose(tiff);
       LiberateTemporaryFile(filename);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
         (char *) NULL)
     }
   /*
@@ -202,7 +202,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateError,"TIFFLibraryIsNotAvailable",image->filename)
+  ThrowBinaryException(MissingDelegateError,TIFFLibraryIsNotAvailable,image->filename)
 }
 #endif
 
@@ -369,7 +369,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
@@ -379,8 +379,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     case JPEGCompression:
     {
       compression=RLECompression;
-      ThrowException(&image->exception,MissingDelegateError,
-        "JPEGLibraryIsNotAvailable",image->filename);
+      ThrowException(&image->exception,MissingDelegateError,JPEGLibraryIsNotAvailable,image->filename);
       break;
     }
 #endif
@@ -388,8 +387,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     case LZWCompression:
     {
       compression=RLECompression;
-      ThrowException(&image->exception,MissingDelegateError,
-        "LZWEncodingNotEnabled",image->filename);
+      ThrowException(&image->exception,MissingDelegateError,LZWEncodingNotEnabled,image->filename);
       break;
     }
 #endif
@@ -397,8 +395,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     case ZipCompression:
     {
       compression=RLECompression;
-      ThrowException(&image->exception,MissingDelegateError,
-        "ZipLibraryIsNotAvailable",image->filename);
+      ThrowException(&image->exception,MissingDelegateError,ZipLibraryIsNotAvailable,image->filename);
       break;
     }
 #endif
@@ -561,7 +558,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         */
         jpeg_image=CloneImage(image,0,0,True,&image->exception);
         if (jpeg_image == (Image *) NULL)
-          ThrowWriterException(CoderError,image->exception.reason,image);
+          ThrowWriterException2(CoderError,image->exception.reason,image);
         (void) strcpy(jpeg_image->magick,"JPEG");
         blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
         (void) WriteBlob(image,length,blob);
@@ -585,7 +582,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         length=4*number_pixels;
         pixels=MagickAllocateMemory(unsigned char *,length);
         if (pixels == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
             image);
         /*
           Dump Packbit encoded pixels.
@@ -811,7 +808,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
   compressed_packets=(unsigned long) (1.001*length+12);
   compressed_pixels=MagickAllocateMemory(unsigned char *,compressed_packets);
   if (compressed_pixels == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
       (char *) NULL);
   stream.next_in=pixels;
   stream.avail_in=(unsigned int) length;
@@ -831,7 +828,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
       compressed_packets=stream.total_out;
     }
   if (status)
-    ThrowBinaryException(CoderError,"UnableToZipCompressImage",(char *) NULL)
+    ThrowBinaryException(CoderError,UnableToZipCompressImage,(char *) NULL)
   else
     for (i=0; i < (long) compressed_packets; i++)
       (void) WriteBlobByte(image,compressed_pixels[i]);
@@ -844,7 +841,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(CoderError,"ZipLibraryIsNotAvailable",image->filename);
+  ThrowBinaryException(CoderError,ZipLibraryIsNotAvailable,image->filename);
   return(False);
 }
 #endif

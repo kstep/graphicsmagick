@@ -131,7 +131,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (list == (char **) NULL)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
     }
   list[0]=(char *) AllocateString((char *) NULL);
   (void) strncpy(list[0],image_info->filename,MaxTextExtent-1);
@@ -141,7 +141,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((status == False) || (number_files == 0))
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
     }
   DestroyImage(image);
   /*
@@ -197,7 +197,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image == (Image *) NULL)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-      ThrowReaderException(CorruptImageError,"UnableToReadVIDImage",image)
+      ThrowReaderException(CorruptImageError,UnableToReadVIDImage,image)
     }
   while (image->previous != (Image *) NULL)
     image=image->previous;
@@ -211,7 +211,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (montage_image == (Image *) NULL)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-      ThrowReaderException(CorruptImageError,"UnableToReadVIDImage",image)
+      ThrowReaderException(CorruptImageError,UnableToReadVIDImage,image)
     }
   DestroyImageList(image);
   MagickFreeMemory(list[0]);
@@ -331,7 +331,7 @@ static unsigned int WriteVIDImage(const ImageInfo *image_info,Image *image)
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   montage_image=MontageImages(image,montage_info,&image->exception);
   if (montage_image == (Image *) NULL)
-    ThrowWriterException(CorruptImageError,image->exception.reason,image);
+    ThrowWriterException2(CorruptImageError,image->exception.reason,image);
   FormatString(montage_image->filename,"miff:%.1024s",image->filename);
   status=WriteImage(image_info,montage_image);
   DestroyImageList(montage_image);

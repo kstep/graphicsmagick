@@ -156,8 +156,8 @@ MagickExport Image *ConstituteImage(const unsigned long width,
   if (image == (Image *) NULL)
     return((Image *) NULL);
   if ((width == 0) || (height == 0))
-    ThrowBinaryException(OptionError,"UnableToConstituteImage",
-      "NonzeroWidthAndHeightRequired");
+    ThrowBinaryException3(OptionError,UnableToConstituteImage,
+      NonzeroWidthAndHeightRequired);
   image->columns=width;
   image->rows=height;
 
@@ -218,15 +218,15 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         case 'I':
           {
             if (!AllocateImageColormap(image,MaxColormapSize))
-              ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-                "UnableToConstituteImage");
+              ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+                UnableToConstituteImage);
             switch_map[i]=IntensityMapQuantum;
             break;
           }
         default:
           {
             DestroyImage(image);
-            ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
+            ThrowImageException(OptionError,UnrecognizedPixelMap,map)
               break;
           }
         }
@@ -290,7 +290,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
+                ThrowImageException(OptionError,UnrecognizedPixelMap,map)
               }
             }
           }
@@ -354,7 +354,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
+                ThrowImageException(OptionError,UnrecognizedPixelMap,map)
               }
             }
           }
@@ -418,7 +418,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
+                ThrowImageException(OptionError,UnrecognizedPixelMap,map)
               }
             }
           }
@@ -482,7 +482,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
+                ThrowImageException(OptionError,UnrecognizedPixelMap,map)
               }
             }
           }
@@ -546,7 +546,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
+                ThrowImageException(OptionError,UnrecognizedPixelMap,map)
               }
             }
           }
@@ -610,7 +610,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
+                ThrowImageException(OptionError,UnrecognizedPixelMap,map)
               }
             }
           }
@@ -624,7 +624,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
     default:
     {
       DestroyImage(image);
-      ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
+      ThrowImageException(OptionError,UnrecognizedPixelMap,map)
     }
   }
   if (image->storage_class == PseudoClass)
@@ -784,7 +784,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             switch_map[i]=RedMapQuantum;
             if (image->colorspace == CMYKColorspace)
               break;
-            ThrowException(exception,OptionError,"ColorSeparatedImageRequired",map);
+            ThrowException(exception,OptionError,ColorSeparatedImageRequired,map);
             return(False);
           }
         case 'M':
@@ -792,7 +792,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             switch_map[i]=GreenMapQuantum;
             if (image->colorspace == CMYKColorspace)
               break;
-            ThrowException(exception,OptionError,"ColorSeparatedImageRequired",map);
+            ThrowException(exception,OptionError,ColorSeparatedImageRequired,map);
             return(False);
           }
         case 'Y':
@@ -800,7 +800,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             switch_map[i]=BlueMapQuanum;
             if (image->colorspace == CMYKColorspace)
               break;
-            ThrowException(exception,OptionError,"ColorSeparatedImageRequired",map);
+            ThrowException(exception,OptionError,ColorSeparatedImageRequired,map);
             return(False);
           }
         case 'K':
@@ -808,7 +808,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             switch_map[i]=OpacityMapQuantum;
             if (image->colorspace == CMYKColorspace)
               break;
-            ThrowException(exception,OptionError,"ColorSeparatedImageRequired",map);
+            ThrowException(exception,OptionError,ColorSeparatedImageRequired,map);
             return(False);
           }
         case 'I':
@@ -818,7 +818,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
           }
         default:
           {
-            ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
+            ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
             return(False);
           }
         }
@@ -870,7 +870,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               default:
               {
-                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
+                ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
                 return(False);
               }
             }
@@ -924,7 +924,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               default:
               {
-                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
+                ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
                 return(False);
               }
             }
@@ -978,7 +978,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               default:
               {
-                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
+                ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
                 return(False);
               }
             }
@@ -1032,7 +1032,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               default:
               {
-                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
+                ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
                 return(False);
               }
             }
@@ -1086,7 +1086,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               default:
               {
-                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
+                ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
                 return(False);
               }
             }
@@ -1140,7 +1140,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               default:
               {
-                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
+                ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
                 return(False);
               }
             }
@@ -1152,7 +1152,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
     }
     default:
     {
-      ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
+      ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
       return(False);
     }
   }
@@ -2776,8 +2776,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           */
           if(!AcquireTemporaryFileName(clone_info->filename))
             {
-              ThrowException(exception,FileOpenError,
-                "UnableToCreateTemporaryFile",clone_info->filename);
+              ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,clone_info->filename);
               CloseBlob(image);
               DestroyImageInfo(clone_info);
               DestroyImage(image);
@@ -2817,17 +2816,15 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
             */
             if (clone_info->filename[0] == 0)
               {
-                ThrowException(exception,MissingDelegateError,
-                "NoDecodeDelegateForThisImageFormat",clone_info->magick);
+                ThrowException(exception,MissingDelegateError,NoDecodeDelegateForThisImageFormat,clone_info->magick);
               }
             else if (IsAccessibleAndNotEmpty(clone_info->filename))
               {
-                ThrowException(exception,MissingDelegateError,
-                "NoDecodeDelegateForThisImageFormat",clone_info->filename);
+                ThrowException(exception,MissingDelegateError, NoDecodeDelegateForThisImageFormat,clone_info->filename);
               }
             else
               {
-                ThrowException(exception,FileOpenError,"UnableToOpenFile",
+                ThrowException(exception,FileOpenError,UnableToOpenFile,
                   clone_info->filename);
               }
             }
@@ -2848,7 +2845,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       (void) strncpy(image->filename,clone_info->filename,MaxTextExtent-1);
       if(!AcquireTemporaryFileName(clone_info->filename))
         {
-          ThrowException(exception,FileOpenError,"UnableToCreateTemporaryFile",
+          ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,
             clone_info->filename);
           DestroyImageInfo(clone_info);
           return((Image *) NULL);
@@ -2867,10 +2864,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           if (exception->severity == UndefinedException)
           {
             if (IsAccessibleAndNotEmpty(clone_info->filename))
-              ThrowException(exception,MissingDelegateError,
-                "NoDecodeDelegateForThisImageFormat",clone_info->filename);
+              ThrowException(exception,MissingDelegateError,NoDecodeDelegateForThisImageFormat,clone_info->filename);
             else
-              ThrowException(exception,FileOpenError,"UnableToOpenFile",
+              ThrowException(exception,FileOpenError,UnableToOpenFile,
                 clone_info->filename);
           }
           if (clone_info->temporary)
@@ -2963,8 +2959,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         }
       }
       if (subimages == (Image *) NULL)
-        ThrowException(exception,OptionError,
-          "SubimageSpecificationReturnsNoImages",clone_info->filename);
+        ThrowException(exception,OptionError,SubimageSpecificationReturnsNoImages,clone_info->filename);
       else
         {
           while (subimages->previous != (Image *) NULL)
@@ -2975,8 +2970,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     }
   if (image->blob->status)
     {
-      ThrowException(exception,CorruptImageError,
-        "AnErrorHasOccurredReadingFromFile",clone_info->filename);
+      ThrowException(exception,CorruptImageError,AnErrorHasOccurredReadingFromFile,clone_info->filename);
       DestroyImageInfo(clone_info);
       return((Image *) NULL);
     }
@@ -3072,6 +3066,8 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
     return((Image *) NULL);
   Strip(command);
   images=StringToArgv(command,&number_images);
+  if (images == (char **) NULL)
+    return((Image *) NULL);
   MagickFreeMemory(command);
   /*
     Read the images into a linked list.
@@ -3159,11 +3155,11 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   image=(Image *) NULL;
   for (p=content; (*p != ',') && (*p != '\0'); p++);
   if (*p == '\0')
-    ThrowReaderException(CorruptImageWarning,"CorruptImage",image);
+    ThrowReaderException(CorruptImageError,CorruptImage,image);
   p++;
   blob=Base64Decode(p,&length);
   if (length == 0)
-    ThrowReaderException(CorruptImageWarning,"CorruptImage",image);
+    ThrowReaderException(CorruptImageError,CorruptImage,image);
   handler=SetMonitorHandler((MonitorHandler) NULL);
   image=BlobToImage(image_info,blob,length,exception);
   (void) SetMonitorHandler(handler);
@@ -3278,8 +3274,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           */
           if(!AcquireTemporaryFileName(image->filename))
             {
-              ThrowException(&image->exception,FileOpenError,
-                "UnableToCreateTemporaryFile",image->filename);
+              ThrowException(&image->exception,FileOpenError,UnableToCreateTemporaryFile,image->filename);
               DestroyImageInfo(clone_info);
               return(False);
             }
@@ -3297,8 +3292,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           (magick_info->encoder == NULL))
         {
           DestroyImageInfo(clone_info);
-          ThrowBinaryException(MissingDelegateError,
-            "NoEncodeDelegateForThisImageFormat",image->filename)
+          ThrowBinaryException(MissingDelegateError,NoEncodeDelegateForThisImageFormat,image->filename)
         }
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
@@ -3309,7 +3303,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   (void) strncpy(image->magick,clone_info->magick,MaxTextExtent-1);
   DestroyImageInfo(clone_info);
   if (image->blob->status)
-    ThrowBinaryException(CorruptImageError,"AnErrorHasOccurredWritingToFile",
+    ThrowBinaryException(CorruptImageError,AnErrorHasOccurredWritingToFile,
       image->filename);
   return(status);
 }

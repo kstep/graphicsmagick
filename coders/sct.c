@@ -142,7 +142,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read control block.
   */
@@ -153,12 +153,12 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (LocaleNCompare((char *) magick,"BM",2) != 0) &&
       (LocaleNCompare((char *) magick,"PG",2) != 0) &&
       (LocaleNCompare((char *) magick,"TX",2) != 0))
-    ThrowReaderException(CorruptImageError,"NotASCTImageFile",image);
+    ThrowReaderException(CorruptImageError,NotASCTImageFile,image);
   if ((LocaleNCompare((char *) magick,"LW",2) == 0) ||
       (LocaleNCompare((char *) magick,"BM",2) == 0) ||
       (LocaleNCompare((char *) magick,"PG",2) == 0) ||
       (LocaleNCompare((char *) magick,"TX",2) == 0))
-    ThrowReaderException(CoderError,"OnlyContinuousTonePictureSupported",image);
+    ThrowReaderException(CoderError,OnlyContinuousTonePictureSupported,image);
   (void) ReadBlob(image,174,(char *) buffer);
   (void) ReadBlob(image,768,(char *) buffer);
   /*
@@ -229,7 +229,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
   }
   if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
   CloseBlob(image);
   return(image);

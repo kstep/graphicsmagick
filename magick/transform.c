@@ -123,8 +123,8 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
       ((chop_info->y+(long) chop_info->height) < 0) ||
       (chop_info->x > (long) image->columns) ||
       (chop_info->y > (long) image->rows))
-    ThrowImageException(OptionError,"GeometryDoesNotContainImage",
-      "UnableToChopImage");
+    ThrowImageException3(OptionError,GeometryDoesNotContainImage,
+      UnableToChopImage);
   clone_info=(*chop_info);
   if ((clone_info.x+(long) clone_info.width) > (long) image->columns)
     clone_info.width=(unsigned long) ((long) image->columns-clone_info.x);
@@ -257,8 +257,8 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(ImageError,"ImageSequenceIsRequired",
-      "UnableToCoalesceImage");
+    ThrowImageException3(ImageError,ImageSequenceIsRequired,
+      UnableToCoalesceImage);
   /*
     Clone first image in sequence.
   */
@@ -381,8 +381,8 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
           ((geometry->y+(long) geometry->height) < 0) ||
           (geometry->x >= (long) image->columns) ||
           (geometry->y >= (long) image->rows))
-        ThrowImageException(OptionError,"GeometryDoesNotContainImage",
-          "UnableToCropImage");
+        ThrowImageException(OptionError,GeometryDoesNotContainImage,
+          MagickMsg(ResourceLimitError,UnableToCropImage));
     }
   page=(*geometry);
   if ((page.width != 0) || (page.height != 0))
@@ -418,12 +418,12 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
         page.y=0;
       if ((((long) page.width+page.x) > (long) image->columns) ||
           (((long) page.height+page.y) > (long) image->rows))
-        ThrowImageException(OptionError,"GeometryDoesNotContainImage",
-          "UnableToCropImage");
+        ThrowImageException(OptionError,GeometryDoesNotContainImage,
+          MagickMsg(ResourceLimitError,UnableToCropImage));
     }
   if ((page.width == 0) || (page.height == 0))
-    ThrowImageException(OptionError,"GeometryDimensionsAreZero",
-      "UnableToCropImage");
+    ThrowImageException(OptionError,GeometryDimensionsAreZero,
+      MagickMsg(ResourceLimitError,UnableToCropImage));
   if ((page.width == image->columns) && (page.height == image->rows) &&
       (page.x == 0) && (page.y == 0))
     return(CloneImage(image,0,0,True,exception));
@@ -524,16 +524,16 @@ MagickExport Image *DeconstructImages(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(ImageError,"ImageSequenceIsRequired",
-      "UnableToDeconstructImageSequence");
+    ThrowImageException3(ImageError,ImageSequenceIsRequired,
+      UnableToDeconstructImageSequence);
   /*
     Ensure the image are the same size.
   */
   for (next=image; next != (Image *) NULL; next=next->next)
   {
     if ((next->columns != image->columns) || (next->rows != image->rows))
-      ThrowImageException(OptionError,"ImagesAreNotTheSameSize",
-        "UnableToDeconstructImageSequence");
+      ThrowImageException(OptionError,ImagesAreNotTheSameSize,
+        MagickMsg(ImageError,UnableToDeconstructImageSequence));
   }
   /*
     Allocate memory.
@@ -541,8 +541,8 @@ MagickExport Image *DeconstructImages(const Image *image,
   bounds=MagickAllocateMemory(RectangleInfo *,
     GetImageListLength(image)*sizeof(RectangleInfo));
   if (bounds == (RectangleInfo *) NULL)
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToDeconstructImageSequence");
+    ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
+      MagickMsg(ImageError,UnableToDeconstructImageSequence));
   /*
     Compute the bounding box for each next in the sequence.
   */
@@ -699,8 +699,8 @@ MagickExport Image *FlattenImages(const Image *image,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(ImageError,"ImageSequenceIsRequired",
-      "UnableToFlattenImage");
+    ThrowImageException3(ImageError,ImageSequenceIsRequired,
+      UnableToFlattenImage);
   /*
     Clone first image in sequence.
   */
@@ -947,8 +947,8 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(ImageError,"ImageSequenceIsRequired",
-      "UnableToCreateImageMosaic");
+    ThrowImageException3(ImageError,ImageSequenceIsRequired,
+      UnableToCreateImageMosaic);
   page.width=image->columns;
   page.height=image->rows;
   page.x=0;
@@ -1039,8 +1039,8 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (name == (const char *) NULL)
-    ThrowBinaryException(OptionError,"NoProfileNameWasGiven",
-      "UnableToAddOrRemoveProfile");
+    ThrowBinaryException3(OptionError,NoProfileNameWasGiven,
+      UnableToAddOrRemoveProfile);
   if ((profile == (const unsigned char *) NULL) || (length == 0))
     {
       /*
@@ -1086,8 +1086,8 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
         {
           image->iptc_profile.info=MagickAllocateMemory(unsigned char *,length);
           if (image->iptc_profile.info == (unsigned char *) NULL)
-            ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-              "UnableToAddIPTCProfile");
+            ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+              UnableToAddIPTCProfile);
           image->iptc_profile.length=length;
           (void) memcpy(image->iptc_profile.info,profile,length);
         }
@@ -1156,8 +1156,8 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
             cmsOpenProfileFromMem((unsigned char *) profile,length);
           if ((image_profile == (cmsHPROFILE) NULL) ||
               (transform_profile == (cmsHPROFILE) NULL))
-            ThrowBinaryException(ResourceLimitError,"UnableToManageColor",
-              "UnableToOpenColorProfile");
+            ThrowBinaryException3(ResourceLimitError,UnableToManageColor,
+              UnableToOpenColorProfile);
           switch (cmsGetColorSpace(transform_profile))
           {
             case icSigCmykData: colorspace=CMYKColorspace; break;
@@ -1201,8 +1201,8 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
             {
               /* Restores error handler previous state */
               cmsErrorAction(errstate);
-              ThrowBinaryException(ResourceLimitError,"UnableToManageColor",
-                "UnableToCreateColorTransform");
+              ThrowBinaryException3(ResourceLimitError,UnableToManageColor,
+                UnableToCreateColorTransform);
             }
           (void) LogMagickEvent(TransformEvent,GetMagickModule(),"Performing color conversion");
           for (y=0; y < (long) image->rows; y++)
@@ -1244,8 +1244,8 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
         {
           image->color_profile.info=MagickAllocateMemory(unsigned char *,length);
           if (image->color_profile.info == (unsigned char *) NULL)
-            ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-              "UnableToAddColorProfile");
+            ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+              UnableToAddColorProfile);
           image->color_profile.length=length;
           (void) memcpy(image->color_profile.info,profile,length);
         }
@@ -1268,7 +1268,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
         MagickReallocMemory(image->generic_profile,
           (i+1)*sizeof(ProfileInfo));
       if (image->generic_profile == (ProfileInfo *) NULL)
-        ThrowBinaryException(ResourceLimitWarning,"MemoryAllocationFailed",
+        ThrowBinaryException(ResourceLimitWarning,MemoryAllocationFailed,
           (char *) NULL)
       image->generic_profiles++;
       image->generic_profile[i].length=0;
@@ -1281,8 +1281,8 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
     {
       image->generic_profile[i].info=MagickAllocateMemory(unsigned char *,length);
       if (image->generic_profile[i].info == (unsigned char *) NULL)
-        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-          "UnableToAddGenericProfile");
+        ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+          UnableToAddGenericProfile);
       image->generic_profile[i].length=length;
       (void) memcpy(image->generic_profile[i].info,profile,length);
     }
@@ -1449,8 +1449,8 @@ MagickExport Image *ShaveImage(const Image *image,
 
   if (((2*shave_info->width) >= image->columns) ||
       ((2*shave_info->height) >= image->rows))
-    ThrowImageException(OptionError,"GeometryDoesNotContainImage",
-      "UnableToShaveImage");
+    ThrowImageException(OptionError,GeometryDoesNotContainImage,
+      MagickMsg(ResourceLimitError,UnableToShaveImage));
   SetGeometry(image,&geometry);
   geometry.width-=2*shave_info->width;
   geometry.height-=2*shave_info->height;

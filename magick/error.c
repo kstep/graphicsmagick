@@ -102,19 +102,19 @@ MagickExport void CatchException(const ExceptionInfo *exception)
   if ((exception->severity >= WarningException) &&
       (exception->severity < ErrorException))
     {
-      MagickWarning(exception->severity,exception->reason,
+      MagickWarning2(exception->severity,exception->reason,
         exception->description);
       return;
     }
   if ((exception->severity >= ErrorException) &&
       (exception->severity < FatalErrorException))
     {
-      MagickError(exception->severity,exception->reason,exception->description);
+      MagickError2(exception->severity,exception->reason,exception->description);
       return;
     }
   if (exception->severity >= FatalErrorException)
     {
-      MagickFatalError(exception->severity,exception->reason,
+      MagickFatalError2(exception->severity,exception->reason,
         exception->description);
       return;
     }
@@ -535,6 +535,16 @@ MagickExport const char *GetLocaleExceptionMessage(const ExceptionType severity,
 %
 %
 */
+#if defined(MagickError)
+MagickExport void _MagickError(const ExceptionType error,const char *reason,
+  const char *description)
+{
+  if (error_handler != (ErrorHandler) NULL)
+    (*error_handler)(error,GetLocaleExceptionMessage(error,reason),
+      GetLocaleExceptionMessage(error,description));
+}
+#endif
+#undef MagickError
 MagickExport void MagickError(const ExceptionType error,const char *reason,
   const char *description)
 {
@@ -548,7 +558,7 @@ MagickExport void MagickError(const ExceptionType error,const char *reason,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k F a t al E r r o r                                            %
+%   M a g i c k F a t a l E r r o r                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -573,6 +583,17 @@ MagickExport void MagickError(const ExceptionType error,const char *reason,
 %
 %
 */
+#if defined(MagickFatalError)
+MagickExport void _MagickFatalError(const ExceptionType error,const char *reason,
+  const char *description)
+{
+  if (fatal_error_handler != (ErrorHandler) NULL)
+    (*fatal_error_handler)(error,GetLocaleExceptionMessage(error,reason),
+      GetLocaleExceptionMessage(error,description));
+  errno=0;
+}
+#endif
+#undef MagickFatalError
 MagickExport void MagickFatalError(const ExceptionType error,const char *reason,
   const char *description)
 {
@@ -611,6 +632,16 @@ MagickExport void MagickFatalError(const ExceptionType error,const char *reason,
 %
 %
 */
+#if defined(MagickWarning)
+MagickExport void _MagickWarning(const ExceptionType warning,const char *reason,
+  const char *description)
+{
+  if (warning_handler != (WarningHandler) NULL)
+    (*warning_handler)(warning,GetLocaleExceptionMessage(warning,reason),
+      GetLocaleExceptionMessage(warning,description));
+}
+#endif
+#undef MagickWarning
 MagickExport void MagickWarning(const ExceptionType warning,const char *reason,
   const char *description)
 {

@@ -398,7 +398,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
     if (LocaleCompare(colorname,p->name) == 0)
       break;
   if (p == (ColorInfo *) NULL)
-    ThrowException(exception,OptionWarning,"UnrecognizedColor",name);
+    ThrowException(exception,OptionWarning,UnrecognizedColor,name);
   else
     if (p != color_list)
       {
@@ -496,7 +496,7 @@ MagickExport const ColorInfo **GetColorInfoArray(ExceptionInfo *exception)
   array=MagickAllocateMemory(const ColorInfo **,sizeof(ColorInfo *)*(entries+1));
   if (!array)
     {
-      ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",0);
+      ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,0);
       return False;
     }
   memset((void **)array,0,sizeof(ColorInfo *)*(entries+1));
@@ -850,8 +850,8 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
   cube_info=GetCubeInfo();
   if (cube_info == (CubeInfo *) NULL)
     {
-      ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToDetermineTheNumberOfImageColors");
+      ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
+        UnableToDetermineTheNumberOfImageColors);
       return(0);
     }
   for (y=0; y < (long) image->rows; y++)
@@ -874,9 +874,8 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
             node_info->child[id]=GetNodeInfo(cube_info,level);
             if (node_info->child[id] == (NodeInfo *) NULL)
               {
-                ThrowException(exception,ResourceLimitError,
-                  "MemoryAllocationFailed",
-                  "UnableToDetermineTheNumberOfImageColors");
+                ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
+                  UnableToDetermineTheNumberOfImageColors);
                 return(0);
               }
           }
@@ -899,9 +898,8 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
             (i+1)*sizeof(ColorPacket));
         if (node_info->list == (ColorPacket *) NULL)
           {
-            ThrowException(exception,ResourceLimitError,
-              "MemoryAllocationFailed",
-              "UnableToDetermineTheNumberOfImageColors");
+            ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
+              UnableToDetermineTheNumberOfImageColors);
             return(0);
           }
         node_info->list[i].pixel=(*p);
@@ -1288,8 +1286,8 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
   cube_info=GetCubeInfo();
   if (cube_info == (CubeInfo *) NULL)
     {
-      ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToDetermineImageClass");
+      ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
+        UnableToDetermineImageClass);
       return(False);
     }
   for (y=0; y < (long) image->rows; y++)
@@ -1312,8 +1310,8 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
             node_info->child[id]=GetNodeInfo(cube_info,level);
             if (node_info->child[id] == (NodeInfo *) NULL)
               {
-                ThrowException(exception,ResourceLimitError,
-                  "MemoryAllocationFailed","UnableToDetermineImageClass");
+                ThrowException3(exception,ResourceLimitError,
+                  MemoryAllocationFailed,UnableToDetermineImageClass);
                 return(False);
               }
           }
@@ -1335,8 +1333,8 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
               (i+1)*sizeof(ColorPacket));
           if (node_info->list == (ColorPacket *) NULL)
             {
-              ThrowException(exception,ResourceLimitError,
-                "MemoryAllocationFailed","UnableToDetermineImageClass");
+              ThrowException3(exception,ResourceLimitError,
+                MemoryAllocationFailed,UnableToDetermineImageClass);
               return(False);
             }
           node_info->list[i].pixel=(*p);
@@ -1526,8 +1524,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
                     pixel.blue|=c-('a'-10);
                   else
                     {
-                      ThrowException(exception,OptionWarning,
-                        "UnrecognizedColor",name);
+                      ThrowException(exception,OptionWarning,UnrecognizedColor,name);
                       return(False);
                     }
             }
@@ -1536,8 +1533,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
       else
         if ((n != 4) && (n != 8) && (n != 16) && (n != 32))
           {
-            ThrowException(exception,OptionWarning,
-              "UnrecognizedColor",name);
+            ThrowException(exception,OptionWarning,UnrecognizedColor,name);
             return(False);
           }
         else
@@ -1566,8 +1562,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
                       pixel.opacity|=c-('a'-10);
                     else
                       {
-                        ThrowException(exception,OptionWarning,
-                          "UnrecognizedColor",name);
+                        ThrowException(exception,OptionWarning,UnrecognizedColor,name);
                         return(False);
                       }
               }
@@ -1784,8 +1779,7 @@ static unsigned int ReadConfigureFile(const char *basename,
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
-                ThrowException(exception,ConfigureError,
-                  "IncludeElementNestedTooDeeply",path);
+                ThrowException(exception,ConfigureError,IncludeElementNestedTooDeeply,path);
               else
                 {
                   char
@@ -1815,8 +1809,8 @@ static unsigned int ReadConfigureFile(const char *basename,
         */
         color_info=MagickAllocateMemory(ColorInfo *,sizeof(ColorInfo));
         if (color_info == (ColorInfo *) NULL)
-          MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "UnableToAllocateColorInfo");
+          MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+            UnableToAllocateColorInfo);
         (void) memset(color_info,0,sizeof(ColorInfo));
         color_info->path=AcquireString(path);
         color_info->signature=MagickSignature;

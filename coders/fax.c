@@ -135,7 +135,7 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Initialize image structure.
   */
@@ -146,7 +146,7 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=3508;
   image->depth=8;
   if (!AllocateImageColormap(image,2))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Monochrome colormap.
   */
@@ -163,9 +163,9 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   status=HuffmanDecodeImage(image);
   if (status == False)
-    ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
+    ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
   if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
   CloseBlob(image);
   return(image);
@@ -302,7 +302,7 @@ static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   clone_info=CloneImageInfo(image_info);
   (void) strcpy(clone_info->magick,"FAX");
   scene=0;

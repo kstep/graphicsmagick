@@ -460,7 +460,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   image->columns = ReadBlobMSBShort(image);
   image->rows = ReadBlobMSBShort(image);
   bytes_per_row = ReadBlobMSBShort(image);
@@ -476,7 +476,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     Initialize image colormap.
   */
   if (bits_per_pixel < 16 && !AllocateImageColormap(image,1L << bits_per_pixel))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
 
   if(bits_per_pixel < 8 && flags & PALM_IS_COMPRESSED_FLAG)    /* compressed size */
     {
@@ -533,7 +533,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
 
   one_row = MagickAllocateMemory(unsigned char *,bytes_per_row);
   if (one_row == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (compressionType == PALM_COMPRESSION_SCANLINE)
     lastrow = MagickAllocateMemory(unsigned char *,bytes_per_row);
 
@@ -783,7 +783,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   lastrow=0;
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   GetExceptionInfo(&exception);
   attribute = GetImageAttribute(image, "Comment");
   if (attribute != (ImageAttribute *)NULL)
@@ -889,7 +889,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     lastrow = MagickAllocateMemory(unsigned char *,bytes_per_row);
   one_row = MagickAllocateMemory(unsigned char *,bytes_per_row);
   if (one_row == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
 
   for (y=0; y < (int) image->rows; y++)
     {

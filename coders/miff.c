@@ -724,7 +724,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Decode image header;  header terminates one character beyond a ':'.
   */
@@ -745,7 +745,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     length=MaxTextExtent;
     values=MagickAllocateMemory(char *,length);
     if (values == (char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     colors=0;
     image->depth=8;
     image->compression=NoCompression;
@@ -782,7 +782,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             *p=c;
           }
           if (comment == (char *) NULL)
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image);
           *p='\0';
           (void) SetImageAttribute(image,"comment",comment);
@@ -818,8 +818,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   p=values+strlen(values);
                 }
               if (values == (char *) NULL)
-                ThrowReaderException(ResourceLimitError,
-                  "MemoryAllocationFailed",image);
+                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
               *p++=c;
               c=ReadBlobByte(image);
               if (*values != '{')
@@ -1046,8 +1045,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       MagickReallocMemory(image->generic_profile,
                         (i+1)*sizeof(ProfileInfo));
                     if (image->generic_profile == (ProfileInfo *) NULL)
-                      ThrowReaderException(ResourceLimitError,
-                        "MemoryAllocationFailed",image);
+                      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
                     image->generic_profile[i].name=AllocateString(keyword+8);
                     image->generic_profile[i].length=atol(values);
                     image->generic_profile[i].info=(unsigned char *) NULL;
@@ -1188,13 +1186,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           {
             /* Recover from failure to read image in sequence */
             RemoveLastImageFromList(&image);
-            ThrowException(exception,CorruptImageWarning,
-              "ImproperImageHeader",image->filename);
+            ThrowException(exception,CorruptImageWarning,ImproperImageHeader,image->filename);
             break;
           }
         else
           {
-            ThrowReaderException(CorruptImageError,"ImproperImageHeader",
+            ThrowReaderException(CorruptImageError,ImproperImageHeader,
               image);
           }
       }
@@ -1209,7 +1206,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         */
         image->directory=MagickAllocateMemory(char *,MaxTextExtent);
         if (image->directory == (char *) NULL)
-          ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
+          ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
         p=image->directory;
         do
         {
@@ -1222,7 +1219,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               MagickReallocMemory(image->directory,
                 (strlen(image->directory)+MaxTextExtent+1));
               if (image->directory == (char *) NULL)
-                ThrowReaderException(CorruptImageError,"UnableToReadImageData",
+                ThrowReaderException(CorruptImageError,UnableToReadImageData,
                   image);
               p=image->directory+strlen(image->directory);
             }
@@ -1238,7 +1235,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         image->color_profile.info=MagickAllocateMemory(unsigned char *,
           image->color_profile.length);
         if (image->color_profile.info == (unsigned char *) NULL)
-          ThrowReaderException(CorruptImageError,"UnableToReadColorProfile",
+          ThrowReaderException(CorruptImageError,UnableToReadColorProfile,
             image);
         (void) ReadBlob(image,image->color_profile.length,
           image->color_profile.info);
@@ -1251,8 +1248,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         image->iptc_profile.info=MagickAllocateMemory(unsigned char *,
           image->iptc_profile.length);
         if (image->iptc_profile.info == (unsigned char *) NULL)
-          ThrowReaderException(CorruptImageError,
-            "UnableToReadiPTCProfile",image);
+          ThrowReaderException(CorruptImageError,UnableToReadIPTCProfile,image);
         (void) ReadBlob(image,image->iptc_profile.length,
           image->iptc_profile.info);
       }
@@ -1268,7 +1264,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           image->generic_profile[i].info=MagickAllocateMemory(unsigned char *,
             image->generic_profile[i].length);
           if (image->generic_profile[i].info == (unsigned char *) NULL)
-            ThrowReaderException(CorruptImageError,"UnableToReadGenericProfile",
+            ThrowReaderException(CorruptImageError,UnableToReadGenericProfile,
               image);
           (void) ReadBlob(image,image->generic_profile[i].length,
             image->generic_profile[i].info);
@@ -1281,7 +1277,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           Create image colormap.
         */
         if (!AllocateImageColormap(image,colors != 0 ? colors : 256))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         if (colors != 0)
           {
@@ -1298,7 +1294,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             packet_size=3*image->depth/8;
             colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
-              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                 image);
             (void) ReadBlob(image,packet_size*image->colors,colormap);
             p=colormap;
@@ -1359,7 +1355,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     compress_pixels=MagickAllocateMemory(unsigned char *,length);
     if ((pixels == (unsigned char *) NULL) ||
         (compress_pixels == (unsigned char *) NULL))
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     /*
       Read image pixels.
     */
@@ -1521,7 +1517,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       }
     if (EOFBlob(image))
       {
-        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
           image->filename);
         break;
       }
@@ -1850,7 +1846,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
@@ -1885,7 +1881,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     compress_pixels=MagickAllocateMemory(unsigned char *,length);
     if ((pixels == (unsigned char *) NULL) ||
         (compress_pixels == (unsigned char *) NULL))
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     /*
       Write MIFF header.
     */
@@ -2108,7 +2104,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         packet_size=3*image->depth/8;
         colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
         if (colormap == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
             image);
         /*
           Write colormap to file.

@@ -295,7 +295,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Determine if this is a PDB image file.
   */
@@ -312,12 +312,12 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ReadBlob(image,4,pdb_info.id);
   if ((count == 0) || (memcmp(pdb_info.type,"vIMG",4) != 0) ||
       (memcmp(pdb_info.id,"View",4) != 0))
-    ThrowReaderException(CoderError,"NotASupportedImageFile",image);
+    ThrowReaderException(CoderError,NotASupportedImageFile,image);
   pdb_info.seed=ReadBlobMSBLong(image);
   pdb_info.next_record=ReadBlobMSBLong(image);
   pdb_info.number_records=ReadBlobMSBShort(image);
   if (pdb_info.next_record != 0)
-    ThrowReaderException(CoderError,"MultipleRecordListNotSupported",image);
+    ThrowReaderException(CoderError,MultipleRecordListNotSupported,image);
   /*
     Read record header.
   */
@@ -326,7 +326,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   record_type=ReadBlobByte(image);
   if (((record_type != 0x00) && (record_type != 0x01)) ||
       (memcmp(tag,"\x40\x6f\x80",3) != 0))
-    ThrowReaderException(CorruptImageError,"CorruptImage",image);
+    ThrowReaderException(CorruptImageError,CorruptImage,image);
   if ((offset-TellBlob(image)) == 6)
     {
       (void) ReadBlobByte(image);
@@ -339,7 +339,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       record_type=ReadBlobByte(image);
       if (((record_type != 0x00) && (record_type != 0x01)) ||
           (memcmp(tag,"\x40\x6f\x80",3) != 0))
-        ThrowReaderException(CorruptImageError,"CorruptImage",image);
+        ThrowReaderException(CorruptImageError,CorruptImage,image);
       if ((offset-TellBlob(image)) == 6)
         {
           (void) ReadBlobByte(image);
@@ -370,7 +370,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->storage_class=PseudoClass;
   bits_per_pixel=pdb_image.type == 0 ? 2 : pdb_image.type == 2 ? 4 : 1;
   if (!AllocateImageColormap(image,1 << bits_per_pixel))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -379,7 +379,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   packets=(bits_per_pixel*image->columns/8)*image->rows;
   pixels=MagickAllocateMemory(unsigned char *,packets+256);
   if (pixels == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitWarning,MemoryAllocationFailed,image);
   switch (pdb_image.version)
   {
     case 0:
@@ -395,7 +395,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
     default:
-      ThrowReaderException(CorruptImageWarning,"UnknownCompressionType",image)
+      ThrowReaderException(CorruptImageError,UnrecognizedImageCompression,image)
   }
   p=pixels;
   switch (bits_per_pixel)
@@ -503,11 +503,11 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
     default:
-      ThrowReaderException(CorruptImageError,"NotAPDBImageFile",image)
+      ThrowReaderException(CorruptImageError,NotAPDBImageFile,image)
   }
   MagickFreeMemory(pixels);
   if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
   if ((offset-TellBlob(image)) == 0)
     {
@@ -547,7 +547,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           c=ReadBlobByte(image);
         }
       if (comment == (char *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       (void) SetImageAttribute(image,"comment",comment);
       MagickFreeMemory(comment);
     }
@@ -706,7 +706,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   bits_per_pixel=image->depth;
   if (GetImageType(image,&image->exception) == BilevelType)
@@ -765,14 +765,14 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   packets=(bits_per_pixel*image->columns/8)*image->rows;
   p=MagickAllocateMemory(unsigned char *,2*packets);
   if (p == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitWarning,MemoryAllocationFailed,image);
   buffer=MagickAllocateMemory(unsigned char *,256);
   if (buffer == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitWarning,MemoryAllocationFailed,image);
   packet_size=image->depth > 8 ? 2: 1;
   scanline=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
   if (scanline == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitWarning,MemoryAllocationFailed,image);
   TransformColorspace(image,RGBColorspace);
   /*
     Convert to GRAY raster scanline.

@@ -243,8 +243,8 @@ MagickExport void Ascii85Initialize(Image *image)
   */
   image->ascii85=MagickAllocateMemory(Ascii85Info *,sizeof(Ascii85Info));
   if (image->ascii85 == (Ascii85Info *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateAscii85Info");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateAscii85Info);
   (void) memset(image->ascii85,0,sizeof(Ascii85Info));
   image->ascii85->line_break=MaxLineExtent << 1;
   image->ascii85->offset=0;
@@ -423,7 +423,7 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
   if ((mb_hash == (HuffmanTable **) NULL) ||
       (mw_hash == (HuffmanTable **) NULL) ||
       (scanline == (unsigned char *) NULL))
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
       (char *) NULL);
   /*
     Initialize Huffman tables.
@@ -701,7 +701,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     width=Max(image->columns,1728);
   scanline=MagickAllocateMemory(unsigned char *,width+1);
   if (scanline == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
       (char *) NULL);
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
@@ -999,7 +999,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(DelegateError,"LZWEncodingNotEnabled",(char *) NULL)
+  ThrowBinaryException(MissingDelegateError,LZWEncodingNotEnabled,(char *) NULL)
 }
 #endif
 
@@ -1058,7 +1058,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
   assert(pixels != (unsigned char *) NULL);
   packbits=MagickAllocateMemory(unsigned char *,128);
   if (packbits == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
       (char *) NULL);
   i=(long) length;
   while (i != 0)

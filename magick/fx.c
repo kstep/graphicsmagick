@@ -314,11 +314,11 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   assert(exception->signature == MagickSignature);
   width=(long) order;
   if ((width % 2) == 0)
-    ThrowImageException(OptionError,"UnableToConvolveImage",
-      "KernelWidthMustBeAnOddNumber");
+    ThrowImageException3(OptionError,UnableToConvolveImage,
+      KernelWidthMustBeAnOddNumber);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionError,"UnableToConvolveImage",
-      "ImageSmallerThanKernelWidth");
+    ThrowImageException3(OptionError,UnableToConvolveImage,
+      ImageSmallerThanKernelWidth);
   convolve_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (convolve_image == (Image *) NULL)
     return((Image *) NULL);
@@ -330,8 +330,8 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   if (normal_kernel == (double *) NULL)
     {
       DestroyImage(convolve_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToConvolveImage")
+      ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
+        MagickMsg(OptionError,UnableToConvolveImage));
     }
   normalize=0.0;
   for (i=0; i < (width*width); i++)
@@ -837,8 +837,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,0.5);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionError,"UnableToPaintImage",
-      "ImageSmallerThanRadius");
+    ThrowImageException3(OptionError,UnableToPaintImage,
+      ImageSmallerThanRadius);
   paint_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (paint_image == (Image *) NULL)
     return((Image *) NULL);
@@ -850,8 +850,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   if (histogram == (unsigned long *) NULL)
     {
       DestroyImage(paint_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToOilPaintImage")
+      ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
+        MagickMsg(OptionError,UnableToOilPaintImage));
     }
   /*
     Paint each row of the image.
@@ -1204,8 +1204,8 @@ MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
   assert(offset_image != (const Image *) NULL);
   if ((image->columns != offset_image->columns) ||
       (image->rows != offset_image->rows))
-    ThrowImageException(ImageError,"UnableToCreateStereoImage",
-      "LeftAndRightImageSizesDiffer");
+    ThrowImageException3(ImageError,UnableToCreateStereoImage,
+      LeftAndRightImageSizesDiffer);
   /*
     Initialize stereo image attributes.
   */
@@ -1443,8 +1443,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   if (sine_map == (double *) NULL)
     {
       DestroyImage(wave_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToWaveImage")
+      ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
+        MagickMsg(OptionError,UnableToWaveImage))
     }
   for (x=0; x < (long) wave_image->columns; x++)
     sine_map[x]=fabs(amplitude)+amplitude*sin((2*MagickPI*x)/wave_length);

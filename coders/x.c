@@ -84,7 +84,7 @@ static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateError,"XWindowLibraryIsNotAvailable",
+  ThrowException(exception,MissingDelegateError,XWindowLibraryIsNotAvailable,
     image_info->filename);
   return((Image *) NULL);
 }
@@ -207,7 +207,7 @@ static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   */
   display=XOpenDisplay(image_info->server_name);
   if (display == (Display *) NULL)
-    ThrowWriterException(ResourceLimitError,"UnableToOpenXServer",image);
+    ThrowWriterException(XServerError,UnableToOpenXServer,image);
   /*
     Set our forgiving error handler.
   */
@@ -230,7 +230,7 @@ static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 {
-  ThrowBinaryException(MissingDelegateError,"XWindowLibraryIsNotAvailable",
+  ThrowBinaryException(MissingDelegateError,XWindowLibraryIsNotAvailable,
     image->filename);
 }
 #endif

@@ -1,565 +1,623 @@
-#define MAX_LOCALE_MSGS 560
+#ifndef _LOCAL_C_H
+#define _LOCAL_C_H
 
-#define BlobErrorUnableToCreateBlob = 1
-#define BlobErrorUnableToOpenFile = 2
-#define BlobErrorUnableToReadFile = 3
-#define BlobErrorUnableToReadToOffset = 4
-#define BlobErrorUnableToSeekToOffset = 5
-#define BlobErrorUnableToWriteBlob = 6
-#define BlobErrorUnrecognizedImageFormat = 7
-#define BlobFatalErrorDefault = 8
-#define BlobWarningDefault = 9
-#define CacheErrorInconsistentPersistentCacheDepth = 10
-#define CacheErrorPixelCacheIsNotOpen = 11
-#define CacheErrorUnableToCloneCache = 12
-#define CacheErrorUnableToExtendCache = 13
-#define CacheErrorUnableToGetCacheNexus = 14
-#define CacheErrorUnableToGetPixelsFromCache = 15
-#define CacheErrorUnableToOpenCache = 16
-#define CacheErrorUnableToReadPixelCache = 17
-#define CacheErrorUnableToSyncCache = 18
-#define CacheFatalErrorDiskAllocationFailed = 19
-#define CacheFatalErrorUnableToExtendPixelCache = 20
-#define CacheWarningDefault = 21
-#define CoderErrorColormapTypeNotSupported = 22
-#define CoderErrorColorspaceModelIsNotSupported = 23
-#define CoderErrorColorTypeNotSupported = 24
-#define CoderErrorDataEncodingSchemeIsNotSupported = 25
-#define CoderErrorDataStorageTypeIsNotSupported = 26
-#define CoderErrorDeltaPNGNotSupported = 27
-#define CoderErrorEncryptedWPGImageFileNotSupported = 28
-#define CoderErrorImageColumnOrRowSizeIsNotSupported = 29
-#define CoderErrorImageDoesNotHaveAMatteChannel = 30
-#define CoderErrorImageTypeNotSupported = 31
-#define CoderErrorIncompatibleSizeOfDouble = 32
-#define CoderErrorIrregularChannelGeometryNotSupported = 33
-#define CoderErrorJPEGEmbeddingFailed = 34
-#define CoderErrorLocationTypeIsNotSupported = 35
-#define CoderErrorMapStorageTypeIsNotSupported = 36
-#define CoderErrorMSBByteOrderNotSupported = 37
-#define CoderErrorMultidimensionalMatricesAreNotSupported = 38
-#define CoderErrorMultipleRecordListNotSupported = 39
-#define CoderErrorNo8BIMDataIsAvailable = 40
-#define CoderErrorNoAPP1DataIsAvailable = 41
-#define CoderErrorNoBitmapOnClipboard = 42
-#define CoderErrorNoDataReturned = 43
-#define CoderErrorNoIPTCInfoWasFound = 44
-#define CoderErrorNoIPTCProfileAvailable = 45
-#define CoderErrorNotASupportedImageFile = 46
-#define CoderErrorNumberOfImagesIsNotSupported = 47
-#define CoderErrorOnlyContinuousTonePictureSupported = 48
-#define CoderErrorOnlyLevelZerofilesSupported = 49
-#define CoderErrorUnableToCopyProfile = 50
-#define CoderErrorUnableToCreateADC = 51
-#define CoderErrorUnableToCreateBitmap = 52
-#define CoderErrorUnableToDecompressImage = 53
-#define CoderErrorUnableToReadCIELABImages = 54
-#define CoderErrorUnableToTranslateText = 55
-#define CoderErrorUnableToWriteMPEGParameters = 56
-#define CoderErrorUnableToZipCompressImage = 57
-#define CoderErrorUnsupportedCellTypeInTheMatrix = 58
-#define CoderFatalErrorDefault = 59
-#define CoderWarningLosslessToLossyJPEGConversion = 60
-#define ConfigureErrorIncludeElementNestedTooDeeply = 61
-#define ConfigureErrorRegistryKeyLookupFailed = 62
-#define ConfigureErrorUnableToAccessConfigureFile = 63
-#define ConfigureErrorUnableToAccessFontFile = 64
-#define ConfigureErrorUnableToAccessLogFile = 65
-#define ConfigureErrorUnableToAccessModuleFile = 66
-#define ConfigureFatalErrorDefault = 67
-#define ConfigureWarningDefault = 68
-#define CorruptImageErrorAnErrorHasOccurredReadingFromFile = 69
-#define CorruptImageErrorAnErrorHasOccurredWritingToFile = 70
-#define CorruptImageErrorColormapExceeds256Colors = 71
-#define CorruptImageErrorCorruptImage = 72
-#define CorruptImageErrorCorruptMNGImage = 73
-#define CorruptImageErrorFileFormatVersionMismatch = 74
-#define CorruptImageErrorImageFileDoesNotContainAnyImageData = 75
-#define CorruptImageErrorImproperImageHeader = 76
-#define CorruptImageErrorInsufficientImageDataInFile = 77
-#define CorruptImageErrorInvalidColormapIndex = 78
-#define CorruptImageErrorLengthAndFilesizeDoNotMatch = 79
-#define CorruptImageErrorMissingImageChannel = 80
-#define CorruptImageErrorNegativeOrZeroImageSize = 81
-#define CorruptImageErrorNonOS2HeaderSizeError = 82
-#define CorruptImageErrorNotABMPImageFile = 83
-#define CorruptImageErrorNotACUTImageFile = 84
-#define CorruptImageErrorNotADCMImageFile = 85
-#define CorruptImageErrorNotADCXImageFile = 86
-#define CorruptImageErrorNotADIBImageFile = 87
-#define CorruptImageErrorNotADPXImageFile = 88
-#define CorruptImageErrorNotAGIFImageFile = 89
-#define CorruptImageErrorNotAMATLABImageFile = 90
-#define CorruptImageErrorNotAMNGImageFile = 91
-#define CorruptImageErrorNotAMTVImageFile = 92
-#define CorruptImageErrorNotAnARTImageFile = 93
-#define CorruptImageErrorNotAnAVIImageFile = 94
-#define CorruptImageErrorNotAnAVSImageFile = 95
-#define CorruptImageErrorNotAnEMFImageFile = 96
-#define CorruptImageErrorNotAnICOImageFile = 97
-#define CorruptImageErrorNotAOTBImageFile = 98
-#define CorruptImageErrorNotAPCDImageFile = 99
-#define CorruptImageErrorNotAPCXImageFile = 100
-#define CorruptImageErrorNotAPICTImageFile = 101
-#define CorruptImageErrorNotAPIXImageFile = 102
-#define CorruptImageErrorNotAPNMImageFile = 103
-#define CorruptImageErrorNotAPSDImageFile = 104
-#define CorruptImageErrorNotAPWPImageFile = 105
-#define CorruptImageErrorNotARLEImageFile = 106
-#define CorruptImageErrorNotASCTImageFile = 107
-#define CorruptImageErrorNotASFWImageFile = 108
-#define CorruptImageErrorNotASGIImageFile = 109
-#define CorruptImageErrorNotASUNImageFile = 110
-#define CorruptImageErrorNotATGAImageFile = 111
-#define CorruptImageErrorNotATIMImageFile = 112
-#define CorruptImageErrorNotAVIFFImageFile = 113
-#define CorruptImageErrorNotAWBMPImageFile = 114
-#define CorruptImageErrorNotAWPGImageFile = 115
-#define CorruptImageErrorNotAXBMImageFile = 116
-#define CorruptImageErrorNotAXCFImageFile = 117
-#define CorruptImageErrorNotAXPMImageFile = 118
-#define CorruptImageErrorNotEnoughTiles = 119
-#define CorruptImageErrorStaticPlanesValueNotEqualToOne = 120
-#define CorruptImageErrorTooMuchImageDataInFile = 121
-#define CorruptImageErrorUnableToReadColorProfile = 122
-#define CorruptImageErrorUnableToReadExtensionBlock = 123
-#define CorruptImageErrorUnableToReadGenericProfile = 124
-#define CorruptImageErrorUnableToReadImageData = 125
-#define CorruptImageErrorUnableToReadImageHeader = 126
-#define CorruptImageErrorUnableToReadIPTCProfile = 127
-#define CorruptImageErrorUnableToReadPixmapFromDumpFile = 128
-#define CorruptImageErrorUnableToReadVIDImage = 129
-#define CorruptImageErrorUnableToReadWindowNameFromDumpFile = 130
-#define CorruptImageErrorUnableToRunlengthDecodeImage = 131
-#define CorruptImageErrorUnableToUncompressImage = 132
-#define CorruptImageErrorUnexpectedEndOfFile = 133
-#define CorruptImageErrorUnexpectedSamplingFactor = 134
-#define CorruptImageErrorUnknownPatternType = 135
-#define CorruptImageErrorUnrecognizedBitsPerPixel = 136
-#define CorruptImageErrorUnrecognizedImageCompression = 137
-#define CorruptImageErrorUnrecognizedXWDHeader = 138
-#define CorruptImageFatalErrorUnableToPersistKey = 139
-#define CorruptImageWarningImproperImageHeader = 140
-#define CorruptImageWarningSkipToSyncByte = 141
-#define DelegateErrorDelegateFailed = 142
-#define DelegateErrorFailedToComputeOutputSize = 143
-#define DelegateErrorFailedToRenderFile = 144
-#define DelegateErrorFailedToScanFile = 145
-#define DelegateErrorNoTagFound = 146
-#define DelegateErrorPostscriptDelegateFailed = 147
-#define DelegateErrorUnableToCreateImage = 148
-#define DelegateErrorUnableToCreateImageComponent = 149
-#define DelegateErrorUnableToDecodeImageFile = 150
-#define DelegateErrorUnableToEncodeImageFile = 151
-#define DelegateErrorUnableToInitializeFPXLibrary = 152
-#define DelegateErrorUnableToInitializeWMFLibrary = 153
-#define DelegateErrorUnableToManageJP2Stream = 154
-#define DelegateErrorUnableToReadAspectRatio = 155
-#define DelegateErrorUnableToReadSummaryInfo = 156
-#define DelegateErrorUnableToSetAffineMatrix = 157
-#define DelegateErrorUnableToSetAspectRatio = 158
-#define DelegateErrorUnableToSetColorTwist = 159
-#define DelegateErrorUnableToSetContrast = 160
-#define DelegateErrorUnableToSetFilteringValue = 161
-#define DelegateErrorUnableToSetImageComment = 162
-#define DelegateErrorUnableToSetImageTitle = 163
-#define DelegateErrorUnableToSetJPEGLevel = 164
-#define DelegateErrorUnableToSetRegionOfInterest = 165
-#define DelegateErrorUnableToSetSummaryInfo = 166
-#define DelegateErrorUnableToWriteSVGFormat = 167
-#define DelegateFatalErrorDefault = 168
-#define DelegateWarningDefault = 169
-#define DrawErrorAlreadyPushingPatternDefinition = 170
-#define DrawErrorNonconformingDrawingPrimitiveDefinition = 171
-#define DrawErrorNotARelativeURL = 172
-#define DrawErrorNotCurrentlyPushingPatternDefinition = 173
-#define DrawErrorUnableToPrint = 174
-#define DrawErrorUnbalancedGraphicContextPushPop = 175
-#define DrawErrorURLNotFound = 176
-#define DrawFatalErrorDefault = 177
-#define DrawWarningDefault = 178
-#define FileOpenErrorUnableToCreateTemporaryFile = 179
-#define FileOpenErrorUnableToOpenFile = 180
-#define FileOpenErrorUnableToWriteFile = 181
-#define FileOpenFatalErrorDefault = 182
-#define FileOpenWarningDefault = 183
-#define ImageErrorAngleIsDiscontinuous = 184
-#define ImageErrorColorSeparatedImageRequired = 185
-#define ImageErrorImageColorspaceDiffers = 186
-#define ImageErrorImageOpacityDiffers = 187
-#define ImageErrorImageSequenceIsRequired = 188
-#define ImageErrorImageSizeDiffers = 189
-#define ImageErrorInputImagesAlreadySpecified = 190
-#define ImageErrorLeftAndRightImageSizesDiffer = 191
-#define ImageErrorNoImagesWereFound = 192
-#define ImageErrorNoImagesWereLoaded = 193
-#define ImageErrorNoLocaleImageAttribute = 194
-#define ImageErrorTooManyClusters = 195
-#define ImageErrorUnableToAppendImage = 196
-#define ImageErrorUnableToAverageImage = 197
-#define ImageErrorUnableToCompareImages = 198
-#define ImageErrorUnableToCreateImageMosaic = 199
-#define ImageErrorUnableToCreateStereoImage = 200
-#define ImageErrorUnableToDeconstructImageSequence = 201
-#define ImageErrorUnableToFlattenImage = 202
-#define ImageErrorUnableToResizeImage = 203
-#define ImageErrorUnableToSegmentImage = 204
-#define ImageErrorWidthOrHeightExceedsLimit = 205
-#define ImageFatalErrorDefault = 206
-#define ImageWarningDefault = 207
-#define MissingDelegateErrorDPSLibraryIsNotAvailable = 208
-#define MissingDelegateErrorFPXLibraryIsNotAvailable = 209
-#define MissingDelegateErrorFreeTypeLibraryIsNotAvailable = 210
-#define MissingDelegateErrorJPEGLibraryIsNotAvailable = 211
-#define MissingDelegateErrorLZWEncodingNotEnabled = 212
-#define MissingDelegateErrorNoDecodeDelegateForThisImageFormat = 213
-#define MissingDelegateErrorNoEncodeDelegateForThisImageFormat = 214
-#define MissingDelegateErrorTIFFLibraryIsNotAvailable = 215
-#define MissingDelegateErrorXMLLibraryIsNotAvailable = 216
-#define MissingDelegateErrorXWindowLibraryIsNotAvailable = 217
-#define MissingDelegateErrorZipLibraryIsNotAvailable = 218
-#define MissingDelegateFatalErrorDefault = 219
-#define MissingDelegateWarningDefault = 220
-#define ModuleErrorFailedToCloseModule = 221
-#define ModuleErrorFailedToFindSymbol = 222
-#define ModuleErrorUnableToLoadModule = 223
-#define ModuleErrorUnableToRegisterImageFormat = 224
-#define ModuleErrorUnrecognizedModule = 225
-#define ModuleFatalErrorUnableToInitializeModuleLoader = 226
-#define ModuleWarningDefault = 227
-#define OptionErrorBevelWidthIsNegative = 228
-#define OptionErrorFrameIsLessThanImageSize = 229
-#define OptionErrorGeometryDimensionsAreZero = 230
-#define OptionErrorGeometryDoesNotContainImage = 231
-#define OptionErrorImagesAreNotTheSameSize = 232
-#define OptionErrorImageSizeMustExceedBevelWidth = 233
-#define OptionErrorImageSmallerThanKernelWidth = 234
-#define OptionErrorImageSmallerThanRadius = 235
-#define OptionErrorImageWidthsOrHeightsDiffer = 236
-#define OptionErrorKernelRadiusIsTooSmall = 237
-#define OptionErrorKernelWidthMustBeAnOddNumber = 238
-#define OptionErrorMissingAffineMatrix = 239
-#define OptionErrorMissingAmplitude = 240
-#define OptionErrorMissingAnImageFilename = 241
-#define OptionErrorMissingArgument = 242
-#define OptionErrorMissingAzimuth = 243
-#define OptionErrorMissingBackgroundColor = 244
-#define OptionErrorMissingBevelWidth = 245
-#define OptionErrorMissingBorderColor = 246
-#define OptionErrorMissingCoefficients = 247
-#define OptionErrorMissingColorizeValue = 248
-#define OptionErrorMissingColors = 249
-#define OptionErrorMissingComment = 250
-#define OptionErrorMissingCycleAmount = 251
-#define OptionErrorMissingDelay = 252
-#define OptionErrorMissingDisposeMethod = 253
-#define OptionErrorMissingDissolveValue = 254
-#define OptionErrorMissingDrawingPrimitive = 255
-#define OptionErrorMissingEnodingType = 256
-#define OptionErrorMissingEventMask = 257
-#define OptionErrorMissingFilename = 258
-#define OptionErrorMissingFillColor = 259
-#define OptionErrorMissingFontName = 260
-#define OptionErrorMissingFormatSpecifier = 261
-#define OptionErrorMissingGeometry = 262
-#define OptionErrorMissingImageDepth = 263
-#define OptionErrorMissingImageGamma = 264
-#define OptionErrorMissingImageIterations = 265
-#define OptionErrorMissingImageLabel = 266
-#define OptionErrorMissingImageProfile = 267
-#define OptionErrorMissingImageRotation = 268
-#define OptionErrorMissingImageScene = 269
-#define OptionErrorMissingImplodeAmount = 270
-#define OptionErrorMissingListName = 271
-#define OptionErrorMissingLogFormat = 272
-#define OptionErrorMissingMatteColor = 273
-#define OptionErrorMissingOpaqueColor = 274
-#define OptionErrorMissingPageGeometry = 275
-#define OptionErrorMissingPaintRadius = 276
-#define OptionErrorMissingPassword = 277
-#define OptionErrorMissingPoint = 278
-#define OptionErrorMissingPointsize = 279
-#define OptionErrorMissingResourceLimit = 280
-#define OptionErrorMissingResourceType = 281
-#define OptionErrorMissingSeedValue = 282
-#define OptionErrorMissingServerName = 283
-#define OptionErrorMissingSpreadAmount = 284
-#define OptionErrorMissingThreshold = 285
-#define OptionErrorMissingTile = 286
-#define OptionErrorMissingTitle = 287
-#define OptionErrorMissingTransparentColor = 288
-#define OptionErrorMissingTreeDepth = 289
-#define OptionErrorMissingType = 290
-#define OptionErrorMissingViewTransform = 291
-#define OptionErrorMissingVirtualPixelMethod = 292
-#define OptionErrorMissingWidth = 293
-#define OptionErrorMustSpecifyAnImageName = 294
-#define OptionErrorMustSpecifyImageSize = 295
-#define OptionErrorNoBlobDefined = 296
-#define OptionErrorNoImagesDefined = 297
-#define OptionErrorNoImageVectorGraphics = 298
-#define OptionErrorNonzeroWidthAndHeightRequired = 299
-#define OptionErrorNoProfileNameWasGiven = 300
-#define OptionErrorNullBlobArgument = 301
-#define OptionErrorReferenceImageRequired = 302
-#define OptionErrorReferenceIsNotMyType = 303
-#define OptionErrorSteganoImageRequired = 304
-#define OptionErrorStereoImageRequired = 305
-#define OptionErrorSubimageSpecificationReturnsNoImages = 306
-#define OptionErrorUnableToAddOrRemoveProfile = 307
-#define OptionErrorUnableToAllocateICCProfile = 308
-#define OptionErrorUnableToBlurImage = 309
-#define OptionErrorUnableToConstituteImage = 310
-#define OptionErrorUnableToConvolveImage = 311
-#define OptionErrorUnableToEdgeImage = 312
-#define OptionErrorUnableToFilterImage = 313
-#define OptionErrorUnableToFormatImageMetadata = 314
-#define OptionErrorUnableToFrameImage = 315
-#define OptionErrorUnableToOilPaintImage = 316
-#define OptionErrorUnableToPaintImage = 317
-#define OptionErrorUnableToRaiseImage = 318
-#define OptionErrorUnableToSharpenImage = 319
-#define OptionErrorUnableToThresholdImage = 320
-#define OptionErrorUnableToWaveImage = 321
-#define OptionErrorUnrecognizedAttribute = 322
-#define OptionErrorUnrecognizedChannelType = 323
-#define OptionErrorUnrecognizedColor = 324
-#define OptionErrorUnrecognizedColorspace = 325
-#define OptionErrorUnrecognizedComposeOperator = 326
-#define OptionErrorUnrecognizedDisposeMethod = 327
-#define OptionErrorUnrecognizedElement = 328
-#define OptionErrorUnrecognizedEndianType = 329
-#define OptionErrorUnrecognizedGravityType = 330
-#define OptionErrorUnrecognizedImageCompression = 331
-#define OptionErrorUnrecognizedImageFilter = 332
-#define OptionErrorUnrecognizedImageFormat = 333
-#define OptionErrorUnrecognizedImageMode = 334
-#define OptionErrorUnrecognizedImageType = 335
-#define OptionErrorUnrecognizedIntentType = 336
-#define OptionErrorUnrecognizedInterlaceType = 337
-#define OptionErrorUnrecognizedListType = 338
-#define OptionErrorUnrecognizedModeType = 339
-#define OptionErrorUnrecognizedOption = 340
-#define OptionErrorUnrecognizedPerlMagickMethod = 341
-#define OptionErrorUnrecognizedPixelMap = 342
-#define OptionErrorUnrecognizedPreviewType = 343
-#define OptionErrorUnrecognizedResourceType = 344
-#define OptionErrorUnrecognizedType = 345
-#define OptionErrorUnrecognizedVirtualPixelMethod = 346
-#define OptionErrorUsageError = 347
-#define OptionFatalErrorMissingAnImageFilename = 348
-#define OptionFatalErrorMissingBevelWidth = 349
-#define OptionFatalErrorMissingBorderColor = 350
-#define OptionFatalErrorMissingColors = 351
-#define OptionFatalErrorMissingCommand = 352
-#define OptionFatalErrorMissingCompressQuality = 353
-#define OptionFatalErrorMissingDegrees = 354
-#define OptionFatalErrorMissingDepth = 355
-#define OptionFatalErrorMissingDisposeMethod = 356
-#define OptionFatalErrorMissingEncodingType = 357
-#define OptionFatalErrorMissingEventMask = 358
-#define OptionFatalErrorMissingFilename = 359
-#define OptionFatalErrorMissingFontName = 360
-#define OptionFatalErrorMissingForeground = 361
-#define OptionFatalErrorMissingGeometry = 362
-#define OptionFatalErrorMissingIDNameOrRoot = 363
-#define OptionFatalErrorMissingImageDepth = 364
-#define OptionFatalErrorMissingLabelName = 365
-#define OptionFatalErrorMissingLevel = 366
-#define OptionFatalErrorMissingLogFormat = 367
-#define OptionFatalErrorMissingMapType = 368
-#define OptionFatalErrorMissingName = 369
-#define OptionFatalErrorMissingPageGeometry = 370
-#define OptionFatalErrorMissingPassword = 371
-#define OptionFatalErrorMissingQuality = 372
-#define OptionFatalErrorMissingResourceLimit = 373
-#define OptionFatalErrorMissingResourceType = 374
-#define OptionFatalErrorMissingSceneNumber = 375
-#define OptionFatalErrorMissingSeconds = 376
-#define OptionFatalErrorMissingServerName = 377
-#define OptionFatalErrorMissingSize = 378
-#define OptionFatalErrorMissingSnaps = 379
-#define OptionFatalErrorMissingThreshold = 380
-#define OptionFatalErrorMissingTitle = 381
-#define OptionFatalErrorMissingType = 382
-#define OptionFatalErrorMissingVirtualPixelMethod = 383
-#define OptionFatalErrorMissingVisualClass = 384
-#define OptionFatalErrorMissingWidth = 385
-#define OptionFatalErrorOptionLengthExceedsLimit = 386
-#define OptionFatalErrorUnrecognizedColormapType = 387
-#define OptionFatalErrorUnrecognizedColorspaceType = 388
-#define OptionFatalErrorUnrecognizedDisposeMethod = 389
-#define OptionFatalErrorUnrecognizedEndianType = 390
-#define OptionFatalErrorUnrecognizedFilterType = 391
-#define OptionFatalErrorUnrecognizedImageCompressionType = 392
-#define OptionFatalErrorUnrecognizedImageType = 393
-#define OptionFatalErrorUnrecognizedInterlaceType = 394
-#define OptionFatalErrorUnrecognizedOption = 395
-#define OptionFatalErrorUnrecognizedResourceType = 396
-#define OptionWarningDefault = 397
-#define RegistryErrorImageExpected = 398
-#define RegistryErrorImageInfoExpected = 399
-#define RegistryErrorStructureSizeMismatch = 400
-#define RegistryErrorUnableToGetRegistryID = 401
-#define RegistryErrorUnableToLocateImage = 402
-#define RegistryErrorUnableToSetRegistry = 403
-#define RegistryFatalErrorDefault = 404
-#define RegistryWarningDefault = 405
-#define ResourceLimitErrorCacheResourcesExhausted = 406
-#define ResourceLimitErrorMemoryAllocationFailed = 407
-#define ResourceLimitErrorNoPixelsDefinedInCache = 408
-#define ResourceLimitErrorPixelCacheAllocationFailed = 409
-#define ResourceLimitErrorUnableToAddColorProfile = 410
-#define ResourceLimitErrorUnableToAddGenericProfile = 411
-#define ResourceLimitErrorUnableToAddIPTCProfile = 412
-#define ResourceLimitErrorUnableToAllocateCoefficients = 413
-#define ResourceLimitErrorUnableToAllocateColormap = 414
-#define ResourceLimitErrorUnableToAllocateString = 415
-#define ResourceLimitErrorUnableToAnnotateImage = 416
-#define ResourceLimitErrorUnableToAverageImageSequence = 417
-#define ResourceLimitErrorUnableToBlurImage = 418
-#define ResourceLimitErrorUnableToChopImage = 419
-#define ResourceLimitErrorUnableToCloneImage = 420
-#define ResourceLimitErrorUnableToCoalesceImage = 421
-#define ResourceLimitErrorUnableToComputeImageSignature = 422
-#define ResourceLimitErrorUnableToConstituteImage = 423
-#define ResourceLimitErrorUnableToConvertFont = 424
-#define ResourceLimitErrorUnableToConvertStringToTokens = 425
-#define ResourceLimitErrorUnableToCreateColormap = 426
-#define ResourceLimitErrorUnableToCreateColorTransform = 427
-#define ResourceLimitErrorUnableToCreateCommandWidget = 428
-#define ResourceLimitErrorUnableToCreateImageGroup = 429
-#define ResourceLimitErrorUnableToCreateImageMontage = 430
-#define ResourceLimitErrorUnableToCreateXWindow = 431
-#define ResourceLimitErrorUnableToCropImage = 432
-#define ResourceLimitErrorUnableToDespeckleImage = 433
-#define ResourceLimitErrorUnableToDetermineImageClass = 434
-#define ResourceLimitErrorUnableToDetermineTheNumberOfImageColors = 435
-#define ResourceLimitErrorUnableToDitherImage = 436
-#define ResourceLimitErrorUnableToDrawOnImage = 437
-#define ResourceLimitErrorUnableToEdgeImage = 438
-#define ResourceLimitErrorUnableToEmbossImage = 439
-#define ResourceLimitErrorUnableToEnhanceImage = 440
-#define ResourceLimitErrorUnableToFloodfillImage = 441
-#define ResourceLimitErrorUnableToGammaCorrectImage = 442
-#define ResourceLimitErrorUnableToGetBestIconSize = 443
-#define ResourceLimitErrorUnableToGetFromRegistry = 444
-#define ResourceLimitErrorUnableToGetPackageInfo = 445
-#define ResourceLimitErrorUnableToLevelImage = 446
-#define ResourceLimitErrorUnableToMagnifyImage = 447
-#define ResourceLimitErrorUnableToManageColor = 448
-#define ResourceLimitErrorUnableToMapImage = 449
-#define ResourceLimitErrorUnableToMapImageSequence = 450
-#define ResourceLimitErrorUnableToMedianFilterImage = 451
-#define ResourceLimitErrorUnableToMotionBlurImage = 452
-#define ResourceLimitErrorUnableToNoiseFilterImage = 453
-#define ResourceLimitErrorUnableToNormalizeImage = 454
-#define ResourceLimitErrorUnableToOpenColorProfile = 455
-#define ResourceLimitErrorUnableToQuantizeImage = 456
-#define ResourceLimitErrorUnableToQuantizeImageSequence = 457
-#define ResourceLimitErrorUnableToReadTextChunk = 458
-#define ResourceLimitErrorUnableToReadXImage = 459
-#define ResourceLimitErrorUnableToReadXServerColormap = 460
-#define ResourceLimitErrorUnableToResizeImage = 461
-#define ResourceLimitErrorUnableToRotateImage = 462
-#define ResourceLimitErrorUnableToSampleImage = 463
-#define ResourceLimitErrorUnableToScaleImage = 464
-#define ResourceLimitErrorUnableToSelectImage = 465
-#define ResourceLimitErrorUnableToSharpenImage = 466
-#define ResourceLimitErrorUnableToShaveImage = 467
-#define ResourceLimitErrorUnableToShearImage = 468
-#define ResourceLimitErrorUnableToSortImageColormap = 469
-#define ResourceLimitErrorUnableToThresholdImage = 470
-#define ResourceLimitErrorUnableToTransformColorspace = 471
-#define ResourceLimitFatalErrorMemoryAllocationFailed = 472
-#define ResourceLimitFatalErrorUnableToAllocateAscii85Info = 473
-#define ResourceLimitFatalErrorUnableToAllocateCacheView = 474
-#define ResourceLimitFatalErrorUnableToAllocateColorInfo = 475
-#define ResourceLimitFatalErrorUnableToAllocateDashPattern = 476
-#define ResourceLimitFatalErrorUnableToAllocateDelegateInfo = 477
-#define ResourceLimitFatalErrorUnableToAllocateDerivatives = 478
-#define ResourceLimitFatalErrorUnableToAllocateDrawContext = 479
-#define ResourceLimitFatalErrorUnableToAllocateDrawInfo = 480
-#define ResourceLimitFatalErrorUnableToAllocateGammaMap = 481
-#define ResourceLimitFatalErrorUnableToAllocateImage = 482
-#define ResourceLimitFatalErrorUnableToAllocateImagePixels = 483
-#define ResourceLimitFatalErrorUnableToAllocateLogInfo = 484
-#define ResourceLimitFatalErrorUnableToAllocateMagicInfo = 485
-#define ResourceLimitFatalErrorUnableToAllocateMagickInfo = 486
-#define ResourceLimitFatalErrorUnableToAllocateModuleInfo = 487
-#define ResourceLimitFatalErrorUnableToAllocateMontageInfo = 488
-#define ResourceLimitFatalErrorUnableToAllocateQuantizeInfo = 489
-#define ResourceLimitFatalErrorUnableToAllocateRegistryInfo = 490
-#define ResourceLimitFatalErrorUnableToAllocateSemaphoreInfo = 491
-#define ResourceLimitFatalErrorUnableToAllocateString = 492
-#define ResourceLimitFatalErrorUnableToAllocateTypeInfo = 493
-#define ResourceLimitFatalErrorUnableToAnimateImageSequence = 494
-#define ResourceLimitFatalErrorUnableToCloneBlobInfo = 495
-#define ResourceLimitFatalErrorUnableToCloneCacheInfo = 496
-#define ResourceLimitFatalErrorUnableToCloneImage = 497
-#define ResourceLimitFatalErrorUnableToCloneImageInfo = 498
-#define ResourceLimitFatalErrorUnableToConcatenateString = 499
-#define ResourceLimitFatalErrorUnableToConvertText = 500
-#define ResourceLimitFatalErrorUnableToCreateColormap = 501
-#define ResourceLimitFatalErrorUnableToDisplayImage = 502
-#define ResourceLimitFatalErrorUnableToEscapeString = 503
-#define ResourceLimitFatalErrorUnableToInterpretMSLImage = 504
-#define ResourceLimitWarningMemoryAllocationFailed = 505
-#define StreamErrorImageDoesNotContainTheStreamGeometry = 506
-#define StreamErrorNoStreamHandlerIsDefined = 507
-#define StreamErrorPixelCacheIsNotOpen = 508
-#define StreamErrorUnableToAcquirePixelStream = 509
-#define StreamErrorUnableToSetPixelStream = 510
-#define StreamErrorUnableToSyncPixelStream = 511
-#define StreamFatalErrorDefault = 512
-#define StreamWarningDefault = 513
-#define TypeErrorFontSubstitutionRequired = 514
-#define TypeErrorUnableToGetTypeMetrics = 515
-#define TypeErrorUnableToInitializeFreetypeLibrary = 516
-#define TypeErrorUnableToReadFont = 517
-#define TypeErrorUnrecognizedFontEncoding = 518
-#define TypeFatalErrorDefault = 519
-#define TypeWarningDefault = 520
-#define XServerErrorColorIsNotKnownToServer = 521
-#define XServerErrorNoWindowWithSpecifiedIDExists = 522
-#define XServerErrorStandardColormapIsNotInitialized = 523
-#define XServerErrorUnableToConnectToRemoteDisplay = 524
-#define XServerErrorUnableToCreateBitmap = 525
-#define XServerErrorUnableToCreateColormap = 526
-#define XServerErrorUnableToCreatePixmap = 527
-#define XServerErrorUnableToCreateProperty = 528
-#define XServerErrorUnableToCreateStandardColormap = 529
-#define XServerErrorUnableToDisplayImageInfo = 530
-#define XServerErrorUnableToGetProperty = 531
-#define XServerErrorUnableToGetStandardColormap = 532
-#define XServerErrorUnableToGetVisual = 533
-#define XServerErrorUnableToGrabMouse = 534
-#define XServerErrorUnableToLoadFont = 535
-#define XServerErrorUnableToMatchVisualToStandardColormap = 536
-#define XServerErrorUnableToOpenXServer = 537
-#define XServerErrorUnableToReadXWindowAttributes = 538
-#define XServerErrorUnableToReadXWindowImage = 539
-#define XServerErrorUnrecognizedColormapType = 540
-#define XServerErrorUnrecognizedGravityType = 541
-#define XServerErrorUnrecognizedVisualSpecifier = 542
-#define XServerFatalErrorUnableToAllocateXHints = 543
-#define XServerFatalErrorUnableToCreateCursor = 544
-#define XServerFatalErrorUnableToCreateGraphicContext = 545
-#define XServerFatalErrorUnableToCreateStandardColormap = 546
-#define XServerFatalErrorUnableToCreateTextProperty = 547
-#define XServerFatalErrorUnableToCreateXImage = 548
-#define XServerFatalErrorUnableToCreateXPixmap = 549
-#define XServerFatalErrorUnableToCreateXWindow = 550
-#define XServerFatalErrorUnableToDisplayImage = 551
-#define XServerFatalErrorUnableToDitherImage = 552
-#define XServerFatalErrorUnableToGetPixelInfo = 553
-#define XServerFatalErrorUnableToGetVisual = 554
-#define XServerFatalErrorUnableToLoadFont = 555
-#define XServerFatalErrorUnableToMakeXWindow = 556
-#define XServerFatalErrorUnableToOpenXServer = 557
-#define XServerFatalErrorUnableToViewFonts = 558
-#define XServerWarningUnableToGetVisual = 559
-#define XServerWarningUsingDefaultVisual = 560
+extern const char *GetLocaleMessageFromID(const int);
+
+#define MAX_LOCALE_MSGS 611
+
+#define BlobErrorUnableToCreateBlob 1
+#define BlobErrorUnableToOpenFile 2
+#define BlobErrorUnableToReadFile 3
+#define BlobErrorUnableToReadToOffset 4
+#define BlobErrorUnableToSeekToOffset 5
+#define BlobErrorUnableToWriteBlob 6
+#define BlobErrorUnrecognizedImageFormat 7
+#define BlobFatalErrorDefault 8
+#define BlobWarningDefault 9
+#define CacheErrorInconsistentPersistentCacheDepth 10
+#define CacheErrorPixelCacheIsNotOpen 11
+#define CacheErrorUnableToCloneCache 12
+#define CacheErrorUnableToExtendCache 13
+#define CacheErrorUnableToGetCacheNexus 14
+#define CacheErrorUnableToGetPixelsFromCache 15
+#define CacheErrorUnableToOpenCache 16
+#define CacheErrorUnableToPeristPixelCache 17
+#define CacheErrorUnableToReadPixelCache 18
+#define CacheErrorUnableToSyncCache 19
+#define CacheFatalErrorDiskAllocationFailed 20
+#define CacheFatalErrorUnableToExtendPixelCache 21
+#define CacheWarningDefault 22
+#define CoderErrorColormapTypeNotSupported 23
+#define CoderErrorColorspaceModelIsNotSupported 24
+#define CoderErrorColorTypeNotSupported 25
+#define CoderErrorCompressionNotValid 26
+#define CoderErrorDataEncodingSchemeIsNotSupported 27
+#define CoderErrorDataStorageTypeIsNotSupported 28
+#define CoderErrorDeltaPNGNotSupported 29
+#define CoderErrorEncryptedWPGImageFileNotSupported 30
+#define CoderErrorFractalCompressionNotSupported 31
+#define CoderErrorImageColumnOrRowSizeIsNotSupported 32
+#define CoderErrorImageDoesNotHaveAMatteChannel 33
+#define CoderErrorImageIsNotTiled 34
+#define CoderErrorImageTypeNotSupported 35
+#define CoderErrorIncompatibleSizeOfDouble 36
+#define CoderErrorIrregularChannelGeometryNotSupported 37
+#define CoderErrorJPEGCompressionNotSupported 38
+#define CoderErrorJPEGEmbeddingFailed 39
+#define CoderErrorLocationTypeIsNotSupported 40
+#define CoderErrorMapStorageTypeIsNotSupported 41
+#define CoderErrorMSBByteOrderNotSupported 42
+#define CoderErrorMultidimensionalMatricesAreNotSupported 43
+#define CoderErrorMultipleRecordListNotSupported 44
+#define CoderErrorNo8BIMDataIsAvailable 45
+#define CoderErrorNoAPP1DataIsAvailable 46
+#define CoderErrorNoBitmapOnClipboard 47
+#define CoderErrorNoColorProfileAvailable 48
+#define CoderErrorNoDataReturned 49
+#define CoderErrorNoImageVectorGraphics 50
+#define CoderErrorNoIPTCInfoWasFound 51
+#define CoderErrorNoIPTCProfileAvailable 52
+#define CoderErrorNotASupportedImageFile 53
+#define CoderErrorNumberOfImagesIsNotSupported 54
+#define CoderErrorOnlyContinuousTonePictureSupported 55
+#define CoderErrorOnlyLevelZerofilesSupported 56
+#define CoderErrorPNGCompressionNotSupported 57
+#define CoderErrorRLECompressionNotSupported 58
+#define CoderErrorUnableToCopyProfile 59
+#define CoderErrorUnableToCreateADC 60
+#define CoderErrorUnableToCreateBitmap 61
+#define CoderErrorUnableToDecompressImage 62
+#define CoderErrorUnableToInitializeFPXLibrary 63
+#define CoderErrorUnableToOpenBlob 64
+#define CoderErrorUnableToReadAspectRatio 65
+#define CoderErrorUnableToReadCIELABImages 66
+#define CoderErrorUnableToReadSummaryInfo 67
+#define CoderErrorUnableToSetAffineMatrix 68
+#define CoderErrorUnableToSetAspectRatio 69
+#define CoderErrorUnableToSetColorTwist 70
+#define CoderErrorUnableToSetContrast 71
+#define CoderErrorUnableToSetFilteringValue 72
+#define CoderErrorUnableToSetImageComments 73
+#define CoderErrorUnableToSetImageTitle 74
+#define CoderErrorUnableToSetJPEGLevel 75
+#define CoderErrorUnableToSetRegionOfInterest 76
+#define CoderErrorUnableToSetSummaryInfo 77
+#define CoderErrorUnableToTranslateText 78
+#define CoderErrorUnableToWriteMPEGParameters 79
+#define CoderErrorUnableToZipCompressImage 80
+#define CoderErrorUnsupportedCellTypeInTheMatrix 81
+#define CoderErrorZipCompressionNotSupported 82
+#define CoderFatalErrorDefault 83
+#define CoderWarningLosslessToLossyJPEGConversion 84
+#define ConfigureErrorIncludeElementNestedTooDeeply 85
+#define ConfigureErrorRegistryKeyLookupFailed 86
+#define ConfigureErrorUnableToAccessConfigureFile 87
+#define ConfigureErrorUnableToAccessFontFile 88
+#define ConfigureErrorUnableToAccessLogFile 89
+#define ConfigureErrorUnableToAccessModuleFile 90
+#define ConfigureFatalErrorDefault 91
+#define ConfigureWarningDefault 92
+#define CorruptImageErrorAnErrorHasOccurredReadingFromFile 93
+#define CorruptImageErrorAnErrorHasOccurredWritingToFile 94
+#define CorruptImageErrorColormapExceeds256Colors 95
+#define CorruptImageErrorCorruptImage 96
+#define CorruptImageErrorImageFileDoesNotContainAnyImageData 97
+#define CorruptImageErrorImageTypeNotSupported 98
+#define CorruptImageErrorImproperImageHeader 99
+#define CorruptImageErrorInsufficientImageDataInFile 100
+#define CorruptImageErrorInvalidColormapIndex 101
+#define CorruptImageErrorInvalidFileFormatVersion 102
+#define CorruptImageErrorLengthAndFilesizeDoNotMatch 103
+#define CorruptImageErrorMissingImageChannel 104
+#define CorruptImageErrorNegativeOrZeroImageSize 105
+#define CorruptImageErrorNonOS2HeaderSizeError 106
+#define CorruptImageErrorNotABMPImageFile 107
+#define CorruptImageErrorNotACUTImageFile 108
+#define CorruptImageErrorNotADCMImageFile 109
+#define CorruptImageErrorNotADCXImageFile 110
+#define CorruptImageErrorNotADIBImageFile 111
+#define CorruptImageErrorNotADPXImageFile 112
+#define CorruptImageErrorNotAGIFImageFile 113
+#define CorruptImageErrorNotAJNGImageFile 114
+#define CorruptImageErrorNotAMATLABImageFile 115
+#define CorruptImageErrorNotAMNGImageFile 116
+#define CorruptImageErrorNotAMTVImageFile 117
+#define CorruptImageErrorNotAnARTImageFile 118
+#define CorruptImageErrorNotAnAVIImageFile 119
+#define CorruptImageErrorNotAnAVSImageFile 120
+#define CorruptImageErrorNotAnEMFImageFile 121
+#define CorruptImageErrorNotAnICOImageFile 122
+#define CorruptImageErrorNotAOTBImageFile 123
+#define CorruptImageErrorNotAPCDImageFile 124
+#define CorruptImageErrorNotAPCXImageFile 125
+#define CorruptImageErrorNotAPDBImageFile 126
+#define CorruptImageErrorNotAPICTImageFile 127
+#define CorruptImageErrorNotAPIXImageFile 128
+#define CorruptImageErrorNotAPNGImageFile 129
+#define CorruptImageErrorNotAPNMImageFile 130
+#define CorruptImageErrorNotAPSDImageFile 131
+#define CorruptImageErrorNotAPWPImageFile 132
+#define CorruptImageErrorNotARLEImageFile 133
+#define CorruptImageErrorNotASCTImageFile 134
+#define CorruptImageErrorNotASFWImageFile 135
+#define CorruptImageErrorNotASGIImageFile 136
+#define CorruptImageErrorNotASUNImageFile 137
+#define CorruptImageErrorNotATGAImageFile 138
+#define CorruptImageErrorNotATIMImageFile 139
+#define CorruptImageErrorNotATOPOLImageFile 140
+#define CorruptImageErrorNotAVIFFImageFile 141
+#define CorruptImageErrorNotAWBMPImageFile 142
+#define CorruptImageErrorNotAWPGImageFile 143
+#define CorruptImageErrorNotAXBMImageFile 144
+#define CorruptImageErrorNotAXCFImageFile 145
+#define CorruptImageErrorNotAXPMImageFile 146
+#define CorruptImageErrorNotEnoughTiles 147
+#define CorruptImageErrorStaticPlanesValueNotEqualToOne 148
+#define CorruptImageErrorTooMuchImageDataInFile 149
+#define CorruptImageErrorUnableToReadColormapFromDumpFile 150
+#define CorruptImageErrorUnableToReadColorProfile 151
+#define CorruptImageErrorUnableToReadExtensionBlock 152
+#define CorruptImageErrorUnableToReadGenericProfile 153
+#define CorruptImageErrorUnableToReadImageData 154
+#define CorruptImageErrorUnableToReadImageHeader 155
+#define CorruptImageErrorUnableToReadIPTCProfile 156
+#define CorruptImageErrorUnableToReadPixmapFromDumpFile 157
+#define CorruptImageErrorUnableToReadSubImageData 158
+#define CorruptImageErrorUnableToReadVIDImage 159
+#define CorruptImageErrorUnableToReadWindowNameFromDumpFile 160
+#define CorruptImageErrorUnableToRunlengthDecodeImage 161
+#define CorruptImageErrorUnableToUncompressImage 162
+#define CorruptImageErrorUnexpectedEndOfFile 163
+#define CorruptImageErrorUnexpectedSamplingFactor 164
+#define CorruptImageErrorUnknownPatternType 165
+#define CorruptImageErrorUnrecognizedBitsPerPixel 166
+#define CorruptImageErrorUnrecognizedImageCompression 167
+#define CorruptImageErrorUnrecognizedXWDHeader 168
+#define CorruptImageFatalErrorUnableToPersistKey 169
+#define CorruptImageWarningCompressionNotValid 170
+#define CorruptImageWarningImproperImageHeader 171
+#define CorruptImageWarningNegativeOrZeroImageSize 172
+#define CorruptImageWarningNonOS2HeaderSizeError 173
+#define CorruptImageWarningSkipToSyncByte 174
+#define CorruptImageWarningStaticPlanesValueNotEqualToOne 175
+#define CorruptImageWarningUnrecognizedBitsPerPixel 176
+#define CorruptImageWarningUnrecognizedImageCompression 177
+#define CorruptImageWarningUnrecognizedNumberOfColors 178
+#define DelegateErrorDelegateFailed 179
+#define DelegateErrorFailedToComputeOutputSize 180
+#define DelegateErrorFailedToRenderFile 181
+#define DelegateErrorFailedToScanFile 182
+#define DelegateErrorNoTagFound 183
+#define DelegateErrorPostscriptDelegateFailed 184
+#define DelegateErrorUnableToCreateImage 185
+#define DelegateErrorUnableToCreateImageComponent 186
+#define DelegateErrorUnableToDecodeImageFile 187
+#define DelegateErrorUnableToEncodeImageFile 188
+#define DelegateErrorUnableToInitializeFPXLibrary 189
+#define DelegateErrorUnableToInitializeWMFLibrary 190
+#define DelegateErrorUnableToManageJP2Stream 191
+#define DelegateErrorUnableToWriteSVGFormat 192
+#define DelegateFatalErrorDefault 193
+#define DelegateWarningDefault 194
+#define DrawErrorAlreadyPushingPatternDefinition 195
+#define DrawErrorNonconformingDrawingPrimitiveDefinition 196
+#define DrawErrorUnableToPrint 197
+#define DrawErrorUnbalancedGraphicContextPushPop 198
+#define DrawFatalErrorDefault 199
+#define DrawWarningNotARelativeURL 200
+#define DrawWarningNotCurrentlyPushingPatternDefinition 201
+#define DrawWarningURLNotFound 202
+#define FileOpenErrorUnableToCreateTemporaryFile 203
+#define FileOpenErrorUnableToOpenFile 204
+#define FileOpenErrorUnableToWriteFile 205
+#define FileOpenFatalErrorDefault 206
+#define FileOpenWarningDefault 207
+#define ImageErrorAngleIsDiscontinuous 208
+#define ImageErrorImageColorspaceDiffers 209
+#define ImageErrorImageOpacityDiffers 210
+#define ImageErrorImageSequenceIsRequired 211
+#define ImageErrorImageSizeDiffers 212
+#define ImageErrorLeftAndRightImageSizesDiffer 213
+#define ImageErrorNoImagesWereFound 214
+#define ImageErrorNoImagesWereLoaded 215
+#define ImageErrorNoLocaleImageAttribute 216
+#define ImageErrorTooManyClusters 217
+#define ImageErrorUnableToAppendImage 218
+#define ImageErrorUnableToAverageImage 219
+#define ImageErrorUnableToCoalesceImage 220
+#define ImageErrorUnableToCompareImages 221
+#define ImageErrorUnableToCreateImageMosaic 222
+#define ImageErrorUnableToCreateStereoImage 223
+#define ImageErrorUnableToDeconstructImageSequence 224
+#define ImageErrorUnableToFlattenImage 225
+#define ImageErrorUnableToResizeImage 226
+#define ImageErrorUnableToSegmentImage 227
+#define ImageErrorUnableToSetClipMask 228
+#define ImageErrorUnableToShearImage 229
+#define ImageErrorWidthOrHeightExceedsLimit 230
+#define ImageFatalErrorUnableToPersistKey 231
+#define ImageWarningDefault 232
+#define MissingDelegateErrorDPSLibraryIsNotAvailable 233
+#define MissingDelegateErrorFPXLibraryIsNotAvailable 234
+#define MissingDelegateErrorFreeTypeLibraryIsNotAvailable 235
+#define MissingDelegateErrorJPEGLibraryIsNotAvailable 236
+#define MissingDelegateErrorLZWEncodingNotEnabled 237
+#define MissingDelegateErrorNoDecodeDelegateForThisImageFormat 238
+#define MissingDelegateErrorNoEncodeDelegateForThisImageFormat 239
+#define MissingDelegateErrorTIFFLibraryIsNotAvailable 240
+#define MissingDelegateErrorXMLLibraryIsNotAvailable 241
+#define MissingDelegateErrorXWindowLibraryIsNotAvailable 242
+#define MissingDelegateErrorZipLibraryIsNotAvailable 243
+#define MissingDelegateFatalErrorDefault 244
+#define MissingDelegateWarningDefault 245
+#define ModuleErrorFailedToCloseModule 246
+#define ModuleErrorFailedToFindSymbol 247
+#define ModuleErrorUnableToLoadModule 248
+#define ModuleErrorUnableToRegisterImageFormat 249
+#define ModuleErrorUnrecognizedModule 250
+#define ModuleFatalErrorUnableToInitializeModuleLoader 251
+#define ModuleWarningDefault 252
+#define OptionErrorBevelWidthIsNegative 253
+#define OptionErrorColorSeparatedImageRequired 254
+#define OptionErrorFrameIsLessThanImageSize 255
+#define OptionErrorGeometryDimensionsAreZero 256
+#define OptionErrorGeometryDoesNotContainImage 257
+#define OptionErrorImagesAreNotTheSameSize 258
+#define OptionErrorImageSizeMustExceedBevelWidth 259
+#define OptionErrorImageSmallerThanKernelWidth 260
+#define OptionErrorImageSmallerThanRadius 261
+#define OptionErrorImageWidthsOrHeightsDiffer 262
+#define OptionErrorInputImagesAlreadySpecified 263
+#define OptionErrorKernelRadiusIsTooSmall 264
+#define OptionErrorKernelWidthMustBeAnOddNumber 265
+#define OptionErrorMissingAffineMatrix 266
+#define OptionErrorMissingAmount 267
+#define OptionErrorMissingAmplitude 268
+#define OptionErrorMissingAnImageFilename 269
+#define OptionErrorMissingArgument 270
+#define OptionErrorMissingAzimuth 271
+#define OptionErrorMissingBackgroundColor 272
+#define OptionErrorMissingBevelWidth 273
+#define OptionErrorMissingBorderColor 274
+#define OptionErrorMissingCoefficients 275
+#define OptionErrorMissingColorizeValue 276
+#define OptionErrorMissingColors 277
+#define OptionErrorMissingComment 278
+#define OptionErrorMissingCompressionQuality 279
+#define OptionErrorMissingCycleAmount 280
+#define OptionErrorMissingDelay 281
+#define OptionErrorMissingDisposeMethod 282
+#define OptionErrorMissingDissolveValue 283
+#define OptionErrorMissingDistance 284
+#define OptionErrorMissingDrawingPrimitive 285
+#define OptionErrorMissingEnodingType 286
+#define OptionErrorMissingEventMask 287
+#define OptionErrorMissingFilename 288
+#define OptionErrorMissingFillColor 289
+#define OptionErrorMissingFontName 290
+#define OptionErrorMissingFormatSpecifier 291
+#define OptionErrorMissingGeometry 292
+#define OptionErrorMissingImageDepth 293
+#define OptionErrorMissingImageFrames 294
+#define OptionErrorMissingImageGamma 295
+#define OptionErrorMissingImageIterations 296
+#define OptionErrorMissingImageLabel 297
+#define OptionErrorMissingImageProfile 298
+#define OptionErrorMissingImageRotation 299
+#define OptionErrorMissingImageScene 300
+#define OptionErrorMissingImageType 301
+#define OptionErrorMissingImplodeAmount 302
+#define OptionErrorMissingListName 303
+#define OptionErrorMissingLogFormat 304
+#define OptionErrorMissingMatrix 305
+#define OptionErrorMissingMatteColor 306
+#define OptionErrorMissingOffset 307
+#define OptionErrorMissingOpaqueColor 308
+#define OptionErrorMissingOrder 309
+#define OptionErrorMissingPageGeometry 310
+#define OptionErrorMissingPaintRadius 311
+#define OptionErrorMissingPassword 312
+#define OptionErrorMissingPoint 313
+#define OptionErrorMissingPointsize 314
+#define OptionErrorMissingResourceLimit 315
+#define OptionErrorMissingResourceType 316
+#define OptionErrorMissingSeedValue 317
+#define OptionErrorMissingServerName 318
+#define OptionErrorMissingSpreadAmount 319
+#define OptionErrorMissingThreshold 320
+#define OptionErrorMissingTile 321
+#define OptionErrorMissingTitle 322
+#define OptionErrorMissingTransparentColor 323
+#define OptionErrorMissingTreeDepth 324
+#define OptionErrorMissingType 325
+#define OptionErrorMissingViewTransform 326
+#define OptionErrorMissingVirtualPixelMethod 327
+#define OptionErrorMissingWidth 328
+#define OptionErrorMustSpecifyAnImageName 329
+#define OptionErrorMustSpecifyImageSize 330
+#define OptionErrorNoBlobDefined 331
+#define OptionErrorNoImagesDefined 332
+#define OptionErrorNonzeroWidthAndHeightRequired 333
+#define OptionErrorNoProfileNameWasGiven 334
+#define OptionErrorNullBlobArgument 335
+#define OptionErrorReferenceImageRequired 336
+#define OptionErrorReferenceIsNotMyType 337
+#define OptionErrorSteganoImageRequired 338
+#define OptionErrorStereoImageRequired 339
+#define OptionErrorSubimageSpecificationReturnsNoImages 340
+#define OptionErrorUnableToAddOrRemoveProfile 341
+#define OptionErrorUnableToAllocateICCProfile 342
+#define OptionErrorUnableToAverageImageSequence 343
+#define OptionErrorUnableToBlurImage 344
+#define OptionErrorUnableToChopImage 345
+#define OptionErrorUnableToConstituteImage 346
+#define OptionErrorUnableToConvolveImage 347
+#define OptionErrorUnableToEdgeImage 348
+#define OptionErrorUnableToEqualizeImage 349
+#define OptionErrorUnableToFilterImage 350
+#define OptionErrorUnableToFormatImageMetadata 351
+#define OptionErrorUnableToFrameImage 352
+#define OptionErrorUnableToOilPaintImage 353
+#define OptionErrorUnableToPaintImage 354
+#define OptionErrorUnableToRaiseImage 355
+#define OptionErrorUnableToSharpenImage 356
+#define OptionErrorUnableToThresholdImage 357
+#define OptionErrorUnableToWaveImage 358
+#define OptionErrorUnrecognizedAttribute 359
+#define OptionErrorUnrecognizedChannelType 360
+#define OptionErrorUnrecognizedColor 361
+#define OptionErrorUnrecognizedColormapType 362
+#define OptionErrorUnrecognizedColorspace 363
+#define OptionErrorUnrecognizedComposeOperator 364
+#define OptionErrorUnrecognizedDisposeMethod 365
+#define OptionErrorUnrecognizedElement 366
+#define OptionErrorUnrecognizedEndianType 367
+#define OptionErrorUnrecognizedGravityType 368
+#define OptionErrorUnrecognizedImageCompression 369
+#define OptionErrorUnrecognizedImageFilter 370
+#define OptionErrorUnrecognizedImageFormat 371
+#define OptionErrorUnrecognizedImageMode 372
+#define OptionErrorUnrecognizedImageType 373
+#define OptionErrorUnrecognizedIntentType 374
+#define OptionErrorUnrecognizedInterlaceType 375
+#define OptionErrorUnrecognizedListType 376
+#define OptionErrorUnrecognizedModeType 377
+#define OptionErrorUnrecognizedNoiseType 378
+#define OptionErrorUnrecognizedOption 379
+#define OptionErrorUnrecognizedPerlMagickMethod 380
+#define OptionErrorUnrecognizedPixelMap 381
+#define OptionErrorUnrecognizedPreviewType 382
+#define OptionErrorUnrecognizedResourceType 383
+#define OptionErrorUnrecognizedType 384
+#define OptionErrorUnrecognizedVirtualPixelMethod 385
+#define OptionErrorUsageError 386
+#define OptionFatalErrorDeprecatedOption 387
+#define OptionFatalErrorInvalidColorspaceType 388
+#define OptionFatalErrorInvalidEndianType 389
+#define OptionFatalErrorInvalidImageType 390
+#define OptionFatalErrorInvalidInterlaceType 391
+#define OptionFatalErrorMissingAnImageFilename 392
+#define OptionFatalErrorMissingBevelWidth 393
+#define OptionFatalErrorMissingBorderColor 394
+#define OptionFatalErrorMissingColor 395
+#define OptionFatalErrorMissingColors 396
+#define OptionFatalErrorMissingCommand 397
+#define OptionFatalErrorMissingComment 398
+#define OptionFatalErrorMissingCompressionQuality 399
+#define OptionFatalErrorMissingDegrees 400
+#define OptionFatalErrorMissingDepth 401
+#define OptionFatalErrorMissingDisposeMethod 402
+#define OptionFatalErrorMissingEncodingType 403
+#define OptionFatalErrorMissingEventMask 404
+#define OptionFatalErrorMissingFactor 405
+#define OptionFatalErrorMissingFilename 406
+#define OptionFatalErrorMissingFontName 407
+#define OptionFatalErrorMissingForeground 408
+#define OptionFatalErrorMissingGeometry 409
+#define OptionFatalErrorMissingIDNameOrRoot 410
+#define OptionFatalErrorMissingImageDepth 411
+#define OptionFatalErrorMissingLabelName 412
+#define OptionFatalErrorMissingLevel 413
+#define OptionFatalErrorMissingLogFormat 414
+#define OptionFatalErrorMissingMapType 415
+#define OptionFatalErrorMissingMethod 416
+#define OptionFatalErrorMissingName 417
+#define OptionFatalErrorMissingPageGeometry 418
+#define OptionFatalErrorMissingPassword 419
+#define OptionFatalErrorMissingQuality 420
+#define OptionFatalErrorMissingResourceLimit 421
+#define OptionFatalErrorMissingResourceType 422
+#define OptionFatalErrorMissingSceneNumber 423
+#define OptionFatalErrorMissingSeconds 424
+#define OptionFatalErrorMissingServerName 425
+#define OptionFatalErrorMissingSize 426
+#define OptionFatalErrorMissingSnaps 427
+#define OptionFatalErrorMissingThreshold 428
+#define OptionFatalErrorMissingTitle 429
+#define OptionFatalErrorMissingType 430
+#define OptionFatalErrorMissingValue 431
+#define OptionFatalErrorMissingVirtualPixelMethod 432
+#define OptionFatalErrorMissingVisualClass 433
+#define OptionFatalErrorMissingWidth 434
+#define OptionFatalErrorNoImagesWereLoaded 435
+#define OptionFatalErrorOptionLengthExceedsLimit 436
+#define OptionFatalErrorUnableToOpenXServer 437
+#define OptionFatalErrorUnableToPersistKey 438
+#define OptionFatalErrorUnrecognizedColormapType 439
+#define OptionFatalErrorUnrecognizedColorspaceType 440
+#define OptionFatalErrorUnrecognizedDisposeMethod 441
+#define OptionFatalErrorUnrecognizedEndianType 442
+#define OptionFatalErrorUnrecognizedFilterType 443
+#define OptionFatalErrorUnrecognizedImageCompressionType 444
+#define OptionFatalErrorUnrecognizedImageType 445
+#define OptionFatalErrorUnrecognizedInterlaceType 446
+#define OptionFatalErrorUnrecognizedOption 447
+#define OptionFatalErrorUnrecognizedResourceType 448
+#define OptionFatalErrorUnrecognizedVirtualPixelMethod 449
+#define OptionWarningUnrecognizedColor 450
+#define RegistryErrorImageExpected 451
+#define RegistryErrorImageInfoExpected 452
+#define RegistryErrorStructureSizeMismatch 453
+#define RegistryErrorUnableToGetRegistryID 454
+#define RegistryErrorUnableToLocateImage 455
+#define RegistryErrorUnableToSetRegistry 456
+#define RegistryFatalErrorDefault 457
+#define RegistryWarningDefault 458
+#define ResourceLimitErrorCacheResourcesExhausted 459
+#define ResourceLimitErrorMemoryAllocationFailed 460
+#define ResourceLimitErrorNoPixelsDefinedInCache 461
+#define ResourceLimitErrorPixelCacheAllocationFailed 462
+#define ResourceLimitErrorUnableToAddColorProfile 463
+#define ResourceLimitErrorUnableToAddGenericProfile 464
+#define ResourceLimitErrorUnableToAddIPTCProfile 465
+#define ResourceLimitErrorUnableToAllocateCoefficients 466
+#define ResourceLimitErrorUnableToAllocateColormap 467
+#define ResourceLimitErrorUnableToAllocateString 468
+#define ResourceLimitErrorUnableToAnnotateImage 469
+#define ResourceLimitErrorUnableToAverageImageSequence 470
+#define ResourceLimitErrorUnableToCloneImage 471
+#define ResourceLimitErrorUnableToComputeImageSignature 472
+#define ResourceLimitErrorUnableToConstituteImage 473
+#define ResourceLimitErrorUnableToConvertFont 474
+#define ResourceLimitErrorUnableToConvertStringToTokens 475
+#define ResourceLimitErrorUnableToCreateColormap 476
+#define ResourceLimitErrorUnableToCreateColorTransform 477
+#define ResourceLimitErrorUnableToCreateCommandWidget 478
+#define ResourceLimitErrorUnableToCreateImageGroup 479
+#define ResourceLimitErrorUnableToCreateImageMontage 480
+#define ResourceLimitErrorUnableToCreateXWindow 481
+#define ResourceLimitErrorUnableToCropImage 482
+#define ResourceLimitErrorUnableToDespeckleImage 483
+#define ResourceLimitErrorUnableToDetermineImageClass 484
+#define ResourceLimitErrorUnableToDetermineTheNumberOfImageColors 485
+#define ResourceLimitErrorUnableToDitherImage 486
+#define ResourceLimitErrorUnableToDrawOnImage 487
+#define ResourceLimitErrorUnableToEdgeImage 488
+#define ResourceLimitErrorUnableToEmbossImage 489
+#define ResourceLimitErrorUnableToEnhanceImage 490
+#define ResourceLimitErrorUnableToFloodfillImage 491
+#define ResourceLimitErrorUnableToGammaCorrectImage 492
+#define ResourceLimitErrorUnableToGetBestIconSize 493
+#define ResourceLimitErrorUnableToGetFromRegistry 494
+#define ResourceLimitErrorUnableToGetPackageInfo 495
+#define ResourceLimitErrorUnableToLevelImage 496
+#define ResourceLimitErrorUnableToMagnifyImage 497
+#define ResourceLimitErrorUnableToManageColor 498
+#define ResourceLimitErrorUnableToMapImage 499
+#define ResourceLimitErrorUnableToMapImageSequence 500
+#define ResourceLimitErrorUnableToMedianFilterImage 501
+#define ResourceLimitErrorUnableToMotionBlurImage 502
+#define ResourceLimitErrorUnableToNoiseFilterImage 503
+#define ResourceLimitErrorUnableToNormalizeImage 504
+#define ResourceLimitErrorUnableToOpenColorProfile 505
+#define ResourceLimitErrorUnableToQuantizeImage 506
+#define ResourceLimitErrorUnableToQuantizeImageSequence 507
+#define ResourceLimitErrorUnableToReadTextChunk 508
+#define ResourceLimitErrorUnableToReadXImage 509
+#define ResourceLimitErrorUnableToReadXServerColormap 510
+#define ResourceLimitErrorUnableToResizeImage 511
+#define ResourceLimitErrorUnableToRotateImage 512
+#define ResourceLimitErrorUnableToSampleImage 513
+#define ResourceLimitErrorUnableToScaleImage 514
+#define ResourceLimitErrorUnableToSelectImage 515
+#define ResourceLimitErrorUnableToSharpenImage 516
+#define ResourceLimitErrorUnableToShaveImage 517
+#define ResourceLimitErrorUnableToShearImage 518
+#define ResourceLimitErrorUnableToSortImageColormap 519
+#define ResourceLimitErrorUnableToThresholdImage 520
+#define ResourceLimitErrorUnableToTransformColorspace 521
+#define ResourceLimitFatalErrorMemoryAllocationFailed 522
+#define ResourceLimitFatalErrorUnableToAllocateAscii85Info 523
+#define ResourceLimitFatalErrorUnableToAllocateCacheInfo 524
+#define ResourceLimitFatalErrorUnableToAllocateCacheView 525
+#define ResourceLimitFatalErrorUnableToAllocateColorInfo 526
+#define ResourceLimitFatalErrorUnableToAllocateDashPattern 527
+#define ResourceLimitFatalErrorUnableToAllocateDelegateInfo 528
+#define ResourceLimitFatalErrorUnableToAllocateDerivatives 529
+#define ResourceLimitFatalErrorUnableToAllocateDrawContext 530
+#define ResourceLimitFatalErrorUnableToAllocateDrawInfo 531
+#define ResourceLimitFatalErrorUnableToAllocateGammaMap 532
+#define ResourceLimitFatalErrorUnableToAllocateImage 533
+#define ResourceLimitFatalErrorUnableToAllocateImagePixels 534
+#define ResourceLimitFatalErrorUnableToAllocateLogInfo 535
+#define ResourceLimitFatalErrorUnableToAllocateMagicInfo 536
+#define ResourceLimitFatalErrorUnableToAllocateMagickInfo 537
+#define ResourceLimitFatalErrorUnableToAllocateModuleInfo 538
+#define ResourceLimitFatalErrorUnableToAllocateMontageInfo 539
+#define ResourceLimitFatalErrorUnableToAllocateQuantizeInfo 540
+#define ResourceLimitFatalErrorUnableToAllocateRegistryInfo 541
+#define ResourceLimitFatalErrorUnableToAllocateSemaphoreInfo 542
+#define ResourceLimitFatalErrorUnableToAllocateString 543
+#define ResourceLimitFatalErrorUnableToAllocateTypeInfo 544
+#define ResourceLimitFatalErrorUnableToAnimateImageSequence 545
+#define ResourceLimitFatalErrorUnableToCloneBlobInfo 546
+#define ResourceLimitFatalErrorUnableToCloneCacheInfo 547
+#define ResourceLimitFatalErrorUnableToCloneImage 548
+#define ResourceLimitFatalErrorUnableToCloneImageInfo 549
+#define ResourceLimitFatalErrorUnableToConcatenateString 550
+#define ResourceLimitFatalErrorUnableToConvertText 551
+#define ResourceLimitFatalErrorUnableToCreateColormap 552
+#define ResourceLimitFatalErrorUnableToDisplayImage 553
+#define ResourceLimitFatalErrorUnableToEscapeString 554
+#define ResourceLimitFatalErrorUnableToInterpretMSLImage 555
+#define ResourceLimitWarningMemoryAllocationFailed 556
+#define StreamErrorImageDoesNotContainTheStreamGeometry 557
+#define StreamErrorNoStreamHandlerIsDefined 558
+#define StreamErrorPixelCacheIsNotOpen 559
+#define StreamErrorUnableToAcquirePixelStream 560
+#define StreamErrorUnableToSetPixelStream 561
+#define StreamErrorUnableToSyncPixelStream 562
+#define StreamFatalErrorDefault 563
+#define StreamWarningDefault 564
+#define TypeErrorFontSubstitutionRequired 565
+#define TypeErrorUnableToGetTypeMetrics 566
+#define TypeErrorUnableToInitializeFreetypeLibrary 567
+#define TypeErrorUnableToReadFont 568
+#define TypeErrorUnrecognizedFontEncoding 569
+#define TypeFatalErrorDefault 570
+#define TypeWarningDefault 571
+#define XServerErrorColorIsNotKnownToServer 572
+#define XServerErrorNoWindowWithSpecifiedIDExists 573
+#define XServerErrorStandardColormapIsNotInitialized 574
+#define XServerErrorUnableToConnectToRemoteDisplay 575
+#define XServerErrorUnableToCreateBitmap 576
+#define XServerErrorUnableToCreateColormap 577
+#define XServerErrorUnableToCreatePixmap 578
+#define XServerErrorUnableToCreateProperty 579
+#define XServerErrorUnableToCreateStandardColormap 580
+#define XServerErrorUnableToDisplayImageInfo 581
+#define XServerErrorUnableToGetProperty 582
+#define XServerErrorUnableToGetStandardColormap 583
+#define XServerErrorUnableToGetVisual 584
+#define XServerErrorUnableToGrabMouse 585
+#define XServerErrorUnableToLoadFont 586
+#define XServerErrorUnableToMatchVisualToStandardColormap 587
+#define XServerErrorUnableToOpenXServer 588
+#define XServerErrorUnableToReadXAttributes 589
+#define XServerErrorUnableToReadXWindowImage 590
+#define XServerErrorUnrecognizedColormapType 591
+#define XServerErrorUnrecognizedGravityType 592
+#define XServerErrorUnrecognizedVisualSpecifier 593
+#define XServerFatalErrorUnableToAllocateXHints 594
+#define XServerFatalErrorUnableToCreateCursor 595
+#define XServerFatalErrorUnableToCreateGraphicContext 596
+#define XServerFatalErrorUnableToCreateStandardColormap 597
+#define XServerFatalErrorUnableToCreateTextProperty 598
+#define XServerFatalErrorUnableToCreateXImage 599
+#define XServerFatalErrorUnableToCreateXPixmap 600
+#define XServerFatalErrorUnableToCreateXWindow 601
+#define XServerFatalErrorUnableToDisplayImage 602
+#define XServerFatalErrorUnableToDitherImage 603
+#define XServerFatalErrorUnableToGetPixelInfo 604
+#define XServerFatalErrorUnableToGetVisual 605
+#define XServerFatalErrorUnableToLoadFont 606
+#define XServerFatalErrorUnableToMakeXWindow 607
+#define XServerFatalErrorUnableToOpenXServer 608
+#define XServerFatalErrorUnableToViewFonts 609
+#define XServerWarningUnableToGetVisual 610
+#define XServerWarningUsingDefaultVisual 611
+
+#endif
 
 #if defined(_INCLUDE_CATEGORYMAP_TABLE_)
 typedef struct _CategoryInfo{
@@ -603,54 +661,54 @@ static const SeverityInfo severity_map[] =
     { "Blob/FatalError", 7, BlobFatalError },
     { "Blob/Warning", 8, BlobWarning },
     { "Cache/Error", 9, CacheError },
-    { "Cache/FatalError", 18, CacheFatalError },
-    { "Cache/Warning", 20, CacheWarning },
-    { "Coder/Error", 21, CoderError },
-    { "Coder/FatalError", 58, CoderFatalError },
-    { "Coder/Warning", 59, CoderWarning },
-    { "Configure/Error", 60, ConfigureError },
-    { "Configure/FatalError", 66, ConfigureFatalError },
-    { "Configure/Warning", 67, ConfigureWarning },
-    { "Corrupt/Image/Error", 68, CorruptImageError },
-    { "Corrupt/Image/FatalError", 138, CorruptImageFatalError },
-    { "Corrupt/Image/Warning", 139, CorruptImageWarning },
-    { "Delegate/Error", 141, DelegateError },
-    { "Delegate/FatalError", 167, DelegateFatalError },
-    { "Delegate/Warning", 168, DelegateWarning },
-    { "Draw/Error", 169, DrawError },
-    { "Draw/FatalError", 176, DrawFatalError },
-    { "Draw/Warning", 177, DrawWarning },
-    { "File/Open/Error", 178, FileOpenError },
-    { "File/Open/FatalError", 181, FileOpenFatalError },
-    { "File/Open/Warning", 182, FileOpenWarning },
-    { "Image/Error", 183, ImageError },
-    { "Image/FatalError", 205, ImageFatalError },
-    { "Image/Warning", 206, ImageWarning },
-    { "Missing/Delegate/Error", 207, MissingDelegateError },
-    { "Missing/Delegate/FatalError", 218, MissingDelegateFatalError },
-    { "Missing/Delegate/Warning", 219, MissingDelegateWarning },
-    { "Module/Error", 220, ModuleError },
-    { "Module/FatalError", 225, ModuleFatalError },
-    { "Module/Warning", 226, ModuleWarning },
-    { "Option/Error", 227, OptionError },
-    { "Option/FatalError", 347, OptionFatalError },
-    { "Option/Warning", 396, OptionWarning },
-    { "Registry/Error", 397, RegistryError },
-    { "Registry/FatalError", 403, RegistryFatalError },
-    { "Registry/Warning", 404, RegistryWarning },
-    { "Resource/Limit/Error", 405, ResourceLimitError },
-    { "Resource/Limit/FatalError", 471, ResourceLimitFatalError },
-    { "Resource/Limit/Warning", 504, ResourceLimitWarning },
-    { "Stream/Error", 505, StreamError },
-    { "Stream/FatalError", 511, StreamFatalError },
-    { "Stream/Warning", 512, StreamWarning },
-    { "Type/Error", 513, TypeError },
-    { "Type/FatalError", 518, TypeFatalError },
-    { "Type/Warning", 519, TypeWarning },
-    { "XServer/Error", 520, XServerError },
-    { "XServer/FatalError", 542, XServerFatalError },
-    { "XServer/Warning", 558, XServerWarning },
-    { 0, 560, 0 }
+    { "Cache/FatalError", 19, CacheFatalError },
+    { "Cache/Warning", 21, CacheWarning },
+    { "Coder/Error", 22, CoderError },
+    { "Coder/FatalError", 82, CoderFatalError },
+    { "Coder/Warning", 83, CoderWarning },
+    { "Configure/Error", 84, ConfigureError },
+    { "Configure/FatalError", 90, ConfigureFatalError },
+    { "Configure/Warning", 91, ConfigureWarning },
+    { "Corrupt/Image/Error", 92, CorruptImageError },
+    { "Corrupt/Image/FatalError", 168, CorruptImageFatalError },
+    { "Corrupt/Image/Warning", 169, CorruptImageWarning },
+    { "Delegate/Error", 178, DelegateError },
+    { "Delegate/FatalError", 192, DelegateFatalError },
+    { "Delegate/Warning", 193, DelegateWarning },
+    { "Draw/Error", 194, DrawError },
+    { "Draw/FatalError", 198, DrawFatalError },
+    { "Draw/Warning", 199, DrawWarning },
+    { "File/Open/Error", 202, FileOpenError },
+    { "File/Open/FatalError", 205, FileOpenFatalError },
+    { "File/Open/Warning", 206, FileOpenWarning },
+    { "Image/Error", 207, ImageError },
+    { "Image/FatalError", 230, ImageFatalError },
+    { "Image/Warning", 231, ImageWarning },
+    { "Missing/Delegate/Error", 232, MissingDelegateError },
+    { "Missing/Delegate/FatalError", 243, MissingDelegateFatalError },
+    { "Missing/Delegate/Warning", 244, MissingDelegateWarning },
+    { "Module/Error", 245, ModuleError },
+    { "Module/FatalError", 250, ModuleFatalError },
+    { "Module/Warning", 251, ModuleWarning },
+    { "Option/Error", 252, OptionError },
+    { "Option/FatalError", 386, OptionFatalError },
+    { "Option/Warning", 449, OptionWarning },
+    { "Registry/Error", 450, RegistryError },
+    { "Registry/FatalError", 456, RegistryFatalError },
+    { "Registry/Warning", 457, RegistryWarning },
+    { "Resource/Limit/Error", 458, ResourceLimitError },
+    { "Resource/Limit/FatalError", 521, ResourceLimitFatalError },
+    { "Resource/Limit/Warning", 555, ResourceLimitWarning },
+    { "Stream/Error", 556, StreamError },
+    { "Stream/FatalError", 562, StreamFatalError },
+    { "Stream/Warning", 563, StreamWarning },
+    { "Type/Error", 564, TypeError },
+    { "Type/FatalError", 569, TypeFatalError },
+    { "Type/Warning", 570, TypeWarning },
+    { "XServer/Error", 571, XServerError },
+    { "XServer/FatalError", 593, XServerFatalError },
+    { "XServer/Warning", 609, XServerWarning },
+    { 0, 611, 0 }
   };
 #endif
 
@@ -679,550 +737,601 @@ static const MessageInfo message_map[] =
     { "UnableToGetCacheNexus", 14 },
     { "UnableToGetPixelsFromCache", 15 },
     { "UnableToOpenCache", 16 },
-    { "UnableToReadPixelCache", 17 },
-    { "UnableToSyncCache", 18 },
-    { "DiskAllocationFailed", 19 },
-    { "UnableToExtendPixelCache", 20 },
-    { "Default", 21 },
-    { "ColormapTypeNotSupported", 22 },
-    { "ColorspaceModelIsNotSupported", 23 },
-    { "ColorTypeNotSupported", 24 },
-    { "DataEncodingSchemeIsNotSupported", 25 },
-    { "DataStorageTypeIsNotSupported", 26 },
-    { "DeltaPNGNotSupported", 27 },
-    { "EncryptedWPGImageFileNotSupported", 28 },
-    { "ImageColumnOrRowSizeIsNotSupported", 29 },
-    { "ImageDoesNotHaveAMatteChannel", 30 },
-    { "ImageTypeNotSupported", 31 },
-    { "IncompatibleSizeOfDouble", 32 },
-    { "IrregularChannelGeometryNotSupported", 33 },
-    { "JPEGEmbeddingFailed", 34 },
-    { "LocationTypeIsNotSupported", 35 },
-    { "MapStorageTypeIsNotSupported", 36 },
-    { "MSBByteOrderNotSupported", 37 },
-    { "MultidimensionalMatricesAreNotSupported", 38 },
-    { "MultipleRecordListNotSupported", 39 },
-    { "No8BIMDataIsAvailable", 40 },
-    { "NoAPP1DataIsAvailable", 41 },
-    { "NoBitmapOnClipboard", 42 },
-    { "NoDataReturned", 43 },
-    { "NoIPTCInfoWasFound", 44 },
-    { "NoIPTCProfileAvailable", 45 },
-    { "NotASupportedImageFile", 46 },
-    { "NumberOfImagesIsNotSupported", 47 },
-    { "OnlyContinuousTonePictureSupported", 48 },
-    { "OnlyLevelZerofilesSupported", 49 },
-    { "UnableToCopyProfile", 50 },
-    { "UnableToCreateADC", 51 },
-    { "UnableToCreateBitmap", 52 },
-    { "UnableToDecompressImage", 53 },
-    { "UnableToReadCIELABImages", 54 },
-    { "UnableToTranslateText", 55 },
-    { "UnableToWriteMPEGParameters", 56 },
-    { "UnableToZipCompressImage", 57 },
-    { "UnsupportedCellTypeInTheMatrix", 58 },
-    { "Default", 59 },
-    { "LosslessToLossyJPEGConversion", 60 },
-    { "IncludeElementNestedTooDeeply", 61 },
-    { "RegistryKeyLookupFailed", 62 },
-    { "UnableToAccessConfigureFile", 63 },
-    { "UnableToAccessFontFile", 64 },
-    { "UnableToAccessLogFile", 65 },
-    { "UnableToAccessModuleFile", 66 },
-    { "Default", 67 },
-    { "Default", 68 },
-    { "AnErrorHasOccurredReadingFromFile", 69 },
-    { "AnErrorHasOccurredWritingToFile", 70 },
-    { "ColormapExceeds256Colors", 71 },
-    { "CorruptImage", 72 },
-    { "CorruptMNGImage", 73 },
-    { "FileFormatVersionMismatch", 74 },
-    { "ImageFileDoesNotContainAnyImageData", 75 },
-    { "ImproperImageHeader", 76 },
-    { "InsufficientImageDataInFile", 77 },
-    { "InvalidColormapIndex", 78 },
-    { "LengthAndFilesizeDoNotMatch", 79 },
-    { "MissingImageChannel", 80 },
-    { "NegativeOrZeroImageSize", 81 },
-    { "NonOS2HeaderSizeError", 82 },
-    { "NotABMPImageFile", 83 },
-    { "NotACUTImageFile", 84 },
-    { "NotADCMImageFile", 85 },
-    { "NotADCXImageFile", 86 },
-    { "NotADIBImageFile", 87 },
-    { "NotADPXImageFile", 88 },
-    { "NotAGIFImageFile", 89 },
-    { "NotAMATLABImageFile", 90 },
-    { "NotAMNGImageFile", 91 },
-    { "NotAMTVImageFile", 92 },
-    { "NotAnARTImageFile", 93 },
-    { "NotAnAVIImageFile", 94 },
-    { "NotAnAVSImageFile", 95 },
-    { "NotAnEMFImageFile", 96 },
-    { "NotAnICOImageFile", 97 },
-    { "NotAOTBImageFile", 98 },
-    { "NotAPCDImageFile", 99 },
-    { "NotAPCXImageFile", 100 },
-    { "NotAPICTImageFile", 101 },
-    { "NotAPIXImageFile", 102 },
-    { "NotAPNMImageFile", 103 },
-    { "NotAPSDImageFile", 104 },
-    { "NotAPWPImageFile", 105 },
-    { "NotARLEImageFile", 106 },
-    { "NotASCTImageFile", 107 },
-    { "NotASFWImageFile", 108 },
-    { "NotASGIImageFile", 109 },
-    { "NotASUNImageFile", 110 },
-    { "NotATGAImageFile", 111 },
-    { "NotATIMImageFile", 112 },
-    { "NotAVIFFImageFile", 113 },
-    { "NotAWBMPImageFile", 114 },
-    { "NotAWPGImageFile", 115 },
-    { "NotAXBMImageFile", 116 },
-    { "NotAXCFImageFile", 117 },
-    { "NotAXPMImageFile", 118 },
-    { "NotEnoughTiles", 119 },
-    { "StaticPlanesValueNotEqualToOne", 120 },
-    { "TooMuchImageDataInFile", 121 },
-    { "UnableToReadColorProfile", 122 },
-    { "UnableToReadExtensionBlock", 123 },
-    { "UnableToReadGenericProfile", 124 },
-    { "UnableToReadImageData", 125 },
-    { "UnableToReadImageHeader", 126 },
-    { "UnableToReadIPTCProfile", 127 },
-    { "UnableToReadPixmapFromDumpFile", 128 },
-    { "UnableToReadVIDImage", 129 },
-    { "UnableToReadWindowNameFromDumpFile", 130 },
-    { "UnableToRunlengthDecodeImage", 131 },
-    { "UnableToUncompressImage", 132 },
-    { "UnexpectedEndOfFile", 133 },
-    { "UnexpectedSamplingFactor", 134 },
-    { "UnknownPatternType", 135 },
-    { "UnrecognizedBitsPerPixel", 136 },
-    { "UnrecognizedImageCompression", 137 },
-    { "UnrecognizedXWDHeader", 138 },
-    { "UnableToPersistKey", 139 },
-    { "ImproperImageHeader", 140 },
-    { "SkipToSyncByte", 141 },
-    { "DelegateFailed", 142 },
-    { "FailedToComputeOutputSize", 143 },
-    { "FailedToRenderFile", 144 },
-    { "FailedToScanFile", 145 },
-    { "NoTagFound", 146 },
-    { "PostscriptDelegateFailed", 147 },
-    { "UnableToCreateImage", 148 },
-    { "UnableToCreateImageComponent", 149 },
-    { "UnableToDecodeImageFile", 150 },
-    { "UnableToEncodeImageFile", 151 },
-    { "UnableToInitializeFPXLibrary", 152 },
-    { "UnableToInitializeWMFLibrary", 153 },
-    { "UnableToManageJP2Stream", 154 },
-    { "UnableToReadAspectRatio", 155 },
-    { "UnableToReadSummaryInfo", 156 },
-    { "UnableToSetAffineMatrix", 157 },
-    { "UnableToSetAspectRatio", 158 },
-    { "UnableToSetColorTwist", 159 },
-    { "UnableToSetContrast", 160 },
-    { "UnableToSetFilteringValue", 161 },
-    { "UnableToSetImageComment", 162 },
-    { "UnableToSetImageTitle", 163 },
-    { "UnableToSetJPEGLevel", 164 },
-    { "UnableToSetRegionOfInterest", 165 },
-    { "UnableToSetSummaryInfo", 166 },
-    { "UnableToWriteSVGFormat", 167 },
-    { "Default", 168 },
-    { "Default", 169 },
-    { "AlreadyPushingPatternDefinition", 170 },
-    { "NonconformingDrawingPrimitiveDefinition", 171 },
-    { "NotARelativeURL", 172 },
-    { "NotCurrentlyPushingPatternDefinition", 173 },
-    { "UnableToPrint", 174 },
-    { "UnbalancedGraphicContextPushPop", 175 },
-    { "URLNotFound", 176 },
-    { "Default", 177 },
-    { "Default", 178 },
-    { "UnableToCreateTemporaryFile", 179 },
-    { "UnableToOpenFile", 180 },
-    { "UnableToWriteFile", 181 },
-    { "Default", 182 },
-    { "Default", 183 },
-    { "AngleIsDiscontinuous", 184 },
-    { "ColorSeparatedImageRequired", 185 },
-    { "ImageColorspaceDiffers", 186 },
-    { "ImageOpacityDiffers", 187 },
-    { "ImageSequenceIsRequired", 188 },
-    { "ImageSizeDiffers", 189 },
-    { "InputImagesAlreadySpecified", 190 },
-    { "LeftAndRightImageSizesDiffer", 191 },
-    { "NoImagesWereFound", 192 },
-    { "NoImagesWereLoaded", 193 },
-    { "NoLocaleImageAttribute", 194 },
-    { "TooManyClusters", 195 },
-    { "UnableToAppendImage", 196 },
-    { "UnableToAverageImage", 197 },
-    { "UnableToCompareImages", 198 },
-    { "UnableToCreateImageMosaic", 199 },
-    { "UnableToCreateStereoImage", 200 },
-    { "UnableToDeconstructImageSequence", 201 },
-    { "UnableToFlattenImage", 202 },
-    { "UnableToResizeImage", 203 },
-    { "UnableToSegmentImage", 204 },
-    { "WidthOrHeightExceedsLimit", 205 },
+    { "UnableToPeristPixelCache", 17 },
+    { "UnableToReadPixelCache", 18 },
+    { "UnableToSyncCache", 19 },
+    { "DiskAllocationFailed", 20 },
+    { "UnableToExtendPixelCache", 21 },
+    { "Default", 22 },
+    { "ColormapTypeNotSupported", 23 },
+    { "ColorspaceModelIsNotSupported", 24 },
+    { "ColorTypeNotSupported", 25 },
+    { "CompressionNotValid", 26 },
+    { "DataEncodingSchemeIsNotSupported", 27 },
+    { "DataStorageTypeIsNotSupported", 28 },
+    { "DeltaPNGNotSupported", 29 },
+    { "EncryptedWPGImageFileNotSupported", 30 },
+    { "FractalCompressionNotSupported", 31 },
+    { "ImageColumnOrRowSizeIsNotSupported", 32 },
+    { "ImageDoesNotHaveAMatteChannel", 33 },
+    { "ImageIsNotTiled", 34 },
+    { "ImageTypeNotSupported", 35 },
+    { "IncompatibleSizeOfDouble", 36 },
+    { "IrregularChannelGeometryNotSupported", 37 },
+    { "JPEGCompressionNotSupported", 38 },
+    { "JPEGEmbeddingFailed", 39 },
+    { "LocationTypeIsNotSupported", 40 },
+    { "MapStorageTypeIsNotSupported", 41 },
+    { "MSBByteOrderNotSupported", 42 },
+    { "MultidimensionalMatricesAreNotSupported", 43 },
+    { "MultipleRecordListNotSupported", 44 },
+    { "No8BIMDataIsAvailable", 45 },
+    { "NoAPP1DataIsAvailable", 46 },
+    { "NoBitmapOnClipboard", 47 },
+    { "NoColorProfileAvailable", 48 },
+    { "NoDataReturned", 49 },
+    { "NoImageVectorGraphics", 50 },
+    { "NoIPTCInfoWasFound", 51 },
+    { "NoIPTCProfileAvailable", 52 },
+    { "NotASupportedImageFile", 53 },
+    { "NumberOfImagesIsNotSupported", 54 },
+    { "OnlyContinuousTonePictureSupported", 55 },
+    { "OnlyLevelZerofilesSupported", 56 },
+    { "PNGCompressionNotSupported", 57 },
+    { "RLECompressionNotSupported", 58 },
+    { "UnableToCopyProfile", 59 },
+    { "UnableToCreateADC", 60 },
+    { "UnableToCreateBitmap", 61 },
+    { "UnableToDecompressImage", 62 },
+    { "UnableToInitializeFPXLibrary", 63 },
+    { "UnableToOpenBlob", 64 },
+    { "UnableToReadAspectRatio", 65 },
+    { "UnableToReadCIELABImages", 66 },
+    { "UnableToReadSummaryInfo", 67 },
+    { "UnableToSetAffineMatrix", 68 },
+    { "UnableToSetAspectRatio", 69 },
+    { "UnableToSetColorTwist", 70 },
+    { "UnableToSetContrast", 71 },
+    { "UnableToSetFilteringValue", 72 },
+    { "UnableToSetImageComments", 73 },
+    { "UnableToSetImageTitle", 74 },
+    { "UnableToSetJPEGLevel", 75 },
+    { "UnableToSetRegionOfInterest", 76 },
+    { "UnableToSetSummaryInfo", 77 },
+    { "UnableToTranslateText", 78 },
+    { "UnableToWriteMPEGParameters", 79 },
+    { "UnableToZipCompressImage", 80 },
+    { "UnsupportedCellTypeInTheMatrix", 81 },
+    { "ZipCompressionNotSupported", 82 },
+    { "Default", 83 },
+    { "LosslessToLossyJPEGConversion", 84 },
+    { "IncludeElementNestedTooDeeply", 85 },
+    { "RegistryKeyLookupFailed", 86 },
+    { "UnableToAccessConfigureFile", 87 },
+    { "UnableToAccessFontFile", 88 },
+    { "UnableToAccessLogFile", 89 },
+    { "UnableToAccessModuleFile", 90 },
+    { "Default", 91 },
+    { "Default", 92 },
+    { "AnErrorHasOccurredReadingFromFile", 93 },
+    { "AnErrorHasOccurredWritingToFile", 94 },
+    { "ColormapExceeds256Colors", 95 },
+    { "CorruptImage", 96 },
+    { "ImageFileDoesNotContainAnyImageData", 97 },
+    { "ImageTypeNotSupported", 98 },
+    { "ImproperImageHeader", 99 },
+    { "InsufficientImageDataInFile", 100 },
+    { "InvalidColormapIndex", 101 },
+    { "InvalidFileFormatVersion", 102 },
+    { "LengthAndFilesizeDoNotMatch", 103 },
+    { "MissingImageChannel", 104 },
+    { "NegativeOrZeroImageSize", 105 },
+    { "NonOS2HeaderSizeError", 106 },
+    { "NotABMPImageFile", 107 },
+    { "NotACUTImageFile", 108 },
+    { "NotADCMImageFile", 109 },
+    { "NotADCXImageFile", 110 },
+    { "NotADIBImageFile", 111 },
+    { "NotADPXImageFile", 112 },
+    { "NotAGIFImageFile", 113 },
+    { "NotAJNGImageFile", 114 },
+    { "NotAMATLABImageFile", 115 },
+    { "NotAMNGImageFile", 116 },
+    { "NotAMTVImageFile", 117 },
+    { "NotAnARTImageFile", 118 },
+    { "NotAnAVIImageFile", 119 },
+    { "NotAnAVSImageFile", 120 },
+    { "NotAnEMFImageFile", 121 },
+    { "NotAnICOImageFile", 122 },
+    { "NotAOTBImageFile", 123 },
+    { "NotAPCDImageFile", 124 },
+    { "NotAPCXImageFile", 125 },
+    { "NotAPDBImageFile", 126 },
+    { "NotAPICTImageFile", 127 },
+    { "NotAPIXImageFile", 128 },
+    { "NotAPNGImageFile", 129 },
+    { "NotAPNMImageFile", 130 },
+    { "NotAPSDImageFile", 131 },
+    { "NotAPWPImageFile", 132 },
+    { "NotARLEImageFile", 133 },
+    { "NotASCTImageFile", 134 },
+    { "NotASFWImageFile", 135 },
+    { "NotASGIImageFile", 136 },
+    { "NotASUNImageFile", 137 },
+    { "NotATGAImageFile", 138 },
+    { "NotATIMImageFile", 139 },
+    { "NotATOPOLImageFile", 140 },
+    { "NotAVIFFImageFile", 141 },
+    { "NotAWBMPImageFile", 142 },
+    { "NotAWPGImageFile", 143 },
+    { "NotAXBMImageFile", 144 },
+    { "NotAXCFImageFile", 145 },
+    { "NotAXPMImageFile", 146 },
+    { "NotEnoughTiles", 147 },
+    { "StaticPlanesValueNotEqualToOne", 148 },
+    { "TooMuchImageDataInFile", 149 },
+    { "UnableToReadColormapFromDumpFile", 150 },
+    { "UnableToReadColorProfile", 151 },
+    { "UnableToReadExtensionBlock", 152 },
+    { "UnableToReadGenericProfile", 153 },
+    { "UnableToReadImageData", 154 },
+    { "UnableToReadImageHeader", 155 },
+    { "UnableToReadIPTCProfile", 156 },
+    { "UnableToReadPixmapFromDumpFile", 157 },
+    { "UnableToReadSubImageData", 158 },
+    { "UnableToReadVIDImage", 159 },
+    { "UnableToReadWindowNameFromDumpFile", 160 },
+    { "UnableToRunlengthDecodeImage", 161 },
+    { "UnableToUncompressImage", 162 },
+    { "UnexpectedEndOfFile", 163 },
+    { "UnexpectedSamplingFactor", 164 },
+    { "UnknownPatternType", 165 },
+    { "UnrecognizedBitsPerPixel", 166 },
+    { "UnrecognizedImageCompression", 167 },
+    { "UnrecognizedXWDHeader", 168 },
+    { "UnableToPersistKey", 169 },
+    { "CompressionNotValid", 170 },
+    { "ImproperImageHeader", 171 },
+    { "NegativeOrZeroImageSize", 172 },
+    { "NonOS2HeaderSizeError", 173 },
+    { "SkipToSyncByte", 174 },
+    { "StaticPlanesValueNotEqualToOne", 175 },
+    { "UnrecognizedBitsPerPixel", 176 },
+    { "UnrecognizedImageCompression", 177 },
+    { "UnrecognizedNumberOfColors", 178 },
+    { "DelegateFailed", 179 },
+    { "FailedToComputeOutputSize", 180 },
+    { "FailedToRenderFile", 181 },
+    { "FailedToScanFile", 182 },
+    { "NoTagFound", 183 },
+    { "PostscriptDelegateFailed", 184 },
+    { "UnableToCreateImage", 185 },
+    { "UnableToCreateImageComponent", 186 },
+    { "UnableToDecodeImageFile", 187 },
+    { "UnableToEncodeImageFile", 188 },
+    { "UnableToInitializeFPXLibrary", 189 },
+    { "UnableToInitializeWMFLibrary", 190 },
+    { "UnableToManageJP2Stream", 191 },
+    { "UnableToWriteSVGFormat", 192 },
+    { "Default", 193 },
+    { "Default", 194 },
+    { "AlreadyPushingPatternDefinition", 195 },
+    { "NonconformingDrawingPrimitiveDefinition", 196 },
+    { "UnableToPrint", 197 },
+    { "UnbalancedGraphicContextPushPop", 198 },
+    { "Default", 199 },
+    { "NotARelativeURL", 200 },
+    { "NotCurrentlyPushingPatternDefinition", 201 },
+    { "URLNotFound", 202 },
+    { "UnableToCreateTemporaryFile", 203 },
+    { "UnableToOpenFile", 204 },
+    { "UnableToWriteFile", 205 },
     { "Default", 206 },
     { "Default", 207 },
-    { "DPSLibraryIsNotAvailable", 208 },
-    { "FPXLibraryIsNotAvailable", 209 },
-    { "FreeTypeLibraryIsNotAvailable", 210 },
-    { "JPEGLibraryIsNotAvailable", 211 },
-    { "LZWEncodingNotEnabled", 212 },
-    { "NoDecodeDelegateForThisImageFormat", 213 },
-    { "NoEncodeDelegateForThisImageFormat", 214 },
-    { "TIFFLibraryIsNotAvailable", 215 },
-    { "XMLLibraryIsNotAvailable", 216 },
-    { "XWindowLibraryIsNotAvailable", 217 },
-    { "ZipLibraryIsNotAvailable", 218 },
-    { "Default", 219 },
-    { "Default", 220 },
-    { "FailedToCloseModule", 221 },
-    { "FailedToFindSymbol", 222 },
-    { "UnableToLoadModule", 223 },
-    { "UnableToRegisterImageFormat", 224 },
-    { "UnrecognizedModule", 225 },
-    { "UnableToInitializeModuleLoader", 226 },
-    { "Default", 227 },
-    { "BevelWidthIsNegative", 228 },
-    { "FrameIsLessThanImageSize", 229 },
-    { "GeometryDimensionsAreZero", 230 },
-    { "GeometryDoesNotContainImage", 231 },
-    { "ImagesAreNotTheSameSize", 232 },
-    { "ImageSizeMustExceedBevelWidth", 233 },
-    { "ImageSmallerThanKernelWidth", 234 },
-    { "ImageSmallerThanRadius", 235 },
-    { "ImageWidthsOrHeightsDiffer", 236 },
-    { "KernelRadiusIsTooSmall", 237 },
-    { "KernelWidthMustBeAnOddNumber", 238 },
-    { "MissingAffineMatrix", 239 },
-    { "MissingAmplitude", 240 },
-    { "MissingAnImageFilename", 241 },
-    { "MissingArgument", 242 },
-    { "MissingAzimuth", 243 },
-    { "MissingBackgroundColor", 244 },
-    { "MissingBevelWidth", 245 },
-    { "MissingBorderColor", 246 },
-    { "MissingCoefficients", 247 },
-    { "MissingColorizeValue", 248 },
-    { "MissingColors", 249 },
-    { "MissingComment", 250 },
-    { "MissingCycleAmount", 251 },
-    { "MissingDelay", 252 },
-    { "MissingDisposeMethod", 253 },
-    { "MissingDissolveValue", 254 },
-    { "MissingDrawingPrimitive", 255 },
-    { "MissingEnodingType", 256 },
-    { "MissingEventMask", 257 },
-    { "MissingFilename", 258 },
-    { "MissingFillColor", 259 },
-    { "MissingFontName", 260 },
-    { "MissingFormatSpecifier", 261 },
-    { "MissingGeometry", 262 },
-    { "MissingImageDepth", 263 },
-    { "MissingImageGamma", 264 },
-    { "MissingImageIterations", 265 },
-    { "MissingImageLabel", 266 },
-    { "MissingImageProfile", 267 },
-    { "MissingImageRotation", 268 },
-    { "MissingImageScene", 269 },
-    { "MissingImplodeAmount", 270 },
-    { "MissingListName", 271 },
-    { "MissingLogFormat", 272 },
-    { "MissingMatteColor", 273 },
-    { "MissingOpaqueColor", 274 },
-    { "MissingPageGeometry", 275 },
-    { "MissingPaintRadius", 276 },
-    { "MissingPassword", 277 },
-    { "MissingPoint", 278 },
-    { "MissingPointsize", 279 },
-    { "MissingResourceLimit", 280 },
-    { "MissingResourceType", 281 },
-    { "MissingSeedValue", 282 },
-    { "MissingServerName", 283 },
-    { "MissingSpreadAmount", 284 },
-    { "MissingThreshold", 285 },
-    { "MissingTile", 286 },
-    { "MissingTitle", 287 },
-    { "MissingTransparentColor", 288 },
-    { "MissingTreeDepth", 289 },
-    { "MissingType", 290 },
-    { "MissingViewTransform", 291 },
-    { "MissingVirtualPixelMethod", 292 },
-    { "MissingWidth", 293 },
-    { "MustSpecifyAnImageName", 294 },
-    { "MustSpecifyImageSize", 295 },
-    { "NoBlobDefined", 296 },
-    { "NoImagesDefined", 297 },
-    { "NoImageVectorGraphics", 298 },
-    { "NonzeroWidthAndHeightRequired", 299 },
-    { "NoProfileNameWasGiven", 300 },
-    { "NullBlobArgument", 301 },
-    { "ReferenceImageRequired", 302 },
-    { "ReferenceIsNotMyType", 303 },
-    { "SteganoImageRequired", 304 },
-    { "StereoImageRequired", 305 },
-    { "SubimageSpecificationReturnsNoImages", 306 },
-    { "UnableToAddOrRemoveProfile", 307 },
-    { "UnableToAllocateICCProfile", 308 },
-    { "UnableToBlurImage", 309 },
-    { "UnableToConstituteImage", 310 },
-    { "UnableToConvolveImage", 311 },
-    { "UnableToEdgeImage", 312 },
-    { "UnableToFilterImage", 313 },
-    { "UnableToFormatImageMetadata", 314 },
-    { "UnableToFrameImage", 315 },
-    { "UnableToOilPaintImage", 316 },
-    { "UnableToPaintImage", 317 },
-    { "UnableToRaiseImage", 318 },
-    { "UnableToSharpenImage", 319 },
-    { "UnableToThresholdImage", 320 },
-    { "UnableToWaveImage", 321 },
-    { "UnrecognizedAttribute", 322 },
-    { "UnrecognizedChannelType", 323 },
-    { "UnrecognizedColor", 324 },
-    { "UnrecognizedColorspace", 325 },
-    { "UnrecognizedComposeOperator", 326 },
-    { "UnrecognizedDisposeMethod", 327 },
-    { "UnrecognizedElement", 328 },
-    { "UnrecognizedEndianType", 329 },
-    { "UnrecognizedGravityType", 330 },
-    { "UnrecognizedImageCompression", 331 },
-    { "UnrecognizedImageFilter", 332 },
-    { "UnrecognizedImageFormat", 333 },
-    { "UnrecognizedImageMode", 334 },
-    { "UnrecognizedImageType", 335 },
-    { "UnrecognizedIntentType", 336 },
-    { "UnrecognizedInterlaceType", 337 },
-    { "UnrecognizedListType", 338 },
-    { "UnrecognizedModeType", 339 },
-    { "UnrecognizedOption", 340 },
-    { "UnrecognizedPerlMagickMethod", 341 },
-    { "UnrecognizedPixelMap", 342 },
-    { "UnrecognizedPreviewType", 343 },
-    { "UnrecognizedResourceType", 344 },
-    { "UnrecognizedType", 345 },
-    { "UnrecognizedVirtualPixelMethod", 346 },
-    { "UsageError", 347 },
-    { "MissingAnImageFilename", 348 },
-    { "MissingBevelWidth", 349 },
-    { "MissingBorderColor", 350 },
-    { "MissingColors", 351 },
-    { "MissingCommand", 352 },
-    { "MissingCompressQuality", 353 },
-    { "MissingDegrees", 354 },
-    { "MissingDepth", 355 },
-    { "MissingDisposeMethod", 356 },
-    { "MissingEncodingType", 357 },
-    { "MissingEventMask", 358 },
-    { "MissingFilename", 359 },
-    { "MissingFontName", 360 },
-    { "MissingForeground", 361 },
-    { "MissingGeometry", 362 },
-    { "MissingIDNameOrRoot", 363 },
-    { "MissingImageDepth", 364 },
-    { "MissingLabelName", 365 },
-    { "MissingLevel", 366 },
-    { "MissingLogFormat", 367 },
-    { "MissingMapType", 368 },
-    { "MissingName", 369 },
-    { "MissingPageGeometry", 370 },
-    { "MissingPassword", 371 },
-    { "MissingQuality", 372 },
-    { "MissingResourceLimit", 373 },
-    { "MissingResourceType", 374 },
-    { "MissingSceneNumber", 375 },
-    { "MissingSeconds", 376 },
-    { "MissingServerName", 377 },
-    { "MissingSize", 378 },
-    { "MissingSnaps", 379 },
-    { "MissingThreshold", 380 },
-    { "MissingTitle", 381 },
-    { "MissingType", 382 },
-    { "MissingVirtualPixelMethod", 383 },
-    { "MissingVisualClass", 384 },
-    { "MissingWidth", 385 },
-    { "OptionLengthExceedsLimit", 386 },
-    { "UnrecognizedColormapType", 387 },
-    { "UnrecognizedColorspaceType", 388 },
-    { "UnrecognizedDisposeMethod", 389 },
-    { "UnrecognizedEndianType", 390 },
-    { "UnrecognizedFilterType", 391 },
-    { "UnrecognizedImageCompressionType", 392 },
-    { "UnrecognizedImageType", 393 },
-    { "UnrecognizedInterlaceType", 394 },
-    { "UnrecognizedOption", 395 },
-    { "UnrecognizedResourceType", 396 },
-    { "Default", 397 },
-    { "ImageExpected", 398 },
-    { "ImageInfoExpected", 399 },
-    { "StructureSizeMismatch", 400 },
-    { "UnableToGetRegistryID", 401 },
-    { "UnableToLocateImage", 402 },
-    { "UnableToSetRegistry", 403 },
-    { "Default", 404 },
-    { "Default", 405 },
-    { "CacheResourcesExhausted", 406 },
-    { "MemoryAllocationFailed", 407 },
-    { "NoPixelsDefinedInCache", 408 },
-    { "PixelCacheAllocationFailed", 409 },
-    { "UnableToAddColorProfile", 410 },
-    { "UnableToAddGenericProfile", 411 },
-    { "UnableToAddIPTCProfile", 412 },
-    { "UnableToAllocateCoefficients", 413 },
-    { "UnableToAllocateColormap", 414 },
-    { "UnableToAllocateString", 415 },
-    { "UnableToAnnotateImage", 416 },
-    { "UnableToAverageImageSequence", 417 },
-    { "UnableToBlurImage", 418 },
-    { "UnableToChopImage", 419 },
-    { "UnableToCloneImage", 420 },
-    { "UnableToCoalesceImage", 421 },
-    { "UnableToComputeImageSignature", 422 },
-    { "UnableToConstituteImage", 423 },
-    { "UnableToConvertFont", 424 },
-    { "UnableToConvertStringToTokens", 425 },
-    { "UnableToCreateColormap", 426 },
-    { "UnableToCreateColorTransform", 427 },
-    { "UnableToCreateCommandWidget", 428 },
-    { "UnableToCreateImageGroup", 429 },
-    { "UnableToCreateImageMontage", 430 },
-    { "UnableToCreateXWindow", 431 },
-    { "UnableToCropImage", 432 },
-    { "UnableToDespeckleImage", 433 },
-    { "UnableToDetermineImageClass", 434 },
-    { "UnableToDetermineTheNumberOfImageColors", 435 },
-    { "UnableToDitherImage", 436 },
-    { "UnableToDrawOnImage", 437 },
-    { "UnableToEdgeImage", 438 },
-    { "UnableToEmbossImage", 439 },
-    { "UnableToEnhanceImage", 440 },
-    { "UnableToFloodfillImage", 441 },
-    { "UnableToGammaCorrectImage", 442 },
-    { "UnableToGetBestIconSize", 443 },
-    { "UnableToGetFromRegistry", 444 },
-    { "UnableToGetPackageInfo", 445 },
-    { "UnableToLevelImage", 446 },
-    { "UnableToMagnifyImage", 447 },
-    { "UnableToManageColor", 448 },
-    { "UnableToMapImage", 449 },
-    { "UnableToMapImageSequence", 450 },
-    { "UnableToMedianFilterImage", 451 },
-    { "UnableToMotionBlurImage", 452 },
-    { "UnableToNoiseFilterImage", 453 },
-    { "UnableToNormalizeImage", 454 },
-    { "UnableToOpenColorProfile", 455 },
-    { "UnableToQuantizeImage", 456 },
-    { "UnableToQuantizeImageSequence", 457 },
-    { "UnableToReadTextChunk", 458 },
-    { "UnableToReadXImage", 459 },
-    { "UnableToReadXServerColormap", 460 },
-    { "UnableToResizeImage", 461 },
-    { "UnableToRotateImage", 462 },
-    { "UnableToSampleImage", 463 },
-    { "UnableToScaleImage", 464 },
-    { "UnableToSelectImage", 465 },
-    { "UnableToSharpenImage", 466 },
-    { "UnableToShaveImage", 467 },
-    { "UnableToShearImage", 468 },
-    { "UnableToSortImageColormap", 469 },
-    { "UnableToThresholdImage", 470 },
-    { "UnableToTransformColorspace", 471 },
-    { "MemoryAllocationFailed", 472 },
-    { "UnableToAllocateAscii85Info", 473 },
-    { "UnableToAllocateCacheView", 474 },
-    { "UnableToAllocateColorInfo", 475 },
-    { "UnableToAllocateDashPattern", 476 },
-    { "UnableToAllocateDelegateInfo", 477 },
-    { "UnableToAllocateDerivatives", 478 },
-    { "UnableToAllocateDrawContext", 479 },
-    { "UnableToAllocateDrawInfo", 480 },
-    { "UnableToAllocateGammaMap", 481 },
-    { "UnableToAllocateImage", 482 },
-    { "UnableToAllocateImagePixels", 483 },
-    { "UnableToAllocateLogInfo", 484 },
-    { "UnableToAllocateMagicInfo", 485 },
-    { "UnableToAllocateMagickInfo", 486 },
-    { "UnableToAllocateModuleInfo", 487 },
-    { "UnableToAllocateMontageInfo", 488 },
-    { "UnableToAllocateQuantizeInfo", 489 },
-    { "UnableToAllocateRegistryInfo", 490 },
-    { "UnableToAllocateSemaphoreInfo", 491 },
-    { "UnableToAllocateString", 492 },
-    { "UnableToAllocateTypeInfo", 493 },
-    { "UnableToAnimateImageSequence", 494 },
-    { "UnableToCloneBlobInfo", 495 },
-    { "UnableToCloneCacheInfo", 496 },
-    { "UnableToCloneImage", 497 },
-    { "UnableToCloneImageInfo", 498 },
-    { "UnableToConcatenateString", 499 },
-    { "UnableToConvertText", 500 },
-    { "UnableToCreateColormap", 501 },
-    { "UnableToDisplayImage", 502 },
-    { "UnableToEscapeString", 503 },
-    { "UnableToInterpretMSLImage", 504 },
-    { "MemoryAllocationFailed", 505 },
-    { "ImageDoesNotContainTheStreamGeometry", 506 },
-    { "NoStreamHandlerIsDefined", 507 },
-    { "PixelCacheIsNotOpen", 508 },
-    { "UnableToAcquirePixelStream", 509 },
-    { "UnableToSetPixelStream", 510 },
-    { "UnableToSyncPixelStream", 511 },
-    { "Default", 512 },
-    { "Default", 513 },
-    { "FontSubstitutionRequired", 514 },
-    { "UnableToGetTypeMetrics", 515 },
-    { "UnableToInitializeFreetypeLibrary", 516 },
-    { "UnableToReadFont", 517 },
-    { "UnrecognizedFontEncoding", 518 },
-    { "Default", 519 },
-    { "Default", 520 },
-    { "ColorIsNotKnownToServer", 521 },
-    { "NoWindowWithSpecifiedIDExists", 522 },
-    { "StandardColormapIsNotInitialized", 523 },
-    { "UnableToConnectToRemoteDisplay", 524 },
-    { "UnableToCreateBitmap", 525 },
-    { "UnableToCreateColormap", 526 },
-    { "UnableToCreatePixmap", 527 },
-    { "UnableToCreateProperty", 528 },
-    { "UnableToCreateStandardColormap", 529 },
-    { "UnableToDisplayImageInfo", 530 },
-    { "UnableToGetProperty", 531 },
-    { "UnableToGetStandardColormap", 532 },
-    { "UnableToGetVisual", 533 },
-    { "UnableToGrabMouse", 534 },
-    { "UnableToLoadFont", 535 },
-    { "UnableToMatchVisualToStandardColormap", 536 },
-    { "UnableToOpenXServer", 537 },
-    { "UnableToReadXWindowAttributes", 538 },
-    { "UnableToReadXWindowImage", 539 },
-    { "UnrecognizedColormapType", 540 },
-    { "UnrecognizedGravityType", 541 },
-    { "UnrecognizedVisualSpecifier", 542 },
-    { "UnableToAllocateXHints", 543 },
-    { "UnableToCreateCursor", 544 },
-    { "UnableToCreateGraphicContext", 545 },
-    { "UnableToCreateStandardColormap", 546 },
-    { "UnableToCreateTextProperty", 547 },
-    { "UnableToCreateXImage", 548 },
-    { "UnableToCreateXPixmap", 549 },
-    { "UnableToCreateXWindow", 550 },
-    { "UnableToDisplayImage", 551 },
-    { "UnableToDitherImage", 552 },
-    { "UnableToGetPixelInfo", 553 },
-    { "UnableToGetVisual", 554 },
-    { "UnableToLoadFont", 555 },
-    { "UnableToMakeXWindow", 556 },
-    { "UnableToOpenXServer", 557 },
-    { "UnableToViewFonts", 558 },
-    { "UnableToGetVisual", 559 },
-    { "UsingDefaultVisual", 560 },
+    { "AngleIsDiscontinuous", 208 },
+    { "ImageColorspaceDiffers", 209 },
+    { "ImageOpacityDiffers", 210 },
+    { "ImageSequenceIsRequired", 211 },
+    { "ImageSizeDiffers", 212 },
+    { "LeftAndRightImageSizesDiffer", 213 },
+    { "NoImagesWereFound", 214 },
+    { "NoImagesWereLoaded", 215 },
+    { "NoLocaleImageAttribute", 216 },
+    { "TooManyClusters", 217 },
+    { "UnableToAppendImage", 218 },
+    { "UnableToAverageImage", 219 },
+    { "UnableToCoalesceImage", 220 },
+    { "UnableToCompareImages", 221 },
+    { "UnableToCreateImageMosaic", 222 },
+    { "UnableToCreateStereoImage", 223 },
+    { "UnableToDeconstructImageSequence", 224 },
+    { "UnableToFlattenImage", 225 },
+    { "UnableToResizeImage", 226 },
+    { "UnableToSegmentImage", 227 },
+    { "UnableToSetClipMask", 228 },
+    { "UnableToShearImage", 229 },
+    { "WidthOrHeightExceedsLimit", 230 },
+    { "UnableToPersistKey", 231 },
+    { "Default", 232 },
+    { "DPSLibraryIsNotAvailable", 233 },
+    { "FPXLibraryIsNotAvailable", 234 },
+    { "FreeTypeLibraryIsNotAvailable", 235 },
+    { "JPEGLibraryIsNotAvailable", 236 },
+    { "LZWEncodingNotEnabled", 237 },
+    { "NoDecodeDelegateForThisImageFormat", 238 },
+    { "NoEncodeDelegateForThisImageFormat", 239 },
+    { "TIFFLibraryIsNotAvailable", 240 },
+    { "XMLLibraryIsNotAvailable", 241 },
+    { "XWindowLibraryIsNotAvailable", 242 },
+    { "ZipLibraryIsNotAvailable", 243 },
+    { "Default", 244 },
+    { "Default", 245 },
+    { "FailedToCloseModule", 246 },
+    { "FailedToFindSymbol", 247 },
+    { "UnableToLoadModule", 248 },
+    { "UnableToRegisterImageFormat", 249 },
+    { "UnrecognizedModule", 250 },
+    { "UnableToInitializeModuleLoader", 251 },
+    { "Default", 252 },
+    { "BevelWidthIsNegative", 253 },
+    { "ColorSeparatedImageRequired", 254 },
+    { "FrameIsLessThanImageSize", 255 },
+    { "GeometryDimensionsAreZero", 256 },
+    { "GeometryDoesNotContainImage", 257 },
+    { "ImagesAreNotTheSameSize", 258 },
+    { "ImageSizeMustExceedBevelWidth", 259 },
+    { "ImageSmallerThanKernelWidth", 260 },
+    { "ImageSmallerThanRadius", 261 },
+    { "ImageWidthsOrHeightsDiffer", 262 },
+    { "InputImagesAlreadySpecified", 263 },
+    { "KernelRadiusIsTooSmall", 264 },
+    { "KernelWidthMustBeAnOddNumber", 265 },
+    { "MissingAffineMatrix", 266 },
+    { "MissingAmount", 267 },
+    { "MissingAmplitude", 268 },
+    { "MissingAnImageFilename", 269 },
+    { "MissingArgument", 270 },
+    { "MissingAzimuth", 271 },
+    { "MissingBackgroundColor", 272 },
+    { "MissingBevelWidth", 273 },
+    { "MissingBorderColor", 274 },
+    { "MissingCoefficients", 275 },
+    { "MissingColorizeValue", 276 },
+    { "MissingColors", 277 },
+    { "MissingComment", 278 },
+    { "MissingCompressionQuality", 279 },
+    { "MissingCycleAmount", 280 },
+    { "MissingDelay", 281 },
+    { "MissingDisposeMethod", 282 },
+    { "MissingDissolveValue", 283 },
+    { "MissingDistance", 284 },
+    { "MissingDrawingPrimitive", 285 },
+    { "MissingEnodingType", 286 },
+    { "MissingEventMask", 287 },
+    { "MissingFilename", 288 },
+    { "MissingFillColor", 289 },
+    { "MissingFontName", 290 },
+    { "MissingFormatSpecifier", 291 },
+    { "MissingGeometry", 292 },
+    { "MissingImageDepth", 293 },
+    { "MissingImageFrames", 294 },
+    { "MissingImageGamma", 295 },
+    { "MissingImageIterations", 296 },
+    { "MissingImageLabel", 297 },
+    { "MissingImageProfile", 298 },
+    { "MissingImageRotation", 299 },
+    { "MissingImageScene", 300 },
+    { "MissingImageType", 301 },
+    { "MissingImplodeAmount", 302 },
+    { "MissingListName", 303 },
+    { "MissingLogFormat", 304 },
+    { "MissingMatrix", 305 },
+    { "MissingMatteColor", 306 },
+    { "MissingOffset", 307 },
+    { "MissingOpaqueColor", 308 },
+    { "MissingOrder", 309 },
+    { "MissingPageGeometry", 310 },
+    { "MissingPaintRadius", 311 },
+    { "MissingPassword", 312 },
+    { "MissingPoint", 313 },
+    { "MissingPointsize", 314 },
+    { "MissingResourceLimit", 315 },
+    { "MissingResourceType", 316 },
+    { "MissingSeedValue", 317 },
+    { "MissingServerName", 318 },
+    { "MissingSpreadAmount", 319 },
+    { "MissingThreshold", 320 },
+    { "MissingTile", 321 },
+    { "MissingTitle", 322 },
+    { "MissingTransparentColor", 323 },
+    { "MissingTreeDepth", 324 },
+    { "MissingType", 325 },
+    { "MissingViewTransform", 326 },
+    { "MissingVirtualPixelMethod", 327 },
+    { "MissingWidth", 328 },
+    { "MustSpecifyAnImageName", 329 },
+    { "MustSpecifyImageSize", 330 },
+    { "NoBlobDefined", 331 },
+    { "NoImagesDefined", 332 },
+    { "NonzeroWidthAndHeightRequired", 333 },
+    { "NoProfileNameWasGiven", 334 },
+    { "NullBlobArgument", 335 },
+    { "ReferenceImageRequired", 336 },
+    { "ReferenceIsNotMyType", 337 },
+    { "SteganoImageRequired", 338 },
+    { "StereoImageRequired", 339 },
+    { "SubimageSpecificationReturnsNoImages", 340 },
+    { "UnableToAddOrRemoveProfile", 341 },
+    { "UnableToAllocateICCProfile", 342 },
+    { "UnableToAverageImageSequence", 343 },
+    { "UnableToBlurImage", 344 },
+    { "UnableToChopImage", 345 },
+    { "UnableToConstituteImage", 346 },
+    { "UnableToConvolveImage", 347 },
+    { "UnableToEdgeImage", 348 },
+    { "UnableToEqualizeImage", 349 },
+    { "UnableToFilterImage", 350 },
+    { "UnableToFormatImageMetadata", 351 },
+    { "UnableToFrameImage", 352 },
+    { "UnableToOilPaintImage", 353 },
+    { "UnableToPaintImage", 354 },
+    { "UnableToRaiseImage", 355 },
+    { "UnableToSharpenImage", 356 },
+    { "UnableToThresholdImage", 357 },
+    { "UnableToWaveImage", 358 },
+    { "UnrecognizedAttribute", 359 },
+    { "UnrecognizedChannelType", 360 },
+    { "UnrecognizedColor", 361 },
+    { "UnrecognizedColormapType", 362 },
+    { "UnrecognizedColorspace", 363 },
+    { "UnrecognizedComposeOperator", 364 },
+    { "UnrecognizedDisposeMethod", 365 },
+    { "UnrecognizedElement", 366 },
+    { "UnrecognizedEndianType", 367 },
+    { "UnrecognizedGravityType", 368 },
+    { "UnrecognizedImageCompression", 369 },
+    { "UnrecognizedImageFilter", 370 },
+    { "UnrecognizedImageFormat", 371 },
+    { "UnrecognizedImageMode", 372 },
+    { "UnrecognizedImageType", 373 },
+    { "UnrecognizedIntentType", 374 },
+    { "UnrecognizedInterlaceType", 375 },
+    { "UnrecognizedListType", 376 },
+    { "UnrecognizedModeType", 377 },
+    { "UnrecognizedNoiseType", 378 },
+    { "UnrecognizedOption", 379 },
+    { "UnrecognizedPerlMagickMethod", 380 },
+    { "UnrecognizedPixelMap", 381 },
+    { "UnrecognizedPreviewType", 382 },
+    { "UnrecognizedResourceType", 383 },
+    { "UnrecognizedType", 384 },
+    { "UnrecognizedVirtualPixelMethod", 385 },
+    { "UsageError", 386 },
+    { "DeprecatedOption", 387 },
+    { "InvalidColorspaceType", 388 },
+    { "InvalidEndianType", 389 },
+    { "InvalidImageType", 390 },
+    { "InvalidInterlaceType", 391 },
+    { "MissingAnImageFilename", 392 },
+    { "MissingBevelWidth", 393 },
+    { "MissingBorderColor", 394 },
+    { "MissingColor", 395 },
+    { "MissingColors", 396 },
+    { "MissingCommand", 397 },
+    { "MissingComment", 398 },
+    { "MissingCompressionQuality", 399 },
+    { "MissingDegrees", 400 },
+    { "MissingDepth", 401 },
+    { "MissingDisposeMethod", 402 },
+    { "MissingEncodingType", 403 },
+    { "MissingEventMask", 404 },
+    { "MissingFactor", 405 },
+    { "MissingFilename", 406 },
+    { "MissingFontName", 407 },
+    { "MissingForeground", 408 },
+    { "MissingGeometry", 409 },
+    { "MissingIDNameOrRoot", 410 },
+    { "MissingImageDepth", 411 },
+    { "MissingLabelName", 412 },
+    { "MissingLevel", 413 },
+    { "MissingLogFormat", 414 },
+    { "MissingMapType", 415 },
+    { "MissingMethod", 416 },
+    { "MissingName", 417 },
+    { "MissingPageGeometry", 418 },
+    { "MissingPassword", 419 },
+    { "MissingQuality", 420 },
+    { "MissingResourceLimit", 421 },
+    { "MissingResourceType", 422 },
+    { "MissingSceneNumber", 423 },
+    { "MissingSeconds", 424 },
+    { "MissingServerName", 425 },
+    { "MissingSize", 426 },
+    { "MissingSnaps", 427 },
+    { "MissingThreshold", 428 },
+    { "MissingTitle", 429 },
+    { "MissingType", 430 },
+    { "MissingValue", 431 },
+    { "MissingVirtualPixelMethod", 432 },
+    { "MissingVisualClass", 433 },
+    { "MissingWidth", 434 },
+    { "NoImagesWereLoaded", 435 },
+    { "OptionLengthExceedsLimit", 436 },
+    { "UnableToOpenXServer", 437 },
+    { "UnableToPersistKey", 438 },
+    { "UnrecognizedColormapType", 439 },
+    { "UnrecognizedColorspaceType", 440 },
+    { "UnrecognizedDisposeMethod", 441 },
+    { "UnrecognizedEndianType", 442 },
+    { "UnrecognizedFilterType", 443 },
+    { "UnrecognizedImageCompressionType", 444 },
+    { "UnrecognizedImageType", 445 },
+    { "UnrecognizedInterlaceType", 446 },
+    { "UnrecognizedOption", 447 },
+    { "UnrecognizedResourceType", 448 },
+    { "UnrecognizedVirtualPixelMethod", 449 },
+    { "UnrecognizedColor", 450 },
+    { "ImageExpected", 451 },
+    { "ImageInfoExpected", 452 },
+    { "StructureSizeMismatch", 453 },
+    { "UnableToGetRegistryID", 454 },
+    { "UnableToLocateImage", 455 },
+    { "UnableToSetRegistry", 456 },
+    { "Default", 457 },
+    { "Default", 458 },
+    { "CacheResourcesExhausted", 459 },
+    { "MemoryAllocationFailed", 460 },
+    { "NoPixelsDefinedInCache", 461 },
+    { "PixelCacheAllocationFailed", 462 },
+    { "UnableToAddColorProfile", 463 },
+    { "UnableToAddGenericProfile", 464 },
+    { "UnableToAddIPTCProfile", 465 },
+    { "UnableToAllocateCoefficients", 466 },
+    { "UnableToAllocateColormap", 467 },
+    { "UnableToAllocateString", 468 },
+    { "UnableToAnnotateImage", 469 },
+    { "UnableToAverageImageSequence", 470 },
+    { "UnableToCloneImage", 471 },
+    { "UnableToComputeImageSignature", 472 },
+    { "UnableToConstituteImage", 473 },
+    { "UnableToConvertFont", 474 },
+    { "UnableToConvertStringToTokens", 475 },
+    { "UnableToCreateColormap", 476 },
+    { "UnableToCreateColorTransform", 477 },
+    { "UnableToCreateCommandWidget", 478 },
+    { "UnableToCreateImageGroup", 479 },
+    { "UnableToCreateImageMontage", 480 },
+    { "UnableToCreateXWindow", 481 },
+    { "UnableToCropImage", 482 },
+    { "UnableToDespeckleImage", 483 },
+    { "UnableToDetermineImageClass", 484 },
+    { "UnableToDetermineTheNumberOfImageColors", 485 },
+    { "UnableToDitherImage", 486 },
+    { "UnableToDrawOnImage", 487 },
+    { "UnableToEdgeImage", 488 },
+    { "UnableToEmbossImage", 489 },
+    { "UnableToEnhanceImage", 490 },
+    { "UnableToFloodfillImage", 491 },
+    { "UnableToGammaCorrectImage", 492 },
+    { "UnableToGetBestIconSize", 493 },
+    { "UnableToGetFromRegistry", 494 },
+    { "UnableToGetPackageInfo", 495 },
+    { "UnableToLevelImage", 496 },
+    { "UnableToMagnifyImage", 497 },
+    { "UnableToManageColor", 498 },
+    { "UnableToMapImage", 499 },
+    { "UnableToMapImageSequence", 500 },
+    { "UnableToMedianFilterImage", 501 },
+    { "UnableToMotionBlurImage", 502 },
+    { "UnableToNoiseFilterImage", 503 },
+    { "UnableToNormalizeImage", 504 },
+    { "UnableToOpenColorProfile", 505 },
+    { "UnableToQuantizeImage", 506 },
+    { "UnableToQuantizeImageSequence", 507 },
+    { "UnableToReadTextChunk", 508 },
+    { "UnableToReadXImage", 509 },
+    { "UnableToReadXServerColormap", 510 },
+    { "UnableToResizeImage", 511 },
+    { "UnableToRotateImage", 512 },
+    { "UnableToSampleImage", 513 },
+    { "UnableToScaleImage", 514 },
+    { "UnableToSelectImage", 515 },
+    { "UnableToSharpenImage", 516 },
+    { "UnableToShaveImage", 517 },
+    { "UnableToShearImage", 518 },
+    { "UnableToSortImageColormap", 519 },
+    { "UnableToThresholdImage", 520 },
+    { "UnableToTransformColorspace", 521 },
+    { "MemoryAllocationFailed", 522 },
+    { "UnableToAllocateAscii85Info", 523 },
+    { "UnableToAllocateCacheInfo", 524 },
+    { "UnableToAllocateCacheView", 525 },
+    { "UnableToAllocateColorInfo", 526 },
+    { "UnableToAllocateDashPattern", 527 },
+    { "UnableToAllocateDelegateInfo", 528 },
+    { "UnableToAllocateDerivatives", 529 },
+    { "UnableToAllocateDrawContext", 530 },
+    { "UnableToAllocateDrawInfo", 531 },
+    { "UnableToAllocateGammaMap", 532 },
+    { "UnableToAllocateImage", 533 },
+    { "UnableToAllocateImagePixels", 534 },
+    { "UnableToAllocateLogInfo", 535 },
+    { "UnableToAllocateMagicInfo", 536 },
+    { "UnableToAllocateMagickInfo", 537 },
+    { "UnableToAllocateModuleInfo", 538 },
+    { "UnableToAllocateMontageInfo", 539 },
+    { "UnableToAllocateQuantizeInfo", 540 },
+    { "UnableToAllocateRegistryInfo", 541 },
+    { "UnableToAllocateSemaphoreInfo", 542 },
+    { "UnableToAllocateString", 543 },
+    { "UnableToAllocateTypeInfo", 544 },
+    { "UnableToAnimateImageSequence", 545 },
+    { "UnableToCloneBlobInfo", 546 },
+    { "UnableToCloneCacheInfo", 547 },
+    { "UnableToCloneImage", 548 },
+    { "UnableToCloneImageInfo", 549 },
+    { "UnableToConcatenateString", 550 },
+    { "UnableToConvertText", 551 },
+    { "UnableToCreateColormap", 552 },
+    { "UnableToDisplayImage", 553 },
+    { "UnableToEscapeString", 554 },
+    { "UnableToInterpretMSLImage", 555 },
+    { "MemoryAllocationFailed", 556 },
+    { "ImageDoesNotContainTheStreamGeometry", 557 },
+    { "NoStreamHandlerIsDefined", 558 },
+    { "PixelCacheIsNotOpen", 559 },
+    { "UnableToAcquirePixelStream", 560 },
+    { "UnableToSetPixelStream", 561 },
+    { "UnableToSyncPixelStream", 562 },
+    { "Default", 563 },
+    { "Default", 564 },
+    { "FontSubstitutionRequired", 565 },
+    { "UnableToGetTypeMetrics", 566 },
+    { "UnableToInitializeFreetypeLibrary", 567 },
+    { "UnableToReadFont", 568 },
+    { "UnrecognizedFontEncoding", 569 },
+    { "Default", 570 },
+    { "Default", 571 },
+    { "ColorIsNotKnownToServer", 572 },
+    { "NoWindowWithSpecifiedIDExists", 573 },
+    { "StandardColormapIsNotInitialized", 574 },
+    { "UnableToConnectToRemoteDisplay", 575 },
+    { "UnableToCreateBitmap", 576 },
+    { "UnableToCreateColormap", 577 },
+    { "UnableToCreatePixmap", 578 },
+    { "UnableToCreateProperty", 579 },
+    { "UnableToCreateStandardColormap", 580 },
+    { "UnableToDisplayImageInfo", 581 },
+    { "UnableToGetProperty", 582 },
+    { "UnableToGetStandardColormap", 583 },
+    { "UnableToGetVisual", 584 },
+    { "UnableToGrabMouse", 585 },
+    { "UnableToLoadFont", 586 },
+    { "UnableToMatchVisualToStandardColormap", 587 },
+    { "UnableToOpenXServer", 588 },
+    { "UnableToReadXAttributes", 589 },
+    { "UnableToReadXWindowImage", 590 },
+    { "UnrecognizedColormapType", 591 },
+    { "UnrecognizedGravityType", 592 },
+    { "UnrecognizedVisualSpecifier", 593 },
+    { "UnableToAllocateXHints", 594 },
+    { "UnableToCreateCursor", 595 },
+    { "UnableToCreateGraphicContext", 596 },
+    { "UnableToCreateStandardColormap", 597 },
+    { "UnableToCreateTextProperty", 598 },
+    { "UnableToCreateXImage", 599 },
+    { "UnableToCreateXPixmap", 600 },
+    { "UnableToCreateXWindow", 601 },
+    { "UnableToDisplayImage", 602 },
+    { "UnableToDitherImage", 603 },
+    { "UnableToGetPixelInfo", 604 },
+    { "UnableToGetVisual", 605 },
+    { "UnableToLoadFont", 606 },
+    { "UnableToMakeXWindow", 607 },
+    { "UnableToOpenXServer", 608 },
+    { "UnableToViewFonts", 609 },
+    { "UnableToGetVisual", 610 },
+    { "UsingDefaultVisual", 611 },
     { 0, 0 }
   };
 #endif
@@ -1247,6 +1356,7 @@ static const char *message_dat[] =
     "Unable to get cache nexus",
     "Unable to get pixels from cache",
     "Unable to open cache",
+    "Unable to persist pixel cache",
     "Unable to read pixel cache",
     "Unable to sync cache",
     "disk allocation failed",
@@ -1255,15 +1365,19 @@ static const char *message_dat[] =
     "Colormap type not supported",
     "Colorspace model is not supported",
     "Color type not supported",
+    "Compression not valid",
     "Data encoding scheme is not supported",
     "Data storage type is not supported",
     "Delta-PNG is not supported",
     "Encrypted WPG image file not supported",
+    "Fractal compression not supported",
     "Image column or row size is not supported",
     "Image does not have a matte channel",
+    "Image is not tiles",
     "Image type not supported",
     "Incompatible size of double",
     "Irregular channel geometry not supported",
+    "JPEG compression is not supported",
     "JPEG embedding failed",
     "Location type is not supported",
     "Map storage type is not supported",
@@ -1273,22 +1387,41 @@ static const char *message_dat[] =
     "No 8BIM data is available",
     "No APP1 data is available",
     "No bitmap on clipboard",
+    "No color profile available",
     "No data returned",
+    "No image vector graphics",
     "No IPTC info was found",
     "No IPTC profile available",
     "Not a supported image file",
     "Number of images is not supported",
     "Only continuous tone picture supported",
     "Only level zero files Supported",
+    "PNG compression is not supported",
+    "RLE compression not supported",
     "Unable to copy profile",
     "Unable to create a DC",
     "Unable to create bitmap",
     "Unable to decompress image",
+    "Unable to Initialize FPX library",
+    "Unable to open blob",
+    "Unable to read aspect ratio",
     "Unable to read CIELAB images",
+    "Unable to read summary info",
+    "Unable to set affine matrix",
+    "Unable to set aspect ratio",
+    "Unable to set color twist",
+    "Unable to set contrast",
+    "Unable to set filtering value",
+    "Unable to set image comment",
+    "Unable to set image title",
+    "Unable to set JPEG level",
+    "Unable to set region of interest",
+    "Unable to set summary info",
     "Unable to translate text",
     "Unable to write MPEG parameters",
     "Unable to zip-compress image",
     "Unsupported cell type in the matrix",
+    "ZIP compression is not supported",
     "default error",
     "Lossless to lossy JPEG conversion",
     "include element nested too deeply",
@@ -1303,12 +1436,12 @@ static const char *message_dat[] =
     "An error has occurred writing to file",
     "Colormap exceeded 256 colors",
     "Corrupt image",
-    "Corrupt MNG image",
-    "file format version mismatch",
     "Image file or does not contain any image data",
+    "Image type not supported",
     "Improper image header",
     "Insufficient image data in file",
     "Invalid colormap index",
+    "invalid file format version",
     "Length and filesize do not match",
     "Missing a required image channel",
     "Negative or zero image size",
@@ -1320,6 +1453,7 @@ static const char *message_dat[] =
     "Not a DIB image file",
     "Not a DPX image file",
     "Not a GIF image file",
+    "Not a JNG image file",
     "Not a MATLAB image file",
     "Not a MNG image file",
     "Not a MTV image file",
@@ -1331,8 +1465,10 @@ static const char *message_dat[] =
     "Not a OTB image file",
     "Not a PCD image file",
     "Not a PCX image file",
+    "Not a PDB image file",
     "Not a PICT image file",
     "Not a PIX image file",
+    "Not a PNG image file",
     "Not a PNM image file",
     "Not a PSD image file",
     "Not a PSP image file",
@@ -1343,6 +1479,7 @@ static const char *message_dat[] =
     "Not a SUN image file",
     "Not a TGA image file",
     "Not a TIM image file",
+    "Not a TOPAL image file",
     "Not a VIFF image file",
     "Not a WBMP image file",
     "Not a WPG image file",
@@ -1352,6 +1489,7 @@ static const char *message_dat[] =
     "Not enough tiles found in level",
     "Static planes value not equal to 1",
     "Too much image data in file",
+    "Unable to read colormap from dump file",
     "Unable to read color profile",
     "Unable to read extension block",
     "Unable to read generic profile",
@@ -1359,6 +1497,7 @@ static const char *message_dat[] =
     "Unable to read image header",
     "Unable to read IPTC profile",
     "Unable to read pixmap from dump file",
+    "Unable to read sub image data",
     "Unable to read VID image",
     "Unable to read window name from dump file",
     "Unable to runlength decode image",
@@ -1370,8 +1509,15 @@ static const char *message_dat[] =
     "Unrecognized compression",
     "Unrecognized XWD header",
     "Unable to persist key",
+    "Compression not valid",
     "Improper image header",
+    "Negative or zero image size",
+    "Non OS2 header size error",
     "Corrupt PCD image, skipping to sync byte",
+    "Static planes value not equal to one",
+    "Unrecognized bits per pixel",
+    "Unrecognized image compression",
+    "Unrecognized number of colors",
     "Delegate failed",
     "Failed to compute output size",
     "Failed to render file",
@@ -1385,58 +1531,46 @@ static const char *message_dat[] =
     "Unable to initialize FPX library",
     "Unable to initialize WMF library",
     "Unable to manage JP2 stream",
-    "Unable to read aspect ratio",
-    "Unable to read summary info",
-    "Unable to set affine matrix",
-    "Unable to set aspect ratio",
-    "Unable to set color twist",
-    "Unable to set contrast",
-    "Unable to set filtering value",
-    "Unable to set image comment",
-    "Unable to set image title",
-    "Unable to set JPEG level",
-    "Unable to set region of interest",
-    "Unable to set summary info",
     "Unable to write SVG format",
     "default error",
     "default warning",
     "Already pushing pattern definition",
     "Non-conforming drawing primitive definition",
-    "Not a relative URL",
-    "Not currently pushing pattern definition",
     "Unable to print",
     "unbalanced graphic context push-pop",
-    "URL not found",
     "default error",
-    "default warning",
+    "Not a relative URL",
+    "Not currently pushing pattern definition",
+    "URL not found",
     "Unable to create temporary file",
     "Unable to open file",
     "Unable to write file",
     "default error",
     "default warning",
     "angle is discontinuous",
-    "Color separated image required",
     "image colorspace differs",
     "image opacity differs",
     "Image sequence is required",
     "image size differs",
-    "Input images already specified",
     "left and right image sizes differ",
-    "No images were found",
-    "No images were loaded",
-    "No [LOCALE] image attribute",
+    "no images were found",
+    "no images were loaded",
+    "no [LOCALE] image attribute",
     "too many cluster",
     "unable to append image",
     "unable to average image",
-    "Unable to compare images",
+    "unable to coalesce image",
+    "unable to compare images",
     "unable to create image mosaic",
-    "Unable to create stereo image",
-    "Unable to deconstruct image sequence",
-    "Unable to flatten image",
-    "Unable to resize image",
-    "Unable to segment image",
-    "Width or height exceeds limit",
-    "default error",
+    "unable to create stereo image",
+    "unable to deconstruct image sequence",
+    "unable to flatten image",
+    "unable to resize image",
+    "unable to segment image",
+    "Unable to set clip mask",
+    "unable to shear image",
+    "width or height exceeds limit",
+    "Unable to persist key",
     "default warning",
     "DPS library is not available",
     "FPX library is not available",
@@ -1459,17 +1593,20 @@ static const char *message_dat[] =
     "Unable to initialize module loader",
     "default warning",
     "bevel width is negative",
+    "color separated image required",
     "frame is less than image size",
-    "Geometry dimensions are zero",
-    "Geometry does not contain image",
-    "Images are not the same size",
+    "geometry dimensions are zero",
+    "geometry does not contain image",
+    "images are not the same size",
     "size must exceed bevel width",
     "image smaller than kernel width",
     "image smaller than radius",
     "image widths or heights differ",
+    "input images already specified",
     "kernel radius is too small",
     "kernel width must be an odd number",
     "Missing affine matrix",
+    "Missing amount",
     "Missing amplitude",
     "Missing an image filename",
     "Missing argument",
@@ -1481,10 +1618,12 @@ static const char *message_dat[] =
     "Missing colorize value",
     "Missing colors",
     "Missing comment",
+    "Missing compression quality",
     "Missing an cycle amount",
     "Missing delay",
     "Missing dispose method",
     "Missing dissolve value",
+    "Missing distance",
     "Missing drawing primitive",
     "Missing encoding type",
     "Missing event mask",
@@ -1494,17 +1633,22 @@ static const char *message_dat[] =
     "Missing format specifier",
     "Missing geometry",
     "Missing image depth",
+    "Missing image frames",
     "Missing image gamma",
     "Missing image iterations",
     "Missing image label",
     "Missing image profile",
     "Missing image rotation",
     "Missing image scene",
+    "Missing image type",
     "Missing an implode amount",
     "Missing list name",
     "Missing log format",
+    "Missing matrix",
     "Missing matte color",
+    "Missing offset",
     "Missing opaque color",
+    "Missing order",
     "Missing page geometry",
     "Missing paint radius",
     "Missing password",
@@ -1528,7 +1672,6 @@ static const char *message_dat[] =
     "Must specify image size",
     "No Binary Large OBjects defined",
     "No images defined",
-    "No image vector graphics",
     "Non-zero width and height required",
     "No profile name was given",
     "Null blob argument",
@@ -1536,13 +1679,16 @@ static const char *message_dat[] =
     "Reference is not my type",
     "Stegano image required",
     "Stereo image required",
-    "Subimage specification returns no images profile name was given",
+    "Subimage specification returns no images",
     "Unable to add or remove profile",
     "unable to allocate ICC profile",
-    "Unable to blur image",
+    "unable to average image sequence",
+    "unable to blur image",
+    "unable to chop image",
     "Unable to constitute image",
     "Unable to convolve image",
     "Unable to edge image",
+    "Unable to equalize image",
     "Unable to filter image",
     "unable to format image meta data",
     "Unable to frame image",
@@ -1555,6 +1701,7 @@ static const char *message_dat[] =
     "Unrecognized attribute",
     "Unrecognized channel type",
     "Unrecognized color",
+    "Unrecognized colormap type",
     "Unrecognized image colorspace",
     "Unrecognized compose operator",
     "Unrecognized dispose method",
@@ -1570,6 +1717,7 @@ static const char *message_dat[] =
     "Unrecognized interlace type",
     "Unrecognized list type",
     "Unrecognized mode type",
+    "Unrecognized noise type",
     "Unrecognized option",
     "Unrecognized PerlMagick method",
     "Unrecognized pixel map",
@@ -1578,17 +1726,25 @@ static const char *message_dat[] =
     "Unrecognized type",
     "Unrecognized virtual pixel method",
     "Improper arguments supplied, please see manual",
+    "Deprecated option",
+    "Invalid colorspace type",
+    "Invalid endian type",
+    "Invalid image type",
+    "Invalid interlace type",
     "Missing an image filename",
     "Missing bevel width",
     "Missing border color",
     "Missing color",
+    "Missing colors",
     "Missing command",
+    "Missing comment",
     "Missing compression quality",
     "Missing degrees",
     "Missing depth",
     "Missing dispose method",
     "Missing encoding type",
     "Missing event mask",
+    "Missing factor",
     "Missing filename",
     "Missing font name",
     "Missing foreground",
@@ -1599,6 +1755,7 @@ static const char *message_dat[] =
     "Missing level",
     "Missing log format",
     "Missing map type",
+    "Missing method",
     "Missing name",
     "Missing page geometry",
     "Missing password",
@@ -1613,10 +1770,14 @@ static const char *message_dat[] =
     "Missing threshold",
     "Missing title",
     "Missing type",
+    "Missing value",
     "Missing virtual pixel method",
     "Missing visual class",
     "Missing width",
+    "No images were loaded",
     "Option length exceeds limit",
+    "Unable to open XServer",
+    "Unable to persist key",
     "Unrecognized colormap type",
     "Unrecognized colorspace type",
     "unrecognized dispose method",
@@ -1627,7 +1788,8 @@ static const char *message_dat[] =
     "Unrecognized interlace type",
     "Unrecognized option",
     "Unrecognized resource type",
-    "default warning",
+    "Unrecognized virtual pixel method",
+    "Unrecognized color",
     "image expected",
     "image info expected",
     "structure size mismatch",
@@ -1648,10 +1810,7 @@ static const char *message_dat[] =
     "unable to allocate string",
     "Unable to annotate image",
     "unable to average image sequence",
-    "unable to blur image",
-    "unable to chop image",
     "unable to clone image",
-    "unable to coalesce image",
     "unable to compute image signature",
     "unable to constitute image",
     "unable to convert font",
@@ -1704,6 +1863,7 @@ static const char *message_dat[] =
     "unable to transform colorspace",
     "Memory allocation failed",
     "unable to allocate ascii85 info",
+    "unable to allocate cache info",
     "unable to allocate cache view",
     "unable to allocate color info",
     "unable to allocate dash pattern",
@@ -1768,7 +1928,7 @@ static const char *message_dat[] =
     "Unable to load font",
     "Unable to match visual to Standard Colormap",
     "Unable to open X server",
-    "Unable to read X window attributes",
+    "Unable to read X attributes",
     "Unable to read X window image",
     "Unrecognized colormap type",
     "Unrecognized gravity type",

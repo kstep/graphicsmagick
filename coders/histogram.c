@@ -213,7 +213,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   histogram_image=CloneImage(image,geometry.width,geometry.height,True,
     &image->exception);
   if (histogram_image == (Image *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   SetImageType(histogram_image,TrueColorType);
   /*
     Allocate histogram count arrays.
@@ -226,7 +226,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       (blue == (long *) NULL))
     {
       DestroyImage(histogram_image);
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image)
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image)
     }
   memset(red,0,length*sizeof(long));
   memset(green,0,length*sizeof(long));

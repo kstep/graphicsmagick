@@ -485,8 +485,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
       scanline_length=ReadBlobByte(blob);
     if (scanline_length >= row_bytes)
       {
-        ThrowException(&image->exception,CorruptImageError,
-          "UnableToUncompressImage","scanline length exceeds row bytes");
+        ThrowException(&image->exception,CorruptImageError,UnableToUncompressImage,"scanline length exceeds row bytes");
         break;
       }
     (void) ReadBlob(blob,scanline_length,(char *) scanline);
@@ -767,7 +766,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read PICT header.
   */
@@ -777,17 +776,17 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   ReadRectangle(frame);
   while ((c=ReadBlobByte(image)) == 0);
   if (c != 0x11)
-    ThrowReaderException(CorruptImageError,"NotAPICTImageFile",image);
+    ThrowReaderException(CorruptImageError,NotAPICTImageFile,image);
   version=ReadBlobByte(image);
   if (version == 2)
     {
       c=ReadBlobByte(image);
       if (c != 0xff)
-        ThrowReaderException(CorruptImageError,"NotAPICTImageFile",image);
+        ThrowReaderException(CorruptImageError,NotAPICTImageFile,image);
     }
   else
     if (version != 1)
-      ThrowReaderException(CorruptImageError,"NotAPICTImageFile",image);
+      ThrowReaderException(CorruptImageError,NotAPICTImageFile,image);
   /*
     Create black canvas.
   */
@@ -809,7 +808,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     if (version == 2)
       code=ReadBlobMSBShort(image);
     if (EOFBlob(image))
-        ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     if ((code < 0) || (code > MaxPICTCode) )
       {
         if (IsEventLogging())
@@ -866,7 +865,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 break;
               }
             if (pattern != 1)
-              ThrowReaderException(CorruptImageError,"UnknownPatternType",
+              ThrowReaderException(CorruptImageError,UnknownPatternType,
                 image);
             length=ReadBlobMSBShort(image);
             ReadRectangle(frame);
@@ -1002,8 +1001,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 if (!AllocateImageColormap(tile_image,tile_image->colors))
                   {
                     DestroyImage(tile_image);
-                    ThrowReaderException(ResourceLimitError,
-                      "MemoryAllocationFailed",image)
+                    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
                   }
                 if (bytes_per_line & 0x8000)
                   {
@@ -1054,8 +1052,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             if (pixels == (unsigned char *) NULL)
               {
                 DestroyImage(tile_image);
-                ThrowReaderException(ResourceLimitError,
-                  "MemoryAllocationFailed",image)
+                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
               }
             /*
               Convert PICT tile image to pixel packets.
@@ -1165,8 +1162,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 image->color_profile.info=MagickAllocateMemory(unsigned char *,
                   length);
                 if (image->color_profile.info == (unsigned char *) NULL)
-                  ThrowReaderException(ResourceLimitError,
-                    "MemoryAllocationFailed",image);
+                  ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
                 image->color_profile.length=length;
                 (void) memcpy(image->color_profile.info,info,length);
                 break;
@@ -1176,8 +1172,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 image->iptc_profile.info=MagickAllocateMemory(unsigned char *,
                   length);
                 if (image->iptc_profile.info == (unsigned char *) NULL)
-                  ThrowReaderException(ResourceLimitError,
-                    "MemoryAllocationFailed",image);
+                  ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
                 image->iptc_profile.length=length;
                 (void) memcpy(image->iptc_profile.info,info,length);
                 break;
@@ -1287,7 +1282,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
       }
   }
   if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
   CloseBlob(image);
   return(image);
@@ -1464,10 +1459,10 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if ((image->columns > 65535L) || (image->rows > 65535L))
-    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit",image);
+    ThrowWriterException(ImageError,WidthOrHeightExceedsLimit,image);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   /*
     Initialize image info.
@@ -1523,7 +1518,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   if ((buffer == (unsigned char *) NULL) ||
       (packed_scanline == (unsigned char *) NULL) ||
       (scanline == (unsigned char *) NULL))
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Write header, header size, size bounding box, version, and reserved.
   */

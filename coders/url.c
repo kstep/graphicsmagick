@@ -178,7 +178,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (!IsAccessibleAndNotEmpty(clone_info->filename))
     {
       LiberateTemporaryFile(clone_info->filename);
-      ThrowException(exception,CoderError,"NoDataReturned",filename);
+      ThrowException(exception,CoderError,NoDataReturned,filename);
     }
   else
     {

@@ -118,8 +118,8 @@ MagickExport void *CropImageToHBITMAP(Image *image,
       ((geometry->y+(long) geometry->height) < 0) ||
       (geometry->x >= (long) image->columns) ||
       (geometry->y >= (long) image->rows))
-    ThrowImageException(OptionError,"GeometryDoesNotContainImage",
-      "UnableToCropImage");
+    ThrowImageException(OptionError,GeometryDoesNotContainImage,
+      MagickMsg(ResourceLimitError,UnableToCropImage));
   page=(*geometry);
   if ((page.x+(long) page.width) > (long) image->columns)
     page.width=image->columns-page.x;
@@ -137,8 +137,8 @@ MagickExport void *CropImageToHBITMAP(Image *image,
     }
 
   if ((page.width == 0) || (page.height == 0))
-    ThrowImageException(OptionError,"GeometryDimensionsAreZero",
-      "UnableToCropImage");
+    ThrowImageException(OptionError,GeometryDimensionsAreZero,
+      MagickMsg(ResourceLimitError,UnableToCropImage));
   /*
     Initialize crop image attributes.
   */
@@ -368,8 +368,8 @@ MagickExport TypeInfo* NTGetTypeList( void )
 
         type_info=MagickAllocateMemory(TypeInfo *,sizeof(TypeInfo));
         if (type_info == (TypeInfo *) NULL)
-          MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "UnableToAllocateTypeInfo");
+          MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+            UnableToAllocateTypeInfo);
         (void) memset(type_info,0,sizeof(TypeInfo));
 
         type_info->path=AcquireString("Windows Fonts");

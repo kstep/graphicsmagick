@@ -218,7 +218,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   /*
     Initialize the printer.
@@ -291,7 +291,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       pixels=MagickAllocateMemory(unsigned char *,
         3*image->columns*sizeof(unsigned char));
       if (pixels == (unsigned char *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image)
+        ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image)
       /*
         Write PCL color image.
       */

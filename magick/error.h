@@ -253,6 +253,9 @@ extern MagickExport void
   MagickError(const ExceptionType,const char *,const char *),
   MagickFatalError(const ExceptionType,const char *,const char *),
   MagickWarning(const ExceptionType,const char *,const char *),
+  _MagickError(const ExceptionType,const char *,const char *),
+  _MagickFatalError(const ExceptionType,const char *,const char *),
+  _MagickWarning(const ExceptionType,const char *,const char *),
   SetExceptionInfo(ExceptionInfo *,ExceptionType),
   ThrowException(ExceptionInfo *,const ExceptionType,const char *,const char *),
   ThrowLoggedException(ExceptionInfo *exception, const ExceptionType severity,
@@ -273,8 +276,67 @@ extern MagickExport WarningHandler
 #endif
 
 #if defined(MAGICK_IMPLEMENTATION)
+#if defined(MAGICK_IDBASED_MESSAGES)
+#define MagickMsg(severity_,msg_) GetLocaleMessageFromID(##severity_##msg_)
+
 #define ThrowException(exception_,severity_,reason_,description_) \
+  (ThrowLoggedException(exception_,severity_,GetLocaleMessageFromID(##severity_##reason_),description_,GetMagickModule()))
+#define ThrowException2(exception_,severity_,reason_,description_) \
   (ThrowLoggedException(exception_,severity_,reason_,description_,GetMagickModule()))
+#define ThrowException3(exception_,severity_,reason_,description_) \
+  (ThrowLoggedException(exception_,severity_,GetLocaleMessageFromID(##severity_##reason_),GetLocaleMessageFromID(##severity_##description_),GetMagickModule()))
+
+#define MagickError(severity_,reason_,description_) \
+  (_MagickError(severity_,GetLocaleMessageFromID(##severity_##reason_),description_))
+#define MagickFatalError(severity_,reason_,description_) \
+  (_MagickFatalError(severity_,GetLocaleMessageFromID(##severity_##reason_),description_))
+#define MagickWarning(severity_,reason_,description_) \
+  (_MagickWarning(severity_,GetLocaleMessageFromID(##severity_##reason_),description_))
+
+#define MagickError2(severity_,reason_,description_) \
+  (_MagickError(severity_,reason_,description_))
+#define MagickFatalError2(severity_,reason_,description_) \
+  (_MagickFatalError(severity_,reason_,description_))
+#define MagickWarning2(severity_,reason_,description_) \
+  (_MagickWarning(severity_,reason_,description_))
+
+#define MagickError3(severity_,reason_,description_) \
+  (_MagickError(severity_,GetLocaleMessageFromID(##severity_##reason_),GetLocaleMessageFromID(##severity_##description_)))
+#define MagickFatalError3(severity_,reason_,description_) \
+  (_MagickFatalError(severity_,GetLocaleMessageFromID(##severity_##reason_),GetLocaleMessageFromID(##severity_##description_)))
+#define MagickWarning3(severity_,reason_,description_) \
+  (_MagickWarning(severity_,GetLocaleMessageFromID(##severity_##reason_),GetLocaleMessageFromID(##severity_##description_)))
+#else
+#define MagickMsg(severity_,msg_) GetLocaleExceptionMessage(severity_,#msg_)
+
+#define ThrowException(exception_,severity_,reason_,description_) \
+  (ThrowLoggedException(exception_,severity_,#reason_,description_,GetMagickModule()))
+#define ThrowException2(exception_,severity_,reason_,description_) \
+  (ThrowLoggedException(exception_,severity_,reason_,description_,GetMagickModule()))
+#define ThrowException3(exception_,severity_,reason_,description_) \
+  (ThrowLoggedException(exception_,severity_,#reason_,#description_,GetMagickModule()))
+
+#define MagickError(severity_,reason_,description_) \
+  (_MagickError(severity_,#reason_,description_))
+#define MagickFatalError(severity_,reason_,description_) \
+  (_MagickFatalError(severity_,#reason_,description_))
+#define MagickWarning(severity_,reason_,description_) \
+  (_MagickWarning(severity_,#reason_,description_))
+
+#define MagickError2(severity_,reason_,description_) \
+  (_MagickError(severity_,reason_,description_))
+#define MagickFatalError2(severity_,reason_,description_) \
+  (_MagickFatalError(severity_,reason_,description_))
+#define MagickWarning2(severity_,reason_,description_) \
+  (_MagickWarning(severity_,reason_,description_))
+
+#define MagickError3(severity_,reason_,description_) \
+  (_MagickError(severity_,#reason_,#description_))
+#define MagickFatalError3(severity_,reason_,description_) \
+  (_MagickFatalError(severity_,#reason_,#description_))
+#define MagickWarning3(severity_,reason_,description_) \
+  (_MagickWarning(severity_,#reason_,#description_))
+#endif
 #endif
 
 #define ThrowBinaryException(severity_,reason_,description_) \
@@ -285,9 +347,35 @@ extern MagickExport WarningHandler
     } \
   return(False); \
 }
+#define ThrowBinaryException2(severity_,reason_,description_) \
+{ \
+  if (image != (Image *) NULL) \
+    { \
+      ThrowException2(&image->exception,severity_,reason_,description_); \
+    } \
+  return(False); \
+}
+#define ThrowBinaryException3(severity_,reason_,description_) \
+{ \
+  if (image != (Image *) NULL) \
+    { \
+      ThrowException3(&image->exception,severity_,reason_,description_); \
+    } \
+  return(False); \
+}
 #define ThrowImageException(code_,reason_,description_) \
 { \
   ThrowException(exception,code_,reason_,description_); \
+  return((Image *) NULL); \
+}
+#define ThrowImageException2(code_,reason_,description_) \
+{ \
+  ThrowException2(exception,code_,reason_,description_); \
+  return((Image *) NULL); \
+}
+#define ThrowImageException3(code_,reason_,description_) \
+{ \
+  ThrowException3(exception,code_,reason_,description_); \
   return((Image *) NULL); \
 }
 #define ThrowReaderException(code_,reason_,image_) \
@@ -305,10 +393,62 @@ extern MagickExport WarningHandler
     } \
   return((Image *) NULL); \
 }
+#define ThrowReaderException2(code_,reason_,image_) \
+{ \
+  if ((image) == (Image *) NULL) \
+    { \
+      ThrowException2(exception,code_,reason_,(char *) NULL); \
+    } \
+  else \
+    { \
+      ThrowException2(exception,code_,reason_,(image)->filename); \
+      if (image->blob->type != UndefinedStream) \
+        CloseBlob(image); \
+      DestroyImageList(image); \
+    } \
+  return((Image *) NULL); \
+}
+#define ThrowReaderException3(code_,reason_,image_) \
+{ \
+  if ((image) == (Image *) NULL) \
+    { \
+      ThrowException(exception,code_,reason_,(char *) NULL); \
+    } \
+  else \
+    { \
+      ThrowException3(exception,code_,reason_,(image)->filename); \
+      if (image->blob->type != UndefinedStream) \
+        CloseBlob(image); \
+      DestroyImageList(image); \
+    } \
+  return((Image *) NULL); \
+}
 #define ThrowWriterException(code_,reason_,image_) \
 { \
   assert(image_ != (Image *) NULL); \
   ThrowException(&(image_)->exception,code_,reason_,(image_)->filename); \
+  if (image_info->adjoin) \
+    while ((image_)->previous != (Image *) NULL) \
+      (image_)=(image_)->previous; \
+  if (image_->blob->type != UndefinedStream) \
+    CloseBlob(image_); \
+  return(False); \
+}
+#define ThrowWriterException2(code_,reason_,image_) \
+{ \
+  assert(image_ != (Image *) NULL); \
+  ThrowException2(&(image_)->exception,code_,reason_,(image_)->filename); \
+  if (image_info->adjoin) \
+    while ((image_)->previous != (Image *) NULL) \
+      (image_)=(image_)->previous; \
+  if (image_->blob->type != UndefinedStream) \
+    CloseBlob(image_); \
+  return(False); \
+}
+#define ThrowWriterException3(code_,reason_,image_) \
+{ \
+  assert(image_ != (Image *) NULL); \
+  ThrowException3(&(image_)->exception,code_,reason_,(image_)->filename); \
   if (image_info->adjoin) \
     while ((image_)->previous != (Image *) NULL) \
       (image_)=(image_)->previous; \

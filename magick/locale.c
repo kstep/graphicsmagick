@@ -121,7 +121,22 @@ const char *NTFormatMessage(DWORD id, ...)
         }
       else
         {
-          result=AllocateManagedString((const char *)buffer);
+          char
+            *s;
+
+          int
+            len;
+
+          s = buffer;
+          len = strlen(s);
+          if (len > 1)
+            { /* the string that is stored in the resource has a CR LF on the end, so we need
+                 to zap this off before returning it
+               */
+              s[len-1]='\0';
+              s[len-2]='\0';
+            }
+          result=AllocateManagedString(s);
           LocalFree(buffer);
         }
     }
@@ -292,9 +307,9 @@ const char *GetLocaleMessageFromID(const int id)
   if ((id > 0) || (id >= MAX_LOCALE_MSGS))
     {
 #if defined(WIN32)
-      return NTFormatMessage(message_map[id].messageid);
+      return NTFormatMessage(id);
 #else
-      return message_dat[message_map[id].messageid];
+      return message_dat[id];
 #endif
     }
   return (const char *) NULL;

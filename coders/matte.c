@@ -160,7 +160,7 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
     status;
 
   if (!image->matte)
-    ThrowWriterException(CoderError,"ImageDoesNotHaveAMatteChannel",image);
+    ThrowWriterException(CoderError,ImageDoesNotHaveAMatteChannel,image);
   matte_image=
     CloneImage(image,image->columns,image->rows,True,&image->exception);
   if (matte_image == (Image *) NULL)

@@ -24,6 +24,7 @@ extern "C" {
   headers when MAGICK_IMPLEMENTATION is defined.
 */
 #define MAGICK_IMPLEMENTATION 1
+#define MAGICK_IDBASED_MESSAGES 1
 
 /*
   System include declarations.
@@ -205,6 +206,10 @@ extern "C" {
 # include "magick/magick_types.h"
 # include "magick/image.h"
 # include "magick/list.h"
+#endif
+
+#if defined(MAGICK_IDBASED_MESSAGES)
+#include "magick/locale_c.h"
 #endif
 
 #if defined(WIN32)

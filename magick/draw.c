@@ -57,6 +57,12 @@
     ThrowException(&context->image->exception,code,reason,description); \
   return; \
 }
+#define ThrowDrawException3(code,reason,description) \
+{ \
+  if (context->image->exception.severity > (long)code) \
+    ThrowException3(&context->image->exception,code,reason,description); \
+  return; \
+}
 
 #define CurrentContext (context->graphic_context[context->index])
 #define PixelPacketMatch(p,q) (((p)->red == (q)->red) && \
@@ -362,8 +368,8 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
       context->mvg = MagickAllocateMemory(char *,alloc_size);
       if( context->mvg == (char*) NULL )
         {
-          ThrowException(&context->image->exception,ResourceLimitError,
-             "MemoryAllocationFailed","UnableToDrawOnImage");
+          ThrowException3(&context->image->exception,ResourceLimitError,
+            MemoryAllocationFailed,UnableToDrawOnImage);
           return -1;
         }
 
@@ -371,8 +377,8 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
       context->mvg_length = 0;
       if (context->mvg == 0)
         {
-          ThrowException(&context->image->exception,ResourceLimitError,
-            "MemoryAllocationFailed","UnableToDrawOnImage");
+          ThrowException3(&context->image->exception,ResourceLimitError,
+            MemoryAllocationFailed,UnableToDrawOnImage);
           return -1;
         }
     }
@@ -385,8 +391,8 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
       MagickReallocMemory(context->mvg, realloc_size);
       if (context->mvg == NULL)
         {
-          ThrowException(&context->image->exception,ResourceLimitError,
-            "MemoryAllocationFailed","UnableToDrawOnImage");
+          ThrowException3(&context->image->exception,ResourceLimitError,
+            MemoryAllocationFailed,UnableToDrawOnImage);
           return -1;
         }
       context->mvg_alloc = realloc_size;
@@ -425,7 +431,7 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
 
     if (formatted_length < 0)
       {
-        ThrowException(&context->image->exception,DrawError,"UnableToPrint",
+        ThrowException(&context->image->exception,DrawError,UnableToPrint,
           format);
       }
     else
@@ -473,7 +479,7 @@ static int MvgAutoWrapPrintf(DrawContext context, const char *format, ...)
 
   if (formatted_length < 0)
     {
-      ThrowException(&context->image->exception,DrawError,"UnableToPrint",
+      ThrowException(&context->image->exception,DrawError,UnableToPrint,
         format);
     }
   else
@@ -668,8 +674,8 @@ MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
   /* Allocate initial drawing context */
   context = MagickAllocateMemory(DrawContext,sizeof(struct _DrawContext));
   if(context == (DrawContext) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateDrawContext");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateDrawContext);
 
   /* Support structures */
   context->image = image;
@@ -694,15 +700,15 @@ MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
   context->graphic_context=MagickAllocateMemory(DrawInfo **,sizeof(DrawInfo *));
   if(context->graphic_context == (DrawInfo **) NULL)
     {
-      ThrowException(&context->image->exception,ResourceLimitError,
-        "MemoryAllocationFailed","UnableToDrawOnImage");
+      ThrowException3(&context->image->exception,ResourceLimitError,
+        MemoryAllocationFailed,UnableToDrawOnImage);
       return (DrawContext) NULL;
     }
   CurrentContext=CloneDrawInfo((ImageInfo*)NULL,draw_info);
   if(CurrentContext == (DrawInfo*) NULL)
     {
-      ThrowException(&context->image->exception,ResourceLimitError,
-        "MemoryAllocationFailed","UnableToDrawOnImage");
+      ThrowException3(&context->image->exception,ResourceLimitError,
+        MemoryAllocationFailed,UnableToDrawOnImage);
       return (DrawContext) NULL;
     }
 
@@ -919,8 +925,8 @@ MagickExport void DrawSetClipPath(DrawContext context, const char *clip_path)
     {
       CloneString(&CurrentContext->clip_path,clip_path);
       if(CurrentContext->clip_path == (char*)NULL)
-        ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-          "UnableToDrawOnImage");
+        ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
+          UnableToDrawOnImage);
 
 #if DRAW_BINARY_IMPLEMENTATION
       (void) DrawClipPath(context->image,CurrentContext,CurrentContext->clip_path);
@@ -1488,13 +1494,13 @@ MagickExport void DrawSetFillPatternURL(DrawContext context, const char* fill_ur
   assert(fill_url != NULL);
 
   if(fill_url[0] != '#')
-    ThrowDrawException(DrawWarning,"NotARelativeuRL", fill_url);
+    ThrowDrawException(DrawWarning,NotARelativeURL, fill_url);
 
   FormatString(pattern,"[%.1024s]",fill_url+1);
 
   if (GetImageAttribute(context->image,pattern) == (ImageAttribute *) NULL)
     {
-      ThrowDrawException(DrawWarning,"URLNotFound", fill_url)
+      ThrowDrawException(DrawWarning,URLNotFound, fill_url)
     }
   else
     {
@@ -1739,8 +1745,8 @@ MagickExport void DrawSetFont(DrawContext context, const char *font_name)
     {
       (void) CloneString(&CurrentContext->font,font_name);
       if(CurrentContext->font == (char*)NULL)
-        ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-          "UnableToDrawOnImage");
+        ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
+          UnableToDrawOnImage);
       MvgPrintf(context, "font '%s'\n", font_name);
     }
 }
@@ -1814,8 +1820,8 @@ MagickExport void DrawSetFontFamily(DrawContext context,
     {
       (void) CloneString(&CurrentContext->family,font_family);
       if(CurrentContext->family == (char*)NULL)
-        ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-          "UnableToDrawOnImage");
+        ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
+          UnableToDrawOnImage);
       MvgPrintf(context, "font-family '%s'\n", font_family);
     }
 }
@@ -2352,8 +2358,8 @@ MagickExport void DrawComposite(DrawContext context,
 
   image_info = CloneImageInfo((ImageInfo*)NULL);
   if(!image_info)
-    ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToDrawOnImage");
+    ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToDrawOnImage);
   handler=SetMonitorHandler((MonitorHandler) NULL);
   blob = (unsigned char*)ImageToBlob( image_info, clone_image, &blob_length,
                                       &context->image->exception );
@@ -2371,7 +2377,7 @@ MagickExport void DrawComposite(DrawContext context,
         buffer[MaxTextExtent];
 
       FormatString(buffer,"%ld bytes", (4L*blob_length/3L+4L));
-      ThrowDrawException(ResourceLimitWarning,"UnableToAllocateMemory",buffer)
+      ThrowDrawException(ResourceLimitWarning,MemoryAllocationFailed,buffer)
     }
 
   mode = "copy";
@@ -3975,7 +3981,7 @@ MagickExport void DrawPopGraphicContext(DrawContext context)
     }
   else
     {
-      ThrowDrawException(DrawError,"UnbalancedGraphicContextPushPop",NULL)
+      ThrowDrawException(DrawError,UnbalancedGraphicContextPushPop,NULL)
     }
 }
 
@@ -4011,7 +4017,7 @@ MagickExport void DrawPopPattern(DrawContext context)
   assert(context->signature == MagickSignature);
 
   if( context->pattern_id == NULL )
-    ThrowDrawException(DrawWarning,"NotCurrentlyPushingPatternDefinition",NULL);
+    ThrowDrawException(DrawWarning,NotCurrentlyPushingPatternDefinition,NULL);
 
   FormatString(key,"[%.1024s]",context->pattern_id);
 
@@ -4142,8 +4148,8 @@ MagickExport void DrawPushGraphicContext(DrawContext context)
                   (context->index+1)*sizeof(DrawInfo *));
   if (context->graphic_context == (DrawInfo **) NULL)
     {
-      ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToDrawOnImage")
+      ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
+        UnableToDrawOnImage)
     }
   CurrentContext=
     CloneDrawInfo((ImageInfo *) NULL,context->graphic_context[context->index-1]);
@@ -4201,7 +4207,7 @@ MagickExport void DrawPushPattern(DrawContext context,
   assert(pattern_id != (const char *) NULL);
 
   if( context->pattern_id != NULL )
-    ThrowDrawException(DrawError,"AlreadyPushingPatternDefinition",
+    ThrowDrawException(DrawError,AlreadyPushingPatternDefinition,
       context->pattern_id);
 
   context->filter_off = True;
@@ -4709,13 +4715,13 @@ MagickExport void DrawSetStrokePatternURL(DrawContext context,
   assert(stroke_url != NULL);
 
   if(stroke_url[0] != '#')
-    ThrowDrawException(OptionWarning, "NotARelativeURL", stroke_url);
+    ThrowDrawException(DrawWarning, NotARelativeURL, stroke_url);
 
   FormatString(pattern,"[%.1024s]",stroke_url+1);
 
   if (GetImageAttribute(context->image,pattern) == (ImageAttribute *) NULL)
     {
-      ThrowDrawException(OptionWarning, "URLNotFound", stroke_url)
+      ThrowDrawException(DrawWarning, URLNotFound, stroke_url)
     }
   else
     {
@@ -4975,8 +4981,8 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
             }
           else
             {
-              ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-                "UnableToDrawOnImage")
+              ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
+                UnableToDrawOnImage)
             }
         }
 

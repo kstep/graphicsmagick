@@ -168,7 +168,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read TGA header information.
   */
@@ -179,7 +179,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     if ((count == 0) || (tga_info.image_type == 0) ||
         (tga_info.image_type > 11))
-      ThrowReaderException(CorruptImageError,"NotATGAImageFile",image);
+      ThrowReaderException(CorruptImageError,NotATGAImageFile,image);
     tga_info.colormap_index=ReadBlobLSBShort(image);
     tga_info.colormap_length=ReadBlobLSBShort(image);
     tga_info.colormap_size=ReadBlobByte(image);
@@ -213,7 +213,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         comment=MagickAllocateMemory(char *,tga_info.id_length+1);
         if (comment == (char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         (void) ReadBlob(image,tga_info.id_length,comment);
         comment[tga_info.id_length]='\0';
@@ -228,7 +228,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read TGA raster colormap.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         for (i=0; i < (long) image->colors; i++)
         {
@@ -313,8 +313,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 count=ReadBlob(image,1,(char *) &runlength);
                 if (count == 0)
-                  ThrowReaderException(CorruptImageError,
-                    "UnableToReadImageData",image);
+                  ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
                 flag=runlength & 0x80;
                 if (flag != 0)
                   runlength-=128;
@@ -380,7 +379,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           }
         if (status == False)
-          ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
+          ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
         if (image->storage_class == PseudoClass)
           indexes[x]=index;
         *q++=pixel;
@@ -406,7 +405,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (EOFBlob(image))
       {
-        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
           image->filename);
         break;
       }
@@ -630,7 +629,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   scene=0;
   do
   {
@@ -704,7 +703,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
         targa_colormap=MagickAllocateMemory(unsigned char *,
           3*targa_info.colormap_length);
         if (targa_colormap == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
             image);
         q=targa_colormap;
         for (i=0; i < (long) image->colors; i++)
@@ -723,7 +722,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     count=(long) ((targa_info.bits_per_pixel*targa_info.width) >> 3);
     targa_pixels=MagickAllocateMemory(unsigned char *,count);
     if (targa_pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     for (y=(long) (image->rows-1); y >= 0; y--)
     {
       p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);

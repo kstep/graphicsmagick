@@ -226,7 +226,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Set the page geometry.
   */
@@ -281,7 +281,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CloneString(&draw_info->geometry,geometry);
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
-    ThrowReaderException(TypeError,"UnableToGetTypeMetrics",image);
+    ThrowReaderException(TypeError,UnableToGetTypeMetrics,image);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   if (draw_info->text != '\0')
     *draw_info->text='\0';
@@ -289,7 +289,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if (IsTXT(p,strlen(p)))
     {
-      ThrowReaderException(CoderError,"NotASupportedImageFile",image);
+      ThrowReaderException(CoderError,NotASupportedImageFile,image);
     }
 
   for (offset=2*page.y; p != (char *) NULL; )
@@ -485,7 +485,7 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   scene=0;
   do
   {

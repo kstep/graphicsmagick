@@ -397,7 +397,7 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
   image = AllocateImage(image_info);
   status = OpenBlob(image_info, image, ReadBinaryBlobMode, exception);
   if (status == False)
-    ThrowReaderException(FileOpenError, "UnableToOpenFile", image);
+    ThrowReaderException(FileOpenError, UnableToOpenFile, image);
 
   /*
     Read TopoL RAS header.
@@ -432,15 +432,15 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
   for (i = 0; i < sizeof(Header.Name); i++)
     {
       if (Header.Name[i] < ' ')
-        TOPOL_KO:ThrowReaderException(CorruptImageError, "NotATOPOLImageFile",
+        TOPOL_KO:ThrowReaderException(CorruptImageError, NotATOPOLImageFile,
                                       image);
     }
   if (Header.Komprese != 0 || (Header.Version >= 2 && Header.TileCompression != 0))
-    ThrowReaderException(CorruptImageError, "CompressionNotSupported", image);
+    ThrowReaderException(CorruptImageError, UnrecognizedImageCompression, image);
   if (Header.Rows == 0 || Header.Cols == 0)
     goto TOPOL_KO;
   if (Header.Version > 2)
-    ThrowReaderException(CorruptImageError, "UnsupportedVersion", image); /* unknown version */
+    ThrowReaderException(CorruptImageError, InvalidFileFormatVersion, image); /* unknown version */
 
   switch (Header.TypSou)
     {
@@ -609,7 +609,7 @@ NoPalette:
       if (!AllocateImageColormap(image, image->colors))
         {
 NoMemory:
-          ThrowReaderException(ResourceLimitError, "MemoryAllocationFailed", image);
+          ThrowReaderException(ResourceLimitError, MemoryAllocationFailed, image);
         }
 
       for (i = 0; i < (long) image->colors; i++)
@@ -651,7 +651,7 @@ NoMemory:
   if (clone_info != NULL)
     DestroyImageInfo(clone_info);
   /* if (EOFBlob(image))
-     ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image); */
+     ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image); */
   CloseBlob(image);
   return (image);
 }

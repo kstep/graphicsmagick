@@ -169,7 +169,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   icon_file.reserved=ReadBlobLSBShort(image);
   icon_file.resource_type=ReadBlobLSBShort(image);
   icon_file.count=ReadBlobLSBShort(image);
@@ -179,7 +179,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
   */
   if((icon_file.reserved != 0) || ((icon_file.resource_type != 1) &&
      (icon_file.resource_type != 2)) || (icon_file.count > MaxIcons))
-    ThrowReaderException(CorruptImageError,"NotAnICOImageFile",image);
+    ThrowReaderException(CorruptImageError,NotAnICOImageFile,image);
   for (i=0; i < icon_file.count; i++)
   {
     icon_file.directory[i].width=ReadBlobByte(image);
@@ -231,10 +231,10 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         Read Icon raster colormap.
       */
       if (!AllocateImageColormap(image,1 << icon_info.bits_per_pixel))
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       icon_colormap=MagickAllocateMemory(unsigned char *,4*image->colors);
       if (icon_colormap == (unsigned char *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       (void) ReadBlob(image,4*image->colors,(char *) icon_colormap);
       p=icon_colormap;
       for (i=0; i < (long) image->colors; i++)
@@ -401,7 +401,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         break;
       }
       default:
-        ThrowReaderException(CorruptImageError,"NotAnICOImageFile",image)
+        ThrowReaderException(CorruptImageError,NotAnICOImageFile,image)
     }
     SyncImage(image);
     /*
@@ -440,7 +440,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     }
     if (EOFBlob(image))
       {
-        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
           image->filename);
         break;
       }

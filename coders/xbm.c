@@ -202,7 +202,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read X bitmap header.
   */
@@ -244,19 +244,19 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
   }
   if ((image->columns == 0) || (image->rows == 0) || EOFBlob(image))
-    ThrowReaderException(CorruptImageError,"NotAXBMImageFile",image);
+    ThrowReaderException(CorruptImageError,NotAXBMImageFile,image);
   /*
     Initialize image structure.
   */
   if (!AllocateImageColormap(image,image->colors))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   padding=0;
   if ((image->columns % 16) && ((image->columns % 16) < 9)  && (version == 10))
     padding=1;
   bytes_per_line=(image->columns+7)/8+padding;
   data=MagickAllocateMemory(unsigned char *,bytes_per_line*image->rows);
   if (data == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Initialize colormap.
   */
@@ -484,7 +484,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   /*
     Write X bitmap header.

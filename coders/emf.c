@@ -256,7 +256,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   hemf=ReadEnhMetaFile(image_info->filename,&width,&height);
   if (!hemf)
-    ThrowReaderException(CorruptImageWarning,"NotAnEMFImageFile",image);
+    ThrowReaderException(CorruptImageError,NotAnEMFImageFile,image);
   if ((image->columns == 0) || (image->rows == 0))
     {
       double
@@ -332,7 +332,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
     }
   hDC=GetDC(NULL);
   if (!hDC)
-    ThrowReaderException(ResourceLimitError,"UnableToCreateADC",image);
+    ThrowReaderException(CoderError,UnableToCreateADC,image);
   /*
     Initialize the bitmap header info.
   */
@@ -347,19 +347,19 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
     CreateDIBSection(hDC,&DIBinfo,DIB_RGB_COLORS,(void **) &ppBits,NULL,0);
   ReleaseDC(NULL,hDC);
   if (!hBitmap)
-    ThrowReaderException(ResourceLimitError,"UnableToCreateBitmap",image);
+    ThrowReaderException(CoderError,UnableToCreateBitmap,image);
   hDC=CreateCompatibleDC(NULL);
   if (!hDC)
     {
       DeleteObject(hBitmap);
-      ThrowReaderException(ResourceLimitError,"UnableToCreateADC",image);
+      ThrowReaderException(CoderError,UnableToCreateADC,image);
     }
   hOldBitmap=(HBITMAP) SelectObject(hDC,hBitmap);
   if (!hOldBitmap)
     {
       DeleteDC(hDC);
       DeleteObject(hBitmap);
-      ThrowReaderException(ResourceLimitError,"UnableToCreateBitmap",image);
+      ThrowReaderException(CoderError,UnableToCreateBitmap,image);
     }
   /*
     Initialize the bitmap to the image background color.

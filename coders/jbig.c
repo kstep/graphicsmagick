@@ -137,7 +137,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Initialize JBIG toolkit.
   */
@@ -154,7 +154,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   */
   buffer=MagickAllocateMemory(unsigned char *,MaxBufferSize);
   if (buffer == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   status=JBG_EAGAIN;
   do
   {
@@ -178,7 +178,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   if (!AllocateImageColormap(image,2))
     {
       MagickFreeMemory(buffer);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
     }
   image->colormap[0].red=0;
   image->colormap[0].green=0;
@@ -411,7 +411,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   scene=0;
   do
   {
@@ -422,7 +422,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     number_packets=((image->columns+7) >> 3)*image->rows;
     pixels=MagickAllocateMemory(unsigned char *,number_packets);
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     /*
       Convert pixels to a bitmap.
     */

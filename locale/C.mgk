@@ -58,6 +58,9 @@
       <Message name="UnableToOpenCache">
         Unable to open cache
       </Message>
+      <Message name="UnableToPeristPixelCache">
+        Unable to persist pixel cache
+      </Message>
       <Message name="UnableToReadPixelCache">
         Unable to read pixel cache
       </Message>
@@ -81,17 +84,41 @@
   </Cache>
   <Coder>
     <Error>
-      <Message name="ColorTypeNotSupported">
-        Color type not supported
-      </Message>
       <Message name="ColormapTypeNotSupported">
         Colormap type not supported
       </Message>
       <Message name="ColorspaceModelIsNotSupported">
         Colorspace model is not supported
       </Message>
+      <Message name="ColorTypeNotSupported">
+        Color type not supported
+      </Message>
       <Message name="DataEncodingSchemeIsNotSupported">
         Data encoding scheme is not supported
+      </Message>
+      <Message name="CompressionNotValid">
+        Compression not valid
+      </Message>
+      <Message name="FractalCompressionNotSupported">
+        Fractal compression not supported
+      </Message>
+      <Message name="ImageIsNotTiled">
+        Image is not tiles
+      </Message>
+      <Message name="UnableToOpenBlob">
+        Unable to open blob
+      </Message>
+      <Message name="UnableToInitializeFPXLibrary">
+        Unable to Initialize FPX library
+      </Message>
+      <Message name="ZipCompressionNotSupported">
+        ZIP compression is not supported
+      </Message>
+      <Message name="JPEGCompressionNotSupported">
+        JPEG compression is not supported
+      </Message>
+      <Message name="PNGCompressionNotSupported">
+        PNG compression is not supported
       </Message>
       <Message name="DataStorageTypeIsNotSupported">
         Data storage type is not supported
@@ -147,8 +174,14 @@
       <Message name="NoDataReturned">
         No data returned
       </Message>
+      <Message name="NoImageVectorGraphics">
+        No image vector graphics
+      </Message>
       <Message name="NoIPTCProfileAvailable">
         No IPTC profile available
+      </Message>
+      <Message name="NoColorProfileAvailable">
+        No color profile available
       </Message>
       <Message name="NoIPTCInfoWasFound">
         No IPTC info was found
@@ -165,6 +198,9 @@
       <Message name="OnlyLevelZerofilesSupported">
         Only level zero files Supported
       </Message>
+      <Message name="RLECompressionNotSupported">
+        RLE compression not supported
+      </Message>
       <Message name="UnableToCopyProfile">
         Unable to copy profile
       </Message>
@@ -179,6 +215,42 @@
       </Message>
       <Message name="UnableToReadCIELABImages">
         Unable to read CIELAB images
+      </Message>
+      <Message name="UnableToReadAspectRatio">
+        Unable to read aspect ratio
+      </Message>
+      <Message name="UnableToReadSummaryInfo">
+        Unable to read summary info
+      </Message>
+      <Message name="UnableToSetAffineMatrix">
+        Unable to set affine matrix
+      </Message>
+      <Message name="UnableToSetAspectRatio">
+        Unable to set aspect ratio
+      </Message>
+      <Message name="UnableToSetColorTwist">
+        Unable to set color twist
+      </Message>
+      <Message name="UnableToSetContrast">
+        Unable to set contrast
+      </Message>
+      <Message name="UnableToSetFilteringValue">
+        Unable to set filtering value
+      </Message>
+      <Message name="UnableToSetImageComments">
+        Unable to set image comment
+      </Message>
+      <Message name="UnableToSetImageTitle">
+        Unable to set image title
+      </Message>
+      <Message name="UnableToSetJPEGLevel">
+        Unable to set JPEG level
+      </Message>
+      <Message name="UnableToSetRegionOfInterest">
+        Unable to set region of interest
+      </Message>
+      <Message name="UnableToSetSummaryInfo">
+        Unable to set summary info
       </Message>
       <Message name="UnableToTranslateText">
         Unable to translate text
@@ -251,14 +323,14 @@
         <Message name="CorruptImage">
           Corrupt image
         </Message>
-        <Message name="CorruptMNGImage">
-          Corrupt MNG image
-        </Message>
-        <Message name="FileFormatVersionMismatch">
-          file format version mismatch
+        <Message name="InvalidFileFormatVersion">
+          invalid file format version
         </Message>
         <Message name="ImageFileDoesNotContainAnyImageData">
           Image file or does not contain any image data
+        </Message>
+        <Message name="ImageTypeNotSupported">
+          Image type not supported
         </Message>
         <Message name="ImproperImageHeader">
           Improper image header
@@ -317,6 +389,9 @@
         <Message name="NotAnICOImageFile">
           Not a ICO image file
         </Message>
+        <Message name="NotAJNGImageFile">
+          Not a JNG image file
+        </Message>
         <Message name="NotAMATLABImageFile">
           Not a MATLAB image file
         </Message>
@@ -340,6 +415,12 @@
         </Message>
         <Message name="NotAPIXImageFile">
           Not a PIX image file
+        </Message>
+        <Message name="NotAPDBImageFile">
+          Not a PDB image file
+        </Message>
+        <Message name="NotAPNGImageFile">
+          Not a PNG image file
         </Message>
         <Message name="NotAPNMImageFile">
           Not a PNM image file
@@ -371,6 +452,9 @@
         <Message name="NotATIMImageFile">
           Not a TIM image file
         </Message>
+        <Message name="NotATOPOLImageFile">
+          Not a TOPAL image file
+        </Message>
         <Message name="NotAVIFFImageFile">
           Not a VIFF image file
         </Message>
@@ -401,6 +485,9 @@
         <Message name="UnableToReadColorProfile">
           Unable to read color profile
         </Message>
+        <Message name="UnableToReadColormapFromDumpFile">
+          Unable to read colormap from dump file
+        </Message>
         <Message name="UnableToReadExtensionBlock">
           Unable to read extension block
         </Message>
@@ -418,6 +505,9 @@
         </Message>
         <Message name="UnableToReadPixmapFromDumpFile">
           Unable to read pixmap from dump file
+        </Message>
+        <Message name="UnableToReadSubImageData">
+          Unable to read sub image data
         </Message>
         <Message name="UnableToReadVIDImage">
           Unable to read VID image
@@ -456,8 +546,29 @@
         </Message>
       </FatalError>
       <Warning>
+        <Message name="CompressionNotValid">
+          Compression not valid
+        </Message>
         <Message name="ImproperImageHeader">
           Improper image header
+        </Message>
+        <Message name="NegativeOrZeroImageSize">
+          Negative or zero image size
+        </Message>
+        <Message name="NonOS2HeaderSizeError">
+          Non OS2 header size error
+        </Message>
+        <Message name="StaticPlanesValueNotEqualToOne">
+          Static planes value not equal to one
+        </Message>
+        <Message name="UnrecognizedBitsPerPixel">
+          Unrecognized bits per pixel
+        </Message>
+        <Message name="UnrecognizedNumberOfColors">
+          Unrecognized number of colors
+        </Message>
+        <Message name="UnrecognizedImageCompression">
+          Unrecognized image compression
         </Message>
         <Message name="SkipToSyncByte">
           Corrupt PCD image, skipping to sync byte
@@ -506,42 +617,6 @@
       <Message name="UnableToManageJP2Stream">
         Unable to manage JP2 stream
       </Message>
-      <Message name="UnableToReadAspectRatio">
-        Unable to read aspect ratio
-      </Message>
-      <Message name="UnableToReadSummaryInfo">
-        Unable to read summary info
-      </Message>
-      <Message name="UnableToSetAffineMatrix">
-        Unable to set affine matrix
-      </Message>
-      <Message name="UnableToSetAspectRatio">
-        Unable to set aspect ratio
-      </Message>
-      <Message name="UnableToSetColorTwist">
-        Unable to set color twist
-      </Message>
-      <Message name="UnableToSetContrast">
-        Unable to set contrast
-      </Message>
-      <Message name="UnableToSetFilteringValue">
-        Unable to set filtering value
-      </Message>
-      <Message name="UnableToSetImageComment">
-        Unable to set image comment
-      </Message>
-      <Message name="UnableToSetImageTitle">
-        Unable to set image title
-      </Message>
-      <Message name="UnableToSetJPEGLevel">
-        Unable to set JPEG level
-      </Message>
-      <Message name="UnableToSetRegionOfInterest">
-        Unable to set region of interest
-      </Message>
-      <Message name="UnableToSetSummaryInfo">
-        Unable to set summary info
-      </Message>
       <Message name="UnableToWriteSVGFormat">
         Unable to write SVG format
       </Message>
@@ -565,20 +640,11 @@
       <Message name="NonconformingDrawingPrimitiveDefinition">
         Non-conforming drawing primitive definition
       </Message>
-      <Message name="NotARelativeURL">
-        Not a relative URL
-      </Message>
-      <Message name="NotCurrentlyPushingPatternDefinition">
-        Not currently pushing pattern definition
-      </Message>
       <Message name="UnableToPrint">
         Unable to print
       </Message>
       <Message name="UnbalancedGraphicContextPushPop">
         unbalanced graphic context push-pop
-      </Message>
-      <Message name="URLNotFound">
-        URL not found
       </Message>
     </Error>
     <FatalError>
@@ -587,8 +653,14 @@
       </Message>
     </FatalError>
     <Warning>
-      <Message name="Default">
-        default warning
+      <Message name="NotCurrentlyPushingPatternDefinition">
+        Not currently pushing pattern definition
+      </Message>
+      <Message name="NotARelativeURL">
+        Not a relative URL
+      </Message>
+      <Message name="URLNotFound">
+        URL not found
       </Message>
     </Warning>
   </Draw>
@@ -622,9 +694,6 @@
       <Message name="AngleIsDiscontinuous">
         angle is discontinuous
       </Message>
-      <Message name="ColorSeparatedImageRequired">
-        Color separated image required
-      </Message>
       <Message name="ImageColorspaceDiffers">
         image colorspace differs
       </Message>
@@ -637,23 +706,20 @@
       <Message name="ImageSizeDiffers">
         image size differs
       </Message>
-      <Message name="InputImagesAlreadySpecified">
-        Input images already specified
-      </Message>
       <Message name="LeftAndRightImageSizesDiffer">
         left and right image sizes differ
       </Message>
       <Message name="NoImagesWereFound">
-        No images were found
+        no images were found
       </Message>
       <Message name="NoImagesWereLoaded">
-        No images were loaded
+        no images were loaded
       </Message>
       <Message name="TooManyClusters">
         too many cluster
       </Message>
       <Message name="NoLocaleImageAttribute">
-        No [LOCALE] image attribute
+        no [LOCALE] image attribute
       </Message>
       <Message name="UnableToAppendImage">
         unable to append image
@@ -661,34 +727,43 @@
       <Message name="UnableToAverageImage">
         unable to average image
       </Message>
+      <Message name="UnableToCoalesceImage">
+        unable to coalesce image
+      </Message>
       <Message name="UnableToCompareImages">
-        Unable to compare images
+        unable to compare images
       </Message>
       <Message name="UnableToCreateStereoImage">
-        Unable to create stereo image
+        unable to create stereo image
       </Message>
       <Message name="UnableToCreateImageMosaic">
         unable to create image mosaic
       </Message>
       <Message name="UnableToDeconstructImageSequence">
-        Unable to deconstruct image sequence
+        unable to deconstruct image sequence
       </Message>
       <Message name="UnableToFlattenImage">
-        Unable to flatten image
+        unable to flatten image
       </Message>
       <Message name="UnableToResizeImage">
-        Unable to resize image
+        unable to resize image
       </Message>
       <Message name="UnableToSegmentImage">
-        Unable to segment image
+        unable to segment image
+      </Message>
+        <Message name="UnableToSetClipMask">
+          Unable to set clip mask
+        </Message>
+      <Message name="UnableToShearImage">
+        unable to shear image
       </Message>
       <Message name="WidthOrHeightExceedsLimit">
-        Width or height exceeds limit
+        width or height exceeds limit
       </Message>
     </Error>
     <FatalError>
-      <Message name="Default">
-        default error
+      <Message name="UnableToPersistKey">
+        Unable to persist key
       </Message>
     </FatalError>
     <Warning>
@@ -780,17 +855,23 @@
       <Message name="BevelWidthIsNegative">
         bevel width is negative
       </Message>
+      <Message name="ColorSeparatedImageRequired">
+        color separated image required
+      </Message>
       <Message name="FrameIsLessThanImageSize">
         frame is less than image size
       </Message>
       <Message name="GeometryDimensionsAreZero">
-        Geometry dimensions are zero
+        geometry dimensions are zero
       </Message>
       <Message name="GeometryDoesNotContainImage">
-        Geometry does not contain image
+        geometry does not contain image
+      </Message>
+      <Message name="InputImagesAlreadySpecified">
+        input images already specified
       </Message>
       <Message name="ImagesAreNotTheSameSize">
-        Images are not the same size
+        images are not the same size
       </Message>
       <Message name="ImageSizeMustExceedBevelWidth">
         size must exceed bevel width
@@ -812,6 +893,9 @@
       </Message>
       <Message name="MissingAffineMatrix">
         Missing affine matrix
+      </Message>
+      <Message name="MissingAmount">
+        Missing amount
       </Message>
       <Message name="MissingAmplitude">
         Missing amplitude
@@ -837,6 +921,9 @@
       <Message name="MissingCoefficients">
         Missing coefficients
       </Message>
+      <Message name="MissingCompressionQuality">
+        Missing compression quality
+      </Message>
       <Message name="MissingColorizeValue">
         Missing colorize value
       </Message>
@@ -857,6 +944,9 @@
       </Message>
       <Message name="MissingDissolveValue">
         Missing dissolve value
+      </Message>
+      <Message name="MissingDistance">
+        Missing distance
       </Message>
       <Message name="MissingDrawingPrimitive">
         Missing drawing primitive
@@ -885,6 +975,9 @@
       <Message name="MissingImageDepth">
         Missing image depth
       </Message>
+      <Message name="MissingImageFrames">
+        Missing image frames
+      </Message>
       <Message name="MissingImageGamma">
         Missing image gamma
       </Message>
@@ -900,6 +993,9 @@
       <Message name="MissingImageRotation">
         Missing image rotation
       </Message>
+      <Message name="MissingImageType">
+        Missing image type
+      </Message>
       <Message name="MissingImageScene">
         Missing image scene
       </Message>
@@ -912,11 +1008,20 @@
       <Message name="MissingLogFormat">
         Missing log format
       </Message>
+      <Message name="MissingMatrix">
+        Missing matrix
+      </Message>
       <Message name="MissingMatteColor">
         Missing matte color
       </Message>
+      <Message name="MissingOffset">
+        Missing offset
+      </Message>
       <Message name="MissingOpaqueColor">
         Missing opaque color
+      </Message>
+      <Message name="MissingOrder">
+        Missing order
       </Message>
       <Message name="MissingPageGeometry">
         Missing page geometry
@@ -987,9 +1092,6 @@
       <Message name="NoImagesDefined">
         No images defined
       </Message>
-      <Message name="NoImageVectorGraphics">
-        No image vector graphics
-      </Message>
       <Message name="NonzeroWidthAndHeightRequired">
         Non-zero width and height required
       </Message>
@@ -1012,7 +1114,7 @@
         Stereo image required
       </Message>
       <Message name="SubimageSpecificationReturnsNoImages">
-        Subimage specification returns no images profile name was given
+        Subimage specification returns no images
       </Message>
       <Message name="UnableToAddOrRemoveProfile">
         Unable to add or remove profile
@@ -1020,8 +1122,14 @@
       <Message name="UnableToAllocateICCProfile">
         unable to allocate ICC profile
       </Message>
+      <Message name="UnableToAverageImageSequence">
+        unable to average image sequence
+      </Message>
       <Message name="UnableToBlurImage">
-        Unable to blur image
+        unable to blur image
+      </Message>
+      <Message name="UnableToChopImage">
+        unable to chop image
       </Message>
       <Message name="UnableToConvolveImage">
         Unable to convolve image
@@ -1031,6 +1139,9 @@
       </Message>
       <Message name="UnableToEdgeImage">
         Unable to edge image
+      </Message>
+      <Message name="UnableToEqualizeImage">
+        Unable to equalize image
       </Message>
       <Message name="UnableToFilterImage">
         Unable to filter image
@@ -1067,6 +1178,9 @@
       </Message>
       <Message name="UnrecognizedColor">
         Unrecognized color
+      </Message>
+      <Message name="UnrecognizedColormapType">
+        Unrecognized colormap type
       </Message>
       <Message name="UnrecognizedColorspace">
         Unrecognized image colorspace
@@ -1113,6 +1227,9 @@
       <Message name="UnrecognizedModeType">
         Unrecognized mode type
       </Message>
+      <Message name="UnrecognizedNoiseType">
+        Unrecognized noise type
+      </Message>
       <Message name="UnrecognizedPerlMagickMethod">
         Unrecognized PerlMagick method
       </Message>
@@ -1139,6 +1256,21 @@
       </Message>
     </Error>
     <FatalError>
+      <Message name="InvalidInterlaceType">
+        Invalid interlace type
+      </Message>
+      <Message name="InvalidColorspaceType">
+        Invalid colorspace type
+      </Message>
+      <Message name="InvalidImageType">
+        Invalid image type
+      </Message>
+      <Message name="InvalidEndianType">
+        Invalid endian type
+      </Message>
+      <Message name="DeprecatedOption">
+        Deprecated option
+      </Message>
       <Message name="MissingAnImageFilename">
         Missing an image filename
       </Message>
@@ -1148,13 +1280,19 @@
       <Message name="MissingBorderColor">
         Missing border color
       </Message>
-      <Message name="MissingColors">
+      <Message name="MissingColor">
         Missing color
+      </Message>
+      <Message name="MissingColors">
+        Missing colors
       </Message>
       <Message name="MissingCommand">
         Missing command
       </Message>
-      <Message name="MissingCompressQuality">
+      <Message name="MissingComment">
+        Missing comment
+      </Message>
+      <Message name="MissingCompressionQuality">
         Missing compression quality
       </Message>
       <Message name="MissingDegrees">
@@ -1171,6 +1309,9 @@
       </Message>
       <Message name="MissingEventMask">
         Missing event mask
+      </Message>
+      <Message name="MissingFactor">
+        Missing factor
       </Message>
       <Message name="MissingFilename">
         Missing filename
@@ -1201,6 +1342,9 @@
       </Message>
       <Message name="MissingMapType">
         Missing map type
+      </Message>
+      <Message name="MissingMethod">
+        Missing method
       </Message>
       <Message name="MissingName">
         Missing name
@@ -1247,14 +1391,26 @@
       <Message name="MissingType">
         Missing type
       </Message>
+      <Message name="MissingValue">
+        Missing value
+      </Message>
       <Message name="MissingVisualClass">
         Missing visual class
       </Message>
       <Message name="MissingVirtualPixelMethod">
         Missing virtual pixel method
       </Message>
+      <Message name="NoImagesWereLoaded">
+        No images were loaded
+      </Message>
       <Message name="OptionLengthExceedsLimit">
         Option length exceeds limit
+      </Message>
+      <Message name="UnableToOpenXServer">
+        Unable to open XServer
+      </Message>
+      <Message name="UnableToPersistKey">
+        Unable to persist key
       </Message>
       <Message name="UnrecognizedColormapType">
         Unrecognized colormap type
@@ -1286,10 +1442,13 @@
       <Message name="UnrecognizedResourceType">
         Unrecognized resource type
       </Message>
+      <Message name="UnrecognizedVirtualPixelMethod">
+        Unrecognized virtual pixel method
+      </Message>
     </FatalError>
     <Warning>
-      <Message name="Default">
-        default warning
+      <Message name="UnrecognizedColor">
+        Unrecognized color
       </Message>
     </Warning>
   </Option>
@@ -1363,15 +1522,6 @@
         </Message>
         <Message name="UnableToAverageImageSequence">
           unable to average image sequence
-        </Message>
-        <Message name="UnableToBlurImage">
-          unable to blur image
-        </Message>
-        <Message name="UnableToCoalesceImage">
-          unable to coalesce image
-        </Message>
-        <Message name="UnableToChopImage">
-          unable to chop image
         </Message>
         <Message name="UnableToCloneImage">
           unable to clone image
@@ -1530,6 +1680,9 @@
       <FatalError>
         <Message name="UnableToAllocateAscii85Info">
           unable to allocate ascii85 info
+        </Message>
+        <Message name="UnableToAllocateCacheInfo">
+          unable to allocate cache info
         </Message>
         <Message name="UnableToAllocateCacheView">
           unable to allocate cache view
@@ -1749,8 +1902,8 @@
       <Message name="UnableToOpenXServer">
         Unable to open X server
       </Message>
-      <Message name="UnableToReadXWindowAttributes">
-        Unable to read X window attributes
+      <Message name="UnableToReadXAttributes">
+        Unable to read X attributes
       </Message>
       <Message name="UnableToReadXWindowImage">
         Unable to read X window image

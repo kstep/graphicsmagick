@@ -232,7 +232,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   CloseBlob(image);
   TransformColorspace(image,RGBColorspace);
   *url='\0';
@@ -275,7 +275,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       */
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+        ThrowWriterException(FileOpenError,UnableToOpenFile,image);
       /*
         Write the HTML image file.
       */
@@ -385,7 +385,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(clone_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   DestroyImageInfo(clone_info);
   /*
     Determine the size and location of each image tile.

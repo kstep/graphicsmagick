@@ -180,7 +180,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode , exception );
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read HDF image.
   */
@@ -192,8 +192,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       status=DFR8getdims(image->filename,&width,&height,(int *) &is_palette);
     }
   if (status == -1)
-    ThrowReaderException(CorruptImageError,
-      "ImageFileDoesNotContainAnyImageData",image);
+    ThrowReaderException(CorruptImageError,ImageFileDoesNotContainAnyImageData,image);
   do
   {
     /*
@@ -212,7 +211,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     hdf_pixels=MagickAllocateMemory(unsigned char *,
       packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     if (image->storage_class == PseudoClass)
       {
         unsigned char
@@ -222,11 +221,11 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Create colormap.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         hdf_palette=MagickAllocateMemory(unsigned char *,768);
         if (hdf_palette == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         (void) DFR8getimage(image->filename,hdf_pixels,(int) image->columns,
           (int) image->rows,hdf_palette);
@@ -515,7 +514,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode, &image->exception );
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   CloseBlob(image);
   scene=0;
   do
@@ -528,7 +527,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     hdf_pixels=MagickAllocateMemory(unsigned char *),
       packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     if (image->storage_class == DirectClass)
       {
         /*
@@ -694,8 +693,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 
             hdf_palette=MagickAllocateMemory(unsigned char *,768);
             if (hdf_palette == (unsigned char *) NULL)
-              ThrowWriterException(ResourceLimitError,
-                "MemoryAllocationFailed",image);
+              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
             q=hdf_palette;
             for (i=0; i < (long) image->colors; i++)
             {

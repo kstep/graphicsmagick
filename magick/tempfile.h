@@ -38,12 +38,12 @@ MagickExport FILE *
 { \
   if ((image) == (Image *) NULL) \
     { \
-    ThrowException(exception,FileOpenError,"UnableToCreateTemporaryFile", \
+    ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile, \
       filename); \
     } \
   else \
     { \
-      ThrowException(exception,FileOpenError,"UnableToCreateTemporaryFile", \
+      ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile, \
         filename); \
       if (image->blob->type != UndefinedStream) \
         CloseBlob(image); \
@@ -55,7 +55,7 @@ MagickExport FILE *
 { \
   assert(image != (Image *) NULL); \
   ThrowException(&(image)->exception,FileOpenError, \
-    "UnableToCreateTemporaryFile",filename); \
+    UnableToCreateTemporaryFile,filename); \
   if (image_info->adjoin) \
     while ((image)->previous != (Image *) NULL) \
       (image)=(image)->previous; \

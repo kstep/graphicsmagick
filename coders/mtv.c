@@ -120,14 +120,14 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read MTV image.
   */
   (void) ReadBlobString(image,buffer);
   count=sscanf(buffer,"%lu %lu\n",&columns,&rows);
   if (count <= 0)
-    ThrowReaderException(CorruptImageError,"NotAMTVImageFile",image);
+    ThrowReaderException(CorruptImageError,NotAMTVImageFile,image);
   do
   {
     /*
@@ -144,12 +144,12 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     pixels=MagickAllocateMemory(unsigned char *,3*image->columns);
     if (pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     for (y=0; y < (long) image->rows; y++)
     {
       count=(long) ReadBlob(image,3*image->columns,pixels);
       if (count == 0)
-        ThrowReaderException(CorruptImageError,"UnableToReadImageData",
+        ThrowReaderException(CorruptImageError,UnableToReadImageData,
           image);
       p=pixels;
       q=SetImagePixels(image,0,y,image->columns,1);
@@ -172,7 +172,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     MagickFreeMemory(pixels);
     if (EOFBlob(image))
       {
-        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
           image->filename);
         break;
       }
@@ -332,7 +332,7 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   scene=0;
   do
   {
@@ -343,7 +343,7 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
     pixels=MagickAllocateMemory(unsigned char *,
       image->columns*sizeof(PixelPacket));
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     /*
       Initialize raster file header.
     */

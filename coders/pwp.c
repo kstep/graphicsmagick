@@ -160,10 +160,10 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   pwp_image=AllocateImage(image_info);
   status=OpenBlob(image_info,pwp_image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",pwp_image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,pwp_image);
   count=ReadBlob(pwp_image,5,(char *) magick);
   if ((count == 0) || (LocaleNCompare((char *) magick,"SFW95",5) != 0))
-    ThrowReaderException(CorruptImageError,"NotAPWPImageFile",pwp_image);
+    ThrowReaderException(CorruptImageError,NotAPWPImageFile,pwp_image);
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
@@ -181,7 +181,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     if (LocaleNCompare((char *) (magick+12),"SFW94A",6) != 0)
       {
-        ThrowReaderException(CorruptImageError,"NotAPWPImageFile",pwp_image);
+        ThrowReaderException(CorruptImageError,NotAPWPImageFile,pwp_image);
       }
     /*
       Dump SFW image to a temporary file.
@@ -233,7 +233,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CloseBlob(pwp_image);
   DestroyImage(pwp_image);
   if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
   CloseBlob(image);
   return(image);

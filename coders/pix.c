@@ -117,7 +117,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read PIX image.
   */
@@ -128,7 +128,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   bits_per_pixel=ReadBlobMSBShort(image);
   if ((width == (unsigned long) ~0) || (height == (unsigned long) ~0) ||
       ((bits_per_pixel != 8) && (bits_per_pixel != 24)))
-    ThrowReaderException(CorruptImageError,"NotAPIXImageFile",image);
+    ThrowReaderException(CorruptImageError,NotAPIXImageFile,image);
   do
   {
     /*
@@ -138,7 +138,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows= height;
     if (bits_per_pixel == 8)
       if (!AllocateImageColormap(image,256))
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
@@ -188,7 +188,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SyncImage(image);
     if (EOFBlob(image))
       {
-        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
           image->filename);
         break;
       }

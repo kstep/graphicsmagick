@@ -188,7 +188,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   transparent=False;
   i=0;
@@ -212,7 +212,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
           number_pixels=image->columns*image->rows;
           matte_image=MagickAllocateMemory(unsigned char *,number_pixels);
           if (matte_image == (unsigned char *) NULL)
-            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+            ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
               image);
           for (y=0; y < (long) image->rows; y++)
           {

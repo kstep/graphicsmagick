@@ -141,7 +141,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read ART image.
   */
@@ -154,7 +154,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   k=(unsigned char) ((-ldblk) & 0x01);
 
    if(GetBlobSize(image)!=(8+((long)ldblk+k)*height))
-     ThrowReaderException(CorruptImageError,"NotAnARTImageFile",image);
+     ThrowReaderException(CorruptImageError,NotAnARTImageFile,image);
 
 
  image->columns=width;
@@ -170,7 +170,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
  BImgBuff=(unsigned char *) malloc(ldblk);  /*Ldblk was set in the check phase*/
  if(BImgBuff==NULL)
 NoMemory:
-  ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+  ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
 
  for(i=0;i< (int) height;i++)
       {
@@ -180,7 +180,7 @@ NoMemory:
       }
  if(BImgBuff!=NULL) free(BImgBuff);
  if (EOFBlob(image))
-   ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+   ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
  CloseBlob(image);
  return(image);

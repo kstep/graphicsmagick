@@ -17,7 +17,7 @@
 %                             W   W   M   M  F                                %
 %                                                                             %
 %                                                                             %
-%                     Read Windows Metafile Format.                        %
+%                     Read Windows Metafile Format.                           %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -543,7 +543,7 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
         description[MaxTextExtent];
 
       FormatString(description,"packed DIB at offset %ld", bmp_read->offset);
-      ThrowException(&ddata->image->exception,CorruptImageError,
+      ThrowException2(&ddata->image->exception,CorruptImageError,
         exception.reason,exception.description);
     }
   else
@@ -2324,7 +2324,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  OpenBlob failed");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
-      ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+      ThrowReaderException(FileOpenError,UnableToOpenFile,image);
     }
   
   /*
@@ -2350,7 +2350,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  wmf_api_create failed");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
-      ThrowReaderException(DelegateError,"UnableToInitializeWMFLibrary",image);
+      ThrowReaderException(DelegateError,UnableToInitializeWMFLibrary,image);
     }
 
   /* Register progress monitor */
@@ -2381,7 +2381,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  wmf_bbuf_input failed");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
-      ThrowReaderException(FileOpenError,"UnableToOpenFile", image);
+      ThrowReaderException(FileOpenError,UnableToOpenFile, image);
     }
 
   /*
@@ -2399,7 +2399,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  wmf_scan failed with wmf_error %d", wmf_error);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
-      ThrowReaderException(DelegateError,"FailedToScanFile",image);
+      ThrowReaderException(DelegateError,FailedToScanFile,image);
     }
 
   /*
@@ -2436,7 +2436,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  wmf_size failed with wmf_error %d", wmf_error);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
-      ThrowReaderException(DelegateError,"FailedToComputeOutputSize",image);
+      ThrowReaderException(DelegateError,FailedToComputeOutputSize,image);
     }
 
   /* Obtain (or guess) metafile units */
@@ -2614,7 +2614,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Playing WMF failed with wmf_error %d", wmf_error);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
-      ThrowReaderException(DelegateError,"FailedToRenderFile",image);
+      ThrowReaderException(DelegateError,FailedToRenderFile,image);
     }
 
   /*
@@ -2632,7 +2632,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   /* Check for and report any rendering error */
   if(image->exception.severity != UndefinedException)
-    ThrowException(exception,
+    ThrowException2(exception,
                    CoderWarning,
                    ddata->image->exception.reason,
                    ddata->image->exception.description);

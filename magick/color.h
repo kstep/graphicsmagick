@@ -21,7 +21,7 @@ extern "C" {
     { \
       index=0; \
       ThrowException(&image->exception,CorruptImageError, \
-                     "InvalidColormapIndex",image->filename); \
+                     InvalidColormapIndex,image->filename); \
     } \
 }
 

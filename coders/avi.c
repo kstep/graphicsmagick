@@ -383,7 +383,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   (void) memset(&avi_info,0,sizeof(AVIInfo));
   (void) memset(&bmp_info,0,sizeof(BMPInfo));
   colormap=(PixelPacket *) NULL;
@@ -410,7 +410,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             FormatString(message,"AVI compression %.1024s not yet supported",
               bmp_info.compression);
-            ThrowException(exception,CorruptImageError,message,image->filename);
+            ThrowException2(exception,CorruptImageError,message,image->filename);
             for ( ; chunk_size != 0; chunk_size--)
               (void) ReadBlobByte(image);
             continue;
@@ -425,7 +425,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->x_resolution=bmp_info.x_pixels/100.0;
         image->y_resolution=bmp_info.y_pixels/100.0;
         if (!AllocateImageColormap(image,number_colors ? number_colors : 256))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         if (number_colors != 0)
           (void) memcpy(image->colormap,colormap,
@@ -437,7 +437,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         pixels=MagickAllocateMemory(unsigned char *,
           Max(bytes_per_line,image->columns+1)*image->rows);
         if (pixels == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         if (LocaleCompare(id,"00db") == 0)
           (void) ReadBlob(image,bytes_per_line*image->rows,(char *) pixels);
@@ -445,8 +445,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             status=DecodeImage(image,1,pixels);
             if (status == False)
-              ThrowReaderException(CorruptImageError,
-                "UnableToRunlengthDecodeImage",image);
+              ThrowReaderException(CorruptImageError,UnableToRunlengthDecodeImage,image);
           }
         /*
           Convert BMP raster image to pixel packets.
@@ -652,7 +651,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
           default:
-            ThrowReaderException(CorruptImageError,"NotAnAVIImageFile",image)
+            ThrowReaderException(CorruptImageError,NotAnAVIImageFile,image)
         }
 
         MagickFreeMemory(pixels);
@@ -761,8 +760,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 colormap=MagickAllocateMemory(PixelPacket *,
                   number_colors*sizeof(PixelPacket));
                 if (colormap == (PixelPacket *) NULL)
-                  ThrowReaderException(ResourceLimitError,
-                    "MemoryAllocationFailed",image);
+                  ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
                 for (i=0; i < (long) number_colors; i++)
                 {
                   colormap[i].blue=ScaleCharToQuantum(ReadBlobByte(image));
@@ -823,7 +821,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         continue;
       }
     FormatString(message,"AVI chunk %.1024s not yet supported",id);
-    ThrowException(exception,CorruptImageError,message,image->filename);
+    ThrowException2(exception,CorruptImageError,message,image->filename);
     for ( ; chunk_size != 0; chunk_size--)
       (void) ReadBlobByte(image);
     continue;

@@ -318,8 +318,8 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   if (scanline == (PixelPacket *) NULL)
     {
       DestroyImage(magnify_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToMagnifyImage")
+      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+        UnableToMagnifyImage)
     }
   /*
     Initialize magnify image pixels.
@@ -1113,8 +1113,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   assert(exception->signature == MagickSignature);
   assert((filter >= 0) && (filter <= SincFilter));
   if ((columns == 0) || (rows == 0))
-    ThrowImageException(ImageError,"UnableToResizeImage",
-      "NegativeOrZeroImageSize");
+    ThrowImageException(ImageError,UnableToResizeImage,
+      MagickMsg(CorruptImageError,NegativeOrZeroImageSize));
   if ((columns == image->columns) && (rows == image->rows) && (blur == 1.0))
     return(CloneImage(image,0,0,True,exception));
   resize_image=CloneImage(image,columns,rows,True,exception);
@@ -1148,8 +1148,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   if (contribution == (ContributionInfo *) NULL)
     {
       DestroyImage(resize_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToResizeImage")
+      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+        UnableToResizeImage)
     }
 
   /*
@@ -1195,8 +1195,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   if (status == False)
     {
       DestroyImage(resize_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToResizeImage")
+      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+        UnableToResizeImage)
     }
   resize_image->is_grayscale=image->is_grayscale;
   return(resize_image);
@@ -1274,8 +1274,8 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if ((columns == 0) || (rows == 0))
-    ThrowImageException(ImageError,"UnableToResizeImage",
-      "NegativeOrZeroImageSize");
+    ThrowImageException(ImageError,UnableToResizeImage,
+      MagickMsg(CorruptImageError,NegativeOrZeroImageSize));
   if ((columns == image->columns) && (rows == image->rows))
     return(CloneImage(image,0,0,True,exception));
   sample_image=CloneImage(image,columns,rows,True,exception);
@@ -1296,8 +1296,8 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
       (y_offset == (double *) NULL))
     {
       DestroyImage(sample_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToSampleImage")
+      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+        UnableToSampleImage)
     }
   /*
     Initialize pixel offsets.
@@ -1465,8 +1465,8 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
       (y_vector == (DoublePixelPacket *) NULL))
     {
       DestroyImage(scale_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToScaleImage")
+      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+        UnableToScaleImage)
     }
   /*
     Scale image.

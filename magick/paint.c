@@ -181,8 +181,8 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   segment_stack=MagickAllocateMemory(SegmentInfo *,MaxStacksize*sizeof(SegmentInfo));
   if ((floodplane== (unsigned char *) NULL) ||
       (segment_stack == (SegmentInfo *) NULL))
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToFloodfillImage");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToFloodfillImage);
   (void) memset(floodplane,False,image->columns*image->rows);
   /*
     Push initial segment on stack.
@@ -435,8 +435,8 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
   */
   segment_stack=MagickAllocateMemory(SegmentInfo *,MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToFloodfillImage");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToFloodfillImage);
   /*
     Push initial segment on stack.
   */

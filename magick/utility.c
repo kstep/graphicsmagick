@@ -120,8 +120,8 @@ MagickExport char *AcquireString(const char *source)
   assert(source != (const char *) NULL);
   destination=MagickAllocateMemory(char *,strlen(source)+1);
   if (destination == (char *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateString");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateString);
   *destination='\0';
   if (source != (char *) NULL)
     (void) strcpy(destination,source);
@@ -168,8 +168,8 @@ MagickExport char *AllocateString(const char *source)
     length+=strlen(source);
   destination=MagickAllocateMemory(char *,length+MaxTextExtent);
   if (destination == (char *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateString");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateString);
   *destination='\0';
   if (source != (char *) NULL)
     (void) strcpy(destination,source);
@@ -519,8 +519,8 @@ MagickExport unsigned int CloneString(char **destination,const char *source)
     }
   MagickReallocMemory(*destination,strlen(source)+MaxTextExtent);
   if (*destination == (char *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateString");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateString);
   (void) strcpy(*destination,source);
   return(True);
 }
@@ -568,8 +568,8 @@ MagickExport unsigned int ConcatenateString(char **destination,
   MagickReallocMemory((*destination),
     strlen(*destination)+strlen(source)+MaxTextExtent);
   if (*destination == (char *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToConcatenateString");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToConcatenateString);
   (void) strcat(*destination,source);
   return(True);
 }
@@ -706,8 +706,8 @@ MagickExport char *EscapeString(const char *source,const char escape)
       length++;
   destination=MagickAllocateMemory(char *,length);
   if (destination == (char *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToEscapeString");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToEscapeString);
   *destination='\0';
   if (source != (char *) NULL)
     {
@@ -854,7 +854,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
   assert(argv != (char ***) NULL);
   for (i=1; i < *argc; i++)
     if (strlen((*argv)[i]) > (MaxTextExtent/2-1))
-      MagickFatalError(ResourceLimitFatalError,"Token length exceeds limit",
+      MagickFatalError2(ResourceLimitFatalError,"Token length exceeds limit",
         (*argv)[i]);
   vector=MagickAllocateMemory(char **,(*argc+MaxTextExtent)*sizeof(char *));
   if (vector == (char **) NULL)
@@ -3249,8 +3249,11 @@ MagickExport char **StringToArgv(const char *text,int *argc)
   (*argc)++;
   argv=MagickAllocateMemory(char **,(*argc+1)*sizeof(char *));
   if (argv == (char **) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToConvertStringToARGV");
+    {
+      MagickError3(ResourceLimitError,MemoryAllocationFailed,
+        UnableToConvertStringToTokens);
+      return((char **) NULL);
+    }
   /*
     Convert string to an ASCII list.
   */
@@ -3277,8 +3280,13 @@ MagickExport char **StringToArgv(const char *text,int *argc)
           q++;
     argv[i]=MagickAllocateMemory(char *,q-p+MaxTextExtent);
     if (argv[i] == (char *) NULL)
-      MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-        "UnableToConvertStringToARGV");
+      {
+        MagickError3(ResourceLimitError,MemoryAllocationFailed,
+          UnableToConvertStringToTokens);
+        /* NOTE: This should try to delete all the strings it has
+           already allocated to avoid a leak */
+        return((char **) NULL);
+      }
     (void) strncpy(argv[i],p,q-p);
     argv[i][q-p]='\0';
     p=q;
@@ -3394,8 +3402,8 @@ MagickExport char **StringToList(const char *text)
           lines++;
       textlist=MagickAllocateMemory(char **,(lines+MaxTextExtent)*sizeof(char *));
       if (textlist == (char **) NULL)
-        MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-          "UnableToConvertText");
+        MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+          UnableToConvertText);
       p=text;
       for (i=0; i < (long) lines; i++)
       {
@@ -3404,8 +3412,8 @@ MagickExport char **StringToList(const char *text)
             break;
         textlist[i]=MagickAllocateMemory(char *,q-p+MaxTextExtent);
         if (textlist[i] == (char *) NULL)
-          MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "UnableToConvertText");
+          MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+            UnableToConvertText);
         (void) strncpy(textlist[i],p,q-p);
         textlist[i][q-p]='\0';
         if (*q == '\r')
@@ -3427,15 +3435,15 @@ MagickExport char **StringToList(const char *text)
       lines=(strlen(text)/0x14)+1;
       textlist=MagickAllocateMemory(char **,(lines+MaxTextExtent)*sizeof(char *));
       if (textlist == (char **) NULL)
-        MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-          "UnableToConvertText");
+        MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+          UnableToConvertText);
       p=text;
       for (i=0; i < (long) lines; i++)
       {
         textlist[i]=MagickAllocateMemory(char *,2*MaxTextExtent);
         if (textlist[i] == (char *) NULL)
-          MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "UnableToConvertText");
+          MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+            UnableToConvertText);
         FormatString(textlist[i],"0x%08lx: ",0x14*i);
         q=textlist[i]+strlen(textlist[i]);
         for (j=1; j <= (long) Min(strlen(p),0x14); j++)
@@ -3577,8 +3585,8 @@ MagickExport int SubstituteString(char **buffer,const char *search,
   allocated_length=strlen(source)+MaxTextExtent;
   result=MagickAllocateMemory(char *,allocated_length);
   if (result == (char *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateString");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateString);
   *result='\0';
   result_length=0;
   destination=result;
@@ -3598,8 +3606,8 @@ MagickExport int SubstituteString(char **buffer,const char *search,
             allocated_length+=copy_length+MaxTextExtent;
             MagickReallocMemory(result,allocated_length);
             if (result == (char *) NULL)
-              MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-              "UnableToAllocateString");
+              MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+              UnableToAllocateString);
           }
         (void) strncpy(destination,source,copy_length);
         destination+=copy_length;
@@ -3614,8 +3622,8 @@ MagickExport int SubstituteString(char **buffer,const char *search,
           allocated_length+=replace_length+MaxTextExtent;
           MagickReallocMemory(result,allocated_length);
           if (result == (char *) NULL)
-            MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-              "UnableToAllocateString");
+            MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+              UnableToAllocateString);
         }
       (void) strcat(destination,replace);
       destination+=replace_length;
@@ -3636,8 +3644,8 @@ MagickExport int SubstituteString(char **buffer,const char *search,
       allocated_length+=copy_length+MaxTextExtent;
       MagickReallocMemory(result,allocated_length);
       if (result == (char *) NULL)
-        MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-          "UnableToAllocateString");
+        MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+          UnableToAllocateString);
     }
   (void) strcat(destination,source);
   MagickFreeMemory(*buffer);
@@ -3694,7 +3702,7 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
   status=NTSystemComman(command);
 #endif
   if (verbose)
-    MagickError(DelegateError,command,!status ? strerror(status) :
+    MagickError2(DelegateError,command,!status ? strerror(status) :
       (char *) NULL);
   return(status);
 }

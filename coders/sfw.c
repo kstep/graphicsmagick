@@ -229,16 +229,16 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read image into a buffer.
   */
   buffer=MagickAllocateMemory(unsigned char *,(size_t) GetBlobSize(image));
   if (buffer == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   count=ReadBlob(image,(size_t) GetBlobSize(image),(char *) buffer);
   if ((count == 0) || (LocaleNCompare((char *) buffer,"SFW",3) != 0))
-    ThrowReaderException(CorruptImageError,"NotASFWImageFile",image);
+    ThrowReaderException(CorruptImageError,NotASFWImageFile,image);
   CloseBlob(image);
   DestroyImage(image);
   /*
@@ -249,7 +249,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (header == (unsigned char *) NULL)
     {
       MagickFreeMemory(buffer);
-      ThrowReaderException(CorruptImageError,"NotASFWImageFile",image)
+      ThrowReaderException(CorruptImageError,NotASFWImageFile,image)
     }
   TranslateSFWMarker(header);  /* translate soi and app tags */
   TranslateSFWMarker(header+2);
@@ -272,7 +272,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (data == (unsigned char *) NULL)
     {
       MagickFreeMemory(buffer);
-      ThrowReaderException(CorruptImageError,"NotASFWImageFile",image)
+      ThrowReaderException(CorruptImageError,NotASFWImageFile,image)
     }
   TranslateSFWMarker(data++);  /* translate eoi marker */
   /*
@@ -302,7 +302,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       LiberateTemporaryFile(clone_info->filename);
       DestroyImageInfo(clone_info);
-      ThrowReaderException(FileOpenError,"UnableToWriteFile",image)
+      ThrowReaderException(FileOpenError,UnableToWriteFile,image)
     }
   /*
     Read JPEG image.

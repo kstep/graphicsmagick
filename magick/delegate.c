@@ -185,20 +185,20 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   delegate_info=GetDelegateInfo(decode,encode,exception);
   if (delegate_info == (const DelegateInfo *) NULL)
     {
-      ThrowException(exception,DelegateError,"NoTagFound",
+      ThrowException(exception,DelegateError,NoTagFound,
         decode ? decode : encode);
       return((char *) NULL);
     }
   commands=StringToList(delegate_info->commands);
   if (commands == (char **) NULL)
     {
-      ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
+      ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
         decode ? decode : encode);
       return((char *) NULL);
     }
   command=TranslateText(image_info,image,commands[0]);
   if (command == (char *) NULL)
-    ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
+    ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
       commands[0]);
   /*
     Free resources.
@@ -366,8 +366,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
       /* Allocate a temporary filename if image is unnamed.  */
       if(!AcquireTemporaryFileName(image->filename))
         {
-          (void) ThrowException(exception,FileOpenError,
-            "UnableToCreateTemporaryFile",image->filename);
+          (void) ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,image->filename);
           return(False);
         }
     }
@@ -377,7 +376,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
     {
       if (temporary_image_filename)
         LiberateTemporaryFile(image->filename);
-      (void) ThrowException(exception,DelegateError,"NoTagFound",
+      (void) ThrowException(exception,DelegateError,NoTagFound,
         decode ? decode : encode);
       return(False);
     }
@@ -392,8 +391,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
         {
           if (temporary_image_filename)
             LiberateTemporaryFile(image->filename);
-          (void) ThrowException(exception,FileOpenError,
-            "UnableToCreateTemporaryFile",image_info->filename);
+          (void) ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,image_info->filename);
           return(False);
         }
       image_info->temporary=True;
@@ -421,8 +419,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
         {
           if (temporary_image_filename)
             LiberateTemporaryFile(image->filename);
-          (void) ThrowException(exception,FileOpenError,
-            "UnableToCreateTemporaryFile",image_info->unique);
+          (void) ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,image_info->unique);
           return(False);
         }
 
@@ -431,8 +428,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
           if (temporary_image_filename)
             LiberateTemporaryFile(image->filename);
           LiberateTemporaryFile(image_info->unique);
-          (void) ThrowException(exception,FileOpenError,
-            "UnableToCreateTemporaryFile",image_info->zero);
+          (void) ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,image_info->zero);
           return(False);
         }
         /* Expand sprintf-style codes in delegate command to command string */
@@ -444,7 +440,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
             LiberateTemporaryFile(image_info->zero);
             if (temporary_image_filename)
               LiberateTemporaryFile(image->filename);
-            (void) ThrowException(exception,DelegateError,"DelegateFailed",
+            (void) ThrowException(exception,DelegateError,DelegateFailed,
               decode ? decode : encode);
             return(False);
           }
@@ -470,7 +466,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
               if (temporary_image_filename)
                 LiberateTemporaryFile(image->filename);
               DestroyImageInfo(clone_info);
-              (void) ThrowException(exception,DelegateError,"DelegateFailed",
+              (void) ThrowException(exception,DelegateError,DelegateFailed,
                 decode ? decode : encode);
               return(False);
             }
@@ -490,8 +486,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
     {
       if (temporary_image_filename)
         LiberateTemporaryFile(image->filename);
-      (void) ThrowException(exception,ResourceLimitError,
-        "MemoryAllocationFailed",decode ? decode : encode);
+      (void) ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,decode ? decode : encode);
       return(False);
     }
   command=(char *) NULL;
@@ -503,15 +498,13 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
     /* Allocate convenience temporary files */
     if (!AcquireTemporaryFileName(image_info->unique))
     {
-      (void) ThrowException(exception,FileOpenError,
-        "UnableToCreateTemporaryFile",image_info->unique);
+      (void) ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,image_info->unique);
       status=False;
       goto error_exit;
     }
     if (!AcquireTemporaryFileName(image_info->zero))
     {
-      (void) ThrowException(exception,FileOpenError,
-        "UnableToCreateTemporaryFile",image_info->zero);
+      (void) ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,image_info->zero);
       LiberateTemporaryFile(image_info->unique);
       status=False;
       goto error_exit;
@@ -531,7 +524,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
     LiberateTemporaryFile(image_info->zero);
     if (status != False)
       {
-        (void) ThrowException(exception,DelegateError,"DelegateFailed",
+        (void) ThrowException(exception,DelegateError,DelegateFailed,
           commands[i]);
         goto error_exit;
       }
@@ -633,6 +626,8 @@ MagickExport unsigned int InvokePostscriptDelegate(const unsigned int verbose,
   if (status < 0)
     return(False);
   argv=StringToArgv(command,&argc);
+  if (argv == (char **) NULL)
+    return(False);
   status=(gs_func->init_with_args)(interpreter,argc-1,argv+1);
   if (status == 0)
     status=(gs_func->run_string)
@@ -848,8 +843,7 @@ static unsigned int ReadConfigureFile(const char *basename,
               if (LocaleCompare(keyword,"file") == 0)
                 {
                   if (depth > 200)
-                    ThrowException(exception,ConfigureError,
-                                   "IncludeElementNestedTooDeeply",path);
+                    ThrowException(exception,ConfigureError,IncludeElementNestedTooDeeply,path);
                   else
                     {
                       char
@@ -879,8 +873,8 @@ static unsigned int ReadConfigureFile(const char *basename,
           */
           delegate_info=MagickAllocateMemory(DelegateInfo *,sizeof(DelegateInfo));
           if (delegate_info == (DelegateInfo *) NULL)
-            MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-                             "UnableToAllocateDelegateInfo");
+            MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+                             UnableToAllocateDelegateInfo);
           (void) memset(delegate_info,0,sizeof(DelegateInfo));
           delegate_info->path=AcquireString(path);
           delegate_info->signature=MagickSignature;
@@ -928,14 +922,16 @@ static unsigned int ReadConfigureFile(const char *basename,
 #  else
                     {
                       char
+                        *key,
                         *key_value;
                     
                       /* Obtain installation path from registry */
-                      key_value=NTRegistryKeyLookup("BinPath");
+                      key="BinPath";
+                      key_value=NTRegistryKeyLookup(key);
                       if (!key_value)
                         {
                           ThrowException(exception,ConfigureError,
-                            "RegistryKeyLookupFailed","BinPath");
+                              RegistryKeyLookupFailed,key);
                         }
                       else
                         {

@@ -542,7 +542,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
       fail = False;
 
       if (offset == 0)
-        ThrowBinaryException(FileOpenError,"NotEnoughTiles",image->filename);
+        ThrowBinaryException(CorruptImageError,NotEnoughTiles,image->filename);
 
       /* save the current position as it is where the
        *  next tile offset is stored.
@@ -588,10 +588,10 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
             fail = True;
           break;
         case COMPRESS_ZLIB:
-          ThrowBinaryException(CoderError,"ZipCompressionNotSupported",
+          ThrowBinaryException(CoderError,ZipCompressionNotSupported,
             image->filename)
         case COMPRESS_FRACTAL:
-          ThrowBinaryException(CoderError,"FractalCompressionNotSupported",
+          ThrowBinaryException(CoderError,FractalCompressionNotSupported,
             image->filename)
       }
 
@@ -622,7 +622,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
 
 
   if (offset != 0)
-    ThrowBinaryException(CorruptImageError,"CorruptImage",image->filename)
+    ThrowBinaryException(CorruptImageError,CorruptImage,image->filename)
 
   return 1;
 }
@@ -916,11 +916,11 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   count=ReadBlob(image,14,(char *) magick);
   if ((count == 0) ||
       (LocaleNCompare((char *) magick,"gimp xcf",8) != 0))
-    ThrowReaderException(CorruptImageError,"NotAXCFImageFile",image);
+    ThrowReaderException(CorruptImageError,NotAXCFImageFile,image);
   /* clear the docinfo stuff */
   memset( &doc_info, 0, sizeof(XCFDocInfo));
   doc_info.exception = exception;
@@ -938,7 +938,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   } else if ( image_type == GIMP_GRAY ) {
     image->colorspace=GRAYColorspace;
   } else if ( image_type == GIMP_INDEXED )
-    ThrowReaderException(CoderError,"ColormapTypeNotSupported",image);
+    ThrowReaderException(CoderError,ColormapTypeNotSupported,image);
   SetImage(image,OpaqueOpacity);  /* until we know otherwise...*/
   image->matte=True;  /* XCF always has a matte! */
 
@@ -994,7 +994,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (doc_info.compression != COMPRESS_RLE) &&
         (doc_info.compression != COMPRESS_ZLIB) &&
         (doc_info.compression != COMPRESS_FRACTAL))
-          ThrowReaderException(CorruptImageError,"CompressionNotValid",image);
+          ThrowReaderException(CorruptImageWarning,CompressionNotValid,image);
       }
       break;
 
@@ -1140,7 +1140,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     layer_info=MagickAllocateMemory(XCFLayerInfo *,
       number_layers*sizeof(XCFLayerInfo));
     if (layer_info == (XCFLayerInfo *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     (void) memset(layer_info,0,number_layers*sizeof(XCFLayerInfo));
 
     for ( ; ; )
@@ -1174,7 +1174,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         int j;
         for (j=0; j < current_layer; j++)
           DestroyImage(layer_info[j].image);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
       }
 
       /* restore the saved position so we'll be ready to

@@ -200,7 +200,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   CloseBlob(image);
 
   /*
@@ -209,14 +209,14 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   fpx_status=FPX_InitSystem();
   if (fpx_status != FPX_OK)
     {
-      ThrowReaderException(CoderError,"UnableToInitializeFPXLibrary",image);
+      ThrowReaderException(CoderError,UnableToInitializeFPXLibrary,image);
     }
   memory_limit=20000000;
   fpx_status=FPX_SetToolkitMemoryLimit(&memory_limit);
   if (fpx_status != FPX_OK)
     {
       FPX_ClearSystem();
-      ThrowReaderException(CoderError,"UnableToInitializeFPXLibrary",image);
+      ThrowReaderException(CoderError,UnableToInitializeFPXLibrary,image);
     }
   tile_width=64;
   tile_height=64;
@@ -236,12 +236,12 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (fpx_status == FPX_LOW_MEMORY_ERROR)
     {
       FPX_ClearSystem();
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     }
   if (fpx_status != FPX_OK)
     {
       FPX_ClearSystem();
-      ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+      ThrowReaderException(FileOpenError,UnableToOpenFile,image);
     }
   if (image_info->view == (char *) NULL)
     {
@@ -254,7 +254,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       aspect_ratio=(float) width/height;
       fpx_status=FPX_GetImageResultAspectRatio(flashpix,&aspect_ratio);
       if (fpx_status != FPX_OK)
-        ThrowReaderException(DelegateError,"UnableToReadAspectRatio",image);
+        ThrowReaderException(CoderError,UnableToReadAspectRatio,image);
       if (width != (unsigned long) ((aspect_ratio*height)+0.5))
         Swap(width,height);
     }
@@ -262,7 +262,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (fpx_status != FPX_OK)
     {
       FPX_ClearSystem();
-      ThrowReaderException(DelegateError,"UnableToReadSummaryInfo",image);
+      ThrowReaderException(CoderError,UnableToReadSummaryInfo,image);
     }
   if (summary_info.title_valid)
     if ((summary_info.title.length != 0) &&
@@ -278,7 +278,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (label == (char *) NULL)
           {
             FPX_ClearSystem();
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image);
           }
         (void) strncpy(label,(char *) summary_info.title.ptr,
@@ -301,7 +301,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (comments == (char *) NULL)
           {
             FPX_ClearSystem();
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image);
           }
         (void) strncpy(comments,(char *) summary_info.comments.ptr,
@@ -344,7 +344,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!AllocateImageColormap(image,MaxColormapSize))
         {
           FPX_ClearSystem();
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         }
     }
@@ -363,7 +363,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       FPX_ClearSystem();
       (void) FPX_CloseImage(flashpix);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     }
   /*
     Initialize FlashPix image description.
@@ -417,7 +417,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             MagickFreeMemory(scanline);
             (void) FPX_CloseImage(flashpix);
             FPX_ClearSystem();
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image);
           }
       }
@@ -466,7 +466,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateError,"FPXLibraryIsNotAvailable",
+  ThrowException(exception,MissingDelegateError,FPXLibraryIsNotAvailable,
     image_info->filename);
   return((Image *) NULL);
 }
@@ -814,7 +814,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   memory_limit=20000000;
   fpx_status=FPX_SetToolkitMemoryLimit(&memory_limit);
   if (fpx_status != FPX_OK)
-    ThrowWriterException(DelegateError,"UnableToInitializeFPXLibrary",image);
+    ThrowWriterException(DelegateError,UnableToInitializeFPXLibrary,image);
   tile_width=64;
   tile_height=64;
   colorspace.numberOfComponents=3;
@@ -847,7 +847,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       compression,&flashpix);
   }
   if (fpx_status != FPX_OK)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   if (image_info->compression == JPEGCompression)
     {
       /*
@@ -856,7 +856,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       fpx_status=
         FPX_SetJPEGCompression(flashpix,(unsigned short) (image_info->quality));
       if (fpx_status != FPX_OK)
-        ThrowWriterException(DelegateError,"UnableToSetJPEGLevel",image);
+        ThrowWriterException(CoderError,UnableToSetJPEGLevel,image);
     }
   /*
     Set image summary info.
@@ -893,7 +893,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
         (void) strncpy((char *) summary_info.title.ptr,label->value,
           MaxTextExtent-1);
       else
-        ThrowWriterException(DelegateError,"UnableToSetImageTitle",image);
+        ThrowWriterException(CoderError,UnableToSetImageTitle,image);
     }
   comment=GetImageAttribute(image,"comment");
   if (comment != (ImageAttribute *) NULL)
@@ -908,11 +908,11 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       if (summary_info.comments.ptr != (unsigned char *) NULL)
         (void) strcpy((char *) summary_info.comments.ptr,comment->value);
       else
-        ThrowWriterException(DelegateError,"UnableToSetImageComments",image);
+        ThrowWriterException(CoderError,UnableToSetImageComments,image);
     }
   fpx_status=FPX_SetSummaryInformation(flashpix,&summary_info);
   if (fpx_status != FPX_OK)
-    ThrowWriterException(DelegateError,"UnableToSetSummaryInfo",image);
+    ThrowWriterException(CoderError,UnableToSetSummaryInfo,image);
   /*
     Allocate pixels.
   */
@@ -922,7 +922,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     {
       (void) FPX_CloseImage(flashpix);
       FPX_ClearSystem();
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     }
   /*
     Initialize FlashPix image description.
@@ -1054,38 +1054,38 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
         {
           fpx_status=FPX_SetImageAffineMatrix(flashpix,&affine);
           if (fpx_status != FPX_OK)
-            ThrowWriterException(DelegateError,"UnableToSetAffineMatrix",image);
+            ThrowWriterException(CoderError,UnableToSetAffineMatrix,image);
         }
       if (aspect_ratio_valid)
         {
           fpx_status=FPX_SetImageResultAspectRatio(flashpix,&aspect_ratio);
           if (fpx_status != FPX_OK)
-            ThrowWriterException(DelegateError,"UnableToSetAspectRatio",image);
+            ThrowWriterException(CoderError,UnableToSetAspectRatio,image);
         }
       if (color_twist_valid)
         {
           fpx_status=FPX_SetImageColorTwistMatrix(flashpix,&color_twist);
           if (fpx_status != FPX_OK)
-            ThrowWriterException(DelegateError,"UnableToSetColorTwist",image);
+            ThrowWriterException(CoderError,UnableToSetColorTwist,image);
         }
       if (contrast_valid)
         {
           fpx_status=FPX_SetImageContrastAdjustment(flashpix,&contrast);
           if (fpx_status != FPX_OK)
-            ThrowWriterException(DelegateError,"UnableToSetContrast",image);
+            ThrowWriterException(CoderError,UnableToSetContrast,image);
         }
       if (sharpen_valid)
         {
           fpx_status=FPX_SetImageFilteringValue(flashpix,&sharpen);
           if (fpx_status != FPX_OK)
-            ThrowWriterException(DelegateError,"UnableToSetFilteringValue",
+            ThrowWriterException(CoderError,UnableToSetFilteringValue,
               image);
         }
       if (view_rect_valid)
         {
           fpx_status=FPX_SetImageROI(flashpix,&view_rect);
           if (fpx_status != FPX_OK)
-            ThrowWriterException(DelegateError,"UnableToSetRegionOfInterest",
+            ThrowWriterException(CoderError,UnableToSetRegionOfInterest,
               image);
         }
     }
@@ -1097,7 +1097,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 {
-  ThrowBinaryException(MissingDelegateError,"FPXLibraryIsNotAvailable",
+  ThrowBinaryException(MissingDelegateError,FPXLibraryIsNotAvailable,
     image->filename)
 }
 #endif

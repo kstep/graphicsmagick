@@ -5137,7 +5137,7 @@ static Image *ReadLOGOImage(const ImageInfo *image_info,
   */
   if (blob == 0)
     {
-      ThrowReaderException(FileOpenError,"UnableToOpenFile",image)
+      ThrowReaderException(BlobError,UnableToOpenFile,image)
     }
   image=BlobToImage(clone_info,blob,extent,exception);
 
@@ -5338,10 +5338,10 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   logo_image=CloneImage(image,0,0,True,&image->exception);
   if (logo_image == (Image *) NULL)
-    ThrowWriterException(ResourceLimitError,image->exception.reason,image);
+    ThrowWriterException2(ResourceLimitError,image->exception.reason,image);
   if (IsMonochromeImage(logo_image,&image->exception) &&
       (logo_image->columns*logo_image->rows < 4097))
     {
@@ -5362,7 +5362,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   if (blob == (void *) NULL)
     {
       DestroyImage(logo_image);
-      ThrowWriterException(FileOpenError,image->exception.reason,image)
+      ThrowWriterException2(FileOpenError,image->exception.reason,image)
     }
   (void) WriteBlobString(image,"/*\n");
   (void) WriteBlobString(image,"  Logo image declaration.\n");

@@ -179,7 +179,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   map_info=XAllocStandardColormap();
   visual_info=(XVisualInfo *) NULL;
   if (map_info == (XStandardColormap *) NULL)
-    ThrowReaderException(ResourceLimitError,"UnableToCreateStandardColormap",
+    ThrowReaderException(ResourceLimitError,UnableToCreateStandardColormap,
       image)
   else
     {
@@ -506,7 +506,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateError,"DPSLibraryIsNotAvailable",
+  ThrowException(exception,MissingDelegateError,DPSLibraryIsNotAvailable,
     image_info->filename);
   return((Image *) NULL);
 }

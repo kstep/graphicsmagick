@@ -696,7 +696,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   image->depth=8;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read WPG image.
   */
@@ -710,9 +710,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   Header.Reserved=ReadBlobLSBShort(image);
 
   if (Header.FileId!=0x435057FF || (Header.ProductType>>8)!=0x16)
-    ThrowReaderException(CorruptImageError,"NotAWPGImageFile",image);
+    ThrowReaderException(CorruptImageError,NotAWPGImageFile,image);
   if (Header.EncryptKey!=0)
-    ThrowReaderException(CoderError,"EncryptedWPGImageFileNotSupported",image);
+    ThrowReaderException(CoderError,EncryptedWPGImageFileNotSupported,image);
 
   image->colors = 0;
   bpp=0;
@@ -817,8 +817,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   if (!AllocateImageColormap(image,image->colors))
                     {
                     NoMemory:
-                      ThrowReaderException(ResourceLimitError,
-                                           "MemoryAllocationFailed",
+                      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                                            image)
                         }
                 }
@@ -848,7 +847,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 /* The raster cannot be unpacked */
                 {
                 DecompressionFailed:
-                  ThrowReaderException(CoderError,"UnableToDecompressImage",
+                  ThrowReaderException(CoderError,UnableToDecompressImage,
                                        image)
                     }
 
@@ -901,8 +900,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
               image->colors=WPG_Palette.NumOfEntries;
               if (!AllocateImageColormap(image,image->colors))
-                ThrowReaderException(ResourceLimitError,
-                                     "MemoryAllocationFailed",image);
+                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
               for (i=WPG_Palette.StartIndex;
                    i < (int)WPG_Palette.NumOfEntries; i++)
                 {
@@ -1011,7 +1009,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
     default:
       {
-        ThrowReaderException(CoderError,"Unsupportedlevel",image)
+        ThrowReaderException(CoderError,DataEncodingSchemeIsNotSupported,image)
       }
    }
 

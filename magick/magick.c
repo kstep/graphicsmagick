@@ -407,7 +407,7 @@ MagickExport const MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
   array=MagickAllocateMemory(const MagickInfo **,sizeof(MagickInfo *)*(entries+1));
   if (!array)
     {
-      ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",0);
+      ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,0);
       return False;
     }
   memset((void **)array,0,sizeof(MagickInfo *)*(entries+1));
@@ -1177,8 +1177,8 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
   assert(name != (const char *) NULL);
   magick_info=MagickAllocateMemory(MagickInfo *,sizeof(MagickInfo));
   if (magick_info == (MagickInfo *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateMagickInfo");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateMagickInfo);
   (void) memset(magick_info,0,sizeof(MagickInfo));
   magick_info->name=AcquireString(name);
   magick_info->adjoin=True;

@@ -501,15 +501,15 @@ static unsigned int CompressColormapTransFirst(Image *image)
     return(False);
   marker=MagickAllocateMemory(unsigned char *,image->colors);
   if (marker == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToCompressColormap")
+    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
+      "Unable to compress image colormap")
   opacity=MagickAllocateMemory(IndexPacket *,
     image->colors*sizeof(IndexPacket));
   if (opacity == (IndexPacket *) NULL)
     {
       MagickFreeMemory(marker);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToCompressColormap")
+      ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
+        "Unable to compress image colormap")
     }
   /*
     Mark colors that are present.
@@ -606,8 +606,8 @@ static unsigned int CompressColormapTransFirst(Image *image)
     {
       MagickFreeMemory(marker);
       MagickFreeMemory(opacity);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToCompressColormap")
+      ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
+        "Unable to compress image colormap")
     }
   /*
     Eliminate unused colormap entries.
@@ -618,8 +618,8 @@ static unsigned int CompressColormapTransFirst(Image *image)
       MagickFreeMemory(marker);
       MagickFreeMemory(opacity);
       MagickFreeMemory(colormap);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToCompressColormap")
+      ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
+        "Unable to compress image colormap")
     }
   k=0;
   for (i=0; i < number_colors; i++)
@@ -1359,7 +1359,7 @@ static void PNGErrorHandler(png_struct *ping,png_const_charp message)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  libpng-%.1024s error: %.1024s", PNG_LIBPNG_VER_STRING,
       message);
-  (void) ThrowException(&image->exception,CoderError,message,image->filename);
+  (void) ThrowException2(&image->exception,CoderError,message,image->filename);
   longjmp(ping->jmpbuf,1);
 }
 
@@ -1372,7 +1372,7 @@ static void PNGWarningHandler(png_struct *ping,png_const_charp message)
       "  libpng-%.1024s warning: %.1024s", PNG_LIBPNG_VER_STRING,
       message);
   image=(Image *) png_get_error_ptr(ping);
-  (void) ThrowException(&image->exception,CoderWarning,message,image->filename);
+  (void) ThrowException2(&image->exception,CoderWarning,message,image->filename);
 }
 
 #ifdef PNG_USER_MEM_SUPPORTED
@@ -1449,15 +1449,14 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
   /* allocate space */
   if (length == 0)
   {
-    (void) ThrowException(&image->exception,CoderError,"UnableToCopyProfile",
+    (void) ThrowException(&image->exception,CoderError,UnableToCopyProfile,
       "invalid profile length");
     return (False);
   }
   info=MagickAllocateMemory(unsigned char *,length);
   if (info == (unsigned char *) NULL)
   {
-    (void) ThrowException(&image->exception,ResourceLimitError,
-      "MemoryAllocationFailed","unable to copy profile");
+    (void) ThrowException(&image->exception,ResourceLimitError,MemoryAllocationFailed,"unable to copy profile");
     return (False);
   }
   /* copy profile, skipping white space and column 1 "=" signs */
@@ -1469,7 +1468,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
     {
       if (*sp == '\0')
         {
-          (void) ThrowException(&image->exception,CoderError,"UnableToCopyProfile",
+          (void) ThrowException(&image->exception,CoderError,UnableToCopyProfile,
             "ran out of data");
           MagickFreeMemory(info);
           return (False);
@@ -1628,18 +1627,18 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     PNGErrorHandler,PNGWarningHandler);
 #endif
   if (ping == (png_struct *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   ping_info=png_create_info_struct(ping);
   if (ping_info == (png_info *) NULL)
     {
       png_destroy_read_struct(&ping,(png_info **) NULL,(png_info **) NULL);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
     }
   end_info=png_create_info_struct(ping);
   if (end_info == (png_info *) NULL)
     {
       png_destroy_read_struct(&ping,&ping_info,(png_info **) NULL);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
     }
   png_pixels=(unsigned char *) NULL;
   if (setjmp(ping->jmpbuf))
@@ -1770,8 +1769,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           image->color_profile.info=MagickAllocateMemory(unsigned char *,length);
           if (image->color_profile.info == (unsigned char *) NULL)
             {
-               MagickError(OptionError,"MemoryAllocationFailed",
-                "UnableToAllocateICCProfile");
+               MagickError3(ResourceLimitError,MemoryAllocationFailed,
+                UnableToAllocateICCProfile);
                image->color_profile.length=0;
             }
           else
@@ -1929,7 +1928,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   {
                     if (mng_info->global_trns_length >
                         mng_info->global_plte_length)
-                      (void) ThrowException(&image->exception,CoderError,
+                      (void) ThrowException2(&image->exception,CoderError,
                         "global tRNS has more entries than global PLTE",
                         image_info->filename);
                     png_set_tRNS(ping,ping_info,mng_info->global_trns,
@@ -1962,7 +1961,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
                 }
               else
-                (void) ThrowException(&image->exception,CoderError,
+                (void) ThrowException2(&image->exception,CoderError,
                   "No global PLTE in file",image_info->filename);
             }
         }
@@ -2088,7 +2087,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         Initialize image colormap.
       */
       if (!AllocateImageColormap(image,image->colors))
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
         {
           int
@@ -2154,7 +2153,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     png_pixels=MagickAllocateMemory(unsigned char *,
       ping_info->rowbytes);
   if (png_pixels == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
 
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2324,7 +2323,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       quantum_scanline=MagickAllocateMemory(Quantum *,(image->matte ?  2 : 1) *
          image->columns*sizeof(Quantum));
       if (quantum_scanline == (Quantum *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       for (y=0; y < (long) image->rows; y++)
       {
         if (num_passes > 1)
@@ -2570,8 +2569,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           value=MagickAllocateMemory(char *,length+1);
           if (value == (char *) NULL)
             {
-              (void) ThrowException(&image->exception,ResourceLimitError,
-                "MemoryAllocationFailed","UnableToReadTextChunk");
+              (void) ThrowException3(&image->exception,ResourceLimitError,
+                MemoryAllocationFailed,UnableToReadTextChunk);
               break;
             }
           *value='\0';
@@ -2607,8 +2606,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           mng_info->ob[object_id]->frozen)
         {
           if (mng_info->ob[object_id] == (MngBuffer *) NULL)
-            (void) ThrowException(&image->exception,ResourceLimitError,
-              "MemoryAllocationFailed",image->filename);
+            (void) ThrowException(&image->exception,ResourceLimitError,MemoryAllocationFailed,image->filename);
           if (mng_info->ob[object_id]->frozen)
             (void) ThrowException(&image->exception,ResourceLimitError,
               "Cannot overwrite frozen MNG object buffer",image->filename);
@@ -2716,20 +2714,20 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   mng_info=(MngInfo *) NULL;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Verify PNG signature.
   */
   (void) ReadBlob(image,8,magic_number);
   if (memcmp(magic_number,"\211PNG\r\n\032\n",8) != 0)
-    ThrowReaderException(CorruptImageError,"NotAPNGImageFile",image);
+    ThrowReaderException(CorruptImageError,NotAPNGImageFile,image);
   /*
     Allocate a MngInfo structure.
   */
   have_mng_structure=False;
   mng_info=MagickAllocateMemory(MngInfo *,sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Initialize members of the MngInfo structure.
   */
@@ -2939,14 +2937,14 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
           type[0],type[1],type[2],type[3],length);
 
     if (length > PNG_MAX_UINT || count == 0)
-      ThrowReaderException(CorruptImageError,"CorruptJNGImage",image);
+      ThrowReaderException(CorruptImageError,CorruptImage,image);
     chunk=(unsigned char *) NULL;
     p=NULL;
     if (length)
       {
         chunk=MagickAllocateMemory(unsigned char *,length);
         if (chunk == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         for (i=0; i < (long) length; i++)
           chunk[i]=ReadBlobByte(image);
@@ -3027,12 +3025,12 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
         color_image_info=MagickAllocateMemory(ImageInfo *,sizeof(ImageInfo));
         if (color_image_info == (ImageInfo *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image);
         GetImageInfo(color_image_info);
         color_image=AllocateImage(color_image_info);
         if (color_image == (Image *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image);
 
         if (logging)
@@ -3042,20 +3040,20 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         status=OpenBlob(color_image_info,color_image,WriteBinaryBlobMode,
             exception);
         if (status == False)
-            ThrowReaderException(FileOpenError,"UnableToOpenBlob",color_image);
+            ThrowReaderException(CoderError,UnableToOpenBlob,color_image);
 
         if (!image_info->ping && jng_color_type >= 12)
           {
             alpha_image_info=MagickAllocateMemory(ImageInfo *,sizeof(ImageInfo));
             if (alpha_image_info == (ImageInfo *) NULL)
-              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                   image);
             GetImageInfo(alpha_image_info);
             alpha_image=AllocateImage(alpha_image_info);
             if (alpha_image == (Image *) NULL)
               {
                 DestroyImage(alpha_image);
-                ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                     alpha_image)
               }
             if (logging)
@@ -3065,7 +3063,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             status=OpenBlob(alpha_image_info,alpha_image,WriteBinaryBlobMode,
                 exception);
             if (status == False)
-                ThrowReaderException(FileOpenError,"UnableToOpenBlob",image);
+                ThrowReaderException(CoderError,UnableToOpenBlob,image);
             if (jng_alpha_compression_method == 0)
               {
                 unsigned char
@@ -3461,22 +3459,22 @@ static Image *ReadJNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   mng_info=(MngInfo *) NULL;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   if (LocaleCompare(image_info->magick,"JNG") != 0)
-    ThrowReaderException(CorruptImageError,"NotAJNGImageFile",image);
+    ThrowReaderException(CorruptImageError,NotAJNGImageFile,image);
   /*
     Verify JNG signature.
   */
   (void) ReadBlob(image,8,magic_number);
   if (memcmp(magic_number,"\213JNG\r\n\032\n",8) != 0)
-    ThrowReaderException(CorruptImageError,"NotAJNGImageFile",image);
+    ThrowReaderException(CorruptImageError,NotAJNGImageFile,image);
   /*
     Allocate a MngInfo structure.
   */
   have_mng_structure=False;
   mng_info=MagickAllocateMemory(MngInfo *,sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Initialize members of the MngInfo structure.
   */
@@ -3623,7 +3621,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   mng_info=(MngInfo *) NULL;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   first_mng_object=False;
   skipping_loop=(-1);
   have_mng_structure=False;
@@ -3632,7 +3630,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   mng_info=MagickAllocateMemory(MngInfo *,sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Initialize members of the MngInfo structure.
   */
@@ -3653,7 +3651,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       (void) ReadBlob(image,8,magic_number);
       if (memcmp(magic_number,"\212MNG\r\n\032\n",8) != 0)
-        ThrowReaderException(CorruptImageError,"NotAMNGImageFile",image);
+        ThrowReaderException(CorruptImageError,NotAMNGImageFile,image);
       /*
         Initialize some nonzero members of the MngInfo structure.
       */
@@ -3710,14 +3708,14 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (length > PNG_MAX_UINT)
           status=False;
         if (count == 0)
-          ThrowReaderException(CorruptImageError,"CorruptMNGImage",image);
+          ThrowReaderException(CorruptImageError,CorruptImage,image);
         p=NULL;
         chunk=(unsigned char *) NULL;
         if (length)
           {
             chunk=MagickAllocateMemory(unsigned char *,length);
             if (chunk == (unsigned char *) NULL)
-              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                 image);
             for (i=0; i < (long) length; i++)
               chunk[i]=ReadBlobByte(image);
@@ -3730,8 +3728,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             skip_to_iend=True;
             if (!mng_info->jhdr_warning)
-              (void) ThrowException(&image->exception,CoderError,
-                "JNGCompressionNotSupported",image->filename);
+              (void) ThrowException(&image->exception,CoderError,JNGCompressionNotSupported,image->filename);
             mng_info->jhdr_warning++;
           }
 #endif
@@ -3739,8 +3736,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             skip_to_iend=True;
             if (!mng_info->dhdr_warning)
-              (void) ThrowException(&image->exception,CoderError,
-               "DeltaPNGNotSupported",image->filename);
+              (void) ThrowException(&image->exception,CoderError,DeltaPNGNotSupported,image->filename);
             mng_info->dhdr_warning++;
           }
         if (!memcmp(type,mng_MEND,4))
@@ -3805,8 +3801,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
             if ((mng_info->mng_width > 65535L) || (mng_info->mng_height
                  > 65535L))
-              (void) ThrowException(&image->exception,ImageError,
-                "WidthOrHeightExceedsLimit",image->filename);
+              (void) ThrowException(&image->exception,ImageError,WidthOrHeightExceedsLimit,image->filename);
             FormatString(page_geometry,"%lux%lu+0+0",mng_info->mng_width,
                 mng_info->mng_height);
             mng_info->frame.left=0;
@@ -3852,11 +3847,11 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!memcmp(type,mng_DEFI,4))
           {
             if (mng_type == 3)
-              (void) ThrowException(&image->exception,CoderError,
+              (void) ThrowException2(&image->exception,CoderError,
                 "DEFI chunk found in MNG-VLC datastream",(char *) NULL);
             object_id=(p[0] << 8) | p[1];
             if (mng_type == 2 && object_id != 0)
-              (void) ThrowException(&image->exception,CoderError,
+              (void) ThrowException2(&image->exception,CoderError,
                 "Nonzero object_id in MNG-LC datastream",(char *) NULL);
             if (object_id > MNG_MAX_OBJECTS)
               {
@@ -3864,7 +3859,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   Instead of issuing a warning we should allocate a larger
                   MngInfo structure and continue.
                 */
-                (void) ThrowException(&image->exception,CoderError,
+                (void) ThrowException2(&image->exception,CoderError,
                   "object id too large",(char *) NULL);
                 object_id=MNG_MAX_OBJECTS;
               }
@@ -3872,7 +3867,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (mng_info->frozen[object_id])
                 {
                   MagickFreeMemory(chunk);
-                  (void) ThrowException(&image->exception,CoderError,
+                  (void) ThrowException2(&image->exception,CoderError,
                     "DEFI cannot redefine a frozen MNG object",(char *) NULL);
                   continue;
                 }
@@ -4074,7 +4069,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!memcmp(type,mng_FRAM,4))
           {
             if (mng_type == 3)
-              (void) ThrowException(&image->exception,CoderError,
+              (void) ThrowException2(&image->exception,CoderError,
                 "FRAM chunk found in MNG-VLC datastream",(char *) NULL);
             if ((mng_info->framing_mode == 2) || (mng_info->framing_mode == 4))
               image->delay=frame_delay;
@@ -4374,7 +4369,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!memcmp(type,mng_CLON,4))
           {
             if (!mng_info->clon_warning)
-              (void) ThrowException(&image->exception,CoderError,
+              (void) ThrowException2(&image->exception,CoderError,
                 "CLON is not implemented yet",image->filename);
             mng_info->clon_warning++;
           }
@@ -4404,7 +4399,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (magn_first || magn_last)
               if (!mng_info->magn_warning)
                 {
-                  (void) ThrowException(&image->exception,CoderError,
+                  (void) ThrowException2(&image->exception,CoderError,
                      "MAGN is not implemented yet for nonzero objects",
                      image->filename);
                    mng_info->magn_warning++;
@@ -4465,7 +4460,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (magn_methx > 5 || magn_methy > 5)
               if (!mng_info->magn_warning)
                 {
-                  (void) ThrowException(&image->exception,CoderError,
+                  (void) ThrowException2(&image->exception,CoderError,
                      "Unknown MAGN method in MNG datastream",image->filename);
                    mng_info->magn_warning++;
                 }
@@ -4488,14 +4483,14 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!memcmp(type,mng_PAST,4))
           {
             if (!mng_info->past_warning)
-              (void) ThrowException(&image->exception,CoderError,
+              (void) ThrowException2(&image->exception,CoderError,
                 "PAST is not implemented yet",image->filename);
             mng_info->past_warning++;
           }
         if (!memcmp(type,mng_SHOW,4))
           {
             if (!mng_info->show_warning)
-              (void) ThrowException(&image->exception,CoderError,
+              (void) ThrowException2(&image->exception,CoderError,
                 "SHOW is not implemented yet",image->filename);
             mng_info->show_warning++;
           }
@@ -4528,7 +4523,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!memcmp(type,mng_pHYg,4))
           {
             if (!mng_info->phyg_warning)
-              (void) ThrowException(&image->exception,CoderError,
+              (void) ThrowException2(&image->exception,CoderError,
                 "pHYg is not implemented.",image->filename);
             mng_info->phyg_warning++;
           }
@@ -4536,7 +4531,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             skip_to_iend=True;
             if (!mng_info->basi_warning)
-              (void) ThrowException(&image->exception,CoderError,
+              (void) ThrowException2(&image->exception,CoderError,
                 "BASI is not implemented yet",image->filename);
             mng_info->basi_warning++;
 #ifdef MNG_BASI_SUPPORTED
@@ -4951,8 +4946,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                      DestroyImageList(image);
                      MngInfoFreeStruct(mng_info,&have_mng_structure);
-                     ThrowReaderException(ResourceLimitError,
-                       "MemoryAllocationFailed",image)
+                     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
                   }
                 n=GetImagePixels(image,0,0,image->columns,1);
                 (void) memcpy(next,n,length);
@@ -5386,7 +5380,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  No beginning");
-        (void) ThrowException(&image->exception,(ExceptionType) CoderError,
+        (void) ThrowException2(&image->exception,(ExceptionType) CoderError,
           "Linked list is corrupted, beginning of list not found",
           image_info->filename);
         return((Image *) NULL);
@@ -5396,7 +5390,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Corrupt list");
-      (void) ThrowException(&image->exception,(ExceptionType) CoderError,
+      (void) ThrowException2(&image->exception,(ExceptionType) CoderError,
        "Linked list is corrupted; next_image is NULL",image_info->filename);
       }
   }
@@ -5405,7 +5399,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  First image null");
-      (void) ThrowException(&image->exception,(ExceptionType) CoderError,
+      (void) ThrowException2(&image->exception,(ExceptionType) CoderError,
        "image->next for first image is NULL but shouldn't be.",
      image_info->filename);
     }
@@ -5414,7 +5408,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  No visible images found.");
-      (void) ThrowException(&image->exception,(ExceptionType) CoderError,
+      (void) ThrowException2(&image->exception,(ExceptionType) CoderError,
         "No visible images in file",image_info->filename);
       if (image != (Image *) NULL)
         DestroyImageList(image);
@@ -5477,7 +5471,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       scene=image->scene;
       next_image=CoalesceImages(image,&image->exception);
       if (next_image == (Image *) NULL)
-        MagickFatalError(image->exception.severity,image->exception.reason,
+        MagickFatalError2(image->exception.severity,image->exception.reason,
           image->exception.description);
       DestroyImageList(image);
       image=next_image;
@@ -5542,7 +5536,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   printf("Your PNG library is too old: You have libpng-%s\n",
      PNG_LIBPNG_VER_STRING);
-  (void) ThrowException(exception,CoderError,"PNG library is too old",
+  (void) ThrowException2(exception,CoderError,"PNG library is too old",
     image_info->filename);
   return (Image *) NULL;
 }
@@ -5988,14 +5982,12 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
     PNGErrorHandler,PNGWarningHandler);
 #endif
   if (ping == (png_struct *) NULL)
-    ThrowWriterException((ExceptionType) ResourceLimitError,
-      "MemoryAllocationFailed",image);
+    ThrowWriterException((ExceptionType) ResourceLimitError,MemoryAllocationFailed,image);
   ping_info=png_create_info_struct(ping);
   if (ping_info == (png_info *) NULL)
     {
       png_destroy_write_struct(&ping,(png_info **) NULL);
-      ThrowWriterException((ExceptionType) ResourceLimitError,
-         "MemoryAllocationFailed",image)
+      ThrowWriterException((ExceptionType) ResourceLimitError,MemoryAllocationFailed,image)
     }
   png_set_write_fn(ping,image,png_put_data,png_flush_data);
   png_pixels=(unsigned char *) NULL;
@@ -6173,8 +6165,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
           palette=MagickAllocateMemory(png_color *,
             number_colors*sizeof(png_color));
           if (palette == (png_color *) NULL)
-            ThrowWriterException((ExceptionType) ResourceLimitError,
-              "MemoryAllocationFailed",image);
+            ThrowWriterException((ExceptionType) ResourceLimitError,MemoryAllocationFailed,image);
           if (logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  Setting up PLTE chunk");
@@ -6202,8 +6193,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
           */
           ping_info->trans=MagickAllocateMemory(unsigned char *,number_colors);
           if (ping_info->trans == (unsigned char *) NULL)
-            ThrowWriterException((ExceptionType) ResourceLimitError,
-              "MemoryAllocationFailed",image);
+            ThrowWriterException((ExceptionType) ResourceLimitError,MemoryAllocationFailed,image);
           assert(number_colors <= 256);
           for (i=0; i < (long) number_colors; i++)
              ping_info->trans[i]=255;
@@ -6525,8 +6515,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                 palette=MagickAllocateMemory(png_color *,
                   number_colors*sizeof(png_color));
                 if (palette == (png_color *) NULL)
-                  ThrowWriterException((ExceptionType) ResourceLimitError,
-                    "MemoryAllocationFailed",image);
+                  ThrowWriterException((ExceptionType) ResourceLimitError,MemoryAllocationFailed,image);
                 for (i=0; i < (long) number_colors; i++)
                 {
                   palette[i].red=ScaleQuantumToChar(image->colormap[i].red);
@@ -6549,8 +6538,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
             */
             ping_info->trans=MagickAllocateMemory(unsigned char *,number_colors);
             if (ping_info->trans == (unsigned char *) NULL)
-              ThrowWriterException((ExceptionType) ResourceLimitError,
-                "MemoryAllocationFailed",image);
+              ThrowWriterException((ExceptionType) ResourceLimitError,MemoryAllocationFailed,image);
             assert(number_colors <= 256);
             for (i=0; i < (long) number_colors; i++)
                ping_info->trans[i]=255;
@@ -6884,8 +6872,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       }
   png_pixels=MagickAllocateMemory(unsigned char *,rowbytes);
   if (png_pixels == (unsigned char *) NULL)
-    ThrowWriterException((ExceptionType) ResourceLimitError,
-      "MemoryAllocationFailed",image);
+    ThrowWriterException((ExceptionType) ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Initialize image scanlines.
   */
@@ -7057,8 +7044,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       {
         ping_info->text=MagickAllocateMemory(png_text *,256*sizeof(png_text));
         if (ping_info->text == (png_text *) NULL)
-          (void) ThrowException(&image->exception,(ExceptionType)
-            ResourceLimitError,"MemoryAllocationFailed",image->filename);
+          (void) ThrowException(&image->exception,(ExceptionType) ResourceLimitError,MemoryAllocationFailed,image->filename);
       }
     i=ping_info->num_text++;
     if (i > 255)
@@ -7119,7 +7105,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
     }
   if (mng_info->write_mng && !mng_info->need_fram &&
       ((int) image->dispose == 3))
-     (void) ThrowException(&image->exception,(ExceptionType) CoderError,
+     (void) ThrowException2(&image->exception,(ExceptionType) CoderError,
        "Cannot convert GIF with disposal method 3 to MNG-LC",(char *) NULL);
   image->depth=save_image_depth;
 
@@ -7182,7 +7168,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter WritePNGImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
 
   /*
     Allocate a MngInfo structure.
@@ -7190,7 +7176,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   have_mng_structure=False;
   mng_info=MagickAllocateMemory(MngInfo *,sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Initialize members of the MngInfo structure.
   */
@@ -7276,14 +7262,14 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
             "  Creating jpeg_image_info for opacity.");
       jpeg_image_info=(ImageInfo *) CloneImageInfo(image_info);
       if (jpeg_image_info == (ImageInfo *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+        ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
             image);
       if (logging)
         LogMagickEvent(CoderEvent,GetMagickModule(),
              "  Creating jpeg_image.");
       jpeg_image=CloneImage(image,0,0,True,&image->exception);
       if (jpeg_image == (Image *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+        ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
             image);
       jpeg_image->blob=MagickAllocateMemory(BlobInfo *,sizeof(BlobInfo));
       GetBlobInfo(jpeg_image->blob);
@@ -7614,7 +7600,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
         "  Creating jpeg_image_info.");
   jpeg_image_info=(ImageInfo *) CloneImageInfo(image_info);
   if (jpeg_image_info == (ImageInfo *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
         image);
 
   if (logging)
@@ -7623,7 +7609,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
 
   jpeg_image=CloneImage(image,0,0,True,&image->exception);
   if (jpeg_image == (Image *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
         image);
   jpeg_image->blob=MagickAllocateMemory(BlobInfo *,sizeof(BlobInfo));
   GetBlobInfo(jpeg_image->blob);
@@ -7709,7 +7695,7 @@ static unsigned int WriteJNGImage(const ImageInfo *image_info,Image *image)
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter WriteJNGImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
 
   /*
     Allocate a MngInfo structure.
@@ -7717,7 +7703,7 @@ static unsigned int WriteJNGImage(const ImageInfo *image_info,Image *image)
   have_mng_structure=False;
   mng_info=MagickAllocateMemory(MngInfo *,sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Initialize members of the MngInfo structure.
   */
@@ -7799,7 +7785,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter WriteMNGImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
 
   /*
     Allocate a MngInfo structure.
@@ -7807,7 +7793,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
   have_mng_structure=False;
   mng_info=MagickAllocateMemory(MngInfo *,sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Initialize members of the MngInfo structure.
   */
@@ -8104,7 +8090,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
                    It's probably a GIF with loop; don't run it *too* fast.
                  */
                  final_delay=10;
-                 (void) ThrowException(&image->exception,CoderError,
+                 (void) ThrowException2(&image->exception,CoderError,
                    "input has zero delay between all frames; assuming 10 cs",
                    (char *) NULL);
                }
@@ -8559,7 +8545,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   image=image;
   printf("Your PNG library is too old: You have libpng-%s\n",
      PNG_LIBPNG_VER_STRING);
-  ThrowBinaryException(CoderError,"PNG library is too old",image_info->filename);
+  ThrowBinaryException(CoderError,PNG library is too old,image_info->filename);
 }
 static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
 {

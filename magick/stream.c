@@ -183,15 +183,15 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
   if ((x < 0) || (y < 0) || ((x+(long) columns) > (long) image->columns) ||
       ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
     {
-      ThrowException(exception,StreamError,"UnableToAcquirePixelStream",
-        "ImageDoesNotContainTheStreamGeometry");
+      ThrowException3(exception,StreamError,UnableToAcquirePixelStream,
+        ImageDoesNotContainTheStreamGeometry);
       return((PixelPacket *) NULL);
     }
   stream_info=(StreamInfo *) image->cache;
   assert(stream_info->signature == MagickSignature);
   if (stream_info->type == UndefinedCache)
     {
-      ThrowException(exception,StreamError,"PixelCacheIsNotOpen",
+      ThrowException(exception,StreamError,PixelCacheIsNotOpen,
         image->filename);
       return((PixelPacket *) NULL);
     }
@@ -209,8 +209,8 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
     if (length != stream_info->length)
       MagickReallocMemory(stream_info->pixels,length);
   if (stream_info->pixels == (void *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateCacheInfo");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateCacheInfo);
   stream_info->length=length;
   stream_info->indexes=(IndexPacket *) NULL;
   if ((image->storage_class == PseudoClass) ||
@@ -542,14 +542,14 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   if ((x < 0) || (y < 0) || ((x+(long) columns) > (long) image->columns) ||
       ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
     {
-      ThrowException(&image->exception,StreamError,"UnableToSetPixelStream",
-        "ImageDoesNotContainTheStreamGeometry");
+      ThrowException3(&image->exception,StreamError,UnableToSetPixelStream,
+        ImageDoesNotContainTheStreamGeometry);
       return((PixelPacket *) NULL);
     }
   if (image->blob->stream == (StreamHandler) NULL)
     {
-      ThrowException(&image->exception,StreamError,"UnableToSetPixelStream",
-        "NoStreamHandlerIsDefined");
+      ThrowException3(&image->exception,StreamError,UnableToSetPixelStream,
+        NoStreamHandlerIsDefined);
       return((PixelPacket *) NULL);
     }
   stream_info=(StreamInfo *) image->cache;
@@ -588,8 +588,8 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
         stream_info->length=length;
       }
   if (stream_info->pixels == (void *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateImagePixels");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateImagePixels);
   stream_info->indexes=(IndexPacket *) NULL;
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
@@ -635,8 +635,8 @@ static unsigned int SyncPixelStream(Image *image)
   assert(stream_info->signature == MagickSignature);
   if (image->blob->stream == (StreamHandler) NULL)
     {
-      ThrowException(&image->exception,StreamError,"UnableToSyncPixelStream",
-        "NoStreamHandlerIsDefined");
+      ThrowException3(&image->exception,StreamError,UnableToSyncPixelStream,
+        NoStreamHandlerIsDefined);
       return(False);
     }
   return(image->blob->stream(image,stream_info->pixels,stream_info->columns));

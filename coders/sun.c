@@ -269,7 +269,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read SUN raster header.
   */
@@ -280,7 +280,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify SUN identifier.
     */
     if (sun_info.magic != 0x59a66a95)
-      ThrowReaderException(CorruptImageError,"NotASUNRasterImage",image);
+      ThrowReaderException(CorruptImageError,NotASUNImageFile,image);
     sun_info.width=ReadBlobMSBLong(image);
     sun_info.height=ReadBlobMSBLong(image);
     sun_info.depth=ReadBlobMSBLong(image);
@@ -310,7 +310,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Create linear color ramp.
             */
             if (!AllocateImageColormap(image,image->colors))
-              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                 image);
           }
         break;
@@ -324,11 +324,11 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read SUN raster colormap.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         sun_colormap=MagickAllocateMemory(unsigned char *,image->colors);
         if (sun_colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
         for (i=0; i < (long) image->colors; i++)
@@ -352,14 +352,14 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         sun_colormap=MagickAllocateMemory(unsigned char *,sun_info.maplength);
         if (sun_colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         (void) ReadBlob(image,sun_info.maplength,(char *) sun_colormap);
         MagickFreeMemory(sun_colormap);
         break;
       }
       default:
-        ThrowReaderException(CoderError,"ColormapTypeNotSupported",image)
+        ThrowReaderException(CoderError,ColormapTypeNotSupported,image)
     } 
     image->matte=(sun_info.depth == 32);
     image->columns=sun_info.width;
@@ -371,10 +371,10 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     sun_data=MagickAllocateMemory(unsigned char *,sun_info.length);
     if (sun_data == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     count=ReadBlob(image,sun_info.length,(char *) sun_data);
     if ((count == 0) && (sun_info.type != RT_ENCODED))
-      ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
+      ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
     sun_pixels=sun_data;
     if (sun_info.type == RT_ENCODED)
       {
@@ -388,7 +388,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bytes_per_line=2*(sun_info.width*sun_info.depth+15)/16;
         sun_pixels=MagickAllocateMemory(unsigned char *,bytes_per_line*height);
         if (sun_pixels == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         (void) DecodeImage(sun_data,sun_info.length,sun_pixels);
         MagickFreeMemory(sun_data);
@@ -488,7 +488,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     MagickFreeMemory(sun_pixels);
     if (EOFBlob(image))
       {
-        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
           image->filename);
         break;
       }
@@ -673,7 +673,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   scene=0;
   do
   {
@@ -753,7 +753,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
         length=image->columns*sizeof(PixelPacket);
         pixels=MagickAllocateMemory(unsigned char *,length);
         if (pixels == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
             image);
         /*
           Convert DirectClass packet to SUN RGB pixel.

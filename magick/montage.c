@@ -85,8 +85,8 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
 
   clone_info=MagickAllocateMemory(MontageInfo *,sizeof(MontageInfo));
   if (clone_info == (MontageInfo *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateMontageInfo");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateMontageInfo);
   GetMontageInfo(image_info,clone_info);
   if (montage_info == (MontageInfo *) NULL)
     return(clone_info);
@@ -347,8 +347,8 @@ MagickExport Image *MontageImages(const Image *images,
   number_images=GetImageListLength(images);
   master_list=ImageListToArray(images,exception);
   if (master_list == (Image **) NULL)
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToCreateImageMontage");
+    ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToCreateImageMontage);
   image_list=master_list;
   for (i=0; i < (long) number_images; i++)
   {
@@ -550,8 +550,8 @@ MagickExport Image *MontageImages(const Image *images,
     montage->directory=MagickAllocateMemory(char *,count);
     if ((montage->montage == (char *) NULL) ||
         (montage->directory == (char *) NULL))
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToCreateImageMontage");
+      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+        UnableToCreateImageMontage);
     x_offset=0;
     y_offset=(long) title_offset;
     FormatString(montage->montage,"%ldx%ld%+ld%+ld",

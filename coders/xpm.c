@@ -216,7 +216,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read XPM file.
   */
@@ -241,7 +241,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       p=xpm_buffer+strlen(xpm_buffer);
     }
   if (xpm_buffer == (char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Remove comments.
   */
@@ -257,7 +257,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   if ((count != 4) || (width > 2) || (image->columns == 0) ||
       (image->rows == 0) || (image->colors == 0))
-    ThrowReaderException(CorruptImageError,"NotAXPMImageFile",image)
+    ThrowReaderException(CorruptImageError,NotAXPMImageFile,image)
   image->depth=16;
   /*
     Remove unquoted characters.
@@ -279,7 +279,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   textlist=StringToList(xpm_buffer);
   MagickFreeMemory(xpm_buffer);
   if (textlist == (char **) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Initialize image structure.
   */
@@ -289,7 +289,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; textlist[i] != (char *) NULL; i++)
         MagickFreeMemory(textlist[i]);
       MagickFreeMemory(textlist);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
     }
   /*
     Read image colormap.
@@ -308,7 +308,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickFreeMemory(textlist[i]);
         MagickFreeMemory(textlist);
         MagickFreeMemory(keys);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
       }
     keys[j][width]='\0';
     (void) strncpy(keys[j],p,width);
@@ -342,7 +342,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; textlist[i] != (char *) NULL; i++)
         MagickFreeMemory(textlist[i]);
       MagickFreeMemory(textlist);
-      ThrowReaderException(CorruptImageError,"CorruptImage",image)
+      ThrowReaderException(CorruptImageError,CorruptImage,image)
     }
   j=0;
   key[width]='\0';
@@ -379,7 +379,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
       if (y < (long) image->rows)
-        ThrowReaderException(CorruptImageError,"NotenoughPixelData",image);
+        ThrowReaderException(CorruptImageError,InsufficientImageDataInFile,image);
     }
   /*
     Free resources.
@@ -595,7 +595,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   SetGeometry(image,&geometry);
   (void) GetMagickGeometry(PiconGeometry,&geometry.x,&geometry.y,
@@ -829,7 +829,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   transparent=False;
   if (image->storage_class == PseudoClass)

@@ -173,8 +173,7 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
-                ThrowException(exception,ConfigureError,
-                  "IncludeElementNestedTooDeeply",path);
+                ThrowException(exception,ConfigureError,IncludeElementNestedTooDeeply,path);
               else
                 {
                   char
@@ -333,7 +332,7 @@ static Image *ReadLOCALEImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   if (status == False)
     {
       DestroyImage(image);
@@ -791,13 +790,13 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   attribute=GetImageAttribute(image,"[Locale]");
   if (attribute == (const ImageAttribute *) NULL)
-    ThrowWriterException(ImageError,"NoLocaleImageAttribute",image);
+    ThrowWriterException(ImageError,NoLocaleImageAttribute,image);
   locale=StringToList(attribute->value);
   if (locale == (char **) NULL)
-    ThrowWriterException(FileOpenError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Sort locale messages.
   */
@@ -885,6 +884,11 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       register char
         *p;
 
+      WriteBlobStringWithEOL(image,"#ifndef _LOCAL_C_H");
+      WriteBlobStringWithEOL(image,"#define _LOCAL_C_H");
+      WriteBlobStringEOL(image);
+      WriteBlobStringWithEOL(image,"extern const char *GetLocaleMessageFromID(const int);");
+      WriteBlobStringEOL(image);
       FormatString(text, "#define MAX_LOCALE_MSGS %ld",count);
       WriteBlobStringWithEOL(image,text);
       WriteBlobStringEOL(image);
@@ -909,13 +913,15 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
                   index++;
                 }
             }
-            FormatString(text, "#define %s%s%s%s = %ld",fields[0],fields[1],fields[2],fields[3],i+1);
+            FormatString(text, "#define %s%s%s%s %ld",fields[0],fields[1],fields[2],fields[3],i+1);
             WriteBlobStringWithEOL(image,text);
           }
       }
       /*
         Write a table that maps category strings over to severity id's
       */
+      WriteBlobStringEOL(image);
+      WriteBlobStringWithEOL(image,"#endif");
       WriteBlobStringEOL(image);
       WriteBlobStringWithEOL(image,"#if defined(_INCLUDE_CATEGORYMAP_TABLE_)");
       WriteBlobStringWithEOL(image,"typedef struct _CategoryInfo{");

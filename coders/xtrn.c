@@ -120,14 +120,17 @@ static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exceptio
   if (clone_info->filename == NULL)
     {
       DestroyImageInfo(clone_info);
-      ThrowReaderException(FileOpenWarning,"No filename specified",image);
+      ThrowReaderException2(CoderError,"No filename was provided",image);
     }
   /* DebugString("ReadXTRN CODER: %s\n",clone_info->filename); */
   if (LocaleCompare(image_info->magick,"XTRNFILE") == 0)
     {
       image=ReadImage(clone_info,exception);
+      /* this should not be needed since the upstream code should catch any
+         excetpions thrown by ReadImage
+       */
       if (exception->severity != UndefinedException)
-        MagickWarning(exception->severity,exception->reason,exception->description);
+        MagickWarning2(exception->severity,exception->reason,exception->description);
     }
   else if (LocaleCompare(image_info->magick,"XTRNIMAGE") == 0)
     {
@@ -165,7 +168,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exceptio
       blob_length=(size_t *) param2;
       image=BlobToImage(clone_info,*blob_data,*blob_length,exception);
       if (exception->severity != UndefinedException)
-        MagickWarning(exception->severity,exception->reason,exception->description);
+        MagickWarning2(exception->severity,exception->reason,exception->description);
     }
   else if (LocaleCompare(image_info->magick,"XTRNSTREAM") == 0)
     {
@@ -238,7 +241,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exceptio
                   image=BlobToImage(clone_info,blob_data,blob_length,exception);
                   hr = SafeArrayUnaccessData(pSafeArray);
                   if (exception->severity != UndefinedException)
-                    MagickWarning(exception->severity,exception->reason,
+                    MagickWarning2(exception->severity,exception->reason,
                        exception->description);
                 }
             }
@@ -282,7 +285,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exceptio
             }
           image=BlobToImage(clone_info,blob_data,blob_length,exception);
           if (exception->severity != UndefinedException)
-            MagickWarning(exception->severity,exception->reason,
+            MagickWarning2(exception->severity,exception->reason,
                 exception->description);
         }
     }

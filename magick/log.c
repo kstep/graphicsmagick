@@ -350,16 +350,17 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
 #  if defined(WIN32)
   {
     char
+      *key,
       *key_value;
 
     /*
       Locate file via registry key.
     */
-    key_value=NTRegistryKeyLookup("ConfigurePath");
+    key="ConfigurePath";
+    key_value=NTRegistryKeyLookup(key);
     if (!key_value)
       {
-        ThrowException(exception,ConfigureError,"RegistryKeyLookupFailed",
-          "ConfigurePath");
+        ThrowException(exception,ConfigureError,RegistryKeyLookupFailed,key);
         return 0;
       }
 
@@ -437,7 +438,7 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
   }
 #endif
 #endif
-  ThrowException(exception,ConfigureError,"UnableToAccessLogFile",filename);
+  ThrowException(exception,ConfigureError,UnableToAccessLogFile,filename);
   return 0;
 }
 
@@ -1168,8 +1169,8 @@ static unsigned int ReadConfigureFile(const char *basename,
         */
         log_info=MagickAllocateMemory(LogInfo *,sizeof(LogInfo));
         if (log_info == (LogInfo *) NULL)
-          MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "UnableToAllocateLogInfo");
+          MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+            UnableToAllocateLogInfo);
         (void) memset((void *) log_info,0,sizeof(LogInfo));
         log_info->path=AcquireString(path);
         GetTimerInfo((TimerInfo *) &log_info->timer);

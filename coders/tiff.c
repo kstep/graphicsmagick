@@ -161,7 +161,7 @@ static unsigned int ReadColorProfile(char *text,long int length,Image *image)
     }
   image->color_profile.info=MagickAllocateMemory(unsigned char *,length);
   if (image->color_profile.info == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
       image->filename);
   image->color_profile.length=length;
   (void) memcpy(image->color_profile.info,p,length);
@@ -193,7 +193,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
       length*=4;
       image->iptc_profile.info=MagickAllocateMemory(unsigned char *,length);
       if (image->iptc_profile.info == (unsigned char *) NULL)
-        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
           image->filename);
       image->iptc_profile.length=length;
       (void) memcpy(image->iptc_profile.info,p,length);
@@ -235,7 +235,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
 #endif
   image->iptc_profile.info=MagickAllocateMemory(unsigned char *,length);
   if (image->iptc_profile.info == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
       image->filename);
   image->iptc_profile.length=length;
   (void) memcpy(image->iptc_profile.info,p,length);
@@ -261,7 +261,7 @@ static unsigned int TIFFErrors(const char *module,const char *format,
 
   (void) vsprintf(message,format,warning);
   (void) strcat(message,".");
-  ThrowException(tiff_exception,CoderError,message,module);
+  ThrowException2(tiff_exception,CoderError,message,module);
   return(True);
 }
 
@@ -297,7 +297,7 @@ static unsigned int TIFFWarnings(const char *module,const char *format,
 
   (void) vsprintf(message,format,warning);
   (void) strcat(message,".");
-  ThrowException(tiff_exception,DelegateWarning,message,module);
+  ThrowException2(tiff_exception,CoderWarning,message,module);
   return(True);
 }
 
@@ -394,7 +394,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   tiff_exception=exception;
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
@@ -417,7 +417,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     {
       if (filename_is_temporary)
         LiberateTemporaryFile(filename);
-      ThrowReaderException(FileOpenError,"UnableToOpenFile",image)
+      ThrowReaderException(FileOpenError,UnableToOpenFile,image)
     }
   if (image_info->subrange != 0)
     while (image->scene < image_info->subimage)
@@ -432,7 +432,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           TIFFClose(tiff);
           if (filename_is_temporary)
             LiberateTemporaryFile(filename);
-          ThrowReaderException(CorruptImageError,"UnableToReadSubimage",
+          ThrowReaderException(CorruptImageError,UnableToReadSubImageData,
             image)
         }
     }
@@ -511,7 +511,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         TIFFClose(tiff);
         if (filename_is_temporary)
           LiberateTemporaryFile(filename);
-        ThrowReaderException(CoderError,"UnableToReadCIELABImages",image)
+        ThrowReaderException(CoderError,UnableToReadCIELABImages,image)
       }
     if (photometric == PHOTOMETRIC_SEPARATED)
       image->colorspace=CMYKColorspace;
@@ -606,7 +606,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             if ((image->blob->type != FileStream) &&
                 (image->blob->type != BlobStream))
               remove(filename);
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
       }
@@ -731,7 +731,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             TIFFClose(tiff);
             if (filename_is_temporary)
               LiberateTemporaryFile(filename);
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
         /*
@@ -967,7 +967,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             TIFFClose(tiff);
             if (filename_is_temporary)
               LiberateTemporaryFile(filename);
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
         for (y=0; y < (long) image->rows; y++)
@@ -1054,7 +1054,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             TIFFClose(tiff);
             if (filename_is_temporary)
               LiberateTemporaryFile(filename);
-            ThrowReaderException(CoderError,"ImageIsNotTiled",image)
+            ThrowReaderException(CoderError,ImageIsNotTiled,image)
           }
         tile_total_pixels=tile_columns*tile_rows;
         if (logging)
@@ -1074,7 +1074,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             TIFFClose(tiff);
             if (filename_is_temporary)
               LiberateTemporaryFile(filename);
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
         for (y=0; y < (long) image->rows; y+=tile_rows)
@@ -1180,14 +1180,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             (number_pixels*sizeof(uint32)))
           {
             TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
         strip_pixels=MagickAllocateMemory(uint32 *,number_pixels*sizeof(uint32));
         if (strip_pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
         /*
@@ -1253,7 +1253,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             TIFFClose(tiff);
             if (filename_is_temporary)
               LiberateTemporaryFile(filename);
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
         (void) TIFFReadRGBAImage(tiff,(uint32) image->columns,
@@ -1336,7 +1336,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 static Image *ReadTIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateError,"TIFFLibraryIsNotAvailable",
+  ThrowException(exception,MissingDelegateError,TIFFLibraryIsNotAvailable,
     image_info->filename);
   return((Image *) NULL);
 }
@@ -1485,13 +1485,13 @@ static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
   */
   pyramid_image=CloneImage(image,0,0,True,&image->exception);
   if (pyramid_image == (Image *) NULL)
-    ThrowWriterException(FileOpenError,image->exception.reason,image);
+    ThrowWriterException2(FileOpenError,image->exception.reason,image);
   do
   {
     pyramid_image->next=ResizeImage(image,pyramid_image->columns/2,
       pyramid_image->rows/2,TriangleFilter,1.0,&image->exception);
     if (pyramid_image->next == (Image *) NULL)
-      ThrowWriterException(FileOpenError,image->exception.reason,image);
+      ThrowWriterException2(FileOpenError,image->exception.reason,image);
     pyramid_image->next->previous=pyramid_image;
     pyramid_image=pyramid_image->next;
   } while ((pyramid_image->columns > 64) && (pyramid_image->rows > 64));
@@ -1510,7 +1510,7 @@ static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
 {
-  ThrowBinaryException(MissingDelegateError,"TIFFLibraryIsNotAvailable",
+  ThrowBinaryException(MissingDelegateError,TIFFLibraryIsNotAvailable,
     image->filename);
 }
 #endif
@@ -1762,7 +1762,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   btype=image->blob->type;
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   tiff_exception=(&image->exception);
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
@@ -2141,7 +2141,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     */
     scanline=MagickAllocateMemory(unsigned char *,8*TIFFScanlineSize(tiff));
     if (scanline == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     switch (photometric)
     {
       case PHOTOMETRIC_RGB:
@@ -2277,7 +2277,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         if ((blue == (unsigned short *) NULL) ||
             (green == (unsigned short *) NULL) ||
             (red == (unsigned short *) NULL))
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
             image);
         /*
           Initialize TIFF colormap.
@@ -2417,7 +2417,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       */
       file=fopen(filename,"rb");
       if (file == (FILE *) NULL)
-        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+        ThrowWriterException(FileOpenError,UnableToOpenFile,image);
       for (c=fgetc(file); c != EOF; c=fgetc(file))
         (void) WriteBlobByte(image,c);
       (void) fclose(file);
@@ -2444,14 +2444,14 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       file=open(filename,O_RDONLY | O_BINARY,0777);
       if (file == -1)
         {
-          ThrowWriterException(FileOpenError,"Unable to open file",image);
+          ThrowWriterException(FileOpenError,UnableToOpenFile,image);
         }
       if ((fstat(file,&attributes) < 0) ||
           (attributes.st_size != (size_t) attributes.st_size) ||
             (attributes.st_size <= (size_t) 0))
         {
           (void) close(file);
-          ThrowWriterException(FileOpenError,"Unable to open file",image);
+          ThrowWriterException(FileOpenError,UnableToOpenFile,image);
         }
       length=(size_t) attributes.st_size;
       map=MapBlob(file,ReadMode,0,length);
@@ -2476,7 +2476,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           if (buffer == (unsigned char *) NULL)
             {
               (void) close(file);
-              ThrowWriterException(FileOpenError,"Memory allocation failed",image);
+              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
             }
           for (i=0; i < length; i+=count)
           {
@@ -2497,7 +2497,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
-  ThrowBinaryException(MissingDelegateError,"TIFFLibraryIsNotAvailable",
+  ThrowBinaryException(MissingDelegateError,TIFFLibraryIsNotAvailable,
     image->filename);
 }
 #endif

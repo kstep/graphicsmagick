@@ -451,14 +451,14 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Determine if this is a DIB file.
   */
   (void) memset(&dib_info,0,sizeof(DIBInfo));
   dib_info.size=ReadBlobLSBLong(image);
   if (dib_info.size!=40)
-    ThrowReaderException(CorruptImageError,"NotADIBImageFile",image);
+    ThrowReaderException(CorruptImageError,NotADIBImageFile,image);
   /*
     Microsoft Windows 3.X DIB image file.
   */
@@ -519,10 +519,10 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Read DIB raster colormap.
       */
       if (!AllocateImageColormap(image,image->colors))
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       dib_colormap=MagickAllocateMemory(unsigned char *,4*image->colors);
       if (dib_colormap == (unsigned char *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       packet_size=4;
       (void) ReadBlob(image,packet_size*image->colors,(char *) dib_colormap);
       p=dib_colormap;
@@ -546,7 +546,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   pixels=MagickAllocateMemory(unsigned char *,
     Max(bytes_per_line,image->columns+1)*image->rows);
   if (pixels == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if ((dib_info.compression == 0) || (dib_info.compression == 3))
     (void) ReadBlob(image,length,(char *) pixels);
   else
@@ -556,7 +556,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       status=DecodeImage(image,dib_info.compression,pixels);
       if (status == False)
-        ThrowReaderException(CorruptImageError,"UnableToRunlengthDecodeImage",
+        ThrowReaderException(CorruptImageError,UnableToRunlengthDecodeImage,
           image);
     }
   /*
@@ -779,11 +779,11 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
     default:
-      ThrowReaderException(CorruptImageError,"NotADIBImageFile",image)
+      ThrowReaderException(CorruptImageError,NotADIBImageFile,image)
   }
   MagickFreeMemory(pixels);
   if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
   if (dib_info.height < 0)
     {
@@ -940,7 +940,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   /*
     Initialize DIB raster file header.
   */
@@ -988,7 +988,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
   */
   pixels=MagickAllocateMemory(unsigned char *,dib_info.image_size);
   if (pixels == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   switch (dib_info.bits_per_pixel)
   {
     case 1:
@@ -1098,7 +1098,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
         if (pixels == (unsigned char *) NULL)
           {
             MagickFreeMemory(pixels);
-            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+            ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
         dib_info.image_size=EncodeImage(image,bytes_per_line,pixels,dib_data);
@@ -1131,7 +1131,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
       dib_colormap=MagickAllocateMemory(unsigned char *,
         4*(1 << dib_info.bits_per_pixel));
       if (dib_colormap == (unsigned char *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+        ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
       q=dib_colormap;
       for (i=0; i < (long) image->colors; i++)
       {
