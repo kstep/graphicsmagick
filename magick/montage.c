@@ -367,7 +367,7 @@ MagickExport Image *MontageImages(const Image *images,
     SetGeometry(image,&geometry);
     flags=GetMagickGeometry(montage_info->geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
-    thumbnail=ThumbnailImage(image,geometry.width,geometry.height,exception);
+    thumbnail=ZoomImage(image,geometry.width,geometry.height,exception);
     if (thumbnail == (Image *) NULL)
       break;
     DestroyImage(image);

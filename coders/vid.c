@@ -183,8 +183,8 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetGeometry(next_image,&geometry);
         (void) GetMagickGeometry(clone_info->size,&geometry.x,&geometry.y,
           &geometry.width,&geometry.height);
-        thumbnail_image=ThumbnailImage(next_image,geometry.width,
-          geometry.height,exception);
+        thumbnail_image=ZoomImage(next_image,geometry.width,geometry.height,
+          exception);
         if (thumbnail_image != (Image *) NULL)
           {
             DestroyImage(next_image);
