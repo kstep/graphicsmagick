@@ -322,7 +322,7 @@ typedef struct _Image
     *directory,
     *geometry;
 
-  int
+  size_t
     offset;
 
   double

@@ -153,12 +153,16 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   (void) strcpy(allocate_image->magick,image_info->magick);
   if (image_info->size != (char *) NULL)
     {
+      int
+        offset;
+
       (void) sscanf(image_info->size,"%ux%u",&allocate_image->columns,
         &allocate_image->rows);
-      flags=ParseGeometry(image_info->size,&allocate_image->offset,
-        &allocate_image->offset,&allocate_image->columns,&allocate_image->rows);
+      flags=ParseGeometry(image_info->size,&offset,&offset,
+        &allocate_image->columns,&allocate_image->rows);
       if ((flags & HeightValue) == 0)
         allocate_image->rows=allocate_image->columns;
+      allocate_image->offset=offset;
       allocate_image->tile_info.width=allocate_image->columns;
       allocate_image->tile_info.height=allocate_image->rows;
     }
