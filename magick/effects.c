@@ -2107,31 +2107,6 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
       return((Image *) NULL);
     }
   shade_image->class=DirectClass;
-  if (!color_shading)
-    {
-      /*
-        Initialize shaded image colormap.
-      */
-      shade_image->class=PseudoClass;
-      shade_image->colors=MaxRGB+1;
-      if (shade_image->colormap != (PixelPacket *) NULL)
-        FreeMemory(shade_image->colormap);
-      shade_image->colormap=(PixelPacket *)
-        AllocateMemory(shade_image->colors*sizeof(PixelPacket));
-      if (shade_image->colormap == (PixelPacket *) NULL)
-        {
-          MagickWarning(ResourceLimitWarning,"Unable to shade image",
-            "Memory allocation failed");
-          DestroyImage(shade_image);
-          return((Image *) NULL);
-        }
-      for (i=0; i < (int) shade_image->colors; i++)
-      {
-        shade_image->colormap[i].red=i;
-        shade_image->colormap[i].green=i;
-        shade_image->colormap[i].blue=i;
-      }
-    }
   /*
     Compute the light vector.
   */
@@ -2183,21 +2158,19 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
                 shade=distance/sqrt(normal_distance);
             }
         }
-      if (shade_image->class == DirectClass)
+      if (!color_shading)
+        {
+          q->red=shade;
+          q->green=shade;
+          q->blue=shade;
+        }
+      else
         {
           q->red=(shade*s1->red)/(MaxRGB+1);
           q->green=(shade*s1->green)/(MaxRGB+1);
           q->blue=(shade*s1->blue)/(MaxRGB+1);
-          q->opacity=s1->opacity;
         }
-      else
-        {
-          index=shade;
-          shade_image->indexes[x]=index;
-          q->red=shade_image->colormap[index].red;
-          q->green=shade_image->colormap[index].green;
-          q->blue=shade_image->colormap[index].blue;
-        }
+      q->opacity=s1->opacity;
       s0++;
       s1++;
       s2++;
