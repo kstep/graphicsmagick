@@ -405,7 +405,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  (void) CloneString(&resource_info.background_color,argv[i]);
+                  resource_info.background_color=argv[i];
                   (void) QueryColorDatabase(argv[i],
                     &image_info->background_color);
                 }
@@ -418,7 +418,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  (void) CloneString(&resource_info.border_color,argv[i]);
+                  resource_info.border_color=argv[i];
                   (void) QueryColorDatabase(argv[i],&image_info->border_color);
                 }
               break;
@@ -614,7 +614,7 @@ int main(int argc,char **argv)
                 }
               if ((image_info->font == (char *) NULL) ||
                   (*image_info->font != '@'))
-                (void) CloneString(&resource_info.font,image_info->font);
+                resource_info.font=AllocateString(image_info->font);
               break;
             }
           if (LocaleNCompare("foreground",option+1,3) == 0)
@@ -624,7 +624,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing foreground",option);
-                  (void) CloneString(&resource_info.foreground_color,argv[i]);
+                  resource_info.foreground_color=argv[i];
                 }
               break;
             }
@@ -642,13 +642,13 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("geometry",option+1,2) == 0)
             {
-              (void) CloneString(&resource_info.image_geometry,(char *) NULL);
+              resource_info.image_geometry=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&resource_info.image_geometry,argv[i]);
+                  resource_info.image_geometry=argv[i];
                 }
               break;
             }
@@ -669,13 +669,13 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("iconGeometry",option+1,5) == 0)
             {
-              (void) CloneString(&resource_info.icon_geometry,(char *) NULL);
+              resource_info.icon_geometry=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&resource_info.icon_geometry,argv[i]);
+                  resource_info.icon_geometry=argv[i];
                 }
               break;
             }
@@ -721,7 +721,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing map type",option);
-                  (void) CloneString(&resource_info.map_type,argv[i]);
+                  resource_info.map_type=argv[i];
                 }
               break;
             }
@@ -734,7 +734,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  (void) CloneString(&resource_info.matte_color,argv[i]);
+                  resource_info.matte_color=argv[i];
                   (void) QueryColorDatabase(argv[i],&image_info->matte_color);
                 }
               break;
@@ -755,13 +755,13 @@ int main(int argc,char **argv)
         }
         case 'n':
         {
-          (void) CloneString(&resource_info.name,(char *) NULL);
+          resource_info.name=(char *) NULL;
           if (*option == '-')
             {
               i++;
               if (i == argc)
                 MagickError(OptionError,"Missing name",option);
-              (void) CloneString(&resource_info.name,argv[i]);
+              resource_info.name=argv[i];
             }
           break;
         }
@@ -845,25 +845,25 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("text_font",option+1,3) == 0)
             {
-              (void) CloneString(&resource_info.text_font,(char *) NULL);
+              resource_info.text_font=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing font name",option);
-                  (void) CloneString(&resource_info.text_font,argv[i]);
+                  resource_info.text_font=argv[i];
                 }
               break;
             }
           if (LocaleNCompare("title",option+1,4) == 0)
             {
-              (void) CloneString(&resource_info.title,(char *) NULL);
+              resource_info.title=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing title",option);
-                  (void) CloneString(&resource_info.title,argv[i]);
+                  resource_info.title=argv[i];
                 }
               break;
             }
@@ -897,7 +897,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing visual class",option);
-                  (void) CloneString(&resource_info.visual_type,argv[i]);
+                  resource_info.visual_type=argv[i];
                 }
               break;
             }
@@ -908,14 +908,14 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("window",option+1,2) == 0)
             {
-              (void) CloneString(&resource_info.window_id,(char *) NULL);
+              resource_info.window_id=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing id, name, or 'root'",
                       option);
-                  (void) CloneString(&resource_info.window_id,argv[i]);
+                  resource_info.window_id=argv[i];
                 }
               break;
             }
