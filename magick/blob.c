@@ -258,6 +258,13 @@ MagickExport void CloseBlob(Image *image)
     {
       image->blob->extent=image->blob->length;
       image->blob->eof=False;
+      if (!image->orphan)
+        {
+          while (image->previous != (Image *) NULL)
+            image=image->previous;
+          for (image=image->next; image != (Image *) NULL; image=image->next)
+            DisengageBlob(image->blob);
+        }
       return;
     }
   if (image->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)

@@ -2357,7 +2357,6 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
     LiberateMemory((void **) &image_info->density);
   if (image_info->view != (char *) NULL)
     LiberateMemory((void **) &image_info->view);
-  DestroyBlobInfo(image_info->blob);
   LiberateMemory((void **) &image_info);
 }
 
