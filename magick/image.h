@@ -179,7 +179,8 @@ typedef enum
   CMYKColorspace,
   sRGBColorspace,
   HSLColorspace,
-  HWBColorspace
+  HWBColorspace,
+  LABColorspace
 } ColorspaceType;
 
 typedef enum

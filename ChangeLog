@@ -1,3 +1,11 @@
+2003-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/Magick.xs: Added "LAB" to colorspace types.
+	* magick/image.h (enum ColorSpace): Add LABColorspace enumeration.
+	* wand/magick_wand.h : Add some compatibility definitions to
+	translate from ImageMagick enumerations to existing GraphicsMagick
+	enumerations.
+
 2003-12-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/annotate.c: Use header synonyms defined by FreeType's

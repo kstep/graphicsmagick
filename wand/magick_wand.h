@@ -32,7 +32,13 @@ extern "C" {
 #include "wand/drawing_wand.h"
 #include "wand/pixel_wand.h"
 
+  /*
+    ImageMagick compatibility definitions
+  */
 #define MagickSizeType magick_int64_t
+#define ReplaceCompositeOp CopyCompositeOp
+#define IndexChannel BlackChannel
+#define AreaResource UndefinedResource /* not supported */
 
 typedef enum
 {

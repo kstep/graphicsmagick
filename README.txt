@@ -119,7 +119,10 @@ MAGICK DELEGATES
 
         http://www.freetype.org/
 
-      to annotate with TrueType and Postscript Type 1 fonts.
+      to annotate with TrueType and Postscript Type 1 fonts. Note that
+      enabling TT_CONFIG_OPTION_BYTECODE_INTERPRETER in FreeType's
+      include/freetype/config/ftoption.h will produce better glyph
+      renderings but may violate an Apple patent.
 
     o GraphicsMagick requires Ghostscript software (version 7.05 recommended)
       available from
