@@ -51,12 +51,6 @@
 #include "magick.h"
 #include "defines.h"
 
-/*
-  Forward declarations.
-*/
-static unsigned int
-  WriteWPGImage(const ImageInfo *,Image *);
-
 #define DWORD unsigned long
 #define WORD  unsigned
 #define BYTE  unsigned char
@@ -82,8 +76,7 @@ typedef struct
 	BYTE	RecLeader;
 	WORD    RecType;
 	DWORD   RecordLength;
-	} WPG2Record
-;
+	} WPG2Record;
 typedef struct
 	{
 	WORD Width;
@@ -97,9 +90,7 @@ typedef struct
 	WORD Width;
 	WORD Heigth;
 	WORD Depth;
-	}WPG2BitmapType1
-
-;
+	}WPG2BitmapType1;
 typedef struct
 	{
 	WORD RotAngle;
@@ -118,6 +109,11 @@ typedef struct
 	WORD StartIndex;
 	WORD NumOfEntries;
 	}WPGColorMapRec;
+typedef struct {
+	DWORD PS_unknown1;
+	WORD PS_unknown2;
+	WORD PS_unknown3;
+       } WPGPSl1Record;	
   
 
 
@@ -328,7 +324,7 @@ long ldblk;
  y=0;
 
  ldblk=((long)image->depth*image->columns+7)/8;
- BImgBuff=(unsigned char *) malloc(ldblk);
+ BImgBuff=malloc(ldblk);
  if(BImgBuff==NULL) return(-2);
 
  while(y<image->rows)
@@ -387,7 +383,58 @@ long ldblk;
  free(BImgBuff);
  return(0);
 }
-
+
+
+Image *ExtractPostscript(Image *image,const ImageInfo *image_info,long PS_Offset,long PS_Size)
+{
+/*char Filename[MaxTextExtent];*/
+FILE *f;
+ImageInfo *clone_info;
+ExceptionInfo exception;
+Image *image2;
+
+if((clone_info=CloneImageInfo(image_info))==NULL) return(image);
+TemporaryFilename((char *) clone_info->filename);
+
+/*printf("PS part %ld %ld %s\n",PS_Offset,PS_Size,clone_info->filename);/**/
+
+if( (f=fopen(clone_info->filename,"wb"))==NULL) goto FINISH;
+SeekBlob(image,PS_Offset,SEEK_SET);
+while(PS_Size-->0)
+    {
+    fputc(ReadByte(image),f);
+    }
+fclose(f);    
+
+if((clone_info->file=fopen(clone_info->filename,"r"))==NULL) goto FINISH_UNL;
+image2=ReadImage(clone_info,&exception);
+
+if(clone_info->file!=NULL)
+    {
+    fclose(clone_info->file);
+    clone_info->file=NULL;
+    }
+    
+if(image2!=NULL) 	/* Allocate next image structure. */
+    {
+    while(image->previous!=NULL)
+       image=image->previous;
+       
+    image->previous=image2;
+    image2->next=image;
+    
+    while(image->next!=NULL)
+       image=image->next;
+    }
+    
+FINISH_UNL:    
+unlink(clone_info->filename);/* */
+FINISH:
+DestroyImageInfo(clone_info);
+return(image);
+}
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -465,13 +512,14 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     case 1:     /*WPG level 1*/
       while(!EOFBlob(image)) /* object parser loop */
        {
-       SeekBlob(image,Header.DataOffset,SEEK_SET);  /*How could I do fseek??*/
+       SeekBlob(image,Header.DataOffset,SEEK_SET);
        if(EOFBlob(image)) break;
 
        Rec.RecType=(i=ReadByte(image));
        if(i==EOF) break;
        Rd_WP_DWORD(image,&Rec.RecordLength);
        if(EOFBlob(image)) break;
+
 
        Header.DataOffset=TellBlob(image)+Rec.RecordLength;
 
@@ -505,11 +553,18 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 			goto NoMemory;
 		 for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
 		   {
-		   image->colormap[i].red=ReadByte(image);
-		   image->colormap[i].green=ReadByte(image);
-		   image->colormap[i].blue=ReadByte(image);
+		   image->colormap[i].red=UpScale(ReadByte(image));
+		   image->colormap[i].green=UpScale(ReadByte(image));
+		   image->colormap[i].blue=UpScale(ReadByte(image));
 		   }
 		 break;
+		 
+         case 0x11:  /* Start PS l1 */
+		   if(Rec.RecordLength>8)
+		      image=ExtractPostscript(image,image_info,
+		               TellBlob(image)+8,   /*skip PS header in the wpg*/
+			       Rec.RecordLength-8);
+		   break;		 
 
 	 case 0x14:  /* bitmap type 2 */
 		 BitmapHeader2.RotAngle=LSBFirstReadShort(image);
@@ -564,6 +619,13 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 		 image=image->next;
 		 image->colors=image->columns=image->rows=image->depth=0;
 		 break;
+
+         case 0x1B:  /*Postscript l2*/
+	         if(Rec.RecordLength>0x3C)
+		      image=ExtractPostscript(image,image_info,
+		               TellBlob(image)+0x3C,   /*skip PS l2 header in the wpg*/
+			       Rec.RecordLength-0x3C);
+		 break;		 
 	 }
       }
       break;
@@ -595,11 +657,10 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 					 image);
 	     for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
 		   {
-		   image->colormap[i].red=ReadByte(image);
-		   image->colormap[i].green=ReadByte(image);
-		   image->colormap[i].blue=ReadByte(image);
-		   ReadByte(image);
-  /*Opacity??*/
+		   image->colormap[i].red=UpScale(ReadByte(image));
+		   image->colormap[i].green=UpScale(ReadByte(image));
+		   image->colormap[i].blue=UpScale(ReadByte(image));
+		   ReadByte(image);   /*Opacity??*/
 		   }
 	     break;
 	 case 0x0E:
@@ -632,7 +693,7 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 		  }
 
              ldblk=((long)image->depth*image->columns+7)/8;
-	     if( (BImgBuff=(unsigned char *) malloc(ldblk))==NULL) goto NoMemory;
+	     if( (BImgBuff=malloc(ldblk))==NULL) goto NoMemory;
 
 	     for(i=0;i<image->rows;i++)
 		{
@@ -647,6 +708,15 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 	     image=image->next;
 	     image->colors=image->columns=image->rows=image->depth=0;
 	     break;
+	     
+	 case 0x12:	/* Postscript WPG2*/     
+	     if(Rec2.RecordLength>0x12)
+		      image=ExtractPostscript(image,image_info,
+		               TellBlob(image)+0x12,   /*skip PS header in the wpg2*/
+			       Rec2.RecordLength-0x12);
+	     break;
+	     
+/*	 default:printf("Record type %d; size %ld; offset %lX\n",Rec2.RecType,Rec2.RecordLength,Header.DataOffset-Rec2.RecordLength);/* */     
 	 }
        }
 
@@ -658,6 +728,8 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 
 
 Finish:
+ CloseBlob(image);
+ 
  while (image->previous != (Image *) NULL)
     {
     image=image->previous;
@@ -665,9 +737,10 @@ Finish:
       if(image->next->rows==0 && image->next->columns==0)
 	    DestroyImage(image->next);
     }
-  CloseBlob(image);
-  return(image);       
+ return(image);       
 }
+
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
