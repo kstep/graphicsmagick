@@ -1629,6 +1629,11 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         if (LocaleCompare("clip-units",keyword) == 0)
           {
             GetToken(q,&q,token);
+            if (LocaleCompare("userSpace",token) == 0)
+              {
+                draw_info->clip_units=UserSpace;
+                break;
+              }
             if (LocaleCompare("userSpaceOnUse",token) == 0)
               {
                 draw_info->clip_units=UserSpaceOnUse;

@@ -37,6 +37,7 @@ typedef enum
 
 typedef enum
 {
+  UserSpace,
   UserSpaceOnUse,
   ObjectBoundingBox
 } ClipPathUnits;
