@@ -1,3 +1,6 @@
+2002-04-12  Leonard Rosenthol  <leonardr@lazerware.com>
+  * Fixed a bug in writing layer names in PSD files
+
 2002-04-10  Cristy  <cristy@mystic.es.dupont.com>
   * Fixed PingImage() memory leak (thanks to Timo Vogel).
   * Added encoding and unicode attributes to PerlMagick (patch provided
