@@ -143,8 +143,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
   for (y=0; y < (long) image->rows; y++)
   {
-    p=AcquireImagePixels(image,-width/2,y-height/2,image->columns+width,height,
-      exception);
+    p=AcquireImagePixels(image,-(long) width/2,y-height/2,image->columns+width,
+      height,exception);
     q=SetImagePixels(threshold_image,0,y,threshold_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
