@@ -2838,7 +2838,7 @@ MagickExport void XGetPixelPacket(Display *display,
           gamma_map=pixel->gamma_map;
           for (i=0; i < (long) image->colors; i++)
             pixel->pixels[i]=
-              XGammaPixel(map_info,gamma_map,image->colormap+i,QuantumDepth);
+              XGammaPixel(map_info,gamma_map,image->colormap+i,16);
           for (i=0; i < MaxNumberPens; i++)
             pixel->pixels[image->colors+i]=pixel->pen_colors[i].pixel;
           pixel->colors+=MaxNumberPens;
@@ -5645,7 +5645,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
               break;
             for (x=0; x < (long) image->columns; x++)
             {
-              pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
+              pixel=XGammaPixel(map_info,gamma_map,p,16);
               pixel&=0xf;
               switch (nibble)
               {
@@ -5697,7 +5697,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             nibble=0;
             for (x=0; x < (long) image->columns; x++)
             {
-              pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
+              pixel=XGammaPixel(map_info,gamma_map,p,16);
               pixel&=0xf;
               switch (nibble)
               {
@@ -5740,7 +5740,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
               break;
             for (x=0; x < (long) image->columns; x++)
             {
-              pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
+              pixel=XGammaPixel(map_info,gamma_map,p,16);
               *q++=(unsigned char) pixel;
               p++;
             }
@@ -5822,7 +5822,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                     break;
                   for (x=0; x < (long) image->columns; x++)
                   {
-                    pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
+                    pixel=XGammaPixel(map_info,gamma_map,p,16);
                     for (k=0; k < (int) bytes_per_pixel; k++)
                     {
                       channel[k]=(unsigned char) pixel;
@@ -6182,7 +6182,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             nibble=0;
             for (x=0; x < (long) image->columns; x++)
             {
-              pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
+              pixel=XGammaPixel(map_info,gamma_map,p,16);
               pixel&=0xf;
               switch (nibble)
               {
@@ -6234,7 +6234,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             nibble=0;
             for (x=0; x < (long) image->columns; x++)
             {
-              pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
+              pixel=XGammaPixel(map_info,gamma_map,p,16);
               pixel&=0xf;
               switch (nibble)
               {
@@ -6277,7 +6277,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
               break;
             for (x=0; x < (long) image->columns; x++)
             {
-              pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
+              pixel=XGammaPixel(map_info,gamma_map,p,16);
               *q++=(unsigned char) pixel;
               p++;
             }
@@ -6359,7 +6359,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                     break;
                   for (x=0; x < (long) image->columns; x++)
                   {
-                    pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
+                    pixel=XGammaPixel(map_info,gamma_map,p,16);
                     for (k=bytes_per_pixel-1; k >= 0; k--)
                     {
                       channel[k]=(unsigned char) pixel;
