@@ -363,7 +363,7 @@ with 0 for any pixel matching in color to pixel location (0,0), otherwise
 
 Choices are: \fINone\fP, \fIBZip\fP, \fIFax\fP,
 \fIGroup4\fP,
-\fIJPEG\fP,
+\fIJPEG\fP, \fILossless\fP,
 \fILZW\fP, \fIRLE\fP or \fIZip\fP.
 
 
@@ -371,10 +371,13 @@ Specify \fB+compress\fP to store the binary image in an uncompressed format.
 The default is the compression type of the specified image file.
 
 
-If LZW compression is specified but LZW compression has not been enabled,
+If \fILZW\fP compression is specified but LZW compression has not been enabled,
 the image data will be written
 in an uncompressed LZW format that can be read by LZW decoders.  This
 may result in larger-than-expected GIF files.
+
+\fI"Lossless"\fP refers to lossless JPEG, which is only available if
+the JPEG library has been patched to support it.
 .TP
 .B "-copy \fI<filename>"\fP
 \fRcopy a previously read image
@@ -509,6 +512,7 @@ If only the width is specified, the width assumes the
 value and the height is chosen to maintain the aspect ratio of the image.
 Similarly, if only the height is specified (e.g., -geometry x256),
 the width is chosen to maintain the aspect ratio. 
+
 
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
@@ -696,8 +700,10 @@ relative to the lower left hand corner of the page by
 -page 612x792>, for example, to center the
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
-Unlike in \fB-geometry\fP, a positive \fBy\fP \fIoffset\fP is measured
-upward from the bottom edge of the page, and negative offsets are not treated
+Positive \fBx\fP and
+\fBy\fP \fIoffset\fP are measured
+rightward and upward from the bottom left corner of the page, Unlike
+in \fB-geometry\fP, negative offsets are not treated
 specially.  They simply specify leftward and downward distances from the lower
 left hand corner of the page.
 
@@ -791,6 +797,13 @@ for details.
 
 Use this option
 .TP
+.B "-sharpen \fI<radius>x<sigma>"\fP
+\fRsharpen the image
+
+Use a gaussian operator of the given radius and
+standard deviation (sigma). 
+
+.TP
 .B "-size \fI<width>x<height>{+offset}"\fP
 \fRwidth and height of the image
 
@@ -849,6 +862,13 @@ quantize for more details.
 The \fB-colors\fP or \fB-monochrome\fP option is required for this option
 to take effect.
 
+.TP
+.B "-trim"
+\fRtrim an image
+
+This option removes any edges that are exactly the same color as the
+corner pixels.  Use \fB-fuzz\fP to make \fB-trim\fP remove edges that
+are nearly the same color as the corner pixels.
 .TP
 .B "-type \fI<type>"\fP
 \fRthe image type

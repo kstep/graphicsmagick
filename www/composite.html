@@ -448,7 +448,7 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Choices are: <em>None</em>, <em>BZip</em>, <em>Fax</em>,
 <em>Group4</em>,
-<em>JPEG</em>,
+<em>JPEG</em>, <em>Lossless</em>,
 <em>LZW</em>, <em>RLE</em> or <em>Zip</em>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -456,10 +456,13 @@ Specify <strong>+compress</strong> to store the binary image in an uncompressed 
 The default is the compression type of the specified image file.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If LZW compression is specified but LZW compression has not been enabled,
+If <em>LZW</em> compression is specified but LZW compression has not been enabled,
 the image data will be written
 in an uncompressed LZW format that can be read by LZW decoders.  This
 may result in larger-than-expected GIF files.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+<em>"Lossless"</em> refers to lossless JPEG, which is only available if
+the JPEG library has been patched to support it.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -693,6 +696,7 @@ value and the height is chosen to maintain the aspect ratio of the image.
 Similarly, if only the height is specified (e.g., <tt>-geometry x256</tt>),
 the width is chosen to maintain the aspect ratio. 
 </font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
 dimensions. To increase the size of an image, use a value greater than
@@ -945,8 +949,10 @@ relative to the lower left hand corner of the page by
 <tt>-page 612x792&gt;</tt>, for example, to center the
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
-Unlike in <strong>-geometry</strong>, a positive <strong>y</strong> <em>offset</em> is measured
-upward from the bottom edge of the page, and negative offsets are not treated
+Positive <strong>x</strong> and
+<strong>y</strong> <em>offset</em> are measured
+rightward and upward from the bottom left corner of the page, Unlike
+in <strong>-geometry</strong>, negative offsets are not treated
 specially.  They simply specify leftward and downward distances from the lower
 left hand corner of the page.
 </font></td></tr></table>
@@ -1096,6 +1102,21 @@ Use this option
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    <a name="-sharpen">-sharpen</a> <i>&lt;radius&gt;x&lt;sigma&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sharpen the image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Use a gaussian operator of the given radius and
+standard deviation (sigma). 
+</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     <a name="-size">-size</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+offset</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>width and height of the image</td></tr></table>
@@ -1180,6 +1201,21 @@ Refer to
 The <strong>-colors</strong> or <strong>-monochrome</strong> option is required for this option
 to take effect.
 </font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a name="-trim">-trim</a>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>trim an image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+This option removes any edges that are exactly the same color as the
+corner pixels.  Use <strong>-fuzz</strong> to make <strong>-trim</strong> remove edges that
+are nearly the same color as the corner pixels.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
