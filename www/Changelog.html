@@ -56,6 +56,12 @@
 2003-12-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/map.c: Added signature members to all structures and
+        added assertions to ensure that the signature == MagickSignature
+        prior to use. MagickMapAllocateObject now initializes the object
+        reference count to one, and MagickMapDestroyObject decrements it
+        in order to be more correct even though the object reference count
+        is not actually used yet.<BR>
   <LI> configure.ac: Search for the shmctl() function.  Under current
         Cygwin, this is hiding in -lcygipc.
 

@@ -400,10 +400,12 @@ namespace Magick
   //
   // GraphicsMagick symbols used in implementation code
   //
+  using MagickLib::AccessDefinition;
   using MagickLib::AcquireCacheView;
   using MagickLib::AcquireImagePixels;
   using MagickLib::AcquireMemory;
   using MagickLib::AdaptiveThresholdImage;
+  using MagickLib::AddDefinitions;
   using MagickLib::AddNoiseImage;
   using MagickLib::AffineMatrix;
   using MagickLib::AffineTransformImage;
@@ -668,6 +670,7 @@ namespace Magick
   using MagickLib::RegistryFatalError;
   using MagickLib::RegistryType;
   using MagickLib::RegistryWarning;
+  using MagickLib::RemoveDefinitions;
   using MagickLib::ResourceLimitError;
   using MagickLib::ResourceLimitFatalError;
   using MagickLib::ResourceLimitWarning;

@@ -922,11 +922,11 @@ valid after calling ping.</font></td>
 const int argc_, char **argv_<br>
       </small></td>
       <td style="vertical-align: middle;"><small>Execute the named
-process module, passing any arguments via an argument vector, with
-argc_ specifying the number of arguments in the vector, and argv_
-passing the address of an array of null-terminated C strings which
-constitute the argument vector. An exception is thrown if the requested
-process module does not exist, fails to load, or fails during execution.</small><br>
+process module, passing any arguments via an argument vector, with argc_
+specifying the number of arguments in the vector, and argv_ passing the
+address of an array of null-terminated C strings which constitute the
+argument vector. An exception is thrown if the requested process module
+does not exist, fails to load, or fails during execution.</small><br>
       </td>
     </tr>
     <tr>
@@ -1566,12 +1566,12 @@ channel_, const unsigned int depth_<br>
       </small></td>
       <td style="vertical-align: middle;"><small>Channel modulus depth.
 The channel modulus depth represents the minimum number of bits required
-to support the channel without loss. Setting the channel's modulus
-depth modifies the channel (i.e. discards resolution) if the requested
+to support the channel without loss. Setting the channel's modulus depth
+modifies the channel (i.e. discards resolution) if the requested
 modulus depth is less than the current modulus depth, otherwise the
 channel is not altered. There is no attribute associated with the
-modulus depth so the current modulus depth is obtained by inspecting
-the pixels. As a result, the depth returned may be less than the most
+modulus depth so the current modulus depth is obtained by inspecting the
+pixels. As a result, the depth returned may be less than the most
 recently set channel depth. Subsequent image processing may result in
 increasing the channel depth.<br>
       </small></td>
@@ -1725,9 +1725,10 @@ for the case  of CMY(K).</font></td>
       <font size="-1">Type</font></center>
       </td>
       <td><font size="-1"><a href="Enumerations.html#CompressionType">CompressionType</a> </font></td>
-      <td><font size="-1">void</font></td>
-      <td><font size="-1"><a href="Enumerations.html#CompressionType">CompressionType</a>
-compressType_</font></td>
+      <td><small><font size="-1"><small>void</small></font></small></td>
+      <td><small><font size="-1"><small><a
+ href="Enumerations.html#CompressionType">CompressionType</a>
+compressType_</small></font></small></td>
       <td><font size="-1">Image compresion type. The default is the
 compression type of the specified image file.</font></td>
     </tr>
@@ -1736,10 +1737,56 @@ compression type of the specified image file.</font></td>
       <center><a name="debug"></a> <font size="-1">debug</font></center>
       </td>
       <td><font size="-1">bool</font></td>
-      <td><font size="-1">void</font></td>
-      <td><font size="-1">bool flag_</font></td>
+      <td><small><font size="-1"><small>void</small></font></small></td>
+      <td><small><font size="-1"><small>bool flag_</small></font></small></td>
       <td><font size="-1">Enable printing of internal debug messages
 from GraphicsMagick   as it executes.</font></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: middle;"><small><a
+ name="defineValue"></a>defineValue<br>
+      </small></td>
+      <td style="vertical-align: middle; text-align: left;"><small>string<br>
+      </small></td>
+      <td style="vertical-align: middle;"><small>const std::string
+&amp;magick_, const std::string &amp;key_<br>
+      </small></td>
+      <td style="vertical-align: middle;"><small>const std::string
+&amp;magick_, const std::string &amp;key_, &nbsp;const std::string
+&amp;value_<br>
+      </small></td>
+      <td style="vertical-align: top;"><small>Set or obtain a
+definition string to applied when encoding or decoding the specified
+format. The meanings of the definitions are format specific. The format
+is designated by the <span style="font-style: italic;">magick_</span>
+argument, the format-specific key is designated by <span
+ style="font-style: italic;">key_</span>, and the associated value is
+specified by <span style="font-style: italic;">value_</span>. See the
+defineSet() method if the key must be removed entirely.</small><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: middle;"><small><a
+ name="defineSet"></a>defineSet<br>
+      </small></td>
+      <td style="vertical-align: middle; text-align: left;"><small>bool<br>
+      </small></td>
+      <td style="vertical-align: middle;"><small>const std::string
+&amp;magick_, const std::string &amp;key_<br>
+      </small></td>
+      <td style="vertical-align: middle;"><small>const std::string
+&amp;magick_, const std::string &amp;key_, bool flag_<br>
+      </small></td>
+      <td style="vertical-align: middle;"><small>Set or obtain a
+definition flag to applied when encoding or decoding the specified
+format.</small><small>. Similar to the defineValue() method except that
+passing the <span style="font-style: italic;">flag_</span> value 'true'
+creates a value-less define with that format and key. Passing the <span
+ style="font-style: italic;">f</span><span style="font-style: italic;">lag_</span>
+value 'false' removes any existing matching definition. The method
+returns 'true' if a matching key exists, and 'false' if no matching key
+exists.<br>
+      </small></td>
     </tr>
     <tr>
       <td>

@@ -13,7 +13,8 @@ For 1.1 Release
    between SPARC and Intel in the PerlMagick tests.
  o Fix libtool configure problem under IRIX and AIX.
  o Debug utilities test failure noticed under OS-X.
- o Add a Magick++ method to set/update/remove defines (-define).
+ o Add a Magick++ method to set/update/remove defines
+   (AccessDefinition/AddDefinitions/RemoveDefinitions).
  o Fix exception logging (map to warning & error logging)
 
 For Future Release

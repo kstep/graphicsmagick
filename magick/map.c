@@ -48,6 +48,9 @@ typedef struct _MagickMapObject
   struct _MagickMapObject
     *previous,
     *next;
+
+  unsigned long
+    signature;
 } MagickMapObject;
 
 /*
@@ -73,6 +76,10 @@ typedef struct _MagickMapHandle
 
   MagickMapObject
     *list;
+
+  unsigned long
+    signature;
+
 } MagickMapHandle;
 
 /*
@@ -101,6 +108,9 @@ typedef struct _MagickMapIteratorHandle
   /* Iterator position */
   MagickMapIteratorPosition
     position;
+
+  unsigned long
+    signature;
 } MagickMapIteratorHandle;
 
 /*
@@ -158,9 +168,10 @@ MagickMapAllocateObject(const char *key, const void *object,
       map_object->object_size=object_size;
       map_object->clone_function=clone;
       map_object->deallocate_function=deallocate;
-      map_object->reference_count=0;
+      map_object->reference_count=1;
       map_object->previous=0;
       map_object->next=0;
+      map_object->signature=MagickSignature;
     }
 
   return map_object;
@@ -193,6 +204,9 @@ static void
 MagickMapDestroyObject(MagickMapObject *object)
 {
   assert(object != 0);
+  assert(object->signature == MagickSignature);
+
+  object->reference_count--;
   assert(object->reference_count == 0);
 
   MagickFreeMemory(object->key);
@@ -243,6 +257,7 @@ MagickMapAccessEntry(MagickMap map,const char *key, size_t *object_size)
     *p;
 
   assert(map != 0);
+  assert(map->signature == MagickSignature);
   assert(key != 0);
 
   if (object_size)
@@ -307,6 +322,7 @@ MagickMapAddEntry(MagickMap map,const char *key, const void *object,
     *new_object;
 
   assert(map != 0);
+  assert(map->signature == MagickSignature);
   assert(key != 0);
   assert(object != 0);
 
@@ -434,6 +450,7 @@ MagickMapAllocateMap(MagickMapObjectClone clone,
       map->semaphore=AllocateSemaphoreInfo();
       map->reference_count=1;
       map->list=0;
+      map->signature=MagickSignature;
     }
   return map;
 }
@@ -472,6 +489,7 @@ MagickMapCloneMap(MagickMap map,ExceptionInfo *exception)
   const char *key;
 
   assert(map != 0);
+  assert(map->signature == MagickSignature);
 
   /*
     Don't lock. Iterator locks the map. PTHREADS doesn't
@@ -523,6 +541,7 @@ MagickExport void
 MagickMapClearMap(MagickMap map)
 {
   assert(map != 0);
+  assert(map->signature == MagickSignature);
 
   LockSemaphoreInfo(map->semaphore);
   if (map->list)
@@ -573,6 +592,7 @@ MagickMapAllocateIterator(MagickMap map)
     iterator;
 
   assert(map != 0);
+  assert(map->signature == MagickSignature);
 
   if (LockSemaphoreInfo(map->semaphore) == False)
     return 0;
@@ -585,6 +605,7 @@ MagickMapAllocateIterator(MagickMap map)
       iterator->member=0;
       iterator->position=FrontPosition;
       iterator->map->reference_count++;
+      iterator->signature=MagickSignature;
     }
 
   UnlockSemaphoreInfo(map->semaphore);
@@ -619,6 +640,7 @@ MagickExport void
 MagickMapDeallocateMap(MagickMap map)
 {
   assert(map != 0);
+  assert(map->signature == MagickSignature);
 
   LockSemaphoreInfo(map->semaphore);
 
@@ -673,6 +695,7 @@ MagickExport void
 MagickMapDeallocateIterator(MagickMapIterator iterator)
 {
   assert(iterator != 0);
+  assert(iterator->signature == MagickSignature);
 
   LockSemaphoreInfo(iterator->map->semaphore);
 
@@ -719,6 +742,7 @@ MagickMapDereferenceIterator(const MagickMapIterator iterator,
     *value=0;
 
   assert(iterator != 0);
+  assert(iterator->signature == MagickSignature);
   assert(iterator->member != 0);
 
   if (object_size)
@@ -762,6 +786,7 @@ MagickExport void
 MagickMapIterateToBack(MagickMapIterator iterator)
 {
   assert(iterator != 0);
+  assert(iterator->signature == MagickSignature);
 
   iterator->member=0;
   iterator->position=BackPosition;
@@ -795,6 +820,7 @@ MagickExport void
 MagickMapIterateToFront(MagickMapIterator iterator)
 {
   assert(iterator != 0);
+  assert(iterator->signature == MagickSignature);
 
   iterator->member=0;
   iterator->position=FrontPosition;
@@ -830,6 +856,7 @@ MagickExport unsigned int
 MagickMapIterateNext(MagickMapIterator iterator,const char **key)
 {
   assert(iterator != 0);
+  assert(iterator->signature == MagickSignature);
   assert(key != 0);
 
   if (LockSemaphoreInfo(iterator->map->semaphore) != True)
@@ -891,6 +918,7 @@ MagickExport unsigned int
 MagickMapIteratePrevious(MagickMapIterator iterator,const char **key)
 {
   assert(iterator != 0);
+  assert(iterator->signature == MagickSignature);
   assert(key != 0);
 
   if(LockSemaphoreInfo(iterator->map->semaphore) != True)
@@ -958,6 +986,7 @@ MagickMapRemoveEntry(MagickMap map,const char *key)
     status = False;
 
   assert(map != 0);
+  assert(map->signature == MagickSignature);
   assert(key != 0);
 
   if(LockSemaphoreInfo(map->semaphore) != True)

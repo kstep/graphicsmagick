@@ -1,3 +1,10 @@
+2003-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (defineValue): New method to support setting
+	format-specific defines.
+	(defineSet): New method to support setting or testing for
+	format-specific flags.
+
 2003-12-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (iccColorProfile): Implementation now uses the

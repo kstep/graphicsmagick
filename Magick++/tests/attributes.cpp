@@ -589,6 +589,55 @@ int main( int /*argc*/, char ** argv)
     }
 
     //
+    // Format specific defines
+    //
+    if (image.defineSet("foo","bar"))
+      {
+        ++failures;
+        cout << "Line: " << __LINE__
+             << ", define for foo:bar incorrectly reports set."
+             << endl;
+      }
+
+    image.defineSet("foo","bar",true);
+    if (!image.defineSet("foo","bar"))
+      {
+        ++failures;
+        cout << "Line: " << __LINE__
+             << ", define for foo:bar incorrectly reports not set."
+             << endl;
+      }
+
+    image.defineSet("foo","bar",false);
+    if (image.defineSet("foo","bar"))
+      {
+        ++failures;
+        cout << "Line: " << __LINE__
+             << ", define for foo:bar incorrectly reports set."
+             << endl;
+      }
+
+    image.defineValue("foo","bar","value");
+    std::string value = image.defineValue("foo","bar");
+    if (image.defineValue("foo","bar") != "value")
+      {
+        ++failures;
+        cout << "Line: " << __LINE__
+             << ", define for foo:bar incorrectly reports value \""
+             << value << "\""
+             << endl;
+      }
+
+    image.defineSet("foo","bar",false);
+    if (image.defineSet("foo","bar"))
+      {
+        ++failures;
+        cout << "Line: " << __LINE__
+             << ", define for foo:bar incorrectly reports set."
+             << endl;
+      }
+
+    //
     // depth
     //
     if ( image.depth() != QuantumDepth )

@@ -724,6 +724,28 @@ namespace Magick
     void            debug ( const bool flag_ );
     bool            debug ( void ) const;
 
+    // Tagged image format define (set/access coder-specific option) The
+    // magick_ option specifies the coder the define applies to.  The key_
+    // option provides the key specific to that coder.  The value_ option
+    // provides the value to set (if any). See the defineSet() method if the
+    // key must be removed entirely.
+    void            defineValue ( const std::string &magick_,
+                                  const std::string &key_,
+                                  const std::string &value_ );
+    std::string     defineValue ( const std::string &magick_,
+                                  const std::string &key_ ) const;
+
+    // Tagged image format define. Similar to the defineValue() method
+    // except that passing the flag_ value 'true' creates a value-less
+    // define with that format and key. Passing the flag_ value 'false'
+    // removes any existing matching definition. The method returns 'true'
+    // if a matching key exists, and 'false' if no matching key exists.
+    void            defineSet ( const std::string &magick_,
+                                const std::string &key_,
+                                bool flag_ );
+    bool            defineSet ( const std::string &magick_,
+                                const std::string &key_ ) const;
+
     // Vertical and horizontal resolution in pixels of the image
     void            density ( const Geometry &geomery_ );
     Geometry        density ( void ) const;

@@ -2224,6 +2224,66 @@ bool Magick::Image::debug ( void ) const
   return constOptions()->debug();
 }
 
+// Tagged image format define (set/access coder-specific option) The
+// magick_ option specifies the coder the define applies to.  The key_
+// option provides the key specific to that coder.  The value_ option
+// provides the value to set (if any). See the defineSet() method if the
+// key must be removed entirely.
+void Magick::Image::defineValue ( const std::string &magick_,
+                                  const std::string &key_,
+                                  const std::string &value_ )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  std::string definition = magick_ + ":" + key_ + "=" + value_;
+  AddDefinitions ( imageInfo(), definition.c_str(), &exceptionInfo );
+  throwException( exceptionInfo );
+}
+std::string Magick::Image::defineValue ( const std::string &magick_,
+                                         const std::string &key_ ) const
+{
+  const char *definition =
+    AccessDefinition ( constImageInfo(), magick_.c_str(), key_.c_str() );
+  if (definition)
+    return std::string( definition );
+  return std::string( );
+}
+
+// Tagged image format define. Similar to the defineValue() method
+// except that passing the flag_ value 'true' creates a value-less
+// define with that format and key. Passing the flag_ value 'false'
+// removes any existing matching definition. The method returns 'true'
+// if a matching key exists, and 'false' if no matching key exists.
+void Magick::Image::defineSet ( const std::string &magick_,
+                                const std::string &key_,
+                                bool flag_ )
+{
+  modifyImage();
+  if (flag_)
+    {
+      ExceptionInfo exceptionInfo;
+      GetExceptionInfo( &exceptionInfo );
+      std::string options = magick_ + ":" + key_ + "=";
+      AddDefinitions ( imageInfo(), options.c_str(), &exceptionInfo );
+      throwException( exceptionInfo );
+    }
+  else
+    {
+      std::string definition = magick_ + ":" + key_;
+      RemoveDefinitions( imageInfo(), definition.c_str() );
+    }
+}
+bool Magick::Image::defineSet ( const std::string &magick_,
+                                const std::string &key_ ) const
+{
+  const char *definition =
+    AccessDefinition ( constImageInfo(), magick_.c_str(), key_.c_str() );
+  if (definition)
+    return true;
+  return false;
+}
+
 // Pixel resolution
 void Magick::Image::density ( const Geometry &density_ )
 {
