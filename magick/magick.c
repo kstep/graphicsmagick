@@ -228,6 +228,8 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %    o filename: A character string representing the desired configuration
 %      file.
 %
+%    o filetype: File type hint.
+%
 %    o exception: Return any errors or warnings in this structure.
 %
 %
@@ -241,12 +243,19 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
 
   assert(filename != (const char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
+
+  /* Current directory */
+  printf("Searching for \"%s\"\n", filename);
   path=AllocateString(filename);
+  printf("Current directory ...\n");
   if (IsAccessible(path))
     return(path);
   search_path=AllocateString(path);
   FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
-    DirectorySeparator,filename);
+               DirectorySeparator,filename);
+
+  /* Executable directory */
+  printf("Executable directory ...\n");
   if (IsAccessible(path))
     {
       LiberateMemory((void **) &search_path);
@@ -254,10 +263,13 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     }
   ConcatenateString(&search_path,"; Client Path:");
   ConcatenateString(&search_path,path);
+
+  /* MAGICK_HOME */
   if (getenv("MAGICK_HOME") != (char *) NULL)
     {
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
-        DirectorySeparator,filename);
+                   DirectorySeparator,filename);
+      printf("MAGICK_HOME ...\n");
       if (IsAccessible(path))
         {
           LiberateMemory((void **) &search_path);
@@ -266,11 +278,14 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
       ConcatenateString(&search_path,"; MAGICK_HOME:");
       ConcatenateString(&search_path,path);
     }
+
+  /* $HOME/.magick */
   if (getenv("HOME") != (char *) NULL)
     {
       FormatString(path,"%.1024s%s%s%s%.1024s",getenv("HOME"),
-        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,
-        DirectorySeparator,filename);
+                   *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,
+                   DirectorySeparator,filename);
+      printf("HOME/.magick ...\n");
       if (IsAccessible(path))
         {
           LiberateMemory((void **) &search_path);
@@ -279,10 +294,13 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
       ConcatenateString(&search_path,"; HOME:");
       ConcatenateString(&search_path,path);
     }
+
+  /* MAGICK_FONT_PATH */
   if (getenv("MAGICK_FONT_PATH") != (char *) NULL)
     {
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_FONT_PATH"),
-        DirectorySeparator,filename);
+                   DirectorySeparator,filename);
+      printf("MAGICK_FONT_PATH ...\n");
       if (IsAccessible(path))
         {
           LiberateMemory((void **) &search_path);
@@ -291,6 +309,8 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
       ConcatenateString(&search_path,"; MAGICK_FONT_PATH:");
       ConcatenateString(&search_path,path);
     }
+
+  /* Windows Registry */
 #if defined(WIN32)
   {
     char
@@ -301,31 +321,35 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
 
     static char
       *registry_path_keys[] =
-      {
-        "LibPath",
-        "ModulesPath",
-        "SharePath",
-        NULL
-      };
+    {
+      "LibPath",
+      "ModulesPath",
+      "SharePath",
+      NULL
+    };
 
     for (i=0; registry_path_keys[i] != (char *) NULL; i++)
-    {
-      key_value=NTRegistryKeyLookup(registry_path_keys[i]);
-      if (key_value == (char *) NULL)
-        continue;
-      FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
-        filename);
-      LiberateMemory((void **) &key_value);
-      if (IsAccessible(path))
-        return(path);
-      ConcatenateString(&search_path,"; Registry[");
-      ConcatenateString(&search_path, registry_path_keys[i]);
-      ConcatenateString(&search_path,"]:");
-      ConcatenateString(&search_path,path);
-    }
+      {
+        key_value=NTRegistryKeyLookup(registry_path_keys[i]);
+        if (key_value == (char *) NULL)
+          continue;
+        FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
+                     filename);
+        LiberateMemory((void **) &key_value);
+        printf("Registry[\"%s\"] ...\n", path);
+        if (IsAccessible(path))
+          return(path);
+        ConcatenateString(&search_path,"; Registry[");
+        ConcatenateString(&search_path, registry_path_keys[i]);
+        ConcatenateString(&search_path,"]:");
+        ConcatenateString(&search_path,path);
+      }
   }
 #endif
+
+  /* Hard coded paths */
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
+  printf("MagickLibPath[\"%s\"]\n", MagickLibPath);
   if (IsAccessible(path))
     {
       LiberateMemory((void **) &search_path);
@@ -334,6 +358,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
   ConcatenateString(&search_path,"; MagickLibPath:");
   ConcatenateString(&search_path,path);
   FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
+  printf("MagickModulesPath[\"%s\"]\n", MagickModulesPath);
   if (IsAccessible(path))
     {
       LiberateMemory((void **) &search_path);
@@ -342,6 +367,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
   ConcatenateString(&search_path,"; MagickModulesPath:");
   ConcatenateString(&search_path,path);
   FormatString(path,"%.1024s%.1024s",MagickSharePath,filename);
+  printf("MagickSharePath[\"%s\"]\n", MagickSharePath);
   if (IsAccessible(path))
     {
       LiberateMemory((void **) &search_path);
@@ -362,12 +388,12 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
         LiberateMemory((void **) &search_path);
         return(path);
       }
-    ConcatenateString(&search_path,"; Windows Registry:");
+    ConcatenateString(&search_path,"; Windows Resource:");
     ConcatenateString(&search_path,path);
   }
 #endif
   ThrowException(exception,ConfigurationError,
-    "Unable to open configuration file",search_path);
+                 "Unable to open configuration file",search_path);
   LiberateMemory((void **) &search_path);
   LiberateMemory((void **) &path);
   return((char *) NULL);

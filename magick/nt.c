@@ -873,6 +873,17 @@ MagickExport char *NTRegistryKeyLookup(const char *key)
     if (res == ERROR_SUCCESS)
       res = RegOpenKeyExA (reg_key, MagickLibVersionText, 0, KEY_READ, &reg_key);
 
+    if (res == ERROR_SUCCESS)
+      {
+#if QuantumDepth == 8
+        res = RegOpenKeyExA (reg_key, "Q:8", 0, KEY_READ, &reg_key);
+#elif QuantumDepth == 16
+        res = RegOpenKeyExA (reg_key, "Q:16", 0, KEY_READ, &reg_key);
+#else
+# error "Specified value of QuantumDepth is not supported"
+#endif
+      }
+
     if (res != ERROR_SUCCESS) {
       reg_key = (HKEY) INVALID_HANDLE_VALUE;
       return 0;

@@ -36,7 +36,7 @@
 AppName=ImageMagick
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=ImageMagick version 5.4.7
+AppVerName=ImageMagick version 5.4.8
 AppCopyright=Copyright (C) 2002 ImageMagick Studio
 ; To install under "C:\Program Files ImageMagick":
 ; DefaultDirName={pf}\ImageMagick
@@ -51,11 +51,12 @@ OutputBaseFilename=ImageMagick-win2k
 
 ; Windows registry settings
 [Registry]
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "ApplicationDefaultsPath"; ValueData: "{app}\config"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "SharePath"; ValueData: "{app}\config"; Flags: uninsdeletekey
+; Paths contain both release version and quantum depth
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q16"; ValueType: string; ValueName: "ApplicationDefaultsPath"; ValueData: "{app}\config"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q16"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q16"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q16"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q16"; ValueType: string; ValueName: "SharePath"; ValueData: "{app}\config"; Flags: uninsdeletekey
 
 [Files]
 ; Executables
