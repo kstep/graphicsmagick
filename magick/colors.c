@@ -1315,24 +1315,24 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  Q u e r y C o l o r N a m e                                                %
+%  Q u e r y C o l o r n a m e                                                %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method QueryColorName returns the name of the color that is closest to the
+%  Method QueryColorname returns the name of the color that is closest to the
 %  supplied color in RGB space.
 %
-%  The format of the QueryColorName method is:
+%  The format of the QueryColorname method is:
 %
 %      unsigned int QueryColorname(Image *image,const PixelPacket *color,
 %        ComplianceType compliance,char *name)
 %
 %  A description of each parameter follows.
 %
-%    o distance: Method QueryColorName returns the distance-squared in RGB
-%      space as well as the color name that is at a minimum distance.
+%    o status: Method QueryColorname returns True if the color is matched
+%      exactly, otherwise False.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -1347,10 +1347,6 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
 MagickExport unsigned int QueryColorname(Image *image,const PixelPacket *color,
   const ComplianceType compliance,char *name)
 {
-  double
-    distance,
-    distance_squared,
-    min_distance;
 
   ExceptionInfo
     exception;
@@ -1361,31 +1357,35 @@ MagickExport unsigned int QueryColorname(Image *image,const PixelPacket *color,
   *name='\0';
   GetExceptionInfo(&exception);
   p=GetColorInfo("*",&exception);
-  if (p == (ColorInfo *) NULL)
-    return(False);
-  min_distance=0;
-  for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
-  {
-    if ((p->compliance != AllCompliance) && (p->compliance != compliance))
-      continue;
-    distance=color->red-(int) p->color.red;
-    distance_squared=distance*distance;
-    distance=color->green-(int) p->color.green;
-    distance_squared+=distance*distance;
-    distance=color->blue-(int) p->color.blue;
-    distance_squared+=distance*distance;
-    distance=color->opacity-(int) p->color.opacity;
-    distance_squared+=distance*distance;
-    if ((p == color_list) || (distance_squared < min_distance))
+  if (p != (ColorInfo *) NULL)
+    {
+      double
+        distance,
+        distance_squared,
+        min_distance;
+
+      min_distance=1.0;
+      for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
       {
-        min_distance=distance_squared;
-        (void) strcpy(name,p->name);
+        if ((p->compliance != AllCompliance) && (p->compliance != compliance))
+          continue;
+        distance=color->red-(int) p->color.red;
+        distance_squared=distance*distance;
+        distance=color->green-(int) p->color.green;
+        distance_squared+=distance*distance;
+        distance=color->blue-(int) p->color.blue;
+        distance_squared+=distance*distance;
+        distance=color->opacity-(int) p->color.opacity;
+        distance_squared+=distance*distance;
+        if ((p == color_list) || (distance_squared < min_distance))
+          {
+            min_distance=distance_squared;
+            (void) strcpy(name,p->name);
+          }
       }
-  }
-  if (LocaleCompare(name,"grey100") == 0)
-    (void) strcpy(name,"white");
-  if (min_distance == 0.0)
-    return(0);
+      if (min_distance == 0.0)
+        return(True);
+    }
   if (color->opacity == OpaqueOpacity)
     {
       if (image->depth <= 8)
@@ -1394,7 +1394,7 @@ MagickExport unsigned int QueryColorname(Image *image,const PixelPacket *color,
       else
         FormatString(name,"#%04x%04x%04x",(unsigned int) color->red,
           (unsigned int) color->green,(unsigned int) color->blue);
-      return((unsigned int) min_distance);
+      return(False);
     }
   if (image->depth <= 8)
     FormatString(name,"#%02x%02x%02x%02x",DownScale(color->red),
@@ -1404,7 +1404,7 @@ MagickExport unsigned int QueryColorname(Image *image,const PixelPacket *color,
     FormatString(name,"#%04x%04x%04x%04x",(unsigned int) color->red,
       (unsigned int) color->green,(unsigned int) color->blue,
       (unsigned int) color->opacity);
-  return((unsigned int) min_distance);
+  return(False);
 }
 
 /*
