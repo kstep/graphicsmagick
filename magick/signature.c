@@ -463,7 +463,6 @@ MagickExport unsigned int SignatureImage(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  signature=AllocateString((char *) NULL);
   message=(unsigned char *) AcquireMemory(10*image->columns);
   if (message == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,
@@ -516,6 +515,7 @@ MagickExport unsigned int SignatureImage(Image *image)
   /*
     Convert digital signature to a 64 character hex string.
   */
+  signature=AllocateString((char *) NULL);
   FormatString(signature,"%08lx%08lx%08lx%08lx%08lx%08lx%08lx%08lx",
     signature_info.digest[0],signature_info.digest[1],signature_info.digest[2],
     signature_info.digest[3],signature_info.digest[4],signature_info.digest[5],
