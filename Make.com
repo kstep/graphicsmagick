@@ -68,7 +68,7 @@ $ if share
 $ then
 $    write sys$output "Making shareable image"
 $    link/share/exe=magickshr.exe   [.magick]libMagick.olb/lib, -
-  [.coders]libCoders.olb/lib, -
+  [-.coders]libCoders.olb/lib, -
   $disk2:[joukj.public.freetype.freetype.freetype2.lib]freetype.olb/lib, -
   []magickshr.opt/opt
 $ libr/crea/share/log magickshr.olb magickshr.exe
@@ -80,7 +80,7 @@ $    write sys$output "Shareable image logical MAGICKSHR defined:"
 $    show logi magickshr
 $ else
 $    link_libraries := [-.magick]libMagick.olb/lib, -
-  [.coders]libCoders.olb/lib
+  [-.coders]libCoders.olb/lib
 $ endif
 $ define magick [-.magick]
 $ set default [.utilities]
