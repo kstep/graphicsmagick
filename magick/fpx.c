@@ -397,7 +397,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             &fpx_info);
         if (fpx_status == FPX_LOW_MEMORY_ERROR)
           {
-            FreeMemory(scanline);
+            FreeMemory((void *) &scanline);
             (void) FPX_CloseImage(flashpix);
             FPX_ClearSystem();
             ThrowReaderException(ResourceLimitWarning,
@@ -440,7 +440,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
-  FreeMemory(scanline);
+  FreeMemory((void *) &scanline);
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
   if (image->temporary)
@@ -1064,7 +1064,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     }
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
-  FreeMemory(pixels);
+  FreeMemory((void *) &pixels);
   if (image->temporary)
     {
       FILE

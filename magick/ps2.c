@@ -553,9 +553,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         {
           (void) sprintf(buffer,"%.1024s \n",labels[i]);
           (void) WriteBlob(image,strlen(buffer),buffer);
-          FreeMemory(labels[i]);
+          FreeMemory((void *) &labels[i]);
         }
-        FreeMemory(labels);
+        FreeMemory((void *) &labels);
       }
     (void) sprintf(buffer,"%u %u\n%u\n%d\n%d\n",image->columns,image->rows,
       IsPseudoClass(image),(int) (image->colorspace == CMYKColorspace),
@@ -667,7 +667,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               CloseBlob(image);
               return(False);
             }
-          FreeMemory(pixels);
+          FreeMemory((void *) &pixels);
           break;
         }
         case NoCompression:
@@ -835,7 +835,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   status=LZWEncodeImage(image,number_packets,pixels);
                 else
                   status=PackbitsEncodeImage(image,number_packets,pixels);
-              FreeMemory(pixels);
+              FreeMemory((void *) &pixels);
               if (!status)
                 {
                   CloseBlob(image);

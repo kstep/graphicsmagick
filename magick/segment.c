@@ -400,7 +400,7 @@ static unsigned int Classify(Image *image,short **extrema,
           head=next_cluster;
         else
           last_cluster->next=next_cluster;
-        FreeMemory(cluster);
+        FreeMemory((void *) &cluster);
       }
   }
   number_clusters=count;
@@ -470,7 +470,7 @@ static unsigned int Classify(Image *image,short **extrema,
   image->matte=False;
   image->class=PseudoClass;
   if (image->colormap != (PixelPacket *) NULL)
-    FreeMemory(image->colormap);
+    FreeMemory((void *) &image->colormap);
   image->colormap=colormap;
   image->colors=number_clusters;
   i=0;
@@ -555,10 +555,10 @@ static unsigned int Classify(Image *image,short **extrema,
   for (cluster=head; cluster != (Cluster *) NULL; cluster=next_cluster)
   {
     next_cluster=cluster->next;
-    FreeMemory(cluster);
+    FreeMemory((void *) &cluster);
   }
   squares-=(int) DownScale(MaxRGB);
-  FreeMemory(squares);
+  FreeMemory((void *) &squares);
   return(True);
 }
 
@@ -1023,7 +1023,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   */
   Stability(root->child);
   MeanStability(root->child);
-  FreeMemory(list);
+  FreeMemory((void *) &list);
   return(root);
 }
 
@@ -1081,7 +1081,7 @@ static void FreeNodes(const IntervalTree *node)
     return;
   FreeNodes(node->sibling);
   FreeNodes(node->child);
-  FreeMemory((void *) node);
+  FreeMemory((void *) &(void *) node);
 }
 
 static double OptimalTau(const long *histogram,const double max_tau,
@@ -1248,8 +1248,8 @@ static double OptimalTau(const long *histogram,const double max_tau,
     Free memory.
   */
   FreeNodes(root);
-  FreeMemory(zero_crossing);
-  FreeMemory(list);
+  FreeMemory((void *) &zero_crossing);
+  FreeMemory((void *) &list);
   return(average_tau);
 }
 
@@ -1451,8 +1451,8 @@ Export unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
       {
         for (i-- ; i >= 0; i--)
         {
-          FreeMemory(extrema[i]);
-          FreeMemory(histogram[i]);
+          FreeMemory((void *) &extrema[i]);
+          FreeMemory((void *) &histogram[i]);
         }
         ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
           image->filename);
@@ -1481,8 +1481,8 @@ Export unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
   */
   for (i=0; i < Dimension; i++)
   {
-    FreeMemory(extrema[i]);
-    FreeMemory(histogram[i]);
+    FreeMemory((void *) &extrema[i]);
+    FreeMemory((void *) &histogram[i]);
   }
   return(status);
 }

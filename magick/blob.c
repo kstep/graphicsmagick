@@ -1166,7 +1166,7 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   if (p != (char *) NULL)
     {
       (void) strcpy(filename,p);
-      FreeMemory(p);
+      FreeMemory((void *) &p);
     }
   /*
     Open image file.

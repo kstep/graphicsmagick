@@ -181,7 +181,7 @@ static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
   }
   label=(char *) ReallocateMemory((char *) label,strlen(label)+1);
   (void) SetImageAttribute(image,"Label",label);
-  FreeMemory(label);
+  FreeMemory((void *) &label);
 }
 
 static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
@@ -568,12 +568,12 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       /*
         Free TrueType resources.
       */
-      FreeMemory(canvas.bitmap);
-      FreeMemory(character.bitmap);
+      FreeMemory((void *) &canvas.bitmap);
+      FreeMemory((void *) &character.bitmap);
       for (i=0; i < MaxGlyphs; i++)
         TT_Done_Glyph(glyphs[i]);
-      FreeMemory(glyphs);
-      FreeMemory(unicode);
+      FreeMemory((void *) &glyphs);
+      FreeMemory((void *) &unicode);
       TT_Done_Instance(instance);
       TT_Close_Face(face);
       TT_Done_FreeType(engine);

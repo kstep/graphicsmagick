@@ -108,7 +108,7 @@ Export void *AllocateMemory(const size_t size)
 %
 %  The format of the FreeMemory method is:
 %
-%      void FreeMemory(void *memory)
+%      void FreeMemory(void **memory)
 %
 %  A description of each parameter follows:
 %
@@ -116,12 +116,12 @@ Export void *AllocateMemory(const size_t size)
 %
 %
 */
-Export void FreeMemory(void *memory)
+Export void FreeMemory(void **memory)
 {
-  if (memory == (void *) NULL)
+  if (*memory == (void *) NULL)
     return;
-  free(memory);
-  memory=(void *) NULL;
+  free(*memory);
+  *memory=(void *) NULL;
 }
 
 /*
@@ -161,6 +161,6 @@ Export void *ReallocateMemory(void *memory,const size_t size)
   if (size)
     new_memory=realloc(memory,size);
   if (new_memory == (void *) NULL)
-    FreeMemory(memory);
+    FreeMemory((void *) &memory);
   return(new_memory);
 }

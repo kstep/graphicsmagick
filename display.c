@@ -1496,7 +1496,7 @@ int main(int argc,char **argv)
     }
   DestroyDelegateInfo();
   DestroyMagickInfo();
-  FreeMemory(argv);
+  FreeMemory((void *) &argv);
   Exit(0);
 #endif
   return(False);

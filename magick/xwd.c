@@ -217,7 +217,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=ReadBlob(image,length,comment);
   comment[length]='\0';
   (void) SetImageAttribute(image,"Comment",comment);
-  FreeMemory(comment);
+  FreeMemory((void *) &comment);
   if (status == False)
     ThrowReaderException(CorruptImageWarning,
       "Unable to read window name from dump file",image);
@@ -310,7 +310,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->ping)
     {
       if (header.ncolors != 0)
-        FreeMemory(colors);
+        FreeMemory((void *) &colors);
       CloseBlob(image);
       return(image);
     }
@@ -446,9 +446,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Free image and colormap.
   */
   if (header.ncolors != 0)
-    FreeMemory(colors);
-  FreeMemory(ximage->data);
-  FreeMemory(ximage);
+    FreeMemory((void *) &colors);
+  FreeMemory((void *) &ximage->data);
+  FreeMemory((void *) &ximage);
   CloseBlob(image);
   return(image);
 }
@@ -651,7 +651,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
         color.flags=colors[i].flags;
         (void) WriteBlob(image,sz_XWDColor,(char *) &color);
       }
-      FreeMemory(colors);
+      FreeMemory((void *) &colors);
     }
   /*
     Allocate memory for pixels.
@@ -691,7 +691,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       if (QuantumTick(y,image->rows))
         ProgressMonitor(SaveImageText,y,image->rows);
   }
-  FreeMemory(pixels);
+  FreeMemory((void *) &pixels);
   CloseBlob(image);
   return(True);
 }

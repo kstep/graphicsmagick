@@ -167,7 +167,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
     handler;
 
   MontageInfo
-    montage_info;
+    *montage_info;
 
   register int
     i;
@@ -529,16 +529,14 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
     images[i]->previous=images[i-1];
     images[i-1]->next=images[i];
   }
-  GetMontageInfo(&montage_info);
-  (void) strcpy(montage_info.filename,image->filename);
-  montage_info.pointsize=image_info->pointsize;
-  montage_info.shadow=True;
-  (void) CloneString(&montage_info.font,image_info->font);
-  (void) CloneString(&montage_info.tile,"3x3");
-  (void) CloneString(&montage_info.geometry,DefaultPreviewGeometry);
-  (void) CloneString(&montage_info.frame,DefaultTileFrame);
-  montage_image=MontageImages(*images,&montage_info,&image->exception);
-  DestroyMontageInfo(&montage_info);
+  montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
+  (void) strcpy(montage_info->filename,image->filename);
+  montage_info->shadow=True;
+  (void) CloneString(&montage_info->tile,"3x3");
+  (void) CloneString(&montage_info->geometry,DefaultPreviewGeometry);
+  (void) CloneString(&montage_info->frame,DefaultTileFrame);
+  montage_image=MontageImages(*images,montage_info,&image->exception);
+  DestroyMontageInfo(montage_info);
   DestroyImages(*images);
   if (montage_image == (Image *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
@@ -547,11 +545,11 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       /*
         Free image directory.
       */
-      FreeMemory(montage_image->montage);
+      FreeMemory((void *) &montage_image->montage);
       montage_image->montage=(char *) NULL;
       if (image->directory != (char *) NULL)
         {
-          FreeMemory(montage_image->directory);
+          FreeMemory((void *) &montage_image->directory);
           montage_image->directory=(char *) NULL;
         }
     }

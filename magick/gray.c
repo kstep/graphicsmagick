@@ -205,7 +205,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,ExceptionInfo *exception
         ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   } while (count > 0);
-  FreeMemory(scanline);
+  FreeMemory((void *) &scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -325,7 +325,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(SaveImageText,y,image->rows);
     }
-    FreeMemory(pixels);
+    FreeMemory((void *) &pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

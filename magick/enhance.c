@@ -243,11 +243,11 @@ Export unsigned int EqualizeImage(Image *image)
     j+=histogram[i];
     map[i]=j;
   }
-  FreeMemory(histogram);
+  FreeMemory((void *) &histogram);
   if (map[MaxRGB] == 0)
     {
-      FreeMemory(equalize_map);
-      FreeMemory(map);
+      FreeMemory((void *) &equalize_map);
+      FreeMemory((void *) &map);
       return(False);
     }
   /*
@@ -258,7 +258,7 @@ Export unsigned int EqualizeImage(Image *image)
   for (i=0; i <= MaxRGB; i++)
     equalize_map[i]=(Quantum)
       ((((double) (map[i]-low))*MaxRGB)/Max(high-low,1));
-  FreeMemory(map);
+  FreeMemory((void *) &map);
   /*
     Stretch the histogram.
   */
@@ -304,7 +304,7 @@ Export unsigned int EqualizeImage(Image *image)
       break;
     }
   }
-  FreeMemory(equalize_map);
+  FreeMemory((void *) &equalize_map);
   return(True);
 }
 
@@ -452,7 +452,7 @@ Export unsigned int GammaImage(Image *image,const char *gamma)
   }
   if (image->gamma != 0.0)
     image->gamma*=(red_gamma+green_gamma+blue_gamma)/3.0;
-  FreeMemory(gamma_map);
+  FreeMemory((void *) &gamma_map);
   return(True);
 }
 
@@ -839,7 +839,7 @@ Export unsigned int NormalizeImage(Image *image)
       break;
     }
   }
-  FreeMemory(normalize_map);
-  FreeMemory(histogram);
+  FreeMemory((void *) &normalize_map);
+  FreeMemory((void *) &histogram);
   return(True);
 }

@@ -306,26 +306,24 @@ typedef struct _MontageInfo
     *title,
     *frame,
     *texture,
-    *pen,
-    *font;
-
-  unsigned int
-    gravity;
-
-  PixelPacket
-    background_color,
-    border_color,
-    matte_color;
+    *font,
+    *pen;
 
   double
     pointsize;
 
   unsigned int
+    gravity,
     border_width,
     shadow;
 
   CompositeOperator
     compose;
+
+  PixelPacket
+    background_color,
+    border_color,
+    matte_color;
 } MontageInfo;
 
 typedef struct _PointInfo
@@ -530,9 +528,6 @@ typedef struct _Image
   unsigned int
     orphan;
 
-  int
-    (*fifo)(void *,const void *,size_t,ExceptionInfo *);
-
   struct _Image
     *previous,
     *list,
@@ -689,6 +684,9 @@ extern Export MagickInfo
   *RegisterMagickInfo(MagickInfo *),
   *SetMagickInfo(const char *);
 
+extern Export MontageInfo
+  *CloneMontageInfo(const ImageInfo *,const MontageInfo *);
+
 extern Export unsigned int
   AnimateImages(const ImageInfo *image_info,Image *image),
   AnnotateImage(Image *,const AnnotateInfo *),
@@ -746,7 +744,7 @@ extern Export void
   GetAnnotateInfo(const ImageInfo *,AnnotateInfo *),
   GetDrawInfo(const ImageInfo *,DrawInfo *),
   GetImageInfo(ImageInfo *),
-  GetMontageInfo(MontageInfo *),
+  GetMontageInfo(const ImageInfo *,MontageInfo *),
   GetPageInfo(RectangleInfo *),
   GetPixelPacket(PixelPacket *),
   ListMagickInfo(FILE *),

@@ -178,7 +178,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,y,image->rows);
     }
-    FreeMemory(pixels);
+    FreeMemory((void *) &pixels);
     /*
       Proceed to next image.
     */
@@ -336,7 +336,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(SaveImageText,y,image->rows);
     }
-    FreeMemory(pixels);
+    FreeMemory((void *) &pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

@@ -600,9 +600,9 @@ Export unsigned int HuffmanDecodeImage(Image *image)
   /*
     Free decoder memory.
   */
-  FreeMemory(mw_hash);
-  FreeMemory(mb_hash);
-  FreeMemory(scanline);
+  FreeMemory((void *) &mw_hash);
+  FreeMemory((void *) &mb_hash);
+  FreeMemory((void *) &scanline);
   return(True);
 }
 
@@ -843,7 +843,7 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
     Ascii85Flush(image);
   if (huffman_image != image)
     DestroyImage(huffman_image);
-  FreeMemory(scanline);
+  FreeMemory((void *) &scanline);
   return(True);
 }
 #if !defined(HasTIFF)
@@ -1049,7 +1049,7 @@ Export unsigned int LZWEncodeImage(Image *image,
   if (number_bits != 0)
     Ascii85Encode(image,accumulator >> 24);
   Ascii85Flush(image);
-  FreeMemory(table);
+  FreeMemory((void *) &table);
   return(True);
 }
 #else
@@ -1196,7 +1196,7 @@ Export unsigned int PackbitsEncodeImage(Image *image,
   }
   Ascii85Encode(image,128);  /* EOD marker */
   Ascii85Flush(image);
-  FreeMemory(packbits);
+  FreeMemory((void *) &packbits);
   return(True);
 }
 
@@ -1292,7 +1292,7 @@ Export unsigned int ZLIBEncodeImage(Image *image,
         Ascii85Encode(image,compressed_pixels[i]);
       Ascii85Flush(image);
     }
-  FreeMemory(compressed_pixels);
+  FreeMemory((void *) &compressed_pixels);
   return(!status);
 }
 #else

@@ -287,10 +287,10 @@ static unsigned int DecodeImage(Image *image,const int opacity,
       if (QuantumTick(y,image->rows))
         ProgressMonitor(LoadImageText,y,image->rows);
   }
-  FreeMemory(pixel_stack);
-  FreeMemory(suffix);
-  FreeMemory(prefix);
-  FreeMemory(packet);
+  FreeMemory((void *) &pixel_stack);
+  FreeMemory((void *) &suffix);
+  FreeMemory((void *) &prefix);
+  FreeMemory((void *) &packet);
   image->compression=LZWCompression;
   image->matte=opacity >= 0;
   if (y < image->rows)
@@ -598,10 +598,10 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
   /*
     Free encoder memory.
   */
-  FreeMemory(hash_suffix);
-  FreeMemory(hash_prefix);
-  FreeMemory(hash_code);
-  FreeMemory(packet);
+  FreeMemory((void *) &hash_suffix);
+  FreeMemory((void *) &hash_prefix);
+  FreeMemory((void *) &hash_code);
+  FreeMemory((void *) &packet);
   return(True);
 }
 
@@ -816,7 +816,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (comments == (char *) NULL)
               break;
             (void) SetImageAttribute(image,"Comment",comments);
-            FreeMemory(comments);
+            FreeMemory((void *) &comments);
             break;
           }
           case 0xff:
@@ -944,7 +944,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i].green=UpScale(*p++);
           image->colormap[i].blue=UpScale(*p++);
         }
-        FreeMemory(colormap);
+        FreeMemory((void *) &colormap);
       }
     if (opacity >= (int) image->colors)
       {
@@ -968,7 +968,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
   }
   if (global_colormap != (unsigned char *) NULL)
-    FreeMemory(global_colormap);
+    FreeMemory((void *) &global_colormap);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -1169,8 +1169,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
               image->colors*sizeof(PixelPacket));
             if (image->colormap == (PixelPacket *) NULL)
               {
-                FreeMemory(global_colormap);
-                FreeMemory(colormap);
+                FreeMemory((void *) &global_colormap);
+                FreeMemory((void *) &colormap);
                 ThrowWriterException(ResourceLimitWarning,
                   "Memory allocation failed",image);
               }
@@ -1374,8 +1374,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
           &image->exception);
         if (interlace_image == (Image *) NULL)
           {
-            FreeMemory(global_colormap);
-            FreeMemory(colormap);
+            FreeMemory((void *) &global_colormap);
+            FreeMemory((void *) &colormap);
             return(False);
           }
         i=0;
@@ -1406,8 +1406,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       }
     if (status == False)
       {
-        FreeMemory(global_colormap);
-        FreeMemory(colormap);
+        FreeMemory((void *) &global_colormap);
+        FreeMemory((void *) &colormap);
         ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
           image);
       }
@@ -1418,8 +1418,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   (void) WriteByte(image,';'); /* terminator */
-  FreeMemory(global_colormap);
-  FreeMemory(colormap);
+  FreeMemory((void *) &global_colormap);
+  FreeMemory((void *) &colormap);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;

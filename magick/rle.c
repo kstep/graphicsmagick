@@ -264,7 +264,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) ReadBlob(image,length-1,comment);
         comment[length-1]='\0';
         (void) SetImageAttribute(image,"Comment",comment);
-        FreeMemory(comment);
+        FreeMemory((void *) &comment);
         if ((length & 0x01) == 0)
           (void) ReadByte(image);
       }
@@ -523,15 +523,15 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (QuantumTick(y,image->rows))
                   ProgressMonitor(LoadImageText,y,image->rows);
             }
-            FreeMemory(image->colormap);
+            FreeMemory((void *) &image->colormap);
             image->colormap=(PixelPacket *) NULL;
             image->class=DirectClass;
             image->colors=0;
           }
       }
     if (number_colormaps != 0)
-      FreeMemory(colormap);
-    FreeMemory(rle_pixels);
+      FreeMemory((void *) &colormap);
+    FreeMemory((void *) &rle_pixels);
     /*
       Proceed to next image.
     */

@@ -16,7 +16,7 @@ extern "C" {
 */
 extern Export void
   *AllocateMemory(const size_t),
-  FreeMemory(void *),
+  FreeMemory(void **),
   *ReallocateMemory(void *,const size_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -100,23 +100,23 @@ Export IndexPacket *GetIndexes(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t P i x e l                                                           %
+%   G e t O n e P i x e l                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetPixel returns a single pixel at the specified (x,y) location.
+%  Method GetOnePixel returns a single pixel at the specified (x,y) location.
 %  The image background color is returned if an error occurs.
 %
-%  The format of the GetPixel method is:
+%  The format of the GetOnePixel method is:
 %
-%      PixelPacket *GetPixel(const Image image,const int x,const int y)
+%      PixelPacket *GetOnePixel(const Image image,const int x,const int y)
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method GetPixels returns the pixels associated with the
-%      last call to the SetPixelCache() or GetPixelCache() methods.
+%    o pixels: Method GetOnePixel returns a pixel at the specified (x,y)
+%      location.
 %
 %    o image: The address of a structure of type Image.
 %

@@ -241,7 +241,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
           }
         }
       if (matte_image != (unsigned char *) NULL)
-        FreeMemory(matte_image);
+        FreeMemory((void *) &matte_image);
     }
   /*
     Compute the character per pixel.

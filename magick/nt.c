@@ -96,7 +96,7 @@ Export void closedir(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
   FindClose(entry->hSearch);
-  FreeMemory(entry);
+  FreeMemory((void *) &entry);
 }
 
 /*

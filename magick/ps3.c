@@ -409,7 +409,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             CloseBlob(image);
             return(False);
           }
-        FreeMemory(pixels);
+        FreeMemory((void *) &pixels);
         break;
       }
       case NoCompression:

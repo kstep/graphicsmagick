@@ -225,7 +225,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) ReadBlob(image,tga_header.id_length,comment);
         comment[tga_header.id_length]='\0';
         (void) SetImageAttribute(image,"Comment",comment);
-        FreeMemory(comment);
+        FreeMemory((void *) &comment);
       }
     GetPixelPacket(&pixel);
     if (tga_header.colormap_type != 0)
@@ -661,7 +661,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
         }
         (void) WriteBlob(image,(int) 3*targa_header.colormap_length,
           (char *) targa_colormap);
-        FreeMemory(targa_colormap);
+        FreeMemory((void *) &targa_colormap);
       }
     /*
       Convert MIFF to TGA raster pixels.
@@ -697,7 +697,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(SaveImageText,y,image->rows);
     }
-    FreeMemory(targa_pixels);
+    FreeMemory((void *) &targa_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

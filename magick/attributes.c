@@ -95,10 +95,10 @@ Export void DestroyImageAttributes(Image *image)
     attribute=p;
     p=p->next;
     if (attribute->key != (char *) NULL)
-      FreeMemory(attribute->key);
+      FreeMemory((void *) &attribute->key);
     if (attribute->value != (char *) NULL)
-      FreeMemory(attribute->value);
-    FreeMemory(attribute);
+      FreeMemory((void *) &attribute->value);
+    FreeMemory((void *) &attribute);
   }
   image->attributes=(ImageAttribute *) NULL;
 }
@@ -207,9 +207,9 @@ Export unsigned int SetImageAttribute(Image *image,const char *key,
       if (p == (ImageAttribute *) NULL)
         return(False);
       if (p->key != (char *) NULL)
-        FreeMemory(p->key);
+        FreeMemory((void *) &p->key);
       if (p->value != (char *) NULL)
-        FreeMemory(p->value);
+        FreeMemory((void *) &p->value);
       if (p->previous != (ImageAttribute *) NULL)
         p->previous->next=p->next;
       else
@@ -220,7 +220,7 @@ Export unsigned int SetImageAttribute(Image *image,const char *key,
         }
       if (p->next != (ImageAttribute *) NULL)
         p->next->previous=p->previous;
-      FreeMemory(p);
+      FreeMemory((void *) &p);
       return(True);
     }
   if (Latin1Compare(key,"Label") == 0)

@@ -972,7 +972,7 @@ static void DestroyList(const NodeInfo *node_info)
     if (node_info->child[id] != (NodeInfo *) NULL)
       DestroyList(node_info->child[id]);
   if (node_info->list != (ColorPacket *) NULL)
-    FreeMemory(node_info->list);
+    FreeMemory((void *) &node_info->list);
 }
 
 /*
@@ -1130,7 +1130,7 @@ Export unsigned long GetNumberColors(Image *image,FILE *file)
   do
   {
     nodes=color_cube.node_list->next;
-    FreeMemory(color_cube.node_list);
+    FreeMemory((void *) &color_cube.node_list);
     color_cube.node_list=nodes;
   }
   while (color_cube.node_list != (Nodes *) NULL);
@@ -1618,7 +1618,7 @@ Export unsigned int IsPseudoClass(Image *image)
   do
   {
     nodes=color_cube.node_list->next;
-    FreeMemory(color_cube.node_list);
+    FreeMemory((void *) &color_cube.node_list);
     color_cube.node_list=nodes;
   } while (color_cube.node_list != (Nodes *) NULL);
   return((image->class == PseudoClass) && (image->colors <= 256));

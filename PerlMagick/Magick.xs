@@ -3357,7 +3357,7 @@ ImageToBlob(ref,...)
       if (blob != (char *) NULL)
         {
           PUSHs(sv_2mortal(newSVpv(blob,length)));
-          FreeMemory(blob);
+          FreeMemory((void *) &blob);
         }
       if (package_info->image_info->adjoin)
         break;
@@ -4771,7 +4771,7 @@ Montage(ref,...)
       error_jmp;
 
     MontageInfo
-      montage_info;
+      *montage_info;
 
     register int
       i;
@@ -4814,12 +4814,12 @@ Montage(ref,...)
         MagickWarning(OptionWarning,"No images to montage",NULL);
         goto MethodException;
       }
-    info=GetPackageInfo((void *) av,info);
     /*
       Get options.
     */
-    GetMontageInfo(&montage_info);
-    FormatString(montage_info.filename,"montage-%.*s",MaxTextExtent-9,
+    info=GetPackageInfo((void *) av,info);
+    montage_info=CloneMontageInfo(info->image_info,(MontageInfo *) NULL);
+    FormatString(montage_info->filename,"montage-%.*s",MaxTextExtent-9,
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     concatenate=0;
     for (i=2; i < items; i+=2)
@@ -4833,18 +4833,18 @@ Montage(ref,...)
           if (strEQcase(attribute,"background"))
             {
               (void) QueryColorDatabase(SvPV(ST(i),na),
-                &montage_info.background_color);
+                &montage_info->background_color);
               continue;
             }
           if (strEQcase(attribute,"bordercolor"))
             {
               (void) QueryColorDatabase(SvPV(ST(i),na),
-                &montage_info.border_color);
+                &montage_info->border_color);
               continue;
             }
           if (strEQcase(attribute,"borderwidth"))
             {
-              montage_info.border_width=SvIV(ST(i));
+              montage_info->border_width=SvIV(ST(i));
               continue;
             }
         }
@@ -4861,7 +4861,7 @@ Montage(ref,...)
                     SvPV(ST(i),na));
                   continue;
                 }
-              montage_info.compose=(CompositeOperator) sp;
+              montage_info->compose=(CompositeOperator) sp;
               continue;
              }
           break;
@@ -4880,27 +4880,27 @@ Montage(ref,...)
                   MagickWarning(OptionWarning,"Invalid geometry on frame",p);
                   continue;
                 }
-              (void) CloneString(&montage_info.frame,p);
+              (void) CloneString(&montage_info->frame,p);
               if (*p == '\0')
-                montage_info.frame=(char *) NULL;
+                montage_info->frame=(char *) NULL;
               continue;
             }
           if (strEQcase(attribute,"filen"))
             {
-              (void) strncpy(montage_info.filename,SvPV(ST(i),na),
+              (void) strncpy(montage_info->filename,SvPV(ST(i),na),
                 MaxTextExtent);
               continue;
             }
           if (strEQcase(attribute,"font"))
             {
-              (void) CloneString(&montage_info.font,SvPV(ST(i),na));
+              (void) CloneString(&montage_info->font,SvPV(ST(i),na));
               continue;
             }
           if (strEQcase(attribute,"fore"))  /* anachronism */
             {
               if (info)
                 (void) CloneString(&info->image_info->pen,SvPV(ST(i),na));
-              (void) CloneString(&montage_info.pen,SvPV(ST(i),na));
+              (void) CloneString(&montage_info->pen,SvPV(ST(i),na));
               continue;
              }
           break;
@@ -4919,9 +4919,9 @@ Montage(ref,...)
                   MagickWarning(OptionWarning,"Invalid geometry on geometry",p);
                   continue;
                 }
-             (void) CloneString(&montage_info.geometry,p);
+             (void) CloneString(&montage_info->geometry,p);
              if (*p == '\0')
-               montage_info.geometry=(char *) NULL;
+               montage_info->geometry=(char *) NULL;
              continue;
            }
          if (strEQcase(attribute,"gravity"))
@@ -4937,7 +4937,7 @@ Montage(ref,...)
                    SvPV(ST(i),na));
                  return;
                }
-             montage_info.gravity=in;
+             montage_info->gravity=in;
              continue;
            }
          break;
@@ -4959,7 +4959,7 @@ Montage(ref,...)
           if (strEQcase(attribute,"mattec"))
             {
               (void) QueryColorDatabase(SvPV(ST(i),na),
-                &montage_info.matte_color);
+                &montage_info->matte_color);
               continue;
             }
           if (strEQcase(attribute,"mode"))
@@ -4979,23 +4979,23 @@ Montage(ref,...)
                 }
                 case FrameMode:
                 {
-                  (void) CloneString(&montage_info.frame,"15x15+3+3");
-                  montage_info.shadow=True;
+                  (void) CloneString(&montage_info->frame,"15x15+3+3");
+                  montage_info->shadow=True;
                   break;
                 }
                 case UnframeMode:
                 {
-                  montage_info.frame=(char *) NULL;
-                  montage_info.shadow=False;
-                  montage_info.border_width=0;
+                  montage_info->frame=(char *) NULL;
+                  montage_info->shadow=False;
+                  montage_info->border_width=0;
                   break;
                 }
                 case ConcatenateMode:
                 {
-                  montage_info.frame=(char *) NULL;
-                  montage_info.shadow=False;
-                  (void) CloneString(&montage_info.geometry,"+0+0");
-                  montage_info.border_width=0;
+                  montage_info->frame=(char *) NULL;
+                  montage_info->shadow=False;
+                  (void) CloneString(&montage_info->geometry,"+0+0");
+                  montage_info->border_width=0;
                   concatenate=True;
                 }
               }
@@ -5010,12 +5010,12 @@ Montage(ref,...)
             {
               if (info)
                 (void) CloneString(&info->image_info->pen,SvPV(ST(i),na));
-              (void) CloneString(&montage_info.pen,SvPV(ST(i),na));
+              (void) CloneString(&montage_info->pen,SvPV(ST(i),na));
               continue;
              }
           if (strEQcase(attribute,"point"))
             {
-              montage_info.pointsize=SvIV(ST(i));
+              montage_info->pointsize=SvIV(ST(i));
               continue;
             }
           break;
@@ -5033,7 +5033,7 @@ Montage(ref,...)
                     SvPV(ST(i),na));
                   continue;
                 }
-             montage_info.shadow=sp;
+             montage_info->shadow=sp;
              continue;
             }
           break;
@@ -5043,7 +5043,7 @@ Montage(ref,...)
         {
           if (strEQcase(attribute,"texture"))
             {
-              (void) CloneString(&montage_info.texture,SvPV(ST(i),na));
+              (void) CloneString(&montage_info->texture,SvPV(ST(i),na));
               continue;
             }
           if (strEQcase(attribute,"tile"))
@@ -5054,14 +5054,14 @@ Montage(ref,...)
                   MagickWarning(OptionWarning,"Invalid geometry on tile",p);
                   continue;
                 }
-              (void) CloneString(&montage_info.tile,p);
+              (void) CloneString(&montage_info->tile,p);
               if (*p == '\0')
-                montage_info.tile=(char *) NULL;
+                montage_info->tile=(char *) NULL;
               continue;
             }
           if (strEQcase(attribute,"title"))
             {
-              (void) CloneString(&montage_info.title,SvPV(ST(i),na));
+              (void) CloneString(&montage_info->title,SvPV(ST(i),na));
               continue;
             }
           if (strEQcase(attribute,"trans"))
@@ -5074,8 +5074,8 @@ Montage(ref,...)
       }
       MagickWarning(OptionWarning,"Invalid attribute",attribute);
     }
-    image=MontageImages(image,&montage_info,&exception);
-    DestroyMontageInfo(&montage_info);
+    image=MontageImages(image,montage_info,&exception);
+    DestroyMontageInfo(montage_info);
     if (!image)
       {
         MagickWarning(exception.severity,exception.message,exception.qualifier);
@@ -5084,7 +5084,7 @@ Montage(ref,...)
     if (transparent_color)
       for (next=image; next; next=next->next)
         TransparentImage(next,transparent_color);
-    (void) strcpy(info->image_info->filename,montage_info.filename);
+    (void) strcpy(info->image_info->filename,montage_info->filename);
     (void) SetImageInfo(info->image_info,False);
     for (next=image; next; next=next->next)
     {

@@ -204,7 +204,7 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
       Ascii85Encode(image,(unsigned int) buffer[j]);
     Ascii85Flush(image);
   }
-  FreeMemory(buffer);
+  FreeMemory((void *) &buffer);
   TIFFClose(tiff);
   (void) remove(filename);
   return(True);
@@ -301,7 +301,7 @@ static unsigned int ReadColorProfile(char *text,long int length,Image *image)
   p=(unsigned char *) text;
   if (image->color_profile.length != 0)
     {
-      FreeMemory(image->color_profile.info);
+      FreeMemory((void *) &image->color_profile.info);
       image->color_profile.length=0;
     }
   image->color_profile.info=(unsigned char *) AllocateMemory(length);
@@ -326,7 +326,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
   p=(unsigned char *) text;
   if (image->iptc_profile.length != 0)
     {
-      FreeMemory(image->iptc_profile.info);
+      FreeMemory((void *) &image->iptc_profile.info);
       image->iptc_profile.length=0;
       image->iptc_profile.info=(unsigned char *) NULL;
     }
@@ -362,7 +362,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
     return(False);
   if (image->iptc_profile.length != 0)
     {
-      FreeMemory(image->iptc_profile.info);
+      FreeMemory((void *) &image->iptc_profile.info);
       image->iptc_profile.length=0;
     }
 #if defined(GET_ONLY_IPTC_DATA)
@@ -842,8 +842,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-        FreeMemory(scanline);
-        FreeMemory(quantum_scanline);
+        FreeMemory((void *) &scanline);
+        FreeMemory((void *) &quantum_scanline);
         break;
       }
       case 1:
@@ -909,7 +909,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-        FreeMemory(scanline);
+        FreeMemory((void *) &scanline);
         break;
       }
       case 2:
@@ -937,7 +937,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         status=TIFFReadRGBAImage(tiff,image->columns,image->rows,pixels,0);
         if (status == False)
           {
-            FreeMemory(pixels);
+            FreeMemory((void *) &pixels);
             TIFFClose(tiff);
             ThrowReaderException(CorruptImageWarning,"Unable to read image",
               image);
@@ -968,7 +968,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-        FreeMemory(pixels);
+        FreeMemory((void *) &pixels);
         break;
       }
     }
@@ -1133,7 +1133,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
       if (TIFFIsByteSwapped(tiff))
         TIFFSwabArrayOfLong((uint32 *) profile,length);
       TIFFSetField(tiff,type,(uint32) (length+roundup),(void *) profile);
-      FreeMemory(profile);
+      FreeMemory((void *) &profile);
       return;
     }
   /*
@@ -1167,7 +1167,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
     profile[length+roundup]=0;
   TIFFSetField(tiff,type,(uint32) length+roundup,(void *) profile);
 #endif
-  FreeMemory(profile);
+  FreeMemory((void *) &profile);
 }
 #endif
 
@@ -1243,9 +1243,9 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
       /*
         Free memory resources.
       */
-      FreeMemory(scanlines);
+      FreeMemory((void *) &scanlines);
       scanlines=(unsigned char *) NULL;
-      FreeMemory(tile_pixels);
+      FreeMemory((void *) &tile_pixels);
       tile_pixels=(unsigned char *) NULL;
     }
   return(status);
@@ -1711,9 +1711,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           blue[i]=0;
         }
         TIFFSetField(tiff,TIFFTAG_COLORMAP,red,green,blue);
-        FreeMemory(red);
-        FreeMemory(green);
-        FreeMemory(blue);
+        FreeMemory((void *) &red);
+        FreeMemory((void *) &green);
+        FreeMemory((void *) &blue);
       }
       default:
       {
@@ -1790,7 +1790,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         break;
       }
     }
-    FreeMemory(scanline);
+    FreeMemory((void *) &scanline);
     if (image_info->verbose == True)
       TIFFPrintDirectory(tiff,stderr,False);
     TIFFWriteDirectory(tiff);

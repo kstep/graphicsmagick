@@ -578,11 +578,11 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   /*
     Free memory.
   */
-  FreeMemory(buffer);
-  FreeMemory(matte_channel);
-  FreeMemory(blue_channel);
-  FreeMemory(green_channel);
-  FreeMemory(red_channel);
+  FreeMemory((void *) &buffer);
+  FreeMemory((void *) &matte_channel);
+  FreeMemory((void *) &blue_channel);
+  FreeMemory((void *) &green_channel);
+  FreeMemory((void *) &red_channel);
   return(despeckle_image);
 }
 
@@ -908,12 +908,12 @@ Export Image *EnhanceImage(Image *image,ExceptionInfo *exception)
   mean=(int) (s->red+red)/2; \
   distance=s->red-(int) red; \
   distance_squared= \
-    (2.0*(MaxRGB+1)+mean)*squares[distance]/(double) (MaxRGB+1); \
+    (2.0*(MaxRGB+1)+mean)*distance*distance/(double) (MaxRGB+1); \
   distance=s->green-(int) green; \
-  distance_squared+=4.0*squares[distance]; \
+  distance_squared+=4.0*distance*distance; \
   distance=s->blue-(int) blue; \
   distance_squared+= \
-    (3.0*(MaxRGB+1)-1.0-mean)*squares[distance]/(double) (MaxRGB+1); \
+    (3.0*(MaxRGB+1)-1.0-mean)*distance*distance/(double) (MaxRGB+1); \
   if (distance_squared < Threshold) \
     { \
       total_red+=(weight)*s->red; \
@@ -956,9 +956,6 @@ Export Image *EnhanceImage(Image *image,ExceptionInfo *exception)
     *q,
     *s;
 
-  register unsigned int
-    *squares;
-
   /*
     Initialize enhanced image attributes.
   */
@@ -969,20 +966,6 @@ Export Image *EnhanceImage(Image *image,ExceptionInfo *exception)
   if (enhance_image == (Image *) NULL)
     return((Image *) NULL);
   enhance_image->class=DirectClass;
-  /*
-    Allocate the squares buffer.
-  */
-  squares=(unsigned int *)
-    AllocateMemory((MaxRGB+MaxRGB+1)*sizeof(unsigned int));
-  if (squares == (unsigned int *) NULL)
-    {
-      DestroyImage(enhance_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to enhance image",
-        "Memory allocation failed");
-    }
-  squares+=MaxRGB;
-  for (i=(-MaxRGB); i <= MaxRGB; i++)
-    squares[i]=i*i;
   /*
     Enhance image.
   */
@@ -1038,11 +1021,6 @@ Export Image *EnhanceImage(Image *image,ExceptionInfo *exception)
     if (QuantumTick(y,image->rows))
       ProgressMonitor(EnhanceImageText,y,image->rows-2);
   }
-  /*
-    Free memory resources.
-  */
-  squares-=MaxRGB;
-  FreeMemory(squares);
   return(enhance_image);
 }
 
@@ -1302,8 +1280,8 @@ Export Image *GaussianBlurImage(Image *image,const double width,
   /*
     Free resources.
   */
-  FreeMemory(mask);
-  FreeMemory(scanline);
+  FreeMemory((void *) &mask);
+  FreeMemory((void *) &scanline);
   return(blur_image);
 }
 
@@ -1580,7 +1558,7 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius,
     if (QuantumTick(y,image->rows))
       ProgressMonitor(MedianFilterImageText,y,image->rows);
   }
-  FreeMemory(neighbors);
+  FreeMemory((void *) &neighbors);
   return(median_image);
 }
 
@@ -1888,7 +1866,7 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius,
     if (QuantumTick(y,image->rows))
       ProgressMonitor(OilPaintImageText,y,image->rows);
   }
-  FreeMemory(histogram);
+  FreeMemory((void *) &histogram);
   return(paint_image);
 }
 
@@ -3176,7 +3154,7 @@ Export unsigned int ThresholdImage(Image *image,const double threshold)
     ThrowBinaryException(ResourceLimitWarning,"Unable to threshold image",
       "Memory allocation failed");
   if (image->colormap != (PixelPacket *) NULL)
-    FreeMemory(image->colormap);
+    FreeMemory((void *) &image->colormap);
   image->class=PseudoClass;
   image->colors=2;
   image->colormap=colormap;
@@ -3302,6 +3280,6 @@ Export Image *WaveImage(Image *image,const double amplitude,
     if (QuantumTick(y,wave_image->rows))
       ProgressMonitor(WaveImageText,y,wave_image->rows);
   }
-  FreeMemory(sine_map);
+  FreeMemory((void *) &sine_map);
   return(wave_image);
 }

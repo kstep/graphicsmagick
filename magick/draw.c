@@ -111,8 +111,8 @@ static unsigned int
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloneDrawInfo makes a duplicate of the given annotate info, or if
-%  annotate info is NULL, a new one.
+%  Method CloneDrawInfo makes a duplicate of the given draw info, or if
+%  draw info is NULL, a new one.
 %
 %  The format of the CloneDrawInfo method is:
 %
@@ -416,7 +416,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
       break;
   }
   image->class=DirectClass;
-  FreeMemory(segment_stack);
+  FreeMemory((void *) &segment_stack);
   return(True);
 }
 
@@ -448,21 +448,16 @@ Export void DestroyDrawInfo(DrawInfo *draw_info)
 {
   assert(draw_info != (DrawInfo *) NULL);
   if (draw_info->primitive != (char *) NULL)
-    FreeMemory(draw_info->primitive);
-  draw_info->primitive=(char *) NULL;
+    FreeMemory((void *) &draw_info->primitive);
   if (draw_info->font != (char *) NULL)
-    FreeMemory(draw_info->font);
-  draw_info->font=(char *) NULL;
+    FreeMemory((void *) &draw_info->font);
   if (draw_info->pen != (char *) NULL)
-    FreeMemory(draw_info->pen);
-  draw_info->pen=(char *) NULL;
+    FreeMemory((void *) &draw_info->pen);
   if (draw_info->box != (char *) NULL)
-    FreeMemory(draw_info->box);
-  draw_info->box=(char *) NULL;
+    FreeMemory((void *) &draw_info->box);
   if (draw_info->tile != (Image *) NULL)
     DestroyImage(draw_info->tile);
-  draw_info->tile=(Image *) NULL;
-  FreeMemory(draw_info);
+  FreeMemory((void *) &draw_info);
 }
 
 /*
@@ -621,7 +616,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   if (primitive_info == (PrimitiveInfo *) NULL)
     {
       if (indirection)
-        FreeMemory(primitive);
+        FreeMemory((void *) &primitive);
       DestroyDrawInfo(clone_info);
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
@@ -725,7 +720,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (primitive_info != (PrimitiveInfo *) NULL)
         continue;
       if (indirection)
-        FreeMemory(primitive);
+        FreeMemory((void *) &primitive);
       DestroyDrawInfo(clone_info);
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
@@ -978,9 +973,9 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   primitive_info[i].primitive=UndefinedPrimitive;
   if (primitive_type == UndefinedPrimitive)
     {
-      FreeMemory(primitive_info);
+      FreeMemory((void *) &primitive_info);
       if (indirection)
-        FreeMemory(primitive);
+        FreeMemory((void *) &primitive);
       DestroyDrawInfo(clone_info);
       ThrowBinaryException(OptionWarning,
         "Non-conforming drawing primitive definition",keyword);
@@ -1069,9 +1064,9 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   /*
     Free resources.
   */
-  FreeMemory(primitive_info);
+  FreeMemory((void *) &primitive_info);
   if (indirection)
-    FreeMemory(primitive);
+    FreeMemory((void *) &primitive);
   DestroyDrawInfo(clone_info);
   return(True);
 }
@@ -1803,7 +1798,7 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
       start=x;
     } while (x <= x2);
   }
-  FreeMemory(segment_stack);
+  FreeMemory((void *) &segment_stack);
   return(True);
 }
 

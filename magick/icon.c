@@ -245,7 +245,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
       image->colormap[x].red=UpScale(*p++);
       p++;
     }
-    FreeMemory(icon_colormap);
+    FreeMemory((void *) &icon_colormap);
     /*
       Convert ICON raster image to pixel packets.
     */

@@ -93,10 +93,10 @@ Export void DestroyMagickInfo()
     entry=p;
     p=p->next;
     if (entry->tag != (char *) NULL)
-      FreeMemory(entry->tag);
+      FreeMemory((void *) &entry->tag);
     if (entry->description != (char *) NULL)
-      FreeMemory(entry->description);
-    FreeMemory(entry);
+      FreeMemory((void *) &entry->description);
+    FreeMemory((void *) &entry);
   }
   magick_info=(MagickInfo *) NULL;
 }
@@ -176,7 +176,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
         	      "*.la", &number_files);
       if (file_list == (char **) NULL)
         {
-          FreeMemory(coder_dir);
+          FreeMemory((void *) &coder_dir);
           return (MagickInfo *)NULL;
         }
 
@@ -204,7 +204,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 	     strcat(func_name,"8");
 
 	  strcat(func_name,base_name);
-	  FreeMemory(base_name);
+	  FreeMemory((void *) &base_name);
 	  strcat(func_name, "Image");
 
 #if 0
@@ -217,13 +217,13 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 	  func();
 #endif
         }
-      FreeMemory(func_name);
-      FreeMemory(coder_dir);
+      FreeMemory((void *) &func_name);
+      FreeMemory((void *) &coder_dir);
 
       for (i=0; i < number_files; i++)
-          FreeMemory(file_list[i]);
+          FreeMemory((void *) &file_list[i]);
       if (file_list != (char **) NULL)
-          FreeMemory(file_list);
+          FreeMemory((void *) &file_list);
 
 #else
       Register8BIMImage();
@@ -511,9 +511,9 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
     if (Latin1Compare(p->tag,tag) == 0)
       {
         if (p->tag != (char *) NULL)
-          FreeMemory(p->tag);
+          FreeMemory((void *) &p->tag);
         if (p->description != (char *) NULL)
-          FreeMemory(p->description);
+          FreeMemory((void *) &p->description);
         if (p->previous != (MagickInfo *) NULL)
           p->previous->next=p->next;
         else
@@ -524,7 +524,7 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
           }
         if (p->next != (MagickInfo *) NULL)
           p->next->previous=p->previous;
-        FreeMemory(p);
+        FreeMemory((void *) &p);
         return(True);
     }
   }

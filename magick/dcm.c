@@ -3106,7 +3106,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) fprintf(stdout,"\n");
           }
       }
-    FreeMemory(data);
+    FreeMemory((void *) &data);
   }
   if ((width == 0) || (height == 0))
     ThrowReaderException(CorruptImageWarning,"Not a DCM image file",image);
@@ -3334,7 +3334,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Free scale resource.
   */
   if (scale != (Quantum *) NULL)
-    FreeMemory(scale);
+    FreeMemory((void *) &scale);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);

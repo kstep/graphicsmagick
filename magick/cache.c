@@ -197,7 +197,7 @@ Export void DestroyCacheInfo(Cache cache)
   {
     case MemoryCache:
     {
-      FreeMemory(cache_info->pixels);
+      FreeMemory((void *) &cache_info->pixels);
       if (cache_info->class == PseudoClass)
         (void) GetCacheMemory(number_pixels*sizeof(IndexPacket));
       (void) GetCacheMemory(number_pixels*sizeof(PixelPacket));
@@ -229,10 +229,9 @@ Export void DestroyCacheInfo(Cache cache)
     {
       for (id=0; id <= cache_info->rows; id++)
         DestroyCacheNexus(cache,id);
-      FreeMemory(cache_info->nexus);
+      FreeMemory((void *) &cache_info->nexus);
     }
-  FreeMemory(cache_info);
-  cache=(void *) NULL;
+  FreeMemory((void *) &cache_info);
 }
 
 /*
@@ -273,7 +272,7 @@ Export void DestroyCacheNexus(Cache cache,const unsigned int id)
   nexus=cache_info->nexus+id;
   nexus->available=True;
   if (nexus->stash != (void *) NULL)
-    FreeMemory(nexus->stash);
+    FreeMemory((void *) &nexus->stash);
   nexus->stash=(void *) NULL;
 }
 

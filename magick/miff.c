@@ -260,7 +260,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
               "Memory allocation failed",image);
           *p='\0';
           (void) SetImageAttribute(image,"Comment",comment);
-          FreeMemory(comment);
+          FreeMemory((void *) &comment);
           c=ReadByte(image);
         }
       else
@@ -433,7 +433,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
       while (isspace(c))
         c=ReadByte(image);
     }
-    FreeMemory(values);
+    FreeMemory((void *) &values);
     (void) ReadByte(image);
     /*
       Verify that required image information is defined.
@@ -547,7 +547,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                 image->colormap[i].blue=(*p++ << 8);
                 image->colormap[i].blue|=(*p++);
               }
-            FreeMemory(colormap);
+            FreeMemory((void *) &colormap);
           }
       }
     /*
@@ -718,8 +718,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
       if (!SyncPixelCache(image))
         break;
     }
-    FreeMemory(pixels);
-    FreeMemory(compressed_pixels);
+    FreeMemory((void *) &pixels);
+    FreeMemory((void *) &compressed_pixels);
     if (status == False)
       {
         DestroyImages(image);
@@ -1127,7 +1127,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             *q++=image->colormap[i].blue  & 0xff;
           }
         (void) WriteBlob(image,packet_size*image->colors,colormap);
-        FreeMemory(colormap);
+        FreeMemory((void *) &colormap);
       }
     /*
       Write image pixels to file.
@@ -1312,8 +1312,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(SaveImageText,y,image->rows);
     }
-    FreeMemory(pixels);
-    FreeMemory(compressed_pixels);
+    FreeMemory((void *) &pixels);
+    FreeMemory((void *) &compressed_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

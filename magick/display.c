@@ -958,8 +958,8 @@ static unsigned int XAnnotateEditImage(Display *display,
           No text on this line--  go to the next line of text.
         */
         previous_info=annotate_info->previous;
-        FreeMemory(annotate_info->text);
-        FreeMemory(annotate_info);
+        FreeMemory((void *) &annotate_info->text);
+        FreeMemory((void *) &annotate_info);
         annotate_info=previous_info;
         continue;
       }
@@ -1005,8 +1005,8 @@ static unsigned int XAnnotateEditImage(Display *display,
       Free up memory.
     */
     previous_info=annotate_info->previous;
-    FreeMemory(annotate_info->text);
-    FreeMemory(annotate_info);
+    FreeMemory((void *) &annotate_info->text);
+    FreeMemory((void *) &annotate_info);
     annotate_info=previous_info;
   }
   XSetForeground(display,annotate_context,
@@ -4503,7 +4503,7 @@ static unsigned int XDrawEditImage(Display *display,
     (void) XConfigureImage(display,resource_info,windows,*image);
   }
   XSetCursorState(display,windows,False);
-  FreeMemory(coordinate_info);
+  FreeMemory((void *) &coordinate_info);
   return(status);
 }
 
@@ -4640,7 +4640,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       windows->image.window_changes.width=cache_image->columns;
       windows->image.window_changes.height=cache_image->rows;
       if (windows->image.crop_geometry != (char *) NULL)
-        FreeMemory(windows->image.crop_geometry);
+        FreeMemory((void *) &windows->image.crop_geometry);
       windows->image.crop_geometry=cache_image->geometry;
       if (redo_image != (Image *) NULL)
         DestroyImage(redo_image);
@@ -4809,7 +4809,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       windows->image.window_changes.width=redo_image->columns;
       windows->image.window_changes.height=redo_image->rows;
       if (windows->image.crop_geometry != (char *) NULL)
-        FreeMemory(windows->image.crop_geometry);
+        FreeMemory((void *) &windows->image.crop_geometry);
       windows->image.crop_geometry=redo_image->geometry;
       DestroyImage(*image);
       *image=redo_image;
@@ -5558,7 +5558,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       TransformImage(image,windows->image.crop_geometry,image_geometry);
       if (windows->image.crop_geometry != (char *) NULL)
         {
-          FreeMemory(windows->image.crop_geometry);
+          FreeMemory((void *) &windows->image.crop_geometry);
           windows->image.crop_geometry=(char *) NULL;
         }
       windows->image.x=0;
@@ -5598,7 +5598,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       windows->image.window_changes.height=(*image)->rows;
       if (windows->image.crop_geometry != (char *) NULL)
         {
-          FreeMemory(windows->image.crop_geometry);
+          FreeMemory((void *) &windows->image.crop_geometry);
           windows->image.crop_geometry=(char *) NULL;
           windows->image.x=0;
           windows->image.y=0;
@@ -7893,7 +7893,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       filelist[j]=(char *) NULL;
       XListBrowserWidget(display,windows,&windows->widget,
         (const char **) filelist,"Load","Select Image to Load:",filename);
-      FreeMemory(filelist);
+      FreeMemory((void *) &filelist);
       XFreeStringList(files);
     }
   if (*filename == '\0')
@@ -8016,10 +8016,10 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
           XTextViewWidget(display,resource_info,windows,True,title,
             (const char **) textlist);
           for (i=0; textlist[i] != (char *) NULL; i++)
-            FreeMemory(textlist[i]);
-          FreeMemory(textlist);
+            FreeMemory((void *) &textlist[i]);
+          FreeMemory((void *) &textlist);
         }
-      FreeMemory(text);
+      FreeMemory((void *) &text);
     }
   DestroyImageInfo(image_info);
   return(loaded_image);
@@ -11169,7 +11169,7 @@ static Image *XVisualDirectoryImage(Display *display,
     handler;
 
   MontageInfo
-    montage_info;
+    *montage_info;
 
   register int
     i;
@@ -11244,7 +11244,7 @@ static Image *XVisualDirectoryImage(Display *display,
     (void) CloneString(&clone_info->size,DefaultTileGeometry);
     next_image=ReadImage(clone_info,&exception);
     if (filelist[i] != filenames)
-      FreeMemory(filelist[i]);
+      FreeMemory((void *) &filelist[i]);
     if (next_image != (Image *) NULL)
       {
         MogrifyImages(clone_info,5,commands,&next_image);
@@ -11268,7 +11268,7 @@ static Image *XVisualDirectoryImage(Display *display,
     ProgressMonitor(LoadImageText,i,number_files);
   }
   DestroyImageInfo(clone_info);
-  FreeMemory(filelist);
+  FreeMemory((void *) &filelist);
   if (image == (Image *) NULL)
     {
       XSetCursorState(display,windows,False);
@@ -11280,12 +11280,10 @@ static Image *XVisualDirectoryImage(Display *display,
   /*
     Create the Visual Image Directory.
   */
-  GetMontageInfo(&montage_info);
-  (void) strcpy(montage_info.filename,filename);
-  (void) CloneString(&montage_info.font,resource_info->image_info->font);
-  montage_info.pointsize=resource_info->image_info->pointsize;
-  montage_image=MontageImages(image,&montage_info,&exception);
-  DestroyMontageInfo(&montage_info);
+  montage_info=CloneMontageInfo(resource_info->image_info,(MontageInfo *) NULL);
+  (void) strcpy(montage_info->filename,filename);
+  montage_image=MontageImages(image,montage_info,&exception);
+  DestroyMontageInfo(montage_info);
   DestroyImages(image);
   XSetCursorState(display,windows,False);
   if (montage_image == (Image *) NULL)
@@ -12178,8 +12176,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   if (windows->image.id != (Window) NULL)
     {
-      FreeMemory(windows->image.name);
-      FreeMemory(windows->image.icon_name);
+      FreeMemory((void *) &windows->image.name);
+      FreeMemory((void *) &windows->image.icon_name);
     }
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->image);
@@ -12385,7 +12383,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Initialize Widget window.
   */
   if (windows->widget.id != (Window) NULL)
-    FreeMemory(windows->widget.name);
+    FreeMemory((void *) &windows->widget.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->widget);
   FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
@@ -12420,7 +12418,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Initialize popup window.
   */
   if (windows->popup.id != (Window) NULL)
-    FreeMemory(windows->popup.name);
+    FreeMemory((void *) &windows->popup.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->popup);
   windows->popup.name=(char *) AllocateMemory(MaxTextExtent);
@@ -12451,7 +12449,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Initialize Magnify window and cursor.
   */
   if (windows->magnify.id != (Window) NULL)
-    FreeMemory(windows->magnify.name);
+    FreeMemory((void *) &windows->magnify.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->magnify);
   windows->magnify.shared_memory=resource_info->use_shared_memory;
@@ -13571,16 +13569,16 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       XFree((void *) visual_info);
       XFree((void *) icon_map);
       XFree((void *) map_info);
-      FreeMemory(windows->popup.name);
-      FreeMemory(windows->widget.name);
-      FreeMemory(windows->magnify.name);
-      FreeMemory(windows->image.icon_name);
-      FreeMemory(windows->image.name);
+      FreeMemory((void *) &windows->popup.name);
+      FreeMemory((void *) &windows->widget.name);
+      FreeMemory((void *) &windows->magnify.name);
+      FreeMemory((void *) &windows->image.icon_name);
+      FreeMemory((void *) &windows->image.name);
       if (resource_info->copy_image != (Image *) NULL)
         DestroyImage(resource_info->copy_image);
-      FreeMemory(windows->icon_resources);
-      FreeMemory(windows->icon_pixel);
-      FreeMemory(windows->pixel_info);
+      FreeMemory((void *) &windows->icon_resources);
+      FreeMemory((void *) &windows->icon_pixel);
+      FreeMemory((void *) &windows->pixel_info);
       (void) signal(SIGSEGV,SIG_DFL);
       (void) signal(SIGINT,SIG_DFL);
       (void) XSetWindows((XWindows *) NULL);

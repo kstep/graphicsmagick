@@ -193,7 +193,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
         if (Latin1Compare(q,P7Comment) == 0)
           *q='\0';
         (void) SetImageAttribute(image,"Comment",comment);
-        FreeMemory(comment);
+        FreeMemory((void *) &comment);
         continue;
       }
   } while (!isdigit(c));
@@ -524,7 +524,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-        FreeMemory(pixels);
+        FreeMemory((void *) &pixels);
         break;
       }
       case '6':
@@ -581,7 +581,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-        FreeMemory(pixels);
+        FreeMemory((void *) &pixels);
         handler=SetMonitorHandler((MonitorHandler) NULL);
         (void) SetMonitorHandler(handler);
         break;
@@ -590,7 +590,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageWarning,"Not a PNM image file",image);
     }
     if (scale != (Quantum *) NULL)
-      FreeMemory(scale);
+      FreeMemory((void *) &scale);
     if (EOFBlob(image))
       ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     /*
@@ -1061,7 +1061,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(SaveImageText,y,image->rows);
         }
-        FreeMemory(pixels);
+        FreeMemory((void *) &pixels);
         break;
       }
       case '7':
@@ -1178,9 +1178,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         for (i=0; i < 2; i++)
           for (j=0; j < 16; j++)
           {
-            FreeMemory(green_map[i][j]);
-            FreeMemory(blue_map[i][j]);
-            FreeMemory(red_map[i][j]);
+            FreeMemory((void *) &green_map[i][j]);
+            FreeMemory((void *) &blue_map[i][j]);
+            FreeMemory((void *) &red_map[i][j]);
           }
         break;
       }

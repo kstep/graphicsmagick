@@ -281,7 +281,7 @@ int main(int argc,char **argv)
     x;
 
   MontageInfo
-    montage_info;
+    *montage_info;
 
   QuantizeInfo
     quantize_info;
@@ -313,7 +313,7 @@ int main(int argc,char **argv)
   last_scene=0;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   image_info->coalesce_frames=True;
-  GetMontageInfo(&montage_info);
+  montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   GetQuantizeInfo(&quantize_info);
   scene=0;
   transparent_color=(char *) NULL;
@@ -347,7 +347,7 @@ int main(int argc,char **argv)
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
                   (void) QueryColorDatabase(argv[i],
-                    &montage_info.background_color);
+                    &montage_info->background_color);
                   (void) QueryColorDatabase(argv[i],
                     &image_info->background_color);
                 }
@@ -370,20 +370,20 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  (void) QueryColorDatabase(argv[i],&montage_info.border_color);
+                  (void) QueryColorDatabase(argv[i],&montage_info->border_color);
                   (void) QueryColorDatabase(argv[i],&image_info->border_color);
                 }
               break;
             }
           if (strncmp("borderwidth",option+1,7) == 0)
             {
-              montage_info.border_width=0;
+              montage_info->border_width=0;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing width",option);
-                  montage_info.border_width=atoi(argv[i]);
+                  montage_info->border_width=atoi(argv[i]);
                 }
               break;
             }
@@ -501,47 +501,47 @@ int main(int argc,char **argv)
             }
           if (strncmp("compose",option+1,5) == 0)
             {
-              montage_info.compose=ReplaceCompositeOp;
+              montage_info->compose=ReplaceCompositeOp;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  montage_info.compose=UndefinedCompositeOp;
+                  montage_info->compose=UndefinedCompositeOp;
                   if (Latin1Compare("Over",option) == 0)
-                    montage_info.compose=OverCompositeOp;
+                    montage_info->compose=OverCompositeOp;
                   if (Latin1Compare("In",option) == 0)
-                    montage_info.compose=InCompositeOp;
+                    montage_info->compose=InCompositeOp;
                   if (Latin1Compare("Out",option) == 0)
-                    montage_info.compose=OutCompositeOp;
+                    montage_info->compose=OutCompositeOp;
                   if (Latin1Compare("Atop",option) == 0)
-                    montage_info.compose=AtopCompositeOp;
+                    montage_info->compose=AtopCompositeOp;
                   if (Latin1Compare("Xor",option) == 0)
-                    montage_info.compose=XorCompositeOp;
+                    montage_info->compose=XorCompositeOp;
                   if (Latin1Compare("Plus",option) == 0)
-                    montage_info.compose=PlusCompositeOp;
+                    montage_info->compose=PlusCompositeOp;
                   if (Latin1Compare("Minus",option) == 0)
-                    montage_info.compose=MinusCompositeOp;
+                    montage_info->compose=MinusCompositeOp;
                   if (Latin1Compare("Add",option) == 0)
-                    montage_info.compose=AddCompositeOp;
+                    montage_info->compose=AddCompositeOp;
                   if (Latin1Compare("Subtract",option) == 0)
-                    montage_info.compose=SubtractCompositeOp;
+                    montage_info->compose=SubtractCompositeOp;
                   if (Latin1Compare("Difference",option) == 0)
-                    montage_info.compose=DifferenceCompositeOp;
+                    montage_info->compose=DifferenceCompositeOp;
                   if (Latin1Compare("Bumpmap",option) == 0)
-                    montage_info.compose=BumpmapCompositeOp;
+                    montage_info->compose=BumpmapCompositeOp;
                   if (Latin1Compare("Replace",option) == 0)
-                    montage_info.compose=ReplaceCompositeOp;
+                    montage_info->compose=ReplaceCompositeOp;
                   if (Latin1Compare("ReplaceRed",option) == 0)
-                    montage_info.compose=ReplaceRedCompositeOp;
+                    montage_info->compose=ReplaceRedCompositeOp;
                   if (Latin1Compare("ReplaceGreen",option) == 0)
-                    montage_info.compose=ReplaceGreenCompositeOp;
+                    montage_info->compose=ReplaceGreenCompositeOp;
                   if (Latin1Compare("ReplaceBlue",option) == 0)
-                    montage_info.compose=ReplaceBlueCompositeOp;
+                    montage_info->compose=ReplaceBlueCompositeOp;
                   if (Latin1Compare("ReplaceMatte",option) == 0)
-                    montage_info.compose=ReplaceMatteCompositeOp;
-                  if (montage_info.compose == UndefinedCompositeOp)
+                    montage_info->compose=ReplaceMatteCompositeOp;
+                  if (montage_info->compose == UndefinedCompositeOp)
                     MagickError(OptionError,"Invalid compose type",option);
                 }
               break;
@@ -673,20 +673,20 @@ int main(int argc,char **argv)
                   if (i == argc)
                     MagickError(OptionError,"Missing font name",option);
                   (void) CloneString(&image_info->font,argv[i]);
-                  (void) CloneString(&montage_info.font,image_info->font);
+                  (void) CloneString(&montage_info->font,image_info->font);
                 }
               break;
             }
           if (strncmp("frame",option+1,2) == 0)
             {
-              montage_info.frame=(char *) NULL;
+              montage_info->frame=(char *) NULL;
               argv[i]="+sans";
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&montage_info.frame,argv[i]);
+                  (void) CloneString(&montage_info->frame,argv[i]);
                 }
               break;
             }
@@ -704,49 +704,49 @@ int main(int argc,char **argv)
             }
           if (strncmp("geometry",option+1,2) == 0)
             {
-              montage_info.geometry=(char *) NULL;
+              montage_info->geometry=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&montage_info.geometry,argv[i]);
+                  (void) CloneString(&montage_info->geometry,argv[i]);
                 }
               break;
             }
           if (strncmp("gravity",option+1,2) == 0)
             {
-              montage_info.gravity=SouthGravity;
+              montage_info->gravity=SouthGravity;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  montage_info.gravity=(~0);
+                  montage_info->gravity=(~0);
                   if (Latin1Compare("Forget",option) == 0)
-                    montage_info.gravity=ForgetGravity;
+                    montage_info->gravity=ForgetGravity;
                   if (Latin1Compare("NorthWest",option) == 0)
-                    montage_info.gravity=NorthWestGravity;
+                    montage_info->gravity=NorthWestGravity;
                   if (Latin1Compare("North",option) == 0)
-                    montage_info.gravity=NorthGravity;
+                    montage_info->gravity=NorthGravity;
                   if (Latin1Compare("NorthEast",option) == 0)
-                    montage_info.gravity=NorthEastGravity;
+                    montage_info->gravity=NorthEastGravity;
                   if (Latin1Compare("West",option) == 0)
-                    montage_info.gravity=WestGravity;
+                    montage_info->gravity=WestGravity;
                   if (Latin1Compare("Center",option) == 0)
-                    montage_info.gravity=CenterGravity;
+                    montage_info->gravity=CenterGravity;
                   if (Latin1Compare("East",option) == 0)
-                    montage_info.gravity=EastGravity;
+                    montage_info->gravity=EastGravity;
                   if (Latin1Compare("SouthWest",option) == 0)
-                    montage_info.gravity=SouthWestGravity;
+                    montage_info->gravity=SouthWestGravity;
                   if (Latin1Compare("South",option) == 0)
-                    montage_info.gravity=SouthGravity;
+                    montage_info->gravity=SouthGravity;
                   if (Latin1Compare("SouthEast",option) == 0)
-                    montage_info.gravity=SouthEastGravity;
+                    montage_info->gravity=SouthEastGravity;
                   if (Latin1Compare("Static",option) == 0)
-                    montage_info.gravity=StaticGravity;
-                  if (montage_info.gravity == (unsigned int) (~0))
+                    montage_info->gravity=StaticGravity;
+                  if (montage_info->gravity == (unsigned int) (~0))
                     MagickError(OptionError,"Invalid gravity type",option);
                 }
               break;
@@ -818,7 +818,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  (void) QueryColorDatabase(argv[i],&montage_info.matte_color);
+                  (void) QueryColorDatabase(argv[i],&montage_info->matte_color);
                   (void) QueryColorDatabase(argv[i],&image_info->matte_color);
                 }
               break;
@@ -838,25 +838,25 @@ int main(int argc,char **argv)
                   if (Latin1Compare("frame",option) == 0)
                     {
                       mode=FrameMode;
-                      (void) CloneString(&montage_info.frame,"15x15+3+3");
-                      montage_info.shadow=True;
+                      (void) CloneString(&montage_info->frame,"15x15+3+3");
+                      montage_info->shadow=True;
                       break;
                     }
                   if (Latin1Compare("unframe",option) == 0)
                     {
                       mode=UnframeMode;
-                      montage_info.frame=(char *) NULL;
-                      montage_info.shadow=False;
-                      montage_info.border_width=0;
+                      montage_info->frame=(char *) NULL;
+                      montage_info->shadow=False;
+                      montage_info->border_width=0;
                       break;
                     }
                   if (Latin1Compare("concatenate",option) == 0)
                     {
                       mode=ConcatenateMode;
-                      montage_info.frame=(char *) NULL;
-                      montage_info.shadow=False;
-                      (void) CloneString(&montage_info.geometry,"+0+0");
-                      montage_info.border_width=0;
+                      montage_info->frame=(char *) NULL;
+                      montage_info->shadow=False;
+                      (void) CloneString(&montage_info->geometry,"+0+0");
+                      montage_info->border_width=0;
                       break;
                     }
                   if (mode == UndefinedMode)
@@ -895,28 +895,28 @@ int main(int argc,char **argv)
           if (strncmp("pen",option+1,2) == 0)
             {
               image_info->pen=(char *) NULL;
-              montage_info.pen=(char *) NULL;
+              montage_info->pen=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing pen color",option);
                   (void) CloneString(&image_info->pen,argv[i]);
-                  (void) CloneString(&montage_info.pen,argv[i]);
+                  (void) CloneString(&montage_info->pen,argv[i]);
                 }
               break;
             }
           if (strncmp("pointsize",option+1,2) == 0)
             {
               image_info->pointsize=12;
-              montage_info.pointsize=12;
+              montage_info->pointsize=12;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing size",option);
                   image_info->pointsize=atof(argv[i]);
-                  montage_info.pointsize=atof(argv[i]);
+                  montage_info->pointsize=atof(argv[i]);
                 }
               break;
             }
@@ -974,7 +974,7 @@ int main(int argc,char **argv)
             }
           if (strncmp("shadow",option+1,2) == 0)
             {
-              montage_info.shadow=(*option == '-');
+              montage_info->shadow=(*option == '-');
               break;
             }
           if (strncmp("sharpen",option+1,5) == 0)
@@ -1016,37 +1016,37 @@ int main(int argc,char **argv)
         {
           if (strncmp("texture",option+1,5) == 0)
             {
-              montage_info.texture=(char *) NULL;
+              montage_info->texture=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing filename",option);
-                  (void) CloneString(&montage_info.texture,argv[i]);
+                  (void) CloneString(&montage_info->texture,argv[i]);
                 }
               break;
             }
           if (strncmp("tile",option+1,3) == 0)
             {
-              montage_info.tile=(char *) NULL;
+              montage_info->tile=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&montage_info.tile,argv[i]);
+                  (void) CloneString(&montage_info->tile,argv[i]);
                 }
               break;
             }
           if (strncmp("title",option+1,3) == 0)
             {
-              montage_info.title=(char *) NULL;
+              montage_info->title=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing title",option);
-                  (void) CloneString(&montage_info.title,argv[i]);
+                  (void) CloneString(&montage_info->title,argv[i]);
                 }
               break;
             }
@@ -1118,11 +1118,11 @@ int main(int argc,char **argv)
               FormatString(filename,"%.1024s.%u",image_info->filename,scene);
             (void) strcpy(image_info->filename,filename);
           }
-        image_info->font=montage_info.font;
+        image_info->font=montage_info->font;
         image_info->colorspace=quantize_info.colorspace;
         image_info->dither=quantize_info.dither;
         if (image_info->size == (char *) NULL)
-          image_info->size=montage_info.geometry;
+          image_info->size=montage_info->geometry;
         next_image=ReadImage(image_info,&exception);
         if (next_image == (Image *) NULL)
           MagickError(exception.severity,exception.message,exception.qualifier);
@@ -1149,8 +1149,8 @@ int main(int argc,char **argv)
   /*
     Create composite image.
   */
-  (void) strcpy(montage_info.filename,argv[argc-1]);
-  montage_image=MontageImages(image,&montage_info,&exception);
+  (void) strcpy(montage_info->filename,argv[argc-1]);
+  montage_image=MontageImages(image,montage_info,&exception);
   if (montage_image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   DestroyImages(image);
@@ -1190,9 +1190,10 @@ int main(int argc,char **argv)
   if (image_info->verbose)
     DescribeImage(montage_image,stderr,False);
   DestroyImages(montage_image);
+  DestroyMontageInfo(montage_info);
   DestroyImageInfo(image_info);
   DestroyDelegateInfo();
   DestroyMagickInfo();
-  FreeMemory(argv);
+  FreeMemory((void *) &argv);
   return(False);
 }

@@ -472,7 +472,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
         p=ExpandBuffer(scanline,&number_pixels,bits_per_pixel);
         memcpy(q,p,number_pixels);
       }
-      FreeMemory(scanline);
+      FreeMemory((void *) &scanline);
       return(pixels);
     }
   /*
@@ -509,7 +509,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
           x+=bytes_per_pixel+1;
         }
   }
-  FreeMemory(scanline);
+  FreeMemory((void *) &scanline);
   return(pixels);
 }
 
@@ -1073,7 +1073,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
               if (QuantumTick(y,tile_image->rows))
                 ProgressMonitor(LoadImageText,y,tile_image->rows);
           }
-          (void) FreeMemory(pixels);
+          (void) FreeMemory((void *) &pixels);
           CompositeImage(image,ReplaceCompositeOp,tile_image,destination.left,
             destination.top);
           DestroyImage(tile_image);
@@ -1100,7 +1100,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
             comment[i]=ReadByte(image);
           comment[i]='\0';
           (void) SetImageAttribute(image,"Comment",comment);
-          FreeMemory(comment);
+          FreeMemory((void *) &comment);
           break;
         }
         default:
@@ -1562,9 +1562,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   if (count & 0x1)
     (void) WriteByte(image,'\0');
   MSBFirstWriteShort(image,PictEndOfPictureOp);
-  FreeMemory(scanline);
-  FreeMemory(packed_scanline);
-  FreeMemory(buffer);
+  FreeMemory((void *) &scanline);
+  FreeMemory((void *) &packed_scanline);
+  FreeMemory((void *) &buffer);
   CloseBlob(image);
   return(True);
 }

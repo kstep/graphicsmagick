@@ -61,6 +61,70 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C l o n e M o n t a g e I n f o                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CloneMontageInfo makes a duplicate of the given montage info, or if
+%  montage info is NULL, a new one.
+%
+%  The format of the CloneMontageInfo method is:
+%
+%      MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
+%        const MontageInfo *montage_info)
+%
+%  A description of each parameter follows:
+%
+%    o cloned_info: Method CloneMontageInfo returns a duplicate of the given
+%      annotate info, or if annotate info is NULL a new one.
+%
+%    o image_info: a structure of type ImageInfo.
+%
+%    o montage_info: a structure of type MontageInfo.
+%
+%
+*/
+Export MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
+  const MontageInfo *montage_info)
+{
+  MontageInfo
+    *cloned_info;
+
+  ExceptionInfo
+    exception;
+
+  cloned_info=(MontageInfo *) AllocateMemory(sizeof(MontageInfo));
+  if (cloned_info == (MontageInfo *) NULL)
+    MagickError(ResourceLimitError,"Unable to clone montage info",
+      "Memory allocation failed");
+  if (montage_info == (MontageInfo *) NULL)
+    {
+      GetMontageInfo(image_info,cloned_info);
+      return(cloned_info);
+    }
+  *cloned_info=(*montage_info);
+  if (montage_info->geometry != (char *) NULL)
+    cloned_info->geometry=AllocateString(montage_info->geometry);
+  if (montage_info->tile != (char *) NULL)
+    cloned_info->tile=AllocateString(montage_info->tile);
+  if (montage_info->frame != (char *) NULL)
+    cloned_info->frame=AllocateString(montage_info->frame);
+  if (montage_info->texture != (char *) NULL)
+    cloned_info->texture=AllocateString(montage_info->texture);
+  if (montage_info->font != (char *) NULL)
+    cloned_info->font=AllocateString(montage_info->font);
+  if (montage_info->pen != (char *) NULL)
+    cloned_info->pen=AllocateString(montage_info->pen);
+  return(cloned_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D e s t r o y M o n t a g e I n f o                                       %
 %                                                                             %
 %                                                                             %
@@ -84,26 +148,20 @@ Export void DestroyMontageInfo(MontageInfo *montage_info)
 {
   assert(montage_info != (MontageInfo *) NULL);
   if (montage_info->geometry != (char *) NULL)
-    FreeMemory(montage_info->geometry);
-  montage_info->geometry=(char *) NULL;
+    FreeMemory((void *) &montage_info->geometry);
   if (montage_info->tile != (char *) NULL)
-    FreeMemory(montage_info->tile);
-  montage_info->tile=(char *) NULL;
+    FreeMemory((void *) &montage_info->tile);
   if (montage_info->title != (char *) NULL)
-    FreeMemory(montage_info->title);
-  montage_info->title=(char *) NULL;
+    FreeMemory((void *) &montage_info->title);
   if (montage_info->frame != (char *) NULL)
-    FreeMemory(montage_info->frame);
-  montage_info->frame=(char *) NULL;
+    FreeMemory((void *) &montage_info->frame);
   if (montage_info->texture != (char *) NULL)
-    FreeMemory(montage_info->texture);
-  montage_info->texture=(char *) NULL;
+    FreeMemory((void *) &montage_info->texture);
   if (montage_info->pen != (char *) NULL)
-    FreeMemory(montage_info->pen);
-  montage_info->pen=(char *) NULL;
+    FreeMemory((void *) &montage_info->pen);
   if (montage_info->font != (char *) NULL)
-    FreeMemory(montage_info->font);
-  montage_info->font=(char *) NULL;
+    FreeMemory((void *) &montage_info->font);
+  FreeMemory((void *) &montage_info);
 }
 
 /*
@@ -121,33 +179,37 @@ Export void DestroyMontageInfo(MontageInfo *montage_info)
 %
 %  The format of the GetMontageInfo method is:
 %
-%      void GetMontageInfo(MontageInfo *montage_info)
+%      void GetMontageInfo(const ImageInfo *image_info,
+%        MontageInfo *montage_info)
 %
 %  A description of each parameter follows:
+%
+%    o image_info: a structure of type ImageInfo.
 %
 %    o montage_info: Specifies a pointer to a MontageInfo structure.
 %
 %
 */
-Export void GetMontageInfo(MontageInfo *montage_info)
+Export void GetMontageInfo(const ImageInfo *image_info,
+  MontageInfo *montage_info)
 {
   assert(montage_info != (MontageInfo *) NULL);
-  *montage_info->filename='\0';
+  (void) strcpy(montage_info->filename,image_info->filename);
   montage_info->geometry=AllocateString(DefaultTileGeometry);
   montage_info->tile=AllocateString("6x4");
-  (void) QueryColorDatabase("#c0c0c0",&montage_info->background_color);
-  (void) QueryColorDatabase(BorderColor,&montage_info->border_color);
-  (void) QueryColorDatabase("#bdbdbd",&montage_info->matte_color);
   montage_info->title=(char *) NULL;
   montage_info->frame=(char *) NULL;
   montage_info->texture=(char *) NULL;
-  montage_info->pen=(char *) NULL;
-  montage_info->font=(char *) NULL;
-  montage_info->pointsize=atof(DefaultPointSize);
+  montage_info->font=AllocateString(image_info->font);
+  montage_info->pen=AllocateString(image_info->pen);
+  montage_info->pointsize=image_info->pointsize;
   montage_info->border_width=0;
   montage_info->gravity=CenterGravity;
   montage_info->shadow=False;
   montage_info->compose=ReplaceCompositeOp;
+  montage_info->background_color=image_info->background_color;
+  montage_info->border_color=image_info->border_color;
+  montage_info->matte_color=image_info->matte_color;
 }
 
 /*
@@ -797,8 +859,8 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info,
       }
   }
   if (texture != (Image *) NULL)
-    FreeMemory(texture);
-  FreeMemory(master_list);
+    FreeMemory((void *) &texture);
+  FreeMemory((void *) &master_list);
   DestroyAnnotateInfo(annotate_info);
   DestroyImageInfo(clone_info);
   while (montage_next->previous != (Image *) NULL)

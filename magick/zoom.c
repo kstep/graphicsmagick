@@ -436,7 +436,7 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
   if (q != (PixelPacket *) NULL)
     memcpy(q,scanline,magnify_image->columns*sizeof(PixelPacket));
   (void) SyncPixelCache(magnify_image);
-  FreeMemory(scanline);
+  FreeMemory((void *) &scanline);
   return(magnify_image);
 }
 
@@ -715,10 +715,10 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
     if (QuantumTick(y,sample_image->rows))
       ProgressMonitor(SampleImageText,y,sample_image->rows);
   }
-  FreeMemory(y_offset);
-  FreeMemory(x_offset);
-  FreeMemory(index);
-  FreeMemory(pixels);
+  FreeMemory((void *) &y_offset);
+  FreeMemory((void *) &x_offset);
+  FreeMemory((void *) &index);
+  FreeMemory((void *) &pixels);
   return(sample_image);
 }
 
@@ -1076,11 +1076,11 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   /*
     Free allocated memory.
   */
-  FreeMemory(y_vector);
-  FreeMemory(scale_scanline);
+  FreeMemory((void *) &y_vector);
+  FreeMemory((void *) &scale_scanline);
   if (scale_image->rows != image->rows)
-    FreeMemory(scanline);
-  FreeMemory(x_vector);
+    FreeMemory((void *) &scanline);
+  FreeMemory((void *) &x_vector);
   return(scale_image);
 }
 
@@ -1603,7 +1603,7 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   /*
     Free allocated memory.
   */
-  FreeMemory(contribution);
+  FreeMemory((void *) &contribution);
   DestroyImage(source_image);
   return(zoom_image);
 }

@@ -188,7 +188,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     pcd_table[i]=(PCDTable *) AllocateMemory(length*sizeof(PCDTable));
     if (pcd_table[i] == (PCDTable *) NULL)
       {
-        FreeMemory(buffer);
+        FreeMemory((void *) &buffer);
         ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
           (char *) NULL);
       }
@@ -199,7 +199,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       r->length=(accumulator & 0xff)+1;
       if (r->length > 16)
         {
-          FreeMemory(buffer);
+          FreeMemory((void *) &buffer);
           return(False);
         }
       PCDGetBits(16);
@@ -303,8 +303,8 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     Free memory.
   */
   for (i=0; i < (image->columns > 1536 ? 3 : 1); i++)
-    FreeMemory(pcd_table[i]);
-  FreeMemory(buffer);
+    FreeMemory((void *) &pcd_table[i]);
+  FreeMemory((void *) &buffer);
   return(True);
 }
 
@@ -393,7 +393,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
     *clone_info;
 
   MontageInfo
-    montage_info;
+    *montage_info;
 
   /*
     Create image tiles.
@@ -409,12 +409,10 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
   /*
     Create the PCD Overview image.
   */
-  GetMontageInfo(&montage_info);
-  (void) strcpy(montage_info.filename,image_info->filename);
-  (void) CloneString(&montage_info.font,image_info->font);
-  montage_info.pointsize=image_info->pointsize;
-  montage_image=MontageImages(image,&montage_info,exception);
-  DestroyMontageInfo(&montage_info);
+  montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
+  (void) strcpy(montage_info->filename,image_info->filename);
+  montage_image=MontageImages(image,montage_info,exception);
+  DestroyMontageInfo(montage_info);
   if (montage_image == (Image *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   DestroyImage(image);
@@ -479,7 +477,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageWarning,"Not a PCD image file",image);
   rotate=header[0x0e02] & 0x03;
   number_images=(header[10] << 8) | header[11];
-  FreeMemory(header);
+  FreeMemory((void *) &header);
   /*
     Determine resolution by subimage specification.
   */
@@ -629,9 +627,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) SetMonitorHandler(handler);
         ProgressMonitor(LoadImageText,j-1,number_images);
       }
-      FreeMemory(chroma2);
-      FreeMemory(chroma1);
-      FreeMemory(luma);
+      FreeMemory((void *) &chroma2);
+      FreeMemory((void *) &chroma1);
+      FreeMemory((void *) &luma);
       while (image->previous != (Image *) NULL)
         image=image->previous;
       overview_image=OverviewImage(image_info,image,exception);
@@ -715,9 +713,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
-  FreeMemory(chroma2);
-  FreeMemory(chroma1);
-  FreeMemory(luma);
+  FreeMemory((void *) &chroma2);
+  FreeMemory((void *) &chroma1);
+  FreeMemory((void *) &luma);
   if (Latin1Compare(image_info->magick,"PCDS") == 0)
     TransformRGBImage(image,sRGBColorspace);
   else
