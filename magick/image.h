@@ -384,7 +384,7 @@ typedef struct _Image
   double
     blur;
 
-  unsigned long
+  size_t
     total_colors;
 
   unsigned int
