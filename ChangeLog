@@ -1,3 +1,22 @@
+2003-06-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (AnimateImageCommand): Eliminate warning regarding
+	unreached code.	
+	(ConvertImageCommand): Eliminate warning regarding
+	unreached code.	
+	(ImportImageCommand): Eliminate warning regarding
+	unreached code.	
+	* magick/type.c (GetTypeBlob): Eliminate warning regarding
+	unreached code.	
+	* magick/blob.c (GetConfigureBlob): Eliminate warning regarding
+	unreached code.
+	* coders/meta.c (super_fgets): Eliminated warnings regarding
+	comparison and return of incompatible pointer types.
+	(super_fgets_w): Eliminated warnings regarding
+	comparison and return of incompatible pointer types.
+	* magick/command.c (ConvertImageCommand): Eliminate warnings
+	noticed when using Sun's compiler.
+
 2003-06-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* acinclude.m4: Add '#undef inline' in front of C++ tests.

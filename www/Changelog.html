@@ -53,9 +53,32 @@
 </tr>
 </table>
 <p>
+2003-06-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (AnimateImageCommand): Eliminate warning regarding
+        unreached code.<BR>
+        (ConvertImageCommand): Eliminate warning regarding
+        unreached code.<BR>
+        (ImportImageCommand): Eliminate warning regarding
+        unreached code.<BR>
+  <LI> magick/type.c (GetTypeBlob): Eliminate warning regarding
+        unreached code.<BR>
+  <LI> magick/blob.c (GetConfigureBlob): Eliminate warning regarding
+        unreached code.<BR>
+  <LI> coders/meta.c (super_fgets): Eliminated warnings regarding
+        comparison and return of incompatible pointer types.
+        (super_fgets_w): Eliminated warnings regarding
+        comparison and return of incompatible pointer types.
+  <LI> magick/command.c (ConvertImageCommand): Eliminate warnings
+        noticed when using Sun's compiler.
+
+</UL>
+<p>
 2003-06-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> acinclude.m4: Add '#undef inline' in front of C++ tests.
   <LI> coders/x.c (RegisterXImage): Only register the X coder if HasX11
         is defined.
 

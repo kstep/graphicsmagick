@@ -1177,8 +1177,8 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
 #else
   MagickFatalError(MissingDelegateError,"XWindowLibraryIsNotAvailable",
     (char *) NULL);
-#endif
   return(False);
+#endif
 }
 
 /*
@@ -3442,7 +3442,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           {
             ConvertUsage();
             ThrowConvertException(OptionError,"UsageError",NULL);
-            continue;
           }
         ThrowConvertException(OptionError,"UnrecognizedOption",option)
       }
@@ -4459,10 +4458,11 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         {
           ConvertUsage();
           ThrowConvertException(OptionError,"UsageError",NULL);
-          continue;
         }
       default:
-        ThrowConvertException(OptionError,"UnrecognizedOption",option)
+        {
+          ThrowConvertException(OptionError,"UnrecognizedOption",option);
+        }
     }
   }
   if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
@@ -6344,8 +6344,8 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
 #else
   MagickFatalError(MissingDelegateError,"XWindowLibraryIsNotAvailable",
     (char *) NULL);
-#endif
   return(False);
+#endif
 }
 
 /*
@@ -8455,10 +8455,10 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             Image
               *resample_image;
 
-            unsigned char
+            char
               resample_density[MaxTextExtent];
 
-            unsigned long
+            long
               x_resolution,
               y_resolution;
 
@@ -8479,7 +8479,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             flags=GetGeometry(argv[++i],&x,&y,&x_resolution,&y_resolution);
             if (!(flags & HeightValue))
               y_resolution=x_resolution;
-            FormatString(resample_density,"%lux%lu",x_resolution,y_resolution);
+            FormatString(resample_density,"%ldx%ld",x_resolution,y_resolution);
             if ((*image)->x_resolution == 0)
               (*image)->x_resolution=72.0;
             if ((*image)->y_resolution == 0)
@@ -13650,8 +13650,8 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
 #else
   MagickFatalError(MissingDelegateError,"XWindowLibraryIsNotAvailable",
     (char *) NULL);
-#endif
   return(False);
+#endif
 }
 
 /*

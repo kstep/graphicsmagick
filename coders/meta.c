@@ -247,14 +247,14 @@ static char *super_fgets(char **b, int *blen, Image *file)
         len<<=1;
         MagickReallocMemory(p,(len+2));
         *b=(char *) p;
-        if (p == (char *) NULL)
+        if (p == (unsigned char *) NULL)
           break;
         q=p+tlen;
       }
     *q=(unsigned char) c;
   }
   *blen=0;
-  if (p != (char *) NULL)
+  if (p != (unsigned char *) NULL)
     {
       int
         tlen;
@@ -265,7 +265,7 @@ static char *super_fgets(char **b, int *blen, Image *file)
       p[tlen] = '\0';
       *blen=++tlen;
     }
-  return p;
+  return (char *)p;
 }
 
 #define BUFFER_SZ 4096
@@ -510,7 +510,7 @@ static char *super_fgets_w(char **b, int *blen, Image *file)
         len<<=1;
         MagickReallocMemory(p,(len+2));
         *b=(char *) p;
-        if (p == (char *) NULL)
+        if (p == (unsigned char *) NULL)
           break;
         q=p+tlen;
       }
@@ -528,7 +528,7 @@ static char *super_fgets_w(char **b, int *blen, Image *file)
       p[tlen] = '\0';
       *blen=++tlen;
     }
-  return p;
+  return (char *) p;
 }
 
 static long parse8BIMW(Image *ifile, Image *ofile)
