@@ -290,7 +290,7 @@
     version="0.1" />
   <type
     name="Palatino-Roman"
-    fullname="Palatino Roman"
+    fullname="Palatino Regular"
     familyname="Palatino"
     foundry="URW"
     weight="Regular"
