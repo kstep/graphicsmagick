@@ -1102,8 +1102,8 @@ static double OptimalTau(const long *histogram,const double max_tau,
 {
   double
     average_tau,
-    derivative[DownScale(MaxRGB+1)],
-    second_derivative[DownScale(MaxRGB+1)],
+    derivative[Downscale(MaxRGB+1)],
+    second_derivative[Downscale(MaxRGB+1)],
     tau,
     value;
 
