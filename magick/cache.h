@@ -133,7 +133,6 @@ extern MagickExport void
   DestroyCacheNexus(Cache,const unsigned long),
   GetCacheInfo(Cache *),
   SetCacheThreshold(const off_t),
-  GetPixelCacheMethods(CacheMethods *),
   SetPixelCacheMethods(Cache,const CacheMethods *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

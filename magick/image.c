@@ -3140,11 +3140,10 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->dither=True;
   GetExceptionInfo(&exception);
   (void) QueryColorDatabase(BackgroundColor,&image_info->background_color,
-     &exception);
+    &exception);
   (void) QueryColorDatabase(BorderColor,&image_info->border_color,&exception);
   (void) QueryColorDatabase(MatteColor,&image_info->matte_color,&exception);
   DestroyExceptionInfo(&exception);
-  GetPixelCacheMethods(&image_info->methods);
   image_info->signature=MagickSignature;
 }
 

@@ -461,9 +461,6 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 MagickExport Image *ReadStream(const ImageInfo *image_info,
   int (*fifo)(const Image *,const void *,const size_t),ExceptionInfo *exception)
 {
-  CacheMethods
-    methods;
-
   Image
     *image;
 
@@ -477,17 +474,16 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  methods.acquire_pixel_handler=AcquirePixelStream;
-  methods.get_pixel_handler=GetPixelStream;
-  methods.set_pixel_handler=SetPixelStream;
-  methods.sync_pixel_handler=SyncPixelStream;
-  methods.get_pixels_from_handler=GetPixelsFromStream;
-  methods.get_indexes_from_handler=GetIndexesFromStream;
-  methods.acquire_one_pixel_from_handler=AcquireOnePixelFromStream;
-  methods.get_one_pixel_from_handler=GetOnePixelFromStream;
-  methods.destroy_pixel_handler=DestroyPixelStream;
   clone_info=CloneImageInfo(image_info);
-  SetPixelCacheMethods(&clone_info->methods,&methods);
+  clone_info->methods.acquire_pixel_handler=AcquirePixelStream;
+  clone_info->methods.get_pixel_handler=GetPixelStream;
+  clone_info->methods.set_pixel_handler=SetPixelStream;
+  clone_info->methods.sync_pixel_handler=SyncPixelStream;
+  clone_info->methods.get_pixels_from_handler=GetPixelsFromStream;
+  clone_info->methods.get_indexes_from_handler=GetIndexesFromStream;
+  clone_info->methods.acquire_one_pixel_from_handler=AcquireOnePixelFromStream;
+  clone_info->methods.get_one_pixel_from_handler=GetOnePixelFromStream;
+  clone_info->methods.destroy_pixel_handler=DestroyPixelStream;
   clone_info->fifo=fifo;
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);

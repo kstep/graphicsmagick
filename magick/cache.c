@@ -931,7 +931,15 @@ MagickExport void GetCacheInfo(Cache *cache)
       "unable to allocate cache info");
   (void) memset(cache_info,0,sizeof(CacheInfo));
   cache_info->colorspace=RGBColorspace;
-  GetPixelCacheMethods(&cache_info->methods);
+  cache_info->methods.acquire_pixel_handler=AcquirePixelCache;
+  cache_info->methods.get_pixel_handler=GetPixelCache;
+  cache_info->methods.set_pixel_handler=SetPixelCache;
+  cache_info->methods.sync_pixel_handler=SyncPixelCache;
+  cache_info->methods.get_pixels_from_handler=GetPixelsFromCache;
+  cache_info->methods.get_indexes_from_handler=GetIndexesFromCache;
+  cache_info->methods.acquire_one_pixel_from_handler=AcquireOnePixelFromCache;
+  cache_info->methods.get_one_pixel_from_handler=GetOnePixelFromCache;
+  cache_info->methods.destroy_pixel_handler=DestroyPixelCache;
   cache_info->reference_count=1;
   cache_info->signature=MagickSignature;
   *cache=cache_info;
@@ -1503,47 +1511,6 @@ static unsigned long GetPixelCacheArea(const Image *image)
   assert(cache_info->signature == MagickSignature);
   nexus_info=cache_info->nexus_info+cache_info->id;
   return(nexus_info->columns*nexus_info->rows);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G e t P i x e l C a c h e M e t h o d s                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetPixelCacheMethods() sets the default image pixel methods to use the
-%  pixel cache.
-%
-%  The format of the GetPixelCacheMethods() method is:
-%
-%      void GetPixelCacheMethods(CacheMethods *methods)
-%
-%  A description of each parameter follows:
-%
-%    o methods: Specifies a pointer to a CacheMethods structure.
-%
-%
-*/
-MagickExport void GetPixelCacheMethods(CacheMethods *methods)
-{
-  /*
-    Get image pixel methods.
-  */
-  assert(methods != (CacheMethods *) NULL);
-  methods->acquire_pixel_handler=AcquirePixelCache;
-  methods->get_pixel_handler=GetPixelCache;
-  methods->set_pixel_handler=SetPixelCache;
-  methods->sync_pixel_handler=SyncPixelCache;
-  methods->get_pixels_from_handler=GetPixelsFromCache;
-  methods->get_indexes_from_handler=GetIndexesFromCache;
-  methods->acquire_one_pixel_from_handler=AcquireOnePixelFromCache;
-  methods->get_one_pixel_from_handler=GetOnePixelFromCache;
-  methods->destroy_pixel_handler=DestroyPixelCache;
 }
 
 /*
@@ -4032,7 +3999,6 @@ static PixelPacket *SetPixelCache(Image *image,const long x,const long y,
 {
   return(SetCacheNexus(image,x,y,columns,rows,0));
 }
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4071,18 +4037,29 @@ MagickExport void SetPixelCacheMethods(Cache cache,const CacheMethods *methods)
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   assert(methods != (CacheMethods *) NULL);
-  cache_info->methods.acquire_pixel_handler=methods->acquire_pixel_handler;
-  cache_info->methods.get_pixel_handler=methods->get_pixel_handler;
-  cache_info->methods.set_pixel_handler=methods->set_pixel_handler;
-  cache_info->methods.sync_pixel_handler=methods->sync_pixel_handler;
-  cache_info->methods.get_pixels_from_handler=methods->get_pixels_from_handler;
-  cache_info->methods.get_indexes_from_handler=
-    methods->get_indexes_from_handler;
-  cache_info->methods.acquire_one_pixel_from_handler=
-    methods->acquire_one_pixel_from_handler;
-  cache_info->methods.get_one_pixel_from_handler=
-    methods->get_one_pixel_from_handler;
-  cache_info->methods.destroy_pixel_handler=methods->destroy_pixel_handler;
+  if (methods->acquire_pixel_handler != (AcquirePixelHandler) NULL)
+    cache_info->methods.acquire_pixel_handler=methods->acquire_pixel_handler;
+  if (methods->get_pixel_handler != (GetPixelHandler) NULL)
+    cache_info->methods.get_pixel_handler=methods->get_pixel_handler;
+  if (methods->set_pixel_handler != (SetPixelHandler) NULL)
+    cache_info->methods.set_pixel_handler=methods->set_pixel_handler;
+  if (methods->sync_pixel_handler != (SyncPixelHandler) NULL)
+    cache_info->methods.sync_pixel_handler=methods->sync_pixel_handler;
+  if (methods->get_pixels_from_handler != (GetPixelsFromHandler) NULL)
+    cache_info->methods.get_pixels_from_handler=
+      methods->get_pixels_from_handler;
+  if (methods->get_indexes_from_handler != (GetIndexesFromHandler) NULL)
+    cache_info->methods.get_indexes_from_handler=
+      methods->get_indexes_from_handler;
+  if (methods->acquire_one_pixel_from_handler !=
+      (AcquireOnePixelFromHandler) NULL)
+    cache_info->methods.acquire_one_pixel_from_handler=
+      methods->acquire_one_pixel_from_handler;
+  if (methods->get_one_pixel_from_handler != (GetOnePixelFromHandler) NULL)
+    cache_info->methods.get_one_pixel_from_handler=
+      methods->get_one_pixel_from_handler;
+  if (methods->destroy_pixel_handler != (DestroyPixelHandler) NULL)
+    cache_info->methods.destroy_pixel_handler=methods->destroy_pixel_handler;
 }
 
 /*
