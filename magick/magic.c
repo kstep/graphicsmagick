@@ -63,7 +63,7 @@
 static MagicTest
   **magic_test_list = (MagicTest**) NULL;
 
-static void IntializeImageMagic(void);
+static void InitializeMagic(void);
 
 
 
@@ -72,15 +72,18 @@ static void IntializeImageMagic(void);
   based on image header data provided in magick,
   with length magick_length.
 */
-Export unsigned int GetImageMagic(char* magic,
-                                  const unsigned char *magick,
-                                  const unsigned int magick_length)
+Export unsigned int GetMagic(char* magic,
+                             const unsigned char *magick,
+                             const unsigned int magick_length)
 {
   int
     i;
 
   if(magic_test_list == (MagicTest**) NULL)
-    IntializeImageMagic();
+    InitializeMagic();
+
+  if(magic_test_list == (MagicTest**) NULL)
+    MagickError(FileOpenError,"Failed to initialize ImageMagick",NULL);
 
   /* Traverse magic tests */
   for (i=0;magic_test_list[i]!=(MagicTest*)NULL;++i)
@@ -93,7 +96,8 @@ Export unsigned int GetImageMagic(char* magic,
               *member;
 
             /* Traverse test members */
-            for(member=magic_test_list[i]->member;member!=(MagicTestMember*)NULL;)
+            for(member=magic_test_list[i]->member;
+                member!=(MagicTestMember*)NULL;)
               {
                 StringMethodArgument
                   *arg;
@@ -134,7 +138,7 @@ Export unsigned int GetImageMagic(char* magic,
 }
 
 /* Free any memory allocated by this source module */
-Export void ExitMagic(void)
+Export void QuitMagic(void)
 {
   int
     i;
@@ -161,7 +165,7 @@ Export void ExitMagic(void)
 }
 
 /* Initialize magic_test_list */
-static void IntializeImageMagic(void)
+static void InitializeMagic(void)
 {
   char
     buffer[MaxTextExtent],
@@ -193,8 +197,8 @@ static void IntializeImageMagic(void)
         (MagicTest**)AllocateMemory((MagicTestListExtent)*sizeof(MagicTest*));
       if(magic_test_list == (MagicTest**)NULL)
         {
-          puts("Memory allocation failure");
-          exit(1);
+          MagickError(ResourceLimitError,"Unable to allocate image",
+                      "Memory allocation failed");
         }
       magic_test_list[list_index]=(MagicTest*)NULL;
 
@@ -214,10 +218,13 @@ static void IntializeImageMagic(void)
           while(isalnum((int)*buff_p))
             *tag_p++=*buff_p++;
           *tag_p='\0';
-          printf("TAG:\"%s\"\n", tag);
           if(*buff_p == '\0')
             goto eol_error;
-          magic_test_list[list_index]=(MagicTest*)AllocateMemory(sizeof(MagicTest));
+          magic_test_list[list_index]=
+            (MagicTest*)AllocateMemory(sizeof(MagicTest));
+          if(magic_test_list[list_index]==(MagicTest*)NULL)
+            MagickError(ResourceLimitError,"Unable to allocate image",
+                        "Memory allocation failed");
           magic_test_list[list_index]->tag=AllocateString(tag);
           magic_test_list[list_index]->member=(MagicTestMember*)NULL;
             
@@ -231,7 +238,11 @@ static void IntializeImageMagic(void)
                 goto eol_error;
 
               /* intialize test_member */
-              test_member=(MagicTestMember*)AllocateMemory(sizeof(MagicTestMember));
+              test_member=
+                (MagicTestMember*)AllocateMemory(sizeof(MagicTestMember));
+              if(test_member==(MagicTestMember*)NULL)
+                MagickError(ResourceLimitError,"Unable to allocate image",
+                            "Memory allocation failed");
               test_member->method=UndefinedMagicMethod;
               test_member->argument=(void*)NULL;
               test_member->truth_value=True;
@@ -257,10 +268,12 @@ static void IntializeImageMagic(void)
 
                   unsigned char
                     *str_p;
-                  printf("Parsing string command\n");
 
                   string_argument=
                     (StringMethodArgument*)AllocateMemory(sizeof(StringMethodArgument));
+                  if(string_argument==(StringMethodArgument*)NULL)
+                    MagickError(ResourceLimitError,"Unable to allocate image",
+                                "Memory allocation failed");
                   test_member->argument=(void*)string_argument;
 
                   test_member->method=StringMagicMethod;
@@ -279,7 +292,6 @@ static void IntializeImageMagic(void)
 
                   /* get offset */
                   string_argument->value_offset=strtol(buff_p, &buff_p, 10);
-                  printf("Offset=%u\n", string_argument->value_offset);
 
                   /* skip over white space */
                   while(isspace((int)*(buff_p)))
@@ -322,35 +334,58 @@ static void IntializeImageMagic(void)
                       if(*buff_p == '\\')
                         {
                           ++buff_p;
-                          if(isdigit((int)*(buff_p)) &&
-                             isdigit((int)*(buff_p+1)) &&
-                             isdigit((int)*(buff_p+2)))
+                          if(isdigit((int)*(buff_p)))
                             {
-                              /* octal code */
-                              char
-                                lbuff[4];
-
-                              lbuff[0]=*buff_p++;
-                              lbuff[1]=*buff_p++;
-                              lbuff[2]=*buff_p++;
-                              lbuff[3]='\0';
-
-                              *str_p=(unsigned char)strtol(lbuff,
-                                                           (char**)NULL,8);
+                              *str_p=(unsigned char)strtol(buff_p,
+                                                           &buff_p,8);
                               ++str_p;
                               ++string_argument->value_length;
                               continue;
                             }
+
+                          switch(*buff_p)
+                            {
+                            case 'b' :
+                              *str_p='\b';
+                              break;
+                            case 'f' :
+                              *str_p='\f';
+                              break;
+                            case 'n' :
+                              *str_p='\n';
+                              break;
+                            case 'r' :
+                              *str_p='\r';
+                              break;
+                            case 't' :
+                              *str_p='\t';
+                              break;
+                            case 'v' :
+                              *str_p='\v';
+                              break;
+                            case 'a' :
+                              *str_p='a';
+                              break;
+                            case '?' :
+                              *str_p='\?';
+                              break;
+                            default :
+                              {
+                                *str_p=*buff_p;
+                              }
+                            }
+                          ++str_p;
+                          ++buff_p;
+                          ++string_argument->value_length;
+                          continue;
                         }
 
-                      /* copy character character */
+                      /* just copy character */
                       *str_p=*buff_p;
                       ++str_p;
                       ++buff_p;
                       ++string_argument->value_length;
                     }
-                  printf("Length=%u\n", string_argument->value_length);
-                  printf("Value=\"%s\"\n", string_argument->value);
 
                   /* skip over white space */
                   while(isspace((int)*(buff_p)))
@@ -401,15 +436,29 @@ static void IntializeImageMagic(void)
           continue;
           
           syntax_error :
-            printf("%s:%d: syntax: \"%s\"\n", file_name,
-                   line_number, buff_p);
-            exit(1);
+            {
+              char
+                buff[MaxTextExtent];
+              
+              sprintf(buff,"%s:%d: syntax: \"%s\"\n", file_name,
+                      line_number, buff_p);
+              MagickError(OptionError,buff,NULL);
+            }
           
           eol_error :
-            printf("%s:%d: syntax: \"%s\"\n", file_name,
-                   line_number, "unexpected end of line");
-            exit(1);
+            {
+              char
+                buff[MaxTextExtent];
+
+              sprintf(buff,"%s:%d: syntax: \"%s\"\n", file_name,
+                      line_number, "unexpected end of line");
+              MagickError(OptionError,buff,NULL);
+            }
         }
       fclose(file);
+    }
+  else
+    {
+      MagickError(FileOpenError,"File open error",file_name);
     }
 }

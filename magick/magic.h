@@ -16,7 +16,7 @@ typedef enum
 } MagicMethod;
 
 /* Argument to support StringMagickMethod */
-#define StringMethodArgumentExtent 32
+#define StringMethodArgumentExtent 64
 typedef struct _StringMethodArgument
 {
   unsigned int
@@ -62,10 +62,10 @@ typedef struct _MagicTest
 */
 
 extern Export void
-  ExitMagic(void);
+  QuitMagic(void);
 
 extern Export unsigned int
-  GetImageMagic(char* magic,const unsigned char *magick,
+  GetMagic(char* magic,const unsigned char *magick,
                 const unsigned int magick_length);
 
 #if defined(__cplusplus) || defined(c_plusplus)
