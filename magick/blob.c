@@ -914,9 +914,6 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   char
     filename[MaxTextExtent];
 
-  register char
-    *p;
-
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
@@ -948,70 +945,72 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       return(True);
     }
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  p=(char *) NULL;
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
   if (*filename != '|')
-    {
-      if ((strlen(filename) > 4) &&
-          (LocaleCompare(filename+strlen(filename)-4,".pgp") == 0))
-        {
-          /*
-            Decrypt image file with PGP encryption utilities.
-          */
-          if (*type == 'r')
-            p=GetDelegateCommand(image_info,image,"pgp",(char *) NULL,exception);
-        }
-      else
-        if ((strlen(filename) > 4) &&
-            (LocaleCompare(filename+strlen(filename)-4,".bz2") == 0))
-          {
-            /*
-              Uncompress/compress image file with BZIP compress utilities.
-            */
-            if (*type == 'r')
-              p=GetDelegateCommand(image_info,image,"bzip",(char *) NULL,
-                exception);
-            else
-              p=GetDelegateCommand(image_info,image,(char *) NULL,"bzip",
-                exception);
-          }
-        else
-          if ((strlen(filename) > 3) &&
-              (LocaleCompare(filename+strlen(filename)-3,".gz") == 0))
-            {
-              /*
-                Uncompress/compress image file with GNU compress utilities.
-              */
-              if (*type == 'r')
-                p=GetDelegateCommand(image_info,image,"zip",(char *) NULL,
-                  exception);
-              else
-                p=GetDelegateCommand(image_info,image,(char *) NULL,"zip",
-                  exception);
-            }
-          else
-            if ((strlen(filename) > 2) &&
-                (LocaleCompare(filename+strlen(filename)-2,".Z") == 0))
-              {
-                /*
-                  Uncompress/compress image file with UNIX compress utilities.
-                */
-                if (*type == 'r')
-                  p=GetDelegateCommand(image_info,image,"compress",
-                    (char *) NULL,exception);
-                else
-                  p=GetDelegateCommand(image_info,image,(char *) NULL,
-                    "compress",exception);
-              }
-    }
-  if (p != (char *) NULL)
     {
       char
         *command;
 
-      (void) strncpy(filename,p,MaxTextExtent-1);
-      command=p;
-      LiberateMemory((void **) &command);
+      /*
+        Handled compressed images.
+      */
+      command=(char *) NULL;
+      if ((strlen(filename) > 4) &&
+          (LocaleCompare(filename+strlen(filename)-4,".bz2") == 0))
+        {
+          /*
+            Uncompress/compress image file with BZIP compress utilities.
+          */
+          if (*type == 'r')
+            command=GetDelegateCommand(image_info,image,"bzip",(char *) NULL,
+              exception);
+          else
+            command=GetDelegateCommand(image_info,image,(char *) NULL,"bzip",
+              exception);
+        }
+      else
+        if ((strlen(filename) > 3) &&
+            ((LocaleCompare(filename+strlen(filename)-3,".gz") == 0) ||
+             (LocaleCompare(filename+strlen(filename)-2,".Z") == 0)))
+          {
+            /*
+              Uncompress/compress image file with GNU compress utilities.
+            */
+            if (*type == 'r')
+              command=GetDelegateCommand(image_info,image,"zip",(char *) NULL,
+                exception);
+            else
+              command=GetDelegateCommand(image_info,image,(char *) NULL,"zip",
+                exception);
+          }
+      if (command != (char *) NULL)
+        {
+          if (*type != 'r')
+            FormatString(filename,"|%.1024s",command);
+          else
+            {
+              FILE
+                *file;
+
+              int
+                c;
+
+              /*
+                Determine if we really are a compressed file.
+              */
+              file=(FILE *) popen(filename,"r");
+              if (file != (FILE *) NULL)
+                {
+                  c=fgetc(file);
+                  if (c >= 0)
+                    FormatString(filename,"|%.1024s",command);
+                  (void) pclose(image->file);
+                }
+            }
+          LiberateMemory((void **) &command);
+        }
     }
+#endif
   /*
     Open image file.
   */
