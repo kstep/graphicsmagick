@@ -1307,9 +1307,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   attribute=GetImageAttribute(image,"comment");
   if ((attribute != (const ImageAttribute *) NULL) &&
     (attribute->value != (char *) NULL))
-    for (i=0; i < (long) strlen(attribute->value); i+=65533)
+    for (i=0; i < (long) strlen(attribute->value); i+=65533L)
       jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) attribute->value+
-        i,(int) Min(strlen(attribute->value+i),65533));
+        i,(int) Min(strlen(attribute->value+i),65533L));
   if (image->color_profile.length != 0)
     WriteICCProfile(&jpeg_info,image);
   if (image->iptc_profile.length != 0)
@@ -1322,10 +1322,10 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     if (LocaleNCompare(image->generic_profile[i].name,"APP",3) != 0)
       continue;
     x=atol(image->generic_profile[i].name+3);
-    for (j=0; j < (long) image->generic_profile[i].length; j+=65533)
+    for (j=0; j < (long) image->generic_profile[i].length; j+=65533L)
       jpeg_write_marker(&jpeg_info,JPEG_APP0+(int) x,
         image->generic_profile[i].info+j,(int)
-        Min(image->generic_profile[i].length-j,65533));
+        Min(image->generic_profile[i].length-j,65533L));
   }
   /*
     Convert MIFF to JPEG raster pixels.

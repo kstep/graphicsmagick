@@ -5261,8 +5261,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
 {
 #define RGBTransformImageText  "  Transform image colors...  "
 #define X  0
-#define Y  65536
-#define Z  (2*65536)
+#define Y  65536L
+#define Z  (2*65536L)
 
   double
     *x_map,
@@ -5338,9 +5338,9 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   /*
     Allocate the tables.
   */
-  x_map=(double *) AcquireMemory(3*65536*sizeof(double));
-  y_map=(double *) AcquireMemory(3*65536*sizeof(double));
-  z_map=(double *) AcquireMemory(3*65536*sizeof(double));
+  x_map=(double *) AcquireMemory(3*65536L*sizeof(double));
+  y_map=(double *) AcquireMemory(3*65536L*sizeof(double));
+  z_map=(double *) AcquireMemory(3*65536L*sizeof(double));
   if ((x_map == (double *) NULL) || (y_map == (double *) NULL) ||
       (z_map == (double *) NULL))
     ThrowBinaryException(ResourceLimitError,
@@ -5381,8 +5381,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      primary_info.y=65536/2;
-      primary_info.z=65536/2;
+      primary_info.y=65536L/2;
+      primary_info.z=65536L/2;
       for (i=0; i <= 65535L; i++)
       {
         x_map[i+X]=0.33333*i;
@@ -5471,8 +5471,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      primary_info.y=65536/2;
-      primary_info.z=65536/2;
+      primary_info.y=65536L/2;
+      primary_info.z=65536L/2;
       for (i=0; i <= 65535L; i++)
       {
         x_map[i+X]=0.299*i;
@@ -5538,8 +5538,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      primary_info.y=65536/2;
-      primary_info.z=65536/2;
+      primary_info.y=65536L/2;
+      primary_info.z=65536L/2;
       for (i=0; i <= 65535L; i++)
       {
         x_map[i+X]=0.299*i;
@@ -5566,8 +5566,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         Pb and Pr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      primary_info.y=65536/2;
-      primary_info.z=65536/2;
+      primary_info.y=65536L/2;
+      primary_info.z=65536L/2;
       for (i=0; i <= 65535L; i++)
       {
         x_map[i+X]=0.299*i;
@@ -5595,8 +5595,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         U and V, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.  Note that U = 0.493*(B-Y), V = 0.877*(R-Y).
       */
-      primary_info.y=65536/2;
-      primary_info.z=65536/2;
+      primary_info.y=65536L/2;
+      primary_info.z=65536L/2;
       for (i=0; i <= 65535L; i++)
       {
         x_map[i+X]=0.299*i;
@@ -6737,8 +6737,8 @@ MagickExport void TextureImage(Image *image,const Image *texture)
 MagickExport unsigned int TransformRGBImage(Image *image,
   const ColorspaceType colorspace)
 {
-#define B  (2*65536)
-#define G  65536
+#define B  (2*65536L)
+#define G  65536L
 #define R  0
 #define TransformRGBImageText  "  Transform image colors...  "
 
@@ -6860,9 +6860,9 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   /*
     Allocate the tables.
   */
-  red_map=(double *) AcquireMemory(3*65536*sizeof(double));
-  green_map=(double *) AcquireMemory(3*65536*sizeof(double));
-  blue_map=(double *) AcquireMemory(3*65536*sizeof(double));
+  red_map=(double *) AcquireMemory(3*65536L*sizeof(double));
+  green_map=(double *) AcquireMemory(3*65536L*sizeof(double));
+  blue_map=(double *) AcquireMemory(3*65536L*sizeof(double));
   if ((red_map == (double *) NULL) || (green_map == (double *) NULL) ||
       (blue_map == (double *) NULL))
     ThrowBinaryException(MissingDelegateError,

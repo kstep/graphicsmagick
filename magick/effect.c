@@ -1053,7 +1053,7 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
   /*
     Determine where it belongs in the list.
   */
-  search=65536;
+  search=65536L;
   for (level=list->level; level >= 0; level--)
   {
     while (list->nodes[search].next[level] < color)
@@ -1079,7 +1079,7 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
   while (level > list->level)
   {
     list->level++;
-    update[list->level]=65536;
+    update[list->level]=65536L;
   }
   /*
     Link the node into the skip-list.
@@ -1116,7 +1116,7 @@ static PixelPacket GetMedianList(MedianPixelList *pixel_list)
   for (channel=0; channel < 4; channel++)
   {
     list=pixel_list->lists+channel;
-    color=65536;
+    color=65536L;
     count=0;
     do
     {
@@ -1192,10 +1192,10 @@ static void ResetMedianList(MedianPixelList *pixel_list)
   for (channel=0; channel < 4; channel++)
   {
     list=pixel_list->lists+channel;
-    root=list->nodes+65536;
+    root=list->nodes+65536L;
     list->level=0;
     for (level=0; level < 9; level++)
-      root->next[level]=65536;
+      root->next[level]=65536L;
   }
   pixel_list->seed=pixel_list->signature++;
 }
@@ -1541,7 +1541,7 @@ static PixelPacket GetNonpeakMedianList(MedianPixelList *pixel_list)
   for (channel=0; channel < 4; channel++)
   {
     list=pixel_list->lists+channel;
-    color=65536;
+    color=65536L;
     next=list->nodes[color].next[0];
     count=0;
     do
@@ -1552,10 +1552,10 @@ static PixelPacket GetNonpeakMedianList(MedianPixelList *pixel_list)
       count+=list->nodes[color].count;
     }
     while (count <= center);
-    if ((previous == 65536) && (next != 65536))
+    if ((previous == 65536L) && (next != 65536L))
       color=next;
     else
-      if ((previous != 65536) && (next == 65536))
+      if ((previous != 65536L) && (next == 65536L))
         color=previous;
     channels[channel]=color;
   }

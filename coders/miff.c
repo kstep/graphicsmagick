@@ -1243,21 +1243,21 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           { \
             value=pixel.red; \
             if ((QuantumDepth-image->depth) != 0) \
-              value*=65537; \
+              value*=65537L; \
             *q++=(unsigned char) (value >> 24); \
             *q++=(unsigned char) (value >> 16); \
             *q++=(unsigned char) (value >> 8); \
             *q++=(unsigned char) value; \
             value=pixel.green; \
             if ((QuantumDepth-image->depth) != 0) \
-              value*=65537; \
+              value*=65537L; \
             *q++=(unsigned char) (value >> 24); \
             *q++=(unsigned char) (value >> 16); \
             *q++=(unsigned char) (value >> 8); \
             *q++=(unsigned char) value; \
             value=pixel.blue; \
             if ((QuantumDepth-image->depth) != 0) \
-              value*=65537; \
+              value*=65537L; \
             *q++=(unsigned char) (value >> 24); \
             *q++=(unsigned char) (value >> 16); \
             *q++=(unsigned char) (value >> 8); \
@@ -1266,7 +1266,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
               { \
                 value=pixel.opacity; \
                 if ((QuantumDepth-image->depth) != 0) \
-                  value*=65537; \
+                  value*=65537L; \
                 *q++=(unsigned char) (value >> 24); \
                 *q++=(unsigned char) (value >> 16); \
                 *q++=(unsigned char) (value >> 8); \
@@ -1275,7 +1275,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                   { \
                     value=index; \
                     if ((QuantumDepth-image->depth) != 0) \
-                      value*=65537; \
+                      value*=65537L; \
                     *q++=(unsigned char) (value >> 24); \
                     *q++=(unsigned char) (value >> 16); \
                     *q++=(unsigned char) (value >> 8); \
@@ -1287,7 +1287,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                 { \
                   value=pixel.opacity; \
                   if ((QuantumDepth-image->depth) != 0) \
-                    value*=65537; \
+                    value*=65537L; \
                   *q++=(unsigned char) (value >> 24); \
                   *q++=(unsigned char) (value >> 16); \
                   *q++=(unsigned char) (value >> 8); \

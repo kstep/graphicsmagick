@@ -1811,9 +1811,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Colormapped TIFF image.
         */
-        blue=(unsigned short *) AcquireMemory(65536*sizeof(unsigned short));
-        green=(unsigned short *) AcquireMemory(65536*sizeof(unsigned short));
-        red=(unsigned short *) AcquireMemory(65536*sizeof(unsigned short));
+        blue=(unsigned short *) AcquireMemory(65536L*sizeof(unsigned short));
+        green=(unsigned short *) AcquireMemory(65536L*sizeof(unsigned short));
+        red=(unsigned short *) AcquireMemory(65536L*sizeof(unsigned short));
         if ((blue == (unsigned short *) NULL) ||
             (green == (unsigned short *) NULL) ||
             (red == (unsigned short *) NULL))
@@ -1822,9 +1822,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Initialize TIFF colormap.
         */
-        memset(red,0,65536*sizeof(unsigned short));
-        memset(green,0,65536*sizeof(unsigned short));
-        memset(blue,0,65536*sizeof(unsigned short));
+        memset(red,0,65536L*sizeof(unsigned short));
+        memset(green,0,65536L*sizeof(unsigned short));
+        memset(blue,0,65536L*sizeof(unsigned short));
         for (i=0; i < (long) image->colors; i++)
         {
           red[i]=(unsigned short)

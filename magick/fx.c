@@ -748,7 +748,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   /*
     Allocate histogram and scanline.
   */
-  histogram=(unsigned long *) AcquireMemory(65536*sizeof(unsigned long));
+  histogram=(unsigned long *) AcquireMemory(65536L*sizeof(unsigned long));
   if (histogram == (unsigned long *) NULL)
     {
       DestroyImage(paint_image);
@@ -771,7 +771,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         Determine most frequent color.
       */
       count=0;
-      (void) memset(histogram,0,65536*sizeof(unsigned long));
+      (void) memset(histogram,0,65536L*sizeof(unsigned long));
       r=p;
       for (v=0; v < width; v++)
       {

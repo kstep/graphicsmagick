@@ -83,7 +83,7 @@
 
 /*
   This is temporary until I set up malloc'ed object attributes array.
-  Recompile with MNG_MAX_OBJECTS=65536 to avoid this limit but
+  Recompile with MNG_MAX_OBJECTS=65536L to avoid this limit but
   waste more memory.
 */
 #define MNG_MAX_OBJECTS 256
@@ -3011,8 +3011,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->colors>256)
           image->colors=256;
 #else
-        if (image->colors>65536)
-          image->colors=65536;
+        if (image->colors>65536L)
+          image->colors=65536L;
 #endif
         if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           {

@@ -385,7 +385,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         pixel=(double) quantum;
         if (fits_info.bits_per_pixel == 16)
           if (pixel > 32767)
-            pixel-=65536;
+            pixel-=65536L;
         if (fits_info.bits_per_pixel == -32)
           {
             j=((long) long_quantum[1] << 16) | ((long) long_quantum[2] << 8) |
@@ -432,7 +432,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           pixel=(double) quantum;
           if (fits_info.bits_per_pixel == 16)
             if (pixel > 32767)
-              pixel-=65536;
+              pixel-=65536L;
           if (fits_info.bits_per_pixel == -32)
             {
               j=((long) long_quantum[1] << 16) | ((long) long_quantum[2] << 8) |
@@ -498,7 +498,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         pixel=(double) quantum;
         if (fits_info.bits_per_pixel == 16)
           if (pixel > 32767)
-            pixel-=65536;
+            pixel-=65536L;
         if (fits_info.bits_per_pixel == -32)
           {
             j=((long) long_quantum[1] << 16) | ((long) long_quantum[2] << 8) |

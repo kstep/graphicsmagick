@@ -1136,10 +1136,10 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   last_glyph.id=0;
   origin.x=0;
   origin.y=0;
-  affine.xx=(FT_Fixed) (65536.0*draw_info->affine.sx);
-  affine.yx=(FT_Fixed) (-65536.0*draw_info->affine.rx);
-  affine.xy=(FT_Fixed) (-65536.0*draw_info->affine.ry);
-  affine.yy=(FT_Fixed) (65536.0*draw_info->affine.sy);
+  affine.xx=(FT_Fixed) (65536L*draw_info->affine.sx+0.5);
+  affine.yx=(FT_Fixed) (-65536L*draw_info->affine.rx+0.5);
+  affine.xy=(FT_Fixed) (-65536L*draw_info->affine.ry+0.5);
+  affine.yy=(FT_Fixed) (65536L*draw_info->affine.sy+0.5);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   (void) QueryColorDatabase("#000000ff",&clone_info->fill,&image->exception);
   (void) CloneString(&clone_info->primitive,"path '");

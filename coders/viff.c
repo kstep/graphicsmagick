@@ -383,7 +383,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             /*
               Create linear color ramp.
             */
-            image->colors=image->depth <= 8 ? 256 : 65536;
+            image->colors=image->depth <= 8 ? 256 : 65536L;
             if (viff_info.data_storage_type == VFF_TYP_BIT)
               image->colors=2;
             if (!AllocateImageColormap(image,image->colors))
