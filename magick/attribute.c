@@ -83,10 +83,10 @@ MagickExport void DestroyImageAttributes(Image *image)
     attribute=p;
     p=p->next;
     if (attribute->key != (char *) NULL)
-      LiberateMemory((void **) &attribute->key);
+      MagickFreeMemory(attribute->key);
     if (attribute->value != (char *) NULL)
-      LiberateMemory((void **) &attribute->value);
-    LiberateMemory((void **) &attribute);
+      MagickFreeMemory(attribute->value);
+    MagickFreeMemory(attribute);
   }
   image->attributes=(ImageAttribute *) NULL;
 }
@@ -157,7 +157,7 @@ static unsigned int GenerateIPTCAttribute(Image *image,const char *key)
     (void) strncpy(attribute,(char *) image->iptc_profile.info+i+5,length);
     attribute[length]='\0';
     (void) SetImageAttribute(image,key,(const char *) attribute);
-    LiberateMemory((void **) &attribute);
+    MagickFreeMemory(attribute);
     break;
   }
   return(i < (long) image->iptc_profile.length);
@@ -340,7 +340,7 @@ static char *TraceClippingPath(char *blob,size_t length,unsigned long columns,
     (void) ConcatenateString(&path,message);
     break;
   }
-  LiberateMemory((void **) &message);
+  MagickFreeMemory(message);
   return(path);
 }
 
@@ -403,7 +403,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
             for (i=0; i < (long) count; i++)
               string[i]=(char) ReadByte((char **) &info,&length);
             string[count]=0;
-            LiberateMemory((void **) &string);
+            MagickFreeMemory(string);
           }
       }
     if (!(count & 0x01))
@@ -425,9 +425,9 @@ static int Generate8BIMAttribute(Image *image,const char *key)
 
             path=TraceClippingPath(attribute,count,image->columns,image->rows);
             (void) SetImageAttribute(image,key,(const char *) path);
-            LiberateMemory((void **) &path);
+            MagickFreeMemory(path);
           }
-        LiberateMemory((void **) &attribute);
+        MagickFreeMemory(attribute);
         status=True;
       }
   }
@@ -961,7 +961,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
                 }
               }
               (void) ConcatenateString(&final,value);
-              LiberateMemory((void **) &value);
+              MagickFreeMemory(value);
             }
         }
         if ((t == TAG_EXIF_OFFSET) || (t == TAG_INTEROP_OFFSET))
@@ -993,7 +993,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
   if (strlen(final) == 0)
     (void) ConcatenateString(&final,"unknown");
   (void) SetImageAttribute(image,specification,(const char *) final);
-  LiberateMemory((void **) &final);
+  MagickFreeMemory(final);
   return(True);
 }
 
@@ -1356,9 +1356,9 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
       if (p == (ImageAttribute *) NULL)
         return(False);
       if (p->key != (char *) NULL)
-        LiberateMemory((void **) &p->key);
+        MagickFreeMemory(p->key);
       if (p->value != (char *) NULL)
-        LiberateMemory((void **) &p->value);
+        MagickFreeMemory(p->value);
       if (p->previous != (ImageAttribute *) NULL)
         p->previous->next=p->next;
       else
@@ -1370,7 +1370,7 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
       if (p->next != (ImageAttribute *) NULL)
         p->next->previous=p->previous;
       attribute=p;
-      LiberateMemory((void **) &attribute);
+      MagickFreeMemory(attribute);
       return(True);
     }
   if (*value == '\0')
@@ -1399,9 +1399,9 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
     if (LocaleCompare(attribute->key,p->key) == 0)
       {
         (void) ConcatenateString(&p->value,attribute->value);
-        LiberateMemory((void **) &attribute->value);
-        LiberateMemory((void **) &attribute->key);
-        LiberateMemory((void **) &attribute);
+        MagickFreeMemory(attribute->value);
+        MagickFreeMemory(attribute->key);
+        MagickFreeMemory(attribute);
         return(True);
       }
     if (p->next == (ImageAttribute *) NULL)

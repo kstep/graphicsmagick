@@ -169,7 +169,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!MagickMonitor(LoadImageText,y,image->rows,exception))
             break;
     }
-    LiberateMemory((void **) &pixels);
+    MagickFreeMemory(pixels);
     if (EOFBlob(image))
       {
         ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
@@ -368,7 +368,7 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
           if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
             break;
     }
-    LiberateMemory((void **) &pixels);
+    MagickFreeMemory(pixels);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

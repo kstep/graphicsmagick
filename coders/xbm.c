@@ -348,7 +348,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
        if (!MagickMonitor(LoadImageText,y,image->rows,exception))
          break;
   }
-  LiberateMemory((void **) &data);
+  MagickFreeMemory(data);
   SyncImage(image);
   CloseBlob(image);
   return(image);

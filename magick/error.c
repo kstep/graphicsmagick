@@ -293,9 +293,9 @@ MagickExport void DestroyExceptionInfo(ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (exception->reason != (char *) NULL)
-    LiberateMemory((void **) &exception->reason);
+    MagickFreeMemory(exception->reason);
   if (exception->description != (char *) NULL)
-    LiberateMemory((void **) &exception->description);
+    MagickFreeMemory(exception->description);
 }
 
 /*
@@ -723,7 +723,7 @@ MagickExport void ThrowException(ExceptionInfo *exception,
   if (reason == (char *) NULL)
     {
       if (exception->reason != (char *) NULL)
-        LiberateMemory((void **) &exception->reason);
+        MagickFreeMemory(exception->reason);
     }
   else
     (void) CloneString(&exception->reason,
@@ -731,7 +731,7 @@ MagickExport void ThrowException(ExceptionInfo *exception,
   if (description == (char *) NULL)
     {
       if (exception->description != (char *) NULL)
-        LiberateMemory((void **) &exception->description);
+        MagickFreeMemory(exception->description);
       return;
     }
   (void) CloneString(&exception->description,

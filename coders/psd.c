@@ -665,7 +665,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image)
       }
           ReadBlob(image,length,data);
-          LiberateMemory((void **) &data);
+          MagickFreeMemory(data);
         }
       else
         {
@@ -1233,7 +1233,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           DestroyImage(image);
           returnImage = layer_info[0].image;  
 #endif
-          LiberateMemory((void **) &layer_info);
+          MagickFreeMemory(layer_info);
 
       if(logging)
       {
@@ -1852,7 +1852,7 @@ compute_layer_info:
    else
   WriteImageChannels( image, image, pixels );
 
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(pixels);
   CloseBlob(image);
   return(True);
 }

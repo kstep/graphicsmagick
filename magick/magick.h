@@ -25,7 +25,7 @@ typedef unsigned int
 
 typedef struct _MagickInfo
 {
-  const char
+  char
     *name,
     *description,
     *note,

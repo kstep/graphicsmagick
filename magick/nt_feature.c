@@ -574,7 +574,7 @@ MagickExport TypeInfo* NTGetTypeList( void )
         type_array[array_index]->next=(TypeInfo *) NULL;
       }
 
-    LiberateMemory((void**) &type_array);
+    MagickFreeMemory(type_array);
   }
 
   return (TypeInfo *) type_list;

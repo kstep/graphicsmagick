@@ -2099,7 +2099,7 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
   magick_font = (wmf_magick_font_t*)font->user_data;
   wmf_font_name = WMF_FONT_NAME(font);
 
-  LiberateMemory((void**)&magick_font->ps_name);
+  MagickFreeMemory(magick_font->ps_name);
 
   GetExceptionInfo(&exception);
   type_info_base=GetTypeInfo("*",&exception);

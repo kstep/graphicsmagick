@@ -586,9 +586,9 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
   /*
     Free decoder memory.
   */
-  LiberateMemory((void **) &mw_hash);
-  LiberateMemory((void **) &mb_hash);
-  LiberateMemory((void **) &scanline);
+  MagickFreeMemory(mw_hash);
+  MagickFreeMemory(mb_hash);
+  MagickFreeMemory(scanline);
   return(True);
 }
 
@@ -823,7 +823,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   if (is_fax == False)
     Ascii85Flush(image);
   DestroyImage(huffman_image);
-  LiberateMemory((void **) &scanline);
+  MagickFreeMemory(scanline);
   return(True);
 }
 
@@ -990,7 +990,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
   OutputCode(LZWEod);
   if (number_bits != 0)
     (void) WriteBlobByte(image,accumulator >> 24);
-  LiberateMemory((void **) &table);
+  MagickFreeMemory(table);
   return(True);
 }
 #else
@@ -1137,6 +1137,6 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
     }
   }
   (void) WriteBlobByte(image,128);  /* EOD marker */
-  LiberateMemory((void **) &packbits);
+  MagickFreeMemory(packbits);
   return(True);
 }

@@ -53,6 +53,22 @@
 </tr>
 </table>
 <p>
+2003-05-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.h (MagickAllocateMemory): New macro to allocate
+        memory.<BR>
+        (MagickFreeMemory): New macro to free memory.
+        (MagickReallocMemory): New macro to reallocate memory.
+  <LI> */*.c,*/*.h: Updated to use MagickFreeMemory and
+        MagickReallocMemory. Eliminated warnings when compiling with
+        GCC 3.3 using -Wall.<BR>
+  <LI> images: The logo image was determined to have a copyright
+        problem so replace with blank image until a replacement is
+        available.
+
+</UL>
+<p>
 2003-05-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

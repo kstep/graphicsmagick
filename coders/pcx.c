@@ -422,7 +422,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   image->colormap[i].blue=ScaleCharToQuantum(*p++);
                 }
             }
-          LiberateMemory((void **) &pcx_colormap);
+          MagickFreeMemory(pcx_colormap);
         }
     /*
       Convert PCX raster image to pixel packets.
@@ -575,8 +575,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (image->storage_class == PseudoClass)
       SyncImage(image);
-    LiberateMemory((void **) &scanline);
-    LiberateMemory((void **) &pcx_pixels);
+    MagickFreeMemory(scanline);
+    MagickFreeMemory(pcx_pixels);
     if (EOFBlob(image))
       {
         ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
@@ -612,7 +612,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
   }
   if (page_table != (ExtendedSignedIntegralType *) NULL)
-    LiberateMemory((void **) &page_table);
+    MagickFreeMemory(page_table);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -1019,8 +1019,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     }
     (void) WriteBlobByte(image,pcx_info.colormap_signature);
     (void) WriteBlob(image,3*256,(char *) pcx_colormap);
-    LiberateMemory((void **) &pcx_pixels);
-    LiberateMemory((void **) &pcx_colormap);
+    MagickFreeMemory(pcx_pixels);
+    MagickFreeMemory(pcx_colormap);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
@@ -1044,7 +1044,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobLSBLong(image,0x3ADE68B1L);
       for (i=0; i <= (long) scene; i++)
         (void) WriteBlobLSBLong(image,(unsigned long) page_table[i]);
-      LiberateMemory((void **) &page_table);
+      MagickFreeMemory(page_table);
     }
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToWriteFile",image);

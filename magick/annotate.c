@@ -172,7 +172,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToAnnotateImage");
   textlist=StringToList(text);
-  LiberateMemory((void **) &text);
+  MagickFreeMemory(text);
   if (textlist == (char **) NULL)
     return(False);
   length=strlen(textlist[0]);
@@ -369,10 +369,10 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   */
   DestroyDrawInfo(clone_info);
   DestroyDrawInfo(annotate);
-  LiberateMemory((void **) &text);
+  MagickFreeMemory(text);
   for (i=0; textlist[i] != (char *) NULL; i++)
-    LiberateMemory((void **) &textlist[i]);
-  LiberateMemory((void **) &textlist);
+    MagickFreeMemory(textlist[i]);
+  MagickFreeMemory(textlist);
   return(status);
 }
 
@@ -1290,7 +1290,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   /*
     Free resources.
   */
-  LiberateMemory((void **) &text);
+  MagickFreeMemory(text);
   DestroyDrawInfo(clone_info);
   (void) FT_Done_Face(face);
   (void) FT_Done_FreeType(library);
@@ -1460,7 +1460,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
     (void) fprintf(file,"(%.1024s) stringwidth pop -0.5 mul -0.5 rmoveto\n",
       text);
   (void) fprintf(file,"(%.1024s) show\n",text);
-  LiberateMemory((void **) &text);
+  MagickFreeMemory(text);
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
   FormatString(geometry,"%ldx%ld+0+0!",(long) ceil(extent.x-0.5),

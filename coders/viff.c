@@ -454,7 +454,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
                 image->colormap[i % image->colors].blue=
                   ScaleCharToQuantum((unsigned long) value);
         }
-        LiberateMemory((void **) &viff_colormap);
+        MagickFreeMemory(viff_colormap);
         break;
       }
       default:
@@ -681,7 +681,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
                   break;
           }
         }
-    LiberateMemory((void **) &viff_pixels);
+    MagickFreeMemory(viff_pixels);
     if (image->storage_class == PseudoClass)
       SyncImage(image);
     if (EOFBlob(image))
@@ -1085,7 +1085,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           for (i=0; i < (long) image->colors; i++)
             *q++=ScaleQuantumToChar(image->colormap[i].blue);
           (void) WriteBlob(image,3*image->colors,(char *) viff_colormap);
-          LiberateMemory((void **) &viff_colormap);
+          MagickFreeMemory(viff_colormap);
           /*
             Convert PseudoClass packet to VIFF colormapped pixels.
           */
@@ -1177,7 +1177,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             }
           }
     (void) WriteBlob(image,packets,(char *) viff_pixels);
-    LiberateMemory((void **) &viff_pixels);
+    MagickFreeMemory(viff_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

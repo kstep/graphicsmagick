@@ -1,5 +1,12 @@
 2003-05-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/utility.h (MagickAllocateMemory): New macro to allocate
+	memory.
+	(MagickFreeMemory): New macro to free memory.
+	(MagickReallocMemory): New macro to reallocate memory.
+	* */*.c,*/*.h: Updated to use MagickFreeMemory and
+	MagickReallocMemory. Eliminated warnings when compiling with
+	GCC 3.3 using -Wall.
 	* images: The logo image was determined to have a copyright
 	problem so replace with blank image until a replacement is
 	available.

@@ -339,7 +339,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
         for (i=0; i < (long) image->colors; i++)
           image->colormap[i].blue=ScaleCharToQuantum(sun_colormap[i]);
-        LiberateMemory((void **) &sun_colormap);
+        MagickFreeMemory(sun_colormap);
         break;
       }
       case RMT_RAW:
@@ -355,7 +355,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         (void) ReadBlob(image,sun_info.maplength,(char *) sun_colormap);
-        LiberateMemory((void **) &sun_colormap);
+        MagickFreeMemory(sun_colormap);
         break;
       }
       default:
@@ -391,7 +391,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         (void) DecodeImage(sun_data,sun_info.length,sun_pixels);
-        LiberateMemory((void **) &sun_data);
+        MagickFreeMemory(sun_data);
       }
     /*
       Convert SUN raster image to pixel packets.
@@ -485,7 +485,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     if (image->storage_class == PseudoClass)
       SyncImage(image);
-    LiberateMemory((void **) &sun_pixels);
+    MagickFreeMemory(sun_pixels);
     if (EOFBlob(image))
       {
         ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
@@ -781,7 +781,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
               if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
                 break;
         }
-        LiberateMemory((void **) &pixels);
+        MagickFreeMemory(pixels);
       }
     else
       if (IsMonochromeImage(image,&image->exception))

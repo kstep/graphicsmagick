@@ -6322,7 +6322,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   }
   (void) WriteBlobString(image,"\n  };\n");
   CloseBlob(image);
-  LiberateMemory((void **) &blob);
+  MagickFreeMemory(blob);
   DestroyImage(logo_image);
   return(True);
 }

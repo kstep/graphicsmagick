@@ -280,7 +280,7 @@ static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
 MagickExport void closedir(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
-  LiberateMemory((void **) &entry);
+  MagickFreeMemory(entry);
 }
 
 /*

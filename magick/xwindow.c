@@ -544,9 +544,9 @@ MagickExport XFontStruct *XBestFont(Display *display,
           {
             if (font_info == (XFontStruct *) NULL)
               font_info=XLoadQueryFont(display,fontlist[i]);
-            LiberateMemory((void **) &fontlist[i]);
+            MagickFreeMemory(fontlist[i]);
           }
-          LiberateMemory((void **) &fontlist);
+          MagickFreeMemory(fontlist);
         }
       if (font_info == (XFontStruct *) NULL)
         MagickError(XServerError,"UnableToLoadFont",font_name);
@@ -795,7 +795,7 @@ MagickExport void XBestPixel(Display *display,const Colormap colormap,
   }
   (void) XAllocColor(display,colormap,&colors[j]);
   if (query_server)
-    LiberateMemory((void **) &colors);
+    MagickFreeMemory(colors);
 }
 
 /*
@@ -1664,10 +1664,10 @@ MagickExport void XDisplayImageInfo(Display *display,
       XTextViewWidget(display,resource_info,windows,True,title,
         (char const **) textlist);
       for (i=0; textlist[i] != (char *) NULL; i++)
-        LiberateMemory((void **) &textlist[i]);
-      LiberateMemory((void **) &textlist);
+        MagickFreeMemory(textlist[i]);
+      MagickFreeMemory(textlist);
     }
-  LiberateMemory((void **) &text);
+  MagickFreeMemory(text);
 }
 
 /*
@@ -1833,9 +1833,9 @@ static void XDitherImage(Image *image,XImage *ximage)
   for (i=0; i < 2; i++)
     for (j=0; j < 16; j++)
     {
-      LiberateMemory((void **) &green_map[i][j]);
-      LiberateMemory((void **) &blue_map[i][j]);
-      LiberateMemory((void **) &red_map[i][j]);
+      MagickFreeMemory(green_map[i][j]);
+      MagickFreeMemory(blue_map[i][j]);
+      MagickFreeMemory(red_map[i][j]);
     }
 }
 
@@ -2406,7 +2406,7 @@ MagickExport void XFreeStandardColormap(Display *display,
   if (pixel != (XPixelInfo *) NULL)
     {
       if (pixel->pixels != (unsigned long *) NULL)
-        LiberateMemory((void **) &pixel->pixels);
+        MagickFreeMemory(pixel->pixels);
       pixel->pixels=(unsigned long *) NULL;
     }
 }
@@ -2639,7 +2639,7 @@ MagickExport void XGetPixelPacket(Display *display,
       pixel->colors=image->colors;
   packets=Max((int) pixel->colors,visual_info->colormap_size)+MaxNumberPens;
   if (pixel->pixels != (unsigned long *) NULL)
-    LiberateMemory((void **) &pixel->pixels);
+    MagickFreeMemory(pixel->pixels);
   pixel->pixels=(unsigned long *) AcquireMemory(packets*sizeof(unsigned long));
   if (pixel->pixels == (unsigned long *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -3692,7 +3692,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
         window_info=(WindowInfo *)
           AcquireMemory(max_windows*sizeof(WindowInfo));
       else
-        ReacquireMemory((void **) &window_info,max_windows*sizeof(WindowInfo));
+        MagickReallocMemory(window_info,max_windows*sizeof(WindowInfo));
     }
   if (window_info == (WindowInfo *) NULL)
     {
@@ -4081,14 +4081,14 @@ static Image *XGetWindowImage(Display *display,const Window window,
       while (colormap_info != (ColormapInfo *) NULL)
       {
         next=colormap_info->next;
-        LiberateMemory((void **) &colormap_info->colors);
-        LiberateMemory((void **) &colormap_info);
+        MagickFreeMemory(colormap_info->colors);
+        MagickFreeMemory(colormap_info);
         colormap_info=next;
       }
       /*
         Free resources and restore initial state.
       */
-      LiberateMemory((void **) &window_info);
+      MagickFreeMemory(window_info);
       window_info=(WindowInfo *) NULL;
       max_windows=0;
       number_windows=0;
@@ -5159,7 +5159,7 @@ MagickExport unsigned int XMakeImage(Display *display,
         }
 #endif
       if (window->ximage->data != (char *) NULL)
-        LiberateMemory((void **) &window->ximage->data);
+        MagickFreeMemory(window->ximage->data);
       window->ximage->data=(char *) NULL;
       XDestroyImage(window->ximage);
     }
@@ -5208,7 +5208,7 @@ MagickExport unsigned int XMakeImage(Display *display,
         Free matte image.
       */
       if (window->matte_image->data != (char *) NULL)
-        (void) LiberateMemory((void **) &window->matte_image->data);
+        MagickFreeMemory(window->matte_image->data);
       window->matte_image->data=(char *) NULL;
       XDestroyImage(window->matte_image);
     }
@@ -7349,8 +7349,8 @@ MagickExport void XMakeStandardColormap(Display *display,
                 *p++=server_colors[i];
               number_colors+=retain_colors;
             }
-          LiberateMemory((void **) &server_colors);
-          LiberateMemory((void **) &diversity);
+          MagickFreeMemory(server_colors);
+          MagickFreeMemory(diversity);
           break;
         }
       /*
@@ -7539,7 +7539,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       }
       pixel->colors=image->colors+MaxNumberPens;
     }
-  LiberateMemory((void **) &colors);
+  MagickFreeMemory(colors);
   if (IsEventLogging())
     {
       (void) LogMagickEvent(X11Event,GetMagickModule(),"Standard Colormap:");

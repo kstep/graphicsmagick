@@ -182,7 +182,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
       (const pthread_mutexattr_t *) NULL);
     if (status != 0)
       {
-        LiberateMemory((void **) &semaphore_info);
+        MagickFreeMemory(semaphore_info);
         return((SemaphoreInfo *) NULL);
       }
   }
@@ -271,7 +271,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 #if defined(WIN32)
   DeleteCriticalSection(&(*semaphore_info)->mutex);
 #endif
-  LiberateMemory((void **) &(*semaphore_info));
+  MagickFreeMemory((*semaphore_info));
 #if defined(HasPTHREADS)
   (void) pthread_mutex_unlock(&semaphore_mutex);
 #endif

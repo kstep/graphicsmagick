@@ -259,7 +259,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) ReadBlob(image,length-1,comment);
         comment[length-1]='\0';
         (void) SetImageAttribute(image,"comment",comment);
-        LiberateMemory((void **) &comment);
+        MagickFreeMemory(comment);
         if ((length & 0x01) == 0)
           (void) ReadBlobByte(image);
       }
@@ -512,15 +512,15 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                     break;
             }
-            LiberateMemory((void **) &image->colormap);
+            MagickFreeMemory(image->colormap);
             image->colormap=(PixelPacket *) NULL;
             image->storage_class=DirectClass;
             image->colors=0;
           }
       }
     if (number_colormaps != 0)
-      LiberateMemory((void **) &colormap);
-    LiberateMemory((void **) &rle_pixels);
+      MagickFreeMemory(colormap);
+    MagickFreeMemory(rle_pixels);
     if (EOFBlob(image))
       {
         ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",

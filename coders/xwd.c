@@ -214,7 +214,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,length,comment);
   comment[length]='\0';
   (void) SetImageAttribute(image,"comment",comment);
-  LiberateMemory((void **) &comment);
+  MagickFreeMemory(comment);
   if (count == 0)
     ThrowReaderException(CorruptImageError,"UnableToReadWindowNameFromDumpFile",
       image);
@@ -436,9 +436,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Free image and colormap.
   */
   if (header.ncolors != 0)
-    LiberateMemory((void **) &colors);
-  LiberateMemory((void **) &ximage->data);
-  LiberateMemory((void **) &ximage);
+    MagickFreeMemory(colors);
+  MagickFreeMemory(ximage->data);
+  MagickFreeMemory(ximage);
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
@@ -677,7 +677,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
         color.flags=colors[i].flags;
         (void) WriteBlob(image,sz_XWDColor,(char *) &color);
       }
-      LiberateMemory((void **) &colors);
+      MagickFreeMemory(colors);
     }
   /*
     Allocate memory for pixels.
@@ -717,7 +717,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
         if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
           break;
   }
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(pixels);
   CloseBlob(image);
   return(True);
 }

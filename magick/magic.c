@@ -101,14 +101,14 @@ MagickExport void DestroyMagicInfo(void)
     magic_info=p;
     p=p->next;
     if (magic_info->path != (char *) NULL)
-      LiberateMemory((void **) &magic_info->path);
+      MagickFreeMemory(magic_info->path);
     if (magic_info->name != (char *) NULL)
-      LiberateMemory((void **) &magic_info->name);
+      MagickFreeMemory(magic_info->name);
     if (magic_info->target != (char *) NULL)
-      LiberateMemory((void **) &magic_info->target);
+      MagickFreeMemory(magic_info->target);
     if (magic_info->magic != (unsigned char *) NULL)
-      LiberateMemory((void **) &magic_info->magic);
-    LiberateMemory((void **) &magic_info);
+      MagickFreeMemory(magic_info->magic);
+    MagickFreeMemory(magic_info);
   }
   magic_list=(MagicInfo *) NULL;
   DestroySemaphoreInfo(&magic_semaphore);
@@ -485,8 +485,8 @@ static unsigned int ReadConfigureFile(const char *basename,
         break;
     }
   }
-  LiberateMemory((void **) &token);
-  LiberateMemory((void **) &xml);
+  MagickFreeMemory(token);
+  MagickFreeMemory(xml);
   if (magic_list == (MagicInfo *) NULL)
     return(False);
   while (magic_list->previous != (MagicInfo *) NULL)

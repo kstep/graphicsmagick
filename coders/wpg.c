@@ -345,7 +345,7 @@ static int UnpackWPGRaster(Image *image,int bpp)
           RunCount=ReadBlobByte(image);
           if(x) {    /* attempt to duplicate row from x position: */
             /* I do not know what to do here */
-            LiberateMemory((void **) &BImgBuff);
+            MagickFreeMemory(BImgBuff);
             return(-3);
           }
           for(i=0;i < (int) RunCount;i++)
@@ -355,7 +355,7 @@ static int UnpackWPGRaster(Image *image,int bpp)
               if(y<2) continue;
               if(y>(long) image->rows)
                 {
-                  LiberateMemory((void **) &BImgBuff);
+                  MagickFreeMemory(BImgBuff);
                   return(-4);
                 }
               InsertRow(BImgBuff,y-1,image,bpp);
@@ -363,7 +363,7 @@ static int UnpackWPGRaster(Image *image,int bpp)
         }
       }
     }
-  LiberateMemory((void **) &BImgBuff);
+  MagickFreeMemory(BImgBuff);
   return(0);
 }
 
@@ -476,7 +476,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
         }
 
     }
-  LiberateMemory((void **) &BImgBuff);
+  MagickFreeMemory(BImgBuff);
   return(0);
 }
 
@@ -814,7 +814,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               else {
                 if(bpp<24)
                   if( image->colors<(1UL<<bpp) && bpp!=24 )
-                    ReacquireMemory((void **) &image->colormap,
+                    MagickReallocMemory(image->colormap,
                       (1<<bpp)*sizeof(PixelPacket));
               }
           
@@ -944,7 +944,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               else {
                 if(bpp<24)
                   if( image->colors<(1UL<<bpp) && bpp!=24 )
-                    ReacquireMemory((void **) &image->colormap,
+                    MagickReallocMemory(image->colormap,
                       (1<<bpp)*sizeof(PixelPacket));
               }
 
@@ -964,7 +964,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                         InsertRow(BImgBuff,i,image,bpp);
                       }
                     if(BImgBuff)
-                      LiberateMemory((void **) &BImgBuff);
+                      MagickFreeMemory(BImgBuff);
                     break;
                   }
                 case 1:    /*RLE for WPG2 */

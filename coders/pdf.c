@@ -186,7 +186,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
     if (fillorder == FILLORDER_LSB2MSB)
       TIFFReverseBits(buffer,count);
   }
-  LiberateMemory((void **) &buffer);
+  MagickFreeMemory(buffer);
   TIFFClose(tiff);
   LiberateTemporaryFile(filename);
   return(True);
@@ -829,7 +829,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         kid_image=kid_image->next;
       }
-      ReacquireMemory((void **) &xref,
+      MagickReallocMemory(xref,
         (count+2048)*sizeof(ExtendedSignedIntegralType));
       if (xref == (ExtendedSignedIntegralType *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
@@ -947,9 +947,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           FormatString(buffer,"(%.1024s) Tj\n",labels[i]);
           (void) WriteBlobString(image,buffer);
           (void) WriteBlobString(image,"ET\n");
-          LiberateMemory((void **) &labels[i]);
+          MagickFreeMemory(labels[i]);
         }
-        LiberateMemory((void **) &labels);
+        MagickFreeMemory(labels);
       }
     FormatString(buffer,"%g 0 0 %g %ld %ld cm\n",x_scale,y_scale,geometry.x,
       geometry.y);
@@ -1089,7 +1089,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
-            LiberateMemory((void **) &blob);
+            MagickFreeMemory(blob);
             break;
           }
           case RLECompression:
@@ -1134,7 +1134,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 status=LZWEncodeImage(image,length,pixels);
               else
                 status=PackbitsEncodeImage(image,length,pixels);
-            LiberateMemory((void **) &pixels);
+            MagickFreeMemory(pixels);
             if (!status)
               {
                 CloseBlob(image);
@@ -1200,7 +1200,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
-            LiberateMemory((void **) &blob);
+            MagickFreeMemory(blob);
             break;
           }
           case RLECompression:
@@ -1257,7 +1257,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 status=LZWEncodeImage(image,length,pixels);
               else
                 status=PackbitsEncodeImage(image,length,pixels);
-            LiberateMemory((void **) &pixels);
+            MagickFreeMemory(pixels);
             if (!status)
               {
                 CloseBlob(image);
@@ -1353,7 +1353,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   status=LZWEncodeImage(image,length,pixels);
                 else
                   status=PackbitsEncodeImage(image,length,pixels);
-              LiberateMemory((void **) &pixels);
+              MagickFreeMemory(pixels);
               if (!status)
                 {
                   CloseBlob(image);
@@ -1513,7 +1513,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
-            LiberateMemory((void **) &blob);
+            MagickFreeMemory(blob);
             break;
           }
           case RLECompression:
@@ -1553,7 +1553,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 status=LZWEncodeImage(image,length,pixels);
               else
                 status=PackbitsEncodeImage(image,length,pixels);
-            LiberateMemory((void **) &pixels);
+            MagickFreeMemory(pixels);
             if (!status)
               {
                 CloseBlob(image);
@@ -1610,7 +1610,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
-            LiberateMemory((void **) &blob);
+            MagickFreeMemory(blob);
             break;
           }
           case RLECompression:
@@ -1662,7 +1662,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 status=LZWEncodeImage(image,length,pixels);
               else
                 status=PackbitsEncodeImage(image,length,pixels);
-            LiberateMemory((void **) &pixels);
+            MagickFreeMemory(pixels);
             if (!status)
               {
                 CloseBlob(image);
@@ -1745,7 +1745,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   status=LZWEncodeImage(image,length,pixels);
                 else
                   status=PackbitsEncodeImage(image,length,pixels);
-              LiberateMemory((void **) &pixels);
+              MagickFreeMemory(pixels);
               if (!status)
                 {
                   CloseBlob(image);
@@ -1879,7 +1879,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   FormatString(buffer,"%lu\n",(unsigned long) offset);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"%%EOF\n");
-  LiberateMemory((void **) &xref);
+  MagickFreeMemory(xref);
   CloseBlob(image);
   return(True);
 }
@@ -1970,7 +1970,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
   else
     for (i=0; i < (long) compressed_packets; i++)
       (void) WriteBlobByte(image,compressed_pixels[i]);
-  LiberateMemory((void **) &compressed_pixels);
+  MagickFreeMemory(compressed_pixels);
   return(!status);
 }
 #else

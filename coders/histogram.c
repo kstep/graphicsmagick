@@ -308,9 +308,9 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Free memory resources.
   */
-  LiberateMemory((void **) &blue);
-  LiberateMemory((void **) &green);
-  LiberateMemory((void **) &red);
+  MagickFreeMemory(blue);
+  MagickFreeMemory(green);
+  MagickFreeMemory(red);
   file=AcquireTemporaryFileStream(filename,BinaryFileIOMode);
   if (file == (FILE *) NULL)
     {

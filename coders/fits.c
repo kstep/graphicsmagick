@@ -537,7 +537,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         if (!MagickMonitor(LoadImageText,y,image->rows,exception))
           break;
     }
-    LiberateMemory((void **) &fits_pixels);
+    MagickFreeMemory(fits_pixels);
     if (EOFBlob(image))
       {
         ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
@@ -731,7 +731,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(buffer,"END");
   (void) strncpy(fits_info+640,buffer,strlen(buffer));
   (void) WriteBlob(image,2880,(char *) fits_info);
-  LiberateMemory((void **) &fits_info);
+  MagickFreeMemory(fits_info);
   /*
     Convert image to fits scale PseudoColor class.
   */
@@ -750,7 +750,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
           break;
       }
   }
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(pixels);
   CloseBlob(image);
   return(True);
 }

@@ -412,7 +412,7 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
             if (edge == number_edges)
               {
                 number_edges<<=1;
-                ReacquireMemory((void **) &polygon_info->edges,
+                MagickReallocMemory(polygon_info->edges,
                   number_edges*sizeof(EdgeInfo));
                 if (polygon_info->edges == (EdgeInfo *) NULL)
                   return((PolygonInfo *) NULL);
@@ -463,7 +463,7 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
         if (edge == number_edges)
           {
             number_edges<<=1;
-            ReacquireMemory((void **) &polygon_info->edges,
+            MagickReallocMemory(polygon_info->edges,
               number_edges*sizeof(EdgeInfo));
             if (polygon_info->edges == (EdgeInfo *) NULL)
               return((PolygonInfo *) NULL);
@@ -496,7 +496,7 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
     if (n == number_points)
       {
         number_points<<=1;
-        ReacquireMemory((void **) &points,number_points*sizeof(PointInfo));
+        MagickReallocMemory(points,number_points*sizeof(PointInfo));
         if (points == (PointInfo *) NULL)
           return((PolygonInfo *) NULL);
       }
@@ -511,13 +511,15 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
   if (points != (PointInfo *) NULL)
     {
       if (n < 2)
-        LiberateMemory((void **) &points);
+        {
+          MagickFreeMemory(points);
+        }
       else
         {
           if (edge == number_edges)
             {
               number_edges<<=1;
-              ReacquireMemory((void **) &polygon_info->edges,
+              MagickReallocMemory(polygon_info->edges,
                 number_edges*sizeof(EdgeInfo));
               if (polygon_info->edges == (EdgeInfo *) NULL)
                 return((PolygonInfo *) NULL);
@@ -710,11 +712,11 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->signature == MagickSignature);
   if (draw_info->primitive != (char *) NULL)
-    LiberateMemory((void **) &draw_info->primitive);
+    MagickFreeMemory(draw_info->primitive);
   if (draw_info->text != (char *) NULL)
-    LiberateMemory((void **) &draw_info->text);
+    MagickFreeMemory(draw_info->text);
   if (draw_info->geometry != (char *) NULL)
-    LiberateMemory((void **) &draw_info->geometry);
+    MagickFreeMemory(draw_info->geometry);
   if (draw_info->tile != (Image *) NULL)
     DestroyImage(draw_info->tile);
   if (draw_info->fill_pattern != (Image *) NULL)
@@ -722,21 +724,21 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
   if (draw_info->stroke_pattern != (Image *) NULL)
     DestroyImage(draw_info->stroke_pattern);
   if (draw_info->font != (char *) NULL)
-    LiberateMemory((void **) &draw_info->font);
+    MagickFreeMemory(draw_info->font);
   if (draw_info->family != (char *) NULL)
-    LiberateMemory((void **) &draw_info->family);
+    MagickFreeMemory(draw_info->family);
   if (draw_info->encoding != (char *) NULL)
-    LiberateMemory((void **) &draw_info->encoding);
+    MagickFreeMemory(draw_info->encoding);
   if (draw_info->density != (char *) NULL)
-    LiberateMemory((void **) &draw_info->density);
+    MagickFreeMemory(draw_info->density);
   if (draw_info->server_name != (char *) NULL)
-    LiberateMemory((void **) &draw_info->server_name);
+    MagickFreeMemory(draw_info->server_name);
   if (draw_info->dash_pattern != (double *) NULL)
-    LiberateMemory((void **) &draw_info->dash_pattern);
+    MagickFreeMemory(draw_info->dash_pattern);
   if (draw_info->clip_path != (char *) NULL)
-    LiberateMemory((void **) &draw_info->clip_path);
+    MagickFreeMemory(draw_info->clip_path);
   memset((void *)draw_info,0xbf,sizeof(DrawInfo));
-  LiberateMemory((void **) &draw_info);
+  MagickFreeMemory(draw_info);
 }
 
 /*
@@ -768,7 +770,7 @@ static long DestroyEdge(PolygonInfo *polygon_info,const long edge)
 {
   assert(edge >= 0);
   assert(edge < polygon_info->number_edges);
-  LiberateMemory((void **) &polygon_info->edges[edge].points);
+  MagickFreeMemory(polygon_info->edges[edge].points);
   polygon_info->number_edges--;
   if (edge < polygon_info->number_edges)
     (void) memcpy(polygon_info->edges+edge,polygon_info->edges+edge+1,
@@ -813,7 +815,7 @@ static void DestroyGradientInfo(GradientInfo *gradient_info)
   for (gradient_info=p; p != (GradientInfo *) NULL; gradient_info=p)
   {
     p=p->next;
-    LiberateMemory((void **) &gradient_info);
+    MagickFreeMemory(gradient_info);
   }
 }
 #endif
@@ -847,9 +849,9 @@ static void DestroyPolygonInfo(PolygonInfo *polygon_info)
     i;
 
   for (i=0; i < polygon_info->number_edges; i++)
-    LiberateMemory((void **) &polygon_info->edges[i].points);
-  LiberateMemory((void **) &polygon_info->edges);
-  LiberateMemory((void **) &polygon_info);
+    MagickFreeMemory(polygon_info->edges[i].points);
+  MagickFreeMemory(polygon_info->edges);
+  MagickFreeMemory(polygon_info);
 }
 
 /*
@@ -1474,7 +1476,7 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
     dash_polygon[j].coordinates=1;
     j++;
   }
-  LiberateMemory((void **) &dash_polygon);
+  MagickFreeMemory(dash_polygon);
   DestroyDrawInfo(clone_info);
   (void) LogMagickEvent(RenderEvent,GetMagickModule(),"    end draw-dash");
   return(status);
@@ -1615,7 +1617,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   graphic_context=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
   if (graphic_context == (DrawInfo **) NULL)
     {
-      LiberateMemory((void **) &primitive);
+      MagickFreeMemory(primitive);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         "UnableToDrawOnImage")
     }
@@ -1624,10 +1626,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     AcquireMemory(number_points*sizeof(PrimitiveInfo));
   if (primitive_info == (PrimitiveInfo *) NULL)
     {
-      LiberateMemory((void **) &primitive);
+      MagickFreeMemory(primitive);
       for ( ; n >= 0; n--)
         DestroyDrawInfo(graphic_context[n]);
-      LiberateMemory((void **) &graphic_context);
+      MagickFreeMemory(graphic_context);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         "UnableToDrawOnImage")
     }
@@ -1869,7 +1871,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             GetToken(q,&q,token);
             (void) CloneString(&graphic_context[n]->font,token);
             if (LocaleCompare("none",token) == 0)
-              LiberateMemory((void **) &graphic_context[n]->font);
+              MagickFreeMemory(graphic_context[n]->font);
             break;
           }
         if (LocaleCompare("font-family",keyword) == 0)
@@ -2352,7 +2354,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             if (LocaleCompare("graphic-context",token) == 0)
               {
                 n++;
-                ReacquireMemory((void **) &graphic_context,
+                MagickReallocMemory(graphic_context,
                   (n+1)*sizeof(DrawInfo *));
                 if (graphic_context == (DrawInfo **) NULL)
                   {
@@ -2460,7 +2462,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("stroke-dasharray",keyword) == 0)
           {
             if (graphic_context[n]->dash_pattern != (double *) NULL)
-              LiberateMemory((void **) &graphic_context[n]->dash_pattern);
+              MagickFreeMemory(graphic_context[n]->dash_pattern);
             if (IsPoint(q))
               {
                 char
@@ -2704,7 +2706,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (i < (long) number_points)
         continue;
       number_points<<=1;
-      ReacquireMemory((void **) &primitive_info,
+      MagickReallocMemory(primitive_info,
         number_points*sizeof(PrimitiveInfo));
       if (primitive_info == (PrimitiveInfo *) NULL)
         {
@@ -2743,7 +2745,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     if (i >= (long) (number_points-length))
       {
         number_points+=length;
-        ReacquireMemory((void **) &primitive_info,
+        MagickReallocMemory(primitive_info,
           number_points*sizeof(PrimitiveInfo));
         if (primitive_info == (PrimitiveInfo *) NULL)
           {
@@ -2893,7 +2895,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (i > (long) (number_points-6*BezierQuantum*length/3-1))
           {
             number_points+=6*BezierQuantum*length/3;
-            ReacquireMemory((void **) &primitive_info,
+            MagickReallocMemory(primitive_info,
               number_points*sizeof(PrimitiveInfo));
             if (primitive_info == (PrimitiveInfo *) NULL)
               {
@@ -2989,7 +2991,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         (void) DrawPrimitive(image,graphic_context[n],primitive_info);
       }
     if (primitive_info->text != (char *) NULL)
-      LiberateMemory((void **) &primitive_info->text);
+      MagickFreeMemory(primitive_info->text);
     status=MagickMonitor(RenderImageText,q-primitive,
       (ExtendedSignedIntegralType) primitive_extent,&image->exception);
     if (status == False)
@@ -2999,13 +3001,13 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   /*
     Free resources.
   */
-  LiberateMemory((void **) &token);
+  MagickFreeMemory(token);
   if (primitive_info != (PrimitiveInfo *) NULL)
-    LiberateMemory((void **) &primitive_info);
-  LiberateMemory((void **) &primitive);
+    MagickFreeMemory(primitive_info);
+  MagickFreeMemory(primitive);
   for ( ; n >= 0; n--)
     DestroyDrawInfo(graphic_context[n]);
-  LiberateMemory((void **) &graphic_context);
+  MagickFreeMemory(graphic_context);
   if (status == False)
     ThrowBinaryException(DrawError,"NonconformingDrawingPrimitiveDefinition",
       keyword);
@@ -3374,7 +3376,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   if (path_info == (PathInfo *) NULL)
     return(False);
   polygon_info=ConvertPathToPolygon(draw_info,path_info);
-  LiberateMemory((void **) &path_info);
+  MagickFreeMemory(path_info);
   if (polygon_info == (PolygonInfo *) NULL)
     return(False);
   if (0)
@@ -4036,7 +4038,7 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
   {
     stroke_polygon=TraceStrokePolygon(draw_info,p);
     status=DrawPolygonPrimitive(image,clone_info,stroke_polygon);
-    LiberateMemory((void **) &stroke_polygon);
+    MagickFreeMemory(stroke_polygon);
     q=p+p->coordinates-1;
     closed_path=(q->point.x == p->point.x) && (q->point.y == p->point.y);
     if ((draw_info->linecap == RoundCap) && !closed_path)
@@ -4377,8 +4379,8 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
     p->primitive=primitive_info->primitive;
     p--;
   }
-  LiberateMemory((void **) &points);
-  LiberateMemory((void **) &coefficients);
+  MagickFreeMemory(points);
+  MagickFreeMemory(coefficients);
 }
 
 static void TraceCircle(PrimitiveInfo *primitive_info,const PointInfo start,
@@ -5163,11 +5165,11 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     if (q >= (max_strokes-6*BezierQuantum-360))
       {
          max_strokes+=6*BezierQuantum+360;
-         ReacquireMemory((void **) &path_p,max_strokes*sizeof(PointInfo));
-         ReacquireMemory((void **) &path_q,max_strokes*sizeof(PointInfo));
+         MagickReallocMemory(path_p,max_strokes*sizeof(PointInfo));
+         MagickReallocMemory(path_q,max_strokes*sizeof(PointInfo));
          if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL))
            {
-             LiberateMemory((void **) &polygon_primitive);
+             MagickFreeMemory(polygon_primitive);
              return((PrimitiveInfo *) NULL);
            }
       }
@@ -5359,8 +5361,8 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
       stroke_polygon[i].primitive=UndefinedPrimitive;
       stroke_polygon[0].coordinates=p+q+2*closed_path+1;
     }
-  LiberateMemory((void **) &path_p);
-  LiberateMemory((void **) &path_q);
-  LiberateMemory((void **) &polygon_primitive);
+  MagickFreeMemory(path_p);
+  MagickFreeMemory(path_q);
+  MagickFreeMemory(polygon_primitive);
   return(stroke_polygon);
 }

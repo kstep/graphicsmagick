@@ -335,7 +335,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
           }
         }
-        LiberateMemory((void **) &scanline);
+        MagickFreeMemory(scanline);
       }
     else
       {
@@ -420,9 +420,9 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               p+=(iris_info.columns*4*bytes_per_pixel);
             }
           }
-        LiberateMemory((void **) &runlength);
-        LiberateMemory((void **) &max_packets);
-        LiberateMemory((void **) &offsets);
+        MagickFreeMemory(runlength);
+        MagickFreeMemory(max_packets);
+        MagickFreeMemory(offsets);
       }
     /*
       Initialize image structure.
@@ -546,7 +546,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         SyncImage(image);
       }
-    LiberateMemory((void **) &iris_pixels);
+    MagickFreeMemory(iris_pixels);
     if (EOFBlob(image))
       {
         ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
@@ -864,7 +864,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlob(image,iris_info.columns,(char *) scanline);
           }
         }
-        LiberateMemory((void **) &scanline);
+        MagickFreeMemory(scanline);
       }
     else
       {
@@ -916,11 +916,11 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         /*
           Free memory.
         */
-        LiberateMemory((void **) &runlength);
-        LiberateMemory((void **) &packets);
-        LiberateMemory((void **) &offsets);
+        MagickFreeMemory(runlength);
+        MagickFreeMemory(packets);
+        MagickFreeMemory(offsets);
       }
-    LiberateMemory((void **) &iris_pixels);
+    MagickFreeMemory(iris_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

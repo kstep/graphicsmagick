@@ -156,7 +156,7 @@ static unsigned int ReadColorProfile(char *text,long int length,Image *image)
   p=(unsigned char *) text;
   if (image->color_profile.length != 0)
     {
-      LiberateMemory((void **) &image->color_profile.info);
+      MagickFreeMemory(image->color_profile.info);
       image->color_profile.length=0;
     }
   image->color_profile.info=(unsigned char *) AcquireMemory(length);
@@ -181,7 +181,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
   p=(unsigned char *) text;
   if (image->iptc_profile.length != 0)
     {
-      LiberateMemory((void **) &image->iptc_profile.info);
+      MagickFreeMemory(image->iptc_profile.info);
       image->iptc_profile.length=0;
       image->iptc_profile.info=(unsigned char *) NULL;
     }
@@ -217,7 +217,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
     return(False);
   if (image->iptc_profile.length != 0)
     {
-      LiberateMemory((void **) &image->iptc_profile.info);
+      MagickFreeMemory(image->iptc_profile.info);
       image->iptc_profile.length=0;
     }
 #if defined(GET_ONLY_IPTC_DATA)
@@ -948,8 +948,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
-        LiberateMemory((void **) &scanline);
-        LiberateMemory((void **) &quantum_scanline);
+        MagickFreeMemory(scanline);
+        MagickFreeMemory(quantum_scanline);
         break;
       }
       case DirectClassScanLineMethod:
@@ -1022,7 +1022,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
-        LiberateMemory((void **) &scanline);
+        MagickFreeMemory(scanline);
         break;
       }
     case DirectClassTiledMethod:
@@ -1152,7 +1152,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                   break;
           }
-        LiberateMemory((void **) &tile_pixels);
+        MagickFreeMemory(tile_pixels);
         
         break;
       }
@@ -1222,7 +1222,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
-        LiberateMemory((void **) &strip_pixels);
+        MagickFreeMemory(strip_pixels);
         break;
       }
       case DirectClassPuntMethod:
@@ -1294,7 +1294,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
-        LiberateMemory((void **) &pixels);
+        MagickFreeMemory(pixels);
         break;
       }
     }
@@ -1576,7 +1576,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
       if (TIFFIsByteSwapped(tiff))
         TIFFSwabArrayOfLong((uint32 *) profile,length);
       (void) TIFFSetField(tiff,type,(uint32) (length+roundup),(void *) profile);
-      LiberateMemory((void **) &profile);
+      MagickFreeMemory(profile);
       return;
     }
   /*
@@ -1610,7 +1610,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
     profile[length+roundup]=0;
   (void) TIFFSetField(tiff,type,(uint32) length+roundup,(void *) profile);
 #endif
-  LiberateMemory((void **) &profile);
+  MagickFreeMemory(profile);
 }
 #endif
 
@@ -1693,9 +1693,9 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
       /*
         Free memory resources.
       */
-      LiberateMemory((void **) &scanlines);
+      MagickFreeMemory(scanlines);
       scanlines=(unsigned char *) NULL;
-      LiberateMemory((void **) &tile_pixels);
+      MagickFreeMemory(tile_pixels);
       tile_pixels=(unsigned char *) NULL;
     }
   return(status);
@@ -2230,9 +2230,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           blue[i]=ScaleQuantumToShort(image->colormap[i].blue);
         }
         (void) TIFFSetField(tiff,TIFFTAG_COLORMAP,red,green,blue);
-        LiberateMemory((void **) &red);
-        LiberateMemory((void **) &green);
-        LiberateMemory((void **) &blue);
+        MagickFreeMemory(red);
+        MagickFreeMemory(green);
+        MagickFreeMemory(blue);
       }
       default:
       {
@@ -2323,7 +2323,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         break;
       }
     }
-    LiberateMemory((void **) &scanline);
+    MagickFreeMemory(scanline);
     if (image_info->verbose == True)
       TIFFPrintDirectory(tiff,stdout,False);
     (void) TIFFWriteDirectory(tiff);
@@ -2420,7 +2420,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               break;
             (void) WriteBlob(image,result,buffer);
           }
-          LiberateMemory((void **) &buffer);
+          MagickFreeMemory(buffer);
         }
       (void) close(file);
       LiberateTemporaryFile(filename);

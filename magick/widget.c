@@ -1868,9 +1868,9 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         else
           {
             for (i=0; i < (long) colors; i++)
-              LiberateMemory((void **) &colorlist[i]);
+              MagickFreeMemory(colorlist[i]);
             if (colorlist != (char **) NULL)
-              LiberateMemory((void **) &colorlist);
+              MagickFreeMemory(colorlist);
             colorlist=checklist;
             colors=number_colors;
           }
@@ -2638,9 +2638,9 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
     Free color list.
   */
   for (i=0; i < (long) colors; i++)
-    LiberateMemory((void **) &colorlist[i]);
+    MagickFreeMemory(colorlist[i]);
   if (colorlist != (char **) NULL)
-    LiberateMemory((void **) &colorlist);
+    MagickFreeMemory(colorlist);
   if ((*reply == '\0') || (strchr(reply,'-') != (char *) NULL))
     return;
   status=XParseColor(display,windows->widget.map_info->colormap,reply,&color);
@@ -2864,7 +2864,7 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
         Allocate selection info memory.
       */
       if (selection_info != (XWidgetInfo *) NULL)
-        LiberateMemory((void **) &selection_info);
+        MagickFreeMemory(selection_info);
       selection_info=(XWidgetInfo *)
         AcquireMemory(number_selections*sizeof(XWidgetInfo));
       if (selection_info == (XWidgetInfo *) NULL)
@@ -4440,9 +4440,9 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
             break;
           }
         for (i=0; i < files; i++)
-          LiberateMemory((void **) &filelist[i]);
+          MagickFreeMemory(filelist[i]);
         if (filelist != (char **) NULL)
-          LiberateMemory((void **) &filelist);
+          MagickFreeMemory(filelist);
         filelist=checklist;
         files=number_files;
         /*
@@ -4799,7 +4799,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
           {
             if (!anomaly)
               {
-                const char
+                char
                   **formats;
 
                 const MagickInfo
@@ -4820,7 +4820,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 i=0;
                 for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
                   i++;
-                formats=(const char **) AcquireMemory((i+1)*sizeof(char *));
+                formats=(char **) AcquireMemory((i+1)*sizeof(char *));
                 i=0;
                 for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
                 {
@@ -4838,7 +4838,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 windows->popup.x=windows->widget.x+60;
                 windows->popup.y=windows->widget.y+60;
                 XListBrowserWidget(display,windows,&windows->popup,
-                  formats,"Select","Select image format type:",format);
+                  (const char **)formats,"Select","Select image format type:",format);
                 XSetCursorState(display,windows,True);
                 (void) XDefineCursor(display,windows->widget.id,
                   windows->widget.cursor);
@@ -4848,8 +4848,8 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 special_info.raised=True;
                 XDrawBeveledButton(display,&windows->widget,&special_info);
                 for (i=0; formats[i] != (char *) NULL; i++)
-                  LiberateMemory((void **) &formats[i]);
-                LiberateMemory((void **) &formats);
+                  MagickFreeMemory(formats[i]);
+                MagickFreeMemory(formats);
                 break;
               }
             if (event.xbutton.window == windows->widget.id)
@@ -5253,9 +5253,9 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
     Free file list.
   */
   for (i=0; i < files; i++)
-    LiberateMemory((void **) &filelist[i]);
+    MagickFreeMemory(filelist[i]);
   if (filelist != (char **) NULL)
-    LiberateMemory((void **) &filelist);
+    MagickFreeMemory(filelist);
   if (*reply == '~')
     ExpandFilename(reply);
 }
@@ -5690,7 +5690,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
           else
             {
               (void) XFreeFontNames(listhead);
-              LiberateMemory((void **) &fontlist);
+              MagickFreeMemory(fontlist);
               fontlist=checklist;
               fonts=number_fonts;
             }
@@ -6444,7 +6444,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
     Free font list.
   */
   (void) XFreeFontNames(listhead);
-  LiberateMemory((void **) &fontlist);
+  MagickFreeMemory(fontlist);
 }
 
 /*

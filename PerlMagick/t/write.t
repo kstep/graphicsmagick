@@ -8,9 +8,9 @@
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 #
 #
-# Test writing formats supported directly by ImageMagick
+# Test writing formats supported directly by GraphicsMagick
 #
-# Currently supported tests are for formats that ImageMagick
+# Currently supported tests are for formats that GraphicsMagick
 # knows how to both read and write.
 #
 # Whenever a new test is added/removed, be sure to update the

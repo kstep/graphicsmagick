@@ -270,7 +270,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
       if (!MagickMonitor(LoadImageText,y,image->rows,exception))
         break;
   }
-  LiberateMemory((void **) &scanline);
+  MagickFreeMemory(scanline);
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
@@ -431,7 +431,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
         if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
           break;
   }
-  LiberateMemory((void **) &scanline);
+  MagickFreeMemory(scanline);
   CloseBlob(image);
   return(True);
 }

@@ -207,7 +207,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
     stream_info->pixels=(PixelPacket *) AcquireMemory(length);
   else
     if (length != stream_info->length)
-      ReacquireMemory((void **) &stream_info->pixels,length);
+      MagickReallocMemory(stream_info->pixels,length);
   if (stream_info->pixels == (void *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToAllocateCacheInfo");
@@ -261,10 +261,10 @@ static void DestroyPixelStream(Image *image)
     }
   LiberateSemaphoreInfo(&stream_info->semaphore);
   if (stream_info->pixels != (PixelPacket *) NULL)
-    LiberateMemory((void **) &stream_info->pixels);
+    MagickFreeMemory(stream_info->pixels);
   if (stream_info->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&stream_info->semaphore);
-  LiberateMemory((void **) &stream_info);
+  MagickFreeMemory(stream_info);
 }
 
 /*
@@ -584,7 +584,7 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   else
     if (stream_info->length < length)
       {
-        ReacquireMemory((void **) &stream_info->pixels,length);
+        MagickReallocMemory(stream_info->pixels,length);
         stream_info->length=length;
       }
   if (stream_info->pixels == (void *) NULL)

@@ -103,7 +103,7 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
       }
       default:
       {
-        LiberateMemory((void **) &registry_info->blob);
+        MagickFreeMemory(registry_info->blob);
         break;
       }
     }
@@ -113,7 +113,7 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
       registry_info->previous->next=registry_info->next;
     if (registry_info->next != (RegistryInfo *) NULL)
       registry_info->next->previous=registry_info->previous;
-    LiberateMemory((void **) &registry_info);
+    MagickFreeMemory(registry_info);
     registry_info=(RegistryInfo *) NULL;
     break;
   }
@@ -167,11 +167,11 @@ MagickExport void DestroyMagickRegistry(void)
       }
       default:
       {
-        LiberateMemory((void **) &registry_info->blob);
+        MagickFreeMemory(registry_info->blob);
         break;
       }
     }
-    LiberateMemory((void **) &registry_info);
+    MagickFreeMemory(registry_info);
   }
   registry_list=(RegistryInfo *) NULL;
   DestroySemaphoreInfo(&registry_semaphore);

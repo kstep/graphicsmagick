@@ -1102,9 +1102,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         {
           FormatString(buffer,"%.1024s \n",labels[i]);
           (void) WriteBlobString(image,buffer);
-          LiberateMemory((void **) &labels[i]);
+          MagickFreeMemory(labels[i]);
         }
-        LiberateMemory((void **) &labels);
+        MagickFreeMemory(labels);
       }
     (void) memset(&pixel,0,sizeof(PixelPacket));
     pixel.opacity=TransparentOpacity;

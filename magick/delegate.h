@@ -20,7 +20,7 @@ extern "C" {
 */
 typedef struct _DelegateInfo
 {
-  const char
+  char
     *path,
     *decode,
     *encode;

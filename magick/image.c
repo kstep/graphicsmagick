@@ -192,7 +192,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
       (void) GetGeometry(geometry,&allocate_image->page.x,
         &allocate_image->page.y,&allocate_image->page.width,
         &allocate_image->page.height);
-      LiberateMemory((void **) &geometry);
+      MagickFreeMemory(geometry);
     }
   allocate_image->depth=image_info->depth;
   allocate_image->background_color=image_info->background_color;
@@ -256,7 +256,7 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
   if (image->colormap == (PixelPacket *) NULL)
     image->colormap=(PixelPacket *) AcquireMemory(length);
   else
-    ReacquireMemory((void **) &image->colormap,length);
+    MagickReallocMemory(image->colormap,length);
   if (image->colormap == (PixelPacket *) NULL)
     return(False);
   for (i=0; i < (long) image->colors; i++)
@@ -607,7 +607,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   average_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (average_image == (Image *) NULL)
     {
-      LiberateMemory((void **) &pixels_array);
+      MagickFreeMemory(pixels_array);
       return((Image *) NULL);
     }
   SetImageType(average_image,TrueColorType);
@@ -659,7 +659,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
       if (!MagickMonitor(AverageImageText,y,average_image->rows,exception))
         break;
   }
-  LiberateMemory((void **) &pixels_array);
+  MagickFreeMemory(pixels_array);
   return(average_image);
 }
 
@@ -1698,11 +1698,11 @@ MagickExport void DescribeImage(Image *image,FILE *file,
                 for (j=0; textlist[j] != (char *) NULL; j++)
                 {
                   (void) fprintf(file,"  %s\n",textlist[j]);
-                  LiberateMemory((void **) &textlist[j]);
+                  MagickFreeMemory(textlist[j]);
                 }
-                LiberateMemory((void **) &textlist);
+                MagickFreeMemory(textlist);
               }
-            LiberateMemory((void **) &text);
+            MagickFreeMemory(text);
           }
         i+=length;
       }
@@ -1939,39 +1939,39 @@ MagickExport void DestroyImage(Image *image)
   if (image->clip_mask != (Image *) NULL)
     DestroyImage(image->clip_mask);
   if (image->montage != (char *) NULL)
-    LiberateMemory((void **) &image->montage);
+    MagickFreeMemory(image->montage);
   if (image->directory != (char *) NULL)
-    LiberateMemory((void **) &image->directory);
+    MagickFreeMemory(image->directory);
   if (image->colormap != (PixelPacket *) NULL)
-    LiberateMemory((void **) &image->colormap);
+    MagickFreeMemory(image->colormap);
   if (image->color_profile.name != (char *) NULL)
-    LiberateMemory((void **) &image->color_profile.name);
+    MagickFreeMemory(image->color_profile.name);
   if (image->color_profile.length != 0)
-    LiberateMemory((void **) &image->color_profile.info);
+    MagickFreeMemory(image->color_profile.info);
   if (image->iptc_profile.name != (char *) NULL)
-    LiberateMemory((void **) &image->iptc_profile.name);
+    MagickFreeMemory(image->iptc_profile.name);
   if (image->iptc_profile.length != 0)
-    LiberateMemory((void **) &image->iptc_profile.info);
+    MagickFreeMemory(image->iptc_profile.info);
   if (image->generic_profiles != 0)
     {
       for (i=0; i < (long) image->generic_profiles; i++)
       {
         if (image->generic_profile[i].name != (char *) NULL)
-          LiberateMemory((void **) &image->generic_profile[i].name);
+          MagickFreeMemory(image->generic_profile[i].name);
         if (image->generic_profile[i].length != 0)
-          LiberateMemory((void **) &image->generic_profile[i].info);
+          MagickFreeMemory(image->generic_profile[i].info);
       }
-      LiberateMemory((void **) &image->generic_profile);
+      MagickFreeMemory(image->generic_profile);
     }
   DestroyImageAttributes(image);
   DestroyExceptionInfo(&image->exception);
   if (image->ascii85 != (Ascii85Info *) NULL)
-    LiberateMemory((void **) &image->ascii85);
+    MagickFreeMemory(image->ascii85);
   DestroyBlobInfo(image->blob);
   if (image->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&image->semaphore);
   memset((void *)image,0xbf,sizeof(Image));
-  LiberateMemory((void **) &image);
+  MagickFreeMemory(image);
 }
 
 /*
@@ -2003,31 +2003,31 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   if (image_info->size != (char *) NULL)
-    LiberateMemory((void **) &image_info->size);
+    MagickFreeMemory(image_info->size);
   if (image_info->tile != (char *) NULL)
-    LiberateMemory((void **) &image_info->tile);
+    MagickFreeMemory(image_info->tile);
   if (image_info->page != (char *) NULL)
-    LiberateMemory((void **) &image_info->page);
+    MagickFreeMemory(image_info->page);
   if (image_info->sampling_factor != (char *) NULL)
-    LiberateMemory((void **) &image_info->sampling_factor);
+    MagickFreeMemory(image_info->sampling_factor);
   if (image_info->server_name != (char *) NULL)
-    LiberateMemory((void **) &image_info->server_name);
+    MagickFreeMemory(image_info->server_name);
   if (image_info->font != (char *) NULL)
-    LiberateMemory((void **) &image_info->font);
+    MagickFreeMemory(image_info->font);
   if (image_info->texture != (char *) NULL)
-    LiberateMemory((void **) &image_info->texture);
+    MagickFreeMemory(image_info->texture);
   if (image_info->density != (char *) NULL)
-    LiberateMemory((void **) &image_info->density);
+    MagickFreeMemory(image_info->density);
   if (image_info->view != (char *) NULL)
-    LiberateMemory((void **) &image_info->view);
+    MagickFreeMemory(image_info->view);
   if (image_info->authenticate != (char *) NULL)
-    LiberateMemory((void **) &image_info->authenticate);
+    MagickFreeMemory(image_info->authenticate);
   if (image_info->attributes != (Image *) NULL)
     DestroyImage(image_info->attributes);
   if (image_info->cache != (void *) NULL)
     DestroyCacheInfo(image_info->cache);
   memset((void *)image_info,0xbf,sizeof(ImageInfo));
-  LiberateMemory((void **) &image_info);
+  MagickFreeMemory(image_info);
 }
 
 #if defined(HasX11)
@@ -2897,7 +2897,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
             colormap_index[image->colormap[i].opacity]=j;
           }
         image->colors=j+1;
-        LiberateMemory((void **)&image->colormap);
+        MagickFreeMemory(image->colormap);
         image->colormap=new_colormap;
       }
 
@@ -2918,7 +2918,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
           if (!SyncImagePixels(image))
             break;
         }
-      LiberateMemory((void **) &colormap_index);
+      MagickFreeMemory(colormap_index);
     }
   image->is_grayscale=True;
 }
@@ -4202,9 +4202,9 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   /*
     Free allocate memory.
   */
-  LiberateMemory((void **) &z_map);
-  LiberateMemory((void **) &y_map);
-  LiberateMemory((void **) &x_map);
+  MagickFreeMemory(z_map);
+  MagickFreeMemory(y_map);
+  MagickFreeMemory(x_map);
 
   if (colorspace==GRAYColorspace)
     image->is_grayscale=True;
@@ -5119,7 +5119,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
       *q++=image->colormap[index];
     }
   }
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(pixels);
   image->is_grayscale=is_grayscale;
   return(True);
 }
@@ -5947,9 +5947,9 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   /*
     Free allocated memory.
   */
-  LiberateMemory((void **) &blue_map);
-  LiberateMemory((void **) &green_map);
-  LiberateMemory((void **) &red_map);
+  MagickFreeMemory(blue_map);
+  MagickFreeMemory(green_map);
+  MagickFreeMemory(red_map);
   LogMagickEvent(TransformEvent,GetMagickModule(),
                  "Colorspace transform completed"); 
   return(True);

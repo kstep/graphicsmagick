@@ -225,6 +225,9 @@
       <Message name="IncludeElementNestedTooDeeply">
         include element nested too deeply
       </Message>
+      <Message name="RegistryKeyLookupFailed">
+        Registry key lookup failed. Package is not properly installed on this machine.
+      </Message>
       <Message name="UnableToAccessConfigureFile">
         Unable to access configure file
       </Message>

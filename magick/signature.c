@@ -269,7 +269,7 @@ MagickExport unsigned int SignatureImage(Image *image)
     UpdateSignature(&signature_info,message,q-message);
   }
   FinalizeSignature(&signature_info);
-  LiberateMemory((void **) &message);
+  MagickFreeMemory(message);
   /*
     Convert digital signature to a 64 character hex string.
   */

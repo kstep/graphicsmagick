@@ -432,7 +432,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           break;
       }
   } while (count != 0);
-  LiberateMemory((void **) &scanline);
+  MagickFreeMemory(scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -764,7 +764,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
     if (status == False)
       break;
   } while (image_info->adjoin);
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(pixels);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;

@@ -52,7 +52,7 @@
 */
 typedef struct _LogInfo
 {
-  const char
+  char
     *path,
     *filename;
 
@@ -60,7 +60,7 @@ typedef struct _LogInfo
     generations,
     limit;
 
-  const char
+  char
     *format;
 
   FILE
@@ -145,12 +145,12 @@ MagickExport void DestroyLogInfo(void)
         (void) fclose(log_info->file);
       }
   if (log_info->filename != (char *) NULL)
-    LiberateMemory((void **) &log_info->filename);
+    MagickFreeMemory(log_info->filename);
   if (log_info->path != (char *) NULL)
-    LiberateMemory((void **) &log_info->path);
+    MagickFreeMemory(log_info->path);
   if (log_info->format != (char *) NULL)
-    LiberateMemory((void **) &log_info->format);
-  LiberateMemory((void **) &log_info);
+    MagickFreeMemory(log_info->format);
+  MagickFreeMemory(log_info);
   DestroySemaphoreInfo(&log_semaphore);
   log_initialize=True;
 }
@@ -488,7 +488,7 @@ static void *LogToBlob(const char *filename,size_t *length,
       if (i < *length)
         {
           (void) close(file);
-          LiberateMemory((void **) &blob);
+          MagickFreeMemory(blob);
           return((void *) NULL);
         }
     }
@@ -963,8 +963,8 @@ static unsigned int ReadConfigureFile(const char *basename,
         break;
     }
   }
-  LiberateMemory((void **) &token);
-  LiberateMemory((void **) &xml);
+  MagickFreeMemory(token);
+  MagickFreeMemory(xml);
   if (log_info == (LogInfo *) NULL)
     return(False);
   return(True);
@@ -1081,7 +1081,7 @@ MagickExport void SetLogFormat(const char *format)
 {
   AcquireSemaphoreInfo(&log_semaphore);
   if (log_info->format != (char *) NULL)
-    LiberateMemory((void **) &log_info->format);
+    MagickFreeMemory(log_info->format);
   log_info->format=AcquireString(format);
   LiberateSemaphoreInfo(&log_semaphore);
 }

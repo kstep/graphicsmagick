@@ -161,7 +161,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) strncpy(clone_info->filename,filelist[i],MaxTextExtent-1);
     *clone_info->magick='\0';
     next_image=ReadImage(clone_info,exception);
-    LiberateMemory((void **) &filelist[i]);
+    MagickFreeMemory(filelist[i]);
     if (next_image != (Image *) NULL)
       {
         (void) SetImageAttribute(next_image,"label",DefaultTileLabel);
@@ -193,7 +193,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
   }
   DestroyImageInfo(clone_info);
-  LiberateMemory((void **) &filelist);
+  MagickFreeMemory(filelist);
   if (image == (Image *) NULL)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
@@ -214,8 +214,8 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"UnableToReadVIDImage",image)
     }
   DestroyImageList(image);
-  LiberateMemory((void **) &list[0]);
-  LiberateMemory((void **) &list);
+  MagickFreeMemory(list[0]);
+  MagickFreeMemory(list);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
   return(montage_image);
 }

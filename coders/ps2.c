@@ -189,7 +189,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
       Ascii85Encode(image,(unsigned long) buffer[j]);
     Ascii85Flush(image);
   }
-  LiberateMemory((void **) &buffer);
+  MagickFreeMemory(buffer);
   TIFFClose(tiff);
   LiberateTemporaryFile(filename);
   return(True);
@@ -754,9 +754,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         {
           FormatString(buffer,"%.1024s \n",labels[i]);
           (void) WriteBlobString(image,buffer);
-          LiberateMemory((void **) &labels[i]);
+          MagickFreeMemory(labels[i]);
         }
-        LiberateMemory((void **) &labels);
+        MagickFreeMemory(labels);
       }
     number_pixels=image->columns*image->rows;
     if ((compression == FaxCompression) ||
@@ -795,7 +795,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
-            LiberateMemory((void **) &blob);
+            MagickFreeMemory(blob);
             break;
           }
           case RLECompression:
@@ -840,7 +840,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               status=LZWEncodeImage(image,length,pixels);
             else
               status=PackbitsEncodeImage(image,length,pixels);
-            LiberateMemory((void **) &pixels);
+            MagickFreeMemory(pixels);
             if (!status)
               {
                 CloseBlob(image);
@@ -903,7 +903,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
               (void) WriteBlob(image,length,blob);
               DestroyImage(jpeg_image);
-              LiberateMemory((void **) &blob);
+              MagickFreeMemory(blob);
               break;
             }
             case RLECompression:
@@ -973,7 +973,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   CloseBlob(image);
                   return(False);
                 }
-              LiberateMemory((void **) &pixels);
+              MagickFreeMemory(pixels);
               break;
             }
             case NoCompression:
@@ -1088,7 +1088,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 status=LZWEncodeImage(image,length,pixels);
               else
                 status=PackbitsEncodeImage(image,length,pixels);
-              LiberateMemory((void **) &pixels);
+              MagickFreeMemory(pixels);
               if (!status)
                 {
                   CloseBlob(image);

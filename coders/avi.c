@@ -654,7 +654,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           default:
             ThrowReaderException(CorruptImageError,"NotAnAVIImageFile",image)
         }
-        LiberateMemory((void **) &pixels);
+
+        MagickFreeMemory(pixels);
+
         if ((unsigned long) image->scene < (avi_info.total_frames-1))
           {
             /*

@@ -8,7 +8,7 @@
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 #
 #
-# Test reading formats supported directly by ImageMagick
+# Test reading formats supported directly by GraphicsMagick
 #
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
@@ -220,3 +220,4 @@ print("UYVY format ...\n");
 ++$test;
 testReadCompare('input_70x46.uyvy', 'reference/read/input_uyvy.miff',
                 q/size=>"70x46", depth=>8/, 2.8e-05, 5.2e-05);
+

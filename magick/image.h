@@ -524,7 +524,7 @@ typedef struct _PixelPacket
 
 typedef struct _ColorInfo
 {
-  const char
+  char
     *path,
     *name;
 

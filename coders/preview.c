@@ -634,11 +634,11 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       /*
         Free image directory.
       */
-      LiberateMemory((void **) &montage_image->montage);
+      MagickFreeMemory(montage_image->montage);
       montage_image->montage=(char *) NULL;
       if (image->directory != (char *) NULL)
         {
-          LiberateMemory((void **) &montage_image->directory);
+          MagickFreeMemory(montage_image->directory);
           montage_image->directory=(char *) NULL;
         }
     }

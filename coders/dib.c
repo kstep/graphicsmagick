@@ -534,7 +534,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (packet_size == 4)
           p++;
       }
-      LiberateMemory((void **) &dib_colormap);
+      MagickFreeMemory(dib_colormap);
     }
   /*
     Read image data.
@@ -781,7 +781,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     default:
       ThrowReaderException(CorruptImageError,"NotADIBImageFile",image)
   }
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(pixels);
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
@@ -1097,12 +1097,12 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
         dib_data=(unsigned char *) AcquireMemory(length);
         if (pixels == (unsigned char *) NULL)
           {
-            LiberateMemory((void **) &pixels);
+            MagickFreeMemory(pixels);
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
               image)
           }
         dib_info.image_size=EncodeImage(image,bytes_per_line,pixels,dib_data);
-        LiberateMemory((void **) &pixels);
+        MagickFreeMemory(pixels);
         pixels=dib_data;
         dib_info.compression=1;
       }
@@ -1149,10 +1149,10 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
       }
       (void) WriteBlob(image,4*(1 << dib_info.bits_per_pixel),
         (char *) dib_colormap);
-      LiberateMemory((void **) &dib_colormap);
+      MagickFreeMemory(dib_colormap);
     }
   (void) WriteBlob(image,dib_info.image_size,(char *) pixels);
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(pixels);
   CloseBlob(image);
   return(True);
 }

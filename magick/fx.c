@@ -457,7 +457,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
       if (!MagickMonitor(ConvolveImageText,y,convolve_image->rows,exception))
         break;
   }
-  LiberateMemory((void **) &normal_kernel);
+  MagickFreeMemory(normal_kernel);
   convolve_image->is_grayscale=image->is_grayscale;
   return(convolve_image);
 }
@@ -908,7 +908,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       if (!MagickMonitor(OilPaintImageTag,y,image->rows,exception))
         break;
   }
-  LiberateMemory((void **) &histogram);
+  MagickFreeMemory(histogram);
   paint_image->is_grayscale=image->is_grayscale;
   return(paint_image);
 }
@@ -1471,7 +1471,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
         break;
   }
   SetImageVirtualPixelMethod(image,virtual_pixel_method);
-  LiberateMemory((void **) &sine_map);
+  MagickFreeMemory(sine_map);
   wave_image->is_grayscale=image->is_grayscale;
   return(wave_image);
 }

@@ -235,7 +235,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((p-xpm_buffer+MaxTextExtent+1) < (long) length)
         continue;
       length<<=1;
-      ReacquireMemory((void **) &xpm_buffer,length);
+      MagickReallocMemory(xpm_buffer,length);
       if (xpm_buffer == (char *) NULL)
         break;
       p=xpm_buffer+strlen(xpm_buffer);
@@ -277,7 +277,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   xpm_buffer[i]='\0';
   textlist=StringToList(xpm_buffer);
-  LiberateMemory((void **) &xpm_buffer);
+  MagickFreeMemory(xpm_buffer);
   if (textlist == (char **) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   /*
@@ -287,8 +287,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (!AllocateImageColormap(image,image->colors) || (keys == (char **) NULL))
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
-        LiberateMemory((void **) &textlist[i]);
-      LiberateMemory((void **) &textlist);
+        MagickFreeMemory(textlist[i]);
+      MagickFreeMemory(textlist);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
     }
   /*
@@ -305,9 +305,9 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (keys[j] == (char *) NULL)
       {
         for (i=0; textlist[i] != (char *) NULL; i++)
-          LiberateMemory((void **) &textlist[i]);
-        LiberateMemory((void **) &textlist);
-        LiberateMemory((void **) &keys);
+          MagickFreeMemory(textlist[i]);
+        MagickFreeMemory(textlist);
+        MagickFreeMemory(keys);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
       }
     keys[j][width]='\0';
@@ -340,8 +340,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (j < (long) image->colors)
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
-        LiberateMemory((void **) &textlist[i]);
-      LiberateMemory((void **) &textlist);
+        MagickFreeMemory(textlist[i]);
+      MagickFreeMemory(textlist);
       ThrowReaderException(CorruptImageError,"CorruptXPMImage",image)
     }
   j=0;
@@ -385,11 +385,11 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Free resources.
   */
   for (i=0; i < (long) image->colors; i++)
-    LiberateMemory((void **) &keys[i]);
-  LiberateMemory((void **) &keys);
+    MagickFreeMemory(keys[i]);
+  MagickFreeMemory(keys);
   for (i=0; textlist[i] != (char *) NULL; i++)
-    LiberateMemory((void **) &textlist[i]);
-  LiberateMemory((void **) &textlist);
+    MagickFreeMemory(textlist[i]);
+  MagickFreeMemory(textlist);
   CloseBlob(image);
   return(image);
 }
@@ -648,7 +648,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
   if (transparent)
     {
       colors++;
-      ReacquireMemory((void **) &picon->colormap,colors*sizeof(PixelPacket));
+      MagickReallocMemory(picon->colormap,colors*sizeof(PixelPacket));
       for (y=0; y < (long) picon->rows; y++)
       {
         q=GetImagePixels(picon,0,y,picon->columns,1);
@@ -868,7 +868,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   if (transparent)
     {
       colors++;
-      ReacquireMemory((void **) &image->colormap,colors*sizeof(PixelPacket));
+      MagickReallocMemory(image->colormap,colors*sizeof(PixelPacket));
       for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);

@@ -285,7 +285,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           summary_info.title.length);
         label[summary_info.title.length]='\0';
         (void) SetImageAttribute(image,"label",label);
-        LiberateMemory((void **) &label);
+        MagickFreeMemory(label);
       }
   if (summary_info.comments_valid)
     if ((summary_info.comments.length != 0) &&
@@ -308,7 +308,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           summary_info.comments.length);
         comments[summary_info.comments.length]='\0';
         (void) SetImageAttribute(image,"comment",comments);
-        LiberateMemory((void **) &comments);
+        MagickFreeMemory(comments);
       }
   /*
     Determine resolution by subimage specification.
@@ -414,7 +414,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (long) tile_height,&fpx_info);
         if (fpx_status == FPX_LOW_MEMORY_ERROR)
           {
-            LiberateMemory((void **) &scanline);
+            MagickFreeMemory(scanline);
             (void) FPX_CloseImage(flashpix);
             FPX_ClearSystem();
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
@@ -458,7 +458,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!MagickMonitor(LoadImageText,y,image->rows,exception))
         break;
   }
-  LiberateMemory((void **) &scanline);
+  MagickFreeMemory(scanline);
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
   return(image);
@@ -1091,7 +1091,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     }
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(pixels);
   return(True);
 }
 #else

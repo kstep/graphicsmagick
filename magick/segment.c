@@ -397,7 +397,7 @@ static unsigned int Classify(Image *image,short **extrema,
           head=next_cluster;
         else
           last_cluster->next=next_cluster;
-        LiberateMemory((void **) &cluster);
+        MagickFreeMemory(cluster);
       }
   }
   number_clusters=count;
@@ -467,7 +467,7 @@ static unsigned int Classify(Image *image,short **extrema,
   image->matte=False;
   image->storage_class=PseudoClass;
   if (image->colormap != (PixelPacket *) NULL)
-    LiberateMemory((void **) &image->colormap);
+    MagickFreeMemory(image->colormap);
   image->colormap=colormap;
   image->colors=number_clusters;
   i=0;
@@ -561,11 +561,11 @@ static unsigned int Classify(Image *image,short **extrema,
   for (cluster=head; cluster != (Cluster *) NULL; cluster=next_cluster)
   {
     next_cluster=cluster->next;
-    LiberateMemory((void **) &cluster);
+    MagickFreeMemory(cluster);
   }
   squares-=255;
   free_squares=squares;
-  LiberateMemory((void **) &free_squares);
+  MagickFreeMemory(free_squares);
   return(True);
 }
 
@@ -1031,7 +1031,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   */
   Stability(root->child);
   MeanStability(root->child);
-  LiberateMemory((void **) &list);
+  MagickFreeMemory(list);
   return(root);
 }
 
@@ -1084,13 +1084,13 @@ static void ActiveNodes(IntervalTree **list,int *number_nodes,
     }
 }
 
-static void FreeNodes(const IntervalTree *node)
+static void FreeNodes(IntervalTree *node)
 {
   if (node == (IntervalTree *) NULL)
     return;
   FreeNodes(node->sibling);
   FreeNodes(node->child);
-  LiberateMemory((void **) &node);
+  MagickFreeMemory(node);
 }
 
 static double OptimalTau(const long *histogram,const double max_tau,
@@ -1174,8 +1174,8 @@ static double OptimalTau(const long *histogram,const double max_tau,
   ZeroCrossHistogram(second_derivative,smoothing_threshold,
     zero_crossing[i].crossings);
   number_crossings=i;
-  LiberateMemory((void **) &derivative);
-  LiberateMemory((void **) &second_derivative);
+  MagickFreeMemory(derivative);
+  MagickFreeMemory(second_derivative);
   /*
     Ensure the scale-space fingerprints form lines in scale-space, not loops.
   */
@@ -1266,8 +1266,8 @@ static double OptimalTau(const long *histogram,const double max_tau,
     Free memory.
   */
   FreeNodes(root);
-  LiberateMemory((void **) &zero_crossing);
-  LiberateMemory((void **) &list);
+  MagickFreeMemory(zero_crossing);
+  MagickFreeMemory(list);
   return(average_tau);
 }
 
@@ -1331,7 +1331,7 @@ static void ScaleSpace(const long *histogram,const double tau,
       sum+=(double) histogram[u]*gamma[AbsoluteValue(x-u)];
     scaled_histogram[x]=alpha*sum;
   }
-  LiberateMemory((void **) &gamma);
+  MagickFreeMemory(gamma);
 }
 
 /*
@@ -1482,8 +1482,8 @@ MagickExport unsigned int SegmentImage(Image *image,
       {
         for (i-- ; i >= 0; i--)
         {
-          LiberateMemory((void **) &extrema[i]);
-          LiberateMemory((void **) &histogram[i]);
+          MagickFreeMemory(extrema[i]);
+          MagickFreeMemory(histogram[i]);
         }
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename)
@@ -1510,8 +1510,8 @@ MagickExport unsigned int SegmentImage(Image *image,
   */
   for (i=0; i < MaxDimension; i++)
   {
-    LiberateMemory((void **) &extrema[i]);
-    LiberateMemory((void **) &histogram[i]);
+    MagickFreeMemory(extrema[i]);
+    MagickFreeMemory(histogram[i]);
   }
   return(status);
 }

@@ -650,7 +650,7 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
   if (blob->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&blob->semaphore);
   memset((void *)blob,0xbf,sizeof(BlobInfo));
-  LiberateMemory((void **) &blob);
+  MagickFreeMemory(blob);
 }
 
 /*
@@ -863,7 +863,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
       if (i < *length)
         {
           (void) close(file);
-          LiberateMemory((void **) &blob);
+          MagickFreeMemory(blob);
           ThrowException(exception,BlobError,"UnableToReadToOffset",
             "UnableToCreateBlob");
           return((void *) NULL);
@@ -1305,13 +1305,13 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
         {
           ThrowException(exception,BlobError,"UnableToWriteBlob",
             clone_info->magick);
-          LiberateMemory((void **) &image->blob->data);
+          MagickFreeMemory(image->blob->data);
           DestroyImageInfo(clone_info);
           (void) LogMagickEvent(BlobEvent,GetMagickModule(),
             "Exiting ImageToBlob");
           return((void *) NULL);
         }
-      ReacquireMemory((void **) &image->blob->data,image->blob->length+1);
+      MagickReallocMemory(image->blob->data,image->blob->length+1);
       blob=image->blob->data;
       *length=image->blob->length;
       DetachBlob(image->blob);
@@ -1448,7 +1448,7 @@ MagickExport unsigned int ImageToFile(Image *image,const char *filename,
       break;
   }
   (void) close(file);
-  LiberateMemory((void **) &buffer);
+  MagickFreeMemory(buffer);
   return(i < length);
 }
 
@@ -2312,20 +2312,20 @@ MagickExport unsigned long ReadBlobLSBLong(Image *image)
     buffer[4],
     *source;
 
+  void
+    *source_v;
+
   unsigned long
     value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  source_v=buffer;
   if (image->blob->type == BlobStream)
-    {
-      value=ReadBlobStream(image,4,(void **)&source);
-    }
+    value=ReadBlobStream(image,4,&source_v);
   else
-    {
-      value=ReadBlob(image,4,(void *)buffer);
-      source=buffer;
-    }
+    value=ReadBlob(image,4,source_v);
+  source=source_v;
   if (value < 4)
     return((unsigned long) ~0);
   value=source[3] << 24;
@@ -2368,20 +2368,20 @@ MagickExport unsigned short ReadBlobLSBShort(Image *image)
     buffer[2],
     *source;
 
+  void
+    *source_v;
+
   unsigned short
     value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  source_v=buffer;
   if (image->blob->type == BlobStream)
-    {
-      value=ReadBlobStream(image,2,(void **)&source);
-    }
+    value=ReadBlobStream(image,2,&source_v);
   else
-    {
-      value=ReadBlob(image,2,(void *)buffer);
-      source=buffer;
-    }
+    value=ReadBlob(image,2,source_v);
+  source=source_v;
   if (value < 2)
     return((unsigned short) ~0);
   value=source[1] << 8;
@@ -2423,20 +2423,20 @@ MagickExport unsigned long ReadBlobMSBLong(Image *image)
     buffer[4],
     *source;
 
+  void
+    *source_v;
+
   unsigned long
     value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  source_v=buffer;
   if (image->blob->type == BlobStream)
-    {
-      value=ReadBlobStream(image,4,(void **)&source);
-    }
+    value=ReadBlobStream(image,4,&source_v);
   else
-    {
-      value=ReadBlob(image,4,(void *)buffer);
-      source=buffer;
-    }
+    value=ReadBlob(image,4,source_v);
+  source=source_v;
   if (value < 4)
     return((unsigned long) ~0);
   value=source[0] << 24;
@@ -2479,20 +2479,20 @@ MagickExport unsigned short ReadBlobMSBShort(Image *image)
     buffer[2],
     *source;
 
+  void
+    *source_v;
+
   unsigned short
     value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  source_v=buffer;
   if (image->blob->type == BlobStream)
-    {
-      value=ReadBlobStream(image,2,(void **)&source);
-    }
+    value=ReadBlobStream(image,2,&source_v);
   else
-    {
-      value=ReadBlob(image,2,(void *)buffer);
-      source=buffer;
-    }
+    value=ReadBlob(image,2,source_v);
+  source=source_v;
   if (value < 2)
     return((unsigned short) ~0);
   value=source[0] << 8;
@@ -2697,7 +2697,7 @@ MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
         else
           {
             image->blob->extent=image->blob->offset+image->blob->quantum;
-            ReacquireMemory((void **) &image->blob->data,image->blob->extent+1);
+            MagickReallocMemory(image->blob->data,image->blob->extent+1);
             (void) SyncBlob(image);
             if (image->blob->data == (unsigned char *) NULL)
               {
@@ -2993,7 +2993,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
             return(0);
           image->blob->quantum<<=1;
           image->blob->extent+=length+image->blob->quantum;
-          ReacquireMemory((void **) &image->blob->data,image->blob->extent+1);
+          MagickReallocMemory(image->blob->data,image->blob->extent+1);
           (void) SyncBlob(image);
           if (image->blob->data == (unsigned char *) NULL)
             {

@@ -161,7 +161,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->colormap[i].blue=(*p++ << 8);
       image->colormap[i].blue|=(*p++);
     }
-  LiberateMemory((void **) &colormap);
+  MagickFreeMemory(colormap);
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -194,7 +194,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (!SyncImagePixels(image))
       break;
   }
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(pixels);
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
@@ -367,7 +367,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
       *q++=image->colormap[i].blue & 0xff;
     }
   (void) WriteBlob(image,packet_size*image->colors,(char *) colormap);
-  LiberateMemory((void **) &colormap);
+  MagickFreeMemory(colormap);
   /*
     Write image pixels to file.
   */
@@ -386,7 +386,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
     }
     (void) WriteBlob(image,q-pixels,(char *) pixels);
   }
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(pixels);
   CloseBlob(image);
   return(status);
 }

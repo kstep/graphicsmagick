@@ -982,13 +982,13 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
   do
   {
     nodes=cube_info->node_queue->next;
-    LiberateMemory((void **) &cube_info->node_queue);
+    MagickFreeMemory(cube_info->node_queue);
     cube_info->node_queue=nodes;
   } while (cube_info->node_queue != (Nodes *) NULL);
   if (!cube_info->quantize_info->dither)
     return;
-  LiberateMemory((void **) &cube_info->cache);
-  LiberateMemory((void **) &cube_info);
+  MagickFreeMemory(cube_info->cache);
+  MagickFreeMemory(cube_info);
 }
 
 /*
@@ -1019,7 +1019,7 @@ MagickExport void DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 {
   assert(quantize_info != (QuantizeInfo *) NULL);
   assert(quantize_info->signature == MagickSignature);
-  LiberateMemory((void **) &quantize_info);
+  MagickFreeMemory(quantize_info);
 }
 
 /*

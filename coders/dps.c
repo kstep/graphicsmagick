@@ -412,7 +412,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!AllocateImageColormap(image,visual_info->colormap_size))
         {
           DestroyImage(image);
-          LiberateMemory((void **) &colors);
+          MagickFreeMemory(colors);
           XDestroyImage(dps_image);
           XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
             (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
@@ -445,7 +445,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
   }
-  LiberateMemory((void **) &colors);
+  MagickFreeMemory(colors);
   XDestroyImage(dps_image);
   if (image->storage_class == PseudoClass)
     SyncImage(image);

@@ -283,8 +283,8 @@ MagickExport unsigned int EqualizeImage(Image *image)
         equalize_map[i].opacity=ScaleMapToQuantum(
          (MaxMap*(map[i].opacity-low.opacity))/(high.opacity-low.opacity));
   }
-  LiberateMemory((void **) &histogram);
-  LiberateMemory((void **) &map);
+  MagickFreeMemory(histogram);
+  MagickFreeMemory(map);
   /*
     Stretch the histogram.
   */
@@ -354,7 +354,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
       break;
     }
   }
-  LiberateMemory((void **) &equalize_map);
+  MagickFreeMemory(equalize_map);
   image->is_grayscale=is_grayscale;
   return(True);
 }
@@ -500,7 +500,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
   }
   if (image->gamma != 0.0)
     image->gamma*=(gamma.red+gamma.green+gamma.blue)/3.0;
-  LiberateMemory((void **) &gamma_map);
+  MagickFreeMemory(gamma_map);
   image->is_grayscale=is_grayscale;
   return(True);
 }
@@ -650,7 +650,7 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
       break;
     }
   }
-  LiberateMemory((void **) &levels_map);
+  MagickFreeMemory(levels_map);
   image->is_grayscale=is_grayscale;
   return(True);
 }
@@ -846,7 +846,7 @@ MagickExport unsigned int LevelImageChannel(Image *image,
         break;
       }
     }
-  LiberateMemory((void **) &levels_map);
+  MagickFreeMemory(levels_map);
   return(True);
 }
 
@@ -1343,7 +1343,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
             }
         }
     }
-  LiberateMemory((void **) &histogram);
+  MagickFreeMemory(histogram);
   /*
     Stretch the histogram to create the normalized image mapping.
   */
@@ -1463,7 +1463,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       break;
     }
   }
-  LiberateMemory((void **) &normalize_map);
+  MagickFreeMemory(normalize_map);
   image->is_grayscale=is_grayscale;
   return(True);
 }

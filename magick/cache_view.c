@@ -116,7 +116,7 @@ MagickExport void CloseCacheView(ViewInfo *view)
   assert(view != (ViewInfo *) NULL);
   assert(view->signature == MagickSignature);
   DestroyCacheNexus(view->image->cache,view->id);
-  LiberateMemory((void **) &view);
+  MagickFreeMemory(view);
 }
 
 /*

@@ -112,20 +112,20 @@ static int
 %
 %
 */
-MagickExport const char *AcquireString(const char *source)
+MagickExport char *AcquireString(const char *source)
 {
   char
     *destination;
 
   assert(source != (const char *) NULL);
-  destination=(char *) AcquireMemory(strlen(source)+1);
+  destination=MagickAllocateMemory(char *,strlen(source)+1);
   if (destination == (char *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToAcquireString");
   *destination='\0';
   if (source != (char *) NULL)
     (void) strcpy(destination,source);
-  return((const char *) destination);
+  return(destination);
 }
 
 /*
@@ -290,7 +290,7 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
     q=strchr(Base64,*p);
     if (q == (char *) NULL)
       {
-        LiberateMemory((void **) &decode);
+        MagickFreeMemory(decode);
         return((unsigned char *) NULL);  /* non-base64 character */
       }
     switch (state)
@@ -330,7 +330,7 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
     {
       if (state != 0)
         {
-          LiberateMemory((void **) &decode);
+          MagickFreeMemory(decode);
           return((unsigned char *) NULL);
         }
     }
@@ -345,7 +345,7 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
           /*
             Unrecognized '=' character.
           */
-          LiberateMemory((void **) &decode);
+          MagickFreeMemory(decode);
           return((unsigned char *) NULL);
         }
         case 2:
@@ -355,7 +355,7 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
               break;
           if (*p != '=')
             {
-              LiberateMemory((void **) &decode);
+              MagickFreeMemory(decode);
               return((unsigned char *) NULL);
             }
           p++;
@@ -365,12 +365,12 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
           for ( ; *p != '\0'; p++)
             if (!isspace((int) *p))
               {
-                LiberateMemory((void **) &decode);
+                MagickFreeMemory(decode);
                 return((unsigned char *) NULL);
               }
           if (decode[i] != 0)
             {
-              LiberateMemory((void **) &decode);
+              MagickFreeMemory(decode);
               return((unsigned char *) NULL);
             }
         }
@@ -508,7 +508,7 @@ MagickExport unsigned int CloneString(char **destination,const char *source)
   if (source == (const char *) NULL)
     {
       if (*destination != (char *) NULL)
-        LiberateMemory((void **) &*destination);
+        MagickFreeMemory(*destination);
       *destination=(char *) NULL;
       return(True);
     }
@@ -517,7 +517,7 @@ MagickExport unsigned int CloneString(char **destination,const char *source)
       *destination=AllocateString(source);
       return(True);
     }
-  ReacquireMemory((void **) &(*destination),strlen(source)+MaxTextExtent);
+  MagickReallocMemory(*destination,strlen(source)+MaxTextExtent);
   if (*destination == (char *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToAllocateString");
@@ -565,7 +565,7 @@ MagickExport unsigned int ConcatenateString(char **destination,
       *destination=AllocateString(source);
       return(True);
     }
-  ReacquireMemory((void **) &(*destination),
+  MagickReallocMemory((*destination),
     strlen(*destination)+strlen(source)+MaxTextExtent);
   if (*destination == (char *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -962,14 +962,14 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
         if (j == number_files)
           {
             for (j=0; j < number_files; j++)
-              LiberateMemory((void **) &filelist[j]);
-            LiberateMemory((void **) &filelist);
+              MagickFreeMemory(filelist[j]);
+            MagickFreeMemory(filelist);
             continue;
           }
         /*
           Transfer file list to argument vector.
         */
-        ReacquireMemory((void **) &vector,
+        MagickReallocMemory(vector,
                         (*argc+count+number_files+MaxTextExtent)*sizeof(char *));
         if (vector == (char **) NULL)
           return(False);
@@ -980,7 +980,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
                          DirectorySeparator,filelist[j]);
             if (IsDirectory(filename) != 0)
               {
-                LiberateMemory((void **) &filelist[j]);
+                MagickFreeMemory(filelist[j]);
                 continue;
               }
             {
@@ -990,10 +990,10 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
               sprintf(file_spec,"%s%s",format,filename);
               vector[count]=AllocateString(file_spec);
             }
-            LiberateMemory((void **) &filelist[j]);
+            MagickFreeMemory(filelist[j]);
             count++;
           }
-        LiberateMemory((void **) &filelist);
+        MagickFreeMemory(filelist);
       }
     }
   }
@@ -2541,7 +2541,7 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
               Extend the file list.
             */
             max_entries<<=1;
-            ReacquireMemory((void **) &filelist,max_entries*sizeof(char *));
+            MagickReallocMemory(filelist,max_entries*sizeof(char *));
             if (filelist == (char **) NULL)
               {
                 (void) closedir(current_directory);
@@ -3324,7 +3324,7 @@ MagickExport int SubstituteString(char **buffer,const char *search,
         if (result_length >= allocated_length)
           {
             allocated_length+=copy_length+MaxTextExtent;
-            ReacquireMemory((void **) &result,allocated_length);
+            MagickReallocMemory(result,allocated_length);
             if (result == (char *) NULL)
               MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
               "UnableToAllocateString");
@@ -3340,7 +3340,7 @@ MagickExport int SubstituteString(char **buffer,const char *search,
       if (result_length >= allocated_length)
         {
           allocated_length+=replace_length+MaxTextExtent;
-          ReacquireMemory((void **) &result,allocated_length);
+          MagickReallocMemory(result,allocated_length);
           if (result == (char *) NULL)
             MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
               "UnableToAllocateString");
@@ -3362,13 +3362,13 @@ MagickExport int SubstituteString(char **buffer,const char *search,
   if (result_length >= allocated_length)
     {
       allocated_length+=copy_length+MaxTextExtent;
-      ReacquireMemory((void **) &result,allocated_length);
+      MagickReallocMemory(result,allocated_length);
       if (result == (char *) NULL)
         MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
           "UnableToAllocateString");
     }
   (void) strcat(destination,source);
-  LiberateMemory((void **)buffer);
+  MagickFreeMemory(buffer);
   *buffer=result;
   return True;
 }
@@ -3865,7 +3865,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
     if ((size_t) (q-translated_text+MaxTextExtent) >= length)
       {
         length<<=1;
-        ReacquireMemory((void **) &translated_text,length);
+        MagickReallocMemory(translated_text,length);
         if (translated_text == (char *) NULL)
           break;
         q=translated_text+strlen(translated_text);
@@ -4129,7 +4129,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
             if ((size_t) (q-translated_text+offset) >= length)
               {
                 length+=(offset+MaxTextExtent);
-                ReacquireMemory((void **) &translated_text,length);
+                MagickReallocMemory(translated_text,length);
                 if (translated_text == (char *) NULL)
                   break;
                 q=translated_text+strlen(translated_text);
@@ -4145,7 +4145,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         if ((size_t) (q-translated_text+offset) >= length)
           {
             length+=(offset+MaxTextExtent);
-            ReacquireMemory((void **) &translated_text,length);
+            MagickReallocMemory(translated_text,length);
             if (translated_text == (char *) NULL)
               break;
             q=translated_text+strlen(translated_text);
@@ -4180,6 +4180,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
   *q='\0';
   DestroyImageInfo(clone_info);
   if (text != (char *) formatted_text)
-    LiberateMemory((void **) &text);
+    MagickFreeMemory(text);
   return(translated_text);
 }

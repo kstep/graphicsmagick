@@ -209,7 +209,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 *p='\0';
                 length<<=1;
-                ReacquireMemory((void **) &comment,length);
+                MagickReallocMemory(comment,length);
                 if (comment == (char *) NULL)
                   break;
                 p=comment+strlen(comment);
@@ -221,7 +221,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image);
           *p='\0';
           (void) SetImageAttribute(image,"comment",comment);
-          LiberateMemory((void **) &comment);
+          MagickFreeMemory(comment);
           c=ReadBlobByte(image);
         }
       else
@@ -247,7 +247,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 {
                   *p='\0';
                   length<<=1;
-                  ReacquireMemory((void **) &values,length);
+                  MagickReallocMemory(values,length);
                   if (values == (char *) NULL)
                     break;
                   p=values+strlen(values);
@@ -480,7 +480,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     geometry=GetPageGeometry(values);
                     (void) GetGeometry(geometry,&image->page.x,&image->page.y,
                       &image->page.width,&image->page.height);
-                    LiberateMemory((void **) &geometry);
+                    MagickFreeMemory(geometry);
                     break;
                   }
                 if (LocaleNCompare(keyword,"profile-",8) == 0)
@@ -500,7 +500,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       image->generic_profile=(ProfileInfo *)
                         AcquireMemory(sizeof(ProfileInfo));
                     else
-                      ReacquireMemory((void **) &image->generic_profile,
+                      MagickReallocMemory(image->generic_profile,
                         (i+1)*sizeof(ProfileInfo));
                     if (image->generic_profile == (ProfileInfo *) NULL)
                       ThrowReaderException(ResourceLimitError,
@@ -637,7 +637,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       while (isspace(c))
         c=ReadBlobByte(image);
     }
-    LiberateMemory((void **) &values);
+    MagickFreeMemory(values);
     (void) ReadBlobByte(image);
     /*
       Verify that required image information is defined.
@@ -669,7 +669,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 Allocate more memory for the image directory.
               */
-              ReacquireMemory((void **) &image->directory,
+              MagickReallocMemory(image->directory,
                 (strlen(image->directory)+MaxTextExtent+1));
               if (image->directory == (char *) NULL)
                 ThrowReaderException(CorruptImageError,"UnableToReadImageData",
@@ -775,7 +775,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->colormap[i].blue=(*p++ << 8);
                 image->colormap[i].blue|=(*p++);
               }
-            LiberateMemory((void **) &colormap);
+            MagickFreeMemory(colormap);
           }
       }
     if (EOFBlob(image))
@@ -1250,7 +1250,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
             *q++=image->colormap[i].blue & 0xff;
           }
         (void) WriteBlob(image,packet_size*image->colors,colormap);
-        LiberateMemory((void **) &colormap);
+        MagickFreeMemory(colormap);
       }
     /*
       Initialize persistent pixel cache.

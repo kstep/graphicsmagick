@@ -243,7 +243,7 @@ static char *super_fgets(char **b, int *blen, Image *file)
 
         tlen=q-(unsigned char *) (*b);
         len<<=1;
-        ReacquireMemory((void **) b,(len+2));
+        MagickReallocMemory(b,(len+2));
         if ((*b) == (char *) NULL)
           break;
         q=(unsigned char*) (*b)+tlen;
@@ -461,11 +461,11 @@ static long parse8BIM(Image *ifile, Image *ofile)
           }
       state++;
     }
-    LiberateMemory((void **) &token);
-    LiberateMemory((void **) &newstr);
-    LiberateMemory((void **) &name);
+    MagickFreeMemory(token);
+    MagickFreeMemory(newstr);
+    MagickFreeMemory(name);
   }
-  LiberateMemory((void **) &line);
+  MagickFreeMemory(line);
   if (savedolen > 0)
     {
       long diff = outputlen - savedolen;
@@ -504,7 +504,7 @@ static char *super_fgets_w(char **b, int *blen, Image *file)
 
         tlen=q-(unsigned char *) (*b);
         len<<=1;
-        ReacquireMemory((void **) b,(len+2));
+        MagickReallocMemory(b,(len+2));
         if ((*b) == (char *) NULL)
           break;
         q=(unsigned char*) (*b)+tlen;
@@ -722,11 +722,11 @@ static long parse8BIMW(Image *ifile, Image *ofile)
           }
       state++;
     }
-    LiberateMemory((void **) &token);
-    LiberateMemory((void **) &newstr);
-    LiberateMemory((void **) &name);
+    MagickFreeMemory(token);
+    MagickFreeMemory(newstr);
+    MagickFreeMemory(name);
   }
-  LiberateMemory((void **) &line);
+  MagickFreeMemory(line);
   if (savedolen > 0)
     {
       long diff = outputlen - savedolen;
@@ -1094,7 +1094,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         image->generic_profile=(ProfileInfo *)
           AcquireMemory(sizeof(ProfileInfo));
       else
-        ReacquireMemory((void **) &image->generic_profile,
+        MagickReallocMemory(image->generic_profile,
           (i+1)*sizeof(ProfileInfo));
       if (image->generic_profile == (ProfileInfo *) NULL)
         {
@@ -1135,7 +1135,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
               (pinfo->info == (unsigned char *) NULL) || (pinfo->length == 0))
             {
               DetachBlob(buff->blob);
-              LiberateMemory((void **) &blob);
+              MagickFreeMemory(blob);
               DestroyImage(buff);
               ThrowReaderException(CoderError,"NoIPTCProfileAvailable",image)
             }
@@ -1143,7 +1143,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           if (iptc == (Image *) NULL)
             {
               DetachBlob(buff->blob);
-              LiberateMemory((void **) &blob);
+              MagickFreeMemory(blob);
               DestroyImage(buff);
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
                 image)
@@ -1157,7 +1157,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           if (result == 0)
             {
               DetachBlob(buff->blob);
-              LiberateMemory((void **) &blob);
+              MagickFreeMemory(blob);
               DestroyImage(buff);
               ThrowReaderException(CoderError,"JPEGEmbeddingFailed",image)
             }
@@ -1201,7 +1201,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
                 if (i < length)
                   break;
               }
-              LiberateMemory((void **) &buffer);
+              MagickFreeMemory(buffer);
             }
 #endif
         }
@@ -1815,7 +1815,7 @@ static int formatIPTC(Image *ifile, Image *ofile)
       FormatString(temp, "%d#%d=",(unsigned int)dataset, (unsigned int) recnum);
     WriteBlobString(ofile,temp);
     formatString( ofile, (char *)str, taglen );
-    LiberateMemory((void **) &str);
+    MagickFreeMemory(str);
 
     tagsfound++;
 
@@ -1938,7 +1938,7 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, long len)
       FormatString(temp, "%d#%d=",(unsigned int)dataset, (unsigned int) recnum);
     WriteBlobString(ofile,temp);
     formatString( ofile, (char *)str, taglen );
-    LiberateMemory((void **) &str);
+    MagickFreeMemory(str);
 
     tagsfound++;
   }
@@ -2061,8 +2061,8 @@ static int format8BIM(Image *ifile, Image *ofile)
         else
           formatString(ofile, (char *)str, (long) Size);
       }
-    LiberateMemory((void **) &str);
-    LiberateMemory((void **) &PString);
+    MagickFreeMemory(str);
+    MagickFreeMemory(PString);
 
     resCount++;
 

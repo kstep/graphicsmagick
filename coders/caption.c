@@ -132,7 +132,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           if ((p-caption+MaxTextExtent+1) < (long) length)
             continue;
           length<<=1;
-          ReacquireMemory((void **) &caption,length);
+          MagickReallocMemory(caption,length);
           if (caption == (char *) NULL)
             break;
           p=caption+strlen(caption);
@@ -174,7 +174,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   draw_info->geometry=AllocateString(geometry);
   (void) AnnotateImage(image,draw_info);
   DestroyDrawInfo(draw_info);
-  LiberateMemory((void **) &caption);
+  MagickFreeMemory(caption);
   return(image);
 }
 

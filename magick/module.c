@@ -86,7 +86,7 @@ static char
 */
 typedef struct _CoderInfo
 {
-  const char
+  char
     *tag;
   
   void
@@ -246,12 +246,12 @@ MagickExport void DestroyModuleInfo(void)
     module_info=q;
     q=q->next;
     if (module_info->path != (char *) NULL)
-      LiberateMemory((void **) &module_info->path);
+      MagickFreeMemory(module_info->path);
     if (module_info->magick != (char *) NULL)
-      LiberateMemory((void **) &module_info->magick);
+      MagickFreeMemory(module_info->magick);
     if (module_info->name != (char *) NULL)
-      LiberateMemory((void **) &module_info->name);
-    LiberateMemory((void **) &module_info);
+      MagickFreeMemory(module_info->name);
+    MagickFreeMemory(module_info);
   }
   module_list=(ModuleInfo *) NULL;
   if (ltdl_initialized)
@@ -482,6 +482,7 @@ static void ChopPathComponents(char *path,const unsigned long components)
 }
 #endif
 
+#if defined(SupportMagickModules)
 static unsigned int FindMagickModule(const char *filename,
   MagickModuleType module_type,char *path,ExceptionInfo *exception)
 {
@@ -656,6 +657,7 @@ static unsigned int FindMagickModule(const char *filename,
     ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",path);
   return(False);
 }
+#endif /* #if defined(SupportMagickModules) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -723,7 +725,7 @@ static char **GetModuleList(ExceptionInfo *exception)
     if (i >= (long) max_entries)
       {
         max_entries<<=1;
-        ReacquireMemory((void **) &modules,max_entries*sizeof(char *));
+        MagickReallocMemory(modules,max_entries*sizeof(char *));
         if (modules == (char **) NULL)
           break;
       }
@@ -778,6 +780,7 @@ static char **GetModuleList(ExceptionInfo *exception)
 %
 %
 */
+#if defined(SupportMagickModules)
 static void *GetModuleBlob(const char *filename,char *path,size_t *length,
   ExceptionInfo *exception)
 {
@@ -824,6 +827,7 @@ static void *GetModuleBlob(const char *filename,char *path,size_t *length,
 #endif
   return (blob);
 }
+#endif /* #if defined(SupportMagickModules) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1145,8 +1149,8 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
       Free resources.
     */
     for (i=0; modules[i]; i++)
-      LiberateMemory((void **) &modules[i]);
-    LiberateMemory((void **) &modules);
+      MagickFreeMemory(modules[i]);
+    MagickFreeMemory(modules);
   }
 #endif
   return(True);
@@ -1331,8 +1335,8 @@ static unsigned int ReadConfigureFile(const char *basename,
         break;
     }
   }
-  LiberateMemory((void **) &token);
-  LiberateMemory((void **) &xml);
+  MagickFreeMemory(token);
+  MagickFreeMemory(xml);
   if (module_list == (ModuleInfo *) NULL)
     return(False);
   while (module_list->previous != (ModuleInfo *) NULL)
@@ -1506,6 +1510,7 @@ static CoderInfo *SetCoderInfo(const char *tag)
 %      MaxTextExtent long.
 %
 */
+#if defined(SupportMagickModules)
 static void TagToCoderModuleName(const char *tag,char *module_name)
 {
   assert(tag != (char *) NULL);
@@ -1528,6 +1533,7 @@ static void TagToCoderModuleName(const char *tag,char *module_name)
 #endif  /* defined(WIN32) */
 #endif /* defined(HasLTDL) */
 }
+#endif /* #if defined(SupportMagickModules) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1719,7 +1725,7 @@ static unsigned int UnregisterModule(const char *tag,ExceptionInfo *exception)
     if (LocaleCompare(p->tag,tag) != 0)
       continue;
     status=UnloadModule((CoderInfo *) p,exception);
-    LiberateMemory((void **) &p->tag);
+    MagickFreeMemory(p->tag);
     if (p->previous != (CoderInfo *) NULL)
       p->previous->next=p->next;
     else
@@ -1731,7 +1737,7 @@ static unsigned int UnregisterModule(const char *tag,ExceptionInfo *exception)
     if (p->next != (CoderInfo *) NULL)
       p->next->previous=p->previous;
     coder_info=p;
-    LiberateMemory((void **) &coder_info);
+    MagickFreeMemory(coder_info);
     break;
   }
   return (status);

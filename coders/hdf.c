@@ -249,7 +249,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->colormap[i].green=ScaleCharToQuantum(i);
             image->colormap[i].blue=ScaleCharToQuantum(i);
           }
-        LiberateMemory((void **) &hdf_palette);
+        MagickFreeMemory(hdf_palette);
         p=hdf_pixels;
         for (y=0; y < (long) image->rows; y++)
         {
@@ -312,7 +312,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             DFANgetlabel(image->filename,DFTAG_RIG,reference,label,length);
             (void) SetImageAttribute(image,"Label",label);
-            LiberateMemory((void **) &label);
+            MagickFreeMemory(label);
           }
       }
     length=DFANgetdesclen(image->filename,DFTAG_RIG,reference);
@@ -330,10 +330,10 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             DFANgetdesc(image->filename,DFTAG_RIG,reference,comments,length);
             (void) SetImageAttribute(image,"Comment",comments);
-            LiberateMemory((void **) &comments);
+            MagickFreeMemory(comments);
           }
       }
-    LiberateMemory((void **) &hdf_pixels);
+    MagickFreeMemory(hdf_pixels);
     if (image->storage_class == PseudoClass)
       SyncImage(image);
     /*
@@ -704,7 +704,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               *q++=ScaleQuantumToChar(image->colormap[i].blue);
             }
             (void) DFR8setpalette(hdf_palette);
-            LiberateMemory((void **) &hdf_palette);
+            MagickFreeMemory(hdf_palette);
             q=hdf_pixels;
             for (y=0; y < (long) image->rows; y++)
             {
@@ -740,7 +740,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     if (attribute != (const ImageAttribute *) NULL)
       (void) DFANputdesc(image->filename,DFTAG_RIG,reference,attribute->value,
         strlen(attribute->value)+1);
-    LiberateMemory((void **) &hdf_pixels);
+    MagickFreeMemory(hdf_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

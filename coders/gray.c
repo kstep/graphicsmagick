@@ -202,7 +202,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
           break;
       }
   } while (count != 0);
-  LiberateMemory((void **) &scanline);
+  MagickFreeMemory(scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -427,7 +427,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
           if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
             break;
     }
-    LiberateMemory((void **) &scanline);
+    MagickFreeMemory(scanline);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

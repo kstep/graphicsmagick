@@ -136,16 +136,16 @@ MagickExport void DestroyMagickInfo(void)
     magick_info=p;
     p=p->next;
     if (magick_info->name != (char *) NULL)
-      LiberateMemory((void **) &magick_info->name);
+      MagickFreeMemory(magick_info->name);
     if (magick_info->description != (char *) NULL)
-      LiberateMemory((void **) &magick_info->description);
+      MagickFreeMemory(magick_info->description);
     if (magick_info->version != (char *) NULL)
-      LiberateMemory((void **) &magick_info->version);
+      MagickFreeMemory(magick_info->version);
     if (magick_info->note != (char *) NULL)
-      LiberateMemory((void **) &magick_info->note);
+      MagickFreeMemory(magick_info->note);
     if (magick_info->module != (char *) NULL)
-      LiberateMemory((void **) &magick_info->module);
-    LiberateMemory((void **) &magick_info);
+      MagickFreeMemory(magick_info->module);
+    MagickFreeMemory(magick_info);
   }
   magick_list=(MagickInfo *) NULL;
   DestroySemaphoreInfo(&magick_semaphore);
@@ -698,8 +698,8 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 /*     module_file=TagToModule("MIFF"); */
 /*     blob=GetModuleBlob(module_file,path,&length,exception); */
 /*     if (blob != (void *) NULL) */
-/*       LiberateMemory((void **) &blob); */
-/*     LiberateMemory((void **) &module_file); */
+/*       MagickFreeMemory(blob); */
+/*     MagickFreeMemory(module_file); */
 /*     GetPathComponent(path,HeadPath,path); */
 /*     (void) fprintf(file,"Path: %.1024s\n\n",path); */
 /*   } */
@@ -734,9 +734,9 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
             for (i=0; text[i] != (char *) NULL; i++)
               {
                 (void) fprintf(file,"            %.1024s\n",text[i]);
-                LiberateMemory((void **) &text[i]);
+                MagickFreeMemory(text[i]);
               }
-            LiberateMemory((void **) &text);
+            MagickFreeMemory(text);
           }
       }
   }
@@ -1009,16 +1009,16 @@ MagickExport unsigned int UnregisterMagickInfo(const char *name)
     else
       magick_list=p->next;
     magick_info=p;
-    LiberateMemory((void **) &magick_info->name);
+    MagickFreeMemory(magick_info->name);
     if (magick_info->description != (char *) NULL)
-      LiberateMemory((void **) &magick_info->description);
+      MagickFreeMemory(magick_info->description);
     if (magick_info->version != (char *) NULL)
-      LiberateMemory((void **) &magick_info->version);
+      MagickFreeMemory(magick_info->version);
     if (magick_info->note != (char *) NULL)
-      LiberateMemory((void **) &magick_info->note);
+      MagickFreeMemory(magick_info->note);
     if (magick_info->module != (char *) NULL)
-      LiberateMemory((void **) &magick_info->module);
-    LiberateMemory((void **) &magick_info);
+      MagickFreeMemory(magick_info->module);
+    MagickFreeMemory(magick_info);
     status=True;
     break;
   }

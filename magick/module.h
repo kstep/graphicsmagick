@@ -23,7 +23,7 @@ extern "C" {
 */
 typedef struct _ModuleInfo
 {
-  const char
+  char
     *path,		/* Path to modules.mgk which created alias */
     *magick,		/* Format name */
     *name;		/* Name of module supporting format. */

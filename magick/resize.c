@@ -422,7 +422,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   if (q != (PixelPacket *) NULL)
     (void) memcpy(q,scanline,magnify_image->columns*sizeof(PixelPacket));
   (void) SyncImagePixels(magnify_image);
-  LiberateMemory((void **) &scanline);
+  MagickFreeMemory(scanline);
   magnify_image->is_grayscale=image->is_grayscale;
   return(magnify_image);
 }
@@ -1162,7 +1162,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
       source_image=CloneImage(resize_image,columns,image->rows,True,exception);
       if (source_image == (Image *) NULL)
         {
-          LiberateMemory((void **) &contribution);
+          MagickFreeMemory(contribution);
           DestroyImage(resize_image);
           return((Image *) NULL);
         }
@@ -1177,7 +1177,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
       source_image=CloneImage(resize_image,image->columns,rows,True,exception);
       if (source_image == (Image *) NULL)
         {
-          LiberateMemory((void **) &contribution);
+          MagickFreeMemory(contribution);
           DestroyImage(resize_image);
           return((Image *) NULL);
         }
@@ -1190,7 +1190,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   /*
     Free allocated memory.
   */
-  LiberateMemory((void **) &contribution);
+  MagickFreeMemory(contribution);
   DestroyImage(source_image);
   if (status == False)
     {
@@ -1343,9 +1343,9 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
       if (!MagickMonitor(SampleImageText,y,sample_image->rows,exception))
         break;
   }
-  LiberateMemory((void **) &y_offset);
-  LiberateMemory((void **) &x_offset);
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(y_offset);
+  MagickFreeMemory(x_offset);
+  MagickFreeMemory(pixels);
   /*
     Sampling does not change the image properties.
   */
@@ -1682,11 +1682,11 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   /*
     Free allocated memory.
   */
-  LiberateMemory((void **) &y_vector);
-  LiberateMemory((void **) &scale_scanline);
+  MagickFreeMemory(y_vector);
+  MagickFreeMemory(scale_scanline);
   if (scale_image->rows != image->rows)
-    LiberateMemory((void **) &scanline);
-  LiberateMemory((void **) &x_vector);
+    MagickFreeMemory(scanline);
+  MagickFreeMemory(x_vector);
   scale_image->is_grayscale=image->is_grayscale;
   return(scale_image);
 }

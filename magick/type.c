@@ -110,24 +110,24 @@ MagickExport void DestroyTypeInfo(void)
     type_info=p;
     p=p->next;
     if (type_info->path != (char *) NULL)
-      LiberateMemory((void **) &type_info->path);
+      MagickFreeMemory(type_info->path);
     if (type_info->name != (char *) NULL)
-      LiberateMemory((void **) &type_info->name);
+      MagickFreeMemory(type_info->name);
     if (type_info->description != (char *) NULL)
-      LiberateMemory((void **) &type_info->description);
+      MagickFreeMemory(type_info->description);
     if (type_info->family != (char *) NULL)
-      LiberateMemory((void **) &type_info->family);
+      MagickFreeMemory(type_info->family);
     if (type_info->encoding != (char *) NULL)
-      LiberateMemory((void **) &type_info->encoding);
+      MagickFreeMemory(type_info->encoding);
     if (type_info->foundry != (char *) NULL)
-      LiberateMemory((void **) &type_info->foundry);
+      MagickFreeMemory(type_info->foundry);
     if (type_info->format != (char *) NULL)
-      LiberateMemory((void **) &type_info->format);
+      MagickFreeMemory(type_info->format);
     if (type_info->metrics != (char *) NULL)
-      LiberateMemory((void **) &type_info->metrics);
+      MagickFreeMemory(type_info->metrics);
     if (type_info->glyphs != (char *) NULL)
-      LiberateMemory((void **) &type_info->glyphs);
-    LiberateMemory((void **) &type_info);
+      MagickFreeMemory(type_info->glyphs);
+    MagickFreeMemory(type_info);
   }
   type_list=(TypeInfo *) NULL;
   DestroySemaphoreInfo(&type_semaphore);
@@ -1036,8 +1036,8 @@ static unsigned int ReadConfigureFile(const char *basename,
         break;
     }
   }
-  LiberateMemory((void **) &token);
-  LiberateMemory((void **) &xml);
+  MagickFreeMemory(token);
+  MagickFreeMemory(xml);
   if (type_list == (TypeInfo *) NULL)
     return(False);
   while (type_list->previous != (TypeInfo *) NULL)

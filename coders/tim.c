@@ -192,7 +192,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i].green=ScaleCharToQuantum(ScaleColor5to8((word >> 5) & 0x1f));
           image->colormap[i].red=ScaleCharToQuantum(ScaleColor5to8(word & 0x1f));
         }
-        LiberateMemory((void **) &tim_colormap);
+        MagickFreeMemory(tim_colormap);
       }
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -351,7 +351,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (image->storage_class == PseudoClass)
       SyncImage(image);
-    LiberateMemory((void **) &tim_pixels);
+    MagickFreeMemory(tim_pixels);
     if (EOFBlob(image))
       {
         ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",

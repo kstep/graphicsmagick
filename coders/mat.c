@@ -507,7 +507,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   if (BImgBuff != NULL)
   {
-    LiberateMemory((void **) &BImgBuff);
+    MagickFreeMemory(BImgBuff);
     BImgBuff = NULL;
   }
   CloseBlob(image);

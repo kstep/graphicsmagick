@@ -3187,7 +3187,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) fprintf(stdout,"\n");
           }
       }
-    LiberateMemory((void **) &data);
+    MagickFreeMemory(data);
   }
   if ((width == 0) || (height == 0))
     ThrowReaderException(CorruptImageError,"NotADCMImageFile",image);
@@ -3446,7 +3446,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Free scale resource.
   */
   if (scale != (Quantum *) NULL)
-    LiberateMemory((void **) &scale);
+    MagickFreeMemory(scale);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);

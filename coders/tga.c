@@ -218,7 +218,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) ReadBlob(image,tga_info.id_length,comment);
         comment[tga_info.id_length]='\0';
         (void) SetImageAttribute(image,"comment",comment);
-        LiberateMemory((void **) &comment);
+        MagickFreeMemory(comment);
       }
     (void) memset(&pixel,0,sizeof(PixelPacket));
     pixel.opacity=TransparentOpacity;
@@ -715,7 +715,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
         }
         (void) WriteBlob(image,3*targa_info.colormap_length,
           (char *) targa_colormap);
-        LiberateMemory((void **) &targa_colormap);
+        MagickFreeMemory(targa_colormap);
       }
     /*
       Convert MIFF to TGA raster pixels.
@@ -754,7 +754,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
           if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
             break;
     }
-    LiberateMemory((void **) &targa_pixels);
+    MagickFreeMemory(targa_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

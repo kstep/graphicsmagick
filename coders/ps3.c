@@ -191,7 +191,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
       Ascii85Encode(image,(unsigned long) buffer[j]);
     Ascii85Flush(image);
   }
-  LiberateMemory((void **) &buffer);
+  MagickFreeMemory(buffer);
   TIFFClose(tiff);
   LiberateTemporaryFile(filename);
   return(True);
@@ -566,7 +566,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
         (void) WriteBlob(image,length,blob);
         DestroyImage(jpeg_image);
-        LiberateMemory((void **) &blob);
+        MagickFreeMemory(blob);
         break;
       }
       case RLECompression:
@@ -621,7 +621,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             CloseBlob(image);
             return(False);
           }
-        LiberateMemory((void **) &pixels);
+        MagickFreeMemory(pixels);
         break;
       }
       case FaxCompression:
@@ -835,7 +835,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
   else
     for (i=0; i < (long) compressed_packets; i++)
       (void) WriteBlobByte(image,compressed_pixels[i]);
-  LiberateMemory((void **) &compressed_pixels);
+  MagickFreeMemory(compressed_pixels);
   return(!status);
 }
 #else

@@ -3052,7 +3052,7 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
     return((Image *) NULL);
   Strip(command);
   images=StringToArgv(command,&number_images);
-  LiberateMemory((void **) &command);
+  MagickFreeMemory(command);
   /*
     Read the images into a linked list.
   */
@@ -3081,8 +3081,8 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   DestroyImageInfo(clone_info);
   for (i=1; i < number_images; i++)
-    LiberateMemory((void **) &images[i]);
-  LiberateMemory((void **) &images);
+    MagickFreeMemory(images[i]);
+  MagickFreeMemory(images);
   return(image);
 }
 
@@ -3147,7 +3147,7 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   handler=SetMonitorHandler((MonitorHandler) NULL);
   image=BlobToImage(image_info,blob,length,exception);
   (void) SetMonitorHandler(handler);
-  LiberateMemory((void **) &blob);
+  MagickFreeMemory(blob);
   return(image);
 }
 

@@ -546,7 +546,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     }
     p->scene=scene;
     if (blob != (unsigned char *) NULL)
-      LiberateMemory((void **) &blob);
+      MagickFreeMemory(blob);
     if (status == False)
       break;
   }

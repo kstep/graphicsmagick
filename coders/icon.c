@@ -244,7 +244,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         image->colormap[i].red=(Quantum) ScaleCharToQuantum(*p++);
         p++;
       }
-      LiberateMemory((void **) &icon_colormap);
+      MagickFreeMemory(icon_colormap);
     }
     /*
       Convert Icon raster image to pixel packets.

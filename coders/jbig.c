@@ -177,7 +177,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   image->rows=jbg_dec_getheight(&jbig_info);
   if (!AllocateImageColormap(image,2))
     {
-      LiberateMemory((void **) &buffer);
+      MagickFreeMemory(buffer);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
     }
   image->colormap[0].red=0;
@@ -227,7 +227,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     Free scale resource.
   */
   jbg_dec_free(&jbig_info);
-  LiberateMemory((void **) &buffer);
+  MagickFreeMemory(buffer);
   CloseBlob(image);
   return(image);
 }
@@ -491,7 +491,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     */
     jbg_enc_out(&jbig_info);
     jbg_enc_free(&jbig_info);
-    LiberateMemory((void **) &pixels);
+    MagickFreeMemory(pixels);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

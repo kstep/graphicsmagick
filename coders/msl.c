@@ -450,10 +450,10 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
   assert(msl_info != (MSLInfo *) NULL);
   msl_info->n++;
   n=msl_info->n;
-  ReacquireMemory((void **) &msl_info->image_info,(n+1)*sizeof(ImageInfo *));
-  ReacquireMemory((void **) &msl_info->draw_info,(n+1)*sizeof(DrawInfo *));
-  ReacquireMemory((void **) &msl_info->attributes,(n+1)*sizeof(Image *));
-  ReacquireMemory((void **) &msl_info->image,(n+1)*sizeof(Image *));
+  MagickReallocMemory(msl_info->image_info,(n+1)*sizeof(ImageInfo *));
+  MagickReallocMemory(msl_info->draw_info,(n+1)*sizeof(DrawInfo *));
+  MagickReallocMemory(msl_info->attributes,(n+1)*sizeof(Image *));
+  MagickReallocMemory(msl_info->image,(n+1)*sizeof(Image *));
   if ((msl_info->image_info == (ImageInfo **) NULL) ||
     (msl_info->draw_info == (DrawInfo **) NULL) ||
     (msl_info->attributes == (Image **) NULL) ||
@@ -3806,7 +3806,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
     }
   }
   if ( value != NULL )
-  LiberateMemory((void **) &value);
+  MagickFreeMemory(value);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  )");
 }
 
@@ -4207,7 +4207,7 @@ static unsigned int ProcessMSLScript(const ImageInfo *image_info,Image **image,
   xmlFreeParserCtxt(msl_info.parser);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"end SAX");
   xmlCleanupParser();
-  LiberateMemory((void **) &msl_info.group_info);
+  MagickFreeMemory(msl_info.group_info);
   if (*image == (Image *) NULL)
     *image=*msl_info.image;
   return((*msl_info.image)->exception.severity == UndefinedException);

@@ -200,6 +200,6 @@ MagickExport void ReacquireMemory(void **memory,const size_t size)
     }
   allocation=realloc(*memory,size);
   if (allocation == (void *) NULL)
-    LiberateMemory((void **) memory);
+    LiberateMemory(memory);
   *memory=allocation;
 }

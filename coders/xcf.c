@@ -323,7 +323,7 @@ static int load_tile (Image* image, Image* tile_image, XCFDocInfo* inDocInfo,
     q++;
   }
 
-  LiberateMemory((void**)&xcfodata);
+  MagickFreeMemory(xcfodata);
   return True;
 }
 
@@ -480,12 +480,12 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
           }
       }
     }
-  LiberateMemory((void **) &xcfodata);
+  MagickFreeMemory(xcfodata);
   return True;
 
  bogus_rle:
   if (xcfodata)
-  LiberateMemory((void **) &xcfodata);
+  MagickFreeMemory(xcfodata);
   return False;
 }
 
@@ -1268,7 +1268,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
     }
 
-    LiberateMemory((void **) &layer_info);
+    MagickFreeMemory(layer_info);
 
 #if 0  /* BOGUS: do we need the channels?? */
     while (True)

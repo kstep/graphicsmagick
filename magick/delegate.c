@@ -113,14 +113,14 @@ MagickExport void DestroyDelegateInfo(void)
     delegate_info=p;
     p=p->next;
     if (delegate_info->path != (char *) NULL)
-      LiberateMemory((void **) &delegate_info->path);
+      MagickFreeMemory(delegate_info->path);
     if (delegate_info->decode != (char *) NULL)
-      LiberateMemory((void **) &delegate_info->decode);
+      MagickFreeMemory(delegate_info->decode);
     if (delegate_info->encode != (char *) NULL)
-      LiberateMemory((void **) &delegate_info->encode);
+      MagickFreeMemory(delegate_info->encode);
     if (delegate_info->commands != (char *) NULL)
-      LiberateMemory((void **) &delegate_info->commands);
-    LiberateMemory((void **) &delegate_info);
+      MagickFreeMemory(delegate_info->commands);
+    MagickFreeMemory(delegate_info);
   }
   delegate_list=(DelegateInfo *) NULL;
   DestroySemaphoreInfo(&delegate_semaphore);
@@ -203,8 +203,8 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
     Free resources.
   */
   for (i=0; commands[i] != (char *) NULL; i++)
-    LiberateMemory((void **) &commands[i]);
-  LiberateMemory((void **) &commands);
+    MagickFreeMemory(commands[i]);
+  MagickFreeMemory(commands);
   return(command);
 }
 
@@ -451,7 +451,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
         clone_info=CloneImageInfo(image_info);
         (void) strncpy((char *) clone_info->magick,magick,MaxTextExtent-1);
         (void) strncpy(image->magick,magick,MaxTextExtent-1);
-        LiberateMemory((void **) &magick);
+        MagickFreeMemory(magick);
         (void) strncpy(filename,image->filename,MaxTextExtent-1);
         FormatString(clone_info->filename,"%.1024s:",delegate_info->decode);
         (void) SetImageInfo(clone_info,True,exception);
@@ -524,7 +524,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
       (void) ConcatenateString(&command," &");
     /* Execute delegate.  */
     status=SystemCommand(image_info->verbose,command);
-    LiberateMemory((void **) &command);
+    MagickFreeMemory(command);
     /* Liberate convenience temporary files */
     LiberateTemporaryFile(image_info->unique);
     LiberateTemporaryFile(image_info->zero);
@@ -534,7 +534,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
           commands[i]);
         goto error_exit;
       }
-    LiberateMemory((void **) &commands[i]);
+    MagickFreeMemory(commands[i]);
   }
   /*
     Free resources.
@@ -543,8 +543,8 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   if (temporary_image_filename)
     LiberateTemporaryFile(image->filename);
   for ( ; commands[i] != (char *) NULL; i++)
-    LiberateMemory((void **) &commands[i]);
-  LiberateMemory((void **) &commands);
+    MagickFreeMemory(commands[i]);
+  MagickFreeMemory(commands);
   return(status != False);
 }
 
@@ -639,8 +639,8 @@ MagickExport unsigned int InvokePostscriptDelegate(const unsigned int verbose,
   (gs_func->exit)(interpreter);
   (gs_func->delete_instance)(interpreter);
   for (i=0; i < argc; i++)
-    LiberateMemory((void **) &argv[i]);
-  LiberateMemory((void **) &argv);
+    MagickFreeMemory(argv[i]);
+  MagickFreeMemory(argv);
   if ((status == 0) || (status == -101))
     return(False);
   return(True);
@@ -751,7 +751,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
         }
     }
     for (i=0; commands[i] != (char *) NULL; i++)
-      LiberateMemory((void **) &commands[i]);
+      MagickFreeMemory(commands[i]);
   }
   (void) fflush(file);
   LiberateSemaphoreInfo(&delegate_semaphore);
@@ -939,7 +939,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                       else
                         {
                           strcpy(BinPath,key_value);
-                          LiberateMemory((void **) &key_value);
+                          MagickFreeMemory(key_value);
                         }
                     }
 #  endif /* defined(MagickBinPath) */
@@ -1048,8 +1048,8 @@ static unsigned int ReadConfigureFile(const char *basename,
           break;
         }
     }
-  LiberateMemory((void **) &token);
-  LiberateMemory((void **) &xml);
+  MagickFreeMemory(token);
+  MagickFreeMemory(xml);
   if (delegate_list == (DelegateInfo *) NULL)
     return(False);
   while (delegate_list->previous != (DelegateInfo *) NULL)
@@ -1124,9 +1124,9 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
         /*
           Delegate overrides an existing one with the same tags.
         */
-        LiberateMemory((void **) &p->commands);
+        MagickFreeMemory(p->commands);
         p->commands=delegate->commands;
-        LiberateMemory((void **) &delegate);
+        MagickFreeMemory(delegate);
         return((DelegateInfo *) delegate_list);
       }
     if (p->next == (DelegateInfo *) NULL)

@@ -159,7 +159,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,long *width,
         }
       if (GetMetaFileBitsEx(hOld,dwSize,pBits) == 0)
         {
-          LiberateMemory((void **) &pBits);
+          MagickFreeMemory(pBits);
           DeleteMetaFile(hOld);
           return((HENHMETAFILE) NULL);
         }
@@ -174,7 +174,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,long *width,
       hTemp=SetWinMetaFileBits(dwSize,pBits,hDC,&mp);
       ReleaseDC(NULL,hDC);
       DeleteMetaFile(hOld);
-      LiberateMemory((void **) &pBits);
+      MagickFreeMemory(pBits);
       GetEnhMetaFileHeader(hTemp,sizeof(ENHMETAHEADER),&emfh);
       *width=emfh.rclFrame.right-emfh.rclFrame.left;
       *height=emfh.rclFrame.bottom-emfh.rclFrame.top;
@@ -193,7 +193,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,long *width,
   CloseHandle(hFile);
   if (((PAPMHEADER) pBits)->dwKey != 0x9ac6cdd7l)
     {
-      LiberateMemory((void **) &pBits);
+      MagickFreeMemory(pBits);
       return((HENHMETAFILE) NULL);
     }
   /*
@@ -210,7 +210,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,long *width,
   hDC=GetDC(NULL);
   hTemp=SetWinMetaFileBits(dwSize,&(pBits[sizeof(APMHEADER)]),hDC,&mp);
   ReleaseDC(NULL,hDC);
-  LiberateMemory((void **) &pBits);
+  MagickFreeMemory(pBits);
   return(hTemp);
 }
 
@@ -328,7 +328,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
             image->rows=(unsigned int)
               (((image->rows*image->y_resolution)/72.0)+0.5);
         }
-      LiberateMemory((void **) &geometry);
+      MagickFreeMemory(geometry);
     }
   hDC=GetDC(NULL);
   if (!hDC)

@@ -844,7 +844,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (packet_size == 4)
             p++;
         }
-        LiberateMemory((void **) &bmp_colormap);
+        MagickFreeMemory(bmp_colormap);
       }
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -1230,7 +1230,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       default:
         ThrowReaderException(CorruptImageError,"NotABMPImageFile",image)
     }
-    LiberateMemory((void **) &pixels);
+    MagickFreeMemory(pixels);
     if (EOFBlob(image))
       {
         ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
@@ -1703,14 +1703,14 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_data=(unsigned char *) AcquireMemory(length);
           if (pixels == (unsigned char *) NULL)
             {
-              LiberateMemory((void **) &pixels);
+              MagickFreeMemory(pixels);
               ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
                 image)
             }
           bmp_info.file_size-=bmp_info.image_size;
           bmp_info.image_size=EncodeImage(image,bytes_per_line,pixels,bmp_data);
           bmp_info.file_size+=bmp_info.image_size;
-          LiberateMemory((void **) &pixels);
+          MagickFreeMemory(pixels);
           pixels=bmp_data;
           bmp_info.compression=BI_RLE8;
         }
@@ -1916,13 +1916,13 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           else
             (void) WriteBlob(image,4*(1 << bmp_info.bits_per_pixel),
               (char *) bmp_colormap);
-        LiberateMemory((void **) &bmp_colormap);
+        MagickFreeMemory(bmp_colormap);
       }
     if (logging)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  Pixels:  %lu bytes",bmp_info.image_size);
     (void) WriteBlob(image,bmp_info.image_size,(char *) pixels);
-    LiberateMemory((void **) &pixels);
+    MagickFreeMemory(pixels);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

@@ -145,7 +145,7 @@ static unsigned int
   ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *);
 
 static void
-  DestroyColorList(const NodeInfo *),
+  DestroyColorList(NodeInfo *node_info),
   Histogram(const Image *,CubeInfo *,const NodeInfo *,FILE *,ExceptionInfo *);
 
 /*
@@ -181,10 +181,10 @@ MagickExport void DestroyColorInfo(void)
     color_info=p;
     p=p->next;
     if (color_info->path != (char *) NULL)
-      LiberateMemory((void **) &color_info->path);
+      MagickFreeMemory(color_info->path);
     if (color_info->name != (char *) NULL)
-      LiberateMemory((void **) &color_info->name);
-    LiberateMemory((void **) &color_info);
+      MagickFreeMemory(color_info->name);
+    MagickFreeMemory(color_info);
   }
   color_list=(ColorInfo *) NULL;
   DestroySemaphoreInfo(&color_semaphore);
@@ -225,10 +225,10 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
   do
   {
     nodes=cube_info->node_queue->next;
-    LiberateMemory((void **) &cube_info->node_queue);
+    MagickFreeMemory(cube_info->node_queue);
     cube_info->node_queue=nodes;
   } while (cube_info->node_queue != (Nodes *) NULL);
-  LiberateMemory((void **) &cube_info);
+  MagickFreeMemory(cube_info);
 }
 
 /*
@@ -256,7 +256,7 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
 %
 %
 */
-static void DestroyColorList(const NodeInfo *node_info)
+static void DestroyColorList(NodeInfo *node_info)
 {
   register unsigned int
     id;
@@ -268,7 +268,7 @@ static void DestroyColorList(const NodeInfo *node_info)
     if (node_info->child[id] != (NodeInfo *) NULL)
       DestroyColorList(node_info->child[id]);
   if (node_info->list != (ColorPacket *) NULL)
-    LiberateMemory((void **) &node_info->list);
+    MagickFreeMemory(node_info->list);
 }
 
 /*
@@ -779,7 +779,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
         if (node_info->number_unique == 0)
           node_info->list=(ColorPacket *) AcquireMemory(sizeof(ColorPacket));
         else
-          ReacquireMemory((void **) &node_info->list,
+          MagickReallocMemory(node_info->list,
             (i+1)*sizeof(ColorPacket));
         if (node_info->list == (ColorPacket *) NULL)
           {
@@ -1215,7 +1215,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
           if (node_info->number_unique == 0)
             node_info->list=(ColorPacket *) AcquireMemory(sizeof(ColorPacket));
           else
-            ReacquireMemory((void **) &node_info->list,
+            MagickReallocMemory(node_info->list,
               (i+1)*sizeof(ColorPacket));
           if (node_info->list == (ColorPacket *) NULL)
             {
@@ -1807,8 +1807,8 @@ static unsigned int ReadConfigureFile(const char *basename,
         break;
     }
   }
-  LiberateMemory((void **) &token);
-  LiberateMemory((void **) &xml);
+  MagickFreeMemory(token);
+  MagickFreeMemory(xml);
   if (color_list == (ColorInfo *) NULL)
     return(False);
   while (color_list->previous != (ColorInfo *) NULL)

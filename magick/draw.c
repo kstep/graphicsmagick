@@ -382,7 +382,7 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
     {
       size_t realloc_size = context->mvg_alloc + alloc_size;
 
-      ReacquireMemory((void **) &context->mvg, realloc_size);
+      MagickReallocMemory(context->mvg, realloc_size);
       if (context->mvg == NULL)
         {
           ThrowException(&context->image->exception,ResourceLimitError,
@@ -590,7 +590,7 @@ MagickExport void DrawAnnotation(DrawContext context,
 
   escaped_text=EscapeString((const char*)text,'\'');
   MvgPrintf(context, "text %.4g,%.4g '%.1024s'\n", x, y, escaped_text);
-  LiberateMemory((void**)&escaped_text);
+  MagickFreeMemory(escaped_text);
 }
 
 /*
@@ -1263,10 +1263,10 @@ MagickExport void DrawDestroyContext(DrawContext context)
     }
   DestroyDrawInfo(CurrentContext);
   CurrentContext = (DrawInfo*) NULL;
-  LiberateMemory((void **) &context->graphic_context);
+  MagickFreeMemory(context->graphic_context);
 
   /* Pattern support */
-  LiberateMemory((void **) &context->pattern_id);
+  MagickFreeMemory(context->pattern_id);
   context->pattern_offset = 0;
 
   context->pattern_bounds.x = 0;
@@ -1275,7 +1275,7 @@ MagickExport void DrawDestroyContext(DrawContext context)
   context->pattern_bounds.height = 0;
 
   /* MVG output string and housekeeping */
-  LiberateMemory((void **) &context->mvg);
+  MagickFreeMemory(context->mvg);
   context->mvg_alloc = 0;
   context->mvg_length = 0;
 
@@ -1284,7 +1284,7 @@ MagickExport void DrawDestroyContext(DrawContext context)
 
   /* Context itself */
   context->signature = 0;
-  LiberateMemory((void **) &context);
+  MagickFreeMemory(context);
 }
 
 /*
@@ -2364,7 +2364,7 @@ MagickExport void DrawComposite(DrawContext context,
     return;
 
   base64 = Base64Encode(blob,blob_length,&encoded_length);
-  LiberateMemory((void**)&blob);
+  MagickFreeMemory(blob);
   if(!base64)
     {
       char
@@ -2501,7 +2501,7 @@ MagickExport void DrawComposite(DrawContext context,
       MvgPrintf(context,"'\n");
     }
 
-  LiberateMemory((void**)&media_type);
+  MagickFreeMemory(media_type);
 }
 
 /*
@@ -3989,7 +3989,7 @@ MagickExport void DrawPopPattern(DrawContext context)
                context->pattern_bounds.x,context->pattern_bounds.y);
   (void) SetImageAttribute(context->image,key,geometry);
 
-  LiberateMemory( (void**)&context->pattern_id );
+  MagickFreeMemory(context->pattern_id);
   context->pattern_offset = 0;
 
   context->pattern_bounds.x = 0;
@@ -4106,7 +4106,7 @@ MagickExport void DrawPushGraphicContext(DrawContext context)
   assert(context->signature == MagickSignature);
 
   context->index++;
-  ReacquireMemory((void **) &context->graphic_context,
+  MagickReallocMemory(context->graphic_context,
                   (context->index+1)*sizeof(DrawInfo *));
   if (context->graphic_context == (DrawInfo **) NULL)
     {
@@ -4927,7 +4927,7 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
   if( context->filter_off || updated )
     {
       if(CurrentContext->dash_pattern != (double*)NULL)
-        LiberateMemory((void **) &CurrentContext->dash_pattern);
+        MagickFreeMemory(CurrentContext->dash_pattern);
 
       if( n_new != 0)
         {

@@ -69,8 +69,8 @@
 void closedir(DIR *directory)
 {
   assert(directory != (DIR *) NULL);
-  LiberateMemory((void **) &directory->pattern);
-  LiberateMemory((void **) &directory);
+  MagickFreeMemory(directory->pattern);
+  MagickFreeMemory(directory);
 }
 
 /*
@@ -116,7 +116,7 @@ DIR *opendir(char *name)
   directory->pattern=(char *) AcquireMemory(strlen(name)+sizeof("*.*")+1);
   if (directory->pattern == (char *) NULL)
     {
-      LiberateMemory((void **) &directory);
+      MagickFreeMemory(directory);
       errno=ENOMEM;
       return(NULL);
     }

@@ -20,7 +20,7 @@ extern "C" {
 */
 typedef struct _MagicInfo
 {  
-  const char
+  char
     *path,
     *name,
     *target;

@@ -456,6 +456,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   /*
     Open image file.
   */
+  lastrow=0;
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
@@ -628,9 +629,9 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
                        TransparentOpacity);
     }
 
-  LiberateMemory((void **) &one_row);
+  MagickFreeMemory(one_row);
   if (compressionType == PALM_COMPRESSION_SCANLINE)
-    LiberateMemory((void **) &lastrow);
+    MagickFreeMemory(lastrow);
   CloseBlob(image);
   return(image);
 }
@@ -779,6 +780,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
+  lastrow=0;
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
@@ -1013,9 +1015,9 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     }
 
   CloseBlob(image);
-  LiberateMemory((void **) &one_row);
+  MagickFreeMemory(one_row);
   if (image->compression == FaxCompression)
-    LiberateMemory((void **) &lastrow);
+    MagickFreeMemory(lastrow);
   DestroyExceptionInfo(&exception);
   return(True);
 }

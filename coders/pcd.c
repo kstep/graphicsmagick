@@ -183,7 +183,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     pcd_table[i]=(PCDTable *) AcquireMemory(length*sizeof(PCDTable));
     if (pcd_table[i] == (PCDTable *) NULL)
       {
-        LiberateMemory((void **) &buffer);
+        MagickFreeMemory(buffer);
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           (char *) NULL)
       }
@@ -194,7 +194,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       r->length=(sum & 0xff)+1;
       if (r->length > 16)
         {
-          LiberateMemory((void **) &buffer);
+          MagickFreeMemory(buffer);
           return(False);
         }
       PCDGetBits(16);
@@ -303,8 +303,8 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     Free memory.
   */
   for (i=0; i < (image->columns > 1536 ? 3 : 1); i++)
-    LiberateMemory((void **) &pcd_table[i]);
-  LiberateMemory((void **) &buffer);
+    MagickFreeMemory(pcd_table[i]);
+  MagickFreeMemory(buffer);
   return(True);
 }
 
@@ -483,7 +483,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"NotAPCDImageFile",image);
   rotate=header[0x0e02] & 0x03;
   number_images=(header[10] << 8) | header[11];
-  LiberateMemory((void **) &header);
+  MagickFreeMemory(header);
   /*
     Determine resolution by subimage specification.
   */
@@ -630,9 +630,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!MagickMonitor(LoadImageText,j-1,number_images,&image->exception))
           break;
       }
-      LiberateMemory((void **) &chroma2);
-      LiberateMemory((void **) &chroma1);
-      LiberateMemory((void **) &luma);
+      MagickFreeMemory(chroma2);
+      MagickFreeMemory(chroma1);
+      MagickFreeMemory(luma);
       while (image->previous != (Image *) NULL)
         image=image->previous;
       overview_image=OverviewImage(image_info,image,exception);
@@ -717,9 +717,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!MagickMonitor(LoadImageText,y,image->rows,exception))
         break;
   }
-  LiberateMemory((void **) &chroma2);
-  LiberateMemory((void **) &chroma1);
-  LiberateMemory((void **) &luma);
+  MagickFreeMemory(chroma2);
+  MagickFreeMemory(chroma1);
+  MagickFreeMemory(luma);
   if (LocaleCompare(image_info->magick,"PCDS") == 0)
     image->colorspace=sRGBColorspace;
   else

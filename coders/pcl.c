@@ -328,7 +328,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
             break;
       }
       (void) WriteBlobString(image,"\033*r0C");  /* end graphics */
-      LiberateMemory((void **) &pixels);
+      MagickFreeMemory(pixels);
     }
   (void) WriteBlobString(image,"\033E");
   CloseBlob(image);

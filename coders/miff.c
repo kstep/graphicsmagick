@@ -697,7 +697,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 
   unsigned char
     *compress_pixels,
-    *pixels,
+    *pixels;
+
+  void
     *pixels_p;
 
   unsigned int
@@ -772,7 +774,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 *p='\0';
                 length<<=1;
-                ReacquireMemory((void **) &comment,length);
+                MagickReallocMemory(comment,length);
                 if (comment == (char *) NULL)
                   break;
                 p=comment+strlen(comment);
@@ -784,7 +786,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               image);
           *p='\0';
           (void) SetImageAttribute(image,"comment",comment);
-          LiberateMemory((void **) &comment);
+          MagickFreeMemory(comment);
           c=ReadBlobByte(image);
         }
       else
@@ -810,7 +812,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 {
                   *p='\0';
                   length<<=1;
-                  ReacquireMemory((void **) &values,length);
+                  MagickReallocMemory(values,length);
                   if (values == (char *) NULL)
                     break;
                   p=values+strlen(values);
@@ -1021,7 +1023,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     geometry=GetPageGeometry(values);
                     (void) GetGeometry(geometry,&image->page.x,&image->page.y,
                       &image->page.width,&image->page.height);
-                    LiberateMemory((void **) &geometry);
+                    MagickFreeMemory(geometry);
                     break;
                   }
                 if (LocaleNCompare(keyword,"profile-",8) == 0)
@@ -1041,7 +1043,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       image->generic_profile=(ProfileInfo *)
                         AcquireMemory(sizeof(ProfileInfo));
                     else
-                      ReacquireMemory((void **) &image->generic_profile,
+                      MagickReallocMemory(image->generic_profile,
                         (i+1)*sizeof(ProfileInfo));
                     if (image->generic_profile == (ProfileInfo *) NULL)
                       ThrowReaderException(ResourceLimitError,
@@ -1165,7 +1167,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       while (isspace(c))
         c=ReadBlobByte(image);
     }
-    LiberateMemory((void **) &values);
+    MagickFreeMemory(values);
     (void) ReadBlobByte(image);
 
     LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1217,7 +1219,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               /*
                 Allocate more memory for the image directory.
               */
-              ReacquireMemory((void **) &image->directory,
+              MagickReallocMemory(image->directory,
                 (strlen(image->directory)+MaxTextExtent+1));
               if (image->directory == (char *) NULL)
                 ThrowReaderException(CorruptImageError,"UnableToReadImageData",
@@ -1334,7 +1336,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   image->colormap[i].blue=ScaleLongToQuantum(pixel);
                   p+=4;
                 }
-            LiberateMemory((void **) &colormap);
+            MagickFreeMemory(colormap);
           }
       }
     if (image_info->ping && (image_info->subrange != 0))
@@ -1502,7 +1504,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 break;
               indexes=GetIndexes(image);
               pixels_p=pixels;
-              (void) ReadBlobZC(image,packet_size*image->columns,(void **)&pixels_p);
+              (void) ReadBlobZC(image,packet_size*image->columns,&pixels_p);
               (void) PushImagePixels(image,quantum_type,pixels_p);
               if (!SyncImagePixels(image))
                 break;
@@ -1510,8 +1512,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           break;
         }
       } /* End switch (image->compression) */
-    LiberateMemory((void **) &pixels);
-    LiberateMemory((void **) &compress_pixels);
+    MagickFreeMemory(pixels);
+    MagickFreeMemory(compress_pixels);
     if (status == False)
       {
         DestroyImageList(image);
@@ -2147,7 +2149,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
               *q++=image->colormap[i].blue;
             }
         (void) WriteBlob(image,packet_size*image->colors,colormap);
-        LiberateMemory((void **) &colormap);
+        MagickFreeMemory(colormap);
       }
     /*
       Write image pixels to file.
@@ -2317,8 +2319,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
             break;
     }
-    LiberateMemory((void **) &pixels);
-    LiberateMemory((void **) &compress_pixels);
+    MagickFreeMemory(pixels);
+    MagickFreeMemory(compress_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

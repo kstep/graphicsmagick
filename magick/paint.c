@@ -343,8 +343,8 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
           break;
       }
     }
-  LiberateMemory((void **) &segment_stack);
-  LiberateMemory((void **) &floodplane);
+  MagickFreeMemory(segment_stack);
+  MagickFreeMemory(floodplane);
   return(True);
 }
 
@@ -540,7 +540,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
       start=x;
     } while (x <= x2);
   }
-  LiberateMemory((void **) &segment_stack);
+  MagickFreeMemory(segment_stack);
   return(True);
 }
 

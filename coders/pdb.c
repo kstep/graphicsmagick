@@ -505,7 +505,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     default:
       ThrowReaderException(CorruptImageError,"NotAPDBImageFile",image)
   }
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(pixels);
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
@@ -537,7 +537,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               length<<=1;
               length+=MaxTextExtent;
-              ReacquireMemory((void **) &comment,length+1);
+              MagickReallocMemory(comment,length+1);
               if (comment == (char *) NULL)
                 break;
               p=comment+strlen(comment);
@@ -549,7 +549,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (comment == (char *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       (void) SetImageAttribute(image,"comment",comment);
-      LiberateMemory((void **) &comment);
+      MagickFreeMemory(comment);
     }
   CloseBlob(image);
   return(image);
@@ -839,8 +839,8 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
         break;
   }
   q=EncodeRLE(q,buffer,literal,repeat);
-  LiberateMemory((void **) &scanline);
-  LiberateMemory((void **) &buffer);
+  MagickFreeMemory(scanline);
+  MagickFreeMemory(buffer);
   /*
     Write the Image record header.
   */
@@ -877,7 +877,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBShort(image,pdb_image.width);
   (void) WriteBlobMSBShort(image,pdb_image.height);
   (void) WriteBlob(image,q-p,p);
-  LiberateMemory((void **) &p);
+  MagickFreeMemory(p);
   if (pdb_info.number_records > 1)
     WriteBlobString(image,comment->value);
   CloseBlob(image);

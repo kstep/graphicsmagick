@@ -249,7 +249,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
           }
         }
       if (matte_image != (unsigned char *) NULL)
-        LiberateMemory((void **) &matte_image);
+        MagickFreeMemory(matte_image);
     }
   /*
     Compute the character per pixel.

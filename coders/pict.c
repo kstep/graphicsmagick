@@ -470,7 +470,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
         p=ExpandBuffer(scanline,&number_pixels,bits_per_pixel);
         (void) memcpy(q,p,number_pixels);
       }
-      LiberateMemory((void **) &scanline);
+      MagickFreeMemory(scanline);
       return(pixels);
     }
   /*
@@ -513,7 +513,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
           j+=bytes_per_pixel+1;
         }
   }
-  LiberateMemory((void **) &scanline);
+  MagickFreeMemory(scanline);
   return(pixels);
 }
 
@@ -1120,7 +1120,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   if (!MagickMonitor(LoadImageText,y,tile_image->rows,&image->exception))
                     break;
             }
-            (void) LiberateMemory((void **) &pixels);
+            MagickFreeMemory(pixels);
             if (tile_image != image)
               {
                 if (!jpeg)
@@ -1185,7 +1185,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               default:
                 break;
             }
-            LiberateMemory((void **) &info);
+            MagickFreeMemory(info);
             break;
           }
           default:
@@ -1644,7 +1644,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,length,blob);
       if (length & 0x01)
         (void) WriteBlobByte(image,'\0');
-      LiberateMemory((void **) &blob);
+      MagickFreeMemory(blob);
     }
   /*
     Write picture opcode, row bytes, and picture bounding box, and version.
@@ -1785,9 +1785,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   offset=TellBlob(image);
   (void) SeekBlob(image,512,SEEK_SET);
   (void) WriteBlobMSBShort(image,(unsigned long) offset);
-  LiberateMemory((void **) &scanline);
-  LiberateMemory((void **) &packed_scanline);
-  LiberateMemory((void **) &buffer);
+  MagickFreeMemory(scanline);
+  MagickFreeMemory(packed_scanline);
+  MagickFreeMemory(buffer);
   CloseBlob(image);
   return(True);
 }

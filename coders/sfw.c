@@ -248,7 +248,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     "\377\310\377\320",4);
   if (header == (unsigned char *) NULL)
     {
-      LiberateMemory((void **) &buffer);
+      MagickFreeMemory(buffer);
       ThrowReaderException(CorruptImageError,"NotASFWImageFile",image)
     }
   TranslateSFWMarker(header);  /* translate soi and app tags */
@@ -271,7 +271,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (unsigned char *) "\377\311",2);
   if (data == (unsigned char *) NULL)
     {
-      LiberateMemory((void **) &buffer);
+      MagickFreeMemory(buffer);
       ThrowReaderException(CorruptImageError,"NotASFWImageFile",image)
     }
   TranslateSFWMarker(data++);  /* translate eoi marker */
@@ -288,7 +288,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
         filename[MaxTextExtent];
 
       strcpy(filename,clone_info->filename);
-      LiberateMemory((void **) &buffer);
+      MagickFreeMemory(buffer);
       DestroyImageInfo(clone_info);
       ThrowReaderTemporaryFileException(filename)
     }
@@ -297,7 +297,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) fwrite(offset+1,data-offset,1,file);
   status=ferror(file);
   (void) fclose(file);
-  LiberateMemory((void **) &buffer);
+  MagickFreeMemory(buffer);
   if (status)
     {
       LiberateTemporaryFile(clone_info->filename);

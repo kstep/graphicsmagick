@@ -867,7 +867,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     }
   } while (event.type != DestroyNotify);
   (void) XSync(display,False);
-  LiberateMemory((void **) &image_list);
+  MagickFreeMemory(image_list);
   if (coalesce)
     DestroyImageList(images);
 }
@@ -1369,8 +1369,8 @@ MagickExport Image *XAnimateImages(Display *display,
   */
   if (windows->image.id != (Window) NULL)
     {
-      LiberateMemory((void **) &windows->image.name);
-      LiberateMemory((void **) &windows->image.icon_name);
+      MagickFreeMemory(windows->image.name);
+      MagickFreeMemory(windows->image.icon_name);
     }
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->image);
@@ -1559,7 +1559,7 @@ MagickExport Image *XAnimateImages(Display *display,
     Initialize Widget window.
   */
   if (windows->widget.id != (Window) NULL)
-    LiberateMemory((void **) &windows->widget.name);
+    MagickFreeMemory(windows->widget.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->widget);
   FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
@@ -1592,7 +1592,7 @@ MagickExport Image *XAnimateImages(Display *display,
     Initialize popup window.
   */
   if (windows->popup.id != (Window) NULL)
-    LiberateMemory((void **) &windows->popup.name);
+    MagickFreeMemory(windows->popup.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->popup);
   windows->popup.name=AllocateString((char *) NULL);
@@ -2460,7 +2460,7 @@ MagickExport Image *XAnimateImages(Display *display,
     }
   }
   while (!(state & ExitState));
-  LiberateMemory((void **) &image_list);
+  MagickFreeMemory(image_list);
   if (coalesce)
     DestroyImageList(images);
   if ((windows->visual_info->storage_class == GrayScale) ||
@@ -2498,9 +2498,9 @@ MagickExport Image *XAnimateImages(Display *display,
       (void) XFreePixmap(display,windows->image.matte_pixmaps[scene]);
     windows->image.matte_pixmaps[scene]=(Pixmap) NULL;
   }
-  LiberateMemory((void **) &windows->image.pixmaps);
+  MagickFreeMemory(windows->image.pixmaps);
   windows->image.pixmaps=(Pixmap *) NULL;
-  LiberateMemory((void **) &windows->image.matte_pixmaps);
+  MagickFreeMemory(windows->image.matte_pixmaps);
   windows->image.matte_pixmaps=(Pixmap *) NULL;
   if (nexus == (Image *) NULL)
     {
@@ -2550,13 +2550,13 @@ MagickExport Image *XAnimateImages(Display *display,
       (void) XFree((void *) visual_info);
       (void) XFree((void *) icon_map);
       (void) XFree((void *) map_info);
-      LiberateMemory((void **) &windows->popup.name);
-      LiberateMemory((void **) &windows->widget.name);
-      LiberateMemory((void **) &windows->image.icon_name);
-      LiberateMemory((void **) &windows->image.name);
-      LiberateMemory((void **) &windows->icon_resources);
-      LiberateMemory((void **) &windows->icon_pixel);
-      LiberateMemory((void **) &windows->pixel_info);
+      MagickFreeMemory(windows->popup.name);
+      MagickFreeMemory(windows->widget.name);
+      MagickFreeMemory(windows->image.icon_name);
+      MagickFreeMemory(windows->image.name);
+      MagickFreeMemory(windows->icon_resources);
+      MagickFreeMemory(windows->icon_pixel);
+      MagickFreeMemory(windows->pixel_info);
       (void) signal(SIGSEGV,SIG_DFL);
       (void) signal(SIGINT,SIG_DFL);
       (void) signal(SIGTERM,SIG_DFL);

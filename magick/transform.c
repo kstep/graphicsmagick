@@ -627,7 +627,7 @@ MagickExport Image *DeconstructImages(const Image *image,
   deconstruct_image=CloneImage(image,0,0,True,exception);
   if (deconstruct_image == (Image *) NULL)
     {
-      LiberateMemory((void **) &bounds);
+      MagickFreeMemory(bounds);
       return((Image *) NULL);
     }
   /*
@@ -647,7 +647,7 @@ MagickExport Image *DeconstructImages(const Image *image,
     crop_next->previous=deconstruct_image;
     deconstruct_image=deconstruct_image->next;
   }
-  LiberateMemory((void **) &bounds);
+  MagickFreeMemory(bounds);
   while (deconstruct_image->previous != (Image *) NULL)
     deconstruct_image=deconstruct_image->previous;
   if (next != (Image *) NULL)
@@ -1048,14 +1048,14 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
       if (GlobExpression("8bim",name) || GlobExpression("iptc",name))
         {
           if (image->iptc_profile.length != 0)
-            LiberateMemory((void **) &image->iptc_profile.info);
+            MagickFreeMemory(image->iptc_profile.info);
           image->iptc_profile.length=0;
           image->iptc_profile.info=(unsigned char *) NULL;
         }
       if (GlobExpression("icm",name))
         {
           if (image->color_profile.length != 0)
-            LiberateMemory((void **) &image->color_profile.info);
+            MagickFreeMemory(image->color_profile.info);
           image->color_profile.length=0;
           image->color_profile.info=(unsigned char *) NULL;
         }
@@ -1064,9 +1064,9 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
         if (!GlobExpression(image->generic_profile[i].name,name))
           continue;
         if (image->generic_profile[i].name != (char *) NULL)
-          LiberateMemory((void **) &image->generic_profile[i].name);
+          MagickFreeMemory(image->generic_profile[i].name);
         if (image->generic_profile[i].length != 0)
-          LiberateMemory((void **) &image->generic_profile[i].info);
+          MagickFreeMemory(image->generic_profile[i].info);
         image->generic_profiles--;
         for (j=i; j < (long) image->generic_profiles; j++)
           image->generic_profile[j]=image->generic_profile[j+1];
@@ -1080,7 +1080,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
   if ((LocaleCompare("8bim",name) == 0) || (LocaleCompare("iptc",name) == 0))
     {
       if (image->iptc_profile.length != 0)
-        LiberateMemory((void **) &image->iptc_profile.info);
+        MagickFreeMemory(image->iptc_profile.info);
       if (clone)
         {
           image->iptc_profile.info=(unsigned char *) AcquireMemory(length);
@@ -1215,7 +1215,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
           else
             image->colorspace=RGBColorspace;
 #endif
-          LiberateMemory((void **) &image->color_profile.info);
+          MagickFreeMemory(image->color_profile.info);
         }
       if (clone)
         {
@@ -1242,7 +1242,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
         image->generic_profile=(ProfileInfo *)
           AcquireMemory((i+1)*sizeof(ProfileInfo));
       else
-        ReacquireMemory((void **) &image->generic_profile,
+        MagickReallocMemory(image->generic_profile,
           (i+1)*sizeof(ProfileInfo));
       if (image->generic_profile == (ProfileInfo *) NULL)
         ThrowBinaryException(ResourceLimitWarning,"MemoryAllocationFailed",
@@ -1253,7 +1253,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
       image->generic_profile[i].name=AllocateString(name);
     }
   if (image->generic_profile[i].length != 0)
-    LiberateMemory((void **) &image->generic_profile[i].info);
+    MagickFreeMemory(image->generic_profile[i].info);
   if (clone)
     {
       image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);

@@ -95,7 +95,7 @@ MagickExport void closedir(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
   FindClose(entry->hSearch);
-  LiberateMemory((void **) &entry);
+  MagickFreeMemory(entry);
 }
 
 /*
@@ -520,7 +520,7 @@ const char *lt_dlerror(void)
   error=NTGetLastError();
   if (error)
     strncpy(last_error,error,MaxTextExtent-1);
-  LiberateMemory((void **) &error);
+  MagickFreeMemory(error);
   return (last_error);
 }
 
@@ -677,7 +677,7 @@ int lt_dlsetsearchpath(const char *path)
 {
   if (lt_slsearchpath)
     {
-      (void) LiberateMemory((void **) &lt_slsearchpath);
+      (void) MagickFreeMemory(lt_slsearchpath);
       lt_slsearchpath=(char *) NULL;
     }
   if (path != (char *) NULL)
@@ -1623,13 +1623,13 @@ MagickExport char *NTRegistryKeyLookup(const char *subkey)
     res = RegQueryValueExA (reg_key, subkey, 0, &type, dest, &size);
     if (res == ERROR_MORE_DATA && type == REG_SZ)
       {
-        ReacquireMemory((void**) &dest,size);
+        MagickReallocMemory(dest,size);
         res = RegQueryValueExA (reg_key, subkey, 0, &type, dest, &size);
       }
     
     if (type != REG_SZ || res != ERROR_SUCCESS)
       {
-        LiberateMemory((void**) &dest);
+        MagickFreeMemory(dest);
       }
     
     return dest;
@@ -1953,7 +1953,7 @@ MagickExport DIR *opendir(char *path)
       entry->hSearch=FindFirstFile(file_specification,&entry->Win32FindData);
       if (entry->hSearch == INVALID_HANDLE_VALUE)
         {
-          LiberateMemory((void **) &entry);
+          MagickFreeMemory(entry);
           return (DIR *)NULL;
         }
     }

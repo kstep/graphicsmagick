@@ -50,6 +50,7 @@ typedef struct _TokenInfo
   Utilities methods.
 */
 extern MagickExport char
+  *AcquireString(const char *),
   *AllocateString(const char *),
   *Base64Encode(const unsigned char *,const size_t,size_t *),
   *EscapeString(const char *,const char),
@@ -61,7 +62,6 @@ extern MagickExport char
   *TranslateText(const ImageInfo *,Image *,const char *);
 
 extern MagickExport const char
-  *AcquireString(const char *),
   *SetClientPath(const char *);
 
 extern MagickExport double
@@ -116,6 +116,37 @@ extern MagickExport void
 #else
   FormatString(char *,const char *,...);
 #endif
+
+#if defined(MAGICK_IMPLEMENTATION)
+
+#define MagickAllocateMemory(type,size) ((type) malloc(size))
+
+#define MagickFreeMemory(memory) \
+{ \
+    void *_magick_mp; \
+    if (memory != 0) \
+      { \
+        _magick_mp=memory; \
+        free(_magick_mp); \
+        memory=0; \
+      } \
+}
+
+#define MagickReallocMemory(memory,size) \
+{ \
+    void *_magick_mp; \
+    if (memory == 0) \
+      _magick_mp=malloc(size); \
+    else \
+      { \
+        _magick_mp=realloc(memory,size); \
+        if (_magick_mp == 0) \
+          free(memory); \
+      } \
+   memory=_magick_mp; \
+}
+
+#endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

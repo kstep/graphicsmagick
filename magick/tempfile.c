@@ -104,7 +104,7 @@ static unsigned int RemoveTemporaryFileFromList(const char *filename)
               previous->next=current->next;
             else
               templist=current->next;
-            LiberateMemory((void **)&current);
+            MagickFreeMemory(current);
             status=True;
             break;
           }
@@ -332,7 +332,7 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
             (void) strncpy(filename,path,MaxTextExtent-1);
           }
 
-        LiberateMemory((void **) &name);
+        MagickFreeMemory(name);
       }
     return (fd);
   }
@@ -442,7 +442,7 @@ MagickExport void DestroyTemporaryFiles(void)
         (void) LogMagickEvent(TemporaryFileEvent,GetMagickModule(),
           "Temporary file removal failed \"%s\"",liberate->filename);
       liberate->next=0;
-      LiberateMemory((void **)&liberate);
+      MagickFreeMemory(liberate);
     }
   LiberateSemaphoreInfo(&templist_semaphore);
 }

@@ -279,8 +279,8 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
     if (*token != '=')
       continue;
   }
-  LiberateMemory((void **) &token);
-  LiberateMemory((void **) &xml);
+  MagickFreeMemory(token);
+  MagickFreeMemory(xml);
   return(True);
 }
 
@@ -779,8 +779,8 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
     Free resources.
   */
   for (i=0; i <= (long) count; i++)
-    LiberateMemory((void **) &locale[i]);
-  LiberateMemory((void **) &locale);
+    MagickFreeMemory(locale[i]);
+  MagickFreeMemory(locale);
   CloseBlob(image);
   return(True);
 }

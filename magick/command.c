@@ -103,8 +103,8 @@ static void LiberateArgumentList(const int argc,char **argv)
 
   for (i=0; i< argc; i++)
     if (argv[i])
-      LiberateMemory((void **)&argv[i]);
-  LiberateMemory((void **) &argv);
+      MagickFreeMemory(argv[i]);
+  MagickFreeMemory(argv);
 }
 
 /*
@@ -283,13 +283,13 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
 static void LiberateCompositeOptions(CompositeOptions *option_info)
 {
   if (option_info->displace_geometry != (char *) NULL)
-    LiberateMemory((void **) &(option_info->displace_geometry));
+    MagickFreeMemory((option_info->displace_geometry));
   if (option_info->geometry != (char *) NULL)
-    LiberateMemory((void **) &(option_info->geometry));
+    MagickFreeMemory((option_info->geometry));
   if (option_info->unsharp_geometry != (char *) NULL)
-    LiberateMemory((void **) &(option_info->unsharp_geometry));
+    MagickFreeMemory((option_info->unsharp_geometry));
   if (option_info->watermark_geometry != (char *) NULL)
-    LiberateMemory((void **) &(option_info->watermark_geometry));
+    MagickFreeMemory((option_info->watermark_geometry));
 }
 
 #define NotInitialized  (unsigned int) (~0)
@@ -1394,7 +1394,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           "UnableToFormatImageMetadata");
       (void) ConcatenateString(&(*metadata),text);
       (void) ConcatenateString(&(*metadata),"\n");
-      LiberateMemory((void **) &text);
+      MagickFreeMemory(text);
     }
   LiberateCompositeOptions(&option_info);
   DestroyImageList(composite_image);
@@ -3309,7 +3309,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           "UnableToFormatImageMetadata");
       (void) ConcatenateString(&(*metadata),text);
       (void) ConcatenateString(&(*metadata),"\n");
-      LiberateMemory((void **) &text);
+      MagickFreeMemory(text);
     }
   DestroyImageList(image_list);
   LiberateArgumentList(argc,argv);
@@ -3357,7 +3357,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 #define ThrowIdentifyException(code,reason,description) \
 { \
   if (format != (char *) NULL) \
-    LiberateMemory((void **) &format); \
+    MagickFreeMemory(format); \
   DestroyImageList(image); \
   ThrowException(exception,code,reason,description); \
   LiberateArgumentList(argc,argv); \
@@ -3472,7 +3472,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
                   "MemoryAllocationFailed","UnableToFormatImageMetadata");
               (void) ConcatenateString(&(*metadata),text);
               (void) ConcatenateString(&(*metadata),"\n");
-              LiberateMemory((void **) &text);
+              MagickFreeMemory(text);
             }
         }
         DestroyImageList(image);
@@ -3690,7 +3690,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   if (i != argc)
     ThrowIdentifyException(OptionError,"MissingAnImageFilename",(char *) NULL);
   if (format != (char *) NULL)
-    LiberateMemory((void **) &format);
+    MagickFreeMemory(format);
   DestroyImageList(image);
   LiberateArgumentList(argc,argv);
   return(status);
@@ -4207,7 +4207,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             for ( ; x < (long) (order*order); x++)
               kernel[x]=0.0;
             (void) ConvolveImage(*image,order,kernel,&(*image)->exception);
-            LiberateMemory((void **) &kernel);
+            MagickFreeMemory(kernel);
             continue;
           }
         if (LocaleCompare("crop",option+1) == 0)
@@ -4985,7 +4985,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             geometry=GetPageGeometry(argv[++i]);
             (void) GetGeometry(geometry,&(*image)->page.x,&(*image)->page.y,
               &(*image)->page.width,&(*image)->page.height);
-            LiberateMemory((void **) &geometry);
+            MagickFreeMemory(geometry);
           }
         if (LocaleCompare("paint",option+1) == 0)
           {
@@ -6076,7 +6076,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
                 argv=&(arguments[next]);
                 (void) ExecuteModuleProcess(token,&mogrify_images,1,&argv);
               }
-            LiberateMemory((void **) &token);
+            MagickFreeMemory(token);
             continue;
           }
         break;
@@ -9130,7 +9130,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
           "UnableToFormatImageMetadata");
       (void) ConcatenateString(&(*metadata),text);
       (void) ConcatenateString(&(*metadata),"\n");
-      LiberateMemory((void **) &text);
+      MagickFreeMemory(text);
     }
   DestroyImageList(montage_image);
   DestroyMontageInfo(montage_info);

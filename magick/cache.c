@@ -909,7 +909,7 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
     (void) close(cache_file);
   if (clone_info->file == -1)
     (void) close(clone_file);
-  LiberateMemory((void **) &buffer);
+  MagickFreeMemory(buffer);
   if (i < length)
     ThrowBinaryException(CacheError,"UnableToCloneCache",image->filename);
   return(True);
@@ -1004,7 +1004,7 @@ MagickExport void DestroyCacheInfo(Cache cache)
     }
     case MemoryCache:
     {
-      LiberateMemory((void **) &cache_info->pixels);
+      MagickFreeMemory(cache_info->pixels);
       LiberateMagickResource(MemoryResource,cache_info->length);
       break;
     }
@@ -1036,13 +1036,13 @@ MagickExport void DestroyCacheInfo(Cache cache)
 
       for (id=0; id < (long) MaxCacheViews; id++)
         DestroyCacheNexus(cache,id);
-      LiberateMemory((void **) &cache_info->nexus_info);
+      MagickFreeMemory(cache_info->nexus_info);
     }
   if (cache_info->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&cache_info->semaphore);
   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"destroy %.1024s",
      cache_info->filename);
-  LiberateMemory((void **) &cache_info);
+  MagickFreeMemory(cache_info);
 }
 
 /*
@@ -1083,7 +1083,7 @@ MagickExport void DestroyCacheNexus(Cache cache,const unsigned long nexus)
   assert(cache_info->signature == MagickSignature);
   nexus_info=cache_info->nexus_info+nexus;
   if (nexus_info->staging != (PixelPacket *) NULL)
-    LiberateMemory((void **) &nexus_info->staging);
+    MagickFreeMemory(nexus_info->staging);
   (void) memset(nexus_info,0,sizeof(NexusInfo));
   nexus_info->available=True;
 }
@@ -2180,7 +2180,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
           pixels=(PixelPacket *) AcquireMemory((size_t) cache_info->length);
         else
           {
-            ReacquireMemory((void **) &cache_info->pixels,(size_t)
+            MagickReallocMemory(cache_info->pixels,(size_t)
               cache_info->length);
             if (cache_info->pixels == (void *) NULL)
               ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -3007,7 +3007,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   else
     if (nexus_info->length < length)
       {
-        ReacquireMemory((void **) &nexus_info->staging,length);
+        MagickReallocMemory(nexus_info->staging,length);
         nexus_info->length=length;
       }
   if (nexus_info->staging == (PixelPacket *) NULL)

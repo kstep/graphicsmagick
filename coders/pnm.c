@@ -167,7 +167,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
               {
                 length<<=1;
                 length+=MaxTextExtent;
-                ReacquireMemory((void **) &comment,length+strlen(P7Comment)+1);
+                MagickReallocMemory(comment,length+strlen(P7Comment)+1);
                 if (comment == (char *) NULL)
                   break;
                 p=comment+strlen(comment);
@@ -182,7 +182,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
         if (LocaleCompare(q,P7Comment) == 0)
           *q='\0';
         (void) SetImageAttribute(image,"comment",comment);
-        LiberateMemory((void **) &comment);
+        MagickFreeMemory(comment);
         continue;
       }
   } while (!isdigit(c));
@@ -530,7 +530,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
-        LiberateMemory((void **) &pixels);
+        MagickFreeMemory(pixels);
         if (EOFBlob(image))
           ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
             image->filename);
@@ -600,7 +600,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
-        LiberateMemory((void **) &pixels);
+        MagickFreeMemory(pixels);
         handler=SetMonitorHandler((MonitorHandler) NULL);
         (void) SetMonitorHandler(handler);
         if (EOFBlob(image))
@@ -612,7 +612,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageError,"NotAPNMImageFile",image)
     }
     if (scale != (unsigned long *) NULL)
-      LiberateMemory((void **) &scale);
+      MagickFreeMemory(scale);
     /*
       Proceed to next image.
     */
@@ -1132,7 +1132,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
               if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
                 break;
         }
-        LiberateMemory((void **) &pixels);
+        MagickFreeMemory(pixels);
         break;
       }
       case 7:
@@ -1252,9 +1252,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         for (i=0; i < 2; i++)
           for (j=0; j < 16; j++)
           {
-            LiberateMemory((void **) &green_map[i][j]);
-            LiberateMemory((void **) &blue_map[i][j]);
-            LiberateMemory((void **) &red_map[i][j]);
+            MagickFreeMemory(green_map[i][j]);
+            MagickFreeMemory(blue_map[i][j]);
+            MagickFreeMemory(red_map[i][j]);
           }
         break;
       }

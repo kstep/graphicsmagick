@@ -254,7 +254,7 @@ int main(int argc,char **argv)
             {
               (void) fputs(text,stdout);
               (void) fputc('\n',stdout);
-              LiberateMemory((void **) &text);
+              MagickFreeMemory(text);
             }
         }
     }

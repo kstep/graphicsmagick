@@ -297,7 +297,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
     *p=GetCharacter(jpeg_info);
   *p='\0';
   (void) SetImageAttribute(image,"comment",comment);
-  LiberateMemory((void **) &comment);
+  MagickFreeMemory(comment);
   return(True);
 }
 
@@ -339,7 +339,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   if (image->generic_profile == (ProfileInfo *) NULL)
     image->generic_profile=(ProfileInfo *) AcquireMemory(sizeof(ProfileInfo));
   else
-    ReacquireMemory((void **) &image->generic_profile,
+    MagickReallocMemory(image->generic_profile,
       (i+1)*sizeof(ProfileInfo));
   if (image->generic_profile == (ProfileInfo *) NULL)
     {
@@ -425,7 +425,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   if (image->color_profile.length == 0)
     image->color_profile.info=(unsigned char *) AcquireMemory(length);
   else
-    ReacquireMemory((void **) &image->color_profile.info,
+    MagickReallocMemory(image->color_profile.info,
       image->color_profile.length+length);
   if (image->color_profile.info == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -525,8 +525,9 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   if (length <= 0)
     return(True);
   if (image->iptc_profile.length != 0)
-    ReacquireMemory((void **) &image->iptc_profile.info,
-      image->iptc_profile.length+length);
+    {
+      MagickReallocMemory(image->iptc_profile.info,image->iptc_profile.length+length);
+    }
   else
     {
       image->iptc_profile.info=(unsigned char *)
@@ -666,7 +667,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (setjmp(error_manager.error_recovery))
     {
       if (jpeg_pixels != (JSAMPLE *) NULL)
-        LiberateMemory((void **) &jpeg_pixels);
+        MagickFreeMemory(jpeg_pixels);
       jpeg_destroy_decompress(&jpeg_info);
       ThrowException(exception,image->exception.severity,
         image->exception.reason,image->exception.description);
@@ -1049,7 +1050,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   */
   (void) jpeg_finish_decompress(&jpeg_info);
   jpeg_destroy_decompress(&jpeg_info);
-  LiberateMemory((void **) &jpeg_pixels);
+  MagickFreeMemory(jpeg_pixels);
   CloseBlob(image);
   if (logging) 
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
@@ -1274,7 +1275,7 @@ static void WriteICCProfile(j_compress_ptr jpeg_info,Image *image)
     for (j=0; j < (long) length; j++)
       profile[j+14]=image->color_profile.info[i+j];
     jpeg_write_marker(jpeg_info,ICC_MARKER,profile,(unsigned int) length+14);
-    LiberateMemory((void **) &profile);
+    MagickFreeMemory(profile);
   }
 }
 
@@ -1322,7 +1323,7 @@ static void WriteIPTCProfile(j_compress_ptr jpeg_info,Image *image)
       profile[length+tag_length]=0;
     jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int)
       (length+roundup+tag_length));
-    LiberateMemory((void **) &profile);
+    MagickFreeMemory(profile);
   }
 }
 
@@ -1855,7 +1856,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     Free memory.
   */
   jpeg_destroy_compress(&jpeg_info);
-  LiberateMemory((void **) &jpeg_pixels);
+  MagickFreeMemory(jpeg_pixels);
   CloseBlob(image);
   if (logging) 
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
