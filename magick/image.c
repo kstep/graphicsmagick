@@ -2299,13 +2299,11 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   if (image->iptc_profile.length > 0)
     {
       char
-        *tag;
+        *tag,
+        *text;
 
       int
         c;
-
-      register int
-        j;
 
       unsigned short
         length;
@@ -2376,17 +2374,32 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
           case 219: tag="Custom Field 20"; break;
           default: tag="unknown"; break;
         }
-        (void) fprintf(file,"    %s: ",tag);
+        (void) fprintf(file,"    %s:\n",tag);
         length=image->iptc_profile.info[++i] << 8;
         length|=image->iptc_profile.info[++i];
-        for (j=0; j < length; j++)
-        {
-          i++;
-          c=image->iptc_profile.info[i];
-          if ((c >= 32) || isspace((int) c))
-            (void) fprintf(file,"%c",c);
-        }
-        (void) fprintf(file,"\n");
+        text=(char *) AllocateMemory((length+1)*sizeof(char));
+        if (text != (char *) NULL)
+          {
+            char
+              **textlist;
+
+            register int
+              j;
+
+            (void) strncpy(text,image->iptc_profile.info+i,length);
+            text[length]='\0';
+            textlist=StringToList(text);
+            if (textlist != (char **) NULL)
+              {
+                for (j=0; textlist[j] != (char *) NULL; j++)
+                {
+                  (void) fprintf(file,"  %s\n",textlist[j]);
+                  FreeMemory(textlist[j]);
+                }
+                FreeMemory(textlist);
+              }
+            FreeMemory(text);
+          }
       }
     }
   if ((image->magick_columns != 0) || (image->magick_rows != 0))
