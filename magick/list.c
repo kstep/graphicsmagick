@@ -373,7 +373,7 @@ MagickExport Image **ListToGroupImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  NewImageList() starts a number image list simply by returning NULL.
+%  NewImageList() creates an empty image list.
 %
 %  The format of the NewImageList method is:
 %
