@@ -59,10 +59,10 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
 
 
 # Platform specific source files that may appear in the library
-EXTRA_libMagick_la_SOURCES = nt.c
+EXTRA_libMagick_la_SOURCES = ntbase.c ntfeature.c
 
 if WIN32_NATIVE
-MAGICK_PLATFORM_SRCS = nt.c
+MAGICK_PLATFORM_SRCS = ntbase.c ntfeature.c
 else
 MAGICK_PLATFORM_SRCS =
 endif
@@ -91,7 +91,7 @@ noinst_HEADERS = animate.h display.h mac.h nt.h studio.h vms.h
 
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES) colors.mgk magic.mgk Magick-config.in \
-  Magick-config.in Make.com mac.c nt.c vms.c $(MAGICK_BASE_SRCS)
+  Magick-config.in Make.com mac.c ntbase.c ntfeature.c vms.c $(MAGICK_BASE_SRCS)
 
 # Where modules are installed
 pkgdir = $(libdir)/ImageMagick/modules/coders
