@@ -561,7 +561,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     length;
 
   /*
-    Read the type configuration file.
+    Read the type configure file.
   */
   xml=(char *) GetFontBlob(basename,path,&length,exception);
   if (xml == (char *) NULL)

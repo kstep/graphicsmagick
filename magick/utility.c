@@ -976,7 +976,7 @@ MagickExport unsigned int GetExecutionPath(char *path)
             (void) getcwd(path,MaxTextExtent-1);
             (void) strcat(path,"/");
           }
-        (void) strcat(path,execution_path);
+        (void) strncat(path,execution_path,MaxTextExtent-strlen(path)-1);
         if (IsAccessible(path))
           return(True);
       }

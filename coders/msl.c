@@ -2986,7 +2986,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             {
               if (LocaleCompare(keyword, "magick") == 0)
               {
-                strcpy( msl_info->image_info[n]->magick, value );
+                (void) strcpy( msl_info->image_info[n]->magick, value );
                 break;
               }
               else if (LocaleCompare(keyword,"mattecolor") == 0)

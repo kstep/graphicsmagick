@@ -9326,7 +9326,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           id=XCommandWidget(display,windows,ApplyMenu,&event);
           if (id >= 0)
             {
-              (void) strcpy(command,ApplyMenu[id]);
+              (void) strncpy(command,ApplyMenu[id],MaxTextExtent-1);
               command_type=ApplyCommands[id];
               if (id < ApplyMenus)
                 {
@@ -9337,7 +9337,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
                     (const char **) Menus[id],command);
                   if (entry >= 0)
                     {
-                      (void) strcpy(command,Menus[id][entry]);
+                      (void) strncpy(command,Menus[id][entry],MaxTextExtent-1);
                       command_type=Commands[id][entry];
                     }
                 }
@@ -12650,7 +12650,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         id=XCommandWidget(display,windows,CommandMenu,&event);
         if (id < 0)
           continue;
-        (void) strcpy(command,CommandMenu[id]);
+        (void) strncpy(command,CommandMenu[id],MaxTextExtent-1);
         command_type=CommandMenus[id];
         if (id < MagickMenus)
           {
@@ -12661,7 +12661,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               command);
             if (entry < 0)
               continue;
-            (void) strcpy(command,Menus[id][entry]);
+            (void) strncpy(command,Menus[id][entry],MaxTextExtent-1);
             command_type=Commands[id][entry];
           }
         if (command_type != NullCommand)

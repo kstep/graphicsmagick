@@ -364,15 +364,17 @@ MagickExport void InitializeMagick(const char *path)
 #else
       if (1)
 #endif
-        (void) strcpy(execution_path,path);
+        (void) strncpy(execution_path,path,MaxTextExtent-1);
       else
         {
-          (void) getcwd(execution_path,MaxTextExtent-1);
+          (void) getcwd(execution_path,MaxTextExtent-2);
           (void) strcat(execution_path,DirectorySeparator);
           if((*path == '.') && (*(path+1) == *DirectorySeparator))
-            (void) strcat(execution_path,path+2);
+            (void) strncat(execution_path,path+2,MaxTextExtent-
+              strlen(execution_path)-1);
           else
-            (void) strcat(execution_path,path);
+            (void) strncat(execution_path,path,MaxTextExtent-
+              strlen(execution_path)-1);
         }
     }
 #endif

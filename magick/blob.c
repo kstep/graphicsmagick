@@ -821,7 +821,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       char
         prefix[MaxTextExtent];
 
-      strcpy(prefix,SetClientPath((char *) NULL));
+      (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
       if (debug)
         (void) fprintf(stdout,"original path  \"%s\"\n",prefix);
       ChopBlobComponents(prefix,1);
@@ -974,7 +974,7 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
       /*
         Search based on executable directory if directory is known.
       */
-      strcpy(prefix,SetClientPath((char *) NULL));
+      (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
       if (debug)
         (void) fprintf(stdout,"original path  \"%s\"\n",prefix);
       ChopBlobComponents(prefix,1);
@@ -1114,7 +1114,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
       /*
         Search based on executable directory if directory is known.
       */
-      (void) strcpy(prefix,SetClientPath((char *) NULL));
+      (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
       if (debug)
         (void) fprintf(stdout,"original path  \"%s\"\n",prefix);
       ChopBlobComponents(prefix,1);

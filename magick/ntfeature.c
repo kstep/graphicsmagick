@@ -228,7 +228,7 @@ MagickExport TypeInfo* NTGetTypeList( void )
         type_info->signature=MagickSignature;
 
         /* Name */
-        strcpy(buffer,value_name);
+        strncpy(buffer,value_name,MaxTextExtent-1);
         for(pos = buffer; *pos != 0 ; pos++)
           if (*pos == ' ')
             *pos = '-';
@@ -243,11 +243,11 @@ MagickExport TypeInfo* NTGetTypeList( void )
         /* Glyphs */
         if (strchr(value_data,'\\') == (char *) NULL)
           {
-            strcpy(buffer,font_root);
+            strncpy(buffer,font_root,MaxTextExtent-1);
             strcat(buffer,value_data);
           }
         else
-          strcpy(buffer,value_data);
+          strncpy(buffer,value_dataMaxTextExtent-1);
 
         LocaleLower(buffer);
         type_info->glyphs=AcquireString(buffer);
