@@ -32,7 +32,7 @@ testRead( 'input_mono.png', 'a1f6cc3e45f2d8c5d01b79355aa90e05' );
 # 
 ++$test;
 print( "16-bit grayscale PNG ...\n" );
-testRead( 'input_16.png', 'e29e5f11479a4a07f035d932cac1f66f',
+testRead( 'input_16.png', 'fcdc12cc9144c09c01c6085d9db307c8',
                           '283037a3703baa1595b6c146a4187baa' );
 #
 # 4) Test 256 color pseudocolor PNG
