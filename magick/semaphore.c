@@ -60,7 +60,13 @@
 #if defined(_VISUALC_)
 #include <windows.h>
 #endif
+#if defined(_MT)
+#define MAXSEMLEN  1
+#endif
 
+/*
+  Struct declaractions.
+*/
 struct SemaphoreInfo
 {
 #if defined(HasPTHREADS)
@@ -76,10 +82,50 @@ struct SemaphoreInfo
   unsigned int
     signature;
 };
-
-#if defined(_MT)
-#define MAXSEMLEN  1
+
+/*
+  Static declaractions.
+*/
+#if defined(HasPTHREADS)
+  static pthread_mutex_t
+    semaphore_mutex = PTHREAD_MUTEX_INITIALIZER;
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A c q u i r e S e m a p h o r e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AcquireSemaphore acquires a semaphore.
+%
+%  The format of the AcquireSemaphore method is:
+%
+%      AcquireSemaphore(SemaphoreInfo **semaphore_info)
+%
+%  A description of each parameter follows:
+%
+%    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
+%
+%
+*/
+MagickExport void AcquireSemaphore(SemaphoreInfo **semaphore_info)
+{
+#if defined(HasPTHREADS)
+  pthread_mutex_lock(&semaphore_mutex);
+#endif
+  if (*semaphore_info == (SemaphoreInfo *) NULL)
+    *semaphore_info=AllocateSemaphoreInfo();
+  (void) LockSemaphore(*semaphore_info);
+#if defined(HasPTHREADS)
+  pthread_mutex_unlock(&semaphore_mutex);
+#endif
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -128,7 +174,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
     security.nLength=sizeof(security);
     security.lpSecurityDescriptor=NULL;
     security.bInheritHandle=TRUE;
-    semaphore_info->id=CreateSemaphore(&security,1,MAXSEMLEN,NULL);
+    semaphore_info->id=CreateSemaphore(&&security,1,MAXSEMLEN,NULL);
     if (semaphore_info->id == NULL)
       {
         LiberateMemory((void **) &semaphore_info);
@@ -158,7 +204,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroySemaphore destroys a semaphore_info.
+%  Method DestroySemaphore destroys a semaphore.
 %
 %  The format of the DestroySemaphore method is:
 %
@@ -190,13 +236,44 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo *semaphore_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   L i b e r a t e S e m a p h o r e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method LiberateSemaphore liberates a semaphore.
+%
+%  The format of the LiberateSemaphore method is:
+%
+%      LiberateSemaphore(SemaphoreInfo **semaphore_info)
+%
+%  A description of each parameter follows:
+%
+%    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
+%
+%
+*/
+MagickExport void LiberateSemaphore(SemaphoreInfo **semaphore_info)
+{
+  assert(semaphore_info != (SemaphoreInfo **) NULL);
+  assert((*semaphore_info)->signature == MagickSignature);
+  if (*semaphore_info != (SemaphoreInfo *) NULL)
+    (void) UnlockSemaphore(*semaphore_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   L o c k S e m a p h o r e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method LockSemaphore locks a semaphore_info.
+%  Method LockSemaphore locks a semaphore.
 %
 %  The format of the LockSemaphore method is:
 %
@@ -237,11 +314,11 @@ MagickExport int LockSemaphore(SemaphoreInfo *semaphore_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnlockSemaphore unlocks a semaphore_info.
+%  Method UnlockSemaphore unlocks a semaphore.
 %
 %  The format of the LockSemaphore method is:
 %
-%      int UnlockSemaphore(SemaphoreInfo *semaphore_info)
+%      int UnlockSemaphore(&SemaphoreInfo *semaphore_info)
 %
 %  A description of each parameter follows:
 %
@@ -257,7 +334,7 @@ MagickExport int UnlockSemaphore(SemaphoreInfo *semaphore_info)
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
 #if defined(_VISUALC_) && defined(_MT)
-  if (ReleaseSemaphore(semaphore_info->id,1,NULL) == FALSE)
+  if (ReleaseSemaphore(&semaphore_info->id,1,NULL) == FALSE)
     return(False);
 #endif
 #if defined(HasPTHREADS)

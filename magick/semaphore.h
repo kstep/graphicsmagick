@@ -8,22 +8,6 @@
 extern "C" {
 #endif
 
-/*
-  Define declarations.
-*/
-#define AcquireSemaphore(semaphore_info)	\
-{ \
-  if (semaphore_info == (SemaphoreInfo *) NULL) \
-    semaphore_info=AllocateSemaphoreInfo(); \
-  (void) LockSemaphore(semaphore_info); \
-}
-
-#define LiberateSemaphore(semaphore_info) \
-{ \
-  if (semaphore_info == (SemaphoreInfo *) NULL) \
-    semaphore_info=AllocateSemaphoreInfo(); \
-  (void) UnlockSemaphore(semaphore_info); \
-}
 
 /*
   Typedef declarations.
@@ -44,7 +28,9 @@ extern MagickExport SemaphoreInfo
   *AllocateSemaphoreInfo(void);
 
 extern MagickExport void
-  DestroySemaphoreInfo(SemaphoreInfo *);
+  DestroySemaphoreInfo(SemaphoreInfo *),
+  AcquireSemaphore(SemaphoreInfo **),
+  LiberateSemaphore(SemaphoreInfo **);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
