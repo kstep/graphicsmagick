@@ -239,7 +239,7 @@ int main(int argc,char **argv)
   /*
     Initialize command line arguments.
   */
-  if (LocaleCompare("-combine",argv[0]) == 0)
+  if (LocaleCompare("-composite",argv[0]) == 0)
     {
       sendmode=FileTransmitType;
       if (argc < 4)
@@ -249,7 +249,7 @@ int main(int argc,char **argv)
     {
       sendmode=UndefinedTransmitType;
       ReadCommandlLine(argc,&argv);
-      if (LocaleCompare("combine",argv[0]) == 0)
+      if (LocaleCompare("composite",argv[0]) == 0)
         MagickIncarnate(GetExecutionPath(argv[0]));
       else
         MagickIncarnate(*argv);
