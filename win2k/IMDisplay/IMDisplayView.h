@@ -47,7 +47,7 @@ public:
 
 protected:
 	// these are the custom functions and vars we've added!
-        void	DoDisplayImage( Image* inImage, CDC* pDC );
+        void	DoDisplayImage( Image &inImage, CDC* pDC );
 	void	SetViewSize();
 	void	UpdateTheView( bool inClearTracker = true );
 	void	ScaleImage( Geometry& inGeometry );
@@ -66,7 +66,7 @@ protected:
 
 	CRectTracker	m_tracker;  // marching ants
 
-	Image*	    mUndoImage;
+	Image	    &mUndoImage;
 
 	BITMAPINFOHEADER    mBMI;
 

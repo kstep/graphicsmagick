@@ -59,7 +59,9 @@ END_MESSAGE_MAP()
 // CIMDisplayView construction/destruction
 
 CIMDisplayView::CIMDisplayView()
-:mOffscreenDC( NULL ), mViewDirty( true ), mUndoImage( NULL )
+  : mOffscreenDC( NULL ),
+    mViewDirty( true ),
+    mUndoImage( )
 {
 	// setup the CRectTracker styles
 	//		I want a simple dotted line, with resize handles outside
@@ -73,9 +75,6 @@ CIMDisplayView::~CIMDisplayView()
 {
     if ( mOffscreenDC )
 	delete mOffscreenDC;
-
-    if ( mUndoImage )
-	delete mUndoImage;
 }
 
 BOOL CIMDisplayView::PreCreateWindow(CREATESTRUCT& cs)
@@ -104,8 +103,8 @@ void CIMDisplayView::OnInitialUpdate()
     CIMDisplayDoc* pDoc = GetDocument();
     ASSERT_VALID(pDoc);
 
-    mBaseGeo.width( pDoc->GetImage()->columns() );
-    mBaseGeo.height( pDoc->GetImage()->rows() );
+    mBaseGeo.width( pDoc->GetImage().columns() );
+    mBaseGeo.height( pDoc->GetImage().rows() );
 
     SetViewSize();
 }
@@ -234,8 +233,8 @@ void CIMDisplayView::OnResize()
 
     CResizeDialog   dlg;
 
-    dlg.Width( pDoc->GetImage()->columns() );
-    dlg.Height( pDoc->GetImage()->rows() );
+    dlg.Width( pDoc->GetImage().columns() );
+    dlg.Height( pDoc->GetImage().rows() );
 
     if ( dlg.DoModal() == IDOK ) {
 	Geometry	newGeo( dlg.Width(), dlg.Height() );
@@ -291,7 +290,7 @@ void CIMDisplayView::OnFlip()
     BeginWaitCursor();
 
     try {
-	pDoc->GetImage()->flip();
+	pDoc->GetImage().flip();
     }
 
     catch(Exception e)
@@ -314,7 +313,7 @@ void CIMDisplayView::OnFlop()
     BeginWaitCursor();
 
     try {
-	pDoc->GetImage()->flop();
+	pDoc->GetImage().flop();
     }
 
     catch(Exception e)
@@ -343,7 +342,7 @@ void CIMDisplayView::OnShear()
 	BeginWaitCursor();
 
 	try {
-	    pDoc->GetImage()->shear( dlg.XShear(), dlg.YShear() );
+	    pDoc->GetImage().shear( dlg.XShear(), dlg.YShear() );
 	}
 
 	catch(Exception e)
@@ -373,7 +372,7 @@ void CIMDisplayView::OnRoll()
 	BeginWaitCursor();
 
 	try {
-	    pDoc->GetImage()->roll( dlg.HPixels(), dlg.VPixels() );
+	    pDoc->GetImage().roll( dlg.HPixels(), dlg.VPixels() );
 	}
 
 	catch(Exception e)
@@ -402,7 +401,7 @@ void CIMDisplayView::OnChop()
 	m_tracker.GetTrueRect(trackRect);
 
 	Geometry    newGeo( trackRect.Width(), trackRect.Height(), trackRect.left, trackRect.top );
-	pDoc->GetImage()->chop( newGeo );
+	pDoc->GetImage().chop( newGeo );
     }
 
     catch(Exception e)
@@ -435,7 +434,7 @@ void CIMDisplayView::OnCrop()
 	m_tracker.GetTrueRect(trackRect);
 
 	Geometry    newGeo( trackRect.Width(), trackRect.Height(), trackRect.left, trackRect.top );
-	pDoc->GetImage()->crop( newGeo );
+	pDoc->GetImage().crop( newGeo );
     }
 
     catch(Exception e)
@@ -464,7 +463,7 @@ void CIMDisplayView::OnTrimedges()
     BeginWaitCursor();
 
     try {
-	pDoc->GetImage()->trim( );
+	pDoc->GetImage().trim( );
     }
 
     catch(Exception e)
@@ -483,7 +482,7 @@ void CIMDisplayView::OnEditUndo()
     ASSERT_VALID(pDoc);
 
     pDoc->SetImage( mUndoImage );
-    mUndoImage = NULL;
+    mUndoImage.isValid(false);
 
     UpdateTheView();
 }
@@ -491,7 +490,7 @@ void CIMDisplayView::OnEditUndo()
 void CIMDisplayView::OnUpdateEditUndo(CCmdUI* pCmdUI) 
 {
     // Enable/Disable the user-interface object
-    pCmdUI->Enable( mUndoImage != NULL );
+    pCmdUI->Enable( mUndoImage.isValid() );
 }
 
 
@@ -501,7 +500,7 @@ void CIMDisplayView::OnEditSelectAll()
     CIMDisplayDoc* pDoc = GetDocument();
     ASSERT_VALID(pDoc);
 
-    m_tracker.m_rect = CRect(0,0,pDoc->GetImage()->columns(), pDoc->GetImage()->rows());
+    m_tracker.m_rect = CRect(0,0,pDoc->GetImage().columns(), pDoc->GetImage().rows());
     UpdateTheView( false );
 }
 
@@ -553,7 +552,7 @@ void CIMDisplayView::OnEditCopy()
     if (theBitsH == NULL)
 	 DoDisplayError( "OnEditCopy", GetLastError() );
     else {
-	PixelPacket *pPixels = pDoc->GetImage()->getPixels(m_tracker.m_rect.left,
+	PixelPacket *pPixels = pDoc->GetImage().getPixels(m_tracker.m_rect.left,
 							   m_tracker.m_rect.top,
 							   m_tracker.m_rect.Width(),
 							   m_tracker.m_rect.Height());
@@ -618,8 +617,8 @@ void CIMDisplayView::SetViewSize()
     CIMDisplayDoc* pDoc = GetDocument();
     ASSERT_VALID(pDoc);
     if ( pDoc->GetImage() ) {
-	sizeTotal.cx = pDoc->GetImage()->columns();
-	sizeTotal.cy = pDoc->GetImage()->rows();
+	sizeTotal.cx = pDoc->GetImage().columns();
+	sizeTotal.cy = pDoc->GetImage().rows();
     } else {
 	sizeTotal.cx = sizeTotal.cy = 100;
     }
@@ -646,7 +645,7 @@ void CIMDisplayView::ScaleImage( Geometry& inGeometry )
 
     try {
 	// NOTE: should this be scale or sample?
-	pDoc->GetImage()->scale( inGeometry );
+	pDoc->GetImage().scale( inGeometry );
     }
 
     catch(Exception e)
@@ -669,7 +668,7 @@ void CIMDisplayView::ResizeImage( Geometry& inGeometry )
     BeginWaitCursor();
 
     try {
-	pDoc->GetImage()->zoom( inGeometry );
+	pDoc->GetImage().zoom( inGeometry );
     }
 
     catch(Exception e)
@@ -692,7 +691,7 @@ void CIMDisplayView::MagnifyImage( void )
     BeginWaitCursor();
 
     try {
-	pDoc->GetImage()->magnify( );
+	pDoc->GetImage().magnify( );
     }
 
     catch(Exception e)
@@ -715,7 +714,7 @@ void CIMDisplayView::MinifyImage( void )
     BeginWaitCursor();
 
     try {
-	pDoc->GetImage()->minify( );
+	pDoc->GetImage().minify( );
     }
 
     catch(Exception e)
@@ -738,7 +737,7 @@ void CIMDisplayView::RotateImage( double inDegrees )
     BeginWaitCursor();
 
     try {
-	pDoc->GetImage()->rotate( inDegrees );
+	pDoc->GetImage().rotate( inDegrees );
     }
 
     catch(Exception e)
@@ -756,7 +755,7 @@ void CIMDisplayView::SetupUndo()
     CIMDisplayDoc* pDoc = GetDocument();
     ASSERT_VALID(pDoc);
 
-    mUndoImage = new Image( *pDoc->GetImage() );   
+    mUndoImage = Image( pDoc->GetImage() );   
 }
 
 //-----------------------------------------------------------------------
@@ -764,10 +763,10 @@ void CIMDisplayView::SetupUndo()
 // Display the image in the client window.  Scale the image to fit.
 //-----------------------------------------------------------------------
 
-void CIMDisplayView::DoDisplayImage( Image* inImage, CDC* pDC )
+void CIMDisplayView::DoDisplayImage( Image &inImage, CDC* pDC )
 {
     // make sure we're getting a valid image!
-    if (inImage == NULL)
+    if (!inImage.isValid())
     {
       return;
     }
@@ -797,8 +796,8 @@ void CIMDisplayView::DoDisplayImage( Image* inImage, CDC* pDC )
 	    // Set up the Windows bitmap header
 	    BITMAPINFOHEADER bmi;
 	    bmi.biSize = sizeof(BITMAPINFOHEADER);	// Size of structure
-	    bmi.biWidth = inImage->columns();	// Bitmaps width in pixels
-	    bmi.biHeight = (-1)*inImage->rows();	// Bitmaps height n pixels
+	    bmi.biWidth = inImage.columns();	// Bitmaps width in pixels
+	    bmi.biHeight = (-1)*inImage.rows();	// Bitmaps height n pixels
 	    bmi.biPlanes = 1;				// Number of planes in the image
 	    bmi.biBitCount = 32;			// The number of bits per pixel
 	    bmi.biCompression = BI_RGB;		// The type of compression used
@@ -810,7 +809,7 @@ void CIMDisplayView::DoDisplayImage( Image* inImage, CDC* pDC )
 	    mBMI = bmi;	// keep it for clipboard use...
 
       // Extract the pixels from Magick++ image object and convert to a DIB section
-      PixelPacket *pPixels = inImage->getPixels(0,0,inImage->columns(),inImage->rows());
+      PixelPacket *pPixels = inImage.getPixels(0,0,inImage.columns(),inImage.rows());
 
 
       RGBQUAD *prgbaDIB = 0;
@@ -827,7 +826,7 @@ void CIMDisplayView::DoDisplayImage( Image* inImage, CDC* pDC )
       if ( !hBitmap )
         return;
 
-      unsigned long nPixels = inImage->columns() * inImage->rows();
+      unsigned long nPixels = inImage.columns() * inImage.rows();
       RGBQUAD *pDestPixel = prgbaDIB;
 
 #if QuantumDepth == 8
@@ -854,7 +853,7 @@ void CIMDisplayView::DoDisplayImage( Image* inImage, CDC* pDC )
 	#if QuantumDepth == 8
 	    // Determine the size of the scaled image
 	    // Don't allow image to be zoomed
-	    CSize sizeScaled = Scale(CSize(inImage->columns(),inImage->rows()), rectClient.Size());
+	    CSize sizeScaled = Scale(CSize(inImage.columns(),inImage.rows()), rectClient.Size());
 
 	    // Calculate the top-left co-ordinates of the image
 	    CPoint pt = rectClient.TopLeft();
@@ -862,7 +861,7 @@ void CIMDisplayView::DoDisplayImage( Image* inImage, CDC* pDC )
 	    int nImageY = ((rectClient.Height()-sizeScaled.cy)/2) + pt.y;
 
 	    // Extract the pixels from Magick++ image object
-	    PixelPacket *pPixels = inImage->getPixels(0,0,inImage->columns(),inImage->rows());
+	    PixelPacket *pPixels = inImage.getPixels(0,0,inImage.columns(),inImage.rows());
 
 	    // Blast it to the device context
 	    SetStretchBltMode(mOffscreenDC,COLORONCOLOR);
@@ -876,8 +875,8 @@ void CIMDisplayView::DoDisplayImage( Image* inImage, CDC* pDC )
 		sizeScaled.cy,		// height of destination rectangle
 		0,			// x-coordinate of upper-left corner of source rect. 
 		0, 			// y-coordinate of upper-left corner of source rect
-		inImage->columns(),	// width of source rectangle 
-		inImage->rows(),	// height of source rectangle 
+		inImage.columns(),	// width of source rectangle 
+		inImage.rows(),	// height of source rectangle 
 		pPixels,		// address of bitmap bits
 		(BITMAPINFO *)&bmi,	// address of bitmap data 
 		DIB_RGB_COLORS,		// usage 
@@ -886,7 +885,7 @@ void CIMDisplayView::DoDisplayImage( Image* inImage, CDC* pDC )
 	#elif QuantumDepth == 16
 	    // Extract the pixels from Magick++ image object and down convert to 8-bit quantum
 
-	    PixelPacket *pPixels = inImage->getPixels(0,0,inImage->columns(),inImage->rows());
+	    PixelPacket *pPixels = inImage.getPixels(0,0,inImage.columns(),inImage.rows());
 
 	    RGBQUAD *prgbaDIB = 0;
 	    HBITMAP hBitmap = CreateDIBSection
@@ -902,7 +901,7 @@ void CIMDisplayView::DoDisplayImage( Image* inImage, CDC* pDC )
 	    if ( !hBitmap )
 		return;
 
-	    unsigned long nPixels = inImage->columns() * inImage->rows();
+	    unsigned long nPixels = inImage.columns() * inImage.rows();
 	    RGBQUAD *pDestPixel = prgbaDIB;
 	    for( unsigned long nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
 	    {
@@ -919,7 +918,7 @@ void CIMDisplayView::DoDisplayImage( Image* inImage, CDC* pDC )
 	    mOffscreenDC->SelectObject( hBitmap );
 	}
 
-	pDC->BitBlt( 0, 0, inImage->columns(), inImage->rows(), mOffscreenDC, 0, 0, SRCCOPY );
+	pDC->BitBlt( 0, 0, inImage.columns(), inImage.rows(), mOffscreenDC, 0, 0, SRCCOPY );
 	mViewDirty = false; // not any more!
 
 	// draw the marching ants, if any

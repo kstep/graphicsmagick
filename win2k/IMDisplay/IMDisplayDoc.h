@@ -40,8 +40,8 @@ public:
 #endif
 
 	// these are the custom functions and vars we've added!
-	Image*	GetImage( void )	    { return m_pImage; }
-	void	SetImage( Image* inImage )  { if ( m_pImage != NULL ) delete m_pImage;  m_pImage = inImage; }
+	Image&	GetImage( void )	    { return m_pImage; }
+	void	SetImage( Image &inImage )  { m_pImage = inImage }
 
 	BOOL	DoReadImage( void );
 
@@ -49,7 +49,7 @@ protected:
 	// these are the custom functions and vars we've added!
         void	DoDisplayError(CString szFunction, CString szCause);
 
-	Image       * m_pImage;
+	Image         m_pImage;
 	CString       m_szFile;
 
 // Generated message map functions

@@ -34,8 +34,6 @@ CIMDisplayDoc::CIMDisplayDoc()
 
 CIMDisplayDoc::~CIMDisplayDoc()
 {
-    if ( m_pImage )
-	delete m_pImage;
 }
 
 BOOL CIMDisplayDoc::OnNewDocument()
@@ -104,14 +102,6 @@ BOOL CIMDisplayDoc::DoReadImage( void )
 {
     BeginWaitCursor();
 
-    // New image object
-    if (m_pImage != NULL)
-    {
-	delete m_pImage;
-	m_pImage = NULL;
-    }
-    m_pImage = new Image;
-
     // Read the image and handle any exceptions
     try
     {
@@ -127,16 +117,14 @@ BOOL CIMDisplayDoc::DoReadImage( void )
     // Image is not usable
     catch(Magick::Error error)
     {
-	delete m_pImage;
-	m_pImage = NULL;
+        m_pImage.isValid(false);
 	DoDisplayError("DoReadImage",error.what());
 	return FALSE;
     }
 
-    catch(exception e)
+    catch(exception &e)
     {
-	delete m_pImage;
-	m_pImage = NULL;
+        m_pImage.isValid(false);
 	DoDisplayError("DoReadImage",e.what());
 	return FALSE;
     }
