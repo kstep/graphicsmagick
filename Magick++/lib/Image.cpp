@@ -635,6 +635,7 @@ void Magick::Image::draw ( const Magick::Drawable &drawable_ )
 
   DrawImage( image(), drawInfo );
 
+  delete drawInfo->primitive; // Frozen dynamic arrays must be deleted
   drawInfo->primitive = 0;
 
   throwImageException();
@@ -665,6 +666,8 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
   drawInfo->primitive = primitive.str();
 //   cout << drawInfo->primitive << endl;
   DrawImage( image(), drawInfo );
+
+  delete drawInfo->primitive; // Frozen dynamic arrays must be deleted
   drawInfo->primitive = 0;
 
   throwImageException();
