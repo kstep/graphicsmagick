@@ -255,9 +255,6 @@ int main(int argc,char **argv)
   ExceptionInfo
     exception;
 
-  ExceptionType
-    severity;
-
   Image
     *image,
     *loaded_image,
@@ -302,7 +299,6 @@ int main(int argc,char **argv)
   first_scene=0;
   image=(Image *) NULL;
   last_scene=0;
-  severity=UndefinedException;
   /*
     Check for server name specified on the command line.
   */
@@ -940,7 +936,7 @@ int main(int argc,char **argv)
               exception.qualifier);
           status=MogrifyImages(image_info,i,argv,&next_image);
           if (status == False)
-            CatchImageException(next_image,&severity);
+            CatchImageException(next_image);
           if (image == (Image *) NULL)
             image=next_image;
           else
@@ -972,14 +968,14 @@ int main(int argc,char **argv)
         image=loaded_image;
         status=MogrifyImage(image_info,argc-1,argv,&image);
         if (status == False)
-          CatchImageException(image,&severity);
+          CatchImageException(image);
         loaded_image=XAnimateImages(display,&resource_info,argv,argc,image);
       }
     }
   DestroyDelegateInfo();
   DestroyMagickInfo();
   FreeMemory(argv);
-  Exit((int) severity);
+  Exit(0);
 #endif
   return(False);
 }

@@ -75,7 +75,8 @@ extern Export ErrorHandler
 
 
 extern Export void
-  CatchImageException(Image *,ExceptionType *),
+  CatchImageException(Image *),
+  GetImageException(Image *,ExceptionInfo *),
   GetExceptionInfo(ExceptionInfo *),
   MagickError(const ExceptionType,const char *,const char *),
   MagickWarning(const ExceptionType,const char *,const char *);

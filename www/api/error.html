@@ -22,6 +22,7 @@
 
 		<LI><A HREF="#catchimageexception">CatchImageException</A></LI>
 		<LI><A HREF="#geterrorinfo">GetErrorInfo</A></LI>
+		<LI><A HREF="#getimageexception">GetImageException</A></LI>
 		<LI><A HREF="#magickerror">MagickError</A></LI>
 		<LI><A HREF="#magickwarning">MagickWarning</A></LI>
 		<LI><A HREF="#seterrorhandler">SetErrorHandler</A></LI>
@@ -41,7 +42,8 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P><STRONG>CatchImageException</STRONG>( Image *image, ExceptionType *severity );</P>
+<P><STRONG>CatchImageException</STRONG>( Image *image );</P>
+<P><STRONG>GetImageException</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>void  <STRONG>MagickError</STRONG>( const ExceptionType error, const char *message, const char *qualifier );</P>
 <P>void  <STRONG>MagickWarning</STRONG>( const ExceptionType warning, const char *message, const char *qualifier );</P>
 <P>ErrorHandler  <STRONG>SetErrorHandler</STRONG>( ErrorHandler handler );</P>
@@ -54,25 +56,21 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="catchimageexception">CatchImageException</A></H2>
-<P>Method CatchImageException traverses an image sequence and calls methods <CODE>MagickWarning</CODE> or <CODE>MagickError</CODE> if it discovers any thrown exceptions.</P>
+<P>Method CatchImageException returns if no exceptions are found in the image sequence, otherwise it determines the most severe exception and reports it as a warning or error depending on the severity.</P>
 <P>The format of the CatchImageException method is:</P>
-<blockquote>CatchImageException ( <A HREF="types/Image.html">Image</A> *image, ExceptionType *severity ); </blockquote><P>
+<blockquote>CatchImageException ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
 Specifies a pointer to a list of one or more images.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_severity%3A">severity:</A></STRONG><BR>
-<DD>
-return the highest severity exception.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="geterrorinfo">GetErrorInfo</A></H2>
 <P>Method GetExceptionInfo initializes the ExceptionInfo structure.</P>
 <P>The format of the GetExceptionInfo method is:</P>
 <PRE>
-    GetExceptionInfo(ExceptionInfo *exception_info)</PRE>
+    GetExceptionInfo(ExceptionInfo *exception)</PRE>
 <P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -81,13 +79,28 @@ return the highest severity exception.
 Specifies a pointer to a ExceptionInfo structure.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="getimageexception">GetImageException</A></H2>
+<P>Method GetImageException traverses an image sequence and returns any error more severe than noted by the exception parameter.</P>
+<P>The format of the GetImageException method is:</P>
+<blockquote>GetImageException ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+Specifies a pointer to a list of one or more images.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+return the highest severity exception.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="magickerror">MagickError</A></H2>
 <P>Method MagickError calls the error handler methods with an error message.</P>
 <P>The format of the MagickError method is:</P>
-<blockquote>void MagickError ( const ExceptionType error, const char *message, const char *qualifier ); </blockquote><P>
+<blockquote>void MagickError ( const <A HREF="types/Enumerations.html#ExceptionType">ExceptionType</A> error, const char *message, const char *qualifier ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Specifies the numeric error category.
 <P></P>
@@ -103,7 +116,7 @@ Specifies any qualifier to the message.
 <H2><A NAME="magickwarning">MagickWarning</A></H2>
 <P>Method MagickWarning calls the warning handler methods with a warning message.</P>
 <P>The format of the MagickWarning method is:</P>
-<blockquote>void MagickWarning ( const ExceptionType warning, const char *message, const char *qualifier ); </blockquote><P>
+<blockquote>void MagickWarning ( const <A HREF="types/Enumerations.html#ExceptionType">ExceptionType</A> warning, const char *message, const char *qualifier ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_warning%3A">warning:</A></STRONG><BR>

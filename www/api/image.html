@@ -148,7 +148,7 @@ The address of a structure of type Image.
 <H2><A NAME="appendimages">AppendImages</A></H2>
 <P>Method AppendImages appends a sequence of images.  All the input images must have the same width or height.  Images of the same width are stacked top-to-bottom.  Images of the same height are stacked left-to-right.  If stack is false, rectangular images are stacked left-to-right otherwise top-to-bottom.</P>
 <P>The format of the AppendImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *AppendImages ( <A HREF="types/Image.html">Image</A> *image, const unsigned int stack, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *AppendImages ( <A HREF="types/Image.html">Image</A> *image, const unsigned int stack, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -167,7 +167,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="averageimages">AverageImages</A></H2>
 <P>Method AverageImages averages a sequence of images.  All the input image must be the same size in pixels.</P>
 <P>The format of the AverageImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *AverageImages ( const <A HREF="types/Image.html">Image</A> *image, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *AverageImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_average_image%3A">average_image:</A></STRONG><BR>
@@ -186,7 +186,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="cloneimage">CloneImage</A></H2>
 <P>Method CloneImage returns a copy of all fields of the input image.  The image pixels and indexes are copied only if the columns and rows of the cloned image are the same as the original otherwise the pixel data is undefined and must be initialized with <CODE>SetPixelCache</CODE> and <CODE>SyncPixelCache</CODE> methods.</P>
 <P>The format of the CloneImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *CloneImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, const unsigned int orphan, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *CloneImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, const unsigned int orphan, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_clone_image%3A">clone_image:</A></STRONG><BR>
@@ -262,7 +262,7 @@ An integer that specifies the row offset of the composited image.
 <H2><A NAME="createimage">CreateImage</A></H2>
 <P>Method CreateImage is a convenience routine that creates an image from the pixel data you supply and returns it.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  The pixel data must be in scanline order top-to-bottom.  The data can be character, short int, integer, float, or double.  Float and double require the pixels to be normalized [0..1]. The other types are [0..MaxRGB]. For example, to create a 640x480 image from unsigned red-green-blue character data, use</P>
 <blockquote>image=CreateImage ( 640, 480, "RGB", 0, pixels, &exception );; </blockquote><P>The format of the CreateImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *CreateImage ( const unsigned int width, const unsigned int height, const char *map, const StorageType type, const void *pixels, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *CreateImage ( const unsigned int width, const unsigned int height, const char *map, const StorageType type, const void *pixels, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -654,7 +654,7 @@ The address of a structure of type Image; returned from ReadImage.
 <H2><A NAME="mosaicimages">MosaicImages</A></H2>
 <P>Method MosaicImages inlays a number of image to form a single coherent picture.</P>
 <P>The format of the MosaicImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *MosaicImages ( const <A HREF="types/Image.html">Image</A> *image, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *MosaicImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -694,7 +694,7 @@ Specifies a character string representing the geometry specification.
 <H2><A NAME="pingimage">PingImage</A></H2>
 <P>Method PingImage returns the image size in bytes if it exists and can be the image is returned as well.  Note, only the first image in a multi-frame image file is pinged.</P>
 <P>The format of the PingImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *PingImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *PingImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_Image%3A">Image:</A></STRONG><BR>
@@ -709,7 +709,7 @@ Specifies a pointer to an ImageInfo structure.
 <H2><A NAME="readimage">ReadImage</A></H2>
 <P>Method ReadImage reads an image and returns it.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  By default, the image format is determined by its magic number.  To specify a particular image format, precede the filename with an explicit image format name and a colon (i.e.  ps:image) or as the filename suffix (i.e.  image.ps).</P>
 <P>The format of the ReadImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ReadImage ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ReadImage ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -729,7 +729,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="readimages">ReadImages</A></H2>
 <P>Method ReadImages reads a list of image names from a file and then returns the images as a linked list.</P>
 <P>The format of the ReadImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ReadImages ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ReadImages ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>

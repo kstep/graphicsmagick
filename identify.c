@@ -140,9 +140,6 @@ int main(int argc,char **argv)
   ExceptionInfo
     exception;
 
-  ExceptionType
-    severity;
-
   Image
     *image,
     *p;
@@ -176,7 +173,6 @@ int main(int argc,char **argv)
   count=0;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   number_images=0;
-  severity=UndefinedException;
   /*
     Identify an image.
   */
@@ -292,6 +288,6 @@ int main(int argc,char **argv)
   DestroyDelegateInfo();
   DestroyMagickInfo();
   FreeMemory(argv);
-  Exit((int) severity);
+  Exit(0);
   return(False);
 }

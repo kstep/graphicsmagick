@@ -89,7 +89,7 @@
 <H2><A NAME="addnoiseimage">AddNoiseImage</A></H2>
 <P>Method AddNoiseImage creates a new image that is a copy of an existing one with noise added.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the AddNoiseImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *AddNoiseImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#NoiseType">NoiseType</A> noise_type, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *AddNoiseImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#NoiseType">NoiseType</A> noise_type, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_noisy_image%3A">noisy_image:</A></STRONG><BR>
@@ -119,7 +119,7 @@ return any errors or warnings in this structure.
    1  2  1</PRE>
 <P>The scan only processes pixels that have a full set of neighbors.  Pixels in the top, bottom, left, and right pairs of rows and columns are omitted from the scan.</P>
 <P>The format of the BlurImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *BlurImage ( <A HREF="types/Image.html">Image</A> *image, const double factor, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *BlurImage ( <A HREF="types/Image.html">Image</A> *image, const double factor, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_blur_image%3A">blur_image:</A></STRONG><BR>
@@ -143,7 +143,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="colorizeimage">ColorizeImage</A></H2>
 <P>Method ColorizeImage creates a new image that is a copy of an existing one with the image pixels colorized.  The colorization is controlled with the pen color and the opacity levels.</P>
 <P>The format of the ColorizeImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ColorizeImage ( <A HREF="types/Image.html">Image</A> *image, const char *opacity, const char *pen_color, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ColorizeImage ( <A HREF="types/Image.html">Image</A> *image, const char *opacity, const char *pen_color, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -154,11 +154,12 @@ The address of a structure of type Image; returned from ReadImage.
 <DD>
 
 <FONT SIZE=-1>A</FONT> character string indicating the level of opacity as a percentage (0-100).
-<P></P></DL></DL>
-<PRE>
-    pen_color: A color string.
-=over 4</PRE>
-<DL><DL>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_pen_color%3A">pen_color:</A></STRONG><BR>
+<DD>
+
+<FONT SIZE=-1>A</FONT> color string.
+<P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 return any errors or warnings in this structure.
@@ -168,7 +169,7 @@ return any errors or warnings in this structure.
 <P>Method DespeckleImage creates a new image that is a copy of an existing one with the speckle noise minified.  It uses the eight hull algorithm described in Applied Optics, Vol.  24, No.  10, 15 May 1985, ``Geometric filter for Speckle Reduction'', by Thomas 
 <FONT SIZE=-1>R</FONT> Crimmins.  Each pixel in the image is replaced by one of its eight of its surrounding pixels using a polarity and negative hull function.  DespeckleImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the DespeckleImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *DespeckleImage ( <A HREF="types/Image.html">Image</A> *image, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *DespeckleImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_despeckle_image%3A">despeckle_image:</A></STRONG><BR>
@@ -194,7 +195,7 @@ return any errors or warnings in this structure.
   -1 -1 -1</PRE>
 <P>The scan only processes pixels that have a full set of neighbors.  Pixels in the top, bottom, left, and right pairs of rows and columns are omitted from the scan.</P>
 <P>The format of the EdgeImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *EdgeImage ( <A HREF="types/Image.html">Image</A> *image, const double factor, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *EdgeImage ( <A HREF="types/Image.html">Image</A> *image, const double factor, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_edge_image%3A">edge_image:</A></STRONG><BR>
@@ -224,7 +225,7 @@ return any errors or warnings in this structure.
    0  2  1</PRE>
 <P>The scan only processes pixels that have a full set of neighbors.  Pixels in the top, bottom, left, and right pairs of rows and columns are omitted from the scan.</P>
 <P>The format of the EmbossImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *EmbossImage ( <A HREF="types/Image.html">Image</A> *image, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *EmbossImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_emboss_image%3A">emboss_image:</A></STRONG><BR>
@@ -248,7 +249,7 @@ return any errors or warnings in this structure.
 <P>Weights assume that the importance of neighboring pixels is negately proportional to the square of their distance from the target pixel.</P>
 <P>The scan only processes pixels that have a full set of neighbors.  Pixels in the top, bottom, left, and right pairs of rows and columns are omitted from the scan.</P>
 <P>The format of the EnhanceImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *EnhanceImage ( <A HREF="types/Image.html">Image</A> *image, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *EnhanceImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_enhance_image%3A">enhance_image:</A></STRONG><BR>
@@ -268,7 +269,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="implodeimage">ImplodeImage</A></H2>
 <P>Method ImplodeImage creates a new image that is a copy of an existing one with the image pixels ``implode'' by the specified percentage.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the ImplodeImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ImplodeImage ( <A HREF="types/Image.html">Image</A> *image, const double factor, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ImplodeImage ( <A HREF="types/Image.html">Image</A> *image, const double factor, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_implode_image%3A">implode_image:</A></STRONG><BR>
@@ -293,7 +294,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="medianfilterimage">MedianFilterImage</A></H2>
 <P>Method MedianFilterImage creates a new image that is a copy of an existing one with each pixel component replaced with the median color in a circular neighborhood.</P>
 <P>The format of the MedianFilterImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *MedianFilterImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int radius, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *MedianFilterImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_median_image%3A">median_image:</A></STRONG><BR>
@@ -317,7 +318,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="morphimages">MorphImages</A></H2>
 <P>Method MorphImages morphs a sequence of images.  Both the next pixels and size are linearly interpolated to give the appearance of a meta-morphosis from one next to the next.</P>
 <P>The format of the MorphImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *MorphImages ( <A HREF="types/Image.html">Image</A> *image, const unsigned int number_frames, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *MorphImages ( <A HREF="types/Image.html">Image</A> *image, const unsigned int number_frames, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_morph_images%3A">morph_images:</A></STRONG><BR>
@@ -340,7 +341,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="oilpaintimage">OilPaintImage</A></H2>
 <P>Method OilPaintImage creates a new image that is a copy of an existing one with each pixel component replaced with the color of greatest frequency in a circular neighborhood.</P>
 <P>The format of the OilPaintImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *OilPaintImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int radius, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *OilPaintImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_paint_image%3A">paint_image:</A></STRONG><BR>
@@ -393,7 +394,7 @@ this integer values define the plasma recursion depth.
 <P>The principal function of noise peak elimination filter is to smooth the objects within an image without losing edge information and without creating undesired structures.  The central idea of the algorithm is to replace a pixel with its next neighbor in value within a 3 x 3 window, if this pixel has been found to be noise.  
 <FONT SIZE=-1>A</FONT> pixel is defined as noise if and only if this pixel is a maximum or minimum within the 3 x 3 window.</P>
 <P>The format of the ReduceNoiseImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ReduceNoiseImage ( <A HREF="types/Image.html">Image</A> *image, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ReduceNoiseImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>noisy_image:</STRONG><BR>
@@ -413,7 +414,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="shadeimage">ShadeImage</A></H2>
 <P>Method ShadeImage creates a new image that is a copy of an existing one with the image pixels shaded using a distance light source.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the ShadeImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ShadeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int color_shading, double azimuth, double elevation, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ShadeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int color_shading, double azimuth, double elevation, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_shade_image%3A">shade_image:</A></STRONG><BR>
@@ -449,7 +450,7 @@ return any errors or warnings in this structure.
   -1 -2 -1</PRE>
 <P>The scan only processes pixels that have a full set of neighbors.  Pixels in the top, bottom, left, and right pairs of rows and columns are omitted from the scan.</P>
 <P>The format of the SharpenImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *SharpenImage ( <A HREF="types/Image.html">Image</A> *image, const double factor, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *SharpenImage ( <A HREF="types/Image.html">Image</A> *image, const double factor, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_sharpen_image%3A">sharpen_image:</A></STRONG><BR>
@@ -488,7 +489,7 @@ An double value that defines the extent of the solarization.
 <H2><A NAME="spreadimage">SpreadImage</A></H2>
 <P>Method SpreadImage creates a new image that is a copy of an existing one with the image pixels randomly displaced.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the SpreadImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *SpreadImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int amount, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *SpreadImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int amount, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_spread_image%3A">spread_image:</A></STRONG><BR>
@@ -512,7 +513,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="steganoimage">SteganoImage</A></H2>
 <P>Method SteganoImage hides a digital watermark within the image.</P>
 <P>The format of the SteganoImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *SteganoImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *watermark, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *SteganoImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *watermark, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_stegano_image%3A">stegano_image:</A></STRONG><BR>
@@ -536,7 +537,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="stereoimage">StereoImage</A></H2>
 <P>Method StereoImage combines two images and produces a single image that is the composite of a left and right image of a stereo pair.  The left image is converted to gray scale and written to the red channel of the stereo image.  The right image is converted to gray scale and written to the blue channel of the stereo image.  View the composite image with red-blue glasses to create a stereo effect.</P>
 <P>The format of the StereoImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *StereoImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *offset_image, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *StereoImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *offset_image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_stereo_image%3A">stereo_image:</A></STRONG><BR>
@@ -560,7 +561,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="swirlimage">SwirlImage</A></H2>
 <P>Method SwirlImage creates a new image that is a copy of an existing one with the image pixels ``swirl'' at a specified angle.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the SwirlImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *SwirlImage ( <A HREF="types/Image.html">Image</A> *image, double degrees, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *SwirlImage ( <A HREF="types/Image.html">Image</A> *image, double degrees, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_swirl_image%3A">swirl_image:</A></STRONG><BR>
@@ -600,7 +601,7 @@ The address of a structure of type Image; returned from ReadImage.
 <H2><A NAME="waveimage">WaveImage</A></H2>
 <P>Method WaveImage creates a new image that is a copy of an existing one with the image pixels altered along a sine wave.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the WaveImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *WaveImage ( <A HREF="types/Image.html">Image</A> *image, const double amplitude, const double wavelength, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *WaveImage ( <A HREF="types/Image.html">Image</A> *image, const double amplitude, const double wavelength, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>shade_image:</STRONG><BR>

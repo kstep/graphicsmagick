@@ -268,9 +268,6 @@ int main(int argc,char **argv)
   ExceptionInfo
     exception;
 
-  ExceptionType
-    severity;
-
   Image
     *image,
     *montage_image,
@@ -320,7 +317,6 @@ int main(int argc,char **argv)
   GetQuantizeInfo(&quantize_info);
   scene=0;
   transparent_color=(char *) NULL;
-  severity=UndefinedException;
   /*
     Parse command line.
   */
@@ -1132,7 +1128,7 @@ int main(int argc,char **argv)
           MagickError(exception.severity,exception.message,exception.qualifier);
         status=MogrifyImages(image_info,i,argv,&next_image);
         if (status == False)
-          CatchImageException(next_image,&severity);
+          CatchImageException(next_image);
         if (image == (Image *) NULL)
           image=next_image;
         else
@@ -1186,7 +1182,7 @@ int main(int argc,char **argv)
   {
     status=WriteImage(image_info,p);
     if (status == False)
-      CatchImageException(p,&severity);
+      CatchImageException(p);
     if (image_info->adjoin)
       break;
   }
@@ -1198,6 +1194,5 @@ int main(int argc,char **argv)
   DestroyDelegateInfo();
   DestroyMagickInfo();
   FreeMemory(argv);
-  Exit((int) severity);
   return(False);
 }

@@ -89,7 +89,7 @@ return any errors or warnings in this structure.
 <FONT SIZE=-1>GIF</FONT> and 
 <FONT SIZE=-1>MNG</FONT> animation sequences that have page offsets and disposal methods.</P>
 <P>The format of the CoalesceImages method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *CoalesceImages ( <A HREF="types/Image.html">Image</A> *image, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *CoalesceImages ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -104,7 +104,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="cropimage">CropImage</A></H2>
 <P>Method CropImage creates a new image that is a subregion of an existing one.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  This method is optimized to preserve the runlength encoding.  That is, the crop image will always use less memory than the original.</P>
 <P>The format of the CropImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *CropImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *crop_info, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *CropImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *crop_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_crop_image%3A">crop_image:</A></STRONG><BR>
@@ -130,7 +130,7 @@ return any errors or warnings in this structure.
 <FONT SIZE=-1>GIF</FONT> or 
 <FONT SIZE=-1>MNG</FONT> animation sequences.</P>
 <P>The format of the DeconstructImages method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *DeconstructImages ( <A HREF="types/Image.html">Image</A> *image, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *DeconstructImages ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -145,7 +145,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="flipimage">FlipImage</A></H2>
 <P>Method FlipImage creates a new image that reflects each scanline in the vertical direction It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the FlipImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *FlipImage ( <A HREF="types/Image.html">Image</A> *image, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *FlipImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_flip_image%3A">flip_image:</A></STRONG><BR>
@@ -165,7 +165,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="flopimage">FlopImage</A></H2>
 <P>Method FlopImage creates a new image that reflects each scanline in the horizontal direction It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the FlopImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *FlopImage ( <A HREF="types/Image.html">Image</A> *image, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *FlopImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_flop_image%3A">flop_image:</A></STRONG><BR>
@@ -185,7 +185,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="rollimage">RollImage</A></H2>
 <P>Method RollImage rolls an image vertically and horizontally.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the RollImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *RollImage ( <A HREF="types/Image.html">Image</A> *image, const int x_offset, const int y_offset, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *RollImage ( <A HREF="types/Image.html">Image</A> *image, const int x_offset, const int y_offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_roll_image%3A">roll_image:</A></STRONG><BR>

@@ -59,7 +59,7 @@
   number_columns &lt;&lt; 1
   number_rows &lt;&lt; 1</PRE>
 <P>The format of the MagnifyImage method is:</P>
-<blockquote>magnify_image=MagnifyImage ( image, ExceptionInfo *exception ); </blockquote><P>
+<blockquote>magnify_image=MagnifyImage ( image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_magnify_image%3A">magnify_image:</A></STRONG><BR>
@@ -85,7 +85,7 @@ return any errors or warnings in this structure.
 <P>Weights assume that the importance of neighboring pixels is negately proportional to the square of their distance from the target pixel.</P>
 <P>The scan only processes pixels that have a full set of neighbors.  Pixels in the top, bottom, left, and right pairs of rows and columns are omitted from the scan.</P>
 <P>The format of the MinifyImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *MinifyImage ( <A HREF="types/Image.html">Image</A> *image, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *MinifyImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_minify_image%3A">minify_image:</A></STRONG><BR>
@@ -105,7 +105,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="sampleimage">SampleImage</A></H2>
 <P>Method SampleImage creates a new image that is a scaled size of an existing one using pixel sampling.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the SampleImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *SampleImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *SampleImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_sample_image%3A">sample_image:</A></STRONG><BR>
@@ -135,7 +135,7 @@ return any errors or warnings in this structure.
 <P>The scaling algorithm was suggested by <A HREF="mailto:rjohnson@shell.com">rjohnson@shell.com</A> and is adapted from <CODE>pnmscale</CODE> of 
 <FONT SIZE=-1>PBMPLUS</FONT> by Jef Poskanzer.</P>
 <P>The format of the ScaleImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ScaleImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ScaleImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_scale_image%3A">scale_image:</A></STRONG><BR>
@@ -165,7 +165,7 @@ return any errors or warnings in this structure.
 <FONT SIZE=-1>III</FONT> for details on this algorithm.</P>
 <P>The filter member of the Image structure specifies which image filter to use.  Blur specifies the blur factor where &gt; 1 is blurry, &lt; 1 is sharp.</P>
 <P>The format of the ZoomImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ZoomImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, ExceptionInfo *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ZoomImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_zoom_image%3A">zoom_image:</A></STRONG><BR>

@@ -395,9 +395,6 @@ int main(int argc,char **argv)
   ExceptionInfo
     exception;
 
-  ExceptionType
-    severity;
-
   Image
     *image,
     *next_image;
@@ -451,7 +448,6 @@ int main(int argc,char **argv)
   image_info=CloneImageInfo((ImageInfo *) NULL);
   option=(char *) NULL;
   scene=0;
-  severity=UndefinedException;
   /*
     Parse command-line arguments.
   */
@@ -472,7 +468,7 @@ int main(int argc,char **argv)
           MagickError(exception.severity,exception.message,exception.qualifier);
         status=MogrifyImages(image_info,i,argv,&next_image);
         if (status == False)
-          CatchImageException(next_image,&severity);
+          CatchImageException(next_image);
         if (image == (Image *) NULL)
           image=next_image;
         else
@@ -1648,7 +1644,7 @@ int main(int argc,char **argv)
     {
       status=MogrifyImages(image_info,i,argv,&image);
       if (status == False)
-        CatchImageException(image,&severity);
+        CatchImageException(image);
     }
   while (image->previous != (Image *) NULL)
     image=image->previous;
@@ -1743,14 +1739,6 @@ int main(int argc,char **argv)
           image=mosaic_image;
         }
     }
-  if (exception.severity != UndefinedException)
-    {
-      if (exception.severity >= FatalException)
-        MagickError(exception.severity,exception.message,exception.qualifier);
-      MagickWarning(exception.severity,exception.message,exception.qualifier);
-      if (exception.severity > severity)
-        severity=exception.severity;
-    }
   if (global_colormap)
     (void) MapImages(image,(Image *) NULL,image_info->dither);
   /*
@@ -1767,7 +1755,7 @@ int main(int argc,char **argv)
   {
     status=WriteImage(image_info,p);
     if (status == False)
-      CatchImageException(p,&severity);
+      CatchImageException(p);
     if (image_info->adjoin)
       break;
   }
@@ -1778,6 +1766,6 @@ int main(int argc,char **argv)
   DestroyDelegateInfo();
   DestroyMagickInfo();
   FreeMemory(argv);
-  Exit((int) severity);
+  Exit(0);
   return(False);
 }

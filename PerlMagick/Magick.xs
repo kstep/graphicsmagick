@@ -1747,9 +1747,6 @@ Animate(ref,...)
     animateimage  = 3
   PPCODE:
   {
-    ExceptionType
-      severity;
-
     jmp_buf
       error_jmp;
 
@@ -1796,7 +1793,7 @@ Animate(ref,...)
         for (i=2; i < items; i+=2)
           SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
     AnimateImages(package_info->image_info,image);
-    CatchImageException(image,&severity);
+    CatchImageException(image);
 
   MethodException:
     if (package_info)
@@ -3525,9 +3522,6 @@ Mogrify(ref,...)
     ExceptionInfo
       exception;
 
-    ExceptionType
-      severity;
-
     FrameInfo
       frame_info;
 
@@ -4668,7 +4662,7 @@ Mogrify(ref,...)
       if (image == (Image *) NULL)
         MagickWarning(exception.severity,exception.message,exception.qualifier);
       else
-        CatchImageException(next,&severity);
+        CatchImageException(next);
       if (region_image != (Image *) NULL)
         {
           unsigned int
@@ -4680,7 +4674,7 @@ Mogrify(ref,...)
           status=CompositeImage(region_image,ReplaceCompositeOp,image,
             region_info.x,region_info.y);
           if (status == False)
-            CatchImageException(region_image,&severity);
+            CatchImageException(region_image);
           image->orphan=True;
           DestroyImage(image);
           image=region_image;
@@ -5746,9 +5740,6 @@ Write(ref,...)
     char
       filename[MaxTextExtent];
 
-    ExceptionType
-      severity;
-
     Image
       *image,
       *next;
@@ -5812,7 +5803,7 @@ Write(ref,...)
     {
       status=WriteImage(package_info->image_info,next);
       if (status == False)
-        CatchImageException(next,&severity);
+        CatchImageException(next);
       number_images++;
       if (package_info->image_info->adjoin)
         break;

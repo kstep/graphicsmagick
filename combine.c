@@ -199,9 +199,6 @@ int main(int argc,char **argv)
   ExceptionInfo
     exception;
 
-  ExceptionType
-    severity;
-
   Image
     *combined_image,
     *composite_image,
@@ -250,7 +247,6 @@ int main(int argc,char **argv)
   stegano=0;
   stereo=False;
   tile=False;
-  severity=UndefinedException;
   watermark_geometry=(char *) NULL;
   write_filename=argv[argc-1];
   /*
@@ -812,7 +808,7 @@ int main(int argc,char **argv)
       status=CompositeImage(composite_image,ReplaceMatteCompositeOp,
         mask_image,0,0);
       if (status == False)
-        CatchImageException(composite_image,&severity);
+        CatchImageException(composite_image);
       DestroyImage(mask_image);
     }
   if (compose == BlendCompositeOp)
@@ -884,7 +880,7 @@ int main(int argc,char **argv)
             {
               status=CompositeImage(image,compose,composite_image,x,y);
               if (status == False)
-                CatchImageException(image,&severity);
+                CatchImageException(image);
             }
           combined_image=image;
         }
@@ -966,7 +962,7 @@ int main(int argc,char **argv)
           }
           status=CompositeImage(image,compose,composite_image,x,y);
           if (status == False)
-            CatchImageException(image,&severity);
+            CatchImageException(image);
           combined_image=image;
         }
   if (combined_image == (Image *) NULL)
@@ -976,7 +972,7 @@ int main(int argc,char **argv)
   */
   status=MogrifyImage(image_info,argc,argv,&combined_image);
   if (status == False)
-    CatchImageException(combined_image,&severity);
+    CatchImageException(combined_image);
   /*
     Write image.
   */
@@ -984,7 +980,7 @@ int main(int argc,char **argv)
   SetImageInfo(image_info,True);
   status=WriteImage(image_info,combined_image);
   if (status == False)
-    CatchImageException(combined_image,&severity);
+    CatchImageException(combined_image);
   if (image_info->verbose)
     DescribeImage(combined_image,stderr,False);
   DestroyImages(combined_image);
@@ -992,6 +988,6 @@ int main(int argc,char **argv)
   DestroyDelegateInfo();
   DestroyMagickInfo();
   FreeMemory(argv);
-  Exit((int) severity);
+  Exit(0);
   return(False);
 }

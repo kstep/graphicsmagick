@@ -91,44 +91,32 @@ static WarningHandler
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CatchImageException traverses an image sequence and calls
-%  methods MagickWarning() or MagickError() if it discovers any thrown
-%  exceptions.
+%  Method CatchImageException returns if no exceptions are found in the
+%  image sequence, otherwise it determines the most severe exception and
+%  reports it as a warning or error depending on the severity.
 %
 %  The format of the CatchImageException method is:
 %
-%      CatchImageException(Image *image,ExceptionType *severity)
+%      CatchImageException(Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o image: Specifies a pointer to a list of one or more images.
 %
-%    o severity: return the highest severity exception.
-%
 %
 */
-Export void CatchImageException(Image *image,ExceptionType *severity)
+Export void CatchImageException(Image *image)
 {
-  register Image
-    *next;
+  ExceptionInfo
+    exception;
 
-  if (image == (Image *) NULL)
+  assert(image != (Image *) NULL);
+  GetImageException(image,&exception);
+  if (exception.severity == UndefinedException)
     return;
-  for (next=image; next != (Image *) NULL; next=next->next)
-  {
-    if (next->exception.severity == UndefinedException)
-      continue;
-    if (next->exception.severity > *severity)
-      *severity=image->exception.severity;
-    if (next->exception.severity < FatalException)
-      {
-        MagickWarning(next->exception.severity,next->exception.message,
-          next->exception.qualifier);
-        continue;
-      }
-    MagickError(next->exception.severity,next->exception.message,
-      next->exception.qualifier);
-  }
+  if (exception.severity >= FatalException)
+    MagickError(exception.severity,exception.message,exception.qualifier);
+  MagickWarning(exception.severity,exception.message,exception.qualifier);
 }
 
 /*
@@ -247,6 +235,48 @@ Export void GetExceptionInfo(ExceptionInfo *exception)
   exception->severity=UndefinedException;
   exception->message=(char *) NULL;
   exception->qualifier=(char *) NULL;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e E x c e p t i o n                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetImageException traverses an image sequence and returns any
+%  error more severe than noted by the exception parameter.
+%
+%  The format of the GetImageException method is:
+%
+%      GetImageException(Image *image,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: Specifies a pointer to a list of one or more images.
+%
+%    o exception: return the highest severity exception.
+%
+%
+*/
+Export void GetImageException(Image *image,ExceptionInfo *exception)
+{
+  register Image
+    *next;
+
+  assert(image != (Image *) NULL);
+  for (next=image; next != (Image *) NULL; next=next->next)
+  {
+    if (next->exception.severity == UndefinedException)
+      continue;
+    if (next->exception.severity > exception->severity)
+      ThrowException(exception,next->exception.severity,
+        next->exception.message,next->exception.qualifier);
+  }
 }
 
 /*

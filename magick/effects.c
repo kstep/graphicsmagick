@@ -303,7 +303,7 @@ Export Image *BlurImage(Image *image,const double factor,
 %    o opacity:  A character string indicating the level of opacity as a
 %      percentage (0-100).
 %
-%      pen_color: A color string.
+%    o pen_color: A color string.
 %
 %    o exception: return any errors or warnings in this structure.
 %
