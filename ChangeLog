@@ -1,6 +1,9 @@
 2002-03-28  Cristy  <cristy@mystic.es.dupont.com>
   * DCM patches provided by Syam Gadde.
 
+2002-03-27  Cristy  <cristy@mystic.es.dupont.com>
+  * ImageMagick, version 5.4.4, released.
+
 2002-03-26  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
   * Added preliminary version of C API for vector drawing commands
     (draw.h & draw.c).  This interface is subject to change, and has not
