@@ -57,7 +57,6 @@ typedef struct _FilterInfo
     (*function)(const double,const double),
     support;
 } FilterInfo;
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -69,8 +68,8 @@ typedef struct _FilterInfo
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method BesselOrderOne computes the Bessel function of x of the first kind
-%  of order 0:
+%  BesselOrderOne() computes the Bessel function of x of the first kind of
+%  order 0:
 %
 %    Reduce x to |x| since j1(x)= -j1(-x), and for x in (0,8]
 %
@@ -101,7 +100,7 @@ typedef struct _FilterInfo
 %
 */
 
-static double J1(const double x)
+static double J1(double x)
 {
   double
     p,
@@ -141,12 +140,12 @@ static double J1(const double x)
   for (i=7; i >= 0; i--)
   {
     p=p*x*x+Pone[i];
-    q=p*x*x+Qone[i];
+    q=q*x*x+Qone[i];
   }
   return(p/q);
 }
 
-static double P1(const double x)
+static double P1(double x)
 {
   double
     p,
@@ -185,7 +184,7 @@ static double P1(const double x)
   return(p/q);
 }
 
-static double Q1(const double x)
+static double Q1(double x)
 {
   double
     p,
@@ -237,8 +236,8 @@ static double BesselOrderOne(double x)
     x=(-x);
   if (x < 8.0)
     return(p*J1(x));
-  q=sqrt(2.0/(MagickPI*x))*(P1(x)*((1.0/sqrt(2.0))*(sin(x)-cos(x)))-8.0/x*Q1(x)*
-    ((-1.0/sqrt(2.0))*(sin(x)+cos(x))));
+  q=sqrt(2.0/(MagickPI*x))*(P1(x)*(1.0/sqrt(2.0)*(sin(x)-cos(x)))-8.0/x*Q1(x)*
+    (-1.0/sqrt(2.0)*(sin(x)+cos(x))));
   if (p < 0.0)
     q=(-q);
   return(q);
@@ -1304,9 +1303,9 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
     Initialize pixel offsets.
   */
   for (x=0; x < (long) sample_image->columns; x++)
-    x_offset[x]=(double) x*image->columns/sample_image->columns;
+    x_offset[x]=(double) x*image->columns/(double) sample_image->columns;
   for (y=0; y < (long) sample_image->rows; y++)
-    y_offset[y]=(double) y*image->rows/sample_image->rows;
+    y_offset[y]=(double) y*image->rows/(double) sample_image->rows;
   /*
     Sample each row.
   */
@@ -1316,12 +1315,12 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
     q=SetImagePixels(sample_image,0,y,sample_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    if (j != (long) (y_offset[y]+0.5))
+    if (j != (long) floor(y_offset[y]+0.5))
       {
         /*
           Read a scan line.
         */
-        j=(long) (y_offset[y]+0.5);
+        j=(long) floor(y_offset[y]+0.5);
         p=AcquireImagePixels(image,0,j,image->columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
@@ -1331,13 +1330,13 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
       Sample each column.
     */
     for (x=0; x < (long) sample_image->columns; x++)
-      *q++=pixels[(long) (x_offset[x]+0.5)];
+      *q++=pixels[(long) floor(x_offset[x]+0.5)];
     indexes=GetIndexes(image);
     sample_indexes=GetIndexes(sample_image);
     if ((indexes != (IndexPacket *) NULL) &&
         (sample_indexes != (IndexPacket *) NULL))
       for (x=0; x < (long) sample_image->columns; x++)
-        sample_indexes[x]=indexes[(long) (x_offset[x]+0.5)];
+        sample_indexes[x]=indexes[(long) floor(x_offset[x]+0.5)];
     if (!SyncImagePixels(sample_image))
       break;
     if (QuantumTick(y,sample_image->rows))

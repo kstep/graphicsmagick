@@ -1,3 +1,14 @@
+2003-03-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resize.c (ResizeImage): Applied fix authored by John
+	Cristy for distortion when using the bessel filter.
+	* magick/display.c: Applied fix authored by John Cristy which
+	eliminates bogging down when using the magnifier window on
+	large images.
+	* Several files: A few files included multiple copies of the
+	copyright header text due to either pilot error, or equipment
+	failure.
+
 2003-03-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/Makefile.am : Removed some debug code which was

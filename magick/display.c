@@ -7,14 +7,6 @@
 % Copyright.txt. You should have received a copy of Copyright.txt with this
 % package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 %
-% Copyright (C) 2003 GraphicsMagick Group
-% Copyright (C) 2002 ImageMagick Studio
-% Copyright 1991-1999 E. I. du Pont de Nemours and Company
-%
-% This program is covered by multiple licenses, which are described in
-% Copyright.txt. You should have received a copy of Copyright.txt with this
-% package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
-%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -12543,8 +12535,6 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   *windows->widget.name='\0';
   windows->widget.border_width=0;
   windows->widget.flags|=PPosition;
-  windows->widget.attributes.backing_store=WhenMapped;
-  windows->widget.attributes.save_under=True;
   windows->widget.attributes.event_mask=ButtonMotionMask | ButtonPressMask |
     ButtonReleaseMask | EnterWindowMask | ExposureMask | KeyPressMask |
     KeyReleaseMask | LeaveWindowMask | OwnerGrabButtonMask |
@@ -12573,8 +12563,6 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   *windows->popup.name='\0';
   windows->popup.border_width=0;
   windows->popup.flags|=PPosition;
-  windows->popup.attributes.backing_store=WhenMapped;
-  windows->popup.attributes.save_under=True;
   windows->popup.attributes.event_mask=ButtonMotionMask | ButtonPressMask |
     ButtonReleaseMask | EnterWindowMask | ExposureMask | KeyPressMask |
     KeyReleaseMask | LeaveWindowMask | StructureNotifyMask;
@@ -12780,6 +12768,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     (void) XNextEvent(display,&event);
     if (!windows->image.stasis)
       windows->image.stasis=(time((time_t *) NULL)-timestamp) > 0;
+    if (!windows->magnify.stasis)
+      windows->magnify.stasis=(time((time_t *) NULL)-timestamp) > 0;
     if (event.xany.window == windows->command.id)
       {
         /*
@@ -13266,11 +13256,14 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                   windows->magnify.screen,CWWidth | CWHeight,&window_changes);
                 break;
               }
-            handler=SetMonitorHandler((MonitorHandler) NULL);
-            status=XMakeImage(display,resource_info,&windows->magnify,
-              display_image,windows->magnify.width,windows->magnify.height);
-            XMakeMagnifyImage(display,windows);
-            (void) SetMonitorHandler(handler);
+            if (windows->magnify.mapped && windows->magnify.stasis)
+              {
+                handler=SetMonitorHandler((MonitorHandler) NULL);
+                status=XMakeImage(display,resource_info,&windows->magnify,
+                  display_image,windows->magnify.width,windows->magnify.height);
+                XMakeMagnifyImage(display,windows);
+                (void) SetMonitorHandler(handler);
+              }
             break;
           }
         if (event.xconfigure.window == windows->pan.id)
