@@ -177,7 +177,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,"Missing event mask",
+                  MagickFatalError(OptionFatalError,"MissingEventMask",
                     option);
                 (void) SetLogEventMask(argv[i]);
               }

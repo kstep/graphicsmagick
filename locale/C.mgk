@@ -880,6 +880,98 @@
         Unrecognized option
       </Message>
     </Error>
+    </FatalError>
+      <Message name="InvalidColormapType">
+        Invalid colormap type
+      </Message>
+      <Message name="InvalidColorspaceType">
+        Invalid colorspace type
+      </Message>
+      <Message name="InvalidInterlaceType">
+        Invalid interlace type
+      </Message>
+      <Message name="InvalidVirtualPixelMethod">
+        Invalid virtual pixel method
+      </Message>
+      <Message name="MissingAnImageFilename">
+        Missing an image filename
+      </Message>
+      <Message name="MissingColor">
+        Missing color
+      </Message>
+      <Message name="MissingCommand">
+        Missing command
+      </Message>
+      <Message name="MissingDegrees">
+        Missing degrees
+      </Message>
+      <Message name="MissingDepth">
+        Missing depth
+      </Message>
+      <Message name="MissingEventMask">
+        Missing event mask
+      </Message>
+      <Message name="MissingFontName">
+        Missing font name
+      </Message>
+      <Message name="MissingForeground">
+        Missing foreground
+      </Message>
+      <Message name="MissingGeometry">
+        Missing geometry
+      </Message>
+      <Message name="MissingIDNameOrRoot">
+        Missing id name or 'root'
+      </Message>
+      <Message name="MissingImageDepth">
+        Missing image depth
+      </Message>
+      <Message name="MissingMapType">
+        Missing map type
+      </Message>
+      <Message name="MissingName">
+        Missing name
+      </Message>
+      <Message name="MissingPassword">
+        Missing password
+      </Message>
+      <Message name="MissingResourceLimit">
+        Missing resource limit
+      </Message>
+      <Message name="MissingResourceType">
+        Missing resource limit
+      </Message>
+      <Message name="MissingSceneNumber">
+        Missing scene number
+      </Message>
+      <Message name="MissingSeconds">
+        Missing seconds
+      </Message>
+      <Message name="MissingServerName">
+        Missing server name
+      </Message>
+      <Message name="MissingThreshold">
+        Missing threshold
+      </Message>
+      <Message name="MissingTitle">
+        Missing title
+      </Message>
+      <Message name="MissingWidth">
+        Missing width
+      </Message>
+      <Message name="MissingType">
+        Missing type
+      </Message>
+      <Message name="MissingVisualClass">
+        Missing visual class
+      </Message>
+      <Message name="MissingVirtualPixelMethod">
+        Missing virtual pixel method
+      </Message>
+      <Message name="UnrecognizedOption">
+        Unrecognized option
+      </Message>
+    </FatalError>
   </Option>
   <Registry>
     <Error>
@@ -1021,6 +1113,11 @@
         Unrecognized gravity type
       </Message>
     </Error>
+    <FatalError>
+      <Message name="UnableToOpenXServer">
+        Unable to open X server
+      </Message>
+    </FatalError>
     <Warning>
       <Message name="UsingDefaultVisual">
         UsingDefaultVisual

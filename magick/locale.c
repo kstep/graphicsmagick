@@ -669,6 +669,18 @@ const char *GetLocaleMessage(const char *tag)
                         return tag;
                     }
                 else
+                if (p - tp == 19 && !LocaleNCompare(tp, "InvalidColormapType", 19))
+                  return *np ? tag : "Invalid colormap type";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "InvalidColorspaceType", 21))
+                  return *np ? tag : "Invalid colorspace type";
+                else
+                if (p - tp == 20 && !LocaleNCompare(tp, "InvalidInterlaceType", 20))
+                  return *np ? tag : "Invalid interlace type";
+                else
+                if (p - tp == 25 && !LocaleNCompare(tp, "InvalidVirtualPixelMethod", 25))
+                  return *np ? tag : "Invalid virtual pixel method";
+                else
                   return tag;
 
               case 'm':  case 'M':
@@ -741,6 +753,81 @@ const char *GetLocaleMessage(const char *tag)
                       else
                         return tag;
                     }
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "MissingAnImageFilename", 22))
+                  return *np ? tag : "Missing an image filename";
+                else
+                if (p - tp == 12 && !LocaleNCompare(tp, "MissingColor", 12))
+                  return *np ? tag : "Missing color";
+                else
+                if (p - tp == 14 && !LocaleNCompare(tp, "MissingCommand", 14))
+                  return *np ? tag : "Missing command";
+                else
+                if (p - tp == 14 && !LocaleNCompare(tp, "MissingDegrees", 14))
+                  return *np ? tag : "Missing degrees";
+                else
+                if (p - tp == 12 && !LocaleNCompare(tp, "MissingDepth", 12))
+                  return *np ? tag : "Missing depth";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "MissingEventMask", 16))
+                  return *np ? tag : "Missing event mask";
+                else
+                if (p - tp == 15 && !LocaleNCompare(tp, "MissingFontName", 15))
+                  return *np ? tag : "Missing font name";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "MissingForeground", 17))
+                  return *np ? tag : "Missing foreground";
+                else
+                if (p - tp == 15 && !LocaleNCompare(tp, "MissingGeometry", 15))
+                  return *np ? tag : "Missing geometry";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "MissingIDNameOrRoot", 19))
+                  return *np ? tag : "Missing id name or 'root";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageDepth", 17))
+                  return *np ? tag : "Missing image depth";
+                else
+                if (p - tp == 14 && !LocaleNCompare(tp, "MissingMapType", 14))
+                  return *np ? tag : "Missing map type";
+                else
+                if (p - tp == 11 && !LocaleNCompare(tp, "MissingName", 11))
+                  return *np ? tag : "Missing name";
+                else
+                if (p - tp == 15 && !LocaleNCompare(tp, "MissingPassword", 15))
+                  return *np ? tag : "Missing password";
+                else
+                if (p - tp == 20 && !LocaleNCompare(tp, "MissingResourceLimit", 20))
+                  return *np ? tag : "Missing resource limit";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "MissingResourceType", 19))
+                  return *np ? tag : "Missing resource limit";
+                else
+                if (p - tp == 18 && !LocaleNCompare(tp, "MissingSceneNumber", 18))
+                  return *np ? tag : "Missing scene number";
+                else
+                if (p - tp == 14 && !LocaleNCompare(tp, "MissingSeconds", 14))
+                  return *np ? tag : "Missing seconds";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "MissingServerName", 17))
+                  return *np ? tag : "Missing server name";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "MissingThreshold", 16))
+                  return *np ? tag : "Missing threshold";
+                else
+                if (p - tp == 12 && !LocaleNCompare(tp, "MissingTitle", 12))
+                  return *np ? tag : "Missing title";
+                else
+                if (p - tp == 11 && !LocaleNCompare(tp, "MissingType", 11))
+                  return *np ? tag : "Missing type";
+                else
+                if (p - tp == 25 && !LocaleNCompare(tp, "MissingVirtualPixelMethod", 25))
+                  return *np ? tag : "Missing virtual pixel method";
+                else
+                if (p - tp == 18 && !LocaleNCompare(tp, "MissingVisualClass", 18))
+                  return *np ? tag : "Missing visual class";
+                else
+                if (p - tp == 12 && !LocaleNCompare(tp, "MissingWidth", 12))
+                  return *np ? tag : "Missing width";
                 else
                 if (p - tp == 6 && !LocaleNCompare(tp, "Module", 6))
                   if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
@@ -1004,269 +1091,9 @@ const char *GetLocaleMessage(const char *tag)
                 else
                   return tag;
 
-              case 'r':  case 'R':
-                if (p - tp == 8 && !LocaleNCompare(tp, "Registry", 8))
-                  if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-                    return tag;
-                  else
-                    switch (*NEXT_FIELD)
-                    {
-                    default:
-                      return tag;
-
-                    case 'u':  case 'U':
-                      if (p - tp == 21 && !LocaleNCompare(tp, "UnableToGetRegistryID", 21))
-                        return *np ? tag : "Unable to get registry ID";
-                      else
-                      if (p - tp == 19 && !LocaleNCompare(tp, "UnableToLocateImage", 19))
-                        return *np ? tag : "Unable to locate image";
-                      else
-                      if (p - tp == 19 && !LocaleNCompare(tp, "UnableToSetRegistry", 19))
-                        return *np ? tag : "Unable to set registry";
-                      else
-                        return tag;
-                    }
-                else
-                if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
-                  if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
-                    return tag;
-                  else
-                    switch (*NEXT_FIELD)
-                    {
-                    default:
-                      return tag;
-
-                    case 'e':  case 'E':
-                      if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
-                        switch (*NEXT_FIELD)
-                        {
-                        default:
-                          return tag;
-
-                        case 'c':  case 'C':
-                          if (p - tp == 23 && !LocaleNCompare(tp, "CacheResourcesExhausted", 23))
-                            return *np ? tag : "Cache resources exhausted";
-                          else
-                            return tag;
-
-                        case 'm':  case 'M':
-                          if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
-                            return *np ? tag : "Memory allocation failed";
-                          else
-                            return tag;
-
-                        case 'n':  case 'N':
-                          if (p - tp == 22 && !LocaleNCompare(tp, "NoPixelsDefinedInCache", 22))
-                            return *np ? tag : "No pixels defined in cache";
-                          else
-                            return tag;
-
-                        case 'p':  case 'P':
-                          if (p - tp == 26 && !LocaleNCompare(tp, "PixelCacheAllocationFailed", 26))
-                            return *np ? tag : "Pixel cache allocation failed";
-                          else
-                            return tag;
-
-                        case 'u':  case 'U':
-                          if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateColormap", 22))
-                            return *np ? tag : "Unable to create colormap";
-                          else
-                          if (p - tp == 19 && !LocaleNCompare(tp, "UnableToManageColor", 19))
-                            return *np ? tag : "Unable to manage color";
-                          else
-                            return tag;
-                        }
-                      else
-                        return tag;
-
-                    case 'w':  case 'W':
-                      if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
-                        if (LocaleNCompare(NEXT_FIELD, "MemoryAllocationFailed", 22) || p - tp != 22)
-                          return tag;
-                        else
-                          return *np ? tag : "Memory allocation failed";
-                      else
-                        return tag;
-                    }
-                else
-                  return tag;
-
-              case 's':  case 'S':
-                if (p - tp == 6 && !LocaleNCompare(tp, "Stream", 6))
-                  if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-                    return tag;
-                  else
-                    switch (*NEXT_FIELD)
-                    {
-                    default:
-                      return tag;
-
-                    case 'p':  case 'P':
-                      if (p - tp == 19 && !LocaleNCompare(tp, "PixelCacheIsNotOpen", 19))
-                        return *np ? tag : "Pixel cache is not open";
-                      else
-                        return tag;
-
-                    case 'u':  case 'U':
-                      if (p - tp == 26 && !LocaleNCompare(tp, "UnableToAcquirePixelStream", 26))
-                        return *np ? tag : "Unable to acquire pixel stream";
-                      else
-                      if (p - tp == 22 && !LocaleNCompare(tp, "UnableToSetPixelStream", 22))
-                        return *np ? tag : "Unable to set pixel stream";
-                      else
-                      if (p - tp == 23 && !LocaleNCompare(tp, "UnableToSyncPixelStream", 23))
-                        return *np ? tag : "Unable to sync pixel stream";
-                      else
-                        return tag;
-                    }
-                else
-                  return tag;
-
-              case 't':  case 'T':
-                if (p - tp == 4 && !LocaleNCompare(tp, "Type", 4))
-                  if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-                    return tag;
-                  else
-                    switch (*NEXT_FIELD)
-                    {
-                    default:
-                      return tag;
-
-                    case 'f':  case 'F':
-                      if (p - tp == 24 && !LocaleNCompare(tp, "FontSubstitutionRequired", 24))
-                        return *np ? tag : "Font substitution required";
-                      else
-                        return tag;
-
-                    case 'u':  case 'U':
-                      if (p - tp == 22 && !LocaleNCompare(tp, "UnableToGetTypeMetrics", 22))
-                        return *np ? tag : "Unable to get type metrics";
-                      else
-                      if (p - tp == 33 && !LocaleNCompare(tp, "UnableToInitializeFreetypeLibrary", 33))
-                        return *np ? tag : "Unable to initialize freetype library";
-                      else
-                      if (p - tp == 16 && !LocaleNCompare(tp, "UnableToReadFont", 16))
-                        return *np ? tag : "Unable to read font";
-                      else
-                      if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedFontEncoding", 24))
-                        return *np ? tag : "Unrecognized font encoding";
-                      else
-                        return tag;
-                    }
-                else
-                  return tag;
-
-              case 'x':  case 'X':
-                if (p - tp == 7 && !LocaleNCompare(tp, "XServer", 7))
-                  switch (*NEXT_FIELD)
-                  {
-                  default:
-                    return tag;
-
-                  case 'e':  case 'E':
-                    if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
-                      switch (*NEXT_FIELD)
-                      {
-                      default:
-                        return tag;
-
-                      case 'c':  case 'C':
-                        if (p - tp == 23 && !LocaleNCompare(tp, "ColorIsNotKnownToServer", 23))
-                          return *np ? tag : "Color is not known to server";
-                        else
-                          return tag;
-
-                      case 'i':  case 'I':
-                        if (p - tp == 22 && !LocaleNCompare(tp, "InvalidVisualSpecifier", 22))
-                          return *np ? tag : "Invalid visual specifier";
-                        else
-                          return tag;
-
-                      case 'n':  case 'N':
-                        if (p - tp == 29 && !LocaleNCompare(tp, "NoWindowWithSpecifiedIDExists", 29))
-                          return *np ? tag : "No window with specified ID exists";
-                        else
-                          return tag;
-
-                      case 's':  case 'S':
-                        if (p - tp == 32 && !LocaleNCompare(tp, "StandardColormapIsNotInitialized", 32))
-                          return *np ? tag : "Standard Colormap is not initialized";
-                        else
-                          return tag;
-
-                      case 'u':  case 'U':
-                        if (p - tp == 30 && !LocaleNCompare(tp, "UnableToConnectToRemoteDisplay", 30))
-                          return *np ? tag : "Unable to connect to remote display";
-                        else
-                        if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreateBitmap", 20))
-                          return *np ? tag : "Unable to create bitmap";
-                        else
-                        if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreatePixmap", 20))
-                          return *np ? tag : "Unable to create pixmap";
-                        else
-                        if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateProperty", 22))
-                          return *np ? tag : "Unable to create property";
-                        else
-                        if (p - tp == 30 && !LocaleNCompare(tp, "UnableToCreateStandardColormap", 30))
-                          return *np ? tag : "Unable to create standard colormap";
-                        else
-                        if (p - tp == 19 && !LocaleNCompare(tp, "UnableToGetProperty", 19))
-                          return *np ? tag : "Unable to get property";
-                        else
-                        if (p - tp == 27 && !LocaleNCompare(tp, "UnableToGetStandardColormap", 27))
-                          return *np ? tag : "Unable to get Standard Colormap";
-                        else
-                        if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
-                          return *np ? tag : "Unable to get visual";
-                        else
-                        if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGrabMouse", 17))
-                          return *np ? tag : "Unable to grab mouse";
-                        else
-                        if (p - tp == 16 && !LocaleNCompare(tp, "UnableToLoadFont", 16))
-                          return *np ? tag : "Unable to load font";
-                        else
-                        if (p - tp == 37 && !LocaleNCompare(tp, "UnableToMatchVisualToStandardColormap", 37))
-                          return *np ? tag : "Unable to match visual to Standard Colormap";
-                        else
-                        if (p - tp == 19 && !LocaleNCompare(tp, "UnableToOpenXServer", 19))
-                          return *np ? tag : "Unable to open X server";
-                        else
-                        if (p - tp == 29 && !LocaleNCompare(tp, "UnableToReadXWindowAttributes", 29))
-                          return *np ? tag : "Unable to read X window attributes";
-                        else
-                        if (p - tp == 24 && !LocaleNCompare(tp, "UnableToReadXWindowImage", 24))
-                          return *np ? tag : "Unable to read X window image";
-                        else
-                        if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedColormapType", 24))
-                          return *np ? tag : "Unrecognized colormap type";
-                        else
-                        if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedGravityType", 23))
-                          return *np ? tag : "Unrecognized gravity type";
-                        else
-                          return tag;
-                      }
-                    else
-                      return tag;
-
-                  case 'w':  case 'W':
-                    if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
-                      switch (*NEXT_FIELD)
-                      {
-                      default:
-                        return tag;
-
-                      case 'u':  case 'U':
-                        if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
-                          return *np ? tag : "Unable to get visual";
-                        else
-                        if (p - tp == 18 && !LocaleNCompare(tp, "UsingDefaultVisual", 18))
-                          return *np ? tag : "UsingDefaultVisual";
-                        else
-                          return tag;
-                      }
-                    else
-                      return tag;
-                  }
+              case 'u':  case 'U':
+                if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedOption", 18))
+                  return *np ? tag : "Unrecognized option";
                 else
                   return tag;
               }
@@ -1569,6 +1396,158 @@ const char *GetLocaleMessage(const char *tag)
         else
           return tag;
 
+      case 'r':  case 'R':
+        if (p - tp == 8 && !LocaleNCompare(tp, "Registry", 8))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 21 && !LocaleNCompare(tp, "UnableToGetRegistryID", 21))
+                return *np ? tag : "Unable to get registry ID";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToLocateImage", 19))
+                return *np ? tag : "Unable to locate image";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToSetRegistry", 19))
+                return *np ? tag : "Unable to set registry";
+              else
+                return tag;
+            }
+        else
+        if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
+          if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'e':  case 'E':
+              if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
+                switch (*NEXT_FIELD)
+                {
+                default:
+                  return tag;
+
+                case 'c':  case 'C':
+                  if (p - tp == 23 && !LocaleNCompare(tp, "CacheResourcesExhausted", 23))
+                    return *np ? tag : "Cache resources exhausted";
+                  else
+                    return tag;
+
+                case 'm':  case 'M':
+                  if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
+                    return *np ? tag : "Memory allocation failed";
+                  else
+                    return tag;
+
+                case 'n':  case 'N':
+                  if (p - tp == 22 && !LocaleNCompare(tp, "NoPixelsDefinedInCache", 22))
+                    return *np ? tag : "No pixels defined in cache";
+                  else
+                    return tag;
+
+                case 'p':  case 'P':
+                  if (p - tp == 26 && !LocaleNCompare(tp, "PixelCacheAllocationFailed", 26))
+                    return *np ? tag : "Pixel cache allocation failed";
+                  else
+                    return tag;
+
+                case 'u':  case 'U':
+                  if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateColormap", 22))
+                    return *np ? tag : "Unable to create colormap";
+                  else
+                  if (p - tp == 19 && !LocaleNCompare(tp, "UnableToManageColor", 19))
+                    return *np ? tag : "Unable to manage color";
+                  else
+                    return tag;
+                }
+              else
+                return tag;
+
+            case 'w':  case 'W':
+              if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
+                if (LocaleNCompare(NEXT_FIELD, "MemoryAllocationFailed", 22) || p - tp != 22)
+                  return tag;
+                else
+                  return *np ? tag : "Memory allocation failed";
+              else
+                return tag;
+            }
+        else
+          return tag;
+
+      case 's':  case 'S':
+        if (p - tp == 6 && !LocaleNCompare(tp, "Stream", 6))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'p':  case 'P':
+              if (p - tp == 19 && !LocaleNCompare(tp, "PixelCacheIsNotOpen", 19))
+                return *np ? tag : "Pixel cache is not open";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 26 && !LocaleNCompare(tp, "UnableToAcquirePixelStream", 26))
+                return *np ? tag : "Unable to acquire pixel stream";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "UnableToSetPixelStream", 22))
+                return *np ? tag : "Unable to set pixel stream";
+              else
+              if (p - tp == 23 && !LocaleNCompare(tp, "UnableToSyncPixelStream", 23))
+                return *np ? tag : "Unable to sync pixel stream";
+              else
+                return tag;
+            }
+        else
+          return tag;
+
+      case 't':  case 'T':
+        if (p - tp == 4 && !LocaleNCompare(tp, "Type", 4))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'f':  case 'F':
+              if (p - tp == 24 && !LocaleNCompare(tp, "FontSubstitutionRequired", 24))
+                return *np ? tag : "Font substitution required";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 22 && !LocaleNCompare(tp, "UnableToGetTypeMetrics", 22))
+                return *np ? tag : "Unable to get type metrics";
+              else
+              if (p - tp == 33 && !LocaleNCompare(tp, "UnableToInitializeFreetypeLibrary", 33))
+                return *np ? tag : "Unable to initialize freetype library";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "UnableToReadFont", 16))
+                return *np ? tag : "Unable to read font";
+              else
+              if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedFontEncoding", 24))
+                return *np ? tag : "Unrecognized font encoding";
+              else
+                return tag;
+            }
+        else
+          return tag;
+
       case 'u':  case 'U':
         if (p - tp == 27 && !LocaleNCompare(tp, "UnableToAccessConfigureFile", 27))
           return *np ? tag : "Unable to access configure file";
@@ -1578,6 +1557,129 @@ const char *GetLocaleMessage(const char *tag)
         else
         if (p - tp == 24 && !LocaleNCompare(tp, "UnableToAccessModuleFile", 24))
           return *np ? tag : "Unable to access module file";
+        else
+          return tag;
+
+      case 'x':  case 'X':
+        if (p - tp == 7 && !LocaleNCompare(tp, "XServer", 7))
+          switch (*NEXT_FIELD)
+          {
+          default:
+            return tag;
+
+          case 'e':  case 'E':
+            if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
+              switch (*NEXT_FIELD)
+              {
+              default:
+                return tag;
+
+              case 'c':  case 'C':
+                if (p - tp == 23 && !LocaleNCompare(tp, "ColorIsNotKnownToServer", 23))
+                  return *np ? tag : "Color is not known to server";
+                else
+                  return tag;
+
+              case 'i':  case 'I':
+                if (p - tp == 22 && !LocaleNCompare(tp, "InvalidVisualSpecifier", 22))
+                  return *np ? tag : "Invalid visual specifier";
+                else
+                  return tag;
+
+              case 'n':  case 'N':
+                if (p - tp == 29 && !LocaleNCompare(tp, "NoWindowWithSpecifiedIDExists", 29))
+                  return *np ? tag : "No window with specified ID exists";
+                else
+                  return tag;
+
+              case 's':  case 'S':
+                if (p - tp == 32 && !LocaleNCompare(tp, "StandardColormapIsNotInitialized", 32))
+                  return *np ? tag : "Standard Colormap is not initialized";
+                else
+                  return tag;
+
+              case 'u':  case 'U':
+                if (p - tp == 30 && !LocaleNCompare(tp, "UnableToConnectToRemoteDisplay", 30))
+                  return *np ? tag : "Unable to connect to remote display";
+                else
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreateBitmap", 20))
+                  return *np ? tag : "Unable to create bitmap";
+                else
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreatePixmap", 20))
+                  return *np ? tag : "Unable to create pixmap";
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateProperty", 22))
+                  return *np ? tag : "Unable to create property";
+                else
+                if (p - tp == 30 && !LocaleNCompare(tp, "UnableToCreateStandardColormap", 30))
+                  return *np ? tag : "Unable to create standard colormap";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToGetProperty", 19))
+                  return *np ? tag : "Unable to get property";
+                else
+                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToGetStandardColormap", 27))
+                  return *np ? tag : "Unable to get Standard Colormap";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
+                  return *np ? tag : "Unable to get visual";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGrabMouse", 17))
+                  return *np ? tag : "Unable to grab mouse";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "UnableToLoadFont", 16))
+                  return *np ? tag : "Unable to load font";
+                else
+                if (p - tp == 37 && !LocaleNCompare(tp, "UnableToMatchVisualToStandardColormap", 37))
+                  return *np ? tag : "Unable to match visual to Standard Colormap";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToOpenXServer", 19))
+                  return *np ? tag : "Unable to open X server";
+                else
+                if (p - tp == 29 && !LocaleNCompare(tp, "UnableToReadXWindowAttributes", 29))
+                  return *np ? tag : "Unable to read X window attributes";
+                else
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnableToReadXWindowImage", 24))
+                  return *np ? tag : "Unable to read X window image";
+                else
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedColormapType", 24))
+                  return *np ? tag : "Unrecognized colormap type";
+                else
+                if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedGravityType", 23))
+                  return *np ? tag : "Unrecognized gravity type";
+                else
+                  return tag;
+              }
+            else
+              return tag;
+
+          case 'f':  case 'F':
+            if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
+              if (LocaleNCompare(NEXT_FIELD, "UnableToOpenXServer", 19) || p - tp != 19)
+                return tag;
+              else
+                return *np ? tag : "Unable to open X server";
+            else
+              return tag;
+
+          case 'w':  case 'W':
+            if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
+              switch (*NEXT_FIELD)
+              {
+              default:
+                return tag;
+
+              case 'u':  case 'U':
+                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
+                  return *np ? tag : "Unable to get visual";
+                else
+                if (p - tp == 18 && !LocaleNCompare(tp, "UsingDefaultVisual", 18))
+                  return *np ? tag : "UsingDefaultVisual";
+                else
+                  return tag;
+              }
+            else
+              return tag;
+          }
         else
           return tag;
       }
@@ -2140,6 +2242,18 @@ const char *GetLocaleMessage(const char *tag)
                         return tag;
                     }
                 else
+                if (p - tp == 19 && !LocaleNCompare(tp, "InvalidColormapType", 19))
+                  return *np ? tag : "Invalid colormap type";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "InvalidColorspaceType", 21))
+                  return *np ? tag : "Invalid colorspace type";
+                else
+                if (p - tp == 20 && !LocaleNCompare(tp, "InvalidInterlaceType", 20))
+                  return *np ? tag : "Invalid interlace type";
+                else
+                if (p - tp == 25 && !LocaleNCompare(tp, "InvalidVirtualPixelMethod", 25))
+                  return *np ? tag : "Invalid virtual pixel method";
+                else
                   return tag;
 
               case 'm':  case 'M':
@@ -2212,6 +2326,81 @@ const char *GetLocaleMessage(const char *tag)
                       else
                         return tag;
                     }
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "MissingAnImageFilename", 22))
+                  return *np ? tag : "Missing an image filename";
+                else
+                if (p - tp == 12 && !LocaleNCompare(tp, "MissingColor", 12))
+                  return *np ? tag : "Missing color";
+                else
+                if (p - tp == 14 && !LocaleNCompare(tp, "MissingCommand", 14))
+                  return *np ? tag : "Missing command";
+                else
+                if (p - tp == 14 && !LocaleNCompare(tp, "MissingDegrees", 14))
+                  return *np ? tag : "Missing degrees";
+                else
+                if (p - tp == 12 && !LocaleNCompare(tp, "MissingDepth", 12))
+                  return *np ? tag : "Missing depth";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "MissingEventMask", 16))
+                  return *np ? tag : "Missing event mask";
+                else
+                if (p - tp == 15 && !LocaleNCompare(tp, "MissingFontName", 15))
+                  return *np ? tag : "Missing font name";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "MissingForeground", 17))
+                  return *np ? tag : "Missing foreground";
+                else
+                if (p - tp == 15 && !LocaleNCompare(tp, "MissingGeometry", 15))
+                  return *np ? tag : "Missing geometry";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "MissingIDNameOrRoot", 19))
+                  return *np ? tag : "Missing id name or 'root";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageDepth", 17))
+                  return *np ? tag : "Missing image depth";
+                else
+                if (p - tp == 14 && !LocaleNCompare(tp, "MissingMapType", 14))
+                  return *np ? tag : "Missing map type";
+                else
+                if (p - tp == 11 && !LocaleNCompare(tp, "MissingName", 11))
+                  return *np ? tag : "Missing name";
+                else
+                if (p - tp == 15 && !LocaleNCompare(tp, "MissingPassword", 15))
+                  return *np ? tag : "Missing password";
+                else
+                if (p - tp == 20 && !LocaleNCompare(tp, "MissingResourceLimit", 20))
+                  return *np ? tag : "Missing resource limit";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "MissingResourceType", 19))
+                  return *np ? tag : "Missing resource limit";
+                else
+                if (p - tp == 18 && !LocaleNCompare(tp, "MissingSceneNumber", 18))
+                  return *np ? tag : "Missing scene number";
+                else
+                if (p - tp == 14 && !LocaleNCompare(tp, "MissingSeconds", 14))
+                  return *np ? tag : "Missing seconds";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "MissingServerName", 17))
+                  return *np ? tag : "Missing server name";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "MissingThreshold", 16))
+                  return *np ? tag : "Missing threshold";
+                else
+                if (p - tp == 12 && !LocaleNCompare(tp, "MissingTitle", 12))
+                  return *np ? tag : "Missing title";
+                else
+                if (p - tp == 11 && !LocaleNCompare(tp, "MissingType", 11))
+                  return *np ? tag : "Missing type";
+                else
+                if (p - tp == 25 && !LocaleNCompare(tp, "MissingVirtualPixelMethod", 25))
+                  return *np ? tag : "Missing virtual pixel method";
+                else
+                if (p - tp == 18 && !LocaleNCompare(tp, "MissingVisualClass", 18))
+                  return *np ? tag : "Missing visual class";
+                else
+                if (p - tp == 12 && !LocaleNCompare(tp, "MissingWidth", 12))
+                  return *np ? tag : "Missing width";
                 else
                 if (p - tp == 6 && !LocaleNCompare(tp, "Module", 6))
                   if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
@@ -2475,269 +2664,9 @@ const char *GetLocaleMessage(const char *tag)
                 else
                   return tag;
 
-              case 'r':  case 'R':
-                if (p - tp == 8 && !LocaleNCompare(tp, "Registry", 8))
-                  if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-                    return tag;
-                  else
-                    switch (*NEXT_FIELD)
-                    {
-                    default:
-                      return tag;
-
-                    case 'u':  case 'U':
-                      if (p - tp == 21 && !LocaleNCompare(tp, "UnableToGetRegistryID", 21))
-                        return *np ? tag : "Unable to get registry ID";
-                      else
-                      if (p - tp == 19 && !LocaleNCompare(tp, "UnableToLocateImage", 19))
-                        return *np ? tag : "Unable to locate image";
-                      else
-                      if (p - tp == 19 && !LocaleNCompare(tp, "UnableToSetRegistry", 19))
-                        return *np ? tag : "Unable to set registry";
-                      else
-                        return tag;
-                    }
-                else
-                if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
-                  if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
-                    return tag;
-                  else
-                    switch (*NEXT_FIELD)
-                    {
-                    default:
-                      return tag;
-
-                    case 'e':  case 'E':
-                      if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
-                        switch (*NEXT_FIELD)
-                        {
-                        default:
-                          return tag;
-
-                        case 'c':  case 'C':
-                          if (p - tp == 23 && !LocaleNCompare(tp, "CacheResourcesExhausted", 23))
-                            return *np ? tag : "Cache resources exhausted";
-                          else
-                            return tag;
-
-                        case 'm':  case 'M':
-                          if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
-                            return *np ? tag : "Memory allocation failed";
-                          else
-                            return tag;
-
-                        case 'n':  case 'N':
-                          if (p - tp == 22 && !LocaleNCompare(tp, "NoPixelsDefinedInCache", 22))
-                            return *np ? tag : "No pixels defined in cache";
-                          else
-                            return tag;
-
-                        case 'p':  case 'P':
-                          if (p - tp == 26 && !LocaleNCompare(tp, "PixelCacheAllocationFailed", 26))
-                            return *np ? tag : "Pixel cache allocation failed";
-                          else
-                            return tag;
-
-                        case 'u':  case 'U':
-                          if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateColormap", 22))
-                            return *np ? tag : "Unable to create colormap";
-                          else
-                          if (p - tp == 19 && !LocaleNCompare(tp, "UnableToManageColor", 19))
-                            return *np ? tag : "Unable to manage color";
-                          else
-                            return tag;
-                        }
-                      else
-                        return tag;
-
-                    case 'w':  case 'W':
-                      if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
-                        if (LocaleNCompare(NEXT_FIELD, "MemoryAllocationFailed", 22) || p - tp != 22)
-                          return tag;
-                        else
-                          return *np ? tag : "Memory allocation failed";
-                      else
-                        return tag;
-                    }
-                else
-                  return tag;
-
-              case 's':  case 'S':
-                if (p - tp == 6 && !LocaleNCompare(tp, "Stream", 6))
-                  if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-                    return tag;
-                  else
-                    switch (*NEXT_FIELD)
-                    {
-                    default:
-                      return tag;
-
-                    case 'p':  case 'P':
-                      if (p - tp == 19 && !LocaleNCompare(tp, "PixelCacheIsNotOpen", 19))
-                        return *np ? tag : "Pixel cache is not open";
-                      else
-                        return tag;
-
-                    case 'u':  case 'U':
-                      if (p - tp == 26 && !LocaleNCompare(tp, "UnableToAcquirePixelStream", 26))
-                        return *np ? tag : "Unable to acquire pixel stream";
-                      else
-                      if (p - tp == 22 && !LocaleNCompare(tp, "UnableToSetPixelStream", 22))
-                        return *np ? tag : "Unable to set pixel stream";
-                      else
-                      if (p - tp == 23 && !LocaleNCompare(tp, "UnableToSyncPixelStream", 23))
-                        return *np ? tag : "Unable to sync pixel stream";
-                      else
-                        return tag;
-                    }
-                else
-                  return tag;
-
-              case 't':  case 'T':
-                if (p - tp == 4 && !LocaleNCompare(tp, "Type", 4))
-                  if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-                    return tag;
-                  else
-                    switch (*NEXT_FIELD)
-                    {
-                    default:
-                      return tag;
-
-                    case 'f':  case 'F':
-                      if (p - tp == 24 && !LocaleNCompare(tp, "FontSubstitutionRequired", 24))
-                        return *np ? tag : "Font substitution required";
-                      else
-                        return tag;
-
-                    case 'u':  case 'U':
-                      if (p - tp == 22 && !LocaleNCompare(tp, "UnableToGetTypeMetrics", 22))
-                        return *np ? tag : "Unable to get type metrics";
-                      else
-                      if (p - tp == 33 && !LocaleNCompare(tp, "UnableToInitializeFreetypeLibrary", 33))
-                        return *np ? tag : "Unable to initialize freetype library";
-                      else
-                      if (p - tp == 16 && !LocaleNCompare(tp, "UnableToReadFont", 16))
-                        return *np ? tag : "Unable to read font";
-                      else
-                      if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedFontEncoding", 24))
-                        return *np ? tag : "Unrecognized font encoding";
-                      else
-                        return tag;
-                    }
-                else
-                  return tag;
-
-              case 'x':  case 'X':
-                if (p - tp == 7 && !LocaleNCompare(tp, "XServer", 7))
-                  switch (*NEXT_FIELD)
-                  {
-                  default:
-                    return tag;
-
-                  case 'e':  case 'E':
-                    if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
-                      switch (*NEXT_FIELD)
-                      {
-                      default:
-                        return tag;
-
-                      case 'c':  case 'C':
-                        if (p - tp == 23 && !LocaleNCompare(tp, "ColorIsNotKnownToServer", 23))
-                          return *np ? tag : "Color is not known to server";
-                        else
-                          return tag;
-
-                      case 'i':  case 'I':
-                        if (p - tp == 22 && !LocaleNCompare(tp, "InvalidVisualSpecifier", 22))
-                          return *np ? tag : "Invalid visual specifier";
-                        else
-                          return tag;
-
-                      case 'n':  case 'N':
-                        if (p - tp == 29 && !LocaleNCompare(tp, "NoWindowWithSpecifiedIDExists", 29))
-                          return *np ? tag : "No window with specified ID exists";
-                        else
-                          return tag;
-
-                      case 's':  case 'S':
-                        if (p - tp == 32 && !LocaleNCompare(tp, "StandardColormapIsNotInitialized", 32))
-                          return *np ? tag : "Standard Colormap is not initialized";
-                        else
-                          return tag;
-
-                      case 'u':  case 'U':
-                        if (p - tp == 30 && !LocaleNCompare(tp, "UnableToConnectToRemoteDisplay", 30))
-                          return *np ? tag : "Unable to connect to remote display";
-                        else
-                        if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreateBitmap", 20))
-                          return *np ? tag : "Unable to create bitmap";
-                        else
-                        if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreatePixmap", 20))
-                          return *np ? tag : "Unable to create pixmap";
-                        else
-                        if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateProperty", 22))
-                          return *np ? tag : "Unable to create property";
-                        else
-                        if (p - tp == 30 && !LocaleNCompare(tp, "UnableToCreateStandardColormap", 30))
-                          return *np ? tag : "Unable to create standard colormap";
-                        else
-                        if (p - tp == 19 && !LocaleNCompare(tp, "UnableToGetProperty", 19))
-                          return *np ? tag : "Unable to get property";
-                        else
-                        if (p - tp == 27 && !LocaleNCompare(tp, "UnableToGetStandardColormap", 27))
-                          return *np ? tag : "Unable to get Standard Colormap";
-                        else
-                        if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
-                          return *np ? tag : "Unable to get visual";
-                        else
-                        if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGrabMouse", 17))
-                          return *np ? tag : "Unable to grab mouse";
-                        else
-                        if (p - tp == 16 && !LocaleNCompare(tp, "UnableToLoadFont", 16))
-                          return *np ? tag : "Unable to load font";
-                        else
-                        if (p - tp == 37 && !LocaleNCompare(tp, "UnableToMatchVisualToStandardColormap", 37))
-                          return *np ? tag : "Unable to match visual to Standard Colormap";
-                        else
-                        if (p - tp == 19 && !LocaleNCompare(tp, "UnableToOpenXServer", 19))
-                          return *np ? tag : "Unable to open X server";
-                        else
-                        if (p - tp == 29 && !LocaleNCompare(tp, "UnableToReadXWindowAttributes", 29))
-                          return *np ? tag : "Unable to read X window attributes";
-                        else
-                        if (p - tp == 24 && !LocaleNCompare(tp, "UnableToReadXWindowImage", 24))
-                          return *np ? tag : "Unable to read X window image";
-                        else
-                        if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedColormapType", 24))
-                          return *np ? tag : "Unrecognized colormap type";
-                        else
-                        if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedGravityType", 23))
-                          return *np ? tag : "Unrecognized gravity type";
-                        else
-                          return tag;
-                      }
-                    else
-                      return tag;
-
-                  case 'w':  case 'W':
-                    if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
-                      switch (*NEXT_FIELD)
-                      {
-                      default:
-                        return tag;
-
-                      case 'u':  case 'U':
-                        if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
-                          return *np ? tag : "Unable to get visual";
-                        else
-                        if (p - tp == 18 && !LocaleNCompare(tp, "UsingDefaultVisual", 18))
-                          return *np ? tag : "UsingDefaultVisual";
-                        else
-                          return tag;
-                      }
-                    else
-                      return tag;
-                  }
+              case 'u':  case 'U':
+                if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedOption", 18))
+                  return *np ? tag : "Unrecognized option";
                 else
                   return tag;
               }
@@ -3040,6 +2969,158 @@ const char *GetLocaleMessage(const char *tag)
         else
           return tag;
 
+      case 'r':  case 'R':
+        if (p - tp == 8 && !LocaleNCompare(tp, "Registry", 8))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 21 && !LocaleNCompare(tp, "UnableToGetRegistryID", 21))
+                return *np ? tag : "Unable to get registry ID";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToLocateImage", 19))
+                return *np ? tag : "Unable to locate image";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToSetRegistry", 19))
+                return *np ? tag : "Unable to set registry";
+              else
+                return tag;
+            }
+        else
+        if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
+          if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'e':  case 'E':
+              if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
+                switch (*NEXT_FIELD)
+                {
+                default:
+                  return tag;
+
+                case 'c':  case 'C':
+                  if (p - tp == 23 && !LocaleNCompare(tp, "CacheResourcesExhausted", 23))
+                    return *np ? tag : "Cache resources exhausted";
+                  else
+                    return tag;
+
+                case 'm':  case 'M':
+                  if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
+                    return *np ? tag : "Memory allocation failed";
+                  else
+                    return tag;
+
+                case 'n':  case 'N':
+                  if (p - tp == 22 && !LocaleNCompare(tp, "NoPixelsDefinedInCache", 22))
+                    return *np ? tag : "No pixels defined in cache";
+                  else
+                    return tag;
+
+                case 'p':  case 'P':
+                  if (p - tp == 26 && !LocaleNCompare(tp, "PixelCacheAllocationFailed", 26))
+                    return *np ? tag : "Pixel cache allocation failed";
+                  else
+                    return tag;
+
+                case 'u':  case 'U':
+                  if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateColormap", 22))
+                    return *np ? tag : "Unable to create colormap";
+                  else
+                  if (p - tp == 19 && !LocaleNCompare(tp, "UnableToManageColor", 19))
+                    return *np ? tag : "Unable to manage color";
+                  else
+                    return tag;
+                }
+              else
+                return tag;
+
+            case 'w':  case 'W':
+              if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
+                if (LocaleNCompare(NEXT_FIELD, "MemoryAllocationFailed", 22) || p - tp != 22)
+                  return tag;
+                else
+                  return *np ? tag : "Memory allocation failed";
+              else
+                return tag;
+            }
+        else
+          return tag;
+
+      case 's':  case 'S':
+        if (p - tp == 6 && !LocaleNCompare(tp, "Stream", 6))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'p':  case 'P':
+              if (p - tp == 19 && !LocaleNCompare(tp, "PixelCacheIsNotOpen", 19))
+                return *np ? tag : "Pixel cache is not open";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 26 && !LocaleNCompare(tp, "UnableToAcquirePixelStream", 26))
+                return *np ? tag : "Unable to acquire pixel stream";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "UnableToSetPixelStream", 22))
+                return *np ? tag : "Unable to set pixel stream";
+              else
+              if (p - tp == 23 && !LocaleNCompare(tp, "UnableToSyncPixelStream", 23))
+                return *np ? tag : "Unable to sync pixel stream";
+              else
+                return tag;
+            }
+        else
+          return tag;
+
+      case 't':  case 'T':
+        if (p - tp == 4 && !LocaleNCompare(tp, "Type", 4))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'f':  case 'F':
+              if (p - tp == 24 && !LocaleNCompare(tp, "FontSubstitutionRequired", 24))
+                return *np ? tag : "Font substitution required";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 22 && !LocaleNCompare(tp, "UnableToGetTypeMetrics", 22))
+                return *np ? tag : "Unable to get type metrics";
+              else
+              if (p - tp == 33 && !LocaleNCompare(tp, "UnableToInitializeFreetypeLibrary", 33))
+                return *np ? tag : "Unable to initialize freetype library";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "UnableToReadFont", 16))
+                return *np ? tag : "Unable to read font";
+              else
+              if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedFontEncoding", 24))
+                return *np ? tag : "Unrecognized font encoding";
+              else
+                return tag;
+            }
+        else
+          return tag;
+
       case 'u':  case 'U':
         if (p - tp == 27 && !LocaleNCompare(tp, "UnableToAccessConfigureFile", 27))
           return *np ? tag : "Unable to access configure file";
@@ -3049,6 +3130,129 @@ const char *GetLocaleMessage(const char *tag)
         else
         if (p - tp == 24 && !LocaleNCompare(tp, "UnableToAccessModuleFile", 24))
           return *np ? tag : "Unable to access module file";
+        else
+          return tag;
+
+      case 'x':  case 'X':
+        if (p - tp == 7 && !LocaleNCompare(tp, "XServer", 7))
+          switch (*NEXT_FIELD)
+          {
+          default:
+            return tag;
+
+          case 'e':  case 'E':
+            if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
+              switch (*NEXT_FIELD)
+              {
+              default:
+                return tag;
+
+              case 'c':  case 'C':
+                if (p - tp == 23 && !LocaleNCompare(tp, "ColorIsNotKnownToServer", 23))
+                  return *np ? tag : "Color is not known to server";
+                else
+                  return tag;
+
+              case 'i':  case 'I':
+                if (p - tp == 22 && !LocaleNCompare(tp, "InvalidVisualSpecifier", 22))
+                  return *np ? tag : "Invalid visual specifier";
+                else
+                  return tag;
+
+              case 'n':  case 'N':
+                if (p - tp == 29 && !LocaleNCompare(tp, "NoWindowWithSpecifiedIDExists", 29))
+                  return *np ? tag : "No window with specified ID exists";
+                else
+                  return tag;
+
+              case 's':  case 'S':
+                if (p - tp == 32 && !LocaleNCompare(tp, "StandardColormapIsNotInitialized", 32))
+                  return *np ? tag : "Standard Colormap is not initialized";
+                else
+                  return tag;
+
+              case 'u':  case 'U':
+                if (p - tp == 30 && !LocaleNCompare(tp, "UnableToConnectToRemoteDisplay", 30))
+                  return *np ? tag : "Unable to connect to remote display";
+                else
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreateBitmap", 20))
+                  return *np ? tag : "Unable to create bitmap";
+                else
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreatePixmap", 20))
+                  return *np ? tag : "Unable to create pixmap";
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateProperty", 22))
+                  return *np ? tag : "Unable to create property";
+                else
+                if (p - tp == 30 && !LocaleNCompare(tp, "UnableToCreateStandardColormap", 30))
+                  return *np ? tag : "Unable to create standard colormap";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToGetProperty", 19))
+                  return *np ? tag : "Unable to get property";
+                else
+                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToGetStandardColormap", 27))
+                  return *np ? tag : "Unable to get Standard Colormap";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
+                  return *np ? tag : "Unable to get visual";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGrabMouse", 17))
+                  return *np ? tag : "Unable to grab mouse";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "UnableToLoadFont", 16))
+                  return *np ? tag : "Unable to load font";
+                else
+                if (p - tp == 37 && !LocaleNCompare(tp, "UnableToMatchVisualToStandardColormap", 37))
+                  return *np ? tag : "Unable to match visual to Standard Colormap";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToOpenXServer", 19))
+                  return *np ? tag : "Unable to open X server";
+                else
+                if (p - tp == 29 && !LocaleNCompare(tp, "UnableToReadXWindowAttributes", 29))
+                  return *np ? tag : "Unable to read X window attributes";
+                else
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnableToReadXWindowImage", 24))
+                  return *np ? tag : "Unable to read X window image";
+                else
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedColormapType", 24))
+                  return *np ? tag : "Unrecognized colormap type";
+                else
+                if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedGravityType", 23))
+                  return *np ? tag : "Unrecognized gravity type";
+                else
+                  return tag;
+              }
+            else
+              return tag;
+
+          case 'f':  case 'F':
+            if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
+              if (LocaleNCompare(NEXT_FIELD, "UnableToOpenXServer", 19) || p - tp != 19)
+                return tag;
+              else
+                return *np ? tag : "Unable to open X server";
+            else
+              return tag;
+
+          case 'w':  case 'W':
+            if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
+              switch (*NEXT_FIELD)
+              {
+              default:
+                return tag;
+
+              case 'u':  case 'U':
+                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
+                  return *np ? tag : "Unable to get visual";
+                else
+                if (p - tp == 18 && !LocaleNCompare(tp, "UsingDefaultVisual", 18))
+                  return *np ? tag : "UsingDefaultVisual";
+                else
+                  return tag;
+              }
+            else
+              return tag;
+          }
         else
           return tag;
       }
