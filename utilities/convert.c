@@ -274,12 +274,15 @@ static void ConcatenateImages(int argc,char **argv)
 %
 %  The format of the ConvertImages method is:
 %
-%      unsigned int ConvertImages(const ImageInfo *image_info,
-%        OptionInfo *option_info,const int argc,char **argv,Image **image)
+%      unsigned int ConvertImages(const ImageInfo *image_info,Image **image,
+%        OptionInfo *option_info,const int argc,char **argv,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: The image info.
+%
+%    o images: The image.
 %
 %    o option_info: The option info.
 %
@@ -287,12 +290,11 @@ static void ConcatenateImages(int argc,char **argv)
 %
 %    o argv: A text array containing the command line arguments.
 %
-%    o images: The image.
-%
+%    o exception: Return any errors or warnings in this structure.
 %
 */
-static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
-  const int argc,char **argv,Image **image)
+static unsigned int ConvertImages(ImageInfo *image_info,Image **image,
+  OptionInfo *option_info,const int argc,char **argv,ExceptionInfo *exception)
 {
   long
     scene;
@@ -307,6 +309,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
   if (argc < 2)
     return(False);
   scene=option_info->scene;
@@ -322,8 +325,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
       /*
         Append an image sequence.
       */
-      append_image=
-        AppendImages(*image,option_info->append == 1,&(*image)->exception);
+      append_image=AppendImages(*image,option_info->append == 1,exception);
       if (append_image != (Image *) NULL)
         {
           DestroyImageList(*image);
@@ -338,7 +340,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
       /*
         Average an image sequence.
       */
-      average_image=AverageImages(*image,&(*image)->exception);
+      average_image=AverageImages(*image,exception);
       if (average_image != (Image *) NULL)
         {
           DestroyImageList(*image);
@@ -353,7 +355,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
       /*
         Coalesce an image sequence.
       */
-      coalesce_image=CoalesceImages(*image,&(*image)->exception);
+      coalesce_image=CoalesceImages(*image,exception);
       if (coalesce_image != (Image *) NULL)
         {
           DestroyImageList(*image);
@@ -368,7 +370,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
       /*
         Deconstruct an image sequence.
       */
-      deconstruct_image=DeconstructImages(*image,&(*image)->exception);
+      deconstruct_image=DeconstructImages(*image,exception);
       if (deconstruct_image != (Image *) NULL)
         {
           DestroyImageList(*image);
@@ -383,7 +385,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
       /*
         Flatten an image sequence.
       */
-      flatten_image=FlattenImages(*image,&(*image)->exception);
+      flatten_image=FlattenImages(*image,exception);
       if (flatten_image != (Image *) NULL)
         {
           DestroyImageList(*image);
@@ -398,7 +400,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
       /*
         Morph an image sequence.
       */
-      morph_image=MorphImages(*image,option_info->morph,&(*image)->exception);
+      morph_image=MorphImages(*image,option_info->morph,exception);
       if (morph_image != (Image *) NULL)
         {
           DestroyImageList(*image);
@@ -413,7 +415,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
       /*
         Create an image mosaic.
       */
-      mosaic_image=MosaicImages(*image,&(*image)->exception);
+      mosaic_image=MosaicImages(*image,exception);
       if (mosaic_image != (Image *) NULL)
         {
           DestroyImageList(*image);
@@ -431,7 +433,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
     (void) strncpy(p->filename,argv[argc-1],MaxTextExtent-1);
     p->scene=scene++;
   }
-  (void) SetImageInfo(image_info,True,&(*image)->exception);
+  (void) SetImageInfo(image_info,True,exception);
   for (p=(*image); p != (Image *) NULL; p=p->next)
   {
     status=WriteImage(image_info,p);
@@ -1031,8 +1033,8 @@ int main(int argc,char **argv)
                   if (clone_image == (Image *) NULL)
                     MagickError(OptionError,"Missing an image file name",
                       (char *) NULL);
-                  status=ConvertImages(clone_info,&option_info,i-j+2,
-                    argv+j-1,&clone_image);
+                  status=ConvertImages(clone_info,&clone_image,&option_info,
+                    i-j+2,argv+j-1,&exception);
                   DestroyImageList(clone_image);
                   DestroyImageInfo(clone_info);
                   j=i+1;
@@ -1850,8 +1852,8 @@ int main(int argc,char **argv)
                   if (image == (Image *) NULL)
                     MagickError(OptionError,"Missing source image",
                       (char *) NULL);
-                  status=ConvertImages(image_info,&option_info,i-j+2,
-                    argv+j-1,&image);
+                  status=ConvertImages(image_info,&image,&option_info,i-j+2,
+                    argv+j-1,&exception);
                   j=i+1;
                 }
               break;
@@ -2195,7 +2197,8 @@ int main(int argc,char **argv)
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  status=ConvertImages(image_info,&option_info,argc-j+1,argv+j-1,&image);
+  status=
+	  ConvertImages(image_info,&image,&option_info,argc-j+1,argv+j-1,&exception);
   DestroyImageList(image);
   DestroyImageInfo(image_info);
   if (LocaleCompare("-convert",argv[0]) == 0)

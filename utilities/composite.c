@@ -146,13 +146,15 @@ typedef struct _CompositeOptionInfo
 %
 %  The format of the CompositeImages method is:
 %
-%      unsigned int CompositeImages(const ImageInfo *image_info,
+%      unsigned int CompositeImages(const ImageInfo *image_info,Image **image,
 %        CompositeOptionInfo *option_info,const int argc,char **argv,
-%        Image **composite_image,Image **mask_image,Image **image)
+%        Image **composite_image,Image **mask_image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: The image info..
+%
+%    o image: The image.
 %
 %    o option_info: The option info.
 %
@@ -164,13 +166,13 @@ typedef struct _CompositeOptionInfo
 %
 %    o mask_image: The mask image.
 %
-%    o image: The image.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-static unsigned int CompositeImages(ImageInfo *image_info,
+static unsigned int CompositeImages(ImageInfo *image_info,Image **image,
   CompositeOptionInfo *option_info,const int argc,char **argv,
-  Image *composite_image,Image *mask_image,Image **image)
+  Image *composite_image,Image *mask_image,ExceptionInfo *exception)
 {
   long
     x,
@@ -187,6 +189,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
   if (argc < 2)
     return(False);
   while ((*image)->previous != (Image *) NULL)
@@ -255,8 +258,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,
             *stegano_image;
 
           (*image)->offset=option_info->stegano-1;
-          stegano_image=
-            SteganoImage(*image,composite_image,&(*image)->exception);
+          stegano_image=SteganoImage(*image,composite_image,exception);
           if (stegano_image != (Image *) NULL)
             {
               DestroyImages(*image);
@@ -269,8 +271,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,
             Image
               *stereo_image;
 
-            stereo_image=
-              StereoImage(*image,composite_image,&(*image)->exception);
+            stereo_image=StereoImage(*image,composite_image,exception);
             if (stereo_image != (Image *) NULL)
               {
                 DestroyImages(*image);
@@ -380,7 +381,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   for (p=(*image); p != (Image *) NULL; p=p->next)
     (void) strncpy(p->filename,argv[argc-1],MaxTextExtent-1);
-  (void) SetImageInfo(image_info,True,&(*image)->exception);
+  (void) SetImageInfo(image_info,True,exception);
   for (p=(*image); p != (Image *) NULL; p=p->next)
   {
     status=WriteImage(image_info,p);
@@ -827,8 +828,8 @@ int main(int argc,char **argv)
                   if (clone_image == (Image *) NULL)
                     MagickError(OptionError,"Missing an image file name",
                       (char *) NULL);
-                  status=CompositeImages(clone_info,&option_info,i-j+2,
-                    argv+j-1,composite_image,mask_image,&clone_image);
+                  status=CompositeImages(clone_info,&clone_image,&option_info,
+                    i-j+2,argv+j-1,composite_image,mask_image,&exception);
                   if (composite_image != (Image *) NULL)
                     {
                       DestroyImages(composite_image);
@@ -1190,8 +1191,8 @@ int main(int argc,char **argv)
                   if (image == (Image *) NULL)
                     MagickError(OptionError,"Missing source image",
                       (char *) NULL);
-                  status=CompositeImages(image_info,&option_info,i-j+2,
-                    argv+j-1,composite_image,mask_image,&image);
+                  status=CompositeImages(image_info,&image,&option_info,i-j+2,
+                    argv+j-1,composite_image,mask_image,&exception);
                   if (composite_image != (Image *) NULL)
                     {
                       DestroyImages(composite_image);
@@ -1394,8 +1395,8 @@ int main(int argc,char **argv)
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  status=CompositeImages(image_info,&option_info,argc-j+1,argv+j-1,
-    composite_image,mask_image,&image);
+  status=CompositeImages(image_info,&image,&option_info,argc-j+1,argv+j-1,
+    composite_image,mask_image,&exception);
   if (option_info.displace_geometry != (char *) NULL)
     LiberateMemory((void **) &option_info.displace_geometry);
   if (option_info.geometry != (char *) NULL)
