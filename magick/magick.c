@@ -335,10 +335,22 @@ MagickExport void InitializeMagick(const char *path)
   (void) setlocale(LC_NUMERIC,"C");
   InitializeSemaphore();
 #if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE) && defined(_SC_PHYS_PAGES)
-  SetMagickResourceLimit(MemoryResource,
-    ((sysconf(_SC_PAGE_SIZE)+512)/1024)*((sysconf(_SC_PHYS_PAGES)+512)/1024));
-  SetMagickResourceLimit(MapResource,
-    2*((sysconf(_SC_PAGE_SIZE)+512)/1024)*((sysconf(_SC_PHYS_PAGES)+512)/1024));
+  {
+    long
+      page_size,
+      phys_pages;
+
+    page_size=sysconf(_SC_PAGE_SIZE);
+    phys_pages=sysconf(_SC_PHYS_PAGES);
+
+    if ( page_size > 0 && phys_pages > 0 )
+      {
+        SetMagickResourceLimit(MemoryResource,
+          ((page_size+512)/1024)*((phys_pages+512)/1024));
+        SetMagickResourceLimit(MapResource,
+          2*((page_size+512)/1024)*((phys_pages+512)/1024));
+      }
+  }
 #endif
 #if defined(PixelCacheThreshold)
   SetMagickResourceLimit(MemoryResource,PixelCacheThreshold);
