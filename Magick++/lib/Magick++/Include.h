@@ -107,6 +107,19 @@ namespace Magick
   using MagickLib::DirectClass;
   using MagickLib::PseudoClass;
   
+  // Channel types
+  using MagickLib::ChannelType;
+  using MagickLib::UndefinedChannel;
+  using MagickLib::RedChannel;
+  using MagickLib::CyanChannel;
+  using MagickLib::GreenChannel;
+  using MagickLib::MagentaChannel;
+  using MagickLib::BlueChannel;
+  using MagickLib::YellowChannel;
+  using MagickLib::OpacityChannel;
+  using MagickLib::BlackChannel;
+  using MagickLib::MatteChannel;
+  
   // Color-space types
   using MagickLib::ColorspaceType;
   using MagickLib::UndefinedColorspace;
@@ -242,14 +255,6 @@ namespace Magick
   using MagickLib::LineInterlace;
   using MagickLib::PlaneInterlace;
   using MagickLib::PartitionInterlace;
-  
-  // Channel types
-  using MagickLib::ChannelType;
-  using MagickLib::UndefinedChannel;
-  using MagickLib::RedChannel;
-  using MagickLib::GreenChannel;
-  using MagickLib::BlueChannel;
-  using MagickLib::MatteChannel;
 
   // Line cap types
   using MagickLib::LineCap;
