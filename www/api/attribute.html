@@ -22,6 +22,7 @@
 
 		<LI><A HREF="#destroyimageattributes">DestroyImageAttributes</A></LI>
 		<LI><A HREF="#getimageattribute">GetImageAttribute</A></LI>
+		<LI><A HREF="#getimageclippingpathattribute">GetImageClippingPathAttribute</A></LI>
 		<LI><A HREF="#getimageinfoattribute">GetImageInfoAttribute</A></LI>
 		<LI><A HREF="#setimageattribute">SetImageAttribute</A></LI>
 		<LI><A HREF="#storeimageattribute">StoreImageAttribute</A></LI>
@@ -41,6 +42,7 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P><STRONG>DestroyImageAttributes</STRONG>( Image *image );</P>
 <P>ImageAttribute * <STRONG>GetImageAttribute</STRONG>( const Image *image, const char *key );</P>
+<P>ImageAttribute * <STRONG>GetImageClippingPathAttribute</STRONG>( const Image *image );</P>
 <P>unsigned int  <STRONG>SetImageAttribute</STRONG>( Image *image, const char *key, const char *value );</P>
 <P><STRONG>StoreImageAttribute</STRONG>( Image *image, char *text );</P>
 <P>
@@ -61,7 +63,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimageattribute">GetImageAttribute</A></H2>
-<P>Method GetImageAttribute searches the list of image attributes and returns a pointer to attribute if it exists otherwise 
+<P>Method GetImageAttribute searches the list of image attributes and returns a pointer to the attribute if it exists otherwise 
 <FONT SIZE=-1>NULL.</FONT></P>
 <P>The format of the GetImageAttribute method is:</P>
 <blockquote>ImageAttribute *GetImageAttribute ( const <A HREF="types/Image.html">Image</A> *image, const char *key ); </blockquote><P>
@@ -79,6 +81,23 @@ The image.
 <p><dt><STRONG><A NAME="item_o_key%3A">key:</A></STRONG><BR>
 <DD>
 These character strings are the name of an image attribute to return.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="getimageclippingpathattribute">GetImageClippingPathAttribute</A></H2>
+<P>Method GetImageClippingPathAttribute searches the list of image attributes and returns a pointer to a clipping path if it exists otherwise 
+<FONT SIZE=-1>NULL.</FONT></P>
+<P>The format of the GetImageClippingPathAttribute method is:</P>
+<blockquote>ImageAttribute *GetImageClippingPathAttribute ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>attribute:</STRONG><BR>
+<DD>
+Method GetImageClippingPathAttribute returns the clipping path if it exists otherwise 
+<FONT SIZE=-1>NULL.</FONT>
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimageinfoattribute">GetImageInfoAttribute</A></H2>

@@ -23,6 +23,11 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2001-09-12  Cristy  <cristy@mystic.es.dupont.com>
+	* Fixed uninitialized pointer in pixel cache subsystem.
+	* PingImage() now reports attributes for all images in
+	  an image sequence.
+
 2001-09-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/image.h: Rename QuantumLeap define to QuantumDepth.
 	  QuantumDepth is set to the values 8 or 16, depending on user
@@ -33,7 +38,7 @@ ImageMagick Changes</font></font></font></b></td>
 	  signature algorithm.
 
 2001-09-08  Cristy  <cristy@mystic.es.dupont.com>
-	* ImageMagick defaults to 16-bit quantum.  Set QuantumDepth for
+	* ImageMagick defaults to 16-bit quantum.  Set QuantumMagick for
 	  8-bit.
 	* Changed image->blob from BlobInfo to BlobInfo* so the Image
 	  structure size is not dependent on the large-file preprocessor

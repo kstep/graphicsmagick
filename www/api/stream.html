@@ -37,7 +37,7 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P>unsigned int  <STRONG>ReadStream</STRONG>( const ImageInfo *image_info, void(* Stream )( const Image *, const void *, const size_t ), ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ReadStream</STRONG>( const ImageInfo *image_info, void(* Stream )( const Image *, const void *, const size_t ), ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>WriteStream</STRONG>( const ImageInfo *image_info, Image *, int(* Stream )( const Image *, const void *, const size_t ));</P>
 <P>
 <HR>
@@ -48,13 +48,9 @@
 <H2><A NAME="readstream">ReadStream</A></H2>
 <P>Method ReadStream makes the image pixels available to a user supplied callback method immediately upon reading a scanline with the <CODE>ReadImage()</CODE> method.</P>
 <P>The format of the ReadStream method is:</P>
-<blockquote>unsigned int ReadStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, void ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *, const void *, const size_t ), <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ReadStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, void ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *, const void *, const size_t ), <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
-<DD>
-Method ReadStream returns True if the image pixels are streamed to the user supplied callback method otherwise False.
-<P></P>
 <p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
 <DD>
 The image info..
@@ -74,7 +70,7 @@ Return any errors or warnings in this structure.
 <blockquote>unsigned int WriteStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *, int ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *, const void *, const size_t ) ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
 <DD>
 Method WriteStream returns True if the image pixels are streamed to the user supplied callback method otherwise False.
 <P></P>

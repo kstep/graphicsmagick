@@ -91,7 +91,7 @@
 <P>unsigned int  <STRONG>IsImageTainted</STRONG>( const Image *image );</P>
 <P>unsigned int  <STRONG>IsImagesEqual</STRONG>( Image *image, Image *reference );</P>
 <P>Image **  <STRONG>ListToGroupImage</STRONG>( Image *image, unsigned int *number_images );</P>
-<P>Image * <STRONG>ModifyImage</STRONG>( Image *image );</P>
+<P>Image * <STRONG>ModifyImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ReferenceImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>SetImage</STRONG>( Image *image, const Quantum opacity );</P>
 <P>unsigned int  <STRONG>SetImageClipMask</STRONG>( Image *image, Image *clip_mask );</P>
@@ -469,12 +469,16 @@ The length of the image array is returned here.
 <P>
 <H2><A NAME="modifyimage">ModifyImage</A></H2>
 <blockquote>ModifyImage ( ) ensures that there is only a single reference to the imageto be modified, updating the provided image pointer to point to a clone ofthe original image if necessary.; </blockquote><P>The format of the ModifyImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ModifyImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ModifyImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="referenceimage">ReferenceImage</A></H2>
