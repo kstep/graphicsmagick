@@ -1,0 +1,439 @@
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ../..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
+AWK = @AWK@
+CC = @CC@
+CPP = @CPP@
+CXX = @CXX@
+DLLTOOL = @DLLTOOL@
+EXEEXT = @EXEEXT@
+FREETYPE_CONFIG = @FREETYPE_CONFIG@
+GD_DEFS = @GD_DEFS@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+LT_AGE = @LT_AGE@
+LT_CURRENT = @LT_CURRENT@
+LT_RELEASE = @LT_RELEASE@
+LT_REVISION = @LT_REVISION@
+MAKEINFO = @MAKEINFO@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+RANLIB = @RANLIB@
+VERSION = @VERSION@
+WMF_BINARY_AGE = @WMF_BINARY_AGE@
+WMF_CFLAGS = @WMF_CFLAGS@
+WMF_CONFIG_CFLAGS = @WMF_CONFIG_CFLAGS@
+WMF_DEFS = @WMF_DEFS@
+WMF_DOCDIR = @WMF_DOCDIR@
+WMF_FONTDIR = @WMF_FONTDIR@
+WMF_GS_FONTDIR = @WMF_GS_FONTDIR@
+WMF_GS_FONTMAP = @WMF_GS_FONTMAP@
+WMF_INTERFACE_AGE = @WMF_INTERFACE_AGE@
+WMF_LDFLAGS = @WMF_LDFLAGS@
+WMF_MAJOR_VERSION = @WMF_MAJOR_VERSION@
+WMF_MICRO_VERSION = @WMF_MICRO_VERSION@
+WMF_MINOR_VERSION = @WMF_MINOR_VERSION@
+WMF_SYS_FONTMAP = @WMF_SYS_FONTMAP@
+WMF_VERSION = @WMF_VERSION@
+WMF_XTRA_FONTMAP = @WMF_XTRA_FONTMAP@
+
+CFLAGS = @CFLAGS@ @WMF_CFLAGS@
+
+LDFLAGS = -L$(top_builddir)/src/.libs @WMF_LDFLAGS@ @LDFLAGS@
+
+DEFS = @DEFS@ @WMF_DEFS@ 	-DPACKAGE=\"@PACKAGE@\" 	-DVERSION=\"@VERSION@\"
+
+
+INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/src -I$(top_builddir)
+@LIBWMF_OPT_X_TRUE@WMF2X = wmf2x
+@LIBWMF_OPT_X_FALSE@WMF2X = 
+@LIBWMF_OPT_PLOT_TRUE@WMF2PLOT = wmf2plot
+@LIBWMF_OPT_PLOT_FALSE@WMF2PLOT = 
+
+bin_PROGRAMS = wmf2eps wmf2fig wmf2svg wmf2gd wmf2magick $(WMF2X) $(WMF2PLOT)
+
+wmf2eps_LDADD = ../libwmf.la
+
+wmf2fig_LDADD = ../libwmf.la
+
+wmf2svg_LDADD = ../libwmf.la
+
+wmf2gd_LDADD = ../libwmf.la
+
+wmf2x_LDADD = ../libwmf.la
+
+wmf2plot_LDADD = ../libwmf.la
+
+wmf2magick_LDADD = ../libwmf.la
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../../config.h
+CONFIG_CLEAN_FILES = 
+@LIBWMF_OPT_PLOT_TRUE@@LIBWMF_OPT_X_FALSE@bin_PROGRAMS =  \
+@LIBWMF_OPT_PLOT_TRUE@@LIBWMF_OPT_X_FALSE@wmf2eps$(EXEEXT) \
+@LIBWMF_OPT_PLOT_TRUE@@LIBWMF_OPT_X_FALSE@wmf2fig$(EXEEXT) \
+@LIBWMF_OPT_PLOT_TRUE@@LIBWMF_OPT_X_FALSE@wmf2svg$(EXEEXT) \
+@LIBWMF_OPT_PLOT_TRUE@@LIBWMF_OPT_X_FALSE@wmf2gd$(EXEEXT) \
+@LIBWMF_OPT_PLOT_TRUE@@LIBWMF_OPT_X_FALSE@wmf2magick$(EXEEXT) \
+@LIBWMF_OPT_PLOT_TRUE@@LIBWMF_OPT_X_FALSE@wmf2plot$(EXEEXT)
+@LIBWMF_OPT_PLOT_FALSE@@LIBWMF_OPT_X_TRUE@bin_PROGRAMS =  \
+@LIBWMF_OPT_PLOT_FALSE@@LIBWMF_OPT_X_TRUE@wmf2eps$(EXEEXT) \
+@LIBWMF_OPT_PLOT_FALSE@@LIBWMF_OPT_X_TRUE@wmf2fig$(EXEEXT) \
+@LIBWMF_OPT_PLOT_FALSE@@LIBWMF_OPT_X_TRUE@wmf2svg$(EXEEXT) \
+@LIBWMF_OPT_PLOT_FALSE@@LIBWMF_OPT_X_TRUE@wmf2gd$(EXEEXT) \
+@LIBWMF_OPT_PLOT_FALSE@@LIBWMF_OPT_X_TRUE@wmf2magick$(EXEEXT) \
+@LIBWMF_OPT_PLOT_FALSE@@LIBWMF_OPT_X_TRUE@wmf2x$(EXEEXT)
+@LIBWMF_OPT_PLOT_FALSE@@LIBWMF_OPT_X_FALSE@bin_PROGRAMS =  \
+@LIBWMF_OPT_PLOT_FALSE@@LIBWMF_OPT_X_FALSE@wmf2eps$(EXEEXT) \
+@LIBWMF_OPT_PLOT_FALSE@@LIBWMF_OPT_X_FALSE@wmf2fig$(EXEEXT) \
+@LIBWMF_OPT_PLOT_FALSE@@LIBWMF_OPT_X_FALSE@wmf2svg$(EXEEXT) \
+@LIBWMF_OPT_PLOT_FALSE@@LIBWMF_OPT_X_FALSE@wmf2gd$(EXEEXT) \
+@LIBWMF_OPT_PLOT_FALSE@@LIBWMF_OPT_X_FALSE@wmf2magick$(EXEEXT)
+@LIBWMF_OPT_PLOT_TRUE@@LIBWMF_OPT_X_TRUE@bin_PROGRAMS =  \
+@LIBWMF_OPT_PLOT_TRUE@@LIBWMF_OPT_X_TRUE@wmf2eps$(EXEEXT) \
+@LIBWMF_OPT_PLOT_TRUE@@LIBWMF_OPT_X_TRUE@wmf2fig$(EXEEXT) \
+@LIBWMF_OPT_PLOT_TRUE@@LIBWMF_OPT_X_TRUE@wmf2svg$(EXEEXT) \
+@LIBWMF_OPT_PLOT_TRUE@@LIBWMF_OPT_X_TRUE@wmf2gd$(EXEEXT) \
+@LIBWMF_OPT_PLOT_TRUE@@LIBWMF_OPT_X_TRUE@wmf2magick$(EXEEXT) \
+@LIBWMF_OPT_PLOT_TRUE@@LIBWMF_OPT_X_TRUE@wmf2x$(EXEEXT) \
+@LIBWMF_OPT_PLOT_TRUE@@LIBWMF_OPT_X_TRUE@wmf2plot$(EXEEXT)
+PROGRAMS =  $(bin_PROGRAMS)
+
+CPPFLAGS = @CPPFLAGS@
+LIBS = @LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_LIBS = @X_LIBS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
+wmf2eps_SOURCES = wmf2eps.c
+wmf2eps_OBJECTS =  wmf2eps.$(OBJEXT)
+wmf2eps_DEPENDENCIES =  ../libwmf.la
+wmf2eps_LDFLAGS = 
+wmf2fig_SOURCES = wmf2fig.c
+wmf2fig_OBJECTS =  wmf2fig.$(OBJEXT)
+wmf2fig_DEPENDENCIES =  ../libwmf.la
+wmf2fig_LDFLAGS = 
+wmf2svg_SOURCES = wmf2svg.c
+wmf2svg_OBJECTS =  wmf2svg.$(OBJEXT)
+wmf2svg_DEPENDENCIES =  ../libwmf.la
+wmf2svg_LDFLAGS = 
+wmf2gd_SOURCES = wmf2gd.c
+wmf2gd_OBJECTS =  wmf2gd.$(OBJEXT)
+wmf2gd_DEPENDENCIES =  ../libwmf.la
+wmf2gd_LDFLAGS = 
+wmf2magick_SOURCES = wmf2magick.c
+wmf2magick_OBJECTS =  wmf2magick.$(OBJEXT)
+wmf2magick_DEPENDENCIES =  ../libwmf.la
+wmf2magick_LDFLAGS = 
+wmf2x_SOURCES = wmf2x.c
+wmf2x_OBJECTS =  wmf2x.$(OBJEXT)
+wmf2x_DEPENDENCIES =  ../libwmf.la
+wmf2x_LDFLAGS = 
+wmf2plot_SOURCES = wmf2plot.c
+wmf2plot_OBJECTS =  wmf2plot.$(OBJEXT)
+wmf2plot_DEPENDENCIES =  ../libwmf.la
+wmf2plot_LDFLAGS = 
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+SOURCES = wmf2eps.c wmf2fig.c wmf2svg.c wmf2gd.c wmf2magick.c wmf2x.c wmf2plot.c
+OBJECTS = wmf2eps.$(OBJEXT) wmf2fig.$(OBJEXT) wmf2svg.$(OBJEXT) wmf2gd.$(OBJEXT) wmf2magick.$(OBJEXT) wmf2x.$(OBJEXT) wmf2plot.$(OBJEXT)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps src/convert/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-binPROGRAMS:
+
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+wmf2eps$(EXEEXT): $(wmf2eps_OBJECTS) $(wmf2eps_DEPENDENCIES)
+	@rm -f wmf2eps$(EXEEXT)
+	$(LINK) $(wmf2eps_LDFLAGS) $(wmf2eps_OBJECTS) $(wmf2eps_LDADD) $(LIBS)
+
+wmf2fig$(EXEEXT): $(wmf2fig_OBJECTS) $(wmf2fig_DEPENDENCIES)
+	@rm -f wmf2fig$(EXEEXT)
+	$(LINK) $(wmf2fig_LDFLAGS) $(wmf2fig_OBJECTS) $(wmf2fig_LDADD) $(LIBS)
+
+wmf2svg$(EXEEXT): $(wmf2svg_OBJECTS) $(wmf2svg_DEPENDENCIES)
+	@rm -f wmf2svg$(EXEEXT)
+	$(LINK) $(wmf2svg_LDFLAGS) $(wmf2svg_OBJECTS) $(wmf2svg_LDADD) $(LIBS)
+
+wmf2gd$(EXEEXT): $(wmf2gd_OBJECTS) $(wmf2gd_DEPENDENCIES)
+	@rm -f wmf2gd$(EXEEXT)
+	$(LINK) $(wmf2gd_LDFLAGS) $(wmf2gd_OBJECTS) $(wmf2gd_LDADD) $(LIBS)
+
+wmf2magick$(EXEEXT): $(wmf2magick_OBJECTS) $(wmf2magick_DEPENDENCIES)
+	@rm -f wmf2magick$(EXEEXT)
+	$(LINK) $(wmf2magick_LDFLAGS) $(wmf2magick_OBJECTS) $(wmf2magick_LDADD) $(LIBS)
+
+wmf2x$(EXEEXT): $(wmf2x_OBJECTS) $(wmf2x_DEPENDENCIES)
+	@rm -f wmf2x$(EXEEXT)
+	$(LINK) $(wmf2x_LDFLAGS) $(wmf2x_OBJECTS) $(wmf2x_LDADD) $(LIBS)
+
+wmf2plot$(EXEEXT): $(wmf2plot_OBJECTS) $(wmf2plot_DEPENDENCIES)
+	@rm -f wmf2plot$(EXEEXT)
+	$(LINK) $(wmf2plot_LDFLAGS) $(wmf2plot_OBJECTS) $(wmf2plot_LDADD) $(LIBS)
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = src/convert
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-binPROGRAMS
+install-exec: install-exec-am
+
+install-data-am:
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-binPROGRAMS
+uninstall: uninstall-am
+all-am: Makefile $(PROGRAMS)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(bindir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
+		clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
+		distclean-tags distclean-generic clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-binPROGRAMS \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
+maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

@@ -1,0 +1,83 @@
+CFLAGS = @CFLAGS@ @WMF_CFLAGS@
+
+LDFLAGS = @LDFLAGS@
+
+DEFS = @DEFS@ @WMF_DEFS@ \
+	-DPACKAGE=\"@PACKAGE@\" \
+	-DVERSION=\"@VERSION@\" \
+	-DWMF_SYS_FONTMAP=\"@WMF_SYS_FONTMAP@\" \
+	-DWMF_XTRA_FONTMAP=\"@WMF_XTRA_FONTMAP@\" \
+	-DWMF_GS_FONTMAP=\"@WMF_GS_FONTMAP@\"
+
+INCLUDES = \
+	-I$(top_srcdir)/include \
+	-I$(top_srcdir)/src \
+	-I$(top_srcdir)/src/extra/gd \
+	-I$(top_builddir)
+
+noinst_LTLIBRARIES = libipa.la
+
+libipa_la_SOURCES = eps.c fig.c svg.c gd.c x.c ipa.c plot.c magick.c
+
+libipa_la_LDFLAGS = 
+
+IPAHEADERS = \
+	ipa/bmp.h \
+	ipa/font.h \
+	ipa/color.h \
+	ipa.h
+
+EPSHEADERS = \
+	eps/bmp.h \
+	eps/device.h \
+	eps/draw.h \
+	eps/region.h \
+	eps.h
+
+FIGHEADERS = \
+	fig/bmp.h \
+	fig/color.h \
+	fig/device.h \
+	fig/draw.h \
+	fig/font.h \
+	fig/region.h \
+	fig.h
+
+SVGHEADERS = \
+	svg/bmp.h \
+	svg/device.h \
+	svg/draw.h \
+	svg/region.h \
+	svg.h
+
+GDHEADERS = \
+	gd/bmp.h \
+	gd/device.h \
+	gd/draw.h \
+	gd/region.h \
+	gd.h
+
+XHEADERS = \
+	x/bmp.h \
+	x/color.h \
+	x/device.h \
+	x/draw.h \
+	x/font.h \
+	x/region.h \
+	x.h
+
+PLOTHEADERS = \
+	plot/bmp.h \
+	plot/device.h \
+	plot/draw.h \
+	plot/region.h \
+	plot.h
+
+MAGICKHEADERS = \
+	magick/bmp.h \
+	magick/device.h \
+	magick/draw.h \
+	magick/region.h \
+	magick.h
+
+EXTRA_DIST = template.c template.h $(IPAHEADERS) $(EPSHEADERS) $(FIGHEADERS) $(SVGHEADERS) $(GDHEADERS) $(XHEADERS) $(PLOTHEADERS) $(MAGICKHEADERS)
