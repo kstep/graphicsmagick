@@ -2437,7 +2437,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             !IsMonochromeImage(image,&image->exception))
           {
             /*
-              Convert PseudoClass packets to contiguous grayscale scanlines.
+              Convert PseudoClass packets to contiguous scanlines.
             */
             for (y=0; y < (long) image->rows; y++)
             {
@@ -2451,12 +2451,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 if (photometric != PHOTOMETRIC_PALETTE)
                   (void) PopImagePixels(image,GrayQuantum,scanline);
                 else
-#if 0
-                  /* This currently only pushes bytes */
-                  (void) PopImagePixels(image,IndexQuantum,scanline);
-#else
-                (void) EncodeIndexPixels(image,bits_per_sample,scanline);
-#endif
+                  (void) EncodeIndexPixels(image,bits_per_sample,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
               if (image->previous == (Image *) NULL)
