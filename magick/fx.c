@@ -348,7 +348,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   range_check=False;
   for (i=0; i < (width*width); i++)
   {
-    if (normal_kernel[i] < 0.0)
+    if (normal_kernel[i] <= 0.0)
       range_check=True;
   }
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
