@@ -1,3 +1,6 @@
+2001-12-06  Cristy  <cristy@mystic.es.dupont.com>
+	* Stream buffer was not being freed in ReadStream().
+
 2001-12-05  Cristy  <cristy@mystic.es.dupont.com>
 	* Corrected bias when downsizing an image with ResizeImage().
 
