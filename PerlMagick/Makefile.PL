@@ -7,7 +7,7 @@ use Config;
 WriteMakefile(
     'NAME'	=> 'Image::Magick',
     'VERSION_FROM' => 'Magick.pm', # finds $VERSION
-    'LIBS'	=> ['-L/usr/local/lib -L/usr/openwin/lib -R/usr/openwin/lib -L/tmp/crap/ImageMagick/magick -lMagick -ljbig -ldf -ltiff -lttf -ljpeg -lpng -ldpstk -ldps -lXext -lXt -lX11 -lsocket -lnsl -lbz2 -lz -lm'],
+    'LIBS'	=> ['-L/usr/local/lib -L/usr/openwin/lib -R/usr/openwin/lib -L/pathos/home/cristy/ImageMagick/magick -lMagick -ldpstk -ldps -lXext -lXt -lX11 -lsocket -lnsl -lm'],
     'DEFINE'	=> '',     # e.g., '-DHAVE_SOMETHING' 
     'INC'	=> '-I.. -I/usr/local/include -I/usr/openwin/include -I/usr/openwin/include/X11',
     ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
@@ -43,7 +43,7 @@ sub MY::test
    #
    # e.g. my @DELEGATES = qw/jpeg tiff/;
    #
-   my @DELEGATES = qw/ bzlib cgm hpgl hdf jbig jpeg mpeg png ps rad tiff ttf x xfig zlib/;
+   my @DELEGATES = qw/ cgm hpgl mpeg ps rad x xfig/;
 
    package MY; # so that "SUPER" works right
    my $inherited = shift->SUPER::test(@_);
