@@ -625,21 +625,20 @@ MAGICK DELEGATES
       issues. If you need to use LZW compression, support is available via
       a seperate LZW compression kit (a patch) at the sites listed above.
 
-    o ImageMagick requires libwmf 0.2.2 (or CVS libwmf) available
-      from
+    o ImageMagick requires libwmf 0.2.5 (or 0.2.2) available from
 
           http://sourceforge.net/projects/wvware/
 
-      to read the Windows Meta File image format (16-bit WMF files only,
-      not 32-bit "EMF") under Unix. This is the format commonly used for
-      Windows clipart (available on CD at your local computer or technical
-      book store). WMF support also requires the FreeType library.
+      to render files in the Windows Meta File (WMF) metafile format
+      (16-bit WMF files only, not 32-bit "EMF"). This is the format
+      commonly used for Windows clipart (available on CD at your local
+      computer or technical book store). WMF support requires the
+      FreeType 2 library in order to render TrueType and Postscript fonts.
 
-      If ImageMagick is built using libwmf then WMF files are rendered via
-      ImageMagick's wmf coder module, otherwise output of the wmf2magick
-      program is rendered by ImageMagick. The configure script for libwmf
-      offers a choice between using the 'expat' XML library (--with-expat)
-      and xmlsoft's libxml (--with-xml). Since ImageMagick already uses
+      While ImageMagick uses the libwmflite (parser) component of the
+      libwmf package which does not depend on any special libraries, the
+      libwmf package as a whole depends on FreeType 2 and either the
+      xmlsoft libxml, or expat libraries. Since ImageMagick already uses
       libxml (for reading SVG), it is recommended that the options
       '--without-expat --with-xml' be supplied to libwmf's configure
       script.
@@ -657,9 +656,9 @@ MAGICK DELEGATES
 
         http://www.microsoft.com/typography/fontpack/default.htm
 
-      The libwmf-based WMF renderer is not capable of using Windows
-      fonts with libwmf 0.2.2.  Windows fonts are fully supported
-      when using libwmf 0.2.4 or later.
+      WMF renderer is not capable of using Windows fonts with libwmf
+      0.2.2. Windows fonts are fully supported when using libwmf 0.2.5
+      or later.
 
     o ImageMagick requires the FlashPIX library version 1.2.0 from
       the Digital Imaging Group in order to support the FlashPIX
