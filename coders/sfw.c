@@ -273,7 +273,8 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset+=(offset[2] << 8)+offset[3]+2;
   }
   offset--;
-  data=SFWScan(offset,buffer+image->blob->filesize-1,(unsigned char *) "\377\311",2);
+  data=SFWScan(offset,buffer+image->blob->filesize-1,
+    (unsigned char *) "\377\311",2);
   if (data == (unsigned char *) NULL)
     {
       LiberateMemory((void **) &buffer);
@@ -284,6 +285,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Write JFIF file.
   */
   clone_info=CloneImageInfo(image_info);
+  GetBlobInfo(clone_info->blob);
   TemporaryFilename(clone_info->filename);
   file=fopen(clone_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)

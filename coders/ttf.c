@@ -150,6 +150,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Draw image.
   */
   clone_info=CloneImageInfo(image_info);
+  GetBlobInfo(clone_info->blob);
   FormatString(geometry,"800x480");
   CloneString(&clone_info->size,geometry);
   FormatString(clone_info->filename,"mvg:%.1024s",filename);

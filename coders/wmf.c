@@ -1701,8 +1701,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       /* Create white canvas image */
       clone_info = (ImageInfo*)AcquireMemory(sizeof(ImageInfo));
-      if(clone_info == (ImageInfo*)NULL)
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
 
       GetImageInfo( clone_info );
       sprintf( buff, "%ix%i", (int)cstruct->realwidth, (int)cstruct->realheight );
@@ -1717,7 +1715,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         sprintf(clone_info->filename,"TILE:%.1024s",image_info->texture);
       GetExceptionInfo(exception);
       DestroyImage(image);
-      image = ReadImage( clone_info, exception );
+      image=ReadImage( clone_info, exception );
       if(image == (Image*)NULL)
         {
           /* Destroy metafile handle (lacks a convenient Destroy function */
