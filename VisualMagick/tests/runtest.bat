@@ -27,6 +27,20 @@ call :_dorwtest both CMYK
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both DIB
 if not %COUNT% EQU 6 goto :_failed
+call :_dorwtest both DPX
+if not %COUNT% EQU 6 goto :_failed
+:call :_dorwtest both EPDF
+:if not %COUNT% EQU 6 goto :_failed
+call :_dorwtest both EPSF
+if not %COUNT% EQU 6 goto :_failed
+call :_dorwtest both EPSI
+if not %COUNT% EQU 6 goto :_failed
+call :_dorwtest both EPI
+if not %COUNT% EQU 6 goto :_failed
+call :_dorwtest both EPS
+if not %COUNT% EQU 6 goto :_failed
+call :_dorwtest both EPT
+if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both FAX
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both FITS
@@ -35,13 +49,15 @@ call :_dorwtest both GIF
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both GRAY
 if not %COUNT% EQU 6 goto :_failed
-:call :_dorwtest both HDF
-:if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both ICB
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both JBIG
 if not %COUNT% EQU 6 goto :_failed
+call :_dorwtest both JP2
+if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both JPEG
+if not %COUNT% EQU 6 goto :_failed
+call :_dorwtest both JNG
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both MIFF
 if not %COUNT% EQU 6 goto :_failed
@@ -63,6 +79,8 @@ call :_dorwtest both PCX
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both PGM
 if not %COUNT% EQU 6 goto :_failed
+:call :_dorwtest both PICON
+:if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both PICT
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both PNG
@@ -70,6 +88,8 @@ if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both PNM
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both PPM
+if not %COUNT% EQU 6 goto :_failed
+call :_dorwtest both PS
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both PSD
 if not %COUNT% EQU 6 goto :_failed
@@ -98,6 +118,8 @@ if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both VIFF
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both VST
+if not %COUNT% EQU 6 goto :_failed
+call :_dorwtest both WBMP
 if not %COUNT% EQU 6 goto :_failed
 call :_dorwtest both XBM
 if not %COUNT% EQU 6 goto :_failed
