@@ -92,9 +92,25 @@ extern "C" {
 #define HasZLIB
 #endif
 
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #if defined(HAVE_CONFIG_H)
-#include "config.h"
+#include <magick/config.h>
 #endif
+#include <magick/classify.h>
+#include <magick/image.h>
+#include <magick/quantize.h>
+#include <magick/gems.h>
+#include <magick/compress.h>
+#include <magick/utility.h>
+#include <magick/monitor.h>
+#include <magick/error.h>
+#include <magick/X.h>
+#include <magick/widget.h>
+#include <magick/PreRvIcccm.h>
+#include <magick/memory.h>
+#include <magick/delegates.h>
+#include <magick/version.h>
+#else
 #include "classify.h"
 #include "image.h"
 #include "quantize.h"
@@ -112,6 +128,7 @@ extern "C" {
 #include "memory.h"
 #include "delegates.h"
 #include "version.h"
+#endif
 
 /*
   Typedef declarations.

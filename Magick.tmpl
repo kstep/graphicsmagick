@@ -160,14 +160,14 @@ PREFIX= /usr/local
 
 DelegatePath= -DDelegatePath=\"$(PREFIX)/share/ImageMagick/\"
 LOCALDIR= $(PREFIX)/bin
-LOCALINC= $(PREFIX)/include/magick
+LOCALINC= $(PREFIX)/include
 LOCALLIB= $(PREFIX)/lib
 LOCALMAN1= $(PREFIX)/man/man1
 LOCALMAN4= $(PREFIX)/man/man4
 LOCALMAN5= $(PREFIX)/man/man5
 
 MAGICKDIR= $(TOP)/magick
-MAGICK_INCLUDES= -I$(TOP)/magick
+MAGICK_INCLUDES= -I$(TOP)
 MAGICK_FLAGS= -L$(MAGICKDIR)
 MAGICK_LIBRARIES= -lMagick
 

@@ -6,7 +6,7 @@ WriteMakefile(
     'VERSION_FROM' => 'Magick.pm', # finds $VERSION
     'LIBS'	=> ['@LDFLAGS@ @MAGICKLIB@ @X11STUBSLIB@ @LIBS@'],
     'DEFINE'	=> '',     # e.g., '-DHAVE_SOMETHING' 
-    'INC'	=> '-I@top_srcdir@/magick @CPPFLAGS@',
+    'INC'	=> '-I@top_srcdir@ @CPPFLAGS@',
 );
 
 #

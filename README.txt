@@ -25,7 +25,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.2.1.tar.gz
+    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.2.2.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -83,8 +83,8 @@ UNIX COMPILATION
 
   Type:
 
-    gunzip ImageMagick-4.2.1.tar.gz
-    tar xvf ImageMagick-4.2.1.tar
+    gunzip ImageMagick-4.2.2.tar.gz
+    tar xvf ImageMagick-4.2.2.tar
     cd ImageMagick
 
   If you do not have gunzip(1), it is available as
@@ -639,7 +639,7 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-4.2.1.zip
+      unzip ImageMagick-4.2.2.zip
       set default [.imagemagick]
       @make
       set display/create/node=node_name::
@@ -809,6 +809,18 @@ ANIMATION
   know a better solution, please send me E-mail.  Note, that the Dec Alpha
   apparently does not pad the structure so ImageMagick should be fine on
   this particular 64-bit machine.
+
+
+Magick++
+
+  If you would like to build and install the Magick++ C++ programming
+  interface to ImageMagick, first build and install ImageMagick
+  according to the instructions in this file (configure script method
+  for Unix) and then build and install Magick++ according to the
+  instructions in the README file in the Magick++ subdirectory. Magick++
+  is currently supported using the egcs 1.1.1 version of GNU g++ (or
+  later) under Unix and Microsoft Visual C++ under Windows NT or Windows
+  95/98.
 
 
 COPYRIGHT

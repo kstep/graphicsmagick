@@ -105,7 +105,7 @@ clean::
 #define IncSubdir magick
 
 #ifndef SGIArchitecture
-SOMAGICKLIBREV= 4.0.21
+SOMAGICKLIBREV= 4.0.22
 #endif
 
 #if (ProjectX < 5)
@@ -155,5 +155,5 @@ SOMAGICKLIBREV= 4.0.21
 
 #endif /* HPArchitecture */
 
-InstallMultiple($(HEADERS),$(LOCALINC))
+InstallMultiple($(HEADERS),$(LOCALINC)/magick)
 DependTarget()

@@ -3,10 +3,10 @@
 #
 # Copyright Bob Friesenhahn, 1999
 #
-AUTOMAKE_OPTIONS = 1.2 dist-zip readme-alpha
+AUTOMAKE_OPTIONS = 1.2 dist-zip #readme-alpha
 
 # Additional files to distribute
-EXTRA_DIST = ALPHA Magick++.dsw
+EXTRA_DIST = Magick++.dsw
 
 SUBDIRS = lib tests demo
 

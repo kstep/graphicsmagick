@@ -12766,7 +12766,7 @@ extern "C" {
 
 static double Box(double x)
 {
-  if ((x > -0.5) && (x <= 0.5))
+  if ((x >= -0.5) && (x < 0.5))
     return(1.0);
   return(0.0);
 }
@@ -12942,7 +12942,7 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
     sum=0.0;
     n=0;
     center=(double) x/x_factor;
-    for (i=(int) (center-width+0.5); i < (int) (center+width+0.5); i++)
+    for (i=(int) (center-width+0.5); i <= (int) (center+width+0.5); i++)
     {
       j=i;
       if (j < 0)
@@ -13037,7 +13037,7 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
     sum=0.0;
     n=0;
     center=(double) y/y_factor;
-    for (i=(int) (center-width+0.5); i < (int) (center+width+0.5); i++)
+    for (i=(int) (center-width+0.5); i <= (int) (center+width+0.5); i++)
     {
       j=i;
       if (j < 0)
@@ -13206,7 +13206,7 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   if (width < filters[image->filter].width)
     width=filters[image->filter].width;
   contribution_info=(ContributionInfo *)
-    AllocateMemory((int) (width*2+1)*sizeof(ContributionInfo));
+    AllocateMemory((int) (width*2+2)*sizeof(ContributionInfo));
   if (contribution_info == (ContributionInfo *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to zoom image",

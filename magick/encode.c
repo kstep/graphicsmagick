@@ -11439,7 +11439,7 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
   bytes_per_pixel=
     TIFFTileSize(tiff)/(image->tile_info.height*image->tile_info.width);
   number_tiles=
-    (image->columns+image->tile_info.height-1)/image->tile_info.height;
+    (image->columns+image->tile_info.width-1)/image->tile_info.height;
   for (i=0; i < number_tiles; i++)
   {
     tile_width=(i == (int) number_tiles-1) ?
@@ -11706,20 +11706,11 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
     TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
     TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_CONTIG);
-    if (image_info->tile == (char *) NULL)
-      TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
-    else
-      if (IsSubimage(image_info->tile,False))
-        TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
-      else
-        {
-          TIFFSetField(tiff,TIFFTAG_TILEWIDTH,image->tile_info.width);
-          TIFFSetField(tiff,TIFFTAG_TILELENGTH,image->tile_info.height);
-        }
     if (photometric == PHOTOMETRIC_RGB)
       if ((image_info->interlace == PlaneInterlace) ||
           (image_info->interlace == PartitionInterlace))
         TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
+    TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,TIFFDefaultStripSize(tiff,-1));
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
         unsigned short

@@ -17,6 +17,7 @@
 
 		<LI><A HREF="#AllocateImage">AllocateImage</A>
 		<LI><A HREF="#AllocateNextImage">AllocateNextImage</A>
+		<LI><A HREF="#AnimateImages">AnimateImages</A>
 		<LI><A HREF="#AnnotateImage">AnnotateImage</A>
 		<LI><A HREF="#AppendImages">AppendImages</A>
 		<LI><A HREF="#AverageImages">AverageImages</A>
@@ -43,6 +44,7 @@
 		<LI><A HREF="#DestroyImageInfo">DestroyImageInfo</A>
 		<LI><A HREF="#DestroyImages">DestroyImages</A>
 		<LI><A HREF="#DestroyMontageInfo">DestroyMontageInfo</A>
+		<LI><A HREF="#DisplayImages">DisplayImages</A>
 		<LI><A HREF="#DrawImage">DrawImage</A>
 		<LI><A HREF="#EqualizeImage">EqualizeImage</A>
 		<LI><A HREF="#FlipImage">FlipImage</A>
@@ -111,6 +113,9 @@ image - ImageMagick Image Methods
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
 allocated_image=<STRONG>AllocateImage</STRONG>(image_info)
+
+<P>
+status=<STRONG>AnimateImages</STRONG>(image_info,image)
 
 <P>
 <STRONG>AnnotateImage</STRONG>(image,annotate_info)
@@ -186,6 +191,9 @@ cropped_image=<STRONG>CropImage</STRONG>(image,crop_info)
 
 <P>
 <STRONG>DestroyMontageInfo</STRONG>(montage_info)
+
+<P>
+status=<STRONG>DisplayImages</STRONG>(image_info,image)
 
 <P>
 <STRONG>DrawImage</STRONG>(image,annotate_info)
@@ -381,6 +389,36 @@ The format of the AllocateNextImage routine is:
 A description of each parameter follows:
 
 <DL><DL>
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="AnimateImages">AnimateImages</A></H2>
+<P>
+Method AnimateImages displays one or more images to an X window.
+
+<P>
+The format of the AllocateNextImage routine is:
+
+<P>
+<PRE>        status=AnimateImages(image_info,image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method DisplayImages returns True if the images are displayed in an X
+window, otherwise False is returned.
+
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
@@ -1120,6 +1158,36 @@ A description of each parameter follows:
 <DT><STRONG>montage_info:</STRONG><DD>
 <P>
 Specifies a pointer to an MontageInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="DisplayImages">DisplayImages</A></H2>
+<P>
+Method DisplayImages displays one or more images to an X window.
+
+<P>
+The format of the AllocateNextImage routine is:
+
+<P>
+<PRE>        status=DisplayImages(image_info,image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method DisplayImages returns True if the images are displayed in an X
+window, otherwise False is returned.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
 
 </DL></DL>
 <P>

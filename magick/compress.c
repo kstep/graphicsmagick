@@ -1280,6 +1280,9 @@ Export unsigned int HuffmanDecodeImage(Image *image)
   do { InputBit(bit); } while (bit == 0);
   packets=0;
   max_packets=image->packets;
+  image->x_resolution=204.0;
+  image->y_resolution=196.0;
+  image->units=PixelsPerInchResolution;
   image->packets=0;
   q=image->pixels;
   SetRunlengthEncoder(q);

@@ -28,7 +28,7 @@
 		<LI><A HREF="#MACSystemCommand">MACSystemCommand</A>
 		<LI><A HREF="#MACWarningHandler">MACWarningHandler</A>
 		<LI><A HREF="#opendir">opendir</A>
-		<LI><A HREF="#ProcessPendingEventsi">ProcessPendingEventsi</A>
+		<LI><A HREF="#ProcessPendingEvents">ProcessPendingEvents</A>
 		<LI><A HREF="#readdir">readdir</A>
 		<LI><A HREF="#ReadPICTImage">ReadPICTImage</A>
 		<LI><A HREF="#SearchForFile">SearchForFile</A>
@@ -60,6 +60,9 @@ mac - Macintosh Utility Methods for ImageMagick
 
 <P>
 <STRONG>MACSystemCommand</STRONG>(command)
+
+<P>
+<STRONG>ProcessPendingEvents</STRONG>(text)
 
 <P>
 image=<STRONG>ReadPICTImage</STRONG>(image_info)
@@ -280,7 +283,7 @@ Specifies a pointer to a DIR structure.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="ProcessPendingEventsi">ProcessPendingEventsi</A></H2>
+<H2><A NAME="ProcessPendingEvents">ProcessPendingEvents</A></H2>
 <P>
 Method ProcessPendingEvents processes any pending events. This prevents
 ImageMagick from monopolizing the processor.
@@ -289,7 +292,7 @@ ImageMagick from monopolizing the processor.
 The format of the ProcessPendingEvents routine is:
 
 <P>
-<PRE>    ProcessPendingEvents(text)
+<PRE>        ProcessPendingEvents(text)
 </PRE>
 <P>
 A description of each parameter follows:

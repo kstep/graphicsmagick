@@ -35,7 +35,7 @@
 AUTOMAKE_OPTIONS = 1.2 foreign # no-dependencies
 
 MAGICK_LIB	= magick/libMagick.la # libtool library name
-INCLUDES	= -I$(srcdir)/magick $(X_CFLAGS)
+INCLUDES	= -I$(srcdir) $(X_CFLAGS)
 
 # Subdirectories to build
 SUBDIRS = delegates magick xtp xlib

@@ -1735,7 +1735,10 @@ A pointer to a Image structure.
 Method WriteImage writes an image to a file as defined by
 image-&gt;filename. You can specify a particular image format by prefixing
 the file with the image type and a colon (i.e. ps:image) or specify the
-image type as the filename suffix (i.e. image.ps).
+image type as the filename suffix (i.e. image.ps). The image may be
+modified to adapt it to the requirements of the image format. For example,
+DirectClass images must be color-reduced to PseudoClass if the format is
+GIF.
 
 <P>
 The format of the WriteImage routine is:
