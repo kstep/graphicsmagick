@@ -3604,7 +3604,7 @@ Get(ref,...)
         {
           if (LocaleCompare(attribute,"sampling-factor") == 0)
             {
-              if (info && *info->image_info->sampling_factor)
+              if (info && info->image_info->sampling_factor)
                 s=newSVpv(info->image_info->sampling_factor,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
