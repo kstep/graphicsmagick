@@ -174,7 +174,7 @@
 /*
   Typedef declarations.
 */
-typedef struct _OptionInfo
+typedef struct _ConvertOptionInfo
 {
   int
     append;
@@ -190,7 +190,7 @@ typedef struct _OptionInfo
     global_colormap,
     flatten,
     mosaic;
-} OptionInfo;
+} ConvertOptionInfo;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -258,19 +258,19 @@ static void ConcatenateImages(int argc,char **argv)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S n a p s h o t I m a g e s                                               %
+%   C o n v e r t I m a g e s                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SnapshotImages performs all the steps needed to take the images that
+%  Method ConvertImages performs all the steps needed to take the images that
 %  have been read and send them to an output file.
 %
-%  The format of the SnapshotImages method is:
+%  The format of the ConvertImages method is:
 %
-%      unsigned int SnapshotImages(const ImageInfo *image_info,const int argc,
-%        char **argv,Image **image,OptionInfo *option_info,
+%      unsigned int ConvertImages(const ImageInfo *image_info,const int argc,
+%        char **argv,Image **image,ConvertOptionInfo *option_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -292,8 +292,8 @@ static void ConcatenateImages(int argc,char **argv)
 %
 %
 */
-static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
-  char **argv,Image **image,OptionInfo *option_info,ExceptionInfo *exception)
+static unsigned int ConvertImages(ImageInfo *image_info,const int argc,
+  char **argv,Image **image,ConvertOptionInfo *option_info,ExceptionInfo *exception)
 {
   long
     scene;
@@ -635,7 +635,7 @@ int main(int argc,char **argv)
     j,
     x;
 
-  OptionInfo
+  ConvertOptionInfo
     option_info;
 
   register Image
@@ -681,7 +681,7 @@ int main(int argc,char **argv)
   (void) SetImageInfo(image_info,True,&exception);
   ping=False;
   option=(char *) NULL;
-  memset(&option_info,0,sizeof(OptionInfo));
+  memset(&option_info,0,sizeof(ConvertOptionInfo));
   /*
     Parse command-line arguments.
   */
@@ -1952,7 +1952,7 @@ int main(int argc,char **argv)
                       if (clone_image == (Image *) NULL)
                         MagickError(OptionError,"Missing an image file name",
                           (char *) NULL);
-                      status=SnapshotImages(clone_info,i-j+2,argv+j-1,
+                      status=ConvertImages(clone_info,i-j+2,argv+j-1,
                         &clone_image,&option_info,&exception);
                       DestroyImages(clone_image);
                       DestroyImageInfo(clone_info);
@@ -1971,7 +1971,7 @@ int main(int argc,char **argv)
                         if (image == (Image *) NULL)
                           MagickError(OptionError,"Missing source image",
                             (char *) NULL);
-                        status=SnapshotImages(image_info,i-j+2,argv+j-1,&image,
+                        status=ConvertImages(image_info,i-j+2,argv+j-1,&image,
                           &option_info,&exception);
                         j=i+1;
                       }
@@ -2179,7 +2179,7 @@ int main(int argc,char **argv)
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  status=SnapshotImages(image_info,argc-j+1,argv+j-1,&image,&option_info,
+  status=ConvertImages(image_info,argc-j+1,argv+j-1,&image,&option_info,
     &exception);
   DestroyImages(image);
   DestroyImageInfo(image_info);
