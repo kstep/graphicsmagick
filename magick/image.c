@@ -2255,7 +2255,6 @@ MagickExport void DestroyImage(Image *image)
       if (image->temporary)
         (void) remove(image->filename);
     }
-  DestroyImagePixels(image);
   if (image->montage != (char *) NULL)
     LiberateMemory((void **) &image->montage);
   if (image->directory != (char *) NULL)
@@ -2289,6 +2288,7 @@ MagickExport void DestroyImage(Image *image)
   if (image->clip_mask != (Image *) NULL)
     DestroyImage(image->clip_mask);
   DestroyBlobInfo(image->blob);
+  DestroyImagePixels(image);
   DestroySemaphoreInfo(image->semaphore);
   if (!image->orphan)
     {
