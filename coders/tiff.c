@@ -458,8 +458,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
     if (logging)
       {
-        LogMagickEvent(CoderEvent,"  Width: %u",(unsigned int) width);
-        LogMagickEvent(CoderEvent,"  Height: %u",(unsigned int) height);
+        LogMagickEvent(CoderEvent,"  Geometry: %ux%u",(unsigned int) width,
+          (unsigned int) height);
         LogMagickEvent(CoderEvent,"  Interlace: %u",interlace);
         LogMagickEvent(CoderEvent,"  Bits per sample: %u",bits_per_sample);
         LogMagickEvent(CoderEvent,"  Min sample value: %u",min_sample_value);
