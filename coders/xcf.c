@@ -34,13 +34,13 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "blob.h"
-#include "cache.h"
-#include "composite.h"
-#include "magick.h"
-#include "quantize.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/composite.h"
+#include "magick/magick.h"
+#include "magick/quantize.h"
+#include "magick/utility.h"
 
 /*
   Typedef declarations.

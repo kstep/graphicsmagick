@@ -36,8 +36,8 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "monitor.h"
+#include "magick/studio.h"
+#include "magick/monitor.h"
 
 /*
   Global declarations.

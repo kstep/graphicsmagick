@@ -36,8 +36,8 @@
 /* 
   Include declarations. 
 */ 
-#include "studio.h" 
-#include "utility.h" 
+#include "magick/studio.h" 
+#include "magick/utility.h" 
  
 /* 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 

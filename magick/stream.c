@@ -35,12 +35,12 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "blob.h"
-#include "cache.h"
-#include "constitute.h"
-#include "stream.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/constitute.h"
+#include "magick/stream.h"
+#include "magick/utility.h"
 
 /*
   Typedef declaractions.

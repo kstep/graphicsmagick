@@ -34,14 +34,14 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "blob.h"
-#include "color.h"
-#include "deprecate.h"
-#include "list.h"
-#include "log.h"
-#include "resource.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/color.h"
+#include "magick/deprecate.h"
+#include "magick/list.h"
+#include "magick/log.h"
+#include "magick/resource.h"
+#include "magick/utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

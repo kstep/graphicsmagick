@@ -16,7 +16,7 @@
 extern "C" {
 #endif
 
-#include "image.h"
+#include "magick/image.h"
 
 /*
   Define declarations.

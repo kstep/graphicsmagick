@@ -19,9 +19,9 @@ extern "C" {
 /*
   Include declarations.
 */
-#include "semaphore.h"
-#include "error.h"
-#include "timer.h"
+#include "magick/semaphore.h"
+#include "magick/error.h"
+#include "magick/timer.h"
 
 /*
   Define declarations.

@@ -64,13 +64,13 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "attribute.h"
-#include "command.h"
-#include "log.h"
-#include "magick.h"
-#include "utility.h"
-#include "version.h"
+#include "magick/studio.h"
+#include "magick/attribute.h"
+#include "magick/command.h"
+#include "magick/log.h"
+#include "magick/magick.h"
+#include "magick/utility.h"
+#include "magick/version.h"
 
 static void GMUsage(void)
 {

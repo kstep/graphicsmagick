@@ -36,21 +36,21 @@
 /*
   Include declarations.
 */
-#include "studio.h"
+#include "magick/studio.h"
 #if defined(WIN32) || defined(__CYGWIN__)
-# include "nt_feature.h"
+# include "magick/nt_feature.h"
 #endif
-#include "blob.h"
-#include "cache.h"
-#include "constitute.h"
-#include "delegate.h"
-#include "log.h"
-#include "magick.h"
-#include "module.h"
-#include "resource.h"
-#include "stream.h"
-#include "tempfile.h"
-#include "utility.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/constitute.h"
+#include "magick/delegate.h"
+#include "magick/log.h"
+#include "magick/magick.h"
+#include "magick/module.h"
+#include "magick/resource.h"
+#include "magick/stream.h"
+#include "magick/tempfile.h"
+#include "magick/utility.h"
 #if defined(HasZLIB)
 #include "zlib.h"
 #endif

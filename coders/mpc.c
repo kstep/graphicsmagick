@@ -35,14 +35,14 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "attribute.h"
-#include "cache.h"
-#include "blob.h"
-#include "color.h"
-#include "magick.h"
-#include "monitor.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/attribute.h"
+#include "magick/cache.h"
+#include "magick/blob.h"
+#include "magick/color.h"
+#include "magick/magick.h"
+#include "magick/monitor.h"
+#include "magick/utility.h"
 
 /*
   Forward declarations.

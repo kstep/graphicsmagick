@@ -39,10 +39,10 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "cache.h"
-#include "cache_view.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/cache.h"
+#include "magick/cache_view.h"
+#include "magick/utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

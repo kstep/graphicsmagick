@@ -34,14 +34,14 @@
 /*
   Include declarations.
 */
-#include "studio.h"
+#include "magick/studio.h"
 #if defined(WIN32) || defined(__CYGWIN__)
-# include "nt_feature.h"
+# include "magick/nt_feature.h"
 #endif
-#include "blob.h"
-#include "log.h"
-#include "render.h"
-#include "utility.h"
+#include "magick/blob.h"
+#include "magick/log.h"
+#include "magick/render.h"
+#include "magick/utility.h"
 
 /*
   Define declarations.

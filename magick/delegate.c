@@ -40,15 +40,15 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "blob.h"
-#include "constitute.h"
-#include "delegate.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/constitute.h"
+#include "magick/delegate.h"
 #if defined(WIN32) || defined(__CYGWIN__)
-# include "nt_feature.h"
+# include "magick/nt_feature.h"
 #endif
-#include "tempfile.h"
-#include "utility.h"
+#include "magick/tempfile.h"
+#include "magick/utility.h"
 
 /*
   Define declarations.

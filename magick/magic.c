@@ -33,10 +33,10 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "blob.h"
-#include "magic.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/magic.h"
+#include "magick/utility.h"
 
 /*
   Define declarations.

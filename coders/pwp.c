@@ -35,13 +35,13 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "blob.h"
-#include "constitute.h"
-#include "magick.h"
-#include "monitor.h"
-#include "tempfile.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/constitute.h"
+#include "magick/magick.h"
+#include "magick/monitor.h"
+#include "magick/tempfile.h"
+#include "magick/utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

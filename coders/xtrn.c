@@ -51,13 +51,13 @@
   Include declarations.
 */
 #if defined(_VISUALC_)
-#include "studio.h"
-#include "blob.h"
-#include "constitute.h"
-#include "delegate.h"
-#include "magick.h"
-#include "stream.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/constitute.h"
+#include "magick/delegate.h"
+#include "magick/magick.h"
+#include "magick/stream.h"
+#include "magick/utility.h"
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <windows.h>

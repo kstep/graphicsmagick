@@ -37,12 +37,12 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "attribute.h"
-#include "blob.h"
-#include "render.h"
-#include "tempfile.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/attribute.h"
+#include "magick/blob.h"
+#include "magick/render.h"
+#include "magick/tempfile.h"
+#include "magick/utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

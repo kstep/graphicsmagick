@@ -35,11 +35,11 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "cache.h"
-#include "attribute.h"
-#include "signature.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/cache.h"
+#include "magick/attribute.h"
+#include "magick/signature.h"
+#include "magick/utility.h"
 
 /*
   Define declarations.

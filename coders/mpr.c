@@ -34,11 +34,11 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "blob.h"
-#include "magick.h"
-#include "registry.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/magick.h"
+#include "magick/registry.h"
+#include "magick/utility.h"
 
 /*
   Forward declarations.

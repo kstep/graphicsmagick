@@ -35,12 +35,12 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "blob.h"
-#include "color.h"
-#include "magick.h"
-#include "utility.h"
-#include "studio.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/color.h"
+#include "magick/magick.h"
+#include "magick/utility.h"
+#include "magick/studio.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

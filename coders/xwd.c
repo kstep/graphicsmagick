@@ -35,14 +35,14 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "attribute.h"
-#include "blob.h"
-#include "cache.h"
-#include "color.h"
-#include "magick.h"
-#include "monitor.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/attribute.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/magick.h"
+#include "magick/monitor.h"
+#include "magick/utility.h"
 
 /*
   Forward declarations.
@@ -94,7 +94,7 @@ static unsigned int IsXWD(const unsigned char *magick,const size_t length)
 }
 
 #if defined(HasX11)
-#include "xwindow.h"
+#include "magick/xwindow.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

@@ -38,18 +38,18 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "cache.h"
-#include "color.h"
-#include "composite.h"
-#include "constitute.h"
-#include "gem.h"
-#include "log.h"
-#include "render.h"
-#include "tempfile.h"
-#include "transform.h"
-#include "utility.h"
-#include "xwindow.h"
+#include "magick/studio.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/composite.h"
+#include "magick/constitute.h"
+#include "magick/gem.h"
+#include "magick/log.h"
+#include "magick/render.h"
+#include "magick/tempfile.h"
+#include "magick/transform.h"
+#include "magick/utility.h"
+#include "magick/xwindow.h"
 #if defined(HasTTF)
 #if defined(__MINGW32__)
 #  undef interface  /* Remove interface define */

@@ -272,6 +272,7 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 SYSCONF_DIR = @SYSCONF_DIR@
 ShowImageDelegate = @ShowImageDelegate@
+SysCtlDelegate = @SysCtlDelegate@
 TXT2HTML = @TXT2HTML@
 TXTDelegate = @TXTDelegate@
 VERSION = @VERSION@

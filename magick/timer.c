@@ -35,7 +35,7 @@
 /*
   Include declarations.
 */
-#include "studio.h"
+#include "magick/studio.h"
 
 /*
   Define declarations.

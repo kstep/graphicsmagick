@@ -34,20 +34,20 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "blob.h"
-#include "cache.h"
-#include "color.h"
-#include "composite.h"
-#include "log.h"
-#include "magick.h"
-#include "shear.h"
-#include "transform.h"
-#include "resize.h"
-#include "tempfile.h"
-#include "utility.h"
-#include "version.h"
-#include "xwindow.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/composite.h"
+#include "magick/log.h"
+#include "magick/magick.h"
+#include "magick/shear.h"
+#include "magick/transform.h"
+#include "magick/resize.h"
+#include "magick/tempfile.h"
+#include "magick/utility.h"
+#include "magick/version.h"
+#include "magick/xwindow.h"
 #if defined(HasX11)
 
 /*

@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-#include "render.h"
+#include "magick/render.h"
 
 /*
   NT features routines.

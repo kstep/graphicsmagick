@@ -35,17 +35,17 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "constitute.h"
-#include "delegate.h"
-#include "log.h"
-#include "monitor.h"
-#include "transform.h"
-#include "utility.h"
-#include "version.h"
-#include "xwindow.h"
+#include "magick/studio.h"
+#include "magick/constitute.h"
+#include "magick/delegate.h"
+#include "magick/log.h"
+#include "magick/monitor.h"
+#include "magick/transform.h"
+#include "magick/utility.h"
+#include "magick/version.h"
+#include "magick/xwindow.h"
 #if defined(HasX11)
-#include "animate.h"
+#include "magick/animate.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

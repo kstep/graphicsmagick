@@ -34,10 +34,10 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "log.h"
-#include "resource.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/log.h"
+#include "magick/resource.h"
+#include "magick/utility.h"
 
 /*
   Define  declarations.

@@ -35,17 +35,17 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "attribute.h"
-#include "blob.h"
-#include "color.h"
-#include "constitute.h"
-#include "gem.h"
-#include "log.h"
-#include "magick.h"
-#include "render.h"
-#include "tempfile.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/attribute.h"
+#include "magick/blob.h"
+#include "magick/color.h"
+#include "magick/constitute.h"
+#include "magick/gem.h"
+#include "magick/log.h"
+#include "magick/magick.h"
+#include "magick/render.h"
+#include "magick/tempfile.h"
+#include "magick/utility.h"
 #if defined(HasXML)
 #  if defined(WIN32)
 #    if defined(__MINGW32__)

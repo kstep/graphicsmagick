@@ -35,15 +35,15 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "blob.h"
-#include "cache.h"
-#include "list.h"
-#include "log.h"
-#include "magick.h"
-#include "resource.h"
-#include "tempfile.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/list.h"
+#include "magick/log.h"
+#include "magick/magick.h"
+#include "magick/resource.h"
+#include "magick/tempfile.h"
+#include "magick/utility.h"
 #if defined(HasZLIB)
 #include "zlib.h"
 #endif

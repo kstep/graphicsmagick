@@ -35,24 +35,24 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "attribute.h"
-#include "blob.h"
-#include "color.h"
-#include "constitute.h"
-#include "decorate.h"
-#include "effect.h"
-#include "enhance.h"
-#include "fx.h"
-#include "magick.h"
-#include "monitor.h"
-#include "montage.h"
-#include "quantize.h"
-#include "resize.h"
-#include "shear.h"
-#include "tempfile.h"
-#include "transform.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/attribute.h"
+#include "magick/blob.h"
+#include "magick/color.h"
+#include "magick/constitute.h"
+#include "magick/decorate.h"
+#include "magick/effect.h"
+#include "magick/enhance.h"
+#include "magick/fx.h"
+#include "magick/magick.h"
+#include "magick/monitor.h"
+#include "magick/montage.h"
+#include "magick/quantize.h"
+#include "magick/resize.h"
+#include "magick/shear.h"
+#include "magick/tempfile.h"
+#include "magick/transform.h"
+#include "magick/utility.h"
 
 /*
   Constant declarations.

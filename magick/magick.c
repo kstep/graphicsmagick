@@ -36,24 +36,24 @@
 /*
   Include declarations.
 */
-#include "studio.h"
+#include "magick/studio.h"
 #if defined(WIN32) || defined(__CYGWIN__)
-# include "nt_feature.h"
+# include "magick/nt_feature.h"
 #endif
-#include "blob.h"
-#include "cache.h"
-#include "color.h"
-#include "constitute.h"
-#include "delegate.h"
-#include "log.h"
-#include "magic.h"
-#include "magick.h"
-#include "module.h"
-#include "registry.h"
-#include "resource.h"
-#include "render.h"
-#include "tempfile.h"
-#include "utility.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/constitute.h"
+#include "magick/delegate.h"
+#include "magick/log.h"
+#include "magick/magic.h"
+#include "magick/magick.h"
+#include "magick/module.h"
+#include "magick/registry.h"
+#include "magick/resource.h"
+#include "magick/render.h"
+#include "magick/tempfile.h"
+#include "magick/utility.h"
 
 /*
   Global declarations.

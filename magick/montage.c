@@ -36,18 +36,18 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "attribute.h"
-#include "cache.h"
-#include "composite.h"
-#include "constitute.h"
-#include "decorate.h"
-#include "gem.h"
-#include "monitor.h"
-#include "montage.h"
-#include "render.h"
-#include "resize.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/attribute.h"
+#include "magick/cache.h"
+#include "magick/composite.h"
+#include "magick/constitute.h"
+#include "magick/decorate.h"
+#include "magick/gem.h"
+#include "magick/monitor.h"
+#include "magick/montage.h"
+#include "magick/render.h"
+#include "magick/resize.h"
+#include "magick/utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -32,9 +32,9 @@
 %
 */
 
-#include "studio.h"
+#include "magick/studio.h"
 #if defined(HasX11)
-#include "xwindow.h"
+#include "magick/xwindow.h"
 
 #if defined(PRE_R6_ICCCM)
 /*

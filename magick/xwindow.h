@@ -58,8 +58,8 @@ extern "C" {
 # include <DPS/dpsXclient.h>
 # include <DPS/dpsXpreview.h>
 #endif
-#include "quantize.h"
-#include "PreRvIcccm.h"
+#include "magick/quantize.h"
+#include "magick/PreRvIcccm.h"
 
 #undef index
 #if defined(hpux9)
@@ -636,7 +636,7 @@ extern MagickExport XWindows
 #if !defined(PWinGravity)
 #define PRE_R4_ICCCM
 #endif
-#include "widget.h"
+#include "magick/widget.h"
 
 #endif
 

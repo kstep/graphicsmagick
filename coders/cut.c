@@ -33,12 +33,12 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "cache.h"
-#include "color.h"
-#include "blob.h"
-#include "magick.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/blob.h"
+#include "magick/magick.h"
+#include "magick/utility.h"
 
 typedef struct
 {

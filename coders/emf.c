@@ -32,11 +32,11 @@
  * Include declarations.
  */
 
-#include "studio.h"
-#include "blob.h"
-#include "cache.h"
-#include "magick.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/magick.h"
+#include "magick/utility.h"
 #if defined(HasWINGDI32)
 #  if defined(__CYGWIN__)
 #    include <windows.h>

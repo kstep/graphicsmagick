@@ -36,11 +36,11 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "cache.h"
-#include "utility.h"
-#include "monitor.h"
-#include "nt_feature.h"
+#include "magick/studio.h"
+#include "magick/cache.h"
+#include "magick/utility.h"
+#include "magick/monitor.h"
+#include "magick/nt_feature.h"
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <windows.h>

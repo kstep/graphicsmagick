@@ -33,13 +33,13 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "color.h"
-#include "cache.h"
-#include "blob.h"
-#include "quantize.h"
-#include "monitor.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/color.h"
+#include "magick/cache.h"
+#include "magick/blob.h"
+#include "magick/quantize.h"
+#include "magick/monitor.h"
+#include "magick/utility.h"
 
 /*
   Define declarations.

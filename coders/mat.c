@@ -33,15 +33,15 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "blob.h"
-#include "cache.h"
-#include "color.h"
-#include "magick.h"
-#include "shear.h"
-#include "transform.h"
-#include "static.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/magick.h"
+#include "magick/shear.h"
+#include "magick/transform.h"
+#include "magick/static.h"
+#include "magick/utility.h"
 
 /* Auto coloring method, sorry this creates some artefact inside data
 MinReal+j*MaxComplex = red  MaxReal+j*MaxComplex = black

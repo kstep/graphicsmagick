@@ -171,13 +171,13 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "cache.h"
-#include "color.h"
-#include "enhance.h"
-#include "quantize.h"
-#include "monitor.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/enhance.h"
+#include "magick/quantize.h"
+#include "magick/monitor.h"
+#include "magick/utility.h"
 
 /*
   Define declarations.

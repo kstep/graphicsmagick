@@ -35,9 +35,9 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "cache.h"
-#include "gem.h"
+#include "magick/studio.h"
+#include "magick/cache.h"
+#include "magick/gem.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

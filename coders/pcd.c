@@ -35,19 +35,19 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "attribute.h"
-#include "blob.h"
-#include "cache.h"
-#include "decorate.h"
-#include "gem.h"
-#include "magick.h"
-#include "monitor.h"
-#include "montage.h"
-#include "resize.h"
-#include "shear.h"
-#include "transform.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/attribute.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/decorate.h"
+#include "magick/gem.h"
+#include "magick/magick.h"
+#include "magick/monitor.h"
+#include "magick/montage.h"
+#include "magick/resize.h"
+#include "magick/shear.h"
+#include "magick/transform.h"
+#include "magick/utility.h"
 
 /*
   Forward declarations.

@@ -34,18 +34,18 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "blob.h"
-#include "cache.h"
-#include "color.h"
-#include "constitute.h"
-#include "delegate.h"
-#include "log.h"
-#include "magick.h"
-#include "monitor.h"
-#include "stream.h"
-#include "tempfile.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/constitute.h"
+#include "magick/delegate.h"
+#include "magick/log.h"
+#include "magick/magick.h"
+#include "magick/monitor.h"
+#include "magick/stream.h"
+#include "magick/tempfile.h"
+#include "magick/utility.h"
 
 /*
   Type definitions

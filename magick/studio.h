@@ -183,19 +183,19 @@ extern "C" {
 #  include <console.h>
 #  include <unix.h>
 # endif
-# include "integral_types.h"
-# include "image.h"
-# include "list.h"
+# include "magick/integral_types.h"
+# include "magick/image.h"
+# include "magick/list.h"
 #endif
 
 #if defined(WIN32)
-# include "nt_base.h"
+# include "magick/nt_base.h"
 #endif
 #if defined(macintosh)
-# include "mac.h"
+# include "magick/mac.h"
 #endif
 #if defined(vms)
-# include "vms.h"
+# include "magick/vms.h"
 #endif
 #if defined(HAVE_MMAP) && !defined(WIN32)
 # include <sys/mman.h>

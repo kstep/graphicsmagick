@@ -35,16 +35,16 @@
 /*
   Include declarations.
 */
-#include "studio.h"
+#include "magick/studio.h"
 #if defined(WIN32) || defined(__CYGWIN__)
-# include "nt_feature.h"
+# include "magick/nt_feature.h"
 #endif
-#include "blob.h"
-#include "log.h"
-#include "magic.h"
-#include "magick.h"
-#include "module.h"
-#include "utility.h"
+#include "magick/blob.h"
+#include "magick/log.h"
+#include "magick/magic.h"
+#include "magick/magick.h"
+#include "magick/module.h"
+#include "magick/utility.h"
 #if defined(HasLTDL)
 #  include "ltdl.h"
    typedef lt_dlhandle ModuleHandle;

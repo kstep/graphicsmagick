@@ -40,20 +40,20 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "attribute.h"
-#include "blob.h"
-#include "cache.h"
-#include "color.h"
-#include "constitute.h"
-#include "enhance.h"
-#include "gem.h"
-#include "log.h"
-#include "monitor.h"
-#include "paint.h"
-#include "render.h"
-#include "transform.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/attribute.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/constitute.h"
+#include "magick/enhance.h"
+#include "magick/gem.h"
+#include "magick/log.h"
+#include "magick/monitor.h"
+#include "magick/paint.h"
+#include "magick/render.h"
+#include "magick/transform.h"
+#include "magick/utility.h"
 
 /*
   Define declarations.

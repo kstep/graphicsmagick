@@ -36,11 +36,11 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "color.h"
-#include "magick.h"
-#include "utility.h"
-#include "xwindow.h"
+#include "magick/studio.h"
+#include "magick/color.h"
+#include "magick/magick.h"
+#include "magick/utility.h"
+#include "magick/xwindow.h"
 #if defined(HasX11)
 
 /*

@@ -1,3 +1,11 @@
+2003-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* GraphicsMagick 1.0.0-beta0 release.
+	* version.sh: Updated for beta0 release.
+	* *.c magick/*.h: Update header inclusion to include
+	"magick/" prefix in order to ensure that there is no
+	confusion with headers from another package.
+
 2003-04-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/resource.c (InitializeMagickResources):

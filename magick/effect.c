@@ -35,17 +35,17 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "cache.h"
-#include "color.h"
-#include "effect.h"
-#include "enhance.h"
-#include "fx.h"
-#include "gem.h"
-#include "log.h"
-#include "monitor.h"
-#include "render.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/effect.h"
+#include "magick/enhance.h"
+#include "magick/fx.h"
+#include "magick/gem.h"
+#include "magick/log.h"
+#include "magick/monitor.h"
+#include "magick/render.h"
+#include "magick/utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

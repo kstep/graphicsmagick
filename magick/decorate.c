@@ -36,10 +36,10 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "cache.h"
-#include "decorate.h"
-#include "monitor.h"
+#include "magick/studio.h"
+#include "magick/cache.h"
+#include "magick/decorate.h"
+#include "magick/monitor.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

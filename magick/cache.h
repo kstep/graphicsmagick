@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-#include "blob.h"
+#include "magick/blob.h"
 
 /*
   Enum declaractions.

@@ -38,9 +38,9 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "utility.h"
-#include "vms.h"
+#include "magick/studio.h"
+#include "magick/utility.h"
+#include "magick/vms.h"
 
 #if !defined(_AXP_) && (!defined(__VMS_VER) || (__VMS_VER < 70000000))
 /*

@@ -36,14 +36,14 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "magick.h"
-#include "utility.h"
-#include "version.h"
+#include "magick/studio.h"
+#include "magick/magick.h"
+#include "magick/utility.h"
+#include "magick/version.h"
 #if defined(HasLTDL)
 #  include "ltdl.h"
 #endif /* defined(HasLTDL) */
-#include "nt_base.h"
+#include "magick/nt_base.h"
 
 /*
   Static declarations.

@@ -36,12 +36,12 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "cache.h"
-#include "enhance.h"
-#include "gem.h"
-#include "monitor.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/cache.h"
+#include "magick/enhance.h"
+#include "magick/gem.h"
+#include "magick/monitor.h"
+#include "magick/utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

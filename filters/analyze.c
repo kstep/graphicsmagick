@@ -33,11 +33,11 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "attribute.h"
-#include "cache.h"
-#include "gem.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/attribute.h"
+#include "magick/cache.h"
+#include "magick/gem.h"
+#include "magick/utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

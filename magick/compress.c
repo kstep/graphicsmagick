@@ -36,12 +36,12 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "blob.h"
-#include "cache.h"
-#include "compress.h"
-#include "monitor.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/compress.h"
+#include "magick/monitor.h"
+#include "magick/utility.h"
 
 /*
   Define declarations.

@@ -31,8 +31,8 @@
 %
 */
 
-#include "studio.h"
-#include "version.h"
+#include "magick/studio.h"
+#include "magick/version.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

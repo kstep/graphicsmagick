@@ -77,11 +77,11 @@
 %
 */
 
-#include "studio.h"
-#include "cache.h"
-#include "monitor.h"
-#include "quantize.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/cache.h"
+#include "magick/monitor.h"
+#include "magick/quantize.h"
+#include "magick/utility.h"
 
 /*
   Define declarations.

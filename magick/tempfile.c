@@ -9,11 +9,11 @@
 %
 */
 
-#include "studio.h"
-#include "error.h"
-#include "log.h"
-#include "tempfile.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/error.h"
+#include "magick/log.h"
+#include "magick/tempfile.h"
+#include "magick/utility.h"
 
 /*
   Define declarations.

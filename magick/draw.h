@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 
-#include "render.h"
+#include "magick/render.h"
 
 
 typedef struct _DrawContext *DrawContext;

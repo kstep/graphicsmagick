@@ -36,14 +36,14 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "cache.h"
-#include "color.h"
-#include "composite.h"
-#include "monitor.h"
-#include "resize.h"
-#include "transform.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/composite.h"
+#include "magick/monitor.h"
+#include "magick/resize.h"
+#include "magick/transform.h"
+#include "magick/utility.h"
 #if defined(HasLCMS)
 #if defined(HAVE_LCMS_LCMS_H)
 #include <lcms/lcms.h>

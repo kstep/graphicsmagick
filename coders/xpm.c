@@ -35,15 +35,15 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "blob.h"
-#include "cache.h"
-#include "color.h"
-#include "magick.h"
-#include "monitor.h"
-#include "quantize.h"
-#include "resize.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/magick.h"
+#include "magick/monitor.h"
+#include "magick/quantize.h"
+#include "magick/resize.h"
+#include "magick/utility.h"
 
 
 /*

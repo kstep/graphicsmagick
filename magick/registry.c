@@ -34,9 +34,9 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "registry.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/registry.h"
+#include "magick/utility.h"
 
 /*
   Global declarations.

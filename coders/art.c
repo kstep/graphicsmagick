@@ -33,13 +33,13 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "blob.h"
-#include "cache.h"
-#include "log.h"
-#include "magick.h"
-#include "monitor.h"
-#include "utility.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/log.h"
+#include "magick/magick.h"
+#include "magick/monitor.h"
+#include "magick/utility.h"
 
 
 static void InsertRow(unsigned char *p,int y,Image *image)

@@ -58,11 +58,11 @@
 #include <Gestalt.h>
 #include <TextUtils.h>
 #define ColorInfo  KolorInfo
-#include "studio.h"
-#include "blob.h"
-#include "monitor.h"
-#include "utility.h"
-#include "mac.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/monitor.h"
+#include "magick/utility.h"
+#include "magick/mac.h"
 
 /*
   Global declaractions.

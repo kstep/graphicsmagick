@@ -37,19 +37,19 @@
 /*
  * Include declarations.
  */
-#include "studio.h"
-#include "blob.h"
-#include "cache.h"
-#include "color.h"
-#include "constitute.h"
-#include "draw.h"
-#include "log.h"
-#include "magick.h"
-#include "monitor.h"
-#include "paint.h"
-#include "transform.h"
-#include "utility.h"
-#include "version.h"
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/constitute.h"
+#include "magick/draw.h"
+#include "magick/log.h"
+#include "magick/magick.h"
+#include "magick/monitor.h"
+#include "magick/paint.h"
+#include "magick/transform.h"
+#include "magick/utility.h"
+#include "magick/version.h"
 #if defined(WIN32)
 #define M_PI MagickPI
 #endif

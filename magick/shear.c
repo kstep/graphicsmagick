@@ -41,13 +41,13 @@
 /*
   Include declarations.
 */
-#include "studio.h"
-#include "cache.h"
-#include "decorate.h"
-#include "monitor.h"
-#include "render.h"
-#include "shear.h"
-#include "transform.h"
+#include "magick/studio.h"
+#include "magick/cache.h"
+#include "magick/decorate.h"
+#include "magick/monitor.h"
+#include "magick/render.h"
+#include "magick/shear.h"
+#include "magick/transform.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
