@@ -909,7 +909,6 @@ AC_SUBST(LIB_JBIG)
 AC_HEADER_STDC
 AC_HEADER_STAT
 AC_HEADER_TIME
-AC_HEADER_SYS_WAIT
 AC_HEADER_DIRENT
 AC_CHECK_HEADER(elf.h,AC_DEFINE(SVR4,,Define on System V Release 4.))
 AC_CHECK_HEADERS(sys/time.h sys/stat.h sys/types.h)
@@ -935,7 +934,6 @@ AC_CHECK_SIZEOF(long long,0)
 AC_FUNC_MEMCMP
 AC_TYPE_SIGNAL
 AC_FUNC_VPRINTF
-AC_FUNC_WAIT3
 AC_FUNC_MMAP
 AC_CHECK_FUNCS(getcwd gettimeofday mkdir select snprintf strchr strerror strtol tempnam vsnprintf)
 
