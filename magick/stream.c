@@ -543,6 +543,9 @@ static unsigned int SyncPixelStream(Image *image)
 MagickExport unsigned int WriteStream(const ImageInfo *image_info,Image *image,
   int (*fifo)(const Image *,const void *,const size_t))
 {
+  ImageInfo
+    *clone_info;
+
   unsigned int
     status;
 
@@ -550,7 +553,9 @@ MagickExport unsigned int WriteStream(const ImageInfo *image_info,Image *image,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  image_info->fifo=fifo;
+  clone_info=CloneImageInfo(image_info);
+  clone_info->fifo=fifo;
   status=WriteImage(image_info,image);
+  DestroyImageInfo(clone_info);
   return(status);
 }
