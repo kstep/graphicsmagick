@@ -396,17 +396,18 @@ MagickExport Image *MontageImages(const Image *images,
   */
   border_width=montage_info->border_width;
   bevel_width=0;
-  SetGeometry(image_list[0],&geometry);
-  (void) strncpy(montage_geometry,montage_info->geometry,MaxTextExtent-2);
-  (void) strcat(montage_geometry,"!");
-  flags=ParseImageGeometry(montage_geometry,&geometry.x,&geometry.y,
-    &geometry.width,&geometry.height);
   if (montage_info->frame != (char *) NULL)
     {
+      SetGeometry(image_list[0],&geometry);
+      (void) strncpy(montage_geometry,montage_info->geometry,MaxTextExtent-2);
+      (void) strcat(montage_geometry,"!");
+      flags=ParseImageGeometry(montage_geometry,&geometry.x,&geometry.y,
+        &geometry.width,&geometry.height);
+      (void) memset(&frame_info,0,sizeof(FrameInfo));
       frame_info.width=geometry.width;
       frame_info.height=geometry.height;
-      frame_info.x=geometry.x;
-      frame_info.y=geometry.y;
+      frame_info.outer_bevel=geometry.x;
+      frame_info.inner_bevel=geometry.y;
       if ((flags & HeightValue) == 0)
         frame_info.height=frame_info.width;
       if ((flags & XValue) == 0)
@@ -418,20 +419,19 @@ MagickExport Image *MontageImages(const Image *images,
       bevel_width=Max(frame_info.inner_bevel,frame_info.outer_bevel);
       border_width=Max(frame_info.width,frame_info.height);
     }
+  concatenate=False;
+  SetGeometry(image_list[0],&tile_info);
   tile_info.x=(long) montage_info->border_width;
   tile_info.y=(long) montage_info->border_width;
-  tile_info.width=image_list[0]->columns;
-  tile_info.height=image_list[0]->rows;
-  concatenate=False;
   if (montage_info->geometry != (char *) NULL)
     {
       /*
         Initialize tile geometry.
       */
-      tile_info.width=geometry.width;
-      tile_info.height=geometry.height;
-      tile_info.x=geometry.x;
-      tile_info.y=geometry.y;
+      (void) strncpy(montage_geometry,montage_info->geometry,MaxTextExtent-2);
+      (void) strcat(montage_geometry,"!");
+      flags=ParseImageGeometry(montage_geometry,&tile_info.x,&tile_info.y,
+        &tile_info.width,&tile_info.height);
       if ((tile_info.x == 0) && (tile_info.y == 0))
         concatenate=!((flags & WidthValue) || (flags & HeightValue));
     }

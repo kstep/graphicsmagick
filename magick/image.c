@@ -3977,8 +3977,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) memset(&frame_info,0,sizeof(FrameInfo));
             frame_info.width=geometry.width;
             frame_info.height=geometry.height;
-            frame_info.x=geometry.x;
-            frame_info.y=geometry.y;
+            frame_info.outer_bevel=geometry.x;
+            frame_info.inner_bevel=geometry.y;
             if ((flags & HeightValue) == 0)
               frame_info.height=frame_info.width;
             if ((flags & XValue) == 0)
