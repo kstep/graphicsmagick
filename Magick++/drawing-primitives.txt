@@ -79,7 +79,9 @@ Locations 0 & 3 are scaling for x,y; 1 & 2 are rotation for x,y; 4 & 5
 are translation. Affine is equivalent to the SVG matrix command."
 
 affine scaleX,rotationX,rotationY,scaleY,translationX,translationY
-arc startX,startY endX,endY startDegrees,endDegrees
+"arcs follow the SVG specification for the A command for the PATH
+ primitive."
+arc rx ry x-axis-rotation arge-arc-flag sweep-flag x y
 bezier x1,y1, x2,y2, x3,y3, ..., xN,yN
 circle originX,originY perimX,perimY
 clip-path url(#%s)  (%s is the name of the clip path)
