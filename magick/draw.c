@@ -643,12 +643,12 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     Parse the primitive attributes.
   */
   primitive_type=UndefinedPrimitive;
-  p=primitive;
   bounds.x1=image->columns-1;
   bounds.y1=image->rows-1;
   bounds.x2=0;
   bounds.y2=0;
-  for (i=0; *p != '\0'; )
+  i=0;
+  for (p=primitive; *p != '\0'; )
   {
     /*
       Define primitive.
@@ -1700,8 +1700,7 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
     }
     if (opacity == Opaque)
       return(opacity);
-    while (p <= q)
-      p++;
+    p=q+1;
   }
   return(opacity);
 }
