@@ -53,6 +53,36 @@
 </tr>
 </table>
 <p>
+2004-01-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/cache.c (OpenCache): While allocating the pixel cache
+        from the heap, reserve enough memory to contain a full PseudoClass
+        image in order to reduce the chance that there will be a memory
+        allocation failure while processing the image. This also avoids
+        the possibility that the image pixels will be block-copied to a
+        new location due to heap memory fragmentation. If there is
+        insufficient heap memory (malloc() fails), then a disk-based pixel
+        cache will be used.<BR>
+  <LI> coders/wpg.c: Backed out Jaroslav Fojtik's patch from 2004-01-13
+        because WPG was failing PerlMagick's existing WPG read test.
+
+</UL>
+<p>
+2004-01-16  Mike Chiarappa  &lt;mikechiarappa@libero.it&gt;
+
+<UL>
+  <LI> BCBMagick: updated to recent Windows delegate libraries.
+  <LI> BCBMagick: modified build procedure. Removed all unused directories
+        and include files.<BR>
+  <LI> lcms/include/lcms.h: Modified to achieve BCBMagick compilation.
+  <LI> tiff/libtiff/tiffio.h: Modified to achieve BCBMagick compilation
+  <LI> ttf/include/freetype/config/ftoption.h: Modified to achieve
+        BCBMagick compilation<BR>
+  <LI> Magick++/lib/Magick++/Include.h: Modified to achieve BCBMagick compilation.
+
+</UL>
+<p>
 2004-01-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

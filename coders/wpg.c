@@ -512,7 +512,17 @@ static int UnpackWPGRaster(Image *image,int bpp)
   return(0);
 }
 
-
+#define InsertRByte(b) \
+{ \
+  BImgBuff[x]=b; \
+  x++; \
+  if((long) x >= ldblk) \
+  { \
+    InsertRow(BImgBuff,(long) (image->rows-y-1),image,bpp); \
+    x=0; \
+    y++; \
+   } \
+}
 static int UnpackWPG2Raster(Image *image,int bpp)
 {
   char
@@ -558,14 +568,14 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           RunCount=ReadBlobByte(image);   /* BLK */
           for(i=0;i<(int) SampleSize*((int)RunCount+1);i++)
             {
-              InsertByte(0);
+              InsertRByte(0);
             }
           break;
         case 0xFD:
 	  RunCount=ReadBlobByte(image);   /* EXT */
 	  for(i=0;i<=(int)RunCount;i++)
                 for(bbuf=0;bbuf<SampleSize;bbuf++)
-                  InsertByte(SampleBuffer[bbuf]);
+                  InsertRByte(SampleBuffer[bbuf]);          
           break;
         case 0xFE:
           RunCount=ReadBlobByte(image);  /* RST */
@@ -579,13 +589,10 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           {
             /* duplicate the previous row RunCount x */
             for(i=0;i<=RunCount;i++)
-              {
-              x=0;
-              InsertRow(BImgBuff,(long) (y<image->rows?y:image->rows-1),
+              {      
+                InsertRow(BImgBuff,(long) (image->rows>y?image->rows-y-1:0),
                   image,bpp);
-              y++;    
-              if(y<2) continue;
-              if(y>image->rows) return(-4);
+                y++;
               }    
           }
           break;
@@ -593,7 +600,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           RunCount=ReadBlobByte(image);	 /* WHT */
           for(i=0;i<(int) SampleSize*((int)RunCount+1);i++)
             {
-              InsertByte(0xFF);
+              InsertRByte(0xFF);
             }
           break;
         default:
@@ -605,78 +612,19 @@ static int UnpackWPG2Raster(Image *image,int bpp)
                 SampleBuffer[i]=ReadBlobByte(image);
               for(i=0;i<=(int)RunCount;i++)
                 for(bbuf=0;bbuf<SampleSize;bbuf++)
-                  InsertByte(SampleBuffer[bbuf]);
+                  InsertRByte(SampleBuffer[bbuf]);
             }
           else {			/* NRP */
             for(i=0;i<(int) SampleSize*((int)RunCount+1);i++)
               {
                 bbuf=ReadBlobByte(image);
-                InsertByte(bbuf);
+                InsertRByte(bbuf);
               }
           }
         }
     }
   MagickFreeMemory(BImgBuff);
   return(0);
-}
-
-
-unsigned LoadWPG2Flags(Image *image,char Precision,float *Angle)
-{
-const unsigned char TPR=1,TRN=2,SKW=4,SCL=8,ROT=0x10,OID=0x20,LCK=0x80;
-unsigned long  x;
-unsigned DenX;
-unsigned Flags;
-float CTM[3][3];        //current transform matrix (currently ignored:(((
-
- memset(CTM,0,sizeof(CTM));     //CTM.erase();CTM.resize(3,3);
- CTM[0][0]=1;
- CTM[1][1]=1;
- CTM[2][2]=1;
-
- Flags=ReadBlobLSBShort(image);
- if(Flags & LCK) x=ReadBlobLSBLong(image);	//Edit lock
- if(Flags & OID)
-	{
-	if(Precision==0)
-	  {x=ReadBlobLSBShort(image);}	//ObjectID
-	else
-	  {x=ReadBlobLSBLong(image);}	//ObjectID (Double precision)
-	}
- if(Flags & ROT)
-	{
-	x=ReadBlobLSBLong(image);	//Rot Angle
-	if(Angle) *Angle=x/65536.0;
-	}
- if(Flags & (ROT|SCL))
-	{
-	x=ReadBlobLSBLong(image);	//Sx*cos()
-	CTM[0][0]=x;
-	x=ReadBlobLSBLong(image);	//Sy*cos()
-	CTM[1][1]=x;
-	}
- if(Flags & (ROT|SKW))
-	{
-	x=ReadBlobLSBLong(image);       //Kx*sin()
-	CTM[1][0]=x;
-	x=ReadBlobLSBLong(image);       //Ky*sin()
-	CTM[0][1]=x;
-	}
- if(Flags & TRN)
-	{
-	x=ReadBlobLSBLong(image); DenX=ReadBlobLSBLong(image); //Tx
-	CTM[0][2]=(float)x + ((x>=0)?1:-1)*(float)DenX/0x10000;
-	x=ReadBlobLSBLong(image); DenX=ReadBlobLSBLong(image); //Ty
-	CTM[1][2]=(float)x + ((x>=0)?1:-1)*(float)DenX/0x10000;
-	}
- if(Flags & TPR)
-	{
-	x=ReadBlobLSBLong(image);	//Px
-	CTM[2][0]=x;
-	x=ReadBlobLSBLong(image);	//Py
-	CTM[2][1]=x;
-	}
- return(Flags);
 }
 
 
@@ -825,13 +773,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
   typedef struct
   {
-    unsigned	HorizontalUnits;
-    unsigned	VerticalUnits;
-    unsigned char PosSizePrecision;
-  } WPG2Start;
-
-  typedef struct
-  {
     unsigned int Width;
     unsigned int Heigth;
     unsigned int Depth;
@@ -888,8 +829,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   WPG2Record
     Rec2;
 
-  WPG2Start StartWPG;
-
   WPGBitmapType1
     BitmapHeader1;
 
@@ -904,8 +843,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
   int
     i,
-    bpp,
-    WPG2Flags;
+    bpp;
 
   long
     ldblk;
@@ -1108,8 +1046,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
       break;
 
     case 2:  /* WPG level 2 */
-      memset(&StartWPG,0,sizeof(StartWPG));
       while(!EOFBlob(image)) /* object parser loop */
+
         {
           (void) SeekBlob(image,Header.DataOffset,SEEK_SET);
           if(EOFBlob(image))
@@ -1130,11 +1068,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
           switch(Rec2.RecType)
             {
-            case 1:
-              StartWPG.HorizontalUnits=ReadBlobLSBShort(image);
-              StartWPG.VerticalUnits=ReadBlobLSBShort(image);
-              StartWPG.PosSizePrecision=ReadBlobByte(image);
-              break;
             case 0x0C:    /* Color palette */
               WPG_Palette.StartIndex=ReadBlobLSBShort(image);
               WPG_Palette.NumOfEntries=ReadBlobLSBShort(image);
@@ -1243,10 +1176,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 image=ExtractPostscript(image,image_info,
                   TellBlob(image)+i,		/*skip PS header in the wpg2*/
                   (long) (Rec2.RecordLength-i-2),exception);
-              break;
-
-            case 0x1B:          /*bitmap rectangle*/
-              WPG2Flags = LoadWPG2Flags(image,StartWPG.PosSizePrecision,NULL);
               break;
             }
         }

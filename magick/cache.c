@@ -2126,11 +2126,11 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   assert(image->cache != (void *) NULL);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowBinaryException(ResourceLimitError,NoPixelsDefinedInCache,
-      image->filename);
+                         image->filename);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   FormatString(cache_info->filename,"%.1024s[%ld]",image->filename,
-    GetImageIndexInList(image));
+               GetImageIndexInList(image));
   cache_info->rows=image->rows;
   cache_info->columns=image->columns;
   number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
@@ -2143,10 +2143,10 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
         Allocate cache nexus.
       */
       cache_info->nexus_info=MagickAllocateMemory(NexusInfo *,
-        MaxCacheViews*sizeof(NexusInfo));
+                                                  MaxCacheViews*sizeof(NexusInfo));
       if (cache_info->nexus_info == (NexusInfo *) NULL)
         MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
-          UnableToAllocateCacheInfo);
+                          UnableToAllocateCacheInfo);
       (void) memset(cache_info->nexus_info,0,MaxCacheViews*sizeof(NexusInfo));
       for (id=1; id < (long) MaxCacheViews; id++)
         cache_info->nexus_info[id].available=True;
@@ -2157,31 +2157,31 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
         Free cache resources.
       */
       switch (cache_info->type)
-      {
+        {
         case MemoryCache:
-        {
-          LiberateMagickResource(MemoryResource,cache_info->length);
-          break;
-        }
-        case MapCache:
-        {
-          (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
-          LiberateMagickResource(MapResource,cache_info->length);
-          break;
-        }
-        case DiskCache:
-        {
-          LiberateMagickResource(DiskResource,cache_info->length);
-          if (cache_info->file == -1)
+          {
+            LiberateMagickResource(MemoryResource,cache_info->length);
             break;
-          close(cache_info->file);
-          cache_info->file=(-1);
-          LiberateMagickResource(FileResource,1);
-          break;
-        }
+          }
+        case MapCache:
+          {
+            (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
+            LiberateMagickResource(MapResource,cache_info->length);
+            break;
+          }
+        case DiskCache:
+          {
+            LiberateMagickResource(DiskResource,cache_info->length);
+            if (cache_info->file == -1)
+              break;
+            close(cache_info->file);
+            cache_info->file=(-1);
+            LiberateMagickResource(FileResource,1);
+            break;
+          }
         default:
           break;
-      }
+        }
     }
   packet_size=sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
@@ -2190,99 +2190,103 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   offset=number_pixels*packet_size;
   if (cache_info->columns != (offset/cache_info->rows/packet_size))
     ThrowBinaryException(ResourceLimitError,PixelCacheAllocationFailed,
-      image->filename);
+                         image->filename);
   cache_info->length=offset;
-  if (cache_info->length == (size_t) cache_info->length)
-    if ((cache_info->type == MemoryCache) ||
-        ((cache_info->type == UndefinedCache) &&
-         AcquireMagickResource(MemoryResource,cache_info->length)))
-      {
-        if (cache_info->storage_class == UndefinedClass)
-          pixels=MagickAllocateMemory(PixelPacket *,(size_t) cache_info->length);
-        else
-          {
-            MagickReallocMemory(cache_info->pixels,(size_t)
-              cache_info->length);
-            if (cache_info->pixels == (void *) NULL)
-              ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-                image->filename);
-            pixels=cache_info->pixels;
-          }
-        if (pixels == (PixelPacket *) NULL)
-          LiberateMagickResource(MemoryResource,cache_info->length);
-        else
-          {
-            /*
-              Create in-memory pixel cache.
-            */
-            cache_info->storage_class=image->storage_class;
-            cache_info->colorspace=image->colorspace;
-            cache_info->type=MemoryCache;
-            cache_info->pixels=pixels;
-            cache_info->indexes=(IndexPacket *) NULL;
-            if ((cache_info->storage_class == PseudoClass) ||
-                (cache_info->colorspace == CMYKColorspace))
-              cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
-            FormatSize(cache_info->length,format);
-            (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-               "open %.1024s (%.1024s)",cache_info->filename,format);
-            return(True);
-          }
-      }
+  /*
+    Assure that there is sufficient address space available to contain
+    the PseudoClass representation (PixelPacket array + colormap
+    indexes array), and assure that there are sufficient memory
+    resources remaining. Pre-allocate sufficient memory to store the
+    PseudoClass representation in order to reduce the chance of
+    running out of virtual memory while processing the image. If the
+    operating system does not reserve heap allocations then it is
+    still possible to run out of virtual memory (the process will be
+    killed) even after the memory has been allocated.
+  */
+  offset=number_pixels*(sizeof(PixelPacket)+sizeof(IndexPacket));
+  if ((offset == (magick_off_t) ((size_t) offset)) &&
+      (AcquireMagickResource(MemoryResource,offset)) &&
+      ((cache_info->type == UndefinedCache) ||
+       (cache_info->type == MemoryCache)))
+    {
+      MagickReallocMemory(cache_info->pixels,(size_t) offset);
+      pixels=cache_info->pixels;
+      if (pixels == (PixelPacket *) NULL)
+        LiberateMagickResource(MemoryResource,offset);
+      else
+        {
+          /*
+            Create in-memory pixel cache.
+          */
+          cache_info->storage_class=image->storage_class;
+          cache_info->colorspace=image->colorspace;
+          cache_info->type=MemoryCache;
+          cache_info->pixels=pixels;
+          cache_info->indexes=(IndexPacket *) NULL;
+          if ((cache_info->storage_class == PseudoClass) ||
+              (cache_info->colorspace == CMYKColorspace))
+            cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
+          FormatSize(cache_info->length,format);
+          (void) LogMagickEvent(CacheEvent,GetMagickModule(),
+                                "open %.1024s (%.1024s)",cache_info->filename,
+                                format);
+          return(True);
+        }
+    }
   /*
     Create pixel cache on disk.
   */
   if (!AcquireMagickResource(DiskResource,cache_info->length))
     ThrowBinaryException(ResourceLimitError,CacheResourcesExhausted,
-      image->filename);
+                         image->filename);
   if (*cache_info->cache_filename == '\0')
     if(!AcquireTemporaryFileName(cache_info->cache_filename))
       {
         LiberateMagickResource(DiskResource,cache_info->length);
         ThrowBinaryException(FileOpenError,UnableToCreateTemporaryFile,
-          cache_info->cache_filename)
-      }
+                             cache_info->cache_filename)
+          }
   switch (mode)
-  {
+    {
     case ReadMode:
-    {
-      file=open(cache_info->cache_filename,O_RDONLY | O_BINARY | _O_SEQUENTIAL);
-      break;
-    }
+      {
+        file=open(cache_info->cache_filename,O_RDONLY | O_BINARY | _O_SEQUENTIAL);
+        break;
+      }
     case WriteMode:
-    {
-      file=open(cache_info->cache_filename,O_WRONLY | O_CREAT | O_BINARY |
-        O_EXCL,S_MODE);
-      if (file == -1)
-        file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,S_MODE);
-      break;
-    }
+      {
+        file=open(cache_info->cache_filename,O_WRONLY | O_CREAT | O_BINARY |
+                  O_EXCL,S_MODE);
+        if (file == -1)
+          file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,S_MODE);
+        break;
+      }
     case IOMode:
     default:
-    {
-      file=open(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY |
-        O_EXCL | _O_RANDOM, S_MODE);
-      if (file == -1)
-        file=open(cache_info->cache_filename,O_RDWR | O_BINARY | _O_RANDOM,
-          S_MODE);
-      break;
+      {
+        file=open(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY |
+                  O_EXCL | _O_RANDOM, S_MODE);
+        if (file == -1)
+          file=open(cache_info->cache_filename,O_RDWR | O_BINARY | _O_RANDOM,
+                    S_MODE);
+        break;
+      }
     }
-  }
   if (file == -1)
     {
       LiberateMagickResource(DiskResource,cache_info->length);
       ThrowBinaryException(CacheError,UnableToOpenCache,image->filename)
-    }
+        }
   if (!ExtendCache(file,cache_info->offset+cache_info->length))
     {
       close(file);
       LiberateTemporaryFile(cache_info->cache_filename);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-        "remove %.1024s (%.1024s)",cache_info->filename,
-        cache_info->cache_filename);
+                            "remove %.1024s (%.1024s)",cache_info->filename,
+                            cache_info->cache_filename);
       LiberateMagickResource(DiskResource,cache_info->length);
       ThrowBinaryException(CacheError,UnableToExtendCache,image->filename)
-    }
+        }
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;
@@ -2291,7 +2295,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
       AcquireMagickResource(MapResource,cache_info->length))
     {
       pixels=(PixelPacket *) MapBlob(file,mode,(off_t) cache_info->offset,
-        (size_t) cache_info->length);
+                                     (size_t) cache_info->length);
       if (pixels == (PixelPacket *) NULL)
         LiberateMagickResource(MapResource,cache_info->length);
       else
@@ -2320,9 +2324,11 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
 #endif
   FormatSize(cache_info->length,format);
   (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-    "open %.1024s (%.1024s[%d], %.1024s, %.1024s)",
-    cache_info->filename,cache_info->cache_filename,cache_info->file,
-    cache_info->type == MapCache ? "memory-mapped" : "disk",format);
+                        "open %.1024s (%.1024s[%d], %.1024s, %.1024s)",
+                        cache_info->filename,cache_info->cache_filename,
+                        cache_info->file,
+                        cache_info->type == MapCache ? "memory-mapped" : "disk",
+                        format);
   return(True);
 }
 

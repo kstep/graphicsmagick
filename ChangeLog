@@ -1,3 +1,16 @@
+2004-01-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/cache.c (OpenCache): While allocating the pixel cache
+	from the heap, reserve enough memory to contain a full PseudoClass
+	image in order to reduce the chance that there will be a memory
+	allocation failure while processing the image. This also avoids
+	the possibility that the image pixels will be block-copied to a
+	new location due to heap memory fragmentation. If there is
+	insufficient heap memory (malloc() fails), then a disk-based pixel
+	cache will be used.
+	* coders/wpg.c: Backed out Jaroslav Fojtik's patch from 2004-01-13
+	because WPG was failing PerlMagick's existing WPG read test.
+
 2004-01-16  Mike Chiarappa  <mikechiarappa@libero.it>
 
 	* BCBMagick: updated to recent Windows delegate libraries.
