@@ -131,14 +131,14 @@ static void FinalizeSignature(SignatureInfo *signature_info)
       TransformSignature(signature_info);
       (void) memset(signature_info->message,0,SignatureSize-8);
     }
-  signature_info->message[56]=(high_order >> 24) & 0xff;
-  signature_info->message[57]=(high_order >> 16) & 0xff;
-  signature_info->message[58]=(high_order >> 8) & 0xff;
-  signature_info->message[59]=high_order & 0xff;
-  signature_info->message[60]=(low_order >> 24) & 0xff;
-  signature_info->message[61]=(low_order >> 16) & 0xff;
-  signature_info->message[62]=(low_order >> 8) & 0xff;
-  signature_info->message[63]=low_order & 0xff;
+  signature_info->message[56]=high_order >> 24;
+  signature_info->message[57]=high_order >> 16;
+  signature_info->message[58]=high_order >> 8;
+  signature_info->message[59]=high_order;
+  signature_info->message[60]=low_order >> 24;
+  signature_info->message[61]=low_order >> 16;
+  signature_info->message[62]=low_order >> 8;
+  signature_info->message[63]=low_order;
   TransformSignature(signature_info);
 }
 
