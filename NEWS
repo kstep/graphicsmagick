@@ -21,9 +21,18 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     * EXIF attributes were not being retrieved when requested.
     * Fix for bug when reading an image via a user-provided file
     descriptor.
+    * The reported image magick string is now always that of the original
+    input file (it was sometimes being reported as the format produced by
+    an intermediate delegate program).
+    * Fixes to color profiling of CMYK images.
+    * Memory leak fixed in DrawClipPath().
+    * Arc drawing is fixed.
+    * Command-line parsing bug under Linux due to Linux's sscanfs
+    inability to parse strings like "0x1" as "%fx%f" is fixed.
 
   Performance improvements:
     * Texture tiling is now 7X faster.
+    * Color profile processing speed improvements for colormapped images.
 
   Utilities enhancements:
     * For Unix, 'gm version' now includes a dump of the configure and
@@ -31,6 +40,11 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     * Logging of thrown exceptions is now supported. Use '-debug
     exception'. This is useful to learn when and where errors are
     reported.
+    * The -coder-options option is added in order to support supplying
+    additional options to coders without needing to add additional
+    command line options or structure members.
+    * The output of 'gm identify -verbose' now provides a nice dump
+    of EXIF data.
 
   Coder additions/improvments
     * The META coder supports wide characters for the IPTC and 8BIM
@@ -44,11 +58,19 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     compatibility.
     * Reading and writting compressed SVG (SVGZ) is now supported.
     * The TXT coder now observes depth when writing.
+    * The TIFF coder now outputs colormapped images with 1, 2, and 4
+    bits per sample in order to provide much smaller file sizes for
+    images with very few colors.
+    * The WPG coder now renders embedded WMFs.
+    * The PS3 coder is completely re-written to work much better and
+    support more features (see ChangeLog).
 
   Code structure enhancements:
     * Error handling has been improved and validated through testing.
     Some errors were being lost, unnecessarily ignored, or reported as
     something else entirely.
+    * The number of error text messages to be maintained has been reduced
+    by consolidating similar messages.
     * The memory allocator functions have been replaced with similar
     macros in order to eliminate warnings with GCC 3.3, avoid
     accidentally casting away const, and allow memory debuggers to
@@ -58,6 +80,8 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     * <magick/xwindow.h> no longer depends on magick_config.h defines.
     * The text string localization code has been replaced with a simpler
     version written by Bill Radcliffe.
+    * Added key,value "map" APIs (somewhat similar to C++'s <map>) for
+    internal use.
 
   API enhancements:
     * Incorporated John Cristy's Wand API's in a new GraphicsMagickWand
@@ -89,6 +113,16 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     type is still a Quantum.
     * GetImageChannelDepth() supports retrieving the modulus depth for a
     specified channel.
+    * SetImageChannelDepth() supports setting the modulus depth for a
+    specified channel.
+    * ProfileImage is updated to handle alpha channels and grayscale
+    images.
+    * CompositeImage() now supports CopyCyanCompositeOp,
+    CopyMagentaCompositeOp, CopyYellowCompositeOp, and
+    CopyBlackCompositeOp, composition operators.
+    * GetColorHistogram() obtains a color histogram for the image.
+    * The semaphore.h header is no longer installed or included in the
+    API headers since these functions are private interfaces.
 
   PerlMagick fixes:
     * Adjusted a number of function option names so that they match the
@@ -102,6 +136,13 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     if the C library doesn't provide it.  This improves security on old
     systems.
     * Configure only configures for C & C++ languages.
+    * Configure now does a better job of figuring out how to build a
+    thread-safe library across multiple operating systems.
+    * Configure incorporates a new mmap() test which tests the
+    functionality which is needed so that mmap() is not unnecessarily
+    rejected on a number of systems. This improves performance for large
+    files on those systems.
+    * Configure/build fixes for IBM's AIX operating system.
 
   Windows-specific improvements:
     * The static install package now uses the "uninstalled"
@@ -120,6 +161,8 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     * Support is provided for issuing log messages to the Windows standard
     logging system.
     * Project files are now provided for use with Borland C++ Builder 6.0.
+    * Updated version of LCMS used for Windows build to version 1.11.
+    * GraphicsMagick now compiles using Visual Studio .NET 2003.
 
 ---------------------------------------------------------------------------
 Significant changes associated with GraphicsMagick 1.0 (Released in May, 2003)

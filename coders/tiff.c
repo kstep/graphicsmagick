@@ -1616,11 +1616,98 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 #endif
 
 /*
-  Encode colormap indexes into TIFF packed format.
-  Currently supported bits-per-quantum are 1, 2, 4, & 8.
+  Encode row of DirectClass gray pixels into TIFF packed format.
+  Currently supported bits-per-sample are 4 & 8.
+*/
+static unsigned int EncodeGrayPixels(const Image *image,
+  const unsigned int bits_per_sample, const unsigned int matte_flag,
+  unsigned char *destination)
+{
+  register long
+    x;
+
+  register PixelPacket
+    *p;
+
+  register unsigned char
+    *q;
+
+  long
+    number_pixels;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(destination != (unsigned char *) NULL);
+  assert(bits_per_sample <= QuantumDepth);
+
+  number_pixels=(long) GetPixelCacheArea(image);
+  p=GetPixels(image);
+  q=destination;
+
+  if ((number_pixels == 0) || (p == 0))
+    return False;
+
+  switch (bits_per_sample)
+    {
+    case 4:
+      {
+        register unsigned long
+          scale;
+
+        scale=MaxRGB / (MaxRGB >> (QuantumDepth-bits_per_sample));
+
+        if (matte_flag)
+          {
+            for (x= number_pixels; x > 0; --x)
+              {
+                *q=0;
+                *q |= (((unsigned char) p->red/scale) & 0xf) << 4;
+                *q |= (((unsigned char) (MaxRGB - p->opacity)/scale) & 0xf) ;
+                q++;
+                p++;
+              }
+          }
+        else
+          {
+            for (x = 0; x < (number_pixels-1) ; x+= 2)
+              {
+                *q=0;
+                *q |= (((unsigned char) p++->red/scale) & 0xf) << 4;
+                *q++ |= (((unsigned char) p++->red/scale) & 0xf);
+              }
+            if ((number_pixels % 2) != 0)
+              {
+                *q=0;
+                *q++ |= ((((unsigned char) p++->red/scale) & 0xf) << 4);
+              }
+          }
+        break;
+      }
+    case 8:
+      {
+        if (matte_flag)
+          for (x= number_pixels; x > 0; --x)
+            {
+              *q++=(unsigned char) ScaleQuantumToChar(p->red);
+              *q++=(unsigned char) ScaleQuantumToChar(MaxRGB - (p->opacity));
+              p++;
+            }
+        else
+          for (x= number_pixels; x > 0; --x)
+            *q++=(unsigned char) ScaleQuantumToChar(p++->red);
+        break;
+      }
+    }
+
+  return True;
+}
+
+/*
+  Encode row of colormap indexes into TIFF packed format.
+  Currently supported bits-per-sample are 1, 2, 4, & 8.
 */
 static unsigned int EncodeIndexPixels(const Image *image,
-  const unsigned int bits_per_quantum, unsigned char *destination)
+  const unsigned int bits_per_sample, unsigned char *destination)
 {
   register IndexPacket
     *indexes;
@@ -1646,12 +1733,12 @@ static unsigned int EncodeIndexPixels(const Image *image,
 
   q=destination;
 
-  switch (bits_per_quantum)
+  switch (bits_per_sample)
     {
     case 1:
       {
         assert(image->colors <= 2);
-        for (x=((long) image->columns-7); x > 0; x-=8)
+        for (x=((long) number_pixels-7); x > 0; x-=8)
           {
             *q=0;
             *q |= (((unsigned char) *indexes++) & 0x01) << 7;
@@ -1664,13 +1751,13 @@ static unsigned int EncodeIndexPixels(const Image *image,
             *q |= (((unsigned char) *indexes++) & 0x01);
             q++;
           }
-        if ((image->columns % 8) != 0)
+        if ((number_pixels % 8) != 0)
           {
             register int
               bit;
 
             *q=0;
-            for (bit=7; bit >= (long) (8-(image->columns % 8)); bit--)
+            for (bit=7; bit >= (long) (8-(number_pixels % 8)); bit--)
               {
                 *q |= (((unsigned char) *indexes++) & 0x01) << bit--;
               }
@@ -1682,7 +1769,7 @@ static unsigned int EncodeIndexPixels(const Image *image,
       {
         assert(image->colors <= 4);
 
-        for (x=0; x < ((long) image->columns-3); x+=4)
+        for (x=0; x < ((long) number_pixels-3); x+=4)
           {
             *q=0;
             *q |= (((unsigned char) *indexes++) & 0x03) << 6;
@@ -1691,13 +1778,13 @@ static unsigned int EncodeIndexPixels(const Image *image,
             *q |= (((unsigned char) *indexes++) & 0x03);
             q++;
           }
-        if ((image->columns % 4) != 0)
+        if ((number_pixels % 4) != 0)
           {
             unsigned int
               i;
 
             *q=0;
-            for (i=3; i >= (long) (4-(image->columns % 4)); i--)
+            for (i=3; i >= (long) (4-(number_pixels % 4)); i--)
               *q |= (((unsigned char) *indexes++) & 0x03) << (i*2);
             q++;
           }
@@ -1706,13 +1793,13 @@ static unsigned int EncodeIndexPixels(const Image *image,
     case 4:
       {
         assert(image->colors <= 16);
-        for (x = 0; x < (image->columns-1) ; x+= 2)
+        for (x = 0; x < (number_pixels-1) ; x+= 2)
           {
             *q=0;
             *q |= ((((unsigned char) *indexes++) & 0xf) << 4);
             *q++ |= (((unsigned char) *indexes++) & 0xf);
           }
-        if ((image->columns % 2) != 0)
+        if ((number_pixels % 2) != 0)
           {
             *q=0;
             *q++ |= ((((unsigned char) *indexes++) & 0xf) << 4);
@@ -2022,20 +2109,53 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 IsGrayImage(image,&image->exception))
               {
                 (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
-                photometric=PHOTOMETRIC_MINISBLACK;
-                if (logging)
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                    "Using PHOTOMETRIC_MINISBLACK, 1 sample per pixel");
+
                 if ((image->storage_class == PseudoClass) &&
                     IsMonochromeImage(image,&image->exception))
                   {
+                    /* Monochrome PseudoClass Image */
+
                     bits_per_sample=1;
                     (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
                     photometric=PHOTOMETRIC_MINISWHITE;
                     compress_tag=COMPRESSION_CCITTFAX4;
                     if (logging)
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Using PHOTOMETRIC_MINISWHITE, 1 sample per pixel, CCITTFAX4 compression");
+                        "Using PHOTOMETRIC_MINISWHITE, 1 sample per pixel,"
+                        " %u bits per sample, CCITTFAX4 compression",
+                        (unsigned int) bits_per_sample);
+                  }
+                else
+                  {
+                    /* Grayscale Image */
+                    unsigned long
+                      opacity_depth,
+                      depth;
+
+                    depth=GetImageDepth(image,&image->exception);
+                    opacity_depth=depth;
+                    if (logging)
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "depth %lu, colors %lu",depth, image->colors);
+
+                    if (image->matte)
+                      opacity_depth=GetImageChannelDepth(image,OpacityChannel,
+                        &image->exception);
+
+                    depth=Max(depth,opacity_depth);
+
+                    if (depth <= 4)
+                      bits_per_sample=4;
+                    else if (depth <= 8)
+                      bits_per_sample=8;
+
+                    (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
+
+                    photometric=PHOTOMETRIC_MINISBLACK;
+                    if (logging)
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Using PHOTOMETRIC_MINISBLACK, 1 sample per pixel,"
+                        " %u bits per sample", (unsigned int) bits_per_sample);
                   }
               }
             else
@@ -2440,11 +2560,13 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               if (p == (const PixelPacket *) NULL)
                 break;
               if (image->matte)
-                (void) PopImagePixels(image,GrayAlphaQuantum,scanline);
+                (void) EncodeGrayPixels(image,bits_per_sample,True,scanline);
               else
                 if (photometric != PHOTOMETRIC_PALETTE)
-                  (void) PopImagePixels(image,GrayQuantum,scanline);
+                  /* Grayscale DirectClass */
+                  (void) EncodeGrayPixels(image,bits_per_sample,False,scanline);
                 else
+                  /* Color PseudoClass */
                   (void) EncodeIndexPixels(image,bits_per_sample,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;

@@ -53,9 +53,23 @@
 </tr>
 </table>
 <p>
+2003-09-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (WriteTIFFImage): Add support for writing
+        DirectClass grayscale images at 4 bits per sample, including those
+        with an opacity channel.  This allows writing smaller files
+        (half the size) when the image has 16 (or less) levels of gray.
+        Use "gm convert inimage.tiff -depth 4 outimage.tiff" to quickly
+        create grayscale TIFF file with 16 (or less) levels of
+        gray.
+
+</UL>
+<p>
 2003-09-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> NEWS: Updated NEWS file with changes since last update.
   <LI> index.html: Added a link to the www/AUTHORS.html file, as well
         as text stating that GraphicsMagick is originally derived from
         ImageMagick 5.5.2, with a link to the ImageMagick site.
@@ -679,7 +693,7 @@
 <p>
 2003-08-17  William Radcliffe  &lt;billr@corbis.com&gt;
 <UL>
-  <LI> coders\png.c: Had to modify a few excetpion calls to work with
+  <LI> coders\png.c: Had to modify a few exception calls to work with
         newest macros.
 
 </UL>
