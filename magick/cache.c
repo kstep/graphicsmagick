@@ -1763,7 +1763,7 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
 */
 MagickExport void SetCacheThreshold(const off_t threshold)
 {
-  cache_memory=1024*1024*threshold-1;
+  cache_memory=1024L*1024L*threshold-1L;
 }
 
 /*
