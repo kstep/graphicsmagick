@@ -2709,51 +2709,51 @@ MagickExport void XGetPixelPacket(Display *display,
   /*
     Set highlight color.
   */
-  pixel->highlight_color.red=(unsigned short) ((unsigned long)
-    (pixel->matte_color.red*HighlightModulate+(unsigned long)
-    (MaxRGB-HighlightModulate)*65535L)/MaxRGB);
-  pixel->highlight_color.green=(unsigned short) ((unsigned long)
-    (pixel->matte_color.green*HighlightModulate+(unsigned long)
-    (MaxRGB-HighlightModulate)*65535L)/MaxRGB);
-  pixel->highlight_color.blue=(unsigned short) ((unsigned long)
-    (pixel->matte_color.blue*HighlightModulate+(unsigned long)
-    (MaxRGB-HighlightModulate)*65535L)/MaxRGB);
+  pixel->highlight_color.red=(unsigned short) (((unsigned long)
+    pixel->matte_color.red*HighlightModulate+
+    65537UL*(MaxRGB-HighlightModulate))/MaxRGB);
+  pixel->highlight_color.green=(unsigned short) (((unsigned long)
+    pixel->matte_color.green*HighlightModulate+(unsigned long)
+    65537UL*(MaxRGB-HighlightModulate))/MaxRGB);
+  pixel->highlight_color.blue=(unsigned short) (((unsigned long)
+    pixel->matte_color.blue*HighlightModulate+(unsigned long)
+    65537UL*(MaxRGB-HighlightModulate))/MaxRGB);
   pixel->highlight_color.pixel=
     XStandardPixel(map_info,pixel->highlight_color,16);
   pixel->highlight_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set shadow color.
   */
-  pixel->shadow_color.red=(unsigned short) ((unsigned long)
-    (pixel->matte_color.red*ShadowModulate)/MaxRGB);
-  pixel->shadow_color.green=(unsigned short) ((unsigned long)
-    (pixel->matte_color.green*ShadowModulate)/MaxRGB);
-  pixel->shadow_color.blue=(unsigned short) ((unsigned long)
-    (pixel->matte_color.blue*ShadowModulate)/MaxRGB);
+  pixel->shadow_color.red=(unsigned short) (((unsigned long)
+    pixel->matte_color.red*ShadowModulate)/MaxRGB);
+  pixel->shadow_color.green=(unsigned short) (((unsigned long)
+    pixel->matte_color.green*ShadowModulate)/MaxRGB);
+  pixel->shadow_color.blue=(unsigned short) (((unsigned long)
+    pixel->matte_color.blue*ShadowModulate)/MaxRGB);
   pixel->shadow_color.pixel=
     XStandardPixel(map_info,pixel->shadow_color,16);
   pixel->shadow_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set depth color.
   */
-  pixel->depth_color.red=(unsigned short) ((unsigned long)
-    (pixel->matte_color.red*DepthModulate)/MaxRGB);
-  pixel->depth_color.green=(unsigned short) ((unsigned long)
-    (pixel->matte_color.green*DepthModulate)/MaxRGB);
-  pixel->depth_color.blue=(unsigned short) ((unsigned long)
-    (pixel->matte_color.blue*DepthModulate)/MaxRGB);
+  pixel->depth_color.red=(unsigned short) (((unsigned long)
+    pixel->matte_color.red*DepthModulate)/MaxRGB);
+  pixel->depth_color.green=(unsigned short) (((unsigned long)
+    pixel->matte_color.green*DepthModulate)/MaxRGB);
+  pixel->depth_color.blue=(unsigned short) (((unsigned long)
+    pixel->matte_color.blue*DepthModulate)/MaxRGB);
   pixel->depth_color.pixel=
     XStandardPixel(map_info,pixel->depth_color,16);
   pixel->depth_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set trough color.
   */
-  pixel->trough_color.red=(unsigned short) ((unsigned long)
-    (pixel->matte_color.red*TroughModulate)/MaxRGB);
-  pixel->trough_color.green=(unsigned short) ((unsigned long)
-    (pixel->matte_color.green*TroughModulate)/MaxRGB);
-  pixel->trough_color.blue=(unsigned short) ((unsigned long)
-    (pixel->matte_color.blue*TroughModulate)/MaxRGB);
+  pixel->trough_color.red=(unsigned short) (((unsigned long)
+    pixel->matte_color.red*TroughModulate)/MaxRGB);
+  pixel->trough_color.green=(unsigned short) (((unsigned long)
+    pixel->matte_color.green*TroughModulate)/MaxRGB);
+  pixel->trough_color.blue=(unsigned short) (((unsigned long)
+    pixel->matte_color.blue*TroughModulate)/MaxRGB);
   pixel->trough_color.pixel=
     XStandardPixel(map_info,pixel->trough_color,16);
   pixel->trough_color.flags=DoRed | DoGreen | DoBlue;
@@ -4042,11 +4042,11 @@ static Image *XGetWindowImage(Display *display,const Window window,
                 {
                   pixel=XGetPixel(ximage,x,y);
                   color=(pixel >> red_shift) & red_mask;
-                  q->red=ScaleShortToQuantum((color*65535L)/red_mask);
+                  q->red=ScaleShortToQuantum((65537UL*color)/red_mask);
                   color=(pixel >> green_shift) & green_mask;
-                  q->green=ScaleShortToQuantum((color*65535L)/green_mask);
+                  q->green=ScaleShortToQuantum((65537UL*color)/green_mask);
                   color=(pixel >> blue_shift) & blue_mask;
-                  q->blue=ScaleShortToQuantum((color*65535L)/blue_mask);
+                  q->blue=ScaleShortToQuantum((65537UL*color)/blue_mask);
                   q++;
                 }
                 if (!SyncImagePixels(composite_image))
@@ -7024,7 +7024,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       if ((map_info->red_max*map_info->green_max*map_info->blue_max) != 0)
         if (!image->matte && !resource_info->color_recovery &&
             resource_info->quantize_info->dither &&
-            ((int) number_colors < (MaxRGB+1)))
+            ((int) number_colors < MaxColormapSize))
           {
             Image
               *map_image;
@@ -7049,15 +7049,15 @@ MagickExport void XMakeStandardColormap(Display *display,
                   q->red=0;
                   if (map_info->red_max != 0)
                     q->red=(Quantum)
-                      (((i/map_info->red_mult)*MaxRGB)/map_info->red_max);
+                      ((MaxRGB*(i/map_info->red_mult))/map_info->red_max);
                   q->green=0;
                   if (map_info->green_max != 0)
-                    q->green=(Quantum) ((((i/map_info->green_mult) %
-                      (map_info->green_max+1))*MaxRGB)/map_info->green_max);
+                    q->green=(Quantum) ((MaxRGB*((i/map_info->green_mult) %
+                      (map_info->green_max+1)))/map_info->green_max);
                   q->blue=0;
                   if (map_info->blue_max != 0)
                     q->blue=(Quantum)
-                      (((i % map_info->green_mult)*MaxRGB)/map_info->blue_max);
+                      ((MaxRGB*(i % map_info->green_mult))/map_info->blue_max);
                   q->opacity=TransparentOpacity;
                   q++;
                 }
@@ -7429,7 +7429,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           color.blue=(unsigned short) 0;
           if (map_info->blue_max != 0)
             color.blue=(unsigned short) ((unsigned long)
-              (((i % map_info->green_mult)*65535L)/map_info->blue_max));
+              ((65537UL*(i % map_info->green_mult))/map_info->blue_max));
           color.green=color.blue;
           color.red=color.blue;
           color.pixel=XStandardPixel(map_info,color,16);
@@ -7441,16 +7441,16 @@ MagickExport void XMakeStandardColormap(Display *display,
           color.red=(unsigned short) 0;
           if (map_info->red_max != 0)
             color.red=(unsigned short) ((unsigned long)
-              (((i/map_info->red_mult)*65535L)/map_info->red_max));
+              ((65537UL*(i/map_info->red_mult))/map_info->red_max));
           color.green=(unsigned int) 0;
           if (map_info->green_max != 0)
             color.green=(unsigned short) ((unsigned long)
-              ((((i/map_info->green_mult) % (map_info->green_max+1))*65535L)/
+              ((65537UL*((i/map_info->green_mult) % (map_info->green_max+1)))/
                 map_info->green_max));
           color.blue=(unsigned short) 0;
           if (map_info->blue_max != 0)
             color.blue=(unsigned short) ((unsigned long)
-              (((i % map_info->green_mult)*65535L)/map_info->blue_max));
+              ((65537UL*(i % map_info->green_mult))/map_info->blue_max));
           color.pixel=XStandardPixel(map_info,color,16);
           *p++=color;
         }
