@@ -1437,9 +1437,9 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
 %
 %  Use DrawImage() to draw a graphic primitive on your image.  The primitive
 %  may be represented as a string or filename.  Precede the filename with an
-%  ampersand (@) and the contents of the file are drawn on the image.  You can
-%  affect how text is drawn by setting one or more members of the draw info
-%  structure.
+%  "at" sign (@) and the contents of the file are drawn on the image.  You
+%  can affect how text is drawn by setting one or more members of the draw
+%  info structure.
 %
 %  The format of the DrawImage method is:
 %
