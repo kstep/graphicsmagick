@@ -56,18 +56,6 @@
 #include "studio.h"
 
 /*
-  Typedef declarations.
-*/
-typedef struct _AggregatePacket
-{
-  double
-    red,
-    green,
-    blue,
-    opacity;
-} AggregatePacket;
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -187,11 +175,11 @@ static void BlurScanline(const double *kernel,const int width,
   const PixelPacket *source,PixelPacket *destination,
   const unsigned long columns)
 {
-  AggregatePacket
-    aggregate;
-
   double
     scale;
+
+  DoublePixelPacket
+    aggregate;
 
   register const double
     *p;
@@ -207,7 +195,7 @@ static void BlurScanline(const double *kernel,const int width,
     {
       for (x=0; x < (long) columns; x++)
       {
-        (void) memset(&aggregate,0,sizeof(AggregatePacket));
+        (void) memset(&aggregate,0,sizeof(DoublePixelPacket));
         scale=0.0;
         p=kernel;
         q=source;
@@ -238,7 +226,7 @@ static void BlurScanline(const double *kernel,const int width,
   */
   for (x=0; x < (long) (width/2); x++)
   {
-    (void) memset(&aggregate,0,sizeof(AggregatePacket));
+    (void) memset(&aggregate,0,sizeof(DoublePixelPacket));
     scale=0.0;
     p=kernel+width/2-x;
     q=source;
@@ -260,7 +248,7 @@ static void BlurScanline(const double *kernel,const int width,
   }
   for ( ; x < (long) (columns-width/2); x++)
   {
-    (void) memset(&aggregate,0,sizeof(AggregatePacket));
+    (void) memset(&aggregate,0,sizeof(DoublePixelPacket));
     p=kernel;
     q=source+(x-width/2);
     for (i=0; i < (long) width; i++)
@@ -279,7 +267,7 @@ static void BlurScanline(const double *kernel,const int width,
   }
   for ( ; x < (long) columns; x++)
   {
-    (void) memset(&aggregate,0,sizeof(AggregatePacket));
+    (void) memset(&aggregate,0,sizeof(DoublePixelPacket));
     scale=0;
     p=kernel;
     q=source+(x-width/2);
@@ -329,7 +317,7 @@ static int GetBlurKernel(int width,const double sigma,double **kernel)
   bias=KernelRank*width/2;
   for (i=(-bias); i <= bias; i++)
     (*kernel)[(i+bias)/KernelRank]+=
-      exp(((double) -i*i)/(2.0*KernelRank*KernelRank*sigma*sigma));
+      exp(-((double) i*i)/(2.0*KernelRank*KernelRank*sigma*sigma));
   normalize=0;
   for (i=0; i < width; i++)
     normalize+=(*kernel)[i];
@@ -664,7 +652,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 {
 #define ConvolveImageText  "  Convolving image...  "
 
-  AggregatePacket
+  DoublePixelPacket
     aggregate;
 
   double
@@ -726,7 +714,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
       break;
     for (x=0; x < (long) convolve_image->columns; x++)
     {
-      (void) memset(&aggregate,0,sizeof(AggregatePacket));
+      (void) memset(&aggregate,0,sizeof(DoublePixelPacket));
       r=p;
       k=kernel;
       for (v=0; v < width; v++)
@@ -1116,7 +1104,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   r++;
 #define EnhanceImageText  "  Enhance image...  "
 
-  AggregatePacket
+  DoublePixelPacket
     aggregate;
 
   double
@@ -1179,7 +1167,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
       /*
         Compute weighted average of target pixel color components.
       */
-      (void) memset(&aggregate,0,sizeof(AggregatePacket));
+      (void) memset(&aggregate,0,sizeof(DoublePixelPacket));
       total_weight=0.0;
       r=p+2*image->columns+2;
       pixel=(*r);
@@ -1989,11 +1977,11 @@ static int GetMotionBlurKernel(int width,const double sigma,double **kernel)
 MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   const double sigma,const double angle,ExceptionInfo *exception)
 {
-  AggregatePacket
-    aggregate;
-
   double
     *kernel;
+
+  DoublePixelPacket
+    aggregate;
 
   Image
     *blur_image;
@@ -2079,7 +2067,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      (void) memset(&aggregate,0,sizeof(AggregatePacket));
+      (void) memset(&aggregate,0,sizeof(DoublePixelPacket));
       for (i=0; i < width; i++)
       {
         u=x+(long) offsets[i].x;
