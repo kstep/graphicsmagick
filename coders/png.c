@@ -4228,13 +4228,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   return (Image *) NULL;
 }
 #endif /* PNG_LIBPNG_VER > 95 */
-#else /* HasPNG */
-static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
-{
-  ThrowException(exception,(ExceptionType) MissingDelegateError,
-    "PNG library is not available",image_info->filename);
-  return((Image *) NULL);
-}
 #endif
 
 /*
@@ -4282,8 +4275,10 @@ ModuleExport void RegisterPNGImage(void)
 #endif
   entry=SetMagickInfo("MNG");
   entry->thread_support=False;
+#if defined(HasPNG)
   entry->decoder=ReadPNGImage;
   entry->encoder=WritePNGImage;
+#endif
   entry->magick=IsMNG;
   entry->description=AcquireString("Multiple-image Network Graphics");
   if (*version != '\0')
@@ -4292,8 +4287,10 @@ ModuleExport void RegisterPNGImage(void)
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PNG");
   entry->thread_support=False;
+#if defined(HasPNG)
   entry->decoder=ReadPNGImage;
   entry->encoder=WritePNGImage;
+#endif
   entry->magick=IsPNG;
   entry->adjoin=False;
   entry->description=AcquireString("Portable Network Graphics");
@@ -6086,10 +6083,4 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     "PNG library is too old", image->filename);
 }
 #endif /* PNG_LIBPNG_VER > 95 */
-#else /* HasPNG */
-static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
-{
-  ThrowBinaryException((ExceptionType) MissingDelegateError,
-    "PNG library is not available", image->filename);
-}
 #endif
