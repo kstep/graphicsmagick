@@ -31,14 +31,15 @@
 # include <string.h>
 #endif
 
-#if defined(_LARGEFILE_SOURCE)
-#define fseek  fseeko
-#define ftell  ftello
-#endif
 #if defined(_VISUALC_)
 # include <direct.h>
 #else
 # include <unistd.h>
+#endif
+
+#if defined _FILE_OFFSET_BITS && _FILE_OFFSET_BITS == 64
+#define fseek  fseeko
+#define ftell  ftello
 #endif
 
 #include <ctype.h>
