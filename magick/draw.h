@@ -78,14 +78,12 @@ typedef struct _DrawInfo
     *font,
     *family,
     *style,
-    *weight;
+    *weight,
+    *encoding,
+    *density;
 
   double
     pointsize;
-
-  char
-    *density,
-    *encoding;
 
   PixelPacket
     box,

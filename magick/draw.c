@@ -223,10 +223,10 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     clone_info->style=AllocateString(draw_info->style);
   if (draw_info->weight != (char *) NULL)
     clone_info->weight=AllocateString(draw_info->weight);
-  if (draw_info->density != (char *) NULL)
-    clone_info->density=AllocateString(draw_info->density);
   if (draw_info->encoding != (char *) NULL)
     clone_info->encoding=AllocateString(draw_info->encoding);
+  if (draw_info->density != (char *) NULL)
+    clone_info->density=AllocateString(draw_info->density);
   if (draw_info->server_name != (char *) NULL)
     clone_info->server_name=AllocateString(draw_info->server_name);
   if (draw_info->dash_pattern != (double *) NULL)
@@ -977,6 +977,12 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     DestroyImage(draw_info->stroke_pattern);
   if (draw_info->font != (char *) NULL)
     LiberateMemory((void **) &draw_info->font);
+  if (draw_info->family != (char *) NULL)
+    LiberateMemory((void **) &draw_info->family);
+  if (draw_info->style != (char *) NULL)
+    LiberateMemory((void **) &draw_info->style);
+  if (draw_info->weight != (char *) NULL)
+    LiberateMemory((void **) &draw_info->weight);
   if (draw_info->encoding != (char *) NULL)
     LiberateMemory((void **) &draw_info->encoding);
   if (draw_info->density != (char *) NULL)
@@ -3947,8 +3953,6 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->decorate=NoDecoration;
   if (clone_info->font != (char *) NULL)
     draw_info->font=AllocateString(clone_info->font);
-  draw_info->style=AllocateString("normal");
-  draw_info->weight=AllocateString("normal");
   if (clone_info->density != (char *) NULL)
     draw_info->density=AllocateString(clone_info->density);
   draw_info->text_antialias=clone_info->antialias;
