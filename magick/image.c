@@ -5458,7 +5458,7 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
   DestroyImage(image);
   magick[MaxTextExtent-1]='\0';
   *magic='\0';
-  if(SetImageMagic(magic,magick,MaxTextExtent) == True)
+  if (SetImageMagic(magic,magick,MaxTextExtent) == True)
     (void) strcpy(image_info->magick,magic);
   return(True);
 }

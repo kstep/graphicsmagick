@@ -649,7 +649,7 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
 
 #define OutputBit(count)  \
 {  \
-  if(count > 0)  \
+  if (count > 0)  \
     byte=byte | bit;  \
   bit>>=1;  \
   if ((bit & 0xff) == 0)   \
