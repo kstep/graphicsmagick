@@ -2704,8 +2704,8 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
       total_error+=distance;
       if (distance > maximum_error_per_pixel)
         maximum_error_per_pixel=distance;
-      p++;
-      q++;
+      p+=count;
+      q+=count;
     }
   }
   /*

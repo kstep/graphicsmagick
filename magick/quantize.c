@@ -456,7 +456,7 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
     }
   if (cube_info->quantize_info->measure_error)
     {
-      (void) GetImageQuantizationError(image);
+      (void) GetImageQuantizeError(image);
       SyncImage(image);
     }
   return(True);
@@ -1316,7 +1316,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageQuantizationError() measures the difference between the original
+%  GetImageQuantizeError() measures the difference between the original
 %  and quantized images.  This difference is the total quantization error.
 %  The error is computed by summing over all pixels in an image the distance
 %  squared in RGB space between each reference pixel value and its quantized
@@ -1336,9 +1336,9 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
 %      independent of the range of red, green, and blue values in your image.
 %
 %
-%  The format of the GetImageQuantizationError method is:
+%  The format of the GetImageQuantizeError method is:
 %
-%      unsigned int GetImageQuantizationError(Image *image)
+%      unsigned int GetImageQuantizeError(Image *image)
 %
 %  A description of each parameter follows.
 %
@@ -1350,10 +1350,10 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
 
 MagickExport unsigned int QuantizationError(Image *image)
 {
-  return(GetImageQuantizationError(image));
+  return(GetImageQuantizeError(image));
 }
 
-MagickExport unsigned int GetImageQuantizationError(Image *image)
+MagickExport unsigned int GetImageQuantizeError(Image *image)
 {
   double
     distance,
