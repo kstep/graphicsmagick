@@ -133,7 +133,7 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
         break;
       }
   }
-  DestroySemaphoreInfo(registry_semaphore);
+  LiberateSemaphoreInfo(registry_semaphore);
   return(delete);
 }
 
@@ -234,7 +234,7 @@ MagickExport const void *GetMagickRegistry(const long id,RegistryType *type,
         registry_info=p;
         break;
       }
-  DestroySemaphoreInfo(registry_semaphore);
+  LiberateSemaphoreInfo(registry_semaphore);
   if (p == (RegistryInfo *) NULL)
     return((RegistryInfo *) NULL);
   *type=registry_info->type;
@@ -330,6 +330,6 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       registry_info->previous=p;
       p->next=registry_info;
     }
-  DestroySemaphoreInfo(registry_semaphore);
+  LiberateSemaphoreInfo(registry_semaphore);
   return(registry_info->id);
 }
