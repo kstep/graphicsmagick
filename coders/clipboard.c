@@ -209,7 +209,7 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
 			break;
 		}
 	} else
-		ThrowReaderException(FileOpenErro,"no bitmap on clipboard",image);
+		ThrowReaderException(FileOpenError,"no bitmap on clipboard",image);
 }
 #endif
 
