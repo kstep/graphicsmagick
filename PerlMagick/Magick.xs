@@ -3653,13 +3653,16 @@ Get(ref,...)
       }
       if (image == (Image *) NULL)
         MagickWarning(OptionWarning,"Invalid attribute",attribute);
-      image_attribute=GetImageAttribute(image,attribute);
-      if (image_attribute == (ImageAttribute *) NULL)
-        MagickWarning(OptionWarning,"Invalid attribute",attribute);
       else
         {
-          s=newSVpv(image_attribute->value,0);
-          PUSHs(s ? sv_2mortal(s) : &sv_undef);
+          image_attribute=GetImageAttribute(image,attribute);
+          if (image_attribute == (ImageAttribute *) NULL)
+            MagickWarning(OptionWarning,"Invalid attribute",attribute);
+          else
+            {
+              s=newSVpv(image_attribute->value,0);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+            }
         }
     }
   }
