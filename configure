@@ -5981,8 +5981,7 @@ rm -f conftest.$ac_objext conftest$ac_exeext
 echo "${ECHO_T}no" >&6
 	X_LIBS="$X_LIBS -R$x_libraries"
       else
-	X_LIBS="$X_LIBS -R$x_libraries"
-#	LIBS="$ac_xsave_LIBS -R $x_libraries"
+	LIBS="$ac_xsave_LIBS -R $x_libraries"
 	
 if { (eval echo configure:5986: \"$ac_link\") >&5; (eval $ac_link) 2>&5; } && test -s conftest$ac_exeext; then
   ac_R_space=yes
@@ -9167,7 +9166,7 @@ EOF
 fi
 done
 
-for ac_header in math.h string.h stdarg.h pwd.h malloc.h
+for ac_header in math.h string.h stdarg.h varargs.h pwd.h malloc.h
 do
 ac_ac_Header=`echo "ac_cv_header_$ac_header" | $ac_tr_sh`
 

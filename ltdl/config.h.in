@@ -12,14 +12,8 @@
 /* Define if you have the shl_load function.  */
 #undef HAVE_SHL_LOAD
 
-/* Define to empty if `const' does not conform to ANSI C. */
-#undef const
-
 /* Define if you have the <ctype.h> header file. */
 #undef HAVE_CTYPE_H
-
-/* Define if you have the <dl.h> header file. */
-#undef HAVE_DL_H
 
 /* Define if you have the GNU dld library. */
 #undef HAVE_DLD
@@ -32,6 +26,9 @@
 
 /* Define if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
+
+/* Define if you have the <dl.h> header file. */
+#undef HAVE_DL_H
 
 /* Define if you have the `index' function. */
 #undef HAVE_INDEX
@@ -72,29 +69,25 @@
 /* Define if you have the `strcmp' function. */
 #undef HAVE_STRCMP
 
-/* Define if you have the <string.h> header file. */
-#undef HAVE_STRING_H
-
 /* Define if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
 
+/* Define if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
 /* Define if you have the `strrchr' function. */
 #undef HAVE_STRRCHR
-
-/* Define as `__inline' if that's what the C compiler calls it, or to nothing
-   if it is not supported. */
-#undef inline
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
 #undef LTDL_OBJDIR
 
-/* Define to the extension used for shared libraries, say, ".so". */
-#undef LTDL_SHLIB_EXT
-
 /* Define to the name of the environment variable that determines the dynamic
    library search path. */
 #undef LTDL_SHLIBPATH_VAR
+
+/* Define to the extension used for shared libraries, say, ".so". */
+#undef LTDL_SHLIB_EXT
 
 /* Define to the system default library search path. */
 #undef LTDL_SYSSEARCHPATH
@@ -104,3 +97,10 @@
 
 /* Define if you have the ANSI C header files. */
 #undef STDC_HEADERS
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
+
+/* Define as `__inline' if that's what the C compiler calls it, or to nothing
+   if it is not supported. */
+#undef inline
