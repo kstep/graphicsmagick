@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "TCLMAGICK_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MD /W3 /Gm /GX /Zi /Od /I "c:\tcl\tcl842\include" /I "c:\opt\ImageMagick\include" /D "_LIB" /D "NeedFunctionPrototypes" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "TCLMAGICK_EXPORTS" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MD /W3 /Gm /GX /Zi /Od /I "c:\tcl\tcl842\include" /I "c:\opt\ImageMagick\include" /D "_LIB" /D "NeedFunctionPrototypes" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "TCLMAGICK_EXPORTS" /D "USE_TCL_STUBS" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
@@ -93,7 +93,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\source\TclMagick.c
+SOURCE=..\generic\TclMagick.c
 # End Source File
 # End Group
 # Begin Group "Header-Dateien"
@@ -101,7 +101,7 @@ SOURCE=.\source\TclMagick.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\source\TclMagick.h
+SOURCE=..\generic\TclMagick.h
 # End Source File
 # End Group
 # Begin Group "Ressourcendateien"
@@ -113,11 +113,7 @@ SOURCE=.\source\TclMagick.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\source\Changes.txt
-# End Source File
-# Begin Source File
-
-SOURCE=.\source\TclMagick.txt
+SOURCE=..\ChangeLog
 # End Source File
 # End Group
 # Begin Source File

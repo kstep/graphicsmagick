@@ -12,30 +12,18 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define USE_TCL_STUBS
-
 #include "TclMagick.h"
 #include <wand/magick_wand.h>
 
-#define TCLMAGICK_VERSION_STR "0.2"
+#define TCLMAGICK_VERSION_STR "0.3"
 #define TCLMAGICK_VERSION_HI  0
-#define TCLMAGICK_VERSION_LO  2
+#define TCLMAGICK_VERSION_LO  3
 
 /**********************************************************************/
 /* Workaround for bugs: */
 
 #define MAGICK_NEW          /* new interfaces */
 #ifdef MAGICK_NEW
-
-#ifndef MagickGetResourceLimits
-    unsigned long MagickGetResourceLimit(const ResourceType type);
-#endif
-#ifndef MagickGetSamplingFactor
-    double *MagickGetSamplingFactor(MagickWand *wand, unsigned long *number_factors);
-#endif
-#ifndef MagickPreviewImages
-    MagickWand *MagickPreviewImages(MagickWand *wand, const PreviewType preview);
-#endif
 
 #endif
 
@@ -306,11 +294,11 @@ static int magickCmd(
     int index, stat, result;
 
     static CONST char *subCmds[] = {
-        "create",        "delete", "names", "type", "types", 
+        "create",        "delete", "names", "type", "types",
         "resourcelimit", "fonts",  "formats",
         (char *) NULL};
     enum subIndex {
-        TM_CREATE,   TM_DELETE, TM_NAMES, TM_TYPE, TM_TYPES, 
+        TM_CREATE,   TM_DELETE, TM_NAMES, TM_TYPE, TM_TYPES,
         TM_RESOURCE, TM_FONTS,  TM_FORMATS,
     };
     static CONST char *resourceNames[] = {
@@ -319,7 +307,7 @@ static int magickCmd(
         (char *) NULL
     };
     static ResourceType resourceTypes[] = {
-        UndefinedResource, AreaResource, DiskResource, 
+        UndefinedResource, AreaResource, DiskResource,
         FileResource,      MapResource,  MemoryResource
     };
 
@@ -613,8 +601,10 @@ static int wandObjCmd(
         "mattecolor",       "GetMatteColor",        "SetMatteColor",
         "pixels",           "GetPixels",            "SetPixels",
         "profile",          "GetProfile",           "SetProfile",
+        "ProfileImage",     "RemoveProfile",
         "redprimary",       "GetRedPrimary",        "SetRedPrimary",
         "renderingintent",  "GetRenederingIntent",  "SetRenderingIntent",
+        "resolution",       "GetResolution",        "SetResolution",
         "scene",            "GetScene",             "SetScene",
         "signature",        "GetSignature",
         "imagesize",        "GetImageSize",
@@ -623,8 +613,6 @@ static int wandObjCmd(
         "virtualpixelmethod","GetVirtualPixelMethod","SetVirtualPixelMethod",
         "whitepoint",       "GetWhitePoint",        "SetWhitePoint",
         "width",            "GetWidth",
-        "xresolution",      "GetXResolution",
-        "yresolution",      "GetYResolution",
         "number",           "GetNumberOfImages",
         "samplingfactors",  "GetSamplingFactors",   "SetSamplingFactors",
         "size",             "GetSize",              "SetSize",
@@ -669,7 +657,6 @@ static int wandObjCmd(
         "scale",            "ScaleImage",
         "setimage",         "SetImage",
         "setoption",        "SetOption",
-        "resolution",       "SetResolution",
         "passphrase",       "SetPassphrase",
         "sharpen",          "SharpenImage",
         "shave",            "ShaveImage",
@@ -745,7 +732,7 @@ static int wandObjCmd(
         TM_CHANNEL_EXTREMA, TM_GET_CHANNEL_EXTREMA,
         TM_CHANNEL_MEAN,    TM_GET_CHANNEL_MEAN,
         TM_COLORMAP_COLOR,  TM_GET_COLORMAP_COLOR,      TM_SET_COLORMAP_COLOR,
-        TM_COLORS,          TM_GET_COLORS, 
+        TM_COLORS,          TM_GET_COLORS,
         TM_COLORSPACE,      TM_GET_COLORSPACE,          TM_SET_COLORSPACE,
         TM_COMPOSE,         TM_GET_COMPOSE,             TM_SET_COMPOSE,
         TM_COMPRESSION,     TM_GET_COMPRESSION,         TM_SET_COMPRESSION,
@@ -764,8 +751,10 @@ static int wandObjCmd(
         TM_MATTE_COLOR,     TM_GET_MATTE_COLOR,         TM_SET_MATTE_COLOR,
         TM_PIXELS,          TM_GET_PIXELS,              TM_SET_PIXELS,
         TM_PROFILE,         TM_GET_PROFILE,             TM_SET_PROFILE,
+        TM_PROFILE_IMAGE,   TM_REMOVE_PROFILE,
         TM_RED_PRIMARY,     TM_GET_RED_PRIMARY,         TM_SET_RED_PRIMARY,
         TM_RENDERING,       TM_GET_RENDERING,           TM_SET_RENDERING,
+        TM_RESOLUTION,      TM_GET_RESOLUTION,          TM_SET_RESOLUTION,
         TM_SCENE,           TM_GET_SCENE,               TM_SET_SCENE,
         TM_SIGNATURE,       TM_GET_SIGNATURE,
         TM_IMAGE_SIZE,      TM_GET_IMAGE_SIZE,
@@ -774,8 +763,6 @@ static int wandObjCmd(
         TM_VIRTUALPIXEL,    TM_GET_VIRTUALPIXEL,        TM_SET_VIRTUALPIXEL,
         TM_WHITE_POINT,     TM_GET_WHITE_POINT,         TM_SET_WHITE_POINT,
 	TM_WIDTH,           TM_GET_WIDTH,
-	TM_X_RESOLUTION,    TM_GET_X_RESOLUTION,
-	TM_Y_RESOLUTION,    TM_GET_Y_RESOLUTION,
         TM_NUMBER,          TM_GET_NUMBER_OF_IMAGES,
         TM_SAMPLING_FACTORS,TM_GET_SAMPLING_FACTORS,    TM_SET_SAMPLING_FACTORS,
         TM_SIZE,            TM_GET_SIZE,                TM_SET_SIZE,
@@ -820,7 +807,6 @@ static int wandObjCmd(
         TM_SCALE,           TM_SCALE_IMAGE,
         TM_SETIMAGE,        TM_SET_IMAGE,
         TM_SETOPTION,       TM_SET_OPTION,
-        TM_RESOLUTION,      TM_SET_RESOLUTION,
         TM_PASSPHRASE,      TM_SET_PASSPHRASE,
         TM_SHARPEN,         TM_SHARPEN_IMAGE,
         TM_SHAVE,           TM_SHAVE_IMAGE,
@@ -880,15 +866,15 @@ static int wandObjCmd(
     };
     static CONST char *csNames[] = {
         "undefined", "RGB",   "GRAY",  "transparent",
-        "OHTA",      "LAB",   "XYZ",   "YCbCr", 
-        "YCC",       "YIQ",   "YPbPr", "YUV", 
+        "OHTA",      "LAB",   "XYZ",   "YCbCr",
+        "YCC",       "YIQ",   "YPbPr", "YUV",
         "CMYK",      "sRGB",  "HSL",   "HWB",
         (char *) NULL
     };
     static ColorspaceType csTypes[] = {
         UndefinedColorspace, RGBColorspace,   GRAYColorspace,  TransparentColorspace,
-        OHTAColorspace,      LABColorspace,   XYZColorspace,   YCbCrColorspace, 
-        YCCColorspace,       YIQColorspace,   YPbPrColorspace, YUVColorspace,   
+        OHTAColorspace,      LABColorspace,   XYZColorspace,   YCbCrColorspace,
+        YCCColorspace,       YIQColorspace,   YPbPrColorspace, YUVColorspace,
         CMYKColorspace,      sRGBColorspace,  HSLColorspace,   HWBColorspace
     };
     static CONST char *opNames[] = {
@@ -924,9 +910,9 @@ static int wandObjCmd(
         (char *) NULL
     };
     static CompressionType compressTypes[] = {
-        UndefinedCompression,    NoCompression,     BZipCompression,  
-        FaxCompression,          Group4Compression, JPEGCompression,  
-        LosslessJPEGCompression, LZWCompression,    RLECompression,    
+        UndefinedCompression,    NoCompression,     BZipCompression,
+        FaxCompression,          Group4Compression, JPEGCompression,
+        LosslessJPEGCompression, LZWCompression,    RLECompression,
         ZipCompression,
     };
     static CONST char *disposeNames[] = {
@@ -958,9 +944,9 @@ static int wandObjCmd(
         (char *) NULL
     };
     static ImageType typeTypes[] = {
-        UndefinedType,            BilevelType,        GrayscaleType, 
-        GrayscaleMatteType,       PaletteType,        PaletteMatteType, 
-        TrueColorType,            TrueColorMatteType, ColorSeparationType, 
+        UndefinedType,            BilevelType,        GrayscaleType,
+        GrayscaleMatteType,       PaletteType,        PaletteMatteType,
+        TrueColorType,            TrueColorMatteType, ColorSeparationType,
         ColorSeparationMatteType, OptimizeType
     };
     static CONST char *unitNames[] = {
@@ -2063,13 +2049,13 @@ static int wandObjCmd(
 	    name = Tcl_GetString(objv[2]);
 	    pixPtr = findPixelWand(interp, name);
         }
-        /* 
+        /*
          * SET color requires existing pixel object
          */
         if( ((enum subIndex)index == TM_SET_BACKGROUND_COLOR) && (pixPtr == NULL) ) {
 	        return TCL_ERROR;
         }
-        /* 
+        /*
          * GET color if GET_COLOR or pixel object doesn't exists
          * otherwise SET color
          */
@@ -2161,13 +2147,13 @@ static int wandObjCmd(
 	    name = Tcl_GetString(objv[2]);
 	    pixPtr = findPixelWand(interp, name);
         }
-        /* 
+        /*
          * SET color requires existing pixel object
          */
         if( ((enum subIndex)index == TM_SET_BORDER_COLOR) && (pixPtr == NULL) ) {
 	        return TCL_ERROR;
         }
-        /* 
+        /*
          * GET color if GET_COLOR or pixel object doesn't exists
          * otherwise SET color
          */
@@ -2310,13 +2296,13 @@ static int wandObjCmd(
 	    name = Tcl_GetString(objv[3]);
 	    pixPtr = findPixelWand(interp, name);
         }
-        /* 
+        /*
          * SET color requires existing pixel object
          */
         if( ((enum subIndex)index == TM_SET_COLORMAP_COLOR) && (pixPtr == NULL) ) {
 	        return TCL_ERROR;
         }
-        /* 
+        /*
          * GET color if GET_COLOR or pixel object doesn't exists
          * otherwise SET color
          */
@@ -2936,13 +2922,13 @@ static int wandObjCmd(
 	    name = Tcl_GetString(objv[2]);
 	    pixPtr = findPixelWand(interp, name);
         }
-        /* 
+        /*
          * SET color requires existing pixel object
          */
         if( ((enum subIndex)index == TM_SET_MATTE_COLOR) && (pixPtr == NULL) ) {
 	        return TCL_ERROR;
         }
-        /* 
+        /*
          * GET color if GET_COLOR or pixel object doesn't exists
          * otherwise SET color
          */
@@ -3048,12 +3034,54 @@ static int wandObjCmd(
 	break;
     }
 
-    case TM_PROFILE:     /* profile name ?profile? */
-    case TM_GET_PROFILE: /* GetProfile name */
-    case TM_SET_PROFILE: /* GetProfile name profile */
+    case TM_PROFILE_IMAGE:  /* ProfileImage name ?profile? */
     {
-	char *profile, *name;
-        long length;
+	char *name;
+	unsigned char *profile = NULL;
+        int length = 0;
+
+        if( (objc != 3) && (objc != 4) ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "name ?profile?");
+	    return TCL_ERROR;
+	}
+	name = Tcl_GetString(objv[2]);
+
+        if( objc > 3 ) {
+	    profile = Tcl_GetByteArrayFromObj(objv[3], &length);
+        }
+        result = MagickProfileImage(wandPtr, name, profile, length);
+	if (!result) {
+	    return myMagickError(interp, wandPtr);
+	}
+        break;
+    }
+
+    case TM_REMOVE_PROFILE: /* RemoveProfile name */
+    {
+	char *name;
+	unsigned char *profile;
+        unsigned long length;
+
+        if( objc != 3 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "name");
+	    return TCL_ERROR;
+	}
+	name = Tcl_GetString(objv[2]);
+
+        profile = MagickRemoveImageProfile(wandPtr, name, &length);
+        if(profile != NULL) {
+	    Tcl_SetObjResult(interp, Tcl_NewByteArrayObj(profile, length));
+	    MagickRelinquishMemory(profile); /* Free TclMagick resource */
+        }
+        break;
+    }
+
+    case TM_PROFILE:        /* profile name ?profile? */
+    case TM_GET_PROFILE:    /* GetProfile name */
+    case TM_SET_PROFILE:    /* SetProfile name profile */
+    {
+	char *name;
+	unsigned char *profile;
 
 	if( ((enum subIndex)index == TM_PROFILE) && (objc != 3) && (objc != 4) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "name ?profile?");
@@ -3070,15 +3098,18 @@ static int wandObjCmd(
 	name = Tcl_GetString(objv[2]);
 
         if( objc == 4 ) {
+            int length;
             /*
              * Set/Add image profile
              */
-	    profile = Tcl_GetByteArrayFromObj(objv[3], (int *)&length);
-	    result = MagickProfileImage(wandPtr, name, profile, length);
+	    profile = Tcl_GetByteArrayFromObj(objv[3], &length);
+	    result = MagickSetImageProfile(wandPtr, name, profile, length);
 	    if (!result) {
 	        return myMagickError(interp, wandPtr);
 	    }
         } else {
+            unsigned long length;
+
             profile = (char *)MagickGetImageProfile(wandPtr, name, &length);
 	    if(profile != NULL) {
 	        Tcl_SetObjResult(interp, Tcl_NewByteArrayObj(profile, length));
@@ -3180,6 +3211,57 @@ static int wandObjCmd(
 		}
 	    }
 	    Tcl_SetObjResult(interp, Tcl_NewIntObj(render));
+	}
+	break;
+    }
+
+    case TM_RESOLUTION:     /* resolution ?x? ?y? */
+    case TM_GET_RESOLUTION: /* GetResolution */
+    case TM_SET_RESOLUTION: /* SetResolution x ?y? */
+    {
+	double  x, y;
+
+	if( ((enum subIndex)index == TM_RESOLUTION) && (objc > 4) ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "?x? ?y?");
+	    return TCL_ERROR;
+	}
+	if( ((enum subIndex)index == TM_GET_RESOLUTION) && (objc != 2) ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, NULL);
+	    return TCL_ERROR;
+	}
+	if( ((enum subIndex)index == TM_SET_RESOLUTION) && (objc != 3) && (objc != 4) ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "x ?y?");
+	    return TCL_ERROR;
+	}
+	if (objc >= 3) {
+	    /*
+	     * Set resolution = x y, default: y=x
+	     */
+	    if( (stat = Tcl_GetDoubleFromObj(interp, objv[2], &x)) != TCL_OK ) {
+		return stat;
+	    }
+            y = x;
+	    if( (objc > 3) && ((stat = Tcl_GetDoubleFromObj(interp, objv[3], &y)) != TCL_OK) ) {
+		return stat;
+	    }
+	    result = MagickSetImageResolution(wandPtr, x, y);
+	    if (!result) {
+		return myMagickError(interp, wandPtr);
+	    }
+	} else {
+	    /*
+	     * Get resolution={x y}
+	     */
+	    Tcl_Obj *listPtr;
+
+	    result = MagickGetImageResolution(wandPtr, &x, &y);
+	    if (!result) {
+		return myMagickError(interp, wandPtr);
+	    }
+	    listPtr = Tcl_NewListObj(0, NULL);
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewDoubleObj(x));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewDoubleObj(y));
+	    Tcl_SetObjResult(interp, listPtr);
 	}
 	break;
     }
@@ -3446,36 +3528,6 @@ static int wandObjCmd(
 	break;
     }
 
-    case TM_X_RESOLUTION:       /* xresolution */
-    case TM_GET_X_RESOLUTION:   /* GetXResolution */
-    {
-	double value;
-
-        if( objc != 2 ) {
-	    Tcl_WrongNumArgs(interp, 2, objv, NULL);
-	    return TCL_ERROR;
-	}
-	value = MagickGetImageXResolution(wandPtr);
-        Tcl_SetObjResult(interp, Tcl_NewDoubleObj(value));
-
-	break;
-    }
-
-    case TM_Y_RESOLUTION:       /* yresolution */
-    case TM_GET_Y_RESOLUTION:   /* GetYResolution */
-    {
-	double value;
-
-        if( objc != 2 ) {
-	    Tcl_WrongNumArgs(interp, 2, objv, NULL);
-	    return TCL_ERROR;
-	}
-	value = MagickGetImageXResolution(wandPtr);
-        Tcl_SetObjResult(interp, Tcl_NewDoubleObj(value));
-
-	break;
-    }
-
     case TM_WIDTH:     /* width */
     case TM_GET_WIDTH: /* GetWidth */
     {
@@ -3555,7 +3607,7 @@ static int wandObjCmd(
 	     */
             Tcl_Obj *listPtr = NULL;
 
-	    factors = MagickGetSamplingFactor(wandPtr, &listLen);
+	    factors = MagickGetSamplingFactors(wandPtr, &listLen);
 	    if( (factors != NULL) && (listLen > 0) ) {
                 listPtr = Tcl_NewListObj(0, NULL);
 	        for( i=0; i < listLen; i++ ) {
@@ -4519,40 +4571,19 @@ static int wandObjCmd(
 	break;
     }
 
-    case TM_SETOPTION:  /* setoption format options */
-    case TM_SET_OPTION: /* SetOption format options */
+    case TM_SETOPTION:  /* setoption format key value */
+    case TM_SET_OPTION: /* SetOption format key value */
     {
-	char *format, *options;
+	char *format, *key, *value;
 
-	if (objc != 4) {
-	    Tcl_WrongNumArgs(interp, 2, objv, "format options");
+	if (objc != 5) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "format key value");
 	    return TCL_ERROR;
 	}
 	format  = Tcl_GetString(objv[2]);
-	options = Tcl_GetString(objv[3]);
-	result = MagickSetImageOption(wandPtr, format, options);
-	if (!result) {
-	    return myMagickError(interp, wandPtr);
-	}
-	break;
-    }
-
-    case TM_RESOLUTION:     /* resolution x y */
-    case TM_SET_RESOLUTION: /* SetResolution x y */
-    {
-	int  x, y;
-
-	if( objc != 4 ) {
-	    Tcl_WrongNumArgs(interp, 2, objv, "x y");
-	    return TCL_ERROR;
-	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[2], &x)) != TCL_OK ) {
-	    return stat;
-	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[3], &y)) != TCL_OK ) {
-	    return stat;
-	}
-	result = MagickSetImageResolution(wandPtr, x, y);
+	key = Tcl_GetString(objv[3]);
+	value = Tcl_GetString(objv[4]);
+	result = MagickSetImageOption(wandPtr, format, key, value);
 	if (!result) {
 	    return myMagickError(interp, wandPtr);
 	}
@@ -7540,9 +7571,11 @@ static void tmExitHandler(
 
 EXPORT(int, Tclmagick_Init)(Tcl_Interp *interp)
 {
+#ifdef USE_TCL_STUBS
     if (Tcl_InitStubs(interp, "8", 0) == NULL) {
 	return TCL_ERROR;
     }
+#endif
     /*
      * Initialize global variables
      */
