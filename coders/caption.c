@@ -133,6 +133,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       /*
         Read caption.
       */
+      (void) strncpy(image->filename,image_info->filename+1,MaxTextExtent-1);
       status=OpenBlob(image_info,image,ReadBinaryType,exception);
       if (status == False)
         ThrowReaderException(FileOpenWarning,"Unable to open file",image);
