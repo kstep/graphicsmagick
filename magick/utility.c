@@ -398,12 +398,17 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
     vector[count++]=option;
     if ((strlen(option) > 1) && ((*option == '-') || (*option == '+')))
       {
+        if (*option == '+')
+          if (LocaleNCompare("profile",option+1,4) != 0)
+            continue;
+        i++;
+        if (i == *argc)
+          continue;
+        option=(*argv)[i];
+        vector[count++]=option;
         continue;
       }
     if ((*option == '"') || (*option == '\''))
-      continue;
-    if ((LocaleCompare("*",option) == 0) && (i > 1) &&
-        (LocaleNCompare("profile",(*argv)[i-1]+1,4) == 0))
       continue;
     (void) strncpy(path,option,MaxTextExtent-1);
     ExpandFilename(path);
