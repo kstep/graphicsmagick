@@ -995,7 +995,7 @@ then
     failed=0;
     passed=0;
     AC_CHECK_HEADER(gnome-xml/parser.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(xml,xmlCreatePushParserCtxt,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(xml,xmlCreateIOParserCtxt,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if XML package is complete)
     if test $passed -gt 0
     then
