@@ -4758,7 +4758,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'r':
       {
-        if (LocaleCompare("-raise",option) == 0)
+        if (LocaleCompare("raise",option+1) == 0)
           {
             /*
               Surround image with a raise of solid color.
