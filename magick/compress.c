@@ -377,7 +377,7 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
       mask=0x80;  \
     }  \
   runlength++;  \
-  bit=byte & mask ? 1 : 0; \
+  bit=byte & mask ? 0x01 : 0x00; \
   mask>>=1;  \
   if (bit)  \
     runlength=0;  \
@@ -749,8 +749,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     indexes=GetIndexes(huffman_image);
     for (x=0; x < (long) huffman_image->columns; x++)
     {
-      *q=(unsigned char)
-        (indexes[x] == polarity ? (long) polarity : (long) !polarity);
+      *q=(unsigned char) (indexes[x] == polarity ? !polarity : polarity);
       q++;
     }
     /*
