@@ -550,7 +550,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_set_marker_processor(&jpeg_info,JPEG_COM,ReadComment);
   jpeg_set_marker_processor(&jpeg_info,ICC_MARKER,ReadColorProfile);
   jpeg_set_marker_processor(&jpeg_info,IPTC_MARKER,ReadNewsProfile);
-  i=jpeg_read_info(&jpeg_info,True);
+  i=jpeg_read_header(&jpeg_info,True);
   if (jpeg_info.out_color_space == JCS_CMYK)
     image->colorspace=CMYKColorspace;
   if (jpeg_info.saw_JFIF_marker)

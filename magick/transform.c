@@ -903,9 +903,6 @@ MagickExport unsigned int ProfileImage(Image *image,const ProfileType type,
   ImageInfo
     *image_info;
 
-  register int
-    i;
-
   assert(image != (Image *) NULL);
   if (filename == (const char *) NULL)
     {
@@ -914,7 +911,7 @@ MagickExport unsigned int ProfileImage(Image *image,const ProfileType type,
       */
       switch (type)
       {
-        ICMProfile:
+        case ICMProfile:
         {
           if (image->color_profile.length != 0)
             FreeMemory((void **) &image->color_profile.info);
@@ -922,7 +919,7 @@ MagickExport unsigned int ProfileImage(Image *image,const ProfileType type,
           image->color_profile.info=(unsigned char *) NULL;
           break;
         }
-        IPTCProfile:
+        case IPTCProfile:
         {
           if (image->iptc_profile.length != 0)
             FreeMemory((void **) &image->iptc_profile.info);
