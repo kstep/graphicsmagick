@@ -282,7 +282,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     coalesce_image->next=CloneImage(coalesce_image,0,0,True,exception);
     if (coalesce_image->next == (Image *) NULL)
       {
-        DestroyImages(coalesce_image);
+        DestroyImageList(coalesce_image);
         return((Image *) NULL);
       }
     coalesce_image->next->previous=coalesce_image;
@@ -631,7 +631,7 @@ MagickExport Image *DeconstructImages(const Image *image,
     deconstruct_image=deconstruct_image->previous;
   if (next != (Image *) NULL)
     {
-      DestroyImages(deconstruct_image);
+      DestroyImageList(deconstruct_image);
       return((Image *) NULL);
     }
   return(deconstruct_image);

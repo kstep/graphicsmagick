@@ -200,7 +200,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         AllocateNextImage(image_info,image);
         if (image->next == (Image *) NULL)
           {
-            DestroyImages(image);
+            DestroyImageList(image);
             return((Image *) NULL);
           }
         image=image->next;

@@ -11286,7 +11286,7 @@ static Image *XVisualDirectoryImage(Display *display,
   (void) strncpy(montage_info->filename,filename,MaxTextExtent-1);
   montage_image=MontageImages(image,montage_info,&image->exception);
   DestroyMontageInfo(montage_info);
-  DestroyImages(image);
+  DestroyImageList(image);
   XSetCursorState(display,windows,False);
   if (montage_image == (Image *) NULL)
     return(montage_image);

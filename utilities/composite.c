@@ -260,7 +260,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,
       stego_image=SteganoImage(*image,composite_image,&(*image)->exception);
       if (stego_image != (Image *) NULL)
         {
-          DestroyImages(*image);
+          DestroyImageList(*image);
           *image=stego_image;
         }
     }
@@ -273,7 +273,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,
         stereo_image=StereoImage(*image,composite_image,&(*image)->exception);
         if (stereo_image != (Image *) NULL)
           {
-            DestroyImages(*image);
+            DestroyImageList(*image);
             *image=stereo_image;
           }
       }
@@ -828,7 +828,7 @@ int main(int argc,char **argv)
                       (char *) NULL);
                   status=CompositeImages(clone_info,&option_info,i-j+2,
                     argv+j-1,composite_image,mask_image,&clone_image);
-                  DestroyImages(clone_image);
+                  DestroyImageList(clone_image);
                   DestroyImageInfo(clone_info);
                   j=i+1;
                 }
@@ -1374,7 +1374,7 @@ int main(int argc,char **argv)
     LiberateMemory((void **) &option_info.unsharp_geometry);
   if (option_info.watermark_geometry != (char *) NULL)
     LiberateMemory((void **) &option_info.watermark_geometry);
-  DestroyImages(image);
+  DestroyImageList(image);
   DestroyImageInfo(image_info);
   if (LocaleCompare("-composite",argv[0]) == 0)
     return(True);

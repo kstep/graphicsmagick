@@ -591,7 +591,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
             MagickError(image->exception.severity,image->exception.reason,
               image->exception.description);
           if (!resource_info->immutable)
-            DestroyImages(image);
+            DestroyImageList(image);
           image=coalesce_image;
         }
     }
@@ -869,7 +869,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   } while (event.type != DestroyNotify);
   (void) XSync(display,False);
   if (coalesce_image != (Image *) NULL)
-    DestroyImages(image);
+    DestroyImageList(image);
 }
 
 /*
@@ -1200,7 +1200,7 @@ MagickExport Image *XAnimateImages(Display *display,
             MagickError(image->exception.severity,image->exception.reason,
               image->exception.description);
           if (!resource_info->immutable)
-            DestroyImages(image);
+            DestroyImageList(image);
           image=coalesce_image;
         }
     }
@@ -2506,7 +2506,7 @@ MagickExport Image *XAnimateImages(Display *display,
     }
   (void) XSync(display,False);
   if (coalesce_image != (Image *) NULL)
-    DestroyImages(image);
+    DestroyImageList(image);
   /*
     Restore our progress monitor and warning handlers.
   */

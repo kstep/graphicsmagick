@@ -1099,7 +1099,7 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
     if (image == (Image *) NULL)
       {
         if (clone_images != (Image *) NULL)
-          DestroyImages(clone_images);
+          DestroyImageList(clone_images);
         break;
       }
     if (clone_images == (Image *) NULL)
@@ -2529,18 +2529,17 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y I m a g e s                                                 %
+%   D e s t r o y I m a g e L i s t                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyImages() is a convenience method.  It calls DestroyImage() for each
-%  image in the sequence.
+%  DestroyImageList() destroys an image list.
 %
-%  The format of the DestroyImages method is:
+%  The format of the DestroyImageList method is:
 %
-%      void DestroyImages(Image *image)
+%      void DestroyImageList(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -2548,7 +2547,13 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
 %
 %
 */
+
 MagickExport void DestroyImages(Image *image)
+{
+  DestroyImageList(image);
+}
+
+MagickExport void DestroyImageList(Image *image)
 {
   Image
     *next;

@@ -208,7 +208,7 @@ int main(int argc,char **argv)
     if (exception.severity != UndefinedException)
       MagickWarning(exception.severity,exception.reason,exception.description);
     if (image != (Image *) NULL)
-      DestroyImages(image);
+      DestroyImageList(image);
   }
   DestroyImageInfo(image_info);
   DestroyMagick();

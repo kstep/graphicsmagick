@@ -371,7 +371,7 @@ int main(int argc,char **argv)
           (void) fputc('\n',stdout);
         }
     }
-    DestroyImages(image);
+    DestroyImageList(image);
     number_images++;
   }
   if ((i != argc) || (number_images == 0))

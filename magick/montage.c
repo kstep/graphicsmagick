@@ -545,7 +545,7 @@ MagickExport Image *MontageImages(const Image *image,
     if ((montage_next->montage == (char *) NULL) ||
         (montage_next->directory == (char *) NULL))
       {
-        DestroyImages(montage_next);
+        DestroyImageList(montage_next);
         ThrowImageException(ResourceLimitWarning,"Unable to montage next_list",
           "Memory allocation failed")
       }
@@ -803,7 +803,7 @@ MagickExport Image *MontageImages(const Image *image,
         AllocateNextImage(image_info,montage_next);
         if (montage_next->next == (Image *) NULL)
           {
-            DestroyImages(montage_next);
+            DestroyImageList(montage_next);
             return((Image *) NULL);
           }
         montage_next=montage_next->next;

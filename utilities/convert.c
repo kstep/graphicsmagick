@@ -324,7 +324,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
         AppendImages(*image,option_info->append == 1,&(*image)->exception);
       if (append_image != (Image *) NULL)
         {
-          DestroyImages(*image);
+          DestroyImageList(*image);
           *image=append_image;
         }
     }
@@ -339,7 +339,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
       average_image=AverageImages(*image,&(*image)->exception);
       if (average_image != (Image *) NULL)
         {
-          DestroyImages(*image);
+          DestroyImageList(*image);
           *image=average_image;
         }
     }
@@ -354,7 +354,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
       coalesce_image=CoalesceImages(*image,&(*image)->exception);
       if (coalesce_image != (Image *) NULL)
         {
-          DestroyImages(*image);
+          DestroyImageList(*image);
           *image=coalesce_image;
         }
     }
@@ -369,7 +369,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
       deconstruct_image=DeconstructImages(*image,&(*image)->exception);
       if (deconstruct_image != (Image *) NULL)
         {
-          DestroyImages(*image);
+          DestroyImageList(*image);
           *image=deconstruct_image;
         }
     }
@@ -384,7 +384,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
       flatten_image=FlattenImages(*image,&(*image)->exception);
       if (flatten_image != (Image *) NULL)
         {
-          DestroyImages(*image);
+          DestroyImageList(*image);
           *image=flatten_image;
         }
     }
@@ -399,7 +399,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
       morph_image=MorphImages(*image,option_info->morph,&(*image)->exception);
       if (morph_image != (Image *) NULL)
         {
-          DestroyImages(*image);
+          DestroyImageList(*image);
           *image=morph_image;
         }
     }
@@ -414,7 +414,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,OptionInfo *option_info,
       mosaic_image=MosaicImages(*image,&(*image)->exception);
       if (mosaic_image != (Image *) NULL)
         {
-          DestroyImages(*image);
+          DestroyImageList(*image);
           *image=mosaic_image;
         }
     }
@@ -1027,7 +1027,7 @@ int main(int argc,char **argv)
                       (char *) NULL);
                   status=ConvertImages(clone_info,&option_info,i-j+2,
                     argv+j-1,&clone_image);
-                  DestroyImages(clone_image);
+                  DestroyImageList(clone_image);
                   DestroyImageInfo(clone_info);
                   j=i+1;
                 }
@@ -2180,7 +2180,7 @@ int main(int argc,char **argv)
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   status=ConvertImages(image_info,&option_info,argc-j+1,argv+j-1,&image);
-  DestroyImages(image);
+  DestroyImageList(image);
   DestroyImageInfo(image_info);
   if (LocaleCompare("-convert",argv[0]) == 0)
     return(True);
