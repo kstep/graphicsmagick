@@ -36,6 +36,7 @@
      <tr><td width="3%"><br></td><td>
 animate - animate a sequence of images
      </td></tr></table>
+&lt;html&gt;
      <table BORDER=0 WIDTH="100%"> 
      <tr> 
      <td ALIGN=LEFT BGCOLOR="#52799E"><img 
@@ -88,6 +89,7 @@ animate - animate a sequence of images
 </dt>
 </dl>
      </td></tr></table>
+&lt;/html&gt;
      <table BORDER=0 WIDTH="100%"> 
      <tr> 
      <td ALIGN=LEFT BGCOLOR="#52799E"><img 
@@ -151,29 +153,27 @@ it eliminates the need to compute a global colormap.</p>
      </font></font></font></b></td></tr></table>
      <table width="94%" border="0" cellspacing="0" cellpadding="8">
      <tr><td width="3%"><br></td><td>
-<dl>
-<dd>
+<p>
 To animate a set of images of a cockatoo, use:
-</dd>
+</p>
 <pre>
     animate cockatoo.*
 </pre>
-<dd>
+<p>
 To animate a cockatoo image sequence while using the Standard Colormap
 <em>best</em>, use:
-</dd>
+</p>
 <pre>
     xstdcmap -best
     animate -map best cockatoo.*
 </pre>
-<dd>
+<p>
 To animate an image of a cockatoo without a border centered on a backdrop,
 use:
-</dd>
+</p>
 <pre>
     animate +borderwidth -backdrop cockatoo.*
 </pre>
-</dl>
      </td></tr></table>
      <p>
      <i><a href="#top">Back to Contents</a></i> 
@@ -191,12 +191,11 @@ use:
 <p>
 Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
-the option again with a different effect.</dd>
+the option again with a different effect.</p>
 <p>
 <strong>Animate</strong> options can appear on the command line or in your X resources
 file. See <em>X(1)</em>. Options on the command line supersede values specified
-in your X resources file.</dd>
-</dl>
+in your X resources file.</p>
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -205,7 +204,7 @@ in your X resources file.</dd>
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-backdrop">-backdrop</a> <i>color</i>
+    <a name="-backdrop">-backdrop</a> <i>color</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>display the image centered on a backdrop.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -222,7 +221,7 @@ for details.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-background">-background</a> <i>color</i>
+    <a name="-background">-background</a> <i>color</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the background color</td></tr></table>
      <table BORDER=0 WIDTH="94%">
@@ -233,7 +232,7 @@ for details.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-border">-border</a> <i>&lt;width&gt;x&lt;height&gt;</i>
+    <a name="-border">-border</a> <i>&lt;width&gt;x&lt;height&gt;</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>surround the image with a border of color</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -248,7 +247,7 @@ about the geometry specification.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-bordercolor">-bordercolor</a> <i>color</i>
+    <a name="-bordercolor">-bordercolor</a> <i>color</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the border color</td></tr></table>
      <table BORDER=0 WIDTH="94%">
@@ -259,7 +258,7 @@ about the geometry specification.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-borderwidth">-borderwidth</a> <i>color</i>
+    <a name="-borderwidth">-borderwidth</a> <i>color</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the border width</td></tr></table>
      <table BORDER=0 WIDTH="94%">
@@ -270,7 +269,7 @@ about the geometry specification.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-cache">-cache</a> <i>threshold</i>
+    <a name="-cache">-cache</a> <i>threshold</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>megabytes of memory available to the pixel cache</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -287,7 +286,7 @@ amount of free memory you may want to adjust this threshold value.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-chop">-chop</a> <i>&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}</i>
+    <a name="-chop">-chop</a> <i>&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>remove pixels from the interior of an image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -307,7 +306,7 @@ and moves the remaining corner blocks leftward and upward to close the gaps.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-colormap">-colormap</a> <i>type</i>
+    <a name="-colormap">-colormap</a> <i>type</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>define the colormap type</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -329,7 +328,7 @@ go <em>technicolor</em> when the image colormap is installed.</font></td></tr></
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-colors">-colors</a> <i>value</i>
+    <a name="-colors">-colors</a> <i>value</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred number of colors in the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -351,7 +350,7 @@ affect the color reduction algorithm.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-colorspace">-colorspace</a> <i>value</i>
+    <a name="-colorspace">-colorspace</a> <i>value</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of colorspace</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -384,7 +383,7 @@ option to take effect.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-crop">-crop</a> <i>&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}</i>
+    <a name="-crop">-crop</a> <i>&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the cropped image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -424,7 +423,18 @@ a portion of the trimmed edges with the image.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-delay">-delay</a> <i>&lt;1/100ths of a second&gt;</i>
+    <a name="-debug">-debug</a>
+     </font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>enable debug printout</td></tr></table>
+     <table BORDER=0 WIDTH="94%">
+     <tr>
+     <td width="3%"><br></td> 
+     <td ALIGN=LEFT BGCOLOR="#9EBAC6">
+     <img SRC="../images/right_triangle_option.png"
+     ALT=">" BORDER=0 height=14
+     width=15><b><font face="Helvetica, Arial"
+     ><font color="#FFFFFF"><font size="+1">
+    <a name="-delay">-delay</a> <i>&lt;1/100ths of a second&gt;</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>display the next image after pausing</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -446,7 +456,7 @@ minimum and maximum delay.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-density">-density</a> <i>&lt;width&gt;x&lt;height&gt;</i>
+    <a name="-density">-density</a> <i>&lt;width&gt;x&lt;height&gt;</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>vertical and horizontal resolution in pixels of the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -462,7 +472,7 @@ and vertical direction. This option is used in concert with <strong>-page</stron
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-depth">-depth</a> <i>value</i>
+    <a name="-depth">-depth</a> <i>value</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>depth of the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -479,7 +489,7 @@ image after it has been read.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-display">-display</a> <i>host:display[.screen]</i>
+    <a name="-display">-display</a> <i>host:display[.screen]</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specifies the X server to contact</td></tr></table>
      <table BORDER=0 WIDTH="94%">
@@ -490,7 +500,7 @@ image after it has been read.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-dispose">-dispose</a> <i>method</i>
+    <a name="-dispose">-dispose</a> <i>method</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>GIF disposal method</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -510,7 +520,7 @@ Here are the valid methods:
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-dissolve">-dissolve</a> <i>value</i>
+    <a name="-dissolve">-dissolve</a> <i>value</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>dissolve an image</td></tr></table>
      <table BORDER=0 WIDTH="94%">
@@ -521,7 +531,7 @@ Here are the valid methods:
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-dither">-dither</a>
+    <a name="-dither">-dither</a>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply Floyd/Steinberg error diffusion to the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -545,7 +555,7 @@ Use <strong>+dither</strong> to render Postscript without text or graphic aliasi
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-font">-font</a> <i>name</i>
+    <a name="-font">-font</a> <i>name</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>use this font when annotating the image with text</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -561,7 +571,7 @@ is Postscript, and <tt>x:fixed</tt> is OPTION1.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-foreground">-foreground</a> <i>color</i>
+    <a name="-foreground">-foreground</a> <i>color</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>define the foreground color</td></tr></table>
      <table BORDER=0 WIDTH="94%">
@@ -572,7 +582,7 @@ is Postscript, and <tt>x:fixed</tt> is OPTION1.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-gamma">-gamma</a> <i>value</i>
+    <a name="-gamma">-gamma</a> <i>value</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>level of gamma correction</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -600,7 +610,7 @@ but not set as an image attribute (e.g. PNG images).
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}{@}{!}{&lt;}{&gt;}</i>
+    <a name="-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}{@}{!}{&lt;}{&gt;}</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -656,7 +666,7 @@ There are 72 pixels per inch in PostScript coordinates.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-help">-help</a>
+    <a name="-help">-help</a>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print usage instructions</td></tr></table>
      <table BORDER=0 WIDTH="94%">
@@ -667,7 +677,7 @@ There are 72 pixels per inch in PostScript coordinates.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-iconGeometry">-iconGeometry</a> <i>geometry</i>
+    <a name="-iconGeometry">-iconGeometry</a> <i>geometry</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify the icon geometry</td></tr></table>
      <table BORDER=0 WIDTH="94%">
@@ -678,7 +688,7 @@ There are 72 pixels per inch in PostScript coordinates.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-iconic">-iconic</a>
+    <a name="-iconic">-iconic</a>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>iconic animation</td></tr></table>
      <table BORDER=0 WIDTH="94%">
@@ -689,7 +699,7 @@ There are 72 pixels per inch in PostScript coordinates.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-interlace">-interlace</a> <i>type</i>
+    <a name="-interlace">-interlace</a> <i>type</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of interlacing scheme</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -699,7 +709,8 @@ or <strong>Partition</strong>. The default is <strong>None</strong>.
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This option is used to specify the type of interlacing scheme for raw image
 formats such as <strong>RGB</strong> or <strong>YUV</strong>. <strong>None</strong> means do not interlace
-(RGBRGBRGBRGBRGBRGB...), <strong>Line</strong> uses scanline interlacing (RRR...GGG...BBB...RRR...GGG...BBB...),
+(RGBRGBRGBRGBRGBRGB...), <strong>Line</strong> uses scanline interlacing
+(RRR...GGG...BBB...RRR...GGG...BBB...),
 and <strong>Plane</strong> uses plane interlacing (RRRRRR...GGGGGG...BBBBBB...).
 <strong>Partition</strong>
 is like plane except the different planes are saved to individual files
@@ -718,7 +729,36 @@ Use <strong>Line</strong>, or <strong>Plane</strong> to create an
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-matte">-matte</a>
+    <a name="-map">-map</a> <i>type</i>
+     </font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
+display image using this type.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">[animate or display]</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Choose from these <em>Standard Colormap</em> types:</font></td></tr></table>
+<pre>
+     best
+     default
+     gray
+     red
+     green
+     blue
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The <em>X server</em> must support the <em>Standard Colormap</em> you choose,
+otherwise an error occurs. Use <strong>list</strong> as the type and <strong>display</strong>
+searches the list of colormap types in <strong>top-to-bottom</strong> order until
+one is located. See <em>xstdcmap(1)</em> for one way of creating Standard
+Colormaps.</font></td></tr></table>
+     <table BORDER=0 WIDTH="94%">
+     <tr>
+     <td width="3%"><br></td> 
+     <td ALIGN=LEFT BGCOLOR="#9EBAC6">
+     <img SRC="../images/right_triangle_option.png"
+     ALT=">" BORDER=0 height=14
+     width=15><b><font face="Helvetica, Arial"
+     ><font color="#FFFFFF"><font size="+1">
+    <a name="-matte">-matte</a>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>store matte channel if the image has one</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -732,7 +772,7 @@ If the image does not have a matte channel, create an opaque one.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-mattecolor">-mattecolor</a> <i>color</i>
+    <a name="-mattecolor">-mattecolor</a> <i>color</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify the matte color</td></tr></table>
      <table BORDER=0 WIDTH="94%">
@@ -743,7 +783,7 @@ If the image does not have a matte channel, create an opaque one.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-monochrome">-monochrome</a>
+    <a name="-monochrome">-monochrome</a>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>transform the image to black and white</td></tr></table>
      <table BORDER=0 WIDTH="94%">
@@ -754,7 +794,7 @@ If the image does not have a matte channel, create an opaque one.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-name">-name</a>
+    <a name="-name">-name</a>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>name an image</td></tr></table>
      <table BORDER=0 WIDTH="94%">
@@ -765,7 +805,7 @@ If the image does not have a matte channel, create an opaque one.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-pause">-pause</a> <i>seconds</i>
+    <a name="-pause">-pause</a> <i>seconds</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pause between animation loops</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -779,7 +819,7 @@ animation.</font></td></tr></table>
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-remote">-remote</a>
+    <a name="-remote">-remote</a>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>perform a remote operation</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -794,7 +834,7 @@ an image file to load.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-rotate">-rotate</a> <i>degrees{&lt;}{&gt;}</i>
+    <a name="-rotate">-rotate</a> <i>degrees{&lt;}{&gt;}</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply Paeth image rotation to the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -817,7 +857,7 @@ for details.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-scene">-scene</a> <i>value{-value}</i>
+    <a name="-scene">-scene</a> <i>value{-value}</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>image scene number or range</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -831,7 +871,7 @@ the discussion of <em>file</em> below for details.</font></td></tr></table>
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-shared_memory">-shared_memory</a>
+    <a name="-shared_memory">-shared_memory</a>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>use shared memory</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -848,7 +888,7 @@ resource is ignored.  The default is <strong>True</strong>.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-size">-size</a> <i>&lt;width&gt;x&lt;height&gt;{+offset}</i>
+    <a name="-size">-size</a> <i>&lt;width&gt;x&lt;height&gt;{+offset}</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>width and height of the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -881,7 +921,7 @@ or JPEG image (e.g. -size 1024x768).
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-text-font">-text-font</a> <i>name</i>
+    <a name="-text_font">-text_font</a> <i>name</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>font for writing fixed-width text</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -901,7 +941,7 @@ and <tt>x:fixed</tt> is OPTION1.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-title">-title</a> <i>"string"</i>
+    <a name="-title">-title</a> <i>"string"</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>assign a title to the displayed image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -951,7 +991,7 @@ titled <tt>bird.miff</tt> and whose width is 512 and height is 480.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-treedepth">-treedepth</a> <i>value</i>
+    <a name="-treedepth">-treedepth</a> <i>value</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>tree depth for the color reduction algorithm</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -977,7 +1017,7 @@ to take effect.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-verbose">-verbose</a>
+    <a name="-verbose">-verbose</a>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print detailed information about the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -999,7 +1039,7 @@ for a description of these values.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-visual">-visual</a> <i>type</i>
+    <a name="-visual">-visual</a> <i>type</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>animate images using this X visual type</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1028,7 +1068,7 @@ simultaneous colors on the default screen is chosen.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<opt><a name="-window">-window</a> <i>id</i>
+    <a name="-window">-window</a> <i>id</i>
      </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>make image the background of a window</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1129,7 +1169,6 @@ they appear on the command line.</p>
 <p>
 Press any button to map or unmap the Command widget. See the next section
 for more information about the Command widget.</p>
-</dl>
      </td></tr></table>
      <p>
      <i><a href="#top">Back to Contents</a></i> 
@@ -1169,7 +1208,6 @@ The Command widget lists a number of sub-menus and commands. They are</p>
 <li><strong>Help</strong>
 <li><strong>Quit</strong>
 </ul>
-</ul>
 <p>
 Menu items with a indented triangle have a sub-menu. They are represented
 above as the indented items. To access a sub-menu item, move the pointer
@@ -1177,7 +1215,6 @@ to the appropriate menu and press a button and drag. When you find the
 desired sub-menu item, release the button and the command is executed.
 Move the pointer away from the sub-menu if you decide not to execute a
 particular command.</p>
-</dl>
      </td></tr></table>
      <p>
      <i><a href="#top">Back to Contents</a></i> 
@@ -1233,7 +1270,8 @@ file. Options on the command line supersede values specified in your X
 resource file. See <strong>X(1)</strong> for more information on X resources.</p>
 <p>
 All <strong>animate</strong> options have a corresponding X resource. In addition,
-the <strong>animate</strong> program uses the following X resources:</dd>
+the <strong>animate</strong> program uses the following X resources:</p>
+<dl>
 <dt><strong>background</strong> <strong>(</strong><em>class</em> <strong>Background)</strong></dt>
 <dd>
 Specifies the preferred color to use for the Image window background. The
@@ -1306,10 +1344,17 @@ of header identifying the window. The default is the image file name.</dd>
      </font></font></font></b></td></tr></table>
      <table width="94%" border="0" cellspacing="0" cellpadding="8">
      <tr><td width="3%"><br></td><td>
-<dl>
-<dt>DISPLAY</dt>
-<dd>
-To get the default host, display number, and screen.</dd>
+     <table BORDER=0 WIDTH="94%">
+     <tr>
+     <td width="3%"><br></td> 
+     <td ALIGN=LEFT BGCOLOR="#9EBAC6">
+     <img SRC="../images/right_triangle_option.png"
+     ALT=">" BORDER=0 height=14
+     width=15><b><font face="Helvetica, Arial"
+     ><font color="#FFFFFF"><font size="+1">
+    <a name="DISPLAY">DISPLAY</a>
+     </font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>To get the default host, display number, and screen.</td></tr></table>
      </td></tr></table>
      <table BORDER=0 WIDTH="100%"> 
      <tr> 
