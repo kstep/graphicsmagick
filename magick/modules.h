@@ -14,7 +14,16 @@ extern "C" {
 #endif /* HasLTDL */
 #if defined(_MAGICKMOD_)
   typedef void* ModuleHandle;
+# if defined(_MT) && defined(_VISUALC_)
+#   define CoderModuleDirectory "."
+#  if defined(_DEBUG)
+#   define ModuleSearchSpec "IM_MOD_DB_*.dll"
+#  else
+#   define ModuleSearchSpec "IM_MOD_*.dll"
+#  endif
+# endif
 #endif
+
   /* Information on loaded modules */
 typedef struct _ModuleInfo
 {
