@@ -682,6 +682,9 @@ static unsigned int RenderTruetype(Image *image,
   register PixelPacket
     *q;
 
+  SegmentInfo
+    extent;
+
   static char
     font[MaxTextExtent];
 
@@ -786,6 +789,10 @@ static unsigned int RenderTruetype(Image *image,
   */
   origin.x=0;
   origin.y=0;
+  extent.x1=32000;
+  extent.x2=(-32000);
+  extent.y1=32000;
+  extent.y2=(-32000);
   affine.xx=(FT_Fixed) (65536.0*annotate_info->affine.sx);
   affine.yx=(FT_Fixed) (-65536.0*annotate_info->affine.rx);
   affine.xy=(FT_Fixed) (-65536.0*annotate_info->affine.ry);
@@ -811,6 +818,14 @@ static unsigned int RenderTruetype(Image *image,
     FT_Glyph_Get_CBox(glyph->image,ft_glyph_bbox_pixels,&bounding_box);
     if (status)
       continue;
+    if (bounding_box.xMin < extent.x1)
+      extent.x1=bounding_box.xMin;
+    if (bounding_box.xMax > extent.x2)
+      extent.x2=bounding_box.xMax;
+    if (bounding_box.yMin < extent.y1)
+      extent.y1=bounding_box.yMin;
+    if (bounding_box.yMax > extent.y2)
+      extent.y2=bounding_box.yMax;
     origin.x+=face->glyph->advance.x;
     glyph++;
   }
@@ -820,7 +835,7 @@ static unsigned int RenderTruetype(Image *image,
   metrics->ppem.y=face->size->metrics.y_ppem;
   metrics->ascent=face->size->metrics.ascender >> 6;
   metrics->descent=face->size->metrics.descender >> 6;
-  metrics->width=origin.x >> 6;
+  metrics->width=Max(origin.x >> 6,extent.x2);
   metrics->height=face->size->metrics.height >> 6;
   metrics->max_advance=face->size->metrics.max_advance >> 6;
   if (!render)
@@ -1040,10 +1055,10 @@ static unsigned int RenderPostscript(Image *image,
   metrics->ppem.x=(resolution.y/72.0)*ExpandAffine(&annotate_info->affine)*
     annotate_info->pointsize;
   metrics->ppem.y=metrics->ppem.x;
-  metrics->ascent=0.9*metrics->ppem.x;
-  metrics->descent=(int) metrics->ppem.y/-5.0;
+  metrics->ascent=0.908*metrics->ppem.x;
+  metrics->descent=(int) metrics->ppem.y/-4.75;
   metrics->width=annotate_image->columns/ExpandAffine(&annotate_info->affine);
-  metrics->height=1.15*metrics->ppem.x;
+  metrics->height=1.152*metrics->ppem.x;
   metrics->max_advance=metrics->ppem.x;
   if (!render)
     {
