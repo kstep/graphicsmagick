@@ -777,6 +777,15 @@ void CConfigureApp::process_module(ofstream &dsw,
   std::list<std::string> source_list;
   std::list<std::string> exclude_list;
 
+  if (runtime == MULTITHREADEDDLL)
+	{
+		defines_list.push_back("_DLL");
+  }
+  else
+  {
+		defines_list.push_back("_LIB");
+  }
+
   if (name.compare("png") == 0)
   {
 		includes_list.push_back("..\\..\\zlib");

@@ -41,7 +41,7 @@
 #  endif
 # else
 # if defined(WIN32)
-#	 if defined(_DLL)
+#	 if defined(_DLL) && !defined(_LIB)
 #		if !defined(_SDLLIB_)
 #     define DECLSPEC __declspec(dllimport)
 #		else
