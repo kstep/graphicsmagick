@@ -616,7 +616,9 @@ uninstall-data-html:
 @WITH_PERL_TRUE@perl-sources:
 @WITH_PERL_TRUE@	if test -n "$(VPATH)" ; then \
 @WITH_PERL_TRUE@	  imagemagick=`(cd $(VPATH) ; pwd)` && \
-@WITH_PERL_TRUE@	  ( cd $(PERLMAGICK) && sh $$imagemagick/lndir.sh $$imagemagick/$(PERLMAGICK) ) \
+@WITH_PERL_TRUE@	  ( cd $(PERLMAGICK) && \
+@WITH_PERL_TRUE@	    sh $$imagemagick/lndir.sh $$imagemagick/$(PERLMAGICK) && \
+@WITH_PERL_TRUE@	    find . -type d -print | xargs chmod 777 ) \
 @WITH_PERL_TRUE@	fi
 @WITH_PERL_TRUE@	touch perl-sources
 
