@@ -226,6 +226,36 @@ then
 
 fi
 
+########
+#
+# Check for large file support
+#
+# Acccording to the X/Open LFS standard, setting _FILE_OFFSET_BITS to 64
+# remaps standard functions to their 64-bit equivalents.
+#
+########
+AC_SYS_LARGEFILE
+LFS_CPPFLAGS=''
+if test "$enable_largefile" != no
+then
+  if test "$ac_cv_sys_file_offset_bits" != 'no'
+  then
+    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_FILE_OFFSET_BITS=$ac_cv_sys_file_offset_bits"
+  fi
+  if test "$ac_cv_sys_large_files" != 'no'
+  then
+    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGE_FILES=1"
+  fi
+  # If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
+  # `_LARGEFILE_SOURCE' if necessary.
+  AC_FUNC_FSEEKO
+  if  test "$ac_cv_sys_largefile_source" != 'no'
+  then
+    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGEFILE_SOURCE=1"
+  fi
+fi
+AC_SUBST(LFS_CPPFLAGS)
+
 #
 # Configure libtool & libltdl
 #
@@ -621,36 +651,6 @@ then
 fi
 AC_SUBST(MODULE_EXTRA_CPPFLAGS)
 AC_SUBST(LIBRARY_EXTRA_CPPFLAGS)
-
-########
-#
-# Check for large file support
-#
-# Acccording to the X/Open LFS standard, setting _FILE_OFFSET_BITS to 64
-# remaps standard functions to their 64-bit equivalents.
-#
-########
-AC_SYS_LARGEFILE
-LFS_CPPFLAGS=''
-if test "$enable_largefile" != no
-then
-  if test "$ac_cv_sys_file_offset_bits" != 'no'
-  then
-    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_FILE_OFFSET_BITS=$ac_cv_sys_file_offset_bits"
-  fi
-  if test "$ac_cv_sys_large_files" != 'no'
-  then
-    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGE_FILES=1"
-  fi
-  # If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
-  # `_LARGEFILE_SOURCE' if necessary.
-  AC_FUNC_FSEEKO
-  if  test "$ac_cv_sys_largefile_source" != 'no'
-  then
-    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGEFILE_SOURCE=1"
-  fi
-fi
-AC_SUBST(LFS_CPPFLAGS)
 
 # Check standard headers
 AC_HEADER_STDC

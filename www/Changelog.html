@@ -56,9 +56,13 @@
 2003-09-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
-  <LI> acinclude.m4 (AC_CXX_HAVE_STD): It seems that defining
-        _XOPEN_SOURCE seems to confuse the C++ headers under AIX so
-        undefine it in that environment.
+  <LI> configure.ac: Decided that the standards conformance
+        defines create more problems than they solve so they are
+        removed.<BR>
+        Move the large-file tests to before the libtool configuration
+        since the libtool configuration was causing stdlib.h to be
+        included prior to the large file defines, and this causes
+        header failure with C++ under AIX.
   <LI> www/api/types.html: Update description of MonitorHandler.
 
 </UL>

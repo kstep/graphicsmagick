@@ -3,6 +3,10 @@
 	* configure.ac: Decided that the standards conformance
 	defines create more problems than they solve so they are
 	removed.
+	Move the large-file tests to before the libtool configuration
+	since the libtool configuration was causing stdlib.h to be
+	included prior to the large file defines, and this causes
+	header failure with C++ under AIX.
 	* www/api/types.html: Update description of MonitorHandler.
 
 2003-09-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
