@@ -736,8 +736,8 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
       points+=n;
     }
   polygon_info->number_edges=edge;
-  ReacquireMemory((void **) &polygon_info,
-    polygon_info->number_edges*sizeof(PolygonInfo));
+  ReacquireMemory((void **) &polygon_info->edges,
+    (polygon_info->number_edges+1)*sizeof(EdgeInfo));
   qsort(polygon_info->edges,polygon_info->number_edges,sizeof(EdgeInfo),
     CompareEdges);
   ReacquireMemory((void **) &polygon_info->points,
