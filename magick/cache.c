@@ -94,21 +94,10 @@ Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
   unsigned int
     status;
 
-  assert(image != (Image *) NULL);
-  if (image->class != GetCacheClassType(image->cache))
-    {
-      status=
-        AllocateCache(image->cache,image->class,image->columns,image->rows);
-      if (status == False)
-        {
-          MagickWarning(CacheWarning,"Unable to initialize pixel cache",
-            (char *) NULL);
-          return((PixelPacket *) NULL);
-        }
-    }
   /*
-    Transfer pixels from the pixel cache.
+    Transfer pixels from the cache.
   */
+  assert(image != (Image *) NULL);
   if (!SetPixelCache(image,x,y,columns,rows))
     return((PixelPacket *) NULL);
   status=ReadCachePixels(image->cache,&image->cache_info,image->pixels);
@@ -447,9 +436,6 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
 Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
-  off_t
-    number_pixels;
-
   unsigned int
     status;
 
@@ -464,40 +450,46 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
         "image does not contain the cache geometry");
       return((PixelPacket *) NULL);
     }
+  if (image->class != GetCacheClassType(image->cache))
+    {
+      /*
+        Allocate pixel cache.
+      */
+      status=
+        AllocateCache(image->cache,image->class,image->columns,image->rows);
+      if (status == False)
+        {
+          MagickWarning(CacheWarning,"Unable to allocate pixel cache",
+            (char *) NULL);
+          return((PixelPacket *) NULL);
+        }
+    }
+  image->cache_info.x=x;
+  image->cache_info.y=y;
+  image->cache_info.width=columns;
+  image->cache_info.height=rows;
+  if (((x == 0) && ((columns % image->columns) == 0)) ||
+      (((x+columns) <= image->columns) && (rows == 1)))
+    {
+      /*
+        Direct access to the pixel cache-- no intermediate buffer.
+      */
+      image->pixels=GetCachePixels(image->cache,x,y);
+      image->indexes=GetCacheIndexes(image->cache,x,y);
+      if (image->pixels != (PixelPacket *) NULL)
+        return(image->pixels);
+    }
   /*
     Allocate buffer to get/put pixels/indexes to/from the pixel cache.
   */
-  number_pixels=columns*rows;
+  image->pixels=(PixelPacket *) GetCacheStash(image->cache,columns*rows);
   if (image->pixels == (PixelPacket *) NULL)
-    image->pixels=(PixelPacket *)
-      AllocateMemory(number_pixels*sizeof(PixelPacket));
-  else
-    if ((image->cache_info.width*image->cache_info.height) < number_pixels)
-      image->pixels=(PixelPacket *)
-        ReallocateMemory(image->pixels,number_pixels*sizeof(PixelPacket));
-  if (image->class == PseudoClass)
-    if (image->indexes == (IndexPacket *) NULL)
-      image->indexes=(IndexPacket *)
-        AllocateMemory(number_pixels*sizeof(IndexPacket));
-    else
-      if ((image->cache_info.width*image->cache_info.height) < number_pixels)
-        image->indexes=(IndexPacket *)
-          ReallocateMemory(image->indexes,number_pixels*sizeof(IndexPacket));
-  if ((image->pixels == (PixelPacket *) NULL) ||
-      ((image->class == PseudoClass) &&
-       (image->indexes == (IndexPacket *) NULL)))
     {
       MagickWarning(CacheWarning,"Unable to set pixel cache",
         "Memory allocation failed");
       return((PixelPacket *) NULL);
     }
-  /*
-    Set the pixel cache geometry.
-  */
-  image->cache_info.x=x;
-  image->cache_info.y=y;
-  image->cache_info.width=columns;
-  image->cache_info.height=rows;
+  image->indexes=(IndexPacket *) (image->pixels+columns*rows);
   return(image->pixels);
 }
 
@@ -533,27 +525,24 @@ Export unsigned int SyncPixelCache(Image *image)
   unsigned int
     status;
 
+  /*
+    Transfer pixels to the cache.
+  */
   assert(image != (Image *) NULL);
-  if (image->pixels == (PixelPacket *) NULL)
-    {
-      MagickWarning(CacheWarning,"Unable to sync pixel cache",
-        "no pixel to write");
-      return(False);
-    }
   if (image->class != GetCacheClassType(image->cache))
     {
+      /*
+        Allocate pixel cache.
+      */
       status=
         AllocateCache(image->cache,image->class,image->columns,image->rows);
       if (status == False)
         {
-          MagickWarning(CacheWarning,"Unable to initialize pixel cache",
+          MagickWarning(CacheWarning,"Unable to allocate pixel cache",
             (char *) NULL);
           return(False);
         }
     }
-  /*
-    Transfer pixels to the pixel cache.
-  */
   status=WriteCachePixels(image->cache,&image->cache_info,image->pixels);
   if (image->class == PseudoClass)
     status|=WriteCacheIndexes(image->cache,&image->cache_info,image->indexes);

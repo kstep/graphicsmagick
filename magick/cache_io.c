@@ -97,6 +97,12 @@ typedef struct _CacheInfo
 
   IndexPacket
     *indexes;
+
+  off_t
+    length;
+
+  void
+    *stash;
 } CacheInfo;
 
 /*
@@ -122,7 +128,7 @@ static off_t
 %
 %  The format of the AllocateCache method is:
 %
-%      unsigned int AllocateCache(Cache cache,ClassType type,
+%      unsigned int AllocateCache(Cache cache,const ClassType type,
 %        const unsigned int columns,const unsigned int rows)
 %
 %  A description of each parameter follows:
@@ -142,7 +148,7 @@ static off_t
 %
 %
 */
-Export unsigned int AllocateCache(Cache cache,ClassType type,
+Export unsigned int AllocateCache(Cache cache,const ClassType type,
   const unsigned int columns,const unsigned int rows)
 {
   CacheInfo
@@ -382,6 +388,8 @@ Export void DestroyCacheInfo(Cache cache)
       FreeMemory(cache_info->pixels);
       (void) GetCacheMemory(cache_info->number_pixels*sizeof(PixelPacket));
     }
+  if (cache_info->stash != (void *) NULL)
+    FreeMemory(cache_info->stash);
   FreeMemory(cache_info);
   cache=(void *) NULL;
 }
@@ -426,6 +434,46 @@ Export ClassType GetCacheClassType(Cache cache)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t C a c h e I n d e x e s                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCacheIndexes returns the address of the cache colormap index
+%  buffer.
+%
+%  The format of the GetCacheIndexes method is:
+%
+%      void *GetCacheIndexes(Cache cache,const unsigned int x,
+%        const unsigned int y)
+%
+%  A description of each parameter follows:
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%    o x,y: This unsigned integer defines the offset into the pixel buffer.
+%
+%
+*/
+Export IndexPacket *GetCacheIndexes(Cache cache,const unsigned int x,
+  const unsigned int y)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  if (cache_info->indexes == (IndexPacket *) NULL)
+    return((IndexPacket *) NULL);
+  return(cache_info->indexes+(y*cache_info->columns+x));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t C a c h e I n f o                                                   %
 %                                                                             %
 %                                                                             %
@@ -460,6 +508,8 @@ Export void GetCacheInfo(Cache *cache)
   cache_info->number_pixels=0;
   cache_info->rows=0;
   cache_info->columns=0;
+  cache_info->length=0;
+  cache_info->stash=(void *) NULL;
   *cache=cache_info;
 }
 
@@ -479,7 +529,7 @@ Export void GetCacheInfo(Cache *cache)
 %
 %  The format of the GetCacheMemory method is:
 %
-%      off_t GetCacheMemory(off_t memory)
+%      off_t GetCacheMemory(const off_t memory)
 %
 %  A description of each parameter follows:
 %
@@ -488,7 +538,7 @@ Export void GetCacheInfo(Cache *cache)
 %
 %
 */
-Export off_t GetCacheMemory(off_t memory)
+Export off_t GetCacheMemory(const off_t memory)
 {
   static off_t
     free_memory = PixelCacheThreshold*1024*1024;
@@ -506,6 +556,93 @@ Export off_t GetCacheMemory(off_t memory)
   free_memory+=memory;
 #endif
   return(free_memory);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e P i x e l s                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCachePixels returns the address of the cache pixel buffer.
+%
+%  The format of the GetCachePixels method is:
+%
+%      void *GetCachePixels(Cache cache,const unsigned int x,
+%        const unsigned int y)
+%
+%  A description of each parameter follows:
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%    o x,y: This unsigned integer defines the offset into the pixel buffer.
+%
+%
+*/
+Export PixelPacket *GetCachePixels(Cache cache,const unsigned int x,
+  const unsigned int y)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  if (cache_info->pixels == (PixelPacket *) NULL)
+    return((PixelPacket *) NULL);
+  return(cache_info->pixels+(y*cache_info->columns+x));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e S t a s h                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCacheStash allocates memory for the cache pixel buffer.
+%
+%  The format of the GetCacheStash method is:
+%
+%      void GetCacheStash(Cache *cache,unsigned int number_pixels)
+%
+%  A description of each parameter follows:
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%    o number_pixels: This unsigned integer defines how many pixels are
+%      needed in the buffer.
+%
+%
+*/
+Export void *GetCacheStash(Cache cache,unsigned int number_pixels)
+{
+  CacheInfo
+    *cache_info;
+
+  off_t
+    length;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  length=number_pixels*sizeof(PixelPacket);
+  if (cache_info->class == PseudoClass)
+    length+=number_pixels*sizeof(IndexPacket);
+  if (cache_info->stash == (PixelPacket *) NULL)
+    cache_info->stash=(void *) AllocateMemory(length);
+  else
+    if (cache_info->length < length)
+      cache_info->stash=(void *) ReallocateMemory(cache_info->stash,length);
+  cache_info->length=length;
+  return(cache_info->stash);
 }
 
 /*
@@ -555,8 +692,8 @@ Export off_t GetCacheThreshold()
 %
 %  The format of the ReadCacheIndexes method is:
 %
-%      unsigned int ReadCacheIndexes(Cache cache,RectangleInfo *region_info,
-%        IndexPacket *indexes)
+%      unsigned int ReadCacheIndexes(Cache cache,
+%        const RectangleInfo *region_info,IndexPacket *indexes)
 %
 %  A description of each parameter follows:
 %
@@ -573,8 +710,8 @@ Export off_t GetCacheThreshold()
 %
 %
 */
-Export unsigned int ReadCacheIndexes(Cache cache,RectangleInfo *region_info,
-  IndexPacket *indexes)
+Export unsigned int ReadCacheIndexes(Cache cache,
+  const RectangleInfo *region_info,IndexPacket *indexes)
 {
   CacheInfo
     *cache_info;
@@ -591,6 +728,8 @@ Export unsigned int ReadCacheIndexes(Cache cache,RectangleInfo *region_info,
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   offset=region_info->y*cache_info->columns+region_info->x;
+  if (indexes == (cache_info->indexes+offset))
+    return(True);
   for (y=0; y < (int) region_info->height; y++)
   {
     if (cache_info->indexes != (IndexPacket *) NULL)
@@ -616,8 +755,6 @@ Export unsigned int ReadCacheIndexes(Cache cache,RectangleInfo *region_info,
     indexes+=region_info->width;
     offset+=cache_info->columns;
   }
-  if (y < (int) region_info->height)
-    return(False);
   return(True);
 }
 
@@ -637,8 +774,8 @@ Export unsigned int ReadCacheIndexes(Cache cache,RectangleInfo *region_info,
 %
 %  The format of the ReadCachePixels method is:
 %
-%      unsigned int ReadCachePixels(Cache cache,RectangleInfo *region_info,
-%        IndexPacket *indexes)
+%      unsigned int ReadCachePixels(Cache cache,
+%        const RectangleInfo *region_info,IndexPacket *indexes)
 %
 %  A description of each parameter follows:
 %
@@ -655,8 +792,8 @@ Export unsigned int ReadCacheIndexes(Cache cache,RectangleInfo *region_info,
 %
 %
 */
-Export unsigned int ReadCachePixels(Cache cache,RectangleInfo *region_info,
-  PixelPacket *pixels)
+Export unsigned int ReadCachePixels(Cache cache,
+  const RectangleInfo *region_info,PixelPacket *pixels)
 {
   CacheInfo
     *cache_info;
@@ -673,6 +810,8 @@ Export unsigned int ReadCachePixels(Cache cache,RectangleInfo *region_info,
   assert(cache != (Cache *) NULL);
   cache_info=(CacheInfo *) cache;
   offset=region_info->y*cache_info->columns+region_info->x;
+  if (pixels == (cache_info->pixels+offset))
+    return(True);
   for (y=0; y < (int) region_info->height; y++)
   {
     if (cache_info->pixels != (PixelPacket *) NULL)
@@ -697,8 +836,6 @@ Export unsigned int ReadCachePixels(Cache cache,RectangleInfo *region_info,
     pixels+=region_info->width;
     offset+=cache_info->columns;
   }
-  if (y < (int) region_info->height)
-    return(False);
   return(True);
 }
 
@@ -717,7 +854,7 @@ Export unsigned int ReadCachePixels(Cache cache,RectangleInfo *region_info,
 %
 %  The format of the SetCacheClassType method is:
 %
-%      void SetCacheClassType(Cache cache)
+%      void SetCacheClassType(Cache cache,const ClassType type)
 %
 %  A description of each parameter follows:
 %
@@ -727,7 +864,7 @@ Export unsigned int ReadCachePixels(Cache cache,RectangleInfo *region_info,
 %
 %
 */
-Export void SetCacheClassType(Cache cache,ClassType type)
+Export void SetCacheClassType(Cache cache,const ClassType type)
 {
   CacheInfo
     *cache_info;
@@ -754,7 +891,7 @@ Export void SetCacheClassType(Cache cache,ClassType type)
 %
 %  The format of the SetCacheThreshold method is:
 %
-%      void SetCacheThreshold(off_t threshold)
+%      void SetCacheThreshold(const off_t threshold)
 %
 %  A description of each parameter follows:
 %
@@ -763,7 +900,7 @@ Export void SetCacheClassType(Cache cache,ClassType type)
 %
 %
 */
-Export void SetCacheThreshold(off_t threshold)
+Export void SetCacheThreshold(const off_t threshold)
 {
   off_t
     offset;
@@ -789,8 +926,8 @@ Export void SetCacheThreshold(off_t threshold)
 %
 %  The format of the WriteCachePixels method is:
 %
-%      unsigned int WriteCachePixels(Cache cache,RectangleInfo *region_info,
-%        IndexPacket *indexes)
+%      unsigned int WriteCachePixels(Cache cache,
+%        const RectangleInfo *region_info,const IndexPacket *indexes)
 %
 %  A description of each parameter follows:
 %
@@ -807,8 +944,8 @@ Export void SetCacheThreshold(off_t threshold)
 %
 %
 */
-Export unsigned int WriteCacheIndexes(Cache cache,RectangleInfo *region_info,
-  IndexPacket *indexes)
+Export unsigned int WriteCacheIndexes(Cache cache,
+  const RectangleInfo *region_info,const IndexPacket *indexes)
 {
   CacheInfo
     *cache_info;
@@ -825,6 +962,8 @@ Export unsigned int WriteCacheIndexes(Cache cache,RectangleInfo *region_info,
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   offset=region_info->y*cache_info->columns+region_info->x;
+  if (indexes == (cache_info->indexes+offset))
+    return(True);
   for (y=0; y < (int) region_info->height; y++)
   {
     if (cache_info->indexes != (IndexPacket *) NULL)
@@ -850,8 +989,6 @@ Export unsigned int WriteCacheIndexes(Cache cache,RectangleInfo *region_info,
     indexes+=region_info->width;
     offset+=cache_info->columns;
   }
-  if (y < (int) region_info->height)
-    return(False);
   return(True);
 }
 
@@ -871,8 +1008,8 @@ Export unsigned int WriteCacheIndexes(Cache cache,RectangleInfo *region_info,
 %
 %  The format of the WriteCachePixels method is:
 %
-%      unsigned int WriteCachePixels(Cache cache,RectangleInfo *region_info,
-%        PixelPacket *pixels)
+%      unsigned int WriteCachePixels(Cache cache,
+%        const RectangleInfo *region_info,const PixelPacket *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -889,8 +1026,8 @@ Export unsigned int WriteCacheIndexes(Cache cache,RectangleInfo *region_info,
 %
 %
 */
-Export unsigned int WriteCachePixels(Cache cache,RectangleInfo *region_info,
-  PixelPacket *pixels)
+Export unsigned int WriteCachePixels(Cache cache,
+  const RectangleInfo *region_info,const PixelPacket *pixels)
 {
   CacheInfo
     *cache_info;
@@ -907,6 +1044,8 @@ Export unsigned int WriteCachePixels(Cache cache,RectangleInfo *region_info,
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   offset=region_info->y*cache_info->columns+region_info->x;
+  if (pixels == (cache_info->pixels+offset))
+    return(True);
   for (y=0; y < (int) region_info->height; y++)
   {
     if (cache_info->pixels != (PixelPacket *) NULL)
@@ -931,7 +1070,5 @@ Export unsigned int WriteCachePixels(Cache cache,RectangleInfo *region_info,
     pixels+=region_info->width;
     offset+=cache_info->columns;
   }
-  if (y < (int) region_info->height)
-    return(False);
   return(True);
 }

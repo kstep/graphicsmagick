@@ -18,22 +18,29 @@ extern "C" {
 extern Export ClassType
   GetCacheClassType(Cache);
 
+extern Export IndexPacket
+  *GetCacheIndexes(Cache,const unsigned int,const unsigned int);
+
 extern Export off_t
-  GetCacheMemory(off_t),
+  GetCacheMemory(const off_t),
   GetCacheThreshold();
 
+extern Export PixelPacket
+  *GetCachePixels(Cache,const unsigned int,const unsigned int);
+
 extern Export unsigned int
-  AllocateCache(Cache,ClassType,const unsigned int,const unsigned int),
-  ReadCachePixels(Cache,RectangleInfo *,PixelPacket *),
-  ReadCacheIndexes(Cache,RectangleInfo *,IndexPacket *),
-  WriteCachePixels(Cache,RectangleInfo *,PixelPacket *),
-  WriteCacheIndexes(Cache,RectangleInfo *,IndexPacket *);
+  AllocateCache(Cache,const ClassType,const unsigned int,const unsigned int),
+  ReadCachePixels(Cache,const RectangleInfo *,PixelPacket *),
+  ReadCacheIndexes(Cache,const RectangleInfo *,IndexPacket *),
+  WriteCachePixels(Cache,const RectangleInfo *,const PixelPacket *),
+  WriteCacheIndexes(Cache,const RectangleInfo *,const IndexPacket *);
 
 extern Export void
   CloseCache(Cache),
   DestroyCacheInfo(Cache),
   GetCacheInfo(Cache *),
-  SetCacheClassType(Cache,ClassType),
+  *GetCacheStash(Cache,unsigned int),
+  SetCacheClassType(Cache,const ClassType),
   SetCacheThreshold(off_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -1584,7 +1584,7 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
     Paint each row of the image.
   */
   k=0;
-  for (y=radius; y < (int) (image->rows-radius); y++)
+  for (y=radius; y < (int) (image->rows-radius-1); y++)
   {
     p=GetPixelCache(image,0,y-radius,image->columns,2*radius+1);
     q=SetPixelCache(paint_image,0,y,paint_image->columns,1);

@@ -2966,7 +2966,7 @@ Get(ref,...)
               PixelPacket
                 *pixel;
 
-              if (!image || !image->pixels)
+              if (!image)
                 break;
               x=0;
               y=0;

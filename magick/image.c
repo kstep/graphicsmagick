@@ -823,20 +823,23 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       int
         y;
 
+      register PixelPacket
+        *p,
+        *q;
+
       /*
         Clone pixel cache.
       */
       for (y=0; y < (int) image->rows; y++)
       {
-        if (!GetPixelCache(image,0,y,image->columns,1))
-          break;
-        if (!SetPixelCache(clone_image,0,y,clone_image->columns,1))
+        p=GetPixelCache(image,0,y,image->columns,1);
+        q=SetPixelCache(clone_image,0,y,clone_image->columns,1);
+        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         if (image->class == PseudoClass)
           (void) memcpy(clone_image->indexes,image->indexes,
             image->columns*sizeof(IndexPacket));
-        (void) memcpy(clone_image->pixels,image->pixels,
-          image->columns*sizeof(PixelPacket));
+        (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
         if (!SyncPixelCache(clone_image))
           break;
       }
@@ -2672,10 +2675,6 @@ Export void DestroyImage(Image *image)
   /*
     Deallocate the image pixels.
   */
-  if (image->pixels != (PixelPacket *) NULL)
-    FreeMemory(image->pixels);
-  if (image->indexes != (IndexPacket *) NULL)
-    FreeMemory(image->indexes);
   if (!image->orphan)
     {
       /*
