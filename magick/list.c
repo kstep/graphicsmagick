@@ -675,9 +675,6 @@ MagickExport Image *ShiftImageList(Image **images)
 MagickExport unsigned int UnshiftImageList(Image **images,const Image *image,
   ExceptionInfo *exception)
 {
-  Image
-    *previous;
-
   assert(images != (Image **) NULL);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -687,11 +684,10 @@ MagickExport unsigned int UnshiftImageList(Image **images,const Image *image,
       return(*images != (Image *) NULL);
     }
   assert((*images)->signature == MagickSignature);
-  previous=(*images);
-  for ( ; previous->previous != (Image *) NULL; previous=previous->previous);
-  previous->previous=CloneImageList(image,exception);
-  if (previous->previous == (Image *) NULL)
-    return(False);
-  previous->previous->next=previous;
+  while ((*images)->previous != (Image *) NULL)
+    (*images)=(*images)->previous;
+  image->next=(*images);
+  (*images)->previous=image;
+  (*images)=(*images)->previous;
   return(True);
 }
