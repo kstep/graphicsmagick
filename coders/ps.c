@@ -1111,8 +1111,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         (void) strcpy(buffer,"userdict begin\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
-    (void) strcpy(buffer,"%%BeginData:\n");
-    (void) WriteBlob(image,strlen(buffer),buffer);
+    else
+      {
+        (void) strcpy(buffer,"%%BeginData:\n");
+        (void) WriteBlob(image,strlen(buffer),buffer);
+      }
     (void) strcpy(buffer,"DisplayImage\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
     /*
@@ -1429,11 +1432,14 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           }
           (void) WriteByte(image,'\n');
         }
-    (void) strcpy(buffer,"%%EndData\n");
-    (void) WriteBlob(image,strlen(buffer),buffer);
     if (LocaleCompare(image_info->magick,"PS") != 0)
       {
         (void) strcpy(buffer,"end\n");
+        (void) WriteBlob(image,strlen(buffer),buffer);
+      }
+    else
+      {
+        (void) strcpy(buffer,"%%EndData\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
     (void) strcpy(buffer,"%%PageTrailer\n");
