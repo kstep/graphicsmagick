@@ -65,7 +65,7 @@ static Image
   *ReadImages(const ImageInfo *,ExceptionInfo *);
 
 MagickExport inline IndexPacket
-	ValidateColormapIndex(Image *,const unsigned long);
+  ValidateColormapIndex(Image *,const unsigned long);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1193,8 +1193,6 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
   SetExceptionInfo(exception,UndefinedException);
   clone_info=CloneImageInfo(image_info);
   clone_info->ping=True;
-  if (clone_info->size == (char *) NULL)
-    clone_info->size=AllocateString(DefaultTileGeometry);
   image=ReadStream(clone_info,&StreamHandler,exception);
   DestroyImageInfo(clone_info);
   return(image);
