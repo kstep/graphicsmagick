@@ -3131,9 +3131,6 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   PixelPacket
     pixel;
 
-  register IndexPacket
-    *indexes;
-
   register long
     x;
 

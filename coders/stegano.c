@@ -94,7 +94,6 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
 #define SetBit(a,i,set) a=(set) ? (a) | (1L << (i)) : (a) & ~(1L << (i))
 
   Image
-    *clone_image,
     *image,
     *watermark;
 
@@ -112,8 +111,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     pixel;
 
   register IndexPacket
-    *indexes,
-    *stegano_indexes;
+    *indexes;
 
   register long
     x;
