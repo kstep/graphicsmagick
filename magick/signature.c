@@ -45,10 +45,6 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Routine SignatureImage computes a digital signature from the image
-%  pixels.  This signature uniquely identifies the image.  The digital
-%  signature is from RSA Data Security MD5 Digest Algorithm described in
-%  Internet draft [MD5], July 1992.
 %
 %
 */
@@ -60,302 +56,284 @@
 #include "define.h"
 
 /*
+  Define declarations.
+*/
+#define SignatureSize  64
+#define Trunc32(x)  ((x) & 0xffffffffL)
+
+/*
   Typedef declarations.
 */
-typedef struct _MessageDigest
+typedef struct _SignatureInfo
 {
   unsigned long
-    number_bits[2],
-    accumulator[4];
+    digest[8],
+    low_count,
+    high_count;
 
   unsigned char
-    message[64],
-    digest[16];
-} MessageDigest;
+    data[SignatureSize];
+
+  size_t
+    local;
+} SignatureInfo;
 
 /*
-  Method prototypes.
+  Forward declarations.
 */
 static void
-  TransformMessageDigest(MessageDigest *,unsigned long *),
-  UpdateMessageDigest(MessageDigest *,const unsigned char *,
-    const unsigned long);
+  TransformSignature(SignatureInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   C o m p u t e M e s s a g e D i g e s t                                   %
++   F i n a l i z e S i g n a t u r e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ComputeMessageDigest computes the message digest.
+%  Method FinalizeSignature finalizes the SHA message digest computation.
 %
-%  The format of the ComputeMessageDigest method is:
+%  The format of the FinalizeSignature method is:
 %
-%      void SignatureImage(Image *image)
+%      FinalizeSignature(SignatureInfo *signature_info)
 %
 %  A description of each parameter follows:
 %
-%    o message_digest: The address of a structure of type MessageDigest.
+%    o signature_info: The address of a structure of type SignatureInfo.
 %
 %
 */
-static void ComputeMessageDigest(MessageDigest *message_digest)
+static void FinalizeSignature(SignatureInfo *signature_info)
 {
   int
-    number_bytes;
-
-  register unsigned char
-    *p;
-
-  register unsigned int
-    i;
-
-  unsigned char
-    padding[64];
+    count;
 
   unsigned long
-    message[16],
-    padding_length;
+    high_count,
+    low_count;
 
   /*
-    Save number of bits.
+    Finalize computing the SHA digest.
   */
-  message[14]=message_digest->number_bits[0];
-  message[15]=message_digest->number_bits[1];
-  /*
-    Compute number of bytes mod 64.
-  */
-  number_bytes=(int) ((message_digest->number_bits[0] >> 3) & 0x3F);
-  /*
-    Pad message to 56 mod 64.
-  */
-  padding_length=(number_bytes < 56) ? (56-number_bytes) : (120-number_bytes);
-  padding[0]=0x80;
-  for (i=1; i < padding_length; i++)
-    padding[i]=0;
-  UpdateMessageDigest(message_digest,padding,padding_length);
-  /*
-    Append length in bits and transform.
-  */
-  p=message_digest->message;
-  for (i=0; i < 14; i++)
-  {
-    message[i]=(unsigned long) (*p++);
-    message[i]|=((unsigned long) (*p++)) << 8;
-    message[i]|=((unsigned long) (*p++)) << 16;
-    message[i]|=((unsigned long) (*p++)) << 24;
-  }
-  TransformMessageDigest(message_digest,message);
-  /*
-    Store message in digest.
-  */
-  p=message_digest->digest;
-  for (i=0; i < 4; i++)
-  {
-    *p++=message_digest->accumulator[i] & 0xff;
-    *p++=(message_digest->accumulator[i] >> 8) & 0xff;
-    *p++=(message_digest->accumulator[i] >> 16) & 0xff;
-    *p++=(message_digest->accumulator[i] >> 24) & 0xff;
-  }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   I n i t i a l i z e M e s s a g e D i g e s t                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method InitializeMessageDigest initializes the message digest structure.
-%
-%  The format of the InitializeMessageDigest method is:
-%
-%      InitializeMessageDigest(message_digest)
-%
-%  A description of each parameter follows:
-%
-%    o message_digest: The address of a structure of type MessageDigest.
-%
-%
-*/
-static void InitializeMessageDigest(MessageDigest *message_digest)
-{
-  message_digest->number_bits[0]=(unsigned long) 0;
-  message_digest->number_bits[1]=(unsigned long) 0;
-  /*
-    Load magic initialization constants.
-  */
-  message_digest->accumulator[0]=(unsigned long) 0x67452301;
-  message_digest->accumulator[1]=(unsigned long) 0xefcdab89;
-  message_digest->accumulator[2]=(unsigned long) 0x98badcfe;
-  message_digest->accumulator[3]=(unsigned long) 0x10325476;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   T r a n s f o r m M e s s a g e D i g e s t                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method TransformMessageDigest updates the message digest.
-%
-%  The format of the TransformMessageDigest method is:
-%
-%      TransformMessageDigest(message_digest,message)
-%
-%  A description of each parameter follows:
-%
-%    o message_digest: The address of a structure of type MessageDigest.
-%
-%
-*/
-static void TransformMessageDigest(MessageDigest *message_digest,
-  unsigned long *message)
-{
-#define F(x,y,z)  (((x) & (y)) | ((~x) & (z)))
-#define G(x,y,z)  (((x) & (z)) | ((y) & (~z)))
-#define H(x,y,z)  ((x) ^ (y) ^ (z))
-#define I(x,y,z)  ((y) ^ ((x) | (~z)))
-#define RotateLeft(x,n)  (((x) << (n)) | (((x) & 0xffffffff) >> (32-(n))))
-
-  static const unsigned long
-    additive_constant[64]=  /* 4294967296*abs(sin(i)), i in radians */
+  low_count=signature_info->low_count;
+  high_count=signature_info->high_count;
+  count=(int) ((low_count >> 3) & 0x3f);
+  signature_info->data[count++]=0x80;
+  if (count <= (SignatureSize-8))
+    memset(signature_info->data+count,0,SignatureSize-8-count);
+  else
     {
-      0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee, 0xf57c0faf,
-      0x4787c62a, 0xa8304613, 0xfd469501, 0x698098d8, 0x8b44f7af,
-      0xffff5bb1, 0x895cd7be, 0x6b901122, 0xfd987193, 0xa679438e,
-      0x49b40821, 0xf61e2562, 0xc040b340, 0x265e5a51, 0xe9b6c7aa,
-      0xd62f105d, 0x2441453,  0xd8a1e681, 0xe7d3fbc8, 0x21e1cde6,
-      0xc33707d6, 0xf4d50d87, 0x455a14ed, 0xa9e3e905, 0xfcefa3f8,
-      0x676f02d9, 0x8d2a4c8a, 0xfffa3942, 0x8771f681, 0x6d9d6122,
-      0xfde5380c, 0xa4beea44, 0x4bdecfa9, 0xf6bb4b60, 0xbebfbc70,
-      0x289b7ec6, 0xeaa127fa, 0xd4ef3085, 0x4881d05,  0xd9d4d039,
-      0xe6db99e5, 0x1fa27cf8, 0xc4ac5665, 0xf4292244, 0x432aff97,
-      0xab9423a7, 0xfc93a039, 0x655b59c3, 0x8f0ccc92, 0xffeff47d,
-      0x85845dd1, 0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
-      0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
-    };
+      memset(signature_info->data+count,0,SignatureSize-count);
+      TransformSignature(signature_info);
+      memset(signature_info->data,0,SignatureSize-8);
+    }
+  signature_info->data[56]=(high_count >> 24) & 0xff;
+  signature_info->data[57]=(high_count >> 16) & 0xff;
+  signature_info->data[58]=(high_count >> 8) & 0xff;
+  signature_info->data[59]=(high_count >> 0) & 0xff;
+  signature_info->data[60]=(low_count >> 24) & 0xff;
+  signature_info->data[61]=(low_count >> 16) & 0xff;
+  signature_info->data[62]=(low_count >> 8) & 0xff;
+  signature_info->data[63]=(low_count >> 0) & 0xff;
+  TransformSignature(signature_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t S i g n a t u r e I n f o                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetSignatureInfo initializes the SHA message digest structure.
+%
+%  The format of the GetSignatureInfo method is:
+%
+%      GetSignatureInfo(SignatureInfo *signature_info)
+%
+%  A description of each parameter follows:
+%
+%    o signature_info: The address of a structure of type SignatureInfo.
+%
+%
+*/
+static void GetSignatureInfo(SignatureInfo *signature_info)
+{
+  signature_info->digest[0]=0x6a09e667L;
+  signature_info->digest[1]=0xbb67ae85L;
+  signature_info->digest[2]=0x3c6ef372L;
+  signature_info->digest[3]=0xa54ff53aL;
+  signature_info->digest[4]=0x510e527fL;
+  signature_info->digest[5]=0x9b05688cL;
+  signature_info->digest[6]=0x1f83d9abL;
+  signature_info->digest[7]=0x5be0cd19L;
+  signature_info->low_count=0L;
+  signature_info->high_count=0L;
+  signature_info->local=0;
+  memset(signature_info->data,0,SignatureSize);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   T r a n s f o r m S i g n a t u r e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method TransformSignature transforms the SHA message digest.
+%
+%  The format of the TransformSignature method is:
+%
+%      TransformSignature(SignatureInfo *signature_info)
+%
+%  A description of each parameter follows:
+%
+%    o signature_info: The address of a structure of type SignatureInfo.
+%
+%
+*/
+static void TransformSignature(SignatureInfo *signature_info)
+{
+#define Ch(x,y,z)  (((x) & (y))^(~(x) & (z)))
+#define Maj(x,y,z)  (((x) & (y))^((x) & (z))^((y) & (z)))
+#define Rot32(x,n)  Trunc32(((x >> n) | (x << (32-n))))
+#define Sigma0(x)  (Rot32(x,7)^Rot32(x,18)^Trunc32(x >> 3))
+#define Sigma1(x)  (Rot32(x,17)^Rot32(x,19)^Trunc32(x >> 10))
+#define Suma0(x)  (Rot32(x,2)^Rot32(x,13)^Rot32(x,22))
+#define Suma1(x)  (Rot32(x,6)^Rot32(x,11)^Rot32(x,25))
+
+  static unsigned long
+    K[64] =
+    {
+      0x428a2f98L, 0x71374491L, 0xb5c0fbcfL, 0xe9b5dba5L,
+      0x3956c25bL, 0x59f111f1L, 0x923f82a4L, 0xab1c5ed5L,
+      0xd807aa98L, 0x12835b01L, 0x243185beL, 0x550c7dc3L,
+      0x72be5d74L, 0x80deb1feL, 0x9bdc06a7L, 0xc19bf174L,
+      0xe49b69c1L, 0xefbe4786L, 0x0fc19dc6L, 0x240ca1ccL,
+      0x2de92c6fL, 0x4a7484aaL, 0x5cb0a9dcL, 0x76f988daL,
+      0x983e5152L, 0xa831c66dL, 0xb00327c8L, 0xbf597fc7L,
+      0xc6e00bf3L, 0xd5a79147L, 0x06ca6351L, 0x14292967L,
+      0x27b70a85L, 0x2e1b2138L, 0x4d2c6dfcL, 0x53380d13L,
+      0x650a7354L, 0x766a0abbL, 0x81c2c92eL, 0x92722c85L,
+      0xa2bfe8a1L, 0xa81a664bL, 0xc24b8b70L, 0xc76c51a3L,
+      0xd192e819L, 0xd6990624L, 0xf40e3585L, 0x106aa070L,
+      0x19a4c116L, 0x1e376c08L, 0x2748774cL, 0x34b0bcb5L,
+      0x391c0cb3L, 0x4ed8aa4aL, 0x5b9cca4fL, 0x682e6ff3L,
+      0x748f82eeL, 0x78a5636fL, 0x84c87814L, 0x8cc70208L,
+      0x90befffaL, 0xa4506cebL, 0xbef9a3f7L, 0xc67178f2L
+    };  /* 32-bit fractional part of the cure root of the first 64 primes */
+
+  int
+    j,
+    shift;
 
   register int
     i;
 
-  register unsigned int
-    j;
-
-  register unsigned long
-    a,
-    b,
-    c,
-    d;
-
-  register const unsigned long
+  register unsigned char
     *p;
 
-  /*
-    Save accumulator.
-  */
-  a=message_digest->accumulator[0];
-  b=message_digest->accumulator[1];
-  c=message_digest->accumulator[2];
-  d=message_digest->accumulator[3];
-  /*
-    a=b+((a+F(b,c,d)+X[k]+t) <<< s).
-  */
-  p=additive_constant;
-  j=0;
-  for (i=0; i < 4; i++)
+  unsigned long
+    A,
+    B,
+    C,
+    D,
+    E,
+    F,
+    G,
+    H,
+    lsb_first,
+    T,
+    T1,
+    T2,
+    W[64];
+
+  shift=32;
+  p=signature_info->data;
+  lsb_first=1;
+  if (*(char *) &lsb_first)
+    {
+      if (sizeof(lsb_first) > 4)
+        for (i=0; i < 16; i+=2)
+        {
+          T=(*((unsigned long *) p));
+          p+=8;
+          W[i]=((T << 24) & 0xff000000) | ((T << 8) & 0x00ff0000) |
+            ((T >> 8) & 0x0000ff00) | ((T >> 24) & 0x000000ff);
+          T>>=shift;
+          W[i+1]=((T << 24) & 0xff000000) | ((T << 8) & 0x00ff0000) |
+            ((T >> 8) & 0x0000ff00) | ((T >> 24) & 0x000000ff);
+        }
+      else
+        for (i=0; i < 16; i++)
+        {
+          T=(*((unsigned long *) p));
+          p+=4;
+          W[i]=((T << 24) & 0xff000000) | ((T << 8) & 0x00ff0000) |
+            ((T >> 8) & 0x0000ff00) | ((T >> 24) & 0x000000ff);
+        }
+    }
+  else
+    {
+      if (sizeof(lsb_first) > 4)
+        for (i=0; i < 16; i+=2)
+        {
+          T=(*((unsigned long *) p));
+          p+=8;
+          W[i]=Trunc32(T >> shift);
+          W[i+1]=Trunc32(T);
+        }
+      else
+        for (i=0; i < 16; i++)
+        {
+          T=(*((unsigned long *) p));
+          p+=4;
+          W[i]=Trunc32(T);
+        }
+    }
+  A=signature_info->digest[0];
+  B=signature_info->digest[1];
+  C=signature_info->digest[2];
+  D=signature_info->digest[3];
+  E=signature_info->digest[4];
+  F=signature_info->digest[5];
+  G=signature_info->digest[6];
+  H=signature_info->digest[7];
+  for (i=16; i < 64; i++)
+    W[i]=Trunc32(Sigma1(W[i-2])+W[i-7]+Sigma0(W[i-15])+W[i-16]);
+  for (j=0; j < 64; j++)
   {
-    a+=F(b,c,d)+message[j & 0x0f]+(*p++);
-    a=RotateLeft(a,7)+b;
-    j++;
-    d+=F(a,b,c)+message[j & 0x0f]+(*p++);
-    d=RotateLeft(d,12)+a;
-    j++;
-    c+=F(d,a,b)+message[j & 0x0f]+(*p++);
-    c=RotateLeft(c,17)+d;
-    j++;
-    b+=F(c,d,a)+message[j & 0x0f]+(*p++);
-    b=RotateLeft(b,22)+c;
-    j++;
+    T1=Trunc32(H+Suma1(E)+Ch(E,F,G)+K[j]+W[j]);
+    T2=Trunc32(Suma0(A)+Maj(A,B,C));
+    H=G;
+    G=F;
+    F=E;
+    E=Trunc32(D+T1);
+    D=C;
+    C=B;
+    B=A;
+    A=Trunc32(T1+T2);
   }
-  /*
-    a=b+((a+G(b,c,d)+X[k]+t) <<< s).
-  */
-  j=1;
-  for (i=0; i < 4; i++)
-  {
-    a+=G(b,c,d)+message[j & 0x0f]+(*p++);
-    a=RotateLeft(a,5)+b;
-    j+=5;
-    d+=G(a,b,c)+message[j & 0x0f]+(*p++);
-    d=RotateLeft(d,9)+a;
-    j+=5;
-    c+=G(d,a,b)+message[j & 0x0f]+(*p++);
-    c=RotateLeft(c,14)+d;
-    j+=5;
-    b+=G(c,d,a)+message[j & 0x0f]+(*p++);
-    b=RotateLeft(b,20)+c;
-    j+=5;
-  }
-  /*
-    a=b+((a+H(b,c,d)+X[k]+t) <<< s).
-  */
-  j=5;
-  for (i=0; i < 4; i++)
-  {
-    a+=H(b,c,d)+message[j & 0x0f]+(*p++);
-    a=RotateLeft(a,4)+b;
-    j+=3;
-    d+=H(a,b,c)+message[j & 0x0f]+(*p++);
-    d=RotateLeft(d,11)+a;
-    j+=3;
-    c+=H(d,a,b)+message[j & 0x0f]+(*p++);
-    c=RotateLeft(c,16)+d;
-    j+=3;
-    b+=H(c,d,a)+message[j & 0x0f]+(*p++);
-    b=RotateLeft(b,23)+c;
-    j+=3;
-  }
-  /*
-    a=b+((a+I(b,c,d)+X[k]+t) <<< s).
-  */
-  j=0;
-  for (i=0; i < 4; i++)
-  {
-    a+=I(b,c,d)+message[j & 0x0f]+(*p++);
-    a=RotateLeft(a,6)+b;
-    j+=7;
-    d+=I(a,b,c)+message[j & 0x0f]+(*p++);
-    d=RotateLeft(d,10)+a;
-    j+=7;
-    c+=I(d,a,b)+message[j & 0x0f]+(*p++);
-    c=RotateLeft(c,15)+d;
-    j+=7;
-    b+=I(c,d,a)+message[j & 0x0f]+(*p++);
-    b=RotateLeft(b,21)+c;
-    j+=7;
-  }
-  /*
-    Increment accumulator.
-  */
-  message_digest->accumulator[0]+=a;
-  message_digest->accumulator[1]+=b;
-  message_digest->accumulator[2]+=c;
-  message_digest->accumulator[3]+=d;
+  signature_info->digest[0]=Trunc32(signature_info->digest[0]+A);
+  signature_info->digest[1]=Trunc32(signature_info->digest[1]+B);
+  signature_info->digest[2]=Trunc32(signature_info->digest[2]+C);
+  signature_info->digest[3]=Trunc32(signature_info->digest[3]+D);
+  signature_info->digest[4]=Trunc32(signature_info->digest[4]+E);
+  signature_info->digest[5]=Trunc32(signature_info->digest[5]+F);
+  signature_info->digest[6]=Trunc32(signature_info->digest[6]+G);
+  signature_info->digest[7]=Trunc32(signature_info->digest[7]+H);
 }
 
 /*
@@ -363,71 +341,68 @@ static void TransformMessageDigest(MessageDigest *message_digest,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   U p d a t e M e s s a g e D i g e s t                                     %
++   U p d a t e S i g n a t u r e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UpdateMessageDigest updates the message digest.
+%  Method UpdateSignature updates the SHA message digest.
 %
-%  The format of the UpdateMessageDigest method is:
+%  The format of the UpdateSignature method is:
 %
-%      UpdateMessageDigest(message_digest,input_message,message_length)
+%      UpdateSignature(SignatureInfo *signature_info,unsigned char *message,
+%        size_t length)
 %
 %  A description of each parameter follows:
 %
-%    o message_digest: The address of a structure of type MessageDigest.
+%    o signature_info: The address of a structure of type SignatureInfo.
+%
+%    o message: the message
+%
+%    o length: The length of the message.
 %
 %
 */
-static void UpdateMessageDigest(MessageDigest *message_digest,
-  const unsigned char *input_message,const unsigned long message_length)
+static void UpdateSignature(SignatureInfo *signature_info,
+  unsigned char *message,size_t length)
 {
-  register unsigned char
-    *p;
-
-  register unsigned int
-    i,
-    j;
+  register int
+    i;
 
   unsigned long
-    message[16],
-    number_bits,
-    number_bytes;
+    count;
 
   /*
-    Compute number of bits and bytes.
+    Update the SHA digest.
   */
-  number_bytes=(long) ((message_digest->number_bits[0] >> 3) & 0x3F);
-  number_bits=message_digest->number_bits[0]+(message_length << 3);
-  if ((number_bits & 0xffffffff) < message_digest->number_bits[0])
-    message_digest->number_bits[1]++;
-  message_digest->number_bits[0]+=message_length << 3;
-  message_digest->number_bits[1]+=message_length >> 29;
-  for (i=0; i < message_length; i++)
+  count=Trunc32(signature_info->low_count+((unsigned char) length << 3));
+  if (length < signature_info->low_count)
+    signature_info->high_count++;
+  signature_info->low_count=count;
+  signature_info->high_count+=(unsigned char) length >> 29;
+  if (signature_info->local)
+    {
+      i=SignatureSize-signature_info->local;
+      if (i > length)
+        i=length;
+      memcpy(signature_info->data+signature_info->local,message,i);
+      length-=i;
+      message+=i;
+      signature_info->local+=i;
+      if (signature_info->local != SignatureSize)
+        return;
+      TransformSignature(signature_info);
+    }
+  while (length >= SignatureSize)
   {
-    /*
-      Add new character to message.
-    */
-    message_digest->message[number_bytes++]=(*input_message++);
-    if (number_bytes == 0x40)
-      {
-        /*
-          Transform message digest 64 bytes at a time.
-        */
-        p=message_digest->message;
-        for (j=0; j < 16; j++)
-        {
-          message[j]=(unsigned long) (*p++);
-          message[j]|=((unsigned long) (*p++)) << 8;
-          message[j]|=((unsigned long) (*p++)) << 16;
-          message[j]|=((unsigned long) (*p++)) << 24;
-        }
-        TransformMessageDigest(message_digest,message);
-        number_bytes=0;
-      }
+    memcpy(signature_info->data,message,SignatureSize);
+    message+=SignatureSize;
+    length-=SignatureSize;
+    TransformSignature(signature_info);
   }
+  memcpy(signature_info->data,message,length);
+  signature_info->local=length;
 }
 
 /*
@@ -441,15 +416,10 @@ static void UpdateMessageDigest(MessageDigest *message_digest,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SignatureImage computes a digital signature from an image.  This
-%  signature uniquely identifies the image and is convenient for determining
-%  if the colormap of a sequence of images is identical when animating.  The
-%  digital signature is from RSA Data Security MD5 Digest Algorithm described
-%  in Internet draft [MD5], July 1992, computed on the pixels after expanding
-%  them to 64-bit RGBA representation, with the two bytes of each 16-bit
-%  sample ordered most significant byte first.  The signature is in RGBA or
-%  CMYK order depending on the colorspace of the image.  If the image does not
-%  have any alpha information, an opaque value (65535) is used.
+%  Method SignatureImage computes a digital signature from an image with an
+%  implementation of the NIST SHA-256 Message Digest algorithm.  This signature
+%  uniquely identifies the image and is convenient for determining whether two
+%  images are identical.
 %
 %  The format of the SignatureImage method is:
 %
@@ -464,9 +434,6 @@ static void UpdateMessageDigest(MessageDigest *message_digest,
 */
 MagickExport unsigned int SignatureImage(Image *image)
 {
-  const char
-    hex[] = "0123456789abcdef";
-
   char
     *signature;
 
@@ -476,11 +443,10 @@ MagickExport unsigned int SignatureImage(Image *image)
   int
     y;
 
-  MessageDigest
-    message_digest;
+  SignatureInfo
+    signature_info;
 
   register int
-    i,
     x;
 
   register PixelPacket
@@ -505,7 +471,7 @@ MagickExport unsigned int SignatureImage(Image *image)
   /*
     Compute image digital signature.
   */
-  InitializeMessageDigest(&message_digest);
+  GetSignatureInfo(&signature_info);
   for (y=0; y < (int) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
@@ -525,7 +491,7 @@ MagickExport unsigned int SignatureImage(Image *image)
         {
           *q++=XUpScale(p->opacity) >> 8;
           *q++=XUpScale(p->opacity);
-          if (image->matte)
+          if (indexes != (IndexPacket *) NULL)
             {
               *q++=XUpScale(indexes[x]) >> 8;
               *q++=XUpScale(indexes[x]);
@@ -544,19 +510,16 @@ MagickExport unsigned int SignatureImage(Image *image)
           }
       p++;
     }
-    UpdateMessageDigest(&message_digest,message,q-message);
+    UpdateSignature(&signature_info,message,q-message);
   }
+  FinalizeSignature(&signature_info);
   /*
-    Convert digital signature to a 32 character hex string.
+    Convert digital signature to a 64 character hex string.
   */
-  ComputeMessageDigest(&message_digest);
-  q=(unsigned char *) signature;
-  for (i=0; i < 16; i++)
-  {
-    *q++=hex[(message_digest.digest[i] >> 4) & 0xf];
-    *q++=hex[message_digest.digest[i] & 0xf];
-  }
-  *q='\0';
+  FormatString(signature,"%08lx%08lx%08lx%08lx%08lx%08lx%08lx%08lx",
+    signature_info.digest[0],signature_info.digest[1],signature_info.digest[2],
+    signature_info.digest[3],signature_info.digest[4],signature_info.digest[5],
+    signature_info.digest[6],signature_info.digest[7]);
   while (SetImageAttribute(image,"Signature",(char *) NULL) != False);
   (void) SetImageAttribute(image,"Signature",signature);
   LiberateMemory((void **) &signature);
