@@ -186,6 +186,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     *pixels;
 
   unsigned int
+    colors,
     packet_size,
     status;
 
@@ -221,6 +222,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     if (values == (char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
         image);
+    colors=0;
     image->depth=8;
     image->compression=NoCompression;
     while (isgraph(c) && (c != ':'))
@@ -346,7 +348,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"colors") == 0)
                   {
-                    image->colors=(unsigned int) atoi(values);
+                    colors=(unsigned int) atoi(values);
                     break;
                   }
                 if (LocaleCompare(keyword,"colorspace") == 0)
@@ -713,18 +715,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         /*
           Create image colormap.
         */
-        if (!AllocateImageColormap(image,image->colors))
+        if (!AllocateImageColormap(image,colors != 0 ? colors : 256))
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
-        if (image->colors == 0)
-          for (i=0; i < 256; i++)
-          {
-            image->colormap[i].red=UpScale(i);
-            image->colormap[i].green=UpScale(i);
-            image->colormap[i].blue=UpScale(i);
-            image->colors++;
-          }
-        else
+        if (colors != 0)
           {
             unsigned char
               *colormap;
