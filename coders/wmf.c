@@ -1722,21 +1722,21 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
       *p = GetMagickConfigurePath(TypeFilename);
 
     if (p != NULL)
-    {
-      strcpy(font_map_path, p);
-      wmf_options_flags |= WMF_OPT_XTRA_FONTS;
-      wmf_options_flags |= WMF_OPT_XTRA_FONTMAP;
-      wmf_api_options.xtra_fontmap_file = font_map_path;
-    }
+      {
+        strcpy(font_map_path, p);
+        wmf_options_flags |= WMF_OPT_XTRA_FONTS;
+        wmf_options_flags |= WMF_OPT_XTRA_FONTMAP;
+        wmf_api_options.xtra_fontmap_file = font_map_path;
+      }
   }
 
   wmf_error = wmf_api_create(&API, wmf_options_flags, &wmf_api_options);
   if (wmf_error != wmf_E_None)
-  {
-    if (API)
-      wmf_api_destroy(API);
-    ThrowReaderException(DelegateError, "Failed to intialize libwmf", image);
-  }
+    {
+      if (API)
+        wmf_api_destroy(API);
+      ThrowReaderException(DelegateError, "Failed to intialize libwmf", image);
+    }
 
   /*
    * Open WMF file
@@ -1744,10 +1744,10 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    */
   wmf_error = wmf_file_open(API, (char *) image_info->filename);
   if (wmf_error != wmf_E_None)
-  {
-    wmf_api_destroy(API);
-    ThrowReaderException(FileOpenError, "Unable to open file", image);
-  }
+    {
+      wmf_api_destroy(API);
+      ThrowReaderException(FileOpenError, "Unable to open file", image);
+    }
 
   /*
    * Scan WMF file
@@ -1755,10 +1755,10 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    */
   wmf_error = wmf_scan(API, 0, &bounding_box);
   if (wmf_error != wmf_E_None)
-  {
-    wmf_api_destroy(API);
-    ThrowReaderException(CorruptImageError, "Failed to scan file", image);
-  }
+    {
+      wmf_api_destroy(API);
+      ThrowReaderException(CorruptImageError, "Failed to scan file", image);
+    }
 
   /*
    * Compute dimensions and scale factors
@@ -1771,32 +1771,36 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   /* User specified resolution */
   resolution_y = 72.0;
   if (image->y_resolution > 0)
-  {
-    resolution_y = image->y_resolution;
-    if (image->units == PixelsPerCentimeterResolution)
-      resolution_y *= CENTIMETERS_PER_INCH;
-  }
+    {
+      resolution_y = image->y_resolution;
+      if (image->units == PixelsPerCentimeterResolution)
+        resolution_y *= CENTIMETERS_PER_INCH;
+    }
 
   resolution_x = 72.0;
   if (image->x_resolution > 0)
-  {
-    resolution_x = image->x_resolution;
-    if (image->units == PixelsPerCentimeterResolution)
-      resolution_x *= CENTIMETERS_PER_INCH;
-  }
+    {
+      resolution_x = image->x_resolution;
+      if (image->units == PixelsPerCentimeterResolution)
+        resolution_x *= CENTIMETERS_PER_INCH;
+    }
 
   /* Obtain output size expressed in metafile units */
   wmf_error = wmf_size(API, &wmf_width, &wmf_height);
   if (wmf_error != wmf_E_None)
-  {
-    wmf_api_destroy(API);
-    ThrowReaderException(CorruptImageError, "Failed to compute output size", image);
-  }
+    {
+      wmf_api_destroy(API);
+      ThrowReaderException(CorruptImageError, "Failed to compute output size", image);
+    }
 
-  /* Obtain metafile units */
+  /* Obtain (or guess) metafile units */
   units_per_inch = TWIPS_PER_INCH;
   if ((API)->File->placeable)
     units_per_inch = (API)->File->pmh->Inch;
+  else if( (wmf_width*wmf_height) < 1024*1024)
+    units_per_inch = 72;  /* MM_TEXT */
+  else
+    units_per_inch = 1440; /* MM_TWIPS */
 
   /* Calculate image width and height based on specified DPI resolution */
   image_width_inch = (double) wmf_width / units_per_inch;
@@ -1804,26 +1808,44 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   image_height_inch = (double) wmf_height / units_per_inch;
   image_height = image_height_inch * resolution_y;
 
-  /* Compute bounding box scale factors */
-  bounding_width = ddata->bbox.BR.x - ddata->bbox.TL.x;
-  bounding_height = ddata->bbox.BR.y - ddata->bbox.TL.y;
+  /* Compute bounding box scale factors and origin translations
+   *
+   * This is all just a hack since libwmf does not currently seem to
+   * provide the mapping between LOGICAL coordinates and DEVICE
+   * coordinates. This mapping is necessary in order to know
+   * where to place the logical bounding box within the image.
+   *
+   */
+  bounding_width = abs(ddata->bbox.BR.x - ddata->bbox.TL.x);
+  bounding_height = abs(ddata->bbox.BR.y - ddata->bbox.TL.y);
 
-  ddata->bbox_to_pixels_scale_x = image_width / bounding_width;
-  ddata->bbox_to_pixels_scale_y = image_height / bounding_height;
-
-  /* Compute translation to place bounding box at image origin */
+  ddata->bbox_to_pixels_scale_x = (image_width/bounding_width);
   ddata->bbox_to_pixels_translate_x = -(ddata->bbox.TL.x);
-  ddata->bbox_to_pixels_translate_y = -(ddata->bbox.TL.y);
+
+  /* Heuristic: guess that if the vertical coordinates mostly span
+     negative values, then the image must be inverted. */
+  if( abs(ddata->bbox.BR.y) > abs(ddata->bbox.TL.y) )
+    {
+      /* Normal (Origin at top left) */
+      ddata->bbox_to_pixels_scale_y = (image_height/bounding_height);
+      ddata->bbox_to_pixels_translate_y = -(ddata->bbox.TL.y);
+    }
+  else
+    {
+      /* Inverted (Origin at bottom left) */
+      ddata->bbox_to_pixels_scale_y = (-image_height/bounding_height);
+      ddata->bbox_to_pixels_translate_y = (ddata->bbox.BR.y);
+    }
 
 #if 0
   printf("Size in metafile units:      %.10gx%.10g\n", wmf_width, wmf_height);
   printf("Metafile units/inch:         %.10g\n", units_per_inch);
-  printf("Bounding Box:                %.10g,%.10g %.10g,%.10g\n", bounding_box.TL.x,
-	 bounding_box.TL.y, bounding_box.BR.x, bounding_box.BR.y);
+  printf("Bounding Box:                %.10g,%.10g %.10g,%.10g\n",
+         bounding_box.TL.x, bounding_box.TL.y, bounding_box.BR.x, bounding_box.BR.y);
   printf("Output resolution:           %.10gx%.10g\n", resolution_x, resolution_y);
   printf("Image size:                  %.10gx%.10g\n", image_width, image_height);
-  printf("Bounding box scale factor:   %.10g,%.10g\n", ddata->bbox_to_pixels_scale_x,
-	 ddata->bbox_to_pixels_scale_y);
+  printf("Bounding box scale factor:   %.10g,%.10g\n",
+         ddata->bbox_to_pixels_scale_x, ddata->bbox_to_pixels_scale_y);
   printf("Translation:                 %.10g,%.10g\n",
 	 ddata->bbox_to_pixels_translate_x, ddata->bbox_to_pixels_translate_y);
 #endif
@@ -1836,34 +1858,34 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   sprintf(buff, "%ix%i", (int) ceil(image_width), (int) ceil(image_height));
   (void) CloneString(&(canvas_info->size), buff);
   if (image_info->texture == (char *) NULL)
-  {
-    QueryColorDatabase("none", &canvas_info->background_color);
-    if (ColorMatch(&image_info->background_color, &canvas_info->background_color, 0))
-      QueryColorDatabase("white", &canvas_info->background_color);
-    else
-      canvas_info->background_color = image_info->background_color;
+    {
+      QueryColorDatabase("none", &canvas_info->background_color);
+      if (ColorMatch(&image_info->background_color, &canvas_info->background_color, 0))
+        QueryColorDatabase("white", &canvas_info->background_color);
+      else
+        canvas_info->background_color = image_info->background_color;
 
-    sprintf(canvas_info->filename,
+      sprintf(canvas_info->filename,
 #if QuantumDepth == 8
-	    "XC:#%02x%02x%02x%02x",
+              "XC:#%02x%02x%02x%02x",
 #elif QuantumDepth == 16
-	    "XC:#%04x%04x%04x%04x",
+              "XC:#%04x%04x%04x%04x",
 #endif
-	    canvas_info->background_color.red,
-	    canvas_info->background_color.green,
-	    canvas_info->background_color.blue,
-	    canvas_info->background_color.opacity);
-  }
+              canvas_info->background_color.red,
+              canvas_info->background_color.green,
+              canvas_info->background_color.blue,
+              canvas_info->background_color.opacity);
+    }
   else
     sprintf(canvas_info->filename, "TILE:%.1024s", image_info->texture);
   GetExceptionInfo(exception);
   DestroyImage(image);
   image = ReadImage(canvas_info, exception);
   if (image == (Image *) NULL)
-  {
-    wmf_api_destroy(API);
-    return image;
-  }
+    {
+      wmf_api_destroy(API);
+      return image;
+    }
   image->units = PixelsPerInchResolution;
   image->x_resolution = resolution_x;
   image->y_resolution = resolution_y;
@@ -1881,11 +1903,11 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   wmf_error = wmf_play(API, 0, &bounding_box);
   if (wmf_error != wmf_E_None)
-  {
-    DestroyImageInfo(canvas_info);
-    wmf_api_destroy(API);
-    ThrowReaderException(CorruptImageError, "Failed to render file", image);
-  }
+    {
+      DestroyImageInfo(canvas_info);
+      wmf_api_destroy(API);
+      ThrowReaderException(CorruptImageError, "Failed to render file", image);
+    }
 
   /*
    * Scribble on canvas image
