@@ -1392,7 +1392,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
         */
         if (!windows->info.mapped)
           (void) XMapWindow(display,windows->info.id);
-        FormatString(text," %ux%u%+d%+d",chop_info.width,chop_info.height,
+        FormatString(text," %lux%lu%+ld%+ld",chop_info.width,chop_info.height,
           chop_info.x,chop_info.y);
         XInfoWidget(display,windows,text);
         XHighlightLine(display,windows->image.id,
@@ -1818,7 +1818,7 @@ static unsigned int XColorEditImage(Display *display,
                 (*image)->fuzz=StringToDouble(FuzzMenu[entry],MaxRGB);
                 break;
               }
-            FormatString(fuzz,"%d",(*image)->fuzz);
+            FormatString(fuzz,"%g",(*image)->fuzz);
             (void) XDialogWidget(display,windows,"Ok","Enter fuzz factor:",
               fuzz);
             if (*fuzz == '\0')
@@ -2271,7 +2271,7 @@ static unsigned int XCompositeImage(Display *display,
           image_info=CloneImageInfo((ImageInfo *) NULL);
           (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
           (void) CloneString(&image_info->size,size);
-          FormatString(image_info->size,"%ux%u",composite_image->columns,
+          FormatString(image_info->size,"%lux%lu",composite_image->columns,
             composite_image->rows);
           mask_image=ReadImage(image_info,&exception);
           if (exception.severity != UndefinedException)
@@ -2316,7 +2316,7 @@ static unsigned int XCompositeImage(Display *display,
         /*
           Display pointer position.
         */
-        FormatString(text," %+d%+d ",composite_info.x,composite_info.y);
+        FormatString(text," %+ld%+ld ",composite_info.x,composite_info.y);
         XInfoWidget(display,windows,text);
       }
     highlight_info=composite_info;
@@ -2984,7 +2984,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
         /*
           Display pointer position.
         */
-        FormatString(text," %+d%+d ",crop_info.x,crop_info.y);
+        FormatString(text," %+ld%+ld ",crop_info.x,crop_info.y);
         XInfoWidget(display,windows,text);
       }
     /*
@@ -3176,7 +3176,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           */
           if (!windows->info.mapped)
             (void) XMapWindow(display,windows->info.id);
-          FormatString(text," %ux%u%+d%+d",crop_info.width,crop_info.height,
+          FormatString(text," %lux%lu%+ld%+ld",crop_info.width,crop_info.height,
             crop_info.x,crop_info.y);
           XInfoWidget(display,windows,text);
           XHighlightRectangle(display,windows->image.id,
@@ -3270,7 +3270,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           /*
             Display pointer position.
           */
-          FormatString(text," %ux%u%+d%+d",crop_info.width,crop_info.height,
+          FormatString(text," %lux%lu%+ld%+ld",crop_info.width,crop_info.height,
             crop_info.x,crop_info.y);
           XInfoWidget(display,windows,text);
         }
@@ -4183,7 +4183,7 @@ static unsigned int XDrawEditImage(Display *display,
               /*
                 Display info and draw drawing rectangle.
               */
-              FormatString(text," %ux%u%+d%+d",rectangle_info.width,
+              FormatString(text," %lux%lu%+ld%+ld",rectangle_info.width,
                 rectangle_info.height,rectangle_info.x,rectangle_info.y);
               XInfoWidget(display,windows,text);
               XHighlightRectangle(display,windows->image.id,
@@ -4205,7 +4205,7 @@ static unsigned int XDrawEditImage(Display *display,
               /*
                 Display info and draw drawing rectangle.
               */
-              FormatString(text," %ux%u%+d%+d",rectangle_info.width,
+              FormatString(text," %lux%lu%+ld%+ld",rectangle_info.width,
                 rectangle_info.height,rectangle_info.x,rectangle_info.y);
               XInfoWidget(display,windows,text);
               XHighlightEllipse(display,windows->image.id,
@@ -5556,7 +5556,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       height=windows->image.ximage->height;
       x=0;
       y=0;
-      FormatString(geometry,"%ux%u+0+0",width,height);
+      FormatString(geometry,"%lux%lu+0+0",width,height);
       status=XDialogWidget(display,windows,"Resize",
         "Enter resize geometry (e.g. 640x480, 200%):",geometry);
       if (*geometry == '\0')
@@ -7562,7 +7562,7 @@ static unsigned int XMatteEditImage(Display *display,
                 (*image)->fuzz=StringToDouble(FuzzMenu[entry],MaxRGB);
                 break;
               }
-            FormatString(fuzz,"%f",(*image)->fuzz);
+            FormatString(fuzz,"%g",(*image)->fuzz);
             (void) XDialogWidget(display,windows,"Ok","Enter fuzz factor:",
               fuzz);
             if (*fuzz == '\0')
@@ -8336,7 +8336,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
         /*
           Display pointer position.
         */
-        FormatString(text," %+d%+d ",paste_info.x,paste_info.y);
+        FormatString(text," %+ld%+ld ",paste_info.x,paste_info.y);
         XInfoWidget(display,windows,text);
       }
     highlight_info=paste_info;
@@ -8990,7 +8990,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
         /*
           Display pointer position.
         */
-        FormatString(text," %+d%+d ",roi_info.x,roi_info.y);
+        FormatString(text," %+ld%+ld ",roi_info.x,roi_info.y);
         XInfoWidget(display,windows,text);
       }
     /*
@@ -9147,7 +9147,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           */
           if (!windows->info.mapped)
             (void) XMapWindow(display,windows->info.id);
-          FormatString(text," %ux%u%+d%+d",roi_info.width,roi_info.height,
+          FormatString(text," %lux%lu%+ld%+ld",roi_info.width,roi_info.height,
             roi_info.x,roi_info.y);
           XInfoWidget(display,windows,text);
           XHighlightRectangle(display,windows->image.id,
@@ -9241,7 +9241,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           /*
             Display pointer position.
           */
-          FormatString(text," %ux%u%+d%+d",roi_info.width,roi_info.height,
+          FormatString(text," %lux%lu%+ld%+ld",roi_info.width,roi_info.height,
             roi_info.x,roi_info.y);
           XInfoWidget(display,windows,text);
         }
@@ -10148,7 +10148,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
       /*
         Request JPEG quality from user.
       */
-      FormatString(quality,"%u",image_info->quality);
+      FormatString(quality,"%lu",image_info->quality);
       status=XDialogWidget(display,windows,"Save","Enter JPEG quality:",
         quality);
       if (*quality == '\0')
@@ -10530,7 +10530,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
       /*
         Display info on cropping rectangle.
       */
-      FormatString(text," %ux%u%+d%+d",crop_info->width,crop_info->height,
+      FormatString(text," %lux%lu%+ld%+ld",crop_info->width,crop_info->height,
         crop_info->x,crop_info->y);
       XInfoWidget(display,windows,text);
     }
@@ -11351,9 +11351,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
     window_info;
 
   unsigned int
-    status;
-
-  unsigned long
+    status,
     height,
     width;
 
@@ -12224,7 +12222,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       register Image
         *q;
 
-      unsigned int
+      unsigned long
         count;
 
       /*
@@ -12233,14 +12231,14 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       windows->image.name=AllocateString((char *) NULL);
       windows->image.icon_name=AllocateString((char *) NULL);
       GetPathComponent(display_image->filename,TailPath,filename);
-      FormatString(windows->image.name,"ImageMagick: %.1024s[%u]",filename,
+      FormatString(windows->image.name,"ImageMagick: %.1024s[%lu]",filename,
         display_image->scene);
       q=display_image;
       while (q->previous != (Image *) NULL)
         q=q->previous;
       for (count=1; q->next != (Image *) NULL; count++)
         q=q->next;
-      FormatString(windows->image.name,"ImageMagick: %.1024s[%u of %u]",
+      FormatString(windows->image.name,"ImageMagick: %.1024s[%lu of %lu]",
         filename,display_image->scene,count);
       if ((display_image->previous == (Image *) NULL) &&
           (display_image->next == (Image *) NULL) &&

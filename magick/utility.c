@@ -2962,7 +2962,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,const Image *image,
       }
       case 'h':
       {
-        FormatString(q,"%u",image->magick_rows ? image->magick_rows : 256);
+        FormatString(q,"%lu",image->magick_rows ? image->magick_rows : 256);
         q=translated_text+strlen(translated_text);
         break;
       }
@@ -2995,7 +2995,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,const Image *image,
       }
       case 'n':
       {
-        FormatString(q,"%u",GetNumberScenes(image));
+        FormatString(q,"%lu",GetNumberScenes(image));
         q=translated_text+strlen(translated_text);
         break;
       }
@@ -3010,27 +3010,27 @@ MagickExport char *TranslateText(const ImageInfo *image_info,const Image *image,
         register const Image
           *p;
 
-        unsigned int
+        unsigned long
           page;
 
         p=image;
         for (page=1; p->previous != (Image *) NULL; page++)
           p=p->previous;
-        FormatString(q,"%u",page);
+        FormatString(q,"%lu",page);
         q=translated_text+strlen(translated_text);
         break;
       }
       case 'q':
       {
-        FormatString(q,"%u",image->depth);
+        FormatString(q,"%lu",image->depth);
         q=translated_text+strlen(translated_text);
         break;
       }
       case 's':
       {
-        FormatString(q,"%u",image->scene);
+        FormatString(q,"%lu",image->scene);
         if (clone_info->subrange != 0)
-          FormatString(q,"%u",clone_info->subimage);
+          FormatString(q,"%lu",clone_info->subimage);
         q=translated_text+strlen(translated_text);
         break;
       }
@@ -3045,20 +3045,20 @@ MagickExport char *TranslateText(const ImageInfo *image_info,const Image *image,
       }
       case 'w':
       {
-        FormatString(q,"%u",
+        FormatString(q,"%lu",
           image->magick_columns ? image->magick_columns : 256);
         q=translated_text+strlen(translated_text);
         break;
       }
       case 'x':
       {
-        FormatString(q,"%u",(unsigned int) image->x_resolution);
+        FormatString(q,"%g",image->x_resolution);
         q=translated_text+strlen(translated_text);
         break;
       }
       case 'y':
       {
-        FormatString(q,"%u",(unsigned int) image->y_resolution);
+        FormatString(q,"%g",image->y_resolution);
         q=translated_text+strlen(translated_text);
         break;
       }

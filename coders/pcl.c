@@ -260,7 +260,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     (void) strncpy(geometry,image_info->page,MaxTextExtent-1);
   else
     if ((image->page.width != 0) && (image->page.height != 0))
-      (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
+      (void) FormatString(geometry,"%lux%lu%+ld%+ld",image->page.width,
         image->page.height,image->page.x,image->page.y);
     else
       if (LocaleCompare(image_info->magick,"PCL") == 0)
@@ -309,7 +309,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image,"\033(s0B");
     }
-  FormatString(buffer,"\033*t%uR",density);  /* graphic resolution */
+  FormatString(buffer,"\033*t%luR",density);  /* graphic resolution */
   (void) WriteBlobString(image,buffer);
   width=(density*width)/75;
   height=(density*height)/75;

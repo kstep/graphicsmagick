@@ -196,7 +196,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (p == (char *) NULL)
       break;
     (void) CloneString(&draw_info->text,text);
-    FormatString(geometry,"%+d%+d",page.x,page.y+offset);
+    FormatString(geometry,"%+ld%+ld",page.x,page.y+offset);
     (void) CloneString(&draw_info->geometry,geometry);
     (void) AnnotateImage(image,draw_info);
     height=(unsigned int) (draw_info->pointsize*
@@ -386,13 +386,13 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
       {
         if (image->matte)
           {
-            FormatString(buffer,"%d,%d: %u,%u,%u,%u\n",x,y,
+            FormatString(buffer,"%ld,%ld: %u,%u,%u,%u\n",x,y,
               p->red,p->green,p->blue,p->opacity);
             (void) WriteBlobString(image,buffer);
           }
         else
           {
-            FormatString(buffer,"%d,%d: %u,%u,%u  ",x,y,
+            FormatString(buffer,"%ld,%ld: %u,%u,%u  ",x,y,
               p->red,p->green,p->blue);
             (void) WriteBlobString(image,buffer);
 	    (void) QueryColorname(image,p,AllCompliance,buffer,

@@ -203,10 +203,10 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     i;
 
   unsigned int
-    colors,
     status;
 
   unsigned long
+    colors,
     height,
     width;
 
@@ -285,7 +285,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         x+=preview_image->columns/NumberTiles;
         y+=preview_image->rows/NumberTiles;
-        FormatString(factor,"%+d%+d",x,y);
+        FormatString(factor,"%+ld%+ld",x,y);
         FormatString(label,"roll %.1024s",factor);
         commands[argc++]=(char *) "-roll";
         commands[argc++]=factor;
@@ -339,7 +339,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case GrayscalePreview:
       {
-        FormatString(factor,"%u",colors);
+        FormatString(factor,"%lu",colors);
         colors<<=1;
         FormatString(label,"colors %.1024s",factor);
         commands[argc++]=(char *) "-colorspace";
@@ -350,7 +350,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case QuantizePreview:
       {
-        FormatString(factor,"%u",colors<<=1);
+        FormatString(factor,"%lu",colors<<=1);
         FormatString(label,"colors %.1024s",factor);
         commands[argc++]=(char *) "-colors";
         commands[argc++]=factor;

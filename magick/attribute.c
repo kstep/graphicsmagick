@@ -292,7 +292,7 @@ static char *TraceClippingPath(char *blob,size_t length,unsigned long columns,
     length-=24;
     FormatString(message,"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
     (void) ConcatenateString(&path,message);
-    FormatString(message,"<svg width=\"%d\" height=\"%d\">\n",columns,rows);
+    FormatString(message,"<svg width=\"%lu\" height=\"%lu\">\n",columns,rows);
     (void) ConcatenateString(&path,message);
     FormatString(message,"<g>\n");
     (void) ConcatenateString(&path,message);
@@ -1130,7 +1130,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
     {
       if (LocaleNCompare("depth",key,2) == 0)
         {
-          FormatString(attribute,"%u",image->depth);
+          FormatString(attribute,"%lu",image->depth);
           break;
         }
       if (LocaleNCompare("directory",key,2) == 0)
@@ -1279,7 +1279,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
     {
       if (LocaleNCompare("xresolution",key,2) == 0)
         {
-          FormatString(attribute,"%u",(unsigned int) image->x_resolution);
+          FormatString(attribute,"%g",image->x_resolution);
           break;
         }
       break;
@@ -1288,7 +1288,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
     {
       if (LocaleNCompare("yresolution",key,2) == 0)
         {
-          FormatString(attribute,"%u",(unsigned int) image->y_resolution);
+          FormatString(attribute,"%g",image->y_resolution);
           break;
         }
       break;

@@ -296,7 +296,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   file=fopen(postscript_filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to write file",image);
-  FormatString(translate_geometry,"%f %f translate\n              ",0.0,0.0);
+  FormatString(translate_geometry,"%g %g translate\n              ",0.0,0.0);
   (void) fputs(translate_geometry,file);
   /*
     Set the page geometry.
@@ -363,8 +363,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Set Postscript render geometry.
     */
-    FormatString(translate_geometry,"%f %f translate\n",-bounds.x1,
-      -bounds.y1);
+    FormatString(translate_geometry,"%g %g translate\n",-bounds.x1,-bounds.y1);
     width=(unsigned int) (bounds.x2-bounds.x1);
     if ((float) ((int) bounds.x2) != bounds.x2)
       width++;

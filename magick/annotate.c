@@ -811,8 +811,8 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   LiberateMemory((void **) &text);
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
-  FormatString(geometry,"%dx%d+0+0!",(int) ceil(extent.x-0.5),
-    (int) ceil(extent.y-0.5));
+  FormatString(geometry,"%ldx%ld+0+0!",(long) ceil(extent.x-0.5),
+    (long) ceil(extent.y-0.5));
   clone_info=CloneImageInfo((ImageInfo *) NULL);
   (void) FormatString(clone_info->filename,"ps:%.1024s",filename);
   (void) CloneString(&clone_info->page,geometry);
@@ -848,7 +848,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
       crop_info.height=(unsigned int) ceil((resolution.y/72.0)*
         ExpandAffine(&draw_info->affine)*draw_info->pointsize-0.5);
       crop_info.y=(int) ceil((resolution.y/72.0)*extent.y/8.0-0.5);
-      (void) FormatString(geometry,"%ux%u%+d%+d",crop_info.width,
+      (void) FormatString(geometry,"%lux%lu%+ld%+ld",crop_info.width,
         crop_info.height,crop_info.x,crop_info.y);
       TransformImage(&annotate_image,geometry,(char *) NULL);
     }

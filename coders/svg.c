@@ -2348,7 +2348,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       clone_info=CloneImageInfo(image_info);
       DetachBlob(clone_info->blob);
-      FormatString(geometry,"%dx%d",svg_info.width,svg_info.height);
+      FormatString(geometry,"%ldx%ld",svg_info.width,svg_info.height);
       (void) CloneString(&clone_info->size,geometry);
       FormatString(clone_info->filename,"mvg:%.1024s",filename);
       if (clone_info->density != (char *) NULL)
@@ -2708,7 +2708,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20000802//EN\"\n");
   (void) WriteBlobString(image,
     "  \"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd\">\n");
-  (void) FormatString(message,"<svg width=\"%u\" height=\"%u\">\n",
+  (void) FormatString(message,"<svg width=\"%lu\" height=\"%lu\">\n",
     image->columns,image->rows);
   (void) WriteBlobString(image,message);
   /*

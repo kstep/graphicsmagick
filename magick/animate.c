@@ -472,10 +472,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     i;
 
   unsigned int
-    status;
-
-  unsigned long
     height,
+    status,
     width;
 
   unsigned long
@@ -1377,7 +1375,7 @@ MagickExport Image *XAnimateImages(Display *display,
       windows->image.name=AllocateString((char *) NULL);
       windows->image.icon_name=AllocateString((char *) NULL);
       GetPathComponent(display_image->filename,TailPath,filename);
-      FormatString(windows->image.name,"ImageMagick: %.1024s[%u of %u]",
+      FormatString(windows->image.name,"ImageMagick: %.1024s[%lu of %lu]",
         filename,display_image->scene,number_scenes);
       (void) strncpy(windows->image.icon_name,filename,MaxTextExtent-1);
     }
@@ -1674,7 +1672,7 @@ MagickExport Image *XAnimateImages(Display *display,
         p=images[scene]->filename+strlen(images[scene]->filename)-1;
         while ((p > images[scene]->filename) && (*(p-1) != '/'))
           p--;
-        FormatString(windows->image.name,"ImageMagick: %.1024s[%u of %u]",p,
+        FormatString(windows->image.name,"ImageMagick: %.1024s[%lu of %lu]",p,
           scene,number_scenes);
       }
     status=XStringListToTextProperty(&windows->image.name,1,&window_name);
@@ -1764,7 +1762,7 @@ MagickExport Image *XAnimateImages(Display *display,
               while ((p > images[scene]->filename) && (*(p-1) != '/'))
                 p--;
               FormatString(windows->image.name,
-                "ImageMagick: %.1024s[%u of %u]",p,scene,number_scenes);
+                "ImageMagick: %.1024s[%lu of %lu]",p,scene,number_scenes);
               if (resource_info->title != (char *) NULL)
                 windows->image.name=TranslateText(resource_info->image_info,
                   image,resource_info->title);

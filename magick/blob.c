@@ -1059,7 +1059,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                 {
                   if ((LocaleCompare(filename,image->filename) == 0) ||
                       (strchr(filename,'%') != (char *) NULL))
-                    FormatString(filename,"%.1024s.%u",image->filename,
+                    FormatString(filename,"%.1024s.%lu",image->filename,
                       image->scene);
                   if (image->next != (Image *) NULL)
                     (void) strncpy(image->next->magick,image->magick,

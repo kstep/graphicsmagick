@@ -508,9 +508,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->page != (char *) NULL)
     (void) ParseGeometry(image_info->page,&page.x,&page.y,
       &page.width,&page.height);
-  FormatString(geometry,"%ux%u",
-    (unsigned int) ceil(page.width*image->x_resolution/dx_resolution-0.5),
-    (unsigned int) ceil(page.height*image->y_resolution/dy_resolution-0.5));
+  FormatString(geometry,"%lux%lu",
+    (unsigned long) ceil(page.width*image->x_resolution/dx_resolution-0.5),
+    (unsigned long) ceil(page.height*image->y_resolution/dy_resolution-0.5));
   if (ferror(file))
     {
       (void) fclose(file);
@@ -524,7 +524,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   *options='\0';
   if (image_info->subrange != 0)
-    FormatString(options,"-dFirstPage=%u -dLastPage=%u",
+    FormatString(options,"-dFirstPage=%lu -dLastPage=%lu",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   clone_info=CloneImageInfo(image_info);
@@ -859,7 +859,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"%PDF-1.2 \n");
   xref[object++]=TellBlob(image);
   info_id=object;
-  FormatString(buffer,"%u 0 obj\n",object);
+  FormatString(buffer,"%lu 0 obj\n",object);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
   seconds=time((time_t *) NULL);
@@ -878,11 +878,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   */
   xref[object++]=TellBlob(image);
   root_id=object;
-  FormatString(buffer,"%u 0 obj\n",object);
+  FormatString(buffer,"%lu 0 obj\n",object);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
   (void) WriteBlobString(image,"/Type /Catalog\n");
-  FormatString(buffer,"/Pages %u 0 R\n",object+1);
+  FormatString(buffer,"/Pages %lu 0 R\n",object+1);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"endobj\n");
@@ -891,11 +891,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   */
   xref[object++]=TellBlob(image);
   pages_id=object;
-  FormatString(buffer,"%u 0 obj\n",object);
+  FormatString(buffer,"%lu 0 obj\n",object);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
   (void) WriteBlobString(image,"/Type /Pages\n");
-  FormatString(buffer,"/Kids [ %u 0 R ",object+1);
+  FormatString(buffer,"/Kids [ %lu 0 R ",object+1);
   (void) WriteBlobString(image,buffer);
   count=pages_id+ObjectsPerImage+1;
   if (image_info->adjoin)
@@ -909,7 +909,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       kid_image=image;
       for ( ; kid_image->next != (Image *) NULL; count+=ObjectsPerImage)
       {
-        FormatString(buffer,"%d 0 R ",count);
+        FormatString(buffer,"%ld 0 R ",count);
         (void) WriteBlobString(image,buffer);
         kid_image=kid_image->next;
       }
@@ -919,7 +919,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           image);
     }
   (void) WriteBlobString(image,"]\n");
-  FormatString(buffer,"/Count %u\n",(count-pages_id)/ObjectsPerImage);
+  FormatString(buffer,"/Count %lu\n",(count-pages_id)/ObjectsPerImage);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"endobj\n");
@@ -949,7 +949,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       (void) strncpy(geometry,image_info->page,MaxTextExtent-1);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
-        (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
+        (void) FormatString(geometry,"%lux%lu%+ld%+ld",image->page.width,
           image->page.height,image->page.x,image->page.y);
       else
         if (LocaleCompare(image_info->magick,"PDF") == 0)
@@ -981,27 +981,27 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Page object.
     */
     xref[object++]=TellBlob(image);
-    FormatString(buffer,"%u 0 obj\n",object);
+    FormatString(buffer,"%lu 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
     (void) WriteBlobString(image,"/Type /Page\n");
-    FormatString(buffer,"/Parent %u 0 R\n",pages_id);
+    FormatString(buffer,"/Parent %lu 0 R\n",pages_id);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"/Resources <<\n");
-    FormatString(buffer,"/Font << /F%u %u 0 R >>\n",image->scene,
+    FormatString(buffer,"/Font << /F%lu %u 0 R >>\n",image->scene,
       object+4);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/XObject << /Im%u %u 0 R >>\n",image->scene,
+    FormatString(buffer,"/XObject << /Im%lu %u 0 R >>\n",image->scene,
       object+5);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/ProcSet %u 0 R >>\n",object+3);
+    FormatString(buffer,"/ProcSet %lu 0 R >>\n",object+3);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/MediaBox [%d %d %d %d]\n",0,0,
+    FormatString(buffer,"/MediaBox [0 0 %ld %d]\n",
       media_info.width,media_info.height);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/Contents %u 0 R\n",object+1);
+    FormatString(buffer,"/Contents %lu 0 R\n",object+1);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/Thumb %u 0 R\n",object+8);
+    FormatString(buffer,"/Thumb %lu 0 R\n",object+8);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"endobj\n");
@@ -1009,10 +1009,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Contents object.
     */
     xref[object++]=TellBlob(image);
-    FormatString(buffer,"%u 0 obj\n",object);
+    FormatString(buffer,"%lu 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
-    FormatString(buffer,"/Length %u 0 R\n",object+1);
+    FormatString(buffer,"/Length %lu 0 R\n",object+1);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"stream\n");
@@ -1027,10 +1027,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         for (i=0; labels[i] != (char *) NULL; i++)
         {
           (void) WriteBlobString(image,"BT\n");
-          FormatString(buffer,"/F%u %f Tf\n",image->scene,
+          FormatString(buffer,"/F%lu %g Tf\n",image->scene,
             image_info->pointsize);
           (void) WriteBlobString(image,buffer);
-          FormatString(buffer,"%d %f Td\n",x,y+height+
+          FormatString(buffer,"%ld %g Td\n",x,y+height+
             i*image_info->pointsize+12);
           (void) WriteBlobString(image,buffer);
           FormatString(buffer,"(%.1024s) Tj\n",labels[i]);
@@ -1040,9 +1040,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         }
         LiberateMemory((void **) &labels);
       }
-    FormatString(buffer,"%g 0 0 %g %d %d cm\n",x_scale,y_scale,x,y);
+    FormatString(buffer,"%g 0 0 %g %ld %ld cm\n",x_scale,y_scale,x,y);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/Im%u Do\n",image->scene);
+    FormatString(buffer,"/Im%lu Do\n",image->scene);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"Q\n");
     offset=TellBlob(image)-offset;
@@ -1052,7 +1052,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Length object.
     */
     xref[object++]=TellBlob(image);
-    FormatString(buffer,"%u 0 obj\n",object);
+    FormatString(buffer,"%lu 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"%lu\n",(unsigned long) offset);
     (void) WriteBlobString(image,buffer);
@@ -1061,7 +1061,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Procset object.
     */
     xref[object++]=TellBlob(image);
-    FormatString(buffer,"%u 0 obj\n",object);
+    FormatString(buffer,"%lu 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
     if (image->storage_class == DirectClass)
       (void) strcpy(buffer,"[ /PDF /Text /ImageC");
@@ -1077,12 +1077,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Font object.
     */
     xref[object++]=TellBlob(image);
-    FormatString(buffer,"%u 0 obj\n",object);
+    FormatString(buffer,"%lu 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
     (void) WriteBlobString(image,"/Type /Font\n");
     (void) WriteBlobString(image,"/Subtype /Type1\n");
-    FormatString(buffer,"/Name /F%u\n",image->scene);
+    FormatString(buffer,"/Name /F%lu\n",image->scene);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"/BaseFont /Helvetica\n");
     (void) WriteBlobString(image,"/Encoding /MacRomanEncoding\n");
@@ -1092,12 +1092,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       Write XObject object.
     */
     xref[object++]=TellBlob(image);
-    FormatString(buffer,"%u 0 obj\n",object);
+    FormatString(buffer,"%lu 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
     (void) WriteBlobString(image,"/Type /XObject\n");
     (void) WriteBlobString(image,"/Subtype /Image\n");
-    FormatString(buffer,"/Name /Im%u\n",image->scene);
+    FormatString(buffer,"/Name /Im%lu\n",image->scene);
     (void) WriteBlobString(image,buffer);
     switch (compression)
     {
@@ -1110,7 +1110,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) strcpy(buffer,"/Filter [ /ASCII85Decode /CCITTFaxDecode ]\n");
         (void) WriteBlobString(image,buffer);
         FormatString(buffer,
-          "/DecodeParms [ << >> << /K %.1024s /Columns %d /Rows %d >> ]\n",
+          "/DecodeParms [ << >> << /K %.1024s /Columns %ld /Rows %ld >> ]\n",
           CCITTParam,image->columns,image->rows);
         break;
       }
@@ -1121,12 +1121,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/Height %lu\n",image->rows);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/ColorSpace %u 0 R\n",object+2);
+    FormatString(buffer,"/ColorSpace %lu 0 R\n",object+2);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/BitsPerComponent %d\n",
       compression == FaxCompression ? 1 : 8);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/Length %u 0 R\n",object+1);
+    FormatString(buffer,"/Length %lu 0 R\n",object+1);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"stream\n");
@@ -1354,7 +1354,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Length object.
     */
     xref[object++]=TellBlob(image);
-    FormatString(buffer,"%u 0 obj\n",object);
+    FormatString(buffer,"%lu 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"%lu\n",(unsigned long) offset);
     (void) WriteBlobString(image,buffer);
@@ -1363,7 +1363,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Colorspace object.
     */
     xref[object++]=TellBlob(image);
-    FormatString(buffer,"%u 0 obj\n",object);
+    FormatString(buffer,"%lu 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
     if (image->colorspace == CMYKColorspace)
       (void) strcpy(buffer,"/DeviceCMYK\n");
@@ -1374,7 +1374,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         if (compression == FaxCompression)
           (void) strcpy(buffer,"/DeviceGray\n");
         else
-          FormatString(buffer,"[ /Indexed /DeviceRGB %u %u 0 R ]\n",
+          FormatString(buffer,"[ /Indexed /DeviceRGB %lu %lu 0 R ]\n",
             image->colors-1,object+3);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
@@ -1398,7 +1398,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       ThrowWriterException(ResourceLimitWarning,"Unable to scale image",
         image);
     xref[object++]=TellBlob(image);
-    FormatString(buffer,"%u 0 obj\n",object);
+    FormatString(buffer,"%lu 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
     switch (compression)
@@ -1412,7 +1412,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) strcpy(buffer,"/Filter [ /ASCII85Decode /CCITTFaxDecode ]\n");
         (void) WriteBlobString(image,buffer);
         FormatString(buffer,
-          "/DecodeParms [ << >> << /K %.1024s /Columns %d /Rows %d >> ]\n",
+          "/DecodeParms [ << >> << /K %.1024s /Columns %lu /Rows %lu >> ]\n",
           CCITTParam,image->columns,image->rows);
         break;
       }
@@ -1423,12 +1423,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/Height %lu\n",tile_image->rows);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/ColorSpace %u 0 R\n",object-1);
+    FormatString(buffer,"/ColorSpace %lu 0 R\n",object-1);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/BitsPerComponent %d\n",
       compression == FaxCompression ? 1 : 8);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/Length %u 0 R\n",object+1);
+    FormatString(buffer,"/Length %lu 0 R\n",object+1);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"stream\n");
@@ -1654,7 +1654,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       Write Length object.
     */
     xref[object++]=TellBlob(image);
-    FormatString(buffer,"%u 0 obj\n",object);
+    FormatString(buffer,"%lu 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"%lu\n",(unsigned long) offset);
     (void) WriteBlobString(image,buffer);
@@ -1671,12 +1671,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           Write Colormap object.
         */
         xref[object++]=TellBlob(image);
-        FormatString(buffer,"%u 0 obj\n",object);
+        FormatString(buffer,"%lu 0 obj\n",object);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"<<\n");
         if (compression == NoCompression)
           (void) WriteBlobString(image,"/Filter [ /ASCII85Decode ]\n");
-        FormatString(buffer,"/Length %u 0 R\n",object+1);
+        FormatString(buffer,"/Length %lu 0 R\n",object+1);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,">>\n");
         (void) WriteBlobString(image,"stream\n");
@@ -1705,7 +1705,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           Write Length object.
         */
         xref[object++]=TellBlob(image);
-        FormatString(buffer,"%u 0 obj\n",object);
+        FormatString(buffer,"%lu 0 obj\n",object);
         (void) WriteBlobString(image,buffer);
         FormatString(buffer,"%lu\n",(unsigned long) offset);
         (void) WriteBlobString(image,buffer);
@@ -1724,7 +1724,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   */
   offset=TellBlob(image)-xref[0]+10;
   (void) WriteBlobString(image,"xref\n");
-  FormatString(buffer,"0 %u\n",object+1);
+  FormatString(buffer,"0 %lu\n",object+1);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"0000000000 65535 f \n");
   for (i=0; i < (long) object; i++)
@@ -1734,11 +1734,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   }
   (void) WriteBlobString(image,"trailer\n");
   (void) WriteBlobString(image,"<<\n");
-  FormatString(buffer,"/Size %u\n",object+1);
+  FormatString(buffer,"/Size %lu\n",object+1);
   (void) WriteBlobString(image,buffer);
-  FormatString(buffer,"/Info %u 0 R\n",info_id);
+  FormatString(buffer,"/Info %lu 0 R\n",info_id);
   (void) WriteBlobString(image,buffer);
-  FormatString(buffer,"/Root %u 0 R\n",root_id);
+  FormatString(buffer,"/Root %lu 0 R\n",root_id);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"startxref\n");

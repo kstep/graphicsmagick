@@ -427,12 +427,12 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     height=image->rows;
     x=0;
     y=text_size;
-    FormatString(geometry,"%ux%u",image->columns,image->rows);
+    FormatString(geometry,"%lux%lu",image->columns,image->rows);
     if (image_info->page != (char *) NULL)
       (void) strncpy(geometry,image_info->page,MaxTextExtent-1);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
-        (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
+        (void) FormatString(geometry,"%lux%lu%+ld%+ld",image->page.width,
           image->page.height,image->page.x,image->page.y);
       else
         if (LocaleCompare(image_info->magick,"PS3") == 0)
@@ -503,7 +503,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             if (!image_info->adjoin)
               (void) strcpy(buffer,"%%Pages: 0\n");
             else
-              FormatString(buffer,"%%%%Pages: %u\n",GetNumberScenes(image));
+              FormatString(buffer,"%%%%Pages: %lu\n",GetNumberScenes(image));
             (void) WriteBlobString(image,buffer);
           }
         (void) WriteBlobString(image,"%%EndComments\n");
@@ -538,7 +538,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         (void) strcpy(buffer,"currentfile /ASCII85Decode filter\n");
         (void) WriteBlobString(image,buffer);
         FormatString(buffer,
-          "<< /K %.1024s /Columns %d /Rows %d >> /CCITTFaxDecode filter\n",
+          "<< /K %.1024s /Columns %lu /Rows %lu >> /CCITTFaxDecode filter\n",
           CCITTParam,image->columns,image->rows);
         break;
       }
@@ -682,14 +682,14 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"/ImageDataDictionary 8 dict def\n");
     (void) WriteBlobString(image,"ImageDataDictionary begin\n");
     (void) WriteBlobString(image,"  /ImageType 1 def\n");
-    FormatString(buffer,"  /Width %u def\n",image->columns);
+    FormatString(buffer,"  /Width %lu def\n",image->columns);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"  /Height %u def\n",image->rows);
+    FormatString(buffer,"  /Height %lu def\n",image->rows);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"  /BitsPerComponent 8 def\n");
     (void) WriteBlobString(image,"  /DataSource datastream def\n");
     (void) WriteBlobString(image,"  /MultipleDataSources false def\n");
-    FormatString(buffer,"  /ImageMatrix [ %d 0 0 %d neg 0 %d ] def\n",
+    FormatString(buffer,"  /ImageMatrix [ %lu 0 0 %lu neg 0 %lu ] def\n",
       image->columns,image->rows,image->rows);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"  /Decode [ 0 1 0 1 0 1 ] def\n");
@@ -698,13 +698,13 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"/ImageMaskDictionary 8 dict def\n");
     (void) WriteBlobString(image,"ImageMaskDictionary begin\n");
     (void) WriteBlobString(image,"  /ImageType 1 def\n");
-    FormatString(buffer,"  /Width %u def\n",image->columns);
+    FormatString(buffer,"  /Width %lu def\n",image->columns);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"  /Height %u def\n",image->rows);
+    FormatString(buffer,"  /Height %lu def\n",image->rows);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"  /BitsPerComponent 8 def\n");
     (void) WriteBlobString(image,"  /MultipleDataSources false def\n");
-    FormatString(buffer,"  /ImageMatrix [ %d 0 0 %d neg 0 %d ] def\n",
+    FormatString(buffer,"  /ImageMatrix [ %ld 0 0 %ld neg 0 %d ] def\n",
       image->columns,image->rows,image->rows);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"  /Decode [ 0 1 ] def\n");
@@ -719,7 +719,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"end\n");
     (void) WriteBlobByte(image,'\n');
     (void) WriteBlobString(image,"gsave\n");
-    FormatString(buffer,"%d %d translate\n",x,y);
+    FormatString(buffer,"%ld %ld translate\n",x,y);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"%g %g scale\n",x_scale,y_scale);
     (void) WriteBlobString(image,buffer);

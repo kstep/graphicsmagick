@@ -333,7 +333,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,buffer);
       if (image->directory == (char *) NULL)
         {
-          FormatString(buffer,"%.1024s\" shape=rect coords=0,0,%u,%u>\n",
+          FormatString(buffer,"%.1024s\" shape=rect coords=0,0,%lu,%lu>\n",
             image->filename,width-1,height-1);
           (void) WriteBlobString(image,buffer);
         }
@@ -414,7 +414,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,buffer);
   if (image->directory == (char *) NULL)
     {
-      FormatString(buffer,"%.1024s\" shape=rect coords=0,0,%u,%u>\n",
+      FormatString(buffer,"%.1024s\" shape=rect coords=0,0,%lu,%lu>\n",
         image->filename,width-1,height-1);
       (void) WriteBlobString(image,buffer);
     }
@@ -424,7 +424,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,*p);
       else
         {
-          FormatString(buffer," shape=rect coords=%d,%d,%d,%d>\n",x,y,
+          FormatString(buffer," shape=rect coords=%ld,%ld,%ld,%ld>\n",x,y,
             x+(long) width-1,y+(long) height-1);
           (void) WriteBlobString(image,buffer);
           if (*(p+1) != '\0')

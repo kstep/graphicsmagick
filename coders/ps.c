@@ -298,7 +298,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   file=fopen(postscript_filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to write file",image);
-  FormatString(translate_geometry,"%f %f translate\n              ",0.0,0.0);
+  FormatString(translate_geometry,"%g %g translate\n              ",0.0,0.0);
   (void) fputs(translate_geometry,file);
   /*
     Set the page geometry.
@@ -369,7 +369,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Set Postscript render geometry.
     */
-    FormatString(translate_geometry,"%f %f translate\n",-bounds.x1,-bounds.y1);
+    FormatString(translate_geometry,"%g %g translate\n",-bounds.x1,-bounds.y1);
     width=(unsigned int) (bounds.x2-bounds.x1);
     if ((float) ((int) bounds.x2) != bounds.x2)
       width++;
@@ -385,9 +385,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->page != (char *) NULL)
     (void) ParseImageGeometry(image_info->page,&page.x,&page.y,&page.width,
       &page.height);
-  FormatString(geometry,"%ux%u",
-    (unsigned int) ceil(page.width*image->x_resolution/dx_resolution-0.5),
-    (unsigned int) ceil(page.height*image->y_resolution/dy_resolution-0.5));
+  FormatString(geometry,"%lux%lu",
+    (unsigned long) ceil(page.width*image->x_resolution/dx_resolution-0.5),
+    (unsigned long) ceil(page.height*image->y_resolution/dy_resolution-0.5));
   if (ferror(file))
     {
       (void) fclose(file);
@@ -405,8 +405,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   *options='\0';
   if (image_info->subrange != 0)
-    FormatString(options,"-dFirstPage=%u -dLastPage=%u",image_info->subimage+1,
-      image_info->subimage+image_info->subrange);
+    FormatString(options,"-dFirstPage=%lu -dLastPage=%lu",
+      image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   TemporaryFilename((char *) image_info->filename);
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
@@ -961,7 +961,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       (void) strncpy(geometry,image_info->page,MaxTextExtent-1);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
-        (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
+        (void) FormatString(geometry,"%lux%lu%+ld%+ld",image->page.width,
           image->page.height,image->page.x,image->page.y);
       else
         if (LocaleCompare(image_info->magick,"PS") == 0)
@@ -1032,7 +1032,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             */
             (void) WriteBlobString(image,"%%Orientation: Portrait\n");
             (void) WriteBlobString(image,"%%PageOrder: Ascend\n");
-            FormatString(buffer,"%%%%Pages: %u\n",
+            FormatString(buffer,"%%%%Pages: %lu\n",
               image_info->adjoin ? GetNumberScenes(image) : 1);
             (void) WriteBlobString(image,buffer);
           }
@@ -1071,7 +1071,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             if (preview_image->colors == 2)
               polarity=Intensity(preview_image->colormap[0]) >
                 Intensity(preview_image->colormap[1]);
-            FormatString(buffer,"%%%%BeginPreview: %u %u %u %u\n%%  ",
+            FormatString(buffer,"%%%%BeginPreview: %lu %lu %lu %lu\n%%  ",
               preview_image->columns,preview_image->rows,(unsigned int) 1,
               (((preview_image->columns+7) >> 3)*preview_image->rows+35)/36);
             (void) WriteBlobString(image,buffer);
@@ -1135,7 +1135,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           {
             (void) WriteBlobString(image,"  /label 512 string def\n");
             (void) WriteBlobString(image,"  currentfile label readline pop\n");
-            FormatString(buffer,"  0 y %f add moveto label show pop\n",
+            FormatString(buffer,"  0 y %g add moveto label show pop\n",
               j*image_info->pointsize+12);
             (void) WriteBlobString(image,buffer);
           }
@@ -1149,7 +1149,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,"} bind def\n");
         (void) WriteBlobString(image,"%%EndProlog\n");
       }
-    FormatString(buffer,"%%%%Page:  1 %u\n",page++);
+    FormatString(buffer,"%%%%Page:  1 %lu\n",page++);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"%%%%PageBoundingBox: %ld %ld %ld %ld\n",x,y,
       x+(long) width,y+(long) (height+text_size));
@@ -1171,7 +1171,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     /*
       Output image data.
     */
-    FormatString(buffer,"%d %d\n%g %g\n%f\n",x,y,x_scale,y_scale,
+    FormatString(buffer,"%ld %ld\n%g %g\n%f\n",x,y,x_scale,y_scale,
       image_info->pointsize);
     (void) WriteBlobString(image,buffer);
     labels=(char **) NULL;
@@ -1288,7 +1288,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     else
       if (IsGrayImage(image,&image->exception))
         {
-          FormatString(buffer,"%u %u\n1\n1\n1\n%d\n",
+          FormatString(buffer,"%lu %lu\n1\n1\n1\n%d\n",
             image->columns,image->rows,
             IsMonochromeImage(image,&image->exception) ? 1 : 8);
           (void) WriteBlobString(image,buffer);
@@ -1396,7 +1396,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           /*
             Dump number of colors and colormap.
           */
-          FormatString(buffer,"%u\n",image->colors);
+          FormatString(buffer,"%lu\n",image->colors);
           (void) WriteBlobString(image,buffer);
           for (i=0; i < (long) image->colors; i++)
           {

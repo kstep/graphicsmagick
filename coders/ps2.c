@@ -595,7 +595,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       (void) strncpy(geometry,image_info->page,MaxTextExtent-1);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
-        (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
+        (void) FormatString(geometry,"%lux%lu%+ld%+ld",image->page.width,
           image->page.height,image->page.x,image->page.y);
       else
         if (LocaleCompare(image_info->magick,"PS2") == 0)
@@ -665,7 +665,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             if (!image_info->adjoin)
               (void) strcpy(buffer,"%%Pages: 0\n");
             else
-              FormatString(buffer,"%%%%Pages: %u\n",GetNumberScenes(image));
+              FormatString(buffer,"%%%%Pages: %lu\n",GetNumberScenes(image));
             (void) WriteBlobString(image,buffer);
           }
         (void) WriteBlobString(image,"%%EndComments\n");
@@ -694,7 +694,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           {
             (void) WriteBlobString(image,"  /label 512 string def\n");
             (void) WriteBlobString(image,"  currentfile label readline pop\n");
-            FormatString(buffer,"  0 y %f add moveto label show pop\n",
+            FormatString(buffer,"  0 y %g add moveto label show pop\n",
               j*image_info->pointsize+12);
             (void) WriteBlobString(image,buffer);
           }
@@ -708,7 +708,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,"} bind def\n");
         (void) WriteBlobString(image,"%%EndProlog\n");
       }
-    FormatString(buffer,"%%%%Page:  1 %u\n",page++);
+    FormatString(buffer,"%%%%Page:  1 %lu\n",page++);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"%%%%PageBoundingBox: %ld %ld %ld %ld\n",x,y,
       x+(long) width,y+(long) (height+text_size));
@@ -731,7 +731,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     /*
       Output image data.
     */
-    FormatString(buffer,"%d %d\n%g %g\n%f\n",x,y,x_scale,y_scale,
+    FormatString(buffer,"%ld %ld\n%g %g\n%f\n",x,y,x_scale,y_scale,
       image_info->pointsize);
     (void) WriteBlobString(image,buffer);
     labels=(char **) NULL;
@@ -917,7 +917,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           /*
             Dump number of colors and colormap.
           */
-          FormatString(buffer,"%u\n",image->colors);
+          FormatString(buffer,"%lu\n",image->colors);
           (void) WriteBlobString(image,buffer);
           for (i=0; i < (long) image->colors; i++)
           {
