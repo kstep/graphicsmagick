@@ -1102,31 +1102,120 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
 #endif
 }
 
+static void EscapeText(char *text, const char ec)
+{
+  register char
+    *p;
+
+  register int
+    i;
+
+  p=text;
+  for (i=0; i < Extent(text); i++)
+  {
+    if ((text[i] == ec) && (text[i+1] != ec))
+      i++;
+    *p++=text[i];
+  }
+  *p='\0';
+  return;
+}
+
 static Image *ReadLABELImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   Image
     *image;
 
+  char
+    *label;
+
   /*
     Create image label.
   */
+  if (image_info->filename[0] != '@')
+    {
+      label=AllocateString(image_info->filename);
+      EscapeText(label,'\\');
+    }
+  else
+    {
+      FILE
+        *file;
+
+      int
+        c;
+
+      char
+        *s,
+        *q;
+
+      unsigned int
+        length;
+
+      ExceptionInfo
+        exception,
+        *yikes;
+
+      yikes=&exception;
+      /*
+        Read text from a file.
+      */
+      file=(FILE *) fopen(&(image_info->filename[1]),"r");
+      if (file == (FILE *) NULL)
+        {
+          ThrowException(yikes,FileOpenWarning,
+              "Unable to read label data from file",&(image_info->filename[1]));
+          FreeMemory((void **) &label);
+          return((Image *) NULL);
+        }
+      length=MaxTextExtent;
+      s=(char *) AllocateMemory(length);
+      q=s;
+      while (s != (char *) NULL)
+      {
+        c=fgetc(file);
+        if (c == EOF)
+          break;
+        if ((c == '\n') || (c == '\r') || (c == '\t'))
+          continue;
+        if ((q-s+1) >= (int) length)
+          {
+            *q='\0';
+            length<<=1;
+            s=(char *) ReallocateMemory(s,length);
+            if (s == (char *) NULL)
+              break;
+            q=s+Extent(s);
+          }
+        *q++=c;
+      }
+      (void) fclose(file);
+      if (s == (char *) NULL)
+        {
+          ThrowException(yikes,FileOpenWarning,
+              "Unable to read label data from file","Memory allocation failed");
+          FreeMemory((void **) &label);
+          return((Image *) NULL);
+        }
+      *q='\0';
+      label=s;
+    }
   if (image_info->font == (char *) NULL)
     {
-      image=RenderPostscript(image_info,image_info->filename,exception);
-      return(image);
+      image=RenderPostscript(image_info,label,exception);
     }
-  if (*image_info->font == '@')
+  else if (*image_info->font == '@')
     {
-      image=RenderFreetype(image_info,image_info->filename,exception);
-      return(image);
+      image=RenderFreetype(image_info,label,exception);
     }
-  if (*image_info->font == '-')
+  else if (*image_info->font == '-')
     {
-      image=RenderX11(image_info,image_info->filename,exception);
-      return(image);
+      image=RenderX11(image_info,label,exception);
     }
-  image=RenderPostscript(image_info,image_info->filename,exception);
+  else
+    image=RenderPostscript(image_info,label,exception);
+  FreeMemory((void **) &label);
   return(image);
 }
 
