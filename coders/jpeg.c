@@ -268,8 +268,8 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
     Determine length of comment.
   */
   image=(Image *) jpeg_info->client_data;
-  length=GetCharacter(jpeg_info) << 8;
-  length+=GetCharacter(jpeg_info);
+  length=(long) GetCharacter(jpeg_info) << 8;
+  length+=(long) GetCharacter(jpeg_info);
   length-=2;
   if (length <= 0)
     return(True);
@@ -305,8 +305,8 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   /*
     Determine length of generic profile.
   */
-  length=GetCharacter(jpeg_info) << 8;
-  length+=GetCharacter(jpeg_info);
+  length=(long) GetCharacter(jpeg_info) << 8;
+  length+=(long) GetCharacter(jpeg_info);
   length-=2;
   if (length <= 0)
     return(True);
@@ -363,8 +363,8 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   /*
     Determine length of color profile.
   */
-  length=GetCharacter(jpeg_info) << 8;
-  length+=GetCharacter(jpeg_info);
+  length=(long) GetCharacter(jpeg_info) << 8;
+  length+=(long) GetCharacter(jpeg_info);
   length-=2;
   if (length <= 0)
     return(True);
@@ -418,19 +418,23 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   register int
     i;
 
+#ifdef GET_ONLY_IPTC_DATA
   unsigned char
     tag[MaxTextExtent];
+#endif
 
   /*
     Determine length of binary data stored here.
   */
-  length=GetCharacter(jpeg_info) << 8;
-  length+=GetCharacter(jpeg_info);
+  length=(long) GetCharacter(jpeg_info) << 8;
+  length+=(long) GetCharacter(jpeg_info);
   length-=2;
   if (length <= 0)
     return(True);
   tag_length=0;
+#ifdef GET_ONLY_IPTC_DATA
   *tag='\0';
+#endif
   image=(Image *) jpeg_info->client_data;
   if (image->iptc_profile.length == 0)
     {
@@ -516,6 +520,7 @@ static void SkipInputData(j_decompress_ptr cinfo,long number_bytes)
 
 static void TerminateSource(j_decompress_ptr cinfo)
 {
+  cinfo=cinfo;
 }
 
 static void JPEGSourceManager(j_decompress_ptr cinfo,Image *image)
@@ -769,10 +774,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          q->red=MaxRGB-q->red;
-          q->green=MaxRGB-q->green;
-          q->blue=MaxRGB-q->blue;
-          q->opacity=MaxRGB-q->opacity;
+          q->red=(Quantum) (MaxRGB-q->red);
+          q->green=(Quantum) (MaxRGB-q->green);
+          q->blue=(Quantum) (MaxRGB-q->blue);
+          q->opacity=(Quantum) (MaxRGB-q->opacity);
           q++;
         }
         if (!SyncImagePixels(image))

@@ -93,8 +93,7 @@ static unsigned int
 %
 %
 */
-static unsigned int DecodeImage(Image *image,const int opacity,
-  ExceptionInfo *exception)
+static unsigned int DecodeImage(Image *image,const int opacity)
 {
 #define MaxStackSize  4096
 #define NullCode  (-1)
@@ -204,7 +203,7 @@ static unsigned int DecodeImage(Image *image,const int opacity,
                   /*
                     Read a new data block.
                   */
-                  count=ReadBlobBlock(image,(char *) packet);
+                  count=ReadBlobBlock(image, packet);
                   if (count <= 0)
                     break;
                   c=packet;
@@ -279,7 +278,8 @@ static unsigned int DecodeImage(Image *image,const int opacity,
       index=ValidateColormapIndex(image,*top_stack);
       indexes[x]=index;
       *q=image->colormap[index];
-      q->opacity=index == opacity ? TransparentOpacity : OpaqueOpacity;
+      q->opacity=index == (unsigned char) (opacity ?
+         TransparentOpacity : OpaqueOpacity);
       x++;
       q++;
     }
@@ -400,7 +400,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
     /*  \
       Add a character to current packet. \
     */ \
-    packet[byte_count++]=(datum & 0xff); \
+    packet[byte_count++]=(unsigned char) (datum & 0xff); \
     if (byte_count >= 254) \
       { \
         (void) WriteBlobByte(image,byte_count); \
@@ -620,7 +620,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
       /*
         Add a character to current packet.
       */
-      packet[byte_count++]=(datum & 0xff);
+      packet[byte_count++]=(unsigned char) (datum & 0xff);
       if (byte_count >= 254)
         {
           (void) WriteBlobByte(image,byte_count);
@@ -814,7 +814,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read Graphics Control extension.
             */
-            while (ReadBlobBlock(image,(char *) header) > 0);
+            while (ReadBlobBlock(image, header) > 0);
             dispose=header[0] >> 2;
             delay=(header[2] << 8) | header[1];
             if ((header[0] & 0x01) == 1)
@@ -835,7 +835,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             comments=(char *) NULL;
             for ( ; ; )
             {
-              length=ReadBlobBlock(image,(char *) header);
+              length=ReadBlobBlock(image, header);
               if (length <= 0)
                 break;
               if (comments != (char *) NULL)
@@ -867,16 +867,16 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Read Netscape Loop extension.
             */
             loop=False;
-            if (ReadBlobBlock(image,(char *) header) > 0)
-              loop=!LocaleNCompare((char *) header,"NETSCAPE2.0",11);
-            while (ReadBlobBlock(image,(char *) header) > 0)
+            if (ReadBlobBlock(image, header) > 0)
+              loop=!LocaleNCompare((const char *) header,"NETSCAPE2.0",11);
+            while (ReadBlobBlock(image, header) > 0)
             if (loop)
               iterations=(header[2] << 8) | header[1];
             break;
           }
           default:
           {
-            while (ReadBlobBlock(image,(char *) header) > 0);
+            while (ReadBlobBlock(image, header) > 0);
             break;
           }
         }
@@ -977,7 +977,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Decode image.
     */
-    status=DecodeImage(image,opacity,exception);
+    status=DecodeImage(image,opacity);
     if (status == False)
       ThrowReaderException(CorruptImageWarning,"Corrupt GIF image",image);
     if (image_info->subrange != 0)
@@ -1291,8 +1291,13 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         c|=(bits_per_pixel-1);   /* size of global colormap */
         (void) WriteBlobByte(image,c);
         for (j=0; j < (int) Max(image->colors-1,1); j++)
-          if (ColorMatch(image->background_color,image->colormap[j],0))
+        {
+          int
+            zero=0;
+
+          if (ColorMatch(image->background_color,image->colormap[j],zero))
             break;
+        }
         (void) WriteBlobByte(image,j);  /* background color */
         (void) WriteBlobByte(image,0x0);  /* reserved */
         (void) WriteBlob(image,3*(1 << bits_per_pixel),(char *) colormap);
