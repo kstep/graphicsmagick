@@ -1233,8 +1233,8 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
     /*
      * Build escaped string
      */
-    for (p = draw_text->str, q = escaped_string, string_length = 0;
-	 *p != 0 && string_length < (sizeof(escaped_string) - 3); ++p)
+    for (p = (unsigned char *) draw_text->str, q = (unsigned char *) escaped_string, string_length = 0;
+	 *p != 0 && string_length < ((int) sizeof(escaped_string) - 3); ++p)
       {
         if (*p == '\'')
           {

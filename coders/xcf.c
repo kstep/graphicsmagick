@@ -285,7 +285,7 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string)
   int
     c;
 
-  register int
+  register long
     i;
 
   unsigned long
@@ -294,7 +294,7 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   length = ReadBlobMSBLong(image);
-  for (i=0; i < length; i++)
+  for (i=0; i < (long) length; i++)
   {
     c=ReadBlobByte(image);
     if (c == EOF)
@@ -339,16 +339,16 @@ static char *ReadBlobStringWithShortSize(Image *image,char *string)
   int
     c;
 
-  register int
+  register long
     i;
 
-  unsigned int
+  unsigned long
 	  length;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   length = ReadBlobMSBShort(image);
-  for (i=0; i < length; i++)
+  for (i=0; i < (long) length; i++)
   {
     c=ReadBlobByte(image);
     if (c == EOF)
@@ -594,7 +594,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* inLaye
 	ntile_rows = (inDocInfo->height + TILE_HEIGHT - 1) / TILE_HEIGHT;
 	ntile_cols = (inDocInfo->width  + TILE_WIDTH  - 1) / TILE_WIDTH;
 	ntiles = ntile_rows * ntile_cols;
-  for (i = 0; i < ntiles; i++)
+  for (i = 0; i < (long) ntiles; i++)
     {
       fail = False;
 
@@ -613,7 +613,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* inLaye
       /* if the offset is 0 then we need to read in the maximum possible
 	 allowing for negative compression */
       if (offset2 == 0)
-		offset2 = offset + TILE_WIDTH * TILE_WIDTH * 4* 1.5; 
+		offset2 = (unsigned long) (offset + TILE_WIDTH * TILE_WIDTH * 4* 1.5); 
 											/* 1.5 is probably more
 											   than we need to allow */
 
@@ -623,9 +623,9 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* inLaye
 	  /* allocate the image for the tile 
 			NOTE: the last tile in a row or column may not be a full tile!
 	  */
-	  tile_image_width = destLeft==ntile_cols-1 ? image->columns % TILE_WIDTH :  TILE_WIDTH;
+	  tile_image_width = destLeft==(int) ntile_cols-1 ? (int) image->columns % TILE_WIDTH :  TILE_WIDTH;
 	  if (tile_image_width == 0)	tile_image_width = TILE_WIDTH;
-	  tile_image_height = destTop==ntile_rows-1 ? image->rows % TILE_HEIGHT :  TILE_HEIGHT;
+	  tile_image_height = destTop==(int) ntile_rows-1 ? (int) image->rows % TILE_HEIGHT :  TILE_HEIGHT;
 	  if (tile_image_height == 0)	tile_image_height = TILE_HEIGHT;
       tile_image=CloneImage(inLayerInfo->image, tile_image_width, tile_image_height,True,exception);
 
@@ -653,7 +653,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* inLaye
 
 	/* adjust tile position */
 	destLeft++;
-	if (destLeft >= ntile_cols) {
+	if (destLeft >= (int) ntile_cols) {
 		destLeft = 0;
 		destTop++;
 	}
@@ -810,7 +810,7 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* outL
 		  break;
 		 case PROP_PARASITES:
 		 {
-			  for (i=0; i<prop_size; i++ )
+			  for (i=0; i<(long) prop_size; i++ )
 				  (void) ReadBlobByte(image);
 
 			  /*
@@ -838,7 +838,7 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* outL
 			while (prop_size > 0)
 			  {
 				amount = Min (16, prop_size);
-				for (i=0; i<amount; i++)
+				for (i=0; i<(long)amount; i++)
 				amount = ReadBlob(image, amount, &buf);
 				prop_size -= Min (16, amount);
 			  }
@@ -1146,7 +1146,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 			while (prop_size > 0)
 			  {
 				amount = Min (16, prop_size);
-				for (i=0; i<amount; i++)
+				for (i=0; i<(unsigned long) amount; i++)
 				amount = ReadBlob(image, amount, &buf);
 				prop_size -= Min (16, amount);
 			  }
