@@ -2,7 +2,7 @@
 #include "magick.h"
 #include "define.h"
 
-MagickExport void OpenStaticModules(void)
+void OpenStaticModules(void)
 {
 #if !defined(HasMODULES)
   RegisterARTImage();
@@ -39,6 +39,7 @@ MagickExport void OpenStaticModules(void)
   RegisterMPCImage();
   RegisterMPEGImage();
   RegisterMPRImage();
+  RegisterMSLImage();
   RegisterMTVImage();
   RegisterMVGImage();
   RegisterNULLImage();
@@ -92,8 +93,8 @@ MagickExport void OpenStaticModules(void)
 #endif
 }
 
-MagickExport unsigned int ExecuteStaticModuleProcess(const char *tag,
-  Image *image,const int argc,char **argv)
+unsigned int ExecuteStaticModuleProcess(const char *tag,
+    Image *image,const int argc,char **argv)
 {
   return(False);
 }

@@ -862,6 +862,7 @@ extern MagickExport void
   RegisterMPCImage(void),
   RegisterMPEGImage(void),
   RegisterMPRImage(void),
+  RegisterMSLImage(void),
   RegisterMTVImage(void),
   RegisterMVGImage(void),
   RegisterNETSCAPEImage(void),
