@@ -89,7 +89,7 @@ AM_ENABLE_SHARED(no)
 AM_ENABLE_STATIC(yes)
 AM_PROG_LIBTOOL
 # Configure libltdl
-AC_CONFIG_SUBDIRS(libltdl)
+AC_CONFIG_SUBDIRS(ltdl)
 # Set DLLDFLAGS
 if test X"$enable_shared" = Xyes; then
   DLLDFLAGS=-export-dynamic

@@ -2081,7 +2081,7 @@ LIBTOOL='$(SHELL) $(top_builddir)/libtool'
 exec 5>>./config.log
 
 # Configure libltdl
-subdirs="libltdl"
+subdirs="ltdl"
 
 # Set DLLDFLAGS
 if test X"$enable_shared" = Xyes; then
@@ -9402,7 +9402,7 @@ if test "$no_recursion" != yes; then
     esac
   done
 
-  for ac_config_dir in libltdl; do
+  for ac_config_dir in ltdl; do
 
     # Do not complain, so a configure script can configure whichever
     # parts of a large source tree are present.
