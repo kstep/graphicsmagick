@@ -53,6 +53,23 @@
 </tr>
 </table>
 <p>
+2004-05-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/enhance.c (NegateImage): If image has a clip mask,
+        then force image to DirectClass so clip mask takes effect.
+
+</UL>
+<p>
+2004-05-15  Vladimir Lukianov  &lt;lvm@integrum.ru&gt;
+
+<UL>
+  <LI> magick/image.c (SetImageOpacity): Ensure that image is
+        DirectClass. If specified opacity is TransparentOpacity, then
+        replace existing opacity with TransparentOpacity.
+
+</UL>
+<p>
 2004-05-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

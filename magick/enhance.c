@@ -1009,6 +1009,8 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
+  if (image->clip_mask)
+    image->storage_class=DirectClass;
   switch (image->storage_class)
   {
     case DirectClass:

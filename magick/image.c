@@ -5874,6 +5874,10 @@ MagickExport unsigned int SetImageChannelDepth(Image *image,
 %  the clip mask to TransparentOpacity to prevent that corresponding image
 %  pixel component from being updated when SyncImagePixels() is applied.
 %
+%  The clip mask protects the DirectClass pixels and PseudoClass pixel indexes
+%  from modification. The clip mask does *not* protect the image colormap since
+%  the image colormap is globally shared by all pixels in a PseudoClass image.
+%
 %  The format of the SetImageClipMask method is:
 %
 %      unsigned int SetImageClipMask(Image *image,Image *clip_mask)
@@ -6360,7 +6364,8 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
-  if (image->matte && (opacity != OpaqueOpacity))
+  image->storage_class=DirectClass;
+  if (image->matte && (opacity != OpaqueOpacity) && (opacity != TransparentOpacity))
     {
       /*
         Attenuate existing opacity channel
