@@ -105,11 +105,6 @@ typedef
    } 
    bz_stream;
 
-
-#ifndef BZ_IMPORT
-#define BZ_EXPORT
-#endif
-
 #if defined(WIN32)
 # include <stdio.h>
 # include <windows.h>

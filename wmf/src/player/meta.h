@@ -1023,7 +1023,7 @@ static void polypoly_construct (wmfAPI* API,wmfPolyPoly_t* polypoly,wmfPolyLine_
 		polyline->count++;
 	}
 
-	polypoly_construct (API, polypoly, polyline, ipoly + 1);
+	polypoly_construct (API, polypoly, polyline, (U16)(ipoly + 1));
 
 	for (i = imin; i < count; i++)
 	{	polyline->pt[polyline->count].x = polypoly->pt[ipoly][i].x;

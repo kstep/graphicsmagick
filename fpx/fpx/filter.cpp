@@ -425,7 +425,6 @@ FPXStatus PTileFlashPix::BlurFilter(filtParmS *FiltP)
   long  paramSet = 0;
   long  nc;
   long  NumKernels;
-  long  pixVal;
 
   unsigned char* srcComp[4];  // Table of pointers to components
   unsigned char* dstComp[4];

@@ -168,7 +168,7 @@ FPXStatus FPX_WideStrcpy (FPXWideStr* theFPXStr, const char* string)
 //  +1 if the first non-match in fpxStr1 is > fpxWStr2 or if fpxWStr1 is longer
 long FPX_WideStrcmp (FPXWideStr* fpxWStr1,  FPXWideStr* fpxWStr2)
 {
-  long      cnt1, cnt2, limit, index;
+  long      cnt1, cnt2, limit;
   unsigned short  *ptr1, *ptr2;
   
   cnt1 = fpxWStr1->length;
@@ -506,7 +506,6 @@ FPXStatus FPX_SetToolkitMemoryLimit ( unsigned long * memoryLimit)
 
 {
   FPXStatus status = FPX_OK;
-  HRESULT res;
 
   // if the GtheSystemToolkit exist yet delete it
   if (GtheSystemToolkit)

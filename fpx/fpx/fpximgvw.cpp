@@ -873,7 +873,6 @@ FPXStatus PFlashPixImageView::SaveSourcePropertySet()
   
   // CHG_WRT_USERS - If there is a result property set, then a 'users' array must be
   //      written. So test for a result property set and write 'users' if need be.
-  FPXImageDescription resultDesc;
   OLEProperty     *aProp;
   long        hasResultPropSet = 0;
 

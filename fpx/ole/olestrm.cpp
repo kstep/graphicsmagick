@@ -1945,7 +1945,7 @@ DWORD OLEStream::WriteVT_VECTOR(DWORD dwType, VECTOR *pvector)
 DWORD OLEStream::WriteDICT_ENTRIES(DICTIONARY *pDict)
 {
   ENTRY *   pEntry;
-  DWORD     i, rem, writeCnt, dwLength = 0;
+  DWORD     i, rem, dwLength = 0;
   
   pEntry = pDict->rgEntry;        // Get ptr to start of array of entries
   

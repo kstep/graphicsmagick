@@ -776,7 +776,7 @@ void PTile::FreeAncientBuffers( long numMinutesOld)
 {
   PTile *currTile = first;
   PTile *nextTile = currTile->next;
-  time_t  ancientTime, timeNow, fiveMin;
+  time_t  ancientTime, timeNow;
   
   // Calculate the minimum time for the last access to the tile. If a tile
   //  has not been accessed within this amount of time, then we will consider
@@ -882,7 +882,6 @@ VISU2 "Memory size available      = %d\n", allocSize FIN
 // END DEBUG PURPOSE
 #endif
 
-  long    i;
   long    freedSize = 0;
   long    theSize = 0;
   Boolean   status = false;

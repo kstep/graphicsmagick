@@ -337,7 +337,6 @@ void PFileFlashPixView::Init ()
             resultDescPropertySet = imgPropSet;
             resultDescPropertyIndex = dataObjectIndx;
             
-            OLEPropertySet  *transPropSet;
             GetTransformName (objectName, creatorIndex);
             GUID transformGuid = ID_Transform;
             

@@ -77,7 +77,7 @@ Magick::Image::Image( const std::string &imageSpec_ )
       // Initialize, Allocate and Read images
       read( imageSpec_ );
     }
-  catch ( const Warning &warning_ )
+  catch ( const Warning & /*warning_*/ )
     {
       // FIXME: need a way to report warnings in constructor
     }
@@ -100,7 +100,7 @@ Magick::Image::Image( const Geometry &size_,
       // Initialize, Allocate and Read images
       read( imageSpec );
     }
-  catch ( const Warning &warning_ )
+  catch ( const Warning & /*warning_*/ )
     {
       // FIXME: need a way to report warnings in constructor
     }
@@ -115,7 +115,7 @@ Magick::Image::Image ( const Blob &blob_ )
       // Initialize, Allocate and Read images
       read( blob_ );
     }
-  catch ( const Warning &warning_ )
+  catch ( const Warning & /*warning_*/ )
     {
       // FIXME: need a way to report warnings in constructor
     }
@@ -131,7 +131,7 @@ Magick::Image::Image ( const Blob &blob_,
       // Read from Blob
       read( blob_, size_ );
     }
-  catch ( const Warning &warning_ )
+  catch ( const Warning & /*warning_*/ )
     {
       // FIXME: need a way to report warnings in constructor
     }
@@ -148,7 +148,7 @@ Magick::Image::Image ( const Blob &blob_,
       // Read from Blob
       read( blob_, size_, depth_ );
     }
-  catch ( const Warning &warning_ )
+  catch ( const Warning & /*warning_*/ )
     {
       // FIXME: need a way to report warnings in constructor
     }
@@ -166,7 +166,7 @@ Magick::Image::Image ( const Blob &blob_,
       // Read from Blob
       read( blob_, size_, depth_, magick_ );
     }
-  catch ( const Warning &warning_ )
+  catch ( const Warning & /*warning_*/ )
     {
       // FIXME: need a way to report warnings in constructor
     }
@@ -183,7 +183,7 @@ Magick::Image::Image ( const Blob &blob_,
       // Read from Blob
       read( blob_, size_, magick_ );
     }
-  catch ( const Warning &warning_ )
+  catch ( const Warning & /*warning_*/ )
     {
       // FIXME: need a way to report warnings in constructor
     }
@@ -202,7 +202,7 @@ Magick::Image::Image ( const unsigned int width_,
     {
       read( width_, height_, map_.c_str(), type_, pixels_ );
     }
-  catch ( const Warning &warning_ )
+  catch ( const Warning & /*warning_*/ )
     {
       // FIXME: need a way to report warnings in constructor
     }

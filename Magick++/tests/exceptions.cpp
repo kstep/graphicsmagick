@@ -29,7 +29,7 @@ int main( int /*argc*/, char ** argv)
       failures++;
       throw int(100);
     }
-  catch ( int value_ )
+  catch ( int /*value_*/ )
     {
       failures--;
     }
@@ -40,7 +40,7 @@ int main( int /*argc*/, char ** argv)
       failures++;
       throw WarningResourceLimit("How now brown cow?");
     }
-  catch( Exception &error_ )
+  catch( Exception & /*error_*/ )
     {
       failures--;
     }
@@ -60,7 +60,7 @@ int main( int /*argc*/, char ** argv)
             failures++;
             image.directory();
           }
-        catch ( Exception& error_ )
+        catch ( Exception& /*error_*/ )
           {
             failures--;
           }

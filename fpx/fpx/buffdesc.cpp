@@ -1605,7 +1605,7 @@ void writeDIB24(unsigned char *obp, unsigned char *pic24, unsigned long w, unsig
 
 void writeDIB1(unsigned char *obp, unsigned char *pic8, unsigned long w, unsigned long h)
 {
-  long i, j, c, bitnum, padw;
+  long i, j, padw;
   unsigned char *pp;
 
   padw = ((w + 3)/4) * 4;  /* 'w', padded to be a multiple of 32 */

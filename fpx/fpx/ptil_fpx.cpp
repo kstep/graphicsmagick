@@ -1077,7 +1077,6 @@ FPXStatus PTileFlashPix::ReadRawPixels()
 //
 FPXStatus PTileFlashPix::Read()
 {
-  ptr_Compresseur monDecompresseur; 
   ViewImage     *imageParam = fatherSubImage->fatherFile->imageParam;
   Boolean     wasLocked = IsLocked();
   FPXStatus   status = FPX_OK;

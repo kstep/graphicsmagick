@@ -137,7 +137,9 @@ extern "C" {
 #define	ushort	unsigned short
 #define	uint	unsigned int
 #define	ulong	unsigned long
+#undef longlong
 #define	longlong	INT64
+#undef ulonglong
 #define	ulonglong	UINT64
 #endif
 
