@@ -1334,7 +1334,7 @@ Export void GetQuantizeInfo(QuantizeInfo *quantize_info)
 {
   assert(quantize_info != (QuantizeInfo *) NULL);
   quantize_info->number_colors=0;
-  quantize_info->tree_depth=8;
+  quantize_info->tree_depth=0;
   quantize_info->dither=False;
   quantize_info->colorspace=RGBColorspace;
   quantize_info->measure_error=False;
