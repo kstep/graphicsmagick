@@ -355,7 +355,8 @@ static struct
       {"x", DoubleReference}, {"y", DoubleReference},
       {"translate", StringReference}, {"scale", StringReference},
       {"rotate", DoubleReference}, {"skewX", DoubleReference},
-      {"skewY", DoubleReference}, {"tile", ImageReference} } },
+      {"skewY", DoubleReference}, {"tile", ImageReference},
+      {"pen", StringReference} } },
     { "Equalize", },
     { "Gamma", { {"gamma", StringReference}, {"red", DoubleReference},
       {"green", DoubleReference}, {"blue", DoubleReference} } },
@@ -4372,7 +4373,8 @@ Mogrify(ref,...)
                 affine[0]=1.0;
                 affine[3]=1.0;
                 k=sscanf(value,"%lf%lf",&affine[4],&affine[5]);
-                k=sscanf(value,"%lf,%lf",&affine[4],&affine[5]);
+                if (k == 1)
+                  k=sscanf(value,"%lf,%lf",&affine[4],&affine[5]);
                 if (k == 1)
                   affine[5]=affine[4];
                 break;
@@ -4383,7 +4385,8 @@ Mogrify(ref,...)
                   Scale.
                 */
                 k=sscanf(value,"%lf%lf",&affine[0],&affine[3]);
-                k=sscanf(value,"%lf,%lf",&affine[0],&affine[3]);
+                if (k == 1)
+                  k=sscanf(value,"%lf,%lf",&affine[0],&affine[3]);
                 if (k == 1)
                   affine[3]=affine[0];
                 break;
@@ -4710,7 +4713,8 @@ Mogrify(ref,...)
                 affine[0]=1.0;
                 affine[3]=1.0;
                 k=sscanf(value,"%lf%lf",&affine[4],&affine[5]);
-                k=sscanf(value,"%lf,%lf",&affine[4],&affine[5]);
+                if (k == 1)
+                  k=sscanf(value,"%lf,%lf",&affine[4],&affine[5]);
                 if (k == 1)
                   affine[5]=affine[4];
                 break;
@@ -4721,7 +4725,8 @@ Mogrify(ref,...)
                   Scale.
                 */
                 k=sscanf(value,"%lf%lf",&affine[0],&affine[3]);
-                k=sscanf(value,"%lf,%lf",&affine[0],&affine[3]);
+                if (k == 1)
+                  k=sscanf(value,"%lf,%lf",&affine[0],&affine[3]);
                 if (k == 1)
                   affine[3]=affine[0];
                 break;
@@ -4801,6 +4806,9 @@ Mogrify(ref,...)
           if (attribute_flag[15])
             draw_info->tile=
               CloneImage(argument_list[15].image_reference,0,0,True,&exception);
+          if (attribute_flag[16])
+            (void) QueryColorDatabase(argument_list[16].string_reference,
+              &draw_info->fill);
           DrawImage(image,draw_info);
           DestroyDrawInfo(draw_info);
           DestroyImageInfo(image_info);
