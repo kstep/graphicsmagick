@@ -37,6 +37,6 @@ check:
 	env srcdir=$(srcdir) ./shapes
 	for filter in $(ZOOM_FILTERS) ; do  \
 	  echo "$$filter ..." ; \
-	  env srcdir=$(srcdir) ./zoom $$filter $(ZOOM_GEOMETRY) $(srcdir)/model.miff zoom_$$filter_out.miff ; \
+	  env srcdir=$(srcdir) ./zoom $$filter $(ZOOM_GEOMETRY) $(srcdir)/model.miff zoom_$${filter}_out.miff ; \
 	done
 
