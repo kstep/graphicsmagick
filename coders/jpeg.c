@@ -1176,6 +1176,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   image->x_resolution=x_resolution;
   image->y_resolution=y_resolution;
   jpeg_info.density_unit=1;  /* default to DPI */
+  jpeg_info.dct_method=JDCT_FLOAT;
   if ((image->x_resolution != 0) && (image->y_resolution != 0))
     {
       /*
@@ -1188,15 +1189,11 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       if (image->units == PixelsPerCentimeterResolution)
         jpeg_info.density_unit=2;
     }
-  /*
-     Allow user to ask for no color subsampling
-  */
-  if (image->compression == NoCompression)
-    for (i=0; i < MAX_COMPONENTS; i++)
-    {
-      jpeg_info.comp_info[i].h_samp_factor=1;
-      jpeg_info.comp_info[i].v_samp_factor=1;
-    }
+  for (i=0; i < MAX_COMPONENTS; i++)
+  {
+    jpeg_info.comp_info[i].h_samp_factor=1;
+    jpeg_info.comp_info[i].v_samp_factor=1;
+  }
   jpeg_info.optimize_coding=True;
 #if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
   if (image_info->interlace != NoInterlace)
