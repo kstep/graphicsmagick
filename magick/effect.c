@@ -260,7 +260,7 @@ static void BlurScanline(const double *kernel,const int width,
     {
       for (x=0; x < (int) columns; x++)
       {
-        memset(&aggregate,0,sizeof(AggregatePacket));
+        (void) memset(&aggregate,0,sizeof(AggregatePacket));
         scale=0.0;
         p=kernel;
         q=source;
@@ -291,7 +291,7 @@ static void BlurScanline(const double *kernel,const int width,
   */
   for (x=0; x < (width/2); x++)
   {
-    memset(&aggregate,0,sizeof(AggregatePacket));
+    (void) memset(&aggregate,0,sizeof(AggregatePacket));
     scale=0.0;
     p=kernel+width/2-x;
     q=source;
@@ -313,7 +313,7 @@ static void BlurScanline(const double *kernel,const int width,
   }
   for ( ; x < (int) (columns-width/2); x++)
   {
-    memset(&aggregate,0,sizeof(AggregatePacket));
+    (void) memset(&aggregate,0,sizeof(AggregatePacket));
     p=kernel;
     q=source+(x-width/2);
     for (i=0; i < width; i++)
@@ -332,7 +332,7 @@ static void BlurScanline(const double *kernel,const int width,
   }
   for ( ; x < (int) columns; x++)
   {
-    memset(&aggregate,0,sizeof(AggregatePacket));
+    (void) memset(&aggregate,0,sizeof(AggregatePacket));
     scale=0;
     p=kernel;
     q=source+(x-width/2);
@@ -354,7 +354,7 @@ static void BlurScanline(const double *kernel,const int width,
   }
 }
 
-static int GetBlurKernel(int width,const double sigma,double **kernel)
+static int GetBlurKernel(unsigned width,const double sigma,double **kernel)
 {
 #define KernelRank 3
 
@@ -423,7 +423,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   kernel=(double *) NULL;
   if (radius > 0)
-    width=GetBlurKernel((int) (2.0*ceil(radius)+1.0),sigma,&kernel);
+    width=GetBlurKernel(2.0*ceil(radius)+1.0,sigma,&kernel);
   else
     {
       double
@@ -782,7 +782,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
       break;
     for (x=0; x < (int) convolve_image->columns; x++)
     {
-      memset(&aggregate,0,sizeof(AggregatePacket));
+      (void) memset(&aggregate,0,sizeof(AggregatePacket));
       k=kernel;
       if ((x < (width/2)) || (x >= (int) (image->columns-width/2)) ||
           (y < (width/2)) || (y >= (int) (image->rows-width/2)))
@@ -1292,7 +1292,7 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
       /*
         Compute weighted average of target pixel color components.
       */
-      memset(&aggregate,0,sizeof(AggregatePacket));
+      (void) memset(&aggregate,0,sizeof(AggregatePacket));
       total_weight=0.0;
       s=p+2*image->columns+2;
       pixel=(*s);
@@ -2056,7 +2056,7 @@ MagickExport Image *MotionBlurImage(Image *image,const double radius,
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      memset(&aggregate,0,sizeof(AggregatePacket));
+      (void) memset(&aggregate,0,sizeof(AggregatePacket));
       for (i=0; i < width; i++)
       {
         u=x+(int) offsets[i].x;
