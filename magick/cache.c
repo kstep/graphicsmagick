@@ -800,7 +800,8 @@ Export IndexPacket *GetVistaIndexes(const Cache cache,const unsigned int id)
   register VistaInfo
     *vista;
 
-  assert(cache != (Cache *) NULL);
+  if (cache == (Cache) NULL)
+    return((IndexPacket *) NULL);
   cache_info=(CacheInfo *) cache;
   if (cache_info->class == UndefinedClass)
     return((IndexPacket *) NULL);
@@ -844,7 +845,8 @@ Export PixelPacket *GetVistaPixels(const Cache cache,const unsigned int id)
   register VistaInfo
     *vista;
 
-  assert(cache != (Cache *) NULL);
+  if (cache == (Cache) NULL)
+    return((PixelPacket *) NULL);
   cache_info=(CacheInfo *) cache;
   if (cache_info->class == UndefinedClass)
     return((PixelPacket *) NULL);
