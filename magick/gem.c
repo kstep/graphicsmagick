@@ -61,6 +61,107 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   A l p h a C o m p o s i t e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AlphaComposite() composites pixel p "over" pixel q.
+%
+%  The format of the AlphaComposite method is:
+%
+%      PixelPacket AlphaComposite(const PixelPacket *p,
+%        const unsigned long alpha,const PixelPacket *q,
+%        const unsigned long beta)
+%
+%  A description of each parameter follows:
+%
+%    o p: Pixel p.
+%
+%    o alpha: The opacity value associated with pixel p.
+%
+%    o q: Pixel q.
+%
+%    o beta: The opacity value associated with pixel q.
+%
+*/
+MagickExport PixelPacket AlphaComposite(const PixelPacket *p,
+  const unsigned long alpha,const PixelPacket *q,const unsigned long beta)
+{
+  double
+    gamma;
+
+  PixelPacket
+    composite;
+
+  if (alpha == OpaqueOpacity)
+    return(*p);
+  gamma=1.0/MaxRGB;
+  composite.red=(Quantum) (gamma*((double) (MaxRGB-(alpha))*(p)->red+
+    (double) (alpha)*(MaxRGB-(beta))*(q)->red/MaxRGB)+0.5);
+  composite.green=(Quantum) (gamma*((double) (MaxRGB-(alpha))*(p)->green+
+    (double) (alpha)*(MaxRGB-(beta))*(q)->green/MaxRGB)+0.5);
+  composite.blue=(Quantum) (gamma*((double) (MaxRGB-(alpha))*(p)->blue+
+    (double) (alpha)*(MaxRGB-(beta))*(q)->blue/MaxRGB)+0.5);
+  composite.opacity=(Quantum) (gamma*((double) (MaxRGB-(alpha))+
+    (double) (alpha)*(MaxRGB-(beta))/MaxRGB)+0.5);
+  return(composite);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C o l o r M a t c h                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ColorMatch() returns true if two pixels are identical in color.
+%
+%  The format of the ColorMatch method is:
+%
+%      void ColorMatch(const PixelPacket *p,const PixelPacket *q,
+%        const double fuzz)
+%
+%  A description of each parameter follows:
+%
+%    o p: Pixel p.
+%
+%    o q: Pixel q.
+%
+%    o distance:  Define how much tolerance is acceptable to consider
+%      two colors as the same.
+%
+%
+*/
+MagickExport unsigned int ColorMatch(const PixelPacket *p,const PixelPacket *q,
+  const double fuzz)
+{
+  long
+    blue,
+    green,
+    red;
+
+  if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
+      (p->blue == q->blue))
+    return(True);
+  red=(long) p->red-(long) q->red;
+  green=(long) p->green-(long) q->green;
+  blue=(long) p->blue-(long) q->blue;
+  if (((red*red)+(green*green)+(blue*blue)) <= (fuzz*fuzz))
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C o n s t r a s t                                                         %
 %                                                                             %
 %                                                                             %
@@ -798,107 +899,6 @@ MagickExport double Permutate(const long n,const long k)
   for (i=1; i <= (n-k); i++)
     r/=i;
   return(r);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   P i x e l M a g i c k                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Here are a set of methods useful for pixel manipulation.
-%
-%
-*/
-
-MagickExport PixelPacket AlphaComposite(const PixelPacket *p,
-  const unsigned long alpha,const PixelPacket *q,const unsigned long beta)
-{
-  double
-    gamma;
-
-  PixelPacket
-    composite;
-
-  if (alpha == OpaqueOpacity)
-    return(*p);
-  gamma=1.0/MaxRGB;
-  composite.red=(Quantum) (gamma*((double) (MaxRGB-(alpha))*(p)->red+
-    (double) (alpha)*(MaxRGB-(beta))*(q)->red/MaxRGB)+0.5);
-  composite.green=(Quantum) (gamma*((double) (MaxRGB-(alpha))*(p)->green+
-    (double) (alpha)*(MaxRGB-(beta))*(q)->green/MaxRGB)+0.5);
-  composite.blue=(Quantum) (gamma*((double) (MaxRGB-(alpha))*(p)->blue+
-    (double) (alpha)*(MaxRGB-(beta))*(q)->blue/MaxRGB)+0.5);
-  composite.opacity=(Quantum) (gamma*((double) (MaxRGB-(alpha))+
-    (double) (alpha)*(MaxRGB-(beta))/MaxRGB)+0.5);
-  return(composite);
-}
-
-MagickExport unsigned int ColorMatch(const PixelPacket *color,
-  const PixelPacket *target,const double distance)
-{
-  if ((distance == 0.0) && (color->red == target->red) &&
-      (color->green == target->green) && (color->blue == target->blue))
-    return(True);
-  if (((((double) color->red-(double) target->red)* 
-       ((double) color->red-(double) target->red))+ 
-      (((double) color->green-(double) target->green)* 
-       ((double) color->green-(double) target->green))+ 
-      (((double) color->blue-(double) target->blue)* 
-       ((double) color->blue-(double) target->blue))) <= (distance*distance))
-    return(True);
-  return(False);
-}
-
-MagickExport Quantum Downscale(const unsigned long quantum)
-{
-#if QuantumDepth == 8
-  return((Quantum) quantum);
-#else
-  return((Quantum) (quantum/257L));
-#endif
-}
-
-MagickExport Quantum Intensity(const PixelPacket *pixel)
-{
-  Quantum
-    intensity;
-
-  intensity=(Quantum)
-    ((9798L*pixel->red+19235L*pixel->green+3735L*pixel->blue)/32768L);
-  return(intensity);
-}
-
-MagickExport Quantum Upscale(const unsigned long quantum)
-{
-#if QuantumDepth == 8
-  return((Quantum) quantum);
-#else
-  return((Quantum) (257L*quantum));
-#endif
-}
-
-MagickExport unsigned short XDownscale(const unsigned long quantum)
-{
-#if QuantumDepth == 8
-  return((unsigned short) (quantum/257L));
-#else
-  return((unsigned short) quantum);
-#endif
-}
-
-MagickExport unsigned short XUpscale(const unsigned long quantum)
-{
-#if QuantumDepth == 8
-  return((unsigned short) (257L*quantum));
-#else
-  return((unsigned short) quantum);
-#endif
 }
 
 /*

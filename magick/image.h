@@ -14,12 +14,31 @@ extern "C" {
 #endif
 
 #if QuantumDepth == 8
+/*
+  Color quantum is [0..255].
+*/
+#define Downscale(quantum)  (quantum)
+#define Upscale(quantum)  (quantum)
+#define XDownscale(color)  ((color)/257L)
+#define XUpscale(color)  (257L*(color))
+
 typedef unsigned char Quantum;
 #elif QuantumDepth == 16
+/*
+  Color quantum is [0..65535].
+*/
+#define Downscale(quantum)  ((quantum)/257L)
+#define Upscale(quantum)  (257L*(quantum))
+#define XDownscale(color)  (color)
+#define XUpscale(color)  (color)
+
 typedef unsigned short Quantum;
 #else
 # error "Specified value of QuantumDepth is not supported"
 #endif
+
+#define Intensity(color)  \
+  ((9798*(color)->red+19235*(color)->green+3735*(color)->blue)/32768L)
 #define MaxRGB  ((1L << QuantumDepth)-1L)
 #define OpaqueOpacity  0
 #define TransparentOpacity  MaxRGB
