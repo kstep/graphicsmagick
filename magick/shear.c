@@ -250,9 +250,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
         Rotate 0 degrees.
       */
       q=rotated_image->pixels;
-      for (y=0; y < image->rows; y++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        for (x=0; x < image->columns; x++)
+        for (x=0; x < (int) image->columns; x++)
         {
           if (runlength != 0)
             runlength--;
@@ -275,10 +275,10 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
       /*
         Rotate 90 degrees.
       */
-      for (x=0; x < rotated_image->columns; x++)
+      for (x=0; x < (int) rotated_image->columns; x++)
       {
         q=rotated_image->pixels+(rotated_image->columns-x)-1;
-        for (y=0; y < rotated_image->rows; y++)
+        for (y=0; y < (int) rotated_image->rows; y++)
         {
           if (runlength != 0)
             runlength--;
@@ -304,7 +304,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
       q=rotated_image->pixels+(rotated_image->columns*rotated_image->rows)-1;
       for (y=image->rows-1; y >= 0; y--)
       {
-        for (x=0; x < image->columns; x++)
+        for (x=0; x < (int) image->columns; x++)
         {
           if (runlength != 0)
             runlength--;
@@ -331,7 +331,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
       {
         q=rotated_image->pixels+(rotated_image->columns*rotated_image->rows)-
           x-1;
-        for (y=0; y < rotated_image->rows; y++)
+        for (y=0; y < (int) rotated_image->rows; y++)
         {
           if (runlength != 0)
             runlength--;
@@ -419,7 +419,7 @@ static void XShearImage(Image *image,const double degrees,
     last_pixel;
 
   y_offset--;
-  for (y=0; y < height; y++)
+  for (y=0; y < (int) height; y++)
   {
     y_offset++;
     displacement=degrees*(((double) y)-(height-1)/2.0);
@@ -448,7 +448,7 @@ static void XShearImage(Image *image,const double degrees,
             */
             p=image->pixels+image->columns*y_offset+x_offset;
             q=p-step;
-            for (i=0; i < width; i++)
+            for (i=0; i < (int) width; i++)
             {
               *q=(*p);
               q++;
@@ -457,7 +457,7 @@ static void XShearImage(Image *image,const double degrees,
             /*
               Set old row to background color.
             */
-            for (i=0; i < step; i++)
+            for (i=0; i < (int) step; i++)
             {
               q->red=image->background_color.red;
               q->green=image->background_color.green;
@@ -474,7 +474,7 @@ static void XShearImage(Image *image,const double degrees,
             */
             p=image->pixels+image->columns*y_offset+x_offset+width;
             q=p+step;
-            for (i=0; i < width; i++)
+            for (i=0; i < (int) width; i++)
             {
               p--;
               q--;
@@ -483,7 +483,7 @@ static void XShearImage(Image *image,const double degrees,
             /*
               Set old row to background color.
             */
-            for (i=0; i < step; i++)
+            for (i=0; i < (int) step; i++)
             {
               q--;
               q->red=image->background_color.red;
@@ -513,7 +513,7 @@ static void XShearImage(Image *image,const double degrees,
         */
         p=image->pixels+image->columns*y_offset+x_offset;
         q=p-step;
-        for (i=0; i < width; i++)
+        for (i=0; i < (int) width; i++)
         {
           red=DownShift(last_pixel.red*(UpShift(1)-fractional_step)+p->red*
             fractional_step);
@@ -576,7 +576,7 @@ static void XShearImage(Image *image,const double degrees,
         */
         p=image->pixels+image->columns*y_offset+x_offset+width;
         q=p+step;
-        for (i=0; i < width; i++)
+        for (i=0; i < (int) width; i++)
         {
           p--;
           red=DownShift(last_pixel.red*(UpShift(1)-fractional_step)+p->red*
@@ -704,7 +704,7 @@ static void YShearImage(Image *image,const double degrees,
     last_pixel;
 
   x_offset--;
-  for (y=0; y < width; y++)
+  for (y=0; y < (int) width; y++)
   {
     x_offset++;
     displacement=degrees*(((double) y)-(width-1)/2.0);
@@ -733,7 +733,7 @@ static void YShearImage(Image *image,const double degrees,
             */
             p=image->pixels+image->columns*y_offset+x_offset;
             q=p-step*image->columns;
-            for (i=0; i < height; i++)
+            for (i=0; i < (int) height; i++)
             {
               *q=(*p);
               q+=image->columns;
@@ -742,7 +742,7 @@ static void YShearImage(Image *image,const double degrees,
             /*
               Set old column to background color.
             */
-            for (i=0; i < step; i++)
+            for (i=0; i < (int) step; i++)
             {
               q->red=image->background_color.red;
               q->green=image->background_color.green;
@@ -759,7 +759,7 @@ static void YShearImage(Image *image,const double degrees,
             */
             p=image->pixels+image->columns*(y_offset+height)+x_offset;
             q=p+step*image->columns;
-            for (i=0; i < height; i++)
+            for (i=0; i < (int) height; i++)
             {
               q-=image->columns;
               p-=image->columns;
@@ -768,7 +768,7 @@ static void YShearImage(Image *image,const double degrees,
             /*
               Set old column to background color.
             */
-            for (i=0; i < step; i++)
+            for (i=0; i < (int) step; i++)
             {
               q-=image->columns;
               q->red=image->background_color.red;
@@ -798,7 +798,7 @@ static void YShearImage(Image *image,const double degrees,
         */
         p=image->pixels+image->columns*y_offset+x_offset;
         q=p-step*image->columns;
-        for (i=0; i < height; i++)
+        for (i=0; i < (int) height; i++)
         {
           red=DownShift(last_pixel.red*(UpShift(1)-fractional_step)+p->red*
             fractional_step);
@@ -861,7 +861,7 @@ static void YShearImage(Image *image,const double degrees,
         */
         p=image->pixels+image->columns*(y_offset+height)+x_offset;
         q=p+step*image->columns;
-        for (i=0; i < height; i++)
+        for (i=0; i < (int) height; i++)
         {
           p-=image->columns;
           red=DownShift(last_pixel.red*(UpShift(1)-fractional_step)+p->red*

@@ -122,9 +122,9 @@ Export Image *AddNoiseImage(Image *image,NoiseType noise_type)
   p=image->pixels;
   runlength=p->length+1;
   q=noisy_image->pixels;
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -258,7 +258,7 @@ Export Image *BlurImage(Image *image,double factor)
   p=image->pixels;
   runlength=p->length+1;
   s=scanline;
-  for (x=0; x < (image->columns << 1); x++)
+  for (x=0; x < (int) (image->columns << 1); x++)
   {
     if (runlength != 0)
       runlength--;
@@ -275,7 +275,7 @@ Export Image *BlurImage(Image *image,double factor)
   */
   q=blurred_image->pixels;
   s1=scanline;
-  for (x=0; x < image->columns; x++)
+  for (x=0; x < (int) image->columns; x++)
   {
     *q=(*s1++);
     q->length=0;
@@ -286,7 +286,7 @@ Export Image *BlurImage(Image *image,double factor)
   */
   weight=(long) ((100.0-factor)/2);
   quantum=(unsigned int) Max(weight+12,1);
-  for (y=1; y < (image->rows-1); y++)
+  for (y=1; y < (int) (image->rows-1); y++)
   {
     /*
       Initialize sliding window pointers.
@@ -298,7 +298,7 @@ Export Image *BlurImage(Image *image,double factor)
       Read another scan line.
     */
     s=s2;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -316,7 +316,7 @@ Export Image *BlurImage(Image *image,double factor)
     *q=(*s1);
     q->length=0;
     q++;
-    for (x=1; x < (image->columns-1); x++)
+    for (x=1; x < (int) (image->columns-1); x++)
     {
       /*
         Compute weighted average of target pixel color components.
@@ -353,7 +353,7 @@ Export Image *BlurImage(Image *image,double factor)
     Dump last scanline of pixels.
   */
   s1=scanline+image->columns*(y % 3);
-  for (x=0; x < image->columns; x++)
+  for (x=0; x < (int) image->columns; x++)
   {
     *q=(*s1++);
     q->length=0;
@@ -463,7 +463,7 @@ Export Image *DespeckleImage(Image *image)
   /*
     Zero image buffers.
   */
-  for (i=0; i < packets; i++)
+  for (i=0; i < (int) packets; i++)
   {
     red_channel[i]=0;
     green_channel[i]=0;
@@ -476,10 +476,10 @@ Export Image *DespeckleImage(Image *image)
   */
   x=image->columns+2;
   p=image->pixels;
-  for (j=0; j < image->rows; j++)
+  for (j=0; j < (int) image->rows; j++)
   {
     x++;
-    for (i=0; i < image->columns; i++)
+    for (i=0; i < (int) image->columns; i++)
     {
       red_channel[x]=p->red;
       green_channel[x]=p->green;
@@ -504,7 +504,7 @@ Export Image *DespeckleImage(Image *image)
   /*
     Reduce speckle in green channel.
   */
-  for (i=0; i < packets; i++)
+  for (i=0; i < (int) packets; i++)
     buffer[i]=0;
   for (i=0; i < 4; i++)
   {
@@ -517,7 +517,7 @@ Export Image *DespeckleImage(Image *image)
   /*
     Reduce speckle in blue channel.
   */
-  for (i=0; i < packets; i++)
+  for (i=0; i < (int) packets; i++)
     buffer[i]=0;
   for (i=0; i < 4; i++)
   {
@@ -532,10 +532,10 @@ Export Image *DespeckleImage(Image *image)
   */
   x=image->columns+2;
   q=despeckled_image->pixels;
-  for (j=0; j < image->rows; j++)
+  for (j=0; j < (int) image->rows; j++)
   {
     x++;
-    for (i=0; i < image->columns; i++)
+    for (i=0; i < (int) image->columns; i++)
     {
       q->red=red_channel[x];
       q->green=green_channel[x];
@@ -671,7 +671,7 @@ Export Image *EdgeImage(Image *image,double factor)
   p=image->pixels;
   runlength=p->length+1;
   s=scanline;
-  for (x=0; x < (image->columns << 1); x++)
+  for (x=0; x < (int) (image->columns << 1); x++)
   {
     if (runlength != 0)
       runlength--;
@@ -687,7 +687,7 @@ Export Image *EdgeImage(Image *image,double factor)
     Dump first scanline of pixels.
   */
   q=edged_image->pixels;
-  for (x=0; x < image->columns; x++)
+  for (x=0; x < (int) image->columns; x++)
   {
     q->red=0;
     q->green=0;
@@ -700,7 +700,7 @@ Export Image *EdgeImage(Image *image,double factor)
     Edge detect each row.
   */
   weight=factor/8.0+0.5;
-  for (y=1; y < (image->rows-1); y++)
+  for (y=1; y < (int) (image->rows-1); y++)
   {
     /*
       Initialize sliding window pointers.
@@ -712,7 +712,7 @@ Export Image *EdgeImage(Image *image,double factor)
       Read another scan line.
     */
     s=s2;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -729,7 +729,7 @@ Export Image *EdgeImage(Image *image,double factor)
     */
     *q=(*(q-1));
     q++;
-    for (x=1; x < (image->columns-1); x++)
+    for (x=1; x < (int) (image->columns-1); x++)
     {
       /*
         Compute weighted average of target pixel color components.
@@ -767,7 +767,7 @@ Export Image *EdgeImage(Image *image,double factor)
   /*
     Dump last scanline of pixels.
   */
-  for (x=0; x < image->columns; x++)
+  for (x=0; x < (int) image->columns; x++)
   {
     q->red=0;
     q->green=0;
@@ -891,7 +891,7 @@ Export Image *EmbossImage(Image *image)
   p=image->pixels;
   runlength=p->length+1;
   s=scanline;
-  for (x=0; x < (image->columns << 1); x++)
+  for (x=0; x < (int) (image->columns << 1); x++)
   {
     if (runlength != 0)
       runlength--;
@@ -907,7 +907,7 @@ Export Image *EmbossImage(Image *image)
     Dump first scanline of pixels.
   */
   q=embossed_image->pixels;
-  for (x=0; x < image->columns; x++)
+  for (x=0; x < (int) image->columns; x++)
   {
     q->red=0;
     q->green=0;
@@ -919,7 +919,7 @@ Export Image *EmbossImage(Image *image)
   /*
     Emboss each row.
   */
-  for (y=1; y < (image->rows-1); y++)
+  for (y=1; y < (int) (image->rows-1); y++)
   {
     /*
       Initialize sliding window pointers.
@@ -931,7 +931,7 @@ Export Image *EmbossImage(Image *image)
       Read another scan line.
     */
     s=s2;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -948,7 +948,7 @@ Export Image *EmbossImage(Image *image)
     */
     *q=(*(q-1));
     q++;
-    for (x=1; x < (image->columns-1); x++)
+    for (x=1; x < (int) (image->columns-1); x++)
     {
       /*
         Compute weighted average of target pixel color components.
@@ -987,7 +987,7 @@ Export Image *EmbossImage(Image *image)
   /*
     Dump last scanline of pixels.
   */
-  for (x=0; x < image->columns; x++)
+  for (x=0; x < (int) image->columns; x++)
   {
     q->red=0;
     q->green=0;
@@ -1150,7 +1150,7 @@ Export Image *EnhanceImage(Image *image)
   p=image->pixels;
   runlength=p->length+1;
   s=scanline;
-  for (x=0; x < (image->columns*4); x++)
+  for (x=0; x < (int) (image->columns*4); x++)
   {
     if (runlength != 0)
       runlength--;
@@ -1167,7 +1167,7 @@ Export Image *EnhanceImage(Image *image)
   */
   q=enhanced_image->pixels;
   s=scanline;
-  for (x=0; x < (image->columns << 1); x++)
+  for (x=0; x < (int) (image->columns << 1); x++)
   {
     *q=(*s);
     q->length=0;
@@ -1177,7 +1177,7 @@ Export Image *EnhanceImage(Image *image)
   /*
     Enhance each row.
   */
-  for (y=2; y < (image->rows-2); y++)
+  for (y=2; y < (int) (image->rows-2); y++)
   {
     /*
       Initialize sliding window pointers.
@@ -1191,7 +1191,7 @@ Export Image *EnhanceImage(Image *image)
       Read another scan line.
     */
     s=s4;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -1214,7 +1214,7 @@ Export Image *EnhanceImage(Image *image)
       q++;
       s++;
     }
-    for (x=2; x < (image->columns-2); x++)
+    for (x=2; x < (int) (image->columns-2); x++)
     {
       /*
         Compute weighted average of target pixel color components.
@@ -1267,7 +1267,7 @@ Export Image *EnhanceImage(Image *image)
     Dump last 2 scanlines of pixels.
   */
   s=scanline+image->columns*(y % 5);
-  for (x=0; x < (image->columns << 1); x++)
+  for (x=0; x < (int) (image->columns << 1); x++)
   {
     *q=(*s);
     q->length=0;
@@ -1523,9 +1523,9 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
         Determine most frequent color.
       */
       count=0;
-      for (i=0; i < (MaxRGB+1); i++)
+      for (i=0; i < (int) (MaxRGB+1); i++)
         histogram[i]=0;
-      for (i=0; i < radius; i++)
+      for (i=0; i < (int) radius; i++)
       {
         s=p-(radius-i)*image->columns-1-i;
         for (j=0; j < (2*i+1); j++)
@@ -1533,7 +1533,7 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
           if (s >= image->pixels)
             k=Intensity(*s);
           histogram[k]++;
-          if (histogram[k] > count)
+          if ((int) histogram[k] > count)
             {
               if (s >= image->pixels)
                 *q=(*s);
@@ -1547,7 +1547,7 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
           if (s < (image->pixels+image->packets-1))
             k=Intensity(*s);
           histogram[k]++;
-          if (histogram[k] > count)
+          if ((int) histogram[k] > count)
             {
               if (s < (image->pixels+image->packets-1))
                 *q=(*s);
@@ -1557,12 +1557,12 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
         }
       }
       s=p-radius;
-      for (j=0; j < (radius+radius+1); j++)
+      for (j=0; j < (int) (radius+radius+1); j++)
       {
         if (s >= image->pixels)
           k=Intensity(*s);
         histogram[k]++;
-        if (histogram[k] > count)
+        if ((int) histogram[k] > count)
           {
             if (s >= image->pixels)
               *q=(*s);
@@ -1833,7 +1833,7 @@ Export void RaiseImage(Image *image,RectangleInfo *raise_info,const int raised)
     }
   image->class=DirectClass;
   p=image->pixels;
-  for (y=0; y < raise_info->height; y++)
+  for (y=0; y < (int) raise_info->height; y++)
   {
     for (x=0; x < y; x++)
     {
@@ -1867,9 +1867,9 @@ Export void RaiseImage(Image *image,RectangleInfo *raise_info,const int raised)
     }
   }
   height=image->rows-(raise_info->height << 1);
-  for (y=0; y < height; y++)
+  for (y=0; y < (int) height; y++)
   {
-    for (x=0; x < raise_info->width; x++)
+    for (x=0; x < (int) raise_info->width; x++)
     {
       p->red=(unsigned int) (p->red*HighlightFactor+foreground*
         (MaxRGB-HighlightFactor))/MaxRGB;
@@ -1881,7 +1881,7 @@ Export void RaiseImage(Image *image,RectangleInfo *raise_info,const int raised)
     }
     for (x=0; x < (int) (image->columns-(raise_info->width << 1)); x++)
       p++;
-    for (x=0; x < raise_info->width; x++)
+    for (x=0; x < (int) raise_info->width; x++)
     {
       p->red=(unsigned int)
         (p->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB;
@@ -1894,7 +1894,7 @@ Export void RaiseImage(Image *image,RectangleInfo *raise_info,const int raised)
     if (QuantumTick(y,height))
       ProgressMonitor(RaiseImageText,y,height);
   }
-  for (y=0; y < raise_info->height; y++)
+  for (y=0; y < (int) raise_info->height; y++)
   {
     for (x=0; x < (int) (raise_info->width-y); x++)
     {
@@ -2039,7 +2039,7 @@ Export Image *ReduceNoiseImage(Image *image)
   p=image->pixels;
   runlength=p->length+1;
   s=scanline;
-  for (x=0; x < (image->columns << 1); x++)
+  for (x=0; x < (int) (image->columns << 1); x++)
   {
     if (runlength != 0)
       runlength--;
@@ -2056,7 +2056,7 @@ Export Image *ReduceNoiseImage(Image *image)
   */
   q=noisy_image->pixels;
   s=scanline;
-  for (x=0; x < image->columns; x++)
+  for (x=0; x < (int) image->columns; x++)
   {
     *q=(*s);
     q->length=0;
@@ -2066,7 +2066,7 @@ Export Image *ReduceNoiseImage(Image *image)
   /*
     Reduce noise in each row.
   */
-  for (y=1; y < (image->rows-1); y++)
+  for (y=1; y < (int) (image->rows-1); y++)
   {
     /*
       Initialize sliding window pointers.
@@ -2078,7 +2078,7 @@ Export Image *ReduceNoiseImage(Image *image)
       Read another scan line.
     */
     s=s2;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -2097,7 +2097,7 @@ Export Image *ReduceNoiseImage(Image *image)
     *q=(*s);
     q->length=0;
     q++;
-    for (x=1; x < (image->columns-1); x++)
+    for (x=1; x < (int) (image->columns-1); x++)
     {
       /*
         Sort window pixels by increasing intensity.
@@ -2159,7 +2159,7 @@ Export Image *ReduceNoiseImage(Image *image)
     Dump last scanline of pixels.
   */
   s=scanline+image->columns*(y % 3);
-  for (x=0; x < image->columns; x++)
+  for (x=0; x < (int) image->columns; x++)
   {
     *q=(*s);
     q->length=0;
@@ -2279,7 +2279,7 @@ Export Image *ShadeImage(Image *image,unsigned int color_shading,double azimuth,
           DestroyImage(shaded_image);
           return((Image *) NULL);
         }
-      for (i=0; i < shaded_image->colors; i++)
+      for (i=0; i < (int) shaded_image->colors; i++)
       {
         shaded_image->colormap[i].red=(Quantum) i;
         shaded_image->colormap[i].green=(Quantum) i;
@@ -2291,18 +2291,18 @@ Export Image *ShadeImage(Image *image,unsigned int color_shading,double azimuth,
   */
   azimuth=DegreesToRadians(azimuth);
   elevation=DegreesToRadians(elevation);
-  light.x=MaxRGB*cos(azimuth)*cos(elevation);
-  light.y=MaxRGB*sin(azimuth)*cos(elevation);
-  light.z=MaxRGB*sin(elevation);
-  normal.z=(6.0*MaxRGB)/3.0;  /* constant Z of surface normal */
+  light.x=(int) (MaxRGB*cos(azimuth)*cos(elevation));
+  light.y=(int) (MaxRGB*sin(azimuth)*cos(elevation));
+  light.z=(int) (MaxRGB*sin(elevation));
+  normal.z=(int) ((6.0*MaxRGB)/3.0);  /* constant Z of surface normal */
   /*
     Shade image.
   */
   p=image->pixels;
   q=shaded_image->pixels;
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       s0=p-image->columns;
       s1=p;
@@ -2338,7 +2338,7 @@ Export Image *ShadeImage(Image *image,unsigned int color_shading,double azimuth,
               normal_distance=
                 normal.x*normal.x+normal.y*normal.y+normal.z*normal.z;
               if (AbsoluteValue(normal_distance) > 0.0000001)
-                shade=distance/sqrt(normal_distance);
+                shade=(long int) (distance/sqrt(normal_distance));
             }
         }
       if (color_shading)
@@ -2476,10 +2476,10 @@ Export Image *SharpenImage(Image *image,double factor)
   */
   p=image->pixels;
   runlength=p->length+1;
-  for (x=0; x < (3*(image->columns+1)); x++)
+  for (x=0; x < (int) (3*(image->columns+1)); x++)
     scanline[x]=(*p);
   s=scanline;
-  for (x=0; x < (image->columns << 1); x++)
+  for (x=0; x < (int) (image->columns << 1); x++)
   {
     if (runlength != 0)
       runlength--;
@@ -2496,7 +2496,7 @@ Export Image *SharpenImage(Image *image,double factor)
   */
   q=sharpened_image->pixels;
   s=scanline;
-  for (x=0; x < image->columns; x++)
+  for (x=0; x < (int) image->columns; x++)
   {
     *q=(*s++);
     q->length=0;
@@ -2507,7 +2507,7 @@ Export Image *SharpenImage(Image *image,double factor)
   */
   weight=(long) ((100.0-factor)/2+13);
   quantum=(unsigned int) Max(weight-12,1);
-  for (y=1; y < (image->rows-1); y++)
+  for (y=1; y < (int) (image->rows-1); y++)
   {
     /*
       Initialize sliding window pointers.
@@ -2519,7 +2519,7 @@ Export Image *SharpenImage(Image *image,double factor)
       Read another scan line.
     */
     s=s2;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -2537,7 +2537,7 @@ Export Image *SharpenImage(Image *image,double factor)
     *q=(*s1);
     q->length=0;
     q++;
-    for (x=1; x < (image->columns-1); x++)
+    for (x=1; x < (int) (image->columns-1); x++)
     {
       /*
         Compute weighted average of target pixel color components.
@@ -2555,28 +2555,28 @@ Export Image *SharpenImage(Image *image,double factor)
       if (total_red < 0)
         q->red=0;
       else
-        if (total_red > (MaxRGB*quantum))
+        if (total_red > (int) (MaxRGB*quantum))
           q->red=MaxRGB;
         else
           q->red=(Quantum) ((total_red+(quantum >> 1))/quantum);
       if (total_green < 0)
         q->green=0;
       else
-        if (total_green > (MaxRGB*quantum))
+        if (total_green > (int) (MaxRGB*quantum))
           q->green=MaxRGB;
         else
           q->green=(Quantum) ((total_green+(quantum >> 1))/quantum);
       if (total_blue < 0)
         q->blue=0;
       else
-        if (total_blue > (MaxRGB*quantum))
+        if (total_blue > (int) (MaxRGB*quantum))
           q->blue=MaxRGB;
         else
           q->blue=(Quantum) ((total_blue+(quantum >> 1))/quantum);
       if (total_index < 0)
         q->index=0;
       else
-        if (total_index > (MaxRGB*quantum))
+        if (total_index > (int) (MaxRGB*quantum))
           q->index=MaxRGB;
         else
           q->index=(unsigned short) ((total_index+(quantum >> 1))/quantum);
@@ -2600,7 +2600,7 @@ Export Image *SharpenImage(Image *image,double factor)
     Dump last scanline of pixels.
   */
   s=scanline+image->columns*(y % 3);
-  for (x=0; x < image->columns; x++)
+  for (x=0; x < (int) image->columns; x++)
   {
     *q=(*s++);
     q->length=0;
@@ -2660,7 +2660,7 @@ Export void SolarizeImage(Image *image,const double factor)
         Solarize DirectClass packets.
       */
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         p->red=p->red > threshold ? MaxRGB-p->red : p->red;
         p->green=p->green > threshold ? MaxRGB-p->green : p->green;
@@ -2676,7 +2676,7 @@ Export void SolarizeImage(Image *image,const double factor)
       /*
         Solarize PseudoClass packets.
       */
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         image->colormap[i].red=image->colormap[i].red > threshold ?
           MaxRGB-image->colormap[i].red : image->colormap[i].red;
@@ -3008,16 +3008,16 @@ Export Image *WaveImage(Image *image,double amplitude,double wavelength)
       DestroyImage(waved_image);
       return((Image *) NULL);
     }
-  for (x=0; x < image->columns; x++)
+  for (x=0; x < (int) image->columns; x++)
     sine_map[x]=
       AbsoluteValue(amplitude)+amplitude*sin((2*M_PI*x)/wavelength);
   /*
     Wave image.
   */
   q=waved_image->pixels;
-  for (y=0; y < waved_image->rows; y++)
+  for (y=0; y < (int) waved_image->rows; y++)
   {
-    for (x=0; x < waved_image->columns; x++)
+    for (x=0; x < (int) waved_image->columns; x++)
     {
       offset=y-sine_map[x];
       interpolated_color=InterpolateColor(image,x,offset);

@@ -682,7 +682,7 @@ int main(int argc,char **argv)
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  montage_info.gravity=(-1);
+                  montage_info.gravity=(~0);
                   if (Latin1Compare("Forget",option) == 0)
                     montage_info.gravity=ForgetGravity;
                   if (Latin1Compare("NorthWest",option) == 0)
@@ -705,7 +705,7 @@ int main(int argc,char **argv)
                     montage_info.gravity=SouthEastGravity;
                   if (Latin1Compare("Static",option) == 0)
                     montage_info.gravity=StaticGravity;
-                  if (montage_info.gravity == (-1))
+                  if (montage_info.gravity == (unsigned int) (~0))
                     MagickError(OptionError,"Invalid gravity type",option);
                 }
               break;

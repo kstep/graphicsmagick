@@ -226,7 +226,7 @@ static int InterpretUnicode(char *code,int n)
 
   if (!code)
     return(-1);
-  if (n >= (sizeof(int)*2))
+  if (n >= (int) (2*sizeof(int)))
     return(-1);
   total=0;
   value=0;
@@ -1136,7 +1136,7 @@ Export char **ListColors(const char *pattern,int *number_colors)
       continue;
     if (GlobExpression(color,pattern))
       {
-        if (*number_colors >= max_colors)
+        if (*number_colors >= (int) max_colors)
           {
             max_colors<<=1;
             colorlist=(char **)
@@ -1268,7 +1268,7 @@ Export char **ListFiles(char *directory,const char *pattern,int *number_entries)
       }
     if (IsDirectory(entry->d_name) || GlobExpression(entry->d_name,pattern))
       {
-        if (*number_entries >= max_entries)
+        if (*number_entries >= (int) max_entries)
           {
             /*
               Extend the file list.
@@ -2290,7 +2290,7 @@ Export char **StringToList(char *text)
           return((char **) NULL);
         }
       p=text;
-      for (i=0; i < lines; i++)
+      for (i=0; i < (int) lines; i++)
       {
         for (q=p; *q != '\0'; q++)
           if ((*q == '\r') || (*q == '\n'))
@@ -2329,7 +2329,7 @@ Export char **StringToList(char *text)
           return((char **) NULL);
         }
       p=text;
-      for (i=0; i < lines; i++)
+      for (i=0; i < (int) lines; i++)
       {
         textlist[i]=(char *) AllocateMemory(900*sizeof(char));
         if (textlist[i] == (char *) NULL)
@@ -2614,7 +2614,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
         c=fgetc(file);
         if (c == EOF)
           break;
-        if ((q-text+1) >= length)
+        if ((q-text+1) >= (int) length)
           {
             *q='\0';
             length<<=1;
@@ -2674,7 +2674,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
   for (q=translated_text; *p != '\0'; p++)
   {
     *q='\0';
-    if ((q-translated_text+MaxTextExtent) >= length)
+    if ((q-translated_text+MaxTextExtent) >= (int) length)
       {
         length<<=1;
         translated_text=(char *)

@@ -506,7 +506,7 @@ Export void SignatureImage(Image *image)
   x=0;
   p=image->pixels;
   q=message;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     for (j=0; j <= ((int) p->length); j++)
     {
@@ -516,7 +516,7 @@ Export void SignatureImage(Image *image)
       if (image->matte)
         WriteQuantum(p->index,q);
       x++;
-      if (x == image->columns)
+      if (x == (int) image->columns)
         {
           UpdateMessageDigest(&message_digest,message,q-message);
           q=message;

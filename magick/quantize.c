@@ -403,7 +403,7 @@ static unsigned int Assignment(CubeInfo *cube_info,QuantizeInfo *quantize_info,
     quantize_info->dither=!DitherImage(cube_info,image);
   p=image->pixels;
   if (!quantize_info->dither)
-    for (i=0; i < image->packets; i++)
+    for (i=0; i < (int) image->packets; i++)
     {
       /*
         Identify the deepest node containing the pixel's color.
@@ -544,7 +544,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
   if (image->packets == (image->columns*image->rows))
     CondenseImage(image);
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     if (cube_info->nodes > MaxNodes)
       {
@@ -595,12 +595,12 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
           /*
             Approximate the quantization error represented by this node.
           */
-          mean=(DownScale(p->red)+mid_red)/2;
-          distance=DownScale(p->red)-mid_red;
+          mean=(long int) ((DownScale(p->red)+mid_red)/2);
+          distance=(int) (DownScale(p->red)-mid_red);
           distance_squared=(2.0*256.0+mean)*squares[distance]/256.0;
-          distance=DownScale(p->green)-mid_green;
+          distance=(int) (DownScale(p->green)-mid_green);
           distance_squared+=4.0*squares[distance];
-          distance=DownScale(p->blue)-mid_blue;
+          distance=(int) (DownScale(p->blue)-mid_blue);
           distance_squared+=(3.0*256.0-1.0-mean)*squares[distance]/256.0;
           node_info->quantization_error+=distance_squared*(p->length+1);
         }
@@ -840,8 +840,8 @@ static void Dither(CubeInfo *cube_info,Image *image,unsigned int direction)
     *p;
 
   p=cube_info;
-  if ((p->x >= 0) && (p->x < image->columns) &&
-      (p->y >= 0) && (p->y < image->rows))
+  if ((p->x >= 0) && (p->x < (int) image->columns) &&
+      (p->y >= 0) && (p->y < (int) image->rows))
     {
       double
         blue_error,
@@ -1835,9 +1835,9 @@ static unsigned int OrderedDitherImage(Image *image)
     Dither image with the ordered dithering technique.
   */
   p=image->pixels;
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       p->index=p->red > DitherMatrix[y & 0x07][x & 0x07] ? 1 : 0;
       p++;
@@ -1939,7 +1939,7 @@ unsigned int QuantizationError(Image *image)
   maximum_error_per_pixel=0;
   total_error=0;
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     distance=p->red-(int) image->colormap[p->index].red;
     distance_squared=cube_info.squares[distance];

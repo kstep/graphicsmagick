@@ -58,16 +58,17 @@
   Define declarations.
 */
 #define AreaIsActive(matte_info,position)  \
-  ((position.y >= (matte_info.y-matte_info.bevel_width)) &&  \
-   (position.y < (matte_info.y+matte_info.height+matte_info.bevel_width)))
+  ((position.y >= (int) (matte_info.y-matte_info.bevel_width)) &&  \
+   (position.y < (int) (matte_info.y+matte_info.height+matte_info.bevel_width)))
 #define MatteIsActive(matte_info,position)  \
-  ((position.x >= (matte_info.x-matte_info.bevel_width)) && \
-   (position.y >= (matte_info.y-matte_info.bevel_width)) &&  \
-   (position.x < (matte_info.x+matte_info.width+matte_info.bevel_width)) &&  \
-   (position.y < (matte_info.y+matte_info.height+matte_info.bevel_width)))
+  ((position.x >= (int) (matte_info.x-matte_info.bevel_width)) && \
+   (position.y >= (int) (matte_info.y-matte_info.bevel_width)) &&  \
+   (position.x < (int) (matte_info.x+matte_info.width+matte_info.bevel_width)) &&  \
+   (position.y < (int) (matte_info.y+matte_info.height+matte_info.bevel_width)))
 #define WindowIsActive(window_info,position)  \
   ((position.x >= 0) && (position.y >= 0) &&  \
-   (position.x < window_info.width) && (position.y < window_info.height))
+   (position.x < (int) window_info.width) &&  \
+   (position.y < (int) window_info.height))
 /*
   State declarations.
 */
@@ -285,7 +286,7 @@ static void XDrawBeveledButton(Display *display,const XWindowInfo *window_info,
     x=button_info->x+(button_info->width >> 1)-(width >> 1);
   y=button_info->y+((button_info->height-
     (font_info->ascent+font_info->descent)) >> 1)+font_info->ascent;
-  if (button_info->width == (QuantumMargin >> 1))
+  if ((int) button_info->width == (QuantumMargin >> 1))
     {
       /*
         Option button-- write label to right of button.
@@ -488,13 +489,13 @@ static void XDrawMatteText(Display *display,const XWindowInfo *window_info,
   else
     {
       text=text_info->marker;
-      if (XTextWidth(font_info,text,(int) (text_info->cursor-text)) > width)
+      if (XTextWidth(font_info,text,(text_info->cursor-text)) > (int) width)
         {
           text=text_info->text;
           for (i=0; i < Extent(text); i++)
           {
             n=XTextWidth(font_info,text+i,(int) (text_info->cursor-text-i));
-            if (n <= width)
+            if (n <= (int) width)
               break;
           }
           text_info->marker=(char *) text+i;
@@ -1545,7 +1546,10 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
 
   int
     colors,
+    height,
     status,
+    text_width,
+    width,
     x,
     y;
 
@@ -1559,10 +1563,7 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
     mask = CWWidth | CWHeight | CWX | CWY;
 
   unsigned int
-    height,
-    text_width,
-    visible_colors,
-    width;
+    visible_colors;
 
   unsigned long
     delay,
@@ -1768,7 +1769,7 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
           scroll_info.height-((slider_info.min_y-scroll_info.y+1) << 1)+2;
         visible_colors=
           (scroll_info.height-(height >> 3)-3)/((9*height) >> 3);
-        if (colors > visible_colors)
+        if (colors > (int) visible_colors)
           slider_info.height=(visible_colors*slider_info.height)/colors;
         slider_info.max_y=south_info.y-south_info.bevel_width-
           slider_info.bevel_width-2;
@@ -1884,7 +1885,7 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
         */
         slider_info.height=
           scroll_info.height-((slider_info.min_y-scroll_info.y+1) << 1)+1;
-        if (colors > visible_colors)
+        if (colors > (int) visible_colors)
           slider_info.height=(visible_colors*slider_info.height)/colors;
         slider_info.max_y=south_info.y-south_info.bevel_width-
           slider_info.bevel_width-2;
@@ -1921,7 +1922,8 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
               list_info.id=Latin1Compare(colorlist[i],reply) == 0 ? i : ~0;
               break;
             }
-        if ((i < slider_info.id) || (i >= (slider_info.id+visible_colors)))
+        if ((i < slider_info.id) ||
+            (i >= (int) (slider_info.id+visible_colors)))
           slider_info.id=i-(visible_colors >> 1);
         selection_info.id=(~0);
         state|=RedrawListState;
@@ -1934,7 +1936,7 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
         */
         if (slider_info.id >= (int) (colors-visible_colors))
           slider_info.id=colors-visible_colors;
-        if ((slider_info.id < 0) || (colors <= visible_colors))
+        if ((slider_info.id < 0) || (colors <= (int) visible_colors))
           slider_info.id=0;
         slider_info.y=slider_info.min_y;
         if (colors > 0)
@@ -1947,7 +1949,7 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
             */
             selection_info.id=slider_info.id;
             selection_info.y=list_info.y+(height >> 3)+2;
-            for (i=0; i < visible_colors; i++)
+            for (i=0; i < (int) visible_colors; i++)
             {
               selection_info.raised=(slider_info.id+i) != list_info.id;
               selection_info.text=(char *) NULL;
@@ -2092,7 +2094,7 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
             */
             id=slider_info.id+(event.xbutton.y-(list_info.y+(height >> 1))+1)/
               selection_info.height;
-            if (id >= colors)
+            if ((int) id >= colors)
               break;
             (void) strcpy(reply_info.text,colorlist[id]);
             reply_info.highlight=False;
@@ -2100,7 +2102,7 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
             reply_info.cursor=reply_info.text+Extent(reply_info.text);
             XDrawMatteText(display,&windows->widget,&reply_info);
             state|=RedrawActionState;
-            if (id == list_info.id)
+            if ((int) id == list_info.id)
               {
                 (void) strcpy(glob_pattern,reply_info.text);
                 state|=UpdateListState;
@@ -2296,13 +2298,13 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
         */
         if (event.xclient.message_type != windows->wm_protocols)
           break;
-        if (*event.xclient.data.l == windows->wm_take_focus)
+        if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
             XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
-        if (*event.xclient.data.l != windows->wm_delete_window)
+        if (*event.xclient.data.l != (int) windows->wm_delete_window)
           break;
         if (event.xclient.window == windows->widget.id)
           {
@@ -2319,13 +2321,13 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
         */
         if (event.xconfigure.window != windows->widget.id)
           break;
-        if ((event.xconfigure.width == windows->widget.width) &&
-            (event.xconfigure.height == windows->widget.height))
+        if ((event.xconfigure.width == (int) windows->widget.width) &&
+            (event.xconfigure.height == (int) windows->widget.height))
           break;
         windows->widget.width=
-          Max(event.xconfigure.width,windows->widget.min_width);
+          Max(event.xconfigure.width,(int) windows->widget.min_width);
         windows->widget.height=
-          Max(event.xconfigure.height,windows->widget.min_height);
+          Max(event.xconfigure.height,(int) windows->widget.min_height);
         state|=UpdateConfigurationState;
         break;
       }
@@ -2834,7 +2836,7 @@ Export int XCommandWidget(Display *display,XWindows *windows,
       }
       number_selections=i;
       windows->command.width+=3*QuantumMargin+10;
-      if (windows->command.width < (tile_width+QuantumMargin+10))
+      if ((int) windows->command.width < (tile_width+QuantumMargin+10))
         windows->command.width=tile_width+QuantumMargin+10;
       windows->command.height=
         number_selections*(((3*height) >> 1)+10)+tile_height+20;
@@ -2885,11 +2887,11 @@ Export int XCommandWidget(Display *display,XWindows *windows,
     {
       case ButtonPress:
       {
-        for (i=0; i < number_selections; i++)
+        for (i=0; i < (int) number_selections; i++)
         {
           if (!MatteIsActive(selection_info[i],event->xbutton))
             continue;
-          if (i >= windows->command.data)
+          if (i >= (int) windows->command.data)
             {
               selection_info[i].raised=False;
               XDrawBeveledButton(display,&windows->command,&selection_info[i]);
@@ -2907,12 +2909,12 @@ Export int XCommandWidget(Display *display,XWindows *windows,
       }
       case ButtonRelease:
       {
-        for (i=0; i < number_selections; i++)
+        for (i=0; i < (int) number_selections; i++)
         {
           if (!MatteIsActive(selection_info[i],event->xbutton))
             continue;
           id=i;
-          if (id >= windows->command.data)
+          if (id >= (int) windows->command.data)
             {
               selection_info[id].raised=True;
               XDrawBeveledButton(display,&windows->command,&selection_info[id]);
@@ -2929,7 +2931,7 @@ Export int XCommandWidget(Display *display,XWindows *windows,
         */
         if (event->xclient.message_type != windows->wm_protocols)
           break;
-        if (*event->xclient.data.l != windows->wm_delete_window)
+        if (*event->xclient.data.l != (int) windows->wm_delete_window)
           break;
         XWithdrawWindow(display,windows->command.id,windows->command.screen);
         break;
@@ -2946,13 +2948,13 @@ Export int XCommandWidget(Display *display,XWindows *windows,
             windows->command.x=event->xconfigure.x;
             windows->command.y=event->xconfigure.y;
           }
-        if ((event->xconfigure.width == windows->command.width) &&
-            (event->xconfigure.height == windows->command.height))
+        if ((event->xconfigure.width == (int) windows->command.width) &&
+            (event->xconfigure.height == (int) windows->command.height))
           break;
         windows->command.width=
-          Max(event->xconfigure.width,windows->command.min_width);
+          Max(event->xconfigure.width,(int) windows->command.min_width);
         windows->command.height=
-          Max(event->xconfigure.height,windows->command.min_height);
+          Max(event->xconfigure.height,(int) windows->command.min_height);
         state|=UpdateConfigurationState;
         break;
       }
@@ -2972,9 +2974,9 @@ Export int XCommandWidget(Display *display,XWindows *windows,
         */
         for ( ; ; )
         {
-          for (i=0; i < number_selections; i++)
+          for (i=0; i < (int) number_selections; i++)
           {
-            if (i >= windows->command.data)
+            if (i >= (int) windows->command.data)
               {
                 if (selection_info[i].raised ==
                     MatteIsActive(selection_info[i],event->xmotion))
@@ -3028,7 +3030,7 @@ Export int XCommandWidget(Display *display,XWindows *windows,
       */
       assert(selections != (char const **) NULL);
       y=tile_height+20;
-      for (i=0; i < number_selections; i++)
+      for (i=0; i < (int) number_selections; i++)
       {
         XGetWidgetInfo(selections[i],&selection_info[i]);
         selection_info[i].center=False;
@@ -3066,10 +3068,10 @@ Export int XCommandWidget(Display *display,XWindows *windows,
             (windows->command.width-tile_width) >> 1,10,1L);
           XFreePixmap(display,tile_pixmap);
         }
-      for (i=0; i < number_selections; i++)
+      for (i=0; i < (int) number_selections; i++)
       {
         XDrawBeveledButton(display,&windows->command,&selection_info[i]);
-        if (i >= windows->command.data)
+        if (i >= (int) windows->command.data)
           continue;
         toggle_info.raised=i == id;
         toggle_info.y=selection_info[i].y+
@@ -3126,13 +3128,11 @@ Export int XConfirmWidget(Display *display,XWindows *windows,char *message,
 
   int
     confirm,
+    height,
     status,
+    width,
     x,
     y;
-
-  unsigned int
-    height,
-    width;
 
   unsigned long
     state;
@@ -3359,13 +3359,13 @@ Export int XConfirmWidget(Display *display,XWindows *windows,char *message,
         */
         if (event.xclient.message_type != windows->wm_protocols)
           break;
-        if (*event.xclient.data.l == windows->wm_take_focus)
+        if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
             XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
-        if (*event.xclient.data.l != windows->wm_delete_window)
+        if (*event.xclient.data.l != (int) windows->wm_delete_window)
           break;
         if (event.xclient.window == windows->widget.id)
           {
@@ -3381,13 +3381,13 @@ Export int XConfirmWidget(Display *display,XWindows *windows,char *message,
         */
         if (event.xconfigure.window != windows->widget.id)
           break;
-        if ((event.xconfigure.width == windows->widget.width) &&
-            (event.xconfigure.height == windows->widget.height))
+        if ((event.xconfigure.width == (int) windows->widget.width) &&
+            (event.xconfigure.height == (int) windows->widget.height))
           break;
         windows->widget.width=
-          Max(event.xconfigure.width,windows->widget.min_width);
+          Max(event.xconfigure.width,(int) windows->widget.min_width);
         windows->widget.height=
-          Max(event.xconfigure.height,windows->widget.min_height);
+          Max(event.xconfigure.height,(int) windows->widget.min_height);
         state|=UpdateConfigurationState;
         break;
       }
@@ -3529,7 +3529,9 @@ Export int XDialogWidget(Display *display,XWindows *windows,char *action,
     primary_selection[MaxTextExtent];
 
   int
+    height,
     status,
+    width,
     x;
 
   register int
@@ -3539,9 +3541,7 @@ Export int XDialogWidget(Display *display,XWindows *windows,char *action,
     raised = False;
 
   unsigned int
-    anomaly,
-    height,
-    width;
+    anomaly;
 
   unsigned long
     state;
@@ -3584,7 +3584,7 @@ Export int XDialogWidget(Display *display,XWindows *windows,char *action,
     Position Dialog widget.
   */
   windows->widget.width=Max(2*width,XTextWidth(font_info,query,Extent(query)));
-  if (windows->widget.width < XTextWidth(font_info,reply,Extent(reply)))
+  if ((int) windows->widget.width < XTextWidth(font_info,reply,Extent(reply)))
     windows->widget.width=XTextWidth(font_info,reply,Extent(reply));
   windows->widget.width+=6*QuantumMargin;
   windows->widget.min_width=
@@ -3809,13 +3809,13 @@ Export int XDialogWidget(Display *display,XWindows *windows,char *action,
         */
         if (event.xclient.message_type != windows->wm_protocols)
           break;
-        if (*event.xclient.data.l == windows->wm_take_focus)
+        if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
             XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
-        if (*event.xclient.data.l != windows->wm_delete_window)
+        if (*event.xclient.data.l != (int) windows->wm_delete_window)
           break;
         if (event.xclient.window == windows->widget.id)
           {
@@ -3832,13 +3832,13 @@ Export int XDialogWidget(Display *display,XWindows *windows,char *action,
         */
         if (event.xconfigure.window != windows->widget.id)
           break;
-        if ((event.xconfigure.width == windows->widget.width) &&
-            (event.xconfigure.height == windows->widget.height))
+        if ((event.xconfigure.width == (int) windows->widget.width) &&
+            (event.xconfigure.height == (int) windows->widget.height))
           break;
         windows->widget.width=
-          Max(event.xconfigure.width,windows->widget.min_width);
+          Max(event.xconfigure.width,(int) windows->widget.min_width);
         windows->widget.height=
-          Max(event.xconfigure.height,windows->widget.min_height);
+          Max(event.xconfigure.height,(int) windows->widget.min_height);
         state|=UpdateConfigurationState;
         break;
       }
@@ -4173,7 +4173,10 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
 
   int
     files,
+    height,
     status,
+    text_width,
+    width,
     x,
     y;
 
@@ -4189,10 +4192,7 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
 
   unsigned int
     anomaly,
-    height,
-    text_width,
-    visible_files,
-    width;
+    visible_files;
 
   unsigned long
     delay,
@@ -4403,7 +4403,7 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
         slider_info.height=
           scroll_info.height-((slider_info.min_y-scroll_info.y+1) << 1)+2;
         visible_files=(scroll_info.height-(height >> 3)-3)/((9*height) >> 3);
-        if (files > visible_files)
+        if (files > (int) visible_files)
           slider_info.height=(visible_files*slider_info.height)/files;
         slider_info.max_y=south_info.y-south_info.bevel_width-
           slider_info.bevel_width-2;
@@ -4508,7 +4508,7 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
         */
         slider_info.height=
           scroll_info.height-((slider_info.min_y-scroll_info.y+1) << 1)+1;
-        if (files > visible_files)
+        if (files > (int) visible_files)
           slider_info.height=(visible_files*slider_info.height)/files;
         slider_info.max_y=south_info.y-south_info.bevel_width-
           slider_info.bevel_width-2;
@@ -4549,7 +4549,7 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
               list_info.id=Latin1Compare(filelist[i],reply) == 0 ? i : ~0;
               break;
             }
-        if ((i < slider_info.id) || (i >= (slider_info.id+visible_files)))
+        if ((i < slider_info.id) || (i >= (int) (slider_info.id+visible_files)))
           slider_info.id=i-(visible_files >> 1);
         selection_info.id=(~0);
         state|=RedrawListState;
@@ -4562,7 +4562,7 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
         */
         if (slider_info.id >= (int) (files-visible_files))
           slider_info.id=files-visible_files;
-        if ((slider_info.id < 0) || (files <= visible_files))
+        if ((slider_info.id < 0) || (files <= (int) visible_files))
           slider_info.id=0;
         slider_info.y=slider_info.min_y;
         if (files > 0)
@@ -4575,7 +4575,7 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
             */
             selection_info.id=slider_info.id;
             selection_info.y=list_info.y+(height >> 3)+2;
-            for (i=0; i < visible_files; i++)
+            for (i=0; i < (int) visible_files; i++)
             {
               selection_info.raised=(slider_info.id+i) != list_info.id;
               selection_info.text=(char *) NULL;
@@ -4697,14 +4697,14 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
             */
             id=slider_info.id+(event.xbutton.y-(list_info.y+(height >> 1))+1)/
               selection_info.height;
-            if (id >= files)
+            if ((int) id >= files)
               break;
             (void) strcpy(reply_info.text,filelist[id]);
             reply_info.highlight=False;
             reply_info.marker=reply_info.text;
             reply_info.cursor=reply_info.text+Extent(reply_info.text);
             XDrawMatteText(display,&windows->widget,&reply_info);
-            if (id == list_info.id)
+            if ((int) id == list_info.id)
               {
                 (void) strcpy(working_directory,reply_info.text);
                 state|=UpdateListState;
@@ -4918,13 +4918,13 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
         */
         if (event.xclient.message_type != windows->wm_protocols)
           break;
-        if (*event.xclient.data.l == windows->wm_take_focus)
+        if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
             XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
-        if (*event.xclient.data.l != windows->wm_delete_window)
+        if (*event.xclient.data.l != (int) windows->wm_delete_window)
           break;
         if (event.xclient.window == windows->widget.id)
           {
@@ -4941,13 +4941,13 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
         */
         if (event.xconfigure.window != windows->widget.id)
           break;
-        if ((event.xconfigure.width == windows->widget.width) &&
-            (event.xconfigure.height == windows->widget.height))
+        if ((event.xconfigure.width == (int) windows->widget.width) &&
+            (event.xconfigure.height == (int) windows->widget.height))
           break;
         windows->widget.width=
-          Max(event.xconfigure.width,windows->widget.min_width);
+          Max(event.xconfigure.width,(int) windows->widget.min_width);
         windows->widget.height=
-          Max(event.xconfigure.height,windows->widget.min_height);
+          Max(event.xconfigure.height,(int) windows->widget.min_height);
         state|=UpdateConfigurationState;
         break;
       }
@@ -5350,7 +5350,10 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
 
   int
     fonts,
+    height,
     status,
+    text_width,
+    width,
     x,
     y;
 
@@ -5364,10 +5367,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
     mask = CWWidth | CWHeight | CWX | CWY;
 
   unsigned int
-    height,
-    text_width,
-    visible_fonts,
-    width;
+    visible_fonts;
 
   unsigned long
     delay,
@@ -5585,7 +5585,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
           scroll_info.height-((slider_info.min_y-scroll_info.y+1) << 1)+2;
         visible_fonts=
           (scroll_info.height-(height >> 3)-3)/((9*height) >> 3);
-        if (fonts > visible_fonts)
+        if (fonts > (int) visible_fonts)
           slider_info.height=(visible_fonts*slider_info.height)/fonts;
         slider_info.max_y=south_info.y-south_info.bevel_width-
           slider_info.bevel_width-2;
@@ -5723,7 +5723,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
           (int (*)(const void *, const void *)) FontCompare);
         slider_info.height=
           scroll_info.height-((slider_info.min_y-scroll_info.y+1) << 1)+1;
-        if (fonts > visible_fonts)
+        if (fonts > (int) visible_fonts)
           slider_info.height=(visible_fonts*slider_info.height)/fonts;
         slider_info.max_y=south_info.y-south_info.bevel_width-
           slider_info.bevel_width-2;
@@ -5760,7 +5760,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
               list_info.id=Latin1Compare(fontlist[i],reply) == 0 ? i : ~0;
               break;
             }
-        if ((i < slider_info.id) || (i >= (slider_info.id+visible_fonts)))
+        if ((i < slider_info.id) || (i >= (int) (slider_info.id+visible_fonts)))
           slider_info.id=i-(visible_fonts >> 1);
         selection_info.id=(~0);
         state|=RedrawListState;
@@ -5773,7 +5773,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
         */
         if (slider_info.id >= (int) (fonts-visible_fonts))
           slider_info.id=fonts-visible_fonts;
-        if ((slider_info.id < 0) || (fonts <= visible_fonts))
+        if ((slider_info.id < 0) || (fonts <= (int) visible_fonts))
           slider_info.id=0;
         slider_info.y=slider_info.min_y;
         if (fonts > 0)
@@ -5786,7 +5786,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
             */
             selection_info.id=slider_info.id;
             selection_info.y=list_info.y+(height >> 3)+2;
-            for (i=0; i < visible_fonts; i++)
+            for (i=0; i < (int) visible_fonts; i++)
             {
               selection_info.raised=(slider_info.id+i) != list_info.id;
               selection_info.text=(char *) NULL;
@@ -5936,7 +5936,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
             */
             id=slider_info.id+(event.xbutton.y-(list_info.y+(height >> 1))+1)/
               selection_info.height;
-            if (id >= fonts)
+            if ((int) id >= fonts)
               break;
             (void) strcpy(reply_info.text,fontlist[id]);
             reply_info.highlight=False;
@@ -5944,7 +5944,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
             reply_info.cursor=reply_info.text+Extent(reply_info.text);
             XDrawMatteText(display,&windows->widget,&reply_info);
             state|=RedrawActionState;
-            if (id == list_info.id)
+            if ((int) id == list_info.id)
               {
                 (void) strcpy(glob_pattern,reply_info.text);
                 state|=UpdateListState;
@@ -6117,13 +6117,13 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
         */
         if (event.xclient.message_type != windows->wm_protocols)
           break;
-        if (*event.xclient.data.l == windows->wm_take_focus)
+        if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
             XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
-        if (*event.xclient.data.l != windows->wm_delete_window)
+        if (*event.xclient.data.l != (int) windows->wm_delete_window)
           break;
         if (event.xclient.window == windows->widget.id)
           {
@@ -6140,13 +6140,13 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
         */
         if (event.xconfigure.window != windows->widget.id)
           break;
-        if ((event.xconfigure.width == windows->widget.width) &&
-            (event.xconfigure.height == windows->widget.height))
+        if ((event.xconfigure.width == (int) windows->widget.width) &&
+            (event.xconfigure.height == (int) windows->widget.height))
           break;
         windows->widget.width=
-          Max(event.xconfigure.width,windows->widget.min_width);
+          Max(event.xconfigure.width,(int) windows->widget.min_width);
         windows->widget.height=
-          Max(event.xconfigure.height,windows->widget.min_height);
+          Max(event.xconfigure.height,(int) windows->widget.min_height);
         state|=UpdateConfigurationState;
         break;
       }
@@ -6493,10 +6493,12 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
 */
 Export void XInfoWidget(Display *display,XWindows *windows,char *activity)
 {
-  unsigned int
+  int
     height,
-    margin,
     width;
+
+  unsigned int
+    margin;
 
   XFontStruct
     *font_info;
@@ -6514,7 +6516,8 @@ Export void XInfoWidget(Display *display,XWindows *windows,char *activity)
   width=
     XTextWidth(font_info,activity,Extent(activity))+((3*QuantumMargin) >> 1)+4;
   height=((6*(font_info->ascent+font_info->descent)) >> 2)+4;
-  if ((windows->info.width != width) || (windows->info.height != height))
+  if (((int) windows->info.width != width) ||
+      ((int) windows->info.height != height))
     {
       /*
         Size Info widget to accomodate the activity text.
@@ -6601,7 +6604,10 @@ Export void XListBrowserWidget(Display *display,XWindows *windows,
 
   int
     entries,
+    height,
     status,
+    text_width,
+    width,
     x;
 
   static char
@@ -6611,10 +6617,7 @@ Export void XListBrowserWidget(Display *display,XWindows *windows,
     i;
 
   unsigned int
-    height,
-    text_width,
-    visible_entries,
-    width;
+    visible_entries;
 
   unsigned long
     delay,
@@ -6779,7 +6782,7 @@ Export void XListBrowserWidget(Display *display,XWindows *windows,
           scroll_info.height-((slider_info.min_y-scroll_info.y+1) << 1)+2;
         visible_entries=
           (scroll_info.height-(height >> 3)-3)/((9*height) >> 3);
-        if (entries > visible_entries)
+        if (entries > (int) visible_entries)
           slider_info.height=(visible_entries*slider_info.height)/entries;
         slider_info.max_y=south_info.y-south_info.bevel_width-
           slider_info.bevel_width-2;
@@ -6852,7 +6855,7 @@ Export void XListBrowserWidget(Display *display,XWindows *windows,
         */
         if (slider_info.id >= (int) (entries-visible_entries))
           slider_info.id=entries-visible_entries;
-        if ((slider_info.id < 0) || (entries <= visible_entries))
+        if ((slider_info.id < 0) || (entries <= (int) visible_entries))
           slider_info.id=0;
         slider_info.y=slider_info.min_y;
         if (entries > 0)
@@ -6865,7 +6868,7 @@ Export void XListBrowserWidget(Display *display,XWindows *windows,
             */
             selection_info.id=slider_info.id;
             selection_info.y=list_info.y+(height >> 3)+2;
-            for (i=0; i < visible_entries; i++)
+            for (i=0; i < (int) visible_entries; i++)
             {
               selection_info.raised=(slider_info.id+i) != list_info.id;
               selection_info.text=(char *) NULL;
@@ -6987,7 +6990,7 @@ Export void XListBrowserWidget(Display *display,XWindows *windows,
             */
             id=slider_info.id+(event.xbutton.y-(list_info.y+(height >> 1))+1)/
               selection_info.height;
-            if (id >= entries)
+            if ((int) id >= entries)
               break;
             (void) strcpy(reply_info.text,list[id]);
             reply_info.highlight=False;
@@ -6995,7 +6998,7 @@ Export void XListBrowserWidget(Display *display,XWindows *windows,
             reply_info.cursor=reply_info.text+Extent(reply_info.text);
             XDrawMatteText(display,window_info,&reply_info);
             selection_info.id=(~0);
-            if (id == list_info.id)
+            if ((int) id == list_info.id)
               {
                 action_info.raised=False;
                 XDrawBeveledButton(display,window_info,&action_info);
@@ -7129,13 +7132,13 @@ Export void XListBrowserWidget(Display *display,XWindows *windows,
         */
         if (event.xclient.message_type != windows->wm_protocols)
           break;
-        if (*event.xclient.data.l == windows->wm_take_focus)
+        if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
             XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
-        if (*event.xclient.data.l != windows->wm_delete_window)
+        if (*event.xclient.data.l != (int) windows->wm_delete_window)
           break;
         if (event.xclient.window == window_info->id)
           {
@@ -7152,13 +7155,13 @@ Export void XListBrowserWidget(Display *display,XWindows *windows,
         */
         if (event.xconfigure.window != window_info->id)
           break;
-        if ((event.xconfigure.width == window_info->width) &&
-            (event.xconfigure.height == window_info->height))
+        if ((event.xconfigure.width == (int) window_info->width) &&
+            (event.xconfigure.height == (int) window_info->height))
           break;
         window_info->width=
-          Max(event.xconfigure.width,window_info->min_width);
+          Max(event.xconfigure.width,(int) window_info->min_width);
         window_info->height=
-          Max(event.xconfigure.height,window_info->min_height);
+          Max(event.xconfigure.height,(int) window_info->min_height);
         state|=UpdateConfigurationState;
         break;
       }
@@ -7495,16 +7498,16 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
     cursor;
 
   int
+    height,
     id,
+    width,
     x,
     y;
 
   unsigned int
-    height,
     number_selections,
     title_height,
-    top_offset,
-    width;
+    top_offset;
 
   unsigned long
     state;
@@ -7540,7 +7543,7 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
   for (id=0; selections[id] != (char *) NULL; id++)
   {
     width=XTextWidth(font_info,selections[id],Extent(selections[id]));
-    if (width > windows->widget.width)
+    if (width > (int) windows->widget.width)
       windows->widget.width=width;
   }
   number_selections=id;
@@ -7644,7 +7647,7 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
           XDrawWidgetText(display,&windows->widget,&selection_info);
         selection_info.center=False;
         selection_info.y=top_offset;
-        for (id=0; id < number_selections; id++)
+        for (id=0; id < (int) number_selections; id++)
         {
           selection_info.text=(char *) selections[id];
           XDrawWidgetText(display,&windows->widget,&selection_info);
@@ -7693,7 +7696,7 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
         state&=(~InactiveWidgetState);
         id=(event.xbutton.y-top_offset)/(int) selection_info.height;
         selection_info.id=id;
-        if ((id < 0) || (id >= number_selections))
+        if ((id < 0) || (id >= (int) number_selections))
           break;
         /*
           Highlight this selection.
@@ -7727,13 +7730,13 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
         */
         if (event.xconfigure.window != windows->widget.id)
           break;
-        if ((event.xconfigure.width == windows->widget.width) &&
-            (event.xconfigure.height == windows->widget.height))
+        if ((event.xconfigure.width == (int) windows->widget.width) &&
+            (event.xconfigure.height == (int) windows->widget.height))
           break;
         windows->widget.width=
-          Max(event.xconfigure.width,windows->widget.min_width);
+          Max(event.xconfigure.width,(int) windows->widget.min_width);
         windows->widget.height=
-          Max(event.xconfigure.height,windows->widget.min_height);
+          Max(event.xconfigure.height,(int) windows->widget.min_height);
         state|=UpdateConfigurationState;
         break;
       }
@@ -7745,7 +7748,8 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
           break;
         state&=(~InactiveWidgetState);
         id=((event.xcrossing.y-top_offset)/(int) selection_info.height);
-        if ((selection_info.id >= 0) && (selection_info.id < number_selections))
+        if ((selection_info.id >= 0) &&
+            (selection_info.id < (int) number_selections))
           {
             /*
               Unhighlight last selection.
@@ -7757,7 +7761,7 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
             selection_info.text=(char *) selections[selection_info.id];
             XDrawWidgetText(display,&windows->widget,&selection_info);
           }
-        if ((id < 0) || (id >= number_selections))
+        if ((id < 0) || (id >= (int) number_selections))
           break;
         /*
           Highlight this selection.
@@ -7785,7 +7789,7 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
           break;
         state|=InactiveWidgetState;
         id=selection_info.id;
-        if ((id < 0) || (id >= number_selections))
+        if ((id < 0) || (id >= (int) number_selections))
           break;
         /*
           Unhighlight last selection.
@@ -7829,7 +7833,8 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
         if (state & InactiveWidgetState)
           break;
         id=(event.xmotion.y-top_offset)/(int) selection_info.height;
-        if ((selection_info.id >= 0) && (selection_info.id < number_selections))
+        if ((selection_info.id >= 0) &&
+            (selection_info.id < (int) number_selections))
           {
             /*
               Unhighlight last selection.
@@ -7842,7 +7847,7 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
             XDrawWidgetText(display,&windows->widget,&selection_info);
           }
         selection_info.id=id;
-        if ((id < 0) || (id >= number_selections))
+        if ((id < 0) || (id >= (int) number_selections))
           break;
         /*
           Highlight this selection.
@@ -7870,7 +7875,7 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
       toggle_info.raised=False;
       XDrawTriangleEast(display,&windows->command,&toggle_info);
     }
-  if ((selection_info.id < 0) || (selection_info.id >= number_selections))
+  if ((selection_info.id < 0) || (selection_info.id >= (int) number_selections))
     return(~0);
   (void) strcpy(item,selections[selection_info.id]);
   return(selection_info.id);
@@ -8034,10 +8039,10 @@ Export void XNoticeWidget(Display *display,XWindows *windows,char *message,
   font_info=windows->widget.font_info;
   width=XTextWidth(font_info,DismissButtonText,Extent(DismissButtonText));
   if (message != (char *) NULL)
-    if (XTextWidth(font_info,message,Extent(message)) > width)
+    if (XTextWidth(font_info,message,Extent(message)) > (int) width)
       width=XTextWidth(font_info,message,Extent(message));
   if (qualifier != (char *) NULL)
-    if (XTextWidth(font_info,qualifier,Extent(qualifier)) > width)
+    if (XTextWidth(font_info,qualifier,Extent(qualifier)) > (int) width)
       width=XTextWidth(font_info,qualifier,Extent(qualifier));
   height=(font_info->ascent+font_info->descent);
   /*
@@ -8163,13 +8168,13 @@ Export void XNoticeWidget(Display *display,XWindows *windows,char *message,
         */
         if (event.xclient.message_type != windows->wm_protocols)
           break;
-        if (*event.xclient.data.l == windows->wm_take_focus)
+        if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
             XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
-        if (*event.xclient.data.l != windows->wm_delete_window)
+        if (*event.xclient.data.l != (int) windows->wm_delete_window)
           break;
         if (event.xclient.window == windows->widget.id)
           {
@@ -8185,13 +8190,13 @@ Export void XNoticeWidget(Display *display,XWindows *windows,char *message,
         */
         if (event.xconfigure.window != windows->widget.id)
           break;
-        if ((event.xconfigure.width == windows->widget.width) &&
-            (event.xconfigure.height == windows->widget.height))
+        if ((event.xconfigure.width == (int) windows->widget.width) &&
+            (event.xconfigure.height == (int) windows->widget.height))
           break;
         windows->widget.width=
-          Max(event.xconfigure.width,windows->widget.min_width);
+          Max(event.xconfigure.width,(int) windows->widget.min_width);
         windows->widget.height=
-          Max(event.xconfigure.height,windows->widget.min_height);
+          Max(event.xconfigure.height,(int) windows->widget.min_height);
         state|=UpdateConfigurationState;
         break;
       }
@@ -8324,17 +8329,15 @@ Export unsigned int XPreferencesWidget(Display *display,
     cache[MaxTextExtent];
 
   int
+    height,
     status,
+    text_width,
+    width,
     x,
     y;
 
   register int
     i;
-
-  unsigned int
-    height,
-    text_width,
-    width;
 
   unsigned long
     state;
@@ -8377,7 +8380,7 @@ Export unsigned int XPreferencesWidget(Display *display,
   /*
     Position Preferences widget.
   */
-  windows->widget.width=Max(width << 1,text_width)+6*QuantumMargin;
+  windows->widget.width=Max((int) (width << 1),text_width)+6*QuantumMargin;
   windows->widget.min_width=(width << 1)+QuantumMargin;
   if (windows->widget.width < windows->widget.min_width)
     windows->widget.width=windows->widget.min_width;
@@ -8561,13 +8564,13 @@ Export unsigned int XPreferencesWidget(Display *display,
         */
         if (event.xclient.message_type != windows->wm_protocols)
           break;
-        if (*event.xclient.data.l == windows->wm_take_focus)
+        if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
             XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
-        if (*event.xclient.data.l != windows->wm_delete_window)
+        if (*event.xclient.data.l != (int) windows->wm_delete_window)
           break;
         if (event.xclient.window == windows->widget.id)
           {
@@ -8583,13 +8586,13 @@ Export unsigned int XPreferencesWidget(Display *display,
         */
         if (event.xconfigure.window != windows->widget.id)
           break;
-        if ((event.xconfigure.width == windows->widget.width) &&
-            (event.xconfigure.height == windows->widget.height))
+        if ((event.xconfigure.width == (int) windows->widget.width) &&
+            (event.xconfigure.height == (int) windows->widget.height))
           break;
         windows->widget.width=
-          Max(event.xconfigure.width,windows->widget.min_width);
+          Max(event.xconfigure.width,(int) windows->widget.min_width);
         windows->widget.height=
-          Max(event.xconfigure.height,windows->widget.min_height);
+          Max(event.xconfigure.height,(int) windows->widget.min_height);
         state|=UpdateConfigurationState;
         break;
       }
@@ -8737,7 +8740,8 @@ Export void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
     primary_selection[MaxTextExtent];
 
   int
-    status;
+    status,
+    text_width;
 
   register int
     i;
@@ -8748,7 +8752,6 @@ Export void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
   unsigned int
     height,
     lines,
-    text_width,
     visible_lines,
     width;
 
@@ -8814,7 +8817,7 @@ Export void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
   /*
     Position Text View widget.
   */
-  windows->widget.width=Min(text_width,MaxTextWidth)+5*QuantumMargin;
+  windows->widget.width=Min((int) text_width,MaxTextWidth)+5*QuantumMargin;
   windows->widget.min_width=MinTextWidth+4*QuantumMargin;
   if (windows->widget.width < windows->widget.min_width)
     windows->widget.width=windows->widget.min_width;
@@ -8966,11 +8969,11 @@ Export void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
             XSetFont(display,windows->widget.highlight_context,text_info->fid);
             selection_info.id=slider_info.id;
             selection_info.y=list_info.y+(height >> 3)+2;
-            for (i=0; i < visible_lines; i++)
+            for (i=0; i < (int) visible_lines; i++)
             {
               selection_info.raised=(slider_info.id+i) != list_info.id;
               selection_info.text=(char *) NULL;
-              if ((slider_info.id+i) < lines)
+              if ((slider_info.id+i) < (int) lines)
                 selection_info.text=(char *) textlist[slider_info.id+i];
               XDrawWidgetText(display,&windows->widget,&selection_info);
               selection_info.y+=(int) selection_info.height;
@@ -9024,7 +9027,7 @@ Export void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
               state|=RedrawListState;
             }
         if (!south_info.raised)
-          if (slider_info.id < lines)
+          if (slider_info.id < (int) lines)
             {
               /*
                 Move slider down.
@@ -9059,7 +9062,7 @@ Export void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
               break;
             }
         if (MatteIsActive(south_info,event.xbutton))
-          if (slider_info.id < lines)
+          if (slider_info.id < (int) lines)
             {
               /*
                 Move slider down.
@@ -9105,7 +9108,7 @@ Export void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
               selection_info.height;
             if (id >= lines)
               break;
-            if (id != list_info.id)
+            if ((int) id != list_info.id)
               {
                 list_info.id=id;
                 click_time=event.xbutton.time;
@@ -9180,13 +9183,13 @@ Export void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
         */
         if (event.xclient.message_type != windows->wm_protocols)
           break;
-        if (*event.xclient.data.l == windows->wm_take_focus)
+        if (*event.xclient.data.l == (int) windows->wm_take_focus)
           {
             XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
-        if (*event.xclient.data.l != windows->wm_delete_window)
+        if (*event.xclient.data.l != (int) windows->wm_delete_window)
           break;
         if (event.xclient.window == windows->widget.id)
           {
@@ -9202,13 +9205,13 @@ Export void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
         */
         if (event.xconfigure.window != windows->widget.id)
           break;
-        if ((event.xconfigure.width == windows->widget.width) &&
-            (event.xconfigure.height == windows->widget.height))
+        if ((event.xconfigure.width == (int) windows->widget.width) &&
+            (event.xconfigure.height == (int) windows->widget.height))
           break;
         windows->widget.width=
-          Max(event.xconfigure.width,windows->widget.min_width);
+          Max(event.xconfigure.width,(int) windows->widget.min_width);
         windows->widget.height=
-          Max(event.xconfigure.height,windows->widget.min_height);
+          Max(event.xconfigure.height,(int) windows->widget.min_height);
         state|=UpdateConfigurationState;
         break;
       }

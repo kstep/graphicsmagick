@@ -362,13 +362,13 @@ Export void Hull(int x_offset,int y_offset,int polarity,unsigned int columns,
   p=f+(columns+2);
   q=g+(columns+2);
   r=p+(y_offset*((int) columns+2)+x_offset);
-  for (y=0; y < rows; y++)
+  for (y=0; y < (int) rows; y++)
   {
     p++;
     q++;
     r++;
     if (polarity > 0)
-      for (x=0; x < columns; x++)
+      for (x=0; x < (int) columns; x++)
       {
         v=(*p);
         if (*r > v)
@@ -379,7 +379,7 @@ Export void Hull(int x_offset,int y_offset,int polarity,unsigned int columns,
         r++;
       }
     else
-      for (x=0; x < columns; x++)
+      for (x=0; x < (int) columns; x++)
       {
         v=(*p);
         if (v > (Quantum) (*r+1))
@@ -397,14 +397,14 @@ Export void Hull(int x_offset,int y_offset,int polarity,unsigned int columns,
   q=g+(columns+2);
   r=q+(y_offset*((int) columns+2)+x_offset);
   s=q-(y_offset*((int) columns+2)+x_offset);
-  for (y=0; y < rows; y++)
+  for (y=0; y < (int) rows; y++)
   {
     p++;
     q++;
     r++;
     s++;
     if (polarity > 0)
-      for (x=0; x < columns; x++)
+      for (x=0; x < (int) columns; x++)
       {
         v=(*q);
         if (((Quantum) (*s+1) > v) && (*r > v))
@@ -416,7 +416,7 @@ Export void Hull(int x_offset,int y_offset,int polarity,unsigned int columns,
         s++;
       }
     else
-      for (x=0; x < columns; x++)
+      for (x=0; x < (int) columns; x++)
       {
         v=(*q);
         if (((Quantum) (*s+1) < v) && (*r < v))
@@ -701,7 +701,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               if ((x == 0) && (y == 0))
                 target=image->pixels[p->y*image->columns+p->x];
               color=image->pixels[y*image->columns+x];
-              inside=ColorMatch(color,target,image->fuzz);
+              inside=ColorMatch(color,target,(int) image->fuzz);
               break;
             }
             case FloodfillMethod:
@@ -748,7 +748,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
             */
             image->class=DirectClass;
             image->matte=True;
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
               image->pixels[i].index=Opaque;
           }
         for ( ; p <= q; p++)
@@ -773,7 +773,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               if ((x == 0) && (y == 0))
                 target=image->pixels[p->y*image->columns+p->x];
               color=image->pixels[y*image->columns+x];
-              if (ColorMatch(color,target,image->fuzz))
+              if (ColorMatch(color,target,(int) image->fuzz))
                 image->pixels[y*image->columns+x].index=Transparent;
               break;
             }
@@ -1149,13 +1149,13 @@ Export void Upsample(unsigned int width,unsigned int height,
     Create a new image that is a integral size greater than an existing one.
   */
   assert(pixels != (unsigned char *) NULL);
-  for (y=0; y < height; y++)
+  for (y=0; y < (int) height; y++)
   {
     p=pixels+(height-1-y)*scaled_width+(width-1);
     q=pixels+((height-1-y) << 1)*scaled_width+((width-1) << 1);
     *q=(*p);
     *(q+1)=(*(p));
-    for (x=1; x < width; x++)
+    for (x=1; x < (int) width; x++)
     {
       p--;
       q-=2;
@@ -1163,12 +1163,12 @@ Export void Upsample(unsigned int width,unsigned int height,
       *(q+1)=(((int) *p)+((int) *(p+1))+1) >> 1;
     }
   }
-  for (y=0; y < (height-1); y++)
+  for (y=0; y < (int) (height-1); y++)
   {
     p=pixels+(y << 1)*scaled_width;
     q=p+scaled_width;
     r=q+scaled_width;
-    for (x=0; x < (width-1); x++)
+    for (x=0; x < (int) (width-1); x++)
     {
       *q=(((int) *p)+((int) *r)+1) >> 1;
       *(q+1)=(((int) *p)+((int) *(p+2))+((int) *r)+((int) *(r+2))+2) >> 2;
@@ -1181,7 +1181,7 @@ Export void Upsample(unsigned int width,unsigned int height,
   }
   p=pixels+(2*height-2)*scaled_width;
   q=pixels+(2*height-1)*scaled_width;
-  for (x=0; x < width; x++)
+  for (x=0; x < (int) width; x++)
   {
     *q++=(*p++);
     *q++=(*p++);

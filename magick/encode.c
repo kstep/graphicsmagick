@@ -151,7 +151,7 @@ unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
     y=0;
     p=image->pixels;
     q=pixels;
-    for (i=0; i < image->packets; i++)
+    for (i=0; i < (int) image->packets; i++)
     {
       for (j=0; j <= ((int) p->length); j++)
       {
@@ -160,7 +160,7 @@ unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
         *q++=DownScale(p->green);
         *q++=DownScale(p->blue);
         x++;
-        if (x == image->columns)
+        if (x == (int) image->columns)
           {
             (void) fwrite((char *) pixels,1,q-pixels,image->file);
             if (image->previous == (Image *) NULL)
@@ -363,7 +363,7 @@ unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         bit=0;
         byte=0;
         q=bmp_pixels+y*bytes_per_line;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
@@ -378,7 +378,7 @@ unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
                 byte=0;
               }
             x++;
-            if (x == image->columns)
+            if (x == (int) image->columns)
               {
                 /*
                   Advance to the next scanline.
@@ -406,13 +406,13 @@ unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         p=image->pixels;
         q=bmp_pixels+y*bytes_per_line;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
             *q++=p->index;
             x++;
-            if (x == image->columns)
+            if (x == (int) image->columns)
               {
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(image->rows-y-1,image->rows))
@@ -434,7 +434,7 @@ unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         p=image->pixels;
         q=bmp_pixels+y*bytes_per_line;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
@@ -444,7 +444,7 @@ unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             if (image->matte)
               *q++=Opaque-DownScale(p->index);
             x++;
-            if (x == image->columns)
+            if (x == (int) image->columns)
               {
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(image->rows-y-1,image->rows))
@@ -518,7 +518,7 @@ unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         if (bmp_colormap == (unsigned char *) NULL)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
         q=bmp_colormap;
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
         {
           *q++=DownScale(image->colormap[i].blue);
           *q++=DownScale(image->colormap[i].green);
@@ -659,7 +659,7 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         y=0;
         p=image->pixels;
         q=pixels;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           cyan=MaxRGB-p->red;
           magenta=MaxRGB-p->green;
@@ -676,7 +676,7 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             WriteQuantum((unsigned int) (yellow-undercolor*black),q);
             WriteQuantum((unsigned int) (black_generation*black),q);
             x++;
-            if (x == image->columns)
+            if (x == (int) image->columns)
               {
                 (void) fwrite((char *) pixels,1,q-pixels,image->file);
                 if (image->previous == (Image *) NULL)
@@ -703,10 +703,10 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         */
         if (!UncondenseImage(image))
           return(False);
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           p=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             cyan=MaxRGB-p->red;
             magenta=MaxRGB-p->green;
@@ -720,7 +720,7 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             p++;
           }
           p=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             cyan=MaxRGB-p->red;
             magenta=MaxRGB-p->green;
@@ -734,7 +734,7 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             p++;
           }
           p=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             cyan=MaxRGB-p->red;
             magenta=MaxRGB-p->green;
@@ -748,7 +748,7 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             p++;
           }
           p=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             cyan=MaxRGB-p->red;
             magenta=MaxRGB-p->green;
@@ -780,7 +780,7 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
               PrematureExit(FileOpenWarning,"Unable to open file",image);
           }
         p=image->pixels;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           cyan=MaxRGB-p->red;
           magenta=MaxRGB-p->green;
@@ -804,7 +804,7 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           }
         ProgressMonitor(SaveImageText,100,400);
         p=image->pixels;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           cyan=MaxRGB-p->red;
           magenta=MaxRGB-p->green;
@@ -828,7 +828,7 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           }
         ProgressMonitor(SaveImageText,200,400);
         p=image->pixels;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           cyan=MaxRGB-p->red;
           magenta=MaxRGB-p->green;
@@ -852,7 +852,7 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           }
         ProgressMonitor(SaveImageText,300,400);
         p=image->pixels;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           cyan=MaxRGB-p->red;
           magenta=MaxRGB-p->green;
@@ -1171,7 +1171,7 @@ unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   {
     p=image->pixels+(y*image->columns);
     q=pixels;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       *q++=DownScale(Intensity(*p));
       p++;
@@ -1614,7 +1614,7 @@ unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   y=0;
   p=image->pixels;
   q=pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     for (j=0; j <= (int) p->length; j++)
     {
@@ -1629,7 +1629,7 @@ unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
             WriteQuantum(p->index,q);
         }
       x++;
-      if (x == image->columns)
+      if (x == (int) image->columns)
         {
           status=FPX_WriteImageLine(flashpix,&fpx_info);
           if (status != FPX_OK)
@@ -1950,7 +1950,7 @@ unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             if (!UncondenseImage(image))
               return(False);
             p=image->pixels;
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               matte[i]=p->index == Transparent;
               if (p->index == Transparent)
@@ -1974,7 +1974,7 @@ unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             p=image->pixels;
             image->class=DirectClass;
             image->matte=True;
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               if (matte[i])
                 p->index=image->colors;
@@ -1984,10 +1984,10 @@ unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
           }
       }
     for (bits_per_pixel=1; bits_per_pixel < 8; bits_per_pixel++)
-      if ((1 << bits_per_pixel) >= colors)
+      if ((1 << bits_per_pixel) >= (int) colors)
         break;
     q=colormap;
-    for (i=0; i < image->colors; i++)
+    for (i=0; i < (int) image->colors; i++)
     {
       *q++=DownScale(image->colormap[i].red);
       *q++=DownScale(image->colormap[i].green);
@@ -2015,7 +2015,7 @@ unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         c|=(8-1) << 4;  /* color resolution */
         c|=(bits_per_pixel-1);   /* size of global colormap */
         (void) fputc((char) c,image->file);
-        for (j=0; j < (image->colors-1); j++)
+        for (j=0; j < (int) (image->colors-1); j++)
           if (ColorMatch(image->background_color,image->colormap[j],0))
             break;
         (void) fputc(j,image->file);  /* background color */
@@ -2057,7 +2057,7 @@ unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             {
               count=Min(Extent(p),255);
               (void) fputc(count,image->file);
-              for (i=0; i < count; i++)
+              for (i=0; i < (int) count; i++)
                 (void) fputc(*p++,image->file);
             }
             (void) fputc(0x0,image->file);
@@ -2092,10 +2092,10 @@ unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     c=0x00;
     if (interlace != NoInterlace)
       c|=0x40;  /* pixel data is interlaced */
-    for (j=0; j < colors; j++)
+    for (j=0; j < (int) colors; j++)
       if (colormap[j] != global_colormap[j])
         break;
-    if (j == colors)
+    if (j == (int) colors)
       (void) fputc((char) c,image->file);
     else
       {
@@ -2142,10 +2142,10 @@ unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         for (pass=0; pass < 4; pass++)
         {
           y=interlace_start[pass];
-          while (y < image->rows)
+          while (y < (int) image->rows)
           {
             p=image->pixels+(y*image->columns);
-            for (x=0; x < image->columns; x++)
+            for (x=0; x < (int) image->columns; x++)
             {
               *q=(*p);
               p++;
@@ -2261,13 +2261,13 @@ unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     y=0;
     p=image->pixels;
     q=pixels;
-    for (i=0; i < image->packets; i++)
+    for (i=0; i < (int) image->packets; i++)
     {
       for (j=0; j <= ((int) p->length); j++)
       {
         WriteQuantum(Intensity(*p),q);
         x++;
-        if (x == image->columns)
+        if (x == (int) image->columns)
           {
             (void) fwrite((char *) pixels,1,q-pixels,image->file);
             if (image->previous == (Image *) NULL)
@@ -2391,7 +2391,7 @@ unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               No interlacing:  RGBRGBRGBRGBRGBRGB...
             */
             DF24setil(DFIL_PIXEL);
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
               {
@@ -2418,22 +2418,22 @@ unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             if (!UncondenseImage(image))
               return(False);
             DF24setil(DFIL_LINE);
-            for (y=0; y < image->rows; y++)
+            for (y=0; y < (int) image->rows; y++)
             {
               p=image->pixels+(y*image->columns);
-              for (x=0; x < image->columns; x++)
+              for (x=0; x < (int) image->columns; x++)
               {
                 *q++=DownScale(p->red);
                 p++;
               }
               p=image->pixels+(y*image->columns);
-              for (x=0; x < image->columns; x++)
+              for (x=0; x < (int) image->columns; x++)
               {
                 *q++=DownScale(p->green);
                 p++;
               }
               p=image->pixels+(y*image->columns);
-              for (x=0; x < image->columns; x++)
+              for (x=0; x < (int) image->columns; x++)
               {
                 *q++=DownScale(p->blue);
                 p++;
@@ -2450,7 +2450,7 @@ unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               Plane interlacing:  RRRRRR...GGGGGG...BBBBBB...
             */
             DF24setil(DFIL_PLANE);
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
                 *q++=DownScale(p->red);
@@ -2458,7 +2458,7 @@ unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             }
             ProgressMonitor(SaveImageText,100,400);
             p=image->pixels;
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
                 *q++=DownScale(p->green);
@@ -2466,7 +2466,7 @@ unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             }
             ProgressMonitor(SaveImageText,250,400);
             p=image->pixels;
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
                 *q++=DownScale(p->blue);
@@ -2491,7 +2491,7 @@ unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
         */
         q=hdf_pixels;
         if (IsGrayImage(image))
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             for (j=0; j <= ((int) p->length); j++)
               *q++=DownScale(p->red);
@@ -2511,7 +2511,7 @@ unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               PrematureExit(ResourceLimitWarning,"Memory allocation failed",
                 image);
             q=hdf_palette;
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
             {
               *q++=DownScale(image->colormap[i].red);
               *q++=DownScale(image->colormap[i].green);
@@ -2520,7 +2520,7 @@ unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             (void) DFR8setpalette(hdf_palette);
             FreeMemory(hdf_palette);
             q=hdf_pixels;
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
                 *q++=p->index;
@@ -2671,14 +2671,14 @@ unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Initialize histogram count arrays.
   */
-  for (i=0; i < histogram_image->columns; i++)
+  for (i=0; i < (int) histogram_image->columns; i++)
   {
     red[i]=0;
     green[i]=0;
     blue[i]=0;
   }
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     red[DownScale(p->red)]+=(p->length+1);
     green[DownScale(p->green)]+=(p->length+1);
@@ -2686,7 +2686,7 @@ unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     p++;
   }
   maximum=0;
-  for (i=0; i < histogram_image->columns; i++)
+  for (i=0; i < (int) histogram_image->columns; i++)
   {
     if (maximum < red[i])
       maximum=red[i];
@@ -2695,7 +2695,7 @@ unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     if (maximum < blue[i])
       maximum=blue[i];
   }
-  for (i=0; i < histogram_image->columns; i++)
+  for (i=0; i < (int) histogram_image->columns; i++)
   {
     if (red[i] > maximum)
       red[i]=maximum;
@@ -2708,7 +2708,7 @@ unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     Initialize histogram image.
   */
   q=histogram_image->pixels;
-  for (i=0; i < histogram_image->packets; i++)
+  for (i=0; i < (int) histogram_image->packets; i++)
   {
     q->red=0;
     q->green=0;
@@ -2719,24 +2719,24 @@ unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   }
   scale=(double) histogram_image->rows/maximum;
   q=histogram_image->pixels;
-  for (i=0; i < histogram_image->columns; i++)
+  for (i=0; i < (int) histogram_image->columns; i++)
   {
     j=histogram_image->rows-(int) (scale*red[i]);
-    while (j < histogram_image->rows)
+    while (j < (int) histogram_image->rows)
     {
       q=histogram_image->pixels+(j*histogram_image->columns+i);
       q->red=MaxRGB;
       j++;
     }
     j=histogram_image->rows-(int) (scale*green[i]);
-    while (j < histogram_image->rows)
+    while (j < (int) histogram_image->rows)
     {
       q=histogram_image->pixels+(j*histogram_image->columns+i);
       q->green=MaxRGB;
       j++;
     }
     j=histogram_image->rows-(int) (scale*blue[i]);
-    while (j < histogram_image->rows)
+    while (j < (int) histogram_image->rows)
     {
       q=histogram_image->pixels+(j*histogram_image->columns+i);
       q->blue=MaxRGB;
@@ -2917,7 +2917,7 @@ unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
               if (*(p+1) != '\0')
                 (void) fprintf(image->file,"  <area href=""%.1024s""",url);
               x+=width;
-              if (x >= image->columns)
+              if (x >= (int) image->columns)
                 {
                   x=0;
                   y+=height;
@@ -2999,7 +2999,7 @@ unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
           if (*(p+1) != '\0')
             (void) fprintf(image->file,"  <area href=""%.1024s""",url);
           x+=width;
-          if (x >= image->columns)
+          if (x >= (int) image->columns)
             {
               x=0;
               y+=height;
@@ -3123,7 +3123,7 @@ unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     y=0;
     p=image->pixels;
     q=pixels;
-    for (i=0; i < image->packets; i++)
+    for (i=0; i < (int) image->packets; i++)
     {
       for (j=0; j <= ((int) p->length); j++)
       {
@@ -3138,7 +3138,7 @@ unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
             byte=0;
           }
         x++;
-        if (x == image->columns)
+        if (x == (int) image->columns)
           {
             /*
               Advance to the next scanline.
@@ -3421,13 +3421,13 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   if ((jpeg_info.data_precision > 8) && (QuantumDepth > 8))
     {
       if (jpeg_info.in_color_space == JCS_GRAYSCALE)
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
             *q++=(JSAMPLE) (Intensity(*p) >> 4);
             x++;
-            if (x == image->columns)
+            if (x == (int) image->columns)
               {
                 (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
                 if (QuantumTick(y,image->rows))
@@ -3441,7 +3441,7 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         }
       else
         if (jpeg_info.in_color_space == JCS_RGB)
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             for (j=0; j <= ((int) p->length); j++)
             {
@@ -3449,7 +3449,7 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               *q++=(JSAMPLE) (p->green >> 4);
               *q++=(JSAMPLE) (p->blue >> 4);
               x++;
-              if (x == image->columns)
+              if (x == (int) image->columns)
                 {
                   (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
                   if (QuantumTick(y,image->rows))
@@ -3464,7 +3464,7 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               ProgressMonitor(SaveImageText,i,image->packets);
           }
         else
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             cyan=MaxRGB-p->red;
             magenta=MaxRGB-p->green;
@@ -3484,7 +3484,7 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               *q++=(JSAMPLE) (yellow-undercolor*black) >> 4;
               *q++=(JSAMPLE) (black_generation*black) >> 4;
               x++;
-              if (x == image->columns)
+              if (x == (int) image->columns)
                 {
                   (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
                   if (QuantumTick(y,image->rows))
@@ -3499,13 +3499,13 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     }
   else
     if (jpeg_info.in_color_space == JCS_GRAYSCALE)
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         for (j=0; j <= ((int) p->length); j++)
         {
           *q++=(JSAMPLE) DownScale(Intensity(*p));
           x++;
-          if (x == image->columns)
+          if (x == (int) image->columns)
             {
               (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
               if (QuantumTick(y,image->rows))
@@ -3519,7 +3519,7 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       }
     else
       if (jpeg_info.in_color_space == JCS_RGB)
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
@@ -3527,7 +3527,7 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             *q++=(JSAMPLE) DownScale(p->green);
             *q++=(JSAMPLE) DownScale(p->blue);
             x++;
-            if (x == image->columns)
+            if (x == (int) image->columns)
               {
                 (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
                 if (QuantumTick(y,image->rows))
@@ -3540,7 +3540,7 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           p++;
         }
       else
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           cyan=MaxRGB-p->red;
           magenta=MaxRGB-p->green;
@@ -3560,7 +3560,7 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             *q++=(JSAMPLE) DownScale(yellow-undercolor*black);
             *q++=(JSAMPLE) DownScale(black_generation*black);
             x++;
-            if (x == image->columns)
+            if (x == (int) image->columns)
               {
                 (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
                 if (QuantumTick(y,image->rows))
@@ -3855,7 +3855,7 @@ unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
     Write colormap to file.
   */
   q=colormap;
-  for (i=0; i < image->colors; i++)
+  for (i=0; i < (int) image->colors; i++)
   {
     WriteQuantum(image->colormap[i].red,q);
     WriteQuantum(image->colormap[i].green,q);
@@ -4040,7 +4040,8 @@ unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Compress image pixels with Zip encoding.
         */
-        compressed_packets=1.001*(packets*image->packet_size)+12;
+        compressed_packets=(long unsigned int)
+          (1.001*(packets*image->packet_size)+12);
         compressed_pixels=(unsigned char *)
           AllocateMemory(compressed_packets*sizeof(unsigned char));
         if (compressed_pixels == (unsigned char *) NULL)
@@ -4246,7 +4247,7 @@ unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         if (colormap == (unsigned char *) NULL)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
         q=colormap;
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
         {
           WriteQuantum(image->colormap[i].red,q);
           WriteQuantum(image->colormap[i].green,q);
@@ -4353,7 +4354,7 @@ unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
   x=0;
   y=0;
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     for (j=0; j <= ((int) p->length); j++)
     {
@@ -4368,7 +4369,7 @@ unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
           byte=0;
         }
       x++;
-      if (x == image->columns)
+      if (x == (int) image->columns)
         {
           /*
             Advance to the next scanline.
@@ -4465,7 +4466,7 @@ unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
     y=0;
     p=image->pixels;
     q=pixels;
-    for (i=0; i < image->packets; i++)
+    for (i=0; i < (int) image->packets; i++)
     {
       for (j=0; j <= ((int) p->length); j++)
       {
@@ -4473,7 +4474,7 @@ unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
         *q++=DownScale(p->green);
         *q++=DownScale(p->blue);
         x++;
-        if (x == image->columns)
+        if (x == (int) image->columns)
           {
             (void) fwrite((char *) pixels,1,q-pixels,image->file);
             if (image->previous == (Image *) NULL)
@@ -4603,21 +4604,21 @@ unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     Write tile to PCD file.
   */
   p=tile_image->pixels;
-  for (y=0; y < tile_image->rows; y+=2)
+  for (y=0; y < (int) tile_image->rows; y+=2)
   {
-    for (x=0; x < (tile_image->columns << 1); x++)
+    for (x=0; x < (int) (tile_image->columns << 1); x++)
     {
       (void) fputc(DownScale(p->red),image->file);
       p++;
     }
     q=downsampled_image->pixels+(y >> 1)*downsampled_image->columns;
-    for (x=0; x < downsampled_image->columns; x++)
+    for (x=0; x < (int) downsampled_image->columns; x++)
     {
       (void) fputc(DownScale(q->green),image->file);
       q++;
     }
     q=downsampled_image->pixels+(y >> 1)*downsampled_image->columns;
-    for (x=0; x < downsampled_image->columns; x++)
+    for (x=0; x < (int) downsampled_image->columns; x++)
     {
       (void) fputc(DownScale(q->blue),image->file);
       q++;
@@ -4841,13 +4842,13 @@ unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       x=0;
       y=0;
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         for (j=0; j <= ((int) p->length); j++)
           (void) fprintf(image->file,"%c%c%c",(int) DownScale(p->red),
             (int) DownScale(p->green),(int) DownScale(p->blue));
         x++;
-        if (x == image->columns)
+        if (x == (int) image->columns)
           {
             (void) fprintf(image->file,"\033*b%uW",3*image->columns);
             if (QuantumTick(y,image->rows))
@@ -4910,7 +4911,7 @@ unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       (void) fprintf(image->file,"\033*r1A");  /* start graphics */
       (void) fprintf(image->file,"\033*b0M");  /* no compression */
       (void) fprintf(image->file,"\033*b%uW",(image->columns+7)/8);
-      for (i=0; i < monochrome_image->packets; i++)
+      for (i=0; i < (int) monochrome_image->packets; i++)
       {
         for (j=0; j <= ((int) p->length); j++)
         {
@@ -4925,7 +4926,7 @@ unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
               byte=0;
             }
           x++;
-          if (x == monochrome_image->columns)
+          if (x == (int) monochrome_image->columns)
             {
               /*
                 Advance to the next scanline.
@@ -4938,7 +4939,7 @@ unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
               byte=0;
               x=0;
               y++;
-              if (y < monochrome_image->rows)
+              if (y < (int) monochrome_image->rows)
                 (void) fprintf(image->file,"\033*b%uW",
                   (monochrome_image->columns+7)/8);
            }
@@ -5129,7 +5130,7 @@ unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       pcx_colormap[i]=0;
     q=pcx_colormap;
     if (image->class == PseudoClass)
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         *q++=DownScale(image->colormap[i].red);
         *q++=DownScale(image->colormap[i].green);
@@ -5157,7 +5158,7 @@ unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         */
         if (!UncondenseImage(image))
           return(False);
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           q=pcx_pixels+(y*pcx_header.bytes_per_line*pcx_header.planes);
           for (i=0; i < (int) pcx_header.planes; i++)
@@ -5198,7 +5199,7 @@ unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       }
     else
       if (pcx_header.bits_per_pixel > 1)
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           /*
             Convert PseudoClass image to PCX raster pixels.
@@ -5207,7 +5208,7 @@ unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           {
             *q++=p->index;
             x++;
-            if (x == image->columns)
+            if (x == (int) image->columns)
               {
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
@@ -5235,7 +5236,7 @@ unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
               Intensity(image->colormap[1]);
           bit=0;
           byte=0;
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             for (j=0; j <= ((int) p->length); j++)
             {
@@ -5250,7 +5251,7 @@ unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
                   byte=0;
                 }
               x++;
-              if (x == image->columns)
+              if (x == (int) image->columns)
                 {
                   /*
                     Advance to the next scanline.
@@ -5273,7 +5274,7 @@ unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     /*
       Runlength-encoded PCX pixels.
     */
-    for (y=0; y < image->rows; y++)
+    for (y=0; y < (int) image->rows; y++)
     {
       q=pcx_pixels+(y*pcx_header.bytes_per_line*pcx_header.planes);
       for (i=0; i < (int) pcx_header.planes; i++)
@@ -5726,7 +5727,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             Dump runlength encoded pixels.
           */
           q=pixels;
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             for (j=0; j <= ((int) p->length); j++)
             {
@@ -5770,7 +5771,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             Dump uncompressed DirectColor packets.
           */
           Ascii85Initialize();
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             for (j=0; j <= ((int) p->length); j++)
             {
@@ -5828,7 +5829,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               Ascii85Initialize();
-              for (i=0; i < image->packets; i++)
+              for (i=0; i < (int) image->packets; i++)
               {
                 for (j=0; j <= ((int) p->length); j++)
                 {
@@ -5843,7 +5844,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                       byte=0;
                     }
                   x++;
-                  if (x == image->columns)
+                  if (x == (int) image->columns)
                     {
                       /*
                         Advance to the next scanline.
@@ -5889,7 +5890,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump Runlength encoded pixels.
               */
               q=pixels;
-              for (i=0; i < image->packets; i++)
+              for (i=0; i < (int) image->packets; i++)
               {
                 for (j=0; j <= ((int) p->length); j++)
                   *q++=(unsigned char) p->index;
@@ -5920,7 +5921,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               Ascii85Initialize();
-              for (i=0; i < image->packets; i++)
+              for (i=0; i < (int) image->packets; i++)
               {
                 for (j=0; j <= ((int) p->length); j++)
                   Ascii85Encode((unsigned char) p->index,image->file);
@@ -6024,7 +6025,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             Dump runlength encoded pixels.
           */
           q=pixels;
-          for (i=0; i < tile_image->packets; i++)
+          for (i=0; i < (int) tile_image->packets; i++)
           {
             for (j=0; j <= ((int) p->length); j++)
             {
@@ -6065,7 +6066,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             Dump uncompressed DirectColor packets.
           */
           Ascii85Initialize();
-          for (i=0; i < tile_image->packets; i++)
+          for (i=0; i < (int) tile_image->packets; i++)
           {
             for (j=0; j <= ((int) p->length); j++)
             {
@@ -6124,7 +6125,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump Runlength encoded pixels.
               */
               q=pixels;
-              for (i=0; i < tile_image->packets; i++)
+              for (i=0; i < (int) tile_image->packets; i++)
               {
                 for (j=0; j <= ((int) p->length); j++)
                 {
@@ -6139,7 +6140,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                       byte=0;
                     }
                   x++;
-                  if (x == tile_image->columns)
+                  if (x == (int) tile_image->columns)
                     {
                       /*
                         Advance to the next scanline.
@@ -6179,7 +6180,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               Ascii85Initialize();
-              for (i=0; i < tile_image->packets; i++)
+              for (i=0; i < (int) tile_image->packets; i++)
               {
                 for (j=0; j <= ((int) p->length); j++)
                 {
@@ -6194,7 +6195,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                       byte=0;
                     }
                   x++;
-                  if (x == tile_image->columns)
+                  if (x == (int) tile_image->columns)
                     {
                       /*
                         Advance to the next scanline.
@@ -6243,7 +6244,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump Runlength encoded pixels.
               */
               q=pixels;
-              for (i=0; i < tile_image->packets; i++)
+              for (i=0; i < (int) tile_image->packets; i++)
               {
                 for (j=0; j <= ((int) p->length); j++)
                   *q++=(unsigned char) p->index;
@@ -6271,7 +6272,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               Ascii85Initialize();
-              for (i=0; i < tile_image->packets; i++)
+              for (i=0; i < (int) tile_image->packets; i++)
               {
                 for (j=0; j <= ((int) p->length); j++)
                   Ascii85Encode((unsigned char) p->index,image->file);
@@ -6312,7 +6313,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) fprintf(image->file,"stream\n");
         length=ftell(image->file);
         Ascii85Initialize();
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
         {
           Ascii85Encode(DownScale(image->colormap[i].red),image->file);
           Ascii85Encode(DownScale(image->colormap[i].green),image->file);
@@ -6346,7 +6347,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) fprintf(image->file,"xref\n");
   (void) fprintf(image->file,"0 %u\n",object+1);
   (void) fprintf(image->file,"0000000000 65535 f \n");
-  for (i=0; i < object; i++)
+  for (i=0; i < (int) object; i++)
     (void) fprintf(image->file,"%010lu 00000 n \n",xref[i]);
   (void) fprintf(image->file,"trailer\n");
   (void) fprintf(image->file,"<<\n");
@@ -6602,7 +6603,7 @@ unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       MSBFirstWriteLong(0x00000000L,image->file);  /* color seed */
       MSBFirstWriteShort(0L,image->file);  /* color flags */
       MSBFirstWriteShort((unsigned short) (image->colors-1),image->file);
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         red=(unsigned int) (image->colormap[i].red*65535L)/MaxRGB;
         green=(unsigned int) (image->colormap[i].green*65535L)/MaxRGB;
@@ -6638,13 +6639,13 @@ unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
         *index;
 
       index=scanline;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         for (j=0; j <= ((int) p->length); j++)
         {
           *index++=(unsigned char) p->index;
           x++;
-          if (x == image->columns)
+          if (x == (int) image->columns)
             {
               count+=PICTEncodeImage(image,scanline,packed_scanline);
               if (QuantumTick(y,image->rows))
@@ -6669,7 +6670,7 @@ unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       green=scanline+image->columns;
       blue=scanline+2*image->columns;
       index=scanline+3*image->columns;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         for (j=0; j <= ((int) p->length); j++)
         {
@@ -6679,7 +6680,7 @@ unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
           if (image->matte)
             *index++=DownScale(p->index);
           x++;
-          if (x == image->columns)
+          if (x == (int) image->columns)
             {
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);
@@ -6953,7 +6954,7 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           if (ping_info->palette == (png_color *) NULL)
             PrematureExit(ResourceLimitWarning,"Memory allocation failed",
               image);
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (int) image->colors; i++)
           {
             ping_info->palette[i].red=DownScale(image->colormap[i].red);
             ping_info->palette[i].green=DownScale(image->colormap[i].green);
@@ -6972,7 +6973,7 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               if (ping_info->trans == (unsigned char *) NULL)
                 PrematureExit(ResourceLimitWarning,"Memory allocation failed",
                   image);
-              for (i=0; i < image->colors; i++)
+              for (i=0; i < (int) image->colors; i++)
               {
                 ping_info->trans[i]=DownScale(Opaque);
                 if (ColorMatch(ping_info->trans_values,image->colormap[i],0))
@@ -7092,13 +7093,13 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         if (image->colors == 2)
           polarity=
             Intensity(image->colormap[1]) > Intensity(image->colormap[0]);
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
             WriteQuantum(p->index == polarity ? 1 : 0,q);
             x++;
-            if (x == image->columns)
+            if (x == (int) image->columns)
               {
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
@@ -7113,13 +7114,13 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       }
     else
       if (IsGrayImage(image))
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
             WriteQuantum(Intensity(*p),q);
             x++;
-            if (x == image->columns)
+            if (x == (int) image->columns)
               {
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
@@ -7133,7 +7134,7 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         }
       else
         if (!IsPseudoClass(image))
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             for (j=0; j <= ((int) p->length); j++)
             {
@@ -7146,7 +7147,7 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               if (matte)
                 WriteQuantum(p->index,q);
               x++;
-              if (x == image->columns)
+              if (x == (int) image->columns)
                 {
                   if (image->previous == (Image *) NULL)
                     if (QuantumTick(y,image->rows))
@@ -7160,13 +7161,13 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             p++;
           }
         else
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             for (j=0; j <= ((int) p->length); j++)
             {
               *q++=p->index;
               x++;
-              if (x == image->columns)
+              if (x == (int) image->columns)
                 {
                   if (image->previous == (Image *) NULL)
                     if (QuantumTick(y,image->rows))
@@ -7427,7 +7428,7 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         if (image->colors == 2)
           polarity=
             Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
@@ -7452,7 +7453,7 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PGM image.
         */
         (void) fprintf(image->file,"%d\n",MaxRGB);
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           index=DownScale(Intensity(*p));
           for (j=0; j <= ((int) p->length); j++)
@@ -7478,7 +7479,7 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PNM image.
         */
         (void) fprintf(image->file,"%d\n",MaxRGB);
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
@@ -7513,7 +7514,7 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
         bit=0;
         byte=0;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
@@ -7528,7 +7529,7 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
                 byte=0;
               }
             x++;
-            if (x == image->columns)
+            if (x == (int) image->columns)
               {
                 /*
                   Advance to the next scanline.
@@ -7554,7 +7555,7 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PGM image.
         */
         (void) fprintf(image->file,"%u\n",DownScale(MaxRGB));
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           index=DownScale(Intensity(*p));
           for (j=0; j <= ((int) p->length); j++)
@@ -7586,7 +7587,7 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         */
         (void) fprintf(image->file,"%u\n",DownScale(MaxRGB));
         q=pixels;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
@@ -7594,7 +7595,7 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             *q++=DownScale(p->green);
             *q++=DownScale(p->blue);
             x++;
-            if (x == image->columns)
+            if (x == (int) image->columns)
               {
                 (void) fwrite((char *) pixels,1,q-pixels,image->file);
                 if (image->previous == (Image *) NULL)
@@ -7695,9 +7696,9 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         i=0;
         j=0;
         p=image->pixels;
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             pixel=(Quantum) ((red_map[i][j][p->red] & 0xe0) |
               ((unsigned int) (green_map[i][j][p->green] & 0xe0) >> 3) |
@@ -8114,7 +8115,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       case JPEGPreview:
       default:
       {
-        local_info.quality=(unsigned int) percentage+13.0;
+        local_info.quality=(unsigned int) (percentage+13.0);
         FormatString(factor,"%u",local_info.quality);
         TemporaryFilename(images[i]->filename);
         status=WriteJPEGImage(&local_info,images[i]);
@@ -8677,7 +8678,7 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             (void) fprintf(image->file,"%%%%BeginPreview: %u %u %u %u\n%%  ",
               preview_image->columns,preview_image->rows,(unsigned int) 1,
               (((preview_image->columns+7) >> 3)*preview_image->rows+35)/36);
-            for (i=0; i < preview_image->packets; i++)
+            for (i=0; i < (int) preview_image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
               {
@@ -8698,7 +8699,7 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                     byte=0;
                   }
                 x++;
-                if (x == preview_image->columns)
+                if (x == (int) preview_image->columns)
                   {
                     if (bit != 0)
                       {
@@ -8790,7 +8791,7 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Dump runlength-encoded DirectColor packets.
             */
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               for (length=p->length; length >= 0; length-=256)
               {
@@ -8820,7 +8821,7 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Dump uncompressed DirectColor packets.
             */
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
               {
@@ -8856,7 +8857,7 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               /*
                 Dump image as grayscale.
               */
-              for (i=0; i < image->packets; i++)
+              for (i=0; i < (int) image->packets; i++)
               {
                 for (j=0; j <= ((int) p->length); j++)
                 {
@@ -8890,7 +8891,7 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               byte=0;
               count=0;
               y=0;
-              for (i=0; i < image->packets; i++)
+              for (i=0; i < (int) image->packets; i++)
               {
                 for (j=0; j <= ((int) p->length); j++)
                 {
@@ -8911,7 +8912,7 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                       byte=0;
                     }
                   x++;
-                  if (x == image->columns)
+                  if (x == (int) image->columns)
                     {
                       /*
                         Advance to the next scanline.
@@ -8954,7 +8955,7 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             Dump number of colors and colormap.
           */
           (void) fprintf(image->file,"%u\n",image->colors);
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (int) image->colors; i++)
             (void) fprintf(image->file,"%02x%02x%02x\n",
               DownScale(image->colormap[i].red),
               DownScale(image->colormap[i].green),
@@ -8967,7 +8968,7 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               /*
                 Dump runlength-encoded PseudoColor packets.
               */
-              for (i=0; i < image->packets; i++)
+              for (i=0; i < (int) image->packets; i++)
               {
                 for (length=p->length; length >= 0; length-=256)
                 {
@@ -8992,7 +8993,7 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               /*
                 Dump uncompressed PseudoColor packets.
               */
-              for (i=0; i < image->packets; i++)
+              for (i=0; i < (int) image->packets; i++)
               {
                 for (j=0; j <= ((int) p->length); j++)
                 {
@@ -9100,15 +9101,15 @@ unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
         Write PSD raster colormap.
       */
       MSBFirstWriteLong(768,image->file);
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
         (void) fputc(DownScale(image->colormap[i].red),image->file);
       for ( ; i < 256; i++)
         (void) fputc(0,image->file);
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
         (void) fputc(DownScale(image->colormap[i].green),image->file);
       for ( ; i < 256; i++)
         (void) fputc(0,image->file);
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
         (void) fputc(DownScale(image->colormap[i].blue),image->file);
       for ( ; i < 256; i++)
         (void) fputc(0,image->file);
@@ -9121,7 +9122,7 @@ unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   */
   p=image->pixels;
   if (image->class == PseudoClass)
-    for (i=0; i < image->packets; i++)
+    for (i=0; i < (int) image->packets; i++)
     {
       for (j=0; j <= ((int) p->length); j++)
         WriteQuantumFile(p->index);
@@ -9129,21 +9130,21 @@ unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     }
   else
     {
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         for (j=0; j <= ((int) p->length); j++)
           WriteQuantumFile(p->red);
         p++;
       }
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         for (j=0; j <= ((int) p->length); j++)
           WriteQuantumFile(p->green);
         p++;
       }
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         for (j=0; j <= ((int) p->length); j++)
           WriteQuantumFile(p->blue);
@@ -9151,7 +9152,7 @@ unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
       }
       p=image->pixels;
       if (image->matte)
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
             WriteQuantumFile(p->index);
@@ -9572,7 +9573,7 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             Dump Packbit encoded pixels.
           */
           q=pixels;
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             for (j=0; j <= ((int) p->length); j++)
             {
@@ -9616,7 +9617,7 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             Dump uncompressed DirectColor packets.
           */
           Ascii85Initialize();
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             for (j=0; j <= ((int) p->length); j++)
             {
@@ -9675,7 +9676,7 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               Ascii85Initialize();
-              for (i=0; i < image->packets; i++)
+              for (i=0; i < (int) image->packets; i++)
               {
                 for (j=0; j <= ((int) p->length); j++)
                 {
@@ -9690,7 +9691,7 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                       byte=0;
                     }
                   x++;
-                  if (x == image->columns)
+                  if (x == (int) image->columns)
                     {
                       /*
                         Advance to the next scanline.
@@ -9718,7 +9719,7 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             Dump number of colors and colormap.
           */
           (void) fprintf(image->file,"%u\n",image->colors);
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (int) image->colors; i++)
             (void) fprintf(image->file,"%02x%02x%02x\n",
               DownScale(image->colormap[i].red),
               DownScale(image->colormap[i].green),
@@ -9744,7 +9745,7 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 Dump Runlength encoded pixels.
               */
               q=pixels;
-              for (i=0; i < image->packets; i++)
+              for (i=0; i < (int) image->packets; i++)
               {
                 for (j=0; j <= ((int) p->length); j++)
                   *q++=(unsigned char) p->index;
@@ -9775,7 +9776,7 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               Ascii85Initialize();
-              for (i=0; i < image->packets; i++)
+              for (i=0; i < (int) image->packets; i++)
               {
                 for (j=0; j <= ((int) p->length); j++)
                   Ascii85Encode((unsigned char) p->index,image->file);
@@ -9902,7 +9903,7 @@ unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
         y=0;
         p=image->pixels;
         q=pixels;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
@@ -9912,7 +9913,7 @@ unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             if (Latin1Compare(image_info->magick,"RGBA") == 0)
               WriteQuantum(image->matte ? p->index : Opaque,q);
             x++;
-            if (x == image->columns)
+            if (x == (int) image->columns)
               {
                 (void) fwrite((char *) pixels,1,q-pixels,image->file);
                 if (image->previous == (Image *) NULL)
@@ -9934,29 +9935,29 @@ unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
         */
         if (!UncondenseImage(image))
           return(False);
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           p=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             WriteQuantumFile(p->red);
             p++;
           }
           p=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             WriteQuantumFile(p->green);
             p++;
           }
           p=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             WriteQuantumFile(p->blue);
             p++;
           }
           p=image->pixels+(y*image->columns);
           if (image->matte)
-            for (x=0; x < image->columns; x++)
+            for (x=0; x < (int) image->columns; x++)
             {
               WriteQuantumFile(p->index);
               p++;
@@ -9980,7 +9981,7 @@ unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
               PrematureExit(FileOpenWarning,"Unable to open file",image);
           }
         p=image->pixels;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
             WriteQuantumFile(p->red);
@@ -9996,7 +9997,7 @@ unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
           }
         ProgressMonitor(SaveImageText,100,400);
         p=image->pixels;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
             WriteQuantumFile(p->green);
@@ -10012,7 +10013,7 @@ unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
           }
         ProgressMonitor(SaveImageText,200,400);
         p=image->pixels;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
             WriteQuantumFile(p->blue);
@@ -10030,7 +10031,7 @@ unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
                 if (image->file == (FILE *) NULL)
                   PrematureExit(FileOpenWarning,"Unable to open file",image);
               }
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
                 WriteQuantumFile(p->index);
@@ -10212,7 +10213,7 @@ unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
       }
     iris_header.minimum_value=0;
     iris_header.maximum_value=MaxRGB;
-    for (i=0; i < sizeof(iris_header.filler); i++)
+    for (i=0; i < (int) sizeof(iris_header.filler); i++)
       iris_header.filler[i]=0;
     /*
       Write SGI header.
@@ -10241,7 +10242,7 @@ unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     y=0;
     p=image->pixels;
     q=iris_pixels+(iris_header.rows-1)*(iris_header.columns*4);
-    for (i=0; i < image->packets; i++)
+    for (i=0; i < (int) image->packets; i++)
     {
       for (j=0; j <= ((int) p->length); j++)
       {
@@ -10250,7 +10251,7 @@ unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         *q++=DownScale(p->blue);
         *q++=(unsigned char) p->index;
         x++;
-        if (x == image->columns)
+        if (x == (int) image->columns)
           {
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
@@ -10512,7 +10513,7 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           Convert DirectClass packet to SUN RGB pixel.
         */
         q=pixels;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
@@ -10522,7 +10523,7 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
             *q++=DownScale(p->green);
             *q++=DownScale(p->blue);
             x++;
-            if (x == image->columns)
+            if (x == (int) image->columns)
               {
                 if (image->columns & 0x01)
                   WriteQuantum(0,q);  /* pad scanline */
@@ -10556,7 +10557,7 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
               Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
           bit=0;
           byte=0;
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             for (j=0; j <= ((int) p->length); j++)
             {
@@ -10571,7 +10572,7 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
                   byte=0;
                 }
               x++;
-              if (x == image->columns)
+              if (x == (int) image->columns)
                 {
                   /*
                     Advance to the next scanline.
@@ -10597,22 +10598,22 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           /*
             Dump colormap to file.
           */
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (int) image->colors; i++)
             (void) fputc(DownScale(image->colormap[i].red),image->file);
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (int) image->colors; i++)
             (void) fputc(DownScale(image->colormap[i].green),image->file);
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (int) image->colors; i++)
             (void) fputc(DownScale(image->colormap[i].blue),image->file);
           /*
             Convert PseudoClass packet to SUN colormapped pixel.
           */
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             for (j=0; j <= ((int) p->length); j++)
             {
               (void) fputc(p->index,image->file);
               x++;
-              if (x == image->columns)
+              if (x == (int) image->columns)
                 {
                   if (image->columns & 0x01)
                     (void) fputc(0,image->file);  /* pad scanline */
@@ -10834,7 +10835,7 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
           Convert DirectClass packet to TGA RGB pixel.
         */
         if (image_info->compression == NoCompression)
-          for (i=0; i < flopped_image->packets; i++)
+          for (i=0; i < (int) flopped_image->packets; i++)
           {
             for (j=0; j <= ((int) p->length); j++)
             {
@@ -10849,7 +10850,7 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
               ProgressMonitor(SaveImageText,i,flopped_image->packets);
           }
         else
-          for (i=0; i < flopped_image->packets; i++)
+          for (i=0; i < (int) flopped_image->packets; i++)
           {
             for (runlength=p->length+1; runlength > 128; runlength-=128)
             {
@@ -10871,7 +10872,7 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
               p--;
             else
               {
-                for ( ; i < flopped_image->packets; i++)
+                for ( ; i < (int) flopped_image->packets; i++)
                 {
                   p--;
                   if ((p->length != 0) || (runlength == 128))
@@ -10914,7 +10915,7 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
             PrematureExit(ResourceLimitWarning,"Memory allocation failed",
               flopped_image);
           q=targa_colormap;
-          for (i=0; i < flopped_image->colors; i++)
+          for (i=0; i < (int) flopped_image->colors; i++)
           {
             *q++=DownScale(flopped_image->colormap[i].blue);
             *q++=DownScale(flopped_image->colormap[i].green);
@@ -10928,7 +10929,7 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
           */
           q=targa_pixels;
           if (image_info->compression == NoCompression)
-            for (i=0; i < flopped_image->packets; i++)
+            for (i=0; i < (int) flopped_image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
                 *q++=p->index;
@@ -10937,7 +10938,7 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
                 ProgressMonitor(SaveImageText,i,flopped_image->packets);
             }
           else
-            for (i=0; i < flopped_image->packets; i++)
+            for (i=0; i < (int) flopped_image->packets; i++)
             {
               for (runlength=p->length+1; runlength > 128; runlength-=128)
               {
@@ -10951,7 +10952,7 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
                 p--;
               else
                 {
-                  for ( ; i < flopped_image->packets; i++)
+                  for ( ; i < (int) flopped_image->packets; i++)
                   {
                     p--;
                     if ((p->length != 0) || (runlength == 128))
@@ -10980,7 +10981,7 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
             polarity=Intensity(flopped_image->colormap[0]) >
               Intensity(flopped_image->colormap[1]);
           if (image_info->compression == NoCompression)
-            for (i=0; i < flopped_image->packets; i++)
+            for (i=0; i < (int) flopped_image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
                 *q++=p->index == polarity ? 0 : DownScale(MaxRGB);
@@ -10989,7 +10990,7 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
                 ProgressMonitor(SaveImageText,i,flopped_image->packets);
             }
           else
-            for (i=0; i < flopped_image->packets; i++)
+            for (i=0; i < (int) flopped_image->packets; i++)
             {
               for (runlength=p->length+1; runlength > 128; runlength-=128)
               {
@@ -11003,7 +11004,7 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
                 p--;
               else
                 {
-                  for ( ; i < flopped_image->packets; i++)
+                  for ( ; i < (int) flopped_image->packets; i++)
                   {
                     p--;
                     if ((p->length != 0) || (runlength == 128))
@@ -11441,7 +11442,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           case NoInterlace:
           default:
           {
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
               {
@@ -11454,7 +11455,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 if (image->matte)
                   *q++=DownScale(p->index);
                 x++;
-                if (x == image->columns)
+                if (x == (int) image->columns)
                   {
                     if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                       break;
@@ -11477,13 +11478,13 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               Plane interlacing:  RRRRRR...GGGGGG...BBBBBB...
             */
             p=image->pixels;
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
               {
                 WriteQuantum(p->red,q);
                 x++;
-                if (x == image->columns)
+                if (x == (int) image->columns)
                   {
                     if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                       break;
@@ -11497,13 +11498,13 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             ProgressMonitor(SaveImageText,100,400);
             p=image->pixels;
             y=0;
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
               {
                 WriteQuantum(p->green,q);
                 x++;
-                if (x == image->columns)
+                if (x == (int) image->columns)
                   {
                     if (TIFFWritePixels(tiff,(char *) scanline,y,1,image) < 0)
                       break;
@@ -11517,13 +11518,13 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             ProgressMonitor(SaveImageText,200,400);
             p=image->pixels;
             y=0;
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
               {
                 WriteQuantum(p->blue,q);
                 x++;
-                if (x == image->columns)
+                if (x == (int) image->columns)
                   {
                     if (TIFFWritePixels(tiff,(char *) scanline,y,2,image) < 0)
                       break;
@@ -11538,13 +11539,13 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             p=image->pixels;
             y=0;
             if (image->matte)
-              for (i=0; i < image->packets; i++)
+              for (i=0; i < (int) image->packets; i++)
               {
                 for (j=0; j <= ((int) p->length); j++)
                 {
                   WriteQuantum(p->index,q);
                   x++;
-                  if (x == image->columns)
+                  if (x == (int) image->columns)
                     {
                       if (TIFFWritePixels(tiff,(char *) scanline,y,3,image) < 0)
                         break;
@@ -11585,7 +11586,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             if (black_generation == 1.0)
               black_generation=undercolor;
           }
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           cyan=MaxRGB-p->red;
           magenta=MaxRGB-p->green;
@@ -11605,7 +11606,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             WriteQuantum((unsigned int) (yellow-undercolor*black),q);
             WriteQuantum((unsigned int) (black_generation*black),q);
             x++;
-            if (x == image->columns)
+            if (x == (int) image->columns)
               {
                 if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                   break;
@@ -11645,7 +11646,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Initialize TIFF colormap.
         */
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
         {
           red[i]=(unsigned int) (image->colormap[i].red*65535L)/MaxRGB;
           green[i]=(unsigned int) (image->colormap[i].green*65535L)/MaxRGB;
@@ -11674,7 +11675,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             /*
               Convert PseudoClass packets to contiguous grayscale scanlines.
             */
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
               {
@@ -11683,7 +11684,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 else
                   WriteQuantum(Intensity(*p),q);
                 x++;
-                if (x == image->columns)
+                if (x == (int) image->columns)
                   {
                     if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                       break;
@@ -11716,7 +11717,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         bit=0;
         byte=0;
         x=0;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
@@ -11731,7 +11732,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 byte=0;
               }
             x++;
-            if (x == image->columns)
+            if (x == (int) image->columns)
               {
                 /*
                   Advance to the next scanline.
@@ -11863,7 +11864,7 @@ unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
     x=0;
     y=0;
     p=image->pixels;
-    for (i=0; i < image->packets; i++)
+    for (i=0; i < (int) image->packets; i++)
     {
       for (j=0; j <= ((int) p->length); j++)
       {
@@ -11878,7 +11879,7 @@ unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
           }
         (void) fprintf(image->file,"\n");
         x++;
-        if (x == image->columns)
+        if (x == (int) image->columns)
           {
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
@@ -12009,7 +12010,7 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
             PrematureExit(ResourceLimitWarning,"Memory allocation failed",
               image);
           p=image->pixels;
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             matte_image[i]=p->index == Transparent;
             if (matte_image[i])
@@ -12028,7 +12029,7 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
             return(False);
           colors++;
           p=image->pixels;
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             if (matte_image[i])
               p->index=image->colors;
@@ -12042,7 +12043,7 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     Compute the character per pixel.
   */
   characters_per_pixel=1;
-  for (k=MaxCixels; colors > k; k*=MaxCixels)
+  for (k=MaxCixels; (int) colors > k; k*=MaxCixels)
     characters_per_pixel++;
   /*
     UIL header.
@@ -12050,7 +12051,7 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   (void) fprintf(image->file,"/* UIL */\n");
   (void) fprintf(image->file,"value\n  %.1024s_ct : color_table(\n",
     BaseFilename(image->filename));
-  for (i=0; i < colors; i++)
+  for (i=0; i < (int) colors; i++)
   {
     ColorPacket
       *p;
@@ -12076,14 +12077,14 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
         }
     }
     if (transparent)
-      if (i == (colors-1))
+      if (i == (int) (colors-1))
         (void) strcpy(name,"None");
     /*
       Write UIL color.
     */
     k=i % MaxCixels;
     symbol[0]=Cixel[k];
-    for (j=1; j < characters_per_pixel; j++)
+    for (j=1; j < (int) characters_per_pixel; j++)
     {
       k=((i-k)/MaxCixels) % MaxCixels;
       symbol[j]=Cixel[k];
@@ -12092,9 +12093,11 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     if (Latin1Compare(name,"None") == 0)
       (void) fprintf(image->file,"    background color = '%.1024s'",symbol);
     else
-      (void) fprintf(image->file,"    color('%.1024s',%.1024s) = '%.1024s'",name,
-        Intensity(*p) < ((MaxRGB+1)/2) ? "background" : "foreground",symbol);
-    (void) fprintf(image->file,"%.1024s",(i == (colors-1) ? ");\n" : ",\n"));
+      (void) fprintf(image->file,"    color('%.1024s',%.1024s) = '%.1024s'",
+        name,Intensity(*p) < ((MaxRGB+1)/2) ? "background" : "foreground",
+        symbol);
+    (void) fprintf(image->file,"%.1024s",
+      (i == (int) (colors-1) ? ");\n" : ",\n"));
   }
   /*
     Define UIL pixels.
@@ -12104,10 +12107,10 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     BaseFilename(image->filename),BaseFilename(image->filename));
   p=image->pixels;
   runlength=p->length+1;
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
     (void) fprintf(image->file,"    \"");
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -12118,7 +12121,7 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
         }
       k=p->index % MaxCixels;
       symbol[0]=Cixel[k];
-      for (j=1; j < characters_per_pixel; j++)
+      for (j=1; j < (int) characters_per_pixel; j++)
       {
         k=(((int) p->index-k)/MaxCixels) % MaxCixels;
         symbol[j]=Cixel[k];
@@ -12127,7 +12130,7 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
       (void) fprintf(image->file,"%.1024s",symbol);
     }
     (void) fprintf(image->file,"\"%.1024s\n",
-      (y == (image->rows-1) ? ");" : ","));
+      (y == (int) (image->rows-1) ? ");" : ","));
     if (QuantumTick(y,image->rows))
       ProgressMonitor(SaveImageText,y,image->rows);
   }
@@ -12203,7 +12206,7 @@ unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
   full=False;
   full=False;
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     for (j=0; j <= ((int) p->length); j++)
     {
@@ -12334,13 +12337,13 @@ unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   y=0;
   p=image->pixels;
   q=pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     for (j=0; j <= ((int) p->length); j++)
     {
       *q++=DownScale(Intensity(*p));
       x++;
-      if (x == image->columns)
+      if (x == (int) image->columns)
         {
           (void) fwrite((char *) pixels,1,q-pixels,image->file);
           if (image->previous == (Image *) NULL)
@@ -12598,7 +12601,7 @@ unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           Convert DirectClass packet to VIFF RGB pixel.
         */
         offset=image->columns*image->rows;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
@@ -12630,11 +12633,11 @@ unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             PrematureExit(ResourceLimitWarning,"Memory allocation failed",
               image);
           q=viff_colormap;
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (int) image->colors; i++)
             *q++=DownScale(image->colormap[i].red);
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (int) image->colors; i++)
             *q++=DownScale(image->colormap[i].green);
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (int) image->colors; i++)
             *q++=DownScale(image->colormap[i].blue);
           (void) fwrite((char *) viff_colormap,1,(int) image->colors*3,
             image->file);
@@ -12643,7 +12646,7 @@ unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             Convert PseudoClass packet to VIFF colormapped pixels.
           */
           q=viff_pixels;
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             for (j=0; j <= ((int) p->length); j++)
               *q++=p->index;
@@ -12676,7 +12679,7 @@ unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             y=0;
             bit=0;
             byte=0;
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
               {
@@ -12691,7 +12694,7 @@ unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                     byte=0;
                   }
                 x++;
-                if (x == image->columns)
+                if (x == (int) image->columns)
                   {
                     /*
                       Advance to the next scanline.
@@ -12715,7 +12718,7 @@ unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             /*
               Convert PseudoClass packet to VIFF grayscale pixel.
             */
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               for (j=0; j <= ((int) p->length); j++)
                 *q++=p->red;
@@ -12777,17 +12780,8 @@ unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   Display
     *display;
 
-  register char
-    *p;
-
-  unsigned int
-    status;
-
   unsigned long
     state;
-
-  Window
-    root_window;
 
   XResourceInfo
     resource_info;
@@ -12924,7 +12918,7 @@ unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   y=0;
   p=image->pixels;
   (void) fprintf(image->file," ");
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     for (j=0; j <= ((int) p->length); j++)
     {
@@ -12948,7 +12942,7 @@ unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
           byte=0;
         }
       x++;
-      if (x == image->columns)
+      if (x == (int) image->columns)
         {
           if (bit != 0)
             {
@@ -13086,7 +13080,7 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
             PrematureExit(ResourceLimitWarning,"Memory allocation failed",
               image);
           p=image->pixels;
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             matte_image[i]=p->index == Transparent;
             if (matte_image[i])
@@ -13105,7 +13099,7 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
             return(False);
           colors++;
           p=image->pixels;
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             if (matte_image[i])
               p->index=image->colors;
@@ -13119,7 +13113,7 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     Compute the character per pixel.
   */
   characters_per_pixel=1;
-  for (k=MaxCixels; colors > k; k*=MaxCixels)
+  for (k=MaxCixels; (int) colors > k; k*=MaxCixels)
     characters_per_pixel++;
   /*
     XPM header.
@@ -13129,7 +13123,7 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   (void) fprintf(image->file,"/* columns rows colors chars-per-pixel */\n");
   (void) fprintf(image->file,"\"%u %u %u %d\",\n",image->columns,
     image->rows,colors,characters_per_pixel);
-  for (i=0; i < colors; i++)
+  for (i=0; i < (int) colors; i++)
   {
     ColorPacket
       *p;
@@ -13158,14 +13152,14 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
         }
     }
     if (transparent)
-      if (i == (colors-1))
+      if (i == (int) (colors-1))
         (void) strcpy(name,"None");
     /*
       Write XPM color.
     */
     k=i % MaxCixels;
     symbol[0]=Cixel[k];
-    for (j=1; j < characters_per_pixel; j++)
+    for (j=1; j < (int) characters_per_pixel; j++)
     {
       k=((i-k)/MaxCixels) % MaxCixels;
       symbol[j]=Cixel[k];
@@ -13179,10 +13173,10 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   (void) fprintf(image->file,"/* pixels */\n");
   p=image->pixels;
   runlength=p->length+1;
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
     (void) fprintf(image->file,"\"");
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -13193,7 +13187,7 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
         }
       k=p->index % MaxCixels;
       symbol[0]=Cixel[k];
-      for (j=1; j < characters_per_pixel; j++)
+      for (j=1; j < (int) characters_per_pixel; j++)
       {
         k=(((int) p->index-k)/MaxCixels) % MaxCixels;
         symbol[j]=Cixel[k];
@@ -13201,7 +13195,8 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       symbol[j]='\0';
       (void) fprintf(image->file,"%.1024s",symbol);
     }
-    (void) fprintf(image->file,"\"%.1024s\n",(y == (image->rows-1) ? "" : ","));
+    (void) fprintf(image->file,"\"%.1024s\n",
+      (y == (int) (image->rows-1) ? "" : ","));
     if (QuantumTick(y,image->rows))
       ProgressMonitor(SaveImageText,y,image->rows);
   }
@@ -13292,7 +13287,7 @@ unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       ProgressMonitor(SaveImageText,100,400);
     RGBTransformImage(yuv_image,YCbCrColorspace);
     p=yuv_image->pixels;
-    for (i=0; i < yuv_image->packets; i++)
+    for (i=0; i < (int) yuv_image->packets; i++)
     {
       for (j=0; j <= ((int) p->length); j++)
         (void) fputc(DownScale(p->red),image->file);
@@ -13324,7 +13319,7 @@ unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       }
     RGBTransformImage(downsampled_image,YCbCrColorspace);
     p=downsampled_image->pixels;
-    for (i=0; i < downsampled_image->packets; i++)
+    for (i=0; i < (int) downsampled_image->packets; i++)
     {
       for (j=0; j <= ((int) p->length); j++)
         (void) fputc(DownScale(p->green),image->file);
@@ -13344,7 +13339,7 @@ unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
           PrematureExit(FileOpenWarning,"Unable to open file",image);
       }
     p=downsampled_image->pixels;
-    for (i=0; i < downsampled_image->packets; i++)
+    for (i=0; i < (int) downsampled_image->packets; i++)
     {
       for (j=0; j <= ((int) p->length); j++)
         (void) fputc(DownScale(p->blue),image->file);
@@ -13494,7 +13489,7 @@ unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       colors=(XColor *) AllocateMemory(image->colors*sizeof(XColor));
       if (colors == (XColor *) NULL)
         PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         colors[i].pixel=i;
         colors[i].red=XUpScale(image->colormap[i].red);
@@ -13508,7 +13503,7 @@ unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
             MSBFirstOrderShort((char *) &colors[i].red,3*sizeof(short));
           }
       }
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         color.pixel=(unsigned int) colors[i].pixel;
         color.red=colors[i].red;
@@ -13535,7 +13530,7 @@ unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   y=0;
   p=image->pixels;
   q=pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     for (j=0; j <= ((int) p->length); j++)
     {
@@ -13548,9 +13543,9 @@ unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
           WriteQuantum(p->blue,q);
         }
       x++;
-      if (x == image->columns)
+      if (x == (int) image->columns)
         {
-          for (x=0; x < scanline_pad; x++)
+          for (x=0; x < (int) scanline_pad; x++)
             WriteQuantum(0,q);
           (void) fwrite((char *) pixels,1,q-pixels,image->file);
           if (image->previous == (Image *) NULL)

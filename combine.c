@@ -769,7 +769,7 @@ int main(int argc,char **argv)
       image->class=DirectClass;
       image->matte=True;
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         p->index=index;
         p++;
@@ -778,7 +778,7 @@ int main(int argc,char **argv)
       composite_image->class=DirectClass;
       composite_image->matte=True;
       p=composite_image->pixels;
-      for (i=0; i < composite_image->packets; i++)
+      for (i=0; i < (int) composite_image->packets; i++)
       {
         p->index=index;
         p++;
@@ -803,8 +803,8 @@ int main(int argc,char **argv)
           /*
             Tile the composite image.
           */
-          for (y=0; y < image->rows; y+=composite_image->rows)
-            for (x=0; x < image->columns; x+=composite_image->columns)
+          for (y=0; y < (int) image->rows; y+=composite_image->rows)
+            for (x=0; x < (int) image->columns; x+=composite_image->columns)
               CompositeImage(image,compose,composite_image,x,y);
           combined_image=image;
         }

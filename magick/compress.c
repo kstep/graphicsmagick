@@ -384,12 +384,12 @@ Export unsigned int BMPDecodeImage(FILE *file,unsigned char *pixels,
 
   assert(file != (FILE *) NULL);
   assert(pixels != (unsigned char *) NULL);
-  for (i=0; i < (number_columns*number_rows); i++)
+  for (i=0; i < (int) (number_columns*number_rows); i++)
     pixels[i]=0;
   byte=0;
   x=0;
   q=pixels;
-  for (y=0; y < number_rows; )
+  for (y=0; y < (int) number_rows; )
   {
     count=fgetc(file);
     if (count != 0)
@@ -533,14 +533,14 @@ Export unsigned int BMPEncodeImage(unsigned char *pixels,
   p=pixels;
   q=compressed_pixels;
   i=0;
-  for (y=0; y < number_rows; y++)
+  for (y=0; y < (int) number_rows; y++)
   {
-    for (x=0; x < number_columns; x+=i)
+    for (x=0; x < (int) number_columns; x+=i)
     {
       /*
         Determine runlength.
       */
-      for (i=1; ((x+i) < number_columns); i++)
+      for (i=1; ((x+i) < (int) number_columns); i++)
         if ((*(p+i) != *p) || (i == 255))
           break;
       *q++=(unsigned char) i;
@@ -684,7 +684,7 @@ Export unsigned int GIFDecodeImage(Image *image)
   first=0;
   top_stack=pixel_stack;
   p=pixels;
-  for (i=0; i < (image->columns*image->rows); )
+  for (i=0; i < (int) (image->columns*image->rows); )
   {
     if (top_stack == pixel_stack)
       {
@@ -774,7 +774,7 @@ Export unsigned int GIFDecodeImage(Image *image)
     p++;
     i++;
   }
-  if (i < (image->columns*image->rows))
+  if (i < (int) (image->columns*image->rows))
     {
       MagickWarning(CorruptImageWarning,"Corrupt GIF image",image->filename);
       return(False);
@@ -823,10 +823,10 @@ Export unsigned int GIFDecodeImage(Image *image)
       for (pass=0; pass < 4; pass++)
       {
         y=interlace_start[pass];
-        while (y < image->rows)
+        while (y < (int) image->rows)
         {
           q=pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             *q=(*p);
             p++;
@@ -853,7 +853,7 @@ Export unsigned int GIFDecodeImage(Image *image)
   p=pixels;
   q=image->pixels;
   SetRunlengthEncoder(q);
-  for (i=0; i < (image->columns*image->rows); i++)
+  for (i=0; i < (int) (image->columns*image->rows); i++)
   {
     index=(*p++);
     if ((index == q->index) && ((int) q->length < MaxRunlength))
@@ -1024,7 +1024,7 @@ Export unsigned int GIFEncodeImage(Image *image,const unsigned int data_size)
   */
   p=image->pixels;
   waiting_code=p->index;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     for (j=(i == 0) ? 1 : 0; j <= ((int) p->length); j++)
     {
@@ -1128,7 +1128,7 @@ Export unsigned int GIFEncodeImage(Image *image,const unsigned int data_size)
   FreeMemory((char *) hash_prefix);
   FreeMemory((char *) hash_code);
   FreeMemory((char *) packet);
-  if (i < image->packets)
+  if (i < (int) image->packets)
     return(False);
   return(True);
 }
@@ -1278,13 +1278,13 @@ Export unsigned int HuffmanDecodeImage(Image *image)
   image->packets=0;
   q=image->pixels;
   SetRunlengthEncoder(q);
-  for (y=0; ((y < image->rows) && (null_lines < 3)); )
+  for (y=0; ((y < (int) image->rows) && (null_lines < 3)); )
   {
     /*
       Initialize scanline to white.
     */
     p=scanline;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
       *p++=0;
     /*
       Decode Huffman encoded scanline.
@@ -1297,7 +1297,7 @@ Export unsigned int HuffmanDecodeImage(Image *image)
     x=0;
     for ( ; ; )
     {
-      if (x >= image->columns)
+      if (x >= (int) image->columns)
         {
           while (runlength < 11)
            InputBit(bit);
@@ -1355,7 +1355,7 @@ Export unsigned int HuffmanDecodeImage(Image *image)
         case TBId:
         {
           count+=entry->count;
-          if ((x+count) > image->columns)
+          if ((x+count) > (int) image->columns)
             count=image->columns-x;
           if (count > 0)
             {
@@ -1388,7 +1388,7 @@ Export unsigned int HuffmanDecodeImage(Image *image)
       Transfer scanline to image pixels.
     */
     p=scanline;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       index=(unsigned short) (*p++);
       if ((index == q->index) && ((int) q->length < MaxRunlength))
@@ -1552,19 +1552,19 @@ Export unsigned int HuffmanEncodeImage(ImageInfo *image_info,Image *image)
     polarity=(Intensity(image->colormap[0]) >
       Intensity(image->colormap[1]) ? 0 : 1);
   q=scanline;
-  for (i=0; i < width; i++)
+  for (i=0; i < (int) width; i++)
     *q++=(unsigned char) polarity;
   p=image->pixels;
   q=scanline;
   x=0;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     for (j=0; j <= ((int) p->length); j++)
     {
       *q++=(unsigned char)
         (p->index == polarity ? (int) polarity : (int) !polarity);
       x++;
-      if (x < image->columns)
+      if (x < (int) image->columns)
         continue;
       /*
         Huffman encode scanline.
@@ -2170,7 +2170,8 @@ Export unsigned int PackbitsEncodeImage(FILE *file,unsigned char *pixels,
               Packed run.
             */
             count=3;
-            while ((count < number_pixels) && (*pixels == *(pixels+count)))
+            while ((count < (int) number_pixels) &&
+                   (*pixels == *(pixels+count)))
             {
               count++;
               if (count >= 127)
@@ -2191,7 +2192,7 @@ Export unsigned int PackbitsEncodeImage(FILE *file,unsigned char *pixels,
         {
           packbits[count+1]=pixels[count];
           count++;
-          if ((count >= (number_pixels-3)) || (count >= 127))
+          if ((count >= (int) (number_pixels-3)) || (count >= 127))
             break;
         }
         number_pixels-=count;
@@ -2344,7 +2345,7 @@ Export unsigned int PCDDecodeImage(Image *image,unsigned char *luma,
         return(False);
       }
     r=pcd_table[i];
-    for (j=0; j < length; j++)
+    for (j=0; j < (int) length; j++)
     {
       PCDGetBits(8);
       r->length=(accumulator & 0xff)+1;
@@ -2448,7 +2449,7 @@ Export unsigned int PCDDecodeImage(Image *image,unsigned char *luma,
       Decode luminance or chrominance deltas.
     */
     r=pcd_table[plane];
-    for (i=0; ((i < length) && ((accumulator & r->mask) != r->sequence)); i++)
+    for (i=0; ((i < (int) length) && ((accumulator & r->mask) != r->sequence)); i++)
       r++;
     if (r == (PCDTable *) NULL)
       {
@@ -2640,7 +2641,7 @@ Export unsigned char* PICTDecodeImage(Image *image,int bytes_per_line,
       /*
         Pixels are already uncompressed.
       */
-      for (i=0; i < image->rows; i++)
+      for (i=0; i < (int) image->rows; i++)
       {
         q=pixels+i*width;
         number_pixels=bytes_per_line;
@@ -2655,7 +2656,7 @@ Export unsigned char* PICTDecodeImage(Image *image,int bytes_per_line,
   /*
     Uncompress RLE pixels into uncompressed pixel buffer.
   */
-  for (i=0; i < image->rows; i++)
+  for (i=0; i < (int) image->rows; i++)
   {
     q=pixels+i*width;
     if ((bytes_per_line > 250) || (bits_per_pixel > 8))
@@ -2920,7 +2921,7 @@ Export unsigned int RunlengthDecodeImage(Image *image)
   if (image->class == DirectClass)
     {
       if (image->compression == RunlengthEncodedCompression)
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           ReadQuantum(q->red,p);
           ReadQuantum(q->green,p);
@@ -2936,7 +2937,7 @@ Export unsigned int RunlengthDecodeImage(Image *image)
               ProgressMonitor(LoadImageText,i,image->packets);
         }
       else
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           ReadQuantum(q->red,p);
           ReadQuantum(q->green,p);
@@ -2960,7 +2961,7 @@ Export unsigned int RunlengthDecodeImage(Image *image)
       if (image->compression == RunlengthEncodedCompression)
         {
           if (image->colors <= 256)
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               q->index=(unsigned short) (*p++);
               q->length=(*p++);
@@ -2971,7 +2972,7 @@ Export unsigned int RunlengthDecodeImage(Image *image)
                   ProgressMonitor(LoadImageText,i,image->packets);
             }
           else
-            for (i=0; i < image->packets; i++)
+            for (i=0; i < (int) image->packets; i++)
             {
               index=(*p++) << 8;
               index|=(*p++);
@@ -2986,7 +2987,7 @@ Export unsigned int RunlengthDecodeImage(Image *image)
         }
       else
         if (image->colors <= 256)
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             q->index=(unsigned short) (*p++);
             q->length=0;
@@ -2997,7 +2998,7 @@ Export unsigned int RunlengthDecodeImage(Image *image)
                 ProgressMonitor(LoadImageText,i,image->packets);
           }
         else
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             index=(*p++) << 8;
             index|=(*p++);
@@ -3102,7 +3103,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
         Compress image.
       */
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         if (p->length > SpecialRunlength)
           {
@@ -3121,7 +3122,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
       q=image->pixels;
       q->length=SpecialRunlength;
       if (image->matte)
-        for (i=0; i < (image->columns*image->rows); i++)
+        for (i=0; i < (int) (image->columns*image->rows); i++)
         {
           if (runlength != 0)
             runlength--;
@@ -3144,7 +3145,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
             }
         }
       else
-        for (i=0; i < (image->columns*image->rows); i++)
+        for (i=0; i < (int) (image->columns*image->rows); i++)
         {
           if (runlength != 0)
             runlength--;
@@ -3224,7 +3225,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
   if (image->class == DirectClass)
     {
       if (image->compression == RunlengthEncodedCompression)
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           WriteQuantum(p->red,q);
           WriteQuantum(p->green,q);
@@ -3239,7 +3240,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
               ProgressMonitor(SaveImageText,i,image->packets);
         }
       else
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
@@ -3260,7 +3261,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
     if (image->compression == RunlengthEncodedCompression)
       {
         if (image->colors <= 256)
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             *q++=(unsigned char) p->index;
             *q++=p->length;
@@ -3271,7 +3272,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
                 ProgressMonitor(SaveImageText,i,image->packets);
           }
         else
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             *q++=p->index >> 8;
             *q++=(unsigned char) p->index;
@@ -3285,7 +3286,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
       }
     else
       if (image->colors <= 256)
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
             *q++=p->index;
@@ -3301,7 +3302,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
             xff00,
             xff;
 
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             xff00=p->index >> 8;
             xff=p->index;
@@ -3458,7 +3459,7 @@ Export unsigned int SUNDecodeImage(unsigned char *compressed_pixels,
   assert(pixels != (unsigned char *) NULL);
   p=compressed_pixels;
   q=pixels;
-  while ((q-pixels) <= (number_columns*number_rows))
+  while ((q-pixels) <= (int) (number_columns*number_rows))
   {
     byte=(*p++);
     if (byte != 128)

@@ -169,9 +169,9 @@ Image *ReadAVSImage(const ImageInfo *image_info)
     */
     q=image->pixels;
     SetRunlengthEncoder(q);
-    for (y=0; y < image->rows; y++)
+    for (y=0; y < (int) image->rows; y++)
     {
-      for (x=0; x < image->columns; x++)
+      for (x=0; x < (int) image->columns; x++)
       {
         index=UpScale(fgetc(image->file));
         image->matte|=index != Transparent;
@@ -186,7 +186,7 @@ Image *ReadAVSImage(const ImageInfo *image_info)
             if (packets != 0)
               q++;
             packets++;
-            if (packets == max_packets)
+            if (packets == (int) max_packets)
               {
                 max_packets<<=1;
                 image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -371,7 +371,7 @@ Image *ReadBMPImage(const ImageInfo *image_info)
     bmp_header.offset_bits=LSBFirstReadLong(image->file);
     bmp_header.size=LSBFirstReadLong(image->file);
     if (image->filesize)
-      if ((bmp_header.file_size-bmp_header.size) > image->filesize)
+      if ((int) (bmp_header.file_size-bmp_header.size) > image->filesize)
         PrematureExit(CorruptImageWarning,"Not a BMP image file",image);
     if (bmp_header.size == 12)
       {
@@ -457,7 +457,7 @@ Image *ReadBMPImage(const ImageInfo *image_info)
           AllocateMemory(image->colors*sizeof(ColorPacket));
         if (image->colormap == (ColorPacket *) NULL)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
         {
           image->colormap[i].red=(Quantum)
             ((long) (MaxRGB*i)/(image->colors-1));
@@ -488,7 +488,7 @@ Image *ReadBMPImage(const ImageInfo *image_info)
             (void) ReadData((char *) bmp_colormap,packet_size,image->colors,
               image->file);
             p=bmp_colormap;
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[i].blue=UpScale(*p++);
               image->colormap[i].green=UpScale(*p++);
@@ -499,7 +499,7 @@ Image *ReadBMPImage(const ImageInfo *image_info)
             FreeMemory((char *) bmp_colormap);
           }
       }
-    while (ftell(image->file) < (start_position+bmp_header.offset_bits))
+    while (ftell(image->file) < (int) (start_position+bmp_header.offset_bits))
       (void) fgetc(image->file);
     /*
       Read image data.
@@ -564,7 +564,7 @@ Image *ReadBMPImage(const ImageInfo *image_info)
           }
           if ((image->columns % 8) != 0)
             {
-              for (bit=0; bit < (image->columns % 8); bit++)
+              for (bit=0; bit < (int) (image->columns % 8); bit++)
               {
                 q->index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
                 q->length=0;
@@ -621,7 +621,7 @@ Image *ReadBMPImage(const ImageInfo *image_info)
         {
           p=bmp_pixels+(image->rows-y-1)*bytes_per_line;
           q=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             q->index=(*p++);
             q->length=0;
@@ -648,7 +648,7 @@ Image *ReadBMPImage(const ImageInfo *image_info)
         {
           p=bmp_pixels+(image->rows-y-1)*bytes_per_line;
           q=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             h=(*p++);
             l=(*p++);
@@ -676,7 +676,7 @@ Image *ReadBMPImage(const ImageInfo *image_info)
         {
           p=bmp_pixels+(image->rows-y-1)*bytes_per_line;
           q=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             q->blue=UpScale(*p++);
             q->green=UpScale(*p++);
@@ -820,7 +820,7 @@ Image *ReadCMYKImage(const ImageInfo *image_info)
         Skip to next image.
       */
       image->scene++;
-      for (y=0; y < image->rows; i++)
+      for (y=0; y < (int) image->rows; i++)
         (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
           image->file);
     }
@@ -850,13 +850,13 @@ Image *ReadCMYKImage(const ImageInfo *image_info)
           (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
             image->file);
         q=image->pixels;
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
             (void) ReadData((char *) scanline,packet_size,
               image->tile_info.width,image->file);
           p=scanline+packet_size*image->tile_info.x;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(q->red,p);
             ReadQuantum(q->green,p);
@@ -884,14 +884,14 @@ Image *ReadCMYKImage(const ImageInfo *image_info)
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
             image->file);
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
             (void) ReadData((char *) scanline,packet_size,
               image->tile_info.width,image->file);
           p=scanline+packet_size*image->tile_info.x;
           q=image->pixels+y*image->columns;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(q->red,p);
             q->length=0;
@@ -901,7 +901,7 @@ Image *ReadCMYKImage(const ImageInfo *image_info)
             image->file);
           p=scanline+packet_size*image->tile_info.x;
           q=image->pixels+y*image->columns;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(q->green,p);
             q++;
@@ -910,7 +910,7 @@ Image *ReadCMYKImage(const ImageInfo *image_info)
             image->file);
           p=scanline+packet_size*image->tile_info.x;
           q=image->pixels+y*image->columns;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(q->blue,p);
             q++;
@@ -919,7 +919,7 @@ Image *ReadCMYKImage(const ImageInfo *image_info)
             image->file);
           p=scanline+packet_size*image->tile_info.x;
           q=image->pixels+y*image->columns;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(q->index,p);
             q++;
@@ -953,13 +953,13 @@ Image *ReadCMYKImage(const ImageInfo *image_info)
             image->file);
         i=0;
         q=image->pixels;
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
             (void) ReadData((char *) scanline,packet_size,
               image->tile_info.width,image->file);
           p=scanline+packet_size*image->tile_info.x;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(q->red,p);
             q->length=0;
@@ -986,12 +986,12 @@ Image *ReadCMYKImage(const ImageInfo *image_info)
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
             image->file);
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
             image->file);
           p=scanline+packet_size*image->tile_info.x;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(q->green,p);
             q++;
@@ -1017,12 +1017,12 @@ Image *ReadCMYKImage(const ImageInfo *image_info)
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
             image->file);
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
             image->file);
           p=scanline+packet_size*image->tile_info.x;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(q->blue,p);
             q++;
@@ -1048,12 +1048,12 @@ Image *ReadCMYKImage(const ImageInfo *image_info)
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
             image->file);
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
             image->file);
           p=scanline+packet_size*image->tile_info.x;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(q->index,p);
             q++;
@@ -1477,7 +1477,7 @@ Image *ReadDCMImage(const ImageInfo *image_info)
                  "Memory allocation failed");
                 break;
               }
-            for (i=0; i < colors; i++)
+            for (i=0; i < (int) colors; i++)
               if (bytes_per_pixel == 1)
                 graymap[i]=data[i];
               else
@@ -1503,7 +1503,7 @@ Image *ReadDCMImage(const ImageInfo *image_info)
                 break;
               }
             p=data;
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
             {
               index=(*p++);
               index|=(*p++) << 8;
@@ -1566,10 +1566,10 @@ Image *ReadDCMImage(const ImageInfo *image_info)
       scale=(Quantum *) AllocateMemory((max_value+1)*sizeof(Quantum));
       if (scale == (Quantum *) NULL)
         PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-      for (i=0; i <= max_value; i++)
+      for (i=0; i <= (int) max_value; i++)
         scale[i]=(Quantum) ((i*MaxRGB+(max_value >> 1))/max_value);
     }
-  for (scene=0; scene < number_scenes; scene++)
+  for (scene=0; scene < (int) number_scenes; scene++)
   {
     /*
       Initialize image structure.
@@ -1587,7 +1587,7 @@ Image *ReadDCMImage(const ImageInfo *image_info)
           AllocateMemory(image->colors*sizeof(ColorPacket));
         if (image->colormap == (ColorPacket *) NULL)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
         {
           image->colormap[i].red=(Quantum)
             ((long) (MaxRGB*i)/(image->colors-1));
@@ -1617,9 +1617,9 @@ Image *ReadDCMImage(const ImageInfo *image_info)
     index=0;
     q=image->pixels;
     SetRunlengthEncoder(q);
-    for (y=0; y < image->rows; y++)
+    for (y=0; y < (int) image->rows; y++)
     {
-      for (x=0; x < image->columns; x++)
+      for (x=0; x < (int) image->columns; x++)
       {
         if (samples_per_pixel == 1)
           {
@@ -1660,7 +1660,7 @@ Image *ReadDCMImage(const ImageInfo *image_info)
             if (packets != 0)
               q++;
             packets++;
-            if (packets == max_packets)
+            if (packets == (int) max_packets)
               {
                 max_packets<<=1;
                 image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -1692,7 +1692,7 @@ Image *ReadDCMImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    if (scene < (number_scenes-1))
+    if (scene < (int) (number_scenes-1))
       {
         /*
           Allocate next image structure.
@@ -2023,9 +2023,9 @@ Image *ReadDPSImage(const ImageInfo *image_info)
       */
       if ((visual_info->colormap_size > 0) &&
           (visual_info->class == DirectColor))
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             pixel=XGetPixel(dps_image,x,y);
             index=(pixel >> red_shift) & red_mask;
@@ -2042,9 +2042,9 @@ Image *ReadDPSImage(const ImageInfo *image_info)
             ProgressMonitor(LoadImageText,y,image->rows);
         }
       else
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             pixel=XGetPixel(dps_image,x,y);
             color=(pixel >> red_shift) & red_mask;
@@ -2079,7 +2079,7 @@ Image *ReadDPSImage(const ImageInfo *image_info)
             (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
           return((Image *) NULL);
         }
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         image->colormap[colors[i].pixel].red=XDownScale(colors[i].red);
         image->colormap[colors[i].pixel].green=XDownScale(colors[i].green);
@@ -2088,9 +2088,9 @@ Image *ReadDPSImage(const ImageInfo *image_info)
       /*
         Convert X image to PseudoClass packets.
       */
-      for (y=0; y < image->rows; y++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        for (x=0; x < image->columns; x++)
+        for (x=0; x < (int) image->columns; x++)
         {
           p->index=(unsigned short) XGetPixel(dps_image,x,y);
           p->length=0;
@@ -2133,8 +2133,8 @@ Image *ReadDPSImage(const ImageInfo *image_info)
               image->class=DirectClass;
               image->matte=True;
               p=image->pixels;
-              for (y=0; y < image->rows; y++)
-                for (x=0; x < image->columns; x++)
+              for (y=0; y < (int) image->rows; y++)
+                for (x=0; x < (int) image->columns; x++)
                 {
                   p->index=Opaque;
                   if (!XGetPixel(matte_image,x,y))
@@ -2475,7 +2475,7 @@ Image *ReadFITSImage(const ImageInfo *image_info)
     AllocateMemory(image->colors*sizeof(ColorPacket));
   if (image->colormap == (ColorPacket *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
-  for (i=0; i < image->colors; i++)
+  for (i=0; i < (int) image->colors; i++)
   {
     image->colormap[i].red=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
     image->colormap[i].green=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
@@ -2527,7 +2527,7 @@ Image *ReadFITSImage(const ImageInfo *image_info)
         pixel=(double) (*((double *) long_quantum));
       fits_header.min_data=pixel*fits_header.scale+fits_header.zero;
       fits_header.max_data=pixel*fits_header.scale+fits_header.zero;
-      for (i=1; i < image->packets; i++)
+      for (i=1; i < (int) image->packets; i++)
       {
         long_quantum[0]=(*p);
         quantum=(*p++);
@@ -2562,7 +2562,7 @@ Image *ReadFITSImage(const ImageInfo *image_info)
   for (y=image->rows-1; y >= 0; y--)
   {
     q=image->pixels+(y*image->columns);
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       long_quantum[0]=(*p);
       quantum=(*p++);
@@ -2868,7 +2868,7 @@ Image *ReadFPXImage(const ImageInfo *image_info)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",
             image);
         }
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         image->colormap[i].red=(Quantum) i;
         image->colormap[i].green=(Quantum) i;
@@ -2931,7 +2931,7 @@ Image *ReadFPXImage(const ImageInfo *image_info)
   index=0;
   q=image->pixels;
   SetRunlengthEncoder(q);
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
     if ((y % tile_height) == 0)
       {
@@ -2962,7 +2962,7 @@ Image *ReadFPXImage(const ImageInfo *image_info)
     g=green_component->theData+(y % tile_height)*green_component->lineStride;
     b=blue_component->theData+(y % tile_height)*blue_component->lineStride;
     a=alpha_component->theData+(y % tile_height)*alpha_component->lineStride;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (fpx_info.numberOfComponents > 2)
         {
@@ -2987,7 +2987,7 @@ Image *ReadFPXImage(const ImageInfo *image_info)
           if (packets != 0)
             q++;
           packets++;
-          if (packets == max_packets)
+          if (packets == (int) max_packets)
             {
               max_packets<<=1;
               image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -3300,7 +3300,7 @@ Image *ReadGIFImage(const ImageInfo *image_info)
           Use global colormap.
         */
         p=global_colormap;
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
         {
           image->colormap[i].red=UpScale(*p++);
           image->colormap[i].green=UpScale(*p++);
@@ -3323,7 +3323,7 @@ Image *ReadGIFImage(const ImageInfo *image_info)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
         (void) ReadData((char *) colormap,3,image->colors,image->file);
         p=colormap;
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
         {
           image->colormap[i].red=UpScale(*p++);
           image->colormap[i].green=UpScale(*p++);
@@ -3341,7 +3341,7 @@ Image *ReadGIFImage(const ImageInfo *image_info)
           Create matte channel.
         */
         q=image->pixels;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           if (q->index != (unsigned short) transparency_index)
             q->index=Opaque;
@@ -3494,9 +3494,9 @@ Image *ReadGRADATIONImage(const ImageInfo *image_info)
     Initialize image pixels.
   */
   q=image->pixels;
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
       q->index=0;
@@ -3608,7 +3608,7 @@ Image *ReadGRAYImage(const ImageInfo *image_info)
         Skip to next image.
       */
       image->scene++;
-      for (y=0; y < image->rows; y++)
+      for (y=0; y < (int) image->rows; y++)
         (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
           image->file);
     }
@@ -3632,7 +3632,7 @@ Image *ReadGRAYImage(const ImageInfo *image_info)
       AllocateMemory(image->colors*sizeof(ColorPacket));
     if (image->colormap == (ColorPacket *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    for (i=0; i < image->colors; i++)
+    for (i=0; i < (int) image->colors; i++)
     {
       image->colormap[i].red=(Quantum) i;
       image->colormap[i].green=(Quantum) i;
@@ -3646,13 +3646,13 @@ Image *ReadGRAYImage(const ImageInfo *image_info)
         image->file);
     q=image->pixels;
     SetRunlengthEncoder(q);
-    for (y=0; y < image->rows; y++)
+    for (y=0; y < (int) image->rows; y++)
     {
       if ((y > 0) || (image->previous == (Image *) NULL))
         (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
           image->file);
       p=scanline+packet_size*image->tile_info.x;
-      for (x=0; x < image->columns; x++)
+      for (x=0; x < (int) image->columns; x++)
       {
         ReadQuantum(index,p);
         if ((index == q->index) && ((int) q->length < MaxRunlength))
@@ -3662,7 +3662,7 @@ Image *ReadGRAYImage(const ImageInfo *image_info)
             if (packets != 0)
               q++;
             packets++;
-            if (packets == max_packets)
+            if (packets == (int) max_packets)
               {
                 max_packets<<=1;
                 image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -3877,7 +3877,7 @@ Image *ReadHDFImage(const ImageInfo *image_info)
             image->colormap[i].blue=UpScale(*p++);
           }
         else
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (int) image->colors; i++)
           {
             image->colormap[i].red=(Quantum) UpScale(i);
             image->colormap[i].green=(Quantum) UpScale(i);
@@ -3885,9 +3885,9 @@ Image *ReadHDFImage(const ImageInfo *image_info)
           }
         FreeMemory((char *) hdf_palette);
         p=hdf_pixels;
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             q->index=(*p++);
             q->length=0;
@@ -3912,9 +3912,9 @@ Image *ReadHDFImage(const ImageInfo *image_info)
         p=hdf_pixels;
         image->interlace=interlace ? PlaneInterlace : NoInterlace;
         q=image->pixels;
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             q->red=UpScale(*p++);
             q->green=UpScale(*p++);
@@ -4103,7 +4103,7 @@ Image *ReadICCImage(const ImageInfo *image_info)
     c=fgetc(image->file);
     if (c == EOF)
       break;
-    if ((q-image->color_profile.info+1) >= length)
+    if ((q-image->color_profile.info+1) >= (int) length)
       {
         image->color_profile.length=q-image->color_profile.info;
         length<<=1;
@@ -4303,7 +4303,7 @@ Image *ReadICONImage(const ImageInfo *image_info)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
     (void) ReadData((char *) icon_colormap,4,image->colors,image->file);
     p=icon_colormap;
-    for (x=0; x < image->colors; x++)
+    for (x=0; x < (int) image->colors; x++)
     {
       image->colormap[x].blue=UpScale(*p++);
       image->colormap[x].green=UpScale(*p++);
@@ -4358,7 +4358,7 @@ Image *ReadICONImage(const ImageInfo *image_info)
           }
           if ((image->columns % 8) != 0)
             {
-              for (bit=0; bit < (image->columns % 8); bit++)
+              for (bit=0; bit < (int) (image->columns % 8); bit++)
               {
                 q->index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
                 q->length=0;
@@ -4413,7 +4413,7 @@ Image *ReadICONImage(const ImageInfo *image_info)
         {
           p=icon_pixels+(image->rows-y-1)*bytes_per_line;
           q=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             q->index=(*p++);
             q->length=0;
@@ -4436,7 +4436,7 @@ Image *ReadICONImage(const ImageInfo *image_info)
         {
           p=icon_pixels+(image->rows-y-1)*bytes_per_line;
           q=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             q->index=(*p++);
             q->index|=(*p++) << 8;
@@ -4476,7 +4476,7 @@ Image *ReadICONImage(const ImageInfo *image_info)
       }
       if ((image->columns % 8) != 0)
         {
-          for (bit=0; bit < (image->columns % 8); bit++)
+          for (bit=0; bit < (int) (image->columns % 8); bit++)
           {
             q->index=((*p) & (0x80 >> bit) ? Transparent : Opaque);
             q->length=0;
@@ -4586,7 +4586,7 @@ Image *ReadIPTCImage(const ImageInfo *image_info)
     c=fgetc(image->file);
     if (c == EOF)
       break;
-    if ((q-image->iptc_profile.info+1) >= length)
+    if ((q-image->iptc_profile.info+1) >= (int) length)
       {
         image->iptc_profile.length=q-image->iptc_profile.info;
         length<<=1;
@@ -4767,10 +4767,10 @@ Image *ReadJBIGImage(const ImageInfo *image_info)
   p=jbg_dec_getimage(&jbig_info,0);
   q=image->pixels;
   SetRunlengthEncoder(q);
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
     bit=0;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (bit == 0)
         byte=(*p++);
@@ -4782,7 +4782,7 @@ Image *ReadJBIGImage(const ImageInfo *image_info)
           if (packets != 0)
             q++;
           packets++;
-          if (packets == max_packets)
+          if (packets == (int) max_packets)
             {
               max_packets<<=1;
               image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -5201,7 +5201,7 @@ Image *ReadJPEGImage(const ImageInfo *image_info)
         AllocateMemory(image->colors*sizeof(ColorPacket));
       if (image->colormap == (ColorPacket *) NULL)
         PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         image->colormap[i].red=UpScale(i);
         image->colormap[i].green=UpScale(i);
@@ -5218,11 +5218,11 @@ Image *ReadJPEGImage(const ImageInfo *image_info)
   scanline[0]=(JSAMPROW) jpeg_pixels;
   q=image->pixels;
   SetRunlengthEncoder(q);
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
     (void) jpeg_read_scanlines(&jpeg_info,scanline,1);
     p=jpeg_pixels;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (jpeg_info.data_precision > QuantumDepth)
         {
@@ -5256,7 +5256,7 @@ Image *ReadJPEGImage(const ImageInfo *image_info)
           if (packets != 0)
             q++;
           packets++;
-          if (packets == max_packets)
+          if (packets == (int) max_packets)
             {
               max_packets<<=1;
               image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -5350,7 +5350,7 @@ static char *EscapeParenthesis(char *text)
 
   escapes=0;
   p=buffer;
-  for (i=0; i < Min(strlen(text),MaxTextExtent-escapes-1); i++)
+  for (i=0; i < Min((int) strlen(text),(MaxTextExtent-escapes-1)); i++)
   {
     if ((text[i] == '(') || (text[i] == ')'))
       {
@@ -5708,7 +5708,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
       p=(unsigned char *) canvas.bitmap;
       q=image->pixels;
       x=0;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         q->red=XDownScale(pen_color.red);
         q->green=XDownScale(pen_color.green);
@@ -5896,7 +5896,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
         PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
       image->matte=True;
       q=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         q->index=Intensity(*q);
         q->red=XDownScale(pen_color.red);
@@ -5954,9 +5954,9 @@ Image *ReadLABELImage(const ImageInfo *image_info)
   corner.red=0;
   corner.green=0;
   corner.blue=0;
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -5966,7 +5966,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
           runlength=q->length;
         }
       if (!ColorMatch(*q,corner,0))
-        if (x > crop_info.width)
+        if (x > (int) crop_info.width)
           crop_info.width=x;
     }
   }
@@ -5976,7 +5976,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
   TransformImage(&image,geometry,(char *) NULL);
   image->matte=True;
   q=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     q->index=Intensity(*q);
     q->red=XDownScale(pen_color.red);
@@ -6072,7 +6072,7 @@ Image *ReadLOGOImage(const ImageInfo *image_info)
       p=NetscapeImage;
       extent=NetscapeImageExtent;
     }
-  for (i=0; i < extent; i++)
+  for (i=0; i < (int) extent; i++)
   {
     (void) fputc((char) *p,file);
     p++;
@@ -6177,7 +6177,7 @@ Image *ReadMAPImage(const ImageInfo *image_info)
   */
   (void) ReadData((char *) colormap,packet_size,image->colors,image->file);
   p=colormap;
-  for (i=0; i < image->colors; i++)
+  for (i=0; i < (int) image->colors; i++)
   {
     ReadQuantum(image->colormap[i].red,p);
     ReadQuantum(image->colormap[i].green,p);
@@ -6319,7 +6319,7 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
             c=fgetc(image->file);
             if ((c == EOF) || (c == '}'))
               break;
-            if ((p-image->comments+1) >= length)
+            if ((p-image->comments+1) >= (int) length)
               {
                 *p='\0';
                 length<<=1;
@@ -6632,7 +6632,7 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
         if (image->colormap == (ColorPacket *) NULL)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
         if (image->colors == 0)
-          for (i=0; i < colors; i++)
+          for (i=0; i < (int) colors; i++)
           {
             image->colormap[i].red=(Quantum) UpScale(i);
             image->colormap[i].green=(Quantum) UpScale(i);
@@ -6656,7 +6656,7 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
             (void) ReadData((char *) colormap,1,packet_size*image->colors,
               image->file);
             p=colormap;
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
             {
               ReadQuantum(image->colormap[i].red,p);
               ReadQuantum(image->colormap[i].green,p);
@@ -6909,7 +6909,7 @@ Image *ReadMONOImage(const ImageInfo *image_info)
   if ((image->pixels == (RunlengthPacket *) NULL) ||
       (image->colormap == (ColorPacket *) NULL))
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-  for (i=0; i < image->colors; i++)
+  for (i=0; i < (int) image->colors; i++)
   {
     image->colormap[i].red=(MaxRGB*i)/(image->colors-1);
     image->colormap[i].green=(MaxRGB*i)/(image->colors-1);
@@ -6918,17 +6918,17 @@ Image *ReadMONOImage(const ImageInfo *image_info)
   /*
     Convert bi-level image to runlength-encoded packets.
   */
-  for (y=0; y < ((image->rows-image->tile_info.y*image->columns+7) >> 3); y++)
+  for (y=0; y < (int) ((image->rows-image->tile_info.y*image->columns+7) >> 3); y++)
     (void) fgetc(image->file);
   byte=0;
   q=image->pixels;
   SetRunlengthEncoder(q);
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
     bit=0;
     for (x=0; y < ((image->tile_info.x+7) >> 3); x++)
       (void) fgetc(image->file);
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (bit == 0)
         byte=fgetc(image->file);
@@ -6940,7 +6940,7 @@ Image *ReadMONOImage(const ImageInfo *image_info)
           if (packets != 0)
             q++;
           packets++;
-          if (packets == max_packets)
+          if (packets == (int) max_packets)
             {
               max_packets<<=1;
               image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -7067,9 +7067,9 @@ Image *ReadMTVImage(const ImageInfo *image_info)
     */
     q=image->pixels;
     SetRunlengthEncoder(q);
-    for (y=0; y < image->rows; y++)
+    for (y=0; y < (int) image->rows; y++)
     {
-      for (x=0; x < image->columns; x++)
+      for (x=0; x < (int) image->columns; x++)
       {
         red=UpScale(fgetc(image->file));
         green=UpScale(fgetc(image->file));
@@ -7082,7 +7082,7 @@ Image *ReadMTVImage(const ImageInfo *image_info)
             if (packets != 0)
               q++;
             packets++;
-            if (packets == max_packets)
+            if (packets == (int) max_packets)
               {
                 max_packets<<=1;
                 image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -7319,14 +7319,14 @@ Image *ReadPCDImage(const ImageInfo *image_info)
   */
   width=192;
   height=128;
-  for (i=1; i < Min(subimage,3); i++)
+  for (i=1; i < Min((int) subimage,3); i++)
   {
     width<<=1;
     height<<=1;
   }
   image->columns=width;
   image->rows=height;
-  for ( ; i < subimage; i++)
+  for ( ; i < (int) subimage; i++)
   {
     image->columns<<=1;
     image->rows<<=1;
@@ -7379,7 +7379,7 @@ Image *ReadPCDImage(const ImageInfo *image_info)
       /*
         Read thumbnails from overview image.
       */
-      for (j=1; j <= number_images; j++)
+      for (j=1; j <= (int) number_images; j++)
       {
         handler=SetMonitorHandler((MonitorHandler) NULL);
         FormatString(image->filename,"images/img%04d.pcd",j);
@@ -7396,7 +7396,7 @@ Image *ReadPCDImage(const ImageInfo *image_info)
         y=luma;
         c1=chroma1;
         c2=chroma2;
-        for (i=0; i < height; i+=2)
+        for (i=0; i < (int) height; i+=2)
         {
           (void) ReadData((char *) y,1,width,image->file);
           y+=image->columns;
@@ -7416,7 +7416,7 @@ Image *ReadPCDImage(const ImageInfo *image_info)
         y=luma;
         c1=chroma1;
         c2=chroma2;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           p->red=UpScale(*y++);
           p->green=UpScale(*c1++);
@@ -7429,7 +7429,7 @@ Image *ReadPCDImage(const ImageInfo *image_info)
           TransformRGBImage(image,sRGBColorspace);
         else
           TransformRGBImage(image,YCCColorspace);
-        if (j < number_images)
+        if (j < (int) number_images)
           {
             /*
               Allocate next image structure.
@@ -7468,7 +7468,7 @@ Image *ReadPCDImage(const ImageInfo *image_info)
   y=luma;
   c1=chroma1;
   c2=chroma2;
-  for (i=0; i < height; i+=2)
+  for (i=0; i < (int) height; i+=2)
   {
     (void) ReadData((char *) y,1,width,image->file);
     y+=image->columns;
@@ -7524,7 +7524,7 @@ Image *ReadPCDImage(const ImageInfo *image_info)
   y=luma;
   c1=chroma1;
   c2=chroma2;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     p->red=UpScale(*y++);
     p->green=UpScale(*c1++);
@@ -7816,14 +7816,14 @@ Image *ReadPCXImage(const ImageInfo *image_info)
     if (image->colormap == (ColorPacket *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
     p=pcx_colormap;
-    for (i=0; i < image->colors; i++)
+    for (i=0; i < (int) image->colors; i++)
     {
       image->colormap[i].red=UpScale(*p++);
       image->colormap[i].green=UpScale(*p++);
       image->colormap[i].blue=UpScale(*p++);
     }
     if (pcx_header.version == 3)
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         image->colormap[i].red=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
         image->colormap[i].green=(Quantum)
@@ -7908,7 +7908,7 @@ Image *ReadPCXImage(const ImageInfo *image_info)
                 (void) ReadData((char *) pcx_colormap,3,image->colors,
                   image->file);
                 p=pcx_colormap;
-                for (i=0; i < image->colors; i++)
+                for (i=0; i < (int) image->colors; i++)
                 {
                   image->colormap[i].red=UpScale(*p++);
                   image->colormap[i].green=UpScale(*p++);
@@ -7926,7 +7926,7 @@ Image *ReadPCXImage(const ImageInfo *image_info)
     index=0;
     q=image->pixels;
     SetRunlengthEncoder(q);
-    for (y=0; y < image->rows; y++)
+    for (y=0; y < (int) image->rows; y++)
     {
       p=pcx_pixels+(y*pcx_header.bytes_per_line*pcx_header.planes);
       r=scanline;
@@ -7966,7 +7966,7 @@ Image *ReadPCXImage(const ImageInfo *image_info)
       else
         if (pcx_header.planes > 1)
           {
-            for (x=0; x < image->columns; x++)
+            for (x=0; x < (int) image->columns; x++)
               *r++=0;
             for (i=0; i < (int) pcx_header.planes; i++)
             {
@@ -7999,7 +7999,7 @@ Image *ReadPCXImage(const ImageInfo *image_info)
               }
               if ((image->columns % 8) != 0)
                 {
-                  for (bit=7; bit >= (8-(image->columns % 8)); bit--)
+                  for (bit=7; bit >= (int) (8-(image->columns % 8)); bit--)
                     *r++=((*p) & (0x01 << bit) ? 0x01 : 0x00);
                   p++;
                 }
@@ -8017,7 +8017,7 @@ Image *ReadPCXImage(const ImageInfo *image_info)
               }
               if ((image->columns % 4) != 0)
                 {
-                  for (i=3; i >= (4-(image->columns % 4)); i--)
+                  for (i=3; i >= (int) (4-(image->columns % 4)); i--)
                     *r++=(*p >> (i*2)) & 0x03;
                   p++;
                 }
@@ -8037,7 +8037,7 @@ Image *ReadPCXImage(const ImageInfo *image_info)
             }
             case 8:
             {
-              for (x=0; x < image->columns; x++)
+              for (x=0; x < (int) image->columns; x++)
                 *r++=(*p++);
               break;
             }
@@ -8048,7 +8048,7 @@ Image *ReadPCXImage(const ImageInfo *image_info)
         Transfer image scanline.
       */
       r=scanline;
-      for (x=0; x < image->columns; x++)
+      for (x=0; x < (int) image->columns; x++)
       {
         if (image->class == PseudoClass)
           index=(*r++);
@@ -8068,7 +8068,7 @@ Image *ReadPCXImage(const ImageInfo *image_info)
             if (packets != 0)
               q++;
             packets++;
-            if (packets == max_packets)
+            if (packets == (int) max_packets)
               {
                 max_packets<<=1;
                 image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -8500,7 +8500,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
   if (image->pixels == (RunlengthPacket *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
   q=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     q->red=0;
     q->green=0;
@@ -8550,7 +8550,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
             PrematureExit(ResourceLimitWarning,"Memory allocation failed",
               image);
           q=image->pixels;
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             q->red=0;
             q->green=0;
@@ -8607,11 +8607,11 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
             length=width;
           if (length < 8)
             {
-              for (i=0; i < (length*height); i++)
+              for (i=0; i < (int) (length*height); i++)
                 (void) fgetc(image->file);
             }
           else
-            for (i=0; i < height; i++)
+            for (i=0; i < (int) height; i++)
               if (length > 250)
                 for (i=0; i < (int) MSBFirstReadShort(image->file); i++)
                   (void) fgetc(image->file);
@@ -8736,7 +8736,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
                   PrematureExit(ResourceLimitWarning,"Memory allocation failed",
                     image);
                 }
-              for (i=0; i < tiled_image->colors; i++)
+              for (i=0; i < (int) tiled_image->colors; i++)
               {
                 tiled_image->colormap[i].red=(Quantum)
                   ((long) (MaxRGB*i)/(tiled_image->colors-1));
@@ -8746,7 +8746,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
                   ((long) (MaxRGB*i)/(tiled_image->colors-1));
               }
               if (bytes_per_line & 0x8000)
-                for (i=0; i < tiled_image->colors; i++)
+                for (i=0; i < (int) tiled_image->colors; i++)
                 {
                   j=MSBFirstReadShort(image->file) % tiled_image->colors;
                   if (flags & 0x8000)
@@ -8797,9 +8797,9 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           p=pixels;
           q=tiled_image->pixels;
           SetRunlengthEncoder(q);
-          for (y=0; y < tiled_image->rows; y++)
+          for (y=0; y < (int) tiled_image->rows; y++)
           {
-            for (x=0; x < tiled_image->columns; x++)
+            for (x=0; x < (int) tiled_image->columns; x++)
             {
               if (tiled_image->class == PseudoClass)
                 index=(*p++);
@@ -8821,7 +8821,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
                   if (packets != 0)
                     q++;
                   packets++;
-                  if (packets == max_packets)
+                  if (packets == (int) max_packets)
                     {
                       max_packets<<=1;
                       tiled_image->pixels=(RunlengthPacket *) ReallocateMemory(
@@ -8845,7 +8845,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
             }
             if (tiled_image->class == DirectClass)
               p+=(pixmap.component_count-1)*tiled_image->columns;
-            if (destination.bottom == image->rows)
+            if (destination.bottom == (int) image->rows)
               if (QuantumTick(y,tiled_image->rows))
                 ProgressMonitor(LoadImageText,y,tiled_image->rows);
           }
@@ -8857,7 +8857,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
             destination.top);
           tiled_image->file=(FILE *) NULL;
           DestroyImage(tiled_image);
-          if (destination.bottom != image->rows)
+          if (destination.bottom != (int) image->rows)
             ProgressMonitor(LoadImageText,destination.bottom,image->rows);
           break;
         }
@@ -9062,7 +9062,7 @@ Image *ReadPIXImage(const ImageInfo *image_info)
           AllocateMemory(image->colors*sizeof(ColorPacket));
         if (image->colormap == (ColorPacket *) NULL)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
         {
           image->colormap[i].red=(Quantum) UpScale(i);
           image->colormap[i].green=(Quantum) UpScale(i);
@@ -9102,7 +9102,7 @@ Image *ReadPIXImage(const ImageInfo *image_info)
       number_pixels+=q->length;
       q++;
       packets++;
-      if (packets == max_packets)
+      if (packets == (int) max_packets)
         {
           max_packets<<=1;
           image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -9214,7 +9214,7 @@ Image *ReadPLASMAImage(const ImageInfo *image_info)
   if (!UncondenseImage(image))
     return(image);
   image->class=DirectClass;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
     image->pixels[i].index=(Opaque-Transparent) >> 1;
   segment_info.x1=0;
   segment_info.y1=0;
@@ -9601,14 +9601,14 @@ Image *ReadPNGImage(const ImageInfo *image_info)
           AllocateMemory(image->colors*sizeof(ColorPacket));
         if (image->colormap == (ColorPacket *) NULL)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
         {
           image->colormap[i].red=(MaxRGB*i)/Max(image->colors-1,1);
           image->colormap[i].green=(MaxRGB*i)/Max(image->colors-1,1);
           image->colormap[i].blue=(MaxRGB*i)/Max(image->colors-1,1);
         }
         if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (int) image->colors; i++)
           {
             image->colormap[i].red=UpScale(ping_info->palette[i].red);
             image->colormap[i].green=UpScale(ping_info->palette[i].green);
@@ -9641,10 +9641,10 @@ Image *ReadPNGImage(const ImageInfo *image_info)
             (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
             (ping_info->valid & PNG_INFO_tRNS))
           image->matte=True;
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           p=scanlines[y];
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(red,p);
             green=red;
@@ -9671,7 +9671,7 @@ Image *ReadPNGImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == max_packets)
+                if (packets == (int) max_packets)
                   {
                     max_packets<<=1;
                     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -9712,7 +9712,7 @@ Image *ReadPNGImage(const ImageInfo *image_info)
           AllocateMemory(image->columns*sizeof(Quantum));
         if (quantum_scanline == (Quantum *) NULL)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           p=scanlines[y];
           r=quantum_scanline;
@@ -9769,13 +9769,13 @@ Image *ReadPNGImage(const ImageInfo *image_info)
             }
             case 8:
             {
-              for (x=0; x < image->columns; x++)
+              for (x=0; x < (int) image->columns; x++)
                 *r++=(*p++);
               break;
             }
             case 16:
             {
-              for (x=0; x < image->columns; x++)
+              for (x=0; x < (int) image->columns; x++)
               {
                 ReadQuantum(*r,p);
                 r++;
@@ -9789,7 +9789,7 @@ Image *ReadPNGImage(const ImageInfo *image_info)
             Transfer image scanline.
           */
           r=quantum_scanline;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             index=(*r++);
             if ((index == q->index) && ((int) q->length < MaxRunlength))
@@ -9799,7 +9799,7 @@ Image *ReadPNGImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == max_packets)
+                if (packets == (int) max_packets)
                   {
                     max_packets<<=1;
                     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -10135,7 +10135,7 @@ Image *ReadPNMImage(const ImageInfo *image_info)
         if (image->colormap == (ColorPacket *) NULL)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
         if (format != '7')
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (int) image->colors; i++)
           {
             image->colormap[i].red=(Quantum)
               ((long) (MaxRGB*i)/(image->colors-1));
@@ -10171,7 +10171,7 @@ Image *ReadPNMImage(const ImageInfo *image_info)
           if (scale == (Quantum *) NULL)
             PrematureExit(ResourceLimitWarning,"Memory allocation failed",
               image);
-          for (i=0; i <= max_value; i++)
+          for (i=0; i <= (int) max_value; i++)
             scale[i]=(Quantum) ((i*MaxRGB+(max_value >> 1))/max_value);
         }
     /*
@@ -10186,9 +10186,9 @@ Image *ReadPNMImage(const ImageInfo *image_info)
         /*
           Convert PBM image to runlength-encoded packets.
         */
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             index=!PNMInteger(image,2);
             if ((index == q->index) && ((int) q->length < MaxRunlength))
@@ -10198,7 +10198,7 @@ Image *ReadPNMImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == max_packets)
+                if (packets == (int) max_packets)
                   {
                     max_packets<<=1;
                     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -10223,9 +10223,9 @@ Image *ReadPNMImage(const ImageInfo *image_info)
         /*
           Convert PGM image to runlength-encoded packets.
         */
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             index=PNMInteger(image,10);
             if ((index == q->index) && ((int) q->length < MaxRunlength))
@@ -10235,7 +10235,7 @@ Image *ReadPNMImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == max_packets)
+                if (packets == (int) max_packets)
                   {
                     max_packets<<=1;
                     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -10264,9 +10264,9 @@ Image *ReadPNMImage(const ImageInfo *image_info)
         /*
           Convert PNM image to runlength-encoded packets.
         */
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             red=PNMInteger(image,10);
             green=PNMInteger(image,10);
@@ -10285,7 +10285,7 @@ Image *ReadPNMImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == max_packets)
+                if (packets == (int) max_packets)
                   {
                     max_packets<<=1;
                     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -10314,22 +10314,22 @@ Image *ReadPNMImage(const ImageInfo *image_info)
       }
       case '4':
       {
+        int
+          x,
+          y;
+
         unsigned char
           bit,
           byte;
 
-        unsigned int
-          x,
-          y;
-
         /*
           Convert PBM raw image to runlength-encoded packets.
         */
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           bit=0;
           byte=0;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             if (bit == 0)
               byte=fgetc(image->file);
@@ -10341,7 +10341,7 @@ Image *ReadPNMImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == max_packets)
+                if (packets == (int) max_packets)
                   {
                     max_packets<<=1;
                     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -10371,9 +10371,9 @@ Image *ReadPNMImage(const ImageInfo *image_info)
         /*
           Convert PGM raw image to runlength-encoded packets.
         */
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             if (max_value <= MaxRawValue)
               index=fgetc(image->file);
@@ -10388,7 +10388,7 @@ Image *ReadPNMImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == max_packets)
+                if (packets == (int) max_packets)
                   {
                     max_packets<<=1;
                     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -10413,9 +10413,9 @@ Image *ReadPNMImage(const ImageInfo *image_info)
         /*
           Convert PNM raster image to runlength-encoded packets.
         */
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             if (max_value <= MaxRawValue)
               {
@@ -10443,7 +10443,7 @@ Image *ReadPNMImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == max_packets)
+                if (packets == (int) max_packets)
                   {
                     max_packets<<=1;
                     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -10995,7 +10995,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
         AllocateMemory(image->colors*sizeof(ColorPacket));
       if (image->colormap == (ColorPacket *) NULL)
         PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         image->colormap[i].red=(MaxRGB*i)/(image->colors-1);
         image->colormap[i].green=(MaxRGB*i)/(image->colors-1);
@@ -11006,11 +11006,11 @@ Image *ReadPSDImage(const ImageInfo *image_info)
           /*
             Read PSD raster colormap.
           */
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (int) image->colors; i++)
             image->colormap[i].red=fgetc(image->file);
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (int) image->colors; i++)
             image->colormap[i].green=fgetc(image->file);
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (int) image->colors; i++)
             image->colormap[i].blue=fgetc(image->file);
         }
     }
@@ -11128,7 +11128,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
           compression=MSBFirstReadShort(layer_info[i].image->file);
           if (compression != 0)
             {
-              for (k=0; k < layer_info[i].image->rows; k++)
+              for (k=0; k < (int) layer_info[i].image->rows; k++)
                 (void) MSBFirstReadShort(image->file);
               PackbitsDecodeImage(layer_info[i].image,
                 layer_info[i].channel_info[j].type);
@@ -11139,7 +11139,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
                 Read uncompressed pixel data as separate planes.
               */
               q=layer_info[i].image->pixels;
-              for (k=0; k < layer_info[i].image->packets; k++)
+              for (k=0; k < (int) layer_info[i].image->packets; k++)
               {
                 switch (layer_info[i].channel_info[j].type)
                 {
@@ -11180,7 +11180,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
               Correct for opacity level.
             */
             q=layer_info[i].image->pixels;
-            for (k=0; k < layer_info[i].image->packets; k++)
+            for (k=0; k < (int) layer_info[i].image->packets; k++)
             {
               q->index=(int) (q->index*layer_info[i].opacity)/Opaque;
               q++;
@@ -11192,7 +11192,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
               Correct CMYK levels.
             */
             q=layer_info[i].image->pixels;
-            for (i=0; i < layer_info[i].image->packets; i++)
+            for (i=0; i < (int) layer_info[i].image->packets; i++)
             {
               q->red=MaxRGB-q->red;
               q->green=MaxRGB-q->green;
@@ -11222,7 +11222,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
       /*
         Read Packbit encoded pixel data as separate planes.
       */
-      for (i=0; i < (image->rows*psd_header.channels); i++)
+      for (i=0; i < (int) (image->rows*psd_header.channels); i++)
         (void) MSBFirstReadShort(image->file);
       for (i=0; i < (int) psd_header.channels; i++)
         PackbitsDecodeImage(image,i);
@@ -11235,7 +11235,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
       for (i=0; i < (int) psd_header.channels; i++)
       {
         q=image->pixels;
-        for (j=0; j < image->packets; j++)
+        for (j=0; j < (int) image->packets; j++)
         {
           switch (i)
           {
@@ -11275,7 +11275,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
         Correct CMYK levels.
       */
       q=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         q->red=MaxRGB-q->red;
         q->green=MaxRGB-q->green;
@@ -11398,7 +11398,7 @@ Image *ReadRGBImage(const ImageInfo *image_info)
         Skip to next image.
       */
       image->scene++;
-      for (y=0; y < image->rows; y++)
+      for (y=0; y < (int) image->rows; y++)
         (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
           image->file);
     }
@@ -11428,13 +11428,13 @@ Image *ReadRGBImage(const ImageInfo *image_info)
           (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
             image->file);
         q=image->pixels;
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
             (void) ReadData((char *) scanline,packet_size,
               image->tile_info.width,image->file);
           p=scanline+packet_size*image->tile_info.x;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(q->red,p);
             ReadQuantum(q->green,p);
@@ -11464,14 +11464,14 @@ Image *ReadRGBImage(const ImageInfo *image_info)
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
             image->file);
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
             (void) ReadData((char *) scanline,packet_size,
               image->tile_info.width,image->file);
           p=scanline+packet_size*image->tile_info.x;
           q=image->pixels+y*image->columns;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(q->red,p);
             q->index=0;
@@ -11482,7 +11482,7 @@ Image *ReadRGBImage(const ImageInfo *image_info)
             image->file);
           p=scanline+packet_size*image->tile_info.x;
           q=image->pixels+y*image->columns;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(q->green,p);
             q++;
@@ -11491,7 +11491,7 @@ Image *ReadRGBImage(const ImageInfo *image_info)
             image->file);
           p=scanline+packet_size*image->tile_info.x;
           q=image->pixels+y*image->columns;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(q->blue,p);
             q++;
@@ -11502,7 +11502,7 @@ Image *ReadRGBImage(const ImageInfo *image_info)
                 image->tile_info.width,image->file);
               p=scanline+packet_size*image->tile_info.x;
               q=image->pixels+y*image->columns;
-              for (x=0; x < image->columns; x++)
+              for (x=0; x < (int) image->columns; x++)
               {
                 ReadQuantum(q->index,p);
                 q++;
@@ -11541,13 +11541,13 @@ Image *ReadRGBImage(const ImageInfo *image_info)
         i=0;
         span=image->rows*(image->matte ? 4 : 3);
         q=image->pixels;
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
             (void) ReadData((char *) scanline,packet_size,
               image->tile_info.width,image->file);
           p=scanline+packet_size*image->tile_info.x;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(q->red,p);
             q->index=0;
@@ -11575,12 +11575,12 @@ Image *ReadRGBImage(const ImageInfo *image_info)
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
             image->file);
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
             image->file);
           p=scanline+packet_size*image->tile_info.x;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(q->green,p);
             q++;
@@ -11606,12 +11606,12 @@ Image *ReadRGBImage(const ImageInfo *image_info)
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
             image->file);
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
             image->file);
           p=scanline+packet_size*image->tile_info.x;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(q->blue,p);
             q++;
@@ -11642,12 +11642,12 @@ Image *ReadRGBImage(const ImageInfo *image_info)
             for (y=0; y < image->tile_info.y; y++)
               (void) ReadData((char *) scanline,packet_size,
                 image->tile_info.width,image->file);
-            for (y=0; y < image->rows; y++)
+            for (y=0; y < (int) image->rows; y++)
             {
               (void) ReadData((char *) scanline,packet_size,
                 image->tile_info.width,image->file);
               p=scanline+packet_size*image->tile_info.x;
-              for (x=0; x < image->columns; x++)
+              for (x=0; x < (int) image->columns; x++)
               {
                 ReadQuantum(q->index,p);
                 q++;
@@ -11803,6 +11803,7 @@ Image *ReadRLAImage(const ImageInfo *image_info)
     *image;
 
   int
+    channel,
     length,
     runlength,
     y;
@@ -11821,9 +11822,6 @@ Image *ReadRLAImage(const ImageInfo *image_info)
 
   unsigned char
     byte;
-
-  unsigned int
-    channel;
 
   /*
     Allocate image structure.
@@ -11913,16 +11911,16 @@ Image *ReadRLAImage(const ImageInfo *image_info)
   /*
     Read offsets to each scanline data.
   */
-  for (i=0; i < image->rows; i++)
+  for (i=0; i < (int) image->rows; i++)
     scanlines[i]=(long) MSBFirstReadLong(image->file);
   /*
     Read image data.
   */
   q=image->pixels;
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
     (void) fseek(image->file,scanlines[image->rows-y-1],SEEK_SET);
-    for (channel=0; channel < rla_header.number_channels; channel++)
+    for (channel=0; channel < (int) rla_header.number_channels; channel++)
     {
       length=MSBFirstReadShort(image->file);
       q=image->pixels+(y*image->columns);
@@ -11968,7 +11966,7 @@ Image *ReadRLAImage(const ImageInfo *image_info)
                 }
               }
               q++;
-              if ((q-image->pixels) >= image->packets)
+              if ((q-image->pixels) >= (int) image->packets)
                 break;
               runlength++;
             }
@@ -12006,7 +12004,7 @@ Image *ReadRLAImage(const ImageInfo *image_info)
             }
           }
           q++;
-          if ((q-image->pixels) >= image->packets)
+          if ((q-image->pixels) >= (int) image->packets)
             break;
           runlength--;
         }
@@ -12015,10 +12013,10 @@ Image *ReadRLAImage(const ImageInfo *image_info)
     }
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
-    if ((q-image->pixels) >= image->packets)
+    if ((q-image->pixels) >= (int) image->packets)
       break;
   }
-  for ( ;  (q-image->pixels) < image->packets; q++)
+  for ( ;  (q-image->pixels) < (int) image->packets; q++)
     q->length=0;
   CondenseImage(image);
   CloseImage(image);
@@ -12147,7 +12145,7 @@ Image *ReadRLEImage(const ImageInfo *image_info)
         /*
           No background color-- initialize to black.
         */
-        for (i=0; i < number_planes; i++)
+        for (i=0; i < (int) number_planes; i++)
           background_color[i]=(unsigned char) 0;
         (void) fgetc(image->file);
       }
@@ -12157,7 +12155,7 @@ Image *ReadRLEImage(const ImageInfo *image_info)
           Initialize background color.
         */
         p=background_color;
-        for (i=0; i < number_planes; i++)
+        for (i=0; i < (int) number_planes; i++)
           *p++=(unsigned char) fgetc(image->file);
       }
     if ((number_planes & 0x01) == 0)
@@ -12173,8 +12171,8 @@ Image *ReadRLEImage(const ImageInfo *image_info)
         if (colormap == (unsigned char *) NULL)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
         p=colormap;
-        for (i=0; i < number_colormaps; i++)
-          for (j=0; j < map_length; j++)
+        for (i=0; i < (int) number_colormaps; i++)
+          for (j=0; j < (int) map_length; j++)
             *p++=XDownScale(LSBFirstReadShort(image->file));
       }
     if (flags & 0x08)
@@ -12209,14 +12207,14 @@ Image *ReadRLEImage(const ImageInfo *image_info)
           Set background color.
         */
         p=rle_pixels;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           if (!image->matte)
-            for (j=0; j < number_planes; j++)
+            for (j=0; j < (int) number_planes; j++)
               *p++=background_color[j];
           else
             {
-              for (j=0; j < (number_planes-1); j++)
+              for (j=0; j < (int) (number_planes-1); j++)
                 *p++=background_color[j];
               *p++=0;  /* initialize matte channel */
             }
@@ -12270,7 +12268,7 @@ Image *ReadRLEImage(const ImageInfo *image_info)
           for (i=0; i < operand; i++)
           {
             pixel=fgetc(image->file);
-            if ((y < image->rows) && ((x+i) < image->columns))
+            if ((y < (int) image->rows) && ((x+i) < (int) image->columns))
               *p=pixel;
             p+=number_planes;
           }
@@ -12291,7 +12289,7 @@ Image *ReadRLEImage(const ImageInfo *image_info)
             x*number_planes+plane;
           for (i=0; i < operand; i++)
           {
-            if ((y < image->rows) && ((x+i) < image->columns))
+            if ((y < (int) image->rows) && ((x+i) < (int) image->columns))
               *p=pixel;
             p+=number_planes;
           }
@@ -12314,15 +12312,15 @@ Image *ReadRLEImage(const ImageInfo *image_info)
         mask=(map_length-1);
         p=rle_pixels;
         if (number_colormaps == 1)
-          for (i=0; i < image->packets; i++)
+          for (i=0; i < (int) image->packets; i++)
           {
             *p=(unsigned char) colormap[*p & mask];
             p++;
           }
         else
           if ((number_planes >= 3) && (number_colormaps >= 3))
-            for (i=0; i < image->packets; i++)
-              for (j=0; j < number_planes; j++)
+            for (i=0; i < (int) image->packets; i++)
+              for (j=0; j < (int) number_planes; j++)
               {
                 *p=(unsigned char) colormap[j*map_length+(*p & mask)];
                 p++;
@@ -12343,9 +12341,9 @@ Image *ReadRLEImage(const ImageInfo *image_info)
           Convert raster image to DirectClass runlength-encoded packets.
         */
         p=rle_pixels;
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             q->red=UpScale(*p++);
             q->green=UpScale(*p++);
@@ -12376,7 +12374,7 @@ Image *ReadRLEImage(const ImageInfo *image_info)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
         p=colormap;
         if (number_colormaps == 0)
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (int) image->colors; i++)
           {
             /*
               Grayscale.
@@ -12387,7 +12385,7 @@ Image *ReadRLEImage(const ImageInfo *image_info)
           }
         else
           if (number_colormaps == 1)
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
             {
               /*
                 Pseudocolor.
@@ -12397,7 +12395,7 @@ Image *ReadRLEImage(const ImageInfo *image_info)
               image->colormap[i].blue=(Quantum) UpScale(i);
             }
           else
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[i].red=UpScale(*p);
               image->colormap[i].green=UpScale(*(p+map_length));
@@ -12410,9 +12408,9 @@ Image *ReadRLEImage(const ImageInfo *image_info)
             /*
               Convert raster image to PseudoClass runlength-encoded packets.
             */
-            for (y=0; y < image->rows; y++)
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (x=0; x < image->columns; x++)
+              for (x=0; x < (int) image->columns; x++)
               {
                 q->index=(unsigned short) (*p++);
                 q->length=0;
@@ -12429,9 +12427,9 @@ Image *ReadRLEImage(const ImageInfo *image_info)
             /*
               Image has a matte channel-- promote to DirectClass.
             */
-            for (y=0; y < image->rows; y++)
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (x=0; x < image->columns; x++)
+              for (x=0; x < (int) image->columns; x++)
               {
                 q->red=image->colormap[*p++].red;
                 q->green=image->colormap[*p++].green;
@@ -12781,10 +12779,10 @@ Image *ReadSGIImage(const ImageInfo *image_info)
         /*
           Convert SGI image to DirectClass runlength-encoded packets.
         */
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           p=iris_pixels+((image->rows-1)-y)*(image->columns*4);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             q->red=UpScale(*p);
             q->green=UpScale(*(p+1));
@@ -12811,7 +12809,7 @@ Image *ReadSGIImage(const ImageInfo *image_info)
           AllocateMemory(image->colors*sizeof(ColorPacket));
         if (image->colormap == (ColorPacket *) NULL)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
         {
           image->colormap[i].red=(Quantum) UpScale(i);
           image->colormap[i].green=(Quantum) UpScale(i);
@@ -12820,10 +12818,10 @@ Image *ReadSGIImage(const ImageInfo *image_info)
         /*
           Convert SGI image to PseudoClass runlength-encoded packets.
         */
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           p=iris_pixels+((image->rows-1)-y)*(image->columns*4);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             index=(unsigned short) (*p);
             q->index=index;
@@ -12963,7 +12961,7 @@ Image *ReadSTEGANOImage(const ImageInfo *image_info)
     AllocateMemory(image->colors*sizeof(ColorPacket));
   if (image->colormap == (ColorPacket *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-  for (i=0; i < image->colors; i++)
+  for (i=0; i < (int) image->colors; i++)
   {
     image->colormap[i].red=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
     image->colormap[i].green=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
@@ -12975,7 +12973,7 @@ Image *ReadSTEGANOImage(const ImageInfo *image_info)
   shift=QuantumDepth-1;
   p=stegano_image->pixels+(stegano_image->offset % stegano_image->packets);
   q=image->pixels;
-  for (i=0; i < stegano_image->packets; i++)
+  for (i=0; i < (int) stegano_image->packets; i++)
   {
     if (stegano_image->class == PseudoClass)
       UnembedBit(p->index)
@@ -13134,7 +13132,7 @@ Image *ReadSUNImage(const ImageInfo *image_info)
             if (image->colormap == (ColorPacket *) NULL)
               PrematureExit(ResourceLimitWarning,"Memory allocation failed",
                 image);
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[i].red=(MaxRGB*i)/(image->colors-1);
               image->colormap[i].green=(MaxRGB*i)/(image->colors-1);
@@ -13159,13 +13157,13 @@ Image *ReadSUNImage(const ImageInfo *image_info)
             (sun_colormap == (unsigned char *) NULL))
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
         (void) ReadData((char *) sun_colormap,1,image->colors,image->file);
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
           image->colormap[i].red=UpScale(sun_colormap[i]);
         (void) ReadData((char *) sun_colormap,1,image->colors,image->file);
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
           image->colormap[i].green=UpScale(sun_colormap[i]);
         (void) ReadData((char *) sun_colormap,1,image->colors,image->file);
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
           image->colormap[i].blue=UpScale(sun_colormap[i]);
         FreeMemory((char *) sun_colormap);
         break;
@@ -13234,12 +13232,12 @@ Image *ReadSUNImage(const ImageInfo *image_info)
     p=sun_pixels;
     q=image->pixels;
     if (sun_header.depth == 1)
-      for (y=0; y < image->rows; y++)
+      for (y=0; y < (int) image->rows; y++)
       {
         /*
           Convert bitmap scanline to runlength-encoded color packets.
         */
-        for (x=0; x < (image->columns >> 3); x++)
+        for (x=0; x < (int) (image->columns >> 3); x++)
         {
           for (bit=7; bit >= 0; bit--)
           {
@@ -13251,7 +13249,7 @@ Image *ReadSUNImage(const ImageInfo *image_info)
         }
         if ((image->columns % 8) != 0)
           {
-            for (bit=7; bit >= (8-(image->columns % 8)); bit--)
+            for (bit=7; bit >= (int) (8-(image->columns % 8)); bit--)
             {
               q->index=((*p) & (0x01 << bit) ? 0x00 : 0x01);
               q->length=0;
@@ -13267,12 +13265,12 @@ Image *ReadSUNImage(const ImageInfo *image_info)
       }
     else
       if (image->class == PseudoClass)
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           /*
             Convert PseudoColor scanline to runlength-encoded color packets.
           */
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             q->index=(*p++);
             q->length=0;
@@ -13285,12 +13283,12 @@ Image *ReadSUNImage(const ImageInfo *image_info)
               ProgressMonitor(LoadImageText,y,image->rows);
         }
       else
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           /*
             Convert DirectColor scanline to runlength-encoded color packets.
           */
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             q->index=0;
             if (image->matte)
@@ -13533,7 +13531,7 @@ Image *ReadTGAImage(const ImageInfo *image_info)
           AllocateMemory(image->colors*sizeof(ColorPacket));
         if (image->colormap == (ColorPacket *) NULL)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
         {
           switch (tga_header.colormap_size)
           {
@@ -13590,7 +13588,7 @@ Image *ReadTGAImage(const ImageInfo *image_info)
     runlength=0;
     offset=0;
     q=image->pixels;
-    for (i=0; i < image->packets; i++)
+    for (i=0; i < (int) image->packets; i++)
     {
       q->red=0;
       q->green=0;
@@ -13599,13 +13597,13 @@ Image *ReadTGAImage(const ImageInfo *image_info)
       q->length=0;
       q++;
     }
-    for (y=0; y < image->rows; y++)
+    for (y=0; y < (int) image->rows; y++)
     {
       real=offset;
       if (((unsigned char) (tga_header.attributes & 0x20) >> 5) == 0)
         real=image->rows-real-1;
       q=image->pixels+(real*image->columns);
-      for (x=0; x < image->columns; x++)
+      for (x=0; x < (int) image->columns; x++)
       {
         if ((tga_header.image_type == TGARLEColormap) ||
             (tga_header.image_type == TGARLERGB) ||
@@ -14103,7 +14101,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
         {
           case PHOTOMETRIC_MINISBLACK:
           {
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[i].red=(MaxRGB*i)/(image->colors-1);
               image->colormap[i].green=(MaxRGB*i)/(image->colors-1);
@@ -14117,7 +14115,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
               colors;
 
             colors=image->colors;
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[colors-i-1].red=(MaxRGB*i)/(image->colors-1);
               image->colormap[colors-i-1].green=(MaxRGB*i)/(image->colors-1);
@@ -14138,14 +14136,14 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
             TIFFGetField(tiff,TIFFTAG_COLORMAP,&red_colormap,&green_colormap,
               &blue_colormap);
             range=256L;  /* might be old style 8-bit colormap */
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
               if ((red_colormap[i] >= 256) || (green_colormap[i] >= 256) ||
                   (blue_colormap[i] >= 256))
                 {
                   range=65535L;
                   break;
                 }
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[i].red=(Quantum)
                 ((long) (MaxRGB*red_colormap[i])/range);
@@ -14162,7 +14160,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
         /*
           Convert image to PseudoClass runlength-encoded packets.
         */
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           TIFFReadScanline(tiff,(char *) scanline,y,0);
           p=scanline;
@@ -14226,7 +14224,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
             }
             case 16:
             {
-              for (x=0; x < image->columns; x++)
+              for (x=0; x < (int) image->columns; x++)
               {
                 ReadQuantum(*r,p);
                 r++;
@@ -14240,7 +14238,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
             Transfer image scanline.
           */
           r=quantum_scanline;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             index=(*r++);
             if ((index == q->index) && ((int) q->length < MaxRunlength))
@@ -14250,7 +14248,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == max_packets)
+                if (packets == (int) max_packets)
                   {
                     max_packets<<=1;
                     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -14293,7 +14291,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
         TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
           &sample_info);
         image->matte=extra_samples == 1;
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           TIFFReadScanline(tiff,(char *) scanline,y,0);
           if (bits_per_sample == 4)
@@ -14312,7 +14310,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
               }
             }
           p=scanline;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             ReadQuantum(red,p);
             ReadQuantum(green,p);
@@ -14328,7 +14326,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == max_packets)
+                if (packets == (int) max_packets)
                   {
                     max_packets<<=1;
                     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -14391,7 +14389,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
         for (y=image->rows-1; y >= 0; y--)
         {
           p=pixels+y*image->columns;
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             red=UpScale(TIFFGetR(*p));
             green=UpScale(TIFFGetG(*p));
@@ -14405,7 +14403,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == max_packets)
+                if (packets == (int) max_packets)
                   {
                     max_packets<<=1;
                     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -14555,9 +14553,9 @@ Image *ReadTILEImage(const ImageInfo *image_info)
   /*
     Tile texture onto image.
   */
-  for (y=0; y < image->rows; y+=tiled_image->rows)
+  for (y=0; y < (int) image->rows; y+=tiled_image->rows)
   {
-    for (x=0; x < image->columns; x+=tiled_image->columns)
+    for (x=0; x < (int) image->columns; x+=tiled_image->columns)
       CompositeImage(image,ReplaceCompositeOp,tiled_image,x,y);
     ProgressMonitor(LoadImageText,y,image->rows);
   }
@@ -14701,7 +14699,7 @@ Image *ReadTIMImage(const ImageInfo *image_info)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
         (void) ReadData((char *) tim_colormap,2,image->colors,image->file);
         p=tim_colormap;
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
         {
           word=(*p++);
           word=word | (*p++ << 8);
@@ -14782,7 +14780,7 @@ Image *ReadTIMImage(const ImageInfo *image_info)
         {
           p=tim_pixels+y*bytes_per_line;
           q=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             q->index=(*p++);
             q->length=0;
@@ -14802,7 +14800,7 @@ Image *ReadTIMImage(const ImageInfo *image_info)
         {
           p=tim_pixels+y*bytes_per_line;
           q=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             q->index=0;
             word=(*p++);
@@ -14827,7 +14825,7 @@ Image *ReadTIMImage(const ImageInfo *image_info)
         {
           p=tim_pixels+y*bytes_per_line;
           q=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             q->index=0;
             q->red=UpScale(*p++);
@@ -15186,7 +15184,7 @@ Image *ReadTXTImage(const ImageInfo *image_info)
       Initialize text image to background color.
     */
     q=image->pixels;
-    for (i=0; i < image->packets; i++)
+    for (i=0; i < (int) image->packets; i++)
     {
       q->red=XDownScale(color.red);
       q->green=XDownScale(color.green);
@@ -15331,7 +15329,7 @@ Image *ReadUYVYImage(const ImageInfo *image_info)
   */
   p=uyvy_pixels;
   q=image->pixels;
-  for (i=0; i < (image->packets >> 1); i++)
+  for (i=0; i < (int) (image->packets >> 1); i++)
   {
     q->red=UpScale(p[1]);
     q->green=UpScale(p[0]);
@@ -15517,7 +15515,7 @@ Image *ReadVICARImage(const ImageInfo *image_info)
   /*
     Read the rest of the header.
   */
-  while (count < header_length)
+  while (count < (int) header_length)
   {
     c=fgetc(image->file);
     count++;
@@ -15534,7 +15532,7 @@ Image *ReadVICARImage(const ImageInfo *image_info)
     AllocateMemory(image->colors*sizeof(ColorPacket));
   if (image->colormap == (ColorPacket *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-  for (i=0; i < image->colors; i++)
+  for (i=0; i < (int) image->colors; i++)
   {
     image->colormap[i].red=(Quantum) UpScale(i);
     image->colormap[i].green=(Quantum) UpScale(i);
@@ -15563,9 +15561,9 @@ Image *ReadVICARImage(const ImageInfo *image_info)
   */
   p=vicar_pixels;
   q=image->pixels;
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       q->index=(unsigned short) *p;
       q->length=0;
@@ -15994,7 +15992,7 @@ Image *ReadVIFFImage(const ImageInfo *image_info)
             if (image->colormap == (ColorPacket *) NULL)
               PrematureExit(ResourceLimitWarning,"Memory allocation failed",
                 image);
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[i].red=(MaxRGB*i)/(image->colors-1);
               image->colormap[i].green=(MaxRGB*i)/(image->colors-1);
@@ -16021,7 +16019,7 @@ Image *ReadVIFFImage(const ImageInfo *image_info)
             (viff_colormap == (unsigned char *) NULL))
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
         (void) ReadData((char *) viff_colormap,1,image->colors,image->file);
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
         {
           image->colormap[i].red=UpScale(viff_colormap[i]);
           image->colormap[i].green=UpScale(viff_colormap[i]);
@@ -16030,13 +16028,13 @@ Image *ReadVIFFImage(const ImageInfo *image_info)
         if (viff_header.map_rows > 1)
           {
             (void) ReadData((char *) viff_colormap,1,image->colors,image->file);
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
               image->colormap[i].green=UpScale(viff_colormap[i]);
           }
         if (viff_header.map_rows > 2)
           {
             (void) ReadData((char *) viff_colormap,1,image->colors,image->file);
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
               image->colormap[i].blue=UpScale(viff_colormap[i]);
           }
         FreeMemory((char *) viff_colormap);
@@ -16092,7 +16090,7 @@ Image *ReadVIFFImage(const ImageInfo *image_info)
         q=(Quantum *) viff_pixels;
         p+=max_packets-1;
         q+=max_packets-1;
-        for (i=0; i < max_packets; i++)
+        for (i=0; i < (int) max_packets; i++)
         {
           value=UpScale(*p);
           *q=(Quantum) value;
@@ -16119,7 +16117,7 @@ Image *ReadVIFFImage(const ImageInfo *image_info)
         p=(short int *) viff_pixels;
         max_value=(*p);
         min_value=(*p);
-        for (i=0; i < max_packets; i++)
+        for (i=0; i < (int) max_packets; i++)
         {
           if (*p > max_value)
             max_value=(*p);
@@ -16143,7 +16141,7 @@ Image *ReadVIFFImage(const ImageInfo *image_info)
         */
         p=(short int *) viff_pixels;
         q=(Quantum *) viff_pixels;
-        for (i=0; i < max_packets; i++)
+        for (i=0; i < (int) max_packets; i++)
         {
           value=DownShift((*p-min_value)*scale_factor);
           if (value > MaxRGB)
@@ -16175,7 +16173,7 @@ Image *ReadVIFFImage(const ImageInfo *image_info)
         p=(int *) viff_pixels;
         max_value=(*p);
         min_value=(*p);
-        for (i=0; i < max_packets; i++)
+        for (i=0; i < (int) max_packets; i++)
         {
           if (*p > max_value)
             max_value=(*p);
@@ -16199,7 +16197,7 @@ Image *ReadVIFFImage(const ImageInfo *image_info)
         */
         p=(int *) viff_pixels;
         q=(Quantum *) viff_pixels;
-        for (i=0; i < max_packets; i++)
+        for (i=0; i < (int) max_packets; i++)
         {
           value=DownShift((*p-min_value)*scale_factor);
           if (value > MaxRGB)
@@ -16248,12 +16246,12 @@ Image *ReadVIFFImage(const ImageInfo *image_info)
         */
         polarity=(viff_header.machine_dependency == VFF_DEP_DECORDER) ||
           (viff_header.machine_dependency == VFF_DEP_NSORDER);
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           /*
             Convert bitmap scanline to runlength-encoded color packets.
           */
-          for (x=0; x < (image->columns >> 3); x++)
+          for (x=0; x < (int) (image->columns >> 3); x++)
           {
             for (bit=0; bit < 8; bit++)
             {
@@ -16266,7 +16264,7 @@ Image *ReadVIFFImage(const ImageInfo *image_info)
           }
           if ((image->columns % 8) != 0)
             {
-              for (bit=0; bit < (image->columns % 8); bit++)
+              for (bit=0; bit < (int) (image->columns % 8); bit++)
               {
                 q->index=
                   ((*p) & (0x01 << bit) ? (int) polarity : (int) !polarity);
@@ -16282,12 +16280,12 @@ Image *ReadVIFFImage(const ImageInfo *image_info)
       }
     else
       if (image->class == PseudoClass)
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
           /*
             Convert PseudoColor scanline to runlength-encoded color packets.
           */
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             q->index=(*p++);
             q->length=0;
@@ -16306,9 +16304,9 @@ Image *ReadVIFFImage(const ImageInfo *image_info)
             Convert DirectColor scanline to runlength-encoded color packets.
           */
           offset=image->columns*image->rows;
-          for (y=0; y < image->rows; y++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            for (x=0; x < image->columns; x++)
+            for (x=0; x < (int) image->columns; x++)
             {
               q->red=(*p);
               q->green=(*(p+offset));
@@ -16617,7 +16615,7 @@ Image *ReadXBMImage(const ImageInfo *image_info)
   */
   p=data;
   if (version == 10)
-    for (x=0; x < (bytes_per_line*image->rows); (x+=2))
+    for (x=0; x < (int) (bytes_per_line*image->rows); (x+=2))
     {
       value=XBMInteger(image->file,hex_digits);
       *p++=value;
@@ -16625,7 +16623,7 @@ Image *ReadXBMImage(const ImageInfo *image_info)
         *p++=value >> 8;
     }
   else
-    for (x=0; x < (bytes_per_line*image->rows); x++)
+    for (x=0; x < (int) (bytes_per_line*image->rows); x++)
     {
       value=XBMInteger(image->file,hex_digits);
       *p++=value;
@@ -16637,10 +16635,10 @@ Image *ReadXBMImage(const ImageInfo *image_info)
   p=data;
   q=image->pixels;
   SetRunlengthEncoder(q);
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
     bit=0;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (bit == 0)
         byte=(*p++);
@@ -16652,7 +16650,7 @@ Image *ReadXBMImage(const ImageInfo *image_info)
           if (packets != 0)
             q++;
           packets++;
-          if (packets == max_packets)
+          if (packets == (int) max_packets)
             {
               max_packets<<=1;
               image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -16757,7 +16755,7 @@ Image *ReadXCImage(const ImageInfo *image_info)
   image->colormap[0].green=XDownScale(color.green);
   image->colormap[0].blue=XDownScale(color.blue);
   q=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     q->index=0;
     SetRunlengthEncoder(q);
@@ -16992,7 +16990,7 @@ Image *ReadXPMImage(const ImageInfo *image_info)
     Read image colormap.
   */
   i=1;
-  for (j=0; j < image->colors; j++)
+  for (j=0; j < (int) image->colors; j++)
   {
     p=textlist[i++];
     if (p == (char *) NULL)
@@ -17026,7 +17024,7 @@ Image *ReadXPMImage(const ImageInfo *image_info)
     image->colormap[j].green=XDownScale(color.green);
     image->colormap[j].blue=XDownScale(color.blue);
   }
-  if (j < image->colors)
+  if (j < (int) image->colors)
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
         FreeMemory((char *) textlist[i]);
@@ -17055,16 +17053,16 @@ Image *ReadXPMImage(const ImageInfo *image_info)
   j=0;
   key[width]='\0';
   r=image->pixels;
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
     p=textlist[i++];
     if (p == (char *) NULL)
       break;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       (void) strncpy(key,p,width);
       if (strcmp(key,image->colormap[j].key) != 0)
-        for (j=0; j < (image->colors-1); j++)
+        for (j=0; j < (int) (image->colors-1); j++)
           if (strcmp(key,image->colormap[j].key) == 0)
             break;
       r->red=image->colormap[j].red;
@@ -17082,7 +17080,7 @@ Image *ReadXPMImage(const ImageInfo *image_info)
       p+=width;
     }
   }
-  if (y < image->rows)
+  if (y < (int) image->rows)
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
         FreeMemory((char *) textlist[i]);
@@ -17246,7 +17244,7 @@ Image *ReadXWDImage(const ImageInfo *image_info)
         AllocateMemory((unsigned int) header.ncolors*sizeof(XColor));
       if (colors == (XColor *) NULL)
         PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-      for (i=0; i < header.ncolors; i++)
+      for (i=0; i < (int) header.ncolors; i++)
       {
         status=ReadData((char *) &color,sz_XWDColor,1,image->file);
         if (status == False)
@@ -17263,7 +17261,7 @@ Image *ReadXWDImage(const ImageInfo *image_info)
       */
       lsb_first=1;
       if (*(char *) &lsb_first)
-        for (i=0; i < header.ncolors; i++)
+        for (i=0; i < (int) header.ncolors; i++)
         {
           MSBFirstOrderLong((char *) &colors[i].pixel,sizeof(unsigned long));
           MSBFirstOrderShort((char *) &colors[i].red,3*sizeof(unsigned short));
@@ -17357,9 +17355,9 @@ Image *ReadXWDImage(const ImageInfo *image_info)
         Convert X image to DirectClass packets.
       */
       if (image->colors != 0)
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             pixel=XGetPixel(ximage,x,y);
             index=(unsigned short) ((pixel >> red_shift) & red_mask);
@@ -17376,7 +17374,7 @@ Image *ReadXWDImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == max_packets)
+                if (packets == (int) max_packets)
                   {
                     max_packets<<=1;
                     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -17397,9 +17395,9 @@ Image *ReadXWDImage(const ImageInfo *image_info)
             ProgressMonitor(LoadImageText,y,image->rows);
         }
       else
-        for (y=0; y < image->rows; y++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             pixel=XGetPixel(ximage,x,y);
             color=(pixel >> red_shift) & red_mask;
@@ -17416,7 +17414,7 @@ Image *ReadXWDImage(const ImageInfo *image_info)
                 if (packets != 0)
                   q++;
                 packets++;
-                if (packets == max_packets)
+                if (packets == (int) max_packets)
                   {
                     max_packets<<=1;
                     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -17447,15 +17445,15 @@ Image *ReadXWDImage(const ImageInfo *image_info)
         AllocateMemory(image->colors*sizeof(ColorPacket));
       if (image->colormap == (ColorPacket *) NULL)
         PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         image->colormap[i].red=XDownScale(colors[i].red);
         image->colormap[i].green=XDownScale(colors[i].green);
         image->colormap[i].blue=XDownScale(colors[i].blue);
       }
-      for (y=0; y < image->rows; y++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        for (x=0; x < image->columns; x++)
+        for (x=0; x < (int) image->columns; x++)
         {
           pixel=XGetPixel(ximage,x,y);
           index=(unsigned short) pixel;
@@ -17466,7 +17464,7 @@ Image *ReadXWDImage(const ImageInfo *image_info)
               if (packets != 0)
                 q++;
               packets++;
-              if (packets == max_packets)
+              if (packets == (int) max_packets)
                 {
                   max_packets<<=1;
                   image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -17604,12 +17602,12 @@ Image *ReadYUVImage(const ImageInfo *image_info)
       }
     i=0;
     q=image->pixels;
-    for (y=0; y < (image->rows << 1); y++)
+    for (y=0; y < (int) (image->rows << 1); y++)
     {
       if ((y > 0) || (image->previous == (Image *) NULL))
         (void) ReadData((char *) scanline,1,image->columns << 1,image->file);
       p=scanline;
-      for (x=0; x < (image->columns << 1); x++)
+      for (x=0; x < (int) (image->columns << 1); x++)
       {
         q->red=UpScale(*p++);
         q->index=0;
@@ -17629,11 +17627,11 @@ Image *ReadYUVImage(const ImageInfo *image_info)
           PrematureExit(FileOpenWarning,"Unable to open file",image);
       }
     q=image->pixels;
-    for (y=0; y < image->rows; y++)
+    for (y=0; y < (int) image->rows; y++)
     {
       (void) ReadData((char *) scanline,1,image->columns,image->file);
       p=scanline;
-      for (x=0; x < image->columns; x++)
+      for (x=0; x < (int) image->columns; x++)
       {
         q->green=UpScale(*p++);
         q++;
@@ -17651,11 +17649,11 @@ Image *ReadYUVImage(const ImageInfo *image_info)
           PrematureExit(FileOpenWarning,"Unable to open file",image);
       }
     q=image->pixels;
-    for (y=0; y < image->rows; y++)
+    for (y=0; y < (int) image->rows; y++)
     {
       (void) ReadData((char *) scanline,1,image->columns,image->file);
       p=scanline;
-      for (x=0; x < image->columns; x++)
+      for (x=0; x < (int) image->columns; x++)
       {
         q->blue=UpScale(*p++);
         q++;
@@ -17677,7 +17675,7 @@ Image *ReadYUVImage(const ImageInfo *image_info)
     image->packets=image->columns*image->rows;
     q=image->pixels;
     r=zoomed_image->pixels;
-    for (i=0; i < image->packets; i++)
+    for (i=0; i < (int) image->packets; i++)
     {
       q->green=r->green;
       q->blue=r->blue;

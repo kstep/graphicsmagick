@@ -395,7 +395,7 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     return;
   length=Extent(textlist[0]);
   for (i=1; textlist[i] != (char *) NULL; i++)
-    if (Extent(textlist[i]) > length)
+    if (Extent(textlist[i]) > (int) length)
       length=Extent(textlist[i]);
   number_lines=i;
   text=(char *) AllocateMemory(length+MaxTextExtent);
@@ -689,7 +689,7 @@ Export Image *AppendImages(Image *images,unsigned int stack)
         if (image->class == DirectClass)
           appended_image->class=DirectClass;
         p=image->pixels;
-        for (i=0; i < image->packets; i++)
+        for (i=0; i < (int) image->packets; i++)
         {
           *q=(*p);
           p++;
@@ -716,7 +716,7 @@ Export Image *AppendImages(Image *images,unsigned int stack)
             global_colormap=False;
             break;
           }
-        for (i=0; i < images->colors; i++)
+        for (i=0; i < (int) images->colors; i++)
           if (!ColorMatch(image->colormap[i],images->colormap[i],image->fuzz))
             {
               global_colormap=False;
@@ -815,7 +815,7 @@ Export Image *AverageImages(Image *images)
     }
   averaged_image->class=DirectClass;
   q=averaged_image->pixels;
-  for (i=0; i < averaged_image->packets; i++)
+  for (i=0; i < (int) averaged_image->packets; i++)
   {
     red=0;
     green=0;
@@ -824,7 +824,7 @@ Export Image *AverageImages(Image *images)
     count=0;
     for (image=images; image != (Image *) NULL; image=image->next)
     {
-      if (i < image->packets)
+      if (i < (int) image->packets)
         {
           red+=image->pixels[i].red;
           green+=image->pixels[i].green;
@@ -1000,7 +1000,7 @@ Export Image *ChopImage(Image *image,RectangleInfo *chop_info)
   runlength=p->length+1;
   q=chopped_image->pixels;
   for (y=0; y < chop_info->y; y++)
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -1009,7 +1009,7 @@ Export Image *ChopImage(Image *image,RectangleInfo *chop_info)
           p++;
           runlength=p->length;
         }
-      if ((x < chop_info->x) || (x >= (chop_info->x+chop_info->width)))
+      if ((x < chop_info->x) || (x >= (int) (chop_info->x+chop_info->width)))
         {
           *q=(*p);
           q->length=0;
@@ -1019,7 +1019,7 @@ Export Image *ChopImage(Image *image,RectangleInfo *chop_info)
   /*
     Skip pixels up to the chop image.
   */
-  for (x=0; x < (chop_info->height*image->columns); x++)
+  for (x=0; x < (int) (chop_info->height*image->columns); x++)
     if (runlength != 0)
       runlength--;
     else
@@ -1031,9 +1031,9 @@ Export Image *ChopImage(Image *image,RectangleInfo *chop_info)
     Extract chop image.
   */
   height=image->rows-(chop_info->y+chop_info->height);
-  for (y=0; y < height; y++)
+  for (y=0; y < (int) height; y++)
   {
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -1042,7 +1042,7 @@ Export Image *ChopImage(Image *image,RectangleInfo *chop_info)
           p++;
           runlength=p->length;
         }
-      if ((x < chop_info->x) || (x >= (chop_info->x+chop_info->width)))
+      if ((x < chop_info->x) || (x >= (int) (chop_info->x+chop_info->width)))
         {
           *q=(*p);
           q->length=0;
@@ -1263,9 +1263,9 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
   */
   assert(image != (Image *) NULL);
   assert(color != (ColorPacket *) NULL);
-  if ((y < 0) || (y >= image->rows))
+  if ((y < 0) || (y >= (int) image->rows))
     return;
-  if ((x < 0) || (x >= image->columns))
+  if ((x < 0) || (x >= (int) image->columns))
     return;
   if (ColorMatch(*color,*target,image->fuzz))
     return;
@@ -1332,7 +1332,7 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
       if (!skip)
         {
           pixel=image->pixels+(y*image->columns+x);
-          for ( ; x < image->columns; x++)
+          for ( ; x < (int) image->columns; x++)
           {
             if (method == FloodfillMethod)
               {
@@ -1463,7 +1463,7 @@ Export void ColorizeImage(Image *image,char *opacity,char *pen_color)
         Colorize DirectClass image.
       */
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         value=(long) (p->red*(100-red_opacity)+target.red*red_opacity)/100;
         p->red=(Quantum) ((value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value);
@@ -1484,7 +1484,7 @@ Export void ColorizeImage(Image *image,char *opacity,char *pen_color)
       /*
         Colorize PseudoClass image.
       */
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         value=(long)
           (image->colormap[i].red*(100-red_opacity)+target.red*red_opacity)/100;
@@ -1589,11 +1589,11 @@ Export void CompressColormap(Image *image)
   if (image->class != PseudoClass)
     return;
   number_colors=image->colors;
-  for (i=0; i < image->colors; i++)
+  for (i=0; i < (int) image->colors; i++)
     image->colormap[i].flags=False;
   image->colors=0;
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     if (!image->colormap[p->index].flags)
       {
@@ -1612,7 +1612,7 @@ Export void CompressColormap(Image *image)
       }
     p++;
   }
-  if (image->colors == number_colors)
+  if ((int) image->colors == number_colors)
     return;  /* no duplicate or unused entries */
   /*
     Compress colormap.
@@ -1640,7 +1640,7 @@ Export void CompressColormap(Image *image)
     Remap pixels.
   */
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     p->index=image->colormap[p->index].index;
     p++;
@@ -1801,12 +1801,12 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
       p=composite_image->pixels;
       runlength=p->length+1;
       r=displaced_image->pixels;
-      for (y=0; y < composite_image->rows; y++)
+      for (y=0; y < (int) composite_image->rows; y++)
       {
-        if (((y_offset+y) < 0) || ((y_offset+y) >= image->rows))
+        if (((y_offset+y) < 0) || ((y_offset+y) >= (int) image->rows))
           continue;
         q=image->pixels+(y_offset+y)*image->columns+x_offset;
-        for (x=0; x < composite_image->columns; x++)
+        for (x=0; x < (int) composite_image->columns; x++)
         {
           if (runlength != 0)
             runlength--;
@@ -1815,7 +1815,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
               p++;
               runlength=p->length;
             }
-          if (((x_offset+x) < 0) || ((x_offset+x) >= image->columns))
+          if (((x_offset+x) < 0) || ((x_offset+x) >= (int) image->columns))
             {
               q++;
               continue;
@@ -1889,7 +1889,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
               green=composite_image->background_color.green;
               blue=composite_image->background_color.blue;
             }
-          for (i=0; i < composite_image->packets; i++)
+          for (i=0; i < (int) composite_image->packets; i++)
           {
             p->index=Opaque;
             if ((p->red == red) && (p->green == green) &&
@@ -1908,12 +1908,12 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
   */
   p=composite_image->pixels;
   runlength=p->length+1;
-  for (y=0; y < composite_image->rows; y++)
+  for (y=0; y < (int) composite_image->rows; y++)
   {
-    if (((y_offset+y) < 0) || ((y_offset+y) >= image->rows))
+    if (((y_offset+y) < 0) || ((y_offset+y) >= (int) image->rows))
       continue;
     q=image->pixels+(y_offset+y)*image->columns+x_offset;
-    for (x=0; x < composite_image->columns; x++)
+    for (x=0; x < (int) composite_image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -1922,7 +1922,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           p++;
           runlength=p->length;
         }
-      if (((x_offset+x) < 0) || ((x_offset+x) >= image->columns))
+      if (((x_offset+x) < 0) || ((x_offset+x) >= (int) image->columns))
         {
           q++;
           continue;
@@ -2183,7 +2183,7 @@ Export void CondenseImage(Image *image)
   q=image->pixels;
   q->length=MaxRunlength;
   if (image->matte)
-    for (i=0; i < (image->columns*image->rows); i++)
+    for (i=0; i < (int) (image->columns*image->rows); i++)
     {
       if (runlength != 0)
         runlength--;
@@ -2206,7 +2206,7 @@ Export void CondenseImage(Image *image)
         }
     }
   else
-    for (i=0; i < (image->columns*image->rows); i++)
+    for (i=0; i < (int) (image->columns*image->rows); i++)
     {
       if (runlength != 0)
         runlength--;
@@ -2282,7 +2282,7 @@ Export void ContrastImage(Image *image,const unsigned int sharpen)
         Contrast enhance DirectClass image.
       */
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         Contrast(sign,&p->red,&p->green,&p->blue);
         p++;
@@ -2301,7 +2301,7 @@ Export void ContrastImage(Image *image,const unsigned int sharpen)
       /*
         Contrast enhance PseudoClass image.
       */
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
         Contrast(sign,&image->colormap[i].red,&image->colormap[i].green,
           &image->colormap[i].blue);
       SyncImage(image);
@@ -2392,7 +2392,7 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       */
       p=image->pixels;
       q=clone_image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         *q=(*p);
         p++;
@@ -2470,7 +2470,7 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
         AllocateMemory(image->colors*sizeof(ColorPacket));
       if (clone_image->colormap == (ColorPacket *) NULL)
         return((Image *) NULL);
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
         clone_image->colormap[i]=image->colormap[i];
     }
   if (image->color_profile.length > 0)
@@ -2482,7 +2482,7 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
         AllocateMemory(image->color_profile.length*sizeof(unsigned char));
       if (clone_image->color_profile.info == (unsigned char *) NULL)
         return((Image *) NULL);
-      for (i=0; i < image->color_profile.length; i++)
+      for (i=0; i < (int) image->color_profile.length; i++)
         clone_image->color_profile.info[i]=image->color_profile.info[i];
     }
   clone_image->page=(char *) NULL;
@@ -2625,7 +2625,7 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
       p=image->pixels;
       runlength=p->length+1;
       corners[0]=(*p);
-      for (i=1; i <= (image->rows*image->columns); i++)
+      for (i=1; i <= (int) (image->rows*image->columns); i++)
       {
         if (runlength != 0)
           runlength--;
@@ -2634,18 +2634,18 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
             p++;
             runlength=p->length;
           }
-        if (i == image->columns)
+        if (i == (int) image->columns)
           corners[1]=(*p);
-        if (i == (image->rows*image->columns-image->columns+1))
+        if (i == (int) (image->rows*image->columns-image->columns+1))
           corners[2]=(*p);
-        if (i == (image->rows*image->columns))
+        if (i == (int) (image->rows*image->columns))
           corners[3]=(*p);
       }
       p=image->pixels;
       runlength=p->length+1;
-      for (y=0; y < image->rows; y++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        for (x=0; x < image->columns; x++)
+        for (x=0; x < (int) image->columns; x++)
         {
           if (runlength != 0)
             runlength--;
@@ -2658,13 +2658,13 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
             if (x < crop_info->x)
               crop_info->x=x;
           if (!ColorMatch(*p,corners[1],image->fuzz))
-            if (x > crop_info->width)
+            if (x > (int) crop_info->width)
               crop_info->width=x;
           if (!ColorMatch(*p,corners[0],image->fuzz))
             if (y < crop_info->y)
               crop_info->y=y;
           if (!ColorMatch(*p,corners[2],image->fuzz))
-            if (y > crop_info->height)
+            if (y > (int) crop_info->height)
               crop_info->height=y;
         }
       }
@@ -2714,7 +2714,7 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
   */
   p=image->pixels;
   runlength=p->length+1;
-  for (x=0; x < (crop_info->y*image->columns+crop_info->x); x++)
+  for (x=0; x < (int) (crop_info->y*image->columns+crop_info->x); x++)
     if (runlength != 0)
       runlength--;
     else
@@ -2728,12 +2728,12 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
   max_packets=0;
   q=cropped_image->pixels;
   SetRunlengthEncoder(q);
-  for (y=0; y < (cropped_image->rows-1); y++)
+  for (y=0; y < (int) (cropped_image->rows-1); y++)
   {
     /*
       Transfer scanline.
     */
-    for (x=0; x < cropped_image->columns; x++)
+    for (x=0; x < (int) cropped_image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -2772,7 +2772,7 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
   /*
     Transfer last scanline.
   */
-  for (x=0; x < cropped_image->columns; x++)
+  for (x=0; x < (int) cropped_image->columns; x++)
   {
     if (runlength != 0)
       runlength--;
@@ -2833,11 +2833,11 @@ Export void CycleColormapImage(Image *image,int amount)
   int
     index;
 
+  register int
+    i;
+
   register RunlengthPacket
     *q;
-
-  register unsigned int
-    i;
 
   assert(image != (Image *) NULL);
   if (image->class == DirectClass)
@@ -2850,7 +2850,7 @@ Export void CycleColormapImage(Image *image,int amount)
       (void) QuantizeImage(&quantize_info,image);
     }
   q=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     index=((int) q->index+amount) % image->colors;
     if (index < 0)
@@ -3027,7 +3027,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         Display image colormap.
       */
       p=image->colormap;
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         (void) fprintf(file,"    %d: (%3d,%3d,%3d)",i,p->red,p->green,p->blue);
         (void) fprintf(file,"  ");
@@ -3543,7 +3543,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         c=fgetc(file);
         if (c == EOF)
           break;
-        if ((q-primitive+1) >= length)
+        if ((q-primitive+1) >= (int) length)
           {
             *q='\0';
             length<<=1;
@@ -3661,22 +3661,22 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
           break;
         }
       if (point.x < bounds.x1)
-        bounds.x1=point.x;
+        bounds.x1=(int) point.x;
       if (point.y < bounds.y1)
-        bounds.y1=point.y;
+        bounds.y1=(int) point.y;
       if (point.x > bounds.x2)
-        bounds.x2=point.x;
+        bounds.x2=(int) point.x;
       if (point.y > bounds.y2)
-        bounds.y2=point.y;
+        bounds.y2=(int) point.y;
       primitive_info[i].primitive=primitive_type;
       primitive_info[i].coordinates=0;
-      primitive_info[i].x=point.x;
-      primitive_info[i].y=point.y;
+      primitive_info[i].x=(int) point.x;
+      primitive_info[i].y=(int) point.y;
       p+=n;
       while (isspace((int) (*p)) || (*p == ','))
         p++;
       i++;
-      if (i < (number_coordinates-360-1))
+      if (i < (int) (number_coordinates-360-1))
         continue;
       number_coordinates<<=1;
       primitive_info=(PrimitiveInfo *) ReallocateMemory(primitive_info,
@@ -3765,15 +3765,15 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         point.x=Max(primitive_info[j].x-radius,0);
         point.y=Max(primitive_info[j].y-radius,0);
         if (point.x < bounds.x1)
-          bounds.x1=point.x;
+          bounds.x1=(int) point.x;
         if (point.y < bounds.y1)
-          bounds.y1=point.y;
+          bounds.y1=(int) point.y;
         point.x=Min(primitive_info[j].x+radius,image->columns-1);
         point.y=Min(primitive_info[j].y+radius,image->rows-1);
         if (point.x > bounds.x2)
-          bounds.x2=point.x;
+          bounds.x2=(int) point.x;
         if (point.y > bounds.y2)
-          bounds.y2=point.y;
+          bounds.y2=(int) point.y;
       }
     if ((primitive_type == EllipsePrimitive) ||
         (primitive_type == FillEllipsePrimitive))
@@ -3796,24 +3796,24 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         degrees.y=primitive_info[i+2].y;
         while (degrees.y < degrees.x)
           degrees.y+=360;
-        for (n=degrees.x+1; n <= degrees.y; n++)
+        for (n=(int) degrees.x+1; n <= (int) degrees.y; n++)
         {
           point.x=cos(DegreesToRadians(i % 360))*arc.width+arc.x;
           point.y=sin(DegreesToRadians(i % 360))*arc.height+arc.y;
           if (point.x < bounds.x1)
-            bounds.x1=point.x;
+            bounds.x1=(int) point.x;
           if (point.y < bounds.y1)
-            bounds.y1=point.y;
+            bounds.y1=(int) point.y;
           if (point.x > bounds.x2)
-            bounds.x2=point.x;
+            bounds.x2=(int) point.x;
           if (point.y > bounds.y2)
-            bounds.y2=point.y;
+            bounds.y2=(int) point.y;
           primitive_info[i].primitive=PolygonPrimitive;
           if (primitive_type == FillEllipsePrimitive)
             primitive_info[i].primitive=FillPolygonPrimitive;
           primitive_info[i].coordinates=0;
-          primitive_info[i].x=point.x;
-          primitive_info[i].y=point.y;
+          primitive_info[i].x=(int) point.x;
+          primitive_info[i].y=(int) point.y;
           i++;
           primitive_info[j].coordinates++;
         }
@@ -3847,7 +3847,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     Draw the primitive on the image.
   */
   image->class=DirectClass;
-  mid=(annotate_info->linewidth+0.5)/2.0;
+  mid=(int) ((annotate_info->linewidth+0.5)/2.0);
   for (y=bounds.y1-mid; y <= (bounds.y2+mid); y++)
   {
     q=image->pixels+y*image->columns+bounds.x1-mid;
@@ -3937,7 +3937,7 @@ Export void EqualizeImage(Image *image)
   for (i=0; i <= MaxRGB; i++)
     histogram[i]=0;
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     histogram[Intensity(*p)]+=(p->length+1);
     p++;
@@ -3979,7 +3979,7 @@ Export void EqualizeImage(Image *image)
         Equalize DirectClass packets.
       */
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         p->red=equalize_map[p->red];
         p->green=equalize_map[p->green];
@@ -3995,7 +3995,7 @@ Export void EqualizeImage(Image *image)
       /*
         Equalize PseudoClass packets.
       */
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         image->colormap[i].red=equalize_map[image->colormap[i].red];
         image->colormap[i].green=equalize_map[image->colormap[i].green];
@@ -4088,13 +4088,13 @@ Export Image *FlipImage(Image *image)
   p=image->pixels;
   runlength=p->length+1;
   q=flipped_image->pixels+flipped_image->packets-1;
-  for (y=0; y < flipped_image->rows; y++)
+  for (y=0; y < (int) flipped_image->rows; y++)
   {
     /*
       Read a scan line.
     */
     s=scanline;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -4110,7 +4110,7 @@ Export Image *FlipImage(Image *image)
       Flip each column.
     */
     s=scanline+image->columns;
-    for (x=0; x < flipped_image->columns; x++)
+    for (x=0; x < (int) flipped_image->columns; x++)
     {
       s--;
       *q=(*s);
@@ -4204,13 +4204,13 @@ Export Image *FlopImage(Image *image)
   p=image->pixels;
   runlength=p->length+1;
   q=flopped_image->pixels;
-  for (y=0; y < flopped_image->rows; y++)
+  for (y=0; y < (int) flopped_image->rows; y++)
   {
     /*
       Read a scan line.
     */
     s=scanline;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -4226,7 +4226,7 @@ Export Image *FlopImage(Image *image)
       Flop each column.
     */
     s=scanline+image->columns;
-    for (x=0; x < flopped_image->columns; x++)
+    for (x=0; x < (int) flopped_image->columns; x++)
     {
       s--;
       *q=(*s);
@@ -4315,7 +4315,7 @@ Export Image *FrameImage(Image *image,FrameInfo *frame_info)
   bevel_width=frame_info->outer_bevel+frame_info->inner_bevel;
   width=(int) frame_info->width-frame_info->x-bevel_width;
   height=(int) frame_info->height-frame_info->y-bevel_width;
-  if ((width < image->columns) || (height < image->rows))
+  if ((width < (int) image->columns) || (height < (int) image->rows))
     {
       MagickWarning(OptionWarning,"Unable to frame image",
         "frame is less than image size");
@@ -4377,7 +4377,7 @@ Export Image *FrameImage(Image *image,FrameInfo *frame_info)
         *q++=highlight;
       else
         *q++=accentuate;
-    for ( ; x < framed_image->columns; x++)
+    for ( ; x < (int) framed_image->columns; x++)
       *q++=shadow;
   }
   for (y=0; y < (int) (frame_info->y-bevel_width); y++)
@@ -4400,7 +4400,7 @@ Export Image *FrameImage(Image *image,FrameInfo *frame_info)
         *q++=shadow;
       else
         *q++=trough;
-    for ( ; x < (image->columns+(frame_info->inner_bevel << 1)); x++)
+    for ( ; x < (int) (image->columns+(frame_info->inner_bevel << 1)); x++)
       *q++=highlight;
     width=frame_info->width-frame_info->x-image->columns-bevel_width;
     for (x=0; x < width; x++)
@@ -4410,7 +4410,7 @@ Export Image *FrameImage(Image *image,FrameInfo *frame_info)
   }
   p=image->pixels;
   runlength=p->length+1;
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
     /*
       Initialize scanline with border color.
@@ -4424,7 +4424,7 @@ Export Image *FrameImage(Image *image,FrameInfo *frame_info)
     /*
       Transfer scanline.
     */
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -4455,13 +4455,13 @@ Export Image *FrameImage(Image *image,FrameInfo *frame_info)
       *q++=matte;
     for (x=0; x < y; x++)
       *q++=shadow;
-    for ( ; x < (image->columns+(frame_info->inner_bevel << 1)); x++)
-      if (x >= (image->columns+(frame_info->inner_bevel << 1)-y))
+    for ( ; x < (int) (image->columns+(frame_info->inner_bevel << 1)); x++)
+      if (x >= (int) (image->columns+(frame_info->inner_bevel << 1)-y))
         *q++=highlight;
       else
         *q++=accentuate;
     width=frame_info->width-frame_info->x-image->columns-bevel_width;
-    for (x=0; x < width; x++)
+    for (x=0; x < (int) width; x++)
       *q++=matte;
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=shadow;
@@ -4480,8 +4480,8 @@ Export Image *FrameImage(Image *image,FrameInfo *frame_info)
   {
     for (x=0; x < y; x++)
       *q++=highlight;
-    for ( ; x < framed_image->columns; x++)
-      if (x >= (framed_image->columns-y))
+    for ( ; x < (int) framed_image->columns; x++)
+      if (x >= (int) (framed_image->columns-y))
         *q++=shadow;
       else
         *q++=trough;
@@ -4590,7 +4590,7 @@ Export void GammaImage(Image *image,char *gamma)
         Gamma-correct DirectClass image.
       */
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         p->red=gamma_map[p->red].red;
         p->green=gamma_map[p->green].green;
@@ -4606,7 +4606,7 @@ Export void GammaImage(Image *image,char *gamma)
       /*
         Gamma-correct PseudoClass image.
       */
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         image->colormap[i].red=gamma_map[image->colormap[i].red].red;
         image->colormap[i].green=gamma_map[image->colormap[i].green].green;
@@ -4901,7 +4901,7 @@ Export unsigned int IsGrayImage(Image *image)
       if (image->matte)
         return(False);
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         if (!IsGray(*p))
           {
@@ -4924,7 +4924,7 @@ Export unsigned int IsGrayImage(Image *image)
     }
     case PseudoClass:
     {
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
         if (!IsGray(image->colormap[i]))
           {
             gray_scale=False;
@@ -5175,7 +5175,7 @@ Export void LayerImage(Image *image,LayerType layer)
   image->class=DirectClass;
   image->matte=False;
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     switch (layer)
     {
@@ -5357,9 +5357,9 @@ Export Image *MagnifyImage(Image *image)
   p=image->pixels;
   runlength=p->length+1;
   q=magnified_image->pixels;
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -5377,7 +5377,7 @@ Export Image *MagnifyImage(Image *image)
   /*
     Magnify each row.
   */
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
     p=magnified_image->pixels+(image->rows-1-y)*magnified_image->columns+
       (image->columns-1);
@@ -5385,7 +5385,7 @@ Export Image *MagnifyImage(Image *image)
       ((image->columns-1) << 1);
     *q=(*p);
     *(q+1)=(*(p));
-    for (x=1; x < image->columns; x++)
+    for (x=1; x < (int) image->columns; x++)
     {
       p--;
       q-=2;
@@ -5397,12 +5397,12 @@ Export Image *MagnifyImage(Image *image)
       (q+1)->length=0;
     }
   }
-  for (y=0; y < (image->rows-1); y++)
+  for (y=0; y < (int) (image->rows-1); y++)
   {
     p=magnified_image->pixels+(y << 1)*magnified_image->columns;
     q=p+magnified_image->columns;
     r=q+magnified_image->columns;
-    for (x=0; x < (image->columns-1); x++)
+    for (x=0; x < (int) (image->columns-1); x++)
     {
       q->red=(((int) p->red)+((int) r->red)+1) >> 1;
       q->green=(((int) p->green)+((int) r->green)+1) >> 1;
@@ -5443,7 +5443,7 @@ Export Image *MagnifyImage(Image *image)
   }
   p=magnified_image->pixels+(2*image->rows-2)*magnified_image->columns;
   q=magnified_image->pixels+(2*image->rows-1)*magnified_image->columns;
-  for (x=0; x < image->columns; x++)
+  for (x=0; x < (int) image->columns; x++)
   {
     *q++=(*p++);
     *q++=(*p++);
@@ -5509,9 +5509,9 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
     Check boundary conditions.
   */
   assert(image != (Image *) NULL);
-  if ((y < 0) || (y >= image->rows))
+  if ((y < 0) || (y >= (int) image->rows))
     return;
-  if ((x < 0) || (x >= image->columns))
+  if ((x < 0) || (x >= (int) image->columns))
     return;
   if (target->index == (unsigned short) matte)
     return;
@@ -5578,7 +5578,7 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
       if (!skip)
         {
           pixel=image->pixels+(y*image->columns+x);
-          for ( ; x < image->columns; x++)
+          for ( ; x < (int) image->columns; x++)
           {
             if (method == FloodfillMethod)
               {
@@ -5653,7 +5653,7 @@ Export void MatteImage(Image *image)
   image->class=DirectClass;
   image->matte=True;
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     p->index=Opaque;
     p++;
@@ -5789,10 +5789,10 @@ Export Image *MinifyImage(Image *image)
   */
   p=image->pixels;
   runlength=p->length+1;
-  for (x=0; x < (4*(image->columns+1)); x++)
+  for (x=0; x < (int) (4*(image->columns+1)); x++)
     scanline[x]=(*p);
   s=scanline;
-  for (x=0; x < (image->columns << 1); x++)
+  for (x=0; x < (int) (image->columns << 1); x++)
   {
     if (runlength != 0)
       runlength--;
@@ -5811,7 +5811,7 @@ Export Image *MinifyImage(Image *image)
   runlength=p->length+1;
   q=minified_image->pixels;
   SetRunlengthEncoder(q);
-  for (y=0; y < (image->rows-1); y+=2)
+  for (y=0; y < (int) (image->rows-1); y+=2)
   {
     /*
       Initialize sliding window pointers.
@@ -5824,7 +5824,7 @@ Export Image *MinifyImage(Image *image)
       Read another scan line.
     */
     s=s2;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -5840,7 +5840,7 @@ Export Image *MinifyImage(Image *image)
       Read another scan line.
     */
     s=s3;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -5852,7 +5852,7 @@ Export Image *MinifyImage(Image *image)
       *s=(*p);
       s++;
     }
-    for (x=0; x < (image->columns-1); x+=2)
+    for (x=0; x < (int) (image->columns-1); x+=2)
     {
       /*
         Compute weighted average of target pixel color components.
@@ -5888,7 +5888,7 @@ Export Image *MinifyImage(Image *image)
           if (packets != 0)
             q++;
           packets++;
-          if (packets == max_packets)
+          if (packets == (int) max_packets)
             {
               max_packets<<=1;
               minified_image->pixels=(RunlengthPacket *) ReallocateMemory(
@@ -5984,7 +5984,7 @@ Export void ModulateImage(Image *image,char *modulate)
         Modulate the color for a DirectClass image.
       */
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         Modulate(percent_hue,percent_saturation,percent_brightness,
           &p->red,&p->green,&p->blue);
@@ -5999,7 +5999,7 @@ Export void ModulateImage(Image *image,char *modulate)
       /*
         Modulate the color for a PseudoClass image.
       */
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
         Modulate(percent_hue,percent_saturation,percent_brightness,
           &image->colormap[i].red,&image->colormap[i].green,
           &image->colormap[i].blue);
@@ -7402,7 +7402,7 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
     images[tile]->orphan=False;
     if (tile_image == (Image *) NULL)
       {
-        for (i=0; i < tile; i++)
+        for (i=0; i < (int) tile; i++)
           DestroyImage(images[i]);
         (void) SetMonitorHandler(handler);
         return((Image *) NULL);
@@ -7544,7 +7544,7 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
       (tile_info.y << 1);
   number_lines=0;
   for (tile=0; tile < number_images; tile++)
-    if (MultilineCensus(images[tile]->label) > number_lines)
+    if (MultilineCensus(images[tile]->label) > (int) number_lines)
       number_lines=MultilineCensus(images[tile]->label);
   /*
     Allocate image structure.
@@ -7560,7 +7560,7 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
   images_per_page=(number_images-1)/(tiles_per_row*tiles_per_column)+1;
   tiles=0;
   total_tiles=number_images;
-  for (i=0; i < images_per_page; i++)
+  for (i=0; i < (int) images_per_page; i++)
   {
     /*
       Determine bounding box.
@@ -7575,7 +7575,7 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
     {
       width=concatenate ? images[tile]->columns : tile_info.width;
       x_offset+=width+(tile_info.x+border_width)*2;
-      if (x_offset > bounding_box.width)
+      if (x_offset > (int) bounding_box.width)
         bounding_box.width=x_offset;
       if (images[tile]->rows > max_height)
         max_height=images[tile]->rows;
@@ -7585,7 +7585,7 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
           height=concatenate ? max_height : tile_info.height;
           y_offset+=height+(tile_info.y+border_width)*2+(font_height+4)*
             number_lines+(montage_info->shadow ? 4 : 0)+(concatenate ? 0 : 2);
-          if (y_offset > bounding_box.height)
+          if (y_offset > (int) bounding_box.height)
             bounding_box.height=y_offset;
           max_height=0;
         }
@@ -7822,7 +7822,7 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
               {
                 p=montage_image->pixels+montage_image->columns*
                   (y_offset+y+image->rows+rows)+x_offset+x+4;
-                for (columns=0; columns < image->columns; columns++)
+                for (columns=0; columns < (int) image->columns; columns++)
                 {
                   if (p >= (montage_image->pixels+montage_image->packets))
                     continue;
@@ -7860,7 +7860,7 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
       tiles++;
     }
     CondenseImage(montage_image);
-    if ((i+1) < images_per_page)
+    if ((i+1) < (int) images_per_page)
       {
         /*
           Allocate next image structure.
@@ -7968,7 +7968,7 @@ Export Image *MorphImages(Image *images,unsigned int number_frames)
   for (image=images; image->next != (Image *) NULL; image=image->next)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    for (i=0; i < number_frames; i++)
+    for (i=0; i < (int) number_frames; i++)
     {
       beta=(double) (i+1.0)/(number_frames+1.0);
       alpha=1.0-beta;
@@ -8004,7 +8004,7 @@ Export Image *MorphImages(Image *images,unsigned int number_frames)
       morphed_images->class=DirectClass;
       p=morphed_image->pixels;
       q=morphed_images->pixels;
-      for (j=0; j < morphed_images->packets; j++)
+      for (j=0; j < (int) morphed_images->packets; j++)
       {
         q->red=(Quantum) (alpha*q->red+beta*p->red+0.5);
         q->green=(Quantum) (alpha*q->green+beta*p->green+0.5);
@@ -8090,7 +8090,7 @@ Export void NegateImage(Image *image,unsigned int grayscale)
         Negate DirectClass packets.
       */
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         if (grayscale)
           if ((p->red != p->green) || (p->green != p->blue))
@@ -8113,7 +8113,7 @@ Export void NegateImage(Image *image,unsigned int grayscale)
       /*
         Negate PseudoClass packets.
       */
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         if (grayscale)
           if ((image->colormap[i].red != image->colormap[i].green) ||
@@ -8183,7 +8183,7 @@ Export void NormalizeImage(Image *image)
   for (i=0; i <= MaxRGB; i++)
     histogram[i]=0;
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     gray_value=Intensity(*p);
     histogram[gray_value]+=p->length+1;
@@ -8253,7 +8253,7 @@ Export void NormalizeImage(Image *image)
         Normalize DirectClass image.
       */
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         p->red=normalize_map[p->red];
         p->green=normalize_map[p->green];
@@ -8269,7 +8269,7 @@ Export void NormalizeImage(Image *image)
       /*
         Normalize PseudoClass image.
       */
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         image->colormap[i].red=normalize_map[image->colormap[i].red];
         image->colormap[i].green=normalize_map[image->colormap[i].green];
@@ -8351,7 +8351,7 @@ Export void OpaqueImage(Image *image,char *opaque_color,char *pen_color)
         Make DirectClass image opaque.
       */
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         if (ColorMatch(*p,target,image->fuzz))
           {
@@ -8374,7 +8374,7 @@ Export void OpaqueImage(Image *image,char *opaque_color,char *pen_color)
         Make PseudoClass image opaque.
       */
       p=image->colormap;
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         if (ColorMatch(*p,target,image->fuzz))
           {
@@ -8942,13 +8942,13 @@ Export void RGBTransformImage(Image *image,const unsigned int colorspace)
         Return if the image is already gray_scale.
       */
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         if ((p->red != p->green) || (p->green != p->blue))
           break;
         p++;
       }
-      if (i == image->packets)
+      if (i == (int) image->packets)
         return;
     }
   /*
@@ -9258,7 +9258,7 @@ Export void RGBTransformImage(Image *image,const unsigned int colorspace)
         Convert DirectClass image.
       */
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         red=p->red;
         green=p->green;
@@ -9277,7 +9277,7 @@ Export void RGBTransformImage(Image *image,const unsigned int colorspace)
       /*
         Convert PseudoClass image.
       */
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         red=image->colormap[i].red;
         green=image->colormap[i].green;
@@ -9376,12 +9376,12 @@ Export Image *RollImage(Image *image,int x_offset,int y_offset)
     y_offset+=(int) image->rows;
   p=image->pixels;
   runlength=p->length+1;
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
     /*
       Transfer scanline.
     */
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
         runlength--;
@@ -9501,7 +9501,7 @@ Export Image *SampleImage(Image *image,unsigned int columns,unsigned int rows)
   */
   scale_factor=(double) image->columns/sampled_image->columns;
   columns=0;
-  for (x=0; x < sampled_image->columns; x++)
+  for (x=0; x < (int) sampled_image->columns; x++)
   {
     x_offset[x]=(unsigned int) ((x+1)*scale_factor-(int) columns);
     columns+=x_offset[x];
@@ -9511,7 +9511,7 @@ Export Image *SampleImage(Image *image,unsigned int columns,unsigned int rows)
   */
   scale_factor=(double) image->rows/sampled_image->rows;
   rows=0;
-  for (y=0; y < sampled_image->rows; y++)
+  for (y=0; y < (int) sampled_image->rows; y++)
   {
     y_offset[y]=(unsigned int) ((y+1)*scale_factor-(int) rows);
     rows+=y_offset[y];
@@ -9522,7 +9522,7 @@ Export Image *SampleImage(Image *image,unsigned int columns,unsigned int rows)
   p=image->pixels;
   runlength=p->length+1;
   s=scanline;
-  for (x=0; x < image->columns; x++)
+  for (x=0; x < (int) image->columns; x++)
   {
     if (runlength != 0)
       runlength--;
@@ -9541,15 +9541,15 @@ Export Image *SampleImage(Image *image,unsigned int columns,unsigned int rows)
   p=image->pixels;
   runlength=p->length+1;
   q=sampled_image->pixels;
-  for (y=0; y < sampled_image->rows; y++)
+  for (y=0; y < (int) sampled_image->rows; y++)
   {
-    for (i=0; i < y_offset[y]; i++)
+    for (i=0; i < (int) y_offset[y]; i++)
     {
       /*
         Read a scan line.
       */
       s=scanline;
-      for (x=0; x < image->columns; x++)
+      for (x=0; x < (int) image->columns; x++)
       {
         if (runlength != 0)
           runlength--;
@@ -9567,7 +9567,7 @@ Export Image *SampleImage(Image *image,unsigned int columns,unsigned int rows)
       Sample each column.
     */
     s=scanline;
-    for (x=0; x < sampled_image->columns; x++)
+    for (x=0; x < (int) sampled_image->columns; x++)
     {
       *q=(*s);
       q++;
@@ -9728,7 +9728,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   next_row=True;
   x_scale=UpShift(scaled_image->rows)/image->rows;
   x_span=UpShift(1);
-  for (x=0; x < image->columns; x++)
+  for (x=0; x < (int) image->columns; x++)
   {
     y_vector[x].red=0;
     y_vector[x].green=0;
@@ -9742,7 +9742,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   for (y=0; y < scaled_image->rows; y++)
   {
     if (scaled_image->rows == image->rows)
-      for (x=0; x < image->columns; x++)
+      for (x=0; x < (int) image->columns; x++)
       {
         /*
           Read a new scanline.
@@ -9766,12 +9766,12 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         */
         while (x_scale < x_span)
         {
-          if (next_row && (number_rows < image->rows))
+          if (next_row && (number_rows < (int) image->rows))
             {
               /*
                 Read a new scanline.
               */
-              for (x=0; x < image->columns; x++)
+              for (x=0; x < (int) image->columns; x++)
               {
                 if (runlength != 0)
                   runlength--;
@@ -9787,7 +9787,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
               }
               number_rows++;
             }
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             y_vector[x].red+=x_scale*x_vector[x].red;
             y_vector[x].green+=x_scale*x_vector[x].green;
@@ -9798,12 +9798,12 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
           x_scale=UpShift(scaled_image->rows)/image->rows;
           next_row=True;
         }
-        if (next_row && (number_rows < image->rows))
+        if (next_row && (number_rows < (int) image->rows))
           {
             /*
               Read a new scanline.
             */
-            for (x=0; x < image->columns; x++)
+            for (x=0; x < (int) image->columns; x++)
             {
               if (runlength != 0)
                 runlength--;
@@ -9821,7 +9821,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
             next_row=False;
           }
         s=scanline;
-        for (x=0; x < image->columns; x++)
+        for (x=0; x < (int) image->columns; x++)
         {
           red=DownShift(y_vector[x].red+x_span*x_vector[x].red);
           green=DownShift(y_vector[x].green+x_span*x_vector[x].green);
@@ -9852,7 +9852,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
           Transfer scanline to scaled image.
         */
         s=scanline;
-        for (x=0; x < scaled_image->columns; x++)
+        for (x=0; x < (int) scaled_image->columns; x++)
         {
           if ((s->red == q->red) && (s->green == q->green) &&
               (s->blue == q->blue) && (s->index == q->index) &&
@@ -9863,7 +9863,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
               if (packets != 0)
                 q++;
               packets++;
-              if (packets == max_packets)
+              if (packets == (int) max_packets)
                 {
                   max_packets<<=1;
                   scaled_image->pixels=(RunlengthPacket *) ReallocateMemory(
@@ -9906,7 +9906,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         y_span=UpShift(1);
         s=scanline;
         t=scaled_scanline;
-        for (x=0; x < image->columns; x++)
+        for (x=0; x < (int) image->columns; x++)
         {
           y_scale=UpShift(scaled_image->columns)/image->columns;
           while (y_scale >= y_span)
@@ -9974,7 +9974,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         Transfer scanline to scaled image.
       */
       t=scaled_scanline;
-      for (x=0; x < scaled_image->columns; x++)
+      for (x=0; x < (int) scaled_image->columns; x++)
       {
         if ((t->red == q->red) && (t->green == q->green) &&
             (t->blue == q->blue) && (t->index == q->index) &&
@@ -9985,7 +9985,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
             if (packets != 0)
               q++;
             packets++;
-            if (packets == max_packets)
+            if (packets == (int) max_packets)
               {
                 max_packets<<=1;
                 scaled_image->pixels=(RunlengthPacket *) ReallocateMemory(
@@ -10063,7 +10063,7 @@ Export void SetImage(Image *image)
   assert(image != (Image *) NULL);
   color=image->background_color;
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     p->red=color.red;
     p->green=color.green;
@@ -10169,7 +10169,7 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
     {
       p--;
     } while ((*p != '.') && (p > (image_info->filename+1)));
-  if ((*p == '.') && (Extent(p) < sizeof(magick)))
+  if ((*p == '.') && (Extent(p) < (int) sizeof(magick)))
     {
       /*
         User specified image format.
@@ -10201,7 +10201,7 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
   if (*(p+1) == '[')
     p++;
 #endif
-  if ((*p == ':') && ((p-image_info->filename) < sizeof(magick)))
+  if ((*p == ':') && ((p-image_info->filename) < (int) sizeof(magick)))
     {
       /*
         User specified image format.
@@ -10504,7 +10504,7 @@ Export void SortColormapByIntensity(Image *image)
   /*
     Assign index values to colormap entries.
   */
-  for (i=0; i < image->colors; i++)
+  for (i=0; i < (int) image->colors; i++)
     image->colormap[i].index=(unsigned short) i;
   /*
     Sort image colormap by decreasing color popularity.
@@ -10514,10 +10514,10 @@ Export void SortColormapByIntensity(Image *image)
   /*
     Update image colormap indexes to sorted colormap order.
   */
-  for (i=0; i < image->colors; i++)
+  for (i=0; i < (int) image->colors; i++)
     pixels[image->colormap[i].index]=(unsigned short) i;
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     index=pixels[p->index];
     p->red=image->colormap[index].red;
@@ -10628,7 +10628,7 @@ Export Image *SteganoImage(Image *image,Image *watermark)
           for (i=stegano_image->colors-1; i >= 0; i--)
             stegano_image->colormap[i]=stegano_image->colormap[i >> 1];
           q=stegano_image->pixels;
-          for (i=0; i < stegano_image->packets; i++)
+          for (i=0; i < (int) stegano_image->packets; i++)
           {
             q->index<<=1;
             q++;
@@ -10642,7 +10642,7 @@ Export Image *SteganoImage(Image *image,Image *watermark)
   p=image->pixels+(image->offset % image->packets);
   q=stegano_image->pixels+(stegano_image->offset % stegano_image->packets);
   r=watermark->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     if (stegano_image->class == PseudoClass)
       EmbedBit(q->index)
@@ -10747,9 +10747,9 @@ Export Image *StereoImage(Image *left_image,Image *right_image)
   q=right_image->pixels;
   right_runlength=q->length+1;
   r=stereo_image->pixels;
-  for (y=0; y < stereo_image->rows; y++)
+  for (y=0; y < (int) stereo_image->rows; y++)
   {
-    for (x=0; x < stereo_image->columns; x++)
+    for (x=0; x < (int) stereo_image->columns; x++)
     {
       if (left_runlength != 0)
         left_runlength--;
@@ -10816,13 +10816,13 @@ Export void SyncImage(Image *image)
   assert(image != (Image *) NULL);
   if (image->class == DirectClass)
     return;
-  for (i=0; i < image->colors; i++)
+  for (i=0; i < (int) image->colors; i++)
   {
     image->colormap[i].index=0;
     image->colormap[i].flags=0;
   }
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     index=p->index;
     p->red=image->colormap[index].red;
@@ -10885,9 +10885,9 @@ Export void TextureImage(Image *image,char *filename)
   /*
     Tile texture onto the image background.
   */
-  for (y=0; y < image->rows; y+=texture_image->rows)
+  for (y=0; y < (int) image->rows; y+=texture_image->rows)
   {
-    for (x=0; x < image->columns; x+=texture_image->columns)
+    for (x=0; x < (int) image->columns; x+=texture_image->columns)
       CompositeImage(image,ReplaceCompositeOp,texture_image,x,y);
     if (QuantumTick(y,image->rows))
       ProgressMonitor(TextureImageText,y,image->rows);
@@ -10956,7 +10956,7 @@ Export void ThresholdImage(Image *image,double threshold)
   image->colormap[1].green=MaxRGB;
   image->colormap[1].blue=MaxRGB;
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     p->index=Intensity(*p) < threshold ? 0 : 1;
     p++;
@@ -11085,9 +11085,9 @@ Export void TransformImage(Image **image,char *crop_geometry,
           */
           next_image=(Image *) NULL;
           cropped_image=(Image *) NULL;
-          for (y=0; y < transformed_image->rows; y+=height)
+          for (y=0; y < (int) transformed_image->rows; y+=height)
           {
-            for (x=0; x < transformed_image->columns; x+=width)
+            for (x=0; x < (int) transformed_image->columns; x+=width)
             {
               crop_info.width=width;
               crop_info.height=height;
@@ -11300,7 +11300,7 @@ Export void TransformRGBImage(Image *image,const unsigned int colorspace)
         Transform image from CMYK to RGB.
       */
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         cyan=p->red;
         magenta=p->green;
@@ -11401,7 +11401,7 @@ Export void TransformRGBImage(Image *image,const unsigned int colorspace)
         blue[i+B]=0;
         range_table[i+(MaxRGB+1)]=(Quantum) UpScale(sRGBMap[DownScale(i)]);
       }
-      for ( ; i < UpScale(351); i++)
+      for ( ; i < (int) UpScale(351); i++)
         range_table[i+(MaxRGB+1)]=(Quantum) UpScale(sRGBMap[DownScale(i)]);
       break;
     }
@@ -11478,7 +11478,7 @@ Export void TransformRGBImage(Image *image,const unsigned int colorspace)
         blue[i+B]=0;
         range_table[i+(MaxRGB+1)]=(Quantum) UpScale(YCCMap[DownScale(i)]);
       }
-      for ( ; i < UpScale(351); i++)
+      for ( ; i < (int) UpScale(351); i++)
         range_table[i+(MaxRGB+1)]=(Quantum) UpScale(YCCMap[DownScale(i)]);
       break;
     }
@@ -11574,7 +11574,7 @@ Export void TransformRGBImage(Image *image,const unsigned int colorspace)
         Convert DirectClass image.
       */
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         x=p->red;
         y=p->green;
@@ -11593,7 +11593,7 @@ Export void TransformRGBImage(Image *image,const unsigned int colorspace)
       /*
         Convert PseudoClass image.
       */
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (int) image->colors; i++)
       {
         x=image->colormap[i].red;
         y=image->colormap[i].green;
@@ -11606,7 +11606,7 @@ Export void TransformRGBImage(Image *image,const unsigned int colorspace)
           range_limit[DownShift(red[x+B]+green[y+B]+blue[z+B])];
       }
       p=image->pixels;
-      for (i=0; i < image->packets; i++)
+      for (i=0; i < (int) image->packets; i++)
       {
         x=p->red;
         y=p->green;
@@ -11690,7 +11690,7 @@ Export void TransparentImage(Image *image,char *color)
   if (!image->matte)
     MatteImage(image);
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     if (ColorMatch(*p,target,image->fuzz))
       p->index=Transparent;
@@ -11759,7 +11759,7 @@ Export unsigned int UncondenseImage(Image *image)
     }
   p=uncompressed_pixels+(image->packets-1);
   q=uncompressed_pixels+(image->columns*image->rows-1);
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     length=p->length;
     for (j=0; j <= length; j++)
@@ -11992,7 +11992,7 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
       width/=x_factor;
       scale_factor/=x_factor;
     }
-  for (x=0; x < destination->columns; x++)
+  for (x=0; x < (int) destination->columns; x++)
   {
     sum=0.0;
     n=0;
@@ -12003,7 +12003,7 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
       if (j < 0)
         j=(-j);
       else
-        if (j >= source->columns)
+        if (j >= (int) source->columns)
           j=(source->columns << 1)-j-1;
       contribution_info[n].pixel=j;
       contribution_info[n].weight=
@@ -12016,7 +12016,7 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
       for (i=0; i < n; i++)
         contribution_info[i].weight/=sum;  /* normalize */
     q=destination->pixels+x;
-    for (y=0; y < destination->rows; y++)
+    for (y=0; y < (int) destination->rows; y++)
     {
       blue_weight=0.0;
       green_weight=0.0;
@@ -12087,7 +12087,7 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
       scale_factor/=y_factor;
     }
   q=destination->pixels;
-  for (y=0; y < destination->rows; y++)
+  for (y=0; y < (int) destination->rows; y++)
   {
     sum=0.0;
     n=0;
@@ -12098,7 +12098,7 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
       if (j < 0)
         j=(-j);
       else
-        if (j >= source->rows)
+        if (j >= (int) source->rows)
           j=(source->rows << 1)-j-1;
       contribution_info[n].pixel=j;
       contribution_info[n].weight=
@@ -12110,7 +12110,7 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
     if ((sum != 0.0) && (sum != 1.0))
       for (i=0; i < n; i++)
         contribution_info[i].weight/=sum;  /* normalize */
-    for (x=0; x < destination->columns; x++)
+    for (x=0; x < (int) destination->columns; x++)
     {
       blue_weight=0.0;
       green_weight=0.0;

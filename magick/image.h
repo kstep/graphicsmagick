@@ -33,7 +33,7 @@ extern "C" {
 #define PixelOffset(x,y) image->pixels+((y)*image->columns+(x))
 #define Push(up,left,right,delta) \
   if ((p < (segment_stack+MaxStacksize)) && (((up)+(delta)) >= 0) && \
-      (((up)+(delta)) < image->rows)) \
+      (((up)+(delta)) < (int) image->rows)) \
     { \
       p->y1=(up); \
       p->x1=(left); \
@@ -404,8 +404,10 @@ typedef struct _ImageInfo
     monochrome,
     pointsize,
     quality,
-    fuzz,
     verbose;
+
+  int
+    fuzz;
 
   ColorspaceType
     colorspace;
@@ -697,7 +699,9 @@ typedef struct _Image
   unsigned int
     dispose,
     delay,
-    iterations,
+    iterations;
+
+  int
     fuzz;
 
   FilterType

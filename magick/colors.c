@@ -195,7 +195,7 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
         i;
 
       p=node_info->list;
-      for (i=0; i < node_info->number_unique; i++)
+      for (i=0; i < (int) node_info->number_unique; i++)
       {
         (void) fprintf(file,"%10lu: (%3d,%3d,%3d)  #%02x%02x%02x",
           p->count,p->red,p->green,p->blue,(unsigned int) p->red,
@@ -350,7 +350,7 @@ Export unsigned int IsPseudoClass(Image *image)
   if (image->packets == (image->columns*image->rows))
     CondenseImage(image);
   p=image->pixels;
-  for (i=0; (i < image->packets) && (color_cube.colors <= 256); i++)
+  for (i=0; (i < (int) image->packets) && (color_cube.colors <= 256); i++)
   {
     /*
       Start at the root and proceed level by level.
@@ -376,12 +376,12 @@ Export unsigned int IsPseudoClass(Image *image)
       index--;
       if (level != MaxTreeDepth)
         continue;
-      for (j=0; j < node_info->number_unique; j++)
+      for (j=0; j < (int) node_info->number_unique; j++)
          if ((p->red == node_info->list[j].red) &&
              (p->green == node_info->list[j].green) &&
              (p->blue == node_info->list[j].blue))
            break;
-      if (j < node_info->number_unique)
+      if (j < (int) node_info->number_unique)
         {
           node_info->list[j].count+=p->length+1;
           continue;
@@ -576,7 +576,7 @@ Export void NumberColors(Image *image,FILE *file)
       return;
     }
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     /*
       Start at the root and proceed level by level.
@@ -602,12 +602,12 @@ Export void NumberColors(Image *image,FILE *file)
       index--;
       if (level != MaxTreeDepth)
         continue;
-      for (j=0; j < node_info->number_unique; j++)
+      for (j=0; j < (int) node_info->number_unique; j++)
          if ((p->red == node_info->list[j].red) &&
              (p->green == node_info->list[j].green) &&
              (p->blue == node_info->list[j].blue))
            break;
-      if (j < node_info->number_unique)
+      if (j < (int) node_info->number_unique)
         {
           node_info->list[j].count+=p->length+1;
           continue;

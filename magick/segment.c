@@ -344,7 +344,7 @@ static unsigned int Classify(Image *image,short **extrema,
   */
   count=0;
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       if (((int) p->red >= (cluster->red.left-SafeMargin)) &&
@@ -493,7 +493,7 @@ static unsigned int Classify(Image *image,short **extrema,
     Do course grain classification.
   */
   q=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       if (((int) q->red >= (cluster->red.left-SafeMargin)) &&
@@ -515,7 +515,7 @@ static unsigned int Classify(Image *image,short **extrema,
           Compute fuzzy membership.
         */
         local_minima=0.0;
-        for (j=0; j < image->colors; j++)
+        for (j=0; j < (int) image->colors; j++)
         {
           sum=0.0;
           mean=(q->red+image->colormap[j].red)/2;
@@ -527,7 +527,7 @@ static unsigned int Classify(Image *image,short **extrema,
           distance_squared+=
             (3.0*(MaxRGB+1)-1.0-mean)*squares[distance]/(MaxRGB+1);
           numerator=sqrt(distance_squared);
-          for (k=0; k < image->colors; k++)
+          for (k=0; k < (int) image->colors; k++)
           {
             mean=(q->red+image->colormap[k].red)/2;
             distance=q->red-(int) image->colormap[k].red;
@@ -839,7 +839,7 @@ static void InitializeHistogram(Image *image,long **histogram)
     histogram[Blue][i]=0;
   }
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  for (i=0; i < (int) image->packets; i++)
   {
     histogram[Red][p->red]+=(p->length+1);
     histogram[Green][p->green]+=(p->length+1);
@@ -1112,7 +1112,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
         (char *) NULL);
       return(0.0);
     }
-  for (i=0; i < count; i++)
+  for (i=0; i < (int) count; i++)
     zero_crossing[i].tau=(-1);
   /*
     Initialize zero crossing list.
@@ -1146,7 +1146,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
   /*
     Force endpoints to be included in the interval.
   */
-  for (i=0; i <= number_crossings; i++)
+  for (i=0; i <= (int) number_crossings; i++)
   {
     for (j=0; j < MaxRGB; j++)
       if (zero_crossing[i].crossings[j] != 0)
@@ -1179,7 +1179,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
     */
     k=0;
     node=list[i];
-    for (j=0; j <= number_crossings; j++)
+    for (j=0; j <= (int) number_crossings; j++)
       if (zero_crossing[j].tau == node->tau)
         k=j;
     /*
