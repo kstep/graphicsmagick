@@ -76,6 +76,9 @@
 #include <TextUtils.h>
 #define ColorInfo  KolorInfo
 #include "studio.h"
+#include "blob.h"
+#include "monitor.h"
+#include "utility.h"
 #include "mac.h"
 
 /*
