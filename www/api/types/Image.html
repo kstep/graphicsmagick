@@ -60,8 +60,21 @@ to ImageMagick's pixel representation and simplifies the implementation.
 <td><b>Description</b></td>
 </tr>
 
+<tr>
+<td><a NAME="attributes"></a><font size=-1>attributes</font></td>
+
+<td><font size=-1>ImageAttribute*</font></td>
+
+<td><font size=-1>Image attribute list. Consists of a doubly-linked-list
+of ImageAttribute structures, each of which has an associated key and value.
+Access/update list via <a href="../attributes.html#setimageattribute">SetImageAttribute()</a>
+and <a href="../attributes.html#getimageattribute">GetImageAttribute().</a>&nbsp;
+Key-strings used by ImageMagick include "Comment" (image comment) , "Label"
+(image label), and "Signature" (image signature).</font></td>
+</tr>
+
 <tr NOSAVE>
-<td><a NAME="background_color"></a><font size=-1>background_color</font></td>
+<td><a NAME="background_color"></a><font size=-1>ImageAttributebackground_color</font></td>
 
 <td><font size=-1><a href="PixelPacket.html">PixelPacket</a></font></td>
 
@@ -73,8 +86,7 @@ to ImageMagick's pixel representation and simplifies the implementation.
 
 <td NOSAVE><font size=-1>double</font></td>
 
-<td><font size=-1>Blur factor to apply to the image when zooming. Default
-is 1.0 (no blur).</font></td>
+<td><font size=-1>Blur factor to apply to the image when zooming</font></td>
 </tr>
 
 <tr>
@@ -101,7 +113,7 @@ is 1.0 (no blur).</font></td>
 <td><font size=-1>Image storage class. If <a href="Enumerations.html#ClassType">DirectClass</a>
 then the image packets contain valid RGB or CMYK colors. If <a href="Enumerations.html#ClassType">PseudoClass</a>
 then the image has a colormap referenced by pixel's index member. For C++
-this member is known as "c_class"</font></td>
+this member is known as "c_class".</font></td>
 </tr>
 
 <tr>
@@ -246,7 +258,7 @@ The stream is closed when the operation completes.</font></td>
 <td><font size=-1><a href="Enumerations.html#FilterType">FilterType</a></font></td>
 
 <td><font size=-1>Filter to use when resizing image. The reduction filter
-employed has a sipngicant effect on the time required to resize an image
+employed has a significant effect on the time required to resize an image
 and the resulting quality. The default filter is Lanczos which has been
 shown to produce high quality results when reducing most images.</font></td>
 </tr>
@@ -313,14 +325,6 @@ loop extension) for.</font></td>
 </tr>
 
 <tr>
-<td><a NAME="label"></a><font size=-1>label</font></td>
-
-<td><font size=-1>char *</font></td>
-
-<td><font size=-1>Image label</font></td>
-</tr>
-
-<tr>
 <td><a NAME="list"></a><font size=-1>list</font></td>
 
 <td><font size=-1>struct _Image *</font></td>
@@ -358,16 +362,6 @@ loop extension) for.</font></td>
 <td><font size=-1>unsigned int</font></td>
 
 <td><font size=-1>Base image height (before transformations)</font></td>
-</tr>
-
-<tr>
-<td><a NAME="magick_time"></a><font size=-1>magick_time</font></td>
-
-<td><font size=-1>long int</font></td>
-
-<td><font size=-1>Time (as reported by POSIX time()) that image was allocated
-by <a href="../image.html#AllocateImage">AllocateImage()</a>. Used by <a href="../image.html#DescribeImage">DescribeImage()</a>
-to display the time spent reading the image.</font></td>
 </tr>
 
 <tr>
@@ -515,15 +509,6 @@ or initialized via <a href="../cache.html#SetPixelCache">SetPixelCache()</a>.</f
 </tr>
 
 <tr>
-<td><a NAME="signature"></a><font size=-1>signature</font></td>
-
-<td><font size=-1>char *</font></td>
-
-<td><font size=-1>Image MD5 signature. Valid after <a href="../signature.html#SignatureImage">SignatureImage()</a>
-has been called.</font></td>
-</tr>
-
-<tr>
 <td><a NAME="tainted"></a><font size=-1>tainted</font></td>
 
 <td><font size=-1>int</font></td>
@@ -547,7 +532,8 @@ It is used for raw formats such as RGB and CMYK as well as for TIFF.</font></td>
 
 <td><font size=-1>TimerInfo</font></td>
 
-<td><font size=-1>Support for measuring actual and elapsed execution time.</font></td>
+<td><font size=-1>Support for measuring actual (user + system) and elapsed
+execution time.</font></td>
 </tr>
 
 <tr>
