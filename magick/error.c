@@ -316,7 +316,7 @@ MagickExport void DestroyExceptionInfo(ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetExceptionInfo() initializes exception to default values.
+%  GetExceptionInfo() initializes an exception to default values.
 %
 %  The format of the GetExceptionInfo method is:
 %
