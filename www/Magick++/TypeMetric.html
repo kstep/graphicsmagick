@@ -1,10 +1,9 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<HTML>
-<HEAD>
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    <meta name="Author" content="Bob Friesenhahn">
-   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.76 [en] (X11; U; SunOS 5.7 sun4u) [Netscape]">
    <meta name="Description" content="Class to access raw image pixels.">
    <meta name="Keywords" content="ImageMagick,Pixel,Magick++">
    <title>Magick::TypeMetric Class</title>
@@ -15,13 +14,24 @@
 <h3>
 Magick::TypeMetric</h3></center>
 The <i>TypeMetric</i> class provides the means to pass data from the Image
-classes TypeMetric method to the user. It provides information regarding
-font metrics. The <i>characterWidth</i> and <i>characterHeight</i> values
-are expressed in units of a pixel, while the <i>ascent</i>, <i>decent</i>,
-<i>textWidth</i>, <i>textHeight</i>, and <i>maxHorizontalAdvance</i> values
-are expressed in units of 1/64th of a pixel (FreeType 2.0 "26.6 format").&nbsp;
-See <a href="http://freetype.sourceforge.net/freetype2/docs/glyphs/index.html">FreeType
-Glyph Conventions</a> for a detailed description of glyph conventions.
+class's TypeMetric method to the user. It provides information regarding
+font metrics such as ascent, descent, text width, text height, and maximum
+horizontal advance. The units of these font metrics are in pixels, and
+that the metrics are dependent on the current Image font (default Ghostscript's
+"Helvetica"), pointsize (default 12 points), and x/y resolution (default
+72 DPI) settings.
+<p>The pixel units may be converted to points (the standard resolution-independent
+measure used by the typesetting industry) via the following equation:
+<blockquote>size_points = (size_pixels * 72)/resolution</blockquote>
+where resolution is in dots-per-inch (DPI). This means that at the default
+image resolution, there is one pixel per point.
+<p>Note that a font's pointsize is only a first-order approximation of
+the font height (ascender + descender) in points. The relationship between
+the specified pointsize and the rendered font height is determined by the
+font designer.
+<p>&nbsp;See <a href="http://freetype.sourceforge.net/freetype2/docs/glyphs/index.html">FreeType
+Glyph Conventions</a> for a detailed description of font metrics related
+issues.
 <p>The methods available in the <i>TypeMetric</i> class are shown in the
 following table:
 <br>&nbsp;
@@ -50,45 +60,17 @@ following table:
 
 <tr>
 <td>
-<center><a NAME="characterWidth"></a><font size=-1>characterWidth</font></center>
-</td>
-
-<td><font size=-1>unsigned int</font></td>
-
-<td><font size=-1>pixels</font></td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1>Returns the character width</font></td>
-</tr>
-
-<tr>
-<td>
-<center><a NAME="characterHeight"></a><font size=-1>characterHeight</font></center>
-</td>
-
-<td><font size=-1>unsigned int</font></td>
-
-<td><font size=-1>pixels</font></td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1>Returns the character height</font></td>
-</tr>
-
-<tr>
-<td>
 <center><a NAME="ascent"></a><font size=-1>ascent</font></center>
 </td>
 
-<td><font size=-1>int</font></td>
+<td><font size=-1>double</font></td>
 
-<td><font size=-1>64ths of a pixel</font></td>
+<td><font size=-1>Pixels</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1>Returns the distance from the baseline to the highest/upper
-grid coordinate used to place an outline point. Always a positive value.</font></td>
+<td><font size=-1>Returns the distance in pixels from the text baseline
+to the highest/upper grid coordinate used to place an outline point.</font></td>
 </tr>
 
 <tr>
@@ -96,14 +78,15 @@ grid coordinate used to place an outline point. Always a positive value.</font><
 <center><a NAME="decent"></a><font size=-1>decent</font></center>
 </td>
 
-<td><font size=-1>int</font></td>
+<td><font size=-1>double</font></td>
 
-<td><font size=-1>64ths of a pixel</font></td>
+<td><font size=-1>Pixels</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1>Returns the distance from the baseline to the lowest
-grid coordinate used to place an outline point. Always a negative value.</font></td>
+<td><font size=-1>Returns the the distance in pixels from the baseline
+to the lowest grid coordinate used to place an outline point. Always a
+negative value.</font></td>
 </tr>
 
 <tr>
@@ -111,13 +94,13 @@ grid coordinate used to place an outline point. Always a negative value.</font><
 <center><a NAME="textWidth"></a><font size=-1>textWidth</font></center>
 </td>
 
-<td><font size=-1>unsigned int</font></td>
+<td><font size=-1>double</font></td>
 
-<td><font size=-1>64ths of a pixel</font></td>
+<td><font size=-1>Pixels</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1>Returns text width</font></td>
+<td><font size=-1>Returns text width in pixels.</font></td>
 </tr>
 
 <tr>
@@ -125,13 +108,13 @@ grid coordinate used to place an outline point. Always a negative value.</font><
 <center><a NAME="textHeight"></a><font size=-1>textHeight</font></center>
 </td>
 
-<td><font size=-1>unsigned int</font></td>
+<td><font size=-1>double</font></td>
 
-<td><font size=-1>64ths of a pixel</font></td>
+<td><font size=-1>Pixels</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1>Returns text height</font></td>
+<td><font size=-1>Returns text height in pixels.</font></td>
 </tr>
 
 <tr>
@@ -139,13 +122,15 @@ grid coordinate used to place an outline point. Always a negative value.</font><
 <center><a NAME="maxHorizontalAdvance"></a><font size=-1>maxHorizontalAdvance</font></center>
 </td>
 
-<td><font size=-1>unsigned int</font></td>
+<td><font size=-1>double</font></td>
 
-<td><font size=-1>64ths of a pixel</font></td>
+<td><font size=-1>Pixels</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1>Returns the maximum horizontal advance</font></td>
+<td><font size=-1>Returns the maximum horizontal advance (advance from
+the beginning of a character to the beginning of the next character) in
+pixels.</font></td>
 </tr>
 </table>
 
