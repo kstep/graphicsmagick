@@ -2981,6 +2981,11 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       }
       case 't':
       {
+        if (LocaleCompare("temporary",option+1) == 0)
+          {
+            image_info->temporary=(*option == '-');
+            break;
+          }
         if (LocaleCompare("texture",option+1) == 0)
           {
             (void) CloneString(&image_info->texture,(char *) NULL);

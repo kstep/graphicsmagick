@@ -837,6 +837,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 *r++=(*p++);
               break;
             }
+/*             case 12: */
+/*             { */
+/*               break; */
+/*             } */
             case 16:
             {
               if (image->depth <= 8)

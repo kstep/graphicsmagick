@@ -2755,7 +2755,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       delegate_info=GetDelegateInfo(clone_info->magick,(char *) NULL,exception);
       if (delegate_info == (const DelegateInfo *) NULL)
         {
-          if (IsAccessible(clone_info->filename))
+          if (IsAccessibleAndNotEmpty(clone_info->filename))
             ThrowException(exception,MissingDelegateError,
               "NoDecodeDelegateForThisImageFormat",clone_info->filename);
           else
@@ -2787,7 +2787,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       if ((magick_info == (const MagickInfo *) NULL) ||
           (magick_info->decoder == NULL))
         {
-          if (IsAccessible(clone_info->filename))
+          if (IsAccessibleAndNotEmpty(clone_info->filename))
             ThrowException(exception,MissingDelegateError,
               "NoDecodeDelegateForThisImageFormat",clone_info->filename);
           else
@@ -2811,7 +2811,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     }
   if (clone_info->temporary)
     {
-      LiberateTemporaryFile(clone_info->filename);
+      if(!LiberateTemporaryFile(clone_info->filename))
+        remove(clone_info->filename); /* Must be user-provided temporary */
       clone_info->temporary=False;
       if (image != (Image *) NULL)
         (void) strncpy(image->filename,filename,MaxTextExtent-1);
@@ -2822,7 +2823,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       return(image);
     }
   if (image->blob->temporary)
-    LiberateTemporaryFile(clone_info->filename);
+    remove(clone_info->filename); /* Maybe this should be LiberateTemporaryFile? */
   if ((image->next != (Image *) NULL) && IsSubimage(clone_info->tile,False))
     {
       char

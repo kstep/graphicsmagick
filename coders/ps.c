@@ -318,6 +318,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     FormatString(options,"-dFirstPage=%lu -dLastPage=%lu",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
+  if (image_info->temporary)
+    LiberateTemporaryFile((char *) image_info->filename);
   AcquireTemporaryFileName((char *) image_info->filename);
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
@@ -332,7 +334,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       file=fopen(postscript_filename,"ab");
       if (file == (FILE *) NULL)
         {
-          LiberateTemporaryFile(image_info->filename);
+          LiberateTemporaryFile((char *) image_info->filename);
           ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
         }
       (void) fputs("showpage\n",file);
@@ -346,7 +348,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Ghostscript has failed-- try the Display Postscript Extension.
       */
-      LiberateTemporaryFile(image_info->filename);
+      LiberateTemporaryFile((char *) image_info->filename);
       (void) FormatString((char *) image_info->filename,"dps:%.1024s",filename);
       image=ReadImage(image_info,exception);
       if (image != (Image *) NULL)
@@ -358,7 +360,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   clone_info->length=0;
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
-  LiberateTemporaryFile(image_info->filename);
+  LiberateTemporaryFile((char *) image_info->filename);
   if (image == (Image *) NULL)
     ThrowReaderException(DelegateError,"PostscriptDelegateFailed",image);
   do

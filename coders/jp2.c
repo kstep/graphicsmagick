@@ -878,8 +878,6 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
         if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
           break;
   }
-  for (i=0; i < (long) number_components; i++)
-    jas_matrix_destroy(pixels[i]);
   (void) strncpy(magick,image_info->magick,MaxTextExtent-1);
   LocaleLower(magick);
   format=jas_image_strtofmt(magick);
@@ -917,10 +915,12 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   }
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Encoding image");
   status=jas_image_encode(jp2_image,jp2_stream,format,options);
+  (void) jas_stream_close(jp2_stream);
+  for (i=0; i < (long) number_components; i++)
+    jas_matrix_destroy(pixels[i]);
+  jas_image_destroy(jp2_image);
   if (status)
     ThrowWriterException(DelegateError,"UnableToEncodeImageFile",image);
-  (void) jas_stream_close(jp2_stream);
-  jas_image_destroy(jp2_image);
   return(True);
 }
 #endif

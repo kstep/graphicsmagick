@@ -1,3 +1,37 @@
+2003-04-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/bin/delegates.mgk: Update similarly to
+	coders/delegates.mgk.in.
+	* coders/delegates.mgk.in: Replaced 'mpeg-decode' delegate
+	specification with 'mpeg' delegate specification.
+	* PerlMagick/t/mpeg/read.t: Since -r option is no longer
+	supplied to mpeg2decode, the signatures must be updated.
+	* magick/utility.c (ExpandFilenames): Skip over no-argument
+	commands properly.
+	* coders/mpeg.c: Removed ReadMPEGImage since this is handled
+	entirely by delegate now.
+	* magick/command.c: Add convert -temporary option for use
+	when input files are temporary files which should be
+	automatically removed.
+	* magick/delegate.c (InvokeDelegate): Ensure that temporary
+	file access is secure.
+	* coders/ept.c (ReadEPTImage): Ensure that temporary file
+	specified by image_info->filename is liberated before
+	allocating a new temporary file name.
+	* coders/ps.c (ReadPSImage): Ensure that temporary file
+	specified by image_info->filename is liberated before
+	allocating a new temporary file name.
+	* coders/pdf.c (ReadPDFImage): Change TemporaryFilename
+	to AcquireTemporaryFileName.
+	* magick/tempfile.c (LiberateTemporaryFile): Now takes
+	a 'char *' argument rather than 'const char *', and
+	erases the provided filename if it is the name of a valid
+	temporary file. This helps avoid errors. The return
+	status may be used to determine if a file was removed.
+	* coders/jp2.c (WriteJP2Image): Destroy pixel matrix
+	after encoding image.  Cristy says that there is memory
+	corruption otherwise.
+
 2003-04-01  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/png.c: Use new temporary file manager for JNG components.

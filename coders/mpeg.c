@@ -92,123 +92,6 @@ static unsigned int IsMPEG(const unsigned char *magick,const size_t length)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d M P E G I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadMPEGImage reads an binary file in the MPEG video stream format
-%  and returns it.  It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.  This method differs from
-%  the other decoder methods in that only the Photoshop resource (MPEG)
-%  information is useful in the returned image.
-%
-%  The format of the ReadMPEGImage method is:
-%
-%      Image *ReadMPEGImage(const ImageInfo *image_info,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method ReadMPEGImage returns a pointer to the image after
-%      reading. A null image is returned if there is a memory shortage or if
-%      the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-%
-*/
-static Image *ReadMPEGImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
-{
-  Image
-    *image,
-    *next_image;
-
-  ImageInfo
-    *clone_info;
-
-  register Image
-    *p;
-
-  register long
-    i;
-
-  unsigned int
-    status;
-
-  /*
-    Open image file.
-  */
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-  if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
-  CloseBlob(image);
-  /*
-    Convert MPEG to PPM with delegate.
-  */
-  image=AllocateImage(image_info);
-  clone_info=CloneImageInfo(image_info);
-  (void) InvokeDelegate(clone_info,image,"mpeg-decode",(char *) NULL,exception);
-  DestroyImage(image);
-  /*
-    Read PPM files.
-  */
-  image=(Image *) NULL;
-  for (i=(long) clone_info->subimage; ; i++)
-  {
-    FormatString(clone_info->filename,"%.1024s%ld.ppm",clone_info->unique,i);
-    if (!IsAccessible(clone_info->filename))
-      break;
-    next_image=ReadImage(clone_info,exception);
-    if (next_image == (Image *) NULL)
-      break;
-    next_image->scene=i;
-    if (image == (Image *) NULL)
-      image=next_image;
-    else
-      {
-        /*
-          Link image into image list.
-        */
-        for (p=image; p->next != (Image *) NULL; p=p->next);
-        next_image->previous=p;
-        p->next=next_image;
-      }
-    if (clone_info->subrange != 0)
-      if (i >= (long) (clone_info->subimage+clone_info->subrange-1))
-        break;
-  }
-  if (image != (Image *) NULL)
-     while (image->previous != (Image *) NULL)
-        image=image->previous;
-  /*
-    Free resources.
-  */
-  for (i=0; ; i++)
-  {
-    FormatString(clone_info->filename,"%.1024s%ld.ppm",clone_info->unique,i);
-    if (!IsAccessible(clone_info->filename))
-      break;
-    (void) remove(clone_info->filename);
-  }
-  DestroyImageInfo(clone_info);
-  return(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   R e g i s t e r M P E G I m a g e                                         %
 %                                                                             %
 %                                                                             %
@@ -233,23 +116,22 @@ ModuleExport void RegisterMPEGImage(void)
     *entry;
 
   entry=SetMagickInfo("MPEG");
-  entry->decoder=(DecoderHandler) ReadMPEGImage;
   entry->encoder=(EncoderHandler) WriteMPEGImage;
   entry->magick=(MagickHandler) IsMPEG;
   entry->blob_support=False;
   entry->description=AcquireString("MPEG Video Stream");
   entry->module=AcquireString("MPEG");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("MPG");
-  entry->decoder=(DecoderHandler) ReadMPEGImage;
   entry->encoder=(EncoderHandler) WriteMPEGImage;
   entry->magick=(MagickHandler) IsMPEG;
   entry->blob_support=False;
   entry->description=AcquireString("MPEG Video Stream");
   entry->module=AcquireString("MPEG");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("M2V");
-  entry->decoder=(DecoderHandler) ReadMPEGImage;
   entry->encoder=(EncoderHandler) WriteMPEGImage;
   entry->magick=(MagickHandler) IsMPEG;
   entry->blob_support=False;
@@ -280,6 +162,8 @@ ModuleExport void RegisterMPEGImage(void)
 ModuleExport void UnregisterMPEGImage(void)
 {
   (void) UnregisterMagickInfo("MPEG");
+  (void) UnregisterMagickInfo("MPG");
+  (void) UnregisterMagickInfo("M2V");
 }
 
 /*
@@ -682,13 +566,13 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     }
     (void) strncpy(p->filename,image_info->filename,MaxTextExtent-1);
   }
-  LiberateTemporaryFile(basename);
   FormatString(filename,"%.1024s.iqm",basename);
   (void) remove(filename);
   FormatString(filename,"%.1024s.niq",basename);
   (void) remove(filename);
   FormatString(filename,"%.1024s.log",basename);
   (void) remove(filename);
+  LiberateTemporaryFile(basename);
   if (coalesce_image != image)
     DestroyImage(coalesce_image);
   if (logging)

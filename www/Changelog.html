@@ -13,6 +13,51 @@
 </tr>
 </table>
 <p>
+2003-04-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> VisualMagick/bin/delegates.mgk: Update similarly to
+        coders/delegates.mgk.in.<BR>
+  <LI> coders/delegates.mgk.in: Replaced 'mpeg-decode' delegate
+        specification with 'mpeg' delegate specification.
+  <LI> PerlMagick/t/mpeg/read.t: Since -r option is no longer
+        supplied to mpeg2decode, the signatures must be updated.
+  <LI> magick/utility.c (ExpandFilenames): Skip over no-argument
+        commands properly.<BR>
+  <LI> coders/mpeg.c: Removed ReadMPEGImage since this is handled
+        entirely by delegate now.<BR>
+  <LI> magick/command.c: Add convert -temporary option for use
+        when input files are temporary files which should be
+        automatically removed.<BR>
+  <LI> magick/delegate.c (InvokeDelegate): Ensure that temporary
+        file access is secure.<BR>
+  <LI> coders/ept.c (ReadEPTImage): Ensure that temporary file
+        specified by image_info-&gt;filename is liberated before
+        allocating a new temporary file name.
+  <LI> coders/ps.c (ReadPSImage): Ensure that temporary file
+        specified by image_info-&gt;filename is liberated before
+        allocating a new temporary file name.
+  <LI> coders/pdf.c (ReadPDFImage): Change TemporaryFilename
+        to AcquireTemporaryFileName.<BR>
+  <LI> magick/tempfile.c (LiberateTemporaryFile): Now takes
+        a 'char *' argument rather than 'const char *', and
+        erases the provided filename if it is the name of a valid
+        temporary file. This helps avoid errors. The return
+        status may be used to determine if a file was removed.
+  <LI> coders/jp2.c (WriteJP2Image): Destroy pixel matrix
+        after encoding image.  Cristy says that there is memory
+        corruption otherwise.
+
+</UL>
+<p>
+2003-04-01  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/png.c: Use new temporary file manager for JNG components.
+        Merge with IM 5.5.7 (mostly cosmetic changes).
+
+</UL>
+<p>
 2003-03-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -69,6 +114,7 @@
         Applied Cristy fix for bug that offset images to the top and left.
   <LI> magick/resize.c (ScaleImage): Fixed bug that caused intensity
         levels to be one unit too high.
+  <LI> coders/png.c: make JNG support depend on HasJPEG. Remove temp files.
 
 </UL>
 <p>

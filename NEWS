@@ -73,8 +73,15 @@ Major changes associated with GraphicsMagick 1.0.0
     threshold an image to bilevel using random thresholding.
 
   Major bug fixes:
-    * Temporary file management subsystem added to ensure that all
-    temporary files are removed before program exit.
+    * A temporary file management subsystem is added to ensure that all
+    temporary files are removed before program exit. Temporary files are
+    created and used in a secure fashion to avoid the possibility that a
+    "trojan" temporary file (e.g. a symbolic link, or a file containing
+    unsafe content) is created before a delegate has the chance to write
+    to it. The environment variable MAGICK_TMPDIR allows the user to
+    specify where temporary files are created without altering where
+    other programs create their temporary files. Temporary filenames are
+    created in 8+3 format to hopefully be more acceptable to ralcgm.
     * When dithering is disabled, don't dither when converting to a
     PseudoClass, grayscale, or monochrome image. Disabling dithering
     may cause these translations to be much faster.

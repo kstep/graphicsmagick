@@ -314,6 +314,8 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
     FormatString(options,"-dFirstPage=%lu -dLastPage=%lu",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
+  if (image_info->temporary)
+    LiberateTemporaryFile((char *) image_info->filename);
   AcquireTemporaryFileName((char *)image_info->filename);
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
@@ -350,7 +352,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   clone_info->length=0;
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
-  LiberateTemporaryFile(image_info->filename);
+  LiberateTemporaryFile((char *) image_info->filename);
   if (image == (Image *) NULL)
     ThrowReaderException(DelegateError,"PostscriptDelegateFailed",image);
   do

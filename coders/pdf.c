@@ -442,7 +442,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image_info->authenticate);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   clone_info=CloneImageInfo(image_info);
-  TemporaryFilename(clone_info->filename);
+  AcquireTemporaryFileName(clone_info->filename);
   FormatString(command,delegate_info->commands,clone_info->antialias ? 4 : 1,
     clone_info->antialias ? 4 : 1,geometry,density,options,clone_info->filename,
     postscript_filename);

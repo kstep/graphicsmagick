@@ -346,7 +346,8 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
     i;
 
   unsigned int
-    status;
+    status,
+    temporary_image_filename;
 
   /*
     Get delegate.
@@ -355,16 +356,33 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  temporary_image_filename=(*image->filename == '\0');
+  if (temporary_image_filename)
+    {
+      /* Allocate a temporary filename if image is unnamed.  */
+      AcquireTemporaryFileName(image->filename);
+    }
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
   delegate_info=GetDelegateInfo(decode,encode,exception);
   if (delegate_info == (DelegateInfo *) NULL)
     {
-      ThrowException(exception,DelegateError,"NoTagFound",
+      if (temporary_image_filename)
+        LiberateTemporaryFile(image->filename);
+      (void) ThrowException(exception,DelegateError,"NoTagFound",
         decode ? decode : encode);
       return(False);
     }
-  AcquireTemporaryFileName(image_info->unique);
-  AcquireTemporaryFileName(image_info->zero);
+
+  if (*image_info->filename == '\0')
+    {
+      /* ReadImage will normally have already set image_info->filename
+         to the name of a temporary file.  If not, then assign
+         one. Setting image_info->temporary to True indicates that
+         there is a temporary file to be removed later.  */
+      AcquireTemporaryFileName(image_info->filename);
+      image_info->temporary=True;
+    }
+
   if (delegate_info->mode != 0)
     if ((decode && (delegate_info->encode != (char *) NULL)) ||
         (encode && (delegate_info->decode != (char *) NULL)))
@@ -382,11 +400,19 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
         /*
           Delegate requires a particular image format.
         */
+
+        AcquireTemporaryFileName(image_info->unique);
+        AcquireTemporaryFileName(image_info->zero);
+        /* Expand sprintf-style codes in delegate command to command string */
         magick=TranslateText(image_info,image,decode != (char *) NULL ?
           delegate_info->encode : delegate_info->decode);
         if (magick == (char *) NULL)
           {
-            ThrowException(exception,DelegateError,"DelegateFailed",
+            LiberateTemporaryFile(image_info->unique);
+            LiberateTemporaryFile(image_info->zero);
+            if (temporary_image_filename)
+              LiberateTemporaryFile(image->filename);
+            (void) ThrowException(exception,DelegateError,"DelegateFailed",
               decode ? decode : encode);
             return(False);
           }
@@ -407,14 +433,20 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
           status=WriteImage(clone_info,p);
           if (status == False)
             {
+              LiberateTemporaryFile(image_info->unique);
+              LiberateTemporaryFile(image_info->zero);
+              if (temporary_image_filename)
+                LiberateTemporaryFile(image->filename);
               DestroyImageInfo(clone_info);
-              ThrowException(exception,DelegateError,"DelegateFailed",
+              (void) ThrowException(exception,DelegateError,"DelegateFailed",
                 decode ? decode : encode);
               return(False);
             }
           if (clone_info->adjoin)
             break;
         }
+        LiberateTemporaryFile(image_info->unique);
+        LiberateTemporaryFile(image_info->zero);
         DestroyImageInfo(clone_info);
       }
   /*
@@ -424,31 +456,44 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   commands=StringToList(delegate_info->commands);
   if (commands == (char **) NULL)
     {
-      ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
-        decode ? decode : encode);
+      if (temporary_image_filename)
+        LiberateTemporaryFile(image->filename);
+      (void) ThrowException(exception,ResourceLimitError,
+        "MemoryAllocationFailed",decode ? decode : encode);
       return(False);
     }
   command=(char *) NULL;
   status=True;
+  /* For each delegate command ... */
   for (i=0; commands[i] != (char *) NULL; i++)
   {
     status=True;
+    /* Allocate convenience temporary files */
+    AcquireTemporaryFileName(image_info->unique);
+    AcquireTemporaryFileName(image_info->zero);
+    /* Expand sprintf-style codes in delegate command to command string */
     command=TranslateText(image_info,image,commands[i]);
     if (command == (char *) NULL)
       break;
-    /*
-      Execute delegate.
-    */
+    /* Handle commands which should be backgrounded */
     if (delegate_info->spawn)
       (void) ConcatenateString(&command," &");
+    /* Execute delegate.  */
     status=SystemCommand(image_info->verbose,command);
     LiberateMemory((void **) &command);
-    LiberateTemporaryFile(image_info->zero);
+    /* Liberate convenience temporary files */
     LiberateTemporaryFile(image_info->unique);
+    LiberateTemporaryFile(image_info->zero);
     if (status != False)
-      ThrowException(exception,DelegateError,"DelegateFailed",commands[i]);
+      (void) ThrowException(exception,DelegateError,"DelegateFailed",
+        commands[i]);
     LiberateMemory((void **) &commands[i]);
   }
+  /*
+    Free resources.
+  */
+  if (temporary_image_filename)
+    LiberateTemporaryFile(image->filename);
   for ( ; commands[i] != (char *) NULL; i++)
     LiberateMemory((void **) &commands[i]);
   LiberateMemory((void **) &commands);

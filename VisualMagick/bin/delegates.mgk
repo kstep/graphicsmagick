@@ -22,7 +22,7 @@
   <delegate decode="html" command='html2ps -U -o "%o" "%i"' />
   <delegate decode="ilbm" command='ilbmtoppm "%i" > "%o"' />
   <delegate decode="man" command='groff -man -Tps "%i" > "%o"' />
-  <delegate decode="mpeg-decode" stealth="True" command='mpeg2dec.exe -q -b "%i" -f -r -o3 "%u%%d"' />
+  <delegate decode="mpeg" command='mpeg2dec.exe -q -b "%i" -f -o3 "%u%%05d"; gm convert -temporary "%u*.ppm" "miff:%o" ' />
   <delegate encode="mpeg-encode" stealth="True" command='mpeg2enc.exe "%i" "%o"' />
   <delegate decode="pdf" encode="eps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=epswrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="pdf" encode="ps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=pswrite -sOutputFile=%o -- "%i" -c quit' />

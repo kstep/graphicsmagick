@@ -228,6 +228,7 @@ int main(int argc,char **argv)
   if (status == False)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       (char *) NULL);
+
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
 

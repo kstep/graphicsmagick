@@ -1,4 +1,51 @@
 <?xml version="1.0"?>
+<!--
+  Delegate command file.
+
+  Commands which specify
+
+    decode="in_format" encode="out_format"
+
+  specify the rules for converting from in_format to out_format
+  These rules may be used to translate directly between formats.
+
+  Commands which specify only
+
+    decode="in_format"
+
+  specify the rules for converting from in_format to some format that
+  GraphicsMagick will automatically recognize. These rules are used to
+  decode formats.
+
+  Commands which specify only
+
+   encode="out_format"
+
+  specify the rules for an "encoder" which may accept any input format.
+
+  For delegates other than gs-color, gs-mono, and mpeg-encode
+  the substitution rules are as follows:
+
+    %i  input image filename
+    %o  output image filename
+    %u  unique temporary filename
+    %z  secondary unique temporary filename
+
+    %#  input image signature
+    %b  image file size
+    %c  input image comment
+    %g  window group
+    %h  image rows (height)
+    %k  input image number colors
+    %m  input image format
+    %p  page number
+    %q  input image depth
+    %s  scene number
+    %w  image columns (width)
+    %x  input image x resolution
+    %y  input image y resolution
+
+ -->
 <delegatemap>
   <delegate decode="autotrace" stealth="True" command='@AutotraceDecodeDelegate@ -output-format svg -output-file "%o" "%i"' />
   <delegate decode="browse" stealth="True" spawn="True" command='@BrowseDelegate@ http://www.imagemagick.org/'  />
@@ -22,7 +69,7 @@
   <delegate decode="html" command='@HTMLDecodeDelegate@ -U -o "%o" "%i"' />
   <delegate decode="ilbm" command='@ILBMDecodeDelegate@ "%i" > "%o"' />
   <delegate decode="man" command='@MANDelegate@ -man -Tps "%i" > "%o"' />
-  <delegate decode="mpeg-decode" stealth="True" command='@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 "%u%%d"' />
+  <delegate decode="mpeg" command='@MPEGDecodeDelegate@ -q -b "%i" -f -o3 "%u%%05d"; @GMDelegate@ convert -temporary "%u*.ppm" "miff:%o" ; rm -f %u*.ppm ' />
   <delegate encode="mpeg-encode" stealth="True" command='@MPEGEncodeDelegate@ "%i" "%o"' />
   <delegate decode="pdf" encode="eps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSEPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="pdf" encode="ps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSPSDevice@ -sOutputFile=%o -- "%i" -c quit' />

@@ -111,3 +111,12 @@ zlib
   This library is used to support the zlib and deflate compression
   algorithms. Its license may be found in the file "zlib.txt".
 
+mpeg2dec
+  This utility is used to decode MPEG v1 and MPEG v2 seqences. Its
+  license (which includes a warning regarding applicable patents)
+  may be found in the file "mpeg2dec.txt".
+
+mpeg2enc
+  This utility is used to encode MPEG v1 and MPEG v2 seqences. Its
+  license (which includes a warning regarding applicable patents)
+  may be found in the file "mpeg2enc.txt".

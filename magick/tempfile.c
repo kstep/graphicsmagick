@@ -438,9 +438,13 @@ MagickExport void DestroyTemporaryFiles(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  LiberateTemporaryFile deallocates the allocated temporary file, removing
-%  the temporary file from the filesystem if it still exists.
+%  the temporary file from the filesystem if it still exists. If the name
+%  provided is a valid temporary file name, then the first position in the
+%  string buffer is set to null in order to avoid accidental continued use.
+%  If the name is not contained in the temporary file list, then it is left
+%  unmodified.
 %
-%      void LiberateTemporaryFile(const char *filename)
+%      void LiberateTemporaryFile(char *filename)
 %
 %  A description of each parameter follows.
 %
@@ -448,16 +452,23 @@ MagickExport void DestroyTemporaryFiles(void)
 %               the temporary file to reclaim.
 %
 */
-MagickExport void LiberateTemporaryFile(const char *filename)
+MagickExport unsigned int LiberateTemporaryFile(char *filename)
 {
+  unsigned int
+    status = False;
+
   if (RemoveTemporaryFileFromList(filename))
     {
-      if ((remove(filename)) != 0)
+      if ((remove(filename)) == 0)
+        status=True;
+      else
         (void) LogMagickEvent(TemporaryFileEvent,GetMagickModule(),
-          "Temporary file removal failed \"%s\"",filename);
+           "Temporary file removal failed \"%s\"",filename);
+      /* Erase name so it is not accidentally used again */
+      filename[0]='\0';
     }
   else
     (void) LogMagickEvent(TemporaryFileEvent,GetMagickModule(),
-      "Temporary file \"%s\" to be removed not allocated!\n",filename);
-    
+      "Temporary file \"%s\" to be removed not allocated!",filename);
+  return (status);
 }

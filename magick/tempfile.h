@@ -22,11 +22,11 @@ typedef enum
 } FileIOMode;
 
 MagickExport void
-  DestroyTemporaryFiles(void),
-  LiberateTemporaryFile(const char *filename);
+  DestroyTemporaryFiles(void);
 
 MagickExport unsigned int
-  AcquireTemporaryFileName(char *filename);
+  AcquireTemporaryFileName(char *filename),
+  LiberateTemporaryFile(char *filename);
 
 MagickExport int
   AcquireTemporaryFileDescriptor(char *filename);

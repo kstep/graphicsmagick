@@ -827,26 +827,26 @@ typedef unsigned int
 typedef struct _ImageInfo
 {
   CompressionType
-    compression;
+    compression;             /* Image compression to use while decoding */
 
   unsigned int
-    temporary,
-    adjoin,
+    temporary,               /* Filename refers to a temporary file to remove */
+    adjoin,                  /* If True, join multiple frames into one file */
     affirm,
-    antialias;
+    antialias;               /* If True, antialias while rendering */
 
   unsigned long
     subimage,
     subrange,
-    depth;
+    depth;                   /* Number of quantum bits to preserve while encoding */
 
   char
-    *size,
+    *size,                   /* Desired/known dimensions to use when decoding image */
     *tile,
     *page;
 
   InterlaceType
-    interlace;
+    interlace;               /* Interlace scheme to use when decoding image */
 
   EndianType
     endian;
@@ -865,20 +865,20 @@ typedef struct _ImageInfo
     *density;
 
   double
-    pointsize;
+    pointsize;               /* Font pointsize */
 
   double
-    fuzz;
+    fuzz;                    /* Colors within this distance are a match */
 
   PixelPacket
-    pen,
+    pen,                     /* Stroke or fill color while drawing */
     background_color,
     border_color,
     matte_color;
 
   unsigned int
-    dither,
-    monochrome;
+    dither,                  /* If true, dither image while writing */
+    monochrome;              /* If true, use monochrome format */
 
   ColorspaceType
     colorspace;
@@ -887,24 +887,24 @@ typedef struct _ImageInfo
     type;
 
   PreviewType
-    preview_type;
+    preview_type;            /* Private, used by PreviewImage */
 
   long
     group;
 
   unsigned int
-    ping,
-    verbose;
+    ping,                    /* Private, if true, read file header only */
+    verbose;                 /* If true, display high-level processing */
 
   char
     *view,
-    *authenticate;
+    *authenticate;           /* Password used to decrypt file */
 
   Image
-    *attributes;
+    *attributes;             /* Private. Image attribute list */
 
   void
-    *client_data;
+    *client_data;            /* User-specified data to pass to coder */
 
   void
     *cache;
@@ -913,22 +913,22 @@ typedef struct _ImageInfo
     stream;
 
   FILE
-    *file;
+  *file;                     /* If not null, stdio FILE to read image from */
 
   void
-    *blob;
+    *blob;                   /* Private, used to pass in open blob */
 
   size_t
     length;
 
   char
-    magick[MaxTextExtent],
-    unique[MaxTextExtent],
-    zero[MaxTextExtent],
-    filename[MaxTextExtent];
+    magick[MaxTextExtent],   /* File format to read. Overrides file extension */
+    unique[MaxTextExtent],   /* Private, passes temporary to TranslateText */
+    zero[MaxTextExtent],     /* Private, passes temporary to TranslateText */
+    filename[MaxTextExtent]; /* File name to read */
 
   unsigned long
-    signature;
+    signature;               /* Private, used to validate structure */
 } ImageInfo;
 
 /*
