@@ -164,24 +164,23 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
   status=False;
   module_name=TagToProcess(tag);
   handle=lt_dlopen(module_name);
-  if (handle == 0)
+  if (handle == (ModuleHandle) NULL)
     {
       char
         message[MaxTextExtent];
 
       FormatString(message,"failed to load module \"%.1024s\"",module_name);
       MagickWarning(MissingDelegateWarning,message,lt_dlerror());
+      LiberateMemory((void **) &module_name);
+      return(status);
     }
-  else
-    {
-      (void) strcpy(module_name,tag);
-      (void) strcat(module_name,"Image");
-      method=(unsigned int (*)(Image *,const int,char **))
-        lt_dlsym(handle,module_name);
-      if (method != NULL)
-        status=(*method)(image,argc,argv);
-      lt_dlclose(handle);
-    }
+  (void) strcpy(module_name,tag);
+  (void) strcat(module_name,"Image");
+  method=(unsigned int (*)(Image *,const int,char **))
+    lt_dlsym(handle,module_name);
+  if (method != NULL)
+    status=(*method)(image,argc,argv);
+  lt_dlclose(handle);
   LiberateMemory((void **) &module_name);
   return(status);
 }
@@ -281,6 +280,7 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag)
   register ModuleInfo
     *p;
 
+  assert(tag != (const char *) NULL);
   if (module_list == (ModuleInfo*) NULL)
     return((ModuleInfo*) NULL);
   if (tag == (char *) NULL)
@@ -505,9 +505,9 @@ void ModuleToTag(const char *filename,const char *format,char *module)
   char
     *module_name;
 
-  assert(format != (char *) NULL);
-  assert(module != (char *) NULL);
   assert(filename != (char *) NULL);
+  assert(format != (const char *) NULL);
+  assert(module != const (char *) NULL);
   module_name=AllocateString(filename);
   LocaleUpper(module_name);
   FormatString(module,format,module_name);
@@ -696,33 +696,50 @@ MagickExport ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
   register ModuleInfo
     *p;
 
+  /*
+    Delete any existing tag.
+  */
   assert(entry != (ModuleInfo *) NULL);
-  p=(ModuleInfo *) NULL;
-  if (module_list != (ModuleInfo *) NULL)
-    for (p=module_list; p->next != (ModuleInfo *) NULL; p=p->next)
-    {
-      if (LocaleCompare(p->tag,entry->tag) >= 0)
-        {
-          if (LocaleCompare(p->tag,entry->tag) == 0)
-            {
-              p=p->previous;
-              UnregisterModuleInfo(entry->tag);
-            }
-          break;
-        }
-    }
+  assert(entry->signature == MagickSignature);
+  UnregisterModuleInfo(entry->tag);
+  entry->previous=(ModuleInfo *) NULL;
+  entry->next=(ModuleInfo *) NULL;
   if (module_list == (ModuleInfo *) NULL)
     {
+      /*
+        Start module list.
+      */
       module_list=entry;
       return(entry);
     }
-  entry->signature=MagickSignature;
-  entry->previous=p;
-  if (p != (ModuleInfo *) NULL)
+  /*
+    Tag is added in lexographic order.
+  */
+  for (p=module_list; p->next != (ModuleInfo *) NULL; p=p->next)
+    if (LocaleCompare(p->tag,entry->tag) >= 0)
+      break;
+  if (LocaleCompare(p->tag,entry->tag) < 0)
     {
+      /*
+        Add entry after target.
+      */
       entry->next=p->next;
       p->next=entry;
+      entry->previous=p;
+      if (entry->next != (ModuleInfo *) NULL)
+        entry->next->previous=entry;
+      return(entry);
     }
+  /*
+    Add entry before target.
+  */
+  entry->next=p;
+  entry->previous=p->previous;
+  p->previous=entry;
+  if (entry->previous != (ModuleInfo *) NULL)
+    entry->previous->next=entry;
+  if (p == module_list)
+    module_list=entry;
   return(entry);
 }
 
@@ -764,11 +781,9 @@ MagickExport ModuleInfo *SetModuleInfo(const char *tag)
   if (entry == (ModuleInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate module info",
       "Memory allocation failed");
+  memset(entry,0,sizeof(ModuleInfo));
   entry->tag=AllocateString(tag);
-  entry->handle=(ModuleHandle) NULL;
-  entry->load_time=0;
-  entry->previous=(ModuleInfo *) NULL;
-  entry->next=(ModuleInfo *) NULL;
+  entry->signature=MagickSignature;
   return(entry);
 }
 
@@ -803,7 +818,7 @@ char *TagToProcess(const char *tag)
 
   assert(tag != (char *) NULL);
   module_name=AllocateString((char *) NULL);
-#if !defined(_VISUALC_)
+#if !defined(WIN32)
   (void) FormatString(module_name,"%.1024s.la",tag);
   (void) LocaleLower(module_name);
 #else
@@ -843,7 +858,7 @@ char *TagToModule(const char *tag)
 
   assert(tag != (char *) NULL);
   module_name=AllocateString("tag");
-#if !defined(_VISUALC_)
+#if !defined(WIN32)
   (void) FormatString(module_name,"%.1024s.la",tag);
   (void) LocaleLower(module_name);
 #else
