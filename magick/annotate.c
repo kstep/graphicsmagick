@@ -57,6 +57,7 @@
 */
 #include "studio.h"
 #include "gem.h"
+#include "log.h"
 #include "render.h"
 #include "utility.h"
 #include "xwindow.h"
@@ -1107,16 +1108,19 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
     }
     default:
     {
-      if (LocaleCompare(draw_info->encoding,"SJIS") == 0)
+      if (draw_info->encoding != (char *) NULL)
         {
-          text=EncodeSJIS(draw_info->text,&length);
-          break;
-        }
-      if ((LocaleCompare(draw_info->encoding,"UTF-8") == 0) ||
-          (encoding_type != ft_encoding_none))
-        {
-          text=EncodeUnicode(draw_info->text,&length);
-          break;
+          if (LocaleCompare(draw_info->encoding,"SJIS") == 0)
+            {
+              text=EncodeSJIS(draw_info->text,&length);
+              break;
+            }
+          if ((LocaleCompare(draw_info->encoding,"UTF-8") == 0) ||
+              (encoding_type != ft_encoding_none))
+            {
+              text=EncodeUnicode(draw_info->text,&length);
+              break;
+            }
         }
       text=EncodeText(draw_info->text,&length);
       break;
@@ -1132,6 +1136,12 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   /*
     Compute bounding box.
   */
+  LogMagickEvent(AnnotateEvent,
+    "Font %.1024s; font-encoding %.1024s; text-encoding %.1024s; pointsize %g",
+    draw_info->font != (char *) NULL ? draw_info->font : "none",
+    encoding != (char *) NULL ? encoding : "none",
+    draw_info->encoding != (char *) NULL ? draw_info->encoding : "none",
+    draw_info->pointsize);
   glyph.id=0;
   last_glyph.id=0;
   origin.x=0;
@@ -1401,6 +1411,9 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   /*
     Render label with a Postscript font.
   */
+  LogMagickEvent(AnnotateEvent,"Font %.1024s; pointsize %g",
+    draw_info->font != (char *) NULL ? draw_info->font : "none",
+    draw_info->pointsize);
   TemporaryFilename(filename);
   file=fopen(filename,"wb");
   if (file == (FILE *) NULL)
@@ -1708,6 +1721,9 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
         ThrowBinaryException(ResourceLimitError,"Unable to load font",
           draw_info->font);
     }
+  LogMagickEvent(AnnotateEvent,"Font %.1024s; pointsize %g",
+    draw_info->font != (char *) NULL ? draw_info->font : "none",
+    draw_info->pointsize);
   cache_info=(*draw_info);
   annotate_info.font_info=font_info;
   annotate_info.text=(char *) draw_info->text;

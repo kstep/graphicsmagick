@@ -563,6 +563,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
   switch (type)
   {
     case ConfigureEvent: domain="Configure"; break;
+    case AnnotateEvent: domain="Annotate"; break;
     case RenderEvent: domain="Render"; break;
     case LocaleEvent: domain="Locale"; break;
     case CoderEvent: domain="Coder"; break;
@@ -765,6 +766,8 @@ static unsigned int ReadConfigureFile(const char *basename,
           {
             if (GlobExpression(token,"*[Aa]ll*"))
               log_info->events|=AllEvents;
+            if (GlobExpression(token,"*[Aa]nnotate*"))
+              log_info->events|=AnnotateEvent;
             if (GlobExpression(token,"*[Bb]lob*"))
               log_info->events|=BlobEvent;
             if (GlobExpression(token,"*[Cc]oder*"))
