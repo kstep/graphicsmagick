@@ -1080,7 +1080,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
             FormatString(buffer,"scene=%lu\n",image->scene);
             (void) WriteBlobString(image,buffer);
           }
-        if (image->iterations != 1)
+        if (image->iterations != 0)
           {
             FormatString(buffer,"iterations=%lu\n",image->iterations);
             (void) WriteBlobString(image,buffer);
