@@ -58,7 +58,7 @@
 /*
   Define declarations.
 */
-#define AccessContext(c) ((struct _MgkDrawContext *)c)
+#define AccessContext(c) ((struct _DrawContext *)c)
 
 /*
   Typedef declarations.
@@ -87,9 +87,9 @@ typedef enum
 }
 PathMode;
 
-#define AccessContext(c) ((struct _MgkDrawContext *)c)
+#define AccessContext(c) ((struct _DrawContext *)c)
 
-struct _MgkDrawContext
+struct _DrawContext
 {
   /* MVG string and housekeeping */
   char *mvg;
@@ -114,21 +114,21 @@ struct _MgkDrawContext
   Forward declarations.
 */
 static int
-  MgkDrawPrintf(MgkDrawContext context, const char *format, ...);
+  DrawPrintf(DrawContext context, const char *format, ...);
 
-MagickExport void MgkDrawSetAffine(MgkDrawContext context, const double sx,
+MagickExport void DrawSetAffine(DrawContext context, const double sx,
                                    const double rx, const double ry, const double sy,
                                    const double tx, const double ty)
 {
-  MgkDrawPrintf(context, "affine %.10g,%.10g,%.10g,%.10g,%.10g,%.10g\n",
+  DrawPrintf(context, "affine %.10g,%.10g,%.10g,%.10g,%.10g,%.10g\n",
                 sy, rx, ry, sy, tx, ty);
 }
-MagickExport MgkDrawContext MgkDrawAllocateContext(ExceptionInfo * exception)
+MagickExport DrawContext DrawAllocateContext(ExceptionInfo * exception)
 {
-  MgkDrawContext
+  DrawContext
     context;
 
-  context = (MgkDrawContext) AcquireMemory(sizeof(struct _MgkDrawContext));
+  context = (DrawContext) AcquireMemory(sizeof(struct _DrawContext));
   AccessContext(context)->mvg = NULL;
   AccessContext(context)->mvg_alloc = 0;
   AccessContext(context)->mvg_length = 0;
@@ -140,42 +140,42 @@ MagickExport MgkDrawContext MgkDrawAllocateContext(ExceptionInfo * exception)
 
   return context;
 }
-MagickExport void MgkDrawSetAngle(MgkDrawContext context, const double degrees)
+MagickExport void DrawSetAngle(DrawContext context, const double degrees)
 {
-  MgkDrawPrintf(context, "angle %.10g\n", degrees);
+  DrawPrintf(context, "angle %.10g\n", degrees);
 }
-MagickExport void MgkDrawArc(MgkDrawContext context, const double sx,
+MagickExport void DrawArc(DrawContext context, const double sx,
                              const double sy, const double ex, const double ey,
                              const double sd, const double ed)
 {
-  MgkDrawPrintf(context, "arc %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
+  DrawPrintf(context, "arc %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
                 sx, sy, ex, ey, sd, ed);
 }
-MagickExport void MgkDrawBezier(MgkDrawContext context, const size_t num_coords,
+MagickExport void DrawBezier(DrawContext context, const size_t num_coords,
                                 const PointInfo * coordinates)
 {
   const PointInfo * coordinate;
 
   size_t i;
 
-  MgkDrawPrintf(context, "bezier");
+  DrawPrintf(context, "bezier");
   for (i = num_coords, coordinate = coordinates; i; i--)
     {
-      MgkDrawPrintf(context, " %.10g,%.10g", coordinate->x, coordinate->y);
+      DrawPrintf(context, " %.10g,%.10g", coordinate->x, coordinate->y);
       ++coordinate;
     }
-  MgkDrawPrintf(context, "\n");
+  DrawPrintf(context, "\n");
 }
-MagickExport void MgkDrawCircle(MgkDrawContext context, const double ox,
+MagickExport void DrawCircle(DrawContext context, const double ox,
                                 const double oy, const double px, const double py)
 {
-  MgkDrawPrintf(context, "circle %.10g,%.10g %.10g,%.10g\n", ox, oy, px, py);
+  DrawPrintf(context, "circle %.10g,%.10g %.10g,%.10g\n", ox, oy, px, py);
 }
-MagickExport void MgkDrawSetClipPath(MgkDrawContext context, const char *clip_url)
+MagickExport void DrawSetClipPath(DrawContext context, const char *clip_url)
 {
-  MgkDrawPrintf(context, "clip-path url(%s)\n", clip_url);
+  DrawPrintf(context, "clip-path url(%s)\n", clip_url);
 }
-MagickExport void MgkDrawSetClipRule(MgkDrawContext context,
+MagickExport void DrawSetClipRule(DrawContext context,
                                      const FillRule fill_rule)
 {
   const char *p = NULL;
@@ -193,9 +193,9 @@ MagickExport void MgkDrawSetClipRule(MgkDrawContext context,
     }
 
   if (p != NULL)
-    MgkDrawPrintf(context, "clip-rule %s\n", p);
+    DrawPrintf(context, "clip-rule %s\n", p);
 }
-MagickExport void MgkDrawSetClipUnits(MgkDrawContext context,
+MagickExport void DrawSetClipUnits(DrawContext context,
                                       const ClipPathUnits clip_units)
 {
   const char *p = NULL;
@@ -214,9 +214,9 @@ MagickExport void MgkDrawSetClipUnits(MgkDrawContext context,
     }
 
   if (p != NULL)
-    MgkDrawPrintf(context, "clip-units %s\n", p);
+    DrawPrintf(context, "clip-units %s\n", p);
 }
-MagickExport void MgkDrawColor(MgkDrawContext context, const double x,
+MagickExport void DrawColor(DrawContext context, const double x,
                                const double y, const PaintMethod paintMethod)
 {
   const char *p = NULL;
@@ -241,29 +241,29 @@ MagickExport void MgkDrawColor(MgkDrawContext context, const double x,
     }
 
   if (p != NULL)
-    MgkDrawPrintf(context, "color %s\n", p);
+    DrawPrintf(context, "color %s\n", p);
 }
-MagickExport void MgkDrawDestroyContext(MgkDrawContext context)
+MagickExport void DrawDestroyContext(DrawContext context)
 {
   LiberateMemory((void **) &AccessContext(context)->mvg);
   AccessContext(context)->mvg_alloc = 0;
   AccessContext(context)->mvg_length = 0;
   LiberateMemory((void **) &context);
 }
-MagickExport void MgkDrawEllipse(MgkDrawContext context,
+MagickExport void DrawEllipse(DrawContext context,
                                  const double ox, const double oy,
                                  const double rx, const double ry,
                                  const double start, const double end)
 {
-  MgkDrawPrintf(context, "ellipse %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
+  DrawPrintf(context, "ellipse %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
                 ox, oy, rx, ry, start, end);
 
 }
-MagickExport void MgkDrawSetFill(MgkDrawContext context,
+MagickExport void DrawSetFill(DrawContext context,
                                  const PixelPacket * fill_color)
 {
   if (fill_color->opacity == OpaqueOpacity)
-    MgkDrawPrintf(context,
+    DrawPrintf(context,
 #if QuantumDepth == 8
                   "fill #%02x%02x%02x\n",
 #elif QuantumDepth == 16
@@ -271,7 +271,7 @@ MagickExport void MgkDrawSetFill(MgkDrawContext context,
 #endif
                   fill_color->red, fill_color->green, fill_color->blue);
   else
-    MgkDrawPrintf(context,
+    DrawPrintf(context,
 #if QuantumDepth == 8
                   "fill #%02x%02x%02x%02x\n",
 #elif QuantumDepth == 16
@@ -280,12 +280,12 @@ MagickExport void MgkDrawSetFill(MgkDrawContext context,
                   fill_color->red, fill_color->green, fill_color->blue,
                   fill_color->opacity);
 }
-MagickExport void MgkDrawSetFillOpacity(MgkDrawContext context,
+MagickExport void DrawSetFillOpacity(DrawContext context,
                                         const double fill_opacity)
 {
-  MgkDrawPrintf(context, "fill-opacity %.10g\n", fill_opacity);
+  DrawPrintf(context, "fill-opacity %.10g\n", fill_opacity);
 }
-MagickExport void MgkDrawSetFillRule(MgkDrawContext context,
+MagickExport void DrawSetFillRule(DrawContext context,
                                      const FillRule fill_rule)
 {
   const char *p = NULL;
@@ -303,23 +303,23 @@ MagickExport void MgkDrawSetFillRule(MgkDrawContext context,
     }
 
   if (p != NULL)
-    MgkDrawPrintf(context, "fill-rule %s\n", p);
+    DrawPrintf(context, "fill-rule %s\n", p);
 }
-MagickExport void MgkDrawSetFont(MgkDrawContext context, const char *font_name)
+MagickExport void DrawSetFont(DrawContext context, const char *font_name)
 {
-  MgkDrawPrintf(context, "font %s\n", font_name);
+  DrawPrintf(context, "font %s\n", font_name);
 }
-MagickExport void MgkDrawSetFontFamily(MgkDrawContext context,
+MagickExport void DrawSetFontFamily(DrawContext context,
                                        const char *font_family)
 {
-  MgkDrawPrintf(context, "font-family %s\n", font_family);
+  DrawPrintf(context, "font-family %s\n", font_family);
 }
-MagickExport void MgkDrawSetFontSize(MgkDrawContext context,
+MagickExport void DrawSetFontSize(DrawContext context,
                                      const double font_pointsize)
 {
-  MgkDrawPrintf(context, "font-size %.10g\n", font_pointsize);
+  DrawPrintf(context, "font-size %.10g\n", font_pointsize);
 }
-MagickExport void MgkDrawSetFontStretch(MgkDrawContext context,
+MagickExport void DrawSetFontStretch(DrawContext context,
                                         const StretchType font_stretch)
 {
   const char *p = NULL;
@@ -359,9 +359,9 @@ MagickExport void MgkDrawSetFontStretch(MgkDrawContext context,
     }
 
   if (p != NULL)
-    MgkDrawPrintf(context, "font-stretch %s\n", p);
+    DrawPrintf(context, "font-stretch %s\n", p);
 }
-MagickExport void MgkDrawSetFontStyle(MgkDrawContext context,
+MagickExport void DrawSetFontStyle(DrawContext context,
                                       const StyleType font_style)
 {
   const char *p = NULL;
@@ -383,14 +383,14 @@ MagickExport void MgkDrawSetFontStyle(MgkDrawContext context,
     }
 
   if (p != NULL)
-    MgkDrawPrintf(context, "font-style %s\n", p);
+    DrawPrintf(context, "font-style %s\n", p);
 }
-MagickExport void MgkDrawSetFontWeight(MgkDrawContext context,
+MagickExport void DrawSetFontWeight(DrawContext context,
                                        const double font_weight)
 {
-  MgkDrawPrintf(context, "font-weight %.10g\n", font_weight);
+  DrawPrintf(context, "font-weight %.10g\n", font_weight);
 }
-MagickExport void MgkDrawSetGravity(MgkDrawContext context,
+MagickExport void DrawSetGravity(DrawContext context,
                                     const GravityType gravity)
 {
   const char *p = NULL;
@@ -432,21 +432,21 @@ MagickExport void MgkDrawSetGravity(MgkDrawContext context,
     }
 
   if (p != NULL)
-    MgkDrawPrintf(context, "gravity %s\n", p);
+    DrawPrintf(context, "gravity %s\n", p);
 }
-MagickExport void MgkDrawImage(MgkDrawContext context,
-                               const CompositeOperator composite_operator,
-                               const double x, const double y,
-                               const double width, const double height,
-                               const Image * image )
+MagickExport void DrawComposite(DrawContext context,
+                                const CompositeOperator composite_operator,
+                                const double x, const double y,
+                                const double width, const double height,
+                                const Image * image )
 {
 
 }
-MagickExport void MgkDrawImageFile(MgkDrawContext context,
-                                   const CompositeOperator composite_operator,
-                                   const double x, const double y,
-                                   const double width, const double height,
-                                   const char * filespec )
+MagickExport void DrawCompositeFile(DrawContext context,
+                                    const CompositeOperator composite_operator,
+                                    const double x, const double y,
+                                    const double width, const double height,
+                                    const char * filespec )
 {
   const char *p = NULL;
 
@@ -550,15 +550,15 @@ MagickExport void MgkDrawImageFile(MgkDrawContext context,
     }
 
   if (p != NULL)
-    MgkDrawPrintf(context, "image %s %.10g,%.10g %.10g,%.10g %s\n",
+    DrawPrintf(context, "image %s %.10g,%.10g %.10g,%.10g %s\n",
                   p, x, y, width, height, filespec);
 }
-MagickExport void MgkDrawLine(MgkDrawContext context, const double sx,
+MagickExport void DrawLine(DrawContext context, const double sx,
                               const double sy, const double ex, const double ey)
 {
-  MgkDrawPrintf(context, "line %.10g,%.10g %.10g,%.10g\n", sx, sy, ex, ey);
+  DrawPrintf(context, "line %.10g,%.10g %.10g,%.10g\n", sx, sy, ex, ey);
 }
-MagickExport void MgkDrawMatte(MgkDrawContext context, const double x,
+MagickExport void DrawMatte(DrawContext context, const double x,
                                const double y, const PaintMethod paint_method)
 {
   const char *p = NULL;
@@ -583,14 +583,14 @@ MagickExport void MgkDrawMatte(MgkDrawContext context, const double x,
     }
 
   if (p != NULL)
-    MgkDrawPrintf(context, "matte %.10g,%.10g %s\n", x, y, p);
+    DrawPrintf(context, "matte %.10g,%.10g %s\n", x, y, p);
 }
 
-MagickExport void MgkDrawPathClose(MgkDrawContext context)
+MagickExport void DrawPathClose(DrawContext context)
 {
-  MgkDrawPrintf(context, "%s", AccessContext(context)->path_mode == AbsolutePathMode ? "Z" : "z");
+  DrawPrintf(context, "%s", AccessContext(context)->path_mode == AbsolutePathMode ? "Z" : "z");
 }
-static void MgkDrawPathCurveTo(MgkDrawContext context, const PathMode mode,
+static void DrawPathCurveTo(DrawContext context, const PathMode mode,
                                const double x1, const double y1, const double x2,
                                const double y2, const double x, const double y)
 {
@@ -599,28 +599,28 @@ static void MgkDrawPathCurveTo(MgkDrawContext context, const PathMode mode,
     {
       AccessContext(context)->path_operation = PathCurveToOperation;
       AccessContext(context)->path_mode = mode;
-      MgkDrawPrintf(context, "%c%.10g,%.10g %.10g,%.10g %.10g,%.10g",
+      DrawPrintf(context, "%c%.10g,%.10g %.10g,%.10g %.10g,%.10g",
                     mode == AbsolutePathMode ? 'C' : 'c', x1, y1, x2, y2, x, y);
     }
   else
-    MgkDrawPrintf(context, " %.10g,%.10g %.10g,%.10g %.10g,%.10g", x1, y1, x2, y2, x,
+    DrawPrintf(context, " %.10g,%.10g %.10g,%.10g %.10g,%.10g", x1, y1, x2, y2, x,
                   y);
 }
-MagickExport void MgkDrawPathCurveToAbsolute(MgkDrawContext context,
+MagickExport void DrawPathCurveToAbsolute(DrawContext context,
                                              const double x1, const double y1,
                                              const double x2, const double y2,
                                              const double x, const double y)
 {
-  MgkDrawPathCurveTo(context, AbsolutePathMode, x1, y1, x2, y2, x, y);
+  DrawPathCurveTo(context, AbsolutePathMode, x1, y1, x2, y2, x, y);
 }
-MagickExport void MgkDrawPathCurveToRelative(MgkDrawContext context,
+MagickExport void DrawPathCurveToRelative(DrawContext context,
                                              const double x1, const double y1,
                                              const double x2, const double y2,
                                              const double x, const double y)
 {
-  MgkDrawPathCurveTo(context, RelativePathMode, x1, y1, x2, y2, x, y);
+  DrawPathCurveTo(context, RelativePathMode, x1, y1, x2, y2, x, y);
 }
-static void MgkDrawPathCurveToQuadraticBezier(MgkDrawContext context,
+static void DrawPathCurveToQuadraticBezier(DrawContext context,
                                               const PathMode mode, const double x1,
                                               const double y1, const double x,
                                               const double y)
@@ -630,29 +630,29 @@ static void MgkDrawPathCurveToQuadraticBezier(MgkDrawContext context,
     {
       AccessContext(context)->path_operation = PathCurveToQuadraticBezierOperation;
       AccessContext(context)->path_mode = mode;
-      MgkDrawPrintf(context, "%c%.10g,%.10g %.10g,%.10g",
+      DrawPrintf(context, "%c%.10g,%.10g %.10g,%.10g",
                     mode == AbsolutePathMode ? 'Q' : 'q', x1, y1, x, y);
     }
   else
-    MgkDrawPrintf(context, " %.10g,%.10g %.10g,%.10g", x1, y1, x, y);
+    DrawPrintf(context, " %.10g,%.10g %.10g,%.10g", x1, y1, x, y);
 }
-MagickExport void MgkDrawPathCurveToQuadraticBezierAbsolute(MgkDrawContext context,
+MagickExport void DrawPathCurveToQuadraticBezierAbsolute(DrawContext context,
                                                             const double x1,
                                                             const double y1,
                                                             const double x,
                                                             const double y)
 {
-  MgkDrawPathCurveToQuadraticBezier(context, AbsolutePathMode, x1, y1, x, y);
+  DrawPathCurveToQuadraticBezier(context, AbsolutePathMode, x1, y1, x, y);
 }
-MagickExport void MgkDrawPathCurveToQuadraticBezierRelative(MgkDrawContext context,
+MagickExport void DrawPathCurveToQuadraticBezierRelative(DrawContext context,
                                                             const double x1,
                                                             const double y1,
                                                             const double x,
                                                             const double y)
 {
-  MgkDrawPathCurveToQuadraticBezier(context, RelativePathMode, x1, y1, x, y);
+  DrawPathCurveToQuadraticBezier(context, RelativePathMode, x1, y1, x, y);
 }
-static void MgkDrawPathCurveToQuadraticBezierSmooth(MgkDrawContext context,
+static void DrawPathCurveToQuadraticBezierSmooth(DrawContext context,
                                                     const PathMode mode,
                                                     const double x, const double y)
 {
@@ -661,27 +661,27 @@ static void MgkDrawPathCurveToQuadraticBezierSmooth(MgkDrawContext context,
     {
       AccessContext(context)->path_operation = PathCurveToQuadraticBezierSmoothOperation;
       AccessContext(context)->path_mode = mode;
-      MgkDrawPrintf(context, "%c%.10g,%.10g", mode == AbsolutePathMode ? 'T' : 't', x,
+      DrawPrintf(context, "%c%.10g,%.10g", mode == AbsolutePathMode ? 'T' : 't', x,
                     y);
     }
   else
-    MgkDrawPrintf(context, " %.10g,%.10g", x, y);
+    DrawPrintf(context, " %.10g,%.10g", x, y);
 }
-MagickExport void MgkDrawPathCurveToQuadraticBezierSmoothAbsolute(MgkDrawContext
+MagickExport void DrawPathCurveToQuadraticBezierSmoothAbsolute(DrawContext
                                                                   context,
                                                                   const double x,
                                                                   const double y)
 {
-  MgkDrawPathCurveToQuadraticBezierSmooth(context, AbsolutePathMode, x, y);
+  DrawPathCurveToQuadraticBezierSmooth(context, AbsolutePathMode, x, y);
 }
-MagickExport void MgkDrawPathCurveToQuadraticBezierSmoothRelative(MgkDrawContext
+MagickExport void DrawPathCurveToQuadraticBezierSmoothRelative(DrawContext
                                                                   context,
                                                                   const double x,
                                                                   const double y)
 {
-  MgkDrawPathCurveToQuadraticBezierSmooth(context, RelativePathMode, x, y);
+  DrawPathCurveToQuadraticBezierSmooth(context, RelativePathMode, x, y);
 }
-static void MgkDrawPathCurveToSmooth(MgkDrawContext context, const PathMode mode,
+static void DrawPathCurveToSmooth(DrawContext context, const PathMode mode,
                                      const double x2, const double y2,
                                      const double x, const double y)
 {
@@ -690,25 +690,25 @@ static void MgkDrawPathCurveToSmooth(MgkDrawContext context, const PathMode mode
     {
       AccessContext(context)->path_operation = PathCurveToSmoothOperation;
       AccessContext(context)->path_mode = mode;
-      MgkDrawPrintf(context, "%c%.10g,%.10g %.10g,%.10g",
+      DrawPrintf(context, "%c%.10g,%.10g %.10g,%.10g",
                     mode == AbsolutePathMode ? 'S' : 's', x2, y2, x, y);
     }
   else
-    MgkDrawPrintf(context, " %.10g,%.10g %.10g,%.10g", x2, y2, x, y);
+    DrawPrintf(context, " %.10g,%.10g %.10g,%.10g", x2, y2, x, y);
 }
-MagickExport void MgkDrawPathCurveToSmoothAbsolute(MgkDrawContext context,
+MagickExport void DrawPathCurveToSmoothAbsolute(DrawContext context,
                                                    const double x2, const double y2,
                                                    const double x, const double y)
 {
-  MgkDrawPathCurveToSmooth(context, AbsolutePathMode, x2, y2, x, y);
+  DrawPathCurveToSmooth(context, AbsolutePathMode, x2, y2, x, y);
 }
-MagickExport void MgkDrawPathCurveToSmoothRelative(MgkDrawContext context,
+MagickExport void DrawPathCurveToSmoothRelative(DrawContext context,
                                                    const double x2, const double y2,
                                                    const double x, const double y)
 {
-  MgkDrawPathCurveToSmooth(context, RelativePathMode, x2, y2, x, y);
+  DrawPathCurveToSmooth(context, RelativePathMode, x2, y2, x, y);
 }
-static void MgkDrawPathEllipticArc(MgkDrawContext context, const PathMode mode,
+static void DrawPathEllipticArc(DrawContext context, const PathMode mode,
                                    const double rx, const double ry,
                                    const double x_axis_rotation,
                                    unsigned int large_arc_flag,
@@ -720,41 +720,41 @@ static void MgkDrawPathEllipticArc(MgkDrawContext context, const PathMode mode,
     {
       AccessContext(context)->path_operation = PathEllipticArcOperation;
       AccessContext(context)->path_mode = mode;
-      MgkDrawPrintf(context, "%c%.10g,%.10g %.10g %u %u %.10g,%.10g",
+      DrawPrintf(context, "%c%.10g,%.10g %.10g %u %u %.10g,%.10g",
                     mode == AbsolutePathMode ? 'A' : 'a', rx, ry, x_axis_rotation,
                     large_arc_flag, sweep_flag, x, y);
     }
   else
-    MgkDrawPrintf(context, " %.10g,%.10g %.10g %u %u %.10g,%.10g", rx, ry,
+    DrawPrintf(context, " %.10g,%.10g %.10g %u %u %.10g,%.10g", rx, ry,
                   x_axis_rotation, large_arc_flag, sweep_flag, x, y);
 }
-MagickExport void MgkDrawPathEllipticArcAbsolute(MgkDrawContext context,
+MagickExport void DrawPathEllipticArcAbsolute(DrawContext context,
                                                  const double rx, const double ry,
                                                  const double x_axis_rotation,
                                                  unsigned int large_arc_flag,
                                                  unsigned int sweep_flag,
                                                  const double x, const double y)
 {
-  MgkDrawPathEllipticArc(context, AbsolutePathMode, rx, ry, x_axis_rotation,
+  DrawPathEllipticArc(context, AbsolutePathMode, rx, ry, x_axis_rotation,
                          large_arc_flag, sweep_flag, x, y);
 }
-MagickExport void MgkDrawPathEllipticArcRelative(MgkDrawContext context,
+MagickExport void DrawPathEllipticArcRelative(DrawContext context,
                                                  const double rx, const double ry,
                                                  const double x_axis_rotation,
                                                  unsigned int large_arc_flag,
                                                  unsigned int sweep_flag,
                                                  const double x, const double y)
 {
-  MgkDrawPathEllipticArc(context, RelativePathMode, rx, ry, x_axis_rotation,
+  DrawPathEllipticArc(context, RelativePathMode, rx, ry, x_axis_rotation,
                          large_arc_flag, sweep_flag, x, y);
 }
-MagickExport void MgkDrawPathFinish(MgkDrawContext context)
+MagickExport void DrawPathFinish(DrawContext context)
 {
-  MgkDrawPrintf(context, "\"\n");
+  DrawPrintf(context, "\"\n");
   AccessContext(context)->path_operation = PathDefaultOperation;
   AccessContext(context)->path_mode = DefaultPathMode;
 }
-static void MgkDrawPathLineTo(MgkDrawContext context, const PathMode mode,
+static void DrawPathLineTo(DrawContext context, const PathMode mode,
                               const double x, const double y)
 {
   if ((AccessContext(context)->path_operation != PathLineToOperation)
@@ -762,23 +762,23 @@ static void MgkDrawPathLineTo(MgkDrawContext context, const PathMode mode,
     {
       AccessContext(context)->path_operation = PathLineToOperation;
       AccessContext(context)->path_mode = mode;
-      MgkDrawPrintf(context, "%c%.10g,%.10g", mode == AbsolutePathMode ? 'L' : 'l', x,
+      DrawPrintf(context, "%c%.10g,%.10g", mode == AbsolutePathMode ? 'L' : 'l', x,
                     y);
     }
   else
-    MgkDrawPrintf(context, " %.10g,%.10g", x, y);
+    DrawPrintf(context, " %.10g,%.10g", x, y);
 }
-MagickExport void MgkDrawPathLineToAbsolute(MgkDrawContext context, const double x,
+MagickExport void DrawPathLineToAbsolute(DrawContext context, const double x,
                                             const double y)
 {
-  MgkDrawPathLineTo(context, AbsolutePathMode, x, y);
+  DrawPathLineTo(context, AbsolutePathMode, x, y);
 }
-MagickExport void MgkDrawPathLineToRelative(MgkDrawContext context, const double x,
+MagickExport void DrawPathLineToRelative(DrawContext context, const double x,
                                             const double y)
 {
-  MgkDrawPathLineTo(context, RelativePathMode, x, y);
+  DrawPathLineTo(context, RelativePathMode, x, y);
 }
-static void MgkDrawPathLineToHorizontal(MgkDrawContext context,
+static void DrawPathLineToHorizontal(DrawContext context,
                                         const PathMode mode, const double x)
 {
   if ((AccessContext(context)->path_operation != PathLineToHorizontalOperation)
@@ -786,22 +786,22 @@ static void MgkDrawPathLineToHorizontal(MgkDrawContext context,
     {
       AccessContext(context)->path_operation = PathLineToHorizontalOperation;
       AccessContext(context)->path_mode = mode;
-      MgkDrawPrintf(context, "%c%.10g", mode == AbsolutePathMode ? 'H' : 'h', x);
+      DrawPrintf(context, "%c%.10g", mode == AbsolutePathMode ? 'H' : 'h', x);
     }
   else
-    MgkDrawPrintf(context, " %.10g", x);
+    DrawPrintf(context, " %.10g", x);
 }
-MagickExport void MgkDrawPathLineToHorizontalAbsolute(MgkDrawContext context,
+MagickExport void DrawPathLineToHorizontalAbsolute(DrawContext context,
                                                       const double x)
 {
-  MgkDrawPathLineToHorizontal(context, AbsolutePathMode, x);
+  DrawPathLineToHorizontal(context, AbsolutePathMode, x);
 }
-MagickExport void MgkDrawPathLineToHorizontalRelative(MgkDrawContext context,
+MagickExport void DrawPathLineToHorizontalRelative(DrawContext context,
                                                       const double x)
 {
-  MgkDrawPathLineToHorizontal(context, RelativePathMode, x);
+  DrawPathLineToHorizontal(context, RelativePathMode, x);
 }
-static void MgkDrawPathLineToVertical(MgkDrawContext context, const PathMode mode,
+static void DrawPathLineToVertical(DrawContext context, const PathMode mode,
                                       const double y)
 {
   if ((AccessContext(context)->path_operation != PathLineToVerticalOperation)
@@ -809,22 +809,22 @@ static void MgkDrawPathLineToVertical(MgkDrawContext context, const PathMode mod
     {
       AccessContext(context)->path_operation = PathLineToVerticalOperation;
       AccessContext(context)->path_mode = mode;
-      MgkDrawPrintf(context, "%c%.10g", mode == AbsolutePathMode ? 'V' : 'v', y);
+      DrawPrintf(context, "%c%.10g", mode == AbsolutePathMode ? 'V' : 'v', y);
     }
   else
-    MgkDrawPrintf(context, " %.10g", y);
+    DrawPrintf(context, " %.10g", y);
 }
-MagickExport void MgkDrawPathLineToVerticalAbsolute(MgkDrawContext context,
+MagickExport void DrawPathLineToVerticalAbsolute(DrawContext context,
                                                     const double y)
 {
-  MgkDrawPathLineToVertical(context, AbsolutePathMode, y);
+  DrawPathLineToVertical(context, AbsolutePathMode, y);
 }
-MagickExport void MgkDrawPathLineToVerticalRelative(MgkDrawContext context,
+MagickExport void DrawPathLineToVerticalRelative(DrawContext context,
                                                     const double y)
 {
-  MgkDrawPathLineToVertical(context, RelativePathMode, y);
+  DrawPathLineToVertical(context, RelativePathMode, y);
 }
-static void MgkDrawPathMoveTo(MgkDrawContext context, const PathMode mode,
+static void DrawPathMoveTo(DrawContext context, const PathMode mode,
                               const double x, const double y)
 {
   if ((AccessContext(context)->path_operation != PathMoveToOperation)
@@ -832,84 +832,84 @@ static void MgkDrawPathMoveTo(MgkDrawContext context, const PathMode mode,
     {
       AccessContext(context)->path_operation = PathMoveToOperation;
       AccessContext(context)->path_mode = mode;
-      MgkDrawPrintf(context, "%c%.10g,%.10g", mode == AbsolutePathMode ? 'M' : 'm', x,
+      DrawPrintf(context, "%c%.10g,%.10g", mode == AbsolutePathMode ? 'M' : 'm', x,
                     y);
     }
   else
-    MgkDrawPrintf(context, " %.10g,%.10g", x, y);
+    DrawPrintf(context, " %.10g,%.10g", x, y);
 }
-MagickExport void MgkDrawPathMoveToAbsolute(MgkDrawContext context, const double x,
+MagickExport void DrawPathMoveToAbsolute(DrawContext context, const double x,
                                             const double y)
 {
-  MgkDrawPathMoveTo(context, AbsolutePathMode, x, y);
+  DrawPathMoveTo(context, AbsolutePathMode, x, y);
 }
-MagickExport void MgkDrawPathMoveToRelative(MgkDrawContext context, const double x,
+MagickExport void DrawPathMoveToRelative(DrawContext context, const double x,
                                             const double y)
 {
-  MgkDrawPathMoveTo(context, RelativePathMode, x, y);
+  DrawPathMoveTo(context, RelativePathMode, x, y);
 }
-MagickExport void MgkDrawPathStart(MgkDrawContext context)
+MagickExport void DrawPathStart(DrawContext context)
 {
-  MgkDrawPrintf(context, "path d=\"");
+  DrawPrintf(context, "path d=\"");
   AccessContext(context)->path_operation = PathDefaultOperation;
   AccessContext(context)->path_mode = DefaultPathMode;
 }
-MagickExport void MgkDrawPoint(MgkDrawContext context, const double x,
+MagickExport void DrawPoint(DrawContext context, const double x,
              const double y)
 {
-  MgkDrawPrintf(context, "point %.10g,%.10g\n", x, y);
+  DrawPrintf(context, "point %.10g,%.10g\n", x, y);
 }
-MagickExport void MgkDrawPolygon(MgkDrawContext context, const size_t num_coords,
+MagickExport void DrawPolygon(DrawContext context, const size_t num_coords,
                                  const PointInfo * coordinates)
 {
   const PointInfo * coordinate;
 
   size_t i;
 
-  MgkDrawPrintf(context, "polygon");
+  DrawPrintf(context, "polygon");
   for (i = num_coords, coordinate = coordinates; i; i--)
     {
-      MgkDrawPrintf(context, " %.10g,%.10g", coordinate->x, coordinate->y);
+      DrawPrintf(context, " %.10g,%.10g", coordinate->x, coordinate->y);
       ++coordinate;
     }
-  MgkDrawPrintf(context, "\n");
+  DrawPrintf(context, "\n");
 }
-MagickExport void MgkDrawPolyline(MgkDrawContext context, const size_t num_coords,
+MagickExport void DrawPolyline(DrawContext context, const size_t num_coords,
                                   const PointInfo * coordinates)
 {
   const PointInfo * coordinate;
 
   size_t i;
 
-  MgkDrawPrintf(context, "polyline");
+  DrawPrintf(context, "polyline");
   for (i = num_coords, coordinate = coordinates; i; i--)
     {
-      MgkDrawPrintf(context, " %.10g,%.10g", coordinate->x, coordinate->y);
+      DrawPrintf(context, " %.10g,%.10g", coordinate->x, coordinate->y);
       ++coordinate;
     }
-  MgkDrawPrintf(context, "\n");
+  DrawPrintf(context, "\n");
 }
-MagickExport void MgkDrawPopClipPath(MgkDrawContext context)
+MagickExport void DrawPopClipPath(DrawContext context)
 {
   AccessContext(context)->indention_depth--;
-  MgkDrawPrintf(context, "pop clip-path\n");
+  DrawPrintf(context, "pop clip-path\n");
 }
-MagickExport void MgkDrawPopDefs(MgkDrawContext context)
+MagickExport void DrawPopDefs(DrawContext context)
 {
   AccessContext(context)->indention_depth--;
-  MgkDrawPrintf(context, "pop defs\n");
+  DrawPrintf(context, "pop defs\n");
 }
-MagickExport void MgkDrawPopGraphicContext(MgkDrawContext context)
+MagickExport void DrawPopGraphicContext(DrawContext context)
 {
   AccessContext(context)->indention_depth--;
-  MgkDrawPrintf(context, "pop graphic-context\n");
+  DrawPrintf(context, "pop graphic-context\n");
 }
-MagickExport void MgkDrawPopPattern(MgkDrawContext context)
+MagickExport void DrawPopPattern(DrawContext context)
 {
   AccessContext(context)->indention_depth--;
-  MgkDrawPrintf(context, "pop pattern\n");
+  DrawPrintf(context, "pop pattern\n");
 }
-static int MgkDrawPrintf(MgkDrawContext context, const char *format, ...)
+static int DrawPrintf(DrawContext context, const char *format, ...)
 {
   const size_t alloc_size = MaxTextExtent * 20; /* 40K */
 
@@ -971,38 +971,38 @@ static int MgkDrawPrintf(MgkDrawContext context, const char *format, ...)
     return str_length;
   }
 }
-MagickExport void MgkDrawPushClipPath(MgkDrawContext context,
+MagickExport void DrawPushClipPath(DrawContext context,
                                       const char *clip_path_id)
 {
-  MgkDrawPrintf(context, "push clip-path %s\n", clip_path_id);
+  DrawPrintf(context, "push clip-path %s\n", clip_path_id);
   AccessContext(context)->indention_depth++;
 }
-MagickExport void MgkDrawPushDefs(MgkDrawContext context)
+MagickExport void DrawPushDefs(DrawContext context)
 {
-  MgkDrawPrintf(context, "push defs\n");
+  DrawPrintf(context, "push defs\n");
   AccessContext(context)->indention_depth++;
 }
-MagickExport void MgkDrawPushGraphicContext(MgkDrawContext context)
+MagickExport void DrawPushGraphicContext(DrawContext context)
 {
-  MgkDrawPrintf(context, "push graphic-context\n");
+  DrawPrintf(context, "push graphic-context\n");
   AccessContext(context)->indention_depth++;
 }
-MagickExport void MgkDrawPushPattern(MgkDrawContext context,
+MagickExport void DrawPushPattern(DrawContext context,
                                      const char *pattern_id, const double x,
                                      const double y, const double width,
                                      const double height)
 {
-  MgkDrawPrintf(context, "push pattern %s %.10g,%.10g %.10g,%.10g\n",
+  DrawPrintf(context, "push pattern %s %.10g,%.10g %.10g,%.10g\n",
     pattern_id, x, y, width, height);
   AccessContext(context)->indention_depth++;
 }
-MagickExport void MgkDrawRectangle(MgkDrawContext context, const double x1,
+MagickExport void DrawRectangle(DrawContext context, const double x1,
                                    const double y1, const double x2, const double y2)
 {
-  MgkDrawPrintf(context, "rectangle %.10g,%.10g %.10g,%.10g\n", x1, y1, x2, y2);
+  DrawPrintf(context, "rectangle %.10g,%.10g %.10g,%.10g\n", x1, y1, x2, y2);
 }
-MagickExport int MgkDrawRender(Image * image, const ImageInfo * image_info,
-                               const MgkDrawContext context)
+MagickExport int DrawRender(Image * image, const ImageInfo * image_info,
+                               const DrawContext context)
 {
   DrawInfo * draw_info;
 
@@ -1015,36 +1015,36 @@ MagickExport int MgkDrawRender(Image * image, const ImageInfo * image_info,
   DestroyDrawInfo(draw_info);
   return True;
 }
-MagickExport void MgkDrawSetRotate(MgkDrawContext context, const double degrees)
+MagickExport void DrawSetRotate(DrawContext context, const double degrees)
 {
-  MgkDrawPrintf(context, "rotate %.10g\n", degrees);
+  DrawPrintf(context, "rotate %.10g\n", degrees);
 }
-MagickExport void MgkDrawRoundRectangle(MgkDrawContext context,
+MagickExport void DrawRoundRectangle(DrawContext context,
                                         double x1, double y1,
                                         double x2, double y2, double rx, double ry)
 {
-  MgkDrawPrintf(context, "roundrectangle %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
+  DrawPrintf(context, "roundrectangle %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
                 x1, y1, x2, y2, rx, ry);
 }
-MagickExport void MgkDrawSetScale(MgkDrawContext context, const double x,
+MagickExport void DrawSetScale(DrawContext context, const double x,
                                   const double y)
 {
-  MgkDrawPrintf(context, "scale %.10g,%.10g\n", x, y);
+  DrawPrintf(context, "scale %.10g,%.10g\n", x, y);
 }
-MagickExport void MgkDrawSetSkewX(MgkDrawContext context, const double degrees)
+MagickExport void DrawSetSkewX(DrawContext context, const double degrees)
 {
-  MgkDrawPrintf(context, "skewX %.10g\n", degrees);
+  DrawPrintf(context, "skewX %.10g\n", degrees);
 }
-MagickExport void MgkDrawSetSkewY(MgkDrawContext context, const double degrees)
+MagickExport void DrawSetSkewY(DrawContext context, const double degrees)
 {
-  MgkDrawPrintf(context, "skewY %.10g\n", degrees);
+  DrawPrintf(context, "skewY %.10g\n", degrees);
 }
-MagickExport void MgkDrawSetStopColor(MgkDrawContext context,
+MagickExport void DrawSetStopColor(DrawContext context,
                                       const PixelPacket * stop_color,
                                       const double offset)
 {
   if (stop_color->opacity == OpaqueOpacity)
-    MgkDrawPrintf(context,
+    DrawPrintf(context,
 #if QuantumDepth == 8
                   "stop-color #%02x%02x%02x %.10g\n",
 #elif QuantumDepth == 16
@@ -1052,7 +1052,7 @@ MagickExport void MgkDrawSetStopColor(MgkDrawContext context,
 #endif
                   stop_color->red, stop_color->green, stop_color->blue, offset);
   else
-    MgkDrawPrintf(context,
+    DrawPrintf(context,
 #if QuantumDepth == 8
                   "stop-color #%02x%02x%02x%02x %.10g\n",
 #elif QuantumDepth == 16
@@ -1061,11 +1061,11 @@ MagickExport void MgkDrawSetStopColor(MgkDrawContext context,
                   stop_color->red, stop_color->green, stop_color->blue,
                   stop_color->opacity, offset);
 }
-MagickExport void MgkDrawSetStroke(MgkDrawContext context,
+MagickExport void DrawSetStroke(DrawContext context,
                                    const PixelPacket * stroke_color)
 {
   if (stroke_color->opacity == OpaqueOpacity)
-    MgkDrawPrintf(context,
+    DrawPrintf(context,
 #if QuantumDepth == 8
                   "stroke #%02x%02x%02x\n",
 #elif QuantumDepth == 16
@@ -1073,7 +1073,7 @@ MagickExport void MgkDrawSetStroke(MgkDrawContext context,
 #endif
                   stroke_color->red, stroke_color->green, stroke_color->blue);
   else
-    MgkDrawPrintf(context,
+    DrawPrintf(context,
 #if QuantumDepth == 8
                   "stroke #%02x%02x%02x%02x\n",
 #elif QuantumDepth == 16
@@ -1083,33 +1083,33 @@ MagickExport void MgkDrawSetStroke(MgkDrawContext context,
                   stroke_color->opacity);
 
 }
-MagickExport void MgkDrawSetStrokeAntialias(MgkDrawContext context,
+MagickExport void DrawSetStrokeAntialias(DrawContext context,
                                             const int true_false)
 {
-  MgkDrawPrintf(context, "stroke-antialias %i\n", true_false ? 1 : 0);
+  DrawPrintf(context, "stroke-antialias %i\n", true_false ? 1 : 0);
 }
-MagickExport void MgkDrawSetStrokeDashArray(MgkDrawContext context,
+MagickExport void DrawSetStrokeDashArray(DrawContext context,
                                             const unsigned int *dasharray)
 {
   register const unsigned int *p = dasharray;
 
-  MgkDrawPrintf(context, "stroke-dasharray ");
+  DrawPrintf(context, "stroke-dasharray ");
   if ((p == (const unsigned int *) NULL) || (*p == 0))
-    MgkDrawPrintf(context, "none");
+    DrawPrintf(context, "none");
   else
     {
-      MgkDrawPrintf(context, "%u", *p++);
+      DrawPrintf(context, "%u", *p++);
       while (*p)
-        MgkDrawPrintf(context, ",%u", *p++);
+        DrawPrintf(context, ",%u", *p++);
     }
-  MgkDrawPrintf(context, "\n");
+  DrawPrintf(context, "\n");
 }
-MagickExport void MgkDrawSetStrokeDashOffset(MgkDrawContext context,
+MagickExport void DrawSetStrokeDashOffset(DrawContext context,
                                              const unsigned int dashoffset)
 {
-  MgkDrawPrintf(context, "stroke-dashoffset %u\n", dashoffset);
+  DrawPrintf(context, "stroke-dashoffset %u\n", dashoffset);
 }
-MagickExport void MgkDrawSetStrokeLineCap(MgkDrawContext context,
+MagickExport void DrawSetStrokeLineCap(DrawContext context,
                                           const LineCap linecap)
 {
   const char *p = NULL;
@@ -1130,9 +1130,9 @@ MagickExport void MgkDrawSetStrokeLineCap(MgkDrawContext context,
     }
 
   if (p != NULL)
-    MgkDrawPrintf(context, "stroke-linecap %s\n", p);
+    DrawPrintf(context, "stroke-linecap %s\n", p);
 }
-MagickExport void MgkDrawSetStrokeLineJoin(MgkDrawContext context,
+MagickExport void DrawSetStrokeLineJoin(DrawContext context,
                                            const LineJoin linejoin)
 {
   const char *p = NULL;
@@ -1153,23 +1153,23 @@ MagickExport void MgkDrawSetStrokeLineJoin(MgkDrawContext context,
     }
 
   if (p != NULL)
-    MgkDrawPrintf(context, "stroke-linejoin %s\n", p);
+    DrawPrintf(context, "stroke-linejoin %s\n", p);
 }
-MagickExport void MgkDrawSetStrokeMiterLimit(MgkDrawContext context,
+MagickExport void DrawSetStrokeMiterLimit(DrawContext context,
                                              const unsigned int miterlimit)
 {
-  MgkDrawPrintf(context, "stroke-miterlimit %u\n", miterlimit);
+  DrawPrintf(context, "stroke-miterlimit %u\n", miterlimit);
 }
-MagickExport void MgkDrawSetStrokeOpacity(MgkDrawContext context,
+MagickExport void DrawSetStrokeOpacity(DrawContext context,
                                           const double opacity)
 {
-  MgkDrawPrintf(context, "stroke-opacity %.10g\n", opacity);
+  DrawPrintf(context, "stroke-opacity %.10g\n", opacity);
 }
-MagickExport void MgkDrawSetStrokeWidth(MgkDrawContext context, const double width)
+MagickExport void DrawSetStrokeWidth(DrawContext context, const double width)
 {
-  MgkDrawPrintf(context, "stroke-width %.10g\n", width);
+  DrawPrintf(context, "stroke-width %.10g\n", width);
 }
-MagickExport void MgkDrawText(MgkDrawContext context, const double x,
+MagickExport void DrawText(DrawContext context, const double x,
                               const double y, const char *text)
 {
   char escaped_string[MaxTextExtent];
@@ -1197,14 +1197,14 @@ MagickExport void MgkDrawText(MgkDrawContext context, const double x,
     }
   *q = 0;
 
-  MgkDrawPrintf(context, "text %.10g,%.10g '%.1024s'\n", escaped_string);
+  DrawPrintf(context, "text %.10g,%.10g '%.1024s'\n", escaped_string);
 }
-MagickExport void MgkDrawSetTextAntialias(MgkDrawContext context,
+MagickExport void DrawSetTextAntialias(DrawContext context,
                                           const int true_false)
 {
-  MgkDrawPrintf(context, "text-antialias %i\n", true_false ? 1 : 0);
+  DrawPrintf(context, "text-antialias %i\n", true_false ? 1 : 0);
 }
-MagickExport void MgkDrawSetTextDecoration(MgkDrawContext context,
+MagickExport void DrawSetTextDecoration(DrawContext context,
                                            const DecorationType decoration)
 {
   const char *p = NULL;
@@ -1226,13 +1226,13 @@ MagickExport void MgkDrawSetTextDecoration(MgkDrawContext context,
     }
 
   if (p != NULL)
-    MgkDrawPrintf(context, "decorate %s\n", p);
+    DrawPrintf(context, "decorate %s\n", p);
 }
-MagickExport void MgkDrawSetTextUnderColor(MgkDrawContext context,
+MagickExport void DrawSetTextUnderColor(DrawContext context,
                                            const PixelPacket * under_color)
 {
   if (under_color->opacity == OpaqueOpacity)
-    MgkDrawPrintf(context,
+    DrawPrintf(context,
 #if QuantumDepth == 8
                   "decorate #%02x%02x%02x\n",
 #elif QuantumDepth == 16
@@ -1240,7 +1240,7 @@ MagickExport void MgkDrawSetTextUnderColor(MgkDrawContext context,
 #endif
                   under_color->red, under_color->green, under_color->blue);
   else
-    MgkDrawPrintf(context,
+    DrawPrintf(context,
 #if QuantumDepth == 8
                   "decorate #%02x%02x%02x%02x\n",
 #elif QuantumDepth == 16
@@ -1251,14 +1251,14 @@ MagickExport void MgkDrawSetTextUnderColor(MgkDrawContext context,
 
 }
 
-MagickExport void MgkDrawSetTranslate(MgkDrawContext context, const double x,
+MagickExport void DrawSetTranslate(DrawContext context, const double x,
                                       const double y)
 {
-  MgkDrawPrintf(context, "translate %.10g,%.10g\n", x, y);
+  DrawPrintf(context, "translate %.10g,%.10g\n", x, y);
 }
-MagickExport void MgkDrawSetViewbox(MgkDrawContext context,
+MagickExport void DrawSetViewbox(DrawContext context,
                                     unsigned long x1, unsigned long y1,
                                     unsigned long x2, unsigned long y2)
 {
-  MgkDrawPrintf(context, "viewbox %lu %lu %lu %lu\n", x1, y1, x2, y2);
+  DrawPrintf(context, "viewbox %lu %lu %lu %lu\n", x1, y1, x2, y2);
 }
