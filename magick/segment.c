@@ -520,6 +520,7 @@ static unsigned int Classify(Image *image,short **extrema,
             Compute fuzzy membership.
           */
           local_minima=0.0;
+          image->indexes[x]=0;
           for (j=0; j < (int) image->colors; j++)
           {
             sum=0.0;
@@ -545,7 +546,7 @@ static unsigned int Classify(Image *image,short **extrema,
                   Classify this pixel.
                 */
                 local_minima=1.0/sum;
-                image->indexes[x]=(IndexPacket) j;
+                image->indexes[x]=j;
               }
           }
         }

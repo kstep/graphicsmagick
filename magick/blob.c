@@ -144,7 +144,7 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
     Write blob to a temporary file on disk.
   */
   TemporaryFilename(local_info->filename);
-  file=fopen(local_info->filename,"wb");
+  file=fopen(local_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     {
       MagickWarning(BlobWarning,"Unable to convert blob to an image",
