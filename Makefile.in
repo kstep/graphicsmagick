@@ -204,7 +204,7 @@ EXTRA_DIST = $(MANPAGES) Magick.tmpl Manifest.ps ImageMagick.html Imakefile 	Mag
 
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = images scenes scripts www PerlMagick
+DISTDIRS = images scenes scripts www PerlMagick Magick++
 
 @WITH_PERL_TRUE@PERLMAGICK = PerlMagick
 @WITH_PERL_TRUE@PERLMAKEMAKER = $(PERLMAGICK)/Makefile.PL

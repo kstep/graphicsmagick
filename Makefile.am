@@ -67,7 +67,7 @@ EXTRA_DIST = $(MANPAGES) Magick.tmpl Manifest.ps ImageMagick.html Imakefile \
 	acconfig.h QuickStart.txt ImageMagick.pdf
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = images scenes scripts www PerlMagick
+DISTDIRS = images scenes scripts www PerlMagick Magick++
 dist-hook:
 	( \
 	  builddir=`pwd` ; \
