@@ -31,7 +31,9 @@ extern "C" {
 #define R_OK 4
 #define W_OK 2
 #define RW_OK 6
-#define lt_dlerror NTGetLastError
+#if !defined(HasLTDL)
+#  define lt_dlerror NTGetLastError
+#endif
 #if defined(_MT) && defined(WIN32)
 #define SAFE_GLOBAL __declspec(thread)
 #else
@@ -89,8 +91,10 @@ extern MagickExport double
   NTUserTime(void);
 
 extern MagickExport int
+#if !defined(HasLTDL)
   lt_dlexit(void),
   lt_dlinit(void),
+#endif
   munmap(void *,size_t);
 
 extern MagickExport long
@@ -110,11 +114,15 @@ extern MagickExport void
   *mmap(char *,size_t,int,int,int,off_t),
   NTErrorHandler(const ExceptionType,const char *,const char *),
   NTWarningHandler(const ExceptionType,const char *,const char *),
-  seekdir(DIR *,long),
+  seekdir(DIR *,long)
+#if !defined(HasLTDL)
+  ,
   lt_dlsetsearchpath(char *),
   *lt_dlopen(char *),
   lt_dlclose(void *),
-  *lt_dlsym(void *, char *);
+  *lt_dlsym(void *, char *)
+#endif
+  ;
 
 #endif
 

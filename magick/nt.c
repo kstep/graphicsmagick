@@ -59,8 +59,10 @@
 /*
   Static declarations.
 */
+#if !defined(HasLTDL)
 static char
   *lt_slsearchpath = (char *) NULL;
+#endif
 
 /*
   External declarations.
@@ -204,6 +206,7 @@ MagickExport int IsWindows95()
   return(0);
 }
 
+#if !defined(HasLTDL)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -433,6 +436,7 @@ void *lt_dlsym(void *h,char *s)
   return((void*) NULL);
 #endif
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

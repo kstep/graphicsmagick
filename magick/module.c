@@ -55,24 +55,24 @@
 */
 #include "studio.h"
 #if defined(HasLTDL)
-#include "ltdl/ltdl.h"
-typedef lt_dlhandle ModuleHandle;
+#  include "ltdl/ltdl.h"
+   typedef lt_dlhandle ModuleHandle;
 #else
-typedef void *ModuleHandle;
+   typedef void *ModuleHandle;
 #endif
 
 /*
   Define declarations.
 */
 #define ModuleFilename  "modules.mgk"
-#if !defined(WIN32)
-#define ModuleGlobExpression "*.la"
+#if defined(HasLTDL)
+#  define ModuleGlobExpression "*.la"
 #else
-#if defined(_DEBUG)
-#define ModuleGlobExpression "IM_MOD_DB_*.dll"
-#else
-#define ModuleGlobExpression "IM_MOD_RL_*.dll"
-#endif
+#  if defined(_DEBUG)
+#    define ModuleGlobExpression "IM_MOD_DB_*.dll"
+#  else
+#    define ModuleGlobExpression "IM_MOD_RL_*.dll"
+#  endif
 #endif
 
 /*
@@ -1138,7 +1138,7 @@ static char *TagToProcess(const char *tag)
 
   assert(tag != (char *) NULL);
   module_name=AllocateString((char *) NULL);
-#if !defined(WIN32)
+#if defined(HasLTDL)
   (void) FormatString(module_name,"%.1024s.la",tag);
   (void) LocaleLower(module_name);
 #else
@@ -1178,7 +1178,7 @@ MagickExport char *TagToModule(const char *tag)
 
   assert(tag != (char *) NULL);
   module_name=AllocateString("tag");
-#if !defined(WIN32)
+#if defined(HasLTDL)
   (void) FormatString(module_name,"%.1024s.la",tag);
   (void) LocaleLower(module_name);
 #else
@@ -1186,11 +1186,11 @@ MagickExport char *TagToModule(const char *tag)
     (void) strncpy(module_name,tag,MaxTextExtent-1);
   else
     {
-#if defined(_DEBUG)
+#  if defined(_DEBUG)
       FormatString(module_name,"IM_MOD_DB_%.1024s_.dll",tag);
-#else
+#  else
       FormatString(module_name,"IM_MOD_RL_%.1024s_.dll",tag);
-#endif
+#  endif
     }
 #endif
   return(module_name);
