@@ -1127,7 +1127,8 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   assert(length != (size_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
-  logging=((LocaleCompare(filename,MagickLogFilename) != 0) && (IsEventLogging()));
+  logging=((LocaleCompare(filename,MagickLogFilename) != 0) &&
+           (IsEventLogging()));
 
   (void) strncpy(path,filename,MaxTextExtent-1);
   path_map=MagickMapAllocateMap(MagickMapCopyString,MagickMapDeallocateString);

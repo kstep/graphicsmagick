@@ -11,12 +11,13 @@
 #
 # Written by Bob Friesenhahn <bfriesen@simple.dallas.tx.us> December 2003
 #
-top_srcdir=@abs_top_srcdir@
-top_builddir=@abs_top_builddir@
+top_srcdir='@abs_top_srcdir@'
+top_builddir='@abs_top_builddir@'
 echo "$@"
 env \
-  MAGICK_MODULE_PATH="${top_builddir}/coders/.libs" \
-  MAGICK_CONFIGURE_PATH="${top_srcdir}/config:${top_builddir}/config" \
   LD_LIBRARY_PATH="${top_builddir}/magick/.libs:${LD_LIBRARY_PATH}" \
+  MAGICK_CODER_MODULE_PATH="${top_builddir}/coders" \
+  MAGICK_CONFIGURE_PATH="${top_srcdir}/config:${top_builddir}/config" \
+  MAGICK_FILTER_MODULE_PATH="${top_builddir}/filters" \
   PATH="${top_builddir}/utilities:${PATH}" \
   "$@"

@@ -1,5 +1,14 @@
 2003-12-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* doc/environment.imdoc: Document MAGICK_CODER_MODULE_PATH and
+	MAGICK_FILTER_MODULE_PATH.
+	* rungm.sh.in: Pass MAGICK_CODER_MODULE_PATH and
+	MAGICK_FILTER_MODULE_PATH in the environment so modules build may
+	be tested without first being installed.
+	* magick/module.c (FindMagickModule): Use the
+	MAGICK_CODER_MODULE_PATH environment variable to specify a search
+	path for coder modules.  Use MAGICK_FILTER_MODULE_PATH to specify
+	a search path for filter modules.
 	* Makefile.am: Updated to Automake 1.8.
 	(install-exec-perl): Fixes which achieve a successful
 	'make distcheck' for the first time in *Magick history.

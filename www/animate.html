@@ -1044,7 +1044,27 @@ width=15><b><font face="Helvetica, Arial"
     HOME
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Location of user's home directory. GraphicsMagick searches for
-configuration files in $HOME/.magick if the directory exists.</td></tr></table>
+configuration files in $HOME/.magick if the directory exists. See
+<strong>MAGICK_CODER_MODULE_PATH</strong>, <strong>MAGICK_CONFIGURE_PATH</strong>, and
+<strong>MAGICK_FILTER_MODULE_PATH</strong> if more flexibility is needed.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    MAGICK_CODER_MODULE_PATH
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Search path to use when searching for image format coder modules.
+This path allows the user to arbitrarily extend the image formats
+supported by GraphicsMagick by adding loadable modules to an arbitrary
+location rather than copying them into the GraphicsMagick installation
+directory. The formatting of the search path is similar to operating
+system search paths (i.e. colon delimited for Unix, and semi-colon
+delimited for Microsoft Windows). This user specified search path is used
+before trying the default search path.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1079,11 +1099,30 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    MAGICK_FILTER_MODULE_PATH
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Search path to use when searching for filter process modules
+(invoked via <strong>-process</strong>). This path allows the user to arbitrarily
+extend GraphicsMagick's image processing functionality by adding loadable
+modules to an arbitrary location rather than copying them into the
+GraphicsMagick installation directory. The formatting of the search path
+is similar to operating system search paths (i.e. colon delimited for
+Unix, and semi-colon delimited for Microsoft Windows). This user
+specified search path is used before trying the default search path.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     MAGICK_FONT_PATH
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Directory where GraphicsMagick should look for TrueType and
-Postscript Type1 font files. It is preferred to define the available
-fonts via type.mgk rather than use <strong>MAGICK_FONT_PATH</strong>.</td></tr></table>
+Postscript Type1 font files if the font file is not found in the current
+directory. It is preferred to define the available fonts via type.mgk
+rather than use <strong>MAGICK_FONT_PATH</strong>.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

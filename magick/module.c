@@ -497,6 +497,9 @@ static void ChopPathComponents(char *path,const unsigned long components)
 static unsigned int FindMagickModule(const char *filename,
   MagickModuleType module_type,char *path,ExceptionInfo *exception)
 {
+  const char
+    *module_path = NULL;
+
   assert(filename != (const char *) NULL);
   assert(path != (char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
@@ -506,14 +509,58 @@ static unsigned int FindMagickModule(const char *filename,
     {
     case MagickCoderModule:
     default:
-      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-         "Searching for coder module file \"%s\" ...",filename);
-      break;
+      {
+        (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+           "Searching for coder module file \"%s\" ...",filename);
+        module_path = getenv("MAGICK_CODER_MODULE_PATH");
+        break;
+      }
     case MagickFilterModule:
-      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-         "Searching for filter module file \"%s\" ...",filename);
-      break;
+      {
+        (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+           "Searching for filter module file \"%s\" ...",filename);
+        module_path = getenv("MAGICK_FILTER_MODULE_PATH");
+        break;
+      }
     }
+
+  {
+    /*
+      Allow the module search path to be explicitly specified.
+    */
+    if ( module_path )
+      {
+        const char
+          *end = NULL,
+          *start = module_path;
+        
+        end=start+strlen(start);
+        while ( start < end )
+          {
+            const char
+              *seperator;
+            
+            int
+              length;
+            
+            seperator = strchr(start,DirectoryListSeparator);
+            if (seperator)
+              length=seperator-start;
+            else
+              length=end-start;
+            if (length > MaxTextExtent-1)
+              length = MaxTextExtent-1;
+            strncpy(path,start,length);
+            path[length]='\0';
+            if (path[length-1] != DirectorySeparator[0])
+              strcat(path,DirectorySeparator);
+            strcat(path,filename);
+            if (IsAccessible(path))
+              return(True);
+            start += length+1;
+          }
+      }
+  }
 
 #if defined(UseInstalledMagick)
 # if defined(MagickCoderModulesPath)

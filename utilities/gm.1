@@ -7902,7 +7902,19 @@ hostname:display.screen).
 .TP
 .B "HOME"
 \fRLocation of user's home directory. GraphicsMagick searches for
-configuration files in $HOME/.magick if the directory exists.
+configuration files in $HOME/.magick if the directory exists. See
+\fBMAGICK_CODER_MODULE_PATH\fP, \fBMAGICK_CONFIGURE_PATH\fP, and
+\fBMAGICK_FILTER_MODULE_PATH\fP if more flexibility is needed.
+.TP
+.B "MAGICK_CODER_MODULE_PATH"
+\fRSearch path to use when searching for image format coder modules.
+This path allows the user to arbitrarily extend the image formats
+supported by GraphicsMagick by adding loadable modules to an arbitrary
+location rather than copying them into the GraphicsMagick installation
+directory. The formatting of the search path is similar to operating
+system search paths (i.e. colon delimited for Unix, and semi-colon
+delimited for Microsoft Windows). This user specified search path is used
+before trying the default search path.
 .TP
 .B "MAGICK_CONFIGURE_PATH"
 \fRSearch path to use when searching for configuration (.mgk) files.
@@ -7914,10 +7926,21 @@ the default search path.
 .B "MAGICK_DEBUG"
 \fRDebug options (see \fB-debug\fP for details)
 .TP
+.B "MAGICK_FILTER_MODULE_PATH"
+\fRSearch path to use when searching for filter process modules
+(invoked via \fB-process\fP). This path allows the user to arbitrarily
+extend GraphicsMagick's image processing functionality by adding loadable
+modules to an arbitrary location rather than copying them into the
+GraphicsMagick installation directory. The formatting of the search path
+is similar to operating system search paths (i.e. colon delimited for
+Unix, and semi-colon delimited for Microsoft Windows). This user
+specified search path is used before trying the default search path.
+.TP
 .B "MAGICK_FONT_PATH"
 \fRDirectory where GraphicsMagick should look for TrueType and
-Postscript Type1 font files. It is preferred to define the available
-fonts via type.mgk rather than use \fBMAGICK_FONT_PATH\fP.
+Postscript Type1 font files if the font file is not found in the current
+directory. It is preferred to define the available fonts via type.mgk
+rather than use \fBMAGICK_FONT_PATH\fP.
 .TP
 .B "MAGICK_HOME"
 \fRPath to top of GraphicsMagick installation directory. Only observed
