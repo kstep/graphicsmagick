@@ -3248,7 +3248,6 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   assert(image != (Image *) NULL);
   if (file == (FILE *) NULL)
     file=stdout;
-  number_colors=GetNumberColors(image,(FILE *) NULL);
   if (!verbose)
     {
       /*
@@ -3284,21 +3283,14 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
           (void) fprintf(file,"%ux%u%+d%+d ",image->columns,image->rows,x,y);
         }
       if (image->class == DirectClass)
-        {
-          (void) fprintf(file,"DirectClass ");
-          if (number_colors != 0)
-            (void) fprintf(file,"%luc ",number_colors);
-        }
+        (void) fprintf(file,"DirectClass ");
       else
-        if (number_colors <= image->colors)
+        {
           (void) fprintf(file,"PseudoClass %uc ",image->colors);
-        else
-          {
-            (void) fprintf(file,"PseudoClass %lu=>%uc ",number_colors,
-              image->colors);
+          if (image->normalized_maximum_error != 0.0)
             (void) fprintf(file,"%u/%.6f/%.6fe ",image->mean_error_per_pixel,
               image->normalized_mean_error,image->normalized_maximum_error);
-          }
+        }
       if (image->filesize != 0)
         {
           if (image->filesize >= (1 << 24))
@@ -3316,6 +3308,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   /*
     Display verbose info about the image.
   */
+  number_colors=GetNumberColors(image,(FILE *) NULL);
   (void) fprintf(file,"Image: %.1024s\n",image->filename);
   magick_info=(MagickInfo *) GetMagickInfo(image->magick);
   if ((magick_info == (MagickInfo *) NULL) ||

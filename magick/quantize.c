@@ -1981,6 +1981,8 @@ Export unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
   status=GetCubeInfo(&cube_info,quantize_info->dither,depth);
   if (status == False)
     return(False);
+  if (image->packets == (image->columns*image->rows))
+    CondenseImage(image);
   if (quantize_info->colorspace != RGBColorspace)
     RGBTransformImage(image,quantize_info->colorspace);
   status=Classification(&cube_info,image);
@@ -2108,6 +2110,8 @@ Export unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
   for (i=0; image != (Image *) NULL; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
+    if (image->packets == (image->columns*image->rows))
+      CondenseImage(image);
     status=Classification(&cube_info,image);
     if (status == False)
       break;
