@@ -17,6 +17,15 @@
 extern "C" {
 #endif
 
+#if !defined(_MAGICK_CONFIG_H)
+# define _MAGICK_CONFIG_H
+# if !defined(vms) && !defined(macintosh)
+#  include "magick/config.h"
+# else
+#  include "config.h"
+# endif
+#endif
+
 #if defined(__cplusplus) || defined(c_plusplus)
 #define storage_class  c_class
 #else
@@ -72,9 +81,6 @@ extern "C" {
 #define MagickSignature  0xabacadab
 
 #if !defined(vms) && !defined(macintosh)
-#if !defined(_MAGICK_CONFIG_H)
-# include "magick/config.h"
-#endif
 #include "magick/classify.h"
 #include "magick/image.h"
 #include "magick/colors.h"
@@ -96,9 +102,6 @@ extern "C" {
 #include "magick/error.h"
 #include "magick/version.h"
 #else
-#if !defined(_MAGICK_CONFIG_H)
-# include "config.h"
-#endif
 #include "classify.h"
 #include "image.h"
 #include "colors.h"
