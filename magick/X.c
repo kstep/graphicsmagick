@@ -8334,7 +8334,7 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
         {
           color.blue=(unsigned short) 0;
           if (map_info->blue_max != 0)
-            color.blue=(unsigned short)
+            color.blue=(unsigned int)
               (((i % map_info->green_mult)*65535L)/map_info->blue_max);
           color.green=color.blue;
           color.red=color.blue;
@@ -8346,15 +8346,15 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
         {
           color.red=(unsigned short) 0;
           if (map_info->red_max != 0)
-            color.red=(unsigned short)
+            color.red=(unsigned int)
               (((i/map_info->red_mult)*65535L)/map_info->red_max);
-          color.green=(unsigned short) 0;
+          color.green=(unsigned int) 0;
           if (map_info->green_max != 0)
-            color.green=(unsigned short) ((((i/map_info->green_mult) %
+            color.green=(unsigned int) ((((i/map_info->green_mult) %
               (map_info->green_max+1))*65535L)/map_info->green_max);
           color.blue=(unsigned short) 0;
           if (map_info->blue_max != 0)
-            color.blue=(unsigned short)
+            color.blue=(unsigned int)
               (((i % map_info->green_mult)*65535L)/map_info->blue_max);
           color.pixel=XStandardPixel(map_info,color,16);
           *p++=color;
@@ -8850,10 +8850,10 @@ Export unsigned int XQueryColorDatabase(const char *target,XColor *color)
             } while (*target != '\0');
           }
       n<<=2;
-      color->red=(65535L*red)/((1 << n)-1);
-      color->green=(65535L*green)/((1 << n)-1);
-      color->blue=(65535L*blue)/((1 << n)-1);
-      color->pixel=(65535L*index)/((1 << n)-1);
+      color->red=(unsigned int) (65535L*red)/((1 << n)-1);
+      color->green=(unsigned int) (65535L*green)/((1 << n)-1);
+      color->blue=(unsigned int) (65535L*blue)/((1 << n)-1);
+      color->pixel=(unsigned int) (65535L*index)/((1 << n)-1);
       return(True);
     }
   if (database == (FILE *) NULL)

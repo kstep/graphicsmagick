@@ -13200,7 +13200,7 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   if (support < filters[image->filter].support)
     support=filters[image->filter].support;
   contribution_info=(ContributionInfo *)
-    AllocateMemory((int) (support*2+2)*sizeof(ContributionInfo));
+    AllocateMemory((int) (support*2+3)*sizeof(ContributionInfo));
   if (contribution_info == (ContributionInfo *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to zoom image",

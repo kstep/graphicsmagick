@@ -2,7 +2,7 @@
 <HEAD>
 <TITLE>ImageMagick Image Transforming Utility</TITLE>
 <LINK rev="made" href="mailto:magick@wizards.dupont.com">
-<meta name="description" content="ImageMagick, version 4.2.2, is a package for
+<meta name="description" content="ImageMagick, version 4.2.1, is a package for
   display and interactive manipulation of images for the X Window System. It
   is written in C and interfaces to the X library, and therefore does not
   require any proprietary toolkit in order to compile.  Although the software
@@ -92,10 +92,8 @@ width and 480 pixels in height, use:
 <DD> remove pixel aliasing.
 <p>
 <DT><B>-blur</B> <EM>factor</EM>
-<DD>use this blur factor when resizing an image.
-Specify <i>factor</i> as the percent enhancement (0.0 - 99.9%).
-
-To blur without resizing, specify <b>-geometry 100%</b>.
+<DD>blurs an image.  Specify <EM>factor</EM> as the percent
+enhancement (0.0 - 99.9%).
 <P>
 <DT><B>-border</B> &lt;<EM>width</EM>&gt;<B>x</B>&lt;<EM>height</EM>&gt;
 <DD>surround the image with a border of color.  See <B>X(1)</B>
@@ -829,10 +827,8 @@ for details.
 source.  Use <b>+shade</b> to return the shading results as a grayscale image.
 <P>
 <DT><B>-sharpen</B> <EM>weight</EM>
-<DD>use this sharpen factor when resizing an image.
-Specify <i>factor</i> as the percent enhancement (0.0 - 99.9%).
-
-To sharpen without resizing, specify <b>-geometry 100%</b>.
+<DD>sharpen an image.  Specify <EM>factor</EM> as the percent
+enhancement (0.0 - 99.9%).
 <P>
 <DT><B>-shear</B> &lt;<B>x</B> <EM>degrees</EM>&gt;<B>x</B>&lt;<B>y</B> <EM>degrees</EM>&gt;
 <DD>shear the image along the X or Y axis by a positive or
