@@ -676,7 +676,7 @@ static void output_switches(Image *image,struct locale_str *locstr, int indent, 
             if (elseflag)
                 indent -= INDENT;
 
-            FormatString(message, "%*sif (LocaleNCompare(%s, \"%s\", %d) || p - tp != %d)\n%*sreturn tag;\n%*selse\n",
+            FormatString(message, "%*sif (LocaleNCompare(%s, \"%s\", %ld) || p - tp != %ld)\n%*sreturn tag;\n%*selse\n",
                     indent, "", field, p, strlen(locstr->name),
                     strlen(locstr->name), indent+INDENT, "", indent, "");
             WriteBlobString(image,message);
@@ -712,7 +712,7 @@ static void output_switches(Image *image,struct locale_str *locstr, int indent, 
           }
 
         p = EscapeLocaleString(xl->name);
-        FormatString(message, "%*sif (p - tp == %d && !LocaleNCompare(tp, \"%s\", %d))\n",
+        FormatString(message, "%*sif (p - tp == %ld && !LocaleNCompare(tp, \"%s\", %ld))\n",
                 indent+INDENT, "", strlen(xl->name), p, strlen(xl->name));
         WriteBlobString(image,message);
         free(p);
