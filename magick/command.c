@@ -1542,7 +1542,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       {
         status&=MogrifyImages(image_info,i-j,argv+j,&image);
         (void) CatchImageException(image);
-        PushImageOnList(&image_list,image,exception);
+        AppendImageToList(&image_list,image,exception);
         DestroyImageList(image);
         image=(Image *) NULL;
         j=k+1;
@@ -3198,7 +3198,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
     {
       status&=MogrifyImages(image_info,i-j,argv+j,&image);
       (void) CatchImageException(image);
-      PushImageOnList(&image_list,image,exception);
+      AppendImageToList(&image_list,image,exception);
       DestroyImageList(image);
     }
   status&=WriteImages(image_info,image_list,argv[argc-1],exception);
@@ -5403,7 +5403,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       {
         status&=MogrifyImages(image_info,i-j,argv+j,&image);
         (void) CatchImageException(image);
-        PushImageOnList(&image_list,image,exception);
+        AppendImageToList(&image_list,image,exception);
         DestroyImageList(image);
         image=(Image *) NULL;
         j=k+1;
@@ -6483,7 +6483,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
     {
       status&=MogrifyImages(image_info,i-j,argv+j,&image);
       (void) CatchImageException(image);
-      PushImageOnList(&image_list,image,exception);
+      AppendImageToList(&image_list,image,exception);
       DestroyImageList(image);
       image=(Image *) NULL;
       j=i;

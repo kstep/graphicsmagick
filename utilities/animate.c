@@ -418,7 +418,7 @@ int main(int argc,char **argv)
       {
         status&=MogrifyImages(image_info,i-j,argv+j,&image);
         (void) CatchImageException(image);
-        PushImageOnList(&image_list,image,&exception);
+        AppendImageToList(&image_list,image,&exception);
         DestroyImageList(image);
         image=(Image *) NULL;
         j=k+1;
@@ -1105,7 +1105,7 @@ int main(int argc,char **argv)
     {
       status&=MogrifyImages(image_info,i-j,argv+j,&image);
       (void) CatchImageException(image);
-      PushImageOnList(&image_list,image,&exception);
+      AppendImageToList(&image_list,image,&exception);
       DestroyImageList(image);
     }
   if (resource_info.window_id != (char *) NULL)
