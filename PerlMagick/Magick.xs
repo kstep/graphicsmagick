@@ -1119,7 +1119,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     {
       if (LocaleCompare(attribute,"background") == 0)
         {
-          (void) QueryColorDatabase(SvPV(sval,na),&target_color,&exception);
+          (void) QueryColorDatabase(SvPV(sval,na),&target_color,
+            image ? &image->exception : &exception);
           if (info)
             info->image_info->background_color=target_color;
           for ( ; image; image=image->next)
@@ -1136,7 +1137,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       if (LocaleCompare(attribute,"bordercolor") == 0)
         {
-          (void) QueryColorDatabase(SvPV(sval,na),&target_color,&exception);
+          (void) QueryColorDatabase(SvPV(sval,na),&target_color,
+            image ? &image->exception : &exception);
           if (info)
             {
               info->image_info->border_color=target_color;
@@ -1181,7 +1183,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             if (i > (int) image->colors)
               i%=image->colors;
             if (strchr(SvPV(sval,na),',') == 0)
-              QueryColorDatabase(SvPV(sval,na),image->colormap+i,&exception);
+              QueryColorDatabase(SvPV(sval,na),image->colormap+i,
+                image ? &image->exception : &exception);
             else
               {
                 color=image->colormap+i;
@@ -1370,7 +1373,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           if (info)
             (void) QueryColorDatabase(SvPV(sval,na),&info->draw_info->fill,
-              &exception);
+                image ? &image->exception : &exception);
           return;
         }
       if (LocaleCompare(attribute,"font") == 0)
@@ -1512,7 +1515,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       if (LocaleCompare(attribute,"mattecolor") == 0)
         {
-          (void) QueryColorDatabase(SvPV(sval,na),&target_color,&exception);
+          (void) QueryColorDatabase(SvPV(sval,na),&target_color,
+            image ? &image->exception : &exception);
           if (info)
             info->image_info->matte_color=target_color;
           for ( ; image; image=image->next)
@@ -1567,7 +1571,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           if (info)
             (void) QueryColorDatabase(SvPV(sval,na),&info->draw_info->fill,
-              &exception);
+              image ? &image->exception : &exception);
           return;
         }
       if (LocaleNCompare(attribute,"pixel",5) == 0)
@@ -1586,7 +1590,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               break;
             SetImageType(image,TrueColorType);
             if (strchr(SvPV(sval,na),',') == 0)
-              QueryColorDatabase(SvPV(sval,na),pixel,&exception);
+              QueryColorDatabase(SvPV(sval,na),pixel,
+                image ? &image->exception : &exception);
             else
               {
                 red=pixel->red;
@@ -1724,7 +1729,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           if (info)
             (void) QueryColorDatabase(SvPV(sval,na),&info->draw_info->stroke,
-              &exception);
+              image ? &image->exception : &exception);
           return;
         }
       MagickError(OptionError,"Invalid attribute",attribute);
@@ -5879,7 +5884,7 @@ Montage(ref,...)
       *attribute;
 
     ExceptionInfo
-      exception;
+      *exception;
 
     HV
       *hv;
@@ -5945,8 +5950,7 @@ Montage(ref,...)
     */
     info=GetPackageInfo((void *) av,info);
     montage_info=CloneMontageInfo(info->image_info,(MontageInfo *) NULL);
-    GetExceptionInfo(&exception);
-    (void) QueryColorDatabase("none",&transparent_color,&exception);
+    (void) QueryColorDatabase("none",&transparent_color,&image->exception);
     for (i=2; i < items; i+=2)
     {
       attribute=(char *) SvPV(ST(i-1),na);
@@ -5958,13 +5962,13 @@ Montage(ref,...)
           if (LocaleCompare(attribute,"background") == 0)
             {
               (void) QueryColorDatabase(SvPV(ST(i),na),
-                &montage_info->background_color,&exception);
+                &montage_info->background_color,&image->exception);
               break;
             }
           if (LocaleCompare(attribute,"bordercolor") == 0)
             {
               (void) QueryColorDatabase(SvPV(ST(i),na),
-                &montage_info->border_color,&exception);
+                &montage_info->border_color,&image->exception);
               break;
             }
           if (LocaleCompare(attribute,"borderwidth") == 0)
@@ -6001,7 +6005,7 @@ Montage(ref,...)
           if (LocaleCompare(attribute,"fill") == 0)
             {
               (void) QueryColorDatabase(SvPV(ST(i),na),&montage_info->fill,
-                &exception);
+                &image->exception);
               break;
             }
           if (LocaleCompare(attribute,"font") == 0)
@@ -6086,7 +6090,7 @@ Montage(ref,...)
           if (LocaleCompare(attribute,"mattecolor") == 0)
             {
               (void) QueryColorDatabase(SvPV(ST(i),na),
-                &montage_info->matte_color,&exception);
+                &montage_info->matte_color,&image->exception);
               break;
             }
           if (LocaleCompare(attribute,"mode") == 0)
@@ -6160,7 +6164,7 @@ Montage(ref,...)
           if (LocaleCompare(attribute,"stroke") == 0)
             {
               (void) QueryColorDatabase(SvPV(ST(i),na),&montage_info->stroke,
-                &exception);
+                &image->exception);
               break;
             }
           MagickError(OptionError,"Invalid attribute",attribute);
@@ -6195,7 +6199,8 @@ Montage(ref,...)
           if (LocaleCompare(attribute,"transparent") == 0)
             {
               transparent_color=AcquireOnePixel(image,0,0,&image->exception);
-              QueryColorDatabase(SvPV(ST(i),na),&transparent_color,&exception);
+              QueryColorDatabase(SvPV(ST(i),na),&transparent_color,
+                &image->exception);
               for (next=image; next; next=next->next)
                 TransparentImage(next,transparent_color,TransparentOpacity);
               break;
@@ -6210,18 +6215,19 @@ Montage(ref,...)
         }
       }
     }
-    image=MontageImages(image,montage_info,&exception);
+    exception=(&image->exception);
+    image=MontageImages(image,montage_info,exception);
     DestroyMontageInfo(montage_info);
     if (!image)
       {
-        MagickError(exception.severity,exception.reason,
-          exception.description);
+        MagickError(exception->severity,exception->reason,
+          exception->description);
         goto MethodException;
       }
     if (transparent_color.opacity != TransparentOpacity)
       for (next=image; next; next=next->next)
         TransparentImage(next,transparent_color,TransparentOpacity);
-    (void) SetImageInfo(info->image_info,False,&exception);
+    (void) SetImageInfo(info->image_info,False,&image->exception);
     for (next=image; next; next=next->next)
     {
       sv=newSViv((IV) next);
@@ -6229,7 +6235,6 @@ Montage(ref,...)
       av_push(av,sv_bless(rv,hv));
       SvREFCNT_dec(sv);
     }
-    DestroyExceptionInfo(&exception);
     ST(0)=av_reference;
     error_jump=NULL;
     SvREFCNT_dec(error_list);
@@ -6789,13 +6794,13 @@ QueryColorname(ref,...)
     SV
       *reference;  /* reference is the SV* of ref=SvIV(reference) */
 
+    GetExceptionInfo(&exception);
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     image=SetupList(reference,&info,(SV ***) NULL);
     EXTEND(sp,items);
-    GetExceptionInfo(&exception);
     for (i=1; i < items; i++)
     {
       (void) QueryColorDatabase(SvPV(ST(i),na),&target_color,&exception);
@@ -6803,9 +6808,9 @@ QueryColorname(ref,...)
         &image->exception);
       PUSHs(sv_2mortal(newSVpv(message,0)));
     }
-    DestoryExceptionInfo(&exception);
     SvREFCNT_dec(error_list);
     error_list=NULL;
+    DestroyExceptionInfo(&exception);
   }
 
 #
