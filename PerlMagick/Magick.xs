@@ -4823,7 +4823,7 @@ Mogrify(ref,...)
               }
               case WestGravity:
               {
-                geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
+                geometry.y+=(long) (geometry.height/2-composite_image->rows/2);
                 break;
               }
               case ForgetGravity:
@@ -4833,13 +4833,13 @@ Mogrify(ref,...)
               {
                 geometry.x+=(long)
                   (geometry.width/2-composite_image->columns/2);
-                geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
+                geometry.y+=(long) (geometry.height/2-composite_image->rows/2);
                 break;
               }
               case EastGravity:
               {
                 geometry.x+=(long) geometry.width-composite_image->columns;
-                geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
+                geometry.y+=(long) (geometry.height/2-composite_image->rows/2);
                 break;
               }
               case SouthWestGravity:

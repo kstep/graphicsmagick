@@ -325,7 +325,8 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
                 }
                 case WestGravity:
                 {
-                  geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
+                  geometry.y+=(long)
+                    (geometry.height/2-composite_image->rows/2);
                   break;
                 }
                 case ForgetGravity:
@@ -335,13 +336,15 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
                 {
                   geometry.x+=(long)
                     (geometry.width/2-composite_image->columns/2);
-                  geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
+                  geometry.y+=(long)
+                    (geometry.height/2-composite_image->rows/2);
                   break;
                 }
                 case EastGravity:
                 {
                   geometry.x+=(long) geometry.width-composite_image->columns;
-                  geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
+                  geometry.y+=(long)
+                    (geometry.height/2-composite_image->rows/2);
                   break;
                 }
                 case SouthWestGravity:
