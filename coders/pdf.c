@@ -1003,7 +1003,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                     Ascii85Encode(image,DownScale(MaxRGB));
                     Ascii85Encode(image,DownScale(MaxRGB));
                     Ascii85Encode(image,DownScale(MaxRGB));
-                    p++;
                     continue;
                   }
                 Ascii85Encode(image,DownScale(p->red));
@@ -1050,10 +1049,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   break;
                 indexes=GetIndexes(image);
                 for (x=0; x < (int) image->columns; x++)
-                {
                   *q++=indexes[x];
-                  p++;
-                }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     MagickMonitor(SaveImageText,y,image->rows);
@@ -1087,10 +1083,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   break;
                 indexes=GetIndexes(image);
                 for (x=0; x < (int) image->columns; x++)
-                {
                   Ascii85Encode(image,indexes[x]);
-                  p++;
-                }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     MagickMonitor(SaveImageText,y,image->rows);
@@ -1266,7 +1259,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                     *q++=DownScale(MaxRGB);
                     *q++=DownScale(MaxRGB);
                     *q++=DownScale(MaxRGB);
-                    p++;
                     continue;
                   }
                 *q++=DownScale(p->red);
@@ -1311,7 +1303,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                     Ascii85Encode(image,DownScale(MaxRGB));
                     Ascii85Encode(image,DownScale(MaxRGB));
                     Ascii85Encode(image,DownScale(MaxRGB));
-                    p++;
                     continue;
                   }
                 Ascii85Encode(image,DownScale(p->red));
@@ -1358,10 +1349,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   break;
                 indexes=GetIndexes(tile_image);
                 for (x=0; x < (int) tile_image->columns; x++)
-                {
                   *q++=indexes[x];
-                  p++;
-                }
               }
               if (compression == ZipCompression)
                 status=ZLIBEncodeImage(image,number_packets,image_info->quality,

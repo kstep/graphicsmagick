@@ -264,7 +264,6 @@ static char *Ascii85Tuple(unsigned char *data)
 
 MagickExport void Ascii85Initialize(Image *image)
 {
-    return;
   image->ascii85.line_break=MaxLineExtent << 1;
   image->ascii85.offset=0;
 }
