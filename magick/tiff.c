@@ -765,10 +765,13 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
                 p--;
               }
             }
-          if (!image->matte)
-            (void) ReadPixelCache(image,RGBQuantum,scanline);
+          if (image->colorspace == CMYKColorspace)
+            (void) ReadPixelCache(image,CMYKQuantum,scanline);
           else
-            (void) ReadPixelCache(image,RGBAQuantum,scanline);
+            if (!image->matte)
+              (void) ReadPixelCache(image,RGBQuantum,scanline);
+            else
+              (void) ReadPixelCache(image,RGBAQuantum,scanline);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
