@@ -95,10 +95,6 @@ typedef struct _Ascii85Info
 
 typedef struct _BlobInfo
 {
-  off_t
-    filesize,
-    offset;
-
   size_t
     length,
     extent,
@@ -110,6 +106,10 @@ typedef struct _BlobInfo
 
   unsigned char
     *data;
+
+  off_t
+    offset,
+    filesize;
 
   unsigned long
     signature;
@@ -181,7 +181,8 @@ typedef struct _ImageAttribute
     *next;
 } ImageAttribute;
 
-typedef Quantum IndexPacket;
+typedef Quantum
+  IndexPacket;
 
 typedef struct _MontageInfo
 {
@@ -267,69 +268,41 @@ typedef struct _TimerInfo
 
 typedef struct _Image
 {
-  BlobInfo
-    blob;
-
-  FILE
-    *file;
-
   char
     filename[MaxTextExtent],
     magick[MaxTextExtent];
 
-  int
-    exempt,
-    status,
-    temporary,
-    pipet;
-
   ClassType
     storage_class;
-
-  unsigned int
-    matte;
-
-  CompressionType
-    compression;
-
-  unsigned int
-    columns,
-    rows,
-    depth;
-
-  int
-    offset;
-
-  RectangleInfo
-    tile_info;
-
-  InterlaceType
-    interlace;
-
-  unsigned int
-    scene;
-
-  char
-    *montage,
-    *directory;
-
-  PixelPacket
-    *colormap;
-
-  unsigned int
-    colors;
 
   ColorspaceType
     colorspace;
 
-  RenderingIntent
-    rendering_intent;
+  unsigned int
+    matte;
+
+  unsigned int
+    columns,
+    rows,
+    depth,
+    colors;
+
+  PixelPacket
+    *colormap;
+
+  PixelPacket
+    background_color,
+    border_color,
+    matte_color;
 
   double
     gamma;
 
   ChromaticityInfo
     chromaticity;
+
+  RenderingIntent
+    rendering_intent;
 
   ProfileInfo
     color_profile,
@@ -344,34 +317,48 @@ typedef struct _Image
   ResolutionType
     units;
 
+  char
+    *montage,
+    *directory,
+    *geometry;
+
+  int
+    offset;
+
   double
     x_resolution,
     y_resolution;
 
-  PixelPacket
-    background_color,
-    border_color,
-    matte_color;
-
-  char
-    *geometry;
-
   RectangleInfo
     page;
 
-  unsigned int
-    dispose,
-    delay,
-    iterations;
+  RectangleInfo
+    tile_info;
 
   double
+    blur,
     fuzz;
 
   FilterTypes
     filter;
 
-  double
-    blur;
+  InterlaceType
+    interlace;
+
+  CompressionType
+    compression;
+
+  ImageAttribute
+    *attributes;
+
+  struct _Image
+    *clip_mask;
+
+  unsigned int
+    scene,
+    dispose,
+    delay,
+    iterations;
 
   unsigned long
     total_colors;
@@ -388,36 +375,14 @@ typedef struct _Image
     magick_columns,
     magick_rows;
 
-  int
-    start_loop,
-    taint;
+  SemaphoreInfo
+    *semaphore;
 
   TimerInfo
     timer;
 
   ExceptionInfo
     exception;
-
-  Ascii85Info
-    ascii85;
-
-  ImageAttribute
-    *attributes;
-
-  struct _Image
-    *clip_mask;
-
-  void
-    *cache;
-
-  int
-    (*fifo)(const struct _Image *,const void *,const size_t);
-
-  SemaphoreInfo
-    *semaphore;
-
-  int
-    reference_count;
 
   void
     *client_data;
@@ -430,23 +395,46 @@ typedef struct _Image
     *list,
     *next;
 
+  /*
+    Private members.
+  */
+  int
+    start_loop,
+    taint;
+
+  void
+    *cache;
+
+  int
+    (*fifo)(const struct _Image *,const void *,const size_t);
+
+  int
+    reference_count;
+
+  Ascii85Info
+    ascii85;
+
+  int
+    exempt,
+    status,
+    temporary,
+    pipet;
+
+  FILE
+    *file;
+
+  BlobInfo
+    blob;
+
   unsigned long
     signature;
 } Image;
 
 typedef struct _ImageInfo
 {
-  BlobInfo
-    blob;
-
-  FILE
-    *file;
-
   char
     filename[MaxTextExtent],
-    magick[MaxTextExtent],
-    unique[MaxTextExtent],
-    zero[MaxTextExtent];
+    magick[MaxTextExtent];
 
   unsigned int
     temporary,
@@ -503,9 +491,6 @@ typedef struct _ImageInfo
   PreviewType
     preview_type;
 
-  char
-    *view;
-
   long
     group;
 
@@ -514,11 +499,27 @@ typedef struct _ImageInfo
     verbose,
     debug;
 
-  int
-    (*fifo)(const Image *,const void *,const size_t);
+  char
+    *view;
 
   void
     *client_data;
+
+  /*
+    Private members.
+  */
+  int
+    (*fifo)(const Image *,const void *,const size_t);
+
+  char
+    unique[MaxTextExtent],
+    zero[MaxTextExtent];
+
+  FILE
+    *file;
+
+  BlobInfo
+    blob;
 
   unsigned long
     signature;
