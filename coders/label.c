@@ -268,7 +268,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
 {
 #if defined(HasTTF)
 #if FREETYPE_MAJOR > 1
-#define NumberGrays  128
+#define NumberGrays  256
 
   typedef struct TGlyph_
   {
@@ -322,7 +322,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     length,
     y;
 
-  register char
+  register unsigned char
     *p;
 
   register int
@@ -346,6 +346,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   if (!status)
     {
       register char
+        *p,
         *q;
 
       /*
@@ -508,9 +509,9 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
           {
             *q=image_info->fill;
             if (image_info->stroke.opacity != TransparentOpacity)
-              if (*p < (NumberGrays/8))
+              if (*p < (NumberGrays-1))
                 *q=image_info->stroke;
-            q->opacity=(MaxRGB*(*p+1)+NumberGrays/2)/NumberGrays;
+            q->opacity=(MaxRGB*(*p+1))/NumberGrays;
           }
         p++;
         q++;
@@ -790,7 +791,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     for (x=0; x < (int) image->columns; x++)
     {
       *q=image_info->fill;
-      if ((image_info->stroke.opacity != TransparentOpacity) && (*p <= 1))
+      if ((image_info->stroke.opacity != TransparentOpacity) && (*p < 4))
         *q=image_info->stroke;
       if (image_info->antialias)
         q->opacity=(int) (MaxRGB*Min(*p,4))/4;
