@@ -256,16 +256,15 @@ MagickExport void CloseBlob(Image *image)
   image->blob->maximum_extent=SizeBlob(image);
   if (image->blob->data != (unsigned char *) NULL)
     {
-      if (image->blob->mapped)
-        (void) UnmapBlob(image->blob->data,image->blob->length);
-      RewindBlob(image->blob);
-      if (!image->orphan)
-        {
-          while (image->previous != (Image *) NULL)
-            image=image->previous;
-          for (image=image->next; image != (Image *) NULL; image=image->next)
-            RewindBlob(image->blob);
-        }
+      register Image
+        *p;
+
+      while (image->previous != (Image *) NULL)
+        image=image->previous;
+      image->blob->extent=image->blob->length;
+      image->blob->eof=False;
+      for (p=image->next; p != (Image *) NULL; p=p->next)
+        RewindBlob(p->blob);
       return;
     }
   if (image->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
@@ -324,6 +323,8 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
   assert(blob->signature == MagickSignature);
+  if (blob->mapped)
+    (void) UnmapBlob(blob->data,blob->length);
   LiberateMemory((void **) &blob);
 }
 
@@ -587,12 +588,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
         }
       DestroyImageInfo(clone_info);
       blob=(unsigned char *) NULL;
-      for (p=image; p != (Image *) NULL; p=p->next)
-      {
-        *length=p->blob->length;
-        blob=p->blob->data;
-        RewindBlob(p->blob);
-      }
+      *length=image->blob->extent;
+      blob=image->blob->data;
       return(blob);
     }
   /*
@@ -1460,6 +1457,7 @@ MagickExport char *ReadBlobString(Image *image,char *string)
 MagickExport void RewindBlob(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
+  blob->extent=blob->length;
   blob->eof=False;
   blob->mapped=False;
   blob->length=0;
