@@ -2,6 +2,8 @@
 
 	* utilities/Makefile.am (check) fixed typos (RM -> RMDelegate
 	and removed stray "gm"), added -random-threshold, ordered-dither.
+	* magick/effect.c: Random-threshold was not treating non-gray
+	PseudoColor images correctly.
 
 2003-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
