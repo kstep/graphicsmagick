@@ -579,8 +579,7 @@ MagickExport void GetColorTuple(const PixelPacket *color,
     {
       if (matte)
         {
-          FormatString(tuple,
-            hex ? "#%02X%02X%02X%02X" : "(%3u,%3u,%3u,%3u)",
+          FormatString(tuple,hex ? "#%02X%02X%02X%02X" : "(%3u,%3u,%3u,%3u)",
             ScaleQuantumToByte(color->red),ScaleQuantumToByte(color->green),
             ScaleQuantumToByte(color->blue),ScaleQuantumToByte(color->opacity));
           return;
@@ -592,8 +591,7 @@ MagickExport void GetColorTuple(const PixelPacket *color,
     }
   if (matte)
     {
-      FormatString(tuple,
-        hex ? "#%04X%04X%04X%04X" : "(%5u,%5u,%5u,%5u)",
+      FormatString(tuple,hex ? "#%04X%04X%04X%04X" : "(%5u,%5u,%5u,%5u)",
         color->red,color->green,color->blue,color->opacity);
       return;
     }
