@@ -1,3 +1,13 @@
+2003-06-02  William Radcliffe  <billr@corbis.com>
+
+	* utilities/gm.c: made -format work again but had to add off flag
+	to MagickCommand to maintain backward compatability with previous
+	versions of GM.
+	* magick/command.c: Added flag to tell MagickCommand whether GM is
+	expected to process metadata requests. The COM object *always* does.
+	* magick/transform.c: Added error handling, memory leak avoidance
+	and performanc enhancment.
+
 2003-06-01  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* NEWS: Added Bug Fixes item with info about the JNG encoder fix.
