@@ -1033,9 +1033,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   DrawInfo
     *clone_info;
 
-  FT_BBox
-    bounding_box;
-
   FT_BitmapGlyph
     bitmap;
 
@@ -1330,7 +1327,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
             }
           }
       }
-    FT_Glyph_Get_CBox(glyph.image,ft_glyph_bbox_pixels,&bounding_box);
     origin.x+=face->glyph->advance.x;
     if ((origin.x/64.0) > metrics->width)
       metrics->width=origin.x/64.0;
