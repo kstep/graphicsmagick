@@ -555,7 +555,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bmp_info.size=ReadBlobLSBLong(image);
     if (bmp_info.file_size != GetBlobSize(image))
       ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP header: length and file_size do not match.", image);
+        "Corrupt BMP image: length and filesize do not match", image);
     if (bmp_info.size == 12)
       {
         /*
@@ -579,7 +579,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (bmp_info.size < 40)
           ThrowReaderException(CorruptImageWarning,
-            "Corrupt BMP header: Non OS/2 BMP header size < 40",image);
+            "Corrupt BMP image: Non OS/2 BMP header size < 40",image);
         bmp_info.width=(short) ReadBlobLSBLong(image);
         bmp_info.height=(short) ReadBlobLSBLong(image);
         bmp_info.planes=ReadBlobLSBShort(image);
@@ -630,22 +630,18 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   ReadBlobLSBLong(image)/0x3ffffff;
                 bmp_info.blue_primary.z=(double)
                   ReadBlobLSBLong(image)/0x3ffffff;
-
-                sum=bmp_info.red_primary.x+bmp_info.red_primary.x
-                    +bmp_info.red_primary.z;
+                sum=bmp_info.red_primary.x+bmp_info.red_primary.x+
+                  bmp_info.red_primary.z;
                 image->chromaticity.red_primary.x/=sum;
                 image->chromaticity.red_primary.y/=sum;
-
-                sum=bmp_info.green_primary.x+bmp_info.green_primary.x
-                    +bmp_info.green_primary.z;
+                sum=bmp_info.green_primary.x+bmp_info.green_primary.x+
+                  bmp_info.green_primary.z;
                 image->chromaticity.green_primary.x/=sum;
                 image->chromaticity.green_primary.y/=sum;
-
-                sum=bmp_info.blue_primary.x+bmp_info.blue_primary.x
-                    +bmp_info.blue_primary.z;
+                sum=bmp_info.blue_primary.x+bmp_info.blue_primary.x+
+                  bmp_info.blue_primary.z;
                 image->chromaticity.blue_primary.x/=sum;
                 image->chromaticity.blue_primary.y/=sum;
-
                 /*
                   Decode 16^16 fixed point formatted gamma_scales.
                 */
@@ -654,10 +650,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 bmp_info.gamma_scale.z=(double) ReadBlobLSBLong(image)/0xffff;
                 /*
                   Compute a single gamma from the BMP 3-channel gamma.
-                  Geometric mean (cube_root(x*y*z)) might be preferable
-                  to the arithmetic mean used here.  We should also
-                  create an ICC profile describing the three gammas,
-                  if an ICC profile isn't already present.
                 */
                 image->gamma=(bmp_info.gamma_scale.x+bmp_info.gamma_scale.y+
                   bmp_info.gamma_scale.z)/3.0;
@@ -698,45 +690,42 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 profile_data=profile_data;
                 profile_size=ReadBlobLSBLong(image);
                 profile_size=profile_size;
-                ReadBlobLSBLong(image); /* Reserved byte */
+                ReadBlobLSBLong(image);  /* Reserved byte */
               }
           }
       }
     if (bmp_info.width <= 0)
       ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP header: Negative or zero width",image);
+        "Corrupt BMP image: Negative or zero width",image);
     if (bmp_info.height == 0)
       ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP header: zero height",image);
+        "Corrupt BMP image: zero height",image);
     if ((bmp_info.height < 0) && (bmp_info.compression !=0))
       ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP header: Negative height with compression not valid",image);
+        "Corrupt BMP image: Negative height with compression not valid",image);
     if (bmp_info.planes != 1)
       ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP header: Static planes value not equal 1",image);
+        "Corrupt BMP image: Static planes value not equal 1",image);
     if ((bmp_info.bits_per_pixel != 1) && (bmp_info.bits_per_pixel != 4) &&
         (bmp_info.bits_per_pixel != 8) && (bmp_info.bits_per_pixel != 16) &&
         (bmp_info.bits_per_pixel != 24) && (bmp_info.bits_per_pixel != 32))
       ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP header: Invalid bits per pixel",image);
-    if (bmp_info.number_colors > (1 << bmp_info.bits_per_pixel))
+        "Corrupt BMP image: Invalid bits per pixel",image);
+    if (bmp_info.number_colors > (1L << bmp_info.bits_per_pixel))
       ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP header: Invalid number of colors",image);
+        "Corrupt BMP image: Invalid number of colors",image);
     if (bmp_info.compression > 3)
      ThrowReaderException(CorruptImageWarning,
-      "Corrupt BMP header: Invalid Compression",image);
+       "Corrupt BMP image: Invalid Compression",image);
     if ((bmp_info.compression == 1) && (bmp_info.bits_per_pixel != 8))
       ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP header: Invalid bits per pixel for RLE8 compression",
-         image);
+        "Corrupt BMP image: Invalid bits per pixel for RLE8 compression",image);
     if ((bmp_info.compression == 2) && (bmp_info.bits_per_pixel != 4))
       ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP header: Invalid bits per pixel for RLE4 compression",
-        image);
+        "Corrupt BMP image: Invalid bits per pixel for RLE4 compression",image);
     if ((bmp_info.compression == 3) && (bmp_info.bits_per_pixel < 16))
       ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP header: Invalid bits per pixel for BITFIELDS compression",
-        image);
+        "Corrupt BMP image: Invalid bits per pixel for compression",image);
     switch (bmp_info.compression)
     {
       case BI_RGB:
@@ -745,11 +734,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case BI_BITFIELDS:
         break;
       case BI_JPEG:
-        ThrowReaderException(CorruptImageError,
-          "JPEG compression not supported",image)
+        ThrowReaderException(CorruptImageError,"JPEG compression not supported",
+          image)
       case BI_PNG:
-        ThrowReaderException(CorruptImageError,
-          "PNG compression not supported",image)
+        ThrowReaderException(CorruptImageError,"PNG compression not supported",
+          image)
       default:
         ThrowReaderException(CorruptImageError,
           "Unrecognized compression method",image)
