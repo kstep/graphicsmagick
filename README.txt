@@ -517,7 +517,7 @@ MAGICK DELEGATES
       URL's whose protocol is FTP.
 
     o ImageMagick requires an X server for display and animate to work
-      properly.  There is a free X server available for Windows and
+      properly.  There is a nearly free X server available for Windows and
       Macintosh at
 
         http://www.microimages.com/freestuf/mix/
