@@ -818,9 +818,6 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
 #endif
   if ((*p == ':') && ((p-image_info->filename) < (int) sizeof(magic)))
     {
-      MagickInfo
-        *magick_info;
-
       /*
         User specified image format.
       */
@@ -829,8 +826,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       if (LocaleCompare(magic,"GRADATION") == 0)
         (void) strcpy(magic,"GRADIENT");
       LocaleUpper(magic);
-      magick_info=(MagickInfo *) GetMagickInfo(magic,exception);
-      if ((magick_info != (MagickInfo *) NULL) && !IsMagickConflict(magic))
+      if (!IsMagickConflict(magic))
         {
           /*
             Strip off image format prefix.
