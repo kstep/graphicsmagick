@@ -596,7 +596,7 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 #EXTRA_DIST = 
 
 clean-local:
-	rm -f out.*
+	rm -f out_*
 
 check-rwblob:
 	status=0; \

@@ -48,7 +48,7 @@ rwfile_SOURCES = rwfile.c
 #EXTRA_DIST = 
 
 clean-local:
-	rm -f out.*
+	rm -f out_*
 
 CHECK_FILES = \
 	'LOGO:' \

@@ -49,15 +49,14 @@ int main ( int argc, char **argv )
 	  argv[0], infile, format );
   fflush(stdout);
 
-  sprintf( filename, "out.%s", format );
-
   /*
    * Read original image
    */
   GetImageInfo( &imageInfo );
   imageInfo.dither = 0;
   strcpy( imageInfo.filename, infile );
-
+  printf("  read \"%s\"\n", imageInfo.filename);
+  fflush(stdout);
   original = ReadImage ( &imageInfo, &exception );
   if ( original == (Image *)NULL )
     {
@@ -77,9 +76,12 @@ int main ( int argc, char **argv )
   /*
    * Save image to file
    */
+  sprintf( filename, "out_1.%s", format );
   strcpy( original->magick, format );
   strcpy( original->filename, filename );
   original->delay = 10;
+  printf("  write \"%s\"\n", original->filename);
+  fflush(stdout);
   WriteImage ( &imageInfo, original );
   imageInfo.depth=GetImageDepth(original);
   DestroyImage( original );
@@ -92,6 +94,8 @@ int main ( int argc, char **argv )
   strcpy( imageInfo.filename, filename );
   if (size != NULL)
     CloneString( &imageInfo.size, size );
+  printf("  read \"%s\"\n", imageInfo.filename);
+  fflush(stdout);
   original = ReadImage ( &imageInfo, &exception );
   if ( original == (Image *)NULL )
     {
@@ -104,9 +108,12 @@ int main ( int argc, char **argv )
   /*
    * Save image to file
    */
+  sprintf( filename, "out_2.%s", format );
   strcpy( original->magick, format );
   strcpy( original->filename, filename );
   original->delay = 10;
+  printf("  write \"%s\"\n", original->filename);
+  fflush(stdout);
   WriteImage ( &imageInfo, original );
 
   /*
@@ -116,6 +123,8 @@ int main ( int argc, char **argv )
   strcpy( imageInfo.filename, filename );
   if ( size != NULL )
     CloneString( &imageInfo.size, size );
+  printf("  read \"%s\"\n", imageInfo.filename);
+  fflush(stdout);
   final = ReadImage ( &imageInfo, &exception );
   if ( final == (Image *)NULL )
     {
