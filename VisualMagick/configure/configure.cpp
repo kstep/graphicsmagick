@@ -777,6 +777,8 @@ void CConfigureApp::process_utility(ofstream &dsw,
       if (!standaloneMode)
       {
         add_project_dependency(dsw, "CORE_magick");
+        // FIXME: Only CORE_magick, UTIL_animate, UTIL_display, &
+        // UTIL_import should link with X11
         if (useX11Stubs)
           add_project_dependency(dsw, "CORE_xlib");
         if (extn.compare("cpp") == 0)
@@ -916,11 +918,11 @@ void CConfigureApp::process_library(ofstream &dsw,
       if (useX11Stubs)
       add_project_dependency(dsw, "CORE_xlib");
       //add_project_dependency(dsw, "CORE_tiff");
-      add_project_dependency(dsw, "CORE_jpeg");
-      add_project_dependency(dsw, "CORE_zlib");
+      //add_project_dependency(dsw, "CORE_jpeg");
+      //add_project_dependency(dsw, "CORE_zlib");
       add_project_dependency(dsw, "CORE_lcms");
       add_project_dependency(dsw, "CORE_ttf");
-      add_project_dependency(dsw, "CORE_libxml");
+      //add_project_dependency(dsw, "CORE_libxml");
     }
     if (name.compare("Magick++") == 0)
     {
@@ -2733,6 +2735,8 @@ BOOL CConfigureApp::InitInstance()
     // Write all library project files:
     if (projectType == MULTITHREADEDDLL)
     {
+      // FIXME: Only CORE_magick, UTIL_animate, UTIL_display, &
+      // UTIL_import should link with X11
       if (!useX11Stubs)
       {
         libs_list_shared.push_back("X11.lib");
