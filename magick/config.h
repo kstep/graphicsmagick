@@ -17,7 +17,7 @@
 #define HAVE_VPRINTF 1
 
 /* Define if you have the wait3 system call.  */
-/* #undef HAVE_WAIT3 */
+#define HAVE_WAIT3 1
 
 /* Define to `int' if <sys/types.h> doesn't define.  */
 /* #undef mode_t */
@@ -104,7 +104,7 @@
 #define RGBColorDatabase "/usr/openwin/lib/X11/rgb.txt"
 
 /* Define if you have the bzip2 library */
-#define HasBZLIB 1
+/* #undef HasBZLIB */
 
 /* Define if you have Display Postscript */
 #define HasDPS 1

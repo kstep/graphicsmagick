@@ -36,11 +36,11 @@ if test "${CDPATH+set}" = set; then CDPATH=; export CDPATH; fi
 ### BEGIN LIBTOOL CONFIG
 # Libtool was configured as follows, on host magick:
 #
-# CC="gcc" CFLAGS="-g -Wall" CPPFLAGS="" \
-# LD="/usr/ccs/bin/ld" LDFLAGS="" LIBS="" \
+# CC="cc" CFLAGS="-g" CPPFLAGS="" \
+# LD="/usr/ucb/ld" LDFLAGS="" LIBS="" \
 # NM="/usr/ccs/bin/nm -p" RANLIB="ranlib" LN_S="ln -s" \
 # DLLTOOL="" OBJDUMP="" AS="" \
-#   ./ltconfig --cache-file=./config.cache --disable-shared --with-gcc --enable-win32-dll --no-verify ./ltmain.sh sparc-sun-solaris2.7
+#   ./ltconfig --cache-file=./config.cache --enable-win32-dll --no-verify ./ltmain.sh sparc-sun-solaris2.7
 #
 # Compiler and other test output produced by ltconfig, useful for
 # debugging ltconfig, is in ./config.log if it exists.
@@ -52,7 +52,7 @@ LTCONFIG_VERSION="1.3.3"
 SHELL="/bin/sh"
 
 # Whether or not to build shared libraries.
-build_libtool_libs=no
+build_libtool_libs=yes
 
 # Whether or not to build static libraries.
 build_old_libs=yes
@@ -71,10 +71,10 @@ echo="/usr/ucb/echo"
 AR="ar"
 
 # The default C compiler.
-CC="gcc"
+CC="cc"
 
 # The linker used to build libraries.
-LD="/usr/ccs/bin/ld"
+LD="/usr/ucb/ld"
 
 # Whether we need hard or soft links.
 LN_S="ln -s"
@@ -111,13 +111,13 @@ libext="a"
 exeext=""
 
 # Additional compiler flags for building library objects.
-pic_flag=" -fPIC"
+pic_flag=" -KPIC"
 
 # Does compiler simultaneously support -c and -o options?
 compiler_c_o="yes"
 
 # Can we write directly to a .lo ?
-compiler_o_lo="yes"
+compiler_o_lo="no"
 
 # Must we lock files when doing compilation ?
 need_locks="no"
@@ -138,10 +138,10 @@ dlopen_self=unknown
 dlopen_self_static=unknown
 
 # Compiler flag to prevent dynamic linking.
-link_static_flag="-static"
+link_static_flag="-Bstatic"
 
 # Compiler flag to turn off builtin functions.
-no_builtin_flag=" -fno-builtin -fno-rtti -fno-exceptions"
+no_builtin_flag=""
 
 # Compiler flag to allow reflexive dlopens.
 export_dynamic_flag_spec=""
@@ -182,7 +182,7 @@ postinstall_cmds="chmod +x \$lib"
 postuninstall_cmds=""
 
 # Method to check whether dependent libraries are shared objects.
-deplibs_check_method="file_magic ELF [0-9][0-9]-bit [LM]SB dynamic lib"
+deplibs_check_method="pass_all"
 
 # Command to use when deplibs_check_method == file_magic.
 file_magic_cmd="/usr/bin/file"

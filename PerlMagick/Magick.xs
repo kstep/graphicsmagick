@@ -3748,9 +3748,9 @@ Mogrify(ref,...)
                     rectangle_info.height=rectangle_info.width;
                 }
               if (attribute_flag[1])
-                rectangle_info.height=argument_list[1].int_reference;
+                rectangle_info.width=argument_list[1].int_reference;
               if (attribute_flag[2])
-                rectangle_info.width=argument_list[2].int_reference;
+                rectangle_info.height=argument_list[2].int_reference;
               if (attribute_flag[3])
                 QueryColorDatabase(argument_list[3].string_reference,
                   &border_color);
