@@ -150,7 +150,10 @@ static void Usage()
       (char *) NULL
     };
 
-  (void) printf("Version: %.1024s\n",MagickVersion);
+  unsigned int
+    version;
+
+  (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
   (void) printf("Usage: %.1024s [options ...] image composite [mask] combined\n",
     SetClientName((char *) NULL));

@@ -232,8 +232,10 @@ static void Usage()
       (char *) NULL
     };
 
-  (void) printf("Version: %.1024s\n",MagickVersion);
-  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
+  unsigned int
+    version;
+
+  (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf(
     "Usage: %.1024s [-options ...] file [ [-options ...] file ...]\n",
     SetClientName((char *) NULL));

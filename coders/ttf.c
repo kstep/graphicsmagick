@@ -133,7 +133,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   y+=20;
   for (i=12; i <= 72; i+=6)
   {
-    y+=i+6;
+    y+=i+12;
     (void) fprintf(file,"pointsize 18\n");
     (void) fprintf(file,"text +10+%d '%d'\n",y,i);
     (void) fprintf(file,"pointsize %d",i);

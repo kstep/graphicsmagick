@@ -501,10 +501,16 @@ MagickExport char **ListModules(void)
 */
 void ModuleToTag(const char *filename,const char *format,char *module)
 {
+  char
+    *module_name;
+
   assert(format != (char *) NULL);
   assert(module != (char *) NULL);
   assert(filename != (char *) NULL);
-  FormatString(module,format,filename);
+  module_name=AllocateString(filename);
+  LocaleUpper(module_name);
+  FormatString(module,format,module_name);
+  LiberateMemory((void **) &module_name);
 }
 
 /*

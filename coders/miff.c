@@ -140,7 +140,8 @@ static unsigned int IsMIFF(const unsigned char *magick,
 %
 %
 */
-static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadMIFFImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
 #if defined(HasBZLIB)
   bz_stream

@@ -401,6 +401,39 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t M a g i c k V e r s i o n                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetMagickVersion returns the ImageMagick API version as a string
+%  and as a number.
+%
+%  The format of the GetMagickVersion method is:
+%
+%      char *GetMagickVersion(unsigned int *version)
+%
+%  A description of each parameter follows:
+%
+%    o string: Method GetMagickVersion returns the ImageMagick version
+%      string.
+%
+%    o version: The ImageMagick version is returned as a number.
+%
+*/
+MagickExport char *GetMagickVersion(unsigned int *version)
+{
+  assert(version != (unsigned int *) NULL);
+  *version=MagickLibVersion;
+  return(MagickVersion);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  L i s t M a g i c k I n f o                                                %
 %                                                                             %
 %                                                                             %

@@ -713,6 +713,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     *font_family,
     *font_style,
     *font_weight,
+    *id,
     *p,
     **tokens;
 
@@ -746,6 +747,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
   if (LocaleCompare((char *) name,"svg") != 0)
     (void) fprintf(svg_info->file,"push graphic-context\n");
   color=AllocateString("none");
+  id=AllocateString("*");
   font_family=(char *) NULL;
   font_style=(char *) NULL;
   font_weight=(char *) NULL;
@@ -778,6 +780,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"color") == 0)
             {
               CloneString(&color,value);
+              break;
+            }
+          if (LocaleCompare(keyword,"clip-path") == 0)
+            {
+              (void) fprintf(svg_info->file,"clip-path %s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"cx") == 0)
@@ -869,6 +876,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"href") == 0)
             {
               CloneString(&svg_info->url,value);
+              break;
+            }
+          break;
+        }
+        case 'I':
+        case 'i':
+        {
+          if (LocaleCompare(keyword,"id") == 0)
+            {
+              CloneString(&id,value);
               break;
             }
           break;
@@ -1019,6 +1036,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   case 'C':
                   case 'c':
                   {
+                     if (LocaleCompare(keyword,"clip-path") == 0)
+                       {
+                         (void) fprintf(svg_info->file,"clip-path %s\n",value);
+                         break;
+                       }
                     if (LocaleCompare(keyword,"color") == 0)
                       {
                         CloneString(&color,value);
@@ -1525,6 +1547,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
           svg_info->height=page.height;
         }
     }
+  if (LocaleCompare((char *) name,"clipPath") == 0)
+    (void) fprintf(svg_info->file,"push clip-path-%s\n",id);
+  LiberateMemory((void **) &id);
   if (color != (char *) NULL)
     LiberateMemory((void **) &color);
 }
@@ -1686,6 +1711,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
     *svg_info->text='\0';
   if (LocaleCompare((char *) name,"svg") != 0)
     (void) fprintf(svg_info->file,"pop graphic-context\n");
+  if (LocaleCompare((char *) name,"clipPath") == 0)
+    (void) fprintf(svg_info->file,"pop clip-path\n");
   svg_info->n--;
 }
 

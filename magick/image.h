@@ -629,7 +629,8 @@ extern MagickExport const char
 */
 extern MagickExport char 
   *GetImageMagick(const unsigned char *,const unsigned int),
-  *GetMagickConfigurePath(const char *);
+  *GetMagickConfigurePath(const char *),
+  *GetMagickVersion(unsigned int *);
 
 extern MagickExport Image
   *AddNoiseImage(Image *,const NoiseType,ExceptionInfo *),

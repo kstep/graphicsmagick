@@ -1052,6 +1052,17 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       case 'c':
       case 'C':
       {
+        if (LocaleCompare("clip-path",keyword) == 0)
+          {
+            if ((LocaleNCompare(q,"url(",4) == 0))
+              for (x=0; (*(q-1) != ')') && (*q != '\0'); x++)
+                value[x]=(*q++);
+            else
+              for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+                value[x]=(*q++);
+            value[x]='\0';
+            break;
+          }
         if (LocaleCompare("circle",keyword) == 0)
           {
             primitive_type=CirclePrimitive;
@@ -1255,11 +1266,16 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            DestroyDrawInfo(graphic_context[n]);
-            n--;
-            if (n < 0)
-              ThrowBinaryException(CorruptImageWarning,
-                "unbalanced graphic context push/pop",value);
+            if (LocaleNCompare("clip-path-",value,10) == 0)
+              break;
+            if (LocaleCompare("graphic-context",value) == 0)
+              {
+                DestroyDrawInfo(graphic_context[n]);
+                n--;
+                if (n < 0)
+                  ThrowBinaryException(CorruptImageWarning,
+                    "unbalanced graphic context push/pop",value);
+              }
             break;
           }
         if (LocaleCompare("push",keyword) == 0)
@@ -1267,14 +1283,19 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            n++;
-            ReacquireMemory((void **) &graphic_context,
-              (n+1)*sizeof(DrawInfo *));
-            if (graphic_context == (DrawInfo **) NULL)
-              MagickError(ResourceLimitWarning,"Unable to draw image",
-                "Memory allocation failed");
-            graphic_context[n]=
-              CloneDrawInfo((ImageInfo *) NULL,graphic_context[n-1]);
+            if (LocaleCompare("clip-path",value) == 0)
+              break;
+            if (LocaleCompare("graphic-context",value) == 0)
+              {
+                n++;
+                ReacquireMemory((void **) &graphic_context,
+                  (n+1)*sizeof(DrawInfo *));
+                if (graphic_context == (DrawInfo **) NULL)
+                  MagickError(ResourceLimitWarning,"Unable to draw image",
+                    "Memory allocation failed");
+                graphic_context[n]=
+                  CloneDrawInfo((ImageInfo *) NULL,graphic_context[n-1]);
+              }
             break;
           }
         status=False;

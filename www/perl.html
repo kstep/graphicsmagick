@@ -1997,11 +1997,23 @@ first image in a multi-frame image file is returned.
 <p>To have full control over text positioning you will need font metric
 information.  Use
 
-<pre>&nbsp;&nbsp;&nbsp; ($x1, $y1, $x2, $y2, $size) = split(', ', $image->QueryFontMetrics(<i>parameters</i>);</pre>
+<pre>&nbsp;&nbsp;&nbsp; ($x_ppem, $y_ppem, $ascender, $descender, $width, $height, $max_advance) = split(', ', $image->QueryFontMetrics(<i>parameters</i>);</pre>
 
 Where <i>parameters</i> is any parameter of the <a href="#mani">Annotate</a>
-method.  The return values represent the bounding box and height of the text
-string relative to the specified font, pointsize, and affine transformations.
+method.  The return values are
+<ul>
+<li>character width, expressed in integer pixels.<li>
+<li>character height, expressed in integer pixels.</li>
+<li>ascender, expressed in 26.6 fixed point pixels.</li>
+<li>descender, expressed in 26.6 fixed point pixels.</li>
+<li>text width, expressed in 26.6 fixed point pixels.</li>
+<li>text height, expressed in 26.6 fixed point pixels.</li>
+<li>maximum horizontal advance, expressed in 26.6 fixed point pixels.</li>
+<li></li>
+<li></li>
+<li></li>
+</ul>
+
 
 <p>For convenience, method <tt>QueryColor</tt> accepts one or
 more color names or hex value and returns their respective red, green,

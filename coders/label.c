@@ -93,17 +93,11 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   AnnotateInfo
     *annotate_info;
 
-  double
-    font_height;
+  FontMetrics
+    metrics;
 
   Image
     *image;
-
-  PointInfo
-    resolution;
-
-  SegmentInfo
-    bounds;
 
   unsigned int
     status;
@@ -113,27 +107,13 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   */
   image=AllocateImage(image_info);
   annotate_info=CloneAnnotateInfo(image_info,(AnnotateInfo *) NULL);
-  annotate_info->gravity=CenterGravity;
+  annotate_info->gravity=WestGravity;
   annotate_info->text=AllocateString(image_info->filename);
-  status=GetFontMetrics(image,annotate_info,&bounds);
+  status=GetFontMetrics(image,annotate_info,&metrics);
   if (status == False)
     ThrowReaderException(DelegateWarning,"Unable to get font metrics",image);
-  resolution.x=72.0;
-  resolution.y=72.0;
-  if (annotate_info->density != (char *) NULL)
-    {
-      int
-        count;
-
-      count=sscanf(annotate_info->density,"%lfx%lf",&resolution.x,
-        &resolution.y);
-      if (count != 2)
-        resolution.y=resolution.x;
-    }
-  font_height=(unsigned int) ceil((resolution.y/72.0)*
-    ExpandAffine(&annotate_info->affine)*annotate_info->pointsize-0.5);
-  image->columns=ceil(bounds.x2-bounds.x1-0.5);
-  image->rows=ceil(Max(bounds.y2-bounds.y1,font_height)-0.5);
+  image->columns=metrics.width;
+  image->rows=metrics.height;
   SetImage(image,TransparentOpacity);
   (void) AnnotateImage(image,annotate_info);
   DestroyAnnotateInfo(annotate_info);

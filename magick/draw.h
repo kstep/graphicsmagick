@@ -42,6 +42,9 @@ typedef struct _AnnotateInfo
   char
     *server_name;
 
+  Image
+    *clip_mask;
+
   unsigned long
     signature;
 } AnnotateInfo;
@@ -110,9 +113,27 @@ typedef struct _DrawInfo
   char
     *server_name;
 
+  Image
+    *clip_mask;
+
   unsigned long
     signature;
 } DrawInfo;
+
+typedef struct _FontMetrics
+{
+  PointInfo
+    ppem;
+
+  int
+    ascent,
+    descent;
+
+  unsigned int
+    width,
+    height,
+    max_advance;
+} FontMetrics;
 
 typedef struct _PrimitiveInfo
 {
@@ -146,7 +167,7 @@ extern MagickExport unsigned int
   ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const int x,
     const int y,const PaintMethod),
   DrawImage(Image *,const DrawInfo *),
-  GetFontMetrics(Image *,const AnnotateInfo *,SegmentInfo *),
+  GetFontMetrics(Image *,const AnnotateInfo *,FontMetrics *),
   MatteFloodfillImage(Image *,const PixelPacket,const unsigned int,const int x,
     const int y,const PaintMethod);
 

@@ -21,6 +21,9 @@ Changes in ImageMagick Version 5.2.6</font></font></font></b></td>
 </tr>
 </table>
 <dl>
+<dd>You can now specify Truetype fonts directly.  No <tt>@</tt> prefix
+is required (e.g. convert -font Arial.ttf ...)</dd>
+<p>
 <dd><a href=http://www.digapp.com>Digital Applications</a> contributed line
 cap and dash pattern rendering code.</dd>
 <p>
@@ -101,8 +104,8 @@ deprecated.</dd>
 <dd>A <i>cache</i> file format is now supported which is a snapshot of an
 image's pixel cache as it appears on disk. Images stored in this format
 (large) may be loaded <i>instantly</i> by ImageMagick since decoding is not
-required. In order to write this format , the argument <tt>-cache 0</tt> must
-be supplied (e.g. <tt>convert -cache 0 file.jpg file.cache</tt>).</dd>
+required. In order to write this format, just convert your image to the
+cache format (e.g. <tt>convert image.jpg cache:image.miff</tt>).</dd>
 <p>
 
 <dd>The build environment for Windows NT is entirely re-done. There is now
