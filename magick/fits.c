@@ -361,8 +361,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,ExceptionInfo *exception
     */
     status=ReadBlob(image,packet_size*image->columns*image->rows,fits_pixels);
     if (status == False)
-      ThrowImageException(CorruptImageWarning,"Insufficient image data in file",
-        image);
+      ThrowReaderException(CorruptImageWarning,
+        "Insufficient image data in file",image);
     if ((fits_header.min_data == 0.0) && (fits_header.max_data == 0.0))
       {
         /*
