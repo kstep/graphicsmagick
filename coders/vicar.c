@@ -400,7 +400,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   char
     buffer[MaxTextExtent],
     header[MaxTextExtent],
-    label[16];
+    label[MaxTextExtent];
 
   int
     label_size,
