@@ -610,73 +610,72 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
   */
   number_delegates=0;
   file=fopen(filename,"r");
-  if (file == (FILE *) NULL)
-    return(False);
-  while (fgets(text,MaxTextExtent,file) != (char *) NULL)
-  {
-    if (*text == '#')
-      continue;
-    Strip(text);
-    if (*text == '\0')
-      continue;
-    *delegate_info.decode_tag='\0';
-    *delegate_info.encode_tag='\0';
-    for (p=text; (*p != '<') && (*p != '=') && (*p != '\0'); p++);
-    (void) strncpy(delegate_info.decode_tag,text,p-text);
-    delegate_info.decode_tag[p-text]='\0';
-    Strip(delegate_info.decode_tag);
-    delegate_info.direction=0;
-    if (*p == '<')
-      {
-        delegate_info.direction--;
-        p++;
-      }
-    if (*p == '=')
-      p++;
-    if (*p == '>')
-      {
-        delegate_info.direction++;
-        p++;
-      }
-    while (isspace((int) *p))
-      p++;
-    if (*p != '0')
-      (void) strcpy(delegate_info.encode_tag,p);
-    Strip(delegate_info.encode_tag);
-    delegate_info.commands=(char *) NULL;
+  if (file != (FILE *) NULL)
     while (fgets(text,MaxTextExtent,file) != (char *) NULL)
     {
-      if (*text != '\t')
-        break;
+      if (*text == '#')
+        continue;
       Strip(text);
-      if (delegate_info.commands != (char *) NULL)
-        delegate_info.commands=(char *) ReallocateMemory(delegate_info.commands,
-          (strlen(delegate_info.commands)+strlen(text)+2));
-      else
+      if (*text == '\0')
+        continue;
+      *delegate_info.decode_tag='\0';
+      *delegate_info.encode_tag='\0';
+      for (p=text; (*p != '<') && (*p != '=') && (*p != '\0'); p++);
+      (void) strncpy(delegate_info.decode_tag,text,p-text);
+      delegate_info.decode_tag[p-text]='\0';
+      Strip(delegate_info.decode_tag);
+      delegate_info.direction=0;
+      if (*p == '<')
         {
-          delegate_info.commands=(char *) AllocateMemory(strlen(text)+2);
-          if (delegate_info.commands != (char *) NULL)
-            *delegate_info.commands='\0';
+          delegate_info.direction--;
+          p++;
         }
+      if (*p == '=')
+        p++;
+      if (*p == '>')
+        {
+          delegate_info.direction++;
+          p++;
+        }
+      while (isspace((int) *p))
+        p++;
+      if (*p != '0')
+        (void) strcpy(delegate_info.encode_tag,p);
+      Strip(delegate_info.encode_tag);
+      delegate_info.commands=(char *) NULL;
+      while (fgets(text,MaxTextExtent,file) != (char *) NULL)
+      {
+        if (*text != '\t')
+          break;
+        Strip(text);
+        if (delegate_info.commands != (char *) NULL)
+          delegate_info.commands=(char *) ReallocateMemory(delegate_info.commands,
+            (strlen(delegate_info.commands)+strlen(text)+2));
+        else
+          {
+            delegate_info.commands=(char *) AllocateMemory(strlen(text)+2);
+            if (delegate_info.commands != (char *) NULL)
+              *delegate_info.commands='\0';
+          }
+        if (delegate_info.commands == (char *) NULL)
+          break;
+        (void) strcat(delegate_info.commands,text);
+        if (delegate_info.commands[strlen(delegate_info.commands)-1] != '\\')
+          (void) strcat(delegate_info.commands,"\n");
+        else
+          delegate_info.commands[strlen(delegate_info.commands)-1]='\0';
+      }
       if (delegate_info.commands == (char *) NULL)
-        break;
-      (void) strcat(delegate_info.commands,text);
-      if (delegate_info.commands[strlen(delegate_info.commands)-1] != '\\')
-        (void) strcat(delegate_info.commands,"\n");
-      else
-        delegate_info.commands[strlen(delegate_info.commands)-1]='\0';
+        MagickWarning(DelegateWarning,"no command for this delegate",
+          delegate_info.decode_tag);
+      /*
+        Add delegate to the delegate list.
+      */
+      Strip(delegate_info.commands);
+      (void) SetDelegateInfo(&delegate_info);
+      number_delegates++;
+      FreeMemory((void **) &delegate_info.commands);
     }
-    if (delegate_info.commands == (char *) NULL)
-      MagickWarning(DelegateWarning,"no command for this delegate",
-        delegate_info.decode_tag);
-    /*
-      Add delegate to the delegate list.
-    */
-    Strip(delegate_info.commands);
-    (void) SetDelegateInfo(&delegate_info);
-    number_delegates++;
-    FreeMemory((void **) &delegate_info.commands);
-  }
 #if defined(HasPTHREADS)
   pthread_mutex_unlock(&delegate_mutex);
 #endif
