@@ -157,6 +157,7 @@
   <color name="goldenrod2" red="238" green="180" blue="34" compliance="X11" />
   <color name="goldenrod3" red="205" green="155" blue="29" compliance="X11" />
   <color name="goldenrod4" red="139" green="105" blue="20" compliance="X11" />
+  <color name="gray" red="126" green="126" blue="126" compliance="SVG" />
   <color name="gray" red="190" green="190" blue="190" compliance="X11" />
   <color name="gray0" red="0" green="0" blue="0" compliance="X11" />
   <color name="gray1" red="3" green="3" blue="3" compliance="X11" />

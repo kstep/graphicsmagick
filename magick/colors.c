@@ -1382,7 +1382,7 @@ MagickExport unsigned int QueryColorname(Image *image,const PixelPacket *color,
         (void) strcpy(name,p->name);
       }
   }
-  if (LocaleCompare(name,"gray100") == 0)
+  if (LocaleCompare(name,"grey100") == 0)
     (void) strcpy(name,"white");
   if (min_distance == 0.0)
     return(0.0);
