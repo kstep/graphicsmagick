@@ -12,19 +12,19 @@ extern "C" {
 #define MagickLibVersion  0x0549
 #define MagickLibVersionText  "5.4.9"
 #define MagickLibVersionNumber  5,4,9,0
-#if QuantumDepth == 8
-#define MagickVersion \
-  "ImageMagick 5.4.9 09/01/02 Q:8 http://www.imagemagick.org"
-#elif QuantumDepth == 16
-#define MagickVersion \
-  "ImageMagick 5.4.9 09/01/02 Q:16 http://www.imagemagick.org"
-#elif QuantumDepth == 32
-#define MagickVersion \
-  "ImageMagick 5.4.9 09/01/02 Q:32 http://www.imagemagick.org"
+#if (QuantumDepth == 8)
+#define MagickQuantumDepth  "Q8"
+#elif (QuantumDepth == 16)
+#define MagickQuantumDepth  "Q16"
+#elif (QuantumDepth == 32)
+#define MagickQuantumDepth  "Q32"
 #else
-#define MagickVersion \
-  "ImageMagick 5.4.9 09/01/02 http://www.imagemagick.org"
+#define MagickQuantumDepth  "Q?"
 #endif
+#define MagickReleaseDate  "09/01/02"
+#define MagickVersion "ImageMagick " MagickLibVersionText " " \
+  MagickReleaseDate " " MagickQuantumDepth " " MagickWebSite
+#define MagickWebSite  "http://www.imagemagick.org"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
