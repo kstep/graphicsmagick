@@ -2954,6 +2954,91 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         break;
       }
+      case 0x0008:
+      {
+        switch (element)
+        {
+          case 0x0020:
+          {
+            (void) SetImageAttribute(image,"StudyDate",(char *) data);
+            break;
+          }
+          default:
+            break;
+        }
+        break;
+      }
+      case 0x0010:
+      {
+        switch (element)
+        {
+          case 0x0010:
+          {
+            (void) SetImageAttribute(image,"PatientName",(char *) data);
+            break;
+          }
+          default:
+            break;
+        }
+        break;
+      }
+      case 0x0018:
+      {
+        switch (element)
+        {
+          case 0x1060:
+          {
+            (void) SetImageAttribute(image,"TriggerTime",(char *) data);
+            break;
+          }
+          default:
+            break;
+        }
+        break;
+      }
+      case 0x0019:
+      {
+        switch (element)
+        {
+          case 0x101e:
+          {
+            (void) SetImageAttribute(image,"FieldOfView",(char *) data);
+            break;
+          }
+          default:
+            break;
+        }
+        break;
+      }
+      case 0x0020:
+      {
+        switch (element)
+        {
+          case 0x0011:
+          {
+            (void) SetImageAttribute(image,"SeriesNumber",(char *) data);
+            break;
+          }
+          case 0x0032:
+          {
+            (void) SetImageAttribute(image,"ImagePosition",(char *) data);
+            break;
+          }
+          case 0x0037:
+          {
+            (void) SetImageAttribute(image,"ImageOrientation",(char *) data);
+            break;
+          }
+          case 0x1041:
+          {
+            (void) SetImageAttribute(image,"SliceLocation",(char *) data);
+            break;
+          }
+          default:
+            break;
+        }
+        break;
+      }
       case 0x0028:
       {
         switch (element)

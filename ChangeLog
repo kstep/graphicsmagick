@@ -1,6 +1,7 @@
 2002-03-07  Cristy  <cristy@mystic.es.dupont.com>
   * Bob Friesenhahn's execution profile results in a number of speed-ups
     with a faster LocaleCompare() algorithm and self-adjusting lists.
+  * Recognize additional DCM metadata (suggested by Barry Branham).
 
 2002-03-06  Cristy  <cristy@mystic.es.dupont.com>
   * Inlined AlphaComposite() and ValidateColormapIndex().
