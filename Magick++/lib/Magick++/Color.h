@@ -90,10 +90,16 @@ namespace Magick
     operator PixelPacket() const;
 
     // Scale a value expressed as a double (0-1) to Quantum range (0-MaxRGB)
-    static Quantum scaleDoubleToQuantum( const double double_ );
+    static Quantum scaleDoubleToQuantum( const double double_ )
+      {
+        return (static_cast<Magick::Quantum>(double_*MaxRGB));
+      }
 
     // Scale a value expressed as a Quantum (0-MaxRGB) to double range (0-1)
-    static double scaleQuantumToDouble( const Quantum quantum_ );
+    static double scaleQuantumToDouble( const Quantum quantum_ )
+      {
+        return (static_cast<double>(quantum_)/MaxRGB);
+      }
 
   protected:
 
@@ -293,18 +299,6 @@ namespace Magick
 //
 // Color
 //
-
-// Scale a value expressed as a double (0-1) to Quantum range (0-MaxRGB)
-inline Magick::Quantum Magick::Color::scaleDoubleToQuantum( const double double_ )
-{
-  return (static_cast<Magick::Quantum>(double_*MaxRGB));
-}
-
-// Scale a value expressed as a Quantum (0-MaxRGB) to double range (0-1)
-inline double Magick::Color::scaleQuantumToDouble( const Magick::Quantum quantum_ )
-{
-  return (static_cast<double>(quantum_/MaxRGB));
-}
 
 // Common initializer for PixelPacket representation
 // Initialized to state that ImageMagick considers to be
