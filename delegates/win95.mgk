@@ -81,8 +81,11 @@
 bmp<=launch
 	c:\Program Files\Accessories\mspaint %i
 
+bmp<=win
+	c:\Program Files\Accessories\mspaint %i
+
 browse=>
-	start http://www.wizards.dupont.com/cristy/ImageMagick.html &
+	start http://www.wizards.dupont.com/magick/ImageMagick.html &
 
 bzip=>
 	|bzip2 -cd %i
@@ -163,9 +166,6 @@ pdf<=>ps
 
 pgp=>
 	pgpv -fq %i
-
-pnm<=win
-	mspaint %i
 
 pov=>
 	povray +i%i +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n

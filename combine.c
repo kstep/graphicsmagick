@@ -112,10 +112,10 @@
 */
 static void Usage(const char *client_name)
 {
-  char
+  const char
     **p;
 
-  static char
+  static const char
     *options[]=
     {
       "-blend value        blend the two images a given percent",

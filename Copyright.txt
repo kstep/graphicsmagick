@@ -26,10 +26,10 @@ written authorization from the E. I. du Pont de Nemours and Company.
 
 ImageMagick is available as
 
-  ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.1.4.tar.gz
+  ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.1.5.tar.gz
 
 The official ImageMagick WWW page is
 
-  http://www.wizards.dupont.com/cristy/ImageMagick.html
+  http://www.wizards.dupont.com/magick/ImageMagick.html
 
-The author is cristy@mystic.es.dupont.com.
+The author is magick@wizards.dupont.com.

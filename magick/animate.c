@@ -827,7 +827,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
 #define MaxWindows  8
 #define MagickTitle  "Commands"
 
-  static char
+  static const char
     *CommandMenu[]=
     {
       "Animate",
@@ -868,7 +868,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     };
 
 
-  static char
+  static const char
     **Menus[MagickMenus]=
     {
       AnimateMenu,
@@ -877,7 +877,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
       HelpMenu
     };
 
-  static CommandType
+  static const CommandType
     CommandMenus[]=
     {
       NullCommand,
@@ -912,7 +912,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
       VersionCommand
     };
 
-  static CommandType
+  static const CommandType
     *Commands[MagickMenus]=
     {
       CommandTypes,

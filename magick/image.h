@@ -34,7 +34,7 @@
 #define RadiansToDegrees(x) ((x)*180/M_PI)
 #define ReadQuantum(quantum,p)  \
 {  \
-  if (image->depth == 8) \
+  if (image->depth <= 8) \
     quantum=UpScale(*p++); \
   else \
     { \
@@ -45,7 +45,7 @@
 }
 #define ReadQuantumFile(quantum)  \
 {  \
-  if (image->depth == 8) \
+  if (image->depth <= 8) \
     quantum=UpScale(fgetc(image->file)); \
   else \
     quantum=MSBFirstReadShort(image->file) >> (image->depth-QuantumDepth); \
@@ -55,7 +55,7 @@
 #define UncompressImage  UncondenseImage
 #define WriteQuantum(quantum,q)  \
 {  \
-  if (image->depth == 8) \
+  if (image->depth <= 8) \
     *q++=DownScale(quantum); \
   else \
     { \
@@ -68,7 +68,7 @@
 }
 #define WriteQuantumFile(quantum)  \
 {  \
-  if (image->depth == 8) \
+  if (image->depth <= 8) \
     (void) fputc(DownScale(quantum),image->file); \
   else \
     if ((QuantumDepth-image->depth) > 0) \
@@ -397,6 +397,7 @@ typedef struct _ImageInfo
     compression;
 
   unsigned int
+    depth,
     dither;
 
   InterlaceType
@@ -536,14 +537,14 @@ typedef struct _ChromaticityInfo
     white_point;
 } ChromaticityInfo;
 
-typedef struct _ColorProfileInfo
+typedef struct _ProfileInfo
 {
   unsigned int
     length;
 
   unsigned char
     *info;
-} ColorProfileInfo;
+} ProfileInfo;
 
 typedef struct _Image
 {
@@ -623,8 +624,9 @@ typedef struct _Image
   ChromaticityInfo
     chromaticity;
 
-  ColorProfileInfo
-    color_profile;
+  ProfileInfo
+    color_profile,
+    iptc_profile;
 
   ResolutionType
     units;
@@ -829,6 +831,7 @@ extern Export unsigned int
   WriteHISTOGRAMImage(const ImageInfo *image_info, Image *image),
   WriteHTMLImage(const ImageInfo *image_info,Image *image),
   WriteICCImage(const ImageInfo *image_info,Image *image),
+  WriteIPTCImage(const ImageInfo *image_info,Image *image),
   WriteImage(ImageInfo *,Image *),
   WriteJBIGImage(const ImageInfo *image_info,Image *image),
   WriteJPEGImage(const ImageInfo *image_info,Image *image),

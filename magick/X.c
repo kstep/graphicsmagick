@@ -452,7 +452,7 @@ static char **FontToList(char *font)
   */
   fonts=1;
   for (p=font; *p != '\0'; p++)
-    if (*p == ':')
+    if ((*p == ':') || (*p == ';') || (*p == ','))
       fonts++;
   fontlist=(char **) AllocateMemory((fonts+1)*sizeof(char *));
   if (fontlist == (char **) NULL)
@@ -465,7 +465,7 @@ static char **FontToList(char *font)
   for (i=0; i < fonts; i++)
   {
     for (q=p; *q != '\0'; q++)
-      if (*q == ':')
+      if ((*q == ':') || (*q == ';') || (*q == ','))
         break;
     fontlist[i]=(char *) AllocateMemory((q-p+1)*sizeof(char));
     if (fontlist[i] == (char *) NULL)
@@ -485,7 +485,7 @@ static char **FontToList(char *font)
 Export XFontStruct *XBestFont(Display *display,
   const XResourceInfo *resource_info,const unsigned int text_font)
 {
-  static char
+  static const char
     *Fonts[]=
     {
       "-*-helvetica-medium-r-*-*-12-*-*-*-*-*-iso8859-*",
@@ -506,7 +506,9 @@ Export XFontStruct *XBestFont(Display *display,
     };
 
   char
-    *font_name,
+    *font_name;
+
+  register const char
     **p;
 
   XFontStruct
@@ -989,7 +991,7 @@ Export XVisualInfo *XBestVisualInfo(Display *display,
         }
       else
         {
-          static char
+          static const char
             *colormap[MaxStandardColormaps]=
             {
               "_HP_RGB_SMOOTH_MAP_LIST",
@@ -1055,7 +1057,7 @@ Export XVisualInfo *XBestVisualInfo(Display *display,
     }
   else
     {
-      static unsigned int
+      static const unsigned int
         rank[]=
           {
             StaticGray,
@@ -1133,12 +1135,12 @@ Export void XCheckRefreshWindows(Display *display,XWindows *windows)
   assert(windows != (XWindows *) NULL);
   XDelay(display,SuspendTime);
   while (XCheckTypedWindowEvent(display,windows->command.id,Expose,&event))
-    (void) XCommandWidget(display,windows,(char **) NULL,&event);
+    (void) XCommandWidget(display,windows,(char const **) NULL,&event);
   while (XCheckTypedWindowEvent(display,windows->image.id,Expose,&event))
     XRefreshWindow(display,&windows->image,&event);
   XDelay(display,SuspendTime << 1);
   while (XCheckTypedWindowEvent(display,windows->command.id,Expose,&event))
-    (void) XCommandWidget(display,windows,(char **) NULL,&event);
+    (void) XCommandWidget(display,windows,(char const **) NULL,&event);
   while (XCheckTypedWindowEvent(display,windows->image.id,Expose,&event))
     XRefreshWindow(display,&windows->image,&event);
 }
@@ -1734,6 +1736,9 @@ Export void XDisplayImageInfo(Display *display,
   if (image->color_profile.length > 0)
     FormatString(text,"%s  color profile: %u bytes\n",text,
       image->color_profile.length);
+  if (image->iptc_profile.length > 0)
+    FormatString(text,"%s  iptc profile: %u bytes\n",text,
+      image->iptc_profile.length);
   if (image->packets < (image->columns*image->rows))
     FormatString(text,"%s  runlength packets: %lu of %u\n",text,
       image->packets,image->columns*image->rows);
@@ -1883,7 +1888,8 @@ Export void XDisplayImageInfo(Display *display,
       register int
         i;
 
-      XTextViewWidget(display,resource_info,windows,True,title,textlist);
+      XTextViewWidget(display,resource_info,windows,True,title,
+        (char const **) textlist);
       for (i=0; textlist[i] != (char *) NULL; i++)
         FreeMemory((char *) textlist[i]);
       FreeMemory((char *) textlist);
@@ -1923,7 +1929,7 @@ Export void XDisplayImageInfo(Display *display,
 */
 static void XDitherImage(Image *image,XImage *ximage)
 {
-  static short int
+  static const short int
     dither_red[2][16]=
     {
       {-16,  4, -1, 11,-14,  6, -3,  9,-15,  5, -2, 10,-13,  7, -4,  8},
@@ -2843,7 +2849,7 @@ Export void XGetPixelInfo(Display *display,const XVisualInfo *visual_info,
   const XStandardColormap *map_info,const XResourceInfo *resource_info,
   Image *image,XPixelInfo *pixel_info)
 {
-  static char
+  static const char
     *PenColors[MaxNumberPens]=
     {
       Pen1Color,
@@ -5159,7 +5165,7 @@ Export Cursor XMakeCursor(Display *display,Window window,Colormap colormap,
 #define scope_y_hot 8
 #define scope_width 17
 
-  static unsigned char
+  static const unsigned char
     scope_bits[] =
     {
       0x80, 0x03, 0x00, 0x80, 0x02, 0x00, 0x80, 0x02, 0x00, 0x80, 0x02,
@@ -5167,9 +5173,7 @@ Export Cursor XMakeCursor(Display *display,Window window,Colormap colormap,
       0xfc, 0x01, 0x01, 0x00, 0x01, 0x7f, 0xfc, 0x01, 0x80, 0x02, 0x00,
       0x80, 0x02, 0x00, 0x80, 0x02, 0x00, 0x80, 0x02, 0x00, 0x80, 0x02,
       0x00, 0x80, 0x02, 0x00, 0x80, 0x03, 0x00
-    };
-
-  static unsigned char
+    },
     scope_mask_bits[] =
     {
       0xc0, 0x07, 0x00, 0xc0, 0x07, 0x00, 0xc0, 0x06, 0x00, 0xc0, 0x06,
@@ -8876,7 +8880,7 @@ Export unsigned int XQueryColorDatabase(char *target,XColor *color)
     red,
     status;
 
-  register XColorlist
+  register const XColorlist
     *p;
 
   static Display

@@ -54,7 +54,7 @@
 % PerlMagick,version 1.52,is an objected-oriented Perl interface to
 % ImageMagick.  Use the module to read,manipulate,or write an image or
 % image sequence from within a Perl script.  This makes it very suitable
-% for Web CGI scripts.  You must have ImageMagick 4.1.4 or above and Perl
+% for Web CGI scripts.  You must have ImageMagick 4.1.5 or above and Perl
 % version 5.002 or greater installed on your system for either of these
 % utilities to work.
 %
@@ -89,9 +89,11 @@ extern "C" {
 #define ImageReference  (char **) 3
 #define IntegerReference  (char **) 1
 #define MaxArguments  12
+#define na  PL_na
 #define NumberOf(array)  (sizeof(array)/sizeof(*array))
 #define PackageName   "Image::Magick"
 #define StringReference  (char **) 0
+#define sv_undef  PL_sv_undef
 
 /*
   Typedef and structure declarations.
@@ -1155,6 +1157,14 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'D':
     case 'd':
     {
+      if (strEQcase(attribute,"delay"))
+        {
+          if (info)
+            CopyString(&info->image_info.delay,SvPV(sval,na));
+          for ( ; image; image=image->next)
+            image->delay=SvIV(sval);
+          return;
+        }
       if (strEQcase(attribute,"density"))
         {
           if (!IsGeometry(SvPV(sval,na)))
@@ -1167,20 +1177,20 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             CopyString(&info->image_info.density,SvPV(sval,na));
           return;
         }
+      if (strEQcase(attribute,"depth"))
+        {
+          if (info)
+            info->image_info.depth=SvIV(sval);
+          for ( ; image; image=image->next)
+            image->depth=SvIV(sval);
+          return;
+        }
       if (strEQcase(attribute,"dispose"))
         {
           if (info)
             CopyString(&info->image_info.dispose,SvPV(sval,na));
           for (; image; image=image->next)
             image->dispose=SvIV(sval);
-          return;
-        }
-      if (strEQcase(attribute,"delay"))
-        {
-          if (info)
-            CopyString(&info->image_info.delay,SvPV(sval,na));
-          for ( ; image; image=image->next)
-            image->delay=SvIV(sval);
           return;
         }
       if (strEQcase(attribute,"dither"))
@@ -5409,7 +5419,7 @@ Read(ref,...)
           continue;
         if ((items >= 3) && strEQcase(list[n],"file"))
           {
-            info->image_info.file=IoIFP(sv_2io(ST(i+1)));
+            info->image_info.file=IoIFP(sv_2io(ST(i+2)));
             continue;
           }
         n++;

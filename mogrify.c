@@ -68,6 +68,7 @@
 %    -cycle amount        cycle the image colormap
 %    -delay value         display the next image after pausing
 %    -density geometry    vertical and horizontal density of the image
+%    -depth value         depth of the image
 %    -despeckle           reduce the speckles within an image",
 %    -display server      obtain image or font from this X server
 %    -dispose method      GIF disposal method
@@ -167,10 +168,10 @@
 */
 static void Usage(const char *client_name)
 {
-  char
+  const char
     **p;
 
-  static char
+  static const char
     *options[]=
     {
       "-blur factor         apply a filter to blur the image",
@@ -187,6 +188,7 @@ static void Usage(const char *client_name)
       "-cycle amount        cycle the image colormap",
       "-delay value         display the next image after pausing",
       "-density geometry    vertical and horizontal density of the image",
+      "-depth value         depth of the image",
       "-despeckle           reduce the speckles within an image",
       "-display server      obtain image or font from this X server",
       "-dispose method      GIF disposal method",
@@ -266,6 +268,8 @@ static void Usage(const char *client_name)
   (void) printf(
     "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
   (void) printf("'-' for standard input or output.\n");
+  ListMagickInfo(stdout);
+  ListDelegateInfo(stdout);
   Exit(0);
 }
 
@@ -581,6 +585,18 @@ int main(int argc,char **argv)
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
                   image_info.density=argv[i];
+                }
+              break;
+            }
+          if (strncmp("depth",option+1,3) == 0)
+            {
+              image_info.depth=QuantumDepth;
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing image depth",option);
+                  image_info.depth=atoi(argv[i]);
                 }
               break;
             }
@@ -1409,9 +1425,8 @@ int main(int argc,char **argv)
           scene--;
         if (image_info.verbose)
           DescribeImage(image,stdout,False);
-        if ((Latin1Compare(image_info.filename,"-") != 0) ||
-            (format == (char *) NULL))
-          if (status != False)
+        if ((format == (char *) NULL) && (status != False))
+          if (Latin1Compare(image_info.filename,"-") != 0)
             (void) rename(image->filename,filename);
         DestroyImage(image);
       }

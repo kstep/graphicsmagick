@@ -152,6 +152,8 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->chromaticity.white_point.y=0.0;
   allocated_image->color_profile.length=0;
   allocated_image->color_profile.info=(unsigned char *) NULL;
+  allocated_image->iptc_profile.length=0;
+  allocated_image->iptc_profile.info=(unsigned char *) NULL;
   allocated_image->normalized_maximum_error=0.0;
   allocated_image->normalized_mean_error=0.0;
   allocated_image->mean_error_per_pixel=0;
@@ -243,6 +245,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
     allocated_image->delay=atoi(image_info->delay);
   if (image_info->iterations != (char *) NULL)
     allocated_image->iterations=atoi(image_info->iterations);
+  allocated_image->depth=image_info->depth;
   allocated_image->filter=image_info->filter;
   if (image_info->background_color != (char *) NULL)
     {
@@ -3182,6 +3185,9 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   if (image->color_profile.length > 0)
     (void) fprintf(file,"  color profile: %u bytes\n",
       image->color_profile.length);
+  if (image->iptc_profile.length > 0)
+    (void) fprintf(file,"  IPTC profile: %u bytes\n",
+      image->iptc_profile.length);
   if (image->packets < (image->columns*image->rows))
     (void) fprintf(file,"  runlength packets: %lu of %u\n",image->packets,
       image->columns*image->rows);
@@ -3428,6 +3434,11 @@ Export void DestroyImage(Image *image)
   */
   if (image->color_profile.length > 0)
     FreeMemory((char *) image->color_profile.info);
+  /*
+    Deallocate the image IPTC profile.
+  */
+  if (image->iptc_profile.length > 0)
+    FreeMemory((char *) image->iptc_profile.info);
   /*
     Deallocate the image signature.
   */
@@ -3758,10 +3769,22 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         p++;
       if (!IsGeometry(p))
         break;
+      point.x=0;
+      point.y=0;
+      n=0;
       (void) sscanf(p,"%f%f%n",&point.x,&point.y,&n);
-      (void) sscanf(p,"%f,%f%n",&point.x,&point.y,&n);
-      (void) sscanf(p,"%f, %f%n",&point.x,&point.y,&n);
-      (void) sscanf(p,"%f %f%n",&point.x,&point.y,&n);
+      if (n == 0)
+        (void) sscanf(p,"%f,%f%n",&point.x,&point.y,&n);
+      if (n == 0)
+        (void) sscanf(p,"%f, %f%n",&point.x,&point.y,&n);
+      if (n == 0)
+        (void) sscanf(p,"%f %f%n",&point.x,&point.y,&n);
+      if (n == 0)
+        {
+          MagickWarning(OptionWarning,
+            "Non-conforming drawing primitive definition",p);
+          break;
+        }
       if (point.x < bounds.x1)
         bounds.x1=point.x;
       if (point.y < bounds.y1)
@@ -4842,6 +4865,7 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->adjoin=True;
   image_info->colorspace=RGBColorspace;
   image_info->compression=UndefinedCompression;
+  image_info->depth=QuantumDepth;
   image_info->dither=True;
   image_info->interlace=DefaultInterlace;
   image_info->monochrome=False;
@@ -9425,7 +9449,7 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
   /*
     Look for explicit 'format:image' in filename.
   */
-  image_info->affirm=False;
+  image_info->affirm=image_info->file != (FILE *) NULL;
   p=image_info->filename;
   while (isalnum(*p))
     p++;
@@ -9503,6 +9527,7 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
       /*
         Copy standard input or pipe to temporary file.
       */
+      image_info->file=(FILE *) NULL;
       TemporaryFilename(image.filename);
       image_info->temporary=True;
       FormatString(image_info->filename,"%s",image.filename);
@@ -9557,6 +9582,8 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
     (void) strcpy(image_info->magick,"GPLT");
   if (strncmp(magick,"\016\003\023\001",4) == 0)
     (void) strcpy(image_info->magick,"HDF");
+  if (strncmp(magick,"IN;",3) == 0)
+    (void) strcpy(image_info->magick,"HPGL");
   if ((strncmp(magick,"<HTML",5) == 0) ||
       (strncmp(magick,"<html",5) == 0))
     (void) strcpy(image_info->magick,"HTML");
@@ -10426,7 +10453,7 @@ Export void TransformRGBImage(Image *image,const unsigned int colorspace)
 #define R 0
 #define TransformRGBImageText  "  Transforming image colors...  "
 
-  static Quantum
+  static const Quantum
     sRGBMap[351] =
     {
         0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,
@@ -11190,7 +11217,7 @@ static double Triangle(double x)
 #endif
 
 static void HorizontalFilter(Image *source,Image *destination,double x_factor,
-  FilterInfo *filter_info,ContributionInfo *contribution_info,
+  const FilterInfo *filter_info,ContributionInfo *contribution_info,
   Quantum *range_limit,unsigned int span,unsigned int *quantum)
 {
   double
@@ -11284,7 +11311,7 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
 }
 
 static void VerticalFilter(Image *source,Image *destination,double y_factor,
-  FilterInfo *filter_info,ContributionInfo *contribution_info,
+  const FilterInfo *filter_info,ContributionInfo *contribution_info,
   Quantum *range_limit,unsigned int span,unsigned int *quantum)
 {
   double
@@ -11401,7 +11428,7 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   register Quantum
     *range_limit;
 
-  static FilterInfo
+  static const FilterInfo
     filters[SincFilter+1] =
     {
       { Box, 0.0 },

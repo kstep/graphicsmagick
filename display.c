@@ -164,10 +164,10 @@
 */
 static void Usage(const char *client_name)
 {
-  char
+  const char
     **p;
 
-  static char
+  static const char
     *buttons[]=
     {
       "1    press to map or unmap the Command widget",
@@ -232,7 +232,8 @@ static void Usage(const char *client_name)
   (void) printf("Version: %.128s\n",MagickVersion);
   (void) printf("Copyright: %.128s\n\n",MagickCopyright);
   (void) printf(
-    "Usage: %.128s [-options ...] file [ [-options ...] file ...]\n",client_name);
+    "Usage: %.128s [-options ...] file [ [-options ...] file ...]\n",
+    client_name);
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.128s\n",*p);

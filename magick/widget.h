@@ -37,8 +37,8 @@ typedef struct _XWidgetInfo
     highlight;
 
   char
-    *text,
     *cursor,
+    *text,
     *marker;
 } XWidgetInfo;
 
@@ -46,10 +46,10 @@ typedef struct _XWidgetInfo
   X utilities routines.
 */
 extern Export int
-  XCommandWidget(Display *,XWindows *,char **,XEvent *),
+  XCommandWidget(Display *,XWindows *,char const **,XEvent *),
   XConfirmWidget(Display *,XWindows *,char *,char *),
   XDialogWidget(Display *,XWindows *,char *,char *,char *),
-  XMenuWidget(Display *,XWindows *,char *,char **,char *);
+  XMenuWidget(Display *,XWindows *,const char *,const char **,char *);
 
 extern Export unsigned int
   XPreferencesWidget(Display *,XResourceInfo *,XWindows *);
@@ -59,12 +59,12 @@ extern Export void
   XFileBrowserWidget(Display *,XWindows *,char *,char *),
   XFontBrowserWidget(Display *,XWindows *,char *,char *),
   XInfoWidget(Display *,XWindows *,char *),
-  XListBrowserWidget(Display *,XWindows *,XWindowInfo *,char **,char *,char *,
-    char *),
+  XListBrowserWidget(Display *,XWindows *,XWindowInfo *,char const **,char *,
+    char *,char *),
   XMonitorWidget(Display *,XWindows *,char *,const unsigned int,
     const unsigned int),
   XNoticeWidget(Display *,XWindows *,char *,char *),
   XTextViewWidget(Display *,const XResourceInfo *,XWindows *,const unsigned int,
-    char *,char **);
+    char *,char const **);
 
 #endif

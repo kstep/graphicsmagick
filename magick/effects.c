@@ -421,7 +421,7 @@ Export Image *DespeckleImage(Image *image)
     *p,
     *q;
 
-  static int
+  static const int
     X[4]= {0, 1, 1,-1},
     Y[4]= {1, 0, 1, 1};
 

@@ -1,7 +1,7 @@
 /*
   Static declarations.
 */
-static char
+static const char
   *ImageMagickHelp[]=
   {
     "BUTTONS",
@@ -100,7 +100,7 @@ typedef enum
 #define ShadowWidth  8
 #define ShadowHeight  8
 
-static unsigned char
+static const unsigned char
   HighlightBitmap[] =
   {
     0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55

@@ -80,7 +80,7 @@
 	|@ZipDelegate@ -cf > %o
 
 browse=>
-	@BrowseDelegate@ http://www.wizards.dupont.com/cristy/ImageMagick.html &
+	@BrowseDelegate@ http://www.wizards.dupont.com/magick/ImageMagick.html &
 
 bzip=>
 	|@BZIPDelegate@ -cd %i
@@ -135,7 +135,8 @@ gs-mono=>
 	  -sOutputFile="%s" -- "%s" -c quit
 
 hpgl=>
-	@HPGLDecodeDelegate@ -q -m eps -f %i %o
+	@HPGLDecodeDelegate@ -q -m eps -f `basename %o` %i
+	mv `basename %o` %o
 
 htm=>
 	@HTMLDecodeDelegate@ -o %o %i
@@ -147,7 +148,7 @@ http=>
 	@WWWDecodeDelegate@ %m:%i > %o 2>&1
 
 man=>
-	@MANDelegate@ -Tps %i > %o
+	@MANDelegate@ -man -Tps %i > %o
 
 mpg=>
 	@MPEGDecodeDelegate@ -q -b %i -f -r -o3 %o%%05d

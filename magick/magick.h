@@ -149,7 +149,7 @@ extern "C" {
 #define DefaultTilePageGeometry  "6x4"
 #define DefaultThumbnailGeometry  "106x106+0+0>"
 #define DocumentationURL  \
-  "http://www.wizards.dupont.com/cristy/ImageMagick.html"
+  "http://www.wizards.dupont.com/magick/ImageMagick.html"
 #define PostscriptColorDevice  "pnmraw"
 #define PostscriptMonoDevice  "pbmraw"
 #define ReadBinaryType  "rb"
@@ -251,7 +251,7 @@ typedef struct _MagickInfo
 /*
   Magick utilities methods.
 */
-extern Export MagickInfo
+extern Export const MagickInfo
   *GetMagickInfo(const char *);
 
 extern Export void

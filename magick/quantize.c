@@ -528,7 +528,7 @@ static unsigned int Classification(CubeInfo *color_cube,Image *image)
   register unsigned int
     index;
 
-  static float
+  static const float
     bisect[] = { 128.0, 64.0, 32.0, 16.0, 8.0, 4.0, 2.0, 1.0, 0.5 };
 
   unsigned int

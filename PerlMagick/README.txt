@@ -3,17 +3,17 @@ Introduction
     PerlMagick, version 1.53, is an objected-oriented Perl interface to
     ImageMagick.  Use the module to read, manipulate, or write an image
     or image sequence from within a Perl script. This makes it suitable
-    for Web CGI scripts. You must have ImageMagick 4.1.4 above and Perl
+    for Web CGI scripts. You must have ImageMagick 4.1.5 above and Perl
     version 5.002 or greater installed on your system.  Perl version
     5.005_02 or greater is required for PerlMagick to work under NT.
 
     See
 
-      http://www.wizards.dupont.com/cristy/www/perl.html
+      http://www.wizards.dupont.com/magick/www/perl.html
 
     for additional information about PerlMagick.  See
 
-      http://www.wizards.dupont.com/cristy/
+      http://www.wizards.dupont.com/magick/
 
     for instructions about installing ImageMagick.
 

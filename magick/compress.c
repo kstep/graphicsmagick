@@ -91,7 +91,7 @@ typedef struct _ScanlinePacket
 #define MBId  26
 #define EXId  27
 
-static HuffmanTable
+static const HuffmanTable
   MBTable[]=
   {
     { MBId, 0x0f, 10, 64 }, { MBId, 0xc8, 12, 128 },
@@ -110,7 +110,7 @@ static HuffmanTable
     { MBId, 0x65, 13, 1728 }, { MBId, 0x00, 0, 0 }
   };
 
-static HuffmanTable
+static const HuffmanTable
   EXTable[]=
   {
     { EXId, 0x08, 11, 1792 }, { EXId, 0x0c, 11, 1856 },
@@ -122,7 +122,7 @@ static HuffmanTable
     { EXId, 0x1f, 12, 2560 }, { EXId, 0x00, 0, 0 }
   };
 
-static HuffmanTable
+static const HuffmanTable
   MWTable[]=
   {
     { MWId, 0x1b, 5, 64 }, { MWId, 0x12, 5, 128 },
@@ -141,7 +141,7 @@ static HuffmanTable
     { MWId, 0x9b, 9, 1728 }, { MWId, 0x00, 0, 0 }
   };
 
-static HuffmanTable
+static const HuffmanTable
   TBTable[]=
   {
     { TBId, 0x37, 10, 0 }, { TBId, 0x02, 3, 1 }, { TBId, 0x03, 2, 2 },
@@ -168,7 +168,7 @@ static HuffmanTable
     { TBId, 0x67, 12, 63 }, { TBId, 0x00, 0, 0 }
   };
 
-static HuffmanTable
+static const HuffmanTable
   TWTable[]=
   {
     { TWId, 0x35, 8, 0 }, { TWId, 0x07, 6, 1 }, { TWId, 0x07, 4, 2 },
@@ -798,7 +798,7 @@ Export unsigned int GIFDecodeImage(Image *image)
       register unsigned char
         *q;
 
-      static int
+      static const int
         interlace_rate[4] = { 8, 8, 4, 2 },
         interlace_start[4] = { 0, 4, 2, 1 };
 
@@ -1168,13 +1168,13 @@ Export unsigned int HuffmanDecodeImage(Image *image)
 #define MWHashB  1178
 
 #define InitializeHashTable(hash,table,a,b) \
-{  \
-  entry=table;  \
-  while (entry->code != 0)  \
+{ \
+  entry=table; \
+  while (entry->code != 0) \
   {  \
-    hash[((entry->length+a)*(entry->code+b)) % HashSize]=entry;  \
-    entry++;  \
-  }  \
+    hash[((entry->length+a)*(entry->code+b)) % HashSize]=(HuffmanTable *) entry; \
+    entry++; \
+  } \
 }
 
 #define InputBit(bit)  \
@@ -1193,8 +1193,10 @@ Export unsigned int HuffmanDecodeImage(Image *image)
     break;  \
 }
 
+  const HuffmanTable
+    *entry;
+
   HuffmanTable
-    *entry,
     **mb_hash,
     **mw_hash;
 
@@ -1482,7 +1484,7 @@ Export unsigned int HuffmanEncodeImage(ImageInfo *image_info,Image *image)
     }  \
 }
 
-  HuffmanTable
+  const HuffmanTable
     *entry;
 
   int

@@ -94,7 +94,7 @@ static Image
 static unsigned int XAnnotateEditImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows,Image *image)
 {
-  static char
+  static const char
     *AnnotateMenu[]=
     {
       "Font Name",
@@ -115,7 +115,7 @@ static unsigned int XAnnotateEditImage(Display *display,
   static double
     degrees = 0.0;
 
-  static ModeType
+  static const ModeType
     AnnotateCommands[]=
     {
       AnnotateNameCommand,
@@ -248,7 +248,7 @@ static unsigned int XAnnotateEditImage(Display *display,
               Select a font name from the pop-up menu.
             */
             font_number=XMenuWidget(display,windows,AnnotateMenu[id],
-              FontMenu,command);
+              (const char **) FontMenu,command);
             if (font_number < 0)
               break;
             if (font_number == (MaxNumberFonts-2))
@@ -293,7 +293,7 @@ static unsigned int XAnnotateEditImage(Display *display,
               Select a pen color from the pop-up menu.
             */
             pen_number=XMenuWidget(display,windows,AnnotateMenu[id],
-              ColorMenu,command);
+              (const char **) ColorMenu,command);
             if (pen_number < 0)
               break;
             transparent_pen=pen_number == (MaxNumberPens-2);
@@ -337,7 +337,7 @@ static unsigned int XAnnotateEditImage(Display *display,
               Select a pen color from the pop-up menu.
             */
             pen_number=XMenuWidget(display,windows,AnnotateMenu[id],
-              ColorMenu,command);
+              (const char **) ColorMenu,command);
             if (pen_number < 0)
               break;
             transparent_box=pen_number == (MaxNumberPens-2);
@@ -373,7 +373,9 @@ static unsigned int XAnnotateEditImage(Display *display,
               entry;
 
             static char
-              angle[MaxTextExtent] = "30.0",
+              angle[MaxTextExtent] = "30.0";
+
+            static const char
               *RotateMenu[]=
               {
                 "-90",
@@ -1120,7 +1122,7 @@ static unsigned int XBackgroundImage(Display *display,
 static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
   XWindows *windows,Image **image)
 {
-  static char
+  static const char
     *ChopMenu[]=
     {
       "Direction",
@@ -1130,13 +1132,15 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
     };
 
   static ModeType
+    direction = HorizontalChopCommand;
+
+  static const ModeType
     ChopCommands[]=
     {
       ChopDirectionCommand,
       ChopHelpCommand,
       ChopDismissCommand
     },
-    direction = HorizontalChopCommand,
     DirectionCommands[]=
     {
       HorizontalChopCommand,
@@ -1217,7 +1221,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
             char
               command[MaxTextExtent];
 
-            static char
+            static const char
               *Directions[]=
               {
                 "horizontal",
@@ -1531,7 +1535,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
 static unsigned int XColorEditImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows,Image **image)
 {
-  static char
+  static const char
     *ColorEditMenu[]=
     {
       "Method",
@@ -1543,7 +1547,7 @@ static unsigned int XColorEditImage(Display *display,
       (char *) NULL
     };
 
-  static ModeType
+  static const ModeType
     ColorEditCommands[]=
     {
       ColorEditMethodCommand,
@@ -1648,7 +1652,7 @@ static unsigned int XColorEditImage(Display *display,
         {
           case ColorEditMethodCommand:
           {
-            static char
+            static const char
               *MethodMenu[]=
               {
                 "point",
@@ -1686,8 +1690,8 @@ static unsigned int XColorEditImage(Display *display,
             /*
               Select a pen color from the pop-up menu.
             */
-            pen_number=XMenuWidget(display,windows,ColorEditMenu[id],ColorMenu,
-              command);
+            pen_number=XMenuWidget(display,windows,ColorEditMenu[id],
+              (const char **) ColorMenu,command);
             if (pen_number < 0)
               break;
             if (pen_number == (MaxNumberPens-2))
@@ -1732,8 +1736,8 @@ static unsigned int XColorEditImage(Display *display,
             /*
               Select a pen color from the pop-up menu.
             */
-            pen_number=XMenuWidget(display,windows,ColorEditMenu[id],ColorMenu,
-              command);
+            pen_number=XMenuWidget(display,windows,ColorEditMenu[id],
+              (const char **) ColorMenu,command);
             if (pen_number < 0)
               break;
             if (pen_number == (MaxNumberPens-2))
@@ -2084,6 +2088,10 @@ static unsigned int XCompositeImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows,Image *image)
 {
   static char
+    displacement_geometry[MaxTextExtent] = "30x30",
+    filename[MaxTextExtent] = "\0";
+
+  static const char
     *CompositeMenu[]=
     {
       "Operators",
@@ -2092,14 +2100,12 @@ static unsigned int XCompositeImage(Display *display,
       "Help",
       "Dismiss",
       (char *) NULL
-    },
-    displacement_geometry[MaxTextExtent] = "30x30",
-    filename[MaxTextExtent] = "\0";
+    };
 
   static CompositeOperator
     compose = ReplaceCompositeOp;
 
-  static ModeType
+  static const ModeType
     CompositeCommands[]=
     {
       CompositeOperatorsCommand,
@@ -2262,7 +2268,7 @@ static unsigned int XCompositeImage(Display *display,
             char
               command[MaxTextExtent];
 
-            static char
+            static const char
               *OperatorMenu[]=
               {
                 "Over",
@@ -2770,7 +2776,7 @@ static unsigned int XConfigureImage(Display *display,
 static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   XWindows *windows,Image *image,const ClipboardMode mode)
 {
-  static char
+  static const char
     *CropModeMenu[]=
     {
       "Help",
@@ -2785,7 +2791,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
       (char *) NULL
     };
 
-  static ModeType
+  static const ModeType
     CropCommands[]=
     {
       CropHelpCommand,
@@ -3517,7 +3523,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
 static unsigned int XDrawEditImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows,Image **image)
 {
-  static char
+  static const char
     *DrawMenu[]=
     {
       "Primitive",
@@ -3533,7 +3539,7 @@ static unsigned int XDrawEditImage(Display *display,
   static PrimitiveType
     primitive = PointPrimitive;
 
-  static ModeType
+  static const ModeType
     DrawCommands[]=
     {
       DrawPrimitiveCommand,
@@ -3660,7 +3666,7 @@ static unsigned int XDrawEditImage(Display *display,
           {
             case DrawPrimitiveCommand:
             {
-              static char
+              static const char
                 *Primitives[]=
                 {
                   "point",
@@ -3708,8 +3714,8 @@ static unsigned int XDrawEditImage(Display *display,
               /*
                 Select a pen color from the pop-up menu.
               */
-              pen_number=XMenuWidget(display,windows,DrawMenu[id],ColorMenu,
-                command);
+              pen_number=XMenuWidget(display,windows,DrawMenu[id],
+                (const char **) ColorMenu,command);
               if (pen_number < 0)
                 break;
               transparent=pen_number == (MaxNumberPens-2);
@@ -3746,7 +3752,9 @@ static unsigned int XDrawEditImage(Display *display,
             case DrawStippleCommand:
             {
               static char
-                filename[MaxTextExtent] = "\0",
+                filename[MaxTextExtent] = "\0";
+
+              static const char
                 *StipplesMenu[]=
                 {
                   "Brick",
@@ -3831,7 +3839,9 @@ static unsigned int XDrawEditImage(Display *display,
             case DrawWidthCommand:
             {
               static char
-                width[MaxTextExtent] = "3",
+                width[MaxTextExtent] = "3";
+
+              static const char
                 *WidthsMenu[]=
                 {
                   "1",
@@ -4758,7 +4768,9 @@ static CommandType XImageWindowCommand(Display *display,
   KeySym key_symbol,Image **image)
 {
   static char
-    delta[MaxTextExtent] = "",
+    delta[MaxTextExtent] = "";
+
+  static const char
     Digits[]="01234567890";
 
   static KeySym
@@ -7165,7 +7177,9 @@ static unsigned int XMatteEditImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows,Image **image)
 {
   static char
-    matte[MaxTextExtent] = "0",
+    matte[MaxTextExtent] = "0";
+
+  static const char
     *MatteEditMenu[]=
     {
       "Method",
@@ -7177,7 +7191,7 @@ static unsigned int XMatteEditImage(Display *display,
       (char *) NULL
     };
 
-  static ModeType
+  static const ModeType
     MatteEditCommands[]=
     {
       MatteEditMethod,
@@ -7276,7 +7290,7 @@ static unsigned int XMatteEditImage(Display *display,
         {
           case MatteEditMethod:
           {
-            static char
+            static const char
               *MethodMenu[]=
               {
                 "point",
@@ -7314,8 +7328,8 @@ static unsigned int XMatteEditImage(Display *display,
             /*
               Select a pen color from the pop-up menu.
             */
-            pen_number=XMenuWidget(display,windows,MatteEditMenu[id],ColorMenu,
-              command);
+            pen_number=XMenuWidget(display,windows,MatteEditMenu[id],
+              (const char **) ColorMenu,command);
             if (pen_number < 0)
               break;
             if (pen_number == (MaxNumberPens-2))
@@ -7712,8 +7726,8 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
         if (*files[i] != '-')
           filelist[j++]=files[i];
       filelist[j]=(char *) NULL;
-      XListBrowserWidget(display,windows,&windows->widget,filelist,"Load",
-        "Select Image to Load:",filename);
+      XListBrowserWidget(display,windows,&windows->widget,
+        (const char **) filelist,"Load","Select Image to Load:",filename);
       FreeMemory((char *) filelist);
       XFreeStringList(files);
     }
@@ -7832,7 +7846,8 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
             i;
 
           FormatString(title,"Unknown format: %.128s",filename);
-          XTextViewWidget(display,resource_info,windows,True,title,textlist);
+          XTextViewWidget(display,resource_info,windows,True,title,
+            (const char **) textlist);
           for (i=0; textlist[i] != (char *) NULL; i++)
             FreeMemory((char *) textlist[i]);
           FreeMemory((char *) textlist);
@@ -8035,7 +8050,7 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
 static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
   XWindows *windows,Image *image)
 {
-  static char
+  static const char
     *PasteMenu[]=
     {
       "Operator",
@@ -8044,7 +8059,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
       (char *) NULL
     };
 
-  static ModeType
+  static const ModeType
     PasteCommands[]=
     {
       PasteOperatorsCommand,
@@ -8151,7 +8166,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
             char
               command[MaxTextExtent];
 
-            static char
+            static const char
               *OperatorMenu[]=
               {
                 "Over",
@@ -8514,7 +8529,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
 {
 #define ApplyMenus  7
 
-  static char
+  static const char
     *ROIMenu[]=
     {
       "Help",
@@ -8606,7 +8621,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
       (char *) NULL
     };
 
-  static char
+  static const char
     **Menus[ApplyMenus]=
     {
       FileMenu,
@@ -8618,7 +8633,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
       MiscellanyMenu
     };
 
-  static CommandType
+  static const CommandType
     ApplyCommands[]=
     {
       NullCommand,
@@ -8700,7 +8715,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
       ROIDismissCommand
     };
 
-  static CommandType
+  static const CommandType
     *Commands[ApplyMenus]=
     {
       FileCommands,
@@ -9124,8 +9139,8 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
                   /*
                     Select a command from a pop-up menu.
                   */
-                  entry=XMenuWidget(display,windows,ApplyMenu[id],Menus[id],
-                    command);
+                  entry=XMenuWidget(display,windows,ApplyMenu[id],
+                    (const char **) Menus[id],command);
                   if (entry >= 0)
                     {
                       (void) strcpy(command,Menus[id][entry]);
@@ -9357,7 +9372,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
 static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
   XWindows *windows,double degrees,Image **image)
 {
-  static char
+  static const char
     *RotateMenu[]=
     {
       "Pixel Color",
@@ -9370,7 +9385,9 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
     };
 
   static ModeType
-    direction = HorizontalRotateCommand,
+    direction = HorizontalRotateCommand;
+
+  static const ModeType
     DirectionCommands[]=
     {
       HorizontalRotateCommand,
@@ -9490,7 +9507,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
                   Select a pen color from the pop-up menu.
                 */
                 pen_number=XMenuWidget(display,windows,RotateMenu[id],
-                  ColorMenu,command);
+                  (const char **) ColorMenu,command);
                 if (pen_number < 0)
                   break;
                 if (pen_number == (MaxNumberPens-2))
@@ -9519,7 +9536,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
               }
               case RotateDirectionCommand:
               {
-                static char
+                static const char
                   *Directions[]=
                   {
                     "horizontal",
@@ -9538,7 +9555,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
               }
               case RotateCropCommand:
               {
-                static char
+                static const char
                   *Options[]=
                   {
                     "false",
@@ -9555,7 +9572,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
               }
               case RotateSharpenCommand:
               {
-                static char
+                static const char
                   *Options[]=
                   {
                     "false",
@@ -10434,7 +10451,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
 static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   XWindows *windows,Image *image,XEvent *event)
 {
-  static char
+  static const char
     *VerbMenu[]=
     {
       "Load",
@@ -10445,7 +10462,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       (char *) NULL,
     };
 
-  static ModeType
+  static const ModeType
     TileCommands[]=
     {
       TileLoadCommand,
@@ -11422,7 +11439,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
 #define MaxWindows  10
 #define MagickTitle  "Commands"
 
-  static char
+  static const char
     *CommandMenu[]=
     {
       "File",
@@ -11581,7 +11598,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       (char *) NULL
     };
 
-  static char
+  static const char
     **Menus[MagickMenus]=
     {
       FileMenu,
@@ -12385,6 +12402,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     if ((windows->image.width < windows->image.ximage->width) ||
         (windows->image.height < windows->image.ximage->height))
       XMapRaised(display,windows->pan.id);
+  XSync(display,False);
   /*
     Respond to events.
   */
@@ -12587,7 +12605,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             int
               factor;
 
-            static char
+            static const char
               *MagnifyMenu[]=
               {
                 "2",

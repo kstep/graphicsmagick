@@ -229,7 +229,7 @@ static void TransformMessageDigest(MessageDigest *message_digest,
 #define I(x,y,z)  ((y) ^ ((x) | (~z)))
 #define RotateLeft(x,n)  (((x) << (n)) | (((x) & 0xffffffff) >> (32-(n))))
 
-  static unsigned long
+  static const unsigned long
     additive_constant[64]=  /* 4294967296*abs(sin(i)), i in radians */
     {
       0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee, 0xf57c0faf,
@@ -257,7 +257,9 @@ static void TransformMessageDigest(MessageDigest *message_digest,
     a,
     b,
     c,
-    d,
+    d;
+
+  register const unsigned long
     *p;
 
   /*
@@ -454,8 +456,8 @@ static void UpdateMessageDigest(MessageDigest *message_digest,
 */
 Export void SignatureImage(Image *image)
 {
-  char
-    *hex;
+  const char
+    hex[] = "0123456789abcdef";
 
   int
     i;
@@ -506,9 +508,6 @@ Export void SignatureImage(Image *image)
   runlength=p->length+1;
   for (y=0; y < image->rows; y++)
   {
-    /*
-      Read a scan line.
-    */
     q=message;
     for (x=0; x < image->columns; x++)
     {
@@ -527,13 +526,12 @@ Export void SignatureImage(Image *image)
     }
     UpdateMessageDigest(&message_digest,message,q-message);
   }
-  ComputeMessageDigest(&message_digest);
   FreeMemory((char *) message);
   /*
     Convert digital signature to a 32 character hex string.
   */
+  ComputeMessageDigest(&message_digest);
   q=(unsigned char *) image->signature;
-  hex="0123456789abcdef";
   for (i=0; i < 16; i++)
   {
     *q++=hex[(message_digest.digest[i] >> 4) & 0xf];

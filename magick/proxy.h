@@ -24,6 +24,7 @@
 #include "jpeglib.h"
 #include "jerror.h"
 #define ICC_MARKER  (JPEG_APP0+2)
+#define IPTC_MARKER  (JPEG_APP0+13)
 #endif
 #if defined(HasPNG)
 #include "png.h"

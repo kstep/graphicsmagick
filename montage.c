@@ -164,10 +164,10 @@
 */
 static void Usage(const char *client_name)
 {
-  char
+  const char
     **p;
 
-  static char
+  static const char
     *options[]=
     {
       "-adjoin             join images into a single multi-image file",

@@ -136,10 +136,10 @@
 */
 static void Usage(const char *client_name)
 {
-  char
+  const char
     **p;
 
-  static char
+  static const char
     *buttons[]=
     {
       "Press any button to map or unmap the Command widget",

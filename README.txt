@@ -7,7 +7,7 @@
 
 AUTHOR
 
-  The author is cristy@mystic.es.dupont.com.  This software is NOT
+  The author is magick@wizards.dupont.com.  This software is NOT
   shareware.  However, I am interested in who might be using it.
   Please consider sending me a picture postcard of the area where you
   live.  Send postcards to
@@ -25,7 +25,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.1.4.tar.gz
+    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.1.5.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -45,7 +45,7 @@ WWW
 
   The official ImageMagick WWW page is
 
-    http://www.wizards.dupont.com/cristy/ImageMagick.html
+    http://www.wizards.dupont.com/magick/ImageMagick.html
 
   To use display as your external image viewer, edit the global
   mail-cap file or your personal mail-cap file .mailrc (located at your
@@ -83,8 +83,8 @@ UNIX COMPILATION
 
   Type:
 
-    gunzip ImageMagick-4.1.4.tar.gz
-    tar xvf ImageMagick-4.1.4.tar
+    gunzip ImageMagick-4.1.5.tar.gz
+    tar xvf ImageMagick-4.1.5.tar
     cd ImageMagick
 
   If you do not have gunzip(1), it is available as
@@ -614,7 +614,7 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-4.1.4.zip
+      unzip ImageMagick-4.1.5.zip
       set default [.imagemagick]
       @make
       set display/create/node=node_name::

@@ -5,7 +5,7 @@ exec wish "$0" "$@"
 #
 #  XSnap, X-Windows Snapshot.  A GUI for the ImageMagick import command
 #
-#  Software design, John Cristy (cristy@dupont.com), March 1996
+#  Software design, John Cristy (magick@dupont.com), March 1996
 #
 #  Copyright 1996 E. I. du Pont de Nemours and Company
 #

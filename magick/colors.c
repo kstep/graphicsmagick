@@ -476,7 +476,7 @@ Export unsigned int QueryColorName(ColorPacket *color,char *name)
   register int
     distance;
 
-  register XColorlist
+  register const XColorlist
     *p;
 
   *name='\0';

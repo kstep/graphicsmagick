@@ -57,7 +57,7 @@
 /*
   Image format declarations.
 */
-static MagickInfo
+static const MagickInfo
   ImageFormats[] =
   {
     { "JPG", ReadJPEGImage, WriteJPEGImage, True,
@@ -145,6 +145,8 @@ static MagickInfo
     { "IMPLICIT", (Image *(*)(const ImageInfo *)) NULL,
       (unsigned int (*)(const ImageInfo *,Image *)) NULL, True,
       "Internal format" },
+    { "IPTC", (Image *(*)(const ImageInfo *)) NULL, WriteIPTCImage, False,
+      "IPTC Newsphoto" },
     { "JBG", ReadJBIGImage, WriteJBIGImage, True,
       "Joint Bi-level Image experts Group file interchange format" },
     { "JBIG", ReadJBIGImage, WriteJBIGImage, True,
@@ -268,7 +270,7 @@ static MagickInfo
 %
 %
 */
-Export MagickInfo *GetMagickInfo(const char *tag)
+Export const MagickInfo *GetMagickInfo(const char *tag)
 {
   register int
     i;
@@ -276,7 +278,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
   for (i=0; ImageFormats[i].magick != (char *) NULL; i++)
     if (Latin1Compare(tag,ImageFormats[i].magick) == 0)
       return(&ImageFormats[i]);
-  return((MagickInfo *) NULL);
+  return((const MagickInfo *) NULL);
 }
 
 /*

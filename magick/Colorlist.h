@@ -13,7 +13,7 @@ typedef struct _XColorlist
     blue;
 } XColorlist;
 
-static XColorlist
+static const XColorlist
   Colorlist[] =
   {
     { "AliceBlue", 240, 248, 255 },

@@ -4414,6 +4414,62 @@ static void ErrorExit(j_common_ptr jpeg_info)
   longjmp(error_recovery,1);
 }
 
+static boolean IPTCProfileHandler(j_decompress_ptr jpeg_info)
+{
+  long int
+    length;
+
+  register unsigned char
+    *p;
+
+  unsigned char
+    tag[2];
+
+  /*
+    Determine length of IPTC profile.
+  */
+  length=GetCharacter(jpeg_info) << 8;
+  length+=GetCharacter(jpeg_info);
+  length-=2;
+  for (*tag='\0'; length > 0; )
+  {
+    *tag=GetCharacter(jpeg_info);
+    *(tag+1)=GetCharacter(jpeg_info);
+    length-=2;
+    if ((*tag == 0x1c) && (*(tag+1) == 0x02))
+      break;
+  }
+  if (length <= 0)
+    return(True);
+  if (image->iptc_profile.length != 0)
+    image->iptc_profile.info=(unsigned char *) ReallocateMemory((char *)
+      image->iptc_profile.info,(unsigned int) (image->iptc_profile.length+
+      length)*sizeof(unsigned char));
+  else
+    {
+      image->iptc_profile.info=(unsigned char *)
+        AllocateMemory((unsigned int) length*sizeof(unsigned char));
+      if (image->iptc_profile.info != (unsigned char *) NULL)
+        image->iptc_profile.length=0;
+    }
+  if (image->iptc_profile.info == (unsigned char *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+        (char *) NULL);
+      return(False);
+    }
+  /*
+    Read IPTC profile.
+  */
+  p=image->iptc_profile.info+image->iptc_profile.length;
+  image->iptc_profile.length+=length+2;
+  *p++=0x1c;
+  *p++=0x02;
+  while (--length >= 0)
+    *p++=GetCharacter(jpeg_info);
+  return(True);
+}
+
 Image *ReadJPEGImage(const ImageInfo *image_info)
 {
   int
@@ -4490,6 +4546,7 @@ Image *ReadJPEGImage(const ImageInfo *image_info)
   jpeg_stdio_src(&jpeg_info,image->file);
   jpeg_set_marker_processor(&jpeg_info,JPEG_COM,CommentHandler);
   jpeg_set_marker_processor(&jpeg_info,ICC_MARKER,ColorProfileHandler);
+  jpeg_set_marker_processor(&jpeg_info,IPTC_MARKER,IPTCProfileHandler);
   (void) jpeg_read_header(&jpeg_info,True);
   if (jpeg_info.saw_JFIF_marker)
     {
@@ -5794,11 +5851,11 @@ Image *ReadLOGOImage(const ImageInfo *image_info)
   ImageInfo
     local_info;
 
+  register const unsigned char
+    *p;
+
   register int
     i;
-
-  register unsigned char
-    *p;
 
   unsigned int
     extent;
@@ -13943,6 +14000,16 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
         image->color_profile.length=length;
         image->color_profile.info=(unsigned char *) text;
       }
+    length=0;
+    text=(char *) NULL;
+#if defined(IPTC_SUPPORT)
+    TIFFGetField(tiff,TIFFTAG_IPTCNEWSPHOTO,&length,&text);
+#endif
+    if (length != 0)
+      {
+        image->iptc_profile.length=length;
+        image->iptc_profile.info=(unsigned char *) text;
+      }
     /*
       Allocate memory for the image and pixel buffer.
     */
@@ -16607,13 +16674,15 @@ static char *ParseColor(char *data)
 {
 #define NumberTargets  6
 
-  static char
+  static const char
     *targets[NumberTargets] = { "c ", "g ", "g4 ", "m ", "b ", "s " };
 
   register char
      *p,
-     *q,
      *r;
+
+  register const char
+     *q;
 
   register int
     i;

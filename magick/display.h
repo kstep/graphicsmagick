@@ -9,7 +9,7 @@
 /*
   Static declarations.
 */
-static char
+static const char
   *NoiseTypes[] =
   {
     "Uniform",
@@ -75,7 +75,7 @@ static char
 /*
   Help widget declarations.
 */
-static char
+static const char
   *ImageAnnotateHelp[]=
   {
     "In annotate mode, the Command widget has these options:",
@@ -1429,7 +1429,7 @@ typedef enum
 #define WavyWidth  16
 #define WavyHeight  16
 
-static unsigned char
+static const unsigned char
   BricksBitmap[] =
   {
     0xff, 0xff, 0x0f, 0x03, 0x0c, 0x00, 0x03, 0x0c, 0x00, 0x03, 0x0c, 0x00,

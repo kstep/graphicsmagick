@@ -1112,7 +1112,7 @@ Export char **ListColors(const char *pattern,int *number_colors)
   database=fopen(RGBColorDatabase,"r");
   if (database == (FILE *) NULL)
     {
-      register XColorlist
+      register const XColorlist
         *p;
 
       /*
@@ -1121,7 +1121,8 @@ Export char **ListColors(const char *pattern,int *number_colors)
       for (p=Colorlist; p->name != (char *) NULL; p++)
         if (GlobExpression(p->name,pattern))
           {
-            colorlist[*number_colors]=(char *) AllocateMemory(Extent(p->name)+1);
+            colorlist[*number_colors]=(char *)
+              AllocateMemory(Extent(p->name)+1);
             if (colorlist[*number_colors] == (char *) NULL)
               break;
             (void) strcpy(colorlist[*number_colors],p->name);
@@ -1872,7 +1873,7 @@ Export void DestroyPostscriptGeometry(char *geometry)
 
 Export char *PostscriptGeometry(const char *page)
 {
-  static char
+  static const char
     *PageSizes[][2]=
     {
       { "11x17", "792x1224>" },

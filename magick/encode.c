@@ -2053,7 +2053,7 @@ unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         register RunlengthPacket
           *q;
 
-        static int
+        static const int
           interlace_rate[4] = { 8, 8, 4, 2 },
           interlace_start[4] = { 0, 4, 2, 1 };
 
@@ -3284,6 +3284,11 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         (unsigned int) Min(Extent(image->comments+i),65533));
   if (image->color_profile.length > 0)
     ColorProfileHandler(&jpeg_info,image);
+  if (image->iptc_profile.length > 0)
+    for (i=0; i < image->iptc_profile.length; i+=65533)
+      jpeg_write_marker(&jpeg_info,IPTC_MARKER,(unsigned char *)
+        image->iptc_profile.info+i,(unsigned int)
+        Min(image->iptc_profile.length-i,65533));
   /*
     Convert MIFF to JPEG raster pixels.
   */
@@ -3492,9 +3497,6 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 */
 unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
 {
-  register int
-    i;
-
   if (image->color_profile.length == 0)
     PrematureExit(FileOpenWarning,"No color profile available",image);
   /*
@@ -3503,8 +3505,53 @@ unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
-  for (i=0; i < image->color_profile.length; i++)
-    (void) fputc(image->color_profile.info[i],image->file);
+  (void) fwrite((char *) image->color_profile.info,1,
+    (int) image->color_profile.length,image->file);
+  CloseImage(image);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e I P T C I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteIPTCImage writes an image in the IPTC format.
+%
+%  The format of the WriteIPTCImage routine is:
+%
+%      status=WriteIPTCImage(image_info,image)
+%
+%  A description of each parameter follows.
+%
+%    o status: Method WriteIPTCImage return True if the image is written.
+%      False is returned is there is a memory shortage or if the image file
+%      fails to write.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image:  A pointer to a Image structure.
+%
+%
+*/
+unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
+{
+  if (image->iptc_profile.length == 0)
+    PrematureExit(FileOpenWarning,"No IPTC profile available",image);
+  /*
+    Open image file.
+  */
+  OpenImage(image_info,image,WriteBinaryType);
+  if (image->file == (FILE *) NULL)
+    PrematureExit(FileOpenWarning,"Unable to open file",image);
+  (void) fwrite((char *) image->iptc_profile.info,1,
+    (int) image->iptc_profile.length,image->file);
   CloseImage(image);
   return(True);
 }
@@ -7366,7 +7413,7 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       }
       case '7':
       {
-        static short int
+        static const short int
           dither_red[2][16]=
           {
             {-16,  4, -1, 11,-14,  6, -3,  9,-15,  5, -2, 10,-13,  7, -4,  8},
@@ -8016,7 +8063,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,
 */
 unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
 {
-  static char
+  static const char
     *PostscriptProlog[]=
     {
       "%%BeginProlog",
@@ -8277,7 +8324,9 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   char
     date[MaxTextExtent],
     density[MaxTextExtent],
-    **labels,
+    **labels;
+
+  const char
     **q;
 
   float
@@ -8980,7 +9029,7 @@ unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
 */
 unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
 {
-  static char
+  static const char
     *PostscriptProlog[]=
     {
       "%%%%BeginProlog",
@@ -9115,7 +9164,9 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   char
     date[MaxTextExtent],
     density[MaxTextExtent],
-    **labels,
+    **labels;
+
+  const char
     **q;
 
   CompressionType
@@ -10874,7 +10925,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     TIFFSetField(tiff,TIFFTAG_IMAGELENGTH,(uint32) image->rows);
     TIFFSetField(tiff,TIFFTAG_IMAGEWIDTH,(uint32) image->columns);
     TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,8);
-    if (image->depth == 16)
+    if (image->depth > 8)
       TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
     compress_tag=COMPRESSION_NONE;
     if (compression == JPEGCompression)
@@ -11000,6 +11051,11 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     if (image->color_profile.length > 0)
       TIFFSetField(tiff,TIFFTAG_ICCPROFILE,(uint32) image->color_profile.length,
         (void *) image->color_profile.info);
+#endif
+#if defined(IPTC_SUPPORT)
+    if (image->iptc_profile.length > 0)
+      TIFFSetField(tiff,TIFFTAG_IPTCNEWSPHOTO,(uint32)
+        image->iptc_profile.length,(void *) image->iptc_profile.info);
 #endif
     TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
     TIFFSetField(tiff,TIFFTAG_SOFTWARE,MagickVersion);
@@ -11429,7 +11485,7 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
 {
 #define MaxCixels  92
 
-  static char
+  static const char
     Cixel[MaxCixels+1] = " .XoO+@#$%&*=-;:>,<1234567890qwertyuipasdfghjk"
                          "lzxcvbnmMNBVCZASDFGHJKLPIUYTREWQ!~^/()_`'][{}|";
 
@@ -11455,7 +11511,7 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   register RunlengthPacket
     *p;
 
-  register XColorlist
+  register const XColorlist
     *q;
 
   unsigned int
@@ -12584,7 +12640,7 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
 {
 #define MaxCixels  92
 
-  static char
+  static const char
     Cixel[MaxCixels+1] = " .XoO+@#$%&*=-;:>,<1234567890qwertyuipasdfghjk"
                          "lzxcvbnmMNBVCZASDFGHJKLPIUYTREWQ!~^/()_`'][{}|";
 
@@ -12610,7 +12666,7 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   register RunlengthPacket
     *p;
 
-  register XColorlist
+  register const XColorlist
     *q;
 
   unsigned int

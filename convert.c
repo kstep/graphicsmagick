@@ -72,6 +72,7 @@
 %    -cycle amount        cycle the image colormap
 %    -delay value         display the next image after pausing
 %    -density geometry    vertical and horizontal density of the image
+%    -depth value         depth of the image
 %    -despeckle           reduce the speckles within an image"
 %    -display server      obtain image or font from this X server
 %    -dispose method      GIF disposal method
@@ -234,10 +235,10 @@ static void ConcatenateImages(int argc,char **argv)
 */
 static void Usage(const char *client_name)
 {
-  char
+  const char
     **p;
 
-  static char
+  static const char
     *options[]=
     {
       "-adjoin              join images into a single multi-image file",
@@ -258,6 +259,7 @@ static void Usage(const char *client_name)
       "-cycle amount        cycle the image colormap",
       "-delay value         display the next image after pausing",
       "-density geometry    vertical and horizontal density of the image",
+      "-depth value         depth of the image",
       "-despeckle           reduce the speckles within an image",
       "-display server      obtain image or font from this X server",
       "-dispose method      GIF disposal method",
@@ -706,6 +708,18 @@ int main(int argc,char **argv)
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
                   image_info.density=argv[i];
+                }
+              break;
+            }
+          if (strncmp("depth",option+1,3) == 0)
+            {
+              image_info.depth=QuantumDepth;
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing image depth",option);
+                  image_info.depth=atoi(argv[i]);
                 }
               break;
             }

@@ -87,12 +87,12 @@ Image::Magick - Perl extension for calling ImageMagick's libmagick routines
 
 This Perl extension allows the reading, manipulation and writing of
 a large number of image file formats using the magick library from
-ImageMagick by John Cristy (cristy@mystic.es.dupont.com).  It was originally
+ImageMagick by John Cristy (magick@wizards.dupont.com).  It was originally
 developed to be used by CGI scripts for Web pages.
 
 A Web page has been set up for this extension. See:
 
-	http://www.wizards.dupont.com/cristy/www/perl.html
+	http://www.wizards.dupont.com/magick/www/perl.html
 
 =head1 AUTHOR
 

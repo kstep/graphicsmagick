@@ -76,7 +76,7 @@
 	|gzip -cf > %o
 
 browse=>
-	mosiac http://www.wizards.dupont.com/cristy/ImageMagick.html &
+	mosiac http://www.wizards.dupont.com/magick/ImageMagick.html &
 
 bzip=>
 	|bzip2 -cd %i

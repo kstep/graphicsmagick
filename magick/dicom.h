@@ -12,7 +12,7 @@ typedef struct _DicomInfo
     *description;
 } DicomInfo;
 
-static DicomInfo
+static const DicomInfo
   dicom_info[] =
   {
     { 0x0000, 0x0000, "UL", "Command Group Length" },
