@@ -4482,29 +4482,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   optimize=(image_info->type == OptimizeType || image_info->type ==
     UndefinedType);
 
-  if (optimize)
-    {
-      Image
-        *p;
- 
-      for(p=image; p->next != (Image *) NULL; p=p->next)
-      {
-        if(p->storage_class != PseudoClass)
-          {
-            p->colors=GetNumberColors(p,(FILE *) NULL,&p->exception);
-            if (p->colors < 256)
-              {
-                if (p->matte)
-                  SetImageType(p, PaletteMatteType);
-                else
-                  SetImageType(p, PaletteType);
-              }
-          }
-        if (!image_info->adjoin)
-          break;
-      }
-    }
-
   use_global_plte=False;
   page.width=0;
   page.height=0;
