@@ -75,7 +75,7 @@ typedef struct _SignatureInfo
     offset;
 
   unsigned char
-    data[SignatureSize];
+    message[SignatureSize];
 } SignatureInfo;
 
 /*
@@ -122,23 +122,23 @@ static void FinalizeSignature(SignatureInfo *signature_info)
   low_order=signature_info->low_order;
   high_order=signature_info->high_order;
   count=(int) ((low_order >> 3) & 0x3f);
-  signature_info->data[count++]=0x80;
+  signature_info->message[count++]=0x80;
   if (count <= (SignatureSize-8))
-    memset(signature_info->data+count,0,SignatureSize-8-count);
+    memset(signature_info->message+count,0,SignatureSize-8-count);
   else
     {
-      memset(signature_info->data+count,0,SignatureSize-count);
+      memset(signature_info->message+count,0,SignatureSize-count);
       TransformSignature(signature_info);
-      memset(signature_info->data,0,SignatureSize-8);
+      memset(signature_info->message,0,SignatureSize-8);
     }
-  signature_info->data[56]=(high_order >> 24) & 0xff;
-  signature_info->data[57]=(high_order >> 16) & 0xff;
-  signature_info->data[58]=(high_order >> 8) & 0xff;
-  signature_info->data[59]=(high_order >> 0) & 0xff;
-  signature_info->data[60]=(low_order >> 24) & 0xff;
-  signature_info->data[61]=(low_order >> 16) & 0xff;
-  signature_info->data[62]=(low_order >> 8) & 0xff;
-  signature_info->data[63]=(low_order >> 0) & 0xff;
+  signature_info->message[56]=(high_order >> 24) & 0xff;
+  signature_info->message[57]=(high_order >> 16) & 0xff;
+  signature_info->message[58]=(high_order >> 8) & 0xff;
+  signature_info->message[59]=(high_order >> 0) & 0xff;
+  signature_info->message[60]=(low_order >> 24) & 0xff;
+  signature_info->message[61]=(low_order >> 16) & 0xff;
+  signature_info->message[62]=(low_order >> 8) & 0xff;
+  signature_info->message[63]=(low_order >> 0) & 0xff;
   TransformSignature(signature_info);
 }
 
@@ -178,7 +178,7 @@ static void GetSignatureInfo(SignatureInfo *signature_info)
   signature_info->low_order=0L;
   signature_info->high_order=0L;
   signature_info->offset=0;
-  memset(signature_info->data,0,SignatureSize);
+  memset(signature_info->message,0,SignatureSize);
 }
 
 /*
@@ -261,7 +261,7 @@ static void TransformSignature(SignatureInfo *signature_info)
     W[64];
 
   shift=32;
-  p=signature_info->data;
+  p=signature_info->message;
   lsb_first=1;
   if (*(char *) &lsb_first)
     {
@@ -386,7 +386,7 @@ static void UpdateSignature(SignatureInfo *signature_info,unsigned char *message
       i=SignatureSize-signature_info->offset;
       if (i > length)
         i=length;
-      memcpy(signature_info->data+signature_info->offset,message,i);
+      memcpy(signature_info->message+signature_info->offset,message,i);
       length-=i;
       message+=i;
       signature_info->offset+=i;
@@ -396,12 +396,12 @@ static void UpdateSignature(SignatureInfo *signature_info,unsigned char *message
     }
   while (length >= SignatureSize)
   {
-    memcpy(signature_info->data,message,SignatureSize);
+    memcpy(signature_info->message,message,SignatureSize);
     message+=SignatureSize;
     length-=SignatureSize;
     TransformSignature(signature_info);
   }
-  memcpy(signature_info->data,message,length);
+  memcpy(signature_info->message,message,length);
   signature_info->offset=length;
 }
 
