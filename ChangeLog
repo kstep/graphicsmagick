@@ -1,3 +1,8 @@
+2003-03-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/random.[c|h]: Removed files from CVS.
+	* magick/command.c: Don't include random.h.
+
 2003-03-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Added tests for pread and pwrite functions.

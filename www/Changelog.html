@@ -13,6 +13,14 @@
 </tr>
 </table>
 <p>
+2003-03-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/random.[c|h]: Removed files from CVS.
+  <LI> magick/command.c: Don't include random.h.
+
+</UL>
+<p>
 2003-03-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -20,18 +28,15 @@
   <LI> magick/image.c (GrayscalePseudoClassImage): Properly invoke SyncImagePixels.
   <LI> magick/cache.c (SyncCacheNexus): Add back in is_monochrome and is_grayscale
         flag resetting which was lost by copying over ImageMagick's cache.c.
-&lt;&lt;&lt;&lt;&lt;&lt;&lt; ChangeLog<BR>
         (FilePositionRead): Inline wrapper for reading a chunk of data at an offset.
         Cleans up some messy code, and makes it easy to use pread().
         (FilePositionWrite): Inline wrapper for writing a chunk of data at an offset.
         Cleans up some messy code, and makes it easy to use pwite().
         Cache now uses pread() and pwrite() to access the cache if these calls are
         available.<BR>
-<HR>
   <LI> magick/resource.c (InitializeMagickResources): Support setting resource
         limits via the environment variables MAGICK_LIMIT_DISK, MAGICK_LIMIT_FILES,
         MAGICK_LIMIT_MEMORY, and MAGICK_LIMIT_MAP.
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; 1.420
 
 </UL>
 <p>

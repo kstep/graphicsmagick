@@ -75,7 +75,6 @@
 #include "montage.h"
 #include "paint.h"
 #include "quantize.h"
-#include "random.h"
 #include "render.h"
 #include "resize.h"
 #include "resource.h"
