@@ -498,7 +498,8 @@ static long mng_get_long(unsigned char *p)
 
 static void MNGCoalesce(Image *image)
 {
-  /* Cannot get this working since version 4.2.9 so it's removed for now */
+  /* I have been unable to get this working after version 4.2.9
+     so it's dummied out for now.  See also transform.c */
 }
 
 static void PNGErrorHandler(png_struct *ping,png_const_charp message)
@@ -1108,7 +1109,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               MagickWarning(DelegateWarning,
                  "FRAM chunk found in MNG-VLC datastream",(char *) NULL);
             if ((framing_mode == 2) || (framing_mode == 4))
-              image->delay=frame_delay;
+              image->delay=(unsigned int) frame_delay;
             frame_delay=default_frame_delay;
             frame_timeout=default_frame_timeout;
             fb=default_fb;
@@ -1507,7 +1508,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           {
             if (simplicity == 0 || (simplicity & 0x08) == 0x08)
               {
-                int
+                unsigned int
                   delay;
 
                 /*
@@ -1552,7 +1553,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 ((clip.left != 0) || (clip.top != 0) ||
                 (image_width != mng_width) || (image_height != mng_height)))
               {
-                int
+                unsigned int
                   delay;
 
                 /*
@@ -1601,7 +1602,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           }
         if (framing_mode == 1 || framing_mode == 3)
           {
-            image->delay=frame_delay;
+            image->delay=(unsigned int) frame_delay;
             frame_delay = default_frame_delay;
           }
         else
@@ -1688,7 +1689,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     image->depth=ping_info->bit_depth;
     if (ping_info->bit_depth < 8)
       {
-        if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
+        if ((ping_info->color_type == PNG_COLOR_TYPE_PALETTE))
           png_set_packing(ping);
         image->depth=8;
       }
@@ -1895,11 +1896,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     image->columns=(unsigned int) ping_info->width;
     image->rows=(unsigned int) ping_info->height;
     if ((ping_info->color_type == PNG_COLOR_TYPE_PALETTE) ||
-        (ping_info->color_type == PNG_COLOR_TYPE_GRAY
-#if 0
-        && ping_info->bit_depth<=8
-#endif
-))
+        (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
+        (ping_info->color_type == PNG_COLOR_TYPE_GRAY))
       {
         image->class=PseudoClass;
         image->colors=1 << ping_info->bit_depth;
@@ -2409,9 +2407,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       image_found++;
     }
   if (ticks_per_second)
-     image->delay=100*final_delay/ticks_per_second;
+     image->delay=(unsigned int) (100*final_delay/ticks_per_second);
   else
-     image->delay=final_delay;
+     image->delay=(unsigned int) final_delay;
   while (image->previous != (Image *) NULL)
   {
     image_count++;
