@@ -410,11 +410,11 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *crop_info,
       "geometry dimensions are zero");
   if ((page.width == image->columns) && (page.height == image->rows) &&
       (page.x == 0) && (page.y == 0))
-    return(CloneImage(image,0,0,False,exception));
+    return(CloneImage(image,0,0,True,exception));
   /*
     Initialize crop image attributes.
   */
-  crop_image=CloneImage(image,page.width,page.height,False,exception);
+  crop_image=CloneImage(image,page.width,page.height,True,exception);
   if (crop_image == (Image *) NULL)
     return((Image *) NULL);
   /*
@@ -749,7 +749,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  flip_image=CloneImage(image,image->columns,image->rows,False,exception);
+  flip_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (flip_image == (Image *) NULL)
     return((Image *) NULL);
   /*
@@ -835,7 +835,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  flop_image=CloneImage(image,image->columns,image->rows,False,exception);
+  flop_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (flop_image == (Image *) NULL)
     return((Image *) NULL);
   /*
@@ -1288,7 +1288,7 @@ MagickExport Image *RollImage(const Image *image,const long x_offset,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  roll_image=CloneImage(image,image->columns,image->rows,False,exception);
+  roll_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (roll_image == (Image *) NULL)
     return((Image *) NULL);
   /*

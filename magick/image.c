@@ -983,9 +983,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       clone_image->cache=ReferenceCache(image->cache);
     }
   clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
-  if (clone_image->orphan || orphan)
+  if (orphan)
     {
-      clone_image->orphan=False;
       clone_image->exempt=True;
       clone_image->previous=(Image *) NULL;
       clone_image->next=(Image *) NULL;
@@ -2421,25 +2420,22 @@ MagickExport void DestroyImage(Image *image)
   DestroyBlobInfo(image->blob);
   if (image->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&image->semaphore);
-  if (!image->orphan)
+  /*
+    Unlink from linked list.
+  */
+  if (image->previous != (Image *) NULL)
     {
-      /*
-        Unlink from linked list.
-      */
-      if (image->previous != (Image *) NULL)
-        {
-          if (image->next != (Image *) NULL)
-            image->previous->next=image->next;
-          else
-            image->previous->next=(Image *) NULL;
-        }
       if (image->next != (Image *) NULL)
-        {
-          if (image->previous != (Image *) NULL)
-            image->next->previous=image->previous;
-          else
-            image->next->previous=(Image *) NULL;
-        }
+        image->previous->next=image->next;
+      else
+        image->previous->next=(Image *) NULL;
+    }
+  if (image->next != (Image *) NULL)
+    {
+      if (image->previous != (Image *) NULL)
+        image->next->previous=image->previous;
+      else
+        image->next->previous=(Image *) NULL;
     }
   LiberateMemory((void **) &image);
 }

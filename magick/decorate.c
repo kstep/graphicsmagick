@@ -106,7 +106,7 @@ MagickExport Image *BorderImage(const Image *image,
   frame_info.y=(long) border_info->height;
   frame_info.inner_bevel=0;
   frame_info.outer_bevel=0;
-  clone_image=CloneImage(image,0,0,False,exception);
+  clone_image=CloneImage(image,0,0,True,exception);
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
   clone_image->matte_color=image->border_color;
@@ -197,8 +197,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   /*
     Initialize framed image attributes.
   */
-  frame_image=CloneImage(image,frame_info->width,frame_info->height,False,
-    exception);
+  frame_image=
+	  CloneImage(image,frame_info->width,frame_info->height,True,exception);
   if (frame_image == (Image *) NULL)
     return(False);
   SetImageType(frame_image,frame_image->matte_color.opacity !=

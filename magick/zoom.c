@@ -319,8 +319,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  magnify_image=CloneImage(image,2*image->columns,2*image->rows,False,
-    exception);
+  magnify_image=CloneImage(image,2*image->columns,2*image->rows,True,exception);
   if (magnify_image == (Image *) NULL)
     return((Image *) NULL);
   magnify_image->storage_class=DirectClass;
@@ -505,7 +504,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   if ((image->columns < 4) || (image->rows < 4))
     return((Image *) NULL);
-  minify_image=CloneImage(image,image->columns/2,image->rows/2,False,exception);
+  minify_image=CloneImage(image,image->columns/2,image->rows/2,True,exception);
   if (minify_image == (Image *) NULL)
     return((Image *) NULL);
   minify_image->storage_class=DirectClass;
@@ -1072,8 +1071,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
     ThrowImageException(OptionWarning,"Unable to resize image",
       "image dimensions are zero");
   if ((columns == image->columns) && (rows == image->rows) && (blur == 1.0))
-    return(CloneImage(image,0,0,False,exception));
-  resize_image=CloneImage(image,columns,rows,False,exception);
+    return(CloneImage(image,0,0,True,exception));
+  resize_image=CloneImage(image,columns,rows,True,exception);
   if (resize_image == (Image *) NULL)
     return((Image *) NULL);
   /*
@@ -1216,8 +1215,8 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
     ThrowImageException(OptionWarning,"Unable to resize image",
       "image dimensions are zero");
   if ((columns == image->columns) && (rows == image->rows))
-    return(CloneImage(image,0,0,False,exception));
-  sample_image=CloneImage(image,columns,rows,False,exception);
+    return(CloneImage(image,0,0,True,exception));
+  sample_image=CloneImage(image,columns,rows,True,exception);
   if (sample_image == (Image *) NULL)
     return((Image *) NULL);
   /*
@@ -1374,7 +1373,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   assert(exception->signature == MagickSignature);
   if ((columns == 0) || (rows == 0))
     return((Image *) NULL);
-  scale_image=CloneImage(image,columns,rows,False,exception);
+  scale_image=CloneImage(image,columns,rows,True,exception);
   if (scale_image == (Image *) NULL)
     return((Image *) NULL);
   scale_image->storage_class=DirectClass;

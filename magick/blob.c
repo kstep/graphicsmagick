@@ -297,13 +297,10 @@ MagickExport void CloseBlob(Image *image)
       if (image->blob->mapped)
         (void) UnmapBlob(image->blob->data,image->blob->length);
       DetachBlob(image->blob);
-      if (!image->orphan)
-        {
-          while (image->previous != (Image *) NULL)
-            image=image->previous;
-          for ( ; image != (Image *) NULL; image=image->next)
-            DetachBlob(image->blob);
-         }
+      while (image->previous != (Image *) NULL)
+        image=image->previous;
+      for ( ; image != (Image *) NULL; image=image->next)
+        DetachBlob(image->blob);
       return;
     }
   if (image->file == (FILE *) NULL)
@@ -320,13 +317,10 @@ MagickExport void CloseBlob(Image *image)
 #endif
     (void) fclose(image->file);
   image->file=(FILE *) NULL;
-  if (!image->orphan)
-    {
-      while (image->previous != (Image *) NULL)
-        image=image->previous;
-      for ( ; image != (Image *) NULL; image=image->next)
-        image->file=(FILE *) NULL;
-    }
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
+  for ( ; image != (Image *) NULL; image=image->next)
+    image->file=(FILE *) NULL;
 }
 
 /*

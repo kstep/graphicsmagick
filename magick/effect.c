@@ -123,7 +123,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  noise_image=CloneImage(image,image->columns,image->rows,False,exception);
+  noise_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
   noise_image->storage_class=DirectClass;
@@ -406,7 +406,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   /*
     Allocate blur image.
   */
-  blur_image=CloneImage(image,image->columns,image->rows,False,exception);
+  blur_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (blur_image == (Image *) NULL)
     {
       LiberateMemory((void **) &kernel);
@@ -503,7 +503,7 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  charcoal_image=CloneImage(image,0,0,False,exception);
+  charcoal_image=CloneImage(image,0,0,True,exception);
   if (charcoal_image == (Image *) NULL)
     return((Image *) NULL);
   SetImageType(charcoal_image,GrayscaleType);
@@ -587,7 +587,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  colorize_image=CloneImage(image,image->columns,image->rows,False,exception);
+  colorize_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (colorize_image == (Image *) NULL)
     return((Image *) NULL);
   SetImageType(colorize_image,TrueColorType);
@@ -708,7 +708,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionWarning,"Unable to convolve image",
       "image smaller than kernel width");
-  convolve_image=CloneImage(image,image->columns,image->rows,False,exception);
+  convolve_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (convolve_image == (Image *) NULL)
     return((Image *) NULL);
   convolve_image->storage_class=DirectClass;
@@ -835,7 +835,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  despeckle_image=CloneImage(image,image->columns,image->rows,False,exception);
+  despeckle_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (despeckle_image == (Image *) NULL)
     return((Image *) NULL);
   despeckle_image->storage_class=DirectClass;
@@ -1157,7 +1157,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   if ((image->columns < 5) || (image->rows < 5))
     return((Image *) NULL);
-  enhance_image=CloneImage(image,image->columns,image->rows,False,exception);
+  enhance_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (enhance_image == (Image *) NULL)
     return((Image *) NULL);
   enhance_image->storage_class=DirectClass;
@@ -1363,7 +1363,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  implode_image=CloneImage(image,image->columns,image->rows,False,exception);
+  implode_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (implode_image == (Image *) NULL)
     return((Image *) NULL);
   SetImageType(implode_image,implode_image->background_color.opacity !=
@@ -1548,7 +1548,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionWarning,"Unable to median filter image",
       "image smaller than kernel radius");
-  median_image=CloneImage(image,image->columns,image->rows,False,exception);
+  median_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (median_image == (Image *) NULL)
     return((Image *) NULL);
   median_image->storage_class=DirectClass;
@@ -1924,7 +1924,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   /*
     Allocate blur image.
   */
-  blur_image=CloneImage(image,image->columns,image->rows,False,exception);
+  blur_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (blur_image == (Image *) NULL)
     {
       LiberateMemory((void **) &kernel);
@@ -2045,7 +2045,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionWarning,"Unable to oil paint",
       "image smaller than radius");
-  paint_image=CloneImage(image,0,0,False,exception);
+  paint_image=CloneImage(image,0,0,True,exception);
   if (paint_image == (Image *) NULL)
     return((Image *) NULL);
   paint_image->storage_class=DirectClass;
@@ -2362,7 +2362,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionWarning,"Unable to noise filter image",
       "image smaller than kernel radius");
-  noise_image=CloneImage(image,image->columns,image->rows,False,exception);
+  noise_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
   noise_image->storage_class=DirectClass;
@@ -2556,7 +2556,7 @@ MagickExport Image *ShadeImage(const Image *image,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  shade_image=CloneImage(image,image->columns,image->rows,False,exception);
+  shade_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (shade_image == (Image *) NULL)
     return((Image *) NULL);
   shade_image->storage_class=DirectClass;
@@ -2864,7 +2864,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
   /*
     Initialize spread image attributes.
   */
-  spread_image=CloneImage(image,image->columns,image->rows,False,exception);
+  spread_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (spread_image == (Image *) NULL)
     return((Image *) NULL);
   spread_image->storage_class=DirectClass;
@@ -2963,7 +2963,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   assert(watermark->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  stegano_image=CloneImage(image,0,0,False,exception);
+  stegano_image=CloneImage(image,0,0,True,exception);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
   SetImageType(stegano_image,TrueColorType);
@@ -3089,7 +3089,7 @@ MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
   /*
     Initialize stereo image attributes.
   */
-  stereo_image=CloneImage(image,image->columns,image->rows,False,exception);
+  stereo_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (stereo_image == (Image *) NULL)
     return((Image *) NULL);
   SetImageType(stereo_image,TrueColorType);
@@ -3188,7 +3188,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  swirl_image=CloneImage(image,image->columns,image->rows,False,exception);
+  swirl_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (swirl_image == (Image *) NULL)
     return((Image *) NULL);
   SetImageType(swirl_image,swirl_image->background_color.opacity !=
