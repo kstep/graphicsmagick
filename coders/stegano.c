@@ -89,9 +89,9 @@
 static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-#define GetBit(a,i) (((a) >> (i)) & 1L)
+#define GetBit(a,i) (((a) >> (i)) & 1UL)
 #define SetBit(a,i,set) \
-  a=(Quantum) ((set) ? (a) | (1L << (i)) : (a) & ~(1L << (i)))
+  a=(Quantum) ((set) ? (a) | (1UL << (i)) : (a) & ~(1UL << (i)))
 
   Image
     *image,
