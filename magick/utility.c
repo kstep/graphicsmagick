@@ -311,7 +311,6 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
         }
       }
     }
-  ReacquireMemory((void **) &decode,i);
   *length=i;
   return(decode);
 }
@@ -392,7 +391,6 @@ MagickExport char *Base64Encode(const unsigned char *source,const size_t length)
       encode[i++]='=';
     }
   encode[i++]='\0';
-  ReacquireMemory((void **) &encode,i);
   return(encode);
 }
 
