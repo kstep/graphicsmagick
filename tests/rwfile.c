@@ -164,7 +164,7 @@ int main ( int argc, char **argv )
       !strcmp( "YUV", format )
       )
     {
-      size = AllocateMemory( 40 );
+      size = AcquireMemory( 40 );
       sprintf( size, "%dx%d", columns, rows );
     }
 
