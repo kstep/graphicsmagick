@@ -1,3 +1,9 @@
+2003-10-08  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/attribute.c (TraceSVGClippingPath): optimized for speed
+	and precision in clipping mask generation by using lines to
+	connect Bezier curve control points where applicable.
+
 2003-10-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/t/tiff/read.t: Added 16-color and 256 color

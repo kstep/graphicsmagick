@@ -549,7 +549,7 @@ static char *TraceSVGClippingPath(unsigned char *blob,size_t length,
               }
             if (!in_subpath)
               {
-                FormatString(message,"M %.4f,%.4f\n",point[1].x,point[1].y);
+                FormatString(message,"M %.6f,%.6f\n",point[1].x,point[1].y);
                 for (i=0; i < 3; i++)
                 {
                   first[i]=point[i];
@@ -558,9 +558,25 @@ static char *TraceSVGClippingPath(unsigned char *blob,size_t length,
               }
             else
               {
-                FormatString(message,"C %.4f,%.4f %.4f,%.4f %.4f,%.4f\n",
-                  last[2].x,last[2].y,point[0].x,point[0].y,point[1].x,
-                  point[1].y);
+                /*
+                  Handle special case when Bezier curves are used to describe
+                  straight lines.
+                */
+                if ((last[1].x == last[2].x) && (last[1].y == last[2].y) &&
+                  (point[0].x == point[1].x) && (point[0].y == point[1].y))
+                {
+                  /*
+                    First control point equals first anchor point and last control
+                    point equals last anchow point. Straigt line between anchor points.
+                  */
+                  FormatString(message,"L %.6f,%.6f\n",point[1].x,point[1].y);
+                }
+                else
+                {
+                  FormatString(message,"C %.6f,%.6f %.6f,%.6f %.6f,%.6f\n",
+                    last[2].x,last[2].y,point[0].x,point[0].y,point[1].x,
+                    point[1].y);
+                }
                 for (i=0; i < 3; i++)
                   last[i]=point[i];
               }
@@ -572,9 +588,21 @@ static char *TraceSVGClippingPath(unsigned char *blob,size_t length,
             */
             if (knot_count == 0)
               {
-                FormatString(message,"C %.4f,%.4f %.4f,%.4f %.4f,%.4f Z\n",last[2].x,
-                  last[2].y,first[0].x,first[0].y,first[1].x,first[1].y);
-                (void) ConcatenateString(&path,message);
+                /*
+                  Same special handling as above except we compare to the
+                  first point in the path and close the path.
+                */
+                if ((last[1].x == last[2].x) && (last[1].y == last[2].y) &&
+                  (first[0].x == first[1].x) && (first[0].y == first[1].y))
+                {
+                  FormatString(message,"L %.6f,%.6f Z\n",first[1].x,first[1].y);
+                }
+                else
+                {
+                  FormatString(message,"C %.6f,%.6f %.6f,%.6f %.6f,%.6f Z\n",last[2].x,
+                    last[2].y,first[0].x,first[0].y,first[1].x,first[1].y);
+                  (void) ConcatenateString(&path,message);
+                }
                 in_subpath=False;
               }
           }
