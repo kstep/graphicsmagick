@@ -113,9 +113,6 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   unsigned int
     status;
 
-  unsigned long
-    length;
-
   /*
     Initialize Image structure.
   */
@@ -126,29 +123,39 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   if (image->columns == 0)
     ThrowReaderException(OptionWarning,"Must specify image size",image);
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
-  if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  /*
-    Read caption.
-  */
-  length=MaxTextExtent;
-  caption=(char *) AcquireMemory(length);
-  p=caption;
-  if (caption != (char *) NULL)
-    while (ReadBlobString(image,p) != (char *) NULL)
+  if (*image_info->filename != '@')
+    caption=AllocateString(image_info->filename);
+  else
     {
-      p+=strlen(p);
-      if ((p-caption+MaxTextExtent+1) < (long) length)
-        continue;
-      length<<=1;
-      ReacquireMemory((void **) &caption,length);
+      unsigned long
+        length;
+
+      /*
+        Read caption.
+      */
+      status=OpenBlob(image_info,image,ReadBinaryType,exception);
+      if (status == False)
+        ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+      length=MaxTextExtent;
+      caption=(char *) AcquireMemory(length);
+      p=caption;
+      if (caption != (char *) NULL)
+        while (ReadBlobString(image,p) != (char *) NULL)
+        {
+          p+=strlen(p);
+          if ((p-caption+MaxTextExtent+1) < (long) length)
+            continue;
+          length<<=1;
+          ReacquireMemory((void **) &caption,length);
+          if (caption == (char *) NULL)
+            break;
+          p=caption+strlen(caption);
+        }
       if (caption == (char *) NULL)
-        break;
-      p=caption+strlen(caption);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          image);
+      CloseBlob(image);
     }
-  if (caption == (char *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Format caption.
   */
@@ -172,13 +179,13 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   }
   if (image->rows == 0)
     image->rows=(i+1)*metrics.height;
+  SetImage(image,OpaqueOpacity);
   /*
     Draw caption.
   */
-  SetImage(image,OpaqueOpacity);
+  (void) strcpy(draw_info->text,caption);
   FormatString(geometry,"+%g+%g",0.5*metrics.max_advance,metrics.ascent);
   draw_info->geometry=AllocateString(geometry);
-  (void) strcpy(draw_info->text,caption);
   (void) AnnotateImage(image,draw_info);
   DestroyDrawInfo(draw_info);
   LiberateMemory((void **) &caption);
