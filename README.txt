@@ -402,12 +402,6 @@ MAGICK DELEGATES
       The DPS extension is less robust than Ghostscript in that it will only
       rasterize one page of a multi-page document.
 
-    o ImageMagick requires the FlashPix SDK available from
-
-          http://www.digitalimaging.org/i_flashpix.html
-
-      to read and write the FPX image format.
-
     o ImageMagick requires the NCSA HDF library available via anonymous FTP
       as
 

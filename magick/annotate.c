@@ -202,7 +202,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
       {
         MagickWarning(ResourceLimitWarning,"Unable to annotate image",
           (char *) NULL);
-        for ( ; textlist[i] != (char *) NULL; i++)
+        for (i++ ; textlist[i] != (char *) NULL; i++)
           FreeMemory(textlist[i]);
         FreeMemory(textlist);
         DestroyAnnotateInfo(local_info);
