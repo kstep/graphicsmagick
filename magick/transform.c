@@ -1015,6 +1015,9 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
           cmsHTRANSFORM
             transform;
 
+          icColorSpaceSignature
+            profilespace;
+
           int
             intent,
             y;
@@ -1041,6 +1044,24 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
               (transform_profile == (cmsHPROFILE) NULL))
             ThrowBinaryException(ResourceLimitWarning,"Unable to manage color",
               "failed to open color profiles");
+
+          profilespace = cmsGetColorSpace(transform_profile);
+          switch (profilespace)
+          {
+            case icSigCmykData:profile_image->colorspace = CMYKColorspace; break;
+            case icSigYCbCrData:profile_image->colorspace = YCbCrColorspace; break;
+            case icSigLuvData:profile_image->colorspace = YUVColorspace; break;
+            case icSigGrayData:profile_image->colorspace = GRAYColorspace; break;
+            case icSigRgbData:profile_image->colorspace = RGBColorspace; break;
+            case icSigCmyData:
+            case icSigXYZData:
+            case icSigLabData:
+            case icSigLuvKData:
+            case icSigHsvData:
+            case icSigHlsData:
+            case icSigYxyData:
+            default:profile_image->colorspace = RGBColorspace; break;
+          }
           switch (image->rendering_intent)
           {
             case AbsoluteIntent: intent=INTENT_ABSOLUTE_COLORIMETRIC; break;
@@ -1099,10 +1120,6 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
           cmsDeleteTransform(transform);
           cmsCloseProfile(image_profile);
           cmsCloseProfile(transform_profile);     
-          if (profile_image->colorspace == CMYKColorspace)
-            image->colorspace=CMYKColorspace;
-          if (profile_image->colorspace == RGBColorspace)
-            image->colorspace=RGBColorspace;
 #endif
           LiberateMemory((void **) &image->color_profile.info);
         }
