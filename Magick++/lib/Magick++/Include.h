@@ -182,11 +182,14 @@ namespace Magick
   using MagickLib::UndefinedType;
   using MagickLib::BilevelType;
   using MagickLib::GrayscaleType;
+  using MagickLib::GrayscaleMatteType;
   using MagickLib::PaletteType;
   using MagickLib::PaletteMatteType;
   using MagickLib::TrueColorType;
   using MagickLib::TrueColorMatteType;
   using MagickLib::ColorSeparationType;
+  using MagickLib::ColorSeparationMatteType;
+  using MagickLib::OptimizeType;
   
   // Interlace types
   using MagickLib::InterlaceType;
