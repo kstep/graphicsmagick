@@ -382,7 +382,20 @@ static void InitializeModuleSearchPath(void)
       for( i=0; module_path[i]; ++i)
         {
           if(i != 0)
-            strcat(scratch,":");
+            {
+#if !defined(_VISUALC_)
+              strcat(scratch,":");
+#else
+              char temp[2];
+              temp[0]=DirectoryListSeparator;
+              temp[1]='\0';
+              strcat(scratch,temp);
+#endif
+            }
+#if defined(_VISUALC_)
+          strcat(module_path[i],"\\");
+          strcat(module_path[i],ModuleSearchSpec);
+#endif
           strcat(scratch,module_path[i]);
         }
       lt_dlsetsearchpath(scratch);
@@ -524,11 +537,7 @@ Export char **ListModules(void)
 
   for( path_index=0; module_path[path_index]; ++path_index)
     {
-#if defined(_VISUALC_)
-      directory=opendir(ModuleSearchSpec);
-#else
       directory=opendir(module_path[path_index]);
-#endif
       if(directory == (DIR *) NULL)
         continue;
 
@@ -755,8 +764,7 @@ Export int LoadDynamicModule(const char* module)
   register_func=(void (*)(void))lt_dlsym(handle, func_name);
   if (register_func == NULL)
     {
-      printf("WARNING: failed to find symbol : %s\n",
-             lt_dlerror());
+      printf("WARNING: failed to find symbol : %s\n", lt_dlerror());
       return False;
     }
   register_func();
@@ -921,8 +929,7 @@ Export int UnloadDynamicModule(const char* module)
       */
       unregister_func=(void (*)(void))lt_dlsym(module_info->handle, func_name);
       if (unregister_func == NULL)
-        printf("WARNING: failed to find symbol : %s\n",
-               lt_dlerror());
+        printf("WARNING: failed to find symbol : %s\n", lt_dlerror());
       else
         unregister_func();
 

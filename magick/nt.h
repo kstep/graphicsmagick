@@ -33,7 +33,7 @@ extern "C" {
 #define SAFE_GLOBAL
 #endif
 #define CoderModuleDirectory "."
-#define ModuleSearchSpec ".\\IM_MOD_*.dll"
+#define ModuleSearchSpec "IM_MOD_*.dll"
 /*
   Typedef declarations.
 */
@@ -67,7 +67,8 @@ struct dirent
 */
 extern Export char
   *SetClientName(const char *),
-  *lt_dlerror(void);
+  *lt_dlerror(void),
+  *ntgetlasterror(void);
 
 extern Export int
   Exit(int),
