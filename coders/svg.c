@@ -317,67 +317,34 @@ static char **GetTransformTokens(const char *text,int *number_tokens)
   /*
     Determine the number of arguments.
   */
-  for (p=text; *p != '\0'; )
+  for (p=text; *p != '\0'; p++)
   {
-    while (isspace((int) (*p)))
-      p++;
-    (*number_tokens)++;
-    if (*p == '"')
-      for (p++; (*p != '"') && (*p != '\0'); p++);
-    if (*p == '\'')
-      for (p++; (*p != '\'') && (*p != '\0'); p++);
-    while (!isspace((int) (*p)) && (*p != '(') && (*p != '\0'))
-    {
-      p++;
-      if (!isspace((int) *p) && ((*(p-1) == ':') || (*(p-1) == ';')))
-        (*number_tokens)++;
-    }
+    if (*p == '(')
+      (*number_tokens)+=2;
   }
-  tokens=(char **) AcquireMemory((*number_tokens+1)*sizeof(char *));
+  tokens=(char **) AcquireMemory((*number_tokens+2)*sizeof(char *));
   if (tokens == (char **) NULL)
     MagickError(ResourceLimitError,"Unable to convert string to tokens",
       "Memory allocation failed");
   /*
     Convert string to an ASCII list.
   */
+  i=0;
   p=text;
-  for (i=0; i < *number_tokens; i++)
+  for (q=p; *q != '\0'; q++)
   {
-    while (isspace((int) (*p)))
-      p++;
-    q=p;
-    if (*q == '"')
-      {
-        p++;
-        for (q++; (*q != '"') && (*q != '\0'); q++);
-      }
-    else
-      if (*q == '\'')
-        {
-          for (q++; (*q != '\'') && (*q != '\0'); q++);
-          q++;
-        }
-      else
-        while (!isspace((int) (*q)) && (*q != '(') && (*q != '\0'))
-        {
-          q++;
-          if (!isspace((int) *q) && ((*(q-1) == ':') || (*(q-1) == ';')))
-            break;
-        }
-    tokens[i]=(char *) AcquireMemory(q-p+1);
-    if (tokens[i] == (char *) NULL)
-      MagickError(ResourceLimitError,"Unable to convert string to tokens",
-        "Memory allocation failed");
+    if ((*q != '(') && (*q != ')') && (*q != '\0'))
+      continue;
+    tokens[i]=AllocateString(p);
     (void) strncpy(tokens[i],p,q-p);
     tokens[i][q-p]='\0';
-    if ((q > (p+1)) && (tokens[i][q-p-1] == ';'))
-      tokens[i][q-p-1]='\0';
-    p=q;
-    if ((*(q-1) == ':') || (*(q-1) == ';') || (*q == '('))
-      continue;
-    while (!isspace((int) (*p)) && (*p != '\0'))
-      p++;
+    Strip(tokens[i++]);
+    p=q+1;
   }
+  tokens[i]=AllocateString(p);
+  (void) strncpy(tokens[i],p,q-p);
+  tokens[i][q-p]='\0';
+  Strip(tokens[i++]);
   tokens[i]=(char *) NULL;
   return(tokens);
 }
@@ -889,7 +856,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 keyword=(char *) tokens[j];
                 value=(char *) tokens[j+1];
                 if (svg_info->verbose)
-                  (void) fprintf(stdout,"    %s %s\n",keyword,value);
+                  (void) fprintf(stdout,"    %s: %s\n",keyword,value);
                 switch (*keyword)
                 {
                   case 'F':
@@ -1098,7 +1065,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 keyword=(char *) tokens[j];
                 value=(char *) tokens[j+1];
                 if (svg_info->verbose)
-                  (void) fprintf(stdout,"    %s %s\n",keyword,value);
+                  (void) fprintf(stdout,"    %s: %s\n",keyword,value);
                 current=transform;
                 affine.sx=1.0;
                 affine.rx=0.0;
@@ -1113,7 +1080,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"matrix") == 0)
                       {
-                        p=(char *) (value+1);
+                        p=(char *) value;
                         affine.sx=strtod(p,&p);
                         if (*p ==',')
                           p++;
@@ -1142,7 +1109,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         double
                           angle;
 
-                        angle=GetUserSpaceCoordinateValue(svg_info,value+1);
+                        angle=GetUserSpaceCoordinateValue(svg_info,value);
                         affine.sx=(-cos(DegreesToRadians(fmod(angle,360.0))));
                         affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
                         affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
@@ -1156,10 +1123,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"scale") == 0)
                       {
-                        for (p=(char *) value+1; *p != '\0'; p++)
+                        for (p=(char *) value; *p != '\0'; p++)
                           if (isspace((int) (*p)) || (*p == ','))
                             break;
-                        affine.sx=GetUserSpaceCoordinateValue(svg_info,value+1);
+                        affine.sx=GetUserSpaceCoordinateValue(svg_info,value);
                         affine.sy=affine.sx;
                         if (*p != '\0')
                           affine.sy=GetUserSpaceCoordinateValue(svg_info,p+1);
@@ -1170,7 +1137,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                         affine.sx=svg_info->x_resolution/72.0;
                         affine.ry=tan(DegreesToRadians(fmod(
-                          GetUserSpaceCoordinateValue(svg_info,value+1),
+                          GetUserSpaceCoordinateValue(svg_info,value),
                           360.0)));
                         affine.sy=svg_info->y_resolution/72.0;
                         break;
@@ -1179,7 +1146,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                         affine.sx=svg_info->x_resolution/72.0;
                         affine.rx=tan(DegreesToRadians(fmod(
-                          GetUserSpaceCoordinateValue(svg_info,value+1),
+                          GetUserSpaceCoordinateValue(svg_info,value),
                           360.0)));
                         affine.sy=svg_info->y_resolution/72.0;
                         break;
@@ -1191,10 +1158,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"translate") == 0)
                       {
-                        for (p=(char *) value+1; *p != '\0'; p++)
+                        for (p=(char *) value; *p != '\0'; p++)
                           if (isspace((int) (*p)) || (*p == ','))
                             break;
-                        affine.tx=GetUserSpaceCoordinateValue(svg_info,value+1);
+                        affine.tx=GetUserSpaceCoordinateValue(svg_info,value);
                         affine.ty=affine.tx;
                         if (*p != '\0')
                           affine.ty=GetUserSpaceCoordinateValue(svg_info,p+1);
@@ -1889,7 +1856,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->page != (char *) NULL)
     CloneString(&svg_info.page,image_info->page);
   if (svg_info.verbose)
-    (void) fprintf(stdout,"Begin SAX\n");
+    (void) fprintf(stdout,"begin SAX\n");
   xmlSubstituteEntitiesDefault(1);
   SAXHandler=(&SAXHandlerStruct);
   n=ReadBlob(image,4,buffer);
@@ -1903,7 +1870,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   n=xmlParseChunk(svg_info.parser,buffer,0,1);
   xmlFreeParserCtxt(svg_info.parser);
   if (svg_info.verbose)
-    (void) fprintf(stdout,"End SAX\n");
+    (void) fprintf(stdout,"end SAX\n");
   xmlCleanupParser();
   (void) fclose(file);
   CloseBlob(image);

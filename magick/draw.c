@@ -89,7 +89,7 @@ typedef struct _EdgeInfo
 
   int
     direction,
-    hidden,
+    visibility,
     highwater;
 
   double
@@ -679,7 +679,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   status=False;
   (void) SetImageAttribute(image,"[MVG]",primitive);
   if (graphic_context[n]->verbose)
-    (void) fprintf(stdout,"Begin vector-graphics\n");
+    (void) fprintf(stdout,"begin vector-graphics\n");
   for (q=primitive; *q != '\0'; )
   {
     /*
@@ -1034,17 +1034,30 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("stroke-dasharray",keyword) == 0)
           {
-            graphic_context[n]->dash_pattern=(unsigned int *)
-              AcquireMemory(256*sizeof(unsigned int));
-            if (graphic_context[n]->dash_pattern == (unsigned int *) NULL)
+            if (IsGeometry(q))
               {
-                ThrowException(&image->exception,ResourceLimitWarning,
-                  "Unable to draw image","Memory allocation failed");
+                graphic_context[n]->dash_pattern=(unsigned int *)
+                  AcquireMemory(256*sizeof(unsigned int));
+                if (graphic_context[n]->dash_pattern == (unsigned int *) NULL)
+                  {
+                    ThrowException(&image->exception,ResourceLimitWarning,
+                      "Unable to draw image","Memory allocation failed");
+                    break;
+                  }
+                for (x=0; IsGeometry(q) && (x < 255); x++)
+                  graphic_context[n]->dash_pattern[x]=
+                    (unsigned int) strtod(q,&q);
+                graphic_context[n]->dash_pattern[x]=0;
                 break;
               }
-            for (x=0; IsGeometry(q) && (x < 255); x++)
-              graphic_context[n]->dash_pattern[x]=(unsigned int) strtod(q,&q);
-            graphic_context[n]->dash_pattern[x]=0;
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            if (LocaleCompare(value,"none") != 0)
+              break;
+            if (graphic_context[n]->dash_pattern != (unsigned int *) NULL)
+              LiberateMemory((void **) &graphic_context[n]->dash_pattern);
+            graphic_context[n]->dash_pattern=(unsigned int *) NULL;
             break;
           }
         if (LocaleCompare("stroke-dashoffset",keyword) == 0)
@@ -1515,7 +1528,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       LiberateMemory((void **) &primitive_info->text);
   }
   if (graphic_context[n]->verbose)
-    (void) fprintf(stdout,"End vector-graphics\n");
+    (void) fprintf(stdout,"end vector-graphics\n");
   /*
     Free resources.
   */
@@ -1599,7 +1612,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
   int
     direction,
     edge,
-    hidden,
+    visibility,
     next_direction,
     number_edges,
     number_points;
@@ -1630,7 +1643,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
     return((PolygonInfo *) NULL);
   direction=0;
   edge=0;
-  hidden=False;
+  visibility=False;
   n=0;
   number_points=0;
   points=(PointInfo *) NULL;
@@ -1657,7 +1670,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
             polygon_info->edges[edge].number_points=n;
             polygon_info->edges[edge].scanline=(-1.0);
             polygon_info->edges[edge].highwater=0;
-            polygon_info->edges[edge].hidden=hidden;
+            polygon_info->edges[edge].visibility=visibility;
             polygon_info->edges[edge].direction=direction > 0;
             if (direction < 0)
               ReversePoints(points,n);
@@ -1666,7 +1679,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
             polygon_info->edges[edge].bounds.y1=points[0].y;
             polygon_info->edges[edge].bounds.y2=points[n-1].y;
             points=(PointInfo *) NULL;
-            hidden=False;
+            visibility=False;
             edge++;
           }
         if (points == (PointInfo *) NULL)
@@ -1676,7 +1689,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
             if (points == (PointInfo *) NULL)
               return((PolygonInfo *) NULL);
           }
-        hidden=path_info[i].code == HiddenCode;
+        visibility=path_info[i].code == HiddenCode;
         point=path_info[i].point;
         points[0]=point;
         bounds.x1=point.x;
@@ -1708,7 +1721,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
         polygon_info->edges[edge].number_points=n;
         polygon_info->edges[edge].scanline=(-1.0);
         polygon_info->edges[edge].highwater=0;
-        polygon_info->edges[edge].hidden=hidden;
+        polygon_info->edges[edge].visibility=visibility;
         polygon_info->edges[edge].direction=direction > 0;
         if (direction < 0)
           ReversePoints(points,n);
@@ -1721,7 +1734,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
         if (points == (PointInfo *) NULL)
           return((PolygonInfo *) NULL);
         n=1;
-        hidden=False;
+        visibility=False;
         points[0]=point;
         bounds.x1=point.x;
         bounds.x2=point.x;
@@ -1762,7 +1775,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
           polygon_info->edges[edge].number_points=n;
           polygon_info->edges[edge].scanline=(-1.0);
           polygon_info->edges[edge].highwater=0;
-          polygon_info->edges[edge].hidden=hidden;
+          polygon_info->edges[edge].visibility=visibility;
           polygon_info->edges[edge].direction=direction > 0;
           if (direction < 0)
             ReversePoints(points,n);
@@ -1770,7 +1783,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
           polygon_info->edges[edge].bounds=bounds;
           polygon_info->edges[edge].bounds.y1=points[0].y;
           polygon_info->edges[edge].bounds.y2=points[n-1].y;
-          hidden=False;
+          visibility=False;
           edge++;
         }
     }
@@ -2067,13 +2080,13 @@ static void PrintPathInfo(const PathInfo *path_info)
   register const PathInfo
     *p;
 
-  (void) fprintf(stdout,"  Begin vector-path\n");
+  (void) fprintf(stdout,"  begin vector-path\n");
   for (p=path_info; p->code != EndCode; p++)
     (void) fprintf(stdout,"    %g,%g %s\n",p->point.x,p->point.y,
-      p->code == HiddenCode ? "moveto hidden" :
+      p->code == HiddenCode ? "moveto visibility" :
       p->code == OpenCode ? "moveto open" : p->code == MoveToCode ? "moveto" :
       p->code == LineToCode ? "lineto" : "?");
-  (void) fprintf(stdout,"  End vector-path\n");
+  (void) fprintf(stdout,"  end vector-path\n");
 }
 
 static void PrintPolygonInfo(const PolygonInfo *polygon_info)
@@ -2085,19 +2098,19 @@ static void PrintPolygonInfo(const PolygonInfo *polygon_info)
     i,
     j;
 
-  (void) fprintf(stdout,"  Begin active-edge\n");
+  (void) fprintf(stdout,"  begin active-edge\n");
   p=polygon_info->edges;
   for (i=0; i < polygon_info->number_edges; i++)
   {
-    (void) fprintf(stdout,
-      "    edge %d, direction = %s, hidden = %s (%g,%g) - (%g,%g)\n",i,
-      p->direction ? "down" : "up",p->hidden ? "hide" : "show",
+    (void) fprintf(stdout,"    edge %d:\n      direction: %s\n      "
+      "visibility: %s\n      bounds: %g,%g - %g,%g\n",i,
+      p->direction ? "down" : "up",p->visibility ? "transparent" : "opaque",
       p->bounds.x1,p->bounds.y1,p->bounds.x2,p->bounds.y2);
     for (j=0; j < p->number_points; j++)
-      (void) fprintf(stdout,"      (%g,%g)\n",p->points[j].x,p->points[j].y);
+      (void) fprintf(stdout,"        %g,%g\n",p->points[j].x,p->points[j].y);
     p++;
   }
-  (void) fprintf(stdout,"  End active-edge\n");
+  (void) fprintf(stdout,"  end active-edge\n");
 }
 
 static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
@@ -2170,7 +2183,7 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
     if (coordinates <= 0)
       {
         coordinates=primitive_info[i].coordinates;
-        (void) fprintf(stdout,"  Begin open (%d)\n",coordinates);
+        (void) fprintf(stdout,"  begin open (%d)\n",coordinates);
         first=point;
       }
     point=primitive_info[i].point;
@@ -2186,9 +2199,9 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
       continue;
     if ((fabs(first.x-point.x) <= MagickEpsilon) &&
         (fabs(first.y-point.y) <= MagickEpsilon))
-      (void) fprintf(stdout,"  End open (%d)\n",coordinates);
+      (void) fprintf(stdout,"  end open (%d)\n",coordinates);
     else
-      (void) fprintf(stdout,"  End last (%d)\n",coordinates);
+      (void) fprintf(stdout,"  end last (%d)\n",coordinates);
   }
 }
 
@@ -2336,7 +2349,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                   p->highwater=j;
                 }
               distance=DistanceToLine(p->points+j-1,x,y);
-              if (!p->hidden)
+              if (!p->visibility)
                 {
                   if ((distance <= ((mid+0.5)*(mid+0.5))) &&
                       (stroke_opacity < 1.0))
