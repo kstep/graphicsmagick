@@ -205,36 +205,6 @@ typedef struct _TypeMetric
     underline_thickness;
 } TypeMetric;
 
-/*
-  We don't want to depend on Ghostscript's iapi.h so equivalent
-  function vectors are defined here.
-*/
-
-#ifndef gs_main_instance_DEFINED
-# define gs_main_instance_DEFINED
-typedef struct gs_main_instance_s gs_main_instance;
-#endif
-
-#if !defined(MagickDLLCall)
-#  if defined(WIN32)
-#    define MagickDLLCall __stdcall
-#  else
-#    define MagickDLLCall
-#  endif
-#endif
-
-typedef struct _GhostscriptVectors
-{
-  int
-    (MagickDLLCall *exit)(gs_main_instance *),
-    (MagickDLLCall *init_with_args)(gs_main_instance *,int,char **),
-    (MagickDLLCall *new_instance)(gs_main_instance **,void *),
-    (MagickDLLCall *run_string)(gs_main_instance *,const char *,int,int *);
-
-  void
-    (MagickDLLCall *delete_instance)(gs_main_instance *);
-} GhostscriptVectors;
-
 
 /*
   Method declarations.
