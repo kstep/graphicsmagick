@@ -210,6 +210,17 @@ typedef enum
 
 typedef enum
 {
+  UndefinedType,
+  BilevelType,
+  GrayscaleType,
+  PaletteType,
+  TrueColorType,
+  MatteType,
+  ColorSeparationType
+} ImageType;
+
+typedef enum
+{
   UndefinedInterlace,
   NoInterlace,
   LineInterlace,
@@ -457,6 +468,7 @@ typedef struct _MontageInfo
     *title,
     *frame,
     *texture,
+    *pen,
     *font;
 
   unsigned int
@@ -827,6 +839,9 @@ extern Export Image
   *SwirlImage(Image *,double),
   *WaveImage(Image *,double,double),
   *ZoomImage(Image *,const unsigned int,const unsigned int);
+
+extern Export ImageType
+  GetImageType(const ImageInfo *,Image *);
 
 extern Export int
   ParseImageGeometry(char *,int *,int *,unsigned int *,unsigned int *);

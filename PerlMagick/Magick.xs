@@ -187,6 +187,11 @@ static char
     "Forget", "NorthWest", "North", "NorthEast", "West", "Center",
     "East", "SouthWest", "South", "SouthEast", "Static", (char *) NULL
   },
+  *ImageTypes[] =
+  {
+    "Undefined", "Bilevel", "Grayscale", "Palette", "TrueColor", "Matte",
+    "ColorSeparation", (char *) NULL
+  },
   *IntentTypes[] =
   {
     "Undefined", "Saturation", "Perceptual", "Absolute", "Relative",
@@ -378,7 +383,7 @@ static jmp_buf
   Forward declarations.
 */
 static char
-  *CloneString(char *);
+  *CopyString(char *);
 
 static int
   strEQcase(const char *,const char *);
@@ -426,38 +431,38 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
   *cloned_info=(*info);
   if (info->image_info.server_name)
     cloned_info->image_info.server_name=
-      CloneString(info->image_info.server_name);
+      CopyString(info->image_info.server_name);
   if (info->image_info.font)
-    cloned_info->image_info.font=CloneString(info->image_info.font);
+    cloned_info->image_info.font=CopyString(info->image_info.font);
   if (info->image_info.pen)
-    cloned_info->image_info.pen=CloneString(info->image_info.pen);
+    cloned_info->image_info.pen=CopyString(info->image_info.pen);
   if (info->image_info.size)
-    cloned_info->image_info.size=CloneString(info->image_info.size);
+    cloned_info->image_info.size=CopyString(info->image_info.size);
   if (info->image_info.tile)
-    cloned_info->image_info.tile=CloneString(info->image_info.tile);
+    cloned_info->image_info.tile=CopyString(info->image_info.tile);
   if (info->image_info.density)
-    cloned_info->image_info.density=CloneString(info->image_info.density);
+    cloned_info->image_info.density=CopyString(info->image_info.density);
   if (info->image_info.page)
-    cloned_info->image_info.page=CloneString(info->image_info.page);
+    cloned_info->image_info.page=CopyString(info->image_info.page);
   if (info->image_info.dispose)
-    cloned_info->image_info.dispose=CloneString(info->image_info.dispose);
+    cloned_info->image_info.dispose=CopyString(info->image_info.dispose);
   if (info->image_info.delay)
-    cloned_info->image_info.delay=CloneString(info->image_info.delay);
+    cloned_info->image_info.delay=CopyString(info->image_info.delay);
   if (info->image_info.iterations)
-    cloned_info->image_info.iterations=CloneString(info->image_info.iterations);
+    cloned_info->image_info.iterations=CopyString(info->image_info.iterations);
   if (info->image_info.texture)
-    cloned_info->image_info.texture=CloneString(info->image_info.texture);
+    cloned_info->image_info.texture=CopyString(info->image_info.texture);
   if (info->image_info.background_color)
     cloned_info->image_info.background_color=
-      CloneString(info->image_info.background_color);
+      CopyString(info->image_info.background_color);
   if (info->image_info.border_color)
     cloned_info->image_info.border_color=
-      CloneString(info->image_info.border_color);
+      CopyString(info->image_info.border_color);
   if (info->image_info.matte_color)
     cloned_info->image_info.matte_color=
-      CloneString(info->image_info.matte_color);
+      CopyString(info->image_info.matte_color);
   if (info->image_info.undercolor)
-    cloned_info->image_info.undercolor=CloneString(info->image_info.undercolor);
+    cloned_info->image_info.undercolor=CopyString(info->image_info.undercolor);
   return(cloned_info);
 }
 
@@ -466,28 +471,28 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C l o n e S t r i n g                                                     %
+%   C o p y S t r i n g                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloneString makes a duplicate of the given string.
+%  Method CopyString makes a duplicate of the given string.
 %
-%  The format of the CloneString routine is:
+%  The format of the CopyString routine is:
 %
-%      cloned_string=CloneString(string)
+%      cloned_string=CopyString(string)
 %
 %  A description of each parameter follows:
 %
-%    o cloned_string: Method CloneString returns a duplicate of the given
+%    o cloned_string: Method CopyString returns a duplicate of the given
 %      string.
 %
 %    o string: A character string.
 %
 %
 */
-static char *CloneString(char *source)
+static char *CopyString(char *source)
 {
   char
     *destination;
@@ -602,40 +607,6 @@ static double constant(char *name,int sans)
   }
   errno=EINVAL;
   return 0;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C o p y S t r i n g                                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method CopyString allocates memory for the destination string and copies the
-%  source string to that memory location.
-%
-%  The format of the CopyString routine is:
-%
-%      CopyString(destination,source)
-%
-%  A description of each parameter follows:
-%
-%    o destination:  A pointer to a character string.
-%
-%    o source: A character string.
-%
-%
-*/
-static void CopyString(char **destination,char *source)
-{
-  if (*destination)
-    safefree(*destination);
-  *destination=(char *) safemalloc(Extent(source)+1);
-  (void) strcpy(*destination,source);
 }
 
 /*
@@ -1048,7 +1019,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"background"))
         {
           if (info)
-            CopyString(&info->image_info.background_color,SvPV(sval,na));
+            CloneString(&info->image_info.background_color,SvPV(sval,na));
           (void) XQueryColorDatabase(SvPV(sval,na),&target_color);
           for ( ; image; image=image->next)
           {
@@ -1069,7 +1040,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"bordercolor"))
         {
           if (info)
-            CopyString(&info->image_info.border_color,SvPV(sval,na));
+            CloneString(&info->image_info.border_color,SvPV(sval,na));
           (void) XQueryColorDatabase(SvPV(sval,na),&target_color);
           for ( ; image; image=image->next)
           {
@@ -1168,7 +1139,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"delay"))
         {
           if (info)
-            CopyString(&info->image_info.delay,SvPV(sval,na));
+            CloneString(&info->image_info.delay,SvPV(sval,na));
           for ( ; image; image=image->next)
             image->delay=SvIV(sval);
           return;
@@ -1182,7 +1153,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               return;
             }
           if (info)
-            CopyString(&info->image_info.density,SvPV(sval,na));
+            CloneString(&info->image_info.density,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"depth"))
@@ -1196,7 +1167,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"dispose"))
         {
           if (info)
-            CopyString(&info->image_info.dispose,SvPV(sval,na));
+            CloneString(&info->image_info.dispose,SvPV(sval,na));
           for (; image; image=image->next)
             image->dispose=SvIV(sval);
           return;
@@ -1222,7 +1193,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           display:
           if (info)
-            CopyString(&info->image_info.server_name,SvPV(sval,na));
+            CloneString(&info->image_info.server_name,SvPV(sval,na));
           return;
         }
       break;
@@ -1258,17 +1229,15 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               return;
             }
           if (info)
-            {
-              info->image_info.filter=(FilterType) sp;
-              for ( ; image; image=image->next)
-                image->filter=(FilterType) sp;
-            }
+            info->image_info.filter=(FilterType) sp;
+          for ( ; image; image=image->next)
+            image->filter=(FilterType) sp;
           return;
         }
       if (strEQcase(attribute,"font"))
         {
           if (info)
-            CopyString(&info->image_info.font,SvPV(sval,na));
+            CloneString(&info->image_info.font,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"fuzz"))
@@ -1304,7 +1273,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
   iterations:
           if (info)
-            CopyString(&info->image_info.iterations,SvPV(sval,na));
+            CloneString(&info->image_info.iterations,SvPV(sval,na));
           for ( ; image; image=image->next)
             image->iterations=SvIV(sval);
           return;
@@ -1361,7 +1330,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"mattec") || strEQcase(attribute,"matte_color"))
         {
           if (info)
-            CopyString(&info->image_info.matte_color,SvPV(sval,na));
+            CloneString(&info->image_info.matte_color,SvPV(sval,na));
           (void) XQueryColorDatabase(SvPV(sval,na),&target_color);
           for ( ; image; image=image->next)
           {
@@ -1377,11 +1346,11 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             SvIV(sval);
           if (sp < 0)
             {
-              MagickWarning(OptionWarning,"Invalid verbose type",
+              MagickWarning(OptionWarning,"Invalid matte type",
                 SvPV(sval,na));
               return;
             }
-          if (image)
+          for ( ; image; image=image->next)
             image->matte=sp;
           return;
         }
@@ -1422,17 +1391,17 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           p=PostscriptGeometry(SvPV(sval,na));
           if (!p)
             return;
-          for ( ; image; image=image->next)
-            image->page=PostscriptGeometry(SvPV(sval,na));
           if (info)
-            CopyString(&info->image_info.page,p);
+            CloneString(&info->image_info.page,p);
+          for ( ; image; image=image->next)
+            CloneString(&image->page,p);
           DestroyPostscriptGeometry(p);
           return;
         }
       if (strEQcase(attribute,"pen"))
         {
           if (info)
-            CopyString(&info->image_info.pen,SvPV(sval,na));
+            CloneString(&info->image_info.pen,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"pixel"))
@@ -1576,7 +1545,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                     SvPV(sval,na));
                   return;
                 }
-              CopyString(&info->image_info.size,SvPV(sval,na));
+              CloneString(&info->image_info.size,SvPV(sval,na));
             }
           return;
         }
@@ -1588,13 +1557,13 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"tile"))
         {
           if (info)
-            CopyString(&info->image_info.tile,SvPV(sval,na));
+            CloneString(&info->image_info.tile,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"texture"))
         {
           if (info)
-            CopyString(&info->image_info.texture,SvPV(sval,na));
+            CloneString(&info->image_info.texture,SvPV(sval,na));
           return;
         }
      if (strEQcase(attribute,"tree"))
@@ -1611,7 +1580,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"underc"))
         {
           if (info)
-            CopyString(&info->image_info.undercolor,SvPV(sval,na));
+            CloneString(&info->image_info.undercolor,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"unit"))
@@ -1652,7 +1621,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"view"))
         {
           if (info)
-            CopyString(&info->image_info.view,SvPV(sval,na));
+            CloneString(&info->image_info.view,SvPV(sval,na));
           return;
         }
       break;
@@ -3225,6 +3194,22 @@ Get(ref,...)
                s=newSViv(info->quantize_info.tree_depth);
              break;
            }
+          if (strEQcase(attribute,"type"))
+            {
+              if (!image)
+                break;
+              if (info)
+                j=(int) GetImageType(&info->image_info,image);
+              else
+                j=(int) GetImageType((const ImageInfo *) NULL,image);
+              s=newSViv(j);
+              if ((j >= 0) && (j < NumberOf(ImageTypes)-1))
+                {
+                  sv_setpv(s,ImageTypes[j]);
+                  SvIOK_on(s);
+                }
+              break;
+            }
          if (strEQcase(attribute,"type"))
            {
              if (image)
@@ -4062,19 +4047,19 @@ Mogrify(ref,...)
             {
               package_info=ClonePackageInfo(info);
               if (attribute_flag[1])
-                CopyString(&package_info->image_info.font,
+                CloneString(&package_info->image_info.font,
                   argument_list[1].string_reference);
               if (attribute_flag[2])
                package_info->image_info.pointsize=
                  argument_list[2].int_reference;
               if (attribute_flag[3])
-                CopyString(&package_info->image_info.density,
+                CloneString(&package_info->image_info.density,
                   argument_list[3].string_reference);
               if (attribute_flag[5])
-                CopyString(&package_info->image_info.pen,
+                CloneString(&package_info->image_info.pen,
                   argument_list[5].string_reference);
               if (attribute_flag[7])
-                CopyString(&package_info->image_info.server_name,
+                CloneString(&package_info->image_info.server_name,
                   argument_list[7].string_reference);
               GetAnnotateInfo(&package_info->image_info,&annotate);
               if (attribute_flag[0])
@@ -4263,13 +4248,13 @@ Mogrify(ref,...)
             {
               package_info=ClonePackageInfo(info);
               if (attribute_flag[3])
-                CopyString(&package_info->image_info.pen,
+                CloneString(&package_info->image_info.pen,
                   argument_list[3].string_reference);
               if (attribute_flag[5])
-                CopyString(&package_info->image_info.server_name,
+                CloneString(&package_info->image_info.server_name,
                   argument_list[5].string_reference);
               if (attribute_flag[6])
-                CopyString(&package_info->image_info.border_color,
+                CloneString(&package_info->image_info.border_color,
                   argument_list[6].string_reference);
               GetAnnotateInfo(&package_info->image_info,&annotate);
               if (attribute_flag[4])
@@ -4953,7 +4938,8 @@ Montage(ref,...)
           if (strEQcase(attribute,"pen"))
             {
               if (info)
-                CopyString(&info->image_info.pen,SvPV(ST(i),na));
+                CloneString(&info->image_info.pen,SvPV(ST(i),na));
+              montage_info.pen=SvPV(ST(i),na);
               continue;
              }
           if (strEQcase(attribute,"point"))

@@ -1646,19 +1646,18 @@ Export void XDisplayImageInfo(Display *display,
     Display info about the image.
   */
   FormatString(text,"%sImage\n  file: %.1024s\n",text,image->filename);
-  if (IsMonochromeImage(image))
-    (void) strcat(text,"  type: bilevel\n");
-  else
-    if (IsGrayImage(image))
-      (void) strcat(text,"  type: grayscale\n");
-    else
-      if (IsPseudoClass(image))
-        (void) strcat(text,"  type: palette\n");
-      else
-        if (!image->matte)
-          (void) strcat(text,"  type: true color\n");
-        else
-          (void) strcat(text,"  type: true color with transparency\n");
+  (void) strcat(text,"  type: ");
+  switch (GetImageType(&resource_info->image_info,image))
+  {
+    case ColorSeparationType: (void) strcat(text,"color separation"); break;
+    case BilevelType: (void) strcat(text,"bilevel"); break;
+    case GrayscaleType: (void) strcat(text,"grayscale"); break;
+    case PaletteType: (void) strcat(text,"palette"); break;
+    case TrueColorType: (void) strcat(text,"true color");
+    case MatteType: (void) strcat(text,"true color with transparency"); break;
+    default: (void) strcat(text,"undefined"); break;
+  }
+  (void) strcat(text,"\n");
   if (image->class == DirectClass)
     (void) strcat(text,"  class: DirectClass\n");
   else

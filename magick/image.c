@@ -1150,7 +1150,7 @@ Export void CoalesceImages(Image *image)
     Determine if all the images in the sequence are the same size.
   */
   for (p=image->next; p != (Image *) NULL; p=p->next)
-    if ((p->columns != p->previous->columns) || 
+    if ((p->columns != p->previous->columns) ||
         (p->rows != p->previous->rows))
       break;
   if (p == (Image *) NULL)
@@ -2979,19 +2979,17 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     Display verbose info about the image.
   */
   (void) fprintf(file,"Image: %.1024s\n",image->filename);
-  if (IsMonochromeImage(image))
-    (void) fprintf(file,"  type: bilevel\n");
-  else
-    if (IsGrayImage(image))
-      (void) fprintf(file,"  type: grayscale\n");
-    else
-      if (IsPseudoClass(image))
-        (void) fprintf(file,"  type: palette\n");
-      else
-        if (!image->matte)
-          (void) fprintf(file,"  type: true color\n");
-        else
-          (void) fprintf(file,"  type: true color with transparency\n");
+  (void) fprintf(file,"  type: ");
+  switch (GetImageType((const ImageInfo *) NULL,image))
+  {
+    case BilevelType: (void) fprintf(file,"bilevel"); break;
+    case GrayscaleType: (void) fprintf(file,"grayscale"); break;
+    case PaletteType: (void) fprintf(file,"palette"); break;
+    case TrueColorType: (void) fprintf(file,"true color");
+    case MatteType: (void) fprintf(file,"true color with transparency"); break;
+    default: (void) fprintf(file,"undefined"); break;
+  }
+  (void) fprintf(file,"\n");
   if (image->class == DirectClass)
     (void) fprintf(file,"  class: DirectClass\n");
   else
@@ -4765,6 +4763,51 @@ Export void GetImageInfo(ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e T y p e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetImageType returns the type of image (e.g. bilevel, palette, etc).
+%
+%  The format of the GetImageType routine is:
+%
+%      type=GetImageType(image_info,image)
+%
+%  A description of each parameter follows:
+%
+%    o type: Method GetImageType returns a ImageType enum that specifies the
+%      type of the specified image (e.g. bilevel, palette, etc).
+%
+%    o image_info: Specifies a pointer to a ImageInfo structure.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export ImageType GetImageType(const ImageInfo *image_info,Image *image)
+{
+  assert(image != (Image *) NULL);
+  if ((image_info != (ImageInfo *) NULL) &&
+      (image_info->colorspace == CMYKColorspace))
+    return(ColorSeparationType);
+  if (IsMonochromeImage(image))
+    return(BilevelType);
+  if (IsGrayImage(image))
+    return(GrayscaleType);
+  if (IsPseudoClass(image))
+    return(PaletteType);
+  if (!image->matte)
+    return(TrueColorType);
+  return(MatteType);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t M o n t a g e I n f o                                               %
 %                                                                             %
 %                                                                             %
@@ -4795,6 +4838,7 @@ Export void GetMontageInfo(MontageInfo *montage_info)
   montage_info->title=(char *) NULL;
   montage_info->frame=(char *) NULL;
   montage_info->texture=(char *) NULL;
+  montage_info->pen=(char *) NULL;
   montage_info->font=(char *) NULL;
   montage_info->pointsize=atoi(DefaultPointSize);
   montage_info->border_width=DefaultTileBorderWidth;
@@ -5944,7 +5988,7 @@ Export Image *MinifyImage(Image *image)
 %
 %    o modulate: A character string indicating the percent change in brightness,
 %      saturation, and hue in floating point notation separated by commas
-%      (e.g. 10.1,0.0,3.1). 
+%      (e.g. 10.1,0.0,3.1).
 %
 %
 */
@@ -6306,7 +6350,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       {
         int
           count;
-  
+
         /*
           Set image density.
         */
@@ -7519,6 +7563,7 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
     Initialize annotate info.
   */
   GetImageInfo(&local_info);
+  local_info.pen=montage_info->pen;
   local_info.font=montage_info->font;
   local_info.pointsize=montage_info->pointsize;
   local_info.background_color=montage_info->background_color;

@@ -854,12 +854,14 @@ int main(int argc,char **argv)
           if (strncmp("pen",option+1,2) == 0)
             {
               image_info.pen=(char *) NULL;
+              montage_info.pen=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing pen color",option);
                   image_info.pen=argv[i];
+                  montage_info.pen=argv[i];
                 }
               break;
             }

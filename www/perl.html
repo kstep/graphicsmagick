@@ -44,7 +44,7 @@
 <dt>Introduction
 </h2>
 <dd><a href="ftp://204.183.81.131/pub/ImageMagick/perl">PerlMagick</a>, 
-version 1.55, is an objected-oriented <a href="http://www.perl.com/perl/">
+version 1.56, is an objected-oriented <a href="http://www.perl.com/perl/">
 Perl</a> interface to <a href="../ImageMagick.html">ImageMagick</a>.  Use the
 module to read, manipulate, or write an image or image sequence
 from within a Perl script.  This makes it very suitable for Web CGI scripts.
@@ -85,7 +85,7 @@ ImageMagick must already be installed on your system.  Next, get the
 distribution and unpack it as shown below:
 <p>
 <pre>
-    gunzip -c PerlMagick-1.55.tar.gz | tar -xvf -
+    gunzip -c PerlMagick-1.56.tar.gz | tar -xvf -
     cd PerlMagick
 </pre>
 <p>
@@ -983,6 +983,11 @@ Image Attributes
   <td>set the image format</td>
 </tr>
 <tr>
+  <td>matte</td>
+  <td>{True, False}</td>
+  <td>True if the image has transparency</td>
+</tr>
+<tr>
   <td>mattecolor</td>
   <td><i>string</i></td>
   <td>set the image matte color</td>
@@ -1091,6 +1096,11 @@ Image Attributes
   <td>verbose</td>
   <td>{True, False}</td>
   <td>print detailed information about the image</td>
+</tr>
+<tr>
+  <td>view</td>
+  <td><i>string</i></td>
+  <td>FlashPix viewing parameters</td>
 </tr>
 <tr>
   <td>white_point</td>
@@ -1202,11 +1212,6 @@ Image Attributes
   <td>image label</td>
 </tr>
 <tr>
-  <td>matte</td>
-  <td>{True, False}</td>
-  <td>True if the image has transparency</td>
-</tr>
-<tr>
   <td>mean</td>
   <td><i>double</i></td>
   <td>the mean error per pixel computed when an image is color reduced</td>
@@ -1261,11 +1266,6 @@ Image Attributes
   <td>{bilevel, greyscale, palette, true color, true color with transparency, 
     color separation }</td>
   <td>image type</td>
-</tr>
-<tr>
-  <td>view</td>
-  <td><i>string</i></td>
-  <td>FlashPix viewing parameters</td>
 </tr>
 <tr>
   <td>width</td>

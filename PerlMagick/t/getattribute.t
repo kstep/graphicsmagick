@@ -88,7 +88,7 @@ testGetAttribute('input.miff','text',undef);
 testGetAttribute('input.miff','total_colors','256');
 
 ++$test;
-testGetAttribute('input.miff','type','palette');
+testGetAttribute('input.miff','type','Palette');
 
 ++$test;
 testGetAttribute('input.miff','units','undefined units');

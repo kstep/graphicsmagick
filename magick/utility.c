@@ -182,6 +182,46 @@ Export char *BaseFilename(const char *name)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C l o n e S t r i n g                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CloneString allocates memory for the destination string and copies
+%  the source string to that memory location.
+%
+%  The format of the CloneString routine is:
+%
+%      CloneString(destination,source)
+%
+%  A description of each parameter follows:
+%
+%    o destination:  A pointer to a character string.
+%
+%    o source: A character string.
+%
+%
+*/
+void CloneString(char **destination,char *source)
+{
+  if (*destination != (char *) NULL)
+    FreeMemory(*destination);
+  *destination=(char *) AllocateMemory((Extent(source)+1)*sizeof(char));
+  if (*destination == (char *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to allocate string",
+        "Memory allocation failed");
+      return;
+    }
+  (void) strcpy(*destination,source);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C o n v e r t T e x t T o U n i c o d e                                   %
 %                                                                             %
 %                                                                             %
