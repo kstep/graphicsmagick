@@ -403,9 +403,9 @@ yuv_la_LIBADD       =
 bin_SCRIPTS = Magick-config
 
 # Headers which are installed
-include_HEADERS = magick.h api.h classify.h image.h quantize.h gems.h \
-	blob.h compress.h utility.h cache.h cache_io.h monitor.h error.h \
-	memory.h delegates.h timer.h version.h xwindows.h config.h
+include_HEADERS = attributes.h magick.h api.h classify.h image.h quantize.h \
+	gems.h blob.h compress.h utility.h cache.h cache_io.h monitor.h \
+	error.h memory.h delegates.h timer.h version.h xwindows.h config.h
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = animate.h defines.h display.h mac.h mng.h nt.h \
