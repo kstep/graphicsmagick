@@ -706,7 +706,7 @@ static double Mitchell(double x)
 
 static double Quadratic(double x)
 {
-  if (x < 0)
+  if (x < 0.0)
     x=(-x);
   if (x < 0.5)
     return(0.75-x*x);
