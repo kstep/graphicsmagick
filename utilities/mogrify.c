@@ -57,6 +57,7 @@
 %  Where options include:
 %    -affine matrix       drawing transform matrix
 %    -antialias           remove pixel-aliasing
+%    -background color    background color
 %    -blur geometry       blur the image
 %    -border geometry     surround image with a border of color
 %    -bordercolor color   border color
@@ -185,6 +186,7 @@ static void Usage()
     {
       "-affine matrix       drawing transform matrix",
       "-antialias           remove pixel-aliasing",
+      "-background color    background color",
       "-blur radius         blur the image",
       "-border geometry     surround image with a border of color",
       "-bordercolor color   border color",

@@ -58,6 +58,7 @@
 %    -antialias           remove pixel-aliasing
 %    -append              append an image sequence
 %    -average             average an image sequence
+%    -background color    background color
 %    -blur geometry       blur the image
 %    -border geometry     surround image with a border of color
 %    -bordercolor color   border color
@@ -258,6 +259,7 @@ static void Usage()
       "-antialias           remove pixel-aliasing",
       "-append              append an image sequence",
       "-average             average an image sequence",
+      "-background color    background color",
       "-blur geometry       blur the image",
       "-border geometry     surround image with a border of color",
       "-bordercolor color   border color",
