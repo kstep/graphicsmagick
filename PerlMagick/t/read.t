@@ -256,5 +256,5 @@ print("UYVY format ...\n");
 testReadSized( 'input_70x46.uyvy',
    '70x46',
    0,
-   '088c606a61cb7f51728d8409d061d2c19d9ded3346e1d9ee6799e0cdd8a115b3',
+   'd88b2fcee63384f58ad68eb114b10dab96957f9a56a09738cc90e85ecd028c16',
    '03d13172c954470b8da3c817afb2b4f1c1c365dafefb86227d44d40240f95393' );

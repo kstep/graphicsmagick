@@ -2660,7 +2660,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     }
   if (image->blob->temporary)
     (void) remove(clone_info->filename);
-  if (IsSubimage(clone_info->tile,False))
+  if ((image->next != (Image *) NULL) && IsSubimage(clone_info->tile,False))
     {
       char
         *q;
