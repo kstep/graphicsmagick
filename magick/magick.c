@@ -350,7 +350,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
       i;
 
     static char
-      *registry_path_keys[] =
+      *RegistryKeys[] =
       {
         "LibPath",
         "ModulesPath",
@@ -364,9 +364,9 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     /*
       Search windows registry.
     */
-    for (i=0; registry_path_keys[i] != (char *) NULL; i++)
+    for (i=0; RegistryKeys[i] != (char *) NULL; i++)
     {
-      key_value=NTRegistryKeyLookup(registry_path_keys[i]);
+      key_value=NTRegistryKeyLookup(RegistryKeys[i]);
       if (key_value == (char *) NULL)
         continue;
       FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
@@ -378,7 +378,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
           return(path);
         }
       ConcatenateString(&search_path,"; Registry[");
-      ConcatenateString(&search_path,registry_path_keys[i]);
+      ConcatenateString(&search_path,RegistryKeys[i]);
       ConcatenateString(&search_path,"]:");
       ConcatenateString(&search_path,path);
     }
