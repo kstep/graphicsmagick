@@ -209,7 +209,7 @@ jpeg_la_LIBADD      = ../magick/libMagick.la @LIB_JPEG@
 # JPEG 2000 module
 jp2_la_SOURCES     = jp2.c
 jp2_la_LDFLAGS     = -no-undefined -module -avoid-version
-jp2_la_LIBADD      = ../magick/libMagick.la @LIB_JP2@ $(LIB_MATH)
+jp2_la_LIBADD      = ../magick/libMagick.la @LIB_JP2@  @LIB_JPEG@ $(LIB_MATH)
 
 # LABEL module
 label_la_SOURCES     = label.c
