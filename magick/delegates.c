@@ -73,8 +73,8 @@ const char
 static DelegateInfo
   *delegates = (DelegateInfo *) NULL;
 
-static MagickMutex *
-  delegate_mutex = (MagickMutex *) NULL;
+static SemaphoreInfo *
+  delegate_semaphore = (SemaphoreInfo *) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -103,7 +103,7 @@ MagickExport void DestroyDelegateInfo(void)
   register DelegateInfo
     *p;
 
-  Magick_LockMutex(delegate_mutex);
+  EngageSemaphore(delegate_semaphore);
   for (p=delegates; p != (DelegateInfo *) NULL; )
   {
     if (p->commands != (char *) NULL)
@@ -113,7 +113,7 @@ MagickExport void DestroyDelegateInfo(void)
     FreeMemory((void **) &delegate);
   }
   delegates=(DelegateInfo *) NULL;
-  Magick_UnlockMutex(delegate_mutex);
+  DisengageSemaphore(delegate_semaphore);
 }
 
 /*
@@ -159,9 +159,9 @@ MagickExport unsigned int GetDelegateInfo(const char *decode_tag,
     *delegates;
 
   assert(delegate_info != (DelegateInfo *) NULL);
-  Magick_LockMutex(delegate_mutex);
+  EngageSemaphore(delegate_semaphore);
   delegates=SetDelegateInfo((DelegateInfo *) NULL);
-  Magick_UnlockMutex(delegate_mutex);
+  DisengageSemaphore(delegate_semaphore);
   if (delegates == (DelegateInfo *) NULL)
     MagickWarning(DelegateWarning,"no delegates configuration file found",
       DelegateFilename);
@@ -520,9 +520,9 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  Magick_LockMutex(delegate_mutex);
+  EngageSemaphore(delegate_semaphore);
   delegates=SetDelegateInfo((DelegateInfo *) NULL);
-  Magick_UnlockMutex(delegate_mutex);
+  DisengageSemaphore(delegate_semaphore);
   if (delegates == (DelegateInfo *) NULL)
     {
       MagickWarning(DelegateWarning,"no delegates configuration file found",
@@ -764,7 +764,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   if (delegates == (DelegateInfo *) NULL)
     {
       delegates=delegate;
-      Magick_UnlockMutex(delegate_mutex);
+      DisengageSemaphore(delegate_semaphore);
       return(delegates);
     }
   for (p=delegates; p != (DelegateInfo *) NULL; p=p->next)

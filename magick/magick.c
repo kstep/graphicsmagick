@@ -65,8 +65,8 @@
 static MagickInfo
   *magick_list = (MagickInfo *) NULL;
 
-static MagickMutex *
-  magick_mutex = (MagickMutex *) NULL;
+static SemaphoreInfo *
+  magick_semaphore = (SemaphoreInfo *) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -94,7 +94,7 @@ MagickExport void DestroyMagickInfo(void)
   register MagickInfo
     *p;
 
-  Magick_LockMutex(magick_mutex);
+  EngageSemaphore(magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; )
   {
     entry=p;
@@ -105,7 +105,7 @@ MagickExport void DestroyMagickInfo(void)
     FreeMemory((void **) &entry);
   }
   magick_list=(MagickInfo *) NULL;
-  Magick_UnlockMutex(magick_mutex);
+  DisengageSemaphore(magick_semaphore);
 }
 
 /*
@@ -142,12 +142,12 @@ MagickExport char *GetImageMagick(const unsigned char *magick)
   register MagickInfo
     *p;
 
-  Magick_LockMutex(magick_mutex);
+  EngageSemaphore(magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (p->magick)
       if (p->magick(magick,MaxTextExtent))
         break;
-  Magick_UnlockMutex(magick_mutex);
+  DisengageSemaphore(magick_semaphore);
   if (p != (MagickInfo *) NULL)
     return(p->tag);
   return((char *) NULL);
@@ -274,20 +274,20 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
   /*
     Find tag in list
   */
-  Magick_LockMutex(magick_mutex);
+  EngageSemaphore(magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
       break;
-  Magick_UnlockMutex(magick_mutex);
+  DisengageSemaphore(magick_semaphore);
   if (p != (MagickInfo *) NULL)
     return(p);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
   (void) OpenModule(tag);
-  Magick_LockMutex(magick_mutex);
+  EngageSemaphore(magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
       break;
-  Magick_UnlockMutex(magick_mutex);
+  DisengageSemaphore(magick_semaphore);
   if (p != (MagickInfo *) NULL)
     return(p);
 #endif
@@ -334,12 +334,12 @@ MagickExport void ListMagickInfo(FILE *file)
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
   OpenModules();
 #endif
-  Magick_LockMutex(magick_mutex);
+  EngageSemaphore(magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->tag ? p->tag : "",
       p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',p->encoder ? 'w' : '-',
       p->encoder && p->adjoin ? '+' : '-',p->description ? p->description : "");
-  Magick_UnlockMutex(magick_mutex);
+  DisengageSemaphore(magick_semaphore);
   (void) fprintf(file,"\n* native blob support\n\n");
   (void) fflush(file);
 }
@@ -381,7 +381,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   /*
     Add tag info to the image format list.
   */
-  Magick_LockMutex(magick_mutex);
+  EngageSemaphore(magick_semaphore);
   p=(MagickInfo *) NULL;
   if (magick_list != (MagickInfo *) NULL)
     for (p=magick_list; p->next != (MagickInfo *) NULL; p=p->next)
@@ -391,9 +391,9 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
       if (LocaleCompare(p->tag,entry->tag) == 0)
         {
           p=p->previous;
-          Magick_UnlockMutex(magick_mutex);
+          DisengageSemaphore(magick_semaphore);
           UnregisterMagickInfo(entry->tag);
-          Magick_LockMutex(magick_mutex);
+          EngageSemaphore(magick_semaphore);
         }
     }
   if (magick_list == (MagickInfo *) NULL)
@@ -406,7 +406,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
         p->next->previous=entry;
       p->next=entry;
     }
-  Magick_UnlockMutex(magick_mutex);
+  DisengageSemaphore(magick_semaphore);
   return(entry);
 }
 
@@ -498,7 +498,7 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
   unsigned int
     status;
 
-  Magick_LockMutex(magick_mutex);
+  EngageSemaphore(magick_semaphore);
   status=False;
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
   {
@@ -517,6 +517,6 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
     status=True;
     break;
   }
-  Magick_UnlockMutex(magick_mutex);
+  DisengageSemaphore(magick_semaphore);
   return(status);
 }

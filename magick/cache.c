@@ -64,9 +64,6 @@ static off_t
 
 static off_t
   free_memory = 0;
-
-static MagickMutex
-  *cache_mutex = (MagickMutex *) NULL;
 
 /*
   Declare pixel cache interfaces.
@@ -443,9 +440,12 @@ MagickExport void GetCacheInfo(Cache *cache)
 */
 static off_t GetCacheMemory(const off_t memory)
 {
-  Magick_LockMutex(cache_mutex);
+  static SemaphoreInfo
+    *cache_semaphore = (SemaphoreInfo *) NULL;
+
+  EngageSemaphore(cache_semaphore);
   free_memory+=memory;
-  Magick_UnlockMutex(cache_mutex);
+  DisengageSemaphore(cache_semaphore);
   return(free_memory);
 }
 
