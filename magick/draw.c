@@ -1637,6 +1637,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             if (LocaleCompare("objectBoundingBox",token) == 0)
               {
                 draw_info->clip_units=ObjectBoundingBox;
+                IdentityAffine(&current);
                 affine.sx=draw_info->bounds.x2;
                 affine.sy=draw_info->bounds.y2;
                 affine.tx=draw_info->bounds.x1;
