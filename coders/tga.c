@@ -227,7 +227,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) SetImageAttribute(image,"Comment",comment);
         LiberateMemory((void **) &comment);
       }
-    GetPixelPacket(&pixel);
+    memset(&pixel,0,sizeof(PixelPacket));
+    pixel.opacity=TransparentOpacity;
     if (tga_info.colormap_type != 0)
       {
         /*

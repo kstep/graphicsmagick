@@ -887,7 +887,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       else
         {
           if (y == 0)
-            GetPixelPacket(&pixel);
+            {
+              memset(&pixel,0,sizeof(PixelPacket));
+              pixel.opacity=TransparentOpacity;
+            }
           p=pixels;
           for (x=0; x < (int) image->columns; x++)
           {

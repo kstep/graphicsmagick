@@ -1106,7 +1106,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         }
         LiberateMemory((void **) &labels);
       }
-    GetPixelPacket(&pixel);
+    memset(&pixel,0,sizeof(PixelPacket));
+    pixel.opacity=TransparentOpacity;
     i=0;
     index=0;
     x=0;
