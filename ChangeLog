@@ -1,3 +1,7 @@
+2004-04-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* : Change web pages to a frames-based design.
+
 2004-04-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* utilities/Makefile.am (check): Change geometry arguments which

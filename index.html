@@ -1,254 +1,40 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
-	<TITLE>GraphicsMagick Image Processing System</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
-	<META NAME="CREATED" CONTENT="20020718;11000900">
-	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20040404;16592000">
-	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
-	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic, WebMagick, Web Magic, visualization, image processing, software development, simulation, image, software, AniMagick, Animagic,  Magick++">
-	<STYLE>
-	<!--
-		@page { size: 8.5in 11in }
-		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		A:link { color: #0085c0 }
-		A:visited { color: #800080 }
-	-->
-	</STYLE>
+  <TITLE>GraphicsMagick Image Processing System</TITLE>
 </HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
-<FORM ACTION="http://www.google.com/search">
-	<INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
-	<INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
-	<TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
-		<COL WIDTH=208*>
-		<COL WIDTH=48*>
-		<TR>
-			<TD WIDTH=81%>
-				<P ALIGN=LEFT>[Home] [<A HREF="www/mission.html">Mission
-				Statement</A>] [<A HREF="www/development.html">Development
-				Process</A>] [<A HREF="www/contribute.html">Contribute</A>]
-				[<A HREF="www/download.html">Download</A>] [<A HREF="www/install.html">Installation</A>]
-				[<A HREF="www/cvs.html">CVS</A>] [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
-				Lists</A>] [<A HREF="www/FAQ.html">FAQ</A>] [<A HREF="www/formats.html">Formats</A>]
-				[<A HREF="www/NEWS.html">News</A> ] [<A HREF="www/Changelog.html">ChangeLog</A>]
-				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
-				Bugs</A>] [<A HREF="www/utilities.html">Utilities</A>]
-				[<A HREF="www/programming.html">Programming</A>] [<A HREF="www/books.html">Books</A>]
-				[<A HREF="www/links.html">Links</A>]</P>
-			</TD>
-			<TD ROWSPAN=2 WIDTH=19%>
-				<P ALIGN=CENTER><IMG SRC="images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
-			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=81%>
-				<P ALIGN=CENTER><FONT SIZE=4><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255 STYLE="width: 2.65in; height: 0.28in">
-				<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search" STYLE="width: 0.58in; height: 0.27in">
-				</I></FONT>
-				</P>
-			</TD>
-		</TR>
-	</TABLE>
-</FORM>
-<TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=2 CELLSPACING=0 RULES=ROWS>
-	<COL WIDTH=74*>
-	<COL WIDTH=182*>
-	<TR VALIGN=TOP>
-		<TD WIDTH=29%>
-			<P><FONT SIZE=3><I><SPAN STYLE="background: transparent">Last
-			Stable Release:</SPAN></I></FONT></P>
-		</TD>
-		<TD WIDTH=71%>
-			<P><A HREF="http://sourceforge.net/project/showfiles.php?group_id=73485"><SPAN STYLE="background: transparent"><I><FONT SIZE=3>1.0.6</FONT></I></SPAN></A>
-			<I><FONT SIZE=3>(Released April 4, 2004)</FONT></I></P>
-		</TD>
-	</TR>
-	<TR VALIGN=TOP>
-		<TD WIDTH=29%>
-			<P><FONT SIZE=3><I><SPAN STYLE="background: transparent">Current
-			Release: </SPAN></I></FONT>
-			</P>
-		</TD>
-		<TD WIDTH=71%>
-			<P ALIGN=LEFT><SPAN STYLE="background: transparent"><I><FONT SIZE=3>1.1
-			(Released April 4, 2004)</FONT></I></SPAN></P>
-		</TD>
-	</TR>
-</TABLE>
-<P><FONT SIZE=3><I>GraphicsMagick</I> is a robust collection of tools
-and libraries which support reading, writing, and manipulating an
-image in over 88 major formats including popular formats like TIFF,
-JPEG, JPEG-2000, PNG, PDF, PhotoCD, SVG, and GIF. <I>GraphicsMagick</I>
-supports creating new images on the fly, making <SPAN STYLE="font-variant: normal">it
-su</SPAN>itable for building dynamic Web applications. GraphicsMagick
-may be used to resize, rotate, sharpen, color reduce, or add special
-effects to an image and save the result in the same or differing
-image format. Image processing operations are available from the
-command line, as well as through C, C++, Perl, Java, or Windows COM
-programming interfaces. Extensions are available from third-parties
-to support <A HREF="www/programming.html">programming</A> in
-Borland's Delphi, Java, PHP, Python, Scheme, and Ruby.</FONT></P>
-<P><FONT SIZE=3><I><SPAN STYLE="background: transparent">Gr</SPAN>aphicsMagick</I>
-is </FONT><A HREF="www/Copyright.html"><FONT SIZE=3>copyrighted</FONT></A>
-<FONT SIZE=3>by the GraphicsMagick Group. GraphicsMagick is
-originally derived from <A HREF="http://www.imagemagick.org/">ImageMagick</A>
-5.5.2, and has enjoyed many improvements (<A HREF="www/NEWS.html">see
-news</A>) by <A HREF="www/AUTHORS.html">many authors</A> using an
-open development model. <I>GraphicsMagick</I> is available for free,
-may be used to support both open and proprietary applications, and
-may be redistributed without fee.</FONT></P>
-<P><FONT SIZE=3>Here are just a few </FONT><A HREF="images/examples.jpg"><FONT SIZE=3>examples</FONT></A>
-<FONT SIZE=3>of what <I>GraphicsMagick</I> can do:</FONT></P>
-<DL>
-	<DD>
-	<TABLE WIDTH=96% BORDER=0 CELLPADDING=0 CELLSPACING=0>
-		<COL WIDTH=6*>
-		<COL WIDTH=162*>
-		<COL WIDTH=88*>
-		<TR>
-			<TD WIDTH=2% VALIGN=TOP>
-				<P><IMG SRC="images/ball.png" NAME="Graphic13" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
-			</TD>
-			<TD WIDTH=63% VALIGN=TOP>
-				<P><FONT SIZE=3>Convert an image from one format to another (e.g.
-				TIFF to JPEG)</FONT></P>
-			</TD>
-			<TD ROWSPAN=9 WIDTH=34%>
-				<P ALIGN=CENTER><IMG SRC="images/gm-282x180t.png" NAME="Graphic23" ALT="Image Magick" ALIGN=BOTTOM WIDTH=282 HEIGHT=180 BORDER=0></P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic14" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
-			</TD>
-			<TD WIDTH=63%>
-				<P><FONT SIZE=3>Resize, rotate, sharpen, color reduce, or add
-				special effects to an image </FONT>
-				</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic15" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
-			</TD>
-			<TD WIDTH=63%>
-				<P><FONT SIZE=3>Create a montage of image thumbnails </FONT>
-				</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic16" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
-			</TD>
-			<TD WIDTH=63%>
-				<P><FONT SIZE=3>Create a transparent image suitable for use on
-				the Web </FONT>
-				</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic17" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
-			</TD>
-			<TD WIDTH=63%>
-				<P><FONT SIZE=3>Turn a group of images into a GIF animation
-				sequence </FONT>
-				</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic18" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
-			</TD>
-			<TD WIDTH=63%>
-				<P><FONT SIZE=3>Create a composite image by combining several
-				separate images </FONT>
-				</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic19" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
-			</TD>
-			<TD WIDTH=63%>
-				<P><FONT SIZE=3>Draw shapes or text on an image </FONT>
-				</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic20" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
-			</TD>
-			<TD WIDTH=63%>
-				<P><FONT SIZE=3>Decorate an image with a border or frame </FONT>
-				</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic22" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
-			</TD>
-			<TD WIDTH=63%>
-				<P><FONT SIZE=3>Describe the format and characteristics of an
-				image</FONT></P>
-			</TD>
-		</TR>
-	</TABLE>
-</DL>
-<P><FONT SIZE=3><I>GraphicsMagick</I> is quite portable, and compiles
-under almost every general purpose operating system that runs on
-32-bit or 64-bit CPUs. <I>GraphicsMagick</I> is available for
-virtually any Unix or Unix-like system, including Linux. It also runs
-under </FONT><A HREF="www/windows.html"><FONT SIZE=3>Windows</FONT></A>
-<FONT SIZE=3>'98 and later ('98, ME, NT 4.0, 2000, and XP), and
-MacOS-X. Ports exists for MacOS 9 and VMS but the ports lack a
-maintainer and have not been tested for quite a while (please
-volunteer!).</FONT></P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
-	<TR>
-		<TD BGCOLOR="#52799e">
-			<P><IMG SRC="images/right_triangle.png" NAME="Graphic36" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">GraphicsMagick
-			Sponsors</FONT></FONT></B></P>
-		</TD>
-	</TR>
-</TABLE>
-<P><FONT SIZE=3>We thank these sponsors of the <I>GraphicsMagick</I>
-project: </FONT>
-</P>
-<DL>
-	<DD>
-	<TABLE WIDTH=90% BORDER=0 CELLPADDING=5 CELLSPACING=0>
-		<COL WIDTH=76*>
-		<COL WIDTH=180*>
-		<TR>
-			<TD WIDTH=30% BGCOLOR="#ffffff">
-				<P ALIGN=CENTER STYLE="color: #0085c0"><FONT COLOR="#0085c0"><A HREF="http://www.corbis.com/"><FONT COLOR="#0085c0"><IMG SRC="images/corbis.png" NAME="Graphic37" ALT="Corbis" ALIGN=BOTTOM WIDTH=145 HEIGHT=39 BORDER=1></FONT></A></FONT></P>
-			</TD>
-			<TD WIDTH=70% BGCOLOR="#ffffff">
-				<P><FONT SIZE=3>Discover the perfect image. Stock photography and
-				pictures.</FONT></P>
-			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=30% BGCOLOR="#ffffff">
-				<P ALIGN=CENTER><FONT COLOR="#0085c0"><A HREF="http://www.pdfsages.com/"><FONT COLOR="#0085c0"><IMG SRC="images/pdfsages.png" NAME="HTTP://WWW.PDFSAGES.COM/" ALT="PDF Sages" ALIGN=BOTTOM WIDTH=126 HEIGHT=40 BORDER=1></FONT></A></FONT>
-								</P>
-			</TD>
-			<TD WIDTH=70% BGCOLOR="#ffffff">
-				<P><FONT SIZE=3>PDF Sages, a company dedicated to providing
-				unmatched PDF consulting, training, and development services.</FONT></P>
-			</TD>
-		</TR>
-	</TABLE>
-</DL>
-<P><BR><BR>
-</P>
-<HR>
-<P><BR><BR>
-</P>
+<FRAMESET ROWS="130,*" FRAMEBORDER=1 BORDER=1>
+ <FRAME SRC="www/header.html" NAME="header" NORESIZE SCROLLING=NO MARGINWIDTH=0 MARGINHEIGHT=3>
+ <FRAMESET COLS="*" FRAMEBORDER=1 BORDER=3>
+  <FRAME SRC="www/body.html" NAME="body" MARGINWIDTH=3 MARGINHEIGHT=3>
+ </FRAMESET>
+ </FRAMESET>
+ <NOFRAMES>
+<BODY
+  TEXT="#000000"
+  BGCOLOR="#FFFFFF"
+  LINK="#0000EE"
+  VLINK="#551A8B"
+  ALINK="#FF0000">
+  <P>This site is best viewed with a browser which supports HTML frames.</P>
+
+  <P ALIGN=LEFT>[<A HREF="www/body.html">Home</A>]
+    [<A HREF="Copyright.html">License</A>]
+    [<A HREF="www/mission.html">Mission Statement</A>]
+    [<A HREF="www/development.html">Development Process</A>]
+    [<A HREF="www/contribute.html">Contribute</A>]
+    [<A HREF="www/download.html">Download</A>]
+    [<A HREF="www/install.html">Installation</A>]
+    [<A HREF="www/cvs.html">CVS</A>]
+    [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing Lists</A>]
+    [<A HREF="www/FAQ.html">FAQ</A>]
+    [<A HREF="www/formats.html">Formats</A>]
+    [<A HREF="www/NEWS.html">News</A> ]
+    [<A HREF="www/Changelog.html">ChangeLog</A>]
+    [<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report Bugs</A>]
+    [<A HREF="www/utilities.html">Utilities</A>]
+    [<A HREF="www/programming.html">Programming</A>]
+    [<A HREF="www/books.html">Books</A>]
+    [<A HREF="www/links.html">Links</A>]</P>
 </BODY>
+</NOFRAMES>
 </HTML>

@@ -1,30 +1,10 @@
+# Copyright (C) 2003 GraphicsMagick Group
+# Copyright (C) 2002 ImageMagick Studio
+# Copyright (C) 1998,1999 E. I. du Pont de Nemours and Company
 #
-# Copyright (C) 2002 GraphicsMagick Group, an organization dedicated
-# to making software imaging solutions freely available.
-#
-# Permission is hereby granted, free of charge, to any person obtaining a
-# copy of this software and associated documentation files ("Open
-# ImageMagick"), to deal in GraphicsMagick without restriction,
-# including without limitation the rights to use, copy, modify, merge,
-# publish, distribute, sublicense, and/or sell copies of ImageMagick, and
-# to permit persons to whom GraphicsMagick is furnished to do so,
-# subject to the following conditions:
-# 
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of GraphicsMagick.
-#
-# The software is provided "as is", without warranty of any kind, express
-# or implied, including but not limited to the warranties of
-# merchantability, fitness for a particular purpose and noninfringement.
-# In no event shall GraphicsMagick Group be liable for any claim,
-# damages or other liability, whether in an action of contract, tort or
-# otherwise, arising from, out of or in connection with GraphicsMagick
-# or the use or other dealings in GraphicsMagick.
-#
-# Except as contained in this notice, the name of the GraphicsMagick
-# Group shall not be used in advertising or otherwise to promote the
-# sale, use or other dealings in GraphicsMagick without prior written
-# authorization from the GraphicsMagick Group.
+# This program is covered by multiple licenses, which are described in
+# Copyright.txt. You should have received a copy of Copyright.txt with this
+# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 #
 
 use ExtUtils::MakeMaker;
@@ -33,7 +13,7 @@ use Config;
 # Compute test specification
 my $delegate_tests='t/*.t';
 my $delegate;
-foreach $delegate (qw/ bzlib cgm fpx hpgl jbig jp2 jpeg lcms mpeg png ps rad tiff ttf wmf x xfig zlib/) {
+foreach $delegate (qw/ bzlib cgm hpgl jbig jng jp2 jpeg lcms mpeg png ps tiff ttf wmf x zlib/) {
   if( -d "t/$delegate" ) {
     $delegate_tests .= " t/$delegate/*.t";
   }
@@ -44,46 +24,85 @@ foreach $delegate (qw/ bzlib cgm fpx hpgl jbig jp2 jpeg lcms mpeg png ps rad tif
 WriteMakefile
   (
    # Module description
-   'ABSTRACT'	=> 'ImageMagick PERL Extension',
-
-   # Module author
-   'AUTHOR'    => 'ImageMagick Studio',
-
-   # Set compiler flags other than INC and OPTIMIZE
-   # 'CCFLAGS'	=> '-O2 -Wall',
-
-   # Preprocessor defines
-   'DEFINE'	=> '-DHAVE_CONFIG_H',     # e.g., '-DHAVE_SOMETHING' 
-
-   # Header search specfication and preprocessor flags
-   'INC'	=> '-I../ -I.. -I/usr/local/include/freetype2 -D_REENTRANT -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -I/usr/local/include/libxml2',
-
-   # Install PerlMagick binary into ImageMagick bin directory
-   'INSTALLBIN'	=> '/usr/local/bin',
-
-   # Library specification
-   'LIBS'	=> ['-L/usr/local/lib -R/usr/local/lib -L/usr/local/lib -L/usr/local/lib -L/home/glennrp/CVS/ImageMagick/magick -lGraphicsMagick -ljbig -llcms -ltiff -lfreetype -ljasper -ljpeg -lgs -lpng -lfpx -lwmflite -lXext -lSM -lICE -lX11 -lsocket -lnsl -lbz2 -lxml2 -lz -lpthread -lm'],
-
-   # Perl binary name (if a Perl binary is built)
-   'MAP_TARGET'	=> 'PerlMagick',
+   'ABSTRACT'	=> 'GraphicsMagick PERL Extension',
 
    # Perl module name is Graphics::Magick
    'NAME'	=> 'Graphics::Magick',
 
+   # Module author
+   'AUTHOR'    => 'GraphicsMagick Group',
+
+   # Module version
+   'VERSION'   => '1.2',
+
+   # Preprocessor defines
+   'DEFINE'	=> '  -DHAVE_CONFIG_H',     # e.g., '-DHAVE_SOMETHING' 
+
+   # Header search specfication and preprocessor flags
+   'INC'	=> '-I../ -I.. -I/usr/local/include/freetype2 -I/usr/local/include -I/usr/X11R6/include -I/usr/X11R6/include/X11 -I/usr/local/include/libxml2',
+
+   # C pre-processor flags (e.g. -I & -D options)
+   # 'CPPFLAGS'    => "$Config{'cppflags'} -I/usr/local/include/freetype2 -I/usr/local/include -I/usr/X11R6/include -I/usr/X11R6/include/X11 -I/usr/local/include/libxml2",
+
+   # C compiler flags (e.g. -O -g)
+   'CCFLAGS'     => "$Config{'ccflags'} -O2 -Wall -march=i686 -mcpu=pentium4 -pipe -Wall -D_THREAD_SAFE -pthread",
+
+   # Linker flags for building an executable
+   'LDFLAGS'    =>  "-L/home/bfriesen/src/graphics/GraphicsMagick-Web/magick/.libs $Config{'ldflags'}",
+
+   # Linker flags for building a dynamically loadable module
+   'LDDLFLAGS'  => "-L/home/bfriesen/src/graphics/GraphicsMagick-Web/magick/.libs $Config{'lddlflags'}",
+
+   # Install PerlMagick binary into GraphicsMagick bin directory
+   'INSTALLBIN'	=> '/usr/local/bin',
+
+   # Library specification
+   'LIBS'	=> ['-L/home/bfriesen/src/graphics/GraphicsMagick-Web/magick/.libs -lGraphicsMagick -L/usr/local/lib -R/usr/local/lib -R/usr/X11R6/lib -L/usr/X11R6/lib -L/usr/local/lib -L/usr/local/lib -ljbig -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -lwmflite -ldpstk -ldps -lXext -lSM -lICE -lX11 -lbz2 -lxml2 -lz -lm -lc_r'],
+
+   # Perl binary name (if a Perl binary is built)
+   'MAP_TARGET'	=> 'PerlMagick',
+
    # Let CFLAGS drive optimization flags by setting OPTIMIZE to empty
    # 'OPTIMIZE'	=> '',
 
-   # Use same compiler as ImageMagick
-   # 'PERLMAINCC'	=> 'gcc',
+   # Use same compiler as GraphicsMagick
+   'PERLMAINCC'	=> '/usr/local/bin/gcc-3.3.3',
 
-   # Set Perl installation prefix to ImageMagick installation prefix
+   # Set Perl installation prefix to GraphicsMagick installation prefix
 #   'PREFIX'	=> '/usr/local',
-
-   # File to extract PerlMagick version from
-   'VERSION_FROM' => 'Magick.pm',
 
    # Include delegate directories in tests
    test		=> { TESTS	=>	$delegate_tests},
 
    ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
 );
+
+
+#
+# Substitutions for "makeaperl" section.
+#
+sub MY::makeaperl {
+     package MY; # so that "SUPER" works right
+     my $inherited = shift->SUPER::makeaperl(@_);
+
+     # Stinky ExtUtils::MM_Unix likes to append its own library path to $(CC),
+     # prior to any user-specified library path so that an installed library is
+     # used rather than the library just built.  This substitution function
+     # tries to insert our library path first. Also, use the same compiler used
+     # to build perlmain.c to link so that a C++ compiler may be used if
+     # necessary.
+     $inherited =~ s:MAP_LINKCMD\s.*\s*\$\(CC\):MAP_LINKCMD   = \$(PERLMAINCC) -L/home/bfriesen/src/graphics/GraphicsMagick-Web/magick/.libs: ;
+     $inherited;
+ }
+
+#
+# Substitutions for "test" section.
+#
+sub MY::test {
+     package MY; # so that "SUPER" works right
+     my $inherited = shift->SUPER::test(@_);
+
+     # Run tests in our environment
+     $inherited =~ s:PERL_DL_NONLAZY=1:/bin/sh ../rungm.sh PERL_DL_NONLAZY=1:g ;
+     $inherited;
+ }

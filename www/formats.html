@@ -13,50 +13,25 @@
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
-		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		PRE { color: #000000 }
-		TH P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		TH P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		A:link { color: #0085c0 }
 		A:visited { color: #800080 }
 	-->
 	</STYLE>
 </HEAD>
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
-<FORM ACTION="http://www.google.com/search">
-	<INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
-	<INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
-	<TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
-		<COL WIDTH=208*>
-		<COL WIDTH=48*>
-		<TR>
-			<TD WIDTH=81%>
-				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="mission.html">Mission
-				Statement</A>] [<A HREF="development.html">Development Process</A>]
-				[<A HREF="contribute.html">Contribute</A>] [<A HREF="download.html">Download</A>]
-				[<A HREF="install.html">Installation</A>] [<A HREF="cvs.html">CVS</A>]
-				[<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
-				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="">Formats</A>]
-				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
-				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
-				Bugs</A>] [<A HREF="utilities.html">Utilities</A>] [<A HREF="programming.html">Programming</A>]
-				[<A HREF="books.html">Books</A>] [<A HREF="links.html">Links</A>]</P>
-			</TD>
-			<TD ROWSPAN=2 WIDTH=19%>
-				<P ALIGN=CENTER><IMG SRC="../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
-			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=81%>
-				<DIV ALIGN=CENTER>
-					<P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
-					<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
-					</P>
-				</DIV>
-			</TD>
-		</TR>
-	</TABLE>
-</FORM>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
+	<COL WIDTH=256*>
+	<TR>
+		<TD WIDTH=100% BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic1" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">GraphicsMagick
+			Formats</FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
 <P STYLE="margin-bottom: 0in"><FONT SIZE=3>GraphicsMagick uses an
 ASCII string known as &quot;magick&quot; (e.g. &quot;GIF&quot;) to
 identify file formats, algorithms acting as formats, built-in images,
@@ -64,8 +39,6 @@ and embedded profile types. After a file has been read or &quot;pinged&quot;,
 the associated magick string is stored in the &quot;magick&quot;
 member of the Image structure, and is reported in the default output
 of 'gm identify'.</FONT></P>
-<P STYLE="margin-bottom: 0in"><BR>
-</P>
 <P STYLE="margin-bottom: 0in"><FONT SIZE=3>Several formats optionally
 rely on the LZW algorithm, which is </FONT><A HREF="http://www.unisys.com/about__unisys/lzw/"><FONT SIZE=3>patented
 by the UNISYS corporation</FONT></A><FONT SIZE=3>. The U.S. LZW
