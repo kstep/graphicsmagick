@@ -1,177 +1,231 @@
 @echo off
-..\bin\rwfile LOGO: AVS
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm AVS
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm AVS
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm AVS
-..\bin\rwfile LOGO: BMP
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm BMP
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm BMP
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm BMP
-..\bin\rwfile LOGO: CMYK
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm CMYK
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm CMYK
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm CMYK
-..\bin\rwfile LOGO: DIB
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm DIB
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm DIB
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm DIB
-..\bin\rwfile LOGO: FAX
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm FAX
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm FAX
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm FAX
-..\bin\rwfile LOGO: FITS
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm FITS
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm FITS
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm FITS
-..\bin\rwfile LOGO: GIF
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm GIF
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm GIF
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm GIF
-..\bin\rwfile LOGO: GRAY
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm GRAY
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm GRAY
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm GRAY
-: ..\bin\rwfile LOGO: HDF
-: ..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm HDF
-: ..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm HDF
-: ..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm HDF
-..\bin\rwfile LOGO: ICB
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm ICB
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm ICB
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm ICB
-..\bin\rwfile LOGO: JBIG
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm JBIG
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm JBIG
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm JBIG
-..\bin\rwfile LOGO: JPEG
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm JPEG
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm JPEG
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm JPEG
-..\bin\rwfile LOGO: MIFF
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm MIFF
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm MIFF
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm MIFF
-..\bin\rwfile LOGO: MNG
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm MNG
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm MNG
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm MNG
-..\bin\rwfile LOGO: MONO
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm MONO
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm MONO
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm MONO
-..\bin\rwfile LOGO: MTV
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm MTV
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm MTV
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm MTV
-..\bin\rwfile LOGO: P7
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm P7
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm P7
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm P7
-..\bin\rwfile LOGO: PBM
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm PBM
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm PBM
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm PBM
-..\bin\rwfile LOGO: PCD
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm PCD
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm PCD
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm PCD
-..\bin\rwfile LOGO: PCDS
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm PCDS
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm PCDS
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm PCDS
-..\bin\rwfile LOGO: PCX
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm PCX
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm PCX
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm PCX
-..\bin\rwfile LOGO: PGM
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm PGM
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm PGM
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm PGM
-..\bin\rwfile LOGO: PICT
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm PICT
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm PICT
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm PICT
-..\bin\rwfile LOGO: PNG
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm PNG
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm PNG
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm PNG
-..\bin\rwfile LOGO: PNM
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm PNM
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm PNM
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm PNM
-..\bin\rwfile LOGO: PPM
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm PPM
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm PPM
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm PPM
-..\bin\rwfile LOGO: PSD
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm PSD
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm PSD
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm PSD
-..\bin\rwfile LOGO: PTIF
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm PTIF
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm PTIF
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm PTIF
-..\bin\rwfile LOGO: RAS
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm RAS
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm RAS
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm RAS
-..\bin\rwfile LOGO: RGB
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm RGB
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm RGB
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm RGB
-..\bin\rwfile LOGO: RGBA
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm RGBA
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm RGBA
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm RGBA
-..\bin\rwfile LOGO: SGI
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm SGI
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm SGI
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm SGI
-..\bin\rwfile LOGO: SUN
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm SUN
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm SUN
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm SUN
-..\bin\rwfile LOGO: TGA
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm TGA
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm TGA
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm TGA
-..\bin\rwfile LOGO: TIFF
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm TIFF
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm TIFF
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm TIFF
-..\bin\rwfile LOGO: UYVY
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm UYVY
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm UYVY
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm UYVY
-..\bin\rwfile LOGO: VDA
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm VDA
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm VDA
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm VDA
-..\bin\rwfile LOGO: VICAR
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm VICAR
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm VICAR
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm VICAR
-..\bin\rwfile LOGO: VIFF
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm VIFF
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm VIFF
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm VIFF
-..\bin\rwfile LOGO: VST
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm VST
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm VST
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm VST
-..\bin\rwfile LOGO: XBM
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm XBM
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm XBM
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm XBM
-..\bin\rwfile LOGO: XPM
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm XPM
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm XPM
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm XPM
-: ..\bin\rwfile LOGO: XWD
-: ..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm XWD
-: ..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm XWD
-: ..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm XWD
-..\bin\rwfile LOGO: YUV
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm YUV
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm YUV
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm YUV
+set exedir=..\bin\
+set srcdir=..\..\tests\
+%exedir%drawtest drawtest_out.miff
+%exedir%drawtest drawtest_out.mvg
+%exedir%drawtest drawtest_out.svg
+%exedir%rwfile %srcdir%input_bilevel.miff AVS 
+%exedir%rwfile %srcdir%input_gray.miff AVS 
+%exedir%rwfile %srcdir%input_256c.miff AVS 
+%exedir%rwfile %srcdir%input_truecolor.miff AVS 
+%exedir%rwfile %srcdir%input_bilevel.miff BMP 
+%exedir%rwfile %srcdir%input_gray.miff BMP 
+%exedir%rwfile %srcdir%input_256c.miff BMP 
+%exedir%rwfile %srcdir%input_truecolor.miff BMP 
+%exedir%rwfile %srcdir%input_bilevel.miff DIB 
+%exedir%rwfile %srcdir%input_gray.miff DIB 
+%exedir%rwfile %srcdir%input_256c.miff DIB 
+%exedir%rwfile %srcdir%input_truecolor.miff DIB 
+%exedir%rwfile %srcdir%input_bilevel.miff DPX 
+%exedir%rwfile %srcdir%input_gray.miff DPX 
+%exedir%rwfile %srcdir%input_256c.miff DPX 
+%exedir%rwfile %srcdir%input_truecolor.miff DPX 
+%exedir%rwfile %srcdir%input_bilevel.miff EPDF 
+%exedir%rwfile %srcdir%input_gray.miff EPDF 
+%exedir%rwfile %srcdir%input_256c.miff EPDF 
+%exedir%rwfile %srcdir%input_truecolor.miff EPDF 
+%exedir%rwfile %srcdir%input_bilevel.miff EPSF 
+%exedir%rwfile %srcdir%input_gray.miff EPSF 
+%exedir%rwfile %srcdir%input_256c.miff EPSF 
+%exedir%rwfile %srcdir%input_truecolor.miff EPSF 
+%exedir%rwfile %srcdir%input_bilevel.miff EPSI 
+%exedir%rwfile %srcdir%input_gray.miff EPSI 
+%exedir%rwfile %srcdir%input_256c.miff EPSI 
+%exedir%rwfile %srcdir%input_truecolor.miff EPSI 
+%exedir%rwfile %srcdir%input_bilevel.miff EPI 
+%exedir%rwfile %srcdir%input_gray.miff EPI 
+%exedir%rwfile %srcdir%input_256c.miff EPI 
+%exedir%rwfile %srcdir%input_truecolor.miff EPI 
+%exedir%rwfile %srcdir%input_bilevel.miff EPS 
+%exedir%rwfile %srcdir%input_gray.miff EPS 
+%exedir%rwfile %srcdir%input_256c.miff EPS 
+%exedir%rwfile %srcdir%input_truecolor.miff EPS 
+%exedir%rwfile %srcdir%input_bilevel.miff EPT 
+%exedir%rwfile %srcdir%input_gray.miff EPT 
+%exedir%rwfile %srcdir%input_256c.miff EPT 
+%exedir%rwfile %srcdir%input_truecolor.miff EPT 
+%exedir%rwfile %srcdir%input_bilevel.miff FAX 
+%exedir%rwfile %srcdir%input_gray.miff FAX 
+%exedir%rwfile %srcdir%input_256c.miff FAX 
+%exedir%rwfile %srcdir%input_truecolor.miff FAX 
+%exedir%rwfile %srcdir%input_bilevel.miff FITS 
+%exedir%rwfile %srcdir%input_gray.miff FITS 
+%exedir%rwfile %srcdir%input_256c.miff FITS 
+%exedir%rwfile %srcdir%input_truecolor.miff FITS 
+%exedir%rwfile %srcdir%input_bilevel.miff FPX 
+%exedir%rwfile %srcdir%input_gray.miff FPX 
+%exedir%rwfile %srcdir%input_256c.miff FPX 
+%exedir%rwfile %srcdir%input_truecolor.miff FPX 
+%exedir%rwfile %srcdir%input_bilevel.miff GIF 
+%exedir%rwfile %srcdir%input_gray.miff GIF 
+%exedir%rwfile %srcdir%input_256c.miff GIF 
+%exedir%rwfile %srcdir%input_truecolor.miff GIF 
+%exedir%rwfile %srcdir%input_bilevel.miff GRAY 
+%exedir%rwfile %srcdir%input_gray.miff GRAY 
+%exedir%rwfile %srcdir%input_256c.miff GRAY 
+%exedir%rwfile %srcdir%input_truecolor.miff GRAY 
+%exedir%rwfile %srcdir%input_bilevel.miff ICB 
+%exedir%rwfile %srcdir%input_gray.miff ICB 
+%exedir%rwfile %srcdir%input_256c.miff ICB 
+%exedir%rwfile %srcdir%input_truecolor.miff ICB 
+%exedir%rwfile %srcdir%input_bilevel.miff JBIG 
+%exedir%rwfile %srcdir%input_gray.miff JBIG 
+%exedir%rwfile %srcdir%input_256c.miff JBIG 
+%exedir%rwfile %srcdir%input_truecolor.miff JBIG 
+%exedir%rwfile %srcdir%input_bilevel.miff JPEG 
+%exedir%rwfile %srcdir%input_gray.miff JPEG 
+%exedir%rwfile %srcdir%input_256c.miff JPEG 
+%exedir%rwfile %srcdir%input_truecolor.miff JPEG 
+%exedir%rwfile %srcdir%input_bilevel.miff JP2 
+%exedir%rwfile %srcdir%input_gray.miff JP2 
+%exedir%rwfile %srcdir%input_256c.miff JP2 
+%exedir%rwfile %srcdir%input_truecolor.miff JP2 
+%exedir%rwfile %srcdir%input_bilevel.miff MIFF 
+%exedir%rwfile %srcdir%input_gray.miff MIFF 
+%exedir%rwfile %srcdir%input_256c.miff MIFF 
+%exedir%rwfile %srcdir%input_truecolor.miff MIFF 
+%exedir%rwfile %srcdir%input_bilevel.miff MNG 
+%exedir%rwfile %srcdir%input_gray.miff MNG 
+%exedir%rwfile %srcdir%input_256c.miff MNG 
+%exedir%rwfile %srcdir%input_truecolor.miff MNG 
+%exedir%rwfile %srcdir%input_bilevel.miff MTV 
+%exedir%rwfile %srcdir%input_gray.miff MTV 
+%exedir%rwfile %srcdir%input_256c.miff MTV 
+%exedir%rwfile %srcdir%input_truecolor.miff MTV 
+%exedir%rwfile %srcdir%input_bilevel.miff P7 
+%exedir%rwfile %srcdir%input_gray.miff P7 
+%exedir%rwfile %srcdir%input_256c.miff P7 
+%exedir%rwfile %srcdir%input_truecolor.miff P7 
+%exedir%rwfile %srcdir%input_bilevel.miff PBM 
+%exedir%rwfile %srcdir%input_gray.miff PBM 
+%exedir%rwfile %srcdir%input_256c.miff PBM 
+%exedir%rwfile %srcdir%input_truecolor.miff PBM 
+%exedir%rwfile %srcdir%input_bilevel.miff PCD 
+%exedir%rwfile %srcdir%input_gray.miff PCD 
+%exedir%rwfile %srcdir%input_256c.miff PCD 
+%exedir%rwfile %srcdir%input_truecolor.miff PCD 
+%exedir%rwfile %srcdir%input_bilevel.miff PCDS 
+%exedir%rwfile %srcdir%input_gray.miff PCDS 
+%exedir%rwfile %srcdir%input_256c.miff PCDS 
+%exedir%rwfile %srcdir%input_truecolor.miff PCDS 
+%exedir%rwfile %srcdir%input_bilevel.miff PCX 
+%exedir%rwfile %srcdir%input_gray.miff PCX 
+%exedir%rwfile %srcdir%input_256c.miff PCX 
+%exedir%rwfile %srcdir%input_truecolor.miff PCX 
+%exedir%rwfile %srcdir%input_bilevel.miff PGM 
+%exedir%rwfile %srcdir%input_gray.miff PGM 
+%exedir%rwfile %srcdir%input_256c.miff PGM 
+%exedir%rwfile %srcdir%input_truecolor.miff PGM 
+%exedir%rwfile %srcdir%input_bilevel.miff PICON 
+%exedir%rwfile %srcdir%input_gray.miff PICON 
+%exedir%rwfile %srcdir%input_256c.miff PICON 
+%exedir%rwfile %srcdir%input_truecolor.miff PICON 
+%exedir%rwfile %srcdir%input_bilevel.miff PICT 
+%exedir%rwfile %srcdir%input_gray.miff PICT 
+%exedir%rwfile %srcdir%input_256c.miff PICT 
+%exedir%rwfile %srcdir%input_truecolor.miff PICT 
+%exedir%rwfile %srcdir%input_bilevel.miff PNG 
+%exedir%rwfile %srcdir%input_gray.miff PNG 
+%exedir%rwfile %srcdir%input_256c.miff PNG 
+%exedir%rwfile %srcdir%input_truecolor.miff PNG 
+%exedir%rwfile %srcdir%input_bilevel.miff PNM 
+%exedir%rwfile %srcdir%input_gray.miff PNM 
+%exedir%rwfile %srcdir%input_256c.miff PNM 
+%exedir%rwfile %srcdir%input_truecolor.miff PNM 
+%exedir%rwfile %srcdir%input_bilevel.miff PPM 
+%exedir%rwfile %srcdir%input_gray.miff PPM 
+%exedir%rwfile %srcdir%input_256c.miff PPM 
+%exedir%rwfile %srcdir%input_truecolor.miff PPM 
+%exedir%rwfile %srcdir%input_bilevel.miff PS 
+%exedir%rwfile %srcdir%input_gray.miff PS 
+%exedir%rwfile %srcdir%input_256c.miff PS 
+%exedir%rwfile %srcdir%input_truecolor.miff PS 
+%exedir%rwfile %srcdir%input_bilevel.miff PSD 
+%exedir%rwfile %srcdir%input_gray.miff PSD 
+%exedir%rwfile %srcdir%input_256c.miff PSD 
+%exedir%rwfile %srcdir%input_truecolor.miff PSD 
+%exedir%rwfile %srcdir%input_bilevel.miff RAS 
+%exedir%rwfile %srcdir%input_gray.miff RAS 
+%exedir%rwfile %srcdir%input_256c.miff RAS 
+%exedir%rwfile %srcdir%input_truecolor.miff RAS 
+%exedir%rwfile %srcdir%input_bilevel.miff SGI 
+%exedir%rwfile %srcdir%input_gray.miff SGI 
+%exedir%rwfile %srcdir%input_256c.miff SGI 
+%exedir%rwfile %srcdir%input_truecolor.miff SGI 
+%exedir%rwfile %srcdir%input_bilevel.miff SUN 
+%exedir%rwfile %srcdir%input_gray.miff SUN 
+%exedir%rwfile %srcdir%input_256c.miff SUN 
+%exedir%rwfile %srcdir%input_truecolor.miff SUN 
+%exedir%rwfile %srcdir%input_bilevel.miff TGA 
+%exedir%rwfile %srcdir%input_gray.miff TGA 
+%exedir%rwfile %srcdir%input_256c.miff TGA 
+%exedir%rwfile %srcdir%input_truecolor.miff TGA 
+%exedir%rwfile %srcdir%input_bilevel.miff TIFF 
+%exedir%rwfile %srcdir%input_gray.miff TIFF 
+%exedir%rwfile %srcdir%input_256c.miff TIFF 
+%exedir%rwfile %srcdir%input_truecolor.miff TIFF 
+%exedir%rwfile %srcdir%input_bilevel.miff VDA 
+%exedir%rwfile %srcdir%input_gray.miff VDA 
+%exedir%rwfile %srcdir%input_256c.miff VDA 
+%exedir%rwfile %srcdir%input_truecolor.miff VDA 
+%exedir%rwfile %srcdir%input_bilevel.miff VICAR 
+%exedir%rwfile %srcdir%input_gray.miff VICAR 
+%exedir%rwfile %srcdir%input_256c.miff VICAR 
+%exedir%rwfile %srcdir%input_truecolor.miff VICAR 
+%exedir%rwfile %srcdir%input_bilevel.miff VIFF 
+%exedir%rwfile %srcdir%input_gray.miff VIFF 
+%exedir%rwfile %srcdir%input_256c.miff VIFF 
+%exedir%rwfile %srcdir%input_truecolor.miff VIFF 
+%exedir%rwfile %srcdir%input_bilevel.miff VST 
+%exedir%rwfile %srcdir%input_gray.miff VST 
+%exedir%rwfile %srcdir%input_256c.miff VST 
+%exedir%rwfile %srcdir%input_truecolor.miff VST 
+%exedir%rwfile %srcdir%input_bilevel.miff WBMP 
+%exedir%rwfile %srcdir%input_gray.miff WBMP 
+%exedir%rwfile %srcdir%input_256c.miff WBMP 
+%exedir%rwfile %srcdir%input_truecolor.miff WBMP 
+%exedir%rwfile %srcdir%input_bilevel.miff XBM 
+%exedir%rwfile %srcdir%input_gray.miff XBM 
+%exedir%rwfile %srcdir%input_256c.miff XBM 
+%exedir%rwfile %srcdir%input_truecolor.miff XBM 
+%exedir%rwfile %srcdir%input_bilevel.miff XPM 
+%exedir%rwfile %srcdir%input_gray.miff XPM 
+%exedir%rwfile %srcdir%input_256c.miff XPM 
+%exedir%rwfile %srcdir%input_truecolor.miff XPM 
+%exedir%rwfile %srcdir%input_bilevel.miff XWD 
+%exedir%rwfile %srcdir%input_gray.miff XWD 
+%exedir%rwfile %srcdir%input_256c.miff XWD 
+%exedir%rwfile %srcdir%input_truecolor.miff XWD
+%exedir%rwfile -size 70x46 %srcdir%input_bilevel.miff CMYK 
+%exedir%rwfile -size 70x46 %srcdir%input_gray.miff CMYK 
+%exedir%rwfile -size 70x46 %srcdir%input_256c.miff CMYK 
+%exedir%rwfile -size 70x46 %srcdir%input_truecolor.miff CMYK 
+%exedir%rwfile -size 70x46 %srcdir%input_bilevel.miff GRAY 
+%exedir%rwfile -size 70x46 %srcdir%input_gray.miff GRAY 
+%exedir%rwfile -size 70x46 %srcdir%input_256c.miff GRAY 
+%exedir%rwfile -size 70x46 %srcdir%input_truecolor.miff GRAY 
+%exedir%rwfile -size 70x46 %srcdir%input_bilevel.miff MONO 
+%exedir%rwfile -size 70x46 %srcdir%input_gray.miff MONO 
+%exedir%rwfile -size 70x46 %srcdir%input_256c.miff MONO 
+%exedir%rwfile -size 70x46 %srcdir%input_truecolor.miff MONO 
+%exedir%rwfile -size 70x46 %srcdir%input_bilevel.miff PAL 
+%exedir%rwfile -size 70x46 %srcdir%input_gray.miff PAL 
+%exedir%rwfile -size 70x46 %srcdir%input_256c.miff PAL 
+%exedir%rwfile -size 70x46 %srcdir%input_truecolor.miff PAL 
+%exedir%rwfile -size 70x46 %srcdir%input_bilevel.miff RGB 
+%exedir%rwfile -size 70x46 %srcdir%input_gray.miff RGB 
+%exedir%rwfile -size 70x46 %srcdir%input_256c.miff RGB 
+%exedir%rwfile -size 70x46 %srcdir%input_truecolor.miff RGB 
+%exedir%rwfile -size 70x46 %srcdir%input_bilevel.miff RGBA 
+%exedir%rwfile -size 70x46 %srcdir%input_gray.miff RGBA 
+%exedir%rwfile -size 70x46 %srcdir%input_256c.miff RGBA 
+%exedir%rwfile -size 70x46 %srcdir%input_truecolor.miff RGBA 
+%exedir%rwfile -size 70x46 %srcdir%input_bilevel.miff UYVY 
+%exedir%rwfile -size 70x46 %srcdir%input_gray.miff UYVY 
+%exedir%rwfile -size 70x46 %srcdir%input_256c.miff UYVY 
+%exedir%rwfile -size 70x46 %srcdir%input_truecolor.miff UYVY 
+%exedir%rwfile -size 70x46 %srcdir%input_bilevel.miff YUV 
+%exedir%rwfile -size 70x46 %srcdir%input_gray.miff YUV 
+%exedir%rwfile -size 70x46 %srcdir%input_256c.miff YUV 
+%exedir%rwfile -size 70x46 %srcdir%input_truecolor.miff YUV 
+
