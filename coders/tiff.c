@@ -398,7 +398,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
   tiff_exception=exception;
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
-  tiff=TIFFClientOpen(image->filename,ReadBinaryUnbufferedType,image,
+  tiff=TIFFClientOpen(image->filename,ReadBinaryUnbufferedType,(thandle_t) image,
     TIFFReadBlob,TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFSizeBlob,
     TIFFMapBlob,TIFFUnmapBlob);
   if (tiff == (TIFF *) NULL)
@@ -1168,13 +1168,13 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,long row,
 
         p=scanlines+(j*TIFFScanlineSize(tiff)+(i*image->tile_info.width+k)*
           bytes_per_pixel);
-        q=tile_pixels+
-          (j*(TIFFTileSize(tiff)/image->tile_info.height)+k*bytes_per_pixel);
+        q=tile_pixels+(j*(TIFFTileSize(tiff)/image->tile_info.height)+k*
+          bytes_per_pixel);
         (void) memcpy(q,p,bytes_per_pixel);
       }
-      status=TIFFWriteTile(tiff,tile_pixels,(uint32)
-        (i*image->tile_info.width),(uint32) ((row/image->tile_info.height)*
-        image->tile_info.height),0,sample);
+      status=TIFFWriteTile(tiff,tile_pixels,(uint32) (i*image->tile_info.width),
+        (uint32) ((row/image->tile_info.height)*image->tile_info.height),0,
+        sample);
       if (status < 0)
         break;
   }
@@ -1196,9 +1196,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #if !defined(TIFFDefaultStripSize)
 #define TIFFDefaultStripSize(tiff,request)  ((8*1024)/TIFFScanlineSize(tiff))
 #endif
-
-  char
-    filename[MaxTextExtent];
 
   ImageAttribute
     *attribute;
@@ -1279,8 +1276,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   tiff_exception=(&image->exception);
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
-  (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  tiff=TIFFClientOpen(image->filename,WriteBinaryType,image,
+  tiff=TIFFClientOpen(image->filename,WriteBinaryType,(thandle_t) image,
     TIFFReadBlob,TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFSizeBlob,
     TIFFMapBlob,TIFFUnmapBlob);
   if (tiff == (TIFF *) NULL)
