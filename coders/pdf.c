@@ -59,6 +59,7 @@
 #include "delegate.h"
 #include "magick.h"
 #include "monitor.h"
+#include "static.h"
 #include "utility.h"
 #include "version.h"
 #if defined(HasTIFF)
@@ -670,7 +671,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     y;
 
   Image
-    encode_image,
     *tile_image;
 
   RectangleInfo
@@ -1090,6 +1090,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
               ThrowWriterException(CoderError,image->exception.reason,image);
+            (void) strcpy(jpeg_image->magick,"JPEG");
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
@@ -1200,6 +1201,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
               ThrowWriterException(CoderError,image->exception.reason,image);
+            (void) strcpy(jpeg_image->magick,"JPEG");
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
@@ -1884,27 +1886,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"%%EOF\n");
   LiberateMemory((void **) &xref);
   CloseBlob(image);
-  if (image->blob->temporary)
-    {
-      FILE
-        *file;
-
-      int
-        c;
-
-      /*
-        Copy temporary file to standard output or pipe.
-      */
-      file=fopen(image->filename,"rb");
-      if (file == (FILE *) NULL)
-        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
-      for (c=fgetc(file); c != EOF; c=fgetc(file))
-        (void) fputc(c,encode_image.blob->file);
-      (void) fclose(file);
-      (void) remove(image->filename);
-      image->blob->temporary=False;
-      CloseBlob(&encode_image);
-    }
   return(True);
 }
 

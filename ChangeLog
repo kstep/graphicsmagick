@@ -1,4 +1,7 @@
-2002-12-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2002-12-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/pdf.c: Remove bogus code for handling temporary file.
+
+2002-12-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* Updated to Autoconf 2.57.
 	* Install libraries as -lGraphicsMagick and -lGraphicsMagick++ under
 	Unix.
