@@ -1288,7 +1288,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
             }
           }
       }
-    origin.x+=face->glyph->advance.x;
+    origin.x+=face->glyph->metrics.horiAdvance;
     if (origin.x > metrics->width)
       metrics->width=origin.x;
     if (last_glyph.id != 0)
