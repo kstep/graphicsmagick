@@ -3,6 +3,8 @@
     for debugging.
   * AcquireImagePixels() did not always return the same pixel values
     for virtual pixels when the cache was stored on disk (very rare).
+  * new -virtual-pixel command line option.
+  * new PerlMagick virtual-pixel image attribute.
 
 2002-08-07  Cristy  <cristy@mystic.es.dupont.com>
   * ImageMagick 5.4.9 released.

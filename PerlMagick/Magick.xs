@@ -291,6 +291,11 @@ static char
   *StyleTypes[] =
   {
     "Normal", "Italic", "Oblique", "Any", (char *) NULL
+  },
+  *VirtualPixelMethods[] =
+  {
+    "Undefined", "", "Constant", "Edge", "Mirror", "Tile"
+    (char *) NULL
   };
 
 static struct
@@ -1853,6 +1858,20 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         {
           if (info)
             (void) CloneString(&info->image_info->view,SvPV(sval,na));
+          return;
+        }
+      if (LocaleCompare(attribute,"virtual-pixel") == 0)
+        {
+          sp=SvPOK(sval) ? LookupStr(VirtualPixelMethods,SvPV(sval,na)) :
+            SvIV(sval);
+          if (sp < 0)
+            {
+              MagickError(OptionError,"Invalid virtual pixel method",
+                SvPV(sval,na));
+              return;
+            }
+          for ( ; image; image=image->next)
+            SetImageVirtualPixelMethod(image,(VirtualPixelMethod) sp);
           return;
         }
       MagickError(OptionError,"Invalid attribute",attribute);
@@ -3868,6 +3887,20 @@ Get(ref,...)
             {
               if (info && info->image_info->view)
                 s=newSVpv(info->image_info->view,0);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
+          if (LocaleCompare(attribute,"virtual-pixel") == 0)
+            {
+              if (!image)
+                break;
+              j=(long) GetVirtualPixelMethod(image);
+              s=newSViv(j);
+              if ((j >= 0) && (j < (long) NumberOf(VirtualPixelMethods)-1))
+                {
+                  (void) sv_setpv(s,VirtualPixelMethods[j]);
+                  SvIOK_on(s);
+                }
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
