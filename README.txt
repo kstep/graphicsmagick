@@ -635,9 +635,38 @@ Windows NT/95 VISUAL C++ 6.0 COMPILATION
   move anything to any of the global SYSTEM or SYSTEM32 areas in the
   operating system installation.
 
-  NOTE: The two utilities "display" and "animate" will only be usable
-  when the real X11 libraries are included. The other build environments
-  uses the X11 stubs to supply non-functional stubs for the X-Window
+  NOTE #1:
+
+  The Visual C++ distribution of ImageMagick comes with the Magick++
+  C++ wrapper by default. This add-on layer has a large number of demo
+  and test files that can be found in ImageMagick\Magick++\demo, and
+  ImageMagick\Magick++\tests.
+
+  None of these programs are configured to be built in the default
+  workspace created by the configure program. You can have any of these
+  programs added to your build configuration by simply dragging them into
+  their corresponding folder from:
+
+    ImageMagick\Magick++\demo, or ImageMagick\Magick++\tests
+
+  to:
+  
+    ImageMagick\demos, or ImageMagick\Magick++\tests
+
+  After running the configure program, you should see projects for all
+  of the programs you have added which will now be part of the entire
+  build procedure.
+
+  You can also use this technique for your opwn development if you wish.
+  When creating a new application, simply grab one of the demo or test
+  programs that is close to what you wish to do, rename it, and drop
+  it into the demos or tests folder to get an appropriate project file.
+
+  NOTE #2:
+
+  The two utilities "display" and "animate" will only be usable when
+  the real X11 libraries are included. The other build environments uses
+  the X11 stubs to supply non-functional stubs for the X-Window
   functionality. There is no support for a "static" build of the X11
   support because the build procedures for the X11 libraries do not seem
   to support this.
