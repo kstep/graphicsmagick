@@ -552,6 +552,17 @@ typedef struct _MagickInfo
   char
     *name;
 
+  char
+    *description,
+    *module;
+
+  unsigned int
+    adjoin,
+    raw,
+    stealth,
+    blob_support,
+    thread_support;
+
   ImageInfo
     *image_info;
 
@@ -560,15 +571,7 @@ typedef struct _MagickInfo
 
   unsigned int
     (*encoder)(const ImageInfo *,Image *),
-    (*magick)(const unsigned char *,const unsigned int),
-    adjoin,
-    blob_support,
-    raw,
-    stealth;
-
-  char
-    *description,
-    *module;
+    (*magick)(const unsigned char *,const unsigned int);
 
   void
     *client_data;
