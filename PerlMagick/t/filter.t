@@ -128,7 +128,7 @@ testFilter('input.miff', 'MatteFloodfill',
 testFilter('input.miff', 'Minify',
   q/ /,
   'e2cc6133847f02d4ae3834919ef8329de7b4876581b06dbc46802ca7bbb0ffec',
-  'd9b69c81d942db60a38bf9fada0487a9135b53cab78b2efd32c7f62d06877313');
+  '5381c1a27250d472643a42d60a5fa1f856e461e0e7adad82f8f47596ef6f64c6');
 
 ++$test;
 testFilter('input.miff', 'Modulate',
