@@ -14,6 +14,7 @@
 #include <iterator>
 #include "Magick++/CoderInfo.h"
 #include "Magick++/Drawable.h"
+#include "Magick++/Exception.h"
 #include "Magick++/Montage.h"
 #include "Magick++/Include.h"
 #include "Magick++/Functions.h"
@@ -2210,7 +2211,7 @@ namespace Magick
     MagickLib::MagickInfo *magickInfo = GetMagickInfo( "*", &exceptionInfo );
     throwException( exceptionInfo );
     if( !magickInfo )
-      throwExceptionExplicit(MissingDelegateError, "Coder list not returned!", 0 );
+      throwExceptionExplicit(MagickLib::MissingDelegateError, "Coder list not returned!", 0 );
 
     // Clear out container
     container_->clear();

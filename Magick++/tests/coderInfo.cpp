@@ -24,6 +24,8 @@ int main( int /*argc*/, char **argv)
 
   try {
 
+    // Emulate ListMagickInfo
+
     cout << "Here is a list of image formats recognized by ImageMagick.  Mode 'rw+'"
          << "means ImageMagick can read, write, and save more than one image of a"
          << "sequence to the same blob or file."
