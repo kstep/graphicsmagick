@@ -364,11 +364,11 @@ int main(int argc,char **argv)
   quantize_info->dither=IsTrue(resource_value);
   snapshots=1;
   status=True;
+  filename=(char *) NULL;
+  target_window=(char *) NULL;
   /*
     Check command syntax.
   */
-  filename=(char *) NULL;
-  target_window=(char *) NULL;
   for (i=1; i < argc; i++)
   {
     option=argv[i];
@@ -968,7 +968,7 @@ int main(int argc,char **argv)
     image=image->previous;
   status&=MogrifyImages(image_info,argc-1,argv,&image);
   (void) CatchImageException(image);
-  status&=WriteImages(image_info,image,argv[argc-1],&image->exception);
+  status&=WriteImages(image_info,image,filename,&image->exception);
   DestroyImageList(image);
   DestroyMagick();
   LiberateMemory((void **) &argv);
