@@ -12,4 +12,4 @@ $q->Raise('6x6');
 $q->Annotate(text=>'Push Me',font=>'@Generic.ttf',fill=>'black',
   gravity=>'Center',pointsize=>18);
 $q->Write('button.gif');
-$q->display();
+$q->Write('win:');

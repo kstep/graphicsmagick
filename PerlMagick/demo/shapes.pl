@@ -36,4 +36,4 @@ $image->Annotate(fill=>'black',geometry=>'+280+120',font=>'Generic.ttf',
 print "Write image...\n";
 $image->Write('shapes.gif');
 print "Display image...\n";
-$image->Display();
+$image->Write('win:');

@@ -13,4 +13,4 @@ $image->Annotate(font=>'@Generic.ttf',fill=>'red',pointsize=>60,
   text=>'Works like magick!',geometry=>'+26+86');
 $mask=$image->Clone();
 $image->Write('shadow.gif');
-$image->display();
+$image->Write('win:');

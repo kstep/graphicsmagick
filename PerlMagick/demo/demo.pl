@@ -255,4 +255,4 @@ print "Write image...\n";
 $montage->Set(matte=>'false');
 $montage->Write('demo.jpg');
 print "Display image...\n";
-$montage->display();
+$montage->Write('win:');

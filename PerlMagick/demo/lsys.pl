@@ -77,7 +77,7 @@ sub lsys_execute
     if ($translate{$command}) { &{$translate{$command}}(); }
   }
   $im->Write($filename);
-  $im->Display();
+  $im->Write('win:');
 }
 
 1;

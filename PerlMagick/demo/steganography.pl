@@ -22,4 +22,5 @@ $image->Display();
 $size="$width" . "x" . "$height" . "+91";
 $stegano=Image::Magick->new(size=>$size);
 $stegano->ReadImage('stegano:model.png');
-$stegano->Display();
+$stegano->Write('stegano.gif');
+$stegano->Write('win:');
