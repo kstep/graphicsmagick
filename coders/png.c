@@ -520,7 +520,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     }
 
   remap_needed=False;
-  if (top_used > new_number_colors)
+  if (top_used >= new_number_colors)
      remap_needed=True;
 
   /*
