@@ -53,6 +53,17 @@
 </tr>
 </table>
 <p>
+2003-05-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/nt_base.c (DllMain): Fix contributed by Achim Domma. For
+        a DLL build, update PATH during Magick DLL initialization to
+        include the directory where the Magick core DLL resides. This
+        allows the loadable modules to find the core DLLs, even if the
+        core DLLs are not already in the PATH.
+
+</UL>
+<p>
 2003-05-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

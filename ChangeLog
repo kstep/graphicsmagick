@@ -1,3 +1,11 @@
+2003-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/nt_base.c (DllMain): Fix contributed by Achim Domma. For
+	a DLL build, update PATH during Magick DLL initialization to
+	include the directory where the Magick core DLL resides. This
+	allows the loadable modules to find the core DLLs, even if the
+	core DLLs are not already in the PATH.
+
 2003-05-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* GraphicsMagick 1.0.1 released.
