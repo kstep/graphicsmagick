@@ -308,7 +308,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,buffer);
   width=(density*width)/75;
   height=(density*height)/75;
-  if (!IsGrayImage(image))
+  if ((image->storage_class == DirectClass) || !IsGrayImage(image))
     {
       /*
         Write PCL color image.

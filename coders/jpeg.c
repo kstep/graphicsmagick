@@ -818,14 +818,6 @@ ModuleExport void RegisterJPEGImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("JPEG24");
-  entry->decoder=ReadJPEGImage;
-  entry->encoder=WriteJPEGImage;
-  entry->adjoin=False;
-  entry->description=
-    AllocateString("Joint Photographic Experts Group JFIF format");
-  entry->module=AllocateString("JPEG");
-  RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPEG");
   entry->decoder=ReadJPEGImage;
   entry->encoder=WriteJPEGImage;
@@ -866,7 +858,6 @@ ModuleExport void RegisterJPEGImage(void)
 */
 ModuleExport void UnregisterJPEGImage(void)
 {
-  UnregisterMagickInfo("JPEG24");
   UnregisterMagickInfo("JPEG");
   UnregisterMagickInfo("JPG");
 }
@@ -1155,7 +1146,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       break;
     }
   }
-  if (LocaleCompare(image_info->magick,"JPEG24") != 0)
+  if (image->storage_class != DirectClass)
     if (IsGrayImage(image))
       {
         jpeg_info.input_components=1;

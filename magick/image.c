@@ -2494,35 +2494,18 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   TemporaryFilename(image_info->unique);
   (void) strcat(image_info->unique,"u");
   TemporaryFilename(image_info->zero);
-  image_info->temporary=False;
   image_info->adjoin=True;
   image_info->depth=QuantumDepth;
   image_info->interlace=NoInterlace;
-  image_info->units=UndefinedResolution;
-  /*
-    Compression members.
-  */
-  image_info->compression=UndefinedCompression;
   image_info->quality=75;
-  /*
-    Annotation members.
-  */
   image_info->antialias=True;
   image_info->pointsize=12;
   (void) QueryColorDatabase("none",&image_info->pen);
   (void) QueryColorDatabase("#ffffff",&image_info->background_color);
   (void) QueryColorDatabase(BorderColor,&image_info->border_color);
   (void) QueryColorDatabase(MatteColor,&image_info->matte_color);
-  /*
-    Color reduction members.
-  */
   image_info->dither=True;
-  image_info->colorspace=UndefinedColorspace;
-  /*
-    Miscellaneous members.
-  */
   image_info->preview_type=JPEGPreview;
-  image_info->fifo=(int (*)(const Image *,const void *,const size_t)) NULL;
   image_info->signature=MagickSignature;
 }
 
@@ -4460,6 +4443,64 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             quantize_info.tree_depth=atoi(argv[++i]);
             continue;
           }
+        if (LocaleCompare("-type",option) == 0)
+          {
+            if (*option == '-')
+              {
+                option=argv[++i];
+                if (LocaleCompare("Bilevel",option) == 0)
+                  {
+                    clone_info->monochrome=True;
+                    quantize_info.number_colors=2;
+                    quantize_info.tree_depth=8;
+                    quantize_info.colorspace=GRAYColorspace;
+                    break;
+                  }
+                if (LocaleCompare("Gray",option) == 0)
+                  {
+                    quantize_info.number_colors=256;
+                    quantize_info.tree_depth=8;
+                    quantize_info.colorspace=GRAYColorspace;
+                    break;
+                  }
+                if (LocaleCompare("Palette",option) == 0)
+                  {
+                    quantize_info.number_colors=256;
+                    quantize_info.tree_depth=8;
+                    break;
+                  }
+                if (LocaleCompare("PaletteMatte",option) == 0)
+                  {
+                    if (!(*image)->matte)
+                      SetImageOpacity(*image,OpaqueOpacity);
+                    (*image)->matte=True;
+                    quantize_info.number_colors=256;
+                    quantize_info.tree_depth=8;
+                    quantize_info.colorspace=TransparentColorspace;
+                    break;
+                  }
+                if (LocaleCompare("TrueColor",option) == 0)
+                  {
+                    (*image)->storage_class=DirectClass;
+                    break;
+                  }
+                if (LocaleCompare("TrueColorMatte",option) == 0)
+                  {
+                    (*image)->storage_class=DirectClass;
+                    if (!(*image)->matte)
+                      SetImageOpacity(*image,OpaqueOpacity);
+                    (*image)->matte=True;
+                    break;
+                  }
+                if (LocaleCompare("ColorSeparation",option) == 0)
+                  {
+                    if ((*image)->colorspace != CMYKColorspace)
+                      RGBTransformImage(*image,CMYKColorspace);
+                    break;
+                  }
+              }
+            continue;
+          }
         break;
       }
       case 'u':
@@ -5509,7 +5550,7 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned int depth)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (QuantumDepth <= 8)
+  if (depth == QuantumDepth)
     return(True);
   if (GetImageDepth(image) == depth)
     return(True);

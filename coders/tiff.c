@@ -984,13 +984,6 @@ ModuleExport void RegisterTIFFImage(void)
   entry->description=AllocateString("Tagged Image File Format");
   entry->module=AllocateString("TIFF");
   RegisterMagickInfo(entry);
-  entry=SetMagickInfo("TIFF24");
-  entry->decoder=ReadTIFFImage;
-  entry->encoder=WriteTIFFImage;
-  entry->blob_support=False;
-  entry->description=AllocateString("24-bit Tagged Image File Format");
-  entry->module=AllocateString("TIFF");
-  RegisterMagickInfo(entry);
 }
 
 /*
@@ -1018,7 +1011,6 @@ ModuleExport void UnregisterTIFFImage(void)
   UnregisterMagickInfo("PTIF");
   UnregisterMagickInfo("TIF");
   UnregisterMagickInfo("TIFF");
-  UnregisterMagickInfo("TIFF24");
 #endif
 }
 
@@ -1363,6 +1355,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       case JPEGCompression:
       {
 	compress_tag=COMPRESSION_JPEG;
+        image->storage_class=DirectClass;
         image->depth=8;
         break;
       }
@@ -1383,9 +1376,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         TIFFSetField(tiff,TIFFTAG_INKSET,INKSET_CMYK);
       }
     else
-      if ((LocaleCompare(image_info->magick,"TIFF24") == 0) ||
-          (compress_tag == COMPRESSION_JPEG) ||
-          (!IsPseudoClass(image) && !IsGrayImage(image)))
+      if (image->storage_class == DirectClass)
         {
           /*
             Full color TIFF raster.

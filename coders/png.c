@@ -3970,23 +3970,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   need_matte=False;
   framing_mode=1;
   old_framing_mode=1;
-
-#ifdef PNG_REDUCE_TO_PSEUDOCLASS
-  /* Reduce DirectClass images to PseudoClass if possible */
-  for (next_image=image; next_image != (Image *) NULL;
-       next_image=next_image->next)
-  {
-    if (next_image->storage_class==DirectClass && IsPseudoClass(next_image))
-#  ifdef PNG_DEBUG
-     if (image_info->verbose)
-       printf("  reduced to %d-bit PseudoClass with %d colors\n",
-           next_image->depth, next_image->colors);
-#  else
-        /* image reduced */;
-#  endif
-  }
-#endif
-
   if (image_info->adjoin)
     {
       unsigned int

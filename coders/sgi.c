@@ -772,11 +772,12 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     iris_info.columns=image->columns;
     iris_info.rows=image->rows;
     iris_info.depth=image->matte ? 4 : 3;
-    if (IsGrayImage(image))
-      {
-        iris_info.dimension=2;
-        iris_info.depth=1;
-      }
+    if (image->storage_class != DirectClass)
+      if (IsGrayImage(image))
+        {
+          iris_info.dimension=2;
+          iris_info.depth=1;
+        }
     iris_info.minimum_value=0;
     iris_info.maximum_value=DownScale(MaxRGB);
     for (i=0; i < (int) sizeof(iris_info.filler); i++)

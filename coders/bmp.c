@@ -904,12 +904,6 @@ ModuleExport void RegisterBMPImage(void)
   entry->description=AllocateString("Microsoft Windows bitmap image");
   entry->module=AllocateString("BMP");
   RegisterMagickInfo(entry);
-  entry=SetMagickInfo("BMP24");
-  entry->decoder=ReadBMPImage;
-  entry->encoder=WriteBMPImage;
-  entry->description=AllocateString("Microsoft Windows 24-bit bitmap image");
-  entry->module=AllocateString("BMP");
-  RegisterMagickInfo(entry);
   entry=SetMagickInfo("DIB");
   entry->decoder=ReadBMPImage;
   entry->encoder=WriteBMPImage;
@@ -940,7 +934,6 @@ ModuleExport void RegisterBMPImage(void)
 ModuleExport void UnregisterBMPImage(void)
 {
   UnregisterMagickInfo("BMP");
-  UnregisterMagickInfo("BMP24");
   UnregisterMagickInfo("DIB");
 }
 
@@ -1019,13 +1012,11 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     TransformRGBImage(image,RGBColorspace);
     bmp_info.file_size=14+40;
     bmp_info.offset_bits=14+40;
-    if ((LocaleCompare(image_info->magick,"BMP24") == 0) ||
-        (!IsPseudoClass(image) && !IsGrayImage(image)))
+    if (image->storage_class == DirectClass)
       {
         /*
           Full color BMP raster.
         */
-        image->storage_class=DirectClass;
         bmp_info.number_colors=0;
         bmp_info.bits_per_pixel=image->matte ? 32 : 24;
       }

@@ -534,7 +534,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     if (hdf_pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
-    if (!IsPseudoClass(image) && !IsGrayImage(image))
+    if (image->storage_class == DirectClass)
       {
         /*
           Convert DirectClass packet to HDF pixels.

@@ -582,8 +582,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
-  if ((compression == JPEGCompression) && IsGrayImage(image))
-    compression=ZipCompression;
   /*
     Allocate X ref memory.
   */
@@ -795,7 +793,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%u 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
-    if (!IsPseudoClass(image) && !IsGrayImage(image))
+    if (image->storage_class == DirectClass)
       (void) strcpy(buffer,"[ /PDF /Text /ImageC");
     else
       if (IsFaxImage(image))
@@ -871,7 +869,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"stream\n");
     length=TellBlob(image);
-    if (!IsPseudoClass(image) && !IsGrayImage(image))
+    if (image->storage_class == DirectClass)
       switch (compression)
       {
         case JPEGCompression:
@@ -1168,7 +1166,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     if (image->colorspace == CMYKColorspace)
       (void) strcpy(buffer,"/DeviceCMYK\n");
     else
-      if (!IsPseudoClass(image) && !IsGrayImage(image))
+      if (image->storage_class == DirectClass)
         (void) strcpy(buffer,"/DeviceRGB\n");
       else
         if (IsFaxImage(image))
@@ -1232,7 +1230,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"stream\n");
     length=TellBlob(image);
-    if (!IsPseudoClass(tile_image) && !IsGrayImage(tile_image))
+    if (image->storage_class == DirectClass)
       switch (compression)
       {
         case RunlengthEncodedCompression:

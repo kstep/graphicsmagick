@@ -675,7 +675,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     sun_info.type=(image->storage_class == DirectClass ? RT_FORMAT_RGB : RT_STANDARD);
     sun_info.maptype=RMT_NONE;
     sun_info.maplength=0;
-    if (!IsPseudoClass(image) && !IsGrayImage(image))
+    if (image->storage_class == DirectClass)
       {
         /*
           Full color SUN raster.
@@ -722,7 +722,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     */
     x=0;
     y=0;
-    if (!IsPseudoClass(image) && !IsGrayImage(image))
+    if (image->storage_class == DirectClass)
       {
         register unsigned char
           *q;

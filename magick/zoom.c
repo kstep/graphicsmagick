@@ -645,7 +645,7 @@ static double Catrom(double x)
   if (x < 0)
     x=(-x);
   if (x < 1.0)
-    return(0.5*(2.0+x*x*(-5.0+3.0*x)));
+    return(0.5*(2.0+x*x*(-5.0+x*3.0)));
   if (x < 2.0)
     return(0.5*(4.0+x*(-8.0+x*(5.0-x))));
   return(0.0);
@@ -660,7 +660,7 @@ static double Cubic(double x)
   if (x < 2.0)
     {
       x=2.0-x;
-      return(x*x*x/6.0);
+      return((1.0/6.0)*x*x*x);
     }
   return(0.0);
 }
@@ -718,12 +718,12 @@ static double Mitchell(double x)
     x=(-x);
   if (x < 1.0)
     {
-      x=((12.0-9.0*b-6.0*c)*x*x*x)+((-18.0+12.0*b+6.0*c)*x*x)+(6.0-2.0*b);
+      x=((12.0-9.0*b-6.0*c)*(x*x*x))+((-18.0+12.0*b+6.0*c)*x*x)+(6.0-2.0*b);
       return(x/6.0);
     }
  if (x < 2.0)
    {
-     x=((-1.0*b-6.0*c)*x*x*x)+((6.0*b+30.0*c)*x*x)+((-12.0*b-48.0*c)*x)+
+     x=((-1.0*b-6.0*c)*(x*x*x))+((6.0*b+30.0*c)*x*x)+((-12.0*b-48.0*c)*x)+
        (8.0*b+24.0*c);
      return(x/6.0);
    }

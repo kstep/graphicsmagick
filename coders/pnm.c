@@ -783,7 +783,6 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       Promote/Demote image based on image type.
     */
     TransformRGBImage(image,RGBColorspace);
-    (void) IsPseudoClass(image);
     if (LocaleCompare(image_info->magick,"PPM") == 0)
       image->storage_class=DirectClass;
     magick=(char *) image_info->magick;
@@ -804,7 +803,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     /*
       Write PNM file header.
     */
-    if (!IsPseudoClass(image) && !IsGrayImage(image))
+    if (image->storage_class == DirectClass)
       {
         /*
           Full color PNM image.

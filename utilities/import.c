@@ -90,6 +90,8 @@
 %    -silent             operate silently, i.e. don't ring any bells 
 %    -transparent color  make this color transparent within the image
 %    -treedepth value    depth of the color tree
+%    -type type          Bilevel, Gray, Palette, PaletteMatte, TrueColor,
+%                        TrueColorMatte, or ColorSeparation
 %    -verbose            print detailed information about the image
 %    -window id          select window with this id or name
 %
@@ -166,6 +168,10 @@ static void Usage()
       "-transparent color  make this color transparent within the image",
       "-silent             operate silently, i.e. don't ring any bells ",
       "-screen             select image from root window",
+      "-transparent color  make this color transparent within the image",
+      "-treedepth value    depth of the color tree",
+      "-type type          Bilevel, Gray, Palette, PaletteMatte, TrueColor, ",
+      "                    TrueColorMatte, or ColorSeparation",
       "-verbose            print detailed information about the image",
       "-window id          select window with this id or name",
       (char *) NULL
@@ -791,6 +797,37 @@ int main(int argc,char **argv)
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing depth",option);
                   quantize_info->tree_depth=atoi(argv[i]);
+                }
+              break;
+            }
+          if (LocaleNCompare("type",option+1,4) == 0)
+            {
+              if (*option == '-')
+                {
+                  ImageType
+                    image_type;
+
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing type",option);
+                  option=argv[i];
+                  image_type=UndefinedType;
+                  if (LocaleCompare("Bilevel",option) == 0)
+                    image_type=BilevelType;
+                  if (LocaleCompare("Grayscale",option) == 0)
+                    image_type=GrayscaleType;
+                  if (LocaleCompare("Palette",option) == 0)
+                    image_type=PaletteType;
+                  if (LocaleCompare("PaletteMatte",option) == 0)
+                    image_type=PaletteMatteType;
+                  if (LocaleCompare("TrueColor",option) == 0)
+                    image_type=TrueColorType;
+                  if (LocaleCompare("TrueColorMatte",option) == 0)
+                    image_type=TrueColorMatteType;
+                  if (LocaleCompare("ColorSeparation",option) == 0)
+                    image_type=ColorSeparationType;
+                  if (image_type == UndefinedType)
+                    MagickError(OptionError,"Invalid image type",option);
                 }
               break;
             }

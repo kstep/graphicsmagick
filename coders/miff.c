@@ -1186,7 +1186,6 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate image pixels.
     */
-    (void) IsPseudoClass(image);
     if (image->storage_class == DirectClass)
       packet_size=image->depth > 8 ? 6 : 3;
     else

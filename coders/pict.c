@@ -1304,13 +1304,6 @@ ModuleExport void RegisterPICTImage(void)
   entry->description=AllocateString("Apple Macintosh QuickDraw/PICT");
   entry->module=AllocateString("PICT");
   RegisterMagickInfo(entry);
-  entry=SetMagickInfo("PICT24");
-  entry->decoder=ReadPICTImage;
-  entry->encoder=WritePICTImage;
-  entry->adjoin=False;
-  entry->description=AllocateString("24-bit Apple Macintosh QuickDraw/PICT");
-  entry->module=AllocateString("PICT");
-  RegisterMagickInfo(entry);
 }
 
 /*
@@ -1336,7 +1329,6 @@ ModuleExport void UnregisterPICTImage(void)
 {
   UnregisterMagickInfo("PCT");
   UnregisterMagickInfo("PICT");
-  UnregisterMagickInfo("PICT24");
 }
 
 /*
@@ -1464,8 +1456,6 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   x_resolution=image->x_resolution ? image->x_resolution : 72;
   y_resolution=image->y_resolution ? image->y_resolution : 72;
   storage_class=image->storage_class;
-  if (LocaleCompare(image_info->magick,"PICT24") == 0)
-    storage_class=DirectClass;
   if (image->compression == JPEGCompression)
     storage_class=DirectClass;
   if (storage_class == DirectClass)

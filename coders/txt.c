@@ -220,7 +220,6 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->next->filesize=image->filesize;
     image->next->scene=image->scene+1;
     image->next->previous=image;
-    (void) IsPseudoClass(image);
     image=image->next;
     MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
     /*
@@ -240,7 +239,6 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (texture != (Image *) NULL)
     DestroyImage(texture);
   DestroyDrawInfo(draw_info);
-  (void) IsPseudoClass(image);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);

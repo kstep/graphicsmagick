@@ -398,7 +398,6 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (QuantumTick(y,image->rows))
           MagickMonitor(LoadImageText,y,image->rows);
     }
-    (void) IsGrayImage(image);
     /*
       Proceed to next image.
     */
@@ -632,7 +631,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     targa_info.height=image->rows;
     targa_info.bits_per_pixel=8;
     targa_info.attributes=0;
-    if (!IsPseudoClass(image))
+    if (image->storage_class == DirectClass)
       {
         /*
           Full color TGA raster.
@@ -668,7 +667,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobByte(image,targa_info.attributes);
     if (targa_info.id_length != 0)
       (void) WriteBlob(image,targa_info.id_length,attribute->value);
-    if (IsPseudoClass(image))
+    if (image->storage_class == PseudoClass)
       {
         unsigned char
           *targa_colormap;

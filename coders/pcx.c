@@ -772,8 +772,9 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     pcx_info.version=5;
     pcx_info.encoding=1;
     pcx_info.bits_per_pixel=8;
-    if (IsMonochromeImage(image))
-      pcx_info.bits_per_pixel=1;
+    if (image->storage_class != DirectClass)
+      if (IsMonochromeImage(image))
+        pcx_info.bits_per_pixel=1;
     pcx_info.left=0;
     pcx_info.top=0;
     pcx_info.right=image->columns-1;
@@ -792,7 +793,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       }
     pcx_info.reserved=0;
     pcx_info.planes=1;
-    if (!IsPseudoClass(image))
+    if (image->storage_class == DirectClass)
       {
         pcx_info.planes=3;
         if (image->matte)

@@ -557,10 +557,11 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         LiberateMemory((void **) &labels);
       }
     FormatString(buffer,"%u %u\n%u\n%d\n%d\n",image->columns,image->rows,
-      IsPseudoClass(image),(int) (image->colorspace == CMYKColorspace),
+      (int) (image->storage_class == PseudoClass),
+      (int) (image->colorspace == CMYKColorspace),
       (int) (compression == NoCompression));
     (void) WriteBlobString(image,buffer);
-    if (!IsPseudoClass(image) && !IsGrayImage(image))
+    if (image->storage_class == DirectClass)
       switch (compression)
       {
         case JPEGCompression:
@@ -585,6 +586,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           if (jpeg_image == (Image *) NULL)
             ThrowWriterException(DelegateWarning,"Unable to clone image",image);
           (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
+          jpeg_image->depth=8;
           status=WriteImage(image_info,jpeg_image);
           DestroyImage(jpeg_image);
           if (status == False)

@@ -144,6 +144,8 @@
 %    -tile filename       tile image when filling a graphic primitive
 %    -transparent color   make this color transparent within the image
 %    -treedepth value     depth of the color color tree
+%    -type type           Bilevel, Gray, Palette, PaletteMatte, TrueColor,
+%                         TrueColorMatte, or ColorSeparation
 %    -units type          PixelsPerInch, PixelsPerCentimeter, or Undefined
 %    -verbose             print detailed information about the image
 %    -view                FlashPix viewing transforms
@@ -343,6 +345,8 @@ static void Usage()
       "-tile filename       tile image when filling a graphic primitive",
       "-transparent color   make this color transparent within the image",
       "-treedepth value     depth of the color color tree",
+      "-type type           Bilevel, Gray, Palette, PaletteMatte, TrueColor, ",
+      "                     TrueColorMatte, or ColorSeparation",
       "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
       "-verbose             print detailed information about the image",
       "-view                FlashPix viewing transforms",
@@ -819,13 +823,11 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("depth",option+1,3) == 0)
             {
-              image_info->depth=QuantumDepth;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing image depth",option);
-                  image_info->depth=atoi(argv[i]);
                 }
               break;
             }
@@ -1688,6 +1690,37 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing depth",option);
+                }
+              break;
+            }
+          if (LocaleNCompare("type",option+1,4) == 0)
+            {
+              if (*option == '-')
+                {
+                  ImageType
+                    image_type;
+
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing type",option);
+                  option=argv[i];
+                  image_type=UndefinedType;
+                  if (LocaleCompare("Bilevel",option) == 0)
+                    image_type=BilevelType;
+                  if (LocaleCompare("Grayscale",option) == 0)
+                    image_type=GrayscaleType;
+                  if (LocaleCompare("Palette",option) == 0)
+                    image_type=PaletteType;
+                  if (LocaleCompare("PaletteMatte",option) == 0)
+                    image_type=PaletteMatteType;
+                  if (LocaleCompare("TrueColor",option) == 0)
+                    image_type=TrueColorType;
+                  if (LocaleCompare("TrueColorMatte",option) == 0)
+                    image_type=TrueColorMatteType;
+                  if (LocaleCompare("ColorSeparation",option) == 0)
+                    image_type=ColorSeparationType;
+                  if (image_type == UndefinedType)
+                    MagickError(OptionError,"Invalid image type",option);
                 }
               break;
             }

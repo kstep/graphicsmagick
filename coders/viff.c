@@ -953,7 +953,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     viff_info.map_subrows=0;
     viff_info.map_enable=1;  /* no colormap */
     viff_info.maps_per_cycle=0;
-    if (!IsPseudoClass(image) && !IsGrayImage(image))
+    if (image->storage_class == DirectClass)
       {
         /*
           Full color VIFF raster.
@@ -1035,7 +1035,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
     q=viff_pixels;
-    if (!IsPseudoClass(image) && !IsGrayImage(image))
+    if (image->storage_class == DirectClass)
       {
         unsigned long
           offset;
