@@ -93,6 +93,8 @@ static unsigned int
 */
 static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+#define GetBit(a,i) (((a) >> (i)) & 1L)
+
   Image
     *image;
 
@@ -116,6 +118,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned char
     bit,
+    info,
     depth;
 
   unsigned int
@@ -135,9 +138,17 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image structure.
   */
-  (void) ReadBlobByte(image);
-  image->columns=ReadBlobByte(image);
-  image->rows=ReadBlobByte(image);
+  info=ReadBlobByte(image);
+  if (GetBit(info,4) == 0)
+    {
+      image->columns=ReadBlobByte(image);
+      image->rows=ReadBlobByte(image);
+    }
+  else
+    {
+      image->columns=ReadBlobMSBShort(image);
+      image->rows=ReadBlobMSBShort(image);
+    }
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageWarning,"Not a OTB image file",image);
   depth=ReadBlobByte(image);
@@ -171,7 +182,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ThrowReaderException(CorruptImageWarning,"Corrupt OTB image",
               image);
         }
-      indexes[x]=(byte & (0x01 << (7-bit))) ? 1 : 0;
+      indexes[x]=(byte & (0x01 << (7-bit))) ? 0 : 1;
       bit++;
       if (bit == 8)
         bit=0;
@@ -281,6 +292,8 @@ ModuleExport void UnregisterOTBImage(void)
 */
 static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
 {
+#define SetBit(a,i,set) a=(set) ? (a) | (1L << (i)) : (a) & ~(1L << (i))
+
   long
     y;
 
@@ -296,6 +309,7 @@ static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
   unsigned char
     bit,
     byte,
+    info,
     polarity;
 
   unsigned int
@@ -329,9 +343,20 @@ static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
   polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
   if (image->colors == 2)
     polarity=Intensity(image->colormap[0]) < Intensity(image->colormap[1]);
-  (void) WriteBlobMSBShort(image,0);
-  (void) WriteBlobMSBShort(image,image->columns);
-  (void) WriteBlobMSBShort(image,image->rows);
+  info=0;
+  if ((image->columns >= 256) || (image->rows >= 256))
+    SetBit(info,4,1);
+  (void) WriteBlobMSBShort(image,info);
+  if ((image->columns >= 256) || (image->rows >= 256))
+    {
+      (void) WriteBlobMSBShort(image,image->columns);
+      (void) WriteBlobMSBShort(image,image->rows);
+    }
+  else
+    {
+      (void) WriteBlobByte(image,image->columns);
+      (void) WriteBlobByte(image,image->rows);
+    }
   (void) WriteBlobMSBShort(image,1);  /* depth */
   for (y=0; y < (long) image->rows; y++)
   {
