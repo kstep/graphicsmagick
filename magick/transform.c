@@ -1040,7 +1040,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
           continue;
         if (image->generic_profile[i].name != (char *) NULL)
           LiberateMemory((void **) &image->generic_profile[i].name);
-        if (image->>generic_profile.length != 0)
+        if (image->generic_profile[i].length != 0)
           LiberateMemory((void **) &image->generic_profile[i].info);
         image->generic_profiles--;
         for (j=i; j < (int) image->generic_profiles; j++)
