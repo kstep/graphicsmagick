@@ -508,7 +508,7 @@ Export void GetAnnotateInfo(const ImageInfo *image_info,
     return;
   attribute=GetImageAttribute(annotate_image,"label");
   if (attribute != (ImageAttribute *) NULL)
-    annotate_info->font_name=attribute->value;
+    annotate_info->font_name=AllocateString(attribute->value);
   annotate_info->bounds.width=
     (annotate_image->columns+(strlen(Alphabet) >> 1))/strlen(Alphabet);
   annotate_info->bounds.height=annotate_image->rows;
