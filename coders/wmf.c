@@ -120,8 +120,6 @@ struct _wmf_magick_t
   double
     scale_x,
     scale_y,
-    resolution_x,
-    resolution_y,
     translate_x,
     translate_y,
     units_per_inch;
@@ -525,16 +523,10 @@ static void wmf_magick_device_begin (wmfAPI* API)
   wmf_stream_printf (API,out,"push graphic-context\n");
 
   /* Scale width and height to image */
-  ddata->scale_x = ((double)ddata->image->columns)/(ddata->bbox.BR.x - ddata->bbox.TL.x);
-  ddata->scale_y = ((double)ddata->image->rows)/(ddata->bbox.BR.y - ddata->bbox.TL.y);
- /*  printf("Scale = %.10g,%.10g\n", ddata->scale_x, ddata->scale_y ); */
   wmf_stream_printf (API,out,"scale %.10g,%.10g\n",
                      ddata->scale_x,
                      ddata->scale_y);
   /* Translate to TL corner of bounding box */
-  ddata->translate_x = -(ddata->bbox.TL.x);
-  ddata->translate_y = -(ddata->bbox.TL.y);
-/* printf("Translate = %.10g,%.10g\n", ddata->translate_x, ddata->translate_y ); */
   wmf_stream_printf (API,out,"translate %.10g,%.10g\n",
                      ddata->translate_x,
                      ddata->translate_y);
@@ -1081,21 +1073,10 @@ static void wmf_magick_draw_text (wmfAPI* API,
     wmf_stream_printf (API,out,"decorate line-through\n");
 
   /* Set font size */
-/*  pointsize = ceil( WMF_FONT_HEIGHT(font) * ((double)TWIPS_PER_INCH/ddata->units_per_inch) * INCHES_PER_POINT */
-/*                     *(ddata->resolution_y/72) * (1/ddata->scale_y) ); */
-
-/*   pointsize = ceil( WMF_FONT_HEIGHT(font) * CENTIMETERS_PER_POINT * 1.4 * */
-/*                     (ddata->resolution_y/72) * (1/ddata->scale_y) ); */
-/*   pointsize = ceil( WMF_FONT_HEIGHT(font) * CENTIMETERS_PER_POINT * */
-/*                     (ddata->resolution_y/72) * (1/ddata->scale_y) ); */
-  pointsize = ceil( WMF_FONT_HEIGHT(font) * INCHES_PER_POINT * 1.9 *
-                    (ddata->resolution_y/72) * (1/ddata->scale_y) );
+  pointsize = ceil(abs(WMF_FONT_HEIGHT(font)*draw_text->dc->pixel_height));
   
 /*   printf("WMF_FONT_HEIGHT       = %i\n", (int)WMF_FONT_HEIGHT(font)); */
 /*   printf("WMF_FONT_WIDTH        = %i\n", (int)WMF_FONT_WIDTH(font)); */
-/*   printf("ddata->units_per_inch = %.10g\n", ddata->units_per_inch); */
-/*   printf("ddata->resolution_y   = %.10g\n", ddata->resolution_y); */
-/*   printf("ddata->scale_y        = %.10g\n", ddata->scale_y); */
 /*   printf("pointsize             = %i\n", (int)pointsize); */
 /*   printf("scaled pointsize      = %.10g\n", (float)pointsize*ddata->scale_y); */
   wmf_stream_printf (API,out,"font-size %i\n", pointsize);
@@ -1525,21 +1506,25 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
     image;
 
   ImageInfo*
-    clone_info;
+    canvas_info;
 
   char
     buff[MaxTextExtent],
     font_map_path[MaxTextExtent],
     *mvg;
 
+  int
+    image_height,
+    image_width;
+
   float
     wmf_width,
     wmf_height;
 
   double
-    resolution_y = 72.0,
-    resolution_x = 72.0,
-    units_per_inch = TWIPS_PER_INCH;
+    resolution_y,
+    resolution_x,
+    units_per_inch;
 
   unsigned long
     mvg_length,
@@ -1596,7 +1581,10 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
       ThrowReaderException(DelegateError,"Failed to intialize libwmf",image);
     }
 
-  /* Open WMF file */
+  /*
+   * Open WMF file
+   *
+   */
   wmf_error = wmf_file_open (API, (char*)image_info->filename);
   if ( wmf_error != wmf_E_None )
     {
@@ -1604,42 +1592,35 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
       ThrowReaderException(FileOpenError,"Unable to open file",image);
     }
 
-  /* Scan WMF file */
+  /*
+   * Scan WMF file
+   *
+   */
   wmf_error = wmf_scan (API,0,&bounding_box);
   if ( wmf_error != wmf_E_None )
     {
       wmf_api_destroy (API);
       ThrowReaderException(CorruptImageError,"Failed to scan file",image);
     }
-/*   printf("Bounding Box: %.10g,%.10g %.10g,%.10g\n", bounding_box.TL.x, bounding_box.TL.y, */
-/*          bounding_box.BR.x,bounding_box.BR.y); */
 
-  /* Compute output width and height */
+  /*
+   * Compute dimensions and scale factors
+   *
+   */
 
-  /* A twip (meaning "twentieth of a point") is the logical unit of
-     measurement used in Windows Metafiles. A twip is equal to 1/1440
-     of an inch. Thus 720 twips equal 1/2 inch, while 32,768 twips is
-     22.75 inches.
+  ddata = WMF_MAGICK_GetData (API);
+  ddata->bbox = bounding_box;
 
-     The units returned by wmf_size are in twips
-  */
-  wmf_error = wmf_size (API,&wmf_width,&wmf_height);
-  if ( wmf_error != wmf_E_None )
-    {
-      wmf_api_destroy (API);
-      ThrowReaderException(CorruptImageError,"Failed to compute output size",
-                           image);
-    }
-/*   printf("wmf_size: %.10gx%.10g\n", wmf_width, wmf_height); */
-/*   printf("Units/inch: %i\n", API->File->pmh->Inch); */
-
+  /* User specified resolution */
+  resolution_y = 72.0;
   if(image->y_resolution > 0)
     {
       resolution_y = image->y_resolution;
       if ( image->units == PixelsPerCentimeterResolution )
         resolution_y *= CENTIMETERS_PER_INCH;
     }
-  
+
+  resolution_x = 72.0;
   if(image->x_resolution > 0)
     {
       resolution_x = image->x_resolution;
@@ -1647,49 +1628,78 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
         resolution_x *= CENTIMETERS_PER_INCH;
     }
 
-  /* If file has metafile header, then retrieve metafile units */
+  /* Obtain output size expressed in metafile units */
+  wmf_error = wmf_size (API,&wmf_width,&wmf_height);
+  if ( wmf_error != wmf_E_None )
+    {
+      wmf_api_destroy (API);
+      ThrowReaderException(CorruptImageError,"Failed to compute output size",
+                           image);
+    }
+
+  /* Obtain metafile units */
+  units_per_inch = TWIPS_PER_INCH;
   if((API)->File->placeable)
     units_per_inch = (API)->File->pmh->Inch;
+  ddata->units_per_inch = units_per_inch;
 
-  wmf_width  = ceil(((double)wmf_width/units_per_inch)*resolution_x);
-  wmf_height = ceil(((double)wmf_height/units_per_inch)*resolution_y);
+  /* Calculate image width and height based on specified resolution */
+  image_width  = ceil(((double)wmf_width/units_per_inch)*resolution_x);
+  image_height = ceil(((double)wmf_height/units_per_inch)*resolution_y);
 
-/*   printf("Size: %.10gx%.10g\n", wmf_width, wmf_height); */
+  /* Compute scale factors */
+/*   ddata->scale_x = ((double)image_width)/(ddata->bbox.BR.x - ddata->bbox.TL.x); */
+/*   ddata->scale_y = ((double)image_height)/(ddata->bbox.BR.y - ddata->bbox.TL.y); */
+  ddata->scale_x = ((ddata->bbox.BR.x - ddata->bbox.TL.x)/(double)wmf_width);
+  ddata->scale_y = ((ddata->bbox.BR.y - ddata->bbox.TL.y)/(double)wmf_height);
 
-  ddata = WMF_MAGICK_GetData (API);
-  ddata->bbox = bounding_box;
+  /* Compute translation to place bounding box at image origin */
+  ddata->translate_x = -(ddata->bbox.TL.x);
+  ddata->translate_y = -(ddata->bbox.TL.y);
 
-  /* Create canvas image */
-  clone_info = (ImageInfo*)AcquireMemory(sizeof(ImageInfo));
-  GetImageInfo( clone_info );
-  sprintf( buff, "%ix%i", (int)wmf_width, (int)wmf_height );
-  (void) CloneString(&(clone_info->size), buff);
+/*   printf("Size in metafile units: %.10gx%.10g\n", wmf_width, wmf_height); */
+/*   printf("Metafile units/inch:    %.10g\n", ddata->units_per_inch); */
+/*   printf("Bounding Box:           %.10g,%.10g %.10g,%.10g\n", bounding_box.TL.x, bounding_box.TL.y, */
+/*          bounding_box.BR.x,bounding_box.BR.y); */
+/*   printf("Output resolution:      %.10gx%.10g\n", resolution_x, resolution_y); */
+/*   printf("Image size:             %ix%i\n", image_width, image_height); */
+/*   printf("Scale factor:           %.10g,%.10g\n", ddata->scale_x, ddata->scale_y ); */
+/*   printf("Translation:            %.10g,%.10g\n", ddata->translate_x, ddata->translate_y ); */
+/*   printf("Pixel width:            %.10g\n", API->((wmfUserData_t*)user_data)->dc->pixel_width; */
+
+  /*
+   * Create canvas image
+   *
+   */
+  canvas_info = CloneImageInfo((ImageInfo *) NULL);
+  sprintf( buff, "%ix%i", image_width, image_height );
+  (void) CloneString(&(canvas_info->size), buff);
   if(image_info->texture == (char*)NULL)
     {
-      QueryColorDatabase("none", &clone_info->background_color);
+      QueryColorDatabase("none", &canvas_info->background_color);
       if(ColorMatch(&image_info->background_color,
-                    &clone_info->background_color,0))
-        QueryColorDatabase("white", &clone_info->background_color);
+                    &canvas_info->background_color,0))
+        QueryColorDatabase("white", &canvas_info->background_color);
       else
-        clone_info->background_color = image_info->background_color;
+        canvas_info->background_color = image_info->background_color;
 
-      sprintf(clone_info->filename,
+      sprintf(canvas_info->filename,
 #if QuantumDepth == 8
               "XC:#%02x%02x%02x%02x",
 #elif QuantumDepth == 16
               "XC:#%04x%04x%04x%04x",
 #endif    
-              clone_info->background_color.red,
-              clone_info->background_color.green,
-              clone_info->background_color.blue,
-              clone_info->background_color.opacity);
+              canvas_info->background_color.red,
+              canvas_info->background_color.green,
+              canvas_info->background_color.blue,
+              canvas_info->background_color.opacity);
     }
   else
-    sprintf(clone_info->filename,"TILE:%.1024s",image_info->texture);
+    sprintf(canvas_info->filename,"TILE:%.1024s",image_info->texture);
   GetExceptionInfo(exception);
   DestroyImage(image);
-  image=ReadImage( clone_info, exception );
-  DestroyImageInfo(clone_info);
+  image=ReadImage( canvas_info, exception );
+  DestroyImageInfo(canvas_info);
   if ( image == (Image*)NULL )
     {
       wmf_api_destroy (API);
@@ -1698,11 +1708,11 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
   strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   strncpy(image->magick,image_info->magick,MaxTextExtent-1);
   ddata->image = image;
-  ddata->resolution_x = resolution_x;
-  ddata->resolution_y = resolution_y;
-  ddata->units_per_inch = units_per_inch;
 
-  /* Create MVG drawing commands*/
+  /*
+   * Play file to generate MVG drawing commands
+   *
+   */
   ddata->out = wmf_stream_create (API,0);
   wmf_error = wmf_play (API,0,&bounding_box);
   if ( wmf_error != wmf_E_None )
@@ -1715,7 +1725,10 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
                      &mvg,		/* MVG data */
                      &mvg_length);	/* MVG length */
 
-  /* Scribble on canvas image */
+  /*
+   * Scribble on canvas image
+   *
+   */
   ScribbleMVG(image,mvg);
 
   /* Cleanup allocated data */
