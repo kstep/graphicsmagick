@@ -1359,8 +1359,8 @@ static void GenerateArc(PrimitiveInfo *primitive_info,PointInfo start,
     *p;
 
   p=primitive_info;
-  scale.x=fabs((end.x-start.x)/2.0);
-  scale.y=fabs((end.y-start.y)/2.0);
+  scale.x=0.5*fabs(end.x-start.x);
+  scale.y=0.5*fabs(end.y-start.y);
   x=Min(start.x,end.x)+scale.x;
   y=Min(start.y,end.y)+scale.y;
   for (angle=(arc.x+1.0); angle <= arc.y; angle+=1.0)
@@ -1921,6 +1921,9 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
   degrees.x=180.0;
   degrees.y=270.0;
   GenerateEllipse(p,point,arc,degrees);
+  p+=p->coordinates;
+  p->primitive=primitive_info->primitive;
+  GeneratePoint(p,primitive_info->pixel);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   primitive_info->primitive=PolygonPrimitive;
