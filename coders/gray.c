@@ -180,7 +180,6 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
     if (EOFBlob(image))
       ThrowReaderException(CorruptImageWarning,"not enough scanline",image);
-    SyncImage(image);
     /*
       Proceed to next image.
     */
