@@ -1,15 +1,13 @@
 /*
-  ImageMagick X Window Widget declarations.
+  X11 User Interface Methods for ImageMagick.
 */
 #ifndef _WIDGET_H
 #define _WIDGET_H
 
-/*
-  Define declarations.
-*/
-#define BorderOffset  4
-#define DoubleClick  250
-
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   Typedef declarations.
 */
@@ -66,5 +64,9 @@ extern Export void
   XNoticeWidget(Display *,XWindows *,char *,char *),
   XTextViewWidget(Display *,const XResourceInfo *,XWindows *,const unsigned int,
     char *,char const **);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

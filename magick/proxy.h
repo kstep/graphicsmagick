@@ -1,5 +1,5 @@
 /*
-  Proxy include definitions.
+  ImageMagick Proxy Definitions.
 */
 #ifndef _PROXY_H
 #define _PROXY_H

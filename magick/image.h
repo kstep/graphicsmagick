@@ -1,5 +1,5 @@
 /*
-  ImageMagick Quantization declarations.
+  ImageMagick Image Methods.
 */
 #ifndef _IMAGE_H
 #define _IMAGE_H
@@ -8,88 +8,6 @@
 extern "C" {
 #endif
 
-/*
-  Image define declarations.
-*/
-#define alias  antialias
-#define Alphabet  "`-=[]\\;',./~!@#$%^&*()_+{}|:\"<>?" \
-  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-#define ColorMatch(color,target,distance) \
-  (((((color).red-(int) (target).red)*((color).red-(int) (target).red))+ \
-    (((color).green-(int) (target).green)*((color).green-(int) (target).green))+ \
-    (((color).blue-(int) (target).blue)*((color).blue-(int) (target).blue))) <= \
-    (distance*distance))
-#define DegreesToRadians(x) ((x)*M_PI/180.0)
-#define Intensity(color)  \
-  ((unsigned int) ((color).red*77+(color).green*150+(color).blue*29) >> 8)
-#define IsFaxImage(color)  \
-  (IsMonochromeImage(image) && ((image)->columns <= 2560))
-#define IsGray(color)  \
-  (((color).red == (color).green) && ((color).green == (color).blue))
-#define MatteMatch(color,target,delta) \
-  (ColorMatch(color,target,delta) && ((color).index == (target).index))
-#define MaxColormapSize  65535L
-#define MaxStacksize  (1 << 15)
-#define MaxTextExtent  1664
-#define Opaque  MaxRGB
-#define PixelOffset(image,x,y) \
-  ((image)->pixels+(((int) (y))*(image)->columns+((int) (x))))
-#define Push(up,left,right,delta) \
-  if ((p < (segment_stack+MaxStacksize)) && (((up)+(delta)) >= 0) && \
-      (((up)+(delta)) < (int) image->rows)) \
-    { \
-      p->y1=(up); \
-      p->x1=(left); \
-      p->x2=(right); \
-      p->y2=(delta); \
-      p++; \
-    }
-#define RadiansToDegrees(x) ((x)*180/M_PI)
-#define ReadQuantum(quantum,p)  \
-{  \
-  if (image->depth <= 8) \
-    quantum=UpScale(*p++); \
-  else \
-    { \
-      value=(*p++) << 8;  \
-      value|=(*p++);  \
-      quantum=value >> (image->depth-QuantumDepth); \
-    } \
-}
-#define ReadQuantumFile(quantum)  \
-{  \
-  if (image->depth <= 8) \
-    quantum=UpScale(fgetc(image->file)); \
-  else \
-    quantum=MSBFirstReadShort(image->file) >> (image->depth-QuantumDepth); \
-}
-#define SharpenFactor  60.0
-#define Transparent  0
-#define UncompressImage  UncondenseImage
-#define WriteQuantum(quantum,q)  \
-{  \
-  if (image->depth <= 8) \
-    *q++=DownScale(quantum); \
-  else \
-    { \
-      value=(quantum); \
-      if ((QuantumDepth-image->depth) > 0) \
-        value*=257; \
-      *q++=value >> 8; \
-      *q++=value; \
-    } \
-}
-#define WriteQuantumFile(quantum)  \
-{  \
-  if (image->depth <= 8) \
-    (void) fputc(DownScale(quantum),image->file); \
-  else \
-    if ((QuantumDepth-image->depth) > 0) \
-      MSBFirstWriteShort((quantum)*257,image->file); \
-    else \
-      MSBFirstWriteShort(quantum,image->file); \
-}
-
 #if defined(QuantumLeap)
 /*
   Color quantum is [0..65535].
@@ -119,14 +37,6 @@ typedef unsigned short Quantum;
 
 typedef unsigned char Quantum;
 #endif
-
-/*
-  Image Geometry defines (extends XParseGeometry flags).
-*/
-#define PercentValue  0x1000
-#define AspectValue  0x2000
-#define LessValue  0x4000
-#define GreaterValue  0x8000
 
 /*
   Typedef declarations.

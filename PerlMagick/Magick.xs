@@ -75,6 +75,7 @@ extern "C" {
 #include "XSUB.h"
 #include "perl.h"
 #include "magick.h"
+#include "defines.h"
 #include <setjmp.h>
 
 #ifdef __cplusplus
@@ -2567,7 +2568,7 @@ Get(ref,...)
           if (strEQcase(attribute,"antialias"))
             {
               if (info)
-                s=newSViv(info->image_info->alias);
+                s=newSViv(info->image_info->antialias);
               break;
             }
           break;

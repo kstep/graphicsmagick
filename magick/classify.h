@@ -1,4 +1,13 @@
-
+/*
+  ImageMagick image and error classifications.
+*/
+#ifndef _CLASSIFY_H
+#define _CLASSIFY_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   Classify image attributes.
 */
@@ -231,3 +240,9 @@ typedef enum
   CorruptImageWarning = 325,
   FileOpenWarning = 330
 } WarningType;
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
+#endif

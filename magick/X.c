@@ -52,7 +52,24 @@
   Include declarations.
 */
 #include "magick.h"
+#include "defines.h"
 #include "Colorlist.h"
+
+/*
+  X defines.
+*/
+#define UndoCache  "16"
+#define XGammaPixel(map,gamma,color,dx)  (unsigned long) (map->base_pixel+ \
+  ((gamma[(color)->red].red*map->red_max+(1 << (dx-1)))/((1 << dx)-1))* \
+    map->red_mult+ \
+  ((gamma[(color)->green].green*map->green_max+(1 << (dx-1)))/((1 << dx)-1))* \
+    map->green_mult+ \
+  ((gamma[(color)->blue].blue*map->blue_max+(1 << (dx-1)))/((1 << dx)-1))* \
+    map->blue_mult)
+#define XStandardPixel(map,color,dx)  (unsigned long) (map->base_pixel+ \
+  (((color).red*map->red_max+(1 << (dx-1)))/((1 << dx)-1))*map->red_mult+ \
+  (((color).green*map->green_max+(1 << (dx-1)))/((1 << dx)-1))*map->green_mult+\
+  (((color).blue*map->blue_max+(1 << (dx-1)))/((1 << dx)-1))*map->blue_mult)
 
 /*
   State declarations.
@@ -60,6 +77,20 @@
 #define ControlState  0x0001
 #define DefaultState  0x0000
 #define ExitState  0x0002
+
+/*
+  Default colors declarations.
+*/
+#define Pen0Color  "#bdbdbd"  /* gray */
+#define Pen1Color  "#000000"  /* black */
+#define Pen2Color  "#0000ff"  /* blue */
+#define Pen3Color  "#00ffff"  /* cyan */
+#define Pen4Color  "#00ff00"  /* green */
+#define Pen5Color  "#bdbdbd"  /* gray */
+#define Pen6Color  "#ff0000"  /* red */
+#define Pen7Color  "#ff00ff"  /* magenta */
+#define Pen8Color  "#ffff00"  /* yellow */
+#define Pen9Color  "#ffffff"  /* white */
 
 /*
   Global declarations.

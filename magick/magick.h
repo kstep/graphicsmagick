@@ -66,11 +66,16 @@ extern "C" {
 #define Export  __declspec(dllexport)
 #pragma warning( disable : 4018 )
 #pragma warning( disable : 4244 )
+#pragma warning( disable : 4142 )
+#ifdef _VISUALC_
+#define INT32  X11_INT32
+#endif
 #endif
 
 #undef index
 #undef tainted
 
+#define MaxTextExtent  1664
 #if defined(macintosh)
 #define HasJPEG
 #define HasLZW
@@ -107,134 +112,6 @@ extern "C" {
 #include "memory.h"
 #include "delegates.h"
 #include "version.h"
-
-/*
-  Define declarations.
-*/
-#define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
-#define DownShift(x) (((int) ((x)+(1L << 13))) >> 14)
-#define Extent(string)  ((int) strlen(string))
-#define False  0
-#define Max(x,y)  (((x) > (y)) ? (x) : (y))
-#define Min(x,y)  (((x) < (y)) ? (x) : (y))
-#if !defined(M_PI)
-#define M_PI  3.14159265358979323846
-#endif
-#define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
-#if !defined(STDIN_FILENO)
-#define STDIN_FILENO  0
-#endif
-#define True  1
-#define UpShift(x) ((int) (x) << 14)
-#define UpShifted(x) ((int) ((x)*(1L << 14)+0.5))
-
-/*
-  Review these definitions and change them to suit your local requirements.
-*/
-#define AppendBinaryType  "ab"
-#define DefaultDisplayGamma  "2.2"
-#define DefaultImageQuality  "75"
-#define DefaultImportName  "magick.miff"
-#define DefaultInterlace  NoInterlace
-#define DefaultPointSize  "12"
-#define DefaultPreviewGeometry  "204x204+10+10"
-#define DefaultPreviewMatte  "#dfdfdf"
-#define DefaultPreviewPageGeometry  "3x3"
-#define DefaultPSFont  "Helvetica"
-#define DefaultPyramidHeight  64
-#define DefaultPyramidWidth  64
-#define DefaultTextBackground  "#cccccc"
-#define DefaultTextForeground  "#000000"
-#define DefaultTileBackground  "#cccccc"
-#define DefaultTileBorderWidth  0
-#define DefaultTileFrame  "15x15+3+3"
-#define DefaultTileGeometry  "106x106+4+3>"
-#define DefaultTileLabel  "%f\n%wx%h\n%b"
-#define DefaultTileMatte  "#bdbdbd"
-#define DefaultTilePageGeometry  "6x4"
-#define DefaultThumbnailGeometry  "106x106+0+0>"
-#define DefaultXFont  "-adobe-helvetica-medium-r-*-*-14-*-*-*-*-*-iso8859-*"
-#define DocumentationURL  \
-  "http://www.wizards.dupont.com/cristy/ImageMagick.html"
-#define PostscriptColorDevice  "pnmraw"
-#define PostscriptMonoDevice  "pbmraw"
-#define ReadBinaryType  "rb"
-#define ReadBinaryUnbufferedType  "rbu"
-#define TemporaryDirectory  "/tmp"
-#define UndoCache  "16"
-#define WriteBinaryType  "wb"
-/*
-  Review these machine specific definitions.
-*/
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-#define ApplicationDefaults  "/usr/X11R6/lib/X11/app-defaults/"
-#define EditorOptions  " -title \"Edit Image Comment\" -e vi"
-#define Exit  exit
-#define PreferencesDefaults  "~/."
-#define ProcessPendingEvents(text)
-#define ReadCommandlLine(argc,argv)
-#define SetNotifyHandlers
-#else
-#if defined(vms)
-#define ApplicationDefaults  "decw$system_defaults:"
-#define EditorOptions  ""
-#define Exit(errno)  errno ? exit(-1) : exit(0)
-#define PreferencesDefaults  "decw$user_defaults:"
-#define ProcessPendingEvents(text)
-#define ReadCommandlLine(argc,argv)
-#if !defined(RGBColorDatabase)
-#define RGBColorDatabase  "sys$common:[sysmgr]decw$rgb.dat"
-#endif
-#define SetNotifyHandlers
-#endif
-#if defined(macintosh)
-#define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
-#define EditorOptions ""
-#define PreferencesDefaults  "~/."
-#define ReadCommandlLine(argc,argv)  argc=ccommand(argv); puts(MagickVersion);
-#if !defined(RGBColorDatabase)
-#define RGBColorDatabase  "../xlib/lib/X11/rgb.txt"
-#endif
-#define SetNotifyHandlers \
-  SetErrorHandler(MACErrorHandler); \
-  SetWarningHandler(MACWarningHandler)
-#endif
-#if defined(WIN32)
-#define ApplicationDefaults  "c:\\ImageMagick\\"
-#define EditorOptions ""
-#undef isatty
-#define isatty(filedes)  1
-#define PreferencesDefaults  "~/."
-#define ProcessPendingEvents(text)
-#define ReadCommandlLine(argc,argv)
-#if !defined(RGBColorDatabase)
-#define RGBColorDatabase  "c:\\ImageMagick\\rgb.txt"
-#endif
-#define SetNotifyHandlers \
-  SetErrorHandler(NTErrorHandler); \
-  SetWarningHandler(NTWarningHandler)
-#undef sleep
-#define sleep(seconds)  Sleep(seconds*1000)
-#endif
-#endif
-
-/*
-  Page geometries:
-*/
-#define PCLPageGeometry  "612x792>"
-#define PCLDensityGeometry  "75x75"
-#define PDFPageGeometry  "612x792>"
-#define PSDensityGeometry  "72x72"
-#define PSPageGeometry  "612x792>"
-#define TextPageGeometry  "612x792+43+43"
-/*
-  3D effects.
-*/
-#define AccentuateModulate  UpScale(80)
-#define HighlightModulate  UpScale(125)
-#define ShadowModulate  UpScale(135)
-#define DepthModulate  UpScale(185)
-#define TroughModulate  UpScale(110)
 
 /*
   Typedef declarations.

@@ -1,3 +1,13 @@
+/*
+  ImageMagick Utility Methods.
+*/
+#ifndef _UTILITY_H
+#define _UTILITY_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #if HAVE_SYS_NDIR_H || HAVE_SYS_DIR_H || HAVE_NDIR_H
 # define dirent direct
@@ -32,43 +42,6 @@
 #define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
 #endif
 
-/*
-  Utility define declarations.
-*/
-#if !defined(vms)
-#define IsGlob(text) \
-  ((strchr(text,'*') != (char *) NULL) || \
-   (strchr(text,'?') != (char *) NULL) || \
-   (strchr(text,'{') != (char *) NULL) || \
-   (strchr(text,'}') != (char *) NULL) || \
-   (strchr(text,'[') != (char *) NULL) || \
-   (strchr(text,']') != (char *) NULL))
-#else
-#define IsGlob(text) \
-  ((strchr(text,'*') != (char *) NULL) || \
-   (strchr(text,'?') != (char *) NULL) || \
-   (strchr(text,'{') != (char *) NULL) || \
-   (strchr(text,'}') != (char *) NULL))
-#endif
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-#define IsBasenameSeparator(c)  ((c) == '/')
-#define DirectorySeparator  "/"
-#define TemporaryTemplate  "magick"
-#else
-#if defined(vms)
-#define IsBasenameSeparator(c)  ((c) == ']')
-#define DirectorySeparator  ""
-#endif
-#if defined(macintosh)
-#define IsBasenameSeparator(c)  ((c) == ':')
-#define DirectorySeparator  ":"
-#endif
-#if defined(WIN32)
-#define IsBasenameSeparator(c)  (((c) == '/') || ((c) == '\\'))
-#define DirectorySeparator  "\\"
-#endif
-#endif
-
 /*
   Utilities methods.
 */
@@ -122,3 +95,9 @@ extern Export void
   MSBFirstWriteShort(const unsigned int,FILE *),
   Strip(char *),
   TemporaryFilename(char *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
+#endif

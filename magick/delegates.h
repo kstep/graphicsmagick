@@ -1,29 +1,13 @@
 /*
-  Delegate Application Programming Interface declarations.
+  Methods to Read/Write/Invoke Delegates.
 */
 #ifndef _DELEGATES_H
 #define _DELEGATES_H
 
-/*
-  Delegate define definitions.
-*/
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-#if !defined(DelegatePath)
-#define DelegatePath  "/usr/local/share/ImageMagick/"
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
 #endif
-#else
-#if defined(vms)
-#define DelegatePath  "sys$login:"
-#endif
-#if defined(macintosh)
-#define DelegatePath  ""
-#endif
-#if defined(WIN32)
-#define DelegatePath  "c:/ImageMagick/"
-#endif
-#endif
-#define DelegateFilename  "delegates.mgk"
-
+
 /*
   Delegate structure definitions.
 */
@@ -58,4 +42,9 @@ Export unsigned int
 Export void
   DestroyDelegateInfo(void),
   ListDelegateInfo(FILE *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
 #endif

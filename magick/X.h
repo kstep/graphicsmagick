@@ -1,8 +1,12 @@
 /*
-  ImageMagick X Window declarations.
+  X11 Utility Methods for ImageMagick.
 */
 #ifndef _X_H
 #define _X_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 #undef False
 #undef True
@@ -645,5 +649,9 @@ extern Export XWindows
 #define PRE_R4_ICCCM
 #endif
 #include "PreRvIcccm.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

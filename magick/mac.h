@@ -1,5 +1,5 @@
 /*
-  Macintosh specific include declarations.
+  Macintosh Utility Methods for ImageMagick.
 */
 #ifndef _MAC_H
 #define _MAC_H

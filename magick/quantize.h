@@ -1,5 +1,5 @@
 /*
-  ImageMagick Quantization declarations.
+  Methods to Reduce the Number of Unique Colors in an Image.
 */
 #ifndef _QUANTIZE_H
 #define _QUANTIZE_H
@@ -8,16 +8,6 @@
 extern "C" {
 #endif
 
-/*
-  Define declarations.
-*/
-#define CacheShift  (QuantumDepth-6)
-#define ErrorQueueLength  16
-#define MaxNodes  266817
-#define MaxSpan ((1 << MaxTreeDepth)-1)
-#define MaxTreeDepth  8
-#define NodesInAList  2048
-
 /*
   Typedef declarations.
 */

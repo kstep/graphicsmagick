@@ -1,5 +1,5 @@
 /*
-  Windows NT specific include declarations.
+  Windows NT Utility Methods for ImageMagick.
 */
 #ifndef _NT_H
 #define _NT_H
@@ -8,10 +8,10 @@
 extern "C" {
 #endif
 
+#define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
 #include <windows.h>
 #include <winuser.h>
-#include <wingdi.h>
-#include <errno.h>
 
 /*
   Typedef declarations.

@@ -53,6 +53,7 @@
   Include declarations.
 */
 #include "magick.h"
+#include "defines.h"
 
 /*
   Image format declarations.

@@ -53,6 +53,7 @@
 */
 #define __EXTENSIONS__  1
 #include "magick.h"
+#include "defines.h"
 #include "display.h"
 
 /*
@@ -8396,7 +8397,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
     *print_image;
 
   ImageInfo
-    image_info;
+    *image_info;
 
   unsigned int
     status;
@@ -8404,15 +8405,15 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   /*
     Request Postscript page geometry from user.
   */
-  image_info=(*resource_info->image_info);
+  image_info=CloneImageInfo(resource_info->image_info);
   FormatString(geometry,DefaultPageSize);
-  if (image_info.page != (char *) NULL)
-    (void) strcpy(geometry,image_info.page);
+  if (image_info->page != (char *) NULL)
+    (void) strcpy(geometry,image_info->page);
   XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
     "Select Postscript Page Geometry:",geometry);
   if (*geometry == '\0')
     return(False);
-  image_info.page=PostscriptGeometry(geometry);
+  image_info->page=PostscriptGeometry(geometry);
   /*
     Apply image transforms.
   */
@@ -8440,14 +8441,13 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   /*
     Print image.
   */
-  (void) strcpy(print_image->magick,"PRINT");
-  TemporaryFilename(print_image->filename);
-  status=WriteImage(&image_info,print_image);
+  TemporaryFilename(print_image->magick_filename);
+  (void) strcpy(print_image->filename,"print:");
+  TemporaryFilename(print_image->filename+strlen("print:"));
+  status=WriteImage(image_info,print_image);
   DestroyImage(print_image);
+  DestroyImageInfo(image_info);
   XSetCursorState(display,windows,False);
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-  (void) remove(print_image->filename);
-#endif
   return(status);
 }
 
@@ -9892,7 +9892,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
     *save_image;
 
   ImageInfo
-    image_info;
+    *image_info;
 
   int
     status;
@@ -9931,11 +9931,11 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
       if (status <= 0)
         return(True);
     }
-  image_info=(*resource_info->image_info);
-  (void) strcpy(image_info.filename,filename);
-  SetImageInfo(&image_info,False);
-  if ((Latin1Compare(image_info.magick,"JPEG") == 0) ||
-      (Latin1Compare(image_info.magick,"JPG") == 0))
+  image_info=CloneImageInfo(resource_info->image_info);
+  (void) strcpy(image_info->filename,filename);
+  SetImageInfo(image_info,False);
+  if ((Latin1Compare(image_info->magick,"JPEG") == 0) ||
+      (Latin1Compare(image_info->magick,"JPG") == 0))
     {
       char
         quality[MaxTextExtent];
@@ -9943,18 +9943,18 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
       /*
         Request JPEG quality from user.
       */
-      FormatString(quality,"%u",image_info.quality);
+      FormatString(quality,"%u",image_info->quality);
       status=XDialogWidget(display,windows,"Save","Enter JPEG quality:",
         quality);
       if (*quality == '\0')
         return(True);
-      image_info.quality=atoi(quality);
-      image_info.interlace=status ? NoInterlace : PlaneInterlace;
+      image_info->quality=atoi(quality);
+      image_info->interlace=status ? NoInterlace : PlaneInterlace;
     }
-  if ((Latin1Compare(image_info.magick,"EPS") == 0) ||
-      (Latin1Compare(image_info.magick,"PDF") == 0) ||
-      (Latin1Compare(image_info.magick,"PS") == 0) ||
-      (Latin1Compare(image_info.magick,"PS2") == 0))
+  if ((Latin1Compare(image_info->magick,"EPS") == 0) ||
+      (Latin1Compare(image_info->magick,"PDF") == 0) ||
+      (Latin1Compare(image_info->magick,"PS") == 0) ||
+      (Latin1Compare(image_info->magick,"PS2") == 0))
     {
       char
         geometry[MaxTextExtent];
@@ -9963,14 +9963,14 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
         Request page geometry from user.
       */
       FormatString(geometry,PSPageGeometry);
-      if (Latin1Compare(image_info.magick,"PDF") == 0)
+      if (Latin1Compare(image_info->magick,"PDF") == 0)
         FormatString(geometry,PDFPageGeometry);
-      if (image_info.page != (char *) NULL)
-        (void) strcpy(geometry,image_info.page);
+      if (image_info->page != (char *) NULL)
+        (void) strcpy(geometry,image_info->page);
       XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
         "Select page geometry:",geometry);
       if (*geometry != '\0')
-        image_info.page=PostscriptGeometry(geometry);
+        image_info->page=PostscriptGeometry(geometry);
     }
   /*
     Apply image transforms.
@@ -10000,8 +10000,9 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
     Write image.
   */
   (void) strcpy(save_image->filename,filename);
-  status=WriteImage(&image_info,save_image);
+  status=WriteImage(image_info,save_image);
   DestroyImage(save_image);
+  DestroyImageInfo(image_info);
   XSetCursorState(display,windows,False);
   return(status);
 }

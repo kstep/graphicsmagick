@@ -53,6 +53,7 @@
   Include declarations.
 */
 #include "magick.h"
+#include "defines.h"
 
 /*
   Define declarations.
@@ -60,6 +61,8 @@
 #define AreaIsActive(matte_info,position)  \
   ((position.y >= (int) (matte_info.y-matte_info.bevel_width)) &&  \
    (position.y < (int) (matte_info.y+matte_info.height+matte_info.bevel_width)))
+#define BorderOffset  4
+#define DoubleClick  250
 #define MatteIsActive(matte_info,position)  \
   ((position.x >= (int) (matte_info.x-matte_info.bevel_width)) && \
    (position.y >= (int) (matte_info.y-matte_info.bevel_width)) &&  \

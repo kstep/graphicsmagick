@@ -94,6 +94,7 @@
 */
 
 #include "magick.h"
+#include "defines.h"
 
 /*
   Define declarations.

@@ -58,6 +58,12 @@
   Include declarations.
 */
 #include "magick.h"
+#include "defines.h"
+
+/*
+  Delegates defines.
+*/
+#define DelegateFilename  "delegates.mgk"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

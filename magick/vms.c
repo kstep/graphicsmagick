@@ -54,10 +54,8 @@
 /*
   Include declarations.
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
+#include "magick.h"
+#include "defines.h"
 #include "vms.h"
 
 #if !defined(__VMS_VER) || (__VMS_VER < 70000000)

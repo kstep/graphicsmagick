@@ -1,4 +1,24 @@
 /*
+  Methods to Interactively Animate an Image Sequence.
+*/
+#ifndef _ANIMATE_H
+#define _ANIMATE_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+/*
+  Animate state declarations.
+*/
+#define AutoReverseAnimationState 0x0004
+#define ForwardAnimationState 0x0008
+#define HighlightState  0x0010
+#define PlayAnimationState 0x0020
+#define RepeatAnimationState 0x0040
+#define StepAnimationState 0x0080
+
+/*
   Static declarations.
 */
 static const char
@@ -119,3 +139,9 @@ static Image
 
 static int
   SceneCompare(const void *,const void *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
+#endif

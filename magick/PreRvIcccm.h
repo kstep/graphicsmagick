@@ -1,3 +1,13 @@
+/*
+  ImageMagick X11 compatibility methods.
+*/
+#ifndef _PRER5ICCCM_H
+#define _PRER5ICCCM_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 #if defined(PRE_R6_ICCCM)
 /*
   Compatability defines for pre X11R6 ICCCM.
@@ -95,4 +105,10 @@ extern Export void
 #else
 #define XInductColormap(display,colormap)
 #define XUninductColormap(display,colormap)
+#endif
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
 #endif

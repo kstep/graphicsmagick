@@ -60,6 +60,7 @@
 #define _X_H
 #define _WIDGET_H
 #include "magick.h"
+#include "defines.h"
 #include "mac.h"
 #include <AppleEvents.h>
 #include <AERegistry.h>

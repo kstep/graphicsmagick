@@ -1,11 +1,11 @@
 /*
-  VMS specific include declarations.
+  VMS Utility Methods for ImageMagick.
 */
 #ifndef _VMS_H
 #define _VMS_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
-"C" {
+extern "C" {
 #endif
 
 #include <lib$routines.h>

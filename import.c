@@ -104,6 +104,7 @@
   Include declarations.
 */
 #include "magick.h"
+#include "defines.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

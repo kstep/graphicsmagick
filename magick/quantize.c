@@ -191,6 +191,14 @@
   Include declarations.
 */
 #include "magick.h"
+#include "defines.h"
+
+/*
+  Define declarations.
+*/
+#define CacheShift  (QuantumDepth-6)
+#define ErrorQueueLength  16
+#define MaxNodes  266817
 
 /*
   Typdef declarations.

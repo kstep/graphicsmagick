@@ -1,8 +1,12 @@
 /*
-  Error declarations.
+  ImageMagick Error Methods.
 */
 #ifndef _ERROR_H
 #define _ERROR_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 /*
   Error define definitions.
@@ -36,5 +40,9 @@ extern Export ErrorHandler
 extern Export void
   MagickError(const unsigned int,const char *,const char *),
   MagickWarning(const unsigned int,const char *,const char *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

@@ -1,7 +1,13 @@
-
 /*
-  X server color list.
+  ImageMagick named colors.
 */
+#ifndef _COLORLIST_H
+#define _COLORLIST_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 typedef struct _XColorlist
 {
   char
@@ -1012,3 +1018,9 @@ static const XColorlist
     { "Gray99", 252, 252, 252 },
     { (char *) NULL, 0, 0, 0 }
 };
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
+#endif

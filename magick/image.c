@@ -53,7 +53,25 @@
   Include declarations.
 */
 #include "magick.h"
+#include "defines.h"
 #include "Colorlist.h"
+
+/*
+  Image defines.
+*/
+#define MatteMatch(color,target,delta) \
+  (ColorMatch(color,target,delta) && ((color).index == (target).index))
+#define MaxStacksize  (1 << 15)
+#define Push(up,left,right,delta) \
+  if ((p < (segment_stack+MaxStacksize)) && (((up)+(delta)) >= 0) && \
+      (((up)+(delta)) < (int) image->rows)) \
+    { \
+      p->y1=(up); \
+      p->x1=(left); \
+      p->x2=(right); \
+      p->y2=(delta); \
+      p++; \
+    }
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -819,19 +837,16 @@ Export Image *AverageImages(Image *images)
     count=0;
     for (image=images; image != (Image *) NULL; image=image->next)
     {
-      if (i < (int) image->packets)
-        {
-          red+=image->pixels[i].red;
-          green+=image->pixels[i].green;
-          blue+=image->pixels[i].blue;
-          index+=image->pixels[i].index;
-          count++;
-        }
+      red+=image->pixels[i].red;
+      green+=image->pixels[i].green;
+      blue+=image->pixels[i].blue;
+      index+=image->pixels[i].index;
+      count++;
     }
     q->red=(Quantum) ((red+(long) (count >> 1))/(long) count);
     q->green=(Quantum) ((green+(long) (count >> 1))/(long) count);
     q->blue=(Quantum) ((blue+(long) (count >> 1))/(long) count);
-    q->blue=(unsigned short) ((index+(long) (count >> 1))/(long) count);
+    q->index=(unsigned short) ((index+(long) (count >> 1))/(long) count);
     q->length=0;
     q++;
     if (QuantumTick(i,averaged_image->packets))
@@ -4405,10 +4420,13 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     Account for linewidth.
   */
   mid=annotate_info->image_info->linewidth/2.0;
-  bounds.x1=Max(bounds.x1-mid,0);
-  bounds.y1=Max(bounds.y1-mid,0);
-  bounds.x2=Min(bounds.x2+ceil(mid),image->columns-1);
-  bounds.y2=Min(bounds.y2+ceil(mid),image->rows-1);
+  if ((bounds.x1 != bounds.x2) || (bounds.y1 != bounds.y2))
+    {
+      bounds.x1=Max(bounds.x1-mid,0);
+      bounds.y1=Max(bounds.y1-mid,0);
+      bounds.x2=Min(bounds.x2+ceil(mid),image->columns-1);
+      bounds.y2=Min(bounds.y2+ceil(mid),image->rows-1);
+    }
   /*
     Draw the primitive on the image.
   */

@@ -1,4 +1,10 @@
 /*
+  ImageMagick Macintosh PICT Methods.
+*/
+#ifndef _PICT_H
+#define _PICT_H
+
+/*
   Macintosh PICT definitions.
 */
 #define ReadPixmap(pixmap) \
@@ -235,3 +241,5 @@ static const PICTCode
     /* 0xa0 */  { "ShortComment",   2, "kind (word)" },
     /* 0xa1 */  { "LongComment",    0, "kind (word), size (word), data" }
   };
+
+#endif

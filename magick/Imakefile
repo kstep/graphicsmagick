@@ -51,7 +51,8 @@ SO_REQLIBS= -lX11 -lc
 #endif
 
 HEADERS = magick.h classify.h image.h gems.h compress.h monitor.h error.h \
-  utility.h quantize.h X.h widget.h PreRvIcccm.h memory.h delegates.h version.h
+  utility.h quantize.h X.h widget.h PreRvIcccm.h memory.h delegates.h \
+  version.h defines.h
 
 SRCS = image.c effects.c shear.c segment.c quantize.c colors.c gems.c \
   signature.c decode.c encode.c compress.c utility.c monitor.c error.c \

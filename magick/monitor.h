@@ -1,9 +1,13 @@
 /*
-  Monitor define declarations.
+  ImageMagick Progress Monitor Methods.
 */
-#define QuantumTick(i,span) \
-  (((~((span)-i-1) & ((span)-i-2))+1) == ((span)-i-1))
-
+#ifndef _MONITOR_H
+#define _MONITOR_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   Monitor typedef declarations.
 */
@@ -18,3 +22,9 @@ extern Export MonitorHandler
 
 extern Export void
   ProgressMonitor(char *,const unsigned int,const unsigned int);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
+#endif

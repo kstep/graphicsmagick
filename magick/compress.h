@@ -1,6 +1,13 @@
 /*
-  Compress utility routines.
+  Image Compression/Decompression Methods.
 */
+#ifndef _COMPRESS_H
+#define _COMPRESS_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 extern Export unsigned char
   *PICTDecodeImage(Image *,int,int);
 
@@ -32,3 +39,9 @@ extern Export void
   Ascii85Initialize(void),
   SetRunlengthEncoder(RunlengthPacket *),
   SetRunlengthPackets(Image *,const unsigned long);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
+#endif
