@@ -287,8 +287,16 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
   {
     case ImageRegistryType:
     {
-      registry_info->blob=(void *)
-        CloneImage((const Image *) blob,0,0,True,exception);
+      Image
+        *image;
+
+      image=(Image *) blob;
+      if (image->signature != MagickSignature)
+        {
+          ThrowException(exception,RegistryWarning,"Not an image",(char *) NULL);
+          return(-1);
+        }
+      registry_info->blob=(void *) CloneImage(image,0,0,True,exception);
       if (registry_info->blob == (void *) NULL)
         return(-1);
       break;
