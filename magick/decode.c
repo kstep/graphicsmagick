@@ -18674,8 +18674,10 @@ Export Image *ReadImage(ImageInfo *image_info)
     (void) strcpy(next_image->magick_filename,image_info->filename);
     if (image->temporary)
       (void) strcpy(next_image->filename,image_info->filename);
-    next_image->magick_columns=next_image->columns;
-    next_image->magick_rows=next_image->rows;
+    if (next_image->magick_columns == 0)
+      next_image->magick_columns=next_image->columns;
+    if (next_image->magick_rows == 0)
+      next_image->magick_rows=next_image->rows;
     if (next_image->class == PseudoClass)
       if (IsMonochromeImage(next_image))
         {

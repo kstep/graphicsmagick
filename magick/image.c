@@ -245,8 +245,6 @@ Export Image *AllocateImage(const ImageInfo *image_info)
         if ((flags & HeightValue) == 0)
           allocated_image->rows=allocated_image->columns;
       }
-  allocated_image->magick_columns=allocated_image->columns;
-  allocated_image->magick_rows=allocated_image->rows;
   allocated_image->compression=image_info->compression;
   allocated_image->interlace=image_info->interlace;
   allocated_image->units=image_info->units;
