@@ -2,6 +2,9 @@
   * Fixed occasional small memory leak associated with exceptions.
   * Persistent cache is no longer updated (MPC coder).
 
+2002-01-20  Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
+  * Fixed some bugs in the uncompressed PGM and PPM reader/writer (pnm.c).
+
 2002-01-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * configure.ac: Removed test for libwmf/font.h.
 
