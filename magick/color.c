@@ -1477,7 +1477,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
 %  The format of the QueryColorname method is:
 %
 %      unsigned int QueryColorname(const Image *image,const PixelPacket *color,
-%        unsigned long compliance,char *name,ExceptionInfo *exception)
+%        const ComplianceType compliance,char *name,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -1494,7 +1494,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
 %
 */
 MagickExport unsigned int QueryColorname(const Image *image,
-  const PixelPacket *color,const unsigned long compliance,char *name,
+  const PixelPacket *color,const ComplianceType compliance,char *name,
   ExceptionInfo *exception)
 {
   register const ColorInfo
