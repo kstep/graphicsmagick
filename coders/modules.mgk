@@ -35,6 +35,7 @@
   <module magick="IMPLICIT" name="MIFF" />
   <module magick="IPTC" name="META" />
   <module magick="JBG" name="JBIG" />
+  <module magick="JNG" name="PNG" />
   <module magick="JPC" name="JP2" />
   <module magick="JPG" name="JPEG" />
   <module magick="K" name="GRAY" />
