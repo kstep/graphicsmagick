@@ -1,3 +1,19 @@
+2001-12-08  Leonard Rosenthol  <leonardr@lazerware.com>
+	* Improvements to the Photoshop (PSD) coder.
+		Added support for Duotone images
+			loaded as grayscale as per PSD docs
+		Added option to composite layers when reading
+			respects layer visibility setting
+	* Added new "flatten" member to _ImageInfo
+		default value is false
+		used by PSD and XCF to determine whether to flatten on read
+	* PSD and XCF now respect image_info->flatten
+	* Fixed bug in XCF loader when loading layered image as layers
+	* Modified the Convert utility to set image_info->flatten 
+		if -flatten is specified
+		NOTE: we still call FlattenImages for other formats 
+			  that don't respect image_info->flatten
+		
 2001-12-07  Cristy  <cristy@mystic.es.dupont.com>
 	* -dissolve wasn't working for the composite program (thanks to
 	  Rick Manbry).
