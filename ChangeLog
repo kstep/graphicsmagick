@@ -1,3 +1,7 @@
+2003-01-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/delegates.mgk.in: Fix cgm entry.  How did it become so
+	terribly broken?
+
 2002-01-08  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 	* magick/magick.c, magick/magick.h: Add "note" member of magick_info.
 	* coders/art.c, coders/fax.c, coders/dcm.c, coders/png.c: add notes

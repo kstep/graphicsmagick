@@ -2,8 +2,7 @@
 <delegatemap>
   <delegate decode="autotrace" stealth="True" command='@AutotraceDecodeDelegate@ -output-format svg -output-file "%o" "%i"' />
   <delegate decode="browse" stealth="True" spawn="True" command='@BrowseDelegate@ http://www.imagemagick.org/'  />
-  <delegate decode="cgm" command='@CGMDecodeDelegate@ -d ps "%i" "%o" "%u"
-    @GMDelegate@ convert -concatenate %o*.ps "%o"' />
+  <delegate decode="cgm" command='@CGMDecodeDelegate@ -d ps "%i" "%o" /dev/null' />
   <delegate decode="dot" command='@DOTDecodeDelegate@ -Tps "%i" -o "%o"' />
   <delegate decode="dvi" command='@DVIDecodeDelegate@ -q -o "%o" "%i"' />
   <delegate decode="edit" stealth="True" command='@EditorDelegate@ -title "Edit Image Comment" -e vi "%o"' />
