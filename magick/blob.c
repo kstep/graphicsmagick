@@ -216,6 +216,7 @@ MagickExport void CloseBlob(Image *image)
     }
   if (image->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
     {
+      /* signal that all data has been written to the stream */
       (void) image->fifo(image,(const void *) NULL,0);
       image->fifo=(int (*)(const Image *,const void *,const size_t)) NULL;
       return;
@@ -751,6 +752,8 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       */
       image->fifo=image_info->fifo;
       image->exempt=True;
+      if (*type == 'w')
+        return(True);
     }
   if (image_info->file != (FILE *) NULL)
     {
