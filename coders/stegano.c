@@ -99,7 +99,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   (*indexes)|=((byte) & 0x01) << shift; \
   (void) SyncImagePixels(image); \
   j++; \
-  if (j == (image->columns*image->rows)) \
+  if (j == (int) (image->columns*image->rows)) \
     { \
       j=0; \
       shift--; \
@@ -166,7 +166,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   {
     for (x=0; x < (int) stegano_image->columns; x++)
     {
-      if (i == (stegano_image->columns*stegano_image->rows))
+      if (i == (int) (stegano_image->columns*stegano_image->rows))
         i=0;
       p=GetImagePixels(stegano_image,i % stegano_image->columns,
         i/stegano_image->columns,1,1);

@@ -310,17 +310,17 @@ long ldblk;
 	if(RunCount)	/* repeat next byte runcount * */
 		{
 		bbuf=ReadBlobByte(image);
-		for(i=0;i<RunCount;i++) InsertByte(bbuf);
+		for(i=0;i<(int) RunCount;i++) InsertByte(bbuf);
 		}
 	   else {	/* read next byte as RunCount; repeat 0xFF runcount* */
 		RunCount=ReadBlobByte(image);
-		for(i=0;i<RunCount;i++) InsertByte(0xFF);
+		for(i=0;i<(int) RunCount;i++) InsertByte(0xFF);
 		}
 	}
    else {
 	if(RunCount)   /* next runcount byte are readed directly */
 		{
-		for(i=0;i<RunCount;i++)
+		for(i=0;i < (int) RunCount;i++)
 			{
 			bbuf=ReadBlobByte(image);
 			InsertByte(bbuf);
@@ -332,7 +332,7 @@ long ldblk;
 		      free(BImgBuff);/* I do not know what to do here */
 		      return(-3);
 		      }
-		for(i=0;i<RunCount;i++)
+		for(i=0;i < (int) RunCount;i++)
 			{
 			x=0;
 			y++;    /* Here I need to duplicate previous row RUNCOUNT* */

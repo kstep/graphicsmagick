@@ -233,7 +233,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((*p == '}') && (*(p+1) == ';'))
         break;
       p+=Extent(p);
-      if ((p-xpm_buffer+MaxTextExtent+1) < length)
+      if ((p-xpm_buffer+MaxTextExtent+1) < (int) length)
         continue;
       length<<=1;
       ReacquireMemory((void **) &xpm_buffer,length);

@@ -733,7 +733,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (colormap == (PixelPacket *) NULL)
                   ThrowReaderException(ResourceLimitWarning,
                     "Memory allocation failed",image);
-                for (i=0; i < number_colors; i++)
+                for (i=0; i < (int) number_colors; i++)
                 {
                   colormap[i].blue=UpScale(ReadBlobByte(image));
                   colormap[i].green=UpScale(ReadBlobByte(image));

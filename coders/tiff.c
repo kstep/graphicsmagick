@@ -1048,7 +1048,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
       if ((length == 0) || (profile == (unsigned char *) NULL))
         return;
       memcpy(profile,image->iptc_profile.info,length);
-      for (i=0; i < roundup; i++)
+      for (i=0; i < (int) roundup; i++)
         profile[length + i] = 0;
       length=(image->iptc_profile.length+roundup)/4;
       if (TIFFIsByteSwapped(tiff))
@@ -1258,7 +1258,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   (void) strcpy(filename,image->filename);
   if ((image->file == stdout) || image->pipet ||
-      (image->blob.data != (char *) NULL))
+      (image->blob.data != (unsigned char *) NULL))
     TemporaryFilename(filename);
   else
     CloseBlob(image);
@@ -1743,7 +1743,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   if (LocaleCompare(image_info->magick,"PTIF") == 0)
     DestroyImages(image);
   if ((image->file == stdout) || image->pipet ||
-      (image->blob.data != (char *) NULL))
+      (image->blob.data != (unsigned char *) NULL))
     {
       FILE
         *file;

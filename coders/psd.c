@@ -609,7 +609,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 A layer without data.
               */
               SetImage(layer_info[i].image,OpaqueOpacity);
-              for (k=0; k < layer_info[i].channel_info[j].size; k++)
+              for (k=0; k < (int) layer_info[i].channel_info[j].size; k++)
                 (void) ReadBlobByte(layer_info[i].image);
               continue;
             }
@@ -652,7 +652,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) ReadBlob(layer_info[i].image,packet_size*
               layer_info[i].image->columns,(char *) scanline);
             indexes=GetIndexes(layer_info[i].image);
-            for (x=0; x < layer_info[i].image->columns; x++)
+            for (x=0; x < (int) layer_info[i].image->columns; x++)
             {
               pixel=scanline[x];
               switch (layer_info[i].channel_info[j].type)
@@ -799,7 +799,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if ((status == False) || (q == (PixelPacket *) NULL))
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < image->columns; x++)
+          for (x=0; x < (int) image->columns; x++)
           {
             pixel=scanline[x];
             switch (image->matte ? i-1 : i)

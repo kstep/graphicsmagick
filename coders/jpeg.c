@@ -1243,7 +1243,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     WriteICCProfile(&jpeg_info,image);
   if (image->iptc_profile.length > 0)
     WriteIPTCProfile(&jpeg_info,image);
-  for (i=0; i < image->generic_profiles; i++)
+  for (i=0; i < (int) image->generic_profiles; i++)
   {
     register int
       j;
@@ -1251,7 +1251,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     if (LocaleNCompare(image->generic_profile[i].name,"APP",3) != 0)
       continue;
     x=atoi(image->generic_profile[i].name+3);
-    for (j=0; j < image->generic_profile[i].length; j+=65533)
+    for (j=0; j < (int) image->generic_profile[i].length; j+=65533)
       jpeg_write_marker(&jpeg_info,JPEG_APP0+x,image->generic_profile[i].info+j,
         Min(image->generic_profile[i].length-j,65533));
   }

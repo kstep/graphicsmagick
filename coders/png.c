@@ -1249,7 +1249,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
    /* copy profile, skipping white space and column 1 "=" signs */
    dp=info;
    nibbles=length*2;
-   for (i=0; i<nibbles; i++)
+   for (i=0; i < (int) nibbles; i++)
    {
      while (*sp < '0' || (*sp > '9' && *sp < 'a') || *sp > 'f')
         sp++;
@@ -3489,11 +3489,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 {
                   if (y == 0)
                     m=mng_info->magn_mt;
-                  else if (magn_methy > 1 && y == image->rows-2)
+                  else if (magn_methy > 1 && y == (int) image->rows-2)
                     m=mng_info->magn_mb;
-                  else if (magn_methy <= 1 && y == image->rows-1)
+                  else if (magn_methy <= 1 && y == (int) image->rows-1)
                     m=mng_info->magn_mb;
-                  else if (magn_methy > 1 && y == image->rows-1)
+                  else if (magn_methy > 1 && y == (int) image->rows-1)
                     m=1;
                   else
                     m=mng_info->magn_my;
@@ -3592,11 +3592,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     if (x == image->columns-length)
                       m=mng_info->magn_ml;
-                    else if (magn_methx > 1 && x == image->columns-2)
+                    else if (magn_methx > 1 && x == (int) image->columns-2)
                       m=mng_info->magn_mr;
-                    else if (magn_methx <= 1 && x == image->columns-1)
+                    else if (magn_methx <= 1 && x == (int) image->columns-1)
                       m=mng_info->magn_mr;
-                    else if (magn_methx > 1 && x == image->columns-1)
+                    else if (magn_methx > 1 && x == (int) image->columns-1)
                       m=1;
                     else
                       m=mng_info->magn_mx;

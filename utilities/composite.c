@@ -1010,11 +1010,11 @@ int main(int argc,char **argv)
           if ((flags & XNegative) != 0)
             x+=image->columns;
           if ((flags & WidthValue) == 0)
-            width-=2*x > width ? width : 2*x;
+            width-=2*x > (int) width ? width : 2*x;
           if ((flags & YNegative) != 0)
             y+=image->rows;
           if ((flags & HeightValue) == 0)
-            height-=2*y > height ? height : 2*y;
+            height-=2*y > (int) height ? height : 2*y;
           switch (gravity)
           {
             case NorthWestGravity:

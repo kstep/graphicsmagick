@@ -1337,7 +1337,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (int) image->columns; x++)
                 {
                   if ((index == indexes[x]) && (length < 255) &&
-                      (x < (image->columns-1)))
+                      (x < ((int) image->columns-1)))
                     length++;
                   else
                     {

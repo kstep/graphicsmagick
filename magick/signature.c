@@ -513,7 +513,7 @@ MagickExport unsigned int SignatureImage(Image *image)
       break;
     indexes=GetIndexes(image);
     q=message;
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       *q++=XUpScale(p->red) >> 8;
       *q++=XUpScale(p->red);

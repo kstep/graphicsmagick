@@ -173,7 +173,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
         if (comment != (char *) NULL)
           for ( ; (c != EOF) && (c != '\n'); p++)
           {
-            if ((p-comment) >= length)
+            if ((p-comment) >= (int) length)
               {
                 length<<=1;
                 length+=MaxTextExtent;

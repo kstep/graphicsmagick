@@ -176,7 +176,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
  if(BImgBuff==NULL)
 NoMemory: ThrowReaderException(CorruptImageWarning,"Memory exhausted",image);
 
- for(i=0;i<height;i++)
+ for(i=0;i< (int) height;i++)
       {
       ReadBlob(image,ldblk,(char *)BImgBuff);
       ReadBlob(image,k,(char *)&dummy);

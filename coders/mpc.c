@@ -710,7 +710,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Generic profile.
       */
-      for (i=0; i < image->generic_profiles; i++)
+      for (i=0; i < (int) image->generic_profiles; i++)
       {
         if (image->generic_profile[i].length == 0)
           continue;
@@ -944,7 +944,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     if (!SyncImagePixels(clone_image))
       break;
   }
-  if (y < image->rows)
+  if (y < (int) image->rows)
     ThrowWriterException(CacheWarning,"Unable to clone image",image);
   /*
     Free resources.

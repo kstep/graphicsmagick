@@ -421,7 +421,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        for (x=0; x < image->columns; x+=4)
+        for (x=0; x < (int) image->columns; x+=4)
         {
           index=ValidateColormapIndex(image,3-((*p >> 6) & 0x03));
           indexes[x]=index;
@@ -455,7 +455,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        for (x=0; x < image->columns; x+=2)
+        for (x=0; x < (int) image->columns; x+=2)
         {
           index=ValidateColormapIndex(image,15-((*p >> 4) & 0x0f));
           indexes[x]=index;
@@ -500,7 +500,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (comment != (char *) NULL)
         for ( ; c != EOF; p++)
         {
-          if ((p-comment) >= length)
+          if ((p-comment) >= (int) length)
             {
               length<<=1;
               length+=MaxTextExtent;

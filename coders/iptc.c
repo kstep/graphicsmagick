@@ -399,7 +399,7 @@ static long GetIPTCStream(unsigned char **info,long length)
         info_length++;
         tag_length|=(long) c;
       }
-    if (tag_length > length)
+    if ((int) tag_length > length)
       break;
     p+=tag_length;
     length-=tag_length;

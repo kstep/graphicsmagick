@@ -200,7 +200,7 @@ static unsigned int DecodeImage(Image *image,const int opacity)
                   /*
                     Read a new data block.
                   */
-                  count=ReadBlobBlock(image,(char *) packet);
+                  count=ReadBlobBlock(image,packet);
                   if (count <= 0)
                     break;
                   c=packet;
@@ -288,7 +288,7 @@ static unsigned int DecodeImage(Image *image,const int opacity)
         default:
         {
           offset+=8;
-          if (offset >= image->rows)
+          if (offset >= (int) image->rows)
             {
               pass++;
               offset=4;
@@ -298,7 +298,7 @@ static unsigned int DecodeImage(Image *image,const int opacity)
         case 1:
         {
           offset+=8;
-          if (offset >= image->rows)
+          if (offset >= (int) image->rows)
             {
               pass++;
               offset=2;
@@ -308,7 +308,7 @@ static unsigned int DecodeImage(Image *image,const int opacity)
         case 2:
         {
           offset+=4;
-          if (offset >= image->rows)
+          if (offset >= (int) image->rows)
             {
               pass++;
               offset=1;
@@ -323,13 +323,13 @@ static unsigned int DecodeImage(Image *image,const int opacity)
       }
     if (!SyncImagePixels(image))
       break;
-    if (x < image->columns)
+    if (x < (int) image->columns)
       break;
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
         MagickMonitor(LoadImageText,y,image->rows);
   }
-  if (y < image->rows)
+  if (y < (int) image->rows)
     ThrowBinaryException(CorruptImageWarning,"Corrupt GIF image",
       image->filename);
   LiberateMemory((void **) &pixel_stack);
@@ -569,7 +569,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
         default:
         {
           offset+=8;
-          if (offset >= image->rows)
+          if (offset >= (int) image->rows)
             {
               pass++;
               offset=4;
@@ -579,7 +579,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
         case 1:
         {
           offset+=8;
-          if (offset >= image->rows)
+          if (offset >= (int) image->rows)
             {
               pass++;
               offset=2;
@@ -589,7 +589,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
         case 2:
         {
           offset+=4;
-          if (offset >= image->rows)
+          if (offset >= (int) image->rows)
             {
               pass++;
               offset=1;
@@ -810,7 +810,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read Graphics Control extension.
             */
-            while (ReadBlobBlock(image,(char *) header) > 0);
+            while (ReadBlobBlock(image,header) > 0);
             dispose=header[0] >> 2;
             delay=(header[2] << 8) | header[1];
             if ((header[0] & 0x01) == 1)
@@ -831,7 +831,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             comments=(char *) NULL;
             for ( ; ; )
             {
-              length=ReadBlobBlock(image,(char *) header);
+              length=ReadBlobBlock(image,header);
               if (length <= 0)
                 break;
               if (comments != (char *) NULL)
@@ -863,16 +863,16 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Read Netscape Loop extension.
             */
             loop=False;
-            if (ReadBlobBlock(image,(char *) header) > 0)
+            if (ReadBlobBlock(image,header) > 0)
               loop=!LocaleNCompare((char *) header,"NETSCAPE2.0",11);
-            while (ReadBlobBlock(image,(char *) header) > 0)
+            while (ReadBlobBlock(image,header) > 0)
             if (loop)
               iterations=(header[2] << 8) | header[1];
             break;
           }
           default:
           {
-            while (ReadBlobBlock(image,(char *) header) > 0);
+            while (ReadBlobBlock(image,header) > 0);
             break;
           }
         }

@@ -788,8 +788,6 @@ int main(int argc,char **argv)
                     montage_info->gravity=SouthEastGravity;
                   if (LocaleCompare("Static",option) == 0)
                     montage_info->gravity=StaticGravity;
-                  if (montage_info->gravity == (unsigned int) (~0))
-                    MagickError(OptionError,"Invalid gravity type",option);
                 }
               break;
             }

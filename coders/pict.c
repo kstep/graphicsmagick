@@ -956,8 +956,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             */
             tile_image=image;
             if ((frame.left != 0) || (frame.top != 0) ||
-                (frame.right != image->columns) ||
-                (frame.bottom != image->rows) || jpeg)
+                (frame.right != (int) image->columns) ||
+                (frame.bottom != (int) image->rows) || jpeg)
               tile_image=CloneImage(image,frame.right-frame.left,
                 frame.bottom-frame.top,True,exception);
             if (tile_image == (Image *) NULL)

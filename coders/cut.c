@@ -330,9 +330,9 @@ CUT_KO:  ThrowReaderException(CorruptImageWarning,"Not a CUT image file",image);
 	}
  if(EncodedByte!=1) goto CUT_KO;	/*wrong data: size incorrect*/
  i=0;				/*guess a number of bit planes*/
- if(ldblk==Header.Width)   i=8;
- if(2*ldblk==Header.Width) i=4;
- if(8*ldblk==Header.Width) i=1;
+ if(ldblk==(int) Header.Width)   i=8;
+ if(2*ldblk==(int) Header.Width) i=4;
+ if(8*ldblk==(int) Header.Width) i=1;
  if(i==0) goto CUT_KO;		/*wrong data: incorrect bit planes*/
 
  image->columns=Header.Width;
@@ -412,7 +412,7 @@ ErasePalette:
    if(PalHeader.MaxGreen==0) PalHeader.MaxGreen=MaxRGB;
    if(PalHeader.MaxBlue==0) PalHeader.MaxBlue=MaxRGB;
    
-   for(i=0;i<=PalHeader.MaxIndex;i++)
+   for(i=0;i<=(int) PalHeader.MaxIndex;i++)
            {      /*this may be wrong- I don't know why is palette such strange*/
 	   j=TellBlob(palette);
 	   if((j % 512)>512-/*sizeof(pal)*/6)
@@ -469,7 +469,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
  if(BImgBuff==NULL) goto NoMemory;
 
  SeekBlob(image,6 /*sizeof(Header)*/,SEEK_SET);
- for(i=0;i<Header.Height;i++)
+ for(i=0;i<(int) Header.Height;i++)
       {
       EncodedByte=ReadBlobLSBShort(image);
 

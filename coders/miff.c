@@ -699,7 +699,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         /*
           Generic profile.
         */
-        for (i=0; i < image->generic_profiles; i++)
+        for (i=0; i < (int) image->generic_profiles; i++)
         {
           if (image->generic_profile[i].length == 0)
             continue;
@@ -1390,7 +1390,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Generic profile.
         */
-        for (i=0; i < image->generic_profiles; i++)
+        for (i=0; i < (int) image->generic_profiles; i++)
         {
           FormatString(buffer,"profile-%.1024s=%u\n",
             image->generic_profile[i].name == (char *) NULL ? "generic" :
@@ -1411,13 +1411,13 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         continue;
       FormatString(buffer,"%.1024s=",attribute->key);
       (void) WriteBlobString(image,buffer);
-      for (i=0; i < strlen(attribute->value); i++)
+      for (i=0; i < (int) strlen(attribute->value); i++)
         if (isspace((int) attribute->value[i]))
           break;
-      if (i < strlen(attribute->value))
+      if (i < (int) strlen(attribute->value))
         (void) WriteBlobByte(image,'{');
       (void) WriteBlob(image,strlen(attribute->value),attribute->value);
-      if (i < strlen(attribute->value))
+      if (i < (int) strlen(attribute->value))
         (void) WriteBlobByte(image,'}');
       (void) WriteBlobByte(image,'\n');
     }
@@ -1442,7 +1442,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Generic profile.
         */
-        for (i=0; i < image->generic_profiles; i++)
+        for (i=0; i < (int) image->generic_profiles; i++)
         {
           if (image->generic_profile[i].length == 0)
             continue;
