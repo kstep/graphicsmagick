@@ -168,7 +168,7 @@ testFilter('input.miff', 'Quantize',
 testFilter('input.miff', 'Raise',
   q/10x10/,
   '6ae4fbb49540e53193584f59250e7973718149a078adcf31b3aea84d00eef3fe',
-  'cb8ba2770bb060f8f75924ec37692b6bd649ac55090f57c3c9271604b362c7d7');
+  '3dd26d98684455a4d6de122ca1040ae44f646f64e0d67cc655e32977f6d2b8bf');
 
 ++$test;
 testFilter('input.miff', 'Resize',

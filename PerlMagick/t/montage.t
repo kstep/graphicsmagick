@@ -142,7 +142,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'False',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
   'fd7ad72249c7fbd3dff4942d916edc5b5d7211827196a6d50c717212de95961c',
-  '4c2a95b56cf4281cdda19294237bc347618aa4fbfed4965d0a948a6697290b4b');
+  '16cd0fc709aee5928df7e7eb2298dd235a13e5d34d171fdee8e27aad6ddbfea1');
 
 #
 # 15) Test Bordered, Un-framed Montage (frame=>'False')
@@ -152,7 +152,7 @@ testMontage( q/bordercolor=>'red'/,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'False',
   borderwidth=>'5', gravity=>'Center', background=>'gray'/,
   'cea55f11c06a780b82e4125ee5f3105169f7b6bcbf24742e8a4a6c06f62ef327',
-  'f43e6f0485f84a60e4bcc25ecd12e33867bbaff0ab8fe16a5978d6331d106075');
+  'fbc115a43a4f1645c84d9e4174577c6c343b5f0fb09b429dc4ee8d23aa7c061b');
 
 #
 # 16) Test Bordered, Un-framed Montage (mode=>'UnFrame')
@@ -172,7 +172,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'16x1', geometry=>'90x80+0+0>', frame=>'False',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
   'b60e513f1f90718ab5530f7902e58a1628f33598653131f584415c52b5ee1719',
-  'cc02af23170bf06722943f70e94b404b580aab32f1b6d32b5392703d426e4427');
+  '399a943baf51c8a1c26fa92460302af18b49f97d80527881b5b7cce595befb31');
 
 #
 # 18) Test concatenated thumbnail Montage (concatenated via special Concatenate mode)
@@ -192,4 +192,4 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'+0+0', frame=>'False', shadow=>'False',
   borderwidth=>'0', background=>'gray'/,
   'bae96cb788c8c5e231945548279605642560708bfca7ddd255a6ab08302031c5',
-  'aa24b5ea6f3775fd8f115730fc2ece8a9c6c7bccd2ae835caa6778c6c4db8e2f');
+  'e3aa9c4c515bd8ddcc7dae52d608da62c20dbe0b30d3ae5c948a113401630eaf');

@@ -84,7 +84,7 @@ print("Xv's visual schnauzer format. ...\n");
 ++$test;
 testRead( 'input_p7.p7',
   'e3a4a0d2f67e4d43ec001ddbf533d0e6da9b8c3e050bded12196c1450fe3f3ca',
-  'cccd0a40da9b1ecf506dfb9ddb1921a73f54361a3743d980a6bf131c7d24dfb3' );
+  'e737f462f4f806207d5bf9453fe1ce3b16057ab4d740b7614c111312a87f1df3' );
 
 print("NULL (white image) ...\n");
 ++$test;
