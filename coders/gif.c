@@ -1172,7 +1172,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   interlace=image_info->interlace;
   if (image_info->adjoin && (image->next != (Image *) NULL))
     interlace=NoInterlace;
-  opacity=0;
+  opacity=(-1);
   scene=0;
   do
   {
@@ -1290,11 +1290,11 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,0xf9);
         (void) WriteBlobByte(image,0x04);
         c=image->dispose << 2;
-        if (image->matte)
+        if (opacity >= 0)
           c|=0x01;
         (void) WriteBlobByte(image,c);
         (void) WriteBlobLSBShort(image,image->delay);
-        (void) WriteBlobByte(image,opacity);
+        (void) WriteBlobByte(image,opacity >= 0 ? opacity : 0);
         (void) WriteBlobByte(image,0x00);
         if (GetImageAttribute(image,"comment") != (ImageAttribute *) NULL)
           {
