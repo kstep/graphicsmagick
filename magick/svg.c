@@ -410,7 +410,8 @@ static char *TraversePath(const char *data)
       }
       default:
       {
-        (void) fprintf(stderr,"unrecognized attribute: %c\n",*p);
+        if (isalpha((int) *p))
+          (void) fprintf(stderr,"attribute not implemented: %c\n",*p);
         break;
       }
     }
@@ -924,7 +925,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) CloneString(&draw_info->primitive,filename);
   status=DrawImage(image,draw_info);
-puts(filename); if (0)
   (void) remove(filename+1);
   if (status == False)
     ThrowReaderException(CorruptImageWarning,"Unable to read SVG image",image);
