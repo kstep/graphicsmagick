@@ -269,8 +269,8 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
         viff_header.rows=LSBFirstReadLong(image);
         viff_header.columns=LSBFirstReadLong(image);
         viff_header.subrows=LSBFirstReadLong(image);
-        viff_header.x_offset=(long) LSBFirstReadLong(image);
-        viff_header.y_offset=(long) LSBFirstReadLong(image);
+        viff_header.x_offset=LSBFirstReadLong(image);
+        viff_header.y_offset=LSBFirstReadLong(image);
         viff_header.x_bits_per_pixel=(float) LSBFirstReadLong(image);
         viff_header.y_bits_per_pixel=(float) LSBFirstReadLong(image);
         viff_header.location_type=LSBFirstReadLong(image);
@@ -293,8 +293,8 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
         viff_header.rows=MSBFirstReadLong(image);
         viff_header.columns=MSBFirstReadLong(image);
         viff_header.subrows=MSBFirstReadLong(image);
-        viff_header.x_offset=(long) MSBFirstReadLong(image);
-        viff_header.y_offset=(long) MSBFirstReadLong(image);
+        viff_header.x_offset=MSBFirstReadLong(image);
+        viff_header.y_offset=MSBFirstReadLong(image);
         viff_header.x_bits_per_pixel=(float) MSBFirstReadLong(image);
         viff_header.y_bits_per_pixel=(float) MSBFirstReadLong(image);
         viff_header.location_type=MSBFirstReadLong(image);

@@ -780,7 +780,7 @@ Export void XBestPixel(Display *display,const Colormap colormap,XColor *colors,
   j=0;
   for (i=0; i < (int) number_colors; i++)
   {
-    mean=(long) (colors[i].red+color->red)/2L;
+    mean=(colors[i].red+color->red)/2;
     distance=colors[i].red-(int) color->red;
     distance_squared=(2.0*65536.0+mean)*distance*distance/65536.0;
     distance=colors[i].green-(int) color->green;

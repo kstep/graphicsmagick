@@ -1297,55 +1297,55 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
               }
             else
               {
-                red=(long) ((unsigned long)
-                  (p->red*p->opacity+q->red*(Opaque-p->opacity))/Opaque);
-                green=(long) ((unsigned long)
-                  (p->green*p->opacity+q->green*(Opaque-p->opacity))/Opaque);
-                blue=(long) ((unsigned long)
-                  (p->blue*p->opacity+q->blue*(Opaque-p->opacity))/Opaque);
-                opacity=(long) ((unsigned long) (p->opacity*p->opacity+
-                  q->opacity*(Opaque-p->opacity))/Opaque);
+                red=(unsigned long)
+                  (p->red*p->opacity+q->red*(Opaque-p->opacity))/Opaque;
+                green=(unsigned long)
+                  (p->green*p->opacity+q->green*(Opaque-p->opacity))/Opaque;
+                blue=(unsigned long)
+                  (p->blue*p->opacity+q->blue*(Opaque-p->opacity))/Opaque;
+                opacity=(unsigned long) (p->opacity*p->opacity+
+                  q->opacity*(Opaque-p->opacity))/Opaque;
               }
           break;
         }
         case InCompositeOp:
         {
-          red=((unsigned long) (p->red*q->opacity)/Opaque);
-          green=((unsigned long) (p->green*q->opacity)/Opaque);
-          blue=((unsigned long) (p->blue*q->opacity)/Opaque);
-          opacity=((unsigned long) (p->opacity*q->opacity)/Opaque);
+          red=(unsigned long) (p->red*q->opacity)/Opaque;
+          green=(unsigned long) (p->green*q->opacity)/Opaque;
+          blue=(unsigned long) (p->blue*q->opacity)/Opaque;
+          opacity=(unsigned long) (p->opacity*q->opacity)/Opaque;
           break;
         }
         case OutCompositeOp:
         {
-          red=((unsigned long) (p->red*(Opaque-q->opacity))/Opaque);
-          green=((unsigned long) (p->green*(Opaque-q->opacity))/Opaque);
-          blue=((unsigned long) (p->blue*(Opaque-q->opacity))/Opaque);
-          opacity=((unsigned long) (p->opacity*(Opaque-q->opacity))/Opaque);
+          red=(unsigned long) (p->red*(Opaque-q->opacity))/Opaque;
+          green=(unsigned long) (p->green*(Opaque-q->opacity))/Opaque;
+          blue=(unsigned long) (p->blue*(Opaque-q->opacity))/Opaque;
+          opacity=(unsigned long) (p->opacity*(Opaque-q->opacity))/Opaque;
           break;
         }
         case AtopCompositeOp:
         {
-          red=((unsigned long)
-            (p->red*q->opacity+q->red*(Opaque-p->opacity))/Opaque);
-          green=((unsigned long)
-            (p->green*q->opacity+q->green*(Opaque-p->opacity))/Opaque);
-          blue=((unsigned long)
-            (p->blue*q->opacity+q->blue*(Opaque-p->opacity))/Opaque);
-          opacity=((unsigned long)
-            (p->opacity*q->opacity+q->opacity*(Opaque-p->opacity))/Opaque);
+          red=(unsigned long)
+            (p->red*q->opacity+q->red*(Opaque-p->opacity))/Opaque;
+          green=(unsigned long)
+            (p->green*q->opacity+q->green*(Opaque-p->opacity))/Opaque;
+          blue=(unsigned long)
+            (p->blue*q->opacity+q->blue*(Opaque-p->opacity))/Opaque;
+          opacity=(unsigned long)
+            (p->opacity*q->opacity+q->opacity*(Opaque-p->opacity))/Opaque;
           break;
         }
         case XorCompositeOp:
         {
-          red=((unsigned long)
-            (p->red*(Opaque-q->opacity)+q->red*(Opaque-p->opacity))/Opaque);
-          green=((unsigned long)
-            (p->green*(Opaque-q->opacity)+q->green*(Opaque-p->opacity))/Opaque);
-          blue=((unsigned long)
-            (p->blue*(Opaque-q->opacity)+q->blue*(Opaque-p->opacity))/Opaque);
-          opacity=((unsigned long) (p->opacity*(Opaque-q->opacity)+
-            q->opacity*(Opaque-p->opacity))/Opaque);
+          red=(unsigned long)
+            (p->red*(Opaque-q->opacity)+q->red*(Opaque-p->opacity))/Opaque;
+          green=(unsigned long)
+            (p->green*(Opaque-q->opacity)+q->green*(Opaque-p->opacity))/Opaque;
+          blue=(unsigned long)
+            (p->blue*(Opaque-q->opacity)+q->blue*(Opaque-p->opacity))/Opaque;
+          opacity=(unsigned long) (p->opacity*(Opaque-q->opacity)+
+            q->opacity*(Opaque-p->opacity))/Opaque;
           break;
         }
         case PlusCompositeOp:
@@ -2153,7 +2153,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
               (void) fprintf(file,"%db ",image->filesize);
         }
       (void) fprintf(file,"%.1024s %.1fu %d:%02d\n",image->magick,user_time,
-        (int) (elapsed_time/60.0),(int) fmod(elapsed_time+0.5,60.0));
+        (int) ((elapsed_time+0.5)/60.0),(int) fmod(elapsed_time+0.5,60.0));
       return;
     }
   /*

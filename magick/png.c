@@ -510,7 +510,7 @@ static void MNGCoalesce(Image *image)
   assert(p->next != (Image *) NULL);
   if (p->delay != 0)
     return;
-  delay=(long)image->delay;
+  delay=image->delay;
   CoalesceImages(p);
   p->file=(FILE *) NULL;
   p->orphan=False;

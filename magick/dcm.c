@@ -3191,11 +3191,11 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
         for (i=0; i < (int) image->colors; i++)
         {
           image->colormap[i].red=(Quantum)
-            ((long) (MaxRGB*i)/(image->colors-1));
+            ((unsigned long) (MaxRGB*i)/(image->colors-1));
           image->colormap[i].green=(Quantum)
-            ((long) (MaxRGB*i)/(image->colors-1));
+            ((unsigned long) (MaxRGB*i)/(image->colors-1));
           image->colormap[i].blue=(Quantum)
-            ((long) (MaxRGB*i)/(image->colors-1));
+            ((unsigned long) (MaxRGB*i)/(image->colors-1));
         }
       }
     if (image_info->ping)

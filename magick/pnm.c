@@ -331,10 +331,10 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
               for (green=0; green < 8; green++)
                 for (blue=0; blue < 4; blue++)
                 {
-                  image->colormap[i].red=(Quantum) ((long) (red*MaxRGB)/0x07);
-                  image->colormap[i].green=(Quantum)
-                    ((long) (green*MaxRGB)/0x07);
-                  image->colormap[i].blue=(Quantum) ((long) (blue*MaxRGB)/0x03);
+                  image->colormap[i].red=((unsigned long) (MaxRGB*red)/0x07);
+                  image->colormap[i].green=
+                    ((unsigned long) (green*MaxRGB)/0x07);
+                  image->colormap[i].blue=((unsigned long) (MaxRGB*blue)/0x03);
                   i++;
                 }
           }
@@ -1039,7 +1039,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
               value=x-32;
               if (x < 112)
                 value=x/2+24;
-              value+=(dither_blue[i][j] << 1);
+              value+=2*dither_blue[i][j];
               blue_map[i][j][x]=(unsigned short)
                 ((value < 0) ? 0 : (value > 255) ? 255 : value);
             }

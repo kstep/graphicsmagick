@@ -186,11 +186,17 @@ Export Image *AddNoiseImage(Image *image,const NoiseType noise_type)
 Export Image *BlurImage(Image *image,const double factor)
 {
 #define Blur(weight) \
-  total_red+=(weight)*(int) (s->red); \
-  total_green+=(weight)*(int) (s->green); \
-  total_blue+=(weight)*(int) (s->blue); \
+  total_red+=(weight)*s->red; \
+  total_green+=(weight)*s->green; \
+  total_blue+=(weight)*s->blue; \
   s++;
 #define BlurImageText  "  Blurring image...  "
+
+  double
+    total_blue,
+    total_green,
+    total_red,
+    weight;
 
   Image
     *blur_image;
@@ -200,12 +206,6 @@ Export Image *BlurImage(Image *image,const double factor)
 
   register int
     x;
-
-  long
-    total_blue,
-    total_green,
-    total_red,
-    weight;
 
   register PixelPacket
     *p,
@@ -232,7 +232,7 @@ Export Image *BlurImage(Image *image,const double factor)
   /*
     Blur image.
   */
-  weight=(long) ((100.0-factor)/2);
+  weight=(100.0-factor)/2;
   quantum=(unsigned int) Max(weight+12,1);
   for (y=0; y < (int) image->rows; y++)
   {
@@ -249,18 +249,18 @@ Export Image *BlurImage(Image *image,const double factor)
       /*
         Compute weighted average of target pixel color components.
       */
-      total_red=0;
-      total_green=0;
-      total_blue=0;
+      total_red=0.0;
+      total_green=0.0;
+      total_blue=0.0;
       s=p;
       Blur(1);  Blur(2); Blur(1);
       s=p+image->columns;
       Blur(2); Blur(weight); Blur(2);
       s=p+2*image->columns;
       Blur(1);  Blur(2); Blur(1);
-      q->red=(Quantum) ((total_red+(quantum >> 1))/quantum);
-      q->green=(Quantum) ((total_green+(quantum >> 1))/quantum);
-      q->blue=(Quantum) ((total_blue+(quantum >> 1))/quantum);
+      q->red=(total_red+(quantum/2))/quantum;
+      q->green=(total_green+(quantum/2))/quantum;
+      q->blue=(total_blue+(quantum/2))/quantum;
       q->opacity=(p+image->columns)->opacity;
       p++;
       q++;
@@ -633,14 +633,18 @@ Export Image *DespeckleImage(Image *image)
 Export Image *EdgeImage(Image *image,const double factor)
 {
 #define Edge(weight) \
-  total_red+=(long) ((weight)*(int) (s->red)); \
-  total_green+=(long) ((weight)*(int) (s->green)); \
-  total_blue+=(long) ((weight)*(int) (s->blue)); \
-  total_opacity+=(long) ((weight)*(int) (s->opacity)); \
+  total_red+=(weight)*s->red; \
+  total_green+=(weight)*s->green; \
+  total_blue+=(weight)*s->blue; \
+  total_opacity+=(weight)*s->opacity; \
   s++;
 #define EdgeImageText  "  Detecting image edges...  "
 
   double
+    total_blue,
+    total_green,
+    total_opacity,
+    total_red,
     weight;
 
   Image
@@ -651,12 +655,6 @@ Export Image *EdgeImage(Image *image,const double factor)
 
   register int
     x;
-
-  long
-    total_blue,
-    total_green,
-    total_opacity,
-    total_red;
 
   register PixelPacket
     *p,
@@ -680,7 +678,7 @@ Export Image *EdgeImage(Image *image,const double factor)
   /*
     Edge detect image.
   */
-  weight=factor/8.0+0.5;
+  weight=factor/8.0;
   for (y=0; y < (int) image->rows; y++)
   {
     p=GetPixelCache(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
@@ -696,23 +694,22 @@ Export Image *EdgeImage(Image *image,const double factor)
       /*
         Compute weighted average of target pixel color components.
       */
-      total_red=0;
-      total_green=0;
-      total_blue=0;
-      total_opacity=0;
+      total_red=0.0;
+      total_green=0.0;
+      total_blue=0.0;
+      total_opacity=0.0;
       s=p;
       Edge(-weight/8); Edge(-weight/8) Edge(-weight/8);
       s=p+image->columns;
       Edge(-weight/8); Edge(weight); Edge(-weight/8);
       s=p+2*image->columns;
       Edge(-weight/8); Edge(-weight/8); Edge(-weight/8);
-      q->red=(Quantum)
-        ((total_red < 0) ? 0 : (total_red > MaxRGB) ? MaxRGB : total_red);
-      q->green=(Quantum)
-        ((total_green < 0) ? 0 : (total_green > MaxRGB) ? MaxRGB : total_green);
-      q->blue=(Quantum)
-        ((total_blue < 0) ? 0 : (total_blue > MaxRGB) ? MaxRGB : total_blue);
-      q->opacity=(Quantum) ((total_opacity < Transparent) ? Transparent :
+      q->red=(total_red < 0) ? 0 : (total_red > MaxRGB) ? MaxRGB : total_red;
+      q->green=
+        (total_green < 0) ? 0 : (total_green > MaxRGB) ? MaxRGB : total_green;
+      q->blue=
+        (total_blue < 0) ? 0 : (total_blue > MaxRGB) ? MaxRGB : total_blue;
+      q->opacity=((total_opacity < Transparent) ? Transparent :
         (total_opacity > Opaque) ? Opaque : total_opacity);
       p++;
       q++;
@@ -773,21 +770,21 @@ Export Image *EmbossImage(Image *image)
 {
 #define EmbossImageText  "  Embossing image...  "
 #define Emboss(weight) \
-  total_red+=(weight)*(int) (s->red); \
-  total_green+=(weight)*(int) (s->green); \
-  total_blue+=(weight)*(int) (s->blue); \
+  total_red+=(weight)*s->red; \
+  total_green+=(weight)*s->green; \
+  total_blue+=(weight)*s->blue; \
   s++;
+
+  double
+    total_blue,
+    total_green,
+    total_red;
 
   Image
     *emboss_image;
 
   int
     y;
-
-  long
-    total_blue,
-    total_green,
-    total_red;
 
   register int
     x;
@@ -829,24 +826,23 @@ Export Image *EmbossImage(Image *image)
       /*
         Compute weighted average of target pixel color components.
       */
-      total_red=0;
-      total_green=0;
-      total_blue=0;
+      total_red=0.0;
+      total_green=0.0;
+      total_blue=0.0;
       s=p;
       Emboss(-1); Emboss(-2); Emboss( 0);
       s=p+image->columns;
       Emboss(-2); Emboss( 0); Emboss( 2);
       s=p+2*image->columns;
       Emboss( 0); Emboss( 2); Emboss( 1);
-      total_red+=(MaxRGB+1) >> 1;
-      q->red=(Quantum)
-        ((total_red < 0) ? 0 : (total_red > MaxRGB) ? MaxRGB : total_red);
-      total_green+=(MaxRGB+1) >> 1;
-      q->green=(Quantum)
-        ((total_green < 0) ? 0 : (total_green > MaxRGB) ? MaxRGB : total_green);
-      total_blue+=(MaxRGB+1) >> 1;
-      q->blue=(Quantum)
-        ((total_blue < 0) ? 0 : (total_blue > MaxRGB) ? MaxRGB : total_blue);
+      total_red+=(MaxRGB+1)/2;
+      q->red=(total_red < 0) ? 0 : (total_red > MaxRGB) ? MaxRGB : total_red;
+      total_green+=(MaxRGB+1)/2;
+      q->green=
+        (total_green < 0) ? 0 : (total_green > MaxRGB) ? MaxRGB : total_green;
+      total_blue+=(MaxRGB+1)/2;
+      q->blue=
+        (total_blue < 0) ? 0 : (total_blue > MaxRGB) ? MaxRGB : total_blue;
       q->opacity=(p+image->columns)->opacity;
       p++;
       q++;
@@ -920,9 +916,9 @@ Export Image *EnhanceImage(Image *image)
     (3.0*(MaxRGB+1)-1.0-mean)*squares[distance]/(double) (MaxRGB+1); \
   if (distance_squared < Threshold) \
     { \
-      total_red+=(weight)*(s->red); \
-      total_green+=(weight)*(s->green); \
-      total_blue+=(weight)*(s->blue); \
+      total_red+=(weight)*s->red; \
+      total_green+=(weight)*s->green; \
+      total_blue+=(weight)*s->blue; \
       total_weight+=(weight); \
     } \
   s++;
@@ -930,17 +926,21 @@ Export Image *EnhanceImage(Image *image)
 #define Threshold  2500
 
   double
-    distance_squared;
+    distance_squared,
+    mean,
+    total_blue,
+    total_green,
+    total_red,
+    total_weight;
 
   Image
     *enhance_image;
 
   int
-    distance,
     y;
 
   long
-    mean;
+    distance;
 
   Quantum
     blue,
@@ -958,12 +958,6 @@ Export Image *EnhanceImage(Image *image)
 
   register unsigned int
     *squares;
-
-  unsigned long
-    total_blue,
-    total_green,
-    total_red,
-    total_weight;
 
   assert(image != (Image *) NULL);
   if ((image->columns < 5) || (image->rows < 5))
@@ -1016,10 +1010,10 @@ Export Image *EnhanceImage(Image *image)
       /*
         Compute weighted average of target pixel color components.
       */
-      total_red=0;
-      total_green=0;
-      total_blue=0;
-      total_weight=0;
+      total_red=0.0;
+      total_green=0.0;
+      total_blue=0.0;
+      total_weight=0.0;
       s=p+2*image->columns+2;
       red=s->red;
       green=s->green;
@@ -1034,9 +1028,9 @@ Export Image *EnhanceImage(Image *image)
       Enhance(8);  Enhance(20); Enhance(40); Enhance(20); Enhance(8);
       s=p+4*image->columns;
       Enhance(5);  Enhance(8);  Enhance(10); Enhance(8);  Enhance(5);
-      q->red=(Quantum) ((total_red+(total_weight >> 1)-1)/total_weight);
-      q->green= (Quantum) ((total_green+(total_weight >> 1)-1)/total_weight);
-      q->blue=(Quantum) ((total_blue+(total_weight >> 1)-1)/total_weight);
+      q->red=(total_red+(total_weight/2)-1)/total_weight;
+      q->green=(total_green+(total_weight/2)-1)/total_weight;
+      q->blue=(total_blue+(total_weight/2)-1)/total_weight;
       q->opacity=(p+2*image->columns)->opacity;
       q++;
     }
@@ -2097,12 +2091,19 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
 Export Image *SharpenImage(Image *image,const double factor)
 {
 #define Sharpen(weight) \
-  total_red+=(weight)*(int) (s->red); \
-  total_green+=(weight)*(int) (s->green); \
-  total_blue+=(weight)*(int) (s->blue); \
-  total_opacity+=(weight)*(int) (s->opacity); \
+  total_red+=(weight)*s->red; \
+  total_green+=(weight)*s->green; \
+  total_blue+=(weight)*s->blue; \
+  total_opacity+=(weight)*s->opacity; \
   s++;
 #define SharpenImageText  "  Sharpening image...  "
+
+  double
+    total_blue,
+    total_green,
+    total_opacity,
+    total_red,
+    weight;
 
   Image
     *sharpen_image;
@@ -2112,13 +2113,6 @@ Export Image *SharpenImage(Image *image,const double factor)
 
   register int
     x;
-
-  long
-    total_blue,
-    total_green,
-    total_opacity,
-    total_red,
-    weight;
 
   register PixelPacket
     *p,
@@ -2145,7 +2139,7 @@ Export Image *SharpenImage(Image *image,const double factor)
   /*
     Sharpen image.
   */
-  weight=(long) ((100.0-factor)/2+13);
+  weight=((100.0-factor)/2+13);
   quantum=(unsigned int) Max(weight-12,1);
   for (y=0; y < (int) image->rows; y++)
   {
@@ -2162,10 +2156,10 @@ Export Image *SharpenImage(Image *image,const double factor)
       /*
         Compute weighted average of target pixel color components.
       */
-      total_red=0;
-      total_green=0;
-      total_blue=0;
-      total_opacity=0;
+      total_red=0.0;
+      total_green=0.0;
+      total_blue=0.0;
+      total_opacity=0.0;
       s=p;
       Sharpen(-1); Sharpen(-2); Sharpen(-1);
       s=p+image->columns;
