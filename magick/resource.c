@@ -58,6 +58,17 @@
 #include "utility.h"
 
 /*
+  Typedef declarations.
+*/
+typedef struct _ResourceInfo
+{
+  off_t
+    memory,
+    disk,
+    memory_map;
+} ResourceInfo;
+
+/*
   Global declarations.
 */
 static ResourceInfo
@@ -120,11 +131,11 @@ MagickExport unsigned int AcquireMagickResource(const ResourceType type,
       status=resource_info.memory_map > 0;
       break;
     }
-		default:
-		{
-		  status=False;
-		  break;
-		}
+    default:
+    {
+      status=False;
+      break;
+    }
   }
   LiberateSemaphoreInfo(&resource_semaphore);
   return(status);
@@ -190,7 +201,7 @@ MagickExport off_t GetMagickResources(const ResourceType type)
     case MemoryResource: size=resource_info.memory; break;
     case DiskResource: size=resource_info.disk; break;
     case MemoryMapResource: size=resource_info.memory_map; break;
-		default: size=0; break;
+    default: size=0; break;
   }
   LiberateSemaphoreInfo(&resource_semaphore);
   return(size);
@@ -230,7 +241,7 @@ MagickExport void LiberateMagickResource(const ResourceType type,
     case MemoryResource: resource_info.memory+=size; break;
     case DiskResource: resource_info.disk+=size; break;
     case MemoryMapResource: resource_info.memory_map+=size; break;
-		default: break;
+    default: break;
   }
   LiberateSemaphoreInfo(&resource_semaphore);
 }
@@ -268,7 +279,7 @@ MagickExport void SetMagickResources(const ResourceType type,const off_t limit)
     case MemoryResource: resource_info.memory=1024*1024*limit; break;
     case DiskResource: resource_info.disk=1024*1024*limit; break;
     case MemoryMapResource: resource_info.memory_map=1024*1024*limit; break;
-		default: break;
+    default: break;
   }
   LiberateSemaphoreInfo(&resource_semaphore);
 }
