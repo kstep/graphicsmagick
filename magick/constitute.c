@@ -1002,7 +1002,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           for (x=0; x < (int) image->columns; x++)
           {
             *q++=indexes[x];
-            *q++=MaxRGB-p->opacity;
+            *q++=DownScale(MaxRGB-p->opacity);
             p++;
           }
           break;
@@ -1023,7 +1023,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (int) image->columns; x++)
           {
-            *q++=(unsigned char) Intensity(*p);
+            *q++=(unsigned char) DownScale(Intensity(*p));
             p++;
           }
           break;
@@ -1042,8 +1042,8 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (int) image->columns; x++)
           {
-            *q++=(unsigned char) Intensity(*p);
-            *q++=MaxRGB-p->opacity;
+            *q++=(unsigned char) DownScale(Intensity(*p));
+            *q++=DownScale(MaxRGB-p->opacity);
             p++;
           }
           break;
@@ -1124,7 +1124,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (int) image->columns; x++)
           {
-            *q++=MaxRGB-DownScale(p->opacity);
+            *q++=DownScale(MaxRGB-p->opacity);
             p++;
           }
           break;
@@ -1191,7 +1191,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
             *q++=DownScale(p->red);
             *q++=DownScale(p->green);
             *q++=DownScale(p->blue);
-            *q++=MaxRGB-DownScale(p->opacity);
+            *q++=DownScale(MaxRGB-p->opacity);
             p++;
           }
           break;
@@ -1338,22 +1338,12 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-#if (QuantumDepth == 16)
-        index=(*p++ << 8);
-        index|=(*p++);
-#else
-        index=(*p++);
-        p++;
-#endif
+        index=DownScale(*p++) << 8;
+        index|=DownScale(*p++);
         indexes[x]=index;
         *q=image->colormap[index];
-#if (QuantumDepth == 16)
-        q->opacity=(MaxRGB-(*p++)) << 8;
-        q->opacity|=MaxRGB-(*p++);
-#else
-        q->opacity=MaxRGB-(*p++);
-        p++;
-#endif
+        q->opacity= XDownScale(XUpScale(MaxRGB)-(((*p) << 8) | *(p+1)));
+        p+=2;
         q++;
       }
       break;
@@ -1372,13 +1362,8 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-#if (QuantumDepth == 16)
-        index=(*p++ << 8);
-        index|=(*p++);
-#else
-        index=(*p++);
-        p++;
-#endif
+        index= ((*p) << 8) | *(p+1);
+        p+=2;
         indexes[x]=index;
         *q++=image->colormap[index];
       }
@@ -1400,22 +1385,12 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-#if (QuantumDepth == 16)
-        index=(*p++ << 8);
-        index|=(*p++);
-#else
-        index=(*p++);
-        p++;
-#endif
+        index= ((*p) << 8) | *(p+1);
+        p+=2;
         indexes[x]=index;
         *q=image->colormap[index];
-#if (QuantumDepth == 16)
-        q->opacity=(MaxRGB-(*p++)) << 8;
-        q->opacity|=MaxRGB-(*p++);
-#else
-        q->opacity=MaxRGB-(*p++);
-        p++;
-#endif
+        q->opacity= XDownScale(XUpScale(MaxRGB)-(((*p) << 8) | *(p+1)));
+        p+=2;
         q++;
       }
       break;
@@ -1434,13 +1409,8 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-#if (QuantumDepth == 16)
-        q->red=(*p++ << 8);
-        q->red|=(*p++);
-#else
-        q->red=(*p++);
-        p++;
-#endif
+        q->red= XDownScale(((*p) << 8) | *(p+1));
+        p+=2;
         q++;
       }
       break;
@@ -1459,13 +1429,8 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-#if (QuantumDepth == 16)
-        q->green=(*p++ << 8);
-        q->green|=(*p++);
-#else
-        q->green=(*p++);
-        p++;
-#endif
+        q->green= XDownScale(((*p) << 8) | *(p+1));
+        p+=2;
         q++;
       }
       break;
@@ -1484,13 +1449,8 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-#if (QuantumDepth == 16)
-        q->blue=(*p++ << 8);
-        q->blue|=(*p++);
-#else
-        q->blue=(*p++);
-        p++;
-#endif
+        q->blue= XDownScale(((*p) << 8) | *(p+1));
+        p+=2;
         q++;
       }
       break;
@@ -1508,13 +1468,8 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-#if (QuantumDepth == 16)
-        q->opacity=(MaxRGB-(*p++)) << 8;
-        q->opacity|=MaxRGB-(*p++);
-#else
-        q->opacity=MaxRGB-(*p++);
-        p++;
-#endif
+        q->opacity= XDownScale(XUpScale(MaxRGB)-(((*p) << 8) | *(p+1)));
+        p+=2;
         q++;
       }
       break;
@@ -1532,13 +1487,8 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-#if (QuantumDepth == 16)
-        q->opacity=(*p++ << 8);
-        q->opacity|=(*p++);
-#else
-        q->opacity=(*p++);
-        p++;
-#endif
+        q->opacity= XDownScale(((*p) << 8) | *(p+1));
+        p+=2;
         q++;
       }
       break;
@@ -1559,23 +1509,13 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-#if (QuantumDepth == 16)
-        q->red=(*p++ << 8);
-        q->red|=(*p++);
-        q->green=(*p++ << 8);
-        q->green|=(*p++);
-        q->blue=(*p++ << 8);
-        q->blue|=(*p++);
+        q->red=  XDownScale(((*p) << 8) | *(p+1));
+        p+=2;
+        q->green=XDownScale(((*p) << 8) | *(p+1));
+        p+=2;
+        q->blue= XDownScale(((*p) << 8) | *(p+1));
+        p+=2;
         q++;
-#else
-        q->red=(*p++);
-        p++;
-        q->green=(*p++);
-        p++;
-        q->blue=(*p++);
-        p++;
-        q++;
-#endif
       }
       break;
     }
@@ -1595,27 +1535,14 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-#if (QuantumDepth == 16)
-        q->red=(*p++ << 8);
-        q->red|=(*p++);
-        q->green=(*p++ << 8);
-        q->green|=(*p++);
-        q->blue=(*p++ << 8);
-        q->blue|=(*p++);
-        q->opacity=(*p++) << 8;
-        q->opacity|=(*p++);
-        q->opacity=MaxRGB-q->opacity;
-#else
-        q->red=(*p++);
-        p++;
-        q->green=(*p++);
-        p++;
-        q->blue=(*p++);
-        p++;
-        q->opacity=MaxRGB-(*p++);
-        p++;
-        q++;
-#endif
+        q->red=  XDownScale(((*p) << 8) | *(p+1));
+        p+=2;
+        q->green=XDownScale(((*p) << 8) | *(p+1));
+        p+=2;
+        q->blue= XDownScale(((*p) << 8) | *(p+1));
+        p+=2;
+        q->opacity= XDownScale(XUpScale(MaxRGB)-(((*p) << 8) | *(p+1)));
+        p+=2;
         q++;
       }
       break;
@@ -1636,26 +1563,14 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-#if (QuantumDepth == 16)
-        q->red=(*p++ << 8);
-        q->red|=(*p++);
-        q->green=(*p++ << 8);
-        q->green|=(*p++);
-        q->blue=(*p++ << 8);
-        q->blue|=(*p++);
-        q->opacity=(*p++ << 8);
-        q->opacity|=(*p++);
-#else
-        q->red=(*p++);
-        p++;
-        q->green=(*p++);
-        p++;
-        q->blue=(*p++);
-        p++;
-        q->opacity=(*p++);
-        p++;
-        q++;
-#endif
+        q->red=  XDownScale(((*p) << 8) | *(p+1));
+        p+=2;
+        q->green=XDownScale(((*p) << 8) | *(p+1));
+        p+=2;
+        q->blue= XDownScale(((*p) << 8) | *(p+1));
+        p+=2;
+        q->opacity= XDownScale(((*p) << 8) | *(p+1));
+        p+=2;
         q++;
       }
       break;

@@ -2771,6 +2771,12 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert image to DirectClass pixel packets.
         */
+#if (QuantumDepth == 8)
+        int
+          depth;
+
+        depth=image->depth;
+#endif
         image->matte=((ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
             (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
             (ping_info->valid & PNG_INFO_tRNS));
@@ -2779,7 +2785,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!SetImagePixels(image,0,y,image->columns,1))
             break;
 #if (QuantumDepth == 8)
-          if (image->depth == 16)
+          if (depth == 16)
             {
               register Quantum
                 *p,
@@ -2812,8 +2818,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     p++;
                     if ((ping_info->valid & PNG_INFO_tRNS) &&
                          (((*(p-6)<<8)|*(p-5))==transparent_color.red) &&
-                             (((*(p-4)<<8)|*(p-3))==transparent_color.green) &&
-                             (((*(p-2)<<8)|*(p-1))==transparent_color.blue))
+                         (((*(p-4)<<8)|*(p-3))==transparent_color.green) &&
+                         (((*(p-2)<<8)|*(p-1))==transparent_color.blue))
                       {
                          /* Cheap transparency */
                          *r++ = TransparentOpacity;
@@ -2821,39 +2827,40 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     else
                          *r++ = OpaqueOpacity;
                   }
-                *r++ = *p++;
-                p++;
-                if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA ||
-                    ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-                {
-                  *r++ = *p++;
-                  p++;
-                }
                 if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
                 {
                   *r++ = *p++;
                   p++;
                   *r++ = *p++;
                   p++;
+                  *r++ = *p++;
+                  p++;
+                }
+                if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA ||
+                    ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+                {
+                  *r++ = *p++;
+                  p++;
                 }
               }
             }
-          if (image->depth == 8 && ping_info->color_type == PNG_COLOR_TYPE_GRAY)
+          if (depth == 8 && ping_info->color_type == PNG_COLOR_TYPE_GRAY)
             (void) PushImagePixels(image,GrayQuantum,scanlines[y]);
           if (ping_info->color_type == PNG_COLOR_TYPE_GRAY ||
               ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
             {
-               image->depth=8;
+              image->depth=8;
               (void) PushImagePixels(image,GrayOpacityQuantum,scanlines[y]);
+              image->depth=depth;
             }
-          else if (image->depth == 8 && ping_info->color_type ==
-               PNG_COLOR_TYPE_RGB)
+          else if (depth == 8 && ping_info->color_type == PNG_COLOR_TYPE_RGB)
              (void) PushImagePixels(image,RGBQuantum,scanlines[y]);
           else if (ping_info->color_type == PNG_COLOR_TYPE_RGB ||
                 ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
             {
               image->depth=8;
               (void) PushImagePixels(image,RGBAQuantum,scanlines[y]);
+              image->depth=depth;
             }
           else if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
               (void) PushImagePixels(image,IndexQuantum,scanlines[y]);
@@ -3859,6 +3866,9 @@ static void PNGType(png_bytep p,png_bytep type)
 
 static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
+  Image
+    *next_image;
+
   ImageAttribute
     *attribute;
 
@@ -3941,11 +3951,16 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   need_matte=False;
   framing_mode=1;
   old_framing_mode=1;
+
+#if 0
+  /* Reduce DirectClass images to PseudoClass if possible */
+  for (next_image=image; next_image != (Image *) NULL;
+        next_image=next_image->next)
+     IsPseudoClass(next_image);
+#endif
+
   if (image_info->adjoin)
     {
-      Image
-        *next_image;
-
       unsigned int
         need_geom;
 
@@ -4903,7 +4918,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
+          (void) PopImagePixels(image,IndexQuantum,scanlines[y]);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               MagickMonitor(SaveImageText,y,image->rows);
@@ -4918,7 +4933,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             if (!GetImagePixels(image,0,y,image->columns,1))
               break;
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
-                (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
+              {
+                if (image->storage_class == DirectClass)
+                  (void) PopImagePixels(image,RedQuantum,scanlines[y]);
+                else
+                  (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
+              }
             else
               (void) PopImagePixels(image,GrayOpacityQuantum,scanlines[y]);
             if (image->previous == (Image *) NULL)
@@ -4934,7 +4954,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               if (!GetImagePixels(image,0,y,image->columns,1))
                 break;
               if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
-                (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
+                {
+                  if (image->storage_class == DirectClass)
+                    (void) PopImagePixels(image,RedQuantum,scanlines[y]);
+                  else
+                    (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
+                }
               else
                 if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
                   (void) PopImagePixels(image,GrayOpacityQuantum,scanlines[y]);
