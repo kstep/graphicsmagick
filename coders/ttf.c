@@ -144,7 +144,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     geometry[MaxTextExtent];
 
   const char
-    *Text = 
+    *Text =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz\n0123456789 "
       "\342\352\356\373\364\344\353\357\366\374\377\340\371\351\350\347\n"
       "&#~\\\"\'(-`_^@)=+\260 $\243^\250*\265\371%!\247:/;.,?<>";
@@ -259,8 +259,13 @@ ModuleExport void RegisterTTFImage(void)
   entry->adjoin=False;
   entry->description=AcquireString("TrueType font");
 #if defined(FREETYPE_MAJOR) && defined(FREETYPE_MINOR)
-  entry->version=AcquireString((char *) NULL);
-  FormatString(entry->version,"%d.%d",FREETYPE_MAJOR,FREETYPE_MINOR);
+  {
+    char
+      version[MaxTextExtent];
+
+    FormatString(version,"%d.%d",FREETYPE_MAJOR,FREETYPE_MINOR);
+    entry->version=AcquireString(version);
+  }
 #endif
   entry->module=AcquireString("TTF");
   (void) RegisterMagickInfo(entry);

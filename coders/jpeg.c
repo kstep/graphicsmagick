@@ -843,8 +843,13 @@ ModuleExport void RegisterJPEGImage(void)
   entry->description=
     AcquireString("Joint Photographic Experts Group JFIF format");
 #if defined(JPEG_LIB_VERSION)
-  entry->version=AcquireString((char *) NULL);
-  FormatString(entry->version,"%d",JPEG_LIB_VERSION);
+  {
+    char
+      version[MaxTextExtent];
+
+    FormatString(version,"%d",JPEG_LIB_VERSION);
+    entry->version=AcquireString(version);
+  }
 #endif
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPG");

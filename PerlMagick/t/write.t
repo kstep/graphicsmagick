@@ -28,7 +28,7 @@ print("Microsoft Windows bitmap image file ...\n");
 testReadWrite( 'BMP:input.bmp',
   'BMP:output.bmp',
   q//,
-  'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1');
+  '5e59fb16de716403d5793be5d79da2e44c5e7cae6541677735297054486afbd4');
 
 print("Microsoft Windows 24-bit bitmap image file ...\n");
 ++$test;

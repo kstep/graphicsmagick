@@ -122,6 +122,7 @@ MagickExport const char *AcquireString(const char *source)
   char
     *destination;
 
+  assert(source != (const char *) NULL);
   destination=(char *) AcquireMemory(strlen(source)+1);
   if (destination == (char *) NULL)
     MagickError(ResourceLimitError,"Unable to acquire string",
