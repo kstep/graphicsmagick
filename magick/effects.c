@@ -1355,7 +1355,7 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
 %
 %  The format of the ImplodeImage method is:
 %
-%      Image *ImplodeImage(Image *image,const double factor,
+%      Image *ImplodeImage(Image *image,const double amount,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1367,13 +1367,13 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o factor:  A double value that defines the extent of the implosion.
+%    o amount:  A double value that defines the extent of the implosion.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
-MagickExport Image *ImplodeImage(Image *image,const double factor,
+MagickExport Image *ImplodeImage(Image *image,const double amount,
   ExceptionInfo *exception)
 {
 #define ImplodeImageText  "  Implode image...  "
@@ -1431,9 +1431,6 @@ MagickExport Image *ImplodeImage(Image *image,const double factor,
         x_scale=(double) image->rows/image->columns;
         radius=y_center;
       }
-  amount=factor/10.0;
-  if (amount >= 0)
-    amount/=10.0;
   /*
     Implode each row.
   */

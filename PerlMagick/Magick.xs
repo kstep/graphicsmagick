@@ -303,7 +303,7 @@ static struct
       {"height", IntegerReference}, {"inner", IntegerReference},
       {"outer", IntegerReference}, {"fill", StringReference},
       {"color", StringReference} } },
-    { "Implode", { {"factor", DoubleReference} } },
+    { "Implode", { {"amount", DoubleReference} } },
     { "Magnify", },
     { "MedianFilter", { {"radius", DoubleReference} } },
     { "Minify", },
@@ -4218,7 +4218,7 @@ Mogrify(ref,...)
         case 16:  /* Implode */
         {
           if (!attribute_flag[0])
-            argument_list[0].double_reference=30.0;
+            argument_list[0].double_reference=3.0;
           image=ImplodeImage(image,argument_list[0].double_reference,
             &exception);
           break;
