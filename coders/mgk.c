@@ -54,10 +54,190 @@
 */
 #include "studio.h"
 /* 
- *   Forward declarations.
- *   */     
+  Forward declarations.
+*/     
 static unsigned int
   WriteMGKImage(const ImageInfo *,Image *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e a d C o n f i g u r e F i l e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadConfigureFile() reads the color configuration file which maps color
+%  strings with a particular image format.
+%
+%  The format of the ReadConfigureFile method is:
+%
+%      unsigned int ReadConfigureFile(Image *image,const char *basename,
+%        const unsigned long depth,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method ReadConfigureFile returns True if at least one color
+%      is defined otherwise False.
+%
+%    o image: The image.
+%
+%    o basename:  The color configuration filename.
+%
+%    o depth: depth of <include /> statements.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+static unsigned int ReadConfigureFile(Image *image,const char *basename,
+  const unsigned long depth,ExceptionInfo *exception)
+{
+  const ImageAttribute
+    *attribute;
+
+  char
+    keyword[MaxTextExtent],
+    path[MaxTextExtent],
+    *q,
+    *token,
+    *xml;
+
+  size_t
+    length;
+
+  /*
+    Read the color configure file.
+  */
+  (void) strcpy(path,basename);
+  if (depth != 0)
+    xml=(char *) FileToBlob(basename,&length,exception);
+  else
+    {
+      attribute=GetImageAttribute(image,basename);
+      if (attribute == (const ImageAttribute *) NULL)
+        ThrowBinaryException(ConfigureError,"No required image attribute",
+          basename);
+      xml=attribute->value;
+    }
+  if (xml == (char *) NULL)
+    return(False);
+  token=AllocateString(xml);
+  for (q=xml; *q != '\0'; )
+  {
+    /*
+      Interpret XML.
+    */
+    GetToken(q,&q,token);
+    if (*token == '\0')
+      break;
+    (void) strncpy(keyword,token,MaxTextExtent-1);
+    if (LocaleCompare(keyword,"<!") == 0)
+      {
+        /*
+          Comment.
+        */
+        while ((*token != '>') && (*q != '\0'))
+          GetToken(q,&q,token);
+        continue;
+      }
+    if (LocaleCompare(keyword,"<include") == 0)
+      {
+        /*
+          Include.
+        */
+        while ((*token != '>') && (*q != '\0'))
+        {
+          (void) strncpy(keyword,token,MaxTextExtent-1);
+          GetToken(q,&q,token);
+          if (*token != '=')
+            continue;
+          GetToken(q,&q,token);
+          if (LocaleCompare(keyword,"file") == 0)
+            {
+              if (depth > 200)
+                ThrowException(exception,ConfigureError,
+                  "<include /> nested too deeply",path);
+              else
+                if (IsAccessible(token))
+                  (void) ReadConfigureFile(image,token,depth+1,exception);
+                else
+                  {
+                    char
+                      filename[MaxTextExtent];
+  
+                    GetPathComponent(path,HeadPath,filename);
+                    (void) strcat(filename,DirectorySeparator);
+                    (void) strncat(filename,token,MaxTextExtent-
+                      strlen(filename)-1);
+                    (void) ReadConfigureFile(image,filename,depth+1,exception);
+                  }
+            }
+        }
+        continue;
+      }
+    if (LocaleCompare(keyword,"<color") == 0)
+      {
+        continue;
+      }
+    GetToken(q,(char **) NULL,token);
+    if (*token != '=')
+      continue;
+    GetToken(q,&q,token);
+    GetToken(q,&q,token);
+    switch (*keyword)
+    {
+      case 'B':
+      case 'b':
+      {
+        break;
+      }
+      case 'C':
+      case 'c':
+      {
+        if (LocaleCompare((char *) keyword,"compliance") == 0)
+          {
+            break;
+          }
+        break;
+      }
+      case 'G':
+      case 'g':
+      {
+        break;
+      }
+      case 'N':
+      case 'n':
+      {
+        break;
+      }
+      case 'O':
+      case 'o':
+      {
+        break;
+      }
+      case 'R':
+      case 'r':
+      {
+        break;
+      }
+      case 'S':
+      case 's':
+      {
+        break;
+      }
+      default:
+        break;
+    }
+  }
+  LiberateMemory((void **) &token);
+  if (depth != 0)
+    LiberateMemory((void **) &xml);
+  return(True);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -92,8 +272,7 @@ static unsigned int
 %
 %
 */
-static Image *ReadMGKImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadMGKImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -116,6 +295,8 @@ static Image *ReadMGKImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
+  image->columns=1;
+  image->rows=1;
   length=GetBlobSize(image);
   blob=(unsigned char *) AcquireMemory(length+1);
   if (blob == (unsigned char *) NULL)
@@ -127,12 +308,13 @@ static Image *ReadMGKImage(const ImageInfo *image_info,
       ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
     }
   blob[length]='\0';
-  if (LocaleCompare((const char *) blob,"<?xml") != 0)
+  if (LocaleNCompare((const char *) blob,"<?xml",5) != 0)
     {
       LiberateMemory((void **) &blob);
       ThrowReaderException(CorruptImageError,"Not a MGK file",image);
-  }
-  (void) SetImageAttribute(image,"[mgk]",blob);
+    }
+  if (SetImageAttribute(image,"[MGK]",blob) == False)
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   return(image);
 }
 
@@ -229,9 +411,6 @@ ModuleExport void UnregisterMGKImage(void)
 */
 static unsigned int WriteMGKImage(const ImageInfo *image_info,Image *image)
 {
-  const ImageAttribute
-		*attribute;
-
   unsigned int
     status;
 
@@ -239,12 +418,11 @@ static unsigned int WriteMGKImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  attribute=GetImageAttribute(image,"[mgk]");
-  if (attribute == (const ImageAttribute *) NULL)
-    ThrowWriterException(ConfigureError,"No required [mgk] image attribute",
-      image);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
+  (void) ReadConfigureFile(image,"[MGK]",0,&image->exception);
+  (void) WriteBlobString(image,"Not implemented yet!\n");
+  CloseBlob(image);
   return(False);
 }
