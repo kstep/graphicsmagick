@@ -151,11 +151,12 @@ static char *p_modes[] = {
     "Undefined", "Frame", "Unframe", "Concatenate", 0 };
 
 static char *p_previews[] = {
-    "Rotate", "Shear", "Roll", "Hue", "Saturation", "Brightness", "Gamma",
-    "Spiff", "Dull", "Grayscale", "Quantize", "Despeckle", "ReduceNoise",
-    "AddNoise", "Sharpen", "Blur", "Threshold", "EdgeDetect", "Spread",
-    "Solarize", "Shade", "Raise", "Segment", "Swirl", "Implode", "Wave",
-    "OilPaint", "Charcoal", 0 };
+    "Undefined", "Rotate", "Shear", "Roll", "Hue", "Saturation",
+    "Brightness", "Gamma", "Spiff", "Dull", "Grayscale", "Quantize",
+    "Despeckle", "ReduceNoise", "AddNoise", "Sharpen", "Blur",
+    "Threshold", "EdgeDetect", "Spread", "Solarize", "Shade", "Raise",
+    "Segment", "Swirl", "Implode", "Wave", "OilPaint", "Charcoal",
+    "JPEG", 0 };
 
 static char *p_primitives[] = {
     "Undefined", "Point", "Line", "Rectangle", "FillRectangle", "Circle",

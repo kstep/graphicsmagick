@@ -106,6 +106,7 @@
 %    -paint radius        simulate an oil painting
 %    -pen color           color for annotating or changing opaque color
 %    -pointsize value     pointsize of Postscript font
+%    -preview type        image preview type
 %    -quality value       JPEG/MIFF/PNG compression level
 %    -raise value         lighten/darken image edges to create a 3-D effect
 %    -region geometry     apply options to a portion of the image
@@ -402,6 +403,7 @@ static void Usage(const char *client_name)
       "-paint radius        simulate an oil painting",
       "-pen color           color for annotating or changing opaque color",
       "-pointsize value     pointsize of Postscript font",
+      "-preview type        image preview type",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-raise value         lighten/darken image edges to create a 3-D effect",
       "-region geometry     apply options to a portion of the image",
@@ -1193,8 +1195,80 @@ int main(int argc,char **argv)
                 }
               break;
             }
+          if (strncmp("preview",option+1,3) == 0)
+            {
+              image_info.preview_type=UndefinedPreview;
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing type",option);
+                  option=argv[i];
+                  image_info.preview_type=UndefinedPreview;
+                  if (Latin1Compare("Rotate",option) == 0)
+                    image_info.preview_type=RotatePreview;
+                  if (Latin1Compare("Shear",option) == 0)
+                    image_info.preview_type=ShearPreview;
+                  if (Latin1Compare("Roll",option) == 0)
+                    image_info.preview_type=RollPreview;
+                  if (Latin1Compare("Hue",option) == 0)
+                    image_info.preview_type=HuePreview;
+                  if (Latin1Compare("Saturation",option) == 0)
+                    image_info.preview_type=SaturationPreview;
+                  if (Latin1Compare("Brightness",option) == 0)
+                    image_info.preview_type=BrightnessPreview;
+                  if (Latin1Compare("Gamma",option) == 0)
+                    image_info.preview_type=GammaPreview;
+                  if (Latin1Compare("Spiff",option) == 0)
+                    image_info.preview_type=SpiffPreview;
+                  if (Latin1Compare("Dull",option) == 0)
+                    image_info.preview_type=DullPreview;
+                  if (Latin1Compare("Grayscale",option) == 0)
+                    image_info.preview_type=GrayscalePreview;
+                  if (Latin1Compare("Quantize",option) == 0)
+                    image_info.preview_type=QuantizePreview;
+                  if (Latin1Compare("Despeckle",option) == 0)
+                    image_info.preview_type=DespecklePreview;
+                  if (Latin1Compare("ReduceNoise",option) == 0)
+                    image_info.preview_type=ReduceNoisePreview;
+                  if (Latin1Compare("AddNoise",option) == 0)
+                    image_info.preview_type=AddNoisePreview;
+                  if (Latin1Compare("Sharpen",option) == 0)
+                    image_info.preview_type=SharpenPreview;
+                  if (Latin1Compare("Blur",option) == 0)
+                    image_info.preview_type=BlurPreview;
+                  if (Latin1Compare("Threshold",option) == 0)
+                    image_info.preview_type=ThresholdPreview;
+                  if (Latin1Compare("EdgeDetect",option) == 0)
+                    image_info.preview_type=EdgeDetectPreview;
+                  if (Latin1Compare("Spread",option) == 0)
+                    image_info.preview_type=SpreadPreview;
+                  if (Latin1Compare("Shade",option) == 0)
+                    image_info.preview_type=ShadePreview;
+                  if (Latin1Compare("Raise",option) == 0)
+                    image_info.preview_type=RaisePreview;
+                  if (Latin1Compare("Segment",option) == 0)
+                    image_info.preview_type=SegmentPreview;
+                  if (Latin1Compare("Solarize",option) == 0)
+                    image_info.preview_type=SolarizePreview;
+                  if (Latin1Compare("Swirl",option) == 0)
+                    image_info.preview_type=SwirlPreview;
+                  if (Latin1Compare("Implode",option) == 0)
+                    image_info.preview_type=ImplodePreview;
+                  if (Latin1Compare("Wave",option) == 0)
+                    image_info.preview_type=WavePreview;
+                  if (Latin1Compare("OilPaint",option) == 0)
+                    image_info.preview_type=OilPaintPreview;
+                  if (Latin1Compare("CharcoalDrawing",option) == 0)
+                    image_info.preview_type=CharcoalDrawingPreview;
+                  if (Latin1Compare("JPEG",option) == 0)
+                    image_info.preview_type=JPEGPreview;
+                  if (image_info.preview_type == UndefinedPreview)
+                    MagickError(OptionError,"Invalid interlace type",option);
+                }
+              break;
+            }
           MagickError(OptionError,"Unrecognized option",option);
-          break;
         }
         case 'q':
         {

@@ -622,7 +622,7 @@ apply a digital filter to enhance a noisy image.
 .B "-equalize"
 perform histogram equalization to the image.
 .TP
-.B "-filter \fIvalue\fP"
+.B "-filter \fItype\fP"
 use this type of filter when resizing an image.
 
 Use this option to affect the resizing operation of an image (see
@@ -912,6 +912,48 @@ See \fBX(1)\fP for details about the color specification.
 .TP
 .B "-pointsize \fIvalue\fP"
 pointsize of the Postscript font.
+.TP
+.B "-preview \fItype\fP"
+image preview type.
+
+Use this option to affect the preview operation of an image
+(e.g. convert -preview Gamma Preview:gamma.gif).
+Choose from these previews:
+
+.nf
+     Rotate
+     Shear
+     Roll
+     Hue
+     Saturation
+     Brightness
+     Gamma
+     Spiff
+     Dull
+     Grayscale
+     Quantize
+     Despeckle
+     ReduceNoise
+     AddNoise
+     Sharpen
+     Blur
+     Threshold
+     Edge Detect
+     Spread
+     Shade
+     Raise
+     Segment
+     Solarize
+     Swirl
+     Implode
+     Wave
+     OilPaint
+     CharcoalDrawing
+     JPEG
+.fi
+
+The default preview is \fBJPEG\fP.
+
 .TP
 .B "-quality \fIvalue\fP"
 JPEG/MIFF/PNG compression level.
