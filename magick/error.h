@@ -46,7 +46,8 @@ extern "C" {
   if (image_info->adjoin) \
     while ((image)->previous != (Image *) NULL) \
       (image)=(image)->previous; \
-  CloseBlob(image); \
+  if (image->blob->type != UndefinedStream) \
+    CloseBlob(image); \
   return(False); \
 }
 
