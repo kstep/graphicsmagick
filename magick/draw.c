@@ -1137,10 +1137,10 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
           (void) QueryColorDatabase("red",&clone_info->stroke);
         else
           (void) QueryColorDatabase("green",&clone_info->stroke);
-        start.x=floor(polygon_info->edges[i].bounds.x1-mid+0.5);
-        start.y=floor(polygon_info->edges[i].bounds.y1-mid+0.5);
-        end.x=ceil(polygon_info->edges[i].bounds.x2+mid-0.5);
-        end.y=ceil(polygon_info->edges[i].bounds.y2+mid-0.5);
+        start.x=polygon_info->edges[i].bounds.x1-mid;
+        start.y=polygon_info->edges[i].bounds.y1-mid;
+        end.x=polygon_info->edges[i].bounds.x2+mid;
+        end.y=polygon_info->edges[i].bounds.y2+mid;
         primitive_info[0].primitive=RectanglePrimitive;
         TraceRectangle(primitive_info,start,end);
         primitive_info[0].method=ReplaceMethod;
@@ -1150,10 +1150,10 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
       }
     }
   (void) QueryColorDatabase("blue",&clone_info->stroke);
-  start.x=floor(bounds.x1-mid+0.5);
-  start.y=floor(bounds.y1-mid+0.5);
-  end.x=ceil(bounds.x2+mid-0.5);
-  end.y=ceil(bounds.y2+mid-0.5);
+  start.x=bounds.x1-mid;
+  start.y=bounds.y1-mid;
+  end.x=bounds.x2+mid;
+  end.y=bounds.y2+mid;
   primitive_info[0].primitive=RectanglePrimitive;
   TraceRectangle(primitive_info,start,end);
   primitive_info[0].method=ReplaceMethod;

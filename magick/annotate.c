@@ -324,8 +324,8 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
         clone_info->fill=draw_info->box;
         clone_info->affine.tx=offset.x-draw_info->affine.ry*metrics.ascent;
         clone_info->affine.ty=offset.y-draw_info->affine.sy*metrics.ascent;
-        FormatString(primitive,"rectangle 0,0 %lu,%lu",
-          metrics.width,metrics.height);
+        FormatString(primitive,"rectangle 0,0 %g,%g",metrics.width,
+          metrics.height);
         (void) CloneString(&clone_info->primitive,primitive);
         (void) DrawImage(image,clone_info);
       }
@@ -334,16 +334,16 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     if (annotate->decorate == OverlineDecoration)
       {
         clone_info->affine.ty-=draw_info->affine.sy*
-          (metrics.ascent+metrics.descent)+1;
-        FormatString(primitive,"line 0,0 %lu,0",metrics.width);
+          (metrics.ascent+metrics.descent)+1.0;
+        FormatString(primitive,"line 0,0 %g,0",metrics.width);
         (void) CloneString(&clone_info->primitive,primitive);
         (void) DrawImage(image,clone_info);
       }
     else
       if (annotate->decorate == UnderlineDecoration)
         {
-          clone_info->affine.ty++;
-          FormatString(primitive,"line 0,0 %lu,0",metrics.width);
+          clone_info->affine.ty+=1.0;
+          FormatString(primitive,"line 0,0 %g,0",metrics.width);
           (void) CloneString(&clone_info->primitive,primitive);
           (void) DrawImage(image,clone_info);
         }
@@ -356,8 +356,8 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     if (annotate->decorate == LineThroughDecoration)
       {
         clone_info->affine.ty-=draw_info->affine.sy*
-          (metrics.ascent+metrics.descent)/2;
-        FormatString(primitive,"line 0,0 %lu,0",metrics.width);
+          (metrics.ascent+metrics.descent)/2.0;
+        FormatString(primitive,"line 0,0 %g,0",metrics.width);
         (void) CloneString(&clone_info->primitive,primitive);
         (void) DrawImage(image,clone_info);
       }
@@ -858,7 +858,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
     ExpandAffine(&draw_info->affine)*draw_info->pointsize;
   metrics->pixels_per_em.y=metrics->pixels_per_em.x;
   metrics->ascent=metrics->pixels_per_em.x;
-  metrics->descent=metrics->pixels_per_em.y/-5;
+  metrics->descent=metrics->pixels_per_em.y/-5.0;
   metrics->width=annotate_image->columns/ExpandAffine(&draw_info->affine);
   metrics->height=1.152*metrics->pixels_per_em.x;
   metrics->max_advance=metrics->pixels_per_em.x;
@@ -898,7 +898,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
         if (!SyncImagePixels(annotate_image))
           break;
       }
-      (void) CompositeImage(image,OverCompositeOp,annotate_image,(int)
+      (void) CompositeImage(image,OverCompositeOp,annotate_image,(long)
         ceil(offset->x-0.5),(long) ceil(offset->y-(metrics->ascent+
         metrics->descent)-0.5));
     }
@@ -1226,8 +1226,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           /*
             Trace the glyph.
           */
-          clone_info->affine.tx=offset->x+(glyph.origin.x+32)/64;
-          clone_info->affine.ty=offset->y-(glyph.origin.y+32)/64;
+          clone_info->affine.tx=offset->x+glyph.origin.x/64.0;
+          clone_info->affine.ty=offset->y-glyph.origin.y/64.0;
           (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
             &OutlineMethods,clone_info);
         }
@@ -1523,9 +1523,8 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
         annotate_info.degrees=(180.0/MagickPI)*
           atan2(draw_info->affine.rx,draw_info->affine.sx);
     }
-  FormatString(annotate_info.geometry,"%ux%u+%d+%d",width,height,
-    (long) ceil(offset->x-0.5),(long) ceil(offset->y-metrics->ascent-
-    metrics->descent-1.5));
+  FormatString(annotate_info.geometry,"%ux%u+%g+%g",width,height,
+    offset->x,offset->y-metrics->ascent-metrics->descent-1.0);
   pixel.pen_color.red=XUpscale(draw_info->fill.red);
   pixel.pen_color.green=XUpscale(draw_info->fill.green);
   pixel.pen_color.blue=XUpscale(draw_info->fill.blue);
