@@ -207,6 +207,172 @@ Export int IsWindows95()
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   l t _ d l s e t s e a r c h p a t h                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method lt_dlsetsearchpath sets the current locations that the subsystem
+%   should look at to find dynamically loadable modules.
+%
+%  The format of the lt_dlsetsearchpath method is:
+%
+%      long lt_dlsetsearchpath(char *path)
+%
+%  A description of each parameter follows:
+%
+%    o path: Specifies a pointer to string representing the search path
+%            for DLL's that can be dynamically loaded.
+%
+*/
+void lt_dlsetsearchpath(char *s)
+{
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   l t _ d l i n i t                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method lt_dlinit initializes the dynamic module loading subsystem.
+%
+%  The format of the lt_dlinit method is:
+%
+%      int lt_dlinit(void)
+%
+*/
+int lt_dlinit(void)
+{
+  return 0;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   l t _ d l e r r o r                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method lt_dlerror returns the last error that occurred in the dynamic
+%   module loading subsystem.
+%
+%  The format of the lt_dlerror method is:
+%
+%      char *lt_dlerror(void)
+%
+%  A description of each parameter follows:
+%
+*/
+char *lt_dlerror(void)
+{
+  return (char *)NULL;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   l t _ d l o p e n                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method lt_dlopen loads a dynamic module into memory and returs a handle
+%   that can be used to access the various procedures in the module.
+%
+%  The format of the lt_dlopen method is:
+%
+%      void *lt_dlopen(char *path)
+%
+%  A description of each parameter follows:
+%
+%    o path: Specifies a pointer to string representing dynamic module that
+%            is to be loaded.
+%
+*/
+void *lt_dlopen(char *path)
+{
+  return (void *)LoadLibrary(path);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   l t _ d l c l o s e                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method lt_dlclose unloads the module associated with the passed handle.
+%
+%  The format of the lt_dlclose method is:
+%
+%      void lt_dlclose(void *h)
+%
+%  A description of each parameter follows:
+%
+%    o h: Specifies a handle to a previously loaded dynamic module.
+%
+*/
+void lt_dlclose(void *h)
+{
+  FreeLibrary(h);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   l t _ d l s y m                                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method lt_dlsym retrieve the procedure address of the procedure specified
+%   by the passed character string.
+%
+%  The format of the lt_dlsym method is:
+%
+%      void *lt_dlsym(void *h, char *s)
+%
+%  A description of each parameter follows:
+%
+%    o h: Specifies a handle to the previously loaded dynamic module.
+%    o s: Specifies the procedure entry point to be returned.
+%
+*/
+void *lt_dlsym(void *h, char *s)
+{
+  LPFNDLLFUNC1 lpfnDllFunc1;
+  lpfnDllFunc1 = (LPFNDLLFUNC1)GetProcAddress(h,s);
+  if (!lpfnDllFunc1)
+    return (void *)NULL;
+  return (void *)lpfnDllFunc1;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  m m a p                                                                    %
 %                                                                             %
 %                                                                             %
@@ -664,11 +830,16 @@ Export DIR *opendir(char *path)
 
   assert(path != (char *) NULL);
   (void) strcpy(file_specification,path);
-  (void) strcat(file_specification,"/*.*");
   entry=(DIR *) AllocateMemory(sizeof(DIR));
   if (entry != (DIR *) NULL)
     entry->hSearch=
       FindFirstFile(file_specification,&entry->Win32FindData);
+  if (entry->hSearch == INVALID_HANDLE_VALUE)
+    {
+      (void) strcat(file_specification,"/*.*");
+      entry->hSearch=
+        FindFirstFile(file_specification,&entry->Win32FindData);
+    }
   return(entry);
 }
 
