@@ -187,10 +187,10 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       RegisterIPTCImage();
       RegisterJBIGImage();
       RegisterJPEGImage();
-      RegisterLabelImage();
+      RegisterLABELImage();
       RegisterLOGOImage();
       RegisterMAPImage();
-      RegisterMatteImage();
+      RegisterMATTEImage();
       RegisterMIFFImage();
       RegisterMONOImage();
       RegisterMTVImage();
@@ -215,7 +215,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       RegisterRLEImage();
       RegisterSCTImage();
       RegisterSGIImage();
-      RegisterSteganoImage();
+      RegisterSTEGANOImage();
       RegisterSUNImage();
       RegisterSVGImage();
       RegisterTGAImage();

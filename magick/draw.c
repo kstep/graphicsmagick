@@ -97,7 +97,7 @@ typedef struct _PrimitiveInfo
 /*
   Forward declarations
 */
-static unsigned int
+static Quantum
   InsidePrimitive(PrimitiveInfo *,const DrawInfo *,const PointInfo *,Image *);
 
 /*
@@ -503,7 +503,7 @@ static double Permutate(int n,int k)
   return(r);
 }
 
-static void Bezier(PrimitiveInfo *primitive_info)
+static void GenerateBezier(PrimitiveInfo *primitive_info)
 {
 #define BezierQuantum  25
 
@@ -579,11 +579,12 @@ static void Bezier(PrimitiveInfo *primitive_info)
   FreeMemory((void *) &coefficients);
 }
 
-static double Circle(PrimitiveInfo *primitive_info,PointInfo start,
+static double GenerateCircle(PrimitiveInfo *primitive_info,PointInfo start,
   PointInfo end)
 {
   double
-    distance;
+    alpha,
+    beta;
 
   register PrimitiveInfo
     *p,
@@ -595,13 +596,13 @@ static double Circle(PrimitiveInfo *primitive_info,PointInfo start,
   q=p+1;
   q->primitive=p->primitive;
   q->pixel=end;
-  distance=(q->pixel.x-p->pixel.x)*(q->pixel.x-p->pixel.x)+
-    (q->pixel.y-p->pixel.y)*(q->pixel.y-p->pixel.y);
-  return(sqrt(distance));
+  alpha=q->pixel.x-p->pixel.x;
+  beta=q->pixel.y-p->pixel.y;
+  return(sqrt(alpha*alpha+beta*beta));
 }
 
-static void Ellipse(PrimitiveInfo *primitive_info,PointInfo start,PointInfo end,
-  PointInfo degrees)
+static void GenerateEllipse(PrimitiveInfo *primitive_info,PointInfo start,
+  PointInfo end,PointInfo degrees)
 {
   double
     i;
@@ -639,27 +640,7 @@ static void Ellipse(PrimitiveInfo *primitive_info,PointInfo start,PointInfo end,
   }
 }
 
-static void Line(PrimitiveInfo *primitive_info,PointInfo start,PointInfo end)
-{
-  register PrimitiveInfo
-    *p,
-    *q;
-
-  p=primitive_info;
-  p->coordinates=2;
-  p->pixel=start;
-  q=p+1;
-  q->primitive=p->primitive;
-  q->pixel=end;
-}
-
-static void Point(PrimitiveInfo *primitive_info,PointInfo start)
-{
-  primitive_info->coordinates=1;
-  primitive_info->pixel=start;
-}
-
-static void Rectangle(PrimitiveInfo *primitive_info,PointInfo start,
+static void GenerateLine(PrimitiveInfo *primitive_info,PointInfo start,
   PointInfo end)
 {
   register PrimitiveInfo
@@ -674,8 +655,29 @@ static void Rectangle(PrimitiveInfo *primitive_info,PointInfo start,
   q->pixel=end;
 }
 
-static void RoundRectangle(PrimitiveInfo *primitive_info,PointInfo start,
-  PointInfo end,PointInfo arc)
+static void GeneratePoint(PrimitiveInfo *primitive_info,PointInfo start)
+{
+  primitive_info->coordinates=1;
+  primitive_info->pixel=start;
+}
+
+static void GenerateRectangle(PrimitiveInfo *primitive_info,PointInfo start,
+  PointInfo end)
+{
+  register PrimitiveInfo
+    *p,
+    *q;
+
+  p=primitive_info;
+  p->coordinates=2;
+  p->pixel=start;
+  q=p+1;
+  q->primitive=p->primitive;
+  q->pixel=end;
+}
+
+static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
+  PointInfo start,PointInfo end,PointInfo arc)
 {
   PointInfo
     degrees,
@@ -694,7 +696,7 @@ static void RoundRectangle(PrimitiveInfo *primitive_info,PointInfo start,
   u.y=start.y;
   v.x=end.x-arc.x;
   v.y=start.y;
-  Line(p,u,v);
+  GenerateLine(p,u,v);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   u.x= end.x-arc.x;
@@ -703,14 +705,14 @@ static void RoundRectangle(PrimitiveInfo *primitive_info,PointInfo start,
   v.y=2.0*arc.y;
   degrees.x=270.0;
   degrees.y=360.0;
-  Ellipse(p,u,v,degrees);
+  GenerateEllipse(p,u,v,degrees);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   u.x=end.x;
   u.y=start.y+arc.y;
   v.x=end.x;
   v.y=end.y-arc.y;
-  Line(p,u,v);
+  GenerateLine(p,u,v);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   u.x=end.x-arc.x;
@@ -719,28 +721,28 @@ static void RoundRectangle(PrimitiveInfo *primitive_info,PointInfo start,
   v.y=2.0*arc.y;
   degrees.x=0.0;
   degrees.y=90.0;
-  Ellipse(p,u,v,degrees);
+  GenerateEllipse(p,u,v,degrees);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   u.x=end.x-arc.x;
   u.y=end.y;
   v.x=start.x+arc.x;
   v.y=end.y;
-  Line(p,u,v);
+  GenerateLine(p,u,v);
   u.x=start.x+arc.x;
   u.y=end.y-arc.y;
   v.x=2.0*arc.x;
   v.y=2.0*arc.y;
   degrees.x=90.0;
   degrees.y=180.0;
-  Ellipse(p,u,v,degrees);
+  GenerateEllipse(p,u,v,degrees);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   u.x=start.x;
   u.y=end.y-arc.y;
   v.x=start.x;
   v.y=start.y+arc.y;
-  Line(p,u,v);
+  GenerateLine(p,u,v);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   u.x=start.x+arc.x;
@@ -749,12 +751,12 @@ static void RoundRectangle(PrimitiveInfo *primitive_info,PointInfo start,
   v.y=2.0*arc.y;
   degrees.x=180.0;
   degrees.y=270.0;
-  Ellipse(p,u,v,degrees);
+  GenerateEllipse(p,u,v,degrees);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   u.x=start.x+arc.x;
   u.y=start.y;
-  Point(p,u);
+  GeneratePoint(p,u);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   primitive_info->coordinates=p-primitive_info;
@@ -796,8 +798,8 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   PrimitiveType
     primitive_type;
 
-  SegmentInfo
-    bounds;
+  Quantum
+    opacity;
 
   register char
     *p;
@@ -809,13 +811,13 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   register PixelPacket
     *q;
 
+  SegmentInfo
+    bounds;
+
   unsigned int
     indirection,
     length,
     number_coordinates;
-
-  unsigned int
-    opacity;
 
   /*
     Ensure the annotation info is valid.
@@ -947,6 +949,8 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       primitive_type=FillEllipsePrimitive;
     if (Latin1Compare("Polyline",keyword) == 0)
       primitive_type=PolylinePrimitive;
+    if (Latin1Compare("FillPolyline",keyword) == 0)
+      primitive_type=FillPolylinePrimitive;
     if (Latin1Compare("Polygon",keyword) == 0)
       primitive_type=PolygonPrimitive;
     if (Latin1Compare("FillPolygon",keyword) == 0)
@@ -1021,7 +1025,8 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             break;
           }
         primitive_info[j].primitive=PointPrimitive;
-        Point(primitive_info+j,primitive_info[j].pixel);
+        GeneratePoint(primitive_info+j,primitive_info[j].pixel);
+        i=j+primitive_info[j].coordinates;
         break;
       }
       case LinePrimitive:
@@ -1032,7 +1037,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             break;
           }
         primitive_info[j].primitive=LinePrimitive;
-        Line(primitive_info+j,primitive_info[j].pixel,
+        GenerateLine(primitive_info+j,primitive_info[j].pixel,
           primitive_info[j+1].pixel);
         i=j+primitive_info[j].coordinates;
         break;
@@ -1048,7 +1053,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         primitive_info[j].primitive=RectanglePrimitive;
         if (primitive_type == FillRectanglePrimitive)
           primitive_info[j].primitive=FillRectanglePrimitive;
-        Rectangle(primitive_info+j,primitive_info[j].pixel,
+        GenerateRectangle(primitive_info+j,primitive_info[j].pixel,
           primitive_info[j+1].pixel);
         i=j+primitive_info[j].coordinates;
         break;
@@ -1064,7 +1069,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         primitive_info[j].primitive=PolygonPrimitive;
         if (primitive_type == FillRoundRectanglePrimitive)
           primitive_info[j].primitive=FillPolygonPrimitive;
-        RoundRectangle(primitive_info+j,primitive_info[j].pixel,
+        GenerateRoundRectangle(primitive_info+j,primitive_info[j].pixel,
           primitive_info[j+1].pixel,primitive_info[j+2].pixel);
         i=j+primitive_info[j].coordinates;
         break;
@@ -1080,7 +1085,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         primitive_info[j].primitive=CirclePrimitive;
         if (primitive_type == FillCirclePrimitive)
           primitive_info[j].primitive=FillCirclePrimitive;
-        radius=Circle(primitive_info+j,primitive_info[j].pixel,
+        radius=GenerateCircle(primitive_info+j,primitive_info[j].pixel,
           primitive_info[j+1].pixel);
         i=j+primitive_info[j].coordinates;
         break;
@@ -1096,12 +1101,13 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         primitive_info[j].primitive=PolygonPrimitive;
         if (primitive_type == FillEllipsePrimitive)
           primitive_info[j].primitive=FillPolygonPrimitive;
-        Ellipse(primitive_info+j,primitive_info[j].pixel,
+        GenerateEllipse(primitive_info+j,primitive_info[j].pixel,
           primitive_info[j+1].pixel,primitive_info[j+2].pixel);
         i=j+primitive_info[j].coordinates;
         break;
       }
       case PolylinePrimitive:
+      case FillPolylinePrimitive:
       {
         if (primitive_info[j].coordinates < 3)
           {
@@ -1132,7 +1138,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             break;
           }
         primitive_info[j].primitive=PolygonPrimitive;
-        Bezier(primitive_info+j);
+        GenerateBezier(primitive_info+j);
         i=j+primitive_info[j].coordinates;
         break;
       }
@@ -1500,7 +1506,7 @@ static double DistanceToLine(const PointInfo *pixel,const PointInfo *p,
   return(alpha*alpha+beta*beta);
 }
 
-static unsigned int PixelOnLine(const PointInfo *pixel,const PointInfo *p,
+static Quantum PixelOnLine(const PointInfo *pixel,const PointInfo *p,
   const PointInfo *q,const double mid,const unsigned int opacity)
 {
   register double
@@ -1519,12 +1525,12 @@ static unsigned int PixelOnLine(const PointInfo *pixel,const PointInfo *p,
   if (distance <= (alpha*alpha))
     {
       alpha=sqrt(distance)-mid-0.5;
-      return((unsigned int) Max(opacity,Opaque*alpha*alpha));
+      return((Quantum) Max(opacity,Opaque*alpha*alpha));
     }
   return(opacity);
 }
 
-static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
+static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
   const DrawInfo *draw_info,const PointInfo *pixel,Image *image)
 {
   PixelPacket
@@ -1541,7 +1547,7 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
     *p,
     *q;
 
-  register unsigned int
+  register Quantum
     opacity;
 
   PixelPacket
@@ -1645,6 +1651,7 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
         opacity=Max(opacity,poly_opacity);
         break;
       }
+      case FillPolylinePrimitive:
       case FillPolygonPrimitive:
       {
         double
