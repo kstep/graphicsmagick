@@ -1423,7 +1423,7 @@ ImageToBlob() returns the image data in their respective formats. You can
 then print it, save it to an ODBC database, write it to a file, or pipe it
 to a display program: <pre>&nbsp;&nbsp;&nbsp; @blobs = $image-&gt;ImageToBlob();<br>&nbsp;&nbsp;&nbsp; open(DISPLAY,"| display -") || die;<br>&nbsp;&nbsp;&nbsp; binmode DISPLAY;<br>&nbsp;&nbsp;&nbsp; print DISPLAY $blobs[0];<br>&nbsp;&nbsp;&nbsp; close DISPLAY;</pre>
  Method BlobToImage() returns an image or image sequence converted from the
-supplied blob: <pre>&nbsp;&nbsp;&nbsp; $blob=$db-&gt;GetImage();<br>&nbsp;&nbsp;&nbsp; $image=Image::Magick-&gt;new(magick=&gt;'jpg');<br>&nbsp;&nbsp;&nbsp; $image-&gt;BlobToImage($blob);</pre>
+supplied blob: <pre>&nbsp;&nbsp;&nbsp; @blob=$db-&gt;GetImage();<br>&nbsp;&nbsp;&nbsp; $image=Image::Magick-&gt;new(magick=&gt;'jpg');<br>&nbsp;&nbsp;&nbsp; $image-&gt;BlobToImage(@blob);</pre>
                                         <br>
                                         </blockquote>
                                         <dl>
