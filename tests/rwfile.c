@@ -146,6 +146,8 @@ int main ( int argc, char **argv )
   imageInfo.dither = 0;
   strncpy( imageInfo.filename, infile, MaxTextExtent-1 );
   fflush(stdout);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+    "Reading image %s", imageInfo.filename);
   original = ReadImage ( &imageInfo, &exception );
   if (exception.severity != UndefinedException)
     CatchException(&exception);
@@ -171,6 +173,8 @@ int main ( int argc, char **argv )
   strncpy( original->filename, filename, MaxTextExtent-1 );
   original->delay = 10;
   fflush(stdout);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+    "Writing image %s", original->filename);
   WriteImage ( &imageInfo, original );
   imageInfo.depth=original->depth;
   DestroyImage( original );
@@ -212,6 +216,8 @@ int main ( int argc, char **argv )
   if ( size != NULL )
     CloneString( &imageInfo.size, size );
   fflush(stdout);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+    "Reading image %s", imageInfo.filename);
   final = ReadImage ( &imageInfo, &exception );
   if (exception.severity != UndefinedException)
     CatchException(&exception);

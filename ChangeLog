@@ -1,5 +1,13 @@
+2003-03-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jp2.c (WriteJP2Image): Improved -quality rate estimation
+	for very small files.
+
 2003-03-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/jp2.c (WriteJP2Image): Add additional logging support.
+	* tests/rwblob.c: Added BLOB read/write logging.
+	* tests/rwfile.c: Added file read/write logging.
 	* magick/module.c (FindMagickModule): Minor code cleanup and limit
 	directory and file name lengths to sensible values.
 	* magick/utility.c (IsAccessible): Log test failures along with

@@ -150,8 +150,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define RenderPostscriptText  "  Rendering postscript...  "
 
   char
-    density[MaxTextExtent],
     command[MaxTextExtent],
+    density[MaxTextExtent],
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
     options[MaxTextExtent],

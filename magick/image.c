@@ -2749,8 +2749,8 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
       */
       if (!AllocateImageColormap(image,MaxColormapSize))
         {
-          ThrowException(&image->exception,ResourceLimitError,"MemoryAllocationFailed",
-                         "UnableToSortImageColormap");
+          ThrowException(&image->exception,ResourceLimitError,
+            "MemoryAllocationFailed","UnableToSortImageColormap");
           return;
         }
 
@@ -2766,8 +2766,8 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
           colormap_index=(int *) AcquireMemory(MaxColormapSize*sizeof(int));
           if (colormap_index == (int *) NULL)
             {
-              ThrowException(&image->exception,ResourceLimitError,"MemoryAllocationFailed",
-                             "UnableToSortImageColormap");
+              ThrowException(&image->exception,ResourceLimitError,
+                "MemoryAllocationFailed","UnableToSortImageColormap");
               return;
             }
 
@@ -2844,8 +2844,8 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
           colormap_index=(int *) AcquireMemory(MaxColormapSize*sizeof(int));
           if (colormap_index == (int *) NULL)
             {
-              ThrowException(&image->exception,ResourceLimitError,"MemoryAllocationFailed",
-                             "UnableToSortImageColormap");
+              ThrowException(&image->exception,ResourceLimitError,
+                "MemoryAllocationFailed","UnableToSortImageColormap");
               return;
             }
         }
@@ -2874,8 +2874,8 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
         new_colormap=(PixelPacket *) AcquireMemory(image->colors*sizeof(PixelPacket));
         if (new_colormap == (PixelPacket *) NULL)
           {
-            ThrowException(&image->exception,ResourceLimitError,"MemoryAllocationFailed",
-                           "UnableToSortImageColormap");
+            ThrowException(&image->exception,ResourceLimitError,
+              "MemoryAllocationFailed","UnableToSortImageColormap");
             return;
           }
 

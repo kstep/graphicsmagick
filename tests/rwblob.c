@@ -149,7 +149,8 @@ int main ( int argc, char **argv )
   GetExceptionInfo( &exception );
   imageInfo.dither = 0;
   strncpy( imageInfo.filename, infile, MaxTextExtent-1 );
-
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+    "Reading image %s", imageInfo.filename);
   original = ReadImage ( &imageInfo, &exception );
   if (exception.severity != UndefinedException)
     CatchException(&exception);
@@ -174,6 +175,8 @@ int main ( int argc, char **argv )
   strncpy( original->magick, format, MaxTextExtent-1 );
   strcpy( imageInfo.filename, "" );
   original->delay = 10;
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+    "Writing image to BLOB");
   blob =(char *) ImageToBlob ( &imageInfo, original, &blob_length, &exception );
   if (exception.severity != UndefinedException)
     CatchException(&exception);
@@ -227,6 +230,8 @@ int main ( int argc, char **argv )
   strcpy( imageInfo.filename, "" );
   if ( size != NULL )
     CloneString( &imageInfo.size, size );
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+    "Reading image from BLOB");
   final = BlobToImage( &imageInfo, blob, blob_length, &exception );
   if (exception.severity != UndefinedException)
     CatchException(&exception);

@@ -16,10 +16,16 @@
 2003-03-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> coders/jp2.c (WriteJP2Image): Add additional logging support.
+  <LI> tests/rwblob.c: Added BLOB read/write logging.
+  <LI> tests/rwfile.c: Added file read/write logging.
   <LI> magick/module.c (FindMagickModule): Minor code cleanup and limit
         directory and file name lengths to sensible values.
   <LI> magick/utility.c (IsAccessible): Log test failures along with
         test failure reason [strerror(errno)]. Also log test success.
+  <LI> VisualMagick/bin/delegates.mgk: -DSAFER does not work with
+        Ghostscript 8.0.<BR>
+  <LI> magick/module.c: Needed to conditionally include nt_feature.h.
 
 </UL>
 <p>

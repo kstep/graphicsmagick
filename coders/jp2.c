@@ -188,7 +188,7 @@ static unsigned int IsJPC(const unsigned char *magick,const size_t length)
 %  necessary for the new Image structure and returns a pointer to the new
 %  image or set of images.
 %
-%  JP2 support written by Nathan Brown, nathanbrown@letu.edu.
+%  JP2 support is originally written by Nathan Brown, nathanbrown@letu.edu.
 %
 %  The format of the ReadJP2Image method is:
 %
@@ -366,11 +366,18 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
             ThrowReaderException(CorruptImageError,"MissingImageChannel",image);
           }
         number_components=3;
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "Image is in RGB colorspace family");
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "RED is in channel %d, GREEN is in channel %d, BLUE is in channel %d",
+          components[0],components[1],components[2]);
 
         if((components[3]=jas_image_getcmptbytype(jp2_image,
             JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_OPACITY))) > 0)
           {
             image->matte=True;
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "OPACITY is in channel %d",components[3]);
             number_components++;
           }
         break;
@@ -384,11 +391,17 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
             jas_image_destroy(jp2_image);
             ThrowReaderException(CorruptImageError,"MissingImageChannel",image);
           }
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+           "Image is in GRAY colorspace family");
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "GRAY is in channel %d",components[0]);
         number_components=1;
         break;
       }
     case JAS_CLRSPC_FAM_YCBCR:
       /* YCBCR is not supported yet */
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "Image is in YCBCR colorspace family");
     default:
       {
         (void) jas_stream_close(jp2_stream);
@@ -678,7 +691,7 @@ ModuleExport void UnregisterJP2Image(void)
 %
 %  Method WriteJP2Image writes an image in the JPEG 2000 image format.
 %
-%  JP2 support written by Nathan Brown, nathanbrown@letu.edu
+%  JP2 support originally written by Nathan Brown, nathanbrown@letu.edu
 %
 %  The format of the WriteJP2Image method is:
 %
@@ -723,14 +736,14 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register long
+  register int
     i,
     x;
 
   unsigned int
     status;
 
-  unsigned long
+  unsigned int
     number_components;
 
   /*
@@ -755,6 +768,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   if ((image_info->type != TrueColorType) &&
       IsGrayImage(image,&image->exception))
     number_components=1;
+
   jp2_image=jas_image_create0();
   if (jp2_image == (jas_image_t *) NULL)
     ThrowWriterException(DelegateError,"UnableToCreateImage",image);
@@ -762,14 +776,15 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   for (i=0; i < (long) number_components; i++)
   {
     (void) memset((void *)&component_info,0,sizeof(jas_image_cmptparm_t));
-    component_info.tlx=0;
-    component_info.tly=0;
-    component_info.hstep=1;
-    component_info.vstep=1;
+    component_info.tlx=0; /* top left x ordinate */
+    component_info.tly=0; /* top left y ordinate */
+    component_info.hstep=1; /* horizontal pixels per step */
+    component_info.vstep=1; /* vertical pixels per step */
     component_info.width=(unsigned int) image->columns;
     component_info.height=(unsigned int) image->rows;
-    component_info.prec=(unsigned int) image->depth <= 8 ? 8 : 16;
-    component_info.sgnd = false;
+    component_info.prec=(unsigned int) image->depth <= 8 ? 8 : 16; /* bits in range */
+    component_info.sgnd = false;  /* range is signed value? */
+
     if (jas_image_addcmpt(jp2_image, i,&component_info)) {
       jas_image_destroy(jp2_image);
       ThrowWriterException(DelegateError,"UnableToCreateImageComponent",image);
@@ -782,9 +797,13 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
          should be transferred and the image colorspace set to
          JAS_CLRSPC_GENGRAY */
       /* sRGB Grayscale */
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Setting SGRAY colorspace");
       jas_image_setclrspc(jp2_image, JAS_CLRSPC_SGRAY);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Setting GRAY channel to channel 0");
       jas_image_setcmpttype(jp2_image,0,
-                            JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y));
+        JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y));
     }
   else
     {
@@ -793,16 +812,28 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
          JAS_CLRSPC_GENRGB */
 
       /* sRGB */
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Setting SRGB colorspace");
       jas_image_setclrspc(jp2_image, JAS_CLRSPC_SRGB);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Setting RED channel to channel 0");
       jas_image_setcmpttype(jp2_image,0,
-                            JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R));
+        JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R));
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Setting GREEN channel to channel 1");
       jas_image_setcmpttype(jp2_image,1,
-                            JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G));
+        JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G));
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Setting BLUE channel to channel 2");
       jas_image_setcmpttype(jp2_image,2,
-                            JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B));
+        JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B));
       if (number_components == 4 )
-        jas_image_setcmpttype(jp2_image,3,
-                              JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_OPACITY));
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Setting OPACITY channel to channel 3");
+          jas_image_setcmpttype(jp2_image,3,
+            JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_OPACITY));
+        }
     }
   /*
     Convert to JPEG 2000 pixels.
@@ -857,8 +888,10 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
           p++;
         }
     for (i=0; i < (long) number_components; i++)
-      (void) jas_image_writecmpt(jp2_image,(short) i,0,(unsigned int) y,
-        (unsigned int) image->columns,1,pixels[i]);
+      {
+        (void) jas_image_writecmpt(jp2_image,(short) i,0,(unsigned int) y,
+          (unsigned int) image->columns,1,pixels[i]);
+      }
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
         if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
@@ -876,17 +909,32 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   */
   {
     double
-      d,
-      rate;
+      rate=1.0;
 
-    d=115-image_info->quality;
-    if (image_info->quality>99.5)
-      d=10;
-    rate=100.0/(d*d);
+    if ((image_info->quality < 99.5) && (image->rows*image->columns > 2500))
+      {
+        double
+          header_size,
+          current_size,
+          target_size,
+          d;
+        
+        d=115-image_info->quality;  /* Best number is 110-115 */
+        rate=100.0/(d*d);
+        header_size=550.0; /* Base file size. */
+        header_size+=(number_components-1)*142; /* Additional components */
+        /* FIXME: Need to account for any ICC profiles here */
+
+        current_size=(double)image->rows*image->columns*(image->depth/8)*
+          number_components;
+        target_size=(current_size*rate)+header_size;
+        rate=target_size/current_size;
+      }
     FormatString(options,"rate=%g",rate);
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Compression rate: %g (%3.2f:1)",
-     rate,(double)1/rate);
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "Compression rate: %g (%3.2f:1)",rate,(double)1/rate);
   }
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Encoding image");
   status=jas_image_encode(jp2_image,jp2_stream,format,options);
   if (status)
     ThrowWriterException(DelegateError,"UnableToEncodeImageFile",image);
