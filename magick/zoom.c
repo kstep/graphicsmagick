@@ -709,26 +709,26 @@ static double Lanczos(const double x,const double support)
 
 static double Mitchell(const double x,const double support)
 {
-#define b   (1.0/3.0)
-#define c   (1.0/3.0)
-#define p0  ((  6.0- 2.0*b       )/6.0)
-#define p2  ((-18.0+12.0*b+ 6.0*c)/6.0)
-#define p3  (( 12.0- 9.0*b- 6.0*c)/6.0)
-#define q0  ((       8.0*b+24.0*c)/6.0)
-#define q1  ((     -12.0*b-48.0*c)/6.0)
-#define q2  ((       6.0*b+30.0*c)/6.0)
-#define q3  ((     - 1.0*b- 6.0*c)/6.0)
+#define B   (1.0/3.0)
+#define C   (1.0/3.0)
+#define P0  ((  6.0- 2.0*B       )/6.0)
+#define P2  ((-18.0+12.0*B+ 6.0*C)/6.0)
+#define P3  (( 12.0- 9.0*B- 6.0*C)/6.0)
+#define Q0  ((       8.0*B+24.0*C)/6.0)
+#define Q1  ((     -12.0*B-48.0*C)/6.0)
+#define Q2  ((       6.0*B+30.0*C)/6.0)
+#define Q3  ((     - 1.0*B- 6.0*C)/6.0)
 
   if (x < -2.0)
     return(0.0);
   if (x < -1.0)
-    return(q0-x*(q1-x*(q2-x*q3)));
+    return(Q0-x*(Q1-x*(Q2-x*Q3)));
   if (x < 0.0)
-    return(p0+x*x*(p2-x*p3));
+    return(P0+x*x*(P2-x*P3));
   if (x < 1.0)
-    return(p0+x*x*(p2+x*p3));
+    return(P0+x*x*(P2+x*P3));
   if (x < 2.0)
-   return(q0+x*(q1+x*(q2+x*q3)));
+    return(Q0+x*(Q1+x*(Q2+x*Q3)));
   return(0.0);
 }
 
