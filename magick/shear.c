@@ -494,13 +494,13 @@ static inline PixelPacket BlendComposite(const PixelPacket *p,
   PixelPacket
     composite;
     
-  color=(double) (p->red*(MaxRGB-alpha)+q->red*alpha)/MaxRGB;
+  color=((double) p->red*(MaxRGB-alpha)+q->red*alpha)/MaxRGB;
   composite.red=(Quantum)
     ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
-  color=(double) (p->green*(MaxRGB-alpha)+q->green*alpha)/MaxRGB;
+  color=((double) p->green*(MaxRGB-alpha)+q->green*alpha)/MaxRGB;
   composite.green=(Quantum)
     ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
-  color=(double) (p->blue*(MaxRGB-alpha)+q->blue*alpha)/MaxRGB;
+  color=((double) p->blue*(MaxRGB-alpha)+q->blue*alpha)/MaxRGB;
   composite.blue=(Quantum)
     ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
   composite.opacity=p->opacity;

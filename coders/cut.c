@@ -427,19 +427,19 @@ ErasePalette:
      if(MaxRGB!=PalHeader.MaxRed) 
          {
          image->colormap[i].red=(Quantum)
-           (((unsigned long)image->colormap[i].red*MaxRGB+(PalHeader.MaxRed>>1))/PalHeader.MaxRed);
+           (((double)image->colormap[i].red*MaxRGB+(PalHeader.MaxRed>>1))/PalHeader.MaxRed+0.5);
          }
      image->colormap[i].green=ReadBlobLSBShort(palette);
      if(MaxRGB!=PalHeader.MaxGreen) 
          {
          image->colormap[i].green=(Quantum)
-           (((unsigned long)image->colormap[i].green*MaxRGB+(PalHeader.MaxGreen>>1))/PalHeader.MaxGreen);
+           (((double)image->colormap[i].green*MaxRGB+(PalHeader.MaxGreen>>1))/PalHeader.MaxGreen+0.5);
          }
      image->colormap[i].blue=ReadBlobLSBShort(palette);       
      if(MaxRGB!=PalHeader.MaxBlue)  
          {
          image->colormap[i].blue=(Quantum)
-           (((unsigned long)image->colormap[i].blue*MaxRGB+(PalHeader.MaxBlue>>1))/PalHeader.MaxBlue);
+           (((double)image->colormap[i].blue*MaxRGB+(PalHeader.MaxBlue>>1))/PalHeader.MaxBlue+0.5);
          }
          
      }

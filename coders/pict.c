@@ -1456,8 +1456,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if ((image->columns > 65535L) || (image->rows > 65535L))
-    ThrowWriterException(ResourceLimitError,
-      "Width or height limit exceeded",image);
+    ThrowWriterException(ResourceLimitError,"Width or height exceeds limit",
+      image);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
@@ -1691,11 +1691,11 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       for (i=0; i < (long) image->colors; i++)
       {
         red=(unsigned short)
-          ((unsigned long) (image->colormap[i].red*65535L)/MaxRGB);
+          (((double) image->colormap[i].red*65535L)/MaxRGB+0.5);
         green=(unsigned short)
-          ((unsigned long) (image->colormap[i].green*65535L)/MaxRGB);
+          (((double) image->colormap[i].green*65535L)/MaxRGB+0.5);
         blue=(unsigned short)
-          ((unsigned long) (image->colormap[i].blue*65535L)/MaxRGB);
+          (((double) image->colormap[i].blue*65535L)/MaxRGB+0.5);
         (void) WriteBlobMSBShort(image,i);
         (void) WriteBlobMSBShort(image,red);
         (void) WriteBlobMSBShort(image,green);
