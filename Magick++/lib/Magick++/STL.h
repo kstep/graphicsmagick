@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2001
 //
 // Definition and implementation of template functions for using
 // Magick::Image with STL containers.
@@ -999,6 +999,22 @@ namespace Magick
     const double _radius;
     const double _sigma;
   };
+
+  // Shave pixels from image edges.
+  class shaveImage : public std::unary_function<Image&,void>
+  {
+  public:
+    shaveImage( const Geometry &geometry_ )
+      : _geometry( geometry_ ) { }
+
+    void operator()( Image &image_ )
+      {
+	image_.shave( _geometry );
+      }
+  private:
+    const Geometry _geometry;
+  };
+
 
   // Shear image (create parallelogram by sliding image by X or Y axis)
   class shearImage : public std::unary_function<Image&,void>

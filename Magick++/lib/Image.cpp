@@ -1320,6 +1320,29 @@ void Magick::Image::sharpen ( const double radius_, const double sigma_ )
   throwException( exceptionInfo );
 }
 
+// Shave pixels from image edges.
+void Magick::Image::shave ( const Geometry &geometry_ )
+{
+  RectangleInfo shaveInfo;
+  shaveInfo.width  = geometry_.width();
+  shaveInfo.height = geometry_.height();
+  shaveInfo.x      = geometry_.xOff();
+  if ( geometry_.xNegative() )
+    shaveInfo.x = - shaveInfo.x;
+  shaveInfo.y      = geometry_.yOff();
+  if ( geometry_.yNegative() )
+    shaveInfo.y = - shaveInfo.y;
+
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickLib::Image* newImage =
+    ShaveImage( image(),
+	       &shaveInfo,
+	       &exceptionInfo);
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+}
+
 // Shear image
 void Magick::Image::shear ( double xShearAngle_,
 			    double yShearAngle_ )

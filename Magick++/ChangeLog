@@ -1,3 +1,9 @@
+2001-06-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (shaveImage): New function to shave edges from image.
+
+	* lib/Image.cpp (shave): New method to shave edges from image.
+
 2001-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (quantize): Remove conditions on whether

@@ -417,6 +417,9 @@ namespace Magick
     // pixels, not counting the center pixel.  The sigma_ parameter
     // specifies the standard deviation of the Laplacian, in pixels.
     void            sharpen ( const double radius_ = 0.0, const double sigma_ = 1.0 );
+
+    // Shave pixels from image edges.
+    void            shave ( const Geometry &geometry_ );
     
     // Shear image (create parallelogram by sliding image by X or Y axis)
     void            shear ( double xShearAngle_,

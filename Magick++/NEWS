@@ -6,6 +6,7 @@ numbering.
   * Default radius and sigma parameters were changed on the blur,
     charcoal, emboss, and sharpen methods to match ImageMagick defaults.
   * Fixes to Magick++ demos to restore appearance.
+  * Added shave method for shaving edges from image (a form of crop).
 
 (5.3.1-5.3.4)
   * No changes.
