@@ -2920,7 +2920,7 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
 %
 %  The format of the TemporaryFilename method is:
 %
-%      void TemporaryFilename(har *filename)
+%      void TemporaryFilename(char *filename)
 %
 %  A description of each parameter follows.
 %
