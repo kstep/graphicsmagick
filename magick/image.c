@@ -614,7 +614,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
       LiberateMemory((void **) &pixels);
       return((Image *) NULL);
     }
-  average_image->storage_class=DirectClass;
+  SetImageType(average_image,TrueColorType);
   /*
     Compute sum over each pixel color component.
   */

@@ -324,7 +324,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   convolve_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (convolve_image == (Image *) NULL)
     return((Image *) NULL);
-  convolve_image->storage_class=DirectClass;
+  SetImageType(convolve_image,TrueColorType);
   /*
     Convolve image.
   */
@@ -761,7 +761,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   paint_image=CloneImage(image,0,0,True,exception);
   if (paint_image == (Image *) NULL)
     return((Image *) NULL);
-  paint_image->storage_class=DirectClass;
+  SetImageType(paint_image,TrueColorType);
   /*
     Allocate histogram and scanline.
   */

@@ -6334,7 +6334,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) (status ? "-shade" : "+shade");
+      argv[1]=(char *) (status ? "+shade" : "-shade");
       argv[2]=geometry;
       (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
