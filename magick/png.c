@@ -1038,7 +1038,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             /* read global PLTE */
 
             if (length < 769)
-              m->global_plte = (png_color_struct *) AllocateMemory(256*sizeof(png_color));
+              m->global_plte = (png_colorp) AllocateMemory(256*sizeof(png_color));
               for (i=0; i<(int)length/3; i++)
                 {
                   m->global_plte[i].red=p[3*i];
