@@ -2266,7 +2266,7 @@ MagickExport void GetImageException(Image *image,ExceptionInfo *exception)
   register Image
     *next;
 
-  assert(image != (const Image *) NULL);
+  assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
