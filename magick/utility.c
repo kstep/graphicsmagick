@@ -549,10 +549,9 @@ MagickExport unsigned int CheckFileAccessability(const char *filename,
 %
 %  A description of each parameter follows:
 %
-%    o path: Specifies a pointer to a character array that contains the
-%      file path.
+%    o path: The path.
 %
-%    o numebr_components: The number of directory components to truncate.
+%    o components: The number of directory components to chop.
 %
 */
 MagickExport void ChopPathComponents(char *path,const unsigned long components)
