@@ -74,7 +74,9 @@ static MonitorHandler
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickMonitor() calls the monitor handler method with a text string that
-%  describes the task and a measure of completion.
+%  describes the task and a measure of completion.  The method returns False
+%  on success otherwise True if an error is encountered, e.g. if there was a
+%  user interrupt.
 %
 %  The format of the MagickMonitor method is:
 %
