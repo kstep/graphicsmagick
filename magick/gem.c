@@ -100,14 +100,14 @@ MagickExport PixelPacket AlphaComposite(const PixelPacket *p,
   if (alpha == TransparentOpacity)
     return(*q);
   gamma=1.0/MaxRGB;
-  composite.red=(Quantum) (gamma*((double) (MaxRGB-(alpha))*(p)->red+
-    (double) (alpha)*(MaxRGB-(beta))*(q)->red/MaxRGB)+0.5);
-  composite.green=(Quantum) (gamma*((double) (MaxRGB-(alpha))*(p)->green+
-    (double) (alpha)*(MaxRGB-(beta))*(q)->green/MaxRGB)+0.5);
-  composite.blue=(Quantum) (gamma*((double) (MaxRGB-(alpha))*(p)->blue+
-    (double) (alpha)*(MaxRGB-(beta))*(q)->blue/MaxRGB)+0.5);
+  composite.red=(Quantum) (gamma*((double) (MaxRGB-alpha)*p->red+
+    (double) alpha*(MaxRGB-beta)*q->red/MaxRGB)+0.5);
+  composite.green=(Quantum) (gamma*((double) (MaxRGB-alpha)*p->green+
+    (double) alpha*(MaxRGB-beta)*q->green/MaxRGB)+0.5);
+  composite.blue=(Quantum) (gamma*((double) (MaxRGB-alpha)*p->blue+
+    (double) alpha*(MaxRGB-beta)*q->blue/MaxRGB)+0.5);
   composite.opacity=(Quantum) (gamma*((double) (MaxRGB-(alpha))+
-    (double) (alpha)*(MaxRGB-(beta))/MaxRGB)+0.5);
+    (double) (alpha)*(MaxRGB-beta)/MaxRGB)+0.5);
   return(composite);
 }
 
