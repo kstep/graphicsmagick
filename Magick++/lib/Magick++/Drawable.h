@@ -75,7 +75,7 @@ namespace Magick
     double _y;
   };
 
-  typedef class std::list<Magick::Coordinate> CoordinateList;
+  typedef std::list<Magick::Coordinate> CoordinateList;
 
 #if defined(MagickDLLBuild)
 
@@ -85,18 +85,18 @@ namespace Magick
 #endif // MagickDLLBuild
 
   // Compare two Coordinate objects regardless of LHS/RHS
-  extern MagickDLLDecl int operator == ( const Coordinate& left_,
-                                         const Coordinate& right_ );
-  extern MagickDLLDecl int operator != ( const Coordinate& left_,
-                                         const Coordinate& right_ );
-  extern MagickDLLDecl int operator >  ( const Coordinate& left_,
-                                         const Coordinate& right_ );
-  extern MagickDLLDecl int operator <  ( const Coordinate& left_,
-                                         const Coordinate& right_ );
-  extern MagickDLLDecl int operator >= ( const Coordinate& left_,
-                                         const Coordinate& right_ );
-  extern MagickDLLDecl int operator <= ( const Coordinate& left_,
-                                         const Coordinate& right_ );
+  MagickDLLDeclExtern int operator == ( const Coordinate& left_,
+                                        const Coordinate& right_ );
+  MagickDLLDeclExtern int operator != ( const Coordinate& left_,
+                                        const Coordinate& right_ );
+  MagickDLLDeclExtern int operator >  ( const Coordinate& left_,
+                                        const Coordinate& right_ );
+  MagickDLLDeclExtern int operator <  ( const Coordinate& left_,
+                                        const Coordinate& right_ );
+  MagickDLLDeclExtern int operator >= ( const Coordinate& left_,
+                                        const Coordinate& right_ );
+  MagickDLLDeclExtern int operator <= ( const Coordinate& left_,
+                                        const Coordinate& right_ );
 
   //
   // Base class for all drawable objects
@@ -153,20 +153,20 @@ namespace Magick
   };
 
   // Compare two Drawable objects regardless of LHS/RHS
-  extern MagickDLLDecl int operator == ( const Drawable& left_,
-                                         const Drawable& right_ );
-  extern MagickDLLDecl int operator != ( const Drawable& left_,
-                                         const Drawable& right_ );
-  extern MagickDLLDecl int operator >  ( const Drawable& left_,
-                                         const Drawable& right_ );
-  extern MagickDLLDecl int operator <  ( const Drawable& left_,
-                                         const Drawable& right_ );
-  extern MagickDLLDecl int operator >= ( const Drawable& left_,
-                                         const Drawable& right_ );
-  extern MagickDLLDecl int operator <= ( const Drawable& left_,
-                                         const Drawable& right_ );
+  MagickDLLDeclExtern int operator == ( const Drawable& left_,
+                                        const Drawable& right_ );
+  MagickDLLDeclExtern int operator != ( const Drawable& left_,
+                                        const Drawable& right_ );
+  MagickDLLDeclExtern int operator >  ( const Drawable& left_,
+                                        const Drawable& right_ );
+  MagickDLLDeclExtern int operator <  ( const Drawable& left_,
+                                        const Drawable& right_ );
+  MagickDLLDeclExtern int operator >= ( const Drawable& left_,
+                                        const Drawable& right_ );
+  MagickDLLDeclExtern int operator <= ( const Drawable& left_,
+                                        const Drawable& right_ );
 
-  typedef class std::list<Magick::Drawable> DrawableList;
+  typedef std::list<Magick::Drawable> DrawableList;
 
 #if defined(MagickDLLBuild)
   MagickDrawableExtern template class MagickDLLDecl
@@ -228,20 +228,20 @@ private:
 };
 
 // Compare two VPath objects regardless of LHS/RHS
-extern MagickDLLDecl int operator == ( const VPath& left_,
-                                       const VPath& right_ );
-extern MagickDLLDecl int operator != ( const VPath& left_,
-                                       const VPath& right_ );
-extern MagickDLLDecl int operator >  ( const VPath& left_,
-                                       const VPath& right_ );
-extern MagickDLLDecl int operator <  ( const VPath& left_,
-                                       const VPath& right_ );
-extern MagickDLLDecl int operator >= ( const VPath& left_,
-                                       const VPath& right_ );
-extern MagickDLLDecl int operator <= ( const VPath& left_,
-                                       const VPath& right_ );
+MagickDLLDeclExtern int operator == ( const VPath& left_,
+                                      const VPath& right_ );
+MagickDLLDeclExtern int operator != ( const VPath& left_,
+                                      const VPath& right_ );
+MagickDLLDeclExtern int operator >  ( const VPath& left_,
+                                      const VPath& right_ );
+MagickDLLDeclExtern int operator <  ( const VPath& left_,
+                                      const VPath& right_ );
+MagickDLLDeclExtern int operator >= ( const VPath& left_,
+                                      const VPath& right_ );
+MagickDLLDeclExtern int operator <= ( const VPath& left_,
+                                      const VPath& right_ );
 
-typedef class std::list<Magick::VPath> VPathList;
+typedef std::list<Magick::VPath> VPathList;
 
 #if defined(MagickDLLBuild)
 MagickDrawableExtern template class MagickDLLDecl std::list<Magick::VPath>;
@@ -2114,20 +2114,20 @@ private:
 };
 
 // Compare two PathArcArgs objects regardless of LHS/RHS
-extern MagickDLLDecl int operator == ( const PathArcArgs& left_,
-                                       const PathArcArgs& right_ );
-extern MagickDLLDecl int operator != ( const PathArcArgs& left_,
-                                       const PathArcArgs& right_ );
-extern MagickDLLDecl int operator >  ( const PathArcArgs& left_,
-                                       const PathArcArgs& right_ );
-extern MagickDLLDecl int operator <  ( const PathArcArgs& left_,
-                                       const PathArcArgs& right_ );
-extern MagickDLLDecl int operator >= ( const PathArcArgs& left_,
-                                       const PathArcArgs& right_ );
-extern MagickDLLDecl int operator <= ( const PathArcArgs& left_,
-                                       const PathArcArgs& right_ );
+MagickDLLDeclExtern int operator == ( const PathArcArgs& left_,
+                                      const PathArcArgs& right_ );
+MagickDLLDeclExtern int operator != ( const PathArcArgs& left_,
+                                      const PathArcArgs& right_ );
+MagickDLLDeclExtern int operator >  ( const PathArcArgs& left_,
+                                      const PathArcArgs& right_ );
+MagickDLLDeclExtern int operator <  ( const PathArcArgs& left_,
+                                      const PathArcArgs& right_ );
+MagickDLLDeclExtern int operator >= ( const PathArcArgs& left_,
+                                      const PathArcArgs& right_ );
+MagickDLLDeclExtern int operator <= ( const PathArcArgs& left_,
+                                      const PathArcArgs& right_ );
 
-typedef class std::list<Magick::PathArcArgs> PathArcArgsList;
+typedef std::list<Magick::PathArcArgs> PathArcArgsList;
 
 #if defined(MagickDLLBuild)
 MagickDrawableExtern template class MagickDLLDecl
@@ -2283,20 +2283,20 @@ double _y;
 };
 
 // Compare two PathCurvetoArgs objects regardless of LHS/RHS
-extern MagickDLLDecl int operator == ( const PathCurvetoArgs& left_,
-                                       const PathCurvetoArgs& right_ );
-extern MagickDLLDecl int operator != ( const PathCurvetoArgs& left_,
-                                       const PathCurvetoArgs& right_ );
-extern MagickDLLDecl int operator >  ( const PathCurvetoArgs& left_,
-                                       const PathCurvetoArgs& right_ );
-extern MagickDLLDecl int operator <  ( const PathCurvetoArgs& left_,
-                                       const PathCurvetoArgs& right_ );
-extern MagickDLLDecl int operator >= ( const PathCurvetoArgs& left_,
-                                       const PathCurvetoArgs& right_ );
-extern MagickDLLDecl int operator <= ( const PathCurvetoArgs& left_,
-                                       const PathCurvetoArgs& right_ );
+MagickDLLDeclExtern int operator == ( const PathCurvetoArgs& left_,
+                                      const PathCurvetoArgs& right_ );
+MagickDLLDeclExtern int operator != ( const PathCurvetoArgs& left_,
+                                      const PathCurvetoArgs& right_ );
+MagickDLLDeclExtern int operator >  ( const PathCurvetoArgs& left_,
+                                      const PathCurvetoArgs& right_ );
+MagickDLLDeclExtern int operator <  ( const PathCurvetoArgs& left_,
+                                      const PathCurvetoArgs& right_ );
+MagickDLLDeclExtern int operator >= ( const PathCurvetoArgs& left_,
+                                      const PathCurvetoArgs& right_ );
+MagickDLLDeclExtern int operator <= ( const PathCurvetoArgs& left_,
+                                      const PathCurvetoArgs& right_ );
 
-typedef class std::list<Magick::PathCurvetoArgs> PathCurveToArgsList;
+typedef std::list<Magick::PathCurvetoArgs> PathCurveToArgsList;
 
 #if defined(MagickDLLBuild)
 MagickDrawableExtern template class MagickDLLDecl
@@ -2459,20 +2459,20 @@ private:
 };
 
 // Compare two PathQuadraticCurvetoArgs objects regardless of LHS/RHS
-extern MagickDLLDecl int operator == ( const PathQuadraticCurvetoArgs& left_,
-                                       const PathQuadraticCurvetoArgs& right_ );
-extern MagickDLLDecl int operator != ( const PathQuadraticCurvetoArgs& left_,
-                                       const PathQuadraticCurvetoArgs& right_);
-extern MagickDLLDecl int operator >  ( const PathQuadraticCurvetoArgs& left_,
-                                       const PathQuadraticCurvetoArgs& right_);
-extern MagickDLLDecl int operator <  ( const PathQuadraticCurvetoArgs& left_,
-                                       const PathQuadraticCurvetoArgs& right_);
-extern MagickDLLDecl int operator >= ( const PathQuadraticCurvetoArgs& left_,
-                                       const PathQuadraticCurvetoArgs& right_ );
-extern MagickDLLDecl int operator <= ( const PathQuadraticCurvetoArgs& left_,
-                                       const PathQuadraticCurvetoArgs& right_ );
+MagickDLLDeclExtern int operator == ( const PathQuadraticCurvetoArgs& left_,
+                                      const PathQuadraticCurvetoArgs& right_ );
+MagickDLLDeclExtern int operator != ( const PathQuadraticCurvetoArgs& left_,
+                                      const PathQuadraticCurvetoArgs& right_);
+MagickDLLDeclExtern int operator >  ( const PathQuadraticCurvetoArgs& left_,
+                                      const PathQuadraticCurvetoArgs& right_);
+MagickDLLDeclExtern int operator <  ( const PathQuadraticCurvetoArgs& left_,
+                                      const PathQuadraticCurvetoArgs& right_);
+MagickDLLDeclExtern int operator >= ( const PathQuadraticCurvetoArgs& left_,
+                                      const PathQuadraticCurvetoArgs& right_ );
+MagickDLLDeclExtern int operator <= ( const PathQuadraticCurvetoArgs& left_,
+                                      const PathQuadraticCurvetoArgs& right_ );
 
-typedef class std::list<Magick::PathQuadraticCurvetoArgs> PathQuadraticCurvetoArgsList;
+typedef std::list<Magick::PathQuadraticCurvetoArgs> PathQuadraticCurvetoArgsList;
 
 #if defined(MagickDLLBuild)
 MagickDrawableExtern template class MagickDLLDecl std::list<Magick::PathQuadraticCurvetoArgs>;

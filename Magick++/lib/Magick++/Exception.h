@@ -177,12 +177,12 @@ namespace Magick
   //
 
   // Throw exception based on raw data
-  extern MagickDLLDecl void throwExceptionExplicit( const MagickLib::ExceptionType severity_,
+  MagickDLLDeclExtern void throwExceptionExplicit( const MagickLib::ExceptionType severity_,
                                                      const char* reason_,
                                                      const char* description_ = 0 );
 
   // Thow exception based on ImageMagick's ExceptionInfo
-  extern MagickDLLDecl void throwException( MagickLib::ExceptionInfo &exception_ );
+  MagickDLLDeclExtern void throwException( MagickLib::ExceptionInfo &exception_ );
 
 } // namespace Magick
 

@@ -205,7 +205,7 @@ namespace Magick
     // Contrast image (enhance intensity differences in image)
     void            contrast ( const unsigned int sharpen_ );
 
-    // Convolve image.  Applies a user-specfied convolution to the image.
+    // Convolve image.  Applies a user-specified convolution to the image.
     //  order_ represents the number of columns and rows in the filter kernel.
     //  kernel_ is an array of doubles representing the convolution kernel.
     void            convolve ( const unsigned int order_,
