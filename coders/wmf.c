@@ -2697,6 +2697,7 @@ ModuleExport void RegisterWMFImage(void)
   entry->decoder = ReadWMFImage;
   entry->description = AcquireString("Windows Meta File");
   entry->blob_support = True;
+  entry->seekable_stream=True;
   entry->module = AcquireString("WMF");
   (void) RegisterMagickInfo(entry);
 #endif /* HasWMF || HasWMFlite */

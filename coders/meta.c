@@ -910,13 +910,46 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         }
       else
         {
+#ifdef SLOW_METHOD
           for ( ; ; )
           {
+            /* Really - really slow - FIX ME PLEASE!!!! */
             c=ReadBlobByte(image);
             if (c == EOF)
               break;
             WriteBlobByte(buff,c);
           }
+#else
+#define MaxBufferSize  65541
+          char
+            *buffer;
+
+          ExtendedSignedIntegralType
+            count;
+
+          size_t
+            i,
+            length;
+
+          buffer=(char *) AcquireMemory(MaxBufferSize);
+          if (buffer != (char *) NULL)
+            {
+              i=0;
+              while ((length=ReadBlob(image,MaxBufferSize,buffer)) != 0)
+              {
+                count=0;
+                for (i=0; i < length; i+=count)
+                {
+                  count=WriteBlob(buff,length-i,buffer+i);
+                  if (count <= 0)
+                    break;
+                }
+                if (i < length)
+                  break;
+              }
+              LiberateMemory((void **) &buffer);
+            }
+#endif
         }
       image->generic_profile[i].info = buff->blob->data;
       image->generic_profile[i].length=GetBlobSize(buff);
@@ -1029,6 +1062,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
+  entry->seekable_stream=True;
   entry->description=AllocateString("Photoshop resource format");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
@@ -1038,6 +1072,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
+  entry->seekable_stream=True;
   entry->description=AllocateString("Photoshop resource format");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
@@ -1047,6 +1082,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
+  entry->seekable_stream=True;
   entry->description=AllocateString("Raw application information");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
@@ -1056,6 +1092,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
+  entry->seekable_stream=True;
   entry->description=AllocateString("Raw JPEG binary data");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
@@ -1064,6 +1101,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->decoder=(DecoderHandler) ReadMETAImage;
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->adjoin=False;
+  entry->seekable_stream=True;
   entry->description=AllocateString("ICC Color Profile");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
@@ -1072,6 +1110,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->decoder=(DecoderHandler) ReadMETAImage;
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->adjoin=False;
+  entry->seekable_stream=True;
   entry->description=AllocateString("ICC Color Profile");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
@@ -1081,6 +1120,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
+  entry->seekable_stream=True;
   entry->description=AllocateString("IPTC Newsphoto");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
@@ -1090,6 +1130,7 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=(EncoderHandler) WriteMETAImage;
   entry->magick=(MagickHandler) IsMETA;
   entry->adjoin=False;
+  entry->seekable_stream=True;
   entry->description=AllocateString("IPTC Newsphoto");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
@@ -1359,8 +1400,9 @@ static tag_spec tags[] = {
   { 115, (char *) "Source" },
   { 116, (char *) "Copyright String" },
   { 120, (char *) "Caption" },
-  { 121, (char *) "Local Caption" },
+  { 121, (char *) "Image Orientation" },
   { 122, (char *) "Caption Writer" },
+  { 131, (char *) "Local Caption" },
   { 200, (char *) "Custom Field 1" },
   { 201, (char *) "Custom Field 2" },
   { 202, (char *) "Custom Field 3" },

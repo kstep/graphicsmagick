@@ -1362,6 +1362,7 @@ ModuleExport void RegisterXCFImage(void)
   entry->magick=(MagickHandler) IsXCF;
   entry->description=AcquireString("GIMP image");
   entry->module=AcquireString("XCF");
+  entry->seekable_stream=True;
   (void) RegisterMagickInfo(entry);
 }
 

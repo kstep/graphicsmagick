@@ -904,6 +904,7 @@ ModuleExport void RegisterWPGImage(void)
   entry->magick=(MagickHandler) IsWPG;
   entry->description=AcquireString("Word Perfect Graphics");
   entry->module=AcquireString("WPG");
+  entry->seekable_stream=True;
   (void) RegisterMagickInfo(entry);
 }
 

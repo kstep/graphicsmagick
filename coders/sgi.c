@@ -627,6 +627,7 @@ ModuleExport void RegisterSGIImage(void)
   entry->magick=(MagickHandler) IsSGI;
   entry->description=AcquireString("Irix RGB image");
   entry->module=AcquireString("SGI");
+  entry->seekable_stream=True;
   (void) RegisterMagickInfo(entry);
 }
 
