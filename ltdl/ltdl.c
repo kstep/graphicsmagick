@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 */
 
 #if HAVE_CONFIG_H
-#  include <config.h>
+#  include <magick_config.h>
 #endif
 
 #if HAVE_UNISTD_H
@@ -541,13 +541,6 @@ argz_insert (pargz, pargz_len, before, entry)
   assert (pargz);
   assert (pargz_len);
   assert (entry && *entry);
-
-  /* Either PARGZ/PARGZ_LEN is empty and BEFORE is NULL,
-     or BEFORE points into an address within the ARGZ vector.  */
-#if 0  /* This assertion fails under Cygwin */
-  assert ((!*pargz && !*pargz_len && !before)
-	  || ((*pargz <= before) && (before < (*pargz + *pargz_len))));
-#endif
 
   /* No BEFORE address indicates ENTRY should be inserted after the
      current last element.  */

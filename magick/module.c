@@ -55,7 +55,7 @@
 */
 #include "studio.h"
 #if defined(HasLTDL)
-#  include "ltdl/ltdl.h"
+#  include "ltdl.h"
    typedef lt_dlhandle ModuleHandle;
 #else
    typedef void *ModuleHandle;

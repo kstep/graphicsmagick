@@ -185,3 +185,8 @@ maintainer-clean-local: distclean-local
 
 # Run tests on PerlMagick
 check-local: check-perl
+
+# Automatically reconfigure libtool
+LIBTOOL_DEPS = @LIBTOOL_DEPS@
+libtool: $(LIBTOOL_DEPS)
+	$(SHELL) ./config.status --recheck

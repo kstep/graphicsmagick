@@ -39,7 +39,7 @@ MICRO_VERSION=@MICRO_VERSION@
 
 BUILT_SOURCES = magick_config.h
 
-INCLUDES = -I$(top_srcdir)
+INCLUDES = -I$(top_srcdir) $(INCLTDL)
 
 ALLMANPAGES = Magick-config.1
 
@@ -70,7 +70,7 @@ endif
 # Library sources
 if WITH_MODULES
 libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
-libMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(top_builddir)/ltdl/libltdlc.la
+libMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(LIBLTDL)
 else
 libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
 libMagick_la_LIBADD = ../coders/libCoders.la @MAGICK_DEP_LIBS@

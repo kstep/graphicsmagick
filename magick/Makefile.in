@@ -142,11 +142,13 @@ INCLUDE_DIR = @INCLUDE_DIR@
 INFO_DIR = @INFO_DIR@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LD = @LD@
+LIBADD_DL = @LIBADD_DL@
 LIBEXEC_DIR = @LIBEXEC_DIR@
 LIBLTDL = @LIBLTDL@
 LIBRARY_EXTRA_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
 LIBSTDCLDFLAGS = @LIBSTDCLDFLAGS@
 LIBTOOL = @LIBTOOL@
+LIBTOOL_DEPS = @LIBTOOL_DEPS@
 LIB_BZLIB = @LIB_BZLIB@
 LIB_DIR = @LIB_DIR@
 LIB_DL = @LIB_DL@
@@ -244,7 +246,7 @@ lib_LTLIBRARIES = libMagick.la
 
 BUILT_SOURCES = magick_config.h
 
-INCLUDES = -I$(top_srcdir)
+INCLUDES = -I$(top_srcdir) $(INCLTDL)
 
 ALLMANPAGES = Magick-config.1
 
@@ -273,7 +275,7 @@ EXTRA_libMagick_la_SOURCES = nt.c
 # Library sources
 @WITH_MODULES_TRUE@libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
 @WITH_MODULES_FALSE@libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
-@WITH_MODULES_TRUE@libMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_TRUE@libMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(LIBLTDL)
 @WITH_MODULES_FALSE@libMagick_la_LIBADD = ../coders/libCoders.la @MAGICK_DEP_LIBS@
 
 # Binary scripts
@@ -314,8 +316,7 @@ CONFIG_HEADER = magick_config.h
 CONFIG_CLEAN_FILES = Magick-config
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
-@WITH_MODULES_TRUE@libMagick_la_DEPENDENCIES = \
-@WITH_MODULES_TRUE@	$(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_TRUE@libMagick_la_DEPENDENCIES =
 @WITH_MODULES_FALSE@libMagick_la_DEPENDENCIES = ../coders/libCoders.la
 am__objects_1 = memory.lo blob.lo cache.lo error.lo monitor.lo \
 	constitute.lo image.lo list.lo color.lo quantize.lo segment.lo \

@@ -142,11 +142,15 @@ INCLUDE_DIR = @INCLUDE_DIR@
 INFO_DIR = @INFO_DIR@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LD = @LD@
+LIBADD_DL = @LIBADD_DL@
 LIBEXEC_DIR = @LIBEXEC_DIR@
 LIBLTDL = @LIBLTDL@
 LIBRARY_EXTRA_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
 LIBSTDCLDFLAGS = @LIBSTDCLDFLAGS@
 LIBTOOL = @LIBTOOL@
+
+# Automatically reconfigure libtool
+LIBTOOL_DEPS = @LIBTOOL_DEPS@
 LIB_BZLIB = @LIB_BZLIB@
 LIB_DIR = @LIB_DIR@
 LIB_DL = @LIB_DL@
@@ -745,6 +749,8 @@ maintainer-clean-local: distclean-local
 
 # Run tests on PerlMagick
 check-local: check-perl
+libtool: $(LIBTOOL_DEPS)
+	$(SHELL) ./config.status --recheck
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -133,19 +133,25 @@ else
 fi
 
 #
-# Configure libtool and ltdl
+# Configure libtool & libltdl
 #
-AC_LIBTOOL_WIN32_DLL
-AC_DISABLE_SHARED
-AC_LIBLTDL_CONVENIENCE
+
+# Configure libltdl
+#AC_CONFIG_SUBDIRS(ltdl)
+AC_LIBLTDL_CONVENIENCE(ltdl)
+AC_LIB_LTDL
 # Substitute INCLTDL and LIBLTDL in the Makefiles
 AC_SUBST(INCLTDL)
 AC_SUBST(LIBLTDL)
-# Check for dlopen support
+
+# Configure libtool
+AC_DISABLE_SHARED
+AC_ENABLE_STATIC
+AC_LIBTOOL_WIN32_DLL
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_SETUP
-# Configure libtool
 AC_PROG_LIBTOOL
+AC_SUBST(LIBTOOL_DEPS)
 
 # Check to see if building shared libraries
 libtool_build_shared_libs='no'
@@ -173,8 +179,6 @@ then
   with_modules='no'
 fi
 AM_CONDITIONAL(WITH_MODULES, test "$with_modules" != 'no')
-# Configure libltdl
-AC_CONFIG_SUBDIRS(ltdl)
 if test "$with_modules" != 'no'
 then
   AC_DEFINE(HasLTDL,,Define if using libltdl to create dynamically loadable modules)
@@ -191,8 +195,9 @@ then
     MagickModulesPath=`$WinPathScript "$MagickModulesPath" 1`
   fi
   AC_DEFINE_UNQUOTED(MagickModulesPath,"$MagickModulesPath",Location of coder modules)
-fi
 
+
+fi
 
 # Enable build using delegate libraries built in subdirectories rather than installed
 # delegate libraries (bzlib fpx hdf jasper jbig jpeg lcms mpeg2 png tiff ttf wmf xml zlib)
@@ -415,7 +420,7 @@ AC_ARG_WITH(wmf,
 
 # Set default font search path
 AC_ARG_WITH(fontpath,
-              [  --with-fontpath         prepend to default font search path],
+              [  --with-fontpath=DIR     prepend to default font search path],
               [with_fontpath=$withval],
               [with_fontpath=''])
 if test "$with_fontpath" != "yes" && test -z "$with_fontpath"
@@ -427,13 +432,14 @@ fi
 
 # Set Ghostscript font directory
 AC_ARG_WITH(gs-font-dir,
-	      [  --with-gs-font-dir      directory containing Ghostscript fonts],
+	      [  --with-gs-font-dir=DIR  directory containing Ghostscript fonts],
 	      [with_gs_font_dir=$withval],
 	      [with_gs_font_dir='default'])
 
 # Set Windows font directory
 AC_ARG_WITH(windows-font-dir,
-	      [  --with-windows-font-dir directory containing MS-Windows fonts],
+	      [  --with-windows-font-dir=DIR
+                          directory containing MS-Windows fonts],
 	      [with_windows_font_dir=$withval],
 	      [with_windows_font_dir=''])
 
@@ -2098,6 +2104,7 @@ AC_SUBST(X_CFLAGS)
 AC_OUTPUT(Makefile magick/Makefile coders/delegates.mgk coders/Makefile \
   utilities/Makefile tests/Makefile coders/type.mgk \
   coders/type-ghostscript.mgk coders/type-windows.mgk coders/type-solaris.mgk \
+  ltdl/Makefile \
   magick/Magick-config Magick++/bin/Makefile Magick++/bin/Magick++-config \
   Magick++/Makefile Magick++/lib/Makefile Magick++/lib/Magick++/Makefile  \
   Magick++/demo/Makefile Magick++/tests/Makefile PerlMagick/Makefile.PL)

@@ -13,6 +13,35 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
+#  Makefile for building ImageMagick library
+#
+# Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated
+# to making software imaging solutions freely available.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files ("ImageMagick"),
+# to deal in ImageMagick without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense
+# and/or sell copies of ImageMagick, and to permit persons to whom the
+# ImageMagick is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of ImageMagick.
+#
+# The software is provided "as is", without warranty of any kind, express or
+# implied, including but not limited to the warranties of merchantability,
+# fitness for a particular purpose and noninfringement.  In no event shall
+# ImageMagick Studio be liable for any claim, damages or other liability,
+# whether in an action of contract, tort or otherwise, arising from, out of
+# or in connection with ImageMagick or the use or other dealings in
+# ImageMagick.
+#
+# Except as contained in this notice, the name of the ImageMagick Studio
+# shall not be used in advertising or otherwise to promote the sale, use or
+# other dealings in ImageMagick without prior written authorization from the
+# ImageMagick Studio.
+#
 SHELL = @SHELL@
 
 srcdir = @srcdir@
@@ -36,7 +65,7 @@ oldincludedir = /usr/include
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
-top_builddir = .
+top_builddir = ..
 
 ACLOCAL = @ACLOCAL@
 AUTOCONF = @AUTOCONF@
@@ -59,8 +88,12 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+build_alias = @build_alias@
+build_triplet = @build@
 host_alias = @host_alias@
 host_triplet = @host@
+target_alias = @target_alias@
+target_triplet = @target@
 
 EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
@@ -68,32 +101,143 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 AMTAR = @AMTAR@
 AS = @AS@
 AWK = @AWK@
+AutotraceDecodeDelegate = @AutotraceDecodeDelegate@
+BIN_DIR = @BIN_DIR@
+BZIPDelegate = @BZIPDelegate@
+BrowseDelegate = @BrowseDelegate@
 CC = @CC@
+CCMALLOCDelegate = @CCMALLOCDelegate@
+CGMDecodeDelegate = @CGMDecodeDelegate@
+CPP = @CPP@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
+CatDelegate = @CatDelegate@
+ConvertDelegate = @ConvertDelegate@
+DATA_DIR = @DATA_DIR@
+DELEGATES = @DELEGATES@
 DEPDIR = @DEPDIR@
+DLLDFLAGS = @DLLDFLAGS@
 DLLTOOL = @DLLTOOL@
+DOTDecodeDelegate = @DOTDecodeDelegate@
+DVIDecodeDelegate = @DVIDecodeDelegate@
 ECHO = @ECHO@
+EXEC_PREFIX_DIR = @EXEC_PREFIX_DIR@
+EchoDelegate = @EchoDelegate@
+EditorDelegate = @EditorDelegate@
+FIGDecodeDelegate = @FIGDecodeDelegate@
 GCJ = @GCJ@
 GCJFLAGS = @GCJFLAGS@
+GSColorDevice = @GSColorDevice@
+GSEPSDevice = @GSEPSDevice@
+GSMonoDevice = @GSMonoDevice@
+GSPDFDevice = @GSPDFDevice@
+GSPSDevice = @GSPSDevice@
+GnuplotDecodeDelegate = @GnuplotDecodeDelegate@
+HPGLDecodeDelegate = @HPGLDecodeDelegate@
+HTMLDecodeDelegate = @HTMLDecodeDelegate@
+ILBMDecodeDelegate = @ILBMDecodeDelegate@
+ILBMEncodeDelegate = @ILBMEncodeDelegate@
 INCLTDL = @INCLTDL@
+INCLUDE_DIR = @INCLUDE_DIR@
+INFO_DIR = @INFO_DIR@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+LD = @LD@
 LIBADD_DL = @LIBADD_DL@
+LIBEXEC_DIR = @LIBEXEC_DIR@
 LIBLTDL = @LIBLTDL@
+LIBRARY_EXTRA_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
+LIBSTDCLDFLAGS = @LIBSTDCLDFLAGS@
 LIBTOOL = @LIBTOOL@
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
+LIB_BZLIB = @LIB_BZLIB@
+LIB_DIR = @LIB_DIR@
+LIB_DL = @LIB_DL@
+LIB_DPS = @LIB_DPS@
+LIB_FPX = @LIB_FPX@
+LIB_GDI32 = @LIB_GDI32@
+LIB_GS = @LIB_GS@
+LIB_HDF = @LIB_HDF@
+LIB_JBIG = @LIB_JBIG@
+LIB_JP2 = @LIB_JP2@
+LIB_JPEG = @LIB_JPEG@
+LIB_LCMS = @LIB_LCMS@
+LIB_LF = @LIB_LF@
+LIB_MATH = @LIB_MATH@
+LIB_MPEG2 = @LIB_MPEG2@
+LIB_PNG = @LIB_PNG@
+LIB_THREAD = @LIB_THREAD@
+LIB_TIFF = @LIB_TIFF@
+LIB_TTF = @LIB_TTF@
+LIB_WMF = @LIB_WMF@
+LIB_WMF_DEPS = @LIB_WMF_DEPS@
+LIB_X11 = @LIB_X11@
+LIB_XEXT = @LIB_XEXT@
+LIB_XML = @LIB_XML@
+LIB_XT = @LIB_XT@
+LIB_ZLIB = @LIB_ZLIB@
 LN_S = @LN_S@
+LOCALSTATE_DIR = @LOCALSTATE_DIR@
+LPDelegate = @LPDelegate@
+LPRDelegate = @LPRDelegate@
+LZWDecodeDelegate = @LZWDecodeDelegate@
+LZWEncodeDelegate = @LZWEncodeDelegate@
+LaunchDelegate = @LaunchDelegate@
+MAGICKLIB = @MAGICKLIB@
+MAGICK_DEP_LIBS = @MAGICK_DEP_LIBS@
+MAINT = @MAINT@
+MAJOR_VERSION = @MAJOR_VERSION@
+MANDelegate = @MANDelegate@
+MAN_DIR = @MAN_DIR@
+MICRO_VERSION = @MICRO_VERSION@
+MINOR_VERSION = @MINOR_VERSION@
+MODULE_EXTRA_CPPFLAGS = @MODULE_EXTRA_CPPFLAGS@
+MPEGDecodeDelegate = @MPEGDecodeDelegate@
+MPEGEncodeDelegate = @MPEGEncodeDelegate@
+MVDelegate = @MVDelegate@
+MagickSharePath = @MagickSharePath@
+MogrifyDelegate = @MogrifyDelegate@
 OBJDUMP = @OBJDUMP@
+OLDINCLUDE_DIR = @OLDINCLUDE_DIR@
 PACKAGE = @PACKAGE@
+PERL = @PERL@
+PERL_MAKE_OPTIONS = @PERL_MAKE_OPTIONS@
+PGPDecodeDelegate = @PGPDecodeDelegate@
+POVDelegate = @POVDelegate@
+PREFIX_DIR = @PREFIX_DIR@
+PSDelegate = @PSDelegate@
+PrintDelegate = @PrintDelegate@
+RADDecodeDelegate = @RADDecodeDelegate@
 RANLIB = @RANLIB@
 RC = @RC@
+RLEEncodeDelegate = @RLEEncodeDelegate@
+RMDelegate = @RMDelegate@
+SBIN_DIR = @SBIN_DIR@
+SCANDecodeDelegate = @SCANDecodeDelegate@
+SHAREDSTATE_DIR = @SHAREDSTATE_DIR@
 STRIP = @STRIP@
+SYSCONF_DIR = @SYSCONF_DIR@
+ShowImageDelegate = @ShowImageDelegate@
+TXT2HTML = @TXT2HTML@
+TXTDelegate = @TXTDelegate@
 VERSION = @VERSION@
+WMFDecodeDelegate = @WMFDecodeDelegate@
+WWWDecodeDelegate = @WWWDecodeDelegate@
+WinPathScript = @WinPathScript@
+X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_LIBS = @X_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
+ZipDelegate = @ZipDelegate@
 am__include = @am__include@
 am__quote = @am__quote@
+freetype_config = @freetype_config@
+ghostscript_font_dir = @ghostscript_font_dir@
 install_sh = @install_sh@
+type_include_files = @type_include_files@
+windows_font_dir = @windows_font_dir@
+xml2_config = @xml2_config@
 
-AUTOMAKE_OPTIONS = no-dependencies foreign
+AUTOMAKE_OPTIONS = 1.6.2 no-dependencies foreign
 
 @INSTALL_LTDL_TRUE@include_HEADERS = ltdl.h
 @INSTALL_LTDL_TRUE@lib_LTLIBRARIES = libltdl.la
@@ -109,10 +253,9 @@ libltdl_la_LIBADD = $(LIBADD_DL)
 
 libltdlc_la_SOURCES = ltdl.c
 libltdlc_la_LIBADD = $(LIBADD_DL)
-subdir = .
-ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-mkinstalldirs = $(SHELL) $(top_srcdir)/../mkinstalldirs
-CONFIG_HEADER = config.h
+subdir = ltdl
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
 
@@ -125,7 +268,7 @@ am_libltdlc_la_OBJECTS = ltdl.lo
 libltdlc_la_OBJECTS = $(am_libltdlc_la_OBJECTS)
 
 DEFS = @DEFS@
-DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
@@ -142,49 +285,19 @@ CFLAGS = @CFLAGS@
 DIST_SOURCES = $(libltdl_la_SOURCES) $(libltdlc_la_SOURCES)
 HEADERS = $(include_HEADERS) $(noinst_HEADERS)
 
-DIST_COMMON = README $(include_HEADERS) $(noinst_HEADERS) \
-	../config.guess ../config.sub ../install-sh ../ltmain.sh \
-	../missing ../mkinstalldirs COPYING.LIB Makefile.am Makefile.in \
-	acinclude.m4 aclocal.m4 config-h.in configure configure.ac
+DIST_COMMON = README $(include_HEADERS) $(noinst_HEADERS) COPYING.LIB \
+	Makefile.am Makefile.in
 SOURCES = $(libltdl_la_SOURCES) $(libltdlc_la_SOURCES)
 
-all: config.h
-	$(MAKE) $(AM_MAKEFLAGS) all-am
+all: all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
-
-am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log
-$(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  Makefile
-Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
-	cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe)
-
-$(top_builddir)/config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
-	$(SHELL) ./config.status --recheck
-$(srcdir)/configure:  $(srcdir)/configure.ac $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
-	cd $(srcdir) && $(AUTOCONF)
-
-$(ACLOCAL_M4):  configure.ac acinclude.m4
-	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
-
-config.h: stamp-h1
-	@if test ! -f $@; then \
-	  rm -f stamp-h1; \
-	  $(MAKE) stamp-h1; \
-	else :; fi
-
-stamp-h1: $(srcdir)/config-h.in $(top_builddir)/config.status
-	@rm -f stamp-h1
-	cd $(top_builddir) && $(SHELL) ./config.status config.h
-
-$(srcdir)/config-h.in:  $(top_srcdir)/configure.ac $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOHEADER)
-	touch $(srcdir)/config-h.in
-
-distclean-hdr:
-	-rm -f config.h stamp-h1
+	  $(AUTOMAKE) --foreign  ltdl/Makefile
+Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
 libLTLIBRARIES_INSTALL = $(INSTALL)
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
@@ -284,11 +397,11 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	       END { for (i in files) print i; }'`; \
 	mkid -fID $$unique
 
-TAGS:  $(HEADERS) $(SOURCES) config-h.in $(TAGS_DEPENDENCIES) \
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SOURCES) $(HEADERS) config-h.in $(LISP) $(TAGS_FILES)'; \
+	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
 	  done | \
@@ -307,21 +420,10 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
-top_distdir = .
-distdir = $(PACKAGE)-$(VERSION)
-
-am__remove_distdir = \
-  { test ! -d $(distdir) \
-    || { find $(distdir) -type d ! -perm -200 -exec chmod u+w {} ';' \
-         && rm -fr $(distdir); }; }
-
-GZIP_ENV = --best
-distcleancheck_listfiles = find . -type f -print
+top_distdir = ..
+distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
-	$(am__remove_distdir)
-	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/..
 	@list='$(DISTFILES)'; for file in $$list; do \
 	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
@@ -342,61 +444,9 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
-	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
-	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
-	  ! -type d ! -perm -444 -exec $(SHELL) $(install_sh) -c -m a+r {} {} \; \
-	|| chmod -R a+r $(distdir)
-dist-gzip: distdir
-	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
-	$(am__remove_distdir)
-
-dist dist-all: distdir
-	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
-	$(am__remove_distdir)
-
-# This target untars the dist file and tries a VPATH configuration.  Then
-# it guarantees that the distribution is self-contained by making another
-# tarfile.
-distcheck: dist
-	$(am__remove_distdir)
-	GZIP=$(GZIP_ENV) gunzip -c $(distdir).tar.gz | $(AMTAR) xf -
-	chmod -R a-w $(distdir); chmod a+w $(distdir)
-	mkdir $(distdir)/=build
-	mkdir $(distdir)/=inst
-	chmod a-w $(distdir)
-	dc_install_base=`$(am__cd) $(distdir)/=inst && pwd` \
-	  && cd $(distdir)/=build \
-	  && ../configure --srcdir=.. --prefix=$$dc_install_base \
-	    $(DISTCHECK_CONFIGURE_FLAGS) \
-	  && $(MAKE) $(AM_MAKEFLAGS) \
-	  && $(MAKE) $(AM_MAKEFLAGS) dvi \
-	  && $(MAKE) $(AM_MAKEFLAGS) check \
-	  && $(MAKE) $(AM_MAKEFLAGS) install \
-	  && $(MAKE) $(AM_MAKEFLAGS) installcheck \
-	  && $(MAKE) $(AM_MAKEFLAGS) uninstall \
-	  && (test `find $$dc_install_base -type f -print | wc -l` -le 1 \
-	      || { echo "ERROR: files left after uninstall:" ; \
-	           find $$dc_install_base -type f -print ; \
-	           exit 1; } >&2 ) \
-	  && $(MAKE) $(AM_MAKEFLAGS) dist-gzip \
-	  && rm -f $(distdir).tar.gz \
-	  && $(MAKE) $(AM_MAKEFLAGS) distcleancheck
-	$(am__remove_distdir)
-	@echo "$(distdir).tar.gz is ready for distribution" | \
-	  sed 'h;s/./=/g;p;x;p;x'
-distcleancheck: distclean
-	if test '$(srcdir)' = . ; then \
-	  echo "ERROR: distcleancheck can only run from a VPATH build" ; \
-	  exit 1 ; \
-	fi
-	test `$(distcleancheck_listfiles) | wc -l` -eq 0 \
-	  || { echo "ERROR: files left after distclean:" ; \
-	       $(distcleancheck_listfiles) ; \
-	       exit 1; } >&2
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(HEADERS) config.h
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 
 installdirs:
 	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(includedir)
@@ -432,8 +482,8 @@ clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
 	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
-	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-distclean-am: clean-am distclean-compile distclean-generic distclean-hdr \
+
+distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-libtool distclean-tags
 
 dvi: dvi-am
@@ -455,8 +505,7 @@ install-man:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-	-rm -rf autom4te.cache
+
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
 mostlyclean: mostlyclean-am
@@ -468,11 +517,10 @@ uninstall-am: uninstall-includeHEADERS uninstall-info-am \
 	uninstall-libLTLIBRARIES
 
 .PHONY: GTAGS all all-am check check-am clean clean-generic \
-	clean-libLTLIBRARIES clean-libtool clean-noinstLTLIBRARIES dist \
-	dist-all dist-gzip distcheck distclean distclean-compile \
-	distclean-generic distclean-hdr distclean-libtool \
-	distclean-tags distcleancheck distdir dvi dvi-am info info-am \
-	install install-am install-data install-data-am install-exec \
+	clean-libLTLIBRARIES clean-libtool clean-noinstLTLIBRARIES \
+	distclean distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am info info-am install \
+	install-am install-data install-data-am install-exec \
 	install-exec-am install-includeHEADERS install-info \
 	install-info-am install-libLTLIBRARIES install-man \
 	install-strip installcheck installcheck-am installdirs \
@@ -481,25 +529,6 @@ uninstall-am: uninstall-includeHEADERS uninstall-info-am \
 	tags uninstall uninstall-am uninstall-includeHEADERS \
 	uninstall-info-am uninstall-libLTLIBRARIES
 
-
-ltdl.lo: ltdl.h config.h
-
-$(libltdl_la_OBJECTS) $(libltdlc_la_OBJECTS): libtool
-libtool: $(LIBTOOL_DEPS)
-	$(SHELL) ./config.status --recheck
-
-local-install-files: $(DISTFILES)
-	-rm -rf $(DESTDIR)$(datadir)/libtool/libltdl
-	$(mkinstalldirs) $(DESTDIR)$(datadir)/libtool/libltdl
-	@for file in $(DISTFILES); do \
-	  d=$(srcdir); \
-	  if test -d $$d/$$file; then \
-	    cp -r $$d/$$file $(DESTDIR)$(datadir)/libtool/libltdl/$$file; \
-	  else \
-	    test -f $(DESTDIR)$(datadir)/libtool/libltdl/$$file \
-	    || cp $$d/$$file $(DESTDIR)$(datadir)/libtool/libltdl/$$file || :; \
-	  fi; \
-	done
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
