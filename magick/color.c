@@ -489,7 +489,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 %
 %  The format of the GetColorList function is:
 %
-%      filelist=GetColorList(const char *pattern,int number_colors)
+%      filelist=GetColorList(const char *pattern,unsigned long *number_colors)
 %
 %  A description of each parameter follows:
 %
@@ -502,7 +502,8 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 %
 %
 */
-MagickExport char **GetColorList(const char *pattern,int *number_colors)
+MagickExport char **GetColorList(const char *pattern,
+  unsigned long *number_colors)
 {
   char
     **colorlist;
@@ -535,8 +536,12 @@ MagickExport char **GetColorList(const char *pattern,int *number_colors)
     return((char **) NULL);
   i=0;
   for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
+	{
+	  if (p->stealth)
+	    continue;
     if (GlobExpression(p->name,pattern))
       colorlist[i++]=AllocateString(p->name);
+	}
   *number_colors=i;
   return(colorlist);
 }

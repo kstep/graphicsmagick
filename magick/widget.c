@@ -1553,7 +1553,6 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
     text[MaxTextExtent];
 
   int
-    colors,
     height,
     status,
     text_width,
@@ -1574,6 +1573,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
     visible_colors;
 
   unsigned long
+    colors,
     delay,
     state;
 

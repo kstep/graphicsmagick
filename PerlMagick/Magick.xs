@@ -6835,33 +6835,19 @@ QueryColor(ref,...)
     GetExceptionInfo(&exception);
     if (items == 1)
       {
-        register volatile const ColorInfo
-          *p;
+        char
+          **colorlist;
 
-        volatile const ColorInfo
-          *color_info;
+        unsigned long
+          colors;
 
-        color_info=GetColorInfo("*",&exception);
-        if (color_info == (const ColorInfo *) NULL)
-          {
-            PUSHs(&sv_undef);
-            goto MethodException;
-          }
-        i=0;
-        for (p=color_info; p != (ColorInfo *) NULL; p=p->next)
-          i++;
-        EXTEND(sp,i);
-        for (p=color_info; p != (ColorInfo *) NULL; p=p->next)
+        colorlist=GetColorList("*",&colors);
+        for (i=0; i < colors; i++)
         {
-          if (p->stealth)
-            continue;
-          if (p->name == (char *) NULL)
-            {
-              PUSHs(&sv_undef);
-              continue;
-            }
-          PUSHs(sv_2mortal(newSVpv(p->name,0)));
+          PUSHs(sv_2mortal(newSVpv(colorlist[i],0)));
+          LiberateMemory((void **) &colorlist[i]);
         }
+        LiberateMemory((void **) &colorlist);
         goto MethodException;
       }
     EXTEND(sp,4*items);
