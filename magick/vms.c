@@ -56,6 +56,7 @@
   Include declarations.
 */
 #include "studio.h"
+#include "utility.h"
 #include "vms.h"
 
 #if !defined(_AXP_) && (!defined(__VMS_VER) || (__VMS_VER < 70000000))

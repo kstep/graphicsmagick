@@ -13,7 +13,6 @@ extern "C" {
 #  include <starlet.h>
 #endif
 
-#include <unistd.h>
 #include <errno.h>
 #include <descrip.h>
 #include <rmsdef.h>
