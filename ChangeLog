@@ -1,3 +1,6 @@
+2002-12-01  Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
+	* www/formats.html: Add JNG and fix libpng links.
+
 2002-12-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* ChangeLog: Updated this ChangeLog to use the format prescribed
 	by the GNU coding standards.
