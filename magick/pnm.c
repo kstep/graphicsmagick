@@ -99,7 +99,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
   */
   do
   {
-    c=fgetc(image->file);
+    c=ReadByte(image);
     if (c == EOF)
       return(0);
     if (c == '#')
@@ -139,7 +139,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
                   break;
                 p=image->comments+Extent(image->comments);
               }
-            c=fgetc(image->file);
+            c=ReadByte(image);
             *p=(char) c;
             *(p+1)='\0';
           }
@@ -164,7 +164,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
   {
     value*=10;
     value+=c-'0';
-    c=fgetc(image->file);
+    c=ReadByte(image);
     if (c == EOF)
       return(0);
   }
@@ -226,7 +226,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
   /*
     Read PNM image.
   */
-  status=ReadData((char *) &format,1,1,image->file);
+  status=ReadBlob(image,1,1,(char *) &format);
   do
   {
     /*
@@ -237,7 +237,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
     /*
       Initialize image structure.
     */
-    format=fgetc(image->file);
+    format=ReadByte(image);
     if (format == '7')
       (void) PNMInteger(image,10);
     image->columns=PNMInteger(image,10);
@@ -429,7 +429,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
           for (x=0; x < (int) image->columns; x++)
           {
             if (bit == 0)
-              byte=fgetc(image->file);
+              byte=ReadByte(image);
             index=(byte & 0x80) ? 0 : 1;
             if ((index == q->index) && ((int) q->length < MaxRunlength))
               q->length++;
@@ -463,9 +463,9 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
           for (x=0; x < (int) image->columns; x++)
           {
             if (max_value <= MaxRawValue)
-              index=fgetc(image->file);
+              index=ReadByte(image);
             else
-              index=LSBFirstReadShort(image->file);
+              index=LSBFirstReadShort(image);
             if (index > max_value)
               index=max_value;
             if ((index == q->index) && ((int) q->length < MaxRunlength))
@@ -496,15 +496,15 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
           {
             if (max_value <= MaxRawValue)
               {
-                red=fgetc(image->file);
-                green=fgetc(image->file);
-                blue=fgetc(image->file);
+                red=ReadByte(image);
+                green=ReadByte(image);
+                blue=ReadByte(image);
               }
             else
               {
-                red=LSBFirstReadShort(image->file);
-                green=LSBFirstReadShort(image->file);
-                blue=LSBFirstReadShort(image->file);
+                red=LSBFirstReadShort(image);
+                green=LSBFirstReadShort(image);
+                blue=LSBFirstReadShort(image);
               }
             if (scale != (Quantum *) NULL)
               {
@@ -557,11 +557,11 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
         /*
           Skip to end of line.
         */
-        status=ReadData(&format,1,1,image->file);
+        status=ReadBlob(image,1,1,&format);
         if (status == False)
           break;
       } while (format != '\n');
-    status=ReadData((char *) &format,1,1,image->file);
+    status=ReadBlob(image,1,1,(char *) &format);
     if ((status == True) && (format == 'P'))
       {
         /*
@@ -574,7 +574,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
   } while ((status == True) && (format == 'P'));
@@ -619,6 +619,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 #define MaxRawValue  255
 
   char
+    buffer[MaxTextExtent],
     *magick;
 
   int
@@ -716,10 +717,11 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     if (Latin1Compare(magick,"P7") == 0)
       {
         format='7';
-        (void) fprintf(image->file,"P7 332\n");
+        (void) strcpy(buffer,"P7 332\n");
       }
     else
-      (void) fprintf(image->file,"P%c\n",format);
+      (void) sprintf(buffer,"P%c\n",format);
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     if (image->comments != (char *) NULL)
       {
         register char
@@ -728,17 +730,20 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Write comments to file.
         */
-        (void) fprintf(image->file,"#");
+        (void) WriteByte(image,'#');
         for (p=image->comments; *p != '\0'; p++)
         {
-          (void) fputc(*p,image->file);
+          (void) WriteByte(image,*p);
           if ((*p == '\n') && (*(p+1) != '\0'))
-            (void) fprintf(image->file,"#");
+            (void) WriteByte(image,'#');
         }
-        (void) fputc('\n',image->file);
+        (void) WriteByte(image,'\n');
       }
     if (format != '7')
-      (void) fprintf(image->file,"%u %u\n",image->columns,image->rows);
+      {
+        (void) sprintf(buffer,"%u %u\n",image->columns,image->rows);
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+      }
     /*
       Convert runlength encoded to PNM raster pixels.
     */
@@ -763,11 +768,12 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
-            (void) fprintf(image->file,"%d ",(int) (p->index == polarity));
+            (void) sprintf(buffer,"%d ",(int) (p->index == polarity));
+            (void) WriteBlob(image,1,strlen(buffer),buffer);
             x++;
             if (x == 36)
               {
-                (void) fprintf(image->file,"\n");
+                (void) WriteByte(image,'\n');
                 x=0;
               }
           }
@@ -783,17 +789,19 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        (void) fprintf(image->file,"%d\n",MaxRGB);
+        (void) sprintf(buffer,"%d\n",MaxRGB);
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
         for (i=0; i < (int) image->packets; i++)
         {
           index=DownScale(Intensity(*p));
           for (j=0; j <= ((int) p->length); j++)
           {
-            (void) fprintf(image->file,"%d ",index);
+            (void) sprintf(buffer,"%d ",index);
+            (void) WriteBlob(image,1,strlen(buffer),buffer);
             x++;
             if (x == 12)
               {
-                (void) fprintf(image->file,"\n");
+                (void) WriteByte(image,'\n');
                 x=0;
               }
           }
@@ -809,16 +817,18 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        (void) fprintf(image->file,"%d\n",MaxRGB);
+        (void) sprintf(buffer,"%d\n",MaxRGB);
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
         for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
-            (void) fprintf(image->file,"%d %d %d ",p->red,p->green,p->blue);
+            (void) sprintf(buffer,"%d %d %d ",p->red,p->green,p->blue);
+            (void) WriteBlob(image,1,strlen(buffer),buffer);
             x++;
             if (x == 4)
               {
-                (void) fprintf(image->file,"\n");
+                (void) WriteByte(image,'\n');
                 x=0;
               }
           }
@@ -855,7 +865,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             bit++;
             if (bit == 8)
               {
-                (void) fputc(byte,image->file);
+                (void) WriteByte(image,byte);
                 bit=0;
                 byte=0;
               }
@@ -866,7 +876,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
                   Advance to the next scanline.
                 */
                 if (bit != 0)
-                  (void) fputc(byte << (8-bit),image->file);
+                  (void) WriteByte(image,byte << (8-bit));
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     ProgressMonitor(SaveImageText,y,image->rows);
@@ -885,12 +895,13 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        (void) fprintf(image->file,"%lu\n",DownScale(MaxRGB));
+        (void) sprintf(buffer,"%lu\n",DownScale(MaxRGB));
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
         for (i=0; i < (int) image->packets; i++)
         {
           index=DownScale(Intensity(*p));
           for (j=0; j <= ((int) p->length); j++)
-            (void) fputc(index,image->file);
+            (void) WriteByte(image,index);
           p++;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(i,image->packets))
@@ -916,7 +927,8 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        (void) fprintf(image->file,"%lu\n",DownScale(MaxRGB));
+        (void) sprintf(buffer,"%lu\n",DownScale(MaxRGB));
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
         q=pixels;
         for (i=0; i < (int) image->packets; i++)
         {
@@ -928,7 +940,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             x++;
             if (x == (int) image->columns)
               {
-                (void) fwrite((char *) pixels,1,q-pixels,image->file);
+                (void) WriteBlob(image,1,q-pixels,(char *) pixels);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     ProgressMonitor(SaveImageText,y,image->rows);
@@ -1021,9 +1033,10 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a P7 image.
         */
-        (void) fprintf(image->file,"#END_OF_COMMENTS\n");
-        (void) fprintf(image->file,"%u %u %d\n",image->columns,image->rows,
-          MaxRGB);
+        (void) strcpy(buffer,"#END_OF_COMMENTS\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) sprintf(buffer,"%u %u %d\n",image->columns,image->rows,MaxRGB);
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
         i=0;
         j=0;
         p=image->pixels;

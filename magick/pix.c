@@ -118,11 +118,11 @@ Export Image *ReadPIXImage(const ImageInfo *image_info)
   /*
     Read PIX image.
   */
-  width=MSBFirstReadShort(image->file);
-  height=MSBFirstReadShort(image->file);
-  (void) MSBFirstReadShort(image->file);  /* x-offset */
-  (void) MSBFirstReadShort(image->file);  /* y-offset */
-  bits_per_pixel=MSBFirstReadShort(image->file);
+  width=MSBFirstReadShort(image);
+  height=MSBFirstReadShort(image);
+  (void) MSBFirstReadShort(image);  /* x-offset */
+  (void) MSBFirstReadShort(image);  /* y-offset */
+  bits_per_pixel=MSBFirstReadShort(image);
   if ((width == (unsigned long) ~0) || (height == (unsigned long) ~0) ||
       ((bits_per_pixel != 8) && (bits_per_pixel != 24)))
     ReaderExit(CorruptImageWarning,"Not a PIX image file",image);
@@ -171,16 +171,16 @@ Export Image *ReadPIXImage(const ImageInfo *image_info)
     q=image->pixels;
     do
     {
-      q->length=fgetc(image->file);
+      q->length=ReadByte(image);
       if (q->length == 0)
         continue;
       if (bits_per_pixel == 8)
-        q->index=UpScale(fgetc(image->file));
+        q->index=UpScale(ReadByte(image));
       else
         {
-          q->blue=UpScale(fgetc(image->file));
-          q->green=UpScale(fgetc(image->file));
-          q->red=UpScale(fgetc(image->file));
+          q->blue=UpScale(ReadByte(image));
+          q->green=UpScale(ReadByte(image));
+          q->red=UpScale(ReadByte(image));
           q->index=0;
         }
       number_pixels+=q->length;
@@ -198,11 +198,11 @@ Export Image *ReadPIXImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    width=MSBFirstReadLong(image->file);
-    height=MSBFirstReadLong(image->file);
-    (void) MSBFirstReadShort(image->file);
-    (void) MSBFirstReadShort(image->file);
-    bits_per_pixel=MSBFirstReadShort(image->file);
+    width=MSBFirstReadLong(image);
+    height=MSBFirstReadLong(image);
+    (void) MSBFirstReadShort(image);
+    (void) MSBFirstReadShort(image);
+    bits_per_pixel=MSBFirstReadShort(image);
     status=(width != (unsigned long) ~0) && (height == (unsigned long) ~0) &&
       ((bits_per_pixel == 8) || (bits_per_pixel == 24));
     if (status == True)
@@ -217,7 +217,7 @@ Export Image *ReadPIXImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
   } while (status == True);

@@ -53,10 +53,10 @@ status=<STRONG>HuffmanDecodeImage</STRONG>(image)
 status=<STRONG>HuffmanEncodeImage</STRONG>(image_info,image)
 
 <P>
-status=<STRONG>LZWEncodeImage</STRONG>(file,number_pixels,pixels)
+status=<STRONG>LZWEncodeImage</STRONG>(image,number_pixels,pixels)
 
 <P>
-status=<STRONG>PackbitsEncodeImage</STRONG>(file,number_pixels,pixels)
+status=<STRONG>PackbitsEncodeImage</STRONG>(image,number_pixels,pixels)
 
 <P>
 status=<STRONG>RunlengthDecodeImage</STRONG>(image)
@@ -202,7 +202,7 @@ binary LZW bytes are encoded as ASCII base-85.
 The format of the LZWEncodeImage routine is:
 
 <P>
-<PRE>        status=LZWEncodeImage(file,number_pixels,pixels)
+<PRE>        status=LZWEncodeImage(image,number_pixels,pixels)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -213,10 +213,9 @@ A description of each parameter follows:
 Method LZWEncodeImage returns True if all the pixels are compressed without
 error, otherwise False.
 
-<DT><STRONG>file:</STRONG><DD>
+<DT><STRONG>image:</STRONG><DD>
 <P>
-The address of a structure of type FILE. LZW encoded pixels are written to
-this file.
+The address of a structure of type Image.
 
 <DT><STRONG>number_pixels:</STRONG><DD>
 <P>
@@ -240,7 +239,7 @@ ensure portability, the binary Packbits bytes are encoded as ASCII Base-85.
 The format of the PackbitsEncodeImage routine is:
 
 <P>
-<PRE>        status=PackbitsEncodeImage(file,number_pixels,pixels)
+<PRE>        status=PackbitsEncodeImage(image,number_pixels,pixels)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -251,10 +250,9 @@ A description of each parameter follows:
 Method PackbitsEncodeImage returns True if all the pixels are compressed
 without error, otherwise False.
 
-<DT><STRONG>file:</STRONG><DD>
+<DT><STRONG>image:</STRONG><DD>
 <P>
-The address of a structure of type FILE. LZW encoded pixels are written to
-this file.
+The address of a structure of type Image.
 
 <DT><STRONG>number_pixels:</STRONG><DD>
 <P>

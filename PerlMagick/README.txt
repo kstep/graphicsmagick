@@ -1,6 +1,6 @@
 Introduction 
 
-    PerlMagick, version 4.27, is an objected-oriented Perl interface to
+    PerlMagick, version 4.28, is an objected-oriented Perl interface to
     ImageMagick.  Use the module to read, manipulate, or write an image
     or image sequence from within a Perl script. This makes it suitable
     for Web CGI scripts. You must have ImageMagick 4.2.7 above and Perl
@@ -22,8 +22,8 @@ Installation
 
     Get the PerlMagick distribution and type the following: 
 
-        gunzip PerlMagick-4.27.tar.gz
-        tar xvf PerlMagick-4.27.tar
+        gunzip PerlMagick-4.28.tar.gz
+        tar xvf PerlMagick-4.28.tar
         cd Magick
 
     Next, edit Makefile.PL and change LIBS and INC to include the

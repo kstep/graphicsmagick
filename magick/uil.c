@@ -129,6 +129,7 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
                          "lzxcvbnmMNBVCZASDFGHJKLPIUYTREWQ!~^/()_`'][{}|";
 
   char
+    buffer[MaxTextExtent],
     name[MaxTextExtent],
     symbol[MaxTextExtent];
 
@@ -236,9 +237,11 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   /*
     UIL header.
   */
-  (void) fprintf(image->file,"/* UIL */\n");
-  (void) fprintf(image->file,"value\n  %.1024s_ct : color_table(\n",
+  (void) strcpy(buffer,"/* UIL */\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) sprintf(buffer,"value\n  %.1024s_ct : color_table(\n",
     BaseFilename(image->filename));
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
   for (i=0; i < (int) colors; i++)
   {
     ColorPacket
@@ -279,25 +282,28 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     }
     symbol[j]='\0';
     if (Latin1Compare(name,"None") == 0)
-      (void) fprintf(image->file,"    background color = '%.1024s'",symbol);
+      (void) sprintf(buffer,"    background color = '%.1024s'",symbol);
     else
-      (void) fprintf(image->file,"    color('%.1024s',%.1024s) = '%.1024s'",
+      (void) sprintf(buffer,"    color('%.1024s',%.1024s) = '%.1024s'",
         name,Intensity(*p) < ((MaxRGB+1)/2) ? "background" : "foreground",
         symbol);
-    (void) fprintf(image->file,"%.1024s",
-      (i == (int) (colors-1) ? ");\n" : ",\n"));
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) sprintf(buffer,"%.1024s",(i == (int) (colors-1) ? ");\n" : ",\n"));
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
   }
   /*
     Define UIL pixels.
   */
-  (void) fprintf(image->file,
+  (void) sprintf(buffer,
     "  %.1024s_icon : icon(color_table = %.1024s_ct,\n",
     BaseFilename(image->filename),BaseFilename(image->filename));
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
   p=image->pixels;
   runlength=p->length+1;
   for (y=0; y < (int) image->rows; y++)
   {
-    (void) fprintf(image->file,"    \"");
+    (void) strcpy(buffer,"    \"");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
@@ -315,10 +321,12 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
-      (void) fprintf(image->file,"%.1024s",symbol);
+      (void) sprintf(buffer,"%.1024s",symbol);
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
     }
-    (void) fprintf(image->file,"\"%.1024s\n",
+    (void) sprintf(buffer,"\"%.1024s\n",
       (y == (int) (image->rows-1) ? ");" : ","));
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     if (QuantumTick(y,image->rows))
       ProgressMonitor(SaveImageText,y,image->rows);
   }

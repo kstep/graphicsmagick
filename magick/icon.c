@@ -176,40 +176,40 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
   OpenImage(image_info,image,ReadBinaryType);
   if (image->file == (FILE *) NULL)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
-  icon_file.reserved=LSBFirstReadShort(image->file);
-  icon_file.resource_type=LSBFirstReadShort(image->file);
-  icon_file.count=LSBFirstReadShort(image->file);
+  icon_file.reserved=LSBFirstReadShort(image);
+  icon_file.resource_type=LSBFirstReadShort(image);
+  icon_file.count=LSBFirstReadShort(image);
   if ((icon_file.reserved != 0) || (icon_file.resource_type != 1) ||
       (icon_file.count > MaxIcons))
     ReaderExit(CorruptImageWarning,"Not a ICO image file",image);
   for (i=0; i < icon_file.count; i++)
   {
-    icon_file.directory[i].width=fgetc(image->file);
-    icon_file.directory[i].height=fgetc(image->file);
-    icon_file.directory[i].colors=fgetc(image->file);
-    icon_file.directory[i].reserved=fgetc(image->file);
-    icon_file.directory[i].planes=LSBFirstReadShort(image->file);
-    icon_file.directory[i].bits_per_pixel=LSBFirstReadShort(image->file);
-    icon_file.directory[i].size=LSBFirstReadLong(image->file);
-    icon_file.directory[i].offset=LSBFirstReadLong(image->file);
+    icon_file.directory[i].width=ReadByte(image);
+    icon_file.directory[i].height=ReadByte(image);
+    icon_file.directory[i].colors=ReadByte(image);
+    icon_file.directory[i].reserved=ReadByte(image);
+    icon_file.directory[i].planes=LSBFirstReadShort(image);
+    icon_file.directory[i].bits_per_pixel=LSBFirstReadShort(image);
+    icon_file.directory[i].size=LSBFirstReadLong(image);
+    icon_file.directory[i].offset=LSBFirstReadLong(image);
   }
   for (i=0; i < icon_file.count; i++)
   {
     /*
       Verify ICON identifier.
     */
-    (void) fseek(image->file,icon_file.directory[i].offset,SEEK_SET);
-    icon_header.size=LSBFirstReadLong(image->file);
-    icon_header.width=LSBFirstReadLong(image->file);
-    icon_header.height=LSBFirstReadLong(image->file);
-    icon_header.planes=LSBFirstReadShort(image->file);
-    icon_header.bits_per_pixel=LSBFirstReadShort(image->file);
-    icon_header.compression=LSBFirstReadLong(image->file);
-    icon_header.image_size=LSBFirstReadLong(image->file);
-    icon_header.x_pixels=LSBFirstReadLong(image->file);
-    icon_header.y_pixels=LSBFirstReadLong(image->file);
-    icon_header.number_colors=LSBFirstReadLong(image->file);
-    icon_header.colors_important=LSBFirstReadLong(image->file);
+    (void) SeekBlob(image,icon_file.directory[i].offset,SEEK_SET);
+    icon_header.size=LSBFirstReadLong(image);
+    icon_header.width=LSBFirstReadLong(image);
+    icon_header.height=LSBFirstReadLong(image);
+    icon_header.planes=LSBFirstReadShort(image);
+    icon_header.bits_per_pixel=LSBFirstReadShort(image);
+    icon_header.compression=LSBFirstReadLong(image);
+    icon_header.image_size=LSBFirstReadLong(image);
+    icon_header.x_pixels=LSBFirstReadLong(image);
+    icon_header.y_pixels=LSBFirstReadLong(image);
+    icon_header.number_colors=LSBFirstReadLong(image);
+    icon_header.colors_important=LSBFirstReadLong(image);
     image->columns=(unsigned int) icon_header.width;
     image->rows=(unsigned int) icon_header.height;
     image->class=PseudoClass;
@@ -233,7 +233,7 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
       AllocateMemory(4*image->colors*sizeof(unsigned char));
     if (icon_colormap == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    (void) ReadData((char *) icon_colormap,4,image->colors,image->file);
+    (void) ReadBlob(image,4,image->colors,(char *) icon_colormap);
     p=icon_colormap;
     for (x=0; x < (int) image->colors; x++)
     {
@@ -250,8 +250,7 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
       AllocateMemory(icon_file.directory[i].size*sizeof(unsigned char));
     if (icon_pixels == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    (void) ReadData((char *) icon_pixels,1,icon_file.directory[i].size,
-      image->file);
+    (void) ReadBlob(image,1,icon_file.directory[i].size,(char *) icon_pixels);
     /*
       Initialize image structure.
     */
@@ -440,7 +439,7 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
   }

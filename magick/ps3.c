@@ -94,6 +94,7 @@
 Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 {
   char
+    buffer[MaxTextExtent],
     date[MaxTextExtent],
     density[MaxTextExtent];
 
@@ -201,35 +202,50 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         /*
           Output Postscript header.
         */
-        (void) fprintf(image->file,"%%!PS-Adobe-3.0 Resource-ProcSet\n");
-        (void) fprintf(image->file,"%%%%Creator: (ImageMagick)\n");
-        (void) fprintf(image->file,"%%%%Title: (%.1024s)\n",image->filename);
+        (void) strcpy(buffer,"%!PS-Adobe-3.0 Resource-ProcSet\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) strcpy(buffer,"%%Creator: (ImageMagick)\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) sprintf(buffer,"%%%%Title: (%.1024s)\n",image->filename);
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
         timer=time((time_t *) NULL);
         (void) localtime(&timer);
         (void) strcpy(date,ctime(&timer));
         date[Extent(date)-1]='\0';
-        (void) fprintf(image->file,"%%%%CreationDate: (%.1024s)\n",date);
+        (void) sprintf(buffer,"%%%%CreationDate: (%.1024s)\n",date);
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
         bounding_box.x1=x;
         bounding_box.y1=y;
         bounding_box.x2=x+width-1;
         bounding_box.y2=y+(height+text_size)-1;
         if (image_info->adjoin && (image->next != (Image *) NULL))
-          (void) fprintf(image->file,"%%%%BoundingBox: (atend)\n");
+          (void) strcpy(buffer,"%%BoundingBox: (atend)\n");
         else
-          (void) fprintf(image->file,"%%%%BoundingBox: %g %g %g %g\n",
+          (void) sprintf(buffer,"%%%%BoundingBox: %g %g %g %g\n",
             bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
         if (image->label != (char *) NULL)
-          (void) fprintf(image->file,
-            "%%%%DocumentNeededResources: font Helvetica\n");
-        (void) fprintf(image->file,"%%%%LanguageLevel: 2\n");
-        (void) fprintf(image->file,"%%%%Orientation: Portrait\n");
-        (void) fprintf(image->file,"%%%%PageOrder: Ascend\n");
-        (void) fprintf(image->file,"%%%%Pages: %u\n",GetNumberScenes(image));
-        (void) fprintf(image->file,"%%%%EndComments\n");
+          {
+            (void) strcpy(buffer,
+              "%%%%DocumentNeededResources: font Helvetica\n");
+            (void) WriteBlob(image,1,strlen(buffer),buffer);
+          }
+        (void) strcpy(buffer,"%%LanguageLevel: 2\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) strcpy(buffer,"%%Orientation: Portrait\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) strcpy(buffer,"%%PageOrder: Ascend\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) sprintf(buffer,"%%%%Pages: %u\n",GetNumberScenes(image));
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) strcpy(buffer,"%%EndComments\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
       }
-    (void) fprintf(image->file,"%%%%Page:  1 %u\n",page++);
-    (void) fprintf(image->file,"%%%%PageBoundingBox: %d %d %d %d\n",x,y,
+    (void) sprintf(buffer,"%%%%Page:  1 %u\n",page++);
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) sprintf(buffer,"%%%%PageBoundingBox: %d %d %d %d\n",x,y,
       x+(int) width-1,y+(int) (height+text_size)-1);
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     if (x < bounding_box.x1)
       bounding_box.x1=x;
     if (y < bounding_box.y1)
@@ -239,16 +255,24 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     if ((y+(int) (height+text_size)-1) > bounding_box.y2)
       bounding_box.y2=y+(height+text_size)-1;
     if (image->label != (char *) NULL)
-      (void) fprintf(image->file,"%%%%PageResources: font Helvetica\n");
+      {
+        (void) strcpy(buffer,"%%PageResources: font Helvetica\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+      }
     /*
       Output image data.
     */
-    (void) fprintf(image->file,"currentfile /ASCII85Decode filter ");
+    (void) strcpy(buffer,"currentfile /ASCII85Decode filter ");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     if (compression != NoCompression)
-      (void) fprintf(image->file,"/%s filter ",
-        compression == ZipCompression ? "FlateDecode" :
-        compression == LZWCompression ? "LZWDecode" : "RunLengthDecode");
-    (void) fprintf(image->file,"/ReusableStreamDecode filter\n");
+      {
+        (void) sprintf(buffer,"/%s filter ",
+          compression == ZipCompression ? "FlateDecode" :
+          compression == LZWCompression ? "LZWDecode" : "RunLengthDecode");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+      }
+    (void) strcpy(buffer,"/ReusableStreamDecode filter\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     p=image->pixels;
     switch (compression)
     {
@@ -286,13 +310,13 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
               ProgressMonitor(SaveImageText,i,image->packets);
         }
         if (compression == ZipCompression)
-          status=ZLIBEncodeImage(image->file,number_packets,
-            image_info->quality,pixels);
+          status=
+            ZLIBEncodeImage(image,number_packets,image_info->quality,pixels);
         else
           if (compression == LZWCompression)
-            status=LZWEncodeImage(image->file,number_packets,pixels);
+            status=LZWEncodeImage(image,number_packets,pixels);
           else
-            status=PackbitsEncodeImage(image->file,number_packets,pixels);
+            status=PackbitsEncodeImage(image,number_packets,pixels);
         if (!status)
           {
             CloseImage(image);
@@ -311,66 +335,104 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
-            Ascii85Encode(DownScale(p->index),image->file);
-            Ascii85Encode(DownScale(p->red),image->file);
-            Ascii85Encode(DownScale(p->green),image->file);
-            Ascii85Encode(DownScale(p->blue),image->file);
+            Ascii85Encode(image,DownScale(p->index));
+            Ascii85Encode(image,DownScale(p->red));
+            Ascii85Encode(image,DownScale(p->green));
+            Ascii85Encode(image,DownScale(p->blue));
           }
           p++;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(i,image->packets))
               ProgressMonitor(SaveImageText,i,image->packets);
         }
-        Ascii85Flush(image->file);
+        Ascii85Flush(image);
         break;
       }
     }
-    (void) fprintf(image->file,"\n");
-    (void) fprintf(image->file,"\n");
-    (void) fprintf(image->file,"/datastream exch def\n");
-    (void) fprintf(image->file,"/DeviceRGB setcolorspace\n");
-    (void) fprintf(image->file,"/ImageDataDictionary 8 dict def\n");
-    (void) fprintf(image->file,"ImageDataDictionary begin\n");
-    (void) fprintf(image->file,"  /ImageType 1 def\n");
-    (void) fprintf(image->file,"  /Width %u def\n",image->columns);
-    (void) fprintf(image->file,"  /Height %u def\n",image->rows);
-    (void) fprintf(image->file,"  /BitsPerComponent 8 def\n");
-    (void) fprintf(image->file,"  /DataSource datastream def\n");
-    (void) fprintf(image->file,"  /MultipleDataSources false def\n");
-    (void) fprintf(image->file,"  /ImageMatrix [ %d 0 0 %d neg 0 %d ] def\n",
+    (void) WriteByte(image,'\n');
+    (void) WriteByte(image,'\n');
+    (void) strcpy(buffer,"/datastream exch def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"/DeviceRGB setcolorspace\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"/ImageDataDictionary 8 dict def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"ImageDataDictionary begin\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"  /ImageType 1 def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) sprintf(buffer,"  /Width %u def\n",image->columns);
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) sprintf(buffer,"  /Height %u def\n",image->rows);
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"  /BitsPerComponent 8 def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"  /DataSource datastream def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"  /MultipleDataSources false def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) sprintf(buffer,"  /ImageMatrix [ %d 0 0 %d neg 0 %d ] def\n",
       image->columns,image->rows,image->rows);
-    (void) fprintf(image->file,"  /Decode [ 0 1 0 1 0 1 ] def\n");
-    (void) fprintf(image->file,"end\n");
-    (void) fprintf(image->file,"\n");
-    (void) fprintf(image->file,"/ImageMaskDictionary 8 dict def\n");
-    (void) fprintf(image->file,"ImageMaskDictionary begin\n");
-    (void) fprintf(image->file,"  /ImageType 1 def\n");
-    (void) fprintf(image->file,"  /Width %u def\n",image->columns);
-    (void) fprintf(image->file,"  /Height %u def\n",image->rows);
-    (void) fprintf(image->file,"  /BitsPerComponent 8 def\n");
-    (void) fprintf(image->file,"  /MultipleDataSources false def\n");
-    (void) fprintf(image->file,"  /ImageMatrix [ %d 0 0 %d neg 0 %d ] def\n",
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"  /Decode [ 0 1 0 1 0 1 ] def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"end\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteByte(image,'\n');
+    (void) strcpy(buffer,"/ImageMaskDictionary 8 dict def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"ImageMaskDictionary begin\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"  /ImageType 1 def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) sprintf(buffer,"  /Width %u def\n",image->columns);
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) sprintf(buffer,"  /Height %u def\n",image->rows);
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"  /BitsPerComponent 8 def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"  /MultipleDataSources false def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) sprintf(buffer,"  /ImageMatrix [ %d 0 0 %d neg 0 %d ] def\n",
       image->columns,image->rows,image->rows);
-    (void) fprintf(image->file,"  /Decode [ 0 1 ] def\n");
-    (void) fprintf(image->file,"end\n");
-    (void) fprintf(image->file,"\n");
-    (void) fprintf(image->file,"/MaskedImageDictionary 7 dict def\n");
-    (void) fprintf(image->file,"MaskedImageDictionary begin\n");
-    (void) fprintf(image->file,"  /ImageType 3 def\n");
-    (void) fprintf(image->file,"  /InterleaveType 1 def\n");
-    (void) fprintf(image->file,"  /MaskDict ImageMaskDictionary def\n");
-    (void) fprintf(image->file,"  /DataDict ImageDataDictionary def\n");
-    (void) fprintf(image->file,"end\n");
-    (void) fprintf(image->file,"\n");
-    (void) fprintf(image->file,"gsave\n");
-    (void) fprintf(image->file,"%d %d translate\n",x,y);
-    (void) fprintf(image->file,"%f %f scale\n",x_scale,y_scale);
-    (void) fprintf(image->file,"ImageMaskDictionary /Decode [ 1 0 ] put\n");
-    (void) fprintf(image->file,"MaskedImageDictionary image\n");
-    (void) fprintf(image->file,"grestore                    \n");
-    (void) fprintf(image->file,"\n");
-    (void) fprintf(image->file,"showpage\n");
-    (void) fprintf(image->file,"%%%%EndData\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"  /Decode [ 0 1 ] def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"end\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteByte(image,'\n');
+    (void) strcpy(buffer,"/MaskedImageDictionary 7 dict def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"MaskedImageDictionary begin\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"  /ImageType 3 def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"  /InterleaveType 1 def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"  /MaskDict ImageMaskDictionary def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"  /DataDict ImageDataDictionary def\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"end\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteByte(image,'\n');
+    (void) strcpy(buffer,"gsave\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) sprintf(buffer,"%d %d translate\n",x,y);
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) sprintf(buffer,"%f %f scale\n",x_scale,y_scale);
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"ImageMaskDictionary /Decode [ 1 0 ] put\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"MaskedImageDictionary image\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"grestore                    \n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) WriteByte(image,'\n');
+    (void) strcpy(buffer,"showpage\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"%%EndData\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     if (image->next == (Image *) NULL)
       break;
     image->next->file=image->file;
@@ -381,9 +443,13 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     while (image->previous != (Image *) NULL)
       image=image->previous;
   if (page > 1)
-    (void) fprintf(image->file,"%%%%BoundingBox: %g %g %g %g\n",
-      bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
-  (void) fprintf(image->file,"%%%%EOF\n");
+    {
+      (void) sprintf(buffer,"%%%%BoundingBox: %g %g %g %g\n",
+        bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
+    }
+  (void) strcpy(buffer,"%%EOF\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
   CloseImage(image);
   return(True);
 }

@@ -44,7 +44,7 @@
 		<LI><A HREF="#MultilineCensus">MultilineCensus</A>
 		<LI><A HREF="#ParseGeometry">ParseGeometry</A>
 		<LI><A HREF="#PostscriptGeometry">PostscriptGeometry</A>
-		<LI><A HREF="#ReadData">ReadData</A>
+		<LI><A HREF="#ReadByte">ReadByte</A>
 		<LI><A HREF="#ReadDataBlock">ReadDataBlock</A>
 		<LI><A HREF="#SetClientName">SetClientName</A>
 		<LI><A HREF="#StringToArgv">StringToArgv</A>
@@ -53,6 +53,7 @@
 		<LI><A HREF="#SystemCommand">SystemCommand</A>
 		<LI><A HREF="#TemporaryFilename">TemporaryFilename</A>
 		<LI><A HREF="#TranslateText">TranslateText</A>
+		<LI><A HREF="#WriteByte">WriteByte</A>
 	</UL>
 
 </UL>
@@ -104,16 +105,16 @@ status=<STRONG>IsAccessible</STRONG>(filename)
 status=<STRONG>IsDirectory</STRONG>(filename)
 
 <P>
-value=<STRONG>LSBFirstReadLong</STRONG>(file)
+value=<STRONG>LSBFirstReadLong</STRONG>(image)
 
 <P>
-value=<STRONG>LSBFirstReadShort</STRONG>(file)
+value=<STRONG>LSBFirstReadShort</STRONG>(image)
 
 <P>
-<STRONG>LSBFirstWriteLong</STRONG>(value,file)
+count=<STRONG>LSBFirstWriteLong</STRONG>(image,value)
 
 <P>
-<STRONG>LSBFirstWriteShort</STRONG>(value,file)
+count=<STRONG>LSBFirstWriteShort</STRONG>(image,value)
 
 <P>
 <STRONG>Latin1Compare</STRONG>(p,q)
@@ -131,13 +132,13 @@ filelist=<STRONG>ListFiles</STRONG>(directory,pattern,number_entries)
 <STRONG>MSBFirstOrderLong</STRONG>(p,length);
 
 <P>
-value=<STRONG>MSBFirstReadLong</STRONG>(file)
+value=<STRONG>MSBFirstReadLong</STRONG>(image)
 
 <P>
-value=<STRONG>MSBFirstReadShort</STRONG>(file)
+value=<STRONG>MSBFirstReadShort</STRONG>(image)
 
 <P>
-<STRONG>MSBFirstWriteLong</STRONG>(value,file)
+count=<STRONG>MSBFirstWriteLong</STRONG>(image,value)
 
 <P>
 <STRONG>MSBFirstWriteShort</STRONG>(value,file)
@@ -146,7 +147,7 @@ value=<STRONG>MSBFirstReadShort</STRONG>(file)
 geometry=<STRONG>PostscriptGeometry</STRONG>(page)
 
 <P>
-status=<STRONG>ReadData</STRONG>(data,size,number_items,file)
+value=<STRONG>ReadByte</STRONG>(image)
 
 <P>
 client_name=<STRONG>SetClientName</STRONG>(name)
@@ -168,6 +169,9 @@ status=<STRONG>SystemCommand</STRONG>(verbose,command)
 
 <P>
 translated_text=<STRONG>TranslateText</STRONG>(image_info,image,formatted_text)
+
+<P>
+count=<STRONG>WriteByte</STRONG>(image,value)
 
 <P>
 <HR>
@@ -637,7 +641,7 @@ least-significant byte first order.
 The format of the LSBFirstReadLong routine is:
 
 <P>
-<PRE>         value=LSBFirstReadLong(file)
+<PRE>         value=LSBFirstReadLong(image)
 </PRE>
 <P>
 A description of each parameter follows.
@@ -647,9 +651,9 @@ A description of each parameter follows.
 <P>
 Method LSBFirstReadLong returns an unsigned long read from the file.
 
-<DT><STRONG>file:</STRONG><DD>
+<DT><STRONG>image:</STRONG><DD>
 <P>
-Specifies the file to read the data from.
+The address of a structure of type Image.
 
 </DL></DL>
 <P>
@@ -663,7 +667,7 @@ least-significant byte first order.
 The format of the LSBFirstReadShort routine is:
 
 <P>
-<PRE>         value=LSBFirstReadShort(file)
+<PRE>         value=LSBFirstReadShort(image)
 </PRE>
 <P>
 A description of each parameter follows.
@@ -673,9 +677,9 @@ A description of each parameter follows.
 <P>
 Method LSBFirstReadShort returns an unsigned short read from the file.
 
-<DT><STRONG>file:</STRONG><DD>
+<DT><STRONG>image:</STRONG><DD>
 <P>
-Specifies the file to read the data from.
+The address of a structure of type Image.
 
 </DL></DL>
 <P>
@@ -689,19 +693,23 @@ least-significant byte first order.
 The format of the LSBFirstWriteLong routine is:
 
 <P>
-<PRE>         LSBFirstWriteLong(value,file)
+<PRE>         count=LSBFirstWriteLong(image,value)
 </PRE>
 <P>
 A description of each parameter follows.
 
 <DL><DL>
+<DT><STRONG>count:</STRONG><DD>
+<P>
+Method LSBFirstWriteLong returns the number of unsigned longs written.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
 <DT><STRONG>value:</STRONG><DD>
 <P>
 Specifies the value to write.
-
-<DT><STRONG>file:</STRONG><DD>
-<P>
-Specifies the file to write the data to.
 
 </DL></DL>
 <P>
@@ -715,19 +723,23 @@ least-significant byte first order.
 The format of the LSBFirstWriteShort routine is:
 
 <P>
-<PRE>         LSBFirstWriteShort(value,file)
+<PRE>         count=LSBFirstWriteShort(image,value)
 </PRE>
 <P>
 A description of each parameter follows.
 
 <DL><DL>
+<DT><STRONG>count:</STRONG><DD>
+<P>
+Method LSBFirstWriteShort returns the number of unsigned longs written.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
 <DT><STRONG>value:</STRONG><DD>
 <P>
 Specifies the value to write.
-
-<DT><STRONG>file:</STRONG><DD>
-<P>
-Specifies the file to write the data to.
 
 </DL></DL>
 <P>
@@ -793,7 +805,7 @@ most-significant byte first order.
 The format of the MSBFirstReadShort routine is:
 
 <P>
-<PRE>         value=MSBFirstReadShort(file)
+<PRE>         value=MSBFirstReadShort(image)
 </PRE>
 <P>
 A description of each parameter follows.
@@ -803,9 +815,9 @@ A description of each parameter follows.
 <P>
 Method MSBFirstReadShort returns an unsigned short read from the file.
 
-<DT><STRONG>file:</STRONG><DD>
+<DT><STRONG>image:</STRONG><DD>
 <P>
-Specifies the file to read the data from.
+The address of a structure of type Image.
 
 </DL></DL>
 <P>
@@ -819,7 +831,7 @@ most-significant byte first order.
 The format of the MSBFirstReadLong routine is:
 
 <P>
-<PRE>         value=MSBFirstReadLong(file)
+<PRE>         value=MSBFirstReadLong(image)
 </PRE>
 <P>
 A description of each parameter follows.
@@ -829,9 +841,9 @@ A description of each parameter follows.
 <P>
 Method MSBFirstReadLong returns an unsigned long read from the file.
 
-<DT><STRONG>file:</STRONG><DD>
+<DT><STRONG>image:</STRONG><DD>
 <P>
-Specifies the file to read the data from.
+The address of a structure of type Image.
 
 </DL></DL>
 <P>
@@ -845,19 +857,23 @@ most-significant byte first order.
 The format of the MSBFirstWriteLong routine is:
 
 <P>
-<PRE>         MSBFirstWriteLong(value,file)
+<PRE>         count=MSBFirstWriteLong(image,value)
 </PRE>
 <P>
 A description of each parameter follows.
 
 <DL><DL>
+<DT><STRONG>count:</STRONG><DD>
+<P>
+Method MSBFirstWriteLong returns the number of unsigned longs written.
+
 <DT><STRONG>value:</STRONG><DD>
 <P>
 Specifies the value to write.
 
-<DT><STRONG>file:</STRONG><DD>
+<DT><STRONG>image:</STRONG><DD>
 <P>
-Specifies the file to write the data to.
+The address of a structure of type Image.
 
 </DL></DL>
 <P>
@@ -973,76 +989,58 @@ Postscript page name (e.g. A4) or a postscript page geometry (e.g.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="ReadData">ReadData</A></H2>
+<H2><A NAME="ReadByte">ReadByte</A></H2>
 <P>
-Method ReadData reads data from the image file and returns it. If it cannot
-read the requested number of items, False is returned indicating an error.
+Method ReadByte reads a single byte from the image file and returns it.
 
 <P>
-The format of the ReadData routine is:
+The format of the ReadByte routine is:
 
 <P>
-<PRE>        status=ReadData(data,size,number_items,file)
+<PRE>         value=ReadByte(image)
 </PRE>
 <P>
-A description of each parameter follows:
+A description of each parameter follows.
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<DT><STRONG>value:</STRONG><DD>
 <P>
-Method ReadData returns True if all the data requested is obtained without
-error, otherwise False.
+Method ReadByte returns an integer read from the file.
 
-<DT><STRONG>data:</STRONG><DD>
+<DT><STRONG>image:</STRONG><DD>
 <P>
-Specifies an area to place the information requested from the file.
-
-<DT><STRONG>size:</STRONG><DD>
-<P>
-Specifies an integer representing the length of an individual item to be
-read from the file.
-
-<DT><STRONG>number_items:</STRONG><DD>
-<P>
-Specifies an integer representing the number of items to read from the
-file.
-
-<DT><STRONG>file:</STRONG><DD>
-<P>
-Specifies a file to read the data.
+The address of a structure of type Image.
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="ReadDataBlock">ReadDataBlock</A></H2>
 <P>
-Method ReadDataBlock reads data from the image file and returns it. The
-amount of data is determined by first reading a count byte. If
-ReadDataBlock cannot read the requested number of items, `-1' is returned
-indicating an error.
+Method ReadBlobBlock reads data from the image file and returns it. The
+amount of data is determined by first reading a count byte. The number or
+bytes read is returned.
 
 <P>
-The format of the ReadData routine is:
+The format of the ReadBlobBlock routine is:
 
 <P>
-<PRE>    status=ReadData(data,file)
+<PRE>    count=ReadBlob(image,data)
 </PRE>
 <P>
 A description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<DT><STRONG>count:</STRONG><DD>
 <P>
-Method ReadData returns the number of characters read unless there is an
-error, otherwise `-1'.
+Method ReadBlobBlock returns the number of bytes read.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
 
 <DT><STRONG>data:</STRONG><DD>
 <P>
 Specifies an area to place the information requested from the file.
-
-<DT><STRONG>file:</STRONG><DD>
-<P>
-Specifies a file to read the data.
 
 </DL></DL>
 <P>
@@ -1239,6 +1237,36 @@ The address of a structure of type Image.
 <P>
 The address of a character string containing the embedded formatting
 characters.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="WriteByte">WriteByte</A></H2>
+<P>
+Method WriteByte write an integer to a file. It returns the number of bytes
+written (either 0 or 1);
+
+<P>
+The format of the WriteByte routine is:
+
+<P>
+<PRE>         count=WriteByte(image,value)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>count:</STRONG><DD>
+<P>
+Method WriteByte returns the number of bytes written.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>value:</STRONG><DD>
+<P>
+Specifies the value to write.
 
 </DL></DL>
 </BODY>

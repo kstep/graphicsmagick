@@ -128,7 +128,7 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
       if (image->file == (FILE *) NULL)
         ReaderExit(FileOpenWarning,"Unable to open file",image);
       for (i=0; i < image->offset; i++)
-        (void) fgetc(image->file);
+        (void) ReadByte(image);
     }
   /*
     Allocate memory for a scanline.
@@ -146,8 +146,8 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
       */
       image->scene++;
       for (y=0; y < (int) image->rows; i++)
-        (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-          image->file);
+        (void) ReadBlob(image,packet_size,image->tile_info.width,
+          (char *) scanline);
     }
   do
   {
@@ -173,14 +173,14 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
           No interlacing:  CMYKCMYKCMYKCMYKCMYK...
         */
         for (y=0; y < image->tile_info.y; y++)
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
         q=image->pixels;
         for (y=0; y < (int) image->rows; y++)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
-            (void) ReadData((char *) scanline,packet_size,
-              image->tile_info.width,image->file);
+            (void) ReadBlob(image,packet_size,image->tile_info.width,
+              (char *) scanline);
           p=scanline+packet_size*image->tile_info.x;
           for (x=0; x < (int) image->columns; x++)
           {
@@ -197,8 +197,8 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
         break;
       }
       case LineInterlace:
@@ -208,13 +208,13 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
         */
         packet_size=image->depth >> 3;
         for (y=0; y < image->tile_info.y; y++)
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
         for (y=0; y < (int) image->rows; y++)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
-            (void) ReadData((char *) scanline,packet_size,
-              image->tile_info.width,image->file);
+            (void) ReadBlob(image,packet_size,image->tile_info.width,
+              (char *) scanline);
           p=scanline+packet_size*image->tile_info.x;
           q=image->pixels+y*image->columns;
           for (x=0; x < (int) image->columns; x++)
@@ -223,8 +223,8 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
             q->length=0;
             q++;
           }
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
           p=scanline+packet_size*image->tile_info.x;
           q=image->pixels+y*image->columns;
           for (x=0; x < (int) image->columns; x++)
@@ -232,8 +232,8 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
             ReadQuantum(q->green,p);
             q++;
           }
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
           p=scanline+packet_size*image->tile_info.x;
           q=image->pixels+y*image->columns;
           for (x=0; x < (int) image->columns; x++)
@@ -241,8 +241,8 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
             ReadQuantum(q->blue,p);
             q++;
           }
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
           p=scanline+packet_size*image->tile_info.x;
           q=image->pixels+y*image->columns;
           for (x=0; x < (int) image->columns; x++)
@@ -256,8 +256,8 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
         break;
       }
       case PlaneInterlace:
@@ -275,15 +275,15 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
           }
         packet_size=image->depth >> 3;
         for (y=0; y < image->tile_info.y; y++)
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
         i=0;
         q=image->pixels;
         for (y=0; y < (int) image->rows; y++)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
-            (void) ReadData((char *) scanline,packet_size,
-              image->tile_info.width,image->file);
+            (void) ReadBlob(image,packet_size,image->tile_info.width,
+              (char *) scanline);
           p=scanline+packet_size*image->tile_info.x;
           for (x=0; x < (int) image->columns; x++)
           {
@@ -298,8 +298,8 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
         if (image_info->interlace == PartitionInterlace)
           {
             CloseImage(image);
@@ -310,12 +310,12 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
           }
         q=image->pixels;
         for (y=0; y < image->tile_info.y; y++)
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
         for (y=0; y < (int) image->rows; y++)
         {
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
           p=scanline+packet_size*image->tile_info.x;
           for (x=0; x < (int) image->columns; x++)
           {
@@ -329,8 +329,8 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
         if (image_info->interlace == PartitionInterlace)
           {
             CloseImage(image);
@@ -341,12 +341,12 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
           }
         q=image->pixels;
         for (y=0; y < image->tile_info.y; y++)
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
         for (y=0; y < (int) image->rows; y++)
         {
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
           p=scanline+packet_size*image->tile_info.x;
           for (x=0; x < (int) image->columns; x++)
           {
@@ -360,8 +360,8 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
         if (image_info->interlace == PartitionInterlace)
           {
             CloseImage(image);
@@ -372,12 +372,12 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
           }
         q=image->pixels;
         for (y=0; y < image->tile_info.y; y++)
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
         for (y=0; y < (int) image->rows; y++)
         {
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
           p=scanline+packet_size*image->tile_info.x;
           for (x=0; x < (int) image->columns; x++)
           {
@@ -391,8 +391,8 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
-          (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-            image->file);
+          (void) ReadBlob(image,packet_size,image->tile_info.width,
+            (char *) scanline);
         if (image_info->interlace == PartitionInterlace)
           (void) strcpy(image->filename,image_info->filename);
         break;
@@ -407,8 +407,7 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
     /*
       Proceed to next image.
     */
-    count=ReadData((char *) scanline,packet_size,image->columns,
-      image->file);
+    count=ReadBlob(image,packet_size,image->columns,(char *) scanline);
     if (count > 0)
       {
         /*
@@ -421,7 +420,7 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
   } while (count > 0);
@@ -535,7 +534,7 @@ Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             x++;
             if (x == (int) image->columns)
               {
-                (void) fwrite((char *) pixels,1,q-pixels,image->file);
+                (void) WriteBlob(image,1,q-pixels,(char *) pixels);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     ProgressMonitor(SaveImageText,y,image->rows);

@@ -1078,8 +1078,8 @@ Image *ReadPICTImage(const ImageInfo *image_info)
   if (picture_handle == nil)
     PrematureExit(ResourceLimitWarning,"Unable to allocate memory",image);
   HLock((Handle) picture_handle);
-  (void) ReadData(*(char **) picture_handle,1,PICTHeaderSize,image->file);
-  status=ReadData(*(char **) picture_handle,1,image->filesize-PICTHeaderSize,
+  (void) ReadBlob(*(char **) picture_handle,1,PICTHeaderSize,image->file);
+  status=ReadBlob(*(char **) picture_handle,1,image->filesize-PICTHeaderSize,
     image->file);
   HUnlock((Handle) picture_handle);
   if (status == False)

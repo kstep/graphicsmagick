@@ -53,6 +53,9 @@
 */
 #include "magick.h"
 #include "defines.h"
+#if defined(HasBZLIB)
+#include "bzlib.h"
+#endif
 #if defined(HasZLIB)
 #include "zlib.h"
 #endif
@@ -130,7 +133,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
   /*
     Decode image header;  header terminates one character beyond a ':'.
   */
-  c=fgetc(image->file);
+  c=ReadByte(image);
   if (c == EOF)
     {
       DestroyImage(image);
@@ -165,7 +168,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
             }
           for ( ; image->comments != (char *) NULL; p++)
           {
-            c=fgetc(image->file);
+            c=ReadByte(image);
             if ((c == EOF) || (c == '}'))
               break;
             if ((p-image->comments+1) >= (int) length)
@@ -184,7 +187,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
             ReaderExit(ResourceLimitWarning,"Memory allocation failed",
               image);
           *p='\0';
-          c=fgetc(image->file);
+          c=ReadByte(image);
         }
       else
         if (isalnum(c))
@@ -197,27 +200,27 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
             {
               if ((p-keyword) < (MaxTextExtent-1))
                 *p++=(char) c;
-              c=fgetc(image->file);
+              c=ReadByte(image);
             } while (isalnum(c) || (c == '-'));
             *p='\0';
             while (isspace(c) || (c == '='))
-              c=fgetc(image->file);
+              c=ReadByte(image);
             p=value;
             if (c != '"')
               while (!isspace(c) && (c != EOF))
               {
                 if ((p-value) < (MaxTextExtent-1))
                   *p++=(char) c;
-                c=fgetc(image->file);
+                c=ReadByte(image);
               }
             else
               {
-                c=fgetc(image->file);
+                c=ReadByte(image);
                 while ((c != '"') && (c != EOF))
                 {
                   if ((p-value) < (MaxTextExtent-1))
                     *p++=(char) c;
-                  c=fgetc(image->file);
+                  c=ReadByte(image);
                 }
               }
             *p='\0';
@@ -381,11 +384,11 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
                 &image->chromaticity.white_point.y);
           }
         else
-          c=fgetc(image->file);
+          c=ReadByte(image);
       while (isspace(c))
-        c=fgetc(image->file);
+        c=ReadByte(image);
     }
-    (void) fgetc(image->file);
+    (void) ReadByte(image);
     /*
       Verify that required image information is defined.
     */
@@ -426,7 +429,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
                   image);
               p=image->directory+Extent(image->directory);
             }
-          c=fgetc(image->file);
+          c=ReadByte(image);
           *p++=(unsigned char) c;
         } while (c != '\0');
       }
@@ -440,8 +443,8 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
         if (image->color_profile.info == (unsigned char *) NULL)
           ReaderExit(CorruptImageWarning,"Unable to read color profile",
             image);
-        (void) fread(image->color_profile.info,1,image->color_profile.length,
-          image->file);
+        (void) ReadBlob(image,1,image->color_profile.length,
+          (char *) image->color_profile.info);
       }
     if (image->class == PseudoClass)
       {
@@ -489,8 +492,8 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
             if (colormap == (unsigned char *) NULL)
               ReaderExit(ResourceLimitWarning,"Memory allocation failed",
                 image);
-            (void) ReadData((char *) colormap,1,packet_size*image->colors,
-              image->file);
+            (void) ReadBlob(image,1,packet_size*image->colors,
+              (char *) colormap);
             p=colormap;
             for (i=0; i < (int) image->colors; i++)
             {
@@ -538,8 +541,8 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
     */
     if ((image->compression != RunlengthEncodedCompression) ||
         (image->packets != 0))
-      (void) ReadData((char *) image->packed_pixels,1,(unsigned int)
-        max_packets*packet_size,image->file);
+      (void) ReadBlob(image,1,(unsigned int) max_packets*packet_size,
+        (char *) image->packed_pixels);
     else
       {
         /*
@@ -549,7 +552,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
         p=image->packed_pixels;
         do
         {
-          (void) ReadData((char *) p,1,packet_size,image->file);
+          (void) ReadBlob(image,1,packet_size,(char *) p);
           image->packets++;
           p+=(packet_size-1);
           count+=(*p+1);
@@ -630,7 +633,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
         break;
     do
     {
-      c=fgetc(image->file);
+      c=ReadByte(image);
     } while (!isgraph(c) && (c != EOF));
     if (c != EOF)
       {
@@ -644,7 +647,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
   } while (c != EOF);
@@ -939,11 +942,11 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         */
         if (image->directory != (char *) NULL)
           (void) fprintf(image->file,"%s",image->directory);
-        (void) fputc('\0',image->file);
+        (void) WriteByte(image,'\0');
       }
     if (image->color_profile.length > 0)
-      (void) fwrite((char *) image->color_profile.info,1,(int)
-        image->color_profile.length,image->file);
+      (void) WriteBlob(image,1,(int) image->color_profile.length,
+        (char *) image->color_profile.info);
     if (image->class == PseudoClass)
       {
         register unsigned char
@@ -976,15 +979,15 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Write colormap to file.
         */
-        (void) fwrite((char *) colormap,1,(int) image->colors*packet_size,
-          image->file);
+        (void) WriteBlob(image,1,(int) image->colors*packet_size,
+          (char *) colormap);
         FreeMemory((char *) colormap);
       }
     /*
       Write image pixels to file.
     */
-    (void) fwrite((char *) image->packed_pixels,(int) image->packet_size,
-      (int) packets,image->file);
+    (void) WriteBlob(image,image->packet_size,packets,
+      (char *) image->packed_pixels);
     if (image->next == (Image *) NULL)
       break;
     image->next->file=image->file;

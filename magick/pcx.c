@@ -185,7 +185,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
       /*
         Read the DCX page table.
       */
-      magic=LSBFirstReadLong(image->file);
+      magic=LSBFirstReadLong(image);
       if (magic != 987654321)
         ReaderExit(CorruptImageWarning,"Not a DCX image file",image);
       page_table=(unsigned long *) AllocateMemory(1024*sizeof(unsigned long));
@@ -193,32 +193,32 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
         ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       for (id=0; id < 1024; id++)
       {
-        page_table[id]=LSBFirstReadLong(image->file);
+        page_table[id]=LSBFirstReadLong(image);
         if (page_table[id] == 0)
           break;
       }
     }
   if (page_table != (unsigned long *) NULL)
-    (void) fseek(image->file,(long) page_table[0],SEEK_SET);
-  status=ReadData((char *) &pcx_header.identifier,1,1,image->file);
+    (void) SeekBlob(image,(long) page_table[0],SEEK_SET);
+  status=ReadBlob(image,1,1,(char *) &pcx_header.identifier);
   for (id=1; id < 1024; id++)
   {
     /*
       Verify PCX identifier.
     */
-    (void) ReadData((char *) &pcx_header.version,1,1,image->file);
+    pcx_header.version=ReadByte(image);
     if ((status == False) || (pcx_header.identifier != 0x0a) ||
         ((pcx_header.version != 2) && (pcx_header.version != 3) &&
          (pcx_header.version != 5)))
       ReaderExit(CorruptImageWarning,"Not a PCX image file",image);
-    (void) ReadData((char *) &pcx_header.encoding,1,1,image->file);
-    (void) ReadData((char *) &pcx_header.bits_per_pixel,1,1,image->file);
-    pcx_header.left=LSBFirstReadShort(image->file);
-    pcx_header.top=LSBFirstReadShort(image->file);
-    pcx_header.right=LSBFirstReadShort(image->file);
-    pcx_header.bottom=LSBFirstReadShort(image->file);
-    pcx_header.horizontal_resolution=LSBFirstReadShort(image->file);
-    pcx_header.vertical_resolution=LSBFirstReadShort(image->file);
+    pcx_header.encoding=ReadByte(image);
+    pcx_header.bits_per_pixel=ReadByte(image);
+    pcx_header.left=LSBFirstReadShort(image);
+    pcx_header.top=LSBFirstReadShort(image);
+    pcx_header.right=LSBFirstReadShort(image);
+    pcx_header.bottom=LSBFirstReadShort(image);
+    pcx_header.horizontal_resolution=LSBFirstReadShort(image);
+    pcx_header.vertical_resolution=LSBFirstReadShort(image);
     /*
       Read PCX raster colormap.
     */
@@ -232,9 +232,9 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
     pcx_colormap=(unsigned char *) AllocateMemory(3*256*sizeof(unsigned char));
     if (pcx_colormap == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    (void) ReadData((char *) pcx_colormap,3,image->colors,image->file);
-    (void) ReadData((char *) &pcx_header.reserved,1,1,image->file);
-    (void) ReadData((char *) &pcx_header.planes,1,1,image->file);
+    (void) ReadBlob(image,3,image->colors,(char *) pcx_colormap);
+    pcx_header.reserved=ReadByte(image);
+    pcx_header.planes=ReadByte(image);
     if ((pcx_header.bits_per_pixel != 8) || (pcx_header.planes == 1))
       {
         image->class=PseudoClass;
@@ -267,10 +267,10 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
           ((long) (MaxRGB*i)/(image->colors-1));
         image->colormap[i].blue=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
       }
-    pcx_header.bytes_per_line=LSBFirstReadShort(image->file);
-    pcx_header.palette_info=LSBFirstReadShort(image->file);
+    pcx_header.bytes_per_line=LSBFirstReadShort(image);
+    pcx_header.palette_info=LSBFirstReadShort(image);
     for (i=0; i < 58; i++)
-      (void) fgetc(image->file);
+      (void) ReadByte(image);
     /*
       Read image data.
     */
@@ -297,7 +297,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
     p=pcx_pixels;
     while (pcx_packets > 0)
     {
-      packet=fgetc(image->file);
+      packet=ReadByte(image);
       if ((packet & 0xc0) != 0xc0)
         {
           *p++=packet;
@@ -305,7 +305,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
           continue;
         }
       count=packet & 0x3f;
-      for (packet=fgetc(image->file); count > 0; count--)
+      for (packet=ReadByte(image); count > 0; count--)
       {
         *p++=packet;
         pcx_packets--;
@@ -342,10 +342,8 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
                 /*
                   256 color images have their color map at the end of the file.
                 */
-                (void) ReadData((char *) &pcx_header.colormap_signature,1,1,
-                  image->file);
-                (void) ReadData((char *) pcx_colormap,3,image->colors,
-                  image->file);
+                pcx_header.colormap_signature=ReadByte(image);
+                (void) ReadBlob(image,3,image->colors,(char *) pcx_colormap);
                 p=pcx_colormap;
                 for (i=0; i < (int) image->colors; i++)
                 {
@@ -533,8 +531,8 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
       break;
     if (page_table[id] == 0)
       break;
-    (void) fseek(image->file,(long) page_table[id],SEEK_SET);
-    status=ReadData((char *) &pcx_header.identifier,1,1,image->file);
+    (void) SeekBlob(image,(long) page_table[id],SEEK_SET);
+    status=ReadBlob(image,1,1,(char *) &pcx_header.identifier);
     if ((status == True) && (pcx_header.identifier == 0x0a))
       {
         /*
@@ -547,7 +545,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
   }
@@ -661,18 +659,18 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       /*
         Write the DCX page table.
       */
-      LSBFirstWriteLong(0x3ADE68B1L,image->file);
+      LSBFirstWriteLong(image,0x3ADE68B1L);
       page_table=(unsigned long *) AllocateMemory(1024*sizeof(unsigned long));
       if (page_table == (unsigned long *) NULL)
         WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
       for (scene=0; scene < 1024; scene++)
-        LSBFirstWriteLong(0x00000000L,image->file);
+        LSBFirstWriteLong(image,0x00000000L);
     }
   scene=0;
   do
   {
     if (page_table != (unsigned long *) NULL)
-      page_table[scene]=ftell(image->file);
+      page_table[scene]=TellBlob(image);
     /*
       Initialize PCX raster file header.
     */
@@ -712,18 +710,16 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     /*
       Write PCX header.
     */
-    (void) fwrite(&pcx_header.identifier,1,1,image->file);
-    (void) fwrite(&pcx_header.version,1,1,image->file);
-    (void) fwrite(&pcx_header.encoding,1,1,image->file);
-    (void) fwrite(&pcx_header.bits_per_pixel,1,1,image->file);
-    LSBFirstWriteShort((unsigned int) pcx_header.left,image->file);
-    LSBFirstWriteShort((unsigned int) pcx_header.top,image->file);
-    LSBFirstWriteShort((unsigned int) pcx_header.right,image->file);
-    LSBFirstWriteShort((unsigned int) pcx_header.bottom,image->file);
-    LSBFirstWriteShort((unsigned int) pcx_header.horizontal_resolution,
-      image->file);
-    LSBFirstWriteShort((unsigned int) pcx_header.vertical_resolution,
-      image->file);
+    (void) WriteByte(image,pcx_header.identifier);
+    (void) WriteByte(image,pcx_header.version);
+    (void) WriteByte(image,pcx_header.encoding);
+    (void) WriteByte(image,pcx_header.bits_per_pixel);
+    LSBFirstWriteShort(image,(unsigned int) pcx_header.left);
+    LSBFirstWriteShort(image,(unsigned int) pcx_header.top);
+    LSBFirstWriteShort(image,(unsigned int) pcx_header.right);
+    LSBFirstWriteShort(image,(unsigned int) pcx_header.bottom);
+    LSBFirstWriteShort(image,(unsigned int) pcx_header.horizontal_resolution);
+    LSBFirstWriteShort(image,(unsigned int) pcx_header.vertical_resolution);
     /*
       Dump colormap to file.
     */
@@ -740,13 +736,13 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         *q++=DownScale(image->colormap[i].green);
         *q++=DownScale(image->colormap[i].blue);
       }
-    (void) fwrite((char *) pcx_colormap,3,16,image->file);
-    (void) fwrite(&pcx_header.reserved,1,1,image->file);
-    (void) fwrite(&pcx_header.planes,1,1,image->file);
-    LSBFirstWriteShort((unsigned int) pcx_header.bytes_per_line,image->file);
-    LSBFirstWriteShort((unsigned int) pcx_header.palette_info,image->file);
+    (void) WriteBlob(image,3,16,(char *) pcx_colormap);
+    (void) WriteByte(image,pcx_header.reserved);
+    (void) WriteByte(image,pcx_header.planes);
+    LSBFirstWriteShort(image,(unsigned int) pcx_header.bytes_per_line);
+    LSBFirstWriteShort(image,(unsigned int) pcx_header.palette_info);
     for (i=0; i < 58; i++)
-      (void) fwrite("\0",1,1,image->file);
+      (void) WriteByte(image,'\0');
     packets=image->rows*pcx_header.bytes_per_line*pcx_header.planes;
     pcx_pixels=(unsigned char *) AllocateMemory(packets*sizeof(unsigned char));
     if (pcx_pixels == (unsigned char *) NULL)
@@ -896,24 +892,24 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           if ((count > 1) || ((previous & 0xc0) == 0xc0))
             {
               count|=0xc0;
-              (void) fwrite(&count,1,1,image->file);
+              (void) WriteByte(image,count);
             }
-          (void) fwrite(&previous,1,1,image->file);
+          (void) WriteByte(image,previous);
           previous=packet;
           count=1;
         }
         if ((count > 1) || ((previous & 0xc0) == 0xc0))
           {
             count|=0xc0;
-            (void) fwrite(&count,1,1,image->file);
+            (void) WriteByte(image,count);
           }
-        (void) fwrite(&previous,1,1,image->file);
+        (void) WriteByte(image,previous);
         if (QuantumTick(y,image->rows))
           ProgressMonitor(SaveImageText,y,image->rows);
       }
     }
-    (void) fwrite(&pcx_header.colormap_signature,1,1,image->file);
-    (void) fwrite((char *) pcx_colormap,3,256,image->file);
+    (void) WriteByte(image,pcx_header.colormap_signature);
+    (void) WriteBlob(image,3,256,(char *) pcx_colormap);
     FreeMemory((char *) pcx_pixels);
     FreeMemory((char *) pcx_colormap);
     if (image->next == (Image *) NULL)
@@ -933,10 +929,10 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         Write the DCX page table.
       */
       page_table[scene+1]=0;
-      (void) fseek(image->file,0L,SEEK_SET);
-      LSBFirstWriteLong(0x3ADE68B1L,image->file);
+      (void) SeekBlob(image,0L,SEEK_SET);
+      LSBFirstWriteLong(image,0x3ADE68B1L);
       for (i=0; i <= (int) scene; i++)
-        LSBFirstWriteLong(page_table[i],image->file);
+        LSBFirstWriteLong(image,page_table[i]);
       FreeMemory((char *) page_table);
     }
   CloseImage(image);

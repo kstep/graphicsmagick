@@ -119,7 +119,7 @@ Export Image *ReadICCImage(const ImageInfo *image_info)
     AllocateMemory(length*sizeof(unsigned char));
   for (q=image->color_profile.info; ; q++)
   {
-    c=fgetc(image->file);
+    c=ReadByte(image);
     if (c == EOF)
       break;
     if ((q-image->color_profile.info+1) >= (int) length)
@@ -180,8 +180,8 @@ Export unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     WriterExit(FileOpenWarning,"Unable to open file",image);
-  (void) fwrite((char *) image->color_profile.info,1,
-    (int) image->color_profile.length,image->file);
+  (void) WriteBlob(image,1,(int) image->color_profile.length,
+    (char *) image->color_profile.info);
   CloseImage(image);
   return(True);
 }

@@ -70,15 +70,14 @@
 %
 %  The format of the DecodeImage routine is:
 %
-%      status=DecodeImage(file,compression,number_columns,number_rows,pixels)
+%      status=DecodeImage(image,compression,number_columns,number_rows,pixels)
 %
 %  A description of each parameter follows:
 %
 %    o status:  Method DecodeImage returns True if all the pixels are
 %      uncompressed without error, otherwise False.
 %
-%    o file: The address of a structure of type FILE.  BMP encoded pixels
-%      are read from this file.
+%    o image: The address of a structure of type Image.
 %
 %    o compression:  A value of 1 means the compressed pixels are runlength
 %      encoded for a 256-color bitmap.  A value of 2 means a 16-color bitmap.
@@ -94,7 +93,7 @@
 %
 %
 */
-static unsigned int DecodeImage(FILE *file,const unsigned int compression,
+static unsigned int DecodeImage(Image *image,const unsigned int compression,
   const unsigned int number_columns,const unsigned int number_rows,
   unsigned char *pixels)
 {
@@ -110,7 +109,7 @@ static unsigned int DecodeImage(FILE *file,const unsigned int compression,
   register unsigned char
     *q;
 
-  assert(file != (FILE *) NULL);
+  assert(image != (Image *) NULL);
   assert(pixels != (unsigned char *) NULL);
   for (i=0; i < (int) (number_columns*number_rows); i++)
     pixels[i]=0;
@@ -119,13 +118,13 @@ static unsigned int DecodeImage(FILE *file,const unsigned int compression,
   q=pixels;
   for (y=0; y < (int) number_rows; )
   {
-    count=fgetc(file);
+    count=ReadByte(image);
     if (count != 0)
       {
         /*
           Encoded mode.
         */
-        byte=fgetc(file);
+        byte=ReadByte(image);
         for (i=0; i < count; i++)
         {
           if (compression == 1)
@@ -140,7 +139,7 @@ static unsigned int DecodeImage(FILE *file,const unsigned int compression,
         /*
           Escape mode.
         */
-        count=fgetc(file);
+        count=ReadByte(image);
         if (count == 0x01)
           return(True);
         switch (count)
@@ -160,8 +159,8 @@ static unsigned int DecodeImage(FILE *file,const unsigned int compression,
             /*
               Delta mode.
             */
-            x+=fgetc(file);
-            y+=fgetc(file);
+            x+=ReadByte(image);
+            y+=ReadByte(image);
             q=pixels+y*number_columns+x;
             break;
           }
@@ -173,11 +172,11 @@ static unsigned int DecodeImage(FILE *file,const unsigned int compression,
             for (i=0; i < count; i++)
             {
               if (compression == 1)
-                *q++=fgetc(file);
+                *q++=ReadByte(image);
               else
                 {
                   if ((i & 0x01) == 0)
-                    byte=fgetc(file);
+                    byte=ReadByte(image);
                   *q++=(i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f);
                 }
               x++;
@@ -188,11 +187,11 @@ static unsigned int DecodeImage(FILE *file,const unsigned int compression,
             if (compression == 1)
               {
                 if (count & 0x01)
-                  (void) fgetc(file);
+                  (void) ReadByte(image);
               }
             else
               if (((count & 0x03) == 1) || ((count & 0x03) == 2))
-                (void) fgetc(file);
+                (void) ReadByte(image);
             break;
           }
         }
@@ -415,20 +414,20 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
   /*
     Determine if this is a BMP file.
   */
-  status=ReadData((char *) magick,1,2,image->file);
+  status=ReadBlob(image,1,2,(char *) magick);
   do
   {
     /*
       Verify BMP identifier.
     */
-    start_position=ftell(image->file)-2;
+    start_position=TellBlob(image)-2;
     if ((status == False) || (strncmp((char *) magick,"BM",2) != 0))
       ReaderExit(CorruptImageWarning,"Not a BMP image file",image);
-    bmp_header.file_size=LSBFirstReadLong(image->file);
-    bmp_header.reserved[0]=LSBFirstReadShort(image->file);
-    bmp_header.reserved[1]=LSBFirstReadShort(image->file);
-    bmp_header.offset_bits=LSBFirstReadLong(image->file);
-    bmp_header.size=LSBFirstReadLong(image->file);
+    bmp_header.file_size=LSBFirstReadLong(image);
+    bmp_header.reserved[0]=LSBFirstReadShort(image);
+    bmp_header.reserved[1]=LSBFirstReadShort(image);
+    bmp_header.offset_bits=LSBFirstReadLong(image);
+    bmp_header.size=LSBFirstReadLong(image);
     if (image->filesize)
       if ((int) (bmp_header.file_size-bmp_header.size) > image->filesize)
         ReaderExit(CorruptImageWarning,"Not a BMP image file",image);
@@ -437,10 +436,10 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
         /*
           OS/2 BMP image file.
         */
-        bmp_header.width=(unsigned long) LSBFirstReadShort(image->file);
-        bmp_header.height=(unsigned long) LSBFirstReadShort(image->file);
-        bmp_header.planes=LSBFirstReadShort(image->file);
-        bmp_header.bits_per_pixel=LSBFirstReadShort(image->file);
+        bmp_header.width=(unsigned long) LSBFirstReadShort(image);
+        bmp_header.height=(unsigned long) LSBFirstReadShort(image);
+        bmp_header.planes=LSBFirstReadShort(image);
+        bmp_header.bits_per_pixel=LSBFirstReadShort(image);
         bmp_header.x_pixels=0;
         bmp_header.y_pixels=0;
         bmp_header.number_colors=0;
@@ -452,44 +451,44 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
         /*
           Microsoft Windows BMP image file.
         */
-        bmp_header.width=LSBFirstReadLong(image->file);
-        bmp_header.height=LSBFirstReadLong(image->file);
-        bmp_header.planes=LSBFirstReadShort(image->file);
-        bmp_header.bits_per_pixel=LSBFirstReadShort(image->file);
-        bmp_header.compression=LSBFirstReadLong(image->file);
-        bmp_header.image_size=LSBFirstReadLong(image->file);
-        bmp_header.x_pixels=LSBFirstReadLong(image->file);
-        bmp_header.y_pixels=LSBFirstReadLong(image->file);
-        bmp_header.number_colors=LSBFirstReadLong(image->file);
-        bmp_header.colors_important=LSBFirstReadLong(image->file);
+        bmp_header.width=LSBFirstReadLong(image);
+        bmp_header.height=LSBFirstReadLong(image);
+        bmp_header.planes=LSBFirstReadShort(image);
+        bmp_header.bits_per_pixel=LSBFirstReadShort(image);
+        bmp_header.compression=LSBFirstReadLong(image);
+        bmp_header.image_size=LSBFirstReadLong(image);
+        bmp_header.x_pixels=LSBFirstReadLong(image);
+        bmp_header.y_pixels=LSBFirstReadLong(image);
+        bmp_header.number_colors=LSBFirstReadLong(image);
+        bmp_header.colors_important=LSBFirstReadLong(image);
         for (i=0; i < ((int) bmp_header.size-40); i++)
-          (void) fgetc(image->file);
+          (void) ReadByte(image);
         if ((bmp_header.compression == 3) &&
             ((bmp_header.bits_per_pixel == 16) ||
              (bmp_header.bits_per_pixel == 32)))
           {
-            bmp_header.red_mask=LSBFirstReadShort(image->file);
-            bmp_header.green_mask=LSBFirstReadShort(image->file);
-            bmp_header.blue_mask=LSBFirstReadShort(image->file);
+            bmp_header.red_mask=LSBFirstReadShort(image);
+            bmp_header.green_mask=LSBFirstReadShort(image);
+            bmp_header.blue_mask=LSBFirstReadShort(image);
             if (bmp_header.size > 40)
               {
                 /*
                   Read color management information.
                 */
-                bmp_header.alpha_mask=LSBFirstReadShort(image->file);
-                bmp_header.colorspace=LSBFirstReadLong(image->file);
-                bmp_header.red_primary.x=LSBFirstReadLong(image->file);
-                bmp_header.red_primary.y=LSBFirstReadLong(image->file);
-                bmp_header.red_primary.z=LSBFirstReadLong(image->file);
-                bmp_header.green_primary.x=LSBFirstReadLong(image->file);
-                bmp_header.green_primary.y=LSBFirstReadLong(image->file);
-                bmp_header.green_primary.z=LSBFirstReadLong(image->file);
-                bmp_header.blue_primary.x=LSBFirstReadLong(image->file);
-                bmp_header.blue_primary.y=LSBFirstReadLong(image->file);
-                bmp_header.blue_primary.z=LSBFirstReadLong(image->file);
-                bmp_header.gamma_scale.x=LSBFirstReadShort(image->file);
-                bmp_header.gamma_scale.y=LSBFirstReadShort(image->file);
-                bmp_header.gamma_scale.z=LSBFirstReadShort(image->file);
+                bmp_header.alpha_mask=LSBFirstReadShort(image);
+                bmp_header.colorspace=LSBFirstReadLong(image);
+                bmp_header.red_primary.x=LSBFirstReadLong(image);
+                bmp_header.red_primary.y=LSBFirstReadLong(image);
+                bmp_header.red_primary.z=LSBFirstReadLong(image);
+                bmp_header.green_primary.x=LSBFirstReadLong(image);
+                bmp_header.green_primary.y=LSBFirstReadLong(image);
+                bmp_header.green_primary.z=LSBFirstReadLong(image);
+                bmp_header.blue_primary.x=LSBFirstReadLong(image);
+                bmp_header.blue_primary.y=LSBFirstReadLong(image);
+                bmp_header.blue_primary.z=LSBFirstReadLong(image);
+                bmp_header.gamma_scale.x=LSBFirstReadShort(image);
+                bmp_header.gamma_scale.y=LSBFirstReadShort(image);
+                bmp_header.gamma_scale.z=LSBFirstReadShort(image);
               }
           }
       }
@@ -545,8 +544,8 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
             packet_size=4;
             if (bmp_header.size == 12)
               packet_size=3;
-            (void) ReadData((char *) bmp_colormap,packet_size,image->colors,
-              image->file);
+            (void) ReadBlob(image,packet_size,image->colors,
+              (char *) bmp_colormap);
             p=bmp_colormap;
             for (i=0; i < (int) image->colors; i++)
             {
@@ -559,8 +558,8 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
             FreeMemory((char *) bmp_colormap);
           }
       }
-    while (ftell(image->file) < (int) (start_position+bmp_header.offset_bits))
-      (void) fgetc(image->file);
+    while (TellBlob(image) < (int) (start_position+bmp_header.offset_bits))
+      (void) ReadByte(image);
     /*
       Read image data.
     */
@@ -573,14 +572,13 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
     if (bmp_pixels == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     if ((bmp_header.compression == 0) || (bmp_header.compression == 3))
-      (void) ReadData((char *) bmp_pixels,1,(unsigned int) image_size,
-        image->file);
+      (void) ReadBlob(image,1,image_size,(char *) bmp_pixels);
     else
       {
         /*
           Convert run-length encoded raster pixels.
         */
-        (void) DecodeImage(image->file,(unsigned int) bmp_header.compression,
+        (void) DecodeImage(image,(unsigned int) bmp_header.compression,
           (unsigned int) bmp_header.width,(unsigned int) bmp_header.height,
           bmp_pixels);
       }
@@ -766,7 +764,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    status=ReadData((char *) magick,1,2,image->file);
+    status=ReadBlob(image,1,2,(char *) magick);
     if ((status == True) && (strncmp((char *) magick,"BM",2) == 0))
       {
         /*
@@ -779,7 +777,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
   } while ((status == True) && (strncmp((char *) magick,"BM",2) == 0));
@@ -1090,22 +1088,22 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     /*
       Write BMP header.
     */
-    (void) fwrite("BM",1,2,image->file);
-    LSBFirstWriteLong(bmp_header.file_size,image->file);
-    LSBFirstWriteShort(bmp_header.reserved[0],image->file);
-    LSBFirstWriteShort(bmp_header.reserved[1],image->file);
-    LSBFirstWriteLong(bmp_header.offset_bits,image->file);
-    LSBFirstWriteLong(bmp_header.size,image->file);
-    LSBFirstWriteLong(bmp_header.width,image->file);
-    LSBFirstWriteLong(bmp_header.height,image->file);
-    LSBFirstWriteShort(bmp_header.planes,image->file);
-    LSBFirstWriteShort(bmp_header.bit_count,image->file);
-    LSBFirstWriteLong(bmp_header.compression,image->file);
-    LSBFirstWriteLong(bmp_header.image_size,image->file);
-    LSBFirstWriteLong(bmp_header.x_pixels,image->file);
-    LSBFirstWriteLong(bmp_header.y_pixels,image->file);
-    LSBFirstWriteLong(bmp_header.number_colors,image->file);
-    LSBFirstWriteLong(bmp_header.colors_important,image->file);
+    (void) WriteBlob(image,1,2,"BM");
+    (void) LSBFirstWriteLong(image,bmp_header.file_size);
+    (void) LSBFirstWriteShort(image,bmp_header.reserved[0]);
+    (void) LSBFirstWriteShort(image,bmp_header.reserved[1]);
+    (void) LSBFirstWriteLong(image,bmp_header.offset_bits);
+    (void) LSBFirstWriteLong(image,bmp_header.size);
+    (void) LSBFirstWriteLong(image,bmp_header.width);
+    (void) LSBFirstWriteLong(image,bmp_header.height);
+    (void) LSBFirstWriteShort(image,bmp_header.planes);
+    (void) LSBFirstWriteShort(image,bmp_header.bit_count);
+    (void) LSBFirstWriteLong(image,bmp_header.compression);
+    (void) LSBFirstWriteLong(image,bmp_header.image_size);
+    (void) LSBFirstWriteLong(image,bmp_header.x_pixels);
+    (void) LSBFirstWriteLong(image,bmp_header.y_pixels);
+    (void) LSBFirstWriteLong(image,bmp_header.number_colors);
+    (void) LSBFirstWriteLong(image,bmp_header.colors_important);
     if (image->class == PseudoClass)
       {
         unsigned char
@@ -1133,12 +1131,11 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           *q++=(Quantum) 0x0;
           *q++=(Quantum) 0x0;
         }
-        (void) fwrite((char *) bmp_colormap,4,1 << bmp_header.bit_count,
-          image->file);
+        (void) WriteBlob(image,4,1 << bmp_header.bit_count,
+          (char *) bmp_colormap);
         FreeMemory((char *) bmp_colormap);
       }
-    (void) fwrite((char *) bmp_pixels,1,(int) bmp_header.image_size,
-      image->file);
+    (void) WriteBlob(image,1,bmp_header.image_size,(char *) bmp_pixels);
     FreeMemory((char *) bmp_pixels);
     if (image->next == (Image *) NULL)
       break;

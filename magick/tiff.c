@@ -315,11 +315,11 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
       file=fopen(image_info->filename,WriteBinaryType);
       if (file == (FILE *) NULL)
         ReaderExit(FileOpenWarning,"Unable to write file",image);
-      c=fgetc(image->file);
+      c=ReadByte(image);
       while (c != EOF)
       {
         (void) putc(c,file);
-        c=fgetc(image->file);
+        c=ReadByte(image);
       }
       (void) fclose(file);
       (void) strcpy(image->filename,image_info->filename);

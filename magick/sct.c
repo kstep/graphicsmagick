@@ -116,8 +116,8 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
   /*
     Read control block.
   */
-  (void) ReadData((char *) buffer,1,80,image->file);
-  (void) ReadData((char *) magick,1,2,image->file);
+  (void) ReadBlob(image,1,80,(char *) buffer);
+  (void) ReadBlob(image,1,2,(char *) magick);
   if ((strncmp((char *) magick,"CT",2) != 0) &&
       (strncmp((char *) magick,"LW",2) != 0) &&
       (strncmp((char *) magick,"BM",2) != 0) &&
@@ -130,18 +130,18 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
       (strncmp((char *) magick,"TX",2) == 0))
     ReaderExit(CorruptImageWarning,"only Continuous Tone Picture supported",
       image);
-  (void) ReadData((char *) buffer,1,174,image->file);
-  (void) ReadData((char *) buffer,1,768,image->file);
+  (void) ReadBlob(image,1,174,(char *) buffer);
+  (void) ReadBlob(image,1,768,(char *) buffer);
   /*
     Read paramter block.
   */
-  (void) ReadData((char *) buffer,1,32,image->file);
-  (void) ReadData((char *) buffer,1,14,image->file);
+  (void) ReadBlob(image,1,32,(char *) buffer);
+  (void) ReadBlob(image,1,14,(char *) buffer);
   image->rows=atoi(buffer);
-  (void) ReadData((char *) buffer,1,14,image->file);
+  (void) ReadBlob(image,1,14,(char *) buffer);
   image->columns=atoi(buffer);
-  (void) ReadData((char *) buffer,1,196,image->file);
-  (void) ReadData((char *) buffer,1,768,image->file);
+  (void) ReadBlob(image,1,196,(char *) buffer);
+  (void) ReadBlob(image,1,768,(char *) buffer);
   if (image_info->ping)
     {
       CloseImage(image);
@@ -165,35 +165,35 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
     q=image->pixels+image->columns*y;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->red=MaxRGB-UpScale(fgetc(image->file));
+      q->red=MaxRGB-UpScale(ReadByte(image));
       q++;
     }
     if ((image->columns % 2) != 0)
-      (void) fgetc(image->file);  /* pad */
+      (void) ReadByte(image);  /* pad */
     q=image->pixels+image->columns*y;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->green=MaxRGB-UpScale(fgetc(image->file));
+      q->green=MaxRGB-UpScale(ReadByte(image));
       q++;
     }
     if ((image->columns % 2) != 0)
-      (void) fgetc(image->file);  /* pad */
+      (void) ReadByte(image);  /* pad */
     q=image->pixels+image->columns*y;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->blue=MaxRGB-UpScale(fgetc(image->file));
+      q->blue=MaxRGB-UpScale(ReadByte(image));
       q++;
     }
     if ((image->columns % 2) != 0)
-      (void) fgetc(image->file);  /* pad */
+      (void) ReadByte(image);  /* pad */
     q=image->pixels+image->columns*y;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->index=MaxRGB-UpScale(fgetc(image->file));
+      q->index=MaxRGB-UpScale(ReadByte(image));
       q++;
     }
     if ((image->columns % 2) != 0)
-      (void) fgetc(image->file);  /* pad */
+      (void) ReadByte(image);  /* pad */
     ProgressMonitor(LoadImageText,y,image->rows);
   }
   CondenseImage(image);

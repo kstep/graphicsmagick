@@ -167,9 +167,9 @@ extern "C" {
 #define ReadQuantumFile(quantum)  \
 {  \
   if (image->depth <= 8) \
-    quantum=UpScale(fgetc(image->file)); \
+    quantum=UpScale(ReadByte(image)); \
   else \
-    quantum=MSBFirstReadShort(image->file) >> (image->depth-QuantumDepth); \
+    quantum=MSBFirstReadShort(image) >> (image->depth-QuantumDepth); \
 }
 #define RenderPostscriptText  "  Rendering postscript...  "
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
@@ -196,12 +196,12 @@ extern "C" {
 #define WriteQuantumFile(quantum)  \
 {  \
   if (image->depth <= 8) \
-    (void) fputc(DownScale(quantum),image->file); \
+    (void) WriteByte(image,DownScale(quantum)); \
   else \
     if ((QuantumDepth-image->depth) > 0) \
-      MSBFirstWriteShort((quantum)*257,image->file); \
+      MSBFirstWriteShort(image,(quantum)*257); \
     else \
-      MSBFirstWriteShort(quantum,image->file); \
+      MSBFirstWriteShort(image,quantum); \
 }
 #define WriterExit(error,message,image) \
 { \

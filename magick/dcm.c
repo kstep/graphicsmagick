@@ -2703,10 +2703,10 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
   /*
     Read DCM preamble.
   */
-  status=ReadData((char *) magick,1,128,image->file);
-  status|=ReadData((char *) magick,1,4,image->file);
+  status=ReadBlob(image,1,128,(char *) magick);
+  status|=ReadBlob(image,1,4,(char *) magick);
   if ((status == False) || (strncmp((char *) magick,"DICM",4) != 0))
-    (void) fseek(image->file,0L,SEEK_SET);
+    (void) SeekBlob(image,0L,SEEK_SET);
   /*
     Read DCM Medical image.
   */
@@ -2729,9 +2729,9 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
     /*
       Read a group.
     */
-    image->offset=ftell(image->file);
-    group=LSBFirstReadShort(image->file);
-    element=LSBFirstReadShort(image->file);
+    image->offset=TellBlob(image);
+    group=LSBFirstReadShort(image);
+    element=LSBFirstReadShort(image);
     quantum=0;
     /*
       Find corresponding VR for this group and element.
@@ -2741,7 +2741,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
           (element == dicom_info[i].element))
         break;
     (void) strcpy(implicit_vr,dicom_info[i].vr);
-    status=ReadData((char *) explicit_vr,1,2,image->file);
+    status=ReadBlob(image,1,2,(char *) explicit_vr);
     if (strcmp(implicit_vr,"xs") == 0)
       if (isupper((int) *explicit_vr) && isupper((int) *(explicit_vr+1)))
         (void) strcpy(implicit_vr,explicit_vr);
@@ -2752,29 +2752,29 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
             (strcmp(explicit_vr,"UN") == 0) ||
             (strcmp(explicit_vr,"OW") == 0) || (strcmp(explicit_vr,"SQ") == 0))
           {
-            (void) LSBFirstReadShort(image->file);
+            (void) LSBFirstReadShort(image);
             quantum=4;
           }
       }
     else
       {
         if (strcmp(implicit_vr,"xs") != 0)
-          (void) fseek(image->file,(off_t) -2,SEEK_CUR);
+          (void) SeekBlob(image,(off_t) -2,SEEK_CUR);
         else
           if ((strcmp(explicit_vr,"SS") == 0) ||
               (strcmp(explicit_vr,"US") == 0))
             quantum=2;
           else
-            (void) fseek(image->file,(off_t) -2,SEEK_CUR);
+            (void) SeekBlob(image,(off_t) -2,SEEK_CUR);
         if (strcmp(implicit_vr,"SQ") != 0)
           quantum=4;
       }
     datum=0;
     if (quantum == 4)
-      datum=LSBFirstReadLong(image->file);
+      datum=LSBFirstReadLong(image);
     else
       if (quantum == 2)
-        datum=LSBFirstReadShort(image->file);
+        datum=LSBFirstReadShort(image);
     quantum=0;
     length=1;
     if (datum != 0)
@@ -2852,13 +2852,13 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
     */
     data=(unsigned char *) NULL;
     if ((length == 1) && (quantum == 1))
-      datum=fgetc(image->file);
+      datum=ReadByte(image);
     else
       if ((length == 1) && (quantum == 2))
-        datum=LSBFirstReadShort(image->file);
+        datum=LSBFirstReadShort(image);
       else
         if ((length == 1) && (quantum == 4))
-          datum=LSBFirstReadLong(image->file);
+          datum=LSBFirstReadLong(image);
         else
           {
             data=(unsigned char *)
@@ -2866,7 +2866,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
             if (data == (unsigned char *) NULL)
               ReaderExit(ResourceLimitWarning,"Memory allocation failed",
                 image);
-            (void) ReadData((char *) data,quantum,length,image->file);
+            (void) ReadBlob(image,quantum,length,(char *) data);
             data[length*quantum]=0;
           }
     switch (group)
@@ -3099,12 +3099,12 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
       if (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0)
         c+=48;
       for (i=0; i < c; i++)
-        (void) fgetc(image->file);
-      c=fgetc(image->file);
+        (void) ReadByte(image);
+      c=ReadByte(image);
       while (c != EOF)
       {
         (void) putc(c,file);
-        c=fgetc(image->file);
+        c=ReadByte(image);
       }
       (void) fclose(file);
       DestroyImage(image);
@@ -3185,10 +3185,10 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
             {
               switch (i)
               {
-                case 0: q->red=(Quantum) fgetc(image->file); break;
-                case 1: q->green=(Quantum) fgetc(image->file); break;
-                case 2: q->blue=(Quantum) fgetc(image->file); break;
-                case 3: q->index=(unsigned int) fgetc(image->file); break;
+                case 0: q->red=(Quantum) ReadByte(image); break;
+                case 1: q->green=(Quantum) ReadByte(image); break;
+                case 2: q->blue=(Quantum) ReadByte(image); break;
+                case 3: q->index=(unsigned int) ReadByte(image); break;
                 default: break;
               }
               q++;
@@ -3227,17 +3227,17 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
             if (samples_per_pixel == 1)
               {
                 if (bytes_per_pixel == 1)
-                  index=fgetc(image->file);
+                  index=ReadByte(image);
                 else
                   if (bits_allocated != 12)
-                    index=MSBFirstReadShort(image->file);
+                    index=MSBFirstReadShort(image);
                   else
                     {
                       if (i & 0x01)
-                        index=(fgetc(image->file) << 8) | byte;
+                        index=(ReadByte(image) << 8) | byte;
                       else
                         {
-                          index=MSBFirstReadShort(image->file);
+                          index=MSBFirstReadShort(image);
                           byte=index & 0x0f;
                           index>>=4;
                         }
@@ -3251,15 +3251,15 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
             else
               if (bytes_per_pixel == 1)
                 {
-                  red=fgetc(image->file);
-                  green=fgetc(image->file);
-                  blue=fgetc(image->file);
+                  red=ReadByte(image);
+                  green=ReadByte(image);
+                  blue=ReadByte(image);
                 }
               else
                 {
-                  red=LSBFirstReadShort(image->file);
-                  green=LSBFirstReadShort(image->file);
-                  blue=LSBFirstReadShort(image->file);
+                  red=LSBFirstReadShort(image);
+                  green=LSBFirstReadShort(image);
+                  blue=LSBFirstReadShort(image);
                 }
             if (scale != (Quantum *) NULL)
               {
@@ -3329,7 +3329,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
   }

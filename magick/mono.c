@@ -124,7 +124,7 @@ Export Image *ReadMONOImage(const ImageInfo *image_info)
   if (image->file == (FILE *) NULL)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   for (i=0; i < image->offset; i++)
-    (void) fgetc(image->file);
+    (void) ReadByte(image);
   /*
     Initialize image structure.
   */
@@ -150,7 +150,7 @@ Export Image *ReadMONOImage(const ImageInfo *image_info)
     Convert bi-level image to runlength-encoded packets.
   */
   for (y=0; y < (int) ((image->rows-image->tile_info.y*image->columns+7) >> 3); y++)
-    (void) fgetc(image->file);
+    (void) ReadByte(image);
   byte=0;
   q=image->pixels;
   SetRunlengthEncoder(q);
@@ -158,11 +158,11 @@ Export Image *ReadMONOImage(const ImageInfo *image_info)
   {
     bit=0;
     for (x=0; y < ((image->tile_info.x+7) >> 3); x++)
-      (void) fgetc(image->file);
+      (void) ReadByte(image);
     for (x=0; x < (int) image->columns; x++)
     {
       if (bit == 0)
-        byte=fgetc(image->file);
+        byte=ReadByte(image);
       index=(byte & 0x01) ? 0 : 1;
       if ((index == q->index) && ((int) q->length < MaxRunlength))
         q->length++;
@@ -285,7 +285,7 @@ Export unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
       bit++;
       if (bit == 8)
         {
-          (void) fputc(byte,image->file);
+          (void) WriteByte(image,byte);
           bit=0;
           byte=0;
         }
@@ -296,7 +296,7 @@ Export unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
             Advance to the next scanline.
           */
           if (bit != 0)
-            (void) fputc(byte >> (8-bit),image->file);
+            (void) WriteByte(image,byte >> (8-bit));
           if (QuantumTick(y,image->rows))
             ProgressMonitor(SaveImageText,y,image->rows);
           bit=0;

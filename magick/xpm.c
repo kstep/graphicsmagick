@@ -664,6 +664,7 @@ Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
                          "lzxcvbnmMNBVCZASDFGHJKLPIUYTREWQ!~^/()_`'][{}|";
 
   char
+    buffer[MaxTextExtent],
     name[MaxTextExtent],
     symbol[MaxTextExtent];
 
@@ -771,11 +772,15 @@ Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   /*
     XPM header.
   */
-  (void) fprintf(image->file,"/* XPM */\n");
-  (void) fprintf(image->file,"static char *magick[] = {\n");
-  (void) fprintf(image->file,"/* columns rows colors chars-per-pixel */\n");
-  (void) fprintf(image->file,"\"%u %u %u %d\",\n",image->columns,
+  (void) strcpy(buffer,"/* XPM */\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) strcpy(buffer,"static char *magick[] = {\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) strcpy(buffer,"/* columns rows colors chars-per-pixel */\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) sprintf(buffer,"\"%u %u %u %d\",\n",image->columns,
     image->rows,colors,characters_per_pixel);
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
   for (i=0; i < (int) colors; i++)
   {
     ColorPacket
@@ -818,17 +823,20 @@ Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       symbol[j]=Cixel[k];
     }
     symbol[j]='\0';
-    (void) fprintf(image->file,"\"%.1024s c %.1024s\",\n",symbol,name);
+    (void) sprintf(buffer,"\"%.1024s c %.1024s\",\n",symbol,name);
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
   }
   /*
     Define XPM pixels.
   */
-  (void) fprintf(image->file,"/* pixels */\n");
+  (void) strcpy(buffer,"/* pixels */\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
   p=image->pixels;
   runlength=p->length+1;
   for (y=0; y < (int) image->rows; y++)
   {
-    (void) fprintf(image->file,"\"");
+    (void) strcpy(buffer,"\"");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
@@ -846,14 +854,17 @@ Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
-      (void) fprintf(image->file,"%.1024s",symbol);
+      (void) sprintf(buffer,"%.1024s",symbol);
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
     }
-    (void) fprintf(image->file,"\"%.1024s\n",
+    (void) sprintf(buffer,"\"%.1024s\n",
       (y == (int) (image->rows-1) ? "" : ","));
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     if (QuantumTick(y,image->rows))
       ProgressMonitor(SaveImageText,y,image->rows);
   }
-  (void) fprintf(image->file,"};\n");
+  (void) strcpy(buffer,"};\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
   CloseImage(image);
   return(True);
 }

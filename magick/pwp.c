@@ -129,7 +129,7 @@ Export Image *ReadPWPImage(const ImageInfo *image_info)
   OpenImage(image_info,pwp_image,ReadBinaryType);
   if (pwp_image->file == (FILE *) NULL)
     ReaderExit(FileOpenWarning,"Unable to open file",pwp_image);
-  status=ReadData((char *) magick,1,5,pwp_image->file);
+  status=ReadBlob(pwp_image,1,5,(char *) magick);
   if ((status == False) || (strncmp((char *) magick,"SFW95",5) != 0))
     ReaderExit(CorruptImageWarning,"Not a PWP image file",pwp_image);
   local_info=CloneImageInfo(image_info);
@@ -137,7 +137,7 @@ Export Image *ReadPWPImage(const ImageInfo *image_info)
   image=(Image *) NULL;
   for ( ; ; )
   {
-    for (c=fgetc(pwp_image->file); c != EOF; c=fgetc(pwp_image->file))
+    for (c=ReadByte(pwp_image); c != EOF; c=ReadByte(pwp_image))
     {
       for (i=0; i < 17; i++)
         magick[i]=magick[i+1];
@@ -159,7 +159,7 @@ Export Image *ReadPWPImage(const ImageInfo *image_info)
     filesize=65535L*magick[2]+256L*magick[1]+magick[0];
     for (i=0; i < filesize; i++)
     {
-      c=fgetc(pwp_image->file);
+      c=ReadByte(pwp_image);
       (void) fputc(c,file);
     }
     (void) fclose(file);
@@ -184,7 +184,7 @@ Export Image *ReadPWPImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (next_image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    ProgressMonitor(LoadImagesText,(unsigned int) ftell(pwp_image->file),
+    ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(pwp_image),
       (unsigned int) pwp_image->filesize);
   }
   (void) remove(local_info->filename);

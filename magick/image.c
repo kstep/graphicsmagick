@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                      IIIII  M   M   AAA   GGGG  EEEEE                       %
-%                        I    MM MM  A   A G      E                           %
-%                        I    M M M  AAAAA G  GG  EEE                         %
-%                        I    M   M  A   A G   G  E                           %
-%                      IIIII  M   M  A   A  GGGG  EEEEE                       %
+%                     IIIII  M   M   AAA    GGGG  EEEEE                       %
+%                       I    MM MM  A   A  G      E                           %
+%                       I    M M M  AAAAA  G  GG  EEE                         %
+%                       I    M   M  A   A  G   G  E                           %
+%                     IIIII  M   M  A   A   GGGG  EEEEE                       %
 %                                                                             %
 %                                                                             %
 %                          ImageMagick Image Methods                          %
@@ -135,6 +135,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   /*
     Initialize Image structure.
   */
+  GetBlobInfo(&allocated_image->blob);
   allocated_image->file=(FILE *) NULL;
   allocated_image->exempt=False;
   allocated_image->status=False;
@@ -747,68 +748,6 @@ Export Image *AverageImages(const Image *images)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   B l o b T o I m a g e                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method BlobToImage implements direct to memory image formats.  It returns
-%  the blob as an image.
-%
-%  The format of the BlobToImage routine is:
-%
-%      image=BlobToImage(blob,length)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method BlobToImage returns an image from the supplied blob.
-%      If an error occurs NULL is returned.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o blob: The address of a character stream in one of the image formats 
-%      understood by ImageMagick.
-%
-%    o length: This unsigned integer reflects the length in bytes of the blob.
-%
-%
-*/
-Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
-  const unsigned long length)
-{
-  FILE
-    *file;
-
-  Image
-    *image;
-
-  ImageInfo
-    *local_info;
-
-  local_info=CloneImageInfo(image_info);
-  TemporaryFilename(local_info->filename);
-  file=fopen(local_info->filename,"w");
-  if (file == (FILE *) NULL)
-    {
-      MagickWarning(FileOpenWarning,"Unable to convert blob to an image",
-        local_info->filename);
-      DestroyImageInfo(local_info);
-      return((Image *) NULL);
-    }
-  (void) fwrite(blob,1,length,file);
-  (void) fclose(file);
-  image=ReadImage(local_info);
-  (void) remove(local_info->filename);
-  DestroyImageInfo(local_info);
-  return(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   C l o n e I m a g e                                                       %
 %                                                                             %
 %                                                                             %
@@ -1083,8 +1022,8 @@ Export void CloseImage(Image *image)
     return;
   (void) fflush(image->file);
   image->status=ferror(image->file);
-  (void) fseek(image->file,0L,SEEK_END);
-  image->filesize=ftell(image->file);
+  (void) SeekBlob(image,0L,SEEK_END);
+  image->filesize=TellBlob(image);
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
   if (image->pipe)
     (void) pclose(image->file);
@@ -2992,96 +2931,6 @@ void GetPixels(const Image *image,float *red_pixels,float *green_pixels,
     }
     p++;
   }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I m a g e T o B l o b                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ImageToBlob implements direct to memory image formats.  It returns
-%  the image as a blob and its length.
-%
-%  The format of the ImageToBlob routine is:
-%
-%      blob=ImageToBlob(image_info,image,length)
-%
-%  A description of each parameter follows:
-%
-%    o blob:  Method ImageToBlob returns a chunk of memory written in the
-%      desired image format (e.g. JPEG, GIF, etc.).  If an error occurs
-%      NULL is returned.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image: The address of a structure of type Image.
-%
-%    o length: This pointer to an unsigned int is set to the length of
-%      the image blob.
-%
-%
-*/
-Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
-  unsigned long *length)
-{
-  char
-    *blob,
-    filename[MaxTextExtent];
-
-  FILE
-    *file;
-
-  ImageInfo
-    *local_info;
-
-  unsigned int
-    status;
-
-  /*
-    Write file to disk in blob image format.
-  */
-  *length=0;
-  local_info=CloneImageInfo(image_info);
-  (void) strcpy(filename,image->filename);
-  FormatString(image->filename,"%.1024s:%.1024s",image->magick,
-    local_info->unique);
-  status=WriteImage(local_info,image);
-  if (status == False)
-    {
-      MagickWarning(FileOpenWarning,"Unable to convert image to a blob",
-        image->filename);
-      return((char *) NULL);
-    }
-  /*
-    Read image from disk as blob.
-  */
-  file=fopen(image->filename,"rb");
-  (void) remove(image->filename);
-  (void) strcpy(image->filename,filename);
-  DestroyImageInfo(local_info);
-  if (file == (FILE *) NULL)
-    {
-      MagickWarning(FileOpenWarning,"Unable to convert image to a blob",
-        image->filename);
-      return((char *) NULL);
-    }
-  (void) fseek(file,0L,SEEK_END);
-  *length=ftell(file);
-  (void) fseek(file,0L,SEEK_SET);
-  blob=(char *) AllocateMemory(*length*sizeof(char));
-  if (blob != (char *) NULL)
-    (void) ReadData((char *) blob,1,*length,file);
-  else
-    MagickError(ResourceLimitWarning,"Unable to create blob",
-      "Memory allocation failed");
-  (void) fclose(file);
-  return(blob);
 }
 
 /*
@@ -5046,9 +4895,9 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
         image->file=(FILE *) fopen(filename,type);
         if (image->file != (FILE *) NULL)
           {
-            (void) fseek(image->file,0L,SEEK_END);
-            image->filesize=ftell(image->file);
-            (void) fseek(image->file,0L,SEEK_SET);
+            (void) SeekBlob(image,0L,SEEK_END);
+            image->filesize=TellBlob(image);
+            (void) SeekBlob(image,0L,SEEK_SET);
           }
       }
   image->status=False;
@@ -6360,7 +6209,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
   if (image.file == (FILE *) NULL)
     return;
   if (!image.exempt)
-    (void) ReadData(magick,1,MaxTextExtent,image.file);
+    (void) ReadBlob(&image,1,MaxTextExtent,magick);
   else
     {
       FILE
@@ -6433,6 +6282,8 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
   if ((strncmp(magick,"<HTML",5) == 0) ||
       (strncmp(magick,"<html",5) == 0))
     (void) strcpy(image_info->magick,"HTML");
+  if (strncmp(magick+8,"ILBM",2) == 0)
+    (void) strcpy(image_info->magick,"ILBM");
   if (strncmp(magick,"\377\330\377",3) == 0)
     (void) strcpy(image_info->magick,"JPEG");
   if (strncmp(magick,"id=ImageMagick",14) == 0)

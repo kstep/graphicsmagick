@@ -146,7 +146,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
   /*
     Determine if this is a TIM file.
   */
-  tim_header.id=LSBFirstReadLong(image->file);
+  tim_header.id=LSBFirstReadLong(image);
   do
   {
     /*
@@ -154,7 +154,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
     */
     if (tim_header.id != 0x00000010)
       ReaderExit(CorruptImageWarning,"Not a TIM image file",image);
-    tim_header.flag=LSBFirstReadLong(image->file);
+    tim_header.flag=LSBFirstReadLong(image);
     has_clut=!!(tim_header.flag & (1 << 3));
     pixel_mode=tim_header.flag & 0x07;
     switch (pixel_mode)
@@ -173,11 +173,11 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
         /*
           Read TIM raster colormap.
         */
-        (void)LSBFirstReadLong(image->file);
-        (void)LSBFirstReadShort(image->file);
-        (void)LSBFirstReadShort(image->file);
-        width=LSBFirstReadShort(image->file);
-        height=LSBFirstReadShort(image->file);
+        (void)LSBFirstReadLong(image);
+        (void)LSBFirstReadShort(image);
+        (void)LSBFirstReadShort(image);
+        width=LSBFirstReadShort(image);
+        height=LSBFirstReadShort(image);
         image->class=PseudoClass;
         image->colors=(unsigned int) pixel_mode == 1 ? 256 : 16;
         image->colormap=(ColorPacket *)
@@ -187,7 +187,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
         if ((image->colormap == (ColorPacket *) NULL) ||
             (tim_colormap == (unsigned char *) NULL))
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-        (void) ReadData((char *) tim_colormap,2,image->colors,image->file);
+        (void) ReadBlob(image,2,image->colors,(char *) tim_colormap);
         p=tim_colormap;
         for (i=0; i < (int) image->colors; i++)
         {
@@ -202,18 +202,18 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
     /*
       Read image data.
     */
-    (void) LSBFirstReadLong(image->file);
-    (void) LSBFirstReadShort(image->file);
-    (void) LSBFirstReadShort(image->file);
-    width=LSBFirstReadShort(image->file);
-    height=LSBFirstReadShort(image->file);
+    (void) LSBFirstReadLong(image);
+    (void) LSBFirstReadShort(image);
+    (void) LSBFirstReadShort(image);
+    width=LSBFirstReadShort(image);
+    height=LSBFirstReadShort(image);
     image_size=2*width*height;
     bytes_per_line=width*2;
     width=(width*16)/bits_per_pixel;
     tim_data=(unsigned char *) AllocateMemory(image_size*sizeof(unsigned char));
     if (tim_data == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Unable to allocate memory",image);
-    (void) ReadData((char *) tim_data,1,(unsigned int) image_size,image->file);
+    (void) ReadBlob(image,1,image_size,(char *) tim_data);
     tim_pixels=tim_data;
     /*
       Initialize image structure.
@@ -339,7 +339,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
     /*
       Proceed to next image.
     */
-    tim_header.id=LSBFirstReadLong(image->file);
+    tim_header.id=LSBFirstReadLong(image);
     if (tim_header.id == 0x00000010)
       {
         /*
@@ -352,7 +352,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
   } while (tim_header.id == 0x00000010);

@@ -125,8 +125,8 @@ Export Image *ReadAVSImage(const ImageInfo *image_info)
   /*
     Read AVS image.
   */
-  width=MSBFirstReadLong(image->file);
-  height=MSBFirstReadLong(image->file);
+  width=MSBFirstReadLong(image);
+  height=MSBFirstReadLong(image);
   if ((width == (unsigned long) ~0) || (height == (unsigned long) ~0))
     ReaderExit(CorruptImageWarning,"Not a AVS image file",image);
   do
@@ -155,11 +155,11 @@ Export Image *ReadAVSImage(const ImageInfo *image_info)
     {
       for (x=0; x < (int) image->columns; x++)
       {
-        index=UpScale(fgetc(image->file));
+        index=UpScale(ReadByte(image));
         image->matte|=index != Transparent;
-        red=UpScale(fgetc(image->file));
-        green=UpScale(fgetc(image->file));
-        blue=UpScale(fgetc(image->file));
+        red=UpScale(ReadByte(image));
+        green=UpScale(ReadByte(image));
+        blue=UpScale(ReadByte(image));
         if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
             (index == q->index) && ((int) q->length < MaxRunlength))
           q->length++;
@@ -186,8 +186,8 @@ Export Image *ReadAVSImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    width=MSBFirstReadLong(image->file);
-    height=MSBFirstReadLong(image->file);
+    width=MSBFirstReadLong(image);
+    height=MSBFirstReadLong(image);
     if ((width != (unsigned long) ~0) && (height != (unsigned long) ~0))
       {
         /*
@@ -200,7 +200,7 @@ Export Image *ReadAVSImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
   } while ((width != (unsigned long) ~0) && (height != (unsigned long) ~0));
@@ -274,8 +274,8 @@ Export unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
       Write AVS header.
     */
     TransformRGBImage(image,RGBColorspace);
-    MSBFirstWriteLong(image->columns,image->file);
-    MSBFirstWriteLong(image->rows,image->file);
+    MSBFirstWriteLong(image,image->columns);
+    MSBFirstWriteLong(image,image->rows);
     /*
       Allocate memory for pixels.
     */
@@ -301,7 +301,7 @@ Export unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
         x++;
         if (x == (int) image->columns)
           {
-            (void) fwrite((char *) pixels,1,q-pixels,image->file);
+            (void) WriteBlob(image,1,q-pixels,(char *) pixels);
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);

@@ -189,49 +189,49 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
   OpenImage(image_info,image,ReadBinaryType);
   if (image->file == (FILE *) NULL)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
-  rla_header.window.left=MSBFirstReadShort(image->file);
-  rla_header.window.right=MSBFirstReadShort(image->file);
-  rla_header.window.bottom=MSBFirstReadShort(image->file);
-  rla_header.window.top=MSBFirstReadShort(image->file);
-  rla_header.active_window.left=MSBFirstReadShort(image->file);
-  rla_header.active_window.right=MSBFirstReadShort(image->file);
-  rla_header.active_window.bottom=MSBFirstReadShort(image->file);
-  rla_header.active_window.top=MSBFirstReadShort(image->file);
-  rla_header.frame=MSBFirstReadShort(image->file);
-  rla_header.storage_type=MSBFirstReadShort(image->file);
-  rla_header.number_channels=MSBFirstReadShort(image->file);
-  rla_header.number_matte_channels=MSBFirstReadShort(image->file);
+  rla_header.window.left=MSBFirstReadShort(image);
+  rla_header.window.right=MSBFirstReadShort(image);
+  rla_header.window.bottom=MSBFirstReadShort(image);
+  rla_header.window.top=MSBFirstReadShort(image);
+  rla_header.active_window.left=MSBFirstReadShort(image);
+  rla_header.active_window.right=MSBFirstReadShort(image);
+  rla_header.active_window.bottom=MSBFirstReadShort(image);
+  rla_header.active_window.top=MSBFirstReadShort(image);
+  rla_header.frame=MSBFirstReadShort(image);
+  rla_header.storage_type=MSBFirstReadShort(image);
+  rla_header.number_channels=MSBFirstReadShort(image);
+  rla_header.number_matte_channels=MSBFirstReadShort(image);
   if (rla_header.number_channels == 0)
     rla_header.number_channels=3;
   rla_header.number_channels+=rla_header.number_matte_channels;
-  rla_header.number_auxiliary_channels=MSBFirstReadShort(image->file);
-  rla_header.revision=MSBFirstReadShort(image->file);
-  (void) ReadData((char *) rla_header.gamma,16,1,image->file);
-  (void) ReadData((char *) rla_header.red_primary,24,1,image->file);
-  (void) ReadData((char *) rla_header.green_primary,24,1,image->file);
-  (void) ReadData((char *) rla_header.blue_primary,24,1,image->file);
-  (void) ReadData((char *) rla_header.white_point,24,1,image->file);
-  rla_header.job_number=(long) MSBFirstReadLong(image->file);
-  (void) ReadData((char *) rla_header.name,128,1,image->file);
-  (void) ReadData((char *) rla_header.description,128,1,image->file);
-  (void) ReadData((char *) rla_header.program,64,1,image->file);
-  (void) ReadData((char *) rla_header.machine,32,1,image->file);
-  (void) ReadData((char *) rla_header.user,32,1,image->file);
-  (void) ReadData((char *) rla_header.date,20,1,image->file);
-  (void) ReadData((char *) rla_header.aspect,24,1,image->file);
-  (void) ReadData((char *) rla_header.aspect_ratio,8,1,image->file);
-  (void) ReadData((char *) rla_header.chan,32,1,image->file);
-  rla_header.field=MSBFirstReadShort(image->file);
-  (void) ReadData((char *) rla_header.time,12,1,image->file);
-  (void) ReadData((char *) rla_header.filter,32,1,image->file);
-  rla_header.bits_per_channel=MSBFirstReadShort(image->file);
-  rla_header.matte_type=MSBFirstReadShort(image->file);
-  rla_header.matte_bits=MSBFirstReadShort(image->file);
-  rla_header.auxiliary_type=MSBFirstReadShort(image->file);
-  rla_header.auxiliary_bits=MSBFirstReadShort(image->file);
-  (void) ReadData((char *) rla_header.auxiliary,32,1,image->file);
-  (void) ReadData((char *) rla_header.space,36,1,image->file);
-  rla_header.next=(long) MSBFirstReadLong(image->file);
+  rla_header.number_auxiliary_channels=MSBFirstReadShort(image);
+  rla_header.revision=MSBFirstReadShort(image);
+  (void) ReadBlob(image,1,16,(char *) rla_header.gamma);
+  (void) ReadBlob(image,1,24,(char *) rla_header.red_primary);
+  (void) ReadBlob(image,1,24,(char *) rla_header.green_primary);
+  (void) ReadBlob(image,1,24,(char *) rla_header.blue_primary);
+  (void) ReadBlob(image,1,24,(char *) rla_header.white_point);
+  rla_header.job_number=(long) MSBFirstReadLong(image);
+  (void) ReadBlob(image,1,128,(char *) rla_header.name);
+  (void) ReadBlob(image,1,128,(char *) rla_header.description);
+  (void) ReadBlob(image,1,64,(char *) rla_header.program);
+  (void) ReadBlob(image,1,32,(char *) rla_header.machine);
+  (void) ReadBlob(image,1,32,(char *) rla_header.user);
+  (void) ReadBlob(image,1,20,(char *) rla_header.date);
+  (void) ReadBlob(image,1,24,(char *) rla_header.aspect);
+  (void) ReadBlob(image,1,8,(char *) rla_header.aspect_ratio);
+  (void) ReadBlob(image,1,32,(char *) rla_header.chan);
+  rla_header.field=MSBFirstReadShort(image);
+  (void) ReadBlob(image,1,12,(char *) rla_header.time);
+  (void) ReadBlob(image,1,32,(char *) rla_header.filter);
+  rla_header.bits_per_channel=MSBFirstReadShort(image);
+  rla_header.matte_type=MSBFirstReadShort(image);
+  rla_header.matte_bits=MSBFirstReadShort(image);
+  rla_header.auxiliary_type=MSBFirstReadShort(image);
+  rla_header.auxiliary_bits=MSBFirstReadShort(image);
+  (void) ReadBlob(image,1,32,(char *) rla_header.auxiliary);
+  (void) ReadBlob(image,1,36,(char *) rla_header.space);
+  rla_header.next=(long) MSBFirstReadLong(image);
   /*
     Initialize image structure.
   */
@@ -266,21 +266,21 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
     Read offsets to each scanline data.
   */
   for (i=0; i < (int) image->rows; i++)
-    scanlines[i]=(long) MSBFirstReadLong(image->file);
+    scanlines[i]=(long) MSBFirstReadLong(image);
   /*
     Read image data.
   */
   q=image->pixels;
   for (y=0; y < (int) image->rows; y++)
   {
-    (void) fseek(image->file,scanlines[image->rows-y-1],SEEK_SET);
+    (void) SeekBlob(image,scanlines[image->rows-y-1],SEEK_SET);
     for (channel=0; channel < (int) rla_header.number_channels; channel++)
     {
-      length=MSBFirstReadShort(image->file);
+      length=MSBFirstReadShort(image);
       q=image->pixels+(y*image->columns);
       while (length > 0)
       {
-        (void) ReadData((char *) &byte,1,1,image->file);
+        byte=ReadByte(image);
         runlength=byte;
         if (byte > 127)
           runlength=byte-256;
@@ -291,7 +291,7 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
           {
             while (runlength < 0)
             {
-              (void) ReadData((char *) &byte,1,1,image->file);
+              byte=ReadByte(image);
               length--;
               switch (channel)
               {
@@ -326,7 +326,7 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
             }
             continue;
           }
-        (void) ReadData((char *) &byte,1,1,image->file);
+        byte=ReadByte(image);
         length--;
         runlength++;
         do

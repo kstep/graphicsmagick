@@ -130,7 +130,7 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
   if (image->file == (FILE *) NULL)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   for (i=0; i < image->offset; i++)
-    (void) fgetc(image->file);
+    (void) ReadByte(image);
   /*
     Allocate memory for a scanline.
   */
@@ -147,8 +147,8 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
       */
       image->scene++;
       for (y=0; y < (int) image->rows; y++)
-        (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-          image->file);
+        (void) ReadBlob(image,packet_size,image->tile_info.width,
+          (char *) scanline);
     }
   do
   {
@@ -179,15 +179,15 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
       Convert raster image to runlength-encoded packets.
     */
     for (y=0; y < image->tile_info.y; y++)
-      (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-        image->file);
+      (void) ReadBlob(image,packet_size,image->tile_info.width,
+        (char *) scanline);
     q=image->pixels;
     SetRunlengthEncoder(q);
     for (y=0; y < (int) image->rows; y++)
     {
       if ((y > 0) || (image->previous == (Image *) NULL))
-        (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-          image->file);
+        (void) ReadBlob(image,packet_size,image->tile_info.width,
+          (char *) scanline);
       p=scanline+packet_size*image->tile_info.x;
       for (x=0; x < (int) image->columns; x++)
       {
@@ -209,8 +209,8 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
     }
     count=image->tile_info.height-image->rows-image->tile_info.y;
     for (y=0; y < count; y++)
-      (void) ReadData((char *) scanline,packet_size,image->tile_info.width,
-        image->file);
+      (void) ReadBlob(image,packet_size,image->tile_info.width,
+        (char *) scanline);
     if (feof(image->file))
       MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
     SetRunlengthPackets(image,packets);
@@ -221,8 +221,8 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    count=ReadData((char *) scanline,packet_size,image->tile_info.width,
-      image->file);
+    count=ReadBlob(image,packet_size,image->tile_info.width,
+      (char *) scanline);
     if (count > 0)
       {
         /*
@@ -235,7 +235,7 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
   } while (count > 0);
@@ -337,7 +337,7 @@ Export unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
         x++;
         if (x == (int) image->columns)
           {
-            (void) fwrite((char *) pixels,1,q-pixels,image->file);
+            (void) WriteBlob(image,1,q-pixels,(char *) pixels);
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);

@@ -297,6 +297,9 @@ typedef struct _Mng
     *ob[MNG_MAX_OBJECTS];
 #endif
 
+  Image *
+    image;
+
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
   FILE *
     file;
@@ -376,7 +379,6 @@ typedef struct _Mng
 #endif
 } Mng;
 
-#ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
 #if !defined(PNG_NO_STDIO)
 /*
   This is the function that does the actual reading of data.  It is
@@ -385,19 +387,46 @@ typedef struct _Mng
   stores its contents for use later.
 */
 static void
-mng_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
+png_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
+{
+  Image *
+    image;
+
+  image=(Image *) png_ptr->io_ptr;
+
+  /* fread() returns 0 on error, so it is OK to store this in a png_size_t
+   * instead of an int, which is what fread() actually returns.
+   */
+
+  if (length)
+    {
+      png_size_t check;
+      check = (png_size_t)ReadBlob(image, (png_size_t)1, length, (char *)data);
+      if (check != length)
+          png_error(png_ptr, "Read Error");
+    }
+}
+
+static void
+mng_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
 {
   Mng *
      m;
+
+  Image *
+    image;
+
 
   png_size_t check;
   int i = 0;
 
   m=(Mng *) png_ptr->io_ptr;
+  image=(Image *) m->image;
 
   /* fread() returns 0 on error, so it is OK to store this in a png_size_t
    * instead of an int, which is what fread() actually returns.
    */
+#ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
   while (m->bytes_in_read_buffer && length)
     {
        data[i]=m->read_buffer[i];
@@ -405,18 +434,20 @@ mng_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
        length--;
        i++;
     }
+#endif
   if (length)
     {
-      check = (png_size_t)fread(&data[i], (png_size_t)1, length,
-         (FILE *)m->file);
+      check = (png_size_t)ReadBlob(image, (png_size_t)1, length,
+         (char *)data+1);
       if (check != length)
-          png_error(png_ptr, "Read Error");
+        png_error(png_ptr,"Read Error");
+#ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
       if (length == 4)
         {
           if (data[0]==0 && data[1]==0 && data[2]==0 && data[3]==0)
             {
-              check = (png_size_t)fread(m->read_buffer,
-                  (png_size_t)1, length, (FILE *)m->file);
+              check = (png_size_t)ReadBlob(image, (png_size_t)1, length,
+                 (char *)m->read_buffer);
               m->read_buffer[4]=0;
               m->bytes_in_read_buffer = 4;
               if (!png_memcmp(m->read_buffer, mng_PLTE, 4))
@@ -429,19 +460,19 @@ mng_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
             }
           if (data[0]==0 && data[1]==0 && data[2]==0 && data[3]==1)
             {
-              check = (png_size_t)fread(m->read_buffer,
-                  (png_size_t)1, length, (FILE *)m->file);
+              check = (png_size_t)ReadBlob(image, (png_size_t)1, length,
+                 (char *)m->read_buffer);
               m->read_buffer[4]=0;
               m->bytes_in_read_buffer = 4;
               if (!png_memcmp(m->read_buffer, mng_bKGD, 4))
                 if(m->found_empty_plte)
                   {
                     /* skip the bKGD data byte and CRC */
-                    check = (png_size_t)fread(m->read_buffer,
-                       (png_size_t)1, 5, (FILE *)m->file);
+                    check = (png_size_t)ReadBlob(image, (png_size_t)1, 5,
+                       (char *)m->read_buffer);
                     /* read the next length */
-                    check = (png_size_t)fread(data, (png_size_t)1, length,
-                       (FILE *)m->file);
+                    check = (png_size_t)ReadBlob(image, (png_size_t)1,
+                       length, (char *)m->read_buffer);
                     m->saved_bkgd_index = m->read_buffer[0];
                     m->have_saved_bkgd_index=True;
                     m->bytes_in_read_buffer = 0;
@@ -450,9 +481,42 @@ mng_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
                   }
             }
         }
+#endif
     }
 }
-#endif
+
+static void
+png_put_data(png_structp png_ptr, png_bytep data, png_size_t length)
+{
+  Image *
+    image;
+
+  image=(Image *) png_ptr->io_ptr;
+
+  if (length)
+    {
+      png_size_t check;
+      check = (png_size_t)WriteBlob(image, (png_size_t)1, length, (char *)data);
+      if (check != length)
+          png_error(png_ptr, "Write Error");
+    }
+}
+
+static void
+png_flush_data(png_structp png_ptr)
+{
+  FILE *io_ptr;
+
+  Image *
+    image;
+
+  image=(Image *) png_ptr->io_ptr;
+
+  io_ptr = (FILE *)CVT_PTR((image->file));
+   if (io_ptr != NULL)
+      fflush(io_ptr);
+}
+
 #endif
 
 int PalettesAreEqual(const ImageInfo *image_info, Image *a, Image *b)
@@ -799,7 +863,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       /*
         Verify MNG signature.
       */
-      (void) ReadData(magic_number,1,8,image->file);
+      (void) ReadBlob(image,1,8,magic_number);
       if (strncmp(magic_number,"\212MNG\r\n\032\n",8) != 0)
         ReaderExit(CorruptImageWarning,"Not a MNG image file",image);
 #ifndef MNG_ALWAYS_VERBOSE
@@ -878,8 +942,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         */
         type[0]='\0';
         strcat(type,"errr");
-        length=MSBFirstReadLong(image->file);
-        status=ReadData(type,1,4,image->file);
+        length=MSBFirstReadLong(image);
+        status=ReadBlob(image,1,4,type);
         if (length > 0x3ffffffL)
            status=False;
         if (m->verbose)
@@ -962,10 +1026,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               }
 
             for (i=0; i < (int) length; i++)
-              chunk[i]=fgetc(image->file);
+              chunk[i]=ReadByte(image);
             p=chunk;
           }
-        (void) MSBFirstReadLong(image->file);  /* read crc word */
+        (void) MSBFirstReadLong(image);  /* read crc word */
 
         if (!png_memcmp(type, mng_MEND, 4))
             break;
@@ -1552,7 +1616,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                skipping_loop=loop_level;
             else
               {
-                m->loop_jump[loop_level]=ftell(image->file);
+                m->loop_jump[loop_level]=TellBlob(image);
                 m->loop_count[loop_level]=loop_iters;
               }
             if (m->verbose)
@@ -1606,7 +1670,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                         if (m->verbose != 0)
                             printf("LOOP back to %ld for another iteration\n",
                                 m->loop_jump[loop_level]);
-                        fseek(image->file, m->loop_jump[loop_level], SEEK_SET);
+                        SeekBlob(image, m->loop_jump[loop_level], SEEK_SET);
                       }
                   }
                 else
@@ -1858,7 +1922,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 return((Image *) NULL);
               }
             image=image->next;
-            ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+            ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
               (unsigned int) image->filesize);
           }
         if (term_chunk_found)
@@ -1884,7 +1948,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           image->page=PostscriptGeometry(page_geometry);
 
         /* Seek back to the beginning of the IHDR chunk's length field */
-        (void) fseek(image->file,-((int) length+12),SEEK_CUR);
+        (void) SeekBlob(image,-((int) length+12),SEEK_CUR);
       }
 
     /*
@@ -1940,12 +2004,14 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 #ifdef PNG_READ_EMPTY_PLTE_SUPPORTED
         png_permit_empty_plte(ping, True);
 #else
-        png_set_read_fn(ping, m, mng_read_data);
+        png_set_read_fn(ping, m, mng_get_data);
         m->bytes_in_read_buffer=0;
         m->found_empty_plte=False;
         m->have_saved_bkgd_index=False;
 #endif
       }
+    else
+      png_set_read_fn(ping, image, png_get_data);
     png_read_info(ping,ping_info);
     image->depth=ping_info->bit_depth;
     if (ping_info->bit_depth < 8)
@@ -2727,8 +2793,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           }
         image->columns=mng_width;
         image->rows=mng_height;
-        FormatString(background_page_geometry,"%lux%lu%+ld%+ld",
-          mng_width, mng_height, 0, 0);
+        FormatString(background_page_geometry,"%ux%u%+d%+d",
+          image->columns, image->rows, 0, 0);
         if (image->page != (char *) NULL)
           FreeMemory((char *) image->page);
         image->page=PostscriptGeometry(background_page_geometry);
@@ -3175,8 +3241,8 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
      /*
         Write the MNG version 0.95 signature and MHDR chunk.
      */
-     (void) fwrite("\212MNG\r\n\032\n",1,8,image->file);
-     MSBFirstWriteLong(28L,image->file);  /* chunk data length = 28 */
+     (void) WriteBlob(image,1,8,"\212MNG\r\n\032\n");
+     MSBFirstWriteLong(image,28L);  /* chunk data length = 28 */
      PNGType(chunk,mng_MHDR);
      PNGLong(chunk+4,page_info.width);
      PNGLong(chunk+8,page_info.height);
@@ -3199,16 +3265,15 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            PNGLong(chunk+28,1L);    /* simplicity = VLC, no transparency */
        }
 
-     (void) fwrite(chunk,1,32,image->file);
-     MSBFirstWriteLong(crc32(0,chunk,32),image->file);
-
+     (void) WriteBlob(image,1,32,(char *) chunk);
+     MSBFirstWriteLong(image,crc32(0,chunk,32));
      if ((image->previous == (Image *) NULL) &&
          (image->next != (Image *) NULL) && (image->iterations != 1))
        {
          /*
            Write MNG TERM chunk
          */
-         MSBFirstWriteLong(10L,image->file);  /* data length = 10 */
+         MSBFirstWriteLong(image,10L);  /* data length = 10 */
          PNGType(chunk,mng_TERM);
          chunk[4]=3;  /* repeat animation */
          chunk[5]=0;  /* show last frame when done */
@@ -3221,8 +3286,8 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            PNGLong(chunk+10, 0x7fffffffL);
          else
            PNGLong(chunk+10, (png_uint_32)image->iterations);
-         (void) fwrite(chunk,1,14,image->file);
-         MSBFirstWriteLong(crc32(0,chunk,14),image->file);
+         (void) WriteBlob(image,1,14,(char *) chunk);
+         MSBFirstWriteLong(image,crc32(0,chunk,14));
        }
 
      /* To do: check for cHRM+gAMA == sRGB, and write sRGB instead */
@@ -3232,12 +3297,12 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          /*
             Write MNG gAMA chunk
          */
-         MSBFirstWriteLong(4L, image->file);
+         MSBFirstWriteLong(image,4L);
          PNGType(chunk,mng_gAMA);
          PNGLong(chunk+4, (unsigned long) (100000*image->gamma+0.5));
-         (void) fwrite(chunk,1,8,image->file);
-         MSBFirstWriteLong(crc32(0,chunk,8),image->file);
-         have_write_global_gama = True;
+         (void) WriteBlob(image,1,8,(char *) chunk);
+         MSBFirstWriteLong(image,crc32(0,chunk,8));
+         have_write_global_gama=True;
        }
      if((image_info->colorspace==sRGBColorspace || image->rendering_intent) &&
           equal_srgbs)
@@ -3245,12 +3310,12 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          /*
            Write MNG sRGB chunk
          */
-         MSBFirstWriteLong(1L, image->file);
+         MSBFirstWriteLong(image,1L);
          PNGType(chunk,mng_sRGB);
          chunk[4]=image->rendering_intent+1;
-         (void) fwrite(chunk,1,5,image->file);
-         MSBFirstWriteLong(crc32(0,chunk,5),image->file);
-         have_write_global_srgb = True;
+         (void) WriteBlob(image,1,5,(char *) chunk);
+         MSBFirstWriteLong(image,crc32(0,chunk,5));
+         have_write_global_srgb=True;
        }
 
      if(equal_backgrounds)
@@ -3264,28 +3329,27 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            green,
            blue;
 
-         MSBFirstWriteLong(6L, image->file);
+         MSBFirstWriteLong(image,6L);
          PNGType(chunk,mng_BACK);
-         red=(unsigned short)UpScale(image->background_color.red);
-         green=(unsigned short)UpScale(image->background_color.green);
-         blue=(unsigned short)UpScale(image->background_color.blue);
+         red=(unsigned short) UpScale(image->background_color.red);
+         green=(unsigned short) UpScale(image->background_color.green);
+         blue=(unsigned short) UpScale(image->background_color.blue);
          PNGShort(chunk+4, red);
          PNGShort(chunk+6, green);
          PNGShort(chunk+8, blue);
-         (void) fwrite(chunk,1,10,image->file);
-         MSBFirstWriteLong(crc32(0,chunk,10),image->file);
+         (void) WriteBlob(image,1,10,(char *) chunk);
+         MSBFirstWriteLong(image,crc32(0,chunk,10));
 
          if (mng_level > 9502)
            {
              /* proposed MNG-0.95c feature */
-             MSBFirstWriteLong(6L, image->file);
+             MSBFirstWriteLong(image,6L);
              PNGType(chunk,mng_bKGD);
-             (void) fwrite(chunk,1,10,image->file);
-             MSBFirstWriteLong(crc32(0,chunk,10),image->file);
+             (void) WriteBlob(image,1,10,(char *) chunk);
+             MSBFirstWriteLong(image,crc32(0,chunk,10));
            }
        }
-
-     if(!need_local_plte && IsPseudoClass(image))
+     if (!need_local_plte && IsPseudoClass(image))
        {
          /*
            Write MNG PLTE chunk
@@ -3293,20 +3357,20 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          long
            data_length;
          data_length=3*image->colors;
-         MSBFirstWriteLong(data_length, image->file);
+         MSBFirstWriteLong(image,data_length);
          PNGType(chunk,mng_PLTE);
          for (i=0; i < (int) image->colors; i++)
          {
            chunk[4+i*3]=
-             (unsigned char)DownScale(image->colormap[i].red)&0xff;
+             (unsigned char) DownScale(image->colormap[i].red)&0xff;
            chunk[5+i*3]=
-             (unsigned char)DownScale(image->colormap[i].green)&0xff;
+             (unsigned char) DownScale(image->colormap[i].green)&0xff;
            chunk[6+i*3]=
-             (unsigned char)DownScale(image->colormap[i].blue)&0xff;
+             (unsigned char) DownScale(image->colormap[i].blue)&0xff;
          }
-         (void) fwrite(chunk,1,data_length+4,image->file);
-         MSBFirstWriteLong(crc32(0,chunk,data_length+4),image->file);
-         have_write_global_plte = True;
+         (void) WriteBlob(image,1,data_length+4,(char *) chunk);
+         MSBFirstWriteLong(image,crc32(0,chunk,data_length+4));
+         have_write_global_plte=True;
        }
     }
   scene=0;
@@ -3318,7 +3382,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
        If we aren't using a global palette for the entire MNG, check to
        see if we can use one for two or more consecutive images.
     */
-    if(need_local_plte && use_global_plte && IsPseudoClass(image))
+    if (need_local_plte && use_global_plte && IsPseudoClass(image))
       {
         /*
            When equal_palettes is true, this image has the same palette
@@ -3335,20 +3399,20 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             long
               data_length;
             data_length=3*image->colors;
-            MSBFirstWriteLong(data_length, image->file);
+            MSBFirstWriteLong(image,data_length);
             PNGType(chunk,mng_PLTE);
             for (i=0; i < (int) image->colors; i++)
             {
               chunk[4+i*3]=
-                (unsigned char)DownScale(image->colormap[i].red)&0xff;
+                (unsigned char) DownScale(image->colormap[i].red) & 0xff;
               chunk[5+i*3]=
-                (unsigned char)DownScale(image->colormap[i].green)&0xff;
+                (unsigned char) DownScale(image->colormap[i].green) & 0xff;
               chunk[6+i*3]=
-                (unsigned char)DownScale(image->colormap[i].blue)&0xff;
+                (unsigned char) DownScale(image->colormap[i].blue) & 0xff;
             }
-            (void) fwrite(chunk,1,data_length+4,image->file);
-            MSBFirstWriteLong(crc32(0,chunk,data_length+4),image->file);
-            have_write_global_plte = True;
+            (void) WriteBlob(image,1,data_length+4,(char *) chunk);
+            MSBFirstWriteLong(image,crc32(0,chunk,data_length+4));
+            have_write_global_plte=True;
           }
       }
 
@@ -3385,7 +3449,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           }
         if (page_info.x || page_info.y || previous_x || previous_y)
           {
-            MSBFirstWriteLong(12L,image->file);  /* data length = 12 */
+            MSBFirstWriteLong(image,12L);  /* data length = 12 */
             PNGType(chunk,mng_DEFI);
             chunk[4]=0; /* object 0 MSB */
             chunk[5]=0; /* object 0 LSB */
@@ -3393,8 +3457,8 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             chunk[7]=0; /* abstract */
             PNGLong(chunk+8,page_info.x);
             PNGLong(chunk+12,page_info.y);
-            (void) fwrite(chunk,1,16,image->file);
-            MSBFirstWriteLong(crc32(0,chunk,16),image->file);
+            (void) WriteBlob(image,1,16,(char *) chunk);
+            MSBFirstWriteLong(image,crc32(0,chunk,16));
           }
       }
 
@@ -3413,6 +3477,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
       }
     png_init_io(ping,image->file);
+    png_set_write_fn(ping, image, png_put_data, png_flush_data);
     png_pixels=(unsigned char *) NULL;
     scanlines=(unsigned char **) NULL;
     if (setjmp(ping->jmpbuf))
@@ -3649,18 +3714,18 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            /*
              Write a MNG FRAM chunk with the new framing mode.
            */
-           MSBFirstWriteLong(1L,image->file);  /* data length = 1 */
+           MSBFirstWriteLong(image,1L);  /* data length = 1 */
            PNGType(chunk,mng_FRAM);
            chunk[4]=framing_mode;
-           (void) fwrite(chunk,1,5,image->file);
-           MSBFirstWriteLong(crc32(0,chunk,5),image->file);
+           (void) WriteBlob(image,1,5,(char *) chunk);
+           MSBFirstWriteLong(image,crc32(0,chunk,5));
         }
         else
         {
            /*
              Write a MNG FRAM chunk with the delay.
            */
-           MSBFirstWriteLong(10L,image->file);  /* data length = 10 */
+           MSBFirstWriteLong(image,10L);  /* data length = 10 */
            PNGType(chunk,mng_FRAM);
            chunk[4]=framing_mode;
            chunk[5]=0;  /* frame name separator (no name) */
@@ -3669,8 +3734,8 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            chunk[8]=0;  /* flag for changing frame clipping */
            chunk[9]=0;  /* flag for changing frame sync_id */
            PNGLong(chunk+10,(png_uint_32)((ticks_per_second*image->delay)/100));
-           (void) fwrite(chunk,1,14,image->file);
-           MSBFirstWriteLong(crc32(0,chunk,14),image->file);
+           (void) WriteBlob(image,1,14,(char *) chunk);
+           MSBFirstWriteLong(image,crc32(0,chunk,14));
            delay=image->delay;
         }
         old_framing_mode = framing_mode;
@@ -3853,7 +3918,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            ping_info->height != page_info.height)
           {
              /* Write FRAM 4 with clipping boundaries followed by FRAM 1. */
-             MSBFirstWriteLong(27L,image->file);  /* data length = 27 */
+             MSBFirstWriteLong(image,27L);  /* data length = 27 */
              PNGType(chunk,mng_FRAM);
              chunk[4]=4;
              chunk[5]=0;  /* frame name separator (no name) */
@@ -3861,17 +3926,16 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
              chunk[7]=0;  /* flag for changing frame timeout */
              chunk[8]=1;  /* flag for changing frame clipping for next frame */
              chunk[9]=0;  /* flag for changing frame sync_id */
-             PNGLong(chunk+10,(png_uint_32)(0L)); /* temporary 0 delay */
+             PNGLong(chunk+10,(png_uint_32) (0L)); /* temporary 0 delay */
              chunk[14]=0; /* clipping boundaries delta type */
-             PNGLong(chunk+15,(png_uint_32)(page_info.x)); /* left cb */
-             PNGLong(chunk+19,(png_uint_32)(page_info.x + ping_info->width));
-             PNGLong(chunk+23,(png_uint_32)(page_info.y)); /* top cb */
-             PNGLong(chunk+27,(png_uint_32)(page_info.y + ping_info->height));
-             (void) fwrite(chunk,1,31,image->file);
-             MSBFirstWriteLong(crc32(0,chunk,31),image->file);
-
-             old_framing_mode = 4;
-             framing_mode = 1;
+             PNGLong(chunk+15,(png_uint_32) (page_info.x)); /* left cb */
+             PNGLong(chunk+19,(png_uint_32) (page_info.x + ping_info->width));
+             PNGLong(chunk+23,(png_uint_32) (page_info.y)); /* top cb */
+             PNGLong(chunk+27,(png_uint_32) (page_info.y + ping_info->height));
+             (void) WriteBlob(image,1,31,(char *) chunk);
+             MSBFirstWriteLong(image,crc32(0,chunk,31));
+             old_framing_mode=4;
+             framing_mode=1;
           }
         else
             framing_mode = 3;
@@ -3904,10 +3968,10 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       /*
         Write the MEND chunk.
       */
-      MSBFirstWriteLong(0x00000000L,image->file);
+      MSBFirstWriteLong(image,0x00000000L);
       PNGType(chunk,mng_MEND);
-      (void) fwrite(chunk,1,4,image->file);
-      MSBFirstWriteLong(crc32(0,chunk,4),image->file);
+      (void) WriteBlob(image,1,4,(char *) chunk);
+      MSBFirstWriteLong(image,crc32(0,chunk,4));
     }
   /*
     Free memory.

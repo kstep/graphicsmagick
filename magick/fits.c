@@ -177,7 +177,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
   /*
     Decode image header.
   */
-  c=fgetc(image->file);
+  c=ReadByte(image);
   count=1;
   if (c == EOF)
     {
@@ -188,7 +188,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
   {
     if (!isalnum(c))
       {
-        c=fgetc(image->file);
+        c=ReadByte(image);
         count++;
       }
     else
@@ -204,7 +204,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
         {
           if ((p-keyword) < (MaxTextExtent-1))
             *p++=(char) c;
-          c=fgetc(image->file);
+          c=ReadByte(image);
           count++;
         } while (isalnum(c) || (c == '_'));
         *p='\0';
@@ -215,7 +215,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
         {
           if (c == '=')
             value_expected=True;
-          c=fgetc(image->file);
+          c=ReadByte(image);
           count++;
         }
         if (value_expected == False)
@@ -225,7 +225,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
         {
           if ((p-value) < (MaxTextExtent-1))
             *p++=(char) c;
-          c=fgetc(image->file);
+          c=ReadByte(image);
           count++;
         }
         *p='\0';
@@ -255,14 +255,14 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
       }
     while (isspace(c))
     {
-      c=fgetc(image->file);
+      c=ReadByte(image);
       count++;
     }
   }
   while (count > 2880)
     count-=2880;
   for ( ; count < 2880; count++)
-    (void) fgetc(image->file);
+    (void) ReadByte(image);
   /*
     Verify that required image information is defined.
   */
@@ -313,8 +313,8 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
     /*
       Convert FITS pixels to runlength-encoded packets.
     */
-    status=ReadData((char *) fits_pixels,(unsigned int) packet_size,
-      image->packets,image->file);
+    status=ReadBlob(image,(unsigned int) packet_size,image->packets,
+      (char *) fits_pixels);
     if (status == False)
       MagickWarning(CorruptImageWarning,"Insufficient image data in file",
         image->filename);
@@ -430,7 +430,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
   }
@@ -526,7 +526,7 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   (void) strncpy(fits_header+400,buffer,Extent(buffer));
   (void) strcpy(buffer,"END");
   (void) strncpy(fits_header+480,buffer,Extent(buffer));
-  (void) fwrite((char *) fits_header,1,2880,image->file);
+  (void) WriteBlob(image,1,2880,(char *) fits_header);
   FreeMemory((char *) fits_header);
   /*
     Convert image to fits scale PseudoColor class.
@@ -540,7 +540,7 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
       *q++=DownScale(Intensity(*p));
       p++;
     }
-    (void) fwrite((char *) pixels,1,q-pixels,image->file);
+    (void) WriteBlob(image,1,q-pixels,(char *) pixels);
     if (QuantumTick(image->rows-y-1,image->rows))
       ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
   }

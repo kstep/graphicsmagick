@@ -205,7 +205,7 @@ Export Image *ReadSFWImage(const ImageInfo *image_info)
     AllocateMemory(image->filesize*sizeof(unsigned char));
   if (buffer == (unsigned char *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  status=ReadData((char *) buffer,1,image->filesize,image->file);
+  status=ReadBlob(image,1,image->filesize,(char *) buffer);
   if ((status == False) || (strncmp((char *) buffer,"SFW",3) != 0))
     ReaderExit(CorruptImageWarning,"Not a SFW image file",image);
   CloseImage(image);

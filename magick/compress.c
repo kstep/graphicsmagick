@@ -277,26 +277,26 @@ Export void Ascii85Initialize(void)
   offset=0;
 }
 
-Export void Ascii85Flush(FILE *file)
+Export void Ascii85Flush(Image *image)
 {
   register char
     *tuple;
 
-  assert(file != (FILE *) NULL);
+  assert(image != (Image *) NULL);
   if (offset > 0)
     {
       ascii85_buffer[offset]=0;
       ascii85_buffer[offset+1]=0;
       ascii85_buffer[offset+2]=0;
       tuple=Ascii85Tuple(ascii85_buffer);
-      (void) fwrite(*tuple == 'z' ? "!!!!" : tuple,offset+1,1,file);
+      (void) WriteBlob(image,1,offset+1,*tuple == 'z' ? "!!!!" : tuple);
     }
-  (void) fputc('~',file);
-  (void) fputc('>',file);
-  (void) fputc('\n',file);
+  (void) WriteByte(image,'~');
+  (void) WriteByte(image,'>');
+  (void) WriteByte(image,'\n');
 }
 
-Export void Ascii85Encode(const unsigned int code,FILE *file)
+Export void Ascii85Encode(Image *image,const unsigned int code)
 {
   int
     n;
@@ -307,7 +307,7 @@ Export void Ascii85Encode(const unsigned int code,FILE *file)
   register unsigned char
     *p;
 
-  assert(file != (const FILE *) NULL);
+  assert(image != (Image *) NULL);
   ascii85_buffer[offset]=code;
   offset++;
   if (offset < 4)
@@ -320,10 +320,10 @@ Export void Ascii85Encode(const unsigned int code,FILE *file)
       line_break--;
       if ((line_break < 0) && (*(q+1) != '%'))
         {
-          (void) fputc('\n',file);
+          (void) WriteByte(image,'\n');
           line_break=2*MaxLineExtent;
         }
-      (void) fputc(*q,file);
+      (void) WriteByte(image,*q);
     }
     p+=8;
   }
@@ -662,8 +662,7 @@ Export unsigned int HuffmanDecodeImage(Image *image)
 %    o image: The address of a structure of type Image.
 %
 */
-Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
-  const Image *image)
+Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
 {
 #define HuffmanOutputCode(entry)  \
 {  \
@@ -683,9 +682,9 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   if ((bit & 0xff) == 0)   \
     {  \
       if (Latin1Compare(image_info->magick,"FAX") == 0) \
-        (void) fputc((char) byte,image->file);  \
+        (void) WriteByte(image,byte);  \
       else \
-        Ascii85Encode((unsigned int) byte,image->file); \
+        Ascii85Encode(image,(unsigned int) byte); \
       byte=0;  \
       bit=0x80;  \
     }  \
@@ -870,12 +869,12 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   if (bit != 0x80)
     {
       if (Latin1Compare(image_info->magick,"FAX") == 0)
-        (void) fputc((char) byte,huffman_image->file);
+        (void) WriteByte(huffman_image,byte);
       else
-        Ascii85Encode((unsigned int) byte,huffman_image->file);
+        Ascii85Encode(huffman_image,(unsigned int) byte);
     }
   if (Latin1Compare(image_info->magick,"FAX") != 0)
-    Ascii85Flush(huffman_image->file);
+    Ascii85Flush(huffman_image);
   if (huffman_image != image)
     DestroyImage(huffman_image);
   FreeMemory((char *) scanline);
@@ -911,8 +910,7 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
 %    o image: The address of a structure of type Image.
 %
 */
-Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
-  const Image *image)
+Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 {
   char
     filename[MaxTextExtent];
@@ -1014,8 +1012,8 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
     if (fillorder == FILLORDER_LSB2MSB)
       TIFFReverseBits(buffer,count);
     for (j=0; j < count; j++)
-      Ascii85Encode((unsigned int) buffer[j],image->file);
-    Ascii85Flush(image->file);
+      Ascii85Encode(image,(unsigned int) buffer[j]);
+    Ascii85Flush(image);
   }
   FreeMemory((char *) buffer);
   TIFFClose(tiff);
@@ -1049,15 +1047,14 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
 %
 %  The format of the LZWEncodeImage routine is:
 %
-%      status=LZWEncodeImage(file,number_pixels,pixels)
+%      status=LZWEncodeImage(image,number_pixels,pixels)
 %
 %  A description of each parameter follows:
 %
 %    o status:  Method LZWEncodeImage returns True if all the pixels are
 %      compressed without error, otherwise False.
 %
-%    o file: The address of a structure of type FILE.  LZW encoded pixels
-%      are written to this file.
+%    o image: The address of a structure of type Image.
 %
 %    o number_pixels:  An unsigned interger that specifies the number of
 %      pixels to compress.
@@ -1067,8 +1064,8 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
 %
 %
 */
-Export unsigned int LZWEncodeImage(FILE *file,const unsigned int number_pixels,
-  unsigned char *pixels)
+Export unsigned int LZWEncodeImage(Image *image,
+  const unsigned int number_pixels,unsigned char *pixels)
 {
 #define LZWClr  256  /* Clear Table Marker */
 #define LZWEod  257  /* End of Data marker */
@@ -1078,7 +1075,7 @@ Export unsigned int LZWEncodeImage(FILE *file,const unsigned int number_pixels,
     number_bits+=code_width; \
     while (number_bits >= 8) \
     { \
-        Ascii85Encode((unsigned int) (accumulator >> 24),file); \
+        Ascii85Encode(image,(unsigned int) (accumulator >> 24)); \
         accumulator=accumulator << 8; \
         number_bits-=8; \
     } \
@@ -1113,7 +1110,7 @@ Export unsigned int LZWEncodeImage(FILE *file,const unsigned int number_pixels,
   /*
     Allocate string table.
   */
-  assert(file != (FILE *) NULL);
+  assert(image != (Image *) NULL);
   assert(pixels != (unsigned char *) NULL);
   table=(TableType *) AllocateMemory((1 << 12)*sizeof(TableType));
   if (table == (TableType *) NULL)
@@ -1194,14 +1191,14 @@ Export unsigned int LZWEncodeImage(FILE *file,const unsigned int number_pixels,
   OutputCode(last_code);
   OutputCode(LZWEod);
   if (number_bits != 0)
-    Ascii85Encode((unsigned int) (accumulator >> 24),file);
-  Ascii85Flush(file);
+    Ascii85Encode(image,accumulator >> 24);
+  Ascii85Flush(image);
   FreeMemory(table);
   return(True);
 }
 #else
-Export unsigned int LZWEncodeImage(FILE *file,const unsigned int number_pixels,
-  unsigned char *pixels)
+Export unsigned int LZWEncodeImage(Image *image,
+  const unsigned int number_pixels,unsigned char *pixels)
 {
   MagickWarning(MissingDelegateWarning,"LZW library is not available",
     (char *) NULL);
@@ -1226,15 +1223,14 @@ Export unsigned int LZWEncodeImage(FILE *file,const unsigned int number_pixels,
 %
 %  The format of the PackbitsEncodeImage routine is:
 %
-%      status=PackbitsEncodeImage(file,number_pixels,pixels)
+%      status=PackbitsEncodeImage(image,number_pixels,pixels)
 %
 %  A description of each parameter follows:
 %
 %    o status:  Method PackbitsEncodeImage returns True if all the pixels are
 %      compressed without error, otherwise False.
 %
-%    o file: The address of a structure of type FILE.  LZW encoded pixels
-%      are written to this file.
+%    o image: The address of a structure of type Image.
 %
 %    o number_pixels:  An unsigned integer that specifies the number of
 %      pixels to compress.
@@ -1244,7 +1240,7 @@ Export unsigned int LZWEncodeImage(FILE *file,const unsigned int number_pixels,
 %
 %
 */
-Export unsigned int PackbitsEncodeImage(FILE *file,
+Export unsigned int PackbitsEncodeImage(Image *image,
   const unsigned int number_pixels,unsigned char *pixels)
 {
   register int
@@ -1258,7 +1254,7 @@ Export unsigned int PackbitsEncodeImage(FILE *file,
   /*
     Compress pixels with Packbits encoding.
   */
-  assert(file != (FILE *) NULL);
+  assert(image != (Image *) NULL);
   assert(pixels != (unsigned char *) NULL);
   packbits=(unsigned char *) AllocateMemory(128*sizeof(unsigned char));
   if (packbits == (unsigned char *) NULL)
@@ -1276,16 +1272,16 @@ Export unsigned int PackbitsEncodeImage(FILE *file,
       case 1:
       {
         i--;
-        Ascii85Encode(0,file);
-        Ascii85Encode(*pixels,file);
+        Ascii85Encode(image,0);
+        Ascii85Encode(image,*pixels);
         break;
       }
       case 2:
       {
         i-=2;
-        Ascii85Encode(1,file);
-        Ascii85Encode(*pixels,file);
-        Ascii85Encode(pixels[1],file);
+        Ascii85Encode(image,1);
+        Ascii85Encode(image,*pixels);
+        Ascii85Encode(image,pixels[1]);
         break;
       }
       case 3:
@@ -1293,14 +1289,14 @@ Export unsigned int PackbitsEncodeImage(FILE *file,
         i-=3;
         if ((*pixels == *(pixels+1)) && (*(pixels+1) == *(pixels+2)))
           {
-            Ascii85Encode((256-3)+1,file);
-            Ascii85Encode(*pixels,file);
+            Ascii85Encode(image,(256-3)+1);
+            Ascii85Encode(image,*pixels);
             break;
           }
-        Ascii85Encode(2,file);
-        Ascii85Encode(*pixels,file);
-        Ascii85Encode(pixels[1],file);
-        Ascii85Encode(pixels[2],file);
+        Ascii85Encode(image,2);
+        Ascii85Encode(image,*pixels);
+        Ascii85Encode(image,pixels[1]);
+        Ascii85Encode(image,pixels[2]);
         break;
       }
       default:
@@ -1318,8 +1314,8 @@ Export unsigned int PackbitsEncodeImage(FILE *file,
                 break;
             }
             i-=count;
-            Ascii85Encode((256-count)+1,file);
-            Ascii85Encode(*pixels,file);
+            Ascii85Encode(image,(256-count)+1);
+            Ascii85Encode(image,*pixels);
             pixels+=count;
             break;
           }
@@ -1338,14 +1334,14 @@ Export unsigned int PackbitsEncodeImage(FILE *file,
         i-=count;
         *packbits=count-1;
         for (j=0; j <= count; j++)
-          Ascii85Encode(packbits[j],file);
+          Ascii85Encode(image,packbits[j]);
         pixels+=count;
         break;
       }
     }
   }
-  Ascii85Encode(128,file);  /* EOD marker */
-  Ascii85Flush(file);
+  Ascii85Encode(image,128);  /* EOD marker */
+  Ascii85Flush(image);
   FreeMemory((char *) packbits);
   return(True);
 }
@@ -1940,7 +1936,7 @@ Export void SetRunlengthPackets(Image *image,const unsigned long packets)
 %
 %
 */
-Export unsigned int ZLIBEncodeImage(FILE *file,
+Export unsigned int ZLIBEncodeImage(Image *image,
   const unsigned long number_pixels,const unsigned int quality,
   unsigned char *pixels)
 {
@@ -1991,14 +1987,14 @@ Export unsigned int ZLIBEncodeImage(FILE *file,
     {
       Ascii85Initialize();
       for (i=0; i < (int) compressed_packets; i++)
-        Ascii85Encode(compressed_pixels[i],file);
-      Ascii85Flush(file);
+        Ascii85Encode(image,compressed_pixels[i]);
+      Ascii85Flush(image);
     }
   FreeMemory((char *) compressed_pixels);
   return(!status);
 }
 #else
-Export unsigned int ZLIBEncodeImage(FILE *file,
+Export unsigned int ZLIBEncodeImage(Image *image,
   const unsigned long number_pixels,const unsigned int quality,
   unsigned char *pixels)
 {

@@ -50,6 +50,16 @@ typedef unsigned char Quantum;
 /*
   Typedef declarations.
 */
+typedef struct _BlobInfo
+{
+  char
+    *data;
+
+  unsigned long
+    offset,
+    length;
+} BlobInfo;
+
 typedef struct _ColorlistInfo
 {
   char
@@ -322,6 +332,9 @@ typedef struct _ChromaticityInfo
 
 typedef struct _Image
 {
+  BlobInfo
+    blob;
+
   FILE
     *file;
 
@@ -518,7 +531,8 @@ typedef struct _MagickInfo
 
   unsigned int
     (*encoder)(const ImageInfo *,Image *),
-    adjoin;
+    adjoin,
+    blob_support;
 
   const char
     *description;
@@ -557,15 +571,11 @@ extern const ColorlistInfo
 extern Export AnnotateInfo
   *CloneAnnotateInfo(const ImageInfo *,const AnnotateInfo *);
 
-extern Export char
-  *ImageToBlob(const ImageInfo *,Image *,unsigned long *);
-
 extern Export Image
   *AddNoiseImage(const Image *,const NoiseType),
   *AllocateImage(const ImageInfo *),
   *AppendImages(Image *,const unsigned int),
   *AverageImages(const Image *),
-  *BlobToImage(const ImageInfo *,const char *,const unsigned long),
   *BlurImage(const Image *,const double),
   *BorderImage(const Image *,const RectangleInfo *),
   *ChopImage(const Image *,const RectangleInfo *),

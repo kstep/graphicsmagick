@@ -132,7 +132,6 @@ Export Image *ReadXCImage(const ImageInfo *image_info)
   q=image->pixels;
   for (i=0; i < (int) image->packets; i++)
   {
-    q->index=0;
     SetRunlengthEncoder(q);
     q++;
     if (QuantumTick(i,image->packets))

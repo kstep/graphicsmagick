@@ -20,7 +20,6 @@
 		<LI><A HREF="#AnimateImages">AnimateImages</A>
 		<LI><A HREF="#AppendImages">AppendImages</A>
 		<LI><A HREF="#AverageImages">AverageImages</A>
-		<LI><A HREF="#BlobToImage">BlobToImage</A>
 		<LI><A HREF="#CloneImage">CloneImage</A>
 		<LI><A HREF="#CloneImageInfo">CloneImageInfo</A>
 		<LI><A HREF="#CloseImage">CloseImage</A>
@@ -39,7 +38,6 @@
 		<LI><A HREF="#GetImageType">GetImageType</A>
 		<LI><A HREF="#GetNumberScenes">GetNumberScenes</A>
 		<LI><A HREF="#GetPixels">GetPixels</A>
-		<LI><A HREF="#ImageToBlob">ImageToBlob</A>
 		<LI><A HREF="#IsGeometry">IsGeometry</A>
 		<LI><A HREF="#IsGrayImage">IsGrayImage</A>
 		<LI><A HREF="#IsMonochromeImage">IsMonochromeImage</A>
@@ -97,9 +95,6 @@ status=<STRONG>AnimateImages</STRONG>(image_info,image)
 averaged_image=<STRONG>AverageImages</STRONG>(images)
 
 <P>
-image=<STRONG>BlobToImage</STRONG>(blob,length)
-
-<P>
 clone_image=<STRONG>CloneImage</STRONG>(image,columns,rows,clone_pixels)
 
 <P>
@@ -152,9 +147,6 @@ scenes=<STRONG>GetNumberScenes</STRONG>(image)
 
 <P>
 <STRONG>GetPixels</STRONG>(image,red_pixels,green_pixels,blue_pixels,opacity_pixels)
-
-<P>
-blob=<STRONG>ImageToBlob</STRONG>(image_info,image,length)
 
 <P>
 status=<STRONG>IsGeometry</STRONG>(geometry)
@@ -374,42 +366,6 @@ Method AverageImages returns the mean pixel value for an image sequence.
 <DT><STRONG>images:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="BlobToImage">BlobToImage</A></H2>
-<P>
-Method BlobToImage implements direct to memory image formats. It returns
-the blob as an image.
-
-<P>
-The format of the BlobToImage routine is:
-
-<P>
-<PRE>        image=BlobToImage(blob,length)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-Method BlobToImage returns an image from the supplied blob. If an error
-occurs NULL is returned.
-
-<DT><STRONG>image_info:</STRONG><DD>
-<P>
-Specifies a pointer to an ImageInfo structure.
-
-<DT><STRONG>blob:</STRONG><DD>
-<P>
-The address of a character stream in one of the image formats understood by
-ImageMagick.
-
-<DT><STRONG>length:</STRONG><DD>
-<P>
-This unsigned integer reflects the length in bytes of the blob.
 
 </DL></DL>
 <P>
@@ -899,41 +855,6 @@ These arrays are returned with the correpondingred, green, blue, and
 opacity values from the image. The length of the arrays must equal the area
 specified by the columns and row values values of the Image structure. If
 you do not want to initialize a particular component, specify it as NULL.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="ImageToBlob">ImageToBlob</A></H2>
-<P>
-Method ImageToBlob implements direct to memory image formats. It returns
-the image as a blob and its length.
-
-<P>
-The format of the ImageToBlob routine is:
-
-<P>
-<PRE>        blob=ImageToBlob(image_info,image,length)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>blob:</STRONG><DD>
-<P>
-Method ImageToBlob returns a chunk of memory written in the desired image
-format (e.g. JPEG, GIF, etc.). If an error occurs NULL is returned.
-
-<DT><STRONG>image_info:</STRONG><DD>
-<P>
-Specifies a pointer to an ImageInfo structure.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>length:</STRONG><DD>
-<P>
-This pointer to an unsigned int is set to the length of the image blob.
 
 </DL></DL>
 <P>

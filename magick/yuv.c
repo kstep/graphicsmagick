@@ -124,7 +124,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
       if (image->file == (FILE *) NULL)
         ReaderExit(FileOpenWarning,"Unable to open file",image);
       for (i=0; i < image->offset; i++)
-        (void) fgetc(image->file);
+        (void) ReadByte(image);
     }
   /*
     Allocate memory for a scanline.
@@ -161,7 +161,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
     for (y=0; y < (int) (image->rows << 1); y++)
     {
       if ((y > 0) || (image->previous == (Image *) NULL))
-        (void) ReadData((char *) scanline,1,image->columns << 1,image->file);
+        (void) ReadBlob(image,1,image->columns << 1,(char *) scanline);
       p=scanline;
       for (x=0; x < (int) (image->columns << 1); x++)
       {
@@ -185,7 +185,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
     q=image->pixels;
     for (y=0; y < (int) image->rows; y++)
     {
-      (void) ReadData((char *) scanline,1,image->columns,image->file);
+      (void) ReadBlob(image,1,image->columns,(char *) scanline);
       p=scanline;
       for (x=0; x < (int) image->columns; x++)
       {
@@ -207,7 +207,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
     q=image->pixels;
     for (y=0; y < (int) image->rows; y++)
     {
-      (void) ReadData((char *) scanline,1,image->columns,image->file);
+      (void) ReadBlob(image,1,image->columns,(char *) scanline);
       p=scanline;
       for (x=0; x < (int) image->columns; x++)
       {
@@ -249,7 +249,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    count=ReadData((char *) scanline,1,image->columns,image->file);
+    count=ReadBlob(image,1,image->columns,(char *) scanline);
     if (count > 0)
       {
         /*
@@ -262,7 +262,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
   } while (count > 0);
@@ -363,7 +363,7 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     for (i=0; i < (int) yuv_image->packets; i++)
     {
       for (j=0; j <= ((int) p->length); j++)
-        (void) fputc(DownScale(p->red),image->file);
+        (void) WriteByte(image,DownScale(p->red));
       p++;
     }
     DestroyImage(yuv_image);
@@ -396,7 +396,7 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     for (i=0; i < (int) downsampled_image->packets; i++)
     {
       for (j=0; j <= ((int) p->length); j++)
-        (void) fputc(DownScale(p->green),image->file);
+        (void) WriteByte(image,DownScale(p->green));
       p++;
     }
     /*
@@ -416,7 +416,7 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     for (i=0; i < (int) downsampled_image->packets; i++)
     {
       for (j=0; j <= ((int) p->length); j++)
-        (void) fputc(DownScale(p->blue),image->file);
+        (void) WriteByte(image,DownScale(p->blue));
       p++;
     }
     DestroyImage(downsampled_image);

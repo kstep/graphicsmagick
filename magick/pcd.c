@@ -91,7 +91,7 @@
 %
 %
 */
-static unsigned int PCDDecodeImage(const Image *image,unsigned char *luma,
+static unsigned int PCDDecodeImage(Image *image,unsigned char *luma,
   unsigned char *chroma1,unsigned char *chroma2)
 {
 #define IsSync  ((accumulator & 0xffffff00) == 0xfffffe00)
@@ -104,7 +104,7 @@ static unsigned int PCDDecodeImage(const Image *image,unsigned char *luma,
   { \
     if (p >= (buffer+0x800)) \
       { \
-        (void) ReadData((char *) buffer,1,0x800,image->file); \
+        (void) ReadBlob(image,1,0x800,(char *) buffer); \
         p=buffer; \
       } \
     accumulator|=((unsigned int) (*p) << (24-bits)); \
@@ -446,7 +446,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
   header=(unsigned char *) AllocateMemory(3*0x800*sizeof(unsigned char));
   if (header == (unsigned char *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  status=ReadData((char *) header,1,3*0x800,image->file);
+  status=ReadBlob(image,1,3*0x800,(char *) header);
   overview=strncmp((char *) header,"PCD_OPA",7) == 0;
   if ((status == False) ||
       ((strncmp((char *) header+0x800,"PCD",3) != 0) && !overview))
@@ -525,7 +525,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
       if (subimage <= 1)
         offset=1;
   for (i=0; i < (offset*0x800); i++)
-    (void) fgetc(image->file);
+    (void) ReadByte(image);
   if (overview)
     {
       Image
@@ -559,13 +559,13 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
         c2=chroma2;
         for (i=0; i < (int) height; i+=2)
         {
-          (void) ReadData((char *) y,1,width,image->file);
+          (void) ReadBlob(image,1,width,(char *) y0);
           y+=image->columns;
-          (void) ReadData((char *) y,1,width,image->file);
+          (void) ReadBlob(image,1,width,(char *) y0);
           y+=image->columns;
-          (void) ReadData((char *) c1,1,width >> 1,image->file);
+          (void) ReadBlob(image,1,width >> 1,(char *) c1);
           c1+=image->columns;
-          (void) ReadData((char *) c2,1,width >> 1,image->file);
+          (void) ReadBlob(image,1,width >> 1,(char *) c2);
           c2+=image->columns;
         }
         Upsample(image->columns >> 1,image->rows >> 1,image->columns,chroma1);
@@ -631,13 +631,13 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
   c2=chroma2;
   for (i=0; i < (int) height; i+=2)
   {
-    (void) ReadData((char *) y,1,width,image->file);
+    (void) ReadBlob(image,1,width,(char *) y);
     y+=image->columns;
-    (void) ReadData((char *) y,1,width,image->file);
+    (void) ReadBlob(image,1,width,(char *) y);
     y+=image->columns;
-    (void) ReadData((char *) c1,1,width >> 1,image->file);
+    (void) ReadBlob(image,1,width >> 1,(char *) c1);
     c1+=image->columns;
-    (void) ReadData((char *) c2,1,width >> 1,image->file);
+    (void) ReadBlob(image,1,width >> 1,(char *) c2);
     c2+=image->columns;
   }
   if (subimage >= 4)
@@ -650,7 +650,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
       Upsample(384,256,image->columns,chroma2);
       image->rows=1024;
       for (i=0; i < (4*0x800); i++)
-        (void) fgetc(image->file);
+        (void) ReadByte(image);
       status=PCDDecodeImage(image,luma,chroma1,chroma2);
       if ((subimage >= 5) && status)
         {
@@ -661,8 +661,8 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
           Upsample(768,512,image->columns,chroma1);
           Upsample(768,512,image->columns,chroma2);
           image->rows=2048;
-          offset=ftell(image->file)/0x800+12;
-          (void) fseek(image->file,offset*0x800,SEEK_SET);
+          offset=TellBlob(image)/0x800+12;
+          (void) SeekBlob(image,offset*0x800,SEEK_SET);
           status=PCDDecodeImage(image,luma,chroma1,chroma2);
           if ((subimage >= 6) && status)
             {
@@ -848,26 +848,26 @@ Export unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   {
     for (x=0; x < (int) (tile_image->columns << 1); x++)
     {
-      (void) fputc(DownScale(p->red),image->file);
+      (void) WriteByte(image,DownScale(p->red));
       p++;
     }
     q=downsampled_image->pixels+(y >> 1)*downsampled_image->columns;
     for (x=0; x < (int) downsampled_image->columns; x++)
     {
-      (void) fputc(DownScale(q->green),image->file);
+      (void) WriteByte(image,DownScale(q->green));
       q++;
     }
     q=downsampled_image->pixels+(y >> 1)*downsampled_image->columns;
     for (x=0; x < (int) downsampled_image->columns; x++)
     {
-      (void) fputc(DownScale(q->blue),image->file);
+      (void) WriteByte(image,DownScale(q->blue));
       q++;
     }
     if (QuantumTick(y,tile_image->rows))
       ProgressMonitor(SaveImageText,y,tile_image->rows);
   }
   for (i=0; i < 0x800; i++)
-    (void) fputc('\0',image->file);
+    (void) WriteByte(image,'\0');
   DestroyImage(downsampled_image);
   DestroyImage(tile_image);
   return(True);
@@ -911,35 +911,35 @@ Export unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
     Write PCD image header.
   */
   for (i=0; i < 32; i++)
-    (void) fputc(0xff,pcd_image->file);
+    (void) WriteByte(image,0xff);
   for (i=0; i < 4; i++)
-    (void) fputc(0x0e,pcd_image->file);
+    (void) WriteByte(image,0x0e);
   for (i=0; i < 8; i++)
-    (void) fputc('\0',pcd_image->file);
+    (void) WriteByte(image,'\0');
   for (i=0; i < 4; i++)
-    (void) fputc(0x01,pcd_image->file);
+    (void) WriteByte(image,0x01);
   for (i=0; i < 4; i++)
-    (void) fputc(0x05,pcd_image->file);
+    (void) WriteByte(image,0x05);
   for (i=0; i < 8; i++)
-    (void) fputc('\0',pcd_image->file);
+    (void) WriteByte(image,'\0');
   for (i=0; i < 4; i++)
-    (void) fputc(0x0A,pcd_image->file);
+    (void) WriteByte(image,0x0A);
   for (i=0; i < 36; i++)
-    (void) fputc('\0',pcd_image->file);
+    (void) WriteByte(image,'\0');
   for (i=0; i < 4; i++)
-    (void) fputc(0x01,pcd_image->file);
+    (void) WriteByte(image,0x01);
   for (i=0; i < 1944; i++)
-    (void) fputc('\0',pcd_image->file);
-  (void) fwrite("PCD_IPI",1,7,pcd_image->file);
-  (void) fputc(0x06,pcd_image->file);
+    (void) WriteByte(image,'\0');
+  (void) WriteBlob(image,1,7,"PCD_IPI");
+  (void) WriteByte(image,0x06);
   for (i=0; i < 1530; i++)
-    (void) fputc('\0',pcd_image->file);
+    (void) WriteByte(image,'\0');
   if (image->columns < image->rows)
-    (void) fputc('\1',pcd_image->file);
+    (void) WriteByte(image,'\1');
   else
-    (void) fputc('\0',pcd_image->file);
+    (void) WriteByte(image,'\0');
   for (i=0; i < 3*0x800-1539; i++)
-    (void) fputc('\0',pcd_image->file);
+    (void) WriteByte(image,'\0');
   /*
     Write PCD tiles.
   */

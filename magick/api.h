@@ -34,6 +34,7 @@
 #include <magick/image.h>
 #include <magick/quantize.h>
 #include <magick/gems.h>
+#include <magick/blob.h>
 #include <magick/compress.h>
 #include <magick/utility.h>
 #include <magick/monitor.h>
@@ -46,6 +47,7 @@
 #include "image.h"
 #include "quantize.h"
 #include "gems.h"
+#include "blob.h"
 #include "compress.h"
 #include "utility.h"
 #include "monitor.h"

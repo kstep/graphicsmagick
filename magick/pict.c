@@ -59,26 +59,26 @@
 */
 #define ReadPixmap(pixmap) \
 { \
-  pixmap.version=MSBFirstReadShort(image->file); \
-  pixmap.pack_type=MSBFirstReadShort(image->file); \
-  pixmap.pack_size=MSBFirstReadLong(image->file); \
-  pixmap.horizontal_resolution=MSBFirstReadLong(image->file); \
-  pixmap.vertical_resolution=MSBFirstReadLong(image->file); \
-  pixmap.pixel_type=MSBFirstReadShort(image->file); \
-  pixmap.bits_per_pixel=MSBFirstReadShort(image->file); \
-  pixmap.component_count=MSBFirstReadShort(image->file); \
-  pixmap.component_size=MSBFirstReadShort(image->file); \
-  pixmap.plane_bytes=MSBFirstReadLong(image->file); \
-  pixmap.table=MSBFirstReadLong(image->file); \
-  pixmap.reserved=MSBFirstReadLong(image->file); \
+  pixmap.version=MSBFirstReadShort(image); \
+  pixmap.pack_type=MSBFirstReadShort(image); \
+  pixmap.pack_size=MSBFirstReadLong(image); \
+  pixmap.horizontal_resolution=MSBFirstReadLong(image); \
+  pixmap.vertical_resolution=MSBFirstReadLong(image); \
+  pixmap.pixel_type=MSBFirstReadShort(image); \
+  pixmap.bits_per_pixel=MSBFirstReadShort(image); \
+  pixmap.component_count=MSBFirstReadShort(image); \
+  pixmap.component_size=MSBFirstReadShort(image); \
+  pixmap.plane_bytes=MSBFirstReadLong(image); \
+  pixmap.table=MSBFirstReadLong(image); \
+  pixmap.reserved=MSBFirstReadLong(image); \
 }
 
 #define ReadRectangle(rectangle) \
 { \
-  rectangle.top=MSBFirstReadShort(image->file); \
-  rectangle.left=MSBFirstReadShort(image->file); \
-  rectangle.bottom=MSBFirstReadShort(image->file); \
-  rectangle.right=MSBFirstReadShort(image->file); \
+  rectangle.top=MSBFirstReadShort(image); \
+  rectangle.left=MSBFirstReadShort(image); \
+  rectangle.bottom=MSBFirstReadShort(image); \
+  rectangle.right=MSBFirstReadShort(image); \
 }
 
 typedef struct _PICTCode
@@ -394,7 +394,7 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,int *bytes_per_line,
   return(scanline);
 }
 
-static unsigned char* DecodeImage(const Image *image,int bytes_per_line,
+static unsigned char* DecodeImage(Image *image,int bytes_per_line,
   const int bits_per_pixel)
 {
   int
@@ -458,7 +458,7 @@ static unsigned char* DecodeImage(const Image *image,int bytes_per_line,
       {
         q=pixels+i*width;
         number_pixels=bytes_per_line;
-        (void) ReadData((char *) scanline,1,number_pixels,image->file);
+        (void) ReadBlob(image,1,number_pixels,(char *) scanline);
         p=ExpandBuffer(scanline,&number_pixels,bits_per_pixel);
         for (j=0; j < number_pixels; j++)
           *q++=(*p++);
@@ -473,10 +473,10 @@ static unsigned char* DecodeImage(const Image *image,int bytes_per_line,
   {
     q=pixels+i*width;
     if ((bytes_per_line > 250) || (bits_per_pixel > 8))
-      scanline_length=MSBFirstReadShort(image->file);
+      scanline_length=MSBFirstReadShort(image);
     else
-      scanline_length=fgetc(image->file);
-    (void) ReadData((char *) scanline,1,scanline_length,image->file);
+      scanline_length=ReadByte(image);
+    (void) ReadBlob(image,1,scanline_length,(char *) scanline);
     for (j=0; j < scanline_length; )
       if ((scanline[j] & 0x80) == 0)
         {
@@ -650,12 +650,12 @@ static unsigned int EncodeImage(Image *image,const unsigned char *scanline,
     Write the number of and the packed packets.
   */
   packets=(int) (q-pixels);
-  MSBFirstWriteShort((unsigned short) packets,image->file);
+  MSBFirstWriteShort(image,(unsigned short) packets);
   packets+=2;
   while (q != pixels)
   {
     q--;
-    (void) fputc((char) *q,image->file);
+    (void) WriteByte(image,*q);
   }
   return(packets);
 }
@@ -736,16 +736,16 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
     Read PICT header.
   */
   for (i=0; i < 512; i++)
-    (void) fgetc(image->file);  /* skip header */
-  (void) MSBFirstReadShort(image->file);  /* skip picture size */
+    (void) ReadByte(image);  /* skip header */
+  (void) MSBFirstReadShort(image);  /* skip picture size */
   ReadRectangle(frame);
-  while ((c=fgetc(image->file)) == 0);
+  while ((c=ReadByte(image)) == 0);
   if (c != 0x11)
     ReaderExit(CorruptImageWarning,"Not a PICT image file",image);
-  version=fgetc(image->file);
+  version=ReadByte(image);
   if (version == 2)
     {
-      c=fgetc(image->file);
+      c=ReadByte(image);
       if (c != 0xff)
         ReaderExit(CorruptImageWarning,"Not a PICT image file",image);
     }
@@ -786,10 +786,10 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
   code=0;
   for ( ; ; )
   {
-    if ((version == 1) || ((ftell(image->file) % 2) != 0))
-      code=fgetc(image->file);
+    if ((version == 1) || ((TellBlob(image) % 2) != 0))
+      code=ReadByte(image);
     if (version == 2)
-      code=MSBFirstReadShort(image->file);
+      code=MSBFirstReadShort(image);
     if ((code == 0xff) || (code == 0xffff))
       break;
     if (code < 0xa2)
@@ -800,11 +800,11 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           /*
             Clipping rectangle.
           */
-          length=MSBFirstReadShort(image->file);
+          length=MSBFirstReadShort(image);
           if (length != 0x000a)
             {
               for (i=0; i < (length-2); i++)
-                (void) fgetc(image->file);
+                (void) ReadByte(image);
               break;
             }
           ReadRectangle(frame);
@@ -822,9 +822,6 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           q=image->pixels;
           for (i=0; i < (int) image->packets; i++)
           {
-            q->red=0;
-            q->green=0;
-            q->blue=0;
             q->index=0;
             SetRunlengthEncoder(q);
             q++;
@@ -832,6 +829,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           q--;
           q->length=image->columns*image->rows-(MaxRunlength+1)*
             (image->packets-1)-1;
+          SyncImage(image);
           break;
         }
         case 0x12:
@@ -848,25 +846,25 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           /*
             Skip pattern definition.
           */
-          pattern=MSBFirstReadShort(image->file);
+          pattern=MSBFirstReadShort(image);
           for (i=0; i < 8; i++)
-            (void) fgetc(image->file);
+            (void) ReadByte(image);
           if (pattern == 2)
             {
               for (i=0; i < 5; i++)
-                (void) fgetc(image->file);
+                (void) ReadByte(image);
               break;
             }
           if (pattern != 1)
             ReaderExit(CorruptImageWarning,"Unknown pattern type",image);
-          length=MSBFirstReadShort(image->file);
+          length=MSBFirstReadShort(image);
           ReadRectangle(frame);
           ReadPixmap(pixmap);
-          (void) MSBFirstReadLong(image->file);
-          flags=MSBFirstReadShort(image->file);
-          length=MSBFirstReadShort(image->file);
+          (void) MSBFirstReadLong(image);
+          flags=MSBFirstReadShort(image);
+          length=MSBFirstReadShort(image);
           for (i=0; i <= length; i++)
-            (void) MSBFirstReadLong(image->file);
+            (void) MSBFirstReadLong(image);
           width=frame.bottom-frame.top;
           height=frame.right-frame.left;
           if (pixmap.bits_per_pixel <= 8)
@@ -878,16 +876,16 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           if (length < 8)
             {
               for (i=0; i < (int) (length*height); i++)
-                (void) fgetc(image->file);
+                (void) ReadByte(image);
             }
           else
             for (i=0; i < (int) height; i++)
               if (length > 250)
-                for (i=0; i < (int) MSBFirstReadShort(image->file); i++)
-                  (void) fgetc(image->file);
+                for (i=0; i < (int) MSBFirstReadShort(image); i++)
+                  (void) ReadByte(image);
               else
-                for (i=0; i < fgetc(image->file); i++)
-                  (void) fgetc(image->file);
+                for (i=0; i < ReadByte(image); i++)
+                  (void) ReadByte(image);
           break;
         }
         case 0x1b:
@@ -896,11 +894,11 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
             Initialize image background color.
           */
           image->background_color.red=
-            XDownScale(MSBFirstReadShort(image->file));
+            XDownScale(MSBFirstReadShort(image));
           image->background_color.green=
-            XDownScale(MSBFirstReadShort(image->file));
+            XDownScale(MSBFirstReadShort(image));
           image->background_color.blue=
-            XDownScale(MSBFirstReadShort(image->file));
+            XDownScale(MSBFirstReadShort(image));
           break;
         }
         case 0x70:
@@ -915,9 +913,9 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           /*
             Skip polygon or region.
           */
-          length=MSBFirstReadShort(image->file);
+          length=MSBFirstReadShort(image);
           for (i=0; i < (length-2); i++)
-            (void) fgetc(image->file);
+            (void) ReadByte(image);
           break;
         }
         case 0x90:
@@ -959,12 +957,12 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           */
           bytes_per_line=0;
           if (code != 0x9a)
-            bytes_per_line=MSBFirstReadShort(image->file);
+            bytes_per_line=MSBFirstReadShort(image);
           else
             {
-              (void) MSBFirstReadShort(image->file);
-              (void) MSBFirstReadShort(image->file);
-              (void) MSBFirstReadShort(image->file);
+              (void) MSBFirstReadShort(image);
+              (void) MSBFirstReadShort(image);
+              (void) MSBFirstReadShort(image);
             }
           ReadRectangle(frame);
           /*
@@ -990,9 +988,9 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
               tiled_image->colors=2;
               if (bytes_per_line & 0x8000)
                 {
-                  (void) MSBFirstReadLong(image->file);
-                  flags=MSBFirstReadShort(image->file);
-                  tiled_image->colors=MSBFirstReadShort(image->file)+1;
+                  (void) MSBFirstReadLong(image);
+                  flags=MSBFirstReadShort(image);
+                  tiled_image->colors=MSBFirstReadShort(image)+1;
                 }
               tiled_image->class=PseudoClass;
               tiled_image->colormap=(ColorPacket *)
@@ -1015,28 +1013,28 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
               if (bytes_per_line & 0x8000)
                 for (i=0; i < (int) tiled_image->colors; i++)
                 {
-                  j=MSBFirstReadShort(image->file) % tiled_image->colors;
+                  j=MSBFirstReadShort(image) % tiled_image->colors;
                   if (flags & 0x8000)
                     j=i;
                   tiled_image->colormap[j].red=
-                    XDownScale(MSBFirstReadShort(image->file));
+                    XDownScale(MSBFirstReadShort(image));
                   tiled_image->colormap[j].green=
-                    XDownScale(MSBFirstReadShort(image->file));
+                    XDownScale(MSBFirstReadShort(image));
                   tiled_image->colormap[j].blue=
-                    XDownScale(MSBFirstReadShort(image->file));
+                    XDownScale(MSBFirstReadShort(image));
                 }
             }
           ReadRectangle(destination);
           ReadRectangle(destination);
-          (void) MSBFirstReadShort(image->file);
+          (void) MSBFirstReadShort(image);
           if ((code == 0x91) || (code == 0x99))
             {
               /*
                 Skip region.
               */
-              length=MSBFirstReadShort(image->file);
+              length=MSBFirstReadShort(image);
               for (i=0; i < (length-2); i++)
-                (void) fgetc(image->file);
+                (void) ReadByte(image);
             }
           packets=0;
           tiled_image->pixels=(RunlengthPacket *) AllocateMemory(
@@ -1135,8 +1133,8 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           /*
             Comment.
           */
-          (void) MSBFirstReadShort(image->file);
-          length=MSBFirstReadShort(image->file);
+          (void) MSBFirstReadShort(image);
+          length=MSBFirstReadShort(image);
           if (length == 0)
             break;
           if (image->comments != (char *) NULL)
@@ -1145,7 +1143,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           if (image->comments == (char *) NULL)
             break;
           for (i=0; i < length; i++)
-            image->comments[i]=fgetc(image->file);
+            image->comments[i]=ReadByte(image);
           image->comments[i]='\0';
           break;
         }
@@ -1155,10 +1153,10 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
             Skip to next op code.
           */
           if (codes[code].length == -1)
-            (void) MSBFirstReadShort(image->file);
+            (void) MSBFirstReadShort(image);
           else
             for (i=0; i < codes[code].length; i++)
-              (void) fgetc(image->file);
+              (void) ReadByte(image);
         }
       }
     if (code == 0xc00)
@@ -1167,7 +1165,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           Skip header.
         */
         for (i=0; i < 24; i++)
-          (void) fgetc(image->file);
+          (void) ReadByte(image);
         continue;
       }
     if (((code >= 0xb0) && (code <= 0xcf)) ||
@@ -1191,10 +1189,10 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
         file=fopen(local_info->filename,WriteBinaryType);
         if (file == (FILE *) NULL)
           ReaderExit(FileOpenWarning,"Unable to write file",image);
-        length=MSBFirstReadLong(image->file);
+        length=MSBFirstReadLong(image);
         for (i=0; i < length; i++)
         {
-          c=fgetc(image->file);
+          c=ReadByte(image);
           if (i >= 154)
             (void) putc(c,file);
         }
@@ -1219,9 +1217,9 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
         /*
           Skip reserved.
         */
-        length=MSBFirstReadShort(image->file);
+        length=MSBFirstReadShort(image);
         for (i=0; i < length; i++)
-          (void) fgetc(image->file);
+          (void) ReadByte(image);
         continue;
       }
     if ((code >= 0x100) && (code <= 0x7fff))
@@ -1231,7 +1229,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
         */
         length=(code >> 7) & 0xff;
         for (i=0; i < length; i++)
-          (void) fgetc(image->file);
+          (void) ReadByte(image);
         continue;
       }
   }
@@ -1383,68 +1381,68 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   */
   for (i=0; i < PictHeaderSize; i++)
     buffer[i]=0;
-  (void) fwrite((char *) buffer,1,PictHeaderSize,image->file);
-  MSBFirstWriteShort(0,image->file);
-  MSBFirstWriteShort(size_rectangle.top,image->file);
-  MSBFirstWriteShort(size_rectangle.left,image->file);
-  MSBFirstWriteShort(size_rectangle.right,image->file);
-  MSBFirstWriteShort(size_rectangle.bottom,image->file);
-  MSBFirstWriteShort(PictVersion,image->file);
-  MSBFirstWriteShort(0x02ff,image->file);
-  MSBFirstWriteShort(PictHeaderOp,image->file);
+  (void) WriteBlob(image,1,PictHeaderSize,(char *) buffer);
+  MSBFirstWriteShort(image,0);
+  MSBFirstWriteShort(image,size_rectangle.top);
+  MSBFirstWriteShort(image,size_rectangle.left);
+  MSBFirstWriteShort(image,size_rectangle.right);
+  MSBFirstWriteShort(image,size_rectangle.bottom);
+  MSBFirstWriteShort(image,PictVersion);
+  MSBFirstWriteShort(image,0x02ff);
+  MSBFirstWriteShort(image,PictHeaderOp);
   /*
     Write full size of the file, resolution, frame bounding box, and reserved.
   */
-  MSBFirstWriteLong(0xFFFE0000UL,image->file);
-  MSBFirstWriteLong(horizontal_resolution,image->file);
-  MSBFirstWriteLong(vertical_resolution,image->file);
-  MSBFirstWriteShort(frame_rectangle.top,image->file);
-  MSBFirstWriteShort(frame_rectangle.left,image->file);
-  MSBFirstWriteShort(frame_rectangle.right,image->file);
-  MSBFirstWriteShort(frame_rectangle.bottom,image->file);
-  MSBFirstWriteLong(0x00000000L,image->file);
+  MSBFirstWriteLong(image,0xFFFE0000UL);
+  MSBFirstWriteLong(image,horizontal_resolution);
+  MSBFirstWriteLong(image,vertical_resolution);
+  MSBFirstWriteShort(image,frame_rectangle.top);
+  MSBFirstWriteShort(image,frame_rectangle.left);
+  MSBFirstWriteShort(image,frame_rectangle.right);
+  MSBFirstWriteShort(image,frame_rectangle.bottom);
+  MSBFirstWriteLong(image,0x00000000L);
   /*
     Write crop region opcode and crop bounding box.
   */
-  MSBFirstWriteShort(PictCropRegionOp,image->file);
-  MSBFirstWriteShort(0xa,image->file);
-  MSBFirstWriteShort(crop_rectangle.top,image->file);
-  MSBFirstWriteShort(crop_rectangle.left,image->file);
-  MSBFirstWriteShort(crop_rectangle.right,image->file);
-  MSBFirstWriteShort(crop_rectangle.bottom,image->file);
+  MSBFirstWriteShort(image,PictCropRegionOp);
+  MSBFirstWriteShort(image,0xa);
+  MSBFirstWriteShort(image,crop_rectangle.top);
+  MSBFirstWriteShort(image,crop_rectangle.left);
+  MSBFirstWriteShort(image,crop_rectangle.right);
+  MSBFirstWriteShort(image,crop_rectangle.bottom);
   /*
     Write picture opcode, row bytes, and picture bounding box, and version.
   */
   if (image->class == PseudoClass)
-    MSBFirstWriteShort(PictPICTOp,image->file);
+    MSBFirstWriteShort(image,PictPICTOp);
   else
     {
-      MSBFirstWriteShort(PictPixmapOp,image->file);
-      MSBFirstWriteLong((unsigned long) base_address,image->file);
+      MSBFirstWriteShort(image,PictPixmapOp);
+      MSBFirstWriteLong(image,(unsigned long) base_address);
     }
-  MSBFirstWriteShort(row_bytes | 0x8000,image->file);
-  MSBFirstWriteShort(bounds.top,image->file);
-  MSBFirstWriteShort(bounds.left,image->file);
-  MSBFirstWriteShort(bounds.right,image->file);
-  MSBFirstWriteShort(bounds.bottom,image->file);
+  MSBFirstWriteShort(image,row_bytes | 0x8000);
+  MSBFirstWriteShort(image,bounds.top);
+  MSBFirstWriteShort(image,bounds.left);
+  MSBFirstWriteShort(image,bounds.right);
+  MSBFirstWriteShort(image,bounds.bottom);
   /*
     Write pack type, pack size, resolution, pixel type, and pixel size.
   */
-  MSBFirstWriteShort(pixmap.version,image->file);
-  MSBFirstWriteShort(pixmap.pack_type,image->file);
-  MSBFirstWriteLong(pixmap.pack_size,image->file);
-  MSBFirstWriteLong(pixmap.horizontal_resolution,image->file);
-  MSBFirstWriteLong(pixmap.vertical_resolution,image->file);
-  MSBFirstWriteShort(pixmap.pixel_type,image->file);
-  MSBFirstWriteShort(pixmap.bits_per_pixel,image->file);
+  MSBFirstWriteShort(image,pixmap.version);
+  MSBFirstWriteShort(image,pixmap.pack_type);
+  MSBFirstWriteLong(image,pixmap.pack_size);
+  MSBFirstWriteLong(image,pixmap.horizontal_resolution);
+  MSBFirstWriteLong(image,pixmap.vertical_resolution);
+  MSBFirstWriteShort(image,pixmap.pixel_type);
+  MSBFirstWriteShort(image,pixmap.bits_per_pixel);
   /*
     Write component count, size, plane bytes, table size, and reserved.
   */
-  MSBFirstWriteShort(pixmap.component_count,image->file);
-  MSBFirstWriteShort(pixmap.component_size,image->file);
-  MSBFirstWriteLong((unsigned long) pixmap.plane_bytes,image->file);
-  MSBFirstWriteLong((unsigned long) pixmap.table,image->file);
-  MSBFirstWriteLong((unsigned long) pixmap.reserved,image->file);
+  MSBFirstWriteShort(image,pixmap.component_count);
+  MSBFirstWriteShort(image,pixmap.component_size);
+  MSBFirstWriteLong(image,(unsigned long) pixmap.plane_bytes);
+  MSBFirstWriteLong(image,(unsigned long) pixmap.table);
+  MSBFirstWriteLong(image,(unsigned long) pixmap.reserved);
   if (image->class == PseudoClass)
     {
       unsigned short
@@ -1455,32 +1453,32 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       /*
         Write image colormap.
       */
-      MSBFirstWriteLong(0x00000000L,image->file);  /* color seed */
-      MSBFirstWriteShort(0L,image->file);  /* color flags */
-      MSBFirstWriteShort((unsigned short) (image->colors-1),image->file);
+      MSBFirstWriteLong(image,0x00000000L);  /* color seed */
+      MSBFirstWriteShort(image,0L);  /* color flags */
+      MSBFirstWriteShort(image,(unsigned short) (image->colors-1));
       for (i=0; i < (int) image->colors; i++)
       {
         red=((unsigned long) (image->colormap[i].red*65535L)/MaxRGB);
         green=((unsigned long) (image->colormap[i].green*65535L)/MaxRGB);
         blue=((unsigned long) (image->colormap[i].blue*65535L)/MaxRGB);
-        MSBFirstWriteShort((unsigned int) i,image->file);
-        MSBFirstWriteShort(red,image->file);
-        MSBFirstWriteShort(green,image->file);
-        MSBFirstWriteShort(blue,image->file);
+        MSBFirstWriteShort(image,(unsigned int) i);
+        MSBFirstWriteShort(image,red);
+        MSBFirstWriteShort(image,green);
+        MSBFirstWriteShort(image,blue);
       }
     }
   /*
     Write source and destination rectangle.
   */
-  MSBFirstWriteShort(source_rectangle.top,image->file);
-  MSBFirstWriteShort(source_rectangle.left,image->file);
-  MSBFirstWriteShort(source_rectangle.right,image->file);
-  MSBFirstWriteShort(source_rectangle.bottom,image->file);
-  MSBFirstWriteShort(destination_rectangle.top,image->file);
-  MSBFirstWriteShort(destination_rectangle.left,image->file);
-  MSBFirstWriteShort(destination_rectangle.right,image->file);
-  MSBFirstWriteShort(destination_rectangle.bottom,image->file);
-  MSBFirstWriteShort(transfer_mode,image->file);
+  MSBFirstWriteShort(image,source_rectangle.top);
+  MSBFirstWriteShort(image,source_rectangle.left);
+  MSBFirstWriteShort(image,source_rectangle.right);
+  MSBFirstWriteShort(image,source_rectangle.bottom);
+  MSBFirstWriteShort(image,destination_rectangle.top);
+  MSBFirstWriteShort(image,destination_rectangle.left);
+  MSBFirstWriteShort(image,destination_rectangle.right);
+  MSBFirstWriteShort(image,destination_rectangle.bottom);
+  MSBFirstWriteShort(image,transfer_mode);
   /*
     Write picture data.
   */
@@ -1565,8 +1563,8 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       }
     }
   if (count & 0x1)
-    (void) fputc('\0',image->file);
-  MSBFirstWriteShort(PictEndOfPictureOp,image->file);
+    (void) WriteByte(image,'\0');
+  MSBFirstWriteShort(image,PictEndOfPictureOp);
   FreeMemory((char *) scanline);
   FreeMemory((char *) packed_scanline);
   FreeMemory((char *) buffer);

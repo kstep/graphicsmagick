@@ -122,7 +122,7 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
   OpenImage(image_info,image,ReadBinaryType);
   if (image->file == (FILE *) NULL)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
-  magick=MSBFirstReadLong(image->file);
+  magick=MSBFirstReadLong(image);
   if ((magick != 256) && (magick != 65536))
     ReaderExit(CorruptImageWarning,"Not a TTF font file",image);
   /*

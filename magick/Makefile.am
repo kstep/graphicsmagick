@@ -42,9 +42,9 @@ INCLUDES = -I$(top_srcdir)
 libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 
 # Library sources
-libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c avs.c bmp.c cmyk.c \
-  colors.c compress.c dcm.c decorate.c delegates.c display.c dps.c draw.c \
-  effects.c enhance.c ept.c error.c fax.c fits.c fpx.c gems.c gif.c \
+libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c avs.c blob.h bmp.c \
+  cmyk.c colors.c compress.c dcm.c decorate.c delegates.c display.c dps.c \
+  draw.c effects.c enhance.c ept.c error.c fax.c fits.c fpx.c gems.c gif.c \
   gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c image.c \
   iptc.c jbig.c jpeg.c label.c logo.c magick.c map.c matte.c memory.c \
   miff.c monitor.c mono.c montage.c mtv.c null.c pcd.c pcl.c pcx.c \
@@ -63,7 +63,7 @@ bin_SCRIPTS = Magick-config
 # Headers which are installed
 include_HEADERS = classify.h compress.h config.h defines.h delegates.h error.h \
 	gems.h image.h magick.h memory.h monitor.h PreRvIcccm.h quantize.h \
-	utility.h version.h widget.h xwindows.h api.h
+	utility.h version.h widget.h xwindows.h api.h blob.h
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = animate.h display.h mac.h nt.h vms.h

@@ -154,9 +154,9 @@ Export Image *ReadMTVImage(const ImageInfo *image_info)
     {
       for (x=0; x < (int) image->columns; x++)
       {
-        red=UpScale(fgetc(image->file));
-        green=UpScale(fgetc(image->file));
-        blue=UpScale(fgetc(image->file));
+        red=UpScale(ReadByte(image));
+        green=UpScale(ReadByte(image));
+        blue=UpScale(ReadByte(image));
         if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
             ((int) q->length < MaxRunlength))
           q->length++;
@@ -196,7 +196,7 @@ Export Image *ReadMTVImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
   } while (count > 0);
@@ -238,6 +238,9 @@ Export Image *ReadMTVImage(const ImageInfo *image_info)
 */
 Export unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
 {
+  char
+    buffer[MaxTextExtent];
+
   int
     x,
     y;
@@ -278,7 +281,8 @@ Export unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize raster file header.
     */
-    (void) fprintf(image->file,"%u %u\n",image->columns,image->rows);
+    (void) sprintf(buffer,"%u %u\n",image->columns,image->rows);
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     x=0;
     y=0;
     p=image->pixels;
@@ -293,7 +297,7 @@ Export unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
         x++;
         if (x == (int) image->columns)
           {
-            (void) fwrite((char *) pixels,1,q-pixels,image->file);
+            (void) WriteBlob(image,1,q-pixels,(char *) pixels);
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);

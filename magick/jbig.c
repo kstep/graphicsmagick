@@ -164,7 +164,7 @@ Export Image *ReadJBIGImage(const ImageInfo *image_info)
   status=JBG_EAGAIN;
   do
   {
-    length=(long) fread(buffer,1,MaxBufferSize,image->file);
+    length=(long) ReadBlob(image,1,MaxBufferSize,(char *) buffer);
     if (length == 0)
       break;
     p=buffer;

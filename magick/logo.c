@@ -5877,6 +5877,7 @@ Export Image *ReadLOGOImage(const ImageInfo *image_info)
 Export unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
 {
   char
+    buffer[MaxTextExtent],
     filename[MaxTextExtent];
 
   FILE
@@ -5915,24 +5916,37 @@ Export unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     WriterExit(FileOpenWarning,"Unable to open file",image);
-  (void) fprintf(image->file,"/*\n");
-  (void) fprintf(image->file,"  Logo image declaration.\n");
-  (void) fprintf(image->file,"*/\n");
-  (void) fprintf(image->file,"#define LogoImageExtent  %lu\n\n",filesize);
-  (void) fprintf(image->file,"static unsigned char\n");
-  (void) fprintf(image->file,"  LogoImage[]=\n");
-  (void) fprintf(image->file,"  {\n");
-  (void) fprintf(image->file,"    ");
+  (void) strcpy(buffer,"/*\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) strcpy(buffer,"  Logo image declaration.\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) strcpy(buffer,"*/\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) sprintf(buffer,"#define LogoImageExtent  %lu\n\n",filesize);
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) strcpy(buffer,"static unsigned char\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) strcpy(buffer,"  LogoImage[]=\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) strcpy(buffer,"  {\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) strcpy(buffer,"    ");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
   for (i=0; ; i++)
   {
     c=fgetc(file);
     if (c < 0)
       break;
-    (void) fprintf(image->file,"0x%02x, ",c);
+    (void) sprintf(buffer,"0x%02x, ",c);
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     if (((i+1) % 12) == 0)
-      (void) fprintf(image->file,"\n    ");
+      {
+        (void) strcpy(buffer,"\n    ");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+      }
   }
-  (void) fprintf(image->file,"\n  };\n");
+  (void) strcpy(buffer,"\n  };\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
   (void) fclose(file);
   CloseImage(image);
   return(True);

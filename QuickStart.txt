@@ -7,12 +7,12 @@ Unix:
 
   Download
 
-    ftp://www.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.2.7.tar.gz
+    ftp://www.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.2.8.tar.gz
 
   and type
 
-    gunzip -c ImageMagick-4.2.7.tar.gz | tar xvf -
-    cd ImageMagick-4.2.7
+    gunzip -c ImageMagick-4.2.8.tar.gz | tar xvf -
+    cd ImageMagick-4.2.8
     ./configure -enable-shared -enable-lzw -with-perl
     make
     make install
@@ -48,7 +48,7 @@ NT:
 
   and double click on it to extract the distribution.  Next, copy
 
-    ImageMagick-4.2.7/ImageMagick-4.2.7/delegates/nt.mgk
+    ImageMagick-4.2.8/ImageMagick-4.2.8/delegates/nt.mgk
 
   to
 
@@ -58,17 +58,17 @@ NT:
   Copy/Paste/Rename to copy and rename nt.mgk to delegates.mgk.
 
   If you have an X server, change to directory
-  ImageMagick-4.2.7/ImageMagick-4.2.7/bin and double-click on
+  ImageMagick-4.2.8/ImageMagick-4.2.8/bin and double-click on
   display.exe.  Otherwise, select Start->Programs->Command Prompt.  In
   the Command Prompt window type
 
-    cd ImageMagick-4.2.7
+    cd ImageMagick-4.2.8
     convert -verbose logo: image.gif
     convert image.gif win:
 
   Alternatively, download the ImageMagick NT source
 
-    ftp://www.wizards.dupont.com/pub/ImageMagick/nt/ImageMagick-4.2.7.zip
+    ftp://www.wizards.dupont.com/pub/ImageMagick/nt/ImageMagick-4.2.8.zip
 
   and double click on the ImageMagick Visual C++ project to build from
   the source.
@@ -83,7 +83,7 @@ Win95:
   and double click on it to extract the distribution.  Next, copy
 
 
-    ImageMagick-4.2.7/delegates/win95.mgk
+    ImageMagick-4.2.8/delegates/win95.mgk
 
   to
 
@@ -93,18 +93,18 @@ Win95:
   Copy/Paste/Rename to copy and rename win95.mgk to delegates.mgk.
 
   If you have an X server, change to directory
-  ImageMagick-4.2.7/ImageMagick-4.2.7/bin and double-click on
+  ImageMagick-4.2.8/ImageMagick-4.2.8/bin and double-click on
   display.exe.  Otherwise, select Start->Programs->MSDOS Prompt.  In
   the MSDOS Prompt window type
 
-    cd c:\ImageMagick-4.2.7
+    cd c:\ImageMagick-4.2.8
     del delegates.mgk
     convert -verbose logo: image.gif
     convert image.gif win:
 
   Alternatively, download the ImageMagick Win95 source
 
-    ftp://www.wizards.dupont.com/pub/ImageMagick/nt/ImageMagick-4.2.7.zip
+    ftp://www.wizards.dupont.com/pub/ImageMagick/nt/ImageMagick-4.2.8.zip
 
   and double click on the ImageMagick Visual C++ project to build from
   the source.
@@ -117,7 +117,7 @@ MAC:
     ftp://www.wizards.dupont.com/pub/ImageMagick/mac/ImageMagick-mac.sit.hqx
 
   and double click on it to extract the distribution.   Move to the
-  ImageMagick-4.2.7 directory and double click on the convert program
+  ImageMagick-4.2.8 directory and double click on the convert program
   icon.  Next, type
 
     -verbose logo: image.gif
@@ -127,7 +127,7 @@ MAC:
 
   Alternatively, download the ImageMagick MAC source
 
-    ftp://www.wizards.dupont.com/pub/ImageMagick/mac/ImageMagick-4.2.7.sit.hqx
+    ftp://www.wizards.dupont.com/pub/ImageMagick/mac/ImageMagick-4.2.8.sit.hqx
 
   and double click on the Make AppleScript script  to build from the source.
 
@@ -136,7 +136,7 @@ VMS:
 
   Type
 
-    unzip ImageMagick-4.2.7.zip
+    unzip ImageMagick-4.2.8.zip
     set default [.imagemagick]
     @make
     convert -verbose logo: image.gif

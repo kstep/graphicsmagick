@@ -144,7 +144,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
   /*
     Determine if this is a RLE file.
   */
-  status=ReadData((char *) magick,1,2,image->file);
+  status=ReadBlob(image,1,2,(char *) magick);
   if ((status == False) || (strncmp(magick,"\122\314",2) != 0))
     ReaderExit(CorruptImageWarning,"Not a RLE image file",image);
   do
@@ -152,22 +152,22 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
     /*
       Read image header.
     */
-    (void) LSBFirstReadShort(image->file);
-    (void) LSBFirstReadShort(image->file);
-    image->columns=LSBFirstReadShort(image->file);
-    image->rows=LSBFirstReadShort(image->file);
+    (void) LSBFirstReadShort(image);
+    (void) LSBFirstReadShort(image);
+    image->columns=LSBFirstReadShort(image);
+    image->rows=LSBFirstReadShort(image);
     if (image_info->ping)
       {
         CloseImage(image);
         return(image);
       }
     image->packets=image->columns*image->rows;
-    flags=fgetc(image->file);
+    flags=ReadByte(image);
     image->matte=flags & 0x04;
-    number_planes=fgetc(image->file);
-    bits_per_pixel=fgetc(image->file);
-    number_colormaps=fgetc(image->file);
-    map_length=1 << fgetc(image->file);
+    number_planes=ReadByte(image);
+    bits_per_pixel=ReadByte(image);
+    number_colormaps=ReadByte(image);
+    map_length=1 << ReadByte(image);
     if ((number_planes == 0) || (number_planes == 2) || (bits_per_pixel != 8) ||
         (image->columns == 0))
       ReaderExit(CorruptImageWarning,"Unsupported RLE image file",image);
@@ -178,7 +178,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
         */
         for (i=0; i < (int) number_planes; i++)
           background_color[i]=(unsigned char) 0;
-        (void) fgetc(image->file);
+        (void) ReadByte(image);
       }
     else
       {
@@ -187,10 +187,10 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
         */
         p=background_color;
         for (i=0; i < (int) number_planes; i++)
-          *p++=(unsigned char) fgetc(image->file);
+          *p++=(unsigned char) ReadByte(image);
       }
     if ((number_planes & 0x01) == 0)
-      (void) fgetc(image->file);
+      (void) ReadByte(image);
     colormap=(unsigned char *) NULL;
     if (number_colormaps != 0)
       {
@@ -204,7 +204,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
         p=colormap;
         for (i=0; i < (int) number_colormaps; i++)
           for (j=0; j < (int) map_length; j++)
-            *p++=XDownScale(LSBFirstReadShort(image->file));
+            *p++=XDownScale(LSBFirstReadShort(image));
       }
     if (flags & 0x08)
       {
@@ -214,14 +214,14 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
         /*
           Read image comment.
         */
-        length=LSBFirstReadShort(image->file);
+        length=LSBFirstReadShort(image);
         image->comments=(char *) AllocateMemory(length*sizeof(char));
         if (image->comments == (char *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-        (void) ReadData((char *) image->comments,1,length-1,image->file);
+        (void) ReadBlob(image,1,length-1,(char *) image->comments);
         image->comments[length-1]='\0';
         if ((length & 0x01) == 0)
-          (void) fgetc(image->file);
+          (void) ReadByte(image);
       }
     /*
       Allocate RLE pixels.
@@ -257,23 +257,23 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
     plane=0;
     x=0;
     y=0;
-    opcode=fgetc(image->file);
+    opcode=ReadByte(image);
     do
     {
       switch (opcode & 0x3f)
       {
         case SkipLinesOp:
         {
-          operand=fgetc(image->file);
+          operand=ReadByte(image);
           if (opcode & 0x40)
-            operand=LSBFirstReadShort(image->file);
+            operand=LSBFirstReadShort(image);
           x=0;
           y+=operand;
           break;
         }
         case SetColorOp:
         {
-          operand=fgetc(image->file);
+          operand=ReadByte(image);
           plane=(unsigned char) operand;
           if (plane == 255)
             plane=number_planes-1;
@@ -282,39 +282,39 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
         }
         case SkipPixelsOp:
         {
-          operand=fgetc(image->file);
+          operand=ReadByte(image);
           if (opcode & 0x40)
-            operand=LSBFirstReadShort(image->file);
+            operand=LSBFirstReadShort(image);
           x+=operand;
           break;
         }
         case ByteDataOp:
         {
-          operand=fgetc(image->file);
+          operand=ReadByte(image);
           if (opcode & 0x40)
-            operand=LSBFirstReadShort(image->file);
+            operand=LSBFirstReadShort(image);
           p=rle_pixels+((image->rows-y-1)*image->columns*number_planes)+
             x*number_planes+plane;
           operand++;
           for (i=0; i < operand; i++)
           {
-            pixel=fgetc(image->file);
+            pixel=ReadByte(image);
             if ((y < (int) image->rows) && ((x+i) < (int) image->columns))
               *p=pixel;
             p+=number_planes;
           }
           if (operand & 0x01)
-            (void) fgetc(image->file);
+            (void) ReadByte(image);
           x+=operand;
           break;
         }
         case RunDataOp:
         {
-          operand=fgetc(image->file);
+          operand=ReadByte(image);
           if (opcode & 0x40)
-            operand=LSBFirstReadShort(image->file);
-          pixel=fgetc(image->file);
-          (void) fgetc(image->file);
+            operand=LSBFirstReadShort(image);
+          pixel=ReadByte(image);
+          (void) ReadByte(image);
           operand++;
           p=rle_pixels+((image->rows-y-1)*image->columns*number_planes)+
             x*number_planes+plane;
@@ -330,7 +330,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
         default:
           break;
       }
-      opcode=fgetc(image->file);
+      opcode=ReadByte(image);
     } while (((opcode & 0x3f) != EOFOp) && (opcode != EOF));
     if (number_colormaps != 0)
       {
@@ -489,8 +489,8 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    (void) fgetc(image->file);
-    status=ReadData((char *) magick,1,2,image->file);
+    (void) ReadByte(image);
+    status=ReadBlob(image,1,2,(char *) magick);
     if ((status == True) && (strncmp(magick,"\122\314",2) == 0))
       {
         /*
@@ -503,7 +503,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
   } while ((status == True) && (strncmp(magick,"\122\314",2) == 0));

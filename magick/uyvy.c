@@ -116,7 +116,7 @@ Export Image *ReadUYVYImage(const ImageInfo *image_info)
   if (image->file == (FILE *) NULL)
     ReaderExit(FileOpenWarning,"Unable to open file",image)
   for (i=0; i < image->offset; i++)
-    (void) fgetc(image->file);
+    (void) ReadByte(image);
   /*
     Read data.
   */
@@ -129,7 +129,7 @@ Export Image *ReadUYVYImage(const ImageInfo *image_info)
       (image->pixels == (RunlengthPacket *) NULL))
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   SetImage(image);
-  (void) ReadData((char *) uyvy_pixels,1,2*image->packets,image->file);
+  (void) ReadBlob(image,1,2*image->packets,(char *) uyvy_pixels);
   /*
     Accumulate UYVY, then unpack into two pixels.
   */
@@ -235,10 +235,10 @@ Export unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
     {
       if (full)
         {
-          (void) fputc(DownScale((u+p->green) >> 1),image->file);
-          (void) fputc(DownScale(y),image->file);
-          (void) fputc(DownScale((v+p->blue) >> 1),image->file);
-          (void) fputc(DownScale(p->red),image->file);
+          (void) WriteByte(image,DownScale((u+p->green) >> 1));
+          (void) WriteByte(image,DownScale(y));
+          (void) WriteByte(image,DownScale((v+p->blue) >> 1));
+          (void) WriteByte(image,DownScale(p->red));
           full=False;
         }
       else

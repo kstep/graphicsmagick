@@ -10,18 +10,18 @@ extern "C" {
 
 extern Export unsigned int
   HuffmanDecodeImage(Image *),
-  HuffmanEncodeImage(const ImageInfo *,const Image *),
-  Huffman2DEncodeImage(ImageInfo *,const Image *),
-  LZWEncodeImage(FILE *,const unsigned int,unsigned char *),
-  PackbitsEncodeImage(FILE *,const unsigned int,unsigned char *),
+  HuffmanEncodeImage(const ImageInfo *,Image *),
+  Huffman2DEncodeImage(ImageInfo *,Image *),
+  LZWEncodeImage(Image *,const unsigned int,unsigned char *),
+  PackbitsEncodeImage(Image *,const unsigned int,unsigned char *),
   RunlengthDecodeImage(Image *),
   RunlengthEncodeImage(Image *),
-  ZLIBEncodeImage(FILE *,const unsigned long,const unsigned int,
+  ZLIBEncodeImage(Image *,const unsigned long,const unsigned int,
     unsigned char *);
 
 extern Export void
-  Ascii85Encode(const unsigned int,FILE *),
-  Ascii85Flush(FILE *),
+  Ascii85Encode(Image *,const unsigned int),
+  Ascii85Flush(Image *),
   Ascii85Initialize(void),
   SetRunlengthEncoder(RunlengthPacket *),
   SetRunlengthPackets(Image *,const unsigned long);

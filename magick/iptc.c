@@ -119,7 +119,7 @@ Export Image *ReadIPTCImage(const ImageInfo *image_info)
     AllocateMemory((length+2)*sizeof(unsigned char));
   for (q=image->iptc_profile.info; ; q++)
   {
-    c=fgetc(image->file);
+    c=ReadByte(image);
     if (c == EOF)
       break;
     if ((q-image->iptc_profile.info+1) >= (int) length)
@@ -180,8 +180,8 @@ Export unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     WriterExit(FileOpenWarning,"Unable to open file",image);
-  (void) fwrite((char *) image->iptc_profile.info,1,
-    (int) image->iptc_profile.length,image->file);
+  (void) WriteBlob(image,1,(int) image->iptc_profile.length,
+    (char *) image->iptc_profile.info);
   CloseImage(image);
   return(True);
 }

@@ -83,7 +83,8 @@
 %
 %
 */
-static int XBMInteger(FILE *file,short int *hex_digits)
+
+static int XBMInteger(Image *image,short int *hex_digits)
 {
   int
     c,
@@ -94,7 +95,7 @@ static int XBMInteger(FILE *file,short int *hex_digits)
   flag=0;
   for ( ; ; )
   {
-    c=fgetc(file);
+    c=ReadByte(image);
     if (c == EOF)
       {
         value=(-1);
@@ -276,7 +277,7 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
   if (version == 10)
     for (x=0; x < (int) (bytes_per_line*image->rows); (x+=2))
     {
-      value=XBMInteger(image->file,hex_digits);
+      value=XBMInteger(image,hex_digits);
       *p++=value;
       if (!padding || ((x+2) % bytes_per_line))
         *p++=value >> 8;
@@ -284,7 +285,7 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
   else
     for (x=0; x < (int) (bytes_per_line*image->rows); x++)
     {
-      value=XBMInteger(image->file,hex_digits);
+      value=XBMInteger(image,hex_digits);
       *p++=value;
     }
   /*
@@ -359,6 +360,7 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
 Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
 {
   char
+    buffer[MaxTextExtent],
     name[MaxTextExtent];
 
   int
@@ -399,10 +401,14 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
     q++;
   if (*q == '.')
     *q='\0';
-  (void) fprintf(image->file,"#define %.1024s_width %u\n",name,image->columns);
-  (void) fprintf(image->file,"#define %.1024s_height %u\n",name,image->rows);
-  (void) fprintf(image->file,"static char %.1024s_bits[] = {\n",name);
-  (void) fprintf(image->file," ");
+  (void) sprintf(buffer,"#define %.1024s_width %u\n",name,image->columns);
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) sprintf(buffer,"#define %.1024s_height %u\n",name,image->rows);
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) sprintf(buffer,"static char %.1024s_bits[] = {\n",name);
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) strcpy(buffer," ");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
   /*
     Convert MIFF to X bitmap pixels.
   */
@@ -427,7 +433,8 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   x=0;
   y=0;
   p=image->pixels;
-  (void) fprintf(image->file," ");
+  (void) strcpy(buffer," ");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
   for (i=0; i < (int) image->packets; i++)
   {
     for (j=0; j <= ((int) p->length); j++)
@@ -441,11 +448,13 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
           /*
             Write a bitmap byte to the image file.
           */
-          (void) fprintf(image->file,"0x%02x, ",(unsigned int) (byte & 0xff));
+          (void) sprintf(buffer,"0x%02x, ",(unsigned int) (byte & 0xff));
+          (void) WriteBlob(image,1,strlen(buffer),buffer);
           count++;
           if (count == 12)
             {
-              (void) fprintf(image->file,"\n  ");
+              (void) strcpy(buffer,"\n  ");
+              (void) WriteBlob(image,1,strlen(buffer),buffer);
               count=0;
             };
           bit=0;
@@ -460,12 +469,13 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
                 Write a bitmap byte to the image file.
               */
               byte>>=(8-bit);
-              (void) fprintf(image->file,"0x%02x, ",(unsigned int)
-                (byte & 0xff));
+              (void) sprintf(buffer,"0x%02x, ",(unsigned int) (byte & 0xff));
+              (void) WriteBlob(image,1,strlen(buffer),buffer);
               count++;
               if (count == 12)
                 {
-                  (void) fprintf(image->file,"\n  ");
+                  (void) strcpy(buffer,"\n  ");
+                  (void) WriteBlob(image,1,strlen(buffer),buffer);
                   count=0;
                 };
               bit=0;
@@ -479,7 +489,8 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
     }
     p++;
   }
-  (void) fprintf(image->file,"};\n");
+  (void) strcpy(buffer,"};\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
   CloseImage(image);
   return(True);
 }

@@ -232,7 +232,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     image->next->previous=image;
     (void) IsPseudoClass(image);
     image=image->next;
-    ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+    ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
       (unsigned int) image->filesize);
     /*
       Initialize text image to background color.
@@ -299,6 +299,9 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
 */
 Export unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
 {
+  char
+    buffer[MaxTextExtent];
+
   int
     x,
     y;
@@ -334,15 +337,20 @@ Export unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
       for (j=0; j <= ((int) p->length); j++)
       {
         if (image->matte)
-          (void) fprintf(image->file,"%d,%d: %d,%d,%d,%d\n",x,y,
-            p->red,p->green,p->blue,p->index);
+          {
+            (void) sprintf(buffer,"%d,%d: %d,%d,%d,%d\n",x,y,
+              p->red,p->green,p->blue,p->index);
+            (void) WriteBlob(image,1,strlen(buffer),buffer);
+          }
         else
           {
-            (void) fprintf(image->file,"%d,%d: %d,%d,%d  ",x,y,
+            (void) sprintf(buffer,"%d,%d: %d,%d,%d  ",x,y,
               p->red,p->green,p->blue);
-            (void) fprintf(image->file,HexColorFormat,p->red,p->green,p->blue);
+            (void) WriteBlob(image,1,strlen(buffer),buffer);
+            (void) sprintf(buffer,HexColorFormat,p->red,p->green,p->blue);
+            (void) WriteBlob(image,1,strlen(buffer),buffer);
           }
-        (void) fprintf(image->file,"\n");
+        (void) WriteByte(image,'\n');
         x++;
         if (x == (int) image->columns)
           {

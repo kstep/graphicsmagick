@@ -112,7 +112,7 @@ Export unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
         Read existing Encapsulated Postscript.
       */
       (void) fseek(ps_file,0L,SEEK_END);
-      eps_length=ftell(ps_file);
+      eps_length=TellBlob(ps_file);
       (void) fseek(ps_file,0L,SEEK_SET);
     }
   else
@@ -154,18 +154,18 @@ Export unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     WriterExit(FileOpenWarning,"Unable to open file",image);
-  LSBFirstWriteLong(0xc6d3d0c5ul,image->file);
-  LSBFirstWriteLong(30,image->file);
-  LSBFirstWriteLong(eps_length,image->file);
-  LSBFirstWriteLong(0,image->file);
-  LSBFirstWriteLong(0,image->file);
-  LSBFirstWriteLong(eps_length+30,image->file);
-  LSBFirstWriteLong(tiff_length,image->file);
-  LSBFirstWriteShort(0xffff,image->file);
+  LSBFirstWriteLong(image,0xc6d3d0c5ul);
+  LSBFirstWriteLong(image,30);
+  LSBFirstWriteLong(image,eps_length);
+  LSBFirstWriteLong(image,0);
+  LSBFirstWriteLong(image,0);
+  LSBFirstWriteLong(image,eps_length+30);
+  LSBFirstWriteLong(image,tiff_length);
+  LSBFirstWriteShort(image,0xffff);
   for (c=fgetc(ps_file); c != EOF; c=fgetc(ps_file))
-    (void) fputc((char) c,image->file);
+    (void) WriteByte(image,(char) c);
   for (c=fgetc(tiff_file); c != EOF; c=fgetc(tiff_file))
-    (void) fputc((char) c,image->file);
+    (void) WriteByte(image,(char) c);
   (void) fclose(tiff_file);
   CloseImage(image);
   return(True);

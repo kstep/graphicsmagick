@@ -229,7 +229,7 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
   /*
     Read SUN raster header.
   */
-  sun_header.magic=MSBFirstReadLong(image->file);
+  sun_header.magic=MSBFirstReadLong(image);
   do
   {
     /*
@@ -237,13 +237,13 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
     */
     if (sun_header.magic != 0x59a66a95)
       ReaderExit(CorruptImageWarning,"Not a SUN raster image",image);
-    sun_header.width=MSBFirstReadLong(image->file);
-    sun_header.height=MSBFirstReadLong(image->file);
-    sun_header.depth=MSBFirstReadLong(image->file);
-    sun_header.length=MSBFirstReadLong(image->file);
-    sun_header.type=MSBFirstReadLong(image->file);
-    sun_header.maptype=MSBFirstReadLong(image->file);
-    sun_header.maplength=MSBFirstReadLong(image->file);
+    sun_header.width=MSBFirstReadLong(image);
+    sun_header.height=MSBFirstReadLong(image);
+    sun_header.depth=MSBFirstReadLong(image);
+    sun_header.length=MSBFirstReadLong(image);
+    sun_header.type=MSBFirstReadLong(image);
+    sun_header.maptype=MSBFirstReadLong(image);
+    sun_header.maplength=MSBFirstReadLong(image);
     image->columns=(unsigned int) sun_header.width;
     image->rows=(unsigned int) sun_header.height;
     if (sun_header.depth < 24)
@@ -298,13 +298,13 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
         if ((image->colormap == (ColorPacket *) NULL) ||
             (sun_colormap == (unsigned char *) NULL))
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-        (void) ReadData((char *) sun_colormap,1,image->colors,image->file);
+        (void) ReadBlob(image,1,image->colors,(char *) sun_colormap);
         for (i=0; i < (int) image->colors; i++)
           image->colormap[i].red=UpScale(sun_colormap[i]);
-        (void) ReadData((char *) sun_colormap,1,image->colors,image->file);
+        (void) ReadBlob(image,1,image->colors,(char *) sun_colormap);
         for (i=0; i < (int) image->colors; i++)
           image->colormap[i].green=UpScale(sun_colormap[i]);
-        (void) ReadData((char *) sun_colormap,1,image->colors,image->file);
+        (void) ReadBlob(image,1,image->colors,(char *) sun_colormap);
         for (i=0; i < (int) image->colors; i++)
           image->colormap[i].blue=UpScale(sun_colormap[i]);
         FreeMemory((char *) sun_colormap);
@@ -322,8 +322,8 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
           AllocateMemory(sun_header.maplength*sizeof(unsigned char));
         if (sun_colormap == (unsigned char *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-        (void) ReadData((char *) sun_colormap,1,(unsigned int)
-          sun_header.maplength,image->file);
+        (void) ReadBlob(image,1,(unsigned int) sun_header.maplength,
+          (char *) sun_colormap);
         FreeMemory((char *) sun_colormap);
         break;
       }
@@ -335,8 +335,7 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
       AllocateMemory(sun_header.length*sizeof(unsigned char));
     if (sun_data == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    status=ReadData((char *) sun_data,1,(unsigned int) sun_header.length,
-      image->file);
+    status=ReadBlob(image,1,(unsigned int) sun_header.length,(char *) sun_data);
     if ((status == False) && (sun_header.type != RT_ENCODED))
       ReaderExit(CorruptImageWarning,"Unable to read image data",image);
     sun_pixels=sun_data;
@@ -472,7 +471,7 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    sun_header.magic=MSBFirstReadLong(image->file);
+    sun_header.magic=MSBFirstReadLong(image);
     if (sun_header.magic == 0x59a66a95)
       {
         /*
@@ -485,7 +484,7 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
   } while (sun_header.magic == 0x59a66a95);
@@ -615,14 +614,14 @@ Export unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     /*
       Write SUN header.
     */
-    MSBFirstWriteLong(sun_header.magic,image->file);
-    MSBFirstWriteLong(sun_header.width,image->file);
-    MSBFirstWriteLong(sun_header.height,image->file);
-    MSBFirstWriteLong(sun_header.depth,image->file);
-    MSBFirstWriteLong(sun_header.length,image->file);
-    MSBFirstWriteLong(sun_header.type,image->file);
-    MSBFirstWriteLong(sun_header.maptype,image->file);
-    MSBFirstWriteLong(sun_header.maplength,image->file);
+    MSBFirstWriteLong(image,sun_header.magic);
+    MSBFirstWriteLong(image,sun_header.width);
+    MSBFirstWriteLong(image,sun_header.height);
+    MSBFirstWriteLong(image,sun_header.depth);
+    MSBFirstWriteLong(image,sun_header.length);
+    MSBFirstWriteLong(image,sun_header.type);
+    MSBFirstWriteLong(image,sun_header.maptype);
+    MSBFirstWriteLong(image,sun_header.maplength);
     /*
       Convert MIFF to SUN raster pixels.
     */
@@ -665,7 +664,7 @@ Export unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
               {
                 if (image->columns & 0x01)
                   WriteQuantum(0,q);  /* pad scanline */
-                (void) fwrite((char *) pixels,1,q-pixels,image->file);
+                (void) WriteBlob(image,1,q-pixels,(char *) pixels);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     ProgressMonitor(SaveImageText,y,image->rows);
@@ -705,7 +704,7 @@ Export unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
               bit++;
               if (bit == 8)
                 {
-                  (void) fputc(byte,image->file);
+                  (void) WriteByte(image,byte);
                   bit=0;
                   byte=0;
                 }
@@ -716,10 +715,10 @@ Export unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
                     Advance to the next scanline.
                   */
                   if (bit != 0)
-                    (void) fputc(byte << (8-bit),image->file);
+                    (void) WriteByte(image,byte << (8-bit));
                   if ((((image->columns/8)+
                       (image->columns % 8 ? 1 : 0)) % 2) != 0)
-                    (void) fputc(0,image->file);  /* pad scanline */
+                    (void) WriteByte(image,0);  /* pad scanline */
                   if (image->previous == (Image *) NULL)
                     if (QuantumTick(y,image->rows))
                       ProgressMonitor(SaveImageText,y,image->rows);
@@ -737,11 +736,11 @@ Export unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
             Dump colormap to file.
           */
           for (i=0; i < (int) image->colors; i++)
-            (void) fputc(DownScale(image->colormap[i].red),image->file);
+            (void) WriteByte(image,DownScale(image->colormap[i].red));
           for (i=0; i < (int) image->colors; i++)
-            (void) fputc(DownScale(image->colormap[i].green),image->file);
+            (void) WriteByte(image,DownScale(image->colormap[i].green));
           for (i=0; i < (int) image->colors; i++)
-            (void) fputc(DownScale(image->colormap[i].blue),image->file);
+            (void) WriteByte(image,DownScale(image->colormap[i].blue));
           /*
             Convert PseudoClass packet to SUN colormapped pixel.
           */
@@ -749,12 +748,12 @@ Export unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           {
             for (j=0; j <= ((int) p->length); j++)
             {
-              (void) fputc(p->index,image->file);
+              (void) WriteByte(image,p->index);
               x++;
               if (x == (int) image->columns)
                 {
                   if (image->columns & 0x01)
-                    (void) fputc(0,image->file);  /* pad scanline */
+                    (void) WriteByte(image,0);  /* pad scanline */
                   if (image->previous == (Image *) NULL)
                     if (QuantumTick(y,image->rows))
                       ProgressMonitor(SaveImageText,y,image->rows);

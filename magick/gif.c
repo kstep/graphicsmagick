@@ -152,7 +152,7 @@ static unsigned int DecodeImage(Image *image)
   /*
     Initialize GIF data stream decoder.
   */
-  data_size=fgetc(image->file);
+  data_size=ReadByte(image);
   clear=1 << data_size;
   end_of_information=clear+1;
   available=clear+2;
@@ -188,7 +188,7 @@ static unsigned int DecodeImage(Image *image)
                 /*
                   Read a new data block.
                 */
-                count=ReadDataBlock((char *) packet,image->file);
+                count=ReadBlobBlock(image,(char *) packet);
                 if (count <= 0)
                   break;
                 c=packet;
@@ -393,7 +393,7 @@ static unsigned int DecodeImage(Image *image)
 %
 %
 */
-static unsigned int EncodeImage(const Image *image,const unsigned int data_size)
+static unsigned int EncodeImage(Image *image,const unsigned int data_size)
 {
 #define MaxCode(number_bits)  ((1 << (number_bits))-1)
 #define MaxHashTable  5003
@@ -421,8 +421,8 @@ static unsigned int EncodeImage(const Image *image,const unsigned int data_size)
     packet[byte_count++]=(unsigned char) (datum & 0xff); \
     if (byte_count >= 254) \
       { \
-        (void) fputc(byte_count,image->file); \
-        (void) fwrite((char *) packet,1,byte_count,image->file); \
+        (void) WriteByte(image,byte_count); \
+        (void) WriteBlob(image,1,byte_count,(char *) packet); \
         byte_count=0; \
       } \
     datum>>=8; \
@@ -586,8 +586,8 @@ static unsigned int EncodeImage(const Image *image,const unsigned int data_size)
       packet[byte_count++]=(unsigned char) (datum & 0xff);
       if (byte_count >= 254)
         {
-          (void) fputc(byte_count,image->file);
-          (void) fwrite((char *) packet,1,byte_count,image->file);
+          (void) WriteByte(image,byte_count);
+          (void) WriteBlob(image,1,byte_count,(char *) packet);
           byte_count=0;
         }
     }
@@ -596,8 +596,8 @@ static unsigned int EncodeImage(const Image *image,const unsigned int data_size)
   */
   if (byte_count > 0)
     {
-      (void) fputc(byte_count,image->file);
-      (void) fwrite((char *) packet,1,byte_count,image->file);
+      (void) WriteByte(image,byte_count);
+      (void) WriteBlob(image,1,byte_count,(char *) packet);
     }
   /*
     Free encoder memory.
@@ -699,17 +699,17 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
   /*
     Determine if this is a GIF file.
   */
-  status=ReadData((char *) magick,1,6,image->file);
+  status=ReadBlob(image,1,6,(char *) magick);
   if ((status == False) || ((strncmp((char *) magick,"GIF87",5) != 0) &&
       (strncmp((char *) magick,"GIF89",5) != 0)))
     ReaderExit(CorruptImageWarning,"Not a GIF image file",image);
   global_colors=0;
   global_colormap=(unsigned char *) NULL;
-  page_info.width=LSBFirstReadShort(image->file);
-  page_info.height=LSBFirstReadShort(image->file);
-  (void) ReadData((char *) &flag,1,1,image->file);
-  (void) ReadData((char *) &background,1,1,image->file);
-  (void) ReadData((char *) &c,1,1,image->file);  /* reserved */
+  page_info.width=LSBFirstReadShort(image);
+  page_info.height=LSBFirstReadShort(image);
+  flag=ReadByte(image);
+  background=ReadByte(image);
+  c=ReadByte(image);  /* reserved */
   if (BitSet(flag,0x80))
     {
       /*
@@ -721,7 +721,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
       if (global_colormap == (unsigned char *) NULL)
         ReaderExit(ResourceLimitWarning,"Unable to read image colormap file",
           image);
-      (void) ReadData((char *) global_colormap,3,global_colors,image->file);
+      (void) ReadBlob(image,3,global_colors,(char *) global_colormap);
     }
   delay=0;
   dispose=0;
@@ -730,7 +730,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
   image_count=0;
   for ( ; ; )
   {
-    status=ReadData((char *) &c,1,1,image->file);
+    status=ReadBlob(image,1,1,(char *) &c);
     if (status == False)
       break;
     if (c == ';')
@@ -740,7 +740,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
         /*
           GIF Extension block.
         */
-        status=ReadData((char *) &c,1,1,image->file);
+        status=ReadBlob(image,1,1,(char *) &c);
         if (status == False)
           ReaderExit(CorruptImageWarning,"Unable to read extension block",
             image);
@@ -751,7 +751,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
             /*
               Read Graphics Control extension.
             */
-            while (ReadDataBlock((char *) header,image->file) > 0);
+            while (ReadBlobBlock(image,(char *) header) > 0);
             dispose=header[0] >> 2;
             delay=(header[2] << 8) | header[1];
             if ((header[0] & 0x01) == 1)
@@ -768,7 +768,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
             */
             for ( ; ; )
             {
-              length=ReadDataBlock((char *) header,image->file);
+              length=ReadBlobBlock(image,(char *) header);
               if (length <= 0)
                 break;
               if (image->comments != (char *) NULL)
@@ -798,27 +798,23 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
               Read Netscape Loop extension.
             */
             int
-               found_netscape_loop=False;
+              found_netscape_loop=False;
 
-            if (ReadDataBlock((char *) header,image->file) > 0)
-             {
-               found_netscape_loop=!strncmp((char *) header,"NETSCAPE2.0",11);
-               if(image_info->verbose)
-                 printf("Found GIF application extension block %s\n",header);
-             }
-            while (ReadDataBlock((char *) header,image->file) > 0)
-              /* look for terminator */ ;
-            if(found_netscape_loop)
+            if (ReadBlobBlock(image,(char *) header) > 0)
+              found_netscape_loop=!strncmp((char *) header,"NETSCAPE2.0",11);
+            while (ReadBlobBlock(image,(char *) header) > 0)
+            if (found_netscape_loop)
               {
-            iterations=(header[2] << 8) | header[1];
-               if(image_info->verbose)
-                 printf("with iterations= %d\n",iterations);
+                /*
+                  Look for terminator.
+                */
+                iterations=(header[2] << 8) | header[1];
               }
             break;
           }
           default:
           {
-            while (ReadDataBlock((char *) header,image->file) > 0);
+            while (ReadBlobBlock(image,(char *) header) > 0);
             break;
           }
         }
@@ -837,7 +833,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
     image_count++;
@@ -845,11 +841,11 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
       Read image attributes.
     */
     image->class=PseudoClass;
-    page_info.x=LSBFirstReadShort(image->file);
-    page_info.y=LSBFirstReadShort(image->file);
-    image->columns=LSBFirstReadShort(image->file);
-    image->rows=LSBFirstReadShort(image->file);
-    (void) ReadData((char *) &flag,1,1,image->file);
+    page_info.x=LSBFirstReadShort(image);
+    page_info.y=LSBFirstReadShort(image);
+    image->columns=LSBFirstReadShort(image);
+    image->rows=LSBFirstReadShort(image);
+    flag=ReadByte(image);
     image->interlace=BitSet(flag,0x40) ? PlaneInterlace : NoInterlace;
     image->colors=!BitSet(flag,0x80) ? global_colors : 1 << ((flag & 0x07)+1);
     FormatString(geometry,"%ux%u%+d%+d",page_info.width,page_info.height,
@@ -911,7 +907,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
           AllocateMemory(3*image->colors*sizeof(unsigned char));
         if (colormap == (unsigned char *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-        (void) ReadData((char *) colormap,3,image->colors,image->file);
+        (void) ReadBlob(image,3,image->colors,(char *) colormap);
         p=colormap;
         for (i=0; i < (int) image->colors; i++)
         {
@@ -1091,17 +1087,17 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   */
   if ((image->comments == (char *) NULL) && !image_info->adjoin &&
       !image->matte)
-    (void) fwrite("GIF87a",1,6,image->file);
+    (void) WriteBlob(image,1,6,"GIF87a");
   else
     if (Latin1Compare(image_info->magick,"GIF87") == 0)
-      (void) fwrite("GIF87a",1,6,image->file);
+      (void) WriteBlob(image,1,6,"GIF87a");
     else
-      (void) fwrite("GIF89a",1,6,image->file);
+      (void) WriteBlob(image,1,6,"GIF89a");
   if (image_info->page != (char *) NULL)
     (void) ParseGeometry(image_info->page,&page_info.x,&page_info.y,
       &page_info.width,&page_info.height);
-  LSBFirstWriteShort(page_info.width,image->file);
-  LSBFirstWriteShort(page_info.height,image->file);
+  LSBFirstWriteShort(image,page_info.width);
+  LSBFirstWriteShort(image,page_info.height);
   page_info.x=0;
   page_info.y=0;
   /*
@@ -1194,13 +1190,13 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         c=0x80;
         c|=(8-1) << 4;  /* color resolution */
         c|=(bits_per_pixel-1);   /* size of global colormap */
-        (void) fputc((char) c,image->file);
+        (void) WriteByte(image,(char) c);
         for (j=0; j < (int) (image->colors-1); j++)
           if (ColorMatch(image->background_color,image->colormap[j],0))
             break;
-        (void) fputc(j,image->file);  /* background color */
-        (void) fputc(0x0,image->file);  /* reserved */
-        (void) fwrite(colormap,1,3*(1 << bits_per_pixel),image->file);
+        (void) WriteByte(image,j);  /* background color */
+        (void) WriteByte(image,0x0);  /* reserved */
+        (void) WriteBlob(image,1,3*(1 << bits_per_pixel),(char *) colormap);
         for (j=0; j < 768; j++)
           global_colormap[j]=colormap[j];
       }
@@ -1209,16 +1205,16 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         /*
           Write Graphics Control extension.
         */
-        (void) fputc(0x21,image->file);
-        (void) fputc(0xf9,image->file);
-        (void) fputc(0x04,image->file);
+        (void) WriteByte(image,0x21);
+        (void) WriteByte(image,0xf9);
+        (void) WriteByte(image,0x04);
         c=image->dispose << 2;
         if (transparency)
           c|=0x01;
-        (void) fputc(c,image->file);
-        LSBFirstWriteShort(image->delay,image->file);
-        (void) fputc((char) image->colors,image->file);
-        (void) fputc(0x00,image->file);
+        (void) WriteByte(image,c);
+        LSBFirstWriteShort(image,image->delay);
+        (void) WriteByte(image,(char) image->colors);
+        (void) WriteByte(image,0x00);
         if (image->comments != (char *) NULL)
           {
             register char
@@ -1230,17 +1226,17 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             /*
               Write Comment extension.
             */
-            (void) fputc(0x21,image->file);
-            (void) fputc(0xfe,image->file);
+            (void) WriteByte(image,0x21);
+            (void) WriteByte(image,0xfe);
             p=image->comments;
             while (Extent(p) > 0)
             {
               count=Min(Extent(p),255);
-              (void) fputc(count,image->file);
+              (void) WriteByte(image,count);
               for (i=0; i < (int) count; i++)
-                (void) fputc(*p++,image->file);
+                (void) WriteByte(image,*p++);
             }
-            (void) fputc(0x0,image->file);
+            (void) WriteByte(image,0x0);
           }
         if ((image->previous == (Image *) NULL) &&
             (image->next != (Image *) NULL) && (image->iterations != 1))
@@ -1248,27 +1244,27 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             /*
               Write Netscape Loop extension.
             */
-            (void) fputc(0x21,image->file);
-            (void) fputc(0xff,image->file);
-            (void) fputc(0x0b,image->file);
-            (void) fwrite("NETSCAPE2.0",1,11,image->file);
-            (void) fputc(0x03,image->file);
-            (void) fputc(0x01,image->file);
-            LSBFirstWriteShort(image->iterations,image->file);
-            (void) fputc(0x00,image->file);
+            (void) WriteByte(image,0x21);
+            (void) WriteByte(image,0xff);
+            (void) WriteByte(image,0x0b);
+            (void) WriteBlob(image,1,11,"NETSCAPE2.0");
+            (void) WriteByte(image,0x03);
+            (void) WriteByte(image,0x01);
+            LSBFirstWriteShort(image,image->iterations);
+            (void) WriteByte(image,0x00);
           }
       }
-    (void) fputc(',',image->file);  /* image separator */
+    (void) WriteByte(image,',');  /* image separator */
     /*
       Write the image header.
     */
     if (image->page != (char *) NULL)
       (void) ParseGeometry(image->page,&page_info.x,&page_info.y,
         &page_info.width,&page_info.height);
-    LSBFirstWriteShort(page_info.x,image->file);
-    LSBFirstWriteShort(page_info.y,image->file);
-    LSBFirstWriteShort(image->columns,image->file);
-    LSBFirstWriteShort(image->rows,image->file);
+    LSBFirstWriteShort(image,page_info.x);
+    LSBFirstWriteShort(image,page_info.y);
+    LSBFirstWriteShort(image,image->columns);
+    LSBFirstWriteShort(image,image->rows);
     c=0x00;
     if (interlace != NoInterlace)
       c|=0x40;  /* pixel data is interlaced */
@@ -1276,19 +1272,19 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       if (colormap[j] != global_colormap[j])
         break;
     if (j == (int) (3*colors))
-      (void) fputc((char) c,image->file);
+      (void) WriteByte(image,(char) c);
     else
       {
         c|=0x80;
         c|=(bits_per_pixel-1);   /* size of local colormap */
-        (void) fputc((char) c,image->file);
-        (void) fwrite(colormap,1,3*(1 << bits_per_pixel),image->file);
+        (void) WriteByte(image,(char) c);
+        (void) WriteBlob(image,1,3*(1 << bits_per_pixel),(char *) colormap);
       }
     /*
       Write the image data.
     */
     c=Max(bits_per_pixel,2);
-    (void) fputc((char) c,image->file);
+    (void) WriteByte(image,(char) c);
     if (interlace == NoInterlace)
       status=EncodeImage(image,Max(bits_per_pixel,2)+1);
     else
@@ -1341,14 +1337,14 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       }
     if (status == False)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
-    (void) fputc(0x0,image->file);
+    (void) WriteByte(image,0x0);
     if (image->next == (Image *) NULL)
       break;
     image->next->file=image->file;
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
-  (void) fputc(';',image->file); /* terminator */
+  (void) WriteByte(image,';'); /* terminator */
   FreeMemory((char *) global_colormap);
   FreeMemory((char *) colormap);
   FreeMemory((char *) matte);

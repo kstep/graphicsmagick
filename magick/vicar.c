@@ -132,7 +132,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
   /*
     Decode image header.
   */
-  c=fgetc(image->file);
+  c=ReadByte(image);
   count=1;
   if (c == EOF)
     {
@@ -144,7 +144,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
   {
     if (!isalnum(c))
       {
-        c=fgetc(image->file);
+        c=ReadByte(image);
         count++;
       }
     else
@@ -160,7 +160,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
         {
           if ((p-keyword) < (MaxTextExtent-1))
             *p++=(char) c;
-          c=fgetc(image->file);
+          c=ReadByte(image);
           count++;
         } while (isalnum(c) || (c == '_'));
         *p='\0';
@@ -169,7 +169,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
         {
           if (c == '=')
             value_expected=True;
-          c=fgetc(image->file);
+          c=ReadByte(image);
           count++;
         }
         if (value_expected == False)
@@ -179,7 +179,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
         {
           if ((p-value) < (MaxTextExtent-1))
             *p++=(char) c;
-          c=fgetc(image->file);
+          c=ReadByte(image);
           count++;
         }
         *p='\0';
@@ -201,7 +201,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
       }
     while (isspace(c))
     {
-      c=fgetc(image->file);
+      c=ReadByte(image);
       count++;
     }
   }
@@ -217,7 +217,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
   */
   while (count < (int) header_length)
   {
-    c=fgetc(image->file);
+    c=ReadByte(image);
     count++;
   }
   /*
@@ -253,7 +253,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
   /*
     Convert VICAR pixels to runlength-encoded packets.
   */
-  status=ReadData((char *) vicar_pixels,1,image->packets,image->file);
+  status=ReadBlob(image,1,image->packets,(char *) vicar_pixels);
   if (status == False)
     ReaderExit(CorruptImageWarning,"Insufficient image data in file",image);
   /*
@@ -319,6 +319,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
 Export unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
 {
   char
+    buffer[MaxTextExtent],
     header[MaxTextExtent],
     label[16];
 
@@ -368,7 +369,8 @@ Export unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   /*
     Print the header and enough spaces to pad to label size.
   */
-  (void) fprintf(image->file, "%-*s",label_size,header);
+  (void) sprintf(buffer, "%-*s",label_size,header);
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
   /*
     Allocate memory for pixels.
   */
@@ -391,7 +393,7 @@ Export unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
       x++;
       if (x == (int) image->columns)
         {
-          (void) fwrite((char *) pixels,1,q-pixels,image->file);
+          (void) WriteBlob(image,1,q-pixels,(char *) pixels);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(SaveImageText,y,image->rows);

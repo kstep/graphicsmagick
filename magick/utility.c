@@ -1582,36 +1582,33 @@ Export void LocaleFilename(char *filename)
 %
 %  The format of the LSBFirstReadLong routine is:
 %
-%       value=LSBFirstReadLong(file)
+%       value=LSBFirstReadLong(image)
 %
 %  A description of each parameter follows.
 %
 %    o value:  Method LSBFirstReadLong returns an unsigned long read from
 %      the file.
 %
-%   o  file:  Specifies the file to read the data from.
+%    o image: The address of a structure of type Image.
 %
 %
 */
-Export unsigned long LSBFirstReadLong(FILE *file)
+Export unsigned long LSBFirstReadLong(Image *image)
 {
   unsigned char
     buffer[4];
 
-  unsigned int
-    status;
-
   unsigned long
     value;
 
-  assert(file != (FILE *) NULL);
-  status=ReadData((char *) buffer,1,4,file);
-  if (status == False)
+  assert(image != (Image *) NULL);
+  value=ReadBlob(image,1,4,(char *) buffer);
+  if (value == 0)
     return((unsigned long) ~0);
-  value=(unsigned int) (buffer[3] << 24);
-  value|=(unsigned int) (buffer[2] << 16);
-  value|=(unsigned int) (buffer[1] << 8);
-  value|=(unsigned int) (buffer[0]);
+  value=(unsigned long) (buffer[3] << 24);
+  value|=(unsigned long) (buffer[2] << 16);
+  value|=(unsigned long) (buffer[1] << 8);
+  value|=(unsigned long) (buffer[0]);
   return(value);
 }
 
@@ -1631,31 +1628,28 @@ Export unsigned long LSBFirstReadLong(FILE *file)
 %
 %  The format of the LSBFirstReadShort routine is:
 %
-%       value=LSBFirstReadShort(file)
+%       value=LSBFirstReadShort(image)
 %
 %  A description of each parameter follows.
 %
 %    o value:  Method LSBFirstReadShort returns an unsigned short read from
 %      the file.
 %
-%   o  file:  Specifies the file to read the data from.
+%    o image: The address of a structure of type Image.
 %
 %
 */
-Export unsigned short LSBFirstReadShort(FILE *file)
+Export unsigned short LSBFirstReadShort(Image *image)
 {
   unsigned char
     buffer[2];
 
-  unsigned int
-    status;
-
   unsigned short
     value;
 
-  assert(file != (FILE *) NULL);
-  status=ReadData((char *) buffer,1,2,file);
-  if (status == False)
+  assert(image != (Image *) NULL);
+  value=ReadBlob(image,1,2,(char *) buffer);
+  if (value == 0)
     return((unsigned short) ~0);
   value=(unsigned short) (buffer[1] << 8);
   value|=(unsigned short) (buffer[0]);
@@ -1678,27 +1672,30 @@ Export unsigned short LSBFirstReadShort(FILE *file)
 %
 %  The format of the LSBFirstWriteLong routine is:
 %
-%       LSBFirstWriteLong(value,file)
+%       count=LSBFirstWriteLong(image,value)
 %
 %  A description of each parameter follows.
 %
-%   o  value:  Specifies the value to write.
+%    o count: Method LSBFirstWriteLong returns the number of unsigned longs
+%      written.
 %
-%   o  file:  Specifies the file to write the data to.
+%    o image: The address of a structure of type Image.
+%
+%    o value: Specifies the value to write.
 %
 %
 */
-Export void LSBFirstWriteLong(const unsigned long value,FILE *file)
+Export unsigned long LSBFirstWriteLong(Image *image,const unsigned long value)
 {
   unsigned char
     buffer[4];
 
-  assert(file != (FILE *) NULL);
+  assert(image != (Image *) NULL);
   buffer[0]=(unsigned char) (value);
   buffer[1]=(unsigned char) ((value) >> 8);
   buffer[2]=(unsigned char) ((value) >> 16);
   buffer[3]=(unsigned char) ((value) >> 24);
-  (void) fwrite((char *) buffer,1,4,file);
+  return(WriteBlob(image,1,4,(char *) buffer));
 }
 
 /*
@@ -1717,25 +1714,28 @@ Export void LSBFirstWriteLong(const unsigned long value,FILE *file)
 %
 %  The format of the LSBFirstWriteShort routine is:
 %
-%       LSBFirstWriteShort(value,file)
+%       count=LSBFirstWriteShort(image,value)
 %
 %  A description of each parameter follows.
 %
-%   o  value:  Specifies the value to write.
+%    o count: Method LSBFirstWriteShort returns the number of unsigned longs
+%      written.
 %
-%   o  file:  Specifies the file to write the data to.
+%    o image: The address of a structure of type Image.
+%
+%    o value:  Specifies the value to write.
 %
 %
 */
-Export void LSBFirstWriteShort(const unsigned int value,FILE *file)
+Export unsigned long LSBFirstWriteShort(Image *image,const unsigned short value)
 {
   unsigned char
     buffer[2];
 
-  assert(file != (FILE *) NULL);
+  assert(image != (Image *) NULL);
   buffer[0]=(unsigned char) (value);
   buffer[1]=(unsigned char) ((value) >> 8);
-  (void) fwrite((char *) buffer,1,2,file);
+  return(WriteBlob(image,1,2,(char *) buffer));
 }
 
 /*
@@ -1846,31 +1846,28 @@ Export void MSBFirstOrderShort(register char *p,const unsigned int length)
 %
 %  The format of the MSBFirstReadShort routine is:
 %
-%       value=MSBFirstReadShort(file)
+%       value=MSBFirstReadShort(image)
 %
 %  A description of each parameter follows.
 %
 %    o value:  Method MSBFirstReadShort returns an unsigned short read from
 %      the file.
 %
-%   o  file:  Specifies the file to read the data from.
+%    o image: The address of a structure of type Image.
 %
 %
 */
-Export unsigned short MSBFirstReadShort(FILE *file)
+Export unsigned short MSBFirstReadShort(Image *image)
 {
   unsigned char
     buffer[2];
 
-  unsigned int
-    status;
-
   unsigned short
     value;
 
-  assert(file != (FILE *) NULL);
-  status=ReadData((char *) buffer,1,2,file);
-  if (status == False)
+  assert(image != (Image *) NULL);
+  value=ReadBlob(image,1,2,(char *) buffer);
+  if (value == 0)
     return((unsigned short) ~0);
   value=(unsigned int) (buffer[0] << 8);
   value|=(unsigned int) (buffer[1]);
@@ -1893,31 +1890,29 @@ Export unsigned short MSBFirstReadShort(FILE *file)
 %
 %  The format of the MSBFirstReadLong routine is:
 %
-%       value=MSBFirstReadLong(file)
+%       value=MSBFirstReadLong(image)
 %
 %  A description of each parameter follows.
 %
 %    o value:  Method MSBFirstReadLong returns an unsigned long read from
 %      the file.
 %
-%   o  file:  Specifies the file to read the data from.
+%    o image: The address of a structure of type Image.
+%
 %
 %
 */
-Export unsigned long MSBFirstReadLong(FILE *file)
+Export unsigned long MSBFirstReadLong(Image *image)
 {
   unsigned char
     buffer[4];
 
-  unsigned int
-    status;
-
   unsigned long
     value;
 
-  assert(file != (FILE *) NULL);
-  status=ReadData((char *) buffer,1,4,file);
-  if (status == False)
+  assert(image != (Image *) NULL);
+  value=ReadBlob(image,1,4,(char *) buffer);
+  if (value == 0)
     return((unsigned long) ~0);
   value=(unsigned int) (buffer[0] << 24);
   value|=(unsigned int) (buffer[1] << 16);
@@ -1942,27 +1937,31 @@ Export unsigned long MSBFirstReadLong(FILE *file)
 %
 %  The format of the MSBFirstWriteLong routine is:
 %
-%       MSBFirstWriteLong(value,file)
+%       count=MSBFirstWriteLong(image,value)
 %
 %  A description of each parameter follows.
 %
-%   o  value:  Specifies the value to write.
+%    o count: Method MSBFirstWriteLong returns the number of unsigned longs
+%      written.
 %
-%   o  file:  Specifies the file to write the data to.
+%    o value:  Specifies the value to write.
+%
+%    o image: The address of a structure of type Image.
+%
 %
 %
 */
-Export void MSBFirstWriteLong(const unsigned long value,FILE *file)
+Export unsigned long MSBFirstWriteLong(Image *image,const unsigned long value)
 {
   unsigned char
     buffer[4];
 
-  assert(file != (FILE *) NULL);
+  assert(image != (Image *) NULL);
   buffer[0]=(unsigned char) ((value) >> 24);
   buffer[1]=(unsigned char) ((value) >> 16);
   buffer[2]=(unsigned char) ((value) >> 8);
   buffer[3]=(unsigned char) (value);
-  (void) fwrite((char *) buffer,1,4,file);
+  return(WriteBlob(image,1,4,(char *) buffer));
 }
 
 /*
@@ -1991,15 +1990,15 @@ Export void MSBFirstWriteLong(const unsigned long value,FILE *file)
 %
 %
 */
-Export void MSBFirstWriteShort(const unsigned int value,FILE *file)
+Export unsigned long MSBFirstWriteShort(Image *image,const unsigned short value)
 {
   unsigned char
     buffer[2];
 
-  assert(file != (FILE *) NULL);
+  assert(image != (Image *) NULL);
   buffer[0]=(unsigned char) ((value) >> 8);
   buffer[1]=(unsigned char) (value);
-  (void) fwrite((char *) buffer,1,2,file);
+  return(WriteBlob(image,1,2,(char *) buffer));
 }
 
 /*
@@ -2367,56 +2366,39 @@ Export char *PostscriptGeometry(const char *page)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  R e a d D a t a                                                            %
+%  R e a d B y t e                                                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadData reads data from the image file and returns it.  If it
-%  cannot read the requested number of items, False is returned indicating
-%  an error.
+%  Method ReadByte reads a single byte from the image file and returns it.
 %
-%  The format of the ReadData routine is:
+%  The format of the ReadByte routine is:
 %
-%      status=ReadData(data,size,number_items,file)
+%       value=ReadByte(image)
 %
-%  A description of each parameter follows:
+%  A description of each parameter follows.
 %
-%    o status:  Method ReadData returns True if all the data requested
-%      is obtained without error, otherwise False.
+%    o value:  Method ReadByte returns an integer read from the file.
 %
-%    o data:  Specifies an area to place the information requested from
-%      the file.
-%
-%    o size:  Specifies an integer representing the length of an
-%      individual item to be read from the file.
-%
-%    o number_items:  Specifies an integer representing the number of items
-%      to read from the file.
-%
-%    o file:  Specifies a file to read the data.
+%    o image: The address of a structure of type Image.
 %
 %
 */
-Export unsigned int ReadData(char *data,const unsigned int size,
-  const unsigned int number_items,FILE *file)
+Export int ReadByte(Image *image)
 {
-  long
-    bytes,
+  int
     count;
 
-  assert(data != (char *) NULL);
-  assert(file != (FILE *) NULL);
-  count=0;
-  for (bytes=size*number_items; bytes > 0; bytes-=count)
-  {
-    count=(long) fread(data,1,bytes,file);
-    if (count <= 0)
-      return(False);
-    data+=count;
-  }
-  return(True);
+  unsigned char
+    value;
+
+  assert(image != (Image *) NULL);
+  count=ReadBlob(image,1,1,(char *) &value);
+  if (count == 0)
+    return((int) ~0);
+  return(value);
 }
 
 /*
@@ -2430,45 +2412,39 @@ Export unsigned int ReadData(char *data,const unsigned int size,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadDataBlock reads data from the image file and returns it.  The
-%  amount of data is determined by first reading a count byte.  If
-%  ReadDataBlock cannot read the requested number of items, `-1' is returned
-%  indicating an error.
+%  Method ReadBlobBlock reads data from the image file and returns it.  The
+%  amount of data is determined by first reading a count byte.  The number
+%  or bytes read is returned.
 %
-%  The format of the ReadData routine is:
+%  The format of the ReadBlobBlock routine is:
 %
-%      status=ReadData(data,file)
+%      count=ReadBlob(image,data)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method ReadData returns the number of characters read
-%      unless there is an error, otherwise `-1'.
+%    o count:  Method ReadBlobBlock returns the number of bytes read.
+%
+%    o image: The address of a structure of type Image.
 %
 %    o data:  Specifies an area to place the information requested from
 %      the file.
 %
-%    o file:  Specifies a file to read the data.
-%
 %
 */
-Export int ReadDataBlock(char *data,FILE *file)
+Export unsigned long ReadBlobBlock(Image *image,char *data)
 {
   unsigned char
+    block_count;
+
+  unsigned long
     count;
 
-  unsigned int
-    status;
-
+  assert(image != (Image *) NULL);
   assert(data != (char *) NULL);
-  assert(file != (FILE *) NULL);
-  status=ReadData((char *) &count,1,1,file);
-  if (status == False)
-    return(-1);
+  count=ReadBlob(image,1,1,(char *) &block_count);
   if (count == 0)
     return(0);
-  status=ReadData(data,1,(unsigned int) count,file);
-  if (status == False)
-    return(-1);
+  count=ReadBlob(image,1,(unsigned long) block_count,data);
   return(count);
 }
 
@@ -3287,4 +3263,42 @@ Export char *TranslateText(const ImageInfo *image_info,const Image *image,
   if (indirection)
     FreeMemory((char *) text);
   return(translated_text);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  W r i t e B y t e                                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteByte write an integer to a file.  It returns the number of
+%  bytes written (either 0 or 1);
+%
+%  The format of the WriteByte routine is:
+%
+%       count=WriteByte(image,value)
+%
+%  A description of each parameter follows.
+%
+%    o count:  Method WriteByte returns the number of bytes written.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o value: Specifies the value to write.
+%
+%
+*/
+Export unsigned long WriteByte(Image *image,const char value)
+{
+  unsigned long
+    count;
+
+  assert(image != (Image *) NULL);
+  count=WriteBlob(image,1,1,(char *) &value);
+  return(count);
 }

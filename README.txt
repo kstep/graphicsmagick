@@ -25,7 +25,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.2.7.tar.gz
+    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.2.8.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -83,8 +83,8 @@ UNIX/Cygwin COMPILATION
 
   Type:
 
-    gunzip ImageMagick-4.2.7.tar.gz
-    tar xvf ImageMagick-4.2.7.tar
+    gunzip ImageMagick-4.2.8.tar.gz
+    tar xvf ImageMagick-4.2.8.tar
     cd ImageMagick
 
   If you do not have gunzip(1), it is available as
@@ -663,7 +663,7 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-4.2.7.zip
+      unzip ImageMagick-4.2.8.zip
       set default [.imagemagick]
       @make
       set display/create/node=node_name::

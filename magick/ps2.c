@@ -245,6 +245,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     };
 
   char
+    buffer[MaxTextExtent],
     date[MaxTextExtent],
     density[MaxTextExtent],
     **labels;
@@ -356,72 +357,104 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           Output Postscript header.
         */
         if (Latin1Compare(image_info->magick,"PS2") == 0)
-          (void) fprintf(image->file,"%%!PS-Adobe-3.0\n");
+          (void) strcpy(buffer,"%!PS-Adobe-3.0\n");
         else
-          (void) fprintf(image->file,"%%!PS-Adobe-3.0 EPSF-3.0\n");
-        (void) fprintf(image->file,"%%%%Creator: (ImageMagick)\n");
-        (void) fprintf(image->file,"%%%%Title: (%.1024s)\n",image->filename);
+          (void) strcpy(buffer,"%!PS-Adobe-3.0 EPSF-3.0\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) strcpy(buffer,"%%Creator: (ImageMagick)\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) sprintf(buffer,"%%Title: (%.1024s)\n",image->filename);
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
         timer=time((time_t *) NULL);
         (void) localtime(&timer);
         (void) strcpy(date,ctime(&timer));
         date[Extent(date)-1]='\0';
-        (void) fprintf(image->file,"%%%%CreationDate: (%.1024s)\n",date);
+        (void) sprintf(buffer,"%%%%CreationDate: (%.1024s)\n",date);
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
         bounding_box.x1=x;
         bounding_box.y1=y;
         bounding_box.x2=x+width-1;
         bounding_box.y2=y+(height+text_size)-1;
         if (image_info->adjoin && (image->next != (Image *) NULL))
-          (void) fprintf(image->file,"%%%%BoundingBox: (atend)\n");
+          (void) strcpy(buffer,"%%BoundingBox: (atend)\n");
         else
-          (void) fprintf(image->file,"%%%%BoundingBox: %g %g %g %g\n",
+          (void) sprintf(buffer,"%%%%BoundingBox: %g %g %g %g\n",
             bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
         if (image->label != (char *) NULL)
-          (void) fprintf(image->file,
-            "%%%%DocumentNeededResources: font Helvetica\n");
-        (void) fprintf(image->file,"%%%%LanguageLevel: 2\n");
+          {
+            (void) strcpy(buffer,
+              "%%%%DocumentNeededResources: font Helvetica\n");
+            (void) WriteBlob(image,1,strlen(buffer),buffer);
+          }
+        (void) strcpy(buffer,"%%LanguageLevel: 2\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
         if (Latin1Compare(image_info->magick,"PS2") != 0)
-          (void) fprintf(image->file,"%%%%Pages: 0\n");
+          {
+            (void) sprintf(buffer,"%%%%Pages: 0\n");
+            (void) WriteBlob(image,1,strlen(buffer),buffer);
+          }
         else
           {
-            (void) fprintf(image->file,"%%%%Orientation: Portrait\n");
-            (void) fprintf(image->file,"%%%%PageOrder: Ascend\n");
+            (void) strcpy(buffer,"%%Orientation: Portrait\n");
+            (void) WriteBlob(image,1,strlen(buffer),buffer);
+            (void) strcpy(buffer,"%%PageOrder: Ascend\n");
+            (void) WriteBlob(image,1,strlen(buffer),buffer);
             if (!image_info->adjoin)
-              (void) fprintf(image->file,"%%%%Pages: 0\n");
+              (void) strcpy(buffer,"%%Pages: 0\n");
             else
-              (void) fprintf(image->file,"%%%%Pages: %u\n",
-                GetNumberScenes(image));
+              (void) sprintf(buffer,"%%%%Pages: %u\n",GetNumberScenes(image));
+            (void) WriteBlob(image,1,strlen(buffer),buffer);
           }
-        (void) fprintf(image->file,"%%%%EndComments\n");
-        (void) fprintf(image->file,"\n%%%%BeginDefaults\n");
-        (void) fprintf(image->file,"%%%%PageOrientation: Portrait\n");
-        (void) fprintf(image->file,"%%%%EndDefaults\n\n");
+        (void) strcpy(buffer,"%%EndComments\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) strcpy(buffer,"\n%%BeginDefaults\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) strcpy(buffer,"%%PageOrientation: Portrait\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) strcpy(buffer,"%%EndDefaults\n\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
         /*
           Output Postscript commands.
         */
         for (q=PostscriptProlog; *q; q++)
         {
-          (void) fprintf(image->file,*q,
+          (void) sprintf(buffer,*q,
             compression == ZipCompression ? "FlateDecode" :
             compression == LZWCompression ? "LZWDecode" : "RunLengthDecode");
-          (void) fprintf(image->file,"\n");
+          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) WriteByte(image,'\n');
         }
         for (i=MultilineCensus(image->label)-1; i >= 0; i--)
         {
-          (void) fprintf(image->file,"  /label 512 string def\n");
-          (void) fprintf(image->file,"  currentfile label readline pop\n");
-          (void) fprintf(image->file,"  0 y %d add moveto label show pop\n",
+          (void) strcpy(buffer,"  /label 512 string def\n");
+          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) strcpy(buffer,"  currentfile label readline pop\n");
+          (void) WriteBlob(image,1,strlen(buffer),buffer);
+          (void) sprintf(buffer,"  0 y %d add moveto label show pop\n",
             i*image_info->pointsize+12);
+          (void) WriteBlob(image,1,strlen(buffer),buffer);
         }
         for (q=PostscriptEpilog; *q; q++)
-          (void) fprintf(image->file,"%.255s\n",*q);
+          {
+            (void) sprintf(buffer,"%.255s\n",*q);
+            (void) WriteBlob(image,1,strlen(buffer),buffer);
+          }
         if (Latin1Compare(image_info->magick,"PS2") == 0)
-          (void) fprintf(image->file,"  showpage\n");
-        (void) fprintf(image->file,"} bind def\n");
-        (void) fprintf(image->file,"%%%%EndProlog\n");
+          {
+            (void) strcpy(buffer,"  showpage\n");
+            (void) WriteBlob(image,1,strlen(buffer),buffer);
+          }
+        (void) strcpy(buffer,"} bind def\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+        (void) strcpy(buffer,"%%EndProlog\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
       }
-    (void) fprintf(image->file,"%%%%Page:  1 %u\n",page++);
-    (void) fprintf(image->file,"%%%%PageBoundingBox: %d %d %d %d\n",x,y,
+    (void) sprintf(buffer,"%%%%Page:  1 %u\n",page++);
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) sprintf(buffer,"%%%%PageBoundingBox: %d %d %d %d\n",x,y,
       x+(int) width-1,y+(int) (height+text_size)-1);
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     if (x < bounding_box.x1)
       bounding_box.x1=x;
     if (y < bounding_box.y1)
@@ -431,29 +464,40 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     if ((y+(int) (height+text_size)-1) > bounding_box.y2)
       bounding_box.y2=y+(height+text_size)-1;
     if (image->label != (char *) NULL)
-      (void) fprintf(image->file,"%%%%PageResources: font Helvetica\n");
+      {
+        (void) strcpy(buffer,"%%PageResources: font Helvetica\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+      }
     if (Latin1Compare(image_info->magick,"PS2") != 0)
-      (void) fprintf(image->file,"userdict begin\n");
-    (void) fprintf(image->file,"%%%%BeginData:\n");
-    (void) fprintf(image->file,"DisplayImage\n");
+      {
+        (void) strcpy(buffer,"userdict begin\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+      }
+    (void) strcpy(buffer,"%%BeginData:\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
+    (void) strcpy(buffer,"DisplayImage\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     /*
       Output image data.
     */
     labels=StringToList(image->label);
-    (void) fprintf(image->file,"%d %d\n%f %f\n%u\n",x,y,x_scale,y_scale,
+    (void) sprintf(buffer,"%d %d\n%f %f\n%u\n",x,y,x_scale,y_scale,
       image_info->pointsize);
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     if (labels != (char **) NULL)
       {
         for (i=0; labels[i] != (char *) NULL; i++)
         {
-          (void) fprintf(image->file,"%.1024s \n",labels[i]);
+          (void) sprintf(buffer,"%.1024s \n",labels[i]);
+          (void) WriteBlob(image,1,strlen(buffer),buffer);
           FreeMemory(labels[i]);
         }
         FreeMemory(labels);
       }
-    (void) fprintf(image->file,"%u %u\n%u\n%d\n%d\n",image->columns,image->rows,
+    (void) sprintf(buffer,"%u %u\n%u\n%d\n%d\n",image->columns,image->rows,
       IsPseudoClass(image),(int) (image->colorspace == CMYKColorspace),
       (int) (compression == NoCompression));
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     p=image->pixels;
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       switch (compression)
@@ -509,13 +553,13 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 ProgressMonitor(SaveImageText,i,image->packets);
           }
           if (compression == ZipCompression)
-            status=ZLIBEncodeImage(image->file,number_packets,
-              image_info->quality,pixels);
+            status=
+              ZLIBEncodeImage(image,number_packets,image_info->quality,pixels);
           else
             if (compression == LZWCompression)
-              status=LZWEncodeImage(image->file,number_packets,pixels);
+              status=LZWEncodeImage(image,number_packets,pixels);
             else
-              status=PackbitsEncodeImage(image->file,number_packets,pixels);
+              status=PackbitsEncodeImage(image,number_packets,pixels);
           if (!status)
             {
               CloseImage(image);
@@ -536,23 +580,23 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             {
               if (image->matte && (p->index == Transparent))
                 {
-                  Ascii85Encode(DownScale(MaxRGB),image->file);
-                  Ascii85Encode(DownScale(MaxRGB),image->file);
-                  Ascii85Encode(DownScale(MaxRGB),image->file);
+                  Ascii85Encode(image,DownScale(MaxRGB));
+                  Ascii85Encode(image,DownScale(MaxRGB));
+                  Ascii85Encode(image,DownScale(MaxRGB));
                 }
               else
                 if (image->colorspace != CMYKColorspace)
                   {
-                    Ascii85Encode(DownScale(p->red),image->file);
-                    Ascii85Encode(DownScale(p->green),image->file);
-                    Ascii85Encode(DownScale(p->blue),image->file);
+                    Ascii85Encode(image,DownScale(p->red));
+                    Ascii85Encode(image,DownScale(p->green));
+                    Ascii85Encode(image,DownScale(p->blue));
                   }
                 else
                   {
-                    Ascii85Encode(DownScale(p->red),image->file);
-                    Ascii85Encode(DownScale(p->green),image->file);
-                    Ascii85Encode(DownScale(p->blue),image->file);
-                    Ascii85Encode(DownScale(p->index),image->file);
+                    Ascii85Encode(image,DownScale(p->red));
+                    Ascii85Encode(image,DownScale(p->green));
+                    Ascii85Encode(image,DownScale(p->blue));
+                    Ascii85Encode(image,DownScale(p->index));
                   }
             }
             p++;
@@ -560,7 +604,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               if (QuantumTick(i,image->packets))
                 ProgressMonitor(SaveImageText,i,image->packets);
           }
-          Ascii85Flush(image->file);
+          Ascii85Flush(image);
           break;
         }
       }
@@ -579,7 +623,8 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           bit=0;
           byte=0;
           x=0;
-          (void) fprintf(image->file,"0\n");
+          (void) WriteByte(image,'\0');
+          (void) WriteByte(image,'\n');
           switch (compression)
           {
             case RunlengthEncodedCompression:
@@ -607,7 +652,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   bit++;
                   if (bit == 8)
                     {
-                      Ascii85Encode(byte,image->file);
+                      Ascii85Encode(image,byte);
                       bit=0;
                       byte=0;
                     }
@@ -618,7 +663,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                         Advance to the next scanline.
                       */
                       if (bit != 0)
-                        Ascii85Encode(byte << (8-bit),image->file);
+                        Ascii85Encode(image,byte << (8-bit));
                       if (image->previous == (Image *) NULL)
                         if (QuantumTick(y,image->rows))
                           ProgressMonitor(SaveImageText,y,image->rows);
@@ -629,7 +674,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 }
                 p++;
               }
-              Ascii85Flush(image->file);
+              Ascii85Flush(image);
               break;
             }
           }
@@ -639,12 +684,16 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           /*
             Dump number of colors and colormap.
           */
-          (void) fprintf(image->file,"%u\n",image->colors);
+          (void) sprintf(buffer,"%u\n",image->colors);
+          (void) WriteBlob(image,1,strlen(buffer),buffer);
           for (i=0; i < (int) image->colors; i++)
-            (void) fprintf(image->file,"%02lx%02lx%02lx\n",
+          {
+            (void) sprintf(buffer,"%02lx%02lx%02lx\n",
               DownScale(image->colormap[i].red),
               DownScale(image->colormap[i].green),
               DownScale(image->colormap[i].blue));
+            (void) WriteBlob(image,1,strlen(buffer),buffer);
+          }
           switch (compression)
           {
             case RunlengthEncodedCompression:
@@ -676,13 +725,13 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                     ProgressMonitor(SaveImageText,i,image->packets);
               }
               if (compression == ZipCompression)
-                status=ZLIBEncodeImage(image->file,number_packets,
-                  image_info->quality,pixels);
+                status=ZLIBEncodeImage(image,number_packets,image_info->quality,
+                  pixels);
               else
                 if (compression == LZWCompression)
-                  status=LZWEncodeImage(image->file,number_packets,pixels);
+                  status=LZWEncodeImage(image,number_packets,pixels);
                 else
-                  status=PackbitsEncodeImage(image->file,number_packets,pixels);
+                  status=PackbitsEncodeImage(image,number_packets,pixels);
               FreeMemory((char *) pixels);
               if (!status)
                 {
@@ -700,22 +749,27 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               for (i=0; i < (int) image->packets; i++)
               {
                 for (j=0; j <= ((int) p->length); j++)
-                  Ascii85Encode((unsigned char) p->index,image->file);
+                  Ascii85Encode(image,(unsigned char) p->index);
                 p++;
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(i,image->packets))
                     ProgressMonitor(SaveImageText,i,image->packets);
               }
-              Ascii85Flush(image->file);
+              Ascii85Flush(image);
               break;
             }
           }
         }
-    (void) fprintf(image->file,"\n");
-    (void) fprintf(image->file,"%%%%EndData\n");
+    (void) WriteByte(image,'\n');
+    (void) strcpy(buffer,"%%EndData\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     if (Latin1Compare(image_info->magick,"PS2") != 0)
-      (void) fprintf(image->file,"end\n");
-    (void) fprintf(image->file,"%%%%PageTrailer\n");
+      {
+        (void) strcpy(buffer,"end\n");
+        (void) WriteBlob(image,1,strlen(buffer),buffer);
+      }
+    (void) strcpy(buffer,"%%PageTrailer\n");
+    (void) WriteBlob(image,1,strlen(buffer),buffer);
     if (image->next == (Image *) NULL)
       break;
     image->next->file=image->file;
@@ -725,11 +779,16 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  (void) fprintf(image->file,"%%%%Trailer\n");
+  (void) strcpy(buffer,"%%Trailer\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
   if (page > 1)
-    (void) fprintf(image->file,"%%%%BoundingBox: %g %g %g %g\n",
-      bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
-  (void) fprintf(image->file,"%%%%EOF\n");
+    {
+      (void) sprintf(buffer,"%%%%BoundingBox: %g %g %g %g\n",
+        bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
+    }
+  (void) strcpy(buffer,"%%EOF\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
   CloseImage(image);
   return(True);
 }

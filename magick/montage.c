@@ -330,6 +330,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
     height=image_list[tile]->rows;
     x=0;
     y=0;
+    image_list[tile]->orphan=True;
     (void) ParseImageGeometry(montage_info->geometry,&x,&y,&width,&height);
     image_list[tile]->orphan=True;
     tiled_image=ZoomImage(image_list[tile],width,height);

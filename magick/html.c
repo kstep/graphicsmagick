@@ -86,6 +86,7 @@
 Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
 {
   char
+    buffer[MaxTextExtent],
     filename[MaxTextExtent],
     mapname[MaxTextExtent],
     url[MaxTextExtent];
@@ -158,20 +159,29 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       /*
         Write the HTML image file.
       */
-      (void) fprintf(image->file,"<html version=\"2.0\">\n");
-      (void) fprintf(image->file,"<head>\n");
-      (void) fprintf(image->file,"<title>%.1024s</title>\n",
+      (void) strcpy(buffer,"<html version=\"2.0\">\n");
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) strcpy(buffer,"<head>\n");
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) sprintf(buffer,"<title>%.1024s</title>\n",
         image->label ? image->label : BaseFilename(image->filename));
-      (void) fprintf(image->file,"</head>\n");
-      (void) fprintf(image->file,"<body>\n");
-      (void) fprintf(image->file,"<center>\n");
-      (void) fprintf(image->file,"<h1>%.1024s</h1>\n",image->filename);
-      (void) fprintf(image->file,"<br><br>\n");
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) strcpy(buffer,"</head>\n");
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) strcpy(buffer,"<body>\n");
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) strcpy(buffer,"<center>\n");
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) sprintf(buffer,"<h1>%.1024s</h1>\n",image->filename);
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) strcpy(buffer,"<br><br>\n");
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
       (void) strcpy(filename,image->filename);
       AppendImageFormat("gif",filename);
-      (void) fprintf(image->file,
+      (void) sprintf(buffer,
         "<img ismap usemap=#%.1024s src=\"%.1024s\" border=0>\n",
         mapname,filename);
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
       /*
         Determine the size and location of each image tile.
       */
@@ -184,21 +194,30 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       /*
         Write an image map.
       */
-      (void) fprintf(image->file,"<map name=%.1024s>\n",mapname);
-      (void) fprintf(image->file,"  <area href=""%.1024s""",url);
+      (void) sprintf(buffer,"<map name=%.1024s>\n",mapname);
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) sprintf(buffer,"  <area href=""%.1024s""",url);
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
       if (image->directory == (char *) NULL)
-        (void) fprintf(image->file,"%.1024s shape=rect coords=0,0,%u,%u>\n",
-          image->filename,width-1,height-1);
+        {
+          (void) sprintf(buffer,"%.1024s shape=rect coords=0,0,%u,%u>\n",
+            image->filename,width-1,height-1);
+          (void) WriteBlob(image,1,strlen(buffer),buffer);
+        }
       else
         for (p=image->directory; *p != '\0'; p++)
           if (*p != '\n')
-            (void) fputc(*p,image->file);
+            (void) WriteByte(image,*p);
           else
             {
-              (void) fprintf(image->file," shape=rect coords=%d,%d,%d,%d>\n",
+              (void) sprintf(buffer," shape=rect coords=%d,%d,%d,%d>\n",
                 x,y,x+(int) width-1,y+(int) height-1);
+              (void) WriteBlob(image,1,strlen(buffer),buffer);
               if (*(p+1) != '\0')
-                (void) fprintf(image->file,"  <area href=""%.1024s""",url);
+                {
+                  (void) sprintf(buffer,"  <area href=""%.1024s""",url);
+                  (void) WriteBlob(image,1,strlen(buffer),buffer);
+                }
               x+=width;
               if (x >= (int) image->columns)
                 {
@@ -206,7 +225,8 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
                   y+=height;
                 }
             }
-      (void) fprintf(image->file,"</map>\n");
+      (void) strcpy(buffer,"</map>\n");
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
       if (image->montage != (char *) NULL)
         {
           char
@@ -222,9 +242,12 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
           TransparentImage(image,color);
         }
       (void) strcpy(filename,image->filename);
-      (void) fprintf(image->file,"</center>\n");
-      (void) fprintf(image->file,"</body>\n");
-      status=fprintf(image->file,"</html>\n");
+      (void) strcpy(buffer,"</center>\n");
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) strcpy(buffer,"</body>\n");
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
+      (void) strcpy(buffer,"</html>\n");
+      status=WriteBlob(image,1,strlen(buffer),buffer);
       CloseImage(image);
       /*
         Write the image as transparent GIF.
@@ -267,21 +290,30 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   /*
     Write an image map.
   */
-  (void) fprintf(image->file,"<map name=%.1024s>\n",mapname);
-  (void) fprintf(image->file,"  <area href=""%.1024s""",url);
+  (void) sprintf(buffer,"<map name=%.1024s>\n",mapname);
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
+  (void) sprintf(buffer,"  <area href=""%.1024s""",url);
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
   if (image->directory == (char *) NULL)
-    (void) fprintf(image->file,"%.1024s shape=rect coords=0,0,%u,%u>\n",
-      image->filename,width-1,height-1);
+    {
+      (void) sprintf(buffer,"%.1024s shape=rect coords=0,0,%u,%u>\n",
+        image->filename,width-1,height-1);
+      (void) WriteBlob(image,1,strlen(buffer),buffer);
+    }
   else
     for (p=image->directory; *p != '\0'; p++)
       if (*p != '\n')
-        (void) fputc(*p,image->file);
+        (void) WriteByte(image,*p);
       else
         {
-          (void) fprintf(image->file," shape=rect coords=%d,%d,%d,%d>\n",x,y,
+          (void) sprintf(buffer," shape=rect coords=%d,%d,%d,%d>\n",x,y,
             x+(int) width-1,y+(int) height-1);
+          (void) WriteBlob(image,1,strlen(buffer),buffer);
           if (*(p+1) != '\0')
-            (void) fprintf(image->file,"  <area href=""%.1024s""",url);
+            {
+              (void) sprintf(buffer,"  <area href=""%.1024s""",url);
+              (void) WriteBlob(image,1,strlen(buffer),buffer);
+            }
           x+=width;
           if (x >= (int) image->columns)
             {
@@ -289,7 +321,8 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
               y+=height;
             }
         }
-  (void) fprintf(image->file,"</map>\n");
+  (void) strcpy(buffer,"</map>\n");
+  (void) WriteBlob(image,1,strlen(buffer),buffer);
   CloseImage(image);
   (void) strcpy(image->filename,filename);
   return(status);
