@@ -120,7 +120,7 @@ MagickExport unsigned int AcquireMagickResources(const ResourceType type,
       status=resource_info.disk > 0;
       break;
     }
-    case MemoryMappedResource:
+    case MemoryMapResource:
     {
       resource_info.memory_map-=size;
       status=resource_info.memory_map > 0;
@@ -196,7 +196,7 @@ MagickExport off_t GetMagickResources(const ResourceType type)
     case MemoryResource: size=resource_info.memory; break;
     case CacheResource: size=resource_info.cache; break;
     case DiskResource: size=resource_info.disk; break;
-    case MemoryMappedResource: size=resource_info.memory_map; break;
+    case MemoryMapResource: size=resource_info.memory_map; break;
 		default: break;
   }
   LiberateSemaphoreInfo(&resource_semaphore);
@@ -237,7 +237,7 @@ MagickExport void LiberateMagickResources(const ResourceType type,
     case MemoryResource: resource_info.memory+=size; break;
     case CacheResource: resource_info.cache+=size; break;
     case DiskResource: resource_info.disk+=size; break;
-    case MemoryMappedResource: resource_info.memory_map+=size; break;
+    case MemoryMapResource: resource_info.memory_map+=size; break;
 		default: break;
   }
   LiberateSemaphoreInfo(&resource_semaphore);
@@ -276,7 +276,7 @@ MagickExport void SetMagickResources(const ResourceType type,const off_t limit)
     case MemoryResource: resource_info.memory=1024*1024*limit; break;
     case CacheResource: resource_info.cache=1024*1024*limit; break;
     case DiskResource: resource_info.disk=1024*1024*limit; break;
-    case MemoryMappedResource: resource_info.memory_map=1024*1024*limit; break;
+    case MemoryMapResource: resource_info.memory_map=1024*1024*limit; break;
 		default: break;
   }
   LiberateSemaphoreInfo(&resource_semaphore);
