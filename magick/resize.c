@@ -1132,7 +1132,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
     {
       DestroyImage(resize_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to resize image");
+        "unable to resize image");
     }
   return(resize_image);
 }
