@@ -212,34 +212,51 @@ MagickExport int IsWindows95()
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   l t _ d l s e t s e a r c h p a t h                                       %
+%   l t _ d l c l o s e                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method lt_dlsetsearchpath sets the current locations that the subsystem
-%   should look at to find dynamically loadable modules.
+%   Method lt_dlclose unloads the module associated with the passed handle.
 %
-%  The format of the lt_dlsetsearchpath method is:
+%  The format of the lt_dlclose method is:
 %
-%      long lt_dlsetsearchpath(char *path)
+%      void lt_dlclose(void *handle)
 %
 %  A description of each parameter follows:
 %
-%    o path: Specifies a pointer to string representing the search path
-%            for DLL's that can be dynamically loaded.
+%    o handle: Specifies a handle to a previously loaded dynamic module.
 %
 */
-void lt_dlsetsearchpath(char *path)
+void lt_dlclose(void *handle)
 {
-  if (lt_slsearchpath)
-    {
-      (void) LiberateMemory((void **) &lt_slsearchpath);
-      lt_slsearchpath=(char *) NULL;
-    }
-  if (path != (char *) NULL)
-    lt_slsearchpath=AllocateString(path);
+#if defined(HasMODULES)
+  FreeLibrary(handle);
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   l t _ d l e x i t                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   lt_dlexit() exits the dynamic module loading subsystem.
+%
+%  The format of the lt_dlexit method is:
+%
+%      int lt_dlexit(void)
+%
+*/
+int lt_dlexit(void)
+{
+  return(0);
 }
 
 /*
@@ -350,28 +367,34 @@ void *lt_dlopen(char *filename)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   l t _ d l c l o s e                                                       %
+%   l t _ d l s e t s e a r c h p a t h                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method lt_dlclose unloads the module associated with the passed handle.
+%   Method lt_dlsetsearchpath sets the current locations that the subsystem
+%   should look at to find dynamically loadable modules.
 %
-%  The format of the lt_dlclose method is:
+%  The format of the lt_dlsetsearchpath method is:
 %
-%      void lt_dlclose(void *handle)
+%      long lt_dlsetsearchpath(char *path)
 %
 %  A description of each parameter follows:
 %
-%    o handle: Specifies a handle to a previously loaded dynamic module.
+%    o path: Specifies a pointer to string representing the search path
+%            for DLL's that can be dynamically loaded.
 %
 */
-void lt_dlclose(void *handle)
+void lt_dlsetsearchpath(char *path)
 {
-#if defined(HasMODULES)
-  FreeLibrary(handle);
-#endif
+  if (lt_slsearchpath)
+    {
+      (void) LiberateMemory((void **) &lt_slsearchpath);
+      lt_slsearchpath=(char *) NULL;
+    }
+  if (path != (char *) NULL)
+    lt_slsearchpath=AllocateString(path);
 }
 
 /*
