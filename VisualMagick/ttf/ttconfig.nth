@@ -250,11 +250,46 @@
 /* variables and functions visible from outside have these prefixes.     */
 
 #undef EXPORT
-#define EXPORT __declspec(dllexport)
+#if !defined(_VISUALC_)
+#	error Something is very very wrong. This header must only be used under Visual C++.
+#endif
+/**
+ * Under VISUALC we have single threaded static libraries, or
+ * mutli-threaded DLLs using the multithreaded runtime DLLs.
+ **/
+#	if defined(_MT) && defined(_DLL) && !defined(_TTFDLL_)
+#		define _TTFDLL_
+#	endif
+
+#	if defined(_MT) && !defined(_TTFDLL_)
+#		error To use the truetype libraries from a multithreaded project, you must use the DLLs
+#		error Use the Mutlithreaded DLL runtime libraries (prefered), or define the macro "_TTFDLL_"
+#	endif
+
+#	if !defined(_MT) && defined(_TTFDLL_)
+#		error To use the truetype libraries from a single-threaded project, you must use static libraries
+#		error Undefine the macro "_TTFDLL_"
+#	endif
+
+#	if defined(_TTFDLL_)
+#		pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
+#		if !defined(_TTFLIB_)
+#     define EXPORT __declspec(dllimport) type
+#		else
+#     define EXPORT __declspec(dllexport)
+#		endif
+#	else
+#   define EXPORT
+#	endif
+
 #undef EXPORT_DEF
-#define EXPORT_DEF __declspec(dllexport)
+#define EXPORT_DEF EXPORT
 #undef EXPORT_FUNC
-#define EXPORT_FUNC __declspec(dllexport)
+#define EXPORT_FUNC EXPORT
+
+#pragma warning(disable : 4018)
+#pragma warning(disable : 4244)
+#pragma warning(disable : 4142)
 
 /* -------------- internal (developer) configuration toggles ------------ */
 
