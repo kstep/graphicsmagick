@@ -333,6 +333,9 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   register unsigned char
     *p;
 
+  int
+    marker;
+
   /*
     Determine length of generic profile.
   */
@@ -341,6 +344,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   length-=2;
   if (length <= 0)
     return(True);
+  marker=jpeg_info->unread_marker-JPEG_APP0;
   /*
     Allocate generic profile.
   */
@@ -359,8 +363,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
         (char *) NULL)
     }
   image->generic_profile[i].name=AllocateString((char *) NULL);
-  FormatString(image->generic_profile[i].name,"APP%d",
-    jpeg_info->unread_marker-JPEG_APP0);
+  FormatString(image->generic_profile[i].name,"APP%d",marker);
   image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);
   if (image->generic_profile[i].info == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
@@ -373,6 +376,15 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
     image->generic_profile[i].name,length);
   for (p=image->generic_profile[i].info; --length >= 0; p++)
     *p=GetCharacter(jpeg_info);
+  /*
+    Do special checks for either Exif data or Adobe XMP
+  */
+  length=image->generic_profile[i].length;
+  p=image->generic_profile[i].info;
+  if ((marker==1) && (length>4) && (strncmp((char *) p,"Exif",4) == 0))
+    FormatString(image->generic_profile[i].name,"EXIF");
+  else if (((marker==1) && length>5) && (strncmp((char *) p,"http:",5) == 0))
+    FormatString(image->generic_profile[i].name,"XMP");
   image->generic_profiles++;
   return(True);
 }
