@@ -112,6 +112,22 @@ typedef enum
 /*
   Typedef declarations.
 */
+typedef struct _GradientInfo
+{
+  PixelPacket
+    color;
+
+  double
+    offset;
+
+  unsigned long
+    signature;
+
+  struct _GradientInfo
+    *previous,
+    *next;
+} GradientInfo;
+
 typedef struct _DrawInfo
 {
   char
@@ -202,6 +218,9 @@ typedef struct _DrawInfo
 
   SegmentInfo
     bounds;
+
+  GradientInfo
+    gradient;
 
   ClipPathUnits
     clip_units;
