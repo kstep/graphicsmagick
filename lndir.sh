@@ -6,9 +6,11 @@
 # By Stephen Gildea <gildea@bbn.com> based on
 #  XConsortium: lndir.sh,v 1.1 88/10/20 17:37:16 jim Exp
 #
-# Used to create a copy of the a directory tree that has links for all non-
-# directories (except those named RCS).  If you are building the distribution
-# on more than one machine, you should use this script.
+# Modified slightly for ImageMagick by Bob Friesenhahn, 1999
+#
+# Used to create a copy of the a directory tree that has links for all
+# non- directories.  If you are building the distribution on more than
+# one machine, you should use this script.
 #
 # If your master sources are located in /usr/local/src/X and you would like
 # your link tree to be in /usr/local/src/new-X, do the following:
@@ -32,66 +34,63 @@ USAGE="Usage: $0 fromdir [todir]"
 
 if [ $# -lt 1 -o $# -gt 2 ]
 then
-	echo "$USAGE"
-	exit 1
+    echo "$USAGE"
+    exit 1
 fi
 
 DIRFROM=$1
 
 if [ $# -eq 2 ];
 then
-	DIRTO=$2
+    DIRTO=$2
 else
-	DIRTO=.
+    DIRTO=.
 fi
 
 if [ ! -d $DIRTO ]
 then
-	echo "$0: $DIRTO is not a directory"
-	echo "$USAGE"
-	exit 2
+    echo "$0: $DIRTO is not a directory"
+    echo "$USAGE"
+    exit 2
 fi
 
 cd $DIRTO
 
 if [ ! -d $DIRFROM ]
 then
-	echo "$0: $DIRFROM is not a directory"
-	echo "$USAGE"
-	exit 2
+    echo "$0: $DIRFROM is not a directory"
+    echo "$USAGE"
+    exit 2
 fi
 
 pwd=`pwd`
 
 if [ `(cd $DIRFROM; pwd)` = $pwd ]
 then
-	echo "$pwd: FROM and TO are identical!"
-	exit 1
+    echo "$pwd: FROM and TO are identical!"
+    exit 1
 fi
 
 for file in `ls $DIRFROM`
 do
-	if [ ! -d $DIRFROM/$file -a ! -r $file ]
+    if [ ! -d $DIRFROM/$file ]
+    then
+	test -r $file || ln -s $DIRFROM/$file .
+    else
+	#echo $file:
+	test -d $file || mkdir $file
+	(cd $file
+	pwd=`pwd`
+	case "$DIRFROM" in
+	    /*) ;;
+	    *)  DIRFROM=../$DIRFROM ;;
+	esac
+	if [ `(cd $DIRFROM/$file; pwd)` = $pwd ]
 	then
-		ln -s $DIRFROM/$file .
-	else
-		if [ $file != RCS ]
-		then
-			#echo $file:
-			mkdir $file
-			(cd $file
-			 pwd=`pwd`
-			 case "$DIRFROM" in
-				 /*) ;;
-				 *)  DIRFROM=../$DIRFROM ;;
-			 esac
-			 if [ `(cd $DIRFROM/$file; pwd)` = $pwd ]
-			 then
-				echo "$pwd: FROM and TO are identical!"
-				exit 1
-			 fi
-			 $0 $DIRFROM/$file
-			)
-		fi
+	    echo "$pwd: FROM and TO are identical!"
+	    exit 1
 	fi
+	$0 $DIRFROM/$file
+	)
+    fi
 done
