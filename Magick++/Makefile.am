@@ -6,14 +6,13 @@
 AUTOMAKE_OPTIONS = 1.6 dist-zip
 
 # Additional files to distribute
-EXTRA_DIST =
+EXTRA_DIST = 
 
 SUBDIRS = bin lib tests demo
 
 if HasTXT2HTML
+
 all-local: ../www/Magick++/NEWS.html ../www/Magick++/ChangeLog.html
-else
-endif
 
 # Build HTML version of news
 ../www/Magick++/NEWS.html: NEWS
@@ -24,3 +23,5 @@ endif
 ../www/Magick++/ChangeLog.html: ChangeLog
 	txt2html -t 'Magick++ ChangeLog' < $(srcdir)/ChangeLog > $(srcdir)/../www/Magick++/ChangeLog.html
 	echo "Please do a 'cvs commit www/Magick++/ChangeLog.html' to submit updated HTML file"
+
+endif
