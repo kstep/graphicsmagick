@@ -5758,7 +5758,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]=(char *) "-bordercolor";
+      argv[1]=(char *) "-background";
       argv[2]=color;
       argv[3]=(char *) "-shear";
       argv[4]=geometry;
