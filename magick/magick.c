@@ -472,9 +472,10 @@ MagickExport void ListMagickInfo(FILE *file)
 #endif    
   AcquireSemaphore(magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
-    (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->tag ? p->tag : "",
-      p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',p->encoder ? 'w' : '-',
-      p->encoder && p->adjoin ? '+' : '-',p->description ? p->description : "");
+    if(p->stealth!=True)
+      (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->tag ? p->tag : "",
+                     p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',p->encoder ? 'w' : '-',
+                     p->encoder && p->adjoin ? '+' : '-',p->description ? p->description : "");
   LiberateSemaphore(magick_semaphore);
   (void) fprintf(file,"\n* native blob support\n\n");
   (void) fflush(file);
@@ -673,6 +674,7 @@ MagickExport MagickInfo *SetMagickInfo(const char *tag)
   entry->adjoin=True;
   entry->blob_support=True;
   entry->raw=False;
+  entry->stealth=False;
   entry->description=(char *) NULL;
   entry->module=(char *) NULL;
   entry->client_data=(void *) NULL;
