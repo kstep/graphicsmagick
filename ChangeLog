@@ -1,3 +1,6 @@
+2002-10-19  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
+  * Updated to Automake 1.7.1.
+
 2002-10-18  Cristy  <cristy@mystic.es.dupont.com>
   * Fixed Ping() memory leak in PerlMagick.
   * Fixed -map problem in convert/mogrify utilities.
