@@ -1,4 +1,9 @@
-2004-08-05  Glenn Randers-Pehrson <glennrp@glennrp.com>
+2004-08-24  Glenn Randers-Pehrson <glennrp@imagemagick.org>
+	* coders/png.c: Fixed call to png_set_unknown_chunks (arg should
+	be 1 not 0 to ignore chunks.
+	* coders/bmp.c: Applied security fix from Cristy.
+
+2004-08-05  Glenn Randers-Pehrson <glennrp@imagemagick.org>
 
 	* coders/png.c: Fixes for CERT security alert TA04-217A described
 	at "http://www.us-cert.gov/cas/techalerts/TA04-217A.html".
