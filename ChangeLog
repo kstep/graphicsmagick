@@ -1,3 +1,9 @@
+2004-04-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* utilities/Makefile.am (check): Change geometry arguments which
+	were expressed as 0.0xVAL to avoid the problematic Linux scanf
+	feature back to 0xVAL.
+
 2004-04-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/symbols.h (GetMagickDimension): Added GetMagickDimension.
