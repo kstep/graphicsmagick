@@ -689,8 +689,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (LocaleCompare("fill",keyword) == 0)
       {
-        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
-          keyword[x]=(*p++);
+        if ((LocaleNCompare(p,"rgb(",4) == 0))
+          for (x=0; (*(p-1) != ')') && (*p != '\0'); x++)
+            keyword[x]=(*p++);
+        else
+          for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
+            keyword[x]=(*p++);
         keyword[x]='\0';
         (void) QueryColorDatabase(keyword,&clone_info->fill);
         continue;
@@ -745,8 +749,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (LocaleCompare("stroke",keyword) == 0)
       {
-        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
-          keyword[x]=(*p++);
+        if ((LocaleNCompare(p,"rgb(",4) == 0))
+          for (x=0; (*(p-1) != ')') && (*p != '\0'); x++)
+            keyword[x]=(*p++);
+        else
+          for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
+            keyword[x]=(*p++);
         keyword[x]='\0';
         (void) QueryColorDatabase(keyword,&clone_info->stroke);
         continue;

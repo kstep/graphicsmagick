@@ -925,9 +925,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
               }
             if (LocaleCompare(keyword,"scale") == 0)
               {
-                p=(char *) (value+1);
-                affine[0]=strtod(p,&p);
-                affine[3]=affine[0];
+                k=sscanf(value+1,"%lf%lf",&affine[0],&affine[3]);
+                k=sscanf(value+1,"%lf,%lf",&affine[0],&affine[3]);
+                if (k == 1)
+                  affine[3]=affine[0];
               }
             if (LocaleCompare(keyword,"skewX") == 0)
               {
@@ -945,8 +946,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
               }
             if (LocaleCompare(keyword,"translate") == 0)
               {
-                affine[0]=1.0;
-                affine[3]=1.0;
                 k=sscanf(value+1,"%lf%lf",&affine[4],&affine[5]);
                 k=sscanf(value+1,"%lf,%lf",&affine[4],&affine[5]);
                 if (k == 1)
