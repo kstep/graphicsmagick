@@ -120,7 +120,6 @@ static void CropToFitImage(Image **image,const double x_shear,
   extent[2].y=height/2.0;
   extent[3].x=width/2.0;
   extent[3].y=height/2.0;
-printf("%g %g\n",x_shear,y_shear);
   for (i=0; i < 4; i++)
   {
     extent[i].x+=x_shear*extent[i].y;
