@@ -360,7 +360,7 @@ MagickExport void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
     name;
 
   assert(filename != (char *) NULL);
-  (void) strncpy((char *) name,filename,,MaxTextExtent-1);
+  (void) strncpy((char *) name,filename,MaxTextExtent-1);
   c2pstr((char *) name);
   FSMakeFSSpec(0,0,name,fsspec);
 }
@@ -1101,7 +1101,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
     Open image file.
   */
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   picture_handle=(PicHandle)
@@ -1405,7 +1405,7 @@ MagickExport void SetApplicationType(const char *filename,const char *magick,
   assert(filename != (char *) NULL);
   filetype='    ';
   (void) strncpy((char *) &filetype,magick,Min(strlen(magick),4));
-  (void) strncpy((char *) name,filename,,MaxTextExtent-1);
+  (void) strncpy((char *) name,filename,MaxTextExtent-1);
   c2pstr((char *) name);
   FSMakeFSSpec(0,0,name,&file_specification);
   FSpCreate(&file_specification,application,filetype,smSystemScript);
