@@ -724,7 +724,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
             /*
               Read image colormap from file.
             */
-            packet_size=image->colors > 256 ? 6 : 3;
+            packet_size=image->depth > 8 ? 6 : 3;
             colormap=(unsigned char *)
               AcquireMemory(packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
@@ -732,7 +732,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                 "Memory allocation failed",image);
             (void) ReadBlob(image,packet_size*image->colors,colormap);
             p=colormap;
-            if (image->colors <= 256)
+            if (image->depth <= 8)
               for (i=0; i < (int) image->colors; i++)
               {
                 image->colormap[i].red=UpScale(*p++);
@@ -758,7 +758,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
     if (image->storage_class == DirectClass)
       packet_size=image->depth > 8 ? 6 : 3;
     else
-      packet_size=image->colors > 256 ? 2 : 1;
+      packet_size=image->depth > 8 ? 2 : 1;
     if (image->matte || (image->colorspace == CMYKColorspace))
       packet_size+=image->depth > 8 ? 2 : 1;
     if (image->compression == RunlengthEncodedCompression)
@@ -878,7 +878,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                 if (image->storage_class != DirectClass)
                   {
                     index=ReadByte(image);
-                    if (image->colors > 256)
+                    if (image->depth > 8)
                       index=(index << 8)+ReadByte(image);
                     if (index >= image->colors)
                       ThrowReaderException(CorruptImageWarning,
@@ -1130,7 +1130,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     if (image->storage_class == DirectClass)
       packet_size=image->depth > 8 ? 6 : 3;
     else
-      packet_size=image->colors > 256 ? 2 : 1;
+      packet_size=image->depth > 8 ? 2 : 1;
     if (image->matte || (image->colorspace == CMYKColorspace))
       packet_size+=image->depth > 8 ? 2 : 1;
     if (compression == RunlengthEncodedCompression)
@@ -1364,7 +1364,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Allocate colormap.
         */
-        packet_size=image->colors > 256 ? 6 : 3;
+        packet_size=image->depth > 8 ? 6 : 3;
         colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
         if (colormap == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
@@ -1373,12 +1373,12 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           Write colormap to file.
         */
         q=colormap;
-        if (image->colors <= 256)
+        if (image->depth <= 8)
           for (i=0; i < (int) image->colors; i++)
           {
-            *q++=image->colormap[i].red;
-            *q++=image->colormap[i].green;
-            *q++=image->colormap[i].blue;
+            *q++=DownScale(image->colormap[i].red);
+            *q++=DownScale(image->colormap[i].green);
+            *q++=DownScale(image->colormap[i].blue);
           }
         else
           for (i=0; i < (int) image->colors; i++)
@@ -1439,7 +1439,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
               {
                 if (image->storage_class != DirectClass)
                   {
-                    if (image->colors > 256)
+                    if (image->depth > 8)
                       *q++=index >> 8;
                     *q++=index;
                   }

@@ -383,9 +383,9 @@ MagickExport void HSLTransform(const double hue,const double saturation,
     (luminosity+saturation-luminosity*saturation);
   if ((saturation == 0.0) || (hue == -1.0))
     {
-      *red=(unsigned char) (MaxRGB*luminosity+0.5);
-      *green=(unsigned char) (MaxRGB*luminosity+0.5);
-      *blue=(unsigned char) (MaxRGB*luminosity+0.5);
+      *red=(Quantum) (MaxRGB*luminosity+0.5);
+      *green=(Quantum) (MaxRGB*luminosity+0.5);
+      *blue=(Quantum) (MaxRGB*luminosity+0.5);
       return;
     }
   y=2.0*luminosity-v;
@@ -401,9 +401,9 @@ MagickExport void HSLTransform(const double hue,const double saturation,
     case 5: r=v; g=y; b=z; break;
     default: r=v; g=x; b=y; break;
   }
-  *red=(unsigned char) (MaxRGB*r+0.5);
-  *green=(unsigned char) (MaxRGB*g+0.5);
-  *blue=(unsigned char) (MaxRGB*b+0.5);
+  *red=(Quantum) (MaxRGB*r+0.5);
+  *green=(Quantum) (MaxRGB*g+0.5);
+  *blue=(Quantum) (MaxRGB*b+0.5);
 }
 
 /*

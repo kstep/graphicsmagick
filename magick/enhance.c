@@ -134,24 +134,12 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
     }
     case PseudoClass:
     {
-      Quantum
-        blue,
-        green,
-        red;
-
       /*
         Contrast enhance PseudoClass image.
       */
       for (i=0; i < (int) image->colors; i++)
-      {
-        red=image->colormap[i].red;
-        green=image->colormap[i].green;
-        blue=image->colormap[i].blue;
-        Contrast(sign,&red,&green,&blue);
-        image->colormap[i].red=red;
-        image->colormap[i].green=green;
-        image->colormap[i].blue=blue;
-      }
+        Contrast(sign,&image->colormap[i].red,&image->colormap[i].green,
+          &image->colormap[i].blue);
       SyncImage(image);
       break;
     }
@@ -258,7 +246,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
   low=map[0];
   high=map[MaxRGB];
   for (i=0; i <= MaxRGB; i++)
-    equalize_map[i]=(unsigned char)
+    equalize_map[i]=(Quantum)
       ((((double) (map[i]-low))*MaxRGB)/Max(high-low,1));
   LiberateMemory((void **) &map);
   /*
@@ -548,25 +536,13 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
     }
     case PseudoClass:
     {
-      Quantum
-        blue,
-        green,
-        red;
-
       /*
         Modulate the color for a PseudoClass image.
       */
       for (i=0; i < (int) image->colors; i++)
-      {
-        red=image->colormap[i].red;
-        green=image->colormap[i].green;
-        blue=image->colormap[i].blue;
         Modulate(percent_hue,percent_saturation,percent_brightness,
-          &red,&green,&blue);
-        image->colormap[i].red=red;
-        image->colormap[i].green=green;
-        image->colormap[i].blue=blue;
-      }
+          &image->colormap[i].red,&image->colormap[i].green,
+          &image->colormap[i].blue);
       SyncImage(image);
       break;
     }
