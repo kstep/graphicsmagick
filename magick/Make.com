@@ -52,6 +52,7 @@ $call Make module.c
 $call Make monitor.c
 $call Make montage.c
 $call Make quantize.c
+$call Make resource.c
 $call Make registry.c
 $call Make render.c
 $call Make resize.c
@@ -72,8 +73,8 @@ $library/create libMagick.olb memory,blob,cache,locale,error,monitor,command, -
   constitute,image,composite,list,color,quantize,segment,resize,transform, -
   shear,enhance,effect,fx,decorate,annotate,type,draw,render,montage, -
   semaphore,attribute,signature,compress,gem,registry,magic,magick,delegate, -
-  module,static,log,timer,utility,cache_view,stream,animate,display,widget, -
-  xwindow,PreRvIcccm,version,vms
+  module,static,resource,log,timer,utility,cache_view,stream,animate,display, -
+	widget,xwindow,PreRvIcccm,version,vms
 $exit
 $
 $Make: subroutine
