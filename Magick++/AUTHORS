@@ -6,4 +6,7 @@ developing the powerful ImageMagick package that Magick++ is based
 on and for enhancing ImageMagick API features in order to allow a
 cleaner implementation.
 
+Also thanks to Bill Radcliffe <BillR@corbis.com> for his assistance
+with getting Magick++ to compile under Visual C++, and for maintaining
+the Windows build environment.
 

@@ -182,16 +182,18 @@ Unix/Linux</h3></center>
 
 <h4>
 Building From Source</h4>
-To install the package under Unix, installation should be similar to
-<p><tt>./configure [ --prefix=/prefix ]</tt>
+Magick++ is now built using the ImageMagick configure script and Makefiles.
+Please follow the installation instructions provided by its README.txt
+file. The following instructions pertain to the Magick++ specific configuration
+and build options.
+<p>To install Magick++ under Unix, installation should be similar to
+<p><tt>./configure --with-magick_plus_plus [ --prefix=/prefix ]</tt>
 <br><tt>make</tt>
 <br><tt>make install</tt>
-<p>The configure script uses the compiler/linker flags it obtains from
-the installed 'Magick-config' script when performing the build. This means
-that <b>ImageMagick must be installed before Magick++ is configured</b>.
-The library is currently named similar to 'libMagick++.a' and is installed
-under prefix/lib while the headers are installed with Magick++.h being
-installed in prefix/include and the remaining headers in prefix/include/Magick++.
+<p>The library is currently named similar to 'libMagick++.a' (and/or libMagick++.so.5.0.24)
+and is installed under prefix/lib while the headers are installed with
+Magick++.h being installed in prefix/include and the remaining headers
+in prefix/include/Magick++.
 <p>To influence the options the configure script chooses, you may specify
 'make' option variables when running the configure script. For example,
 the command

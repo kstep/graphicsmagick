@@ -5,7 +5,8 @@ Items large and small which remain to be completed
   <BillR@corbis.com> has agreed to write a container class to support
   this.
 
-* Port to Sun Workshop 5.0 under Solaris
+* Port to Sun Workshop 5.0 under Solaris.  The library compiles now
+  but the STL-based tests and demos do not.
 
 Items which will require the aid of volunteers.  Volunteers?
 --------------------------------------------------------------------

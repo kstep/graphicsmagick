@@ -76,16 +76,6 @@ to check out the Magick++ files.  You may also set your CVSROOT environment
 variable to ':pserver:anonymous@cvs.simplesystems.org:/cvsroot' prior to
 executing the commands in order to avoid specifying the -d option.
 
-The CVS repository version of Magick++ does not include the configure
-script, Makefile.in, or libtool files required to build under Unix. To
-overcome this, ensure that you have the CVS versions of GNU libtool
-(multi-language-branch), automake, and autoconf installed and then execute
-
- ./bootstrap
-
-in the Magick++ directory prior to continuing with installation.
-
-
                                 Installation
 
 Once you have the sources available, follow these detailed installation
