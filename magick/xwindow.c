@@ -1646,7 +1646,7 @@ MagickExport void XDisplayImageInfo(Display *display,
   if (text == (char *) NULL)
     {
       XNoticeWidget(display,windows,"MemoryAllocationFailed",
-				"unable to display image info");
+        "unable to display image info");
       return;
     }
   textlist=StringToList(text);
@@ -2642,7 +2642,7 @@ MagickExport void XGetPixelPacket(Display *display,
   pixel->pixels=(unsigned long *) AcquireMemory(packets*sizeof(unsigned long));
   if (pixel->pixels == (unsigned long *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-			"unable to get pixel info");
+      "unable to get pixel info");
   /*
     Set foreground color.
   */
@@ -5030,28 +5030,8 @@ MagickExport unsigned int XMakeImage(Display *display,
             resize_image=SampleImage(window->image,width,height,
               &image->exception);
           else
-            {
-              double
-                scale_factor;
-              
-              scale_factor=((double) width*height)/
-                ((double) window->image->columns*window->image->rows);
-              if (scale_factor >= 0.01)
-                resize_image=ZoomImage(window->image,width,height,
-                  &image->exception);
-              else
-                {
-                  Image
-                    *sample_image;
-
-                  sample_image=SampleImage(window->image,5*width,5*height,
-                    &image->exception);
-                  if (sample_image != (Image *) NULL)
-                    resize_image=ScaleImage(sample_image,width,height,
-                      &image->exception);
-                  DestroyImage(sample_image);
-                }
-            }
+            resize_image=ZoomImage(window->image,width,height,
+              &image->exception);
           if (resize_image != (Image *) NULL)
             {
               if (window->image != image)
@@ -7455,7 +7435,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       colors=(XColor *) AcquireMemory(number_colors*sizeof(XColor));
       if (colors == (XColor *) NULL)
         MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-					"unable to create colormap");
+          "unable to create colormap");
       /*
         Initialize linear color ramp.
       */
