@@ -1266,21 +1266,18 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 %
 %  Method DrawPolygonPrimitive draws a polygon on the image.
 %
-%  Rick Mabry provided the algorithms for anti-aliased polygons.
+%  Rick Mabry provided the algorithm for anti-aliased polygons.
 %
 %  The format of the DrawPolygonPrimitive method is:
 %
 %      DrawPolygonPrimitive(PrimitiveInfo *primitive_info,
-%        const DrawInfo *draw_info,const SegmentInfo *bounds,Image *image)
+%        const DrawInfo *draw_info,Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
 %
 %    o draw_info: Specifies a pointer to a DrawInfo structure.
-%
-%    o bounds: Specifies the bounding box of the polygon interected with
-%      the image.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -1336,8 +1333,8 @@ static inline double PixelOnLine(const PointInfo *point,const PointInfo *p,
   return(opacity);
 }
 
-MagickExport void DrawPolygonPrimitive(PrimitiveInfo *primitive_info,
-  const DrawInfo *draw_info,SegmentInfo *bounds,Image *image)
+static void DrawPolygonPrimitive(PrimitiveInfo *primitive_info,
+  const DrawInfo *draw_info,Image *image)
 {
   double
     alpha,
@@ -1369,21 +1366,54 @@ MagickExport void DrawPolygonPrimitive(PrimitiveInfo *primitive_info,
   register PrimitiveInfo
     *p;
 
+  SegmentInfo
+    bounds;
+
+  /*
+    Compute bounding box.
+  */
   assert(primitive_info != (PrimitiveInfo *) NULL);
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->signature == MagickSignature);
-  assert(bounds != (SegmentInfo *) NULL);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  mid=draw_info->affine[0]*draw_info->linewidth/2.0;
-  for (y=(int) ceil(bounds->y1-0.5); y <= (int) floor(bounds->y2-0.5); y++)
+  p=primitive_info;
+  bounds.x1=p->point.x;
+  bounds.x2=p->point.x;
+  bounds.y1=p->point.y;
+  bounds.y2=p->point.y;
+  for (p++ ; p->primitive != UndefinedPrimitive; p++)
+  {
+    if (p->point.x < bounds.x1)
+      bounds.x1=p->point.x;
+    if (p->point.y < bounds.y1)
+      bounds.y1=p->point.y;
+    if (p->point.x > bounds.x2)
+      bounds.x2=p->point.x;
+    if (p->point.y > bounds.y2)
+      bounds.y2=p->point.y;
+  }
+  mid=draw_info->linewidth/2.0;
+  bounds.x1-=mid;
+  if (bounds.x1 < 0.0)
+    bounds.x1=0.0;
+  bounds.y1-=mid;
+  if (bounds.y1 < 0.0)
+    bounds.y1=0.0;
+  bounds.x2+=mid;
+  if (bounds.x2 >= image->columns)
+    bounds.x2=image->columns-1.0;
+  bounds.y2+=mid;
+  if (bounds.y2 >= image->rows)
+    bounds.y2=image->rows-1.0;
+  for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2-0.5); y++)
   {
     point.y=y;
-    x=(int) ceil(bounds->x1-0.5);
-    q=GetImagePixels(image,x,y,(int) floor(bounds->x2-0.5)-x+1,1);
+    x=(int) ceil(bounds.x1-0.5);
+    q=GetImagePixels(image,x,y,(int) floor(bounds.x2-0.5)-x+1,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for ( ; x <= (int) floor(bounds->x2-0.5); x++)
+    for ( ; x <= (int) floor(bounds.x2-0.5); x++)
     {
       /*
         Compute the stroke and fill opacity values.
@@ -1411,11 +1441,11 @@ MagickExport void DrawPolygonPrimitive(PrimitiveInfo *primitive_info,
         }
         default:
         {
+          register PrimitiveInfo
+            *q;
+
           while (p->primitive != UndefinedPrimitive)
           {
-            register PrimitiveInfo
-              *q;
-
             q=p+p->coordinates-1;
             subpath_opacity=PixelOnLine(&point,&p->point,&q->point,1.0,0.0,
               &minimum_distance);
@@ -1815,48 +1845,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
     }
     default:
     {
-      double
-        mid;
-
-      PointInfo
-        point;
-
-      SegmentInfo
-        bounds;
-
-      /*
-        Compute bounding box.
-      */
-      bounds.x1=image->columns-1.0;
-      bounds.y1=image->rows-1.0;
-      bounds.x2=0.0;
-      bounds.y2=0.0;
-      for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
-      {
-        point=primitive_info[i].point;
-        if (point.x < bounds.x1)
-          bounds.x1=point.x;
-        if (point.y < bounds.y1)
-          bounds.y1=point.y;
-        if (point.x > bounds.x2)
-          bounds.x2=point.x;
-        if (point.y > bounds.y2)
-          bounds.y2=point.y;
-      }
-      mid=draw_info->linewidth/2.0+1.0;
-      bounds.x1-=mid;
-      if (bounds.x1 < 0.0)
-        bounds.x1=0.0;
-      bounds.y1-=mid;
-      if (bounds.y1 < 0.0)
-        bounds.y1=0.0;
-      bounds.x2+=mid;
-      if (bounds.x2 >= image->columns)
-        bounds.x2=image->columns-1.0;
-      bounds.y2+=mid;
-      if (bounds.y2 >= image->rows)
-        bounds.y2=image->rows-1.0;
-      DrawPolygonPrimitive(primitive_info,draw_info,&bounds,image);
+      DrawPolygonPrimitive(primitive_info,draw_info,image);
       break;
     }
   }
