@@ -314,7 +314,7 @@ static struct
       {"box", StringReference}, {"stroke", StringReference},
       {"fill", StringReference}, {"geometry", StringReference},
       {"sans", StringReference}, {"x", IntegerReference},
-      {"y", IntegerReference}, {"grav", GravityTypes},
+      {"y", IntegerReference}, {"gravity", GravityTypes},
       {"translate", StringReference}, {"scale", StringReference},
       {"rotate", DoubleReference}, {"skewX", DoubleReference},
       {"skewY", DoubleReference}, {"strokewidth", IntegerReference},
@@ -1305,6 +1305,19 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'G':
     case 'g':
     {
+      if (LocaleCompare(attribute,"gravity") == 0)
+        {
+          sp=SvPOK(sval) ? LookupStr(GravityTypes,SvPV(sval,na)) :
+            SvIV(sval);
+          if (sp < 0)
+            {
+              MagickWarning(OptionWarning,"Invalid gravity type",SvPV(sval,na));
+              return;
+            }
+          for ( ; image; image=image->next)
+            image->gravity=(GravityType) sp;
+          return;
+        }
       if (LocaleCompare(attribute,"green-primary") == 0)
         {
           for ( ; image; image=image->next)
@@ -3165,6 +3178,18 @@ Get(ref,...)
             {
               if (image && image->geometry)
                 s=newSVpv(image->geometry,0);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
+          if (LocaleCompare(attribute,"gravity") == 0)
+            {
+              j=image->gravity;
+              s=newSViv(j);
+              if ((j >= 0) && (j < (int) NumberOf(GravityTypes)-1))
+                {
+                  (void) sv_setpv(s,GravityTypes[j]);
+                  SvIOK_on(s);
+                }
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -5664,7 +5689,8 @@ Montage(ref,...)
                    SvPV(ST(i),na));
                  return;
                }
-             image->gravity=(GravityType) in;
+             for (next=image; next; next=next->next)
+               image->gravity=(GravityType) in;
              break;
            }
           break;
