@@ -101,8 +101,7 @@ struct _wmf_magick_t
 
   unsigned int width;
   unsigned int height;
-  double x_resolution; /* horizontal resolution in DPI */
-  double y_resolution; /* vertical resolution in DPI */
+  Image *magick_image;  /* ImageMagick image */
 
   /* Magick device layer writes raster images as PNG */
   struct _wmf_magick_image
@@ -841,6 +840,7 @@ static void wmf_magick_draw_text (wmfAPI* API,
   if (out == 0) return;
 
   font = WMF_DC_FONT (draw_text->dc);
+/*   printf("WMF_FONT_NAME: %s\n", WMF_FONT_NAME(font)); */
 
   /* Save graphic context */
   wmf_stream_printf (API,out,"push graphic-context\n");
@@ -865,9 +865,11 @@ static void wmf_magick_draw_text (wmfAPI* API,
 
   /* Output font file name */
   font_name = WMF_FONT_PSNAME (font);
+/*   printf("WMF_FONT_PSNAME: %s\n", font_name); */
   font_path = wmf_ipa_font_lookup (API,font_name);
-  if (font_path)
-    wmf_stream_printf (API,out,"font '%s'\n",font_path);
+/*   if (font_path) */
+/*     printf("Font path: %s\n", font_path); */
+  wmf_stream_printf (API,out,"font '%s'\n",font_name);
 
   /* Set underline */
   if(WMF_TEXT_UNDERLINE(font))
@@ -880,7 +882,7 @@ static void wmf_magick_draw_text (wmfAPI* API,
   /* Set font size */
   /*   printf("========= Font Height  : %i\n", (int)WMF_FONT_HEIGHT(font)); */
   /*   printf("========= Font Width   : %i\n", (int)WMF_FONT_WIDTH(font)); */
-  pointsize = ceil((((double)2.54*ddata->y_resolution*WMF_FONT_HEIGHT(font)))/TWIPS_INCH);
+  pointsize = ceil((((double)2.54*ddata->magick_image->y_resolution*WMF_FONT_HEIGHT(font)))/TWIPS_INCH);
   /*   printf("========= Pointsize    : %i\n", (int)pointsize); */
   wmf_stream_printf (API,out,"font-size %i\n", pointsize);
 
@@ -1302,6 +1304,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
 
   char
     buff[MaxTextExtent],
+    font_map_path[MaxTextExtent],
     *mvg;
 
   float
@@ -1334,11 +1337,30 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   GetExceptionInfo(exception);
 
-  /* Create WMF API */
+  /*
+   * Create WMF API
+   *
+   */
+
+  /* Register callbacks */
   wmf_options_flags |= WMF_OPT_FUNCTION;
   memset(&wmf_api_options,0,sizeof(wmf_api_options));
   wmf_api_options.function = wmf_magick_function;
+
+  /* Ignore non-fatal errors */
   wmf_options_flags |= WMF_OPT_IGNORE_NONFATAL;
+
+  /* Use ImageMagick's font map file */
+  {
+    char *p = GetMagickConfigurePath(TypeFilename);
+    if(p!=NULL)
+      {
+        strcpy(font_map_path, p);
+        wmf_options_flags |= WMF_OPT_XTRA_FONTS;
+        wmf_options_flags |= WMF_OPT_XTRA_FONTMAP;
+        wmf_api_options.xtra_fontmap_file = font_map_path;
+      }
+  }
   wmf_error = wmf_api_create (&API,wmf_options_flags,&wmf_api_options);
   if ( wmf_error != wmf_E_None )
     {
@@ -1362,8 +1384,8 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
       wmf_api_destroy (API);
       ThrowReaderException(CorruptImageError,"Failed to scan file",image);
     }
-/*   printf("Bounding Box: %f,%f %f,%f\n", bounding_box.TL.x, bounding_box.TL.y, */
-/*          bounding_box.BR.x,bounding_box.BR.y); */
+  /*   printf("Bounding Box: %f,%f %f,%f\n", bounding_box.TL.x, bounding_box.TL.y, */
+  /*          bounding_box.BR.x,bounding_box.BR.y); */
 
   /* Compute output width and height */
 
@@ -1373,15 +1395,15 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
      22.75 inches.
 
      The units returned by wmf_size are in centimeters
-*/
+  */
   wmf_error = wmf_size (API,&wmf_width,&wmf_height);
   if ( wmf_error != wmf_E_None )
-  {
-    wmf_api_destroy (API);
-    ThrowReaderException(CorruptImageError,"Failed to compute output size",
-                         image);
-  }
-/*   printf("wmf_size: %fx%f\n", wmf_width, wmf_height); */
+    {
+      wmf_api_destroy (API);
+      ThrowReaderException(CorruptImageError,"Failed to compute output size",
+                           image);
+    }
+  /*   printf("wmf_size: %fx%f\n", wmf_width, wmf_height); */
 
   if(image->y_resolution > 0)
     {
@@ -1400,14 +1422,12 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
   wmf_width  = ceil(( wmf_width*CENTIMETERS_INCH)/TWIPS_INCH*x_resolution);
   wmf_height = ceil((wmf_height*CENTIMETERS_INCH)/TWIPS_INCH*y_resolution);
 
-/*   printf("Size: %fx%f\n", wmf_width, wmf_height); */
+  /*   printf("Size: %fx%f\n", wmf_width, wmf_height); */
 
   ddata = WMF_MAGICK_GetData (API);
   ddata->bbox = bounding_box;
   ddata->width  = (unsigned int) wmf_width;
   ddata->height = (unsigned int) wmf_height;
-  ddata->x_resolution = x_resolution;
-  ddata->y_resolution = y_resolution;
 
   /* Create canvas image */
   clone_info = (ImageInfo*)AcquireMemory(sizeof(ImageInfo));
@@ -1438,6 +1458,10 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
     }
   strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   strncpy(image->magick,image_info->magick,MaxTextExtent-1);
+  ddata->magick_image = image;
+  ddata->magick_image->x_resolution = x_resolution;
+  ddata->magick_image->y_resolution = y_resolution;
+  ddata->magick_image->units = PixelsPerInchResolution;
 
   /* Create MVG drawing commands*/
   ddata->out = wmf_stream_create (API,0);
