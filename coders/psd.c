@@ -291,38 +291,6 @@ static unsigned int IsPSD(const unsigned char *magick,const size_t length)
     return(True);
   return(False);
 }
-
-
-/*
-    Simple utility routine to convert between PSD blending modes and
-    ImageMagick compositing operators
-*/
-static CompositeOperator PSDBlendModeToCompositeOperator( const char* blendMode )
-{
-    if (strncmp(blendMode, "norm", 4)==0) return( OverCompositeOp );
-    if (strncmp(blendMode, "mul ", 4)==0) return( MultiplyCompositeOp );
-    if (strncmp(blendMode, "diss", 4)==0) return( DissolveCompositeOp );
-    if (strncmp(blendMode, "diff", 4)==0) return( DifferenceCompositeOp );
-    if (strncmp(blendMode, "dark", 4)==0) return( DarkenCompositeOp );
-    if (strncmp(blendMode, "lite", 4)==0) return( LightenCompositeOp );
-    if (strncmp(blendMode, "hue ", 4)==0) return( HueCompositeOp );
-    if (strncmp(blendMode, "sat ", 4)==0) return( SaturateCompositeOp );
-    if (strncmp(blendMode, "colr", 4)==0) return( ColorizeCompositeOp );
-    if (strncmp(blendMode, "lum ", 4)==0) return( LuminizeCompositeOp );
-    if (strncmp(blendMode, "scrn", 4)==0) return( ScreenCompositeOp );
-    if (strncmp(blendMode, "over", 4)==0) return( OverlayCompositeOp );
-/*
-    if (strncmp(blendMode, "hLit", 4)==0) return(???);    // HardLight
-    if (strncmp(blendMode, "sLit", 4)==0) return(???);    // SoftLight
-    if (strncmp(blendMode, "smud", 4)==0) return(???);    // Exclusion
-    if (strncmp(blendMode, "div ", 4)==0) return(???);    // Dodge
-    if (strncmp(blendMode, "idiv", 4)==0) return(???);    // Burn
-*/
-
-    /* NOTE: if we got here, it's not a supported mode... */
-    return( OverCompositeOp );
-}
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -355,17 +323,59 @@ static CompositeOperator PSDBlendModeToCompositeOperator( const char* blendMode 
 %
 %
 */
+
+static CompositeOperator PSDBlendModeToCompositeOperator(const char *mode)
+{
+  if (mode == (const char *) NULL)
+    return(OverCompositeOp);
+  if (LocaleNCompare(mode,"norm",4) == 0)
+    return(OverCompositeOp);
+  if (LocaleNCompare(mode,"mul ",4) == 0)
+    return(MultiplyCompositeOp);
+  if (LocaleNCompare(mode,"diss",4) == 0)
+    return(DissolveCompositeOp);
+  if (LocaleNCompare(mode,"diff",4) == 0)
+    return(DifferenceCompositeOp);
+  if (LocaleNCompare(mode,"dark",4) == 0)
+    return(DarkenCompositeOp);
+  if (LocaleNCompare(mode,"lite",4) == 0)
+    return(LightenCompositeOp);
+  if (LocaleNCompare(mode,"hue ",4) == 0)
+    return(HueCompositeOp);
+  if (LocaleNCompare(mode,"sat ",4) == 0)
+    return(SaturateCompositeOp);
+  if (LocaleNCompare(mode,"colr",4) == 0)
+    return(ColorizeCompositeOp);
+  if (LocaleNCompare(mode,"lum ",4) == 0)
+    return(LuminizeCompositeOp);
+  if (LocaleNCompare(mode,"scrn",4) == 0)
+    return(ScreenCompositeOp);
+  if (LocaleNCompare(mode,"over",4) == 0)
+    return(OverlayCompositeOp);
+  if (LocaleNCompare(mode,"hLit",4) == 0)
+    return(OverCompositeOp);
+  if (LocaleNCompare(mode,"sLit",4) == 0)
+    return(OverCompositeOp);
+  if (LocaleNCompare(mode,"smud",4) == 0)
+    return(OverCompositeOp);
+  if (LocaleNCompare(mode,"div ",4) == 0)
+    return(OverCompositeOp);
+  if (LocaleNCompare(mode,"idiv",4) == 0)
+    return(OverCompositeOp);
+  return(OverCompositeOp);
+}
+
 static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   typedef enum
   {
     BitmapMode = 0,
     GrayscaleMode = 1,
-    IndexedMode = 2, 
-    RGBMode = 3, 
-    CMYKMode = 4, 
+    IndexedMode = 2,
+    RGBMode = 3,
+    CMYKMode = 4,
     MultichannelMode = 7,
-    DuotoneMode = 8, 
+    DuotoneMode = 8,
     LabMode = 9
   } PSDImageType;
 
@@ -514,7 +524,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->colorspace=CMYKColorspace;
       image->matte=psd_info.channels >= 5;
     }
-  if ((psd_info.mode == BitmapMode) || 
+  if ((psd_info.mode == BitmapMode) ||
       (psd_info.mode == GrayscaleMode) ||
       (psd_info.mode == DuotoneMode))
     {
@@ -649,20 +659,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (ReadBlobMSBLong(image)-layer_info[i].mask.y);
                 layer_info[i].mask.width=
                   (ReadBlobMSBLong(image)-layer_info[i].mask.x);
-                /* 
-                  BOGUS Skip over the rest of the layer mask information!
-                  NOTE: for adjustment layers, the width and/or height
-                  can be zero!!
+                /*
+                  Skip over the rest of the layer mask information.
                 */
                 for (j=0; j < (long) (length-16); j++)
                   (void) ReadBlobByte(image);
               }
-
-            /* 
-              BOGUS Skip the rest of the variable data until we
-              support it.  this is where layer name, layer blending
-              ranges, adjustment layers, layer effects, text layers,
-              etc. are found!
+            /*
+              Skip the rest of the variable data until we support it.
             */
             for (j=0; j < (long) (size-length-4); j++)
               (void) ReadBlobByte(image);
@@ -681,9 +685,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               "Memory allocation failed",image)
           }
         SetImage(layer_info[i].image,OpaqueOpacity);
-        layer_info[i].image->compose = PSDBlendModeToCompositeOperator( layer_info[i].blendkey );
-        if ( layer_info[i].visible == False )    /* BOGUS: should really be separate member var! */
-            layer_info[i].image->compose = NoCompositeOp;    
+        layer_info[i].image->compose=
+          PSDBlendModeToCompositeOperator(layer_info[i].blendkey);
+        if (layer_info[i].visible == False)
+          layer_info[i].image->compose=NoCompositeOp;
         if (psd_info.mode == CMYKMode)
           layer_info[i].image->colorspace=CMYKColorspace;
         for (j=0; j < layer_info[i].channels; j++)

@@ -77,8 +77,8 @@ typedef struct _BMPInfo
   unsigned long
     compression,
     image_size,
-    x_pixels,
-    y_pixels,
+    x_pixels,     /* pixels per meter */
+    y_pixels,     /* pixels per meter */
     number_colors,
     red_mask,
     green_mask,
@@ -87,6 +87,7 @@ typedef struct _BMPInfo
     colors_important;
 
   long
+    intent,
     colorspace;
 
   PointInfo
@@ -402,7 +403,8 @@ static unsigned int IsBMP(const unsigned char *magick,const size_t length)
 %  Method ReadBMPImage reads a Microsoft Windows bitmap image file, Version
 %  2, 3 (for Windows or NT), or 4, and  returns it.  It allocates the memory
 %  necessary for the new Image structure and returns a pointer to the new
-%  image.  It currently only handles masks RGB8880 and RGBA8888.
+%  image.  It currently only handles masks RGB555, RGB565, RGB8880, and
+%  RGBA8888.
 %
 %  The format of the ReadBMPImage method is:
 %
@@ -560,19 +562,64 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bmp_info.alpha_mask=ReadBlobLSBLong(image);
             bmp_info.colorspace=(long) ReadBlobLSBLong(image);
             bmp_info.red_primary.x=ReadBlobLSBLong(image);
-            bmp_info.red_primary.y=ReadBlobLSBLong(image);
-            bmp_info.red_primary.z=ReadBlobLSBLong(image);
-            bmp_info.green_primary.x=ReadBlobLSBLong(image);
-            bmp_info.green_primary.y=ReadBlobLSBLong(image);
-            bmp_info.green_primary.z=ReadBlobLSBLong(image);
-            bmp_info.blue_primary.x=ReadBlobLSBLong(image);
-            bmp_info.blue_primary.y=ReadBlobLSBLong(image);
-            bmp_info.blue_primary.z=ReadBlobLSBLong(image);
-            bmp_info.gamma_scale.x=ReadBlobLSBShort(image);
-            bmp_info.gamma_scale.y=ReadBlobLSBShort(image);
-            bmp_info.gamma_scale.z=ReadBlobLSBShort(image);
+            /*
+              The primaries are formatted in 2^30 fixed point.
+            */
+            bmp_info.red_primary.y=(double) ReadBlobLSBLong(image)/0x3ffffff;
+            bmp_info.red_primary.z=(double) ReadBlobLSBLong(image)/0x3ffffff;
+            bmp_info.green_primary.x=(double) ReadBlobLSBLong(image)/0x3ffffff;
+            bmp_info.green_primary.y=(double) ReadBlobLSBLong(image)/0x3ffffff;
+            bmp_info.green_primary.z=(double) ReadBlobLSBLong(image)/0x3ffffff;
+            bmp_info.blue_primary.x=(double) ReadBlobLSBLong(image)/0x3ffffff;
+            bmp_info.blue_primary.y=(double) ReadBlobLSBLong(image)/0x3ffffff;
+            bmp_info.blue_primary.z=(double) ReadBlobLSBLong(image)/0x3ffffff;
+            /*
+              The gamma_scales are formatted in 16^16 fixed point
+            */
+            bmp_info.gamma_scale.x=(double) ReadBlobLSBLong(image)/0xffff;
+            bmp_info.gamma_scale.y=(double) ReadBlobLSBLong(image)/0xffff;
+            bmp_info.gamma_scale.z=(double) ReadBlobLSBLong(image)/0xffff;
+          }
+        if (bmp_info.size > 108)
+          {
+            /*
+              Skip BMP Version 5 color management information.
+            */
+            for (i=0; i<4; i++)
+              ReadBlobLSBLong(image);
+          }
+        if (bmp_info.size > 124)
+          {
+            /*
+              Skip future BMP Version information.
+            */
+            for (i=124; i<bmp_info.size; i++)
+              ReadBlobByte(image);
           }
       }
+    switch (bmp_info.compression)
+    {
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+        break;
+      case 4:
+      {
+        ThrowReaderException(CorruptImageWarning,
+          "JPEG compression not supported",image);
+      }
+      case 5:
+      {
+        ThrowReaderException(CorruptImageWarning,
+          "PNG compression not supported",image);
+      }
+      default:
+      {
+        ThrowReaderException(CorruptImageWarning,
+          "Unrecognized compression method",image);
+      }
+    }
     image->columns=bmp_info.width;
     image->rows=AbsoluteValue(bmp_info.height);
     image->depth=8;

@@ -1114,6 +1114,7 @@ MagickExport unsigned int CompositeImage(Image *image,
     percent_brightness,
     percent_saturation,
     red,
+    sans,
     saturation,
     threshold;
 
@@ -1137,12 +1138,6 @@ MagickExport unsigned int CompositeImage(Image *image,
     *q;
 
 
-    /* 
-        If the compositing is NoCompositeOp, we don't composite!
-    */
-  if ( compose == NoCompositeOp )
-    return( True );
-
   /*
     Prepare composite image.
   */
@@ -1150,6 +1145,8 @@ MagickExport unsigned int CompositeImage(Image *image,
   assert(image->signature == MagickSignature);
   assert(composite_image != (Image *) NULL);
   assert(composite_image->signature == MagickSignature);
+  if (compose == NoCompositeOp)
+    return(True);
   SetImageType(image,TrueColorType);
   switch (compose)
   {
@@ -1303,6 +1300,209 @@ MagickExport unsigned int CompositeImage(Image *image,
         q->opacity=OpaqueOpacity;
       switch (compose)
       {
+        case OverCompositeOp:
+        default:
+        {
+          if (pixel.opacity != TransparentOpacity)
+            *q=AlphaComposite(p,pixel.opacity,q,q->opacity);
+          break;
+        }
+        case InCompositeOp:
+        {
+          q->red=(Quantum) ((double) (MaxRGB-pixel.opacity)*
+            (MaxRGB-q->opacity)*pixel.red/MaxRGB/MaxRGB+0.5);
+          q->green=(Quantum) ((double) (MaxRGB-pixel.opacity)*
+            (MaxRGB-q->opacity)*pixel.green/MaxRGB/MaxRGB+0.5);
+          q->blue=(Quantum) ((double) (MaxRGB-pixel.opacity)*
+            (MaxRGB-q->opacity)*pixel.blue/MaxRGB/MaxRGB+0.5);
+          q->opacity=(Quantum) (MaxRGB-(double) (MaxRGB-pixel.opacity)*
+            (MaxRGB-q->opacity)/MaxRGB+0.5);
+          break;
+        }
+        case OutCompositeOp:
+        {
+          q->red=(Quantum) ((double) (MaxRGB-pixel.opacity)*
+            q->opacity*pixel.red/MaxRGB/MaxRGB+0.5);
+          q->green=(Quantum) ((double) (MaxRGB-pixel.opacity)*
+            q->opacity*pixel.green/MaxRGB/MaxRGB+0.5);
+          q->blue=(Quantum) ((double) (MaxRGB-pixel.opacity)*
+            q->opacity*pixel.blue/MaxRGB/MaxRGB+0.5);
+          q->opacity=(Quantum) (MaxRGB-(double) (MaxRGB-pixel.opacity)*
+            q->opacity/MaxRGB+0.5);
+          break;
+        }
+        case AtopCompositeOp:
+        {
+          red=((double) (MaxRGB-pixel.opacity)*(MaxRGB-q->opacity)*
+            pixel.red/MaxRGB+(double) pixel.opacity*(MaxRGB-q->opacity)*
+            q->red/MaxRGB)/MaxRGB;
+          q->red=(Quantum) (red > MaxRGB ? MaxRGB : red+0.5);
+          green=((double) (MaxRGB-pixel.opacity)*(MaxRGB-q->opacity)*
+            pixel.green/MaxRGB+(double) pixel.opacity*(MaxRGB-q->opacity)*
+            q->green/MaxRGB)/MaxRGB;
+          q->green=(Quantum) (green > MaxRGB ? MaxRGB : green+0.5);
+          blue=((double) (MaxRGB-pixel.opacity)*(MaxRGB-q->opacity)*
+            pixel.blue/MaxRGB+(double) pixel.opacity*(MaxRGB-q->opacity)*
+            q->blue/MaxRGB)/MaxRGB;
+          q->blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue+0.5);
+          opacity=MaxRGB-((double) (MaxRGB-pixel.opacity)*
+            (MaxRGB-q->opacity)+(double) pixel.opacity*
+            (MaxRGB-q->opacity))/MaxRGB;
+          q->opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity+0.5);
+          break;
+        }
+        case XorCompositeOp:
+        {
+          red=((unsigned long) (MaxRGB-q->opacity)*pixel.red/MaxRGB+
+            (MaxRGB-pixel.opacity)*q->red/MaxRGB)/MaxRGB;
+          q->red=(Quantum) (red > MaxRGB ? MaxRGB : red+0.5);
+          green=((unsigned long) (MaxRGB-q->opacity)*pixel.green/MaxRGB+
+            (MaxRGB-pixel.opacity)*q->green/MaxRGB)/MaxRGB;
+          q->green=(Quantum) (green > MaxRGB ? MaxRGB : green+0.5);
+          green=((unsigned long) (MaxRGB-q->opacity)*pixel.green/MaxRGB+
+            (MaxRGB-pixel.opacity)*q->green/MaxRGB)/MaxRGB;
+          q->green=(Quantum) (green > MaxRGB ? MaxRGB : green+0.5);
+          opacity=((unsigned long) (MaxRGB-q->opacity)*pixel.opacity/MaxRGB+
+            (MaxRGB-pixel.opacity)*q->opacity/MaxRGB)/MaxRGB;
+          q->opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity+0.5);
+          break;
+        }
+        case PlusCompositeOp:
+        {
+          red=((double) (MaxRGB-pixel.opacity)*pixel.red+
+            (double) (MaxRGB-q->opacity)*q->red)/MaxRGB;
+          q->red=(Quantum) (red > MaxRGB ? MaxRGB : red+0.5);
+          green=((double) (MaxRGB-pixel.opacity)*pixel.green+
+            (double) (MaxRGB-q->opacity)*q->green)/MaxRGB;
+          q->green=(Quantum) (green > MaxRGB ? MaxRGB : green+0.5);
+          blue=((double) (MaxRGB-pixel.opacity)*pixel.blue+
+            (double) (MaxRGB-q->opacity)*q->blue)/MaxRGB;
+          q->blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue+0.5);
+          opacity=MaxRGB-((double) (MaxRGB-pixel.opacity)+
+            (MaxRGB-q->opacity));
+          q->opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity+0.5);
+          break;
+        }
+        case MinusCompositeOp:
+        {
+          red=((double) (MaxRGB-pixel.opacity)*pixel.red-
+            (double) (MaxRGB-q->opacity)*q->red)/MaxRGB;
+          q->red=(Quantum) (red < 0 ? 0 : red+0.5);
+          green=((double) (MaxRGB-pixel.opacity)*pixel.green-
+            (double) (MaxRGB-q->opacity)*q->green)/MaxRGB;
+          q->green=(Quantum) (green < 0 ? 0 : green+0.5);
+          blue=((double) (MaxRGB-pixel.opacity)*pixel.blue-
+            (double) (MaxRGB-q->opacity)*q->blue)/MaxRGB;
+          q->blue=(Quantum) (blue < 0 ? 0 : blue+0.5);
+          opacity=MaxRGB-((double) (MaxRGB-pixel.opacity)-
+            (MaxRGB-q->opacity));
+          q->opacity=(Quantum) (opacity < 0 ? 0 : opacity+0.5);
+          break;
+        }
+        case AddCompositeOp:
+        {
+          red=(double) pixel.red+q->red;
+          q->red=(Quantum) (red > MaxRGB ? red-=MaxRGB : red+0.5);
+          green=(double) pixel.green+q->green;
+          q->green=(Quantum) (green > MaxRGB ? green-=MaxRGB : green+0.5);
+          blue=(double) pixel.blue+q->blue;
+          q->blue=(Quantum) (blue > MaxRGB ? blue-=MaxRGB : blue+0.5);
+          q->opacity=OpaqueOpacity;
+          break;
+        }
+        case SubtractCompositeOp:
+        {
+          red=(double) pixel.red-q->red;
+          q->red=(Quantum) (red < 0 ? red+=MaxRGB : red+0.5);
+          green=(double) pixel.green-q->green;
+          q->green=(Quantum) (green < 0 ? green+=MaxRGB : green+0.5);
+          blue=(double) pixel.blue-q->blue;
+          q->blue=(Quantum) (blue < 0 ? blue+=MaxRGB : blue+0.5);
+          q->opacity=OpaqueOpacity;
+          break;
+        }
+        case MultiplyCompositeOp:
+        {
+          q->red=(Quantum) ((unsigned long) (pixel.red*q->red/MaxRGB));
+          q->green=(Quantum)
+            ((unsigned long) (pixel.green*q->green/MaxRGB));
+          q->blue=(Quantum) ((unsigned long) (pixel.blue*q->blue/MaxRGB));
+          q->opacity=(Quantum)
+            ((unsigned long) (pixel.opacity*q->opacity/MaxRGB+0.5));
+          break;
+        }
+        case DifferenceCompositeOp:
+        {
+          q->red=(Quantum) AbsoluteValue((double) pixel.red-q->red);
+          q->green=(Quantum) AbsoluteValue((double) pixel.green-q->green);
+          q->blue=(Quantum) AbsoluteValue((double) pixel.blue-q->blue);
+          q->opacity=(Quantum)
+            AbsoluteValue((double) pixel.opacity-q->opacity);
+          break;
+        }
+        case BumpmapCompositeOp:
+        {
+          q->red=(Quantum)
+            ((unsigned long) ((Intensity(&pixel)*q->red)/MaxRGB));
+          q->green=(Quantum)
+            ((unsigned long) ((Intensity(&pixel)*q->green)/MaxRGB));
+          q->blue=(Quantum)
+            ((unsigned long) ((Intensity(&pixel)*q->blue)/MaxRGB));
+          q->opacity=(Quantum)
+            ((unsigned long) (Intensity(&pixel)*q->opacity/MaxRGB));
+          break;
+        }
+        case CopyCompositeOp:
+        {
+          *q=pixel;
+          break;
+        }
+        case CopyRedCompositeOp:
+        {
+          q->red=pixel.red;
+          break;
+        }
+        case CopyGreenCompositeOp:
+        {
+          q->green=pixel.green;
+          break;
+        }
+        case CopyBlueCompositeOp:
+        {
+          q->blue=pixel.blue;
+          break;
+        }
+        case CopyOpacityCompositeOp:
+        {
+          if (!composite_image->matte)
+            {
+              q->opacity=Intensity(&pixel);
+              break;
+            }
+          q->opacity=pixel.opacity;
+          break;
+        }
+        case ClearCompositeOp:
+        {
+          q->opacity=TransparentOpacity;
+          break;
+        }
+        case DissolveCompositeOp:
+        {
+          q->red=(Quantum) ((unsigned long) ((pixel.opacity*pixel.red+
+            (MaxRGB-pixel.opacity)*q->red)/MaxRGB));
+          q->green=(Quantum) ((unsigned long) ((pixel.opacity*pixel.green+
+            (MaxRGB-pixel.opacity)*q->green)/MaxRGB));
+          q->blue=(Quantum) ((unsigned long) ((pixel.opacity*pixel.blue+
+            (MaxRGB-pixel.opacity)*q->blue)/MaxRGB));
+          q->opacity=OpaqueOpacity;
+          break;
+        }
+        case DisplaceCompositeOp:
+        {
+          *q=pixel;
+          break;
+        }
         case ThresholdCompositeOp:
         {
           double
@@ -1359,335 +1559,80 @@ MagickExport unsigned int CompositeImage(Image *image,
           HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
           break;
         }
-        default:
+        case DarkenCompositeOp:
         {
-          switch (compose)
-          {
-            case OverCompositeOp:
-            default:
-            {
-              if (pixel.opacity != TransparentOpacity)
-                *q=AlphaComposite(p,pixel.opacity,q,q->opacity);
-              break;
-            }
-            case InCompositeOp:
-            {
-              q->red=(Quantum) ((double) (MaxRGB-pixel.opacity)*
-                (MaxRGB-q->opacity)*pixel.red/MaxRGB/MaxRGB+0.5);
-              q->green=(Quantum) ((double) (MaxRGB-pixel.opacity)*
-                (MaxRGB-q->opacity)*pixel.green/MaxRGB/MaxRGB+0.5);
-              q->blue=(Quantum) ((double) (MaxRGB-pixel.opacity)*
-                (MaxRGB-q->opacity)*pixel.blue/MaxRGB/MaxRGB+0.5);
-              q->opacity=(Quantum) (MaxRGB-(double) (MaxRGB-pixel.opacity)*
-                (MaxRGB-q->opacity)/MaxRGB+0.5);
-              break;
-            }
-            case OutCompositeOp:
-            {
-              q->red=(Quantum) ((double) (MaxRGB-pixel.opacity)*
-                q->opacity*pixel.red/MaxRGB/MaxRGB+0.5);
-              q->green=(Quantum) ((double) (MaxRGB-pixel.opacity)*
-                q->opacity*pixel.green/MaxRGB/MaxRGB+0.5);
-              q->blue=(Quantum) ((double) (MaxRGB-pixel.opacity)*
-                q->opacity*pixel.blue/MaxRGB/MaxRGB+0.5);
-              q->opacity=(Quantum) (MaxRGB-(double) (MaxRGB-pixel.opacity)*
-                q->opacity/MaxRGB+0.5);
-              break;
-            }
-            case AtopCompositeOp:
-            {
-              red=((double) (MaxRGB-pixel.opacity)*(MaxRGB-q->opacity)*
-                pixel.red/MaxRGB+(double) pixel.opacity*(MaxRGB-q->opacity)*
-                q->red/MaxRGB)/MaxRGB;
-              q->red=(Quantum) (red > MaxRGB ? MaxRGB : red+0.5);
-              green=((double) (MaxRGB-pixel.opacity)*(MaxRGB-q->opacity)*
-                pixel.green/MaxRGB+(double) pixel.opacity*(MaxRGB-q->opacity)*
-                q->green/MaxRGB)/MaxRGB;
-              q->green=(Quantum) (green > MaxRGB ? MaxRGB : green+0.5);
-              blue=((double) (MaxRGB-pixel.opacity)*(MaxRGB-q->opacity)*
-                pixel.blue/MaxRGB+(double) pixel.opacity*(MaxRGB-q->opacity)*
-                q->blue/MaxRGB)/MaxRGB;
-              q->blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue+0.5);
-              opacity=MaxRGB-((double) (MaxRGB-pixel.opacity)*
-                (MaxRGB-q->opacity)+(double) pixel.opacity*
-                (MaxRGB-q->opacity))/MaxRGB;
-              q->opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity+0.5);
-              break;
-            }
-            case XorCompositeOp:
-            {
-              red=((unsigned long) (MaxRGB-q->opacity)*pixel.red/MaxRGB+
-                (MaxRGB-pixel.opacity)*q->red/MaxRGB)/MaxRGB;
-              q->red=(Quantum) (red > MaxRGB ? MaxRGB : red+0.5);
-              green=((unsigned long) (MaxRGB-q->opacity)*pixel.green/MaxRGB+
-                (MaxRGB-pixel.opacity)*q->green/MaxRGB)/MaxRGB;
-              q->green=(Quantum) (green > MaxRGB ? MaxRGB : green+0.5);
-              green=((unsigned long) (MaxRGB-q->opacity)*pixel.green/MaxRGB+
-                (MaxRGB-pixel.opacity)*q->green/MaxRGB)/MaxRGB;
-              q->green=(Quantum) (green > MaxRGB ? MaxRGB : green+0.5);
-              opacity=((unsigned long) (MaxRGB-q->opacity)*pixel.opacity/MaxRGB+
-                (MaxRGB-pixel.opacity)*q->opacity/MaxRGB)/MaxRGB;
-              q->opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity+0.5);
-              break;
-            }
-            case PlusCompositeOp:
-            {
-              red=((double) (MaxRGB-pixel.opacity)*pixel.red+
-                (double) (MaxRGB-q->opacity)*q->red)/MaxRGB;
-              q->red=(Quantum) (red > MaxRGB ? MaxRGB : red+0.5);
-              green=((double) (MaxRGB-pixel.opacity)*pixel.green+
-                (double) (MaxRGB-q->opacity)*q->green)/MaxRGB;
-              q->green=(Quantum) (green > MaxRGB ? MaxRGB : green+0.5);
-              blue=((double) (MaxRGB-pixel.opacity)*pixel.blue+
-                (double) (MaxRGB-q->opacity)*q->blue)/MaxRGB;
-              q->blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue+0.5);
-              opacity=MaxRGB-((double) (MaxRGB-pixel.opacity)+
-                (MaxRGB-q->opacity));
-              q->opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity+0.5);
-              break;
-            }
-            case MinusCompositeOp:
-            {
-              red=((double) (MaxRGB-pixel.opacity)*pixel.red-
-                (double) (MaxRGB-q->opacity)*q->red)/MaxRGB;
-              q->red=(Quantum) (red < 0 ? 0 : red+0.5);
-              green=((double) (MaxRGB-pixel.opacity)*pixel.green-
-                (double) (MaxRGB-q->opacity)*q->green)/MaxRGB;
-              q->green=(Quantum) (green < 0 ? 0 : green+0.5);
-              blue=((double) (MaxRGB-pixel.opacity)*pixel.blue-
-                (double) (MaxRGB-q->opacity)*q->blue)/MaxRGB;
-              q->blue=(Quantum) (blue < 0 ? 0 : blue+0.5);
-              opacity=MaxRGB-((double) (MaxRGB-pixel.opacity)-
-                (MaxRGB-q->opacity));
-              q->opacity=(Quantum) (opacity < 0 ? 0 : opacity+0.5);
-              break;
-            }
-            case AddCompositeOp:
-            {
-              red=(double) pixel.red+q->red;
-              q->red=(Quantum) (red > MaxRGB ? red-=MaxRGB : red+0.5);
-              green=(double) pixel.green+q->green;
-              q->green=(Quantum) (green > MaxRGB ? green-=MaxRGB : green+0.5);
-              blue=(double) pixel.blue+q->blue;
-              q->blue=(Quantum) (blue > MaxRGB ? blue-=MaxRGB : blue+0.5);
-              q->opacity=OpaqueOpacity;
-              break;
-            }
-            case SubtractCompositeOp:
-            {
-              red=(double) pixel.red-q->red;
-              q->red=(Quantum) (red < 0 ? red+=MaxRGB : red+0.5);
-              green=(double) pixel.green-q->green;
-              q->green=(Quantum) (green < 0 ? green+=MaxRGB : green+0.5);
-              blue=(double) pixel.blue-q->blue;
-              q->blue=(Quantum) (blue < 0 ? blue+=MaxRGB : blue+0.5);
-              q->opacity=OpaqueOpacity;
-              break;
-            }
-            case MultiplyCompositeOp:
-            {
-              q->red=(Quantum) ((unsigned long) (pixel.red*q->red/MaxRGB));
-              q->green=(Quantum)
-                ((unsigned long) (pixel.green*q->green/MaxRGB));
-              q->blue=(Quantum) ((unsigned long) (pixel.blue*q->blue/MaxRGB));
-              q->opacity=(Quantum)
-                ((unsigned long) (pixel.opacity*q->opacity/MaxRGB+0.5));
-              break;
-            }
-            case DifferenceCompositeOp:
-            {
-              q->red=(Quantum) AbsoluteValue((double) pixel.red-q->red);
-              q->green=(Quantum) AbsoluteValue((double) pixel.green-q->green);
-              q->blue=(Quantum) AbsoluteValue((double) pixel.blue-q->blue);
-              q->opacity=(Quantum)
-                AbsoluteValue((double) pixel.opacity-q->opacity);
-              break;
-            }
-            case BumpmapCompositeOp:
-            {
-              q->red=(Quantum)
-                ((unsigned long) ((Intensity(&pixel)*q->red)/MaxRGB));
-              q->green=(Quantum)
-                ((unsigned long) ((Intensity(&pixel)*q->green)/MaxRGB));
-              q->blue=(Quantum)
-                ((unsigned long) ((Intensity(&pixel)*q->blue)/MaxRGB));
-              q->opacity=(Quantum)
-                ((unsigned long) (Intensity(&pixel)*q->opacity/MaxRGB));
-              break;
-            }
-            case CopyCompositeOp:
-            {
-              *q=pixel;
-              break;
-            }
-            case CopyRedCompositeOp:
-            {
-              q->red=pixel.red;
-              break;
-            }
-            case CopyGreenCompositeOp:
-            {
-              q->green=pixel.green;
-              break;
-            }
-            case CopyBlueCompositeOp:
-            {
-              q->blue=pixel.blue;
-              break;
-            }
-            case CopyOpacityCompositeOp:
-            {
-              if (!composite_image->matte)
-                {
-                  q->opacity=Intensity(&pixel);
-                  break;
-                }
-              q->opacity=pixel.opacity;
-              break;
-            }
-            case ClearCompositeOp:
-            {
-              q->opacity=TransparentOpacity;
-              break;
-            }
-            case DissolveCompositeOp:
-            {
-              q->red=(Quantum) ((unsigned long) ((pixel.opacity*pixel.red+
-                (MaxRGB-pixel.opacity)*q->red)/MaxRGB));
-              q->green=(Quantum) ((unsigned long) ((pixel.opacity*pixel.green+
-                (MaxRGB-pixel.opacity)*q->green)/MaxRGB));
-              q->blue=(Quantum) ((unsigned long) ((pixel.opacity*pixel.blue+
-                (MaxRGB-pixel.opacity)*q->blue)/MaxRGB));
-              q->opacity=OpaqueOpacity;
-              break;
-            }
-            case DisplaceCompositeOp:
-            {
-              *q=pixel;
-              break;
-            }
-            case DarkenCompositeOp:
-            {
-                if ( pixel.red < q->red )
-                    q->red = pixel.red;
-                if ( pixel.green < q->green )
-                    q->green = pixel.green;
-                if ( pixel.blue < q->blue )
-                    q->blue = pixel.blue;
-                if ( pixel.opacity < q->opacity )
-                    q->opacity = pixel.opacity;
-                break;
-            }
-            case LightenCompositeOp:
-            {
-                if ( pixel.red > q->red )
-                    q->red = pixel.red;
-                if ( pixel.green > q->green )
-                    q->green = pixel.green;
-                if ( pixel.blue > q->blue )
-                    q->blue = pixel.blue;
-                if ( pixel.opacity > q->opacity )
-                    q->opacity = pixel.opacity;
-                break;
-            }
-            case HueCompositeOp:
-            {
-                double    src_hue;
-
-                TransformHSL(pixel.red,pixel.green, pixel.blue,&src_hue,&saturation,&brightness);
-                TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
-                HSLTransform(src_hue,saturation,brightness,&q->red,&q->green,&q->blue);
-                if ( pixel.opacity < q->opacity )
-                    q->opacity = pixel.opacity;
-                break;
-            }
-            case SaturateCompositeOp:
-            {
-                double    src_saturation;
-
-                TransformHSL(pixel.red,pixel.green, pixel.blue,&hue,&src_saturation,&brightness);
-                TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
-                HSLTransform(hue,src_saturation,brightness,&q->red,&q->green,&q->blue);
-                if ( pixel.opacity < q->opacity )
-                    q->opacity = pixel.opacity;
-                break;
-            }
-            case LuminizeCompositeOp:
-            {
-                double    src_brightness;
-
-                TransformHSL(pixel.red,pixel.green, pixel.blue,&hue,&saturation,&src_brightness);
-                TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
-                HSLTransform(hue,saturation,src_brightness,&q->red,&q->green,&q->blue);
-                if ( pixel.opacity < q->opacity )
-                    q->opacity = pixel.opacity;
-                break;
-            }
-            case ColorizeCompositeOp:
-            {
-                double    src_hue, src_saturation, src_brightness;
-
-                TransformHSL(pixel.red,pixel.green, pixel.blue,&src_hue,&src_saturation,&src_brightness);
-                TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
-                HSLTransform(src_hue,src_saturation,brightness,&q->red,&q->green,&q->blue);
-                if ( pixel.opacity < q->opacity )
-                    q->opacity = pixel.opacity;
-                break;
-            }
-            case ScreenCompositeOp:
-            {
-                /* BOGUS: NOT YET IMPLEMENTED */
-                /*
-                    This is a code snippet the implements screen, but I haven't figured out
-                    how to make it work with IM yet :(
-
-                    #define DO_SCREEN_VALUE(b,t) \
-                                res1 = 0x0000FFFF - (int)b[i] ; res2 = 0x0000FFFF - (int)t[i] ;\
-                                res1 = 0x0000FFFF - ((res1*res2)>>16); b[i] = res1 < 0 ? 0 : res1
-
-                        while( ++i < max_i )
-                            if( ta[i] )
-                            {
-                                int res1 ;
-                                int res2 ;
-
-                                DO_SCREEN_VALUE(br,tr);
-                                DO_SCREEN_VALUE(bg,tg);
-                                DO_SCREEN_VALUE(bb,tb);
-
-                                if( ta[i] > ba[i] )
-                                    ba[i] = ta[i] ;
-                            }
-                */
-                break;
-            }
-            case OverlayCompositeOp:
-            {
-                /* BOGUS: NOT YET IMPLEMENTED */
-                /*
-                    This is a code snippet the implements overlay, but I haven't figured out
-                    how to make it work with IM yet :(
-
-                    #define DO_OVERLAY_VALUE(b,t) \
-                                    tmp_screen = 0x0000FFFF - (((0x0000FFFF - (int)b[i]) * (0x0000FFFF - (int)t[i])) >> 16); \
-                                    tmp_mult   = (b[i] * t[i]) >> 16; \
-                                    res = (b[i] * tmp_screen + (0x0000FFFF - (int)b[i]) * tmp_mult) >> 16; \
-                                    b[i] = res < 0 ? 0 : res
-
-                        while( ++i < max_i )
-                            if( ta[i] )
-                            {
-                                int tmp_screen, tmp_mult, res ;
-                                DO_OVERLAY_VALUE(br,tr);
-                                DO_OVERLAY_VALUE(bg,tg);
-                                DO_OVERLAY_VALUE(bb,tb);
-                                if( ta[i] > ba[i] )
-                                    ba[i] = ta[i] ;
-                            }
-                */
-                break;
-            }
-          }
+          if (pixel.red < q->red)
+            q->red=pixel.red;
+          if (pixel.green < q->green)
+            q->green=pixel.green;
+          if (pixel.blue < q->blue)
+            q->blue=pixel.blue;
+          if (pixel.opacity < q->opacity)
+            q->opacity=pixel.opacity;
+          break;
+        }
+        case LightenCompositeOp:
+        {
+          if (pixel.red > q->red)
+            q->red=pixel.red;
+          if (pixel.green > q->green)
+            q->green=pixel.green;
+          if (pixel.blue > q->blue)
+            q->blue=pixel.blue;
+          if (pixel.opacity > q->opacity)
+            q->opacity=pixel.opacity;
+          break;
+        }
+        case HueCompositeOp:
+        {
+          TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
+          TransformHSL(pixel.red,pixel.green,pixel.blue,&hue,&sans,&sans);
+          HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
+          if (pixel.opacity < q->opacity)
+            q->opacity=pixel.opacity;
+          break;
+        }
+        case SaturateCompositeOp:
+        {
+          TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
+          TransformHSL(pixel.red,pixel.green,pixel.blue,&sans,&saturation,
+            &sans);
+          HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
+          if (pixel.opacity < q->opacity)
+            q->opacity=pixel.opacity;
+          break;
+        }
+        case LuminizeCompositeOp:
+        {
+          TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
+          TransformHSL(pixel.red,pixel.green,pixel.blue,&sans,&sans,
+            &brightness);
+          HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
+          if (pixel.opacity < q->opacity)
+            q->opacity=pixel.opacity;
+          break;
+        }
+        case ColorizeCompositeOp:
+        {
+          TransformHSL(q->red,q->green,q->blue,&sans,&sans,&brightness);
+          TransformHSL(pixel.red,pixel.green,pixel.blue,&hue,&saturation,&sans);
+          HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
+          if (pixel.opacity < q->opacity)
+            q->opacity=pixel.opacity;
+          break;
+        }
+        case ScreenCompositeOp:
+        {
+          /*
+            No op for now.
+          */
+          break;
+        }
+        case OverlayCompositeOp:
+        {
+          /*
+            No op for now.
+          */
           break;
         }
       }
