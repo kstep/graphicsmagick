@@ -12,7 +12,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1; print "1..8\n"; }
+BEGIN { $| = 1; $test=1; print "1..11\n"; }
 END {print "not ok $test\n" unless $loaded;}
 
 use Graphics::Magick;
@@ -85,3 +85,29 @@ testRead( 'input_truecolor_tiled32x32.tiff',
 print("TrueColor (8-bit) stripped, image, 8 rows per strip ...\n");
 testRead( 'input_truecolor_stripped.tiff',
   '326599218925e7aa27c735d482332744cccf41f460a1ba2d276a2d172f2b3de0' );
+
+#
+# 9) Test Reading Grayscale 8-bit
+# 
+++$test;
+print("Grayscale (8-bit) ...\n");
+testRead( 'input_gray_8bit.tiff',
+  '00f6147d547f5a654369a5b41d18f0b44b38f9cc753c773f384808b9a18cac92');
+
+#
+# 10) Test Reading Grayscale 12-bit
+# 
+++$test;
+print("Grayscale (12-bit) ...\n");
+testRead( 'input_gray_12bit.tiff',
+  'c644742ce63461958e441f0f7e5fae596bb5381b2c5d41f6c524b3f68f5d0d97',
+  'd401344f52d6e85f63aa98467fef7c5c1408905322b56fed20aa982417537d36');
+
+#
+# 11) Test Reading Grayscale 16-bit
+# 
+++$test;
+print("Grayscale (16-bit) ...\n");
+testRead( 'input_gray_16bit.tiff',
+  '00f6147d547f5a654369a5b41d18f0b44b38f9cc753c773f384808b9a18cac92',
+  '1db9216ffb84dab419b4924e6aba945e922f728c0dca8ce24c3d7f4c47c604b9' );

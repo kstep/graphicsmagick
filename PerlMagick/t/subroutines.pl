@@ -70,10 +70,11 @@ sub testRead {
     $image=Graphics::Magick->new;
     $image->Set(size=>'512x512');
     $status=$image->ReadImage("$infile");
-    if( "$status" ) {
+    if( "$status" && !($status =~ /Exception 315/)) {
       print "ReadImage $infile: $status";
       ++$failure;
     } else {
+      undef $status;
       $magick=$image->Get('magick');
       $signature=$image->Get('signature');
       if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
@@ -106,7 +107,7 @@ sub testRead {
           $image=Graphics::Magick->new(magick=>$magick);
           $status=$image->BlobToImage( $blob );
           undef $blob;
-          if( "$status" ) {
+          if( "$status" && !($status =~ /Exception 315/)) {
             print "BlobToImage $infile: $status";
             ++$failure;
           } else {
