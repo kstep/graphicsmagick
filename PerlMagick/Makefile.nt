@@ -16,8 +16,30 @@ WriteMakefile(
     'LIBS'      => ['-L..\VisualMagick\lib -L..\VisualMagick\bin -lCORE_RL_magick_.lib'],
     'DEFINE'    => '-D_VISUALC_ -D_WINDOWS',     # e.g., '-DHAVE_SOMETHING' 
     'INC'       => '-I.. -I..\xlib\include',
+    'BINARY_LOCATION'  => 'x86/Image-Magick.tar.gz',
     ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
 );
+
+#
+# Add a target for building an ActiveState ppm distribution module
+# Requires tar, gzip, and zip.  This produces PerlMagick.zip
+#
+sub MY::postamble
+{
+        '
+ppm: ppd all
+        del PerlMagick.zip
+        $(TAR) $(TARFLAGS) Image-Magick.tar blib
+        $(COMPRESS) Image-Magick.tar
+        md x86
+        copy Image-Magick.tar$(SUFFIX) x86
+        del Image-Magick.tar$(SUFFIX)
+        copy ppm-readme.txt readme
+        $(ZIP) PerlMagick.zip readme Image-Magick.ppd x86/Image-Magick.tar$(SUFFIX)
+        del x86\Image-Magick.tar$(SUFFIX)
+        rd x86
+        '
+}
 
 #
 # Modify the MakeMaker test fragment

@@ -385,30 +385,24 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
       {
         if (image->matte)
           {
-            FormatString(buffer,"%d,%d: %d,%d,%d,%d\n",x,y,
+            FormatString(buffer,"%d,%d: %u,%u,%u,%u\n",x,y,
               p->red,p->green,p->blue,p->opacity);
             (void) WriteBlob(image,strlen(buffer),buffer);
           }
         else
           {
-            FormatString(buffer,"%d,%d: %d,%d,%d  ",x,y,
+            FormatString(buffer,"%d,%d: %u,%u,%u  ",x,y,
               p->red,p->green,p->blue);
             (void) WriteBlob(image,strlen(buffer),buffer);
             FormatString(buffer,HexColorFormat,p->red,p->green,p->blue);
             (void) WriteBlob(image,strlen(buffer),buffer);
           }
         (void) WriteByte(image,'\n');
-        x++;
-        if (x == (int) image->columns)
-          {
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
-            x=0;
-            y++;
-          }
+        if (image->previous == (Image *) NULL)
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(SaveImageText,y,image->rows);
+        p++;
       }
-      p++;
     }
     if (image->next == (Image *) NULL)
       break;

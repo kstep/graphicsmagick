@@ -676,7 +676,7 @@ extern MagickExport const char
 
 extern MagickExport const ColorlistInfo
   XPMColorlist[235],
-  XColorlist[761];
+  XColorlist[764];
 
 /*
   Image utilities methods.

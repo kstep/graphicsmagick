@@ -125,7 +125,7 @@ typedef struct _CubeInfo
 /*
   Color list.
 */
-#define NumberXColors  761
+#define NumberXColors  764
 #define NumberXPMColors  235
 
 const ColorlistInfo
@@ -305,6 +305,7 @@ const ColorlistInfo
     { "forest green", UpScale(34), UpScale(139), UpScale(34) },
     { "forestgreen", UpScale(34), UpScale(139), UpScale(34) },
     { "fractal", UpScale(128), UpScale(128), UpScale(128) },
+    { "fuchsia", UpScale(255), UpScale(0), UpScale(255) },
     { "gainsboro", UpScale(220), UpScale(220), UpScale(220) },
     { "ghost white", UpScale(248), UpScale(248), UpScale(255) },
     { "ghostwhite", UpScale(248), UpScale(248), UpScale(255) },
@@ -701,6 +702,7 @@ const ColorlistInfo
     { "navyblue", UpScale(0), UpScale(0), UpScale(128) },
     { "old lace", UpScale(253), UpScale(245), UpScale(230) },
     { "oldlace", UpScale(253), UpScale(245), UpScale(230) },
+    { "olive", UpScale(128), UpScale(128), UpScale(0) },
     { "olive drab", UpScale(107), UpScale(142), UpScale(35) },
     { "olivedrab", UpScale(107), UpScale(142), UpScale(35) },
     { "olivedrab1", UpScale(192), UpScale(255), UpScale(62) },
@@ -1113,6 +1115,7 @@ const ColorlistInfo
     { "seagreen", UpScale(82), UpScale(149), UpScale(132) },
     { "seashell", UpScale(255), UpScale(245), UpScale(238) },
     { "sienna", UpScale(150), UpScale(82), UpScale(45) },
+    { "silver", UpScale(192), UpScale(192), UpScale(192) },
     { "skyblue", UpScale(114), UpScale(159), UpScale(255) },
     { "slateblue", UpScale(126), UpScale(136), UpScale(171) },
     { "slategray", UpScale(112), UpScale(128), UpScale(144) },

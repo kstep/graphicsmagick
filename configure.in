@@ -1016,7 +1016,7 @@ AC_HEADER_STDC
 AC_HEADER_STAT
 AC_HEADER_TIME
 AC_HEADER_DIRENT
-AC_CHECK_HEADERS(sys/time.h sys/stat.h sys/types.h)
+AC_CHECK_HEADERS(sys/select.h sys/time.h sys/stat.h sys/types.h)
 AC_CHECK_HEADERS(math.h string.h stdarg.h pwd.h malloc.h)
 AC_CHECK_HEADERS(memory.h errno.h fcntl.h)
 

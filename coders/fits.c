@@ -410,7 +410,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       Convert FITS pixels to pixel packets.
     */
     scale=1.0;
-    if ((fits_info.max_data-fits_info.min_data) <= 1.0)
+    if (((fits_info.max_data-fits_info.min_data) <= 1.0) ||
+        ((fits_info.max_data-fits_info.min_data) > MaxRGB))
       scale=MaxRGB/(fits_info.max_data-fits_info.min_data);
     p=fits_pixels;
     for (y=image->rows-1; y >= 0; y--)

@@ -413,10 +413,10 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   bounds.x2=(-32000);
   bounds.y1=32000;
   bounds.y2=(-32000);
-  affine.xx=(FT_Fixed) (0x10000*image_info->affine[0]);
-  affine.yx=(FT_Fixed) (-0x10000*image_info->affine[1]);
-  affine.xy=(FT_Fixed) (-0x10000*image_info->affine[2]);
-  affine.yy=(FT_Fixed) (0x10000*image_info->affine[3]);
+  affine.xx=(FT_Fixed) (65536.0*image_info->affine[0]);
+  affine.yx=(FT_Fixed) (-65536.0*image_info->affine[1]);
+  affine.xy=(FT_Fixed) (-65536.0*image_info->affine[2]);
+  affine.yy=(FT_Fixed) (65536.0*image_info->affine[3]);
   glyph=glyphs;
   for (i=0; i < length; i++)
   {

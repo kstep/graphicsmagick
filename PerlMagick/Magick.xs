@@ -341,7 +341,7 @@ static struct
     { "Composite", { {"compos", CompositeTypes}, {"image", ImageReference},
       {"geom", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"grav", GravityTypes},
-      {"opacity", StringReference} } },
+      {"opacity", StringReference}, {"tile", BooleanTypes} } },
     { "Contrast", { {"sharp", BooleanTypes} } },
     { "CycleColormap", { {"amount", IntegerReference} } },
     { "Draw", { {"prim", PrimitiveTypes}, {"points", StringReference},
@@ -4454,8 +4454,21 @@ Mogrify(ref,...)
         }
         case 35:  /* Composite */
         {
-          if (!attribute_flag[0])
-            argument_list[0].int_reference=2;
+          Image
+            *composite_image;
+          
+          CompositeOperator
+            compose;
+
+          int
+            tile,
+            x,
+            y;
+        
+          if (attribute_flag[0])
+            compose=(CompositeOperator) argument_list[0].int_reference;
+          else
+            compose=InCompositeOp;
           if (!attribute_flag[3])
             argument_list[3].int_reference=0;
           if (!attribute_flag[4])
@@ -4470,12 +4483,15 @@ Mogrify(ref,...)
               if (!(flags & HeightValue))
                 rectangle_info.height=rectangle_info.width;
             }
-          if (!attribute_flag[1])
+          if (attribute_flag[1])
+            composite_image=argument_list[1].image_reference;
+          else
             {
               MagickWarning(OptionWarning,"Missing image in composite",NULL);
               goto ReturnIt;
             }
-          if (attribute_flag[5])
+          tile=attribute_flag[7] ? argument_list[7].int_reference : False;
+          if (attribute_flag[5] && !tile)
             switch (argument_list[5].int_reference)
             {
               case NorthWestGravity:
@@ -4548,25 +4564,16 @@ Mogrify(ref,...)
                 break;
               }
             }
-          /* blend opacity */
           if (!attribute_flag[6])
             argument_list[6].string_reference="0.0";
-          if (argument_list[0].int_reference == BlendCompositeOp)
+          if (compose == BlendCompositeOp)
             {
-              Image
-                *composite_image;
-
               register PixelPacket 
                 *q;
 
               double 
                 blend;
 
-              int 
-                x,
-                y;
-              
-              composite_image=argument_list[1].image_reference;
               blend=atof(argument_list[6].string_reference);
               for (y=0; y < (int) composite_image->rows; y++)
               {
@@ -4587,9 +4594,22 @@ Mogrify(ref,...)
               composite_image->storage_class=DirectClass;
               composite_image->matte=True;
             }
-          CompositeImage(image,(CompositeOperator)
-            argument_list[0].int_reference,argument_list[1].image_reference,
-            rectangle_info.x,rectangle_info.y);
+          if (!tile)
+            {
+              CompositeImage(image,compose,composite_image,
+                rectangle_info.x,rectangle_info.y);
+              break;
+            }
+          for (y=0; y < (int) image->rows; y+=(int) composite_image->rows)
+            for (x=0; x < (int) image->columns; x+=(int) composite_image->columns)
+            {
+              int
+                status;
+
+              status=CompositeImage(image,compose,composite_image,x,y);
+              if (status == False)
+                CatchImageException(image);
+            }
           break;
         }
         case 36:  /* Contrast */

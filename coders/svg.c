@@ -252,6 +252,8 @@ static char **StringToTokens(const char *text,int *number_tokens)
       for (p++; (*p != '\'') && (*p != '\0'); p++);
     if ((LocaleNCompare(p,"rgb(",4) == 0) || (*p == '('))
       for (p++; (*p != ')') && (*p != '\0'); p++);
+    if ((LocaleNCompare(p,"url(",4) == 0) || (*p == '('))
+      for (p++; (*p != ')') && (*p != '\0'); p++);
     while (!isspace((int) (*p)) && (*p != '(') && (*p != '\0'))
     {
       p++;
@@ -290,12 +292,18 @@ static char **StringToTokens(const char *text,int *number_tokens)
             q++;
           }
         else
-          while (!isspace((int) (*q)) && (*q != '(') && (*q != '\0'))
-          {
-            q++;
-            if (!isspace((int) *q) && ((*(q-1) == ':') || (*(q-1) == ';')))
-              break;
-          }
+          if ((LocaleNCompare(q,"url(",4) == 0) || (*q == '('))
+            {
+              for (q++; (*q != ')') && (*q != '\0'); q++);
+              q++;
+            }
+          else
+            while (!isspace((int) (*q)) && (*q != '(') && (*q != '\0'))
+            {
+              q++;
+              if (!isspace((int) *q) && ((*(q-1) == ':') || (*(q-1) == ';')))
+                break;
+            }
     tokens[i]=(char *) AcquireMemory(q-p+1);
     if (tokens[i] == (char *) NULL)
       MagickError(ResourceLimitError,"Unable to convert string to tokens",
