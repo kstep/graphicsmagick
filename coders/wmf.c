@@ -231,7 +231,9 @@ static void         ipa_udata_free(wmfAPI * API, wmfUserData_t * userdata);
 static void         ipa_udata_init(wmfAPI * API, wmfUserData_t * userdata);
 static void         ipa_udata_set(wmfAPI * API, wmfUserData_t * userdata);
 static void         util_draw_arc(wmfAPI * API, wmfDrawArc_t * draw_arc,magick_arc_t finish);
+#if defined(HasWMFlite)
 static int          util_font_weight( const char* font );
+#endif
 static double       util_pointsize( wmfAPI* API, wmfFont* font, char* str, double font_height);
 static void         util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_apply);
 static void         util_set_pen(wmfAPI * API, wmfDC * dc);
@@ -1856,6 +1858,7 @@ static double util_pointsize( wmfAPI* API, wmfFont* font, char* str, double font
   return floor(pointsize);
 }
 
+#if defined(HasWMFlite)
 /* Estimate weight based on font name */
 static int util_font_weight( const char* font )
 {
@@ -1886,7 +1889,6 @@ static int util_font_weight( const char* font )
   return weight;
 }
 
-#if defined(HasWMFlite)
 /*
  * Returns width of string in points, assuming (unstretched) font size of 1pt
  * (similar to wmf_ipa_font_stringwidth)
