@@ -54,8 +54,8 @@
 /*
   Include declarations.
 */
-#include "magick/magick.h"
-#include "magick/define.h"
+#include "magick.h"
+#include "define.h"
 #if defined(HasXML)
 #ifdef WIN32
 #include <win32config.h>
