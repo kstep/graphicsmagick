@@ -89,7 +89,7 @@
 #define HasX11 1
 
 /* Include patented LZW compression */
-#define HasLZW 1
+/* #undef HasLZW */
 
 /* X11 server supports shape extension */
 #define HasShape 1

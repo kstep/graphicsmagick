@@ -36,7 +36,7 @@ if test "${CDPATH+set}" = set; then CDPATH=; export CDPATH; fi
 ### BEGIN LIBTOOL CONFIG
 # Libtool was configured as follows, on host magick:
 #
-# CC="gcc" CFLAGS="-g" CPPFLAGS="" \
+# CC="gcc" CFLAGS="-g -O2" CPPFLAGS="" \
 # LD="/usr/ccs/bin/ld" LDFLAGS="" LIBS="" \
 # NM="/usr/ccs/bin/nm -p" RANLIB="ranlib" LN_S="ln -s" \
 # DLLTOOL="" OBJDUMP="" AS="" \

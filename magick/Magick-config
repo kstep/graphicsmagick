@@ -48,7 +48,7 @@ while test $# -gt 0; do
       echo 4.2.8
       ;;
     --cflags)
-      echo '-g'
+      echo '-g -O2'
       ;;
     --cppflags)
       if test $prefix_set = yes
