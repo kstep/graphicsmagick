@@ -260,9 +260,6 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
           if (status != False)
             return(pixels);
         }
-      ThrowException(exception,CacheError,"Unable to acquire pixels from cache",
-        image->filename);
-      return((const PixelPacket *) NULL);
     }
   /*
     Pixel request is outside cache extents.
