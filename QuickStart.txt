@@ -1,7 +1,7 @@
 ImageMagick now depends on an external file, delegates.mgk.  If certain
 ImageMagick commands fails, check this file and verify it is valid for
-your environment.  For details beyond this document, see README.txt
-and ImageMagick.html.
+your environment.  For details beyond this document, see README.txt and
+ImageMagick.html.
 
 Unix:
 
@@ -24,8 +24,8 @@ Unix:
 
   If you downloaded just the binary distribution, you must move
   share/ImageMagick/delegates.mgk to
-  /usr/local/share/ImageMagick/delegates.mgk or your home directory
-  and ensure the permissions are set correctly (world-readable).
+  /usr/local/share/ImageMagick/delegates.mgk or your home directory and
+  ensure the permissions are set correctly (world-readable).
 
 
 NT:
@@ -42,13 +42,13 @@ NT:
 
     c:\ImageMagick\delegates.mgk
 
-  Select File->New->Folder to create c:\ImageMagick.  Use Copy/Paste/Rename to
-  copy and rename nt.mgk to delegates.mgk.
+  Select File->New->Folder to create c:\ImageMagick.  Use
+  Copy/Paste/Rename to copy and rename nt.mgk to delegates.mgk.
 
   If you have an X server, change to directory
-  ImageMagick-4.1.4/ImageMagick-4.1.4/bin and double-click on display.exe.
-  Otherwise, select Start->Programs->Command Prompt.  In the Command Prompt
-  window type
+  ImageMagick-4.1.4/ImageMagick-4.1.4/bin and double-click on
+  display.exe.  Otherwise, select Start->Programs->Command Prompt.  In
+  the Command Prompt window type
 
     cd ImageMagick-4.1.4
     convert -verbose logo: image.gif
@@ -77,13 +77,13 @@ Win95:
 
     c:\ImageMagick\delegates.mgk
 
-  Select File->New->Folder to create c:\ImageMagick.  Use Copy/Paste/Rename to
-  copy and rename win95.mgk to delegates.mgk.
+  Select File->New->Folder to create c:\ImageMagick.  Use
+  Copy/Paste/Rename to copy and rename win95.mgk to delegates.mgk.
 
   If you have an X server, change to directory
-  ImageMagick-4.1.4/ImageMagick-4.1.4/bin and double-click on display.exe.
-  Otherwise, select Start->Programs->MSDOS Prompt.  In the MSDOS Prompt
-  window type
+  ImageMagick-4.1.4/ImageMagick-4.1.4/bin and double-click on
+  display.exe.  Otherwise, select Start->Programs->MSDOS Prompt.  In
+  the MSDOS Prompt window type
 
     cd c:\ImageMagick-4.1.4
     del delegates.mgk
@@ -104,14 +104,15 @@ MAC:
 
     ftp://www.wizards.dupont.com/pub/ImageMagick/mac/ImageMagick-mac.sit.hqx
 
-  and double click on it to extract the distribution.   Move to the ImageMagick-4.1.4
-  directory and double click on the convert program icon.  Next, type
+  and double click on it to extract the distribution.   Move to the
+  ImageMagick-4.1.4 directory and double click on the convert program
+  icon.  Next, type
 
     -verbose logo: image.gif
 
-  in the command window and choose File->Quit to exit.  Double click on image.gif
-  to see the results.
- 
+  in the command window and choose File->Quit to exit.  Double click on
+  image.gif to see the results.
+
   Alternatively, download the ImageMagick MAC source
 
     ftp://www.wizards.dupont.com/pub/ImageMagick/mac/ImageMagick-4.1.4.sit.hqx

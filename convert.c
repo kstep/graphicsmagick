@@ -86,6 +86,7 @@
 %    -flop                flop image in the horizontal direction
 %    -font name           X11 font for displaying text
 %    -frame geometry      surround image with an ornamental border
+%    -fuzz distance       colors within this distance are considered equal
 %    -gamma value         level of gamma correction
 %    -geometry geometry   perferred size or location of the image
 %    -gravity type        vertical and horizontal text placement
@@ -446,6 +447,7 @@ static void Usage(const char *client_name)
       "-flop                flop image in the horizontal direction",
       "-font name           X11 font for displaying text",
       "-frame geometry      surround image with an ornamental border",
+      "-fuzz distance       colors within this distance are considered equal",
       "-gamma value         level of gamma correction",
       "-geometry geometry   perferred size or location of the image",
       "-gravity type        vertical and horizontal text placement",
@@ -1016,6 +1018,18 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
+                }
+              break;
+            }
+          if (strncmp("fuzz",option+1,2) == 0)
+            {
+              image_info.fuzz=0;
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing distance",option);
+                  image_info.fuzz=atoi(argv[i]);
                 }
               break;
             }

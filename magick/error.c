@@ -58,9 +58,17 @@
 /*
   Forward declaraations.
 */
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static void
   DefaultErrorHandler(const char *,const char *),
   DefaultWarningHandler(const char *,const char *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 /*
   Global declarations.

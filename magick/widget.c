@@ -1235,6 +1235,10 @@ static void XHighlightWidget(Display *display,const XWindowInfo *window_info,
 %
 %
 */
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static int XScreenEvent(Display *display,XEvent *event,char *data)
 {
   XWindows
@@ -1314,6 +1318,10 @@ static int XScreenEvent(Display *display,XEvent *event,char *data)
   }
   return(False);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

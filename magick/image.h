@@ -403,6 +403,7 @@ typedef struct _ImageInfo
     monochrome,
     pointsize,
     quality,
+    fuzz,
     verbose;
 
   FilterType
@@ -660,6 +661,19 @@ typedef struct _Image
     border_color,
     matte_color;
 
+  char
+    *geometry,
+    *page;
+
+  unsigned int
+    dispose,
+    delay,
+    iterations,
+    fuzz;
+
+  FilterType
+    filter;
+
   long int
     magick_time;
 
@@ -669,18 +683,6 @@ typedef struct _Image
   unsigned int
     magick_columns,
     magick_rows;
-
-  char
-    *geometry,
-    *page;
-
-  unsigned int
-    dispose,
-    delay,
-    iterations;
-
-  FilterType
-    filter;
 
   unsigned int
     orphan;

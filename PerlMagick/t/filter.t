@@ -210,7 +210,7 @@ testFilter('input.miff', 'Wave',
 ++$test;
 testFilter('input.miff', 'Zoom',
   q/50%/,
-  '3d541e271af26574314643698621c4bb');
+  '1dd0d72cc02f27ad9b32dbbfe0a44121');
 
 ++$test;
 

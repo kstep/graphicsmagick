@@ -431,7 +431,7 @@ MAGICK DELEGATES
 
       to read or write the MPEG image format.
 
-    o ImageMagick requires the PNG library from
+    o ImageMagick requires the PNG library, version 1.0 or above, from
 
           http://www.cdrom.com/pub/png/pngcode.html
 

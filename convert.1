@@ -697,6 +697,16 @@ about the geometry specification.
 The color of the border is specified with the \fB-mattecolor\fP command line
 option.
 .TP
+.B "-fuzz \fIdistance\fP"
+colors within this distance are considered equal.
+
+A number of algorithms search for a target color.  By default the color
+must be exact.  Use this option to match colors that are close to the
+target color in RGB space.  For example, if you want to automatically trim the
+edges of an image with \fB-crop 0x0\fP but the image was scanned.  The
+target background color may differ by a small amount.  This option can
+account for these differences.
+.TP
 .B "-gamma \fIvalue\fP"
 level of gamma correction.
 

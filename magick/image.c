@@ -164,15 +164,12 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->packets=0;
   allocated_image->packet_size=0;
   allocated_image->packed_pixels=(unsigned char *) NULL;
-  *allocated_image->magick_filename='\0';
-  allocated_image->magick_columns=0;
-  allocated_image->magick_rows=0;
-  allocated_image->magick_time=time((time_t *) NULL);
   allocated_image->geometry=(char *) NULL;
   allocated_image->page=(char *) NULL;
   allocated_image->dispose=0;
   allocated_image->delay=0;
   allocated_image->iterations=1;
+  allocated_image->fuzz=0;
   (void) XQueryColorDatabase(BackgroundColor,&color);
   allocated_image->background_color.red=XDownScale(color.red);
   allocated_image->background_color.green=XDownScale(color.green);
@@ -188,6 +185,10 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->matte_color.green=XDownScale(color.green);
   allocated_image->matte_color.blue=XDownScale(color.blue);
   allocated_image->matte_color.index=0;
+  *allocated_image->magick_filename='\0';
+  allocated_image->magick_columns=0;
+  allocated_image->magick_rows=0;
+  allocated_image->magick_time=time((time_t *) NULL);
   allocated_image->orphan=False;
   allocated_image->previous=(Image *) NULL;
   allocated_image->list=(Image *) NULL;
@@ -480,7 +481,7 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
         annotate_info->bounds.x=x;
         annotate_info->bounds.y=y+(height >> 1)-
           (number_lines*annotate_info->bounds.height >> 1)+
-	  i*annotate_info->bounds.height;
+          i*annotate_info->bounds.height;
         break;
       }
       case ForgetGravity:
@@ -491,7 +492,7 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
         annotate_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
         annotate_info->bounds.y=y+(height >> 1)-
           (number_lines*annotate_info->bounds.height >> 1)+
-	  i*annotate_info->bounds.height;
+          i*annotate_info->bounds.height;
         break;
       }
       case EastGravity:
@@ -499,7 +500,7 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
         annotate_info->bounds.x=x+width-annotate_image->columns;
         annotate_info->bounds.y=y+(height >> 1)-
           (number_lines*annotate_info->bounds.height >> 1)+
-	  i*annotate_info->bounds.height;
+          i*annotate_info->bounds.height;
         break;
       }
       case SouthWestGravity:
@@ -714,7 +715,7 @@ Export Image *AppendImages(Image *images,unsigned int stack)
             break;
           }
         for (i=0; i < images->colors; i++)
-          if (!ColorMatch(image->colormap[i],images->colormap[i],0))
+          if (!ColorMatch(image->colormap[i],images->colormap[i],image->fuzz))
             {
               global_colormap=False;
               break;
@@ -1372,7 +1373,7 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
     return;
   if ((x < 0) || (x >= image->columns))
     return;
-  if (ColorMatch(*color,*target,0))
+  if (ColorMatch(*color,*target,image->fuzz))
     return;
   if (!UncondenseImage(image))
     return;
@@ -1412,11 +1413,12 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
     {
       if (method == FloodfillMethod)
         {
-          if (!ColorMatch(*pixel,*target,0))
+          if (!ColorMatch(*pixel,*target,image->fuzz))
             break;
         }
       else
-        if (ColorMatch(*pixel,*target,0) || ColorMatch(*pixel,*color,0))
+        if (ColorMatch(*pixel,*target,image->fuzz) ||
+            ColorMatch(*pixel,*color,image->fuzz))
           break;
       pixel->red=color->red;
       pixel->green=color->green;
@@ -1440,11 +1442,12 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
           {
             if (method == FloodfillMethod)
               {
-                if (!ColorMatch(*pixel,*target,0))
+                if (!ColorMatch(*pixel,*target,image->fuzz))
                   break;
               }
             else
-              if (ColorMatch(*pixel,*target,0) || ColorMatch(*pixel,*color,0))
+              if (ColorMatch(*pixel,*target,image->fuzz) ||
+                  ColorMatch(*pixel,*color,image->fuzz))
                 break;
             pixel->red=color->red;
             pixel->green=color->green;
@@ -1462,11 +1465,12 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
         pixel++;
         if (method == FloodfillMethod)
           {
-            if (ColorMatch(*pixel,*target,0))
+            if (ColorMatch(*pixel,*target,image->fuzz))
               break;
           }
         else
-          if (!ColorMatch(*pixel,*target,0) && !ColorMatch(*pixel,*color,0))
+          if (!ColorMatch(*pixel,*target,image->fuzz) &&
+              !ColorMatch(*pixel,*color,image->fuzz))
             break;
       }
       start=x;
@@ -2748,16 +2752,16 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
               p++;
               runlength=p->length;
             }
-          if (!ColorMatch(*p,corners[0],0))
+          if (!ColorMatch(*p,corners[0],image->fuzz))
             if (x < crop_info->x)
               crop_info->x=x;
-          if (!ColorMatch(*p,corners[1],0))
+          if (!ColorMatch(*p,corners[1],image->fuzz))
             if (x > crop_info->width)
               crop_info->width=x;
-          if (!ColorMatch(*p,corners[0],0))
+          if (!ColorMatch(*p,corners[0],image->fuzz))
             if (y < crop_info->y)
               crop_info->y=y;
-          if (!ColorMatch(*p,corners[2],0))
+          if (!ColorMatch(*p,corners[2],image->fuzz))
             if (y > crop_info->height)
               crop_info->height=y;
         }
@@ -4819,6 +4823,7 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->interlace=DefaultInterlace;
   image_info->monochrome=False;
   image_info->pointsize=atoi(DefaultPointSize);
+  image_info->fuzz=0;
   image_info->quality=atoi(DefaultImageQuality);
   image_info->verbose=False;
   image_info->filter=MitchellFilter;
@@ -6494,6 +6499,11 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
           }
         continue;
       }
+    if (strncmp("-fuzz",option,3) == 0)
+      {
+        (*image)->fuzz=atoi(argv[++i]);
+        continue;
+      }
     if (strncmp("gamma",option+1,2) == 0)
       {
         if (*option == '+')
@@ -7606,7 +7616,7 @@ Export void OpaqueImage(Image *image,char *opaque_color,char *pen_color)
       p=image->pixels;
       for (i=0; i < image->packets; i++)
       {
-        if (ColorMatch(*p,target,0))
+        if (ColorMatch(*p,target,image->fuzz))
           {
             p->red=XDownScale(target_color.red);
             p->green=XDownScale(target_color.green);
@@ -7629,7 +7639,7 @@ Export void OpaqueImage(Image *image,char *opaque_color,char *pen_color)
       p=image->colormap;
       for (i=0; i < image->colors; i++)
       {
-        if (ColorMatch(*p,target,0))
+        if (ColorMatch(*p,target,image->fuzz))
           {
             p->red=XDownScale(target_color.red);
             p->green=XDownScale(target_color.green);
@@ -9467,6 +9477,8 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
     (void) strcpy(image_info->magick,"BMP");
   if (strncmp(magick,"BEGMF",3) == 0)
     (void) strcpy(image_info->magick,"CGM");
+  if (strncmp(magick+128,"DICM",4) == 0)
+    (void) strcpy(image_info->magick,"DCM");
   if (strncmp(magick,"\305\320\323\306",4) == 0)
     (void) strcpy(image_info->magick,"EPT");
   if (strncmp(magick,"IT0",3) == 0)
@@ -10856,7 +10868,7 @@ Export void TransparentImage(Image *image,char *color)
   p=image->pixels;
   for (i=0; i < image->packets; i++)
   {
-    if (ColorMatch(*p,target,0))
+    if (ColorMatch(*p,target,image->fuzz))
       p->index=Transparent;
     p++;
     if (QuantumTick(i,image->packets))
@@ -10978,6 +10990,10 @@ Export unsigned int UncondenseImage(Image *image)
 */
 
 #define ZoomImageText  "  Zooming image...  "
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 static double Box(double x)
 {
@@ -11110,6 +11126,10 @@ static double Triangle(double x)
     return(1.0-x);
   return(0.0);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 static void HorizontalFilter(Image *source,Image *destination,double x_factor,
   FilterInfo *filter_info,ContributionInfo *contribution_info,

@@ -455,8 +455,10 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
               PrematureExit(ResourceLimitWarning,"Memory allocation failed",
                 image);
             }
+          bmp_header.file_size-=bmp_header.image_size;
           bmp_header.image_size=
             BMPEncodeImage(bmp_pixels,bmp_data,image->columns,image->rows);
+          bmp_header.file_size+=bmp_header.image_size;
           FreeMemory((char *) bmp_pixels);
           bmp_pixels=bmp_data;
           bmp_header.compression=1;
@@ -498,14 +500,14 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           *q++=DownScale(image->colormap[i].blue);
           *q++=DownScale(image->colormap[i].green);
           *q++=DownScale(image->colormap[i].red);
-          q++;
+          *q++=(Quantum) 0x0;
         }
         for ( ; i < (int) (1 << bmp_header.bit_count); i++)
         {
           *q++=(Quantum) 0x0;
           *q++=(Quantum) 0x0;
           *q++=(Quantum) 0x0;
-          q++;
+          *q++=(Quantum) 0x0;
         }
         (void) fwrite((char *) bmp_colormap,4,1 << bmp_header.bit_count,
           image->file);
@@ -828,43 +830,6 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
       image=image->previous;
   CloseImage(image);
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   W r i t e C G M I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteDICOMImage writes an image in the DICOM Medical encoded image
-%  format.
-%
-%  The format of the WriteDICOMImage routine is:
-%
-%      status=WriteDICOMImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteDICOMImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteDICOMImage(const ImageInfo *image_info,Image *image)
-{
-  MagickWarning(MissingDelegateWarning,"Cannot write DICOM images",
-    image->filename);
-  return(False);
 }
 
 /*
@@ -2150,43 +2115,6 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       image=image->previous;
   CloseImage(image);
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   W r i t e G R A D A T I O N I m a g e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteGRADATIONImage writes an image in the gradation image format.
-%
-%  The format of the WriteGRADATIONImage routine is:
-%
-%      status=WriteGRADATIONImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteGRADATIONImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteGRADATIONImage(const ImageInfo *image_info,
-  Image *image)
-{
-  MagickWarning(MissingDelegateWarning,"Cannot write GRADATION images",
-    image->filename);
-  return(False);
 }
 
 /*
@@ -3546,22 +3474,21 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e I C O N I m a g e                                               %
++   W r i t e I C C I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteICONImage writes an image in the Microsoft icon encoded image
-%  format.
+%  Method WriteICCImage writes an image in the ICC format.
 %
-%  The format of the WriteICONImage routine is:
+%  The format of the WriteICCImage routine is:
 %
-%      status=WriteICONImage(image_info,image)
+%      status=WriteICCImage(image_info,image)
 %
 %  A description of each parameter follows.
 %
-%    o status: Method WriteICONImage return True if the image is written.
+%    o status: Method WriteICCImage return True if the image is written.
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
@@ -3571,47 +3498,23 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-static unsigned int WriteICONImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingDelegateWarning,"Cannot write ICON images",
-    image->filename);
-  return(False);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   W r i t e L A B E L I m a g e                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteLABELImage writes an image in the LABEL encoded image format.
-%
-%  The format of the WriteLABELImage routine is:
-%
-%      status=WriteLABELImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteLABELImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteLABELImage(const ImageInfo *image_info,Image *image)
-{
-  MagickWarning(MissingDelegateWarning,"Cannot write LABEL images",
-    image->filename);
-  return(False);
+  register int
+    i;
+
+  if (image->color_profile.length == 0)
+    PrematureExit(FileOpenWarning,"No color profile available",image);
+  /*
+    Open image file.
+  */
+  OpenImage(image_info,image,WriteBinaryType);
+  if (image->file == (FILE *) NULL)
+    PrematureExit(FileOpenWarning,"Unable to open file",image);
+  for (i=0; i < image->color_profile.length; i++)
+    (void) fputc(image->color_profile.info[i],image->file);
+  CloseImage(image);
+  return(True);
 }
 
 /*
@@ -6524,80 +6427,6 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   W r i t e T I M I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WritePIXImage writes an image in the Alias/Wavefront RLE image
-%  format.
-%
-%  The format of the WritePIXImage routine is:
-%
-%      status=WritePIXImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WritePIXImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WritePIXImage(const ImageInfo *image_info,Image *image)
-{
-  MagickWarning(MissingDelegateWarning,"Cannot write PIX images",
-    image->filename);
-  return(False);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   W r i t e P L A S M A I m a g e                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WritePLASMAImage writes an image in the plasma image format.
-%
-%  The format of the WritePLASMAImage routine is:
-%
-%      status=WritePLASMAImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WritePLASMAImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WritePLASMAImage(const ImageInfo *image_info,
-  Image *image)
-{
-  MagickWarning(MissingDelegateWarning,"Cannot write PLASMA images",
-    image->filename);
-  return(False);
-}
-
 #if defined(HasPNG)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -6630,6 +6459,10 @@ static unsigned int WritePLASMAImage(const ImageInfo *image_info,
 %
 */
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static void PNGError(png_struct *ping,png_const_charp message)
 {
   MagickWarning(DelegateWarning,message,(char *) NULL);
@@ -6654,6 +6487,10 @@ static void PNGWarning(png_struct *ping,png_const_charp message)
 {
   MagickWarning(DelegateWarning,message,(char *) NULL);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
@@ -10867,42 +10704,6 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   W r i t e T E X T I m a g e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteTEXTImage writes an image in the TEXT image forma.
-%
-%  The format of the WriteTEXTImage routine is:
-%
-%      status=WriteTEXTImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteTEXTImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteTEXTImage(const ImageInfo *image_info,Image *image)
-{
-  MagickWarning(MissingDelegateWarning,"Cannot write TEXT images",
-    image->filename);
-  return(False);
-}
-
 #if defined(HasTIFF)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -11531,77 +11332,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   return(False);
 }
 #endif
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   W r i t e T I L E I m a g e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteTILEImage writes an image in the TILE encoded image format.
-%
-%  The format of the WriteTILEImage routine is:
-%
-%      status=WriteTILEImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteTILEImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteTILEImage(const ImageInfo *image_info,Image *image)
-{
-  MagickWarning(MissingDelegateWarning,"Cannot write TILE images",
-    image->filename);
-  return(False);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   W r i t e T I M I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteTIMImage writes an image in the PSX TIM encoded image format.
-%
-%  The format of the WriteTIMImage routine is:
-%
-%      status=WriteTIMImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteTIMImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteTIMImage(const ImageInfo *image_info,Image *image)
-{
-  MagickWarning(MissingDelegateWarning,"Cannot write TIM images",image->filename);
-  return(False);
-}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -12764,41 +12494,6 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e X C I m a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteXCImage writes an image in the X constant image format.
-%
-%  The format of the WriteXCImage routine is:
-%
-%      status=WriteXCImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteXCImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteXCImage(const ImageInfo *image_info,Image *image)
-{
-  MagickWarning(MissingDelegateWarning,"Cannot write XC images",image->filename);
-  return(False);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   W r i t e X P M I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -13466,11 +13161,6 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteBMPImage(image_info,image);
           break;
         }
-      if (Latin1Compare(image_info->magick,"DICOM") == 0)
-        {
-          status=WriteDICOMImage(image_info,image);
-          break;
-        }
       MagickWarning(MissingDelegateWarning,"no delegate for this image format",
         image->magick);
       break;
@@ -13532,11 +13222,6 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteGIFImage(image_info,image);
           break;
         }
-      if (Latin1Compare(image_info->magick,"GRADATION") == 0)
-        {
-          status=WriteGRADATIONImage(image_info,image);
-          break;
-        }
       if (Latin1Compare(image_info->magick,"GRANITE") == 0)
         {
           status=WriteLOGOImage(image_info,image);
@@ -13578,6 +13263,22 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
         image->magick);
       break;
     }
+    case 'I':
+    {
+      if (Latin1Compare(image_info->magick,"ICB") == 0)
+        {
+          status=WriteTGAImage(image_info,image);
+          break;
+        }
+      if (Latin1Compare(image_info->magick,"ICC") == 0)
+        {
+          status=WriteICCImage(image_info,image);
+          break;
+        }
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
+      break;
+    }
     case 'J':
     {
       if ((Latin1Compare(image_info->magick,"JBG") == 0) ||
@@ -13597,29 +13298,8 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
         image->magick);
       break;
     }
-    case 'I':
-    {
-      if (Latin1Compare(image_info->magick,"ICB") == 0)
-        {
-          status=WriteTGAImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"ICON") == 0)
-        {
-          status=WriteICONImage(image_info,image);
-          break;
-        }
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image->magick);
-      break;
-    }
     case 'L':
     {
-      if (Latin1Compare(image_info->magick,"LABEL") == 0)
-        {
-          status=WriteLABELImage(image_info,image);
-          break;
-        }
       if (Latin1Compare(image_info->magick,"LOGO") == 0)
         {
           status=WriteLOGOImage(image_info,image);
@@ -13710,16 +13390,6 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WritePDFImage(image_info,image);
           break;
         }
-      if (Latin1Compare(image_info->magick,"PIX") == 0)
-        {
-          status=WritePIXImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"PLASMA") == 0)
-        {
-          status=WritePLASMAImage(image_info,image);
-          break;
-        }
       if (Latin1Compare(image_info->magick,"PM") == 0)
         {
           status=WriteXPMImage(image_info,image);
@@ -13793,11 +13463,6 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
     }
     case 'T':
     {
-      if (Latin1Compare(image_info->magick,"TEXT") == 0)
-        {
-          status=WriteTEXTImage(image_info,image);
-          break;
-        }
       if (Latin1Compare(image_info->magick,"TGA") == 0)
         {
           status=WriteTGAImage(image_info,image);
@@ -13808,27 +13473,6 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           (Latin1Compare(image_info->magick,"TIFF24") == 0))
         {
           status=WriteTIFFImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"TILE") == 0)
-        {
-          status=WriteTILEImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"TIM") == 0)
-        {
-          status=WriteTIMImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"TTF") == 0)
-        {
-          MagickWarning(MissingDelegateWarning,"Cannot write TTF images",
-            image->filename);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"TXT") == 0)
-        {
-          status=WriteTEXTImage(image_info,image);
           break;
         }
       MagickWarning(MissingDelegateWarning,"no delegate for this image format",
@@ -13888,11 +13532,6 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
       if (Latin1Compare(image_info->magick,"XBM") == 0)
         {
           status=WriteXBMImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"XC") == 0)
-        {
-          status=WriteXCImage(image_info,image);
           break;
         }
       if (Latin1Compare(image_info->magick,"XPM") == 0)

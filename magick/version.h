@@ -9,4 +9,4 @@
 #endif
 #define MagickLibVersion  0x0414
 #define MagickVersion  \
-  "@(#)ImageMagick 4.1.4 98/11/01 cristy@mystic.es.dupont.com"
+  "@(#)ImageMagick 4.1.4 98/11/24 cristy@mystic.es.dupont.com"

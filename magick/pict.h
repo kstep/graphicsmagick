@@ -37,7 +37,7 @@ typedef struct _PICTCode
     *description;
 } PICTCode;
 
-typedef struct  _PICTPixmap
+typedef struct _PICTPixmap
 {
   short
     version,

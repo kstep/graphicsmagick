@@ -633,7 +633,11 @@ static int MakeDirectory(char *directory)
   if ((p == (char *) NULL) || (p == directory))
     return(False);
   *p='\0';
+#if !defined(__OPENNT)
   if (lstat(directory,&info) < 0)
+#else
+  if (stat(directory,&info) < 0)
+#endif
     {
       /*
         Path component does not exist;  create it.
@@ -1539,9 +1543,11 @@ int main(int argc,char **argv)
           p=ident+strlen(ident);
           *p++='@';
           (void) gethostname(p,64);
+#if !defined(__OPENNT)
           p=ident+strlen(ident);
           *p++='.';
           (void) getdomainname(p,64);
+#endif
         }
     }
   if (proxy != (char *) NULL)

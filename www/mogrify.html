@@ -454,6 +454,16 @@ use a TrueType font, precede the TrueType filename with a <tt>@</tt> (e.g.
 <DD>The color of the border is specified with the
 <B>-mattecolor</B> command line option.
 <P>
+<DT><B>-fuzz</B> <EM>distance</EM>
+<dd>colors within this distance are considered equal.
+<p>
+<dd>A number of algorithms search for a target color.  By default the color
+must be exact.  Use this option to match colors that are close to the
+target color in RGB space.  For example, if you want to automatically trim the
+edges of an image with <em>-crop 0x0</em> but the image was scanned.  The
+target background color may differ by a small amount.  This option can
+account for these differences.
+<p>
 <DT><B>-gamma</B> <EM>value</EM>
 <DD>level of gamma correction.
 <P>

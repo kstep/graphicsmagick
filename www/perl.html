@@ -724,7 +724,9 @@ Image Manipulation Methods
 </tr>
 <tr>
   <td>Transform</td>
-  <td>crop=&gt;<i>geometry</i>, geometry=&gt;<i>geometry</i></td>
+  <td>crop=&gt;<i>geometry</i>, geometry=&gt;<i>geometry</i>,
+      filter=&gt;{Point, Box, Triangle, Hermite, Hanning, Hamming, Blackman,
+      Gaussian, Quadratic, Cubic, Catrom, Mitchell, Lanczos, Bessel, Sinc}</td>
   <td>crop or resize an image with a fully-qualified geometry specification</td>
 </tr>
 <tr>
@@ -935,6 +937,11 @@ Image Attributes
   <td>format</td>
   <td><i>string</i></td>
   <td>set the image format</td>
+</tr>
+<tr>
+  <td>fuzz</td>
+  <td><i>integer</i></td>
+  <td>colors within this distance are considered equal</td>
 </tr>
 <tr>
   <td>green_primary</td>

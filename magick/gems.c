@@ -702,7 +702,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               if ((x == 0) && (y == 0))
                 target=image->pixels[p->y*image->columns+p->x];
               color=image->pixels[y*image->columns+x];
-              inside=ColorMatch(color,target,0);
+              inside=ColorMatch(color,target,image->fuzz);
               break;
             }
             case FloodfillMethod:
@@ -774,7 +774,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               if ((x == 0) && (y == 0))
                 target=image->pixels[p->y*image->columns+p->x];
               color=image->pixels[y*image->columns+x];
-              if (ColorMatch(color,target,0))
+              if (ColorMatch(color,target,image->fuzz))
                 image->pixels[y*image->columns+x].index=Transparent;
               break;
             }

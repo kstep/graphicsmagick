@@ -1967,7 +1967,7 @@ static unsigned int XColorEditImage(Display *display,
                 p=(*image)->pixels;
                 for (i=0; i < (*image)->packets; i++)
                 {
-                  if (ColorMatch(*p,target,0))
+                  if (ColorMatch(*p,target,(*image)->fuzz))
                     {
                       p->red=XDownScale(color.red);
                       p->green=XDownScale(color.green);
@@ -1979,7 +1979,7 @@ static unsigned int XColorEditImage(Display *display,
             else
               {
                 for (i=0; i < (*image)->colors; i++)
-                  if (ColorMatch((*image)->colormap[i],target,0))
+                  if (ColorMatch((*image)->colormap[i],target,(*image)->fuzz))
                     {
                       (*image)->colormap[i].red=XDownScale(color.red);
                       (*image)->colormap[i].green=XDownScale(color.green);
@@ -7564,7 +7564,7 @@ static unsigned int XMatteEditImage(Display *display,
             p=(*image)->pixels;
             for (i=0; i < (*image)->packets; i++)
             {
-              if (ColorMatch(*p,target,0))
+              if (ColorMatch(*p,target,(*image)->fuzz))
                 p->index=atoi(matte) & 0xff;
               p++;
             }
@@ -10052,6 +10052,10 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
 %
 */
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static int XPredicate(Display *display,XEvent *event,char *data)
 {
   register XWindows
@@ -10063,6 +10067,10 @@ static int XPredicate(Display *display,XEvent *event,char *data)
     return(False);
   return(True);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
 {

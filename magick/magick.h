@@ -34,10 +34,14 @@ extern "C" {
 #include <ctype.h>
 #include <string.h>
 #include <signal.h>
-#include <time.h>
 #include <errno.h>
 #include <math.h>
 #include <assert.h>
+#if !defined(__OPENNT)
+#include <time.h>
+#else
+#include <sys/time.h>
+#endif
 #if !defined(__MWERKS__)
 #include <sys/types.h>
 #include <sys/stat.h>

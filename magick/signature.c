@@ -380,9 +380,6 @@ static void TransformMessageDigest(MessageDigest *message_digest,
 static void UpdateMessageDigest(MessageDigest *message_digest,
   unsigned char *input_message,unsigned long message_length)
 {
-  int
-    number_bytes;
-
   register unsigned char
     *p;
 
@@ -390,17 +387,16 @@ static void UpdateMessageDigest(MessageDigest *message_digest,
     i;
 
   unsigned long
-    message[16];
+    message[16],
+    number_bits,
+    number_bytes;
 
   /*
-    Compute number of bytes mod 64.
+    Compute number of bits and bytes.
   */
-  number_bytes=(int) ((message_digest->number_bits[0] >> 3) & 0x3F);
-  /*
-    Update number of bits.
-  */
-  if (((message_digest->number_bits[0]+(message_length << 3)) & 0xffffffff) <
-      message_digest->number_bits[0])
+  number_bytes=(long) ((message_digest->number_bits[0] >> 3) & 0x3F);
+  number_bits=message_digest->number_bits[0]+(message_length << 3);
+  if ((number_bits & 0xffffffff) < message_digest->number_bits[0])
     message_digest->number_bits[1]++;
   message_digest->number_bits[0]+=message_length << 3;
   message_digest->number_bits[1]+=message_length >> 29;

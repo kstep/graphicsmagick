@@ -2530,9 +2530,9 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,int *bytes_per_line,
       return(pixels);
     case 4:
     {
-      for (i = 0; i < *bytes_per_line; i++)
+      for (i=0; i < *bytes_per_line; i++)
       {
-        *q++=(*p >> 4) & 15;
+        *q++=(*p >> 4) & 0xff;
         *q++=(*p & 15);
         p++;
       }
@@ -2541,11 +2541,11 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,int *bytes_per_line,
     }
     case 2:
     {
-      for (i = 0; i < *bytes_per_line; i++)
+      for (i=0; i < *bytes_per_line; i++)
       {
-        *q++=(*p >> 6) & 3;
-        *q++=(*p >> 4) & 3;
-        *q++=(*p >> 2) & 3;
+        *q++=(*p >> 6) & 0x03;
+        *q++=(*p >> 4) & 0x03;
+        *q++=(*p >> 2) & 0x03;
         *q++=(*p & 3);
         p++;
       }
@@ -2554,16 +2554,16 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,int *bytes_per_line,
     }
     case 1:
     {
-      for (i = 0; i < *bytes_per_line; i++)
+      for (i=0; i < *bytes_per_line; i++)
       {
-        *q++=(*p >> 7) & 1;
-        *q++=(*p >> 6) & 1;
-        *q++=(*p >> 5) & 1;
-        *q++=(*p >> 4) & 1;
-        *q++=(*p >> 3) & 1;
-        *q++=(*p >> 2) & 1;
-        *q++=(*p >> 1) & 1;
-        *q++=(*p & 1);
+        *q++=(*p >> 7) & 0x01;
+        *q++=(*p >> 6) & 0x01;
+        *q++=(*p >> 5) & 0x01;
+        *q++=(*p >> 4) & 0x01;
+        *q++=(*p >> 3) & 0x01;
+        *q++=(*p >> 2) & 0x01;
+        *q++=(*p >> 1) & 0x01;
+        *q++=(*p & 0x01);
         p++;
       }
       *bytes_per_line*=8;
