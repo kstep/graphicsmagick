@@ -3748,12 +3748,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (*image)->border_color=clone_info->border_color;
             continue;
           }
-        if (LocaleCompare("-box",option) == 0)
-          {
-            (void) QueryColorDatabase(argv[++i],&draw_info->box,
-              &(*image)->exception);
-            continue;
-          }
         break;
       }
       case 'c':
@@ -5180,6 +5174,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'u':
       {
+        if (LocaleCompare("-undercolor",option) == 0)
+          {
+            (void) QueryColorDatabase(argv[++i],&draw_info->undercolor,
+              &(*image)->exception);
+            continue;
+          }
         if (LocaleCompare("units",option+1) == 0)
           {
             ResolutionType

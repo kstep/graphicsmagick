@@ -240,7 +240,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info->density != (char *) NULL)
     clone_info->density=AllocateString(draw_info->density);
   clone_info->align=draw_info->align;
-  clone_info->box=draw_info->box;
+  clone_info->undercolor=draw_info->undercolor;
   clone_info->border_color=draw_info->border_color;
   if (draw_info->server_name != (char *) NULL)
     clone_info->server_name=AllocateString(draw_info->server_name);
@@ -2837,10 +2837,10 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             graphic_context[n]->text_antialias=atoi(token);
             break;
           }
-        if (LocaleCompare("text-underbox",keyword) == 0)
+        if (LocaleCompare("text-undercolor",keyword) == 0)
           {
             GetToken(q,&q,token);
-            (void) QueryColorDatabase(token,&graphic_context[n]->box,
+            (void) QueryColorDatabase(token,&graphic_context[n]->undercolor,
               &image->exception);
             break;
           }
@@ -4329,7 +4329,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
     draw_info->density=AllocateString(clone_info->density);
   draw_info->text_antialias=clone_info->antialias;
   draw_info->pointsize=clone_info->pointsize;
-  draw_info->box.opacity=TransparentOpacity;
+  draw_info->undercolor.opacity=TransparentOpacity;
   draw_info->border_color=clone_info->border_color;
   draw_info->compose=CopyCompositeOp;
   if (clone_info->server_name != (char *) NULL)

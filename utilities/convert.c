@@ -156,7 +156,6 @@ static void ConvertUsage(void)
       "-blur geometry       blur the image",
       "-border geometry     surround image with a border of color",
       "-bordercolor color   border color",
-      "-box color           color for annotation bounding box",
       "-cache threshold     megabytes of memory available to the pixel cache",
       "-channel type        extract a particular color channel from image",
       "-charcoal radius     simulate a charcoal drawing",
@@ -256,6 +255,7 @@ static void ConvertUsage(void)
       "-treedepth value     depth of the color tree",
       "-trim                trim image edges",
       "-type type           image type",
+      "-undercolor color    color for annotation bounding box",
       "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
       "-unsharp geometry    sharpen the image",
       "-verbose             print detailed information about the image",
@@ -490,16 +490,6 @@ static unsigned int ConvertUtility(int argc,char **argv)
                     option);
                 (void) QueryColorDatabase(argv[i],&image_info->border_color,
                   &exception);
-              }
-            break;
-          }
-        if (LocaleCompare("box",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"Missing box color",option);
               }
             break;
           }
@@ -1815,6 +1805,16 @@ static unsigned int ConvertUtility(int argc,char **argv)
       }
       case 'u':
       {
+        if (LocaleCompare("undercolor",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"Missing color",option);
+              }
+            break;
+          }
         if (LocaleCompare("units",option+1) == 0)
           {
             image_info->units=UndefinedResolution;

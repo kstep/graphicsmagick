@@ -90,7 +90,7 @@ typedef struct _DrawInfo
     align;
 
   PixelPacket
-    box,
+    undercolor,
     border_color;
 
   char

@@ -2079,9 +2079,9 @@ MagickExport void DrawSetTextUnderColor(DrawContext context,
   assert(context->signature == MagickSignature);
   assert(under_color != (const PixelPacket *)NULL);
 
-  if (context->filter_off || !(PixelPacketMatch(&CurrentContext->box, under_color)))
+  if (context->filter_off || !(PixelPacketMatch(&CurrentContext->undercolor, under_color)))
     {
-      CurrentContext->box = *under_color;
+      CurrentContext->undercolor = *under_color;
       MvgPrintf(context, "text-undercolor ");
       MvgAppendColor(context, under_color);
       MvgPrintf(context, "\n");

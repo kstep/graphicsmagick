@@ -334,7 +334,7 @@ static struct
       {"blur", DoubleReference } } },
     { "Annotate", { {"text", StringReference}, {"font", StringReference},
       {"point", DoubleReference}, {"density", StringReference},
-      {"box", StringReference}, {"stroke", StringReference},
+      {"undercolor", StringReference}, {"stroke", StringReference},
       {"fill", StringReference}, {"geometry", StringReference},
       {"sans", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"gravity", GravityTypes},
@@ -4768,7 +4768,7 @@ Mogrify(ref,...)
               argument_list[0].string_reference);
           if (attribute_flag[4])
             (void) QueryColorDatabase(argument_list[4].string_reference,
-              &draw_info->box,&image->exception);
+              &draw_info->undercolor,&image->exception);
           if (attribute_flag[5])
             (void) QueryColorDatabase(argument_list[5].string_reference,
               &draw_info->stroke,&image->exception);

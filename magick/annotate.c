@@ -326,12 +326,12 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       default:
         break;
     }
-    if (draw_info->box.opacity != TransparentOpacity)
+    if (draw_info->undercolor.opacity != TransparentOpacity)
       {
         /*
           Text box.
         */
-        clone_info->fill=draw_info->box;
+        clone_info->fill=draw_info->undercolor;
         clone_info->affine.tx=offset.x-draw_info->affine.ry*(metrics.ascent-
           metrics.max_advance/4);
         clone_info->affine.ty=offset.y-draw_info->affine.sy*metrics.ascent;

@@ -114,11 +114,11 @@ Magick::Color Magick::Options::borderColor ( void ) const
 // Text bounding-box base color
 void Magick::Options::boxColor ( const Magick::Color &boxColor_ )
 {
-  _drawInfo->box = boxColor_;
+  _drawInfo->undercolor = boxColor_;
 }
 Magick::Color Magick::Options::boxColor ( void ) const
 {
-  return Magick::Color( _drawInfo->box );
+  return Magick::Color( _drawInfo->undercolor );
 }
 
 // Enable printing of debug messages from ImageMagick
