@@ -39,105 +39,163 @@ comment:
          Imported from MTV raster image:  aquarium.mtv
 .fi
 .SH OPTIONS
-.TP
-.B "-cache \fIthreshold\fP"
-megabytes of memory available to the pixel cache.
 
-Image pixels are stored in memory until 80 megabytes of memory
-have been consumed.  Subsequent pixel operations are cached on disk.
-Operations to memory are significantly faster but if your computer does not
-have a sufficient amount of free memory you may want to adjust this threshold
-value.
 .TP
-.B "-density \fI<width>x<height>\fP
-vertical and horizontal resolution in pixels of the image.
+.B "-cache \fIthreshold"
 
-This option specifies an image density when decoding a Postscript or
-Portable Document page.  The default is 72 pixels per inch in the horizontal
-and vertical direction.  This option is used in concert with \fB-page\fP.
+\fRmegabytes of memory available to the pixel cache
+
+
+Image pixels are stored in memory until 80 megabytes of memory have been
+consumed. Subsequent pixel operations are cached on disk. Operations to
+memory are significantly faster but if your computer does not have a sufficient
+amount of free memory you may want to adjust this threshold value.
+
+
 .TP
-.B "-depth \fIvalue\fP"
-depth of the image. This is the number of bits in a pixel. The only acceptable
+.B "-debug"
+
+\fRenable debug printout
+
+.TP
+.B "-density \fI<width>x<height>"
+
+\fRvertical and horizontal resolution in pixels of the image
+
+
+This option specifies an image density when decoding a \fIPostScript\fP
+or Portable Document page. The default is 72 dots per inch in the horizontal
+and vertical direction. This option is used in concert with \fB-page\fP.
+
+
+.TP
+.B "-depth \fIvalue"
+
+\fRdepth of the image
+
+
+This is the number of bits in a pixel. The only acceptable
 values are 8 or 16.  Use this option to specify the depth of raw images whose
-depth is unknown such as \fBGRAY\fP, \fBRGB\fP, or \fBCMYK\fP,
-or to change the depth of any
+depth is unknown such as GRAY, RGB, or CMYK, or to change the depth of any
 image after it has been read.
+
+
 .TP
-.B "-format \fIstring\fP"
-output formatted image characteristics.
+.B "-format \fI"string""
 
-Use this option to print information about the image in a format of your
-choosing.  You can include the image filename, type, width, height,
-or other image attributes by embedding special format characters:
+\fRoutput formatted image characteristics
 
-.nf
-    %b   file size
-    %c   comment
-    %d   directory
-    %e   filename extention
-    %f   filename
-    %h   height
-    %i   input filename
-    %k   number of unique colors
-    %l   label
-    %m   magick
-    %n   number of scenes
-    %o   output filename
-    %p   page number
-    %q   quantum depth
-    %s   scene number
-    %t   top of filename
-    %u   unique temporary filename
-    %w   width
-    %x   x resolution
-    %y   y resolution
-    \\n   newline
-    \\r   carriage return
-.fi
-
-For example,
-
-.nf
-     -format "%m:%f %wx%h"
-.fi
-
-displays \fBMIFF:bird.miff 512x480\fP for an image
-titled \fBbird.miff\fP and whose width is 512 and height is 480.
-
-If the first character of \fIstring\fP is \fB@\fP, the image comment is read
-from a file titled by the remaining characters in the string.
 .TP
-.B "-size \fI<width>x<height>+<offset>\fP"
-width and height of the image.
+.B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"
 
-Use this option to specify the width and height of raw images whose
-dimensions are unknown such as \fBGRAY\fP, \fBRGB\fP, or \fBCMYK\fP.
-In addition to width and height, use \fB-size\fP to skip any header
-information in the image or tell the number of colors in a \fBMAP\fP
-image file, (e.g. -size 640x512+256).
+\fRpreferred size and location of the Image window.
+
+See \fIX(1)\fP for details
+about the geometry specification. By default, the window size is the image
+size and the location is chosen by you when it is mapped.
+
+
+
+By default, the width and height are maximum values. That is, the image
+is expanded or contracted to fit the width and height value while maintaining
+the aspect ratio of the image. \fIAppend an exclamation point to the geometry
+to force the image size to exactly the size you specify\fP. For example,
+if you specify \fB640x480!\fP the image width is set to 640 pixels and
+height to 480. If only one factor is specified, both the width and height
+assume the value.
+
+
+
+To specify a percentage width or height instead, append %. The image size
+is multiplied by the width and height percentages to obtain the final image
+dimensions. To increase the size of an image, use a value greater than
+100 (e.g. 125%). To decrease an image's size, use a percentage less than
+100.
+
+
+
+Use \fB@\fP to specify the maximum area in pixels of an image.
+
+
+
+Use \fB>\fP to change the dimensions of the image \fIonly\fP if
+its size exceeds the geometry specification. \fB<\fP resizes the image
+\fIonly\fP
+if its dimensions is less than the geometry specification. For example,
+if you specify \fB'640x480>'\fP and the image size is 512x512, the image
+size does not change. However, if the image is 1024x1024, it is resized
+to 640x480.
+
+
+Use \fB<\fP to change the dimensions of the image \fIonly\fP if
+its size exceeds the geometry specification. \fB>\fP resizes the image
+\fIonly\fP
+if its dimensions is less than the geometry specification. For example,
+if you specify \fB640x480>\fP and the image size is 512x512, the image
+size does not change. However, if the image is 1024x1024, it is resized
+to 640x480.
+
+
+There are 72 pixels per inch in PostScript coordinates.
+
+
+.TP
+.B "-help"
+
+\fRprint usage instructions
+
+.TP
+.B "-ping"
+
+\fRefficiently determine image characteristics
+
+.TP
+.B "-size \fI<width>x<height>{+offset}"
+
+\fRwidth and height of the image
+
+
+Use this option to specify the width and height of raw images whose dimensions
+are unknown such as \fBGRAY\fP,
+\fBRGB\fP, or \fBCMYK\fP. In addition
+to width and height, use
+\fB-size\fP with an offset to skip any header information in
+the image or tell the number of colors in a \fBMAP\fP image
+file, (e.g. -size 640x512+256).
+
+
 
 For Photo CD images, choose from these sizes:
 
-.nf
-      192x128
-      384x256
-      768x512
+     192x128
+     384x256
+     768x512
      1536x1024
      3072x2048
-.fi
+
 
 Finally, use this option to choose a particular resolution layer of a JBIG
 or JPEG image (e.g. -size 1024x768).
-.TP
-.B -verbose
-print detailed information about the image.
 
-This information is printed:  image name;  the image class
-(\fIDirectClass\fP or \fIPseudoClass\fP);  the total number of unique
-colors; whether there is a matte associated with the image; the number
-of runlength packets; the image size; the depth of the image; the image
-format; the image scene; and finally any image comment.  Refer to
-\fBmiff(1)\fP for a description of the image class.
+
+.TP
+.B "-verbose"
+
+\fRprint detailed information about the image
+
+
+This information is printed: image scene number; image name; image size;
+the image class (\fIDirectClass\fP or \fIPseudoClass\fP); the total number
+of unique colors; and the number of seconds to read and transform the image.
+Refer to <a href="miff.html">miff</a> for a description of the image class.
+
+
+
+If \fB-colors\fP is also specified, the total unique colors in the image
+and color reduction error values are printed. Refer to <a href="quantize.html">quantize</a>
+for a description of these values.
+
+
 .SH SEE ALSO
 .B
 display(1), animate(1), montage(1), mogrify(1), convert(1), composite(1)
@@ -168,4 +226,5 @@ shall not be used in advertising or otherwise to promote the sale, use or
 other dealings in ImageMagick without prior written authorization from the
 ImageMagick Studio.
 .SH AUTHORS
-John Cristy, E.I. du Pont De Nemours and Company Incorporated
+John Cristy, ImageMagick Studio LLC
+
