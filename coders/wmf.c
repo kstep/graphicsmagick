@@ -173,7 +173,7 @@ static void  magick_font_map(wmfAPI* API,wmfFont* font);
 static float magick_font_stringwidth(wmfAPI* API, wmfFont* font, char* str);
 #endif
 
-static const Image* magick_get_registry(wmfAPI * API, const long id);
+static const Image* magick_get_registry(wmfAPI * API, const long id, ExceptionInfo *exception);
 static double       magick_font_pointsize( wmfAPI* API, wmfFont* font, char* str, double font_height);
 static double       magick_font_weight( const char* font );
 static int          magick_mvg_printf(wmfAPI * API, char *format, ...);
@@ -304,19 +304,16 @@ static void magick_remove_registry(wmfAPI * API, const long id)
 }
 
 /* Retrieve an image from the image registry */
-static const Image* magick_get_registry(wmfAPI * API, const long id)
+static const Image* magick_get_registry(wmfAPI * API, const long id,
+                                        ExceptionInfo *exception)
 {
-	ExceptionInfo
-		exception;
-
   size_t
     length;
 
   RegistryType
     type;
 
-  GetExceptionInfo(&exception);
-  return (const Image*)GetMagickRegistry(id,&type,&length,&exception);
+  return (const Image*)GetMagickRegistry(id,&type,&length,exception);
 }
 
 static void wmf_magick_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
@@ -340,10 +337,15 @@ static void wmf_magick_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
   if (bmp_draw->bmp.data == 0)
     return;
 
-  id = (long*)bmp_draw->bmp.data;
-  image = magick_get_registry( API, *id );
-
   GetExceptionInfo(&exception);
+  id = (long*)bmp_draw->bmp.data;
+  image = magick_get_registry( API, *id, &exception );
+  if(!image)
+    {
+       ThrowException(&ddata->image->exception,exception.severity,
+                       exception.reason,exception.description);
+       return;
+    }
 
   if(bmp_draw->crop.x || bmp_draw->crop.y ||
      (bmp_draw->crop.w != bmp_draw->bmp.width) ||
@@ -1220,7 +1222,9 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 
   {
     char
-      escaped_string[MaxTextExtent],
+      escaped_string[MaxTextExtent];
+
+    unsigned char
       *p,
       *q;
 
@@ -1482,11 +1486,17 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
             const long
               *id;
 
+            GetExceptionInfo(&exception);
+
             id = (long*)brush_bmp->data;
 
-            image = magick_get_registry( API, *id );
-
-            GetExceptionInfo(&exception);
+            image = magick_get_registry( API, *id, &exception );
+            if(!image)
+              {
+                ThrowException(&ddata->image->exception,exception.severity,
+                               exception.reason,exception.description);
+                break;
+              }
 
             mode = "Copy";	/* Default is copy */
             switch (fill_ROP)
@@ -2078,7 +2088,7 @@ static int magick_mvg_printf(wmfAPI * API, char *format, ...)
   /* Allocate initial memory */
   if(ddata->mvg == 0)
     {
-      ddata->mvg = AcquireMemory(alloc_size);
+      ddata->mvg = (char*)AcquireMemory(alloc_size);
       ddata->mvg_alloc = alloc_size;
       ddata->mvg_length = 0;
       if(ddata->mvg == 0)
@@ -2441,7 +2451,7 @@ static Image *ReadWMFImage2(const ImageInfo * image_info, ExceptionInfo * except
     if(background_color.opacity != OpaqueOpacity)
       image->matte = True;
 
-    for (row=0; row < (long) image->rows; row++)
+    for (row=0; row < image->rows; row++)
       {
         pixel=SetImagePixels(image,0,row,image->columns,1);
         if (pixel == (PixelPacket *) NULL)
@@ -2456,7 +2466,7 @@ static Image *ReadWMFImage2(const ImageInfo * image_info, ExceptionInfo * except
    * Play file to generate MVG drawing commands
    *
    */
-  ddata->mvg = AcquireMemory(MaxTextExtent);
+  ddata->mvg = (char*)AcquireMemory(MaxTextExtent);
   wmf_error = wmf_play(API, 0, &bbox);
   if (wmf_error != wmf_E_None)
     {
