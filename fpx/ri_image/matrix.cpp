@@ -161,7 +161,7 @@ CombinMat operator*(const CombinMat& a, const CombinMat& b)
       for ( j=0 ; j < 3 ; j++ )
         ab.coef[i][j] = (a.coef[i][0]*b.coef[0][j] + a.coef[i][1]*b.coef[1][j] + a.coef[i][2]*b.coef[2][j]) >> 10;
         
-      ab.coef[i][3] = (a.coef[i][0]*b.coef[0][3] + a.coef[i][1]*b.coef[1][3] + a.coef[i][2]*b.coef[2][3]) >> 10 + a.coef[i][3];
+      ab.coef[i][3] = (((a.coef[i][0]*b.coef[0][3]) + (a.coef[i][1]*b.coef[1][3]) + (a.coef[i][2]*b.coef[2][3])) >> 10) + a.coef[i][3];
     }
     
     return ab;
