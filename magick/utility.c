@@ -905,31 +905,31 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  FindConfigurationFile() searches a number of pre-defined locations
-%  for the specified ImageMagick configuration file and returns the path.
+%  FindConfigurationFile() searches a number of pre-defined locations for the
+%  specified ImageMagick configuration file and returns the path.
 %
 %  The format of the FindConfigurationFile method is:
 %
 %      char *FindConfigurationFile(const char *filename,
-%        const unsigned int debug,ExceptionInfo *exception)
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o path:  Method FindConfigurationFile returns the path if the
-%      configuration file is found, otherwise NULL is returned.
+%    o path:  FindConfigurationFile() returns the path if the configuration
+%      file is found, otherwise NULL is returned.
 %
 %    o filename: A character string representing the desired configuration
 %      file.
-%
-%    o debug: Set to True to enable run-time diagnostics.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-static unsigned int CheckFileAccessability(const char *path, const unsigned int debug)
+
+static unsigned int CheckFileAccessability(const char *path,
+  const unsigned int debug)
 {
-  int
+  unsigned int
     accessible;
   
   accessible=IsAccessible(path);
@@ -940,57 +940,54 @@ static unsigned int CheckFileAccessability(const char *path, const unsigned int 
       else
         (void) fprintf(stdout,"  !%s\n",path);
     }
-  return accessible;
+  return(accessible);
 }
-static void TruncatePathElements(char *path, const unsigned int elements, const unsigned int debug)
+
+static void TruncatePathElements(char *path,const unsigned long elements,
+  const unsigned int debug)
 {
-  char
+  register char
     *p;
-  
-  unsigned int
-    count,
+
+  size_t
     length;
+  
+  unsigned long
+    count;
   
   count=0;
   length=strlen(path);
   p=path+length;
-  
   if (debug)
     (void) fprintf(stdout,"original path  \"%s\"\n", path);
-
   if (*p == *DirectorySeparator)
     *p='\0';
-
-  for (count=0; (count < elements) && (p>path); p--)
-    {
-      if (*p == *DirectorySeparator)
-        {
-          *p='\0';
-          count++;
-        }
-    } 
-
+  for (count=0; (count < elements) && (p > path); p--)
+    if (*p == *DirectorySeparator)
+      {
+        *p='\0';
+        count++;
+      }
   if (debug)
     (void) fprintf(stdout,"truncated path \"%s\"\n", path);
 }
-MagickExport char *FindConfigurationFile(const char *filename, ExceptionInfo *exception)
+
+MagickExport char *FindConfigurationFile(const char *filename,
+  ExceptionInfo *exception)
 {
   char
     *path;
 
   unsigned int
-    debug = False;
+    debug;
 
   assert(filename != (const char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-
-  if (getenv("MAGICK_DEBUG"))
-    debug=True;
-
+  debug=getenv("MAGICK_DEBUG") != (char *) NULL;
   path=AllocateString(filename);
-
   if (debug)
-    (void) fprintf(stdout,"Searching for configuration file \"%s\" ...\n", filename);
+    (void) fprintf(stdout,"Searching for configuration file \"%s\" ...\n",
+      filename);
 #if defined(UseInstalledImageMagick)
 #  if defined(WIN32)
   /*
@@ -1004,11 +1001,11 @@ MagickExport char *FindConfigurationFile(const char *filename, ExceptionInfo *ex
     if (key_value != (char *) NULL)
       {
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
-                     filename);
+          filename);
         if (!CheckFileAccessability(path,debug))
           {
             ThrowException(exception,ConfigurationError,
-                           "Unable to open configuration file",path);
+              "Unable to open configuration file",path);
             LiberateMemory((void **) &path);
           }
         return(path);
@@ -1025,7 +1022,7 @@ MagickExport char *FindConfigurationFile(const char *filename, ExceptionInfo *ex
       if (debug)
         (void) fprintf(stdout,"  !%s",path);
       ThrowException(exception,ConfigurationError,
-                     "Unable to access configuration file",path);
+        "Unable to access configuration file",path);
       LiberateMemory((void **) &path);
     }
   return(path);
@@ -1036,17 +1033,16 @@ MagickExport char *FindConfigurationFile(const char *filename, ExceptionInfo *ex
   */
   if (*SetClientPath((char *) NULL) != '\0')
     {
-#if defined POSIX
+#if defined(POSIX)
       char
         prefix[MaxTextExtent];
 
       strcpy(prefix,SetClientPath((char *) NULL));
       TruncatePathElements(prefix,1,debug);
-      FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",
-                   prefix,filename);
+      FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",prefix,filename);
 #else
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
-                   DirectorySeparator,filename);
+        DirectorySeparator,filename);
 #endif
       if (CheckFileAccessability(path,debug))
         return(path);
@@ -1057,11 +1053,11 @@ MagickExport char *FindConfigurationFile(const char *filename, ExceptionInfo *ex
   if (getenv("MAGICK_HOME") != (char *) NULL)
     {
 #if defined POSIX
-      FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",
-                   getenv("MAGICK_HOME"),filename);
+      FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",getenv("MAGICK_HOME"),
+        filename);
 #else
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
-                   DirectorySeparator,filename);
+        DirectorySeparator,filename);
 #endif
       if (CheckFileAccessability(path,debug))
         return(path);
@@ -1072,8 +1068,7 @@ MagickExport char *FindConfigurationFile(const char *filename, ExceptionInfo *ex
   if (getenv("HOME") != (char *) NULL)
     {
       FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
-                   *getenv("HOME") == '/' ? "/.magick" : "",
-                   DirectorySeparator,filename);
+        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
       if (CheckFileAccessability(path,debug))
         return(path);
     }
@@ -1102,7 +1097,7 @@ MagickExport char *FindConfigurationFile(const char *filename, ExceptionInfo *ex
 #endif /* UseInstalledImageMagick */
   LiberateMemory((void **) &path);
   ThrowException(exception,ConfigurationError,
-                 "Unable to locate configuration file",filename);
+    "Unable to find configuration file",filename);
   return((char *) NULL);
 }
 
@@ -1117,44 +1112,36 @@ MagickExport char *FindConfigurationFile(const char *filename, ExceptionInfo *ex
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  FindFontFile() searches a number of pre-defined locations
-%  for the specified font file and returns the path.
+%  FindFontFile() searches a number of pre-defined locations for the specified
+%  font file and returns the path.
 %
 %  The format of the FindFontFile method is:
 %
-%      char *FindFontFile(const char *filename,
-%        const unsigned int debug,ExceptionInfo *exception)
+%      char *FindFontFile(const char *filename,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o path:  Method FindFontFile returns the path if the
-%      file is found, otherwise NULL is returned.
+%    o path:  FindFontFile() returns the path if the file is found, otherwise
+%      NULL is returned.
 %
-%    o filename: A character string representing the desired font
-%      file.
-%
-%    o debug: Set to True to enable run-time diagnostics.
+%    o filename: A character string representing the desired font file.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-MagickExport char *FindFontFile(const char *filename, ExceptionInfo *exception)
+MagickExport char *FindFontFile(const char *filename,ExceptionInfo *exception)
 {
   char
     *path;
 
   unsigned int
-    debug = False;
+    debug;
 
   assert(filename != (const char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-
-  if (getenv("MAGICK_DEBUG"))
-    debug=True;
-
+  debug=getenv("MAGICK_DEBUG") != (char *) NULL;
   path=AllocateString(filename);
-
   if (debug)
     (void) fprintf(stdout,"Searching for font file \"%s\" ...\n", filename);
   /*
@@ -1168,7 +1155,7 @@ MagickExport char *FindFontFile(const char *filename, ExceptionInfo *exception)
   if (getenv("MAGICK_FONT_PATH") != (char *) NULL)
     {
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_FONT_PATH"),
-                   DirectorySeparator,filename);
+       DirectorySeparator,filename);
       if (CheckFileAccessability(path,debug))
         return(path);
     }
@@ -1178,7 +1165,7 @@ MagickExport char *FindFontFile(const char *filename, ExceptionInfo *exception)
   if (getenv("MAGICK_HOME") != (char *) NULL)
     {
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
-                   DirectorySeparator,filename);
+        DirectorySeparator,filename);
       if (CheckFileAccessability(path,debug))
         return(path);
     }
@@ -1188,8 +1175,7 @@ MagickExport char *FindFontFile(const char *filename, ExceptionInfo *exception)
   if (getenv("HOME") != (char *) NULL)
     {
       FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
-                   *getenv("HOME") == '/' ? "/.magick" : "",
-                   DirectorySeparator,filename);
+        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
       if (CheckFileAccessability(path,debug))
         return(path);
     }
@@ -1211,8 +1197,8 @@ MagickExport char *FindFontFile(const char *filename, ExceptionInfo *exception)
   }
 #  endif /* WIN32 */
   LiberateMemory((void **) &path);
-  ThrowException(exception,ConfigurationError,
-                 "Unable to locate font file",filename);
+  ThrowException(exception,ConfigurationError,"Unable to find font file",
+    filename);
   return((char *) NULL);
 }
 
@@ -1227,13 +1213,12 @@ MagickExport char *FindFontFile(const char *filename, ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  FindModuleFile() searches a number of pre-defined locations
-%  for the specified module file and returns the path.
+%  FindModuleFile() searches a number of pre-defined locations for the
+%  specified module file and returns the path.
 %
 %  The format of the FindModuleFile method is:
 %
-%      char *FindModuleFile(const char *filename,
-%        const unsigned int debug,ExceptionInfo *exception)
+%      char *FindModuleFile(const char *filename,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1247,22 +1232,18 @@ MagickExport char *FindFontFile(const char *filename, ExceptionInfo *exception)
 %
 %
 */
-MagickExport char *FindModuleFile(const char *filename, ExceptionInfo *exception)
+MagickExport char *FindModuleFile(const char *filename,ExceptionInfo *exception)
 {
   char
     *path;
 
   unsigned int
-    debug = False;
+    debug;
 
   assert(filename != (const char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-
-  if (getenv("MAGICK_DEBUG"))
-    debug=True;
-
+  debug=getenv("MAGICK_DEBUG") != (char *) NULL;
   path=AllocateString(filename);
-
   if (debug)
     (void) fprintf(stdout,"Searching for module file \"%s\" ...\n", filename);
 #if defined(UseInstalledImageMagick)
@@ -1278,11 +1259,11 @@ MagickExport char *FindModuleFile(const char *filename, ExceptionInfo *exception
     if (key_value != (char *) NULL)
       {
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
-                     filename);
+          filename);
         if (!CheckFileAccessability(path,debug))
           {
             ThrowException(exception,ConfigurationError,
-                           "Unable to access module file",path);
+              "Unable to access module file",path);
             LiberateMemory((void **) &path);
           }
         return(path);
@@ -1300,7 +1281,7 @@ MagickExport char *FindModuleFile(const char *filename, ExceptionInfo *exception
       if (debug)
         (void) fprintf(stdout,"  !%s",path);
       ThrowException(exception,ConfigurationError,
-                     "Unable to access configuration file",path);
+        "Unable to access configuration file",path);
       LiberateMemory((void **) &path);
     }
   return(path);
@@ -1316,13 +1297,13 @@ MagickExport char *FindModuleFile(const char *filename, ExceptionInfo *exception
       char
         prefix[MaxTextExtent];
 
-      strcpy(prefix,SetClientPath((char *) NULL));
+      (void) strcpy(prefix,SetClientPath((char *) NULL));
       TruncatePathElements(prefix,1,debug);
       FormatString(path,"%.1024s/lib/ImageMagick/modules/coders/%.1024s",
-                   prefix,filename);
+        prefix,filename);
 #else
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
-                   DirectorySeparator,filename);
+        DirectorySeparator,filename);
 #endif
       if (CheckFileAccessability(path,debug))
         return(path);
@@ -1334,10 +1315,10 @@ MagickExport char *FindModuleFile(const char *filename, ExceptionInfo *exception
     {
 #if defined POSIX
       FormatString(path,"%.1024s/lib/ImageMagick/modules/coders/%.1024s",
-                   getenv("MAGICK_HOME"),filename);
+        getenv("MAGICK_HOME"),filename);
 #else
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
-                   DirectorySeparator,filename);
+        DirectorySeparator,filename);
 #endif
       if (CheckFileAccessability(path,debug))
         return(path);
@@ -1348,8 +1329,7 @@ MagickExport char *FindModuleFile(const char *filename, ExceptionInfo *exception
   if (getenv("HOME") != (char *) NULL)
     {
       FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
-                   *getenv("HOME") == '/' ? "/.magick" : "",
-                   DirectorySeparator,filename);
+        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
       if (CheckFileAccessability(path,debug))
         return(path);
     }
@@ -1377,8 +1357,8 @@ MagickExport char *FindModuleFile(const char *filename, ExceptionInfo *exception
 #  endif /* WIN32 */
 #endif /* UseInstalledImageMagick */
   LiberateMemory((void **) &path);
-  ThrowException(exception,ConfigurationError,
-                 "Unable to locate module file",filename);
+  ThrowException(exception,ConfigurationError,"Unable to find module file",
+    filename);
   return((char *) NULL);
 }
 
