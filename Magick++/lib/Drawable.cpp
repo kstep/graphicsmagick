@@ -16,13 +16,6 @@
 using namespace std;
 
 // Print coordinate to stream.
-// std::ostream& operator<<( std::ostream& stream_,
-//                           const Magick::Coordinate& coordinate_ )
-// {
-//   stream_ << coordinate_.x() << "," << coordinate_.y();
-//   return stream_;
-// }
-
 std::ostream& Magick::operator<<( std::ostream& stream_, const Magick::Coordinate& coordinate_
 )
 {

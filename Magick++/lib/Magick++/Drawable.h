@@ -40,11 +40,6 @@ namespace Magick
     double _x;
     double _y;
   };
-//   typedef std::pair<double,double> Coordinate;
-
-  // Print coordinate to stream.
-//   std::ostream& operator<<( std::ostream& stream_,
-//                             const Coordinate& coordinate_ );
 
   //
   // Representation of a drawable object
@@ -208,11 +203,6 @@ namespace Magick
   };
 
 } // namespace Magick
-
-
-// Print coordinate to stream.
-// std::ostream& operator<<( std::ostream& stream_,
-// 			  const Magick::Coordinate& coordinate_ );
 
 //
 // Inlines
