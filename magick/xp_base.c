@@ -54,7 +54,7 @@
   Include declarations.
 */
 #include "studio.h"
-#include "ntbase.h"
+#include "xp_base.h"
 
 /*
   Static declarations.

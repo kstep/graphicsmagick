@@ -59,13 +59,13 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
 	stream.c animate.c display.c widget.c xwindow.c PreRvIcccm.c version.c
 
 # Platform specific source files that may appear in the library
-EXTRA_libMagick_la_SOURCES = ntbase.c ntfeature.c
+EXTRA_libMagick_la_SOURCES = xp_base.c xp_feature.c
 
 if WIN32_NATIVE_BUILD
-MAGICK_PLATFORM_SRCS = ntbase.c ntfeature.c
+MAGICK_PLATFORM_SRCS = xp_base.c xp_feature.c
 else
 if CYGWIN_BUILD
-MAGICK_PLATFORM_SRCS = ntfeature.c
+MAGICK_PLATFORM_SRCS = xp_feature.c
 else
 MAGICK_PLATFORM_SRCS =
 endif # if CYGWIN_BUILD
@@ -91,11 +91,11 @@ include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h \
   version.h widget.h xwindow.h
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h display.h mac.h ntbase.h ntfeature.h studio.h vms.h
+noinst_HEADERS = animate.h display.h mac.h xp_base.h xp_feature.h studio.h vms.h
 
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES) colors.mgk log.mgk magic.mgk Magick-config.in \
-  Magick-config.in Make.com mac.c ntbase.c ntfeature.c vms.c $(MAGICK_BASE_SRCS)
+  Magick-config.in Make.com mac.c xp_base.c xp_feature.c vms.c $(MAGICK_BASE_SRCS)
 
 # Where configuration files get installed
 pkgdir = $(libdir)/ImageMagick
