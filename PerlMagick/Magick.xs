@@ -350,7 +350,7 @@ static struct
       {"opacity", DoubleReference}, {"tile", BooleanTypes},
       {"rotate", DoubleReference} } },
     { "Contrast", { {"sharp", BooleanTypes} } },
-    { "CycleColormap", { {"amount", IntegerReference} } },
+    { "CycleColormap", { {"display", IntegerReference} } },
     { "Draw", { {"prim", PrimitiveTypes}, {"points", StringReference},
       {"meth", MethodTypes}, {"stroke", StringReference},
       {"fill", StringReference}, {"stroke_width", DoubleReference},
