@@ -100,7 +100,7 @@ print("Portable bitmap format (black and white), ASCII format ...\n");
 testReadWrite( 'PBM:input_p1.pbm',
   'PBM:output_p1.pbm',
   q/compress=>'None'/,
-  'e09c8eb1ccbf32e3a4062bad04b96dbc9209bc7897b0a63ac8dc2c8e0ccc3d92');
+  'e2ddb3690a614bae64f0c55c7054d19d18c0f56f59b3f9d051cb64c9f2b315ec');
 
 
 print("Portable bitmap format (black and white), binary format ...\n");
