@@ -582,7 +582,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (logging)
           {
             LogMagickEvent(CoderEvent,"   Decoding OS/2 BMP datastream");
-            LogMagickEvent(CoderEvent,"   width=%d, height=%d",bmp_info.width,
+            LogMagickEvent(CoderEvent,"   width=%ld, height=%ld",bmp_info.width,
               bmp_info.height);
           }
       }
@@ -610,7 +610,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (logging)
           {
             LogMagickEvent(CoderEvent,"   Decoding MS Windows BMP datastream");
-            LogMagickEvent(CoderEvent,"   width=%d, height=%d",bmp_info.width,
+            LogMagickEvent(CoderEvent,"   width=%ld, height=%ld",bmp_info.width,
               bmp_info.height);
             LogMagickEvent(CoderEvent,"   bits per pixel=%d",
               bmp_info.bits_per_pixel);
@@ -649,7 +649,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               default:
                 {
                   LogMagickEvent(CoderEvent,"   compression=UNKNOWN (%d)",
-                    bmp_info.compression);
+                    (int) bmp_info.compression);
                 }
             }
             LogMagickEvent(CoderEvent,"   number_colors=%lu",
@@ -832,7 +832,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (logging)
           LogMagickEvent(CoderEvent,"   Reading colormap of %d colors",
-            image->colors);
+            (int) image->colors);
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
@@ -1697,7 +1697,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
            default:
              {
                LogMagickEvent(CoderEvent,"   compression=UNKNOWN (%d)",
-                 bmp_info.compression);
+                 (int) bmp_info.compression);
              }
         }
         LogMagickEvent(CoderEvent,"   number_colors=%lu",bmp_info.number_colors);
@@ -1818,7 +1818,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         if (logging)
           LogMagickEvent(CoderEvent,"   Writing colormap with %d entries",
-            image->colors);
+            (int) image->colors);
         bmp_colormap=(unsigned char *)
           AcquireMemory(4*(1 << bmp_info.bits_per_pixel));
         if (bmp_colormap == (unsigned char *) NULL)
@@ -1844,7 +1844,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         LiberateMemory((void **) &bmp_colormap);
       }
     if (logging)
-      LogMagickEvent(CoderEvent,"   Writing pixels (%d bytes)",
+      LogMagickEvent(CoderEvent,"   Writing pixels (%lu bytes)",
         bmp_info.image_size);
     (void) WriteBlob(image,bmp_info.image_size,(char *) pixels);
     LiberateMemory((void **) &pixels);
