@@ -2072,6 +2072,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           else
             ThrowException(exception,FileOpenWarning,"Unable to open file",
               clone_info->filename);
+          if (clone_info->temporary)
+            (void) remove(clone_info->filename);
           DestroyImageInfo(clone_info);
           return((Image *) NULL);
         }
