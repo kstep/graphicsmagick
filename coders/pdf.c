@@ -395,7 +395,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     page;
 
   register char
-    *p;
+    *p,
+    *q;
 
   register int
     c;
@@ -480,12 +481,13 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (LocaleNCompare(command,"/Rotate 90",10) == 0)
       portrait=False;
-    if (LocaleNCompare(MediaBox,command,strlen(MediaBox)) != 0)
+    q=strstr(command,MediaBox);
+    if (q == (char *) NULL)
       continue;
-    count=sscanf(command,"/MediaBox [%lf %lf %lf %lf",&bounds.x1,&bounds.y1,
+    count=sscanf(q,"/MediaBox [%lf %lf %lf %lf",&bounds.x1,&bounds.y1,
       &bounds.x2,&bounds.y2);
     if (count != 4)
-      count=sscanf(command,"/MediaBox[%lf %lf %lf %lf",&bounds.x1,&bounds.y1,
+      count=sscanf(q,"/MediaBox[%lf %lf %lf %lf",&bounds.x1,&bounds.y1,
         &bounds.x2,&bounds.y2);
     if (count != 4)
       continue;
