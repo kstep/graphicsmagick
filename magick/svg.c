@@ -155,9 +155,9 @@ static unsigned int GetToken(Image *image,char **token,int *c,
     {
       if ((*c == '\n') || (*c == '\r'))
         *c=' ';
-      if (Extent(*token) >= (length-1))
+      if (Extent(*token) >= (length-MaxTextExtent-1))
         {
-          length=(length << 1)+MaxTextExtent;
+          length<<=1;
           *token=(char *) ReallocateMemory(*token,length);
           if (*token == (char *) NULL)
             ThrowBinaryException(ResourceLimitWarning,"Unable to get token",
@@ -279,8 +279,12 @@ Export char **StringToTokens(const char *text,int *number_tokens)
   return(tokens);
 }
 
-static void TraversePath(FILE *file,const char *path)
+static char *TraversePath(const char *data)
 {
+  char
+    *path,
+    points[MaxTextExtent];
+
   double
     x,
     y;
@@ -298,13 +302,20 @@ static void TraversePath(FILE *file,const char *path)
     segment;
 
   unsigned int
+    length,
     status;
 
-  p=path;
+  length=MaxTextExtent;
+  path=(char *) AllocateMemory(length);
+  if (path == (char *) NULL)
+    return((char *) NULL);
+  *path='\0';
+  p=data;
   while (*p != '\0')
   {
     while (isspace(*p))
       p++;
+    *points='\0';
     n=0;
     switch (*p)
     {
@@ -316,7 +327,7 @@ static void TraversePath(FILE *file,const char *path)
           (void) sscanf(p+1,"%lf,%lf%lf,%lf%lf,%lf%n",&segment.x1,&segment.y1,
             segment.x2,segment.y2,x,y,&n);
         p+=n;
-        (void) fprintf(file,"ellipse %g,%g %g,%g %g,%g\n",segment.x1,segment.y1,
+        (void) FormatString(points,"%g,%g %g,%g %g,%g ",segment.x1,segment.y1,
           segment.x2,segment.y2,x,y);
         break;
       }
@@ -328,7 +339,7 @@ static void TraversePath(FILE *file,const char *path)
           (void) sscanf(p+1,"%lf,%lf%lf,%lf%lf,%lf%n",&segment.x1,&segment.y1,
             segment.x2,segment.y2,x,y,&n);
         p+=n;
-        (void) fprintf(file,"bezier %g,%g %g,%g %g,%g\n",segment.x1,segment.y1,
+        (void) FormatString(points,"%g,%g %g,%g %g,%g ",segment.x1,segment.y1,
           segment.x2,segment.y2,x,y);
         break;
       }
@@ -337,7 +348,7 @@ static void TraversePath(FILE *file,const char *path)
         (void) sscanf(p+1,"%lf%n",&x,&n);
         p+=n;
         segment.x2+=x;
-        (void) fprintf(file,"line %g,%g %g,%g\n",segment.x1,segment.y1,
+        (void) FormatString(points,"%g,%g %g,%g ",segment.x1,segment.y1,
           segment.x2,segment.y2);
         break;
       }
@@ -345,7 +356,7 @@ static void TraversePath(FILE *file,const char *path)
       {
         (void) sscanf(p+1,"%lf%n",&segment.x2,&n);
         p+=n;
-        (void) fprintf(file,"line %g,%g %g,%g\n",segment.x1,segment.y1,
+        (void) FormatString(points,"%g,%g %g,%g ",segment.x1,segment.y1,
           segment.x2,segment.y2);
         break;
       }
@@ -357,7 +368,7 @@ static void TraversePath(FILE *file,const char *path)
         p+=n;
         segment.x2+=x;
         segment.y2+=y;
-        (void) fprintf(file,"line %g,%g %g,%g\n",segment.x1,segment.y1,
+        (void) FormatString(points,"%g,%g %g,%g ",segment.x1,segment.y1,
           segment.x2,segment.y2);
         break;
       }
@@ -367,7 +378,7 @@ static void TraversePath(FILE *file,const char *path)
         if (n == 0)
           (void) sscanf(p+1,"%lf,%lf%n",&segment.x2,&segment.y2,&n);
         p+=n;
-        (void) fprintf(file,"line %g,%g %g,%g\n",segment.x1,segment.y1,
+        (void) FormatString(points,"%g,%g %g,%g ",segment.x1,segment.y1,
           segment.x2,segment.y2);
         break;
       }
@@ -391,7 +402,7 @@ static void TraversePath(FILE *file,const char *path)
           (void) sscanf(p+1,"%lf,%lf%lf,%lf%lf,%lf%n",&segment.x1,&segment.y1,
             segment.x2,segment.y2,x,y,&n);
         p+=n;
-        (void) fprintf(file,"bezier %g,%g %g,%g %g,%g\n",segment.x1,segment.y1,
+        (void) FormatString(points,"%g,%g %g,%g %g,%g ",segment.x1,segment.y1,
           segment.x2,segment.y2,x,y);
         break;
       }
@@ -403,7 +414,7 @@ static void TraversePath(FILE *file,const char *path)
           (void) sscanf(p+1,"%lf,%lf%lf,%lf%lf.%lf%n",&segment.x1,&segment.y1,
             segment.x2,segment.y2,x,y,&n);
         p+=n;
-        (void) fprintf(file,"bezier %g,%g %g,%g %g,%g\n",segment.x1,segment.y1,
+        (void) FormatString(points,"%g,%g %g,%g %g,%g ",segment.x1,segment.y1,
           segment.x2,segment.y2,x,y);
         break;
       }
@@ -412,7 +423,7 @@ static void TraversePath(FILE *file,const char *path)
         (void) sscanf(p+1,"%lf%n",&y,&n);
         p+=n;
         segment.y2+=y;
-        (void) fprintf(file,"line %g,%g %g,%g\n",segment.x1,segment.y1,
+        (void) FormatString(points,"%g,%g %g,%g ",segment.x1,segment.y1,
           segment.x2,segment.y2);
         break;
       }
@@ -420,7 +431,7 @@ static void TraversePath(FILE *file,const char *path)
       {
         (void) sscanf(p+1,"%lf%n",&segment.y2,&n);
         p+=n;
-        (void) fprintf(file,"line %g,%g %g,%g\n",segment.x1,segment.y1,
+        (void) FormatString(points,"%g,%g %g,%g ",segment.x1,segment.y1,
           segment.x2,segment.y2);
         break;
       }
@@ -429,7 +440,7 @@ static void TraversePath(FILE *file,const char *path)
       {
         segment.x1=start.x;
         segment.y1=start.y;
-        (void) fprintf(file,"line %g,%g %g,%g\n",segment.x1,segment.y1,
+        (void) FormatString(points,"%g,%g %g,%g ",segment.x1,segment.y1,
           segment.x2,segment.y2);
         break;
       }
@@ -439,10 +450,22 @@ static void TraversePath(FILE *file,const char *path)
         break;
       }
     }
+    if (*points != '\0')
+      {
+        (void) strcat(path,points);
+        if (Extent(path) >= (length-MaxTextExtent-1))
+          {
+            length<<=1;
+            path=(char *) ReallocateMemory(path,length);
+            if (path == (char *) NULL)
+              return((char *) NULL);
+          }
+      }
     segment.x1=segment.x2;
     segment.y1=segment.y2;
     p++;
   }
+  return(path);
 }
 
 static double UnitOfMeasure(const char *value)
@@ -732,6 +755,13 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (Latin1Compare(keyword,"d") == 0)
       {
+        char
+          *path;
+
+        path=TraversePath(value);
+        if (path == (char *) NULL)
+          ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
+            image);
         (void) fprintf(file,"antialias %d\n",
           graphic_context[n].antialias ? 1 : 0);
         (void) fprintf(file,"linewidth %g\n",graphic_context[n].linewidth);
@@ -740,11 +770,16 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) fprintf(file,"rotate %g\n",element.angle);
         (void) fprintf(file,"opacity %g\n",graphic_context[n].opacity);
         if (Latin1Compare(graphic_context[n].fill,"none") != 0)
-          (void) fprintf(file,"pen %s\n",graphic_context[n].fill);
+          {
+            (void) fprintf(file,"pen %s\n",graphic_context[n].fill);
+            (void) fprintf(file,"fill 1\n");
+            (void) fprintf(file,"polyline %s\n",path);
+          }
         if (Latin1Compare(graphic_context[n].stroke,"none") != 0)
           (void) fprintf(file,"pen %s\n",graphic_context[n].stroke);
         (void) fprintf(file,"fill 0\n");
-        TraversePath(file,value);
+        (void) fprintf(file,"polyline %s\n",path);
+        (void) FreeMemory((void *) &path);
         (void) CloneString(&keyword,token);
         continue;
       }
@@ -938,6 +973,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) CloneString(&draw_info->primitive,filename);
   status=DrawImage(image,draw_info);
+puts(filename); if (0)
   (void) remove(filename+1);
   if (status == False)
     ThrowReaderException(CorruptImageWarning,"Unable to read SVG image",image);
