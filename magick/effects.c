@@ -1730,14 +1730,32 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (image->next == (Image *) NULL)
-    ThrowImageException(OptionWarning,"Unable to morph image sequence",
-      "next sequence required");
   morph_images=CloneImage(image,0,0,True,exception);
   if (morph_images == (Image *) NULL)
     return((Image *) NULL);
+  if (image->next == (Image *) NULL)
+    {
+      /*
+        Morph single image.
+      */
+      for (i=1; i < (int) number_frames; i++)
+      {
+        morph_images->next=CloneImage(image,0,0,True,exception);
+        if (morph_images->next == (Image *) NULL)
+          {
+            DestroyImages(morph_images);
+            return((Image *) NULL);
+          }
+        morph_images->next->previous=morph_images;
+        morph_images=morph_images->next;
+        MagickMonitor(MorphImageText,i,number_frames);
+      }
+      while (morph_images->previous != (Image *) NULL)
+        morph_images=morph_images->previous;
+      return(morph_images);
+    }
   /*
-    Morph next.
+    Morph image sequence.
   */
   scene=0;
   for (next=image; next->next != (Image *) NULL; next=next->next)
