@@ -951,7 +951,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->colors=opacity+1;
     image->page.width=page.width;
     image->page.height=page.height;
-    /* Correct for SouthWest gravity. */
     image->page.y=(long) page.height-page.y-(long) image->rows;
     image->page.x=page.x;
     image->delay=delay;
@@ -1196,10 +1195,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   {
     page.x=next_image->page.x;
     page.y=next_image->page.y;
-
-    /* Correct for SouthWest gravity. */
     page.y=(long) page.height-page.y-(long) image->rows;
-
     if ((next_image->columns+page.x) > page.width)
       page.width=next_image->columns+page.x;
     if ((next_image->rows+page.y) > page.height)
@@ -1413,17 +1409,12 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     if ((image->page.width != 0) && (image->page.height != 0))
       {
         page=image->page;
-
+        page.y=(long) page.height-page.y-(long) image->rows;
         if ((image->previous == (Image *) NULL) &&
             (image->next == (Image *) NULL))
           {
             page.x=0;
             page.y=0;
-          }
-        else
-          {
-            /* Correct for SouthWest gravity. */
-            page.y=(long) page.height-page.y-(long) image->rows;
           }
       }
     (void) WriteBlobLSBShort(image,page.x);
