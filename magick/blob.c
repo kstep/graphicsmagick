@@ -774,10 +774,7 @@ Export void *MapBlob(int file,const MapMode mode,size_t *length)
     }
   }
   if (map == MAP_FAILED)
-    {
-      MagickWarning(BlobWarning,"Unable to map file",(char *) NULL);
-      return((void *) NULL);
-    }
+    return((void *) NULL);
   return((void *) map);
 #else
   return((void *) NULL);
@@ -1669,8 +1666,6 @@ Export unsigned int UnmapBlob(void *map,const size_t length)
     status;
 
   status=munmap(map,length);
-  if (status == -1)
-    MagickWarning(BlobWarning,"Unable to unmap file",(char *) NULL);
   return(status);
 #else
   return(-1);

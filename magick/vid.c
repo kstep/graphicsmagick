@@ -121,34 +121,22 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Expand the filename.
   */
+  image=AllocateImage(image_info);
   list=(char **) AllocateMemory(sizeof(char *));
   if (list == (char **) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return((Image *) NULL);
-    }
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   list[0]=(char *) AllocateMemory(Extent(image_info->filename)+1);
   if (list[0] == (char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return((Image *) NULL);
-    }
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   (void) strcpy(list[0],image_info->filename);
   number_files=1;
   filelist=list;
   status=ExpandFilenames(&number_files,&filelist);
   if ((status == False) || (number_files == 0))
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        image_info->filename);
-      return((Image *) NULL);
-    }
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Read each image and convert them to a tile.
   */
-  image=(Image *) NULL;
   clone_info=CloneImageInfo(image_info);
   if (clone_info == (ImageInfo *) NULL)
     return((Image *) NULL);
@@ -183,11 +171,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   DestroyImageInfo(clone_info);
   FreeMemory(filelist);
   if (image == (Image *) NULL)
-    {
-      MagickWarning(CorruptImageWarning,"unable to read VID image",
-        image_info->filename);
-      return((Image *) NULL);
-    }
+    ThrowReaderException(CorruptImageWarning,"unable to read VID image",image);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   /*
@@ -200,11 +184,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   montage_image=MontageImages(image,&montage_info);
   DestroyMontageInfo(&montage_info);
   if (montage_image == (Image *) NULL)
-    {
-      MagickWarning(CorruptImageWarning,"unable to read VID image",
-        image_info->filename);
-      return((Image *) NULL);
-    }
+    ThrowReaderException(CorruptImageWarning,"unable to read VID image",image);
   DestroyImages(image);
   FreeMemory(list[0]);
   FreeMemory(list);

@@ -122,11 +122,8 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
   else
     rotate_image=CloneImage(image,image->columns,image->rows,False);
   if (rotate_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to rotate image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ThrowImageException(ResourceLimitWarning,"Unable to rotate image",
+      "Memory allocation failed");
   /*
     Integral rotate the image.
   */
@@ -806,11 +803,8 @@ Export Image *RotateImage(Image *image,const double degrees)
   */
   integral_image=IntegralRotateImage(image,rotations);
   if (integral_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to rotate image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ThrowImageException(ResourceLimitWarning,"Unable to rotate image",
+      "Memory allocation failed");
   shear.x=(-tan(DegreesToRadians(angle)/2.0));
   shear.y=sin(DegreesToRadians(angle));
   if ((shear.x == 0.0) || (shear.y == 0.0))
@@ -839,11 +833,8 @@ Export Image *RotateImage(Image *image,const double degrees)
   rotate_image=BorderImage(integral_image,&border_info);
   DestroyImage(integral_image);
   if (rotate_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to rotate image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ThrowImageException(ResourceLimitWarning,"Unable to rotate image",
+      "Memory allocation failed");
   rotate_image->class=DirectClass;
   /*
     Rotate the image.
@@ -925,21 +916,15 @@ Export Image *ShearImage(Image *image,const double x_shear,const double y_shear)
 
   assert(image != (Image *) NULL);
   if ((x_shear == 180.0) || (y_shear == 180.0))
-    {
-      MagickWarning(OptionWarning,"Unable to shear image",
-        "angle is discontinuous");
-      return((Image *) NULL);
-    }
+    ThrowImageException(OptionWarning,"Unable to shear image",
+      "angle is discontinuous");
   /*
     Initialize shear angle.
   */
   integral_image=IntegralRotateImage(image,0);
   if (integral_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to shear image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ThrowImageException(ResourceLimitWarning,"Unable to shear image",
+      "Memory allocation failed");
   shear.x=(-tan(DegreesToRadians(x_shear)/2.0));
   shear.y=sin(DegreesToRadians(y_shear));
   if ((shear.x == 0.0) || (shear.y == 0.0))
@@ -960,11 +945,8 @@ Export Image *ShearImage(Image *image,const double x_shear,const double y_shear)
   border_info.height=y_offset;
   shear_image=BorderImage(integral_image,&border_info);
   if (shear_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to shear image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ThrowImageException(ResourceLimitWarning,"Unable to shear image",
+      "Memory allocation failed");
   DestroyImage(integral_image);
   shear_image->class=DirectClass;
   /*

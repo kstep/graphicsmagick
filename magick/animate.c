@@ -339,7 +339,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       status=InvokeDelegate(resource_info->image_info,*image,"browse",
         (char *) NULL);
-      if (status != False)
+      if (status == False)
         XNoticeWidget(display,windows,"Unable to browse documentation",
           (char *) NULL);
       XDelay(display,1500);

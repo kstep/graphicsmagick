@@ -105,8 +105,8 @@ Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
     status|=ReadCacheIndexes(image->cache,&image->cache_info,image->indexes);
   if (status == False)
     {
-      MagickWarning(CacheWarning,"Unable to read pixels from cache",
-        (char *) NULL);
+      ThrowException(&image->exception,CacheWarning,
+        "Unable to read pixels from cache",(char *) NULL);
       return((PixelPacket *) NULL);
     }
   return(image->pixels);
@@ -446,7 +446,7 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   if ((x < 0) || (y < 0) || ((x+columns) > (int) image->columns) ||
       ((y+rows) > (int) image->rows) || (columns == 0) || (rows == 0))
     {
-      MagickWarning(CacheWarning,"Unable to set pixel cache",
+      ThrowException(&image->exception,CacheWarning,"Unable to set pixel cache",
         "image does not contain the cache geometry");
       return((PixelPacket *) NULL);
     }
@@ -456,8 +456,8 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   status=AllocateCache(image->cache,image->class,image->columns,image->rows);
   if (status == False)
     {
-      MagickWarning(CacheWarning,"Unable to allocate pixel cache",
-        (char *) NULL);
+      ThrowException(&image->exception,CacheWarning,
+        "Unable to allocate pixel cache",(char *) NULL);
       return((PixelPacket *) NULL);
     }
   image->cache_info.x=x;
@@ -481,7 +481,7 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   image->pixels=(PixelPacket *) GetCacheStash(image->cache,columns*rows);
   if (image->pixels == (PixelPacket *) NULL)
     {
-      MagickWarning(CacheWarning,"Unable to set pixel cache",
+      ThrowException(&image->exception,CacheWarning,"Unable to set pixel cache",
         "Memory allocation failed");
       return((PixelPacket *) NULL);
     }
@@ -527,11 +527,8 @@ Export unsigned int SyncPixelCache(Image *image)
   assert(image != (Image *) NULL);
   status=AllocateCache(image->cache,image->class,image->columns,image->rows);
   if (status == False)
-    {
-      MagickWarning(CacheWarning,"Unable to allocate pixel cache",
-        (char *) NULL);
-      return(False);
-    }
+    ThrowBinaryException(CacheWarning,"Unable to allocate pixel cache",
+      (char *) NULL);
   /*
     Transfer pixels to the cache.
   */
@@ -539,10 +536,8 @@ Export unsigned int SyncPixelCache(Image *image)
   if (image->class == PseudoClass)
     status|=WriteCacheIndexes(image->cache,&image->cache_info,image->indexes);
   if (status == False)
-    {
-      MagickWarning(CacheWarning,"Unable to sync pixel cache",(char *) NULL);
-      return(False);
-    }
+    ThrowBinaryException(CacheWarning,"Unable to sync pixel cache",
+      (char *) NULL);
   image->tainted=True;
   return(True);
 }

@@ -452,10 +452,9 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
       file=(FILE *) fopen(primitive+1,"r");
       if (file == (FILE *) NULL)
         {
-          MagickWarning(FileOpenWarning,"Unable to read primitive file",
-            primitive+1);
           DestroyAnnotateInfo(clone_info);
-          return(False);
+          ThrowImageException(FileOpenWarning,"Unable to read primitive file",
+            primitive+1);
         }
       length=MaxTextExtent;
       primitive=(char *) AllocateMemory(length);
@@ -489,10 +488,9 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
       (void) fclose(file);
       if (primitive == (char *) NULL)
         {
-          MagickWarning(ResourceLimitWarning,"Unable to draw image",
-            "Memory allocation failed");
           DestroyAnnotateInfo(clone_info);
-          return(False);
+          ThrowImageException(ResourceLimitWarning,"Unable to draw image",
+            "Memory allocation failed");
         }
       *q='\0';
     }
@@ -508,12 +506,11 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
       (clone_info->geometry == (char *) NULL) ||
       (clone_info->text == (char *) NULL))
     {
-      MagickWarning(ResourceLimitWarning,"Unable to draw image",
-        "Memory allocation failed");
       if (indirection)
         FreeMemory(primitive);
       DestroyAnnotateInfo(clone_info);
-      return(False);
+      ThrowImageException(ResourceLimitWarning,"Unable to draw image",
+        "Memory allocation failed");
     }
   /*
     Parse the primitive attributes.
@@ -588,11 +585,8 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
       if (n == 0)
         (void) sscanf(p,"%lf %lf%n",&point.x,&point.y,&n);
       if (n == 0)
-        {
-          MagickWarning(OptionWarning,
-            "Non-conforming drawing primitive definition",p);
-          break;
-        }
+        ThrowImageException(OptionWarning,
+          "Non-conforming drawing primitive definition",p);
       if (point.x < bounds.x1)
         bounds.x1=point.x;
       if (point.y < bounds.y1)
@@ -617,12 +611,11 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
         number_coordinates*sizeof(PrimitiveInfo));
       if (primitive_info != (PrimitiveInfo *) NULL)
         continue;
-      MagickWarning(ResourceLimitWarning,"Unable to draw image",
-        "Memory allocation failed");
       if (indirection)
         FreeMemory(primitive);
       DestroyAnnotateInfo(clone_info);
-      return(False);
+      ThrowImageException(ResourceLimitWarning,"Unable to draw image",
+        "Memory allocation failed");
     }
     primitive_info[j].coordinates=x;
     primitive_info[j].method=FloodfillMethod;
@@ -875,13 +868,12 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
   primitive_info[i].primitive=UndefinedPrimitive;
   if (primitive_type == UndefinedPrimitive)
     {
-      MagickWarning(OptionWarning,"Non-conforming drawing primitive definition",
-        keyword);
       FreeMemory(primitive_info);
       if (indirection)
         FreeMemory(primitive);
       DestroyAnnotateInfo(clone_info);
-      return(False);
+      ThrowImageException(OptionWarning,
+        "Non-conforming drawing primitive definition",keyword);
     }
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
     if ((primitive_info[i].method == ReplaceMethod) ||

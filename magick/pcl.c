@@ -135,7 +135,7 @@ static unsigned int IsPCL(const unsigned char *magick,const unsigned int length)
 */
 static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  MagickWarning(MissingDelegateWarning,"Cannot read PCL images",
+  ThrowException(exception,MissingDelegateWarning,"Cannot read PCL images",
     image_info->filename);
   return((Image *) NULL);
 }

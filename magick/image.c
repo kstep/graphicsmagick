@@ -5623,7 +5623,7 @@ Export Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
           InvokeDelegate(image_info,image,image_info->magick,(char *) NULL);
         DestroyImages(image);
         image=(Image *) NULL;
-        if (status == False)
+        if (status != False)
           image_info->temporary=True;
         SetImageInfo(image_info,False);
         magick_info=(MagickInfo *) GetMagickInfo(image_info->magick);
@@ -7437,7 +7437,7 @@ Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
               status=InvokeDelegate(clone_info,image,image->magick,
                 clone_info->magick);
               DestroyImageInfo(clone_info);
-              return(status);
+              return(!status);
             }
   /*
     Call appropriate image writer based on image type.
@@ -7472,7 +7472,7 @@ Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           InvokeDelegate(clone_info,image,(char *) NULL,clone_info->magick);
         (void) remove(image->filename);
         DestroyImageInfo(clone_info);
-        return(status);
+        return(!status);
       }
   (void) strcpy(image->magick,clone_info->magick);
   DestroyImageInfo(clone_info);

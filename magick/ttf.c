@@ -213,7 +213,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  MagickWarning(MissingDelegateWarning,"Cannot read TTF images",
+  ThrowException(exception,MissingDelegateWarning,"Cannot read TTF images",
     image_info->filename);
   return((Image *) NULL);
 }

@@ -447,8 +447,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  MagickWarning(MissingDelegateWarning,"X11 library is not available",
-    image_info->filename);
+  ThrowException(exception,MissingDelegateWarning,
+    "X11 library is not available",image_info->filename);
   return((Image *) NULL);
 }
 #endif
@@ -685,8 +685,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingDelegateWarning,"X11 library is not available",
+  ThrowBinaryException(MissingDelegateWarning,"X11 library is not available",
     image->filename);
-  return(False);
 }
 #endif

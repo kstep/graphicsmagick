@@ -315,11 +315,8 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
   */
   image_list=ListToGroupImage(images,&number_images);
   if (image_list == (Image **) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to montage image_list",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ThrowImageException(ResourceLimitWarning,"Unable to montage image list",
+      "Memory allocation failed");
   master_list=image_list;
   /*
     Create image tiles.
@@ -539,10 +536,9 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
     if ((montage_image->montage == (char *) NULL) ||
         (montage_image->directory == (char *) NULL))
       {
-        MagickWarning(ResourceLimitWarning,"Unable to montage image_list",
-          "Memory allocation failed");
         DestroyImages(montage_image);
-        return((Image *) NULL);
+        ThrowImageException(ResourceLimitWarning,"Unable to montage image_list",
+          "Memory allocation failed");
       }
     x_offset=0;
     y_offset=title_offset;

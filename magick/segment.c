@@ -298,11 +298,8 @@ static unsigned int Classify(Image *image,short **extrema,
             head=cluster;
           }
         if (cluster == (Cluster *) NULL)
-          {
-            MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-              (char *) NULL);
-            return(False);
-          }
+          ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+            image->filename);
         /*
           Initialize a new class.
         */
@@ -321,11 +318,8 @@ static unsigned int Classify(Image *image,short **extrema,
       */
       cluster=(Cluster *) AllocateMemory(sizeof(Cluster));
       if (cluster == (Cluster *) NULL)
-        {
-          MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-            (char *) NULL);
-          return(False);
-        }
+        ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+          image->filename);
       /*
         Initialize a new class.
       */
@@ -457,11 +451,8 @@ static unsigned int Classify(Image *image,short **extrema,
   squares=(double *)
     AllocateMemory((DownScale(MaxRGB)+DownScale(MaxRGB)+1)*sizeof(double));
   if (squares == (double *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return(False);
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      image->filename);
   squares+=DownScale(MaxRGB);
   for (i=(-(int) DownScale(MaxRGB)); i <= (int) DownScale(MaxRGB); i++)
     squares[i]=i*i;
@@ -471,11 +462,8 @@ static unsigned int Classify(Image *image,short **extrema,
   colormap=(PixelPacket *)
     AllocateMemory((unsigned int) number_clusters*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return(False);
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      image->filename);
   image->matte=False;
   image->class=PseudoClass;
   if (image->colormap != (PixelPacket *) NULL)
@@ -965,11 +953,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   */
   list=(IntervalTree **) AllocateMemory(TreeLength*sizeof(IntervalTree *));
   if (list == (IntervalTree **) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return((IntervalTree *) NULL);
-    }
+    return((IntervalTree *) NULL);
   /*
     The root is the entire histogram.
   */
@@ -1135,22 +1119,14 @@ static double OptimalTau(const long *histogram,const double max_tau,
   */
   list=(IntervalTree **) AllocateMemory(TreeLength*sizeof(IntervalTree *));
   if (list == (IntervalTree **) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return(0.0);
-    }
+    return(0.0);
   /*
     Allocate zero crossing list.
   */
   count=(unsigned int) ((max_tau-min_tau)/delta_tau)+2;
   zero_crossing=(ZeroCrossing *) AllocateMemory(count*sizeof(ZeroCrossing));
   if (zero_crossing == (ZeroCrossing *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return(0.0);
-    }
+    return(0.0);
   for (i=0; i < (int) count; i++)
     zero_crossing[i].tau=(-1);
   /*
@@ -1469,8 +1445,8 @@ Export unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
     extrema[i]=(short *) AllocateMemory((DownScale(MaxRGB)+1)*sizeof(short));
     if ((histogram[i] == (long *) NULL) || (extrema[i] == (short *) NULL))
       {
-        MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-          (char *) NULL);
+        ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+          image->filename);
         for (i-- ; i >= 0; i--)
         {
           FreeMemory(extrema[i]);

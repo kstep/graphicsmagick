@@ -238,8 +238,8 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,ExceptionInfo *exception
 #else
 static Image *ReadJBIGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  MagickWarning(MissingDelegateWarning,"JBIG library is not available",
-    image_info->filename);
+  ThrowException(exception,MissingDelegateWarning,
+    "JBIG library is not available",image_info->filename);
   return((Image *) NULL);
 }
 #endif
@@ -465,8 +465,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingDelegateWarning,"JBIG library is not available",
+  ThrowBinaryException(MissingDelegateWarning,"JBIG library is not available",
     image->filename);
-  return(False);
 }
 #endif

@@ -370,8 +370,8 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  MagickWarning(MissingDelegateWarning,"HDF library is not available",
-    image_info->filename);
+  ThrowException(exception,MissingDelegateWarning,
+    "HDF library is not available",image_info->filename);
   return((Image *) NULL);
 }
 #endif
@@ -704,8 +704,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingDelegateWarning,"HDF library is not available",
+  ThrowBinaryException(MissingDelegateWarning,"HDF library is not available",
     image->filename);
-  return(False);
 }
 #endif

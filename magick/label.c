@@ -410,18 +410,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       if (status)
         status=TT_Open_Face(engine,clone_info->font+1,&face);
       if (status)
-        {
-          /*
-            Use default font.
-          */
-          MagickWarning(DelegateWarning,"Unable to open TTF font",
-            clone_info->font+1);
-          DestroyImage(image);
-          (void) CloneString(&clone_info->font,DefaultXFont);
-          image=ReadLABELImage(clone_info,exception);
-          DestroyImageInfo(clone_info);
-          return(image);
-        }
+        ThrowReaderException(DelegateWarning,"Unable to open TTF font",image);
       TT_Get_Face_Properties(face,&face_properties);
       if (strcmp(text,Alphabet) == 0)
         GetFontInfo(face,&face_properties,image);
@@ -588,8 +577,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       DestroyImageInfo(clone_info);
       return(image);
 #else
-      MagickWarning(MissingDelegateWarning,"FreeType library is not available",
-        (char *) NULL);
+      ThrowReaderException(MissingDelegateWarning,
+        "FreeType library is not available",image);
 #endif
     }
   if (*clone_info->font == '-')
@@ -691,18 +680,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
             }
         }
       if (display == (Display *) NULL)
-        {
-          /*
-            Use default font.
-          */
-          MagickWarning(XServerWarning,"Unable to open X server",
-            clone_info->server_name);
-          DestroyImage(image);
-          (void) CloneString(&clone_info->font,"Helvetica");
-          image=ReadLABELImage(clone_info,exception);
-          DestroyImageInfo(clone_info);
-          return(image);
-        }
+        ThrowReaderException(XServerWarning,"Unable to open X server",image);
       /*
         Initialize annotate info.
       */
@@ -717,7 +695,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
           (void) CloneString(&resource_info.font,clone_info->font);
           font_info=XBestFont(display,&resource_info,False);
           if (font_info == (XFontStruct *) NULL)
-            ThrowReaderException(ResourceLimitWarning,"Unable to load font",image);
+            ThrowReaderException(ResourceLimitWarning,"Unable to load font",
+              image);
         }
       annotate_info.font_info=font_info;
       annotate_info.text=text;
@@ -735,7 +714,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       image->background_color=image->border_color;
       status=XAnnotateImage(display,&pixel,&annotate_info,image);
       if (status == 0)
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          image);
       for (y=0; y < (int) image->rows; y++)
       {
         q=GetPixelCache(image,0,y,image->columns,1);
@@ -761,8 +741,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       DestroyImageInfo(clone_info);
       return(image);
 #else
-      MagickWarning(MissingDelegateWarning,"X11 library is not available",
-        (char *) NULL);
+      ThrowReaderException(MissingDelegateWarning,
+        "X11 library is not available",image);
 #endif
     }
   /*

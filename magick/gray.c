@@ -180,7 +180,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,ExceptionInfo *exception
     for (y=0; y < count; y++)
       (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
     if (EOFBlob(image))
-      MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
+      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     SyncImage(image);
     /*
       Proceed to next image.

@@ -3028,11 +3028,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             graymap=(unsigned short *)
               AllocateMemory(colors*sizeof(unsigned short));
             if (graymap == (unsigned short *) NULL)
-              {
-                MagickWarning(ResourceLimitWarning,"Unable to create graymap",
-                  "Memory allocation failed");
-                break;
-              }
+              ThrowReaderException(ResourceLimitWarning,
+                "Unable to create graymap",image);
             for (i=0; i < (int) colors; i++)
               if (bytes_per_pixel == 1)
                 graymap[i]=data[i];
@@ -3056,11 +3053,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image->colormap=(PixelPacket *)
                 AllocateMemory(image->colors*sizeof(PixelPacket));
             if (image->colormap == (PixelPacket *) NULL)
-              {
-                MagickWarning(ResourceLimitWarning,"Unable to create colormap",
-                 "Memory allocation failed");
-                break;
-              }
+              ThrowReaderException(ResourceLimitWarning,
+                "Unable to create colormap",image);
             p=data;
             for (i=0; i < (int) image->colors; i++)
             {

@@ -54,6 +54,17 @@
 */
 #include "magick.h"
 #include "defines.h"
+#if defined(HasPNG)
+#include "png.h"
+#include "zlib.h"
+#include "mng.h"
+#endif
+
+/*
+  Global declarations.
+*/
+static Image
+  *image;
 
 /*
   Forward declarations.
@@ -62,9 +73,6 @@ static unsigned int
   WritePNGImage(const ImageInfo *,Image *);
 
 #if defined(HasPNG)
-#include "png.h"
-#include "zlib.h"
-#include "mng.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -83,7 +91,7 @@ static unsigned int
 %
 %  The format of the CompressColormapTransFirst method is:
 %
-%      void CompressColormapTransFirst(Image *image)
+%      unsigned int CompressColormapTransFirst(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -91,7 +99,7 @@ static unsigned int
 %
 %
 */
-Export void CompressColormapTransFirst(Image *image)
+Export unsigned int CompressColormapTransFirst(Image *image)
 {
   int
     number_colors,
@@ -124,19 +132,15 @@ Export void CompressColormapTransFirst(Image *image)
     return;
   marker=(unsigned char *) AllocateMemory(image->colors);
   if (marker == (unsigned char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to compress colormap",
-        "Memory allocation failed");
-      return;
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Unable to compress colormap",
+      "Memory allocation failed");
   opacity=(unsigned short *)
     AllocateMemory(image->colors*sizeof(unsigned short));
   if (opacity == (unsigned short *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to compress colormap",
-        "Memory allocation failed");
       FreeMemory(marker);
-      return;
+      ThrowBinaryException(ResourceLimitWarning,"Unable to compress colormap",
+        "Memory allocation failed");
     }
   /*
     Mark colors that are present.
@@ -200,12 +204,11 @@ Export void CompressColormapTransFirst(Image *image)
   colormap=(PixelPacket *) AllocateMemory(image->colors*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to compress colormap",
-        "Memory allocation failed");
       FreeMemory(marker);
       FreeMemory(opacity);
       image->colors=number_colors;
-      return;
+      ThrowBinaryException(ResourceLimitWarning,"Unable to compress colormap",
+        "Memory allocation failed");
     }
   /*
     Eliminate unused colormap entries.
@@ -214,13 +217,12 @@ Export void CompressColormapTransFirst(Image *image)
       short));
   if (link == (unsigned short *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to compress colormap",
-        "Memory allocation failed");
       FreeMemory(marker);
       FreeMemory(opacity);
       FreeMemory(colormap);
       image->colors=number_colors;
-      return;
+      ThrowBinaryException(ResourceLimitWarning,"Unable to compress colormap",
+        "Memory allocation failed");
     }
   index=0;
   for (i=0; i < number_colors; i++)
@@ -305,6 +307,7 @@ Export void CompressColormapTransFirst(Image *image)
   FreeMemory(link);
   FreeMemory(image->colormap);
   image->colormap=colormap;
+  return(True);
 }
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -771,15 +774,15 @@ static void MNGCoalesce(Image *image)
 
 static void PNGErrorHandler(png_struct *ping,png_const_charp message)
 {
-  MagickWarning(DelegateWarning,message,(char *) NULL);
+  ThrowException(&image->exception,DelegateWarning,message,(char *) NULL);
   longjmp(ping->jmpbuf,1);
 }
 
 static void PNGWarningHandler(png_struct *ping,png_const_charp message)
 {
-  MagickWarning(DelegateWarning,message,(char *) NULL);
+  ThrowException(&image->exception,DelegateWarning,message,(char *) NULL);
   if (ping == (png_struct *) NULL)
-     return;
+    return;
 }
 
 #ifdef PNG_USER_MEM_SUPPORTED
@@ -815,9 +818,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     mng_background_color,
     mng_global_bkgd,
     transparent_color;
-
-  Image
-    *image;
 
   int
     have_global_bkgd,
@@ -1020,25 +1020,21 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (length > PNG_MAX_UINT)
           status=False;
         if (status == False)
-          {
-            MagickWarning(CorruptImageWarning,"Corrupt MNG image",
-              image->filename);
-            break;
-          }
+          ThrowReaderException(CorruptImageWarning,"Corrupt MNG image",image);
         if (!png_memcmp(type,mng_JHDR,4))
           {
             skip_to_iend=True;
             if (!mng_info->jhdr_warning)
-              MagickWarning(DelegateWarning,"JNG is not implemented yet",
-                image->filename);
+              ThrowException(&image->exception,DelegateWarning,
+                "JNG is not implemented yet",image->filename);
             mng_info->jhdr_warning++;
           }
         if (!png_memcmp(type,mng_DHDR,4))
           {
             skip_to_iend=True;
             if (!mng_info->dhdr_warning)
-            MagickWarning(DelegateWarning,"Delta-PNG is not implemented yet",
-              image->filename);
+              ThrowException(&image->exception,DelegateWarning,
+                "Delta-PNG is not implemented yet",image->filename);
             mng_info->dhdr_warning++;
           }
         if (length)
@@ -1108,9 +1104,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 mng_info->image=image;
               }
 
-            if (mng_width > 65535 || mng_height > 65535)
-              MagickWarning(DelegateWarning,"Image dimensions are too large.",
-                (char *) NULL);
+            if ((mng_width > 65535) || (mng_height > 65535))
+              ThrowException(&image->exception,DelegateWarning,
+                "image dimensions are too large.",image->filename);
             FormatString(page_geometry,"%lux%lu%+0+0",mng_width,mng_height);
             frame.left=0;
             frame.right=(long) mng_width;
@@ -1149,28 +1145,28 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!png_memcmp(type,mng_DEFI,4))
           {
             if (mng_type == 3)
-              MagickWarning(DelegateWarning,
+              ThrowException(&image->exception,DelegateWarning,
                 "DEFI chunk found in MNG-VLC datastream",(char *) NULL);
             object_id = (p[0]<<8) | p[1];
             if (mng_type == 2 && object_id != 0)
-              MagickWarning(DelegateWarning,
-               "Nonzero object_id in MNG-LC datastream",(char *) NULL);
+              ThrowException(&image->exception,DelegateWarning,
+                "Nonzero object_id in MNG-LC datastream",(char *) NULL);
             if (object_id > MNG_MAX_OBJECTS)
               {
                 /*
                   Instead of issuing a warning we should allocate a larger
                   MngInfo structure and continue.
                 */
-                MagickWarning(DelegateWarning,"object_id too large",
-                  (char *) NULL);
+                ThrowException(&image->exception,DelegateWarning,
+                  "object id too large",(char *) NULL);
                 object_id=MNG_MAX_OBJECTS;
               }
             if (mng_info->exists[object_id])
               if (mng_info->frozen[object_id])
                 {
-                  MagickWarning(DelegateWarning,
-                   "DEFI cannot redefine a frozen MNG object",(char *) NULL);
                   FreeMemory(chunk);
+                  ThrowException(&image->exception,DelegateWarning,
+                     "DEFI cannot redefine a frozen MNG object",(char *) NULL);
                   continue;
                 }
             mng_info->exists[object_id]=True;
@@ -1343,8 +1339,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!png_memcmp(type,mng_FRAM,4))
           {
             if (mng_type == 3)
-              MagickWarning(DelegateWarning,
-                 "FRAM chunk found in MNG-VLC datastream",(char *) NULL);
+              ThrowException(&image->exception,DelegateWarning,
+                "FRAM chunk found in MNG-VLC datastream",(char *) NULL);
             if ((framing_mode == 2) || (framing_mode == 4))
               image->delay=(unsigned int) frame_delay;
             frame_delay=default_frame_delay;
@@ -1612,22 +1608,22 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!png_memcmp(type,mng_CLON,4))
           {
             if (!mng_info->clon_warning)
-              MagickWarning(DelegateWarning,"CLON is not implemented yet",
-                image->filename);
+              ThrowException(&image->exception,DelegateWarning,
+                "CLON is not implemented yet",image->filename);
             mng_info->clon_warning++;
           }
         if (!png_memcmp(type,mng_PAST,4))
           {
             if (!mng_info->past_warning)
-              MagickWarning(DelegateWarning,"PAST is not implemented yet",
-                image->filename);
+              ThrowException(&image->exception,DelegateWarning,
+                "PAST is not implemented yet",image->filename);
             mng_info->past_warning++;
           }
         if (!png_memcmp(type,mng_SHOW,4))
           {
             if (!mng_info->show_warning)
-              MagickWarning(DelegateWarning,"SHOW is not implemented yet",
-                image->filename);
+              ThrowException(&image->exception,DelegateWarning,
+                "SHOW is not implemented yet",image->filename);
             mng_info->show_warning++;
           }
         if (!png_memcmp(type,mng_sBIT,4))
@@ -1662,8 +1658,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!png_memcmp(type,mng_pHYg,4))
           {
             if (!mng_info->phyg_warning)
-              MagickWarning(DelegateWarning,"pHYg is not implemented.",
-                image->filename);
+              ThrowException(&image->exception,DelegateWarning,
+                "pHYg is not implemented.",image->filename);
             mng_info->phyg_warning++;
           }
         if (!png_memcmp(type,mng_BASI,4))
@@ -1674,8 +1670,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
             skip_to_iend=True;
             if (!mng_info->basi_warning)
-              MagickWarning(DelegateWarning,"BASI is not implemented yet",
-                image->filename);
+              ThrowException(&image->exception,DelegateWarning,
+                "BASI is not implemented yet",image->filename);
             mng_info->basi_warning++;
 #ifdef MNG_BASI_SUPPORTED
             pair.a=0;
@@ -2040,7 +2036,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (global_trns_length)
                     {
                       if (global_trns_length > global_plte_length)
-                        MagickWarning(DelegateWarning,
+                        ThrowException(&image->exception,DelegateWarning,
                           "global tRNS has more entries than global PLTE",
                           image_info->filename);
                       png_set_tRNS(ping,ping_info,mng_info->global_trns,
@@ -2073,7 +2069,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     #endif
                   }
                 else
-                  MagickWarning(DelegateWarning,
+                  ThrowException(&image->exception,DelegateWarning,
                     "No global PLTE in file",image_info->filename);
               }
           }
@@ -2470,8 +2466,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           value=(char *) AllocateMemory(length+1);
           if (value == (char *) NULL)
             {
-              MagickWarning(ResourceLimitWarning,"Unable to read text chunk",
-                "Memory allocation failed");
+              ThrowException(&image->exception,ResourceLimitWarning,
+                "Unable to read text chunk","Memory allocation failed");
               break;
             }
           *value='\0';
@@ -2504,11 +2500,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             mng_info->ob[object_id]->frozen)
           {
             if (mng_info->ob[object_id] == (MngInfoBuffer *) NULL)
-              MagickWarning(ResourceLimitWarning,
+              ThrowException(&image->exception,ResourceLimitWarning,
                 "Memory allocation of MNG object buffer failed",
                 image->filename);
             if (mng_info->ob[object_id]->frozen)
-              MagickWarning(ResourceLimitWarning,
+              ThrowException(&image->exception,ResourceLimitWarning,
                 "Cannot overwrite frozen MNG object buffer",image->filename);
           }
         else
@@ -2531,7 +2527,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (mng_info->ob[object_id]->image != (Image *) NULL)
               mng_info->ob[object_id]->image->file=(FILE *) NULL;
             else
-              MagickWarning(ResourceLimitWarning,
+              ThrowException(&image->exception,ResourceLimitWarning,
                 "Cloning image for object buffer failed",image->filename);
             png_get_IHDR(ping,ping_info,&width,&height,&bit_depth,&color_type,
               &interlace_method,&compression_method,&filter_method);
@@ -2700,23 +2696,23 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_count++;
     if (image_count>10*image_found)
       {
-        MagickWarning(DelegateWarning,
+        ThrowException(&image->exception,DelegateWarning,
           "Linked list is corrupted, beginning of list not found",
           image_info->filename);
         return((Image *) NULL);
       }
     image=image->previous;
     if (image->next == (Image *) NULL)
-      MagickWarning(DelegateWarning,
+      ThrowException(&image->exception,DelegateWarning,
        "Linked list is corrupted; next_image is NULL",image_info->filename);
   }
   if (ticks_per_second && image_found > 1 && image->next == (Image *) NULL)
-    MagickWarning(DelegateWarning,
+    ThrowException(&image->exception,DelegateWarning,
      "image->next for first image is NULL but shouldn't be.",
      image_info->filename);
   if (!image_found)
     {
-      MagickWarning(DelegateWarning,
+      ThrowException(&image->exception,DelegateWarning,
         "No visible images in file",image_info->filename);
       if (image != (Image *) NULL)
         DestroyImages(image);
@@ -2731,8 +2727,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  MagickWarning(MissingDelegateWarning,"PNG library is not available",
-    image_info->filename);
+  ThrowException(exception,MissingDelegateWarning,
+    "PNG library is not available",image_info->filename);
   return((Image *) NULL);
 }
 #endif
@@ -3119,7 +3115,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                    It's probably a GIF with loop; don't run it *too* fast.
                  */
                  final_delay=10;
-                 MagickWarning(DelegateWarning,
+                 ThrowException(&image->exception,DelegateWarning,
                    "input has zero delay between all frames; assuming 10 cs",
                    image->filename);
                }
@@ -3992,12 +3988,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         {
           ping_info->text=(png_text *) AllocateMemory(256*sizeof(png_text));
           if (ping_info->text == (png_text *) NULL)
-            MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-              image->filename);
+            ThrowException(&image->exception,ResourceLimitWarning,
+              "Memory allocation failed",image->filename);
         }
       i=ping_info->num_text++;
       if (i > 255)
-        MagickWarning(ResourceLimitWarning,
+        ThrowException(&image->exception,ResourceLimitWarning,
           "Cannot write more than 256 PNG text chunks",image->filename);
       ping_info->text[i].key=attribute->key;
       ping_info->text[i].text=attribute->value;
@@ -4041,7 +4037,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           framing_mode=3;
       }
     if (need_fram && (image->dispose == 3))
-       MagickWarning(DelegateWarning,
+       ThrowException(&image->exception,DelegateWarning,
          "Cannot convert GIF with disposal method 3 to MNG-LC",(char *) NULL);
     image->depth=save_image_depth;
     /*
@@ -4085,9 +4081,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingDelegateWarning,"PNG library is not available",
+  ThrowBinaryException(MissingDelegateWarning,"PNG library is not available",
     image->filename);
-  return(False);
 }
 #endif
 

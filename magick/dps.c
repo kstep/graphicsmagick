@@ -174,8 +174,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   map_info=XAllocStandardColormap();
   visual_info=(XVisualInfo *) NULL;
   if (map_info == (XStandardColormap *) NULL)
-    MagickWarning(ResourceLimitWarning,"Unable to create standard colormap",
-      "Memory allocation failed");
+    ThrowReaderException(ResourceLimitWarning,
+      "Unable to create standard colormap",image)
   else
     {
       /*
@@ -488,7 +488,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  MagickWarning(MissingDelegateWarning,"Cannot read DPS images",
+  ThrowException(&exception,MissingDelegateWarning,"Cannot read DPS images",
     image_info->filename);
   return((Image *) NULL);
 }

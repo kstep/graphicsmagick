@@ -59,13 +59,21 @@
 #include "tiffconf.h"
 #endif
 #include "tiffio.h"
-
+#endif
+
+/*
+  Global declarations.
+*/
+static Image
+  *image;
+
 /*
   Forward declarations.
 */
 static unsigned int
   WriteTIFFImage(const ImageInfo *,Image *);
 
+#if defined(HasTIFF)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -161,9 +169,9 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
   tiff=TIFFOpen(filename,ReadBinaryType);
   if (tiff == (TIFF *) NULL)
     {
-      MagickWarning(FileOpenWarning,"Unable to open file",image_info->filename);
       (void) remove(filename);
-      return(False);
+      ThrowBinaryException(FileOpenWarning,"Unable to open file",
+        image_info->filename);
     }
   /*
     Allocate raw strip buffer.
@@ -176,11 +184,10 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
   buffer=(unsigned char *) AllocateMemory(strip_size);
   if (buffer == (unsigned char *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
       TIFFClose(tiff);
       (void) remove(filename);
-      return(False);
+      ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+        (char *) NULL);
     }
   /*
     Compress runlength encoded to 2D Huffman pixels.
@@ -262,7 +269,8 @@ static unsigned int IsTIFF(const unsigned char *magick,
 %
 %  The format of the ReadTIFFImage method is:
 %
-%      Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadTIFFImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -297,11 +305,8 @@ static unsigned int ReadColorProfile(char *text,long int length,Image *image)
     }
   image->color_profile.info=(unsigned char *) AllocateMemory(length);
   if (image->color_profile.info == (unsigned char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return(False);
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      image->filename);
   image->color_profile.length=length;
   (void) memcpy(image->color_profile.info,p,length);
   return(True);
@@ -332,11 +337,8 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
       length*=4;
       image->iptc_profile.info=(unsigned char *) AllocateMemory(length);
       if (image->iptc_profile.info == (unsigned char *) NULL)
-        {
-          MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-            (char *) NULL);
-          return(False);
-        }
+        ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+          image->filename);
       image->iptc_profile.length=length;
       (void) memcpy(image->iptc_profile.info,p,length);
       return(True);
@@ -377,18 +379,15 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
 #endif
   image->iptc_profile.info=(unsigned char *) AllocateMemory(length);
   if (image->iptc_profile.info == (unsigned char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return(False);
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      image->filename);
   image->iptc_profile.length=length;
   (void) memcpy(image->iptc_profile.info,p,length);
   return(True);
 }
 #endif
 
-static void TIFFWarningHandler(const char *module,const char *format,
+static unsigned int TIFFWarningHandler(const char *module,const char *format,
   va_list warning)
 {
   char
@@ -405,14 +404,15 @@ static void TIFFWarningHandler(const char *module,const char *format,
     }
   (void) vsprintf(p,format,warning);
   (void) strcat(p,".");
-  MagickWarning(DelegateWarning,message,(char *) NULL);
+  ThrowBinaryException(DelegateWarning,message,image->filename);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
 
-static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadTIFFImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   char
     *text;
@@ -421,9 +421,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
     *chromaticity,
     x_resolution,
     y_resolution;
-
-  Image
-    *image;
 
   int
     range,
@@ -503,8 +500,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
       image->temporary=True;
     }
   CloseBlob(image);
-  TIFFSetErrorHandler(TIFFWarningHandler);
-  TIFFSetWarningHandler(TIFFWarningHandler);
+  TIFFSetErrorHandler((void *) TIFFWarningHandler);
+  TIFFSetWarningHandler((void *) TIFFWarningHandler);
   tiff=TIFFOpen(image->filename,ReadBinaryUnbufferedType);
   if (tiff == (TIFF *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
@@ -1002,10 +999,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
   return(image);
 }
 #else
-static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadTIFFImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
-  MagickWarning(MissingDelegateWarning,"TIFF library is not available",
-    image_info->filename);
+  ThrowException(exception,MissingDelegateWarning,
+    "TIFF library is not available",image_info->filename);
   return((Image *) NULL);
 }
 #endif
@@ -1814,8 +1812,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingDelegateWarning,"TIFF library is not available",
+  ThrowBinaryException(MissingDelegateWarning,"TIFF library is not available",
     image->filename);
-  return(False);
 }
 #endif

@@ -167,7 +167,8 @@ static unsigned int IsJPEG(const unsigned char *magick,
 %
 %  The format of the ReadJPEGImage method is:
 %
-%      Image *ReadJPEGImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadJPEGImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -182,7 +183,7 @@ static unsigned int IsJPEG(const unsigned char *magick,
 %
 */
 
-static void EmitMessage(j_common_ptr jpeg_info,int level)
+static unsigned int EmitMessage(j_common_ptr jpeg_info,int level)
 {
   char
     message[JMSG_LENGTH_MAX];
@@ -192,12 +193,13 @@ static void EmitMessage(j_common_ptr jpeg_info,int level)
     {
       if ((jpeg_info->err->num_warnings == 0) ||
           (jpeg_info->err->trace_level >= 3))
-        MagickWarning(DelegateWarning,(char *) message,image->filename);
+        ThrowBinaryException(DelegateWarning,(char *) message,image->filename);
       jpeg_info->err->num_warnings++;
     }
   else
     if (jpeg_info->err->trace_level >= level)
-      MagickWarning(DelegateWarning,(char *) message,image->filename);
+      ThrowBinaryException(DelegateWarning,(char *) message,image->filename);
+  return(True);
 }
 
 static boolean FillInputBuffer(j_decompress_ptr cinfo)
@@ -285,11 +287,8 @@ static boolean ReadColorProfile(j_decompress_ptr jpeg_info)
     image->color_profile.info=(unsigned char *) ReallocateMemory((char *)
       image->color_profile.info,image->color_profile.length+length);
   if (image->color_profile.info == (unsigned char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return(False);
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      (char *) NULL);
   /*
     Read color profile.
   */
@@ -319,11 +318,8 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   length-=2;
   comment=(char *) AllocateMemory(length+1);
   if (comment == (char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return(False);
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      (char *) NULL);
   /*
     Read comment.
   */
@@ -414,11 +410,8 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
         image->iptc_profile.length=0;
     }
   if (image->iptc_profile.info == (unsigned char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return(False);
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      (char *) NULL);
   /*
     Read the payload of this binary data, decoding
     is left as a excercise for the application.
@@ -479,7 +472,8 @@ static void JPEGSourceManager(j_decompress_ptr cinfo,Image *image)
   source->image=image;
 }
 
-static Image *ReadJPEGImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadJPEGImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   IndexPacket
     index;
@@ -523,7 +517,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,ExceptionInfo *exception
     Initialize image structure.
   */
   jpeg_info.err=jpeg_std_error(&jpeg_error);
-  jpeg_info.err->emit_message=EmitMessage;
+  jpeg_info.err->emit_message=(void *) EmitMessage;
   jpeg_info.err->error_exit=JPEGErrorHandler;
   jpeg_pixels=(JSAMPLE *) NULL;
   if (setjmp(error_recovery))
@@ -706,10 +700,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,ExceptionInfo *exception
   return(image);
 }
 #else
-static Image *ReadJPEGImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadJPEGImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
-  MagickWarning(MissingDelegateWarning,"JPEG library is not available",
-    image_info->filename);
+  ThrowException(exception,MissingDelegateWarning,
+    "JPEG library is not available",image_info->filename);
   return((Image *) NULL);
 }
 #endif
@@ -827,7 +822,7 @@ static void InitializeDestination(j_compress_ptr cinfo)
   destination->manager.free_in_buffer=MaxBufferExtent;
 }
 
-static void JPEGWarningHandler(j_common_ptr jpeg_info,int level)
+static unsigned int JPEGWarningHandler(j_common_ptr jpeg_info,int level)
 {
   char
     message[JMSG_LENGTH_MAX];
@@ -837,12 +832,13 @@ static void JPEGWarningHandler(j_common_ptr jpeg_info,int level)
     {
       if ((jpeg_info->err->num_warnings == 0) ||
           (jpeg_info->err->trace_level >= 3))
-        MagickWarning(DelegateWarning,(char *) message,(char *) NULL);
+        ThrowBinaryException(DelegateWarning,(char *) message,image->filename);
       jpeg_info->err->num_warnings++;
     }
   else
     if (jpeg_info->err->trace_level >= level)
-      MagickWarning(DelegateWarning,(char *) message,(char *) NULL);
+      ThrowBinaryException(DelegateWarning,(char *) message,image->filename);
+  return(True);
 }
 
 static void TerminateDestination(j_compress_ptr cinfo)
@@ -1007,7 +1003,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     Initialize JPEG parameters.
   */
   jpeg_info.err=jpeg_std_error(&jpeg_error);
-  jpeg_info.err->emit_message=JPEGWarningHandler;
+  jpeg_info.err->emit_message=(void *) JPEGWarningHandler;
   jpeg_create_compress(&jpeg_info);
   JPEGDestinationManager(&jpeg_info,image);
   jpeg_info.image_width=image->columns;
@@ -1219,8 +1215,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingDelegateWarning,"JPEG library is not available",
+  ThrowBinaryException(MissingDelegateWarning,"JPEG library is not available",
     image->filename);
-  return(False);
 }
 #endif

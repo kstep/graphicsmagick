@@ -437,11 +437,8 @@ Export unsigned int HuffmanDecodeImage(Image *image)
   if ((mb_hash == (HuffmanTable **) NULL) ||
       (mw_hash == (HuffmanTable **) NULL) ||
       (scanline == (unsigned char *) NULL))
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return(False);
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      (char *) NULL);
   /*
     Initialize Huffman tables.
   */
@@ -703,11 +700,8 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
     width=Max(image->columns,1728);
   scanline=(unsigned char *) AllocateMemory(width+1);
   if (scanline == (unsigned char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return(False);
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      (char *) NULL);
   huffman_image=(Image *) image;
   if (!IsMonochromeImage(huffman_image))
     {
@@ -877,9 +871,8 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
 Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 {
   assert(image != (Image *) NULL);
-  MagickWarning(MissingDelegateWarning,"TIFF library is not available",
+  ThrowBinaryException(MissingDelegateWarning,"TIFF library is not available",
     image->filename);
-  return(False);
 }
 #endif
 
@@ -1056,9 +1049,8 @@ Export unsigned int LZWEncodeImage(Image *image,
   const unsigned int number_pixels,unsigned char *pixels)
 {
   assert(image != (Image *) NULL);
-  MagickWarning(MissingDelegateWarning,"LZW library is not available",
+  ThrowBinaryException(MissingDelegateWarning,"LZW library is not available",
     (char *) NULL);
-  return(False);
 }
 #endif
 
@@ -1115,11 +1107,8 @@ Export unsigned int PackbitsEncodeImage(Image *image,
   assert(pixels != (unsigned char *) NULL);
   packbits=(unsigned char *) AllocateMemory(128);
   if (packbits == (unsigned char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return(False);
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      (char *) NULL);
   Ascii85Initialize();
   i=number_pixels;
   while (i != 0)
@@ -1266,11 +1255,8 @@ Export unsigned int ZLIBEncodeImage(Image *image,
   compressed_packets=(unsigned long) (1.001*number_pixels+12);
   compressed_pixels=(unsigned char *) AllocateMemory(compressed_packets);
   if (compressed_pixels == (unsigned char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return(False);
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      (char *) NULL);
   stream.next_in=pixels;
   stream.avail_in=number_pixels;
   stream.next_out=compressed_pixels;
@@ -1289,7 +1275,8 @@ Export unsigned int ZLIBEncodeImage(Image *image,
       compressed_packets=stream.total_out;
     }
   if (status)
-    MagickWarning(DelegateWarning,"Unable to Zip compress image",(char *) NULL);
+    ThrowBinaryException(DelegateWarning,"Unable to Zip compress image",
+      (char *) NULL)
   else
     {
       Ascii85Initialize();
@@ -1306,7 +1293,7 @@ Export unsigned int ZLIBEncodeImage(Image *image,
   unsigned char *pixels)
 {
   assert(image != (Image *) NULL);
-  MagickWarning(MissingDelegateWarning,"ZLIB library is not available",
+  ThrowBinaryException(MissingDelegateWarning,"ZLIB library is not available",
     image->filename);
   return(False);
 }

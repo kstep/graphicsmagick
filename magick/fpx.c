@@ -197,7 +197,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   memory_limit=20000000;
   fpx_status=FPX_SetToolkitMemoryLimit(&memory_limit);
   if (fpx_status != FPX_OK)
-    ThrowReaderException(DelegateWarning,"Unable to initialize FPX library",image);
+    ThrowReaderException(DelegateWarning,"Unable to initialize FPX library",
+      image);
   tile_width=64;
   tile_height=64;
   flashpix=(FPXImageHandle *) NULL;
@@ -216,7 +217,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (fpx_status == FPX_LOW_MEMORY_ERROR)
     {
       FPX_ClearSystem();
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     }
   if (fpx_status != FPX_OK)
     {
@@ -234,8 +236,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       aspect_ratio=(float) width/height;
       fpx_status=FPX_GetImageResultAspectRatio(flashpix,&aspect_ratio);
       if (fpx_status != FPX_OK)
-        MagickWarning(DelegateWarning,"Unable to read aspect ratio",
-          image_info->filename);
+        ThrowReaderException(DelegateWarning,"Unable to read aspect ratio",
+          image);
       if (width != (unsigned long) ((aspect_ratio*height)+0.5))
         Swap(width,height);
     }
@@ -254,8 +256,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         image->label=(char *) AllocateMemory(summary_info.title.length+1);
         if (image->label == (char *) NULL)
-          MagickWarning(DelegateWarning,"Memory allocation failed",
-            image_info->filename);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image)
         else
           {
             (void) strncpy(image->label,(char *) summary_info.title.ptr,
@@ -272,8 +274,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         image->comments=(char *) AllocateMemory(summary_info.comments.length+1);
         if (image->comments == (char *) NULL)
-          MagickWarning(DelegateWarning,"Memory allocation failed",
-            image_info->filename);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         else
           {
             (void) strncpy(image->comments,(char *) summary_info.comments.ptr,
@@ -448,8 +450,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  MagickWarning(MissingDelegateWarning,"FPX library is not available",
-    image_info->filename);
+  ThrowException(exception,MissingDelegateWarning,
+    "FPX library is not available",image_info->filename);
   return((Image *) NULL);
 }
 #endif
@@ -820,7 +822,8 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       fpx_status=
         FPX_SetJPEGCompression(flashpix,(unsigned short) (image_info->quality));
       if (fpx_status != FPX_OK)
-        MagickWarning(DelegateWarning,"Unable to set JPEG level",(char *) NULL);
+        ThrowWriterException(DelegateWarning,"Unable to set JPEG level",
+          (char *) NULL);
     }
   /*
     Set image summary info.
@@ -855,8 +858,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       if (summary_info.title.ptr != (unsigned char *) NULL)
         (void) strcpy((char *) summary_info.title.ptr,image->label);
       else
-        MagickWarning(DelegateWarning,"Unable to set image title",
-          (char *) NULL);
+        ThrowWriterException(DelegateWarning,"Unable to set image title",image);
     }
   if (image->comments != (char *) NULL)
     {
@@ -870,12 +872,12 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       if (summary_info.comments.ptr != (unsigned char *) NULL)
         (void) strcpy((char *) summary_info.comments.ptr,image->comments);
       else
-        MagickWarning(DelegateWarning,"Unable to set image comments",
-          (char *) NULL);
+        ThrowWriterException(DelegateWarning,"Unable to set image comments",
+          image);
     }
   fpx_status=FPX_SetSummaryInformation(flashpix,&summary_info);
   if (fpx_status != FPX_OK)
-    MagickWarning(DelegateWarning,"Unable to set summary info",(char *) NULL);
+    ThrowWriterException(DelegateWarning,"Unable to set summary info",image);
   /*
     Allocate pixels.
   */
@@ -885,7 +887,8 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     {
       (void) FPX_CloseImage(flashpix);
       FPX_ClearSystem();
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     }
   /*
     Initialize FlashPix image description.
@@ -1016,43 +1019,43 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
         {
           fpx_status=FPX_SetImageAffineMatrix(flashpix,&affine);
           if (fpx_status != FPX_OK)
-            MagickWarning(DelegateWarning,"Unable to set affine matrix",
-              (char *) NULL);
+            ThrowWriterException(DelegateWarning,"Unable to set affine matrix",
+              image);
         }
       if (aspect_ratio_valid)
         {
           fpx_status=FPX_SetImageResultAspectRatio(flashpix,&aspect_ratio);
           if (fpx_status != FPX_OK)
-            MagickWarning(DelegateWarning,"Unable to set aspect ratio",
-              (char *) NULL);
+            ThrowWriterException(DelegateWarning,"Unable to set aspect ratio",
+              image);
         }
       if (color_twist_valid)
         {
           fpx_status=FPX_SetImageColorTwistMatrix(flashpix,&color_twist);
           if (fpx_status != FPX_OK)
-            MagickWarning(DelegateWarning,"Unable to set color color twist",
-              (char *) NULL);
+            ThrowWriterException(DelegateWarning,
+              "Unable to set color color twist",image);
         }
       if (contrast_valid)
         {
           fpx_status=FPX_SetImageContrastAdjustment(flashpix,&contrast);
           if (fpx_status != FPX_OK)
-            MagickWarning(DelegateWarning,"Unable to set contrast",
-              (char *) NULL);
+            ThrowWriterException(DelegateWarning,"Unable to set contrast",
+              image);
         }
       if (sharpen_valid)
         {
           fpx_status=FPX_SetImageFilteringValue(flashpix,&sharpen);
           if (fpx_status != FPX_OK)
-            MagickWarning(DelegateWarning,"Unable to set filtering value",
-              (char *) NULL);
+            ThrowWriterException(DelegateWarning,
+              "Unable to set filtering value",image);
         }
       if (view_rect_valid)
         {
-          fpx_status=FPX_SetImageROI(flashpix, &view_rect);
+          fpx_status=FPX_SetImageROI(flashpix,&view_rect);
           if (fpx_status != FPX_OK)
-            MagickWarning(DelegateWarning,"Unable to set region of interest",
-              (char *) NULL);
+            ThrowWriterException(DelegateWarning,
+              "Unable to set region of interest",image);
         }
     }
   (void) FPX_CloseImage(flashpix);
@@ -1084,8 +1087,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingDelegateWarning,"FPX library is not available",
+  ThrowBinaryException(MissingDelegateWarning,"FPX library is not available",
     image->filename);
-  return(False);
 }
 #endif

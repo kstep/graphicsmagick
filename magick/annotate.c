@@ -80,7 +80,8 @@ const char
 %
 %  The format of the AnnotateImage method is:
 %
-%      void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
+%      unsigned int AnnotateImage(Image *image,
+%        const AnnotateInfo *annotate_info)
 %
 %  A description of each parameter follows:
 %
@@ -90,7 +91,8 @@ const char
 %
 %
 */
-Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
+Export unsigned int AnnotateImage(Image *image,
+  const AnnotateInfo *annotate_info)
 {
   AnnotateInfo
     *clone_info;
@@ -139,7 +141,8 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
   if (text == (char *) NULL)
     {
       DestroyAnnotateInfo(clone_info);
-      return;
+      ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
+        "Memory allocation failed");
     }
   textlist=StringToList(text);
   FreeMemory(text);
@@ -156,9 +159,9 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
   text=(char *) AllocateMemory(length+MaxTextExtent);
   if (text == (char *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to annotate image",
-        "Memory allocation failed");
       DestroyAnnotateInfo(clone_info);
+      ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
+        "Memory allocation failed");
       return;
     }
   width=image->columns;
@@ -203,13 +206,12 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
     annotate_image=ReadImage(clone_info->image_info,&error);
     if (annotate_image == (Image *) NULL)
       {
-        MagickWarning(ResourceLimitWarning,"Unable to annotate image",
-          (char *) NULL);
         for (i++ ; textlist[i] != (char *) NULL; i++)
           FreeMemory(textlist[i]);
         FreeMemory(textlist);
         DestroyAnnotateInfo(clone_info);
-        return;
+        ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
+          "Memory allocation failed");
       }
     if (annotate_info->degrees != 0.0)
       {
@@ -320,6 +322,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
   for ( ; textlist[i] != (char *) NULL; i++)
     FreeMemory(textlist[i]);
   FreeMemory(textlist);
+  return(True);
 }
 
 /*

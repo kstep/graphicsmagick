@@ -188,11 +188,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
             *(p+1)='\0';
           }
         if (comment == (char *) NULL)
-          {
-            MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-              (char *) NULL);
-            return(0);
-          }
+          return(0);
         q=comment+offset;
         if (Latin1Compare(q,P7Comment) == 0)
           *q='\0';
@@ -582,7 +578,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (scale != (Quantum *) NULL)
       FreeMemory(scale);
     if (EOFBlob(image))
-      MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
+      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     /*
       Proceed to next image.
     */

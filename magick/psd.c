@@ -206,18 +206,12 @@ static unsigned int DecodeImage(Image *image,const int channel)
     Guarentee the correct number of pixel packets.
   */
   if (length > 0)
-    {
-      MagickWarning(CorruptImageWarning,"insufficient image data in file",
-        image->filename);
-      return(False);
-    }
+    ThrowBinaryException(CorruptImageWarning,
+      "insufficient image data in file",image->filename)
   else
     if (length < 0)
-      {
-        MagickWarning(CorruptImageWarning,"too much image data in file",
-          image->filename);
-        return(False);
-      }
+      ThrowBinaryException(CorruptImageWarning,"too much image data in file",
+        image->filename);
   return(True);
 }
 

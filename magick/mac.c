@@ -1010,12 +1010,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
 {
 #define LoadImageText  "  Loading image...  "
 #define PICTHeaderSize    512
-#define PrematureExit(warning,message,image) \
-{ \
-  MagickWarning(warning,message,image->filename); \
-  DestroyImages(image); \
-  return((Image *) NULL); \
-}
 
   CodecType
     codec;
@@ -1065,11 +1059,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    PrematureExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   picture_handle=(PicHandle)
     NewHandle(Max(image->filesize-PICTHeaderSize,PICTHeaderSize));
   if (picture_handle == nil)
-    PrematureExit(ResourceLimitWarning,"Unable to allocate memory",image);
+    ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",image);
   HLock((Handle) picture_handle);
   (void) ReadBlob(image,PICTHeaderSize,*(char **) picture_handle);
   status=
@@ -1077,7 +1071,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
   if (status == False)
     {
       DisposeHandle((Handle) picture_handle);
-      PrematureExit(CorruptImageWarning,"Unable to read image data",image);
+      ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
     }
   GetGWorld(&port,&device);
   theErr=NewGWorld(&graphic_world,0,&(**picture_handle).picFrame,nil,nil,
@@ -1085,7 +1079,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
   if (theErr != noErr && graphic_world == nil)
     {
       DisposeHandle((Handle) picture_handle);
-      PrematureExit(ResourceLimitWarning,"Unable to allocate memory",image);
+      ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",image);
     }
   HUnlock((Handle) picture_handle);
   SetGWorld(graphic_world,nil);
@@ -1094,7 +1088,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
     {
       DisposeGWorld(graphic_world);
       DisposeHandle((Handle) picture_handle);
-      PrematureExit(CorruptImageWarning,"Unable to read image data",image);
+      ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
     }
   BottleneckTest(picture_handle,&codec,&depth,&colormap_id);
   switch (codec)
@@ -1141,7 +1135,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
             DisposeHandle((Handle) picture_info.theColorTable);
           DisposeGWorld(graphic_world);
           DisposeHandle((Handle) picture_handle);
-          PrematureExit(ResourceLimitWarning,"Unable to allocate memory",image);
+          ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",image);
         }
       for (x=0; x < image->colors; x++)
       {

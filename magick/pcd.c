@@ -176,11 +176,8 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   assert(chroma2 != (unsigned char *) NULL);
   buffer=(unsigned char *) AllocateMemory(0x800);
   if (buffer == (unsigned char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return(False);
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      (char *) NULL);
   accumulator=0;
   bits=32;
   p=buffer+0x800;
@@ -191,10 +188,9 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     pcd_table[i]=(PCDTable *) AllocateMemory(length*sizeof(PCDTable));
     if (pcd_table[i] == (PCDTable *) NULL)
       {
-        MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-          (char *) NULL);
         FreeMemory(buffer);
-        return(False);
+        ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+          (char *) NULL);
       }
     r=pcd_table[i];
     for (j=0; j < (int) length; j++)
@@ -269,9 +265,8 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
           }
           default:
           {
-            MagickWarning(CorruptImageWarning,"Corrupt PCD image",
+            ThrowBinaryException(CorruptImageWarning,"Corrupt PCD image",
               image->filename);
-            return(False);
           }
         }
         length=pcd_length[plane];
@@ -287,7 +282,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       r++;
     if (r == (PCDTable *) NULL)
       {
-        MagickWarning(CorruptImageWarning,
+        ThrowException(&image->exception,CorruptImageWarning,
           "Corrupt PCD image, skipping to sync byte",image->filename);
         while ((accumulator & 0x00fff000) != 0x00fff000)
           PCDGetBits(8);

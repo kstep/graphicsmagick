@@ -262,20 +262,21 @@ Export char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
 
   if (!GetDelegateInfo(decode_tag,encode_tag,&delegate_info))
     {
-      MagickWarning(MissingDelegateWarning,"no tag found",
+      ThrowException(&image->exception,MissingDelegateWarning,"no tag found",
         decode_tag ? decode_tag : encode_tag);
       return((char *) NULL);
     }
   commands=StringToList(delegate_info.commands);
   if (commands == (char **) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        decode_tag ? decode_tag : encode_tag);
+      ThrowException(&image->exception,ResourceLimitWarning,
+        "Memory allocation failed",decode_tag ? decode_tag : encode_tag);
       return((char *) NULL);
     }
   command=TranslateText(image_info,image,commands[0]);
   if (command == (char *) NULL)
-    MagickWarning(ResourceLimitWarning,"Memory allocation failed",commands[0]);
+    ThrowException(&image->exception,ResourceLimitWarning,
+      "Memory allocation failed",commands[0]);
   /*
     Free resources.
   */
@@ -332,11 +333,8 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
 
   (void) strcpy(filename,image->filename);
   if (!GetDelegateInfo(decode_tag,encode_tag,&delegate_info))
-    {
-      MagickWarning(MissingDelegateWarning,"no tag found",
-        decode_tag ? decode_tag : encode_tag);
-      return(True);
-    }
+    ThrowBinaryException(MissingDelegateWarning,"no tag found",
+      decode_tag ? decode_tag : encode_tag);
   if (Latin1Compare(delegate_info.decode_tag,"YUV") == 0)
     if ((Latin1Compare(delegate_info.encode_tag,"M2V") == 0) ||
         (Latin1Compare(delegate_info.encode_tag,"MPG") == 0))
@@ -354,11 +352,8 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
         mpeg=Latin1Compare(delegate_info.encode_tag,"M2V") != 0;
         file=fopen(image_info->unique,"w");
         if (file == (FILE *) NULL)
-          {
-            MagickWarning(DelegateWarning,"delegate failed",
-              decode_tag ? decode_tag : encode_tag);
-            return(True);
-          }
+          ThrowBinaryException(DelegateWarning,"delegate failed",
+            decode_tag ? decode_tag : encode_tag);
         (void) fprintf(file,"MPEG\n");
         (void) fprintf(file,"%.1024s%%d\n",image->filename);
         (void) fprintf(file,"-\n");
@@ -441,11 +436,8 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
         magick=TranslateText(image_info,image,decode_tag != (char *) NULL ?
           delegate_info.encode_tag : delegate_info.decode_tag);
         if (magick == (char *) NULL)
-          {
-            MagickWarning(DelegateWarning,"delegate failed",
-              decode_tag ? decode_tag : encode_tag);
-            return(True);
-          }
+          ThrowBinaryException(DelegateWarning,"delegate failed",
+            decode_tag ? decode_tag : encode_tag);
         Latin1Upper(magick);
         (void) strcpy((char *) image_info->magick,magick);
         (void) strcpy(image->magick,magick);
@@ -453,11 +445,8 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
         (void) strcpy(filename,image->filename);
         clone_info=CloneImageInfo(image_info);
         if (clone_info == (ImageInfo *) NULL)
-          {
-            MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-              (char *) NULL);
-            return(True);
-          }
+          ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+            (char *) NULL);
         FormatString(clone_info->filename,"%.1024s:",delegate_info.decode_tag);
         SetImageInfo(clone_info,True);
         for (p=image; p != (Image *) NULL; p=p->next)
@@ -466,11 +455,8 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
             filename);
           status=WriteImage(clone_info,p);
           if (status == False)
-            {
-              MagickWarning(DelegateWarning,"delegate failed",
-                decode_tag ? decode_tag : encode_tag);
-              return(False);
-            }
+            ThrowBinaryException(DelegateWarning,"delegate failed",
+              decode_tag ? decode_tag : encode_tag);
           if (clone_info->adjoin)
             break;
         }
@@ -479,11 +465,8 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
   (void) strcpy(image->filename,filename);
   commands=StringToList(delegate_info.commands);
   if (commands == (char **) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        decode_tag ? decode_tag : encode_tag);
-      return(True);
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      decode_tag ? decode_tag : encode_tag);
   command=(char *) NULL;
   status=True;
   for (i=0; commands[i] != (char *) NULL; i++)
@@ -498,10 +481,7 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
     status=SystemCommand(image_info->verbose,command);
     FreeMemory(command);
     if (status != False)
-      {
-        MagickWarning(DelegateWarning,"delegate failed",commands[i]);
-        break;
-      }
+      ThrowBinaryException(DelegateWarning,"delegate failed",commands[i]);
     FreeMemory(commands[i]);
   }
   /*
@@ -512,7 +492,7 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
   for ( ; commands[i] != (char *) NULL; i++)
     FreeMemory(commands[i]);
   FreeMemory(commands);
-  return(status);
+  return(!status);
 }
 
 /*
@@ -530,7 +510,7 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
 %
 %  The format of the ListDelegateInfo method is:
 %
-%      void ListDelegateInfo(FILE *file)
+%      unsigned int ListDelegateInfo(FILE *file)
 %
 %  A description of each parameter follows.
 %
@@ -538,7 +518,7 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
 %
 %
 */
-Export void ListDelegateInfo(FILE *file)
+Export unsigned int ListDelegateInfo(FILE *file)
 {
   char
     delegate[MaxTextExtent],
@@ -579,7 +559,7 @@ Export void ListDelegateInfo(FILE *file)
           DelegateFilename);
     }
   if (delegates == (DelegateInfo *) NULL)
-    return;
+    return(False);
   (void) fprintf(file,"\nImageMagick uses these delegates to read or write "
     "image formats it does not\ndirectly support:\n\n");
   (void) fprintf(file,"Decode-Tag   Encode-Tag  Delegate\n");
@@ -602,6 +582,7 @@ Export void ListDelegateInfo(FILE *file)
       p->direction >= 0 ? ">" : " ",tag,delegate);
   }
   (void) fflush(file);
+  return(True);
 }
 
 /*
@@ -723,11 +704,8 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
         delegate_info.commands[strlen(delegate_info.commands)-1]='\0';
     }
     if (delegate_info.commands == (char *) NULL)
-      {
-        MagickWarning(DelegateWarning,"no commands for this delgate",
-          delegate_info.decode_tag);
-        continue;
-      }
+      MagickWarning(DelegateWarning,"no commands for this delgate",
+        delegate_info.decode_tag);
     /*
       Add delegate to the delegate list.
     */

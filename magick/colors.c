@@ -1048,7 +1048,7 @@ Export unsigned long GetNumberColors(Image *image,FILE *file)
   color_cube.root=InitializeNode(&color_cube,0);
   if (color_cube.root == (NodeInfo *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,
+      ThrowException(&image->exception,ResourceLimitWarning,
         "Unable to determine the number of image colors",
         "Memory allocation failed");
       return(0);
@@ -1075,7 +1075,7 @@ Export unsigned long GetNumberColors(Image *image,FILE *file)
             node_info->child[id]=InitializeNode(&color_cube,level);
             if (node_info->child[id] == (NodeInfo *) NULL)
               {
-                MagickWarning(ResourceLimitWarning,
+                ThrowException(&image->exception,ResourceLimitWarning,
                   "Unable to determine the number of image colors",
                   "Memory allocation failed");
                 return(0);
@@ -1100,7 +1100,7 @@ Export unsigned long GetNumberColors(Image *image,FILE *file)
             ReallocateMemory(node_info->list,(i+1)*sizeof(ColorPacket));
         if (node_info->list == (ColorPacket *) NULL)
           {
-            MagickWarning(ResourceLimitWarning,
+            ThrowException(&image->exception,ResourceLimitWarning,
               "Unable to determine the number of image colors",
               "Memory allocation failed");
             return(0);
@@ -1502,11 +1502,8 @@ Export unsigned int IsPseudoClass(Image *image)
   color_cube.free_nodes=0;
   color_cube.root=InitializeNode(&color_cube,0);
   if (color_cube.root == (NodeInfo *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to determine image class",
-        "Memory allocation failed");
-      return(False);
-    }
+    ThrowBinaryException(ResourceLimitWarning,"Unable to determine image class",
+      "Memory allocation failed");
   for (y=0; (y < (int) image->rows) && (color_cube.colors <= 256); y++)
   {
     p=GetPixelCache(image,0,y,image->columns,1);
@@ -1528,11 +1525,8 @@ Export unsigned int IsPseudoClass(Image *image)
           {
             node_info->child[id]=InitializeNode(&color_cube,level);
             if (node_info->child[id] == (NodeInfo *) NULL)
-              {
-                MagickWarning(ResourceLimitWarning,
-                  "Unable to determine image class","Memory allocation failed");
-                return(False);
-              }
+              ThrowBinaryException(ResourceLimitWarning,
+                "Unable to determine image class","Memory allocation failed");
           }
         node_info=node_info->child[id];
         index--;
@@ -1551,11 +1545,8 @@ Export unsigned int IsPseudoClass(Image *image)
             node_info->list=(ColorPacket *)
               ReallocateMemory(node_info->list,(i+1)*sizeof(ColorPacket));
           if (node_info->list == (ColorPacket *) NULL)
-            {
-              MagickWarning(ResourceLimitWarning,
-                "Unable to determine image class","Memory allocation failed");
-              return(False);
-            }
+            ThrowBinaryException(ResourceLimitWarning,
+              "Unable to determine image class","Memory allocation failed");
           node_info->list[i].red=p->red;
           node_info->list[i].green=p->green;
           node_info->list[i].blue=p->blue;
@@ -1582,11 +1573,8 @@ Export unsigned int IsPseudoClass(Image *image)
         image->colormap=(PixelPacket *) ReallocateMemory((char *)
           image->colormap,image->colors*sizeof(PixelPacket));
       if (image->colormap == (PixelPacket *) NULL)
-        {
-          MagickWarning(ResourceLimitWarning,"Unable to determine image class",
-            "Memory allocation failed");
-          return(False);
-        }
+        ThrowBinaryException(ResourceLimitWarning,
+          "Unable to determine image class","Memory allocation failed");
       for (y=0; y < (int) image->rows; y++)
       {
         q=GetPixelCache(image,0,y,image->columns,1);

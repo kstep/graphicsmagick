@@ -354,14 +354,15 @@ static Image *ReadFITSImage(const ImageInfo *image_info,ExceptionInfo *exception
     fits_pixels=(unsigned char *)
       AllocateMemory(packet_size*image->columns*image->rows);
     if (fits_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     /*
       Convert FITS pixels to pixel packets.
     */
     status=ReadBlob(image,packet_size*image->columns*image->rows,fits_pixels);
     if (status == False)
-      MagickWarning(CorruptImageWarning,"Insufficient image data in file",
-        image->filename);
+      ThrowImageException(CorruptImageWarning,"Insufficient image data in file",
+        image);
     if ((fits_header.min_data == 0.0) && (fits_header.max_data == 0.0))
       {
         /*
