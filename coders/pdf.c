@@ -442,7 +442,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenError,"Unable to write file",image);
   /*
-    Set the page geometry.
+    Set the page density.
   */
   dx_resolution=72.0;
   dy_resolution=72.0;
@@ -455,16 +455,12 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->y_resolution=image->x_resolution;
     }
   FormatString(density,"%gx%g",image->x_resolution,image->y_resolution);
-  SetGeometry(image,&page);
-  page.width=612;
-  page.height=792;
-  (void) GetGeometry(PSPageGeometry,&page.x,&page.y,&page.width,&page.height);
-  portrait=True;
   /*
     Determine page geometry from the PDF media box.
   */
-  box.width=0;
-  box.height=0;
+  memset(&page,0,sizeof(RectangleInfo));
+  memset(&box,0,sizeof(RectangleInfo));
+  portrait=True;
   for (p=command; ; )
   {
     c=ReadBlobByte(image);
@@ -508,6 +504,12 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     page.height=height;
     box=page;
   }
+  if ((page.width == 0) || (page.height == 0))
+    {
+      SetGeometry(image,&page);
+      (void) GetGeometry(PSPageGeometry,&page.x,&page.y,&page.width,
+        &page.height);
+    }
   if (image_info->page != (char *) NULL)
     (void) GetGeometry(image_info->page,&page.x,&page.y,&page.width,
       &page.height);

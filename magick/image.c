@@ -6390,7 +6390,6 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
     magick[2*MaxTextExtent];
 
   unsigned int
-    affirm,
     status;
 
   /*
@@ -6473,7 +6472,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   /*
     Look for explicit 'format:image' in filename.
   */
-  affirm=False;
+  image_info->affirm=False;
   p=image_info->filename;
   while (isalnum((int) *p))
     p++;
@@ -6506,7 +6505,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
             {
               (void) strncpy(image_info->magick,magic,MaxTextExtent-1);
               if (LocaleCompare(magic,"TMP") != 0)
-                affirm=True;
+                image_info->affirm=True;
               else
                 image_info->temporary=True;
             }
@@ -6532,7 +6531,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
         image_info->adjoin&=magick_info->adjoin;
       return(True);
     }
-  if (affirm)
+  if (image_info->affirm)
     return(True);
   /*
     Allocate image structure.

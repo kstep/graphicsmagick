@@ -105,7 +105,7 @@ static unsigned int IsJPEG(const unsigned char *magick,const size_t length)
 #if defined(HasJPEG)
 #define JPEG_INTERNAL_OPTIONS
 #if defined(__MINGW32__)
-# define XMD_H 1 /* Avoid conflicting typedef for INT32 */
+# define XMD_H 1  /* Avoid conflicting typedef for INT32 */
 #endif
 #include <setjmp.h>
 #include "jpeglib.h"

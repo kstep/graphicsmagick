@@ -373,6 +373,7 @@ typedef struct _ImageInfo
   unsigned int
     temporary,
     adjoin,
+    affirm,
     antialias;
 
   unsigned long

@@ -2449,9 +2449,8 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   */
   status=False;
   magick_info=GetMagickInfo(clone_info->magick,&image->exception);
-  if ((magick_info != (const MagickInfo *) NULL) &&
-      (magick_info->encoder !=
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL))
+  if ((magick_info != (const MagickInfo *) NULL) && (magick_info->encoder !=
+      (unsigned int (*)(const ImageInfo *,Image *)) NULL))
     {
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
@@ -2477,12 +2476,11 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           return(!status);
         }
       magick_info=GetMagickInfo(clone_info->magick,&image->exception);
-      if (magick_info == (const MagickInfo *) NULL)
+      if (!clone_info->explicit && (magick_info == (const MagickInfo *) NULL))
         magick_info=(MagickInfo *)
           GetMagickInfo(image->magick,&image->exception);
-      if ((magick_info == (MagickInfo *) NULL) ||
-          (magick_info->encoder ==
-           (unsigned int (*)(const ImageInfo *,Image *)) NULL))
+      if ((magick_info == (MagickInfo *) NULL) || (magick_info->encoder ==
+          (unsigned int (*)(const ImageInfo *,Image *)) NULL))
         {
           DestroyImageInfo(clone_info);
           ThrowBinaryException(MissingDelegateError,

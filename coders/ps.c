@@ -302,24 +302,22 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   FormatString(translate_geometry,"%g %g translate\n              ",0.0,0.0);
   (void) fputs(translate_geometry,file);
   /*
-    Set the page geometry.
+    Set the page density.
   */
   dx_resolution=72.0;
   dy_resolution=72.0;
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
       (void) strcpy(density,PSDensityGeometry);
-      count=sscanf(density,"%lfx%lf",&image->x_resolution,
-        &image->y_resolution);
+      count=sscanf(density,"%lfx%lf",&image->x_resolution,&image->y_resolution);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
   FormatString(density,"%gx%g",image->x_resolution,image->y_resolution);
-  SetGeometry(image,&page);
-  (void) GetGeometry(PSPageGeometry,&page.x,&page.y,&page.width,&page.height);
   /*
     Determine page geometry from the Postscript bounding box.
   */
+  memset(&page,0,sizeof(RectangleInfo));
   filesize=0;
   if (LocaleCompare(image_info->magick,"EPT") == 0)
     {
@@ -377,6 +375,12 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (height > page.height)
       page.height=height;
   }
+  if ((page.width == 0) || (page.height == 0))
+    {
+      SetGeometry(image,&page);
+      (void) GetGeometry(PSPageGeometry,&page.x,&page.y,&page.width,
+        &page.height);
+    }
   if (image_info->page != (char *) NULL)
     (void) GetGeometry(image_info->page,&page.x,&page.y,&page.width,
       &page.height);
