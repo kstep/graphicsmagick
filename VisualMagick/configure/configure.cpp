@@ -508,6 +508,11 @@ do_it_again:
         case SINGLETHREADEDSTATIC:
         case MULTITHREADEDSTATIC:
         case MULTITHREADEDSTATICDLL:
+          if (name.compare("fpx") == 0)
+          {
+            name = "FPXjpeg";
+            do_extra_stuff = true;
+          }
           break;
         default:
         case MULTITHREADEDDLL:
@@ -903,6 +908,8 @@ BOOL CConfigureApp::InitInstance()
 		  libs_list_shared.push_back("kernel32.lib");
 		  libs_list_shared.push_back("user32.lib");
 		  libs_list_shared.push_back("gdi32.lib");
+		  libs_list_shared.push_back("ole32.lib");
+		  libs_list_shared.push_back("oleaut32.lib");
 			defines_list.push_back("_DLL");
 		  defines_list.push_back("_MAGICKMOD_");
 		}
@@ -911,6 +918,8 @@ BOOL CConfigureApp::InitInstance()
 		  libs_list_shared.push_back("kernel32.lib");
 		  libs_list_shared.push_back("user32.lib");
 		  libs_list_shared.push_back("gdi32.lib");
+		  libs_list_shared.push_back("ole32.lib");
+		  libs_list_shared.push_back("oleaut32.lib");
 		  defines_list.push_back("_LIB");
     }
 

@@ -14,12 +14,34 @@
 	#define Commun_h
 //	------------------------------------------------------------------------------------------------
 
-#ifndef FPXEXPORT
-  #define FPXEXPORT extern __declspec(dllexport)
+#if !defined(_VISUALC_)
+#	error Something is very very wrong. This header must only be used under Visual C++.
 #endif
-#ifndef JPEGEXPORT
-  #define JPEGEXPORT extern __declspec(dllexport)
-#endif
+/**
+ * Under VISUALC we have single threaded static libraries, or
+ * mutli-threaded DLLs using the multithreaded runtime DLLs.
+ **/
+#	if defined(_MT) && defined(_DLL) && !defined(_FPXDLL_) && !defined(_LIB)
+#		define _FPXDLL_
+#	endif
+#	if defined(_FPXDLL_)
+#		pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
+#		if !defined(_FPXLIB_)
+#     define JPEGEXPORT extern __declspec(dllimport)
+#     define FPXEXPORT extern __declspec(dllimport)
+#		else
+#     define JPEGEXPORT extern __declspec(dllexport)
+#     define FPXEXPORT extern __declspec(dllexport)
+#		endif
+#	else
+#   define FPXEXPORT extern
+#   define JPEGEXPORT extern
+#	endif
+
+#pragma warning(disable : 4018)
+#pragma warning(disable : 4244)
+#pragma warning(disable : 4142)
+
 
 #ifndef ApplCommun_h
 	#include	"common_a.h"
