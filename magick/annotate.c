@@ -251,7 +251,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       case NorthEastGravity:
       {
         offset.x=x+width+i*draw_info->affine.ry*metrics.height-
-          draw_info->affine.sx*metrics.width+1;
+          draw_info->affine.sx*metrics.width;
         offset.y=y+i*draw_info->affine.sy*metrics.height-
           draw_info->affine.rx*metrics.width;
         break;
@@ -261,7 +261,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
         offset.x=x+i*draw_info->affine.ry*metrics.height+
           draw_info->affine.ry*(metrics.ascent+metrics.descent)/2;
         offset.y=y+0.5*height+i*draw_info->affine.sy*metrics.height+
-          draw_info->affine.sy*(metrics.ascent+metrics.descent)/2+1;
+          draw_info->affine.sy*(metrics.ascent+metrics.descent)/2;
         break;
       }
       case ForgetGravity:
@@ -274,17 +274,17 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
           (metrics.ascent+metrics.descent)/2;
         offset.y=y+0.5*height+i*draw_info->affine.sy*metrics.height-
           draw_info->affine.rx*metrics.width/2+draw_info->affine.sy*
-          (metrics.ascent+metrics.descent)/2+1;
+          (metrics.ascent+metrics.descent)/2;
         break;
       }
       case EastGravity:
       {
         offset.x=x+width+i*draw_info->affine.ry*metrics.height-
           draw_info->affine.sx*metrics.width+draw_info->affine.ry*
-          (metrics.ascent+metrics.descent)/2+1;
+          (metrics.ascent+metrics.descent)/2;
         offset.y=y+0.5*height+i*draw_info->affine.sy*metrics.height-
           draw_info->affine.rx*metrics.width+draw_info->affine.sy*
-          (metrics.ascent+metrics.descent)/2+1;
+          (metrics.ascent+metrics.descent)/2;
         break;
       }
       case SouthWestGravity:
@@ -292,7 +292,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
         offset.x=x+i*draw_info->affine.ry*metrics.height+
           draw_info->affine.ry*(metrics.ascent+metrics.descent);
         offset.y=y+height+i*draw_info->affine.sy*metrics.height+
-          draw_info->affine.sy*(metrics.ascent+metrics.descent)+1;
+          draw_info->affine.sy*(metrics.ascent+metrics.descent);
         break;
       }
       case SouthGravity:
@@ -302,17 +302,17 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
           (metrics.ascent+metrics.descent);
         offset.y=y+height+i*draw_info->affine.sy*metrics.height-
           draw_info->affine.rx*metrics.width/2+draw_info->affine.sy*
-          (metrics.ascent+metrics.descent)+1;
+          (metrics.ascent+metrics.descent);
         break;
       }
       case SouthEastGravity:
       {
         offset.x=x+width+i*draw_info->affine.ry*metrics.height-
           draw_info->affine.sx*metrics.width+draw_info->affine.ry*
-          (metrics.ascent+metrics.descent)+1;
+          (metrics.ascent+metrics.descent);
         offset.y=y+height+i*draw_info->affine.sy*metrics.height-
           draw_info->affine.rx*metrics.width+draw_info->affine.sy*
-          (metrics.ascent+metrics.descent)+1;
+          (metrics.ascent+metrics.descent);
         break;
       }
     }
@@ -1169,11 +1169,11 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     (unsigned int) resolution.y);
   metrics->pixels_per_em.x=face->size->metrics.x_ppem;
   metrics->pixels_per_em.y=face->size->metrics.y_ppem;
-  metrics->ascent=face->size->metrics.ascender >> 6;
-  metrics->descent=face->size->metrics.descender >> 6;
+  metrics->ascent=(face->size->metrics.ascender+32)/64;
+  metrics->descent=(face->size->metrics.descender+32)/64;
   metrics->width=0;
-  metrics->height=face->size->metrics.height >> 6;
-  metrics->max_advance=face->size->metrics.max_advance >> 6;
+  metrics->height=(face->size->metrics.height+32)/64;
+  metrics->max_advance=(face->size->metrics.max_advance+32)/64;
   /*
     Convert to Unicode.
   */
@@ -1227,8 +1227,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           /*
             Trace the glyph.
           */
-          clone_info->affine.tx=offset->x+(glyph.origin.x >> 6);
-          clone_info->affine.ty=offset->y-(glyph.origin.y >> 6);
+          clone_info->affine.tx=offset->x+(glyph.origin.x+32)/64;
+          clone_info->affine.ty=offset->y-(glyph.origin.y+32)/64;
           (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
             &OutlineMethods,clone_info);
         }
@@ -1310,7 +1310,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
       FT_Done_Glyph(last_glyph.image);
     last_glyph=glyph;
   }
-  metrics->width>>=6;
+  metrics->width=(metrics->width+32)/64;
   if (render)
     if ((draw_info->stroke.opacity != TransparentOpacity) ||
         (draw_info->stroke_pattern != (Image *) NULL))
