@@ -327,8 +327,6 @@ static void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
                     mng_info->saved_bkgd_index=mng_info->read_buffer[0];
                     mng_info->have_saved_bkgd_index=True;
                     mng_info->bytes_in_read_buffer=0;
-                    if (mng_info->verbose)
-                      (void) printf("Read a bKGD chunk after empty PLTE.\n");
                   }
             }
         }
@@ -369,34 +367,17 @@ static int PalettesAreEqual(const ImageInfo *image_info,Image *a,Image *b)
     i;
 
   if ((a == (Image *) NULL) || (b == (Image *) NULL))
-    {
-      if (image_info->verbose)
-        (void) printf("PalettesAreEqual: image is NULL.\n");
-      return((int) False);
-    }
+    return((int) False);
   if (!IsPseudoClass(a) || !IsPseudoClass(b))
-    {
-      if (image_info->verbose)
-        (void) printf("PalettesAreEqual: image is not PseudoClass.\n");
-      return((int) False);
-    }
+    return((int) False);
   if (a->colors != b->colors)
-    {
-      if (image_info->verbose)
-        (void) printf("PalettesAreEqual: a->colors=%d and b->colors=%d\n",
-          a->colors,b->colors);
-      return((int) False);
-    }
+    return((int) False);
   for (i=0; i < (int) a->colors; i++)
   {
     if ((a->colormap[i].red != b->colormap[i].red) ||
         (a->colormap[i].green != b->colormap[i].green) ||
         (a->colormap[i].blue != b->colormap[i].blue))
-      {
-        if (image_info->verbose)
-          (void) printf("PalettesAreEqual: Palettes differ.\n");
-        return((int) False);
-      }
+      return((int) False);
   }
   return((int)True);
 }
@@ -415,8 +396,6 @@ static void MngInfoDiscardObject(MngInfo *mng_info,int i)
             {
               if (mng_info->ob[i]->image != (Image *)NULL)
                 DestroyImage(mng_info->ob[i]->image);
-              if (mng_info->verbose)
-                (void) printf("Discarded object buffer[%d]\n",i);
               FreeMemory(mng_info->ob[i]);
             }
         }
@@ -432,8 +411,6 @@ static void MngInfoDiscardObject(MngInfo *mng_info,int i)
       mng_info->object_clip[i].right=PNG_MAX_UINT;
       mng_info->object_clip[i].top=0;
       mng_info->object_clip[i].bottom=PNG_MAX_UINT;
-      if (mng_info->verbose)
-        (void) printf("Discarded object %d\n",i);
     }
 }
 
@@ -444,8 +421,6 @@ static void MngInfoFreeStruct(MngInfo *mng_info,int *have_mng_structure)
       register int
         i;
 
-      if (mng_info->verbose)
-        (void) printf("Free mng structure.\n");
       for (i=1; i < MNG_MAX_OBJECTS; i++)
         MngInfoDiscardObject(mng_info,i);
       if (mng_info->global_plte != (png_colorp) NULL)
@@ -726,10 +701,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   first_mng_object=0;
   skipping_loop=(-1);
   have_mng_structure=False;
-#ifndef MNG_ALWAYS_VERBOSE
-  if (image_info->verbose)
-#endif
-    (void) printf("Reading %s\n",image_info->filename);
   if (Latin1Compare(image_info->magick,"MNG") == 0)
     {
       char
@@ -741,10 +712,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       (void) ReadBlob(image,8,magic_number);
       if (strncmp(magic_number,"\212MNG\r\n\032\n",8) != 0)
         ReaderExit(CorruptImageWarning,"Not a MNG image file",image);
-#ifndef MNG_ALWAYS_VERBOSE
-      if (image_info->verbose)
-#endif
-        (void) printf("Reading MNG file.\n");
       first_mng_object=1;
       /*
         Allocate a MngInfo structure.
@@ -753,11 +720,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       if (mng_info == (MngInfo *) NULL)
         ReaderExit(ResourceLimitWarning,"b. Memory allocation failed", image);
       have_mng_structure=True;
-#ifdef MNG_ALWAYS_VERBOSE
-      mng_info->verbose=True;
-#else
-      mng_info->verbose=image_info->verbose;
-#endif
       mng_info->image=image;
       mng_info->global_plte=(png_colorp) NULL;
       mng_info->global_sbit=(png_color_8p) NULL;
@@ -818,11 +780,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   global_plte_length=0;
   global_trns_length=0;
   mng_background_color=image->background_color;
-#ifndef MNG_ALWAYS_VERBOSE
-  if (image_info->verbose)
-#endif
-    (void) printf("background color is %3d %3d %3d\n",mng_background_color.red,
-      mng_background_color.green, mng_background_color.blue);
   do
   {
     if (Latin1Compare(image_info->magick,"MNG") == 0)
@@ -841,58 +798,13 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         length=MSBFirstReadLong(image);
         status=ReadBlob(image,4,type);
         if (length > PNG_MAX_UINT)
-           status=False;
-        if (mng_info->verbose)
-          {
-            char
-              chunk_name[5];
-
-            if (skip_to_iend)
-              {
-                if (type[0] == 0x4a)   /* 'J' */
-                  (void) printf("Skipping JNG ");
-                else
-                  (void) printf("Skipping PNG ");
-              }
-            else
-              {
-                if (!png_memcmp(type, mng_IHDR, 4))
-                  (void) printf("PNG ");
-                else
-                  {
-                    if (type[0] == 0x4a)   /* 'J' */
-                      (void) printf("Skipping JNG ");
-                    else
-                      (void) printf("MNG ");
-                  }
-              }
-            for (i=0; i<4; i++)
-            {
-               const char
-                 upper[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-                 lower[] = "abcdefghijklmnopqrstuvwxyz";
-
-               if ((type[i] >= 0x41) && (type[i] <= 0x5A))
-                 chunk_name[i]=upper[type[i]-0x41];
-               else
-                 if ((type[i] >= 0x61) && (type[i] <= 0x7A))
-                   chunk_name[i]=lower[type[i]-0x61];
-                 else
-                   {
-                     (void) printf("Invalid byte (0x%x) in chunk name\n",type[i]);
-                     chunk_name[i]=0x3f;   /* '?' */
-                   }
-            }
-            chunk_name[4]=0;
-            (void) printf("chunk %s, length=%lu\n",chunk_name,length);
-          }
+          status=False;
         if (status == False)
           {
             MagickWarning(CorruptImageWarning,"Corrupt MNG image",
               image->filename);
             break;
           }
-
         if (!png_memcmp(type,mng_JHDR,4))
           {
             skip_to_iend=True;
@@ -914,12 +826,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             chunk=(unsigned char *)
               AllocateMemory(length*sizeof(unsigned char));
             if (chunk == (unsigned char *) NULL)
-              {
-                if (mng_info->verbose)
-                  (void) printf("chunk length = %lu\n",length);
-                ReaderExit(ResourceLimitWarning,
-                 "Unable to allocate memory for chunk data", image);
-              }
+              ReaderExit(ResourceLimitWarning,
+               "Unable to allocate memory for chunk data", image);
             for (i=0; i < (int) length; i++)
               chunk[i]=ReadByte(image);
             p=chunk;
@@ -990,13 +898,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             clip=default_fb=previous_fb=frame;
             for (i=0; i < MNG_MAX_OBJECTS; i++)
               mng_info->object_clip[i]=frame;
-            if (mng_info->verbose)
-              {
-                (void) printf("MHDR data:\n");
-                (void) printf("     width=%ld, height=%ld\n",frame.right,frame.bottom);
-                (void) printf("     ticks per second=%lu\n",ticks_per_second);
-                (void) printf("     simplicity profile=0x%8.8x\n",simplicity);
-              }
             FreeMemory(chunk);
             continue;
           }
@@ -1020,9 +921,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 if (image_info->iterations == (char *) NULL)
                   image->iterations=iterations;
                 term_chunk_found=True;
-                if (mng_info->verbose)
-                  (void) printf("TERM: final_delay=%ld, iterations=%ld\n",
-                    final_delay,iterations);
               }
             FreeMemory(chunk);
             continue;
@@ -1076,17 +974,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             */
             if (length>27)
               mng_info->object_clip[object_id]=mng_read_box(frame,0,&p[12]);
-            if (mng_info->verbose)
-              {
-                (void) printf("  DEFI object_id=%d geometry=%ldx%ld%+ld%+ld\n",
-                  object_id, mng_width, mng_height, mng_info->x_off[object_id],
-                  mng_info->y_off[object_id]);
-                (void) printf("  clipping boundaries: L=%ld R=%ld T=%ld B=%ld\n",
-                  mng_info->object_clip[object_id].left,
-                  mng_info->object_clip[object_id].right,
-                  mng_info->object_clip[object_id].top,
-                  mng_info->object_clip[object_id].bottom);
-              }
             FreeMemory(chunk);
             continue;
           }
@@ -1123,13 +1010,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               }
             if (length > 8)
               mng_background_object=(p[7] << 8) | p[8];
-            if (mng_info->verbose)
-              {
-                (void) printf(" Background color= %3d %3d %3d, background object=%d",
-                  mng_background_color.red,mng_background_color.green,
-                  mng_background_color.blue,mng_background_object);
-                (void) printf(" (mandatory =%d)\n",mandatory_back);
-              }
             FreeMemory(chunk);
             continue;
           }
@@ -1322,8 +1202,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   {
                     image->restart_animation_here=True;
                     term_chunk_found=False;
-                    if (mng_info->verbose)
-                      (void) printf("Setting restart_animation_here\n");
                   }
                 image->columns=subframe_width;
                 image->rows=subframe_height;
@@ -1351,9 +1229,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             */
             first_object=(p[0]<<8) | p[1];
             last_object=(p[2]<<8) | p[3];
-            if (mng_info->verbose)
-              (void) printf("CLIP: first_object=%u, last_object=%u\n",
-                first_object,last_object);
             for (i=(int) first_object; i<=(int) last_object; i++)
             {
               if (mng_info->exists[i] && !mng_info->frozen[i])
@@ -1363,10 +1238,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 
                   box=mng_info->object_clip[i];
                   mng_info->object_clip[i]=mng_read_box(box,p[4],&p[5]);
-                  if (mng_info->verbose)
-                    (void) printf("  new clip[%d]: L=%ld, R=%ld, T=%ld, B=%ld\n",
-                       i,mng_info->object_clip[i].left,mng_info->object_clip[i].right,
-                       mng_info->object_clip[i].top,mng_info->object_clip[i].bottom);
                 }
             }
             FreeMemory(chunk);
@@ -1443,9 +1314,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   new_pair=mng_read_pair(old_pair,p[4],&p[5]);
                   mng_info->x_off[i]=new_pair.a;
                   mng_info->y_off[i]=new_pair.b;
-                  if (mng_info->verbose)
-                    (void) printf("  MOVE to x[%d]=%ld, y[%d]=%ld\n",
-                       i,mng_info->x_off[i],i,mng_info->y_off[i]);
                 }
             }
             FreeMemory(chunk);
@@ -1468,11 +1336,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               {
                 mng_info->loop_jump[loop_level]=TellBlob(image);
                 mng_info->loop_count[loop_level]=loop_iters;
-              }
-            if (mng_info->verbose)
-              {
-                (void) printf("loop offset=%ld, ",mng_info->loop_jump[loop_level]);
-                (void) printf("loop iterations=%ld\n",mng_info->loop_count[loop_level]);
               }
             mng_info->loop_iteration[loop_level]=0;
             FreeMemory(chunk);
@@ -1497,11 +1360,11 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               {
                 if (mng_info->loop_active[loop_level] == 1)
                   {
-                    if (mng_info->verbose)
-                      (void) printf("Processing ENDL chunk.\n");
                     mng_info->loop_count[loop_level]--;
                     mng_info->loop_iteration[loop_level]++;
-                    if (mng_info->loop_count[loop_level] == 0)
+                    if (mng_info->loop_count[loop_level] != 0)
+                      SeekBlob(image,mng_info->loop_jump[loop_level],SEEK_SET);
+                    else
                       {
                         int
                           last_level;
@@ -1516,16 +1379,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                           if (mng_info->loop_active[i] == 1)
                             last_level=i;
                         loop_level=last_level;
-                      }
-                    else
-                      {
-                        /*
-                          Jump back for another iteration of loop.
-                        */
-                        if (mng_info->verbose != 0)
-                          (void) printf("LOOP back to %ld for another iteration\n",
-                            mng_info->loop_jump[loop_level]);
-                        SeekBlob(image, mng_info->loop_jump[loop_level], SEEK_SET);
                       }
                   }
               }
@@ -1651,17 +1504,11 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           {
             if (!image_info->decode_all_MNG_objects)
               {
-                if (mng_info->verbose)
-                  (void) printf("skipping invisible object %d...\n",object_id);
                 skip_to_iend=True;
                 FreeMemory(chunk);
                 continue;
               }
           }
-        if (mng_info->verbose)
-          (void) printf("  object_id=%d geometry=%ldx%ld%+ld%+ld\n",
-            object_id, mng_width, mng_height, mng_info->x_off[object_id],
-            mng_info->y_off[object_id]);
         /*
           Insert a background layer behind the upcoming image if
           framing_mode is 3 and transparency might be present.
@@ -1693,8 +1540,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   {
                     image->restart_animation_here=True;
                     term_chunk_found=False;
-                    if (mng_info->verbose)
-                      (void) printf("Setting restart_animation_here\n");
                   }
                 delay=image->delay;
                 image->delay=0;
@@ -1708,10 +1553,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 image->matte=False;
                 SetImage(image);
                 image->delay=delay;
-                if (image_info->verbose)
-                  (void) printf("inserted a layer with color %5d %5d %5d\n",
-                    image->background_color.red,image->background_color.green,
-                    image->background_color.blue);
               }
           }
         /*
@@ -1768,8 +1609,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           {
             image->restart_animation_here=True;
             term_chunk_found=False;
-            if (mng_info->verbose)
-              (void) printf("Setting restart_animation_here\n");
           }
         if (framing_mode == 1 || framing_mode == 3)
           {
@@ -1946,13 +1785,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             if (global_plte_length)
               {
                 png_set_PLTE(ping,ping_info,mng_info->global_plte,global_plte_length);
-                if (mng_info->verbose)
-                  (void) printf("setting global PLTE.\n");
                 if (!(ping_info->valid & PNG_INFO_tRNS))
                   if (global_trns_length)
                     {
-                      if (mng_info->verbose)
-                        (void) printf("setting global tRNS.\n");
                       if (global_trns_length > global_plte_length)
                         MagickWarning(DelegateWarning,
                           "global tRNS has more entries than global PLTE",
@@ -2026,11 +1861,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             image->background_color.blue=
               (unsigned short)XDownScale(ping_info->background.blue);
           }
-        if (image_info->verbose)
-          (void) printf("image background  = %5d %5d %5d (bKGD = %5d %5d %5d)\n",
-            image->background_color.red,image->background_color.green,
-            image->background_color.blue,ping_info->background.red,
-            ping_info->background.green,ping_info->background.blue);
       }
 #endif
     if (ping_info->valid & PNG_INFO_tRNS)
@@ -2047,16 +1877,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             transparent_color.red=transparent_color.opacity;
             transparent_color.green=transparent_color.opacity;
             transparent_color.blue=transparent_color.opacity;
-          }
-        if (image_info->verbose)
-          {
-            (void) printf("transparent color = %5d %5d %5d (tRNS = %5d %5d %5d %5d)\n",
-                transparent_color.red,transparent_color.green,
-                transparent_color.blue,ping_info->trans_values.red,
-                ping_info->trans_values.green,ping_info->trans_values.blue,
-                ping_info->trans_values.index);
-            if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
-              (void) printf("transparent color index= %5d\n",transparent_color.opacity);
           }
       }
 #if defined(PNG_READ_sBIT_SUPPORTED)
@@ -2079,11 +1899,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         frame=image_box;
         clip=image_box;
       }
-#ifndef MNG_ALWAYS_VERBOSE
-    if (image_info->verbose)
-#endif
-      (void) printf("  Image width=%lu, height=%lu, delay=%d\n",
-        ping_info->width,ping_info->height,image->delay);
     image->compression=ZipCompression;
     image->columns=(unsigned int) ping_info->width;
     image->rows=(unsigned int) ping_info->height;
@@ -2102,8 +1917,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         MngInfoFreeStruct(mng_info,&have_mng_structure);
         return(image);
       }
-    if (image_info->verbose)
-      (void) printf("rowbytes=%ld\n",ping_info->rowbytes);
     png_pixels=(unsigned char *)
       AllocateMemory(ping_info->rowbytes*image->rows*sizeof(Quantum));
     scanlines=(unsigned char **)
@@ -2152,8 +1965,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         /*
           Convert image to DirectClass pixel packets.
         */
-        if (image_info->verbose)
-          (void) printf("Converting DirectClass pixels\n");
         if ((ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
             (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
             (ping_info->valid & PNG_INFO_tRNS))
@@ -2191,8 +2002,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         register Quantum
           *r;
 
-        if (image_info->verbose)
-          (void) printf("Converting PseudoClass pixels\n");
         /*
           Convert image to PseudoClass pixel packets.
         */
@@ -2376,9 +2185,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             /*
               create a new object buffer.
             */
-            if (mng_info->verbose)
-              (void) printf("Allocating memory for object buffer[%d]\n",object_id);
-            mng_info->ob[object_id]=(MngInfoBuffer *) AllocateMemory(sizeof(MngInfoBuffer));
+            mng_info->ob[object_id]=(MngInfoBuffer *)
+              AllocateMemory(sizeof(MngInfoBuffer));
             if (mng_info->ob[object_id] != (MngInfoBuffer *)NULL)
               {
                 mng_info->ob[object_id]->image=(Image *) NULL;
@@ -2409,28 +2217,17 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               compression_method,
               filter_method;
 
-            if (mng_info->verbose)
-              {
-                if (mng_info->ob[object_id]->image != (Image *)NULL)
-                  (void) printf("Creating object buffer[%d]\n",object_id);
-                else
-                  (void) printf("Updating object buffer[%d]\n",object_id);
-              }
             if (mng_info->ob[object_id]->image != (Image *)NULL)
               DestroyImage(mng_info->ob[object_id]->image);
             image->orphan=True;
             mng_info->ob[object_id]->image=
               CloneImage(image,image->columns,image->rows,True);
             image->orphan=False;
-            if (mng_info->ob[object_id]->image == (Image *)NULL)
+            if (mng_info->ob[object_id]->image != (Image *)NULL)
+              mng_info->ob[object_id]->image->file=(FILE *)NULL;
+            else
               MagickWarning(ResourceLimitWarning,
                 "Cloning image for object buffer failed",image->filename);
-            else
-              {
-                if (mng_info->verbose)
-                  (void) printf("Copied image to object buffer[%d]\n",object_id);
-                mng_info->ob[object_id]->image->file=(FILE *)NULL;
-              }
             png_get_IHDR(ping,ping_info,&width,&height,&bit_depth,&color_type,
               &interlace_method,&compression_method,&filter_method);
             mng_info->ob[object_id]->width=width;
@@ -2469,10 +2266,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     png_destroy_read_struct(&ping,&ping_info,&end_info);
     FreeMemory(png_pixels);
     FreeMemory(scanlines);
-#ifndef MNG_ALWAYS_VERBOSE
-    if (image_info->verbose)
-#endif
-      (void) printf("Destroyed the png read structure\n");
     if (mng_type)
       {
         MngBox
@@ -2518,14 +2311,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 image->page_info.y=0;
                 image->orphan=True;
                 p=CropImage(image,&crop_info);
-                image->orphan=False;
-                if (p == (Image *) NULL)
-                  {
-                    if (mng_info->verbose)
-                      MagickWarning(ResourceLimitWarning,"Unable to crop image",
-                       "Who knows why?");
-                  }
-                else
+                if (p != (Image *) NULL)
                   {
                     image->columns=p->columns;
                     image->rows=p->rows;
@@ -2543,9 +2329,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     image->page_info.height=image->rows;
                     image->page_info.x=crop_box.left;
                     image->page_info.y=crop_box.top;
-                    if (mng_info->verbose)
-                      (void) printf("  object_id %d cropped to geometry=%s\n",
-                        object_id,page_geometry);
                   }
               }
             else
@@ -2564,9 +2347,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 image->page_info.height=1;
                 image->page_info.x=0;
                 image->page_info.y=0;
-                if (mng_info->verbose)
-                  (void) printf("  object_id %d cropped to geometry=%s\n",
-                    object_id,page_geometry);
               }
           }
         if (image_info->coalesce_frames)
@@ -2576,10 +2356,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           }
       }
   } while (Latin1Compare(image_info->magick,"MNG") == 0);
-#ifndef MNG_ALWAYS_VERBOSE
-  if (image_info->verbose)
-#endif
-    (void) printf("Supposedly there are %d visible images.\n",image_found);
   if (image_info->insert_backdrops && !image_found && (mng_width > 0) &&
       (mng_height > 0))
     {
@@ -2615,9 +2391,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
      image->delay=100*final_delay/ticks_per_second;
   else
      image->delay=final_delay;
-  if (image_info->verbose)
-     (void) printf("terminal delay=%d (final_delay=%ld, tps=%ld)\n",image->delay,
-       final_delay,ticks_per_second);
   while (image->previous != (Image *) NULL)
   {
     image_count++;
@@ -2646,17 +2419,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       MngInfoFreeStruct(mng_info,&have_mng_structure);
       return((Image *) NULL);
     }
-#ifndef MNG_ALWAYS_VERBOSE
-  if (image_info->verbose)
-#endif
-    (void) printf("Finished loading %d visible images.\n",image_found);
   CloseBlob(image);
   MngInfoFreeStruct(mng_info,&have_mng_structure);
   have_mng_structure=False;
-#ifndef MNG_ALWAYS_VERBOSE
-  if (image_info->verbose)
-#endif
-    (void) printf("Free'ed the mng structure if there was one.\n");
   return(image);
 }
 #else
@@ -2788,9 +2553,6 @@ static void WriteTextChunk(const ImageInfo *image_info,png_info *ping_info,
     image_info->compression == NoCompression ||
     (image_info->compression == UndefinedCompression &&
     ping_info->text[i].text_length < 128) ? -1 : 0;
-  if (image_info->verbose)
-    (void) printf("image_info->compression = %d for text chunk %d\n",
-      image_info->compression,i);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -2866,8 +2628,6 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
-  if (image_info->verbose)
-    (void) printf("Writing PNG image\n");
   use_global_plte=False;
   page_info.width=0;
   page_info.height=0;
@@ -3009,11 +2769,6 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           use_global_plte=False;
           need_local_plte=True;
         }
-     if (image_info->verbose)
-       {
-         (void) printf("initial delay=%d, final delay=%d\n",initial_delay,final_delay);
-         (void) printf("need_defi=%d, need_fram=%d\n",need_defi,need_fram);
-       }
      if (!need_fram)
        {
          /*
@@ -3043,8 +2798,6 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            ticks_per_second=1;
          if (final_delay > 125)
            need_fram=True;
-         if (image_info->verbose)
-            (void) printf("final delay=%d, need_fram=%d\n",final_delay,need_fram);
          if (need_defi && final_delay > 2 && (final_delay != 4) &&
              (final_delay != 5) && (final_delay != 10) && (final_delay != 20) &&
              (final_delay != 25) && (final_delay != 50) && (final_delay != 100))
@@ -3096,10 +2849,6 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          chunk[4]=3;  /* repeat animation */
          chunk[5]=0;  /* show last frame when done */
          PNGLong(chunk+6, (png_uint_32)(ticks_per_second*final_delay/100));
-         if (image_info->verbose)
-            (void) printf(
-             "Wrote MNG TERM chunk with delay=%d (tps=%d, final_delay=%d)\n",
-              ticks_per_second*final_delay/100,ticks_per_second,final_delay);
          if (image->iterations == 0)
            PNGLong(chunk+10, PNG_MAX_UINT);
          else
@@ -3393,23 +3142,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               (((!image->matte ||
               ((p->opacity >> 8) & 0xff) == (p->opacity & 0xff)))));
             if (!ok_to_reduce)
-              {
-                if (image_info->verbose)
-                  {
-                    int ii;
-                    (void) printf("Cannot reduce 16-bit samples to 8-bit because\n");
-                    (void) printf("packet %d has ",i);
-                    (void) printf("  red=%04x, ",p->red);
-                    (void) printf("green=%04x, ",p->green);
-                    (void) printf(" blue=%04x",p->blue);
-                    if (image->matte)
-                      (void) printf(", alpha=%04x",p->opacity);
-                    (void) printf(".\n");
-                    (void) printf("\nPackets:\n");
-                    p=image->pixels;
-                  }
-                break;
-              }
+              break;
             p++;
           }
           if (x < (int) image->columns)
@@ -3417,8 +3150,6 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         }
         if (ok_to_reduce)
           {
-            if (image_info->verbose)
-              (void) printf("Reducing 16-bit samples to 8-bit.\n");
             ping_info->bit_depth=8;
             image->depth=8;
           }
@@ -3516,8 +3247,6 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             /*
               No transparent pixels are present.  Changes 4 or 6 to 0 or 2.
             */
-            if (image_info->verbose)
-              (void) printf("There are no transparent pixels.\n");
             image->matte=False;
             ping_info->color_type&=0x03;
           }
@@ -3539,25 +3268,21 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                     if (!ColorMatch(ping_info->trans_values,*p,0))
                       {
                         ping_info->valid&=(~PNG_INFO_tRNS);
-                        if (image_info->verbose)
-                          (void) printf("There are two or more transparent colors.\n");
                         break;
                       }
                     if (p->opacity)
                       {
                         ping_info->valid&=(~PNG_INFO_tRNS);
-                        if (image_info->verbose)
-                          (void) printf("A semitransparent color is present.\n");
                       }
                   }
                  else
                   {
                     if (ColorMatch(ping_info->trans_values,*p,0))
                       {
-                        /* Can't use RGB + tRNS */
+                        /*
+                          Can't use RGB + tRNS.
+                        */
                         ping_info->valid&=(~PNG_INFO_tRNS);
-                        if (image_info->verbose)
-                          (void) printf("A color is both transparent and opaque.\n");
                         break;
                       }
                   }
@@ -3571,8 +3296,6 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->color_type &= 0x03;  /* changes 4 or 6 to 0 or 2 */
             if (save_image_depth == 16 && image->depth == 8)
               {
-                if (image_info->verbose)
-                  (void) printf("reducing trans_values to 8-bit\n");
                 ping_info->trans_values.red&=0xff;
                 ping_info->trans_values.green&=0xff;
                 ping_info->trans_values.blue&=0xff;
@@ -3594,16 +3317,10 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           ping_info->color_type=PNG_COLOR_TYPE_PALETTE;
           ping_info->valid|=PNG_INFO_PLTE;
           if (have_write_global_plte)
-            {
-              if (image_info->verbose)
-                (void) printf("writing empty PLTE chunk\n");
-              ping_info->num_palette=0;
-            }
+            ping_info->num_palette=0;
           else
             {
               ping_info->num_palette=image->colors;
-              if (image_info->verbose)
-                (void) printf("Allocating memory for palette\n");
               ping_info->palette=(png_color *)
                 AllocateMemory(image->colors*sizeof(png_color));
               if (ping_info->palette == (png_color *) NULL)
@@ -3626,8 +3343,6 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             {
               if (save_image_depth == 16 && image->depth == 8)
                 {
-                  if (image_info->verbose)
-                    (void) printf("re-expanding trans_values to 16-bit\n");
                   ping_info->trans_values.red*=0x0101;
                   ping_info->trans_values.green*=0x0101;
                   ping_info->trans_values.blue*=0x0101;
@@ -3636,8 +3351,6 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               /*
                 Identify which colormap entry is transparent.
               */
-              if (image_info->verbose)
-                (void) printf("Allocating memory for trans\n");
               ping_info->trans=(unsigned char *)
                 AllocateMemory(image->colors*sizeof(unsigned char));
               if (ping_info->trans == (unsigned char *) NULL)
@@ -3653,8 +3366,6 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                   }
               }
               ping_info->num_trans=i+1;
-              if (image_info->verbose)
-                (void) printf("transparent index = %d of %d\n",i,image->colors);
             }
           /*
             Identify which colormap entry is the background color.
@@ -3664,16 +3375,8 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             if (ColorMatch(ping_info->background,image->colormap[i],0))
               break;
           }
-          if (image_info->verbose)
-            (void) printf("background index = %d of %d\n",i,image->colors);
           ping_info->background.index=(unsigned short) i;
         }
-    if (image_info->verbose)
-      {
-        if (image->colors)
-          (void) printf("image->colors = %d\n",image->colors);
-        (void) printf("ping_info->color_type = %d\n",ping_info->color_type);
-      }
     image->matte=matte;
 #if defined(PNG_WRITE_sRGB_SUPPORTED)
     if (!have_write_global_srgb &&
@@ -3832,12 +3535,6 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     else
       if (IsGrayImage(image))
         {
-          if (image_info->verbose)
-            {
-              (void) printf("Writing GrayImage, QuantumDepth=%d and depth=%d\n",
-                QuantumDepth,image->depth);
-              (void) printf("columns=%d, rowbytes=%d\n",image->columns,rowbytes);
-            }
           for (y=0; y < (int) image->rows; y++)
           {
             if (!GetPixelCache(image,0,y,image->columns,1))
@@ -3850,13 +3547,6 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         }
       else
         {
-          if (image_info->verbose)
-            {
-               (void) printf("Writing image, QuantumDepth=%d and depth=%d\n",
-                 QuantumDepth,image->depth);
-               (void) printf("columns=%d, rowbytes=%d\n",image->columns,
-                 rowbytes);
-             }
           if (image->depth > 8 || !IsPseudoClass(image))
             for (y=0; y < (int) image->rows; y++)
             {

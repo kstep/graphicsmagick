@@ -59,9 +59,6 @@
 #include <sys/times.h>
 #include <limits.h>
 #endif
-#if defined(vms)
-#define CLK_TCK  1000;
-#endif
 #if defined(macintosh)
 #define CLK_TCK  CLOCKS_PER_SEC
 #endif
@@ -160,7 +157,7 @@ static double ElapsedTime(void)
 
   GetSystemTime(&system_time);
   SystemTimeToFileTime(&system_time,&elapsed_time.filetime);
-  return((double) CLK_TCK*elapsed_time.filetime64);
+  return((double) 1.0e-7*elapsed_time.filetime64);
 #endif
 }
 
@@ -442,6 +439,6 @@ static double UserTime(void)
     &kernel_time.filetime,&user_time.filetime);
   if (status != TRUE)
     return(0.0);
-  return((double) CLK_TCK*(kernel_time.filetime64+user_time.filetime64));
+  return((double) 1.0e-7*(kernel_time.filetime64+user_time.filetime64));
 #endif
 }

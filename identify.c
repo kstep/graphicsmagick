@@ -275,7 +275,7 @@ int main(int argc,char **argv)
     {
       if (p->scene == 0)
         p->scene=count++;
-      DescribeImage(p,(FILE *) NULL,image_info.verbose);
+      DescribeImage(p,stdout,image_info.verbose);
     }
     DestroyImages(image);
     number_images++;

@@ -1188,7 +1188,7 @@ int main(int argc,char **argv)
   }
   (void) strcpy(montage_image->magick_filename,argv[argc-1]);
   if (image_info.verbose)
-    DescribeImage(montage_image,(FILE *) NULL,False);
+    DescribeImage(montage_image,stderr,False);
   DestroyImages(montage_image);
   DestroyDelegateInfo();
   FreeMemory(argv);

@@ -69,166 +69,166 @@
 #
 
 <=bzip
-	|/usr/local/bin/bzip2 -f > %o
+	|bzip2 -f > %o
 
 <=compress
-	|/usr/bin/compress -c > %o
+	|compress -c > %o
 
 <=show
-	/usr/local/bin/display -immutable -window_group %g -title "%l of %f" tmp:%o &
+	display -immutable -window_group %g -title "%l of %f" tmp:%o &
 
 <=zip
-	|/usr/local/bin/gzip -cf > %o
+	|gzip -cf > %o
 
 browse=>
-	/usr/local/bin/netscape http://www.wizards.dupont.com/cristy/ImageMagick.html &
+	netscape http://www.wizards.dupont.com/cristy/ImageMagick.html &
 
 bzip=>
-	|/usr/local/bin/bzip2 -cd %i
+	|bzip2 -cd %i
 
 cgm=>
-	/usr/local/bin/ralcgm -d ps %i %o %u
-	/usr/local/bin/convert -concatenate %o*.ps %o
+	ralcgm -d ps %i %o %u
+	convert -concatenate %o*.ps %o
 
 compress=>
-	|/usr/bin/uncompress -c %i
+	|uncompress -c %i
 
 dot=>
-	/usr/local/bin/dot -Tps %i -o %o 
+	dot -Tps %i -o %o 
 
 dvi=>
-	/usr/local/bin/dvips -q -o %o %i
+	dvips -q -o %o %i
 
 edit=>
-	/usr/openwin/bin/xterm -title "Edit Image Comment" -e vi %o
+	xterm -title "Edit Image Comment" -e vi %o
 
 emf=>
-	/usr/local/bin/wmftogif %i %o
+	wmftogif %i %o
 
 eps<=>pdf
-	/usr/local/bin/gs -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	gs -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 eps<=>ps
-	/usr/local/bin/gs -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	gs -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 file=>
-	/usr/local/bin/GET %m:%i > %o 2>&1
+	GET %m:%i > %o 2>&1
 
 fig=>
-	/usr/local/bin/fig2dev -L ps %i %o
+	fig2dev -L ps %i %o
 
 ftp=>
-	/usr/local/bin/GET %m:%i > %o 2>&1
+	GET %m:%i > %o 2>&1
 
 # Gnuplot format (rendered as Postscript)
 # Add additional gnuplot commands to the input file to adjust output.
 gplt=>
-	/usr/bin/echo "set size 1.25,0.62; set terminal postscript portrait color solid; set output '%o'; load '%i'" > %u
-	/usr/local/bin/gnuplot %u
+	echo "set size 1.25,0.62; set terminal postscript portrait color solid; set output '%o'; load '%i'" > %u
+	gnuplot %u
 
 gs-color=>
-	/usr/local/bin/gs -dMaxBitmap=300000000 -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
+	gs -dMaxBitmap=300000000 -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 gs-mono=>
-	/usr/local/bin/gs -dMaxBitmap=300000000 -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
+	gs -dMaxBitmap=300000000 -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 hpgl=>
-	/usr/local/bin/hp2xx -q -m eps -f `basename %o` %i
+	hp2xx -q -m eps -f `basename %o` %i
 	mv `basename %o` %o
 
 htm=>
-	/usr/local/bin/html2ps -U -o %o %i
+	html2ps -U -o %o %i
 
 html=>
-	/usr/local/bin/html2ps -U -o %o %i
+	html2ps -U -o %o %i
 
 http=>
-	/usr/local/bin/GET %m:%i > %o 2>&1
+	GET %m:%i > %o 2>&1
 
 ilbm=>
-	/usr/local/bin/ilbmtoppm %i > %o 
+	ilbmtoppm %i > %o 
 
 man=>
-	/usr/local/bin/groff -man -Tps %i > %o
+	groff -man -Tps %i > %o
 
 mpg=>
-	/usr/local/bin/mpeg2decode -q -b %i -f -r -o3 %o%%05d
-	/usr/local/bin/convert -concatenate %o*.ppm %o
+	mpeg2decode -q -b %i -f -r -o3 %o%%05d
+	convert -concatenate %o*.ppm %o
 
 m2v=>
-	/usr/local/bin/mpeg2decode -q -b %i -f -r -o3 %o%%05d
-	/usr/local/bin/convert -concatenate %o*.ppm %o
+	mpeg2decode -q -b %i -f -r -o3 %o%%05d
+	convert -concatenate %o*.ppm %o
 
 pdf<=>eps
-	/usr/local/bin/gs -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	gs -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 pdf<=>ps
-	/usr/local/bin/gs -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	gs -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 pgp=>
 	pgpv -fq %i
 
 pnm<=ilbm
-	/usr/local/bin/ppmtoilbm -24if %i > %o
+	ppmtoilbm -24if %i > %o
 
 pnm<=launch
-	/usr/local/bin/gimp %i
+	gimp %i
 
 pnm<=win
-	/usr/local/bin/display -immutable %i
+	display -immutable %i
 
 pov=>
-	/usr/local/bin/povray +i%i +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n
-	/usr/local/bin/convert -concatenate %o*.png %o
+	povray +i%i +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n
+	convert -concatenate %o*.png %o
 
 ps<=>eps
-	/usr/local/bin/gs -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	gs -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=>pdf
-	/usr/local/bin/gs -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	gs -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=print
-	/usr/bin/lp -c -s %i
+	lp -c -s %i
 
 rad=>
-	/usr/local/bin/ra_ppm -g 1.0 %i %o
+	ra_ppm -g 1.0 %i %o
 
 rgba<=rle
-	/usr/local/bin/mogrify -flip -size %wx%h rgba:%i
-	/usr/local/bin/rawtorle -w %w -h %h -n 4 -o %o %i
+	mogrify -flip -size %wx%h rgba:%i
+	rawtorle -w %w -h %h -n 4 -o %o %i
 
 scan=>
-	/usr/local/bin/scanimage -d %i > %o
+	scanimage -d %i > %o
 
 shtml=>
-	/usr/local/bin/html2ps -U -o %o %i
+	html2ps -U -o %o %i
 
 txt<=>ps
-	/usr/local/bin/enscript -o %o %i
+	enscript -o %o %i
 
 wmf=>
-	/usr/local/bin/wmftogif %i %o
+	wmftogif %i %o
 
 xcf=>
 	xcftopnm %i > %o 
 
 yuv<=m2v
-	/usr/local/bin/mpeg2encode %u %o
-	/usr/local/bin/convert -concatenate %i*.yuv %u
+	mpeg2encode %u %o
+	convert -concatenate %i*.yuv %u
 
 yuv<=mpg
-	/usr/local/bin/mpeg2encode %u %o
-	/usr/local/bin/convert -concatenate %i*.yuv %u
+	mpeg2encode %u %o
+	convert -concatenate %i*.yuv %u
 
 zip=>
-	|/usr/local/bin/gzip -cdfq %i
+	|gzip -cdfq %i

@@ -1714,7 +1714,7 @@ int main(int argc,char **argv)
       break;
   }
   if (image_info.verbose)
-    DescribeImage(image,(FILE *) NULL,False);
+    DescribeImage(image,stderr,False);
   DestroyImages(image);
   DestroyDelegateInfo();
   FreeMemory(argv);

@@ -245,6 +245,7 @@ typedef enum
 {
   IndexQuantum,
   GrayQuantum,
+  IndexOpacityQuantum,
   GrayOpacityQuantum,
   RedQuantum,
   CyanQuantum,

@@ -598,6 +598,7 @@ void ReadPixelCache(Image *image,QuantumTypes quantum,unsigned char *source)
       }
       break;
     }
+    case IndexOpacityQuantum:
     case GrayOpacityQuantum:
     {
       if (image->colors <= 256)
@@ -1195,10 +1196,7 @@ void WritePixelCache(Image *image,QuantumTypes quantum,
               break;
             }
           for (x=0; x < (int) image->columns; x++)
-          {
             *q++=image->indexes[x];
-            p++;
-          }
           break;
         }
       if (destination == (unsigned char *) NULL)
@@ -1211,7 +1209,6 @@ void WritePixelCache(Image *image,QuantumTypes quantum,
       {
         *q++=image->indexes[x] >> 8;
         *q++=image->indexes[x] & 0xff;
-        p++;
       }
       break;
     }
@@ -1251,6 +1248,54 @@ void WritePixelCache(Image *image,QuantumTypes quantum,
       {
         *q++=Intensity(*p) >> 8;
         *q++=Intensity(*p) & 0xff;
+        p++;
+      }
+      break;
+    }
+    case IndexOpacityQuantum:
+    {
+      if (image->depth <= 8)
+        {
+          if (destination == (unsigned char *) NULL)
+            {
+              for (x=0; x < (int) image->columns; x++)
+              {
+                (void) WriteByte(image,image->indexes[x]);
+                (void) WriteByte(image,p->opacity);
+                p++;
+              }
+              break;
+            }
+          for (x=0; x < (int) image->columns; x++)
+          {
+            *q++=image->indexes[x];
+            *q++=p->opacity;
+            p++;
+          }
+          break;
+        }
+      if (destination == (unsigned char *) NULL)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            if ((QuantumDepth-image->depth) > 0)
+              MSBFirstWriteShort(image,257*image->indexes[x]);
+            else
+              MSBFirstWriteShort(image,image->indexes[x]);
+            if ((QuantumDepth-image->depth) > 0)
+              MSBFirstWriteShort(image,257*p->opacity);
+            else
+              MSBFirstWriteShort(image,p->opacity);
+            p++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        *q++=image->indexes[x] >> 8;
+        *q++=image->indexes[x] & 0xff;
+        *q++=p->opacity >> 8;
+        *q++=p->opacity & 0xff;
         p++;
       }
       break;

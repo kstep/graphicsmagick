@@ -2086,8 +2086,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
 
 
   assert(image != (Image *) NULL);
-  if (file == (FILE *) NULL)
-    file=stdout;
+  assert(file != (FILE *) NULL);
   if (!verbose)
     {
       double
@@ -2145,7 +2144,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       user_time=GetUserTime(&image->timer_info);
       ContinueTimer(&image->timer_info);
       (void) fprintf(file,"%.1024s %.1fu %d:%02d\n",image->magick,user_time,
-        (int) (elapsed_time/60.0),(int) fmod(elapsed_time,60.0));
+        (int) (elapsed_time/60.0),(int) fmod(elapsed_time+0.5,60.0));
       return;
     }
   /*

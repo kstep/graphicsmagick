@@ -1912,17 +1912,10 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
 {
 #define ShadeImageText  "  Shading image...  "
 
-   typedef struct _VectorPacket
-   {
-     int
-       x,
-       y,
-       z;
-   } VectorPacket;
-
   double
     distance,
-    normal_distance;
+    normal_distance,
+    shade;
 
   Image
     *shade_image;
@@ -1933,8 +1926,9 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
   int
     y;
 
-  long
-    shade;
+  PointInfo
+    light,
+    normal;
 
   register int
     i,
@@ -1946,14 +1940,10 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
     *p2,
     *q;
 
-  VectorPacket
-    light,
-    normal;
-
-  assert(image != (Image *) NULL);
   /*
     Initialize shaded image attributes.
   */
+  assert(image != (Image *) NULL);
   shade_image=CloneImage(image,image->columns,image->rows,True);
   if (shade_image == (Image *) NULL)
     {
@@ -1992,10 +1982,10 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
   */
   azimuth=DegreesToRadians(azimuth);
   elevation=DegreesToRadians(elevation);
-  light.x=(int) (MaxRGB*cos(azimuth)*cos(elevation));
-  light.y=(int) (MaxRGB*sin(azimuth)*cos(elevation));
-  light.z=(int) (MaxRGB*sin(elevation));
-  normal.z=(int) ((6.0*MaxRGB)/3.0);  /* constant Z of surface normal */
+  light.x=MaxRGB*cos(azimuth)*cos(elevation);
+  light.y=MaxRGB*sin(azimuth)*cos(elevation);
+  light.z=MaxRGB*sin(elevation);
+  normal.z=(6.0*MaxRGB)/3.0;  /* constant Z of surface normal */
   /*
     Shade image.
   */
@@ -2025,27 +2015,26 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
         shade=light.z;
       else
         {
-          shade=0;
-          distance=(double)
-            (normal.x*light.x+normal.y*light.y+normal.z*light.z);
+          shade=0.0;
+          distance=normal.x*light.x+normal.y*light.y+normal.z*light.z;
           if (distance > 0.0)
             {
               normal_distance=
                 normal.x*normal.x+normal.y*normal.y+normal.z*normal.z;
               if (AbsoluteValue(normal_distance) > 0.0000001)
-                shade=(long int) (distance/sqrt(normal_distance));
+                shade=distance/sqrt(normal_distance);
             }
         }
       if (shade_image->class == DirectClass)
         {
-          q->red=(Quantum) (((long) p->red*shade) >> QuantumDepth);
-          q->green=(Quantum) (((long) p->green*shade) >> QuantumDepth);
-          q->blue=(Quantum) (((long) p->blue*shade) >> QuantumDepth);
-          q->opacity=(p+image->columns)->opacity;
+          q->red=((unsigned long) (p->red*shade)) >> QuantumDepth;
+          q->green=((unsigned long) (p->green*shade)) >> QuantumDepth;
+          q->blue=((unsigned long) (p->blue*shade)) >> QuantumDepth;
+          q->opacity=p1->opacity;
         }
       else
         {
-          index=(unsigned short) shade;
+          index=shade;
           shade_image->indexes[x]=index;
           q->red=shade_image->colormap[index].red;
           q->green=shade_image->colormap[index].green;

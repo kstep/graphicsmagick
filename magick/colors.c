@@ -935,15 +935,25 @@ Export void CompressColormap(Image *image)
     i,
     x;
 
+  unsigned char
+    *marker;
+
   /*
     Determine if colormap can be compressed.
   */
   assert(image != (Image *) NULL);
   if (image->class != PseudoClass)
     return;
+  marker=(unsigned char *) AllocateMemory(image->colors*sizeof(unsigned char));
+  if (marker == (unsigned char *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to compress colormap",
+        "Memory allocation failed");
+      return;
+    }
   number_colors=image->colors;
   for (i=0; i < (int) image->colors; i++)
-    image->colormap[i].opacity=False;
+    marker[i]=False;
   image->colors=0;
   for (y=0; y < (int) image->rows; y++)
   {
@@ -952,20 +962,20 @@ Export void CompressColormap(Image *image)
     for (x=0; x < (int) image->columns; x++)
     {
       index=image->indexes[x];
-      if (!image->colormap[index].opacity)
+      if (!marker[index])
         {
           /*
             Eliminate duplicate colors.
           */
           for (i=0; i < number_colors; i++)
-            if ((i != index) && image->colormap[i].opacity)
+            if ((i != index) && marker[i])
               if (ColorMatch(image->colormap[index],image->colormap[i],0))
                 break;
           if (i != number_colors)
             image->colormap[index].opacity=image->colormap[i].opacity;
           else
             image->colormap[index].opacity=image->colors++;
-          image->colormap[index].opacity=True;
+          marker[index]=True;
         }
     }
   }
@@ -979,6 +989,7 @@ Export void CompressColormap(Image *image)
     {
       MagickWarning(ResourceLimitWarning,"Unable to compress colormap",
         "Memory allocation failed");
+      FreeMemory(marker);
       image->colors=number_colors;
       return;
     }
@@ -986,13 +997,14 @@ Export void CompressColormap(Image *image)
     Eliminate unused colormap entries.
   */
   for (i=0; i < number_colors; i++)
-    if (image->colormap[i].opacity)
+    if (marker[i])
       {
         index=image->colormap[i].opacity;
         colormap[index].red=image->colormap[i].red;
         colormap[index].green=image->colormap[i].green;
         colormap[index].blue=image->colormap[i].blue;
       }
+  FreeMemory(marker);
   /*
     Remap pixels.
   */
@@ -1699,9 +1711,6 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
   static FILE
     *database = (FILE *) NULL;
 
-  unsigned int
-    status;
-
   /*
     Initialize color return value.
   */
@@ -1809,9 +1818,9 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
           continue;
         if (Latin1Compare(colorname,target) == 0)
           {
-            color->red=red;
-            color->green=green;
-            color->blue=blue;
+            color->red=UpScale(red);
+            color->green=UpScale(green);
+            color->blue=UpScale(blue);
             return(True);
           }
       }
@@ -1834,6 +1843,9 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
   {
     XColor
       xcolor;
+
+    unsigned int
+      status;
 
     status=XQueryColorDatabase(target,&xcolor);
     color->red=XDownScale(xcolor.red);

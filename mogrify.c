@@ -1446,7 +1446,7 @@ int main(int argc,char **argv)
         for (p=image; p != (Image *) NULL; p=p->next)
           scene--;
         if (image_info.verbose)
-          DescribeImage(image,(FILE *) NULL,False);
+          DescribeImage(image,stderr,False);
         if ((format == (char *) NULL) && (status != False))
           if (Latin1Compare(image_info.filename,"-") != 0)
             {

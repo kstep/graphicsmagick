@@ -621,7 +621,12 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
       if (image->compression != RunlengthEncodedCompression)
         {
           if (image->class == PseudoClass)
-            ReadPixelCache(image,IndexQuantum,pixels);
+            {
+              if (!image->matte)
+                ReadPixelCache(image,IndexQuantum,pixels);
+              else
+                ReadPixelCache(image,IndexOpacityQuantum,pixels);
+            }
           else
             if (image->colorspace == CMYKColorspace)
               ReadPixelCache(image,CMYKQuantum,pixels);
@@ -1083,7 +1088,12 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       if (compression != RunlengthEncodedCompression)
         {
           if (image->class == PseudoClass)
-            WritePixelCache(image,IndexQuantum,pixels);
+            {
+              if (!image->matte)
+                WritePixelCache(image,IndexQuantum,pixels);
+              else
+                WritePixelCache(image,IndexOpacityQuantum,pixels);
+            }
           else
             if (image->colorspace == CMYKColorspace)
               WritePixelCache(image,CMYKQuantum,pixels);

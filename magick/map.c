@@ -294,9 +294,9 @@ Export unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
       *q++=image->colormap[i].red >> 8;
       *q++=image->colormap[i].red & 0xff;
       *q++=image->colormap[i].green >> 8;
-      *q++=image->colormap[i].green  & 0xff;
+      *q++=image->colormap[i].green & 0xff;
       *q++=image->colormap[i].blue >> 8;
-      *q++=image->colormap[i].blue  & 0xff;
+      *q++=image->colormap[i].blue & 0xff;
     }
   (void) WriteBlob(image,packet_size*image->colors,(char *) colormap);
   FreeMemory(colormap);

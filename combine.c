@@ -959,7 +959,7 @@ int main(int argc,char **argv)
   SetImageInfo(&image_info,True);
   status=WriteImage(&image_info,combined_image);
   if (image_info.verbose)
-    DescribeImage(combined_image,(FILE *) NULL,False);
+    DescribeImage(combined_image,stderr,False);
   DestroyImages(combined_image);
   DestroyDelegateInfo();
   FreeMemory(argv);

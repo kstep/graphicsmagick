@@ -1422,7 +1422,7 @@ int main(int argc,char **argv)
                 (void) WriteImage(image_info,image);
               }
             if (image_info->verbose)
-              DescribeImage(image,(FILE *) NULL,False);
+              DescribeImage(image,stderr,False);
             /*
               Proceed to next/previous image.
             */

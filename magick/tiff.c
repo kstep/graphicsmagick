@@ -56,7 +56,6 @@
 
 #if defined(HasTIFF)
 #include "tiffio.h"
-#include "tiffconf.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -134,7 +133,7 @@ Export unsigned int IsTIFF(const unsigned char *magick,
 extern "C" {
 #endif
 
-#if defined(ICC_SUPPORT)
+#if defined(ICCPROFILE)
 static unsigned int ReadColorProfile(char *text,long int length,Image *image)
 {
   register unsigned char
@@ -162,7 +161,7 @@ static unsigned int ReadColorProfile(char *text,long int length,Image *image)
 }
 #endif
 
-#if defined(IPTC_SUPPORT)
+#if defined(TIFFTAG_RICHTIFFIPTC)
 static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
   int type)
 {
@@ -438,14 +437,14 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
       }
     length=0;
     text=(char *) NULL;
-#if defined(ICC_SUPPORT)
+#if defined(ICCPROFILE)
     TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&text);
     ReadColorProfile(text,length,image);
 #endif
-#if defined(IPTC_SUPPORT)
+#if defined(TIFFTAG_RICHTIFFIPTC)
     length=0;
     text=(char *) NULL;
-#if defined(PHOTOSHOP_SUPPORT)
+#if defined(TIFFTAG_PHOTOSHOP)
     TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&text);
     if (length > 0)
       ReadNewsProfile(text,length,image,TIFFTAG_PHOTOSHOP);
@@ -701,7 +700,8 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
             {
               for (x=0; x < (int) image->columns; x++)
               {
-                *r=(*p++ << 8) | (*p++);
+                *r=(*p++ << 8);
+                *r|=(*p++);
                 r++;
               }
               break;
@@ -942,7 +942,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
 %
 */
 
-#if defined(IPTC_SUPPORT)
+#if defined(TIFFTAG_RICHTIFFIPTC)
 static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 {
   register int
@@ -1105,9 +1105,6 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
   int
     y;
-
-  register PixelPacket
-    *p;
 
   register int
     i,
@@ -1359,13 +1356,13 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         chromaticity[1]=image->chromaticity.white_point.y;
         TIFFSetField(tiff,TIFFTAG_WHITEPOINT,chromaticity);
       }
-#if defined(ICC_SUPPORT)
+#if defined(ICCPROFILE)
     if (image->color_profile.length > 0)
       TIFFSetField(tiff,TIFFTAG_ICCPROFILE,(uint32) image->color_profile.length,
         (void *) image->color_profile.info);
 #endif
-#if defined(IPTC_SUPPORT)
-#if defined(PHOTOSHOP_SUPPORT)
+#if defined(TIFFTAG_RICHTIFFIPTC)
+#if defined(TIFFTAG_PHOTOSHOP)
     if (image->iptc_profile.length > 0)
       WriteNewsProfile(tiff,TIFFTAG_PHOTOSHOP,image);
 #else
@@ -1588,7 +1585,6 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 bit=0;
                 byte=0;
               }
-            p++;
           }
           if (bit != 0)
             *q++=byte << (8-bit);

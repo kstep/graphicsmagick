@@ -235,8 +235,7 @@ typedef struct _MngInfo
     phyg_warning,
     phys_warning,
     sbit_warning,
-    show_warning,
-    verbose;
+    show_warning;
 
 #ifdef MNG_BASI_SUPPORTED
   unsigned long

@@ -930,29 +930,8 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
         break;
       }
     if (image_info->subrange != 0)
-      {
-        if (image->scene < image_info->subimage)
-          {
-            Image
-              subimage;
-
-            /*
-              Destroy image.
-            */
-            subimage=(*image);
-            image->file=(FILE *) NULL;
-            DestroyImage(image);
-            image=AllocateImage(image_info);
-            if (image == (Image *) NULL)
-              return((Image *) NULL);
-            image->file=subimage.file;
-            image->scene=subimage.scene+1;
-            image_count=0;
-          }
-        else
-          if (image->scene >= (image_info->subimage+image_info->subrange-1))
-            break;
-      }
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
   }
   if (global_colormap != (unsigned char *) NULL)
     FreeMemory(global_colormap);
