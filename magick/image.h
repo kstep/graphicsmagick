@@ -209,6 +209,15 @@ typedef struct _SegmentInfo
     y2;
 } SegmentInfo;
 
+typedef struct _VirtualPixel
+{
+  VirtualPixelMethod
+    method;
+
+  PixelPacket
+    pixel;
+} VirtualPixel;
+
 typedef struct _Ascii85Info _Ascii85Info_;
 
 typedef struct _BlobInfo _BlobInfo_;
@@ -325,6 +334,9 @@ typedef struct _Image
 
   void
     *client_data;
+
+  VirtualPixel
+    virtual_pixel;
 
   void
     *cache;
@@ -689,20 +701,11 @@ extern MagickExport void
   DestroyMagick(void),
   DestroyMagickInfo(void),
   DestroyMontageInfo(MontageInfo *),
-  GetImageException(Image *,ExceptionInfo *),
+	GetImageException(Image *,ExceptionInfo *),
   GetImageInfo(ImageInfo *),
   GetMontageInfo(const ImageInfo *,MontageInfo *),
   InitializeMagick(const char *),
   ModifyImage(Image **,ExceptionInfo *),
-  SetImage(Image *,const Quantum),
-  SetImageOpacity(Image *,const unsigned int),
-  SetImageType(Image *,const ImageType),
-  SolarizeImage(Image *,const double),
-  SyncImage(Image *),
-  TextureImage(Image *,const Image *),
-  TransformImage(Image **,const char *,const char *);
-
-extern ModuleExport void
   RegisterARTImage(void),
   RegisterAVIImage(void),
   RegisterAVSImage(void),
@@ -827,6 +830,13 @@ extern ModuleExport void
   RegisterXVImage(void),
   RegisterXWDImage(void),
   RegisterYUVImage(void),
+  SetImage(Image *,const Quantum),
+  SetImageOpacity(Image *,const unsigned int),
+  SetImageType(Image *,const ImageType),
+  SolarizeImage(Image *,const double),
+  SyncImage(Image *),
+  TextureImage(Image *,const Image *),
+  TransformImage(Image **,const char *,const char *),
   UnregisterARTImage(void),
   UnregisterAVIImage(void),
   UnregisterAVSImage(void),

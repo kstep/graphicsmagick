@@ -64,14 +64,8 @@
 static off_t
   cache_memory = ~0;
 
-static PixelPacket
-  virtual_pixel = { 0, 0, 0, 0};
-
 static SemaphoreInfo
   *cache_semaphore = (SemaphoreInfo *) NULL;
-
-static VirtualPixelMethod
-  virtual_pixel_method = EdgeVPMethod;
 
 /*
   Declare pixel cache interfaces.
@@ -290,13 +284,8 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
             Transfer a single pixel.
           */
           span=1;
-          switch (virtual_pixel_method)
+          switch (image->virtual_pixel.method)
           {
-            case ConstantVPMethod:
-            {
-              p=(&virtual_pixel);
-              break;
-            }
             case EdgeVPMethod:
             default:
             {
@@ -314,6 +303,11 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
             {
               p=AcquireCacheNexus(image,MirrorX(x+u),MirrorY(y+v),1,1,
                 image_nexus,exception);
+              break;
+            }
+            case ConstantVPMethod:
+            {
+              p=(&image->virtual_pixel.pixel);
               break;
             }
           }
@@ -2607,55 +2601,6 @@ MagickExport void SetPixelCacheMethods(AcquirePixelHandler acquire_pixel,
   acquire_one_pixel_from_handler=acquire_one_pixel_from;
   get_one_pixel_from_handler=get_one_pixel_from;
   destroy_pixel_handler=destroy_pixel;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t V i r t u a l P i x e l M e t h o d                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SetVirtualPixelMethod() sets the method used to define "virtual" pixels.
-%  A virtual pixel is any pixel access that is outside the boundaries of the
-%  image.
-%
-%  The format of the SetVirtualPixelMethod() method is:
-%
-%      SetVirtualPixelMethod(const VirtualPixelMethod method,
-%        const PixelPacket *pixel)
-%
-%  A description of each parameter follows:
-%
-%    o method: choose from these access methods:
-%
-%        ConstantVPMethod:  every value outside the image is a constant as
-%        defines by the pixel parameter.
-%
-%        EdgeVPMethod:  the edge pixels of the image extend infinitely.
-%        Any pixel outside the image is assigned the same value as the
-%        pixel at the edge closest to it.
-%
-%        TileVPMethod:  the image extends periodically or tiled.  The pixels
-%        wrap around the edges of the image.
-%
-%        MirrorVPMethod:  mirror the image at the boundaries.
-%
-%    o pixel: the constant pixel value for the ConstantVPMethod method.
-%      This value is ignored for other access methods.
-%
-%
-*/
-MagickExport void SetVirtualPixelMethod(const VirtualPixelMethod method,
-  const PixelPacket *pixel)
-{
-  virtual_pixel_method=method;
-  if (pixel != (PixelPacket *) NULL)
-    virtual_pixel=(*pixel);
 }
 
 /*
