@@ -50,13 +50,16 @@ AC_EXEEXT
 AC_OBJEXT
 
 if test "${GCC}" != "yes" ; then
-    case "${host}" in
-          *-*-hpux* )
-               CFLAGS="${CFLAGS} -Wp,-H30000"
-               ;;
-    esac
+  case "${host}" in
+    *-*-hpux* )
+      # aCC: HP ANSI C++ B3910B A.03.34
+      CFLAGS="${CFLAGS} -Wp,-H30000"
+      CXX="${CXX} -AA"
+      LDFLAGS="${LDFLAGS} -AA"
+      ;;
+  esac
 else
-    CFLAGS="${CFLAGS} -Wall"
+  CFLAGS="${CFLAGS} -Wall"
 fi
 
 #

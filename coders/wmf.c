@@ -487,13 +487,8 @@ static void ipa_bmp_free(wmfAPI * API, wmfBMP * bmp)
  */
 static void ipa_device_open(wmfAPI * API)
 {
-  DrawInfo
-    *draw_info;
-
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData (API);
-
-  /* draw_info = CloneDrawInfo(ddata->image_info,(DrawInfo*)NULL); */
 
   ddata->pattern_id = 0;
   ddata->clipping = False;
@@ -502,8 +497,6 @@ static void ipa_device_open(wmfAPI * API)
   ddata->push_depth = 0;
 
   ddata->draw_context = DrawAllocateContext((DrawInfo*)NULL,ddata->image);
-
-  /* DestroyDrawInfo(draw_info); */
 }
 
 /*

@@ -369,8 +369,8 @@ MagickExport void DrawSetAffine(DrawContext context, const AffineMatrix *affine)
 #endif
 
   MvgPrintf(context, "affine %.4g,%.4g,%.4g,%.4g,%.4g,%.4g\n",
-             affine->sy, affine->rx, affine->ry, affine->sy,
-             affine->tx, affine->ty);
+            affine->sy, affine->rx, affine->ry, affine->sy,
+            affine->tx, affine->ty);
 }
 
 MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
@@ -428,7 +428,7 @@ MagickExport void DrawArc(DrawContext context,
   assert(context->signature == MagickSignature);
 
   MvgPrintf(context, "arc %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",
-             sx, sy, ex, ey, sd, ed);
+            sx, sy, ex, ey, sd, ed);
 }
 
 MagickExport void DrawBezier(DrawContext context, const size_t num_coords,
@@ -462,7 +462,7 @@ MagickExport void DrawSetClipPath(DrawContext context, const char *clip_path)
       CloneString(&CurrentContext->clip_path,clip_path);
 #if 0
       (void) DrawClipPath(context->image,context->graphic_context[context->index,
-                          CurrentContext->clip_path));
+                                                                 CurrentContext->clip_path));
 #endif
       MvgPrintf(context, "clip-path url(#%s)\n", clip_path);
     }
@@ -606,7 +606,7 @@ MagickExport void DrawEllipse(DrawContext context,
   assert(context->signature == MagickSignature);
 
   MvgPrintf(context, "ellipse %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",
-             ox, oy, rx, ry, start, end);
+            ox, oy, rx, ry, start, end);
 }
 
 MagickExport void DrawSetFillColor(DrawContext context,
@@ -1061,7 +1061,7 @@ MagickExport void DrawComposite(DrawContext context,
         *str;
 
       MvgPrintf(context, "image %s %.4g,%.4g %.4g,%.4g 'data:%s;base64,\n",
-                      mode, x, y, width, height, media_type);
+                mode, x, y, width, height, media_type);
 
       remaining = strlen(base64);
       for( str = base64; remaining > 0; )
@@ -1127,7 +1127,7 @@ MagickExport void DrawPathClose(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  MvgPrintf(context, "%s", context->path_mode == AbsolutePathMode ? "Z" : "z");
+  MvgAutoWrapPrintf(context, "%s", context->path_mode == AbsolutePathMode ? "Z" : "z");
 }
 
 static void DrawPathCurveTo(DrawContext context,
@@ -1144,11 +1144,13 @@ static void DrawPathCurveTo(DrawContext context,
     {
       context->path_operation = PathCurveToOperation;
       context->path_mode = mode;
-      MvgPrintf(context, "%c%.4g,%.4g %.4g,%.4g %.4g,%.4g",
-                 mode == AbsolutePathMode ? 'C' : 'c', x1, y1, x2, y2, x, y);
+      MvgAutoWrapPrintf(context, "%c%.4g,%.4g %.4g,%.4g %.4g,%.4g",
+                        mode == AbsolutePathMode ? 'C' : 'c',
+                        x1, y1, x2, y2, x, y);
     }
   else
-    MvgPrintf(context, " %.4g,%.4g %.4g,%.4g %.4g,%.4g", x1, y1, x2, y2, x, y);
+    MvgAutoWrapPrintf(context, " %.4g,%.4g %.4g,%.4g %.4g,%.4g",
+                      x1, y1, x2, y2, x, y);
 }
 
 MagickExport void DrawPathCurveToAbsolute(DrawContext context,
@@ -1186,11 +1188,11 @@ static void DrawPathCurveToQuadraticBezier(DrawContext context,
     {
       context->path_operation = PathCurveToQuadraticBezierOperation;
       context->path_mode = mode;
-      MvgPrintf(context, "%c%.4g,%.4g %.4g,%.4g",
-                 mode == AbsolutePathMode ? 'Q' : 'q', x1, y1, x, y);
+      MvgAutoWrapPrintf(context, "%c%.4g,%.4g %.4g,%.4g",
+                        mode == AbsolutePathMode ? 'Q' : 'q', x1, y1, x, y);
     }
   else
-    MvgPrintf(context, " %.4g,%.4g %.4g,%.4g", x1, y1, x, y);
+    MvgAutoWrapPrintf(context, " %.4g,%.4g %.4g,%.4g", x1, y1, x, y);
 }
 
 MagickExport void DrawPathCurveToQuadraticBezierAbsolute(DrawContext context,
@@ -1229,11 +1231,11 @@ static void DrawPathCurveToQuadraticBezierSmooth(DrawContext context,
     {
       context->path_operation = PathCurveToQuadraticBezierSmoothOperation;
       context->path_mode = mode;
-      MvgPrintf(context, "%c%.4g,%.4g", mode == AbsolutePathMode ? 'T' : 't', x,
-                    y);
+      MvgAutoWrapPrintf(context, "%c%.4g,%.4g",
+                        mode == AbsolutePathMode ? 'T' : 't', x, y);
     }
   else
-    MvgPrintf(context, " %.4g,%.4g", x, y);
+    MvgAutoWrapPrintf(context, " %.4g,%.4g", x, y);
 }
 
 MagickExport void DrawPathCurveToQuadraticBezierSmoothAbsolute(DrawContext
@@ -1267,11 +1269,11 @@ static void DrawPathCurveToSmooth(DrawContext context, const PathMode mode,
     {
       context->path_operation = PathCurveToSmoothOperation;
       context->path_mode = mode;
-      MvgPrintf(context, "%c%.4g,%.4g %.4g,%.4g",
-                    mode == AbsolutePathMode ? 'S' : 's', x2, y2, x, y);
+      MvgAutoWrapPrintf(context, "%c%.4g,%.4g %.4g,%.4g",
+                        mode == AbsolutePathMode ? 'S' : 's', x2, y2, x, y);
     }
   else
-    MvgPrintf(context, " %.4g,%.4g %.4g,%.4g", x2, y2, x, y);
+    MvgAutoWrapPrintf(context, " %.4g,%.4g %.4g,%.4g", x2, y2, x, y);
 }
 
 MagickExport void DrawPathCurveToSmoothAbsolute(DrawContext context,
@@ -1309,13 +1311,13 @@ static void DrawPathEllipticArc(DrawContext context, const PathMode mode,
     {
       context->path_operation = PathEllipticArcOperation;
       context->path_mode = mode;
-      MvgPrintf(context, "%c%.4g,%.4g %.4g %u %u %.4g,%.4g",
-                 mode == AbsolutePathMode ? 'A' : 'a', rx, ry, x_axis_rotation,
-                 large_arc_flag, sweep_flag, x, y);
+      MvgAutoWrapPrintf(context, "%c%.4g,%.4g %.4g %u %u %.4g,%.4g",
+                        mode == AbsolutePathMode ? 'A' : 'a', rx, ry, x_axis_rotation,
+                        large_arc_flag, sweep_flag, x, y);
     }
   else
-    MvgPrintf(context, " %.4g,%.4g %.4g %u %u %.4g,%.4g", rx, ry,
-               x_axis_rotation, large_arc_flag, sweep_flag, x, y);
+    MvgAutoWrapPrintf(context, " %.4g,%.4g %.4g %u %u %.4g,%.4g", rx, ry,
+                      x_axis_rotation, large_arc_flag, sweep_flag, x, y);
 }
 
 MagickExport void DrawPathEllipticArcAbsolute(DrawContext context,
@@ -1329,7 +1331,7 @@ MagickExport void DrawPathEllipticArcAbsolute(DrawContext context,
   assert(context->signature == MagickSignature);
 
   DrawPathEllipticArc(context, AbsolutePathMode, rx, ry, x_axis_rotation,
-                         large_arc_flag, sweep_flag, x, y);
+                      large_arc_flag, sweep_flag, x, y);
 }
 
 MagickExport void DrawPathEllipticArcRelative(DrawContext context,
@@ -1340,7 +1342,7 @@ MagickExport void DrawPathEllipticArcRelative(DrawContext context,
                                               const double x, const double y)
 {
   DrawPathEllipticArc(context, RelativePathMode, rx, ry, x_axis_rotation,
-                         large_arc_flag, sweep_flag, x, y);
+                      large_arc_flag, sweep_flag, x, y);
 }
 
 MagickExport void DrawPathFinish(DrawContext context)
@@ -1365,11 +1367,11 @@ static void DrawPathLineTo(DrawContext context,
     {
       context->path_operation = PathLineToOperation;
       context->path_mode = mode;
-      MvgPrintf(context, "%c%.4g,%.4g", mode == AbsolutePathMode ? 'L' : 'l', x,
-                 y);
+      MvgAutoWrapPrintf(context, "%c%.4g,%.4g",
+                        mode == AbsolutePathMode ? 'L' : 'l', x, y);
     }
   else
-    MvgPrintf(context, " %.4g,%.4g", x, y);
+    MvgAutoWrapPrintf(context, " %.4g,%.4g", x, y);
 }
 
 MagickExport void DrawPathLineToAbsolute(DrawContext context,
@@ -1401,10 +1403,11 @@ static void DrawPathLineToHorizontal(DrawContext context,
     {
       context->path_operation = PathLineToHorizontalOperation;
       context->path_mode = mode;
-      MvgPrintf(context, "%c%.4g", mode == AbsolutePathMode ? 'H' : 'h', x);
+      MvgAutoWrapPrintf(context, "%c%.4g",
+                        mode == AbsolutePathMode ? 'H' : 'h', x);
     }
   else
-    MvgPrintf(context, " %.4g", x);
+    MvgAutoWrapPrintf(context, " %.4g", x);
 }
 
 MagickExport void DrawPathLineToHorizontalAbsolute(DrawContext context,
@@ -1433,10 +1436,11 @@ static void DrawPathLineToVertical(DrawContext context, const PathMode mode,
     {
       context->path_operation = PathLineToVerticalOperation;
       context->path_mode = mode;
-      MvgPrintf(context, "%c%.4g", mode == AbsolutePathMode ? 'V' : 'v', y);
+      MvgAutoWrapPrintf(context, "%c%.4g",
+                        mode == AbsolutePathMode ? 'V' : 'v', y);
     }
   else
-    MvgPrintf(context, " %.4g", y);
+    MvgAutoWrapPrintf(context, " %.4g", y);
 }
 
 MagickExport void DrawPathLineToVerticalAbsolute(DrawContext context,
@@ -1468,11 +1472,11 @@ static void DrawPathMoveTo(DrawContext context, const PathMode mode,
     {
       context->path_operation = PathMoveToOperation;
       context->path_mode = mode;
-      MvgPrintf(context, "%c%.4g,%.4g", mode == AbsolutePathMode ? 'M' : 'm', x,
-                 y);
+      MvgAutoWrapPrintf(context, "%c%.4g,%.4g",
+                        mode == AbsolutePathMode ? 'M' : 'm', x, y);
     }
   else
-    MvgPrintf(context, " %.4g,%.4g", x, y);
+    MvgAutoWrapPrintf(context, " %.4g,%.4g", x, y);
 }
 
 MagickExport void DrawPathMoveToAbsolute(DrawContext context, const double x,
@@ -1634,7 +1638,7 @@ MagickExport void DrawPushPattern(DrawContext context,
   context->filter_off = True;
 
   MvgPrintf(context, "push pattern %s %.4g,%.4g %.4g,%.4g\n",
-    pattern_id, x, y, width, height);
+            pattern_id, x, y, width, height);
   context->indent_depth++;
 }
 
@@ -1691,7 +1695,7 @@ MagickExport void DrawRoundRectangle(DrawContext context,
   assert(context->signature == MagickSignature);
 
   MvgPrintf(context, "roundrectangle %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",
-                x1, y1, x2, y2, rx, ry);
+            x1, y1, x2, y2, rx, ry);
 }
 
 MagickExport void DrawSetScale(DrawContext context,
