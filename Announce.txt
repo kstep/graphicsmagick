@@ -1,23 +1,21 @@
 The ImageMagick Studio LLC development group announces the release of
-ImageMagick 5.4.3. Version 5.4.3 is a feature release but also resolves
+ImageMagick 5.4.3.  Version 5.4.3 is a feature release but also resolves
 bugs reported against 5.4.2.
 
-ImageMagick is a robust collection of tools and libraries to read,
-write, and manipulate an image in many image formats (over 72 major
-formats) including popular formats like FlashPIX, GIF, JPEG, PDF, PNG,
-Photo CD, SVG, TIFF, and WMF.  With ImageMagick you can create images
-dynamically, making it suitable for Web applications.  You can also
-resize, rotate, sharpen, color reduce, or add special effects to an
-image and save your completed work in the same or differing image
-format.  Image processing operations are available from the command
-line, as well as through C, C++, and PERL-based programming
-interfaces.
+ImageMagick is a robust collection of tools and libraries to read, write,
+and manipulate an image in many image formats (over 72 major formats)
+including popular formats like FlashPIX, GIF, JPEG, PDF, PNG, Photo CD,
+SVG, TIFF, and WMF.  With ImageMagick you can create images dynamically,
+making it suitable for Web applications.  You can also resize, rotate,
+sharpen, color reduce, or add special effects to an image and save your
+completed work in the same or differing image format.  Image processing
+operations are available from the command line, as well as through C,
+C++, and PERL-based programming interfaces.
 
-ImageMagick is copyrighted by ImageMagick Studio, a nonprofit
-organization dedicated to making software imaging solutions freely
-available.  ImageMagick is available for free, may be used to support
-both open and proprietary applications, and may be redistributed
-without fee.
+ImageMagick is copyrighted by ImageMagick Studio, a nonprofit organization
+dedicated to making software imaging solutions freely available.
+ImageMagick is available for free, may be used to support both open and
+proprietary applications, and may be redistributed without fee.
 
 Significant changes from the 5.4.2 release (see release ChangeLog
 for details):
