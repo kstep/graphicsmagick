@@ -571,8 +571,13 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
       ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
     {
       ThrowException(&image->exception,StreamWarning,
-        "Unable to set pixel stream",
-        "image does not contain the stream geometry");
+        "Unable to set pixel stream","image does not contain the geometry");
+      return((PixelPacket *) NULL);
+    }
+  if (image->fifo == (int (*)(const Image *,const void *,const size_t)) NULL)
+    {
+      ThrowException(&image->exception,StreamWarning,
+        "Unable to set pixel stream","no fifo is defined");
       return((PixelPacket *) NULL);
     }
   stream_info=(StreamInfo *) image->cache;
