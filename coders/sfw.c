@@ -239,10 +239,10 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read image into a buffer.
   */
-  buffer=(unsigned char *) AcquireMemory(image->filesize);
+  buffer=(unsigned char *) AcquireMemory(image->blob.filesize);
   if (buffer == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  status=ReadBlob(image,image->filesize,(char *) buffer);
+  status=ReadBlob(image,image->blob.filesize,(char *) buffer);
   if ((status == False) || (LocaleNCompare((char *) buffer,"SFW",3) != 0))
     ThrowReaderException(CorruptImageWarning,"Not a SFW image file",image);
   CloseBlob(image);
@@ -250,7 +250,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Find the start of the JFIF data
   */
-  header=SFWScan(buffer,buffer+image->filesize-1,(unsigned char *)
+  header=SFWScan(buffer,buffer+image->blob.filesize-1,(unsigned char *)
     "\377\310\377\320",4);
   if (header == (unsigned char *) NULL)
     {
@@ -273,7 +273,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset+=(offset[2] << 8)+offset[3]+2;
   }
   offset--;
-  data=SFWScan(offset,buffer+image->filesize-1,(unsigned char *) "\377\311",2);
+  data=SFWScan(offset,buffer+image->blob.filesize-1,(unsigned char *) "\377\311",2);
   if (data == (unsigned char *) NULL)
     {
       LiberateMemory((void **) &buffer);

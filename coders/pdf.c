@@ -296,7 +296,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   (void) fclose(file);
   CloseBlob(image);
-  filesize=image->filesize;
+  filesize=image->blob.filesize;
   /*
     Use Ghostscript to convert Postscript image.
   */
@@ -333,7 +333,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     (void) strcpy(image->magick,"PDF");
     (void) strcpy(filename,image_info->filename);
-    image->filesize=filesize;
+    image->blob.filesize=filesize;
     if (!portrait)
       {
         Image

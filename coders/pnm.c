@@ -606,7 +606,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->blob.filesize);
       }
   } while ((status == True) && (format == 'P'));
   while (image->previous != (Image *) NULL)

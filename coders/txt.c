@@ -217,12 +217,12 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) strcpy(image->next->filename,filename);
     image->next->blob=image->blob;
     image->next->file=image->file;
-    image->next->filesize=image->filesize;
+    image->next->filesize=image->blob.filesize;
     image->next->scene=image->scene+1;
     image->next->previous=image;
     image=image->next;
     SetImage(image,OpaqueOpacity);
-    MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
+    MagickMonitor(LoadImagesText,TellBlob(image),image->blob.filesize);
     /*
       Initialize text image to background color.
     */

@@ -718,7 +718,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->blob.filesize);
       }
   } while ((status == True) && (viff_info.identifier == 0xab));
   while (image->previous != (Image *) NULL)
