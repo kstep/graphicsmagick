@@ -1,5 +1,7 @@
 2003-04-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* version.sh (PACKAGE_VERSION): Update release version ID.
+	* magick/version.h (MagickReleaseDate): Update release date.
 	* magick/constitute.c (ConstituteImage): Fixed problems with
 	reading intensity (gray) pixel arrays.
 	* magick/image.c (GrayscalePseudoClassImage): Use

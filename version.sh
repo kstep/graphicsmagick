@@ -9,13 +9,13 @@ PACKAGE_NAME='GraphicsMagick'
 #
 # Package version.  This is is the numeric version suffix applied to
 # PACKAGE_NAME (e.g. "1.0.0").
-PACKAGE_VERSION='1.0.0'
+PACKAGE_VERSION='1.0'
 #
 # Package version addendum.  This is an arbitrary suffix (if any)
 # appended to the package version. (e.g. "beta1")
 
 # To hardcode the version addendum, uncomment the following line
-PACKAGE_VERSION_ADDENDUM='-Beta0'
+PACKAGE_VERSION_ADDENDUM='-Beta1'
 
 # If addendum is not defined above, then form a snapshot attendum.
 if test "${PACKAGE_VERSION_ADDENDUM}X" = 'X'
