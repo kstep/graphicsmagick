@@ -1921,13 +1921,19 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
     }
     case WriteMode:
     {
-      file=open(cache_info->cache_filename,O_WRONLY | O_CREAT | O_BINARY,0777);
+      file=open(cache_info->cache_filename,O_WRONLY | O_CREAT | O_BINARY |
+        O_EXCL,0777);
+      if (file == -1)
+        file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,0777);
       break;
     }
     case IOMode:
     default:
     {
-      file=open(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY,0777);
+      file=open(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY |
+        O_EXCL,0777);
+      if (file == -1)
+        file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
       break;
     }
   }
