@@ -1028,10 +1028,6 @@ MagickExport unsigned int OpenCache(Image *image)
       threshold=PixelCacheThreshold;
       if (getenv("MAGICK_CACHE_THRESHOLD") != (char *) NULL)
         threshold=atoi(getenv("MAGICK_CACHE_THRESHOLD"));
-#if defined(_SC_PAGESIZE) && defined(_SC_PHYS_PAGES)
-      if (threshold > (sysconf(_SC_PAGESIZE)*sysconf(_SC_PHYS_PAGES)/1048576))
-        threshold=sysconf(_SC_PAGESIZE)*sysconf(_SC_PHYS_PAGES)/1048576;
-#endif
       SetCacheThreshold(threshold);
     }
   cache_info=(CacheInfo *) image->cache;
