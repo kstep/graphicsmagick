@@ -548,7 +548,15 @@ namespace Magick
   class DrawableCompositeImage : public DrawableBase
   {
   public:
-    
+    DrawableCompositeImage ( double x_, double y_,
+                             const std::string &image_ )
+      : _x(x_),
+        _y(y_),
+        _width(0),
+        _height(0),
+        _image(image_)
+      {
+      }
     DrawableCompositeImage ( double x_, double y_,
                              double width_, double height_,
                              const std::string &image_ )

@@ -192,11 +192,21 @@ whereas filltoborder recolors any neighbor pixel that is not the border
 color. Finally, reset recolors all pixels.</font></td>
 </tr>
 
-<tr>
-<td>
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
 <center><a NAME="DrawableCompositeImage"></a><font size=-1>DrawableCompositeImage</font></center>
 </td>
 
+<td><font size=-1>double x_, double y_, const std::string &amp;image_</font></td>
+
+<td><font size=-1>Composite current image with contents of specified image
+file, at specified coordinates. If the <i>matte</i> attribute is set to
+<i>true</i>, then the image composition will consider an alpha channel,
+or transparency, present in the image file so that non-opaque portions
+allow part (or all) of the composite image to show through.</font></td>
+</tr>
+
+<tr>
 <td><font size=-1>double x_, double y_, double width_, double height_,
 const std::string &amp;image_</font></td>
 

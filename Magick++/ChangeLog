@@ -1,3 +1,10 @@
+2000-10-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Drawable.h (DrawableCompositeImage): Add a
+ 	short-form constructor to support specifying image location and
+ 	name, but without specifing rendered size (use existing image
+ 	size).
+
 2000-10-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Drawable.h (DrawablePopGraphicContext): New class
