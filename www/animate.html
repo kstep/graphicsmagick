@@ -208,7 +208,9 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This backdrop covers the entire workstation screen and is useful for hiding
 other X window activity while viewing the image. The color of the backdrop
-is specified as the background color. Refer to <a href="#xres">X Resources</a>
+is specified as the background color.
+Refer to
+<a href="#xres">X Resources</a>
 for details.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -619,6 +621,11 @@ value and the height is chosen to maintain the aspect ratio of the image.
 Similarly, if only the height is specified (e.g., <tt>-geometry x256</tt>),
 the width is chosen to maintain the aspect ratio. 
 </font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+If the <em>x offset</em> is negative, the offset is measured outward
+from the right edge of the image.  To measure inward from the right edge,
+use <strong>two</strong> minus signs.  Similarly, use one or two minus signs
+on <em>y offset</em> to measure from the bottom.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
@@ -1105,13 +1112,13 @@ specify a subimage with a geometry
 <p>
 Single images are read with the filename you specify. Alternatively, you
 can animate an image sequence with a single filename. Define the range
-of the image sequence with -<em>scene</em>. Each image in the range is read
+of the image sequence with <strong>-scene</strong>. Each image in the range is read
 with the filename followed by a period (<strong>.</strong>) and the scene number.
 You can change this behavior by embedding a <strong>printf</strong> format specification
 in the file name. For example,
 </p>
 <pre>
-    -scene 0-9 image%02d.miff
+    animate -scene 0-9 image%02d.miff
 </pre>
 <p>
 animates files image00.miff, image01.miff, through image09.miff.
@@ -1347,7 +1354,8 @@ implementation of Alan Paeth's image rotation algorithm.</dd>
 <em>David Pensak</em>, <strong>duPont</strong>, for providing a computing
 environment that made this program possible.</dd>
 <dd><em>Paul Raveling</em>, <strong>USC Information Sciences Institute</strong>.
-The spatial subdivision color reduction algorithm is based on his Img software.</dl>
+The spatial subdivision color reduction algorithm is based on his Img
+software.</dl>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 

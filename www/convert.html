@@ -355,7 +355,8 @@ To create a visual image directory of all your JPEG images, use:</p>
 To annotate an image with blue text using font 12x24 at position (100,100),
 use:</p>
 <pre>
-    convert -font helvetica -fill blue -draw "text 100,100 Cockatoo" bird.jpg bird.miff
+    convert -font helvetica -fill blue -draw "text 100,100 Cockatoo" \
+            bird.jpg bird.miff
 </pre>
 <p>
 To tile a 640x480 image with a JPEG texture with bumps use:</p>
@@ -626,9 +627,6 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-coalesce">-coalesce</a>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>merge a sequence of images</td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-See <strong>X(1)</strong> for details about the color specification
-</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1227,8 +1225,8 @@ curveto (draw a curve using a cubic bezier), arc (elliptical or
 circular arc) and closepath (close the current shape by drawing a line
 to the last moveto) elements. Compound paths (i.e., a path with
 subpaths, each consisting of a single moveto followed by one or more
-line or curve operations) are possible to allow effects such as "donut
-holes" in objects.
+line or curve operations) are possible to allow effects such as
+"donut holes" in objects.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <strong>color</strong> to change the color of a pixel. Follow the pixel coordinate
@@ -1571,6 +1569,11 @@ value and the height is chosen to maintain the aspect ratio of the image.
 Similarly, if only the height is specified (e.g., <tt>-geometry x256</tt>),
 the width is chosen to maintain the aspect ratio. 
 </font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+If the <em>x offset</em> is negative, the offset is measured outward
+from the right edge of the image.  To measure inward from the right edge,
+use <strong>two</strong> minus signs.  Similarly, use one or two minus signs
+on <em>y offset</em> to measure from the bottom.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
@@ -2352,7 +2355,7 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>scale the image.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 See <strong>-geometry</strong> for details about
-the geometry specification.
+the geometry specification.  <strong>-scale</strong> uses a simpler, faster algorithm.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -2398,7 +2401,9 @@ Specify <em>cluster threshold</em> as the number of pixels in each cluster
 must exceed the the cluster threshold to be considered valid. <em>Smoothing
 threshold</em> eliminates noise in the second derivative of the histogram.
 As the value is increased, you can expect a smoother second derivative.
-The default is 1.5. See <a href="#segm">Image Segmentation</a> for details.
+The default is 1.5. See
+<a href="#segm">"Image Segmentation"</a>
+for details.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>

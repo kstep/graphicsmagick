@@ -141,7 +141,9 @@ in your X resources file.
 
 This backdrop covers the entire workstation screen and is useful for hiding
 other X window activity while viewing the image. The color of the backdrop
-is specified as the background color. Refer to X Resources
+is specified as the background color.
+Refer to
+"X Resources", below,
 for details.
 
 .TP
@@ -506,6 +508,11 @@ Similarly, if only the height is specified (e.g., -geometry x256),
 the width is chosen to maintain the aspect ratio. 
 
 
+If the \fIx offset\fP is negative, the offset is measured outward
+from the right edge of the image.  To measure inward from the right edge,
+use \fBtwo\fP minus signs.  Similarly, use one or two minus signs
+on \fIy offset\fP to measure from the bottom.
+
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
 dimensions. To increase the size of an image, use a value greater than
@@ -815,7 +822,9 @@ Specify \fIcluster threshold\fP as the number of pixels in each cluster
 must exceed the the cluster threshold to be considered valid. \fISmoothing
 threshold\fP eliminates noise in the second derivative of the histogram.
 As the value is increased, you can expect a smoother second derivative.
-The default is 1.5. See Image Segmentation for details.
+The default is 1.5. See
+"Image Segmentation", below,
+for details.
 
 .TP
 .B "-shared_memory"
@@ -1009,7 +1018,9 @@ Use \fB-compress\fP to specify the type of image compression.
 
 The equivalent X resource for this option is
 \fBwriteFilename\fP (class \fBWriteFilename\fP).
-See X Resources for details.
+See
+"X Resources", below,
+for details.
 .SH FILES AND FORMATS
 
 By default, the image format is determined by its magic number. To specify

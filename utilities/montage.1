@@ -604,8 +604,8 @@ curveto (draw a curve using a cubic bezier), arc (elliptical or
 circular arc) and closepath (close the current shape by drawing a line
 to the last moveto) elements. Compound paths (i.e., a path with
 subpaths, each consisting of a single moveto followed by one or more
-line or curve operations) are possible to allow effects such as "donut
-holes" in objects.
+line or curve operations) are possible to allow effects such as
+"donut holes" in objects.
 
 
 Use \fBcolor\fP to change the color of a pixel. Follow the pixel coordinate
@@ -773,6 +773,11 @@ value and the height is chosen to maintain the aspect ratio of the image.
 Similarly, if only the height is specified (e.g., -geometry x256),
 the width is chosen to maintain the aspect ratio. 
 
+
+If the \fIx offset\fP is negative, the offset is measured outward
+from the right edge of the image.  To measure inward from the right edge,
+use \fBtwo\fP minus signs.  Similarly, use one or two minus signs
+on \fIy offset\fP to measure from the bottom.
 
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image

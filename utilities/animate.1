@@ -65,7 +65,9 @@ in your X resources file.
 
 This backdrop covers the entire workstation screen and is useful for hiding
 other X window activity while viewing the image. The color of the backdrop
-is specified as the background color. Refer to X Resources
+is specified as the background color.
+Refer to
+"X Resources", below,
 for details.
 
 .TP
@@ -307,6 +309,11 @@ value and the height is chosen to maintain the aspect ratio of the image.
 Similarly, if only the height is specified (e.g., -geometry x256),
 the width is chosen to maintain the aspect ratio. 
 
+
+If the \fIx offset\fP is negative, the offset is measured outward
+from the right edge of the image.  To measure inward from the right edge,
+use \fBtwo\fP minus signs.  Similarly, use one or two minus signs
+on \fIy offset\fP to measure from the bottom.
 
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
@@ -606,13 +613,13 @@ specify a subimage with a geometry
 
 Single images are read with the filename you specify. Alternatively, you
 can animate an image sequence with a single filename. Define the range
-of the image sequence with -\fIscene\fP. Each image in the range is read
+of the image sequence with \fB-scene\fP. Each image in the range is read
 with the filename followed by a period (\fB.\fP) and the scene number.
 You can change this behavior by embedding a \fBprintf\fP format specification
 in the file name. For example,
 
 
-    -scene 0-9 image%02d.miff
+    animate -scene 0-9 image%02d.miff
 
 animates files image00.miff, image01.miff, through image09.miff.
 Image filenames may appear in any order on the command line if the image
@@ -876,7 +883,8 @@ environment that made this program possible.
 .in 15
 .in 20
 \fIPaul Raveling\fP, \fBUSC Information Sciences Institute\fP.
-The spatial subdivision color reduction algorithm is based on his Img software.
+The spatial subdivision color reduction algorithm is based on his Img
+software.
 .SH SEE ALSO
 
 display(1), composite(1), conjure(1), convert(1), identify(1),
