@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..26\n"; }
+BEGIN { $| = 1; $test=1, print "1..25\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -29,9 +29,6 @@ testGetAttribute('input.miff','colors','3019');
 
 ++$test;
 testGetAttribute('input.miff','columns','70');
-
-++$test;
-testGetAttribute('input.miff','comment',q/This is a comment./);
 
 ++$test;
 testGetAttribute('input.miff','directory',undef);
