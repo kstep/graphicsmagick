@@ -24,6 +24,9 @@ ImageMagick Changes</font></font></font></b></td>
 <dd>
 <pre>
 2002-03-13  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * Enhanced MPC to read/write image sequences.
+
+2002-03-13  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * A number of formats (e.g. JPEG, PS) did not handle DirectClass
     grayscale images properly.
 
@@ -185,12 +188,12 @@ ImageMagick Changes</font></font></font></b></td>
 2001-12-28  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
   * Even more features and options were added to conjure
   * Added CropBox support to PDF writer
-  
+
 2001-12-26  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
   * Conjure now supports having a list of files for the script to
     process being passed on the command line.
   * More features and options were added to conjure
-  
+
 2001-12-25  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
   * Made a huge number of improvements to conjure.  It now supports
     over 15 different commands for manipulating your images.
@@ -220,10 +223,10 @@ ImageMagick Changes</font></font></font></b></td>
     operator.
 
 2001-12-10  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-  * Removed the flatten option from ImageInfo. 
+  * Removed the flatten option from ImageInfo.
   * Added new compose member to ImageInfo that defines which of
     the composite operators to use when flattening an image.
-  
+
 2001-12-09  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
   * Added new member to ImageInfo, flatten, used by PSD and XCF
     to determine whether to flatten an image when read.
@@ -239,7 +242,7 @@ ImageMagick Changes</font></font></font></b></td>
     for Duotone images loaded as grayscale as per PSD docs;  and 2)
     added option to composite layers when reading respects layer
     visibility setting.
-    
+
 2001-12-07  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * -dissolve wasn't working for the composite program (thanks to
     Rick Manbry).
