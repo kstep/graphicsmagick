@@ -2763,49 +2763,123 @@ MagickExport unsigned int IsGeometry(const char *geometry)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     I s S u b i m a g e                                                     %
+%                                                                             %
+%  I s I m a g e s E q u a l                                                  %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsSubimage returns True if the geometry is a valid subimage
-%  specification (e.g. [1], [1-9], [1,7,4]).
+%  Method IsImagesEqual measures the difference between two images.  The error
+%  is computed by summing over all pixels in an image the distance squared
+%  in RGB space between each image pixel and its corresponding pixel in the
+%  reference image.
+%  These values are computed:
 %
-%  The format of the IsSubimage method is:
+%    o mean_error_per_pixel:  This value is the mean error for any single
+%      pixel in the image.
 %
-%      unsigned int IsSubimage(const char *geometry,const unsigned int pedantic)
+%    o normalized_mean_square_error:  This value is the normalized mean
+%      quantization error for any single pixel in the image.  This distance
+%      measure is normalized to a range between 0 and 1.  It is independent
+%      of the range of red, green, and blue values in the image.
 %
-%  A description of each parameter follows:
+%    o normalized_maximum_square_error:  Thsi value is the normalized
+%      maximum quantization error for any single pixel in the image.  This
+%      distance measure is normalized to a range between 0 and 1.  It is
+%      independent of the range of red, green, and blue values in your image.
 %
-%    o status: Method IsSubimage returns True if the geometry is a valid
-%      subimage specification otherwise False is returned.
 %
-%    o geometry: This string is the geometry specification.
+%  The format of the IsImagesEqual method is:
 %
-%    o pedantic: A value other than 0 invokes a more restriction set of
-%      conditions for a valid specification (e.g. [1], [1-4], [4-1]).
+%      unsigned int IsImagesEqual(Image *image,Image *reference)
+%
+%  A description of each parameter follows.
+%
+%    o image: Specifies a pointer to an Image structure.
+%
+%    o reference: Specifies a pointer to an Image structure.
 %
 %
 */
-MagickExport unsigned int IsSubimage(const char *geometry,
-  const unsigned int pedantic)
+MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
 {
+  double
+    distance,
+    maximum_error_per_pixel,
+    normalize,
+    total_error;
+
   int
-    x,
     y;
 
-  unsigned int
-    flags,
-    height,
-    width;
+  register double
+    blue,
+    green,
+    opacity,
+    red;
 
-  if (geometry == (const char *) NULL)
+  register int
+    x;
+
+  register PixelPacket
+    *p,
+    *q;
+
+  /*
+    Initialize measurement.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(reference != (Image *) NULL);
+  assert(reference->signature == MagickSignature);
+  image->total_colors=GetNumberColors(image,(FILE *) NULL);
+  image->mean_error_per_pixel=0;
+  image->normalized_mean_error=0.0;
+  image->normalized_maximum_error=0.0;
+  if ((image->rows != reference->rows) ||
+      (image->columns != reference->columns) ||
+      (image->interlace != reference->interlace) ||
+      (image->colorspace != reference->colorspace) ||
+      (image->matte != reference->matte))
     return(False);
-  flags=ParseGeometry((char *) geometry,&x,&y,&width,&height);
-  if (pedantic)
-    return((flags != NoValue) && !(flags & HeightValue));
-  return(IsGeometry(geometry) && !(flags & HeightValue));
+  /*
+    For each pixel, collect error statistics.
+  */
+  maximum_error_per_pixel=0;
+  total_error=0;
+  opacity=0;
+  for (y=0; y < (int) image->rows; y++)
+  {
+    p=GetImagePixels(image,0,y,image->columns,1);
+    q=GetImagePixels(reference,0,y,reference->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      red=(double) (p->red-q->red);
+      green=(double) (p->green-q->green);
+      blue=(double) (p->blue-q->blue);
+      if (image->matte || (image->colorspace == CMYKColorspace))
+        opacity=(double) (p->opacity-q->opacity);
+      distance=red*red+green*green+blue*blue+opacity*opacity;
+      total_error+=distance;
+      if (distance > maximum_error_per_pixel)
+        maximum_error_per_pixel=distance;
+      p++;
+      q++;
+    }
+  }
+  /*
+    Compute final error statistics.
+  */
+  normalize=3.0*(MaxRGB+1)*(MaxRGB+1);
+  if (image->matte || (image->colorspace == CMYKColorspace))
+    normalize=4.0*(MaxRGB+1)*(MaxRGB+1);
+  image->mean_error_per_pixel=total_error/(image->columns*image->rows);
+  image->normalized_mean_error=image->mean_error_per_pixel/normalize;
+  image->normalized_maximum_error=maximum_error_per_pixel/normalize;
+  return(image->normalized_mean_error == 0.0);
 }
 
 /*
@@ -2858,6 +2932,55 @@ MagickExport unsigned int IsImageTainted(const Image *image)
       return(True);
   }
   return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     I s S u b i m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsSubimage returns True if the geometry is a valid subimage
+%  specification (e.g. [1], [1-9], [1,7,4]).
+%
+%  The format of the IsSubimage method is:
+%
+%      unsigned int IsSubimage(const char *geometry,const unsigned int pedantic)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method IsSubimage returns True if the geometry is a valid
+%      subimage specification otherwise False is returned.
+%
+%    o geometry: This string is the geometry specification.
+%
+%    o pedantic: A value other than 0 invokes a more restriction set of
+%      conditions for a valid specification (e.g. [1], [1-4], [4-1]).
+%
+%
+*/
+MagickExport unsigned int IsSubimage(const char *geometry,
+  const unsigned int pedantic)
+{
+  int
+    x,
+    y;
+
+  unsigned int
+    flags,
+    height,
+    width;
+
+  if (geometry == (const char *) NULL)
+    return(False);
+  flags=ParseGeometry((char *) geometry,&x,&y,&width,&height);
+  if (pedantic)
+    return((flags != NoValue) && !(flags & HeightValue));
+  return(IsGeometry(geometry) && !(flags & HeightValue));
 }
 
 /*

@@ -1824,10 +1824,8 @@ static void PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
 %
 %  A description of each parameter follows.
 %
-%    o image: The address of a byte (8 bits) array of run-length
-%      encoded pixel data of your reference image.  The sum of the
-%      run-length counts in the reference image must be equal to or exceed
-%      the number of pixels.
+%    o image: Specifies a pointer to an Image structure;  returned from
+%      ReadImage.
 %
 %
 */

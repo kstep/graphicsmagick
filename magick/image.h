@@ -719,6 +719,7 @@ extern MagickExport unsigned int
   GetNumberScenes(const Image *),
   IsGeometry(const char *),
   IsGrayImage(Image *),
+  IsImagesEqual(Image *,Image *),
   IsMonochromeImage(Image *),
   IsOpaqueImage(Image *),
   IsPseudoClass(Image *),
