@@ -71,8 +71,8 @@ struct SemaphoreInfo
 #endif
 
 #if defined(WIN32)
-  HANDLE
-    id;
+  CRITICAL_SECTION
+    critical_section;
 #endif
 
   unsigned long
@@ -195,15 +195,8 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
       }
   }
 #endif
-#if defined(WIN32) && defined(_MT)
-  {
-    semaphore_info->id=CreateMutex(NULL,False,NULL);
-    if (semaphore_info->id == (HANDLE) NULL)
-      {
-        LiberateMemory((void **) &semaphore_info);
-        return((SemaphoreInfo *) NULL);
-      }
-  }
+#if defined(WIN32)
+  InitializeCriticalSection(&semaphore_info->critical_section);
 #endif
   semaphore_info->signature=MagickSignature;
   return(semaphore_info);
@@ -282,8 +275,8 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 #if defined(HasPTHREADS)
   (void) pthread_mutex_destroy(&(*semaphore_info)->id);
 #endif
-#if defined(WIN32) && defined(_MT)
-  CloseHandle((*semaphore_info)->id);
+#if defined(WIN32)
+  DeleteCriticalSection(&(*semaphore_info)->critical_section);
 #endif
   LiberateMemory((void **) &(*semaphore_info));
 #if defined(HasPTHREADS)
@@ -385,21 +378,14 @@ MagickExport void LiberateSemaphoreInfo(SemaphoreInfo **semaphore_info)
 */
 MagickExport unsigned int LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
-  int
-    status;
-
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
-  status=False;
 #if defined(HasPTHREADS)
-  status=pthread_mutex_lock(&semaphore_info->id);
-  if (status != 0)
+  if (pthread_mutex_lock(&semaphore_info->id))
     return(False);
 #endif
-#if defined(WIN32) && defined(_MT)
-  status=WaitForSingleObject(semaphore_info->id,INFINITE);
-  if (status == WAIT_FAILED)
-    return(False);
+#if defined(WIN32)
+  EnterCriticalSection(&semaphore_info->critical_section);
 #endif
   return(True);
 }
@@ -432,21 +418,14 @@ MagickExport unsigned int LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 */
 MagickExport unsigned int UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
-  int
-    status;
-
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
-  status=False;
 #if defined(HasPTHREADS)
-  status=pthread_mutex_unlock(&semaphore_info->id);
-  if (status != 0)
+  if (pthread_mutex_unlock(&semaphore_info->id))
     return(False);
 #endif
-#if defined(WIN32) && defined(_MT)
-  status=ReleaseMutex(semaphore_info->id);
-  if (status == 0)
-    return(False);
+#if defined(WIN32)
+  LeaveCriticalSection(&semaphore_info->critical_section);
 #endif
   return(True);
 }
