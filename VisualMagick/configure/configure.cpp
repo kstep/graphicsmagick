@@ -945,6 +945,7 @@ void CConfigureApp::process_module(ofstream &dsw,
   if ((name.compare("pdf") == 0) || (name.compare("ps2") == 0) ||
       (name.compare("ps3") == 0))
   {
+		includes_list.push_back("..\\..\\zlib");
 		includes_list.push_back("..\\..\\tiff\\libtiff");
   }
   if (name.compare("miff") == 0)
