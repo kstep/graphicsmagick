@@ -354,7 +354,7 @@ static void BlurScanline(const double *kernel,const int width,
   }
 }
 
-static int GetBlurKernel(unsigned width,const double sigma,double **kernel)
+static int GetBlurKernel(int width,const double sigma,double **kernel)
 {
 #define KernelRank 3
 

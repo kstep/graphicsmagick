@@ -211,6 +211,10 @@ typedef struct _ErrorInfo
 
 typedef struct _NodeInfo
 {
+  struct _NodeInfo
+    *parent,
+    *child[8];
+
   double
     number_unique,
     total_red,
@@ -225,10 +229,6 @@ typedef struct _NodeInfo
     id,
     level,
     census;
-
-  struct _NodeInfo
-    *parent,
-    *child[8];
 } NodeInfo;
 
 typedef struct _Nodes
