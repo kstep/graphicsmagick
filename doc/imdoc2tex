@@ -127,4 +127,4 @@ cat <<!! > sed-script
 # figured out how to prevent it.  It doesn't happen under IRIX 6.5
 # so appending and removing @@ is a NOOP.
 
-sed -f sed-script $1
+/bin/sed -f sed-script $1

@@ -81,7 +81,7 @@ cat <<!!
 <table border=0 cellpadding=10 cellspacing=0 style="margin-top:-17px" width="100%"><tr><td>
 !!
 
-sed  "
+/bin/sed  "
      /<!--/d
      /<include file=/d
 

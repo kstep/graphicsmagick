@@ -942,21 +942,29 @@ option appears after all of the input images, all images are deconstructed.</pp>
 <abs>add coder/decoder specific options</abs>
 
 <pp>This option creates one or more definitions for coders and
-decoders to use while reading and writing image data. Definitions may
-be passed to coders and decoders to control options that are very
+decoders to use while reading and writing image data. Definitions
+may be passed to coders and decoders to control options that are
 specific to certain image formats. If <i>value</i> is missing for a
-definition, an empty-valued definition will be created for that
-key. This is used to control on/off options. Use <tt>+define
+definition, an empty-valued definition of a flag will be created with
+that name. This is used to control on/off options. Use <tt>+define
 <key>,...</tt> to remove definitions previously created. Use
 <tt>+define "*"</tt> to remove all existing definitions.</pp>
 
 <pp>
-The following defintions may be created:
+The following definitions may be created:
 </pp>
 
 <pre>
+    jpeg:preserve-settings
+        If the jpeg:preserve-settings flag is defined, the JPEG encoder
+        will use the same "quality" and "sampling-factor" settings that
+        were found in the input file, if the input was in JPEG format.
+        These settings are also preserved if the input is a JPEG file
+        and the output is a JNG file.  If the colorspace of the output
+        file differs from that of the input file, the quality setting is
+        preserved but the sampling-factors are not.
     ps:imagemask
-        If the ps:imagemask key is defined, the PS3 and EPS3 coders will
+        If the ps:imagemask flag is defined, the PS3 and EPS3 coders will
         create Postscript files that render bilevel images with the Postscript
         imagemask operator instead of the image operator.
     tiff:bits-per-sample=<value>
@@ -3166,6 +3174,8 @@ and highest
 compression) to 100 (best quality but least effective compression). The default
 quality is 75.  Use the <s>-sampling-factor</s> option to specify the factors
 for chroma downsampling.
+To use the same quality value as that found by the JPEG decoder,
+use the <tt>-define jpeg:preserve-settings</tt> flag.
 </pp>
 
 <pp>
@@ -3476,6 +3486,8 @@ will use its own default values.  When reading or writing the YUV format
 and when writing the M2V (MPEG-2) format, use
 <s>-sampling-factor 2x1</s> to specify the 4:2:2 downsampling method.</pp>
 
+To use the same sampling factors as those found by the JPEG decoder, use
+the <tt>-define jpeg:preserve-settings</tt> flag.
 </utils>
 
 
