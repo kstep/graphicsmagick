@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                        FFFFF   OOO   N   N  TTTTT                           %
-%                        F      O   O  NN  N    T                             %
-%                        FFF    O   O  N N N    T                             %
-%                        F      O   O  N  NN    T                             %
-%                        F       OOO   N   N    T                             %
+%                     FFFFF   OOO   N   N  TTTTT  SSSSS                       %
+%                     F      O   O  NN  N    T    SS                          %
+%                     FFF    O   O  N N N    T     SSS                        %
+%                     F      O   O  N  NN    T       SS                       %
+%                     F       OOO   N   N    T    SSSSS                       %
 %                                                                             %
 %                                                                             %
 %                     ImageMagick Image Font Methods                          %
