@@ -518,10 +518,16 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   double
     mid;
 
+  Image
+    *tile;
+
   int
     j,
     n,
     y;
+
+  PixelPacket
+    color;
 
   PointInfo
     pixel,
@@ -1103,6 +1109,8 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   /*
     Draw the primitive on the image.
   */
+  color=GetOnePixel(clone_info->tile,0,0);
+  tile=clone_info->tile;
   image->class=DirectClass;
   for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
   {
@@ -1119,32 +1127,27 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           opacity=Opaque;
       if (opacity != Transparent)
         {
-          register PixelPacket
-            *p;
-
-          p=GetImagePixels(clone_info->tile,x % clone_info->tile->columns,
-            y % clone_info->tile->rows,1,1);
-          if (p == (PixelPacket *) NULL)
-            break;
+          if ((tile->columns > 1) || (tile->rows > 1))
+            color=GetOnePixel(tile,x % tile->columns,y % tile->rows);
           if (!clone_info->tile->matte)
             {
               q->red=((unsigned long)
-                (p->red*opacity+q->red*(Opaque-opacity))/Opaque);
+                (color.red*opacity+q->red*(Opaque-opacity))/Opaque);
               q->green=((unsigned long)
-                (p->green*opacity+q->green*(Opaque-opacity))/Opaque);
+                (color.green*opacity+q->green*(Opaque-opacity))/Opaque);
               q->blue=((unsigned long)
-                (p->blue*opacity+q->blue*(Opaque-opacity))/Opaque);
+                (color.blue*opacity+q->blue*(Opaque-opacity))/Opaque);
             }
           else
             {
-              q->red=((unsigned long)
-                (p->red*p->opacity+q->red*(Opaque-p->opacity))/Opaque);
-              q->green=((unsigned long)
-                (p->green*p->opacity+q->green*(Opaque-p->opacity))/Opaque);
-              q->blue=((unsigned long)
-                (p->blue*p->opacity+q->blue*(Opaque-p->opacity))/Opaque);
-              q->opacity=((unsigned long)
-                (p->opacity*p->opacity+q->opacity*(Opaque-p->opacity))/Opaque);
+              q->red=((unsigned long) (color.red*color.opacity+q->red*
+                (Opaque-color.opacity))/Opaque);
+              q->green=((unsigned long) (color.green*color.opacity+q->green*
+                (Opaque-color.opacity))/Opaque);
+              q->blue=((unsigned long) (color.blue*color.opacity+q->blue*
+                (Opaque-color.opacity))/Opaque);
+              q->opacity=((unsigned long) (color.opacity*color.opacity+
+                q->opacity*(Opaque-color.opacity))/Opaque);
             }
         }
       q++;
