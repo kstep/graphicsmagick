@@ -457,8 +457,8 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(OptionError,"Unable to append images",
-      "an image sequence is required");
+    ThrowImageException(ImageError, "ImageSequenceIsRequired",
+      "Unable to append images");
   width=image->columns;
   height=image->rows;
   for (next=image->next; next != (Image *) NULL; next=next->next)
@@ -586,8 +586,8 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(OptionError,"Unable to average image sequence",
-      "image sequence required");
+    ThrowImageException(ImageError,"ImageSequenceIsRequired");
+      "Unable to average image sequence");
   for (next=image; next != (Image *) NULL; next=next->next)
   {
     if ((next->columns != image->columns) || (next->rows != image->rows))

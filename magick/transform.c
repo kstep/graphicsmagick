@@ -267,8 +267,8 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(OptionError,"Unable to coalesce image",
-      "image sequence required");
+    ThrowImageException(ImageError,"ImageSequenceIsRequired",
+      "Unable to coalesce image");
   /*
     Clone first image in sequence.
   */
@@ -516,8 +516,8 @@ MagickExport Image *DeconstructImages(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(OptionError,"Unable to deconstruct image sequence",
-      "image sequence required");
+    ThrowImageException(ImageError,"ImageSequenceIsRequired",
+      "Unable to deconstruct image sequence");
   /*
     Ensure the image are the same size.
   */
@@ -533,8 +533,8 @@ MagickExport Image *DeconstructImages(const Image *image,
   bounds=(RectangleInfo *)
     AcquireMemory(GetImageListSize(image)*sizeof(RectangleInfo));
   if (bounds == (RectangleInfo *) NULL)
-    ThrowImageException(OptionError,"Unable to deconstruct image sequence",
-      "Memory allocation failed");
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
+      "Unable to deconstruct image sequence");
   /*
     Compute the bounding box for each next in the sequence.
   */
@@ -691,8 +691,8 @@ MagickExport Image *FlattenImages(const Image *image,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(OptionError,"Unable to flatten image",
-      "image sequence required");
+    ThrowImageException(ImageError,"ImageSequenceIsRequired",
+      "Unable to flatten image");
   /*
     Clone first image in sequence.
   */
@@ -937,8 +937,8 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(OptionError,"Unable to create image mosaic",
-      "image sequence required");
+    ThrowImageException(ImageError,"ImageSequenceIsRequired",
+      "Unable to create image mosaic");
   page.width=image->columns;
   page.height=image->rows;
   page.x=0;

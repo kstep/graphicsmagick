@@ -212,6 +212,18 @@ const char *GetLocaleMessage(const char *tag)
         else
           return tag;
 
+      case 'i':  case 'I':
+        if (p - tp == 5 && !LocaleNCompare(tp, "Image", 5))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+          if (LocaleNCompare(NEXT_FIELD, "ImageSequenceIsRequired", 23) || p - tp != 23)
+            return tag;
+          else
+            return *np ? tag : "Image sequence is required";
+        else
+          return tag;
+
       case 'r':  case 'R':
         if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
           if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
@@ -369,6 +381,18 @@ const char *GetLocaleMessage(const char *tag)
             return tag;
           else
             return *np ? tag : "include element nested too deeply";
+        else
+          return tag;
+
+      case 'i':  case 'I':
+        if (p - tp == 5 && !LocaleNCompare(tp, "Image", 5))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+          if (LocaleNCompare(NEXT_FIELD, "ImageSequenceIsRequired", 23) || p - tp != 23)
+            return tag;
+          else
+            return *np ? tag : "Image sequence is required";
         else
           return tag;
 

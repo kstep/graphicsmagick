@@ -70,6 +70,13 @@
       </Message>
     </Error>
   </Configure>
+  <Image>
+    <Error>
+        <Message name="ImageSequenceIsRequired">
+          Image sequence is required
+        </Message>
+    </Error>
+  </Image>
   <Resource>
     <Limit>
       <Error>

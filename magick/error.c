@@ -396,8 +396,14 @@ static const char *GetLocaleExceptionMessage(const ExceptionType severity,
   char
     message[MaxTextExtent];
 
+  const char
+    *locale_message;
+
   FormatString(message,"%.1024s%.1024s",ExceptionSeverityToTag(severity),tag);
-  return(GetLocaleMessage(message));
+  locale_message=GetLocaleMessage(message);
+  if (locale_message == message)
+    return(tag);
+  return(locale_message);
 }
 
 /*
