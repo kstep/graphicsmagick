@@ -406,6 +406,16 @@ std::string Magick::Options::tileName ( void ) const
   return std::string();
 }
 
+// Image representation type
+void Magick::Options::type ( const Magick::ImageType type_ )
+{
+  _imageInfo->type = type_;
+}
+Magick::ImageType Magick::Options::type ( void ) const
+{
+  return _imageInfo->type;
+}
+
 // Origin of coordinate system to use when annotating with text or drawing
 void Magick::Options::transformOrigin ( double tx_, double ty_ )
 {

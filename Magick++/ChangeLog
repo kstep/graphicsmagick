@@ -1,3 +1,11 @@
+2002-07-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (type): Set the ImageInfo type attribute when
+ 	setting the image type.  If the type attribute is set to something
+ 	other than UndefinedType (implying that the user has set a desired
+ 	output image type), then return that as the image type, otherwise
+ 	use GetImageType() to evaluate the image type.
+
 2002-05-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (DrawableTextUnderColor): New class to set the

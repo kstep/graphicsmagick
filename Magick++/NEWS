@@ -1,6 +1,8 @@
 This file records noteworthy changes in Magick++.
+
 (5.4.8)
-  * No changes to report.
+  * The image type() method now also specifies the output image type
+    to use while writing.
 
 (5.4.7)
   * No changes to report.

@@ -4,6 +4,17 @@
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
+2002-07-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (type): Set the ImageInfo type attribute when
+        setting the image type.  If the type attribute is set to something
+        other than UndefinedType (implying that the user has set a desired
+        output image type), then return that as the image type, otherwise
+        use GetImageType() to evaluate the image type.
+
+</UL>
+<p>
 2002-05-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

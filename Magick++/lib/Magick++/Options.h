@@ -219,6 +219,10 @@ namespace Magick
     void            tileName ( const std::string &tileName_ );
     std::string     tileName ( void ) const;
 
+    // Image representation type
+    void            type ( const ImageType type_ );
+    ImageType       type ( void ) const;
+
     // Origin of coordinate system to use when annotating with text or drawing
     void            transformOrigin ( double tx_, double ty_ );
 

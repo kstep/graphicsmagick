@@ -2979,13 +2979,16 @@ Magick::ImageType Magick::Image::type ( void ) const
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  ImageType image_type = GetImageType(constImage(), &exceptionInfo);
+  ImageType image_type = constOptions()->type();
+  if ( image_type == UndefinedType )
+    image_type= GetImageType(constImage(), &exceptionInfo);
   throwException( exceptionInfo );
   return image_type;
 }
 void Magick::Image::type ( const Magick::ImageType type_)
 {
   modifyImage();
+  options()->type( type_ );
   SetImageType( image(), type_ );
 }
 
