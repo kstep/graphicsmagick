@@ -55,6 +55,7 @@
 #include "studio.h"
 #include "blob.h"
 #include "magick.h"
+#include "monitor.h"
 #include "utility.h"
 #if defined(HasJP2)
 #if !defined(uchar)
