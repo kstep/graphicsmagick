@@ -975,17 +975,31 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                     "Memory allocation failed",image);
                 }
               if (bytes_per_line & 0x8000)
-                for (i=0; i < (int) tile_image->colors; i++)
                 {
-                  j=MSBFirstReadShort(image) % tile_image->colors;
-                  if (flags & 0x8000)
-                    j=i;
-                  tile_image->colormap[j].red=
-                    XDownScale(MSBFirstReadShort(image));
-                  tile_image->colormap[j].green=
-                    XDownScale(MSBFirstReadShort(image));
-                  tile_image->colormap[j].blue=
-                    XDownScale(MSBFirstReadShort(image));
+                  for (i=0; i < (int) tile_image->colors; i++)
+                  {
+                    j=MSBFirstReadShort(image) % tile_image->colors;
+                    if (flags & 0x8000)
+                      j=i;
+                    tile_image->colormap[j].red=
+                      XDownScale(MSBFirstReadShort(image));
+                    tile_image->colormap[j].green=
+                      XDownScale(MSBFirstReadShort(image));
+                    tile_image->colormap[j].blue=
+                      XDownScale(MSBFirstReadShort(image));
+                  }
+                }
+              else
+                {
+                  for (i=0; i < (int) tile_image->colors; i++)
+                  {
+                    tile_image->colormap[i].red=MaxRGB-
+                      tile_image->colormap[i].red;
+                    tile_image->colormap[i].green=MaxRGB-
+                      tile_image->colormap[i].green;
+                    tile_image->colormap[i].blue=MaxRGB-
+                      tile_image->colormap[i].blue;
+                  }
                 }
             }
           ReadRectangle(destination);
