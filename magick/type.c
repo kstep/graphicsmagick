@@ -623,8 +623,9 @@ static unsigned int ReadConfigureFile(const char *basename,
                       strlen(filename)-1);
                     (void) ReadConfigureFile(filename,depth+1,exception);
                   }
-              while (type_list->next != (TypeInfo *) NULL)
-                type_list=type_list->next;
+              if (type_list != (TypeInfo *) NULL)
+                while (type_list->next != (TypeInfo *) NULL)
+                  type_list=type_list->next;
             }
         }
         continue;

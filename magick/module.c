@@ -906,8 +906,9 @@ static unsigned int ReadConfigureFile(const char *basename,
                       strlen(filename)-1);
                     (void) ReadConfigureFile(filename,depth+1,exception);
                   }
-              while (module_list->next != (ModuleInfo *) NULL)
-                module_list=module_list->next;
+              if (module_list != (ModuleInfo *) NULL)
+                while (module_list->next != (ModuleInfo *) NULL)
+                  module_list=module_list->next;
             }
         }
         continue;

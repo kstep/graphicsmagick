@@ -645,8 +645,9 @@ static unsigned int ReadConfigureFile(const char *basename,
                       strlen(filename)-1);
                     (void) ReadConfigureFile(filename,depth+1,exception);
                   }
-              while (delegate_list->next != (DelegateInfo *) NULL)
-                delegate_list=delegate_list->next;
+              if (delegate_list != (DelegateInfo *) NULL)
+                while (delegate_list->next != (DelegateInfo *) NULL)
+                  delegate_list=delegate_list->next;
             }
         }
         continue;

@@ -371,8 +371,9 @@ static unsigned int ReadConfigureFile(const char *basename,
                       strlen(filename)-1);
                     (void) ReadConfigureFile(filename,depth+1,exception);
                   }
-              while (magic_list->next != (MagicInfo *) NULL)
-                magic_list=magic_list->next;
+              if (magic_list != (MagicInfo *) NULL)
+                while (magic_list->next != (MagicInfo *) NULL)
+                  magic_list=magic_list->next;
             }
         }
         continue;

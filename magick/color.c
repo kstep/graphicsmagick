@@ -1705,8 +1705,9 @@ static unsigned int ReadConfigureFile(const char *basename,
                       strlen(filename)-1);
                     (void) ReadConfigureFile(filename,depth+1,exception);
                   }
-              while (color_list->next != (ColorInfo *) NULL)
-                color_list=color_list->next;
+              if (color_list != (ColorInfo *) NULL)
+                while (color_list->next != (ColorInfo *) NULL)
+                  color_list=color_list->next;
             }
         }
         continue;
