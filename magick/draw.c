@@ -1293,7 +1293,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       for (x=(int) (bounds.x1-0.5); x <= (int) (bounds.x2+0.5); x++)
       {
         target.x=x;
-        opacity=TransparentOpacity;
         switch (primitive_info->primitive)
         {
           case ArcPrimitive:
@@ -1310,9 +1309,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             if (clone_info->tile != (Image *) NULL)
               color=GetOnePixel(clone_info->tile,x % clone_info->tile->columns,
                 y % clone_info->tile->rows);
-            opacity=0.01*(MaxRGB-color.opacity)*clone_info->opacity*
+            if (color.opacity == TransparentOpacity)
+              break;
+            opacity=MaxRGB-0.01*(MaxRGB-color.opacity)*clone_info->opacity*
               IntersectPrimitive(primitive_info,clone_info,&target,True,image);
-            opacity=MaxRGB-opacity;
             if ((int) opacity == TransparentOpacity)
               break;
             if (!clone_info->antialias)
@@ -1330,28 +1330,41 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           default:
             break;
         }
-        if (opacity == OpaqueOpacity)
-          {
-            q++;
-            continue;
-          }
         color=clone_info->stroke;
-        opacity=0.01*(MaxRGB-color.opacity)*clone_info->opacity*
-          IntersectPrimitive(primitive_info,clone_info,&target,False,image);
-        opacity=MaxRGB-opacity;
-        if ((int) opacity == TransparentOpacity)
+        switch (primitive_info->primitive)
+        {
+          case ArcPrimitive:
+          case BezierPrimitive:
+          case CirclePrimitive:
+          case EllipsePrimitive:
+          case PathPrimitive:
+          case PolylinePrimitive:
+          case PolygonPrimitive:
+          case RectanglePrimitive:
+          case RoundRectanglePrimitive:
           {
-            q++;
-            continue;
+            if (color.opacity == TransparentOpacity)
+              break;
           }
-        if (!clone_info->antialias)
-          opacity=(Quantum) (OpaqueOpacity*clone_info->opacity/100.0);
-        q->red=(Quantum) (alpha*(color.red*(MaxRGB-opacity)+q->red*opacity));
-        q->green=(Quantum)
-          (alpha*(color.green*(MaxRGB-opacity)+q->green*opacity));
-        q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-opacity)+q->blue*opacity));
-        q->opacity=(Quantum)
-          (alpha*(opacity*(MaxRGB-opacity)+q->opacity*opacity));
+          default:
+          {
+            opacity=MaxRGB-0.01*(MaxRGB-color.opacity)*clone_info->opacity*
+              IntersectPrimitive(primitive_info,clone_info,&target,False,image);
+            if ((int) opacity == TransparentOpacity)
+              break;
+            if (!clone_info->antialias)
+              opacity=(Quantum) (OpaqueOpacity*clone_info->opacity/100.0);
+            q->red=(Quantum)
+              (alpha*(color.red*(MaxRGB-opacity)+q->red*opacity));
+            q->green=(Quantum)
+              (alpha*(color.green*(MaxRGB-opacity)+q->green*opacity));
+            q->blue=(Quantum)
+              (alpha*(color.blue*(MaxRGB-opacity)+q->blue*opacity));
+            q->opacity=(Quantum)
+              (alpha*(opacity*(MaxRGB-opacity)+q->opacity*opacity));
+            break;
+          }
+        }
         q++;
       }
       if (!SyncImagePixels(image))
