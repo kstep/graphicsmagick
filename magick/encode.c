@@ -4031,8 +4031,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             max_packets=compressed_packets;
             status=bzBuffToBuffCompress((char *) compressed_pixels,&max_packets,
               (char *) image->packed_pixels,packets*image->packet_size,
-              Min(image_info->quality/10,9),0,(image_info->quality % 10)*
-              (image_info->quality % 10)+5);
+              Min(image_info->quality/10,9),image_info->verbose,
+              (image_info->quality % 10)*(image_info->quality % 10)+5);
             compressed_packets=max_packets;
           }
 #endif

@@ -3223,10 +3223,14 @@ static Image *ReadGIFImage(ImageInfo *image_info)
     image->colors=!BitSet(flag,0x80) ? global_colors : 1 << ((flag & 0x07)+1);
     (void) sprintf(geometry,"%ux%u%+d%+d",page_info.width,page_info.height,
       page_info.x,page_info.y);
-    image->page=PostscriptGeometry(geometry);
-    image->delay=delay;
-    image->dispose=dispose;
-    image->iterations=iterations;
+    if (image_info->page == (char *) NULL)
+      image->page=PostscriptGeometry(geometry);
+    if (image_info->delay == (char *) NULL)
+      image->delay=delay;
+    if (image_info->dispose == (char *) NULL)
+      image->dispose=dispose;
+    if (image_info->iterations == (char *) NULL)
+      image->iterations=iterations;
     delay=0;
     dispose=0;
     iterations=1;
@@ -6254,11 +6258,13 @@ static Image *ReadMIFFImage(const ImageInfo *image_info)
             if (Latin1Compare(keyword,"columns") == 0)
               image->columns=(unsigned int) atoi(value);
             if (Latin1Compare(keyword,"delay") == 0)
-              image->delay=atoi(value);
+              if (image_info->delay == (char *) NULL)
+                image->delay=atoi(value);
             if (Latin1Compare(keyword,"depth") == 0)
               image->depth=atoi(value) <= 8 ? 8 : 16;
             if (Latin1Compare(keyword,"dispose") == 0)
-              image->dispose=atoi(value);
+              if (image_info->dispose == (char *) NULL)
+                image->dispose=atoi(value);
             if (Latin1Compare(keyword,"gamma") == 0)
               image->gamma=atof(value);
             if (Latin1Compare(keyword,"green-primary") == 0)
@@ -6270,7 +6276,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info)
               else
                 image->id=UndefinedId;
             if (Latin1Compare(keyword,"iterations") == 0)
-              image->iterations=atoi(value);
+              if (image_info->iterations == (char *) NULL)
+                image->iterations=atoi(value);
             if (Latin1Compare(keyword,"label") == 0)
               {
                 image->label=(char *)
@@ -6297,7 +6304,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info)
                 (void) strcpy(image->montage,value);
               }
             if (Latin1Compare(keyword,"page") == 0)
-              image->page=PostscriptGeometry(value);
+              if (image_info->page == (char *) NULL)
+                image->page=PostscriptGeometry(value);
             if (Latin1Compare(keyword,"packets") == 0)
               image->packets=(unsigned int) atoi(value);
             if (Latin1Compare(keyword,"red-primary") == 0)
@@ -6547,7 +6555,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info)
 #if defined(HasBZLIB)
         compressed_packets=max_packets;
         status=bzBuffToBuffDecompress((char *) image->packed_pixels,
-          &compressed_packets,(char *) compressed_pixels,image->packets,0,0);
+          &compressed_packets,(char *) compressed_pixels,image->packets,
+          image_info->verbose,False);
         max_packets=compressed_packets;
 #endif
         image->packets=(unsigned int) (max_packets/image->packet_size);
@@ -9764,15 +9773,16 @@ static Image *ReadPNGImage(const ImageInfo *image_info)
         if (Latin1Compare(ping_info->text[i].key,"Comment") == 0)
           PNGTextChunk(ping_info,i,&image->comments);
         if (Latin1Compare(ping_info->text[i].key,"Delay") == 0)
-          {
-            char
-              *delay;
-
-            delay=(char *) NULL;
-            PNGTextChunk(ping_info,i,&delay);
-            image->delay=atoi(delay);
-            FreeMemory(delay);
-          }
+          if (image_info->delay == (char *) NULL)
+            {
+              char
+                *delay;
+  
+              delay=(char *) NULL;
+              PNGTextChunk(ping_info,i,&delay);
+              image->delay=atoi(delay);
+              FreeMemory(delay);
+            }
         if (Latin1Compare(ping_info->text[i].key,"Description") == 0)
           PNGTextChunk(ping_info,i,&image->comments);
         if (Latin1Compare(ping_info->text[i].key,"Directory") == 0)
@@ -9782,7 +9792,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info)
         if (Latin1Compare(ping_info->text[i].key,"Montage") == 0)
           PNGTextChunk(ping_info,i,&image->montage);
         if (Latin1Compare(ping_info->text[i].key,"Page") == 0)
-          PNGTextChunk(ping_info,i,&image->page);
+          if (image_info->page == (char *) NULL)
+            PNGTextChunk(ping_info,i,&image->page);
         if (Latin1Compare(ping_info->text[i].key,"Scene") == 0)
           {
             char
