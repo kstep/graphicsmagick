@@ -46,6 +46,7 @@
 #include "magick/quantize.h"
 #include "magick/utility.h"
 #include "magick/log.h"
+#include "magick/profile.h"
 #if defined(HasLCMS)
 #if defined(HAVE_LCMS_LCMS_H)
 #include <lcms/lcms.h>

@@ -1,3 +1,8 @@
+2004-01-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/profile.c: Needed to include "magick/profile.h" in order
+	to obtain prototypes.
+
 2004-01-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/wandtest.c: Change MagickCloneWand to MagickGetImage since
