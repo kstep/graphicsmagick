@@ -1098,7 +1098,7 @@ MagickExport unsigned int CompositeImage(Image *image,
   red=0.0;
   green=0.0;
   blue=0.0;
-  midpoint=(MaxRGB+1)/2.0;
+  midpoint=0x80;
   switch (compose)
   {
     case XorCompositeOp:
@@ -1202,7 +1202,7 @@ MagickExport unsigned int CompositeImage(Image *image,
     }
     case ModulateCompositeOp:
     {
-      midpoint=(MaxRGB+1)/2.0;
+      midpoint=0x80;
       saturation_scale=50.0;
       brightness_scale=50.0;
       if (composite_image->geometry != (char *) NULL)
