@@ -5630,17 +5630,11 @@ MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (clip_mask == (Image *) NULL)
-    {
-      if (image->clip_mask != (Image *) NULL)
-        DestroyImage(image->clip_mask);
-      image->clip_mask=(Image *) NULL;
-      return(True);
-    }
-  if ((clip_mask->columns != image->columns) ||
-      (clip_mask->rows != image->rows))
-    ThrowBinaryException(OptionWarning,"Unable to set clip mask",
-      "image widths or heights differ");
+  if (clip_mask != (Image *) NULL)
+    if ((clip_mask->columns != image->columns) ||
+        (clip_mask->rows != image->rows))
+      ThrowBinaryException(OptionWarning,"Unable to set clip mask",
+        "image widths or heights differ");
   if (image->clip_mask != (Image *) NULL)
     DestroyImage(image->clip_mask);
   image->clip_mask=clip_mask;
