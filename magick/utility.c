@@ -1723,7 +1723,7 @@ MagickExport int ParseGeometry(const char *geometry,long *x,long *y,
         Parse height.
       */
       p++;
-      bounds.height=(unsigned int) strtod(p,&p);
+      bounds.height=(unsigned long) strtod(p,&p);
       mask|=HeightValue;
     }
   if ((*p == '+') || (*p == '-'))
