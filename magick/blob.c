@@ -762,7 +762,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
 %
 %  The format of the MapBlob method is:
 %
-%      void *MapBlob(int file,const MapMode mode,size_t offset,size_t *length)
+%      void *MapBlob(int file,const MapMode mode,off_t offset,size_t *length)
 %
 %  A description of each parameter follows:
 %
@@ -773,13 +773,13 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
 %
 %    o mode: ReadMode, WriteMode, or IOMode.
 %
-%    o offset: starting at this offset within the file.
+%    o offset: start at this offset within the file.
 %
 %    o length: the length of the mapping is returned in this pointer.
 %
 %
 */
-MagickExport void *MapBlob(int file,const MapMode mode,size_t offset,
+MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
   size_t *length)
 {
 #if defined(HAVE_MMAP)
