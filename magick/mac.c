@@ -431,7 +431,7 @@ static OSErr HGetVInfo(short volume_index,StringPtr volume_name,short *volume,
   return(result);
 }
  
-MagickExport int MACIsMagickConflict(const char *magick)
+MagickExport unsigned int MACIsMagickConflict(const char *magick)
 {
   unsigned long
     free_bytes,
