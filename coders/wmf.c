@@ -669,6 +669,10 @@ static void ipa_device_begin(wmfAPI * API)
 
       image_info = CloneImageInfo((ImageInfo *) 0);
       strcpy(image_info->filename, ddata->image_info->texture);
+
+      if ( ddata->image_info->size )
+        CloneString(&image_info->size,ddata->image_info->size);
+
       image = ReadImage(image_info,&exception);
       DestroyImageInfo(image_info);
       if(image)
@@ -676,6 +680,7 @@ static void ipa_device_begin(wmfAPI * API)
           char
             pattern_id[30];
 
+          strcpy(image->magick,"MIFF");
           DrawPushDefs(WmfDrawContext);
           draw_pattern_push(API, ddata->pattern_id, image->columns, image->rows);
           DrawComposite(WmfDrawContext, CopyCompositeOp, 0, 0, image->columns, image->rows, image);
@@ -692,6 +697,7 @@ static void ipa_device_begin(wmfAPI * API)
         }
       else
         {
+          LogMagickEvent(CoderEvent,GetMagickModule(),"reading texture image failed!");
           ThrowException(&ddata->image->exception,exception.severity,
             exception.reason,exception.description);
         }
@@ -2577,7 +2583,9 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     }
 
   if (logging)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Creating canvas image with size %ldx%ld", image->rows, image->columns);
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "  Creating canvas image with size %ldx%ld",
+                          image->rows, image->columns);
 
   /*
    * Set solid background color
@@ -2639,6 +2647,13 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   /* Cleanup allocated data */
   wmf_api_destroy(API);
   CloseBlob(image);
+
+  // Check for and report any rendering error
+  if(image->exception.severity != UndefinedException)
+    ThrowException(exception,
+                   CoderWarning,
+                   ddata->image->exception.reason,
+                   ddata->image->exception.description);
 
   if(logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");

@@ -2352,6 +2352,9 @@ MagickExport void DrawComposite(DrawContext context,
   assert(width != 0);
   assert(height != 0);
   assert(*image->magick != '\0');
+  
+/*   LogMagickEvent(CoderEvent,GetMagickModule(),"DrawComposite columns=%ld rows=%ld magick=%s ", */
+/*                  image->columns, image->rows, image->magick ); */
 
   clone_image = CloneImage(image,0,0,True,&context->image->exception);
   if(!clone_image)
