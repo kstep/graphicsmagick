@@ -1567,18 +1567,18 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case ThresholdCompositeOp:
         {
-          red=AbsoluteValue(p->red-(int) q->red);
-          if ((red*2.0) < threshold)
+          red=q->red-(int) p->red;
+          if (AbsoluteValue(red*2.0) < threshold)
             red=q->red;
           else
             red=q->red+(red*amount);
-          green=AbsoluteValue(p->green-(int) q->green);
-          if ((green*2.0) < threshold)
+          green=q->green-(int) p->green;
+          if (AbsoluteValue(green*2.0) < threshold)
             green=q->green;
           else
             green=q->green+(green*amount);
-          blue=AbsoluteValue(p->blue-(int) q->blue);
-          if ((blue*2.0) < threshold)
+          blue=q->blue-(int) p->blue;
+          if (AbsoluteValue(blue*2.0) < threshold)
             blue=q->blue;
           else
             blue=q->blue+(blue*amount);
