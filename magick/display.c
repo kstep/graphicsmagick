@@ -13501,6 +13501,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           XFreePixmap(display,magick_windows[i]->pixmap);
         if (magick_windows[i]->id != (Window) NULL)
           XDestroyWindow(display,magick_windows[i]->id);
+        if (magick_windows[i]->destroy)
+          if (magick_windows[i]->image != (Image *) NULL)
+            DestroyImage(magick_windows[i]->image);
       }
       /*
         Free Standard Colormap.

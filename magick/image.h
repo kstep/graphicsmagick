@@ -13,7 +13,7 @@ extern "C" {
   Color quantum is [0..65535].
 */
 #define DownScale(quantum)  ((quantum)/256)
-#define HexColorFormat "#%04x%04x%04x"
+#define HexColorFormat "#%04x%04x%04x%04x"
 #define MaxRGB  65535L
 #define QuantumDepth  16
 #define UpScale(quantum)  (257*(quantum))
@@ -26,7 +26,7 @@ typedef unsigned short Quantum;
   Color quantum is [0..255].
 */
 #define DownScale(quantum)  (quantum)
-#define HexColorFormat "#%02x%02x%02x"
+#define HexColorFormat "#%02x%02x%02x%02x"
 #define MaxRGB  255L
 #define QuantumDepth  8
 #define UpScale(quantum)  (quantum)

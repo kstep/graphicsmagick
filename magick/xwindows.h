@@ -433,6 +433,12 @@ typedef struct _XWindowInfo
     orphan,
     mapped,
     stasis;
+
+  Image
+    *image;
+
+  unsigned int
+    destroy;
 } XWindowInfo;
 
 typedef struct _XWindows

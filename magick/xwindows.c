@@ -4777,6 +4777,7 @@ MagickExport XWindows *XInitializeWindows(Display *display,
         "Memory allocation failed");
       return((XWindows *) NULL);
     }
+  memset(windows,0,sizeof(XWindows));
   windows->pixel_info=(XPixelInfo *) AcquireMemory(sizeof(XPixelInfo));
   windows->icon_pixel=(XPixelInfo *) AcquireMemory(sizeof(XPixelInfo));
   windows->icon_resources=(XResourceInfo *)
@@ -5059,9 +5060,6 @@ MagickExport unsigned int XMakeImage(Display *display,
   const XResourceInfo *resource_info,XWindowInfo *window,Image *image,
   unsigned int width,unsigned int height)
 {
-  Image
-    *transform_image;
-
   int
     depth,
     format;
@@ -5083,8 +5081,11 @@ MagickExport unsigned int XMakeImage(Display *display,
   XDefineCursor(display,window->id,window->busy_cursor);
   XFlush(display);
   depth=window->depth;
-  transform_image=image;
-  if (transform_image != (Image *) NULL)
+  if (window->destroy)
+    DestroyImage(window->image);
+  window->image=image;
+  window->destroy=False;
+  if (window->image != (Image *) NULL)
     {
       if (window->crop_geometry)
         {
@@ -5097,23 +5098,24 @@ MagickExport unsigned int XMakeImage(Display *display,
           /*
             Crop image.
           */
-          crop_info.width=transform_image->columns;
-          crop_info.height=transform_image->rows;
+          crop_info.width=window->image->columns;
+          crop_info.height=window->image->rows;
           crop_info.x=0;
           crop_info.y=0;
           (void) XParseGeometry(window->crop_geometry,&crop_info.x,
             &crop_info.y,&crop_info.width,&crop_info.height);
-          transform_image->orphan=True;
-          crop_image=CropImage(transform_image,&crop_info,&image->exception);
+          window->image->orphan=True;
+          crop_image=CropImage(window->image,&crop_info,&image->exception);
           if (crop_image != (Image *) NULL)
             {
-              if (transform_image != image)
-                DestroyImage(transform_image);
-              transform_image=crop_image;
+              if (window->image != image)
+                DestroyImage(window->image);
+              window->image=crop_image;
+              window->destroy=True;
             }
         }
-      if ((width != transform_image->columns) ||
-          (height != transform_image->rows))
+      if ((width != window->image->columns) ||
+          (height != window->image->rows))
         {
           Image
             *resize_image;
@@ -5121,29 +5123,30 @@ MagickExport unsigned int XMakeImage(Display *display,
           /*
             Scale image.
           */
-          transform_image->orphan=True;
-          if ((window->pixel_info->colors != 0) || transform_image->matte)
+          window->image->orphan=True;
+          if ((window->pixel_info->colors != 0) || window->image->matte)
             resize_image=
-              SampleImage(transform_image,width,height,&image->exception);
+              SampleImage(window->image,width,height,&image->exception);
           else
             if ((width <= 160) && (height <= 160))
-              resize_image=ScaleImage(transform_image,width,height,
+              resize_image=ScaleImage(window->image,width,height,
                 &image->exception);
             else
-              resize_image=ZoomImage(transform_image,width,height,
+              resize_image=ZoomImage(window->image,width,height,
                 &image->exception);
           if (resize_image != (Image *) NULL)
             {
-              if (transform_image != image)
-                DestroyImage(transform_image);
-              transform_image=resize_image;
+              if (window->image != image)
+                DestroyImage(window->image);
+              window->image=resize_image;
+              window->destroy=True;
             }
         }
       if (window->immutable)
-        if (IsMonochromeImage(transform_image))
+        if (IsMonochromeImage(window->image))
           depth=1;
-      width=transform_image->columns;
-      height=transform_image->rows;
+      width=window->image->columns;
+      height=window->image->rows;
     }
   /*
     Create X image.
@@ -5171,8 +5174,6 @@ MagickExport unsigned int XMakeImage(Display *display,
       /*
         Unable to create X image.
       */
-      if (transform_image != image)
-        DestroyImage(transform_image);
       XDefineCursor(display,window->id,window->cursor);
       return(False);
     }
@@ -5232,8 +5233,6 @@ MagickExport unsigned int XMakeImage(Display *display,
       /*
         Unable to allocate pixel data.
       */
-      if (transform_image != image)
-        DestroyImage(transform_image);
       XDestroyImage(ximage);
       XDefineCursor(display,window->id,window->cursor);
       return(False);
@@ -5264,8 +5263,8 @@ MagickExport unsigned int XMakeImage(Display *display,
 #endif
   window->ximage=ximage;
   matte_image=(XImage *) NULL;
-  if (transform_image != (Image *) NULL)
-    if (transform_image->matte)
+  if (window->image != (Image *) NULL)
+    if (window->image->matte)
       {
         /*
           Create matte image.
@@ -5318,14 +5317,14 @@ MagickExport unsigned int XMakeImage(Display *display,
   /*
     Convert pixels to X image data.
   */
-  if (transform_image != (Image *) NULL)
+  if (window->image != (Image *) NULL)
     {
       if ((ximage->byte_order == LSBFirst) || ((ximage->format == XYBitmap) &&
           (ximage->bitmap_bit_order == LSBFirst)))
-        XMakeImageLSBFirst(resource_info,window,transform_image,ximage,
+        XMakeImageLSBFirst(resource_info,window,window->image,ximage,
           matte_image);
       else
-        XMakeImageMSBFirst(resource_info,window,transform_image,ximage,
+        XMakeImageMSBFirst(resource_info,window,window->image,ximage,
           matte_image);
     }
   if (window->matte_image != (XImage *) NULL)
@@ -5359,8 +5358,6 @@ MagickExport unsigned int XMakeImage(Display *display,
 #endif
         }
       }
-  if (transform_image != image)
-    DestroyImage(transform_image);
   (void) XMakePixmap(display,resource_info,window);
   /*
     Restore cursor.
@@ -6475,6 +6472,9 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
     k,
     l;
 
+  PixelPacket
+    color;
+
   static char
     text[MaxTextExtent];
 
@@ -6490,9 +6490,6 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
     magnify,
     scanline_pad,
     width;
-
-  XColor
-    color;
 
   XImage
     *ximage;
@@ -6837,24 +6834,21 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
   /*
     Show center pixel color.
   */
-  color.pixel=
-    XGetPixel(windows->image.ximage,windows->magnify.x,windows->magnify.y);
-  XQueryColor(display,windows->map_info->colormap,&color);
-  if (windows->magnify.depth > 12)
-    FormatString(text," %+d%+d  (%3u,%3u,%3u) ",
-      windows->magnify.x,windows->magnify.y,XDownScale(color.red),
-      XDownScale(color.green),XDownScale(color.blue));
+  color=GetOnePixel(windows->image.image,windows->magnify.x,windows->magnify.y);
+  if (!windows->image.image->matte)
+    FormatString(text," %+d%+d  (%u,%u,%u) ",windows->magnify.x,
+      windows->magnify.y,color.red,color.green,color.blue);
   else
-    FormatString(text," %+d%+d  (%3u,%3u,%3u) %lu ",
-      windows->magnify.x,windows->magnify.y,XDownScale(color.red),
-      XDownScale(color.green),XDownScale(color.blue),color.pixel);
+    FormatString(text," %+d%+d  (%u,%u,%u,%u) ",windows->magnify.x,
+      windows->magnify.y,color.red,color.green,color.blue,color.opacity);
   height=windows->magnify.font_info->ascent+windows->magnify.font_info->descent;
   x=windows->magnify.font_info->max_bounds.width >> 1;
   y=windows->magnify.font_info->ascent+(height >> 2);
   XDrawImageString(display,windows->magnify.pixmap,
     windows->magnify.annotate_context,x,y,text,Extent(text));
-  FormatString(text," #%04x%04x%04x ",color.red,color.green,color.blue);
   y+=height;
+  FormatString(text,HexColorFormat,(unsigned int) color.red,(unsigned int)
+    color.green,(unsigned int) color.blue,(unsigned int) color.opacity);
   XDrawImageString(display,windows->magnify.pixmap,
     windows->magnify.annotate_context,x,y,text,Extent(text));
   /*
@@ -7622,8 +7616,8 @@ MagickExport void XMakeStandardColormap(Display *display,
 %  The format of the XMakeWindow method is:
 %
 %      void XMakeWindow(Display *display,Window parent,char **argv,int argc,
-%        XClassHint *class_hint,XWMHints *manager_hints,XWindowInfo *window_info)
-%        window_info)
+%        XClassHint *class_hint,XWMHints *manager_hints,
+%        XWindowInfo *window_info)
 %
 %  A description of each parameter follows:
 %
@@ -7845,6 +7839,8 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
       window_info->shared_memory=False;
 #endif
     }
+  window_info->image=(Image *) NULL;
+  window_info->destroy=False;
 }
 
 /*
