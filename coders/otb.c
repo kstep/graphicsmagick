@@ -113,9 +113,6 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  register long
-    i;
-
   unsigned char
     bit,
     info,
