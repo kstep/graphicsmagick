@@ -43,7 +43,8 @@
 	* utilities/conjure.c: Had missed removing this file earlier.
 
 2003-01-04  Derry Bryson  <dbryson@techass.com>
-	* magick/decorate.c: Fix typo.
+	* magick/decorate.c: Use the ShadowFactor rather than ShadowModule
+	define in RaiseImage() (bug-fix).
 
 2002-12-31  Cristy  <cristy@mystic.es.dupont.com>
 	* magick/command.c: Do not quantize CMYK (bug fix).
