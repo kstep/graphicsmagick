@@ -1,3 +1,6 @@
+2002-04-01  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
+  * Fixed TTF preview function.
+
 2002-03-28  Cristy  <cristy@mystic.es.dupont.com>
   * DCM patches provided by Syam Gadde.
   * Multi-frame MPC image files caused a fault under Windows.

@@ -140,8 +140,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent],
-    magick[MaxTextExtent],
-    geometry[MaxTextExtent];
+    magick[MaxTextExtent];
 
   const char
     *Text =
@@ -187,7 +186,9 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   y=20;
-  (void) fprintf(file,"font %.1024s\n",image_info->filename);
+  (void) fprintf(file,"push graphic-context\n");
+  (void) fprintf(file,"viewbox 0 0 800 480\n");
+  (void) fprintf(file,"font '%.1024s'\n",image_info->filename);
   (void) fprintf(file,"font-size 18\n");
   (void) fprintf(file,"text +10%+ld \"%s\"\n",y,Text);
   y+=20*MultilineCensus(Text)+20;
@@ -196,13 +197,14 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y+=i+12;
     (void) fprintf(file,"font-size 18\n");
     (void) fprintf(file,"text +10+%ld '%ld'\n",y,i);
-    (void) fprintf(file,"font-size %ld",i);
+    (void) fprintf(file,"font-size %ld\n",i);
     (void) fprintf(file,
       "text +50+%ld 'That which does not destroy me, only makes me stronger.'\n",
       y);
     if (i >= 24)
       i+=6;
   }
+  (void) fprintf(file,"pop graphic-context\n");
   (void) fclose(file);
   CloseBlob(image);
   DestroyImage(image);
@@ -211,8 +213,6 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   clone_info=CloneImageInfo(image_info);
   DetachBlob(clone_info->blob);
-  FormatString(geometry,"800x480");
-  (void) CloneString(&clone_info->size,geometry);
   FormatString(clone_info->filename,"mvg:%.1024s",filename);
   image=ReadImage(clone_info,exception);
   if (image != (Image *) NULL)
