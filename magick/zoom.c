@@ -606,7 +606,7 @@ MagickExport Image *MinifyImage(Image *image,ExceptionInfo *exception)
 %
 %    o image: the address of a structure of type Image.
 %
-%    o columns: an integer that specifies the number of columns in the zoom
+%    o columns: an integer that specifies the number of columns in the resize
 %      image.
 %
 %    o rows: an integer that specifies the number of rows in the scaled
@@ -827,7 +827,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
       return(y == (int) destination->rows);
     }
   /*
-    Apply filter to zoom horizontally from source to destination.
+    Apply filter to resize horizontally from source to destination.
   */
   scale_factor=blur*Max(1.0/x_factor,1.0);
   support=Max(scale_factor*filter_info->support,0.5);
@@ -970,7 +970,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
       return(y == (int) destination->rows);
     }
   /*
-    Apply filter to zoom vertically from source to destination.
+    Apply filter to resize vertically from source to destination.
   */
   scale_factor=blur*Max(1.0/y_factor,1.0);
   support=Max(scale_factor*filter_info->support,0.5);
@@ -1062,7 +1062,7 @@ MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
 
   Image
     *source_image,
-    *zoom_image;
+    *resize_image;
 
   static const FilterInfo
     filters[SincFilter+1] =
@@ -1091,7 +1091,7 @@ MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
     status;
 
   /*
-    Initialize zoom image attributes.
+    Initialize resize image attributes.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1099,29 +1099,18 @@ MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
   assert(exception->signature == MagickSignature);
   assert((filter >= 0) && (filter <= SincFilter));
   if ((columns == 0) || (rows == 0))
-    ThrowImageException(OptionWarning,"Unable to zoom image",
+    ThrowImageException(OptionWarning,"Unable to resize image",
       "image dimensions are zero");
   if ((columns == image->columns) && (rows == image->rows))
     return(CloneImage(image,0,0,False,exception));
-  zoom_image=CloneImage(image,columns,rows,False,exception);
-  if (zoom_image == (Image *) NULL)
+  resize_image=CloneImage(image,columns,rows,False,exception);
+  if (resize_image == (Image *) NULL)
     return((Image *) NULL);
-  if (zoom_image->rows >= image->rows)
-    source_image=
-      CloneImage(image,zoom_image->columns,image->rows,True,exception);
-  else
-    source_image=
-      CloneImage(image,image->columns,zoom_image->rows,True,exception);
-  if (source_image == (Image *) NULL)
-    {
-      DestroyImage(zoom_image);
-      return((Image *) NULL);
-    }
   /*
-    Allocate filter info list.
+    Allocate filter contribution info.
   */
-  x_factor=(double) zoom_image->columns/image->columns;
-  y_factor=(double) zoom_image->rows/image->rows;
+  x_factor=(double) resize_image->columns/image->columns;
+  y_factor=(double) resize_image->rows/image->rows;
   support=Max(filters[filter].support/x_factor,
     filters[filter].support/y_factor);
   if (support < filters[filter].support)
@@ -1130,30 +1119,42 @@ MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
     AcquireMemory((int) (support*2+3)*sizeof(ContributionInfo));
   if (contribution == (ContributionInfo *) NULL)
     {
-      DestroyImage(source_image);
-      DestroyImage(zoom_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to zoom image",
+      DestroyImage(resize_image);
+      ThrowImageException(ResourceLimitWarning,"Unable to resize image",
         "Memory allocation failed");
     }
   /*
     Resize image.
   */
   quantum=0;
-  if ((zoom_image->columns*(image->rows+zoom_image->rows)) <
-      (zoom_image->rows*(zoom_image->columns+image->columns)))
+  if ((columns*(image->rows+rows)) < (rows*(image->columns+columns)))
     {
-      span=source_image->columns+zoom_image->rows;
+      source_image=CloneImage(image,columns,image->rows,True,exception);
+      if (source_image == (Image *) NULL)
+        {
+          LiberateMemory((void **) &contribution);
+          DestroyImage(resize_image);
+          return((Image *) NULL);
+        }
+      span=source_image->columns+resize_image->rows;
       status=HorizontalFilter(image,source_image,x_factor,&filters[filter],blur,
 	contribution,span,&quantum);
-      status|=VerticalFilter(source_image,zoom_image,y_factor,&filters[filter],
-        blur,contribution,span,&quantum);
+      status|=VerticalFilter(source_image,resize_image,y_factor,
+        &filters[filter],blur,contribution,span,&quantum);
     }
   else
     {
-      span=zoom_image->columns+source_image->columns;
+      source_image=CloneImage(image,image->columns,rows,True,exception);
+      if (source_image == (Image *) NULL)
+        {
+          LiberateMemory((void **) &contribution);
+          DestroyImage(resize_image);
+          return((Image *) NULL);
+        }
+      span=resize_image->columns+source_image->columns;
       status=VerticalFilter(image,source_image,y_factor,&filters[filter],blur,
         contribution,span,&quantum);
-      status|=HorizontalFilter(source_image,zoom_image,x_factor,
+      status|=HorizontalFilter(source_image,resize_image,x_factor,
         &filters[filter],blur,contribution,span,&quantum);
     }
   /*
@@ -1163,10 +1164,10 @@ MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
   DestroyImage(source_image);
   if (status == False)
     {
-      DestroyImage(zoom_image);
+      DestroyImage(resize_image);
       ThrowImageException(CacheWarning,"Unable to resize image",(char *) NULL);
     }
-  return(zoom_image);
+  return(resize_image);
 }
 
 /*
