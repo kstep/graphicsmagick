@@ -3438,7 +3438,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     if (LocaleCompare("-fill",option) == 0)
       {
         (void) QueryColorDatabase(argv[++i],&clone_info->fill);
-        draw_info->fill=image_info->fill;
+        draw_info->fill=clone_info->fill;
         continue;
       }
     if (LocaleNCompare("filter",option+1,4) == 0)
@@ -3817,6 +3817,14 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=paint_image;
         continue;
       }
+    if (LocaleCompare("-pen",option) == 0)  /* anachronism */
+      {
+        (void) QueryColorDatabase(argv[++i],&clone_info->stroke);
+        draw_info->stroke=clone_info->stroke;
+        clone_info->fill=clone_info->stroke;
+        draw_info->fill=clone_info->fill;
+        continue;
+      }
     if (LocaleNCompare("pointsize",option+1,2) == 0)
       {
         clone_info->pointsize=atof(argv[++i]);
@@ -4154,7 +4162,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     if (LocaleCompare("-stroke",option) == 0)
       {
         (void) QueryColorDatabase(argv[++i],&clone_info->stroke);
-        draw_info->stroke=image_info->stroke;
+        draw_info->stroke=clone_info->stroke;
         continue;
       }
     if (LocaleNCompare("-swirl",option,3) == 0)
