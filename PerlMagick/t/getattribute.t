@@ -51,7 +51,7 @@ testGetAttribute('input.miff','geometry',undef);
 testGetAttribute('input.miff','height','46');
 
 ++$test;
-# Retuns undef
+# Returns undef
 testGetAttribute('input.miff','label',undef);
 
 ++$test;
