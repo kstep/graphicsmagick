@@ -2806,9 +2806,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   char
     keyword[MaxTextExtent],
     message[MaxTextExtent],
+    name[MaxTextExtent],
     *p,
     *q,
-    *token;
+    *token,
+    type[MaxTextExtent];
 
   const ImageAttribute
     *attribute;
@@ -3182,6 +3184,12 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                 (void) WriteBlobString(image,"</defs>\n");
                 break;
               }
+            if (LocaleCompare("gradient",token) == 0)
+              {
+                FormatString(message,"</%sGradient>\n",type);
+                (void) WriteBlobString(image,message);
+                break;
+              }
             if (LocaleCompare("graphic-context",token) == 0)
               {
                 n--;
@@ -3189,11 +3197,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                   ThrowWriterException(CorruptImageWarning,
                     "unbalanced graphic context push/pop",image);
                 (void) WriteBlobString(image,"</g>\n");
-              }
-            if (LocaleCompare("gradient",token) == 0)
-              {
-                (void) WriteBlobString(image,"</gadient>\n");
-                break;
               }
             if (LocaleCompare("pattern",token) == 0)
               {
@@ -3219,6 +3222,37 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                 (void) WriteBlobString(image,"<defs>\n");
                 break;
               }
+            if (LocaleCompare("gradient",token) == 0)
+              {
+                GetToken(q,&q,token);
+                (void) strncpy(name,token,MaxTextExtent-1);
+                GetToken(q,&q,token);
+                (void) strncpy(type,token,MaxTextExtent-1);
+                GetToken(q,&q,token);
+                GetToken(q,&q,token);
+                if (*token == ',')
+                  GetToken(q,&q,token);
+                GetToken(q,&q,token);
+                if (*token == ',')
+                  GetToken(q,&q,token);
+                GetToken(q,&q,token);
+                if (*token == ',')
+                  GetToken(q,&q,token);
+                FormatString(message,"<%sGradient id=\"%s\" x1=\"%g\" "
+                  "y1=\"%g\" y1=\"%g\" y2=\"%g\">\n",type,name,
+                  0.0,0.0,0.0,0.0);
+                if (LocaleCompare(type,"radial") == 0)
+                  {
+                    GetToken(q,&q,token);
+                    if (*token == ',')
+                      GetToken(q,&q,token);
+                    FormatString(message,"<%sGradient id=\"%s\" cx=\"%g\" "
+                      "cy=\"%g\" r=\"%g\" fx=\"%g\" fy=\"%g\">\n",type,name,
+                      0.0,0.0,0.0,0.0,0.0);
+                  }
+                (void) WriteBlobString(image,message);
+                break;
+              }
             if (LocaleCompare("graphic-context",token) == 0)
               {
                 n++;
@@ -3232,28 +3266,25 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               }
             if (LocaleCompare("pattern",token) == 0)
               {
-                char
-                  name[MaxTextExtent];
-
                 RectangleInfo
                   bounds;
 
                 GetToken(q,&q,token);
                 (void) strncpy(name,token,MaxTextExtent-1);
                 GetToken(q,&q,token);
-                bounds.x=atof(token);
+                bounds.x=atol(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                bounds.y=atof(token);
+                bounds.y=atol(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                bounds.width=atof(token);
+                bounds.width=atol(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                bounds.height=atof(token);
+                bounds.height=atol(token);
                 FormatString(message,"<pattern id=\"%s\" x=\"%ld\" y=\"%ld\" "
                   "width=\"%lu\" height=\"%lu\">\n",name,bounds.x,bounds.y,
                   bounds.width,bounds.height);
