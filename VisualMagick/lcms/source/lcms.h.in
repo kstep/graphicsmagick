@@ -1,0 +1,726 @@
+/* source/lcms.h.  Generated automatically by configure.  */
+/* source/lcms.h.in.  Generated automatically from configure.in by autoheader.  */
+//
+//  Little cms
+//  Copyright (C) 1998-2000 Marti Maria
+//
+// THIS SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
+// WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+//
+// IN NO EVENT SHALL MARTI MARIA BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
+// INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
+// OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+// WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
+// LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
+// OF THIS SOFTWARE.
+//
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+// Version 1.06
+
+#ifndef __cms_H
+
+// ********** Configuration toggles ****************************************
+
+
+/* Define to empty if the keyword does not work.  */
+/* #undef const */
+
+/* Define if you have the ANSI C header files.  */
+#define STDC_HEADERS 1
+
+/* Define if your processor stores words with the most significant
+   byte first (like Motorola and SPARC, unlike Intel and VAX).  */
+/* #undef WORDS_BIGENDIAN */
+
+//   Optimization mode.
+//
+// Note that USE_ASSEMBLER Is fastest by far, but it is limited to Pentium.
+// USE_FLOAT are the generic floating-point routines. USE_C should work on
+// virtually any machine.
+
+/* #undef USE_FLOAT */
+//#define USE_C 1
+#define USE_ASSEMBLER 1
+
+#define USE_TRILINEAR 1
+/* #undef USE_TETRAHEDRAL */
+
+// Uncomment if you are trying the engine in a non-windows environment
+// like linux or SGI
+//#define NON_WINDOWS 1
+
+// Uncomment this one if you are using big endian machines (only meaningfull
+// when NON_WINDOWS is used)
+/* #undef USE_BIG_ENDIAN */
+
+// Uncomment this one if your compiler/machine does support the new
+// __int64 type This will speedup fixed point math. (USE_C only)
+#define USE_INT64 1
+
+/* Define if you have the m library (-lm).  */
+//#define HAVE_LIBM 1
+
+/* Name of package */
+#define PACKAGE "lcms"
+
+/* Version number of package */
+#define VERSION "1.06"
+
+
+// In conversion 16 -> 8 bps, it should be / 257, but doesn't matter
+// anyway if I just >> 8, and the speed gain is big. This toggle forces
+// the / 257 method, at a div per component cost. Don't touch unless
+// you really know what are you doing.
+// #define USE_257_FOR_16_TO_8_CONVERSION 1
+
+// ********** End of configuration toggles ******************************
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <assert.h>
+
+
+#ifdef NON_WINDOWS
+
+// Non windows environments. Also avoid indentation on includes.
+// Many thanks to Karl Heinz Kremer and Neil Okamoto for
+// assistence on linux and SGI ports.
+
+/* #undef LCMS_DLL */
+
+#ifdef  USE_ASSEMBLER
+/* #undef  USE_ASSEMBLER */
+#define USE_C        1
+#endif
+
+#ifdef __sgi__
+#define USE_BIG_ENDIAN      1
+#endif
+
+#include <memory.h>
+#include <string.h>
+
+typedef unsigned char BYTE, *LPBYTE;
+typedef unsigned short WORD, *LPWORD;
+typedef unsigned int DWORD, *LPDWORD;
+typedef int BOOL;
+typedef void *HANDLE, *LPVOID;
+typedef char *LPSTR;
+
+#define ZeroMemory(p,l)     memset((p),0,(l))
+#define CopyMemory(d,s,l)   memcpy((d),(s),(l))
+#define FAR
+#define CONST const
+#ifndef FALSE
+#define FALSE (0)
+#endif
+#ifndef TRUE
+#define TRUE  (1)
+#endif
+#define LOWORD(l)    ((WORD)(l))
+#define HIWORD(l)    ((WORD)((DWORD)(l) >> 16))
+#define MAX_PATH     (256)
+// #define MessageBox(a,b,c,d)
+#define cdecl
+#pragma pack(1)
+
+#else
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <pshpack1.h>
+#endif
+
+
+#include "icc34.h"          // ICC header file
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifdef NON_WINDOWS
+
+#define LCMSEXPORT
+#define LCMSAPI
+
+#else
+
+#if defined(_VISUALC_)
+  #if defined(_DLL) && !defined(_LIB)
+    #if !defined(_LCMSLIB_)
+      #define LCMSEXPORT _stdcall
+      #define LCMSAPI extern __declspec(dllimport)
+    #else
+      #define LCMSEXPORT _stdcall
+      #define LCMSAPI extern __declspec(dllexport)
+    #endif
+  #else
+    #define LCMSEXPORT _stdcall
+    #define LCMSAPI extern
+  #endif
+#else
+#ifdef LCMS_DLL
+  #ifdef __BORLANDC__
+       #define LCMSEXPORT __stdcall _export
+       #define LCMSAPI
+  #else
+       #define LCMSEXPORT _stdcall
+       #define LCMSAPI __declspec(dllimport)
+  #endif
+#else
+      #define LCMSEXPORT cdecl
+      #define LCMSAPI
+#endif
+#endif
+
+
+#endif
+
+
+#ifdef __BORLANDC__
+      #define ASM     asm
+      #define RET(v)  return(v)
+#else
+      // VC++
+      #define ASM     __asm
+      #define RET(v)  return
+#endif
+
+
+// ********** Little cms API ***************************************************
+
+typedef HANDLE cmsHPROFILE;        // Opaque typedefs to hide internals
+typedef HANDLE cmsHTRANSFORM;
+
+// Format of pixel is defined by one integer, using bits as follows
+//
+//                       X S EEE CCC BBB
+//
+//            X: swap 16 bps endianess?
+//            S: Do swap? ie, BGR, KCMY
+//            E: Extra samples
+//            C: Channels (Samples per pixel)
+//            B: Bytes per sample
+//
+
+#define ENDIAN16_SH(e)         ((e) << 10)
+#define DOSWAP_SH(e)           ((e) << 9)
+#define EXTRA_SH(e)            ((e) << 6)
+#define CHANNELS_SH(c)         ((c) << 3)
+#define BYTES_SH(b)            (b)
+
+
+// Some representations
+
+#ifndef TYPE_RGB_8
+#define TYPE_GRAY_8     (CHANNELS_SH(1)|BYTES_SH(1))
+#define TYPE_GRAY_16    (CHANNELS_SH(1)|BYTES_SH(2))
+#define TYPE_GRAY_16_SE (CHANNELS_SH(1)|BYTES_SH(2)|ENDIAN16_SH(1))
+#define TYPE_GRAYA_8    (EXTRA_SH(1)|CHANNELS_SH(1)|BYTES_SH(1))
+#define TYPE_GRAYA_16   (EXTRA_SH(1)|CHANNELS_SH(1)|BYTES_SH(2))
+#define TYPE_GRAYA_16_SE (EXTRA_SH(1)|CHANNELS_SH(1)|BYTES_SH(2)|ENDIAN16_SH(1))
+#define TYPE_RGB_8      (CHANNELS_SH(3)|BYTES_SH(1))
+#define TYPE_BGR_8      (CHANNELS_SH(3)|BYTES_SH(1)|DOSWAP_SH(1))
+#define TYPE_RGB_16     (CHANNELS_SH(3)|BYTES_SH(2))
+#define TYPE_BGR_16     (CHANNELS_SH(3)|BYTES_SH(2)|DOSWAP_SH(1))
+#define TYPE_RGB_16_SE  (CHANNELS_SH(3)|BYTES_SH(2)|ENDIAN16_SH(1))
+#define TYPE_BGR_16_SE  (CHANNELS_SH(3)|BYTES_SH(2)|DOSWAP_SH(1)|ENDIAN16_SH(1))
+#define TYPE_RGBA_8     (EXTRA_SH(1)|CHANNELS_SH(3)|BYTES_SH(1))
+#define TYPE_RGBA_16    (EXTRA_SH(1)|CHANNELS_SH(3)|BYTES_SH(2))
+#define TYPE_RGBA_16_SE (EXTRA_SH(1)|CHANNELS_SH(3)|BYTES_SH(2)|ENDIAN16_SH(1))
+#define TYPE_ABGR_8     (EXTRA_SH(1)|CHANNELS_SH(3)|BYTES_SH(1)|DOSWAP_SH(1))
+#define TYPE_ABGR_16    (EXTRA_SH(1)|CHANNELS_SH(3)|BYTES_SH(2)|DOSWAP_SH(1))
+#define TYPE_ABGR_16_SE (EXTRA_SH(1)|CHANNELS_SH(3)|BYTES_SH(2)|DOSWAP_SH(1)|ENDIAN16_SH(1))
+#define TYPE_XYZ_16     (CHANNELS_SH(3)|BYTES_SH(2))
+#define TYPE_XYZ_16_SE  (CHANNELS_SH(3)|BYTES_SH(2)|ENDIAN16_SH(1))
+#define TYPE_Lab_8      (CHANNELS_SH(3)|BYTES_SH(1))
+#define TYPE_Lab_16     (CHANNELS_SH(3)|BYTES_SH(2))
+#define TYPE_Lab_16_SE  (CHANNELS_SH(3)|BYTES_SH(2)|ENDIAN16_SH(1))
+#define TYPE_CMY_8      (CHANNELS_SH(3)|BYTES_SH(1))
+#define TYPE_CMY_16     (CHANNELS_SH(3)|BYTES_SH(2))
+#define TYPE_CMY_16_SE  (CHANNELS_SH(3)|BYTES_SH(2)|ENDIAN16_SH(1))
+#define TYPE_CMYK_8     (CHANNELS_SH(4)|BYTES_SH(1))
+#define TYPE_CMYK_16    (CHANNELS_SH(4)|BYTES_SH(2))
+#define TYPE_CMYK_16_SE (CHANNELS_SH(4)|BYTES_SH(2)|ENDIAN16_SH(1))
+#define TYPE_CcMmYK_8   (CHANNELS_SH(6)|BYTES_SH(1))
+#define TYPE_CcMmYK_16  (CHANNELS_SH(6)|BYTES_SH(2))
+#endif
+
+// Gamma tables.
+
+typedef struct {
+              int  nEntries;
+              WORD GammaTable[1];
+
+              } GAMMATABLE, FAR* LPGAMMATABLE;
+
+// Vectors
+
+typedef struct {                // Float Vector
+        double n[3];
+        } VEC3, FAR* LPVEC3;
+
+
+typedef struct {                // Matrix
+        VEC3 v[3];
+        } MAT3, FAR* LPMAT3;
+
+
+// CIE values
+
+typedef struct {
+               double X;
+               double Y;
+               double Z;
+
+               } cmsCIEXYZ, FAR* LPcmsCIEXYZ;
+
+typedef struct {
+
+              cmsCIEXYZ  Red;
+              cmsCIEXYZ  Green;
+              cmsCIEXYZ  Blue;
+
+              } cmsCIEXYZTRIPLE, FAR* LPcmsCIEXYZTRIPLE;
+
+typedef struct {
+               double x;
+               double y;
+               double Y;
+
+               } cmsCIExyY, FAR* LPcmsCIExyY;
+
+
+typedef struct {
+
+              cmsCIExyY  Red;                      // Primaries
+              cmsCIExyY  Green;
+              cmsCIExyY  Blue;
+
+              } cmsCIExyYTRIPLE, FAR* LPcmsCIExyYTRIPLE;
+
+
+
+
+// Input/Output
+
+LCMSAPI cmsHPROFILE   LCMSEXPORT cmsOpenProfileFromFile(const char *ICCProfile, const char *sAccess);
+LCMSAPI cmsHPROFILE   LCMSEXPORT cmsOpenProfileFromMem(LPVOID MemPtr, DWORD dwSize);
+
+LCMSAPI cmsHPROFILE   LCMSEXPORT cmsCreateRGBProfile(LPcmsCIExyY WhitePoint,
+                                        LPcmsCIExyYTRIPLE Primaries,
+                                        LPGAMMATABLE TransferFunction[3]);
+
+LCMSAPI BOOL          LCMSEXPORT cmsCloseProfile(cmsHPROFILE hProfile);
+
+// Utils
+
+LCMSAPI void          LCMSEXPORT cmsXYZ2xyY(LPcmsCIExyY Dest, CONST LPcmsCIEXYZ Source);
+LCMSAPI void          LCMSEXPORT cmsxyY2XYZ(LPcmsCIEXYZ Dest, CONST LPcmsCIExyY Source);
+LCMSAPI BOOL          LCMSEXPORT cmsWhitePointFromTemp(int TempK, LPcmsCIExyY WhitePoint);
+LCMSAPI BOOL          LCMSEXPORT cmsAdaptToIlluminant(LPcmsCIEXYZ Result,
+                                                        LPcmsCIExyY SourceWhitePt,
+                                                        LPcmsCIExyY Illuminant,
+                                                        LPcmsCIEXYZ Value);
+
+LCMSAPI BOOL          LCMSEXPORT cmsBuildRGB2XYZtransferMatrix(LPMAT3 r,
+                                                        LPcmsCIExyY WhitePoint,
+                                                        LPcmsCIExyYTRIPLE Primaries);
+
+// Gamma
+
+LCMSAPI LPGAMMATABLE  LCMSEXPORT cmsBuildGamma(int nEntries, double Gamma);
+LCMSAPI LPGAMMATABLE  LCMSEXPORT cmsAllocGamma(int nEntries);
+LCMSAPI void          LCMSEXPORT cmsFreeGamma(LPGAMMATABLE Gamma);
+LCMSAPI LPGAMMATABLE  LCMSEXPORT cmsReverseGamma(int nResultSamples, LPGAMMATABLE InGamma);
+LCMSAPI LPGAMMATABLE  LCMSEXPORT cmsJoinGamma(LPGAMMATABLE InGamma,  LPGAMMATABLE OutGamma);
+
+
+// Access to Profile data.
+
+LCMSAPI BOOL          LCMSEXPORT cmsTakeMediaWhitePoint(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
+LCMSAPI BOOL          LCMSEXPORT cmsTakeMediaBlackPoint(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
+LCMSAPI BOOL          LCMSEXPORT cmsTakeIluminant(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
+LCMSAPI BOOL          LCMSEXPORT cmsTakeColorants(LPcmsCIEXYZTRIPLE Dest, cmsHPROFILE hProfile);
+LCMSAPI const char*   LCMSEXPORT cmsTakeProductName(cmsHPROFILE hProfile);
+LCMSAPI const char*   LCMSEXPORT cmsTakeProductDesc(cmsHPROFILE hProfile);
+LCMSAPI const char*   LCMSEXPORT cmsTakeProductInfo(cmsHPROFILE hProfile);
+LCMSAPI BOOL          LCMSEXPORT cmsIsTag(cmsHPROFILE hProfile, icTagSignature sig);
+LCMSAPI int           LCMSEXPORT cmsTakeRenderingIntent(cmsHPROFILE hProfile);
+
+LCMSAPI icColorSpaceSignature   LCMSEXPORT cmsGetPCS(cmsHPROFILE hProfile);
+LCMSAPI icColorSpaceSignature   LCMSEXPORT cmsGetColorSpace(cmsHPROFILE hProfile);
+LCMSAPI icProfileClassSignature LCMSEXPORT cmsGetDeviceClass(cmsHPROFILE hProfile);
+
+
+
+// Intents
+
+#define INTENT_PERCEPTUAL                 0
+#define INTENT_RELATIVE_COLORIMETRIC      1
+#define INTENT_SATURATION                 2
+#define INTENT_ABSOLUTE_COLORIMETRIC      3
+
+// Flags
+
+#define cmsFLAGS_MATRIXINPUT       0x0001
+#define cmsFLAGS_MATRIXOUTPUT      0x0002
+#define cmsFLAGS_MATRIXONLY        (cmsFLAGS_MATRIXINPUT|cmsFLAGS_MATRIXOUTPUT)
+#define cmsFLAGS_NOTPRECALC        0x0100
+#define cmsFLAGS_NULLTRANSFORM     0x0200        // Don't transform anyway
+#define cmsFLAGS_GAMUTCHECK        0x1000        // Out of Gamut alarm color
+
+
+LCMSAPI cmsHTRANSFORM LCMSEXPORT cmsCreateTransform(cmsHPROFILE Input,
+                                               DWORD InputFormat,
+                                               cmsHPROFILE Output,
+                                               DWORD OutputFormat,
+                                               int Intent,
+                                               DWORD dwFlags);
+
+LCMSAPI cmsHTRANSFORM LCMSEXPORT cmsCreateProofingTransform(cmsHPROFILE Input,
+                                               DWORD InputFormat,
+                                               cmsHPROFILE Output,
+                                               DWORD OutputFormat,
+                                               cmsHPROFILE Proofing,
+                                               int Intent,
+                                               int ProofingIntent,
+                                               DWORD dwFlags);
+
+LCMSAPI void         LCMSEXPORT cmsDeleteTransform(cmsHTRANSFORM hTransform);
+
+LCMSAPI void         LCMSEXPORT cmsDoTransform(cmsHTRANSFORM Transform,
+                                                 LPVOID InputBuffer,
+                                                 LPVOID OutputBuffer,
+                                                 unsigned int Size);
+
+
+LCMSAPI void         LCMSEXPORT cmsSetAlarmCodes(int r, int g, int b);
+LCMSAPI void         LCMSEXPORT cmsGetAlarmCodes(int *r, int *g, int *b);
+
+// Error handling
+
+#define LCMS_ERROR_ABORT    0
+#define LCMS_ERROR_SHOW     1
+#define LCMS_ERROR_IGNORE   2
+
+LCMSAPI void LCMSEXPORT cmsErrorAction(int nAction);
+
+#define LCMS_ERRC_WARNING        0x1000
+#define LCMS_ERRC_RECOVERABLE    0x2000
+#define LCMS_ERRC_ABORTED        0x3000
+
+void cdecl cmsSignalError(int ErrorCode, const char *ErrorText, ...);
+
+// ***************************************************************************
+// End of Little cms API From here functions are private
+// You can use them only if using static libraries, and at your own risk of
+// be stripped or changed at futures releases.
+
+
+// Alignment handling (needed in ReadLUT16 and ReadLUT8)
+
+typedef struct {
+        icS15Fixed16Number a;
+        icUInt16Number     b;
+
+       } _cmsTestAlign16;
+
+#define SIZEOF_UINT16_ALIGNED (sizeof(_cmsTestAlign16) - sizeof(icS15Fixed16Number))
+
+typedef struct {
+        icS15Fixed16Number a;
+        icUInt8Number      b;
+
+       } _cmsTestAlign8;
+
+#define SIZEOF_UINT8_ALIGNED (sizeof(_cmsTestAlign8) - sizeof(icS15Fixed16Number))
+
+
+// Fixed point
+
+typedef long Fixed32;       // Fixed 15.16 whith sign
+
+
+#define INT_TO_FIXED(x)         ((x)<<16)
+#define DOUBLE_TO_FIXED(x)      ((long)((x)*65536.0+.5))
+#define FIXED_TO_INT(x)         ((x)>>16)
+#define FIXED_REST_TO_INT(x)    ((x)&0xFFFFU)
+#define FIXED_TO_DOUBLE(x)      (((double)x)/65536.0)
+#define ROUND_FIXED_TO_INT(x)   (((x)+0x8000)>>16)
+
+
+Fixed32 cdecl FixedMul(Fixed32 a, Fixed32 b);
+Fixed32 cdecl FixedDiv(Fixed32 a, Fixed32 b);
+Fixed32 cdecl ToFixedDomain(int a);              // (a * 65536.0 / 65535.0)
+int     cdecl FromFixedDomain(Fixed32 a);        // (a * 65535.0 + .5)
+Fixed32 cdecl FixedLERP(Fixed32 a, Fixed32 l, Fixed32 h);
+WORD    cdecl FixedScale(WORD a, Fixed32 s);
+
+// Vector & Matrix operations. I'm using the notation frequently found in
+// literature. Mostly 'Graphic Gems' samples. Not to be same routines.
+
+// Vector members
+
+#define VX      0
+#define VY      1
+#define VZ      2
+
+typedef struct {                // Fixed 15.16 bits vector
+        Fixed32 n[3];
+        } WVEC3, FAR* LPWVEC3;
+
+typedef struct {                // Matrix (Fixed 15.16)
+        WVEC3 v[3];
+        } WMAT3, FAR* LPWMAT3;
+
+
+
+void cdecl VEC3init(LPVEC3 r, double x, double y, double z);   // double version
+void cdecl VEC3initF(LPWVEC3 r, double x, double y, double z); // Fix32 version
+void cdecl VEC3toFix(LPWVEC3 r, LPVEC3 v);
+void cdecl VEC3scaleFix(LPWORD r, LPWVEC3 Scale);
+void cdecl VEC3swap(LPVEC3 a, LPVEC3 b);
+void cdecl VEC3divK(LPVEC3 r, LPVEC3 v, double d);
+void cdecl VEC3perK(LPVEC3 r, LPVEC3 v, double d);
+void cdecl VEC3minus(LPVEC3 r, LPVEC3 a, LPVEC3 b);
+void cdecl VEC3perComp(LPVEC3 r, LPVEC3 a, LPVEC3 b);
+BOOL cdecl VEC3equal(LPWVEC3 a, LPWVEC3 b, double Tolerance);
+
+void cdecl MAT3identity(LPMAT3 a);
+void cdecl MAT3per(LPMAT3 r, LPMAT3 a, LPMAT3 b);
+void cdecl MAT3perK(LPMAT3 r, LPMAT3 v, double d);
+int  cdecl MAT3inverse(LPMAT3 a, LPMAT3 b);
+void cdecl MAT3eval(LPVEC3 r, LPMAT3 a, LPVEC3 v);
+void cdecl MAT3toFix(LPWMAT3 r, LPMAT3 v);
+void cdecl MAT3evalW(LPWVEC3 r, LPWMAT3 a, LPWVEC3 v);
+BOOL cdecl MAT3isIdentity(LPWMAT3 a, double Tolerance);
+
+
+// Is a table linear?
+
+int  cdecl cmsIsLinear(WORD Table[], int nEntries);
+
+// I hold this structures describing domain
+// details mainly for optimization purposes.
+
+
+typedef struct {              // Used on 16 bits interpolations
+
+               int nSamples;       // Valid on all kinds of tables
+               int nInputs;        // != 1 only in 3D interpolation
+               int nOutputs;       // != 1 only in 3D interpolation
+
+               WORD Domain;
+
+               int a1, a2, a3, a4;     // Optimization for 3D LUT
+
+
+               } L16PARAMS, *LPL16PARAMS;
+
+
+void cdecl cmsCalcL16Params(int nSamples, LPL16PARAMS p);
+void cdecl cmsCalcCLUT16Params(int nSamples, int InputChan, int OutputChan, LPL16PARAMS p);
+
+WORD cdecl cmsLinearInterpLUT16(WORD Value, WORD LutTable[], LPL16PARAMS p);
+
+Fixed32 cdecl cmsLinearInterpFixed(WORD Value1, WORD LutTable[], LPL16PARAMS p);
+
+WORD cdecl cmsReverseLinearInterpLUT16(WORD Value,
+                                       WORD LutTable[], LPL16PARAMS p);
+
+void cdecl cmsTrilinearInterp16(WORD Input[],
+                                WORD Output[],
+                                WORD LutTable[],
+                                LPL16PARAMS p);
+
+void cdecl cmsTetrahedralInterp16(WORD Input[],
+                                  WORD Output[],
+                                  WORD LutTable[], LPL16PARAMS p);
+
+
+
+// LUT handling
+
+#define LUT_HASMATRIX       0x0001        // Do-op Flags
+#define LUT_HASTL1          0x0002
+#define LUT_HASTL2          0x0008
+#define LUT_HAS3DGRID       0x0010
+
+#define MAXCHANNELS  16            // Maximum number of channels
+
+typedef struct {
+
+               DWORD wFlags;
+               WMAT3 Matrix;                    // 15fixed16 matrix
+
+               unsigned int InputChan;
+               unsigned int OutputChan;
+               unsigned int InputEntries;
+               unsigned int OutputEntries;
+               unsigned int cLutPoints;
+
+               // I'm encoding linear tables as
+               // WORD (0..ffff) values
+
+               LPWORD L1[MAXCHANNELS];          // First linearization
+               LPWORD L2[MAXCHANNELS];          // Last linearization
+
+               LPWORD T;                        // 3D CLUT
+
+              // Parameters & Optimizations
+
+               L16PARAMS In16params;
+               L16PARAMS Out16params;
+               L16PARAMS CLut16params;
+
+               int Intent;                       // Accomplished intent
+
+               } LUT, FAR* LPLUT;
+
+
+// LUT handling
+
+LPLUT cdecl cmsAllocLUT(void);
+LPLUT cdecl cmsAllocLinearTable(LPLUT NewLUT, LPGAMMATABLE Tables[], int nTable);
+LPLUT cdecl cmsAlloc3DGrid(LPLUT Lut, int clutPoints, int inputChan, int outputChan);
+void  cdecl cmsFreeLUT(LPLUT Lut);
+void  cdecl cmsEvalLUT(LPLUT Lut, WORD In[], WORD Out[]);
+LPLUT cdecl cmsReadICCLut(cmsHPROFILE hProfile, icTagSignature sig);
+
+
+// Gamma
+
+LPGAMMATABLE cdecl cmsScaleGamma(LPGAMMATABLE Input, Fixed32 Factor);
+
+
+
+// Shaper/Matrix handling
+
+#define MATSHAPER_HASMATRIX        0x0001        // Do-ops flags
+#define MATSHAPER_HASSHAPER        0x0002
+#define MATSHAPER_INPUT            0x0004        // Behaviour
+#define MATSHAPER_OUTPUT           0x0008
+#define MATSHAPER_ALLSMELTED       (MATSHAPER_INPUT|MATSHAPER_OUTPUT)
+
+
+typedef struct {
+               DWORD dwFlags;
+
+               WMAT3 Matrix;
+               L16PARAMS p16;
+
+               LPWORD L[3];
+
+               } MATSHAPER, FAR* LPMATSHAPER;
+
+LPMATSHAPER cdecl cmsAllocMatShaper(LPMAT3 matrix, LPGAMMATABLE Shaper[], DWORD Behaviour);
+LPMATSHAPER cdecl cmsAllocMonoMatShaper(LPGAMMATABLE Tables[], DWORD Behaviour);
+void        cdecl cmsFreeMatShaper(LPMATSHAPER MatShaper);
+void        cdecl cmsEvalMatShaper(LPMATSHAPER MatShaper, WORD In[], WORD Out[]);
+
+LPGAMMATABLE cdecl cmsReadICCGamma(cmsHPROFILE hProfile, icTagSignature sig);
+BOOL         cdecl cmsReadICCMatrixRGB2XYZ(LPMAT3 r, cmsHPROFILE hProfile);
+
+// White Point & Primary chromas handling
+
+BOOL cdecl cmsAdaptMatrixToD50(LPMAT3 r, LPcmsCIExyY SourceWhitePt);
+BOOL cdecl cmsAdaptMatrixFromD50(LPMAT3 r, LPcmsCIExyY DestWhitePt);
+
+// Inter-PCS conversion routines. They assume D50 as white point.
+
+void cdecl cmsXYZ2LabEncoded(WORD XYZ[3], WORD Lab[3]);
+void cdecl cmsLab2XYZEncoded(WORD Lab[3], WORD XYZ[3]);
+
+
+
+// These macros unpack format specifiers into integers
+
+#define T_ENDIAN16(e)         (((e)>>10)&1)
+#define T_DOSWAP(e)           (((e)>>9)&1)
+#define T_EXTRA(e)            (((e)>>6)&7)
+#define T_CHANNELS(c)         (((c)>>3)&7)
+#define T_BYTES(b)            ((b)&7)
+
+// Packing & Unpacking
+
+typedef LPBYTE (* _cmsFIXFN)(WORD ToUnroll[], LPBYTE Buffer);
+
+_cmsFIXFN cdecl _cmsIdentifyInputFormat(DWORD dwInput);
+_cmsFIXFN cdecl _cmsIdentifyOutputFormat(DWORD dwOutput);
+
+// Conversion
+
+#define NONE         -1
+#define XYZRel       0
+#define LabRel       1
+#define XYZAbs       2
+#define LabAbs       3
+
+
+typedef void (* _cmsADJFN)(WORD In[], WORD Out[], LPWVEC3 a, LPWVEC3 b);
+
+int cdecl cmsChooseCnvrt(int Absolute,
+                 int Phase1, LPcmsCIEXYZ BlackPointIn,
+                             LPcmsCIEXYZ WhitePointIn,
+                             LPcmsCIEXYZ IlluminantIn,
+
+                 int Phase2, LPcmsCIEXYZ BlackPointOut,
+                             LPcmsCIEXYZ WhitePointOut,
+                             LPcmsCIEXYZ IlluminantOut,
+
+                 _cmsADJFN *fn1,
+                 LPWVEC3 wa, LPWVEC3 wb);
+
+
+
+// Clamping & Gamut handling
+
+WORD cdecl Clamp_XYZ(int in);
+WORD cdecl Clamp_RGB(int in);
+
+WORD cdecl Clamp_L(Fixed32 in);
+WORD cdecl Clamp_ab(Fixed32 in);
+
+
+// These are two VITAL macros, from converting between 8 and 16 bit
+// representation. For commodity, I'm always TRUNCATING values. Rounding
+// has bad side effects, as a 0xFFFF is converted to 0x10000 and a '00' is
+// returned.
+
+#define RGB_8_TO_16(rgb) (WORD) ((((WORD) (rgb)) << 8)|(rgb)) // * 257
+
+#ifdef USE_257_FOR_16_TO_8_CONVERSION
+#define RGB_16_TO_8(rgb) (BYTE) (((WORD) (rgb)) / 257)
+#else
+#define RGB_16_TO_8(rgb) (BYTE) (((WORD) (rgb)) >> 8)
+#endif
+
+
+#define __cms_H
+
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef NON_WINDOWS
+#pragma pack()
+#else
+#include <poppack.h>
+#endif
+#endif
