@@ -467,7 +467,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) memset(&dib_info,0,sizeof(DIBInfo));
   dib_info.size=ReadBlobLSBLong(image);
   if (dib_info.size!=40)
-    ThrowReaderException(CorruptImageWarning,"Not a Windows 3.X DIB image",image);
+    ThrowReaderException(CorruptImageWarning,"Not a Windows 3.X DIB image",
+      image);
   /*
     Microsoft Windows 3.X DIB image file.
   */
@@ -499,22 +500,21 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->colors == 0)
         image->colors=1L << dib_info.bits_per_pixel;
     }
-  /* Allow non-zero width or height from size to override DIB header */
   if(image_info->size)
     {
-      long
-        size_x = 0,
-        size_y = 0;
+      int
+        flags;
 
-      unsigned long
-        size_width = 0,
-        size_height = 0;
+      RectangleInfo
+        geometry;
 
-      ParseGeometry(image_info->size,&size_x,&size_y,&size_width,&size_height);
-      if(size_width && size_width < image->columns)
-        image->columns = size_width;
-      if(size_height && size_height < image->rows)
-        image->rows = size_height;
+      memset(&geometry,0,sizeof(RectangleInfo));
+      flags=ParseGeometry(image_info->size,&geometry.x,&geometry.y,
+        &geometry.width,&geometry.height);
+      if ((flags & WidthValue) && (geometry.width < image->columns))
+        image->columns=geometry.width;
+      if ((flags & HeightValue) && (geometry.height < image->rows))
+        image->rows=geometry.height;
     }
   if (image->storage_class == PseudoClass)
     {

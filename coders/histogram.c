@@ -176,15 +176,17 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   Image
     *histogram_image;
 
-  int
+  long
     *blue,
     *green,
     maximum,
     *red;
 
   long
-    sans_offset,
     y;
+
+  RectangleInfo
+		geometry;
 
   register const PixelPacket
     *p;
@@ -199,10 +201,6 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   unsigned int
     status;
 
-  unsigned long
-    height,
-    width;
-
   /*
     Allocate histogram image.
   */
@@ -210,15 +208,15 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  width=image->columns;
-  height=image->rows;
+  SetGeometry(image,&geometry);
   if (image_info->density != (char *) NULL)
-    (void) ParseGeometry(image_info->density,&sans_offset,&sans_offset,
-      &width,&height);
+    (void) ParseGeometry(image_info->density,&geometry.x,&geometry.y,
+      &geometry.width,&geometry.height);
   else
-    (void) ParseGeometry(HistogramDensity,&sans_offset,&sans_offset,
-      &width,&height);
-  histogram_image=CloneImage(image,width,height,True,&image->exception);
+    (void) ParseGeometry(HistogramDensity,&geometry.x,&geometry.y,
+      &geometry.width,&geometry.height);
+  histogram_image=CloneImage(image,geometry.width,geometry.height,True,
+    &image->exception);
   if (histogram_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,
         "Memory allocation failed",image);
@@ -226,11 +224,11 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Allocate histogram count arrays.
   */
-  red=(int *) AcquireMemory (histogram_image->columns*sizeof(int));
-  green=(int *) AcquireMemory (histogram_image->columns*sizeof(int));
-  blue=(int *) AcquireMemory (histogram_image->columns*sizeof(int));
-  if ((red == (int *) NULL) || (green == (int *) NULL) ||
-      (blue == (int *) NULL))
+  red=(long *) AcquireMemory (histogram_image->columns*sizeof(long));
+  green=(long *) AcquireMemory (histogram_image->columns*sizeof(long));
+  blue=(long *) AcquireMemory (histogram_image->columns*sizeof(long));
+  if ((red == (long *) NULL) || (green == (long *) NULL) ||
+      (blue == (long *) NULL))
     {
       DestroyImage(histogram_image);
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
