@@ -565,6 +565,71 @@ MagickExport unsigned int ConcatenateString(char **destination,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   E s c a p e S t r i n g                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  EscapeString() allocates memory for a backslash-escaped version of a
+%  source text string, copies the escaped version of the text to that
+%  memory location while adding backslash characters, and returns the
+%  escaped string.
+%
+%  The format of the EscapeString method is:
+%
+%      char *EscapeString(const char *source, const char escape)
+%
+%  A description of each parameter follows:
+%
+%    o allocated_string:  Method EscapeString returns the escaped string.
+%
+%    o source: A character string.
+%
+%    o escape: The quoted string termination character to escape (e.g. '"').
+%
+*/
+MagickExport char *EscapeString(const char *source,const char escape)
+{
+  char
+    *destination,
+    *q;
+
+  const char
+    *p;
+
+  unsigned int
+    allocated;
+
+  assert(source != (const char *) NULL);
+
+  allocated=strlen(source)+1;
+  for (p=source; *p; p++)
+    if ( (*p=='\\') || (*p==escape) )
+      ++allocated;
+  destination=(char *) AcquireMemory(allocated);
+  if (destination == (char *) NULL)
+    MagickFatalError(ResourceLimitFatalError,"Unable to acquire string",
+                     "Memory allocation failed");
+  *destination=0;
+  if (source != (char *) NULL)
+    {
+      for (p = source, q=destination; *p; p++)
+        {
+          if ( (*p == '\\') || (*p == escape))
+            *q++ = '\\';
+          *q++ = (*p);
+        }
+      *q = 0;
+    }
+  return(destination);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   E x p a n d F i l e n a m e                                               %
 %                                                                             %
 %                                                                             %

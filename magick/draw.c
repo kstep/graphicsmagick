@@ -542,37 +542,16 @@ MagickExport void DrawAnnotation(DrawContext context,
                                  const double x, const double y,
                                  const unsigned char *text)
 {
-  unsigned char
-    escaped_string[MaxTextExtent];
-
-  unsigned const char
-    *p;
-
-  unsigned char
-    *q;
-
-  unsigned int
-    string_length;
+  char
+    *escaped_text;
 
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
   assert(text != (const unsigned char *) NULL);
 
-  for (p = text, q = escaped_string, string_length = 0;
-       (*p != 0) && (string_length < (sizeof(escaped_string) - 3));
-       ++p)
-    {
-      if ( (*p == '\\') || (*p == '\''))
-        {
-          *q++ = '\\';
-          ++string_length;
-        }
-      *q++ = (*p);
-      ++string_length;
-    }
-  *q = 0;
-
-  MvgPrintf(context, "text %.4g,%.4g '%.1024s'\n", x, y, escaped_string);
+  escaped_text=EscapeString((const char*)text,'\'');
+  MvgPrintf(context, "text %.4g,%.4g '%.1024s'\n", x, y, escaped_text);
+  LiberateMemory((void**)&escaped_text);
 }
 
 MagickExport void DrawSetAffine(DrawContext context, const AffineMatrix *affine)

@@ -626,8 +626,10 @@ then
   done
 fi
 
-LDFLAGS="$LDFLAGS -L$LIB_DIR"
-CPPFLAGS="$CPPFLAGS -I$INCLUDE_DIR"
+# Assume that delegate headers and libraries may reside under same
+# directory as ImageMagick installation prefix.
+#LDFLAGS="$LDFLAGS -L$LIB_DIR"
+#CPPFLAGS="$CPPFLAGS -I$INCLUDE_DIR"
 
 # Extend includedir to include magick subdirectory offset
 includedir="$includedir/magick"
@@ -817,7 +819,7 @@ then
   LDFLAGS="$LDFLAGS $X_LIBS"
   LIB_X11="$X_PRE_LIBS -lX11 $X_EXTRA_LIBS"
   LIBS="$LIB_X11 $LIBS"
-  CPPFLAGS="$CPPFLAGS $X_CFLAGS"dnl
+  CPPFLAGS="$CPPFLAGS $X_CFLAGS"
 
   AC_DEFINE(HasX11,,Define if you have X11 library)dnl
 
@@ -1202,8 +1204,8 @@ then
        then
           freetype_prefix=`freetype-config --prefix`
           freetype_exec_prefix=`freetype-config --exec-prefix`
-          LDFLAGS="-L${freetype_exec_prefix}/lib $LDFLAGS" 2> /dev/null
-          CPPFLAGS="-I${freetype_prefix}/include/freetype2 $CPPFLAGS" 2> /dev/null
+          LDFLAGS="$LDFLAGS -L${freetype_exec_prefix}/lib"
+          CPPFLAGS="$CPPFLAGS -I${freetype_prefix}/include/freetype2"
        fi
     fi
 
@@ -1382,9 +1384,9 @@ then
         xml2_prefix=`xml2-config --prefix`
         if test -d "${xml2_prefix}/include/libxml2"
         then
-          CPPFLAGS="-I${xml2_prefix}/include/libxml2 $CPPFLAGS" 2> /dev/null
+          CPPFLAGS="$CPPFLAGS -I${xml2_prefix}/include/libxml2"
         fi
-        LDFLAGS="-L${xml2_prefix}/lib $LDFLAGS" 2> /dev/null
+        LDFLAGS="$LDFLAGS -L${xml2_prefix}/lib"
      fi
     failed=0;
     passed=0;

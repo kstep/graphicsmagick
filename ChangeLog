@@ -1,4 +1,7 @@
 2002-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Added EscapeText() to utility.c to support escaping text.
+
+2002-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Text escaping for -draw and DrawAnnotation was not working properly.
     Now it does.  Backslash should act as a escape for the the active
     quote character (', ", or }) as well as backslash.  The backslash

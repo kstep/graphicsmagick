@@ -33,6 +33,7 @@ typedef struct _TokenInfo
 extern MagickExport char
   *AllocateString(const char *),
   *Base64Encode(const unsigned char *,const size_t,size_t *),
+  *EscapeString(const char *,const char),
   *GetExecutionPath(const char *),
   *GetPageGeometry(const char *),
   **ListFiles(const char *,const char *,long *),
