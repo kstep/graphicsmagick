@@ -74,7 +74,7 @@ static unsigned int
     const unsigned int,TypeMetric *),
   RenderPostscript(Image *,const DrawInfo *,const PointInfo *,
     const unsigned int,TypeMetric *),
-  RenderTruetype(Image *,const DrawInfo *,const PointInfo *,
+  RenderFreetype(Image *,const DrawInfo *,const PointInfo *,
     const unsigned int,TypeMetric *),
   RenderX11(Image *,const DrawInfo *,const PointInfo *,const unsigned int,
     TypeMetric *);
@@ -777,51 +777,34 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
   DrawInfo
     *clone_info;
 
-  ImageInfo
-    *image_info;
-
   unsigned int
     status;
 
-  image_info=CloneImageInfo((ImageInfo *) NULL);
   type_info=GetTypeInfoByFamily(draw_info->family,draw_info->style,
     draw_info->stretch,draw_info->weight,&image->exception);
   if (draw_info->font != (char *) NULL)
+    type_info=GetTypeInfo(draw_info->font,&image->exception);
+  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  if (type_info != (const TypeInfo *) NULL)
     {
-      (void) strncpy(image_info->filename,draw_info->font,MaxTextExtent-1);
-      type_info=GetTypeInfo(draw_info->font,&image->exception);
+      if (type_info->glyphs != (char *) NULL)
+        (void) CloneString(&clone_info->font,type_info->glyphs);
+      if (type_info->encoding != (char *) NULL)
+        (void) CloneString(&clone_info->encoding,type_info->encoding);
+      status=RenderFreetype(image,clone_info,offset,render,metrics);
     }
-  if ((type_info != (const TypeInfo *) NULL) &&
-      (type_info->glyphs != (char *) NULL))
-    (void) strncpy(image_info->filename,type_info->glyphs,MaxTextExtent-1);
-  (void) strcpy(image_info->magick,"PS");
-  if (*image_info->filename == '@')
-    (void) strcpy(image_info->magick,"TTF");
-  if (*image_info->filename == '-')
-    (void) strcpy(image_info->magick,"X");
-  (void) SetImageInfo(image_info,False,&image->exception);
-  clone_info=CloneDrawInfo(image_info,draw_info);
-  if (*image_info->filename != '@')
-    (void) CloneString(&clone_info->font,image_info->filename);
   else
-    (void) CloneString(&clone_info->font,image_info->filename+1);
-  if ((type_info != (const TypeInfo *) NULL) &&
-      (type_info->encoding != (char *) NULL))
-    (void) CloneString(&clone_info->encoding,type_info->encoding);
-  if (LocaleCompare(image_info->magick,"PS") == 0)
-    status=RenderPostscript(image,clone_info,offset,render,metrics);
-  else
-    if ((LocaleCompare(image_info->magick,"TTF") == 0) ||
-        (LocaleCompare(image_info->magick,"PFA") == 0) ||
-        (LocaleCompare(image_info->magick,"PFB") == 0))
-      status=RenderTruetype(image,clone_info,offset,render,metrics);
+    if (*clone_info->font == '@')
+      {
+        (void) CloneString(&clone_info->font,clone_info->font+1);
+        status=RenderFreetype(image,clone_info,offset,render,metrics);
+      }
     else
-      if (LocaleCompare(image_info->magick,"X") == 0)
+      if (*clone_info->font == '-')
         status=RenderX11(image,clone_info,offset,render,metrics);
       else
         status=RenderPostscript(image,clone_info,offset,render,metrics);
   DestroyDrawInfo(clone_info);
-  DestroyImageInfo(image_info);
   return(status);
 }
 
@@ -830,283 +813,23 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e n d e r P o s t s c r i p t                                           %
++   R e n d e r F r e e t y p e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RenderPostscript renders text on the image with a Postscript font.
-%  It also returns the bounding box of the text relative to the image.
-%
-%  The format of the RenderPostscript method is:
-%
-%      unsigned int RenderPostscript(Image *image,DrawInfo *draw_info,
-%        const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method RenderPostscript returns True if the text is rendered on
-%      the image, otherwise False.
-%
-%    o image: The image.
-%
-%    o draw_info: The draw info.
-%
-%    o offset: (x,y) location of text relative to image.
-%
-%    o render: a value other than zero renders the text otherwise just the
-%      font metric is returned.
-%
-%    o metrics: bounding box of text.
-%
-%
-*/
-
-static char *EscapeParenthesis(const char *text)
-{
-  char
-    *buffer;
-
-  register char
-    *p;
-
-  register long
-    i;
-
-  unsigned long
-    escapes;
-
-  escapes=0;
-  buffer=GetString(text);
-  p=buffer;
-  for (i=0; i < (long) Min(strlen(text),(MaxTextExtent-escapes-1)); i++)
-  {
-    if ((text[i] == '(') || (text[i] == ')'))
-      {
-        *p++='\\';
-        escapes++;
-      }
-    *p++=text[i];
-  }
-  *p='\0';
-  return(buffer);
-}
-
-static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
-{
-  char
-    filename[MaxTextExtent],
-    geometry[MaxTextExtent],
-    *text;
-
-  FILE
-    *file;
-
-  Image
-    *annotate_image,
-    *pattern;
-
-  ImageInfo
-    *clone_info;
-
-  long
-    y;
-
-  PointInfo
-    extent,
-    point,
-    resolution;
-
-  register long
-    i,
-    x;
-
-  register PixelPacket
-    *q;
-
-  unsigned int
-    identity;
-
-  /*
-    Render label with a Postscript font.
-  */
-  TemporaryFilename(filename);
-  file=fopen(filename,WriteBinaryType);
-  if (file == (FILE *) NULL)
-    ThrowBinaryException(FileOpenWarning,"Unable to open file",filename);
-  (void) fprintf(file,"%%!PS-Adobe-3.0\n");
-  (void) fprintf(file,"/ReencodeType\n");
-  (void) fprintf(file,"{\n");
-  (void) fprintf(file,"  findfont dup length\n");
-  (void) fprintf(file,
-    "  dict begin { 1 index /FID ne {def} {pop pop} ifelse } forall\n");
-  (void) fprintf(file,
-    "  /Encoding ISOLatin1Encoding def currentdict end definefont pop\n");
-  (void) fprintf(file,"} bind def\n");
-  /*
-    Sample to compute bounding box.
-  */
-  identity=(draw_info->affine.sx == draw_info->affine.sy) &&
-    (draw_info->affine.rx == 0.0) && (draw_info->affine.ry == 0.0);
-  extent.x=0.0;
-  extent.y=0.0;
-  for (i=0; i <= (long) (strlen(draw_info->text)+2); i++)
-  {
-    point.x=fabs(draw_info->affine.sx*i*draw_info->pointsize+
-      draw_info->affine.ry*2.0*draw_info->pointsize);
-    point.y=fabs(draw_info->affine.rx*i*draw_info->pointsize+
-      draw_info->affine.sy*2.0*draw_info->pointsize);
-    if (point.x > extent.x)
-      extent.x=point.x;
-    if (point.y > extent.y)
-      extent.y=point.y;
-  }
-  (void) fprintf(file,"%g %g moveto\n",identity ? 0.0 : extent.x/2.0,
-    extent.y/2.0);
-  (void) fprintf(file,"%g %g scale\n",draw_info->pointsize,
-    draw_info->pointsize);
-  if ((draw_info->font == (char *) NULL) || (*draw_info->font == '\0'))
-    (void) fprintf(file,
-      "/Times-Roman-ISO dup /Times-Roman ReencodeType findfont setfont\n");
-  else
-    (void) fprintf(file,
-      "/%.1024s-ISO dup /%.1024s ReencodeType findfont setfont\n",
-      draw_info->font,draw_info->font);
-  (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",draw_info->affine.sx,
-    -draw_info->affine.rx,-draw_info->affine.ry,draw_info->affine.sy);
-  text=EscapeParenthesis(draw_info->text);
-  if (!identity)
-    (void) fprintf(file,"(%.1024s) stringwidth pop -0.5 mul -0.5 rmoveto\n",
-      text);
-  (void) fprintf(file,"(%.1024s) show\n",text);
-  LiberateMemory((void **) &text);
-  (void) fprintf(file,"showpage\n");
-  (void) fclose(file);
-  FormatString(geometry,"%ldx%ld+0+0!",(long) ceil(extent.x-0.5),
-    (long) ceil(extent.y-0.5));
-  clone_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) FormatString(clone_info->filename,"ps:%.1024s",filename);
-  (void) CloneString(&clone_info->page,geometry);
-  if (draw_info->density != (char *) NULL)
-    (void) CloneString(&clone_info->density,draw_info->density);
-  clone_info->antialias=draw_info->text_antialias;
-  annotate_image=ReadImage(clone_info,&image->exception);
-  if (image->exception.severity != UndefinedException)
-    MagickWarning(image->exception.severity,image->exception.reason,
-      image->exception.description);
-  DestroyImageInfo(clone_info);
-  (void) remove(filename);
-  if (annotate_image == (Image *) NULL)
-    return(False);
-  resolution.x=72.0;
-  resolution.y=72.0;
-  if (draw_info->density != (char *) NULL)
-    {
-      int
-        count;
-
-      count=sscanf(draw_info->density,"%lfx%lf",&resolution.x,&resolution.y);
-      if (count != 2)
-        resolution.y=resolution.x;
-    }
-  if (!identity)
-    TransformImage(&annotate_image,"0x0",(char *) NULL);
-  else
-    {
-      RectangleInfo
-        crop_info;
-
-      crop_info=GetImageBoundingBox(annotate_image,&annotate_image->exception);
-      crop_info.height=(unsigned int) ceil((resolution.y/72.0)*
-        ExpandAffine(&draw_info->affine)*draw_info->pointsize-0.5);
-      crop_info.y=(long) ceil((resolution.y/72.0)*extent.y/8.0-0.5);
-      (void) FormatString(geometry,"%lux%lu%+ld%+ld",crop_info.width,
-        crop_info.height,crop_info.x,crop_info.y);
-      TransformImage(&annotate_image,geometry,(char *) NULL);
-    }
-  metrics->pixels_per_em.x=(resolution.y/72.0)*
-    ExpandAffine(&draw_info->affine)*draw_info->pointsize;
-  metrics->pixels_per_em.y=metrics->pixels_per_em.x;
-  metrics->ascent=metrics->pixels_per_em.x;
-  metrics->descent=metrics->pixels_per_em.y/-5.0;
-  metrics->width=annotate_image->columns/ExpandAffine(&draw_info->affine);
-  metrics->height=1.152*metrics->pixels_per_em.x;
-  metrics->max_advance=metrics->pixels_per_em.x;
-  metrics->bounds.x1=0.0;
-  metrics->bounds.y1=metrics->descent;
-  metrics->bounds.x2=metrics->ascent+metrics->descent;
-  metrics->bounds.y2=metrics->ascent+metrics->descent;
-  metrics->underline_position=(-2.0);
-  metrics->underline_thickness=1.0;
-  if (!render)
-    {
-      DestroyImage(annotate_image);
-      return(True);
-    }
-  if (draw_info->fill.opacity != TransparentOpacity)
-    {
-      PixelPacket
-        fill_color;
-
-      /*
-        Render fill color.
-      */
-      SetImageType(annotate_image,TrueColorMatteType);
-      fill_color=draw_info->fill;
-      pattern=draw_info->fill_pattern;
-      for (y=0; y < (long) annotate_image->rows; y++)
-      {
-        q=GetImagePixels(annotate_image,0,y,annotate_image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) annotate_image->columns; x++)
-        {
-          if (pattern != (Image *) NULL)
-            fill_color=AcquireOnePixel(pattern,
-              (x-pattern->tile_info.x) % pattern->columns,
-              (y-pattern->tile_info.y) % pattern->rows,&image->exception);
-          q->opacity=(Quantum) (MaxRGB-((unsigned long) ((MaxRGB-Intensity(q))*
-            (MaxRGB-fill_color.opacity))/MaxRGB));
-          q->red=fill_color.red;
-          q->green=fill_color.green;
-          q->blue=fill_color.blue;
-          q++;
-        }
-        if (!SyncImagePixels(annotate_image))
-          break;
-      }
-      (void) CompositeImage(image,OverCompositeOp,annotate_image,(long)
-        ceil(offset->x-0.5),(long) ceil(offset->y-(metrics->ascent+
-        metrics->descent)-0.5));
-    }
-  DestroyImage(annotate_image);
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   R e n d e r T r u e t y p e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method RenderTruetype renders text on the image with a Truetype font.  It
+%  Method RenderFreetype renders text on the image with a Truetype font.  It
 %  also returns the bounding box of the text relative to the image.
 %
-%  The format of the RenderTruetype method is:
+%  The format of the RenderFreetype method is:
 %
-%      unsigned int RenderTruetype(Image *image,DrawInfo *draw_info,
+%      unsigned int RenderFreetype(Image *image,DrawInfo *draw_info,
 %        const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method RenderTruetype returns True if the text is rendered on the
+%    o status: Method RenderFreetype returns True if the text is rendered on the
 %      image, otherwise False.
 %
 %    o image: The image.
@@ -1210,7 +933,7 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
   return(0);
 }
 
-static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
+static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 {
   typedef struct _GlyphInfo
@@ -1571,13 +1294,273 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   return(True);
 }
 #else
-static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
+static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 {
   ThrowBinaryException(MissingDelegateWarning,
     "FreeType library is not available",draw_info->font);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e n d e r P o s t s c r i p t                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RenderPostscript renders text on the image with a Postscript font.
+%  It also returns the bounding box of the text relative to the image.
+%
+%  The format of the RenderPostscript method is:
+%
+%      unsigned int RenderPostscript(Image *image,DrawInfo *draw_info,
+%        const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method RenderPostscript returns True if the text is rendered on
+%      the image, otherwise False.
+%
+%    o image: The image.
+%
+%    o draw_info: The draw info.
+%
+%    o offset: (x,y) location of text relative to image.
+%
+%    o render: a value other than zero renders the text otherwise just the
+%      font metric is returned.
+%
+%    o metrics: bounding box of text.
+%
+%
+*/
+
+static char *EscapeParenthesis(const char *text)
+{
+  char
+    *buffer;
+
+  register char
+    *p;
+
+  register long
+    i;
+
+  unsigned long
+    escapes;
+
+  escapes=0;
+  buffer=GetString(text);
+  p=buffer;
+  for (i=0; i < (long) Min(strlen(text),(MaxTextExtent-escapes-1)); i++)
+  {
+    if ((text[i] == '(') || (text[i] == ')'))
+      {
+        *p++='\\';
+        escapes++;
+      }
+    *p++=text[i];
+  }
+  *p='\0';
+  return(buffer);
+}
+
+static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
+  const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
+{
+  char
+    filename[MaxTextExtent],
+    geometry[MaxTextExtent],
+    *text;
+
+  FILE
+    *file;
+
+  Image
+    *annotate_image,
+    *pattern;
+
+  ImageInfo
+    *clone_info;
+
+  long
+    y;
+
+  PointInfo
+    extent,
+    point,
+    resolution;
+
+  register long
+    i,
+    x;
+
+  register PixelPacket
+    *q;
+
+  unsigned int
+    identity;
+
+  /*
+    Render label with a Postscript font.
+  */
+  TemporaryFilename(filename);
+  file=fopen(filename,WriteBinaryType);
+  if (file == (FILE *) NULL)
+    ThrowBinaryException(FileOpenWarning,"Unable to open file",filename);
+  (void) fprintf(file,"%%!PS-Adobe-3.0\n");
+  (void) fprintf(file,"/ReencodeType\n");
+  (void) fprintf(file,"{\n");
+  (void) fprintf(file,"  findfont dup length\n");
+  (void) fprintf(file,
+    "  dict begin { 1 index /FID ne {def} {pop pop} ifelse } forall\n");
+  (void) fprintf(file,
+    "  /Encoding ISOLatin1Encoding def currentdict end definefont pop\n");
+  (void) fprintf(file,"} bind def\n");
+  /*
+    Sample to compute bounding box.
+  */
+  identity=(draw_info->affine.sx == draw_info->affine.sy) &&
+    (draw_info->affine.rx == 0.0) && (draw_info->affine.ry == 0.0);
+  extent.x=0.0;
+  extent.y=0.0;
+  for (i=0; i <= (long) (strlen(draw_info->text)+2); i++)
+  {
+    point.x=fabs(draw_info->affine.sx*i*draw_info->pointsize+
+      draw_info->affine.ry*2.0*draw_info->pointsize);
+    point.y=fabs(draw_info->affine.rx*i*draw_info->pointsize+
+      draw_info->affine.sy*2.0*draw_info->pointsize);
+    if (point.x > extent.x)
+      extent.x=point.x;
+    if (point.y > extent.y)
+      extent.y=point.y;
+  }
+  (void) fprintf(file,"%g %g moveto\n",identity ? 0.0 : extent.x/2.0,
+    extent.y/2.0);
+  (void) fprintf(file,"%g %g scale\n",draw_info->pointsize,
+    draw_info->pointsize);
+  if ((draw_info->font == (char *) NULL) || (*draw_info->font == '\0'))
+    (void) fprintf(file,
+      "/Times-Roman-ISO dup /Times-Roman ReencodeType findfont setfont\n");
+  else
+    (void) fprintf(file,
+      "/%.1024s-ISO dup /%.1024s ReencodeType findfont setfont\n",
+      draw_info->font,draw_info->font);
+  (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",draw_info->affine.sx,
+    -draw_info->affine.rx,-draw_info->affine.ry,draw_info->affine.sy);
+  text=EscapeParenthesis(draw_info->text);
+  if (!identity)
+    (void) fprintf(file,"(%.1024s) stringwidth pop -0.5 mul -0.5 rmoveto\n",
+      text);
+  (void) fprintf(file,"(%.1024s) show\n",text);
+  LiberateMemory((void **) &text);
+  (void) fprintf(file,"showpage\n");
+  (void) fclose(file);
+  FormatString(geometry,"%ldx%ld+0+0!",(long) ceil(extent.x-0.5),
+    (long) ceil(extent.y-0.5));
+  clone_info=CloneImageInfo((ImageInfo *) NULL);
+  (void) FormatString(clone_info->filename,"ps:%.1024s",filename);
+  (void) CloneString(&clone_info->page,geometry);
+  if (draw_info->density != (char *) NULL)
+    (void) CloneString(&clone_info->density,draw_info->density);
+  clone_info->antialias=draw_info->text_antialias;
+  annotate_image=ReadImage(clone_info,&image->exception);
+  if (image->exception.severity != UndefinedException)
+    MagickWarning(image->exception.severity,image->exception.reason,
+      image->exception.description);
+  DestroyImageInfo(clone_info);
+  (void) remove(filename);
+  if (annotate_image == (Image *) NULL)
+    return(False);
+  resolution.x=72.0;
+  resolution.y=72.0;
+  if (draw_info->density != (char *) NULL)
+    {
+      int
+        count;
+
+      count=sscanf(draw_info->density,"%lfx%lf",&resolution.x,&resolution.y);
+      if (count != 2)
+        resolution.y=resolution.x;
+    }
+  if (!identity)
+    TransformImage(&annotate_image,"0x0",(char *) NULL);
+  else
+    {
+      RectangleInfo
+        crop_info;
+
+      crop_info=GetImageBoundingBox(annotate_image,&annotate_image->exception);
+      crop_info.height=(unsigned int) ceil((resolution.y/72.0)*
+        ExpandAffine(&draw_info->affine)*draw_info->pointsize-0.5);
+      crop_info.y=(long) ceil((resolution.y/72.0)*extent.y/8.0-0.5);
+      (void) FormatString(geometry,"%lux%lu%+ld%+ld",crop_info.width,
+        crop_info.height,crop_info.x,crop_info.y);
+      TransformImage(&annotate_image,geometry,(char *) NULL);
+    }
+  metrics->pixels_per_em.x=(resolution.y/72.0)*
+    ExpandAffine(&draw_info->affine)*draw_info->pointsize;
+  metrics->pixels_per_em.y=metrics->pixels_per_em.x;
+  metrics->ascent=metrics->pixels_per_em.x;
+  metrics->descent=metrics->pixels_per_em.y/-5.0;
+  metrics->width=annotate_image->columns/ExpandAffine(&draw_info->affine);
+  metrics->height=1.152*metrics->pixels_per_em.x;
+  metrics->max_advance=metrics->pixels_per_em.x;
+  metrics->bounds.x1=0.0;
+  metrics->bounds.y1=metrics->descent;
+  metrics->bounds.x2=metrics->ascent+metrics->descent;
+  metrics->bounds.y2=metrics->ascent+metrics->descent;
+  metrics->underline_position=(-2.0);
+  metrics->underline_thickness=1.0;
+  if (!render)
+    {
+      DestroyImage(annotate_image);
+      return(True);
+    }
+  if (draw_info->fill.opacity != TransparentOpacity)
+    {
+      PixelPacket
+        fill_color;
+
+      /*
+        Render fill color.
+      */
+      SetImageType(annotate_image,TrueColorMatteType);
+      fill_color=draw_info->fill;
+      pattern=draw_info->fill_pattern;
+      for (y=0; y < (long) annotate_image->rows; y++)
+      {
+        q=GetImagePixels(annotate_image,0,y,annotate_image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (long) annotate_image->columns; x++)
+        {
+          if (pattern != (Image *) NULL)
+            fill_color=AcquireOnePixel(pattern,
+              (x-pattern->tile_info.x) % pattern->columns,
+              (y-pattern->tile_info.y) % pattern->rows,&image->exception);
+          q->opacity=(Quantum) (MaxRGB-((unsigned long) ((MaxRGB-Intensity(q))*
+            (MaxRGB-fill_color.opacity))/MaxRGB));
+          q->red=fill_color.red;
+          q->green=fill_color.green;
+          q->blue=fill_color.blue;
+          q++;
+        }
+        if (!SyncImagePixels(annotate_image))
+          break;
+      }
+      (void) CompositeImage(image,OverCompositeOp,annotate_image,(long)
+        ceil(offset->x-0.5),(long) ceil(offset->y-(metrics->ascent+
+        metrics->descent)-0.5));
+    }
+  DestroyImage(annotate_image);
+  return(True);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
