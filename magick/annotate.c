@@ -1069,10 +1069,10 @@ static unsigned int RenderPostscript(Image *image,
     }
   font_height=(resolution.y/72.0)*
     ExpandAffine(&annotate_info->affine)*annotate_info->pointsize;
-  bounds->y1=ceil(-font_height/4.8-0.5);
+  bounds->y1=ceil(-font_height/4.0+0.5);
   bounds->x1=ceil(-bounds->y1/4.0-0.5);
   bounds->x2=annotate_image->columns;
-  bounds->y2=floor(3.0*font_height/4.0-0.5);
+  bounds->y2=ceil(3.0*font_height/4.0+0.5);
   if (!render)
     {
       DestroyImage(annotate_image);
