@@ -2986,13 +2986,12 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   (void) strncpy(image->filename,clone_info->filename,MaxTextExtent-1);
   if (((image->next == (Image *) NULL) || clone_info->adjoin) &&
       (image->previous == (Image *) NULL) &&
-      (clone_info->page == (char *) NULL) &&
-      !IsTaintImage(image) && IsAccessible(image->magick_filename))
+      (clone_info->page == (char *) NULL) && !IsTaintImage(image))
     {
       delegate_info=GetDelegateInfo(image->magick,clone_info->magick,
         &image->exception);
       if ((delegate_info != (const DelegateInfo *) NULL) &&
-          (delegate_info->mode == 0))
+          (delegate_info->mode == 0) && IsAccessible(image->magick_filename))
         {
           /*
             Let our bi-modal delegate process the image.
