@@ -1,7 +1,6 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<HTML>
-<HEAD>
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
@@ -71,7 +70,7 @@ imageList.begin(), imageList.end() );</font></tt>
 of image frames are shown in the following table:
 <br>&nbsp;
 <table BORDER WIDTH="100%" >
-<caption><b>Magick++ STL Algorithms</b></caption>
+<caption><b>Magick++ STL Algorithms For Image Sequences</b></caption>
 
 <tr>
 <td>
@@ -365,8 +364,9 @@ and selects the appropriate Image method based on the arguments supplied.
 provide the means to construct an object which caches arguments for later
 use by an algorithm designed for use with unary function objects. There
 is a unary function object corresponding each algorithm provided by the
-<a href="Image.html">Image</a> class and there is a contructor available
-compatable with each synonymous method in the Image class.
+<a href="Image.html">Image</a>
+class and there is a contructor available compatable with each synonymous
+method in the Image class.
 <p>The unary function objects that Magick++ provides to support manipulating
 images are shown in the following table:
 <br>&nbsp;
@@ -625,10 +625,10 @@ automatic radius selection.</font></td>
 
 <td><font size=-1>const double radius_ = 1, const double sigma_ = 0.5</font></td>
 
-<td><font size=-1>Emboss image (hilight edges with 3D effect). The
-radius_ parameter specifies the radius of the Gaussian, in pixels, not
-counting the center pixel.&nbsp; The sigma_ parameter specifies the standard
-deviation of the Laplacian, in pixels.</font></td>
+<td><font size=-1>Emboss image (hilight edges with 3D effect). The radius_
+parameter specifies the radius of the Gaussian, in pixels, not counting
+the center pixel.&nbsp; The sigma_ parameter specifies the standard deviation
+of the Laplacian, in pixels.</font></td>
 </tr>
 
 <tr>
@@ -670,9 +670,9 @@ deviation of the Laplacian, in pixels.</font></td>
 <td><font size=-1>unsigned int x_, unsigned int y_, const <a href="Color.html">Color</a>
 &amp;fillColor_</font></td>
 
-<td ROWSPAN="2"><font size=-1>Flood-fill color across pixels that
-match the color of the target pixel and are neighbors of the target pixel.
-Uses current fuzz setting when determining color match.</font></td>
+<td ROWSPAN="2"><font size=-1>Flood-fill color across pixels that match
+the color of the target pixel and are neighbors of the target pixel. Uses
+current fuzz setting when determining color match.</font></td>
 </tr>
 
 <tr>
@@ -684,9 +684,9 @@ const <a href="Color.html">Color</a> &amp;fillColor_</font></td>
 <td><font size=-1>unsigned int x_, unsigned int y_, const <a href="Color.html">Color</a>
 &amp;fillColor_, const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
 
-<td ROWSPAN="2"><font size=-1>Flood-fill color across pixels starting
-at target-pixel and stopping at pixels matching specified border color.
-Uses current fuzz setting when determining color match.</font></td>
+<td ROWSPAN="2"><font size=-1>Flood-fill color across pixels starting at
+target-pixel and stopping at pixels matching specified border color. Uses
+current fuzz setting when determining color match.</font></td>
 </tr>
 
 <tr>
@@ -704,9 +704,9 @@ const <a href="Color.html">Color</a> &amp;fillColor_, const <a href="Color.html"
 <td><font size=-1>unsigned int x_, unsigned int y_,&nbsp; const <a href="Image.html">Image</a>
 &amp;texture_</font></td>
 
-<td ROWSPAN="2"><font size=-1>Flood-fill texture across pixels that
-match the color of the target pixel and are neighbors of the target pixel.
-Uses current fuzz setting when determining color match.</font></td>
+<td ROWSPAN="2"><font size=-1>Flood-fill texture across pixels that match
+the color of the target pixel and are neighbors of the target pixel. Uses
+current fuzz setting when determining color match.</font></td>
 </tr>
 
 <tr>
@@ -958,8 +958,8 @@ penColor_.</font></td>
 
 <td><font size=-1>bool measureError_ = false</font></td>
 
-<td><font size=-1>Quantize image (reduce number of colors). Set
-measureError_ to true in order to calculate error attributes.</font></td>
+<td><font size=-1>Quantize image (reduce number of colors). Set measureError_
+to true in order to calculate error attributes.</font></td>
 </tr>
 
 <tr>
@@ -982,8 +982,8 @@ to give a 3-D raised or lowered effect)</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td ROWSPAN="2"><font size=-1>Reduce noise in image using a noise
-peak elimination filter.</font></td>
+<td ROWSPAN="2"><font size=-1>Reduce noise in image using a noise peak
+elimination filter.</font></td>
 </tr>
 
 <tr>
@@ -1188,8 +1188,8 @@ red-blue glasses (Red image on left, blue on right)</font></td>
 
 <td><font size=-1>const <a href="Geometry.html">Geometry</a> &amp;imageGeometry_</font></td>
 
-<td ROWSPAN="2"><font size=-1>Transform image based on image and
-crop geometries. Crop geometry is optional.</font></td>
+<td ROWSPAN="2"><font size=-1>Transform image based on image and crop geometries.
+Crop geometry is optional.</font></td>
 </tr>
 
 <tr>
@@ -2016,6 +2016,73 @@ image from</font></td>
 </tr>
 </table>
 
+<br>&nbsp;
+<center>
+<h3>
+Query Image Format Support</h3></center>
+Magick++ provides the&nbsp;<a NAME="coderInfoList"></a><i>coderInfoList()</i>
+function to support obtaining information about the image formats supported
+by ImageMagick. Support for image formats in ImageMagick is provided by
+modules known as "coders". A user-provided container is updated based on
+a boolean truth-table match. The truth-table supports matching based on
+whether ImageMagick can read the format, write the format, or supports
+multiple frames for the format. A wildcard specifier is supported for any
+"don't care" field.
+<p>The definition of coderInfoList is:
+<p><tt><font color="#000066">&nbsp; template &lt;class Container ></font></tt>
+<br><tt><font color="#000066">&nbsp; void coderInfoList( Container *container_,</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MatchType isReadable_ = AnyMatch,</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MatchType isWritable_ = AnyMatch,</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MatchType isMultiFrame_ = AnyMatch</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+);</font></tt>
+<p>The following example shows how to retrieve a list of all of the coders
+which support reading images and print the coder attributes (all listed
+coders will be readable):
+<p><tt><font color="#000066">&nbsp; list&lt;CoderInfo> coderList;</font></tt>
+<br><tt><font color="#000066">&nbsp; coderInfoList( &amp;coderList, TrueMatch,
+AnyMatch, AnyMatch);</font></tt>
+<br><tt><font color="#000066">&nbsp; list&lt;CoderInfo>::iterator entry
+= coderList.begin();</font></tt>
+<br><tt><font color="#000066">&nbsp; while( entry != coderList.end() )</font></tt>
+<br><tt><font color="#000066">&nbsp; {</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt;&nbsp;entry->name()
+&lt;&lt; ": (" &lt;&lt; entry->description() &lt;&lt; ") : ";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Readable
+= ";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; if ( entry->isReadable()
+)</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+"true";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; else</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+"false";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; ",&nbsp;";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Writable
+= ";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; if ( entry->isWritable()
+)</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+"true";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; else</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+"false";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; ",&nbsp;";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Multiframe
+= ";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; if ( entry->isMultiframe()
+)</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+"true";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; else</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+"false";</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; endl;</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp; }</font></tt>
+<br><tt><font color="#000066"></font></tt>&nbsp;
 <br>&nbsp;
 </body>
 </html>
