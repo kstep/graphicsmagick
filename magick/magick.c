@@ -238,6 +238,19 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
   path=AllocateString(filename);
   if (IsAccessible(path))
     return(path);
+#if defined(WIN32)
+  {
+    void
+      *blob;
+
+    blob=NTResourceToBlob(path);
+    if (blob != (unsigned char *) NULL)
+      {
+        LiberateMemory((void **) &blob);
+        return(path);
+      }
+  }
+#endif
   search_path=AllocateString(path);
   FormatString(path,"%.1024s%.1024s%.1024s",SetClientPath((char *) NULL),
     DirectorySeparator,filename);
