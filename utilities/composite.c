@@ -590,7 +590,6 @@ int main(int argc,char **argv)
                 exception.description);
             if (composite_image == (Image *) NULL)
               continue;
-            (void) CloneString(&option_info.geometry,(char *) NULL);
             status=MogrifyImages(image_info,i-k,argv+k,&composite_image);
             CatchImageException(composite_image);
             continue;
@@ -605,7 +604,6 @@ int main(int argc,char **argv)
                 exception.description);
             if (image == (Image *) NULL)
               continue;
-            (void) CloneString(&option_info.geometry,(char *) NULL);
             status=MogrifyImages(image_info,i-k,argv+k,&image);
             CatchImageException(image);
             continue;
@@ -619,7 +617,6 @@ int main(int argc,char **argv)
             exception.description);
         if (mask_image == (Image *) NULL)
           continue;
-        (void) CloneString(&option_info.geometry,(char *) NULL);
         status=MogrifyImages(image_info,i-k,argv+k,&mask_image);
         CatchImageException(mask_image);
       }
