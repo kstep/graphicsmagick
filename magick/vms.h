@@ -740,13 +740,11 @@ extern "C" {
 #define applicationShellWidgetClass APPLICATIONSHELLWIDGETCLASS
 #define compositeWidgetClass COMPOSITEWIDGETCLASS
 #define lib$ediv LIB$EDIV
-#define lib$find_file LIB$FIND_FILE
 #define lib$find_file_end LIB$FIND_FILE_END
 #define lib$set_symbol LIB$SET_SYMBOL
 #define lib$sfree1_dd LIB$SFREE1_DD
 #define lib$spawn LIB$SPAWN
 #define lib$subx LIB$SUBX
-#define lib$wait LIB$WAIT
 #define overrideShellWidgetClass OVERRIDESHELLWIDGETCLASS
 #define pthread_attr_create PTHREAD_ATTR_CREATE
 #define pthread_attr_delete PTHREAD_ATTR_DELETE
@@ -838,7 +836,6 @@ extern "C" {
 #define sys$crembx SYS$CREMBX
 #define sys$dassgn SYS$DASSGN
 #define sys$dclexh SYS$DCLEXH
-#define sys$getdviw SYS$GETDVIW
 #define sys$getsyiw SYS$GETSYIW
 #define sys$gettim SYS$GETTIM
 #define sys$qio SYS$QIO
