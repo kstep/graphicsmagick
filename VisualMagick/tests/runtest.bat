@@ -1,5 +1,4 @@
 @echo off
-set PATH=..\VisualMagick\bin\;%PATH%
 pushd ..\VisualMagick\bin
 set TESTS=0
 set TYPE=NONE
