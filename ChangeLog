@@ -1,7 +1,8 @@
 2003-04-30  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* utilities/Makefile.am (check) Change % to %% in -label parameter.
-	The use of %% to convey % in TranslateText() needs to be documented.
+	* www/gm.html, utilities/gm.1, etc. Documented use of %% to convey
+	the % sign in -format, -comment, -label strings.
 
 2003-04-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
