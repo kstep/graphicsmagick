@@ -1373,6 +1373,16 @@ int main(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleNCompare("process",option+1,4) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing argument",option);
+                }
+              break;
+            }
           if (LocaleNCompare("profile",option+1,4) == 0)
             {
               if (*option == '-')

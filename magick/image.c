@@ -54,8 +54,13 @@
   Include declarations.
 */
 #include "magick.h"
-#include "defines.h"
+#if !defined(_VISUALC_)
+#include "magick/modules.h"
+#else
+#include "modules.h"
+#endif
 #include "magic.h"
+#include "defines.h"
 #if defined(HasX11)
 #include "xwindows.h"
 #endif
@@ -3832,6 +3837,36 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     if (LocaleNCompare("pointsize",option+1,2) == 0)
       {
         clone_info->pointsize=atof(argv[++i]);
+        continue;
+      }
+    if (LocaleNCompare("-process",option,5) == 0)
+      {
+        char
+          *args,
+          brkused,
+          quoted,
+          *token;
+
+        int
+          next;
+
+        unsigned int
+          length;
+
+        TokenInfo
+          tinfo;
+
+        length=Extent(argv[++i]);
+        token=(char *) AllocateMemory(length+1);
+        if (token != (char *) NULL)
+          {
+            next=0;
+            args=argv[i];
+            if(Tokenizer(&tinfo, 0, token, length, args, "", "=", "\"", 0,
+              &brkused,&next,&quoted)==0)
+                CallImageFilter((const char *)token,*image,(const char *)&args[next]);
+            FreeMemory((void **) &token);
+          }
         continue;
       }
     if (LocaleNCompare("profile",option+1,4) == 0)
