@@ -321,11 +321,8 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
     height=image_list[tile]->rows;
     x=0;
     y=0;
-    image_list[tile]->orphan=True;
     (void) ParseImageGeometry(montage_info->geometry,&x,&y,&width,&height);
-    image_list[tile]->orphan=True;
     tiled_image=ZoomImage(image_list[tile],width,height);
-    image_list[tile]->orphan=False;
     if (tiled_image == (Image *) NULL)
       {
         for (i=0; i < (int) tile; i++)
@@ -560,7 +557,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
       }
     (void) SetMonitorHandler(handler);
     /*
-      Copy tile image_list to the composite image.
+      Copy tile image to the composite image.
     */
     x_offset=tile_info.x;
     y_offset=title_offset+tile_info.y;
@@ -594,9 +591,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
               border_info.width=(width-image->columns+1) >> 1;
               border_info.height=(height-image->rows+1) >> 1;
             }
-          image->orphan=True;
           bordered_image=BorderImage(image,&border_info);
-          image->orphan=False;
           if (bordered_image != (Image *) NULL)
             {
               DestroyImage(image);
@@ -678,12 +673,10 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
             Put an ornamental border around this tile.
           */
           tile_info=frame_info;
-          tile_info.width=width+(frame_info.width << 1);
-          tile_info.height=height+(frame_info.height << 1)+(font_height+4)*
-            MultilineCensus(image->label);
-          image->orphan=True;
+          tile_info.width=width+2*frame_info.width;
+          tile_info.height=height+2*frame_info.height+
+            (font_height+4)*MultilineCensus(image->label);
           framed_image=FrameImage(image,&tile_info);
-          image->orphan=False;
           if (framed_image != (Image *) NULL)
             {
               DestroyImage(image);
@@ -790,6 +783,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
   if (texture != (Image *) NULL)
     FreeMemory(texture);
   FreeMemory(master_list);
+  DestroyAnnotateInfo(&annotate_info);
   DestroyImageInfo(local_info);
   while (montage_image->previous != (Image *) NULL)
     montage_image=montage_image->previous;

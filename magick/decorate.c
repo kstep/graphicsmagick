@@ -236,7 +236,9 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info)
   /*
     Draw top of ornamental border.
   */
-  q=SetPixelCache(frame_image,0,0,frame_image->columns,Max(frame_info->y,1));
+  height=frame_info->outer_bevel+(frame_info->y-bevel_width)+
+    frame_info->inner_bevel;
+  q=SetPixelCache(frame_image,0,0,frame_image->columns,Max(height,1));
   if (q == (PixelPacket *) NULL)
     {
       DestroyImage(frame_image);
@@ -323,8 +325,10 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info)
   /*
     Draw bottom of ornamental border.
   */
-  q=SetPixelCache(frame_image,0,frame_image->rows-Max(frame_info->y,1),
-    frame_image->columns,Max(frame_info->y,1));
+  height=frame_info->inner_bevel+frame_info->height-frame_info->y-image->rows-
+    bevel_width+frame_info->outer_bevel;
+  q=SetPixelCache(frame_image,0,frame_image->rows-Max(height,1),
+    frame_image->columns,Max(height,1));
   if (q == (PixelPacket *) NULL)
     {
       DestroyImage(frame_image);

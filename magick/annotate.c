@@ -138,6 +138,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
       return;
     }
   textlist=StringToList(text);
+  FreeMemory(text);
   if (textlist == (char **) NULL)
     {
       DestroyAnnotateInfo(local_info);
@@ -317,6 +318,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
     DestroyImage(annotate_image);
   }
   DestroyAnnotateInfo(local_info);
+  FreeMemory(local_info);
   FreeMemory(text);
   for ( ; textlist[i] != (char *) NULL; i++)
     FreeMemory(textlist[i]);
