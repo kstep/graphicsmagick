@@ -238,8 +238,7 @@ testReadWriteSized( 'CMYK:input_70x46.cmyk',
   8,
   q//,
   '397a9f8411f7bb065f4b6e56731734ddad8ea1a7d4c488745545e17dbe575903',
-  '04da6486cc4ddf7435994e8bac2804fc0ed1630410e963ba78b14b2d7943ea1d' );
-
+  '619c8c2a9f1684f1a18ff87524666303615310d19ef8c67d26401703c56e7476' );
 
 print("GRAY format ...\n");
 ++$test;
