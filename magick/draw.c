@@ -57,12 +57,6 @@
 /*
   Define declarations.
 */
-#define ThrowDrawException(code,reason,description) \
-{ \
-  if (context->image->exception.severity > (long)code) \
-    ThrowException(&context->image->exception,code,reason,description); \
-  return; \
-}
 #define PixelPacketMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue) && \
   ((p)->opacity == (q)->opacity))
@@ -100,8 +94,8 @@ struct _DrawContext
   ImageInfo
     *image_info;
 
-  Image
-    *image;
+  ExceptionInfo
+    exception;
 
   /* MVG output string and housekeeping */
   char
@@ -120,7 +114,7 @@ struct _DrawContext
 
   /* Pretty-printing depth */
   long
-    indent_depth;
+    indention_depth;
 
   /* Path operation support */
   PathOperation
@@ -207,8 +201,7 @@ MagickExport void DrawSetAffine(DrawContext context, const AffineMatrix *affine)
              affine->tx, affine->ty);
 }
 
-MagickExport DrawContext DrawAllocateContext(const ImageInfo *image_info,
-                                             Image *image)
+MagickExport DrawContext DrawAllocateContext(void)
 {
   DrawContext
     context;
@@ -220,8 +213,8 @@ MagickExport DrawContext DrawAllocateContext(const ImageInfo *image_info,
       "Unable to allocate initial drawing context","Memory allocation failed");
 
   /* Support structures */
-  context->image_info = CloneImageInfo(image_info);
-  context->image = image;
+  GetExceptionInfo( &context->exception );
+  context->image_info = CloneImageInfo((const ImageInfo *)NULL);
 
   /* MVG output string and housekeeping */
   context->mvg = NULL;
@@ -232,12 +225,16 @@ MagickExport DrawContext DrawAllocateContext(const ImageInfo *image_info,
   context->index = 0;
   context->graphic_context=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
   if(context->graphic_context == (DrawInfo **) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to allocate drawing context",
+    MagickFatalError(ResourceLimitFatalError,"Unable to allocate draw info",
       "Memory allocation failed");
-  context->graphic_context[context->index]=CloneDrawInfo(image_info,(DrawInfo*)NULL);
+  context->graphic_context[context->index]=(DrawInfo *) AcquireMemory(sizeof(DrawInfo));
+  if(context->graphic_context[context->index]==(DrawInfo *) NULL)
+    MagickFatalError(ResourceLimitFatalError,"Unable to allocatedraw info",
+      "Memory allocation failed");
+  GetDrawInfo((const ImageInfo *)NULL,context->graphic_context[context->index]);
 
   /* Pretty-printing depth */
-  context->indent_depth = 0;
+  context->indention_depth = 0;
 
   /* Path operation support */
   context->path_operation = PathDefaultOperation;
@@ -370,9 +367,8 @@ MagickExport void DrawSetClipUnits(DrawContext context,
     }
 }
 
-MagickExport void DrawColor(DrawContext context,
-                            const double x, const double y,
-                            const PaintMethod paintMethod)
+MagickExport void DrawColor(DrawContext context, const double x,
+                            const double y, const PaintMethod paintMethod)
 {
   const char
     *p = NULL;
@@ -413,7 +409,7 @@ MagickExport void DrawDestroyContext(DrawContext context)
   context->path_mode = DefaultPathMode;
 
   /* Pretty-printing depth */
-  context->indent_depth = 0;
+  context->indention_depth = 0;
 
   /* Graphic context */
   for ( ; context->index >= 0; context->index--)
@@ -427,7 +423,7 @@ MagickExport void DrawDestroyContext(DrawContext context)
 
   /* Support structures */
   DestroyImageInfo(context->image_info);
-  context->image = (Image*)NULL;
+  DestroyExceptionInfo(&context->exception);
 
   /* Context itself */
   context->signature = 0;
@@ -490,7 +486,7 @@ MagickExport void DrawSetFillString(DrawContext context, const char* fill_color)
   PixelPacket
     pixel_packet;
 
-  if(QueryColorDatabase(fill_color,&pixel_packet,&context->image->exception))
+  if(QueryColorDatabase(fill_color,&pixel_packet,&context->exception))
     DrawSetFill(context,&pixel_packet);
 }
 
@@ -769,12 +765,12 @@ MagickExport void DrawComposite(DrawContext context,
   assert(height != 0);
   assert(*image->magick != '\0');
 
-  clone_image = CloneImage(image,0,0,True,&context->image->exception);
+  clone_image = CloneImage(image,0,0,True,&context->exception);
   if(!clone_image)
     return;
 
   blob = (unsigned char*)ImageToBlob( context->image_info, clone_image, &blob_length,
-                                      &context->image->exception );
+                                      &context->exception );
   DestroyImageList(clone_image);
   if(!blob)
     return;
@@ -787,7 +783,9 @@ MagickExport void DrawComposite(DrawContext context,
         buffer[MaxTextExtent];
 
       FormatString(buffer,"%d bytes", (4*blob_length/3+4));
-      ThrowDrawException(ResourceLimitWarning, "allocating Base64 memory",buffer);
+      ThrowException(&context->exception,ResourceLimitWarning,
+                     "allocating Base64 memory",buffer);
+      return;
     }
 
   mode = "copy";
@@ -988,7 +986,8 @@ static void DrawPathCurveTo(DrawContext context,
                  mode == AbsolutePathMode ? 'C' : 'c', x1, y1, x2, y2, x, y);
     }
   else
-    DrawPrintf(context, " %.4g,%.4g %.4g,%.4g %.4g,%.4g", x1, y1, x2, y2, x, y);
+    DrawPrintf(context, " %.4g,%.4g %.4g,%.4g %.4g,%.4g", x1, y1, x2, y2, x,
+               y);
 }
 
 MagickExport void DrawPathCurveToAbsolute(DrawContext context,
@@ -1400,7 +1399,7 @@ MagickExport void DrawPopClipPath(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  context->indent_depth--;
+  context->indention_depth--;
   DrawPrintf(context, "pop clip-path\n");
 }
 
@@ -1409,7 +1408,7 @@ MagickExport void DrawPopDefs(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  context->indent_depth--;
+  context->indention_depth--;
   DrawPrintf(context, "pop defs\n");
 }
 
@@ -1431,7 +1430,7 @@ MagickExport void DrawPopGraphicContext(DrawContext context)
       DestroyDrawInfo(context->graphic_context[context->index]);
       context->index--;
       
-      context->indent_depth--;
+      context->indention_depth--;
       DrawPrintf(context, "pop graphic-context\n");
     }
 }
@@ -1441,7 +1440,7 @@ MagickExport void DrawPopPattern(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  context->indent_depth--;
+  context->indention_depth--;
   DrawPrintf(context, "pop pattern\n");
 }
 
@@ -1487,7 +1486,7 @@ static int DrawPrintf(DrawContext context, const char *format, ...)
       {
         long i;
 
-        for (i = context->indent_depth; i; i--)
+        for (i = context->indention_depth; i; i--)
           {
             *(context->mvg + context->mvg_length) = ' ';
             ++context->mvg_length;
@@ -1522,7 +1521,7 @@ MagickExport void DrawPushClipPath(DrawContext context,
   assert(clip_path_id != (const char *) NULL);
 
   DrawPrintf(context, "push clip-path %s\n", clip_path_id);
-  context->indent_depth++;
+  context->indention_depth++;
 }
 
 MagickExport void DrawPushDefs(DrawContext context)
@@ -1531,7 +1530,7 @@ MagickExport void DrawPushDefs(DrawContext context)
   assert(context->signature == MagickSignature);
 
   DrawPrintf(context, "push defs\n");
-  context->indent_depth++;
+  context->indention_depth++;
 }
 
 MagickExport void DrawPushGraphicContext(DrawContext context)
@@ -1550,7 +1549,7 @@ MagickExport void DrawPushGraphicContext(DrawContext context)
     CloneDrawInfo((ImageInfo *) NULL,context->graphic_context[context->index-1]);
 
   DrawPrintf(context, "push graphic-context\n");
-  context->indent_depth++;
+  context->indention_depth++;
 }
 
 MagickExport void DrawPushPattern(DrawContext context,
@@ -1564,7 +1563,7 @@ MagickExport void DrawPushPattern(DrawContext context,
 
   DrawPrintf(context, "push pattern %s %.4g,%.4g %.4g,%.4g\n",
     pattern_id, x, y, width, height);
-  context->indent_depth++;
+  context->indention_depth++;
 }
 
 MagickExport void DrawRectangle(DrawContext context,
@@ -1577,7 +1576,9 @@ MagickExport void DrawRectangle(DrawContext context,
   DrawPrintf(context, "rectangle %.4g,%.4g %.4g,%.4g\n", x1, y1, x2, y2);
 }
 
-MagickExport int DrawRender(const DrawContext context)
+MagickExport int DrawRender(const DrawContext context,
+                            const ImageInfo *image_info,
+                            Image *image)
 {
   DrawInfo
     *draw_info;
@@ -1586,10 +1587,10 @@ MagickExport int DrawRender(const DrawContext context)
   assert(context->signature == MagickSignature);
 
   draw_info = (DrawInfo *) AcquireMemory(sizeof(DrawInfo));
-  GetDrawInfo(context->image_info, draw_info);
+  GetDrawInfo(image_info, draw_info);
   draw_info->primitive = context->mvg;
   /* puts(draw_info->primitive); */
-  DrawImage(context->image, draw_info);
+  DrawImage(image, draw_info);
   draw_info->primitive = (char *) NULL;
   DestroyDrawInfo(draw_info);
   return True;
@@ -1744,7 +1745,7 @@ MagickExport void DrawSetStrokeString(DrawContext context, const char* stroke_co
   PixelPacket
     pixel_packet;
 
-  if(QueryColorDatabase(stroke_color,&pixel_packet,&context->image->exception))
+  if(QueryColorDatabase(stroke_color,&pixel_packet,&context->exception))
     DrawSetStroke(context,&pixel_packet);
 }
 
@@ -1821,8 +1822,8 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
             AcquireMemory((n_new+1)*sizeof(double));
           if(context->graphic_context[context->index]->dash_pattern == (double*)NULL)
             {
-              ThrowDrawException(ResourceLimitError, "Unable to draw image",
-                                 "Memory allocation failed");
+              ThrowException(&context->exception,ResourceLimitError,
+                             "Unable to draw image","Memory allocation failed");
             }
           else
             {
