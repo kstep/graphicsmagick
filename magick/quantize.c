@@ -292,7 +292,7 @@ static unsigned int
 
 static void
   DefineImageColormap(Image *,NodeInfo *),
-  HilbertCurve(CubeInfo *,Image *,const int,const unsigned int),
+  HilbertCurve(CubeInfo *,Image *,const long,const unsigned int),
   PruneLevel(CubeInfo *,const NodeInfo *),
   ReduceImageColors(CubeInfo *,const unsigned long);
 
