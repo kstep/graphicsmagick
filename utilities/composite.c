@@ -446,7 +446,7 @@ static void CompositeUsage(void)
 %
 %
 */
-MagickExport unsigned int CompositeUtility(int argc,char **argv)
+unsigned int CompositeUtility(int argc,char **argv)
 {
 #define NotInitialized  (unsigned int) (~0)
 
