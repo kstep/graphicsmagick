@@ -1101,6 +1101,9 @@ MagickExport unsigned int CompositeImage(Image *image,
   const CompositeOperator compose,const Image *composite_image,
   const long x_offset,const long y_offset)
 {
+  const PixelPacket
+    *pixels;
+
   double
     amount,
     blue,
@@ -1273,6 +1276,9 @@ MagickExport unsigned int CompositeImage(Image *image,
     q=GetImagePixels(image,0,y,image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
+    pixels=p;
+    if (x_offset < 0)
+      p-=x_offset;
     composite_indexes=GetIndexes(composite_image);
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
@@ -1282,11 +1288,9 @@ MagickExport unsigned int CompositeImage(Image *image,
           q++;
           continue;
         }
-      pixel=(*p++);
-      if ((x+x_offset) < 0)
-        continue;
       if ((x-x_offset) >= (long) composite_image->columns)
         break;
+      pixel=(*p);
       if (!composite_image->matte)
         pixel.opacity=OpaqueOpacity;
       if (!image->matte)
@@ -1561,6 +1565,9 @@ MagickExport unsigned int CompositeImage(Image *image,
       if ((indexes != (IndexPacket *) NULL) &&
           (composite_indexes != (IndexPacket *) NULL))
         indexes[x]=composite_indexes[x-x_offset];
+      p++;
+      if (p >= (pixels+composite_image->columns))
+        p=pixels;
       q++;
     }
     if (!SyncImagePixels(image))
