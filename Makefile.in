@@ -181,8 +181,8 @@ DIST_COMMON = $(am__configure_deps) $(include_HEADERS) \
 	install-sh ltmain.sh missing mkinstalldirs
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/libtool.m4 $(top_srcdir)/ltdl.m4 \
+	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -1278,6 +1278,7 @@ DCRAWDecodeDelegate = @DCRAWDecodeDelegate@
 DEFS = @DEFS@
 DELEGATES = @DELEGATES@
 DEPDIR = @DEPDIR@
+DIRSEP = @DIRSEP@
 DISTCHECK_CONFIG_FLAGS = @DISTCHECK_CONFIG_FLAGS@
 DLLDFLAGS = @DLLDFLAGS@
 DLLTOOL = @DLLTOOL@
@@ -1407,9 +1408,13 @@ MAGICK_API_CPPFLAGS = @MAGICK_API_CPPFLAGS@
 MAGICK_API_LDFLAGS = @MAGICK_API_LDFLAGS@
 MAGICK_API_LIBS = @MAGICK_API_LIBS@
 MAGICK_API_PC_CPPFLAGS = @MAGICK_API_PC_CPPFLAGS@
+MAGICK_CODER_MODULE_PATH = @MAGICK_CODER_MODULE_PATH@
 MAGICK_COMPAT_FALSE = @MAGICK_COMPAT_FALSE@
 MAGICK_COMPAT_TRUE = @MAGICK_COMPAT_TRUE@
+MAGICK_CONFIGURE_BUILD_PATH = @MAGICK_CONFIGURE_BUILD_PATH@
+MAGICK_CONFIGURE_SRC_PATH = @MAGICK_CONFIGURE_SRC_PATH@
 MAGICK_DEP_LIBS = @MAGICK_DEP_LIBS@
+MAGICK_FILTER_MODULE_PATH = @MAGICK_FILTER_MODULE_PATH@
 MAGICK_LIBRARY_AGE = @MAGICK_LIBRARY_AGE@
 MAGICK_LIBRARY_CURRENT = @MAGICK_LIBRARY_CURRENT@
 MAGICK_LIBRARY_REVISION = @MAGICK_LIBRARY_REVISION@
@@ -1571,6 +1576,11 @@ xml2_config = @xml2_config@
 AUTOMAKE_OPTIONS = 1.9 subdir-objects dist-zip dist-bzip2 foreign
 topincludedir = @includedir@/GraphicsMagick
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/Magick++/lib
+
+# It seems that AC_CONFIG_MACRO_DIR([m4]) in configure.ac should cause
+# Automake to pass aclocal the right flags, but here is some more
+# positive enforcement.
+ACLOCAL_AMFLAGS = -I .
 MODULECOMMONFLAGS = -no-undefined -module -avoid-version
 
 # Options to pass when running configure in the distcheck target.

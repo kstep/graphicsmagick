@@ -1,3 +1,8 @@
+2004-11-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* rungm.sh.in: Compute final variable definitions from within
+	configure in order to improve MinGW test execution times.
+
 2004-11-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/gif.c: Fix two error-path memory leaks which were noticed

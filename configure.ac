@@ -12,6 +12,9 @@
 AC_PREREQ(2.59)
 AC_INIT(magick/magick.h)
 
+# Specify directory where m4 macros may be found.
+AC_CONFIG_MACRO_DIR([.])
+
 #
 # Save initial user-tunable values
 #
@@ -141,6 +144,29 @@ builddir=`pwd`
 
 WinPathScript="${srcdirfull}/winpath.sh"
 AC_SUBST(WinPathScript)
+
+#
+# Compute variables useful for running uninstalled software
+#
+MAGICK_CODER_MODULE_PATH="${builddir}/coders"
+MAGICK_CONFIGURE_SRC_PATH="${srcdirfull}/config"
+MAGICK_CONFIGURE_BUILD_PATH="${builddir}/config"
+MAGICK_FILTER_MODULE_PATH="${builddir}/filters"
+DIRSEP=':'
+case "${host_os}" in
+  mingw* )
+    MAGICK_CODER_MODULE_PATH=`$WinPathScript "${MAGICK_CODER_MODULE_PATH}" 0`
+    MAGICK_CONFIGURE_SRC_PATH=`$WinPathScript "${MAGICK_CONFIGURE_SRC_PATH}" 0`
+    MAGICK_CONFIGURE_BUILD_PATH=`$WinPathScript "${MAGICK_CONFIGURE_BUILD_PATH}" 0`
+    MAGICK_FILTER_MODULE_PATH=`$WinPathScript "${MAGICK_FILTER_MODULE_PATH}" 0`
+    DIRSEP=';'
+    ;;
+esac
+AC_SUBST(MAGICK_CODER_MODULE_PATH)
+AC_SUBST(MAGICK_CONFIGURE_SRC_PATH)
+AC_SUBST(MAGICK_CONFIGURE_BUILD_PATH)
+AC_SUBST(MAGICK_FILTER_MODULE_PATH)
+AC_SUBST(DIRSEP)
 
 # Check for programs
 AC_PROG_CC

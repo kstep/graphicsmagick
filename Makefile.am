@@ -15,6 +15,11 @@ topincludedir = @includedir@/GraphicsMagick
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/Magick++/lib
 
+# It seems that AC_CONFIG_MACRO_DIR([m4]) in configure.ac should cause
+# Automake to pass aclocal the right flags, but here is some more
+# positive enforcement.
+ACLOCAL_AMFLAGS = -I .
+
 MODULECOMMONFLAGS = -no-undefined -module -avoid-version
 
 # Options to pass when running configure in the distcheck target.
