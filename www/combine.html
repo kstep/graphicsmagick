@@ -55,7 +55,7 @@
   </font>
 </td></tr>
 </table>
-</A>
+<p>
 <p>
 <dd><B>combine</B> [ <EM>options</EM> ... ] <EM>image</EM>
 <EM>composite</EM> [ <EM>mask</EM> ] <EM>combined</EM>
@@ -74,7 +74,7 @@
   </font>
 </td></tr>
 </table>
-</A>
+<p>
 <p>
 <dd><B>combine</B> combine images to create new images.
 </DL>
@@ -92,7 +92,7 @@
   </font>
 </td></tr>
 </table>
-</A>
+<p>
 <p>
 <DD>To combine an image of a cockatoo with a perch, use:
 <dl>
@@ -133,7 +133,12 @@ image, try
   </font>
 </td></tr>
 </table>
-</A> 
+<p> 
+<P>
+<DD>Options are processed in command line order.  Any option you
+specify on the command line remains in effect until it is
+explicitly changed by specifying the option again with a
+different effect.
 <p>
 <DL>  
 <dt><table width="65%" cellpadding="1" border="0">
@@ -256,7 +261,7 @@ How each operator behaves is described below.
 <P>
 <DL>
 <DL>
-<dt><table width="65%" cellpadding="1" border="0">
+<dt><table width="30%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#9ebac6">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
     <img src="../images/right_triangle.gif" width="15" height="14" border="0"
@@ -267,7 +272,7 @@ How each operator behaves is described below.
 <DD>The result will be the union of the two image shapes, with
 <em>composite image</em> obscuring <em>image</em> in the region of overlap.
 <P>
-<dt><table width="65%" cellpadding="1" border="0">
+<dt><table width="30%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#9ebac6">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
     <img src="../images/right_triangle.gif" width="15" height="14" border="0"
@@ -279,7 +284,7 @@ How each operator behaves is described below.
 <em>image</em>.  None of the image data of <em>image</em> will be in the
 result.
 <P>
-<dt><table width="65%" cellpadding="1" border="0">
+<dt><table width="30%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#9ebac6">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
     <img src="../images/right_triangle.gif" width="15" height="14" border="0"
@@ -290,7 +295,7 @@ result.
 <DD>The resulting image is <em>composite image</em> with the shape of
 <em>image</em> cut out.
 <P>
-<dt><table width="65%" cellpadding="1" border="0">
+<dt><table width="30%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#9ebac6">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
     <img src="../images/right_triangle.gif" width="15" height="14" border="0"
@@ -304,7 +309,7 @@ overlap.  Note this differs from <b>over</b> because the portion of
 <em>composite image</em>
 outside <em>image</em>'s shape does not appear in the result.
 <P>
-<dt><table width="65%" cellpadding="1" border="0">
+<dt><table width="30%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#9ebac6">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
     <img src="../images/right_triangle.gif" width="15" height="14" border="0"
@@ -316,7 +321,7 @@ outside <em>image</em>'s shape does not appear in the result.
 <em>image</em> that is outside the overlap region.  The overlap region
 will be blank.
 <P>
-<dt><table width="65%" cellpadding="1" border="0">
+<dt><table width="30%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#9ebac6">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
     <img src="../images/right_triangle.gif" width="15" height="14" border="0"
@@ -328,7 +333,7 @@ will be blank.
 to 255 (no overflow).  This operation is independent of the matte
 channels.
 <P>
-<dt><table width="65%" cellpadding="1" border="0">
+<dt><table width="30%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#9ebac6">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
     <img src="../images/right_triangle.gif" width="15" height="14" border="0"
@@ -339,7 +344,7 @@ channels.
 <DD>The result of <em>composite image</em> - <em>image</em>, with underflow
 cropped to zero.  The matte channel is ignored (set to 255, full coverage).
 <P>
-<dt><table width="65%" cellpadding="1" border="0">
+<dt><table width="30%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#9ebac6">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
     <img src="../images/right_triangle.gif" width="15" height="14" border="0"
@@ -350,7 +355,7 @@ cropped to zero.  The matte channel is ignored (set to 255, full coverage).
 <DD>The result of <em>composite image</em> + <em>image</em>, with overflow
 wrapping around (<EM>mod</EM> 256).
 <P>
-<dt><table width="65%" cellpadding="1" border="0">
+<dt><table width="30%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#9ebac6">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
     <img src="../images/right_triangle.gif" width="15" height="14" border="0"
@@ -362,7 +367,7 @@ wrapping around (<EM>mod</EM> 256).
 wrapping around (<EM>mod</EM> 256).  The <b>add</b> and <b>subtract</b>
 operators can be used to perform reversible transformations.
 <P>
-<dt><table width="65%" cellpadding="1" border="0">
+<dt><table width="30%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#9ebac6">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
     <img src="../images/right_triangle.gif" width="15" height="14" border="0"
@@ -373,7 +378,7 @@ operators can be used to perform reversible transformations.
 <DD>The result of abs(<em>composite image</em> - <em>image</em>).  This is
 useful for comparing two very similar images.
 <P>
-<dt><table width="65%" cellpadding="1" border="0">
+<dt><table width="30%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#9ebac6">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
     <img src="../images/right_triangle.gif" width="15" height="14" border="0"
@@ -383,7 +388,7 @@ useful for comparing two very similar images.
 </table>
 <DD>The result of <em>image</em> shaded by <em>image</em>.
 <P>
-<dt><table width="65%" cellpadding="1" border="0">
+<dt><table width="30%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#9ebac6">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
     <img src="../images/right_triangle.gif" width="15" height="14" border="0"
@@ -884,11 +889,6 @@ of unique colors;  and the number of seconds to read
 and combine the image.
 </DL>
 <P>
-<DD>Options are processed in command line order.  Any option you
-specify on the command line remains in effect until it is
-explicitly changed by specifying the option again with a
-different effect.
-<P>
 <DD>By default, the image format is determined by its magic
 number. To specify a particular image format, precede the
 filename with an image format name and a colon (i.e.
@@ -940,7 +940,7 @@ whether it should be overwritten.
   </font>
 </td></tr>
 </table>
-</A>
+<p>
 <p>
 <DL>
 <table width="100%" cellpadding="1" border="0">
@@ -969,7 +969,7 @@ whether it should be overwritten.
   </font>
 </td></tr>
 </table>
-</A>
+<p>
 <p>
 <DD><I>John Cristy</I>, <A HREF="mailto:magick@wizards.dupont.com">
  <I>magick@wizards.dupont.com</I></A> <B>E.I. du Pont de Nemours and Company
@@ -988,7 +988,6 @@ Incorporated</B>.
   </font>
 </td></tr>
 </table>
-</A>
 <p>
 <B>
 <dd>Copyright 1999 E. I. du Pont de Nemours and Company

@@ -244,6 +244,16 @@ Wide Web (WWW)</B> uniform resource locator <B>(URL)</B>, use:
 </td></tr>
 </table>
 <p>
+<dd>Options are processed in command line order.  Any option
+you specify on the command line remains in effect until it
+is explicitly changed by specifying the option again with
+a different effect.  For example to display two images,
+the first with 32 colors, and the second with only 16
+colors, use:
+<PRE>
+      display -colors 32 cockatoo.miff -colors 16 macaw.miff
+</PRE>
+<P>
 <DD><B>Display</B> options can appear on the command line or in your X
 resources file. See <I>X(1)</I>. Options on the command line
 supersede values specified in your X resources file.
@@ -1252,16 +1262,6 @@ standard X resources as command line options:
 <B>-foreground</B>, <B>-iconGeometry</B>, <B>-iconic</B>,
 <B>-mattecolor</B>, <B>-name</B>, or <B>-title</B>.  
 See <A HREF="#xres">X Resources</A> for details.
-<P>
-Options are processed in command line order.  Any option
-you specify on the command line remains in effect until it
-is explicitly changed by specifying the option again with
-a different effect.  For example to display two images,
-the first with 32 colors, and the second with only 16
-colors, use:
-<PRE>
-      display -colors 32 cockatoo.miff -colors 16 macaw.miff
-</PRE>
 <P>
 By default, the image format is determined by its magic
 number. To specify a particular image <A

@@ -201,10 +201,20 @@ frame), use:
   </font>
 </td></tr>
 </table>
-<p>
+<P>
+<dd>Options are processed in command line order.  Any option you
+specify on the command line remains in effect until it is
+explicitly changed by specifying the option again with a
+different effect.  For example, to montage two images, the
+first with 32 colors and the second with only 16 colors,
+use:
+<P>
+<pre>
+    montage -colors 32 cockatoo.1 -colors 16 cockatoo.2 cockatoo.miff
+</pre>
 <p>
 <DL>
-<table width="100%" cellpadding="1" border="0">
+<table width="65%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#9ebac6">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
     <img src="../images/right_triangle.gif" width="15" height="14" border="0"
@@ -1222,17 +1232,6 @@ standard X resources as command line options:  <B>-background</B>,
 <B>-mattecolor</B>, or <B>-title</B>.  See <A HREF="#xres"><B>X</B>
 <B>Resources</B></A> for details.
 <P>
-Options are processed in command line order.  Any option you
-specify on the command line remains in effect until it is
-explicitly changed by specifying the option again with a
-different effect.  For example, to montage two images, the
-first with 32 colors and the second with only 16 colors,
-use:
-<P>
-<pre>
-    montage -colors 32 cockatoo.1 -colors 16 cockatoo.2 cockatoo.miff
-</pre>
-<P>
 By default, the image format is determined by its magic
 number. To specify a particular image format, precede the
 filename with an image format name and a colon (i.e.
@@ -1272,7 +1271,7 @@ For example,
 </PRE>
 montages files image00.miff, image01.miff, etc.
 <p>
-<dt>Prepend an at sign <tt>@</tt> to a filename to read a list of image
+Prepend an at sign <tt>@</tt> to a filename to read a list of image
 filenames from that file.  This is convenient in the event you have too
 may image filenames to fit on the command line.
 <P>

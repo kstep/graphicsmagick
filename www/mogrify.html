@@ -124,8 +124,16 @@ width and 480 pixels in height, use:
 </td></tr>
 </table>
 <p>
+<dd>Options are processed in command line order.  Any option you
+specify on the command line remains in effect until it is
+explicitly changed by specifying the option again with a
+different effect.  For example, to mogrify two images, the
+first with 32 colors and the second with only 16 colors,
+use:
+<PRE>
+    mogrify -colors 32 cockatoo.miff -colors 16 macaw.miff
+</PRE>
 <p>
-<P>
 <dl>
 <dt><table width="65%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#9ebac6">

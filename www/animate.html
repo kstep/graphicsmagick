@@ -158,6 +158,11 @@ on a backdrop, use:
 </td></tr>
 </table>
 <p>
+<DD>Options are processed in command line order.  Any option you
+specify on the command line remains in effect until it is
+explicitly changed by specifying the option again with a
+different effect.
+<p>
 <DD><B>Animate</B> options can appear on the command line or in your X
 resources file. See <I>X(1)</I>. Options on the command line
 supersede values specified in your X resources file.
@@ -685,10 +690,6 @@ colors, use:
 <PRE>
   animate -colors 32 cockatoo.1 -colors 16 cockatoo.2
 </PRE>
-<DD>Options are processed in command line order.  Any option you
-specify on the command line remains in effect until it is
-explicitly changed by specifying the option again with a
-different effect.
 <P>
 <DD>By default, the image format is determined by its magic
 number. To specify a particular image format, precede the
