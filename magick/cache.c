@@ -1981,7 +1981,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   if (cache_info->length == (size_t) cache_info->length)
     if ((cache_info->type == MemoryCache) ||
         ((cache_info->type == UndefinedCache) &&
-         ((GetCacheThreshold(0).minimum != ~0) ||
+         ((GetCacheThreshold(0).minimum == ~0) ||
           (cache_info->length <= GetCacheThreshold(0).minimum))))
       {
         if (cache_info->storage_class == UndefinedClass)

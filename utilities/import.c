@@ -191,9 +191,6 @@ int main(int argc,char **argv)
   Display
     *display;
 
-  double
-    sans;
-
   ExceptionInfo
     exception;
 
