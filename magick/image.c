@@ -5086,6 +5086,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     if (image_info->verbose)
       DescribeImage(image,stdout,False);
     PushImageList(&mogrify_images,image,&image->exception);
+    DestroyImage(image);
     MagickMonitor(MogrifyImageText,i,length);
   }
 	*images=mogrify_images;
