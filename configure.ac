@@ -1470,6 +1470,11 @@ then
 fi
 AC_SUBST(windows_font_dir)
 
+# Adobe Postscript fonts on various systems
+case $host_os in
+  solaris*) type_include_files="$type_include_files "'file="type-solaris.mgk"';;
+esac
+
 # Ghostscript
 ghostscript_font_dir="$prefix/share/ghostscript/fonts"
 if test "$PSDelegate" != 'gs'
@@ -1481,6 +1486,9 @@ AC_SUBST(ghostscript_font_dir)
 
 AC_SUBST(type_include_files)
 
+#
+# Handle case where user doesn't want frozen paths
+#
 if test "$with_frozenpaths" != 'yes'
 then
   # Re-set delegate definitions to default (no paths)
@@ -1820,7 +1828,7 @@ AC_SUBST(X_CFLAGS)
 
 AC_OUTPUT(Makefile magick/Makefile coders/delegates.mgk coders/Makefile \
   utilities/Makefile tests/Makefile coders/type.mgk \
-  coders/type-ghostscript.mgk coders/type-windows.mgk \
+  coders/type-ghostscript.mgk coders/type-windows.mgk coders/type-solaris.mgk \
   magick/Magick-config Magick++/bin/Makefile Magick++/bin/Magick++-config \
   Magick++/Makefile Magick++/lib/Makefile Magick++/lib/Magick++/Makefile  \
   Magick++/demo/Makefile Magick++/tests/Makefile PerlMagick/Makefile.PL)

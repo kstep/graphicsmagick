@@ -711,13 +711,14 @@ DATADELEGATES = \
 	delegates.mgk \
 	type-ghostscript.mgk \
 	type-windows.mgk \
+	type-solaris.mgk \
 	type.mgk
 
 subdir = coders
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
 CONFIG_CLEAN_FILES = delegates.mgk type.mgk type-ghostscript.mgk \
-	type-windows.mgk
+	type-windows.mgk type-solaris.mgk
 LTLIBRARIES = $(noinst_LTLIBRARIES) $(pkg_LTLIBRARIES)
 
 art_la_DEPENDENCIES = ../magick/libMagick.la
@@ -1093,8 +1094,8 @@ DATA = $(pkg_DATA) $(pkgdata_DATA)
 HEADERS = $(noinst_HEADERS)
 
 DIST_COMMON = $(noinst_HEADERS) Makefile.am Makefile.in \
-	delegates.mgk.in type-ghostscript.mgk.in type-windows.mgk.in \
-	type.mgk.in
+	delegates.mgk.in type-ghostscript.mgk.in type-solaris.mgk.in \
+	type-windows.mgk.in type.mgk.in
 SOURCES = $(art_la_SOURCES) $(avi_la_SOURCES) $(avs_la_SOURCES) $(bmp_la_SOURCES) $(cmyk_la_SOURCES) $(cut_la_SOURCES) $(dcm_la_SOURCES) $(dib_la_SOURCES) $(dps_la_SOURCES) $(dpx_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) $(fits_la_SOURCES) $(fpx_la_SOURCES) $(gif_la_SOURCES) $(gradient_la_SOURCES) $(gray_la_SOURCES) $(hdf_la_SOURCES) $(histogram_la_SOURCES) $(html_la_SOURCES) $(icon_la_SOURCES) $(jbig_la_SOURCES) $(jp2_la_SOURCES) $(jpeg_la_SOURCES) $(label_la_SOURCES) $(libCoders_la_SOURCES) $(logo_la_SOURCES) $(map_la_SOURCES) $(mat_la_SOURCES) $(matte_la_SOURCES) $(meta_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) $(mpc_la_SOURCES) $(mpeg_la_SOURCES) $(mpr_la_SOURCES) $(msl_la_SOURCES) $(mtv_la_SOURCES) $(mvg_la_SOURCES) $(null_la_SOURCES) $(otb_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) $(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) $(pict_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) $(png_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) $(ps_la_SOURCES) $(ps2_la_SOURCES) $(ps3_la_SOURCES) $(psd_la_SOURCES) $(pwp_la_SOURCES) $(rgb_la_SOURCES) $(rla_la_SOURCES) $(rle_la_SOURCES) $(sct_la_SOURCES) $(sfw_la_SOURCES) $(sgi_la_SOURCES) $(stegano_la_SOURCES) $(sun_la_SOURCES) $(svg_la_SOURCES) $(tga_la_SOURCES) $(tiff_la_SOURCES) $(tile_la_SOURCES) $(tim_la_SOURCES) $(ttf_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) $(url_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(wmf_la_SOURCES) $(wpg_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) $(xcf_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
 
 all: all-am
@@ -1124,6 +1125,8 @@ type.mgk: $(top_builddir)/config.status type.mgk.in
 type-ghostscript.mgk: $(top_builddir)/config.status type-ghostscript.mgk.in
 	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= CONFIG_LINKS= $(SHELL) ./config.status
 type-windows.mgk: $(top_builddir)/config.status type-windows.mgk.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= CONFIG_LINKS= $(SHELL) ./config.status
+type-solaris.mgk: $(top_builddir)/config.status type-solaris.mgk.in
 	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= CONFIG_LINKS= $(SHELL) ./config.status
 
 clean-noinstLTLIBRARIES:

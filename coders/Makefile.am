@@ -533,6 +533,7 @@ DATADELEGATES = \
 	delegates.mgk \
 	type-ghostscript.mgk \
 	type-windows.mgk \
+	type-solaris.mgk \
 	type.mgk
 
 install-data-delegates: 
