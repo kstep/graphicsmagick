@@ -1,3 +1,6 @@
+2001-10-16  Cristy  <cristy@mystic.es.dupont.com>
+	* Convert now supports -channel {Cyan,Magenta,Yellow,Black}.
+
 2001-10-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
         * coders/wmf.c updated for libwmf 0.2.  Plenty of bugs
           remain within.
