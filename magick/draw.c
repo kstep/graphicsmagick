@@ -1795,6 +1795,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         if (LocaleCompare("font",keyword) == 0)
           {
             GetToken(q,&q,token);
+            if (draw_info->font != (char *) NULL)
+              (void) strncpy(token,draw_info->font,MaxTextExtent-1);
             (void) CloneString(&graphic_context[n]->font,token);
             break;
           }
