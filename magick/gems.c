@@ -486,6 +486,7 @@ MagickExport PixelPacket InterpolateColor(Image *image,const double x_offset,
     y;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   x=x_offset;
   y=y_offset;
   if ((x < -1) || (x >= image->columns) || (y < -1) || (y >= image->rows))

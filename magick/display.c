@@ -11349,6 +11349,8 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   /*
     Determine target window.
   */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   resources=(*resource_info);
   window_info.id=(Window) NULL;
   root_window=XRootWindow(display,XDefaultScreen(display));
@@ -12002,6 +12004,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   XWMHints
     *manager_hints;
 
+  assert(image != (Image **) NULL);
+  assert((*image)->signature == MagickSignature);
   display_image=(*image);
   TransformRGBImage(display_image,RGBColorspace);
   monitor_handler=(MonitorHandler) NULL;

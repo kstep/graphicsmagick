@@ -497,6 +497,10 @@ MagickExport unsigned int StreamImage(const ImageInfo *image_info,
   /*
     Replace image pixel methods with streaming methods.
   */
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   CloseImagePixels=ClosePixelStream;
   DestroyImagePixels=DestroyPixelStream;
   GetImagePixels=GetPixelStream;

@@ -4980,7 +4980,8 @@ Mogrify(ref,...)
       if (image == (Image *) NULL)
         MagickWarning(exception.severity,exception.message,exception.qualifier);
       else
-        CatchImageException(next);
+        if (next != (Image *) NULL)
+          CatchImageException(next);
       if (region_image != (Image *) NULL)
         {
           unsigned int

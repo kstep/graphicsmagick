@@ -110,6 +110,8 @@
 #define HasXML
 #endif
 
+#define MagickSignature  0xcafe
+
 #undef index
 
 #endif

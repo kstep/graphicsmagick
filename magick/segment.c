@@ -1451,6 +1451,7 @@ MagickExport unsigned int SegmentImage(Image *image,
     Allocate histogram and extrema.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   for (i=0; i < MaxDimension; i++)
   {
     histogram[i]=(long *) AllocateMemory((DownScale(MaxRGB)+1)*sizeof(long));

@@ -103,6 +103,7 @@ MagickExport Image *BorderImage(Image *image,const RectangleInfo *border_info,
     frame_info;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(border_info != (RectangleInfo *) NULL);
   frame_info.width=image->columns+(border_info->width << 1);
   frame_info.height=image->rows+(border_info->height << 1);
@@ -186,6 +187,7 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
     Check frame geometry.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(frame_info != (FrameInfo *) NULL);
   if ((frame_info->outer_bevel < 0) || (frame_info->inner_bevel < 0))
     ThrowImageException(OptionWarning,"Unable to frame image",
@@ -438,6 +440,7 @@ MagickExport unsigned int RaiseImage(Image *image,
     height;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(raise_info != (RectangleInfo *) NULL);
   if ((image->columns <= (raise_info->width << 1)) ||
       (image->rows <= (raise_info->height << 1)))

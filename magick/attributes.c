@@ -90,6 +90,7 @@ MagickExport void DestroyImageAttributes(Image *image)
     *p;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   for (p=image->attributes; p != (ImageAttribute *) NULL; )
   {
     attribute=p;
@@ -181,6 +182,7 @@ MagickExport ImageAttribute *GetImageAttribute(const Image *image,
     *p;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (key == (char *) NULL)
     return(image->attributes);
   for (p=image->attributes; p != (ImageAttribute *) NULL; p=p->next)
@@ -241,6 +243,7 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
     Initialize new attribute.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if ((key == (const char *) NULL) || (*key == '\0'))
     return(False);
   if (value == (const char *) NULL)

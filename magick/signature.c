@@ -489,10 +489,11 @@ MagickExport unsigned int SignatureImage(Image *image)
   unsigned char
     *message;
 
-  assert(image != (Image *) NULL);
   /*
     Allocate memory for digital signature.
   */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   signature=(char *) AllocateMemory(33);
   message=(unsigned char *) AllocateMemory(8*image->columns);
   if ((signature == (char *) NULL) || (message == (unsigned char *) NULL))

@@ -3285,7 +3285,7 @@ fi
 #
 # Most delegates have includes in the same directory as the library
 #
-for dir in bzlib hdf/hdf/src jbig/libjbig jpeg lcms/source  png tiff/libtiff ttf ttf/lib ttf/lib/.libs xml zlib
+for dir in bzlib hdf/hdf/src jbig/libjbig jpeg lcms/source  png tiff/libtiff ttf ttf/lib ttf/lib/.libs xml xml/.libs zlib
 do
   if test -d "$builddir/$dir"
   then
@@ -4422,7 +4422,8 @@ rm -f conftest*
 echo "$ECHO_T""no" >&6
 	X_LIBS="$X_LIBS -R$x_libraries"
       else
-	LIBS="$ac_xsave_LIBS -R $x_libraries"
+	X_LIBS="$X_LIBS -R$x_libraries"
+#	LIBS="$ac_xsave_LIBS -R $x_libraries"
 	cat >conftest.$ac_ext <<EOF
 
 EOF

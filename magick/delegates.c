@@ -245,6 +245,12 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   register int
     i;
 
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(decode_tag != (char *) NULL);
+  assert(encode_tag != (char *) NULL);
   if (!GetDelegateInfo(decode_tag,encode_tag,&delegate_info))
     {
       ThrowException(&image->exception,MissingDelegateWarning,"no tag found",
@@ -316,6 +322,10 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
   unsigned int
     status;
 
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   (void) strcpy(filename,image->filename);
   if (!GetDelegateInfo(decode_tag,encode_tag,&delegate_info))
     ThrowBinaryException(MissingDelegateWarning,"no tag found",
@@ -763,6 +773,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
         return(delegates);
       (void) strcpy(delegate->commands,delegate_info->commands);
     }
+  delegate->signature=MagickSignature;
   delegate->previous=(DelegateInfo *) NULL;
   delegate->next=(DelegateInfo *) NULL;
   if (delegates == (DelegateInfo *) NULL)

@@ -91,7 +91,6 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define ClientName  "montage"
 
   char
-    *commands[5],
     **filelist,
     **list;
 
@@ -134,28 +133,25 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=ExpandFilenames(&number_files,&filelist);
   if ((status == False) || (number_files == 0))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+  DestroyImage(image);
   /*
     Read each image and convert them to a tile.
   */
+  image=(Image *) NULL;
   clone_info=CloneImageInfo(image_info);
   if (clone_info == (ImageInfo *) NULL)
     return((Image *) NULL);
   (void) CloneString(&clone_info->size,DefaultTileGeometry);
-  commands[0]=SetClientName((char *) NULL);
-  commands[1]="-label";
-  commands[2]=(char *) DefaultTileLabel;
-  commands[3]="-geometry";
-  commands[4]=(char *) DefaultTileGeometry;
   for (i=0; i < number_files; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
     (void) strcpy(clone_info->filename,filelist[i]);
-    *clone_info->magick='\0';
     next_image=ReadImage(clone_info,exception);
     FreeMemory((void **) &filelist[i]);
     if (next_image != (Image *) NULL)
       {
-        MogrifyImages(clone_info,5,commands,&next_image);
+        (void) SetImageAttribute(next_image,"Label",DefaultTileLabel);
+        TransformImage(&next_image,(char *) NULL,DefaultTileGeometry);
         if (image == (Image *) NULL)
           image=next_image;
         else

@@ -207,6 +207,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->cache=(void *) NULL;
   allocate_image->fifo=(void (*)(Image *)) NULL;
   allocate_image->orphan=False;
+  allocate_image->signature=MagickSignature;
   allocate_image->previous=(Image *) NULL;
   allocate_image->list=(Image *) NULL;
   allocate_image->next=(Image *) NULL;
@@ -316,6 +317,7 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
     Allocate image colormap.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(colors != 0);
   image->storage_class=PseudoClass;
   image->colors=colors;
@@ -364,6 +366,7 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
     Allocate image structure.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   CloseImagePixels(image);
   image->next=AllocateImage(image_info);
   if (image->next == (Image *) NULL)
@@ -424,6 +427,10 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
   XResourceInfo
     resource;
 
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   display=XOpenDisplay((char *) NULL);
   if (display == (Display *) NULL)
     return(False);
@@ -443,6 +450,10 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
 MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
   Image *image)
 {
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   ThrowBinaryException(MissingDelegateWarning,"X11 library is not available",
     image->filename);
   return(False);
@@ -505,6 +516,9 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
     Ensure the image have the same column width.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   next=image;
   if (image->next == (Image *) NULL)
     ThrowImageException(OptionWarning,"Unable to append image sequence",
@@ -666,6 +680,9 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
     Ensure the image are the same size.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
     ThrowImageException(OptionWarning,"Unable to average image sequence",
       "image sequence required");
@@ -809,6 +826,9 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
     Allocate image structure.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   clone_image=(Image *) AllocateMemory(sizeof(Image));
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
@@ -1073,7 +1093,9 @@ MagickExport unsigned int CompositeImage(Image *image,
     Prepare composite image.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(composite_image != (Image *) NULL);
+  assert(composite_image->signature == MagickSignature);
   alpha=1.0/MaxRGB;
   red=0.0;
   green=0.0;
@@ -1593,6 +1615,7 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
     *q;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (image->storage_class == DirectClass)
     {
       QuantizeInfo
@@ -1686,6 +1709,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     number_colors;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(file != (FILE *) NULL);
   elapsed_time=GetElapsedTime(&image->timer);
   user_time=GetUserTime(&image->timer);
@@ -2186,6 +2210,7 @@ MagickExport void DestroyImage(Image *image)
     Close image.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   DestroyBlobInfo(&image->blob);
   if (image->file != (FILE *) NULL)
     {
@@ -2277,6 +2302,7 @@ MagickExport void DestroyImage(Image *image)
 MagickExport void DestroyImageInfo(ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
   if (image_info->server_name != (char *) NULL)
     FreeMemory((void **) &image_info->server_name);
   if (image_info->size != (char *) NULL)
@@ -2334,8 +2360,8 @@ MagickExport void DestroyImages(Image *image)
   /*
     Proceed to the top of the image list.
   */
-  if (image == (Image *) NULL)
-    return;
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   do
@@ -2401,6 +2427,10 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
   XResourceInfo
     resource;
 
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   display=XOpenDisplay((char *) NULL);
   if (display == (Display *) NULL)
     return(False);
@@ -2426,6 +2456,10 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
   Image *image)
 {
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   ThrowBinaryException(MissingDelegateWarning,"X11 library is not available",
     image->filename);
   return(False);
@@ -2527,6 +2561,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->group=0L;
   image_info->ping=False;
   image_info->fifo=(void (*)(Image *)) NULL;
+  image_info->signature=MagickSignature;
 }
 
 /*
@@ -2558,6 +2593,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
 MagickExport ImageType GetImageType(Image *image)
 {
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (image->colorspace == CMYKColorspace)
     return(ColorSeparationType);
   if (IsMonochromeImage(image))
@@ -2601,6 +2637,7 @@ MagickExport ImageType GetImageType(Image *image)
 MagickExport Image *GetNextImage(Image *image)
 {
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   image->next->blob=image->blob;
   image->next->file=image->file;
   return(image->next);
@@ -2644,6 +2681,7 @@ MagickExport unsigned int GetNumberScenes(const Image *image)
     Compute the number of scenes in the image.
   */
   assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   next=image;
@@ -2848,6 +2886,7 @@ MagickExport unsigned int IsTainted(const Image *image)
     *p;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   (void) strcpy(magick,image->magick);
   (void) strcpy(filename,image->filename);
   for (p=image; p != (Image *) NULL; p=p->next)
@@ -2901,6 +2940,7 @@ MagickExport unsigned int LayerImage(Image *image,const LayerType layer)
     *q;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if ((layer == MatteLayer) && !image->matte)
     ThrowBinaryException(OptionWarning,"Unable to extract layer",
       "image does not have a matte layer");
@@ -2999,6 +3039,7 @@ MagickExport Image **ListToGroupImage(Image *image,unsigned int *number_images)
     Determine the number of images in the list.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(number_images != (unsigned int *) NULL);
   next=(Image *) image;
   for (i=0; next != (Image *) NULL; i++)
@@ -3058,6 +3099,7 @@ MagickExport void MatteImage(Image *image,Quantum opacity)
     *q;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   image->storage_class=DirectClass;
   image->matte=True;
   for (y=0; y < (int) image->rows; y++)
@@ -3148,7 +3190,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     Verify option length.
   */
   assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
   assert(image != (Image **) NULL);
+  assert((*image)->signature == MagickSignature);
   for (i=1; i < argc; i++)
     if (Extent(argv[i]) > (MaxTextExtent/2-1))
       MagickError(OptionWarning,"Option length exceeds limit",argv[i]);
@@ -4453,7 +4497,9 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *next_info,
     status;
 
   assert(next_info != (ImageInfo *) NULL);
+  assert(next_info->signature == MagickSignature);
   assert(image != (Image **) NULL);
+  assert((*image)->signature == MagickSignature);
   next=(*image);
   for (number_images=1; next->next != (Image *) NULL; number_images++)
     next=next->next;
@@ -4540,6 +4586,9 @@ MagickExport Image *MosaicImages(Image *image,ExceptionInfo *exception)
     Determine next bounding box.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
     ThrowImageException(OptionWarning,"Unable to create image mosaic",
       "image sequence required");
@@ -4836,6 +4885,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
     *q;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace))
     return(True);
   if (colorspace == CMYKColorspace)
@@ -5287,6 +5337,7 @@ MagickExport void SetImage(Image *image,Quantum opacity)
     *q;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   background_color=image->background_color;
   background_color.opacity=opacity;
   if (opacity != OpaqueOpacity)
@@ -5366,6 +5417,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
     Look for 'image.format' in filename.
   */
   assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
   *magic='\0';
   p=image_info->filename+Max(Extent(image_info->filename)-1,0);
   if (*p == ']')
@@ -5609,6 +5661,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
     *pixels;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (image->storage_class != PseudoClass)
     return(True);
   /*
@@ -5693,6 +5746,7 @@ MagickExport void SyncImage(Image *image)
     *q;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (image->storage_class == DirectClass)
     return;
   for (y=0; y < (int) image->rows; y++)
@@ -5748,6 +5802,7 @@ MagickExport void TextureImage(Image *image,Image *texture)
     y;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (texture == (const Image *) NULL)
     return;
   /*
@@ -5969,6 +6024,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
     *q;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if ((image->colorspace == CMYKColorspace) && (colorspace == RGBColorspace))
     {
       unsigned int

@@ -162,6 +162,8 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
     (*method)(Image *,const int,char **),
     status;
 
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   status=False;
   module_name=TagToModule(tag);
   handle=lt_dlopen(module_name);
@@ -561,6 +563,7 @@ MagickExport int OpenModule(const char *module)
   /*
     Assign module name from alias.
   */
+  assert(module != (const char *) NULL);
   (void) strcpy(module_name,module);
   if (module_aliases != (ModuleAliases *) NULL)
     {
@@ -737,6 +740,7 @@ MagickExport ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
   register ModuleInfo
     *p;
 
+  assert(entry != (ModuleInfo *) NULL);
   p=(ModuleInfo *) NULL;
   if (module_list != (ModuleInfo *) NULL)
     for (p=module_list; p->next != (ModuleInfo *) NULL; p=p->next)
@@ -756,6 +760,7 @@ MagickExport ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
       module_list=entry;
       return(entry);
     }
+  entry->signature=MagickSignature;
   entry->previous=p;
   entry->next=p->next;
   p->next=entry;
@@ -795,6 +800,7 @@ MagickExport ModuleInfo *SetModuleInfo(const char *tag)
   ModuleInfo
     *entry;
 
+  assert(tag != (const char *) NULL);
   entry=(ModuleInfo *) AllocateMemory(sizeof(ModuleInfo));
   if (entry == (ModuleInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate module info",
@@ -882,7 +888,7 @@ char *TagToModule(const char *tag)
 %    o module: a character string that indicates the module to unload.
 %
 */
-MagickExport int UnloadDynamicModule(const char* module)
+MagickExport int UnloadDynamicModule(const char *module)
 {
   char
     name[MaxTextExtent];
@@ -893,6 +899,7 @@ MagickExport int UnloadDynamicModule(const char* module)
   void
     (*method)(void);
 
+  assert(module != (const char *) NULL);
   module_info=GetModuleInfo(module);
   if (module_info == (ModuleInfo *) NULL)
     return(False);
@@ -948,6 +955,7 @@ MagickExport int UnregisterModuleInfo(const char *tag)
   register ModuleInfo
     *p;
 
+  assert(tag != (const char *) NULL);
   for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
   {
     if (LocaleCompare(p->tag,tag) != 0)

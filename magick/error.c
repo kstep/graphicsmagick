@@ -110,8 +110,8 @@ MagickExport void CatchImageException(Image *image)
   ExceptionInfo
     exception;
 
-  if (image == (Image *) NULL)
-    return;
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   GetExceptionInfo(&exception);
   GetImageException(image,&exception);
   if (exception.severity == UndefinedException)
@@ -237,6 +237,7 @@ static void DefaultWarningHandler(const ExceptionType warning,
 MagickExport void DestroyExceptionInfo(ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if (exception->message != (char *) NULL)
     FreeMemory((void **) &exception->message);
   if (exception->qualifier != (char *) NULL)
@@ -272,6 +273,7 @@ MagickExport void GetExceptionInfo(ExceptionInfo *exception)
   exception->severity=UndefinedException;
   exception->message=(char *) NULL;
   exception->qualifier=(char *) NULL;
+  exception->signature=MagickSignature;
 }
 
 /*
@@ -306,6 +308,9 @@ MagickExport void GetImageException(Image *image,ExceptionInfo *exception)
     *next;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   for (next=image; next != (Image *) NULL; next=next->next)
   {
     if (next->exception.severity == UndefinedException)

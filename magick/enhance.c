@@ -100,6 +100,7 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
     *q;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   sign=sharpen ? 1 : -1;
   switch (image->storage_class)
   {
@@ -211,6 +212,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
     Allocate and initialize histogram arrays.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   histogram=(unsigned int *) AllocateMemory((MaxRGB+1)*sizeof(unsigned int));
   map=(unsigned int *) AllocateMemory((MaxRGB+1)*sizeof(unsigned int));
   equalize_map=(Quantum *) AllocateMemory((MaxRGB+1)*sizeof(Quantum));
@@ -358,6 +360,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
     *gamma_map;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (gamma == (char *) NULL)
     return(False);
   red_gamma=1.0;
@@ -507,6 +510,7 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
     Initialize gamma table.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (modulate == (char *) NULL)
     return(False);
   percent_hue=0.0;
@@ -610,6 +614,7 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
     *q;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   switch (image->storage_class)
   {
     case DirectClass:
@@ -720,6 +725,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
     Allocate histogram and normalize map.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   histogram=(int *) AllocateMemory((MaxRGB+1)*sizeof(int));
   normalize_map=(Quantum *) AllocateMemory((MaxRGB+1)*sizeof(Quantum));
   if ((histogram == (int *) NULL) || (normalize_map == (Quantum *) NULL))

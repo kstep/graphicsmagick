@@ -886,6 +886,7 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
 MagickExport void DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 {
   assert(quantize_info != (QuantizeInfo *) NULL);
+  assert(quantize_info->signature == MagickSignature);
   FreeMemory((void **) &quantize_info);
 }
 
@@ -1310,6 +1311,7 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
   quantize_info->dither=False;
   quantize_info->colorspace=RGBColorspace;
   quantize_info->measure_error=False;
+  quantize_info->signature=MagickSignature;
 }
 
 /*
@@ -1479,12 +1481,13 @@ MagickExport unsigned int MapImage(Image *image,Image *map_image,
   unsigned int
     status;
 
-  assert(image != (Image *) NULL);
-  if (map_image == (Image *) NULL)
-    return(False);
   /*
     Initialize color cube.
   */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(map_image != (Image *) NULL);
+  assert(map_image->signature == MagickSignature);
   GetQuantizeInfo(&quantize_info);
   quantize_info.dither=dither;
   quantize_info.colorspace=image->matte ? TransparentColorspace : RGBColorspace;
@@ -1552,6 +1555,9 @@ MagickExport unsigned int MapImages(Image *images,Image *map_image,
     status;
 
   assert(images != (Image *) NULL);
+  assert(images->signature == MagickSignature);
+  assert(map_image != (Image *) NULL);
+  assert(map_image->signature == MagickSignature);
   if (images->next == (Image *) NULL)
     {
       /*
@@ -1887,6 +1893,7 @@ MagickExport unsigned int QuantizationError(Image *image)
     Initialize measurement.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   image->total_colors=GetNumberColors(image,(FILE *) NULL);
   image->mean_error_per_pixel=0;
   image->normalized_mean_error=0.0;
@@ -1978,7 +1985,10 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
     number_colors,
     status;
 
+  assert(quantize_info != (const QuantizeInfo *) NULL);
+  assert(quantize_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if ((quantize_info->number_colors == 2) && quantize_info->dither &&
       (quantize_info->colorspace == GRAYColorspace))
     {
@@ -2084,7 +2094,10 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
     number_images,
     status;
 
+  assert(quantize_info != (const QuantizeInfo *) NULL);
+  assert(quantize_info->signature == MagickSignature);
   assert(images != (Image *) NULL);
+  assert(images->signature == MagickSignature);
   if (images->next == (Image *) NULL)
     {
       /*

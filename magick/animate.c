@@ -480,6 +480,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   /*
     Determine target window.
   */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   resources=(*resource_info);
   window_info.id=(Window) NULL;
   root_window=XRootWindow(display,XDefaultScreen(display));
@@ -1053,6 +1055,8 @@ MagickExport Image *XAnimateImages(Display *display,
   XWMHints
     *manager_hints;
 
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   monitor_handler=(MonitorHandler) NULL;
   warning_handler=(WarningHandler) NULL;
   windows=XSetWindows((XWindows *) ~0);

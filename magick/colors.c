@@ -1172,6 +1172,8 @@ MagickExport void CompressColormap(Image *image)
   QuantizeInfo
     quantize_info;
 
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (!IsPseudoClass(image))
     return;
   GetQuantizeInfo(&quantize_info);
@@ -1286,6 +1288,7 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
     Initialize color description tree.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   color_cube.node_list=(Nodes *) NULL;
   color_cube.progress=0;
   color_cube.colors=0;
@@ -1555,6 +1558,7 @@ MagickExport unsigned int IsGrayImage(Image *image)
     Determine if image is grayscale.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (!IsPseudoClass(image))
     return(False);
   for (i=0; i < (int) image->colors; i++)
@@ -1606,6 +1610,7 @@ MagickExport unsigned int IsMatteImage(Image *image)
     Determine if image is grayscale.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (!image->matte)
     return(False);
   for (y=0; y < (int) image->rows; y++)
@@ -1658,6 +1663,7 @@ MagickExport unsigned int IsMonochromeImage(Image *image)
     Determine if image is monochrome.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (!IsGrayImage(image))
     return(False);
   if (image->colors > 2)
@@ -1734,6 +1740,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
     level;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if ((image->storage_class == PseudoClass) && (image->colors <= 256))
     return(True);
   if (image->matte)

@@ -131,6 +131,8 @@ MagickExport Image *ConstituteImage(const unsigned int width,
     Allocate image structure.
   */
   assert(pixels != (void *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   GetExceptionInfo(exception);
   image=AllocateImage((ImageInfo *) NULL);
   if (image == (Image *) NULL)
@@ -554,6 +556,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
     *p;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   for (i=0; i < strlen(map); i++)
     switch (map[i])
     {
@@ -903,6 +906,9 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
   ImageInfo
     *ping_info;
 
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
   ping_info=CloneImageInfo(image_info);
   ping_info->ping=True;
   ping_info->verbose=False;
@@ -967,6 +973,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     *q;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(destination != (unsigned char *) NULL);
   p=GetPixels(image);
   indexes=GetIndexes(image);
@@ -1242,6 +1249,7 @@ MagickExport unsigned int PushImagePixels(const Image *image,
     *q;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(source != (const unsigned char *) NULL);
   p=source;
   q=GetPixels(image);
@@ -1541,6 +1549,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     Determine image type from filename prefix or suffix (e.g. image.jpg).
   */
   assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
   assert(image_info->filename != (char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   GetExceptionInfo(exception);
@@ -1803,6 +1812,9 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
   /*
     Read image list from a file.
   */
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
   file=(FILE *) fopen(image_info->filename+1,"r");
   if (file == (FILE *) NULL)
     {
@@ -1921,8 +1933,10 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     Determine image type from filename prefix or suffix (e.g. image.jpg).
   */
   assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
   assert(image_info->filename != (char *) NULL);
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   clone_info=CloneImageInfo(image_info);
   (void) strcpy(clone_info->filename,image->filename);
   (void) strcpy(clone_info->magick,image->magick);

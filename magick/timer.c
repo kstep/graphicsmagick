@@ -94,6 +94,8 @@ static double
 */
 MagickExport unsigned int ContinueTimer(TimerInfo *time_info)
 {
+  assert(time_info != (TimerInfo *) NULL);
+  assert(time_info->signature == MagickSignature);
   if (time_info->state == UndefinedTimerState)
     return(False);
   if (time_info->state == StoppedTimerState)
@@ -167,6 +169,8 @@ static double ElapsedTime(void)
 */
 MagickExport double GetElapsedTime(TimerInfo *time_info)
 {
+  assert(time_info != (TimerInfo *) NULL);
+  assert(time_info->signature == MagickSignature);
   if (time_info->state == UndefinedTimerState)
     return(0.0);
   if (time_info->state == RunningTimerState)
@@ -201,9 +205,11 @@ MagickExport void GetTimerInfo(TimerInfo *time_info)
   /*
     Create a stopwatch and start it.
   */
+  assert(time_info != (TimerInfo *) NULL);
   time_info->state=UndefinedTimerState;
   time_info->user.total=0;
   time_info->elapsed.total=0;
+  time_info->signature=MagickSignature;
   StartTimer(time_info,True);
 }
 
@@ -233,6 +239,8 @@ MagickExport void GetTimerInfo(TimerInfo *time_info)
 */
 MagickExport double GetUserTime(TimerInfo *time_info)
 {
+  assert(time_info != (TimerInfo *) NULL);
+  assert(time_info->signature == MagickSignature);
   if (time_info->state == UndefinedTimerState)
     return(0.0);
   if (time_info->state == RunningTimerState)
@@ -264,6 +272,8 @@ MagickExport double GetUserTime(TimerInfo *time_info)
 */
 MagickExport void ResetTimer(TimerInfo *time_info)
 {
+  assert(time_info != (TimerInfo *) NULL);
+  assert(time_info->signature == MagickSignature);
   StopTimer(time_info);
   time_info->elapsed.stop=0.0;
   time_info->user.stop=0.0;  
@@ -295,8 +305,10 @@ MagickExport void ResetTimer(TimerInfo *time_info)
 %       stopwatch.
 %
 */
-MagickExport void StartTimer(TimerInfo *time_info, const unsigned int reset)
+MagickExport void StartTimer(TimerInfo *time_info,const unsigned int reset)
 {
+  assert(time_info != (TimerInfo *) NULL);
+  assert(time_info->signature == MagickSignature);
   if (reset)
     {
       /*
@@ -337,6 +349,8 @@ MagickExport void StartTimer(TimerInfo *time_info, const unsigned int reset)
 */
 MagickExport void StopTimer(TimerInfo *time_info)
 {
+  assert(time_info != (TimerInfo *) NULL);
+  assert(time_info->signature == MagickSignature);
   time_info->elapsed.stop=ElapsedTime();
   time_info->user.stop=UserTime();
   if (time_info->state == RunningTimerState)

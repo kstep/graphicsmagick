@@ -441,6 +441,8 @@ MagickExport unsigned int SetImageMagic(const unsigned char *magick,
   register StringMethodArgument
     *p;
 
+  assert(magick != (const unsigned char *) NULL);
+  assert(magic != (char *) NULL);
   *magic='\0';
   q=GetImageMagick(magick);
   if (q != (char *) NULL)

@@ -804,6 +804,9 @@ MagickExport Image *RotateImage(Image *image,const double degrees,
     Adjust rotation angle.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   angle=degrees;
   while (angle < -45.0)
     angle+=360.0;
@@ -928,6 +931,9 @@ MagickExport Image *ShearImage(Image *image,const double x_shear,
     y_width;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if ((x_shear == 180.0) || (y_shear == 180.0))
     ThrowImageException(OptionWarning,"Unable to shear image",
       "angle is discontinuous");

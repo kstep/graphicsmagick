@@ -93,6 +93,7 @@ static MonitorHandler
 MagickExport void ProgressMonitor(const char *text,const off_t quantum,
   const off_t span)
 {
+  assert(text != (const char *) NULL);
   ProcessPendingEvents(text);
   if (monitor_handler != (MonitorHandler) NULL)
     (*monitor_handler)(text,quantum,span);

@@ -28,7 +28,8 @@ typedef struct _QuantizeInfo
     colorspace;
 
   unsigned int
-    measure_error;
+    measure_error,
+    signature;
 } QuantizeInfo;
 
 /*

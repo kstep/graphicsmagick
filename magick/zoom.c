@@ -324,6 +324,9 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
     Initialize magnify image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   magnify_image=
     CloneImage(image,2*image->columns,2*image->rows,False,exception);
   if (magnify_image == (Image *) NULL)
@@ -520,6 +523,9 @@ MagickExport Image *MinifyImage(Image *image,ExceptionInfo *exception)
     Initialize minified image.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if ((image->columns < 4) || (image->rows < 4))
     return((Image *) NULL);
   minify_image=CloneImage(image,image->columns/2,image->rows/2,False,exception);
@@ -640,6 +646,9 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
     Initialize sampled image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if ((columns == 0) || (rows == 0))
     ThrowImageException(OptionWarning,"Unable to resize image",
       "image dimensions are zero");
@@ -830,6 +839,9 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
     Initialize scaled image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if ((columns == 0) || (rows == 0))
     return((Image *) NULL);
   scale_image=CloneImage(image,columns,rows,False,exception);
@@ -1596,6 +1608,9 @@ MagickExport Image *ZoomImage(Image *image,const unsigned int columns,
     Initialize zoom image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   assert((image->filter >= 0) && (image->filter <= SincFilter));
   if ((columns == 0) || (rows == 0))
     ThrowImageException(OptionWarning,"Unable to zoom image",

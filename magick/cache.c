@@ -140,6 +140,7 @@ static void CloseCache(Cache cache)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
   if (cache_info->file != -1)
     (void) close(cache_info->file);
   cache_info->file=(-1);
@@ -174,6 +175,7 @@ static void CloseCache(Cache cache)
 static void ClosePixelCache(Image *image)
 {
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (image->cache == (void *) NULL)
     return;
   CloseCache(image->cache);
@@ -215,6 +217,7 @@ static void DestroyCacheInfo(Cache cache)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
   number_pixels=cache_info->columns*cache_info->rows;
   switch (cache_info->type)
   {
@@ -293,6 +296,7 @@ MagickExport void DestroyCacheNexus(Cache cache,const unsigned int id)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
   nexus=cache_info->nexus+id;
   nexus->available=True;
   if (nexus->line != (void *) NULL)
@@ -326,6 +330,7 @@ MagickExport void DestroyCacheNexus(Cache cache,const unsigned int id)
 static void DestroyPixelCache(Image *image)
 {
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (image->cache == (void *) NULL)
     return;
   DestroyCacheInfo(image->cache);
@@ -364,6 +369,7 @@ MagickExport ClassType GetCacheClassType(const Cache cache)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
   return(cache_info->storage_class);
 }
 
@@ -410,6 +416,7 @@ MagickExport void GetCacheInfo(Cache *cache)
   *cache_info->filename='\0';
   cache_info->file=(-1);
   cache_info->nexus=(NexusInfo *) NULL;
+  cache_info->signature=MagickSignature;
   *cache=cache_info;
 }
 
@@ -484,6 +491,7 @@ MagickExport unsigned int GetCacheNexus(Cache cache)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
   for (id=1; id <= cache_info->rows; id++)
     if (cache_info->nexus[id].available)
       {
@@ -524,6 +532,7 @@ MagickExport unsigned int GetCacheNexus(Cache cache)
 static IndexPacket *GetIndexesFromCache(const Image *image)
 {
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   return(GetNexusIndexes(image->cache,0));
 }
 
@@ -568,6 +577,7 @@ MagickExport IndexPacket *GetNexusIndexes(const Cache cache,
   if (cache == (Cache) NULL)
     return((IndexPacket *) NULL);
   cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class == UndefinedClass)
     return((IndexPacket *) NULL);
   nexus=cache_info->nexus+id;
@@ -614,6 +624,7 @@ MagickExport PixelPacket *GetNexusPixels(const Cache cache,
   if (cache == (Cache) NULL)
     return((PixelPacket *) NULL);
   cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class == UndefinedClass)
     return((PixelPacket *) NULL);
   nexus=cache_info->nexus+id;
@@ -655,6 +666,7 @@ static PixelPacket GetOnePixelFromCache(Image *image,const int x,const int y)
     *pixel;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   pixel=GetPixelCache(image,x,y,1,1);
   if (pixel != (PixelPacket *) NULL)
     return(*pixel);
@@ -706,6 +718,7 @@ static PixelPacket *GetPixelCache(Image *image,const int x,const int y,
     Transfer pixels from the cache.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   pixels=SetPixelCache(image,x,y,columns,rows);
   if (pixels == (PixelPacket *) NULL)
     return((PixelPacket *) NULL);
@@ -753,6 +766,7 @@ static PixelPacket *GetPixelCache(Image *image,const int x,const int y,
 static PixelPacket *GetPixelsFromCache(const Image *image)
 {
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   return(GetNexusPixels(image->cache,0));
 }
 
@@ -798,6 +812,7 @@ MagickExport unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
   if (cache == (Cache) NULL)
     return(False);
   cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class == UndefinedClass)
     return(False);
   nexus=cache_info->nexus+id;
@@ -881,6 +896,7 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
       SetCacheThreshold(threshold);
     }
   cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
   number_pixels=cache_info->columns*cache_info->rows;
   length=number_pixels*sizeof(PixelPacket);
   if (cache_info->storage_class == PseudoClass)
@@ -1047,6 +1063,7 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class != PseudoClass)
     return(False);
   nexus=cache_info->nexus+id;
@@ -1143,6 +1160,7 @@ MagickExport unsigned int ReadCachePixels(Cache cache,const unsigned int id)
 
   assert(cache != (Cache *) NULL);
   cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
   nexus=cache_info->nexus+id;
   offset=nexus->y*cache_info->columns+nexus->x;
   pixels=nexus->pixels;
@@ -1272,6 +1290,7 @@ MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
   nexus=cache_info->nexus+id;
   nexus->columns=region->width;
   nexus->rows=region->height;
@@ -1360,6 +1379,7 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
     Validate pixel cache geometry.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if ((x < 0) || (y < 0) || ((x+columns) > (int) image->columns) ||
       ((y+rows) > (int) image->rows) || (columns == 0) || (rows == 0))
     {
@@ -1457,6 +1477,7 @@ static unsigned int SyncPixelCache(Image *image)
     Transfer pixels to the cache.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (image->cache == (Cache) NULL)
     ThrowBinaryException(CacheWarning,"pixel cache is not open",
       image->filename);
@@ -1522,6 +1543,7 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class != PseudoClass)
     return(False);
   nexus=cache_info->nexus+id;
@@ -1618,6 +1640,7 @@ MagickExport unsigned int WriteCachePixels(Cache cache,const unsigned int id)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
   nexus=cache_info->nexus+id;
   pixels=nexus->pixels;
   offset=nexus->y*cache_info->columns+nexus->x;

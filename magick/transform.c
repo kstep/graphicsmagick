@@ -125,6 +125,9 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
     Check chop geometry.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   assert(chop_info != (RectangleInfo *) NULL);
   if (((chop_info->x+(int) chop_info->width) < 0) ||
       ((chop_info->y+(int) chop_info->height) < 0) ||
@@ -252,6 +255,9 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
     Coalesce the next sequence.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
     ThrowImageException(OptionWarning,"Unable to coalesce image",
       "next sequence required");
@@ -354,7 +360,10 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
     Check crop geometry.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(crop_info != (const RectangleInfo *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if ((crop_info->width != 0) || (crop_info->height != 0))
     {
       if (((crop_info->x+(int) crop_info->width) < 0) ||
@@ -552,6 +561,9 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     *q;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
     ThrowImageException(OptionWarning,"Unable to deconstruct image sequence",
       "image sequence required");
@@ -741,6 +753,9 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
     Initialize flip image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   flip_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (flip_image == (Image *) NULL)
     return((Image *) NULL);
@@ -831,6 +846,9 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
     Initialize flop image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   flop_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (flop_image == (Image *) NULL)
     return((Image *) NULL);
@@ -904,6 +922,7 @@ MagickExport unsigned int ProfileImage(Image *image,const ProfileType type,
     *image_info;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (filename == (const char *) NULL)
     {
       /*
@@ -1124,6 +1143,9 @@ MagickExport Image *RollImage(Image *image,const int x_offset,
     Initialize roll image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   roll_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (roll_image == (Image *) NULL)
     return((Image *) NULL);
@@ -1225,6 +1247,7 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
     width;
 
   assert(image != (Image **) NULL);
+  assert((*image)->signature == MagickSignature);
   transform_image=(*image);
   if (crop_geometry != (const char *) NULL)
     {

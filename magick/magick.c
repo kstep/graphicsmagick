@@ -143,6 +143,7 @@ MagickExport char *GetImageMagick(const unsigned char *magick)
   register MagickInfo
     *p;
 
+  assert(magick != (const unsigned char *) NULL);
   AcquireSemaphore(magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (p->magick)
@@ -191,6 +192,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
   unsigned int
     initialize;
 
+  assert(tag != (const char *) NULL);
   AcquireSemaphore(magick_semaphore);
   initialize=magick_list == (MagickInfo *) NULL;
   LiberateSemaphore(magick_semaphore);
@@ -387,6 +389,7 @@ MagickExport void MagickIncarnate(const char *path)
   unsigned char
     magick[MaxTextExtent];
 
+  assert(path != (const char *) NULL);
   (void) getcwd(directory,MaxTextExtent);
   (void) SetClientPath(directory);
   if (path != (const char *) NULL)
@@ -472,6 +475,8 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   /*
     Add tag info to the image format list.
   */
+  assert(entry != (MagickInfo *) NULL);
+  assert(entry->signature == MagickSignature);
   AcquireSemaphore(magick_semaphore);
   p=(MagickInfo *) NULL;
   if (magick_list != (MagickInfo *) NULL)
@@ -488,7 +493,11 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
         }
     }
   if (magick_list == (MagickInfo *) NULL)
-    magick_list=entry;
+    {
+      entry->previous=(MagickInfo *) NULL;
+      entry->next=(MagickInfo *) NULL;
+      magick_list=entry;
+    }
   else
     {
       entry->previous=p;
@@ -534,6 +543,7 @@ MagickExport MagickInfo *SetMagickInfo(const char *tag)
   MagickInfo
     *entry;
 
+  assert(tag != (const char *) NULL);
   entry=(MagickInfo *) AllocateMemory(sizeof(MagickInfo));
   if (entry == (MagickInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
@@ -549,6 +559,7 @@ MagickExport MagickInfo *SetMagickInfo(const char *tag)
   entry->description=(char *) NULL;
   entry->module=(char *) NULL;
   entry->data=(void *) NULL;
+  entry->signature=MagickSignature;
   entry->previous=(MagickInfo *) NULL;
   entry->next=(MagickInfo *) NULL;
   return(entry);
@@ -589,6 +600,7 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
   unsigned int
     status;
 
+  assert(tag != (const char *) NULL);
   status=False;
   AcquireSemaphore(magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)

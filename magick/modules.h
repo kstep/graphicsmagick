@@ -58,6 +58,9 @@ typedef struct _ModuleInfo
   time_t
     load_time;
 
+  unsigned int
+    signature;
+
   struct _ModuleInfo
     *previous,
     *next;

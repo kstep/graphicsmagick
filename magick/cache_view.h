@@ -18,6 +18,9 @@ typedef struct _ViewInfo
 
   Image
     *image;
+
+  unsigned int
+    signature;
 } ViewInfo;
 
 /*

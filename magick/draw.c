@@ -242,7 +242,9 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
     Check boundary conditions.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(draw_info != (DrawInfo *) NULL);
+  assert(draw_info->signature == MagickSignature);
   if ((x_offset < 0) || (x_offset >= (int) image->columns))
     return(False);
   if ((y_offset < 0) || (y_offset >= (int) image->rows))
@@ -472,6 +474,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
 MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
 {
   assert(draw_info != (DrawInfo *) NULL);
+  assert(draw_info->signature == MagickSignature);
   if (draw_info->primitive != (char *) NULL)
     FreeMemory((void **) &draw_info->primitive);
   if (draw_info->font != (char *) NULL)
@@ -562,7 +565,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     Ensure the annotation info is valid.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(draw_info != (DrawInfo *) NULL);
+  assert(draw_info->signature == MagickSignature);
   assert(draw_info->primitive != (char *) NULL);
   if (*draw_info->primitive == '\0')
     return(False);
@@ -1238,7 +1243,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           case CirclePrimitive:
           case EllipsePrimitive:
           case PathPrimitive:
-/*          case PolylinePrimitive:*/
+          case PolylinePrimitive:
           case PolygonPrimitive:
           case RectanglePrimitive:
           case RoundRectanglePrimitive:
@@ -1968,6 +1973,8 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   /*
     Initialize draw attributes.
   */
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
   assert(draw_info != (DrawInfo *) NULL);
   draw_info->primitive=(char *) NULL;
   draw_info->font=AllocateString(image_info->font);
@@ -1985,6 +1992,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->border_color=image_info->border_color;
   draw_info->decorate=NoDecoration;
   draw_info->tile=(Image *) NULL;
+  draw_info->signature=MagickSignature;
 }
 
 /*
@@ -2108,7 +2116,9 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
 
   assert(primitive_info != (PrimitiveInfo *) NULL);
   assert(draw_info != (DrawInfo *) NULL);
+  assert(draw_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   opacity=0.0;
   mid=draw_info->linewidth/2.0;
   p=primitive_info;
@@ -2512,6 +2522,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
     Check boundary conditions.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if ((x_offset < 0) || (x_offset >= (int) image->columns))
     return(False);
   if ((y_offset < 0) || (y_offset >= (int) image->rows))
@@ -2681,6 +2692,7 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
     Make image color opaque.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   switch (image->storage_class)
   {
     case DirectClass:
@@ -2771,6 +2783,7 @@ MagickExport unsigned int TransparentImage(Image *image,
     Make image color transparent.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (!image->matte)
     MatteImage(image,OpaqueOpacity);
   for (y=0; y < (int) image->rows; y++)

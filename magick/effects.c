@@ -113,6 +113,9 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
     Initialize noise image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   noise_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
@@ -193,6 +196,9 @@ MagickExport Image *BlurImage(Image *image,const unsigned int order,
     v;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if ((order % 2) == 0)
     ThrowImageException(ResourceLimitWarning,"Unable to blur image",
       "kernel order must be an odd number");
@@ -278,6 +284,9 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
     Allocate colorized image.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   colorize_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (colorize_image == (Image *) NULL)
     return((Image *) NULL);
@@ -401,6 +410,9 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
     Initialize convolved image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if ((order % 2) == 0)
     ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
       "kernel order must be an odd number");
@@ -557,6 +569,9 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     Allocate despeckled image.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   despeckle_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (despeckle_image == (Image *) NULL)
     return((Image *) NULL);
@@ -728,6 +743,9 @@ MagickExport Image *EdgeImage(Image *image,const unsigned int order,
     i;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if ((order % 2) == 0)
     ThrowImageException(ResourceLimitWarning,"Unable to edge image",
       "kernel order must be an odd number");
@@ -795,6 +813,9 @@ MagickExport Image *EmbossImage(Image *image,const unsigned int order,
     v;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if ((order % 2) == 0)
     ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
       "kernel order must be an odd number");
@@ -921,6 +942,9 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
     Initialize enhanced image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if ((image->columns < 5) || (image->rows < 5))
     return((Image *) NULL);
   enhance_image=CloneImage(image,image->columns,image->rows,False,exception);
@@ -1103,6 +1127,9 @@ MagickExport Image *GaussianBlurImage(Image *image,const double width,
     Initialize blurred image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   blur_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
@@ -1314,6 +1341,9 @@ MagickExport Image *ImplodeImage(Image *image,const double factor,
     Initialize implode image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if (!image->matte)
     MatteImage(image,OpaqueOpacity);
   implode_image=CloneImage(image,image->columns,image->rows,False,exception);
@@ -1491,6 +1521,9 @@ MagickExport Image *MedianFilterImage(Image *image,const unsigned int order,
     Initialize mediand image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if ((image->columns < order) || (image->rows < order))
     ThrowImageException(ResourceLimitWarning,"Unable to median filter image",
       "image smaller than kernel order");
@@ -1623,6 +1656,9 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
     Clone first frame in sequence.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
     ThrowImageException(OptionWarning,"Unable to morph image sequence",
       "next sequence required");
@@ -1771,6 +1807,9 @@ MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
     Initialize painted image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if ((image->columns < (2*radius+1)) || (image->rows < (2*radius+1)))
     ThrowImageException(ResourceLimitWarning,"Unable to oil paint",
       "image smaller than radius");
@@ -1925,6 +1964,8 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
     *q;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(segment != (SegmentInfo *) NULL);
   if (depth != 0)
     {
       SegmentInfo
@@ -2126,6 +2167,9 @@ MagickExport Image *ReduceNoiseImage(Image *image,const unsigned int order,
     Initialize noised image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if ((image->columns < order) || (image->rows < order))
     ThrowImageException(ResourceLimitWarning,"Unable to noise filter image",
       "image smaller than kernel order");
@@ -2323,6 +2367,9 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
     Initialize shaded image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   shade_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (shade_image == (Image *) NULL)
     return((Image *) NULL);
@@ -2457,6 +2504,9 @@ MagickExport Image *SharpenImage(Image *image,const unsigned int order,
     v;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if ((order % 2) == 0)
     ThrowImageException(ResourceLimitWarning,"Unable to sharpen image",
       "kernel order must be an odd number");
@@ -2523,6 +2573,7 @@ MagickExport void SolarizeImage(Image *image,const double factor)
     threshold;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   threshold=(unsigned int) (factor*(MaxRGB+1)/100.0);
   switch (image->storage_class)
   {
@@ -2630,6 +2681,9 @@ MagickExport Image *SpreadImage(Image *image,const unsigned int amount,
     *q;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if ((image->columns < 3) || (image->rows < 3))
     return((Image *) NULL);
   /*
@@ -2739,7 +2793,11 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
     Initialize steganographic image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(watermark != (Image *) NULL);
+  assert(watermark->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   stegano_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
@@ -2872,6 +2930,9 @@ MagickExport Image *StereoImage(Image *image,Image *offset_image,
     *r;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   assert(offset_image != (Image *) NULL);
   if ((image->columns != offset_image->columns) ||
       (image->rows != offset_image->rows))
@@ -2983,6 +3044,9 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
     Initialize swirl image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if (!image->matte)
     MatteImage(image,OpaqueOpacity);
   swirl_image=CloneImage(image,image->columns,image->rows,False,exception);
@@ -3094,6 +3158,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
     Threshold image.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   colormap=(PixelPacket *) AllocateMemory(2*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to threshold image",
@@ -3188,6 +3253,9 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
     Initialize waved image attributes.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if (!image->matte)
     MatteImage(image,OpaqueOpacity);
   wave_image=CloneImage(image,image->columns,(int)

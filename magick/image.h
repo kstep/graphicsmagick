@@ -135,6 +135,9 @@ typedef struct _AnnotateInfo
 
   RectangleInfo
     bounds;
+
+  unsigned int
+    signature;
 } AnnotateInfo;
 
 typedef struct _BoundingBox
@@ -161,6 +164,9 @@ typedef struct _BlobInfo
     length,
     extent,
     quantum;
+
+  unsigned int
+    signature;
 } BlobInfo;
 
 typedef struct _ChromaticityInfo
@@ -191,6 +197,9 @@ typedef struct _ExceptionInfo
   char
     *message,
     *qualifier;
+
+  unsigned int
+    signature;
 } ExceptionInfo;
 
 typedef struct _FrameInfo
@@ -254,6 +263,9 @@ typedef struct _MontageInfo
     background_color,
     border_color,
     matte_color;
+
+  unsigned int
+    signature;
 } MontageInfo;
 
 typedef struct _ProfileInfo
@@ -293,6 +305,9 @@ typedef struct _TimerInfo
 
   TimerState
     state;
+
+  unsigned int
+    signature;
 } TimerInfo;
 
 typedef struct _Image
@@ -447,7 +462,8 @@ typedef struct _Image
     (*fifo)(struct _Image *);
 
   unsigned int
-    orphan;
+    orphan,
+    signature;
 
   struct _Image
     *previous,
@@ -485,6 +501,9 @@ typedef struct _DrawInfo
 
   Image
     *tile;
+
+  unsigned int
+    signature;
 } DrawInfo;
 
 typedef struct _ImageInfo
@@ -603,6 +622,9 @@ typedef struct _ImageInfo
 
   void
     (*fifo)(Image *);
+
+  unsigned int
+    signature;
 } ImageInfo;
 
 typedef struct _MagickInfo
@@ -626,6 +648,9 @@ typedef struct _MagickInfo
 
   void
     *data;
+
+  unsigned int
+    signature;
 
   struct _MagickInfo
     *previous,

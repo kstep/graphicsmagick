@@ -142,6 +142,7 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
 MagickExport void DestroyMontageInfo(MontageInfo *montage_info)
 {
   assert(montage_info != (MontageInfo *) NULL);
+  assert(montage_info->signature == MagickSignature);
   if (montage_info->geometry != (char *) NULL)
     FreeMemory((void **) &montage_info->geometry);
   if (montage_info->tile != (char *) NULL)
@@ -186,6 +187,8 @@ MagickExport void DestroyMontageInfo(MontageInfo *montage_info)
 MagickExport void GetMontageInfo(const ImageInfo *image_info,
   MontageInfo *montage_info)
 {
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
   assert(montage_info != (MontageInfo *) NULL);
   (void) strcpy(montage_info->filename,image_info->filename);
   montage_info->geometry=AllocateString(DefaultTileGeometry);
@@ -204,6 +207,7 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
   montage_info->background_color=image_info->background_color;
   montage_info->border_color=image_info->border_color;
   montage_info->matte_color=image_info->matte_color;
+  montage_info->signature=MagickSignature;
 }
 
 /*
@@ -371,7 +375,11 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     Create next tiles.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(montage_info != (MontageInfo *) NULL);
+  assert(montage_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   next_list=ListToGroupImage(image,&number_images);
   master_list=next_list;
   for (tile=0; tile < number_images; tile++)

@@ -22,6 +22,24 @@ Changes in ImageMagick Version 5.2.1</font></font></font></b></td>
 </table>
 <dl>
 <p>
+<dd> Support added for the Word Perfect Graphics (WPG) file format
+(contributed by Jaroslav Fojtik).<dd>
+<p>
+<dd>The pixel 'matte' field is changed to indicate the degree of pixel
+transparency rather than the degree of opacity. This makes the pixels
+compatable with most popular video cards, and many in-memory image
+formats.</dd>
+<p>
+<dd>When the pixel quantum size is eight bits, the colormap is restricted
+to 256 colors, but supports up to 65535 colors when the quantum size
+is sixteen bits (when QuantumLeap is defined at compilation time).</dd>
+<p>
+<dd>ImageMagick is more memory efficient (by 18%) when the quantum size
+is eight bits, and the image is colormapped.<dd>
+<p>
+<dd>ImageMagick is (finally) believed to be thread safe under Windows, since
+it uses the Windows synchronization APIs to lock shared data.</dd>
+<p>
 <dd>Under Unix and Windows, dynamically-loaded format <i>coder</i> modules are
 supported. There are currently 72 loadable modules. Support for
 loadable modules allows the user to add or remove formats from

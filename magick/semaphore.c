@@ -54,28 +54,31 @@
 */
 #include "magick.h"
 #include "defines.h"
-
 #if defined(HasPTHREADS)
 #include <pthread.h>
-
+#endif
+#if defined(_VISUALC_)
+#include <windows.h>
+#endif
+
 struct SemaphoreInfo
 {
+#if defined(HasPTHREADS)
   pthread_mutex_t
     id;
-};
 #endif
 
 #if defined(_VISUALC_)
-#include <windows.h>
+  HANDLE
+    id;
+#endif
 
-struct SemaphoreInfo 
-{
-  HANDLE id;
+  unsigned int
+    signature;
 };
 
 #if defined(_MT)
 #define MAXSEMLEN  1
-#endif
 #endif
 
 /*
@@ -140,6 +143,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
         return((SemaphoreInfo *) NULL);
       }
 #endif
+  semaphore_info->signature=MagickSignature;
   return(semaphore_info);
 }
 
@@ -168,6 +172,8 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 */
 MagickExport void DestroySemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
+  assert(semaphore_info != (SemaphoreInfo *) NULL);
+  assert(semaphore_info->signature == MagickSignature);
   if (semaphore_info == (SemaphoreInfo *) NULL)
     return;
 #if defined(_VISUALC_) && defined(_MT)
@@ -207,6 +213,8 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo *semaphore_info)
 */
 MagickExport int LockSemaphore(SemaphoreInfo *semaphore_info)
 {
+  assert(semaphore_info != (SemaphoreInfo *) NULL);
+  assert(semaphore_info->signature == MagickSignature);
 #if defined(_VISUALC_) && defined(_MT)
   if (WaitForSingleObject(semaphore_info->id,INFINITE) == WAIT_FAILED)
     return(False);
@@ -246,6 +254,8 @@ MagickExport int LockSemaphore(SemaphoreInfo *semaphore_info)
 */
 MagickExport int UnlockSemaphore(SemaphoreInfo *semaphore_info)
 {
+  assert(semaphore_info != (SemaphoreInfo *) NULL);
+  assert(semaphore_info->signature == MagickSignature);
 #if defined(_VISUALC_) && defined(_MT)
   if (ReleaseSemaphore(semaphore_info->id,1,NULL) == FALSE)
     return(False);

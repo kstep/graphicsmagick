@@ -126,7 +126,9 @@ MagickExport unsigned int AnnotateImage(Image *image,
     Ensure the annotation info is valid.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(annotate_info != (AnnotateInfo *) NULL);
+  assert(annotate_info->signature == MagickSignature);
   if (annotate_info->text == (char *) NULL)
     return(False);
   if (*annotate_info->text == '\0')
@@ -443,6 +445,7 @@ MagickExport AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
 MagickExport void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
 {
   assert(annotate_info != (AnnotateInfo *) NULL);
+  assert(annotate_info->signature == MagickSignature);
   if (annotate_info->geometry != (char *) NULL)
     FreeMemory((void **) &annotate_info->geometry);
   if (annotate_info->text != (char *) NULL)
@@ -502,6 +505,7 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
     Initialize annotate attributes;
   */
   assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
   assert(annotate_info != (AnnotateInfo *) NULL);
   annotate_info->geometry=(char *) NULL;
   annotate_info->text=(char *) NULL;
@@ -521,6 +525,7 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   annotate_info->bounds.height=ceil(image_info->pointsize);
   annotate_info->bounds.x=0;
   annotate_info->bounds.y=0;
+  annotate_info->signature=MagickSignature;
   if (annotate_info->font == (char *) NULL)
     return;
   /*

@@ -274,6 +274,7 @@ MagickExport void Ascii85Flush(Image *image)
     *tuple;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (image->ascii85.offset > 0)
     {
       image->ascii85.buffer[image->ascii85.offset]=0;
@@ -300,6 +301,7 @@ MagickExport void Ascii85Encode(Image *image,const unsigned int code)
     *p;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   image->ascii85.buffer[image->ascii85.offset]=code;
   image->ascii85.offset++;
   if (image->ascii85.offset < 4)
@@ -428,6 +430,7 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
     Allocate buffers.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   mb_hash=(HuffmanTable **) AllocateMemory(HashSize*sizeof(HuffmanTable *));
   mw_hash=(HuffmanTable **) AllocateMemory(HashSize*sizeof(HuffmanTable *));
   scanline=(unsigned char *) AllocateMemory(image->columns);
@@ -699,6 +702,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     Allocate scanline buffer.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   width=image->columns;
   if (LocaleCompare(image_info->magick,"FAX") == 0)
     width=Max(image->columns,1728);
@@ -914,7 +918,9 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
     Write image as CCITTFax4 TIFF image to a temporary file.
   */
   assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   huffman_image=CloneImage(image,image->columns,image->rows,True,
     &image->exception);
   if (huffman_image == (Image *) NULL)
@@ -990,6 +996,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
   Image *image)
 {
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   ThrowBinaryException(MissingDelegateWarning,"TIFF library is not available",
     image->filename);
 }
@@ -1078,6 +1085,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
     Allocate string table.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(pixels != (unsigned char *) NULL);
   table=(TableType *) AllocateMemory((1 << 12)*sizeof(TableType));
   if (table == (TableType *) NULL)
@@ -1168,6 +1176,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
   const unsigned int number_pixels,unsigned char *pixels)
 {
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   ThrowBinaryException(MissingDelegateWarning,"LZW library is not available",
     (char *) NULL);
 }
@@ -1223,6 +1232,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
     Compress pixels with Packbits encoding.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(pixels != (unsigned char *) NULL);
   packbits=(unsigned char *) AllocateMemory(128);
   if (packbits == (unsigned char *) NULL)
@@ -1371,6 +1381,7 @@ MagickExport unsigned int ZLIBEncodeImage(Image *image,
     stream;
 
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   compressed_packets=(unsigned long) (1.001*number_pixels+12);
   compressed_pixels=(unsigned char *) AllocateMemory(compressed_packets);
   if (compressed_pixels == (unsigned char *) NULL)
@@ -1412,6 +1423,7 @@ MagickExport unsigned int ZLIBEncodeImage(Image *image,
   unsigned char *pixels)
 {
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   ThrowBinaryException(MissingDelegateWarning,"ZLIB library is not available",
     image->filename);
   return(False);
