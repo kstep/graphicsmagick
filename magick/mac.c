@@ -1402,8 +1402,11 @@ MagickExport void SetApplicationType(const char *filename,const char *magick,
     name;
    
   assert(filename != (char *) NULL);
+  assert(magick != (const char *) NULL);
   filetype='    ';
   (void) strncpy((char *) &filetype,magick,Min(strlen(magick),4));
+  if (LocaleCompare(magick,"JPG") == 0)
+    (void) strcpy((char *) &filetype,"JPEG");
   (void) strncpy((char *) name,filename,254);
   c2pstr((char *) name);
   FSMakeFSSpec(0,0,name,&file_specification);
