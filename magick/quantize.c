@@ -981,7 +981,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
       green=(green_error < 0) ? 0 :
         (green_error > MaxRGB) ? MaxRGB : green_error+0.5;
       blue=(blue_error < 0) ? 0 :
-	(blue_error > MaxRGB) ? MaxRGB : blue_error+0.5;
+        (blue_error > MaxRGB) ? MaxRGB : blue_error+0.5;
       i=(blue >> CacheShift) << 12 | (green >> CacheShift) << 6 |
         (red >> CacheShift);
       if (p->cache[i] < 0)
@@ -1571,12 +1571,13 @@ Export unsigned int MapImages(Image *images,Image *map_image,
     }
   GetQuantizeInfo(&quantize_info);
   quantize_info.dither=dither;
+  image=images;
   if (map_image == (Image *) NULL)
     {
       /*
         Create a global colormap for an image sequence.
       */
-      for (image=images; image != (Image *) NULL; image=image->next)
+      for ( ; image != (Image *) NULL; image=image->next)
         if (image->matte)
           quantize_info.colorspace=TransparentColorspace;
       status=QuantizeImages(&quantize_info,images);
