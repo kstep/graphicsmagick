@@ -640,7 +640,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
   index=(-1);
   for (i=0; i < (long) image->generic_profiles; i++)
   {
-    if ((LocaleCompare(image->generic_profile[i].name,"APP1") == 0) &&
+    if ((LocaleCompare(image->generic_profile[i].name,"EXIF") == 0) &&
         (image->generic_profile[i].length != 0))
       {
         index=i;

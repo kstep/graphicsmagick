@@ -1,3 +1,8 @@
+2003-07-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/attribute.c (GenerateEXIFAttribute): Look for the profile
+	name "EXIF" rather than "APP1".
+
 2003-07-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/log.c (LogMagickEvent): Unlock semaphore before
