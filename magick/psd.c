@@ -165,7 +165,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
       {
         case 0:
         {
-          q->red=(Quantum) pixel;
+          q->red=pixel;
           if (image->class == PseudoClass)
             {
               *image->indexes=pixel;
@@ -175,18 +175,18 @@ static unsigned int DecodeImage(Image *image,const int channel)
         }
         case 1:
         {
-          q->green=(Quantum) pixel;
+          q->green=pixel;
           break;
         }
         case 2:
         {
-          q->blue=(Quantum) pixel;
+          q->blue=pixel;
           break;
         }
         case 3:
         default:
         {
-          q->opacity=(Quantum) pixel;
+          q->opacity=pixel;
           break;
         }
       }
@@ -557,10 +557,14 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
                 Read uncompressed pixel data as separate planes.
               */
               packet_size=1;
-              if ((layer_info[i].image->depth > 8) ||
-                  ((layer_info[i].image->class == PseudoClass) &&
-                   (layer_info[i].image->colors > 256)))
-                packet_size++;
+              if (layer_info[i].image->class == PseudoClass)
+                {
+                  if (layer_info[i].image->colors > 256)
+                    packet_size++;
+                }
+              else
+                if (layer_info[i].image->depth > 8)
+                  packet_size++;
               scanline=(unsigned char *) AllocateMemory(
                 packet_size*layer_info[i].image->columns*sizeof(unsigned char));
               if (scanline == (unsigned char *) NULL)
@@ -684,11 +688,14 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
         Read uncompressed pixel data as separate planes.
       */
       packet_size=1;
-      if ((image->depth > 8) || (image->colors > 256))
-        packet_size++;
-      if ((image->depth > 8) ||
-          ((image->class == PseudoClass) && (image->colors > 256)))
-        packet_size++;
+      if (image->class == PseudoClass)
+        {
+          if (image->colors > 256)
+            packet_size++;
+        }
+      else
+        if (image->depth > 8)
+          packet_size++;
       scanline=(unsigned char *)
         AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
       if (scanline == (unsigned char *) NULL)
