@@ -1993,7 +1993,7 @@ first image in a multi-frame image file is returned.
 <p>To have full control over text positioning you will need font metric
 information. Use
 <pre>&nbsp;&nbsp;&nbsp; ($x_ppem, $y_ppem, $ascender, $descender, $width, $height, $max_advance) =
-&nbsp;&nbsp;&nbsp;&nbsp; split(', ', $image->QueryFontMetrics(<i>parameters</i>));</pre>
+&nbsp;&nbsp;&nbsp;&nbsp; $image->QueryFontMetrics(<i>parameters</i>);</pre>
 Where <i>parameters</i> is any parameter of the <a href="#mani">Annotate</a>
 method. The return values are
 <ul>
@@ -2021,7 +2021,7 @@ maximum horizontal advance, expressed in 26.6 fixed point pixels.</li>
 For convenience, method <tt>QueryColor</tt> accepts one or more color names
 or hex value and returns their respective red, green, and blue color values:
 <pre>&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = split(', ', $image->QueryColor('cyan'));
-&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = split(', ', $image->QueryColor('#716bae'));</pre>
+&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = $image->QueryColor('#716bae');</pre>
 
 <dd>
 <tt>QueryColorName</tt> accepts a color value and returns its respective
