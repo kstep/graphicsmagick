@@ -112,7 +112,7 @@ testFilter('input.miff', 'Gamma',
 ++$test;
 testFilter('input.miff', 'Implode',
   q/0.5/,
-  'de8e208763de9f3269339d31ed1a3b7d',
+  'a2d1ee8a517c20c1ec93309b9d934429',
   'a8e08e25ea60706c37b264edfdc9bd99');
 
 ++$test;
@@ -164,7 +164,7 @@ testFilter('input.miff', 'Opaque',
 ++$test;
 testFilter('input.miff', 'Quantize',
   q/128/,
-  '3178d3fdc71aa26d9b4b693cc19e15db',
+  'a99fc0bbab4e180eef5ba471113daaac',
   'd51eec15134fee4bfcdb732b6d706a17');
 
 ++$test;
@@ -227,6 +227,7 @@ testFilter('input.miff', 'Shear',
 ++$test;
 testFilter('input.miff', 'Solarize',
   q/60/,
+  'c428f5a3d50b22c03fc728ab76414b7b',
   '7c1ca362ad2afc2eb11d61bc08e48026');
 
 ++$test;
