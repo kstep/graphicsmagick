@@ -740,6 +740,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     center,
     density,
     green,
+    offset,
     opacity,
     red,
     scale,
@@ -807,6 +808,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
+printf("%.12f %.12f\n",scale,support);
+  offset=scale >= 1.0 ? 0.5 : -0.5;
   for (x=0; x < (long) destination->columns; x++)
   {
     density=0.0;
@@ -817,7 +820,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     for (i=start; i <= end; i++)
     {
       contribution[n].pixel=i;
-      contribution[n].weight=filter_info->function(scale*(i-center+0.5));
+      contribution[n].weight=filter_info->function(scale*(i-center+offset));
       contribution[n].weight*=scale;
       density+=contribution[n].weight;
       n++;
@@ -878,6 +881,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     center,
     density,
     green,
+    offset,
     opacity,
     red,
     scale,
@@ -945,6 +949,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
+  offset=scale >= 1.0 ? 0.5 : -0.5;
   for (y=0; y < (long) destination->rows; y++)
   {
     density=0.0;
@@ -955,7 +960,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     for (i=start; i <= end; i++)
     {
       contribution[n].pixel=i;
-      contribution[n].weight=filter_info->function(scale*(i-center+0.5));
+      contribution[n].weight=filter_info->function(scale*(i-center+offset));
       contribution[n].weight*=scale;
       density+=contribution[n].weight;
       n++;
