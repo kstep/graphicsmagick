@@ -6313,12 +6313,15 @@ QueryColor(ref,...)
 #
 #
 void
-QueryColorName(ref,...)
+QueryColorname(ref,...)
   Image::Magick ref=NO_INIT
   ALIAS:
     querycolorname = 1
   PPCODE:
   {
+    AV
+      *av;
+
     char
       message[MaxTextExtent];
 
@@ -6328,15 +6331,23 @@ QueryColorName(ref,...)
     register int
       i;
 
+    struct PackageInfo
+      *info;
+
     SV
+      *reference,  /* reference is the SV* of ref=SvIV(reference) */
       *s;
 
     EXTEND(sp,items-1);
     error_list=newSVpv("",0);
+    reference=SvRV(ST(0));
+    av=(AV *) reference;
+    info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
+    image=SetupList(reference,&info,(SV ***) NULL);
     for (i=1; i < items; i++)
     {
       (void) QueryColorDatabase(SvPV(ST(i),na),&target_color);
-      if (!QueryColorName(&target_color,message))
+      if (!QueryColorname(image,&target_color,message))
         s=(&sv_undef);
       else
         s=sv_2mortal(newSVpv(message,0));

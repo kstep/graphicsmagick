@@ -1301,13 +1301,13 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           image->page.height,image->page.x,image->page.y);
         (void) WriteBlobString(image,buffer);
       }
-    (void) QueryColorName(&image->background_color,color);
+    (void) QueryColorname(image,&image->background_color,color);
     FormatString(buffer,"background-color=%.1024s  ",color);
     (void) WriteBlobString(image,buffer);
-    (void) QueryColorName(&image->border_color,color);
+    (void) QueryColorname(image,&image->border_color,color);
     FormatString(buffer,"border-color=%.1024s  ",color);
     (void) WriteBlobString(image,buffer);
-    (void) QueryColorName(&image->matte_color,color);
+    (void) QueryColorname(image,&image->matte_color,color);
     FormatString(buffer,"matte-color=%.1024s\n",color);
     (void) WriteBlobString(image,buffer);
     if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
