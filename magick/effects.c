@@ -3113,7 +3113,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   */
   i=image->offset;
   j=0;
-  shift=QuantumDepth-1;
+  shift=image->depth-1;
   for (y=0; y < (int) image->rows; y++)
   {
     for (x=0; x < (int) image->columns; x++)
