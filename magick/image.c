@@ -1304,6 +1304,9 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
       color.red=XDownScale(pen_color.red);
       color.green=XDownScale(pen_color.green);
       color.blue=XDownScale(pen_color.blue);
+      pixel=PixelOffset(image,x,y);
+      if (ColorMatch(color,*target,image->fuzz))
+        return;
     }
   else
     {
@@ -6230,6 +6233,9 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
     return;
   if (!UncondenseImage(image))
     return;
+  pixel=PixelOffset(image,x,y);
+  if (pixel->index == (unsigned short) matte)
+    return;
   /*
     Allocate segment stack.
   */
@@ -6268,11 +6274,11 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
     {
       if (method == FloodfillMethod)
         {
-          if (!MatteMatch(*pixel,*target,0))
+          if (!MatteMatch(*pixel,*target,image->fuzz))
             break;
         }
       else
-        if (MatteMatch(*pixel,*target,0) ||
+        if (MatteMatch(*pixel,*target,image->fuzz) ||
             (pixel->index == (unsigned short) matte))
           break;
       pixel->index=(unsigned short) matte;
@@ -6295,11 +6301,11 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
           {
             if (method == FloodfillMethod)
               {
-                if (!MatteMatch(*pixel,*target,0))
+                if (!MatteMatch(*pixel,*target,image->fuzz))
                   break;
               }
             else
-              if (MatteMatch(*pixel,*target,0) ||
+              if (MatteMatch(*pixel,*target,image->fuzz) ||
                   (pixel->index == (unsigned short) matte))
                 break;
             pixel->index=(unsigned short) matte;
@@ -6316,11 +6322,11 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
         pixel++;
         if (method == FloodfillMethod)
           {
-            if (MatteMatch(*pixel,*target,0))
+            if (MatteMatch(*pixel,*target,image->fuzz))
               break;
           }
         else
-          if (!MatteMatch(*pixel,*target,0) &&
+          if (!MatteMatch(*pixel,*target,image->fuzz) &&
               (pixel->index != (unsigned short) matte))
             break;
       }
