@@ -206,7 +206,7 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %  The search order follows:
 %
 %             <current directory>/
-%             <client path>/
+%             <client path>/ (if known)
 %             $MAGICK_HOME/
 %             $HOME/.magick/
 %             $MAGICK_FONT_PATH
