@@ -515,7 +515,6 @@ MAGICK DELEGATES
     o ImageMagick requires the MPEG utilities from the MPEG Software
       Simulation Group, which are available via anonymous FTP as
 
-          http://libmpeg2.sourceforge.net
 	  ftp://ftp.mpeg.org/pub/mpeg/mssg/mpeg2vidcodec_v12.tar.gz
 
       to read or write the MPEG image format.
