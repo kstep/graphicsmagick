@@ -3870,7 +3870,13 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         status=Tokenizer(&token_info,0,token,length,arguments,"","=","\"",0,
           &breaker,&next,&quote);
         if (status == 0)
-          ExecuteModuleProcess((const char *) token,*image,1,&arguments);
+          {
+            char
+              *s;
+
+            s=&(arguments[next]);
+            ExecuteModuleProcess((const char *) token,*image,1,&s);
+          }
         FreeMemory((void **) &token);
         continue;
       }
