@@ -1413,21 +1413,10 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
       /*
         Crop image to a user specified size.
       */
+      crop_image=(Image *) NULL;
       SetGeometry(transform_image,&geometry);
       flags=ParseImageGeometry(crop_geometry,&geometry.x,&geometry.y,
         &geometry.width,&geometry.height);
-      if (strchr(crop_geometry,'%') != (char *) NULL)
-        {
-          /*
-            Crop geometry is relative to image size.
-          */
-          geometry.x=(long) geometry.width/2;
-          geometry.y=(long) geometry.height/2;
-          geometry.width=transform_image->columns-2*geometry.x;
-          geometry.height=transform_image->rows-2*geometry.y;
-          flags|=XValue | YValue;
-        }
-      crop_image=(Image *) NULL;
       if ((geometry.width == 0) || (geometry.height == 0) ||
           ((flags & XValue) != 0) || ((flags & YValue) != 0))
         crop_image=CropImage(transform_image,&geometry,&(*image)->exception);
