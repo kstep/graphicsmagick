@@ -341,7 +341,7 @@ static struct
     { "Scale", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference} } },
     { "Shade", { {"geometry", StringReference}, {"azimuth", DoubleReference},
-      {"elevatation", DoubleReference}, {"gray", BooleanTypes} } },
+      {"elevation", DoubleReference}, {"gray", BooleanTypes} } },
     { "Sharpen", { {"geometry", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference} } },
     { "Shear", { {"geometry", StringReference}, {"x", IntegerReference},

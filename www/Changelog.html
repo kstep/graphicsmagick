@@ -56,6 +56,10 @@
 2003-05-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> coders/ept.c (WriteEPTImage): Fixed writing EPT preview image and
+        added logging.<BR>
+  <LI> PerlMagick/Magick.xs: Fix spelling of 'elevation' argument to
+        Shade method.<BR>
   <LI> magick/image.c (CloneImage): Don't clone huffman ascii85
         encoding support structure since it is not useful outside of the
         current image context. Cloning a structure via pointer assignment
