@@ -239,7 +239,7 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
   */
   height=frame_info->outer_bevel+(frame_info->y-bevel_width)+
     frame_info->inner_bevel;
-  q=SetImagePixels(frame_image,0,0,frame_image->columns,Max(height,1));
+  q=SetImagePixels(frame_image,0,0,frame_image->columns,height);
   if (q != (PixelPacket *) NULL)
     {
       for (y=0; y < frame_info->outer_bevel; y++)
@@ -256,8 +256,7 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
       {
         for (x=0; x < frame_info->outer_bevel; x++)
           *q++=highlight;
-        width=frame_image->columns-2*frame_info->outer_bevel;
-        for (x=0; x < (int) width; x++)
+        for (x=0; x < (int) (frame_image->columns-2*frame_info->outer_bevel); x++)
           *q++=matte;
         for (x=0; x < frame_info->outer_bevel; x++)
           *q++=shadow;
@@ -269,7 +268,7 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
         for (x=0; x < (int) (frame_info->x-bevel_width); x++)
           *q++=matte;
         width=image->columns+(frame_info->inner_bevel << 1)-y;
-        for (x=0; x < (int) width; x++)
+        for (x=0; x < width; x++)
           if (x < y)
             *q++=shadow;
           else
@@ -324,8 +323,8 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
   */
   height=frame_info->inner_bevel+frame_info->height-frame_info->y-image->rows-
     bevel_width+frame_info->outer_bevel;
-  q=SetImagePixels(frame_image,0,frame_image->rows-Max(height,1),
-    frame_image->columns,Max(height,1));
+  q=SetImagePixels(frame_image,0,frame_image->rows-height,frame_image->columns,
+    height);
   if (q == (PixelPacket *) NULL)
     return(frame_image);
   for (y=frame_info->inner_bevel-1; y >= 0; y--)
@@ -495,9 +494,9 @@ MagickExport unsigned int RaiseImage(Image *image,
       q->red=((unsigned long) (q->red*HighlightFactor+foreground*
         (MaxRGB-HighlightFactor))/MaxRGB);
       q->green=((unsigned long) (q->green*HighlightFactor+foreground*
-	(MaxRGB-HighlightFactor))/MaxRGB);
+        (MaxRGB-HighlightFactor))/MaxRGB);
       q->blue=((unsigned long) (q->blue*HighlightFactor+foreground*
-	(MaxRGB-HighlightFactor))/MaxRGB);
+        (MaxRGB-HighlightFactor))/MaxRGB);
       q++;
     }
     for (x=0; x < (int) (image->columns-(raise_info->width << 1)); x++)

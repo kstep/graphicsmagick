@@ -1561,7 +1561,7 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   offset=y*cache_info->columns+x;
   if (offset < 0)
     return((PixelPacket *) NULL);
-  offset=y*(cache_info->columns+rows-1)+columns+x;
+  offset+=rows*columns;
   if (offset > (cache_info->columns*cache_info->rows))
     return((PixelPacket *) NULL);
   /*
