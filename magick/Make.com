@@ -60,7 +60,7 @@ $call Make xwindow.c
 $call Make zoom.c
 $library/create libMagick.olb PreRvIcccm,animate,annotate,attribute,blob, -
   cache,cache_view,color,compress,constitute,decorate,delegate,display,draw, -
-  effect,enhance,error,gems,image,magic,magick,memory,module,monitor, -
+  effect,enhance,error,gem,image,magic,magick,memory,module,monitor, -
   montage,quantize,segment,semaphore,shear,signature,stream,timer,transform, -
   type,utility,vms,widget,xwindow,zoom
 $exit
