@@ -1,5 +1,7 @@
 2004-02-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/xwd.c (RegisterXWDImage): Always register XWD, but only
+	register read/write methods if it is supported.
 	* wand/magick_wand.c: Synchronized with latest ImageMagick API
 	changes.
 

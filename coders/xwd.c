@@ -444,13 +444,6 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CloseBlob(image);
   return(image);
 }
-#else
-static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
-{
-  ThrowException(exception,MissingDelegateError,XWindowLibraryIsNotAvailable,
-    image_info->filename);
-  return((Image *) NULL);
-}
 #endif
 
 /*
@@ -482,8 +475,10 @@ ModuleExport void RegisterXWDImage(void)
     *entry;
 
   entry=SetMagickInfo("XWD");
+#if defined(HasX11)
   entry->decoder=(DecoderHandler) ReadXWDImage;
   entry->encoder=(EncoderHandler) WriteXWDImage;
+#endif
   entry->magick=(MagickHandler) IsXWD;
   entry->adjoin=False;
   entry->description=AcquireString("X Windows system window dump (color)");
@@ -512,9 +507,7 @@ ModuleExport void RegisterXWDImage(void)
 */
 ModuleExport void UnregisterXWDImage(void)
 {
-#if defined(HasX11)
   (void) UnregisterMagickInfo("XWD");
-#endif
 }
 
 #if defined(HasX11)
@@ -727,11 +720,5 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   MagickFreeMemory(pixels);
   CloseBlob(image);
   return(True);
-}
-#else
-static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
-{
-  ThrowBinaryException(MissingDelegateError,XWindowLibraryIsNotAvailable,
-    image->filename);
 }
 #endif
