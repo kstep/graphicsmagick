@@ -1191,7 +1191,7 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                 {
                   zip_info.next_out=compressed_pixels;
                   zip_info.avail_out=1.01+packet_size*image->columns+12;
-                  status=!deflate(&zip_info,Z_SYNC_FLUSH);
+                  status=!deflate(&zip_info,Z_FINISH);
                   if (zip_info.next_out == compressed_pixels)
                     break;
                   length=zip_info.next_out-compressed_pixels;
