@@ -23,6 +23,11 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2001-09-15  Cristy  <cristy@mystic.es.dupont.com>
+	* Surveying the code for 64-bit compatibility.
+	* The cloned colormap was too small (reported by Glenn).
+	* A blob was being unmapped more than once for multi-frame images.
+
 2001-09-12  Cristy  <cristy@mystic.es.dupont.com>
 	* Text drawing now handles UTF8-encoding.
 	* Off-by-one GetImagePixels() fix in draw.c
