@@ -16,6 +16,7 @@
   <module magick="EPS2" name="PS2" />
   <module magick="EPSF" name="PS" />
   <module magick="EPSI" name="PS" />
+  <module magick="EXIF" name="META" />
   <module magick="FILE" name="URL" />
   <module magick="FRACTAL" name="PLASMA" />
   <module magick="FTP" name="URL" />
@@ -68,6 +69,7 @@
   <module magick="VST" name="TGA" />
   <module magick="WMFWIN32" name="EMF" />
   <module magick="XV" name="VIFF" />
+  <module magick="XMP" name="META" />
   <module magick="XTRNARRAY" name="XTRN" />
   <module magick="Y" name="GRAY" />
 </modulemap>
