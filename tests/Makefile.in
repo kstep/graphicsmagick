@@ -633,7 +633,7 @@ uninstall-am: uninstall-info-am
 #EXTRA_DIST = 
 
 clean-local:
-	rm -f out_*
+	rm -f *out_*
 
 check-rwblob:
 	@status=0 ; \
@@ -691,6 +691,8 @@ check-rwfile:
 
 check: check-rwfile check-rwblob
 	./drawtest drawtest_out.miff
+	./drawtest drawtest_out.mvg
+	./drawtest drawtest_out.svg
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

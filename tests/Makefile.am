@@ -50,7 +50,7 @@ drawtest_SOURCES = drawtest.c
 #EXTRA_DIST = 
 
 clean-local:
-	rm -f out_*
+	rm -f *out_*
 
 CHECK_FILES = \
 	'LOGO:' \
@@ -278,3 +278,5 @@ check-rwfile:
 
 check: check-rwfile check-rwblob
 	./drawtest drawtest_out.miff
+	./drawtest drawtest_out.mvg
+	./drawtest drawtest_out.svg

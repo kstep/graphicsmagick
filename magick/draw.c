@@ -1770,21 +1770,86 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
                                          const double *dasharray)
 {
   register const double
-    *p = dasharray;
+    *p;
+
+  register double
+    *q;
+
+  unsigned int
+    updated = False,
+    n_new = 0,
+    n_old = 0;
 
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  DrawPrintf(context, "stroke-dasharray ");
-  if ((p == (const double *) NULL) || (*p == 0))
-    DrawPrintf(context, "none");
-  else
+  p = dasharray;
+  if(p != (const double *) NULL)
+    while( *p++ != 0)
+      n_new++;
+
+  q = context->graphic_context[context->index]->dash_pattern;
+  if(q != (const double *) NULL)
+    while( *q++ != 0)
+      n_old++;
+
+  if( (n_old == 0) && (n_new == 0) )
     {
-      DrawPrintf(context, "%.4g", *p++);
-      while (*p)
-        DrawPrintf(context, ",%.4g", *p++);
+      updated = False;
     }
-  DrawPrintf(context, "\n");
+  else if( n_old != n_new )
+    {
+      updated = True;
+    }
+  else if((context->graphic_context[context->index]->dash_pattern != (double*)NULL)
+          && (dasharray != (double*)NULL))
+    {
+      p = dasharray;
+      q = context->graphic_context[context->index]->dash_pattern;
+      while( *p && *q )
+        if(*p != *q)
+          {
+            updated = True;
+            break;
+          }
+    }
+
+  if( updated )
+    {
+      if(context->graphic_context[context->index]->dash_pattern != (double*)NULL)
+        LiberateMemory((void **) &context->graphic_context[context->index]->dash_pattern);
+
+      if( n_new != 0)
+        {
+          context->graphic_context[context->index]->dash_pattern = (double *)
+            AcquireMemory((n_new+1)*sizeof(double));
+          if(context->graphic_context[context->index]->dash_pattern == (double*)NULL)
+            {
+              ThrowException(&context->exception,ResourceLimitError,
+                             "Unable to draw image","Memory allocation failed");
+            }
+          else
+            {
+              q=context->graphic_context[context->index]->dash_pattern;
+              p=dasharray;
+              while(*p)
+                *q++=*p++;
+              *q=0;
+            }
+        }
+
+      DrawPrintf(context, "stroke-dasharray ");
+      if ( n_new == 0 )
+        DrawPrintf(context, "none");
+      else
+        {
+          p = dasharray;
+          DrawPrintf(context, "%.4g", *p++);
+          while (*p)
+            DrawPrintf(context, ",%.4g", *p++);
+        }
+      DrawPrintf(context, "\n");
+    }
 }
 
 MagickExport void DrawSetStrokeDashOffset(DrawContext context,
