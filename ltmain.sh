@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4e
-TIMESTAMP=" (1.1212 2003/03/29 05:06:46)"
+TIMESTAMP=" (1.1217 2003/04/02 16:44:37)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -132,7 +132,7 @@ win32_libid () {
     if eval $OBJDUMP -f $1 | $SED -e '10q' 2>/dev/null | \
       grep -E 'file format pe-i386(.*architecture: i386)?' >/dev/null ; then
       win32_nmres=`eval $NM -f posix -A $1 | \
-        sed -n -e '1,100{/ I /{x;/import/!{s/^/import/;h;p;};x;}}'`
+	sed -n -e '1,100{/ I /{x;/import/!{s/^/import/;h;p;};x;};}'`
       if test "X$win32_nmres" = "Ximport" ; then
         win32_libid_type="x86 archive import"
       else
@@ -878,6 +878,7 @@ EOF
     temp_rpath=
     thread_safe=no
     vinfo=
+    vinfo_number=no
 
     # We need to know -static, to get the right output filenames.
     for arg
@@ -1398,6 +1399,11 @@ EOF
 
       -version-info)
 	prev=vinfo
+	continue
+	;;
+      -version-number)
+	prev=vinfo
+	vinfo_number=yes
 	continue
 	;;
 
@@ -2313,7 +2319,7 @@ EOF
 		  *-*-darwin* )
 		    # if the lib is a module then we can not link against it, someone
 		    # is ignoring the new warnings I added
-		    if test -z `otool -XD $add` ; then
+		    if /usr/bin/file -L $add 2> /dev/null | grep "bundle" >/dev/null ; then
 		      $echo "** Warning, lib $linklib is a module, not a shared library"
 		      if test -z "$old_library" ; then
 		        $echo
@@ -2405,6 +2411,12 @@ EOF
 	      *) finalize_shlibpath="$finalize_shlibpath$libdir:" ;;
 	      esac
 	      add="-l$name"
+	    elif test "$hardcode_automatic" = yes; then
+	      if test -n "$inst_prefix_dir" && test -f "$inst_prefix_dir$libdir/$linklib" ; then
+	        add="$inst_prefix_dir$libdir/$linklib"
+	      else
+	        add="$libdir/$linklib"
+	      fi
 	    else
 	      # We cannot seem to hardcode it, guess we'll fake it.
 	      add_dir="-L$libdir"
@@ -2634,6 +2646,7 @@ EOF
 	    # practice:
 	    case $deplib in
 	    -L*) new_libs="$deplib $new_libs" ;;
+	    -R*) ;;
 	    *)
 	      # And here is the reason: when a library appears more
 	      # than once as an explicit dependence of a library, or
@@ -2714,7 +2727,7 @@ EOF
       fi
 
       if test -n "$vinfo"; then
-	$echo "$modename: warning: \`-version-info' is ignored for archives" 1>&2
+	$echo "$modename: warning: \`-version-info/-version-number' is ignored for archives" 1>&2
       fi
 
       if test -n "$release"; then
@@ -2791,7 +2804,7 @@ EOF
 	fi
 
 	if test -n "$vinfo"; then
-	  $echo "$modename: warning: \`-version-info' is ignored for convenience libraries" 1>&2
+	  $echo "$modename: warning: \`-version-info/-version-number' is ignored for convenience libraries" 1>&2
 	fi
 
 	if test -n "$release"; then
@@ -2810,9 +2823,46 @@ EOF
 	  exit 1
 	fi
 
-	current="$2"
-	revision="$3"
-	age="$4"
+	# convert absolute version numbers to libtool ages
+	# this retains compatibility with .la files and attempts
+	# to make the code below a bit more comprehensible
+	
+	case $vinfo_number in
+	yes)
+	  number_major="$2"
+	  number_minor="$3"
+	  number_revision="$4"
+	  #
+	  # There are really only two kinds -- those that
+	  # use the current revision as the major version
+	  # and those that subtract age and use age as
+	  # a minor version.  But, then there is irix
+	  # which has an extra 1 added just for fun
+	  #
+	  case $version_type in
+	  darwin|linux|osf|windows)
+	    current=`expr $number_major + $number_minor`
+	    age="$number_minor"
+	    revision="$number_revision"
+	    ;;
+	  freebsd-aout|freebsd-elf|sunos)
+	    current="$number_major"
+	    revision="$number_minor"
+	    age="0"
+	    ;;
+	  irix|nonstopux)
+	    current=`expr $number_major + $number_minor - 1`
+	    age="$number_minor"
+	    revision="$number_minor"
+	    ;;
+	  esac
+	  ;;
+	no)
+	  current="$2"
+	  revision="$3"
+	  age="$4"
+	  ;;
+	esac
 
 	# Check that each of the things are valid numbers.
 	case $current in

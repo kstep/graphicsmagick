@@ -327,7 +327,7 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
     if ((tmpnam(fname) == fname))
       {
         (void) remove(fname);
-        fd=open(fname,O_WRONLY | O_CREAT | O_BINARY | O_EXCL, S_MODE);
+        fd=open(fname,O_RDWR | O_CREAT | O_BINARY | O_EXCL, S_MODE);
         if (fd != -1)
           {
             (void) strncpy(filename,fname,MaxTextExtent-1);

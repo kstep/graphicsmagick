@@ -1,3 +1,8 @@
+2003-04-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/tempfile.c (AcquireTemporaryFileDescriptor): Open
+	flag should have been O_RDWR, not O_WRONLY!
+
 2003-04-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/bin/delegates.mgk: Update similarly to
