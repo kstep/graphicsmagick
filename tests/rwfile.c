@@ -66,7 +66,31 @@ int main ( int argc, char **argv )
     
       if (*option == '-')
         {
-          if (LocaleCompare("depth",option+1) == 0)
+          if (LocaleCompare("compress",option+1) == 0)
+            {
+              arg++;
+              option=argv[arg];
+              imageInfo.compression=UndefinedCompression;
+              if (LocaleCompare("None",option) == 0)
+                imageInfo.compression=NoCompression;
+              if (LocaleCompare("BZip",option) == 0)
+                imageInfo.compression=BZipCompression;
+              if (LocaleCompare("Fax",option) == 0)
+                imageInfo.compression=FaxCompression;
+              if (LocaleCompare("Group4",option) == 0)
+                imageInfo.compression=Group4Compression;
+              if (LocaleCompare("JPEG",option) == 0)
+                imageInfo.compression=JPEGCompression;
+              if (LocaleCompare("Lossless",option) == 0)
+                imageInfo.compression=LosslessJPEGCompression;
+              if (LocaleCompare("LZW",option) == 0)
+                imageInfo.compression=LZWCompression;
+              if (LocaleCompare("RLE",option) == 0)
+                imageInfo.compression=RunlengthEncodedCompression;
+              if (LocaleCompare("Zip",option) == 0)
+                imageInfo.compression=ZipCompression;
+            }
+          else if (LocaleCompare("depth",option+1) == 0)
             {
               imageInfo.depth=QuantumDepth;
               arg++;
@@ -98,7 +122,7 @@ int main ( int argc, char **argv )
   if (arg != argc-2)
     {
       printf("arg=%d, argc=%d\n", arg, argc);
-      printf ( "Usage: %s [-depth integer -size geometry] infile format\n", argv[0] );
+      printf ( "Usage: %s [-compress algorithm -depth integer -size geometry] infile format\n", argv[0] );
       exit( 1 );
     }
   
