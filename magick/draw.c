@@ -1314,10 +1314,10 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
     AcquireMemory((2*number_vertices+1)*sizeof(PrimitiveInfo));
   if (dash_polygon == (PrimitiveInfo *) NULL)
     return(False);
-  scale=ExpandAffine(&draw_info->affine);
-  offset=draw_info->dash_offset != 0.0 ? scale*draw_info->dash_offset : 0.0;
-  length=scale*draw_info->dash_pattern[0];
   dash_polygon[0]=primitive_info[0];
+  scale=ExpandAffine(&draw_info->affine);
+  length=scale*draw_info->dash_pattern[0];
+  offset=draw_info->dash_offset != 0.0 ? scale*draw_info->dash_offset : 0.0;
   j=1;
   for (n=0; offset > 0.0; j=0)
   {
