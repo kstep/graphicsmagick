@@ -3385,46 +3385,6 @@ information is sometimes used by a window manager to provide some sort
 of header identifying the window. The default is the image file name.
 .in 15
 
-.SH ENVIRONMENT
-.TP
-.B "DISPLAY"
-\fRTo get the default host, display number, and screen.
-.SH ACKNOWLEDGEMENTS
-.in 15
-
-.in 15
-.in 20
-.B ""
-.in 20
- \fR
-The \fBMIT X Consortium\fP for making network transparent graphics a
-reality.
-.in 15
-.in 15
-.in 20
-.B ""
-.in 20
- \fR
-\fIMichael Halle\fP, \fBSpatial Imaging Group at MIT\fP, for the initial
-implementation of Alan Paeth's image rotation algorithm.
-.in 15
-.in 15
-.in 20
-.B ""
-.in 20
- \fR
-\fIDavid Pensak\fP, \fBduPont\fP, for providing a computing
-environment that made this program possible.
-.in 15
-.in 15
-.in 20
-.B ""\fIPaul Raveling\fP, \fBUSC Information Sciences Institute\fP.
-.in 20
- \fR
-The spatial subdivision color reduction algorithm is based on his Img
-software.
-.in 15
-
 .SH GM COMPOSITE
 
 \fBcomposite\fP composite images to create new images.
@@ -4599,48 +4559,6 @@ Options, above.
 
 For a more detailed description of each option, see
 Options, above.
-
-.SH SEGMENTATION
-
-Use \fB-segment\fP to segment an image by analyzing the histograms of
-the color components and identifying units that are homogeneous with the
-fuzzy c-means technique. The scale-space filter analyzes the histograms
-of the three color components of the image and identifies a set of classes.
-The extents of each class is used to coarsely segment the image with thresholding.
-The color associated with each class is determined by the mean color of
-all pixels within the extents of a particular class. Finally, any unclassified
-pixels are assigned to the closest class with the fuzzy c-means technique.
-
-The fuzzy c-Means algorithm can be summarized as follows:
-
-    
-Build a histogram, one for each color component of the image.
-    
-For each histogram, successively apply the scale-space filter and build
-an interval tree of zero crossings in the second derivative at each scale.
-Analyze this scale-space "fingerprint" to determine which peaks or valleys
-in the histogram are most predominant.
-    
-The fingerprint defines intervals on the axis of the histogram. Each interval
-contains either a minima or a maxima in the original signal. If each color
-component lies within the maxima interval, that pixel is considered "classified"
-and is assigned an unique class number.
-    
-Any pixel that fails to be classified in the above thresholding pass is
-classified using the fuzzy c-Means technique. It is assigned to one of
-the classes discovered in the histogram analysis phase.
-
-
-The fuzzy c-Means technique attempts to cluster a pixel by finding the
-local minima of the generalized within group sum of squared error objective
-function. A pixel is assigned to the closest class of which the fuzzy membership
-has a maximum value.
-
-For additional information see:
-<bq>\fIYoung Won Lim, Sang Uk Lee\fP, ``\fBOn The Color Image Segmentation
-Algorithm Based on the Thresholding and the Fuzzy c-Means Techniques\fP'',
-Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.</bq>
-
 .SH GM DISPLAY
 
 Display is a machine architecture independent
@@ -5837,46 +5755,6 @@ sub-menu of the Command widget.
 
 To cancel the image rotation, move the pointer back to the starting point
 of the line and release the button.
-.SH IMAGE SEGMENTATION
-
-Choose \fBEffects->Segment\fP to segment an image by analyzing the histograms
-of the color components and identifying units that are homogeneous with
-the fuzzy c-means technique. The scale-space filter analyzes the histograms
-of the three color components of the image and identifies a set of classes.
-The extents of each class is used to coarsely segment the image with thresholding.
-The color associated with each class is determined by the mean color of
-all pixels within the extents of a particular class. Finally, any unclassified
-pixels are assigned to the closest class with the fuzzy c-means technique.
-The fuzzy c-Means algorithm can be summarized as follows:
-
-    
-Build a histogram, one for each color component of the image.
-    
-For each histogram, successively apply the scale-space filter and build
-an interval tree of zero crossings in the second derivative at each scale.
-Analyze this scale-space "fingerprint" to determine which peaks or valleys
-in the histogram are most predominant.
-    
-The fingerprint defines intervals on the axis of the histogram. Each interval
-contains either a minima or a maxima in the original signal. If each color
-component lies within the maxima interval, that pixel is considered "classified"
-and is assigned an unique class number.
-    
-Any pixel that fails to be classified in the above thresholding pass is
-classified using the fuzzy c-Means technique. It is assigned to one of
-the classes discovered in the histogram analysis phase.
-
-
-The fuzzy c-Means technique attempts to cluster a pixel by finding the
-local minima of the generalized within group sum of squared error objective
-function. A pixel is assigned to the closest class of which the fuzzy membership
-has a maximum value.
-
-For additional information see:
-<bq>\fIYoung Won Lim, Sang Uk Lee\fP, "\fBOn The Color Image Segmentation
-Algorithm Based on the Thresholding and the Fuzzy c-Means Techniques\fP",
-Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.</bq>
-
 .SH IMAGE ANNOTATION
 
 An image is annotated interactively. There is no command line argument
@@ -6838,210 +6716,6 @@ image. Panning is much faster with Pixmaps than with a XImage. Pixmaps
 are considered a precious resource, use them with discretion.
 .in 15
 
-.SH ENVIRONMENT
-.TP
-.B "DISPLAY"
-\fRTo get the default host, display number, and screen.
-.SH ACKNOWLEDGEMENTS
-
-The \fBMIT X Consortium\fP for making network transparent graphics a
-reality.
-
-\fIPeder Langlo\fP, \fBHewlett Packard\fP, Norway, made hundreds of suggestions
-and bug reports. Without Peder, \fBImageMagick\fP would not be nearly
-as useful as it is today.
-
-\fIRod Bogart\fP and \fIJohn W. Peterson\fP, \fBUniversity of Utah\fP.
-Image compositing is loosely based on rlecomp of the Utah Raster Toolkit.
-
-\fIMichael Halle\fP, \fBSpatial Imaging Group at MIT\fP, for the initial
-implementation of Alan Paeth's image rotation algorithm.
-
-\fIDavid Pensak\fP, \fBImageMagick Studio\fP, for providing a computing
-environment that made this program possible.
-
-\fIPaul Raveling\fP, \fBUSC Information Sciences Institute\fP. The
-spatial subdivision color reduction algorithm is based on his Img software.
-
-\fBName\fP   \fBMode\fP \fBDescription\fP
- o  8BIM      *rw- Photoshop resource format
- o  AFM       *r-- TrueType font
- o  APP1      *rw- Photoshop resource format
- o  ART       *r-- PF1: 1st Publisher
- o  AVI       *r-- Audio/Visual Interleaved
- o  AVS       *rw+ AVS X image
- o  BIE       *rw- Joint Bi-level Image experts Group
-                   interchange format
- o  BMP       *rw+ Microsoft Windows bitmap image
- o  CAPTION   *r+  Caption (requires separate size info)
- o  CMYK      *rw- Raw cyan, magenta, yellow, and black
-                   samples (8 or 16 bits, depending on
-                   the image depth)
- o  CMYKA     *rw- Raw cyan, magenta, yellow, black, and
-                   matte samples (8 or 16 bits, depending
-                   on the image depth)
- o  CUT       *r-- DR Halo
- o  DCM       *r-- Digital Imaging and Communications in
-                    Medicine image
- o  DCX       *rw+ ZSoft IBM PC multi-page Paintbrush
- o  DIB       *rw+ Microsoft Windows bitmap image
- o  DPS       *r-- Display PostScript
- o  DPX       *r-- Digital Moving Picture Exchange
- o  EPDF      *rw- Encapsulated Portable Document Format
- o  EPI       *rw- Adobe Encapsulated PostScript
-                   Interchange format
- o  EPS       *rw- Adobe Encapsulated PostScript
- o  EPS2      *-w- Adobe Level II Encapsulated PostScript
- o  EPS3      *-w- Adobe Level III Encapsulated PostScript
- o  EPSF      *rw- Adobe Encapsulated PostScript
- o  EPSI      *rw- Adobe Encapsulated PostScript
-                   Interchange format
- o  EPT       *rw- Adobe Encapsulated PostScript with TIFF
-                   preview
- o  FAX       *rw+ Group 3 FAX
- o  FILE      *r-- Uniform Resource Locator
- o  FITS      *rw- Flexible Image Transport System
- o  FPX       *rw- FlashPix Format
- o  FTP       *r-- Uniform Resource Locator
- o  G3        *rw- Group 3 FAX
- o  GIF       *rw+ CompuServe graphics interchange format
- o  GIF87     *rw- CompuServe graphics interchange format
-                   (version 87a)
- o  GRADIENT  *r-- Gradual passing from one shade to
-                   another
- o  GRANITE   *r-- Granite texture
- o  GRAY      *rw+ Raw gray samples (8 or 16 bits,
-                   depending on the image depth)
- o  H         *rw- Internal format
- o  HDF       -rw+ Hierarchical Data Format
- o  HISTOGRAM *-w- Histogram of the image
- o  HTM       *-w- Hypertext Markup Language and a
-                   client-side image map
- o  HTML      *-w- Hypertext Markup Language and a
-                   client-side image map
- o  HTTP      *r-- Uniform Resource Locator
- o  ICB       *rw+ Truevision Targa image
- o  ICM       *rw- ICC Color Profile
- o  ICO       *r-- Microsoft icon
- o  ICON      *r-- Microsoft icon
- o  IMPLICIT  *--- 
- o  IPTC      *rw- IPTC Newsphoto
- o  JBG       *rw+ Joint Bi-level Image experts Group
-                   interchange format
- o  JBIG      *rw+ Joint Bi-level Image experts Group
-                   interchange format
- o  JP2       *rw- JPEG-2000 JP2 File Format Syntax
- o  JPC       *rw- JPEG-2000 Code Stream Syntax
- o  JPEG      *rw- Joint Photographic Experts Group
-                   JFIF format
- o  JPG       *rw- Joint Photographic Experts Group
-                   JFIF format
- o  LABEL     *r-- Text image format
- o  LOGO      *rw- ImageMagick Logo
- o  M2V       *rw+ MPEG-2 Video Stream
- o  MAP       *rw- Colormap intensities (8 or 16 bits,
-                   depending on the image depth) and
-                   indices (8 or 16 bits, depending
-                   on whether colors exceeds 256).
- o  MAT       *-w+ MATLAB image format
- o  MATTE     *-w+ MATTE format
- o  MIFF      *rw+ Magick image format
- o  MNG       *rw+ Multiple-image Network Graphics
- o  MONO      *rw- Bi-level bitmap in least-significant-
-                   -byte-first order
- o  MPC       -rw- Magick Persistent Cache image format
- o  MPEG      *rw+ MPEG-1 Video Stream
- o  MPG       *rw+ MPEG-1 Video Stream
- o  MPR       *r-- Magick Persistent Registry
- o  MSL       *r-- Magick Scripting Language
- o  MTV       *rw+ MTV Raytracing image format
- o  MVG       *rw- Magick Vector Graphics
- o  NETSCAPE  *r-- Netscape 216 color cube
- o  NULL      *r-- Constant image of uniform color
- o  OTB       *rw- On-the-air bitmap
- o  P7        *rw+ Xv thumbnail format
- o  PAL       *rw- 16bit/pixel interleaved YUV
- o  PALM      *rw- Palm Pixmap format
- o  PBM       *rw+ Portable bitmap format (black and white)
- o  PCD       *rw- Photo CD
- o  PCDS      *rw- Photo CD
- o  PCL       *-w- Page Control Language
- o  PCT       *rw- Apple Macintosh QuickDraw/PICT
- o  PCX       *rw- ZSoft IBM PC Paintbrush
- o  PDB       *r-- Pilot Image Format
- o  PDF       *rw+ Portable Document Format
- o  PFA       *r-- TrueType font
- o  PFB       *r-- TrueType font
- o  PFM       *r-- TrueType font
- o  PGM       *rw+ Portable graymap format (gray scale)
- o  PICON     *rw- Personal Icon
- o  PICT      *rw- Apple Macintosh QuickDraw/PICT
- o  PIX       *r-- Alias/Wavefront RLE image format
- o  PLASMA    *r-- Plasma fractal image
- o  PM        *rw- X Windows system pixmap (color)
- o  PNG       *rw- Portable Network Graphics
- o  PNM       *rw+ Portable anymap
- o  PPM       *rw+ Portable pixmap format (color)
- o  PREVIEW   *-w- Show a preview an image enhancement,
-                   effect, or f/x
- o  PS        *rw+ Adobe PostScript
- o  PS2       *-w+ Adobe Level II PostScript
- o  PS3       *-w+ Adobe Level III PostScript
- o  PSD       *rw- Adobe Photoshop bitmap
- o  PTIF      *rw- Pyramid encoded TIFF
- o  PWP       *r-- Seattle Film Works
- o  RAS       *rw+ SUN Rasterfile
- o  RGB       *rw+ Raw red, green, and blue samples (8 or
-                   16 bits, depending on the image depth)
- o  RGBA      *rw+ Raw red, green, blue, and matte samples
-                   (8 or 16 bits, depending on the image
-                   depth)
- o  RLA       *r-- Alias/Wavefront image
- o  RLE       *r-- Utah Run length encoded image
- o  ROSE      *rw- 70x46 Truecolor test image
- o  SCT       *r-- Scitex HandShake
- o  SFW       *r-- Seattle Film Works
- o  SGI       *rw+ Irix RGB image
- o  SHTML     *-w- Hypertext Markup Language and a
-                   client-side image map
- o  STEGANO   *r-- Steganographic image
- o  SUN       *rw+ SUN Rasterfile
- o  SVG       *rw+ Scalable Vector Gaphics
- o  TEXT      *rw+ Raw text
- o  TGA       *rw+ Truevision Targa image
- o  TIF       *rw+ Tagged Image File Format
- o  TIFF      *rw+ Tagged Image File Format
- o  TILE      *r-- Tile image with a texture
- o  TIM       *r-- PSX TIM
- o  TTF       *r-- TrueType font
- o  TXT       *rw+ Raw text
- o  UIL       *-w- X-Motif UIL table
- o  UYVY      *rw- 16bit/pixel interleaved YUV
- o  VDA       *rw+ Truevision Targa image
- o  VICAR     *rw- VICAR rasterfile format
- o  VID       *rw+ Visual Image Directory
- o  VIFF      *rw+ Khoros Visualization image
- o  VST       *rw+ Truevision Targa image
- o  WBMP      *rw- Wireless Bitmap (level 0) image
- o  WMF       *r-- Windows Metafile
- o  WPG       *r-- Word Perfect Graphics
- o  X         *rw- X Image
- o  XBM       *rw- X Windows system bitmap (black
-                   and white)
- o  XC        *r-- Constant image uniform color
- o  XCF       *r-- GIMP image
- o  XML       *r-- Scalable Vector Gaphics
- o  XPM       *rw- X Windows system pixmap (color)
- o  XV        *rw+ Khoros Visualization image
- o  XWD       *rw- X Windows system window dump (color)
- o  YUV       *rw- CCIR 601 4:1:1
-                   
-    Modes:         
-              *    Native blob support
-              r    Read
-              w    Write
-              +    Multi-image
-
 .SH GM IDENTIFY
 
 \fBIdentify\fP describes the format and characteristics of one or more
@@ -7722,46 +7396,6 @@ Options, above.
 For a more detailed description of each option, see
 Options, above.
 
-.SH IMAGE SEGMENTATION
-
-Use \fB-segment\fP to segment an image by analyzing the histograms of
-the color components and identifying units that are homogeneous with the
-fuzzy c-means technique. The scale-space filter analyzes the histograms
-of the three color components of the image and identifies a set of classes.
-The extents of each class is used to coarsely segment the image with thresholding.
-The color associated with each class is determined by the mean color of
-all pixels within the extents of a particular class. Finally, any unclassified
-pixels are assigned to the closest class with the fuzzy c-means technique.
-
-The fuzzy c-Means algorithm can be summarized as follows:
-
-    
-Build a histogram, one for each color component of the image.
-    
-For each histogram, successively apply the scale-space filter and build
-an interval tree of zero crossings in the second derivative at each scale.
-Analyze this scale-space "fingerprint" to determine which peaks or valleys
-in the histogram are most predominant.
-    
-The fingerprint defines intervals on the axis of the histogram. Each interval
-contains either a minima or a maxima in the original signal. If each color
-component lies within the maxima interval, that pixel is considered "classified"
-and is assigned an unique class number.
-    
-Any pixel that fails to be classified in the above thresholding pass is
-classified using the fuzzy c-Means technique. It is assigned to one of
-the classes discovered in the histogram analysis phase.
-
-
-The fuzzy c-Means technique attempts to cluster a pixel by finding the
-local minima of the generalized within group sum of squared error objective
-function. A pixel is assigned to the closest class of which the fuzzy membership
-has a maximum value.
-
-For additional information see:
-<bq>\fIYoung Won Lim, Sang Uk Lee\fP, ``\fBOn The Color Image Segmentation
-Algorithm Based on the Thresholding and the Fuzzy c-Means Techniques\fP'',
-Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.</bq>
 .SH GM MONTAGE
 
 \fBmontage\fP creates a composite image by combining several separate
@@ -8145,42 +7779,49 @@ implementation of Alan Paeth's image rotation algorithm.
 \fIDavid Pensak\fP, \fBImageMagick Studio\fP, for providing a computing
 environment that made this program possible.
 
-.SH SEE ALSO
 
-display(1), animate(1), import(1), mogrify(1), convert(1), composite(1),
-ImageMagick(1)
+\fIPeder Langlo\fP, \fBHewlett Packard\fP, Norway, made hundreds of suggestions
+and bug reports. Without Peder, this software would not be nearly
+as useful as it is today.
 
+\fIRod Bogart\fP and \fIJohn W. Peterson\fP, \fBUniversity of Utah\fP.
+Image compositing is loosely based on rlecomp of the Utah Raster Toolkit.
+
+\fIPaul Heckbert\fP. Image resizing is based on his Zoom program.
+
+\fIPaul Raveling\fP, \fBUSC Information Sciences Institute\fP. The
+spatial subdivision color reduction algorithm is based on his Img software.
 .SH COPYRIGHT
 
-\fBCopyright (C) 2003 ImageMagick Studio\fP
+\fBCopyright (C) 2003 GraphicsMagick Development Group\fP
 
 \fBPermission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files ("ImageMagick"),
-to deal in ImageMagick without restriction, including without limitation
+a copy of this software and associated documentation files ("GraphicsMagick"),
+to deal in GraphicsMagick without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
+and/or sell copies of GraphicsMagick, and to permit persons to whom GraphicsMagick
 is furnished to do so, subject to the following conditions:\fP
 
 \fBThe above copyright notice and this permission notice shall be included
-in all copies or substantial portions of ImageMagick.\fP
+in all copies or substantial portions of GraphicsMagick.\fP
 
 \fBThe software is provided "as is", without warranty of any kind, express
 or implied, including but not limited to the warranties of merchantability,
-fitness for a particular purpose and noninfringement.In no event shall
-ImageMagick Studio be liable for any claim, damages or other liability,
+fitness for a particular purpose and noninfringement. In no event shall
+GraphicsMagick Development Group be liable for any claim, damages or other liability,
 whether in an action of contract, tort or otherwise, arising from, out
-of or in connection with ImageMagick or the use or other dealings in
-ImageMagick.\fP
+of or in connection with GraphicsMagick or the use or other dealings in
+GraphicsMagick.\fP
 
 \fBExcept as contained in this notice, the name of the
-ImageMagick Studio LLC shall not be used in advertising or otherwise to
-promote the sale, use or other dealings in ImageMagick without prior written
-authorization from the ImageMagick Studio.\fP
+GraphicsMagick Development Group shall not be used in advertising or otherwise to
+promote the sale, use or other dealings in GraphicsMagick without prior written
+authorization from the GraphicsMagick Development Group.\fP
 .SH AUTHORS
 
 \fI
 John Cristy, ImageMagick Studio LLC,
 .in 7
-Glenn Randers-Pehrson, ImageMagick Studio LLC.
+Glenn Randers-Pehrson, GraphicsMagick Development Group.
 \fP
 
