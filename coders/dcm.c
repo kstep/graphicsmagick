@@ -2905,8 +2905,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               data=(unsigned char *) AcquireMemory(quantum*(length+1));
               if (data == (unsigned char *) NULL)
-                ThrowReaderException(ResourceLimitError,
-                  "MemoryAllocationFailed",image);
+                ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+                  image);
               (void) ReadBlob(image,quantum*length,(char *) data);
               data[length*quantum]=0;
             }

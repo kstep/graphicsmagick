@@ -612,8 +612,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
           FormatString(filename,"%.1024s.niq",basename);
           (void) remove(filename);
         }
-      ThrowWriterException(DelegateError,"Unable to write MPEG parameters",
-        image)
+      ThrowWriterException(DelegateError,"Unable to write MPEG parameters",image)
     }
   count=0;
   clone_info->interlace=PlaneInterlace;

@@ -220,8 +220,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     map_length=1 << ReadBlobByte(image);
     if ((number_planes == 0) || (number_planes == 2) || (bits_per_pixel != 8) ||
         (image->columns == 0))
-      ThrowReaderException(CorruptImageError,"Unsupported RLE image file",
-        image);
+      ThrowReaderException(CorruptImageError,"Unsupported RLE image file",image);
     if (flags & 0x02)
       {
         /*

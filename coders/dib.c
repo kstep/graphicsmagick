@@ -473,8 +473,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) memset(&dib_info,0,sizeof(DIBInfo));
   dib_info.size=ReadBlobLSBLong(image);
   if (dib_info.size!=40)
-    ThrowReaderException(CorruptImageError,"Not a Windows 3.X DIB image",
-      image);
+    ThrowReaderException(CorruptImageError,"Not a Windows 3.X DIB image",image);
   /*
     Microsoft Windows 3.X DIB image file.
   */
@@ -1109,8 +1108,8 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
         if (pixels == (unsigned char *) NULL)
           {
             LiberateMemory((void **) &pixels);
-            ThrowWriterException(ResourceLimitError,
-              "MemoryAllocationFailed",image)
+            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+              image)
           }
         dib_info.image_size=EncodeImage(image,bytes_per_line,pixels,dib_data);
         LiberateMemory((void **) &pixels);

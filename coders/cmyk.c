@@ -383,8 +383,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 AppendImageFormat("A",image->filename);
                 status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
                 if (status == False)
-                  ThrowReaderException(FileOpenError,"UnableToOpenFile",
-                    image);
+                  ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
               }
             for (y=0; y < image->tile_info.y; y++)
               (void) ReadBlob(image,packet_size*image->tile_info.width,
@@ -668,7 +667,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         if (image_info->interlace == PartitionInterlace)
           {
             AppendImageFormat("C",image->filename);
-            status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+            status=
+              OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
             if (status == False)
               ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
           }
@@ -748,8 +748,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
                 status=OpenBlob(image_info,image,WriteBinaryBlobMode,
                   &image->exception);
                 if (status == False)
-                  ThrowWriterException(FileOpenError,"UnableToOpenFile",
-                    image);
+                  ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
               }
             for (y=0; y < (long) image->rows; y++)
             {

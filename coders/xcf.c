@@ -606,10 +606,10 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
           break;
         case COMPRESS_ZLIB:
           ThrowBinaryException(FileOpenError,
-            "xcf: zlib compression unimplemented",image->filename)
+           "xcf: zlib compression unimplemented",image->filename)
         case COMPRESS_FRACTAL:
           ThrowBinaryException(FileOpenError,
-            "xcf: fractal compression unimplemented",image->filename)
+           "xcf: fractal compression unimplemented",image->filename)
       }
 
       /* composite the tile onto the layer's image, and then destroy it */
@@ -956,8 +956,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   } else if ( image_type == GIMP_GRAY ) {
     image->colorspace=GRAYColorspace;
   } else if ( image_type == GIMP_INDEXED )
-    ThrowReaderException(FileOpenError,
-       "Indexed colors not currently supported",image);
+    ThrowReaderException(FileOpenError,"Indexed colors not currently supported",
+      image);
   SetImage(image,OpaqueOpacity);  /* until we know otherwise...*/
   image->matte=True;  /* XCF always has a matte! */
 
@@ -1013,7 +1013,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (doc_info.compression != COMPRESS_RLE) &&
         (doc_info.compression != COMPRESS_ZLIB) &&
         (doc_info.compression != COMPRESS_FRACTAL))
-          ThrowReaderException(CorruptImageError,"Unknown compression type",image);
+          ThrowReaderException(CorruptImageError,"Unknown compression type",
+            image);
       }
       break;
 
@@ -1192,8 +1193,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         int j;
         for (j=0; j < current_layer; j++)
           DestroyImage(layer_info[j].image);
-        ThrowReaderException(ResourceLimitError,
-           "MemoryAllocationFailed",image)
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
       }
 
       /* restore the saved position so we'll be ready to

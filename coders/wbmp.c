@@ -199,8 +199,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
         {
           byte=ReadBlobByte(image);
           if (byte == EOF)
-            ThrowReaderException(CorruptImageError,"Corrupt WBMP image",
-              image);
+            ThrowReaderException(CorruptImageError,"Corrupt WBMP image",image);
         }
       indexes[x]=(byte & (0x01 << (7-bit))) ? 1 : 0;
       bit++;

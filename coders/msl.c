@@ -465,7 +465,7 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
     (msl_info->attributes == (Image **) NULL) ||
     (msl_info->image == (Image **) NULL))
       ThrowException(msl_info->exception,ResourceLimitFatalError,
-        "Unable to allocate image","MemoryAllocationFailed");
+				"MemoryAllocationFailed","Unable to allocate image");
   msl_info->image_info[n]=CloneImageInfo(msl_info->image_info[n-1]);
   msl_info->draw_info[n]=CloneDrawInfo(msl_info->image_info[n-1], msl_info->draw_info[n-1]);
   msl_info->attributes[n]=AllocateImage(msl_info->image_info[n]);
@@ -473,7 +473,7 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
   if ((msl_info->image_info[n] == (ImageInfo *) NULL) ||
     (msl_info->attributes[n] == (Image *) NULL))
     ThrowException(msl_info->exception,ResourceLimitFatalError,
-      "Unable to allocate image","MemoryAllocationFailed");
+			"MemoryAllocationFailed","Unable to allocate image");
   if ( msl_info->nGroups )
     msl_info->group_info[msl_info->nGroups-1].numImages++;
   attribute=GetImageAttribute(msl_info->attributes[n-1],(char *) NULL);
@@ -549,7 +549,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionError,
-          "no images defined",(char *) name);
+            "no images defined",(char *) name);
           break;
         }
         /*
@@ -622,7 +622,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionError,
-          "no images defined",(char *) name);
+            "no images defined",(char *) name);
           break;
         }
         /*

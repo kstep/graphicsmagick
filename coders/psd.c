@@ -249,8 +249,8 @@ static unsigned int DecodeImage(Image *image,const int channel)
     Guarentee the correct number of pixel packets.
   */
   if (number_pixels > 0)
-    ThrowBinaryException(CorruptImageError,
-      "insufficient image data in file",image->filename)
+    ThrowBinaryException(CorruptImageError,"insufficient image data in file",
+      image->filename)
   else
     if (number_pixels < 0)
       ThrowBinaryException(CorruptImageError,"too much image data in file",
@@ -601,8 +601,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           */
           data=(unsigned char *) AcquireMemory(length);
           if (data == (unsigned char *) NULL)
-            ThrowReaderException(ResourceLimitError,
-              "Resource memory allocation failed",image);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+              image);
           ReadBlob(image,length,data);
           LiberateMemory((void **) &data);
         }
@@ -612,8 +612,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Read PSD raster colormap.
           */
           if (!AllocateImageColormap(image,length/3))
-            ThrowReaderException(ResourceLimitError,
-              "MemoryAllocationFailed",image);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+              image);
           for (i=0; i < (long) image->colors; i++)
             image->colormap[i].red=ScaleCharToQuantum(ReadBlobByte(image));
           for (i=0; i < (long) image->colors; i++)
@@ -691,8 +691,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         count=ReadBlob(image,4,(char *) type);
         if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
-          ThrowReaderException(CorruptImageError,"Not a PSD image file",
-            image);
+          ThrowReaderException(CorruptImageError,"Not a PSD image file",image);
         (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);
         layer_info[i].opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image)));
         layer_info[i].clipping=ReadBlobByte(image);
@@ -763,8 +762,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             for (j=0; j < i; j++)
               DestroyImage(layer_info[j].image);
-            ThrowReaderException(ResourceLimitError,
-              "MemoryAllocationFailed",image)
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+              image)
           }
         SetImage(layer_info[i].image,OpaqueOpacity);
         layer_info[i].image->compose=

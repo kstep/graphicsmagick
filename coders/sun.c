@@ -325,8 +325,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Create linear color ramp.
             */
             if (!AllocateImageColormap(image,image->colors))
-              ThrowReaderException(ResourceLimitError,
-                "MemoryAllocationFailed",image);
+              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+                image);
           }
         break;
       }
@@ -374,8 +374,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       default:
-        ThrowReaderException(CorruptImageError,
-          "Colormap type is not supported",image)
+        ThrowReaderException(CorruptImageError,"Colormap type is not supported",
+          image)
     } 
     image->matte=(sun_info.depth == 32);
     image->columns=sun_info.width;
@@ -390,8 +390,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     count=ReadBlob(image,sun_info.length,(char *) sun_data);
     if ((count == 0) && (sun_info.type != RT_ENCODED))
-      ThrowReaderException(CorruptImageError,"UnableToReadImageData",
-        image);
+      ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
     sun_pixels=sun_data;
     if (sun_info.type == RT_ENCODED)
       {

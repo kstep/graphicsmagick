@@ -227,8 +227,8 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
           number_pixels=image->columns*image->rows;
           matte_image=(unsigned char *) AcquireMemory(number_pixels);
           if (matte_image == (unsigned char *) NULL)
-            ThrowWriterException(ResourceLimitError,
-              "MemoryAllocationFailed",image);
+            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+              image);
           for (y=0; y < (long) image->rows; y++)
           {
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);

@@ -660,8 +660,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       if (jpeg_pixels != (JSAMPLE *) NULL)
         LiberateMemory((void **) &jpeg_pixels);
       jpeg_destroy_decompress(&jpeg_info);
-      ThrowException(exception,image->exception.severity,
-        image->exception.reason,image->exception.description);
+      ThrowException(exception,image->exception.severity,image->exception.reason,
+        image->exception.description);
       number_pixels=image->columns*image->rows;
       if (number_pixels != 0)
         return(image);
@@ -811,7 +811,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
                jpeg_info.quant_tbl_ptrs[0]->quantval[53]+
                jpeg_info.quant_tbl_ptrs[1]->quantval[0]+
                jpeg_info.quant_tbl_ptrs[1]->quantval[DCTSIZE2-1]);
-             for (i=0; i<100; i++)
+             for (i=0; i < 100; i++)
              {
                if ((hashval >= hash[i]) || (sum >= sums[i]))
                  {
@@ -921,15 +921,14 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
             jpeg_info.comp_info[2].v_samp_factor,
             jpeg_info.comp_info[3].h_samp_factor,
             jpeg_info.comp_info[3].v_samp_factor);
-            break;
+          break;
         }
       }
     }
   image->depth=jpeg_info.data_precision <= 8 ? 8 : 16;
   if (jpeg_info.out_color_space == JCS_GRAYSCALE)
     if (!AllocateImageColormap(image,1 << image->depth))
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-        image);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   if (image_info->ping)
     {
       jpeg_destroy_decompress(&jpeg_info);

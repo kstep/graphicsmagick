@@ -882,7 +882,8 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
               DetachBlob(buff->blob);
               LiberateMemory((void **) &blob);
               DestroyImage(buff);
-              ThrowReaderException(FileOpenError,"No iptc profile available",image)
+              ThrowReaderException(FileOpenError,"No iptc profile available",
+                image)
             }
           iptc=AllocateImage((ImageInfo *) NULL);
           if (iptc == (Image *) NULL)

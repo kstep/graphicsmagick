@@ -900,8 +900,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     lastrow = (unsigned char *) AcquireMemory(bytes_per_row);
   one_row = (unsigned char *) AcquireMemory(bytes_per_row);
   if (one_row == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,
-                                "MemoryAllocationFailed", image);
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
 
   for (y=0; y < (int) image->rows; y++)
     {

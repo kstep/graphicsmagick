@@ -186,8 +186,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   map_info=XAllocStandardColormap();
   visual_info=(XVisualInfo *) NULL;
   if (map_info == (XStandardColormap *) NULL)
-    ThrowReaderException(ResourceLimitError,
-      "Unable to create standard colormap",image)
+    ThrowReaderException(ResourceLimitError,"Unable to create standard colormap",
+      image)
   else
     {
       /*

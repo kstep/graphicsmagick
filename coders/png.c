@@ -431,14 +431,14 @@ static unsigned int CompressColormapTransFirst(Image *image)
   marker=(unsigned char *) AcquireMemory(image->colors);
   if (marker == (unsigned char *) NULL)
     ThrowBinaryException((ExceptionType) ResourceLimitError,
-      "Unable to compress colormap", "MemoryAllocationFailed");
+			"MemoryAllocationFailed","Unable to compress colormap");
   opacity=(IndexPacket *)
     AcquireMemory(image->colors*sizeof(IndexPacket));
   if (opacity == (IndexPacket *) NULL)
     {
       LiberateMemory((void **) &marker);
       ThrowBinaryException((ExceptionType) ResourceLimitError,
-        "Unable to compress colormap", "MemoryAllocationFailed")
+				"MemoryAllocationFailed","Unable to compress colormap");
     }
   /*
     Mark colors that are present.
@@ -539,7 +539,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
       LiberateMemory((void **) &marker);
       LiberateMemory((void **) &opacity);
       ThrowBinaryException((ExceptionType) ResourceLimitError,
-        "Unable to compress colormap", "MemoryAllocationFailed")
+				"MemoryAllocationFailed","Unable to compress colormap");
     }
   /*
     Eliminate unused colormap entries.
@@ -551,7 +551,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
       LiberateMemory((void **) &opacity);
       LiberateMemory((void **) &colormap);
       ThrowBinaryException((ExceptionType) ResourceLimitError,
-        "Unable to compress colormap", "MemoryAllocationFailed")
+				"MemoryAllocationFailed","Unable to compress colormap");
     }
   k=0;
   for (i=0; i < number_colors; i++)
@@ -1292,7 +1292,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
    if (info == (unsigned char *) NULL)
    {
      ThrowException(&image->exception,(ExceptionType) ResourceLimitError,
-        "Unable to copy profile", "MemoryAllocationFailed");
+			"MemoryAllocationFailed","Unable to copy profile");
      return (False);
    }
    /* copy profile, skipping white space and column 1 "=" signs */
@@ -1521,8 +1521,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   mng_info=(MngInfo *) NULL;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException((ExceptionType) FileOpenError,
-    "Unable to open file",image);
+    ThrowReaderException((ExceptionType) FileOpenError,"UnableToOpenFile",
+      image);
   first_mng_object=False;
   skipping_loop=(-1);
   have_mng_structure=False;
@@ -1537,7 +1537,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) ReadBlob(image,8,magic_number);
       if (memcmp(magic_number,"\212MNG\r\n\032\n",8) != 0)
         ThrowReaderException((ExceptionType) CorruptImageError,
-        "Not a MNG image file",image);
+          "Not a MNG image file",image);
       first_mng_object=True;
       /*
         Allocate a MngInfo structure.
@@ -1545,8 +1545,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       mng_info=(MngInfo *) AcquireMemory(sizeof(MngInfo));
       if (mng_info == (MngInfo *) NULL)
         ThrowReaderException((ExceptionType) ResourceLimitError,
-        "MemoryAllocationFailed",
-          image);
+          "MemoryAllocationFailed",image);
       have_mng_structure=True;
       mng_info->image=image;
       mng_info->global_plte=(png_colorp) NULL;
@@ -1647,7 +1646,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           status=False;
         if (count == 0)
           ThrowReaderException((ExceptionType) CorruptImageError,
-          "Corrupt MNG image",image);
+            "Corrupt MNG image",image);
         if (!memcmp(type,mng_JHDR,4))
           {
             skip_to_iend=True;
@@ -1796,9 +1795,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (mng_info->frozen[object_id])
                 {
                   LiberateMemory((void **) &chunk);
-                  ThrowException(&image->exception,(ExceptionType)
-                     DelegateError,
-                     "DEFI cannot redefine a frozen MNG object",(char *) NULL);
+                  ThrowException(&image->exception,(ExceptionType) DelegateError,
+                    "DEFI cannot redefine a frozen MNG object",(char *) NULL);
                   continue;
                 }
             mng_info->exists[object_id]=True;
@@ -1977,8 +1975,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!memcmp(type,mng_FRAM,4))
           {
             if (mng_type == 3)
-              ThrowException(&image->exception,(ExceptionType)
-                DelegateError,
+              ThrowException(&image->exception,(ExceptionType) DelegateError,
                 "FRAM chunk found in MNG-VLC datastream",(char *) NULL);
             if ((framing_mode == 2) || (framing_mode == 4))
               image->delay=frame_delay;
@@ -2285,8 +2282,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (magn_first || magn_last)
               if (!mng_info->magn_warning)
                 {
-                  ThrowException(&image->exception,(ExceptionType)
-                     DelegateError,
+                  ThrowException(&image->exception,(ExceptionType) DelegateError,
                      "MAGN is not implemented yet for nonzero objects",
                      image->filename);
                    mng_info->magn_warning++;
@@ -2347,10 +2343,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (magn_methx > 5 || magn_methy > 5)
               if (!mng_info->magn_warning)
                 {
-                  ThrowException(&image->exception,(ExceptionType)
-                     DelegateError,
-                     "Unknown MAGN method in MNG datastream",
-                     image->filename);
+                  ThrowException(&image->exception,(ExceptionType) DelegateError,
+                     "Unknown MAGN method in MNG datastream",image->filename);
                    mng_info->magn_warning++;
                 }
 #ifdef MNG_OBJECT_BUFFERS
@@ -2971,8 +2965,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
                   }
                 else
-                  ThrowException(&image->exception,(ExceptionType)
-                    DelegateError,
+                  ThrowException(&image->exception,(ExceptionType) DelegateError,
                     "No global PLTE in file",image_info->filename);
               }
           }

@@ -285,8 +285,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       aspect_ratio=(float) width/height;
       fpx_status=FPX_GetImageResultAspectRatio(flashpix,&aspect_ratio);
       if (fpx_status != FPX_OK)
-        ThrowReaderException(DelegateError,"Unable to read aspect ratio",
-          image);
+        ThrowReaderException(DelegateError,"Unable to read aspect ratio",image);
       if (width != (unsigned long) ((aspect_ratio*height)+0.5))
         Swap(width,height);
     }
@@ -310,8 +309,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (label == (char *) NULL)
           {
             FPX_ClearSystem();
-            ThrowReaderException(ResourceLimitError,
-              "MemoryAllocationFailed",image);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+              image);
           }
         (void) strncpy(label,(char *) summary_info.title.ptr,
           summary_info.title.length);
@@ -333,8 +332,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (comments == (char *) NULL)
           {
             FPX_ClearSystem();
-            ThrowReaderException(ResourceLimitError,
-              "MemoryAllocationFailed",image);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+              image);
           }
         (void) strncpy(comments,(char *) summary_info.comments.ptr,
           summary_info.comments.length);
@@ -450,8 +449,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &scanline);
             (void) FPX_CloseImage(flashpix);
             FPX_ClearSystem();
-            ThrowReaderException(ResourceLimitError,
-              "MemoryAllocationFailed",image);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+              image);
           }
       }
     /*
@@ -500,8 +499,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateError,
-    "FPX library is not available",image_info->filename);
+  ThrowException(exception,MissingDelegateError,"FPX library is not available",
+    image_info->filename);
   return((Image *) NULL);
 }
 #endif
@@ -855,8 +854,8 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   memory_limit=20000000;
   fpx_status=FPX_SetToolkitMemoryLimit(&memory_limit);
   if (fpx_status != FPX_OK)
-    ThrowWriterException(ResourceLimitError,
-      "Unable to initialize FPX library",image);
+    ThrowWriterException(ResourceLimitError,"Unable to initialize FPX library",
+      image);
   tile_width=64;
   tile_height=64;
   colorspace.numberOfComponents=3;
@@ -956,8 +955,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       if (summary_info.comments.ptr != (unsigned char *) NULL)
         (void) strcpy((char *) summary_info.comments.ptr,comment->value);
       else
-        ThrowWriterException(DelegateError,"Unable to set image comments",
-          image);
+        ThrowWriterException(DelegateError,"Unable to set image comments",image);
     }
   fpx_status=FPX_SetSummaryInformation(flashpix,&summary_info);
   if (fpx_status != FPX_OK)
@@ -1117,22 +1115,21 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
         {
           fpx_status=FPX_SetImageColorTwistMatrix(flashpix,&color_twist);
           if (fpx_status != FPX_OK)
-            ThrowWriterException(DelegateError,
-              "Unable to set color color twist",image);
+            ThrowWriterException(DelegateError,"Unable to set color color twist",
+              image);
         }
       if (contrast_valid)
         {
           fpx_status=FPX_SetImageContrastAdjustment(flashpix,&contrast);
           if (fpx_status != FPX_OK)
-            ThrowWriterException(DelegateError,"Unable to set contrast",
-              image);
+            ThrowWriterException(DelegateError,"Unable to set contrast",image);
         }
       if (sharpen_valid)
         {
           fpx_status=FPX_SetImageFilteringValue(flashpix,&sharpen);
           if (fpx_status != FPX_OK)
-            ThrowWriterException(DelegateError,
-              "Unable to set filtering value",image);
+            ThrowWriterException(DelegateError,"Unable to set filtering value",
+              image);
         }
       if (view_rect_valid)
         {

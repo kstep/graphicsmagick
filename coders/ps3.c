@@ -165,8 +165,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (tiff == (TIFF *) NULL)
     {
       (void) remove(filename);
-      ThrowBinaryException(FileOpenError,"UnableToOpenFile",
-        image_info->filename)
+      ThrowBinaryException(FileOpenError,"UnableToOpenFile",image_info->filename)
     }
   /*
     Allocate raw strip buffer.

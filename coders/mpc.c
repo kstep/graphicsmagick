@@ -234,8 +234,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             *p=c;
           }
           if (comment == (char *) NULL)
-            ThrowReaderException(ResourceLimitError,
-              "MemoryAllocationFailed",image);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+              image);
           *p='\0';
           (void) SetImageAttribute(image,"comment",comment);
           LiberateMemory((void **) &comment);
@@ -712,8 +712,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->color_profile.info=(unsigned char *)
           AcquireMemory(image->color_profile.length);
         if (image->color_profile.info == (unsigned char *) NULL)
-          ThrowReaderException(CorruptImageError,
-            "Unable to read color profile",image);
+          ThrowReaderException(CorruptImageError,"Unable to read color profile",
+            image);
         (void) ReadBlob(image,image->color_profile.length,
           image->color_profile.info);
       }
@@ -725,8 +725,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->iptc_profile.info=(unsigned char *)
           AcquireMemory(image->iptc_profile.length);
         if (image->iptc_profile.info == (unsigned char *) NULL)
-          ThrowReaderException(CorruptImageError,
-            "Unable to read IPTC profile",image);
+          ThrowReaderException(CorruptImageError,"Unable to read IPTC profile",
+            image);
         (void) ReadBlob(image,image->iptc_profile.length,
           image->iptc_profile.info);
       }

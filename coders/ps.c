@@ -314,8 +314,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (ferror(file))
     {
       (void) fclose(file);
-      ThrowReaderException(FileOpenError,
-        "An error has occurred writing to file",image)
+      ThrowReaderException(FileOpenError,"An error has occurred writing to file",
+        image)
     }
   (void) rewind(file);
   (void) fputs(translate_geometry,file);
@@ -360,8 +360,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=ReadImage(image_info,exception);
       if (image != (Image *) NULL)
         return(image);
-      ThrowReaderException(CorruptImageError,"Postscript delegate failed",
-        image)
+      ThrowReaderException(CorruptImageError,"Postscript delegate failed",image)
     }
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) NULL;
@@ -370,8 +369,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   DestroyImageInfo(clone_info);
   (void) remove(image_info->filename);
   if (image == (Image *) NULL)
-    ThrowReaderException(CorruptImageError,"Postscript delegate failed",
-      image);
+    ThrowReaderException(CorruptImageError,"Postscript delegate failed",image);
   do
   {
     (void) strcpy(image->magick,"PS");
@@ -982,8 +980,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             */
             preview_image=CloneImage(image,0,0,True,&image->exception);
             if (preview_image == (Image *) NULL)
-              ThrowWriterException(ResourceLimitError,
-                "MemoryAllocationFailed",image);
+              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+                image);
             /*
               Dump image as bitmap.
             */

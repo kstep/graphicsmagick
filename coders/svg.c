@@ -280,7 +280,7 @@ static char **GetStyleTokens(void *context,const char *text,int *number_tokens)
   if (tokens == (char **) NULL)
     {
       ThrowException(svg_info->exception,ResourceLimitError,
-        "Unable to convert string to tokens","MemoryAllocationFailed");
+				"MemoryAllocationFailed","Unable to convert string to tokens");
       return((char **) NULL);
     }
   /*
@@ -338,7 +338,7 @@ static char **GetTransformTokens(void *context,const char *text,
   if (tokens == (char **) NULL)
     {
       ThrowException(svg_info->exception,ResourceLimitError,
-        "Unable to convert string to tokens","MemoryAllocationFailed");
+				"MemoryAllocationFailed","Unable to convert string to tokens");
       return((char **) NULL);
     }
   /*
@@ -699,7 +699,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
   if (svg_info->scale == (double *) NULL)
     {
       ThrowException(svg_info->exception,ResourceLimitError,
-        "Unable to convert SVG image","MemoryAllocationFailed");
+				"MemoryAllocationFailed","Unable to convert SVG image");
       return;
     }
   svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
@@ -2849,8 +2849,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   splines=fitted_splines(pixels,&fit_info);
   output_file=fopen(image->filename,"w");
   if (output_file == (FILE *) NULL)
-    ThrowWriterException(FileOpenError,"Unable to open the output file",
-      image);
+    ThrowWriterException(FileOpenError,"Unable to open the output file",image);
   output_writer(output_file,image->filename,0,0,image_header.width,
     image_header.height,splines);
   return(True);
@@ -3701,7 +3700,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       if (primitive_info == (PrimitiveInfo *) NULL)
         {
           ThrowException(&image->exception,ResourceLimitError,
-            "Unable to draw image","MemoryAllocationFailed");
+						"MemoryAllocationFailed","Unable to draw image");
           break;
         }
     }

@@ -101,8 +101,8 @@ static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateError,
-    "X11 library is not available",image_info->filename);
+  ThrowException(exception,MissingDelegateError,"X11 library is not available",
+    image_info->filename);
   return((Image *) NULL);
 }
 #endif

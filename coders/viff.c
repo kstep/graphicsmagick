@@ -392,8 +392,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             if (viff_info.data_storage_type == VFF_TYP_BIT)
               image->colors=2;
             if (!AllocateImageColormap(image,image->colors))
-              ThrowReaderException(ResourceLimitError,
-                "MemoryAllocationFailed",image);
+              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+                image);
           }
         break;
       }
@@ -479,8 +479,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         break;
       }
       default:
-        ThrowReaderException(CorruptImageError,
-          "Colormap type is not supported",image)
+        ThrowReaderException(CorruptImageError,"Colormap type is not supported",
+          image)
     }
     /*
       Initialize image structure.
@@ -1092,8 +1092,8 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           */
           viff_colormap=(unsigned char *) AcquireMemory(3*image->colors);
           if (viff_colormap == (unsigned char *) NULL)
-            ThrowWriterException(ResourceLimitError,
-              "MemoryAllocationFailed",image);
+            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+              image);
           q=viff_colormap;
           for (i=0; i < (long) image->colors; i++)
             *q++=ScaleQuantumToChar(image->colormap[i].red);

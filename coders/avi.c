@@ -422,12 +422,11 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if ((LocaleCompare(id,"00db") == 0) || (LocaleCompare(id,"00dc") == 0))
       {
-  if (LocaleCompare(bmp_info.compression,"MJPG") == 0)
+        if (LocaleCompare(bmp_info.compression,"MJPG") == 0)
           {
             FormatString(message,"AVI compression %.1024s not yet supported",
               bmp_info.compression);
-            ThrowException(exception,CorruptImageError,message,
-              image->filename);
+            ThrowException(exception,CorruptImageError,message,image->filename);
             for ( ; chunk_size != 0; chunk_size--)
               (void) ReadBlobByte(image);
             continue;
@@ -442,8 +441,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->x_resolution=bmp_info.x_pixels/100.0;
         image->y_resolution=bmp_info.y_pixels/100.0;
         if (!AllocateImageColormap(image,number_colors ? number_colors : 256))
-          ThrowReaderException(ResourceLimitError,
-            "MemoryAllocationFailed",image);
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+            image);
         if (number_colors != 0)
           (void) memcpy(image->colormap,colormap,
             number_colors*sizeof(PixelPacket));
@@ -665,8 +664,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
           default:
-            ThrowReaderException(CorruptImageError,"Not a avi image file",
-              image)
+            ThrowReaderException(CorruptImageError,"Not a avi image file",image)
         }
         LiberateMemory((void **) &pixels);
         if ((unsigned long) image->scene < (avi_info.total_frames-1))

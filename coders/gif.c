@@ -1277,8 +1277,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
               {
                 LiberateMemory((void **) &global_colormap);
                 LiberateMemory((void **) &colormap);
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed",image)
+                ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+                  image)
               }
             image->colormap[opacity]=image->background_color;
             for (y=0; y < (long) image->rows; y++)
@@ -1455,8 +1455,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       {
         LiberateMemory((void **) &global_colormap);
         LiberateMemory((void **) &colormap);
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
-          image)
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image)
       }
     (void) WriteBlobByte(image,0x0);
     if (image->next == (Image *) NULL)

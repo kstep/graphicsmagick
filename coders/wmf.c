@@ -450,7 +450,7 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
   if(!image)
     {
        ThrowException(&ddata->image->exception,exception.severity,
-                       exception.reason,exception.description);
+         exception.reason,exception.description);
        return;
     }
 
@@ -481,7 +481,7 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
         }
       else
         ThrowException(&ddata->image->exception,exception.severity,
-                       exception.reason,exception.description);
+          exception.reason,exception.description);
     }
 
   width = AbsoluteValue(bmp_draw->pixel_width * (double) bmp_draw->crop.w);
@@ -549,7 +549,7 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
 
       FormatString(description,"packed DIB at offset %ld", bmp_read->offset);
       ThrowException(&ddata->image->exception,CorruptImageError,exception.reason,
-                     exception.description);
+        exception.description);
     }
   else
     {
@@ -682,7 +682,7 @@ static void ipa_device_begin(wmfAPI * API)
       else
         {
           ThrowException(&ddata->image->exception,exception.severity,
-                         exception.reason,exception.description);
+            exception.reason,exception.description);
         }
     }
 
@@ -2106,7 +2106,7 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
   if(type_info_base == 0)
     {
       ThrowException(&ddata->image->exception,exception.severity,
-                     exception.reason,exception.description);
+        exception.reason,exception.description);
       return;
     }
 
@@ -2407,7 +2407,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     {
       wmf_api_destroy(API);
       ThrowReaderException(CorruptImageError,
-                           "Failed to compute output size", image);
+        "Failed to compute output size", image);
     }
 
   /* Obtain (or guess) metafile units */

@@ -164,8 +164,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (tiff == (TIFF *) NULL)
     {
       (void) remove(filename);
-      ThrowBinaryException(FileOpenError,"UnableToOpenFile",
-        image_info->filename)
+      ThrowBinaryException(FileOpenError,"UnableToOpenFile",image_info->filename)
     }
   /*
     Allocate raw strip buffer.
@@ -815,8 +814,8 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             length=number_pixels;
             pixels=(unsigned char *) AcquireMemory(length);
             if (pixels == (unsigned char *) NULL)
-              ThrowWriterException(ResourceLimitError,
-                "MemoryAllocationFailed",image);
+              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+                image);
             /*
               Dump Runlength encoded pixels.
             */
@@ -922,8 +921,8 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 number_pixels;
               pixels=(unsigned char *) AcquireMemory(length);
               if (pixels == (unsigned char *) NULL)
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed",image);
+                ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+                  image);
               /*
                 Dump Packbit encoded pixels.
               */
@@ -1055,8 +1054,8 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               length=number_pixels;
               pixels=(unsigned char *) AcquireMemory(length);
               if (pixels == (unsigned char *) NULL)
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed",image);
+                ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+                  image);
               /*
                 Dump Runlength encoded pixels.
               */

@@ -223,8 +223,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"XWD file format version mismatch",
       image);
   if (header.header_size < sz_XWDheader)
-    ThrowReaderException(CorruptImageError,"XWD header size is too small",
-      image);
+    ThrowReaderException(CorruptImageError,"XWD header size is too small",image);
   length=header.header_size-sz_XWDheader;
   comment=(char *) AcquireMemory(length+1);
   if (comment == (char *) NULL)

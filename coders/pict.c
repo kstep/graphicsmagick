@@ -1062,8 +1062,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             if (pixels == (unsigned char *) NULL)
               {
                 DestroyImage(tile_image);
-                ThrowReaderException(ResourceLimitError,
-                  "MemoryAllocationFailed",image)
+                ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+                  image)
               }
             /*
               Convert PICT tile image to pixel packets.

@@ -328,8 +328,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 count=ReadBlob(image,1,(char *) &runlength);
                 if (count == 0)
-                  ThrowReaderException(CorruptImageError,
-                    "UnableToReadImageData",image);
+                  ThrowReaderException(CorruptImageError,"UnableToReadImageData",
+                    image);
                 flag=runlength & 0x80;
                 if (flag != 0)
                   runlength-=128;
@@ -389,8 +389,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           }
         if (status == False)
-          ThrowReaderException(CorruptImageError,"UnableToReadImageData",
-            image);
+          ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
         if (image->storage_class == PseudoClass)
           indexes[x]=index;
         *q++=pixel;

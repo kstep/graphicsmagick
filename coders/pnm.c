@@ -504,8 +504,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
         }
         if (EOFBlob(image))
-          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",
-            image);
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
         break;
       }
       case '5':
@@ -523,8 +522,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           count=ReadBlob(image,packets*image->columns,pixels);
           if (count == 0)
-            ThrowReaderException(CorruptImageError,
-              "UnableToReadImageData",image);
+            ThrowReaderException(CorruptImageError,"UnableToReadImageData",
+              image);
           p=pixels;
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -566,8 +565,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         LiberateMemory((void **) &pixels);
         if (EOFBlob(image))
-          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",
-            image);
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
         break;
       }
       case '6':
@@ -638,8 +636,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         handler=SetMonitorHandler((MonitorHandler) NULL);
         (void) SetMonitorHandler(handler);
         if (EOFBlob(image))
-          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",
-            image);
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
         break;
       }
       default:

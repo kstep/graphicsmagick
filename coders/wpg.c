@@ -600,9 +600,9 @@ typedef struct {
    Header.Reserved=ReadBlobLSBShort(image);
 
   if (Header.FileId!=0x435057FF || (Header.ProductType>>8)!=0x16 )
-      ThrowReaderException(CorruptImageError,"Not a WPG image file",image);
-  if(Header.EncryptKey!=0 )
-      ThrowReaderException(CorruptImageError,"Encrypted WPG image file",image);
+    ThrowReaderException(CorruptImageError,"Not a WPG image file",image);
+  if (Header.EncryptKey!=0 )
+    ThrowReaderException(CorruptImageError,"Encrypted WPG image file",image);
 
   image->colors = 0;
 

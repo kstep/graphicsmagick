@@ -166,8 +166,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (tiff == (TIFF *) NULL)
     {
       (void) remove(filename);
-      ThrowBinaryException(FileOpenError,"UnableToOpenFile",
-        image_info->filename)
+      ThrowBinaryException(FileOpenError,"UnableToOpenFile",image_info->filename)
     }
   /*
     Allocate raw strip buffer.
@@ -1517,8 +1516,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             if (pixels == (unsigned char *) NULL)
               {
                 DestroyImage(tile_image);
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed",image)
+                ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+                  image)
               }
             /*
               Dump Runlength encoded pixels.
@@ -1615,8 +1614,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             if (pixels == (unsigned char *) NULL)
               {
                 DestroyImage(tile_image);
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed",image)
+                ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+                  image)
               }
             /*
               Dump runoffset encoded pixels.
