@@ -99,8 +99,8 @@ typedef struct _PrimitiveInfo
   Forward declarations
 */
 static double
-  IntersectPrimitive(PrimitiveInfo *,const DrawInfo *,const PointInfo *,
-    const int,Image *);
+  IntersectPrimitive(PrimitiveInfo *,const DrawInfo *,Image *,
+    const PointInfo *,double *);
 
 static unsigned int
   GeneratePath(PrimitiveInfo *,const char *);
@@ -528,8 +528,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   double
     alpha,
     beta,
+    fill_opacity,
     mid,
-    opacity;
+    stroke_opacity;
 
   DrawInfo
     *clone_info;
@@ -1307,80 +1308,50 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         target.x=x;
         target.y=y;
-        switch (primitive_info->primitive)
-        {
-          case ArcPrimitive:
-          case BezierPrimitive:
-          case CirclePrimitive:
-          case EllipsePrimitive:
-          case LinePrimitive:
-          case PathPrimitive:
-          case PolylinePrimitive:
-          case PolygonPrimitive:
-          case RectanglePrimitive:
-          case RoundRectanglePrimitive:
+        stroke_opacity=IntersectPrimitive(primitive_info,clone_info,image,
+          &target,&fill_opacity);
+        color=clone_info->fill;
+        if (clone_info->tile != (Image *) NULL)
+          color=GetOnePixel(clone_info->tile,x % clone_info->tile->columns,
+            y % clone_info->tile->rows);
+        if ((fill_opacity != 0.0) && (color.opacity != TransparentOpacity))
           {
-            color=clone_info->fill;
-            if (clone_info->tile != (Image *) NULL)
-              color=GetOnePixel(clone_info->tile,x % clone_info->tile->columns,
-                y % clone_info->tile->rows);
-            if (color.opacity == TransparentOpacity)
-              break;
-            opacity=MaxRGB-0.01*(MaxRGB-color.opacity)*clone_info->opacity*
-              IntersectPrimitive(primitive_info,clone_info,&target,True,image);
-            if ((int) opacity == TransparentOpacity)
-              break;
+            /*
+              Fill.
+            */
+            fill_opacity=MaxRGB-
+              0.01*(MaxRGB-color.opacity)*clone_info->opacity*fill_opacity;
             if (!clone_info->antialias)
-              opacity=(Quantum) (OpaqueOpacity*clone_info->opacity/100.0);
-            q->red=(Quantum)
-              (alpha*(color.red*(MaxRGB-opacity)+q->red*opacity));
-            q->green=(Quantum)
-              (alpha*(color.green*(MaxRGB-opacity)+q->green*opacity));
-            q->blue=(Quantum)
-              (alpha*(color.blue*(MaxRGB-opacity)+q->blue*opacity));
-            q->opacity=(Quantum)
-              (alpha*(opacity*(MaxRGB-opacity)+q->opacity*opacity));
-            break;
+              fill_opacity=(Quantum) (OpaqueOpacity*clone_info->opacity/100.0);
+            q->red=(Quantum) (alpha*(color.red*(MaxRGB-fill_opacity)+
+              q->red*fill_opacity));
+            q->green=(Quantum) (alpha*(color.green*(MaxRGB-fill_opacity)+
+              q->green*fill_opacity));
+            q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-fill_opacity)+
+              q->blue*fill_opacity));
+            q->opacity=(Quantum) (alpha*(fill_opacity*(MaxRGB-fill_opacity)+
+              q->opacity*fill_opacity));
           }
-          default:
-            break;
-        }
         color=clone_info->stroke;
-        switch (primitive_info->primitive)
-        {
-          case ArcPrimitive:
-          case BezierPrimitive:
-          case CirclePrimitive:
-          case EllipsePrimitive:
-          case LinePrimitive:
-          case PathPrimitive:
-          case PolylinePrimitive:
-          case PolygonPrimitive:
-          case RectanglePrimitive:
-          case RoundRectanglePrimitive:
+        if ((stroke_opacity != 0.0) && (color.opacity != TransparentOpacity))
           {
-            if (color.opacity == TransparentOpacity)
-              break;
-          }
-          default:
-          {
-            opacity=MaxRGB-0.01*(MaxRGB-color.opacity)*clone_info->opacity*
-              IntersectPrimitive(primitive_info,clone_info,&target,False,image);
-            if ((int) opacity == TransparentOpacity)
-              break;
+            /*
+              Stroke.
+            */
+            stroke_opacity=MaxRGB-
+              0.01*(MaxRGB-color.opacity)*clone_info->opacity*stroke_opacity;
             if (!clone_info->antialias)
-              opacity=(Quantum) (OpaqueOpacity*clone_info->opacity/100.0);
-            q->red=(Quantum)
-              (alpha*(color.red*(MaxRGB-opacity)+q->red*opacity));
-            q->green=(Quantum)
-              (alpha*(color.green*(MaxRGB-opacity)+q->green*opacity));
-            q->blue=(Quantum)
-              (alpha*(color.blue*(MaxRGB-opacity)+q->blue*opacity));
-            q->opacity=(Quantum)
-              (alpha*(opacity*(MaxRGB-opacity)+q->opacity*opacity));
-            break;
+              stroke_opacity=(Quantum)
+                (OpaqueOpacity*clone_info->opacity/100.0);
+            q->red=(Quantum) (alpha*(color.red*(MaxRGB-stroke_opacity)+
+              q->red*stroke_opacity));
+            q->green=(Quantum) (alpha*(color.green*(MaxRGB-stroke_opacity)+
+              q->green*stroke_opacity));
+            q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-stroke_opacity)+
+              q->blue*stroke_opacity));
+            q->opacity=(Quantum) (alpha*(stroke_opacity*(MaxRGB-stroke_opacity)+
+              q->opacity*stroke_opacity));
           }
-        }
         q++;
         target.x++;
       }
@@ -2003,6 +1974,7 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
 {
   PointInfo
     degrees,
+    offset,
     point;
 
   register int
@@ -2012,24 +1984,26 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
     *p;
 
   p=primitive_info;
-  if (arc.x > (0.5*end.x))
-    arc.x=0.5*end.x;
-  if (arc.y > (0.5*end.y))
-    arc.y=0.5*end.y;
-  point.x=start.x+end.x-arc.x;
+  offset.x=end.x-start.x;
+  offset.y=end.y-start.y;
+  if (arc.x > (0.5*offset.x))
+    arc.x=0.5*offset.x;
+  if (arc.y > (0.5*offset.y))
+    arc.y=0.5*offset.y;
+  point.x=start.x+offset.x-arc.x;
   point.y=start.y+arc.y;
   degrees.x=270.0;
   degrees.y=360.0;
   GenerateEllipse(p,point,arc,degrees);
   p+=p->coordinates;
-  point.x=start.x+end.x-arc.x;
-  point.y=start.y+end.y-arc.y;
+  point.x=start.x+offset.x-arc.x;
+  point.y=start.y+offset.y-arc.y;
   degrees.x=0.0;
   degrees.y=90.0;
   GenerateEllipse(p,point,arc,degrees);
   p+=p->coordinates;
   point.x=start.x+arc.x;
-  point.y=start.y+end.y-arc.y;
+  point.y=start.y+offset.y-arc.y;
   degrees.x=90.0;
   degrees.y=180.0;
   GenerateEllipse(p,point,arc,degrees);
@@ -2128,25 +2102,26 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %  The format of the IntersectPrimitive method is:
 %
 %      double IntersectPrimitive(PrimitiveInfo *primitive_info,
-%        const DrawInfo *draw_info,const PointInfo *point,const int fill,
-%        Image *image)
+%        const DrawInfo *draw_info,Image *image,const PointInfo *point,
+%        double *fill_opacity)
 %
 %  A description of each parameter follows:
 %
-%    o opacity:  Method IntersectPrimitive returns a opacity from [0..1] as
-%      determined by intesecting the (x,y) position of the image with the
-%      specified primitive list.
+%    o opacity:  Method IntersectPrimitive returns a stroke opacity from
+%      [0..1] as determined by intesecting the (x,y) position of the image
+%      with the specified primitive list.
 %
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
 %
 %    o draw_info: Specifies a pointer to a DrawInfo structure.
 %
+%    o image: The address of a structure of type Image.
+%
 %    o target: PointInfo representing the (x,y) location in the image.
 %
-%    o fill: only return True if the point is in the interior of the
-%      specified graphics primitive.
-%
-%    o image: The address of a structure of type Image.
+%    o fill_opacity: returns a fill opacity from [0..1] as determined by
+%      intesecting the (x,y) position of the image with the specified
+%      primitive list.
 %
 %
 */
@@ -2184,7 +2159,7 @@ static inline double PixelOnLine(const PointInfo *point,const PointInfo *p,
     alpha,
     distance;
 
-  if ((mid == 0) || (opacity == 1.0))
+  if ((mid == 0.0) || (opacity == 1.0))
     return(opacity);
   if ((p->x == q->x) && (p->y == q->y))
     return((point->x == p->x) && (point->y == p->y) ? 1.0 : opacity);
@@ -2202,7 +2177,8 @@ static inline double PixelOnLine(const PointInfo *point,const PointInfo *p,
 }
 
 static double IntersectPrimitive(PrimitiveInfo *primitive_info,
-  const DrawInfo *draw_info,const PointInfo *point,const int fill,Image *image)
+  const DrawInfo *draw_info,Image *image,const PointInfo *point,
+  double *fill_opacity)
 {
   PixelPacket
     border_color;
@@ -2212,7 +2188,7 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
     beta,
     distance,
     mid,
-    opacity;
+    stroke_opacity;
 
   register int
     i;
@@ -2229,8 +2205,9 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
   assert(draw_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  *fill_opacity=0.0;
+  stroke_opacity=0.0;
   mid=draw_info->affine[0]*draw_info->linewidth/2.0;
-  opacity=0.0;
   p=primitive_info;
   while (p->primitive != UndefinedPrimitive)
   {
@@ -2242,7 +2219,7 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
       {
         if ((ceil(point->x-0.5) == ceil(p->point.x-0.5)) &&
             (ceil(point->y-0.5) == ceil(p->point.y-0.5)))
-          opacity=1.0;
+          stroke_opacity=1.0;
         break;
       }
       case ArcPrimitive:
@@ -2264,15 +2241,10 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           crossing,
           crossings;
 
-        if (!fill)
-          {
-            for (p++; (p <= q) && (opacity != 1.0); p++)
-              opacity=PixelOnLine(point,&(p-1)->point,&p->point,mid,opacity);
-            break;
-          }
         minimum_distance=DistanceToLine(point,&q->point,&p->point);
         subpath_opacity=0.0;
-        if ((primitive_info->method == FillToBorderMethod) && (opacity != 0.0))
+        if ((primitive_info->method == FillToBorderMethod) &&
+            (*fill_opacity != 0.0))
           subpath_opacity=PixelOnLine(point,&q->point,&p->point,1.0,0.0);
         crossings=0;
         if ((point->y < q->point.y) != (point->y < p->point.y))
@@ -2285,13 +2257,15 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
               if (crossing)
                 crossings++;
           }
-        for (p++; p <= q; p++)
+        for (p++; (p <= q) && (stroke_opacity != 1.0); p++)
         {
           distance=DistanceToLine(point,&(p-1)->point,&p->point);
           if (distance < minimum_distance)
             minimum_distance=distance;
+          stroke_opacity=
+            PixelOnLine(point,&(p-1)->point,&p->point,mid,stroke_opacity);
           if ((primitive_info->method == FillToBorderMethod) &&
-              (opacity != 0.0) && (subpath_opacity != 1.0))
+              (*fill_opacity != 0.0) && (subpath_opacity != 1.0))
             subpath_opacity=
               PixelOnLine(point,&(p-1)->point,&p->point,1.0,subpath_opacity);
           if (point->y < (p-1)->point.y)
@@ -2317,22 +2291,25 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
             if (crossing)
               crossings++;
         }
-        if ((primitive_info->method == FillToBorderMethod) && (opacity != 0.0))
+        if (stroke_opacity == 1.0)
+          break;
+        if ((primitive_info->method == FillToBorderMethod) &&
+            (*fill_opacity != 0.0))
           if ((crossings & 0x01)|| (minimum_distance <= (0.5*0.5)))
             {
-              opacity=subpath_opacity;
+              *fill_opacity=subpath_opacity;
               break;
             }
         if (!draw_info->antialias || (minimum_distance > (0.5*0.5)))
           {
             if (crossings & 0x01)
-              opacity=1.0;
+              *fill_opacity=1.0;
             break;
           }
         alpha=0.5+(crossings & 0x01 ? 1.0 : -1.0)*sqrt(minimum_distance);
         beta=alpha*alpha;
-        if (beta > opacity)
-          opacity=beta;
+        if (beta > *fill_opacity)
+          *fill_opacity=beta;
         break;
       }
       case ColorPrimitive:
@@ -2345,7 +2322,7 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
             if ((ceil(point->x-0.5) != ceil(p->point.x-0.5)) ||
                 (ceil(point->y-0.5) != ceil(p->point.y-0.5)))
               break;
-            opacity=1.0;
+            stroke_opacity=1.0;
             break;
           }
           case ReplaceMethod:
@@ -2359,7 +2336,7 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
             target=GetOnePixel(image,ceil(p->point.x-0.5),(int)
               ceil(p->point.y-0.5));
             (void) OpaqueImage(image,target,draw_info->fill);
-            opacity=0.0;
+            stroke_opacity=0.0;
             break;
           }
           case FloodfillMethod:
@@ -2381,7 +2358,7 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           }
           case ResetMethod:
           {
-            opacity=1.0;
+            stroke_opacity=1.0;
             break;
           }
         }
@@ -2422,7 +2399,7 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
             target=GetOnePixel(image,ceil(p->point.x-0.5),(int)
               ceil(p->point.y-0.5));
             (void) TransparentImage(image,target);
-            opacity=0.0;
+            stroke_opacity=0.0;
             break;
           }
           case FloodfillMethod:
@@ -2523,7 +2500,7 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
     }
     p=q+1;
   }
-  return(opacity);
+  return(stroke_opacity);
 }
 
 /*

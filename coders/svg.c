@@ -1286,8 +1286,10 @@ static void SVGEndElement(void *context,const xmlChar *name)
       if (svg_info->radius.y == 0.0)
         svg_info->radius.y=svg_info->radius.x;
       (void) fprintf(svg_info->file,"roundRectangle %g,%g %g,%g %g,%g\n",
-        svg_info->bounds.x,svg_info->bounds.y,svg_info->bounds.width,
-        svg_info->bounds.height,svg_info->radius.x,svg_info->radius.y);
+        svg_info->bounds.x,svg_info->bounds.y,
+        svg_info->bounds.x+svg_info->bounds.width,
+        svg_info->bounds.y+svg_info->bounds.height,
+        svg_info->radius.x,svg_info->radius.y);
       svg_info->radius.x=0.0;
       svg_info->radius.y=0.0;
       return;
