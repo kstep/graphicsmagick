@@ -121,6 +121,10 @@ typedef struct _DiversityPacket
 
 typedef struct _XAnnotateInfo
 {
+  struct _XAnnotateInfo
+    *previous,
+    *next;
+
   int
     x,
     y;
@@ -129,9 +133,6 @@ typedef struct _XAnnotateInfo
     width,
     height;
 
-  AnnotationStencil
-    stencil;
-
   double
     degrees;
 
@@ -139,12 +140,13 @@ typedef struct _XAnnotateInfo
     *font_info;
 
   char
-    *text,
-    geometry[MaxTextExtent];
+    *text;
 
-  struct _XAnnotateInfo
-    *previous,
-    *next;
+  AnnotationStencil
+    stencil;
+
+  char
+    geometry[MaxTextExtent];
 } XAnnotateInfo;
 
 typedef struct _XDrawInfo
@@ -156,9 +158,6 @@ typedef struct _XDrawInfo
   unsigned int
     width,
     height;
-
-  char
-    geometry[MaxTextExtent];
 
   double
     degrees;
@@ -186,6 +185,9 @@ typedef struct _XDrawInfo
 
   XPoint
     *coordinate_info;
+
+  char
+    geometry[MaxTextExtent];
 } XDrawInfo;
 
 typedef struct _XImportInfo
@@ -218,14 +220,14 @@ typedef struct _XPixelInfo
     pen_colors[MaxNumberPens],
     *gamma_map;
 
-  unsigned short
-    box_index,
-    pen_index;
-
   GC
     annotate_context,
     highlight_context,
     widget_context;
+
+  unsigned short
+    box_index,
+    pen_index;
 } XPixelInfo;
 
 typedef struct _XResourceInfo
@@ -250,9 +252,6 @@ typedef struct _XResourceInfo
     *background_color,
     *border_color;
 
-  unsigned int
-    border_width;
-
   char
     *client_name;
 
@@ -260,9 +259,8 @@ typedef struct _XResourceInfo
     colormap;
 
   unsigned int
-    color_recovery;
-
-  unsigned int
+    border_width,
+    color_recovery,
     confirm_exit,
     debug,
     delay;
@@ -270,22 +268,16 @@ typedef struct _XResourceInfo
   char
     *display_gamma;
 
-  unsigned int
-    display_warnings;
-
   char
     *font,
     *font_name[MaxNumberFonts],
     *foreground_color;
 
   unsigned int
+    display_warnings,
     gamma_correct;
 
-  int
-    gravity;
-
   char
-    home_directory[MaxTextExtent],
     *icon_geometry;
 
   unsigned int
@@ -295,26 +287,24 @@ typedef struct _XResourceInfo
   char
     *image_geometry;
 
-  unsigned int
-    magnify;
-
   char
     *map_type,
     *matte_color,
     *name;
 
   unsigned int
+    magnify,
     pause;
 
   char
     *pen_colors[MaxNumberPens];
 
-  int
-    quantum;
-
   char
     *text_font,
     *title;
+
+  int
+    quantum;
 
   unsigned int
     update,
@@ -332,15 +322,18 @@ typedef struct _XResourceInfo
 
   Image
     *copy_image;
+
+  int
+    gravity;
+
+  char
+    home_directory[MaxTextExtent];
 } XResourceInfo;
 
 typedef struct _XWindowInfo
 {
   Window
     id;
-
-  int
-    screen;
 
   Window
     root;
@@ -401,6 +394,9 @@ typedef struct _XWindowInfo
     shape,
     shared_memory;
 
+  int
+    screen;
+
   XImage
     *ximage,
     *matte_image;
@@ -413,9 +409,6 @@ typedef struct _XWindowInfo
     matte_pixmap,
     *matte_pixmaps;
 
-  int
-    mask;
-
   XSetWindowAttributes
     attributes;
 
@@ -426,6 +419,9 @@ typedef struct _XWindowInfo
   XShmSegmentInfo
     segment_info[2];
 #endif
+
+  int
+    mask;
 
   unsigned int
     orphan,

@@ -13,6 +13,11 @@ extern "C" {
 */
 typedef struct _XWidgetInfo
 {
+  char
+    *cursor,
+    *text,
+    *marker;
+
   int
     id;
 
@@ -33,11 +38,6 @@ typedef struct _XWidgetInfo
     center,
     trough,
     highlight;
-
-  char
-    *cursor,
-    *text,
-    *marker;
 } XWidgetInfo;
 
 /*

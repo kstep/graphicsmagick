@@ -97,17 +97,17 @@ typedef struct _ColorPacket
 
 typedef struct _NodeInfo
 {
-  unsigned char
-    level;
-
-  unsigned long
-    number_unique;
+  struct _NodeInfo
+    *child[8];
 
   ColorPacket
     *list;
 
-  struct _NodeInfo
-    *child[8];
+  unsigned long
+    number_unique;
+
+  unsigned char
+    level;
 } NodeInfo;
 
 typedef struct _Nodes

@@ -1566,7 +1566,7 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
           {
             image->blob->extent=image->blob->offset+image->blob->quantum;
             ReacquireMemory((void **) &image->blob->data,image->blob->extent+1);
-            SyncBlob(image);
+            (void) SyncBlob(image);
             if (image->blob->data == (unsigned char *) NULL)
               {
                 DetachBlob(image->blob);
@@ -1795,7 +1795,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
             return(0);
           image->blob->extent+=length+image->blob->quantum;
           ReacquireMemory((void **) &image->blob->data,image->blob->extent+1);
-          SyncBlob(image);
+          (void) SyncBlob(image);
           if (image->blob->data == (unsigned char *) NULL)
             {
               DetachBlob(image->blob);
