@@ -1,958 +1,1358 @@
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
-<html>
-<head>
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="description" content="ImageMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
-   <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software    development, simulation, image, software, AniMagick, Animagic,    Magick++">
-   <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
-   <title>ImageMagick - Image Processing and Display Package</title>
-<link rel="StyleSheet" href="magick.css" type="text/css">
-</head>
-<body text="#000000" bgcolor="#FFFFFF" link="#0085C0" vlink="#800080" alink="#0085C0">
-
-<center><img SRC="../images/magick_small.png" ALT="" height="118" width="114"></center>
-
-<p><br>
-<br>
-<br>
-<p>Here is a table of image formats <b>ImageMagick</b> can read and/or
-write.
-<br>&nbsp;
-<center><table BORDER=0 CELLPADDING=5 WIDTH="90%" BGCOLOR="#99CCFF" >
-<caption>&nbsp;</caption>
-
-<tr>
-<th>Tag</th>
-
-<th>Description</th>
-
-<th>Notes</th>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><a href="http://www.jmcgowan.com/avi.html">AVI</a></td>
-
-<td BGCOLOR="#9EBAC6">Audio/Video Interleave image file</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>AVS</b></td>
-
-<td BGCOLOR="#9EBAC6">AVS X image file</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><a href="http://msdn.microsoft.com/library/sdkdoc/gdi/bitmaps_9c6r.htm">BMP</a></td>
-
-<td BGCOLOR="#9EBAC6">Microsoft Windows bitmap image file</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>CGM</b></td>
-
-<td BGCOLOR="#9EBAC6">Computer Graphics Metafile</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.agocg.ac.uk/train/cgm/ralcgm.htm">ralcgm</a>;
-read only</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>CMYK</b></td>
-
-<td BGCOLOR="#9EBAC6">Raw cyan, magenta, yellow, and black samples</td>
-
-<td BGCOLOR="#9EBAC6">set <tt>-size</tt> and <tt>-depth</tt> to specify
-the image width, height, and depth</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>DCM</b></td>
-
-<td BGCOLOR="#9EBAC6">Digital Imaging and Communications in Medicine image
-file format</td>
-
-<td BGCOLOR="#9EBAC6">read only</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>DCX</b></td>
-
-<td BGCOLOR="#9EBAC6">ZSoft IBM PC multi-page Paintbrush file</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>DIB</b></td>
-
-<td BGCOLOR="#9EBAC6">Microsoft Windows bitmap image file</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>DPX</b></td>
-
-<td BGCOLOR="#9EBAC6">Digital Moving Picture Exchange</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>EPDF</b></td>
-
-<td BGCOLOR="#9EBAC6">Encapsulated Portable Document Format</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>EPI</b></td>
-
-<td BGCOLOR="#9EBAC6">Adobe Encapsulated PostScript Interchange format</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a>
-to read</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>EPS</b></td>
-
-<td BGCOLOR="#9EBAC6">Adobe Encapsulated PostScript file</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a>
-to read</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>EPS2</b></td>
-
-<td BGCOLOR="#9EBAC6">Adobe Level II Encapsulated PostScript file</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a>
-to read</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>EPSF</b></td>
-
-<td BGCOLOR="#9EBAC6">Adobe Encapsulated PostScript file</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a>
-to read</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>EPSI</b></td>
-
-<td BGCOLOR="#9EBAC6">Adobe Encapsulated PostScript Interchange format</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a>
-to read</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>EPT</b></td>
-
-<td BGCOLOR="#9EBAC6">Adobe Encapsulated PostScript Interchange format
-with TIFF preview</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a>
-to read</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>FAX</b></td>
-
-<td BGCOLOR="#9EBAC6">Group 3</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>FIG</b></td>
-
-<td BGCOLOR="#9EBAC6">TransFig image format</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="ftp://ftp.x.org/contrib/applications/drawing_tools/transfig">TransFig</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><a href="http://www.cv.nrao.edu/fits/">FITS</a></td>
-
-<td BGCOLOR="#9EBAC6">Flexible Image Transport System</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>FPX</b></td>
-
-<td BGCOLOR="#9EBAC6">FlashPix Format</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="ftp://ftp.imagemagick.org/pub/ImageMagick/delegates">FlashPix SDK</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>GIF</b></td>
-
-<td BGCOLOR="#9EBAC6">CompuServe graphics interchange format</td>
-
-<td BGCOLOR="#9EBAC6">8-bit color</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>GIF87</b></td>
-
-<td BGCOLOR="#9EBAC6">CompuServe graphics interchange format</td>
-
-<td BGCOLOR="#9EBAC6">8-bit color (version 87a)</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>GPLT</b></td>
-
-<td BGCOLOR="#9EBAC6">Gnuplot plot files</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="ftp://ftp.dartmouth.edu/pub/gnuplot/">gnuplot3.5.tar.Z</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>GRADIENT</b></td>
-
-<td BGCOLOR="#9EBAC6">Gradual passing from one shade to another</td>
-
-<td BGCOLOR="#9EBAC6">specify the desired shading as the filename (e.g.
-<tt>gradient:red-blue</tt></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>GRANITE</b></td>
-
-<td BGCOLOR="#9EBAC6">Granite texture.</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>GRAY</b></td>
-
-<td BGCOLOR="#9EBAC6">Raw gray samples</td>
-
-<td BGCOLOR="#9EBAC6">set <tt>-size</tt> and <tt>-depth</tt> to specify
-the image width, height, and depth</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>HDF</b></td>
-
-<td BGCOLOR="#9EBAC6">Hierarchical Data Format</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="ftp://ftp.ncsa.uiuc.edu/HDF/">HDF4.1r2.tar.gz</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>HISTOGRAM</b></td>
-
-<td BGCOLOR="#9EBAC6">Histogram of the image</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>HPGL</b></td>
-
-<td BGCOLOR="#9EBAC6">HP-GL plotter language</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://ftp.cdrom.com/pub/ImageMagick/delegates/hp2xx-3.2.0.tar.gz">hp2xx-3.2.0.tar.gz</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>HTML</b></td>
-
-<td BGCOLOR="#9EBAC6">Hypertext Markup Language with a client-side image
-map</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.tdb.uu.se/~jan/">html2ps</a>
-to read</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>ICO</b></td>
-
-<td BGCOLOR="#9EBAC6">Microsoft icon</td>
-
-<td BGCOLOR="#9EBAC6">read only</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>ICC</b></td>
-
-<td BGCOLOR="#9EBAC6">International Color Consortium color profile</td>
-
-<td BGCOLOR="#9EBAC6">To read, use <tt>-profile</tt> with <i><a href="convert.html">convert</a></i></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>ILBM</b></td>
-
-<td BGCOLOR="#9EBAC6">Amiga IFF</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>IPTC</b></td>
-
-<td BGCOLOR="#9EBAC6">Newswire profile</td>
-
-<td BGCOLOR="#9EBAC6">To read, use <tt>-profile</tt> with <i><a href="convert.html">convert</a></i></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>JBIG</b></td>
-
-<td BGCOLOR="#9EBAC6">Joint Bi-level Image experts Group file interchange
-format</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="ftp://ftp.uni-erlangen.de/pub/doc/ISO/JBIG/">jbigkit-1.0.tar.gz</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>JP2</b></td>
-
-<td BGCOLOR="#9EBAC6">JPEG-2000 JP2 File Format Syntax</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.ece.ubc.ca/~mdadams/jasper/">jasper-1.500.0.zip</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>JPC</b></td>
-
-<td BGCOLOR="#9EBAC6">JPEG-2000 Code Stream Syntax</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.ece.ubc.ca/~mdadams/jasper/">jasper-1.500.0.zip</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>JPEG</b></td>
-
-<td BGCOLOR="#9EBAC6">Joint Photographic Experts Group JFIF format</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="ftp://ftp.uu.net/graphics/jpeg/">jpegsrc.v6b.tar.gz</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>LABEL</b></td>
-
-<td BGCOLOR="#9EBAC6">text image format</td>
-
-<td BGCOLOR="#9EBAC6">specify the desired text as the filename (e.g. <tt>label:This
-is a label</tt></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>MAP</b></td>
-
-<td BGCOLOR="#9EBAC6">colormap intensities and indices</td>
-
-<td BGCOLOR="#9EBAC6">set -depth to set the sample size of the intensities;
-indices are 16-bit if colors > 256.</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>MAN</b></td>
-
-<td BGCOLOR="#9EBAC6">Unix reference manual pages</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><a href="miff.html">MIFF</a></td>
-
-<td BGCOLOR="#9EBAC6">Magick image file format</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><a href="http://www.libmng.com/">MNG</a></td>
-
-<td BGCOLOR="#9EBAC6">Multiple-image Network Graphics</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="ftp://ftp.uu.net/graphics/png/src/">libpng-1.02.tar.gz</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><a href="http://www.mpeg.org/">MPEG&nbsp;</a></td>
-
-<td BGCOLOR="#9EBAC6">Motion Picture Experts Group file interchange format</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="ftp://ftp.mpeg.org/pub/mpeg/mssg/">mpeg2vidcodec_v12.tar.gz</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><a href="http://www.mpeg.org/">M2V&nbsp;</a></td>
-
-<td BGCOLOR="#9EBAC6">Motion Picture Experts Group file interchange format
-(version 2)</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="ftp://ftp.mpeg.org/pub/mpeg/mssg/">mpeg2vidcodec_v12.tar.gz</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>MPC</b></td>
-
-<td BGCOLOR="#9EBAC6">Magick Persistent Cache image file format</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>MTV</b></td>
-
-<td BGCOLOR="#9EBAC6">MTV Raytracing image format</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>MVG</b></td>
-
-<td BGCOLOR="#9EBAC6">Magick Vector Graphics.</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>NETSCAPE</b></td>
-
-<td BGCOLOR="#9EBAC6">Netscape 216 color cube.</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>NULL</b></td>
-
-<td BGCOLOR="#9EBAC6">NULL image</td>
-
-<td BGCOLOR="#9EBAC6">useful for creating blank tiles with <a href="montage.html">montage</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>OTB</b></td>
-
-<td BGCOLOR="#9EBAC6">On-the-air Bitmap</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PBM</b></td>
-
-<td BGCOLOR="#9EBAC6">Portable bitmap format (black and white)</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PCD</b></td>
-
-<td BGCOLOR="#9EBAC6">Photo CD</td>
-
-<td BGCOLOR="#9EBAC6">the maximum resolution written is 768x512 pixels</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PCDS</b></td>
-
-<td BGCOLOR="#9EBAC6">Photo CD</td>
-
-<td BGCOLOR="#9EBAC6">decode with the sRGB color tables</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PCL</b></td>
-
-<td BGCOLOR="#9EBAC6">Page Control Language</td>
-
-<td BGCOLOR="#9EBAC6">write only</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PCX</b></td>
-
-<td BGCOLOR="#9EBAC6">ZSoft IBM PC Paintbrush file</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PDB</b></td>
-
-<td BGCOLOR="#9EBAC6">Pilot Image Format</td>
-
-<td BGCOLOR="#9EBAC6">read only</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PDF</b></td>
-
-<td BGCOLOR="#9EBAC6">Portable Document Format</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a>
-to read</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PGM</b></td>
-
-<td BGCOLOR="#9EBAC6">Portable graymap format (gray scale)</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PICT</b></td>
-
-<td BGCOLOR="#9EBAC6">Apple Macintosh QuickDraw/PICT file</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PIX</b></td>
-
-<td BGCOLOR="#9EBAC6">Alias/Wavefront RLE image format</td>
-
-<td BGCOLOR="#9EBAC6">read only</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PLASMA</b></td>
-
-<td BGCOLOR="#9EBAC6">plasma fractal image.</td>
-
-<td BGCOLOR="#9EBAC6">Specify the base color as the filename (e.g. <tt>plasma:blue-yellow</tt>).
-Use <tt>fractal</tt> to initialize to a random value (e.g. <tt>plasma:fractal</tt></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><a href="http://www.cdrom.com/pub/png/">PNG</a></td>
-
-<td BGCOLOR="#9EBAC6">Portable Network Graphics</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="ftp://ftp.uu.net/graphics/png/src/">libpng-1.02.tar.gz</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PNM</b></td>
-
-<td BGCOLOR="#9EBAC6">Portable anymap</td>
-
-<td BGCOLOR="#9EBAC6">use <tt>+compress</tt> to produce ASCII renditions</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PPM</b></td>
-
-<td BGCOLOR="#9EBAC6">Portable pixmap format (color)</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PREVIEW</b></td>
-
-<td BGCOLOR="#9EBAC6">show a preview an image enhancement, effect, or f/x</td>
-
-<td BGCOLOR="#9EBAC6">specify the desired preview with the <tt>-preview</tt>
-option)</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PRINT</b></td>
-
-<td BGCOLOR="#9EBAC6">Send image to your computer printer</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PS</b></td>
-
-<td BGCOLOR="#9EBAC6">Adobe PostScript file</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a>
-to read</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PSD&nbsp;</b></td>
-
-<td BGCOLOR="#9EBAC6">Adobe Photoshop bitmap file</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PS2</b></td>
-
-<td BGCOLOR="#9EBAC6">Adobe Level II PostScript file</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a>
-to read</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PS3</b></td>
-
-<td BGCOLOR="#9EBAC6">Adobe Level III PostScript file</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a>
-to read</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>PTIF</b></td>
-
-<td BGCOLOR="#9EBAC6">Pyramid encoded TIFF</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.libtiff.org/">tiff-v3.5.4.tar.gz</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><a href="http://www.filmworks.com/">PWP&nbsp;</a></td>
-
-<td BGCOLOR="#9EBAC6">Seattle File Works multi-image file</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>P7</b></td>
-
-<td BGCOLOR="#9EBAC6">Xv's visual schnauzer format</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>RAD</b></td>
-
-<td BGCOLOR="#9EBAC6">Radiance image file</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>RGB</b></td>
-
-<td BGCOLOR="#9EBAC6">Raw red, green, and blue samples</td>
-
-<td BGCOLOR="#9EBAC6">set <tt>-size</tt> and <tt>-depth</tt> to specify
-the image width, height, and depth</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>RGBA</b></td>
-
-<td BGCOLOR="#9EBAC6">Raw red, green, blue, and matte samples</td>
-
-<td BGCOLOR="#9EBAC6">set <tt>-size</tt> and <tt>-depth</tt> to specify
-the image width, height, and depth</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>RLA</b></td>
-
-<td BGCOLOR="#9EBAC6">Alias/Wavefront image file</td>
-
-<td BGCOLOR="#9EBAC6">read only</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>RLE</b></td>
-
-<td BGCOLOR="#9EBAC6">Utah Run length encoded image file</td>
-
-<td BGCOLOR="#9EBAC6">read only</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>SCAN</b></td>
-
-<td BGCOLOR="#9EBAC6">Import image from a scanner device</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.mostang.com/sane/">SANE</a>
-Specify the device name and path as the filename (e.g. <tt>scan:mustek:/dev/scanner</tt></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><a href="http://www.ora.com/centers/gff/formats/scitex/index.htm">SCT&nbsp;</a></td>
-
-<td BGCOLOR="#9EBAC6">Scitex Continuous Tone Picture image file</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><a href="http://www.filmworks.com/">SFW&nbsp;</a></td>
-
-<td BGCOLOR="#9EBAC6">Seattle File Works image file</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>SGI</b></td>
-
-<td BGCOLOR="#9EBAC6">Irix RGB image file</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>SHTML</b></td>
-
-<td BGCOLOR="#9EBAC6">Hypertext Markup Language with a client-side image
-map</td>
-
-<td BGCOLOR="#9EBAC6">write only</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>STEGANO</b></td>
-
-<td BGCOLOR="#9EBAC6">Steganographic image</td>
-
-<td BGCOLOR="#9EBAC6">use <tt>-size</tt> command line option to specify
-width, height, and offset of the steganographic image</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>SUN</b></td>
-
-<td BGCOLOR="#9EBAC6">SUN Rasterfile</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><a href="http://www.w3.org/Graphics/SVG//">SVG&nbsp;</a></td>
-
-<td BGCOLOR="#9EBAC6">Scalable Vector Graphics</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://xmlsoft.org/">libxml2-2.0.0</a>;
-affine text transformations requires <a href="ftp://ftp.freetype.org/freetype/freetype2/">freetype-2.tar.gz</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>TGA</b></td>
-
-<td BGCOLOR="#9EBAC6">Truevision Targa image file</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>TIFF</b></td>
-
-<td BGCOLOR="#9EBAC6">Tagged Image File Format</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="http://www.libtiff.org/">tiff-v3.5.4.tar.gz</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>TILE</b></td>
-
-<td BGCOLOR="#9EBAC6">Tile image with a texture</td>
-
-<td BGCOLOR="#9EBAC6">read only</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>TIM</b></td>
-
-<td BGCOLOR="#9EBAC6">PSX TIM file</td>
-
-<td BGCOLOR="#9EBAC6">read only</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b><a href="http://www.freetype.org/">TTF</a></b></td>
-
-<td BGCOLOR="#9EBAC6">TrueType font file</td>
-
-<td BGCOLOR="#9EBAC6">requires <a href="ftp://ftp.freetype.org/pub/freetype2/">freetype-2-beta8.tar.gz</a></td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>TXT</b></td>
-
-<td BGCOLOR="#9EBAC6">Raw text file</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>UIL</b></td>
-
-<td BGCOLOR="#9EBAC6">X-Motif UIL table</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>UYVY</b></td>
-
-<td BGCOLOR="#9EBAC6">Interleaved YUV</td>
-
-<td BGCOLOR="#9EBAC6">use <tt>-size</tt> command line option to specify
-width and height</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>VICAR</b></td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-
-<td BGCOLOR="#9EBAC6">read only</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>VID</b></td>
-
-<td BGCOLOR="#9EBAC6">Visual Image Directory</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>VIFF</b></td>
-
-<td BGCOLOR="#9EBAC6">Khoros Visualization image file</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><a href="http://www.wapforum.org">WBMP</a></td>
-
-<td BGCOLOR="#9EBAC6">Wireless bitmap image file</td>
-
-<td BGCOLOR="#9EBAC6">support for uncompressed monochrome only&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>WIN</b></td>
-
-<td BGCOLOR="#9EBAC6">Select image from or display image to your computer
-screen</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>WPG</b></td>
-
-<td BGCOLOR="#9EBAC6">Word Perfect Graphic</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b><a href="http://www.wvware.com/libwmf.html">WMF</a></b></td>
-
-<td BGCOLOR="#9EBAC6">Windows Meta File</td>
-
-<td BGCOLOR="#9EBAC6">Requires <a href="http://sourceforge.net/projects/wvware/">libwmf</a>.&nbsp;
-By default, renders WMF files to the size specified by the metafile header.
-Use the -density option to adjust the output resolution, and thereby adjust
-the ouput size. The default output resolution is 72DPI so '-density 144'
-results in an image twice as large as the default.</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0">X</td>
-
-<td BGCOLOR="#9EBAC6">Select image from or display image to your X server
-screen</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>XC</b></td>
-
-<td BGCOLOR="#9EBAC6">Constant image of X server color</td>
-
-<td BGCOLOR="#9EBAC6">set <tt>-size</tt> and <tt>-depth</tt> to specify
-the image width, height, and depth</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>XBM</b></td>
-
-<td BGCOLOR="#9EBAC6">X Windows system bitmap, black and white only</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><a href="http://www.inria.fr/koala/lehors/xpm.html">XPM</a></td>
-
-<td BGCOLOR="#9EBAC6">X Windows system pixmap file (color)</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>XWD</b></td>
-
-<td BGCOLOR="#9EBAC6">X Windows system window dump file (color)</td>
-
-<td BGCOLOR="#9EBAC6">&nbsp;</td>
-</tr>
-
-<tr>
-<td BGCOLOR="#D0D0D0"><b>YUV</b></td>
-
-<td BGCOLOR="#9EBAC6">CCIR 601 4:1:1 file</td>
-
-<td BGCOLOR="#9EBAC6">use <tt>-size</tt> command line option to specify
-width and height</td>
-</tr>
-</table></center>
-
-<br>&nbsp;
-Support for some of the formats are delegated to libraries or external
-programs. <a href="install.html#extr">README</a> mentions where to find
-these distributions.
-<p>
-To get a complete listing of which image formats are supported on your system,
-type
-<pre>
-    convert -list format
-</pre>
-<p>On some platforms, ImageMagick automatically processes these extensions:
-<tt>.gz</tt>
-for Zip compression, <tt>.Z</tt> for Unix compression,
-<tt>.bz2</tt> for
-block compression, and <tt>.pgp</tt> for PGP encryption. For example, a
-PNM image called <tt>image.pnm.gz</tt> is automatically uncompressed with
-the <tt>gzip</tt> program and the image is subsequently read.
-<p>
-<hr>
-<p><a href="../ImageMagick.html"><img SRC="../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
-Image manipulation software that works like magic.</font>
-</body>
-</html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<TITLE>ImageMagick - Image Processing and Display Package</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
+	<META NAME="CREATED" CONTENT="20020810;12535100">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20020810;17074500">
+	<META NAME="DESCRIPTION" CONTENT="ImageMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
+	<META NAME="KEYWORDS" CONTENT="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software    development, simulation, image, software, AniMagick, Animagic,    Magick++">
+	<STYLE>
+	<!--
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		PRE { color: #000000 }
+		TH P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		A:link { color: #0085c0 }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+<P STYLE="margin-bottom: 0in"><BR>ImageMagick supports reading over
+68 file formats. The following is a table describing supported image
+formats.</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Supported File Formats</B></P>
+<CENTER>
+	<TABLE WIDTH=90% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=5 CELLSPACING=1 BGCOLOR="#99ccff">
+		<COL WIDTH=53*>
+		<COL WIDTH=74*>
+		<COL WIDTH=129*>
+		<TR>
+			<TH WIDTH=21%>
+				<P>Tag</P>
+			</TH>
+			<TH WIDTH=29%>
+				<P>Description</P>
+			</TH>
+			<TH WIDTH=50%>
+				<P>Notes</P>
+			</TH>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.jmcgowan.com/avi.html">AVI</A></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Audio/Video Interleave image file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>AVS</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>AVS X image file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><A HREF="http://msdn.microsoft.com/library/sdkdoc/gdi/bitmaps_9c6r.htm">BMP</A></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Microsoft Windows bitmap image file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>CGM</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Computer Graphics Metafile</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://www.agocg.ac.uk/train/cgm/ralcgm.htm">ralcgm</A>
+				to render CGM files. Read only.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>CMYK</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Raw cyan, magenta, yellow, and black samples</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Set <TT>-size</TT> and <TT>-depth</TT> to specify the image
+				width, height, and depth.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>DCM</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Digital Imaging and Communications in Medicine (DICOM) image
+				file format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Read only. Used by the medical community for images like
+				X-rays.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>DCX</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>ZSoft IBM PC multi-page Paintbrush file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>DIB</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Microsoft Windows Device Independent Bitmap</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>DIB is a <A HREF="#BMP">BMP</A> file without the <A HREF="#BMP">BMP</A>
+				header. Used to support embedded images in compound formats like
+				WMF.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>DPX</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Digital Moving Picture Exchange</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>EPDF</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Encapsulated Portable Document Format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>EPI</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Adobe Encapsulated PostScript Interchange format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
+				to read.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>EPS</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Adobe Encapsulated PostScript file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
+				to read.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>EPS2</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Adobe Level II Encapsulated PostScript file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
+				to read.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>EPSF</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Adobe Encapsulated PostScript file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
+				to read.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>EPSI</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Adobe Encapsulated PostScript Interchange format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
+				to read.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>EPT</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Adobe Encapsulated PostScript Interchange format with <A HREF="#TIFF">TIFF</A>
+				preview</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
+				to read.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>FAX</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Group 3 TIFF</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>See <A HREF="#TIFF">TIFF</A> format. Note that FAX machines
+				use non-square pixels which are 1.5 times wider than they are
+				tall but computer displays use square pixels so FAX images may
+				appear to be narrow unless they are explicitly resized using a
+				resize specification of &ldquo;<FONT FACE="Cumberland">150x100%</FONT>&rdquo;.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>FIG</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>TransFig image format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="ftp://ftp.x.org/contrib/applications/drawing_tools/transfig">TransFig</A>.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.cv.nrao.edu/fits/">FITS</A></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Flexible Image Transport System</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>FPX</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>FlashPix Format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="ftp://ftp.imagemagick.org/pub/ImageMagick/delegates">FlashPix
+				SDK</A>.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>GIF</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>CompuServe Graphics Interchange Format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>8-bit RGB PseudoColor with up to 256 palette entires. Note
+				that since Unisys claims a <A HREF="http://www.delphion.com/details?&amp;pn=US04558302__">patent
+				on the LZW algorithm</A> (expiring in 2003) used by GIF,
+				ImageMagick binary distributions do not include support for the
+				LZW algorithm so GIF files are written uncompressed. Users are
+				recommended to use the PNG or JPEG formats instead, and should
+				consult the <A HREF="http://www.unisys.com/about__unisys/lzw/">Unisys
+				LZW web page</A> before enabling LZW support.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>GIF87</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>CompuServe Graphics Interchange Format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>8-bit color (version 87a). See GIF format for more
+				information.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>GPLT</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Gnuplot plot files</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="ftp://ftp.dartmouth.edu/pub/gnuplot/">gnuplot3.5.tar.Z</A>
+				or later.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>GRADIENT</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Gradual passing from one shade to another</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Returns a rendered gradient image using the specified image
+				size. Specify the desired shading as part of the filename (e.g.
+				&ldquo;<TT>gradient:red-blue</TT>&rdquo; or
+				&ldquo;<FONT FACE="Cumberland">gradient:#F00-#00F</FONT>&rdquo;).</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>GRANITE</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Granite texture.</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Built-in image to return a granite texture image (&ldquo;<FONT FACE="Cumberland">GRANITE:</FONT>&rdquo;).</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>GRAY</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Raw gray samples</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Use <TT>-size</TT> and <TT>-depth</TT> to specify the image
+				width, height, and depth.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>HDF</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Hierarchical Data Format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>requires <A HREF="ftp://ftp.ncsa.uiuc.edu/HDF/">HDF4.1r2.tar.gz</A></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>HISTOGRAM</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Histogram of the image</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>HPGL</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>HP-GL plotter language</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>requires <A HREF="http://ftp.cdrom.com/pub/ImageMagick/delegates/hp2xx-3.2.0.tar.gz">hp2xx-3.2.0.tar.gz</A></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>HTML</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Hypertext Markup Language with a client-side image map</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>requires <A HREF="http://www.tdb.uu.se/~jan/">html2ps</A> to
+				read</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>ICO</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Microsoft icon</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>read only</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>ICC</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>International Color Consortium color profile</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>To read, use <TT>-profile</TT> with <A HREF="convert.html"><I>convert</I></A>.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>ILBM</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Amiga IFF</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>IPTC</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Newswire profile</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>To read, use <TT>-profile</TT> with <A HREF="convert.html"><I>convert</I></A></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>JBIG</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Joint Bi-level Image experts Group file interchange format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>requires <A HREF="ftp://ftp.uni-erlangen.de/pub/doc/ISO/JBIG/">jbigkit-1.0.tar.gz</A></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>JP2</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>JPEG-2000 JP2 File Format Syntax</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>requires <A HREF="http://www.ece.ubc.ca/~mdadams/jasper/">jasper-1.500.0.zip</A></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>JPC</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>JPEG-2000 Code Stream Syntax</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>requires <A HREF="http://www.ece.ubc.ca/~mdadams/jasper/">jasper-1.500.0.zip</A></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>JPEG</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Joint Photographic Experts Group JFIF format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>requires <A HREF="ftp://ftp.uu.net/graphics/jpeg/">jpegsrc.v6b.tar.gz</A></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>LABEL</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Text image format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Specify the desired text as the filename (e.g. <TT>label:This
+				is a label<FONT FACE="Verdana, Arial, Helvetica">).</FONT></TT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>MAP</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Colormap intensities and indices</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Set -depth to set the sample size of the intensities; indices
+				are 16-bit if colors &gt; 256.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>MAN</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Unix reference manual pages</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires that GNU groff and Ghostcript are installed.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><A NAME="MIFF"></A><A HREF="miff.html">MIFF</A></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Magick image file format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>ImageMagick's own image format (with ASCII header) which
+				ensures that no image attributes understood by ImageMagick are
+				lost.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.libmng.com/">MNG</A></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Multiple-image Network Graphics</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="libpng-1.02.tar.gz">libpng-1.02.tar.gz</A>
+				or later.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.mpeg.org/">MPEG</A></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Motion Picture Experts Group file interchange format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="ftp://ftp.mpeg.org/pub/mpeg/mssg/">mpeg2vidcodec_v12.tar.gz</A>.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.mpeg.org/">M2V</A></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Motion Picture Experts Group file interchange format (version
+				2)</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="ftp://ftp.mpeg.org/pub/mpeg/mssg/">mpeg2vidcodec_v12.tar.gz</A>.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>MPC</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Magick Persistent Cache image file format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>The native &ldquo;in-memory&rdquo; ImageMagick uncompressed
+				file format. This file format is identical to that used by
+				ImageMagick to represent images in memory and is read in &ldquo;zero
+				time&rdquo; via memory mapping. The MPC format is not portable
+				and is not suitable as an archive format. It is suitable as an
+				intermediate format for high-performance image processing.</P>
+				<P>The MPC format requires two files to support one image. When
+				writing the MPC format, a file with extension &ldquo;.mpc&rdquo;
+				is used to store information about the image, while a file with
+				extension &ldquo;.cache&rdquo; stores the image pixels. The
+				storage space required by a MPC image (or an image in memory) may
+				be calculated by the equation (QuantumDepth*Rows*Columns*5)/8.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>MTV</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>MTV Raytracing image format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>MVG</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Magick Vector Graphics.</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>The native ImageMagick vector metafile format. A text file
+				containing vector drawing commands accepted by <A HREF="convert.html">convert</A>'s
+				-draw option.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>NETSCAPE</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Netscape 216 color cube.</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Built-in image which returns an image containing the colors in
+				the 6x6x6 color cube used to render colors on 256 color displays
+				by the Netscape 2.0 browser. Most commonly used with the
+				<A HREF="convert.html">convert</A>/<A HREF="mogrify.html">mogrify</A>
+				-map option to create &ldquo;web safe&rdquo; images.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>NULL</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>NULL image</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Useful for creating blank tiles with <A HREF="montage.html">montage</A>
+				(use &ldquo;NULL:&rdquo;). Also useful as an output format when
+				evaluating image read performance.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>OTB</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>On-the-air Bitmap</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PBM</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Portable bitmap format (black and white)</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PCD</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Photo CD</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>The maximum resolution written is 768x512 pixels since larger
+				images require huffman compression (which is not supported).</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PCDS</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Photo CD</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Decode with the sRGB color tables.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PCL</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>HP Page Control Language</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Write only.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PCX</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>ZSoft IBM PC Paintbrush file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PDB</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Palm Database ImageViewer Format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6"></TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PDF</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Portable Document Format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
+				to read.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PGM</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Portable graymap format (gray scale)</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PICT</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Apple Macintosh QuickDraw/PICT file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PIX</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Alias/Wavefront RLE image format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Read only.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PLASMA</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Plasma fractal image.</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Returns a fractal image using the specified size. Specify the
+				base color as the filename (e.g. <TT>plasma:blue-yellow</TT>).
+				Use <TT>fractal</TT> to initialize to a random value (e.g.
+				&ldquo;<TT>plasma:fractal&rdquo;).</TT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.cdrom.com/pub/png/">PNG</A></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Portable Network Graphics</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="ftp://ftp.uu.net/graphics/png/src/">libpng-1.02.tar.gz</A>.
+								</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PNM</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Portable anymap</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Use <TT>+compress</TT> to produce the ASCII version of the
+				format.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PPM</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Portable pixmap format (color)</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PREVIEW</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Show a preview an image enhancement, effect, or f/x</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Creates a preview montage of images prepared over a
+				parameteric range in order to assist with parameter selection.
+				Specify the desired preview type via the <TT>-preview</TT>
+				option).</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PRINT</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Send image to your computer printer</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Unix users may set the PRINTER or LPDEST environment variables
+				to select the desired printer.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PS</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Adobe PostScript file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
+				to read.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PSD</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Adobe Photoshop bitmap file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PS2</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Adobe Level II PostScript file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
+				to read.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PS3</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Adobe Level III PostScript file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
+				to read.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>PTIF</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Pyramid encoded <A HREF="#TIFF">TIFF</A></P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Multi-resolution <A HREF="#TIFF">TIFF</A> containing
+				successively smaller versions of the image down to the size of an
+				icon. The desired sub-image size may be specified when readingvia
+				the -size option when reading the image.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.photoworks.com/">PWP</A></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Seattle File Works multi-image file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>P7</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Xv's Visual Schnauzer thumbnail format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>RAD</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Radiance image file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires that ra_ppm from the Radiance software package be
+				installed.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>RGB</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Raw red, green, and blue samples</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Use <TT>-size</TT> and <TT>-depth</TT> to specify the image
+				width, height, and depth.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>RGBA</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Raw red, green, blue, and matte samples</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Use <TT>-size</TT> and <TT>-depth</TT> to specify the image
+				width, height, and depth.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>RLA</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Alias/Wavefront image file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Read only.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>RLE</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Utah Run length encoded image file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Read only.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>SCAN</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Import image from a scanner device</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://www.mostang.com/sane/">SANE</A>
+				Specify the device name and path as the filename (e.g.
+				&ldquo;<TT>scan:mustek:/dev/scanner<FONT FACE="Verdana, Arial, Helvetica, sans-serif">&ldquo;).</FONT></TT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.ora.com/centers/gff/formats/scitex/index.htm">SCT</A></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Scitex Continuous Tone Picture image file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.photoworks.com/">SFW</A></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Seattle File Works image file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>SGI</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Irix RGB image file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>SHTML</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Hypertext Markup Language client-side image map</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Used to write HTML clickable image maps based on a the output
+				of <A HREF="montage.html">montage</A> or a format which supports
+				tiled images such as <A HREF="#MIFF">MIFF</A>.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>STEGANO</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Steganographic image</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Use <TT>-size</TT> command line option to specify width,
+				height, and offset of the steganographic image</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>SUN</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>SUN Rasterfile</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.w3.org/Graphics/SVG//">SVG</A></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Scalable Vector Graphics</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://xmlsoft.org/">libxml2</A> and
+				<A HREF="freetype-2.tar.g">freetype-2</A>. Note that SVG is a
+				very complex specification so support is still not complete.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>TGA</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Truevision Targa image file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>TIFF</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Tagged Image File Format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://ftp://ftp.remotesensing.org/pub/libtiff/">tiff-v3.5.4.tar.gz</A>
+				or later. Note that since Unisys claims a <A HREF="http://www.delphion.com/details?&amp;pn=US04558302__">patent
+				on the LZW algorithm</A> (expiring in 2003) used by
+				LZW-compressed TIFF files, ImageMagick binary distributions do
+				not include support for the LZW algorithm so LZW TIFF files can
+				not be written. Although a patch is available for libtiff to
+				enable building with LZW support. Users should consult the <A HREF="http://www.unisys.com/about__unisys/lzw/">Unisys
+				LZW web page</A> before applying it. 
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>TILE</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Tiled image</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Create a tiled version of an image at by tiling a image. Use
+				-size to specify the tiled image size. The image is specified
+				similar to &ldquo;<FONT FACE="Cumberland">TILE:image.miff</FONT>&rdquo;.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>TIM</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>PSX TIM file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Read only.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.freetype.org/"><B>TTF</B></A></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>TrueType font file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="freetype-2-beta8.tar.g">freetype 2</A>.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>TXT</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Raw text file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>UIL</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>X-Motif UIL table</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>UYVY</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Interleaved YUV</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Use <TT>-size</TT> command line option to specify width and
+				height.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>VICAR</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>VICAR rasterfile format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6"></TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>VID</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Visual Image Directory</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Used to create a thumbnailed directory (tiled thumbnails) of a
+				set of images which may be used to select images to view via the
+				<A HREF="display.html">display</A> program, or saved to a <A HREF="#MIFF">MIFF</A>
+				or <A HREF="#SHTML">SHTML</A> file.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>VIFF</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Khoros Visualization Image File Format</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.wapforum.org/">WBMP</A></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Wireless bitmap image file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Support for uncompressed monochrome only.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>WIN</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Select image from or display image to your computer screen</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6"></TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>WPG</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Word Perfect Graphics File</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>&nbsp;</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.wvware.com/libwmf.html"><B>WMF</B></A></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Windows Meta File</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Requires <A HREF="http://sourceforge.net/projects/wvware/">libwmf</A>.
+				By default, renders WMF files using the dimensions specified by
+				the metafile header. Use the -density option to adjust the output
+				resolution, and thereby adjust the ouput size. The default output
+				resolution is 72DPI so '-density 144' results in an image twice
+				as large as the default.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P>X</P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Select image from or display image to your X server screen</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Also see the <A HREF="import.html">import</A> and <A HREF="display.html">display</A>
+				programs.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>XC</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>Canvas image of specified color</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Useful to create solid color &ldquo;canvas&rdquo; images. Use
+				<TT>-size</TT> and <TT>-depth</TT> to specify the image width,
+				height, and depth. Example XC color specifications include
+				&ldquo;<FONT FACE="Cumberland">XC:red</FONT>&rdquo; and
+				&ldquo;<FONT FACE="Cumberland">XC:#FF0000</FONT>&rdquo;.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>XBM</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>X Windows system bitmap, black and white only</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Used by the X Windows System to store monochrome icons.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><A HREF="http://www.inria.fr/koala/lehors/xpm.html">XPM</A></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>X Windows system pixmap file (color)</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Used by the X Windows System to store color icons.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>XWD</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>X Windows system window dump file (color)</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Used by the X Windows System to save/display screen dumps.</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=21% BGCOLOR="#d0d0d0">
+				<P><B>YUV</B></P>
+			</TD>
+			<TD WIDTH=29% BGCOLOR="#9ebac6">
+				<P>CCIR 601 4:1:1 file</P>
+			</TD>
+			<TD WIDTH=50% BGCOLOR="#9ebac6">
+				<P>Use <TT>-size</TT> command line option to specify width and
+				height.</P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<P><BR>Support for some of the formats are delegated to libraries or
+external programs. The <A HREF="install.html#extr">Installation Guide</A>
+describes where to find these distributions and any special
+configuration options required.</P>
+<P>To get a complete listing of which image formats are supported on
+your system, type 
+</P>
+<PRE STYLE="margin-bottom: 0.2in">    convert -list format</PRE><P>
+On some platforms, ImageMagick automatically processes these
+extensions: <TT>.gz</TT> for Zip compression, <TT>.Z</TT> for Unix
+compression, <TT>.bz2</TT> for block compression, and <TT>.pgp</TT>
+for PGP encryption. For example, a PNM image called <TT>image.pnm.gz</TT>
+is automatically uncompressed with the <TT>gzip</TT> program and the
+image is subsequently read. 
+</P>
+<HR>
+<P><A HREF="../ImageMagick.html"><IMG SRC="../images/home.png" NAME="Graphic2" ALT="Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=1>
+Image manipulation software that works like magic.</FONT> 
+</P>
+</BODY>
+</HTML>
