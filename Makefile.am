@@ -53,8 +53,7 @@ pkgdata_DATA = Copyright.txt QuickStart.txt
 
 # Additional files to distribute
 EXTRA_DIST = Copyright.txt TODO.txt ImageMagick.html Magickshr.opt Make.com \
-	Manifest.ps PLATFORMS.txt QuickStart.txt README.txt acconfig.h \
-	lndir.sh
+	Manifest.ps PLATFORMS.txt QuickStart.txt README.txt lndir.sh
 
 # Non-Automake subdirectories to distribute
 DISTDIRS = contrib guide images scenes scripts www PerlMagick
