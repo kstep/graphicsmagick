@@ -3151,7 +3151,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       file=fopen(filename,WriteBinaryType);
       if (file == (FILE *) NULL)
         ThrowReaderException(FileOpenWarning,"Unable to write file",image);
-      *magick='\0';
+      memset(magick,0,sizeof(magick));
       while ((c=ReadBlobByte(image)) != EOF)
       {
         magick[0]=magick[1];

@@ -56,8 +56,7 @@ extern MagickExport unsigned int
   ConcatenateString(char **,const char *),
   ExecutePostscriptInterpreter(const unsigned int,const char *),
   ExpandFilenames(int *,char ***),
-  IsAccessible(const char *),
-  IsDirectory(const char *);
+  IsAccessible(const char *);
 
 extern MagickExport unsigned short
   *ConvertTextToUnicode(const char *,int *);

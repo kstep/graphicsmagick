@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declaration.
+*/
+static int
+  IsDirectory(const char *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -616,7 +622,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
     if (filelist == (char **) NULL)
       continue;
     for (j=0; j < number_files; j++)
-      if (!IsDirectory(filelist[j]))
+      if (IsDirectory(filelist[j]) <= 0)
         break;
     if (j == number_files)
       {
@@ -635,15 +641,15 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
     count--;
     for (j=0; j < number_files; j++)
     {
-      if (IsDirectory(filelist[j]))
+      FormatString(filename,"%.1024s%s%.1024s",working_directory,
+        DirectorySeparator,filelist[j]);
+      if (IsDirectory(filename) != 0)
         {
           LiberateMemory((void **) &filelist[j]);
           continue;
         }
       expanded=True;
-      vector[count]=AllocateString(path);
-      FormatString(vector[count],"%.1024s%.1024s%.1024s",working_directory,
-        DirectorySeparator,filelist[j]);
+      vector[count]=AllocateString(filename);
       LiberateMemory((void **) &filelist[j]);
       count++;
     }
@@ -1240,30 +1246,31 @@ MagickExport unsigned int IsAccessible(const char *filename)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  I s D i r e c t o r y                                                      %
++  I s D i r e c t o r y                                                      %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsDirectory returns True if the file as defined by filename is
-%  a directory.
+%  Method IsDirectory returns -1 if the filename does not exist, 0 if the
+%  filename represents a file, and 1 if the filename represents a directory.
 %
 %  The format of the IsAccessible method is:
 %
-%      unsigned int IsDirectory(const char *filename)
+%      int IsDirectory(const char *filename)
 %
 %  A description of each parameter follows.
 %
-%   o  status:  Method IsDirectory returns True is the file as defined by
-%      filename is a directory, otherwise False is returned.
+%   o  status:  Method IsDirectory returns -1 if the filename does not exist,
+%      0 if the filename represents a file, and 1 if the filename represents
+%      a directory.
 %
 %   o  filename:  Specifies a pointer to an array of characters.  The unique
 %      file name is returned in this array.
 %
 %
 */
-MagickExport unsigned int IsDirectory(const char *filename)
+static int IsDirectory(const char *filename)
 {
   int
     status;
@@ -1272,11 +1279,9 @@ MagickExport unsigned int IsDirectory(const char *filename)
     file_info;
 
   assert(filename != (const char *) NULL);
-  if (*filename == '\0')
-    return(False);
   status=stat(filename,&file_info);
   if (status != 0)
-    return(False);
+    return(-1);
   return(S_ISDIR(file_info.st_mode));
 }
 
@@ -1391,7 +1396,8 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
         entry=readdir(current_directory);
         continue;
       }
-    if (IsDirectory(entry->d_name) || GlobExpression(entry->d_name,pattern))
+    if ((IsDirectory(entry->d_name) > 0) ||
+        GlobExpression(entry->d_name,pattern))
       {
         if (*number_entries >= (int) max_entries)
           {
@@ -1427,7 +1433,7 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
         if (filelist[*number_entries] == (char *) NULL)
           break;
         (void) strcpy(filelist[*number_entries],entry->d_name);
-        if (IsDirectory(entry->d_name))
+        if (IsDirectory(entry->d_name) > 0)
           (void) strcat(filelist[*number_entries],DirectorySeparator);
         (*number_entries)++;
       }
