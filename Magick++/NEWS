@@ -1,5 +1,9 @@
 This file records noteworthy changes in Magick++.
 
+(5.5.1)
+  * Fixed a Color memory allocation problem which became evident when
+    using the Magick++ DLL.
+
 (5.4.9)
   * Added the Image textEncoding() method and an encoding option to
     DrawableText to support specifying "UTF-8" (Unicode) text encoding.

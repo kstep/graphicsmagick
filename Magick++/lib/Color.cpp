@@ -73,6 +73,44 @@ int Magick::operator <= ( const Magick::Color& left_,
 // Color Implementation
 //
 
+// Default constructor
+Magick::Color::Color ( void )
+  : _pixel(new PixelPacket),
+    _pixelOwn(true),
+    _pixelType(RGBPixel)
+{
+  initPixel();
+}
+
+// Construct from RGB
+Magick::Color::Color ( Quantum red_,
+                       Quantum green_,
+                       Quantum blue_ )
+  : _pixel(new PixelPacket),
+    _pixelOwn(true),
+    _pixelType(RGBPixel)
+{
+  redQuantum   ( red_   );
+  greenQuantum ( green_ );
+  blueQuantum  ( blue_  );
+  alphaQuantum ( OpaqueOpacity );
+}
+
+// Construct from RGBA
+Magick::Color::Color ( Quantum red_,
+                       Quantum green_,
+                       Quantum blue_,
+                       Quantum alpha_ )
+  : _pixel(new PixelPacket),
+    _pixelOwn(true),
+    _pixelType(RGBAPixel)
+{
+  redQuantum   ( red_   );
+  greenQuantum ( green_ );
+  blueQuantum  ( blue_  );
+  alphaQuantum ( alpha_ );
+}
+
 // Copy constructor
 Magick::Color::Color ( const Magick::Color & color_ )
   : _pixel( new PixelPacket ),
@@ -80,6 +118,59 @@ Magick::Color::Color ( const Magick::Color & color_ )
     _pixelType( color_._pixelType )
 {
   *_pixel    = *color_._pixel;
+}
+
+// Construct from color expressed as C++ string
+Magick::Color::Color ( const std::string &x11color_ )
+  : _pixel(new PixelPacket),
+    _pixelOwn(true),
+    _pixelType(RGBPixel)
+{
+  initPixel();
+
+  // Use operator = implementation
+  *this = x11color_;
+}
+
+// Construct from color expressed as C string
+Magick::Color::Color ( const char * x11color_ )
+  : _pixel(new PixelPacket),
+    _pixelOwn(true),
+    _pixelType(RGBPixel)
+{
+  initPixel();
+
+  // Use operator = implementation
+  *this = x11color_;
+}
+
+// Construct color via ImageMagick PixelPacket
+Magick::Color::Color ( const PixelPacket &color_ )
+  : _pixel(new PixelPacket),
+    _pixelOwn(true),	    // We allocated this pixel
+    _pixelType(RGBPixel)  // RGB pixel by default
+{
+  *_pixel = color_;
+
+  if ( color_.opacity != OpaqueOpacity )
+    _pixelType = RGBAPixel;
+}
+
+// Protected constructor to construct with PixelPacket*
+// Used to point Color at a pixel.
+Magick::Color::Color ( PixelPacket* rep_, PixelType pixelType_  )
+  : _pixel(rep_),
+    _pixelOwn(false),
+    _pixelType(pixelType_)
+{
+}
+
+// Destructor
+Magick::Color::~Color( void )
+{
+  if ( _pixelOwn )
+    delete _pixel;
+  _pixel=0;
 }
 
 // Assignment operator
@@ -146,19 +237,6 @@ Magick::Color::operator std::string() const
   return std::string(colorbuf);
 }
 
-
-// Construct color via ImageMagick PixelPacket
-Magick::Color::Color ( const PixelPacket &color_ )
-  : _pixel(new PixelPacket),
-    _pixelOwn(true),	    // We allocated this pixel
-    _pixelType(RGBPixel)  // RGB pixel by default
-{
-  *_pixel = color_;
-
-  if ( color_.opacity != OpaqueOpacity )
-    _pixelType = RGBAPixel;
-}
-
 // Set color via ImageMagick PixelPacket
 const Magick::Color& Magick::Color::operator= ( const MagickLib::PixelPacket &color_ )
 {
@@ -168,6 +246,39 @@ const Magick::Color& Magick::Color::operator= ( const MagickLib::PixelPacket &co
   else
     _pixelType = RGBPixel;
   return *this;
+}
+
+// Set pixel
+// Used to point Color at a pixel in an image
+void Magick::Color::pixel ( PixelPacket* rep_, PixelType pixelType_ )
+{
+  if ( _pixelOwn )
+    delete _pixel;
+  _pixel = rep_;
+  _pixelOwn = false;
+  _pixelType = pixelType_;
+}
+
+// Does object contain valid color?
+bool Magick::Color::isValid ( void ) const
+{
+  return( _pixel->opacity != TransparentOpacity ||
+          _pixel->red != 0 ||
+          _pixel->green != 0 ||
+          _pixel->blue != 0 );
+}
+void Magick::Color::isValid ( bool valid_ )
+{
+  if ( (valid_ && isValid()) || (!valid_ && !isValid()) )
+    return;
+
+  if ( !_pixelOwn )
+    {
+      _pixel = new PixelPacket;
+      _pixelOwn = true;
+    }
+
+  initPixel();
 }
 
 //

@@ -355,89 +355,11 @@ inline Magick::Quantum Magick::Color::alphaQuantum ( void ) const
   return _pixel->opacity;
 }
 
-inline Magick::Color::Color ( Quantum red_,
-			      Quantum green_,
-			      Quantum blue_ )
-  : _pixel(new PixelPacket),
-    _pixelOwn(true),
-    _pixelType(RGBPixel)
-{
-  redQuantum   ( red_   );
-  greenQuantum ( green_ );
-  blueQuantum  ( blue_  );
-  alphaQuantum ( OpaqueOpacity );
-}
-
-inline Magick::Color::Color ( Quantum red_,
-			      Quantum green_,
-			      Quantum blue_,
-			      Quantum alpha_ )
-  : _pixel(new PixelPacket),
-    _pixelOwn(true),
-    _pixelType(RGBAPixel)
-{
-  redQuantum   ( red_   );
-  greenQuantum ( green_ );
-  blueQuantum  ( blue_  );
-  alphaQuantum ( alpha_ );
-}
-
-// Construct from color expressed as C++ string
-inline Magick::Color::Color ( const std::string &x11color_ )
-  : _pixel(new PixelPacket),
-    _pixelOwn(true),
-    _pixelType(RGBPixel)
-{
-  initPixel();
-
-  // Use operator = implementation
-  *this = x11color_;
-}
-
-// Construct from color expressed as C string
-inline Magick::Color::Color ( const char * x11color_ )
-  : _pixel(new PixelPacket),
-    _pixelOwn(true),
-    _pixelType(RGBPixel)
-{
-  initPixel();
-
-  // Use operator = implementation
-  *this = x11color_;
-}
-
-// Default constructor
-inline Magick::Color::Color ( void )
-  : _pixel(new PixelPacket),
-    _pixelOwn(true),
-    _pixelType(RGBPixel)
-{
-  initPixel();
-}
-
-// Protected constructor to construct with PixelPacket*
-// Used to point Color at a pixel.
-inline Magick::Color::Color ( PixelPacket* rep_, PixelType pixelType_  )
-  : _pixel(rep_),
-    _pixelOwn(false),
-    _pixelType(pixelType_)
-{
-}
-
 // Return ImageMagick PixelPacket struct based on color.
 inline Magick::Color::operator MagickLib::PixelPacket () const
 {
   return *_pixel;
 }
-
-// Destructor
-inline Magick::Color::~Color( void )
-{
-  if ( _pixelOwn )
-    delete _pixel;
-  _pixel=0;
-}
-
 
 // Scaled version of alpha for use in sub-classes
 inline void  Magick::Color::alpha ( double alpha_ )
@@ -447,40 +369,6 @@ inline void  Magick::Color::alpha ( double alpha_ )
 inline double Magick::Color::alpha ( void ) const
 {
   return scaleQuantumToDouble( alphaQuantum() );
-}
-
-// Does object contain valid color?
-inline bool Magick::Color::isValid ( void ) const
-{
-  return( _pixel->opacity != TransparentOpacity ||
-          _pixel->red != 0 ||
-          _pixel->green != 0 ||
-          _pixel->blue != 0 );
-}
-inline void Magick::Color::isValid ( bool valid_ )
-{
-  if ( (valid_ && isValid()) || (!valid_ && !isValid()) )
-    return;
-
-  if ( !_pixelOwn )
-    {
-      _pixel = new PixelPacket;
-      _pixelOwn = true;
-    }
-
-  initPixel();
-}
-
-
-// Set pixel
-// Used to point Color at a pixel in an image
-inline void Magick::Color::pixel ( PixelPacket* rep_, PixelType pixelType_ )
-{
-  if ( _pixelOwn )
-    delete _pixel;
-  _pixel = rep_;
-  _pixelOwn = false;
-  _pixelType = pixelType_;
 }
 
 //

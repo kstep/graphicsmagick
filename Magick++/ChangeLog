@@ -1,3 +1,9 @@
+2002-09-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Color.cpp (Color): Use of 'new' and 'delete' in inlines was
+ 	causing memory allocation/deallocation problems for users of the
+ 	DLL build.  Problem was identified by Marc Iwan.
+
 2002-09-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (compare): New method to compare current image

@@ -4,6 +4,15 @@
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
+2002-09-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Color.cpp (Color): Use of 'new' and 'delete' in inlines was
+        causing memory allocation/deallocation problems for users of the
+        DLL build.  Problem was identified by Marc Iwan.
+
+</UL>
+<p>
 2002-09-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
