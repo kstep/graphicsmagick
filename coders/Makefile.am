@@ -136,7 +136,7 @@ dpx_la_LIBADD       = ../magick/libMagick.la
 # EPT module
 ept_la_SOURCES      = ept.c
 ept_la_LDFLAGS      = -no-undefined -module -avoid-version
-ept_la_LIBADD       = ../magick/libMagick.la $(LIB_MATH)
+ept_la_LIBADD       = ../magick/libMagick.la @LIB_GS@ $(LIB_MATH)
 
 # FAX module
 fax_la_SOURCES      = fax.c
@@ -291,7 +291,7 @@ pdb_la_LIBADD       = ../magick/libMagick.la
 # PDF module
 pdf_la_SOURCES      = pdf.c
 pdf_la_LDFLAGS      = -no-undefined -module -avoid-version
-pdf_la_LIBADD       = ../magick/libMagick.la @LIB_TIFF@ $(LIB_MATH)
+pdf_la_LIBADD       = ../magick/libMagick.la @LIB_TIFF@ @LIB_GS@ $(LIB_MATH)
 
 # PICT module
 pict_la_SOURCES     = pict.c
@@ -326,7 +326,7 @@ preview_la_LIBADD   = ../magick/libMagick.la
 # PS module
 ps_la_SOURCES       = ps.c
 ps_la_LDFLAGS       = -no-undefined -module -avoid-version
-ps_la_LIBADD        = ../magick/libMagick.la $(LIB_MATH)
+ps_la_LIBADD        = ../magick/libMagick.la @LIB_GS@ $(LIB_MATH)
 
 # PS2 module
 ps2_la_SOURCES      = ps2.c
