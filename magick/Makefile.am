@@ -51,11 +51,12 @@ AM_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
 
 # Library base sources
 MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
-  image.c list.c color.c quantize.c segment.c resize.c transform.c shear.c \
-  enhance.c effect.c decorate.c annotate.c type.c draw.c render.c montage.c \
-  semaphore.c attribute.c signature.c compress.c command.c gem.c registry.c \
-	magic.c magick.c delegate.c module.c static.c timer.c utility.c cache_view.c \
-  stream.c animate.c display.c widget.c xwindow.c PreRvIcccm.c
+  image.c composite.c list.c color.c quantize.c segment.c resize.c \
+	transform.c shear.c enhance.c effect.c fx.c decorate.c annotate.c type.c \
+	draw.c render.c montage.c semaphore.c attribute.c signature.c compress.c \
+	command.c gem.c registry.c magic.c magick.c delegate.c module.c static.c \
+	timer.c utility.c cache_view.c stream.c animate.c display.c widget.c \
+	xwindow.c PreRvIcccm.c
 
 # Platform specific source files that may appear in the library
 EXTRA_libMagick_la_SOURCES = ntbase.c ntfeature.c

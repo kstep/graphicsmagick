@@ -260,11 +260,12 @@ AM_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
 
 # Library base sources
 MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
-  image.c list.c color.c quantize.c segment.c resize.c transform.c shear.c \
-  enhance.c effect.c decorate.c annotate.c type.c draw.c render.c montage.c \
-  semaphore.c attribute.c signature.c compress.c command.c gem.c registry.c \
-	magic.c magick.c delegate.c module.c static.c timer.c utility.c cache_view.c \
-  stream.c animate.c display.c widget.c xwindow.c PreRvIcccm.c
+  image.c composite.c list.c color.c quantize.c segment.c resize.c \
+	transform.c shear.c enhance.c effect.c fx.c decorate.c annotate.c type.c \
+	draw.c render.c montage.c semaphore.c attribute.c signature.c compress.c \
+	command.c gem.c registry.c magic.c magick.c delegate.c module.c static.c \
+	timer.c utility.c cache_view.c stream.c animate.c display.c widget.c \
+	xwindow.c PreRvIcccm.c
 
 
 # Platform specific source files that may appear in the library
@@ -321,13 +322,14 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 @WITH_MODULES_TRUE@libMagick_la_DEPENDENCIES =
 @WITH_MODULES_FALSE@libMagick_la_DEPENDENCIES = ../coders/libCoders.la
 am__objects_1 = memory.lo blob.lo cache.lo error.lo monitor.lo \
-	constitute.lo image.lo list.lo color.lo quantize.lo segment.lo \
-	resize.lo transform.lo shear.lo enhance.lo effect.lo decorate.lo \
-	annotate.lo type.lo draw.lo render.lo montage.lo semaphore.lo \
-	attribute.lo signature.lo compress.lo command.lo gem.lo \
-	registry.lo magic.lo magick.lo delegate.lo module.lo static.lo \
-	timer.lo utility.lo cache_view.lo stream.lo animate.lo \
-	display.lo widget.lo xwindow.lo PreRvIcccm.lo
+	constitute.lo image.lo composite.lo list.lo color.lo \
+	quantize.lo segment.lo resize.lo transform.lo shear.lo \
+	enhance.lo effect.lo fx.lo decorate.lo annotate.lo type.lo \
+	draw.lo render.lo montage.lo semaphore.lo attribute.lo \
+	signature.lo compress.lo command.lo gem.lo registry.lo magic.lo \
+	magick.lo delegate.lo module.lo static.lo timer.lo utility.lo \
+	cache_view.lo stream.lo animate.lo display.lo widget.lo \
+	xwindow.lo PreRvIcccm.lo
 @CYGWIN_BUILD_FALSE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 =
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 = \
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@	ntfeature.lo
@@ -350,24 +352,25 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/attribute.Plo ./$(DEPDIR)/blob.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/cache.Plo ./$(DEPDIR)/cache_view.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/color.Plo ./$(DEPDIR)/command.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/compress.Plo ./$(DEPDIR)/constitute.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/decorate.Plo ./$(DEPDIR)/delegate.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/display.Plo ./$(DEPDIR)/draw.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/effect.Plo ./$(DEPDIR)/enhance.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/error.Plo ./$(DEPDIR)/gem.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/composite.Plo ./$(DEPDIR)/compress.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/constitute.Plo ./$(DEPDIR)/decorate.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/delegate.Plo ./$(DEPDIR)/display.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/draw.Plo ./$(DEPDIR)/effect.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/enhance.Plo ./$(DEPDIR)/error.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/fx.Plo ./$(DEPDIR)/gem.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/image.Plo ./$(DEPDIR)/list.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/magic.Plo ./$(DEPDIR)/magick.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/memory.Plo ./$(DEPDIR)/module.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/monitor.Plo ./$(DEPDIR)/montage.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ntbase.Plo ./$(DEPDIR)/ntfeature.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/quantize.Plo ./$(DEPDIR)/registry.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/render.Plo ./$(DEPDIR)/segment.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/semaphore.Plo ./$(DEPDIR)/shear.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/signature.Plo ./$(DEPDIR)/static.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/stream.Plo ./$(DEPDIR)/timer.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/transform.Plo ./$(DEPDIR)/type.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/utility.Plo ./$(DEPDIR)/widget.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/xwindow.Plo ./$(DEPDIR)/resize.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/render.Plo ./$(DEPDIR)/resize.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/segment.Plo ./$(DEPDIR)/semaphore.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/shear.Plo ./$(DEPDIR)/signature.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/static.Plo ./$(DEPDIR)/stream.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/timer.Plo ./$(DEPDIR)/transform.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/type.Plo ./$(DEPDIR)/utility.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/widget.Plo ./$(DEPDIR)/xwindow.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -485,6 +488,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cache_view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/color.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/command.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/composite.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/compress.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/constitute.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/decorate.Plo@am__quote@
@@ -494,6 +498,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effect.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enhance.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/error.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/image.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/list.Plo@am__quote@
@@ -508,6 +513,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quantize.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/registry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/render.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/resize.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/segment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/semaphore.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shear.Plo@am__quote@
@@ -520,7 +526,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utility.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/widget.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xwindow.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/resize.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
