@@ -1262,7 +1262,8 @@ MagickExport unsigned int PopImagePixels(const Image *image,
       for (x=0; x < (long) image->columns; x++)
       {
         *q++=(*indexes) >> 8;
-        *q++=(*indexes++);
+        *q++=(*indexes);
+        indexes++;
       }
       break;
     }
@@ -1280,10 +1281,11 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       for (x=0; x < (long) image->columns; x++)
       {
-        *q++=(*indexes++) >> 8;
-        *q++=(*indexes++);
+        *q++=(*indexes) >> 8;
+        *q++=(*indexes);
         *q++=(MaxRGB-p->opacity) >> 8;
         *q++=MaxRGB-p->opacity;
+        indexes++;
         p++;
       }
       break;
