@@ -500,6 +500,11 @@ Export void GetCacheInfo(Cache *cache)
 %
 %
 */
+#if defined(_MT) && defined(_VISUALC_)
+#define SAFE_GLOBAL __declspec( thread )
+#else
+#define SAFE_GLOBAL
+#endif
 Export off_t GetCacheMemory(const off_t memory)
 {
   static off_t
