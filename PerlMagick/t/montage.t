@@ -122,7 +122,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True',background=>'gray'/,
   '3d3278daa05babc0c033f4b73ae7bc022705c89cd2acfe227b2ca073414bc7ac',
-  '305d256ebd57078fcfc8159156100b6f11fdeedf8673b82144caaa7dd97c8ca4');
+  '80ae64204e17eae24968b7f227566e7ca4b76f32747cf378f53f106167866c7c');
 
 #
 # 13) Test Framed Montage with drop-shadows and background texture
@@ -132,7 +132,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True', texture=>'granite:'/,
   '64986944a9db033ff39184c148204bfff7dc0d91d114dac946126c0b600d818d',
-  '1fe53d94e8e07b121c037a089ad27dd5f8b4651cb6abf2efb0773281dddfff9b');
+  '2bebe7912810ad4233696201682212eb14150ca36140aefb4417da81ead77963');
 
 #
 # 14) Test Un-bordered, Un-framed Montage

@@ -102,6 +102,9 @@
       <Message name="ImageTypeNotSupported">
         Image type not supported
       </Message>
+       <Message name="IrregularChannelGeometryNotSupported">
+        Irregular channel geometry not supported
+      </Message>
       <Message name="IncompatibleSizeOfDouble">
         Incompatible size of double
       </Message>
@@ -289,6 +292,9 @@
         </Message>
         <Message name="LengthAndFilesizeDoNotMatch">
           Length and filesize do not match
+        </Message>
+        <Message name="MissingImageChannel">
+          Missing a required image channel
         </Message>
         <Message name="NegativeOrZeroImageSize">
           Negative or zero image size
@@ -514,6 +520,9 @@
       </Message>
       <Message name="UnableToCreateImage">
         Unable to create image
+      </Message>
+      <Message name="UnableToCreateImageComponent">
+        Unable to create image component
       </Message>
       <Message name="UnableToDecodeImageFile">
         Unable to decode image file

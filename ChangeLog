@@ -1,3 +1,22 @@
+2003-02-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/locale.c: Added error messages to support JP2.
+	* locale/C.mgk: Added error messages to support JP2.
+	* locale/locale.mgk: Update to GraphicsMagick copyright.
+	* coders/jp2.c: Updated to use Jasper 1.700.1 interface
+	conventions. Jasper 1.700.1 is required now. Support
+	reading arbitrary quantum sizes up to 16-bits.  Return
+	grayscale images as PseudoClass.
+	* jp2/: Updated Jasper sources to version 1.700.1.
+
+2003-02-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jp2.c (ReadJP2Image): Obtain channel indexes by
+	ID rather than assuming index value.  Validate that channel
+	geometry and encoding is supported.
+	* magick/effect.c (ThresholdImage): Additional performance
+	optimization. Work faster if image is already gray.
+
 2003-02-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jp2.c (WriteJP2Image): Port to Jasper 1.7.

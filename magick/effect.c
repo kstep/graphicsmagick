@@ -2432,21 +2432,33 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=(long) image->columns; x > 0; x--)
-    {
-      index=PixelIntensityToQuantum(q) <= threshold ? 0 : 1;
-      *indexes++=index;
-      q->red=image->colormap[index].red;
-      q->green=image->colormap[index].green;
-      q->blue=image->colormap[index].blue;
-      q++;
-    }
+    if (image->is_grayscale)
+      {
+        for (x=(long) image->columns; x > 0; x--)
+          {
+            index=q->red <= threshold ? 0 : 1;
+            *indexes++=index;
+            q->red=q->green=q->blue=image->colormap[index].red;
+            q++;
+          }
+      }
+    else
+      {
+        for (x=(long) image->columns; x > 0; x--)
+          {
+            index=PixelIntensityToQuantum(q) <= threshold ? 0 : 1;
+            *indexes++=index;
+            q->red=q->green=q->blue=image->colormap[index].red;
+            q++;
+          }
+      }
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       if (!MagickMonitor(ThresholdImageText,y,image->rows,&image->exception))
         break;
   }
+  image->storage_class=PseudoClass;
   image->is_monochrome=True;
   image->is_grayscale=True;
   return(True);
