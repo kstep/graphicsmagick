@@ -286,7 +286,7 @@ push(@$images,$example);
 print "Shade...\n";
 $example=$model->Clone();
 $example->Label('Shade');
-$example->Shade(geometry=>'30x30',color=>'false');
+$example->Shade(geometry=>'30x30',gray=>'true');
 push(@$images,$example);
 
 print "Sharpen...\n";
