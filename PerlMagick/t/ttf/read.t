@@ -29,12 +29,12 @@ testRead( 'input.ttf',
 #
 ++$test;
 print("Draw text using font ...\n");
-$infile = 'input.ttf';
+$infile = 't/input.ttf';
 $md5    = 'f85f556f418a80a8e30bd01254b1735fa4b730174706ddab39e676014e69e1ee';
-$md5_16 = '025882a03b92779d6d37bb38ae55cfd8522aa2b801ee60d02d90fe989b7ff0b4';
+$md5_16 = 'b114c9d1bea88fd75d88094f0b69ef4714c3e7d74c3e3dd158fd5aea7f5f6aea';
 
 $image=Image::Magick->new;
-$status=$image->Set(font=>"\@$infile", pen=>'#0000FF', pointsize=>14);
+$status=$image->Set(font=>"$infile", pen=>'#0000FF', pointsize=>14);
 if( "$status" ) {
   print "$status\n";
   print "not ok $test\n";
@@ -83,7 +83,7 @@ if( "$status" ) {
   } else {
     $status = $image->Annotate(text=>'The quick brown fox jumps over the lazy dog.',
 			       geometry=>'+4+6',
-			       font=>"\@$infile",
+			       font=>"$infile",
 			       fill=>"#000000",
 			       pointsize=>14);
     if ( $status ) {
