@@ -31,7 +31,7 @@ extern "C" {
 #define MagickLibPath  "/usr/local/lib/ImageMagick/"
 #endif
 #if !defined(MagickModulesPath)
-#define MagickModulesPath  "/usr/local/lib/ImageMagick/modules/"
+#define MagickModulesPath  "/usr/local/lib/ImageMagick/module/"
 #endif
 #if !defined(MagickSharePath)
 #define MagickSharePath  "/usr/local/share/ImageMagick/"
