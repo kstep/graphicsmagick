@@ -205,6 +205,7 @@ MODULE_EXTRA_CPPFLAGS = @MODULE_EXTRA_CPPFLAGS@
 MPEGDecodeDelegate = @MPEGDecodeDelegate@
 MPEGEncodeDelegate = @MPEGEncodeDelegate@
 MVDelegate = @MVDelegate@
+MagickBinPath = @MagickBinPath@
 MagickCoderModulesPath = @MagickCoderModulesPath@
 MagickFilterModulesPath = @MagickFilterModulesPath@
 MagickLibPath = @MagickLibPath@

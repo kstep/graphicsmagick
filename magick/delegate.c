@@ -733,170 +733,231 @@ static unsigned int ReadConfigureFile(const char *basename,
     xml=AllocateString(DelegateMap);
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
-  {
-    /*
-      Interpret XML.
-    */
-    GetToken(q,&q,token);
-    if (*token == '\0')
-      break;
-    (void) strncpy(keyword,token,MaxTextExtent-1);
-    if (LocaleNCompare(keyword,"<!--",4) == 0)
-      {
-        /*
-          Comment element.
-        */
-        while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
-          GetToken(q,&q,token);
-        continue;
-      }
-    if (LocaleCompare(keyword,"<include") == 0)
-      {
-        /*
-          Include element.
-        */
-        while ((*token != '>') && (*q != '\0'))
-        {
-          (void) strncpy(keyword,token,MaxTextExtent-1);
-          GetToken(q,&q,token);
-          if (*token != '=')
-            continue;
-          GetToken(q,&q,token);
-          if (LocaleCompare(keyword,"file") == 0)
-            {
-              if (depth > 200)
-                ThrowException(exception,ConfigureError,
-                  "IncludeElementNestedTooDeeply",path);
-              else
-                {
-                  char
-                    filename[MaxTextExtent];
-
-                  GetPathComponent(path,HeadPath,filename);
-                  if (*filename != '\0')
-                    (void) strcat(filename,DirectorySeparator);
-                  (void) strncat(filename,token,MaxTextExtent-
-                    strlen(filename)-1);
-                  (void) ReadConfigureFile(filename,depth+1,exception);
-                }
-              if (delegate_list != (DelegateInfo *) NULL)
-                while (delegate_list->next != (DelegateInfo *) NULL)
-                  delegate_list=delegate_list->next;
-            }
-        }
-        continue;
-      }
-    if (LocaleCompare(keyword,"<delegate") == 0)
-      {
-        DelegateInfo
-          *delegate_info;
-
-        /*
-          Allocate memory for the delegate list.
-        */
-        delegate_info=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
-        if (delegate_info == (DelegateInfo *) NULL)
-          MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "UnableToAllocateDelegateInfo");
-        (void) memset(delegate_info,0,sizeof(DelegateInfo));
-        delegate_info->path=AcquireString(path);
-        delegate_info->signature=MagickSignature;
-        if (delegate_list == (DelegateInfo *) NULL)
-          {
-            delegate_list=delegate_info;
-            continue;
-          }
-        delegate_list->next=delegate_info;
-        delegate_info->previous=delegate_list;
-        delegate_list=delegate_list->next;
-        continue;
-      }
-    if (delegate_list == (DelegateInfo *) NULL)
-      continue;
-    GetToken(q,(char **) NULL,token);
-    if (*token != '=')
-      continue;
-    GetToken(q,&q,token);
-    GetToken(q,&q,token);
-    switch (*keyword)
     {
-      case 'C':
-      case 'c':
-      {
-        if (LocaleCompare((char *) keyword,"command") == 0)
-          {
-            delegate_list->commands=AllocateString(token);
-#if defined(WIN32)
-            if (strchr(delegate_list->commands,'@') != (char *) NULL)
-              {
-                char
-                  path[MaxTextExtent];
+      /*
+        Interpret XML.
+      */
+      GetToken(q,&q,token);
+      if (*token == '\0')
+        break;
+      (void) strncpy(keyword,token,MaxTextExtent-1);
+      if (LocaleNCompare(keyword,"<!--",4) == 0)
+        {
+          /*
+            Comment element.
+          */
+          while ((LocaleNCompare(q,"->",2) != 0) && (*q != '\0'))
+            GetToken(q,&q,token);
+          continue;
+        }
+      if (LocaleCompare(keyword,"<include") == 0)
+        {
+          /*
+            Include element.
+          */
+          while ((*token != '>') && (*q != '\0'))
+            {
+              (void) strncpy(keyword,token,MaxTextExtent-1);
+              GetToken(q,&q,token);
+              if (*token != '=')
+                continue;
+              GetToken(q,&q,token);
+              if (LocaleCompare(keyword,"file") == 0)
+                {
+                  if (depth > 200)
+                    ThrowException(exception,ConfigureError,
+                                   "IncludeElementNestedTooDeeply",path);
+                  else
+                    {
+                      char
+                        filename[MaxTextExtent];
 
-                NTGhostscriptEXE(path,MaxTextExtent-1);
-                SubstituteString((char **) &delegate_list->commands,
-                  "@PSDelegate@",path);
+                      GetPathComponent(path,HeadPath,filename);
+                      if (*filename != '\0')
+                        (void) strcat(filename,DirectorySeparator);
+                      (void) strncat(filename,token,MaxTextExtent-
+                                     strlen(filename)-1);
+                      (void) ReadConfigureFile(filename,depth+1,exception);
+                    }
+                  if (delegate_list != (DelegateInfo *) NULL)
+                    while (delegate_list->next != (DelegateInfo *) NULL)
+                      delegate_list=delegate_list->next;
+                }
+            }
+          continue;
+        }
+      if (LocaleCompare(keyword,"<delegate") == 0)
+        {
+          DelegateInfo
+            *delegate_info;
+
+          /*
+            Allocate memory for the delegate list.
+          */
+          delegate_info=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
+          if (delegate_info == (DelegateInfo *) NULL)
+            MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+                             "UnableToAllocateDelegateInfo");
+          (void) memset(delegate_info,0,sizeof(DelegateInfo));
+          delegate_info->path=AcquireString(path);
+          delegate_info->signature=MagickSignature;
+          if (delegate_list == (DelegateInfo *) NULL)
+            {
+              delegate_list=delegate_info;
+              continue;
+            }
+          delegate_list->next=delegate_info;
+          delegate_info->previous=delegate_list;
+          delegate_list=delegate_list->next;
+          continue;
+        }
+      if (delegate_list == (DelegateInfo *) NULL)
+        continue;
+      GetToken(q,(char **) NULL,token);
+      if (*token != '=')
+        continue;
+      GetToken(q,&q,token);
+      GetToken(q,&q,token);
+      switch (*keyword)
+        {
+        case 'C':
+        case 'c':
+          {
+            if (LocaleCompare((char *) keyword,"command") == 0)
+              {
+                delegate_list->commands=AllocateString(token);
+#if defined(WIN32)
+                if (strchr(delegate_list->commands,'@') != (char *) NULL)
+                  {
+                    char
+                      BinPath[MaxTextExtent],
+                      path[MaxTextExtent];
+                
+                    /* Substitute @PSDelegate@ with path to Ghostscript */
+                    NTGhostscriptEXE(path,MaxTextExtent-1);
+                    SubstituteString((char **) &delegate_list->commands,
+                                     "@PSDelegate@",path);
+
+# if defined(UseInstalledImageMagick)
+#  if defined(MagickBinPath)
+                    strcpy(BinPath,MagickBinPath);
+#  else
+                    {
+                      char
+                        *key_value;
+                    
+                      /* Obtain installation path from registry */
+                      key_value=NTRegistryKeyLookup("BinPath");
+                      if (key_value)
+                        strcpy(BinPath,key_value);
+                      LiberateMemory((void **) &key_value);
+                    }
+#  endif /* defined(MagickBinPath) */
+# else
+                    /* Base path off of client path */
+                    strcpy(BinPath,SetClientPath(NULL));
+# endif /* defined(UseInstalledImageMagick) */
+                    if ((BinPath[0] != 0) &&
+                        (BinPath[strlen(BinPath)-1] != *DirectorySeparator))
+                      strcat(BinPath,DirectorySeparator);
+
+                    /* Substitute @GMDelegate@ with path to gm.exe */
+                    strcpy(path,BinPath);
+                    strcat(path,"gm.exe");
+                    SubstituteString((char **) &delegate_list->commands,
+                                     "@GMDelegate@",path);
+
+                    /* Substitute @GMDisplayDelegate@ with path to
+                       gmdisplay.exe */
+                    strcpy(path,BinPath);
+                    strcat(path,"gmdisplay.exe");
+                    SubstituteString((char **) &delegate_list->commands,
+                                     "@GMDisplayDelegate@",path);
+
+                    /* Substitute @MPEGDecodeDelegate@ with path to
+                       mpeg2dec.exe */
+                    strcpy(path,BinPath);
+                    strcat(path,"mpeg2dec.exe");
+                    SubstituteString((char **) &delegate_list->commands,
+                                     "@MPEGDecodeDelegate@",path);
+
+                    /* Substitute @MPEGEncodeDelegate@ with path to
+                       mpeg2enc.exe */
+                    strcpy(path,BinPath);
+                    strcat(path,"mpeg2enc.exe");
+                    SubstituteString((char **) &delegate_list->commands,
+                                     "@MPEGEncodeDelegate@",path);
+
+                    /* Substitute @HPGLDecodeDelegate@ with path to
+                       hp2xx.exe */
+                    strcpy(path,BinPath);
+                    strcat(path,"hp2xx.exe");
+                    SubstituteString((char **) &delegate_list->commands,
+                                     "@HPGLDecodeDelegate@",path);
+                  }
+#endif /* defined(WIN32) */
+              } /* LocaleCompare */
+            break;
+          } /*  case 'c': */
+          {
+            break;
+          }
+        case 'D':
+        case 'd':
+          {
+            if (LocaleCompare((char *) keyword,"decode") == 0)
+              {
+                delegate_list->decode=AcquireString(token);
+                delegate_list->mode=1;
+                break;
               }
-#endif
             break;
           }
-        break;
-      }
-      case 'D':
-      case 'd':
-      {
-        if (LocaleCompare((char *) keyword,"decode") == 0)
+        case 'E':
+        case 'e':
           {
-            delegate_list->decode=AcquireString(token);
-            delegate_list->mode=1;
-            break;
-          }
-        break;
-      }
-      case 'E':
-      case 'e':
-      {
-        if (LocaleCompare((char *) keyword,"encode") == 0)
-          {
-            delegate_list->encode=AcquireString(token);
-            delegate_list->mode=(-1);
-            break;
-          }
-        break;
-      }
-      case 'M':
-      case 'm':
-      {
-        if (LocaleCompare((char *) keyword,"mode") == 0)
-          {
-            delegate_list->mode=1;
-            if (LocaleCompare(token,"bi") == 0)
-              delegate_list->mode=0;
-            else
-              if (LocaleCompare(token,"encode") == 0)
+            if (LocaleCompare((char *) keyword,"encode") == 0)
+              {
+                delegate_list->encode=AcquireString(token);
                 delegate_list->mode=(-1);
+                break;
+              }
             break;
           }
-        break;
-      }
-      case 'S':
-      case 's':
-      {
-        if (LocaleCompare((char *) keyword,"spawn") == 0)
+        case 'M':
+        case 'm':
           {
-            delegate_list->spawn=LocaleCompare(token,"True") == 0;
+            if (LocaleCompare((char *) keyword,"mode") == 0)
+              {
+                delegate_list->mode=1;
+                if (LocaleCompare(token,"bi") == 0)
+                  delegate_list->mode=0;
+                else
+                  if (LocaleCompare(token,"encode") == 0)
+                    delegate_list->mode=(-1);
+                break;
+              }
             break;
           }
-        if (LocaleCompare((char *) keyword,"stealth") == 0)
+        case 'S':
+        case 's':
           {
-            delegate_list->stealth=LocaleCompare(token,"True") == 0;
+            if (LocaleCompare((char *) keyword,"spawn") == 0)
+              {
+                delegate_list->spawn=LocaleCompare(token,"True") == 0;
+                break;
+              }
+            if (LocaleCompare((char *) keyword,"stealth") == 0)
+              {
+                delegate_list->stealth=LocaleCompare(token,"True") == 0;
+                break;
+              }
             break;
           }
-        break;
-      }
-      default:
-        break;
+        default:
+          break;
+        }
     }
-  }
   LiberateMemory((void **) &token);
   LiberateMemory((void **) &xml);
   if (delegate_list == (DelegateInfo *) NULL)

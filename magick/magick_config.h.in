@@ -345,6 +345,9 @@
 /* Define to prepend to default font search path. */
 #undef MAGICK_FONT_PATH
 
+/* Directory where executables are installed. */
+#undef MagickBinPath
+
 /* Location of coder modules */
 #undef MagickCoderModulesPath
 

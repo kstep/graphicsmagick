@@ -1667,6 +1667,16 @@ AC_SUBST(LIB_WMF_DEPS)
 MagickLibSubdir="${PACKAGE_NAME}-${PACKAGE_VERSION}"
 AC_DEFINE_UNQUOTED(MagickLibSubdir,"$MagickLibSubdir",Subdirectory of lib where GraphicsMagick architecture dependent files are installed)
 
+# Path to GraphicsMagick bin directory
+MagickBinPath="${BIN_DIR}"
+MagickBinPathDefine="${MagickBinPath}/"
+if test "$native_win32_build" = 'yes'
+then
+  MagickBinPathDefine=`$WinPathScript "$MagickBinPathDefine" 1`
+fi
+AC_DEFINE_UNQUOTED(MagickBinPath,"$MagickBinPathDefine",Directory where executables are installed.)
+AC_SUBST(MagickBinPath)
+
 # Path to GraphicsMagick lib
 MagickLibPath="${LIB_DIR}/${MagickLibSubdir}"
 MagickLibPathDefine="${MagickLibPath}/"
@@ -2005,11 +2015,11 @@ if test $have_gs = 'yes'
 then
 
   AC_MSG_CHECKING(for Ghostscript version)
-  if GSVersion=`gs --version`
+  if GSVersion=`$PSDelegate --version`
   then
     :
   else
-    GSVersion=`gs --help | sed -e '1q' | awk '{ print $3 }'`
+    GSVersion=`$PSDelegate --help | sed -e '1q' | awk '{ print $3 }'`
   fi
   AC_MSG_RESULT($GSVersion)
 

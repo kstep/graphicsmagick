@@ -476,7 +476,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os LIBRARY_CURRENT LIBRARY_REVISION LIBRARY_AGE PACKAGE_VERSION_ADDENDUM INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE PREFIX_DIR EXEC_PREFIX_DIR BIN_DIR SBIN_DIR LIBEXEC_DIR DATA_DIR SYSCONF_DIR SHAREDSTATE_DIR LOCALSTATE_DIR LIB_DIR INCLUDE_DIR OLDINCLUDE_DIR INFO_DIR MAN_DIR WinPathScript CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP EGREP LD LN_S LIB_GDI32 HasWINGDI32_TRUE HasWINGDI32_FALSE WIN32_NATIVE_BUILD_TRUE WIN32_NATIVE_BUILD_FALSE CYGWIN_BUILD_TRUE CYGWIN_BUILD_FALSE INSTALL_LTDL_TRUE INSTALL_LTDL_FALSE CONVENIENCE_LTDL_TRUE CONVENIENCE_LTDL_FALSE LIBADD_DL INCLTDL LIBLTDL ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB DLLTOOL ac_ct_DLLTOOL AS ac_ct_AS OBJDUMP ac_ct_OBJDUMP CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL LIBTOOL_DEPS WITH_MODULES_TRUE WITH_MODULES_FALSE WITH_LTDL_TRUE WITH_LTDL_FALSE DLLDFLAGS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT HasLZW_TRUE HasLZW_FALSE QuantumDepth PERL_MAKE_OPTIONS LIBSTDCLDFLAGS MODULE_EXTRA_CPPFLAGS LIBRARY_EXTRA_CPPFLAGS LIB_LF WITH_MAGICK_PLUS_PLUS_TRUE WITH_MAGICK_PLUS_PLUS_FALSE CCMALLOCDelegate LIB_MATH LIB_THREAD HasZLIB_TRUE HasZLIB_FALSE LIB_ZLIB HasBZLIB_TRUE HasBZLIB_FALSE LIB_BZLIB X_CFLAGS X_PRE_LIBS X_LIBS X_EXTRA_LIBS HasX11_TRUE HasX11_FALSE LIB_X11 LIB_XEXT LIB_DL HasDPS_TRUE HasDPS_FALSE LIB_DPS HasFPX_TRUE HasFPX_FALSE LIB_FPX HasLCMS_TRUE HasLCMS_FALSE LIB_LCMS HasPNG_TRUE HasPNG_FALSE LIB_PNG HasJPEG_TRUE HasJPEG_FALSE LIB_JPEG HasJP2_TRUE HasJP2_FALSE LIB_JP2 HasGS_TRUE HasGS_FALSE LIB_GS freetype_config HasTTF_TRUE HasTTF_FALSE LIB_TTF HasTIFF_TRUE HasTIFF_FALSE LIB_TIFF HasJBIG_TRUE HasJBIG_FALSE LIB_JBIG xml2_config HasXML_TRUE HasXML_FALSE LIB_XML HasWMF_TRUE HasWMF_FALSE LIB_WMF LIB_WMF_DEPS MagickLibPath MagickCoderModulesPath MagickFilterModulesPath MagickSharePath AutotraceDecodeDelegate BZIPDelegate BrowseDelegate CGMDecodeDelegate CatDelegate DOTDecodeDelegate DVIDecodeDelegate EchoDelegate EditorDelegate FIGDecodeDelegate GMDelegate GnuplotDecodeDelegate HPGLDecodeDelegate HTMLDecodeDelegate ILBMDecodeDelegate ILBMEncodeDelegate LPDelegate LPRDelegate LZWDecodeDelegate LZWEncodeDelegate LaunchDelegate MANDelegate MPEGDecodeDelegate MPEGEncodeDelegate MVDelegate PGPDecodeDelegate POVDelegate PSDelegate RADDecodeDelegate RLEEncodeDelegate RMDelegate SCANDecodeDelegate TXTDelegate WMFDecodeDelegate WWWDecodeDelegate ZipDelegate PrintDelegate TXT2HTML HasTXT2HTML_TRUE HasTXT2HTML_FALSE windows_font_dir ghostscript_font_dir type_include_files ConvertDelegate MogrifyDelegate ShowImageDelegate GSMonoDevice GSPDFDevice GSPSDevice GSColorDevice GSEPSDevice GSVersion PERL WITH_PERL_TRUE WITH_PERL_FALSE WITH_PERL_STATIC_TRUE WITH_PERL_STATIC_FALSE WITH_PERL_DYNAMIC_TRUE WITH_PERL_DYNAMIC_FALSE MAGICKLIB DELEGATES MAGICK_DEP_LIBS LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os LIBRARY_CURRENT LIBRARY_REVISION LIBRARY_AGE PACKAGE_VERSION_ADDENDUM INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE PREFIX_DIR EXEC_PREFIX_DIR BIN_DIR SBIN_DIR LIBEXEC_DIR DATA_DIR SYSCONF_DIR SHAREDSTATE_DIR LOCALSTATE_DIR LIB_DIR INCLUDE_DIR OLDINCLUDE_DIR INFO_DIR MAN_DIR WinPathScript CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP EGREP LD LN_S LIB_GDI32 HasWINGDI32_TRUE HasWINGDI32_FALSE WIN32_NATIVE_BUILD_TRUE WIN32_NATIVE_BUILD_FALSE CYGWIN_BUILD_TRUE CYGWIN_BUILD_FALSE INSTALL_LTDL_TRUE INSTALL_LTDL_FALSE CONVENIENCE_LTDL_TRUE CONVENIENCE_LTDL_FALSE LIBADD_DL INCLTDL LIBLTDL ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB DLLTOOL ac_ct_DLLTOOL AS ac_ct_AS OBJDUMP ac_ct_OBJDUMP CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL LIBTOOL_DEPS WITH_MODULES_TRUE WITH_MODULES_FALSE WITH_LTDL_TRUE WITH_LTDL_FALSE DLLDFLAGS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT HasLZW_TRUE HasLZW_FALSE QuantumDepth PERL_MAKE_OPTIONS LIBSTDCLDFLAGS MODULE_EXTRA_CPPFLAGS LIBRARY_EXTRA_CPPFLAGS LIB_LF WITH_MAGICK_PLUS_PLUS_TRUE WITH_MAGICK_PLUS_PLUS_FALSE CCMALLOCDelegate LIB_MATH LIB_THREAD HasZLIB_TRUE HasZLIB_FALSE LIB_ZLIB HasBZLIB_TRUE HasBZLIB_FALSE LIB_BZLIB X_CFLAGS X_PRE_LIBS X_LIBS X_EXTRA_LIBS HasX11_TRUE HasX11_FALSE LIB_X11 LIB_XEXT LIB_DL HasDPS_TRUE HasDPS_FALSE LIB_DPS HasFPX_TRUE HasFPX_FALSE LIB_FPX HasLCMS_TRUE HasLCMS_FALSE LIB_LCMS HasPNG_TRUE HasPNG_FALSE LIB_PNG HasJPEG_TRUE HasJPEG_FALSE LIB_JPEG HasJP2_TRUE HasJP2_FALSE LIB_JP2 HasGS_TRUE HasGS_FALSE LIB_GS freetype_config HasTTF_TRUE HasTTF_FALSE LIB_TTF HasTIFF_TRUE HasTIFF_FALSE LIB_TIFF HasJBIG_TRUE HasJBIG_FALSE LIB_JBIG xml2_config HasXML_TRUE HasXML_FALSE LIB_XML HasWMF_TRUE HasWMF_FALSE LIB_WMF LIB_WMF_DEPS MagickBinPath MagickLibPath MagickCoderModulesPath MagickFilterModulesPath MagickSharePath AutotraceDecodeDelegate BZIPDelegate BrowseDelegate CGMDecodeDelegate CatDelegate DOTDecodeDelegate DVIDecodeDelegate EchoDelegate EditorDelegate FIGDecodeDelegate GMDelegate GnuplotDecodeDelegate HPGLDecodeDelegate HTMLDecodeDelegate ILBMDecodeDelegate ILBMEncodeDelegate LPDelegate LPRDelegate LZWDecodeDelegate LZWEncodeDelegate LaunchDelegate MANDelegate MPEGDecodeDelegate MPEGEncodeDelegate MVDelegate PGPDecodeDelegate POVDelegate PSDelegate RADDecodeDelegate RLEEncodeDelegate RMDelegate SCANDecodeDelegate TXTDelegate WMFDecodeDelegate WWWDecodeDelegate ZipDelegate PrintDelegate TXT2HTML HasTXT2HTML_TRUE HasTXT2HTML_FALSE windows_font_dir ghostscript_font_dir type_include_files ConvertDelegate MogrifyDelegate ShowImageDelegate GSMonoDevice GSPDFDevice GSPSDevice GSColorDevice GSEPSDevice GSVersion PERL WITH_PERL_TRUE WITH_PERL_FALSE WITH_PERL_STATIC_TRUE WITH_PERL_STATIC_FALSE WITH_PERL_DYNAMIC_TRUE WITH_PERL_DYNAMIC_FALSE MAGICKLIB DELEGATES MAGICK_DEP_LIBS LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -36438,6 +36438,20 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
+# Path to GraphicsMagick bin directory
+MagickBinPath="${BIN_DIR}"
+MagickBinPathDefine="${MagickBinPath}/"
+if test "$native_win32_build" = 'yes'
+then
+  MagickBinPathDefine=`$WinPathScript "$MagickBinPathDefine" 1`
+fi
+
+cat >>confdefs.h <<_ACEOF
+#define MagickBinPath "$MagickBinPathDefine"
+_ACEOF
+
+
+
 # Path to GraphicsMagick lib
 MagickLibPath="${LIB_DIR}/${MagickLibSubdir}"
 MagickLibPathDefine="${MagickLibPath}/"
@@ -38256,11 +38270,11 @@ then
 
   echo "$as_me:$LINENO: checking for Ghostscript version" >&5
 echo $ECHO_N "checking for Ghostscript version... $ECHO_C" >&6
-  if GSVersion=`gs --version`
+  if GSVersion=`$PSDelegate --version`
   then
     :
   else
-    GSVersion=`gs --help | sed -e '1q' | awk '{ print $3 }'`
+    GSVersion=`$PSDelegate --help | sed -e '1q' | awk '{ print $3 }'`
   fi
   echo "$as_me:$LINENO: result: $GSVersion" >&5
 echo "${ECHO_T}$GSVersion" >&6
@@ -39630,6 +39644,7 @@ s,@HasWMF_TRUE@,$HasWMF_TRUE,;t t
 s,@HasWMF_FALSE@,$HasWMF_FALSE,;t t
 s,@LIB_WMF@,$LIB_WMF,;t t
 s,@LIB_WMF_DEPS@,$LIB_WMF_DEPS,;t t
+s,@MagickBinPath@,$MagickBinPath,;t t
 s,@MagickLibPath@,$MagickLibPath,;t t
 s,@MagickCoderModulesPath@,$MagickCoderModulesPath,;t t
 s,@MagickFilterModulesPath@,$MagickFilterModulesPath,;t t

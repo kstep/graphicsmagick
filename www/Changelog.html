@@ -16,6 +16,26 @@
 2003-04-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/delegate.c (ReadConfigureFile): Perform substitutions
+        for "@GMDelegate@", "@GMDisplayDelegate@", "@MPEGDecodeDelegate@",
+        "@MPEGEncodeDelegate@", and "@HPGLDecodeDelegate@" while reading
+        delegates.mgk under windows.<BR>
+  <LI> configure.ac (MagickBinPathDefine): Added support for
+        a MagickBinPath definition.
+
+</UL>
+<p>
+2003-04-03  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> magick/utility.c: Simplified skipping over the "*" in
+        the +profile "*" option when expanding filenames.
+
+</UL>
+<p>
+2003-04-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
   <LI> configure.ac (GSVersion): Added test to obtain version
         of installed Ghostcript.<BR>
   <LI> magick/tempfile.c (AcquireTemporaryFileDescriptor): Open

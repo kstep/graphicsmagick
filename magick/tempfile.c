@@ -25,6 +25,12 @@
 #else
 # define S_MODE      0600
 #endif
+
+#if defined(WIN32)
+# if defined(_P_tmpdir) && !defined(P_tmpdir)
+#  define P_tmpdir _P_tmpdir
+# endif
+#endif
 
 /*
   Type definitions
@@ -234,7 +240,7 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
   if (!tempdir)
     tempdir=getenv("TEMP");
 #endif /* WIN32 */
-#if defined(P_tmpdir) || defined(WIN32)
+#if defined(P_tmpdir)
   if (!tempdir)
     tempdir=P_tmpdir;
 #endif

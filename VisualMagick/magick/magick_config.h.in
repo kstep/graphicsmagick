@@ -92,6 +92,9 @@
 // Optional: Specify where user-specific X11 application resource files are installed
 // #define PreferencesDefaults  "~\\."
 
+// Optional: Specify where gm.exe and support executables are installed
+// #define MagickBinPath       "c:\\ImageMagick\\"
+
 // Optional: Specify where operating system specific files are installed
 // #define MagickLibPath       "c:\\ImageMagick\\"
 
