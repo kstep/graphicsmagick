@@ -2283,7 +2283,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   memset(&svg_info,0,sizeof(SVGInfo));
   svg_info.file=file;
-  svg_info.debug=image_info->verbose;
+  svg_info.debug=image_info->debug;
   svg_info.exception=exception;
   svg_info.scale=(double *) AcquireMemory(sizeof(double));
   if (svg_info.scale == (double *) NULL)
