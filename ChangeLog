@@ -577,6 +577,9 @@
   * Added SVG pattern support.
   * Changed default background color to none.
 
+2001-11-06  Cristy  <cristy@mystic.es.dupont.com>
+  * Added support of reading and writing 16-bit raw PPM/PGM files.
+
 2001-11-05  Cristy  <cristy@mystic.es.dupont.com>
   * Added -level to convert/mogrify (suggested by
     mericson@phillynews.kom).
