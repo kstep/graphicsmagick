@@ -18,7 +18,7 @@
 ******************************************************************************
 */
 #ifndef JPEGEXPORT
-  #define JPEGEXPORT extern __declspec(dllexport)
+#include "jpegconf.h"
 #endif
 
 typedef struct {
