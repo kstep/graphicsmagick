@@ -49,7 +49,7 @@
 %
 %  The composite program syntax is:
 %
-%  Usage: composite [options ...] image composite [mask] composite
+%  Usage: composite [ -option value ... ] image composite [ mask ] composite
 %
 %  Where options include:
 %    -cache threshold    number of megabytes available to the pixel cache
@@ -461,7 +461,7 @@ static void Usage(void)
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
   (void) printf(
-    "Usage: %.1024s [options ...] image composite [mask] composite\n",
+    "Usage: %.1024s [ -option value ... ] image composite [ mask ] composite\n",
     SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)

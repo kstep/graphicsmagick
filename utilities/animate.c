@@ -62,7 +62,7 @@
 %
 %  The Animate program command syntax is:
 %
-%  Usage: animate [options ...] file [ [options ...] file ...]
+%  Usage: animate [ -option value ... ] file [ [ -option value ... ] file ... ]
 %
 %  Where options include:
 %    -backdrop            display image centered on a backdrop
@@ -184,9 +184,8 @@ static void Usage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf(
-    "Usage: %.1024s [-options ...] file [ [-options ...] file ...]\n",
-    SetClientName((char *) NULL));
+  (void) printf("Usage: %.1024s [ -option value ... ] file [ [ -option value "
+	  "... ] file ... ]\n",SetClientName((char *) NULL));
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
