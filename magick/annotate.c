@@ -1000,6 +1000,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   /*
     Compute bounding box.
   */
+  glyph.id=0;
+  last_glyph.id=0;
   origin.x=0;
   origin.y=0;
   extent.x1=32000;
@@ -1114,9 +1116,12 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     if (bounding_box.yMax > extent.y2)
       extent.y2=bounding_box.yMax;
     origin.x+=face->glyph->advance.x;
-    FT_Done_Glyph(glyph.image);
+    if (last_glyph.id != 0)
+      FT_Done_Glyph(last_glyph.image);
     last_glyph=glyph;
   }
+  if (glyph.id != 0)
+    FT_Done_Glyph(glyph.image);
   metrics->pixels_per_em.x=face->size->metrics.x_ppem;
   metrics->pixels_per_em.y=face->size->metrics.y_ppem;
   metrics->ascent=face->size->metrics.ascender >> 6;
