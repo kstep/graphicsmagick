@@ -66,7 +66,7 @@ const char
   *DefaultTileFrame = "15x15+3+3",
   *DefaultTileGeometry = "120x120+4+3>",
   *DefaultTileLabel = "%f\n%wx%h\n%b",
-  *ForegroundColor = "#ffffff",  /* white */
+  *ForegroundColor = "#000000",  /* black */
   *LoadImageText = "  Loading image...  ",
   *LoadImagesText = "  Loading images...  ",
   *MatteColor = "#bdbdbd",  /* gray */
