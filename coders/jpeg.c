@@ -712,7 +712,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     jpeg_info.process == JPROC_PROGRESSIVE ? PlaneInterlace : NoInterlace;
   image->compression=jpeg_info.process == JPROC_LOSSLESS ?
     LosslessJPEGCompression : JPEGCompression;
-  if (jpeg_info.data_precision > QuantumDepth)
+  if (jpeg_info.data_precision > 8)
     MagickError(OptionError,
       "12-bit JPEG not supported. Reducing pixel data to 8 bits",(char *) NULL);
 #else
@@ -726,9 +726,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   (void) jpeg_start_decompress(&jpeg_info);
   image->columns=jpeg_info.output_width;
   image->rows=jpeg_info.output_height;
-  image->depth=jpeg_info.data_precision <= 8 ? 8 : QuantumDepth;
+  image->depth=jpeg_info.data_precision <= 8 ? 8 : 16;
   if (jpeg_info.out_color_space == JCS_GRAYSCALE)
-    if (!AllocateImageColormap(image,1 << jpeg_info.data_precision))
+    if (!AllocateImageColormap(image,1 << image->depth))
       ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         image);
   if (image_info->ping)
@@ -753,13 +753,13 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    if (jpeg_info.data_precision > QuantumDepth)
+    if (jpeg_info.data_precision > 8)
       {
         if (jpeg_info.out_color_space == JCS_GRAYSCALE)
           {
             for (x=0; x < (long) image->columns; x++)
             {
-              index=ConstrainColormapIndex(image,GETJSAMPLE(*p++)/16);
+              index=ConstrainColormapIndex(image,16*GETJSAMPLE(*p++));
               indexes[x]=index;
               *q++=image->colormap[index];
             }
@@ -768,11 +768,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           {
             for (x=0; x < (long) image->columns; x++)
             {
-              q->red=(Quantum) (GETJSAMPLE(*p++)/16);
-              q->green=(Quantum) (GETJSAMPLE(*p++)/16);
-              q->blue=(Quantum) (GETJSAMPLE(*p++)/16);
+              q->red=ScaleShortToQuantum(16*GETJSAMPLE(*p++));
+              q->green=ScaleShortToQuantum(16*GETJSAMPLE(*p++));
+              q->blue=ScaleShortToQuantum(16*GETJSAMPLE(*p++));
               if (image->colorspace == CMYKColorspace)
-                q->opacity=(IndexPacket) (GETJSAMPLE(*p++)/16);
+                q->opacity=ScaleShortToQuantum(16*GETJSAMPLE(*p++));
               q++;
             }
           }
@@ -795,7 +795,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
             q->green=ScaleCharToQuantum(GETJSAMPLE(*p++));
             q->blue=ScaleCharToQuantum(GETJSAMPLE(*p++));
             if (image->colorspace == CMYKColorspace)
-              q->opacity=(IndexPacket) ScaleCharToQuantum(GETJSAMPLE(*p++));
+              q->opacity=ScaleCharToQuantum(GETJSAMPLE(*p++));
             q++;
           }
         }
