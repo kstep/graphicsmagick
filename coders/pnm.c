@@ -847,10 +847,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       format=5;
     else
       if (LocaleCompare(image_info->magick,"PBM") == 0)
-        {
-          format=4;
-          SetImageType(image,BilevelType);
-        }
+        format=4;
       else
         if ((LocaleCompare(image_info->magick,"PNM") == 0) &&
             (image_info->type != TrueColorType) &&
@@ -906,6 +903,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PBM image.
         */
+        SetImageType(image,BilevelType);
         polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
         if (image->colors == 2)
           polarity=PixelIntensityToQuantum(&image->colormap[0]) <
@@ -1025,6 +1023,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PBM image.
         */
+        SetImageType(image,BilevelType);
         polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
         if (image->colors == 2)
           polarity=PixelIntensityToQuantum(&image->colormap[0]) <

@@ -614,6 +614,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         /*
           Convert bitmap scanline.
         */
+        SetImageType(image,BilevelType);
         polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
         if (image->colors >= 2)
           polarity=PixelIntensityToQuantum(&image->colormap[0]) >
@@ -1126,6 +1127,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             /*
               Convert PseudoClass image to a VIFF monochrome image.
             */
+            SetImageType(image,BilevelType);
             polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
             if (image->colors == 2)
               polarity=PixelIntensityToQuantum(&image->colormap[0]) <

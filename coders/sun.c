@@ -799,6 +799,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           /*
             Convert PseudoClass image to a SUN monochrome image.
           */
+          SetImageType(image,BilevelType);
           polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
           if (image->colors == 2)
             polarity=PixelIntensityToQuantum(&image->colormap[0]) <

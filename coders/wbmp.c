@@ -376,18 +376,7 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
   /*
     Convert image to a bi-level image.
   */
-  if ((image->storage_class == DirectClass) ||
-      !IsMonochromeImage(image,&image->exception))
-    {
-      QuantizeInfo
-        quantize_info;
-
-      GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=2;
-      quantize_info.dither=image_info->dither;
-      quantize_info.colorspace=GRAYColorspace;
-      (void) QuantizeImage(&quantize_info,image);
-    }
+  SetImageType(image,BilevelType);
   polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
   if (image->colors == 2)
     polarity=PixelIntensityToQuantum(&image->colormap[0]) <
