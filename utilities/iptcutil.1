@@ -1,0 +1,120 @@
+.ad l
+.nh
+.TH iptcutil 1 "1 October 2000" "ImageMagick"
+.SH NAME
+iptcutil - convert between IPTC binary and a "special" IPTC text file format.
+.SH SYNOPSIS
+.B "iptcutil"
+-t | -b [-i file] [-o file] <input >output
+.SH DESCRIPTION
+\fBiptcutil\fP supports the creation of the IPTC binary file format
+from a text file format. It also supports the conversion of the IPTC
+binary file format into the equivalent text file format.
+.SH OPTIONS
+.TP
+.B "-t
+Input file is a text file.
+.TP
+.B "-b"
+Input file is a binary IPTC file.
+.TP
+.B "-i \fBfile\fP"
+Input file to use.  If this option is not specified input is taken
+from the standard input.
+.TP
+.B "-o \fBfile\fP"
+Output file to use.  If this option is not specified then output is
+sent to the standard output.
+.TP
+
+.B IPTC Field Names
+
+The following field names are supported:
+
+.nf
+    Image Name
+    Edit Status
+    Priority
+    Category
+    Supplemental Category
+    Fixture Identifier
+    Keyword
+    Release Date
+    Release Time
+    Special Instructions
+    Reference Service
+    Reference Date
+    Reference Number
+    Created Date
+    Created Time
+    Originating Program
+    Program Version
+    Object Cycle
+    Byline
+    Byline Title
+    City
+    Province State
+    Country Code
+    Country
+    Original Transmission Reference
+    Headline
+    Credit
+    Source
+    Copyright String
+    Caption
+    Local Caption
+    Caption Writer
+    Custom Field 1
+    Custom Field 2
+    Custom Field 3
+    Custom Field 4
+    Custom Field 5
+    Custom Field 6
+    Custom Field 7
+    Custom Field 8
+    Custom Field 9
+    Custom Field 10
+    Custom Field 11
+    Custom Field 12
+    Custom Field 13
+    Custom Field 14
+    Custom Field 15
+    Custom Field 16
+    Custom Field 17
+    Custom Field 18
+    Custom Field 19
+    Custom Field 20
+.fi
+
+
+.SH SEE ALSO
+.B
+display(1), animate(1), montage(1), mogrify(1), convert(1), combine(1), xtp(1)
+.SH COPYRIGHT
+Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated
+to making software imaging solutions freely available.
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files ("ImageMagick"),
+to deal in ImageMagick without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of ImageMagick, and to permit persons to whom the
+ImageMagick is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of ImageMagick.
+
+The software is provided "as is", without warranty of any kind, express or
+implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose and noninfringement.  In no event shall
+ImageMagick Studio be liable for any claim, damages or other liability,
+whether in an action of contract, tort or otherwise, arising from, out of
+or in connection with ImageMagick or the use or other dealings in
+ImageMagick.
+
+Except as contained in this notice, the name of the ImageMagick Studio
+shall not be used in advertising or otherwise to promote the sale, use or
+other dealings in ImageMagick without prior written authorization from the
+ImageMagick Studio.
+.SH AUTHORS
+William T. Radcliffe, Corbis, billr@corbis.com
