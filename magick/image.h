@@ -135,10 +135,6 @@ typedef struct _ChromaticityInfo
 
 typedef struct _ColorInfo
 {
-  struct _ColorInfo
-    *previous,
-    *next;
-
   char
     *filename,
     *name;
@@ -148,6 +144,13 @@ typedef struct _ColorInfo
 
   PixelPacket
     color;
+
+  unsigned int
+    stealth;
+
+  struct _ColorInfo
+    *previous,
+    *next;
 } ColorInfo;
 
 typedef struct _ElementInfo
