@@ -1611,13 +1611,18 @@ AC_ARG_WITH(share-path,
 AC_DEFINE_UNQUOTED(MagickSharePath,"$MagickSharePathDefine",Directory where architecture-independent files live.)
 AC_SUBST(MagickSharePath)
 
+#
+# program_transform_name is formed for use in a Makefile, so create a
+# modified version for use in a shell script.
+configure_transform_name=`echo ${program_transform_name} | sed 's,\\$\\$,$,'`
+
 # Default delegate definitions
 AutotraceDecodeDelegateDefault='autotrace'
 BZIPDelegateDefault='bzip2'
 BrowseDelegateDefault='netscape'
 CGMDecodeDelegateDefault='ralcgm'
 CatDelegateDefault='cat'
-ConvertDelegateDefault='convert'
+ConvertDelegateDefault=`echo convert | sed ${configure_transform_name}`
 DOTDecodeDelegateDefault='dot'
 DVIDecodeDelegateDefault='dvips'
 EchoDelegateDefault='echo'
@@ -1637,7 +1642,7 @@ MANDelegateDefault='groff'
 MPEGDecodeDelegateDefault='mpeg2decode'
 MPEGEncodeDelegateDefault='mpeg2encode'
 MVDelegateDefault='mv'
-MogrifyDelegateDefault='mogrify'
+MogrifyDelegateDefault=`echo mogrify | sed ${configure_transform_name}`
 PGPDecodeDelegateDefault='pgpv'
 POVDelegateDefault='povray'
 if test "$native_win32_build" = 'yes' ; then
@@ -1649,7 +1654,7 @@ RADDecodeDelegateDefault='ra_ppm'
 RLEEncodeDelegateDefault='rawtorle'
 RMDelegateDefault='rm'
 SCANDecodeDelegateDefault='scanimage'
-ShowImageDelegateDefault='display'
+ShowImageDelegateDefault=`echo display | sed ${configure_transform_name}`
 TXTDelegateDefault='enscript'
 WMFDecodeDelegateDefault='wmf2eps'
 WWWDecodeDelegateDefault='wget'
@@ -1702,9 +1707,9 @@ fi
 AC_SUBST(PrintDelegate)
 
 # Installed ImageMagick utiltity paths
-ConvertDelegate=$BIN_DIR/convert
-ShowImageDelegate=$BIN_DIR/display
-MogrifyDelegate=$BIN_DIR/mogrify
+ConvertDelegate="${BIN_DIR}/${ConvertDelegateDefault}"
+ShowImageDelegate="${BIN_DIR}/${ShowImageDelegateDefault}"
+MogrifyDelegate="${BIN_DIR}/${MogrifyDelegateDefault}"
 
 # Set delegate booleans
 have_fig2dev='no' ; if test "$FIGDecodeDelegate" != "$FIGDecodeDelegateDefault" ; then have_fig2dev='yes' ; fi

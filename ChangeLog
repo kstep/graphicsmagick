@@ -1,3 +1,8 @@
+2002-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Apply prefix/suffix transformations to ImageMagick program names
+    which are substituted into delegates.mgk.  This fix was requested
+    by Glenn Randers-Pehrson.
+
 2002-08-25  Cristy  <cristy@mystic.es.dupont.com>
   * Arcs are now rendered properly.
   * Use -authenticate to specifiy a password when viewing encrypted PDF's.
