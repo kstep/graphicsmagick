@@ -54,8 +54,8 @@ Source: "bin\identify.exe"; DestDir: "{app}"
 Source: "bin\import.exe"; DestDir: "{app}"
 Source: "bin\mogrify.exe"; DestDir: "{app}"
 Source: "bin\montage.exe"; DestDir: "{app}"
-Source: "bin\mpeg2dec.exe; DestDir: "{app}"
-Source: "bin\mpeg2enc.exe; DestDir: "{app}"
+Source: "bin\mpeg2dec.exe"; DestDir: "{app}"
+Source: "bin\mpeg2enc.exe"; DestDir: "{app}"
 ; DLLs
 Source: "bin\CORE_*.dll"; DestDir: "{app}"
 Source: "bin\IM_MOD_*.dll"; DestDir: "{app}"
@@ -73,10 +73,10 @@ Source: "bin\type.mgk"; DestDir: "{app}"
 ; Release documentation files
 Source: "..\ChangeLog"; DestDir: "{app}"
 Source: "..\Copyright.txt"; DestDir: "{app}"
-Source: "..\QuickStart.txt"; DestDir: "{app}"; Flags: isreadme
+Source: "..\QuickStart.txt"; DestDir: "{app}"
 Source: "..\README.txt"; DestDir: "{app}"
 ; Web pages
-Source: "..\ImageMagick.html"; DestDir: "{app}"
+Source: "..\ImageMagick.html"; DestDir: "{app}"; Flags: isreadme
 Source: "..\images\*.jpg"; DestDir: "{app}\images"
 Source: "..\images\*.png"; DestDir: "{app}\images"
 Source: "..\www\*.c"; DestDir: "{app}\www"
