@@ -353,7 +353,7 @@ MagickExport void GetExceptionInfo(ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t L o c a l e E x c e p t i o n M e s s a g e                         %
+%   G e t L o c a l e E x c e p t i o n M e s s a g e                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -440,7 +440,7 @@ static const char *ExceptionSeverityToTag(const ExceptionType severity)
   return("");
 }
 
-static const char *GetLocaleExceptionMessage(const ExceptionType severity,
+MagickExport const char *GetLocaleExceptionMessage(const ExceptionType severity,
   const char *tag)
 {
   char

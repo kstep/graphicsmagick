@@ -1009,9 +1009,11 @@ static void MagickErrorHandler(const ExceptionType severity,const char *reason,
   dMY_CXT;
   errno=0;
   FormatString(text,"Exception %d: %.1024s%s%.1024s%s%s%.64s%s",severity,
-    (reason ? reason : "ERROR"),description ? " (" : "",
-    description ? description : "",description ? ")" : "",
-    errno ? " [" : "",errno ? strerror(errno) : "",errno? "]" : "");
+    (reason ? GetLocaleExceptionMessage(severity,reason) : "ERROR"),
+    description ? " (" : "",
+    description ? GetLocaleExceptionMessage(severity,description) : "",
+		description ? ")" : "",errno ? " [" : "",errno ? strerror(errno) : "",
+    errno? "]" : "");
   if ((MY_CXT.error_list == NULL) || (MY_CXT.error_jump == NULL))
     {
       /*
@@ -1073,9 +1075,11 @@ static void MagickWarningHandler(const ExceptionType severity,
   if (!reason)
     return;
   FormatString(text,"Exception %d: %.1024s%s%.1024s%s%s%.64s%s",severity,
-    (reason ? reason : "WARNING"),description ? " (" : "",
-    description ? description : "",description ? ")" : "",
-    errno ? " [" : "",errno ? strerror(errno) : "",errno? "]" : "");
+    (reason ? GetLocaleExceptionMessage(severity,reason) : "WARNING"),
+    description ? " (" : "",
+    description ? GetLocaleExceptionMessage(severity,description) : "",
+    description ? ")" : "",errno ? " [" : "",errno ? strerror(errno) : "",
+    errno? "]" : "");
   if (MY_CXT.error_list == NULL)
     {
       /*
