@@ -794,6 +794,33 @@ then
     AC_CHECK_HEADER(jmorecfg.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_HEADER(jpeglib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_LIB(jpeg,jpeg_read_header,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+
+# Test for compatable JPEG library
+if test "$ac_cv_jpeg_version_ok" != 'yes' ; then
+AC_CACHE_CHECK(for JPEG library is version 6b or later, ac_cv_jpeg_version_ok,
+[AC_TRY_RUN(
+changequote(<<, >>)dnl
+<<
+#include <stdio.h>
+#include <jpeglib.h>
+int
+main ()
+{
+if ( JPEG_LIB_VERSION >= 62 ) exit(0);
+exit(1);
+}
+>>,
+changequote([, ])dnl
+ac_cv_jpeg_version_ok='yes',
+ac_cv_jpeg_version_ok='no')])
+if test "$ac_cv_jpeg_version_ok" = 'yes' ; then
+ AC_MSG_RESULT(yes)
+ passed=`expr $passed + 1`
+else
+ AC_MSG_RESULT(no)
+ failed=`expr $failed + 1`
+fi
+fi
     AC_MSG_CHECKING(if JPEG package is complete)
     if test $passed -gt 0
     then
