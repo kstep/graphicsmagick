@@ -68,6 +68,7 @@ extern MagickExport void
   GetExceptionInfo(ExceptionInfo *),
   MagickError(const ExceptionType,const char *,const char *),
   MagickWarning(const ExceptionType,const char *,const char *),
+  SetExceptionInfo(ExceptionInfo *,ExceptionType),
   ThrowException(ExceptionInfo *,const ExceptionType,const char *,const char *);
 
 extern MagickExport WarningHandler

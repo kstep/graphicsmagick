@@ -153,7 +153,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
         image_info->magick);
       return((Image *) NULL);
     }
-  exception->severity=UndefinedException;
+  SetExceptionInfo(exception,UndefinedException);
   clone_info=CloneImageInfo(image_info);
   AttachBlob(clone_info->blob,blob,length);
   (void) SetImageInfo(clone_info,False,exception);
@@ -649,7 +649,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  exception->severity=UndefinedException;
+  SetExceptionInfo(exception,UndefinedException);
   clone_info=CloneImageInfo(image_info);
   (void) strncpy(clone_info->magick,image->magick,MaxTextExtent-1);
   magick_info=GetMagickInfo(clone_info->magick,exception);
@@ -1196,7 +1196,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  exception->severity=UndefinedException;
+  SetExceptionInfo(exception,UndefinedException);
   if ((blob == (const void *) NULL) || (length == 0))
     {
       ThrowException(exception,BlobWarning,"Unrecognized image format",

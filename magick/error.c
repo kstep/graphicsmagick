@@ -258,7 +258,7 @@ MagickExport void DestroyExceptionInfo(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o exception: The exception info
+%    o exception: The exception info.
 %
 %
 */
@@ -266,7 +266,7 @@ MagickExport void GetExceptionInfo(ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
   (void) memset(exception,0,sizeof(ExceptionInfo));
-  exception->severity=UndefinedException;
+  SetExceptionInfo(exception,UndefinedException);
   exception->signature=MagickSignature;
 }
 
@@ -421,6 +421,38 @@ MagickExport ErrorHandler SetErrorHandler(ErrorHandler handler)
   previous_handler=error_handler;
   error_handler=handler;
   return(previous_handler);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t E x c e p t i o n I n f o                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetExceptionInfo() set the exception severity.
+%
+%  The format of the SetExceptionInfo method is:
+%
+%      SetExceptionInfo(ExceptionInfo *exception,ExceptionType severity)
+%
+%  A description of each parameter follows:
+%
+%    o exception: The exception info.
+%
+%    o severity: The exception severity.
+%
+%
+*/
+MagickExport void SetExceptionInfo(ExceptionInfo *exception,
+	ExceptionType severity)
+{
+  assert(exception != (ExceptionInfo *) NULL);
+  exception->severity=severity;
 }
 
 /*
