@@ -810,13 +810,13 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
   {
     density=0.0;
     n=0;
-    center=(double) x/x_factor;
-    start=(long) Max(ceil(center-support-0.5),0L);
-    end=(long) Min(floor(center+support+0.5),source->columns-1);
+    center=(double) x/x_factor+MagickEpsilon;
+    start=(long) Max(ceil(center-support-0.5),0);
+    end=(long) Min(floor(center+support+0.5),source->columns);
     for (i=start; i <= end; i++)
     {
       contribution[n].pixel=i;
-      contribution[n].weight=filter_info->function(scale*(i-center));
+      contribution[n].weight=filter_info->function(scale*(i-center+0.5));
       contribution[n].weight*=scale;
       density+=contribution[n].weight;
       n++;
@@ -947,13 +947,13 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
   {
     density=0.0;
     n=0;
-    center=(double) y/y_factor;
-    start=(long) Max(ceil(center-support-0.5),0L);
-    end=(long) Min(floor(center+support+0.5),source->rows-1);
+    center=(double) y/y_factor+MagickEpsilon;
+    start=(long) Max(ceil(center-support-0.5),0);
+    end=(long) Min(floor(center+support+0.5),source->rows);
     for (i=start; i <= end; i++)
     {
       contribution[n].pixel=i;
-      contribution[n].weight=filter_info->function(scale*(i-center));
+      contribution[n].weight=filter_info->function(scale*(i-center+0.5));
       contribution[n].weight*=scale;
       density+=contribution[n].weight;
       n++;
