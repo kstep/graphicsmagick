@@ -486,9 +486,9 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
         {
           if (floodplane[y*image->columns+x])
             {
-              color=GetOnePixel(pattern,
+              color=AcquireOnePixel(pattern,
                 (x-pattern->tile_info.x) % pattern->columns,
-                (y-pattern->tile_info.y) % pattern->rows);
+                (y-pattern->tile_info.y) % pattern->rows,&image->exception);
               if (!pattern->matte)
                 color.opacity=OpaqueOpacity;
               if (color.opacity != TransparentOpacity)
@@ -3341,18 +3341,18 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
         }
       pattern=draw_info->fill_pattern;
       if (pattern != (Image *) NULL)
-        fill_color=GetOnePixel(pattern,
+        fill_color=AcquireOnePixel(pattern,
           ((x-pattern->tile_info.x)) % pattern->columns,
-          ((y-pattern->tile_info.y)) % pattern->rows);
+          ((y-pattern->tile_info.y)) % pattern->rows,&image->exception);
       fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
       if (fill_opacity != TransparentOpacity)
         *q=AlphaComposite(&fill_color,fill_opacity,q,
           (q->opacity == TransparentOpacity) ? OpaqueOpacity : q->opacity);
       pattern=draw_info->stroke_pattern;
       if (pattern != (Image *) NULL)
-        stroke_color=GetOnePixel(pattern,
+        stroke_color=AcquireOnePixel(pattern,
           ((x-pattern->tile_info.x)) % pattern->columns,
-          ((y-pattern->tile_info.y)) % pattern->rows);
+          ((y-pattern->tile_info.y)) % pattern->rows,&image->exception);
       stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
       if (stroke_opacity != TransparentOpacity)
         *q=AlphaComposite(&stroke_color,stroke_opacity,q,
@@ -3571,9 +3571,9 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
                 }
               if (pattern != (Image *) NULL)
                 {
-                  color=GetOnePixel(pattern,
+                  color=AcquireOnePixel(pattern,
                     (x-pattern->tile_info.x) % pattern->columns,
-                    (y-pattern->tile_info.y) % pattern->rows);
+                    (y-pattern->tile_info.y) % pattern->rows,&image->exception);
                   if (!pattern->matte)
                     color.opacity=OpaqueOpacity;
                 }

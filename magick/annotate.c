@@ -985,9 +985,9 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
         for (x=0; x < (long) annotate_image->columns; x++)
         {
           if (pattern != (Image *) NULL)
-            fill_color=GetOnePixel(pattern,
+            fill_color=AcquireOnePixel(pattern,
               (x-pattern->tile_info.x) % pattern->columns,
-              (y-pattern->tile_info.y) % pattern->rows);
+              (y-pattern->tile_info.y) % pattern->rows,&image->exception);
           q->opacity=(Quantum) (MaxRGB-((unsigned long) ((MaxRGB-Intensity(q))*
             (MaxRGB-fill_color.opacity))/MaxRGB));
           q->red=fill_color.red;
@@ -1390,9 +1390,10 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                     ((*p) >= 64 ? TransparentOpacity : OpaqueOpacity);
                 fill_color=draw_info->fill;
                 if (pattern != (Image *) NULL)
-                  fill_color=GetOnePixel(pattern,
+                  fill_color=AcquireOnePixel(pattern,
                     (long) (point.x+x-pattern->tile_info.x) % pattern->columns,
-                    (long) (point.y+y-pattern->tile_info.y) % pattern->rows);
+                    (long) (point.y+y-pattern->tile_info.y) % pattern->rows,
+                    &image->exception);
                 opacity=(Quantum) ((unsigned long) ((MaxRGB-opacity)*
                   (MaxRGB-fill_color.opacity))/MaxRGB);
                 if (!active)
