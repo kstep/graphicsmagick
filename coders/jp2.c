@@ -459,7 +459,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     *jp2_image;
 
   jas_matrix_t
-    *pixels;
+    *pixels[4];
 
   jas_stream_t
     *jp2_stream;
@@ -518,50 +518,58 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   */
   for (i=0; i < number_components; i++)
   {
-    pixels=jas_matrix_create(image->rows,image->columns);
-    if (pixels == (jas_matrix_t *) NULL)
-      break;
-    for (y=0; y < (int) image->rows; y++)
-    {
-      p=GetImagePixels(image,0,y,image->columns,1);
-      if (p == (PixelPacket *) NULL)
-        break;
-      for (x=0; x < (int) image->columns; x++)
+    pixels[i]=jas_matrix_create(1,image->columns);
+    if (pixels[i] == (jas_matrix_t *) NULL)
       {
+        jas_image_destroy(jp2_image);
+        ThrowWriterException(CorruptImageWarning,"Unable to allocate memory",
+          image);
+      }
+  }
+  for (y=0; y < (int) image->rows; y++)
+  {
+    p=GetImagePixels(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      for (i=0; i < number_components; i++)
         switch (i)
         {
           case 0:
           {
-            jas_matrix_set(pixels,y,x,DownScale(p->red));
+            jas_matrix_setv(pixels[0],x,DownScale(p->red));
             break;
           }
           case 1:
           {
-            jas_matrix_set(pixels,y,x,DownScale(p->green));
+            jas_matrix_setv(pixels[1],x,DownScale(p->green));
             break;
           }
           case 2:
           {
-            jas_matrix_set(pixels,y,x,DownScale(p->blue));
+            jas_matrix_setv(pixels[2],x,DownScale(p->blue));
             break;
           }
           case 3:
           {
-            jas_matrix_set(pixels,y,x,DownScale(p->opacity));
+            jas_matrix_setv(pixels[3],x,DownScale(p->opacity));
             break;
           }
           default:
             break;
         }
-        p++;
-      }
+      p++;
     }
-    (void) jas_image_writecmpt(jp2_image,i,0,0,image->columns,image->rows,pixels);
-    jas_matrix_destroy(pixels);
+    for (i=0; i < number_components; i++)
+      (void) jas_image_writecmpt(jp2_image,i,0,y,image->columns,1,pixels[i]);
     if (image->previous == (Image *) NULL)
-      MagickMonitor(SaveImageText,i,number_components);
+      if (QuantumTick(y,image->rows))
+        MagickMonitor(SaveImageText,y,image->rows);
   }
-  (void) strcpy(magick,image->magick);
+  for (i=0; i < number_components; i++)
+    jas_matrix_destroy(pixels[i]);
+  (void) strcpy(magick,image_info->magick);
   LocaleLower(magick);
   format=jas_image_strtofmt(magick);
   status=jas_image_encode(jp2_image,jp2_stream,format,0);
