@@ -23,15 +23,19 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
-2001-11-12  Cristy  <cristy@mystic.es.dupont.com>
+2001-11-25  Cristy  <cristy@mystic.es.dupont.com>
+	* AcquireImagePixels() can accept (x,y) outside the image area
+	  (e.g. AcquireImagePixels(image,-3,-3,7,7,exception)).
+
+2001-11-22  Cristy  <cristy@mystic.es.dupont.com>
 	* Added limited SVG gradient support.
 
 2001-11-21  Cristy  <cristy@mystic.es.dupont.com>
 	* Added API method, PingBlob().
 
 2001-11-14  Cristy  <cristy@mystic.es.dupont.com>
-	* Moved a few pixel related defines (e.g. Downscale()) to
-	  a corresponding method to enforce strong type checking at
+	* Moved a few pixel related defines (e.g. Downscale()) to a
+	  corresponding method to enforce strong type checking at
 	  compile time.
 
 2001-11-12  Cristy  <cristy@mystic.es.dupont.com>
