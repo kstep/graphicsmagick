@@ -17,7 +17,8 @@ extern MagickExport Image
   *NewImageList(void),
   *RemoveLastImageFromList(Image **),
   *RemoveFirstImageFromList(Image **),
-  *SplitImageList(Image *);
+  *SplitImageList(Image *),
+  *SyncNextImageInList(const Image *);
 
 extern MagickExport long
   GetImageIndexInList(const Image *);

@@ -374,7 +374,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     (void) strcpy(image->magick,"PS");
     (void) strncpy(image->filename,filename,MaxTextExtent-1);
-    next_image=SyncBlobToImage(image);
+    next_image=SyncNextImageInList(image);
     if (next_image != (Image *) NULL)
       image=next_image;
   } while (next_image != (Image *) NULL);
@@ -1425,7 +1425,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"%%PageTrailer\n");
     if (image->next == (Image *) NULL)
       break;
-    image=SyncBlobToImage(image);
+    image=SyncNextImageInList(image);
     if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
       break;
   } while (image_info->adjoin);

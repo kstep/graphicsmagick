@@ -735,7 +735,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"%%EndData\n");
     if (image->next == (Image *) NULL)
       break;
-    image=SyncBlobToImage(image);
+    image=SyncNextImageInList(image);
     status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
       &image->exception);
     if (status == False)

@@ -2823,7 +2823,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 AllocateNextImage(image_info,image);
                 if (image->next == (Image *) NULL)
                   return((Image *) NULL);
-                image=SyncBlobToImage(image);
+                image=SyncNextImageInList(image);
                 mng_info->image=image;
               }
 
@@ -3149,7 +3149,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         MngInfoFreeStruct(mng_info,&have_mng_structure);
                         return((Image *) NULL);
                       }
-                    image=SyncBlobToImage(image);
+                    image=SyncNextImageInList(image);
                   }
                 mng_info->image=image;
                 if (term_chunk_found)
@@ -3596,7 +3596,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         MngInfoFreeStruct(mng_info,&have_mng_structure);
                         return((Image *) NULL);
                       }
-                    image=SyncBlobToImage(image);
+                    image=SyncNextImageInList(image);
                   }
                 mng_info->image=image;
                 if (term_chunk_found)
@@ -3641,7 +3641,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   MngInfoFreeStruct(mng_info,&have_mng_structure);
                   return((Image *) NULL);
                 }
-              image=SyncBlobToImage(image);
+              image=SyncNextImageInList(image);
             }
             mng_info->image=image;
             if (term_chunk_found)
@@ -3680,7 +3680,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 MngInfoFreeStruct(mng_info,&have_mng_structure);
                 return((Image *) NULL);
               }
-            image=SyncBlobToImage(image);
+            image=SyncNextImageInList(image);
           }
         mng_info->image=image;
         if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
@@ -3829,7 +3829,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     return((Image *) NULL);
                   }
 
-                large_image=SyncBlobToImage(image);
+                large_image=SyncNextImageInList(image);
 
                 large_image->columns=magnified_width;
                 large_image->rows=magnified_height;
@@ -4291,7 +4291,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               MngInfoFreeStruct(mng_info,&have_mng_structure);
               return((Image *) NULL);
             }
-          image=SyncBlobToImage(image);
+          image=SyncNextImageInList(image);
         }
       image->columns=mng_info->mng_width;
       image->rows=mng_info->mng_height;
@@ -6737,7 +6737,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
     CatchImageException(image);
     if (image->next == (Image *) NULL)
       break;
-    image=SyncBlobToImage(image);
+    image=SyncNextImageInList(image);
     if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
         &image->exception))
       break;

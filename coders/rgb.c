@@ -403,7 +403,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             DestroyImageList(image);
             return((Image *) NULL);
           }
-        image=SyncBlobToImage(image);
+        image=SyncNextImageInList(image);
         if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
           break;
       }
@@ -710,7 +710,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
     }
     if (image->next == (Image *) NULL)
       break;
-    image=SyncBlobToImage(image);
+    image=SyncNextImageInList(image);
     if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
       break;
   } while (image_info->adjoin);

@@ -458,7 +458,7 @@ if(image2!=NULL)   /* Allocate next image structure. */
     image2->next=image;
     
     while(image->next!=NULL)
-       image=SyncBlobToImage(image);
+       image=SyncNextImageInList(image);
     }
     
 FINISH_UNL:    
@@ -729,7 +729,7 @@ DecompressionFailed: ThrowReaderException(CoderError,"UnableToDecompressImage",
      /* Allocate next image structure. */
      AllocateNextImage(image_info,image);
      if (image->next == (Image *) NULL) goto Finish;
-     image=SyncBlobToImage(image);
+     image=SyncNextImageInList(image);
      image->columns=image->rows=0;
      image->colors=image->depth=0;
      break;
@@ -833,7 +833,7 @@ DecompressionFailed: ThrowReaderException(CoderError,"UnableToDecompressImage",
       /* Allocate next image structure. */
        AllocateNextImage(image_info,image);
        if (image->next == (Image *) NULL) goto Finish;
-       image=SyncBlobToImage(image);
+       image=SyncNextImageInList(image);
        image->columns=image->rows=0;
        image->colors=image->depth=0;
        break;

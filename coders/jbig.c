@@ -508,7 +508,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     LiberateMemory((void **) &pixels);
     if (image->next == (Image *) NULL)
       break;
-    image=SyncBlobToImage(image);
+    image=SyncNextImageInList(image);
     if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
       break;
   } while (image_info->adjoin);

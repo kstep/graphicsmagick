@@ -1058,7 +1058,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             DestroyImageList(image);
             return((Image *) NULL);
           }
-        image=SyncBlobToImage(image);
+        image=SyncNextImageInList(image);
         status=MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
           exception);
         if (status == False)
@@ -1815,7 +1815,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     LiberateMemory((void **) &compress_pixels);
     if (image->next == (Image *) NULL)
       break;
-    image=SyncBlobToImage(image);
+    image=SyncNextImageInList(image);
     status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
       &image->exception);
     if (status == False)

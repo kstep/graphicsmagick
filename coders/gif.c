@@ -942,7 +942,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &global_colormap);
             return((Image *) NULL);
           }
-        image=SyncBlobToImage(image);
+        image=SyncNextImageInList(image);
         if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
           break;
       }
@@ -1460,7 +1460,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobByte(image,0x0);
     if (image->next == (Image *) NULL)
       break;
-    image=SyncBlobToImage(image);
+    image=SyncNextImageInList(image);
     status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
       &image->exception);
     if (status == False)

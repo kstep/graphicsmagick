@@ -372,7 +372,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   {
     (void) strcpy(image->magick,"PS");
     (void) strncpy(image->filename,filename,MaxTextExtent-1);
-    next_image=SyncBlobToImage(image);
+    next_image=SyncNextImageInList(image);
     if (next_image != (Image *) NULL)
       image=next_image;
   } while (next_image != (Image *) NULL);

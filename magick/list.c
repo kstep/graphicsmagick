@@ -808,3 +808,42 @@ MagickExport Image *SplitImageList(Image *images)
   images->previous=(Image *) NULL;
   return(images);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   S y n c N e x t I m a g e I n L i s t                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SyncNextImageInList() returns the next image in the list after the blob
+%  referenced is synchronized with the current image.
+%
+%  The format of the SyncNextImageInList method is:
+%
+%      Image *SyncNextImageInList(const Image *images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%
+*/
+MagickExport Image *SyncNextImageInList(const Image *images)
+{
+  if (images == (Image *) NULL)
+    return((Image *) NULL);
+  assert(images->signature == MagickSignature);
+  if (images->next == (Image *) NULL)
+    return((Image *) NULL);
+  if (images->blob != images->next->blob)
+    {
+      DestroyBlobInfo(images->next->blob);
+      images->next->blob=ReferenceBlob(images->blob);
+    }
+  return(images->next);
+}

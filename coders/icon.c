@@ -469,7 +469,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             DestroyImageList(image);
             return((Image *) NULL);
           }
-        image=SyncBlobToImage(image);
+        image=SyncNextImageInList(image);
         if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
           break;
       }
