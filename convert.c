@@ -1707,6 +1707,7 @@ int main(int argc,char **argv)
     p->scene=scene++;
   }
   SetImageInfo(&image_info,True);
+  status=0;
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     status=WriteImage(&image_info,p);

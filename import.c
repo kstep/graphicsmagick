@@ -857,6 +857,7 @@ int main(int argc,char **argv)
   */
   MogrifyImages(image_info,argc,argv,&image);
   SetImageInfo(image_info,True);
+  status=0;
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     status=WriteImage(image_info,p);

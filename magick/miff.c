@@ -1082,6 +1082,7 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       p=GetPixelCache(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
+      q=pixels;
       if (compression != RunlengthEncodedCompression)
         {
           if (image->class == PseudoClass)
@@ -1103,10 +1104,10 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       else
         {
           pixel=(*image->pixels);
+          index=0;
           if (image->class == PseudoClass)
             index=(*image->indexes);
           length=0;
-          q=pixels;
           for (x=0; x < (int) image->columns; x++)
           {
             if ((p->red == pixel.red) && (p->green == pixel.green) && 

@@ -1051,6 +1051,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
   red=0;
   green=0;
   blue=0;
+  midpoint=0;
   switch (compose)
   {
     case XorCompositeOp:
@@ -1158,7 +1159,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
     }
     case ModulateCompositeOp:
     {
-      midpoint=(MaxRGB) >> 1;
+      midpoint=MaxRGB/2;
       saturation_scale=50.0;
       brightness_scale=50.0;
       if (composite_image->geometry != (char *) NULL)
@@ -2189,6 +2190,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         PixelPacket
           *p;
 
+        p=(PixelPacket *) NULL;
         for (y=0; y < (int) image->rows; y++)
         {
           p=GetPixelCache(image,0,y,image->columns,1);
@@ -2211,7 +2213,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
             else
               (void) fprintf(file,"  matte: (%5d,%5d,%5d) #%04x%04x%04x\n",
                 p->red,p->green,p->blue,p->red,p->green,p->blue);
-        }
+          }
       }
   if (image->class == DirectClass)
     (void) fprintf(file,"  colors: %lu\n",number_colors);

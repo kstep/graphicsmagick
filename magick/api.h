@@ -28,22 +28,22 @@
 
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #if defined(HAVE_CONFIG_H)
-#include <magick/config.h>
+#include "magick/config.h"
 #endif
-#include <magick/classify.h>
-#include <magick/image.h>
-#include <magick/cache.h>
-#include <magick/gems.h>
-#include <magick/quantize.h>
-#include <magick/error.h>
-#include <magick/monitor.h>
-#include <magick/compress.h>
-#include <magick/utility.h>
-#include <magick/blob.h>
-#include <magick/memory.h>
-#include <magick/delegates.h>
-#include <magick/timer.h>
-#include <magick/version.h>
+#include "magick/classify.h"
+#include "magick/image.h"
+#include "magick/cache.h"
+#include "magick/gems.h"
+#include "magick/quantize.h"
+#include "magick/error.h"
+#include "magick/monitor.h"
+#include "magick/compress.h"
+#include "magick/utility.h"
+#include "magick/blob.h"
+#include "magick/memory.h"
+#include "magick/delegates.h"
+#include "magick/timer.h"
+#include "magick/version.h"
 #else
 #include "classify.h"
 #include "image.h"

@@ -798,7 +798,7 @@ Export void MACWarningHandler(const unsigned int warning,const char *message,
   const char *qualifier)
 {
   char
-    buffer[2048];
+    buffer[1664];
 
   if (message == (char *) NULL)
     return;
@@ -838,7 +838,7 @@ Export void MACWarningHandler(const unsigned int warning,const char *message,
 DIR *opendir(char *path)
 {
   char
-    pathname[2048];
+    pathname[1664];
 
   CInfoPBRec
     search_info;
@@ -950,7 +950,7 @@ struct dirent *readdir(DIR *entry)
     dir_entry;
 
   static unsigned char
-    pathname[2048];
+    pathname[1664];
 
   if (entry == (DIR *) NULL)
     return((struct dirent *) NULL);
