@@ -53,9 +53,11 @@
 
 #else
 #define Export __declspec(dllexport)
+#define ModuleExport __declspec(dllexport)
 #endif
 #else
 # define Export
+# define ModuleExport
 #endif
 
 #define MaxTextExtent  1664
