@@ -1,19 +1,19 @@
-You have now installed ImageMagick. To test the installation select "Command
+You have now installed GraphicsMagick. To test the installation select "Command
 Prompt" from the Windows Start menu. Within the window type
     
         convert logo: logo.miff
         imdisplay logo.miff
     
-and the ImageMagick logo should be displayed in a window.
+and the GraphicsMagick logo should be displayed in a window.
 
-If you selected to create a desktop icon, an icon labeled "ImageMagick
-Display" will appear on your desktop. Double clicking brings up ImageMagick's
+If you selected to create a desktop icon, an icon labeled "GraphicsMagick
+Display" will appear on your desktop. Double clicking brings up GraphicsMagick's
 image display program. Please be patient with us. The image display program
 is still very much under development.
 
-For your convenience, the full content of the ImageMagick web site has been
+For your convenience, the full content of the GraphicsMagick web site has been
 installed on your computer. This is available from the Windows start menu via
-"ImageMagick 5.5.2" -> "ImageMagick Web Pages".
+"GraphicsMagick 5.5.2" -> "GraphicsMagick Web Pages".
 
 For C and C++ developers who would like to be able to use the DLLs provided
 with this package, link libraries and header files are provide in the 'lib'

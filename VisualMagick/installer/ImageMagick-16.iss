@@ -52,7 +52,7 @@
 AppName=ImageMagick 5.5.2 Q:16
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=ImageMagick 5.5.2 Q:16 Beta (November 10, 2002)
+AppVerName=ImageMagick 5.5.2 Q:16 Beta (November 26, 2002)
 AppVersion=5.5.2
 AppCopyright=Copyright (C) 2002 ImageMagick Studio LLC
 AppPublisher=ImageMagick Studio
@@ -69,7 +69,7 @@ InfoBeforeFile=before.txt
 InfoAfterFile=after.txt
 UninstallDisplayIcon={app}\ImageMagick.ico
 OutputDir=..\bin
-OutputBaseFilename=ImageMagick-5.5.2-Q16-win2k
+OutputBaseFilename=ImageMagick-5.5.2-Q16-windows
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
 
@@ -829,6 +829,7 @@ Source: "..\..\magick\magick.h"; DestDir: "{app}\include\magick"; CopyMode: alwa
 Source: "..\..\magick\module.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\monitor.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\PreRvIcccm.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\..\magick\paint.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\quantize.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\registry.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\render.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite

@@ -1,46 +1,46 @@
 ;
-; Configuration file for Inno Setup Compiler 2.0.19 to construct ImageMagick
+; Configuration file for Inno Setup Compiler 2.0.19 to construct GraphicsMagick
 ; installation package.  This file is originally authored by Bob Friesenhahn
 ; <bfriesen@simple.dallas.tx.us>.
 ;
 ; Inno Setup is freely available from "http://www.jrsoftware.org/isinfo.php".
 ;
-; Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated
+; Copyright (C) 2002 GraphicsMagick Group, a non-profit organization dedicated
 ; to making software imaging solutions freely available.
 ;
 ; Permission is hereby granted, free of charge, to any person obtaining a
-; copy of this software and associated documentation files ("ImageMagick"),
-; to deal in ImageMagick without restriction, including without limitation
+; copy of this software and associated documentation files ("GraphicsMagick"),
+; to deal in GraphicsMagick without restriction, including without limitation
 ; the rights to use, copy, modify, merge, publish, distribute, sublicense,
-; and/or sell copies of ImageMagick, and to permit persons to whom the
-; ImageMagick is furnished to do so, subject to the following conditions:
+; and/or sell copies of GraphicsMagick, and to permit persons to whom the
+; GraphicsMagick is furnished to do so, subject to the following conditions:
 ;
 ; The above copyright notice and this permission notice shall be included in
-; all copies or substantial portions of ImageMagick.
+; all copies or substantial portions of GraphicsMagick.
 ;
 ; The software is provided "as is", without warranty of any kind, express or
 ; implied, including but not limited to the warranties of merchantability,
 ; fitness for a particular purpose and noninfringement.  In no event shall
-; ImageMagick Studio be liable for any claim, damages or other liability,
+; GraphicsMagick Group be liable for any claim, damages or other liability,
 ; whether in an action of contract, tort or otherwise, arising from, out of
-; or in connection with ImageMagick or the use or other dealings in
-; ImageMagick.
+; or in connection with GraphicsMagick or the use or other dealings in
+; GraphicsMagick.
 ;
-; Except as contained in this notice, the name of the ImageMagick Studio
+; Except as contained in this notice, the name of the GraphicsMagick Group
 ; shall not be used in advertising or otherwise to promote the sale, use or
-; other dealings in ImageMagick without prior written authorization from the
-; ImageMagick Studio.
+; other dealings in GraphicsMagick without prior written authorization from the
+; GraphicsMagick Group.
 ;
 ;
 ; Notes to whoever builds an installer from this file.  Certain things
 ; may need to be adjusted before you run the compiler.  Please remember
 ; to update the following if needed:
 ;
-;   o ImageMagick release version (needs to be globally substituted)
+;   o GraphicsMagick release version (needs to be globally substituted)
 ;   o Release date in AppVerName should reflect the release date.
 ;   o Ensure that the word "Beta" occurs in AppVerName before the date
 ;     if this is a beta release snapshot.  For example:
-;     "ImageMagick 5.5.2 Q:8 Beta (August 26, 2002)"
+;     "GraphicsMagick 1.0.0 Q:8 Beta (August 26, 2002)"
 ;   o Ensure that the quantum depth indication ("Q:8", "Q:8", or "Q:32")
 ;     is correct.  The normal release build should be Q:8.
 ;
@@ -49,19 +49,19 @@
 ; final build step.
 
 [Setup]
-AppName=ImageMagick 5.5.2 Q:8
+AppName=GraphicsMagick 1.0.0 Q:8
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=ImageMagick 5.5.2 Q:8 Beta (November 10, 2002)
-AppVersion=5.5.2
-AppCopyright=Copyright (C) 2002 ImageMagick Studio LLC
-AppPublisher=ImageMagick Studio
-AppPublisherURL=http://www.imagemagick.org/
-AppSupportURL=http://www.imagemagick.org/www/magick-list.html
-AppUpdatesURL=http://www.imagemagick.org/www/archives.html
-; Default install is under "C:\Program Files\ImageMagick-5.5.2-Q8":
-DefaultDirName={pf}\ImageMagick-5.5.2-Q8
-DefaultGroupName=ImageMagick 5.5.2 Q8
+AppVerName=GraphicsMagick 1.0.0 Q:8 Beta (November 26, 2002)
+AppVersion=1.0.0
+AppCopyright=Copyright (C) 2002 GraphicsMagick Group LLC
+AppPublisher=GraphicsMagick Group
+AppPublisherURL=http://www.GraphicsMagick.org/
+AppSupportURL=http://www.GraphicsMagick.org/www/magick-list.html
+AppUpdatesURL=http://www.GraphicsMagick.org/www/archives.html
+; Default install is under "C:\Program Files\GraphicsMagick-1.0.0-Q8":
+DefaultDirName={pf}\GraphicsMagick-1.0.0-Q8
+DefaultGroupName=GraphicsMagick 1.0.0 Q8
 Compression=zip/9
 ChangesAssociations=1
 AllowRootDirectory=no
@@ -69,7 +69,7 @@ InfoBeforeFile=before.txt
 InfoAfterFile=after.txt
 UninstallDisplayIcon={app}\ImageMagick.ico
 OutputDir=..\bin
-OutputBaseFilename=ImageMagick-5.5.2-Q8-win2k
+OutputBaseFilename=GraphicsMagick-1.0.0-Q8-windows
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
 
@@ -77,8 +77,8 @@ OutputBaseFilename=ImageMagick-5.5.2-Q8-win2k
 [Tasks]
 Name: desktop_icon; Description: "Create a &desktop icon"; MinVersion: 4,4
 Name: update_path; Description: "Update executable search path"
-Name: associate_extensions; Description: "Associate supported file extensions with ImageMagick"; Flags: unchecked
-Name: install_PerlMagick; Description: "Install PerlMagick for ActiveState Perl v5.6.1 build 633"; Flags: unchecked
+Name: associate_extensions; Description: "Associate supported file extensions with GraphicsMagick"; Flags: unchecked
+Name: install_PerlMagick; Description: "Install PerlMagick for ActiveState Perl v5.8.0 build 804"; Flags: unchecked
 ;Name: install_Magick_DLL; Description: "Install ImageMagickObject OLE Control for VBscript, Visual Basic, and WSH"; Flags: unchecked
 
 ; Windows registry settings
@@ -86,22 +86,22 @@ Name: install_PerlMagick; Description: "Install PerlMagick for ActiveState Perl 
 ;
 ; Record installation paths
 ;
-Root: HKLM; Subkey: "Software\ImageMagick"; ValueType: none; Flags: uninsdeletekeyifempty
-Root: HKLM; Subkey: "Software\ImageMagick\5.5.2"; ValueType: none; Flags: uninsdeletekeyifempty
-Root: HKLM; Subkey: "Software\ImageMagick\5.5.2\Q:8"; ValueType: none; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\5.5.2\Q:8"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"
-Root: HKLM; Subkey: "Software\ImageMagick\5.5.2\Q:8"; ValueType: string; ValueName: "ConfigurePath"; ValueData: "{app}\config"
-Root: HKLM; Subkey: "Software\ImageMagick\5.5.2\Q:8"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"
-Root: HKLM; Subkey: "Software\ImageMagick\5.5.2\Q:8"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"
+Root: HKLM; Subkey: "Software\GraphicsMagick"; ValueType: none; Flags: uninsdeletekeyifempty
+Root: HKLM; Subkey: "Software\GraphicsMagick\1.0.0"; ValueType: none; Flags: uninsdeletekeyifempty
+Root: HKLM; Subkey: "Software\GraphicsMagick\1.0.0\Q:8"; ValueType: none; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\GraphicsMagick\1.0.0\Q:8"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"
+Root: HKLM; Subkey: "Software\GraphicsMagick\1.0.0\Q:8"; ValueType: string; ValueName: "ConfigurePath"; ValueData: "{app}\config"
+Root: HKLM; Subkey: "Software\GraphicsMagick\1.0.0\Q:8"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"
+Root: HKLM; Subkey: "Software\GraphicsMagick\1.0.0\Q:8"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"
 
-Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: none; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "Version"; ValueData: "5.5.2"
-Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: dword; ValueName: "QuantumDepth"; ValueData: 8
+Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: none; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: string; ValueName: "Version"; ValueData: "1.0.0"
+Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: dword; ValueName: "QuantumDepth"; ValueData: 8
 
-Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"
-Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "ConfigurePath"; ValueData: "{app}\config"
-Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"
-Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"
+Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"
+Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: string; ValueName: "ConfigurePath"; ValueData: "{app}\config"
+Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"
+Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"
 
 ;
 ; Tell windows to use our convert.exe
@@ -829,6 +829,7 @@ Source: "..\..\magick\magick.h"; DestDir: "{app}\include\magick"; CopyMode: alwa
 Source: "..\..\magick\module.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\monitor.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\PreRvIcccm.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\..\magick\paint.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\quantize.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\registry.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\render.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
@@ -864,13 +865,13 @@ Source: "..\..\Magick++\demo\*.cpp"; DestDir: "{app}\Magick++_Demo"; CopyMode: a
 Source: "..\..\Magick++\demo\*.miff"; DestDir: "{app}\Magick++_Demo"; CopyMode: alwaysoverwrite
 
 [Icons]
-Name: "{group}\ImageMagick Web Pages"; Filename: "{app}\ImageMagick.html"
-Name: "{group}\ImageMagick Windows Setup"; Filename: "{app}\www\windows.html"
-; Name: "{group}\ImageMagick Readme"; Filename: "{app}\README.txt"
-; Name: "{group}\ImageMagick Quick Start"; Filename: "{app}\QuickStart.txt"
-; Name: "{group}\ImageMagick License"; Filename: "{app}\Copyright.txt"
-Name: "{group}\ImageMagick Display"; Filename: "{app}\IMDisplay.exe"; IconFilename: "{app}\ImageMagick.ico"
-Name: "{userdesktop}\ImageMagick Display"; Filename: "{app}\IMDisplay.exe"; IconFilename: "{app}\ImageMagick.ico"; Tasks: desktop_icon; MinVersion: 4,4
+Name: "{group}\GraphicsMagick Web Pages"; Filename: "{app}\ImageMagick.html"
+Name: "{group}\GraphicsMagick Windows Setup"; Filename: "{app}\www\windows.html"
+; Name: "{group}\GraphicsMagick Readme"; Filename: "{app}\README.txt"
+; Name: "{group}\GraphicsMagick Quick Start"; Filename: "{app}\QuickStart.txt"
+; Name: "{group}\GraphicsMagick License"; Filename: "{app}\Copyright.txt"
+Name: "{group}\GraphicsMagick Display"; Filename: "{app}\IMDisplay.exe"; IconFilename: "{app}\ImageMagick.ico"
+Name: "{userdesktop}\GraphicsMagick Display"; Filename: "{app}\IMDisplay.exe"; IconFilename: "{app}\ImageMagick.ico"; Tasks: desktop_icon; MinVersion: 4,4
 
 [Run]
 ; Add -debug to parameters to enable debugging
