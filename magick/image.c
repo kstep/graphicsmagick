@@ -459,9 +459,15 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
     ThrowImageException(OptionWarning,"Unable to append image sequence",
       "image sequence required");
   for (next=image->next; next != (Image *) NULL; next=next->next)
+    {
     if ((next->columns != image->columns) && (next->rows != image->rows))
       ThrowImageException(OptionWarning,"Unable to append image sequence",
+        "image widths and heights differ");
+    if (stack && ((next->columns != image->columns) || (next->rows !=
+        image->rows)))
+      ThrowImageException(OptionWarning,"Unable to append image sequence",
         "image widths or heights differ");
+    }
   width=image->columns;
   height=image->rows;
   for (next=image->next; next != (Image *) NULL; next=next->next)
