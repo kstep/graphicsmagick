@@ -474,7 +474,7 @@ wbmp_la_LIBADD      = ../magick/libMagick.la
 # WMF module
 wmf_la_SOURCES      = wmf.c
 wmf_la_LDFLAGS      = -no-undefined -module -avoid-version
-wmf_la_LIBADD       = ../magick/libMagick.la @LIB_WMF@ $(LIB_MATH)
+wmf_la_LIBADD       = ../magick/libMagick.la @LIB_WMF@ @LIB_JPEG@ @LIB_PNG@ @LIB_ZLIB@ $(LIB_MATH)
 
 # WPG module
 wpg_la_SOURCES     = wpg.c
