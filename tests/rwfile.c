@@ -152,19 +152,8 @@ int main ( int argc, char **argv )
    */
   rows    = original->rows;
   columns = original->columns;
-  if (
-      !strcmp( "CMYK", format ) ||
-      !strcmp( "GRAY", format ) ||
-      !strcmp( "MONO", format ) ||
-      !strcmp( "RGB", format ) ||
-      !strcmp( "RGBA", format ) ||
-      !strcmp( "UYVY", format ) ||
-      !strcmp( "YUV", format )
-      )
-    {
-      size = AcquireMemory( 40 );
-      sprintf( size, "%dx%d", columns, rows );
-    }
+  size = AcquireMemory( 40 );
+  sprintf( size, "%dx%d", columns, rows );
 
   /*
    * Save image to file
@@ -233,6 +222,9 @@ int main ( int argc, char **argv )
 
   if ( !strcmp( "PCDS", format ) )
     fuzz_factor = 12;
+
+  if ( !strcmp( "PAL", format ) )
+    fuzz_factor = 1;
 
   if ( !strcmp( "UYVY", format ) )
     fuzz_factor = 1;
