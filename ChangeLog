@@ -1,3 +1,11 @@
+2003-06-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (LocaleNCompare): Documented that comparison is
+	case-insensitive.
+	(LocaleCompare): Documented that comparison is case-insensitive.
+	* magick/log.c (ParseEvents): LocaleNCompare already does
+	case-insensitive compare so lower-casing is not necessary.
+
 2003-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/log.c (ReadConfigureFile): Move event parsing to

@@ -142,8 +142,7 @@ static void
 */
 static unsigned long ParseEvents(const char *event_string)
 {
-  char
-    *lower_case,
+  const char
     *p;
 
   int
@@ -152,9 +151,7 @@ static unsigned long ParseEvents(const char *event_string)
   unsigned long
     events=0;
 
-  lower_case=AllocateString(event_string);
-  LocaleLower(lower_case);
-  for (p=lower_case; p != 0; p=strchr(p,','))
+  for (p=event_string; p != 0; p=strchr(p,','))
     {
       while ((*p != 0) && (isspace((int)(*p)) || *p == ','))
         p++;
@@ -168,8 +165,6 @@ static unsigned long ParseEvents(const char *event_string)
             }
         }
     }
-
-  MagickFreeMemory(lower_case);
 
   return events;
 }

@@ -2621,13 +2621,13 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method LocaleCompare compares two strings byte-by-byte, according to
-%  the ordering of the current locale encoding. LocaleCompare returns an
-%  integer greater than, equal to, or less than 0, if the string pointed
-%  to by p is greater than, equal to, or less than the string pointed to
-%  by q respectively.  The sign of a non-zero return value is determined
-%  by the sign of the difference between the values of the first pair of
-%  bytes that differ in the strings being compared.
+%  Method LocaleCompare performs a case-insensitive comparison of two strings
+%  byte-by-byte, according to the ordering of the current locale encoding.
+%  LocaleCompare returns an integer greater than, equal to, or less than 0,
+%  if the string pointed to by p is greater than, equal to, or less than the
+%  string pointed to by q respectively.  The sign of a non-zero return value
+%  is determined by the sign of the difference between the values of the first
+%  pair of bytes that differ in the strings being compared.
 %
 %  The format of the LocaleCompare method is:
 %
@@ -2708,15 +2708,16 @@ MagickExport void LocaleLower(char *string)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method LocaleNCompare compares two strings byte-by-byte, according to
-%  the ordering of the current locale encoding. LocaleNCompare returns an
-%  integer greater than, equal to, or less than 0, if the string pointed
-%  to by p is greater than, equal to, or less than the string pointed to
-%  by q respectively.  The sign of a non-zero return value is determined
-%  by the sign of the difference between the values of the first pair of
-%  bytes that differ in the strings being compared.  The LocaleNCompare
-%  method makes the same comparison as LocaleCompare but looks at a
-%  maximum of n bytes.  Bytes following a null byte are not compared.
+%  Method LocaleNCompare performs a case-insensitive comparison of two
+%  strings byte-by-byte, according to the ordering of the current locale
+%  encoding. LocaleNCompare returns an integer greater than, equal to, or
+%  less than 0, if the string pointed to by p is greater than, equal to, or
+%  less than the string pointed to by q respectively.  The sign of a non-zero
+%  return value is determined by the sign of the difference between the
+%  values of the first pair of bytes that differ in the strings being
+%  compared.  The LocaleNCompare method makes the same comparison as
+%  LocaleCompare but looks at a maximum of n bytes.  Bytes following a
+%  null byte are not compared.
 %
 %  The format of the LocaleNCompare method is:
 %
