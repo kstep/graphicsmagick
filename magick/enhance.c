@@ -93,11 +93,13 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
     y;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -137,7 +139,7 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
       /*
         Contrast enhance PseudoClass image.
       */
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
         Contrast(sign,&image->colormap[i].red,&image->colormap[i].green,
           &image->colormap[i].blue);
       SyncImage(image);
@@ -183,12 +185,14 @@ MagickExport unsigned int EqualizeImage(Image *image)
     *equalize_map;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *p,
     *q;
+
+  register size_t
+    i;
 
   unsigned int
     high,
@@ -220,7 +224,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      histogram[(int) Intensity(*p)]++;
+      histogram[Intensity(*p)]++;
       p++;
     }
   }
@@ -284,7 +288,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
       /*
         Equalize PseudoClass packets.
       */
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
       {
         image->colormap[i].red=equalize_map[image->colormap[i].red];
         image->colormap[i].green=equalize_map[image->colormap[i].green];
@@ -338,11 +342,13 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
     y;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
 
   PixelPacket
     *gamma_map;
@@ -431,7 +437,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
       /*
         Gamma-correct PseudoClass image.
       */
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
       {
         image->colormap[i].red=gamma_map[image->colormap[i].red].red;
         image->colormap[i].green=gamma_map[image->colormap[i].green].green;
@@ -488,11 +494,13 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
     y;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
 
   /*
     Initialize gamma table.
@@ -539,7 +547,7 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
       /*
         Modulate the color for a PseudoClass image.
       */
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
         Modulate(percent_hue,percent_saturation,percent_brightness,
           &image->colormap[i].red,&image->colormap[i].green,
           &image->colormap[i].blue);
@@ -583,11 +591,13 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
     y;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -630,7 +640,7 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
       /*
         Negate PseudoClass packets.
       */
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
       {
         if (grayscale)
           if ((image->colormap[i].red != image->colormap[i].green) ||
@@ -680,6 +690,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
     y;
 
   long
+    intensity,
     threshold_intensity;
 
   Quantum
@@ -687,13 +698,14 @@ MagickExport unsigned int NormalizeImage(Image *image)
     *normalize_map;
 
   register int
-    i,
-    intensity,
     x;
 
   register PixelPacket
     *p,
     *q;
+
+  register size_t
+    i;
 
   unsigned int
     high,
@@ -813,7 +825,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       /*
         Normalize PseudoClass image.
       */
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < image->colors; i++)
       {
         image->colormap[i].red=normalize_map[image->colormap[i].red];
         image->colormap[i].green=normalize_map[image->colormap[i].green];
