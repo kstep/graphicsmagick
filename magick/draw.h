@@ -66,7 +66,7 @@ extern MagickExport unsigned long
   DrawGetFontWeight(DrawContext context),
   DrawGetStrokeMiterLimit(DrawContext context);
 
-extern double
+extern MagickExport double
   DrawGetFillOpacity(DrawContext context),
   DrawGetFontSize(DrawContext context),
   *DrawGetStrokeDashArray(DrawContext context, size_t *num_elems),
