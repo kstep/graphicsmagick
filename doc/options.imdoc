@@ -975,7 +975,7 @@ with the defined bits per sample, overriding any value stored in the
 image.
 </dd>
 
-<dt>tiff:bits-per-sample=<value></dt>
+<dt>tiff:samples-per-pixel=<value></dt>
 <dd>
 If the tiff:samples-per-pixel key is defined to a value, the TIFF
 coder will write TIFF images with the defined samples per pixel,

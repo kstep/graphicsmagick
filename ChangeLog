@@ -1,3 +1,12 @@
+2004-07-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/options.imdoc: Fix typo regarding -define tiff:samples-per-pixel.
+	* doc/GNUmakefile (utility-install): Utility HTML targets were not being installed.
+
+2004-07-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lcms: Updated to version 1.13.
+
 2004-07-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh (CVS_BRANCH_TAG): Record the CVS branch tag that

@@ -61,10 +61,10 @@ brief_options.imdoc:	options.imdoc
 	imdoc_select_brief options.imdoc brief_options.imdoc
 
 $(INSTALLWWW)/gm.html: gm.html
-	cp $< $@
+	cp -p $< $@
 
 $(INSTALLUTILITIES)/gm.1: gm.1
-	cp $< $@
+	cp -p $< $@
 
 $(GMSUBDIR)/man.imdoc: targets-man
 	@if test ! -d $(GMSUBDIR); then mkdir -p $(GMSUBDIR); fi
@@ -128,7 +128,8 @@ utility-html:	$(UTILBASE).html
 
 utility-tex:	$(UTILBASE).tex
 
-utility-install: $(INSTALLWWW)/$(UTILBASE).html # $(INSTALLUTILITIES)/$(UTILBASE).1
+utility-install: $(UTILBASE).html # $(INSTALLUTILITIES)/$(UTILBASE).1
+	cp -p $(UTILBASE).html $(INSTALLWWW)/$(UTILBASE).html
 
 $(UTILSUBDIR)/Expanded.imdoc: $(UTILITY).imdoc brief_options.imdoc config_files.imdoc copyright.imdoc environment.imdoc $(DOCINCLUDE)
 	@if test ! -d $(UTILSUBDIR); then mkdir -p $(UTILSUBDIR); fi
@@ -153,10 +154,10 @@ $(UTILBASE).tex:  $(UTILSUBDIR)/tex.imdoc $(DOC2TEX)
 	$(DOC2TEX) < $< > $@
 
 $(INSTALLWWW)/$(UTILITY).html: $(UTILBASE).html
-	cp $< $@
+	cp -p $< $@
 
 $(INSTALLUTILITIES)/$(UTILITY).1: $(UTILBASE).1
-	cp $< $@
+	cp -p $< $@
 
 utility-clean:
 	rm -f $(UTILBASE).1 $(UTILBASE).html $(UTILBASE).tex $(UTILSUBDIR)/*
