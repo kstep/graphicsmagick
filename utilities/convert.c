@@ -148,7 +148,7 @@ static void ConvertUsage(void)
     *options[]=
     {
       "-adjoin              join images into a single multi-image file",
-      "-affine matrix       drawing transform matrix",
+      "-affine matrix       affine transform matrix",
       "-antialias           remove pixel-aliasing",
       "-append              append an image sequence",
       "-average             average an image sequence",
@@ -251,6 +251,7 @@ static void ConvertUsage(void)
       "-texture filename    name of texture to tile onto the image background",
       "-threshold value     threshold the image",
       "-tile filename       tile image when filling a graphic primitive",
+      "-transform           affine transform image",
       "-transparent color   make this color transparent within the image",
       "-treedepth value     depth of the color tree",
       "-trim                trim image edges",
@@ -1747,6 +1748,8 @@ static unsigned int ConvertUtility(int argc,char **argv)
               MagickFatalError(OptionFatalError,"Missing tile",option);
             break;
           }
+        if (LocaleCompare("transform",option+1) == 0)
+          break;
         if (LocaleCompare("transparent",option+1) == 0)
           {
             if (*option == '-')

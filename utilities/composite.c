@@ -296,6 +296,7 @@ static void CompositeUsage(void)
   static const char
     *options[]=
     {
+      "-affine matrix       affine transform matrix",
       "-cache threshold     number of megabytes available to the pixel cache",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
@@ -334,6 +335,7 @@ static void CompositeUsage(void)
       "-stegano offset      hide watermark within an image",
       "-stereo              combine two image to create a stereo anaglyph",
       "-tile                repeat composite operation across image",
+      "-transform           affine transform image",
       "-treedepth value     depth of the color tree",
       "-type type           image type",
       "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
@@ -506,6 +508,21 @@ unsigned int CompositeUtility(int argc,char **argv)
       }
     switch(*(option+1))
     {
+      case 'a':
+      {
+        if (LocaleCompare("affine",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                  MagickFatalError(OptionFatalError,"Missing matrix",option);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
+        break;
+      }
       case 'b':
       {
         if (LocaleCompare("background",option+1) == 0)
@@ -1134,6 +1151,8 @@ unsigned int CompositeUtility(int argc,char **argv)
             option_info.tile=(*option == '-');
             break;
           }
+        if (LocaleCompare("transform",option+1) == 0)
+          break;
         if (LocaleCompare("treedepth",option+1) == 0)
           {
             if (*option == '-')

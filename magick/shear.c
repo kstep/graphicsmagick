@@ -64,6 +64,107 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     A f f i n e T r a n s f o r m I m a g e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AffineTransformImage() transforms an image as dictated by the affine matrix.
+%  It allocates the memory necessary for the new Image structure and returns
+%  a pointer to the new image.
+%
+%  The format of the AffineTransformImage method is:
+%
+%      Image *AffineTransformImage(const Image *image,
+%        AffineMatrix *affine,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o affine: The affine transform.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *AffineTransformImage(const Image *image,
+  const AffineMatrix *affine,ExceptionInfo *exception)
+{
+  AffineMatrix
+    current;
+
+  Image
+    *affine_image;
+
+  long
+    y;
+
+  PointInfo
+    extent[4],
+    min,
+    max;
+
+  register long
+    i,
+    x;
+
+  /*
+    Initialize affine image attributes.
+  */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(affine != (AffineMatrix *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  extent[0].x=0;
+  extent[0].y=0;
+  extent[1].x=image->columns;
+  extent[1].y=0;
+  extent[2].x=image->columns;
+  extent[2].y=image->rows;
+  extent[3].x=0;
+  extent[3].y=image->rows;
+  for (i=0; i < 4; i++)
+  {
+    x=extent[i].x+0.5;
+    y=extent[i].y+0.5;
+    extent[i].x=x*affine->sx+y*affine->ry+affine->tx;
+    extent[i].y=x*affine->rx+y*affine->sy+affine->ty;
+  }
+  min=extent[0];
+  max=extent[0];
+  for (i=1; i < 4; i++)
+  {
+    if (min.x > extent[i].x)
+      min.x=extent[i].x;
+    if (min.y > extent[i].y)
+      min.y=extent[i].y;
+    if (max.x < extent[i].x)
+      max.x=extent[i].x;
+    if (max.y < extent[i].y)
+      max.y=extent[i].y;
+  }
+  affine_image=CloneImage(image,(unsigned long) floor(max.x-min.x+0.5),
+    (unsigned long) floor(max.y-min.y+0.5),True,exception);
+  if (affine_image == (Image *) NULL)
+    return((Image *) NULL);
+  SetImage(affine_image,OpaqueOpacity);
+  current.sx=affine->sx;
+  current.rx=affine->rx;
+  current.ry=affine->ry;
+  current.sy=affine->sy;
+  current.tx=(-min.x);
+  current.ty=(-min.y);
+  DrawAffineImage(affine_image,image,&current);
+  return(affine_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %                                                                             %
 +   C r o p T o F i t I m a g e                                               %
 %                                                                             %

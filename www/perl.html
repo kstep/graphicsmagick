@@ -341,6 +341,17 @@ And here is a list of other image manipulation methods you can call:<br>
   <td>noise=&gt;{Uniform, Gaussian, Multiplicative, Impulse, Laplacian, Poisson}</td>
   <td>add noise to an image</td>
  </tr>
+ <td>AffineTransform</td>
+  <td>translate=&gt;<i>float, float</i>, scale=&gt;<i> float, float</i>,
+    rotate=&gt;<i>float</i>, skewX=&gt;<i>float</i>, skewY=&gt;<i>float</i></td>
+  <td>affine transform image</td>
+ </tr>
+  <tr>
+ <td>Edge</td>
+  <td>radius=&gt;<i>double</i></td>
+  <td>enhance edges within the image with a convolution filter of the given 
+radius.</td>
+ </tr>
   <tr>
  <td>Annotate</td>
   <td>text=&gt;<i>string</i>, font=&gt;<i>string</i>, family=&gt;<i>string</i>,

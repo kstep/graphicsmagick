@@ -11,17 +11,6 @@ extern "C" {
 /*
   Typedef declarations.
 */
-typedef struct _AffineMatrix
-{
-  double
-    sx,
-    rx,
-    ry,
-    sy,
-    tx,
-    ty;
-} AffineMatrix;
-
 typedef struct _DrawInfo
 {
   char
@@ -227,6 +216,7 @@ extern MagickExport unsigned int
   AnnotateImage(Image *,const DrawInfo *),
   ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const long,
     const long,const PaintMethod),
+  DrawAffineImage(Image *,const Image *,const AffineMatrix *),
   DrawImage(Image *,DrawInfo *),
   GetTypeMetrics(Image *,const DrawInfo *,TypeMetric *),
   ListTypeInfo(FILE *,ExceptionInfo *),

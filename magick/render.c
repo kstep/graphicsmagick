@@ -133,7 +133,6 @@ static PrimitiveInfo
   *TraceStrokePolygon(const DrawInfo *,const PrimitiveInfo *);
 
 static unsigned int
-  DrawAffineImage(Image *,const Image *,const AffineMatrix *),
   DrawPatternPath(Image *,DrawInfo *,const char *,Image **),
   DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *),
   DrawStrokePolygon(Image *,const DrawInfo *,const PrimitiveInfo *);
@@ -1241,7 +1240,7 @@ static AffineMatrix InverseAffineMatrix(const AffineMatrix *affine)
   return(inverse_affine);
 }
 
-static unsigned int DrawAffineImage(Image *image,const Image *composite,
+MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
   const AffineMatrix *affine)
 {
   AffineMatrix

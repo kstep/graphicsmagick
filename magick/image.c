@@ -5096,6 +5096,22 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             DestroyImage(fill_pattern);
             continue;
           }
+        if (LocaleCompare("-transform",option) == 0)
+          {
+            Image
+              *transform_image;
+
+            /*
+              Affine transform image.
+            */
+            transform_image=AffineTransformImage(*image,&draw_info->affine,
+              &(*image)->exception);
+            if (transform_image == (Image *) NULL)
+              break;
+            DestroyImage(*image);
+            *image=transform_image;
+            continue;
+          }
         if (LocaleCompare("-transparent",option) == 0)
           {
             PixelPacket

@@ -50,6 +50,17 @@ typedef unsigned short Quantum;
 /*
   Typedef declarations.
 */
+typedef struct _AffineMatrix
+{
+  double
+    sx,
+    rx,
+    ry,
+    sy,
+    tx,
+    ty;
+} AffineMatrix;
+
 typedef struct _PointInfo
 {
   double
@@ -507,6 +518,7 @@ extern MagickExport const PixelPacket
 
 extern MagickExport Image
   *AddNoiseImage(const Image *,const NoiseType,ExceptionInfo *),
+  *AffineTransformImage(const Image *,const AffineMatrix *,ExceptionInfo *),
   *AllocateImage(const ImageInfo *),
   *AppendImages(const Image *,const unsigned int,ExceptionInfo *),
   *AverageImages(const Image *,ExceptionInfo *),

@@ -87,6 +87,7 @@ static void MontageUsage(void)
     *options[]=
     {
       "-adjoin              join images into a single multi-image file",
+      "-affine matrix       affine transform matrix",
       "-blur factor         apply a filter to blur the image",
       "-cache threshold     megabytes of memory available to the pixel cache",
       "-colors value        preferred number of colors in the image",
@@ -129,6 +130,7 @@ static void MontageUsage(void)
       "-stroke color        color to use when stroking a graphic primitive",
       "-texture filename    name of texture to tile onto the image background",
       "-tile geometry       number of tiles per row and column",
+      "-transform           affine transform image",
       "-transparent color   make this color transparent within the image",
       "-treedepth value     depth of the color tree",
       "-trim                trim image edges",
@@ -327,6 +329,8 @@ static unsigned int MontageUtility(int argc,char **argv)
             image_info->adjoin=(*option == '-');
             break;
           }
+        if (LocaleCompare("transform",option+1) == 0)
+          break;
         MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
@@ -1154,6 +1158,8 @@ static unsigned int MontageUtility(int argc,char **argv)
               }
             break;
           }
+        if (LocaleCompare("transform",option+1) == 0)
+          break;
         if (LocaleCompare("transparent",option+1) == 0)
           {
             transparent_color=(char *) NULL;

@@ -425,6 +425,9 @@ static struct
     { "Level", { {"level", StringReference}, {"black-point", DoubleReference},
       {"mid-point", DoubleReference}, {"white-point", DoubleReference} } },
     { "Clip", },
+    { "AffineTransform", {{"translate", StringReference},
+      {"scale", StringReference}, {"rotate", DoubleReference},
+			{"skewX", DoubleReference}, {"skewY", DoubleReference} } },
   };
 
 /*
@@ -4122,6 +4125,8 @@ Mogrify(ref,...)
     LevelImage         = 146
     Clip               = 147
     ClipImage          = 148
+    AffineTransform    = 149
+    AffineTransformImage = 150
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -5080,6 +5085,10 @@ Mogrify(ref,...)
           if (attribute_flag[7])
             (void) QueryColorDatabase(argument_list[7].string_reference,
               &draw_info->border_color);
+          if (attribute_flag[8])
+            draw_info->affine.tx=argument_list[8].double_reference;
+          if (attribute_flag[9])
+            draw_info->affine.ty=argument_list[9].double_reference;
           for (j=10; j < 15; j++)
           {
             if (!attribute_flag[j])
@@ -5638,6 +5647,86 @@ Mogrify(ref,...)
         case 74:  /* Clip */
         {
           (void) ClipImage(image);
+          break;
+        }
+        case 75:  /* AffineTransform */
+        {
+          DrawInfo
+            *draw_info;
+
+          draw_info=CloneDrawInfo(info ? info->image_info : (ImageInfo *) NULL,
+            info ? info->draw_info : (DrawInfo *) NULL);
+          for (j=0; j < 5; j++)
+          {
+            if (!attribute_flag[j])
+              continue;
+            value=argument_list[j].string_reference;
+            angle=argument_list[j].double_reference;
+            current=draw_info->affine;
+            IdentityAffine(&affine);
+            switch (j)
+            {
+              case 0:
+              {
+                /*
+                  Translate.
+                */
+                k=sscanf(value,"%lf%*[, ]%lf",&affine.tx,&affine.ty);
+                if (k == 1)
+                  affine.ty=affine.tx;
+                break;
+              }
+              case 1:
+              {
+                /*
+                  Scale.
+                */
+                k=sscanf(value,"%lf%*[, ]%lf",&affine.sx,&affine.sy);
+                if (k == 1)
+                  affine.sy=affine.sx;
+                break;
+              }
+              case 2:
+              {
+                /*
+                  Rotate.
+                */
+                if (angle == 0.0)
+                  break;
+                affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
+                affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
+                affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
+                affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
+                break;
+              }
+              case 3:
+              {
+                /*
+                  SkewX.
+                */
+                affine.ry=tan(DegreesToRadians(fmod(angle,360.0)));
+                break;
+              }
+              case 4:
+              {
+                /*
+                  SkewY.
+                */
+                affine.rx=tan(DegreesToRadians(fmod(angle,360.0)));
+                break;
+              }
+            }
+            draw_info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
+            draw_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
+            draw_info->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
+            draw_info->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
+            draw_info->affine.tx=
+              current.sx*affine.tx+current.ry*affine.ty+current.tx;
+            draw_info->affine.ty=
+              current.rx*affine.tx+current.sy*affine.ty+current.ty;
+          }
+          image=AffineTransformImage(image,&draw_info->affine,exception);
+          DestroyDrawInfo(draw_info);
           break;
         }
       }
