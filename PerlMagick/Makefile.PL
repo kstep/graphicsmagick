@@ -6,9 +6,9 @@ use Config;
 WriteMakefile(
     'NAME'	=> 'Image::Magick',
     'VERSION_FROM' => 'Magick.pm', # finds $VERSION
-    'LIBS'	=> ['-L/usr/lib -L/usr/local/lib -L/usr/X11R6/lib -L/home/cristy/ImageMagick/magick -lMagick    -ltiff -lfreetype -ljpeg  -lpng  -ldpstk -ldps -lXext -lXt  -lSM -lICE -lX11  -lbz2  -lz -lpthread  -lm'],
+    'LIBS'	=> ['-L/usr/lib -L/usr/local/lib -L/usr/X11R6/lib -L/home/cristy/ImageMagick/magick -lMagick    -ltiff -lfreetype -ljpeg -ljasper  -lpng  -ldpstk -ldps -lXext -lXt  -lSM -lICE -lX11  -lbz2  -lz -lpthread  -lm'],
     'DEFINE'	=> '-DHAVE_CONFIG_H',     # e.g., '-DHAVE_SOMETHING' 
-    'INC'	=> '-I../ -I.. -I/usr/include/freetype2 -I/usr/include/freetype2 -D_REENTRANT -D_FILE_OFFSET_BITS=64 -I/usr/local/include -I/usr/X11R6/include -I/usr/X11R6/include/X11',
+    'INC'	=> '-I../ -I.. -I/usr/include/freetype2 -I/usr/include/freetype2 -D_REENTRANT -D_FILE_OFFSET_BITS=64 -I/usr/local/include -I/X11',
     ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
 );
 
@@ -30,7 +30,8 @@ sub MY::test
    #   fpx      FlashPix format         FlashPix library
    #   hdf	HDF format		HDF library
    #   jbig	JBIG format		JBIG library
-   #   jpeg 	JPEG format		JPEG library
+   #   jpeg 	JPEG v1 format		libjpeg
+   #   jp2 	JPEG v2 format		libjasper
    #   mpeg	MPEG format		'mpeg2decode' & 'mpeg2encode' programs
    #   png	PNG format		PNG and Zlib libraries
    #   ps	Postscript format	'gs' program and/or DPS library
@@ -43,7 +44,7 @@ sub MY::test
    #
    # e.g. my @DELEGATES = qw/jpeg tiff/;
    #
-   my @DELEGATES = qw/ bzlib jpeg mpeg png ps tiff ttf x xfig zlib/;
+   my @DELEGATES = qw/ bzlib jp2 jpeg mpeg png ps tiff ttf x xfig zlib/;
 
    package MY; # so that "SUPER" works right
    my $inherited = shift->SUPER::test(@_);

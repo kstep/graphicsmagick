@@ -50,7 +50,7 @@ else
 X11PROGRAMS =
 MANPAGES = $(STDMANPAGES)
 endif
-bin_PROGRAMS = composite convert identify iptcutil mogrify montage $(X11PROGRAMS)
+bin_PROGRAMS = composite convert identify mogrify montage $(X11PROGRAMS)
 
 # Libtool libraries, dependencies, and linker flags used by most executables
 if WITH_MODULES
@@ -84,10 +84,6 @@ identify_SOURCES  = identify.c
 import_LDADD      = $(COMMONLDADD)
 import_LDFLAGS    = $(COMMONLDFLAGS)
 import_SOURCES    = import.c
-
-iptcutil_LDADD    = # Don't use ImageMagick LIBS
-iptcutil_LDFLAGS  = # Don't use ImageMagick LDFLAGS
-iptcutil_SOURCES  = iptcutil.c
 
 mogrify_LDADD     = $(COMMONLDADD)
 mogrify_LDFLAGS   = $(COMMONLDFLAGS)
