@@ -3033,10 +3033,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive_type=UndefinedPrimitive;
             break;
           }
-        point.x=primitive_info[j+1].point.x/2;
-        point.y=primitive_info[j+1].point.y/2;
-        TraceEllipse(primitive_info+j,primitive_info[j].point,point,
-          primitive_info[j+2].point);
+        TraceArc(primitive_info+j,primitive_info[j].point,
+          primitive_info[j+1].point,primitive_info[j+2].point,0,True,False);
         i=(long) (j+primitive_info[j].coordinates);
         break;
       }
