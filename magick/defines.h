@@ -121,6 +121,7 @@ extern "C" {
   SetWarningHandler(NTWarningHandler)
 #undef sleep
 #define sleep(seconds)  Sleep(seconds*1000)
+#define HAVE_TIFFCONF_H
 #endif /* WIN32 */
 #endif /* end of platform specific definitions */
 
