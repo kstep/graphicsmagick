@@ -579,39 +579,42 @@ MagickExport void GetColorTuple(const PixelPacket *color,
     {
       if (depth <= 8)
         {
-          FormatString(tuple,hex ? "#%02X%02X%02X%02X" : "(%3u,%3u,%3u,%3u)",
+          FormatString(tuple,
+            hex ? "#%02lX%02lX%02lX%02lX" : "(%3lu,%3lu,%3lu,%3lu)",
             ScaleQuantumToChar(color->red),ScaleQuantumToChar(color->green),
             ScaleQuantumToChar(color->blue),ScaleQuantumToChar(color->opacity));
           return;
         }
       if (depth <= 16)
         {
-          FormatString(tuple,hex ? "#%04X%04X%04X%04X" : "(%5u,%5u,%5u,%5u)",
+          FormatString(tuple,
+            hex ? "#%04lX%04lX%04lX%04lX" : "(%5lu,%5lu,%5lu,%5lu)",
             ScaleQuantumToShort(color->red),ScaleQuantumToShort(color->green),
             ScaleQuantumToShort(color->blue),
             ScaleQuantumToShort(color->opacity));
           return;
         }
-      FormatString(tuple,hex ? "#%08X%08X%08X%08X" : "(%10u,%10u,%10u,%10u)",
+      FormatString(tuple,
+        hex ? "#%08lX%08lX%08lX%08lX" : "(%10lu,%10lu,%10lu,%10lu)",
         ScaleQuantumToInt(color->red),ScaleQuantumToInt(color->green),
         ScaleQuantumToInt(color->blue),ScaleQuantumToInt(color->opacity));
       return;
     }
   if (depth <= 8)
     {
-      FormatString(tuple,hex ? "#%02X%02X%02X" : "(%3u,%3u,%3u)",
+      FormatString(tuple,hex ? "#%02lX%02lX%02lX" : "(%3lu,%3lu,%3lu)",
         ScaleQuantumToChar(color->red),ScaleQuantumToChar(color->green),
         ScaleQuantumToChar(color->blue));
       return;
     }
   if (depth <= 16)
     {
-      FormatString(tuple,hex ? "#%04X%04X%04X" : "(%5u,%5u,%5u)",
+      FormatString(tuple,hex ? "#%04lX%04lX%04lX" : "(%5lu,%5lu,%5lu)",
         ScaleQuantumToShort(color->red),ScaleQuantumToShort(color->green),
         ScaleQuantumToShort(color->blue));
       return;
     }
-  FormatString(tuple,hex ? "#%08X%08X%08X" : "(%10u,%10u,%10u)",
+  FormatString(tuple,hex ? "#%08lX%08lX%08lX" : "(%10lu,%10lu,%10lu)",
     ScaleQuantumToInt(color->red),ScaleQuantumToInt(color->green),
     ScaleQuantumToInt(color->blue));
   return;
