@@ -1421,10 +1421,10 @@ static int formatIPTC(Image *ifile, Image *ofile)
     /* we found the 0x1c tag and now grab the dataset and record number tags */
     c = ReadBlobByte(ifile);
     if (c == EOF) return -1;
-    dataset = c;
+    dataset = (unsigned char) c;
     c = ReadBlobByte(ifile);
     if (c == EOF) return -1;
-    recnum = c;
+    recnum = (unsigned char) c;
     /* try to match this record to one of the ones in our named table */
     for (i=0; i< tagcount; i++)
     {
@@ -1465,7 +1465,7 @@ static int formatIPTC(Image *ifile, Image *ofile)
     {
       c=ReadBlobByte(ifile);
       if (c == EOF) return -1;
-      str[tagindx] = c;
+      str[tagindx] = (unsigned char) c;
     }
     str[taglen] = 0;
 
@@ -1498,7 +1498,7 @@ static int readWordFromBuffer(char **s, long *len)
   {
     c = *(*s)++; (*len)--;
     if (*len < 0) return -1;
-    buffer[i] = c;
+    buffer[i] = (unsigned char) c;
   }
   return (((int) buffer[ 0 ]) <<  8) |
          (((int) buffer[ 1 ]));
@@ -1551,10 +1551,10 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, long len)
     /* we found the 0x1c tag and now grab the dataset and record number tags */
     c = *s++; len--;
     if (len < 0) return -1;
-    dataset = c;
+    dataset = (unsigned char) c;
     c = *s++; len--;
     if (len < 0) return -1;
-    recnum = c;
+    recnum = (unsigned char) c;
     /* try to match this record to one of the ones in our named table */
     for (i=0; i< tagcount; i++)
     {
@@ -1591,7 +1591,7 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, long len)
     {
       c = *s++; len--;
       if (len < 0) return -1;
-      str[tagindx] = c;
+      str[tagindx] = (unsigned char) c;
     }
     str[ taglen ] = 0;
 
@@ -1640,12 +1640,12 @@ static int format8BIM(Image *ifile, Image *ofile)
         unsigned char
           buffer[5];
 
-        buffer[0] = c;
+        buffer[0] = (unsigned char) c;
         for (i=1; i<4; i++)
         {
           c=ReadBlobByte(ifile);
           if (c == EOF) return -1;
-          buffer[i] = c;
+          buffer[i] = (unsigned char) c;
         }
         buffer[4] = 0;
         if (strcmp((const char *)buffer, "8BIM") == 0)
@@ -1668,7 +1668,7 @@ static int format8BIM(Image *ifile, Image *ofile)
 
       c=ReadBlobByte(ifile);
       if (c == EOF) return -1;
-      plen = c;
+      plen = (unsigned char) c;
       PString=(unsigned char *) AcquireMemory((unsigned int) (plen+1));
       if (PString == (unsigned char *) NULL)
       {
@@ -1679,7 +1679,7 @@ static int format8BIM(Image *ifile, Image *ofile)
       {
         c=ReadBlobByte(ifile);
         if (c == EOF) return -1;
-        PString[i] = c;
+        PString[i] = (unsigned char) c;
       }
       PString[ plen ] = 0;
       if (!(plen&1))
@@ -1701,7 +1701,7 @@ static int format8BIM(Image *ifile, Image *ofile)
     {
       c=ReadBlobByte(ifile);
       if (c == EOF) return -1;
-      str[i] = c;
+      str[i] = (unsigned char) c;
     }
 
     /* we currently skip thumbnails, since it does not make
