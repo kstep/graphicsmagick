@@ -347,7 +347,7 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
               XCFLayerInfo*  inLayerInfo, int data_length)
 {
   unsigned char data, val;
-  off_t size;
+  ExtendedSignedIntegralType size;
   int count;
   int length;
   int bpp;    /* BYTES per pixel! */
@@ -508,7 +508,7 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
 static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
    inLayerInfo)
 {
-  off_t
+  ExtendedSignedIntegralType
     saved_pos,
     offset,
     offset2;
@@ -648,7 +648,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
 static int load_hierarchy (Image *image, XCFDocInfo* inDocInfo, XCFLayerInfo*
     inLayer)
 {
-  off_t
+  ExtendedSignedIntegralType
   saved_pos,
   offset,
   junk;
@@ -1145,7 +1145,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         we have to scan the layer offset list, and then reposition
         the read pointer
     */
-    off_t  oldPos = TellBlob(image);
+    ExtendedSignedIntegralType  oldPos = TellBlob(image);
     do {
       long  offset = (long) ReadBlobMSBLong(image);
       if ( offset == 0 )
@@ -1164,7 +1164,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
     for ( ; ; )
     {
-      off_t
+      ExtendedSignedIntegralType
         offset,
         saved_pos;
       int

@@ -7736,7 +7736,7 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
 %
 %  The format of the XMagickMonitor method is:
 %
-%      void XMagickMonitor(const char *task,const off_t quantum,
+%      void XMagickMonitor(const char *task,const ExtendedSignedIntegralType quantum,
 %        const size_t span,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -7751,7 +7751,7 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
 %    o exception: Return any errors or warnings in this structure.
 %
 */
-MagickExport unsigned int XMagickMonitor(const char *task,const off_t quantum,
+MagickExport unsigned int XMagickMonitor(const char *task,const ExtendedSignedIntegralType quantum,
   const size_t span,ExceptionInfo *exception)
 {
   XWindows

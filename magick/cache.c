@@ -102,9 +102,6 @@ static void
 static inline unsigned int
   IsNexusInCore(const Cache,const unsigned long);
 
-static inline ExtendedSignedIntegralType
-  SeekCache(int,const ExtendedSignedIntegralType,const int);
-
 static PixelPacket
   *SetNexus(const Image *,const RectangleInfo *,const unsigned long);
 
@@ -1792,12 +1789,12 @@ static unsigned int ExtendCache(int file,ExtendedSignedIntegralType length)
     count,
     offset;
 
-  offset=SeekCache(file,0,SEEK_END);
+  offset=lseek(file,0,SEEK_END);
   if (offset < 0)
     return(False);
   if (offset >= length)
     return(True);
-  offset=SeekCache(file,length-1,SEEK_SET);
+  offset=lseek(file,length-1,SEEK_SET);
   if (offset < 0)
     return(False);
   count=write(file,(void *) "",1);
@@ -1976,7 +1973,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   if ((cache_info->length > MinBlobExtent) &&
       (cache_info->length == (size_t) cache_info->length))
     {
-      pixels=(PixelPacket *) MapBlob(file,mode,(off_t) cache_info->offset,
+      pixels=(PixelPacket *) MapBlob(file,mode,(ExtendedSignedIntegralType) cache_info->offset,
         (size_t) cache_info->length);
       if (pixels != (PixelPacket *) NULL)
         {
@@ -2224,7 +2221,7 @@ static unsigned int ReadCacheIndexes(const Cache cache,
   number_pixels=cache_info->columns*cache_info->rows;
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=SeekCache(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+
+    count=lseek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+
       offset*sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
@@ -2328,8 +2325,7 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
     return(False);
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=
-      SeekCache(file,cache_info->offset+offset*sizeof(PixelPacket),SEEK_SET);
+    count=lseek(file,cache_info->offset+offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
       return(False);
     for (i=0; i < length; i+=count)
@@ -2383,50 +2379,6 @@ MagickExport Cache ReferenceCache(Cache cache)
   cache_info->reference_count++;
   LiberateSemaphoreInfo(&cache_info->semaphore);
   return(cache_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  S e e k C a c h e                                                          %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SeekCache() sets the offset in bytes from the beginning of a file and
-%  returns the resulting offset.
-%
-%  The format of the SeekCache method is:
-%
-%      ExtendedSignedIntegralType SeekCache(int file,
-%        const ExtendedSignedIntegralType offset,const int whence)
-%
-%  A description of each parameter follows:
-%
-%    o file: The file.
-%
-%    o offset:  Specifies an integer representing the offset in bytes.
-%
-%    o whence:  Specifies an integer representing how the offset is
-%      treated relative to the beginning of the blob as follows:
-%
-%        SEEK_SET  Set position equal to offset bytes.
-%        SEEK_CUR  Set position to current location plus offset.
-%        SEEK_END  Set position to EOF plus offset.
-%
-%
-*/
-static inline ExtendedSignedIntegralType SeekCache(int file,
-  const ExtendedSignedIntegralType offset,const int whence)
-{
-#if defined(Win32)
-  return(_lseeki64(file,offset,SEEK_SET));
-#else
-  return(lseek(file,(off_t) offset,SEEK_SET));
-#endif
 }
 
 /*
@@ -2653,7 +2605,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   CacheInfo
     *cache_info;
 
-  off_t
+  ExtendedSignedIntegralType
     offset;
 
   register NexusInfo
@@ -3097,7 +3049,7 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
   number_pixels=cache_info->columns*cache_info->rows;
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=SeekCache(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+
+    count=lseek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+
       offset*sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
@@ -3204,8 +3156,7 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
     return(False);
   for (y=0; y < (long) nexus_info->rows; y++)
   {
-    count=
-      SeekCache(file,cache_info->offset+offset*sizeof(PixelPacket),SEEK_SET);
+    count=lseek(file,cache_info->offset+offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
       return(False);
     for (i=0; i < length; i+=count)

@@ -1416,7 +1416,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   long
     y;
 
-  off_t
+  ExtendedSignedIntegralType
     offset;
 
   PICTPixmap

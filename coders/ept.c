@@ -175,7 +175,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
     c,
     status;
 
-  off_t
+  ExtendedSignedIntegralType
     filesize;
 
   RectangleInfo

@@ -523,7 +523,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   combinedlength,
     size;
 
-  off_t
+  ExtendedSignedIntegralType
   offset,
   diff_offset;
 

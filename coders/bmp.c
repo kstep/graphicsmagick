@@ -475,7 +475,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     opacity,
     red;
 
-  off_t
+  ExtendedSignedIntegralType
     start_position;
 
   register IndexPacket

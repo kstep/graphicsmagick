@@ -11,6 +11,9 @@ extern "C" {
 extern MagickExport char
   *PostscriptGeometry(const char *);
 
+extern MagickExport ExtendedSignedIntegralType
+  SizeBlob(const Image *image);
+
 extern MagickExport int
   ParseImageGeometry(const char *,long *,long *,unsigned long *,
     unsigned long *);

@@ -291,7 +291,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int status;
   MATHeader MATLAB_HDR;
   unsigned long size;
-  off_t filepos;
+  ExtendedSignedIntegralType filepos;
   unsigned long CellType;
   int i,x;
   long ldblk;

@@ -277,7 +277,7 @@ int magick_progress_callback (void* context,float quantum)
     status = 0;
 
   image=(Image *) context;
-  if (MagickMonitor((char*)context,(off_t)floor(quantum*100),100,&image->exception) == False)
+  if (MagickMonitor((char*)context,(ExtendedSignedIntegralType)floor(quantum*100),100,&image->exception) == False)
     status = 1;
   return status;
 }
@@ -2268,7 +2268,7 @@ static int ipa_blob_read(void* context)
 /* BLOB seek */
 static int ipa_blob_seek(void* context,long position)
 {
-  return (int)SeekBlob((Image*)context,(off_t)position,SEEK_SET);
+  return (int)SeekBlob((Image*)context,(ExtendedSignedIntegralType)position,SEEK_SET);
 }
 
 /* BLOB tell */

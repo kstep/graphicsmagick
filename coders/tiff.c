@@ -289,7 +289,7 @@ static tsize_t TIFFReadBlob(thandle_t image,tdata_t data,tsize_t size)
 
 static toff_t TIFFSeekBlob(thandle_t image,toff_t offset,int whence)
 {
-  return((toff_t) SeekBlob((Image *) image,(off_t) offset,whence));
+  return((toff_t) SeekBlob((Image *) image,offset,whence));
 }
 
 static toff_t TIFFGetBlobSize(thandle_t image)

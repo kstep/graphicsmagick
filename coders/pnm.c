@@ -158,7 +158,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
         char
           *comment;
 
-        off_t
+        ExtendedSignedIntegralType
           offset;
 
         register char

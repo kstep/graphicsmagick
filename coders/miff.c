@@ -879,7 +879,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           } while (zip_info.avail_out != 0);
           if (y == (long) (image->rows-1))
             {
-              (void) SeekBlob(image,-((off_t) zip_info.avail_in),SEEK_CUR);
+              (void) SeekBlob(image,-((ExtendedSignedIntegralType)
+                zip_info.avail_in),SEEK_CUR);
               status=!inflateEnd(&zip_info);
             }
         }
@@ -913,7 +914,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             } while (bzip_info.avail_out != 0);
             if (y == (long) (image->rows-1))
               {
-                (void) SeekBlob(image,-((off_t) bzip_info.avail_in),SEEK_CUR);
+                (void) SeekBlob(image,-((ExtendedSignedIntegralType)
+                  bzip_info.avail_in),SEEK_CUR);
                 status=!BZ2_bzDecompressEnd(&bzip_info);
               }
           }

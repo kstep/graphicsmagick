@@ -312,7 +312,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
     savedolen = 0L,
     outputlen = 0L;
 
-  off_t
+  ExtendedSignedIntegralType
     savedpos,
     currentpos;
 
@@ -1621,7 +1621,7 @@ static int format8BIM(Image *ifile, Image *ofile)
   unsigned int
     foundOSType;
 
-  off_t
+  ExtendedSignedIntegralType
     Size;
 
   int

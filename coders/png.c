@@ -276,7 +276,7 @@ typedef struct _MngInfo
     loop_count[256],
     loop_iteration[256];
 
-  off_t
+  ExtendedSignedIntegralType
     loop_jump[256];
 
   unsigned char

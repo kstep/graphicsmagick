@@ -119,6 +119,14 @@ extern "C" {
 # define ftell  ftello
 #endif
 
+#if defined(WIN32) && !defined(Windows95)
+# define fseek _fseeki64
+# define fstat _fstati64
+# define ftell _ftelli64
+# define lseek _lseeki64
+# define stat _stati64
+#endif
+
 #include <string.h>
 #include <ctype.h>
 #include <locale.h>

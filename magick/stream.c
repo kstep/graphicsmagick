@@ -183,7 +183,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
   const long y,const unsigned long columns,const unsigned long rows,
   ExceptionInfo *exception)
 {
-  off_t
+  ExtendedSignedIntegralType
     offset;
 
   StreamInfo
@@ -542,7 +542,7 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
 static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   const unsigned long columns,const unsigned long rows)
 {
-  off_t
+  ExtendedSignedIntegralType
     offset;
 
   StreamInfo

@@ -3964,7 +3964,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         char
           key[MaxTextExtent];
 
-        off_t
+        ExtendedSignedIntegralType
           offset;
 
         if (strchr(p,']') == (char *) NULL)

@@ -53,6 +53,7 @@
   Include declarations.
 */
 #include "studio.h"
+#include "blob.h"
 #include "deprecate.h"
 #include "resource.h"
 #include "utility.h"
@@ -217,4 +218,35 @@ MagickExport void SetCacheThreshold(const unsigned long size)
 {
   SetMagickResourceLimit(MemoryResource,size);
   SetMagickResourceLimit(MapResource,2*size);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  S i z e B l o b                                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SizeBlob() returns the current length of the image file or blob.
+%
+%  The format of the SizeBlob method is:
+%
+%      off_t SizeBlob(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o size:  Method SizeBlob returns the current length of the image file
+%      or blob.
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport ExtendedSignedIntegralType SizeBlob(const Image *image)
+{
+  return(GetBlobSize(image));
 }

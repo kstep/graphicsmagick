@@ -424,7 +424,7 @@ char SampleSize=1;
 
 
 static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
-  off_t PS_Offset,long PS_Size)
+  ExtendedSignedIntegralType PS_Offset,long PS_Size)
 {
 /*char Filename[MaxTextExtent];*/
 FILE *f;
@@ -505,7 +505,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 typedef struct
   {
   unsigned long FileId;
-  off_t DataOffset;
+  ExtendedSignedIntegralType DataOffset;
   unsigned int ProductType;
   unsigned int FileType;
   unsigned char MajorVersion;
@@ -591,7 +591,7 @@ typedef struct {
     Read WPG image.
   */
    Header.FileId=ReadBlobLSBLong(image);
-   Header.DataOffset=(off_t) ReadBlobLSBLong(image);
+   Header.DataOffset=(ExtendedSignedIntegralType) ReadBlobLSBLong(image);
    Header.ProductType=ReadBlobLSBShort(image);
    Header.FileType=ReadBlobLSBShort(image);
    Header.MajorVersion=ReadBlobByte(image);

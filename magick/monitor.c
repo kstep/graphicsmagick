@@ -80,7 +80,7 @@ static MonitorHandler
 %
 %  The format of the MagickMonitor method is:
 %
-%      unsigned int MagickMonitor(const char *text,const off_t quantum,
+%      unsigned int MagickMonitor(const char *text,const ExtendedSignedIntegralType quantum,
 %        const size_t span,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -93,7 +93,7 @@ static MonitorHandler
 %    o exception: Return any errors or warnings in this structure.
 %
 */
-MagickExport unsigned int MagickMonitor(const char *text,const off_t quantum,
+MagickExport unsigned int MagickMonitor(const char *text,const ExtendedSignedIntegralType quantum,
   const size_t span,ExceptionInfo *exception)
 {
   unsigned int

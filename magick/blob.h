@@ -54,7 +54,7 @@ typedef struct _BlobInfo
   unsigned char
     *data;
 
-  off_t
+  ExtendedSignedIntegralType
     offset,
     size;
 
@@ -90,6 +90,11 @@ extern MagickExport BlobInfo
 extern MagickExport char
   *ReadBlobString(Image *,char *);
 
+extern MagickExport ExtendedSignedIntegralType
+  GetBlobSize(const Image *image),
+  SeekBlob(Image *,const ExtendedSignedIntegralType,const int),
+  TellBlob(const Image *image);
+
 extern MagickExport Image
   *BlobToImage(const ImageInfo *,const void *,const size_t,ExceptionInfo *),
   *PingBlob(const ImageInfo *,const void *,const size_t,ExceptionInfo *);
@@ -98,12 +103,6 @@ extern MagickExport int
   EOFBlob(const Image *),
   ReadBlobByte(Image *),
   SyncBlob(Image *);
-
-extern MagickExport off_t
-  GetBlobSize(const Image *image),
-  SeekBlob(Image *,const off_t,const int),
-  SizeBlob(const Image *image),
-  TellBlob(const Image *image);
 
 extern MagickExport size_t
   ReadBlob(Image *,const size_t,void *),
@@ -139,7 +138,7 @@ extern MagickExport void
   *GetTypeBlob(const char *,char *,size_t *,ExceptionInfo *),
   *GetModuleBlob(const char *,char *,size_t *,ExceptionInfo *),
   *ImageToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
-  *MapBlob(int,const MapMode,off_t,size_t),
+  *MapBlob(int,const MapMode,ExtendedSignedIntegralType,size_t),
   MSBOrderLong(unsigned char *,const size_t),
   MSBOrderShort(unsigned char *,const size_t);
 

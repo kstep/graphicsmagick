@@ -434,7 +434,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   long
     x;
 
-  off_t
+  ExtendedSignedIntegralType
     offset;
 
   register long

@@ -141,11 +141,11 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
 MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
   const size_t length,ExceptionInfo *exception)
 {
+  ExtendedSignedIntegralType
+    count;
+
   int
     file;
-
-  off_t
-    count;
 
   register size_t
     i;
@@ -538,11 +538,11 @@ MagickExport int EOFBlob(const Image *image)
 MagickExport void *FileToBlob(const char *filename,size_t *length,
   ExceptionInfo *exception)
 {
+  ExtendedSignedIntegralType
+    offset;
+
   int
     file;
-
-  off_t
-    offset;
 
   unsigned char
     *blob;
@@ -584,7 +584,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
     }
   else
     {
-      off_t
+      ExtendedSignedIntegralType
         count;
 
       register size_t
@@ -657,7 +657,7 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
 %
 %  The format of the GetBlobSize method is:
 %
-%      off_t GetBlobSize(const Image *image)
+%      ExtendedSignedIntegralType GetBlobSize(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -668,15 +668,9 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
 %
 %
 */
-
-MagickExport off_t SizeBlob(const Image *image)
+MagickExport ExtendedSignedIntegralType GetBlobSize(const Image *image)
 {
-  return(GetBlobSize(image));
-}
-
-MagickExport off_t GetBlobSize(const Image *image)
-{
-  off_t
+  ExtendedSignedIntegralType
     offset;
 
   struct stat
@@ -1226,7 +1220,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
 %
 %  The format of the MapBlob method is:
 %
-%      void *MapBlob(int file,const MapMode mode,off_t offset,size_t length)
+%      void *MapBlob(int file,const MapMode mode,
+%        ExtendedSignedIntegralType offset,size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -1243,8 +1238,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
 %
 %
 */
-MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
-  size_t length)
+MagickExport void *MapBlob(int file,const MapMode mode,
+  ExtendedSignedIntegralType offset,size_t length)
 {
 #if defined(HAVE_MMAP)
   void
@@ -2115,7 +2110,8 @@ MagickExport BlobInfo *ReferenceBlob(BlobInfo *blob)
 %
 %  The format of the SeekBlob method is:
 %
-%      off_t SeekBlob(Image *image,const off_t offset,const int whence)
+%      ExtendedSignedIntegralType SeekBlob(Image *image,
+%        const ExtendedSignedIntegralType offset,const int whence)
 %
 %  A description of each parameter follows:
 %
@@ -2135,7 +2131,8 @@ MagickExport BlobInfo *ReferenceBlob(BlobInfo *blob)
 %
 %
 */
-MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
+MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
+   const ExtendedSignedIntegralType offset,const int whence)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2160,13 +2157,15 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
         }
         case SEEK_END:
         {
-          if ((off_t) (image->blob->offset+image->blob->length+offset) < 0)
+          if ((ExtendedSignedIntegralType)
+              (image->blob->offset+image->blob->length+offset) < 0)
             return(-1);
           image->blob->offset=image->blob->length+offset;
           break;
         }
       }
-      if (image->blob->offset <= (off_t) image->blob->length)
+      if (image->blob->offset <= (ExtendedSignedIntegralType)
+          image->blob->length)
         image->blob->eof=False;
       else
         if (image->blob->mapped)
@@ -2252,7 +2251,7 @@ MagickExport int SyncBlob(Image *image)
 %
 %  The format of the TellBlob method is:
 %
-%      off_t TellBlob(const Image *image)
+%      ExtendedSignedIntegralType TellBlob(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -2264,7 +2263,7 @@ MagickExport int SyncBlob(Image *image)
 %
 %
 */
-MagickExport off_t TellBlob(const Image *image)
+MagickExport ExtendedSignedIntegralType TellBlob(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2375,7 +2374,8 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
         }
       (void) memcpy(image->blob->data+image->blob->offset,data,length);
       image->blob->offset+=length;
-      if (image->blob->offset > (off_t) image->blob->length)
+      if (image->blob->offset > (ExtendedSignedIntegralType)
+          image->blob->length)
         image->blob->length=image->blob->offset;
       return(length);
     }

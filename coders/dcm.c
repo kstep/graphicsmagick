@@ -2813,7 +2813,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) strncpy(implicit_vr,explicit_vr,MaxTextExtent-1);
     if (!use_explicit || (strcmp(implicit_vr,"!!") == 0))
       {
-        (void) SeekBlob(image,(off_t) -2,SEEK_CUR);
+        (void) SeekBlob(image,(ExtendedSignedIntegralType) -2,SEEK_CUR);
         quantum=4;
       }
     else

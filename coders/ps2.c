@@ -488,6 +488,10 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     y_resolution,
     y_scale;
 
+  ExtendedSignedIntegralType
+    start,
+    stop;
+
   int
     count,
     status;
@@ -495,10 +499,6 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   long
     j,
     y;
-
-  off_t
-    start,
-    stop;
 
   RectangleInfo
     geometry;

@@ -661,6 +661,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     y_resolution,
     y_scale;
 
+  ExtendedSignedIntegralType
+    offset;
+
   long
     count,
     y;
@@ -668,9 +671,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   Image
     encode_image,
     *tile_image;
-
-  off_t
-    offset;
 
   RectangleInfo
     geometry,
@@ -713,7 +713,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     scene,
     text_size;
 
-  off_t
+  ExtendedSignedIntegralType
     *xref;
 
   /*
@@ -776,10 +776,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate X ref memory.
   */
-  xref=(off_t *) AcquireMemory(2048*sizeof(off_t));
-  if (xref == (off_t *) NULL)
+  xref=(ExtendedSignedIntegralType *) AcquireMemory(2048*sizeof(ExtendedSignedIntegralType));
+  if (xref == (ExtendedSignedIntegralType *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
-  memset(xref,0,2048*sizeof(off_t));
+  memset(xref,0,2048*sizeof(ExtendedSignedIntegralType));
   /*
     Write Info object.
   */
@@ -844,8 +844,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         kid_image=kid_image->next;
       }
-      ReacquireMemory((void **) &xref,(count+2048)*sizeof(off_t));
-      if (xref == (off_t *) NULL)
+      ReacquireMemory((void **) &xref,(count+2048)*sizeof(ExtendedSignedIntegralType));
+      if (xref == (ExtendedSignedIntegralType *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     }
   (void) WriteBlobString(image,"]\n");
