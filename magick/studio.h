@@ -243,12 +243,8 @@ extern "C" {
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 #define False  0
 #define DegreesToRadians(x) (MagickPI*(x)/180.0)
-#define IsFaxImage(color) \
-  (IsMonochromeImage(image) && ((image)->columns <= 2560))
 #define IsGray(color)  \
   (((color).red == (color).green) && ((color).green == (color).blue))
-#define IsMono(color)  \
-  (IsGray(color) && ((Intensity(color) == 0) || (Intensity(color) == MaxRGB)))
 #define MagickIncarnate(x)  InitializeMagick(x)
 #define MagickEpsilon  1.0e-12
 #define MagickPI  3.14159265358979323846264338327950288419716939937510
