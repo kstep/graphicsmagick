@@ -21,9 +21,9 @@ extern "C" {
 #include "magick_config.h"
 #endif
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
 #if !defined(WIN32)
 #  include <unistd.h>
 #else
