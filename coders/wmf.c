@@ -2324,7 +2324,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     {
       if (API)
         wmf_api_destroy(API);
-      ThrowReaderException(DelegateFatalError, "Failed to intialize libwmf", image);
+      ThrowReaderException(DelegateError, "Failed to intialize libwmf", image);
     }
 
   /* Register progress monitor */
@@ -2350,7 +2350,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
-      ThrowReaderException(FileOpenFatalError, "Unable to open file", image);
+      ThrowReaderException(FileOpenError, "Unable to open file", image);
     }
 
   /*
@@ -2361,7 +2361,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
-      ThrowReaderException(CorruptImageFatalError, "Failed to scan file", image);
+      ThrowReaderException(CorruptImageError, "Failed to scan file", image);
     }
 
   /*
@@ -2393,7 +2393,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
-      ThrowReaderException(CorruptImageFatalError,
+      ThrowReaderException(CorruptImageError,
                            "Failed to compute output size", image);
     }
 
@@ -2553,7 +2553,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
-      ThrowReaderException(CorruptImageFatalError, "Failed to render file", image);
+      ThrowReaderException(CorruptImageError, "Failed to render file", image);
     }
 
   /*
