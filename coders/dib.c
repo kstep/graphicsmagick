@@ -1154,7 +1154,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
       if (dib_colormap == (unsigned char *) NULL)
         ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
       q=dib_colormap;
-      for (i=0; i < (long) image->colors; i++)
+      for (i=0; i < (long) Min(image->colors,dib_info.number_colors); i++)
       {
         *q++=ScaleQuantumToChar(image->colormap[i].blue);
         *q++=ScaleQuantumToChar(image->colormap[i].green);
