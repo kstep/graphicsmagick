@@ -22,6 +22,7 @@
 		<LI><A HREF="#EmbossImage">EmbossImage</A>
 		<LI><A HREF="#EnhanceImage">EnhanceImage</A>
 		<LI><A HREF="#ImplodeImage">ImplodeImage</A>
+		<LI><A HREF="#MedianFilterImage">MedianFilterImage</A>
 		<LI><A HREF="#MorphImages">MorphImages</A>
 		<LI><A HREF="#OilPaintImage">OilPaintImage</A>
 		<LI><A HREF="#PlasmaImage">PlasmaImage</A>
@@ -74,14 +75,16 @@ Image * <STRONG>EnhanceImage</STRONG>( Image <CODE>*image</CODE> );
 Image * <STRONG>ImplodeImage</STRONG>( Image *image, const double factor );
 
 <P>
+Image * <STRONG>MedianFilterImage</STRONG>( Image *image, const unsigned int radius );
+
+<P>
 Image * <STRONG>MorphImages</STRONG>( Image *images, const unsigned int number_frames );
 
 <P>
 Image * <STRONG>OilPaintImage</STRONG>( Image *image, const unsigned int radius );
 
 <P>
-unsigned int  <STRONG>PlasmaImage</STRONG>( Image *image, const SegmentInfo *segment_info, int attenuate, int depth
-);
+unsigned int  <STRONG>PlasmaImage</STRONG>( Image *image, const SegmentInfo *segment, int attenuate, int depth );
 
 <P>
 Image * <STRONG>ReduceNoiseImage</STRONG>( Image <CODE>*image</CODE> );
@@ -427,6 +430,39 @@ implosion.
 </DL></DL>
 <P>
 <HR>
+<H2><A NAME="MedianFilterImage">MedianFilterImage</A></H2>
+<P>
+Method MedianFilterImage creates a new image that is a copy of an existing
+one with each pixel component replaced with the median color in a circular
+neighborhood.
+
+<P>
+The format of the MedianFilterImage method is:
+
+<blockquote><A HREF="types/Image.html">Image</A> *MedianFilterImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int radius ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+<DL><DL>
+<p><dt><STRONG>median_image:</STRONG><DD>
+<P>
+Method MedianFilterImage returns a pointer to the image after it is `filtered'. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
+
+
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<p><dt><STRONG>radius:</STRONG><DD>
+<P>
+An unsigned int that is the radius of the circular neighborhood.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="MorphImages">MorphImages</A></H2>
 <P>
 Method MorphImages morphs a set of images. Both the image pixels and size
@@ -502,7 +538,7 @@ seeded before this method is called.
 <P>
 The format of the PlasmaImage method is:
 
-<blockquote>unsigned int PlasmaImage ( <A HREF="types/Image.html">Image</A> *image, const SegmentInfo *segment_info, int attenuate, int depth ); </blockquote>
+<blockquote>unsigned int PlasmaImage ( <A HREF="types/Image.html">Image</A> *image, const SegmentInfo *segment, int attenuate, int depth ); </blockquote>
 
 <P>
 
@@ -518,7 +554,7 @@ Otherwise False is returned.
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<p><dt><STRONG>segment_info:</STRONG><DD>
+<p><dt><STRONG>segment:</STRONG><DD>
 <P>
 specifies a structure of type SegmentInfo that defines the boundaries of
 the area where the plasma fractals are applied.

@@ -351,8 +351,7 @@ Export Image *MagnifyImage(Image *image)
     q=SetPixelCache(magnify_image,0,y,magnify_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    for (x=0; x < (int) image->columns; x++)
-      *q++=(*p++);
+    (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
     if (!SyncPixelCache(magnify_image))
       break;
   }
@@ -365,8 +364,7 @@ Export Image *MagnifyImage(Image *image)
     if (p == (PixelPacket *) NULL)
       break;
     s=scanline;
-    for (x=0; x < (int) magnify_image->columns; x++)
-      *s++=(*p++);
+    (void) memcpy(s,p,magnify_image->columns*sizeof(PixelPacket));
     q=GetPixelCache(magnify_image,0,(image->rows-1-y) << 1,
       magnify_image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -559,7 +557,8 @@ Export Image *MinifyImage(Image *image)
       p+=2;
       q++;
     }
-    *q++=(*++p);
+    p++;
+    *q++=(*p);
     if (!SyncPixelCache(minify_image))
       break;
     if (QuantumTick(y,image->rows))

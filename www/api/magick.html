@@ -15,9 +15,12 @@
 	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
 	<UL>
 
-		<LI><A HREF="#GetMagickInfo">GetMagickInfo</A>
+		<LI><A HREF="#DestroyMagickInfo">DestroyMagickInfo</A>
+		<LI><A HREF="#GetMagickList">GetMagickList</A>
 		<LI><A HREF="#ListMagickInfo">ListMagickInfo</A>
 		<LI><A HREF="#RegisterMagickInfo">RegisterMagickInfo</A>
+		<LI><A HREF="#SetMagickInfo">SetMagickInfo</A>
+		<LI><A HREF="#UnregisterMagickInfo">UnregisterMagickInfo</A>
 	</UL>
 
 </UL>
@@ -33,25 +36,38 @@ magick - Methods to Read or List ImageMagick Image formats
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char <CODE>*tag</CODE> );
+void  <STRONG>DestroyMagickInfo</STRONG>( );
 
 <P>
 void  <STRONG>ListMagickInfo</STRONG>( 
 <FONT SIZE=-1>FILE</FONT> <CODE>*file</CODE> );
 
 <P>
-MagickInfo * <STRONG>RegisterMagickInfo</STRONG>( const char *tag, Image *(* decoder )( const ImageInfo *), unsigned
-<CODE>int(*</CODE> encoder )( const ImageInfo *, Image *), unsigned
-<CODE>int(*</CODE> magick )( const unsigned char *, const unsigned int ),
-const unsigned int adjoin, const unsigned int blob_support, const char
-<CODE>*description</CODE> );
+MagickInfo * <STRONG>RegisterMagickInfo</STRONG>( MagickInfo <CODE>*entry</CODE> );
+
+<P>
+MagickInfo * <STRONG>SetMagickInfo</STRONG>( const char <CODE>*tag</CODE> );
+
+<P>
+unsigned int  <STRONG>UnregisterMagickInfo</STRONG>( const char <CODE>*tag</CODE> );
 
 <P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
 <P>
 <HR>
-<H2><A NAME="GetMagickInfo">GetMagickInfo</A></H2>
+<H2><A NAME="DestroyMagickInfo">DestroyMagickInfo</A></H2>
+<P>
+Method DestroyMagickInfo deallocates memory associated MagickInfo list.
+
+<P>
+The format of the DestroyMagickInfo method is:
+
+<blockquote>void DestroyMagickInfo ( ); </blockquote>
+
+<P>
+<HR>
+<H2><A NAME="GetMagickList">GetMagickList</A></H2>
 <P>
 Method GetMagickInfo returns a pointer MagickInfo structure that matches the specified tag. If tag is 
 <FONT SIZE=-1>NULL,</FONT> the head of the image format list is returned.
@@ -60,8 +76,9 @@ Method GetMagickInfo returns a pointer MagickInfo structure that matches the spe
 <P>
 The format of the GetMagickInfo method is:
 
-<blockquote><A HREF="types/MagickInfo.html">MagickInfo</A> *GetMagickInfo ( const char *tag ); </blockquote>
-
+<P>
+<PRE>    MagickInfo *GetMagickInfo(const char *tag)
+</PRE>
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -111,7 +128,7 @@ Method RegisterMagickInfo adds attributes for a particular image format to the l
 <P>
 The format of the RegisterMagickInfo method is:
 
-<blockquote><A HREF="types/MagickInfo.html">MagickInfo</A> *RegisterMagickInfo ( const char *tag, <A HREF="types/Image.html">Image</A> *( *decoder ) ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *), unsigned int ( *encoder ) ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *, <A HREF="types/Image.html">Image</A> *), unsigned int ( *magick ) ( const unsigned char *, const unsigned int ), const unsigned int adjoin, const unsigned int blob_support, const char *description ); </blockquote>
+<blockquote><A HREF="types/MagickInfo.html">MagickInfo</A> *RegisterMagickInfo ( <A HREF="types/MagickInfo.html">MagickInfo</A> *entry ); </blockquote>
 
 <P>
 
@@ -123,36 +140,64 @@ The format of the RegisterMagickInfo method is:
 Method RegisterMagickInfo returns a pointer MagickInfo structure that
 contains the specified tag info.
 
+<p><dt><STRONG>o</STRONG><DD>
+<P>
+entry:
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SetMagickInfo">SetMagickInfo</A></H2>
+<P>
+Method SetMagickInfo allocates a MagickInfo structure and initializes the
+members to default values.
+
+<P>
+The format of the SetMagickInfo method is:
+
+<blockquote><A HREF="types/MagickInfo.html">MagickInfo</A> *SetMagickInfo ( const char *tag ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+<DL><DL>
+<p><dt><STRONG>magick_info:</STRONG><DD>
+<P>
+Method SetMagickInfo returns the allocated and initialized MagickInfo
+structure.
+
+<p><dt><STRONG>tag:</STRONG><DD>
+<P>
+a character string that represents the image format associated with the
+MagickInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="UnregisterMagickInfo">UnregisterMagickInfo</A></H2>
+<P>
+Method UnregisterMagickInfo removes a tag from the magick info list. It
+returns False if the tag does not exist in the list otherwise True.
+
+<P>
+The format of the UnregisterMagickInfo method is:
+
+<blockquote>unsigned int UnregisterMagickInfo ( const char *tag ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+<DL><DL>
+<p><dt><STRONG>status:</STRONG><DD>
+<P>
+Method UnregisterMagickInfo returns False if the tag does not exist in the
+list otherwise True.
+
 <p><dt><STRONG>tag:</STRONG><DD>
 <P>
 a character string that represents the image format we are looking for.
-
-<p><dt><STRONG>decoder:</STRONG><DD>
-<P>
-a method that is used to read the image format.
-
-<p><dt><STRONG>encoder:</STRONG><DD>
-<P>
-a method that is used to write the image format.
-
-<p><dt><STRONG>magick:</STRONG><DD>
-<P>
-this method returns True if the image format signature matches a subset of
-the first few bytes of the file or blob.
-
-<p><dt><STRONG>adjoin:</STRONG><DD>
-<P>
-a value greater than 0 means the image format can save more than one frame
-to the file or blob.
-
-<p><dt><STRONG>blob_support:</STRONG><DD>
-<P>
-a value greater than 0 means the format supports native in-memory 
-<FONT SIZE=-1>I/O.</FONT>
-
-<p><dt><STRONG>description:</STRONG><DD>
-<P>
-a character string that describes the image format.
 
 </DL></DL>
 </BODY>

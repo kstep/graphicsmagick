@@ -777,20 +777,28 @@ to assign a specific comment to the image. Optionally you can include the
 image filename, type, width, height, or other image attribute by embedding
 special format characters:</dd>
 
-<pre>&nbsp;&nbsp;&nbsp; %b&nbsp;&nbsp; file size
-&nbsp;&nbsp;&nbsp; %d&nbsp;&nbsp; directory
-&nbsp;&nbsp;&nbsp; %e&nbsp;&nbsp; filename extension
-&nbsp;&nbsp;&nbsp; %f&nbsp;&nbsp; filename
-&nbsp;&nbsp;&nbsp; %h&nbsp;&nbsp; height
-&nbsp;&nbsp;&nbsp; %m&nbsp;&nbsp; magick
-&nbsp;&nbsp;&nbsp; %p&nbsp;&nbsp; page number
-&nbsp;&nbsp;&nbsp; %s&nbsp;&nbsp; scene number
-&nbsp;&nbsp;&nbsp; %t&nbsp;&nbsp; top of filename
-&nbsp;&nbsp;&nbsp; %w&nbsp;&nbsp; width
-&nbsp;&nbsp;&nbsp; %x&nbsp;&nbsp; x resolution
-&nbsp;&nbsp;&nbsp; %y&nbsp;&nbsp; y resolution
-&nbsp;&nbsp;&nbsp; \n&nbsp;&nbsp; newline
-&nbsp;&nbsp;&nbsp; \r&nbsp;&nbsp; carriage return</pre>
+<dd><pre>
+    %b   file size
+    %d   directory
+    %e   filename extention
+    %f   filename
+    %h   height
+    %i   input filename
+    %l   label
+    %m   magick
+    %n   number of scenes
+    %o   output filename
+    %p   page number
+    %q   quantum depth
+    %s   scene number
+    %t   top of filename
+    %u   unique temporary filename
+    %w   width
+    %x   x resolution
+    %y   y resolution
+    \\n   newline
+    \\r   carriage return
+</pre>
 For example,
 <pre>&nbsp; -comment "%m:%f %wx%h"</pre>
 

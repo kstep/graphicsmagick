@@ -309,8 +309,8 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info)
     /*
       Transfer scanline.
     */
-    for (x=0; x < (int) image->columns; x++)
-      *q++=(*p++);
+    (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+    q+=image->columns;
     for (x=0; x < frame_info->inner_bevel; x++)
       *q++=highlight;
     width=frame_info->width-frame_info->x-image->columns-bevel_width;
