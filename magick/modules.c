@@ -211,9 +211,6 @@ MagickExport void ExitModules(void)
     *alias,
     *entry;
 
-  register int
-    i;
-
   register ModuleInfo
     *p;
 
@@ -320,13 +317,6 @@ MagickExport void InitializeModules(void)
     *aliases,
     *entry;
 
-  register char
-    *p,
-    *q;
-
-  register int
-    i;
-
   unsigned int
     match;
 
@@ -419,8 +409,7 @@ MagickExport char **ListModules(void)
     *directory;
 
   register int
-    i,
-    j;
+    i;
 
   struct dirent
     *entry;
@@ -432,7 +421,7 @@ MagickExport char **ListModules(void)
   module_list=(char **) AcquireMemory((max_entries+1)*sizeof(char *));
   if (module_list == (char **)NULL)
     return((char **) NULL);
-  j=0;
+  i=0;
   *module_list=(char *) NULL;
   path=GetMagickConfigurePath(ModuleFilename);
   if (path == (char *) NULL)
@@ -449,7 +438,7 @@ MagickExport char **ListModules(void)
         entry=readdir(directory);
         continue;
       }
-    if (j >= max_entries)
+    if (i >= max_entries)
       {
         max_entries<<=1;
         ReacquireMemory((void **) &module_list,max_entries*sizeof(char *));
@@ -459,14 +448,15 @@ MagickExport char **ListModules(void)
     /*
       Add new module name to list.
     */
-    module_list[j]=BaseFilename(entry->d_name);
-    LocaleUpper(module_list[j]);
-    if (LocaleNCompare("IM_MOD_",module_list[j],7) == 0)
+    module_list[i]=BaseFilename(entry->d_name);
+    LocaleUpper(module_list[i]);
+    if (LocaleNCompare("IM_MOD_",module_list[i],7) == 0)
       {
-        (void) strcpy(module_list[j],module_list[j]+10);
-        module_list[j][Extent(module_list[j])-1]='\0';
+        (void) strcpy(module_list[i],module_list[i]+10);
+        module_list[i][Extent(module_list[i])-1]='\0';
       }
-    module_list[++j]=(char *) NULL;
+    i++;
+    module_list[i]=(char *) NULL;
     entry=readdir(directory);
   }
   (void) closedir(directory);
@@ -510,9 +500,6 @@ MagickExport int OpenModule(const char *module)
 
   ModuleInfo
     *module_info;
-
-  register int
-    i;
 
   register ModuleAliases
     *p;

@@ -1200,7 +1200,6 @@ MagickExport char **ListColors(const char *pattern,int *number_colors)
 {
   char
     color[MaxTextExtent],
-    filename[MaxTextExtent],
     **colorlist,
     *path,
     text[MaxTextExtent];
