@@ -106,7 +106,7 @@ static ResourceInfo
 %
 */
 MagickExport unsigned int AcquireMagickResource(const ResourceType type,
-  const ExtendedSignedIntegralType size)
+  const magick_int64_t size)
 {
   char
     message[MaxTextExtent];
@@ -461,7 +461,7 @@ MagickExport void InitializeMagickResources(void)
 %
 */
 MagickExport void LiberateMagickResource(const ResourceType type,
-  const ExtendedSignedIntegralType size)
+  const magick_int64_t size)
 {
   char
     message[MaxTextExtent];

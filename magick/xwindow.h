@@ -552,8 +552,8 @@ extern MagickExport unsigned int
   XGetWindowColor(Display *,XWindows *,char *),
   XMakeImage(Display *,const XResourceInfo *,XWindowInfo *,Image *,
     unsigned int,unsigned int),
-  XMagickMonitor(const char *,const ExtendedSignedIntegralType,
-    const ExtendedUnsignedIntegralType,ExceptionInfo *),
+  XMagickMonitor(const char *task,const magick_int64_t quantum,
+    const magick_uint64_t span,ExceptionInfo *exception),
   XQueryColorDatabase(const char *,XColor *),
   XRemoteCommand(Display *,const char *,const char *);
 

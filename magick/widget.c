@@ -7895,8 +7895,8 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
 %  The format of the XMonitorWidget method is:
 %
 %      void XMonitorWidget(Display *display,XWindows *windows,const char *task,
-%        const ExtendedSignedIntegralType quantum,
-%        const ExtendedUnsignedIntegralType span)
+%        const magick_int64_t quantum,
+%        const magick_uint64_t span)
 %
 %  A description of each parameter follows:
 %
@@ -7915,8 +7915,8 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
 %
 */
 MagickExport void XMonitorWidget(Display *display,XWindows *windows,
-  const char *task,const ExtendedSignedIntegralType quantum,
-  const ExtendedUnsignedIntegralType span)
+  const char *task,const magick_int64_t quantum,
+  const magick_uint64_t span)
 {
   unsigned int
     width;

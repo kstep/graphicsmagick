@@ -308,7 +308,7 @@ extern "C" {
 #define Max(x,y)  (((x) > (y)) ? (x) : (y))
 #define Min(x,y)  (((x) < (y)) ? (x) : (y))
 #define QuantumTick(i,span) \
-  ((((i) & 0xff) == 0) || (i == ((ExtendedSignedIntegralType) (span)-1)))
+  ((((i) & 0xff) == 0) || (i == ((magick_int64_t) (span)-1)))
 #define RadiansToDegrees(x) (180.0*(x)/MagickPI)
 #define ScaleColor5to8(x)  ((x) << 3)
 #define ScaleColor6to8(x)  ((x) << 2)
@@ -356,11 +356,11 @@ extern "C" {
   /* Windows '95 and Borland C do not support _lseeki64 */
 #  define MagickSeek(file,offset,whence)  _lseeki64(file,offset,whence)
 #  define MagickTell(file) _telli64(file)
-#  define MagickOffset ExtendedSignedIntegralType
+#  define magick_off_t  __int64
 #else
 #  define MagickSeek(file,offset,whence)  lseek(file,offset,whence)
 #  define MagickTell(file) tell(file)
-#  define MagickOffset off_t
+#  define magick_off_t off_t
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

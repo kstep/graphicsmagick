@@ -20,18 +20,19 @@ extern "C" {
   Monitor typedef declarations.
 */
 typedef unsigned int
-  (*MonitorHandler)(const char *,const ExtendedSignedIntegralType,
-    const ExtendedUnsignedIntegralType,ExceptionInfo *);
+  (*MonitorHandler)(const char *text,const magick_int64_t quantum,
+    const magick_uint64_t span,ExceptionInfo *exception);
 
 /*
   Monitor declarations.
 */
 extern MagickExport MonitorHandler
-  SetMonitorHandler(MonitorHandler);
+  SetMonitorHandler(MonitorHandler handler);
 
 extern MagickExport unsigned int
-  MagickMonitor(const char *,const ExtendedSignedIntegralType,
-    const ExtendedUnsignedIntegralType,ExceptionInfo *);
+  MagickMonitor(const char *text,
+  const magick_int64_t quantum,const magick_uint64_t span,
+  ExceptionInfo *exception);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

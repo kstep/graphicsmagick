@@ -429,7 +429,7 @@ MagickExport int ftruncate(int filedes, off_t length)
   int
     status;
 
-  MagickOffset
+  magick_off_t
     current_pos;
 
   status=0;

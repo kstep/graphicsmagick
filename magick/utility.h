@@ -99,7 +99,7 @@ extern MagickExport void
   AppendImageFormat(const char *,char *),
   *CloneMemory(void *,const void *,const size_t),
   ExpandFilename(char *),
-  FormatSize(const ExtendedSignedIntegralType,char *),
+  FormatSize(const magick_int64_t size,char *format),
   GetPathComponent(const char *,PathType,char *),
   GetToken(const char *,char **,char *),
   LiberateMemory(void **),

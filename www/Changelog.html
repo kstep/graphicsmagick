@@ -56,6 +56,27 @@
 2003-07-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/monitor.c (MagickMonitor): Change 'quantum' argument from
+        type ExtendedSignedIntegralType to magick_int64_t. Change 'span'
+        argument from ExtendedUnsignedIntegralType to magick_uint64_t.
+  <LI> magick/xwindow.c (XMagickMonitor): Change 'quantum' argument from
+        type ExtendedSignedIntegralType to magick_int64_t. Change 'span'
+        argument from ExtendedUnsignedIntegralType to magick_uint64_t.
+  <LI> magick/widget.c (XMonitorWidget): Change 'quantum' argument from
+        type ExtendedSignedIntegralType to magick_int64_t. Change 'span'
+        argument from ExtendedUnsignedIntegralType to magick_uint64_t.
+  <LI> magick/studio.h (QuantumTick): Change typecast from
+        ExtendedSignedIntegralType to magick_int64_t.
+  <LI> magick/resource.c (AcquireMagickResource): Change 'size'
+        argument type from ExtendedSignedIntegralType to magick_int64_t.
+        (LiberateMagickResource): Change 'size' argument type from
+        ExtendedSignedIntegralType to magick_int64_t.
+  <LI> magick/utility.c (FormatSize): Change 'size' argument type from
+        ExtendedSignedIntegralType to magick_int64_t.
+  <LI> magick/nt_base.c: Change MagickOffset to magick_off_t.
+  <LI> magick/studio.h (magick_off_t): Change MagickOffset to magick_off_t.
+  <LI> coders/topol.c: Insert dummy member into palettRAS structure
+        since Visual C++ doesn't seem to handle empty structures.
   <LI> wand/GraphicsMagickWand.pc.in (prefix): Pass LFS CPPFLAGS.
   <LI> wand/GraphicsMagickWand-config.in: Pass LFS CPPFLAGS.
   <LI> wand/Makefile.am: Fix include path.

@@ -1,5 +1,24 @@
 2003-07-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/monitor.c (MagickMonitor): Change 'quantum' argument from
+	type ExtendedSignedIntegralType to magick_int64_t. Change 'span'
+	argument from ExtendedUnsignedIntegralType to magick_uint64_t.
+	* magick/xwindow.c (XMagickMonitor): Change 'quantum' argument from
+	type ExtendedSignedIntegralType to magick_int64_t. Change 'span'
+	argument from ExtendedUnsignedIntegralType to magick_uint64_t.
+	* magick/widget.c (XMonitorWidget): Change 'quantum' argument from
+	type ExtendedSignedIntegralType to magick_int64_t. Change 'span'
+	argument from ExtendedUnsignedIntegralType to magick_uint64_t.
+	* magick/studio.h (QuantumTick): Change typecast from
+	ExtendedSignedIntegralType to magick_int64_t.
+	* magick/resource.c (AcquireMagickResource): Change 'size'
+	argument type from ExtendedSignedIntegralType to magick_int64_t.
+	(LiberateMagickResource): Change 'size' argument type from
+	ExtendedSignedIntegralType to magick_int64_t.
+	* magick/utility.c (FormatSize): Change 'size' argument type from
+	ExtendedSignedIntegralType to magick_int64_t.
+	* magick/nt_base.c: Change MagickOffset to magick_off_t.
+	* magick/studio.h (magick_off_t): Change MagickOffset to magick_off_t.
         * coders/topol.c: Insert dummy member into palettRAS structure
 	since Visual C++ doesn't seem to handle empty structures.
 	* wand/GraphicsMagickWand.pc.in (prefix): Pass LFS CPPFLAGS.

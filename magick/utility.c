@@ -1030,7 +1030,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
 %
 %
 */
-MagickExport void FormatSize(const ExtendedSignedIntegralType size,char *format)
+MagickExport void FormatSize(const magick_int64_t size,char *format)
 {
   double
     length;
