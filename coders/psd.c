@@ -905,7 +905,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 layer_info[i].image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=GetIndexes(layer_info[i].image);
               for (x=0; x < (long) layer_info[i].image->columns; x++)
               {
                 q->opacity=(Quantum) ((unsigned long)
