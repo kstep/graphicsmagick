@@ -64,8 +64,8 @@
 <p>unsigned int  <strong>PrependImageToList</strong>( Image *images, Image *image );</p>
 <p>Image * <strong>RemoveFirstImageFromList</strong>( Image ** images );</p>
 <p>Image * <strong>RemoveLastImageFromList</strong>( Image ** images );</p>
-<p>Image * <strong>ReverseImageList</strong>( const Image *images, ExceptionInfo *exception );</p>
-<p>unsigned int  <strong>SpliceImageIntoList</strong>( Image ** images, const unsigned long length, Image *splices );</p>
+<p><strong>ReverseImageList</strong>( const Image ** images );</p>
+<p>unsigned int  <strong>SpliceImageIntoList</strong>( Image ** images, const unsigned long length, Image *splice );</p>
 <p>Image * <strong>SplitImageList</strong>( Image *images );</p>
 <p>
 </p>
@@ -283,25 +283,19 @@ The image list.
 </p>
 <h2><a name="reverseimagelist">ReverseImageList</a></h2>
 <blockquote>ReverseImageList() reverses the image list. </blockquote><p>The format of the ReverseImageList method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *ReverseImageList ( const <A HREF="types/Image.html">Image</A> *images, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>ReverseImageList ( const <A HREF="types/Image.html">Image</A> **images ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />
 </dt>
 <dd>
 The image list.
 </dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
-Return any errors or warnings in this structure.
-</dd>
 <p></p></dl>
 <p>
 </p>
 <h2><a name="spliceimageintolist">SpliceImageIntoList</a></h2>
-<blockquote>SpliceImageIntoList() removes 'length' images from the list and replaces them with the specified list. </blockquote><p>The format of the SpliceImageIntoList method is:</p>
-<blockquote>unsigned int SpliceImageIntoList ( <A HREF="types/Image.html">Image</A> **images, const unsigned long length, <A HREF="types/Image.html">Image</A> *splices ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>SpliceImageIntoList() removes 'length' images from the list and replaces them with the specified splice. </blockquote><p>The format of the SpliceImageIntoList method is:</p>
+<blockquote>unsigned int SpliceImageIntoList ( <A HREF="types/Image.html">Image</A> **images, const unsigned long length, <A HREF="types/Image.html">Image</A> *splice ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />
 </dt>
