@@ -681,7 +681,8 @@ extern MagickExport ImageType
   GetImageType(Image *);
 
 extern MagickExport IndexPacket
-  *(*GetIndexes)(const Image *);
+  *(*GetIndexes)(const Image *),
+  ValidateColormapIndex(Image *,const int);
 
 extern MagickExport int
   ParseGeometry(const char *,int *,int *,unsigned int *,unsigned int *),

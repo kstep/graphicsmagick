@@ -1388,7 +1388,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
             index=ValidateColormapIndex(image,*p);
             indexes[x]=index;
             *q=image->colormap[index];
-            q->opacity=MaxRGB-(*p++);
+            p++;
+            q->opacity=MaxRGB-(*p);
             p++;
             q++;
           }
@@ -1420,7 +1421,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        q->red=XDownScale(((*p) << 8) | *(p+1));
+        q->red=XDownScale((*p << 8) | *(p+1));
         p+=2;
         q++;
       }
@@ -1460,7 +1461,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        q->blue=XDownScale(((*p) << 8) | *(p+1));
+        q->blue=XDownScale((*p << 8) | *(p+1));
         p+=2;
         q++;
       }
@@ -1498,7 +1499,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        q->opacity=XDownScale(((*p) << 8) | *(p+1));
+        q->opacity=XDownScale((*p << 8) | *(p+1));
         p+=2;
         q++;
       }
@@ -1520,11 +1521,11 @@ MagickExport unsigned int PushImagePixels(Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        q->red=XDownScale(((*p) << 8) | *(p+1));
+        q->red=XDownScale((*p << 8) | *(p+1));
         p+=2;
-        q->green=XDownScale(((*p) << 8) | *(p+1));
+        q->green=XDownScale((*p << 8) | *(p+1));
         p+=2;
-        q->blue=XDownScale(((*p) << 8) | *(p+1));
+        q->blue=XDownScale((*p << 8) | *(p+1));
         p+=2;
         q++;
       }
@@ -1546,11 +1547,11 @@ MagickExport unsigned int PushImagePixels(Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        q->red=XDownScale(((*p) << 8) | *(p+1));
+        q->red=XDownScale((*p << 8) | *(p+1));
         p+=2;
-        q->green=XDownScale(((*p) << 8) | *(p+1));
+        q->green=XDownScale((*p << 8) | *(p+1));
         p+=2;
-        q->blue=XDownScale(((*p) << 8) | *(p+1));
+        q->blue=XDownScale((*p << 8) | *(p+1));
         p+=2;
         q->opacity=XDownScale(XUpScale(MaxRGB)-(((*p) << 8) | *(p+1)));
         p+=2;
@@ -1574,13 +1575,13 @@ MagickExport unsigned int PushImagePixels(Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        q->red=XDownScale(((*p) << 8) | *(p+1));
+        q->red=XDownScale((*p << 8) | *(p+1));
         p+=2;
-        q->green=XDownScale(((*p) << 8) | *(p+1));
+        q->green=XDownScale((*p << 8) | *(p+1));
         p+=2;
-        q->blue=XDownScale(((*p) << 8) | *(p+1));
+        q->blue=XDownScale((*p << 8) | *(p+1));
         p+=2;
-        q->opacity=XDownScale(((*p) << 8) | *(p+1));
+        q->opacity=XDownScale((*p << 8) | *(p+1));
         p+=2;
         q++;
       }
