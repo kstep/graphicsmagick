@@ -151,14 +151,17 @@ AC_EXEEXT
 AC_OBJEXT
 
 LIB_GDI32=''
+StaticCplusPlusLibraries='no'
 native_win32_build='no'
 cygwin_build='no'
 case "${host_os}" in
   cygwin* )
+    StaticCplusPlusLibraries='yes'
     cygwin_build='yes'
     LIB_GDI32='-lgdi32'
     ;;
   mingw* )
+    StaticCplusPlusLibraries='yes'
     native_win32_build='yes'
     LIB_GDI32='-lgdi32'
     ;;
@@ -301,6 +304,13 @@ libtool_build_static_libs='no'
 if test "$enable_static" = 'yes'
 then
   libtool_build_static_libs='yes'
+fi
+
+# MinGW and Cygwin can't build C++ DLLs which support exceptions.
+if test "${StaticCplusPlusLibraries}" = 'yes'
+then
+  LTCXXLIBOPTS='--static'
+  AC_SUBST(LTCXXLIBOPTS)
 fi
 
 #

@@ -293,6 +293,7 @@ LN_S = @LN_S@
 LOCALSTATE_DIR = @LOCALSTATE_DIR@
 LPDelegate = @LPDelegate@
 LPRDelegate = @LPRDelegate@
+LTCXXLIBOPTS = @LTCXXLIBOPTS@
 LTLIBOBJS = @LTLIBOBJS@
 LZWDecodeDelegate = @LZWDecodeDelegate@
 LZWEncodeDelegate = @LZWEncodeDelegate@
@@ -466,7 +467,10 @@ xml2_config = @xml2_config@
 # Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004
 #
 AUTOMAKE_OPTIONS = 1.8 foreign
-AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/Magick++/lib -I$(top_srcdir)
+AM_CPPFLAGS = \
+	-I$(top_builddir) -I$(top_srcdir)/Magick++/lib \
+	-I$(top_srcdir) $(MAGICK_API_CPPFLAGS)
+
 LDADD = ../lib/libGraphicsMagick++.la
 appendImages_SOURCES = appendImages.cpp
 attributes_SOURCES = attributes.cpp

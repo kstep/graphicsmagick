@@ -5,7 +5,9 @@
 #
 AUTOMAKE_OPTIONS = 1.8 foreign
 
-AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/Magick++/lib -I$(top_srcdir)
+AM_CPPFLAGS = \
+	-I$(top_builddir) -I$(top_srcdir)/Magick++/lib \
+	-I$(top_srcdir) $(MAGICK_API_CPPFLAGS)
 
 #
 # Execute 'make check' to compile and run a test program

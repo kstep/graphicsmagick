@@ -54,10 +54,10 @@ namespace MagickLib
 // Provide appropriate DLL imports/exports for Visual C++,
 // Borland C++Builder and MinGW builds
 //
-#if defined(WIN32) && !defined(__CYGWIN__)
-# define MagickWIN32
+#if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__)
+# define MagickCplusPlusDLLSupported
 #endif
-#if defined(MagickWIN32)
+#if defined(MagickCplusPlusDLLSupported)
 #  if defined(_MT) && defined(_DLL) && !defined(_LIB)
 #    define MagickDLLBuild
 #    pragma warning( disable: 4273 )      /* Disable the stupid dll linkage warnings */

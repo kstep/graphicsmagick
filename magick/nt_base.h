@@ -111,9 +111,12 @@ struct dirent
     d_namlen;
 };
 
-/* ssize_t is the type returned by _read and _write */
-#if !defined(ssize_t)
-typedef int ssize_t;
+/*
+  ssize_t is the type returned by _read and _write.
+  Recent MinGW compilers include this typedef by default.
+ */
+#if !defined(ssize_t) && !defined(__MINGW32__)
+typedef long ssize_t;
 #endif
 
 typedef struct _DIR

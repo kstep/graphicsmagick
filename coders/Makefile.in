@@ -682,6 +682,7 @@ LN_S = @LN_S@
 LOCALSTATE_DIR = @LOCALSTATE_DIR@
 LPDelegate = @LPDelegate@
 LPRDelegate = @LPRDelegate@
+LTCXXLIBOPTS = @LTCXXLIBOPTS@
 LTLIBOBJS = @LTLIBOBJS@
 LZWDecodeDelegate = @LZWDecodeDelegate@
 LZWEncodeDelegate = @LZWEncodeDelegate@

@@ -1,3 +1,11 @@
+2004-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Magick++ needs to be built as a static library
+	under Cygwin and MinGW since C++ exceptions don't work otherwise.
+	Be more assertive about that.
+	* magick/nt_base.h: Avoid conflict with ssize_t definition under
+	MinGW.
+
 2004-05-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/constitute.c (DispatchImage): Support 8-bit output to
