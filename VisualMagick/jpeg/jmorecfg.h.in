@@ -10,6 +10,7 @@
  * optimizations.  Most users will not need to touch this file.
  */
 
+
 /*
  * Define BITS_IN_JSAMPLE as either
  *   8   for 8-bit sample values (the usual setting)
@@ -252,7 +253,6 @@ typedef unsigned int JDIMENSION;
  * in standard header files.  Or you may have conflicts with application-
  * specific header files that you want to include together with these files.
  * Defining HAVE_BOOLEAN before including jpeglib.h should make it work.
- *
  */
 #ifndef HAVE_BOOLEAN
 typedef unsigned char boolean;

@@ -227,25 +227,22 @@ struct jbg_dec_state {
 /* function prototypes */
 
 #if !defined(_VISUALC_)
-#	error Something is very very wrong. This header must only be used under Visual C++.
+#  error Something is very very wrong. This header must only be used under Visual C++.
 #endif
 /**
  * Under VISUALC we have single threaded static libraries, or
  * mutli-threaded DLLs using the multithreaded runtime DLLs.
  **/
-#	if defined(_MT) && defined(_DLL) && !defined(_JBIGDLL_) && !defined(_LIB)
-#		define _JBIGDLL_
-#	endif
-#	if defined(_JBIGDLL_)
-#		pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
-#		if !defined(_JBIGLIB_)
-#     define JBIGEXPORT __declspec(dllimport)
-#		else
-#     define JBIGEXPORT __declspec(dllexport)
-#		endif
-#	else
-#   define JBIGEXPORT
-#	endif
+#if defined(_MT) && defined(_DLL) && !defined(_LIB)
+#  pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
+#  if !defined(_JBIGLIB_)
+#    define JBIGEXPORT __declspec(dllimport)
+#  else
+#   define JBIGEXPORT __declspec(dllexport)
+#  endif
+#else
+#  define JBIGEXPORT
+#endif
 
 #pragma warning(disable : 4018)
 #pragma warning(disable : 4244)

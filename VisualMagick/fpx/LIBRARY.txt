@@ -1,0 +1,5 @@
+#ECF - this file contains additional configuration info.
+DEFINE = _FPXLIB_
+DEFINE = USE_UNICODE
+DEFINE = _UNICODE
+EXCLUDE = wchar.c

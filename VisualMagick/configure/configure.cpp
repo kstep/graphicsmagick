@@ -57,6 +57,12 @@ CString release_loc;
 CString debug_loc;
 CString bin_loc;
 CString lib_loc;
+
+CString final_release_loc;
+CString final_debug_loc;
+CString final_bin_loc;
+CString final_lib_loc;
+
 std::list<std::string> libs_list_shared;
 std::list<std::string> dependency_list;
 std::list<std::string> standard_include;
@@ -89,7 +95,7 @@ void CConfigureApp::generate_dependencies(
 		it1a++)
 	{
     strDepends = (*it1a).c_str();
-    if (strDepends.FindNoCase("LIBR_%szlib",0) == 0)
+    if (strDepends.FindNoCase("CORE_%szlib",0) == 0)
     {
       strDepends.Format((*it1a).c_str(),"","");
 		  add_project_dependency(dsw, strDepends );
@@ -102,7 +108,7 @@ void CConfigureApp::generate_dependencies(
 		it1b++)
 	{
     strDepends = (*it1b).c_str();
-    if (strDepends.FindNoCase("LIBR_%sbzlib",0) == 0)
+    if (strDepends.FindNoCase("CORE_%sbzlib",0) == 0)
     {
       strDepends.Format((*it1b).c_str(),"","");
 		  add_project_dependency(dsw, strDepends );
@@ -115,7 +121,7 @@ void CConfigureApp::generate_dependencies(
 		it1c++)
 	{
     strDepends = (*it1c).c_str();
-    if (strDepends.FindNoCase("LIBR_%sjpeg",0) == 0)
+    if (strDepends.FindNoCase("CORE_%sjpeg",0) == 0)
     {
       strDepends.Format((*it1c).c_str(),"","");
 		  add_project_dependency(dsw, strDepends );
@@ -128,11 +134,11 @@ void CConfigureApp::generate_dependencies(
 		it1++)
 	{
     strDepends = (*it1).c_str();
-    if (strDepends.FindNoCase("LIBR_%szlib",0) == 0)
+    if (strDepends.FindNoCase("CORE_%szlib",0) == 0)
       continue;
-    if (strDepends.FindNoCase("LIBR_%sbzlib",0) == 0)
+    if (strDepends.FindNoCase("CORE_%sbzlib",0) == 0)
       continue;
-    if (strDepends.FindNoCase("LIBR_%sjpeg",0) == 0)
+    if (strDepends.FindNoCase("CORE_%sjpeg",0) == 0)
       continue;
     if (strDepends.FindNoCase("LIBR_",0) == 0)
     {
@@ -289,7 +295,8 @@ static bool process_one_entry(const char *entry, int nLinesRead,
   std::list<std::string> &defines_list,
   std::list<std::string> &includes_list,
   std::list<std::string> &source_list,
-  std::list<std::string> &exclude_list)
+  std::list<std::string> &exclude_list,
+  int runtime)
 {
   CStringEx sTempString = entry;
   // check for a valid file by looking for the magick
@@ -322,6 +329,20 @@ static bool process_one_entry(const char *entry, int nLinesRead,
 	    source_list.push_back(temp);
     if (sName.CompareNoCase(_T("EXCLUDE")) == 0)
 	    exclude_list.push_back(temp);
+    switch(runtime)
+    {
+      default:
+      case SINGLETHREADEDSTATIC:
+      case MULTITHREADEDSTATIC:
+      case MULTITHREADEDSTATICDLL:
+        if (sName.CompareNoCase(_T("DEFINESTATIC")) == 0)
+	        defines_list.push_back(temp);
+        break;
+      case MULTITHREADEDDLL:
+        if (sName.CompareNoCase(_T("DEFINEDLL")) == 0)
+	        defines_list.push_back(temp);
+        break;
+    }
   }
   return true;
 }
@@ -330,7 +351,8 @@ int load_environment_file( const char *inputfile,
   std::list<std::string> &defines_list,
   std::list<std::string> &includes_list,
   std::list<std::string> &source_list,
-  std::list<std::string> &exclude_list)
+  std::list<std::string> &exclude_list,
+  int runtime)
 {
   char szBuf[2048];
   int nLinesRead = 0;
@@ -343,11 +365,13 @@ int load_environment_file( const char *inputfile,
         // last line may contain text also
         // (if it's not terminated with '\n' EOF is returned)
         return process_one_entry( szBuf, nLinesRead,
-                  defines_list, includes_list, source_list, exclude_list );
+                  defines_list, includes_list, source_list, exclude_list,
+                    runtime );
       }
       if ( !inpStream.good() ||
         !process_one_entry( szBuf, nLinesRead,
-            defines_list, includes_list, source_list, exclude_list) )
+            defines_list, includes_list, source_list, exclude_list,
+              runtime) )
         return false;      
       nLinesRead++;
     }
@@ -380,7 +404,8 @@ void CConfigureApp::process_utility(ofstream &dsw,
   else
     envpath += "\\PROJECT.txt";
   load_environment_file(envpath.c_str(),
-    defines_list, includes_list, source_list, exclude_list);
+    defines_list, includes_list, source_list, exclude_list,
+      runtime);
 
 	for (std::list<std::string>::iterator it = exclude_list.begin();
 			it != exclude_list.end();
@@ -534,6 +559,7 @@ void CConfigureApp::process_library(ofstream &dsw,
   }
 
 	includes_list.push_back("..\\..\\zlib");
+	includes_list.push_back("..\\..\\jpeg");
 	includes_list.push_back("..\\..\\tiff\\libtiff");
 	includes_list.push_back("..\\..\\lcms\\src");
 	includes_list.push_back("..\\..\\lcms\\source");
@@ -551,13 +577,15 @@ void CConfigureApp::process_library(ofstream &dsw,
   {
     envpath += "\\LIBRARY.txt";
     load_environment_file(envpath.c_str(),
-      defines_list, includes_list, source_list, exclude_list);
+      defines_list, includes_list, source_list, exclude_list,
+        runtime);
   }
   if (project_type == STATICLIB)
   {
     envpath += "\\STATICLIB.txt";
     load_environment_file(envpath.c_str(),
-      defines_list, includes_list, source_list, exclude_list);
+      defines_list, includes_list, source_list, exclude_list,
+        runtime);
   }
 
 	write_lib_dsp(
@@ -612,9 +640,9 @@ void CConfigureApp::process_library(ofstream &dsw,
         {
           if (useX11Stubs)
 	          add_project_dependency(dsw, "CORE_xlib");
-	        add_project_dependency(dsw, "LIBR_JPEG");
-	        add_project_dependency(dsw, "LIBR_ZLIB");
-	        add_project_dependency(dsw, "LIBR_TIFF");
+	        add_project_dependency(dsw, "CORE_tiff");
+	        add_project_dependency(dsw, "CORE_jpeg");
+	        add_project_dependency(dsw, "CORE_zlib");
 	        add_project_dependency(dsw, "CORE_lcms");
 	        add_project_dependency(dsw, "CORE_ttf");
 	        add_project_dependency(dsw, "CORE_libxml");
@@ -629,7 +657,16 @@ void CConfigureApp::process_library(ofstream &dsw,
         }
         if (name.compare("hdf") == 0)
         {
-	        add_project_dependency(dsw, "LIBR_ZLIB");
+	        add_project_dependency(dsw, "CORE_zlib");
+        }
+        if (name.compare("png") == 0)
+        {
+	        add_project_dependency(dsw, "CORE_zlib");
+        }
+        if (name.compare("tiff") == 0)
+        {
+	        add_project_dependency(dsw, "CORE_jpeg");
+	        add_project_dependency(dsw, "CORE_zlib");
         }
 	      end_project(dsw);
         break;
@@ -679,11 +716,6 @@ void CConfigureApp::process_3rd_party_library(ofstream &dsw,
   {
 		defines_list.push_back("_LIB");
   }
-
-  //if (project_type == LIBRARY)
-  //{
-	//  defines_list.push_back("_MAGICKLIB_");
-  //}
 
   std::string libpath;
   bool do_extra_stuff = false;
@@ -739,35 +771,35 @@ do_it_again:
         case SINGLETHREADEDSTATIC:
         case MULTITHREADEDSTATIC:
         case MULTITHREADEDSTATICDLL:
-          if (name.compare("fpx") == 0)
-          {
-            name = "FPXjpeg";
-            do_extra_stuff = true;
-          }
+          //if (name.compare("fpx") == 0)
+          //{
+          //  name = "FPXjpeg";
+          //  do_extra_stuff = true;
+          //}
           break;
         default:
         case MULTITHREADEDDLL:
           {
             if (name.compare("png") == 0)
             {
-	            add_project_dependency(dsw, "LIBR_ZLIB");
+	            add_project_dependency(dsw, "CORE_zlib");
             }
             if (name.compare("hdf") == 0)
             {
-	            add_project_dependency(dsw, "LIBR_JPEG");
-	            add_project_dependency(dsw, "LIBR_ZLIB");
+	            add_project_dependency(dsw, "CORE_jpeg");
+	            add_project_dependency(dsw, "CORE_zlib");
             }
             if (name.compare("tiff") == 0)
             {
-	            add_project_dependency(dsw, "LIBR_JPEG");
-	            add_project_dependency(dsw, "LIBR_ZLIB");
+	            add_project_dependency(dsw, "CORE_jpeg");
+	            add_project_dependency(dsw, "CORE_zlib");
             }
-            if (name.compare("fpx") == 0)
-            {
-	            add_project_dependency(dsw, "LIBR_FPXjpeg");
-              name = "FPXjpeg";
-              do_extra_stuff = true;
-            }
+            //if (name.compare("fpx") == 0)
+            //{
+	          //  add_project_dependency(dsw, "LIBR_FPXjpeg");
+            //  name = "FPXjpeg";
+            //  do_extra_stuff = true;
+            //}
           }
           break;
       }
@@ -870,10 +902,6 @@ void CConfigureApp::process_module(ofstream &dsw,
   std::string extn = basename.GetField('.',1);
   std::string prefix;
 
-  //CStringEx staging = root;
-  //int levels = staging.GetFieldCount('\\');
-  //std::string parent = staging.GetField('\\',levels-1);
-
   if (project_type == MODULE)
     prefix = MODULE_PREFIX;    
 
@@ -931,7 +959,6 @@ void CConfigureApp::process_module(ofstream &dsw,
   if (name.compare("hdf") == 0)
   {
 		includes_list.push_back("..\\..\\zlib");
-		//includes_list.push_back("..\\..\\hdf\\src");
   }
 
   // generate the includes paths required for this module
@@ -939,8 +966,8 @@ void CConfigureApp::process_module(ofstream &dsw,
   std::string libpath;
   std::string dependency;
 
-  // look for LIBRARY.txt file (instead of THIRDPARTY.txt) to
-  // see if this is a third party library or a core library
+  // look for xxxx.txt files to see if there is a third party
+  // library or a core library that is needed for this module
   libpath = "..\\";
   libpath += name;
   libpath += "\\LIBRARY.txt";
@@ -1016,7 +1043,8 @@ void CConfigureApp::process_module(ofstream &dsw,
   if (project_type == ADD_ON)
     envpath += "\\ADD_ON.txt";
   load_environment_file(envpath.c_str(),
-    defines_list, includes_list, source_list, exclude_list);
+    defines_list, includes_list, source_list, exclude_list,
+      runtime);
 
  	write_lib_dsp(
     (runtime == MULTITHREADEDDLL),
@@ -1079,12 +1107,12 @@ void CConfigureApp::process_module(ofstream &dsw,
         }
         if (name.compare("miff") == 0)
         {
-	        add_project_dependency(dsw, "LIBR_ZLIB");
-		      add_project_dependency(dsw, "LIBR_BZLIB");
+	        add_project_dependency(dsw, "CORE_zlib");
+		      add_project_dependency(dsw, "CORE_bzlib");
         }
         if (name.compare("png") == 0)
         {
-	        add_project_dependency(dsw, "LIBR_ZLIB");
+	        add_project_dependency(dsw, "CORE_zlib");
         }
         if (name.compare("x") == 0)
         {
@@ -1491,7 +1519,8 @@ void CConfigureApp::process_project_type(ofstream &dsw,
           rootpath += "\\";
           rootpath += topdata.cFileName;
           process_one_folder(dsw,rootpath.c_str(),data,btype,runtime);
-          if (btype == UTILITY || btype == PROJECT || btype == ADD_ON)
+          if (btype == UTILITY || btype == PROJECT
+            || btype == ADD_ON || btype == MODULE)
           {
             rootpath = root;
             rootpath += "\\";
@@ -2519,8 +2548,6 @@ void CConfigureApp::write_lib_dsp(
 	std::list<std::string> &source_list,
   std::list<std::string> &exclude_list)
 {
-	//CString filename = "..\\";
-  //filename += directory.c_str();
   CString filename = root.c_str();
   filename += "\\";
 	filename += prefix.c_str();
@@ -2572,7 +2599,29 @@ void CConfigureApp::write_lib_dsp(
 
 	ofstream dsp(filename);
 
-  std::string lib_path = lib_loc;
+  std::string bin_path;
+  std::string lib_path;
+  std::string debug_path;
+  std::string release_path;
+  std::string extra_path;
+  CStringEx getcount = root.c_str();
+  int levels = getcount.GetFieldCount('\\');
+  {
+    for (int j=0; j<(levels-2); j++)
+      extra_path += "..\\";
+  }
+  if (bin_loc[0]=='.')
+    bin_path += extra_path;
+  bin_path += bin_loc;
+  if (lib_loc[0]=='.')
+    lib_path += extra_path;
+  lib_path += lib_loc;
+  if (debug_loc[0]=='.')
+    debug_path += extra_path;
+  debug_path += debug_loc;
+  if (release_loc[0]=='.')
+    release_path += extra_path;
+  release_path += release_loc;
 
 	dsp << "# Microsoft Developer Studio Project File - Name=\"" << libname << "\" - Package Owner=<4>" << endl;
 	dsp << "# Microsoft Developer Studio Generated Build File, Format Version 6.00" << endl;
@@ -2622,8 +2671,8 @@ void CConfigureApp::write_lib_dsp(
 
 	dsp << "# PROP Use_MFC 0" << endl;
 	dsp << "# PROP Use_Debug_Libraries 0" << endl;
-	dsp << "# PROP Output_Dir \"" << lib_loc << "\"" << endl;
-	dsp << "# PROP Intermediate_Dir \"" << release_loc << libname << "\"" << endl;
+	dsp << "# PROP Output_Dir \"" << lib_path.c_str() << "\"" << endl;
+	dsp << "# PROP Intermediate_Dir \"" << release_path.c_str() << libname << "\"" << endl;
 	dsp << "# PROP Target_Dir \"\"" << endl;
   if (dll)
 	  dsp << "LIB32=link.exe -lib" << endl;
@@ -2731,7 +2780,7 @@ void CConfigureApp::write_lib_dsp(
     outname += "_";
   if (dll)
   {
-    dsp << "/pdb:\"" << bin_loc << outname << ".pdb\"";
+    dsp << "/pdb:\"" << bin_path.c_str() << outname << ".pdb\"";
     {
 	    WIN32_FIND_DATA	defdata;
 	    //CString defname = "..\\";
@@ -2747,11 +2796,11 @@ void CConfigureApp::write_lib_dsp(
         dsp << " /def:\".\\" << outname << ".def\"";
       }
     }
-    dsp << " /out:\"" << bin_loc << outname << ".dll\"";
+    dsp << " /out:\"" << bin_path.c_str() << outname << ".dll\"";
   }
   else
   {
-    dsp << " /out:\"" << lib_loc << outname << ".lib\"";
+    dsp << " /out:\"" << lib_path.c_str() << outname << ".lib\"";
   }
 	dsp << endl;
 	dsp << endl;
@@ -2761,8 +2810,8 @@ void CConfigureApp::write_lib_dsp(
 
 	dsp << "# PROP Use_MFC 0" << endl;
 	dsp << "# PROP Use_Debug_Libraries 1" << endl;
-	dsp << "# PROP Output_Dir \"" << lib_loc << "\"" << endl;
-	dsp << "# PROP Intermediate_Dir \"" << debug_loc << libname << "\"" << endl;
+	dsp << "# PROP Output_Dir \"" << lib_path.c_str() << "\"" << endl;
+	dsp << "# PROP Intermediate_Dir \"" << debug_path.c_str() << libname << "\"" << endl;
 	dsp << "# PROP Target_Dir \"\"" << endl;
   if (dll)
 	  dsp << "LIB32=link.exe -lib" << endl;
@@ -2870,7 +2919,7 @@ void CConfigureApp::write_lib_dsp(
 	  dsp << " /nologo /machine:I386 ";
   if (dll)
   {
-    dsp << "/pdb:\"" << bin_loc << outname << ".pdb\"";
+    dsp << "/pdb:\"" << bin_path.c_str() << outname << ".pdb\"";
     {
 	    WIN32_FIND_DATA	defdata;
 	    //CString defname = "..\\";
@@ -2886,11 +2935,11 @@ void CConfigureApp::write_lib_dsp(
         dsp << " /def:\".\\" << outname << ".def\"";
       }
     }
-    dsp << " /out:\"" << bin_loc << outname << ".dll\"";
+    dsp << " /out:\"" << bin_path.c_str() << outname << ".dll\"";
   }
   else
   {
-    dsp << " /out:\"" << lib_loc << outname << ".lib\"";
+    dsp << " /out:\"" << lib_path.c_str() << outname << ".lib\"";
   }
 	dsp << endl;
 
@@ -3529,7 +3578,8 @@ void CConfigureApp::generate_dir(ofstream &dsp,
 
 		  if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
 			  continue;
-      if (project_type == UTILITY || project_type == PROJECT || project_type == ADD_ON)
+      if (project_type == UTILITY || project_type == PROJECT
+          || project_type == ADD_ON || project_type == MODULE)
       {
         CStringEx getcount = path;
         int levels = getcount.GetFieldCount('\\');

@@ -1,0 +1,6 @@
+#ECF - this file contains additional configuration info.
+DEFINE = BZ_EXPORT
+DEFINE = _WIN32
+EXCLUDE = dlltest.c
+EXCLUDE = bzip2recover.c
+EXCLUDE = bzip2.c
