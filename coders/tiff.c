@@ -327,6 +327,15 @@ static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
 }
 #endif
 
+typedef enum
+{
+  PseudoClassMethod,          /* PseudoClass method */
+  DirectClassScanLineMethod, /* Scanline method */
+  DirectClassStrippedMethod, /* Stripped RGBA method */
+  DirectClassTiledMethod,    /* Tiled RGBA method */
+  DirectClassPuntMethod      /* Last resort RGBA method */
+} TIFFReadMethod;
+
 static Image *ReadTIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -377,13 +386,16 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   uint32
     height,
     length,
+    rows_per_strip,
     width;
 
   unsigned char
     *scanline;
 
+  TIFFReadMethod
+    method;
+
   unsigned int
-    method,
     logging,
     status;
 
@@ -642,21 +654,23 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    method=0;
+    method=PseudoClassMethod;
     if ((image->storage_class == DirectClass) || image->matte)
       {
-        method=3;
+        method=DirectClassPuntMethod;
+        if (TIFFGetField(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip))
+          method=DirectClassStrippedMethod;
         if (photometric == PHOTOMETRIC_RGB)
           if ((samples_per_pixel >= 2) && (interlace == PLANARCONFIG_CONTIG))
-            method=1;
+            method=DirectClassScanLineMethod;
         if (image->colorspace == CMYKColorspace)
-          method=1;
+          method=DirectClassScanLineMethod;
       }
     if (TIFFIsTiled(tiff))
-      method=2;
+      method=DirectClassTiledMethod;
     switch (method)
     {
-      case 0:
+      case PseudoClassMethod:
       {
         register unsigned char
           *r;
@@ -878,7 +892,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         LiberateMemory((void **) &quantum_scanline);
         break;
       }
-      case 1:
+      case DirectClassScanLineMethod:
       {
         /*
           Convert TIFF image to DirectClass MIFF image.
@@ -948,10 +962,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         LiberateMemory((void **) &scanline);
         break;
       }
-    case 2:
+    case DirectClassTiledMethod:
       {
         /*
-          Read tiled TIFF
+          Convert tiled TIFF image to DirectClass MIFF image.
         */
         register uint32
           *p;
@@ -970,18 +984,34 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if(!TIFFGetField(tiff,TIFFTAG_TILEWIDTH,&tile_columns)
            || !TIFFGetField(tiff,TIFFTAG_TILELENGTH,&tile_rows))
           {
+            TIFFClose(tiff);
+            if ((image->blob->type != FileStream) &&
+                (image->blob->type != BlobStream))
+              remove(filename);
             ThrowReaderException(CoderError,"ImageIsNotTiled",image)
           }
         tile_total_pixels=tile_columns*tile_rows;
-        logging && LogMagickEvent(CoderEvent,GetMagickModule(),"Reading TIFF tiles ...");
-        logging && LogMagickEvent(CoderEvent,GetMagickModule(),
-          "TIFF tile geometry %ux%u, %lu pixels",(unsigned int)tile_columns,
-            (unsigned int)tile_rows, tile_total_pixels);
+        if (logging)
+          {
+            LogMagickEvent(CoderEvent,GetMagickModule(),"Reading TIFF tiles ...");
+            LogMagickEvent(CoderEvent,GetMagickModule(),
+              "TIFF tile geometry %ux%u, %lu pixels",(unsigned int)tile_columns,
+              (unsigned int)tile_rows, tile_total_pixels);
+          }
         
         /*
           Allocate tile buffer
         */
         tile_pixels=(uint32*) AcquireMemory(tile_columns*tile_rows*sizeof (uint32));
+        if (tile_pixels == (uint32 *) NULL)
+          {
+            TIFFClose(tiff);
+            if ((image->blob->type != FileStream) &&
+                (image->blob->type != BlobStream))
+              remove(filename);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+              image)
+          }
         for (y=0; y < (long) image->rows; y+=tile_rows)
           {
             /*
@@ -1061,7 +1091,72 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         
         break;
       }
-      case 3:
+      case DirectClassStrippedMethod:
+      {
+        unsigned long
+          number_pixels;
+
+        uint32
+          *strip_pixels;
+
+        register uint32
+          *p;
+
+        /*
+          Convert stripped TIFF image to DirectClass MIFF image.
+        */
+        number_pixels=(ExtendedSignedIntegralType)
+          image->columns*rows_per_strip;
+        if ((number_pixels*sizeof(uint32)) != (size_t)
+            (number_pixels*sizeof(uint32)))
+          {
+            TIFFClose(tiff);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+              image)
+          }
+        strip_pixels=(uint32 *) AcquireMemory(number_pixels*sizeof(uint32));
+        if (strip_pixels == (uint32 *) NULL)
+          {
+            TIFFClose(tiff);
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+              image)
+          }
+        /*
+          Convert image to DirectClass pixel packets.
+        */
+        for (y=0; y < (long) image->rows; y+=rows_per_strip)
+        {
+          i=rows_per_strip;
+          if ((y+rows_per_strip) > (long) image->rows)
+            i=image->rows-y;
+          q=SetImagePixels(image,0,y,image->columns,i);
+          if (q == (PixelPacket *) NULL)
+            break;
+          q+=image->columns*i-1;
+          p=strip_pixels+image->columns*i-1;
+          if (!TIFFReadRGBAStrip(tiff,y,strip_pixels))
+            break;
+          for (x=0; x < (long) image->columns; x++)
+          {
+            q->red=ScaleCharToQuantum(TIFFGetR(*p));
+            q->green=ScaleCharToQuantum(TIFFGetG(*p));
+            q->blue=ScaleCharToQuantum(TIFFGetB(*p));
+            if (image->matte)
+              q->opacity=(Quantum) ScaleCharToQuantum(TIFFGetA(*p));
+            p--;
+            q--;
+          }
+          if (!SyncImagePixels(image))
+            break;
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                break;
+        }
+        LiberateMemory((void **) &strip_pixels);
+        break;
+      }
+      case DirectClassPuntMethod:
       default:
       {
         register uint32

@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1; print "1..5\n"; }
+BEGIN { $| = 1; $test=1; print "1..8\n"; }
 END {print "not ok $test\n" unless $loaded;}
 
 use Graphics::Magick;
@@ -30,7 +30,23 @@ testRead( 'input_256.tiff',
   'a570df6d4c214d08bccaaee856f617883fee4f96494af6ef5e25c76d86ea0e0a' );
 
 #
-# 3) Test Reading TrueColor (8-bit)
+# 3) Test reading PseudoColor using contiguous planar packing
+#
+++$test;
+print("PseudoColor contiguous planes ...\n");
+testRead( 'input_256_planar_contig.tiff',
+  'a570df6d4c214d08bccaaee856f617883fee4f96494af6ef5e25c76d86ea0e0a' );
+
+#
+# 4) Test reading PseudoColor using seperate planes
+#
+++$test;
+print("PseudoColor seperate planes ...\n");
+testRead( 'input_256_planar_separate.tiff',
+  'a570df6d4c214d08bccaaee856f617883fee4f96494af6ef5e25c76d86ea0e0a' );
+
+#
+# 5) Test Reading TrueColor (8-bit)
 # 
 ++$test;
 print("TrueColor (8-bit) image ...\n");
@@ -38,7 +54,7 @@ testRead( 'input_truecolor.tiff',
   '326599218925e7aa27c735d482332744cccf41f460a1ba2d276a2d172f2b3de0' );
 
 #
-# 4) Test Reading TrueColor (16-bit)
+# 6) Test Reading TrueColor (16-bit)
 #
 ++$test;
 print("TrueColor (16-bit) image ...\n");
@@ -47,9 +63,17 @@ testRead( 'input_truecolor_16.tiff',
   '72fd047e4f5942b4edc96e8b16444580e9eb1f265017dd6bb11795a842e58d58' );
 
 #
-# 5) Test Reading 8-bit TrueColor Tiled (32x32 tiles)
+# 7) Test Reading 8-bit TrueColor Tiled (32x32 tiles)
 # 
 ++$test;
-print("TrueColor (8-bit) tiled image ...\n");
+print("TrueColor (8-bit) tiled image, 32x32 tiles ...\n");
 testRead( 'input_truecolor_tiled32x32.tiff',
+  '326599218925e7aa27c735d482332744cccf41f460a1ba2d276a2d172f2b3de0' );
+
+#
+# 8) Test Reading 8-bit TrueColor Tiled (8 rows per strip)
+# 
+++$test;
+print("TrueColor (8-bit) stripped, image, 8 rows per strip ...\n");
+testRead( 'input_truecolor_stripped.tiff',
   '326599218925e7aa27c735d482332744cccf41f460a1ba2d276a2d172f2b3de0' );

@@ -1,3 +1,11 @@
+2003-02-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/tiff/read.t: Added read tests for stripped,
+	planar contiguous, and planar seperated TIFFs.
+	* coders/tiff.c (ReadTIFFImage): Transferred stripped-TIFF
+	reading code from ImageMagick.
+	Enumerated reading methods to make the logic more clear.
+
 2003-02-27  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* JNG alpha sample depth was sometimes inconsistent.
@@ -6,10 +14,19 @@
 
 2003-02-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* PerlMagick/Makefile.PL.in (LIBS): Put MAGICKLIB first to
+	decrease the probability that the wrong libMagick is used
+	when linking static PerlMagick.
+	* configure.ac (PerlMagick): Fix linker search path for
+	-lGraphicsMagick when linking a static PerlMagick.  It seems
+	that libtool changed the location where it places static
+	libraries.
 	* PerlMagick/t/tiff/read.t: Added test for reading tiled TIFF.
 	* coders/tiff.c (ReadTIFFImage): Add optimized support for
 	reading tiled TIFFs.
 	(ReadTIFFImage): Optimize loops for reading tiled TIFFs as well.
+	(ReadTIFFImage): Eliminate compiler warning.
+	(ReadTIFFImage): Add some missing error handling for tiled TIFF.
 
 2003-02-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

@@ -55,6 +55,7 @@ Major changes associated with GraphicsMagick 1.0.0
     * JNG/MNG/PNG format support tracks ImageMagick version.
     * BMP encoder can write 16-color indexed BMPs now as well as 2-color
     BMPs (not restricted to monochrome).
+    * TIFF decoder now includes optimized support for tiled TIFF.
 
   Major bug fixes:
     * When dithering is disabled, don't dither when converting to a

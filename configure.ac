@@ -2108,7 +2108,21 @@ AM_CONDITIONAL(WITH_PERL_DYNAMIC, test $with_perl_dynamic = 'yes')
 MAGICKLIB="-L${LIB_DIR} -lGraphicsMagick"
 if test $with_perl_static = 'yes'
 then
-  MAGICKLIB="-L${builddir}/magick -lGraphicsMagick"
+  # Find out where libtool hides its uninstalled libraries (as libtool_objdir)
+  eval `./libtool --config|grep '^objdir='|sed -e 's/^objdir/libtool_objdir/'`
+
+  # Find out what extension is applied to static libraries (as libtool_libext)
+  #eval `./libtool --config|grep '^libext='|sed -e 's/^libext/libtool_libext/'`
+
+  # Find out full form of library name (as libtool_libname_spec)
+  #eval `./libtool --config|grep '^libname_spec='|sed -e 's/^libname_spec/libtool_libname_spec/'`
+  #eval 'name=GraphicsMagick '`eval 'echo library_name="${libtool_libname_spec}.${libtool_libext}"'`
+
+  # Explicit path to static library (Perl rejects it!)
+  #MAGICKLIB="${builddir}/magick/${libtool_objdir}/${library_name}"
+
+  # Linker search path to library, followed by -lGraphicsMagick
+  MAGICKLIB="-L${builddir}/magick/${libtool_objdir} -lGraphicsMagick"
 fi
 AC_SUBST(MAGICKLIB)
 

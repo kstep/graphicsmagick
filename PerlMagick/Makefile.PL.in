@@ -62,7 +62,7 @@ WriteMakefile
    'INSTALLBIN'	=> '@BIN_DIR@',
 
    # Library specification
-   'LIBS'	=> ['@LDFLAGS@ @MAGICKLIB@ @MAGICK_DEP_LIBS@'],
+   'LIBS'	=> ['@MAGICKLIB@ @LDFLAGS@ @MAGICK_DEP_LIBS@'],
 
    # Perl binary name (if a Perl binary is built)
    'MAP_TARGET'	=> 'PerlMagick',
