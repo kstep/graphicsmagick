@@ -2630,6 +2630,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
     if (QuantumTick(y,noise_image->rows))
       MagickMonitor(ReduceNoiseImageText,y,noise_image->rows);
   }
+  LiberateMemory((void **) &window);
   return(noise_image);
 }
 
