@@ -58,6 +58,7 @@
 #include "studio.h"
 #include "blob.h"
 #include "draw.h"
+#include "log.h"
 #include "magick.h"
 #include "monitor.h"
 #include "utility.h"
@@ -155,16 +156,9 @@ struct _wmf_magick_t
     translate_y,
     rotate;
 
-  /* MVG output */
+  /* Vector output */
   DrawContext
     draw_context;
-
-  char
-    *mvg;
-
-  size_t
-    mvg_alloc,
-    mvg_length;
 
   /* ImageMagick image */
     Image
@@ -1177,9 +1171,6 @@ static void ipa_functions(wmfAPI *API)
   /*
      Device data defaults
    */
-  ddata->mvg = 0;
-  ddata->mvg_alloc = 0;
-  ddata->mvg_length = 0;
   ddata->image = 0;
 }
 
@@ -2297,6 +2288,9 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     resolution_x,
     units_per_inch;
 
+  unsigned int
+    logging;
+
   unsigned long
     wmf_options_flags = 0;
 
@@ -2315,10 +2309,19 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   wmfD_Rect
     bbox;
 
+  logging=LogMagickEvent(CoderEvent,"enter ReadWMFImage()");
+
   image = AllocateImage(image_info);
   if (!OpenBlob(image_info,image,ReadBinaryBlobMode,exception))
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
-
+    {
+      if(logging)
+        {
+          LogMagickEvent(CoderEvent,"  OpenBlob failed");
+          LogMagickEvent(CoderEvent,"leave ReadWMFImage()");
+        }
+      ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    }
+  
   /*
    * Create WMF API
    *
@@ -2337,6 +2340,11 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     {
       if (API)
         wmf_api_destroy(API);
+      if(logging)
+        {
+          LogMagickEvent(CoderEvent,"  wmf_api_create failed");
+          LogMagickEvent(CoderEvent,"leave ReadWMFImage()");
+        }
       ThrowReaderException(DelegateError,"UnableToInitializeWMFLibrary",image);
     }
 
@@ -2363,6 +2371,11 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
+      if(logging)
+        {
+          LogMagickEvent(CoderEvent,"  wmf_bbuf_input failed");
+          LogMagickEvent(CoderEvent,"leave ReadWMFImage()");
+        }
       ThrowReaderException(FileOpenError,"UnableToOpenFile", image);
     }
 
@@ -2370,10 +2383,17 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    * Scan WMF file
    *
    */
+  if (logging)
+    LogMagickEvent(CoderEvent,"  Scanning WMF to obtain bounding box");
   wmf_error = wmf_scan(API, 0, &bbox);
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
+      if (logging)
+        {
+          LogMagickEvent(CoderEvent,"  wmf_scan failed with wmf_error %d", wmf_error);
+          LogMagickEvent(CoderEvent,"leave ReadWMFImage()");
+        }
       ThrowReaderException(DelegateError,"FailedToScanFile",image);
     }
 
@@ -2406,6 +2426,11 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
+      if (logging)
+        {
+          LogMagickEvent(CoderEvent,"  wmf_size failed with wmf_error %d", wmf_error);
+          LogMagickEvent(CoderEvent,"leave ReadWMFImage()");
+        }
       ThrowReaderException(DelegateError,"FailedToComputeOutputSize",image);
     }
 
@@ -2455,26 +2480,32 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
       ddata->translate_y = 0-bbox.BR.y;
     }
 
+  if (logging)
+    {
+      LogMagickEvent(CoderEvent,"  Placeable metafile:          %s",
+                     (API)->File->placeable ? "Yes" : "No");
+      
+      LogMagickEvent(CoderEvent,"  Size in metafile units:      %.4gx%.4g",
+                     wmf_width, wmf_height);
+      LogMagickEvent(CoderEvent,"  Metafile units/inch:         %.4g",
+                     units_per_inch);
+      LogMagickEvent(CoderEvent,"  Size in inches:              %.4gx%.4g",
+                     image_width_inch,image_height_inch);
+      LogMagickEvent(CoderEvent,"  Bounding Box:                %.4g,%.4g %.4g,%.4g",
+                     bbox.TL.x, bbox.TL.y, bbox.BR.x, bbox.BR.y);
+      LogMagickEvent(CoderEvent,"  Bounding width x height:     %.4gx%.4g",
+                     bounding_width, bounding_height);
+      LogMagickEvent(CoderEvent,"  Output resolution:           %.4gx%.4g",
+                     resolution_x, resolution_y);
+      LogMagickEvent(CoderEvent,"  Image size:                  %.4gx%.4g",
+                     image_width, image_height);
+      LogMagickEvent(CoderEvent,"  Bounding box scale factor:   %.4g,%.4g",
+                     ddata->scale_x, ddata->scale_y);
+      LogMagickEvent(CoderEvent,"  Translation:                 %.4g,%.4g",
+                     ddata->translate_x, ddata->translate_y);
+    }
+
 #if 0
-  printf("\nPlaceable metafile:          ");
-  if ((API)->File->placeable)
-    printf("Yes\n");
-  else
-    printf("No\n");
-  printf("Size in metafile units:      %.4gx%.4g\n", wmf_width, wmf_height);
-  printf("Metafile units/inch:         %.4g\n", units_per_inch);
-  printf("Size in inches:              %.4gx%.4g\n",image_width_inch,image_height_inch);
-  printf("Bounding Box:                %.4g,%.4g %.4g,%.4g\n",
-         bbox.TL.x, bbox.TL.y, bbox.BR.x, bbox.BR.y);
-  printf("Bounding width x height:     %.4gx%.4g\n", bounding_width, bounding_height);
-  printf("Output resolution:           %.4gx%.4g\n", resolution_x, resolution_y);
-  printf("Image size:                  %.4gx%.4g\n", image_width, image_height);
-  printf("Bounding box scale factor:   %.4g,%.4g\n",
-         ddata->scale_x, ddata->scale_y);
-  printf("Translation:                 %.4g,%.4g\n",
-   ddata->translate_x, ddata->translate_y);
-
-
 #if 0
   {
     typedef struct _wmfPlayer_t wmfPlayer_t;
@@ -2516,7 +2547,6 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    * Create canvas image
    *
    */
-
   image->rows = (unsigned long)ceil(image_height);
   image->columns = (unsigned long)ceil(image_width);
 
@@ -2524,8 +2554,13 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     {
       wmf_api_destroy(API);
       CloseBlob(image);
+      if(logging)
+        LogMagickEvent(CoderEvent,"leave ReadWMFImage()");
       return(image);
     }
+
+  if (logging)
+    LogMagickEvent(CoderEvent,"  Creating canvas image with size %ldx%ld", image->rows, image->columns);
 
   /*
    * Set solid background color
@@ -2556,15 +2591,22 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
       }
   }
   /*
-   * Play file to generate MVG drawing commands
+   * Play file to generate Vector drawing commands
    *
    */
 
-  ddata->mvg = NULL;
+  if (logging)
+    LogMagickEvent(CoderEvent,"  Playing WMF to prepare vectors");
+
   wmf_error = wmf_play(API, 0, &bbox);
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
+      if (logging)
+        {
+          LogMagickEvent(CoderEvent,"  Playing WMF failed with wmf_error %d", wmf_error);
+          LogMagickEvent(CoderEvent,"leave ReadWMFImage()");
+        }
       ThrowReaderException(DelegateError,"FailedToRenderFile",image);
     }
 
@@ -2572,12 +2614,17 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    * Scribble on canvas image
    *
    */
-  
+
+  if (logging)
+    LogMagickEvent(CoderEvent,"  Rendering WMF vectors");
   DrawRender(ddata->draw_context);
 
   /* Cleanup allocated data */
   wmf_api_destroy(API);
   CloseBlob(image);
+
+  if(logging)
+    LogMagickEvent(CoderEvent,"leave ReadWMFImage()");
 
   /* Return image */
   return image;
@@ -2617,7 +2664,7 @@ ModuleExport void RegisterWMFImage(void)
   entry = SetMagickInfo("WMF");
   entry->decoder = ReadWMFImage;
   entry->description = AcquireString("Windows Meta File");
-  entry->blob_support = False;
+  entry->blob_support = True;
   entry->module = AcquireString("WMF");
   (void) RegisterMagickInfo(entry);
 #endif /* HasWMF || HasWMFlite */

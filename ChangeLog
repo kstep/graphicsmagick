@@ -1,4 +1,7 @@
 2002-10-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * coders/wmf.c: Added logging facilities.
+
+2002-10-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * display.c: removed unnecessary SignatureImage() calls which
     dramatically slowed down loading images and quiting the program.
   * xwindow.c: optimized image size reduction for the case where the
