@@ -61,10 +61,15 @@
 /*
   Global declarations.
 */
+/* List of loaded modules */
 static ModuleInfo
   *module_info = (ModuleInfo *) NULL;
+/* List of module aliases */
 static ModuleAliases
   *module_aliases = (ModuleAliases *) NULL;
+/* Module search path */
+static char
+  *module_path = (char*) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -146,6 +151,9 @@ Export void ExitModules(void)
       FreeMemory((void**)&entry);
     }
   module_aliases=(ModuleAliases*)NULL;
+
+  /* Free module search path */
+  FreeMemory((void**)&module_path);
 
   /* Shut down libltdl */
  /*  lt_dlexit(void); */
@@ -243,7 +251,36 @@ Export void InitializeModules(void)
 	}
       
       /* Set ltdl module search path */
-      lt_dlsetsearchpath( CoderModuleDirectory );
+      module_path=(char*)AllocateMemory(MaxTextExtent);
+      if(module_path != (char*)NULL)
+	{
+	  char *path;
+	  char scratch[MaxTextExtent];
+	  *module_path='\0';
+	  /* Add user specified path */
+	  if((path=getenv("MAGICK_MODULE_PATH")) != NULL)
+	    {
+	      strcpy(module_path, path);
+	    }
+	  /* Add HOME/.magick if it exists */
+	  if((path=getenv("HOME")) != NULL)
+	    {
+	      strcpy(scratch,path);
+	      strcat(scratch,"/.magick");
+	      if(access(scratch,R_OK) == 0)
+		{
+		  if(*module_path != '\0')
+		    strcat(module_path,":");
+		  strcat(module_path,scratch);
+		}
+	    }
+	  /* Add default module installation directory */
+	  if(*module_path != '\0')
+	    strcat(module_path,":");
+	  strcat(module_path,CoderModuleDirectory);
+	  /* Tell ltdl about search path */
+	  lt_dlsetsearchpath(module_path);
+	}
 
       /* Load module aliases */
       strcpy(aliases, DelegatePath);
@@ -355,41 +392,73 @@ Export int LoadAllModules(void)
 Export char **ListModules(void)
 {
   char
-    **file_list,
     **module_list,
-    current_directory[MaxTextExtent];
+    **module_list_tmp,
+    *p,
+    *q;
 
   int
-    entry,
     i;
 
-  static int
-    number_files = 256;
+  DIR
+    *directory;
 
-  /* Get list of module files */
-  (void) getcwd(current_directory,MaxTextExtent-1);
-  file_list=ListFiles(CoderModuleDirectory,
-		      "*.la", &number_files);
-  (void) chdir(current_directory);
-  if (file_list == (char **) NULL)
-    return (char **)NULL;
+  struct dirent
+    *entry;
 
-  /* Create list of modules (uppercased base names of module files) */
-  module_list=(char **) AllocateMemory((number_files+1)*sizeof(char *));
-  entry=0;
-  while(entry<number_files)
+  unsigned int
+    entry_index,
+    name_length,
+    max_entries;
+
+  max_entries=256;
+  entry_index=0;
+
+  directory=opendir(CoderModuleDirectory);
+  if(directory == (DIR *) NULL)
+    return((char **) NULL);
+
+  module_list=(char **) AllocateMemory((max_entries+1)*sizeof(char *));
+  if(module_list == (char **)NULL)
+    return((char **) NULL);
+
+  module_list[0]=(char*)NULL;
+
+  entry=readdir(directory);
+  while (entry != (struct dirent *) NULL)
     {
-      module_list[entry]=BaseFilename(file_list[entry]);
-      Latin1Upper(module_list[entry]);
-      ++entry;
+      name_length=Extent(entry->d_name);
+      p = (entry->d_name + name_length - 3);
+      if ( name_length < 4 ||
+	   *p++ != '.' ||
+	   *p++ != 'l' ||
+	   *p != 'a' )
+	{
+	  entry=readdir(directory);
+	  continue;
+	}
+      if(entry_index >= max_entries)
+	{
+	  max_entries<<=1;
+	  module_list_tmp=(char **)
+	    ReallocateMemory((char **)module_list,max_entries*sizeof(char *));
+	  if (module_list_tmp == (char **) NULL)
+	    break;
+	  module_list=module_list_tmp;
+	}
+      module_list[entry_index]=(char *)AllocateMemory(name_length);
+      if(module_list[entry_index] == (char *) NULL)
+	break;
+      p=module_list[entry_index];
+      q=entry->d_name;
+      for( i=name_length-3; i != 0; --i)
+	*p++=toupper((int)*q++);
+      *p=0;
+      ++entry_index;
+      module_list[entry_index]=(char*)NULL;
+      entry=readdir(directory);
     }
-  module_list[entry]=(char*)NULL;
-
-  /* Deallocate memory associated with file list */
-  for (i=0; i < number_files; i++)
-    FreeMemory((void **) &file_list[i]);
-  if (file_list != (char **) NULL)
-    FreeMemory((void **) &file_list);
+  (void) closedir(directory);
 
   return module_list;
 }
