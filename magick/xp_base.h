@@ -96,8 +96,8 @@ extern MagickExport DIR
   *opendir(char *);
 
 extern MagickExport double
-  NTElapsedTime(void),
-  NTUserTime(void);
+  XPElapsedTime(void),
+  XPUserTime(void);
 
 extern MagickExport int
 #if !defined(HasLTDL)

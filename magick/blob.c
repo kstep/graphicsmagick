@@ -833,7 +833,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   if (IsAccessible(path))
     return(FileToBlob(path,length,exception));
 #if defined(WIN32)
-  return(NTResourceToBlob(filename));
+  return(XPResourceToBlob(filename));
 #endif
 #endif
   ThrowException(exception,ConfigureError,"Unable to access configure file",
@@ -966,7 +966,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
   if (IsAccessible(path))
     return(FileToBlob(path,length,exception));
 #if defined(WIN32)
-  return(NTResourceToBlob(path));
+  return(XPResourceToBlob(path));
 #endif
 #endif
   ThrowException(exception,ConfigureError,"Unable to access module file",
@@ -1084,7 +1084,7 @@ MagickExport void *GetTypeBlob(const char *filename,char *path,
   if (IsAccessible(path))
     return(FileToBlob(path,length,exception));
 #if defined(WIN32)
-  return(NTResourceToBlob(filename));
+  return(XPResourceToBlob(filename));
 #endif
 #endif
   ThrowException(exception,ConfigureError,"Unable to access font file",

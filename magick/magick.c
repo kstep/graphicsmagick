@@ -98,7 +98,7 @@ MagickExport void DestroyMagick(void)
   DestroySemaphore();
 #if defined(WIN32)
   DestroyTracingCriticalSection();
-  NTGhostscriptUnLoadDLL();
+  XPGhostscriptUnLoadDLL();
 #endif
 }
 

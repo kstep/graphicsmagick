@@ -296,7 +296,7 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
   if (IsLogAccessible(path))
     return(LogToBlob(path,length,exception));
 #if defined(WIN32)
-  return(NTResourceToBlob(filename));
+  return(XPResourceToBlob(filename));
 #endif
 #endif
   return((void *) NULL);

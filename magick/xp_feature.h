@@ -22,7 +22,7 @@ extern "C" {
   NT features routines.
 */
 extern MagickExport char
-  *NTRegistryKeyLookup(const char *key);
+  *XPRegistryKeyLookup(const char *key);
 
 extern MagickExport HBITMAP 
 	ImageToHBITMAP(Image* image);

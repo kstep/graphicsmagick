@@ -674,16 +674,16 @@ MagickExport int munmap(void *map,size_t length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method NTElapsedTime returns the elapsed time (in seconds) since the last
+%  Method XPElapsedTime returns the elapsed time (in seconds) since the last
 %  call to StartTimer().
 %
 %  The format of the ElapsedTime method is:
 %
-%      double NTElapsedTime(void)
+%      double XPElapsedTime(void)
 %
 %
 */
-MagickExport double NTElapsedTime(void)
+MagickExport double XPElapsedTime(void)
 {
   union
   {
@@ -1629,16 +1629,16 @@ MagickExport int NTSystemCommand(const char *command)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method NTUserTime returns the total time the process has been scheduled (i
+%  Method XPUserTime returns the total time the process has been scheduled (i
 %  seconds) since the last call to StartTimer().
 %
 %  The format of the UserTime method is:
 %
-%      double NTUserTime(void)
+%      double XPUserTime(void)
 %
 %
 */
-MagickExport double NTUserTime(void)
+MagickExport double XPUserTime(void)
 {
   DWORD
     status;
@@ -1671,7 +1671,7 @@ MagickExport double NTUserTime(void)
   OsVersionInfo.dwOSVersionInfoSize=sizeof(OSVERSIONINFO);
   GetVersionEx(&OsVersionInfo);
   if (OsVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
-    return(NTElapsedTime());
+    return(XPElapsedTime());
   status=GetProcessTimes(GetCurrentProcess(),&create_time,&exit_time,
     &kernel_time.filetime,&user_time.filetime);
   if (status != TRUE)

@@ -142,7 +142,7 @@ static double ElapsedTime(void)
   return((double) times(&timer)/CLK_TCK);
 #else
 #if defined(WIN32)
-  return(NTElapsedTime());
+  return(XPElapsedTime());
 #else
   return((double) clock()/CLK_TCK);
 #endif
@@ -397,7 +397,7 @@ static double UserTime(void)
   return((double) (timer.tms_utime+timer.tms_stime)/CLK_TCK);
 #else
 #if defined(WIN32)
-  return(NTUserTime());
+  return(XPUserTime());
 #else
   return((double) clock()/CLK_TCK);
 #endif
