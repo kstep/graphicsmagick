@@ -2672,6 +2672,11 @@ MagickExport unsigned int GradientImage(Image *image,
 %    o reference: The reference image.
 %
 */
+#if QuantumDepth > 16 && defined(HAVE_LONG_DOUBLE)
+  typedef long double ErrorSumType;
+#else
+  typedef double ErrorSumType;
+#endif
 MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
 {
   double
@@ -2685,7 +2690,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
   long
     y;
 
-  long double
+  ErrorSumType
     total_error;
 
   register const PixelPacket

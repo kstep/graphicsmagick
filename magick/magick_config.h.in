@@ -106,6 +106,13 @@
 /* Define if you have the libdl library or equivalent. */
 #undef HAVE_LIBDL
 
+/* Define to 1 if long double works and has more range or precision than
+   double. */
+#undef HAVE_LONG_DOUBLE
+
+/* Define to 1 if the system has the type `long long'. */
+#undef HAVE_LONG_LONG
+
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
 
@@ -224,6 +231,9 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* Define to 1 if the system has the type `unsigned long long'. */
+#undef HAVE_UNSIGNED_LONG_LONG
 
 /* Define to 1 if you have the `vsnprintf' function. */
 #undef HAVE_VSNPRINTF

@@ -21174,9 +21174,11 @@ echo "${ECHO_T}$ac_cv_prog_gcc_traditional" >&6
 fi
 
 
+########
 #
 # Set defines required to build DLLs and modules using MinGW
 #
+########
 # These options are set for multi-thread DLL module build
 #  libMagick:           _DLL _MAGICKMOD_ _MAGICKLIB_
 #  module:              _DLL
@@ -21209,9 +21211,11 @@ fi
 
 
 
+########
 #
 # Check for large file support
 #
+########
 LIB_LF=''
 if test "$with_largefile" = 'yes'
 then
@@ -21831,7 +21835,14 @@ fi
 done
 
 
+########
+#
 # Checks for typedefs, structures, and compiler characteristics.
+#
+########
+
+# If the C compiler does not fully support the ANSI C qualifier const,
+# define const to be empty.
 echo "$as_me:$LINENO: checking for an ANSI C-conforming const" >&5
 echo $ECHO_N "checking for an ANSI C-conforming const... $ECHO_C" >&6
 if test "${ac_cv_c_const+set}" = set; then
@@ -21930,6 +21941,10 @@ _ACEOF
 
 fi
 
+
+# If the C compiler supports the keyword inline, do nothing. Otherwise
+# define inline to __inline__ or __inline if it accepts one of those,
+# otherwise define inline to be empty.
 echo "$as_me:$LINENO: checking for inline" >&5
 echo $ECHO_N "checking for inline... $ECHO_C" >&6
 if test "${ac_cv_c_inline+set}" = set; then
@@ -21988,6 +22003,9 @@ _ACEOF
  ;;
 esac
 
+
+# If words are stored with the most significant byte first (like
+# Motorola and SPARC CPUs), define `WORDS_BIGENDIAN'.
 echo "$as_me:$LINENO: checking whether byte ordering is bigendian" >&5
 echo $ECHO_N "checking whether byte ordering is bigendian... $ECHO_C" >&6
 if test "${ac_cv_c_bigendian+set}" = set; then
@@ -22193,6 +22211,184 @@ presetting ac_cv_c_bigendian=no (or yes) will help" >&2;}
 esac
 
 
+# If the C compiler supports a working long double type with more range
+# or precision than the double type, define HAVE_LONG_DOUBLE.
+echo "$as_me:$LINENO: checking for working long double with more range or precision than double" >&5
+echo $ECHO_N "checking for working long double with more range or precision than double... $ECHO_C" >&6
+if test "${ac_cv_c_long_double+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <float.h>
+	  long double foo = 0.0;
+int
+main ()
+{
+static int test_array [1 - 2 * !(/* Using '|' rather than '||' catches a GCC 2.95.2 x86 bug.  */
+          (DBL_MAX < LDBL_MAX) | (LDBL_EPSILON < DBL_EPSILON)
+	  | (DBL_MAX_EXP < LDBL_MAX_EXP) | (DBL_MANT_DIG < LDBL_MANT_DIG))];
+test_array [0] = 0
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_c_long_double=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_c_long_double=no
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_c_long_double" >&5
+echo "${ECHO_T}$ac_cv_c_long_double" >&6
+if test $ac_cv_c_long_double = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_LONG_DOUBLE 1
+_ACEOF
+
+fi
+
+
+# If the C compiler supports the 'long long' type, define HAVE_LONG_LONG
+echo "$as_me:$LINENO: checking for long long" >&5
+echo $ECHO_N "checking for long long... $ECHO_C" >&6
+if test "${ac_cv_type_long_long+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+if ((long long *) 0)
+  return 0;
+if (sizeof (long long))
+  return 0;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_type_long_long=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_type_long_long=no
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_type_long_long" >&5
+echo "${ECHO_T}$ac_cv_type_long_long" >&6
+if test $ac_cv_type_long_long = yes; then
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_LONG_LONG 1
+_ACEOF
+
+
+fi
+
+
+# If the C compiler supports the 'unsigned long long' type, define
+# HAVE_UNSIGNED_LONG_LONG
+echo "$as_me:$LINENO: checking for unsigned long long" >&5
+echo $ECHO_N "checking for unsigned long long... $ECHO_C" >&6
+if test "${ac_cv_type_unsigned_long_long+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+if ((unsigned long long *) 0)
+  return 0;
+if (sizeof (unsigned long long))
+  return 0;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_type_unsigned_long_long=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_type_unsigned_long_long=no
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_type_unsigned_long_long" >&5
+echo "${ECHO_T}$ac_cv_type_unsigned_long_long" >&6
+if test $ac_cv_type_unsigned_long_long = yes; then
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_UNSIGNED_LONG_LONG 1
+_ACEOF
+
+
+fi
+
+
+# If the system does not provide a 'mode_t' type, use 'int' instead
 echo "$as_me:$LINENO: checking for mode_t" >&5
 echo $ECHO_N "checking for mode_t... $ECHO_C" >&6
 if test "${ac_cv_type_mode_t+set}" = set; then
@@ -22250,6 +22446,8 @@ _ACEOF
 
 fi
 
+
+# If the system does not provide a 'off_t' type, use 'long' instead
 echo "$as_me:$LINENO: checking for off_t" >&5
 echo $ECHO_N "checking for off_t... $ECHO_C" >&6
 if test "${ac_cv_type_off_t+set}" = set; then
@@ -22307,6 +22505,8 @@ _ACEOF
 
 fi
 
+
+# If the system does not provide a 'pid_t' type, use 'int' instead
 echo "$as_me:$LINENO: checking for pid_t" >&5
 echo $ECHO_N "checking for pid_t... $ECHO_C" >&6
 if test "${ac_cv_type_pid_t+set}" = set; then
@@ -22364,6 +22564,8 @@ _ACEOF
 
 fi
 
+
+# If the system does not provide a 'size_t', use 'unsigned int' instead
 echo "$as_me:$LINENO: checking for size_t" >&5
 echo $ECHO_N "checking for size_t... $ECHO_C" >&6
 if test "${ac_cv_type_size_t+set}" = set; then
@@ -22486,9 +22688,11 @@ echo "${ECHO_T}no" >&6
 fi
 fi
 
+########
 #
 # Check for functions
 #
+########
 
 
 for ac_header in stdlib.h unistd.h
@@ -22984,9 +23188,11 @@ fi
 done
 
 
+########
 #
 # C++ Support Tests (For Magick++)
 #
+########
 have_magick_plus_plus='no'
 if test "$with_magick_plus_plus" = 'yes'
 then

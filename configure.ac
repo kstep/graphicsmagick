@@ -499,9 +499,11 @@ AC_SUBST(LIBSTDCLDFLAGS)
 # Does gcc required -traditional?
 AC_PROG_GCC_TRADITIONAL
 
+########
 #
 # Set defines required to build DLLs and modules using MinGW
 #
+########
 # These options are set for multi-thread DLL module build
 #  libMagick:           _DLL _MAGICKMOD_ _MAGICKLIB_
 #  module:              _DLL 
@@ -534,9 +536,11 @@ fi
 AC_SUBST(MODULE_EXTRA_CPPFLAGS)
 AC_SUBST(LIBRARY_EXTRA_CPPFLAGS)
 
+########
 #
 # Check for large file support
 #
+########
 LIB_LF=''
 if test "$with_largefile" = 'yes'
 then
@@ -573,14 +577,46 @@ AC_HEADER_DIRENT
 # Check additional headers
 AC_CHECK_HEADERS(sys/times.h sys/types.h)
 
+########
+#
 # Checks for typedefs, structures, and compiler characteristics.
+#
+########
+
+# If the C compiler does not fully support the ANSI C qualifier const,
+# define const to be empty.
 AC_C_CONST
+
+# If the C compiler supports the keyword inline, do nothing. Otherwise
+# define inline to __inline__ or __inline if it accepts one of those,
+# otherwise define inline to be empty.
 AC_C_INLINE
+
+# If words are stored with the most significant byte first (like
+# Motorola and SPARC CPUs), define `WORDS_BIGENDIAN'.
 AC_C_BIGENDIAN
 
+# If the C compiler supports a working long double type with more range
+# or precision than the double type, define HAVE_LONG_DOUBLE.
+AC_C_LONG_DOUBLE
+
+# If the C compiler supports the 'long long' type, define HAVE_LONG_LONG
+AC_CHECK_TYPES([long long])
+
+# If the C compiler supports the 'unsigned long long' type, define
+# HAVE_UNSIGNED_LONG_LONG
+AC_CHECK_TYPES([unsigned long long])
+
+# If the system does not provide a 'mode_t' type, use 'int' instead
 AC_CHECK_TYPE(mode_t, int)
+
+# If the system does not provide a 'off_t' type, use 'long' instead
 AC_CHECK_TYPE(off_t, long)
+
+# If the system does not provide a 'pid_t' type, use 'int' instead
 AC_CHECK_TYPE(pid_t, int)
+
+# If the system does not provide a 'size_t', use 'unsigned int' instead
 AC_CHECK_TYPE(size_t, unsigned)
 
 # Test for C compiler __func__ support
@@ -605,15 +641,19 @@ else
 fi
 fi
 
+########
 #
 # Check for functions
 #
+########
 AC_FUNC_MMAP
 AC_CHECK_FUNCS(ftime getexecname poll select times strerror sysconf vsnprintf)
 
+########
 #
 # C++ Support Tests (For Magick++)
 #
+########
 have_magick_plus_plus='no'
 if test "$with_magick_plus_plus" = 'yes'
 then
