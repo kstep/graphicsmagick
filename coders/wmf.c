@@ -1084,7 +1084,11 @@ static void wmf_magick_draw_text (wmfAPI* API,
 /*  pointsize = ceil( WMF_FONT_HEIGHT(font) * ((double)TWIPS_PER_INCH/ddata->units_per_inch) * INCHES_PER_POINT */
 /*                     *(ddata->resolution_y/72) * (1/ddata->scale_y) ); */
 
-  pointsize = ceil( WMF_FONT_HEIGHT(font) * CENTIMETERS_PER_POINT * 1.4 *
+/*   pointsize = ceil( WMF_FONT_HEIGHT(font) * CENTIMETERS_PER_POINT * 1.4 * */
+/*                     (ddata->resolution_y/72) * (1/ddata->scale_y) ); */
+/*   pointsize = ceil( WMF_FONT_HEIGHT(font) * CENTIMETERS_PER_POINT * */
+/*                     (ddata->resolution_y/72) * (1/ddata->scale_y) ); */
+  pointsize = ceil( WMF_FONT_HEIGHT(font) * INCHES_PER_POINT * 1.9 *
                     (ddata->resolution_y/72) * (1/ddata->scale_y) );
   
 /*   printf("WMF_FONT_HEIGHT       = %i\n", (int)WMF_FONT_HEIGHT(font)); */
@@ -1371,20 +1375,28 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
 
 static void magick_pen (wmfAPI* API, wmfDC* dc)
 {
-  wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData (API);
 
-  wmfPen* pen = 0;
+  wmfPen
+    *pen = 0;
 
-  wmfRGB* pen_color = 0;
+  wmfRGB
+    *pen_color = 0;
 
-  double pen_width;
+  wmfStream
+    *out = ddata->out;
 
-  unsigned int pen_style;
-  unsigned int pen_endcap;
-  unsigned int pen_join;
-  unsigned int pen_type;
+  double
+    pen_width,
+    pixel_width;
 
-  wmfStream* out = ddata->out;
+  unsigned int
+    pen_endcap,
+    pen_join,
+    pen_style,
+    pen_type;
+
 
   WMF_DEBUG (API,"~~~~~~~~magick_pen");
 
@@ -1396,6 +1408,14 @@ static void magick_pen (wmfAPI* API, wmfDC* dc)
 
   pen_width = (WMF_PEN_WIDTH(pen) +
                WMF_PEN_HEIGHT(pen))/2;
+
+  /* Pixel width is inverse of pixel scale */
+  pixel_width = (((double)1/(ddata->scale_x)) +
+                 ((double)1/(ddata->scale_y)))/2;
+
+  /* Don't allow pen_width to be less than pixel_width in order to
+     avoid spider-web lines*/
+  pen_width = max(pen_width,pixel_width);
 
   pen_style  = (unsigned int) WMF_PEN_STYLE (pen);
   pen_endcap = (unsigned int) WMF_PEN_ENDCAP (pen);
@@ -1446,24 +1466,24 @@ static void magick_pen (wmfAPI* API, wmfDC* dc)
     {
     case PS_DASH: /* DASH_LINE */
       wmf_stream_printf (API,out,"stroke-dasharray %.10g,%.10g\n",
-		         pen_width*10,pen_width*10);
+		         pixel_width*18,pixel_width*7);
       break;
 
     case PS_ALTERNATE:
     case PS_DOT: /* DOTTED_LINE */
       wmf_stream_printf (API,out,"stroke-dasharray %.10g,%.10g\n",
-		         pen_width,pen_width*2);
+		         pixel_width*3,pixel_width*3);
       break;
 
     case PS_DASHDOT: /* DASH_DOT_LINE */
       wmf_stream_printf (API,out,"stroke-dasharray %.10g,%.10g,%.10g,%.10g\n",
-		         pen_width*10,pen_width*2,pen_width,pen_width*2);
+		         pixel_width*9,pixel_width*6,pixel_width*3,pixel_width*6);
       break;
 
     case PS_DASHDOTDOT: /* DASH_2_DOTS_LINE */
       wmf_stream_printf (API,out,"stroke-dasharray %.10g,%.10g,%.10g,%.10g,%.10g,%.10g\n",
-		         pen_width*10,pen_width*2,pen_width,pen_width*2,
-                         pen_width,pen_width*2);
+		         pixel_width*9,pixel_width*3,pixel_width*3,pixel_width*3,
+                         pixel_width*3,pixel_width*3);
       break;
 
     case PS_INSIDEFRAME: /* There is nothing to do in this case... */
