@@ -95,12 +95,6 @@ int main(int argc,char **argv)
 #endif
 
   (void) SetClientName(argv[0]);
-  if (argc < 2)
-    {
-      PrintUsage();
-      Exit(1);
-    }
-
   {
     /*
       Support traditional alternate names for GraphicsMagick subcommands.
@@ -136,6 +130,12 @@ int main(int argc,char **argv)
       }
     else
       {
+        if (argc < 2)
+          {
+            PrintUsage();
+            Exit(1);
+          }
+
         /*
           Skip to subcommand name.
         */
