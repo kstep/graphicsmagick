@@ -718,35 +718,28 @@ MagickExport PixelPacket InterpolateColor(const Image *image,
     beta;
 
   PixelPacket
-    color,
-    p,
-    q,
-    r,
-    s;
+    color;
 
-  register double
-    x,
-    y;
+  register const PixelPacket
+    *p,
+    *q;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  x=x_offset;
-  y=y_offset;
-  p=AcquireOnePixel(image,(long) x,(long) y,exception);
-  q=AcquireOnePixel(image,(long) (x+1.0),(long) y,exception);
-  r=AcquireOnePixel(image,(long) x,(long) (y+1.0),exception);
-  s=AcquireOnePixel(image,(long) (x+1.0),(long) (y+1.0),exception);
-  x-=floor(x);
-  y-=floor(y);
-  alpha=1.0-x;
-  beta=1.0-y;
-  color.red=(Quantum) (beta*(alpha*p.red+x*q.red)+y*(alpha*r.red+x*s.red)+0.5);
-  color.green=(Quantum)
-    (beta*(alpha*p.green+x*q.green)+y*(alpha*r.green+x*s.green)+0.5);
-  color.blue=(Quantum)
-    (beta*(alpha*p.blue+x*q.blue)+y*(alpha*r.blue+x*s.blue)+0.5);
-  color.opacity=(Quantum)
-    (beta*(alpha*p.opacity+x*q.opacity)+y*(alpha*r.opacity+x*s.opacity)+0.5);
+  p=AcquireImagePixels(image,(long) x_offset,(long) y_offset,2,1,exception);
+  q=AcquireImagePixels(image,(long) x_offset,(long) (y_offset+1),2,1,exception);
+  if ((p == (const PixelPacket *) NULL) || (q == (const PixelPacket *) NULL))
+    return(AcquireOnePixel(image,(long) x_offset,(long) y_offset,exception));
+  alpha=x_offset-floor(x_offset);
+  beta=y_offset-floor(y_offset);
+  color.red=(Quantum) ((1.0-beta)*((1.0-alpha)*p[0].red+
+    alpha*p[1].red)+beta*((1.0-alpha)*q[0].red+alpha*q[1].red)+0.5);
+  color.green=(Quantum) ((1.0-beta)*((1.0-alpha)*p[0].green+
+    alpha*p[1].green)+beta*((1.0-alpha)*q[0].green+alpha*q[1].green)+0.5);
+  color.blue=(Quantum) ((1.0-beta)*((1.0-alpha)*p[0].blue+
+    alpha*p[1].blue)+beta*((1.0-alpha)*q[0].blue+alpha*q[1].blue)+0.5);
+  color.opacity=(Quantum) ((1.0-beta)*((1.0-alpha)*p[0].opacity+
+    alpha*p[1].opacity)+beta*((1.0-alpha)*q[0].opacity+alpha*q[1].opacity)+0.5);
   return(color);
 }
 
