@@ -2613,8 +2613,37 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   /*
     Call appropriate image reader based on image type.
   */
-  image=(Image *) NULL;
   magick_info=GetMagickInfo(clone_info->magick,exception);
+  if ((magick_info != (const MagickInfo *) NULL) &&
+      magick_info->seekable_stream)
+    {
+      unsigned int
+        status;
+
+      image=AllocateImage(clone_info);
+      if (image == (Image *) NULL)
+        return(False);
+      (void) strncpy(image->filename,clone_info->filename,MaxTextExtent-1);
+      status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+      if (status == False)
+        {
+          DestroyImage(image);
+          return(False);
+        }
+      if ((GetBlobStreamType(image) != FileStream) &&
+          (GetBlobStreamType(image) != BlobStream))
+        {
+          /*
+            Coder requires a random access stream.
+          */
+          TemporaryFilename(clone_info->filename);
+          (void) ImageToFile(image,clone_info->filename,exception);
+          clone_info->temporary=True;
+        }
+      CloseBlob(image);
+      DestroyImage(image);
+    }
+  image=(Image *) NULL;
   if ((magick_info != (const MagickInfo *) NULL) &&
       (magick_info->decoder != NULL))
     {
