@@ -6451,15 +6451,22 @@ QueryConfiguration(ref,...)
         {
           if (strEQcase(attribute,"color"))
             {
+              ColorInfo
+                *color_info;
+
               register ColorInfo
                 *p;
 
-              p=GetColorInfo(value,&exception);
-              if (p == (ColorInfo *) NULL)
+              color_info=GetColorInfo(value,&exception);
+              if (color_info == (ColorInfo *) NULL)
                 break;
               if (LocaleCompare(value,"*") == 0)
                 {
-                  for ( ; p != (ColorInfo *) NULL; p=p->next)
+                  i=0;
+                  for (p=color_info; p != (ColorInfo *) NULL; p=p->next)
+                    i++;
+                  EXTEND(sp,i);
+                  for (p=color_info; p != (ColorInfo *) NULL; p=p->next)
                   {
                     *message='\0';
                     if (p->name != (char *) NULL)
@@ -6491,15 +6498,22 @@ QueryConfiguration(ref,...)
         {
           if (strEQcase(attribute,"font"))
             {
+              FontInfo
+                *font_info;
+
               register FontInfo
                 *p;
 
-              p=GetFontInfo(value,&exception);
-              if (p == (FontInfo *) NULL)
+              font_info=GetFontInfo(value,&exception);
+              if (font_info == (FontInfo *) NULL)
                 break;
               if (LocaleCompare(value,"*") == 0)
                 {
-                  for ( ; p != (FontInfo *) NULL; p=p->next)
+                  i=0;
+                  for (p=font_info; p != (FontInfo *) NULL; p=p->next)
+                    i++;
+                  EXTEND(sp,i);
+                  for (p=font_info; p != (FontInfo *) NULL; p=p->next)
                   {
                     *message='\0';
                     if (p->name != (char *) NULL)
@@ -6544,15 +6558,22 @@ QueryConfiguration(ref,...)
             }
           if (strEQcase(attribute,"format"))
             {
+              MagickInfo
+                *magick_info;
+
               register MagickInfo
                 *p;
 
-              p=GetMagickInfo(value,&exception);
-              if (p == (MagickInfo *) NULL)
+              magick_info=GetMagickInfo(value,&exception);
+              if (magick_info == (MagickInfo *) NULL)
                 break;
               if (LocaleCompare(value,"*") == 0)
                 {
-                  for ( ; p != (MagickInfo *) NULL; p=p->next)
+                  i=0;
+                  for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
+                    i++;
+                  EXTEND(sp,i);
+                  for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
                   {
                     *message='\0';
                     if (p->tag != (char *) NULL)
@@ -6581,17 +6602,25 @@ QueryConfiguration(ref,...)
         {
           if (strEQcase(attribute,"magic"))
             {
+              MagicInfo
+                *magic_info;
+
               register MagicInfo
                 *p;
 
-              p=GetMagicInfo((unsigned char *) value,Extent(value),&exception);
+              magic_info=GetMagicInfo((unsigned char *) value,Extent(value),
+                &exception);
               if (LocaleCompare(value,"*") == 0)
-                p=GetMagicInfo((unsigned char *) NULL,0,&exception);
-              if (p == (MagicInfo *) NULL)
+                magic_info=GetMagicInfo((unsigned char *) NULL,0,&exception);
+              if (magic_info == (MagicInfo *) NULL)
                 break;
               if (LocaleCompare(value,"*") == 0)
                 {
-                  for ( ; p != (MagicInfo *) NULL; p=p->next)
+                  i=0;
+                  for (p=magic_info; p != (MagicInfo *) NULL; p=p->next)
+                    i++;
+                  EXTEND(sp,i);
+                  for (p=magic_info; p != (MagicInfo *) NULL; p=p->next)
                   {
                     *message='\0';
                     if (p->name != (char *) NULL)
@@ -6610,15 +6639,22 @@ QueryConfiguration(ref,...)
             }
           if (strEQcase(attribute,"module"))
             {
+              ModuleAlias
+                *module_alias;
+
               register ModuleAlias
                 *p;
 
-              p=GetModuleAlias(value,&exception);
-              if (p == (ModuleAlias *) NULL)
+              module_alias=GetModuleAlias(value,&exception);
+              if (module_alias == (ModuleAlias *) NULL)
                 break;
               if (LocaleCompare(value,"*") == 0)
                 {
-                  for ( ; p != (ModuleAlias *) NULL; p=p->next)
+                  i=0;
+                  for (p=module_alias; p != (ModuleAlias *) NULL; p=p->next)
+                    i++;
+                  EXTEND(sp,i);
+                  for (p=module_alias; p != (ModuleAlias *) NULL; p=p->next)
                   {
                     *message='\0';
                     if (p->name != (char *) NULL)
