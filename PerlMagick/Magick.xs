@@ -119,6 +119,9 @@ extern "C" {
 #endif
 #define NumberOf(array)  (sizeof(array)/sizeof(*array))
 #define PackageName   "Image::Magick"
+#ifndef PerlIO_findFILE
+#define PerlIO_findFILE(f)  (FILE *) (f)
+#endif
 #define StringReference  (char **) 0
 #ifndef sv_undef
 #define sv_undef  PL_sv_undef
@@ -1127,11 +1130,8 @@ static void MagickWarningHandler(const ExceptionType severity,
 static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
   char *attribute,SV *sval)
 {
-  double
-    blue,
-    green,
-    opacity,
-    red;
+  DoublePixelPacket
+    pixel;
 
   ExceptionInfo
     exception;
@@ -1264,17 +1264,17 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             else
               {
                 color=image->colormap+i;
-                red=color->red;
-                green=color->green;
-                blue=color->blue;
-                (void) sscanf(SvPV(sval,na),"%lf%*[,/]%lf%*[,/]%lf",&red,
-                  &green,&blue);
-                color->red=(Quantum)
-                  ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-                color->green=(Quantum)
-                  ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-                color->blue=(Quantum)
-                  ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+                pixel.red=color->red;
+                pixel.green=color->green;
+                pixel.blue=color->blue;
+                (void) sscanf(SvPV(sval,na),"%lf%*[,/]%lf%*[,/]%lf",&pixel.red,
+                  &pixel.green,&pixel.blue);
+                color->red=(Quantum) ((pixel.red < 0) ? 0 :
+                  (pixel.red > MaxRGB) ? MaxRGB : pixel.red+0.5);
+                color->green=(Quantum) ((pixel.green < 0) ? 0 :
+                  (pixel.green > MaxRGB) ? MaxRGB : pixel.green+0.5);
+                color->blue=(Quantum) ((pixel.blue < 0) ? 0 :
+                  (pixel.blue > MaxRGB) ? MaxRGB : pixel.blue+0.5);
               }
           }
           return;
@@ -1442,7 +1442,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       if (LocaleCompare(attribute,"file") == 0)
         {
           if (info)
-            info->image_info->file=(FILE *) IoIFP(sv_2io(sval));
+            info->image_info->file=PerlIO_findFILE(IoIFP(sv_2io(sval)));
           return;
         }
       if (LocaleCompare(attribute,"fill") == 0)
@@ -1520,8 +1520,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           IndexPacket
             *indexes;
 
-          PixelPacket
-            *pixel;
+          register PixelPacket
+            *p;
 
           for ( ; image; image=image->next)
           {
@@ -1530,9 +1530,9 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             x=0;
             y=0;
             (void) sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
-            pixel=GetImagePixels(image,(long) (x % image->columns),
+            p=GetImagePixels(image,(long) (x % image->columns),
               (long) (y % image->rows),1,1);
-            if (pixel == (PixelPacket *) NULL)
+            if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
             (void) sscanf(SvPV(sval,na),"%ld",&index);
@@ -1671,38 +1671,38 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleNCompare(attribute,"pixel",5) == 0)
         {
-          PixelPacket
-            *pixel;
+          register PixelPacket
+            *p;
 
           for ( ; image; image=image->next)
           {
             x=0;
             y=0;
             (void) sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
-            pixel=GetImagePixels(image,(long) (x % image->columns),
+            p=GetImagePixels(image,(long) (x % image->columns),
               (long) (y % image->rows),1,1);
-            if (pixel == (PixelPacket *) NULL)
+            if (p == (PixelPacket *) NULL)
               break;
             SetImageType(image,TrueColorType);
             if (strchr(SvPV(sval,na),',') == 0)
-              QueryColorDatabase(SvPV(sval,na),pixel,
+              QueryColorDatabase(SvPV(sval,na),p,
                 image ? &image->exception : &exception);
             else
               {
-                red=pixel->red;
-                green=pixel->green;
-                blue=pixel->blue;
-                opacity=pixel->opacity;
+                pixel.red=p->red;
+                pixel.green=p->green;
+                pixel.blue=p->blue;
+                pixel.opacity=p->opacity;
                 (void) sscanf(SvPV(sval,na),"%lf%*[,/]%lf%*[,/]%lf%*[,/]%lf",
-                  &red,&green,&blue,&opacity);
-                pixel->red=(Quantum)
-                  ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-                pixel->green=(Quantum)
-                  ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-                pixel->blue=(Quantum)
-                  ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-                pixel->opacity=(Quantum) ((opacity < 0) ? 0 :
-                  (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+                  &pixel.red,&pixel.green,&pixel.blue,&pixel.opacity);
+                p->red=(Quantum) ((pixel.red < 0) ? 0 :
+                  (pixel.red > MaxRGB) ? MaxRGB : pixel.red+0.5);
+                p->green=(Quantum) ((pixel.green < 0) ? 0 :
+                  (pixel.green > MaxRGB) ? MaxRGB : pixel.green+0.5);
+                p->blue=(Quantum) ((pixel.blue < 0) ? 0 :
+                  (pixel.blue > MaxRGB) ? MaxRGB : pixel.blue+0.5);
+                p->opacity=(Quantum) ((pixel.opacity < 0) ? 0 :
+                  (pixel.opacity > MaxRGB) ? MaxRGB : pixel.opacity+0.5);
               }
             (void) SyncImagePixels(image);
           }
@@ -6786,7 +6786,8 @@ Ping(ref,...)
           continue;
         if ((items >= 3) && strEQcase(list[n],"file"))
           {
-            package_info->image_info->file=(FILE *) IoIFP(sv_2io(ST(i+2)));
+            package_info->image_info->file=
+              PerlIO_findFILE(IoIFP(sv_2io(ST(i+2))));
             continue;
           }
         n++;
@@ -7563,7 +7564,8 @@ Read(ref,...)
           continue;
         if ((items >= 3) && strEQcase(list[n],"file"))
           {
-            package_info->image_info->file=(FILE *) IoIFP(sv_2io(ST(i+2)));
+            package_info->image_info->file=
+              PerlIO_findFILE(IoIFP(sv_2io(ST(i+2))));
             continue;
           }
         n++;
