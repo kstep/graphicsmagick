@@ -3370,6 +3370,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         (void) strncpy(path,p,q-p+1);
         path[q-p]='\0';
+        (void) WriteBlobString(image,"  <path d=\"");
+        (void) WriteBlobString(image,path);
+        (void) WriteBlobString(image,"\"/>\n");
         LiberateMemory((void **) &path);
         break;
       }
@@ -3446,7 +3449,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             primitive_info[j].text[q-p]='\0';
           }
         (void) FormatString(buffer,"  <text x=\"%g\" y=\"%g\">",
-          primitive_info[j+1].point.x,primitive_info[j+1].point.y);
+          primitive_info[j].point.x,primitive_info[j].point.y);
         (void) WriteBlobString(image,buffer);
         for (p=primitive_info[j].text; *p != '\0'; p++)
           if (*p != '&')
