@@ -1,3 +1,6 @@
+2002-03-04  Cristy  <cristy@mystic.es.dupont.com>
+  * Removed bug introduced into Bob's Base64Encode() method.
+
 2002-03-02  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
   * Added Base64Decode() and Base64Encode() to utility.c and updated
     ReadInlineImage() in magick/constitute.c to use Base64Decode().

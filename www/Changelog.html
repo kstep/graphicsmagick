@@ -23,6 +23,17 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-03-04  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * Removed bug introduced into Bob's Base64Encode() method.
+
+2002-03-02  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Added Base64Decode() and Base64Encode() to utility.c and updated
+    ReadInlineImage() in magick/constitute.c to use Base64Decode().
+
+2002-03-01  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * GetTypeInfoByFamily() null pointer fault (reported by Bob Friesenhahn).
+  * Added module version number (patch by Glenn Randers-Pehrson).
+
 2002-03-01  Glenn Randers-Pehrson  &lt;randeg@alum.rpi.edu&gt;
   * image-&gt;matte was not being set when reading GRAY-ALPHA PNG files.
 
