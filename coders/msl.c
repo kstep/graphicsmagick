@@ -3238,7 +3238,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         msl_info->image[n]=newImage;
         break;
         } else
-          ThrowException(msl_info->exception,OptionError,MissingFilename,keyword);
+          ThrowException(msl_info->exception,OptionError,MissingAnImageFilename,keyword);
       }
       else if (LocaleCompare((char *) name,"stereo") == 0)
       {
@@ -3302,7 +3302,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         msl_info->image[n]=newImage;
         break;
         } else
-          ThrowException(msl_info->exception,OptionError,MissingFilename,keyword);
+          ThrowException(msl_info->exception,OptionError,MissingAnImageFilename,keyword);
       }
       else if (LocaleCompare((char *) name,"swirl") == 0)
       {
@@ -3443,7 +3443,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         TextureImage(msl_info->image[n], textureImage);
         break;
         } else
-          ThrowException(msl_info->exception,OptionError,MissingFilename,keyword);
+          ThrowException(msl_info->exception,OptionError,MissingAnImageFilename,keyword);
       }
       else if (LocaleCompare((char *) name,"threshold") == 0)
       {

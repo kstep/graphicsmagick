@@ -370,7 +370,7 @@ zoom_SOURCES = zoom.cpp
 
 EXTRA_DIST = model.miff smile.miff smile_anim.miff tile.miff
 
-CLEANFILES = *_out.*
+CLEANFILES = *_out.* ir.out # SunWS_cache
 
 ZOOM_FILTERS = bessel blackman box catrom cubic gaussian hamming hanning hermite \
  lanczos mitchell point quadratic sample scale sinc triangle

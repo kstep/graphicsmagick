@@ -42,7 +42,7 @@ readWriteImages_SOURCES = readWriteImages.cpp
 EXTRA_DIST = \
 	test_image.miff test_image_anim.miff
 
-CLEANFILES = colorHistogram.txt testmagick_anim_out.miff
+CLEANFILES = colorHistogram.txt testmagick_anim_out.miff ir.out # SunWS_cache
 
 if WIN32_NATIVE_BUILD
 SRCDIR='$(shell @WinPathScript@ $(srcdir)/)'

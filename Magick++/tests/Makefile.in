@@ -392,7 +392,7 @@ EXTRA_DIST = \
 	test_image.miff test_image_anim.miff
 
 
-CLEANFILES = colorHistogram.txt testmagick_anim_out.miff
+CLEANFILES = colorHistogram.txt testmagick_anim_out.miff ir.out # SunWS_cache
 
 @WIN32_NATIVE_BUILD_TRUE@SRCDIR = '$(shell @WinPathScript@ $(srcdir)/)'
 @WIN32_NATIVE_BUILD_FALSE@SRCDIR = '$(srcdir)/'

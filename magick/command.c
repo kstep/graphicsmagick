@@ -342,7 +342,7 @@ Display
         */
         i++;
         if (i == argc)
-          MagickFatalError(OptionFatalError,MissingServerName,option);
+          MagickFatalError(OptionFatalError,MissingArgument,option);
         server_name=argv[i];
         break;
       }
@@ -488,7 +488,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingPassword,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->authenticate,argv[i]);
               }
             break;
@@ -509,7 +509,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingColor,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.background_color=argv[i];
                 (void) QueryColorDatabase(argv[i],&image_info->background_color,
                   exception);
@@ -522,7 +522,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingColor,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.border_color=argv[i];
                 (void) QueryColorDatabase(argv[i],&image_info->border_color,
                   exception);
@@ -536,7 +536,7 @@ Display
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingWidth,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.border_width=atoi(argv[i]);
               }
             break;
@@ -552,7 +552,7 @@ Display
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingThreshold,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                 SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
@@ -565,7 +565,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingType,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
                 resource_info.colormap=UndefinedColormap;
                 if (LocaleCompare("private",option) == 0)
@@ -585,7 +585,7 @@ Display
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingColors,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 quantize_info->number_colors=atol(argv[i]);
               }
             break;
@@ -597,7 +597,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingType,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
                 quantize_info->colorspace=UndefinedColorspace;
                 if (LocaleCompare("cmyk",option) == 0)
@@ -644,7 +644,7 @@ Display
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -660,7 +660,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingEventMask,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 (void) SetLogEventMask(argv[i]);
               }
@@ -672,7 +672,7 @@ Display
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingSeconds,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -683,7 +683,7 @@ Display
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->density,argv[i]);
               }
             break;
@@ -695,7 +695,7 @@ Display
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingImageDepth,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 image_info->depth=atol(argv[i]);
               }
             break;
@@ -707,7 +707,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingServerName,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->server_name,argv[i]);
               }
             break;
@@ -729,7 +729,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingFontName,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->font,argv[i]);
               }
             if ((image_info->font == (char *) NULL) ||
@@ -743,7 +743,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingForeground,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 resource_info.foreground_color=argv[i];
               }
@@ -758,7 +758,7 @@ Display
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              MagickFatalError(OptionFatalError,MissingValue,option);
+              MagickFatalError(OptionFatalError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("geometry",option+1) == 0)
@@ -768,7 +768,7 @@ Display
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.image_geometry=argv[i];
               }
             break;
@@ -795,7 +795,7 @@ Display
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.icon_geometry=argv[i];
               }
             break;
@@ -811,7 +811,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingType,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
                 image_info->interlace=UndefinedInterlace;
                 if (LocaleCompare("None",option) == 0)
@@ -842,12 +842,12 @@ Display
 
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingResourceType,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 type=argv[i];
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingResourceLimit,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
                   SetMagickResourceLimit(DiskResource,atol(argv[i]));
@@ -868,7 +868,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingLogFormat,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) SetLogFormat(argv[i]);
               }
             break;
@@ -886,7 +886,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingMapType,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.map_type=argv[i];
               }
             break;
@@ -899,7 +899,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingColor,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.matte_color=argv[i];
                 (void) QueryColorDatabase(argv[i],&image_info->matte_color,
                   exception);
@@ -929,7 +929,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingName,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.name=argv[i];
               }
             break;
@@ -948,7 +948,7 @@ Display
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingSeconds,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             resource_info.pause=atoi(argv[i]);
             break;
@@ -961,7 +961,7 @@ Display
           {
             i++;
             if (i == argc)
-              MagickFatalError(OptionFatalError,MissingCommand,option);
+              MagickFatalError(OptionFatalError,MissingArgument,option);
             status=XRemoteCommand(display,resource_info.window_id,argv[i]);
             Exit(!status);
           }
@@ -969,7 +969,7 @@ Display
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              MagickFatalError(OptionFatalError,MissingDegrees,option);
+              MagickFatalError(OptionFatalError,MissingArgument,option);
             break;
           }
         MagickFatalError(OptionFatalError,UnrecognizedOption,option);
@@ -984,7 +984,7 @@ Display
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
             break;
@@ -997,7 +997,7 @@ Display
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingSceneNumber,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 first_scene=atol(argv[i]);
                 last_scene=first_scene;
@@ -1017,7 +1017,7 @@ Display
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->size,argv[i]);
               }
             break;
@@ -1034,7 +1034,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingFontName,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.text_font=argv[i];
               }
             break;
@@ -1046,7 +1046,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingTitle,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.title=argv[i];
               }
             break;
@@ -1058,7 +1058,7 @@ Display
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingDepth,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 quantize_info->tree_depth=atoi(argv[i]);
               }
             break;
@@ -1086,7 +1086,7 @@ Display
 
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingVirtualPixelMethod,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 option=argv[i];
                 virtual_pixel_method=UndefinedVirtualPixelMethod;
@@ -1111,7 +1111,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingVisualClass,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 resource_info.visual_type=argv[i];
               }
@@ -1129,7 +1129,7 @@ Display
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingIDNameOrRoot,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 resource_info.window_id=argv[i];
               }
@@ -1517,7 +1517,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowCompositeException(OptionError,MissingAffineMatrix,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -1529,7 +1529,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingPassword,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->authenticate,argv[i]);
               }
             break;
@@ -1544,7 +1544,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingBackgroundColor,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
                 (void) QueryColorDatabase(argv[i],&image_info->background_color,
                   exception);
@@ -1557,7 +1557,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowCompositeException(OptionError,MissingPoint,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -1571,7 +1571,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowCompositeException(OptionError,MissingThreshold,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
                 SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                 SetMagickResourceLimit(MapResource,2*atol(argv[i]));
@@ -1584,7 +1584,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowCompositeException(OptionError,MissingColors,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -1595,7 +1595,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingType,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->colorspace=UndefinedColorspace;
                 if (LocaleCompare("cmyk",option) == 0)
@@ -1638,7 +1638,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingComment,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -1649,7 +1649,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingType,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 option=argv[i];
                 option_info.compose=UndefinedCompositeOp;
                 if (LocaleCompare("Over",option) == 0)
@@ -1701,7 +1701,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingType,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->compression=UndefinedCompression;
                 if (LocaleCompare("None",option) == 0)
@@ -1739,7 +1739,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingEventMask,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
                 (void) SetLogEventMask(argv[i]);
               }
@@ -1752,7 +1752,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowCompositeException(OptionError,MissingGeometry,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->density,argv[i]);
               }
             break;
@@ -1764,7 +1764,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowCompositeException(OptionError,MissingImageDepth,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
                 image_info->depth=atol(argv[i]);
               }
@@ -1777,7 +1777,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowCompositeException(OptionError,MissingGeometry,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 (void) CloneString(&option_info.displace_geometry,argv[i]);
                 option_info.compose=DisplaceCompositeOp;
               }
@@ -1790,7 +1790,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingServerName,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
                 (void) CloneString(&image_info->server_name,argv[i]);
               }
@@ -1802,7 +1802,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingDisposeMethod,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
                 option=argv[i];
                 if ((LocaleCompare("0",option) != 0) &&
@@ -1825,7 +1825,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowCompositeException(OptionError,MissingDissolveValue,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
                 option_info.dissolve=atof(argv[i]);
                 option_info.compose=DissolveCompositeOp;
@@ -1847,7 +1847,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingEnodingType,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -1859,7 +1859,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingType,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->endian=UndefinedEndian;
                 if (LocaleCompare("LSB",option) == 0)
@@ -1885,7 +1885,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingType,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 option=argv[i];
                 filter=UndefinedFilter;
                 if (LocaleCompare("Point",option) == 0)
@@ -1931,7 +1931,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingFontName,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->font,argv[i]);
               }
             break;
@@ -1942,7 +1942,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingFormatSpecifier,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
                 format=argv[i];
               }
@@ -1959,7 +1959,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowCompositeException(OptionError,MissingGeometry,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 (void) CloneString(&option_info.geometry,argv[i]);
               }
             break;
@@ -1971,7 +1971,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingType,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 option=argv[i];
                 if (LocaleCompare("Forget",option) == 0)
                   option_info.gravity=ForgetGravity;
@@ -2005,7 +2005,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowCompositeException(OptionError,MissingPoint,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -2030,7 +2030,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingType,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->interlace=UndefinedInterlace;
                 if (LocaleCompare("None",option) == 0)
@@ -2057,7 +2057,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingImageLabel,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -2071,12 +2071,12 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingResourceType,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
                 type=argv[i];
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowCompositeException(OptionError,MissingResourceLimit,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
                   SetMagickResourceLimit(DiskResource,atol(argv[i]));
@@ -2098,7 +2098,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingLogFormat,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
                 (void) SetLogFormat(argv[i]);
               }
@@ -2146,7 +2146,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingPageGeometry,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
                 image_info->page=GetPageGeometry(argv[i]);
               }
@@ -2167,7 +2167,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           {
             i++;
             if (i == argc)
-              ThrowCompositeException(OptionError,MissingImageProfile,option);
+              ThrowCompositeException(OptionError,MissingArgument,option);
             break;
           }
         ThrowCompositeException(OptionError,UnrecognizedOption,option)
@@ -2181,7 +2181,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowCompositeException(OptionError,MissingCompressionQuality,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 image_info->quality=atol(argv[i]);
               }
             break;
@@ -2196,7 +2196,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowCompositeException(OptionError,MissingPoint,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -2208,7 +2208,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowCompositeException(OptionError,MissingGeometry,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -2216,7 +2216,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowCompositeException(OptionError,MissingImageRotation,
+              ThrowCompositeException(OptionError,MissingArgument,
                 option);
             break;
           }
@@ -2231,7 +2231,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowCompositeException(OptionError,MissingGeometry,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
             break;
@@ -2242,7 +2242,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowCompositeException(OptionError,MissingImageScene,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -2251,7 +2251,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowCompositeException(OptionError,MissingGeometry,option);
+              ThrowCompositeException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("size",option+1) == 0)
@@ -2261,7 +2261,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowCompositeException(OptionError,MissingGeometry,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->size,argv[i]);
               }
             break;
@@ -2273,7 +2273,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowCompositeException(OptionError,MissingOffset,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 option_info.stegano=atol(argv[i])+1;
               }
             break;
@@ -2300,7 +2300,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowCompositeException(OptionError,MissingTreeDepth,
+                  ThrowCompositeException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -2312,7 +2312,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingType,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 option=argv[i];
                 if (LocaleCompare("Bilevel",option) == 0)
                   image_info->type=BilevelType;
@@ -2351,7 +2351,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingType,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->units=UndefinedResolution;
                 if (LocaleCompare("PixelsPerInch",option) == 0)
@@ -2368,7 +2368,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowCompositeException(OptionError,MissingGeometry,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 (void) CloneString(&option_info.unsharp_geometry,argv[i]);
                 option_info.compose=ThresholdCompositeOp;
               }
@@ -2394,7 +2394,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,MissingVirtualPixelMethod,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 option=argv[i];
                 virtual_pixel_method=UndefinedVirtualPixelMethod;
                 if (LocaleCompare("Constant",option) == 0)
@@ -2421,7 +2421,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowCompositeException(OptionError,MissingGeometry,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
                 (void) CloneString(&option_info.watermark_geometry,argv[i]);
                 option_info.compose=ModulateCompositeOp;
               }
@@ -2433,7 +2433,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowCompositeException(OptionError,MissingPoint,option);
+                  ThrowCompositeException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -2441,7 +2441,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           {
             i++;
             if (i == argc)
-              ThrowCompositeException(OptionError,MissingFilename,option);
+              ThrowCompositeException(OptionError,MissingArgument,option);
             break;
           }
         ThrowCompositeException(OptionError,UnrecognizedOption,option)
@@ -2791,7 +2791,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingMatrix,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -2809,7 +2809,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingPassword,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->authenticate,argv[i]);
               }
             break;
@@ -2826,7 +2826,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingBackgroundColor,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
                 (void) QueryColorDatabase(argv[i],&image_info->background_color,
                   exception);
@@ -2839,7 +2839,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingPoint,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -2847,7 +2847,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowConvertException(OptionError,MissingGeometry,option);
+              ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("border",option+1) == 0)
@@ -2856,7 +2856,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -2866,7 +2866,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingBorderColor,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
                 (void) QueryColorDatabase(argv[i],&image_info->border_color,
                   exception);
@@ -2879,7 +2879,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingColors,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -2893,7 +2893,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingThreshold,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                 SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
@@ -2908,7 +2908,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingType,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
                 channel=UndefinedChannel;
                 if (LocaleCompare("Red",option) == 0)
@@ -2941,7 +2941,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingPaintRadius,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -2952,7 +2952,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -2962,7 +2962,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
          {
             i++;
             if (i == argc)
-              ThrowConvertException(OptionError,MissingClippingPathName,
+              ThrowConvertException(OptionError,MissingArgument,
                 option);
             break;
           }
@@ -2974,7 +2974,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingImageGamma,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -2984,7 +2984,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingColors,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -2994,7 +2994,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingType,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->colorspace=UndefinedColorspace;
                 if (LocaleCompare("cmyk",option) == 0)
@@ -3036,7 +3036,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingComment,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -3047,7 +3047,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingType,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->compression=UndefinedCompression;
                 if (LocaleCompare("None",option) == 0)
@@ -3082,7 +3082,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
              {
                i++;
                if ((i == (argc-1)) || !IsGeometry(argv[i]))
-                 ThrowConvertException(OptionError,MissingCoefficients,
+                 ThrowConvertException(OptionError,MissingArgument,
                    option);
              }
            break;
@@ -3093,7 +3093,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -3103,7 +3103,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingAmount,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -3120,7 +3120,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingEventMask,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 (void) SetLogEventMask(argv[i]);
               }
             break;
@@ -3131,7 +3131,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingDelay,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -3142,7 +3142,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->density,argv[i]);
               }
             break;
@@ -3154,7 +3154,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingImageDepth,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 image_info->depth=atol(argv[i]);
               }
             break;
@@ -3168,7 +3168,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingServerName,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->server_name,argv[i]);
               }
             break;
@@ -3179,7 +3179,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingDisposeMethod,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
                 option=argv[i];
                 if ((LocaleCompare("0",option) != 0) &&
@@ -3206,7 +3206,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingDrawingPrimitive,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -3221,7 +3221,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingPaintRadius,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -3232,7 +3232,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingPaintRadius,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -3243,7 +3243,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingEnodingType,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -3255,7 +3255,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingType,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->endian=UndefinedEndian;
                 if (LocaleCompare("LSB",option) == 0)
@@ -3283,7 +3283,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingFillColor,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 (void) QueryColorDatabase(argv[i],&image_info->pen,exception);
               }
             break;
@@ -3297,7 +3297,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingType,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
                 filter=UndefinedFilter;
                 if (LocaleCompare("Point",option) == 0)
@@ -3349,7 +3349,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingFontName,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->font,argv[i]);
               }
             break;
@@ -3360,7 +3360,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingFormatSpecifier,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
                 format=argv[i];
               }
@@ -3372,7 +3372,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -3383,7 +3383,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingDistance,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 image_info->fuzz=StringToDouble(argv[i],MaxRGB);
               }
             break;
@@ -3396,14 +3396,14 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowConvertException(OptionError,MissingImageGamma,option);
+              ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("gaussian",option+1) == 0)
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowConvertException(OptionError,MissingGeometry,option);
+              ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("geometry",option+1) == 0)
@@ -3412,7 +3412,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -3426,7 +3426,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingType,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
                 if (LocaleCompare("NorthWest",option) == 0)
                   gravity=NorthWestGravity;
@@ -3458,7 +3458,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingPoint,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -3481,7 +3481,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingImplodeAmount,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -3495,7 +3495,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingType,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
                 rendering_intent=UndefinedIntent;
                 if (LocaleCompare("Absolute",option) == 0)
@@ -3519,7 +3519,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingType,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->interlace=UndefinedInterlace;
                 if (LocaleCompare("None",option) == 0)
@@ -3546,7 +3546,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingImageLabel,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -3556,7 +3556,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -3564,7 +3564,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-              ThrowConvertException(OptionError,MissingImageGamma,option);
+              ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("linewidth",option+1) == 0)
@@ -3573,7 +3573,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingPointsize,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -3586,12 +3586,12 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingResourceType,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
                 type=argv[i];
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingResourceLimit,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
                   SetMagickResourceLimit(DiskResource,atol(argv[i]));
@@ -3613,7 +3613,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingListName,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
                 switch (*option)
                 {
@@ -3720,7 +3720,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingLogFormat,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 (void) SetLogFormat(argv[i]);
               }
             break;
@@ -3731,7 +3731,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingImageIterations,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -3746,7 +3746,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingFilename,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -3756,7 +3756,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingFilename,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -3768,7 +3768,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingMatteColor,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 (void) QueryColorDatabase(argv[i],&image_info->matte_color,
                   exception);
               }
@@ -3780,7 +3780,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingPaintRadius,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -3791,7 +3791,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                  ThrowConvertException(OptionError,MissingImageGamma,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -3806,7 +3806,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingImageFrames,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -3825,13 +3825,13 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingImageGamma,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             if (*option == '+')
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingType,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
                 if ((LocaleCompare("Uniform",option) != 0) &&
                     (LocaleCompare("Gaussian",option) != 0) &&
@@ -3858,7 +3858,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingOpaqueColor,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -3869,10 +3869,10 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingType,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingOrder,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -3887,7 +3887,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingPageGeometry,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
                 image_info->page=GetPageGeometry(argv[i]);
               }
@@ -3899,7 +3899,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingPaintRadius,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -3916,7 +3916,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingPointsize,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 image_info->pointsize=atof(argv[i]);
               }
             break;
@@ -3928,7 +3928,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingType,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->preview_type=UndefinedPreview;
                 if (LocaleCompare("Rotate",option) == 0)
@@ -4009,7 +4009,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           {
             i++;
             if (i == argc)
-              ThrowConvertException(OptionError,MissingImageProfile,option);
+              ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
         ThrowConvertException(OptionError,UnrecognizedOption,option)
@@ -4023,7 +4023,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingCompressionQuality,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
                 image_info->quality=atol(argv[i]);
               }
@@ -4037,7 +4037,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowConvertException(OptionError,MissingBevelWidth,option);
+              ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("random-threshold",option+1) == 0)
@@ -4046,10 +4046,10 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingType,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingThreshold,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4059,7 +4059,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingPoint,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4069,7 +4069,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4081,7 +4081,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == (argc-1)) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4091,7 +4091,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4101,7 +4101,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4109,7 +4109,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowConvertException(OptionError,MissingImageRotation,option);
+              ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
         ThrowConvertException(OptionError,UnrecognizedOption,option)
@@ -4122,7 +4122,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4133,7 +4133,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
             break;
@@ -4144,7 +4144,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4154,7 +4154,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingImageScene,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4164,7 +4164,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingThreshold,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4172,14 +4172,14 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowConvertException(OptionError,MissingAzimuth,option);
+              ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("sharpen",option+1) == 0)
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowConvertException(OptionError,MissingGeometry,option);
+              ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("shave",option+1) == 0)
@@ -4188,7 +4188,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4196,7 +4196,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowConvertException(OptionError,MissingGeometry,option);
+              ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("size",option+1) == 0)
@@ -4206,7 +4206,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->size,argv[i]);
               }
             break;
@@ -4217,7 +4217,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingThreshold,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4227,7 +4227,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingSpreadAmount,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -4238,7 +4238,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingColors,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4248,7 +4248,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingPointsize,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4258,7 +4258,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingImageRotation,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -4279,7 +4279,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingFilename,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->texture,argv[i]);
               }
             break;
@@ -4290,7 +4290,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingThreshold,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4298,7 +4298,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           {
             i++;
             if (i == argc)
-              ThrowConvertException(OptionError,MissingTile,option);
+              ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("transform",option+1) == 0)
@@ -4309,7 +4309,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingTransparentColor,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -4320,7 +4320,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,MissingTreeDepth,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4333,7 +4333,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingType,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
                 if (LocaleCompare("Bilevel",option) == 0)
                   image_info->type=BilevelType;
@@ -4370,7 +4370,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingColors,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4381,7 +4381,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingType,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->units=UndefinedResolution;
                 if (LocaleCompare("PixelsPerInch",option) == 0)
@@ -4397,7 +4397,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingGeometry,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4419,7 +4419,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingViewTransform,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
                 (void) CloneString(&image_info->view,argv[i]);
               }
@@ -4434,7 +4434,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,MissingVirtualPixelMethod,
+                  ThrowConvertException(OptionError,MissingArgument,
                     option);
                 option=argv[i];
                 virtual_pixel_method=UndefinedVirtualPixelMethod;
@@ -4459,7 +4459,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowConvertException(OptionError,MissingAmplitude,option);
+              ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("white-point",option+1) == 0)
@@ -4468,7 +4468,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowConvertException(OptionError,MissingPoint,option);
+                  ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -4476,7 +4476,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           {
             i++;
             if (i == argc)
-              ThrowConvertException(OptionError,MissingFilename,option);
+              ThrowConvertException(OptionError,MissingArgument,option);
             break;
           }
         ThrowConvertException(OptionError,UnrecognizedOption,option)
@@ -4809,7 +4809,7 @@ MagickExport unsigned int ConjureImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingEventMask,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) SetLogEventMask(argv[i]);
               }
             continue;
@@ -4827,7 +4827,7 @@ MagickExport unsigned int ConjureImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingLogFormat,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) SetLogFormat(argv[i]);
               }
             continue;
@@ -5101,7 +5101,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
         */
         i++;
         if (i == argc)
-          MagickFatalError(OptionFatalError,MissingServerName,option);
+          MagickFatalError(OptionFatalError,MissingArgument,option);
         server_name=argv[i];
         break;
       }
@@ -5361,7 +5361,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionError,MissingPassword,option);
+                  MagickFatalError(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->authenticate,argv[i]);
               }
             break;
@@ -5382,7 +5382,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingColor,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.background_color=argv[i];
                 (void) QueryColorDatabase(argv[i],&image_info->background_color,
                   exception);
@@ -5395,7 +5395,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -5405,7 +5405,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingColor,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.border_color=argv[i];
                 (void) QueryColorDatabase(argv[i],&image_info->border_color,
                   exception);
@@ -5419,7 +5419,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingWidth,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.border_width=atoi(argv[i]);
               }
             break;
@@ -5435,7 +5435,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingThreshold,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                 SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
@@ -5448,7 +5448,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingType,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
                 resource_info.colormap=UndefinedColormap;
                 if (LocaleCompare("private",option) == 0)
@@ -5468,7 +5468,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingColors,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 quantize_info->number_colors=atol(argv[i]);
               }
             break;
@@ -5480,7 +5480,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingType,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
                 quantize_info->colorspace=UndefinedColorspace;
                 if (LocaleCompare("cmyk",option) == 0)
@@ -5527,7 +5527,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingComment,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -5538,7 +5538,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingType,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
                 image_info->compression=UndefinedCompression;
                 if (LocaleCompare("None",option) == 0)
@@ -5573,7 +5573,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -5589,7 +5589,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingEventMask,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) SetLogEventMask(argv[i]);
               }
             break;
@@ -5601,7 +5601,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingSeconds,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.delay=atoi(argv[i]);
               }
             break;
@@ -5613,7 +5613,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->density,argv[i]);
               }
             break;
@@ -5625,7 +5625,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingImageDepth,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 image_info->depth=atol(argv[i]);
               }
             break;
@@ -5639,7 +5639,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingServerName,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 image_info->server_name=argv[i];
               }
             break;
@@ -5650,7 +5650,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingMethod,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
                 if ((LocaleCompare("0",option) != 0) &&
                     (LocaleCompare("1",option) != 0) &&
@@ -5681,7 +5681,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                  MagickFatalError(OptionFatalError,MissingFactor,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -5692,7 +5692,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingType,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
                 image_info->endian=UndefinedEndian;
                 if (LocaleCompare("LSB",option) == 0)
@@ -5720,7 +5720,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingType,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
                 filter=UndefinedFilter;
                 if (LocaleCompare("Point",option) == 0)
@@ -5770,7 +5770,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingFontName,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 image_info->font=argv[i];
               }
             if ((image_info->font == (char *) NULL) ||
@@ -5784,7 +5784,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingForeground,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.foreground_color=argv[i];
               }
              break;
@@ -5795,7 +5795,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -5808,7 +5808,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              MagickFatalError(OptionFatalError,MissingValue,option);
+              MagickFatalError(OptionFatalError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("geometry",option+1) == 0)
@@ -5818,7 +5818,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.image_geometry=argv[i];
               }
             break;
@@ -5842,7 +5842,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.icon_geometry=argv[i];
               }
             break;
@@ -5864,7 +5864,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingType,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
                 image_info->interlace=UndefinedInterlace;
                 if (LocaleCompare("None",option) == 0)
@@ -5892,7 +5892,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingLabelName,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -5905,12 +5905,12 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingResourceType,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 type=argv[i];
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingResourceLimit,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
                   SetMagickResourceLimit(DiskResource,atol(argv[i]));
@@ -5931,7 +5931,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingLogFormat,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) SetLogFormat(argv[i]);
               }
             break;
@@ -5948,7 +5948,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingLevel,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.magnify=atoi(argv[i]);
               }
             break;
@@ -5961,7 +5961,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingMapType,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.map_type=argv[i];
               }
             break;
@@ -5974,7 +5974,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingColor,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.matte_color=argv[i];
                 (void) QueryColorDatabase(argv[i],&image_info->matte_color,
                   exception);
@@ -6004,7 +6004,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingName,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.name=argv[i];
               }
             break;
@@ -6025,7 +6025,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingPageGeometry,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 image_info->page=GetPageGeometry(argv[i]);
               }
@@ -6043,7 +6043,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingCompressionQuality,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 image_info->quality=atol(argv[i]);
               }
@@ -6058,14 +6058,14 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-              MagickFatalError(OptionFatalError,MissingBevelWidth,option);
+              MagickFatalError(OptionFatalError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("remote",option+1) == 0)
           {
             i++;
             if (i == argc)
-              MagickFatalError(OptionFatalError,MissingCommand,option);
+              MagickFatalError(OptionFatalError,MissingArgument,option);
             status=XRemoteCommand(display,resource_info.window_id,argv[i]);
             Exit(!status);
           }
@@ -6075,7 +6075,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -6083,7 +6083,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              MagickFatalError(OptionFatalError,MissingDegrees,option);
+              MagickFatalError(OptionFatalError,MissingArgument,option);
             break;
           }
         MagickFatalError(OptionFatalError,UnrecognizedOption,option);
@@ -6097,7 +6097,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -6108,7 +6108,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
             break;
@@ -6121,7 +6121,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingSceneNumber,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 first_scene=atol(argv[i]);
                 last_scene=first_scene;
@@ -6135,7 +6135,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                  MagickFatalError(OptionFatalError,MissingThreshold,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -6145,7 +6145,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -6161,7 +6161,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->size,argv[i]);
               }
             break;
@@ -6178,7 +6178,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingFontName,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.text_font=argv[i];
               }
             break;
@@ -6190,7 +6190,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingFilename,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->texture,argv[i]);
               }
             break;
@@ -6202,7 +6202,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingTitle,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.title=argv[i];
               }
             break;
@@ -6214,7 +6214,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingDepth,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 quantize_info->tree_depth=atoi(argv[i]);
               }
             break;
@@ -6233,7 +6233,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingSeconds,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.update=atoi(argv[i]);
               }
             break;
@@ -6262,7 +6262,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingVisualClass,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 resource_info.visual_type=argv[i];
               }
@@ -6277,7 +6277,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingVirtualPixelMethod,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 option=argv[i];
                 virtual_pixel_method=UndefinedVirtualPixelMethod;
@@ -6306,7 +6306,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingIDNameOrRoot,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 resource_info.window_id=argv[i];
               }
@@ -6319,7 +6319,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingIDNameOrRoot,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 resource_info.window_group=argv[i];
               }
@@ -6332,7 +6332,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingFilename,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.write_filename=argv[i];
                 if (IsAccessible(resource_info.write_filename))
                   {
@@ -6591,7 +6591,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
       {
         i++;
         if (i == argc)
-          ThrowIdentifyException(OptionError,MissingFormatSpecifier,option);
+          ThrowIdentifyException(OptionError,MissingArgument,option);
         (void) CloneString(&format,argv[i]);
         break;
       }
@@ -6658,7 +6658,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowIdentifyException(OptionError,MissingThreshold,option);
+                  ThrowIdentifyException(OptionError,MissingArgument,option);
                 SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                 SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
@@ -6675,7 +6675,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowIdentifyException(OptionError,MissingEventMask,option);
+                  ThrowIdentifyException(OptionError,MissingArgument,option);
                 (void) SetLogEventMask(argv[i]);
               }
             break;
@@ -6687,7 +6687,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
               {
               i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowIdentifyException(OptionError,MissingGeometry,option);
+                  ThrowIdentifyException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->density,argv[i]);
               }
             break;
@@ -6699,7 +6699,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowIdentifyException(OptionError,MissingImageDepth,
+                  ThrowIdentifyException(OptionError,MissingArgument,
                     option);
                 image_info->depth=atol(argv[i]);
               }
@@ -6715,7 +6715,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowIdentifyException(OptionError,MissingFormatSpecifier,
+                  ThrowIdentifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -6736,7 +6736,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowIdentifyException(OptionError,MissingType,option);
+                  ThrowIdentifyException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->interlace=UndefinedInterlace;
                 if (LocaleCompare("None",option) == 0)
@@ -6762,7 +6762,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowIdentifyException(OptionError,MissingLogFormat,option);
+                  ThrowIdentifyException(OptionError,MissingArgument,option);
                 (void) SetLogFormat(argv[i]);
               }
             break;
@@ -6784,7 +6784,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowIdentifyException(OptionError,MissingGeometry,option);
+                  ThrowIdentifyException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
             break;
@@ -6796,7 +6796,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowIdentifyException(OptionError,MissingGeometry,option);
+                  ThrowIdentifyException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->size,argv[i]);
               }
             break;
@@ -6821,7 +6821,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowIdentifyException(OptionError,MissingVirtualPixelMethod,option);
+                  ThrowIdentifyException(OptionError,MissingArgument,option);
                 option=argv[i];
                 virtual_pixel_method=UndefinedVirtualPixelMethod;
                 if (LocaleCompare("Constant",option) == 0)
@@ -9611,7 +9611,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingMatrix,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -9627,7 +9627,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingPassword,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->authenticate,argv[i]);
               }
             break;
@@ -9642,7 +9642,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingBackgroundColor,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 (void) QueryColorDatabase(argv[i],&image_info->background_color,
                   exception);
@@ -9655,7 +9655,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingPoint,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -9663,7 +9663,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowMogrifyException(OptionError,MissingGeometry,option);
+              ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("border",option+1) == 0)
@@ -9672,7 +9672,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -9682,7 +9682,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingBorderColor,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 (void) QueryColorDatabase(argv[i],&image_info->border_color,
                   exception);
@@ -9695,7 +9695,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingColors,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -9709,7 +9709,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingThreshold,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                 SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
@@ -9724,7 +9724,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingType,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 option=argv[i];
                 channel=UndefinedChannel;
                if (LocaleCompare("Red",option) == 0)
@@ -9757,7 +9757,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingPaintRadius,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -9768,7 +9768,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -9778,7 +9778,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingColorizeValue,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -9789,7 +9789,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingColors,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -9799,7 +9799,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingType,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->colorspace=UndefinedColorspace;
                 if (LocaleCompare("cmyk",option) == 0)
@@ -9841,7 +9841,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingComment,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -9852,7 +9852,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingType,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->compression=UndefinedCompression;
                 if (LocaleCompare("None",option) == 0)
@@ -9887,7 +9887,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
              {
                i++;
                if ((i == (argc-1)) || !IsGeometry(argv[i]))
-                 ThrowMogrifyException(OptionError,MissingCoefficients,
+                 ThrowMogrifyException(OptionError,MissingArgument,
                    option);
              }
            break;
@@ -9898,7 +9898,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -9908,7 +9908,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingCycleAmount,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -9924,7 +9924,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingEventMask,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 (void) SetLogEventMask(argv[i]);
               }
             break;
@@ -9935,7 +9935,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingDelay,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -9946,7 +9946,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 (void) CloneString(&image_info->density,argv[i]);
               }
@@ -9959,7 +9959,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingImageDepth,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 image_info->depth=atol(argv[i]);
               }
             break;
@@ -9973,7 +9973,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingServerName,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->server_name,argv[i]);
               }
             break;
@@ -9984,7 +9984,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingDisposeMethod,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 option=argv[i];
                 if ((LocaleCompare("0",option) != 0) &&
@@ -10011,7 +10011,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingDrawingPrimitive,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10026,7 +10026,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingPaintRadius,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10037,7 +10037,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingPaintRadius,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10048,7 +10048,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingEnodingType,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10060,7 +10060,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingType,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->endian=UndefinedEndian;
                 if (LocaleCompare("LSB",option) == 0)
@@ -10088,7 +10088,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingFillColor,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 (void) QueryColorDatabase(argv[i],&image_info->pen,exception);
               }
             break;
@@ -10102,7 +10102,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingType,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 option=argv[i];
                 filter=UndefinedFilter;
                 if (LocaleCompare("Point",option) == 0)
@@ -10152,7 +10152,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingFontName,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 (void) CloneString(&image_info->font,argv[i]);
               }
@@ -10165,7 +10165,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingImageType,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 (void) CloneString(&format,argv[i]);
                 (void) strncpy(image_info->filename,format,MaxTextExtent-1);
@@ -10182,7 +10182,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10194,7 +10194,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingDistance,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 image_info->fuzz=StringToDouble(argv[i],MaxRGB);
               }
@@ -10208,14 +10208,14 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowMogrifyException(OptionError,MissingImageGamma,option);
+              ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("gaussian",option+1) == 0)
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowMogrifyException(OptionError,MissingGeometry,option);
+              ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("geometry",option+1) == 0)
@@ -10224,7 +10224,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10239,7 +10239,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingType,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 option=argv[i];
                 if (LocaleCompare("NorthWest",option) == 0)
                   gravity=NorthWestGravity;
@@ -10271,7 +10271,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingPoint,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -10291,7 +10291,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingAmount,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -10302,7 +10302,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingType,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->interlace=UndefinedInterlace;
                 if (LocaleCompare("None",option) == 0)
@@ -10329,7 +10329,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingImageLabel,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10340,7 +10340,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -10348,7 +10348,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-              ThrowMogrifyException(OptionError,MissingImageGamma,option);
+              ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("linewidth",option+1) == 0)
@@ -10357,7 +10357,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingPointsize,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -10370,12 +10370,12 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingResourceType,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 type=argv[i];
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingResourceLimit,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
                   SetMagickResourceLimit(DiskResource,atol(argv[i]));
@@ -10396,7 +10396,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingListName,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 option=argv[i];
                 switch (*option)
@@ -10504,7 +10504,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingLogFormat,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 (void) SetLogFormat(argv[i]);
               }
             break;
@@ -10515,7 +10515,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingImageIterations,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10531,7 +10531,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingFilename,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10542,7 +10542,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingFilename,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10555,7 +10555,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingMatteColor,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 (void) QueryColorDatabase(argv[i],&image_info->matte_color,
                   exception);
@@ -10568,7 +10568,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                  ThrowMogrifyException(OptionError,MissingImageGamma,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -10578,7 +10578,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingPaintRadius,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -10599,13 +10599,13 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingImageGamma,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             if (*option == '+')
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingType,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 option=argv[i];
                 if ((LocaleCompare("Uniform",option) != 0) &&
                     (LocaleCompare("Gaussian",option) != 0) &&
@@ -10632,7 +10632,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingOpaqueColor,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10643,10 +10643,10 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingType,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingOrder,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -10661,7 +10661,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingPageGeometry,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 image_info->page=GetPageGeometry(argv[i]);
               }
@@ -10673,7 +10673,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingPaintRadius,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10685,7 +10685,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingPointsize,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 image_info->pointsize=atof(argv[i]);
               }
             break;
@@ -10694,7 +10694,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           {
             i++;
             if (i == argc)
-              ThrowMogrifyException(OptionError,MissingImageProfile,option);
+              ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }
         ThrowMogrifyException(OptionError,UnrecognizedOption,option)
@@ -10708,7 +10708,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingCompressionQuality,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 image_info->quality=atol(argv[i]);
               }
@@ -10722,7 +10722,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowMogrifyException(OptionError,MissingBevelWidth,option);
+              ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("random-threshold",option+1) == 0)
@@ -10731,10 +10731,10 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingType,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingThreshold,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
           break;
           }
@@ -10744,7 +10744,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingPoint,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -10754,7 +10754,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10767,7 +10767,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == (argc-1)) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -10777,7 +10777,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -10787,7 +10787,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10798,7 +10798,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10807,7 +10807,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowMogrifyException(OptionError,MissingImageRotation,option);
+              ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }
         ThrowMogrifyException(OptionError,UnrecognizedOption,option)
@@ -10820,7 +10820,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10832,7 +10832,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
@@ -10844,7 +10844,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10855,7 +10855,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingImageScene,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10866,7 +10866,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingThreshold,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10875,14 +10875,14 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowMogrifyException(OptionError,MissingAzimuth,option);
+              ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("sharpen",option+1) == 0)
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowMogrifyException(OptionError,MissingGeometry,option);
+              ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("shave",option+1) == 0)
@@ -10891,7 +10891,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10900,7 +10900,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowMogrifyException(OptionError,MissingGeometry,option);
+              ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("size",option+1) == 0)
@@ -10910,7 +10910,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingGeometry,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 (void) CloneString(&image_info->size,argv[i]);
               }
@@ -10922,7 +10922,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingThreshold,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -10933,7 +10933,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingAmount,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -10943,7 +10943,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingColors,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -10953,7 +10953,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingPointsize,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -10963,7 +10963,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingImageRotation,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -10978,7 +10978,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingFilename,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 (void) CloneString(&image_info->texture,argv[i]);
               }
@@ -10990,7 +10990,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingImageGamma,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -10998,7 +10998,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           {
             i++;
             if (i == argc)
-              ThrowMogrifyException(OptionError,MissingTile,option);
+              ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("transform",option+1) == 0)
@@ -11009,7 +11009,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingTransparentColor,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -11020,7 +11020,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,MissingTreeDepth,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -11034,7 +11034,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingType,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 option=argv[i];
                 if (LocaleCompare("Bilevel",option) == 0)
                   image_info->type=BilevelType;
@@ -11072,7 +11072,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingColors,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -11083,7 +11083,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingType,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->units=UndefinedResolution;
                 if (LocaleCompare("PixelsPerInch",option) == 0)
@@ -11097,7 +11097,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowMogrifyException(OptionError,MissingGeometry,option);
+              ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }
         ThrowMogrifyException(OptionError,UnrecognizedOption,option)
@@ -11118,7 +11118,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingViewTransform,
+                  ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 (void) CloneString(&image_info->view,argv[i]);
               }
@@ -11133,7 +11133,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingVirtualPixelMethod,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 option=argv[i];
                 virtual_pixel_method=UndefinedVirtualPixelMethod;
                 if (LocaleCompare("Constant",option) == 0)
@@ -11157,7 +11157,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowMogrifyException(OptionError,MissingAmplitude,option);
+              ThrowMogrifyException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("white-point",option+1) == 0)
@@ -11166,7 +11166,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMogrifyException(OptionError,MissingPoint,option);
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -11550,7 +11550,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingPassword,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->authenticate,argv[i]);
               }
             break;
@@ -11565,7 +11565,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingColors,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) QueryColorDatabase(argv[i],
                   &montage_info->background_color,exception);
                 (void) QueryColorDatabase(argv[i],&image_info->background_color,
@@ -11579,7 +11579,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMontageException(OptionError,MissingPoint,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -11589,7 +11589,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMontageException(OptionError,MissingGeometry,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -11599,7 +11599,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingColors,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) QueryColorDatabase(argv[i],&montage_info->border_color,
                   exception);
                 (void) QueryColorDatabase(argv[i],&image_info->border_color,
@@ -11614,7 +11614,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMontageException(OptionError,MissingWidth,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 montage_info->border_width=atol(argv[i]);
               }
             break;
@@ -11629,7 +11629,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMontageException(OptionError,MissingThreshold,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                 SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
@@ -11642,7 +11642,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMontageException(OptionError,MissingColors,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 quantize_info.number_colors=atol(argv[i]);
               }
             break;
@@ -11654,7 +11654,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingType,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 option=argv[i];
                 quantize_info.colorspace=UndefinedColorspace;
                 if (LocaleCompare("cmyk",option) == 0)
@@ -11701,7 +11701,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingComment,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -11712,7 +11712,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingType,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->compression=UndefinedCompression;
                 if (LocaleCompare("None",option) == 0)
@@ -11748,7 +11748,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingType,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 option=argv[i];
                 compose=UndefinedCompositeOp;
                 if (LocaleCompare("Over",option) == 0)
@@ -11797,7 +11797,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMontageException(OptionError,MissingGeometry,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -11812,7 +11812,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingEventMask,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) SetLogEventMask(argv[i]);
               }
             break;
@@ -11824,7 +11824,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMontageException(OptionError,MissingGeometry,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->density,argv[i]);
               }
             break;
@@ -11836,7 +11836,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMontageException(OptionError,MissingImageDepth,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 image_info->depth=atol(argv[i]);
               }
             break;
@@ -11848,7 +11848,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingServerName,
+                  ThrowMontageException(OptionError,MissingArgument,
                     option);
                 (void) CloneString(&image_info->server_name,argv[i]);
               }
@@ -11860,7 +11860,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingDisposeMethod,
+                  ThrowMontageException(OptionError,MissingArgument,
                     option);
                 option=argv[i];
                 if ((LocaleCompare("0",option) != 0) &&
@@ -11887,7 +11887,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingDrawingPrimitive,
+                  ThrowMontageException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -11902,7 +11902,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingEnodingType,
+                  ThrowMontageException(OptionError,MissingArgument,
                     option);
               }
             break;
@@ -11914,7 +11914,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingType,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->endian=UndefinedEndian;
                 if (LocaleCompare("LSB",option) == 0)
@@ -11939,7 +11939,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingFillColor,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) QueryColorDatabase(argv[i],&image_info->pen,exception);
                 (void) QueryColorDatabase(argv[i],&montage_info->fill,
                   exception);
@@ -11955,7 +11955,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingType,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 option=argv[i];
                 filter=UndefinedFilter;
                 if (LocaleCompare("Point",option) == 0)
@@ -12005,7 +12005,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingFontName,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->font,argv[i]);
                 (void) CloneString(&montage_info->font,argv[i]);
               }
@@ -12017,7 +12017,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingFormatSpecifier,
+                  ThrowMontageException(OptionError,MissingArgument,
                     option);
                 format=argv[i];
               }
@@ -12031,7 +12031,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMontageException(OptionError,MissingGeometry,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) CloneString(&montage_info->frame,argv[i]);
               }
             break;
@@ -12044,7 +12044,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-              ThrowMontageException(OptionError,MissingImageGamma,option);
+              ThrowMontageException(OptionError,MissingArgument,option);
             break;
           }
         if (LocaleCompare("geometry",option+1) == 0)
@@ -12054,7 +12054,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMontageException(OptionError,MissingGeometry,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) CloneString(&montage_info->geometry,argv[i]);
               }
             break;
@@ -12069,7 +12069,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingType,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 option=argv[i];
                 if (LocaleCompare("Forget",option) == 0)
                   gravity=ForgetGravity;
@@ -12103,7 +12103,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMontageException(OptionError,MissingPoint,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -12124,7 +12124,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingType,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 option=argv[i];
                 image_info->interlace=UndefinedInterlace;
                 if (LocaleCompare("None",option) == 0)
@@ -12150,7 +12150,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingImageLabel,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -12163,12 +12163,12 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingResourceType,
+                  ThrowMontageException(OptionError,MissingArgument,
                     option);
                 type=argv[i];
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMontageException(OptionError,MissingResourceLimit,
+                  ThrowMontageException(OptionError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
                   SetMagickResourceLimit(DiskResource,atol(argv[i]));
@@ -12189,7 +12189,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingLogFormat,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) SetLogFormat(argv[i]);
               }
             break;
@@ -12206,7 +12206,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingColors,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) QueryColorDatabase(argv[i],&montage_info->matte_color,
                   exception);
                 (void) QueryColorDatabase(argv[i],&image_info->matte_color,
@@ -12223,7 +12223,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingType,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 option=argv[i];
                 mode=UndefinedMode;
                 if (LocaleCompare("frame",option) == 0)
@@ -12284,7 +12284,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingPageGeometry,
+                  ThrowMontageException(OptionError,MissingArgument,
                     option);
                 image_info->page=GetPageGeometry(argv[i]);
               }
@@ -12298,7 +12298,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMontageException(OptionError,MissingPointsize,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 image_info->pointsize=atof(argv[i]);
                 montage_info->pointsize=atof(argv[i]);
               }
@@ -12315,7 +12315,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMontageException(OptionError,MissingCompressionQuality,
+                  ThrowMontageException(OptionError,MissingArgument,
                     option);
                 image_info->quality=atol(argv[i]);
               }
@@ -12331,7 +12331,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMontageException(OptionError,MissingPoint,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -12343,7 +12343,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMontageException(OptionError,MissingGeometry,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -12351,7 +12351,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-              ThrowMontageException(OptionError,MissingImageRotation,option);
+              ThrowMontageException(OptionError,MissingArgument,option);
             break;
           }
         ThrowMontageException(OptionError,UnrecognizedOption,option)
@@ -12365,7 +12365,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMontageException(OptionError,MissingGeometry,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
             break;
@@ -12378,7 +12378,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMontageException(OptionError,MissingImageScene,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 first_scene=atol(argv[i]);
                 last_scene=first_scene;
                 (void) sscanf(argv[i],"%ld-%ld",&first_scene,&last_scene);
@@ -12396,7 +12396,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMontageException(OptionError,MissingGeometry,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -12407,7 +12407,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMontageException(OptionError,MissingGeometry,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->size,argv[i]);
               }
             break;
@@ -12419,7 +12419,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingColors,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) QueryColorDatabase(argv[i],&montage_info->stroke,
                   exception);
               }
@@ -12431,7 +12431,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMontageException(OptionError,MissingPointsize,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -12446,7 +12446,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingFilename,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) CloneString(&montage_info->texture,argv[i]);
               }
             break;
@@ -12459,7 +12459,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMontageException(OptionError,MissingGeometry,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) CloneString(&montage_info->tile,argv[i]);
               }
             break;
@@ -12471,7 +12471,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingTitle,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) CloneString(&montage_info->title,argv[i]);
               }
             break;
@@ -12485,7 +12485,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingColors,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 (void) CloneString(&transparent_color,argv[i]);
               }
             break;
@@ -12497,7 +12497,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMontageException(OptionError,MissingImageDepth,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 quantize_info.tree_depth=atoi(argv[i]);
               }
             break;
@@ -12511,7 +12511,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingType,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
                 option=argv[i];
                 if (LocaleCompare("Bilevel",option) == 0)
                   image_info->type=BilevelType;
@@ -12559,7 +12559,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,MissingVirtualPixelMethod,
+                  ThrowMontageException(OptionError,MissingArgument,
                     option);
                 option=argv[i];
                 virtual_pixel_method=UndefinedVirtualPixelMethod;
@@ -12586,7 +12586,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  ThrowMontageException(OptionError,MissingPoint,option);
+                  ThrowMontageException(OptionError,MissingArgument,option);
               }
             break;
           }
@@ -12873,7 +12873,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
         */
         i++;
         if (i == argc)
-          MagickFatalError(OptionFatalError,MissingServerName,option);
+          MagickFatalError(OptionFatalError,MissingArgument,option);
         server_name=argv[i];
         break;
       }
@@ -13002,7 +13002,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingBorderColor,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 (void) QueryColorDatabase(argv[i],&image_info->border_color,
                   exception);
@@ -13020,7 +13020,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingThreshold,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                 SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
@@ -13033,7 +13033,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingColors,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 quantize_info->number_colors=atol(argv[i]);
               }
             break;
@@ -13045,7 +13045,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingType,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
                 quantize_info->colorspace=UndefinedColorspace;
                 if (LocaleCompare("cmyk",option) == 0)
@@ -13092,7 +13092,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingComment,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -13103,7 +13103,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingType,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
                 image_info->compression=UndefinedCompression;
                 if (LocaleCompare("None",option) == 0)
@@ -13135,7 +13135,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -13151,7 +13151,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingEventMask,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) SetLogEventMask(argv[i]);
               }
             break;
@@ -13162,7 +13162,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingSeconds,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -13173,7 +13173,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->density,argv[i]);
               }
             break;
@@ -13185,7 +13185,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingImageDepth,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 image_info->depth=atol(argv[i]);
               }
             break;
@@ -13202,7 +13202,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingServerName,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 (void) CloneString(&image_info->server_name,argv[i]);
               }
@@ -13214,7 +13214,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingDisposeMethod,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 option=argv[i];
                 if ((LocaleCompare("0",option) != 0) &&
@@ -13246,7 +13246,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingEncodingType,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
               }
             break;
@@ -13258,7 +13258,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingType,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
                 image_info->endian=UndefinedEndian;
                 if (LocaleCompare("LSB",option) == 0)
@@ -13292,7 +13292,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -13315,7 +13315,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingType,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
                 image_info->interlace=UndefinedInterlace;
                 if (LocaleCompare("No",option) == 0)
@@ -13343,7 +13343,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingLabelName,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -13356,12 +13356,12 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
 
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingResourceType,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 type=argv[i];
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingResourceLimit,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
                   SetMagickResourceLimit(DiskResource,atol(argv[i]));
@@ -13382,7 +13382,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingLogFormat,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) SetLogFormat(argv[i]);
               }
             break;
@@ -13422,7 +13422,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingPageGeometry,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 image_info->page=GetPageGeometry(argv[i]);
               }
@@ -13435,24 +13435,19 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingSeconds,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 resource_info.pause=atoi(argv[i]);
               }
             break;
           }
-        if (LocaleCompare("ping",option+1) == 0)
-          {
-            MagickError(OptionFatalError,DeprecatedOption,option);
-            break;
-          }
-        if (LocaleCompare("pointsize",option+1) == 0)
+       if (LocaleCompare("pointsize",option+1) == 0)
           {
             image_info->pointsize=12;
             if (*option == '-')
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingSize,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 image_info->pointsize=atof(argv[i]);
               }
             break;
@@ -13469,7 +13464,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingCompressionQuality,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 image_info->quality=atol(argv[i]);
               }
@@ -13486,7 +13481,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -13494,7 +13489,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-               MagickFatalError(OptionFatalError,MissingDegrees,option);
+               MagickFatalError(OptionFatalError,MissingArgument,option);
             break;
           }
         MagickFatalError(OptionFatalError,UnrecognizedOption,option);
@@ -13509,7 +13504,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
             break;
@@ -13520,7 +13515,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingSceneNumber,
+                  MagickFatalError(OptionFatalError,MissingArgument,
                     option);
               }
             break;
@@ -13542,7 +13537,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,MissingGeometry,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->size,argv[i]);
               }
             break;
@@ -13552,7 +13547,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
             (void) strcpy(argv[i]+1,"sans");
             i++;
             if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-              MagickFatalError(OptionFatalError,MissingSnaps,option);
+              MagickFatalError(OptionFatalError,MissingArgument,option);
             snapshots=atol(argv[i]);
             break;
           }
@@ -13567,7 +13562,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingColor,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
               }
             break;
           }
@@ -13578,7 +13573,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,MissingDepth,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 quantize_info->tree_depth=atoi(argv[i]);
               }
             break;
@@ -13592,7 +13587,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingType,option);
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
                 if (LocaleCompare("Bilevel",option) == 0)
                   image_info->type=BilevelType;
@@ -13638,7 +13633,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
       {
         i++;
         if (i == argc)
-          MagickFatalError(OptionFatalError,MissingIDNameOrRoot,option);
+          MagickFatalError(OptionFatalError,MissingArgument,option);
         (void) CloneString(&target_window,argv[i]);
         break;
       }
