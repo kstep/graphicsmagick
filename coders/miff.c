@@ -893,7 +893,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                         pixel.blue=UpScale(ReadBlobByte(image));
                         if (image->matte ||
                             (image->colorspace == CMYKColorspace))
-                          pixel.opacity=MaxRGB-UpScale(ReadBlobByte(image));
+                          pixel.opacity=UpScale(ReadBlobByte(image));
                       }
                     else
                       {
@@ -905,7 +905,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                           (image->depth-QuantumDepth);
                         if (image->matte ||
                             (image->colorspace == CMYKColorspace))
-                          pixel.opacity=MaxRGB-(ReadBlobMSBShort(image) >>
+                          pixel.opacity=(ReadBlobMSBShort(image) >>
                             (image->depth-QuantumDepth));
                       }
                   }
@@ -1056,6 +1056,54 @@ ModuleExport void UnregisterMIFFImage(void)
 */
 static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 {
+#define WriteRunlengthPacket(image,pixel,length,q,index) \
+{ \
+  if (image->storage_class != DirectClass) \
+    { \
+      if (image->depth > 8) \
+        *q++=index >> 8; \
+      *q++=index; \
+    } \
+  else \
+    { \
+      if (image->depth <= 8) \
+        { \
+          *q++=DownScale(pixel.red); \
+          *q++=DownScale(pixel.green); \
+          *q++=DownScale(pixel.blue); \
+          if (image->matte || (image->colorspace == CMYKColorspace)) \
+            *q++=DownScale(pixel.opacity); \
+        } \
+      else \
+        { \
+          value=pixel.red; \
+          if ((QuantumDepth-image->depth) > 0) \
+            value*=257; \
+          *q++=value >> 8; \
+          *q++=value & 0xff; \
+          value=pixel.green; \
+          if ((QuantumDepth-image->depth) > 0) \
+            value*=257; \
+          *q++=value >> 8; \
+          *q++=value & 0xff; \
+          value=pixel.blue; \
+          if ((QuantumDepth-image->depth) > 0) \
+            value*=257; \
+          *q++=value >> 8; \
+          *q++=value & 0xff; \
+          if (image->matte || (image->colorspace == CMYKColorspace)) \
+            { \
+              value=pixel.opacity; \
+              if ((QuantumDepth-image->depth) > 0) \
+                value*=257; \
+              *q++=value >> 8; \
+              *q++=value & 0xff; \
+            } \
+        } \
+    } \
+  *q++=(unsigned char) length; \
+}
+
 #if defined(HasBZLIB)
   bz_stream
     bzip_info;
@@ -1426,61 +1474,17 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           index=0;
           if (image->storage_class == PseudoClass)
             index=(*indexes);
-          length=0;
+          length=255;
           for (x=0; x < (int) image->columns; x++)
           {
             if ((p->red == pixel.red) && (p->green == pixel.green) && 
                 (p->blue == pixel.blue) && (p->opacity == pixel.opacity) &&
-                (length < 255) && (x < (image->columns-1)))
+                (length < 255) && (x < (int) (image->columns-1)))
               length++;
             else
               {
-                if (image->storage_class != DirectClass)
-                  {
-                    if (image->depth > 8)
-                      *q++=index >> 8;
-                    *q++=index;
-                  }
-                else
-                  {
-                    if (image->depth <= 8)
-                      {
-                        *q++=DownScale(pixel.red);
-                        *q++=DownScale(pixel.green);
-                        *q++=DownScale(pixel.blue);
-                        if (image->matte ||
-                            (image->colorspace == CMYKColorspace))
-                          *q++=MaxRGB-DownScale(pixel.opacity);
-                      }
-                    else
-                      {
-                        value=pixel.red;
-                        if ((QuantumDepth-image->depth) > 0)
-                          value*=257;
-                        *q++=value >> 8;
-                        *q++=value & 0xff;
-                        value=pixel.green;
-                        if ((QuantumDepth-image->depth) > 0)
-                          value*=257;
-                        *q++=value >> 8;
-                        *q++=value & 0xff;
-                        value=pixel.blue;
-                        if ((QuantumDepth-image->depth) > 0)
-                          value*=257;
-                        *q++=value >> 8;
-                        *q++=value & 0xff;
-                        if (image->matte ||
-                            (image->colorspace == CMYKColorspace))
-                          {
-                            value=MaxRGB-pixel.opacity;
-                            if ((QuantumDepth-image->depth) > 0)
-                              value*=257;
-                            *q++=value >> 8;
-                            *q++=value & 0xff;
-                          }
-                      }
-                  }
-                *q++=(unsigned char) length;
+                if (x > 0)
+                  WriteRunlengthPacket(image,pixel,length,q,index);
                 length=0;
               }
             if (image->storage_class == PseudoClass)
@@ -1488,6 +1492,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             pixel=(*p);
             p++;
           }
+          WriteRunlengthPacket(image,pixel,length,q,index);
         }
 #if defined(HasZLIB)
         if (compression == ZipCompression)

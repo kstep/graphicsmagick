@@ -523,7 +523,24 @@ ModuleExport void UnregisterPSImage(void)
 */
 static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
 {
-  static const char
+#define WriteRunlengthPacket(image,pixel,length,p) \
+{ \
+  if (image->matte && (p->opacity == TransparentOpacity)) \
+    FormatString(buffer,"ffffff%02x",(unsigned int) Min(length,0xff)); \
+  else \
+    FormatString(buffer,"%02lx%02lx%02lx%02lx",DownScale(pixel.red), \
+      DownScale(pixel.green),DownScale(pixel.blue), \
+      (unsigned long) Min(length,0xff)); \
+  (void) WriteBlobString(image,buffer); \
+  i++; \
+  if (i == 9) \
+    { \
+      (void) WriteBlobByte(image,'\n'); \
+      i=0; \
+    } \
+}
+
+  static const char 
     *PostscriptProlog[]=
     {
       "%%BeginProlog",
@@ -1116,7 +1133,6 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         switch (image_info->compression)
         {
           case RunlengthEncodedCompression:
-          default:
           {
             /*
               Dump runlength-encoded DirectColor packets.
@@ -1127,35 +1143,23 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               if (p == (PixelPacket *) NULL)
                 break;
               pixel=(*p);
-              length=0;
+              length=255;
               for (x=0; x < (int) image->columns; x++)
               {
                 if ((p->red == pixel.red) && (p->green == pixel.green) &&
                     (p->blue == pixel.blue) && (p->opacity == pixel.opacity) &&
-                    (length < 255) && (x < (image->columns-1)))
+                    (length < 255) && (x < (int) (image->columns-1)))
                   length++;
                 else
                   {
-                    if (image->matte && (p->opacity == TransparentOpacity))
-                      FormatString(buffer,"ffffff%02x",(unsigned int)
-                        Min(length,0xff));
-                    else
-                      FormatString(buffer,"%02lx%02lx%02lx%02lx",
-                        DownScale(pixel.red),DownScale(pixel.green),
-                        DownScale(pixel.blue),
-                        (unsigned long) Min(length,0xff));
-                    (void) WriteBlobString(image,buffer);
-                    i++;
-                    if (i == 9)
-                      {
-                        (void) WriteBlobByte(image,'\n');
-                        i=0;
-                      }
+                    if (x > 0)
+                      WriteRunlengthPacket(image,pixel,length,p);
                     length=0;
                   }
                 pixel=(*p);
                 p++;
               }
+              WriteRunlengthPacket(image,pixel,length,p);
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   MagickMonitor(SaveImageText,y,image->rows);
@@ -1163,6 +1167,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             break;
           }
           case NoCompression:
+          default:
           {
             /*
               Dump uncompressed DirectColor packets.
@@ -1319,7 +1324,6 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           switch (image_info->compression)
           {
             case RunlengthEncodedCompression:
-            default:
             {
               /*
                 Dump runlength-encoded PseudoColor packets.
@@ -1362,6 +1366,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               break;
             }
             case NoCompression:
+            default:
             {
               /*
                 Dump uncompressed PseudoColor packets.

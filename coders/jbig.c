@@ -419,7 +419,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
     /*
-      Convert Runlength encoded pixels to a bitmap.
+      Convert pixels to a bitmap.
     */
     if (!IsMonochromeImage(image))
       {
