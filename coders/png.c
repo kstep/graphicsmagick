@@ -1710,7 +1710,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     else
       image->depth=8;
     
-  image->depth=ping_info->bit_depth;
   if (ping_info->bit_depth < 8)
     {
       if ((ping_info->color_type == PNG_COLOR_TYPE_PALETTE))
