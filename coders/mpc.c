@@ -873,8 +873,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
       /*
         Write persistent cache to disk.
       */
-      (void) strcpy(cache_info->cache_filename,image->filename);
-      AppendImageFormat("cache",cache_info->cache_filename);
+      TemporaryFilename(cache_info->cache_filename);
       file=open(cache_info->cache_filename,O_WRONLY | O_CREAT | O_BINARY,0777);
       if (file == -1)
         ThrowWriterException(FileOpenWarning,"Unable to open file",image);
