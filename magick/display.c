@@ -2015,7 +2015,7 @@ static unsigned int XColorEditImage(Display *display,
             /*
               Update color information using replace algorithm.
             */
-            target=GetPixel(*image,x_offset,y_offset);
+            target=GetOnePixel(*image,x_offset,y_offset);
             if ((*image)->class == DirectClass)
               {
                 for (y=0; y < (int) (*image)->rows; y++)
@@ -2065,7 +2065,7 @@ static unsigned int XColorEditImage(Display *display,
             /*
               Update color information using floodfill algorithm.
             */
-            target=GetPixel(*image,x_offset,y_offset);
+            target=GetOnePixel(*image,x_offset,y_offset);
             if (method == FillToBorderMethod)
               {
                 target.red=XDownScale(border_color.red);
@@ -7354,7 +7354,6 @@ static unsigned int XMatteEditImage(Display *display,
     i;
 
   register PixelPacket
-    *p,
     *q;
 
   unsigned int
@@ -7726,7 +7725,7 @@ static unsigned int XMatteEditImage(Display *display,
             /*
               Update matte information using replace algorithm.
             */
-            target=GetPixel(*image,x_offset,y_offset);
+            target=GetOnePixel(*image,x_offset,y_offset);
             for (y=0; y < (int) (*image)->rows; y++)
             {
               q=GetPixelCache(*image,0,y,(*image)->columns,1);
@@ -7752,7 +7751,7 @@ static unsigned int XMatteEditImage(Display *display,
             /*
               Update matte information using floodfill algorithm.
             */
-            target=GetPixel(*image,x_offset,y_offset);
+            target=GetOnePixel(*image,x_offset,y_offset);
             if (method == FillToBorderMethod)
               {
                 target.red=XDownScale(border_color.red);
@@ -10794,7 +10793,6 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         j;
 
       register PixelPacket
-        *r,
         *s;
 
       /*
@@ -10819,7 +10817,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         */
         x_offset=width*(tile % ((image->columns-x)/width))+x;
         y_offset=height*(tile/((image->columns-x)/width))+y;
-        pixel=GetPixel(image,0,0);
+        pixel=GetOnePixel(image,0,0);
         for (i=0; i < (int) height; i++)
         {
           s=GetPixelCache(image,x_offset,y_offset+i,width,1);
