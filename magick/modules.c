@@ -593,7 +593,7 @@ MagickExport int OpenModule(const char *module)
       continue;
     handle=lt_dlopen(module_load_path);
     if (handle != 0)
-      continue;
+      break;
     FormatString(message,"failed to load module \"%s\"",module_load_path);
     MagickWarning(MissingDelegateWarning,message,lt_dlerror());
     LiberateMemory((void **) &module_file);
