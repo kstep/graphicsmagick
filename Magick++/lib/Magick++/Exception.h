@@ -174,9 +174,9 @@ namespace Magick
   //
 
   // Throw exception based on raw data
-  void throwExceptionExplicit( MagickLib::ExceptionType severity_,
-			       const char* message_,
-			       const char* qualifier_ = 0 );
+  void throwExceptionExplicit( MagickLib::ExceptionType error_,
+			       const char* reason_,
+			       const char* description_ = 0 );
 
   // Thow exception based on ImageMagick's ExceptionInfo
   void throwException( const MagickLib::ExceptionInfo &exception_ );

@@ -9,6 +9,8 @@
 
 #include <string>
 #include <iostream>
+#include <errno.h>
+#include <string.h>
 
 using namespace std;
 
@@ -152,25 +154,31 @@ Magick::ErrorCache::ErrorCache ( const std::string& what_ )
 }
 
 // Format and throw exception
-void Magick::throwExceptionExplicit( ExceptionType severity_,
-				     const char* message_,
-				     const char* qualifier_)
+void Magick::throwExceptionExplicit( ExceptionType error_,
+				     const char* reason_,
+				     const char* description_)
 {
   // Just return if there is no reported error
-  if ( severity_ == UndefinedException )
+  if ( error_ == UndefinedException )
     return;
   // Format error message ImageMagick-style
   std::string message = SetClientName(0);
-  if ( message_ )
+  if ( reason_ )
     {
       message += std::string(": ");
-      message += std::string(message_);
+      message += std::string(reason_);
     }
 
-  if ( qualifier_ )
-    message += " (" + std::string(qualifier_) + ")";
+  if ( description_ )
+    message += " (" + std::string(description_) + ")";
 
-  switch ( severity_ )
+  if ( error_ != OptionError && errno)
+    {
+      message += " [" + std::string(strerror(errno)) + "]";
+      errno = 0;
+    }
+
+  switch ( error_ )
     {
       // Warnings
     case ResourceLimitWarning :
