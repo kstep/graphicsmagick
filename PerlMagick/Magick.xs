@@ -1027,9 +1027,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     opacity,
     red;
 
-  ExceptionInfo
-    exception;
-
   int
     sp;
 
@@ -1041,7 +1038,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     *color,
     target_color;
 
-  GetExceptionInfo(&exception);
   switch (*attribute)
   {
     case 'A':
@@ -1390,6 +1386,10 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           if (info)
             {
+              ExceptionInfo
+                exception;
+
+              GetExceptionInfo(&exception);
               FormatString(info->image_info->filename,"%.1024s:",SvPV(sval,na));
               SetImageInfo(info->image_info,True,&exception);
               if (*info->image_info->magick == '\0')
@@ -1399,6 +1399,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                 for ( ; image; image=image->next)
                   (void) strncpy(image->magick,info->image_info->magick,
                     MaxTextExtent-1);
+              DestroyExceptionInfo(&exception);
             }
           return;
         }
@@ -1687,7 +1688,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     default:
       break;
   }
-  DestroyExceptionInfo(&exception);
   if (image == (Image *) NULL)
     MagickWarning(OptionWarning,"Invalid attribute",attribute);
   for ( ; image; image=image->next)
@@ -2255,7 +2255,8 @@ BlobToImage(ref,...)
     {
       image=BlobToImage(info->image_info,list[i],length[i],&exception);
       if (image == (Image *) NULL)
-        MagickWarning(exception.severity,exception.reason,exception.description);
+        MagickWarning(exception.severity,exception.reason,
+          exception.description);
       for ( ; image; image=image->next)
       {
         sv=newSViv((IV) image);
@@ -2783,9 +2784,6 @@ Get(ref,...)
     const ImageAttribute
       *image_attribute;
 
-    ExceptionInfo
-      exception;
-
     Image
       *image;
 
@@ -2815,7 +2813,6 @@ Get(ref,...)
         XSRETURN_EMPTY;
       }
     EXTEND(sp,items);
-    GetExceptionInfo(&exception);
     for (i=1; i < items; i++)
     {
       attribute=(char *) SvPV(ST(i),na);
@@ -3120,12 +3117,20 @@ Get(ref,...)
             }
           if (LocaleCompare(attribute,"format") == 0)
             {
+              ExceptionInfo
+                exception;
+
               const MagickInfo
                 *magick_info;
 
               magick_info=(const MagickInfo *) NULL;
               if (info && (*info->image_info->magick != '\0'))
-                magick_info=GetMagickInfo(info->image_info->magick,&exception);
+                {
+                  GetExceptionInfo(&exception);
+                  magick_info=
+                    GetMagickInfo(info->image_info->magick,&exception);
+                  DestroyExceptionInfo(&exception);
+                }
               else
                 if (image)
                   magick_info=GetMagickInfo(image->magick,&image->exception);
@@ -3669,7 +3674,6 @@ Get(ref,...)
             }
         }
     }
-    DestroyExceptionInfo(&exception);
   }
 
 #
@@ -3755,10 +3759,10 @@ ImageToBlob(ref,...)
     for (next=image; next; next=next->next)
     {
       length=0;
-      blob=ImageToBlob(package_info->image_info,next,&length,&image->exception);
+      blob=ImageToBlob(package_info->image_info,next,&length,&next->exception);
       if (blob == (void *) NULL)
-        MagickWarning(image->exception.severity,image->exception.reason,
-          image->exception.description);
+        MagickWarning(next->exception.severity,next->exception.reason,
+          next->exception.description);
       if (blob != (char *) NULL)
         {
           PUSHs(sv_2mortal(newSVpv(blob,length)));
@@ -7289,11 +7293,11 @@ Transform(ref,...)
     }
     for (next=image; next; next=next->next)
     {
-      clone=CloneImage(next,0,0,True,&image->exception);
+      clone=CloneImage(next,0,0,True,&next->exception);
       if (!clone)
         {
-          MagickWarning(image->exception.severity,image->exception.reason,
-            image->exception.description);
+          MagickWarning(next->exception.severity,next->exception.reason,
+            next->exception.description);
           goto MethodException;
         }
       TransformImage(&clone,crop_geometry,geometry);
