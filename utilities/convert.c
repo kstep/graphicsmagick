@@ -499,19 +499,25 @@ static unsigned int ConvertUtility(int argc,char **argv)
           MagickWarning(exception.severity,exception.reason,
             exception.description);
         status&=next_image != (Image *) NULL;
-        if (next_image == (Image *) NULL)
-          continue;
-        if (image == (Image *) NULL)
-          image=next_image;
-        else
+        if (next_image != (Image *) NULL)
           {
-            /*
-              Link image into image list.
-            */
-            for (p=image; p->next != (Image *) NULL; p=p->next);
-            next_image->previous=p;
-            p->next=next_image;
+            status&=MogrifyImages(image_info,i-j,argv+j,&next_image);
+            (void) CatchImageException(next_image);
+            if (image == (Image *) NULL)
+              image=next_image;
+            else
+              {
+                /*
+                  Link image into image list.
+                */
+                for (p=image; p->next != (Image *) NULL; p=p->next);
+                next_image->previous=p;
+                p->next=next_image;
+              }
           }
+        option=argv[i+1];
+        if ((strlen(option) >= 2) && ((*option == '-') || (*option == '+')))
+          j=i+1;
       }
     else
       switch (*(option+1))

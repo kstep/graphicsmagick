@@ -329,6 +329,7 @@ int main(int argc,char **argv)
     first_scene,
     image_number,
     j,
+    k,
     last_scene,
     scene,
     x;
@@ -369,6 +370,7 @@ int main(int argc,char **argv)
   GetExceptionInfo(&exception);
   first_scene=0;
   image_number=0;
+	j=1;
   last_image=0;
   last_scene=0;
   image_marker=(unsigned int *) AcquireMemory((argc+1)*sizeof(unsigned int));
@@ -378,11 +380,11 @@ int main(int argc,char **argv)
   for (i=0; i <= argc; i++)
     image_marker[i]=argc;
   resource_database=(XrmDatabase) NULL;
+  server_name=(char *) NULL;
   state=0;
   /*
     Check for server name specified on the command line.
   */
-  server_name=(char *) NULL;
   for (i=1; i < argc; i++)
   {
     /*
@@ -1358,14 +1360,17 @@ int main(int argc,char **argv)
           status&=image != (Image *) NULL;
           if (image == (Image *) NULL)
             continue;
+          status&=MogrifyImage(image_info,i-j,argv+j,&image);
+          (void) CatchImageException(image);
+          option=argv[i+1];
+          if ((strlen(option) >= 2) && ((*option == '-') || (*option == '+')))
+            j=i+1;
           do
           {
             /*
               Transmogrify image as defined by the image processing options.
             */
             resource_info.quantum=1;
-            status&=MogrifyImage(image_info,i,argv,&image);
-            (void) CatchImageException(image);
             if (first_scene != last_scene)
               image->scene=scene;
             /*
@@ -1440,14 +1445,14 @@ int main(int argc,char **argv)
             */
             next=image;
             if (state & FormerImageState)
-              for (j=0; j < resource_info.quantum; j++)
+              for (k=0; k < resource_info.quantum; k++)
               {
                 next=next->previous;
                 if (next == (Image *) NULL)
                   break;
               }
             else
-              for (j=0; j < resource_info.quantum; j++)
+              for (k=0; k < resource_info.quantum; k++)
               {
                 next=next->next;
                 if (next == (Image *) NULL)

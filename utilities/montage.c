@@ -343,6 +343,7 @@ static unsigned int MontageUtility(int argc,char **argv)
   /*
     Parse command line.
   */
+	j=1;
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];
@@ -1241,19 +1242,25 @@ static unsigned int MontageUtility(int argc,char **argv)
           MagickWarning(exception.severity,exception.reason,
             exception.description);
         status&=next_image != (Image *) NULL;
-        if (next_image == (Image *) NULL)
-          continue;
-        if (image == (Image *) NULL)
-          image=next_image;
-        else
+        if (next_image != (Image *) NULL)
           {
-            /*
-              Link image into image list.
-            */
-            for (p=image; p->next != (Image *) NULL; p=p->next);
-            next_image->previous=p;
-            p->next=next_image;
+            status&=MogrifyImages(image_info,i-j,argv+j,&next_image);
+            (void) CatchImageException(next_image);
+            if (image == (Image *) NULL)
+              image=next_image;
+            else
+              {
+                /*
+                  Link image into image list.
+                */
+                for (p=image; p->next != (Image *) NULL; p=p->next);
+                next_image->previous=p;
+                p->next=next_image;
+              }
           }
+        option=argv[i+1];
+        if ((strlen(option) >= 2) && ((*option == '-') || (*option == '+')))
+          j=i+1;
       }
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
@@ -1263,7 +1270,7 @@ static unsigned int MontageUtility(int argc,char **argv)
   /*
     Create composite image.
   */
-  status&=MogrifyImages(image_info,argc-1,argv,&image);
+  status&=MogrifyImages(image_info,i-j,argv+j,&image);
   (void) CatchImageException(image);
   (void) strncpy(montage_info->filename,argv[argc-1],MaxTextExtent-1);
   montage_image=MontageImages(image,montage_info,&exception);

@@ -364,6 +364,7 @@ static unsigned int MogrifyUtility(int argc,char **argv)
     *image;
 
   long
+	  j,
     x;
 
   register long
@@ -381,10 +382,12 @@ static unsigned int MogrifyUtility(int argc,char **argv)
   global_colormap=False;
   image=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
+  j=0;
   status=True;
   /*
     Parse command line.
   */
+  j=1;
   for (i=1; i < argc; i++)
   {
     option=argv[i];
@@ -1715,7 +1718,7 @@ static unsigned int MogrifyUtility(int argc,char **argv)
         /*
           Transmogrify image as defined by the image processing options.
         */
-        status&=MogrifyImages(image_info,i,argv,&image);
+        status&=MogrifyImages(image_info,i-j,argv+j,&image);
         (void) CatchImageException(image);
         if (global_colormap)
           (void) MapImages(image,(Image *) NULL,image_info->dither);
@@ -1745,6 +1748,9 @@ static unsigned int MogrifyUtility(int argc,char **argv)
               (void) rename(image->filename,filename);
             }
         DestroyImage(image);
+        option=argv[i+1];
+        if ((strlen(option) >= 2) && ((*option == '-') || (*option == '+')))
+          j=i+1;
       }
   }
   if ((i != argc) || (image == (Image *) NULL))
