@@ -115,6 +115,9 @@ static unsigned int IsTIFF(const unsigned char *magick,
 #include "tiffconf.h"
 #endif
 #include "tiffio.h"
+#if !defined(COMPRESSION_ADOBE_DEFLATE)
+#define COMPRESSION_ADOBE_DEFLATE  8
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1372,7 +1375,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       case RunlengthEncodedCompression:
         compress_tag=COMPRESSION_PACKBITS; break;
       case ZipCompression: compress_tag=COMPRESSION_ADOBE_DEFLATE; break;
-      /* case ZipCompression: compress_tag=COMPRESSION_DEFLATE; break; */
       default: compress_tag=COMPRESSION_NONE; break;
     }
     if (((image_info->colorspace == UndefinedColorspace) &&
@@ -1447,7 +1449,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       case LZWCompression: compress_tag=COMPRESSION_LZW; break;
       case RunlengthEncodedCompression:
         compress_tag=COMPRESSION_PACKBITS; break;
-      /* case ZipCompression: compress_tag=COMPRESSION_DEFLATE; break; */
       case ZipCompression: compress_tag=COMPRESSION_ADOBE_DEFLATE; break;
       default: break;
     }
