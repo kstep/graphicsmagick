@@ -1,3 +1,7 @@
+2004-08-26  Glenn Randers-Pehrson <glennrp@glennrp.com>
+	* Avoid error introduced in libpng-1.2.6 that causes the encoder
+	to write out-of-spec zlib header bytes.
+
 2004-08-24  Glenn Randers-Pehrson <glennrp@glennrp.com>
 	* coders/bmp.c is said to have a potential buffer overrun.
 	Patch from Cristy applied (also to avi.c and dib.c).

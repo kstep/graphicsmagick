@@ -1097,6 +1097,8 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
       png_size_t
         check;
 
+      if (length > 0x7fffffff)
+         png_warning(png_ptr, "chunk length > 2G");
       check=(png_size_t) ReadBlob(image,(size_t) length,(char *) data);
       if (check != length)
         {
@@ -6903,6 +6905,13 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
         "  Writing PNG header chunks");
 
   png_write_info(ping,ping_info);
+
+#if (PNG_LIBPNG_VER == 10206)
+  /* avoid libpng-1.2.6 bug by setting PNG_HAVE_IDAT flag */
+#define PNG_HAVE_IDAT               0x04
+  ping->mode |= PNG_HAVE_IDAT;
+#undef PNG_HAVE_IDAT
+#endif
 
   png_set_packing(ping);
   /*
