@@ -3,6 +3,8 @@ dnl Currently maintained by Bob Friesenhahn, bfriesen@simple.dallas.tx.us
 #
 # ImageMagick Configure Script
 #
+# Report ImageMagick configure bugs to bfriesen@simple.dallas.tx.us
+#
 
 AC_INIT(magick/magick.h)
 
@@ -751,368 +753,197 @@ fi
 eval DelegatePath="${DATA_DIR}"
 AC_DEFINE_UNQUOTED(DelegatePath,"$DelegatePath")
 
-#
 # Look for 'cat' program
-#
-have_cat='no'
-AC_PATH_PROG(CatDelegate, cat)
-if test -n "$CatDelegate"
-then
-    AC_DEFINE_UNQUOTED(CatDelegate,"$CatDelegate")
-    have_cat='yes'
-else
-    CatDelegate=cat
-fi
+AC_PATH_PROG(CatDelegate, cat, cat)
 AC_SUBST(CatDelegate)
 
-
-#
 # Look for LP program.
-#
-have_lp='no'
-AC_PATH_PROG(LPDelegate, lp)
-if test -n "$LPDelegate"
-then
-    AC_DEFINE_UNQUOTED(LPDelegate,"$LPDelegate")
-    have_lp='yes'
-else
-    LPDelegate=lp
-fi
+AC_PATH_PROG(LPDelegate, lp, lp)
 AC_SUBST(LPDelegate)
 
-#
 # Look for 'mv' program
-#
-have_mv='no'
-AC_PATH_PROG(MVDelegate, mv)
-if test -n "$MVDelegate"
-then
-    AC_DEFINE_UNQUOTED(MVDelegate,"$MVDelegate")
-    have_mv='yes'
-else
-    MVDelegate=mv
-fi
+AC_PATH_PROG(MVDelegate, mv, mv)
 AC_SUBST(MVDelegate)
 
-#
 # Look for 'rm' program
-#
-have_rm='no'
-AC_PATH_PROG(RMDelegate, rm)
-if test -n "$RMDelegate"
-then
-    AC_DEFINE_UNQUOTED(RMDelegate,"$RMDelegate")
-    have_rm='yes'
-else
-    RMDelegate=rm
-fi
+AC_PATH_PROG(RMDelegate, rm, rm)
 AC_SUBST(RMDelegate)
 
-
-#
 # Look for Netscape program.
-#
-have_netscape='no'
-AC_PATH_PROG(BrowseDelegate, netscape)
-if test -n "$BrowseDelegate"
-then
-    AC_DEFINE_UNQUOTED(BrowseDelegate,"$BrowseDelegate")
-    have_netscape='yes'
-else
-    BrowseDelegate=netscape
-fi
+AC_PATH_PROG(BrowseDelegate, netscape, netscape)
 AC_SUBST(BrowseDelegate)
 
-
-#
 # Look for 'bzip2' program
-#
-have_bzip2='no'
-AC_PATH_PROG(BZIPDelegate, bzip2)
-if test -n "$BZIPDelegate"
-then
-    AC_DEFINE_UNQUOTED(BZIPDelegate,"$BZIPDelegate")
-    have_bzip2='yes'
-else
-    BZIPDelegate=bzip2
-fi
+AC_PATH_PROG(BZIPDelegate, bzip2, bzip2)
 AC_SUBST(BZIPDelegate)
 
-#
 # Look for 'compress' program
-#
-have_compress='no'
-AC_PATH_PROG(LZWEncodeDelegate, compress)
-if test -n "$LZWEncodeDelegate"
-then
-    AC_DEFINE_UNQUOTED(LZWEncodeDelegate,"$LZWEncodeDelegate")
-    have_compress='yes'
-else
-    LZWEncodeDelegate=compress
-fi
+AC_PATH_PROG(LZWEncodeDelegate, compress, compress)
 AC_SUBST(LZWEncodeDelegate)
 
-#
 # Look for xterm program.
-#
-have_xterm='no'
-AC_PATH_PROG(EditorDelegate, xterm)
-if test -n "$EditorDelegate"
-then
-    AC_DEFINE_UNQUOTED(EditorDelegate,"$EditorDelegate")
-    have_xterm='yes'
-else
-    EditorDelegate=xterm
-fi
+AC_PATH_PROG(EditorDelegate, xterm, xterm)
 AC_SUBST(EditorDelegate)
 
-#
 # Look for TeX DVI format support program 'dvips'
-#
-have_dvips='no'
 AC_PATH_PROG(DVIDecodeDelegate, dvips, dvips)
-if test "$DVIDecodeDelegate" != 'dvips'
-then
-   have_dvips='yes'
-fi
 AC_SUBST(DVIDecodeDelegate)
 
-#
 # Look for Fig format support program 'fig2dev'
-#
 have_fig2dev='no'
-AC_PATH_PROG(FIGDecodeDelegate, fig2dev)
-if test -n "$FIGDecodeDelegate"
-then
-   AC_DEFINE_UNQUOTED(FIGDecodeDelegate,"$FIGDecodeDelegate")
-   have_fig2dev='yes'
-else
-   FIGDecodeDelegate=fig2dev
-fi
+AC_PATH_PROG(FIGDecodeDelegate, fig2dev, fig2dev)
+if test "$FIGDecodeDelegate" != 'fig2dev' ; then have_fig2dev='yes' ; fi
 AC_SUBST(FIGDecodeDelegate)
 
-#
 # Look for 'gzip' program
-#
-have_gzip='no'
-AC_PATH_PROG(ZipDelegate, gzip)
-if test -n "$ZipDelegate"
-then
-    AC_DEFINE_UNQUOTED(ZipDelegate,"$ZipDelegate")
-    have_gzip='yes'
-else
-    ZipDelegate=gzip
-fi
+AC_PATH_PROG(ZipDelegate, gzip, gzip)
 AC_SUBST(ZipDelegate)
 
-#
 # Look for Ghostscript 'gs'
-#
 have_gs='no'
-AC_PATH_PROG(PSDelegate, gs)
-if test -n "$PSDelegate"
-then
-  AC_DEFINE_UNQUOTED(PSDelegate,"$PSDelegate")
-  have_gs='yes'
-else
-  PSDelegate=gs
-fi
+AC_PATH_PROG(PSDelegate, gs, gs)
+if test "$PSDelegate" != 'gs' ; then have_gs='yes' ; fi
 AC_SUBST(PSDelegate)
 
-#
-# Look for Gimp program.
-#
-have_gimp='no'
-AC_PATH_PROG(LaunchDelegate, gimp)
-if test -n "$LaunchDelegate"
+# Figure out what drivers Ghostscript supports (if available)
+if test $have_gs = 'yes'
 then
-    AC_DEFINE_UNQUOTED(LaunchDelegate,"$LaunchDelegate")
-    have_gimp='yes'
-else
-    LaunchDelegate=gimp
+
+  # GSColorDevice
+  AC_MSG_CHECKING(for gs color device)
+  if $PSDelegate -q -dBATCH -sDEVICE=pnmraw < /dev/null 2> /dev/null
+  then
+    GSColorDevice=pnmraw
+  else
+    if $PSDelegate -q -dBATCH -sDEVICE=ppmraw < /dev/null 2> /dev/null
+    then
+      GSColorDevice=ppmraw
+    else
+      GSColorDevice=nodevice
+    fi
+  fi
+  AC_SUBST(GSColorDevice)
+  AC_MSG_RESULT($GSColorDevice)
+
+  # GSMonoDevice
+  AC_MSG_CHECKING(for gs mono device)
+  if $PSDelegate -q -dBATCH -sDEVICE=pbmraw < /dev/null 2> /dev/null
+  then
+    GSMonoDevice=pbmraw
+  else
+    GSMonoDevice=nodevice
+  fi
+  AC_SUBST(GSMonoDevice)
+  AC_MSG_RESULT($GSMonoDevice)
+
+  # GSPDFDevice
+  AC_MSG_CHECKING(for gs PDF writing device)
+  if $PSDelegate -q -dBATCH -sDEVICE=pdfwrite < /dev/null 2> /dev/null
+  then
+    GSPDFDevice=pdfwrite
+  else
+    GSPDFDevice=nodevice
+  fi
+  AC_SUBST(GSPDFDevice)
+  AC_MSG_RESULT($GSPDFDevice)
+
+  # GSPSDevice
+  AC_MSG_CHECKING(for gs PS writing device)
+  if $PSDelegate -q -dBATCH -sDEVICE=pswrite < /dev/null 2> /dev/null
+  then
+    GSPSDevice=pswrite
+  else
+    GSPSDevice=nodevice
+  fi
+  AC_SUBST(GSPSDevice)
+  AC_MSG_RESULT($GSPSDevice)
+
+  # GSEPSDevice
+  AC_MSG_CHECKING(for gs EPS writing device)
+  if $PSDelegate -q -dBATCH -sDEVICE=epswrite < /dev/null 2> /dev/null
+  then
+    GSEPSDevice=epswrite
+  else
+    GSEPSDevice=nodevice
+  fi
+  AC_SUBST(GSEPSDevice)
+  AC_MSG_RESULT($GSEPSDevice)
+
 fi
+
+# Look for Gimp program.
+AC_PATH_PROG(LaunchDelegate, gimp, gimp)
 AC_SUBST(LaunchDelegate)
 
-
-#
 # Look for MPEG support program 'mpeg2decode'
-#
 have_mpeg2decode='no'
-AC_PATH_PROG(MPEGDecodeDelegate, mpeg2decode)
-if test -n "$MPEGDecodeDelegate"
-then
-    AC_DEFINE_UNQUOTED(MPEGDecodeDelegate,"$MPEGDecodeDelegate")
-    have_mpeg2decode='yes'
-else
-    MPEGDecodeDelegate=mpeg2decode
-fi
+AC_PATH_PROG(MPEGDecodeDelegate, mpeg2decode, mpeg2decode)
+if test "$MPEGDecodeDelegate" != 'mpeg2decode' ; then have_mpeg2decode='yes' ; fi
 AC_SUBST(MPEGDecodeDelegate)
 
-#
 # Look for MPEG support program 'mpeg2encode'
-#
 have_mpeg2encode='no'
-AC_PATH_PROG(MPEGEncodeDelegate, mpeg2encode)
-if test -n "$MPEGEncodeDelegate"
-then
-    AC_DEFINE_UNQUOTED(MPEGEncodeDelegate,"$MPEGEncodeDelegate")
-    have_mpeg2encode='yes'
-else
-    MPEGEncodeDelegate=mpeg2encode
-fi
+AC_PATH_PROG(MPEGEncodeDelegate, mpeg2encode, mpeg2encode)
+if test "$MPEGEncodeDelegate" != 'mpeg2encode' ; then have_mpeg2encode='yes' ; fi
 AC_SUBST(MPEGEncodeDelegate)
 
-#
-# Look for 'pgpv' program
-#
-have_pgpv='no'
-AC_PATH_PROG(PGPDecodeDelegate, pgpv)
-if test -n "$PGPDecodeDelegate"
-then
-    AC_DEFINE_UNQUOTED(PGPDecodeDelegate,"$PGPDecodeDelegate")
-    have_pgpv='yes'
-else
-    PGPDecodeDelegate=pgpv
-fi
+# Look for PGP support program 'pgpv'
+AC_PATH_PROG(PGPDecodeDelegate, pgpv, pgpv)
 AC_SUBST(PGPDecodeDelegate)
 
-#
 # Look for Radiance format support program 'ra_ppm'
-#
 have_ra_ppm='no'
-AC_PATH_PROG(RADDecodeDelegate, ra_ppm)
-if test -n "$RADDecodeDelegate"
-then
-    AC_DEFINE_UNQUOTED(RADDecodeDelegate,"$RADDecodeDelegate")
-    have_ra_ppm='yes'
-else
-    RADDecodeDelegate=ra_ppm
-fi
+AC_PATH_PROG(RADDecodeDelegate, ra_ppm, ra_ppm)
+if test "$RADDecodeDelegate" != 'ra_ppm' ; then have_ra_ppm='yes' ; fi
 AC_SUBST(RADDecodeDelegate)
 
-#
 # Look for CGM support program 'ralcgm'
-#
 have_ralcgm='no'
-AC_PATH_PROG(CGMDecodeDelegate, ralcgm)
-if test -n "$CGMDecodeDelegate"
-then
-    AC_DEFINE_UNQUOTED(CGMDecodeDelegate,"$CGMDecodeDelegate")
-    have_ralcgm='yes'
-else
-    CGMDecodeDelegate=ralcgm
-fi
+AC_PATH_PROG(CGMDecodeDelegate, ralcgm, ralcgm)
+if test "$CGMDecodeDelegate" != 'ralcgm' ; then have_ralcgm='yes' ; fi
 AC_SUBST(CGMDecodeDelegate)
 
-#
 # Look for 'uncompress' program
-#
-have_uncompress='no'
-AC_PATH_PROG(LZWDecodeDelegate, uncompress)
-if test -n "$LZWDecodeDelegate"
-then
-    AC_DEFINE_UNQUOTED(LZWDecodeDelegate,"$LZWDecodeDelegate")
-    have_uncompress='yes'
-else
-    LZWDecodeDelegate=uncompress
-fi
+AC_PATH_PROG(LZWDecodeDelegate, uncompress, uncompress)
 AC_SUBST(LZWDecodeDelegate)
 
-#
-# Look for 'hp2xx' program
-#
+# Look for 'hp2xx' program (for HPGL)
 have_hp2xx='no'
-AC_PATH_PROG(HPGLDecodeDelegate, hp2xx)
-if test -n "$HPGLDecodeDelegate"
-then
-    AC_DEFINE_UNQUOTED(HPGLDecodeDelegate,"$HPGLDecodeDelegate")
-    have_hp2xx='yes'
-else
-    HPGLDecodeDelegate=hp2xx
-fi
+AC_PATH_PROG(HPGLDecodeDelegate, hp2xx, hp2xx)
+if test "$HPGLDecodeDelegate" != 'hp2xx' ; then have_hp2xx='yes' ; fi
 AC_SUBST(HPGLDecodeDelegate)
 
-#
 # Look for 'html2ps' program
-#
-have_html2ps='no'
-AC_PATH_PROG(HTMLDecodeDelegate, html2ps)
-if test -n "$HTMLDecodeDelegate"
-then
-    AC_DEFINE_UNQUOTED(HTMLDecodeDelegate,"$HTMLDecodeDelegate")
-    have_html2ps='yes'
-else
-    HTMLDecodeDelegate=html2ps
-fi
+AC_PATH_PROG(HTMLDecodeDelegate, html2ps, html2ps)
 AC_SUBST(HTMLDecodeDelegate)
 
-
-#
-# Configure convert program
-#
-ConvertDelegate=$BIN_DIR/convert
-have_convert='yes'
-AC_DEFINE_UNQUOTED(ConvertDelegate,"$ConvertDelegate")
-AC_SUBST(ConvertDelegate)
-
-#
-# Configure display program.
-#
-ShowImageDelegate=$BIN_DIR/display
-have_display='yes'
-AC_DEFINE_UNQUOTED(ShowImageDelegate,"$ShowImageDelegate")
-AC_SUBST(ShowImageDelegate)
-
-#
-# Configure mogrify program.
-#
-MogrifyDelegate=$BIN_DIR/mogrify
-have_mogrify='yes'
-AC_DEFINE_UNQUOTED(MogrifyDelegate,"$MogrifyDelegate")
-AC_SUBST(MogrifyDelegate)
-
-
-#
 # Look for 'rawtorle' program
-#
-have_rawtorle='no'
-AC_PATH_PROG(RLEEncodeDelegate, rawtorle)
-if test -n "$RLEEncodeDelegate"
-then
-    AC_DEFINE_UNQUOTED(RLEEncodeDelegate,"$RLEEncodeDelegate")
-    have_rawtorle='yes'
-else
-    RLEEncodeDelegate=rawtorle
-fi
+AC_PATH_PROG(RLEEncodeDelegate, rawtorle, rawtorle)
 AC_SUBST(RLEEncodeDelegate)
 
-#
 # Look for 'scanimage' program
-#
-have_scanimage='no'
-AC_PATH_PROG(SCANDecodeDelegate, scanimage)
-if test -n "$SCANDecodeDelegate"
-then
-    AC_DEFINE_UNQUOTED(SCANDecodeDelegate,"$SCANDecodeDelegate")
-    have_scanimage='yes'
-else
-    SCANDecodeDelegate=scanimage
-fi
+AC_PATH_PROG(SCANDecodeDelegate, scanimage, scanimage)
 AC_SUBST(SCANDecodeDelegate)
 
-#
 # Look for 'GET' program
-#
-have_GET='no'
-AC_PATH_PROG(WWWDecodeDelegate, GET)
-if test -n "$WWWDecodeDelegate"
-then
-    AC_DEFINE_UNQUOTED(WWWDecodeDelegate,"$WWWDecodeDelegate")
-    have_GET='yes'
-else
-    WWWDecodeDelegate=GET
-fi
+AC_PATH_PROG(WWWDecodeDelegate, GET, GET)
 AC_SUBST(WWWDecodeDelegate)
+
+#
+# Define paths to installed ImageMagick utilities
+#
+
+# Configure convert program
+ConvertDelegate=$BIN_DIR/convert
+AC_SUBST(ConvertDelegate)
+
+# Configure display program.
+ShowImageDelegate=$BIN_DIR/display
+AC_SUBST(ShowImageDelegate)
+
+# Configure mogrify program.
+MogrifyDelegate=$BIN_DIR/mogrify
+AC_SUBST(MogrifyDelegate)
 
 #
 # PerlMagick-related configuration
@@ -1151,6 +982,7 @@ DELEGATES=''
 if test "$have_bzlib"  = 'yes' ; then DELEGATES="$DELEGATES bzlib"  ; fi
 if test "$have_ralcgm" = 'yes' ; then DELEGATES="$DELEGATES cgm"  ; fi
 if test "$have_fpx"    = 'yes' ; then DELEGATES="$DELEGATES fpx"  ; fi
+if test "$have_hp2xx"  = 'yes' ; then DELEGATES="$DELEGATES hpgl"  ; fi
 if test "$have_hdf"    = 'yes' ; then DELEGATES="$DELEGATES hdf"  ; fi
 if test "$have_jbig"   = 'yes' ; then DELEGATES="$DELEGATES jbig" ; fi
 if test "$have_jpeg"   = 'yes' ; then DELEGATES="$DELEGATES jpeg" ; fi

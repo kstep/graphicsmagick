@@ -101,6 +101,11 @@ DELEGATES = @DELEGATES@
 DVIDecodeDelegate = @DVIDecodeDelegate@
 EditorDelegate = @EditorDelegate@
 FIGDecodeDelegate = @FIGDecodeDelegate@
+GSColorDevice = @GSColorDevice@
+GSEPSDevice = @GSEPSDevice@
+GSMonoDevice = @GSMonoDevice@
+GSPDFDevice = @GSPDFDevice@
+GSPSDevice = @GSPSDevice@
 HPGLDecodeDelegate = @HPGLDecodeDelegate@
 HTMLDecodeDelegate = @HTMLDecodeDelegate@
 LD = @LD@
@@ -148,7 +153,7 @@ AUTOMAKE_OPTIONS = 1.2 foreign
 pkgdata_DATA = delegates.mgk
 
 # Additional files to distribute
-EXTRA_DIST = delegates.mgk.in mac.mgk nt.mgk unix.mgk vms.mgk win95.mgk
+EXTRA_DIST = delegates.mgk.in delegates.mgk mac.mgk nt.mgk unix.mgk vms.mgk win95.mgk
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../magick/config.h
 CONFIG_CLEAN_FILES =  delegates.mgk

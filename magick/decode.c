@@ -7752,7 +7752,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
   char
     density[MaxTextExtent],
     command[MaxTextExtent],
-    *device,
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
     options[MaxTextExtent],
@@ -7803,8 +7802,14 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
     portrait,
     width;
 
-  if (!GetDelegateInfo("gs",True,&delegate_info))
-    return((Image *) NULL);
+  if (image_info->monochrome)
+    {
+      if (!GetDelegateInfo("gs-mono",True,&delegate_info))
+        return((Image *) NULL);
+    }
+  else
+    if (!GetDelegateInfo("gs-color",True,&delegate_info))
+      return((Image *) NULL);
   /*
     Allocate image structure.
   */
@@ -7912,9 +7917,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
   if (image_info->subrange != 0)
     (void) sprintf(options,"-dFirstPage=%u -dLastPage=%u",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
-  device=PostscriptColorDevice;
-  if (image_info->monochrome)
-    device=PostscriptMonoDevice;
   (void) strcpy(filename,image_info->filename);
   for (i=0; i < 50; i++)
   {
@@ -7926,21 +7928,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
       break;
   }
   alias_bits=image_info->dither && !image_info->monochrome ? 4 : 1;
-  (void) sprintf(command,delegate_info.commands,device,alias_bits,alias_bits,
-    geometry,density,options,image_info->filename,postscript_filename);
+  (void) sprintf(command,delegate_info.commands,alias_bits,alias_bits,geometry,
+    density,options,image_info->filename,postscript_filename);
   ProgressMonitor(RenderPostscriptText,0,8);
   status=SystemCommand(image_info->verbose,command);
-  if (status)
-    {
-      /*
-        Older ghostscript may not support text aliasing.
-      */
-      device="ppmraw";
-      (void) sprintf(command,delegate_info.commands,device,alias_bits,
-        alias_bits,geometry,density,options,image_info->filename,
-        postscript_filename);
-      status=SystemCommand(image_info->verbose,command);
-    }
   ProgressMonitor(RenderPostscriptText,7,8);
   if (status)
     {
@@ -10131,7 +10122,6 @@ static Image *ReadPSImage(const ImageInfo *image_info)
   char
     density[MaxTextExtent],
     command[MaxTextExtent],
-    *device,
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
     options[MaxTextExtent],
@@ -10184,8 +10174,14 @@ static Image *ReadPSImage(const ImageInfo *image_info)
     level,
     width;
 
-  if (!GetDelegateInfo("gs",True,&delegate_info))
-    return((Image *) NULL);
+  if (image_info->monochrome)
+    {
+      if (!GetDelegateInfo("gs-mono",True,&delegate_info))
+        return((Image *) NULL);
+    }
+  else
+    if (!GetDelegateInfo("gs-color",True,&delegate_info))
+      return((Image *) NULL);
   /*
     Allocate image structure.
   */
@@ -10322,9 +10318,6 @@ static Image *ReadPSImage(const ImageInfo *image_info)
   if (image_info->subrange != 0)
     (void) sprintf(options,"-dFirstPage=%u -dLastPage=%u",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
-  device=PostscriptColorDevice;
-  if (image_info->monochrome)
-    device=PostscriptMonoDevice;
   (void) strcpy(filename,image_info->filename);
   for (i=0; i < 50; i++)
   {
@@ -10336,21 +10329,10 @@ static Image *ReadPSImage(const ImageInfo *image_info)
       break;
   }
   alias_bits=image_info->dither && !image_info->monochrome ? 4 : 1;
-  (void) sprintf(command,delegate_info.commands,device,alias_bits,alias_bits,
-    geometry,density,options,image_info->filename,postscript_filename);
+  (void) sprintf(command,delegate_info.commands,alias_bits,alias_bits,geometry,
+    density,options,image_info->filename,postscript_filename);
   ProgressMonitor(RenderPostscriptText,0,8);
   status=SystemCommand(image_info->verbose,command);
-  if (status)
-    {
-      /*
-        Older ghostscript may not support text aliasing.
-      */
-      device="ppmraw";
-      (void) sprintf(command,delegate_info.commands,device,alias_bits,
-        alias_bits,geometry,density,options,image_info->filename,
-        postscript_filename);
-      status=SystemCommand(image_info->verbose,command);
-    }
   if (!IsAccessible(image_info->filename))
     {
       /*

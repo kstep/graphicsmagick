@@ -34,4 +34,4 @@ AUTOMAKE_OPTIONS = 1.2 foreign
 pkgdata_DATA = delegates.mgk
 
 # Additional files to distribute
-EXTRA_DIST = delegates.mgk.in mac.mgk nt.mgk unix.mgk vms.mgk win95.mgk
+EXTRA_DIST = delegates.mgk.in delegates.mgk mac.mgk nt.mgk unix.mgk vms.mgk win95.mgk

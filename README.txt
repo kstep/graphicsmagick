@@ -275,20 +275,20 @@ UNIX COMPILATION
     seperate step to install PerlMagick (see the README file in the
     PerlMagick subdirectory).
 
-    Review the defines in magick/magick.h and delegates/delegates.mgk and
-    make sure the meet the requirements of your local system.
-
     Edit Magick.tmpl and set the variables to suit your local
     environment.  Now type:
     
+        ./configure
         xmkmf
         make Makefiles
         
     or just
       
+        ./configure
         xmkmf -a
         
-    if you are using X11R6 imake.
+    if you are using X11R6 imake.  Here, GNU configure is used to 
+    initialize the delegates/delegates.mgk file.
 
   * * *
   

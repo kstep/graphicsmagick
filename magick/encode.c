@@ -5269,7 +5269,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   if (image->ps_file != (FILE *) NULL) 
     if ((image->next == (Image *) NULL) || image_info->adjoin)
       if ((image->previous == (Image *) NULL) && !IsTainted(image))
-        if (GetDelegateInfo("gs",False,&delegate_info))
+        if (GetDelegateInfo("gs-pdf",False,&delegate_info))
           {
             char
               command[MaxTextExtent],
@@ -5291,8 +5291,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 for (c=fgetc(image->ps_file); c != EOF; c=fgetc(image->ps_file))
                   (void) putc(c,file);
                 (void) fclose(file);
-                (void) sprintf(command,delegate_info.commands,"pdfwrite",
-                  image->filename,filename);
+                (void) sprintf(command,delegate_info.commands,image->filename,
+                  filename);
                 status=SystemCommand(image_info->verbose,command);
                 (void) remove(filename);
                 if (status == False)
@@ -8462,7 +8462,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   if (image->ps_file != (FILE *) NULL) 
     if ((image->next == (Image *) NULL) || image_info->adjoin)
       if ((image->previous == (Image *) NULL) && !IsTainted(image))
-        if (GetDelegateInfo("gs",False,&delegate_info))
+        if ((Latin1Compare(image_info->magick,"PS") &&
+             GetDelegateInfo("gs-ps",False,&delegate_info)) ||
+             GetDelegateInfo("gs-eps",False,&delegate_info))
           {
             char
               command[MaxTextExtent],
@@ -8487,9 +8489,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 for (c=fgetc(image->ps_file); c != EOF; c=fgetc(image->ps_file))
                   (void) putc(c,file);
                 (void) fclose(file);
-                (void) sprintf(command,delegate_info.commands,
-                  Latin1Compare(image_info->magick,"PS") == 0 ? "pswrite" :
-                  "epswrite",image->filename,filename);
+                (void) sprintf(command,delegate_info.commands,image->filename,
+                  filename);
                 status=SystemCommand(image_info->verbose,command);
                 (void) remove(filename);
                 if (status == False)

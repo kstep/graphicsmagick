@@ -51,8 +51,11 @@
 # ImageMagick looks for the delegate configurarion file in this order:
 #
 #     /usr/local/share/ImageMagick/delegates.mgk
-#     ~/magick/delegates.mgk
+#     DELEGATE_PATH/delegates.mgk
+#     HOME/.magick/delegates.mgk
 #     ./delegates.mgk
+#
+# Where DELEGATE_PATH and HOME are environment variables.
 #
 # Like entries in the later two directory overrides the specification
 # in the system-wide delegates file.
@@ -64,8 +67,17 @@
 <=compress
 	|@LZWEncodeDelegate@ -c > %o
 
-<=gs
-	@PSDelegate@ -sDEVICE=%s -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" -c quit
+<=gs-eps
+	@PSDelegate@ -sDEVICE=@GSEPSDevice@ -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%s" -- "%s" -c quit
+
+<=gs-pdf
+	@PSDelegate@ -sDEVICE=@GSPDFDevice@ -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%s" -- "%s" -c quit
+
+<=gs-ps
+	@PSDelegate@ -sDEVICE=@GSPSDevice@ -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%s" -- "%s" -c quit
 
 <=zip
 	|@ZipDelegate@ -cf > %o
@@ -99,10 +111,15 @@ fig=>
 ftp=>
 	@WWWDecodeDelegate@ %m:%i > %o 2>&1
 
-gs=>
-	@PSDelegate@ -sDEVICE=%s -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u \
-	  -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- \
-	  "%s" -c quit
+gs-color=>
+	@PSDelegate@ -sDEVICE=@GSColorDevice@ -q -dNOPAUSE -dSAFER \
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
+	  -sOutputFile="%s" -- "%s" -c quit
+
+gs-mono=>
+	@PSDelegate@ -sDEVICE=@GSMonoDevice@ -q -dNOPAUSE -dSAFER \
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
+	  -sOutputFile="%s" -- "%s" -c quit
 
 hpgl=>
 	@HPGLDecodeDelegate@ -q -m eps -f %i %o

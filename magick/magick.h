@@ -61,7 +61,16 @@ extern "C" {
 
 #undef index
 
-#if defined(WIN32) || defined(macintosh)
+#if defined(macintosh)
+#define HasJPEG
+#define HasLZW
+#define HasPNG
+#define HasTIFF
+#define HasTTF
+#define HasZLIB
+#endif
+
+#if defined(WIN32)
 #define HasJBIG
 #define HasJPEG
 #define HasLZW

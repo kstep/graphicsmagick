@@ -5999,14 +5999,11 @@ cat >> confdefs.h <<EOF
 EOF
 
 
-#
 # Look for 'cat' program
-#
-have_cat='no'
 # Extract the first word of "cat", so it can be a program name with args.
 set dummy cat; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6010: checking for $ac_word" >&5
+echo "configure:6007: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_CatDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6024,6 +6021,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_CatDelegate" && ac_cv_path_CatDelegate="cat"
   ;;
 esac
 fi
@@ -6034,27 +6032,13 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$CatDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define CatDelegate "$CatDelegate"
-EOF
-
-    have_cat='yes'
-else
-    CatDelegate=cat
-fi
 
 
-
-#
 # Look for LP program.
-#
-have_lp='no'
 # Extract the first word of "lp", so it can be a program name with args.
 set dummy lp; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6058: checking for $ac_word" >&5
+echo "configure:6042: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_LPDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6072,6 +6056,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_LPDelegate" && ac_cv_path_LPDelegate="lp"
   ;;
 esac
 fi
@@ -6082,26 +6067,13 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$LPDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define LPDelegate "$LPDelegate"
-EOF
-
-    have_lp='yes'
-else
-    LPDelegate=lp
-fi
 
 
-#
 # Look for 'mv' program
-#
-have_mv='no'
 # Extract the first word of "mv", so it can be a program name with args.
 set dummy mv; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6105: checking for $ac_word" >&5
+echo "configure:6077: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_MVDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6119,6 +6091,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_MVDelegate" && ac_cv_path_MVDelegate="mv"
   ;;
 esac
 fi
@@ -6129,26 +6102,13 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$MVDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define MVDelegate "$MVDelegate"
-EOF
-
-    have_mv='yes'
-else
-    MVDelegate=mv
-fi
 
 
-#
 # Look for 'rm' program
-#
-have_rm='no'
 # Extract the first word of "rm", so it can be a program name with args.
 set dummy rm; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6152: checking for $ac_word" >&5
+echo "configure:6112: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_RMDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6166,6 +6126,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_RMDelegate" && ac_cv_path_RMDelegate="rm"
   ;;
 esac
 fi
@@ -6176,27 +6137,13 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$RMDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define RMDelegate "$RMDelegate"
-EOF
-
-    have_rm='yes'
-else
-    RMDelegate=rm
-fi
 
 
-
-#
 # Look for Netscape program.
-#
-have_netscape='no'
 # Extract the first word of "netscape", so it can be a program name with args.
 set dummy netscape; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6200: checking for $ac_word" >&5
+echo "configure:6147: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_BrowseDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6214,6 +6161,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_BrowseDelegate" && ac_cv_path_BrowseDelegate="netscape"
   ;;
 esac
 fi
@@ -6224,27 +6172,13 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$BrowseDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define BrowseDelegate "$BrowseDelegate"
-EOF
-
-    have_netscape='yes'
-else
-    BrowseDelegate=netscape
-fi
 
 
-
-#
 # Look for 'bzip2' program
-#
-have_bzip2='no'
 # Extract the first word of "bzip2", so it can be a program name with args.
 set dummy bzip2; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6248: checking for $ac_word" >&5
+echo "configure:6182: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_BZIPDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6262,6 +6196,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_BZIPDelegate" && ac_cv_path_BZIPDelegate="bzip2"
   ;;
 esac
 fi
@@ -6272,26 +6207,13 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$BZIPDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define BZIPDelegate "$BZIPDelegate"
-EOF
-
-    have_bzip2='yes'
-else
-    BZIPDelegate=bzip2
-fi
 
 
-#
 # Look for 'compress' program
-#
-have_compress='no'
 # Extract the first word of "compress", so it can be a program name with args.
 set dummy compress; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6295: checking for $ac_word" >&5
+echo "configure:6217: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_LZWEncodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6309,6 +6231,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_LZWEncodeDelegate" && ac_cv_path_LZWEncodeDelegate="compress"
   ;;
 esac
 fi
@@ -6319,26 +6242,13 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$LZWEncodeDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define LZWEncodeDelegate "$LZWEncodeDelegate"
-EOF
-
-    have_compress='yes'
-else
-    LZWEncodeDelegate=compress
-fi
 
 
-#
 # Look for xterm program.
-#
-have_xterm='no'
 # Extract the first word of "xterm", so it can be a program name with args.
 set dummy xterm; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6342: checking for $ac_word" >&5
+echo "configure:6252: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_EditorDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6356,6 +6266,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_EditorDelegate" && ac_cv_path_EditorDelegate="xterm"
   ;;
 esac
 fi
@@ -6366,26 +6277,13 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$EditorDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define EditorDelegate "$EditorDelegate"
-EOF
-
-    have_xterm='yes'
-else
-    EditorDelegate=xterm
-fi
 
 
-#
 # Look for TeX DVI format support program 'dvips'
-#
-have_dvips='no'
 # Extract the first word of "dvips", so it can be a program name with args.
 set dummy dvips; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6389: checking for $ac_word" >&5
+echo "configure:6287: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_DVIDecodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6414,20 +6312,14 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test "$DVIDecodeDelegate" != 'dvips'
-then
-   have_dvips='yes'
-fi
 
 
-#
 # Look for Fig format support program 'fig2dev'
-#
 have_fig2dev='no'
 # Extract the first word of "fig2dev", so it can be a program name with args.
 set dummy fig2dev; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6431: checking for $ac_word" >&5
+echo "configure:6323: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_FIGDecodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6445,6 +6337,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_FIGDecodeDelegate" && ac_cv_path_FIGDecodeDelegate="fig2dev"
   ;;
 esac
 fi
@@ -6455,26 +6348,14 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$FIGDecodeDelegate"
-then
-   cat >> confdefs.h <<EOF
-#define FIGDecodeDelegate "$FIGDecodeDelegate"
-EOF
-
-   have_fig2dev='yes'
-else
-   FIGDecodeDelegate=fig2dev
-fi
+if test "$FIGDecodeDelegate" != 'fig2dev' ; then have_fig2dev='yes' ; fi
 
 
-#
 # Look for 'gzip' program
-#
-have_gzip='no'
 # Extract the first word of "gzip", so it can be a program name with args.
 set dummy gzip; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6478: checking for $ac_word" >&5
+echo "configure:6359: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_ZipDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6492,6 +6373,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_ZipDelegate" && ac_cv_path_ZipDelegate="gzip"
   ;;
 esac
 fi
@@ -6502,26 +6384,14 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$ZipDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define ZipDelegate "$ZipDelegate"
-EOF
-
-    have_gzip='yes'
-else
-    ZipDelegate=gzip
-fi
 
 
-#
 # Look for Ghostscript 'gs'
-#
 have_gs='no'
 # Extract the first word of "gs", so it can be a program name with args.
 set dummy gs; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6525: checking for $ac_word" >&5
+echo "configure:6395: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_PSDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6539,6 +6409,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_PSDelegate" && ac_cv_path_PSDelegate="gs"
   ;;
 esac
 fi
@@ -6549,26 +6420,85 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$PSDelegate"
-then
-  cat >> confdefs.h <<EOF
-#define PSDelegate "$PSDelegate"
-EOF
+if test "$PSDelegate" != 'gs' ; then have_gs='yes' ; fi
 
-  have_gs='yes'
-else
-  PSDelegate=gs
+
+# Figure out what drivers Ghostscript supports (if available)
+if test $have_gs = 'yes'
+then
+
+  # GSColorDevice
+  echo $ac_n "checking for gs color device""... $ac_c" 1>&6
+echo "configure:6433: checking for gs color device" >&5
+  if $PSDelegate -q -dBATCH -sDEVICE=pnmraw < /dev/null 2> /dev/null
+  then
+    GSColorDevice=pnmraw
+  else
+    if $PSDelegate -q -dBATCH -sDEVICE=ppmraw < /dev/null 2> /dev/null
+    then
+      GSColorDevice=ppmraw
+    else
+      GSColorDevice=nodevice
+    fi
+  fi
+  
+  echo "$ac_t""$GSColorDevice" 1>&6
+
+  # GSMonoDevice
+  echo $ac_n "checking for gs mono device""... $ac_c" 1>&6
+echo "configure:6450: checking for gs mono device" >&5
+  if $PSDelegate -q -dBATCH -sDEVICE=pbmraw < /dev/null 2> /dev/null
+  then
+    GSMonoDevice=pbmraw
+  else
+    GSMonoDevice=nodevice
+  fi
+  
+  echo "$ac_t""$GSMonoDevice" 1>&6
+
+  # GSPDFDevice
+  echo $ac_n "checking for gs PDF writing device""... $ac_c" 1>&6
+echo "configure:6462: checking for gs PDF writing device" >&5
+  if $PSDelegate -q -dBATCH -sDEVICE=pdfwrite < /dev/null 2> /dev/null
+  then
+    GSPDFDevice=pdfwrite
+  else
+    GSPDFDevice=nodevice
+  fi
+  
+  echo "$ac_t""$GSPDFDevice" 1>&6
+
+  # GSPSDevice
+  echo $ac_n "checking for gs PS writing device""... $ac_c" 1>&6
+echo "configure:6474: checking for gs PS writing device" >&5
+  if $PSDelegate -q -dBATCH -sDEVICE=pswrite < /dev/null 2> /dev/null
+  then
+    GSPSDevice=pswrite
+  else
+    GSPSDevice=nodevice
+  fi
+  
+  echo "$ac_t""$GSPSDevice" 1>&6
+
+  # GSEPSDevice
+  echo $ac_n "checking for gs EPS writing device""... $ac_c" 1>&6
+echo "configure:6486: checking for gs EPS writing device" >&5
+  if $PSDelegate -q -dBATCH -sDEVICE=epswrite < /dev/null 2> /dev/null
+  then
+    GSEPSDevice=epswrite
+  else
+    GSEPSDevice=nodevice
+  fi
+  
+  echo "$ac_t""$GSEPSDevice" 1>&6
+
 fi
 
-
-#
 # Look for Gimp program.
-#
-have_gimp='no'
 # Extract the first word of "gimp", so it can be a program name with args.
 set dummy gimp; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6572: checking for $ac_word" >&5
+echo "configure:6502: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_LaunchDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6586,6 +6516,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_LaunchDelegate" && ac_cv_path_LaunchDelegate="gimp"
   ;;
 esac
 fi
@@ -6596,27 +6527,14 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$LaunchDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define LaunchDelegate "$LaunchDelegate"
-EOF
-
-    have_gimp='yes'
-else
-    LaunchDelegate=gimp
-fi
 
 
-
-#
 # Look for MPEG support program 'mpeg2decode'
-#
 have_mpeg2decode='no'
 # Extract the first word of "mpeg2decode", so it can be a program name with args.
 set dummy mpeg2decode; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6620: checking for $ac_word" >&5
+echo "configure:6538: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_MPEGDecodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6634,6 +6552,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_MPEGDecodeDelegate" && ac_cv_path_MPEGDecodeDelegate="mpeg2decode"
   ;;
 esac
 fi
@@ -6644,26 +6563,15 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$MPEGDecodeDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define MPEGDecodeDelegate "$MPEGDecodeDelegate"
-EOF
-
-    have_mpeg2decode='yes'
-else
-    MPEGDecodeDelegate=mpeg2decode
-fi
+if test "$MPEGDecodeDelegate" != 'mpeg2decode' ; then have_mpeg2decode='yes' ; fi
 
 
-#
 # Look for MPEG support program 'mpeg2encode'
-#
 have_mpeg2encode='no'
 # Extract the first word of "mpeg2encode", so it can be a program name with args.
 set dummy mpeg2encode; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6667: checking for $ac_word" >&5
+echo "configure:6575: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_MPEGEncodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6681,6 +6589,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_MPEGEncodeDelegate" && ac_cv_path_MPEGEncodeDelegate="mpeg2encode"
   ;;
 esac
 fi
@@ -6691,26 +6600,14 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$MPEGEncodeDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define MPEGEncodeDelegate "$MPEGEncodeDelegate"
-EOF
-
-    have_mpeg2encode='yes'
-else
-    MPEGEncodeDelegate=mpeg2encode
-fi
+if test "$MPEGEncodeDelegate" != 'mpeg2encode' ; then have_mpeg2encode='yes' ; fi
 
 
-#
-# Look for 'pgpv' program
-#
-have_pgpv='no'
+# Look for PGP support program 'pgpv'
 # Extract the first word of "pgpv", so it can be a program name with args.
 set dummy pgpv; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6714: checking for $ac_word" >&5
+echo "configure:6611: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_PGPDecodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6728,6 +6625,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_PGPDecodeDelegate" && ac_cv_path_PGPDecodeDelegate="pgpv"
   ;;
 esac
 fi
@@ -6738,26 +6636,14 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$PGPDecodeDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define PGPDecodeDelegate "$PGPDecodeDelegate"
-EOF
-
-    have_pgpv='yes'
-else
-    PGPDecodeDelegate=pgpv
-fi
 
 
-#
 # Look for Radiance format support program 'ra_ppm'
-#
 have_ra_ppm='no'
 # Extract the first word of "ra_ppm", so it can be a program name with args.
 set dummy ra_ppm; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6761: checking for $ac_word" >&5
+echo "configure:6647: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_RADDecodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6775,6 +6661,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_RADDecodeDelegate" && ac_cv_path_RADDecodeDelegate="ra_ppm"
   ;;
 esac
 fi
@@ -6785,26 +6672,15 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$RADDecodeDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define RADDecodeDelegate "$RADDecodeDelegate"
-EOF
-
-    have_ra_ppm='yes'
-else
-    RADDecodeDelegate=ra_ppm
-fi
+if test "$RADDecodeDelegate" != 'ra_ppm' ; then have_ra_ppm='yes' ; fi
 
 
-#
 # Look for CGM support program 'ralcgm'
-#
 have_ralcgm='no'
 # Extract the first word of "ralcgm", so it can be a program name with args.
 set dummy ralcgm; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6808: checking for $ac_word" >&5
+echo "configure:6684: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_CGMDecodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6822,6 +6698,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_CGMDecodeDelegate" && ac_cv_path_CGMDecodeDelegate="ralcgm"
   ;;
 esac
 fi
@@ -6832,26 +6709,14 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$CGMDecodeDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define CGMDecodeDelegate "$CGMDecodeDelegate"
-EOF
-
-    have_ralcgm='yes'
-else
-    CGMDecodeDelegate=ralcgm
-fi
+if test "$CGMDecodeDelegate" != 'ralcgm' ; then have_ralcgm='yes' ; fi
 
 
-#
 # Look for 'uncompress' program
-#
-have_uncompress='no'
 # Extract the first word of "uncompress", so it can be a program name with args.
 set dummy uncompress; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6855: checking for $ac_word" >&5
+echo "configure:6720: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_LZWDecodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6869,6 +6734,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_LZWDecodeDelegate" && ac_cv_path_LZWDecodeDelegate="uncompress"
   ;;
 esac
 fi
@@ -6879,26 +6745,14 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$LZWDecodeDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define LZWDecodeDelegate "$LZWDecodeDelegate"
-EOF
-
-    have_uncompress='yes'
-else
-    LZWDecodeDelegate=uncompress
-fi
 
 
-#
-# Look for 'hp2xx' program
-#
+# Look for 'hp2xx' program (for HPGL)
 have_hp2xx='no'
 # Extract the first word of "hp2xx", so it can be a program name with args.
 set dummy hp2xx; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6902: checking for $ac_word" >&5
+echo "configure:6756: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_HPGLDecodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6916,6 +6770,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_HPGLDecodeDelegate" && ac_cv_path_HPGLDecodeDelegate="hp2xx"
   ;;
 esac
 fi
@@ -6926,26 +6781,14 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$HPGLDecodeDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define HPGLDecodeDelegate "$HPGLDecodeDelegate"
-EOF
-
-    have_hp2xx='yes'
-else
-    HPGLDecodeDelegate=hp2xx
-fi
+if test "$HPGLDecodeDelegate" != 'hp2xx' ; then have_hp2xx='yes' ; fi
 
 
-#
 # Look for 'html2ps' program
-#
-have_html2ps='no'
 # Extract the first word of "html2ps", so it can be a program name with args.
 set dummy html2ps; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6949: checking for $ac_word" >&5
+echo "configure:6792: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_HTMLDecodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6963,6 +6806,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_HTMLDecodeDelegate" && ac_cv_path_HTMLDecodeDelegate="html2ps"
   ;;
 esac
 fi
@@ -6973,61 +6817,13 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$HTMLDecodeDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define HTMLDecodeDelegate "$HTMLDecodeDelegate"
-EOF
-
-    have_html2ps='yes'
-else
-    HTMLDecodeDelegate=html2ps
-fi
 
 
-
-#
-# Configure convert program
-#
-ConvertDelegate=$BIN_DIR/convert
-have_convert='yes'
-cat >> confdefs.h <<EOF
-#define ConvertDelegate "$ConvertDelegate"
-EOF
-
-
-
-#
-# Configure display program.
-#
-ShowImageDelegate=$BIN_DIR/display
-have_display='yes'
-cat >> confdefs.h <<EOF
-#define ShowImageDelegate "$ShowImageDelegate"
-EOF
-
-
-
-#
-# Configure mogrify program.
-#
-MogrifyDelegate=$BIN_DIR/mogrify
-have_mogrify='yes'
-cat >> confdefs.h <<EOF
-#define MogrifyDelegate "$MogrifyDelegate"
-EOF
-
-
-
-
-#
 # Look for 'rawtorle' program
-#
-have_rawtorle='no'
 # Extract the first word of "rawtorle", so it can be a program name with args.
 set dummy rawtorle; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:7031: checking for $ac_word" >&5
+echo "configure:6827: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_RLEEncodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -7045,6 +6841,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_RLEEncodeDelegate" && ac_cv_path_RLEEncodeDelegate="rawtorle"
   ;;
 esac
 fi
@@ -7055,26 +6852,13 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$RLEEncodeDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define RLEEncodeDelegate "$RLEEncodeDelegate"
-EOF
-
-    have_rawtorle='yes'
-else
-    RLEEncodeDelegate=rawtorle
-fi
 
 
-#
 # Look for 'scanimage' program
-#
-have_scanimage='no'
 # Extract the first word of "scanimage", so it can be a program name with args.
 set dummy scanimage; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:7078: checking for $ac_word" >&5
+echo "configure:6862: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_SCANDecodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -7092,6 +6876,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_SCANDecodeDelegate" && ac_cv_path_SCANDecodeDelegate="scanimage"
   ;;
 esac
 fi
@@ -7102,26 +6887,13 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$SCANDecodeDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define SCANDecodeDelegate "$SCANDecodeDelegate"
-EOF
-
-    have_scanimage='yes'
-else
-    SCANDecodeDelegate=scanimage
-fi
 
 
-#
 # Look for 'GET' program
-#
-have_GET='no'
 # Extract the first word of "GET", so it can be a program name with args.
 set dummy GET; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:7125: checking for $ac_word" >&5
+echo "configure:6897: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_WWWDecodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -7139,6 +6911,7 @@ else
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_WWWDecodeDelegate" && ac_cv_path_WWWDecodeDelegate="GET"
   ;;
 esac
 fi
@@ -7149,16 +6922,22 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test -n "$WWWDecodeDelegate"
-then
-    cat >> confdefs.h <<EOF
-#define WWWDecodeDelegate "$WWWDecodeDelegate"
-EOF
 
-    have_GET='yes'
-else
-    WWWDecodeDelegate=GET
-fi
+
+#
+# Define paths to installed ImageMagick utilities
+#
+
+# Configure convert program
+ConvertDelegate=$BIN_DIR/convert
+
+
+# Configure display program.
+ShowImageDelegate=$BIN_DIR/display
+
+
+# Configure mogrify program.
+MogrifyDelegate=$BIN_DIR/mogrify
 
 
 #
@@ -7173,7 +6952,7 @@ then
     if test "$with_perl" != 'yes'
     then
 	echo $ac_n "checking for perl""... $ac_c" 1>&6
-echo "configure:7177: checking for perl" >&5
+echo "configure:6956: checking for perl" >&5
 if eval "test \"`echo '$''{'ac_cv_path_PERL'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -7189,7 +6968,7 @@ do
 # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:7193: checking for $ac_word" >&5
+echo "configure:6972: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_PERL'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -7239,6 +7018,7 @@ DELEGATES=''
 if test "$have_bzlib"  = 'yes' ; then DELEGATES="$DELEGATES bzlib"  ; fi
 if test "$have_ralcgm" = 'yes' ; then DELEGATES="$DELEGATES cgm"  ; fi
 if test "$have_fpx"    = 'yes' ; then DELEGATES="$DELEGATES fpx"  ; fi
+if test "$have_hp2xx"  = 'yes' ; then DELEGATES="$DELEGATES hpgl"  ; fi
 if test "$have_hdf"    = 'yes' ; then DELEGATES="$DELEGATES hdf"  ; fi
 if test "$have_jbig"   = 'yes' ; then DELEGATES="$DELEGATES jbig" ; fi
 if test "$have_jpeg"   = 'yes' ; then DELEGATES="$DELEGATES jpeg" ; fi
@@ -7272,7 +7052,7 @@ if test "$have_zlib"   = 'yes' ; then DELEGATES="$DELEGATES zlib" ; fi
 #
 
 echo $ac_n "checking for HP style pty allocation""... $ac_c" 1>&6
-echo "configure:7276: checking for HP style pty allocation" >&5
+echo "configure:7056: checking for HP style pty allocation" >&5
 # following test fails on DECstations and other things that don't grok -c
 # but that's ok, since they don't have PTYMs anyway
 if test -r /dev/ptym/ptyp0 2>/dev/null ; then
@@ -7287,9 +7067,9 @@ else
 fi
 
 echo $ac_n "checking for HP style pty trapping""... $ac_c" 1>&6
-echo "configure:7291: checking for HP style pty trapping" >&5
+echo "configure:7071: checking for HP style pty trapping" >&5
 cat > conftest.$ac_ext <<EOF
-#line 7293 "configure"
+#line 7073 "configure"
 #include "confdefs.h"
 #include <sys/ptyio.h>
 EOF
@@ -7311,7 +7091,7 @@ rm -f conftest*
 
 
 echo $ac_n "checking for AIX new-style pty allocation""... $ac_c" 1>&6
-echo "configure:7315: checking for AIX new-style pty allocation" >&5
+echo "configure:7095: checking for AIX new-style pty allocation" >&5
 if test -r /dev/ptc -a -r /dev/pts ; then
     echo "$ac_t""yes" 1>&6
     cat >> confdefs.h <<\EOF
@@ -7324,7 +7104,7 @@ else
 fi
 
 echo $ac_n "checking for SGI old-style pty allocation""... $ac_c" 1>&6
-echo "configure:7328: checking for SGI old-style pty allocation" >&5
+echo "configure:7108: checking for SGI old-style pty allocation" >&5
 if test -r /dev/ptc -a ! -r /dev/pts ; then
     echo "$ac_t""yes" 1>&6
     cat >> confdefs.h <<\EOF
@@ -7342,7 +7122,7 @@ fi
 # anyway.  So we chose these, which have a special numbering scheme.
 #
 echo $ac_n "checking for SCO style pty allocation""... $ac_c" 1>&6
-echo "configure:7346: checking for SCO style pty allocation" >&5
+echo "configure:7126: checking for SCO style pty allocation" >&5
 sco_ptys=""
 case "${host}" in
   *-sco3.2v[45]*)     sco_clist_ptys=1 svr4_ptys_broken=1;;
@@ -7360,7 +7140,7 @@ else
 fi
 
 echo $ac_n "checking for SVR4/UNIX-'98 style pty allocation""... $ac_c" 1>&6
-echo "configure:7364: checking for SVR4/UNIX-'98 style pty allocation" >&5
+echo "configure:7144: checking for SVR4/UNIX-'98 style pty allocation" >&5
 if test -r /dev/ptmx -a "x$svr4_ptys_broken" = x ; then
   echo "$ac_t""yes" 1>&6
   cat >> confdefs.h <<\EOF
@@ -7369,12 +7149,12 @@ EOF
 
   # aargg. Some systems need libpt.a to use /dev/ptmx
   echo $ac_n "checking for ptsname""... $ac_c" 1>&6
-echo "configure:7373: checking for ptsname" >&5
+echo "configure:7153: checking for ptsname" >&5
 if eval "test \"`echo '$''{'ac_cv_func_ptsname'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7378 "configure"
+#line 7158 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char ptsname(); below.  */
@@ -7397,7 +7177,7 @@ ptsname();
 
 ; return 0; }
 EOF
-if { (eval echo configure:7401: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:7181: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_func_ptsname=yes"
 else
@@ -7424,7 +7204,7 @@ fi
 # In OSF/1 case, SVR4 are somewhat different.
 # Gregory Depp <depp@osf.org> 17Aug93
 echo $ac_n "checking for OSF/1 style pty allocation""... $ac_c" 1>&6
-echo "configure:7428: checking for OSF/1 style pty allocation" >&5
+echo "configure:7208: checking for OSF/1 style pty allocation" >&5
 if test -r /dev/ptmx_bsd ; then
     cat >> confdefs.h <<\EOF
 #define HAVE_PTMX_BSD 1
@@ -7450,17 +7230,17 @@ then
   have_socks_lib='no'
   ac_safe=`echo "socks.h" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for socks.h""... $ac_c" 1>&6
-echo "configure:7454: checking for socks.h" >&5
+echo "configure:7234: checking for socks.h" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7459 "configure"
+#line 7239 "configure"
 #include "confdefs.h"
 #include <socks.h>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:7464: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:7244: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -7483,7 +7263,7 @@ have_socks_header='no'
 fi
 
   echo $ac_n "checking for SOCKSinit in -lsocks5""... $ac_c" 1>&6
-echo "configure:7487: checking for SOCKSinit in -lsocks5" >&5
+echo "configure:7267: checking for SOCKSinit in -lsocks5" >&5
 ac_lib_var=`echo socks5'_'SOCKSinit | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -7491,7 +7271,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="$LIBS -lsocks5 "
 cat > conftest.$ac_ext <<EOF
-#line 7495 "configure"
+#line 7275 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -7502,7 +7282,7 @@ int main() {
 SOCKSinit()
 ; return 0; }
 EOF
-if { (eval echo configure:7506: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:7286: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -7534,7 +7314,7 @@ do
 # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:7538: checking for $ac_word" >&5
+echo "configure:7318: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_XTP_FTP'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -7568,7 +7348,7 @@ done
 fi
 XTP_DEFS="$XTP_DEFS -DXTP_FTP=\"\\\"$XTP_FTP\\\"\""
 echo $ac_n "checking for gethostbyname in -lnsl""... $ac_c" 1>&6
-echo "configure:7572: checking for gethostbyname in -lnsl" >&5
+echo "configure:7352: checking for gethostbyname in -lnsl" >&5
 ac_lib_var=`echo nsl'_'gethostbyname | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -7576,7 +7356,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="$LIBS -lnsl "
 cat > conftest.$ac_ext <<EOF
-#line 7580 "configure"
+#line 7360 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -7587,7 +7367,7 @@ int main() {
 gethostbyname()
 ; return 0; }
 EOF
-if { (eval echo configure:7591: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:7371: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -7608,7 +7388,7 @@ else
 fi
 
 echo $ac_n "checking for socket in -lsocket""... $ac_c" 1>&6
-echo "configure:7612: checking for socket in -lsocket" >&5
+echo "configure:7392: checking for socket in -lsocket" >&5
 ac_lib_var=`echo socket'_'socket | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -7616,7 +7396,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="$LIBS -lsocket "
 cat > conftest.$ac_ext <<EOF
-#line 7620 "configure"
+#line 7400 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -7627,7 +7407,7 @@ int main() {
 socket()
 ; return 0; }
 EOF
-if { (eval echo configure:7631: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:7411: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -7848,6 +7628,11 @@ s%@DVIDecodeDelegate@%$DVIDecodeDelegate%g
 s%@FIGDecodeDelegate@%$FIGDecodeDelegate%g
 s%@ZipDelegate@%$ZipDelegate%g
 s%@PSDelegate@%$PSDelegate%g
+s%@GSColorDevice@%$GSColorDevice%g
+s%@GSMonoDevice@%$GSMonoDevice%g
+s%@GSPDFDevice@%$GSPDFDevice%g
+s%@GSPSDevice@%$GSPSDevice%g
+s%@GSEPSDevice@%$GSEPSDevice%g
 s%@LaunchDelegate@%$LaunchDelegate%g
 s%@MPEGDecodeDelegate@%$MPEGDecodeDelegate%g
 s%@MPEGEncodeDelegate@%$MPEGEncodeDelegate%g
@@ -7857,12 +7642,12 @@ s%@CGMDecodeDelegate@%$CGMDecodeDelegate%g
 s%@LZWDecodeDelegate@%$LZWDecodeDelegate%g
 s%@HPGLDecodeDelegate@%$HPGLDecodeDelegate%g
 s%@HTMLDecodeDelegate@%$HTMLDecodeDelegate%g
-s%@ConvertDelegate@%$ConvertDelegate%g
-s%@ShowImageDelegate@%$ShowImageDelegate%g
-s%@MogrifyDelegate@%$MogrifyDelegate%g
 s%@RLEEncodeDelegate@%$RLEEncodeDelegate%g
 s%@SCANDecodeDelegate@%$SCANDecodeDelegate%g
 s%@WWWDecodeDelegate@%$WWWDecodeDelegate%g
+s%@ConvertDelegate@%$ConvertDelegate%g
+s%@ShowImageDelegate@%$ShowImageDelegate%g
+s%@MogrifyDelegate@%$MogrifyDelegate%g
 s%@PERL@%$PERL%g
 s%@MAGICKLIB@%$MAGICKLIB%g
 s%@DELEGATES@%$DELEGATES%g

@@ -379,14 +379,11 @@ editing a configuration file. Use of this scheme requires a
 seperate step to install <b>PerlMagick</b> (see the README file in the
 <b>PerlMagick</b> subdirectory).
 <p>
-Review the defines in <tt>magick/magick.h</tt> and
-<tt>delegates/delegates.mgk</tt> and make sure the meet the requirements
-of your local system.
-<p>
 Edit <tt>Magick.tmpl</tt> and set the variables to suit your local
 environment. Now type:
 <p>
 <pre>
+       ./confingure
        xmkmf
        make Makefiles
 </pre>
@@ -394,9 +391,11 @@ environment. Now type:
 or just
 <p>
 <pre>
+       ./confingure
        xmkmf -a
 </pre>
-If you are using X11R6 imake.
+If you are using X11R6 imake. Here, GNU configure is used to 
+initialize the <tt>delegates/delegates.mgk</tt> file.
 <p>
 Note, <em>ImageMagick requires an ANSI compiler</em>.  If the compile fails,
 first check to ensure your compile is ANSI compatible.  If it fails for some

@@ -50,7 +50,11 @@
 # ImageMagick looks for the delegate configurarion file in this order:
 #
 #     c:\ImageMagick\delegates.mgk
-#     <current directory\delegates.mgk
+#     DELEGATE_PATH\delegates.mgk
+#     HOME\.magick\delegates.mgk
+#     delegates.mgk
+#
+# Where DELEGATE_PATH and HOME are environment variables.
 #
 # Like entries in the later directory overrides the specification in the
 # system-wide delegates file.
@@ -62,8 +66,17 @@
 <=compress
 	|compress -c > %o
 
-<=gs
-	gswin32 -sDEVICE=%s -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" -c quit
+<=gs-eps
+	gswin32 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- \
+	  "%s" -c quit
+
+<=gs-pdf
+	gswin32 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- \
+	  "%s" -c quit
+
+<=gs-ps
+	gswin32 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- \
+	  "%s" -c quit
 
 <=zip
 	|gzip -cf > %o
@@ -97,10 +110,13 @@ fig=>
 ftp=>
 	GET %m:%i > %o 2>&1
 
-gs=>
-	gswin32 -sDEVICE=%s -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u \
-	  -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- \
-	  "%s" -c quit
+gs-color=>
+	gswin32 -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u \
+	  -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit
+
+gs-mono=>
+	gswin32 -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u \
+	  -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit
 
 hpgl=>
 	hp2xx -q -m eps -f %i %o

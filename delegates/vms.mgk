@@ -50,8 +50,11 @@
 # ImageMagick looks for the delegate configurarion file in this order:
 #
 #     /usr/local/share/ImageMagick/delegates.mgk
-#     ~/.magick/delegates.mgk
+#     DELEGATE_PATH/delegates.mgk
+#     HOME/.magick/delegates.mgk
 #     ./delegates.mgk
+#
+# Where DELEGATE_PATH and HOME are environment variables.
 #
 # Like entries in the later two directories overrides the specification
 # in the system-wide delegates file.
@@ -66,8 +69,17 @@
 <=zip
 	|gzip -cf > %o
 
-<=gs
-	gs -sDEVICE=%s -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" -c quit
+<=gs-eps
+	gs -sDEVICE=epswrite -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" \
+	  -c quit
+
+<=gs-pdf
+	gs -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" \
+	  -c quit
+
+<=gs-ps
+	gs -sDEVICE=pswrite -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" \
+	  -c quit
 
 browse=>
 	mosiac http://www.wizards.dupont.com/cristy/ImageMagick.html &
@@ -95,10 +107,13 @@ fig=>
 ftp=>
 	GET %m:%i > %o 2>&1
 
-gs=>
-	gs -sDEVICE=%s -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u \
-	  -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- \
-	  "%s" -c quit
+gs-color=>
+	gs -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u \
+	  -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit
+
+gs-mono=>
+	gs -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u \
+	  -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit
 
 hpgl=>
 	hp2xx -q -m eps -f %i %o

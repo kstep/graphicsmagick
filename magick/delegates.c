@@ -298,6 +298,7 @@ Export unsigned int GetDelegateInfo(char *tag,unsigned int decode,
       delegate_info.direction=0;
       (void) SetDelegateInfo(&delegate_info);
       (void) ReadDelegates(DelegatePath,"/ImageMagick/");
+      (void) ReadDelegates((char *) getenv("DELEGATE_PATH"),(char *) NULL);
       (void) ReadDelegates((char *) getenv("HOME"),"/.magick/");
       (void) ReadDelegates((char *) NULL,(char *) NULL);
       delegates=SetDelegateInfo((DelegateInfo *) NULL);

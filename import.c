@@ -248,9 +248,9 @@ int main(int argc,char **argv)
   SetErrorHandler(NTErrorHandler);
   SetWarningHandler(NTWarningHandler);
 #endif
+  ReadCommandlLine(argc,&argv);
   GetImageInfo(&image_info);
   GetQuantizeInfo(&quantize_info);
-  ReadCommandlLine(argc,&argv);
   client_name=SetClientName(*argv);
   for (i=1; i < argc; i++)
   {
