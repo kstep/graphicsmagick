@@ -42,7 +42,7 @@ elsif ($QuantumDepth == 32)
 sub testRead {
   my( $infile, $md5, $md5_16 ) =  @_;
 
-  my($image,$success);
+  my($image,$magick,$success);
 
   $failure=0;
 
@@ -51,13 +51,15 @@ sub testRead {
       $md5_16 = $md5;
     }
 
+  $magick='';
+
   #
   # Test reading from file
   #
   {
     my($image, $signature, $status);
 
-    print( "  testing reading from file ...\n");
+    print( "  testing reading from file \"", $infile, "\" ...\n");
     $image=Image::Magick->new;
     $image->Set(size=>'512x512');
     $status=$image->ReadImage("$infile");
@@ -65,6 +67,7 @@ sub testRead {
       print "ReadImage $infile: $status";
       ++$failure;
     } else {
+      $magick=$image->Get('magick');
       $signature=$image->Get('signature');
       if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
         print "Image: $infile, signatures do not match.\n";
@@ -88,12 +91,12 @@ sub testRead {
 
     if( open( FILE, "< $infile"))
       {
-        print( "  testing reading from BLOB ...\n");
+        print( "  testing reading from BLOB with magick \"", $magick, "\"...\n");
         binmode( FILE );
         $blob_length = read( FILE, $blob, 10000000 );
         close( FILE );
         if( defined( $blob ) ) {
-          $image=Image::Magick->new(filename=>$infile);
+          $image=Image::Magick->new(magick=>$magick);
           $status=$image->BlobToImage( $blob );
           undef $blob;
           if( "$status" ) {
