@@ -178,6 +178,9 @@ extern MagickExport DrawInfo
 extern MagickExport DrawInfo
   *CloneDrawInfo(const ImageInfo *,const DrawInfo *);
 
+extern MagickExport FontInfo
+  *GetFontInfo(char *);
+
 extern MagickExport unsigned int
   AnnotateImage(Image *,const DrawInfo *),
   ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const int x,

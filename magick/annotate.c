@@ -451,7 +451,7 @@ MagickExport void DestroyFontInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t F o n t I n f o                                                     %
+%   G e t F o n t I n f o                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
