@@ -579,7 +579,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
       FormatString(timestamp,"%02d:%02d:%02d",
         time_meridian->tm_hour,time_meridian->tm_min,time_meridian->tm_sec);
       (void) fprintf(log_info->file,
-        "%.1024s %0.3fu %ld:%02ld %.1024s %.1024s[%ld]:%c %.1024s\n",timestamp,
+        "%.1024s %0.3fu %ld:%02ld %.1024s %.1024s[%ld]:%c  %.1024s\n",timestamp,
         user_time,(long) (elapsed_time/60.0),
         (long) ceil(fmod(elapsed_time,60.0)),domain,method,(long) getpid(),
         strlen(event) > 20 ? '\n' : ' ',event);
