@@ -96,23 +96,14 @@ static unsigned int
 static Image *ReadMPRImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  char
-    *p;
-
   Image
     *image;
-
-  RegistryType
-    type;
-
-  size_t
-    length;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=(Image *) GetImageByNameFromRegistry(image_info->filename,exception);
+  image=(Image *) GetImageFromRegistry(image_info->filename,exception);
   if ((image == (Image *) NULL) || (type != ImageRegistryType))
     return((Image *) NULL);
   return(CloneImage(image,0,0,True,exception));
