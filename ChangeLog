@@ -3,6 +3,7 @@
     (primarily limited by Windows bitmap size limits).
   * Added some more file types (EPS, GIF, MIFF, SVG, & WMF) to
     IMdisplay's file open list.
+  * The list management methods were given more meaningful names.
 
 2002-11-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Modified IMdisplay so that Magick++ Images are stored by value rather
