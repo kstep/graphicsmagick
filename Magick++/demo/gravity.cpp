@@ -62,14 +62,14 @@ int main( int /*argc*/, char ** argv)
         cout << "angle " << angle << endl;
         Image pic = base;
         pic.annotate( "NorthWest", Geometry(0,0,x,y), NorthWestGravity, angle );
-        pic.annotate( "North", Geometry(0,0,x,y), NorthGravity, angle );
+        pic.annotate( "North", Geometry(0,0,0,y), NorthGravity, angle );
         pic.annotate( "NorthEast", Geometry(0,0,x,y), NorthEastGravity, angle );
-        pic.annotate( "East", Geometry(0,0,x,y), EastGravity, angle );
-        pic.annotate( "Center", Geometry(0,0,x,y), CenterGravity, angle );
+        pic.annotate( "East", Geometry(0,0,x,0), EastGravity, angle );
+        pic.annotate( "Center", Geometry(0,0,0,0), CenterGravity, angle );
         pic.annotate( "SouthEast", Geometry(0,0,x,y), SouthEastGravity, angle );
-        pic.annotate( "South", Geometry(0,0,x,y), SouthGravity, angle );
+        pic.annotate( "South", Geometry(0,0,0,y), SouthGravity, angle );
         pic.annotate( "SouthWest", Geometry(0,0,x,y), SouthWestGravity, angle );
-        pic.annotate( "West", Geometry(0,0,x,y), WestGravity, angle );
+        pic.annotate( "West", Geometry(0,0,x,0), WestGravity, angle );
         animation.push_back( pic );
       }
     cout << "Writing image \"gravity_out.miff\" ..." << endl;
