@@ -274,7 +274,10 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
         filename);
       LiberateMemory((void **) &key_value);
       if (IsAccessible(path))
-        return(path);
+        {
+          LiberateMemory((void **) &search_path);
+          return(path);
+        }
       ConcatenateString(&search_path,"; Registry[");
       ConcatenateString(&search_path, registry_path_keys[i]);
       ConcatenateString(&search_path,"]:");
@@ -286,7 +289,10 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     Search current directory.
   */
   if (IsAccessible(path))
-    return(path);
+    {
+      LiberateMemory((void **) &search_path);
+      return(path);
+    }
   /*
     Search executable directory.
   */
