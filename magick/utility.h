@@ -166,7 +166,7 @@ extern MagickExport void
         if (_magick_mp == 0) \
           free(memory); \
       } \
-    (void *) memory=_magick_mp;                  \
+    memory=_magick_mp; \
 }
 
 /*

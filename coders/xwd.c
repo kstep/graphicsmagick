@@ -550,7 +550,7 @@ ModuleExport void UnregisterXWDImage(void)
 */
 static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 {
-  int
+  long
     y;
 
   register const PixelPacket
@@ -570,6 +570,9 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 
   unsigned char
     *pixels;
+
+  size_t
+    pixels_size;
 
   unsigned int
     status;
@@ -681,14 +684,14 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate memory for pixels.
   */
-  pixels=MagickAllocateMemory(unsigned char *,
-    image->columns*sizeof(PixelPacket));
+  scanline_pad=(bytes_per_line-((image->columns*bits_per_pixel) >> 3));
+  pixels_size=image->columns*(image->storage_class == PseudoClass ? 1 : 3)+scanline_pad;
+  pixels=MagickAllocateMemory(unsigned char *,pixels_size);
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Convert MIFF to XWD raster pixels.
   */
-  scanline_pad=(bytes_per_line-((image->columns*bits_per_pixel) >> 3));
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -696,21 +699,26 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       break;
     indexes=GetIndexes(image);
     q=pixels;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      if (image->storage_class == PseudoClass)
-        *q++=indexes[x];
-      else
-        {
-          *q++=ScaleQuantumToChar(p->red);
-          *q++=ScaleQuantumToChar(p->green);
-          *q++=ScaleQuantumToChar(p->blue);
-        }
-      p++;
-    }
-    for (x=0; x < (long) scanline_pad; x++)
+
+    if (image->storage_class == PseudoClass)
+      {
+        for (x=(long) image->columns; x > 0; x--)
+          *q++=(unsigned char) *indexes++;
+      }
+    else
+      {
+        for (x=(long) image->columns; x > 0; x--)
+          {
+            
+            *q++=ScaleQuantumToChar(p->red);
+            *q++=ScaleQuantumToChar(p->green);
+            *q++=ScaleQuantumToChar(p->blue);
+            p++;
+          }
+      }
+    for (x=(long) scanline_pad; x > 0; x--)
       *q++=0;
-    (void) WriteBlob(image,q-pixels,(char *) pixels);
+    (void) WriteBlob(image,(size_t) (q-pixels),(char *) pixels);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
         if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))

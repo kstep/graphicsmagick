@@ -6,7 +6,7 @@
 # ImageMagick.  Please see the file "COPYING" included with Magick++
 # for usage and copying restrictions.
 #
-executable=`echo $0 | sed -e 's:.*/::g ; s:test_:: ; s:\.sh::'`
+executable=`echo $0 | sed -e 's:.*/::g;s:test_::;s:\.sh::'`
 
 outfile="test_${executable}.out"
 

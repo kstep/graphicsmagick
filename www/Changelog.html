@@ -56,6 +56,10 @@
 2004-02-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/utility.h (MagickReallocMemory): Solaris compiler
+        complains about cast so remove it.
+  <LI> coders/xwd.c (WriteXWDImage): Right-size the pixels buffer and
+        tune writer loops a bit.<BR>
   <LI> magick/color.h (VerifyColormapIndex): Improve diagnostics.
   <LI> coders/pict.c (WritePICTImage): Eliminate use of uninitialized
         data when writing RGB PICT. Fix OpenBlob assertion when writing

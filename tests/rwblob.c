@@ -169,7 +169,11 @@ int main ( int argc, char **argv )
     "Reading image %s", imageInfo->filename);
   original = ReadImage ( imageInfo, &exception );
   if (exception.severity != UndefinedException)
-    CatchException(&exception);
+    {
+      CatchException(&exception);
+      exit_status = 1;
+      goto program_exit;
+    }
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read original image %s\n", imageInfo->filename );
@@ -199,7 +203,11 @@ int main ( int argc, char **argv )
     "Writing image to BLOB");
   blob =(char *) ImageToBlob ( imageInfo, original, &blob_length, &exception );
   if (exception.severity != UndefinedException)
-    CatchException(&exception);
+    {
+      CatchException(&exception);
+      exit_status = 1;
+      goto program_exit;
+    }
   if ( blob == NULL )
     {
       printf ( "Failed to write BLOB in format %s\n", imageInfo->magick );
@@ -220,7 +228,11 @@ int main ( int argc, char **argv )
     CloneString( &imageInfo->size, size );
   original = BlobToImage( imageInfo, blob, blob_length, &exception );
   if (exception.severity != UndefinedException)
-    CatchException(&exception);
+    {
+      CatchException(&exception);
+      exit_status = 1;
+      goto program_exit;
+    }
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read image from BLOB in format %s\n",imageInfo->magick );
@@ -239,7 +251,11 @@ int main ( int argc, char **argv )
   original->delay = 10;
   blob = (char *) ImageToBlob ( imageInfo, original, &blob_length, &exception );
   if (exception.severity != UndefinedException)
-    CatchException(&exception);
+    {
+      CatchException(&exception);
+      exit_status = 1;
+      goto program_exit;
+    }
   imageInfo->depth=original->depth;
   if ( blob == NULL )
     {
@@ -260,7 +276,11 @@ int main ( int argc, char **argv )
     "Reading image from BLOB");
   final = BlobToImage( imageInfo, blob, blob_length, &exception );
   if (exception.severity != UndefinedException)
-    CatchException(&exception);
+    {
+      CatchException(&exception);
+      exit_status = 1;
+      goto program_exit;
+    }
   if ( final == (Image *)NULL )
     {
       printf ( "Failed to read image from BLOB in format %s\n",imageInfo->magick );
