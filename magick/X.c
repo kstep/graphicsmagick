@@ -3243,6 +3243,7 @@ Export void XGetResourceInfo(XrmDatabase database,char *client_name,
     XGetResourceClass(database,client_name,"window",(char *) NULL);
   resource_info->write_filename=XGetResourceClass(database,client_name,
     "writeFilename",(char *) NULL);
+  resource_info->copy_image=(Image *) NULL;
 }
 
 /*

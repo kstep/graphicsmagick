@@ -347,8 +347,6 @@ Export unsigned int IsPseudoClass(Image *image)
         "Memory allocation failed");
       return(False);
     }
-  if (image->packets == (image->columns*image->rows))
-    CondenseImage(image);
   p=image->pixels;
   for (i=0; (i < (int) image->packets) && (color_cube.colors <= 256); i++)
   {

@@ -5644,6 +5644,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
 #if defined(HasTTF)
       int
         character_map,
+        length,
         number_glyphs;
 
       register int
@@ -5687,7 +5688,6 @@ Image *ReadLABELImage(const ImageInfo *image_info)
         code;
 
       unsigned int
-        length,
         height,
         width;
 
@@ -7334,7 +7334,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(montage_info.filename,image_info->filename);
   montage_image=MontageImages(image,&montage_info);
   CloneString(&montage_info.font,image_info->font);
-  montage_info.pointsize,image_info->pointsize;
+  montage_info.pointsize=image_info->pointsize;
   CloneString(&montage_info.texture,"Granite:");
   DestroyMontageInfo(&montage_info);
   if (montage_image == (Image *) NULL)
@@ -9525,7 +9525,7 @@ Image *ReadPNGImage(const ImageInfo *image_info)
           }
         if (strncmp(type,"MEND",4) == 0)
           break;
-        for (i=0; i < length; i++)
+        for (i=0; i < (int) length; i++)
           (void) fgetc(image->file);
         (void) MSBFirstReadLong(image->file);  /* read crc word */
         if (strncmp(type,"IHDR",4) != 0)
@@ -9727,7 +9727,7 @@ Image *ReadPNGImage(const ImageInfo *image_info)
     /*
       Read image scanlines.
     */
-    for (i=0; i < image->rows; i++)
+    for (i=0; i < (int) image->rows; i++)
       scanlines[i]=png_pixels+(i*ping_info->rowbytes);
     png_read_image(ping,scanlines);
     png_read_end(ping,ping_info);
@@ -9840,7 +9840,7 @@ Image *ReadPNGImage(const ImageInfo *image_info)
               }
               if ((image->columns % 8) != 0)
                 {
-                  for (bit=7; bit >= (8-(image->columns % 8)); bit--)
+                  for (bit=7; bit >= (int) (8-(image->columns % 8)); bit--)
                     *r++=((*p) & (0x01 << bit) ? 0x01 : 0x00);
                   p++;
                 }
@@ -9858,7 +9858,7 @@ Image *ReadPNGImage(const ImageInfo *image_info)
               }
               if ((image->columns % 4) != 0)
                 {
-                  for (i=3; i >= (4-(image->columns % 4)); i--)
+                  for (i=3; i >= (int) (4-(image->columns % 4)); i--)
                     *r++=(*p >> (i*2)) & 0x03;
                   p++;
                 }
@@ -13968,7 +13968,7 @@ static unsigned int TIFFNewsProfileHandler(char *text,long int length,
   */
   while (length > 0)
   {
-    if ((p[0]=='8') && (p[1]=='B') && (p[2]=='I') && (p[3]=='M') &&
+    if ((p[0] == '8') && (p[1] == 'B') && (p[2] == 'I') && (p[3] == 'M') &&
         (p[4] == 4) && (p[5] == 4))
       break;
     length-=2;
@@ -14230,7 +14230,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
       {
         image->class=PseudoClass;
         image->colors=1 << bits_per_sample;
-        if (range <= image->colors)
+        if (range <= (int) image->colors)
           image->colors=range+1;
         if (bits_per_sample > QuantumDepth)
           image->colors=MaxRGB+1;
@@ -14395,7 +14395,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
               }
               if ((width % 8) != 0)
                 {
-                  for (bit=7; bit >= (8-(width % 8)); bit--)
+                  for (bit=7; bit >= (int) (8-(width % 8)); bit--)
                     *r++=((*p) & (0x01 << bit) ? 0x01 : 0x00);
                   p++;
                 }
@@ -14413,7 +14413,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
               }
               if ((width % 4) != 0)
                 {
-                  for (i=3; i >= (4-(width % 4)); i--)
+                  for (i=3; i >= (int) (4-(width % 4)); i--)
                     *r++=(*p >> (i*2)) & 0x03;
                   p++;
                 }
@@ -14651,8 +14651,6 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
     SetRunlengthPackets(image,packets);
     if (image->class == PseudoClass)
       SyncImage(image);
-    else
-      (void) IsPseudoClass(image);
     /*
       Proceed to next image.
     */

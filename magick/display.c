@@ -56,12 +56,6 @@
 #include "display.h"
 
 /*
-  Global variable declarations.
-*/
-static Image
-  *copy_image = (Image *) NULL;
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -2187,7 +2181,7 @@ static unsigned int XCompositeImage(Display *display,
           XCheckRefreshWindows(display,windows);
           GetImageInfo(&image_info);
           (void) strcpy(image_info.filename,filename);
-          image_info.size=size;
+          CloneString(&image_info.size,size);
           FormatString(image_info.size,"%ux%u",composite_image->columns,
             composite_image->rows);
           mask_image=ReadImage(&image_info);
@@ -2200,6 +2194,7 @@ static unsigned int XCompositeImage(Display *display,
           CompositeImage(composite_image,ReplaceMatteCompositeOp,mask_image,
             0,0);
           DestroyImage(mask_image);
+          DestroyImageInfo(&image_info);
         }
     }
   /*
@@ -3431,9 +3426,9 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   XSetCursorState(display,windows,False);
   if (crop_image == (Image *) NULL)
     return(False);
-  if (copy_image != (Image *) NULL)
-    DestroyImage(copy_image);
-  copy_image=crop_image;
+  if (resource_info->copy_image != (Image *) NULL)
+    DestroyImage(resource_info->copy_image);
+  resource_info->copy_image=crop_image;
   if (mode == CopyMode)
     {
       (void) XConfigureImage(display,resource_info,windows,image);
@@ -5274,7 +5269,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Create canvas.
       */
       FormatString(image_info.filename,"%.1024s:%.1024s",format,color);
-      image_info.size=geometry;
+      CloneString(&image_info.size,geometry);
       loaded_image=ReadImage(&image_info);
       XClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
@@ -7737,7 +7732,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       */
       if (resource_info->image_info->size != (char *) NULL)
         (void) strcpy(geometry,resource_info->image_info->size);
-      resource_info->image_info->size=geometry;
+      CloneString(&resource_info->image_info->size,geometry);
       (void) XDialogWidget(display,windows,"Load",
         "Enter the image geometry:",geometry);
     }
@@ -8069,11 +8064,11 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
   /*
     Copy image.
   */
-  if (copy_image == (Image *) NULL)
+  if (resource_info->copy_image == (Image *) NULL)
     return(False);
-  copy_image->orphan=True;
-  paste_image=CloneImage(copy_image,copy_image->columns,copy_image->rows,True);
-  copy_image->orphan=False;
+  resource_info->copy_image->orphan=True;
+  paste_image=CloneImage(resource_info->copy_image,resource_info->copy_image->columns,resource_info->copy_image->rows,True);
+  resource_info->copy_image->orphan=False;
   /*
     Map Command widget.
   */
@@ -13340,8 +13335,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       FreeMemory((char *) windows->magnify.name);
       FreeMemory((char *) windows->image.icon_name);
       FreeMemory((char *) windows->image.name);
-      if (copy_image != (Image *) NULL)
-        DestroyImage(copy_image);
+      if (resource_info->copy_image != (Image *) NULL)
+        DestroyImage(resource_info->copy_image);
       FreeMemory((char *) windows->icon_resources);
       FreeMemory((char *) windows->icon_pixel);
       FreeMemory((char *) windows->pixel_info);

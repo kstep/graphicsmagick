@@ -158,15 +158,6 @@ static void
   ZeroCrossHistogram(double *,const double,short *);
 
 /*
-  Global declarations.
-*/
-static int
-  number_nodes;
-
-static IntervalTree
-  **list;
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -863,14 +854,15 @@ static void InitializeHistogram(Image *image,long **histogram)
 %
 */
 
-static void InitializeList(register IntervalTree *node)
+static void InitializeList(IntervalTree **list,int *number_nodes,
+  IntervalTree *node)
 {
   if (node == (IntervalTree *) NULL)
     return;
   if (node->child == (IntervalTree *) NULL)
-    list[number_nodes++]=node;
-  InitializeList(node->sibling);
-  InitializeList(node->child);
+    list[(*number_nodes)++]=node;
+  InitializeList(list,number_nodes,node->sibling);
+  InitializeList(list,number_nodes,node->child);
 }
 
 static void MeanStability(register IntervalTree *node)
@@ -919,10 +911,12 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   const unsigned int number_crossings)
 {
   int
-    left;
+    left,
+    number_nodes;
 
   IntervalTree
     *head,
+    **list,
     *node,
     *root;
 
@@ -931,6 +925,16 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
     j,
     k;
 
+  /*
+    Allocate interval tree.
+  */
+  list=(IntervalTree **) AllocateMemory(TreeLength*sizeof(IntervalTree *));
+  if (list == (IntervalTree **) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+        (char *) NULL);
+      return((IntervalTree *) NULL);
+    }
   /*
     The root is the entire histogram.
   */
@@ -946,7 +950,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
       Initialize list with all nodes with no children.
     */
     number_nodes=0;
-    InitializeList(root);
+    InitializeList(list,&number_nodes,root);
     /*
       Split list.
     */
@@ -996,6 +1000,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   */
   Stability(root->child);
   MeanStability(root->child);
+  FreeMemory((char *) list);
   return(root);
 }
 
@@ -1030,19 +1035,20 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
 %
 */
 
-static void ActiveNodes(register IntervalTree *node)
+static void ActiveNodes(IntervalTree **list,int *number_nodes,
+  IntervalTree *node)
 {
   if (node == (IntervalTree *) NULL)
     return;
   if (node->stability >= node->mean_stability)
     {
-      list[number_nodes++]=node;
-      ActiveNodes(node->sibling);
+      list[(*number_nodes)++]=node;
+      ActiveNodes(list,number_nodes,node->sibling);
     }
   else
     {
-      ActiveNodes(node->sibling);
-      ActiveNodes(node->child);
+      ActiveNodes(list,number_nodes,node->sibling);
+      ActiveNodes(list,number_nodes,node->child);
     }
 }
 
@@ -1068,10 +1074,12 @@ static double OptimalTau(const long *histogram,const double max_tau,
 
   int
     index,
+    number_nodes,
     peak,
     x;
 
   IntervalTree
+    **list,
     *node,
     *root;
 
@@ -1087,6 +1095,16 @@ static double OptimalTau(const long *histogram,const double max_tau,
   ZeroCrossing
     *zero_crossing;
 
+  /*
+    Allocate interval tree.
+  */
+  list=(IntervalTree **) AllocateMemory(TreeLength*sizeof(IntervalTree *));
+  if (list == (IntervalTree **) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+        (char *) NULL);
+      return(0.0);
+    }
   /*
     Allocate zero crossing list.
   */
@@ -1147,12 +1165,14 @@ static double OptimalTau(const long *histogram,const double max_tau,
     Initialize interval tree.
   */
   root=InitializeIntervalTree(zero_crossing,number_crossings);
+  if (root == (IntervalTree *) NULL)
+    return(0.0);
   /*
     Find active nodes:  stabilty is greater (or equal) to the mean stability of
     its children.
   */
   number_nodes=0;
-  ActiveNodes(root->child);
+  ActiveNodes(list,&number_nodes,root->child);
   /*
     Initialize extrema.
   */
@@ -1213,6 +1233,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
   */
   FreeNodes(root);
   FreeMemory((char *) zero_crossing);
+  FreeMemory((char *) list);
   return(average_tau);
 }
 
@@ -1402,19 +1423,9 @@ Export unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
     status;
 
   /*
-    Allocate interval tree.
-  */
-  assert(image != (Image *) NULL);
-  list=(IntervalTree **) AllocateMemory(TreeLength*sizeof(IntervalTree *));
-  if (list == (IntervalTree **) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      return(False);
-    }
-  /*
     Allocate histogram and extrema.
   */
+  assert(image != (Image *) NULL);
   for (i=0; i < Dimension; i++)
   {
     histogram[i]=(long *) AllocateMemory((MaxRGB+1)*sizeof(long));
@@ -1457,6 +1468,5 @@ Export unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
     FreeMemory((char *) extrema[i]);
     FreeMemory((char *) histogram[i]);
   }
-  FreeMemory((char *) list);
   return(status);
 }

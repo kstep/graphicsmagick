@@ -123,7 +123,7 @@ typedef unsigned char Quantum;
 /*
   Image Geometry defines (extends XParseGeometry flags).
 */
-#define PercentValue  0x1000 
+#define PercentValue  0x1000
 #define AspectValue  0x2000
 #define LessValue  0x4000
 #define GreaterValue  0x8000
@@ -736,6 +736,9 @@ typedef struct _Image
   unsigned int
     magick_columns,
     magick_rows;
+
+  int
+    reference_count;
 
   unsigned int
     orphan;

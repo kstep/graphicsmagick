@@ -102,7 +102,7 @@ extern Export unsigned long
   MSBFirstReadLong(FILE *);
 
 extern Export unsigned short
-  *ConvertTextToUnicode(const char *,unsigned int *),
+  *ConvertTextToUnicode(const char *,int *),
   LSBFirstReadShort(FILE *),
   MSBFirstReadShort(FILE *);
 

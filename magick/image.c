@@ -189,6 +189,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->magick_columns=0;
   allocated_image->magick_rows=0;
   allocated_image->magick_time=time((time_t *) NULL);
+  allocated_image->reference_count=0;
   allocated_image->orphan=False;
   allocated_image->previous=(Image *) NULL;
   allocated_image->list=(Image *) NULL;

@@ -3249,7 +3249,7 @@ static void JPEGColorProfileHandler(j_compress_ptr jpeg_info,Image *image)
   /*
     Save color profile as a APP marker.
   */
-  for (i=0; i < image->color_profile.length; i+=65519)
+  for (i=0; i < (int) image->color_profile.length; i+=65519)
   {
     length=Min(image->color_profile.length-i,65519);
     profile=(unsigned char *) AllocateMemory((length+14)*sizeof(unsigned char));
@@ -3258,7 +3258,7 @@ static void JPEGColorProfileHandler(j_compress_ptr jpeg_info,Image *image)
     (void) strcpy((char *) profile,"ICC_PROFILE");
     profile[12]=(i/65519)+1;
     profile[13]=(image->color_profile.length/65519)+1;
-    for (j=0; j < length; j++)
+    for (j=0; j < (int) length; j++)
       profile[j+14]=image->color_profile.info[j];
     jpeg_write_marker(jpeg_info,ICC_MARKER,profile,(unsigned int) length+14);
     FreeMemory((char *) profile);
@@ -3280,7 +3280,7 @@ static void JPEGNewsProfileHandler(j_compress_ptr jpeg_info,Image *image)
   /*
     Save IPTC profile as a APP marker.
   */
-  for (i=0; i < image->iptc_profile.length; i+=65507)
+  for (i=0; i < (int) image->iptc_profile.length; i+=65507)
   {
     length=Min(image->iptc_profile.length-i,65507);
     profile=(unsigned char *) AllocateMemory((length+27)*sizeof(unsigned char));
@@ -3290,7 +3290,7 @@ static void JPEGNewsProfileHandler(j_compress_ptr jpeg_info,Image *image)
     profile[13]=0x00;
     profile[24]=length >> 8;
     profile[25]=length & 0xff;
-    for (j=0; j < length; j++)
+    for (j=0; j < (int) length; j++)
       profile[j+26]=image->iptc_profile.info[j];
     profile[j+26]=0x001;
     jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int) length+
@@ -3369,15 +3369,6 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   OpenImage(image_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
-  CondenseImage(image);
-  if (image->class == DirectClass)
-    {
-      if (image->packets >= ((3*image->columns*image->rows) >> 2))
-        image->compression=NoCompression;
-    }
-  else
-    if (image->packets >= ((image->columns*image->rows) >> 1))
-      image->compression=NoCompression;
   /*
     Initialize JPEG parameters.
   */
@@ -3433,6 +3424,15 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       if (image->units == PixelsPerCentimeterResolution)
         jpeg_info.density_unit=2;
     }
+  CondenseImage(image);
+  if (image->class == DirectClass)
+    {
+      if (image->packets >= ((3*image->columns*image->rows) >> 2))
+        image->compression=NoCompression;
+    }
+  else
+    if (image->packets >= ((image->columns*image->rows) >> 1))
+      image->compression=NoCompression;
   if (image->compression != NoCompression)
     for (i=0; i < MAX_COMPONENTS; i++)
     {
@@ -6819,6 +6819,10 @@ static void PNGWarning(png_struct *ping,png_const_charp message)
 
 unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
+  int
+    x,
+    y;
+
   register int
     i,
     j;
@@ -6842,9 +6846,7 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
   unsigned int
     matte,
-    scene,
-    x,
-    y;
+    scene;
 
   unsigned short
     value;
@@ -6956,7 +6958,7 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         */
         ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
         p=image->pixels;
-        for (i=0; (p->index == Opaque) && (i < (image->packets-1)); i++)
+        for (i=0; (p->index == Opaque) && (i < (int) (image->packets-1)); i++)
         {
           if (!IsGray(*p))
             ping_info->color_type=PNG_COLOR_TYPE_RGB_ALPHA;
@@ -6969,7 +6971,7 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         ping_info->trans_values.blue=p->blue;
         ping_info->trans_values.gray=Intensity(*p);
         ping_info->trans_values.index=DownScale(p->index);
-        for ( ; i < image->packets; i++)
+        for ( ; i < (int) image->packets; i++)
         {
           if (!IsGray(*p))
             ping_info->color_type=PNG_COLOR_TYPE_RGB_ALPHA;
@@ -7007,7 +7009,7 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->palette[i].blue=DownScale(image->colormap[i].blue);
           }
           ping_info->bit_depth=1;
-          while ((1 << ping_info->bit_depth) < image->colors)
+          while ((1 << ping_info->bit_depth) < (int) image->colors)
             ping_info->bit_depth<<=1;
           if (ping_info->valid & PNG_INFO_tRNS)
             {
@@ -7033,7 +7035,7 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           /*
             Identify which colormap entry is the background color.
           */
-          for (i=0; i < (image->colors-1); i++)
+          for (i=0; i < (int) (image->colors-1); i++)
             if (ColorMatch(ping_info->background,image->colormap[i],0))
               break;
           ping_info->background.index=(unsigned short) i;
@@ -7121,7 +7123,7 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize image scanlines.
     */
-    for (i=0; i < image->rows; i++)
+    for (i=0; i < (int) image->rows; i++)
       scanlines[i]=png_pixels+(ping_info->rowbytes*i);
     x=0;
     y=0;
@@ -11213,7 +11215,7 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
     (image->columns+image->tile_info.height-1)/image->tile_info.height;
   for (i=0; i < number_tiles; i++)
   {
-    tile_width=(i == number_tiles-1) ?
+    tile_width=(i == (int) number_tiles-1) ?
       image->columns-(i*image->tile_info.width) : image->tile_info.width;
     for (j=0; j < ((row % image->tile_info.height)+1); j++)
       for (k=0; k < tile_width; k++)
@@ -11477,8 +11479,8 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         if (image->units == PixelsPerCentimeterResolution)
           units=RESUNIT_CENTIMETER;
         TIFFSetField(tiff,TIFFTAG_RESOLUTIONUNIT,(uint16) units);
-        TIFFSetField(tiff,TIFFTAG_XRESOLUTION,image->x_resolution);
-        TIFFSetField(tiff,TIFFTAG_YRESOLUTION,image->y_resolution);
+        TIFFSetField(tiff,TIFFTAG_XRESOLUTION,(float) image->x_resolution);
+        TIFFSetField(tiff,TIFFTAG_YRESOLUTION,(float) image->y_resolution);
       }
     if (image->chromaticity.white_point.x != 0.0)
       {

@@ -56,15 +56,6 @@
 #include "nt.h"
 
 /*
-  Static declarations.
-*/
-static HINSTANCE
-  nt_instance;
-
-static Image
-  *nt_image;
-
-/*
   External declarations.
 */
 #if !defined(_VISUALC_)
@@ -577,7 +568,6 @@ Export long telldir(DIR *entry)
 */
 BOOL WINAPI DllMain(HINSTANCE instance,DWORD data_segment,LPVOID reserved)
 {
-  nt_instance=instance;
   switch(data_segment)
   {
     case DLL_PROCESS_ATTACH:

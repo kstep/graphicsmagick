@@ -1731,7 +1731,7 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
   */
   TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
   strip_size=byte_count[0];
-  for (i=1; i < TIFFNumberOfStrips(tiff); i++)
+  for (i=1; i < (int) TIFFNumberOfStrips(tiff); i++)
     if (byte_count[i] > strip_size)
       strip_size=byte_count[i];
   buffer=(char *) AllocateMemory(strip_size*sizeof(char));
@@ -1746,7 +1746,7 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
     Compress runlength encoded to 2D Huffman pixels.
   */
   Ascii85Initialize();
-  for (i=0; i < TIFFNumberOfStrips(tiff); i++)
+  for (i=0; i < (int) TIFFNumberOfStrips(tiff); i++)
   {
     count=TIFFReadRawStrip(tiff,i,buffer,strip_size);
     for (j=0; j < count; j++)
@@ -3563,7 +3563,7 @@ Export unsigned int ZLIBEncodeImage(FILE *file,
   z_stream
     stream;
 
-  compressed_packets=1.001*number_pixels+12;
+  compressed_packets=(unsigned long) (1.001*number_pixels+12);
   compressed_pixels=(unsigned char *)
     AllocateMemory(compressed_packets*sizeof(unsigned char));
   if (compressed_pixels == (unsigned char *) NULL)
@@ -3594,7 +3594,7 @@ Export unsigned int ZLIBEncodeImage(FILE *file,
   else
     {
       Ascii85Initialize();
-      for (i=0; i < compressed_packets; i++)
+      for (i=0; i < (int) compressed_packets; i++)
         Ascii85Encode(compressed_pixels[i],file);
       Ascii85Flush(file);
     }

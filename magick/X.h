@@ -366,6 +366,9 @@ typedef struct _XResourceInfo
     *window_group,
     *window_id,
     *write_filename;
+
+  Image
+    *copy_image;
 } XResourceInfo;
 
 typedef struct _XWindowInfo

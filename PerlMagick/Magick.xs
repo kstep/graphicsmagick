@@ -1822,7 +1822,7 @@ Animate(ref,...)
         XSetErrorHandler(XError);
         resource_database=XGetResourceDatabase(display,client_name);
         XGetResourceInfo(resource_database,client_name,&resource);
-        resource.image_info=(package_info->image_info);
+        resource.image_info=package_info->image_info;
         resource.quantize_info=(&package_info->quantize_info);
         (void) XAnimateImages(display,&resource,&client_name,1,image);
         XCloseDisplay(display);
@@ -4821,6 +4821,13 @@ Montage(ref,...)
           if (strEQcase(attribute,"font"))
             {
               CloneString(&montage_info.font,SvPV(ST(i),na));
+              continue;
+            }
+          if (strEQcase(attribute,"fore"))  /* anachronism */
+            {
+              if (info)
+                CloneString(&info->image_info->pen,SvPV(ST(i),na));
+              CloneString(&montage_info.pen,SvPV(ST(i),na));
               continue;
              }
           break;

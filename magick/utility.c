@@ -342,8 +342,7 @@ static int InterpretUnicode(const char *code,const int n)
   return(total);
 }
 
-Export unsigned short *ConvertTextToUnicode(const char *text,
-  unsigned int *count)
+Export unsigned short *ConvertTextToUnicode(const char *text,int *count)
 {
   int
     value;
