@@ -1,3 +1,16 @@
+2003-11-29  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/installer/inc/files-configs.isx: Updated the source
+	locations for the .mgk files.  Install modules.mgk into the config
+	directory rather than the modules directory.
+	* configure.ac: Fixes to work with latest CVS libtool.
+	* libtool.m4: Update to latest CVS libtool.
+	* magick/modulesc, magick/static.c (ExecuteStaticModuleProcess):
+	Fix conditional compilation logic so that "moby" shared library
+	build works again.
+	* magick/compress.c, magick/mac.c: Use existing SaveImageText and
+	LoadImageText global constants rather than separate defines.
+
 2003-11-17  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Update to Autoconf 2.58.

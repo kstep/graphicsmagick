@@ -46,8 +46,7 @@
 /*
   Define declarations.
 */
-#define LoadImageText  "  Load image...  "
-#define SaveImageText  "  Save image...  "
+
 
 /*
   Typedef declarations.

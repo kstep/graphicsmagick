@@ -1031,7 +1031,6 @@ MagickExport struct dirent *readdir(DIR *entry)
 MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-#define LoadImageText  "  Loading image...  "
 #define PICTHeaderSize    512
 
   CodecType

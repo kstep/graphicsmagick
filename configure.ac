@@ -240,7 +240,7 @@ fi
 #
 # Check for large file support
 #
-# Acccording to the X/Open LFS standard, setting _FILE_OFFSET_BITS to 64
+# According to the X/Open LFS standard, setting _FILE_OFFSET_BITS to 64
 # remaps standard functions to their 64-bit equivalents.
 #
 ########
@@ -290,14 +290,14 @@ AC_SUBST(LIBTOOL_DEPS)
 
 # Check to see if building shared libraries
 libtool_build_shared_libs='no'
-if ./libtool --config | grep 'build_libtool_libs=yes' > /dev/null
+if test "$enable_shared" = 'yes'
 then
   libtool_build_shared_libs='yes'
 fi
 
 # Check to see if building static libraries
 libtool_build_static_libs='no'
-if ./libtool --config | grep 'build_old_libs=yes' > /dev/null
+if test "$enable_static" = 'yes'
 then
   libtool_build_static_libs='yes'
 fi
@@ -2448,7 +2448,7 @@ MAGICKLIB="-L${MAGICKLIBDIR} -lGraphicsMagick"
 if test $with_perl_static = 'yes'
 then
   # Find out where libtool hides its uninstalled libraries (as libtool_objdir)
-  eval `./libtool --config|grep '^objdir='|sed -e 's/^objdir/libtool_objdir/'`
+  libtool_objdir=$objdir
 
   # Find out what extension is applied to static libraries (as libtool_libext)
   #eval `./libtool --config|grep '^libext='|sed -e 's/^libext/libtool_libext/'`

@@ -2484,8 +2484,7 @@ class provides the more general form of the interface.
 <p>Obtain existing image pixels via <i>getPixels()</i>.   Create a new
 pixel region using <i>setPixels().</i></p>
 <p>In order to ensure that only the current generation of the image is
-modified, the Image's <a
- href="file:///home/bfriesen/src/graphics/GraphicsMagick/www/Magick++/Image.html#modifyImage">modifyImage()</a>
+modified, the Image's <a href="#modifyImage">modifyImage()</a>
 method should be invoked to reduce the reference count on the underlying
 image to one. If this is not done, then it is possible for a previous
 generation of the image to be modified due to the use of reference

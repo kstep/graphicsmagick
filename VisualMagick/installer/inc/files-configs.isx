@@ -9,13 +9,13 @@
 #endif
 
 ; Configuration files
-Source: "..\..\magick\colors.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
-Source: "..\..\magick\log.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+Source: "..\..\config\colors.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+Source: "..\..\config\log.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+Source: "..\..\config\magic.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
 Source: "..\bin\delegates.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
-Source: "..\..\magick\magic.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
 Source: "..\bin\type-ghostscript.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
 Source: "..\bin\type.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
 
 #ifdef MagickCodersDirectory
-Source: "..\..\coders\modules.mgk"; DestDir: {#MagickCodersDirectory}; Flags: confirmoverwrite
+Source: "..\..\config\modules.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
 #endif

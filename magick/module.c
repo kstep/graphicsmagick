@@ -305,6 +305,16 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);
   status=False;
+
+#if !defined(BuildMagickModules)
+  /*
+    Try to locate and execute a static module.
+  */
+  status=ExecuteStaticModuleProcess(tag,image,argc,argv);
+  if (status != False)
+    return;
+#endif
+
   {
     char
       module_name[MaxTextExtent],

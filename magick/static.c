@@ -45,18 +45,20 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   E x e c u t e M o d u l e P r o c e s s                       %
+%   E x e c u t e S t a t i c M o d u l e P r o c e s s                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ExecuteModuleProcess() is just a template method. This version is only
-%  used for static builds.  See the version in module.c for module builds.
+%  ExecuteStaticModuleProcess() is just a template method. This version is
+%  only used for static and moby builds.  See the version in module.c for
+%  module-only builds. This function takes the place of ExecuteModuleProcess
+%  for builds which do not support loading modules.
 %
-%  The format of the ExecuteModuleProcess method is:
+%  The format of the ExecuteStaticModuleProcess method is:
 %
-%      unsigned int ExecuteModuleProcess(const char *tag,
+%      unsigned int ExecuteStaticModuleProcess(const char *tag,
 %        Image **image,const int argc,char **argv)
 %
 %  A description of each parameter follows:
@@ -70,15 +72,20 @@
 %    o argv: A text array containing the command line arguments.
 %
 */
-#if !defined(BuildMagickModules)
+#if defined(SupportMagickModules)
+MagickExport unsigned int ExecuteStaticModuleProcess(const char *tag,
+  Image **image,const int argc,char **argv)
+#else
 MagickExport unsigned int ExecuteModuleProcess(const char *tag,
   Image **image,const int argc,char **argv)
+#endif /* defined(SupportMagickModules) */
 {
+#if !defined(BuildMagickModules)
   if (LocaleCompare("analyze",tag) == 0)
     return AnalyzeImage(image,argc,argv);
+#endif /* !defined(BuildMagickModules) */
   return(False);
 }
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
