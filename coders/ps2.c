@@ -680,7 +680,15 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           switch (compression)
           {
             case NoCompression: FormatString(buffer,*q,"ASCII85Decode"); break;
-            case JPEGCompression: FormatString(buffer,*q,"DCTDecode"); break;
+            case JPEGCompression: 
+            {
+              FormatString(buffer,*q,"DCTDecode"); 
+              if (image->colorspace != CMYKColorspace)
+                break;
+              (void) WriteBlobString(image,buffer);
+              (void) strcpy(buffer,"/Decode[1 0 1 0 1 0 1 0]\n");
+              break;
+            }
             case LZWCompression: FormatString(buffer,*q,"LZWDecode"); break;
             case FaxCompression: FormatString(buffer,*q,"ASCII85Decode"); break;
             default: FormatString(buffer,*q,"RunLengthDecode"); break;
@@ -779,40 +787,25 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           }
           case JPEGCompression:
           {
-            char
-              filename[MaxTextExtent];
-
-            FILE
-              *file;
-
             Image
               *jpeg_image;
 
-            int
-              c;
+            size_t
+              length;
+
+            void
+              *blob;
 
             /*
-              Write image to temporary file in JPEG format.
+              Write image in JPEG format.
             */
-            TemporaryFilename(filename);
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(DelegateError,"Unable to clone image",
-                image);
-            (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
-            status=WriteImage(image_info,jpeg_image);
+              ThrowWriterException(DelegateError,"Unable to clone image",image);
+            blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
+            (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
-            if (status == False)
-              ThrowWriterException(DelegateError,"Unable to write image",
-                image);
-            file=fopen(filename,ReadBinaryType);
-            if (file == (FILE *) NULL)
-              ThrowWriterException(FileOpenError,"Unable to open file",
-                image);
-            for (c=fgetc(file); c != EOF; c=fgetc(file))
-              (void) WriteBlobByte(image,c);
-            (void) fclose(file);
-            (void) remove(filename);
+            LiberateMemory((void **) &blob);
             break;
           }
           case RunlengthEncodedCompression:
@@ -899,40 +892,26 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           {
             case JPEGCompression:
             {
-              char
-                filename[MaxTextExtent];
-
-              FILE
-                *file;
-
               Image
                 *jpeg_image;
 
-              int
-                c;
+              size_t
+                length;
+
+              void
+                *blob;
 
               /*
-                Write image to temporary file in JPEG format.
+                Write image in JPEG format.
               */
-              TemporaryFilename(filename);
               jpeg_image=CloneImage(image,0,0,True,&image->exception);
               if (jpeg_image == (Image *) NULL)
                 ThrowWriterException(DelegateError,"Unable to clone image",
                   image);
-              (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
-              status=WriteImage(image_info,jpeg_image);
+              blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
+              (void) WriteBlob(image,length,blob);
               DestroyImage(jpeg_image);
-              if (status == False)
-                ThrowWriterException(DelegateError,"Unable to write image",
-                  image);
-              file=fopen(filename,ReadBinaryType);
-              if (file == (FILE *) NULL)
-                ThrowWriterException(FileOpenError,"Unable to open file",
-                  image);
-              for (c=fgetc(file); c != EOF; c=fgetc(file))
-                (void) WriteBlobByte(image,c);
-              (void) fclose(file);
-              (void) remove(filename);
+              LiberateMemory((void **) &blob);
               break;
             }
             case RunlengthEncodedCompression:
