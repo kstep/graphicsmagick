@@ -1556,8 +1556,6 @@ MagickExport unsigned int MapImages(Image *images,Image *map_image,
 
   assert(images != (Image *) NULL);
   assert(images->signature == MagickSignature);
-  assert(map_image != (Image *) NULL);
-  assert(map_image->signature == MagickSignature);
   if (images->next == (Image *) NULL)
     {
       /*
