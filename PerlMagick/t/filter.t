@@ -44,7 +44,7 @@ testFilter('input.miff', 'Colorize',
 ++$test;
 testFilter('input.miff', 'Contrast',
   q/1/,
-  'ade6d7be494f4d3437c7f9a3fa008adc',
+  'c2156d2134de57d98a03fe8ffdf0a3cd',
   'e4dc79d4309f1c7cded302a52b57614c');
 
 ++$test;
@@ -259,7 +259,7 @@ testFilter('input.miff', 'Wave',
 ++$test;
 testFilter('input.miff', 'Zoom',
   q/geometry=>50%,filter=>Point/,
-  '7f2ece454edfd8555c4f071a87547eb4',
+  '6c972c20b34dd28586541a326e443b6f',
   '9e78d6fcaf019530500dff7078a23efc');
 
 ++$test;

@@ -1306,6 +1306,27 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     *p,
     *q;
 
+  if ((source->columns == destination->columns) &&
+      (source->rows == destination->rows))
+    {
+      /*
+        Equal width and height-- just copy pixels.
+      */
+      for (y=0; y < (int) destination->rows; y++)
+      {
+        p=SetImagePixels(source,0,y,source->columns,1);
+        q=SetImagePixels(destination,0,y,destination->columns,1);
+        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          break;
+        memcpy(q,p,source->columns*sizeof(PixelPacket));
+        if (!SyncImagePixels(destination))
+          break;
+        if (QuantumTick(*quantum,span))
+          ProgressMonitor(ZoomImageText,*quantum,span);
+        (*quantum)++;
+      }
+      return(y == (int) destination->rows);
+    }
   /*
     Apply filter to zoom horizontally from source to destination.
   */
@@ -1322,19 +1343,17 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
       support=0.5;
       scale_factor=1.0;
     }
-  support+=1.0e-7;
   for (x=0; x < (int) destination->columns; x++)
   {
     density=0.0;
     n=0;
     center=(double) x/x_factor;
-    start=center-support+0.5;
-    end=center+support+0.5;
+    start=center-support;
+    end=center+support;
     for (i=Max(start,0); i < (int) Min(end,source->columns); i++)
     {
       contribution[n].pixel=i;
-      contribution[n].weight=
-        filter_info->function(((double) i-center+0.5)/scale_factor);
+      contribution[n].weight=filter_info->function((i-center)/scale_factor);
       contribution[n].weight/=scale_factor;
       density+=contribution[n].weight;
       n++;
@@ -1424,6 +1443,27 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     *p,
     *q;
 
+  if ((source->columns == destination->columns) &&
+      (source->rows == destination->rows))
+    {
+      /*
+        Equal width and height-- just copy pixels.
+      */
+      for (y=0; y < (int) destination->rows; y++)
+      {
+        p=SetImagePixels(source,0,y,source->columns,1);
+        q=SetImagePixels(destination,0,y,destination->columns,1);
+        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          break;
+        memcpy(q,p,source->columns*sizeof(PixelPacket));
+        if (!SyncImagePixels(destination))
+          break;
+        if (QuantumTick(*quantum,span))
+          ProgressMonitor(ZoomImageText,*quantum,span);
+        (*quantum)++;
+      }
+      return(y == (int) destination->rows);
+    }
   /*
     Apply filter to zoom vertically from source to destination.
   */
@@ -1440,19 +1480,17 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
       support=0.5;
       scale_factor=1.0;
     }
-  support+=1.0e-7;
   for (y=0; y < (int) destination->rows; y++)
   {
     density=0.0;
     n=0;
     center=(double) y/y_factor;
-    start=center-support+0.5;
-    end=center+support+0.5;
+    start=center-support;
+    end=center+support;
     for (i=Max(start,0); i < (int) Min(end,source->rows); i++)
     {
       contribution[n].pixel=i;
-      contribution[n].weight=
-        filter_info->function(((double) i-center+0.5)/scale_factor);
+      contribution[n].weight=filter_info->function((i-center)/scale_factor);
       contribution[n].weight/=scale_factor;
       density+=contribution[n].weight;
       n++;
