@@ -129,6 +129,12 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   void
     *context;
 
+  struct stat
+    file_info;
+
+  int
+    status;
+
   image=(Image *) NULL;
   clone_info=CloneImageInfo(image_info);
   DetachBlob(clone_info->blob);
@@ -175,10 +181,14 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
   (void) fclose(file);
+  status=stat(clone_info->filename,&file_info);
   *clone_info->magick='\0';
-  image=ReadImage(clone_info,exception);
+  if ((status == 0) && (file_info.st_size > 0))
+    image=ReadImage(clone_info,exception);
   (void) remove(clone_info->filename);
   DestroyImageInfo(clone_info);
+  if ((status != 0) || (file_info.st_size <= 0))
+    ThrowException(exception,FileOpenWarning,"No data returned from:",filename);
   return(image);
 }
 #else
