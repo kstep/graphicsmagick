@@ -1757,6 +1757,148 @@ MagickExport unsigned int DescribeImage(Image *image,FILE *file,
       (void) fprintf(file,"    white point: (%g,%g)\n",
         image->chromaticity.white_point.x,image->chromaticity.white_point.y);
     }
+  if ((image->tile_info.width*image->tile_info.height) != 0)
+    (void) fprintf(file,"  Tile geometry: %lux%lu%+ld%+ld\n",
+      image->tile_info.width,image->tile_info.height,image->tile_info.x,
+      image->tile_info.y);
+  if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
+    {
+      /*
+        Display image resolution.
+      */
+      (void) fprintf(file,"  Resolution: %gx%g",image->x_resolution,
+        image->y_resolution);
+      if (image->units == UndefinedResolution)
+        (void) fprintf(file," pixels\n");
+      else
+        if (image->units == PixelsPerInchResolution)
+          (void) fprintf(file," pixels/inch\n");
+        else
+          if (image->units == PixelsPerCentimeterResolution)
+            (void) fprintf(file," pixels/centimeter\n");
+          else
+            (void) fprintf(file,"\n");
+    }
+  FormatSize(GetBlobSize(image),format);
+  (void) fprintf(file,"  Filesize: %.1024s\n",format);
+  if (image->interlace == NoInterlace)
+    (void) fprintf(file,"  Interlace: None\n");
+  else
+    if (image->interlace == LineInterlace)
+      (void) fprintf(file,"  Interlace: Line\n");
+    else
+      if (image->interlace == PlaneInterlace)
+        (void) fprintf(file,"  Interlace: Plane\n");
+    else
+      if (image->interlace == PartitionInterlace)
+        (void) fprintf(file,"  Interlace: Partition\n");
+  (void) QueryColorname(image,&image->background_color,SVGCompliance,color,
+    &image->exception);
+  (void) fprintf(file,"  Background Color: %.1024s\n",color);
+  (void) QueryColorname(image,&image->border_color,SVGCompliance,color,
+    &image->exception);
+  (void) fprintf(file,"  Border Color: %.1024s\n",color);
+  (void) QueryColorname(image,&image->matte_color,SVGCompliance,color,
+    &image->exception);
+  (void) fprintf(file,"  Matte Color: %.1024s\n",color);
+  if ((image->page.width != 0) && (image->page.height != 0))
+    (void) fprintf(file,"  Page geometry: %lux%lu%+ld%+ld\n",image->page.width,
+      image->page.height,image->page.x,image->page.y);
+  (void) fprintf(file,"  Dispose: ");
+  switch (image->dispose)
+  {
+    case UndefinedDispose: (void) fprintf(file,"Undefined\n"); break;
+    case NoneDispose: (void) fprintf(file,"None\n"); break;
+    case BackgroundDispose: (void) fprintf(file,"Background\n"); break;
+    case PreviousDispose: (void) fprintf(file,"Previous\n"); break;
+    default: (void) fprintf(file,"\n");  break;
+  }
+  if (image->delay != 0)
+    (void) fprintf(file,"  Delay: %lu\n",image->delay);
+  if (image->iterations != 1)
+    (void) fprintf(file,"  Iterations: %lu\n",image->iterations);
+  p=image;
+  while (p->previous != (Image *) NULL)
+    p=p->previous;
+  for (count=1; p->next != (Image *) NULL; count++)
+    p=p->next;
+  if (count > 1)
+    (void) fprintf(file,"  Scene: %lu of %lu\n",image->scene,count);
+  else
+    if (image->scene != 0)
+      (void) fprintf(file,"  Scene: %lu\n",image->scene);
+  (void) fprintf(file,"  Compression: ");
+  switch (image->compression)
+  {
+    case NoCompression: (void) fprintf(file,"None\n"); break;
+    case BZipCompression: (void) fprintf(file,"BZip\n"); break;
+    case FaxCompression: (void) fprintf(file,"Fax\n"); break;
+    case Group4Compression: (void) fprintf(file,"Group 4\n"); break;
+    case JPEGCompression: (void) fprintf(file,"JPEG\n"); break;
+    case LosslessJPEGCompression: (void) fprintf(file,"Lossless JPEG\n"); break;
+    case LZWCompression: (void) fprintf(file,"LZW\n"); break;
+    case RLECompression: (void) fprintf(file,"Runlength Encoded\n"); break;
+    case ZipCompression: (void) fprintf(file,"Zip\n"); break;
+    default: (void) fprintf(file,"\n");  break;
+  }
+  /*
+    Display formatted image attributes. This must happen before we access
+    any pseudo attributes like EXIF since doing so causes real attributes
+    to be created and we would get duplicates in the output.
+  */
+  attribute=GetImageAttribute(image,(char *) NULL);
+  {
+#if defined(WRAP_ATTRIBUTES)
+    int
+      screen_width=79;
+
+    if (getenv("COLUMNS"))
+        screen_width=atoi(getenv("COLUMNS"))-1;
+#endif /* defined(WRAP_ATTRIBUTES) */
+
+    for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
+      {
+        (void) fprintf(file,"  %c", toupper((int)attribute->key[0]));
+        if (strlen(attribute->key) > 1)
+          (void) fprintf(file,"%.1024s",attribute->key+1);
+#if defined(WRAP_ATTRIBUTES)
+        {
+          int
+            attribute_length,
+            formatted_chars=0,
+            length=0,
+            start_column=4,
+            strip_length;
+
+          char
+            *s;
+
+          (void) fprintf(file,":\n");
+          attribute_length=strlen(attribute->value);
+          for (s=attribute->value; length < attribute_length; s+=formatted_chars)
+            {
+              fprintf(file,"%*s",start_column,"");
+              strip_length=screen_width-start_column;
+              if (length+strip_length < attribute_length)
+                {
+                  char
+                    *e;
+
+                  for(e=s+strip_length; (e > s) && ( !isspace((int)(*(e-1)))) ; e--);
+                  if ((e > s) && (*(e-1) == ' '))
+                    strip_length=e-s;
+                }
+              formatted_chars=fprintf(file,"%.*s",strip_length,s);
+              length+=formatted_chars;
+              fprintf(file,"\n");
+            }
+        }
+#else
+        (void) fprintf(file,": ");
+        (void) fprintf(file,"%s\n",attribute->value);
+#endif
+      }
+  }
   if (image->color_profile.length != 0)
     (void) fprintf(file,"  Profile-color: %lu bytes\n",(unsigned long)
       image->color_profile.length);
@@ -1877,90 +2019,45 @@ MagickExport unsigned int DescribeImage(Image *image,FILE *file,
       image->generic_profile[i].name == (char *) NULL ? "generic" :
       image->generic_profile[i].name,(unsigned long)
       image->generic_profile[i].length);
-  }
-  if ((image->tile_info.width*image->tile_info.height) != 0)
-    (void) fprintf(file,"  Tile geometry: %lux%lu%+ld%+ld\n",
-      image->tile_info.width,image->tile_info.height,image->tile_info.x,
-      image->tile_info.y);
-  if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
-    {
-      /*
-        Display image resolution.
-      */
-      (void) fprintf(file,"  Resolution: %gx%g",image->x_resolution,
-        image->y_resolution);
-      if (image->units == UndefinedResolution)
-        (void) fprintf(file," pixels\n");
-      else
-        if (image->units == PixelsPerInchResolution)
-          (void) fprintf(file," pixels/inch\n");
-        else
-          if (image->units == PixelsPerCentimeterResolution)
-            (void) fprintf(file," pixels/centimeter\n");
-          else
-            (void) fprintf(file,"\n");
-    }
-  FormatSize(GetBlobSize(image),format);
-  (void) fprintf(file,"  Filesize: %.1024s\n",format);
-  if (image->interlace == NoInterlace)
-    (void) fprintf(file,"  Interlace: None\n");
-  else
-    if (image->interlace == LineInterlace)
-      (void) fprintf(file,"  Interlace: Line\n");
-    else
-      if (image->interlace == PlaneInterlace)
-        (void) fprintf(file,"  Interlace: Plane\n");
-    else
-      if (image->interlace == PartitionInterlace)
-        (void) fprintf(file,"  Interlace: Partition\n");
-  (void) QueryColorname(image,&image->background_color,SVGCompliance,color,
-    &image->exception);
-  (void) fprintf(file,"  Background Color: %.1024s\n",color);
-  (void) QueryColorname(image,&image->border_color,SVGCompliance,color,
-    &image->exception);
-  (void) fprintf(file,"  Border Color: %.1024s\n",color);
-  (void) QueryColorname(image,&image->matte_color,SVGCompliance,color,
-    &image->exception);
-  (void) fprintf(file,"  Matte Color: %.1024s\n",color);
-  if ((image->page.width != 0) && (image->page.height != 0))
-    (void) fprintf(file,"  Page geometry: %lux%lu%+ld%+ld\n",image->page.width,
-      image->page.height,image->page.x,image->page.y);
-  (void) fprintf(file,"  Dispose: ");
-  switch (image->dispose)
-  {
-    case UndefinedDispose: (void) fprintf(file,"Undefined\n"); break;
-    case NoneDispose: (void) fprintf(file,"None\n"); break;
-    case BackgroundDispose: (void) fprintf(file,"Background\n"); break;
-    case PreviousDispose: (void) fprintf(file,"Previous\n"); break;
-    default: (void) fprintf(file,"\n");  break;
-  }
-  if (image->delay != 0)
-    (void) fprintf(file,"  Delay: %lu\n",image->delay);
-  if (image->iterations != 1)
-    (void) fprintf(file,"  Iterations: %lu\n",image->iterations);
-  p=image;
-  while (p->previous != (Image *) NULL)
-    p=p->previous;
-  for (count=1; p->next != (Image *) NULL; count++)
-    p=p->next;
-  if (count > 1)
-    (void) fprintf(file,"  Scene: %lu of %lu\n",image->scene,count);
-  else
-    if (image->scene != 0)
-      (void) fprintf(file,"  Scene: %lu\n",image->scene);
-  (void) fprintf(file,"  Compression: ");
-  switch (image->compression)
-  {
-    case NoCompression: (void) fprintf(file,"None\n"); break;
-    case BZipCompression: (void) fprintf(file,"BZip\n"); break;
-    case FaxCompression: (void) fprintf(file,"Fax\n"); break;
-    case Group4Compression: (void) fprintf(file,"Group 4\n"); break;
-    case JPEGCompression: (void) fprintf(file,"JPEG\n"); break;
-    case LosslessJPEGCompression: (void) fprintf(file,"Lossless JPEG\n"); break;
-    case LZWCompression: (void) fprintf(file,"LZW\n"); break;
-    case RLECompression: (void) fprintf(file,"Runlength Encoded\n"); break;
-    case ZipCompression: (void) fprintf(file,"Zip\n"); break;
-    default: (void) fprintf(file,"\n");  break;
+    if (LocaleCompare(image->generic_profile[i].name,"EXIF") == 0)
+      {
+        attribute=GetImageAttribute(image,"EXIF:*");
+        if (attribute != (const ImageAttribute *) NULL)
+          {
+            char
+              **values;
+
+            register char
+              *p;
+
+            values=StringToList(attribute->value);
+            if (values != (char **) NULL)
+              {
+                for (x=0; values[x] != (char *) NULL; x++)
+                {
+                  (void) fprintf(file,"    ");
+                  for (p=values[x]; *p != '\0'; p++)
+                  {
+                    if (p > values[x])
+                      if ((isupper((int) ((unsigned char) *p)) != False) &&
+                          (islower((int) ((unsigned char) *(p+1))) != False))
+                        (void) fprintf(file," ");
+                    if (*p == '=')
+                      {
+                        (void) fprintf(file,": ");
+                        for (p++; *p != '\0'; p++)
+                          (void) fputc(*p,file);
+                        break;
+                      }
+                    (void) fputc(*p,file);
+                  }
+                  (void) fputc('\n',file);
+                  MagickFreeMemory(values[x]);
+                }
+                MagickFreeMemory(values);
+              }
+          }
+      }
   }
   if (image->montage != (char *) NULL)
     (void) fprintf(file,"  Montage: %.1024s\n",image->montage);
@@ -2017,62 +2114,6 @@ MagickExport unsigned int DescribeImage(Image *image,FILE *file,
       }
       DestroyImageInfo(image_info);
     }
-  /*
-    Display formatted image attributes.
-  */
-  attribute=GetImageAttribute(image,(char *) NULL);
-  {
-#if defined(WRAP_ATTRIBUTES)
-    int
-      screen_width=79;
-
-    if (getenv("COLUMNS"))
-        screen_width=atoi(getenv("COLUMNS"))-1;
-#endif /* defined(WRAP_ATTRIBUTES) */
-
-    for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
-      {
-        (void) fprintf(file,"  %c", toupper((int)attribute->key[0]));
-        if (strlen(attribute->key) > 1)
-          (void) fprintf(file,"%.1024s",attribute->key+1);
-#if defined(WRAP_ATTRIBUTES)
-        {
-          int
-            attribute_length,
-            formatted_chars=0,
-            length=0,
-            start_column=4,
-            strip_length;
-
-          char
-            *s;
-
-          (void) fprintf(file,":\n");
-          attribute_length=strlen(attribute->value);
-          for (s=attribute->value; length < attribute_length; s+=formatted_chars)
-            {
-              fprintf(file,"%*s",start_column,"");
-              strip_length=screen_width-start_column;
-              if (length+strip_length < attribute_length)
-                {
-                  char
-                    *e;
-
-                  for(e=s+strip_length; (e > s) && ( !isspace((int)(*(e-1)))) ; e--);
-                  if ((e > s) && (*(e-1) == ' '))
-                    strip_length=e-s;
-                }
-              formatted_chars=fprintf(file,"%.*s",strip_length,s);
-              length+=formatted_chars;
-              fprintf(file,"\n");
-            }
-        }
-#else
-        (void) fprintf(file,": ");
-        (void) fprintf(file,"%s\n",attribute->value);
-#endif
-      }
-  }
   if (image->taint)
     (void) fprintf(file,"  Tainted: True\n");
   else
