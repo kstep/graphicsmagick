@@ -120,7 +120,8 @@ typedef struct _SVGInfo
     segment;
 
   BoundingBox
-    bounds;
+    bounds,
+    view_box;
 
   PointInfo
     radius;
@@ -1356,16 +1357,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"viewBox") == 0)
             {
               p=(char *) value;
-              svg_info->bounds.x=strtod(p,&p);
+              svg_info->view_box.x=strtod(p,&p);
               if (*p == ',');
                 p++;
-              svg_info->bounds.y=strtod(p,&p);
+              svg_info->view_box.y=strtod(p,&p);
               if (*p == ',');
                 p++;
-              svg_info->bounds.width=strtod(p,&p);
+              svg_info->view_box.width=strtod(p,&p);
               if (*p == ',');
                 p++;
-              svg_info->bounds.height=strtod(p,&p);
+              svg_info->view_box.height=strtod(p,&p);
               if (*p == ',');
                 p++;
               break;
@@ -1465,22 +1466,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
           RectangleInfo
             page;
 
-          for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
-          {
-            keyword=(char *) attributes[i];
-            value=(char *) attributes[i+1];
-            if (LocaleCompare(keyword,"height") == 0)
-              svg_info->height=(int) svg_info->bounds.height;
-            if (LocaleCompare(keyword,"width") == 0)
-              svg_info->width=(int) svg_info->bounds.width;
-            if (LocaleCompare(keyword,"viewBox") == 0)
-              {
-                svg_info->height=(int) svg_info->bounds.height;
-                svg_info->width=(int) svg_info->bounds.width;
-              }
-          }
-          page.width=svg_info->width;
-          page.height=svg_info->height;
+          if ((svg_info->view_box.width == 0.0) ||
+              (svg_info->view_box.height == 0.0))
+            svg_info->view_box=svg_info->bounds;
+          page.width=svg_info->bounds.width;
+          page.height=svg_info->bounds.height;
           page.x=0;
           page.y=0;
           geometry=(char *) NULL;
@@ -1499,13 +1489,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (svg_info->x_resolution != 0.0)
             page.width=(unsigned int)
-              (((page.width*svg_info->x_resolution)/72.0)+0.5);
+              ceil(((page.width*svg_info->x_resolution)/72.0)-0.5);
           if (svg_info->y_resolution != 0.0)
             page.height=(unsigned int)
-              (((page.height*svg_info->y_resolution)/72.0)+0.5);
+              ceil(((page.height*svg_info->y_resolution)/72.0)-0.5);
           (void) fprintf(svg_info->file,"affine %g 0.0 0.0 %g 0.0 0.0\n",
-            (double) page.width/svg_info->width,
-            (double) page.height/svg_info->height);
+            (double) page.width/svg_info->view_box.width,
+            (double) page.height/svg_info->view_box.height);
           svg_info->width=page.width;
           svg_info->height=page.height;
         }
@@ -2025,8 +2015,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.scale[0]=1.0;
   svg_info.x_resolution=image->x_resolution == 0.0 ? 72.0 : image->x_resolution;
   svg_info.y_resolution=image->y_resolution == 0.0 ? 72.0 : image->y_resolution;
-  svg_info.width=image->columns;
-  svg_info.height=image->rows;
+  svg_info.bounds.width=image->columns;
+  svg_info.bounds.height=image->rows;
   if (image_info->size != (char *) NULL)
     CloneString(&svg_info.size,image_info->size);
   if (image_info->page != (char *) NULL)
