@@ -1,7 +1,7 @@
 # ltmain.sh - Provide generalized library-building support services.
 # NOTE: Changing this file will not affect anything until you rerun configure.
 #
-# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003
+# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004
 # Free Software Foundation, Inc.
 # Originally by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 #
@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.5a
-TIMESTAMP=" 1.1354 2003/11/28 13:41:21"
+TIMESTAMP=" 1.1363 2004/01/04 20:45:24"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -856,7 +856,7 @@ EOF
       ;;
     esac
     libtool_args="$nonopt"
-    base_compile="$nonopt"
+    base_compile="$nonopt $@"
     compile_command="$nonopt"
     finalize_command="$nonopt"
 
@@ -906,7 +906,7 @@ EOF
     # Only attempt this if the compiler in the base link
     # command doesn't match the default compiler.
     if test -n "$available_tags" && test -z "$tagname"; then
-      case "$base_compile " in
+      case $base_compile in
       # Blanks in the command may have been stripped by the calling shell,
       # but not from the CC environment variable when configure was run.
       "$CC "* | " $CC "* | "`$echo $CC` "* | " `$echo $CC` "*) ;;
@@ -917,7 +917,7 @@ EOF
 	  if grep "^# ### BEGIN LIBTOOL TAG CONFIG: $z$" < "$0" > /dev/null; then
 	    # Evaluate the configuration.
 	    eval "`${SED} -n -e '/^# ### BEGIN LIBTOOL TAG CONFIG: '$z'$/,/^# ### END LIBTOOL TAG CONFIG: '$z'$/p' < $0`"
-	    case "$base_compile " in
+	    case $base_compile in
 	    "$CC "* | " $CC "* | "`$echo $CC` "* | " `$echo $CC` "*)
 	      # The compiler in $compile_command matches
 	      # the one in the tagged configuration.
@@ -985,7 +985,6 @@ EOF
     # Go through the arguments, transforming them on the way.
     while test "$#" -gt 0; do
       arg="$1"
-      base_compile="$base_compile $arg"
       shift
       case $arg in
       *[\[\~\#\^\&\*\(\)\{\}\|\;\<\>\?\'\ \	]*|*]*|"")
@@ -4979,7 +4978,7 @@ sed_quote_subst='$sed_quote_subst'
 
 # The HP-UX ksh and POSIX shell print the target directory to stdout
 # if CDPATH is set.
-if test \"\${CDPATH+set}\" = set; then CDPATH=:; export CDPATH; fi
+if test \"\${CDPATH+set}\" = set; then CDPATH=\${ZSH_VERSION+.}:; export CDPATH; fi
 
 relink_command=\"$relink_command\"
 
@@ -5858,7 +5857,7 @@ relink_command=\"$relink_command\""
 	      tmpdir="/tmp"
 	      test -n "$TMPDIR" && tmpdir="$TMPDIR"
 	      tmpdir="$tmpdir/libtool-$$"
-	      if $mkdir -p "$tmpdir" && chmod 700 "$tmpdir"; then :
+	      if $mkdir "$tmpdir" && chmod 700 "$tmpdir"; then :
 	      else
 		$echo "$modename: error: cannot create temporary directory \`$tmpdir'" 1>&2
 		continue
@@ -6357,7 +6356,7 @@ relink_command=\"$relink_command\""
 fi # test -z "$show_help"
 
 if test -n "$exec_cmd"; then
-  eval exec $exec_cmd
+  eval exec "$exec_cmd"
   exit 1
 fi
 

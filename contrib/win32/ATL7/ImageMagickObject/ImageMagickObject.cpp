@@ -36,7 +36,7 @@ class CModuelOverrideClass
       /* The first thing to do is make sure that basic critical sections are
          initialized properly. This should prevent ANY other race conditions
        */
-      MagickLib::InitializeSemaphore();
+      // MagickLib::InitializeSemaphore();
       /* Next we use a back door to init the path to US so that the logging
          system can find its configuration file log.gk and load it
        */

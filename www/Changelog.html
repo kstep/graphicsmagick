@@ -53,6 +53,24 @@
 </tr>
 </table>
 <p>
+2004-01-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> contrib/win32/ATL7/ImageMagickObject/ImageMagickObject.cpp
+        (IDispatch): Comment out InitializeSemaphore() so code compiles.
+  <LI> libtool.m4: Updated to 2004-01-03 version of CVS libtool. This
+        should fix configure problems under AIX and IRIX.
+
+</UL>
+<p>
+2004-01-03  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/sgi.c: opacity channel was lost when writing grayscale
+        SGI images.  See bug report in magick-users list.
+
+</UL>
+<p>
 2003-12-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

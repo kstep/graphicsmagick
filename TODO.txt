@@ -5,16 +5,14 @@ Items large and small which remain to be worked on.
 For 1.1 Release
 ===============
 
- o ImageMagickObject should compile.
  o Fix -process parsing so '-process analyze' works.
  o Fix SegmentImage.  Result image is coming out all black!
- o Fix AnnotateImage. Result image has no text!
  o Fix new XorCompositeOp implementation.  Apparently a pixel is inverted
    between SPARC and Intel in the PerlMagick tests.
- o Fix libtool configure problem under IRIX and AIX.
  o Debug utilities test failure noticed under OS-X.
  o Fix exception logging (map to warning & error logging)
  o Update Windows LCMS to 1.12 release (MIT license!).
+ o Update Windows libtiff to version 3.6.1.
 
 For Future Release
 ==================

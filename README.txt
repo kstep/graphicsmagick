@@ -244,7 +244,7 @@ MAGICK DELEGATES
     o GraphicsMagick requires Sam Leffler's TIFF software available via
       anonymous FTP at
 
-         ftp://ftp.remotesensing.org/pub/libtiff/
+         ftp://ftp.remotesensing.org/libtiff/
 
       or via HTTP at
 

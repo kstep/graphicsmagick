@@ -507,7 +507,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               index=(*p++);
               if (index >= image->colors)
                 {
-                  ThrowException(&image->exception,CorruptImageError,InvalidColormapIndex,image->filename);
+                  ThrowException(&image->exception,CorruptImageError,
+                    InvalidColormapIndex,image->filename);
                   index=0;
                 }
               indexes[x]=index;
@@ -538,7 +539,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case '6':
       {
         /*
-          Convert PNM raster image to pixel packets.
+          Convert PPM raw raster image to pixel packets.
         */
         packets=image->depth <= 8 ? 3 : 6;
         pixels=MagickAllocateMemory(unsigned char *,packets*image->columns);

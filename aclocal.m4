@@ -95,7 +95,7 @@ dnl
 _LT_CONFIG_LIBTOOL_INIT([
 # See if we are running on zsh, and set the options which allow our
 # commands through without removal of \ escapes INIT.                             
-if test -n "${ZSH_VERSION+set}" ; then
+if test -n "\${ZSH_VERSION+set}" ; then
    setopt NO_GLOB_SUBST
 fi
 ])
@@ -365,7 +365,7 @@ fi
 
 # The HP-UX ksh and POSIX shell print the target directory to stdout
 # if CDPATH is set.
-if test "X${CDPATH+set}" = Xset; then CDPATH=:; export CDPATH; fi
+if test "X${CDPATH+set}" = Xset; then CDPATH=${ZSH_VERSION+.}:; export CDPATH; fi
 
 if test -z "$ECHO"; then
 if test "X${echo_test_string+set}" != Xset; then
@@ -3852,7 +3852,7 @@ m4_if([$1], [],
 # Generated automatically by $PROGRAM (GNU $PACKAGE $VERSION$TIMESTAMP)
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
-# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001
+# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003
 # Free Software Foundation, Inc.
 #
 # This file is part of GNU Libtool:
@@ -3885,7 +3885,7 @@ Xsed="$SED -e s/^X//"
 
 # The HP-UX ksh and POSIX shell print the target directory to stdout
 # if CDPATH is set.
-if test "X\${CDPATH+set}" = Xset; then CDPATH=:; export CDPATH; fi
+if test "X\${CDPATH+set}" = Xset; then CDPATH=\${ZSH_VERSION+.}:; export CDPATH; fi
 
 # The names of the tagged configurations supported by this script.
 available_tags=
@@ -4401,10 +4401,10 @@ _LT_EOF
     old_postinstall_cmds | old_postuninstall_cmds | \
     sys_lib_search_path_spec | sys_lib_dlsearch_path_spec)
       # Double-quote double-evaled strings.
-      eval "lt_\$var=\\\\\"\\\`\\\$echo \"X\\\$\$var\" | \\\$Xsed -e \"\\\$double_quote_subst\" -e \"\\\$sed_quote_subst\" -e \"\\\$delay_variable_subst\"\\\`\\\\\""
+      eval "lt_\$var=\\\\\\"\\\`\\\$echo \\"X\\\$\$var\\" | \\\$Xsed -e \\"\\\$double_quote_subst\\" -e \\"\\\$sed_quote_subst\\" -e \\"\\\$delay_variable_subst\\"\\\`\\\\\\""
       ;;
     *)
-      eval "lt_\$var=\\\\\"\\\`\\\$echo \"X\\\$\$var\" | \\\$Xsed -e \"\\\$sed_quote_subst\"\\\`\\\\\""
+      eval "lt_\$var=\\\\\\"\\\`\\\$echo \\"X\\\$\$var\\" | \\\$Xsed -e \\"\\\$sed_quote_subst\\"\\\`\\\\\\""
       ;;
     esac
   done
