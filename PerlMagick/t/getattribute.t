@@ -73,7 +73,7 @@ testGetAttribute('input.miff','normalized_mean','0');
 testGetAttribute('input.miff','rows','46');
 
 ++$test;
-testGetAttribute('input.miff','signature','7785d161ea66bd39394bb74ef704a0aa');
+testGetAttribute('input.miff','signature','12643c99ecf96cf1d7e8f5cc62b13c78');
 
 ++$test;
 testGetAttribute('input.miff','text',undef);

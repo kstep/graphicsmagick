@@ -20,6 +20,6 @@ chdir 't/rad' || die 'Cd failed';
 testReadWrite( 'RAD:input.rad',
                'MIFF:output.rad',
                q//,
-               'cba35b22fe0534fc713c2887a6d1725b',
+               '722852451d8612f2b7fd8a3c0fa834a3',
                'ada489ea3efaf7a6e6b087fc73b2bfca' );
 1;

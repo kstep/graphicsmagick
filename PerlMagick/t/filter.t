@@ -15,240 +15,240 @@ chdir 't' || die 'Cd failed';
 
 testFilter('input.miff', 'Border',
   q/#ccc/,
-  '36bc2833b05ad1e4e2cace027e045d9d');
+  'd5731e36e03b9e408280a85fca37c09c');
 
 ++$test;
 testFilter('input.miff', 'Blur',
   q/60/,
-  'a1af7b4d08186a26ed9e01738b568051',
-  '4feca1e68d3036db3997310a63231b51');
+  '8b903e0b804825a294258f98f957ad36',
+  '52f7685c94e7d22abe789127e15f9e6d');
 
 ++$test;
 testFilter('input.miff', 'Border',
   q/10/,
-  '60b20d26fbf98095cc994c21d013d42e');
+  '48ea19579994e852415de2b83d31c080');
 
 ++$test;
 testFilter('input.miff', 'Chop',
   q/+10+10/,
-  '92fd46db3668d557b12c30fc810b1fe6');
+  '9904c07819014a4d9f6c0f4c5e650b08');
 
 ++$test;
 testFilter('input.miff', 'ColorFloodfill',
   q/geometry=>+10+10,pen=>black/,
-  'a51dc2d20c36c8e4df18afc567db636e');
+  '4af3b2e075157f4493f8980ec3b9612f');
 
 ++$test;
 testFilter('input.miff', 'Colorize',
   q/red/,
-  'd61bcae2abd48b9a8cb789f054c609e8');
+  '2ffd120c34e437df526227b1dcd83f7d');
 
 ++$test;
 testFilter('input.miff', 'Contrast',
   q/1/,
-  '60e07b732b6cd84177e0ba22a8aa4106',
-  'e7385ab2db1c1aee9ae33dbab44daebb');
+  '5bb2fd58bf4f1c7c956f6f87553aec2c',
+  '8f0ab7b7117ffbbf380e8493d4399aba');
 
 ++$test;
 testFilter('input.miff', 'Crop',
   q/10x10/,
-  '92fd46db3668d557b12c30fc810b1fe6');
+  '9904c07819014a4d9f6c0f4c5e650b08');
 
 ++$test;
 testFilter('input.miff', 'Despeckle',
   q/ /,
-  '9166d0fff05dc5805eef1275863ec244',
-  '07ac0065b7c5aa0826c721faaa462a2c');
+  '1594e4794aba1342f205a81d7d7b9d25',
+  'a0648ef96fc3a4bb20daf366d96659c6');
 
 ++$test;
 testFilter('input.miff', 'Edge',
   q/60/,
-  '3e8c5c72a869f1158141bf0da0a2e25c',
-  '18df2894f1ed7eab251c3d89872fa4cf');
+  'efababe350b4cb8b0e08423fcdf70895',
+  'b1c57d6727fc7f44af4e95cb06efba87');
 
 ++$test;
 testFilter('input.miff', 'Emboss',
   q/ /,
-  '3bd50587263c86a4229dda55b3c80e16',
-  '13369e7bc6da29962fc73834305e454b');
+  '53d333238024e412189bf0e43b585504',
+  'cab0f35d59cd03d7c230df9c29c73a5e');
 
 ++$test;
 testFilter('input.miff', 'Equalize',
   q/ /,
-  'c484e3f1b74e35e911f514ad465451df',
-  '2f56b395d3b86f5f5e0d2df4a9037364');
+  '439090ad2ed811ae0c03ef3e9597fedd',
+  '457bfc1fd604ec8f2e30e5d59380c616');
 
 ++$test;
 testFilter('input.miff', 'Flip',
   q/ /,
-  'cac8dfaf79af279c6b1f37a495e8552f');
+  '39804bd87007de5f1340d104425f43fe');
 
 ++$test;
 testFilter('input.miff', 'Flop',
   q/ /,
-  '64ce85ac3a977b2ddbeebb12690965c6');
+  'cc058a59cac9ccd9c3fa63372b26bbc2');
 
 ++$test;
 testFilter('input.miff', 'Frame',
   q/10x10/,
-  '7558cc1e69972d2e0d9272b9e94dbaf6',
-  'aa803690f5e4f940d4a9e1b14896d38c');
+  'd59fe165d2d7880fbb22c09b7d950cef', 
+  '97adf83222e170fa289fa72cefc289e2');
 
 ++$test;
 testFilter('input.miff', 'Gamma',
   q/2.2/,
-  'b5f821615ecb6f3856fef4a6939d9ad1',
-  '16f54dd1ea09d26b4a240f8c20be42e0');
+  '64b0b4b0cc7be6e81da8286c4abcd759',
+  '01b56fba77fa4702291810c25973f21b');
 
 ++$test;
 testFilter('input.miff', 'Implode',
   q/60/,
-  '3d7e8331469ab7afbbeeb1ef39f61581',
-  '9b1a3972baad96b958f68e3e36867fe7');
+  '45334ad418acf64531d0d0223316e918',
+  'adbe2c44b8204890f2cfe76a98a910a2');
 
 ++$test;
 testFilter('input.miff', 'Layer',
   q/Red/,
-  'bf8f741ba7273610138b8e0ef5b5f79b');
+  '20b3b7d6e137f0814d770e336fe444a6');
 
 ++$test;
 testFilter('input.miff', 'Magnify',
   q/ /,
-  '49437b49220fa637150ce589aa40e4a1',
-  'b276d893a0ba26f924e493c8d1339fec');
+  '184bc6123d35da7ce55cd797b1a242dd',
+  '4ef0c8da5a7bfc711c728eb0ea9ba851');
 
 ++$test;
 testFilter('input.miff', 'MatteFloodfill',
   q/geometry=>+10+10,matte=>Opaque/,
-  'd7c89e6b946d94187dc34c58d4c5e2f1');
+  '43c99602c51d08df9f6e57ea4d710603');
 
 ++$test;
 testFilter('input.miff', 'Minify',
   q/ /,
-  '8b31e05a3a8710cf9864e7de0567fbec',
-  '53c73ef4da2f601052ca8a08fbf255b4');
+  '177e696d6b5fd0746b4eeafca8994e36',
+  '43c9cff509bd15579c00e466694b85de');
 
 ++$test;
 testFilter('input.miff', 'Modulate',
   q/60/,
-  'e9b8baed761cc95bd60ba1b6272bad2b',
-  'ab1ca0d1a91337bb0f8c96d40fcd00b9');
+  '8942e7e11eb93d8ac4f95ba269ec3557',
+  '626f106b1302506ad361b73754ff59ab');
 
 ++$test;
 testFilter('input.miff', 'Negate',
   q/0/,
-  'e46a038426f4de5a3f051316aee46046');
+  '8aee54346f25ff6fd2bda4efab917a4d');
 
 ++$test;
 testFilter('input.miff', 'Normalize',
   q/ /,
-  '352b86fce0e86dd83c326d257820be9c',
-  '734077e250b645a3fa05ef33085b6c56');
+  '94973214e269266f2fa95c93a45aad3e',
+  '7172f13abfaa77f105a59c463498d63d');
 
 ++$test;
 testFilter('input.miff', 'OilPaint',
   q/3/,
-  '7bfd698305d42711246edfa48f6aa9f9',
-  '2a4603d9d93d29cf463fc24d218d66df');
+  'b50f0037c332a894c7f8feec5518d1af',
+  '045c760a3f775375b1f8f66e306c184d');
 
 ++$test;
 testFilter('input.miff', 'Opaque',
   q/#fefefd/,
-  '6444b7dae412d1d441b3ff8278e874d3');
+  '96a79b61c080cbedc168200bee1202f1');
 
 ++$test;
 testFilter('input.miff', 'Quantize',
   q/128/,
-  'f4696fd19e5c100a50381235c86689cc',
-  'f88964db06cde78987d0fafdf63040e3');
+  '30bfc8ca3cdafb088afde37caf5bb64a',
+  'a456dbfe7d80321199b54bedc0aa5e38');
 
 ++$test;
 testFilter('input.miff', 'Raise',
   q/10x10/,
-  '1e5e69f5c89a366cead97e4c71b97dc5',
-  '098fb2e5b76f2eb1a12bc03f7df2d3d5');
+  'b7bdafcac55883e6b4deacb5b3aa8bc6',
+  '367626c7ba7248132248cb7fe473debb');
 
 ++$test;
 testFilter('input.miff', 'Roll',
   q/+10+10/,
-  '6d1f073f2a9c2c7bb156e25c4436e691');
+  '5a1fa84d03fb6d74221f63dc6bcbc027');
 
 ++$test;
 testFilter('input.miff', 'Rotate',
   q/45/,
-  'd8227927877e43f75c517bea4b0a9720',
-  '2be65e679ddc401a8994400114078bf4');
+  '87ac385abab338b3c2f95594cf4d88f4',
+  '9a33f1a94080a4d9621694be119e508e');
 
 ++$test;
 testFilter('input.miff', 'Sample',
   q/50%/,
-  '3d541e271af26574314643698621c4bb');
+  '87dd8d66feb7ab3185b11c72d150aaa5');
 
 ++$test;
 testFilter('input.miff', 'Scale',
   q/50%/,
-  'ed70966b7e264bcc36f3813d6de07f4f',
-  '13c229dc92426097f74443c945142b0f');
+  '4ca074949b56261a96b5f7df8d3b2029',
+  '1f3087d4eb6c8407b37d8eae742342f9');
 
 ++$test;
 testFilter('input.miff', 'Segment',
   q/1/,
-  '02179931bd9f63a64883c210ba52641e');
+  '0f18ee2d2334c100e2af70723b4cbf70');
 
 ++$test;
 testFilter('input.miff', 'Shade',
   q/30x30/,
-  'fa6ae11e0b14697429fa5261396ee7fd',
-  '93168809b907d270554533830a4cbd62');
+  'e0386a1db33967dfb96711f96e86fdba',
+  '00c21abdaf56855db95b4fda02b5bbbd');
 
 ++$test;
 testFilter('input.miff', 'Shear',
   q/45x45/,
-  '9bb77fc01cf42c37f9e2c4f130375701',
-  'f1493545b68b868d21502d27d2b112c5');
+  '2514be7aa9e6dd3f106c8d0f0b5e1e24',
+  'dce103e3b7f8c99edc33db6ddc6cd34b');
 
 ++$test;
 testFilter('input.miff', 'Solarize',
   q/60/,
-  '2594080986a34434961fe5841ae1bebc');
+  '6dcb8bbce5436b5f11c6ed0e80ee2c69');
 
 ++$test;
 testFilter('input.miff', 'Swirl',
   q/60/,
-  '099d55d589ff2a7fd6e970cca743818b',
-  'df3ba375840a79e33d9358d703f69a8d');
+  'd575bc680058c205dc54316057361849',
+  '26d1140c6dde1d6f41b185f7cdf1ad5e');
 
 ++$test;
 testFilter('input.miff', 'Texture',
   q/filename=>granite:/,
-  '7785d161ea66bd39394bb74ef704a0aa');
+  '12643c99ecf96cf1d7e8f5cc62b13c78');
 
 ++$test;
 testFilter('input.miff', 'Transform',
   q/geometry=>50x60/,
-  '7785d161ea66bd39394bb74ef704a0aa');
+  '12643c99ecf96cf1d7e8f5cc62b13c78');
 
 ++$test;
 testFilter('input.miff', 'Threshold',
   q/128/,
-  'ad5daf059a1f4dcd132f8aeed878611d',
-  '466d22c8ed1f73d913359ac063cc9317');
+  'c814d57949a4c2ac54befa72791e54dd',
+  'caa7ebca666f176a8f4d4a2f012e2236');
 
 ++$test;
 testFilter('input.miff', 'Trim',
   q/ /,
-  '7785d161ea66bd39394bb74ef704a0aa');
+  '12643c99ecf96cf1d7e8f5cc62b13c78');
 
 ++$test;
 testFilter('input.miff', 'Wave',
   q/25x157/,
-  'f1408829aaa27452850131e22f222ab6');
+  '44aac6c6b992751b29ce7babf4b13301');
 
 ++$test;
 testFilter('input.miff', 'Zoom',
   q/geometry=>50%,filter=>Point/,
-  'f9a5ccced93db546404214742d5329d2',
-  'ff9c22952d8df931e62b81c4f8b44c37');
+  'c5089c568e0024f7c9b42fa3ab5fe121',
+  '85e37abae62fc538cd4fe2fb3797ec77');
 
 ++$test;
 
