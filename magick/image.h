@@ -610,7 +610,7 @@ extern const char
 
 extern const ColorlistInfo
   XPMColorlist[235],
-  XColorlist[758];
+  XColorlist[761];
 
 /*
   Image utilities methods.

@@ -274,7 +274,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   typedef struct _EllipseInfo
   {
-    int
+    double
       cx,
       cy,
       major,
@@ -320,7 +320,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     number_tokens;
 
   RectangleInfo
-    page_info;
+    page;
 
   SegmentInfo
     segment;
@@ -350,13 +350,14 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Interpret SVG language.
   */
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  GetPageInfo(&page_info);
-  primitive=AllocateString("none");
+  ellipse.angle=0.0;
   fill=AllocateString("none");
   filename=AllocateString("logo:");
   keyword=AllocateString("none");
   quote=False;
-  opacity=1.0;
+  opacity=100.0;
+  GetPageInfo(&page);
+  primitive=AllocateString("none");
   stroke=AllocateString("none");
   text=AllocateString("none");
   token=AllocateString("none");
@@ -390,13 +391,13 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (Latin1Compare(token,"=") == 0)
       (void) GetToken(image,&value,&c,exception);
     if (Latin1Compare(keyword,"angle") == 0)
-      (void) sscanf(value,"%d",&ellipse.angle);
+      (void) sscanf(value,"%f",&ellipse.angle);
     if (Latin1Compare(keyword,"circle") == 0)
       CloneString(&primitive,"circle");
     if (Latin1Compare(keyword,"cx") == 0)
-      (void) sscanf(value,"%d",&ellipse.cx);
+      (void) sscanf(value,"%lf",&ellipse.cx);
     if (Latin1Compare(keyword,"cy") == 0)
-      (void) sscanf(value,"%d",&ellipse.cy);
+      (void) sscanf(value,"%lf",&ellipse.cy);
     if (Latin1Compare(keyword,"d") == 0)
       (void) ConcatenateString(&vertices,value);
     if (Latin1Compare(keyword,"ellipse") == 0)
@@ -406,18 +407,17 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
          CloneString(&primitive,"none");
          (void) CloneString(&fill,"none");
          (void) CloneString(&stroke,"none");
-         opacity=1.0;
+         opacity=100.0;
       }
     if (Latin1Compare(keyword,"height") == 0)
       {
-        (void) sscanf(value,"%u",&page_info.height);
+        (void) sscanf(value,"%u",&page.height);
         if (Latin1Compare(value+strlen(value)-2,"cm") == 0)
-          page_info.height=72*page_info.height/2.5;
+          page.height=72*page.height/2.54;
         if (Latin1Compare(value+strlen(value)-2,"in") == 0)
-          page_info.height=72*page_info.height;
-        FormatString(geometry,"%ux%u!",canvas->columns,page_info.height);
-        if ((canvas->columns < page_info.width) ||
-            (canvas->rows < page_info.height))
+          page.height=72*page.height;
+        FormatString(geometry,"%ux%u!",canvas->columns,page.height);
+        if ((canvas->columns < page.width) || (canvas->rows < page.height))
           TransformImage(&canvas,(char *) NULL,geometry);
       }
     if (Latin1Compare(keyword,"href") == 0)
@@ -427,9 +427,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (Latin1Compare(keyword,"image") == 0)
       CloneString(&primitive,"image");
     if (Latin1Compare(keyword,"major") == 0)
-      (void) sscanf(value,"%d",&ellipse.major);
+      (void) sscanf(value,"%lf",&ellipse.major);
     if (Latin1Compare(keyword,"minor") == 0)
-      (void) sscanf(value,"%d",&ellipse.minor);
+      (void) sscanf(value,"%lf",&ellipse.minor);
     if (Latin1Compare(keyword,"polygon") == 0)
       CloneString(&primitive,"polygon");
     if (Latin1Compare(keyword,"polyline") == 0)
@@ -440,11 +440,21 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) CloneString(&vertices,value);
     if (Latin1Compare(keyword,"r") == 0)
       {
-        (void) sscanf(value,"%d",&ellipse.major);
-        (void) sscanf(value,"%d",&ellipse.minor);
+        (void) sscanf(value,"%lf",&ellipse.major);
+        (void) sscanf(value,"%lf",&ellipse.minor);
       }
     if (Latin1Compare(keyword,"rect") == 0)
       CloneString(&primitive,"rectangle");
+    if (Latin1Compare(keyword,"rx") == 0)
+      {
+        (void) sscanf(value,"%lf",&ellipse.major);
+        ellipse.major*=2.0;
+      }
+    if (Latin1Compare(keyword,"ry") == 0)
+      {
+        (void) sscanf(value,"%lf",&ellipse.minor);
+        ellipse.minor*=2.0;
+      }
     if (Latin1Compare(keyword,"style") == 0)
       {
         tokens=StringToTokens(value,&number_tokens);
@@ -469,6 +479,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           if (Latin1Compare(tokens[i],"stroke-antialiasing:") == 0)
             draw_info->antialias=Latin1Compare(tokens[++i],"true");
+          if (Latin1Compare(tokens[i],"stroke-opacity:") == 0)
+            (void) sscanf(tokens[++i],"%lf",&opacity);
           if (Latin1Compare(tokens[i],"stroke-width:") == 0)
             (void) sscanf(tokens[++i],"%d",&draw_info->linewidth);
           if (Latin1Compare(tokens[i],"text-antialiasing:") == 0)
@@ -482,28 +494,27 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (Latin1Compare(keyword,"verts") == 0)
       (void) CloneString(&vertices,value);
     if (Latin1Compare(keyword,"viewBox") == 0)
-      (void) sscanf(value,"%d %d %u %u",&page_info.x,&page_info.y,
-        &page_info.width,&page_info.height);
+      (void) sscanf(value,"%d %d %u %u",&page.x,&page.y,
+        &page.width,&page.height);
     if (Latin1Compare(keyword,"width") == 0)
       {
-        (void) sscanf(value,"%u",&page_info.width);
+        (void) sscanf(value,"%u",&page.width);
         if (Latin1Compare(value+strlen(value)-2,"cm") == 0)
-          page_info.width=72*page_info.width/2.5;
+          page.width=72*page.width/2.54;
         if (Latin1Compare(value+strlen(value)-2,"in") == 0)
-          page_info.width=72*page_info.width;
-        FormatString(geometry,"%ux%u!",page_info.width,canvas->rows);
-        if ((canvas->columns < page_info.width) ||
-            (canvas->rows < page_info.height))
+          page.width=72*page.width;
+        FormatString(geometry,"%ux%u!",page.width,canvas->rows);
+        if ((canvas->columns < page.width) || (canvas->rows < page.height))
           TransformImage(&canvas,(char *) NULL,geometry);
       }
     if (Latin1Compare(keyword,"x") == 0)
-      (void) sscanf(value,"%u",&page_info.x);
+      (void) sscanf(value,"%u",&page.x);
     if (Latin1Compare(keyword,"x1") == 0)
       (void) sscanf(value,"%lf",&segment.x1);
     if (Latin1Compare(keyword,"x2") == 0)
       (void) sscanf(value,"%lf",&segment.x2);
     if (Latin1Compare(keyword,"y") == 0)
-      (void) sscanf(value,"%u",&page_info.y);
+      (void) sscanf(value,"%u",&page.y);
     if (Latin1Compare(keyword,"y1") == 0)
       (void) sscanf(value,"%lf",&segment.y1);
     if (Latin1Compare(keyword,"y2") == 0)
@@ -521,6 +532,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Render graphic primitive.
         */
+        if ((Latin1Compare(primitive,"rectangle") == 0) && (ellipse.major != 0))
+          CloneString(&primitive,"roundRectangle");
         length=strlen(primitive)+MaxTextExtent;
         if (vertices != (char *) NULL)
           length+=strlen(vertices);
@@ -535,7 +548,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (Latin1Compare(fill,"none") != 0)
               (void) strncpy(command,"fill",4);
-            FormatString(points,"%d,%d %d,%d",ellipse.cx,ellipse.cy,
+            FormatString(points,"%g,%g %g,%g",ellipse.cx,ellipse.cy,
               ellipse.cx,ellipse.cy+ellipse.minor);
             (void) strcat(command,points);
           }
@@ -543,14 +556,14 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (Latin1Compare(fill,"none") != 0)
               (void) strncpy(command,"fill",4);
-            FormatString(points,"%d,%d %d,%d 0,360",ellipse.cx,ellipse.cy,
+            FormatString(points,"%g,%g %g,%g 0,360",ellipse.cx,ellipse.cy,
               ellipse.angle == 0 ? ellipse.major: ellipse.minor,
               ellipse.angle == 0 ? ellipse.minor: ellipse.major);
             (void) strcat(command,points);
           }
         if (Latin1Compare(primitive,"line") == 0)
           {
-            FormatString(points,"%f,%f %f,%f",segment.x1,segment.y1,
+            FormatString(points,"%g,%g %g,%g",segment.x1,segment.y1,
               segment.x2,segment.y2);
             (void) strcat(command,points);
           }
@@ -574,21 +587,29 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (Latin1Compare(fill,"none") != 0)
               (void) strncpy(command,"fill",4);
-            FormatString(points,"%d,%d %d,%d",page_info.x,page_info.y,
-              page_info.x+page_info.width,page_info.y+page_info.height);
+            FormatString(points,"%d,%d %d,%d",page.x,page.y,
+              page.x+page.width,page.y+page.height);
+            (void) strcat(command,points);
+          }
+        if (Latin1Compare(primitive,"roundRectangle") == 0)
+          {
+            if (Latin1Compare(fill,"none") != 0)
+              (void) strncpy(command,"fill",4);
+            FormatString(points,"%g,%g %d,%d %g,%g",page.x+page.width/2.0,
+              page.y+page.height/2.0,page.width,page.height,
+              ellipse.major/2.0,ellipse.minor/2.0);
             (void) strcat(command,points);
           }
         if (Latin1Compare(primitive,"image") == 0)
           {
-            FormatString(points,"%d,%d",page_info.x,page_info.y);
+            FormatString(points,"%d,%d",page.x,page.y);
             (void) strcat(command,points);
             (void) strcat(command," ");
             (void) strcat(command,filename);
           }
         if (Latin1Compare(primitive,"text") == 0)
           {
-            FormatString(points,"%d,%f",page_info.x,page_info.y-
-              draw_info->pointsize/2);
+            FormatString(points,"%d,%g",page.x,page.y-draw_info->pointsize/2);
             (void) strcat(command,points);
             (void) strcat(command," '");
             (void) strcat(command,text+1);
@@ -605,12 +626,12 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (Latin1Compare(stroke,"none") == 0))
           (void) CloneString(&draw_info->pen,fill);
         (void) QueryColorDatabase(draw_info->pen,&tile->background_color);
-        SetImage(tile,(Quantum) (Opaque*opacity));
+        SetImage(tile,opacity*Opaque/100.0);
         if (draw_info->tile != (Image *) NULL)
           DestroyImage(draw_info->tile);
         draw_info->tile=tile;
         (void) CloneString(&draw_info->primitive,command);
-        (void) printf("draw:  %s %s\n",draw_info->pen,command);
+        (void) printf("draw:  %s %s\n",draw_info->pen,draw_info->primitive);
         status=DrawImage(canvas,draw_info);
         if (status == False)
           ThrowReaderException(ResourceLimitWarning,
@@ -624,12 +645,12 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 "Unable to draw primitive",image);
             (void) CloneString(&draw_info->pen,stroke);
             (void) QueryColorDatabase(draw_info->pen,&tile->background_color);
-            SetImage(tile,(Quantum) (Opaque*opacity));
+            SetImage(tile,opacity*Opaque/100.0);
             if (draw_info->tile != (Image *) NULL)
               DestroyImage(draw_info->tile);
             draw_info->tile=tile;
             (void) CloneString(&draw_info->primitive,command+4);
-            (void) printf("draw:  %s %s\n",draw_info->pen,command);
+            (void) printf("       %s %s\n",draw_info->pen,draw_info->primitive);
             status=DrawImage(canvas,draw_info);
             if (status == False)
               ThrowReaderException(ResourceLimitWarning,
@@ -639,6 +660,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         CloneString(&primitive,"none");
         CloneString(&fill,"none");
         CloneString(&stroke,"none");
+        opacity=100.0;
       }
     (void) CloneString(&keyword,token);
   }
