@@ -745,7 +745,7 @@ MagickExport char *GetExecutionPath(const char *path)
   return(AllocateString(getexecname(void));
 #endif
 #if defined(WIN32)
-  return(NTGetExecutionPath(void));
+  return(NTGetExecutionPath());
 #endif
   return(AllocateString(path));
 }
