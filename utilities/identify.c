@@ -291,10 +291,7 @@ int main(int argc,char **argv)
           case 'p':
           {
             if (LocaleNCompare("ping",option+1,2) == 0)
-              {
-                MagickWarning(OptionError,"Deprecated option",option);
-                break;
-              }
+              break;  /* default is ping; silently ignore */
             MagickError(OptionError,"Unrecognized option",option);
             break;
           }
