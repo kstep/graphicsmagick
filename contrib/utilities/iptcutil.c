@@ -274,7 +274,8 @@ static html_code html_codes[] = {
   { 4,"&gt;",'>' },
 #endif
   { 5,"&amp;",'&' },
-  { 6,"&quot;",'"' }
+  { 6,"&quot;",'"' },
+  { 6,"&apos;",'\''}
 };
 
 /*
