@@ -108,111 +108,85 @@ const char *GetLocaleMessage(const char *tag)
    tp = locale;
    p = locale + strlen(locale);
    np = tag;
-  switch (*locale)
-  {
-  default:
+  if (LocaleNCompare(locale, "C", 1) || p - tp != 1)
     return tag;
-
-  case 'c':  case 'C':
-    if (p - tp == 1 && !LocaleNCompare(tp, "C", 1))
-      switch (*NEXT_FIELD)
-      {
-      default:
-        return tag;
-
-      case 'c':  case 'C':
-        if (p - tp == 5 && !LocaleNCompare(tp, "Cache", 5))
-          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-            return tag;
-          else
-          if (LocaleNCompare(NEXT_FIELD, "PixelCacheIsNotOpen", 19) || p - tp != 19)
-            return tag;
-          else
-            return *np ? tag : "Pixel cache is not open";
-        else
-          return tag;
-
-      case 'r':  case 'R':
-        if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
-          if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
-            return tag;
-          else
-          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-            return tag;
-          else
-            switch (*NEXT_FIELD)
-            {
-            default:
-              return tag;
-
-            case 'm':  case 'M':
-              if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
-                return *np ? tag : "Memory allocation failed";
-              else
-                return tag;
-
-            case 'u':  case 'U':
-              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneImage", 18))
-                return *np ? tag : "Unable to clone image";
-              else
-                return tag;
-            }
-        else
-          return tag;
-      }
-    else
+  else
+    switch (*NEXT_FIELD)
+    {
+    default:
       return tag;
 
-  case 'e':  case 'E':
-    if (p - tp == 5 && !LocaleNCompare(tp, "en_US", 5))
-      switch (*NEXT_FIELD)
-      {
-      default:
-        return tag;
-
-      case 'c':  case 'C':
-        if (p - tp == 5 && !LocaleNCompare(tp, "Cache", 5))
-          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-            return tag;
-          else
-          if (LocaleNCompare(NEXT_FIELD, "PixelCacheIsNotOpen", 19) || p - tp != 19)
-            return tag;
-          else
-            return *np ? tag : "Pixel cache is not open";
-        else
+    case 'c':  case 'C':
+      if (p - tp == 5 && !LocaleNCompare(tp, "Cache", 5))
+        if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
           return tag;
+        else
+          switch (*NEXT_FIELD)
+          {
+          default:
+            return tag;
 
-      case 'r':  case 'R':
-        if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
-          if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
-            return tag;
-          else
-          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-            return tag;
-          else
-            switch (*NEXT_FIELD)
-            {
-            default:
+          case 'p':  case 'P':
+            if (p - tp == 19 && !LocaleNCompare(tp, "PixelCacheIsNotOpen", 19))
+              return *np ? tag : "Pixel cache is not open";
+            else
               return tag;
 
-            case 'm':  case 'M':
-              if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
-                return *np ? tag : "Memory allocation failed";
-              else
-                return tag;
+          case 'u':  case 'U':
+            if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneCache", 18))
+              return *np ? tag : "Unable to clone cache";
+            else
+            if (p - tp == 19 && !LocaleNCompare(tp, "UnableToExtendCache", 19))
+              return *np ? tag : "Unable to extend cache";
+            else
+            if (p - tp == 21 && !LocaleNCompare(tp, "UnableToGetCacheNexus", 21))
+              return *np ? tag : "Unable to get cache nexus";
+            else
+            if (p - tp == 26 && !LocaleNCompare(tp, "UnableToGetPixelsFromCache", 26))
+              return *np ? tag : "Unable to get pixels from cache";
+            else
+            if (p - tp == 17 && !LocaleNCompare(tp, "UnableToOpenCache", 17))
+              return *np ? tag : "Unable to open cache";
+            else
+            if (p - tp == 22 && !LocaleNCompare(tp, "UnableToReadPixelCache", 22))
+              return *np ? tag : "Unable to read pixel cache";
+            else
+            if (p - tp == 17 && !LocaleNCompare(tp, "UnableToSyncCache", 17))
+              return *np ? tag : "Unable to sync cache";
+            else
+              return tag;
+          }
+      else
+        return tag;
 
-            case 'u':  case 'U':
-              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneImage", 18))
-                return *np ? tag : "Unable to clone image";
-              else
-                return tag;
-            }
-        else
+    case 'r':  case 'R':
+      if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
+        if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
           return tag;
-      }
-    else
-      return tag;
-  }
+        else
+        if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+          return tag;
+        else
+          switch (*NEXT_FIELD)
+          {
+          default:
+            return tag;
+
+          case 'm':  case 'M':
+            if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
+              return *np ? tag : "Memory allocation failed";
+            else
+              return tag;
+
+          case 'u':  case 'U':
+            if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneImage", 18))
+              return *np ? tag : "Unable to clone image";
+            else
+              return tag;
+          }
+      else
+        return tag;
+    }
 
    return tag;
 }
