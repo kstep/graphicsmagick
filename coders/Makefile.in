@@ -229,10 +229,10 @@ EXTRA_DIST = modules.mgk delegates.mgk.in fonts.mgk.in
 noinst_HEADERS = 
 
 # Where modules are installed
-@WITH_MODULES_TRUE@pkgdir = @WITH_MODULES_TRUE@$(libdir)/ImageMagick
+@WITH_MODULES_TRUE@pkgdir = @WITH_MODULES_TRUE@$(libdir)/ImageMagick/modules/coders
 
 # Architecture-dependent data files installed with modules
-@WITH_MODULES_TRUE@pkg_DATA = @WITH_MODULES_TRUE@modules.mgk delegates.mgk fonts.mgk
+@WITH_MODULES_TRUE@pkg_DATA = @WITH_MODULES_TRUE@
 
 # Architecture independent data files installed in the package's data directory
 @WITH_MODULES_TRUE@pkgdata_DATA = 
@@ -1515,7 +1515,7 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am: 
+install-exec-am: install-exec-local
 install-exec: install-exec-am
 
 install-data-am: install-pkgLTLIBRARIES install-pkgDATA \
@@ -1589,11 +1589,29 @@ uninstall-pkgdataDATA install-pkgdataDATA tags mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags mostlyclean-depend \
 distclean-depend clean-depend maintainer-clean-depend distdir info-am \
 info dvi-am dvi check check-am installcheck-am installcheck \
-install-exec-am install-exec install-data-am \
+install-exec-local install-exec-am install-exec install-data-am \
 install-data install-am install uninstall-local uninstall-am uninstall \
 all-redirect all-am all install-strip installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
+
+
+# Install config files
+install-data-config: 
+	$(mkinstalldirs) $(pkglibdir)
+	$(INSTALL_DATA) delegates.mgk $(pkglibdir)
+	$(INSTALL_DATA) fonts.mgk $(pkglibdir)
+	$(INSTALL_DATA) modules.mgk $(pkglibdir)
+
+# Uninstall delegates files
+uninstall-data-config:
+	rm -f $(pkglibdir)/delegates.mgk
+	rm -f $(pkglibdir)/fonts.mgk
+	rm -f $(pkglibdir)/modules.mgk
+
+install-exec-local: install-data-config
+
+uninstall-local: uninstall-data-config
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

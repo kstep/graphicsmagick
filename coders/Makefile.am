@@ -59,10 +59,10 @@ noinst_HEADERS =
 
 if WITH_MODULES
 # Where modules are installed
-pkgdir = $(libdir)/ImageMagick
+pkgdir = $(libdir)/ImageMagick/modules/coders
 
 # Architecture-dependent data files installed with modules
-pkg_DATA = modules.mgk delegates.mgk fonts.mgk
+pkg_DATA = 
 
 # Architecture independent data files installed in the package's data directory
 pkgdata_DATA = 
@@ -488,3 +488,19 @@ yuv_la_LIBADD       = ../magick/libMagick.la
 
 DEFS = @DEFS@ -I../
 
+# Install config files
+install-data-config: 
+	$(mkinstalldirs) $(pkglibdir)
+	$(INSTALL_DATA) delegates.mgk $(pkglibdir)
+	$(INSTALL_DATA) fonts.mgk $(pkglibdir)
+	$(INSTALL_DATA) modules.mgk $(pkglibdir)
+
+# Uninstall config files
+uninstall-data-config:
+	rm -f $(pkglibdir)/delegates.mgk
+	rm -f $(pkglibdir)/fonts.mgk
+	rm -f $(pkglibdir)/modules.mgk
+
+install-exec-local: install-data-config
+
+uninstall-local: uninstall-data-config
