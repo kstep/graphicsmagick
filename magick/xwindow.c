@@ -5033,8 +5033,8 @@ MagickExport unsigned int XMakeImage(Display *display,
             Resize image.
           */
           if (window->pixel_info->colors != 0)
-            resize_image=ResizeImage(window->image,width,height,PointFilter,
-              1.0,&image->exception);
+            resize_image=SampleImage(window->image,width,height,
+              &image->exception);
           else
             resize_image=
               ZoomImage(window->image,width,height,&image->exception);
