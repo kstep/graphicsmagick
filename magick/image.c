@@ -6046,10 +6046,10 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       (void) CloneString(&image_info->tile,q+1);
       image_info->tile[p-q-1]='\0';
       *q='\0';
-      p=q;
       image_info->subimage=atol(image_info->tile);
       image_info->subrange=image_info->subimage;
-      for (p=image_info->tile; *p != '\0'; p++)
+      p=image_info->tile;
+      for (p=q; *q != '\0'; p++)
       {
         while (isspace((int) *p) || (*p == ','))
           p++;
