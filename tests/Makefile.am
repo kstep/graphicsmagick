@@ -158,11 +158,12 @@ CHECK_BLOB_FORMATS = \
 	$(XWD) \
 	YUV
 
-# Formats that currently don't work: DIB DPX EPDF $(FPX) PICON
+# Formats that currently don't work: DPX EPDF $(FPX) PICON
 CHECK_FILE_FORMATS = \
 	AVS \
 	BMP \
 	CMYK \
+	DIB \
 	EPSF \
 	EPSI \
 	EPI \
@@ -220,7 +221,7 @@ check-rwblob:
 	  format_failed=0 ; \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if MAGICK_DELEGATE_PATH=$(top_srcdir)/delegates ./rwblob $$file $$format ; \
+	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwblob $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -247,7 +248,7 @@ check-rwfile:
 	  format_failed=0 ; \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if MAGICK_DELEGATE_PATH=$(top_srcdir)/delegates ./rwfile $$file $$format ; \
+	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwfile $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
