@@ -86,11 +86,6 @@ sub testRead {
   {
     my(@blob, $blob_length, $image, $signature, $status);
 
-    $image = new Image::Magick;
-    $status=$image->Read( "$infile" );
-    $magick = $image->Get('magick');
-    undef $image;
-
     if( open( FILE, "< $infile"))
       {
         print( "  testing reading from BLOB ...\n");
@@ -98,7 +93,7 @@ sub testRead {
         $blob_length = read( FILE, $blob, 10000000 );
         close( FILE );
         if( defined( $blob ) ) {
-          $image=Image::Magick->new(magick=>$magick);
+          $image=Image::Magick->new(filename=>$infile);
           $status=$image->BlobToImage( $blob );
           undef $blob;
           if( "$status" ) {
