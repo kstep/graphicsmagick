@@ -870,8 +870,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     buffer[MaxTextExtent],
     date[MaxTextExtent],
     density[MaxTextExtent],
-    geometry[MaxTextExtent],
-    **labels;
+    **labels,
+    page_geometry[MaxTextExtent];
 
   const char
     **q;
@@ -894,7 +894,6 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     length;
 
   long
-    x,
     y;
 
   long
@@ -903,6 +902,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   PixelPacket
     pixel;
 
+  RectangleInfo
+	  geometry;
+
   register const PixelPacket
     *p;
 
@@ -910,7 +912,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     *indexes;
 
   register long
-    i;
+    i,
+    x;
 
   SegmentInfo
     bounds;
@@ -927,10 +930,6 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     scene,
     status,
     text_size;
-
-  unsigned long
-    height,
-    width;
 
   /*
     Open output image file.
@@ -955,21 +954,20 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     if (attribute != (const ImageAttribute *) NULL)
       text_size=(unsigned int)
         (MultilineCensus(attribute->value)*image_info->pointsize+12);
-    width=image->columns;
-    height=image->rows;
-    x=0;
-    y=(long) text_size;
-    FormatString(geometry,"%lux%lu",image->columns,image->rows);
+    SetGeometry(image,&geometry);
+    geometry.y=(long) text_size;
+    FormatString(page_geometry,"%lux%lu",image->columns,image->rows);
     if (image_info->page != (char *) NULL)
-      (void) strncpy(geometry,image_info->page,MaxTextExtent-1);
+      (void) strncpy(page_geometry,image_info->page,MaxTextExtent-1);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
-        (void) FormatString(geometry,"%lux%lu%+ld%+ld",image->page.width,
+        (void) FormatString(page_geometry,"%lux%lu%+ld%+ld",image->page.width,
           image->page.height,image->page.x,image->page.y);
       else
         if (LocaleCompare(image_info->magick,"PS") == 0)
-          (void) strcpy(geometry,PSPageGeometry);
-    (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+          (void) strcpy(page_geometry,PSPageGeometry);
+    (void) ParseImageGeometry(page_geometry,&geometry.x,&geometry.y,
+      &geometry.width,&geometry.height);
     /*
       Scale relative to dots-per-inch.
     */
@@ -986,10 +984,10 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         if (count != 2)
           y_resolution=x_resolution;
       }
-    x_scale=(width*dx_resolution)/x_resolution;
-    width=(unsigned long) (x_scale+0.5);
-    y_scale=(height*dy_resolution)/y_resolution;
-    height=(unsigned long) (y_scale+0.5);
+    x_scale=(geometry.width*dx_resolution)/x_resolution;
+    geometry.width=(unsigned long) (x_scale+0.5);
+    y_scale=(geometry.height*dy_resolution)/y_resolution;
+    geometry.height=(unsigned long) (y_scale+0.5);
     if (page == 1)
       {
         /*
@@ -1009,10 +1007,10 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         date[strlen(date)-1]='\0';
         FormatString(buffer,"%%%%CreationDate: (%.1024s)\n",date);
         (void) WriteBlobString(image,buffer);
-        bounds.x1=x;
-        bounds.y1=y;
-        bounds.x2=x+x_scale;
-        bounds.y2=y+(height+text_size);
+        bounds.x1=geometry.x;
+        bounds.y1=geometry.y;
+        bounds.x2=geometry.x+x_scale;
+        bounds.y2=geometry.y+(geometry.height+text_size);
         if (image_info->adjoin && (image->next != (Image *) NULL))
           (void) strcpy(buffer,"%%%%BoundingBox: (atend)\n");
         else
@@ -1153,17 +1151,18 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       }
     FormatString(buffer,"%%%%Page:  1 %lu\n",page++);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"%%%%PageBoundingBox: %ld %ld %ld %ld\n",x,y,
-      x+(long) width,y+(long) (height+text_size));
+    FormatString(buffer,"%%%%PageBoundingBox: %ld %ld %ld %ld\n",geometry.x,
+      geometry.y,geometry.x+(long) geometry.width,geometry.y+(long)
+      (geometry.height+text_size));
     (void) WriteBlobString(image,buffer);
-    if (x < bounds.x1)
-      bounds.x1=x;
-    if (y < bounds.y1)
-      bounds.y1=y;
-    if ((x+(long) width-1) > bounds.x2)
-      bounds.x2=x+width-1;
-    if ((y+(long) (height+text_size)-1) > bounds.y2)
-      bounds.y2=y+(height+text_size)-1;
+    if (geometry.x < bounds.x1)
+      bounds.x1=geometry.x;
+    if (geometry.y < bounds.y1)
+      bounds.y1=geometry.y;
+    if ((geometry.x+(long) geometry.width-1) > bounds.x2)
+      bounds.x2=geometry.x+geometry.width-1;
+    if ((geometry.y+(long) (geometry.height+text_size)-1) > bounds.y2)
+      bounds.y2=geometry.y+(geometry.height+text_size)-1;
     attribute=GetImageAttribute(image,"label");
     if (attribute != (const ImageAttribute *) NULL)
       (void) WriteBlobString(image,"%%%%PageResources: font Times-Roman\n");
@@ -1173,8 +1172,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     /*
       Output image data.
     */
-    FormatString(buffer,"%ld %ld\n%g %g\n%f\n",x,y,x_scale,y_scale,
-      image_info->pointsize);
+    FormatString(buffer,"%ld %ld\n%g %g\n%f\n",geometry.x,geometry.y,
+      x_scale,y_scale,image_info->pointsize);
     (void) WriteBlobString(image,buffer);
     labels=(char **) NULL;
     attribute=GetImageAttribute(image,"label");

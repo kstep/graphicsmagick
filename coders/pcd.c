@@ -871,7 +871,7 @@ ModuleExport void UnregisterPCDImage(void)
 */
 
 static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
-  char *geometry,char *tile_geometry)
+  char *page_geometry,char *tile_geometry)
 {
   Image
     *clone_image,
@@ -879,41 +879,40 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     *tile_image;
 
   long
-    x,
     y;
+
+  RectangleInfo
+	  geometry;
 
   register const PixelPacket
     *p,
     *q;
 
   register int
-    i;
-
-  unsigned long
-    height,
-    width;
+    i,
+		x;
 
   /*
     Scale image to tile size.
   */
-  width=image->columns;
-  height=image->rows;
-  x=0;
-  y=0;
-  (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
-  if ((width % 2) != 0)
-    width--;
-  if ((height % 2) != 0)
-    height--;
+  SetGeometry(image,&geometry);
+  (void) ParseImageGeometry(page_geometry,&geometry.x,&geometry.y,
+	  &geometry.width,&geometry.height);
+  if ((geometry.width % 2) != 0)
+    geometry.width--;
+  if ((geometry.height % 2) != 0)
+    geometry.height--;
   clone_image=CloneImage(image,0,0,True,&image->exception);
   if (clone_image == (Image *) NULL)
     return(False);
-  tile_image=ZoomImage(clone_image,width,height,&image->exception);
+  tile_image=ZoomImage(clone_image,geometry.width,geometry.height,
+	  &image->exception);
   DestroyImage(clone_image);
   if (tile_image == (Image *) NULL)
     return(False);
-  (void) sscanf(geometry,"%lux%lu",&width,&height);
-  if ((tile_image->columns != width) || (tile_image->rows != height))
+  (void) sscanf(page_geometry,"%lux%lu",&geometry.width,&geometry.height);
+  if ((tile_image->columns != geometry.width) ||
+      (tile_image->rows != geometry.height))
     {
       Image
         *bordered_image;
@@ -924,8 +923,8 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       /*
         Put a border around the image.
       */
-      border_info.width=(width-tile_image->columns+1) >> 1;
-      border_info.height=(height-tile_image->rows+1) >> 1;
+      border_info.width=(geometry.width-tile_image->columns+1) >> 1;
+      border_info.height=(geometry.height-tile_image->rows+1) >> 1;
       bordered_image=BorderImage(tile_image,&border_info,&image->exception);
       if (bordered_image == (Image *) NULL)
         return(False);

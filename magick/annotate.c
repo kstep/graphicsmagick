@@ -322,19 +322,19 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       }
     clone_info->affine.tx=offset.x;
     clone_info->affine.ty=offset.y;
+    FormatString(primitive,"stroke-width %g line 0,0 %g,0",
+      metrics.underline_thickness,metrics.width);
     if (annotate->decorate == OverlineDecoration)
       {
         clone_info->affine.ty-=draw_info->affine.sy*
-          (metrics.ascent+metrics.descent)+1.0;
-        FormatString(primitive,"line 0,0 %g,0",metrics.width);
+          (metrics.ascent+metrics.descent)-metrics.underline_position;
         (void) CloneString(&clone_info->primitive,primitive);
         (void) DrawImage(image,clone_info);
       }
     else
       if (annotate->decorate == UnderlineDecoration)
         {
-          clone_info->affine.ty+=1.0;
-          FormatString(primitive,"line 0,0 %g,0",metrics.width);
+          clone_info->affine.ty-=metrics.underline_position;
           (void) CloneString(&clone_info->primitive,primitive);
           (void) DrawImage(image,clone_info);
         }
@@ -347,8 +347,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     if (annotate->decorate == LineThroughDecoration)
       {
         clone_info->affine.ty-=draw_info->affine.sy*
-          (metrics.ascent+metrics.descent)/2.0;
-        FormatString(primitive,"line 0,0 %g,0",metrics.width);
+          (metrics.ascent+metrics.descent)/2.0-metrics.underline_position/2.0;
         (void) CloneString(&clone_info->primitive,primitive);
         (void) DrawImage(image,clone_info);
       }

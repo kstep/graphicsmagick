@@ -718,8 +718,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     buffer[MaxTextExtent],
     date[MaxTextExtent],
     density[MaxTextExtent],
-    geometry[MaxTextExtent],
-    **labels;
+    **labels,
+    page_geometry[MaxTextExtent];
 
   CompressionType
     compression;
@@ -737,7 +737,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 
   long
     count,
-    x,
     y;
 
   Image
@@ -749,6 +748,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     offset;
 
   RectangleInfo
+	  geometry,
     media_info;
 
   register const PixelPacket
@@ -761,7 +761,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     *q;
 
   register long
-    i;
+    i,
+		x;
 
   size_t
     length;
@@ -785,9 +786,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     number_pixels,
     object,
     pages_id,
-    root_id,
-    height,
-    width;
+    root_id;
 
   off_t
     *xref;
@@ -944,22 +943,21 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     if (attribute != (const ImageAttribute *) NULL)
       text_size=(unsigned int)
         (MultilineCensus(attribute->value)*image_info->pointsize+12);
-    width=image->columns;
-    height=image->rows;
-    x=0;
-    y=(long) text_size;
-    FormatString(geometry,"%lux%lu",image->columns,image->rows);
+    SetGeometry(image,&geometry);
+    geometry.y=(long) text_size;
+    FormatString(page_geometry,"%lux%lu",image->columns,image->rows);
     if (image_info->page != (char *) NULL)
-      (void) strncpy(geometry,image_info->page,MaxTextExtent-1);
+      (void) strncpy(page_geometry,image_info->page,MaxTextExtent-1);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
-        (void) FormatString(geometry,"%lux%lu%+ld%+ld",image->page.width,
+        (void) FormatString(page_geometry,"%lux%lu%+ld%+ld",image->page.width,
           image->page.height,image->page.x,image->page.y);
       else
         if (LocaleCompare(image_info->magick,"PDF") == 0)
-          (void) strcpy(geometry,PSPageGeometry);
-    (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
-    (void) GetGeometry(geometry,&media_info.x,&media_info.y,
+          (void) strcpy(page_geometry,PSPageGeometry);
+    (void) ParseImageGeometry(page_geometry,&geometry.x,&geometry.y,
+      &geometry.width,&geometry.height);
+    (void) GetGeometry(page_geometry,&media_info.x,&media_info.y,
       &media_info.width,&media_info.height);
     /*
       Scale relative to dots-per-inch.
@@ -977,10 +975,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         if (count != 2)
           y_resolution=x_resolution;
       }
-    x_scale=(width*dx_resolution)/x_resolution;
-    width=(unsigned long) (x_scale+0.5);
-    y_scale=(height*dy_resolution)/y_resolution;
-    height=(unsigned long) (y_scale+0.5);
+    x_scale=(geometry.width*dx_resolution)/x_resolution;
+    geometry.width=(unsigned long) (x_scale+0.5);
+    y_scale=(geometry.height*dy_resolution)/y_resolution;
+    geometry.height=(unsigned long) (y_scale+0.5);
     /*
       Write Page object.
     */
@@ -1003,8 +1001,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     FormatString(buffer,"/MediaBox [0 0 %ld %d]\n",
       media_info.width,media_info.height);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/CropBox [%ld %ld %ld %d]\n",x,y,
-      image->columns+x,image->rows+y);
+    FormatString(buffer,"/CropBox [%ld %ld %ld %d]\n",geometry.x,geometry.y,
+      image->columns+geometry.x,image->rows+geometry.y);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/Contents %lu 0 R\n",object+1);
     (void) WriteBlobString(image,buffer);
@@ -1037,8 +1035,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           FormatString(buffer,"/F%lu %g Tf\n",image->scene,
             image_info->pointsize);
           (void) WriteBlobString(image,buffer);
-          FormatString(buffer,"%ld %g Td\n",x,y+height+
-            i*image_info->pointsize+12);
+          FormatString(buffer,"%ld %g Td\n",geometry.x,geometry.y+
+            geometry.height+i*image_info->pointsize+12);
           (void) WriteBlobString(image,buffer);
           FormatString(buffer,"(%.1024s) Tj\n",labels[i]);
           (void) WriteBlobString(image,buffer);
@@ -1047,7 +1045,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         }
         LiberateMemory((void **) &labels);
       }
-    FormatString(buffer,"%g 0 0 %g %ld %ld cm\n",x_scale,y_scale,x,y);
+    FormatString(buffer,"%g 0 0 %g %ld %ld cm\n",x_scale,y_scale,
+      geometry.x,geometry.y);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/Im%lu Do\n",image->scene);
     (void) WriteBlobString(image,buffer);
@@ -1388,18 +1387,17 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     /*
       Write Thumb object.
     */
-    width=image->columns;
-    height=image->rows;
-    x=0;
-    y=0;
-    (void) ParseImageGeometry("106x106+0+0>",&x,&y,&width,&height);
+    SetGeometry(image,&geometry);
+    (void) ParseImageGeometry("106x106+0+0>",&geometry.x,&geometry.y,
+      &geometry.width,&geometry.height);
     clone_image=CloneImage(image,0,0,True,&image->exception);
     if (clone_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Unable to scale image",
         image);
     if (clone_image->storage_class == PseudoClass)
       clone_image->filter=PointFilter;
-    tile_image=ZoomImage(clone_image,width,height,&image->exception);
+    tile_image=ZoomImage(clone_image,geometry.width,geometry.height,
+      &image->exception);
     DestroyImage(clone_image);
     if (tile_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Unable to scale image",
