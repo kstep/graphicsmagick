@@ -355,11 +355,11 @@ MagickExport void InitializeMagick(const char *path)
       (strlen(path) <= 2))
     {
       char
-        *execution_path;
+        *path;
 
-      execution_path=GetExecutionPath();
-      if (execution_path != (char *) NULL)
-        (void) strcpy(execution_path,execution_path);
+      path=GetExecutionPath();
+      if (path != (char *) NULL)
+        (void) strcpy(execution_path,path);
     }
   else
     {
