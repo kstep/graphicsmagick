@@ -674,7 +674,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
             if (i == argc)
               MagickFatalError(OptionFatalError,MissingArgument,option);
             if (*option == '+')
-              RemoveDefinitions(image_info,argv[i]);
+              (void) RemoveDefinitions(image_info,argv[i]);
             else
               (void) AddDefinitions(image_info,argv[i],exception);
             break;
@@ -7210,7 +7210,7 @@ MagickExport unsigned int MagickCommand(ImageInfo *image_info,
               FormatString(client_name,"%.1024s %s",GetClientName(),
                            commands[i].command);
               
-              SetClientName(client_name);
+              (void) SetClientName(client_name);
             }
           return(commands[i].command_vector)(image_info,argc,argv,
             commands[i].pass_metadata ? metadata : (char **) NULL,exception);

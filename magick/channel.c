@@ -337,7 +337,7 @@ MagickExport Image *ExportImageChannel(const Image *src_image,
           {
             if (src_image->colorspace == CMYKColorspace)
               {
-                const register IndexPacket
+                register const IndexPacket
                   *src_indexes;
                 
                 src_indexes=GetIndexes(src_image);
@@ -545,7 +545,7 @@ do { \
   dst_indexes=GetIndexes(dst_image); \
   if (src_image->storage_class == PseudoClass) \
     { \
-      const register IndexPacket \
+      register const IndexPacket \
         *src_indexes; \
 \
       src_indexes=GetIndexes(src_image); \
@@ -603,7 +603,7 @@ MagickPassFail ImportImageChannel(const Image *src_image,
       register long
         x;
   
-      const register PixelPacket
+      register const PixelPacket
         *p;
 
       register PixelPacket

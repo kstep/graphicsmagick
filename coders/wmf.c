@@ -386,7 +386,7 @@ static void ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
       (void) printf("ipa_rop_draw PATPAINT ROP mode not implemented\n");
       break;
     case PATINVERT: /* dest = pattern XOR dest */
-      printf("ipa_rop_draw PATINVERT ROP mode not implemented\n");
+      (void) printf("ipa_rop_draw PATINVERT ROP mode not implemented\n");
       break;
     case DSTINVERT: /* dest = (NOT dest) */
       (void) printf("ipa_rop_draw DSTINVERT ROP mode not implemented\n");

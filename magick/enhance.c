@@ -265,7 +265,7 @@ MagickExport MagickPassFail EqualizeImage(Image *image)
   /*
     Integrate the histogram to get the equalization map.
   */
-  memset(&intensity,0,sizeof(DoublePixelPacket));  
+  (void) memset(&intensity,0,sizeof(DoublePixelPacket));  
   if (image->matte)
     for (i=0; i <= (long) MaxMap; i++)
       {
@@ -285,7 +285,7 @@ MagickExport MagickPassFail EqualizeImage(Image *image)
       }
   low=map[0];
   high=map[MaxMap];
-  memset(equalize_map,0,(MaxMap+1)*sizeof(PixelPacket));
+  (void) memset(equalize_map,0,(MaxMap+1)*sizeof(PixelPacket));
   for (i=0; i <= (long) MaxMap; i++)
   {
     if (high.red != low.red)
@@ -1274,7 +1274,7 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
   /*
     Form histogram.
   */
-  memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
+  (void) memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -1305,14 +1305,14 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
     Find the histogram boundaries by locating the 0.1 percent levels.
   */
   threshold_intensity=(long) (image->columns*image->rows)/1000;
-  memset(&intensity,0,sizeof(DoublePixelPacket));
+  (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (low.red=0; low.red < MaxMap; low.red++)
   {
     intensity.red+=histogram[(long) low.red].red;
     if (intensity.red > threshold_intensity)
       break;
   }
-  memset(&intensity,0,sizeof(DoublePixelPacket));
+  (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (high.red=MaxMap; high.red != 0; high.red--)
   {
     intensity.red+=histogram[(long) high.red].red;
@@ -1325,14 +1325,14 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
         Unreasonable contrast;  use zero threshold to determine boundaries.
       */
       threshold_intensity=0;
-      memset(&intensity,0,sizeof(DoublePixelPacket));
+      (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (low.red=0; low.red < MaxRange(MaxRGB); low.red++)
       {
         intensity.red+=histogram[(long) low.red].red;
         if (intensity.red > threshold_intensity)
           break;
       }
-      memset(&intensity,0,sizeof(DoublePixelPacket));
+      (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (high.red=MaxRange(MaxRGB); high.red != 0; high.red--)
       {
         intensity.red+=histogram[(long) high.red].red;
@@ -1340,14 +1340,14 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
           break;
       }
     }
-  memset(&intensity,0,sizeof(DoublePixelPacket));
+  (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (low.green=0; low.green < MaxRange(MaxRGB); low.green++)
   {
     intensity.green+=histogram[(long) low.green].green;
     if (intensity.green > threshold_intensity)
       break;
   }
-  memset(&intensity,0,sizeof(DoublePixelPacket));
+  (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (high.green=MaxRange(MaxRGB); high.green != 0; high.green--)
   {
     intensity.green+=histogram[(long) high.green].green;
@@ -1360,14 +1360,14 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
         Unreasonable contrast;  use zero threshold to determine boundaries.
       */
       threshold_intensity=0;
-      memset(&intensity,0,sizeof(DoublePixelPacket));
+      (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (low.green=0; low.green < MaxRange(MaxRGB); low.green++)
       {
         intensity.green+=histogram[(long) low.green].green;
         if (intensity.green > threshold_intensity)
           break;
       }
-      memset(&intensity,0,sizeof(DoublePixelPacket));
+      (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (high.green=MaxRange(MaxRGB); high.green != 0; high.green--)
       {
         intensity.green+=histogram[(long) high.green].green;
@@ -1375,14 +1375,14 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
           break;
       }
     }
-  memset(&intensity,0,sizeof(DoublePixelPacket));
+  (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (low.blue=0; low.blue < MaxRange(MaxRGB); low.blue++)
   {
     intensity.blue+=histogram[(long) low.blue].blue;
     if (intensity.blue > threshold_intensity)
       break;
   }
-  memset(&intensity,0,sizeof(DoublePixelPacket));
+  (void) memset(&intensity,0,sizeof(DoublePixelPacket));
   for (high.blue=MaxRange(MaxRGB); high.blue != 0; high.blue--)
   {
     intensity.blue+=histogram[(long) high.blue].blue;
@@ -1395,14 +1395,14 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
         Unreasonable contrast;  use zero threshold to determine boundaries.
       */
       threshold_intensity=0;
-      memset(&intensity,0,sizeof(DoublePixelPacket));
+      (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (low.blue=0; low.blue < MaxRange(MaxRGB); low.blue++)
       {
         intensity.blue+=histogram[(long) low.blue].blue;
         if (intensity.blue > threshold_intensity)
           break;
       }
-      memset(&intensity,0,sizeof(DoublePixelPacket));
+      (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (high.blue=MaxRange(MaxRGB); high.blue != 0; high.blue--)
       {
         intensity.blue+=histogram[(long) high.blue].blue;
@@ -1412,14 +1412,14 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
     }
   if (image->matte)
     {
-      memset(&intensity,0,sizeof(DoublePixelPacket));
+      (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (low.opacity=0; low.opacity < MaxRange(MaxRGB); low.opacity++)
         {
           intensity.opacity+=histogram[(long) low.opacity].opacity;
           if (intensity.opacity > threshold_intensity)
             break;
         }
-      memset(&intensity,0,sizeof(DoublePixelPacket));
+      (void) memset(&intensity,0,sizeof(DoublePixelPacket));
       for (high.opacity=MaxRange(MaxRGB); high.opacity != 0; high.opacity--)
         {
           intensity.opacity+=histogram[(long) high.opacity].opacity;
@@ -1432,14 +1432,14 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
             Unreasonable contrast;  use zero threshold to determine boundaries.
           */
           threshold_intensity=0;
-          memset(&intensity,0,sizeof(DoublePixelPacket));
+          (void) memset(&intensity,0,sizeof(DoublePixelPacket));
           for (low.opacity=0; low.opacity < MaxRange(MaxRGB); low.opacity++)
             {
               intensity.opacity+=histogram[(long) low.opacity].opacity;
               if (intensity.opacity > threshold_intensity)
                 break;
             }
-          memset(&intensity,0,sizeof(DoublePixelPacket));
+          (void) memset(&intensity,0,sizeof(DoublePixelPacket));
           for (high.opacity=MaxRange(MaxRGB); high.opacity != 0; high.opacity--)
             {
               intensity.opacity+=histogram[(long) high.opacity].opacity;
@@ -1452,7 +1452,7 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
   /*
     Stretch the histogram to create the normalized image mapping.
   */
-  memset(normalize_map,0,(MaxMap+1)*sizeof(PixelPacket));
+  (void) memset(normalize_map,0,(MaxMap+1)*sizeof(PixelPacket));
   for (i=0; i <= MaxMap; i++)
   {
     if (i < (long) low.red)

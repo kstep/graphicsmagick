@@ -688,7 +688,7 @@ static void output_switches(Image *image,struct locale_str *locstr, int indent, 
     FormatString(message, "%*sswitch (*%s)\n%*s{\n%*sdefault:\n%*sreturn tag;\n",
                 indent, "", field, indent, "", indent, "", indent+INDENT, "");
 
-    WriteBlobString(image,message);
+    (void) WriteBlobString(image,message);
     xl = locstr;
     if (!xl->lower)
     {

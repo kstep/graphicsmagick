@@ -892,12 +892,12 @@ static MagickPassFail ReadLogConfigureFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"filename") == 0)
           {
-            CloneString(&log_info->filename,token);
+            (void) CloneString(&log_info->filename,token);
             break;
           }
         if (LocaleCompare((char *) keyword,"format") == 0)
           {
-            CloneString(&log_info->format,token);
+            (void) CloneString(&log_info->format,token);
             break;
           }
         break;
@@ -1062,6 +1062,6 @@ MagickExport void SetLogFormat(const char *format)
       DestroyExceptionInfo(&exception);
     }
 
-  CloneString(&log_info->format,format);
+  (void) CloneString(&log_info->format,format);
   LiberateSemaphoreInfo(&log_semaphore);
 }

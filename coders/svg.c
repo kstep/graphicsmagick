@@ -2668,7 +2668,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (svg_info.scale == (double *) NULL)
     {
       (void) fclose(file);
-      LiberateTemporaryFile(filename);
+      (void) LiberateTemporaryFile(filename);
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     }
   IdentityAffine(&svg_info.affine);

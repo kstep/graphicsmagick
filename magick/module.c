@@ -784,7 +784,7 @@ MagickExport void InitializeMagickModules(void)
               UnableToInitializeModuleLoader,lt_dlerror());
           ltdl_initialized=True;
         }
-      ReadModuleConfigureFile(ModuleFilename,0,&exception);
+      (void) ReadModuleConfigureFile(ModuleFilename,0,&exception);
     }
   LiberateSemaphoreInfo(&module_semaphore);
   (void) InitializeModuleSearchPath(MagickCoderModule,&exception);

@@ -2579,12 +2579,12 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
     {
       if (length == 1)
         {
-          unsigned int
+          int
             c;
 
           if ((c=getc(image->blob->file)) != EOF)
             {
-              *((unsigned char *)data)=c;
+              *((unsigned char *)data)=(unsigned char) c;
               count=1;
             }
           else
@@ -2973,7 +2973,7 @@ MagickExport unsigned short ReadBlobMSBShort(Image *image)
     value=ReadBlob(image,2,source_v);
   source=source_v;
   if (value < 2)
-    return((unsigned short) ~0);
+    return((unsigned short) ~0U);
   value=source[0] << 8;
   value|=source[1];
   return(value);

@@ -1000,7 +1000,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlobByte(image, (transpix.green * 63) / MaxRGB);
           (void) WriteBlobByte(image, (transpix.blue * 31) / MaxRGB);
         }
-      SeekBlob(image, 16, SEEK_SET);
+      (void) SeekBlob(image, 16, SEEK_SET);
       if(flags & PALM_HAS_FOUR_BYTE_FIELD)
         (void) WriteBlobMSBLong(image, count - 16);
       else

@@ -974,7 +974,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
         *filename_buffer='\0';
         (void) strcat(filename_buffer,path);
         if (*path != '\0')
-          strcat(filename_buffer,DirectorySeparator);
+          (void) strcat(filename_buffer,DirectorySeparator);
         (void) strcat(filename_buffer,filelist[j]);
         /* If it's a filename (not a directory) ... */
         if (IsDirectory(filename_buffer) == 0) 
