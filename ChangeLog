@@ -1,3 +1,13 @@
+2004-05-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/magick_compat.c (QueryMagickColor): Fixed wrong DLL export.
+	* wand/magick_wand.c: Fixed some wrong DLL exports.
+
+2004-05-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (ConvertUsage): Usage missed -operator.
+	(MogrifyUsage): Usage missed -operator.
+
 2004-05-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/enhance.c (NegateImage): If image has a clip mask,

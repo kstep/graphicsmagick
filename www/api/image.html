@@ -785,7 +785,8 @@ Desired channel depth (range 1 to QuantumDepth)
 <P></P></DL></DL>
 <P>
 <H3><A NAME="setimageclipmask">SetImageClipMask</A></H3>
-<blockquote>SetImageClipMask() associates a clip mask with the image. The clip mask must be the same dimensions as the image. Set any pixel component of the clip mask to TransparentOpacity to prevent that corresponding image pixel component from being updated when SyncImagePixels ( ) is applied. </blockquote><P>The format of the SetImageClipMask method is:</P>
+<blockquote>SetImageClipMask() associates a clip mask with the image. The clip mask must be the same dimensions as the image. Set any pixel component of the clip mask to TransparentOpacity to prevent that corresponding image pixel component from being updated when SyncImagePixels ( ) is applied. </blockquote><P>The clip mask protects the DirectClass pixels and PseudoClass pixel indexes from modification.  The clip mask does *not* protect the image colormap since the image colormap is globally shared by all pixels in a PseudoClass image.</P>
+<P>The format of the SetImageClipMask method is:</P>
 <blockquote>unsigned int SetImageClipMask ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#Image">Image</A> *clip_mask ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>

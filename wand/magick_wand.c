@@ -5887,7 +5887,7 @@ WandExport double *MagickQueryFontMetrics(MagickWand *wand,
 %
 %
 */
-MagickExport char **MagickQueryFonts(const char *pattern,
+WandExport char **MagickQueryFonts(const char *pattern,
   unsigned long *number_fonts)
 {
 #if NOT_SUPPORTED
@@ -5924,7 +5924,7 @@ MagickExport char **MagickQueryFonts(const char *pattern,
 %
 %
 */
-MagickExport char **MagickQueryFormats(const char *pattern,
+WandExport char **MagickQueryFormats(const char *pattern,
   unsigned long *number_formats)
 {
   ExceptionInfo
