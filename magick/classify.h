@@ -513,11 +513,11 @@ typedef enum
 
 typedef enum
 {
-  ConstantExtent,
-  EdgeExtent,
-  TileExtent,
-  MirrorExtent
-} VirtualPixelExtent;
+  ConstantVPMethod,
+  EdgeVPMethod,
+  TileVPMethod,
+  MirrorVPMethod
+} VirtualPixelMethod;
 
 typedef enum
 {

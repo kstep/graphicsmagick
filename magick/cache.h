@@ -157,7 +157,7 @@ extern MagickExport void
   SetPixelCacheMethods(AcquirePixelHandler,GetPixelHandler,SetPixelHandler,
     SyncPixelHandler,GetPixelsFromHandler,GetIndexesFromHandler,
     AcquireOnePixelFromHandler,GetOnePixelFromHandler,DestroyPixelHandler),
-  SetVirtualPixelExtent(const VirtualPixelExtent,const PixelPacket *);
+  SetVirtualPixelMethod(const VirtualPixelMethod,const PixelPacket *);
 
 
 #if defined(__cplusplus) || defined(c_plusplus)

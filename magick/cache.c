@@ -65,13 +65,13 @@ static off_t
   cache_memory = ~0;
 
 static PixelPacket
-  constant_virtual_pixel = { 0, 0, 0, 0};
+  virtual_pixel = { 0, 0, 0, 0};
 
 static SemaphoreInfo
   *cache_semaphore = (SemaphoreInfo *) NULL;
 
-static VirtualPixelExtent
-  virtual_pixel_extent = EdgeExtent;
+static VirtualPixelMethod
+  virtual_pixel_method = EdgeVPMethod;
 
 /*
   Declare pixel cache interfaces.
@@ -290,27 +290,27 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
             Transfer a single pixel.
           */
           span=1;
-          switch (virtual_pixel_extent)
+          switch (virtual_pixel_method)
           {
-            case ConstantExtent:
+            case ConstantVPMethod:
             {
-              p=(&constant_virtual_pixel);
+              p=(&virtual_pixel);
               break;
             }
-            case EdgeExtent:
+            case EdgeVPMethod:
             default:
             {
               p=AcquireCacheNexus(image,EdgeX(x+u),EdgeY(y+v),1,1,image_nexus,
                 exception);
               break;
             }
-            case TileExtent:
+            case TileVPMethod:
             {
               p=AcquireCacheNexus(image,TileX(x+u),TileY(y+v),1,1,image_nexus,
                 exception);
               break;
             }
-            case MirrorExtent:
+            case MirrorVPMethod:
             {
               p=AcquireCacheNexus(image,MirrorX(x+u),MirrorY(y+v),1,1,
                 image_nexus,exception);
@@ -2614,48 +2614,48 @@ MagickExport void SetPixelCacheMethods(AcquirePixelHandler acquire_pixel,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t V i r t u a l P i x e l E x t e n t                                 %
+%   S e t V i r t u a l P i x e l M e t h o d                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetVirtualPixelExtent() sets the method used to define "virtual" pixels
-%  that may exceed the boundaries of the image when being acquired with
-%  the AcquireImagePixels() method.
+%  SetVirtualPixelMethod() sets the method used to define "virtual" pixels.
+%  A virtual pixel is any pixel access that is outside the boundaries of the
+%  image.
 %
-%  The format of the SetVirtualPixelExtent() method is:
+%  The format of the SetVirtualPixelMethod() method is:
 %
-%      SetVirtualPixelExtent(const VirtualPixelExtent extent,
+%      SetVirtualPixelMethod(const VirtualPixelMethod method,
 %        const PixelPacket *pixel)
 %
 %  A description of each parameter follows:
 %
-%    o extent: choose from these methods:
+%    o method: choose from these access methods:
 %
-%        ConstantExtent:  every value outside the image is a constant as
+%        ConstantVPMethod:  every value outside the image is a constant as
 %        defines by the pixel parameter.
 %
-%        EdgeExtent:  the edge pixels of the image extend infinitely.
+%        EdgeVPMethod:  the edge pixels of the image extend infinitely.
 %        Any pixel outside the image is assigned the same value as the
 %        pixel at the edge closest to it.
 %
-%        TileExtent:  the image extends periodically or tiled.  The pixels
+%        TileVPMethod:  the image extends periodically or tiled.  The pixels
 %        wrap around the edges of the image.
 %
-%        MirrorExtent:  mirror the image at the boundaries.
+%        MirrorVPMethod:  mirror the image at the boundaries.
 %
-%    o pixel: the constant pixel value for the ConstantExtent method
-%      otherwise NULL.
+%    o pixel: the constant pixel value for the ConstantVPMethod method.
+%      This value is ignored for other access methods.
 %
 %
 */
-MagickExport void SetVirtualPixelExtent(const VirtualPixelExtent extent,
+MagickExport void SetVirtualPixelMethod(const VirtualPixelMethod method,
   const PixelPacket *pixel)
 {
-  virtual_pixel_extent=extent;
+  virtual_pixel_method=method;
   if (pixel != (PixelPacket *) NULL)
-    constant_virtual_pixel=(*pixel);
+    virtual_pixel=(*pixel);
 }
 
 /*
