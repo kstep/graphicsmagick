@@ -1836,8 +1836,19 @@ etc.). Otherwise, \fB-page\fP behaves much like
 \fB-geometry\fP (e.g.  -page letter+43+43>).
 
 
-To position a GIF image, use \fB-page\fP\fI{+-}<x>{+-}<y>\fP
-(e.g. -page +100+200).
+This option is also used to place subimages when writing to a multi-image
+format that supports offsets, such as GIF89 and MNG.  When used for this
+purpose the offsets are always  measured from the
+top left corner of the canvas and are not affected by the \fB-gravity\fP
+option.
+To position a GIF or MNG image, use \fB-page\fP\fI{+-}<x>{+-}<y>\fP
+(e.g. -page +100+200).  When writing to a MNG file, a \fB-page\fP
+option appearing ahead of the first image in the sequence with nonzero
+width and height defines the width and height values that are written in
+the \fBMHDR\fP chunk.  Otherwise, the MNG width and height are computed
+from the bounding box that contains all images in the sequence.  When
+writing a GIF89 file, only the bounding box method is used to determine its
+dimensions.
 
 
 For a PostScript page, the image is sized as in \fB-geometry\fP and positioned

@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <title>Utilities: ImageMagick - Image Processing and Display Package</title>
+   <title>ImageMagick: ImageMagick - Image Processing and Display Package</title>
    <meta name="description" content="ImageMagick is a robust collection of
    tools and libraries to read, write, and manipulate an image in any of the
    more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.
@@ -2619,8 +2619,19 @@ etc.). Otherwise, <strong>-page</strong> behaves much like
 <strong>-geometry</strong> (e.g.  <tt>-page letter+43+43&gt;</tt>).
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-To position a GIF image, use <strong>-page</strong><em>{+-}&lt;x&gt;{+-}&lt;y&gt;</em>
-(e.g. -page +100+200).
+This option is also used to place subimages when writing to a multi-image
+format that supports offsets, such as GIF89 and MNG.  When used for this
+purpose the offsets are always  measured from the
+top left corner of the canvas and are not affected by the <strong>-gravity</strong>
+option.
+To position a GIF or MNG image, use <strong>-page</strong><em>{+-}&lt;x&gt;{+-}&lt;y&gt;</em>
+(e.g. -page +100+200).  When writing to a MNG file, a <strong>-page</strong>
+option appearing ahead of the first image in the sequence with nonzero
+width and height defines the width and height values that are written in
+the <strong>MHDR</strong> chunk.  Otherwise, the MNG width and height are computed
+from the bounding box that contains all images in the sequence.  When
+writing a GIF89 file, only the bounding box method is used to determine its
+dimensions.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For a PostScript page, the image is sized as in <strong>-geometry</strong> and positioned
@@ -4057,5 +4068,4 @@ href="mailto:webmaster@imagemagick.org"><img SRC="../images/mail.png"
 ALT="ImageMagick Home Page" BORDER=0 height=40 width=40
 align=MIDDLE></a><font size="-2">
 Image manipulation software that works like magic.</font>
-</body>
-</html>
+</body></html>
