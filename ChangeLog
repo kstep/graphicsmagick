@@ -1,5 +1,7 @@
 2003-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/contribute.html: Added text regarding contributing to
+	GraphicsMagick.
 	* www/api/types.html: Documentation for GraphicsMagick API types
 	moved from www/api/types/*.html into this one file.  Types
 	documentation is still very much under development.
