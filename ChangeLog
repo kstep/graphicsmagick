@@ -1,3 +1,13 @@
+2004-03-10  Peter Boos  <pedib@colorfullife.com>
+
+	* magick/annotate.c (RenderFreetype): If DrawAnnotation is called
+	with a string containing only one character and this character is
+	not recognized by the TrueType engine, a crash occured due to the
+	failure of FT_Load_Glyph. The failure caused an uninitialized
+	glyph.image pointer to be used by FT_Done_Glyph() later in the
+	code. The solution is to initialize the glyph.image pointer to
+	null.
+
 2004-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (QuantumOperatorRegionImage): Properly handle

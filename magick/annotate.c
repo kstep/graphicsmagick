@@ -1191,6 +1191,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
         origin.x+=kerning.x;
       }
     glyph.origin=origin;
+    glyph.image=0;
     status=FT_Load_Glyph(face,glyph.id,FT_LOAD_DEFAULT);
     if (status != False)
       continue;
