@@ -1800,10 +1800,7 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
       bounds.width=strtod(p,&p);
       mask|=WidthValue;
       if (bounds.width == 0)
-	{
-          bounds.height=bounds.width;
-          mask|=HeightValue;
-        }
+        bounds.height=bounds.width;
     }
   if ((*p == 'x') || (*p == 'X'))
     {
