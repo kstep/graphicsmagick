@@ -765,165 +765,105 @@ void CIMDisplayView::SetupUndo()
 
 void CIMDisplayView::DoDisplayImage( Image &inImage, CDC* pDC )
 {
-    // make sure we're getting a valid image!
-    if (!inImage.isValid())
+  // make sure we're getting a valid image!
+  if (!inImage.isValid())
     {
       return;
     }
 
-    // if the view is dirty, dispose the old offscreen!
-    if ( mViewDirty == true ) {
-	delete mOffscreenDC;
-	mOffscreenDC = NULL;
-    }
+  // if the view is dirty, dispose the old offscreen!
+  if ( mViewDirty == true ) {
+    delete mOffscreenDC;
+    mOffscreenDC = NULL;
+  }
 
-    // make sure we have a valid destination DC
-    if (pDC != NULL)
+  // make sure we have a valid destination DC
+  if (pDC != NULL)
     {
-	bool isPrinting = pDC->IsPrinting();
+      bool isPrinting = pDC->IsPrinting();
 
-	// if we don't already have a ready offscreen, then create it!
-	if ( !mOffscreenDC ) {
-	    mOffscreenDC = new CDC();
-	    mOffscreenDC->CreateCompatibleDC( pDC );
+      // if we don't already have a ready offscreen, then create it!
+      if ( !mOffscreenDC ) {
+        mOffscreenDC = new CDC();
+        mOffscreenDC->CreateCompatibleDC( pDC );
 
-	    CRect rectClient;
-	    GetClientRect(rectClient);
+        CRect rectClient;
+        GetClientRect(rectClient);
 
-	    // Clear the background
-	    mOffscreenDC->FillSolidRect(rectClient,mOffscreenDC->GetBkColor());
+        // Clear the background
+        mOffscreenDC->FillSolidRect(rectClient,mOffscreenDC->GetBkColor());
 
-	    // Set up the Windows bitmap header
-	    BITMAPINFOHEADER bmi;
-	    bmi.biSize = sizeof(BITMAPINFOHEADER);	// Size of structure
-	    bmi.biWidth = inImage.columns();	// Bitmaps width in pixels
-	    bmi.biHeight = (-1)*inImage.rows();	// Bitmaps height n pixels
-	    bmi.biPlanes = 1;				// Number of planes in the image
-	    bmi.biBitCount = 32;			// The number of bits per pixel
-	    bmi.biCompression = BI_RGB;		// The type of compression used
-	    bmi.biSizeImage = 0;			// The size of the image in bytes
-	    bmi.biXPelsPerMeter = 0;			// Horizontal resolution
-	    bmi.biYPelsPerMeter = 0;			// Veritical resolution
-	    bmi.biClrUsed = 0;			// Number of colors actually used
-	    bmi.biClrImportant = 0;			// Colors most important
-	    mBMI = bmi;	// keep it for clipboard use...
+        // Set up the Windows bitmap header
+        BITMAPINFOHEADER bmi;
+        bmi.biSize = sizeof(BITMAPINFOHEADER);	// Size of structure
+        bmi.biWidth = inImage.columns();	// Bitmaps width in pixels
+        bmi.biHeight = (-1)*inImage.rows();	// Bitmaps height n pixels
+        bmi.biPlanes = 1;				// Number of planes in the image
+        bmi.biBitCount = 32;			// The number of bits per pixel
+        bmi.biCompression = BI_RGB;		// The type of compression used
+        bmi.biSizeImage = 0;			// The size of the image in bytes
+        bmi.biXPelsPerMeter = 0;			// Horizontal resolution
+        bmi.biYPelsPerMeter = 0;			// Veritical resolution
+        bmi.biClrUsed = 0;			// Number of colors actually used
+        bmi.biClrImportant = 0;			// Colors most important
+        mBMI = bmi;	// keep it for clipboard use...
 
-      // Extract the pixels from Magick++ image object and convert to a DIB section
-      const PixelPacket *pPixels = inImage.getConstPixels(0,0,inImage.columns(),inImage.rows());
+        RGBQUAD *prgbaDIB = 0;
+        HBITMAP hBitmap = CreateDIBSection
+          (
+           pDC->m_hDC,            // handle to device context
+           (BITMAPINFO *)&bmi,    // pointer to structure containing bitmap size, format, and color data
+           DIB_RGB_COLORS,        // color data type indicator: RGB values or palette indices
+           (void**)&prgbaDIB,     // pointer to variable to receive a pointer to the bitmap's bit values
+           NULL,                  // optional handle to a file mapping object
+           0                      // offset to the bitmap bit values within the file mapping object
+           );
 
+        if ( !hBitmap )
+          return;
 
-      RGBQUAD *prgbaDIB = 0;
-      HBITMAP hBitmap = CreateDIBSection
-        (
-         pDC->m_hDC,            // handle to device context
-         (BITMAPINFO *)&bmi,    // pointer to structure containing bitmap size, format, and color data
-         DIB_RGB_COLORS,        // color data type indicator: RGB values or palette indices
-         (void**)&prgbaDIB,     // pointer to variable to receive a pointer to the bitmap's bit values
-         NULL,                  // optional handle to a file mapping object
-         0                      // offset to the bitmap bit values within the file mapping object
-         );
+        //
+        // Extract the pixels from Magick++ image object and convert to a DIB section
+        //
 
-      if ( !hBitmap )
-        return;
+        unsigned int columns = inImage.columns();
+        unsigned int rows = inImage.rows();
 
-      unsigned long nPixels = inImage.columns() * inImage.rows();
-      RGBQUAD *pDestPixel = prgbaDIB;
+        RGBQUAD *pDestPixel = prgbaDIB;
+
+        for( unsigned int row = 0 ; row < rows ; ++row )
+          {
+            const PixelPacket *pPixels = inImage.getConstPixels(0,row,columns,row);
 
 #if QuantumDepth == 8
-
-      // Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8
-      memcpy((void*)pDestPixel,(const void*)pPixels,sizeof(PixelPacket)*nPixels);
+            // Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8
+            memcpy((void*)pDestPixel,(const void*)pPixels,sizeof(PixelPacket)*columns);
+            pDestPixel+=columns;
 
 #else	// 16 or 32 bit Quantum
-
-      // Transfer pixels, scaling to Quantum
-      for( unsigned long nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
-        {
-          pDestPixel->rgbRed = ScaleQuantumToChar(pPixels->red);
-          pDestPixel->rgbGreen = ScaleQuantumToChar(pPixels->green);
-          pDestPixel->rgbBlue = ScaleQuantumToChar(pPixels->blue);
-          pDestPixel->rgbReserved = 0;
-          ++pDestPixel;
-          ++pPixels;
-        }
-
+            // Transfer pixels, scaling to Quantum
+            for( unsigned long nPixelCount = columns; nPixelCount ; nPixelCount-- )
+              {
+                pDestPixel->rgbRed = ScaleQuantumToChar(pPixels->red);
+                pDestPixel->rgbGreen = ScaleQuantumToChar(pPixels->green);
+                pDestPixel->rgbBlue = ScaleQuantumToChar(pPixels->blue);
+                pDestPixel->rgbReserved = 0;
+                ++pDestPixel;
+                ++pPixels;
+              }
 #endif
+          }
 
-/*
-	#if QuantumDepth == 8
-	    // Determine the size of the scaled image
-	    // Don't allow image to be zoomed
-	    CSize sizeScaled = Scale(CSize(inImage.columns(),inImage.rows()), rectClient.Size());
+        // Now copy the bitmap to devi.
+        mOffscreenDC->SelectObject( hBitmap );
+      }
 
-	    // Calculate the top-left co-ordinates of the image
-	    CPoint pt = rectClient.TopLeft();
-	    int nImageX= ((rectClient.Width()-sizeScaled.cx)/2)+ pt.x ;
-	    int nImageY = ((rectClient.Height()-sizeScaled.cy)/2) + pt.y;
+      pDC->BitBlt( 0, 0, inImage.columns(), inImage.rows(), mOffscreenDC, 0, 0, SRCCOPY );
+      mViewDirty = false; // not any more!
 
-	    // Extract the pixels from Magick++ image object
-	    PixelPacket *pPixels = inImage.getPixels(0,0,inImage.columns(),inImage.rows());
-
-	    // Blast it to the device context
-	    SetStretchBltMode(mOffscreenDC,COLORONCOLOR);
-
-	    StretchDIBits
-	    (
-		mOffscreenDC,		// handle of device context 
-		nImageX,		// x-coordinate of upper-left corner of dest. rect. 
-		nImageY,		// y-coordinate of upper-left corner of dest. rect.
-		sizeScaled.cx,		// width of destination rectangle 
-		sizeScaled.cy,		// height of destination rectangle
-		0,			// x-coordinate of upper-left corner of source rect. 
-		0, 			// y-coordinate of upper-left corner of source rect
-		inImage.columns(),	// width of source rectangle 
-		inImage.rows(),	// height of source rectangle 
-		pPixels,		// address of bitmap bits
-		(BITMAPINFO *)&bmi,	// address of bitmap data 
-		DIB_RGB_COLORS,		// usage 
-		SRCCOPY			// raster operation code
-	    );
-	#elif QuantumDepth == 16
-	    // Extract the pixels from Magick++ image object and down convert to 8-bit quantum
-
-	    PixelPacket *pPixels = inImage.getPixels(0,0,inImage.columns(),inImage.rows());
-
-	    RGBQUAD *prgbaDIB = 0;
-	    HBITMAP hBitmap = CreateDIBSection
-	    (
-		mOffscreenDC->GetSafeHdc(),		// handle to device context 
-		(BITMAPINFO *)&bmi,	// pointer to structure containing bitmap size, format, and color data
-		DIB_RGB_COLORS,		// color data type indicator: RGB values or palette indices 
-		(void**)&prgbaDIB,	// pointer to variable to receive a pointer to the bitmap's bit values
-		NULL,			// optional handle to a file mapping object 
-		0			// offset to the bitmap bit values within the file mapping object 
-	    );
-
-	    if ( !hBitmap )
-		return;
-
-	    unsigned long nPixels = inImage.columns() * inImage.rows();
-	    RGBQUAD *pDestPixel = prgbaDIB;
-	    for( unsigned long nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
-	    {
-      		pDestPixel->rgbRed		= Downscale(pPixels->red);
-			pDestPixel->rgbGreen	= Downscale(pPixels->green);
-			pDestPixel->rgbBlue		= Downscale(pPixels->blue);
-			pDestPixel->rgbReserved = 0;
-			++pDestPixel;
-			++pPixels;
-	    }
-	#endif
-*/
-	    // Now copy the bitmap to devi.
-	    mOffscreenDC->SelectObject( hBitmap );
-	}
-
-	pDC->BitBlt( 0, 0, inImage.columns(), inImage.rows(), mOffscreenDC, 0, 0, SRCCOPY );
-	mViewDirty = false; // not any more!
-
-	// draw the marching ants, if any
-	if ( !isPrinting && m_tracker.m_rect.Width() && m_tracker.m_rect.Height() )
-		m_tracker.Draw( pDC );
+      // draw the marching ants, if any
+      if ( !isPrinting && m_tracker.m_rect.Width() && m_tracker.m_rect.Height() )
+        m_tracker.Draw( pDC );
     }
 }
 
