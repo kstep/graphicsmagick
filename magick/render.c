@@ -3308,7 +3308,8 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
     stroke_opacity;
 
   Image
-    *pattern;
+    *fill_pattern,
+    *stroke_pattern;
 
   long
     start,
@@ -3423,6 +3424,8 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   fill=(primitive_info->method == FillToBorderMethod) ||
     (primitive_info->method == FloodfillMethod);
   fill_color=draw_info->fill;
+  fill_pattern=draw_info->fill_pattern;
+  stroke_pattern=draw_info->stroke_pattern;
   start=(long) ceil(bounds.x1-0.5);
   stop=(long) floor(bounds.x2+0.5);
   for (y=(long) ceil(bounds.y1-0.5); y <= (long) floor(bounds.y2+0.5); y++)
@@ -3443,20 +3446,20 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
           fill_opacity=fill_opacity > 0.50 ? 1.0 : 0.0;
           stroke_opacity=stroke_opacity > 0.50 ? 1.0 : 0.0;
         }
-      pattern=draw_info->fill_pattern;
-      if (pattern != (Image *) NULL)
-        fill_color=AcquireOnePixel(pattern,
-          (long) (x-pattern->tile_info.x) % pattern->columns,
-          (long) (y-pattern->tile_info.y) % pattern->rows,&image->exception);
+      if (fill_pattern != (Image *) NULL)
+        fill_color=AcquireOnePixel(fill_pattern,
+          (long) (x-fill_pattern->tile_info.x) % fill_pattern->columns,
+          (long) (y-fill_pattern->tile_info.y) % fill_pattern->rows,
+          &image->exception);
       fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
       if (fill_opacity != TransparentOpacity)
         *q=AlphaComposite(&fill_color,fill_opacity,q,
           (q->opacity == TransparentOpacity) ? OpaqueOpacity : q->opacity);
-      pattern=draw_info->stroke_pattern;
-      if (pattern != (Image *) NULL)
-        stroke_color=AcquireOnePixel(pattern,
-          (long) (x-pattern->tile_info.x) % pattern->columns,
-          (long) (y-pattern->tile_info.y) % pattern->rows,&image->exception);
+      if (stroke_pattern != (Image *) NULL)
+        stroke_color=AcquireOnePixel(stroke_pattern,
+          (long) (x-stroke_pattern->tile_info.x) % stroke_pattern->columns,
+          (long) (y-stroke_pattern->tile_info.y) % stroke_pattern->rows,
+          &image->exception);
       stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
       if (stroke_opacity != TransparentOpacity)
         *q=AlphaComposite(&stroke_color,stroke_opacity,q,
