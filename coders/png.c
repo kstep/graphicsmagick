@@ -69,7 +69,6 @@
 #undef MNG_OBJECT_BUFFERS
 #undef MNG_BASI_SUPPORTED
 #define PNG_SORT_PALETTE
-#undef PNG_REDUCE_TO_PSEUDOCLASS
 
 /*
   This is temporary until I set up malloc'ed object attributes array.
@@ -1168,6 +1167,96 @@ static png_free_ptr png_IM_free(png_structp png_ptr,png_voidp ptr)
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
+
+static int
+png_read_raw_profile(Image *image, const ImageInfo *image_info,png_struct *ping,
+   png_info *ping_info,png_textp text,int ii)
+{
+   unsigned char
+     *info;
+
+   register int
+     i;
+
+   register unsigned char
+     *dp;
+
+   register png_charp
+     sp;
+
+   png_uint_32
+     length,
+     nibbles;
+
+   unsigned char
+     unhex[103]= {0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,
+                  0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,
+                  0,0,0,0,0,0,0,0,0,1, 2,3,4,5,6,7,8,9,0,0,
+                  0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,
+                  0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,10,11,12,
+                  13,14,15};
+
+   sp=text[ii].text+1;
+   /* look for newline */
+   while (*sp != '\n')
+      sp++;
+   /* look for length */
+   while (*sp == '\0' || *sp == ' ' || *sp == '\n')
+      sp++;
+   length=atoi(sp);
+   while (*sp != ' ' && *sp != '\n')
+      sp++;
+   /* allocate space */
+   info=(unsigned char *) AcquireMemory(length);
+   if (info == (unsigned char *) NULL)
+     ThrowBinaryException(ResourceLimitWarning,"Unable to copy profile",
+        "Memory allocation failed");
+   /* copy profile, skipping white space and column 1 "=" signs */
+   dp=info;
+   nibbles=length*2;
+   for (i=0; i<nibbles; i++)
+   {
+     while (*sp < '0' || (*sp > '9' && *sp < 'a') || *sp > 'f')
+        sp++;
+     if (i%2 == 0)
+        *dp=16*unhex[*sp++];
+     else
+        (*dp++)+=unhex[*sp++];
+   }
+
+   /* We have already read "Raw profile type " */
+   if (!memcmp(&text[ii].key[17], "iptc\0",5))
+     {
+       image->iptc_profile.length=length;
+       image->iptc_profile.info=info;
+       if (image_info->verbose)
+         printf(" Got an IPTC profile.\n");
+     }
+   else if (!memcmp(&text[ii].key[17], "icm\0",4))
+     {
+       image->color_profile.length=length;
+       image->color_profile.info=info;
+       if (image_info->verbose)
+         printf(" Got an ICM (ICCP) profile.\n");
+     }
+   else
+     {
+       i=image->generic_profiles;
+       if (image->generic_profile == (ProfileInfo *) NULL)
+         image->generic_profile=(ProfileInfo *)
+            AcquireMemory(sizeof(ProfileInfo));
+       else
+         ReacquireMemory((void **) &image->generic_profile,
+            (i+1)*sizeof(ProfileInfo));
+       image->generic_profile[i].length=length;
+       image->generic_profile[i].name=AllocateString(&text[ii].key[17]);
+       image->generic_profile[i].info=info;
+       image->generic_profiles++;
+       if (image_info->verbose)
+         printf(" Got a generic profile, type %s\n", &text[ii].key[17]);
+     }
+   return True;
+}
 
 static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -2456,7 +2545,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->color_profile.length)
           {
 #ifdef PNG_FREE_ME_SUPPORTED
-            image->color_profile.name=name;
+            image->color_profile.name=AllocateString("icm");
             image->color_profile.info=(unsigned char *) info;
             png_data_freer(ping, ping_info, PNG_USER_WILL_FREE_DATA,
                PNG_FREE_ICCP);
@@ -2472,7 +2561,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             else
               {
                  memcpy(image->color_profile.info,(unsigned char *) info,length);
-                 image->color_profile.name=AllocateString(name);
+                 image->color_profile.name=AllocateString("icm");
+                 /* Note that the PNG iCCP profile name gets lost. */
               }
 #endif
         }
@@ -3104,22 +3194,35 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (png_get_text(ping,ping_info,&text,&num_text) > 0)
       for (i=0; i < num_text; i++)
       {
-        char
-          *value;
 
-        length=text[i].text_length;
-        value=(char *) AcquireMemory(length+1);
-        if (value == (char *) NULL)
+        /* Check for a profile */
+        
+        if (!memcmp(text[i].key, "Raw profile type ",17))
           {
-            ThrowException(&image->exception,ResourceLimitWarning,
-              "Unable to read text chunk","Memory allocation failed");
-            break;
+            png_read_raw_profile(image,image_info,ping,ping_info,text,i);
+            png_free_data(ping,ping_info,PNG_FREE_TEXT, i);
           }
-        *value='\0';
-        (void) strncat(value,text[i].text,length);
-        value[length]='\0';
-        (void) SetImageAttribute(image,text[i].key,value);
-        LiberateMemory((void **) &value);
+        else
+          {
+            char
+              *value;
+
+            printf("Read text key=%s\n",text[i].key);
+
+            length=text[i].text_length;
+            value=(char *) AcquireMemory(length+1);
+            if (value == (char *) NULL)
+              {
+                ThrowException(&image->exception,ResourceLimitWarning,
+                  "Unable to read text chunk","Memory allocation failed");
+                break;
+              }
+            *value='\0';
+            (void) strncat(value,text[i].text,length);
+            value[length]='\0';
+            (void) SetImageAttribute(image,text[i].key,value);
+            LiberateMemory((void **) &value);
+          }
       }
 #ifdef MNG_OBJECT_BUFFERS
     /*
@@ -3883,6 +3986,84 @@ static void PNGType(png_bytep p,png_bytep type)
 }
 #endif
 
+static void
+png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
+   png_info *ping_info, unsigned char *profile_type, unsigned char
+   *profile_description, unsigned char *profile_data, int length)
+{
+   png_textp
+     text;
+
+   register int
+     i;
+
+   unsigned char
+     *sp;
+
+   png_charp
+     dp;
+
+   png_uint_32
+     allocated_length,
+     description_length,
+     zbuffer_size;
+
+   unsigned char
+     hex[16]={'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+
+#if (PNG_LIBPNG_VER <= 10005)
+   if (image_info->verbose)
+     printf("Not ");
+#endif
+   if (image_info->verbose)
+     {
+     printf("writing raw profile: type=%s, length=%d\n",
+       profile_type, length);
+     }
+#if (PNG_LIBPNG_VER > 10005)
+   text=(png_textp) png_malloc(ping,(png_uint_32) sizeof(png_text));
+   description_length=strlen((const char *) profile_description);
+   allocated_length= (png_uint_32) (length*2 + (length>>5) + 10
+      + description_length);
+   text[0].text=png_malloc(ping,allocated_length);
+   text[0].key= png_malloc(ping, (png_uint_32) 80);
+   text[0].key[0]='\0';
+   strcat(text[0].key, "Raw profile type ");
+   strncat(text[0].key, (const char *) profile_type, 61);
+   sp=profile_data;
+   dp=text[0].text;
+   *dp++='\n';
+   strcat(dp,(const char *) profile_description);
+   dp+=description_length;
+   *dp++='\n';
+   sprintf(dp,"%8d ",length);
+   dp+=8;
+   for (i=0; i<length; i++)
+   {
+     if (i%36 == 0)
+       *dp++ = '\n';
+     *(dp++)=hex[((*sp>>4) & 0x0f)];
+     *(dp++)=hex[((*sp++ ) & 0x0f)];
+   }
+   *dp++='\n';
+   *dp='\0';
+   text[0].text_length=dp-text[0].text;
+   text[0].compression=image_info->compression == NoCompression ||
+     (image_info->compression == UndefinedCompression &&
+     text[0].text_length < 128) ? -1 : 0;
+   assert(text[0].text_length <= allocated_length);
+   zbuffer_size=png_get_compression_buffer_size(ping);
+   if(allocated_length >= zbuffer_size)
+     png_set_compression_buffer_size(ping,allocated_length+1);
+   png_set_text(ping,ping_info,text,1);
+   if(allocated_length >= zbuffer_size)
+     png_set_compression_buffer_size(ping,zbuffer_size);
+   png_free(ping,text[0].text);
+   png_free(ping,text[0].key);
+   png_free(ping,text);
+#endif
+}
+
 static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
   Image
@@ -3970,6 +4151,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   need_matte=False;
   framing_mode=1;
   old_framing_mode=1;
+
   if (image_info->adjoin)
     {
       unsigned int
@@ -4810,11 +4992,44 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.gray*=0x0101;
           }
       }
-#if (PNG_LIBPNG_VER > 10008) && defined(PNG_WRITE_iCCP_SUPPORTED)
+
+    /*
+      Initialize compression level and filtering.
+    */
+    png_set_compression_buffer_size(ping,32768L);
+    png_set_compression_mem_level(ping, 9);
+    if (image_info->quality > 9)
+       png_set_compression_level(ping,Min(image_info->quality/10,9));
+    else
+       png_set_compression_strategy(ping, Z_HUFFMAN_ONLY);
+#if defined(PNG_MNG_FEATURES_SUPPORTED) && defined(PNG_INTRAPIXEL_DIFFERENCING)
+    /* This became available in libpng-1.0.9.  Output must be a MNG. */
+    if (image_info->adjoin && ((image_info->quality % 10) == 7))
+    {
+      ping_info->filter_type=PNG_INTRAPIXEL_DIFFERENCING;
+    }
+#endif
+    if ((image_info->quality % 10) > 5)
+      png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
+    else
+      if ((image_info->quality % 10) != 5)
+        png_set_filter(ping,PNG_FILTER_TYPE_BASE,image_info->quality % 10);
+      else
+        if ((ping_info->color_type == PNG_COLOR_TYPE_GRAY) ||
+            (ping_info->color_type == PNG_COLOR_TYPE_PALETTE) ||
+            (image_info->quality < 50))
+          png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_NO_FILTERS);
+        else
+          png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
+
+
+
+
     if (image->color_profile.length)
+#if (PNG_LIBPNG_VER > 10008) && defined(PNG_WRITE_iCCP_SUPPORTED)
       {
         if (image->color_profile.name == (png_charp) NULL)
-          png_set_iCCP(ping,ping_info,(png_charp) "ICC Profile",
+          png_set_iCCP(ping,ping_info,(png_charp) "icm",
              (int) 0, (png_charp) image->color_profile.info,
              (png_uint_32) image->color_profile.length);
         else
@@ -4822,7 +5037,35 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
              (int) 0, (png_charp) image->color_profile.info,
              (png_uint_32) image->color_profile.length);
       }
+#else
+      png_write_raw_profile(image_info,ping,ping_info,
+        (unsigned char *) "icm",
+        (unsigned char *) "ICC Profile",
+        (unsigned char *) image->color_profile.info,
+        (png_uint_32) image->color_profile.length);
 #endif
+    if (image->iptc_profile.length > 0)
+      png_write_raw_profile(image_info,ping,ping_info,
+        (unsigned char *) "iptc",
+        (unsigned char *) "IPTC profile",
+        (unsigned char *) image->iptc_profile.info,
+        (png_uint_32) image->iptc_profile.length);
+    for (i=0; i < image->generic_profiles; i++)
+    {
+      if(image->generic_profile[i].name == (png_charp) NULL)
+        png_write_raw_profile(image_info,ping,ping_info,
+          (unsigned char *) "generic",
+          (unsigned char *) "generic profile",
+          (unsigned char *) image->generic_profile[i].info,
+          (png_uint_32) image->generic_profile[i].length);
+      else
+        png_write_raw_profile(image_info,ping,ping_info,
+          (unsigned char *) image->generic_profile[i].name,
+          (unsigned char *) "generic profile",
+          (unsigned char *) image->generic_profile[i].info,
+          (png_uint_32) image->generic_profile[i].length);
+    }
+
 #if defined(PNG_WRITE_sRGB_SUPPORTED)
     if (!have_write_global_srgb &&
         ((image->rendering_intent != UndefinedIntent) ||
@@ -4863,33 +5106,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          }
       }
     ping_info->interlace_type=image_info->interlace != NoInterlace;
-    /*
-      Initialize compression level and filtering.
-    */
-    png_set_compression_mem_level(ping, 9);
-    if (image_info->quality > 9)
-       png_set_compression_level(ping,Min(image_info->quality/10,9));
-    else
-       png_set_compression_strategy(ping, Z_HUFFMAN_ONLY);
-#if defined(PNG_MNG_FEATURES_SUPPORTED) && defined(PNG_INTRAPIXEL_DIFFERENCING)
-    /* This became available in libpng-1.0.9.  Output must be a MNG. */
-    if (image_info->adjoin && ((image_info->quality % 10) == 7))
-    {
-      ping_info->filter_type=PNG_INTRAPIXEL_DIFFERENCING;
-    }
-#endif
-    if ((image_info->quality % 10) > 5)
-      png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
-    else
-      if ((image_info->quality % 10) != 5)
-        png_set_filter(ping,PNG_FILTER_TYPE_BASE,image_info->quality % 10);
-      else
-        if ((ping_info->color_type == PNG_COLOR_TYPE_GRAY) ||
-            (ping_info->color_type == PNG_COLOR_TYPE_PALETTE) ||
-            (image_info->quality < 50))
-          png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_NO_FILTERS);
-        else
-          png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
+
     if (need_fram && image_info->adjoin && ((image->delay != delay) ||
         (framing_mode != old_framing_mode)))
       {
@@ -4928,6 +5145,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
     if (image_info->adjoin)
       png_set_sig_bytes(ping,8);
+
     png_write_info(ping,ping_info);
     png_set_packing(ping);
     /*
