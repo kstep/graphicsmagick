@@ -53,6 +53,39 @@
 </tr>
 </table>
 <p>
+2003-09-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (WriteTIFFImage): Add support for writing
+        colormapped TIFF images with 1, 2, &amp; 4 bits per colormap index.
+        This allows writing smaller files.
+
+</UL>
+<p>
+2003-09-24  Lars Ruben Skyum  &lt;lars.skyum@stibo.com&gt;
+
+<UL>
+  <LI> coders/ps3.c: Now creates a correct %%BoundingBox for images
+        with resolution stored as pixels per centimeter. Renamed serialize
+        functions. Added comment headers where they were
+        missing. Reformatted code to be in alignment with GraphicsMagick
+        standard formatting.<BR>
+  <LI> magick/map.c: Fixed semaphore double locking problem in
+        MagickMapCloneMap.
+
+</UL>
+<p>
+2003-09-23  Mike Chiarappa  &lt;mikechiarappa@libero.it&gt;
+
+<UL>
+  <LI> BCBMagick/readme.txt : Updated compilation instructions.
+  <LI> BCBMagick/magick/libMagick.bpr : Updated project, now include map.c.
+  <LI> BCBMagick/lcms/Projects/BCB6/lcms.bpr : Updated project, now include
+          cmscam02.c and cmsvirt.c.<BR>
+        Much thanks to Alex Dvoretsky for bringing this problem to my attention.
+
+</UL>
+<p>
 2003-09-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

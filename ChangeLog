@@ -1,3 +1,9 @@
+2003-09-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Add support for writing
+	colormapped TIFF images with 1, 2, & 4 bits per colormap index.
+	This allows writing smaller files.
+
 2003-09-24  Lars Ruben Skyum  <lars.skyum@stibo.com>
 
 	* coders/ps3.c: Now creates a correct %%BoundingBox for images

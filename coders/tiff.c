@@ -1615,6 +1615,122 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 }
 #endif
 
+/*
+  Encode colormap indexes into TIFF packed format.
+  Currently supported bits-per-quantum are 1, 2, 4, & 8.
+*/
+static unsigned int EncodeIndexPixels(const Image *image,
+  const unsigned int bits_per_quantum, unsigned char *destination)
+{
+  register IndexPacket
+    *indexes;
+
+  register long
+    x;
+
+  register unsigned char
+    *q;
+
+  long
+    number_pixels;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(destination != (unsigned char *) NULL);
+
+  number_pixels=(long) GetPixelCacheArea(image);
+  indexes=GetIndexes(image);
+
+  if ((number_pixels == 0) || (indexes == 0))
+    return False;
+
+  q=destination;
+
+  switch (bits_per_quantum)
+    {
+    case 1:
+      {
+        assert(image->colors <= 2);
+        for (x=((long) image->columns-7); x > 0; x-=8)
+          {
+            *q=0;
+            *q |= (((unsigned char) *indexes++) & 0x01) << 7;
+            *q |= (((unsigned char) *indexes++) & 0x01) << 6;
+            *q |= (((unsigned char) *indexes++) & 0x01) << 5;
+            *q |= (((unsigned char) *indexes++) & 0x01) << 4;
+            *q |= (((unsigned char) *indexes++) & 0x01) << 3;
+            *q |= (((unsigned char) *indexes++) & 0x01) << 2;
+            *q |= (((unsigned char) *indexes++) & 0x01) << 1;
+            *q |= (((unsigned char) *indexes++) & 0x01);
+            q++;
+          }
+        if ((image->columns % 8) != 0)
+          {
+            register int
+              bit;
+
+            *q=0;
+            for (bit=7; bit >= (long) (8-(image->columns % 8)); bit--)
+              {
+                *q |= (((unsigned char) *indexes++) & 0x01) << bit--;
+              }
+            q++;
+          }
+        break;
+      }
+    case 2:
+      {
+        assert(image->colors <= 4);
+
+        for (x=0; x < ((long) image->columns-3); x+=4)
+          {
+            *q=0;
+            *q |= (((unsigned char) *indexes++) & 0x03) << 6;
+            *q |= (((unsigned char) *indexes++) & 0x03) << 4;
+            *q |= (((unsigned char) *indexes++) & 0x03) << 2;
+            *q |= (((unsigned char) *indexes++) & 0x03);
+            q++;
+          }
+        if ((image->columns % 4) != 0)
+          {
+            unsigned int
+              i;
+
+            *q=0;
+            for (i=3; i >= (long) (4-(image->columns % 4)); i--)
+              *q |= (((unsigned char) *indexes++) & 0x03) << (i*2);
+            q++;
+          }
+        break;
+      }
+    case 4:
+      {
+        assert(image->colors <= 16);
+        for (x = 0; x < (image->columns-1) ; x+= 2)
+          {
+            *q=0;
+            *q |= ((((unsigned char) *indexes++) & 0xf) << 4);
+            *q++ |= (((unsigned char) *indexes++) & 0xf);
+          }
+        if ((image->columns % 2) != 0)
+          {
+            *q=0;
+            *q++ |= ((((unsigned char) *indexes++) & 0xf) << 4);
+          }
+        break;
+      }
+    case 8:
+      {
+        assert(image->colors <= 256);
+        for (x= number_pixels; x > 0; --x)
+          *q++=(unsigned char) *indexes++;
+        break;
+      }
+    }
+
+  return True;
+}
+
 static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
   tsample_t sample,Image *image)
 {
@@ -1702,11 +1818,11 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
   return(status);
 }
 
-static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
-{
 #if !defined(TIFFDefaultStripSize)
 #define TIFFDefaultStripSize(tiff,request)  ((8*1024)/TIFFScanlineSize(tiff))
 #endif
+static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
+{
 
   char
     filename[MaxTextExtent];
@@ -1734,6 +1850,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     *tiff;
 
   uint16
+    bits_per_sample,
     compress_tag,
     photometric;
 
@@ -1794,7 +1911,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_REDUCEDIMAGE);
     (void) TIFFSetField(tiff,TIFFTAG_IMAGELENGTH,(uint32) image->rows);
     (void) TIFFSetField(tiff,TIFFTAG_IMAGEWIDTH,(uint32) image->columns);
-    (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,8);
+    bits_per_sample=8;
+    (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
     compress_tag=COMPRESSION_NONE;
     switch (image->compression)
     {
@@ -1869,7 +1987,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     }
     if (image->depth > 8)
       {
-        (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
+        bits_per_sample=16;
+        (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Using 16 bits per sample");
@@ -1910,7 +2029,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 if ((image->storage_class == PseudoClass) &&
                     IsMonochromeImage(image,&image->exception))
                   {
-                    (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,1);
+                    bits_per_sample=1;
+                    (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
                     photometric=PHOTOMETRIC_MINISWHITE;
                     compress_tag=COMPRESSION_CCITTFAX4;
                     if (logging)
@@ -1928,13 +2048,21 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   if (logging)
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                           "Using 1 sample per pixel");
-                  if (image->colors <= 256)
-                    {
-                      (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,8);
-                      if (logging)
-                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                          "Using 8 bits per sample");
-                    }
+
+                  if (image->colors <= 2)
+                    bits_per_sample=1;
+                  else if (image->colors <= 4)
+                    bits_per_sample=2;
+                  else if (image->colors <= 16)
+                    bits_per_sample=4;
+                  else if (image->colors <= 256)
+                    bits_per_sample=8;
+
+                  (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
+                  if (logging)
+                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                          "Using %u bits per sample",
+                                          (unsigned int) bits_per_sample);
                   photometric=PHOTOMETRIC_PALETTE;
                   if (logging)
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2323,7 +2451,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 if (photometric != PHOTOMETRIC_PALETTE)
                   (void) PopImagePixels(image,GrayQuantum,scanline);
                 else
+#if 0
+                  /* This currently only pushes bytes */
                   (void) PopImagePixels(image,IndexQuantum,scanline);
+#else
+                (void) EncodeIndexPixels(image,bits_per_sample,scanline);
+#endif
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
               if (image->previous == (Image *) NULL)
