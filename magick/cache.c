@@ -1874,8 +1874,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   if (cache_info->length == (size_t) cache_info->length)
     if ((cache_info->type == MemoryCache) ||
         ((cache_info->type == UndefinedCache) &&
-         ((GetMagickResourceUsage(MemoryResource) == ResourceInfinity) ||
-          (cache_info->length <= GetMagickResourceUsage(MemoryResource)))))
+         ((GetMagickResource(MemoryResource) == ResourceInfinity) ||
+          (cache_info->length <= GetMagickResource(MemoryResource)))))
       {
         if (cache_info->storage_class == UndefinedClass)
           pixels=(PixelPacket *) AcquireMemory(cache_info->length);
