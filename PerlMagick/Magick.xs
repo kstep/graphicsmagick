@@ -5470,8 +5470,6 @@ Montage(ref,...)
     */
     info=GetPackageInfo((void *) av,info);
     montage_info=CloneMontageInfo(info->image_info,(MontageInfo *) NULL);
-    FormatString(montage_info->filename,"montage-%.*s",MaxTextExtent-9,
-      ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     concatenate=0;
     (void) QueryColorDatabase("none",&transparent_color);
     for (i=2; i < items; i+=2)
@@ -5535,12 +5533,6 @@ Montage(ref,...)
               (void) CloneString(&montage_info->frame,p);
               if (*p == '\0')
                 montage_info->frame=(char *) NULL;
-              break;
-            }
-          if (strEQcase(attribute,"filen"))
-            {
-              (void) strncpy(montage_info->filename,SvPV(ST(i),na),
-                MaxTextExtent);
               break;
             }
           if (strEQcase(attribute,"fill"))
@@ -5736,7 +5728,6 @@ Montage(ref,...)
     if (transparent_color.opacity != TransparentOpacity)
       for (next=image; next; next=next->next)
         TransparentImage(next,transparent_color);
-    (void) strcpy(info->image_info->filename,montage_info->filename);
     (void) SetImageInfo(info->image_info,False);
     for (next=image; next; next=next->next)
     {
@@ -5984,8 +5975,6 @@ Mosaic(ref)
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
     info=GetPackageInfo((void *) av,info);
-    FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
-      ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) strcpy(image->filename,info->image_info->filename);
     SetImageInfo(info->image_info,False);
     SvREFCNT_dec(error_list);
