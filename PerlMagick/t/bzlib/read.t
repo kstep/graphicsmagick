@@ -18,4 +18,4 @@ chdir 't/bzlib' || die 'Cd failed';
 # Test reading BZip compressed MIFF
 # 
 testRead( 'input.miff',
-  'bc6bf6d18ff76a1f422d913671437c595f0bb475ce5b0ffd8c915179d6918298' );
+  'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1' );

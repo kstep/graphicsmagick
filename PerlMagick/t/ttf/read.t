@@ -19,7 +19,7 @@ chdir 't/ttf' || die 'Cd failed';
 #
 print("Default ImageMagick read ...\n");
 testRead( 'input.ttf',
-  '97cc59573f031733d9fcd40d18c33b1641d0185533aa8cc8f453de2eff1a5c09',
+  '279dbbbce3047bcfd523a91744d73ffa3251949d4b84ce79dc3b595939031236',
   '89d7a300daed5d83bf1d9acd3ad33a18152c9bc0e632591886a4a3ee34e3523d' );
 
 #

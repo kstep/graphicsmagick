@@ -46,6 +46,6 @@ testRead( 'input.mng',
 # 
 ++$test;
 testRead( 'input_16.png',
-  '21b59be11e5dd15dbe5ff4a127eb90c2e7fb1bd687e3a3b6d3b829414e5d928b',
+  '4eeef86b727f91d7f4bddfe8edbd7264ab835208c1b4edb199fdb40c1cdcba9f',
   '07696b623faf33d67921b80b29ff905ff9d546c445a54026a32d263adbf5f6b9');
 

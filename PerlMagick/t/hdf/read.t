@@ -18,11 +18,11 @@ chdir 't/hdf' || die 'Cd failed';
 # 1) Test 256 color pseudocolor HDF
 # 
 testRead( 'input_256.hdf',
-  'bc6bf6d18ff76a1f422d913671437c595f0bb475ce5b0ffd8c915179d6918298' );
+  'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1' );
 
 #
 # 2) Test TrueColor HDF
 # 
 ++$test;
 testRead( 'input_truecolor.hdf',
-  'bc6bf6d18ff76a1f422d913671437c595f0bb475ce5b0ffd8c915179d6918298' );
+  'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1' );
