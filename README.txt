@@ -85,8 +85,8 @@ UNIX/Cygwin COMPILATION
 
   Type:
 
-    gzip -dc ImageMagick-5.0.0.tar.gz | tar xvf -
-    cd ImageMagick-5.0.0
+    gzip -dc ImageMagick-5.2.0.tar.gz | tar xvf -
+    cd ImageMagick-5.2.0
 
   If you do not have gunzip(1), it is available as
   prep.ai.mit.edu:pub/gnu/gzip-1.2.4.shar.
@@ -211,6 +211,15 @@ UNIX/Cygwin COMPILATION
         additional expertise and effort; 4) you are unable to build
         shared libraries.
 
+      o --with-modules: image format coders are built as loadable modules
+        which are installed in [prefix]/lib/ImageMagick/modules/coders.
+        Support for modules allows the formats supported by ImageMagick
+        to be extended by simply adding additional modules to the module
+        search path.  Besides the installation directory, modules will
+        be found in $HOME/.magick, and in directories specified by
+        the environment variable MAGICK_MODULE_PATH. The modules option
+        is only available in conjunction with --enable-shared.
+
       o --enable-lzw: Unisys claims a patent on the algorithm supporting
         LZW compression (e.g. used by GIF and TIFF).  To avoid infringing
         on this patent, support for LZW is disabled by default.  With
@@ -276,7 +285,8 @@ UNIX/Cygwin COMPILATION
       libraries for Cygwin are available from
       http://dao.gsfc.nasa.gov/software/grads/win32/X11R6.4/. Use the
       same procedure as for Unix except that building DLLs is not yet
-      supported so do not specify --enable-shared option to configure.
+      supported so do not specify the --enable-shared option to
+      configure.
 
     Dealing with configuration failures:
 
@@ -347,13 +357,14 @@ UNIX/Cygwin COMPILATION
 
       display
 
-  If the program faults ensure that you have not inadvertingly linked to
-  an older version of the libMagick library. To ensure this is not the
-  case type
+  If the program faults, ensure that you have not inadvertingly linked to
+  an older version of the libMagick library or used header files from
+  a different release. To ensure this is not the case type
 
       cd ImageMagick/magick
       make install
       cd ..
+      make clean
       make
 
   If the image colors are not correct use this command:
@@ -660,7 +671,7 @@ HOW TO COMPILE
 
       configure
       make clean
-      make -k
+      make
 
   You can now convert or display images in the JPEG, TIFF, PNG, etc.
   image formats.
@@ -674,7 +685,7 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-5.0.0.zip
+      unzip ImageMagick-5.2.0.zip
       set default [.imagemagick]
       @make
       set display/create/node=node_name::
@@ -687,7 +698,7 @@ VMS COMPILATION
 
   Alternatively, get a zipped distribution (with JPEG, PNG, TIFF, TTF) from
 
-      ftp://ftp.wizards.dupont.com/pub/ImageMagick/vms/ImageMagick-4.1.zip
+      ftp://ftp.wizards.dupont.com/pub/ImageMagick/vms/ImageMagick-5.2.0.zip
 
   The VMS JPEG, PNG, TIFF, and TTF  source libraries are available on
   axp.psl.ku.dk in [anonymous.decwindows.lib].
