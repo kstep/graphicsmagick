@@ -17,6 +17,7 @@
 
 		<LI><A HREF="#AppendImageFormat">AppendImageFormat</A>
 		<LI><A HREF="#BaseFilename">BaseFilename</A>
+		<LI><A HREF="#CloneString">CloneString</A>
 		<LI><A HREF="#ConvertTextToUnicode">ConvertTextToUnicode</A>
 		<LI><A HREF="#ExpandFilename">ExpandFilename</A>
 		<LI><A HREF="#ExpandFilenames">ExpandFilenames</A>
@@ -68,6 +69,9 @@ utility - ImageMagick Utility Methods
 
 <P>
 <STRONG>BaseFilename</STRONG>(name)
+
+<P>
+<STRONG>CloneString</STRONG>(destination,source)
 
 <P>
 unicode=<STRONG>ConvertTextToUnicode</STRONG>(text,count)
@@ -206,6 +210,32 @@ A description of each parameter follows:
 <DT><STRONG>name:</STRONG><DD>
 <P>
 Specifies a pointer to an character array that contains the name.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="CloneString">CloneString</A></H2>
+<P>
+Method CloneString allocates memory for the destination string and copies
+the source string to that memory location.
+
+<P>
+The format of the CloneString routine is:
+
+<P>
+<PRE>        CloneString(destination,source)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>destination:</STRONG><DD>
+<P>
+A pointer to a character string.
+
+<DT><STRONG>source:</STRONG><DD>
+<P>
+A character string.
 
 </DL></DL>
 <P>

@@ -2520,67 +2520,28 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       }
     }
   clone_image->packed_pixels=(unsigned char *) NULL;
+  clone_image->comments=(char *) NULL;
   if (image->comments != (char *) NULL)
-    {
-      /*
-        Allocate and copy the image comments.
-      */
-      clone_image->comments=(char *)
-        AllocateMemory((unsigned int) Extent(image->comments)+1);
-      if (clone_image->comments == (char *) NULL)
-        return((Image *) NULL);
-      (void) strcpy(clone_image->comments,image->comments);
-    }
+    CloneString(&clone_image->comments,image->comments);
+  clone_image->label=(char *) NULL;
   if (image->label != (char *) NULL)
-    {
-      /*
-        Allocate and copy the image label.
-      */
-      clone_image->label=(char *)
-        AllocateMemory((unsigned int) Extent(image->label)+1);
-      if (clone_image->label == (char *) NULL)
-        return((Image *) NULL);
-      (void) strcpy(clone_image->label,image->label);
-    }
+    CloneString(&clone_image->label,image->label);
   clone_image->montage=(char *) NULL;
-  if ((image->columns == columns) && (image->rows == rows))
+  if (clone_pixels)
     if (image->montage != (char *) NULL)
-      {
-        /*
-          Allocate and copy the image montage.
-        */
-        clone_image->montage=(char *)
-          AllocateMemory((unsigned int) Extent(image->montage)+1);
-        if (clone_image->montage == (char *) NULL)
-          return((Image *) NULL);
-        (void) strcpy(clone_image->montage,image->montage);
-      }
+      CloneString(&clone_image->montage,image->montage);
   clone_image->directory=(char *) NULL;
-  if ((image->columns == columns) && (image->rows == rows))
+  if (clone_pixels)
     if (image->directory != (char *) NULL)
-      {
-        /*
-          Allocate and copy the image directory.
-        */
-        clone_image->directory=(char *)
-          AllocateMemory((unsigned int) Extent(image->directory)+1);
-        if (clone_image->directory == (char *) NULL)
-          return((Image *) NULL);
-        (void) strcpy(clone_image->directory,image->directory);
-      }
+      CloneString(&clone_image->directory,image->directory);
   clone_image->signature=(char *) NULL;
-  if ((image->columns == columns) && (image->rows == rows))
+  if (clone_pixels)
     if (image->signature != (char *) NULL)
-      {
-        /*
-          Allocate and copy the image signature.
-        */
-        clone_image->signature=(char *)
-          AllocateMemory((unsigned int) Extent(image->signature)+1);
-        if (clone_image->signature == (char *) NULL)
-          return((Image *) NULL);
-        (void) strcpy(clone_image->signature,image->signature);
-      }
+      CloneString(&clone_image->signature,image->signature);
+  clone_image->page=(char *) NULL;
+  if (clone_pixels)
+    if (image->page != (char *) NULL)
+      CloneString(&clone_image->page,image->page);
   if (image->colormap != (ColorPacket *) NULL)
     {
       /*
@@ -2605,19 +2566,6 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       for (i=0; i < (int) image->color_profile.length; i++)
         clone_image->color_profile.info[i]=image->color_profile.info[i];
     }
-  clone_image->page=(char *) NULL;
-  if ((image->columns == columns) && (image->rows == rows))
-    if (image->page != (char *) NULL)
-      {
-        /*
-          Allocate and copy the image page.
-        */
-        clone_image->page=(char *)
-          AllocateMemory((unsigned int) Extent(image->page)+1);
-        if (clone_image->page == (char *) NULL)
-          return((Image *) NULL);
-        (void) strcpy(clone_image->page,image->page);
-      }
   if (image->orphan)
     {
       clone_image->file=(FILE *) NULL;
@@ -4860,7 +4808,8 @@ Export void GetAnnotateInfo(ImageInfo *image_info,AnnotateInfo *annotate_info)
   annotate_image=ReadLABELImage(&local_info);
   if (annotate_image == (Image *) NULL)
     return;
-  CloneString(&annotate_info->font_name,annotate_image->label);
+  if (annotate_image->label != (char *) NULL)
+    CloneString(&annotate_info->font_name,annotate_image->label);
   annotate_info->bounds.width=
     (annotate_image->columns+(strlen(Alphabet) >> 1))/strlen(Alphabet);
   annotate_info->bounds.height=annotate_image->rows;
@@ -11362,10 +11311,7 @@ Export void TransformImage(Image **image,char *crop_geometry,
       */
       zoomed_image=ZoomImage(transformed_image,width,height);
       if (zoomed_image == (Image *) NULL)
-{
-puts("what's up");
         zoomed_image=ScaleImage(transformed_image,width,height);
-}
       if (zoomed_image != (Image *) NULL)
         {
           DestroyImage(transformed_image);

@@ -205,6 +205,7 @@ Export char *BaseFilename(const char *name)
 */
 void CloneString(char **destination,const char *source)
 {
+  assert(source != (const char *) NULL);
   if (*destination != (char *) NULL)
     FreeMemory(*destination);
   *destination=(char *) AllocateMemory((Extent(source)+1)*sizeof(char));

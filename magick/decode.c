@@ -6457,14 +6457,7 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
                   image->iterations=atoi(value);
               }
             if (Latin1Compare(keyword,"label") == 0)
-              {
-                image->label=(char *)
-                  AllocateMemory(Extent(value)+1*sizeof(char));
-                if (image->label == (char *) NULL)
-                  PrematureExit(ResourceLimitWarning,"Memory allocation failed",
-                    image);
-                (void) strcpy(image->label,value);
-              }
+              CloneString(&image->label,value);
             if ((Latin1Compare(keyword,"matte") == 0) ||
                 (Latin1Compare(keyword,"alpha") == 0))
               {
@@ -6483,14 +6476,7 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
                 image->matte_color.index=0;
               }
             if (Latin1Compare(keyword,"montage") == 0)
-              {
-                image->montage=(char *)
-                  AllocateMemory(Extent(value)+1*sizeof(char));
-                if (image->montage == (char *) NULL)
-                  PrematureExit(ResourceLimitWarning,"Memory allocation failed",
-                    image);
-                (void) strcpy(image->montage,value);
-              }
+              CloneString(&image->montage,value);
             if (Latin1Compare(keyword,"page") == 0)
               {
                 if (image_info->page == (char *) NULL)
@@ -6525,14 +6511,7 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
             if (Latin1Compare(keyword,"scene") == 0)
               image->scene=(unsigned int) atoi(value);
             if (Latin1Compare(keyword,"signature") == 0)
-              {
-                image->signature=(char *)
-                  AllocateMemory((Extent(value)+1)*sizeof(char));
-                if (image->signature == (char *) NULL)
-                  PrematureExit(ResourceLimitWarning,"Memory allocation failed",
-                    image);
-                (void) strcpy(image->signature,value);
-              }
+              CloneString(&image->signature,value);
             if (Latin1Compare(keyword,"units") == 0)
               {
                 if (Latin1Compare(value,"undefined") == 0)
@@ -14051,31 +14030,11 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
     text=(char *) NULL;
     TIFFGetField(tiff,TIFFTAG_PAGENAME,&text);
     if (text != (char *) NULL)
-      {
-        image->label=(char *)
-          AllocateMemory((unsigned int) (Extent(text)+1)*sizeof(char));
-        if (image->label == (char *) NULL)
-          {
-            TIFFClose(tiff);
-            PrematureExit(ResourceLimitWarning,"Memory allocation failed",
-              image);
-          }
-        (void) strcpy(image->label,text);
-      }
+      CloneString(&image->label,text);
     text=(char *) NULL;
     TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text);
     if (text != (char *) NULL)
-      {
-        image->comments=(char *)
-          AllocateMemory((unsigned int) (Extent(text)+1)*sizeof(char));
-        if (image->comments == (char *) NULL)
-          {
-            TIFFClose(tiff);
-            PrematureExit(ResourceLimitWarning,"Memory allocation failed",
-              image);
-          }
-        (void) strcpy(image->comments,text);
-      }
+      CloneString(&image->comments,text);
     if (range < 0)
       range=max_sample_value;
     q=image->pixels;
@@ -15912,13 +15871,7 @@ Image *ReadVIFFImage(const ImageInfo *image_info)
     (void) ReadData((char *) viff_header.comment,1,512,image->file);
     viff_header.comment[511]='\0';
     if (Extent(viff_header.comment) > 4)
-      {
-        image->comments=(char *) AllocateMemory((unsigned int)
-          (Extent(viff_header.comment)+1)*sizeof(char));
-        if (image->comments == (char *) NULL)
-          PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-        (void) strcpy(image->comments,viff_header.comment);
-      }
+      CloneString(&image->comments,viff_header.comment);
     if ((viff_header.machine_dependency == VFF_DEP_DECORDER) ||
         (viff_header.machine_dependency == VFF_DEP_NSORDER))
       {

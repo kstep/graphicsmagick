@@ -58,11 +58,11 @@
 		<LI><A HREF="#ReadSTEGANOImage">ReadSTEGANOImage</A>
 		<LI><A HREF="#ReadSUNImage">ReadSUNImage</A>
 		<LI><A HREF="#ReadTGAImage">ReadTGAImage</A>
-		<LI><A HREF="#ReadTEXTImage">ReadTEXTImage</A>
 		<LI><A HREF="#ReadTIFFImage">ReadTIFFImage</A>
 		<LI><A HREF="#ReadTILEImage">ReadTILEImage</A>
 		<LI><A HREF="#ReadTIMImage">ReadTIMImage</A>
 		<LI><A HREF="#ReadTTFImage">ReadTTFImage</A>
+		<LI><A HREF="#ReadTXTImage">ReadTXTImage</A>
 		<LI><A HREF="#ReadUILImage">ReadUILImage</A>
 		<LI><A HREF="#ReadUYVYImage">ReadUYVYImage</A>
 		<LI><A HREF="#ReadVICARImage">ReadVICARImage</A>
@@ -219,9 +219,6 @@ image=<STRONG>ReadSTEGANOImage</STRONG>(image_info)
 image=<STRONG>ReadSUNImage</STRONG>(image_info)
 
 <P>
-image=<STRONG>ReadTEXTImage</STRONG>(image_info)
-
-<P>
 image=<STRONG>ReadTGAImage</STRONG>(image_info)
 
 <P>
@@ -235,6 +232,9 @@ image=<STRONG>ReadTIMImage</STRONG>(image_info)
 
 <P>
 image=<STRONG>ReadTTFImage</STRONG>(image_info)
+
+<P>
+image=<STRONG>ReadTXTImage</STRONG>(image_info)
 
 <P>
 image=<STRONG>ReadUILImage</STRONG>(image_info)
@@ -363,9 +363,9 @@ Specifies a pointer to an ImageInfo structure.
 <HR>
 <H2><A NAME="ReadDCMImage">ReadDCMImage</A></H2>
 <P>
-Method ReadDCMImage reads a DICOM Medical image file and returns it. It It
-allocates the memory necessary for the new Image structure and returns a
-pointer to the new image.
+Method ReadDCMImage reads a Digital Imaging and Communications in Medicine
+(DICOM) file and returns it. It It allocates the memory necessary for the
+new Image structure and returns a pointer to the new image.
 
 <P>
 The format of the ReadDCMImage routine is:
@@ -1530,35 +1530,6 @@ Specifies a pointer to an ImageInfo structure.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="ReadTEXTImage">ReadTEXTImage</A></H2>
-<P>
-Method ReadTEXTImage reads a text file and returns it as an image. It
-allocates the memory necessary for the new Image structure and returns a
-pointer to the new image.
-
-<P>
-The format of the ReadTEXTImage routine is:
-
-<P>
-<PRE>        image=ReadTEXTImage(image_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-Method ReadTEXTImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
-read.
-
-<DT><STRONG>image_info:</STRONG><DD>
-<P>
-Specifies a pointer to an ImageInfo structure.
-
-</DL></DL>
-<P>
-<HR>
 <H2><A NAME="ReadTIFFImage">ReadTIFFImage</A></H2>
 <P>
 Method ReadTIFFImage reads a Tagged image file and returns it. It allocates
@@ -1668,6 +1639,35 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadTTFImage returns a pointer to the image after reading. A null
+image is returned if there is a a memory shortage or if the image cannot be
+read.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReadTXTImage">ReadTXTImage</A></H2>
+<P>
+Method ReadTXTImage reads a text file and returns it as an image. It
+allocates the memory necessary for the new Image structure and returns a
+pointer to the new image.
+
+<P>
+The format of the ReadTXTImage routine is:
+
+<P>
+<PRE>        image=ReadTXTImage(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Method ReadTXTImage returns a pointer to the image after reading. A null
 image is returned if there is a a memory shortage or if the image cannot be
 read.
 

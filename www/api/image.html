@@ -20,7 +20,6 @@
 		<LI><A HREF="#AnnotateImage">AnnotateImage</A>
 		<LI><A HREF="#AppendImages">AppendImages</A>
 		<LI><A HREF="#AverageImages">AverageImages</A>
-		<LI><A HREF="#BlackImage">BlackImage</A>
 		<LI><A HREF="#BorderImage">BorderImage</A>
 		<LI><A HREF="#ChopImage">ChopImage</A>
 		<LI><A HREF="#CloseImage">CloseImage</A>
@@ -34,7 +33,7 @@
 		<LI><A HREF="#ContrastImage">ContrastImage</A>
 		<LI><A HREF="#CloneImage">CloneImage</A>
 		<LI><A HREF="#CropImage">CropImage</A>
-		<LI><A HREF="#CycleImage">CycleImage</A>
+		<LI><A HREF="#CycleColormapImage">CycleColormapImage</A>
 		<LI><A HREF="#DescribeImage">DescribeImage</A>
 		<LI><A HREF="#DestroyImage">DestroyImage</A>
 		<LI><A HREF="#DestroyImages">DestroyImages</A>
@@ -46,6 +45,7 @@
 		<LI><A HREF="#GammaImage">GammaImage</A>
 		<LI><A HREF="#GetAnnotateInfo">GetAnnotateInfo</A>
 		<LI><A HREF="#GetImageInfo">GetImageInfo</A>
+		<LI><A HREF="#GetImageType">GetImageType</A>
 		<LI><A HREF="#GetMontageInfo">GetMontageInfo</A>
 		<LI><A HREF="#IsGeometry">IsGeometry</A>
 		<LI><A HREF="#IsGrayImage">IsGrayImage</A>
@@ -57,6 +57,7 @@
 		<LI><A HREF="#ListToGroupImage">ListToGroupImage</A>
 		<LI><A HREF="#MagnifyImage">MagnifyImage</A>
 		<LI><A HREF="#MatteFloodfillImage">MatteFloodfillImage</A>
+		<LI><A HREF="#MatteImage">MatteImage</A>
 		<LI><A HREF="#MinifyImage">MinifyImage</A>
 		<LI><A HREF="#ModulateImage">ModulateImage</A>
 		<LI><A HREF="#MogrifyImage">MogrifyImage</A>
@@ -73,6 +74,7 @@
 		<LI><A HREF="#RollImage">RollImage</A>
 		<LI><A HREF="#SampleImage">SampleImage</A>
 		<LI><A HREF="#ScaleImage">ScaleImage</A>
+		<LI><A HREF="#SetImage">SetImage</A>
 		<LI><A HREF="#SetImageInfo">SetImageInfo</A>
 		<LI><A HREF="#SetNumberScenes">SetNumberScenes</A>
 		<LI><A HREF="#SortColormapByIntentsity">SortColormapByIntentsity</A>
@@ -113,9 +115,6 @@ allocated_image=<STRONG>AllocateImage</STRONG>(image_info)
 averaged_image=<STRONG>AverageImages</STRONG>(images)
 
 <P>
-<STRONG>BlackImage</STRONG>(image)
-
-<P>
 bordered_image=<STRONG>BorderImage</STRONG>(image,border_info)
 
 <P>
@@ -128,7 +127,7 @@ clone_image=<STRONG>CloneImage</STRONG>(image,columns,rows,clone_pixels)
 <STRONG>CloseImage</STRONG>(image)
 
 <P>
-<STRONG>ColorFloodfillImage</STRONG>(image,target,color,x,y,method)
+<STRONG>ColorFloodfillImage</STRONG>(image,target,pen,x,y,method)
 
 <P>
 <STRONG>ColorizeImage</STRONG>(image,opaque_color,pen_color)
@@ -150,6 +149,9 @@ clone_image=<STRONG>CloneImage</STRONG>(image,columns,rows,clone_pixels)
 
 <P>
 cropped_image=<STRONG>CropImage</STRONG>(image,crop_info)
+
+<P>
+<STRONG>CycleColormapImage</STRONG>(image,amount)
 
 <P>
 <STRONG>DescribeImage</STRONG>(image,file,verbose)
@@ -185,6 +187,9 @@ framed_image=<STRONG>FrameImage</STRONG>(image,frame_info)
 <STRONG>GetImageInfo</STRONG>(image_info)
 
 <P>
+type=<STRONG>GetImageType</STRONG>(image_info,image)
+
+<P>
 <STRONG>GetMontageInfo</STRONG>(montage_info)
 
 <P>
@@ -216,6 +221,9 @@ magnified_image=<STRONG>MagnifyImage</STRONG>(image)
 
 <P>
 <STRONG>MatteFloodfillImage</STRONG>(image,target,matte,x,y,method)
+
+<P>
+<STRONG>MatteImage</STRONG>(image)
 
 <P>
 minified_image=<STRONG>MinifyImage</STRONG>(image)
@@ -261,6 +269,9 @@ sampled_image=<STRONG>SampleImage</STRONG>(image,columns,rows)
 
 <P>
 scaled_image=<STRONG>ScaleImage</STRONG>(image,columns,rows)
+
+<P>
+<STRONG>SetImage</STRONG>(image)
 
 <P>
 <STRONG>SetImageInfo</STRONG>(image_info,rectify)
@@ -436,27 +447,6 @@ The address of a structure of type Image; returned from ReadImage.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="BlackImage">BlackImage</A></H2>
-<P>
-Method BlackImage initializes the reference image to the background color.
-
-<P>
-The format of the BlackImage routine is:
-
-<P>
-<PRE>        BlackImage(image)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image; returned from ReadImage.
-
-</DL></DL>
-<P>
-<HR>
 <H2><A NAME="BorderImage">BorderImage</A></H2>
 <P>
 Method BorderImage takes an image and puts a border around it of a
@@ -484,7 +474,8 @@ The address of a structure of type Image.
 
 <DT><STRONG>border_info:</STRONG><DD>
 <P>
-Specifies a pointer to a XRectangle which defines the border region.
+Specifies a pointer to a structure of type Rectangle which defines the
+border region.
 
 </DL></DL>
 <P>
@@ -577,7 +568,7 @@ Gems'' by Paul Heckbert.
 The format of the ColorFloodfillImage routine is:
 
 <P>
-<PRE>        ColorFloodfillImage(image,target,color,x,y,method)
+<PRE>        ColorFloodfillImage(image,target,pen,x,y,method)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -591,9 +582,9 @@ The address of a structure of type Image.
 <P>
 A RunlengthPacket structure. This is the RGB value of the target color.
 
-<DT><STRONG>color:</STRONG><DD>
+<DT><STRONG>pen:</STRONG><DD>
 <P>
-A ColorPacket structure. This is the RGB value of the replacement color.
+A character string representing the pen color.
 
 <DT><STRONG>x,y:</STRONG><DD>
 <P>
@@ -842,7 +833,7 @@ image to crop.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="CycleImage">CycleImage</A></H2>
+<H2><A NAME="CycleColormapImage">CycleColormapImage</A></H2>
 <P>
 Method CycleColormapImage cycles the image colormap by a specified amount.
 
@@ -850,7 +841,7 @@ Method CycleColormapImage cycles the image colormap by a specified amount.
 The format of the CycleColormapImage routine is:
 
 <P>
-<PRE>    CycleColormapImage(image,amount)
+<PRE>        CycleColormapImage(image,amount)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -1144,6 +1135,36 @@ A description of each parameter follows:
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to a ImageInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="GetImageType">GetImageType</A></H2>
+<P>
+Method GetImageType returns the type of image (e.g. bilevel, palette, etc).
+
+<P>
+The format of the GetImageType routine is:
+
+<P>
+<PRE>        type=GetImageType(image_info,image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>type:</STRONG><DD>
+<P>
+Method GetImageType returns a ImageType enum that specifies the type of the
+specified image (e.g. bilevel, palette, etc).
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to a ImageInfo structure.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
 
 </DL></DL>
 <P>
@@ -1473,6 +1494,28 @@ drawing method of type PrimitiveType: floodfill or fill to border.
 </DL></DL>
 <P>
 <HR>
+<H2><A NAME="MatteImage">MatteImage</A></H2>
+<P>
+Method MatteImage initializes the matte channel of the reference image to
+opaque.
+
+<P>
+The format of the MatteImage routine is:
+
+<P>
+<PRE>        MatteImage(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="MinifyImage">MinifyImage</A></H2>
 <P>
 Method MinifyImage creates a new image that is a integral size less than an
@@ -1544,8 +1587,8 @@ The address of a structure of type Image; returned from ReadImage.
 
 <DT><STRONG>modulate:</STRONG><DD>
 <P>
-A character string indicating the percent change in hue, saturation, and
-brightness.
+A character string indicating the percent change in brightness, saturation,
+and hue in floating point notation separated by commas (e.g. 10.1,0.0,3.1).
 
 </DL></DL>
 <P>
@@ -2000,6 +2043,27 @@ An integer that specifies the number of columns in the scaled image.
 <DT><STRONG>rows:</STRONG><DD>
 <P>
 An integer that specifies the number of rows in the scaled image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SetImage">SetImage</A></H2>
+<P>
+Method SetImage initializes the reference image to the background color.
+
+<P>
+The format of the SetImage routine is:
+
+<P>
+<PRE>        SetImage(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
 
 </DL></DL>
 <P>

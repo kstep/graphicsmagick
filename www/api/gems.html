@@ -20,7 +20,7 @@
 		<LI><A HREF="#HSLTransform">HSLTransform</A>
 		<LI><A HREF="#Hull">Hull</A>
 		<LI><A HREF="#InsidePrimitive">InsidePrimitive</A>
-		<LI><A HREF="#Interpolate">Interpolate</A>
+		<LI><A HREF="#InterpolateColor">InterpolateColor</A>
 		<LI><A HREF="#Modulate">Modulate</A>
 		<LI><A HREF="#TransformHSL">TransformHSL</A>
 		<LI><A HREF="#Upsample">Upsample</A>
@@ -51,7 +51,7 @@ gems - Graphic Gems - Graphic Support Methods
 status=<STRONG>InsidePrimitive</STRONG>(primitive_info,annotate_info,x,y,image)
 
 <P>
-<STRONG>Interpolate</STRONG>(image,pixel,x,y)
+<STRONG>InterpolateColor</STRONG>(image,x,y)
 
 <P>
 <STRONG>TransformHSL</STRONG>(red,green,blue,hue,saturation,luminosity)
@@ -219,16 +219,16 @@ The address of a structure of type Image.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="Interpolate">Interpolate</A></H2>
+<H2><A NAME="InterpolateColor">InterpolateColor</A></H2>
 <P>
-Method Interpolate applies bi-linear interpolation between a pixel and it's
-neighbors.
+Method InterpolateColor applies bi-linear interpolation between a pixel and
+it's neighbors.
 
 <P>
-The format of the Interpolate routine is:
+The format of the InterpolateColor routine is:
 
 <P>
-<PRE>        Interpolate(image,pixel,x,y)
+<PRE>        InterpolateColor(image,x,y)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -237,10 +237,6 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
-
-<DT><STRONG>pixel:</STRONG><DD>
-<P>
-A pointer to a RunlengthPacket representing the current pixel.
 
 <DT><STRONG>x,y:</STRONG><DD>
 <P>

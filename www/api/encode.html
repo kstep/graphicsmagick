@@ -53,6 +53,7 @@
 		<LI><A HREF="#WriteSUNImage">WriteSUNImage</A>
 		<LI><A HREF="#WriteTGAImage">WriteTGAImage</A>
 		<LI><A HREF="#WriteTIFFImage">WriteTIFFImage</A>
+		<LI><A HREF="#WriteTXTImage">WriteTXTImage</A>
 		<LI><A HREF="#WriteUILImage">WriteUILImage</A>
 		<LI><A HREF="#WriteUYVYImage">WriteUYVYImage</A>
 		<LI><A HREF="#WriteVICARImage">WriteVICARImage</A>
@@ -193,6 +194,9 @@ status=<STRONG>WriteTGAImage</STRONG>(image_info,image)
 
 <P>
 status=<STRONG>WriteTIFFImage</STRONG>(image_info,image)
+
+<P>
+status=<STRONG>WriteTXTImage</STRONG>(image_info,image)
 
 <P>
 status=<STRONG>WriteUILImage</STRONG>(image_info,image)
@@ -1399,6 +1403,36 @@ A description of each parameter follows:
 Method WriteTIFFImage return True if the image is written. False is
 returned is there is of a memory shortage or if the image file cannot be
 opened for writing.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+A pointer to a Image structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="WriteTXTImage">WriteTXTImage</A></H2>
+<P>
+Method WriteTXTImage writes the pixel values as text numbers.
+
+<P>
+The format of the WriteTXTImage routine is:
+
+<P>
+<PRE>        status=WriteTXTImage(image_info,image)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method WriteTXTImage return True if the image is written. False is returned
+is there is a memory shortage or if the image file fails to write.
 
 <DT><STRONG>image_info:</STRONG><DD>
 <P>

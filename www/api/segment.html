@@ -40,7 +40,16 @@ status=<STRONG>SegmentImage</STRONG>(image,colorspace,verbose)
 <HR>
 <H2><A NAME="SegmentImage">SegmentImage</A></H2>
 <P>
-Method SegmentImage analyzes the colors within a reference image and
+Method SegmentImage segment an image by analyzing the histograms of the
+color components and identifying units that are homogeneous with the fuzzy
+c-means technique.
+
+<P>
+Specify Icluster threshold as the number of pixels in each cluster must
+exceed the the cluster threshold to be considered valid. Smoothing
+threshold eliminates noise in the second derivative of the histogram. As
+the value is increased, you can expect a smoother second derivative. The
+default is 1.5.
 
 <P>
 The format of the SegmentImage routine is:
