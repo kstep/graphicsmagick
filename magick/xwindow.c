@@ -5035,7 +5035,7 @@ MagickExport unsigned int XMakeImage(Display *display,
             resize_image=SampleImage(window->image,width,height,
               &image->exception);
           else
-            resize_image=ZoomImage(window->image,width,height,
+            resize_image=ThumbnailImage(window->image,width,height,
               &image->exception);
           if (resize_image != (Image *) NULL)
             {

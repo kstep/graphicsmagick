@@ -570,8 +570,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	padBytes;
 
 
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter ReadPSDImage()");
-
   /*
     Open image file.
   */
@@ -579,13 +577,15 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter");
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False) {
 	  if(logging)
 		{
 		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  OpenBlob failed");
-		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
+		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "return ReadPSDImage()");
 		}
     ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   }
@@ -600,7 +600,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if(logging)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  File signature was %.4s instead of '8BPS'", psd_info.signature );
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
         }
     ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image);
   }
@@ -639,7 +639,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		  if(logging)
 			{
 			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  allocation of ImageColorMap failed");
-			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
 			}
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
 	  }
@@ -677,7 +677,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 			  if(logging)
 				{
 				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  allocation of ImageColorMap failed");
-				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
+				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
 				}
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image);
@@ -694,7 +694,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 			  if(logging)
 				{
 				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  allocation of ImageColorMap failed");
-				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
+				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
 				}
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image);
@@ -726,7 +726,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		  if(logging)
 			{
 			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  allocation of resources/IPTC failed");
-			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
 			}
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
 	  }
@@ -735,7 +735,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		  if(logging)
 			{
 			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  image resources invalid");
-			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
 			}
         ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image);
 	  }
@@ -753,7 +753,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	  if(logging)
 		{
 		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  pinging of image complete");
-		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
+		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
 		}
 
       return(image);
@@ -796,7 +796,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		  if(logging)
 			{
 			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  allocation of LayerInfo failed");
-			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
 			}
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
 	  }
@@ -836,7 +836,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		  if(logging)
 			{
 			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  layer type was %.4s instead of 8BIM", type);
-			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
 			}
           ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image);
 		}
@@ -961,7 +961,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 				  if(logging)
 					{
 					  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  adjustment layer type was %.4s instead of 8BIM", alsig);
-					  (void) LogMagickEvent(CoderEvent,__MagickMethod,"leave ReadPSDImage()");
+					  (void) LogMagickEvent(CoderEvent,__MagickMethod,"return");
 					}
 				  ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image);
 				}
@@ -1008,7 +1008,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 			  if(logging)
 				{
 				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  allocation of image for layer %ld failed", i);
-				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
+				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
 				}
 
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
@@ -1253,7 +1253,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 		  if(logging)
 			{
-			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
 			}
 
           return(returnImage);
@@ -1388,7 +1388,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if(logging)
 	{
-	  (void) LogMagickEvent(CoderEvent,GetMagickModule(), "leave ReadPSDImage()");
+	  (void) LogMagickEvent(CoderEvent,GetMagickModule(), "return");
 	}
 
   return(image);

@@ -11278,7 +11278,7 @@ static Image *XVisualDirectoryImage(Display *display,
         (void) GetMagickGeometry(clone_info->size,&geometry.x,&geometry.y,
           &geometry.width,&geometry.height);
         thumbnail_image=ThumbnailImage(next_image,geometry.width,
-          geometry.height,exception);
+          geometry.height,&exception);
         if (thumbnail_image != (Image *) NULL)
           {
             DestroyImage(next_image);
