@@ -1124,12 +1124,11 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"ImageMagick understands these color strings:\n");
   p=GetColorInfo("*",exception);
   if (p == (ColorInfo *) NULL)
     return(False);
   if (p->filename != (char *) NULL)
-    (void) fprintf(file,"\nFilename: %.1024s\n\n",p->filename);
+    (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
   (void) fprintf(file,
     "Name                   Color                   Compliance\n");
   (void) fprintf(file,"-------------------------------------------------------"

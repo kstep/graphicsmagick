@@ -498,10 +498,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"Here is a list of image formats recognized by "
-    "ImageMagick.  Mode 'rw+'\nmeans ImageMagick can read, write, and "
-    "save more than one image of a\nsequence to the same blob or file.\n\n");
-  (void) fprintf(file,"    Format  Mode  Description\n");
+  (void) fprintf(file,"   Format  Mode  Description\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------------\n");
   p=GetMagickInfo("*",exception);
@@ -510,7 +507,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   AcquireSemaphoreInfo(&magick_semaphore);
   for ( ; p != (MagickInfo *) NULL; p=p->next)
     if (p->stealth != True)
-      (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->name ? p->name : "",
+      (void) fprintf(file,"%9s%c  %c%c%c  %s\n",p->name ? p->name : "",
         p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',
         p->encoder ? 'w' : '-',p->encoder && p->adjoin ? '+' : '-',
         p->description ? p->description : "");

@@ -224,12 +224,11 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"ImageMagick supports these built-in fonts.\n");
   p=GetTypeInfo("*",exception);
   if (p == (TypeInfo *) NULL)
     return(False);
   if (p->filename != (char *) NULL)
-    (void) fprintf(file,"\nFilename: %.1024s\n\n",p->filename);
+    (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
   (void) fprintf(file,"Name                         Description\n");
   (void) fprintf(file,"-------------------------------------------------------"
     "------------------------\n");

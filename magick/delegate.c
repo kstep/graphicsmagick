@@ -520,13 +520,11 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"ImageMagick uses these delegates to read or write "
-    "image formats it does not\ndirectly support.\n");
   p=GetDelegateInfo("*","*",exception);
   if (p == (DelegateInfo *) NULL)
     return(False);
   if (p->filename != (char *) NULL)
-    (void) fprintf(file,"\nFilename: %.1024s\n\n",p->filename);
+    (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
   (void) fprintf(file,"Delegate             Command\n");
   (void) fprintf(file,"-------------------------------------------------------"
     "------------------------\n");

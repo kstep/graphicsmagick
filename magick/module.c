@@ -523,12 +523,11 @@ MagickExport unsigned int ListModuleAliases(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"ImageMagick understands these module aliases:\n");
   p=GetModuleAlias("*",exception);
   if (p == (ModuleAlias *) NULL)
     return(False);
   if (p->filename != (char *) NULL)
-    (void) fprintf(file,"\nFilename: %.1024s\n\n",p->filename);
+    (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
   (void) fprintf(file,"Name      Alias\n");
   (void) fprintf(file,"-------------------------------------------------------"
     "------------------------\n");

@@ -217,12 +217,11 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"ImageMagick understands these magic strings:\n");
   p=GetMagicInfo((unsigned char *) NULL,0,exception);
   if (p == (MagicInfo *) NULL)
     return(False);
   if (p->filename != (char *) NULL)
-    (void) fprintf(file,"\nFilename: %.1024s\n\n",p->filename);
+    (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
   (void) fprintf(file,"Name      Offset Target\n");
   (void) fprintf(file,"-------------------------------------------------------"
     "------------------------\n");
