@@ -10,15 +10,14 @@ extern "C" {
 
 #define ErrorQueueLength  16
 #define MaxTreeDepth  8
-#define DitherTileSize  512
-#define NodesInAList  2048
+#define NodesInAList  1536
 
 /*
   Typedef declarations.
 */
 typedef struct _ErrorPacket
 {
-  long
+  double
     red,
     green,
     blue;

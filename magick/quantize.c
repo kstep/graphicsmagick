@@ -597,6 +597,8 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
         mid_red+=id & 4 ? bisect[level] : -bisect[level];
         mid_green+=id & 2 ? bisect[level] : -bisect[level];
         mid_blue+=id & 1 ? bisect[level] : -bisect[level];
+        distance_squared=squares[(int) (p->red-mid_red)]+
+          squares[(int) (p->green-mid_green)]+squares[(int) (p->blue-mid_blue)];
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
             /*
@@ -614,12 +616,6 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
               cube_info->colors++;
           }
         node_info=node_info->child[id];
-        /*
-          Approximate the quantization error represented by this node.
-        */
-        distance_squared=squares[(int) p->red-(int) mid_red]+
-          squares[(int) p->green-(int) mid_green]+
-          squares[(int) p->blue-(int) mid_blue];
         node_info->quantization_error+=distance_squared;
         index--;
       }
@@ -738,13 +734,13 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
           */
           squares=cube_info->squares;
           color=cube_info->colormap+node_info->color_number;
-          distance_squared=squares[(int) color->red-(int) cube_info->color.red]+
-            squares[(int) color->green-(int) cube_info->color.green]+
-            squares[(int) color->blue-(int) cube_info->color.blue];
+          distance_squared=squares[(int) (color->red-cube_info->color.red)]+
+            squares[(int) (color->green-cube_info->color.green)]+
+            squares[(int) (color->blue-cube_info->color.blue)];
           if (distance_squared < cube_info->distance)
             {
               cube_info->distance=distance_squared;
-              cube_info->color_number=(unsigned short) node_info->color_number;
+              cube_info->color_number=node_info->color_number;
             }
         }
     }
@@ -800,11 +796,11 @@ static void DefineColormap(CubeInfo *cube_info,NodeInfo *node_info)
       */
       number_unique=node_info->number_unique;
       cube_info->colormap[cube_info->colors].red=(Quantum)
-        ((node_info->total_red+number_unique/2)/number_unique);
+        ((node_info->total_red+0.5*number_unique)/number_unique);
       cube_info->colormap[cube_info->colors].green=(Quantum)
-        ((node_info->total_green+number_unique/2)/number_unique);
+        ((node_info->total_green+0.5*number_unique)/number_unique);
       cube_info->colormap[cube_info->colors].blue=(Quantum)
-        ((node_info->total_blue+number_unique/2)/number_unique);
+        ((node_info->total_blue+0.5*number_unique)/number_unique);
       node_info->color_number=(unsigned int) cube_info->colors++;
     }
 }
@@ -963,9 +959,9 @@ static void Dither(CubeInfo *cube_info,Image *image,
       q=GetPixelCache(image,p->x,p->y,1,1);
       if (q == (PixelPacket *) NULL)
         return;
-      red=p->range_limit[(int) q->red+(int) red_error];
-      green=p->range_limit[(int) q->green+(int) green_error];
-      blue=p->range_limit[(int) q->blue+(int) blue_error];
+      red=p->range_limit[(int) (q->red+red_error)];
+      green=p->range_limit[(int) (q->green+green_error)];
+      blue=p->range_limit[(int) (q->blue+blue_error)];
       i=(blue >> CacheShift) << 12 | (green >> CacheShift) << 6 |
         (red >> CacheShift);
       if (p->cache[i] < 0)
@@ -1018,9 +1014,9 @@ static void Dither(CubeInfo *cube_info,Image *image,
       */
       for (i=0; i < (ErrorQueueLength-1); i++)
         p->error[i]=p->error[i+1];
-      p->error[i].red=(int) red-(int) image->colormap[index].red;
-      p->error[i].green=(int) green-(int) image->colormap[index].green;
-      p->error[i].blue=(int) blue-(int) image->colormap[index].blue;
+      p->error[i].red=red-image->colormap[index].red;
+      p->error[i].green=green-image->colormap[index].green;
+      p->error[i].blue=blue-image->colormap[index].blue;
     }
   switch (direction)
   {
@@ -1076,9 +1072,9 @@ static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
   */
   for (i=0; i < ErrorQueueLength; i++)
   {
-    cube_info->error[i].red=0;
-    cube_info->error[i].green=0;
-    cube_info->error[i].blue=0;
+    cube_info->error[i].red=0.0;
+    cube_info->error[i].green=0.0;
+    cube_info->error[i].blue=0.0;
   }
   /*
     Distribute quantization error along a Hilbert curve.
@@ -1923,10 +1919,9 @@ Export unsigned int QuantizationError(Image *image)
     for (x=0; x < (int) image->columns; x++)
     {
       index=image->indexes[x];
-      distance_squared=
-        squares[(int) p->red-(int) image->colormap[index].red]+
-        squares[(int) p->green-(int) image->colormap[index].green]+
-        squares[(int) p->blue-(int) image->colormap[index].blue];
+      distance_squared=squares[(int) (p->red-image->colormap[index].red)]+
+        squares[(int) (p->green-image->colormap[index].green)]+
+        squares[(int) (p->blue-image->colormap[index].blue)];
       total_error+=distance_squared;
       if (distance_squared > maximum_error_per_pixel)
         maximum_error_per_pixel=distance_squared;
