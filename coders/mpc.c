@@ -147,7 +147,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *values;
 
   ExtendedSignedIntegralType
-    length,
     offset;
 
   Image
@@ -161,6 +160,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   register unsigned char
     *p;
+
+	size_t
+    length;
 
   unsigned int
     status;
@@ -220,7 +222,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             c=ReadBlobByte(image);
             if ((c == EOF) || (c == '}'))
               break;
-            if ((p-comment+1) >= (int) length)
+            if ((p-comment+1) >= length)
               {
                 *p='\0';
                 length<<=1;
@@ -268,8 +270,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   p=values+strlen(values);
                 }
               if (values == (char *) NULL)
-                ThrowReaderException(ResourceLimitError,
-                  "MemoryAllocationFailed",image);
+                ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+                  image);
               *p++=c;
               c=ReadBlobByte(image);
               if (*values != '{')
@@ -681,8 +683,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         image->directory=AllocateString((char *) NULL);
         if (image->directory == (char *) NULL)
-          ThrowReaderException(CorruptImageError,"UnableToReadImageData",
-            image);
+          ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
         p=image->directory;
         do
         {
@@ -695,8 +696,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ReacquireMemory((void **) &image->directory,
                 (strlen(image->directory)+MaxTextExtent+1));
               if (image->directory == (char *) NULL)
-                ThrowReaderException(CorruptImageError,
-                  "UnableToReadImageData",image);
+                ThrowReaderException(CorruptImageError,"UnableToReadImageData",
+                  image);
               p=image->directory+strlen(image->directory);
             }
           c=ReadBlobByte(image);
@@ -777,8 +778,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             packet_size=image->depth > 8 ? 6 : 3;
             colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
-              ThrowReaderException(ResourceLimitError,
-                "MemoryAllocationFailed",image);
+              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+                image);
             (void) ReadBlob(image,packet_size*image->colors,colormap);
             p=colormap;
             if (image->depth <= 8)

@@ -716,7 +716,7 @@ MagickExport void DestroyCacheInfo(Cache cache)
       break;
     }
     case MapCache:
-      (void) UnmapBlob(cache_info->pixels,cache_info->length);
+      (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
     case DiskCache:
     {
       (void) remove(cache_info->cache_filename);
@@ -1854,7 +1854,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class != UndefinedClass)
     if (cache_info->type == MapCache)
-      (void) UnmapBlob(cache_info->pixels,cache_info->length);
+      (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
   FormatString(cache_info->filename,"%.1024s[%ld]",image->filename,
     GetImageListIndex(image));
   cache_info->rows=image->rows;
@@ -1893,10 +1893,11 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
          AcquireMagickResource(MemoryResource,cache_info->length)))
       {
         if (cache_info->storage_class == UndefinedClass)
-          pixels=(PixelPacket *) AcquireMemory(cache_info->length);
+          pixels=(PixelPacket *) AcquireMemory((size_t) cache_info->length);
         else
           {
-            ReacquireMemory((void **) &cache_info->pixels,cache_info->length);
+            ReacquireMemory((void **) &cache_info->pixels,
+              (size_t) cache_info->length);
             if (cache_info->pixels == (void *) NULL)
               ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
                 image->filename);
@@ -2424,7 +2425,7 @@ static inline ExtendedSignedIntegralType SeekCache(int file,
 #if defined(Win32)
   return(_lseeki64(file,offset,SEEK_SET));
 #else
-  return(lseek(file,offset,SEEK_SET));
+  return(lseek(file,(off_t) offset,SEEK_SET));
 #endif
 }
 
@@ -2652,7 +2653,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   CacheInfo
     *cache_info;
 
-  ExtendedSignedIntegralType
+  off_t
     offset;
 
   register NexusInfo
