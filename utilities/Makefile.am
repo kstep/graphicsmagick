@@ -50,7 +50,7 @@ else
 X11PROGRAMS =
 MANPAGES = $(STDMANPAGES)
 endif
-bin_PROGRAMS = combine convert identify iptcutil mogrify montage $(X11PROGRAMS)
+bin_PROGRAMS = cgimagick combine convert identify iptcutil mogrify montage $(X11PROGRAMS)
 
 # Libtool libraries, dependencies, and linker flags used by most executables
 if WITH_MODULES
@@ -61,41 +61,45 @@ COMMONLDADD	= $(MAGICK_LIB)
 COMMONLDFLAGS	= @LDFLAGS@
 endif # WITH_MODULES
 
-display_SOURCES   = display.c
-display_LDADD     = $(COMMONLDADD)
-display_LDFLAGS   = $(COMMONLDFLAGS)
-
-animate_SOURCES   = animate.c
 animate_LDADD     = $(COMMONLDADD)
 animate_LDFLAGS   = $(COMMONLDFLAGS)
+animate_SOURCES   = animate.c
 
-import_SOURCES    = import.c
-import_LDADD      = $(COMMONLDADD)
-import_LDFLAGS    = $(COMMONLDFLAGS)
+cgimagick_LDADD    = $(COMMONLDADD)
+cgimagick_LDFLAGS  = $(COMMONLDFLAGS)
+cgimagick_SOURCES  = cgimagick.c
 
-iptcutil_SOURCES  = iptcutil.c
-iptcutil_LDADD    = # Don't use ImageMagick LIBS
-iptcutil_LDFLAGS  = # Don't use ImageMagick LDFLAGS
-
-montage_SOURCES   = montage.c
-montage_LDADD     = $(COMMONLDADD)
-montage_LDFLAGS   = $(COMMONLDFLAGS)
-
-convert_SOURCES   = convert.c
-convert_LDADD     = $(COMMONLDADD)
-convert_LDFLAGS   = $(COMMONLDFLAGS)
-
-mogrify_SOURCES   = mogrify.c
-mogrify_LDADD     = $(COMMONLDADD)
-mogrify_LDFLAGS   = $(COMMONLDFLAGS)
-
-identify_SOURCES  = identify.c
-identify_LDADD    = $(COMMONLDADD)
-identify_LDFLAGS  = $(COMMONLDFLAGS)
-
-combine_SOURCES   = combine.c
 combine_LDADD     = $(COMMONLDADD)
 combine_LDFLAGS   = $(COMMONLDFLAGS)
+combine_SOURCES   = combine.c
+
+convert_LDADD     = $(COMMONLDADD)
+convert_LDFLAGS   = $(COMMONLDFLAGS)
+convert_SOURCES   = convert.c
+
+display_LDADD     = $(COMMONLDADD)
+display_LDFLAGS   = $(COMMONLDFLAGS)
+display_SOURCES   = display.c
+
+identify_LDADD    = $(COMMONLDADD)
+identify_LDFLAGS  = $(COMMONLDFLAGS)
+identify_SOURCES  = identify.c
+
+import_LDADD      = $(COMMONLDADD)
+import_LDFLAGS    = $(COMMONLDFLAGS)
+import_SOURCES    = import.c
+
+iptcutil_LDADD    = # Don't use ImageMagick LIBS
+iptcutil_LDFLAGS  = # Don't use ImageMagick LDFLAGS
+iptcutil_SOURCES  = iptcutil.c
+
+mogrify_LDADD     = $(COMMONLDADD)
+mogrify_LDFLAGS   = $(COMMONLDFLAGS)
+mogrify_SOURCES   = mogrify.c
+
+montage_LDADD     = $(COMMONLDADD)
+montage_LDFLAGS   = $(COMMONLDFLAGS)
+montage_SOURCES   = montage.c
 
 # Manual pages to install
 man_MANS = $(MANPAGES)
