@@ -2,6 +2,7 @@
 
 	* coders/bpp.c: Fix off-by-one error while initializing padding bytes.
 	* coders/dib.c: Fix off-by-one error while initializing padding bytes.
+	* magick/enhance.c: MaxMap vs MaxRGB error fixed.  Reported by Cristy.
 
 2004-02-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 

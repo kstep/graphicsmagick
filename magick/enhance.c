@@ -1358,7 +1358,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       normalize_map[i].red=0;
     else
       if (i > (long) high.red)
-        normalize_map[i].red=MaxMap;
+        normalize_map[i].red=MaxRGB;
       else
         if (low.red != high.red)
           normalize_map[i].red=
@@ -1367,7 +1367,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       normalize_map[i].green=0;
     else
       if (i > (long) high.green)
-        normalize_map[i].green=MaxMap;
+        normalize_map[i].green=MaxRGB;
       else
         if (low.green != high.green)
           normalize_map[i].green=ScaleMapToQuantum((MaxMap*(i-low.green))/
@@ -1376,7 +1376,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       normalize_map[i].blue=0;
     else
       if (i > (long) high.blue)
-        normalize_map[i].blue=MaxMap;
+        normalize_map[i].blue=MaxRGB;
       else
         if (low.blue != high.blue)
           normalize_map[i].blue=
@@ -1387,7 +1387,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
           normalize_map[i].opacity=0;
         else
           if (i > (long) high.opacity)
-            normalize_map[i].opacity=MaxMap;
+            normalize_map[i].opacity=MaxRGB;
           else
             if (low.opacity != high.opacity)
               normalize_map[i].opacity=ScaleMapToQuantum(
