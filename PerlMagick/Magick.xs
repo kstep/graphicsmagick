@@ -6355,6 +6355,9 @@ Ping(ref,...)
     Image
       *image;
 
+    ImageInfo
+      *clone_info;
+
     int
       count;
 
@@ -6378,33 +6381,32 @@ Ping(ref,...)
     GetExceptionInfo(&exception);
     for (i=1; i < items; i++)
     {
-      (void) strncpy(info->image_info->filename,(char *) SvPV(ST(i),na),
+      clone_info=CloneImageInfo(info->image_info);
+      (void) strncpy(clone_info->filename,(char *) SvPV(ST(i),na),
         MaxTextExtent-1);
-      if ((items >= 3) && strEQcase(info->image_info->filename,"filename"))
+      if ((items >= 3) && strEQcase(clone_info->filename,"filename"))
         continue;
-      if ((items >= 3) && strEQcase(info->image_info->filename,"file"))
+      if ((items >= 3) && strEQcase(clone_info->filename,"file"))
         {
           i++;
-          info->image_info->file=(FILE *) IoIFP(sv_2io(ST(i)));
+          clone_info->file=(FILE *) IoIFP(sv_2io(ST(i)));
         }
-      if ((items >= 3) && strEQcase(info->image_info->filename,"blob"))
+      if ((items >= 3) && strEQcase(clone_info->filename,"blob"))
         {
-          char
-            *blob;
-
           STRLEN
             length;
 
           i++;
-          blob=(char *) (SvPV(ST(i),length));
-          AttachBlob(info->image_info->blob,blob,length);
+          clone_info->blob=(void *) (SvPV(ST(i),length));
+          clone_info->length=length;
         }
-      image=PingImage(info->image_info,&exception);
+      image=PingImage(clone_info,&exception);
       if (image == (Image *) NULL)
         {
           MagickError(exception.severity,exception.reason,
             exception.description);
           PUSHs(&sv_undef);
+          DestroyImageInfo(clone_info);
           continue;
         }
       count+=GetImageListSize(image);
@@ -6419,10 +6421,10 @@ Ping(ref,...)
         PUSHs(sv_2mortal(newSVpv(message,0)));
         PUSHs(sv_2mortal(newSVpv(p->magick,0)));
       }
-      DestroyImage(image);
+      DestroyImageList(image);
+      DestroyImageInfo(clone_info);
     }
     DestroyExceptionInfo(&exception);
-    info->image_info->file=(FILE *) NULL;
     SvREFCNT_dec(error_list);  /* throw away all errors */
     error_list=NULL;
   }

@@ -654,7 +654,11 @@ static void DestroyCacheInfo(Cache cache)
       break;
     }
     default:
+		{
+		  if (cache_info->pixels != (PixelPacket *) NULL)
+        LiberateMemory((void **) &cache_info->pixels);
       break;
+		}
   }
   if (cache_info->type != UndefinedCache)
     {
