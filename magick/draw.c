@@ -1232,7 +1232,6 @@ MagickExport void DrawComposite(DrawContext context,
   if(!image_info)
     ThrowDrawException(ResourceLimitError, "Unable to draw image",
                        "Memory allocation failed");
-
   blob = (unsigned char*)ImageToBlob( image_info, clone_image, &blob_length,
                                       &context->image->exception );
   DestroyImageInfo(image_info);
@@ -1355,17 +1354,18 @@ MagickExport void DrawComposite(DrawContext context,
 
   if( media_type != NULL )
     {
-      int
-        remaining;
-
       char
         *str;
+
+      int
+        remaining;
 
       MvgPrintf(context, "image %s %.4g,%.4g %.4g,%.4g 'data:%s;base64,\n",
                 mode, x, y, width, height, media_type);
 
       remaining = (int)encoded_length;
-      for( str = base64; remaining > 0; )
+      str = base64;
+      while( remaining > 0 )
         {
           MvgPrintf(context,"%.76s", str);
           remaining -= 76;

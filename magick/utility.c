@@ -276,13 +276,17 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
   register size_t
     i;
 
+  size_t
+    allocated;
+
   unsigned char
     *decode;
 
   assert(source != (char *) NULL);
   assert(length != (size_t *) NULL);
   *length=0;
-  decode=(unsigned char *) AcquireMemory(3*strlen(source)/4+1);
+  allocated=3*strlen(source)/4+1;
+  decode=(unsigned char *) AcquireMemory(allocated);
   if (decode == (unsigned char *) NULL)
     return((unsigned char *) NULL);
   i=0;
@@ -374,15 +378,11 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
                 LiberateMemory((void **) &decode);
                 return((unsigned char *) NULL);
               }
-          if (decode[i] != 0)
-            {
-              LiberateMemory((void **) &decode);
-              return((unsigned char *) NULL);
-            }
         }
       }
     }
   *length=i;
+  assert(*length < allocated);
   return(decode);
 }
 
@@ -397,7 +397,8 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Base64Encode() encodes arbitrary binary data to base64 encoded format and
+%  Base64Encode() encodes arbitrary binary data to base64 encoded format as
+%  described by the "Base64 Content-Transfer-Encoding" section of RFC 2045 and
 %  returns the result as a null-terminated ASCII string.  NULL is returned if
 %  a memory allocation failure occurs.
 %
@@ -466,8 +467,8 @@ MagickExport char *Base64Encode(const unsigned char *blob,
         encode[i++]=Base64[((code[1] & 0x0f) << 2)+(code[2] >> 6)];
       encode[i++]='=';
     }
-  encode[i++]='\0';
   *encode_length=i;
+  encode[i++]='\0';
   return(encode);
 }
 
