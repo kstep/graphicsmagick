@@ -1,3 +1,7 @@
+2002-10-06  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+  * Added detailed logging to BMP, PNG, and JPEG codecs, including JPEG
+    quality estimate.
+
 2002-10--1  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
   * Added draw.h "DrawGet" equivalents to most of the "DrawSet" functions.
   * Added an array size argument to DrawSetDashPattern and got rid of
