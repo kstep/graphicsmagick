@@ -93,7 +93,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\Source\TclMagick.c
+SOURCE=.\source\TclMagick.c
 # End Source File
 # End Group
 # Begin Group "Header-Dateien"
@@ -101,7 +101,7 @@ SOURCE=.\Source\TclMagick.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\Source\TclMagick.h
+SOURCE=.\source\TclMagick.h
 # End Source File
 # End Group
 # Begin Group "Ressourcendateien"
@@ -113,15 +113,11 @@ SOURCE=.\Source\TclMagick.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\www\Changes.txt
+SOURCE=.\source\Changes.txt
 # End Source File
 # Begin Source File
 
-SOURCE=.\www\TclMagick.html
-# End Source File
-# Begin Source File
-
-SOURCE=.\www\TclMagick.txt
+SOURCE=.\source\TclMagick.txt
 # End Source File
 # End Group
 # Begin Source File

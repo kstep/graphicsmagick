@@ -1,31 +1,103 @@
 Tcl Image Magick 0.2
 ChangeLog:
 
-2003-09-01:
+2003-12-23:
+    - New API's:
+		pixelName SetQuantumColor ?{r g b o}?
+
+	- Test script updated
+		New PixelWand color naming: "rgb(10%,20%,30%)"
+		Updated changed API's 
+
+2003-12-22:
+	- General remarks:
+		MagickGetImageHistogram	not implemented: returns array of PixelWand objects ???
+
     - API changes:
-		wandName GammaImage ?level=1.0?
+	    Added channelType="index" 
+		Added colorspace="LAB"
+		"wandName CloneWand" renamed to "wandName CloneImage"
+		wandName CompareImages refName metric
+		"wandName fx" renamed to "wandName fxchannel"
+		"wandName Get/SetImagePixels" renamed to "wandName Get/SetPixels"
+		"wandName gamma" renamed to "wandName gammaimage"
+		wandName profile name ?profile?
 
-2003-08-06:
-    - API changes:
-		wandName AnnotateImage draw ?x y? ?txt?
-		wandName CompositeImage compWand opType ?x y?
-		drawName fillcolor get|set pixel
-		drawName GetFillColor pixel
-		drawName SetFillColor pixel
-		drawName strokecolor get|set pixel
-		drawName GetStrokeColor pixel
-		drawName SetStrokeColor pixel
-		drawName textundercolor get|set pixel
-		drawName GetTextUnderColor pixel
-		drawName SetTextUnderColor pixel
-
-
-	- Removed API's
-		drawName SetFillColorString color
-		drawName SetStrokeColorString color
-		drawName SetTextUnderColorString color
+    - API's removed:
+		wandName SetFuzzyColorDistance
 
     - New API's:
+		magick resourcelimit resource ?limit?
+		magick fonts pattern
+		magick formats pattern
+	
+		wandName CompareImageChannels refName chan metric
+		wandName Get/SetBackgroundColor bgPix
+		wandName Get/SetBluePrimary ?x y?
+		wandName Get/SetGreenPrimary ?x y?
+		wandName Get/SetRedPrimary ?x y?
+		wandName Get/SetBorderColor ?pixel?
+		wandName Get/SetChannelDepth channelType ?depth?
+		wandName GetChannelExtrema channelType
+		wandName GetChannelMean channelType
+		wandName Get/SetColormapColor index ?pixel?
+		wandName GetColors
+		wandName Get/SetColorspace ?colorspaceType?
+		wandName Get/SetCompose ?opType?
+		wandName Get/SetCompression ?compressType?
+		wandName Get/SetDelay ?delay?
+		wandName Get/SetDepth ?depth?
+		wandName GetExtrema
+		wandName Get/SetDispose ?disposeType?
+		wandName GetFormat 
+		wandName Get/SetGamma ?gamma?
+		wandName GetWidth/Height
+		wandName Get/SetIndex ?index?
+		wandName GetSetInterlaceScheme ?interlaceType?
+		wandName Get/SetIterations ?num?
+		wandName Get/SetMatteColor ?pixel?
+		wandName Get/SetProfile
+		wandName Get/SetRenderingIntent ?renderType?
+		wandName SetScene ?num?
+		wandName GetImageSize
+		wandName Get/SetImageType ?type?
+		wandName Get/SetImageUnits ?unitType?
+		wandName Get/SetVirtualPixelMethod ?methodType?
+		wandName Get/SetWhitePoint ?x y?
+		wandName GetX/YResolution
+		wandName Get/SetSamplingFactors ?factors?
+		wandName PingImage filename
+		wandName QueryFontMetrics draw text
+		wandName QueryFonts pattern
+		wandName ReadImageBlob data
+		wandName SetOption format options
+		wandName SetResolution x y
+		wandName SetPassphrase phrase
+		wandName TintImage tintPixel opacityPixel
+		wandName ThresholdImageChannel channelType threshold
+		wandName TransformImage crop geometry ?newName?
+
+2003-12-04:
+    - Removed subcommands:
+		wandName seek
+
+    - API changes:
+		wandName CompositeImage compWand opType ?x y?
+        wandName GammaImage level
+
+    - New API's:
+		wandName AddImage name
+		wandName AppendImages ?stack? ?newName?
+		wandName AverageImages ?newName?
+		wandName ClipImage pathname ?inside?
+		wandname fxImageChannel fxWand channelType expr 
+        wandName GammaImageChannel channelType level
+		wandName HasNextImage
+		wandName HasPreviousImage
+		wandName LevelImageChannel channelType ?black? ?gamma? ?white?
+		wandName MontageImage draw tileGeom thumbGeom mode frameGeom ?newName?
+		wandName MorphImages num ?newName?
+		wandName MosaicImages ?newName?
 
 2003-07-02:
     - API changes:

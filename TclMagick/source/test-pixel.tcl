@@ -44,9 +44,10 @@ proc debugLeave {cmdstr code result op} {
 proc ShowPixel {pix {all 1}} {
     puts "----------"
     if {$all} {
-	$pix color
+        $pix color
         $pix get -quant red green blue opacity
         $pix get red green blue opacity
+        $pix GetQuantumColor
     } else {
         $pix GetColorAsString
     }
@@ -60,22 +61,22 @@ proc TestPixel {} {
     set pix [magick create pixel pix0]
     debug $pix
 
-    $pix SetColor 10%
+    $pix SetColor rgb(10%)
     ShowPixel $pix
     
-    $pix SetColor 20%,30%
+    $pix SetColor rgb(20%,30%)
     ShowPixel $pix
     
-    $pix SetColor 30%,40%,50%
+    $pix SetColor rgb(30%,40%,50%)
     ShowPixel $pix
     
-    $pix SetColor 80%,,,20%
+    $pix SetColor rgb(80%,,20%)
     ShowPixel $pix
     
-    $pix SetColor 30,40,50,60
+    $pix SetColor rgb(30,40,50)
     ShowPixel $pix
     
-    $pix color 60%,70%,100%
+    $pix color #99B2FF
     ShowPixel $pix
     
     $pix set red 0.1 green 0.2 blue 0.3 opacity 0.4
@@ -94,6 +95,9 @@ proc TestPixel {} {
     $pix SetGreenQuantum 23456
     $pix SetBlueQuantum 34567
     $pix SetOpacityQuantum 45678
+    ShowPixel $pix
+
+    $pix SetQuantumColor {100 150 200 250}
     ShowPixel $pix
     
     magick delete $pix

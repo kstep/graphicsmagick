@@ -15,26 +15,44 @@ Deleting the Magick object also deletes the command.
 ############################################################################
 TclMagick objects
 ############################################################################
-magick create type ?name?           # Create a TclMagick object of type
+magick create type ?name?               # Create a TclMagick object of type
     type="wand","drawing","pixel"
     returns: object name
 
-magick delete name ?name? ...       # Delete TclMagick objects
+magick delete name ?name? ...           # Delete TclMagick objects
 
-magick names ?type?                 # Return all TclMagick objects (of type)
+magick names ?type?                     # Return all TclMagick objects (of type)
 
-magick type name                    # Return the type of the object
+magick type name                        # Return the type of the object
 
-magick types                        # Return valid type names
+magick types                            # Return valid type names
+
+magick resourcelimit resource ?limit?   # MagickGet/SetResourceLimits
+    resource=
+	    "undefined","area","disk",
+		"file","map","memory"
+	unsigned limit
+
+magick fonts pattern					# MagickQueryFonts
+	string pattern
+    returns stringList (all matching fonts)
+
+magick formats pattern					# MagickQueryFormats
+	string pattern
+    returns stringList (all matching image formats)
 
 ############################################################################
 MagickWand commands:                                     ImageMagick API
 ############################################################################
 
-wandName adaptivethreshold ?width? ?height? ?ofs?        MagickAdaptiverThresholdImage
-wandName AdaptiveThresholdImage ?width? ?height? ?ofs?   MagickAdaptiverThresholdImage
+wandName adaptivethreshold ?width? ?height? ?ofs?        MagickAdaptiveThresholdImage
+wandName AdaptiveThresholdImage ?width? ?height? ?ofs?   MagickAdaptiveThresholdImage
    integer width,height,ofs
            (default: width=2, height=width, ofs=0)
+
+wandName add wandName                                    MagickAddImage
+wandName AddImage wandName                               MagickAddImage
+   MagickWand wandName
 
 wandName addnoise ?noiseType?                            MagickAddNoiseImage
 wandName AddNoiseImage ?noiseType?                       MagickAddNoiseImage
@@ -47,11 +65,18 @@ wandName affinetransform draw                            MagickAffineTransformIm
 wandName AffineTransformImage draw                       MagickAffineTransformImage
    DrawingWand draw
 
-wandName annotate draw ?x y? ?txt?                       MagickAnnotateImage
-wandName AnnotateImage draw ?x y? ?txt?                  MagickAnnotateImage
+wandName annotate draw                                   MagickAnnotateImage
+wandName AnnotateImage draw                              MagickAnnotateImage
    DrawingWand draw
-   double      x,y
-   string      txt
+
+wandName append ?stack? ?newName?                        MagickAppendImages
+wandName AppendImages ?stack? ?newName?                  MagickAppendImages
+   bool stack (default=0)
+   string newName
+
+wandName average ?newName?						         MagickAverageImages
+wandName AverageImages ?newName?						 MagickAverageImages
+   string newName
 
 wandName blackthreshold thresholdPixel                   MagickBlackThresholdImage
 wandName BlackThresholdImage thresholdPixel              MagickBlackThresholdImage
@@ -72,7 +97,7 @@ wandName channel channelType                             MagickChannelImage
 wandName ChannelImage channelType                        MagickChannelImage
    string channelType 
        = "undefined", "red",   "cyan",   "green", "magenta",
-         "blue",      "yellow, "opacity, "black,  "matte"
+         "blue",      "yellow, "opacity, "black,  "matte",  "index"
 
 wandName charcoal ?radius? ?sigma?                       MagickCharcoalImage
 wandName CharcoalImage ?radius? ?sigma?                  MagickCharcoalImage
@@ -87,8 +112,13 @@ wandName ChopImage width height ?x y?                    MagickChopImage
 wandName clip                                            MagickClipImage
 wandName ClipImage                                       MagickClipImage
 
-wandName clone ?newName?                                 MagickCloneWand
-wandName CloneWand ?newName?                             MagickCloneWand
+wandName clippath pathname ?inside?						 MagickClipPathImage
+wandName ClipPathImage pathname ?inside?				 MagickClipPathImage
+	string pathname
+	bool inside (default=0)
+
+wandName clone ?newName?                                 MagickCloneImage
+wandName CloneImage ?newName?                            MagickCloneImage
    string newName
 
 wandName coalesce ?newName?                              MagickCoalesceImages
@@ -111,10 +141,24 @@ wandName comment str                                     MagickCommentImage
 wandName CommentImage str                                MagickCommentImage
    string str
 
-wandName compare refName                                 MagickCompareImage
-wandName CompareImage refName                            MagickCompareImage
+wandName compare refName                                 MagickCompareImages
+wandName CompareImages refName metric                    MagickCompareImages
    MagickWand refName
-   returns double {pixelMeanError normMeanError normMaxError}
+   string metricType =
+        "meanabsoluteerror",       "meansquarederror",    "peakabsoluteerror",
+        "peaksignaltonoiseratio",  "rootmeansquarederror",
+   returns double distortion
+
+wandName comparechannels chen refName                    MagickCompareImageChannels
+wandName CompareImageChannels refName chan metric        MagickCompareImageChannels
+   MagickWand refName
+   string channelType 
+       = "undefined", "red",   "cyan",   "green", "magenta",
+         "blue",      "yellow, "opacity, "black,  "matte",  "index"
+   string metricType =
+        "meanabsoluteerror",       "meansquarederror",    "peakabsoluteerror",
+        "peaksignaltonoiseratio",  "rootmeansquarederror",
+   returns double distortion
 
 wandName composite compWand opType ?x y?                 MagickCompositeImage
 wandName CompositeImage compWand opType ?x y?            MagickCompositeImage
@@ -127,7 +171,8 @@ wandName CompositeImage compWand opType ?x y?            MagickCompositeImage
          "displace",  "modulate",    "threshold",  "no", 
          "darken",    "lighten",     "hue",        "saturate",
          "colorize",  "luminize",    "screen",     "overlay",  
-         "copycyan",  "copymagenta", "copyyellow", "copyBlack"
+         "copycyan",  "copymagenta", "copyyellow", "copyblack",
+		 "replace"
    MagickWand compWand
    integer    x,y
              (default: x=y=0)
@@ -192,43 +237,269 @@ wandName FlipImage                                   MagickFlipImage
 wandName flop                                        MagickFlopImage
 wandName FlopImage                                   MagickFlopImage
 
-wandName filename ?name?                             MagickGet/SetFilename
-wandName GetFilename                                 MagickGetFilename
-wandName SetFilename name                            MagickSetFilename
-    string name
-
-wandName imagefilename ?name?                        MagickGet/SetImageFilename
-wandName GetImageFilename                            MagickGetImageFilename
-wandName SetImageFilename name                       MagickSetImageFilename
-    string name
-
 wandName frame framePix ?width? ?height? ?inner? ?outer?         MagickFrameImage
 wandName FrameImage framePix ?width? ?height? ?inner? ?outer?    MagickFrameImage
    PixelWand framePix
    integer   witdh,height,innerBevel,outerBevel
              (default: width=1, height=width, inner=0, outer=inner)
 
-wandName gamma ?level?                               MagickGammaImage
-wandName GammaImage ?level?                          MagickGammaImage
-   double level (default=1.0)
+wandname fxchannel fxWand channelType expr			 MagickFxImageChannel
+wandname fxImageChannel fxWand channelType expr		 MagickFxImageChannel
+	MagickWand fxWand
+    string channelType 
+       = "undefined", "red",   "cyan",   "green", "magenta",
+         "blue",      "yellow, "opacity, "black,  "matte",  "index"
+	string expr
+
+wandName gamma level								 MagickGammaImage
+wandName GammaImage level							 MagickGammaImage
+    double level
+
+wandName gammachannel channelType level				 MagickGammaImageChannel
+wandName GammaImageChannel channelType level		 MagickGammaImageChannel
+    string channelType 
+       = "undefined", "red",   "cyan",   "green", "magenta",
+         "blue",      "yellow, "opacity, "black,  "matte",  "index"
+    double level
+
+wandName filename ?name?                             MagickGet/SetFilename
+wandName GetFilename                                 MagickGetFilename
+wandName SetFilename name                            MagickSetFilename
+    string name
+
+wandName backgroundcolor ?pixel?                     MagickGet/SetBackgroundColor
+wandName GetBackgroundColor ?pixel?                  MagickGetImageBackgroundColor
+wandName SetBackgroundColor pixel                    MagickSetImageBackgroundColor
+    PixelWand pixel
+
+wandName blueprimary ?x y?                           MagickGet/SetBluePrimary
+wandName GetBluePrimary                              MagickGetBluePrimary
+wandName SetBluePrimary x y                          MagickSetBluePrimary
+
+wandName bordercolor ?pixel?                         MagickGet/SetBorderColor
+wandName GetBorderColor ?pixel?                      MagickGetImageBorderColor
+wandName SetBorderColor pixel                        MagickSetImageBorderColor
+    PixelWand pixel
+
+wandName channeldepth channelType depth				 MagickGet/SetImageChannelDepth
+wandName GetChannelDepth channelType			     MagickGetImageChannelDepth
+wandName SetChannelDepth channelType depth		     MagickSetImageChannelDepth
+    string channelType 
+       = "undefined", "red",   "cyan",   "green", "magenta",
+         "blue",      "yellow, "opacity, "black,  "matte",  "index"
+    int depth
+
+wandName channelextrema channelType 				MagickGetImageChannelExtrema
+wandName GetChannelExtrema channelType			    MagickGetImageChannelExtrema
+    string channelType 
+       = "undefined", "red",   "cyan",   "green", "magenta",
+         "blue",      "yellow, "opacity, "black,  "matte",  "index"
+   returns intList {min max}
+
+wandName channelmean channelType 					MagickGetImageChannelMean
+wandName GetChannelMean channelType			    MagickGetImageChannelMean
+    string channelType 
+       = "undefined", "red",   "cyan",   "green", "magenta",
+         "blue",      "yellow, "opacity, "black,  "matte",  "index"
+   returns doubleList {mean deviation}
+
+wandName colormapcolor index ?pixel?                 MagickGet/SetColormapColor
+wandName GetColormapColor index ?pixel?              MagickGetImageColormapColor
+wandName SetColormapColor index pixel                MagickSetImageColormapColor
+    int index
+    PixelWand pixel
+
+wandName colors                                      MagickGetImageColors
+wandName GetColors									 MagickGetImageColors
+
+wandName colorspace ?colorspaceType?				 MagickGet/SetImageColorspace
+wandName GetColorspace								 MagickGetImageColorspace
+wandName SetColorspace colorspaceType				 MagickSetImageColorspace
+    string colorspaceType (default="RGB")
+        ="undefined","RGB","GRAY","transparent","OHTA",
+         "LAB","XYZ","YCbCr","YCC","YIQ","YPbPr","YUV",
+		 "CMYK","sRGB","HSL","HWB"
+
+wandName compose ?opType?							 MagickGet/SetImageCompose
+wandName GetCompose									 MagickGetImageCompose
+wandName SetCompose opType							 MagickSetImageCompose
+   string opType 
+       = "undefined", "over",        "in",         "out",
+         "atop",      "xor",         "plus",       "minus",
+         "add",       "subtract",    "difference", "multiply",
+         "bumpmap",   "copy",        "copyred",    "copygreen", 
+         "copyblue",  "copyopacity", "clear",      "dissolve"
+         "displace",  "modulate",    "threshold",  "no", 
+         "darken",    "lighten",     "hue",        "saturate",
+         "colorize",  "luminize",    "screen",     "overlay",  
+         "copycyan",  "copymagenta", "copyyellow", "copyblack",
+		 "replace"
+
+wandName compression ?compressType?					 MagickGet/SetImageCompression
+wandName GetCompression								 MagickGetImageCompression
+wandName SetCompression compressType				 MagickSetImageCompression
+   string compressType 
+        "undefined", "none",   "bzip",
+        "fax",       "group4", "jpeg",
+        "jpeg-ls",   "lzw",    "rle",
+        "zip"
+
+wandName delay ?delay?								 MagickGet/SetImageDelay
+wandName GetDelay									 MagickGetImageDelay
+wandName SetDelay delay								 MagickSetImageDelay
+   int delay (1/100 sec)
+
+wandName depth ?depth?								 MagickGet/SetImageDepth
+wandName GetDepth									 MagickGetImageDepth
+wandName SetDepth depth								 MagickSetImageDepth
+   int depth (bits)
+
+wandName dispose ?disposeType?						 MagickGet/SetImageDispose
+wandName GetDispose									 MagickGetImageDispose
+wandName SetDispose disposeType						 MagickSetImageDispose
+   string disposeType 
+        "undefined","none","background","previous",
+
+wandName extrema									 MagickGetImageExtrema
+wandName GetExtrema 								 MagickGetImageExtrema
+   returns intList {min max}
+
+wandName format										 MagickGetImageFormat
+wandName GetFormat 									 MagickGetImageFormat
+   returns string format
+
+wandName gamma ?gamma?								 MagickGet/SetImageGamma
+wandName GetGamma									 MagickGetImageGamma
+wandName SetGamma gamma								 MagickSetImageGamma
+   double gamma
+
+wandName greenprimary ?x y?                          MagickGet/SetGreenPrimary
+wandName GetGreenPrimary                             MagickGetGreenPrimary
+wandName SetGreenPrimary x y                         MagickSetGreenPrimary
+
+wandName heigth										 MagickGetImageHeight
+wandName GetHeight 									 MagickGetImageHeight
+   returns int height
+
+wandName index ?index?								 MagickGet/SetImageIndex
+wandName GetIndex									 MagickGetImageIndex
+wandName SetIndex index								 MagickSetImageIndex
+   int index
+
+wandName interlace ?interlaceType?					 MagickGet/SetImageInterlaceScheme
+wandName GetInterlaceScheme							 MagickGetImageInterlaceScheme
+wandName SetInterlaceScheme interlaceType			 MagickSetImageInterlaceScheme
+   string interlaceType 
+       "undefined","none","line","plane","partition"
+
+wandName iterations ?num?							 MagickGet/SetImageIterations
+wandName GetIterations								 MagickGetImageIterations
+wandName SetIterations num							 MagickSetImageIterations
+   int num
+
+wandName mattecolor ?pixel?                         MagickGet/SetMatteColor
+wandName GetMatteColor ?pixel?                      MagickGetImageMatteColor
+wandName SetMatteColor pixel                        MagickSetImageMatteColor
+    PixelWand pixel
+
+wandName imagefilename ?name?                        MagickGet/SetImageFilename
+wandName GetImageFilename                            MagickGetImageFilename
+wandName SetImageFilename name                       MagickSetImageFilename
+    string name
 
 wandName pixels x0 y0 cols rows map storageType ?data?   MagickGet/SetImagePixels
-wandName GetImagePixels x0 .. storageType            MagickGetImagePixels
-wandName SetImagePixels x0 .. storageType data       MagickSetImagePixels
-    storageType = "char", "short", "integer", 
-                  "long", "float", "double"
+wandName GetPixels x0 .. storageType				 MagickGetImagePixels
+wandName SetPixels x0 .. storageType data			 MagickSetImagePixels
+    storageType = 
+		"char", "short", "integer", 
+        "long", "float", "double"
+
+wandName profile name ?profile?                      Magick(Get)ImageProfile
+wandName GetProfile	name                             MagickGetImageProfile
+wandName SetProfile name profile                     MagickImageProfile
+    string name="*","icc","icm","cptc","8bim",genericProfiles
+    binary profile
+
+wandName redprimary ?x y?                            MagickGet/SetRedPrimary
+wandName GetRedPrimary                               MagickGetRedPrimary
+wandName SetRedPrimary x y                           MagickSetRedPrimary
+
+wandName rendering ?renderType?						 MagickGet/SetImageRenderingIntent
+wandName GetRenderingIntent							 MagickGetImageRenderingIntent
+wandName SetRenderingIntent renderType				 MagickSetImageRenderingIntent
+   string renderType =
+        "undefined","saturation","perceptual",
+		"absolute","relative",
+
+wandName scene ?num?								 MagickGet/SetImageScene
+wandName GetScene									 MagickGetImageScene
+wandName SetScene num								 MagickSetImageScene
+   int num
+
+wandName imagesize									 MagickGetImageSize
+wandName GetImageSize								 MagickGetImageSize
+	returns wideInt size
 
 wandName signature                                   MagickGetImageSignature
-wandName GetImageSignature                           MagickGetImageSignature
+wandName GetSignature							     MagickGetImageSignature
     returns string signature
+
+wandName imagetype ?type?							 MagickGet/SetImageType
+wandName GetImageType								 MagickGetImageType
+wandName SetImageType type							 MagickSetImageType
+   string type 
+       "undefined","bilevel","grayscale",
+       "grayscalematte","palette","palettematte",
+       "truecolor","truecolormatte","colorseparation",
+       "colorseparationmatte","optimize"
+
+wandName imageunits ?unitType?						 MagickGet/SetImageUnits
+wandName GetImageUnits								 MagickGetImageUnits
+wandName SetImageUnits unitType						 MagickSetImageUnits
+   string unitType 
+       "undefined", "ppi", "ppcm",
+
+wandName virtualpixelmethod ?methodType?			 MagickGet/SetImageVirtualPixelMethod
+wandName GetVirtualPixelMethod						 MagickGetImageVirtualPixelMethod
+wandName SetVirtualPixelMethod methodType			 MagickSetImageVirtualPixelMethod
+   string methodType 
+	   "undefined", "constant", "edge",
+       "mirror",    "tile"
+
+wandName whitepoint ?x y?                            MagickGet/SetWhitePoint
+wandName GetWhitePoint                               MagickGetWhitePoint
+wandName SetWhitePoint x y                           MagickSetWhitePoint
+
+wandName width										 MagickGetImageWidth
+wandName GetWidth 									 MagickGetImageWidth
+   returns int width
+
+wandName xresolution								 MagickGetImageXResolution
+wandName GetXResolution 							 MagickGetImageXResolution
+   returns double resolution
+
+wandName yresolution								 MagickGetImageYResolution
+wandName GetYResolution 							 MagickGetImageYResolution
+   returns double resolution
 
 wandName number                                      MagickGetNumberOfImages
 wandName GetNumberOfImages                           MagickGetNumberOfImages
+
+wandName samplingfactors ?factors?                   MagickGet/SetSamplingFactors
+wandName GetSamplingFactors                          MagickGetSamplingFactors
+wandName SetSamplingFactors factors                  MagickSetSamplingFactors
+	doubleList factors
 
 wandName size ?x y?                                  MagickGet/SetSize
 wandName GetSize                                     MagickGetSize
 wandName SetSize x y                                 MagickSetSize
     int x,y
+
+wandName hasnext									 MagickHasNextImage
+wandName HasNextImage								 MagickHasNextImage
+
+wandName hasprevious								 MagickHasPreviousImage
+wandName HasPreviousImage							 MagickHasPreviousImage
 
 wandName implode ?amount?                            MagickImplodeImage
 wandName ImplodeImage ?amount?                       MagickImplodeImage
@@ -240,6 +511,14 @@ wandName LabelImage str                              MagickLabelImage
 
 wandName level ?black? ?gamma? ?white?               MagickLevelImage
 wandName LevelImage ?black? ?gamma? ?white?          MagickLevelImage
+    double black,gamma,white
+          (default: black=0.0, gama=1.0, white=MaxRGB)
+
+wandName levelchannel channelType ?black? ?gamma? ?white?		MagickLevelImageChannel
+wandName LevelImageChannel channelType ?black? ?gamma? ?white?  MagickLevelImageChannel
+    string channelType 
+       = "undefined", "red",   "cyan",   "green", "magenta",
+         "blue",      "yellow, "opacity, "black,  "matte",  "index"
     double black,gamma,white
           (default: black=0.0, gama=1.0, white=MaxRGB)
 
@@ -273,6 +552,22 @@ wandName modulate ?brightness? ?saturation? ?hue?       MagickModulateImage
 wandName ModulateImage ?brightness? ?saturation? ?hue?  MagickModulateImage
    double brightness,saturation,hue (default=0.0)
 
+wandName montage draw tileGeom thumbGeom mode frameGeom ?newName?		MagickMontageImage
+wandName MontageImage draw tileGeom thumbGeom mode frameGeom ?newName?	MagickMontageImage
+	DrawingWand draw
+	string tileGeom, thumbGeom, frameGeom
+	string mode
+		= "frame", "unframe", "concatenate"
+
+wandName morph num ?newName?						 MagickMorphImages
+wandName MorphImages num ?newName?		             MagickMorphImages
+   integer num
+   string newName
+
+wandName mosaic ?newName?							 MagickMosaicImages
+wandName MosaicImages ?newName?						 MagickMosaicImages
+   string newName
+
 wandName motionblur ?radius? ?sigma? ?angle?         MagickMotionBlurImage
 wandName MotionBlurImage ?radius? ?sigma? ?angle?    MagickMotionBlurImage
    double radius,sigma,angle (default=0.0)
@@ -298,10 +593,26 @@ wandName OpaqueImage targetPix fillPix ?fuzz?        MagickOpaqueImage
     PixelWand targetPix,fillPix
     double fuzz (default=0.0)
 
-wandName profile name ?profile length?               MagickProfileImage
-wandName ProfileImage name ?profile?                 MagickProfileImage
-    string name="*","icc","icm","cptc","8bim",genericProfiles
-    binary profile
+wandName ping filename                               MagickPingImage
+wandName PingImage filename                          MagickPingImage
+    string filename
+
+wandName preview previewType ?newName?				 MagickPreviewImages
+wandName PreviewImages previewType ?newName?         MagickPreviewImages
+   integer previewType
+        "undefined", "rotate",      "shear",      "roll",
+        "hue",       "saturation",  "brightness", "gamma",
+        "spiff",     "dull",        "grayscale",  "quantize",
+        "despeckle", "reducenoise", "addnoise",   "sharpen",
+        "blur",      "threshold",   "edgedetect", "spread",
+        "solarize",  "shade",       "raise",      "segment",
+        "swirl",     "implode",     "wave",       "oilpaint",
+        "charcoal",  "jpeg",
+   string newName
+
+wandName previous ?offset=1?                         MagickPreviousImage
+wandName PreviousImage ?offset=1?                    MagickPreviousImage
+    int offset
 
                                                      MagickQuantizeImage
 wandName quantize numColors ?colorspaceType? ?treedepth? ?dither? ?measureError?
@@ -311,18 +622,16 @@ wandName QuantizeImages numColors colorspaceType treedepth dither measureError
     int numColors
     string colorspaceType (default="RGB")
         ="undefined","RGB","GRAY","transparent","OHTA",
-         "XYZ","YCbCr","YCC","YIQ","YPbPr","YUV","CMYK",
-         "sRGB","HSL","HWB"
+         "LAB","XYZ","YCbCr","YCC","YIQ","YPbPr","YUV",
+		 "CMYK","sRGB","HSL","HWB"
     int treedepth
     bool dither, measureError (default=no)
 
-wandName previous ?offset=1?                         MagickPreviousImage
-wandName PreviousImage ?offset=1?                    MagickPreviousImage
-    int offset
-
-wandName seek position                               MagickSetImage
-wandName SetImage position                           MagickSetImage
-    int position
+wandName queryfontmetrics draw text					 MagickQueryFontMetrics
+wandName QueryFontMetrics draw text					 MagickQueryFontMetrics
+	DrawingWand draw
+	string text
+    returns intList(7)
 
 wandName raise width height ?x y? ?raise?            MagickRaiseImage
 wandName RaiseImage width height ?x y? ?raise?       MagickRaiseImage
@@ -330,10 +639,13 @@ wandName RaiseImage width height ?x y? ?raise?       MagickRaiseImage
     int x,y (default=0)
     bool raise (default=no)
 
-
 wandName read filename                               MagickReadImage
 wandName ReadImage filename                          MagickReadImage
     string filename
+
+wandName readblob data                               MagickReadImageBlob
+wandName ReadImageBlob data                          MagickReadImageBlob
+    binary data
 
 wandName reducenoise ?radius?                        MagickReduceNoiseImage
 wandName ReduceNoiseImage ?radius?                   MagickReduceNoiseImage
@@ -342,6 +654,9 @@ wandName ReduceNoiseImage ?radius?                   MagickReduceNoiseImage
 
 wandName remove                                      MagickRemoveImage
 wandName RemoveImage                                 MagickRemoveImage
+
+wandName resetiterator                               MagickResetIterator
+wandName ResetIterator                               MagickResetIterator
 
 wandName resample xRes ?yRes? ?filterType? ?blur?       MagickResampleImage
 wandName ResampleImage xRes ?yRes? ?filterType? ?blur?  MagickResampleImage
@@ -378,9 +693,21 @@ wandName scale x y                                   MagickScaleImage
 wandName ScaleImage x y                              MagickScaleImage
     int x,y
 
-wandName fuzzycolor distance                         MagickSetFuzzyColorDistance
-wandName SetFuzzyColorDistance distance              MagickSetFuzzyColorDistance
-    double distance    
+wandName setimage name                               MagickSetImage
+wandName SetImage name                               MagickSetImage
+    MagickWand name
+
+wandName setoption format options                    MagickSetImageOption
+wandName SetOption format options                    MagickSetImageOption
+    string format, options
+
+wandName resolution x y                              MagickSetImageResolution
+wandName SetResolution x y                            MagickSetImageResolution
+    int x,y
+
+wandName passphrase phrase							 MagickSetPassphrase
+wandName SetPassphrase phrase						 MagickSetPassphrase
+    string phrase
 
 wandName sharpen ?radius? ?sigma?                    MagickSharpenImage
 wandName SharpenImage ?radius? ?sigma?               MagickSharpenImage
@@ -431,6 +758,22 @@ wandName threshold threshold                         MagickThresholdImage
 wandName ThresholdImage threshold                    MagickThresholdImage
     double threshold
 
+wandName thresholdchannel channelType threshold      MagickThresholdImage
+wandName ThresholdImageChannel channelType threshold MagickThresholdImage
+   string channelType 
+       = "undefined", "red",   "cyan",   "green", "magenta",
+         "blue",      "yellow, "opacity, "black,  "matte",  "index"
+    double threshold
+
+wandName tint tintPixel opacityPixel                 MagickTintImage
+wandName TintImage tintPixel opacityPixel            MagickTintImage
+   PixelWand tintPixel, opacityPixel
+
+wandName transform crop geometry ?newName?           MagickTransformImage
+wandName TransformImage crop geometry ?newName?      MagickTransformImage
+    string crop, geometry
+    string newName
+
 wandName transparent targetPix ?opacity? ?fuzz?      MagickTransparentImage
 wandName TransparentImage targetPix ?opacity? ?fuzz? MagickTransparentImage
     PixelWand targetPix
@@ -463,9 +806,14 @@ wandName WriteImages filename ?adjoin?               MagickWriteImages
 
 
 Not implemented API's:
-     MagickAnimateImages
-     MagickDisplayImage
-     MagickDisplayImages
+     MagickAnimateImages		# depends on X
+     MagickDisplayImage			# depends on X
+     MagickDisplayImages		# depends on X
+
+	 MagickGetImageHistogram	# returns array of PixelWand objects ???
+	 MagickReadImageFile		# Should be implemented via TclChannel
+	 MagickWriteImageFile		# Should be implemented via TclChannel
+
 
 ############################################################################
 
@@ -504,6 +852,10 @@ pixelName SetOpacityQuantum val                  PixelSetOpacityQuantum
 pixelName SetColor name                          PixelSetColor
 pixelName GetColor                               PixelGetColorAsString
 pixelName GetColorAsString                       PixelGetColorAsString
+
+pixelName quantumcolor ?{r g b o}?				 Get/SetSetQuantumColor
+pixelName GetQuantumColor                        GetQuantumColor
+pixelName SetQuantumColor {r g b o}              SetQuantumColor
 
 ############################################################################
 
@@ -553,9 +905,12 @@ drawName comment text                            DrawComment
 drawName ellipse ox oy rx ry start end           DrawEllipse
 drawName Ellipse ox oy rx ry start end           DrawEllipse
  
-drawName fillcolor get|set pixel                 DrawGet/SetFillColor
-drawName GetFillColor pixel                      DrawGetFillColor
-drawName SetFillColor pixel						 DrawSetFillColor
+drawName fillcolor                               DrawGetFillColor
+drawName fillcolor string                        DrawSetFillColorString
+drawName fillcolor red green blue opacity        DrawSetFillColor
+drawName GetFillColor                            DrawGetFillColor
+drawName SetFillColor red green blue opacity     DrawSetFillColor
+drawName SetFillColorString color                DrawSetFillColorString
 
 drawName fillopacity                             DrawGetFillOpacity
 drawName fillopacity value                       DrawSetFillOpacity
@@ -683,9 +1038,12 @@ drawName SkewX degrees                           DrawSkewX
 drawName skewy degrees                           DrawSkewY
 drawName SkewY degrees                           DrawSkewY
 
-drawName strokecolor get|set pixel               DrawGet/SetStrokeColor
-drawName GetStrokeColor pixel                    DrawGetStrokeColor
-drawName SetStrokeColor pixel                    DrawSetStrokeColor
+drawName strokecolor                             DrawGetStrokeColor
+drawName strokecolor string                      DrawSetStrokeColorString
+drawName strokecolor red green blue opacity      DrawSetStrokeColor
+drawName GetStrokeColor                          DrawGetStrokeColor
+drawName SetStrokeColor red green blue opacity   DrawSetStrokeColor
+drawName SetStrokeColorString color              DrawSetStrokeColorString
 
 drawName strokeantialias                         DrawGetStrokeAntialias
 drawName strokeantialias flag                    DrawSetStrokeAntialias
@@ -746,9 +1104,12 @@ drawName textencoding string                     DrawSetTextEncoding
 drawName GetTextEncoding                         DrawGetTextEncoding
 drawName SetTextEncoding string                  DrawSetTextEncoding
 
-drawName textundercolor get|set pixel            DrawGet/SetTextUnderColor
-drawName GetTextUnderColor pixel                 DrawGetTextUnderColor
-drawName SetTextUnderColor pixel                 DrawSetTextUnderColor
+drawName textundercolor                          DrawGetTextUnderColor
+drawName textundercolor string                   DrawStTextUnderColorString
+drawName textundercolor red green blue opacity   DrawSetTextUnderColor
+drawName GetTextUnderColor                       DrawGetTextUnderColor
+drawName SetTextUnderColorString string          DrawStTextUnderColorString
+drawName SetTextUnderColor red green blue opacity DrawSetTextUnderColor
 
 drawName translate x y                           DrawTranslate
 drawName Translate x y                           DrawTranslate

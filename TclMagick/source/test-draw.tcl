@@ -60,50 +60,62 @@ proc DrawTest {img} {
     set draw [magick create draw draw0]
     debug $draw $wand
     
+    [magick create pixel pix0] SetColor "lightblue"
+    [magick create pixel pix1] SetColor "blue"
+    [magick create pixel pix2] SetColor "red"
+    [magick create pixel pix3] SetColor "yellow"
+    [magick create pixel pix4] SetColor "brown"
+    [magick create pixel pix5] SetColor "lightgreen"
+    [magick create pixel pix6] SetColor "green"
+    [magick create pixel pix7] SetColor "lightgray"
+    [magick create pixel pix8] SetColor "black"
+
     $draw PushGraphicContext
         $draw SetStrokeWidth 1.0
-        $draw SetStrokeColorString "blue"
-        $draw SetFillColorString "blue"
+        $draw SetStrokeColor pix1
+        $draw SetFillColor pix1
         $draw SetFontSize 24
         $draw Annotation 5 30 "Created by TclMagick:"
     $draw PopGraphicContext
     $draw PushGraphicContext
         $draw SetStrokeWidth 1.0
-        $draw SetStrokeColorString "red"
-        $draw SetFillColorString "red"
+        $draw SetStrokeColor pix8
+        $draw SetFillColor pix2
         $draw Arc 50 50 100 100 45 -45
     $draw PopGraphicContext
     $draw PushGraphicContext
         $draw SetStrokeWidth 1.0
-        $draw SetStrokeColorString "blue"
-        $draw SetFillColorString "yellow"
+        $draw SetStrokeColor pix1
+        $draw SetFillColor pix3
         $draw Bezier 110 110 140 10 170 120 150 150 110 110
     $draw PopGraphicContext
     $draw PushGraphicContext
         $draw SetStrokeWidth 1.0
-        $draw SetStrokeColorString "brown"
-        $draw SetFillColorString "lightgray"
+        $draw SetStrokeColor pix4
+        $draw SetFillColor pix7
         $draw Circle 100 200 50 200
     $draw PopGraphicContext
     $draw PushGraphicContext
-        $draw SetStrokeColorString "black"
-        $draw SetFillColorString "lightgreen"
+        $draw SetStrokeColor pix8
+        $draw SetFillColor pix6
         $draw SetFillOpacity 0.7
         $draw Ellipse 250 100 50 25 0 360
     $draw PopGraphicContext
     $draw PushGraphicContext
         $draw SetStrokeWidth 1.0
-        $draw SetStrokeColorString "green"
+        $draw SetStrokeColor pix2
+        $draw SetFillColor pix2
         $draw Point 200 200
     $draw PopGraphicContext
     $draw PushGraphicContext
-        $draw SetFillColorString "lightblue"
+        $draw SetFillColor pix0
         $draw Color 0 0 replace
     $draw PopGraphicContext
     
     $wand DrawImage $draw
     $wand WriteImage "$::TMP/y-Draw-%0d.bmp"
     
+    magick delete pix0 pix1 pix2 pix3 pix4 pix5 pix6 pix7 pix8 
     magick delete $draw $wand
 }
 
@@ -111,10 +123,11 @@ proc DrawTest {img} {
 # 
 #
 proc DLR_logo {draw color x y scale} {
+
     $draw PushGraphicContext
     
-    $draw SetStrokeColorString $color
-    $draw SetFillColorString $color
+    $draw SetStrokeColor $color
+    $draw SetFillColor $color
     $draw SetStrokeWidth 0.0
 
     $draw Scale $scale
@@ -187,16 +200,18 @@ proc DLR_logo {draw color x y scale} {
             finish
         }
     }
-    $draw PopGraphicContext
-    
+    $draw PopGraphicContext    
 }
 proc PathTest {img} {
-    set wand [$img CloneWand imgX]
+    set wand [$img Clone imgX]
     set draw [magick create draw draw0]
     debug $draw $wand
     
-    DLR_logo $draw "lightgray" 0 2 4
-    DLR_logo $draw "black" 1 1.5 4
+    [magick create pixel pix0] SetColor "gray"
+    [magick create pixel pix1] SetColor "black"
+
+    DLR_logo $draw pix0 0 2 4
+    DLR_logo $draw pix1 1 1.5 4
 
     $wand DrawImage $draw
     $wand WriteImage "$::TMP/y-Path-%0d.bmp"
@@ -209,6 +224,10 @@ proc PathTest {img} {
 #
 
 debug magick
+
+if { ! [file isdirectory $TMP]} {
+    file mkdir $TMP
+}
 
 set img [magick create wand img0]
 debug $img
@@ -232,6 +251,7 @@ foreach {func var flag} $TestFunctions {
     }
 }
 
+puts "##### DRAW TEST READY #####"
 if {!$ERRORS} {
     after 3000 exit
 }

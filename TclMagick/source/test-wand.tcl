@@ -12,6 +12,8 @@
 #
 if {[file exists ../debug/tclMagick.dll]} {
     load ../debug/tclMagick.dll
+} else {
+
 }
 package require TclMagick
 puts [info script]
@@ -42,7 +44,7 @@ set TestFunctions {
     ColorFloodfillImage         img     1
     ColorizeImage               img     1
     CommentImage                img     1
-    CompareImage                img     1
+    CompareImages               img     1
     CompositeImage              img     1
     ContrastImage               img     1
     ConvolveImage               img     1
@@ -60,50 +62,49 @@ set TestFunctions {
     FlopImage                   img     1
     FrameImage                  img     1
     Filename                    img     1
-    GammaImage			img	1
-    GetImageSignature		img	1
-    ImplodeImage		img	1
-    LabelImage 			img	1
-    LevelImage 			img	1
-    MagnifyImage		img	1
-    MapImage 			img	1
-    MatteFloodfillImage 	img	1
-    MedianFilterImage 		img	1
-    MinifyImage			img	1
-    ModulateImage 		img	1
-    MotionBlurImage 		img	1
-    NegateImage 		img	1
-    NormalizeImage		img	1
-    OilPaintImage 		img	1
-    OpaqueImage 		img	1
-    ProfileImage		img	1
-    QuantizeImage 		img	1
-    RaiseImage 			img	1
-    ReduceNoiseImage 		img	1
-    ResampleImage		img	1
+    GammaImage                  img     1
+    GetSignature                img     1
+    ImplodeImage                img     1
+    LabelImage                  img     1
+    LevelImage                  img     1
+    MagnifyImage                img     1
+    MapImage                    img     1
+    MatteFloodfillImage         img     1
+    MedianFilterImage           img     1
+    MinifyImage                 img     1
+    ModulateImage               img     1
+    MotionBlurImage             img     1
+    NegateImage                 img     1
+    NormalizeImage              img     1
+    OilPaintImage               img     1
+    OpaqueImage                 img     1
+    SetProfile                  img     1
+    QuantizeImage               img     1
+    RaiseImage                  img     1
+    ReduceNoiseImage            img     1
+    ResampleImage               img     1
     ResizeImage                 img     1
-    RollImage 			img	1
+    RollImage                   img     1
     RotateImage                 img     1
-    SampleImage 		img	1
-    SetFuzzyColorDistance       img     1
-    ScaleImage 			img	1
-    SharpenImage 		img	1
-    ShaveImage 			img	1
-    ShearImage 			img	1
+    SampleImage                 img     1
+    ScaleImage                  img     1
+    SharpenImage                img     1
+    ShaveImage                  img     1
+    ShearImage                  img     1
     Size                        img     1
-    SolarizeImage		img	1
-    SpreadImage 		img	1
-    SteganoImage		img	1
-    StereoImage 		img	1
-    StripImage			img	1
-    SwirlImage 			img	1
-    TextureImage		img	1
-    ThresholdImage		img	1
-    TransparentImage		img	1
-    TrimImage 			img	1
-    UnsharpMaskImage		img	1
-    WaveImage 			img	1
-    WhiteThresholdImage 	img	1
+    SolarizeImage               img     1
+    SpreadImage                 img     1
+    SteganoImage                img     1
+    StereoImage                 img     1
+    StripImage                  img     1
+    SwirlImage                  img     1
+    TextureImage                img     1
+    ThresholdImage              img     1
+    TransparentImage            img     1
+    TrimImage                   img     1
+    UnsharpMaskImage            img     1
+    WaveImage                   img     1
+    WhiteThresholdImage         img     1
 
     Pixels                      img     1
     SequenceTest                seq     1
@@ -245,8 +246,8 @@ proc ColorFloodfillImage {img} {
     set border [magick create pixel]
     debug $wand $fill $border
     
-    $fill color 50%,0,0
-    $border color 0,0,50%
+    $fill color rgb(50%,0,0)
+    $border color rgb(0,0,50%)
     $wand ColorFloodfillImage $fill 1.0 $border 100 100
     
     $wand WriteImage "$::TMP/x-ColorFloodfill.jpg"
@@ -258,8 +259,8 @@ proc ColorizeImage {img} {
     set opacity [magick create pixel]
     debug $wand $fill $opacity
     
-    $fill color 70%,0,0
-    $opacity SetColor 0,0,0,0
+    $fill color rgb(70%,0,0)
+    $opacity SetColor rgb(0,0,0)
     $wand ColorizeImage $fill $opacity
     
     $wand WriteImage "$::TMP/x-Colorize.jpg"
@@ -272,12 +273,12 @@ proc CommentImage {img} {
     $wand WriteImage "$::TMP/x-Comment.jpg"
     magick delete $wand
 }
-proc CompareImage {img} {
+proc CompareImages {img} {
     set wand [$img clone imgX]
     debug $wand
-    $wand CompareImage $img
+    $wand CompareImages $img peakabsoluteerror
     $wand BlurImage 1.0 1.0
-    $wand CompareImage $img
+    $wand CompareImages $img meansquarederror
     magick delete $wand
 }
 proc CompositeImage {img} {
@@ -285,9 +286,9 @@ proc CompositeImage {img} {
     set bg [magick create pixel]
     debug $wand $bg 
     
-    $bg SetColor 50%,50%,50%
+    $bg SetColor rgb(50%,50%,50%)
     $wand rotate $bg 90
-    $wand CompositeImage add $img 0 0
+    $wand CompositeImage $img add 0 0
     $wand WriteImage "$::TMP/x-Composite.jpg"
 
     magick delete $wand $bg
@@ -338,28 +339,32 @@ proc DrawImage {img} {
     set draw [magick create draw]
     debug $wand $draw
    
+    [magick create pixel whitePix] SetColor "white"
+    [magick create pixel bluePix]  SetColor "blue"
+    [magick create pixel redPix]   SetColor "red"
+    
     $draw push graph
-	$draw Rotate -45    
-	$draw push graph
-	    $draw SetStrokeWidth 2
-	    $draw SetFillColorString "white"
-	    $draw SetStrokeColorString "blue"
-	    $draw Rectangle -200 280 +90 310
-	$draw pop graph
+        $draw Rotate -45    
+        $draw push graph
+            $draw SetStrokeWidth 2
+            $draw SetFillColor whitePix
+            $draw SetStrokeColor bluePix
+            $draw Rectangle -200 280 +90 310
+        $draw pop graph
 
-	$draw push graph
-	    $draw SetStrokeWidth 0.5
-	    $draw SetStrokeColorString "blue"
-	    $draw SetFillColorString "blue"
-	    $draw SetFontSize 18
-	    $draw Annotation -197 300 "Tcl/Tk + ImageMagick = TclMagick"
-	$draw pop graph
+        $draw push graph
+            $draw SetStrokeWidth 0.5
+            $draw SetStrokeColor bluePix
+            $draw SetFillColor bluePix
+            $draw SetFontSize 18
+            $draw Annotation -197 300 "Tcl/Tk + ImageMagick = TclMagick"
+        $draw pop graph
     $draw pop graph
 
     $draw push graph
         $draw SetStrokeWidth 0.5
-        $draw SetStrokeColorString "blue"
-        $draw SetFillColorString "blue"
+        $draw SetStrokeColor redPix
+        $draw SetFillColor redPix
         $draw SetFontSize 14
         $draw Annotation 10 400 "Image %wx%h (%xx%y dpi) format=%m size=%b"
     $draw pop graph
@@ -444,20 +449,17 @@ proc Filename {img} {
 }
 proc GammaImage {img} {
     set wand [$img clone imgX]
-    set pix [magick create pixel]
-    debug $wand $pix
+    debug $wand
     
-    $pix set red 0.5 green 0.5 blue 0.5
-    $pix GetColor 
-    $wand GammaImage $pix
+    $wand GammaImage 2.0
     
     $wand WriteImage "$::TMP/x-Gamma.jpg"
-    magick delete $pix $wand
+    magick delete $wand
 }
-proc GetImageSignature {img} {
+proc GetSignature {img} {
     set wand [$img clone imgX]
     debug $wand
-    $wand GetImageSignature
+    $wand GetSignature
     magick delete $wand
 }
 proc ImplodeImage {img} {
@@ -564,17 +566,17 @@ proc OpaqueImage {img} {
     set pix2 [magick create pixel]
     debug $wand $pix1 $pix2
 
-    $pix1 color 1,1,1
-    $pix2 color 0,1,1
+    $pix1 color rgb(100%,100%,100%)
+    $pix2 color rgb(0,100%,100%)
     $wand OpaqueImage $pix1 $pix2 10
     $wand WriteImage "$::TMP/x-Opaque-%0d.gif"
     
     magick delete $wand $pix1 $pix2
 }
-proc ProfileImage {img} {
+proc SetProfile {img} {
     set wand [$img clone imgX]
     debug $wand
-    $wand ProfileImage ICC HALLO
+    $wand SetProfile ICC HALLO
     $wand WriteImage "$::TMP/x-Profile.jpg"
     magick delete $wand 
 }
@@ -628,7 +630,7 @@ proc RotateImage {img} {
     set bg [magick create pixel]
     debug $wand $bg 
     
-    $bg color 0.5,0,5,0.5
+    $bg color rgb(50%,50%,50%)
     $wand RotateImage $bg -45
     $wand WriteImage "$::TMP/x-Rotate.jpg"
 
@@ -647,14 +649,6 @@ proc ScaleImage {img} {
     $wand ScaleImage 300 200
     $wand WriteImage "$::TMP/x-Scale.jpg"
     magick delete $wand 
-}
-proc SetFuzzyColorDistance {img} {
-    set wand [$img clone imgX]
-    debug $wand
-    
-    $wand SetFuzzyColorDistance 10
-    $wand WriteImage "$::TMP/x-SetFuzzy.jpg"
-    magick delete $wand
 }
 proc SharpenImage {img} {
     set wand [$img clone imgX]
@@ -675,7 +669,7 @@ proc ShearImage {img} {
     set pix [magick create pixel]
     debug $wand $pix
     
-    $pix color 0.5,0.5,0.5
+    $pix color rgb(50%,50%,50%)
     $wand ShearImage $pix 30 20
     $wand WriteImage "$::TMP/x-Shear.jpg"
     magick delete $wand $pix
@@ -766,7 +760,7 @@ proc TransparentImage {img} {
     set pix [magick create pixel]
     debug $wand $pix
     
-    $pix color 0,0,1
+    $pix color "blue"
     $wand TransparentImage $pix 40000 100
     $wand WriteImage "$::TMP/x-Transparent-%0d.gif"
 
@@ -798,7 +792,7 @@ proc WhiteThresholdImage {img} {
     set pix [magick create pixel]
     debug $wand $pix
     
-    $pix color 1,1,1
+    $pix color "white"
     $wand WhiteThresholdImage $pix
     $wand WriteImage "$::TMP/x-WhiteThreshold.jpg"
 
@@ -821,14 +815,14 @@ proc Pixels {img} {
     }
     set pix1 [binary format c* $pixelList]
 
-    $wand SetImagePixels 0 0 3 3 "RGB" char $pix1
-    set pix2 [$wand GetImagePixels 0 0 3 3 "RGB" char]
+    $wand SetPixels 0 0 3 3 "RGB" char $pix1
+    set pix2 [$wand GetPixels 0 0 3 3 "RGB" char]
     if {! [string equal $pix1 $pix2]} {
         error "Get pixels do not match set pixels"
     }
-    set data [$wand GetImagePixels 10 5 10 5 "RGB" char]
+    set data [$wand GetPixels 10 5 10 5 "RGB" char]
     puts [format "image pixels: %d bytes, expected: %d bytes" [string length $data] 150]
-    $wand SetImagePixels 10 5 10 5 "RGB" char [binary format x150]
+    $wand SetPixels 10 5 10 5 "RGB" char [binary format x150]
 
     $wand WriteImage "$::TMP/x-Pixels.jpg"
     magick delete $wand
@@ -847,19 +841,19 @@ proc SequenceTest {seq} {
     }
     $wand WriteImages "$::TMP/y-seq0.gif" 1
 
-    $wand SetImage 3
+    $wand SetIndex 3
     $wand WriteImage "$::TMP/y-seq-Extract-%0d.gif"
 
-    $wand SetImage 0
+    $wand SetIndex 0
     $wand RemoveImage
 
     set new [$wand DeconstructImages]
     $new WriteImages "$::TMP/y-seq-Deconstruct.gif"
     magick delete $new
     
-    $wand SetImage 1
+    $wand SetIndex 1
     $wand ResizeImage 40 20
-    $wand SetImage 3
+    $wand SetIndex 3
     $wand ResizeImage 40 40
     $wand WriteImages "$::TMP/y-seq1.gif"
 
