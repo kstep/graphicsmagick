@@ -168,9 +168,7 @@ MagickExport unsigned int GetDelegateInfo(const char *decode_tag,
     *delegates;
 
   assert(delegate_info != (DelegateInfo *) NULL);
-  AcquireSemaphore(&delegate_semaphore);
   delegates=SetDelegateInfo((DelegateInfo *) NULL);
-  LiberateSemaphore(&delegate_semaphore);
   if (delegates == (DelegateInfo *) NULL)
     MagickWarning(DelegateWarning,"no delegates configuration file found",
       DelegateFilename);
@@ -538,9 +536,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  AcquireSemaphore(&delegate_semaphore);
   delegates=SetDelegateInfo((DelegateInfo *) NULL);
-  LiberateSemaphore(&delegate_semaphore);
   if (delegates == (DelegateInfo *) NULL)
     {
       MagickWarning(DelegateWarning,"no delegates configuration file found",
@@ -734,7 +730,8 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   register DelegateInfo
     *p;
 
-  if (delegate_info == (DelegateInfo *) NULL)
+  if ((delegates == (DelegateInfo *) NULL) &&
+      (delegate_info == (DelegateInfo *) NULL))
     {
       /*
         Read delegate configuration file.
@@ -743,6 +740,8 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
       atexit(DestroyDelegateInfo);
       return(delegates);
     }
+  if (delegate_info == (DelegateInfo *) NULL)
+    return(delegates);
   /*
     Initialize new delegate.
   */
@@ -767,6 +766,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   delegate->signature=MagickSignature;
   delegate->previous=(DelegateInfo *) NULL;
   delegate->next=(DelegateInfo *) NULL;
+  AcquireSemaphore(&delegate_semaphore);
   if (delegates == (DelegateInfo *) NULL)
     {
       delegates=delegate;
@@ -785,6 +785,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
         LiberateMemory((void **) &p->commands);
         p->commands=delegate->commands;
         LiberateMemory((void **) &delegate);
+        LiberateSemaphore(&delegate_semaphore);
         return(delegates);
       }
     if (p->next == (DelegateInfo *) NULL)
@@ -795,5 +796,6 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   */
   delegate->previous=p;
   p->next=delegate;
+  LiberateSemaphore(&delegate_semaphore);
   return(delegates);
 }
