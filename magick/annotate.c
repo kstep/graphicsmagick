@@ -943,31 +943,44 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
 static int TraceCubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
   DrawInfo *draw_info)
 {
+  AffineMatrix
+    affine;
+
   char
     path[MaxTextExtent];
 
-  FormatString(path,"C%g,%g %g,%g %g,%g",(p->x/64.0),(-p->y/64.0),(q->x/64.0),
-    (-q->y/64.0),(to->x/64.0),(-to->y/64.0));
+  affine=draw_info->affine;
+  FormatString(path,"C%g,%g %g,%g %g,%g",affine.tx+(p->x/64.0),
+    affine.ty+(-p->y/64.0),affine.tx+(q->x/64.0),affine.ty+(-q->y/64.0),
+    affine.tx+(to->x/64.0),affine.ty+(-to->y/64.0));
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
 
 static int TraceLineTo(FT_Vector *to,DrawInfo *draw_info)
 {
+  AffineMatrix
+    affine;
+
   char
     path[MaxTextExtent];
 
-  FormatString(path,"L%g,%g",(to->x/64.0),(-to->y/64.0));
+  affine=draw_info->affine;
+  FormatString(path,"L%g,%g",affine.tx+(to->x/64.0),affine.ty+(-to->y/64.0));
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
 
 static int TraceMoveTo(FT_Vector *to,DrawInfo *draw_info)
 {
+  AffineMatrix
+    affine;
+
   char
     path[MaxTextExtent];
 
-  FormatString(path,"M%g,%g",(to->x/64.0),(-to->y/64.0));
+  affine=draw_info->affine;
+  FormatString(path,"M%g,%g",affine.tx+(to->x/64.0),affine.ty+(-to->y/64.0));
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -975,11 +988,16 @@ static int TraceMoveTo(FT_Vector *to,DrawInfo *draw_info)
 static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
   DrawInfo *draw_info)
 {
+  AffineMatrix
+    affine;
+
   char
     path[MaxTextExtent];
 
-  FormatString(path,"Q%g,%g %g,%g",(control->x/64.0),(-control->y/64.0),
-    (to->x/64.0),(-to->y/64.0));
+  affine=draw_info->affine;
+  FormatString(path,"Q%g,%g %g,%g",affine.tx+(control->x/64.0),
+    affine.ty+(-control->y/64.0),affine.tx+(to->x/64.0),
+    affine.ty+(-to->y/64.0));
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -1169,8 +1187,9 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   affine.xy=(FT_Fixed) (-65536.0*draw_info->affine.ry);
   affine.yy=(FT_Fixed) (65536.0*draw_info->affine.sy);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  IdentityAffine(&clone_info->affine);
   (void) QueryColorDatabase("#000000ff",&clone_info->fill);
-  (void) CloneString(&clone_info->primitive,"");
+  (void) CloneString(&clone_info->primitive,"path '");
   for (i=0; i < (long) length; i++)
   {
     glyph.id=FT_Get_Char_Index(face,unicode[i]);
@@ -1200,10 +1219,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           */
           clone_info->affine.tx=offset->x+(glyph.origin.x >> 6);
           clone_info->affine.ty=offset->y-(glyph.origin.y >> 6);
-          (void) CloneString(&clone_info->primitive,"path '");
           (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
             &OutlineMethods,clone_info);
-          (void) ConcatenateString(&clone_info->primitive,"'");
         }
     (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
     if (render)
@@ -1273,9 +1290,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
               (void) SyncImagePixels(image);
             }
           }
-        if ((draw_info->stroke.opacity != TransparentOpacity) ||
-            (draw_info->stroke_pattern != (Image *) NULL))
-          (void) DrawImage(image,clone_info);  /* draw text stroke */
       }
     FT_Glyph_Get_CBox(glyph.image,ft_glyph_bbox_pixels,&bounding_box);
     if (bounding_box.xMin < extent.x1)
@@ -1291,6 +1305,16 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
       FT_Done_Glyph(last_glyph.image);
     last_glyph=glyph;
   }
+  if ((draw_info->stroke.opacity != TransparentOpacity) ||
+      (draw_info->stroke_pattern != (Image *) NULL))
+    {
+      /*
+        Draw text stroke.
+      */
+      IdentityAffine(&clone_info->affine);
+      (void) ConcatenateString(&clone_info->primitive,"'");
+      (void) DrawImage(image,clone_info);
+    }
   if (glyph.id != 0)
     FT_Done_Glyph(glyph.image);
   metrics->pixels_per_em.x=face->size->metrics.x_ppem;
