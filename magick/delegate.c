@@ -197,7 +197,7 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   delegate_info=GetDelegateInfo(decode,encode,exception);
   if (delegate_info == (const DelegateInfo *) NULL)
     {
-      ThrowException(exception,MissingDelegateError,"no tag found",
+      ThrowException(exception,DelegateError,"NoTagFound",
         decode ? decode : encode);
       return((char *) NULL);
     }
@@ -375,7 +375,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   delegate_info=GetDelegateInfo(decode,encode,exception);
   if (delegate_info == (DelegateInfo *) NULL)
     {
-      ThrowException(exception,MissingDelegateError,"no tag found",
+      ThrowException(exception,DelegateError,"NoTagFound",
         decode ? decode : encode);
       return(False);
     }
@@ -402,7 +402,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
           delegate_info->encode : delegate_info->decode);
         if (magick == (char *) NULL)
           {
-            ThrowException(exception,DelegateError,"delegate failed",
+            ThrowException(exception,DelegateError,"DelegateFailed",
               decode ? decode : encode);
             return(False);
           }
@@ -424,7 +424,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
           if (status == False)
             {
               DestroyImageInfo(clone_info);
-              ThrowException(exception,DelegateError,"delegate failed",
+              ThrowException(exception,DelegateError,"DelegateFailed",
                 decode ? decode : encode);
               return(False);
             }
@@ -462,7 +462,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
     (void) remove(image_info->zero);
     (void) remove(image_info->unique);
     if (status != False)
-      ThrowException(exception,DelegateError,"delegate failed",commands[i]);
+      ThrowException(exception,DelegateError,"DelegateFailed",commands[i]);
     LiberateMemory((void **) &commands[i]);
   }
   for ( ; commands[i] != (char *) NULL; i++)

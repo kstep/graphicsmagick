@@ -227,7 +227,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   TemporaryFilename((char *) image_info->filename);
   file=fopen(image_info->filename,"wb");
   if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenError,"Unable to write file",image);
+    ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
   c=ReadBlobByte(image);
   while (c != EOF)
   {

@@ -226,7 +226,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   TemporaryFilename(postscript_filename);
   file=fopen(postscript_filename,"wb");
   if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenError,"Unable to write file",image);
+    ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
   FormatString(translate_geometry,"%g %g translate\n              ",0.0,0.0);
   (void) fputs(translate_geometry,file);
   /*
@@ -344,7 +344,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       file=fopen(postscript_filename,"ab");
       if (file == (FILE *) NULL)
-        ThrowReaderException(FileOpenError,"Unable to write file",image);
+        ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
       (void) fputs("showpage\n",file);
       (void) fclose(file);
       status=InvokePostscriptDelegate(image_info->verbose,command);

@@ -3229,7 +3229,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       TemporaryFilename(filename);
       file=fopen(filename,"wb");
       if (file == (FILE *) NULL)
-        ThrowReaderException(FileOpenError,"Unable to write file",image);
+        ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
       (void) memset(magick,0,sizeof(magick));
       while ((c=ReadBlobByte(image)) != EOF)
       {

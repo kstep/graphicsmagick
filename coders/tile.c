@@ -122,7 +122,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
     return((Image *) NULL);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"Must specify image size",image);
+    ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
   if (*image_info->filename == '\0')
     ThrowReaderException(OptionError,"must specify an image name",image);
   /*

@@ -385,6 +385,7 @@ static const char *ExceptionSeverityToTag(const ExceptionType severity)
     case CacheError: return("Cache/Error/");
     case ConfigureError: return("Configure/Error/");
     case CorruptImageError: return("Corrupt/Image/Error/");
+    case DelegateError: return("Delegate/Error/");
     case FileOpenError: return("File/Open/Error/");
     case ImageError: return("Image/Error/");
     case OptionError: return("Option/Error/");

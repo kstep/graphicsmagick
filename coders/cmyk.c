@@ -130,7 +130,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"Must specify image size",image);
+    ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
   if (image_info->interlace != PartitionInterlace)
     {
       /*

@@ -132,7 +132,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"Must specify image size",image);
+    ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)

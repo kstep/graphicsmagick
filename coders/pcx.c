@@ -1037,7 +1037,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       LiberateMemory((void **) &page_table);
     }
   if (status == False)
-    ThrowWriterException(FileOpenError,"Unable to write file",image);
+    ThrowWriterException(FileOpenError,"UnableToWriteFile",image);
   CloseBlob(image);
   return(True);
 }

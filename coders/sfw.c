@@ -301,7 +301,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       LiberateMemory((void **) &buffer);
       DestroyImageInfo(clone_info);
-      ThrowReaderException(FileOpenError,"Unable to write file",image)
+      ThrowReaderException(FileOpenError,"UnableToWriteFile",image)
     }
   (void) fwrite(header,offset-header+1,1,file);
   (void) fwrite(HuffmanTable,1,sizeof(HuffmanTable)/sizeof(*HuffmanTable),file);
@@ -313,7 +313,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       (void) remove(clone_info->filename);
       DestroyImageInfo(clone_info);
-      ThrowReaderException(FileOpenError,"Unable to write file",image)
+      ThrowReaderException(FileOpenError,"UnableToWriteFile",image)
     }
   /*
     Read JPEG image.

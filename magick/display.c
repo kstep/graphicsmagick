@@ -7308,7 +7308,7 @@ static void XMakePanImage(Display *display,XResourceInfo *resource_info,
   status=XMakeImage(display,resource_info,&windows->pan,image,
     windows->pan.width,windows->pan.height);
   if (status == False)
-    MagickError(XServerError,"Unable to create Pan icon image",
+    MagickError(XServerError,"Unable to create pan icon image",
       (char *) NULL);
   (void) XSetWindowBackgroundPixmap(display,windows->pan.id,
     windows->pan.pixmap);

@@ -202,7 +202,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     file=fopen(clone_info->filename,"wb");
     if (file == (FILE *) NULL)
-      ThrowReaderException(FileOpenError,"Unable to write file",image);
+      ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
     (void) fwrite("SFW94A",1,6,file);
     filesize=65535L*magick[2]+256L*magick[1]+magick[0];
     for (i=0; i < (long) filesize; i++)

@@ -412,7 +412,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       TemporaryFilename(filename);
       file=fopen(filename,"wb");
       if (file == (FILE *) NULL)
-        ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+        ThrowReaderException(FileOpenWarning,"UnableToWriteFile",image);
       for (c=ReadBlobByte(image); c != EOF; c=ReadBlobByte(image))
         (void) fputc(c,file);
       (void) fclose(file);

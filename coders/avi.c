@@ -664,7 +664,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
           default:
-            ThrowReaderException(CorruptImageError,"Not a avi image file",image)
+            ThrowReaderException(CorruptImageError,"Not a AVI image file",image)
         }
         LiberateMemory((void **) &pixels);
         if ((unsigned long) image->scene < (avi_info.total_frames-1))

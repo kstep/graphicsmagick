@@ -219,6 +219,21 @@ const char *GetLocaleMessage(const char *tag)
             default:
               return tag;
 
+            case 'a':  case 'A':
+              if (p - tp == 33 && !LocaleNCompare(tp, "AnErrorHasOccurredReadingFromFile", 33))
+                return *np ? tag : "An error has occurred reading from file";
+              else
+              if (p - tp == 31 && !LocaleNCompare(tp, "AnErrorHasOccurredWritingToFile", 31))
+                return *np ? tag : "An error has occurred writing to file";
+              else
+                return tag;
+
+            case 'c':  case 'C':
+              if (p - tp == 18 && !LocaleNCompare(tp, "CorruptInlineImage", 18))
+                return *np ? tag : "Corrupt inline image";
+              else
+                return tag;
+
             case 'i':  case 'I':
               if (p - tp == 19 && !LocaleNCompare(tp, "ImproperImageHeader", 19))
                 return *np ? tag : "Improper image header";
@@ -249,6 +264,31 @@ const char *GetLocaleMessage(const char *tag)
         else
           return tag;
 
+      case 'd':  case 'D':
+        if (p - tp == 8 && !LocaleNCompare(tp, "Delegate", 8))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'd':  case 'D':
+              if (p - tp == 14 && !LocaleNCompare(tp, "DelegateFailed", 14))
+                return *np ? tag : "DelegateFailed";
+              else
+                return tag;
+
+            case 'n':  case 'N':
+              if (p - tp == 10 && !LocaleNCompare(tp, "NoTagFound", 10))
+                return *np ? tag : "No tag found";
+              else
+                return tag;
+            }
+        else
+          return tag;
+
       case 'f':  case 'F':
         if (p - tp == 4 && !LocaleNCompare(tp, "File", 4))
           if (LocaleNCompare(NEXT_FIELD, "Open", 4) || p - tp != 4)
@@ -257,10 +297,20 @@ const char *GetLocaleMessage(const char *tag)
           if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
             return tag;
           else
-          if (LocaleNCompare(NEXT_FIELD, "UnableToOpenFile", 16) || p - tp != 16)
-            return tag;
-          else
-            return *np ? tag : "Unable to open file";
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 16 && !LocaleNCompare(tp, "UnableToOpenFile", 16))
+                return *np ? tag : "Unable to open file";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToWriteFile", 17))
+                return *np ? tag : "Unable to write file";
+              else
+                return tag;
+            }
         else
           return tag;
 
@@ -273,6 +323,12 @@ const char *GetLocaleMessage(const char *tag)
             {
             default:
               return tag;
+
+            case 'c':  case 'C':
+              if (p - tp == 27 && !LocaleNCompare(tp, "ColorSeparatedImageRequired", 27))
+                return *np ? tag : "Color separated image required";
+              else
+                return tag;
 
             case 'i':  case 'I':
               if (p - tp == 23 && !LocaleNCompare(tp, "ImageSequenceIsRequired", 23))
@@ -317,6 +373,21 @@ const char *GetLocaleMessage(const char *tag)
             case 'f':  case 'F':
               if (p - tp == 29 && !LocaleNCompare(tp, "FreeTypeLibraryIsNotAvailable", 29))
                 return *np ? tag : "FreeType library is not available";
+              else
+                return tag;
+
+            case 'l':  case 'L':
+              if (p - tp == 21 && !LocaleNCompare(tp, "LZWEncodingNotEnabled", 21))
+                return *np ? tag : "LZW encoding not enabled";
+              else
+                return tag;
+
+            case 'n':  case 'N':
+              if (p - tp == 34 && !LocaleNCompare(tp, "NoDecodeDelegateForThisImageFormat", 34))
+                return *np ? tag : "No decode delegate for this image format";
+              else
+              if (p - tp == 34 && !LocaleNCompare(tp, "NoEncodeDelegateForThisImageFormat", 34))
+                return *np ? tag : "No encode delegate for this image format";
               else
                 return tag;
 
@@ -378,6 +449,9 @@ const char *GetLocaleMessage(const char *tag)
               else
               if (p - tp == 16 && !LocaleNCompare(tp, "InvalidImageType", 16))
                 return *np ? tag : "Invalid image type";
+              else
+              if (p - tp == 15 && !LocaleNCompare(tp, "InvalidPixelMap", 15))
+                return *np ? tag : "Invalid pixel map";
               else
               if (p - tp == 19 && !LocaleNCompare(tp, "InvalidResourceType", 19))
                 return *np ? tag : "Invalid resource type";
@@ -493,6 +567,9 @@ const char *GetLocaleMessage(const char *tag)
               if (p - tp == 12 && !LocaleNCompare(tp, "MissingWidth", 12))
                 return *np ? tag : "Missing width";
               else
+              if (p - tp == 20 && !LocaleNCompare(tp, "MustSpecifyImageSize", 20))
+                return *np ? tag : "Must specify image size";
+              else
                 return tag;
 
             case 'n':  case 'N':
@@ -501,9 +578,18 @@ const char *GetLocaleMessage(const char *tag)
               else
                 return tag;
 
+            case 's':  case 'S':
+              if (p - tp == 36 && !LocaleNCompare(tp, "SubimageSpecificationReturnsNoImages", 36))
+                return *np ? tag : "Subimage specification returns no images profile name was given";
+              else
+                return tag;
+
             case 'u':  case 'U':
               if (p - tp == 17 && !LocaleNCompare(tp, "UnableToBlurImage", 17))
                 return *np ? tag : "Unable to blur image";
+              else
+              if (p - tp == 23 && !LocaleNCompare(tp, "UnableToConstituteImage", 23))
+                return *np ? tag : "Unable to constitute image";
               else
               if (p - tp == 21 && !LocaleNCompare(tp, "UnableToConvolveImage", 21))
                 return *np ? tag : "Unable to convolve image";
@@ -782,6 +868,21 @@ const char *GetLocaleMessage(const char *tag)
             default:
               return tag;
 
+            case 'a':  case 'A':
+              if (p - tp == 33 && !LocaleNCompare(tp, "AnErrorHasOccurredReadingFromFile", 33))
+                return *np ? tag : "An error has occurred reading from file";
+              else
+              if (p - tp == 31 && !LocaleNCompare(tp, "AnErrorHasOccurredWritingToFile", 31))
+                return *np ? tag : "An error has occurred writing to file";
+              else
+                return tag;
+
+            case 'c':  case 'C':
+              if (p - tp == 18 && !LocaleNCompare(tp, "CorruptInlineImage", 18))
+                return *np ? tag : "Corrupt inline image";
+              else
+                return tag;
+
             case 'i':  case 'I':
               if (p - tp == 19 && !LocaleNCompare(tp, "ImproperImageHeader", 19))
                 return *np ? tag : "Improper image header";
@@ -812,6 +913,31 @@ const char *GetLocaleMessage(const char *tag)
         else
           return tag;
 
+      case 'd':  case 'D':
+        if (p - tp == 8 && !LocaleNCompare(tp, "Delegate", 8))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'd':  case 'D':
+              if (p - tp == 14 && !LocaleNCompare(tp, "DelegateFailed", 14))
+                return *np ? tag : "DelegateFailed";
+              else
+                return tag;
+
+            case 'n':  case 'N':
+              if (p - tp == 10 && !LocaleNCompare(tp, "NoTagFound", 10))
+                return *np ? tag : "No tag found";
+              else
+                return tag;
+            }
+        else
+          return tag;
+
       case 'f':  case 'F':
         if (p - tp == 4 && !LocaleNCompare(tp, "File", 4))
           if (LocaleNCompare(NEXT_FIELD, "Open", 4) || p - tp != 4)
@@ -820,10 +946,20 @@ const char *GetLocaleMessage(const char *tag)
           if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
             return tag;
           else
-          if (LocaleNCompare(NEXT_FIELD, "UnableToOpenFile", 16) || p - tp != 16)
-            return tag;
-          else
-            return *np ? tag : "Unable to open file";
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 16 && !LocaleNCompare(tp, "UnableToOpenFile", 16))
+                return *np ? tag : "Unable to open file";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToWriteFile", 17))
+                return *np ? tag : "Unable to write file";
+              else
+                return tag;
+            }
         else
           return tag;
 
@@ -836,6 +972,12 @@ const char *GetLocaleMessage(const char *tag)
             {
             default:
               return tag;
+
+            case 'c':  case 'C':
+              if (p - tp == 27 && !LocaleNCompare(tp, "ColorSeparatedImageRequired", 27))
+                return *np ? tag : "Color separated image required";
+              else
+                return tag;
 
             case 'i':  case 'I':
               if (p - tp == 23 && !LocaleNCompare(tp, "ImageSequenceIsRequired", 23))
@@ -880,6 +1022,21 @@ const char *GetLocaleMessage(const char *tag)
             case 'f':  case 'F':
               if (p - tp == 29 && !LocaleNCompare(tp, "FreeTypeLibraryIsNotAvailable", 29))
                 return *np ? tag : "FreeType library is not available";
+              else
+                return tag;
+
+            case 'l':  case 'L':
+              if (p - tp == 21 && !LocaleNCompare(tp, "LZWEncodingNotEnabled", 21))
+                return *np ? tag : "LZW encoding not enabled";
+              else
+                return tag;
+
+            case 'n':  case 'N':
+              if (p - tp == 34 && !LocaleNCompare(tp, "NoDecodeDelegateForThisImageFormat", 34))
+                return *np ? tag : "No decode delegate for this image format";
+              else
+              if (p - tp == 34 && !LocaleNCompare(tp, "NoEncodeDelegateForThisImageFormat", 34))
+                return *np ? tag : "No encode delegate for this image format";
               else
                 return tag;
 
@@ -941,6 +1098,9 @@ const char *GetLocaleMessage(const char *tag)
               else
               if (p - tp == 16 && !LocaleNCompare(tp, "InvalidImageType", 16))
                 return *np ? tag : "Invalid image type";
+              else
+              if (p - tp == 15 && !LocaleNCompare(tp, "InvalidPixelMap", 15))
+                return *np ? tag : "Invalid pixel map";
               else
               if (p - tp == 19 && !LocaleNCompare(tp, "InvalidResourceType", 19))
                 return *np ? tag : "Invalid resource type";
@@ -1056,6 +1216,9 @@ const char *GetLocaleMessage(const char *tag)
               if (p - tp == 12 && !LocaleNCompare(tp, "MissingWidth", 12))
                 return *np ? tag : "Missing width";
               else
+              if (p - tp == 20 && !LocaleNCompare(tp, "MustSpecifyImageSize", 20))
+                return *np ? tag : "Must specify image size";
+              else
                 return tag;
 
             case 'n':  case 'N':
@@ -1064,9 +1227,18 @@ const char *GetLocaleMessage(const char *tag)
               else
                 return tag;
 
+            case 's':  case 'S':
+              if (p - tp == 36 && !LocaleNCompare(tp, "SubimageSpecificationReturnsNoImages", 36))
+                return *np ? tag : "Subimage specification returns no images profile name was given";
+              else
+                return tag;
+
             case 'u':  case 'U':
               if (p - tp == 17 && !LocaleNCompare(tp, "UnableToBlurImage", 17))
                 return *np ? tag : "Unable to blur image";
+              else
+              if (p - tp == 23 && !LocaleNCompare(tp, "UnableToConstituteImage", 23))
+                return *np ? tag : "Unable to constitute image";
               else
               if (p - tp == 21 && !LocaleNCompare(tp, "UnableToConvolveImage", 21))
                 return *np ? tag : "Unable to convolve image";

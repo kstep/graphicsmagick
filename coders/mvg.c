@@ -189,7 +189,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"Must specify image size",image);
+    ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
   SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->fill=image_info->pen;

@@ -145,7 +145,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"Must specify image size",image);
+    ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
   image->depth=8;
   interlace=image_info->interlace;
   horizontal_factor=2;
@@ -558,7 +558,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     yuv_image=ResizeImage(image,width,height,TriangleFilter,1.0,
       &image->exception);
     if (yuv_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitError,"Unable to resize image",image);
+      ThrowWriterException(ResourceLimitError,image->exception.reason,image);
     (void) RGBTransformImage(yuv_image,YCbCrColorspace);
     /*
       Downsample image.
@@ -566,7 +566,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     chroma_image=ResizeImage(image,width/horizontal_factor,
       height/vertical_factor,TriangleFilter,1.0,&image->exception);
     if (chroma_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitError,"Unable to resize image",image);
+      ThrowWriterException(ResourceLimitError,image->exception.reason,image);
     (void) RGBTransformImage(chroma_image,YCbCrColorspace);
     if (interlace == NoInterlace)
       {

@@ -70,6 +70,15 @@
   <Corrupt>
     <Image>
       <Error>
+        <Message name="AnErrorHasOccurredReadingFromFile">
+          An error has occurred reading from file
+        </Message>
+        <Message name="AnErrorHasOccurredWritingToFile">
+          An error has occurred writing to file
+        </Message>
+        <Message name="CorruptInlineImage">
+          Corrupt inline image
+        </Message>
         <Message name="ImproperImageHeader">
           Improper image header
         </Message>
@@ -94,17 +103,33 @@
       </Error>
     </Image>
   </Corrupt>
+  <Delegate>
+    <Error>
+      <Message name="DelegateFailed">
+        DelegateFailed
+      </Message>
+      <Message name="NoTagFound">
+        No tag found
+      </Message>
+    </Error>
+  </Delegate>
   <File>
     <Open>
       <Error>
         <Message name="UnableToOpenFile">
           Unable to open file
         </Message>
+        <Message name="UnableToWriteFile">
+          Unable to write file
+        </Message>
       </Error>
     </Open>
   </File>
   <Image>
     <Error>
+      <Message name="ColorSeparatedImageRequired">
+        Color separated image required
+      </Message>
       <Message name="ImageSequenceIsRequired">
         Image sequence is required
       </Message>
@@ -127,6 +152,15 @@
       <Error>
         <Message name="FreeTypeLibraryIsNotAvailable">
           FreeType library is not available
+        </Message>
+        <Message name="LZWEncodingNotEnabled">
+          LZW encoding not enabled
+        </Message>
+        <Message name="NoDecodeDelegateForThisImageFormat">
+          No decode delegate for this image format
+        </Message>
+        <Message name="NoEncodeDelegateForThisImageFormat">
+          No encode delegate for this image format
         </Message>
         <Message name="XWindowLibraryIsNotAvailable">
           X Window library is not available
@@ -171,6 +205,9 @@
       </Message>
       <Message name="InvalidImageType">
         Invalid image type
+      </Message>
+      <Message name="InvalidPixelMap">
+        Invalid pixel map
       </Message>
       <Message name="InvalidResourceType">
         Invalid resource type
@@ -283,14 +320,23 @@
       <Message name="MissingWidth">
         Missing width
       </Message>
+      <Message name="MustSpecifyImageSize">
+        Must specify image size
+      </Message>
       <Message name="NoProfileNameWasGiven">
         No profile name was given
+      </Message>
+      <Message name="SubimageSpecificationReturnsNoImages">
+        Subimage specification returns no images profile name was given
       </Message>
       <Message name="UnableToBlurImage">
         Unable to blur image
       </Message>
       <Message name="UnableToConvolveImage">
         Unable to convolve image
+      </Message>
+      <Message name="UnableToConstituteImage">
+        Unable to constitute image
       </Message>
       <Message name="UnableToEdgeImage">
         Unable to edge image

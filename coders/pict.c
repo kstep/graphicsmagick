@@ -1241,7 +1241,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         TemporaryFilename(clone_info->filename);
         file=fopen(clone_info->filename,"wb");
         if (file == (FILE *) NULL)
-          ThrowReaderException(FileOpenError,"Unable to write file",image);
+          ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
         length=ReadBlobMSBLong(image);
         for (i=0; i < 6; i++)
           (void) ReadBlobMSBLong(image);

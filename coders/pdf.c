@@ -363,7 +363,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   TemporaryFilename(postscript_filename);
   file=fopen(postscript_filename,"wb");
   if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenError,"Unable to write file",image);
+    ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
   /*
     Set the page density.
   */
