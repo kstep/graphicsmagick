@@ -447,7 +447,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
                   p++;
                   if (isdigit((int) *p))
                     {
-                      *q++=(unsigned char) strtol(p,&p,8);
+                      *q++=(unsigned char) strtol(p,(char *) &p,8);
                       magic_list->length++;
                       continue;
                     }
