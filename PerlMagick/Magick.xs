@@ -4347,8 +4347,6 @@ Mogrify(ref,...)
               frame_info.height=geometry.height;
               frame_info.outer_bevel=geometry.x;
               frame_info.inner_bevel=geometry.y;
-              frame_info.width=image->columns+2*frame_info.width;
-              frame_info.height=image->rows+2*frame_info.height;
             }
           if (attribute_flag[1])
             frame_info.width=argument_list[1].int_reference;
@@ -4358,14 +4356,14 @@ Mogrify(ref,...)
             frame_info.inner_bevel=argument_list[3].int_reference;
           if (attribute_flag[4])
             frame_info.outer_bevel=argument_list[4].int_reference;
-          frame_info.x=(long) frame_info.width;
-          frame_info.y=(long) frame_info.height;
           if (attribute_flag[5])
             QueryColorDatabase(argument_list[5].string_reference,&fill_color);
           if (attribute_flag[6])
             QueryColorDatabase(argument_list[6].string_reference,&fill_color);
-          frame_info.width=image->columns+(frame_info.x << 1);
-          frame_info.height=image->rows+(frame_info.y << 1);
+          frame_info.x=(long) frame_info.width;
+          frame_info.y=(long) frame_info.height;
+          frame_info.width=image->columns+2*frame_info.x;
+          frame_info.height=image->rows+2*frame_info.y;
           if (attribute_flag[5] || attribute_flag[6])
             image->matte_color=fill_color;
           image=FrameImage(image,&frame_info,exception);

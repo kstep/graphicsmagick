@@ -98,7 +98,7 @@ testFilter('input.miff', 'Flop',
 testFilter('input.miff', 'Frame',
   q/10x10/,
   '808ad51705e83a0bbc21720b770f198949df0f99a7f060a93eba22ada7768240', 
-  '61e51802a1b11a86b1f192cf63da321bdf55292c13583370547f2ad785ec602c');
+  '90a0ef26496810bef40cef8e5d3bc28cb64676e2b8b6c43268257e7c481b7452');
 
 ++$test;
 testFilter('input.miff', 'Gamma',
