@@ -6,9 +6,9 @@ follows.
 
 1)
   In November 2002, the GraphicsMagick Group created GraphicsMagick
-  from ImageMagick Studio's ImageMagick and applied a new license:
+  from ImageMagick Studio's ImageMagick and applied this license:
 
-  Copyright (C) 2002 GraphicsMagick Group, an organization dedicated
+  Copyright (C) 2003 GraphicsMagick Group, an organization dedicated
   to making software imaging solutions freely available.
 
   Permission is hereby granted, free of charge, to any person obtaining
@@ -118,10 +118,37 @@ follows.
   in all copies or substantial portions of the Software.
 
 5)
+  The GraphicsMagick Base64Decode() and Base64Encode() functions are
+  based on source code obtained from OpenSSH.
+  This source code is distributed under the following license.
+
+  Copyright (c) 2000 Markus Friedl.  All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+  1. Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
+
+  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+6)
   The C++ API known as "Magick++", and which resides in the Magick++
   directory, is distributed under the following license:
 
-  Copyright 1999 - 2002 Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
+  Copyright 1999 - 2003 Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of the source files and associated documentation
@@ -144,7 +171,7 @@ follows.
   contract, tort or otherwise, arising from, out of or in connection
   with Magick++ or the use or other dealings in Magick++.
 
-6)
+7)
   GraphicsMagick makes use of third-party "delegate" libraries to
   support certain optional features. These libraries bear their own
   copyrights and licenses, which may be more or less restrictive than the

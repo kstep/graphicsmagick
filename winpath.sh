@@ -1,4 +1,9 @@
 #!/bin/sh
+# Copyright (C) 2003 GraphicsMagick Group
+#
+# This program is covered by multiple licenses, which are described in
+# Copyright.txt. You should have received a copy of Copyright.txt with this
+# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 #
 # Convert the specified POSIX path to a Windows path under MinGW and Cygwin
 # The optional second parameter specifies the level of backslash escaping

@@ -1,32 +1,13 @@
+# Copyright (C) 2003 GraphicsMagick Group
+# Copyright (C) 2002 ImageMagick Studio
+# Copyright (C) 1999 E. I. du Pont de Nemours and Company
+#
+# This program is covered by multiple licenses, which are described in
+# Copyright.txt. You should have received a copy of Copyright.txt with this
+# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 #
 #  Top-Level Makefile for building GraphicsMagick
 #
-# Copyright (C) 2002 GraphicsMagick Group, an organization dedicated
-# to making software imaging solutions freely available.
-#
-# Permission is hereby granted, free of charge, to any person obtaining
-# a copy of this software and associated documentation files
-# ("GraphicsMagick"), to deal in GraphicsMagick without restriction,
-# including without limitation the rights to use, copy, modify, merge,
-# publish, distribute, sublicense, and/or sell copies of GraphicsMagick,
-# and to permit persons to whom GraphicsMagick is furnished to do so,
-# subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of GraphicsMagick.
-#
-# The software is provided "as is", without warranty of any kind, express
-# or implied, including but not limited to the warranties of
-# merchantability, fitness for a particular purpose and noninfringement.
-# In no event shall GraphicsMagick Group be liable for any claim,
-# damages or other liability, whether in an action of contract, tort or
-# otherwise, arising from, out of or in connection with GraphicsMagick
-# or the use or other dealings in GraphicsMagick.
-#
-# Except as contained in this notice, the name of the GraphicsMagick
-# Group shall not be used in advertising or otherwise to promote the
-# sale, use or other dealings in GraphicsMagick without prior written
-# authorization from the GraphicsMagick Group.
 #
 
 # Don't require all the GNU mandated files
@@ -232,16 +213,16 @@ $(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
 
 # Build HTML version of INSTALL-mac.txt
 $(top_srcdir)/www/INSTALL-mac.html: $(top_srcdir)/INSTALL-unix.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t $(PACKAGE_NAME)' MacOS 9 Installation' < $(top_srcdir)/INSTALL-mac.txt > $(top_srcdir)/www/INSTALL-mac.html
+	@PERL@ $(top_srcdir)/scripts/txt2html -s 55 -p 4 -pb 1 -t $(PACKAGE_NAME)' MacOS 9 Installation' < $(top_srcdir)/INSTALL-mac.txt > $(top_srcdir)/www/INSTALL-mac.html
 
 # Build HTML version of INSTALL-unix.txt
 $(top_srcdir)/www/INSTALL-unix.html: $(top_srcdir)/INSTALL-unix.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t $(PACKAGE_NAME)' Unix Installation' < $(top_srcdir)/INSTALL-unix.txt > $(top_srcdir)/www/INSTALL-unix.html
+	@PERL@ $(top_srcdir)/scripts/txt2html -s 55 -p 4 -pb 1 -t $(PACKAGE_NAME)' Unix Installation' < $(top_srcdir)/INSTALL-unix.txt > $(top_srcdir)/www/INSTALL-unix.html
 
 # Build HTML version of INSTALL-vms.txt
 $(top_srcdir)/www/INSTALL-vms.html: $(top_srcdir)/INSTALL-vms.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t $(PACKAGE_NAME)' VMS Installation' < $(top_srcdir)/INSTALL-vms.txt > $(top_srcdir)/www/INSTALL-vms.html
+	@PERL@ $(top_srcdir)/scripts/txt2html -s 55 -p 4 -pb 1 -t $(PACKAGE_NAME)' VMS Installation' < $(top_srcdir)/INSTALL-vms.txt > $(top_srcdir)/www/INSTALL-vms.html
 
 # Build HTML version of INSTALL-windows.txt
 $(top_srcdir)/www/INSTALL-windows.html: $(top_srcdir)/INSTALL-windows.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t $(PACKAGE_NAME)' Windows Installation' < $(top_srcdir)/INSTALL-windows.txt > $(top_srcdir)/www/INSTALL-windows.html
+	@PERL@ $(top_srcdir)/scripts/txt2html -s 55 -p 4 -pb 1 -t $(PACKAGE_NAME)' Windows Installation' < $(top_srcdir)/INSTALL-windows.txt > $(top_srcdir)/www/INSTALL-windows.html

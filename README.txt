@@ -5,12 +5,12 @@ programming interfaces, and GUIs, to support image processing and 2D vector
 rendering.
 
 GraphicsMagick is originally based on ImageMagick from ImageMagick Studio
-(which was originally written at Dupont). The goal of GraphicsMagick is to
-provide the highest quality product possible while encouraging open and
-active participation from all interested developers. The GraphicsMagick
-usage license is designed to allow it to be used for any application,
-including proprietary or GPLed applications. Please see the file
-Copyright.txt for the GraphicsMagick licence.
+(which was originally written by John Cristy at Dupont). The goal of
+GraphicsMagick is to provide the highest quality product possible while
+encouraging open and active participation from all interested developers.
+The GraphicsMagick usage license is designed to allow it to be used for any
+application, including proprietary or GPLed applications. Please see the
+file Copyright.txt for the GraphicsMagick licence.
 
 AVAILABILITY
 
@@ -50,20 +50,19 @@ AVAILABILITY
 
 DOCUMENTATION
 
-  Open the file index.html in a web browser, or refer to
-  the manual pages for the display(1), animate(1), montage(1),
-  import(1), mogrify(1), identify(1), composite(1), and convert(1)
-  commands. The GraphicsMagick(1) manual page provides details for command
-  options and will also aid with understanding library interfaces. Also
-  read the GraphicsMagick frequently asked questions in the file
-  www/Magick.html.
+  Open the file index.html in a web browser, or refer to the manual pages
+  for the display(1), animate(1), montage(1), import(1), mogrify(1),
+  identify(1), composite(1), and convert(1) commands. The GraphicsMagick(1)
+  manual page provides details for command options and will also aid with
+  understanding library interfaces. Also read the GraphicsMagick frequently
+  asked questions in the file www/Magick.html.
 
 INSTALLATION
 
-  GraphicsMagick may be compiled from source code for virtually any
-  modern Unix system (including Linux and MacOS X), Microsoft Windows,
-  MacOS9, and VMS. Installation instructions may be found in the
-  following files (or their HTML equivalents):
+  GraphicsMagick may be compiled from source code for virtually any modern
+  Unix system (including Linux and MacOS X), Microsoft Windows, MacOS9, and
+  VMS. Installation instructions may be found in the following files (or
+  their HTML equivalents):
 
     o Unix:
 
@@ -119,35 +118,33 @@ MAGICK DELEGATES
 
         http://www.cs.wisc.edu/~ghost/
 
-      to read the Postscript or the Portable Document format. Ghostscript is used to
-      annotate an image when the FreeType library is not used, or an X
-      server is not available. See the FreeType library above for another
-      means to annotate an image. Note, Ghostscript must support the ppmraw
-      device (type gs -h to verify). If Ghostscript is unavailable, the
-      Display Postscript X11 extension is used to rasterize a Postscript
-      document (assuming you define HasDPS and DPS is available). The DPS
-      extension is less robust than Ghostscript in that it will only
-      rasterize one page of a multi-page document.
+      to read the Postscript or the Portable Document format. Ghostscript
+      is used to annotate an image when the FreeType library is not used,
+      or an X server is not available. See the FreeType library above for
+      another means to annotate an image. Note, Ghostscript must support
+      the ppmraw device (type gs -h to verify). If Ghostscript is
+      unavailable, the Display Postscript X11 extension is used to
+      rasterize a Postscript document (assuming you define HasDPS and DPS
+      is available). The DPS extension is less robust than Ghostscript in
+      that it will only rasterize one page of a multi-page document.
 
-      Ghostscript (release 7.0 and later) may optionally install a
-      library (libgs). If this library is installed, GraphicsMagick may
-      be configured to use it. Note that Ghostscript provides its own
-      modified version of libjpeg and that symbols from this libjpeg may
-      be confused with symbols with the stand-alone libjpeg. If
-      conflicts cause JPEG to fail (JPEG returns an error regarding
-      expected structure sizes), it may be necessary to use
-      Ghostscript's copy of libjpeg for GraphicsMagick, and all delegate
-      libraries which depend on libjpeg, or convince Ghostscript to
-      build against an unmodified installed JPEG library (and loose
-      compatibility with some Postscript files).
+      Ghostscript (release 7.0 and later) may optionally install a library
+      (libgs). If this library is installed, GraphicsMagick may be
+      configured to use it. Note that Ghostscript provides its own modified
+      version of libjpeg and that symbols from this libjpeg may be confused
+      with symbols with the stand-alone libjpeg. If conflicts cause JPEG to
+      fail (JPEG returns an error regarding expected structure sizes), it
+      may be necessary to use Ghostscript's copy of libjpeg for
+      GraphicsMagick, and all delegate libraries which depend on libjpeg,
+      or convince Ghostscript to build against an unmodified installed JPEG
+      library (and loose compatibility with some Postscript files).
 
     o GraphicsMagick requires hp2xx available from
 
          http://www.gnu.org/software/hp2xx/hp2xx.html
 
       to read the HP-GL image format. Note that HPGL is a plotter file
-      format. HP printers usually accept PCL format rather than HPGL
-      format.
+      format. HP printers usually accept PCL format rather than HPGL format.
 
     o GraphicsMagick requires the LCMS library available from
 
@@ -185,9 +182,8 @@ MAGICK DELEGATES
 
       to read the JPEG v1 image format.
 
-      Apply this JPEG patch to Independent JPEG Group's source
-      distribution if you want to read lossless jpeg-encoded DICOM
-      (medical) images:
+      Apply this JPEG patch to Independent JPEG Group's source distribution
+      if you want to read lossless jpeg-encoded DICOM (medical) images:
 
          ftp://ftp.imagemagick.org/pub/GraphicsMagick/delegates/ljpeg-6b.tar.gz
 
@@ -257,39 +253,38 @@ MAGICK DELEGATES
       to render files in the Windows Meta File (WMF) metafile format
       (16-bit WMF files only, not 32-bit "EMF"). This is the format
       commonly used for Windows clipart (available on CD at your local
-      computer or technical book store). WMF support requires the
-      FreeType 2 library in order to render TrueType and Postscript fonts.
+      computer or technical book store). WMF support requires the FreeType
+      2 library in order to render TrueType and Postscript fonts.
 
       While GraphicsMagick uses the libwmflite (parser) component of the
       libwmf package which does not depend on any special libraries, the
       libwmf package as a whole depends on FreeType 2 and either the
       xmlsoft libxml, or expat libraries. Since GraphicsMagick already uses
-      libxml (for reading SVG and to retrieve files via HTTP or FTP), it
-      is recommended that the options '--without-expat --with-xml' be
-      supplied to libwmf's configure script.
+      libxml (for reading SVG and to retrieve files via HTTP or FTP), it is
+      recommended that the options '--without-expat --with-xml' be supplied
+      to libwmf's configure script.
 
       GraphicsMagick's WMF renderer provides some of the finest WMF
       rendering available due its use of antialiased drawing algorithms.
-      You may select a background color or texture image to render on.
-      For example, "-background '#ffffffff'" renders on a transparent
-      background while "-texture plasma:fractal" renders on a fractal
-      image.
+      You may select a background color or texture image to render on. For
+      example, "-background '#ffffffff'" renders on a transparent
+      background while "-texture plasma:fractal" renders on a fractal image.
 
       The WMF renderer is not capable of using Windows fonts with libwmf
-      0.2.2. Windows fonts are fully supported when using libwmf 0.2.5
-      or later.
+      0.2.2. Windows fonts are fully supported when using libwmf 0.2.5 or
+      later.
 
-    o GraphicsMagick requires the FlashPIX library version 1.2.0 from
-      the Digital Imaging Group in order to support the FlashPIX
-      format. The FlashPIX library may be obtained from GraphicsMagick
-      anonymous CVS by checking out the 'fpx' module, or retrieving the
-      file libfpx-1.2.0.5.tar.gz from the ftp directory.
+    o GraphicsMagick requires the FlashPIX library version 1.2.0 from the
+      Digital Imaging Group in order to support the FlashPIX format. The
+      FlashPIX library may be obtained from GraphicsMagick anonymous CVS by
+      checking out the 'fpx' module, or retrieving the file
+      libfpx-1.2.0.5.tar.gz from the ftp directory.
 
          ftp://ftp.imagemagick.org/pub/GraphicsMagick/delegates/.
 
-    o GraphicsMagick requires an X server for the 'display', 'animate',
-      and 'import' commands to work properly. Unix systems usually provide
-      an X server as part of their standard installation.
+    o GraphicsMagick requires an X server for the 'display', 'animate', and
+      'import' functions to work properly. Unix systems usually provide an X
+      server as part of their standard installation.
 
       A free X server for Microsoft Windows is available from
 
@@ -299,8 +294,7 @@ MAGICK DELEGATES
 
          http://www.cygwin.com/xfree/
 
-      There is a nearly free X server available for Windows and
-      Macintosh at
+      There is a nearly free X server available for Windows and Macintosh at
 
          http://www.microimages.com/freestuf/mix/
 
@@ -317,9 +311,19 @@ MAGICK DELEGATES
 
       to read or write the PNG or Zip compressed MIFF images.
 
-    o GraphicsMagick requires a background texture for the TILE
-      format and for the -texture option of montage(1).  You can use
-      your own or get samples from
+    o GraphicsMagick requires a background texture for the TILE format and
+      for the -texture option of montage(1). You can use your own or get
+      samples from
 
          http://the-tech.mit.edu/KPT/
+
+---------------------------------------------------------------------------
+Copyright (C) 2003 GraphicsMagick Group
+Copyright (C) 2002 ImageMagick Studio
+Copyright (C) 1999 E. I. du Pont de Nemours and Company
+
+This program is covered by multiple licenses, which are described in
+Copyright.txt. You should have received a copy of Copyright.txt with this
+package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+
 

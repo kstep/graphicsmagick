@@ -1,14 +1,24 @@
+Copyright (C) 2003 GraphicsMagick Group
+Copyright (C) 2002 ImageMagick Studio
+Copyright (C) 1999 E. I. du Pont de Nemours and Company
+
+This program is covered by multiple licenses, which are described in
+Copyright.txt. You should have received a copy of Copyright.txt with this
+package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+---------------------------------------------------------------------------
+
 This file documents how to use the binary distribution packages built by
-GraphicsMagick Group, and found in the GraphicsMagick 'binaries' subdirectory
-of GraphicsMagick ftp sites.  Those who want to build GraphicsMagick from
-source code should refer to the file README.txt in the GraphicsMagick source
-package or http://www.imagemagick.org/www/install.html on the web.
+GraphicsMagick Group, and found in the GraphicsMagick 'binaries'
+subdirectory of GraphicsMagick ftp sites. Those who want to build
+GraphicsMagick from source code should refer to the file README.txt in the
+GraphicsMagick source package or
+http://www.graphicsmagick.org/www/README.html on the web.
 
 Unix/Linux/Darwin/Cygwin/MinGW Install:
 
   Download the appropriate binary from
 
-     ftp://ftp.imagemagick.org/pub/GraphicsMagick/binaries
+     ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/binaries
 
   Create (or choose) a directory to install the package into and
   cd to that directory, for example:
@@ -28,8 +38,8 @@ Unix/Linux/Darwin/Cygwin/MinGW Install:
 
   Test GraphicsMagick to see if it is working
 
-     convert "LOGO:" logo.miff
-     display logo.miff
+     gm convert "LOGO:" logo.miff
+     gm display logo.miff
 
   If an error is displayed that a file can not be found, you may need to
   set the MAGICK_HOME environment variable to the path where you
@@ -44,6 +54,7 @@ Unix/Linux/Darwin/Cygwin/MinGW Install:
      In addition to the MAGICK_HOME environment variable defined above,
      you may find these variables useful:
 
+       MAGICK_DEBUG            debugging options similar to -debug arguments
        MAGICK_HOME             path to GraphicsMagick installation directory
        TMPDIR                  path to store temporary files
        LD_LIBRARY_PATH         path to libMagick.so and other libraries
@@ -51,9 +62,9 @@ Unix/Linux/Darwin/Cygwin/MinGW Install:
     Configuration Files
 
       GraphicsMagick depends on a number of external configuration files
-      which include colors.mgk, delegates.mgk, magic.mgk, type.mgk, and
-      modules.mgk. GraphicsMagick searches for configuration files in the
-      following order, and will use the first file found:
+      which include colors.mgk, delegates.mgk, log.mgk, magic.mgk,
+      type.mgk, and modules.mgk. GraphicsMagick searches for configuration
+      files in the following order, and will use the first file found:
 
           <client path>/../lib/GraphicsMagick/
           $MAGICK_HOME/lib/GraphicsMagick/
@@ -86,7 +97,7 @@ XP, Win2K, WinME, NT, Win98, Win95 Install:
 
   Download
 
-      ftp://ftp.imagemagick.org/pub/GraphicsMagick/binaries/GraphicsMagick-i686-pc-windows.exe
+      ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/binaries/GraphicsMagick-i686-pc-windows.exe
 
   and execute it (or "open" it from your browser) to start the installation
   program.
@@ -94,28 +105,28 @@ XP, Win2K, WinME, NT, Win98, Win95 Install:
   Once GraphicsMagick is installed, Select Start->Programs->Command Prompt.
   In the Command Prompt window type
 
-      identify -verbose logo:
+      gm identify -verbose logo:
 
   If you have an X11 server, from the Command Prompt window type
 
       set DISPLAY=:0
-      display
+      gm display
 
 MAC Install:
 
   Download
 
-      ftp://ftp.imagemagick.org/pub/GraphicsMagick/binaries/GraphicsMagick-powerpc-apple-mac9.2.sit
+      ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/binaries/GraphicsMagick-powerpc-apple-mac9.2.sit
 
         or
 
-      ftp://ftp.imagemagick.org/pub/GraphicsMagick/binaries/GraphicsMagick-powerpc-apple-darwin6.0.tar.gz
+      ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/binaries/GraphicsMagick-powerpc-apple-darwin6.0.tar.gz
 
   and double click on it to extract the distribution.   Move to the
   GraphicsMagick folder and double click on the convert program icon.
   Next, type
 
-      -verbose logo: logo.jpg
+     convert -verbose logo: logo.jpg
 
   in the command window and choose File->Quit to exit.
 
@@ -124,6 +135,6 @@ VMS Install:
   Type
 
       unzip GraphicsMagick-1.0.0.zip
-      set default [.imagemagick]
+      set default [.graphicsmagick]
       @make
-      identify -verbose logo:
+      gm identify -verbose logo:

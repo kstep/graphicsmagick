@@ -1,3 +1,4 @@
+
 IMPORTANT NOTES
 
   On some platforms VISUAL C++ 7.0 fails with an internal compiler
@@ -302,4 +303,13 @@ ENVIRONMENT VARIABLES
   the GraphicsMagick documentation.
 
   The Win2K executables will work under Windows 95/98.
+
+---------------------------------------------------------------------------
+
+Copyright (C) 2003 GraphicsMagick Group
+Copyright (C) 2002 ImageMagick Studio
+
+This program is covered by multiple licenses, which are described in
+Copyright.txt. You should have received a copy of Copyright.txt with this
+package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 

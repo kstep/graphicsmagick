@@ -1,3 +1,9 @@
+2003-03-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Copyright.txt: Add copyright statements to all the files,
+	including some copyrights that ImageMagick seems to have
+	lost along the way.
+
 2003-03-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/Makefile.am: Added temporary.c and temporary.h. These
 	are not finished yet.
