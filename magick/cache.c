@@ -1712,9 +1712,7 @@ MagickExport unsigned int OpenCache(Image *image)
   */
   if (*cache_info->cache_filename == '\0')
     TemporaryFilename(cache_info->cache_filename);
-  file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
-  if (file == -1)
-    file=open(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY,0777);
+  file=open(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY,0777);
   if (file == -1)
     ThrowBinaryException(CacheWarning,"Unable to open cache",image->filename);
   if (lseek(file,cache_info->offset+cache_info->length,SEEK_SET) == -1)
