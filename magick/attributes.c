@@ -524,6 +524,7 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
         p->next->previous=p->previous;
       attribute=p;
       LiberateMemory((void **) &attribute);
+      image->taint=True;
       return(True);
     }
   if (*value == '\0')
@@ -559,6 +560,7 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
   */
   attribute->previous=p;
   p->next=attribute;
+  image->taint=True;
   return(True);
 }
 

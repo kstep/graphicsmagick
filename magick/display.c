@@ -6667,7 +6667,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Edit image comment.
       */
       TemporaryFilename(image_info->filename);
-      comment=GetImageAttribute(*image,"comment");
+      comment=GetImageAttribute(*image,"Comment");
       if ((comment != (ImageAttribute *) NULL) &&
           (comment->value != (char *) NULL))
         {
@@ -6689,7 +6689,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       status=InvokeDelegate(image_info,*image,"edit",(char *) NULL);
-      if (status != False)
+      if (status == False)
         XNoticeWidget(display,windows,"Unable to edit image comment",
           (char *) NULL);
       else
@@ -6935,7 +6935,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       status=InvokeDelegate(image_info,*image,"browse",(char *) NULL);
-      if (status != False)
+      if (status == False)
         XNoticeWidget(display,windows,"Unable to browse documentation",
           (char *) NULL);
       XDelay(display,1500);
