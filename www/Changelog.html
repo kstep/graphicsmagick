@@ -56,6 +56,9 @@
 2003-12-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/annotate.c: Use header synonyms defined by FreeType's
+        ftheader.h (included via &lt;ft2build.h&gt;) to include FreeType headers.
+        This will presumably be more portable in the future.
   <LI> configure.ac: &lt;ft2build.h&gt; is an optional prerequisite for
         &lt;freetype/freetype.h&gt; and &lt;libwmf/ipa.h&gt; so include it when
         testing for these headers.<BR>
