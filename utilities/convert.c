@@ -1830,22 +1830,34 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("xinfo",option+1) == 0)
             {
+              ImageInfo
+                **image_info_ptr;
+
               i++;
-              if ((i == argc) && (sendmode>0))
+              if ((i == argc) && (sendmode != UndefinedTransmitType))
                 MagickError(OptionError,"Missing image info",option);
               param1=(void *) argv[i];
               argv[i]=AllocateString((char *) NULL);
               sendmode=ImageTransmitType;
+              image_info_ptr=(ImageInfo **) param1;
+              if (*image_info_ptr != (ImageInfo *)NULL)
+                image_info=*image_info_ptr;
               break;
             }
           if (LocaleCompare("ximag",option+1) == 0)
             {
+              Image
+                **image_ptr;
+
               i++;
               if ((i == argc) && (sendmode != UndefinedTransmitType))
                 MagickError(OptionError,"Missing image",option);
               param2=(void *) argv[i];
               argv[i]=AllocateString((char *) NULL);
               sendmode=ImageTransmitType;
+              image_ptr=(Image **) param2;
+              if (*image_ptr != (Image *)NULL)
+                image=*image_ptr;
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
