@@ -894,18 +894,22 @@ MagickExport unsigned long SetLogEventMask(const char *events)
     }
   if (GlobExpression(events,"*[Aa]ll*"))
     log_info->events|=AllEvents;
+  if (GlobExpression(events,"*[Aa]nnotate*"))
+    log_info->events|=AnnotateEvents;
   if (GlobExpression(events,"*[Bb]lob*"))
     log_info->events|=BlobEvent;
+  if (GlobExpression(events,"*[Cc]ache*"))
+    log_info->events|=CacheEvent;
   if (GlobExpression(events,"*[Cc]oder*"))
     log_info->events|=CoderEvent;
   if (GlobExpression(events,"*[Cc]onfigure*"))
     log_info->events|=ConfigureEvent;
   if (GlobExpression(events,"*[Ll]ocale*"))
     log_info->events|=LocaleEvent;
-  if (GlobExpression(events,"*[Nn]one*"))
-    log_info->events|=NoEvents;
   if (GlobExpression(events,"*[Rr]ender*"))
     log_info->events|=RenderEvent;
+  if (GlobExpression(events,"*[X]11*"))
+    log_info->events|=X11Event;
   LiberateSemaphoreInfo(&log_semaphore);
   return(log_info->events);
 }

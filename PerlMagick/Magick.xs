@@ -254,6 +254,11 @@ static char
   {
     "Undefined", "None", "Line", "Plane", "Partition", (char *) NULL
   },
+  *LogEventTypes[] =
+  {
+    "No", "Configure", "Annotate", "Render", "Locale", "Coder",
+    "X11", "Cache", "Blob", "All", (char *) NULL
+  },
   *MethodTypes[] =
   {
     "Point", "Replace", "Floodfill", "FillToBorder", "Reset", (char *) NULL
@@ -1303,19 +1308,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     {
       if (LocaleCompare(attribute,"debug") == 0)
         {
-          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
-          if (sp < 0)
-            {
-              MagickError(OptionError,"Invalid debug type",SvPV(sval,na));
-              return;
-            }
-          if (info)
-            {
-              if (sp != 0)
-                SetLogEventMask("All");
-              else
-                SetLogEventMask("None");
-            }
+          SetLogEventMask(SvPV(sval,na));
           return;
         }
       if (LocaleCompare(attribute,"delay") == 0)
