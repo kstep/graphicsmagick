@@ -628,7 +628,7 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
 %    o status:  Method HuffmanEncodeImage returns True if all the pixels are
 %      compressed without error, otherwise False.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info..
 %
 %    o image: The image.
 %
@@ -876,7 +876,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
 %    o status:  Method Huffman2DEncodeImage returns True if all the pixels are
 %      compressed without error, otherwise False.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info..
 %
 %    o image: The image.
 %

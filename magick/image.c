@@ -1023,8 +1023,9 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CloneImageInfo() makes a copy of the given image info, or if is NULL,
-%  a new one.
+%  CloneImageInfo() makes a copy of the given image info structure.  If
+%  NULL is specified, a new image info structure is created initialized to
+%  default values.
 %
 %  The format of the CloneImageInfo method is:
 %
@@ -3245,7 +3246,7 @@ MagickExport Image **ListToGroupImage(Image *image,unsigned int *number_images)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info..
 %
 %    o argc: Specifies a pointer to an integer describing the number of
 %      elements in the argument vector.
@@ -4823,7 +4824,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info..
 %
 %    o argc: Specifies a pointer to an integer describing the number of
 %      elements in the argument vector.
@@ -6728,7 +6729,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
 %    o image: The image; returned from
 %      ReadImage.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info..
 %
 %    o sendmode: An unsigned integer value defines which transmit mode
 %      to send the image with.

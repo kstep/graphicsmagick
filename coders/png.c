@@ -2347,8 +2347,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (insert_layers && mng_type && first_mng_object)
           {
             if ((clip.left > 0) || (clip.top > 0) ||
-                (image_width < mng_width) || (clip.right < mng_width) ||
-                (image_height < mng_height) || (clip.bottom < mng_height))
+                (image_width < mng_width) || (clip.right < (long) mng_width) ||
+                (image_height < mng_height) || (clip.bottom < (long) mng_height))
               {
                 if (GetPixels(image) != (PixelPacket *) NULL)
                   {

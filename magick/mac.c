@@ -1031,7 +1031,7 @@ MagickExport struct dirent *readdir(DIR *entry)
 %      reading.  A null image is returned if there is a a memory shortage or
 %      if the image cannot be read.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info..
 %
 %    o exception: Return any errors or warnings in this structure.
 %

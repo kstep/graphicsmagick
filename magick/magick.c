@@ -692,7 +692,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info..
 %
 %    o rectify: an unsigned value other than zero rectifies the attribute for
 %      multi-frame support (user may want multi-frame but image format may not

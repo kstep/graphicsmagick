@@ -130,8 +130,9 @@ static void
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloneDrawInfo makes a duplicate of the given draw info, or if draw
-%  info is NULL, a new one.
+%  CloneDrawInfo() makes a copy of the given draw info structure.  If NULL
+%  is specified, a new image info structure is created initialized to
+%  default values.
 %
 %  The format of the CloneDrawInfo method is:
 %
@@ -140,12 +141,9 @@ static void
 %
 %  A description of each parameter follows:
 %
-%    o clone_info: Method CloneDrawInfo returns a duplicate of the given
-%      annotate info, or if annotate info is NULL a new one.
+%    o image_info: The image info.
 %
-%    o image_info: a structure of type ImageInfo.
-%
-%    o draw_info: a structure of type DrawInfo.
+%    o draw_info: The draw info.
 %
 %
 */
@@ -218,9 +216,17 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ColorFloodfillImage floodfills the designated area with a color.
-%  The floodfill algorithm is strongly based on a similar algorithm in
-%  "Graphics Gems" by Paul Heckbert.
+%  ColorFloodfill() changes the color value of any pixel that matches
+%  target and is an immediate neighbor.  If the method is
+%  FillToBorderMethod is specified, the color value is changed for any
+%  neighbor pixel that does not match the bordercolor member of image.
+%
+%  By default target must match a particular pixel color exactly.
+%  However, in many cases two colors may differ by a small amount.  The
+%  fuzz member of image defines how much tolerance is acceptable to
+%  consider two colors as the same.  For example, set fuzz to 10 and the
+%  color red at intensities of 100 and 102 respectively are now
+%  interpreted as the same color for the purposes of the floodfill.
 %
 %  The format of the ColorFloodfillImage method is:
 %
@@ -232,15 +238,13 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %
 %    o image: The image.
 %
-%    o draw_info: a structure of type DrawInfo.
+%    o draw_info: The draw info.
 %
-%    o target: A PixelPacket structure.  This is the RGB value of the target
-%      color.
+%    o target: The RGB value of the target color.
 %
-%    o x,y: Unsigned integers representing the current location of the pen.
+%    o x,y: The starting location of the operation.
 %
-%    o method: drawing method of type PrimitiveType: floodfill or fill to
-%      border.
+%    o method: Choose either FloodfillMethod or FillToBorderMethod.
 %
 %
 */
@@ -931,8 +935,8 @@ static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyDrawInfo deallocates memory associated with an
-%  DrawInfo structure.
+%  DestroyDrawInfo() deallocates memory associated with an DrawInfo
+%  structure.
 %
 %  The format of the DestroyDrawInfo method is:
 %
@@ -940,7 +944,7 @@ static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
 %
 %  A description of each parameter follows:
 %
-%    o draw_info: Specifies a pointer to an DrawInfo structure.
+%    o draw_info: The draw info.
 %
 %
 */
@@ -1063,7 +1067,7 @@ static void DestroyPolygonInfo(PolygonInfo *polygon_info)
 %
 %  A description of each parameter follows:
 %
-%    o draw_info: The address of a DrawInfo structure.
+%    o draw_info: The draw info.
 %
 %    o polygon_info: Specifies a pointer to a PolygonInfo structure.
 %
@@ -1204,7 +1208,7 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
 %
 %  A description of each parameter follows:
 %
-%    o draw_info: The address of a DrawInfo structure.
+%    o draw_info: The draw info.
 %
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
 %
@@ -1348,7 +1352,11 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DrawImage draws a primitive (line, rectangle, ellipse) on the image.
+%  Draw() allows you to draw a graphic primitive on your image.  The
+%  primitive may be represented as a string or filename.  Precede the
+%  filename with an ampersand (@) and the contents of the file are drawn
+%  on the image.  image.   You can affect how text is drawn by setting one
+%  or more members of the draw info structure.
 %
 %  The format of the DrawImage method is:
 %
@@ -1358,7 +1366,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
 %
 %    o image: The image.
 %
-%    o draw_info: The address of a DrawInfo structure.
+%    o draw_info: The draw info.
 %
 %
 */
@@ -2506,7 +2514,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 %
 %  A description of each parameter follows:
 %
-%    o draw_info: Specifies a pointer to a DrawInfo structure.
+%    o draw_info: The draw info.
 %
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
 %
@@ -2859,7 +2867,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
 %
 %  A description of each parameter follows:
 %
-%    o draw_info: The address of a DrawInfo structure.
+%    o draw_info: The draw info.
 %
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
 %
@@ -3340,7 +3348,7 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
 %
 %  A description of each parameter follows:
 %
-%    o draw_info: The address of a DrawInfo structure.
+%    o draw_info: The draw info.
 %
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
 %
@@ -3931,7 +3939,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t D r a w I n f o                                                     %
++   G e t D r a w I n f o                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3945,9 +3953,9 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info..
 %
-%    o draw_info: Specifies a pointer to a DrawInfo structure.
+%    o draw_info: The draw info.
 %
 %
 */
@@ -4001,34 +4009,43 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MatteFloodfillImage floodfills the designated area with a matte
-%  value.  The floodfill algorithm is strongly based on a similar algorithm in
-%  "Graphics Gems" by Paul Heckbert.
+%  MatteFloodfill() changes the transparency value of any pixel that
+%  matches target and is an immediate neighbor.  If the method is
+%  FillToBorderMethod is specified, the transparency value is changed for
+%  any neighbor pixel that does not match the bordercolor member of
+%  image.
+%
+%  By default target must match a particular pixel transparency exactly.
+%  However, in many cases two transparency values may differ by a small
+%  amount.  The fuzz member of image defines how much tolerance is
+%  acceptable to consider two transparency values as the same.  For
+%  example, set fuzz to 10 and the opacity values of 100 and 102
+%  respectively are now interpreted as the same value for the purposes of
+%  the floodfill.
 %
 %  The format of the MatteFloodfillImage method is:
 %
 %      unsigned int MatteFloodfillImage(Image *image,const PixelPacket target,
-%        const unsigned int matte,const int x_offset,const int y_offset,
+%        const unsigned int opacity,const int x_offset,const int y_offset,
 %        const PaintMethod method)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
-%    o target: A PixelPacket structure.  This is the RGB value of the target
-%      color.
+%    o target: The RGB value of the target color.
 %
-%    o matte: A integer value representing the amount of transparency.
+%    o opacity: The level of transparency: 0 is fully opaque and MaxRGB is
+%      fully transparent.
 %
-%    o x,y: Unsigned integers representing the current location of the pen.
+%    o x,y: The starting location of the operation.
 %
-%    o method: drawing method of type PrimitiveType: floodfill or fill to
-%      border.
+%    o method:  Choose either FloodfillMethod or FillToBorderMethod.
 %
 %
 */
 MagickExport unsigned int MatteFloodfillImage(Image *image,
-  const PixelPacket target,const unsigned int matte,const int x_offset,
+  const PixelPacket target,const unsigned int opacity,const int x_offset,
   const int y_offset,const PaintMethod method)
 {
   int
@@ -4060,12 +4077,12 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
     return(False);
   if ((y_offset < 0) || (y_offset >= (int) image->rows))
     return(False);
-  if (target.opacity == matte)
+  if (target.opacity == opacity)
     return(False);
   q=GetImagePixels(image,x_offset,y_offset,1,1);
   if (q == (PixelPacket *) NULL)
     return(False);
-  if (q->opacity == matte)
+  if (q->opacity == opacity)
     return(False);
   /*
     Allocate segment stack.
@@ -4111,9 +4128,9 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
             break;
         }
       else
-        if (MatteMatch(*q,target,image->fuzz) || (q->opacity == matte))
+        if (MatteMatch(*q,target,image->fuzz) || (q->opacity == opacity))
           break;
-      q->opacity=matte;
+      q->opacity=opacity;
       q--;
     }
     if (!SyncImagePixels(image))
@@ -4142,9 +4159,9 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
                   break;
               }
             else
-              if (MatteMatch(*q,target,image->fuzz) || (q->opacity == matte))
+              if (MatteMatch(*q,target,image->fuzz) || (q->opacity == opacity))
                 break;
-            q->opacity=matte;
+            q->opacity=opacity;
             q++;
           }
           if (!SyncImagePixels(image))
@@ -4167,7 +4184,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
               break;
           }
         else
-          if (!MatteMatch(*q,target,image->fuzz) && (q->opacity != matte))
+          if (!MatteMatch(*q,target,image->fuzz) && (q->opacity != opacity))
             break;
       }
       start=x;
@@ -4187,26 +4204,32 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method OpaqueImage changes the color of an opaque point to the pen color.
+%  OpaqueImage() changes any pixel that matches color with the color
+%  defined by fill.
+%
+%  By default color must match a particular pixel color exactly.  However,
+%  in many cases two colors may differ by a small amount.  Fuzz defines
+%  how much tolerance is acceptable to consider two colors as the same.
+%  For example, set fuzz to 10 and the color red at intensities of 100 and
+%  102 respectively are now interpreted as the same color.
 %
 %  The format of the OpaqueImage method is:
 %
 %      unsigned int OpaqueImage(Image *image,const PixelPacket target,
-%        const PixelPacket pen_color)
+%        const PixelPacket fill)
 %
 %  A description of each parameter follows:
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: The image.
 %
-%    o target: the color to search for in the image.
+%    o target: The RGB value of the target color.
 %
-%    o pen_color: the color to replace it with.
+%    o fill: The replacement color.
 %
 %
 */
 MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
-  const PixelPacket pen_color)
+  const PixelPacket fill)
 {
 #define OpaqueImageText  "  Setting opaque color in the image...  "
 
@@ -4241,7 +4264,7 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
         for (x=0; x < (int) image->columns; x++)
         {
           if (ColorMatch(*q,target,image->fuzz))
-            *q=pen_color;
+            *q=fill;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -4259,7 +4282,7 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
       for (i=0; i < (int) image->colors; i++)
       {
         if (ColorMatch(image->colormap[i],target,image->fuzz))
-          image->colormap[i]=pen_color;
+          image->colormap[i]=fill;
         if (QuantumTick(i,image->colors))
           MagickMonitor(OpaqueImageText,i,image->colors);
       }
@@ -5009,9 +5032,14 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method TransparentImage creates a matte image associated with the
-%  image.  All pixel locations are initially set to opaque.  Any pixel
-%  that matches the specified color are set to supplied opacity value.
+%  TransparentImage() changes the opacity value associated with any pixel
+%  that matches color to the value defined by opacity.
+%
+%  By default color must match a particular pixel color exactly.  However,
+%  in many cases two colors may differ by a small amount.  Fuzz defines
+%  how much tolerance is acceptable to consider two colors as the same.
+%  For example, set fuzz to 10 and the color red at intensities of 100 and
+%  102 respectively are now interpreted as the same color.
 %
 %  The format of the TransparentImage method is:
 %
@@ -5020,10 +5048,9 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
 %
 %  A description of each parameter follows:
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: The image.
 %
-%    o target: The color to search for in the image.
+%    o target: The RGB value of the target color.
 %
 %
 */

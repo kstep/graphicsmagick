@@ -4468,7 +4468,7 @@ MagickExport void XHighlightRectangle(Display *display,Window window,
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info..
 %
 %    o ximage_info: Specifies a pointer to an XImportInfo structure.
 %

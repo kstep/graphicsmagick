@@ -740,10 +740,10 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     colorspace =
     {
       TRUE, 4,
-      NIFRGB_R, DATA_TYPE_UNSIGNED_BYTE,
-      NIFRGB_G, DATA_TYPE_UNSIGNED_BYTE,
-      NIFRGB_B, DATA_TYPE_UNSIGNED_BYTE,
-      ALPHA, DATA_TYPE_UNSIGNED_BYTE
+      { { NIFRGB_R, DATA_TYPE_UNSIGNED_BYTE },
+        { NIFRGB_G, DATA_TYPE_UNSIGNED_BYTE },
+        { NIFRGB_B, DATA_TYPE_UNSIGNED_BYTE },
+        { ALPHA, DATA_TYPE_UNSIGNED_BYTE } }
     };
 
   FPXCompressionOption
@@ -818,7 +818,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     compression=JPEG_UNSPECIFIED;
   (void) strcpy(filename,image->filename);
   if ((image->file == stdout) || image->pipet ||
-      (image->blob.data != (char *) NULL))
+      (image->blob.data != (unsigned char *) NULL))
     TemporaryFilename(filename);
   else
     CloseBlob(image);
@@ -1087,7 +1087,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   FPX_ClearSystem();
   LiberateMemory((void **) &pixels);
   if ((image->file == stdout) || image->pipet ||
-      (image->blob.data != (char *) NULL))
+      (image->blob.data != (unsigned char *) NULL))
     {
       FILE
         *file;

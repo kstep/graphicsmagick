@@ -85,7 +85,7 @@
 %    o image:  Method BlobToImage returns an image from the supplied blob.
 %      If an error occurs NULL is returned.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info..
 %
 %    o blob: The address of a character stream in one of the image formats
 %      understood by ImageMagick.
@@ -368,7 +368,7 @@ MagickExport void GetBlobInfo(BlobInfo *blob)
 %      desired image format (e.g. JPEG, GIF, etc.).  If an error occurs
 %      NULL is returned.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info..
 %
 %    o image: The image.
 %
@@ -715,7 +715,7 @@ MagickExport void MSBOrderShort(register char *p,const size_t length)
 %    o status:  Method OpenBlob returns True if the file is successfully
 %      opened otherwise False.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info..
 %
 %    o image: The image.
 %

@@ -2979,8 +2979,9 @@ MagickExport Image *SpreadImage(Image *image,const unsigned int amount,
       {
         x_distance=(rand() & (amount+1))-quantum;
         y_distance=(rand() & (amount+1))-quantum;
-      } while (((x+x_distance) < 0) || ((x+x_distance) >= image->columns) ||
-               ((y+y_distance) < 0) || ((y+y_distance) >= image->rows));
+      } while (((x+x_distance) < 0) || ((y+y_distance) < 0) ||
+               ((x+x_distance) >= (int) image->columns) ||
+	       ((y+y_distance) >= (int) image->rows));
       *q++=GetOnePixel(image,x+x_distance,y+y_distance);
     }
     if (!SyncImagePixels(spread_image))

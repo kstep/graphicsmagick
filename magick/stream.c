@@ -344,7 +344,7 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 %    o status: Method ReadStream returns True if the image pixels are
 %      streamed to the user supplied callback method otherwise False.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info..
 %
 %    o stream: a callback method.
 %
@@ -546,7 +546,7 @@ static unsigned int SyncPixelStream(Image *image)
 %    o status: Method WriteStream returns True if the image pixels are
 %      streamed to the user supplied callback method otherwise False.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info..
 %
 %    o stream: a callback method.
 %

@@ -363,7 +363,7 @@ static struct
       {"green", DoubleReference}, {"blue", DoubleReference} } },
     { "Map", { {"image", ImageReference}, {"dither", BooleanTypes} } },
     { "MatteFloodfill", { {"geom", StringReference}, {"x", IntegerReference},
-      {"y", IntegerReference}, {"matte", IntegerReference},
+      {"y", IntegerReference}, {"opacity", IntegerReference},
       {"bordercolor", StringReference}, {"fuzz", DoubleReference} } },
     { "Modulate", { {"factor", StringReference}, {"bright", DoubleReference},
       {"satur", DoubleReference}, {"hue", DoubleReference} } },
@@ -5107,7 +5107,7 @@ Mogrify(ref,...)
             target;
 
           unsigned int
-            matte;
+            opacity;
 
           if (first)
             {
@@ -5125,9 +5125,9 @@ Mogrify(ref,...)
                 QueryColorDatabase(argument_list[4].string_reference,
                   &fill_color);
             }
-          matte=TransparentOpacity;
+          opacity=TransparentOpacity;
           if (attribute_flag[3])
-            matte=argument_list[3].int_reference;
+            opacity=argument_list[3].int_reference;
           if (!image->matte)
             SetImageOpacity(image,OpaqueOpacity);
           target=GetOnePixel(image,rectangle_info.x % image->columns,
@@ -5136,7 +5136,7 @@ Mogrify(ref,...)
             target=fill_color;
           if (attribute_flag[5])
             image->fuzz=argument_list[5].double_reference;
-          MatteFloodfillImage(image,target,matte,rectangle_info.x,
+          MatteFloodfillImage(image,target,opacity,rectangle_info.x,
             rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
             FloodfillMethod);
           break;

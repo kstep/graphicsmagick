@@ -288,7 +288,6 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
   hid_t
     dataset,
     dataspace,
-    datatype,
     file;
 
   hsize_t
@@ -296,6 +295,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 
   int
     **pixels,
+    status,
     y;
 
   register int
@@ -305,8 +305,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     *q;
 
   unsigned int
-    scene,
-    status;
+    scene;
 
   /*
     Open output image file.
@@ -330,7 +329,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     dataspace=H5Screate_simple(2,dimensions,NULL);
     dataset=H5Dcreate(file,"IntArray",H5T_STD_U8BE,dataspace,H5P_DEFAULT);
     pixels=(int **) AcquireMemory(image->rows*sizeof(int *));
-    for (y=0; y < image->rows; y++)
+    for (y=0; y < (int) image->rows; y++)
     {
       pixels[y]=(int *) AcquireMemory(image->columns*sizeof(int));
       q=SetImagePixels(image,0,y,image->columns,1);

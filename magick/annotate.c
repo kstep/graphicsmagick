@@ -105,7 +105,7 @@ static unsigned int
 %
 %    o image: The image.
 %
-%    o draw_info: The address of a DrawInfo structure.
+%    o draw_info: The draw info.
 %
 %
 */
@@ -392,7 +392,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %
 %    o image: The image.
 %
-%    o draw_info: Specifies a pointer to a DrawInfo structure.
+%    o draw_info: The draw info.
 %
 %    o metrics: Method GetFontMetrics returns the font metrics.
 %
@@ -442,7 +442,7 @@ MagickExport unsigned int GetFontMetrics(Image *image,
 %
 %    o image: The image.
 %
-%    o draw_info: The address of a DrawInfo structure.
+%    o draw_info: The draw info.
 %
 %    o offset: (x,y) location of text relative to image.
 %
@@ -531,7 +531,7 @@ static unsigned int RenderFont(Image *image,const DrawInfo *draw_info,
 %
 %    o image: The image.
 %
-%    o draw_info: The address of a DrawInfo structure.
+%    o draw_info: The draw info.
 %
 %    o offset: (x,y) location of text relative to image.
 %
@@ -782,7 +782,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
 %
 %    o image: The image.
 %
-%    o draw_info: The address of a DrawInfo structure.
+%    o draw_info: The draw info.
 %
 %    o offset: (x,y) location of text relative to image.
 %
@@ -1196,7 +1196,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
 %
 %    o image: The image.
 %
-%    o draw_info: The address of a DrawInfo structure.
+%    o draw_info: The draw info.
 %
 %    o offset: (x,y) location of text relative to image.
 %

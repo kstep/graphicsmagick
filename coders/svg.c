@@ -1633,10 +1633,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
           page.x=0;
           page.y=0;
           geometry=(char *) NULL;
-          if (svg_info->size != (char *) NULL)
-            geometry=PostscriptGeometry(svg_info->size);
           if (svg_info->page != (char *) NULL)
             geometry=PostscriptGeometry(svg_info->page);
+          else
+            if (svg_info->size != (char *) NULL)
+              geometry=PostscriptGeometry(svg_info->size);
           if (geometry != (char *) NULL)
             {
               p=strchr(geometry,'>');

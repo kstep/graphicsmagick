@@ -725,6 +725,8 @@ long parse8BIM(FILE *ifile, FILE *ofile)
     savedpos,
     currentpos;
 
+  dataset = 0;
+  recnum = 0;
   line = (char *) malloc(inputlen);     
   name = token = (char *)NULL;
   while((line = super_fgets(line,&inputlen,ifile))!=NULL)
@@ -1127,6 +1129,7 @@ int main(int argc, char *argv[])
 
   align = mode = 0;
   length = -1;
+  xfile = (FILE *) NULL;
   buffer = (unsigned char *)NULL;
 
   for (i=1; i<argc; i++)
