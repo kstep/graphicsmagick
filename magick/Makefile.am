@@ -102,15 +102,43 @@ pkg_DATA = modules.mgk
 
 # Modules which are to be built
 if WITH_MODULES
-pkg_LTLIBRARIES   = 8bim.la avs.la bmp.la cache.la cmyk.la dcm.la dps.la ept.la \
-  fax.la fpx.la fits.la gif.la gray.la gradation.la hdf.la histogram.la \
-  html.la icc.la icon.la iptc.la jbig.la jpeg.la label.la logo.la map.la \
-  matte.la miff.la mono.la mtv.la pcd.la pcl.la pcx.la pdb.la pdf.la \
-  pict.la png.la pix.la plasma.la pnm.la preview.la ps.la ps2.la ps3.la \
-  psd.la pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la \
-  sun.la svg.la tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la \
-  uyvy.la vicar.la vid.la viff.la wbmp.la x.la xbm.la xc.la xpm.la \
-  xwd.la yuv.la
+if HasDPS
+DSP_LA=dps.la
+endif # HasDPS
+if HasFPX
+FPX_LA=fpx.la
+endif # HasFPX
+if HasHDF
+HDF_LA=hdf.la
+endif # HasHDF
+if HasJBIG
+JBIG_LA=jbig.la
+endif # HasJBIG
+if HasJPEG
+JPEG_LA=jpeg.la
+endif # HasJPEG
+if HasPNG
+PNG_LA=png.la
+endif # HasPNG
+if HasTIFF
+TIFF_LA=tiff.la
+endif # HasTIFF
+if HasTTF
+TTF_LA=ttf.la
+endif # HasTTF
+if HasX11
+X_LA=x.la
+XWD_LA=xwd.la
+endif # HasX11
+pkg_LTLIBRARIES   = 8bim.la avs.la bmp.la cache.la cmyk.la dcm.la \
+  $(DSP_LA) ept.la fax.la $(FPX_LA) fits.la gif.la gray.la gradation.la \
+  $(HDF_LA) histogram.la html.la icc.la icon.la iptc.la $(JBIG_LA) \
+  $(JPEG_LA) label.la logo.la map.la matte.la miff.la mono.la mtv.la \
+  pcd.la pcl.la pcx.la pdb.la pdf.la pict.la $(PNG_LA) pix.la plasma.la \
+  pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la rgb.la rla.la \
+  rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la tga.la $(TIFF_LA) \
+  tile.la tim.la $(TTF_LA) txt.la uil.la uyvy.la vicar.la vid.la viff.la \
+  wbmp.la $(X_LA) xbm.la xc.la xpm.la $(XWD_LA) yuv.la
 else
 pkg_LTLIBRARIES   =
 endif # WITH_MODULES

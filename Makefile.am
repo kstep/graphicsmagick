@@ -70,12 +70,12 @@ combine_SOURCES  = combine.c
 # Libtool libraries, dependencies, and linker flags used by all executables
 if WITH_MODULES
 LDADD		 = $(MAGICK_LIB) $(top_builddir)/ltdl/libltdlc.la
-DEPENDENCIES     = $(LIBLTDL) $(MAGICK_LIB)
+#DEPENDENCIES     = $(LIBLTDL) $(MAGICK_LIB)
 LDFLAGS          = @DLLDFLAGS@
 else
 LDADD		 = $(MAGICK_LIB)
-DEPENDENCIES     = $(MAGICK_LIB)
-LDFLAGS          = 
+#DEPENDENCIES     = 
+#LDFLAGS          = 
 endif # WITH_MODULES
 
 # Manual pages to install

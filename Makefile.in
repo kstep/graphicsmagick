@@ -1,6 +1,6 @@
 # Makefile.in generated automatically by automake 1.4a from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-9, 2000 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -231,10 +231,10 @@ identify_SOURCES = identify.c
 combine_SOURCES = combine.c
 @WITH_MODULES_TRUE@LDADD = @WITH_MODULES_TRUE@$(MAGICK_LIB) $(top_builddir)/ltdl/libltdlc.la
 @WITH_MODULES_FALSE@LDADD = @WITH_MODULES_FALSE@$(MAGICK_LIB)
-@WITH_MODULES_TRUE@DEPENDENCIES = @WITH_MODULES_TRUE@$(LIBLTDL) $(MAGICK_LIB)
-@WITH_MODULES_FALSE@DEPENDENCIES = @WITH_MODULES_FALSE@$(MAGICK_LIB)
+#DEPENDENCIES     = $(LIBLTDL) $(MAGICK_LIB)
 @WITH_MODULES_TRUE@LDFLAGS = @WITH_MODULES_TRUE@@DLLDFLAGS@
-@WITH_MODULES_FALSE@LDFLAGS = 
+#DEPENDENCIES     = 
+#LDFLAGS          = 
 
 # Manual pages to install
 man_MANS = $(MANPAGES)
@@ -338,6 +338,10 @@ man5dir = $(mandir)/man5
 MANS = $(man_MANS)
 
 NROFF = nroff
+depcomp = $(SHELL) $(top_srcdir)/depcomp
+DEP_FILES =  @AMDEP@ $(DEPDIR)/animate.Po $(DEPDIR)/combine.Po \
+$(DEPDIR)/convert.Po $(DEPDIR)/display.Po $(DEPDIR)/identify.Po \
+$(DEPDIR)/import.Po $(DEPDIR)/mogrify.Po $(DEPDIR)/montage.Po
 DIST_COMMON =  Makefile.am Makefile.in acconfig.h aclocal.m4 \
 config.guess config.sub configure configure.in depcomp install-sh \
 ltconfig ltmain.sh missing mkinstalldirs
@@ -346,10 +350,6 @@ ltconfig ltmain.sh missing mkinstalldirs
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-depcomp = $(SHELL) $(top_srcdir)/depcomp
-DEP_FILES =  @AMDEP@ $(DEPDIR)/animate.Po $(DEPDIR)/combine.Po \
-$(DEPDIR)/convert.Po $(DEPDIR)/display.Po $(DEPDIR)/identify.Po \
-$(DEPDIR)/import.Po $(DEPDIR)/mogrify.Po $(DEPDIR)/montage.Po
 SOURCES = $(animate_SOURCES) $(combine_SOURCES) $(convert_SOURCES) $(display_SOURCES) $(identify_SOURCES) $(import_SOURCES) $(mogrify_SOURCES) $(montage_SOURCES)
 OBJECTS = $(am_animate_OBJECTS) $(am_combine_OBJECTS) $(am_convert_OBJECTS) $(am_display_OBJECTS) $(am_identify_OBJECTS) $(am_import_OBJECTS) $(am_mogrify_OBJECTS) $(am_montage_OBJECTS)
 
@@ -359,7 +359,7 @@ all: all-redirect
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -625,7 +625,7 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	  done | \
 	  $(AWK) '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
-	mkid -f$$here/ID $$unique $(LISP)
+	mkid -fID $$unique $(LISP)
 
 TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
@@ -653,6 +653,45 @@ distclean-tags:
 	-rm -f TAGS ID
 
 maintainer-clean-tags:
+
+@AMDEP@include $(DEPDIR)/animate.Po
+@AMDEP@include $(DEPDIR)/combine.Po
+@AMDEP@include $(DEPDIR)/convert.Po
+@AMDEP@include $(DEPDIR)/display.Po
+@AMDEP@include $(DEPDIR)/identify.Po
+@AMDEP@include $(DEPDIR)/import.Po
+@AMDEP@include $(DEPDIR)/mogrify.Po
+@AMDEP@include $(DEPDIR)/montage.Po
+
+mostlyclean-depend:
+
+clean-depend:
+
+distclean-depend:
+	-rm -rf $(DEPDIR)
+
+maintainer-clean-depend:
+
+@AMDEP@CCDEPMODE = @CCDEPMODE@
+
+.c.o:
+@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
+
+.c.lo:
+@AMDEP@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
+@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(LTCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
+
+.c.obj:
+@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c -o $@ `cygpath -w $<`
+
 
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -710,10 +749,12 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pR $$d/$$file $(distdir); \
+	    cp -pR $$d/$$file $(distdir) \
+	    || exit 1; \
 	  else \
 	    test -f $(distdir)/$$file \
-	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	    || cp -p $$d/$$file $(distdir)/$$file \
+	    || exit 1; \
 	  fi; \
 	done
 	for subdir in $(SUBDIRS); do \
@@ -726,45 +767,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-
-@AMDEP@include $(DEPDIR)/animate.Po
-@AMDEP@include $(DEPDIR)/combine.Po
-@AMDEP@include $(DEPDIR)/convert.Po
-@AMDEP@include $(DEPDIR)/display.Po
-@AMDEP@include $(DEPDIR)/identify.Po
-@AMDEP@include $(DEPDIR)/import.Po
-@AMDEP@include $(DEPDIR)/mogrify.Po
-@AMDEP@include $(DEPDIR)/montage.Po
-
-mostlyclean-depend:
-
-clean-depend:
-
-distclean-depend:
-	-rm -rf $(DEPDIR)
-
-maintainer-clean-depend:
-
-@AMDEP@CCDEPMODE = @CCDEPMODE@
-
-.c.o:
-@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
-@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(COMPILE) -c -o $@ $<
-
-.c.lo:
-@AMDEP@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
-@AMDEP@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
-@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(LTCOMPILE) -c -o $@ $<
-
-.c.obj:
-@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
-@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(COMPILE) -c -o $@ `cygpath -w $<`
-
 info-am:
 info: info-recursive
 dvi-am:
@@ -847,15 +849,14 @@ uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
 all-recursive check-recursive installcheck-recursive info-recursive \
 dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir \
-mostlyclean-depend distclean-depend clean-depend \
-maintainer-clean-depend info-am info dvi-am dvi check-local check \
-check-am installcheck-am installcheck install-exec-local \
-install-exec-am install-exec install-data-am install-data install-am \
-install uninstall-am uninstall all-redirect all-am all install-strip \
-installdirs-am installdirs mostlyclean-generic distclean-generic \
-clean-generic maintainer-clean-generic clean mostlyclean distclean \
-maintainer-clean
+distclean-tags clean-tags maintainer-clean-tags mostlyclean-depend \
+distclean-depend clean-depend maintainer-clean-depend distdir info-am \
+info dvi-am dvi check-local check check-am installcheck-am installcheck \
+install-exec-local install-exec-am install-exec install-data-am \
+install-data install-am install uninstall-am uninstall all-redirect \
+all-am all install-strip installdirs-am installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 dist-hook:
 	( \

@@ -266,15 +266,27 @@ pkgdir = $(libdir)/ImageMagick/modules/coders
 
 # Architecture-dependent data files installed with modules
 pkg_DATA = modules.mgk
-@WITH_MODULES_TRUE@pkg_LTLIBRARIES = @WITH_MODULES_TRUE@8bim.la avs.la bmp.la cache.la cmyk.la dcm.la dps.la ept.la \
-@WITH_MODULES_TRUE@  fax.la fpx.la fits.la gif.la gray.la gradation.la hdf.la histogram.la \
-@WITH_MODULES_TRUE@  html.la icc.la icon.la iptc.la jbig.la jpeg.la label.la logo.la map.la \
-@WITH_MODULES_TRUE@  matte.la miff.la mono.la mtv.la pcd.la pcl.la pcx.la pdb.la pdf.la \
-@WITH_MODULES_TRUE@  pict.la png.la pix.la plasma.la pnm.la preview.la ps.la ps2.la ps3.la \
-@WITH_MODULES_TRUE@  psd.la pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la \
-@WITH_MODULES_TRUE@  sun.la svg.la tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la \
-@WITH_MODULES_TRUE@  uyvy.la vicar.la vid.la viff.la wbmp.la x.la xbm.la xc.la xpm.la \
-@WITH_MODULES_TRUE@  xwd.la yuv.la
+
+# Modules which are to be built
+@WITH_MODULES_TRUE@@HasDPS_TRUE@DSP_LA = @WITH_MODULES_TRUE@@HasDPS_TRUE@dps.la
+@WITH_MODULES_TRUE@@HasFPX_TRUE@FPX_LA = @WITH_MODULES_TRUE@@HasFPX_TRUE@fpx.la
+@WITH_MODULES_TRUE@@HasHDF_TRUE@HDF_LA = @WITH_MODULES_TRUE@@HasHDF_TRUE@hdf.la
+@WITH_MODULES_TRUE@@HasJBIG_TRUE@JBIG_LA = @WITH_MODULES_TRUE@@HasJBIG_TRUE@jbig.la
+@WITH_MODULES_TRUE@@HasJPEG_TRUE@JPEG_LA = @WITH_MODULES_TRUE@@HasJPEG_TRUE@jpeg.la
+@WITH_MODULES_TRUE@@HasPNG_TRUE@PNG_LA = @WITH_MODULES_TRUE@@HasPNG_TRUE@png.la
+@WITH_MODULES_TRUE@@HasTIFF_TRUE@TIFF_LA = @WITH_MODULES_TRUE@@HasTIFF_TRUE@tiff.la
+@WITH_MODULES_TRUE@@HasTTF_TRUE@TTF_LA = @WITH_MODULES_TRUE@@HasTTF_TRUE@ttf.la
+@WITH_MODULES_TRUE@@HasX11_TRUE@X_LA = @WITH_MODULES_TRUE@@HasX11_TRUE@x.la
+@WITH_MODULES_TRUE@@HasX11_TRUE@XWD_LA = @WITH_MODULES_TRUE@@HasX11_TRUE@xwd.la
+@WITH_MODULES_TRUE@pkg_LTLIBRARIES = @WITH_MODULES_TRUE@8bim.la avs.la bmp.la cache.la cmyk.la dcm.la \
+@WITH_MODULES_TRUE@  $(DSP_LA) ept.la fax.la $(FPX_LA) fits.la gif.la gray.la gradation.la \
+@WITH_MODULES_TRUE@  $(HDF_LA) histogram.la html.la icc.la icon.la iptc.la $(JBIG_LA) \
+@WITH_MODULES_TRUE@  $(JPEG_LA) label.la logo.la map.la matte.la miff.la mono.la mtv.la \
+@WITH_MODULES_TRUE@  pcd.la pcl.la pcx.la pdb.la pdf.la pict.la $(PNG_LA) pix.la plasma.la \
+@WITH_MODULES_TRUE@  pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la rgb.la rla.la \
+@WITH_MODULES_TRUE@  rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la tga.la $(TIFF_LA) \
+@WITH_MODULES_TRUE@  tile.la tim.la $(TTF_LA) txt.la uil.la uyvy.la vicar.la vid.la viff.la \
+@WITH_MODULES_TRUE@  wbmp.la $(X_LA) xbm.la xc.la xpm.la $(XWD_LA) yuv.la
 @WITH_MODULES_FALSE@pkg_LTLIBRARIES = 
 
 # AVS module
