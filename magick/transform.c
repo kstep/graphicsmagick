@@ -404,22 +404,40 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
         p=GetPixelCache(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
-        {
-          if (!ColorMatch(*p,corners[0],image->fuzz))
-            if (x < page_info.x)
-              page_info.x=x;
-          if (!ColorMatch(*p,corners[1],image->fuzz))
-            if (x > (int) page_info.width)
-              page_info.width=x;
-          if (!ColorMatch(*p,corners[0],image->fuzz))
-            if (y < page_info.y)
-              page_info.y=y;
-          if (!ColorMatch(*p,corners[2],image->fuzz))
-            if (y > (int) page_info.height)
-              page_info.height=y;
-          p++;
-        }
+        if (image->matte)
+          for (x=0; x < (int) image->columns; x++)
+          {
+            if (p->opacity != corners[0].opacity)
+              if (x < page_info.x)
+                page_info.x=x;
+            if (p->opacity != corners[1].opacity)
+              if (x > (int) page_info.width)
+                page_info.width=x;
+            if (p->opacity != corners[0].opacity)
+              if (y < page_info.y)
+                page_info.y=y;
+            if (p->opacity != corners[2].opacity)
+              if (y > (int) page_info.height)
+                page_info.height=y;
+            p++;
+          }
+        else
+          for (x=0; x < (int) image->columns; x++)
+          {
+            if (!ColorMatch(*p,corners[0],image->fuzz))
+              if (x < page_info.x)
+                page_info.x=x;
+            if (!ColorMatch(*p,corners[1],image->fuzz))
+              if (x > (int) page_info.width)
+                page_info.width=x;
+            if (!ColorMatch(*p,corners[0],image->fuzz))
+              if (y < page_info.y)
+                page_info.y=y;
+            if (!ColorMatch(*p,corners[2],image->fuzz))
+              if (y > (int) page_info.height)
+                page_info.height=y;
+            p++;
+          }
       }
       if ((page_info.width != 0) || (page_info.height != 0))
         {
