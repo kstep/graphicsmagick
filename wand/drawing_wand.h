@@ -10,115 +10,225 @@ extern "C" {
 
 #include "wand/pixel_wand.h"
 
+#undef DestroyDrawingWand
 #define DestroyDrawingWand MagickDestroyDrawingWand
+#undef DrawAffine
 #define DrawAffine MagickDrawAffine
+#undef DrawAllocateWand
 #define DrawAllocateWand MagickDrawAllocateWand
+#undef DrawAnnotation
 #define DrawAnnotation MagickDrawAnnotation
+#undef DrawArc
 #define DrawArc MagickDrawArc
+#undef DrawBezier
 #define DrawBezier MagickDrawBezier
+#undef DrawCircle
 #define DrawCircle MagickDrawCircle
+#undef DrawColor
 #define DrawColor MagickDrawColor
+#undef DrawComment
 #define DrawComment MagickDrawComment
+#undef DrawComposite
 #define DrawComposite MagickDrawComposite
+#undef DrawEllipse
 #define DrawEllipse MagickDrawEllipse
+#undef DrawGetClipPath
 #define DrawGetClipPath MagickDrawGetClipPath
+#undef DrawGetClipRule
 #define DrawGetClipRule MagickDrawGetClipRule
+#undef DrawGetClipUnits
 #define DrawGetClipUnits MagickDrawGetClipUnits
+#undef DrawGetFillColor
 #define DrawGetFillColor MagickDrawGetFillColor
+#undef DrawGetFillOpacity
 #define DrawGetFillOpacity MagickDrawGetFillOpacity
+#undef DrawGetFillRule
 #define DrawGetFillRule MagickDrawGetFillRule
+#undef DrawGetFont
 #define DrawGetFont MagickDrawGetFont
+#undef DrawGetFontFamily
 #define DrawGetFontFamily MagickDrawGetFontFamily
+#undef DrawGetFontSize
 #define DrawGetFontSize MagickDrawGetFontSize
+#undef DrawGetFontStretch
 #define DrawGetFontStretch MagickDrawGetFontStretch
+#undef DrawGetFontStyle
 #define DrawGetFontStyle MagickDrawGetFontStyle
+#undef DrawGetFontWeight
 #define DrawGetFontWeight MagickDrawGetFontWeight
+#undef DrawGetGravity
 #define DrawGetGravity MagickDrawGetGravity
+#undef DrawGetStrokeAntialias
 #define DrawGetStrokeAntialias MagickDrawGetStrokeAntialias
+#undef DrawGetStrokeColor
 #define DrawGetStrokeColor MagickDrawGetStrokeColor
+#undef DrawGetStrokeDashArray
 #define DrawGetStrokeDashArray MagickDrawGetStrokeDashArray
+#undef DrawGetStrokeDashOffset
 #define DrawGetStrokeDashOffset MagickDrawGetStrokeDashOffset
+#undef DrawGetStrokeLineCap
 #define DrawGetStrokeLineCap MagickDrawGetStrokeLineCap
+#undef DrawGetStrokeLineJoin
 #define DrawGetStrokeLineJoin MagickDrawGetStrokeLineJoin
+#undef DrawGetStrokeMiterLimit
 #define DrawGetStrokeMiterLimit MagickDrawGetStrokeMiterLimit
+#undef DrawGetStrokeOpacity
 #define DrawGetStrokeOpacity MagickDrawGetStrokeOpacity
+#undef DrawGetStrokeWidth
 #define DrawGetStrokeWidth MagickDrawGetStrokeWidth
+#undef DrawGetTextAntialias
 #define DrawGetTextAntialias MagickDrawGetTextAntialias
+#undef DrawGetTextDecoration
 #define DrawGetTextDecoration MagickDrawGetTextDecoration
+#undef DrawGetTextEncoding
 #define DrawGetTextEncoding MagickDrawGetTextEncoding
+#undef DrawGetTextUnderColor
 #define DrawGetTextUnderColor MagickDrawGetTextUnderColor
+#undef DrawLine
 #define DrawLine MagickDrawLine
+#undef DrawMatte
 #define DrawMatte MagickDrawMatte
+#undef DrawPathClose
 #define DrawPathClose MagickDrawPathClose
+#undef DrawPathCurveToAbsolute
 #define DrawPathCurveToAbsolute MagickDrawPathCurveToAbsolute
+#undef DrawPathCurveToQuadraticBezierAbsolute
 #define DrawPathCurveToQuadraticBezierAbsolute MagickDrawPathCurveToQuadraticBezierAbsolute
+#undef DrawPathCurveToQuadraticBezierRelative
 #define DrawPathCurveToQuadraticBezierRelative MagickDrawPathCurveToQuadraticBezierRelative
+#undef DrawPathCurveToQuadraticBezierSmoothAbsolute
 #define DrawPathCurveToQuadraticBezierSmoothAbsolute MagickDrawPathCurveToQuadraticBezierSmoothAbsolute
+#undef DrawPathCurveToQuadraticBezierSmoothRelative
 #define DrawPathCurveToQuadraticBezierSmoothRelative MagickDrawPathCurveToQuadraticBezierSmoothRelative
+#undef DrawPathCurveToRelative
 #define DrawPathCurveToRelative MagickDrawPathCurveToRelative
+#undef DrawPathCurveToSmoothAbsolute
 #define DrawPathCurveToSmoothAbsolute MagickDrawPathCurveToSmoothAbsolute
+#undef DrawPathCurveToSmoothRelative
 #define DrawPathCurveToSmoothRelative MagickDrawPathCurveToSmoothRelative
+#undef DrawPathEllipticArcAbsolute
 #define DrawPathEllipticArcAbsolute MagickDrawPathEllipticArcAbsolute
+#undef DrawPathEllipticArcRelative
 #define DrawPathEllipticArcRelative MagickDrawPathEllipticArcRelative
+#undef DrawPathFinish
 #define DrawPathFinish MagickDrawPathFinish
+#undef DrawPathLineToAbsolute
 #define DrawPathLineToAbsolute MagickDrawPathLineToAbsolute
+#undef DrawPathLineToHorizontalAbsolute
 #define DrawPathLineToHorizontalAbsolute MagickDrawPathLineToHorizontalAbsolute
+#undef DrawPathLineToHorizontalRelative
 #define DrawPathLineToHorizontalRelative MagickDrawPathLineToHorizontalRelative
+#undef DrawPathLineToRelative
 #define DrawPathLineToRelative MagickDrawPathLineToRelative
+#undef DrawPathLineToVerticalAbsolute
 #define DrawPathLineToVerticalAbsolute MagickDrawPathLineToVerticalAbsolute
+#undef DrawPathLineToVerticalRelative
 #define DrawPathLineToVerticalRelative MagickDrawPathLineToVerticalRelative
+#undef DrawPathMoveToAbsolute
 #define DrawPathMoveToAbsolute MagickDrawPathMoveToAbsolute
+#undef DrawPathMoveToRelative
 #define DrawPathMoveToRelative MagickDrawPathMoveToRelative
+#undef DrawPathStart
 #define DrawPathStart MagickDrawPathStart
+#undef DrawPeekGraphicContext
 #define DrawPeekGraphicContext MagickDrawPeekGraphicContext
+#undef DrawPoint
 #define DrawPoint MagickDrawPoint
+#undef DrawPolygon
 #define DrawPolygon MagickDrawPolygon
+#undef DrawPolyline
 #define DrawPolyline MagickDrawPolyline
+#undef DrawPopClipPath
 #define DrawPopClipPath MagickDrawPopClipPath
+#undef DrawPopDefs
 #define DrawPopDefs MagickDrawPopDefs
+#undef DrawPopGraphicContext
 #define DrawPopGraphicContext MagickDrawPopGraphicContext
+#undef DrawPopPattern
 #define DrawPopPattern MagickDrawPopPattern
+#undef DrawPushClipPath
 #define DrawPushClipPath MagickDrawPushClipPath
+#undef DrawPushDefs
 #define DrawPushDefs MagickDrawPushDefs
+#undef DrawPushGraphicContext
 #define DrawPushGraphicContext MagickDrawPushGraphicContext
+#undef DrawPushPattern
 #define DrawPushPattern MagickDrawPushPattern
+#undef DrawRectangle
 #define DrawRectangle MagickDrawRectangle
+#undef DrawRender
 #define DrawRender MagickDrawRender
+#undef DrawRotate
 #define DrawRotate MagickDrawRotate
+#undef DrawRoundRectangle
 #define DrawRoundRectangle MagickDrawRoundRectangle
+#undef DrawScale
 #define DrawScale MagickDrawScale
+#undef DrawSetClipPath
 #define DrawSetClipPath MagickDrawSetClipPath
+#undef DrawSetClipRule
 #define DrawSetClipRule MagickDrawSetClipRule
+#undef DrawSetClipUnits
 #define DrawSetClipUnits MagickDrawSetClipUnits
+#undef DrawSetFillColor
 #define DrawSetFillColor MagickDrawSetFillColor
+#undef DrawSetFillOpacity
 #define DrawSetFillOpacity MagickDrawSetFillOpacity
+#undef DrawSetFillPatternURL
 #define DrawSetFillPatternURL MagickDrawSetFillPatternURL
+#undef DrawSetFillRule
 #define DrawSetFillRule MagickDrawSetFillRule
+#undef DrawSetFont
 #define DrawSetFont MagickDrawSetFont
+#undef DrawSetFontFamily
 #define DrawSetFontFamily MagickDrawSetFontFamily
+#undef DrawSetFontSize
 #define DrawSetFontSize MagickDrawSetFontSize
+#undef DrawSetFontStretch
 #define DrawSetFontStretch MagickDrawSetFontStretch
+#undef DrawSetFontStyle
 #define DrawSetFontStyle MagickDrawSetFontStyle
+#undef DrawSetFontWeight
 #define DrawSetFontWeight MagickDrawSetFontWeight
+#undef DrawSetGravity
 #define DrawSetGravity MagickDrawSetGravity
+#undef DrawSetStrokeAntialias
 #define DrawSetStrokeAntialias MagickDrawSetStrokeAntialias
+#undef DrawSetStrokeColor
 #define DrawSetStrokeColor MagickDrawSetStrokeColor
+#undef DrawSetStrokeDashArray
 #define DrawSetStrokeDashArray MagickDrawSetStrokeDashArray
+#undef DrawSetStrokeDashOffset
 #define DrawSetStrokeDashOffset MagickDrawSetStrokeDashOffset
+#undef DrawSetStrokeLineCap
 #define DrawSetStrokeLineCap MagickDrawSetStrokeLineCap
+#undef DrawSetStrokeLineJoin
 #define DrawSetStrokeLineJoin MagickDrawSetStrokeLineJoin
+#undef DrawSetStrokeMiterLimit
 #define DrawSetStrokeMiterLimit MagickDrawSetStrokeMiterLimit
+#undef DrawSetStrokeOpacity
 #define DrawSetStrokeOpacity MagickDrawSetStrokeOpacity
+#undef DrawSetStrokePatternURL
 #define DrawSetStrokePatternURL MagickDrawSetStrokePatternURL
+#undef DrawSetStrokeWidth
 #define DrawSetStrokeWidth MagickDrawSetStrokeWidth
+#undef DrawSetTextAntialias
 #define DrawSetTextAntialias MagickDrawSetTextAntialias
+#undef DrawSetTextDecoration
 #define DrawSetTextDecoration MagickDrawSetTextDecoration
+#undef DrawSetTextEncoding
 #define DrawSetTextEncoding MagickDrawSetTextEncoding
+#undef DrawSetTextUnderColor
 #define DrawSetTextUnderColor MagickDrawSetTextUnderColor
+#undef DrawSetViewbox
 #define DrawSetViewbox MagickDrawSetViewbox
+#undef DrawSkewX
 #define DrawSkewX MagickDrawSkewX
+#undef DrawSkewY
 #define DrawSkewY MagickDrawSkewY
+#undef DrawTranslate
 #define DrawTranslate MagickDrawTranslate
+#undef NewDrawingWand
 #define NewDrawingWand MagickNewDrawingWand
 
 typedef struct _DrawingWand

@@ -347,7 +347,12 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
       (*method)(Image **,const int,char **);
 
     /* Locate module method */
+#if defined(MAGICK_SYMBOL_PREFIX)
+    FormatString(method_name,"%s%.64sImage",
+      DefineValueToString(MAGICK_SYMBOL_PREFIX),tag);
+#else
     FormatString(method_name,"%.64sImage",tag);
+#endif
     method=(unsigned int (*)(Image **,const int,char **))
       lt_dlsym(handle,method_name);
 
@@ -1098,7 +1103,21 @@ MagickExport unsigned int OpenModule(const char *module,
     /*
       Locate and execute RegisterFORMATImage function
     */
+#if defined(MAGICK_SYMBOL_PREFIX)
+/*     { */
+/*       char */
+/*         format[MaxTextExtent]; */
+
+/*       FormatString(format,"%sRegister%%sImage", */
+/*         DefineValueToString(MAGICK_SYMBOL_PREFIX)); */
+
+/*       TagToFunctionName(module_name,format,name); */
+/*     } */
+    
+    TagToFunctionName(module_name,DefineValueToString(MAGICK_SYMBOL_PREFIX) "Register%sImage",name);
+#else
     TagToFunctionName(module_name,"Register%sImage",name);
+#endif
     method=(void (*)(void)) lt_dlsym(handle,name);
     if (method == (void (*)(void)) NULL)
       {
@@ -1673,7 +1692,19 @@ static unsigned int UnloadModule(const CoderInfo *coder_info,
     Locate and execute UnregisterFORMATImage function
   */
   assert(coder_info != (const CoderInfo *) NULL);
-  TagToFunctionName(coder_info->tag,"Unregister%sImage",name);
+#if defined(MAGICK_SYMBOL_PREFIX)
+    {
+      char
+        format[MaxTextExtent];
+
+      FormatString(format,"%sUnregister%%sImage",
+        DefineValueToString(MAGICK_SYMBOL_PREFIX));
+
+      TagToFunctionName(coder_info->tag,format,name);
+    }
+#else
+    TagToFunctionName(coder_info->tag,"Unregister%sImage",name);
+#endif
   method=(void (*)(void)) lt_dlsym((ModuleHandle) coder_info->handle,name);
   if (method == (void (*)(void)) NULL)
     {

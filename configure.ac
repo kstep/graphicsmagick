@@ -419,6 +419,16 @@ AC_ARG_ENABLE(lzw,
 test "$with_lzw" = 'yes' && AC_DEFINE(HasLZW,1,Include LZW compression)
 AM_CONDITIONAL(HasLZW, test "$have_lzw" != 'no')
 
+# Enable prefixing library symbols with a common string
+AC_ARG_ENABLE(symbol-prefix,
+	      [  --enable-symbol-prefix           enable prefixing library symbols with "Gm"],
+	      [with_symbol_prefix=$enableval],
+	      [with_symbol_prefix='no'])
+if test "$with_symbol_prefix" != 'no'
+then
+  AC_DEFINE(MAGICK_SYMBOL_PREFIX,Gm,[Prefix library symbols with a common string.])
+fi
+
 # Number of bits in a Quantum
 AC_ARG_WITH(quantum-depth,
 	      [  --with-quantum-depth    number of bits in a pixel quantum (default 8)],

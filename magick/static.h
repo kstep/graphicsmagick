@@ -23,6 +23,7 @@ extern ModuleExport void
   RegisterBIEImage(void),
   RegisterBMPImage(void),
   RegisterCAPTIONImage(void),
+  RegisterCINEONImage(void),
   RegisterCLIPBOARDImage(void),
   RegisterCMYKImage(void),
   RegisterCUTImage(void),

@@ -56,9 +56,9 @@ extern "C" {
 #include "perl.h"
 #include "XSUB.h"
 #include <math.h>
-#include <magick/locale_c.h>
 #define MAGICK_IMPLEMENTATION 1
 #include <magick/api.h>
+#include <magick/locale_c.h>
 #undef tainted
 #if !defined(WIN32)
 #include <setjmp.h>

@@ -37,6 +37,11 @@ extern "C" {
 # endif
 #endif
 
+/*
+  Support library symbol prefixing
+*/
+#include "magick/symbols.h"
+
 #if !defined(const)
   /*
     For some stupid reason the zlib headers define 'const' to nothing
@@ -340,6 +345,9 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #define ScaleColor6to8(x)  (((x) << 2) | ((x) >> 4))
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
 #define True  1
+
+#define DefineNameToString(value) #value
+#define DefineValueToString(define) DefineNameToString(define)
 
 /*
   3D effects.

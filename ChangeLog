@@ -1,3 +1,15 @@
+2003-10-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Added --enable-symbol-prefix configure option
+	which prepends "Gm" to all GraphicsMagick library symbols using
+	the C pre-processor.  In the future, this may change to support
+	specifying an arbitrary prefix, depending on experience.
+	* magick/studio.h: Include magick/symbols.h.
+	* magick/api.h: Include magick/symbols.h.
+	* magick/symbols.h: New header to support optionally remapping
+	library symbols.  If MAGICK_SYMBOL_PREFIX is defined, then
+	library symbols are remapped.
+
 2003-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/api.h: Removed inclusion of <magick/semaphore.h> since it

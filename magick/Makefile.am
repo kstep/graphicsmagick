@@ -163,6 +163,7 @@ pkginclude_HEADERS = \
 	shear.h \
 	signature.h \
 	stream.h \
+	symbols.h \
 	timer.h \
 	transform.h \
 	utility.h \
