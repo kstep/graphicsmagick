@@ -5457,38 +5457,9 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
     }
   DestroyImage(image);
   magick[MaxTextExtent-1]='\0';
-
   *magic='\0';
   if(SetImageMagic(magic,magick,MaxTextExtent) == True)
     (void) strcpy(image_info->magick,magic);
-#if 0
-
-  if (LocaleNCompare(magick,"BEGMF",3) == 0)
-    (void) strcpy(image_info->magick,"CGM");
-  if (LocaleNCompare(magick,"digraph",7) == 0)
-    (void) strcpy(image_info->magick,"DOT");
-  if (LocaleNCompare(magick,"#FIG",4) == 0)
-    (void) strcpy(image_info->magick,"FIG");
-  if (LocaleNCompare(magick,"#!/usr/local/bin/gnuplot",24) == 0)
-    (void) strcpy(image_info->magick,"GPLT");
-  if (LocaleNCompare(magick,"IN;",3) == 0)
-    (void) strcpy(image_info->magick,"HPGL");
-  if (LocaleNCompare((char *) magick,"\033E\033&",4) == 0)
-    (void) strcpy(image_info->magick,"HPGL");
-  if (LocaleNCompare(magick+8,"ILBM",4) == 0)
-    (void) strcpy(image_info->magick,"ILBM");
-  if ((magick[0] == 0x00) && (magick[1] == 0x00))
-    if ((magick[2] == 0x01) && ((unsigned char) magick[3] == 0xb3))
-      (void) strcpy(image_info->magick,"M2V");
-  if (LocaleNCompare(magick,"#?RADIANCE",10) == 0)
-    (void) strcpy(image_info->magick,"RAD");
-  if (LocaleNCompare(magick,"gimp xcf file",13) == 0)
-    (void) strcpy(image_info->magick,"XCF");
-  for (r=GetMagickInfo((char *) NULL); r != (MagickInfo *) NULL; r=r->next)
-    if (r->magick)
-      if (r->magick((unsigned char *) magick,MaxTextExtent))
-        (void) strcpy(image_info->magick,r->tag);
-#endif
   return(True);
 }
 
