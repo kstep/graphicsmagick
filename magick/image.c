@@ -136,7 +136,6 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   (void) QueryColorDatabase(BackgroundColor,&allocate_image->background_color);
   (void) QueryColorDatabase(BorderColor,&allocate_image->border_color);
   (void) QueryColorDatabase(MatteColor,&allocate_image->matte_color);
-  allocate_image->iterations=1;
   allocate_image->filter=LanczosFilter;
   allocate_image->blur=1.0;
   GetExceptionInfo(&allocate_image->exception);
