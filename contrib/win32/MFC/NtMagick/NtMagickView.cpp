@@ -41,16 +41,10 @@ END_MESSAGE_MAP()
 
 CNtMagickView::CNtMagickView()
 {
-  // Init local objects
-  m_pImage = NULL;
 }
 
 CNtMagickView::~CNtMagickView()
 {
-  if (m_pImage != NULL)
-  {
-    delete m_pImage;
-  }
 }
 
 BOOL CNtMagickView::PreCreateWindow(CREATESTRUCT& cs)
@@ -146,32 +140,25 @@ void CNtMagickView::OnFileOpen()
 
 BOOL CNtMagickView::DoReadImage()
 {
-  // New image object
-  if (m_pImage != NULL)
-  {
-    delete m_pImage;
-    m_pImage = NULL;
-  }
-  m_pImage = new Image;
+  // Release image object memory
+  m_Image.isValid(FALSE);
 
   // Read the image and handle any exceptions
   try
   {
-    m_pImage->read(m_szFile.GetBuffer(MAX_PATH+1));
+    m_Image.read(m_szFile.GetBuffer(MAX_PATH+1));
   }
 
   catch(Exception e)
   {
-    delete m_pImage;
-    m_pImage = NULL;
+    m_Image.isValid(FALSE);
     DoDisplayError("Read",e.what());
     return FALSE;
   }
 
   catch(exception e)
   {
-    delete m_pImage;
-    m_pImage = NULL;
+    m_Image.isValid(FALSE);
     DoDisplayError("Read",e.what());
     return FALSE;
   }
@@ -198,11 +185,6 @@ void CNtMagickView::DoDisplayError(CString szFunction, CString szCause)
 
 void CNtMagickView::DoDisplayImage()
 {
-  if (m_pImage == NULL)
-    {
-      return;
-    }
-
   CDC *pDC = GetDC();
   if (pDC != NULL)
     {
@@ -214,36 +196,36 @@ void CNtMagickView::DoDisplayImage()
 
       // Set up the Windows bitmap header
       BITMAPINFOHEADER bmi;
-      bmi.biSize = sizeof(BITMAPINFOHEADER);	// Size of structure
-      bmi.biWidth = m_pImage->columns();	// Bitmaps width in pixels
-      bmi.biHeight = (-1)*m_pImage->rows();	// Bitmaps height n pixels
-      bmi.biPlanes = 1;				// Number of planes in the image
-      bmi.biBitCount = 32;			// The number of bits per pixel
-      bmi.biCompression = BI_RGB;		// The type of compression used
-      bmi.biSizeImage = 0;			// The size of the image in bytes
-      bmi.biXPelsPerMeter = 0;			// Horizontal resolution
-      bmi.biYPelsPerMeter = 0;			// Veritical resolution
-      bmi.biClrUsed = 0;			// Number of colors actually used
-      bmi.biClrImportant = 0;			// Colors most important
+      bmi.biSize = sizeof(BITMAPINFOHEADER);    // Size of structure
+      bmi.biWidth = m_Image.columns();          // Bitmaps width in pixels
+      bmi.biHeight = (-1)*m_Image.rows();       // Bitmaps height n pixels
+      bmi.biPlanes = 1;                         // Number of planes in the image
+      bmi.biBitCount = 32;                      // The number of bits per pixel
+      bmi.biCompression = BI_RGB;               // The type of compression used
+      bmi.biSizeImage = 0;                      // The size of the image in bytes
+      bmi.biXPelsPerMeter = 0;                  // Horizontal resolution
+      bmi.biYPelsPerMeter = 0;                  // Veritical resolution
+      bmi.biClrUsed = 0;                        // Number of colors actually used
+      bmi.biClrImportant = 0;                   // Colors most important
 
       // Extract the pixels from Magick++ image object and convert to a DIB section
-      PixelPacket *pPixels = m_pImage->getPixels(0,0,m_pImage->columns(),m_pImage->rows());
+      PixelPacket *pPixels = m_Image.getPixels(0,0,m_Image.columns(),m_Image.rows());
 
       RGBQUAD *prgbaDIB = 0;
       HBITMAP hBitmap = CreateDIBSection
         (
-         pDC->m_hDC,		// handle to device context 
-         (BITMAPINFO *)&bmi,	// pointer to structure containing bitmap size, format, and color data
-         DIB_RGB_COLORS,	// color data type indicator: RGB values or palette indices 
-         (void**)&prgbaDIB,	// pointer to variable to receive a pointer to the bitmap's bit values
-         NULL,			// optional handle to a file mapping object 
-         0			// offset to the bitmap bit values within the file mapping object 
+         pDC->m_hDC,            // handle to device context
+         (BITMAPINFO *)&bmi,    // pointer to structure containing bitmap size, format, and color data
+         DIB_RGB_COLORS,        // color data type indicator: RGB values or palette indices
+         (void**)&prgbaDIB,     // pointer to variable to receive a pointer to the bitmap's bit values
+         NULL,                  // optional handle to a file mapping object
+         0                      // offset to the bitmap bit values within the file mapping object
          );
 
       if ( !hBitmap )
         return;
 
-      unsigned long nPixels = m_pImage->columns() * m_pImage->rows();
+      unsigned long nPixels = m_Image.columns() * m_Image.rows();
       RGBQUAD *pDestPixel = prgbaDIB;
 #if QuantumDepth == 8
       // Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8
@@ -262,10 +244,10 @@ void CNtMagickView::DoDisplayImage()
 #endif
 
       // Now copy the bitmap to device.
-	HDC	hMemDC = CreateCompatibleDC( pDC->m_hDC );
-	SelectObject( hMemDC, hBitmap );
-	BitBlt( pDC->m_hDC, 0, 0, m_pImage->columns(), m_pImage->rows(), hMemDC, 0, 0, SRCCOPY );
-	DeleteObject( hMemDC );
+        HDC     hMemDC = CreateCompatibleDC( pDC->m_hDC );
+        SelectObject( hMemDC, hBitmap );
+        BitBlt( pDC->m_hDC, 0, 0, m_Image.columns(), m_Image.rows(), hMemDC, 0, 0, SRCCOPY );
+        DeleteObject( hMemDC );
     }
 }
 
@@ -389,13 +371,13 @@ float CNtMagickView::ScaleFactor(BOOL bAllowZoom, CSize sizeSrc, CSize sizeTgt)
 
 void CNtMagickView::UpdateUI(CCmdUI *pCmdUI)
 {
-  if (m_pImage == NULL)
+  if (m_Image.isValid())
   {
-    pCmdUI->Enable(FALSE);
+    pCmdUI->Enable(TRUE);
   }
   else
   {
-    pCmdUI->Enable(TRUE);
+    pCmdUI->Enable(FALSE);
   }
 }
 
@@ -406,14 +388,9 @@ void CNtMagickView::UpdateUI(CCmdUI *pCmdUI)
 
 void CNtMagickView::OnImageFlipHorizontal()
 {
-  if (m_pImage == NULL)
-  {
-    return;
-  }
-
   try
   {
-    m_pImage->flop();
+    m_Image.flop();
   }
 
   catch(Exception e)
@@ -443,14 +420,9 @@ void CNtMagickView::OnUpdateImageFlipHorizontal(CCmdUI* pCmdUI)
 
 void CNtMagickView::OnImageFlipVertical()
 {
-  if (m_pImage == NULL)
-  {
-    return;
-  }
-
   try
   {
-    m_pImage->flip();
+    m_Image.flip();
   }
 
   catch(Exception e)
@@ -480,14 +452,9 @@ void CNtMagickView::OnUpdateImageFlipVertical(CCmdUI* pCmdUI)
 
 void CNtMagickView::OnImageRotate180()
 {
-  if (m_pImage == NULL)
-  {
-    return;
-  }
-
   try
   {
-    m_pImage->rotate(180);
+    m_Image.rotate(180);
   }
 
   catch(Exception e)
@@ -517,14 +484,9 @@ void CNtMagickView::OnUpdateImageRotate180(CCmdUI* pCmdUI)
 
 void CNtMagickView::OnImageRotate90()
 {
-  if (m_pImage == NULL)
-  {
-    return;
-  }
-
   try
   {
-    m_pImage->rotate(90);
+    m_Image.rotate(90);
   }
 
   catch(Exception e)
@@ -554,14 +516,9 @@ void CNtMagickView::OnUpdateImageRotate90(CCmdUI* pCmdUI)
 
 void CNtMagickView::OnImageRotate90ccw()
 {
-  if (m_pImage == NULL)
-  {
-    return;
-  }
-
   try
   {
-    m_pImage->rotate(-90);
+    m_Image.rotate(-90);
   }
 
   catch(Exception e)
@@ -591,17 +548,11 @@ void CNtMagickView::OnUpdateImageRotate90ccw(CCmdUI* pCmdUI)
 
 void CNtMagickView::OnFileClear()
 {
-  if (m_pImage == NULL)
-  {
-    return;
-  }
-
   CRect rectClient;
   CDC * pDC;
 
   // Remove image and clear client area
-  delete m_pImage;
-  m_pImage = NULL;
+  m_Image.isValid(FALSE);
   pDC = GetDC();
   GetClientRect(rectClient);
   if (pDC != NULL)

@@ -26,7 +26,7 @@ protected: // create from serialization only
 // Attributes
 public:
         CString       m_szFile;
-        Image       * m_pImage;
+        Image         m_Image;
         CNtMagickDoc* GetDocument();
         void          DoDisplayError(CString szFunction, CString szCause);
         void          DoDisplayImage();
@@ -71,9 +71,9 @@ protected:
         afx_msg void OnUpdateImageRotate90(CCmdUI* pCmdUI);
         afx_msg void OnImageRotate90ccw();
         afx_msg void OnUpdateImageRotate90ccw(CCmdUI* pCmdUI);
-	afx_msg void OnFileClear();
-	afx_msg void OnUpdateFileClear(CCmdUI* pCmdUI);
-	//}}AFX_MSG
+        afx_msg void OnFileClear();
+        afx_msg void OnUpdateFileClear(CCmdUI* pCmdUI);
+        //}}AFX_MSG
         DECLARE_MESSAGE_MAP()
 };
 

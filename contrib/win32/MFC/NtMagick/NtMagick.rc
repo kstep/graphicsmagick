@@ -36,7 +36,7 @@ IDR_NTMAGITYPE          ICON    DISCARDABLE     "res\\NtMagickDoc.ico"
 // Menu
 //
 
-IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+IDR_MAINFRAME MENU PRELOAD DISCARDABLE
 BEGIN
     POPUP "&File"
     BEGIN
@@ -65,7 +65,7 @@ END
 // Accelerator
 //
 
-IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
+IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE
 BEGIN
     "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
@@ -76,10 +76,10 @@ BEGIN
     "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
     VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
     VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
-    VK_ESCAPE,      ID_FILE_CLEAR,          VIRTKEY 
+    VK_ESCAPE,      ID_FILE_CLEAR,          VIRTKEY
     VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
     VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
-    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY
     VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
 END
 
@@ -94,7 +94,7 @@ STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About Win32 ImageMagick Viewer"
 FONT 8, "MS Sans Serif"
 BEGIN
-    LTEXT           "NtMagickView 1.0",IDC_STATIC,6,102,119,8,SS_NOPREFIX
+    LTEXT           "NtMagickView 1.1",IDC_STATIC,6,102,119,8,SS_NOPREFIX
     DEFPUSHBUTTON   "OK",IDOK,90,131,50,14,WS_GROUP
     CONTROL         131,IDC_STATIC,"Static",SS_BITMAP,76,8,83,79
     LTEXT           "Sample ImageMagick MFC image viewer ",IDC_STATIC,5,113,
@@ -151,7 +151,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO DISCARDABLE
 BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
@@ -169,18 +169,18 @@ END
 // String Table
 //
 
-STRINGTABLE PRELOAD DISCARDABLE 
+STRINGTABLE PRELOAD DISCARDABLE
 BEGIN
     IDR_MAINFRAME           "NtMagick\n\nNtMagi\n\n\nNtMagick.Document\nNtMagi Document"
 END
 
-STRINGTABLE PRELOAD DISCARDABLE 
+STRINGTABLE PRELOAD DISCARDABLE
 BEGIN
     AFX_IDS_APP_TITLE       "NtMagick"
     AFX_IDS_IDLEMESSAGE     "Ready"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE DISCARDABLE
 BEGIN
     ID_INDICATOR_EXT        "EXT"
     ID_INDICATOR_CAPS       "CAP"
@@ -190,7 +190,7 @@ BEGIN
     ID_INDICATOR_REC        "REC"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE DISCARDABLE
 BEGIN
     ID_FILE_NEW             "Create a new document\nNew"
     ID_FILE_OPEN            "Open an existing document\nOpen"
@@ -199,13 +199,13 @@ BEGIN
     ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE DISCARDABLE
 BEGIN
     ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
     ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE DISCARDABLE
 BEGIN
     ID_FILE_MRU_FILE1       "Open this document"
     ID_FILE_MRU_FILE2       "Open this document"
@@ -225,18 +225,18 @@ BEGIN
     ID_FILE_MRU_FILE16      "Open this document"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE DISCARDABLE
 BEGIN
     ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
     ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE DISCARDABLE
 BEGIN
     ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE DISCARDABLE
 BEGIN
     ID_EDIT_CLEAR           "Erase the selection\nErase"
     ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
@@ -251,7 +251,7 @@ BEGIN
     ID_EDIT_REDO            "Redo the previously undone action\nRedo"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE DISCARDABLE
 BEGIN
     AFX_IDS_SCSIZE          "Change the window size"
     AFX_IDS_SCMOVE          "Change the window position"
@@ -262,13 +262,13 @@ BEGIN
     AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE DISCARDABLE
 BEGIN
     AFX_IDS_SCRESTORE       "Restore the window to normal size"
     AFX_IDS_SCTASKLIST      "Activate Task List"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE DISCARDABLE
 BEGIN
     ID_IMAGE_ROTATE_90      "Rotate image 90 degrees clockwise\nRotate 90 degrees clockwise"
     ID_IMAGE_ROTATE_180     "Rotate image 180 degrees\nRotate 180 degrees"
@@ -277,7 +277,7 @@ BEGIN
     ID_IMAGE_FLIP_VERTICAL  "Flip image vertically\nFlip vertically"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE DISCARDABLE
 BEGIN
     ID_FILE_CLEAR           "Clear the current image\nClear image"
 END
@@ -301,18 +301,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE DISCARDABLE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE DISCARDABLE
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE DISCARDABLE
 BEGIN
     "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
     "#define _AFX_NO_OLE_RESOURCES\r\n"

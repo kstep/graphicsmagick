@@ -3,4 +3,7 @@ shows how to use MFC and ImageMagick together. It is meant as a starting
 point only. It creates a GUI that supports loading and displaying and
 image, as well as rotating it.
 
-The author of NtMagick is currently unknown.
+The author of NtMagick is Robert Bennett rbennett@iinet.net.au
+
+1.00  Original Release
+1.01  Modified to automatic allocation of images
