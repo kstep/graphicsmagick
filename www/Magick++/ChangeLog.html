@@ -53,6 +53,14 @@
 </tr>
 </table>
 <p>
+2004-03-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Thread.cpp (lock): For MsgWaitForMultipleObjects, monitor
+        state change only.  Otherwise lock may deadlock.
+
+</UL>
+<p>
 2004-03-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

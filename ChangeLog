@@ -1,5 +1,11 @@
 2004-03-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/nt_base.c (NTSystemComman): Adjust
+	MsgWaitForMultipleObjects() arguments to wait for object to be
+	signaled only (FALSE) rather wait for object to be signaled as
+	well as an input event received(TRUE).  It seems that process
+	status changes do not result in an input event, so the call was
+	deadlocking.
 	* magick/constitute.c (ReadImage): If module loading reported an
 	error, ReadImage immediately returned an error rather than trying
 	to use a delegate defined by delegates.mgk.

@@ -82,8 +82,9 @@ void Magick::MutexLock::lock(void)
                           strerror(sysError));
 #endif
 #if defined(_MT) && defined(_VISUALC_)
-  if (MsgWaitForMultipleObjects(1, &_mutex.id, true, INFINITE, QS_ALLEVENTS)
-      != WAIT_FAILED )
+  DWORD status;
+  status=MsgWaitForMultipleObjects(1, &_mutex.id, FALSE, INFINITE, QS_ALLEVENTS);
+  if ((status - WAIT_OBJECT_0) == 0)
     return;
   throwExceptionExplicit( OptionError, "mutex lock failed" );
 #endif
