@@ -142,6 +142,88 @@ MagickExport void DestroyDelegateInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t D e l e g a t e C o m m a n d                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetDelegateCommand replaces any embedded formatting characters with
+%  the appropriate image attribute and returns the resulting command.
+%
+%  The format of the GetDelegateCommand method is:
+%
+%      char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
+%        const char *decode,const char *encode,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o command: Method GetDelegateCommand returns the command associated
+%      with specified delegate tag.
+%
+%    o image_info: The image info.
+%
+%    o image: The image.
+%
+%    o decode: Specifies the decode delegate we are searching for as a
+%      character string.
+%
+%    o encode: Specifies the encode delegate we are searching for as a
+%      character string.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
+  const char *decode,const char *encode,ExceptionInfo *exception)
+{
+  char
+    *command,
+    **commands;
+
+  const DelegateInfo
+    *delegate_info;
+
+  register int
+    i;
+
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  delegate_info=GetDelegateInfo(decode,encode,exception);
+  if (delegate_info == (const DelegateInfo *) NULL)
+    {
+      ThrowException(exception,MissingDelegateWarning,"no tag found",
+        decode ? decode : encode);
+      return((char *) NULL);
+    }
+  commands=StringToList(delegate_info->commands);
+  if (commands == (char **) NULL)
+    {
+      ThrowException(exception,ResourceLimitWarning,"Memory allocation failed",
+        decode ? decode : encode);
+      return((char *) NULL);
+    }
+  command=TranslateText(image_info,image,commands[0]);
+  if (command == (char *) NULL)
+    ThrowException(exception,ResourceLimitWarning,"Memory allocation failed",
+      commands[0]);
+  /*
+    Free resources.
+  */
+  for (i=0; commands[i] != (char *) NULL; i++)
+    LiberateMemory((void **) &commands[i]);
+  LiberateMemory((void **) &commands);
+  return(command);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t D e l e g a t e I n f o                                             %
 %                                                                             %
 %                                                                             %
@@ -211,89 +293,6 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
         break;
   }
   return(p);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t D e l e g a t e C o m m a n d                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetDelegateCommand replaces any embedded formatting characters with
-%  the appropriate image attribute and returns the resulting command.
-%
-%  The format of the GetDelegateCommand method is:
-%
-%      char *GetDelegateCommand(const ImageInfo *image_info,const Image *image,
-%        const char *decode,const char *encode,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o command: Method GetDelegateCommand returns the command associated
-%      with specified delegate tag.
-%
-%    o image_info: The image info.
-%
-%    o image: The image.
-%
-%    o decode: Specifies the decode delegate we are searching for as a
-%      character string.
-%
-%    o encode: Specifies the encode delegate we are searching for as a
-%      character string.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-%
-*/
-MagickExport char *GetDelegateCommand(const ImageInfo *image_info,
-  const Image *image,const char *decode,const char *encode,
-  ExceptionInfo *exception)
-{
-  char
-    *command,
-    **commands;
-
-  const DelegateInfo
-    *delegate_info;
-
-  register int
-    i;
-
-  assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  delegate_info=GetDelegateInfo(decode,encode,exception);
-  if (delegate_info == (const DelegateInfo *) NULL)
-    {
-      ThrowException(exception,MissingDelegateWarning,"no tag found",
-        decode ? decode : encode);
-      return((char *) NULL);
-    }
-  commands=StringToList(delegate_info->commands);
-  if (commands == (char **) NULL)
-    {
-      ThrowException(exception,ResourceLimitWarning,"Memory allocation failed",
-        decode ? decode : encode);
-      return((char *) NULL);
-    }
-  command=TranslateText(image_info,image,commands[0]);
-  if (command == (char *) NULL)
-    ThrowException(exception,ResourceLimitWarning,"Memory allocation failed",
-      commands[0]);
-  /*
-    Free resources.
-  */
-  for (i=0; commands[i] != (char *) NULL; i++)
-    LiberateMemory((void **) &commands[i]);
-  LiberateMemory((void **) &commands);
-  return(command);
 }
 
 /*
