@@ -507,19 +507,6 @@ extern const unsigned char
   HighlightBitmap[8],
   ShadowBitmap[8];
 
-extern const unsigned int
-  DefaultState,
-  EscapeState,
-  ExitState,
-  FormerImageState,
-  ModifierState,
-  MontageImageState,
-  NextImageState,
-  RetainColorsState,
-  SuspendTime,
-  UpdateConfigurationState,
-  UpdateRegionState;
-
 extern const XColorlist
   Colorlist[757],
   XPMColorlist[235];

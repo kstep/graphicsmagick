@@ -471,12 +471,6 @@ extern const char
 
 extern const double
   SharpenFactor;
-
-extern Export const unsigned int
-  AspectValue,
-  LessValue,
-  GreaterValue,
-  PercentValue;
 
 /*
   Image utilities methods.

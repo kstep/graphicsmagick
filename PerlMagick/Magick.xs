@@ -2452,9 +2452,9 @@ Display(ref,...)
           resource.delay=atoi(package_info->image_info->delay);
         for (next=image; next; next=next->next)
         {
-          state=0x0000;
+          state=DefaultState;
           (void) XDisplayImage(display,&resource,&client_name,1,&next,&state);
-          if (state & 0x0002)
+          if (state & ExitState)
             break;
         }
         XCloseDisplay(display);

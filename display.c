@@ -141,13 +141,6 @@
 #include "defines.h"
 
 /*
-  Constant declarations.
-*/
-#define ExitState  0x0002
-#define FormerImageState  0x0004
-#define RetainColorsState 0x0040
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %

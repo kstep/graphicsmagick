@@ -99,14 +99,7 @@ static XWidgetInfo
 */
 const unsigned int
   BorderOffset = 4,
-  ControlState = 0x0001,
-  DoubleClick = 250,
-  InactiveWidgetState = 0x0004,
-  JumpListState = 0x0008,
-  RedrawActionState = 0x0010,
-  RedrawListState = 0x0020,
-  RedrawWidgetState = 0x0040,
-  UpdateListState = 0x0100;
+  DoubleClick = 250;
 
 /*
   Method prototypes.

@@ -94,6 +94,14 @@ typedef enum
 
 typedef enum
 {
+  AspectValue = 0x2000,
+  GreaterValue = 0x8000,
+  LessValue = 0x4000,
+  PercentValue = 0x1000
+} GeometryFlags;
+
+typedef enum
+{
   UndefinedId,
   ImageMagickId
 } IdType;
@@ -214,6 +222,32 @@ typedef enum
   PixelsPerInchResolution,
   PixelsPerCentimeterResolution
 } ResolutionType;
+
+typedef enum
+{
+  ControlState = 0x0001,
+  InactiveWidgetState = 0x0004,
+  JumpListState = 0x0008,
+  RedrawActionState = 0x0010,
+  RedrawListState = 0x0020,
+  RedrawWidgetState = 0x0040,
+  UpdateListState = 0x0100
+} WidgetState;
+
+typedef enum
+{
+  DefaultState = 0x0000,
+  EscapeState = 0x0001,
+  ExitState = 0x0002,
+  FormerImageState = 0x0004,
+  ModifierState = 0x0008,
+  MontageImageState = 0x0010,
+  NextImageState = 0x0020,
+  RetainColorsState = 0x0040,
+  SuspendTime = 50,
+  UpdateConfigurationState = 0x0080,
+  UpdateRegionState = 0x0100
+} XState;
 
 /*
   Classify errors and warnings.

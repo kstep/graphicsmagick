@@ -86,12 +86,6 @@ const double
 
 const InterlaceType
   DefaultInterlace = NoInterlace;
-
-Export const unsigned int
-  AspectValue = 0x2000,
-  GreaterValue = 0x8000,
-  LessValue = 0x4000,
-  PercentValue = 0x1000;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
