@@ -5402,7 +5402,7 @@ Mogrify(ref,...)
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])
             geometry.height=argument_list[2].int_reference;
-          if (attribute_flag[3])
+          if (!attribute_flag[3])
             argument_list[3].int_reference=1;
           RaiseImage(image,&geometry,argument_list[3].int_reference);
           break;
