@@ -1145,13 +1145,13 @@ void CConfigureApp::process_project_replacements(ofstream &dsw,
                 renamed += ".bak";
                 if (MoveFile(rootpath.c_str(),renamed.c_str())==0)
                 {
-                  MessageBox(NULL, TEXT("Could not copy file to destination."), NULL, MB_OK);
+                  MessageBox(NULL, TEXT("Could not copy file to destination."), TEXT("Move Error!"), MB_OK);
                 }
                 else
                 {
                   if (CopyFile(filepath.c_str(),rootpath.c_str(),FALSE)==0)
                   {
-                    MessageBox(NULL, TEXT("Could not copy file to destination."), NULL, MB_OK);
+                    MessageBox(NULL, TEXT("Could not copy file to destination."), TEXT("Copy Error!"), MB_OK);
                   }
                 }
               }
@@ -1628,6 +1628,21 @@ void CConfigureApp::write_lib_dsp(
   if (dll)
   {
     dsp << "/pdb:\"" << bin_loc << outname << "_.pdb\"";
+    {
+	    WIN32_FIND_DATA	defdata;
+	    CString defname = "..\\";
+
+      defname += directory.c_str();
+      defname += "\\";
+      defname += outname;
+      defname += "_.def";
+	    HANDLE defhandle = FindFirstFile(defname, &defdata);
+	    if (defhandle != INVALID_HANDLE_VALUE)
+      {
+        FindClose(defhandle);
+        dsp << " /def:\".\\" << outname << "_.def\"";
+      }
+    }
     dsp << " /out:\"" << bin_loc << outname << "_.dll\"";
   }
   else
@@ -1740,6 +1755,21 @@ void CConfigureApp::write_lib_dsp(
   if (dll)
   {
     dsp << "/pdb:\"" << bin_loc << outname << "_.pdb\"";
+    {
+	    WIN32_FIND_DATA	defdata;
+	    CString defname = "..\\";
+
+      defname += directory.c_str();
+      defname += "\\";
+      defname += outname;
+      defname += "_.def";
+	    HANDLE defhandle = FindFirstFile(defname, &defdata);
+	    if (defhandle != INVALID_HANDLE_VALUE)
+      {
+        FindClose(defhandle);
+        dsp << " /def:\".\\" << outname << "_.def\"";
+      }
+    }
     dsp << " /out:\"" << bin_loc << outname << "_.dll\"";
   }
   else
