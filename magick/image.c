@@ -2785,12 +2785,12 @@ MagickExport int GetImageGeometry(const Image *image,const char *geometry,
       break;
     case NorthGravity:
     {
-      region_info->x+=(long) image->columns/2-region_info->width/2;
+      region_info->x+=(long) (image->columns/2-region_info->width/2);
       break;
     }
     case NorthEastGravity:
     {
-      region_info->x+=(long) image->columns-region_info->width;
+      region_info->x=(long) image->columns-region_info->width-region_info->x;
       break;
     }
     case WestGravity:
@@ -2803,30 +2803,30 @@ MagickExport int GetImageGeometry(const Image *image,const char *geometry,
     default:
     {
       region_info->x+=(long) (image->columns/2-region_info->width/2);
-      region_info->y+=(long) (image->rows/2-region_info->width/2);
+      region_info->y+=(long) (image->rows/2-region_info->height/2);
       break;
     }
     case EastGravity:
     {
-      region_info->x+=(long) image->columns-region_info->width;
+      region_info->x=(long) image->columns-region_info->width-region_info->x;
       region_info->y+=(long) (image->rows/2-region_info->width/2);
       break;
     }
     case SouthWestGravity:
     {
-      region_info->y+=(long) image->rows-region_info->height;
+      region_info->y=(long) image->rows-region_info->height-region_info->y;
       break;
     }
     case SouthGravity:
     {
       region_info->x+=(long) (image->columns/2-region_info->width/2);
-      region_info->y+=(long) image->rows-region_info->height;
+      region_info->y=(long) image->rows-region_info->height-region_info->y;
       break;
     }
     case SouthEastGravity:
     {
-      region_info->x+=(long) image->columns-region_info->width;
-      region_info->y+=(long) image->rows-region_info->height;
+      region_info->x=(long) image->columns-region_info->width-region_info->x;
+      region_info->y=(long) image->rows-region_info->height-region_info->y;
       break;
     }
   }
