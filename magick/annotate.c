@@ -736,7 +736,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   /*
     Render label with a Postscript font.
   */
-  UniqueImageFilename(image,filename);
+  UniqueImageFilename(filename);
   file=fopen(filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     ThrowBinaryException(FileOpenWarning,"Unable to open file",filename);

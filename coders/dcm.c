@@ -3152,7 +3152,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Handle 2.4.50 lossy JPEG and 2.4.70 lossless JPEG.
       */
-      UniqueImageFilename(image,filename);
+      UniqueImageFilename(filename);
       file=fopen(filename,WriteBinaryType);
       if (file == (FILE *) NULL)
         ThrowReaderException(FileOpenWarning,"Unable to write file",image);

@@ -937,7 +937,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
       quantize_info.colorspace=GRAYColorspace;
       (void) QuantizeImage(&quantize_info,huffman_image);
     }
-  UniqueImageFilename(image,filename);
+  UniqueImageFilename(filename);
   FormatString(huffman_image->filename,"tiff:%s",filename);
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;

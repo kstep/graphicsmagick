@@ -2285,7 +2285,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open draw file.
   */
-  UniqueImageFilename(image,filename);
+  UniqueImageFilename(filename);
   file=fopen(filename,"w");
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);

@@ -345,7 +345,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   /*
     Copy image to temporary file.
   */
-  UniqueImageFilename(image,(char *) image_info->filename);
+  UniqueImageFilename((char *) image_info->filename);
   file=fopen(image_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to write file",image);
@@ -1239,7 +1239,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(filename,image->filename);
   if ((image->file == stdout) || image->pipet ||
       (image->blob->data != (unsigned char *) NULL))
-    UniqueImageFilename(image,filename);
+    UniqueImageFilename(filename);
   else
     CloseBlob(image);
   tiff=TIFFOpen(filename,WriteBinaryType);

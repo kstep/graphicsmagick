@@ -838,7 +838,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
         Copy standard input or pipe to temporary file.
       */
       image_info->file=(FILE *) NULL;
-      UniqueImageFilename(image,image->filename);
+      UniqueImageFilename(image->filename);
       image_info->temporary=True;
       FormatString(image_info->filename,"%.1024s",image->filename);
       file=fopen(image->filename,WriteBinaryType);

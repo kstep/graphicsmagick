@@ -1565,7 +1565,7 @@ MagickExport void XDisplayImageInfo(Display *display,
   assert(resource_info != (XResourceInfo *) NULL);
   assert(windows != (XWindows *) NULL);
   assert(image != (Image *) NULL);
-  UniqueImageFilename(image,filename);
+  UniqueImageFilename(filename);
   file=fopen(filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     {

@@ -422,7 +422,6 @@ typedef struct _Image
     *next;
 
   unsigned long
-    serial,
     signature;
 } Image;
 
@@ -893,7 +892,7 @@ extern MagickExport void
   TransformHSL(const Quantum,const Quantum,const Quantum,double *,double *,
     double *),
   TransformImage(Image **,const char *,const char *),
-  UniqueImageFilename(Image *,char *),
+  UniqueImageFilename(char *),
   Unregister8BIMImage(void),
   UnregisterARTImage(void),
   UnregisterAVIImage(void),

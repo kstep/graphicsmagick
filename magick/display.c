@@ -3926,7 +3926,7 @@ static unsigned int XDrawEditImage(Display *display,
               XSetCursorState(display,windows,False);
               if (stipple_image == (Image *) NULL)
                 break;
-              UniqueImageFilename(stipple_image,filename);
+              UniqueImageFilename(filename);
               FormatString(stipple_image->filename,"xbm:%.1024s",filename);
               status=WriteImage(image_info,stipple_image);
               DestroyImage(stipple_image);
@@ -6675,7 +6675,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Edit image comment.
       */
-      UniqueImageFilename(*image,image_info->filename);
+      UniqueImageFilename(image_info->filename);
       comment=GetImageAttribute(*image,"comment");
       if ((comment != (ImageAttribute *) NULL) &&
           (comment->value != (char *) NULL))
@@ -6721,7 +6721,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      UniqueImageFilename(*image,filename);
+      UniqueImageFilename(filename);
       FormatString((*image)->filename,"launch:%s",filename);
       status=WriteImage(image_info,*image);
       if (status != False)
@@ -6799,7 +6799,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       image_info->preview_type=(PreviewType) (i+1);
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"label","Preview");
-      UniqueImageFilename(*image,filename);
+      UniqueImageFilename(filename);
       FormatString((*image)->filename,"preview:%s",filename);
       status=WriteImage(image_info,*image);
       FormatString((*image)->filename,"show:%s",filename);
@@ -6820,7 +6820,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"label","Histogram");
-      UniqueImageFilename(*image,filename);
+      UniqueImageFilename(filename);
       FormatString((*image)->filename,"histogram:%s",filename);
       status=WriteImage(image_info,*image);
       FormatString((*image)->filename,"show:%s",filename);
@@ -6847,7 +6847,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"label","Matte");
-      UniqueImageFilename(*image,filename);
+      UniqueImageFilename(filename);
       FormatString((*image)->filename,"matte:%s",filename);
       status=WriteImage(image_info,*image);
       FormatString((*image)->filename,"show:%s",filename);
@@ -8621,8 +8621,8 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   /*
     Print image.
   */
-  UniqueImageFilename(print_image,print_image->magick_filename);
-  UniqueImageFilename(print_image,filename);
+  UniqueImageFilename(print_image->magick_filename);
+  UniqueImageFilename(filename);
   FormatString(print_image->filename,"print:%s",filename);
   status=WriteImage(image_info,print_image);
   DestroyImage(print_image);

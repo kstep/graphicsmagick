@@ -430,7 +430,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         /*
           Write image to temporary file in JPEG format.
         */
-        UniqueImageFilename(image,filename);
+        UniqueImageFilename(filename);
         jpeg_image=CloneImage(image,0,0,True,&image->exception);
         if (jpeg_image == (Image *) NULL)
           ThrowWriterException(DelegateWarning,"Unable to clone image",image);

@@ -536,22 +536,19 @@ MagickExport unsigned int SignatureImage(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method UniqueImageFilename replaces the contents of the string pointed to
-%  by filename by a unique file name.  Some delegates do not like % or .
-%  in their filenames.
+%  by filename by a unique file name.
 %
 %  The format of the UniqueImageFilename method is:
 %
-%      void UniqueImageFilename(Image *image,char *filename)
+%      void UniqueImageFilename(har *filename)
 %
 %  A description of each parameter follows.
-%
-%    o image: The image.
 %
 %   o  filename:  Specifies a pointer to an array of characters.  The unique
 %      file name is returned in this array.
 %
 */
-MagickExport void UniqueImageFilename(Image *image,char *filename)
+MagickExport void UniqueImageFilename(char *filename)
 {
   SignatureInfo
     signature_info;
@@ -560,19 +557,36 @@ MagickExport void UniqueImageFilename(Image *image,char *filename)
     Convert digital signature to a filename.
   */
   assert(filename != (char *) NULL);
-  do
+  (void) strcpy(filename,"XXXXXX");
+  GetSignatureInfo(&signature_info);
+#if defined(HAVE_MKSTEMP)
   {
-    GetSignatureInfo(&signature_info);
-    UpdateSignature(&signature_info,(unsigned char *) &image,sizeof(Image *));
-    UpdateSignature(&signature_info,(unsigned char *) image,sizeof(Image));
-    UpdateSignature(&signature_info,(unsigned char *) &filename,sizeof(char *));
-    FinalizeSignature(&signature_info);
-    FormatString(filename,"magick%08lx%08lx%08lx%08lx%08lx%08lx%08lx%08lx",
-      signature_info.digest[0],signature_info.digest[1],signature_info.digest[2],
-      signature_info.digest[3],signature_info.digest[4],signature_info.digest[5],
-      signature_info.digest[6],signature_info.digest[7]);
-    AcquireSemaphoreInfo(&image->semaphore);
-    image->serial++;
-    LiberateSemaphoreInfo(&image->semaphore);
-  } while (IsAccessible(filename));
+    int
+      file;
+
+    file=mkstemp(filename);
+    if (file != (FILE *) NULL)
+      close(file);
+  }
+#elif !defined(vms) && !defined(macintosh)
+  {
+    char
+      *name;
+
+    name=(char *) tempnam((char *) NULL,filename);
+    if (name != (char *) NULL)
+      {
+        (void) strcpy(filename,name);
+        LiberateMemory((void **) &name);
+      }
+  }
+#else
+  (void) tmpnam(filename);
+#endif
+  UpdateSignature(&signature_info,(unsigned char *) filename,strlen(filename));
+  FinalizeSignature(&signature_info);
+  FormatString(filename,"magick%08lx%08lx%08lx%08lx%08lx%08lx%08lx%08lx",
+    signature_info.digest[0],signature_info.digest[1],signature_info.digest[2],
+    signature_info.digest[3],signature_info.digest[4],signature_info.digest[5],
+    signature_info.digest[6],signature_info.digest[7]);
 }
