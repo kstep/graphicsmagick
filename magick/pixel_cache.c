@@ -110,7 +110,7 @@ Export void
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C l o s e P i x e l C a c h e                                             %
++   C l o s e P i x e l C a c h e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -131,7 +131,7 @@ Export void
 %
 %
 */
-Export void ClosePixelCache(Image *image)
+static void ClosePixelCache(Image *image)
 {
   assert(image != (Image *) NULL);
   if (image->cache == (void *) NULL)
@@ -144,7 +144,7 @@ Export void ClosePixelCache(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y P i x e l C a c h e                                         %
++   D e s t r o y P i x e l C a c h e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -162,7 +162,7 @@ Export void ClosePixelCache(Image *image)
 %
 %
 */
-Export void DestroyPixelCache(Image *image)
+static void DestroyPixelCache(Image *image)
 {
   assert(image != (Image *) NULL);
   if (image->cache == (void *) NULL)
@@ -176,7 +176,7 @@ Export void DestroyPixelCache(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I n d e x e s F r o m C a c h e                                     %
++   G e t I n d e x e s F r o m C a c h e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -210,7 +210,7 @@ static IndexPacket *GetIndexesFromCache(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t O n e P i x e l F r o m C a c h e                                   %
++   G e t O n e P i x e l F r o m C a c h e                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -251,7 +251,7 @@ static PixelPacket GetOnePixelFromCache(Image *image,const int x,const int y)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t P i x e l C a c h e                                                 %
++   G e t P i x e l C a c h e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -313,7 +313,7 @@ static PixelPacket *GetPixelCache(Image *image,const int x,const int y,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t P i x e l s F r o m C a c h e                                       %
++   G e t P i x e l s F r o m C a c h e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -346,7 +346,7 @@ static PixelPacket *GetPixelsFromCache(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t P i x e l C a c h e                                                 %
++   S e t P i x e l C a c h e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -428,7 +428,7 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ResetPixelCacheMethods set the default image pixel methods to
+%  Method SetPixelCacheMethods set the default image pixel methods to
 %  use the pixel cache.
 %
 %
@@ -453,7 +453,7 @@ Export void SetPixelCacheMethods(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S y n c P i x e l C a c h e                                               %
++   S y n c P i x e l C a c h e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %

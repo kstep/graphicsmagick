@@ -473,7 +473,7 @@ Export CacheType GetCacheType(const Cache cache)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t C a c h e N e x u s                                                 %
+%   G e t C a c h e N e x u s                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -726,7 +726,7 @@ Export unsigned int OpenCache(Cache cache,const ClassType class_type,
       if (cache_info->type == MemoryCache)
         (void) GetCacheMemory(length);
       if (cache_info->type == MemoryMappedCache)
-        (void) UnmapBlob(cache_info->pixels,length);
+        (void) UnmapBlob(cache_info->pixels,(size_t) length);
     }
   else
     {

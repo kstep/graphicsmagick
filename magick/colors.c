@@ -1682,9 +1682,6 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
       char
         c;
 
-      register int
-        i;
-
       unsigned long
         n;
 

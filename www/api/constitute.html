@@ -27,7 +27,6 @@
 		<LI><A HREF="#pushimagepixels">PushImagePixels</A></LI>
 		<LI><A HREF="#readimage">ReadImage</A></LI>
 		<LI><A HREF="#readimages">ReadImages</A></LI>
-		<LI><A HREF="#streamimage">StreamImage</A></LI>
 		<LI><A HREF="#writeimage">WriteImage</A></LI>
 	</UL>
 
@@ -49,9 +48,8 @@
 <P>Image * <STRONG>PingImage</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>PullImagePixels</STRONG>( const Image *image, const QuantumTypes quantum, const unsigned char *source );</P>
 <P>unsigned int  <STRONG>PushImagePixels</STRONG>( const Image *, const QuantumTypes quantum, unsigned char *destination );</P>
-<P>Image * <STRONG>ReadImage</STRONG>( ImageInfo *image_info, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>ReadImages</STRONG>( ImageInfo *image_info, ExceptionInfo *exception );</P>
-<P>void  <STRONG>StreamImage</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ReadImage</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ReadImages</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>WriteImage</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>
 <A HREF="#__index__"><SMALL>page index</SMALL></A>
@@ -211,7 +209,7 @@ The components are transferred to this buffer.
 <H2><A NAME="readimage">ReadImage</A></H2>
 <P>Method ReadImage reads an image and returns it.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  By default, the image format is determined by its magic number.  To specify a particular image format, precede the filename with an explicit image format name and a colon (i.e.  ps:image) or as the filename suffix (i.e.  image.ps).</P>
 <P>The format of the ReadImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ReadImage ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ReadImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -231,7 +229,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="readimages">ReadImages</A></H2>
 <P>Method ReadImages reads a list of image names from a file and then returns the images as a linked list.</P>
 <P>The format of the ReadImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ReadImages ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ReadImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -242,21 +240,6 @@ Method ReadImage returns a pointer to the image after reading.
 <p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
 Specifies a pointer to an ImageInfo structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="streamimage">StreamImage</A></H2>
-<P>Method StreamImage</P>
-<P>The format of the StreamImage method is:</P>
-<blockquote>void StreamImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image_info:</STRONG><BR>
-<DD>
-Specifies a pointer to an ImageInfo structure.
-<P></P>
-<p><dt><STRONG>exception:</STRONG><BR>
-<DD>
-return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="writeimage">WriteImage</A></H2>

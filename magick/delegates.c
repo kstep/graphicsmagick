@@ -704,7 +704,7 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
         delegate_info.commands[strlen(delegate_info.commands)-1]='\0';
     }
     if (delegate_info.commands == (char *) NULL)
-      MagickWarning(DelegateWarning,"no commands for this delgate",
+      MagickWarning(DelegateWarning,"no command for this delegate",
         delegate_info.decode_tag);
     /*
       Add delegate to the delegate list.

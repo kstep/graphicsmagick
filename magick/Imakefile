@@ -51,14 +51,14 @@ REQUIREDLIBS= $(REQUIRED_LIBRARIES) $(LDPRELIB) -lXext -lX11
 SO_REQLIBS= -lX11 -lc
 #endif
 
-HEADERS = api.h blob.h cache.h classify.h compress.h delegates.h error.h \
-  gems.h image.h magick.h memory.h monitor.h quantize.h timer.h utility.h \
-  version.h xwindows.h
+HEADERS = PreRvIcccm.h api.h attributes.h blob.h cache_view.h \
+  classify.h compress.h config.h delegates.h error.h gems.h image.h magick.h \
+  memory.h monitor.h quantize.h timer.h utility.h version.h widget.h xwindows.h
 
 SRCS = PreRvIcccm.c animate.c annotate.c attributes.c avs.c bim.c blob.c bmp.c \
-  cache.c cache_view.c cmyk.c colors.c compress.c dcm.c decorate.c \
-  delegates.c display.c dps.c draw.c effects.c enhance.c ept.c error.c \
-  fax.c fits.c fpx.c gems.c gif.c gradation.c gray.c hdf.c histogram.c \
+  cache.c cache_view.c cmyk.c colors.c compress.c constitute.c dcm.c \
+  decorate.c delegates.c display.c dps.c draw.c effects.c enhance.c ept.c \
+  error.c fax.c fits.c fpx.c gems.c gif.c gradation.c gray.c hdf.c histogram.c \
   html.c icc.c icon.c image.c iptc.c jbig.c jpeg.c label.c logo.c mac.c \
   magick.c map.c matte.c memory.c miff.c monitor.c mono.c montage.c mtv.c \
   nt.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c pixel_cache.c plasma.c \
@@ -69,9 +69,9 @@ SRCS = PreRvIcccm.c animate.c annotate.c attributes.c avs.c bim.c blob.c bmp.c \
   xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c
 
 OBJS = PreRvIcccm.o animate.o annotate.o attributes.o avs.o bim.o blob.o bmp.o \
-  cache.o cache_view.o cmyk.o colors.o compress.o dcm.o decorate.o \
-  delegates.o display.o dps.o draw.o effects.o enhance.o ept.o error.o \
-  fax.o fits.o fpx.o gems.o gif.o gradation.o gray.o hdf.o histogram.o \
+  cache.o cache_view.o cmyk.o colors.o compress.o constitute.o dcm.o \
+  decorate.o delegates.o display.o dps.o draw.o effects.o enhance.o ept.o \
+  error.o fax.o fits.o fpx.o gems.o gif.o gradation.o gray.o hdf.o histogram.o \
   html.o icc.o icon.o image.o iptc.o jbig.o jpeg.o label.o logo.o mac.o \
   magick.o map.o matte.o memory.o miff.o monitor.o mono.o montage.o mtv.o \
   nt.o pcd.o pcl.o pcx.o pdb.o pdf.o pict.o pix.o pixel_cache.o plasma.o \

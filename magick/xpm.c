@@ -430,7 +430,6 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     count,
     j,
-    length,
     none,
     y;
 
@@ -449,6 +448,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *r;
 
   unsigned int
+    length,
     status,
     width;
 

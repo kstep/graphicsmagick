@@ -719,6 +719,7 @@ extern Export unsigned int
   IsMonochromeImage(Image *),
   IsPseudoClass(Image *),
   IsSubimage(const char *,const unsigned int),
+  IsTainted(const Image *),
   LayerImage(Image *,const LayerType),
   MatteFloodfillImage(Image *,const PixelPacket *,const unsigned int,
     const int x,const int y,const PaintMethod),
