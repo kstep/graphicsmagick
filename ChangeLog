@@ -1,5 +1,6 @@
 2003-02-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/NEWS.html: New HTML file for project news.
 	* scripts/txt2html: New script for formatting text into HTML.
 	* Makefile.am: Automated the generation of www/Changelog.html and
 	www/NEWS.html.
