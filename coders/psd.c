@@ -512,7 +512,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   number_layers=0;
   length=ReadBlobMSBLong(image);
   if (length == 8)
-    length=ReadBlobMSBLong(image);
+    {
+      length=ReadBlobMSBLong(image);
+      length=ReadBlobMSBLong(image);
+    }
   if (length != 0)
     {
       /*
@@ -772,8 +775,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return(image);
     }
   compression=ReadBlobMSBShort(image);
-  if (compression == 0)
-    compression=ReadBlobMSBShort(image);
   if (compression == 1)
     {
       /*
@@ -1063,7 +1064,6 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     }
   (void) WriteBlobMSBLong(image,0);  /* image resource block */
   (void) WriteBlobMSBLong(image,0);  /* layer and mask block */
-  (void) WriteBlobMSBShort(image,0);
   (void) WriteBlobMSBShort(image,0);  /* compression */
   /*
     Write uncompressed pixel data as separate planes.
