@@ -6316,37 +6316,43 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
   image->depth=GetImageDepth(image,&image->exception);
   if (image->depth == depth)
     return(True);
-  for (y=0; y < (long) image->rows; y++)
-  {
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (long) image->columns; x++)
+  if (depth <= 8)
     {
-      q->red=ScaleCharToQuantum(ScaleQuantumToChar(q->red));
-      q->green=ScaleCharToQuantum(ScaleQuantumToChar(q->green));
-      q->blue=ScaleCharToQuantum(ScaleQuantumToChar(q->blue));
-      q->opacity=ScaleCharToQuantum(ScaleQuantumToChar(q->opacity));
-      q++;
-    }
-    if (!SyncImagePixels(image))
-      break;
-  }
-  if (image->storage_class == PseudoClass)
-    {
-      register long
-        i;
-
-      q=image->colormap;
-      for (i=0; i < (long) image->colors; i++)
+      for (y=0; y < (long) image->rows; y++)
       {
-        q->red=ScaleCharToQuantum(ScaleQuantumToChar(q->red));
-        q->green=ScaleCharToQuantum(ScaleQuantumToChar(q->green));
-        q->blue=ScaleCharToQuantum(ScaleQuantumToChar(q->blue));
-        q->opacity=ScaleCharToQuantum(ScaleQuantumToChar(q->opacity));
-        q++;
+        q=GetImagePixels(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (long) image->columns; x++)
+        {
+          q->red=ScaleCharToQuantum(ScaleQuantumToChar(q->red));
+          q->green=ScaleCharToQuantum(ScaleQuantumToChar(q->green));
+          q->blue=ScaleCharToQuantum(ScaleQuantumToChar(q->blue));
+          q->opacity=ScaleCharToQuantum(ScaleQuantumToChar(q->opacity));
+          q++;
+        }
+        if (!SyncImagePixels(image))
+          break;
       }
+      if (image->storage_class == PseudoClass)
+        {
+          register long
+            i;
+
+          q=image->colormap;
+          for (i=0; i < (long) image->colors; i++)
+          {
+            q->red=ScaleCharToQuantum(ScaleQuantumToChar(q->red));
+            q->green=ScaleCharToQuantum(ScaleQuantumToChar(q->green));
+            q->blue=ScaleCharToQuantum(ScaleQuantumToChar(q->blue));
+            q->opacity=ScaleCharToQuantum(ScaleQuantumToChar(q->opacity));
+            q++;
+          }
+        }
+      image->depth=8;
+      return(True);
     }
+  image->depth=16;
   return(True);
 }
 
