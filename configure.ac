@@ -148,7 +148,7 @@ AC_PROG_CC_STDC
 AC_PROG_CPP
 AM_PROG_LD
 AC_SUBST(LD)
-AM_PROG_CC_C_O
+AM_PROG_CC_C_O  # Necessary if objects are placed in subdirectories.
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S

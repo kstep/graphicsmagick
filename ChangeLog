@@ -1,3 +1,11 @@
+2004-09-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c: Don't use deprecated tiff.h _SUPPORT defines.
+	Support retrieving and saving XMP profile.  Use profile set/get
+	methods in implementation.
+	* coders/mat.c,coders/topol.c (ReadBlobWordLSB,ReadBlobDoublesLSB):
+	Use better variable name than `I' for image.
+
 2004-09-07  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 
 	* coders/miff.c (WriteMIFFImage): Ensure that MIFF files are never

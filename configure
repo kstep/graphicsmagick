@@ -4363,7 +4363,7 @@ if eval "test \"`echo '$ac_cv_prog_cc_'${ac_cc}_c_o`\" != yes"; then
    # and then we could set am__CC="\$(top_srcdir)/compile \$(CC)"
    CC="$am_aux_dir/compile $CC"
 fi
-
+  # Necessary if objects are placed in subdirectories.
 # Find a good install program.  We prefer a C program (faster),
 # so one script is as good as another.  But avoid the broken or
 # incompatible versions:

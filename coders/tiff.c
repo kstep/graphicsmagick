@@ -45,6 +45,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/profile.h"
 #include "magick/resize.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
@@ -251,31 +252,6 @@ static const char *PhotometricTagToString(unsigned int photometric)
   return result;
 }
 
-#if defined(ICC_SUPPORT)
-static unsigned int ReadColorProfile(char *text,long int length,Image *image)
-{
-  register unsigned char
-    *p;
-
-  if (length <= 0)
-    return(False);
-  p=(unsigned char *) text;
-  if (image->color_profile.length != 0)
-    {
-      MagickFreeMemory(image->color_profile.info);
-      image->color_profile.length=0;
-    }
-  image->color_profile.info=MagickAllocateMemory(unsigned char *,length);
-  if (image->color_profile.info == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-      image->filename);
-  image->color_profile.length=length;
-  (void) memcpy(image->color_profile.info,p,length);
-  return(True);
-}
-#endif
-
-#if defined(IPTC_SUPPORT)
 static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
   int type)
 {
@@ -285,25 +261,13 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
   if (length <= 0)
     return(False);
   p=(unsigned char *) text;
-  if (image->iptc_profile.length != 0)
-    {
-      MagickFreeMemory(image->iptc_profile.info);
-      image->iptc_profile.length=0;
-      image->iptc_profile.info=(unsigned char *) NULL;
-    }
   if (type == TIFFTAG_RICHTIFFIPTC)
     {
       /*
         Handle IPTC tag.
       */
       length*=4;
-      image->iptc_profile.info=MagickAllocateMemory(unsigned char *,length);
-      if (image->iptc_profile.info == (unsigned char *) NULL)
-        ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-          image->filename);
-      image->iptc_profile.length=length;
-      (void) memcpy(image->iptc_profile.info,p,length);
-      return(True);
+      return SetImageProfile(image,"IPTC",p,(size_t) length);
     }
   /*
     Handle PHOTOSHOP tag.
@@ -321,11 +285,6 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
   }
   if (length <= 0)
     return(False);
-  if (image->iptc_profile.length != 0)
-    {
-      MagickFreeMemory(image->iptc_profile.info);
-      image->iptc_profile.length=0;
-    }
 #if defined(GET_ONLY_IPTC_DATA)
   /*
     Eat OSType, IPTC ID code, and Pascal string length bytes.
@@ -339,15 +298,8 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
   length=(p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
   p+=4;
 #endif
-  image->iptc_profile.info=MagickAllocateMemory(unsigned char *,length);
-  if (image->iptc_profile.info == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-      image->filename);
-  image->iptc_profile.length=length;
-  (void) memcpy(image->iptc_profile.info,p,length);
-  return(True);
+  return SetImageProfile(image,"8BIM",p,(size_t) length);
 }
-#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -510,9 +462,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
   uint32
     height,
-#if defined(ICC_SUPPORT) || defined(IPTC_SUPPORT) || defined(PHOTOSHOP_SUPPORT)
-    length,
-#endif
     rows_per_strip,
     width;
 
@@ -653,23 +602,44 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         image->chromaticity.blue_primary.x=chromaticity[4];
         image->chromaticity.blue_primary.y=chromaticity[5];
       }
-#if defined(ICC_SUPPORT)
-    if (TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&text) == 1)
-      (void) ReadColorProfile(text,(long) length,image);
+    {
+      /*
+        Retrieve embedded profiles.
+      */
+      uint32
+        length;
+      /*
+        ICC ICM color profile.
+      */
+#if defined(TIFFTAG_ICCPROFILE)
+      if (TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&text) == 1)
+        SetImageProfile(image,"ICM",(unsigned char *) text,(size_t) length);
+#endif /* defined(TIFFTAG_ICCPROFILE) */
+      /*
+        IPTC/Photoshop profile.
+      */
+#if defined(TIFFTAG_PHOTOSHOP)
+      /* Photoshop profile (with embedded IPTC profile) */
+      if (TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&text) == 1)
+        (void) ReadNewsProfile(text,(long) length,image,TIFFTAG_PHOTOSHOP);
+#elif defined(TIFFTAG_RICHTIFFIPTC)
+      /* IPTC TAG from RichTIFF specifications */
+      if (TIFFGetField(tiff,TIFFTAG_RICHTIFFIPTC,&length,&text) == 1)
+        {
+          if (TIFFIsByteSwapped(tiff))
+            TIFFSwabArrayOfLong((uint32 *) text,length);
+          ReadNewsProfile(text,length,image,TIFFTAG_RICHTIFFIPTC);
+        }
 #endif
-#if defined(IPTC_SUPPORT)
-#if defined(PHOTOSHOP_SUPPORT)
-    if (TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&text) == 1)
-      (void) ReadNewsProfile(text,(long) length,image,TIFFTAG_PHOTOSHOP);
-#else
-    if (TIFFGetField(tiff,TIFFTAG_RICHTIFFIPTC,&length,&text) == 1)
-      {
-        if (TIFFIsByteSwapped(tiff))
-          TIFFSwabArrayOfLong((uint32 *) text,length);
-        ReadNewsProfile(text,length,image,TIFFTAG_RICHTIFFIPTC);
-      }
+      /*
+        XML XMP profile.
+      */
+#if defined(TIFFTAG_XMLPACKET)
+      /* %XML packet [Adobe XMP technote 9-14-02] */
+    if (TIFFGetField(tiff,TIFFTAG_XMLPACKET,&length,&text) == 1)
+      SetImageProfile(image,"XMP",(unsigned char *) text,(size_t) length);
 #endif
-#endif
+    }
     /*
       Allocate memory for the image and pixel buffer.
     */
@@ -1519,8 +1489,9 @@ static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
 %
 */
 
-#if defined(IPTC_SUPPORT)
-static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
+static void WriteNewsProfile(TIFF *tiff,int profile_tag,
+                             const unsigned char *profile_data,
+                             size_t profile_length)
 {
   register long
     i;
@@ -1532,23 +1503,24 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
     length,
     roundup;
 
-  if (type == TIFFTAG_RICHTIFFIPTC)
+  if (profile_tag == TIFFTAG_RICHTIFFIPTC)
     {
       /*
         Handle TIFFTAG_RICHTIFFIPTC tag.
       */
-      length=image->iptc_profile.length;
+      length=profile_length;
       roundup=4-(length & 0x03); /* round up for long word alignment */
       profile=MagickAllocateMemory(unsigned char *,length+roundup);
       if ((length == 0) || (profile == (unsigned char *) NULL))
         return;
-      (void) memcpy(profile,image->iptc_profile.info,length);
+      (void) memcpy(profile,profile_data,length);
       for (i=0; i < (long) roundup; i++)
         profile[length+i] = 0;
-      length=(image->iptc_profile.length+roundup)/4;
+      length=(profile_length+roundup)/4;
       if (TIFFIsByteSwapped(tiff))
         TIFFSwabArrayOfLong((uint32 *) profile,length);
-      (void) TIFFSetField(tiff,type,(uint32) (length+roundup),(void *) profile);
+      (void) TIFFSetField(tiff,profile_tag,(uint32) (length+roundup),
+                          (void *) profile);
       MagickFreeMemory(profile);
       return;
     }
@@ -1556,7 +1528,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
     Handle TIFFTAG_PHOTOSHOP tag.
   */
 #if defined(GET_ONLY_IPTC_DATA)
-  length=image->iptc_profile.length;
+  length=profile_length;
   roundup=(length & 0x01); /* round up for Photoshop */
   profile=MagickAllocateMemory(unsigned char *,length+roundup+12);
   if ((length == 0) || (profile == (unsigned char *) NULL))
@@ -1566,26 +1538,27 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
   profile[10]=(length >> 8) & 0xff;
   profile[11]=length & 0xff;
   for (i=0; i < length; i++)
-    profile[i+12]=image->iptc_profile.info[i];
+    profile[i+12]=profile_data[i];
   if (roundup)
     profile[length+roundup+11]=0;
-  (void) TIFFSetField(tiff,type,(uint32) length+roundup+12,(void *) profile);
+  (void) TIFFSetField(tiff,profile_tag,(uint32) length+roundup+12,
+                      (void *) profile);
 #else
-  length=image->iptc_profile.length;
+  length=profile_length;
   if (length == 0)
     return;
   roundup=(length & 0x01); /* round up for Photoshop */
   profile=MagickAllocateMemory(unsigned char *,length+roundup);
   if (profile == (unsigned char *) NULL)
     return;
-  (void) memcpy(profile,image->iptc_profile.info,length);
+  (void) memcpy(profile,profile_data,length);
   if (roundup)
     profile[length+roundup]=0;
-  (void) TIFFSetField(tiff,type,(uint32) length+roundup,(void *) profile);
+  (void) TIFFSetField(tiff,profile_tag,(uint32) length+roundup,
+                      (void *) profile);
 #endif
   MagickFreeMemory(profile);
 }
-#endif
 
 static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
   tsample_t sample,Image *image)
@@ -1844,7 +1817,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #ifdef JPEG_SUPPORT
       case JPEGCompression: compress_tag=COMPRESSION_JPEG; break;
 #endif
-#ifdef HasLZW
+#ifdef LZW_SUPPORT
       case LZWCompression: compress_tag=COMPRESSION_LZW; break;
 #endif
 #ifdef PACKBITS_SUPPORT
@@ -2130,20 +2103,51 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         chromaticity[1]=image->chromaticity.white_point.y;
         (void) TIFFSetField(tiff,TIFFTAG_WHITEPOINT,chromaticity);
       }
-#if defined(ICC_SUPPORT)
-    if (image->color_profile.length != 0)
-      (void) TIFFSetField(tiff,TIFFTAG_ICCPROFILE,(uint32)
-        image->color_profile.length,(void *) image->color_profile.info);
-#endif
-#if defined(IPTC_SUPPORT)
-#if defined(PHOTOSHOP_SUPPORT)
-    if (image->iptc_profile.length != 0)
-      WriteNewsProfile(tiff,TIFFTAG_PHOTOSHOP,image);
+    {
+      /*
+        Copy any embedded profiles to TIFF.
+      */
+      size_t
+        profile_length=0;
+
+      const unsigned char
+        *profile_data=0;
+
+#if defined(TIFFTAG_XMLPACKET)
+      /*
+        XML XMP profile.
+      */
+      if ((profile_data=GetImageProfile(image,"XMP",&profile_length)) != 0)
+        (void) TIFFSetField(tiff,TIFFTAG_XMLPACKET,(uint32) profile_length,
+                            profile_data);
+#endif /* defined(TIFFTAG_XMLPACKET) */
+      
+#if defined(TIFFTAG_ICCPROFILE)
+      /*
+        ICC color profile.
+      */
+      if ((profile_data=GetImageProfile(image,"ICM",&profile_length)) != 0)
+        (void) TIFFSetField(tiff,TIFFTAG_ICCPROFILE,(uint32)profile_length,
+                            profile_data);
+#endif /* defined(ICC_SUPPORT) */
+      
+      /*
+        IPTC NewsPhoto profile.
+      */
+      if ((profile_data=GetImageProfile(image,"IPTC",&profile_length)) != 0)
+        {
+          int
+            profile_tag=0;
+#if defined(TIFFTAG_PHOTOSHOP)
+          /* Photoshop profile (with embedded IPTC profile). */
+          profile_tag=TIFFTAG_PHOTOSHOP;
 #else
-    if (image->iptc_profile.length != 0)
-      WriteNewsProfile(tiff,TIFFTAG_RICHTIFFIPTC,image);
-#endif
-#endif
+          /* IPTC TAG from RichTIFF specifications */
+          profile_tag=TIFFTAG_RICHTIFFIPTC;
+#endif /* defined(PHOTOSHOP_SUPPORT) */
+          WriteNewsProfile(tiff,profile_tag,profile_data,profile_length);
+        }
+    }
     if (image_info->adjoin && (GetImageListLength(image) > 1))
       {
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
