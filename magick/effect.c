@@ -220,8 +220,8 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
 %
 %  The format of the BlurImage method is:
 %
-%      Image *BlurImage(const Image *image,const double radius,const double sigma,
-%        ExceptionInfo *exception)
+%      Image *BlurImage(const Image *image,const double radius,
+%        const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3114,30 +3114,18 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int amount,
 MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   ExceptionInfo *exception)
 {
-#define EmbedBit(byte) \
-{ \
-  pixel=AcquireOnePixel(watermark,(long) (j % watermark->columns), \
-    (long) (j/watermark->columns),exception); \
-  (byte)&=(~0x01); \
-  (byte)|=((unsigned long) Intensity(pixel) >> shift) & 0x01; \
-  j++; \
-  if (j == (long) (watermark->columns*watermark->rows)) \
-    { \
-      j=0; \
-      shift--; \
-      if (shift < 0) \
-        break; \
-    } \
-}
+#define GetBit(a,i) (((a) >> (i)) & 1L)
+#define SetBit(a,i,set) a=(set) ? (a) | (1L << (i)) : (a) & ~(1L << (i))
 #define SteganoImageText  "  Hide image...  "
 
   Image
     *stegano_image;
 
   long
+    c,
     i,
     j,
-    shift,
+    k,
     y;
 
   PixelPacket
@@ -3164,73 +3152,57 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   stegano_image=CloneImage(image,0,0,False,exception);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
-  if (stegano_image->storage_class == PseudoClass)
-    {
-      if (stegano_image->colors > 128)
-        SetImageType(stegano_image,TrueColorType);
-      else
-        {
-          /*
-            Shift colormap to make room for information hiding.
-          */
-          stegano_image->colors<<=1;
-          ReacquireMemory((void **) &stegano_image->colormap,
-            stegano_image->colors*sizeof(PixelPacket));
-          if (stegano_image->colormap == (PixelPacket *) NULL)
-            {
-              DestroyImage(stegano_image);
-              ThrowImageException(ResourceLimitWarning,
-                "Unable to create steganograph image",
-                "Memory allocation failed")
-            }
-          for (i=stegano_image->colors-1; i >= 0; i--)
-            stegano_image->colormap[i]=stegano_image->colormap[i >> 1];
-          for (y=0; y < (long) stegano_image->rows; y++)
-          {
-            q=GetImagePixels(stegano_image,0,y,stegano_image->columns,1);
-            if (q == (PixelPacket *) NULL)
-              break;
-            indexes=GetIndexes(stegano_image);
-            for (x=0; x < (long) stegano_image->columns; x++)
-              indexes[x]*=2;
-            if (!SyncImagePixels(stegano_image))
-              break;
-          }
-        }
-    }
+  stegano_image->class=DirectClass;
+  stegano_image->depth=QuantumDepth;
   /*
     Hide watermark in low-order bits of image.
   */
-  i=image->offset;
+  c=0;
+  i=0;
   j=0;
-  shift=image->depth-1;
-  for (y=0; y < (long) image->rows; y++)
+  k=image->offset;
+  for (i=QuantumDepth-1; (i >= 0) && (j < QuantumDepth); i--)
   {
-    for (x=0; x < (long) image->columns; x++)
+    for (y=0; (y < (long) watermark->rows) && (j < QuantumDepth); y++)
     {
-      if (i == (long) (stegano_image->columns*stegano_image->rows))
-        i=0;
-      q=GetImagePixels(stegano_image,(long) (i % stegano_image->columns),
-        (long) (i/stegano_image->columns),1,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      indexes=GetIndexes(image);
-      if (stegano_image->storage_class == PseudoClass)
-        EmbedBit(*indexes)
-      else
+      for (x=0; (x < (long) watermark->columns) && (j < QuantumDepth); x++)
+      {
+        pixel=AcquireOnePixel(watermark,x,y,exception);
+        q=GetImagePixels(stegano_image,k % (long) stegano_image->columns,
+        k/(long) stegano_image->columns,1,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        switch (c)
         {
-          EmbedBit(q->red);
-          EmbedBit(q->green);
-          EmbedBit(q->blue);
+          case 0:
+	  {
+            SetBit(q->red,j,GetBit(Intensity(pixel),i));
+            break;
+          }
+          case 1:
+	  {
+            SetBit(q->green,j,GetBit(Intensity(pixel),i));
+            break;
+          }
+          case 2:
+	  {
+            SetBit(q->blue,j,GetBit(Intensity(pixel),i));
+            break;
+          }
         }
-      if (!SyncImagePixels(stegano_image))
-        break;
-      i++;
+        (void) SyncImage(stegano_image);
+        c++;
+        if (c == 3)
+          c=0;
+        k++;
+        if (k == (long) (stegano_image->columns*stegano_image->columns))
+          k=0;
+        if (k == image->offset)
+          j++;
+      }
     }
-    if (shift < 0)
-      break;
-    if (QuantumTick(y,image->rows))
-      MagickMonitor(SteganoImageText,y,image->rows);
+    if (QuantumTick(i,QuantumDepth))
+      MagickMonitor(SteganoImageText,i,QuantumDepth);
   }
   if (stegano_image->storage_class == PseudoClass)
     SyncImage(stegano_image);

@@ -1010,6 +1010,8 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
   assert(image->signature == MagickSignature);
   if ((image->storage_class == PseudoClass) && (image->colors <= 256))
     return(True);
+  if (image->storage_class == PseudoClass)
+    return(False);
   /*
     Initialize color description tree.
   */

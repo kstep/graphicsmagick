@@ -90,37 +90,22 @@
 static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-#define UnembedBit(byte) \
-{ \
-  q=GetImagePixels(image,(long) (j % image->columns), \
-    (long) (j/image->columns),1,1); \
-  if (q == (PixelPacket *) NULL) \
-    break; \
-  indexes=GetIndexes(image); \
-  (*indexes)|=((byte) & 0x01) << shift; \
-  (void) SyncImagePixels(image); \
-  j++; \
-  if (j == (long) (image->columns*image->rows)) \
-    { \
-      j=0; \
-      shift--; \
-      if (shift < 0) \
-        break; \
-    } \
-}
+#define GetBit(a,i) (((a) >> (i)) & 1L)
+#define SetBit(a,i,set) a=(set) ? (a) | (1L << (i)) : (a) & ~(1L << (i))
 
   Image
     *clone_image,
     *image,
-    *stegano_image;
+    *watermark;
 
   ImageInfo
     *clone_info;
 
   long
+    c,
     i,
     j,
-    shift,
+    k,
     y;
 
   PixelPacket
@@ -145,51 +130,65 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   clone_info=CloneImageInfo(image_info);
   DetachBlob(clone_info->blob);
   *clone_info->magick='\0';
-  stegano_image=ReadImage(clone_info,exception);
+  watermark=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
-  if (stegano_image == (Image *) NULL)
+  if (watermark == (Image *) NULL)
     return((Image *) NULL);
-  clone_image=CloneImage(stegano_image,image->columns,image->rows,True,
-    exception);
-  DestroyImage(image);
-  if (clone_image == (Image *) NULL)
-    return((Image *) NULL);
-  image=clone_image;
-  if (!AllocateImageColormap(image,1 << image->depth))
+  watermark->depth=QuantumDepth;
+  if (!AllocateImageColormap(image,MaxRGB+1))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  SetImage(image,OpaqueOpacity);
   /*
-    Grab embedded watermark.
+    Get hidden watermark from low-order bits of image.
   */
-  i=image->offset;
+  c=0;
+  i=0;
   j=0;
-  shift=image->depth-1;
-  for (y=0; y < (long) stegano_image->rows; y++)
+  k=image->offset;
+  for (i=QuantumDepth-1; (i >= 0) && (j < QuantumDepth); i--)
   {
-    for (x=0; x < (long) stegano_image->columns; x++)
+    for (y=0; (y < (long) image->rows) && (j < QuantumDepth); y++)
     {
-      if (i == (long) (stegano_image->columns*stegano_image->rows))
-        i=0;
-      pixel=AcquireOnePixel(stegano_image,(long) (i % stegano_image->columns),
-        (long) (i/stegano_image->columns),&image->exception);
-      stegano_indexes=GetIndexes(stegano_image);
-      if (stegano_image->storage_class == PseudoClass)
-        UnembedBit(*stegano_indexes)
-      else
+      for (x=0; (x < (long) image->columns) && (j < QuantumDepth); x++)
+      {
+        pixel=AcquireOnePixel(watermark,k % (long) watermark->columns,
+          k/(long) watermark->columns,exception);
+        q=GetImagePixels(image,x,y,1,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        indexes=GetIndexes(image);
+        switch (c)
         {
-          UnembedBit(pixel.red);
-          UnembedBit(pixel.green);
-          UnembedBit(pixel.blue);
+          case 0:
+	  {
+            SetBit(*indexes,i,GetBit(pixel.red,j));
+            break;
+          }
+          case 1:
+	  {
+            SetBit(*indexes,i,GetBit(pixel.green,j));
+            break;
+          }
+          case 2:
+	  {
+            SetBit(*indexes,i,GetBit(pixel.blue,j));
+            break;
+          }
         }
-      i++;
+        (void) SyncImage(image);
+        c++;
+        if (c == 3)
+          c=0;
+        k++;
+        if (k == (long) (watermark->columns*watermark->columns))
+          k=0;
+        if (k == image->offset)
+          j++;
+      }
     }
-    if (shift < 0)
-      break;
-    if (QuantumTick(y,stegano_image->rows))
-      MagickMonitor(LoadImageText,y,stegano_image->rows);
+    MagickMonitor(LoadImagesText,i,QuantumDepth);
   }
+  DestroyImage(watermark);
   SyncImage(image);
-  DestroyImage(stegano_image);
   return(image);
 }
 
