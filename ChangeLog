@@ -1,5 +1,5 @@
 2002-11-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * Moved coder Register/Unregister methods to static.h since
+  * Moved coder Register/Unregister method prototypes to static.h since
     they are only needed by static.c.
   * Removed defunct HDF and libmpeg2 support since it was
     confusing to users.
