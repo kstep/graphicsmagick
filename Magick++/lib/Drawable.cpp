@@ -479,8 +479,7 @@ Magick::DrawableDashArray::DrawableDashArray( const unsigned int* dasharray_ )
 }
 void Magick::DrawableDashArray::dasharray( const unsigned int* dasharray_ )
 {
-  delete _dasharray;
-  _dasharray = 0;
+  LiberateMemory(reinterpret_cast<void**>(&_dasharray));
 
   if(dasharray_)
     {
@@ -488,7 +487,7 @@ void Magick::DrawableDashArray::dasharray( const unsigned int* dasharray_ )
       int x;
       for (x=0; dasharray_[x]; x++);
       // Allocate elements
-      _dasharray=new unsigned int[x+1];
+      _dasharray=static_cast<unsigned int*>(AcquireMemory((x+1)*sizeof(unsigned int)));
       // Copy elements
       memcpy(_dasharray,dasharray_,
              (x+1)*sizeof(unsigned int));

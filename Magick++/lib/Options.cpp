@@ -161,8 +161,7 @@ Magick::Color Magick::Options::boxColor ( void ) const
 
 void Magick::Options::strokeDashArray ( const unsigned int* strokeDashArray_ )
 {
-  delete _drawInfo->dash_pattern;
-  _drawInfo->dash_pattern = 0;
+  LiberateMemory(reinterpret_cast<void**>(&_drawInfo->dash_pattern));
 
   if(strokeDashArray_)
     {
@@ -170,7 +169,8 @@ void Magick::Options::strokeDashArray ( const unsigned int* strokeDashArray_ )
       int x;
       for (x=0; strokeDashArray_[x]; x++);
       // Allocate elements
-      _drawInfo->dash_pattern=new unsigned int[x+1];
+      _drawInfo->dash_pattern =
+        static_cast<unsigned int*>(AcquireMemory((x+1)*sizeof(unsigned int)));
       // Copy elements
       memcpy(_drawInfo->dash_pattern,strokeDashArray_,
              (x+1)*sizeof(unsigned int));
