@@ -222,13 +222,17 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case PlayCommand:
     {
-      *state|=PlayAnimationState;
-      *state&=(~AutoReverseAnimationState);
+      char
+        *basename;
+
       /*
         Window name is the base of the filename.
       */
-      FormatString(windows->image.name,"ImageMagick: %.1024s",
-        BaseFilename((*image)->filename));
+      *state|=PlayAnimationState;
+      *state&=(~AutoReverseAnimationState);
+      basename=BaseFilename((*image)->filename);
+      FormatString(windows->image.name,"ImageMagick: %.1024s",basename);
+      FreeMemory((void *) &basename);
       if (resource_info->title != (char *) NULL)
         windows->image.name=
           TranslateText(resource_info->image_info,*image,resource_info->title);

@@ -184,7 +184,7 @@ Export DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %
 %  The format of the ColorFloodfillImage method is:
 %
-%      unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
+%      unsigned int ColorFloodfillImage(Image *image,const PixelPacket target,
 %        Image *tile,const int x_offset,const int y_offset,
 %        const PaintMethod method)
 %
@@ -204,7 +204,7 @@ Export DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %
 %
 */
-Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
+Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket target,
   Image *tile,const int x_offset,const int y_offset,const PaintMethod method)
 {
   PixelPacket
@@ -249,7 +249,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
   */
   (void) QueryColorDatabase("black",&color);
   color=GetOnePixel(tile,0,0);
-  if (ColorMatch(color,*target,image->fuzz))
+  if (ColorMatch(color,target,image->fuzz))
     return(False);
   segment_stack=(SegmentInfo *)
     AllocateMemory(MaxStacksize*sizeof(SegmentInfo));
@@ -302,11 +302,11 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
     {
       if (method == FloodfillMethod)
         {
-          if (!ColorMatch(*q,*target,image->fuzz))
+          if (!ColorMatch(*q,target,image->fuzz))
             break;
         }
       else
-        if (ColorMatch(*q,*target,image->fuzz) ||
+        if (ColorMatch(*q,target,image->fuzz) ||
             ColorMatch(*q,color,image->fuzz))
           break;
       indexes[x]=True;
@@ -337,11 +337,11 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
               {
                 if (method == FloodfillMethod)
                   {
-                    if (!ColorMatch(*q,*target,image->fuzz))
+                    if (!ColorMatch(*q,target,image->fuzz))
                       break;
                   }
                 else
-                  if (ColorMatch(*q,*target,image->fuzz) ||
+                  if (ColorMatch(*q,target,image->fuzz) ||
                       ColorMatch(*q,color,image->fuzz))
                     break;
                 indexes[i]=True;
@@ -367,11 +367,11 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
           {
             if (method == FloodfillMethod)
               {
-                if (ColorMatch(*q,*target,image->fuzz))
+                if (ColorMatch(*q,target,image->fuzz))
                   break;
               }
             else
-              if (!ColorMatch(*q,*target,image->fuzz) &&
+              if (!ColorMatch(*q,target,image->fuzz) &&
                   !ColorMatch(*q,color,image->fuzz))
                 break;
             q++;
@@ -1211,7 +1211,7 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->box=(char *) NULL;
   draw_info->antialias=image_info->antialias;
   draw_info->linewidth=1;
-  draw_info->gravity=ForgetGravity;
+  draw_info->gravity=NorthWestGravity;
   draw_info->border_color=image_info->border_color;
   /*
     Get tile.
@@ -1563,7 +1563,7 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
                 target.green=border_color.green;
                 target.blue=border_color.blue;
               }
-            (void) ColorFloodfillImage(image,&target,draw_info->tile,
+            (void) ColorFloodfillImage(image,target,draw_info->tile,
               (int) pixel->x,(int) pixel->y,p->method);
             break;
           }
@@ -1632,7 +1632,7 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
                 target.green=border_color.green;
                 target.blue=border_color.blue;
               }
-            (void) MatteFloodfillImage(image,&target,Transparent,(int) pixel->x,
+            (void) MatteFloodfillImage(image,target,Transparent,(int) pixel->x,
               (int) pixel->y,p->method);
             break;
           }
@@ -1729,7 +1729,7 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
 %
 %  The format of the MatteFloodfillImage method is:
 %
-%      unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
+%      unsigned int MatteFloodfillImage(Image *image,const PixelPacket target,
 %        const unsigned int matte,const int x_offset,const int y_offset,
 %        const PaintMethod method)
 %
@@ -1749,7 +1749,7 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
 %
 %
 */
-Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
+Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket target,
   const unsigned int matte,const int x_offset,const int y_offset,
   const PaintMethod method)
 {
@@ -1781,7 +1781,7 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
     return(False);
   if ((y_offset < 0) || (y_offset >= (int) image->rows))
     return(False);
-  if (target->opacity == matte)
+  if (target.opacity == matte)
     return(False);
   q=GetImagePixels(image,x_offset,y_offset,1,1);
   if (q == (PixelPacket *) NULL)
@@ -1829,11 +1829,11 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
     {
       if (method == FloodfillMethod)
         {
-          if (!MatteMatch(*q,*target,image->fuzz))
+          if (!MatteMatch(*q,target,image->fuzz))
             break;
         }
       else
-        if (MatteMatch(*q,*target,image->fuzz) || (q->opacity == matte))
+        if (MatteMatch(*q,target,image->fuzz) || (q->opacity == matte))
           break;
       q->opacity=matte;
       q--;
@@ -1860,11 +1860,11 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
           {
             if (method == FloodfillMethod)
               {
-                if (!MatteMatch(*q,*target,image->fuzz))
+                if (!MatteMatch(*q,target,image->fuzz))
                   break;
               }
             else
-              if (MatteMatch(*q,*target,image->fuzz) || (q->opacity == matte))
+              if (MatteMatch(*q,target,image->fuzz) || (q->opacity == matte))
                 break;
             q->opacity=matte;
             q++;
@@ -1885,11 +1885,11 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
         q++;
         if (method == FloodfillMethod)
           {
-            if (MatteMatch(*q,*target,image->fuzz))
+            if (MatteMatch(*q,target,image->fuzz))
               break;
           }
         else
-          if (!MatteMatch(*q,*target,image->fuzz) && (q->opacity != matte))
+          if (!MatteMatch(*q,target,image->fuzz) && (q->opacity != matte))
             break;
       }
       start=x;

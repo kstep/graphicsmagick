@@ -2077,8 +2077,7 @@ static unsigned int XColorEditImage(Display *display,
             (void) CloneString(&image_info->pen,
               resource_info->pen_colors[pen_id]);
             draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-            ColorFloodfillImage(*image,&target,draw_info->tile,x_offset,
-              y_offset,method);
+            ColorFloodfillImage(*image,target,draw_info->tile,x_offset,y_offset,              method);
             DestroyDrawInfo(draw_info);
             DestroyImageInfo(image_info);
             break;
@@ -7781,7 +7780,7 @@ static unsigned int XMatteEditImage(Display *display,
                 target.green=XDownScale(border_color.green);
                 target.blue=XDownScale(border_color.blue);
               }
-            MatteFloodfillImage(*image,&target,atoi(matte) & 0xff,x_offset,
+            MatteFloodfillImage(*image,target,atoi(matte) & 0xff,x_offset,
               y_offset,method);
             break;
           }

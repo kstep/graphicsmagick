@@ -4194,9 +4194,9 @@ Mogrify(ref,...)
           if (attribute_flag[4])
             target=border_color;
           draw_info=CloneDrawInfo(info->image_info,(DrawInfo *) NULL);
-          ColorFloodfillImage(image,&target,draw_info->tile,
-            rectangle_info.x,rectangle_info.y,
-            attribute_flag[4] ? FillToBorderMethod : FloodfillMethod);
+          ColorFloodfillImage(image,target,draw_info->tile,rectangle_info.x,
+            rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
+            FloodfillMethod);
           DestroyDrawInfo(draw_info);
           break;
         }
@@ -4428,7 +4428,7 @@ Mogrify(ref,...)
             target=(*pixel);
           if (attribute_flag[4])
             target=border_color;
-          MatteFloodfillImage(image,&target,matte,rectangle_info.x,
+          MatteFloodfillImage(image,target,matte,rectangle_info.x,
             rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
             FloodfillMethod);
           break;

@@ -431,8 +431,8 @@ Export void RegisterXBMImage(void)
 static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
 {
   char
-    buffer[MaxTextExtent],
-    name[MaxTextExtent];
+    *basename,
+    buffer[MaxTextExtent];
 
   int
     y;
@@ -468,17 +468,17 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   /*
     Write X bitmap header.
   */
-  (void) strcpy(name,BaseFilename(image->filename));
-  q=name;
+  basename=BaseFilename(image->filename);
+  q=basename;
   while ((*q != '.') && (*q != '\0'))
     q++;
   if (*q == '.')
     *q='\0';
-  FormatString(buffer,"#define %.1024s_width %u\n",name,image->columns);
+  FormatString(buffer,"#define %.1024s_width %u\n",basename,image->columns);
   (void) WriteBlob(image,strlen(buffer),buffer);
-  FormatString(buffer,"#define %.1024s_height %u\n",name,image->rows);
+  FormatString(buffer,"#define %.1024s_height %u\n",basename,image->rows);
   (void) WriteBlob(image,strlen(buffer),buffer);
-  FormatString(buffer,"static char %.1024s_bits[] = {\n",name);
+  FormatString(buffer,"static char %.1024s_bits[] = {\n",basename);
   (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer," ");
   (void) WriteBlob(image,strlen(buffer),buffer);
@@ -561,5 +561,6 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(buffer,"};\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
   CloseBlob(image);
+  FreeMemory((void *) &basename);
   return(True);
 }

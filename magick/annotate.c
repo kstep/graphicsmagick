@@ -353,7 +353,7 @@ Export unsigned int AnnotateImage(Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o cloned_info: Method CloneAnnotateInfo returns a duplicate of the given
+%    o clone_info: Method CloneAnnotateInfo returns a duplicate of the given
 %      annotate info, or if annotate info is NULL a new one.
 %
 %    o image_info: a structure of type info.
@@ -366,31 +366,31 @@ Export AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
   const AnnotateInfo *annotate_info)
 {
   AnnotateInfo
-    *cloned_info;
+    *clone_info;
 
-  cloned_info=(AnnotateInfo *) AllocateMemory(sizeof(AnnotateInfo));
-  if (cloned_info == (AnnotateInfo *) NULL)
+  clone_info=(AnnotateInfo *) AllocateMemory(sizeof(AnnotateInfo));
+  if (clone_info == (AnnotateInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to clone annotate info",
       "Memory allocation failed");
   if (annotate_info == (AnnotateInfo *) NULL)
     {
-      GetAnnotateInfo(image_info,cloned_info);
-      return(cloned_info);
+      GetAnnotateInfo(image_info,clone_info);
+      return(clone_info);
     }
-  *cloned_info=(*annotate_info);
+  *clone_info=(*annotate_info);
   if (annotate_info->geometry != (char *) NULL)
-    cloned_info->geometry=AllocateString(annotate_info->geometry);
+    clone_info->geometry=AllocateString(annotate_info->geometry);
   if (annotate_info->text != (char *) NULL)
-    cloned_info->text=AllocateString(annotate_info->text);
+    clone_info->text=AllocateString(annotate_info->text);
   if (annotate_info->font != (char *) NULL)
-    cloned_info->font=AllocateString(annotate_info->font);
+    clone_info->font=AllocateString(annotate_info->font);
   if (annotate_info->pen != (char *) NULL)
-    cloned_info->pen=AllocateString(annotate_info->pen);
+    clone_info->pen=AllocateString(annotate_info->pen);
   if (annotate_info->box != (char *) NULL)
-    cloned_info->box=AllocateString(annotate_info->box);
+    clone_info->box=AllocateString(annotate_info->box);
   if (annotate_info->font_name != (char *) NULL)
-    cloned_info->font_name=AllocateString(annotate_info->font_name);
-  return(cloned_info);
+    clone_info->font_name=AllocateString(annotate_info->font_name);
+  return(clone_info);
 }
 
 /*

@@ -182,6 +182,7 @@ Export void RegisterHTMLImage(void)
 static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
 {
   char
+    *basename,
     buffer[MaxTextExtent],
     filename[MaxTextExtent],
     mapname[MaxTextExtent],
@@ -236,7 +237,9 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   */
   (void) strcpy(filename,image->filename);
   AppendImageFormat("map",filename);
-  (void) strcpy(mapname,BaseFilename(filename));
+  basename=BaseFilename(filename);
+  (void) strcpy(mapname,basename);
+  FreeMemory((void *) &basename);
   (void) strcpy(image->filename,image_info->filename);
   (void) strcpy(filename,image->filename);
   clone_info=CloneImageInfo(image_info);
@@ -266,8 +269,11 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       if (attribute != (ImageAttribute *) NULL)
         FormatString(buffer,"<title>%.1024s</title>\n",attribute->value);
       else
-        FormatString(buffer,"<title>%.1024s</title>\n",
-          BaseFilename(image->filename));
+        {
+          basename=BaseFilename(filename);
+          FormatString(buffer,"<title>%.1024s</title>\n",basename);
+          FreeMemory((void *) &basename);
+        }
       (void) WriteBlob(image,strlen(buffer),buffer);
       (void) strcpy(buffer,"</head>\n");
       (void) WriteBlob(image,strlen(buffer),buffer);
