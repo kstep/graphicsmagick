@@ -396,7 +396,7 @@ MagickExport Image *NewImageList(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PopImageList() takes the image off the end of the image list.
+%  PopImageList() removes the last image in the list.
 %
 %  The format of the PopImageList method is:
 %
