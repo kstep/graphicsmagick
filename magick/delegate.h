@@ -27,7 +27,7 @@ typedef struct _DelegateInfo
     spawn;
 
   unsigned long
-	  signature;
+    signature;
 
   struct _DelegateInfo
     *previous,

@@ -52,7 +52,7 @@ extern MagickExport int
   LocaleCompare(const char *,const char *),
   GetMagickGeometry(const char *,long *,long *,unsigned long *,unsigned long *),
   ParseImageGeometry(const char *,long *,long *,unsigned long *,
-	  unsigned long *),
+    unsigned long *),
   SystemCommand(const unsigned int,const char *),
   Tokenizer(TokenInfo *,unsigned,char *,size_t,char *,char *,char *,char *,
     char,char *,int *,char *);
@@ -62,7 +62,7 @@ extern MagickExport unsigned int
   ConcatenateString(char **,const char *),
   ExpandFilenames(int *,char ***),
   IsAccessible(const char *),
-	IsGeometry(const char *);
+  IsGeometry(const char *);
 
 extern MagickExport unsigned long
   MultilineCensus(const char *);

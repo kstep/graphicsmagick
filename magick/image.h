@@ -18,19 +18,19 @@ extern "C" {
   Color quantum is [0..255].
 */
 #define Downscale(quantum)  ((Quantum) (quantum))
-#define Upscale(quantum)  ((unsigned long) (quantum))
-#define XDownscale(color)  ((Quantum) ((color)/257L))
-#define XUpscale(color)  ((unsigned long) (257L*(color)))
+#define Upscale(quantum)  ((unsigned int) (quantum))
+#define XDownscale(color)  ((Quantum) ((color)/257))
+#define XUpscale(color)  ((unsigned int) (257*(color)))
 
 typedef unsigned char Quantum;
 #elif QuantumDepth == 16
 /*
   Color quantum is [0..65535].
 */
-#define Downscale(quantum)  ((Quantum) ((quantum)/257L))
-#define Upscale(quantum)  ((unsigned long) (257L*(quantum)))
+#define Downscale(quantum)  ((Quantum) ((quantum)/257))
+#define Upscale(quantum)  ((unsigned int) (257*(quantum)))
 #define XDownscale(color)  ((Quantum) (color))
-#define XUpscale(color)  ((unsigned long) (color))
+#define XUpscale(color)  ((unsigned int) (color))
 
 typedef unsigned short Quantum;
 #else
@@ -714,7 +714,7 @@ extern MagickExport IndexPacket
 
 extern MagickExport int
   GetImageGeometry(const Image *,const char *,const unsigned int,
-		RectangleInfo *);
+    RectangleInfo *);
 
 extern MagickExport MagickInfo
   *RegisterMagickInfo(MagickInfo *),

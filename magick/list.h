@@ -11,14 +11,14 @@ extern "C" {
 extern MagickExport Image
   *CloneImageList(const Image *,ExceptionInfo *),
   *GetImageList(const Image *,const unsigned long,ExceptionInfo *),
-	*GetNextImage(Image *),
+  *GetNextImage(Image *),
   **ImageListToArray(const Image *,ExceptionInfo *),
   *NewImageList(void),
   *PopImageList(Image **),
   *ReverseImageList(const Image *,ExceptionInfo *),
   *ShiftImageList(Image **),
   *SpliceImageList(Image *,const unsigned long,const unsigned long,
-	  const Image *,ExceptionInfo *);
+    const Image *,ExceptionInfo *);
 
 extern MagickExport size_t
   GetImageListSize(const Image *);
