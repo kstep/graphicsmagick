@@ -1381,9 +1381,6 @@ MagickExport unsigned int CompositeImage(Image *image,
             q->green*p->opacity)/MaxRGB);
           blue=((unsigned long) (p->blue*(MaxRGB-p->opacity)+
             q->blue*p->opacity)/MaxRGB);
-          if (composite_image->matte)
-            opacity=((unsigned long) (p->opacity*(MaxRGB-p->opacity)+
-              q->opacity*p->opacity)/MaxRGB);
           break;
         }
         case InCompositeOp:
@@ -1391,9 +1388,6 @@ MagickExport unsigned int CompositeImage(Image *image,
           red=((unsigned long) (p->red*(MaxRGB-q->opacity))/MaxRGB);
           green=((unsigned long) (p->green*(MaxRGB-q->opacity))/MaxRGB);
           blue=((unsigned long) (p->blue*(MaxRGB-q->opacity))/MaxRGB);
-          if (composite_image->matte)
-            opacity=((unsigned long) (p->opacity*(MaxRGB-q->opacity))/
-              (MaxRGB+1));
           break;
         }
         case OutCompositeOp:
@@ -1401,8 +1395,6 @@ MagickExport unsigned int CompositeImage(Image *image,
           red=((unsigned long) (p->red*q->opacity)/MaxRGB);
           green=((unsigned long) (p->green*q->opacity)/MaxRGB);
           blue=((unsigned long) (p->blue*q->opacity)/MaxRGB);
-          if (composite_image->matte)
-            opacity=((unsigned long) (p->opacity*q->opacity)/MaxRGB);
           break;
         }
         case AtopCompositeOp:
@@ -1413,9 +1405,6 @@ MagickExport unsigned int CompositeImage(Image *image,
             q->green*(MaxRGB-p->opacity))/MaxRGB);
           blue=((unsigned long) (p->blue*q->opacity+
             q->blue*(MaxRGB-p->opacity))/MaxRGB);
-          if (composite_image->matte)
-            opacity=((unsigned long) (p->opacity*q->opacity+
-              q->opacity*(MaxRGB-p->opacity))/MaxRGB);
           break;
         }
         case XorCompositeOp:
@@ -1426,9 +1415,6 @@ MagickExport unsigned int CompositeImage(Image *image,
             q->green*p->opacity)/MaxRGB);
           blue=((unsigned long) (p->blue*q->opacity+
             q->blue*p->opacity)/MaxRGB);
-          if (composite_image->matte)
-            opacity=((unsigned long) (p->opacity*q->opacity+
-              q->opacity*p->opacity)/MaxRGB);
           break;
         }
         case PlusCompositeOp:
@@ -1549,8 +1535,6 @@ MagickExport unsigned int CompositeImage(Image *image,
             q->green*(MaxRGB-q->opacity))/MaxRGB);
           blue=((unsigned long) (p->blue*(MaxRGB-p->opacity)+
             q->blue*(MaxRGB-q->opacity))/MaxRGB);
-          opacity=((unsigned long) (p->opacity*(MaxRGB-p->opacity)+
-            q->opacity*(MaxRGB-q->opacity))/MaxRGB);
           break;
         }
         case DisplaceCompositeOp:
