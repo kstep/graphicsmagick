@@ -1,3 +1,9 @@
+2003-03-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Test for libtiff functions (TIFFClientOpen &
+	TIFFIsByteSwapped), which are required by GraphicsMagick, but
+	not found in older libtiff versions.
+
 2003-03-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/rwblob.c (main): DestroyImage asserts on NULL so only
