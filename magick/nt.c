@@ -446,8 +446,8 @@ void *lt_dlsym(void *h,char *s)
 %
 %  The format of the mmap method is:
 %
-%    MagickExport void *mmap(char *address,size_t length,int protection,int access,
-%      int file,off_t offset)
+%    MagickExport void *mmap(char *address,size_t length,int protection,
+%      int access,int file,off_t offset)
 %
 %
 */
@@ -467,8 +467,8 @@ MagickExport void *mmap(char *address,size_t length,int protection,int access,
     case PROT_READ:
     default:
     {
-      handle=CreateFileMapping((HANDLE) _get_osfhandle(file),0,
-        PAGE_READONLY,0,length,0);
+      handle=CreateFileMapping((HANDLE) _get_osfhandle(file),0,PAGE_READONLY,0,
+        length,0);
       if (!handle)
         break;
       map=(void *) MapViewOfFile(handle,FILE_MAP_READ,0,0,length);
@@ -477,8 +477,8 @@ MagickExport void *mmap(char *address,size_t length,int protection,int access,
     }
     case PROT_WRITE:
     {
-      handle=CreateFileMapping((HANDLE) _get_osfhandle(file),0,
-        PAGE_READWRITE,0,length,0);
+      handle=CreateFileMapping((HANDLE) _get_osfhandle(file),0,PAGE_READWRITE,0,
+        length,0);
       if (!handle)
         break;
       map=(void *) MapViewOfFile(handle,FILE_MAP_WRITE,0,0,length);
@@ -487,8 +487,8 @@ MagickExport void *mmap(char *address,size_t length,int protection,int access,
     }
     case PROT_READWRITE:
     {
-      handle=CreateFileMapping((HANDLE) _get_osfhandle(file),0,
-        PAGE_READWRITE,0,length,0);
+      handle=CreateFileMapping((HANDLE) _get_osfhandle(file),0,PAGE_READWRITE,0,
+        length,0);
       if (!handle)
         break;
       map=(void *) MapViewOfFile(handle,FILE_MAP_ALL_ACCESS,0,0,length);
@@ -930,13 +930,14 @@ MagickExport void NTWarningHandler(const ExceptionType warning,
 MagickExport DIR *opendir(char *path)
 {
   char
-    file_specification[2048];
+    file_specification[1536];
 
   DIR
     *entry;
 
   assert(path != (char *) NULL);
   (void) strcpy(file_specification,path);
+  (void) strcat(file_specification,DirectorySeparator);
   entry=(DIR *) AllocateMemory(sizeof(DIR));
   if (entry != (DIR *) NULL)
     { 

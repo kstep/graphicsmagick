@@ -1161,215 +1161,6 @@ MagickExport unsigned int IsDirectory(const char *filename)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L o c a l e C o m p a r e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method LocaleCompare compares two strings byte-by-byte, according to
-%  the ordering of the current locale encoding. LocaleCompare returns an
-%  integer greater than, equal to, or less than 0, if the string pointed
-%  to by p is greater than, equal to, or less than the string pointed to
-%  by q respectively.  The sign of a non-zero return value is determined
-%  by the sign of the difference between the values of the first pair of
-%  bytes that differ in the strings being compared.
-%
-%  The format of the LocaleCompare method is:
-%
-%      int LocaleCompare(const char *p,const char *q)
-%
-%  A description of each parameter follows:
-%
-%    o p: A pointer to the string to convert to Locale string.
-%
-%    o q: A pointer to the string to convert to Locale string.
-%
-%
-*/
-MagickExport int LocaleCompare(const char *p,const char *q)
-{
-  register int
-    i,
-    j;
-
-  if (p == q)
-    return(0);
-  if (p == (char *) NULL)
-    return(-1);
-  if (q == (char *) NULL)
-    return(1);
-  while ((*p != '\0') && (*q != '\0'))
-  {
-    i=(*p);
-    if (islower(i))
-      i=toupper(i);
-    j=(*q);
-    if (islower(j))
-      j=toupper(j);
-    if (i != j)
-      break;
-    p++;
-    q++;
-  }
-  return(toupper(*p)-toupper(*q));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   L o c a l e L o w e r                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method LocaleLower copies a null terminated string from source to
-%  destination (including the null), changing all uppercase letters to
-%  lowercase.
-%
-%  The format of the LocaleLower method is:
-%
-%      void LocaleLower(char *string)
-%
-%  A description of each parameter follows:
-%
-%    o string: A pointer to the string to convert to lower-case Locale.
-%
-%
-*/
-MagickExport void LocaleLower(char *string)
-{
-  register int
-    c;
-
-  assert(string != (char *) NULL);
-  for ( ; *string != '\0'; string++)
-  {
-    c=(*string);
-    if (islower(c))
-      continue;
-    c=tolower(c);
-    *string=(char) c;
-  }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   L o c a l e N C o m p a r e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method LocaleNCompare compares two strings byte-by-byte, according to
-%  the ordering of the currnet locale encoding. LocaleNCompare returns an
-%  integer greater than, equal to, or less than 0, if the string pointed
-%  to by p is greater than, equal to, or less than the string pointed to
-%  by q respectively.  The sign of a non-zero return value is determined
-%  by the sign of the difference between the values of the first pair of
-%  bytes that differ in the strings being compared.  The LocaleNCompare
-%  method makes the same comparison as LocaleCompare but looks at a
-%  maximum of n bytes.  Bytes following a null byte are not compared.
-%
-%  The format of the LocaleNCompare method is:
-%
-%      int LocaleNCompare(const char *p,const char *q,size_t n)
-%
-%  A description of each parameter follows:
-%
-%    o p: A pointer to the string to convert to Locale string.
-%
-%    o q: A pointer to the string to convert to Locale string.
-%
-%    o n: A pointer to the string to convert to Locale string.
-%
-%
-*/
-MagickExport int LocaleNCompare(const char *p,const char *q,size_t n)
-{
-  register int
-    i,
-    j;
-
-  if (p == q)
-    return(0);
-  if (p == (char *) NULL)
-    return(-1);
-  if (q == (char *) NULL)
-    return(1);
-  while ((*p != '\0') && (*q != '\0'))
-  {
-    if ((*p == '\0') || (*q == '\0'))
-      break;
-    i=(*p);
-    if (islower(i))
-      i=toupper(i);
-    j=(*q);
-    if (islower(j))
-      j=toupper(j);
-    if (i != j)
-      break;
-    n--;
-    if (n == 0)
-      break;
-    p++;
-    q++;
-  }
-  return(toupper(*p)-toupper(*q));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   L o c a l e U p p e r                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method LocaleUpper copies a null terminated string from source to
-%  destination (including the null), changing all lowercase letters to
-%  uppercase.
-%
-%  The format of the LocaleUpper method is:
-%
-%      void LocaleUpper(char *string)
-%
-%  A description of each parameter follows:
-%
-%    o string: A pointer to the string to convert to upper-case Locale.
-%
-%
-*/
-MagickExport void LocaleUpper(char *string)
-{
-  register int
-    c;
-
-  assert(string != (char *) NULL);
-  for ( ; *string != '\0'; string++)
-  {
-    c=(*string);
-    if (isupper(c))
-      continue;
-    c=toupper(c);
-    *string=(char) c;
-  }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   L i s t C o l o r s                                                       %
 %                                                                             %
 %                                                                             %
@@ -1645,6 +1436,215 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
   qsort((void *) filelist,*number_entries,sizeof(char **),
     (int (*)(const void *, const void *)) FileCompare);
   return(filelist);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   L o c a l e C o m p a r e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method LocaleCompare compares two strings byte-by-byte, according to
+%  the ordering of the current locale encoding. LocaleCompare returns an
+%  integer greater than, equal to, or less than 0, if the string pointed
+%  to by p is greater than, equal to, or less than the string pointed to
+%  by q respectively.  The sign of a non-zero return value is determined
+%  by the sign of the difference between the values of the first pair of
+%  bytes that differ in the strings being compared.
+%
+%  The format of the LocaleCompare method is:
+%
+%      int LocaleCompare(const char *p,const char *q)
+%
+%  A description of each parameter follows:
+%
+%    o p: A pointer to the string to convert to Locale string.
+%
+%    o q: A pointer to the string to convert to Locale string.
+%
+%
+*/
+MagickExport int LocaleCompare(const char *p,const char *q)
+{
+  register int
+    i,
+    j;
+
+  if (p == q)
+    return(0);
+  if (p == (char *) NULL)
+    return(-1);
+  if (q == (char *) NULL)
+    return(1);
+  while ((*p != '\0') && (*q != '\0'))
+  {
+    i=(*p);
+    if (islower(i))
+      i=toupper(i);
+    j=(*q);
+    if (islower(j))
+      j=toupper(j);
+    if (i != j)
+      break;
+    p++;
+    q++;
+  }
+  return(toupper(*p)-toupper(*q));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   L o c a l e L o w e r                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method LocaleLower copies a null terminated string from source to
+%  destination (including the null), changing all uppercase letters to
+%  lowercase.
+%
+%  The format of the LocaleLower method is:
+%
+%      void LocaleLower(char *string)
+%
+%  A description of each parameter follows:
+%
+%    o string: A pointer to the string to convert to lower-case Locale.
+%
+%
+*/
+MagickExport void LocaleLower(char *string)
+{
+  register int
+    c;
+
+  assert(string != (char *) NULL);
+  for ( ; *string != '\0'; string++)
+  {
+    c=(*string);
+    if (islower(c))
+      continue;
+    c=tolower(c);
+    *string=(char) c;
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   L o c a l e N C o m p a r e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method LocaleNCompare compares two strings byte-by-byte, according to
+%  the ordering of the currnet locale encoding. LocaleNCompare returns an
+%  integer greater than, equal to, or less than 0, if the string pointed
+%  to by p is greater than, equal to, or less than the string pointed to
+%  by q respectively.  The sign of a non-zero return value is determined
+%  by the sign of the difference between the values of the first pair of
+%  bytes that differ in the strings being compared.  The LocaleNCompare
+%  method makes the same comparison as LocaleCompare but looks at a
+%  maximum of n bytes.  Bytes following a null byte are not compared.
+%
+%  The format of the LocaleNCompare method is:
+%
+%      int LocaleNCompare(const char *p,const char *q,size_t n)
+%
+%  A description of each parameter follows:
+%
+%    o p: A pointer to the string to convert to Locale string.
+%
+%    o q: A pointer to the string to convert to Locale string.
+%
+%    o n: A pointer to the string to convert to Locale string.
+%
+%
+*/
+MagickExport int LocaleNCompare(const char *p,const char *q,size_t n)
+{
+  register int
+    i,
+    j;
+
+  if (p == q)
+    return(0);
+  if (p == (char *) NULL)
+    return(-1);
+  if (q == (char *) NULL)
+    return(1);
+  while ((*p != '\0') && (*q != '\0'))
+  {
+    if ((*p == '\0') || (*q == '\0'))
+      break;
+    i=(*p);
+    if (islower(i))
+      i=toupper(i);
+    j=(*q);
+    if (islower(j))
+      j=toupper(j);
+    if (i != j)
+      break;
+    n--;
+    if (n == 0)
+      break;
+    p++;
+    q++;
+  }
+  return(toupper(*p)-toupper(*q));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   L o c a l e U p p e r                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method LocaleUpper copies a null terminated string from source to
+%  destination (including the null), changing all lowercase letters to
+%  uppercase.
+%
+%  The format of the LocaleUpper method is:
+%
+%      void LocaleUpper(char *string)
+%
+%  A description of each parameter follows:
+%
+%    o string: A pointer to the string to convert to upper-case Locale.
+%
+%
+*/
+MagickExport void LocaleUpper(char *string)
+{
+  register int
+    c;
+
+  assert(string != (char *) NULL);
+  for ( ; *string != '\0'; string++)
+  {
+    c=(*string);
+    if (isupper(c))
+      continue;
+    c=toupper(c);
+    *string=(char) c;
+  }
 }
 
 /*
