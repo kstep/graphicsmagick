@@ -466,7 +466,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
     count;
 
   /*
-	  Open output locale file.
+    Open output locale file.
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -482,7 +482,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   if (locale == (char **) NULL)
     ThrowWriterException(FileOpenError,"Memory allocation failed",image);
   /*
-	  Sort locale messages.
+    Sort locale messages.
   */
   for (i=0; locale[i] != (char *) NULL; i++);
   count=i-1;
@@ -498,21 +498,21 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
           locale[j]=swap;
         }
   /*
-	  Write locale comments.
+    Write locale comments.
   */
   attribute=GetImageAttribute(image,"[LocaleComment]");
   if (attribute != (const ImageAttribute *) NULL)
     WriteBlobString(image,attribute->value);
   /*
-	  Write locale messages.
+    Write locale messages.
   */
   for (i=0; i < count; i++)
-	{
+  {
     WriteBlobString(image,locale[i]);
     WriteBlobString(image,"\n");
   }
   /*
-	  Free resources.
+    Free resources.
   */
   for (i=0; i <= count; i++)
     LiberateMemory((void **) &locale[i]);
