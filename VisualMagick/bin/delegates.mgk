@@ -6,14 +6,14 @@
   <delegate decode="compress" restrain="True" command='|uncompress -c "%i"' />
   <delegate decode="dot" command='dot -Tps "%i" -o "%o"' />
   <delegate decode="dvi" command='dvips -q -o "%o" "%i"' />
-  <delegate decode="edit" command='/usr/X11R6/bin/xterm -title "Edit Image Comment" -e vi "%o"' />
+  <delegate decode="edit" restrain="True" command='notepad "%o"' />
   <delegate decode="emf" command='wmftopng "%i" "%o"' />
   <delegate decode="eps" encode="pdf" mode="bi" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="eps" encode="ps" mode="bi" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pswrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="fig" command='/usr/X11R6/bin/fig2dev -L ps "%i" "%o"' />
   <delegate decode="gplt" command='/bin/echo "set size 1.25,0.62\nset terminal postscript portrait color solid; set output "%o"; load "%i"" > %u;gnuplot %u' />
-  <delegate decode="gs-color" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pnmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
-  <delegate decode="gs-mono" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pbmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
+  <delegate decode="gs-color" restrain="True" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pnmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
+  <delegate decode="gs-mono" restrain="True" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pbmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
   <delegate decode="hpgl" command='hp2xx -q -m eps -f `basename "%o"` "%i"\nmv `basename "%o"` "%o' />
   <delegate decode="htm" command='html2ps -U -o "%o" "%i"' />
   <delegate decode="html" command='html2ps -U -o "%o" "%i"' />
@@ -26,12 +26,12 @@
   <delegate decode="pdf" encode="ps" mode="bi" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pswrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="pgp" command='pgpv -fq "%i"' />
   <delegate decode="pnm" encode="ilbm" mode="encode" command='ppmtoilbm -24if "%i" > "%o"' />
-  <delegate decode="pnm" encode="launch" mode="encode" command='gimp "%i"' />
-  <delegate decode="pnm" encode="win" mode="encode" command='display -immutable "%i"' />
+  <delegate decode="bmp" encode="launch" mode="encode" command='mspaint "%i"' />
+  <delegate decode="bmp" encode="win" mode="encode" command='mspaint "%i"' />
   <delegate decode="pov" command='povray "+i"%i"" +o"%o" +fn%q +w%w +h%h +a -q9 -kfi"%s" -kff"%n"\nconvert -concatenate "%o*.png" "%o"' />
   <delegate decode="ps" encode="eps" mode="bi" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=epswrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="ps" encode="pdf" mode="bi" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite -sOutputFile=%o -- "%i" -c quit' />
-  <delegate decode="ps" encode="print" mode="encode" command='lpr "%i"' />
+  <delegate decode="pcl" encode="print" mode="encode" command='print "%i"' />
   <delegate decode="rad" command='ra_ppm -g 1.0 "%i" "%o"' />
   <delegate decode="rgba" encode="rle" mode="encode" command='mogrify -flip -size %wx%h "rgba:%i"\nrawtorle -w %w -h %h -n 4 -o "%o" "%i"' />
   <delegate decode="scan" command='scanimage -d "%i" > "%o"' />
