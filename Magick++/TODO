@@ -1,6 +1,10 @@
 Items large and small which remain to be completed
 --------------------------------------------------------------------
 
+* Add support for ConvolveImage().
+
+* Add support for UnsharpMaskImage().
+
 * Support manipulating IPTC profiles directly. Bill Radcliffe
   <BillR@corbis.com> has agreed to write a container class to support
   this.
