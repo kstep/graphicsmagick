@@ -1,5 +1,8 @@
 2004-04-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* VisualMagick/*/*.bat: Add .exe to exe file names in order to
+	ensure that the executable is executed rather than something else
+	(such as a batch script).
 	* magick/locale.c: Only use Windows resource message lookup for
 	the DLL build since it doesn't seem to work for static
 	executables.
