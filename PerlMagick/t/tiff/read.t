@@ -1,5 +1,5 @@
 #!/usr/local/bin/perl
-# Copyright (C) 2003 GraphicsMagick Group
+# Copyright (C) 2003, 2004 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1991-1999 E. I. du Pont de Nemours and Company
 #
@@ -12,7 +12,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1; print "1..16\n"; }
+BEGIN { $| = 1; $test=1; print "1..22\n"; }
 END {print "not ok $test\n" unless $loaded;}
 
 use Graphics::Magick;
@@ -25,8 +25,8 @@ chdir 't/tiff' || die 'Cd failed';
 #
 # 1) Test Reading Monochrome
 # 
-print("Monochrome ...\n");
-testRead ( 'input_mono.tiff',
+print("Monochrome (min-is-white) ...\n");
+testRead ( 'input_gray_01bit_minwhite.tiff',
   '2b48bcf7d93cc31a8deb3026d872f1bb0a300b0f4e177423e5301adc638179e4' );
 
 #
@@ -34,15 +34,15 @@ testRead ( 'input_mono.tiff',
 #
 ++$test;
 print("PseudoColor (16 color)...\n");
-testRead( 'input_16.tiff',
+testRead( 'input_palette_16.tiff',
   'a0313f6235a3158655412e1480c2f37549d89a5cacf40abc854811af1b757159' );
 
 #
 # 3) Test reading PseudoColor (16 color + matte channel)
 #
 ++$test;
-print("PseudoColor (16 color + matte channel)...\n");
-testRead( 'input_16_matte.tiff',
+print("PseudoColor (16 color + matte channel) ...\n");
+testRead( 'input_palette_16_matte.tiff',
   '631c0997280217f3f430336513f1e51fe03e04f552d49a848449a438c100aa20' );
 
 #
@@ -50,7 +50,7 @@ testRead( 'input_16_matte.tiff',
 #
 ++$test;
 print("PseudoColor (256 color) ...\n");
-testRead( 'input_256.tiff',
+testRead( 'input_palette_256.tiff',
   'a570df6d4c214d08bccaaee856f617883fee4f96494af6ef5e25c76d86ea0e0a' );
 
 #
@@ -58,7 +58,7 @@ testRead( 'input_256.tiff',
 #
 ++$test;
 print("PseudoColor (256 color + matte channel) ...\n");
-testRead( 'input_256_matte.tiff',
+testRead( 'input_palette_256_matte.tiff',
   'a3f865320dc8b7953850babbd22d468d821c0103cc14063d6459159506a910d6' );
 
 #
@@ -66,7 +66,7 @@ testRead( 'input_256_matte.tiff',
 #
 ++$test;
 print("PseudoColor (256 color) contiguous planes ...\n");
-testRead( 'input_256_planar_contig.tiff',
+testRead( 'input_palette_256_planar_contig.tiff',
   'a570df6d4c214d08bccaaee856f617883fee4f96494af6ef5e25c76d86ea0e0a' );
 
 #
@@ -74,7 +74,7 @@ testRead( 'input_256_planar_contig.tiff',
 #
 ++$test;
 print("PseudoColor (256 color) seperate planes ...\n");
-testRead( 'input_256_planar_separate.tiff',
+testRead( 'input_palette_256_planar_separate.tiff',
   'a570df6d4c214d08bccaaee856f617883fee4f96494af6ef5e25c76d86ea0e0a' );
 
 #
@@ -82,11 +82,41 @@ testRead( 'input_256_planar_separate.tiff',
 # 
 ++$test;
 print("TrueColor (8-bit) image ...\n");
-testRead( 'input_truecolor.tiff',
+testRead( 'input_truecolor_08.tiff',
   '326599218925e7aa27c735d482332744cccf41f460a1ba2d276a2d172f2b3de0' );
 
 #
-# 9) Test Reading TrueColor (16-bit)
+# 9) Test Reading TrueColor (10-bit)
+# 
+++$test;
+print("TrueColor (10-bit) image ...\n");
+testRead( 'input_truecolor_10.tiff',
+  'e70080518fa43632e7896300d6614a4d1c39ad02efd3d6ab8c70a35f63364193',
+  'f38f0d191bce9aebd4e99229dfbe07e82fc68d8b95d9049abb53c532f471f5e0',
+  '59178f8b7f9df6dd59b2965161100db5b11fd4d46d0a790c7393c82f8b6a4f84' );
+
+#
+# 10) Test Reading TrueColor (12-bit)
+# 
+++$test;
+print("TrueColor (12-bit) image ...\n");
+testRead( 'input_truecolor_12.tiff',
+  'e70080518fa43632e7896300d6614a4d1c39ad02efd3d6ab8c70a35f63364193',
+  'db9e9a4bc0b315f4dea136fbfd90181909cefb9bbdafd7f47d9c267b54f9197c',
+  '56ff48dbfbe3602198010130717523664d83068cd41cf27422414bd4385abda0' );
+
+#
+# 11) Test Reading TrueColor (14-bit)
+# 
+++$test;
+print("TrueColor (14-bit) image ...\n");
+testRead( 'input_truecolor_14.tiff',
+  'e70080518fa43632e7896300d6614a4d1c39ad02efd3d6ab8c70a35f63364193',
+  '8a897778184d453e5e681943e286f6cd34c8d5004a00132e81613debcd333f8f',
+  '412b3f0188113505c79dc226eef901b25e5f66d8bae28eb832e48c89eb139e81' );
+
+#
+# 12) Test Reading TrueColor (16-bit)
 #
 ++$test;
 print("TrueColor (16-bit) image ...\n");
@@ -95,47 +125,65 @@ testRead( 'input_truecolor_16.tiff',
   '72fd047e4f5942b4edc96e8b16444580e9eb1f265017dd6bb11795a842e58d58' );
 
 #
-# 10) Test Reading 8-bit TrueColor Tiled (32x32 tiles)
+# 13) Test Reading 8-bit TrueColor Tiled (32x32 tiles)
 # 
 ++$test;
 print("TrueColor (8-bit) tiled image, 32x32 tiles ...\n");
-testRead( 'input_truecolor_tiled32x32.tiff',
+testRead( 'input_truecolor_08_tiled32x32.tiff',
   '326599218925e7aa27c735d482332744cccf41f460a1ba2d276a2d172f2b3de0' );
 
 #
-# 11) Test Reading 8-bit TrueColor Tiled (8 rows per strip)
+# 14) Test Reading 8-bit TrueColor Stripped (8 rows per strip)
 # 
 ++$test;
 print("TrueColor (8-bit) stripped, image, 8 rows per strip ...\n");
-testRead( 'input_truecolor_stripped.tiff',
+testRead( 'input_truecolor_08_stripped.tiff',
   '326599218925e7aa27c735d482332744cccf41f460a1ba2d276a2d172f2b3de0' );
 
 #
-# 12) Test Reading Grayscale 4-bit
+# 15) Test Reading Grayscale 4-bit
 #
 ++$test;
 print("Grayscale (4-bit) ...\n");
-testRead( 'input_gray_4bit.tiff',
+testRead( 'input_gray_04bit.tiff',
   '45c0655a417852480336d5e12d7bb16b9647d911b11589e9d000a05dd1813570');
 
 #
-# 13) Test Reading Grayscale 8-bit
+# 16) Test Reading Grayscale 4-bit + matte
+#
+++$test;
+print("Grayscale (4-bit + matte) ...\n");
+testRead( 'input_gray_04bit_matte.tiff',
+  '1e4ca36f33b13d8799bcda20108d20c1a2da913c27eb7872d95a6928cb8b0b48');
+
+#
+# 17) Test Reading Grayscale 8-bit
 # 
 ++$test;
 print("Grayscale (8-bit) ...\n");
-testRead( 'input_gray_8bit.tiff',
+testRead( 'input_gray_08bit.tiff',
   '00f6147d547f5a654369a5b41d18f0b44b38f9cc753c773f384808b9a18cac92');
 
 #
-# 14) Test Reading Grayscale 8-bit + matte
+# 18) Test Reading Grayscale 8-bit + matte
 # 
 ++$test;
 print("Grayscale (8-bit + matte) ...\n");
-testRead( 'input_gray_8bit_matte.tiff',
+testRead( 'input_gray_08bit_matte.tiff',
   '70e1e096e53af6a312ec6aa54890a59b35d3c6932dfc052d6b355f62733635be');
 
 #
-# 15) Test Reading Grayscale 12-bit
+# 19) Test Reading Grayscale 10-bit
+# 
+++$test;
+print("Grayscale (10-bit) ...\n");
+testRead( 'input_gray_10bit.tiff',
+  '0b2b6cd7afd3fe90a8e4b77c8812b97a3d8a08b33c332f40fec3f51ebac14011',
+  'b278e43185a407d0419768dc57f2e714597cdb8f3b6c80278a6307af68a0a5f1',
+  'b5be0d42f6e491343f86744af8fcd4b51ef70373fad69593046a27ad2d805788');
+
+#
+# 20) Test Reading Grayscale 12-bit
 # 
 ++$test;
 print("Grayscale (12-bit) ...\n");
@@ -145,7 +193,17 @@ testRead( 'input_gray_12bit.tiff',
   '4d382632a407732017ec16d6cbcb92a81cdb56150e9aedce1b987ac9b68d5948');
 
 #
-# 16) Test Reading Grayscale 16-bit
+# 21) Test Reading Grayscale 14-bit
+# 
+++$test;
+print("Grayscale (14-bit) ...\n");
+testRead( 'input_gray_14bit.tiff',
+  '242789a92fff666ef472202305c4d762beef8b048ba871f8ad20700c01392334',
+  'a8ecb9b559640e7db2505543cd85c7a614460bed067cf197e3d2116246b1fd05',
+  'e61921b0de711a9a109cb97920a4487852f0aea9fdb255c357b8290be408ebaa');
+
+#
+# 22) Test Reading Grayscale 16-bit
 # 
 ++$test;
 print("Grayscale (16-bit) ...\n");

@@ -968,7 +968,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           /*
             Ensure the header byte-order is most-significant byte first.
           */
-          if (bits_per_sample > 8)
+          if (bits_per_sample >= 16)
             {
               unsigned long
                 lsb_first;

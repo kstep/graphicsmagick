@@ -1,9 +1,13 @@
 2004-08-22  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
 
+	* PerlMagick/t/tiff/write.t: Adjusted file naming.
+	* PerlMagick/t/tiff/read.t: Added more tests.
 	* coders/tiff.c (ReadTIFFImage): Use ImportImagePixelArea to read
 	PseudoClass tiff.
 	(WriteTIFFImage): Allow user to set the bits-per-sample define to
 	any value in the range of 1 to 32.
+	(ReadTIFFImage): Fix endian-reordering for DirectClass read and
+	bits-per-sample values ranging 9-15.
 	* coders/rgb.c: Support reading & writing 32-bit depths for raw
 	RGB images.
 	* coders/cmyk.c: Support reading & writing 32-bit depths for raw CMYK
