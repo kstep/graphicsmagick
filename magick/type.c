@@ -179,7 +179,7 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
   if (type_list == (TypeInfo *) NULL)
     {
       (void) ReadConfigurationFile(TypeFilename,exception);
-#if defined(WIN32)
+#if defined(WIN32) || defined(__CYGWIN__)
       {
         TypeInfo
           *type_info;

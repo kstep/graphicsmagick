@@ -1,3 +1,12 @@
+2002-07-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Split nt.c into ntbase.c and ntfeature.c
+  * Split nt.h into ntbase.h and ntfeature.h
+  * Invoke NTIsMagickConflict() under Cygwin to ensure that
+    drive letters in file specifications are not confused with
+    magick strings.
+  * Invoke NTGetTypeList() under Cygwin to read the list of
+    Windows fonts.
+
 2002-07-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Created Windows "setup.exe" style installation package for
     ImageMagick.
