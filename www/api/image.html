@@ -31,7 +31,6 @@
 		<LI><A HREF="#clipimage">ClipImage</A>
 		<LI><A HREF="#cloneimage">CloneImage</A>
 		<LI><A HREF="#cloneimageinfo">CloneImageInfo</A>
-		<LI><A HREF="#compositeimage">CompositeImage</A>
 		<LI><A HREF="#cyclecolormapimage">CycleColormapImage</A>
 		<LI><A HREF="#describeimage">DescribeImage</A>
 		<LI><A HREF="#destroyimage">DestroyImage</A>
@@ -45,6 +44,7 @@
 		<LI><A HREF="#isimagesequal">IsImagesEqual</A>
 		<LI><A HREF="#istaintimage">IsTaintImage</A>
 		<LI><A HREF="#modifyimage">ModifyImage</A>
+		<LI><A HREF="#plasmaimage">PlasmaImage</A>
 		<LI><A HREF="#referenceimage">ReferenceImage</A>
 		<LI><A HREF="#setimage">SetImage</A>
 		<LI><A HREF="#setimageclipmask">SetImageClipMask</A>
@@ -77,7 +77,6 @@
 <P>unsigned int  <STRONG>ClipImage</STRONG>( Image *image );</P>
 <P>Image * <STRONG>CloneImage</STRONG>( const Image *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, ExceptionInfo *exception );</P>
 <P>ImageInfo * <STRONG>CloneImageInfo</STRONG>( const ImageInfo *image_info );</P>
-<P>unsigned int  <STRONG>CompositeImage</STRONG>( Image *image, const CompositeOperator compose, const Image *composite_image, const long x_offset, const long y_offset );</P>
 <P><STRONG>CycleColormapImage</STRONG>( Image *image, const int amount );</P>
 <P>void  <STRONG>DescribeImage</STRONG>( Image *image, 
 <FONT SIZE=-1>FILE</FONT> *file, const unsigned int verbose );</P>
@@ -92,6 +91,7 @@
 <P>unsigned int  <STRONG>IsImagesEqual</STRONG>( Image *image, Image *reference );</P>
 <P>unsigned int  <STRONG>IsTaintImage</STRONG>( const Image *image );</P>
 <P><STRONG>ModifyImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>PlasmaImage</STRONG>( Image *image, const SegmentInfo *segment, int attenuate, int depth );</P>
 <P>Image * <STRONG>ReferenceImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>SetImage</STRONG>( Image *image, const Quantum opacity );</P>
 <P>unsigned int  <STRONG>SetImageClipMask</STRONG>( Image *image, Image *clip_mask );</P>
@@ -263,40 +263,6 @@ Return any errors or warnings in this structure.
 <dd><p></p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
 The image info.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="compositeimage">CompositeImage</A></H2>
-<blockquote>CompositeImage() returns the second image composited onto the first at the specified offsets. </blockquote><P>The format of the CompositeImage method is:</P>
-<blockquote>unsigned int CompositeImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#CompositeOperator">CompositeOperator</A> compose, const <A HREF="types/Image.html">Image</A> *composite_image, const long x_offset, const long y_offset ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_compose%3A">compose:</A></STRONG><BR>
-<DD>
-This operator affects how the composite is applied to the image.  The default is Over.  Choose from these operators:
-<P></P></DL></DL>
-<PRE>
-      OverCompositeOp       InCompositeOp         OutCompositeOP
-      AtopCompositeOP       XorCompositeOP        PlusCompositeOP
-      MinusCompositeOP      AddCompositeOP        SubtractCompositeOP
-      DifferenceCompositeOP BumpmapCompositeOP    CopyCompositeOP
-      DisplaceCompositeOP
-=over 4</PRE>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_composite_image%3A">composite_image:</A></STRONG><BR>
-<DD>
-The composite image.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_x_offset%3A">x_offset:</A></STRONG><BR>
-<DD>
-The column offset of the composited image.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_y_offset%3A">y_offset:</A></STRONG><BR>
-<DD>
-The row offset of the composited image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cyclecolormapimage">CycleColormapImage</A></H2>
@@ -499,6 +465,28 @@ The image.
 Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="plasmaimage">PlasmaImage</A></H2>
+<blockquote>PlasmaImage() initializes an image with plasma fractal values. The image must be initialized with a base color and the random number generator seeded before this method is called. </blockquote><P>The format of the PlasmaImage method is:</P>
+<blockquote>unsigned int PlasmaImage ( <A HREF="types/Image.html">Image</A> *image, const SegmentInfo *segment, int attenuate, int depth ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_segment%3A">segment:</A></STRONG><BR>
+<DD>
+Define the region to apply plasma fractals values.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_attenuate%3A">attenuate:</A></STRONG><BR>
+<DD>
+Define the plasma attenuation factor.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_depth%3A">depth:</A></STRONG><BR>
+<DD>
+Limit the plasma recursion depth.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="referenceimage">ReferenceImage</A></H2>
 <blockquote>ReferenceImage() increments the reference count associated with an image returning a pointer to the image. </blockquote><P>The format of the ReferenceImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ReferenceImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
@@ -546,7 +534,7 @@ The image clip mask.
 <DD>
 The image.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_depth%3A">depth:</A></STRONG><BR>
+<dd><p></p><dt><STRONG>depth:</STRONG><BR>
 <DD>
 The image depth.
 <P></P></DL></DL>
