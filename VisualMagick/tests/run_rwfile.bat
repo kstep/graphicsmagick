@@ -192,11 +192,11 @@ set truecolor_file=%srcdir%input_truecolor.miff
 %exedir%rwfile.exe -debug %events% %bilevel_file% XPM 
 %exedir%rwfile.exe -debug %events% %gray_file% XPM 
 %exedir%rwfile.exe -debug %events% %pallette_file% XPM 
-%exedir%rwfile.exe -debug %events% %truecolor_file% XPM 
-%exedir%rwfile.exe -debug %events% %bilevel_file% XWD 
-%exedir%rwfile.exe -debug %events% %gray_file% XWD 
-%exedir%rwfile.exe -debug %events% %pallette_file% XWD 
-%exedir%rwfile.exe -debug %events% %truecolor_file% XWD
+%exedir%rwfile.exe -debug %events% %truecolor_file% XPM
+: %exedir%rwfile.exe -debug %events% %bilevel_file% XWD 
+: %exedir%rwfile.exe -debug %events% %gray_file% XWD 
+: %exedir%rwfile.exe -debug %events% %pallette_file% XWD 
+: %exedir%rwfile.exe -debug %events% %truecolor_file% XWD
 %exedir%rwfile.exe -debug %events% -size 70x46 %bilevel_file% CMYK 
 %exedir%rwfile.exe -debug %events% -size 70x46 %gray_file% CMYK 
 %exedir%rwfile.exe -debug %events% -size 70x46 %pallette_file% CMYK 

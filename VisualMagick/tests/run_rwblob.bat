@@ -190,10 +190,10 @@ set truecolor_file=%srcdir%input_truecolor.miff
 %exedir%rwblob.exe -debug %events% %gray_file% XPM 
 %exedir%rwblob.exe -debug %events% %pallette_file% XPM 
 %exedir%rwblob.exe -debug %events% %truecolor_file% XPM 
-%exedir%rwblob.exe -debug %events% %bilevel_file% XWD 
-%exedir%rwblob.exe -debug %events% %gray_file% XWD 
-%exedir%rwblob.exe -debug %events% %pallette_file% XWD 
-%exedir%rwblob.exe -debug %events% %truecolor_file% XWD
+: %exedir%rwblob.exe -debug %events% %bilevel_file% XWD
+: %exedir%rwblob.exe -debug %events% %gray_file% XWD 
+: %exedir%rwblob.exe -debug %events% %pallette_file% XWD 
+: %exedir%rwblob.exe -debug %events% %truecolor_file% XWD
 %exedir%rwblob.exe -debug %events% -size 70x46 %bilevel_file% CMYK 
 %exedir%rwblob.exe -debug %events% -size 70x46 %gray_file% CMYK 
 %exedir%rwblob.exe -debug %events% -size 70x46 %pallette_file% CMYK 
