@@ -96,17 +96,21 @@ MagickExport void DestroyMagicInfo(void)
   register int
     i;
 
+  if (magic_list == (MagicInfo **) NULL)
+    return;
   for (i=0; magic_list[i] != (MagicInfo *) NULL; i++)
   {
+    LiberateMemory((void **) &magic_list[i]->tag);
     for (member=magic_list[i]->member; member != (MagicInfoMember *) NULL; )
     {
       entry=member;
+      member=member->next;
       LiberateMemory((void **) &entry->argument);
       LiberateMemory((void **) &entry);
-      member=member->next;
     }
+    LiberateMemory((void **) &magic_list[i]);
   }
-  LiberateMemory((void **) &magic_list[i]);
+  LiberateMemory((void **) &magic_list);
 }
 
 /*
@@ -366,6 +370,7 @@ static int ReadMagicConfigureFile()
   LiberateMemory((void **) &path);
   if (magic_list == (MagicInfo **) NULL)
     return(False);
+  atexit(DestroyMagicInfo);
   return(True);
 }
 
