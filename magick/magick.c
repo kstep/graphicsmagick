@@ -142,7 +142,8 @@ Export MagickInfo *GetMagickInfo(const char *tag)
         **file_list,
         *coder_dir,
         *func_name,
-        *base_name;
+	*base_name,
+	current_directory[MaxTextExtent];
 
       int
         i,
@@ -172,8 +173,10 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       /*
 	List module files
       */
+      (void) getcwd(current_directory,MaxTextExtent-1);
       file_list=ListFiles(coder_dir,
 			  "*.la", &number_files);
+      (void) chdir(current_directory);
       if (file_list == (char **) NULL)
         {
           FreeMemory((void **) &coder_dir);
@@ -191,7 +194,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 	  /* printf("Loading %s\n", file_list[i]); */
 	  if( ( handle=lt_dlopen(file_list[i]) ) == 0)
 	    {
-	      printf("ERROR: failed to load module %s: %s\n",
+	      printf("WARNING: failed to load module \"%s\": %s\n",
 		     file_list[i], lt_dlerror());
 	      continue;
 	      /*exit(1);*/
@@ -215,7 +218,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 	  func=(void (*)(void))lt_dlsym(handle, func_name);
 	  if (func == NULL)
 	    {
-	      printf("ERROR: failed to find symbol : %s\n",
+	      printf("WARNING: failed to find symbol : %s\n",
 		     lt_dlerror());
 	      continue;
 	    }
