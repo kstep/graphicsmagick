@@ -11,4 +11,7 @@ Display" will appear on your desktop. Double clicking brings up
 ImageMagick's image display program. Please be patient with us. The
 image display program is still under development.
 
+For your convenience, the full content of the ImageMagick web site has
+been installed on your computer. This is available from the Windows
+start menu via "ImageMagick 5.4.9" -> "ImageMagick Web Pages".
 

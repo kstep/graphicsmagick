@@ -47,7 +47,7 @@ Installation Steps
   Select Destination Directory
   
     Specify what drive and directory to install ImageMagick into.
-    Approximately 13MB of free disk space is required to install
+    Approximately 14MB of free disk space is required to install
     ImageMagick. The default installation directory is similar to
     "C:\Program Files\ImageMagick-5.4.9-Q16". Once you have entered the
     desired installation directory, then select "Next>" to continue.
