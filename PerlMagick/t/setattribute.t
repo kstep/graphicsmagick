@@ -14,12 +14,8 @@ require 't/subroutines.pl';
 chdir 't' || die 'Cd failed';
 
 # Determine if QuantumLeap is defined
-my $depth = 8;
 $image=Image::Magick->new;
-$status=$image->ReadImage('input_16.miff');
-if ( !$status ) {
-   $depth=$image->GetAttribute('depth');
-}
+my $depth = $image->Get('depth');
 
 testSetAttribute('input.miff','adjoin','True');
 
