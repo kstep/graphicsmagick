@@ -638,7 +638,7 @@
     familyname="WingDings"
     weight="Regular"
     style="Regular"
-    glyphs="@windows_font_dir@/winding.ttf"
+    glyphs="@windows_font_dir@/wingding.ttf"
     version="0.1" />
   <type
     name="Wingdings-2"
