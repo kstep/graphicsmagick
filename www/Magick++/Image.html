@@ -26,38 +26,36 @@ Methods</a> </li>
 <hr width="100%">Image is the primary object in Magick++ and represents
 a single image frame (see <a href="ImageDesign.html">design</a> ). The <a
  href="STL.html">STL interface</a> <b>must</b> be used to operate on
-image sequences or images (e.g. of  format  GIF, TIFF, MIFF,
-Postscript, &amp; MNG) which are comprized of multiple  image  frames.
-Individual frames of a multi-frame image may be requested by adding
-array-style notation to the end of the file name (e.g.
-"animation.gif[3]" retrieves the fourth frame of a GIF animation.&nbsp;
-Various image manipulation   operations may be applied to the image.
-Attributes may be set on the image   to influence the operation of the
-manipulation operations. The <a href="Pixels.html"> Pixels</a> class
-provides low-level access to image pixels. As a convenience, including <tt><font
- color="#663366">&lt;Magick++.h&gt;</font></tt> is sufficient in  order
-to use the complete Magick++ API. The Magick++ API is enclosed within 
-the <i>Magick</i> namespace so you must either add the prefix "<tt>
-Magick::</tt> " to each class/enumeration name or add the statement "<tt>
-using namespace  Magick;</tt>" after including the <tt>Magick++.h </tt>
-header.
+image sequences or images (e.g. of  format  GIF, TIFF, MIFF, Postscript,
+&amp; MNG) which are comprized of multiple  image  frames. Individual
+frames of a multi-frame image may be requested by adding array-style
+notation to the end of the file name (e.g. "animation.gif[3]" retrieves
+the fourth frame of a GIF animation.&nbsp; Various image manipulation  
+operations may be applied to the image. Attributes may be set on the
+image   to influence the operation of the manipulation operations. The <a
+ href="Pixels.html"> Pixels</a> class provides low-level access to image
+pixels. As a convenience, including <tt><font color="#663366">&lt;Magick++.h&gt;</font></tt>
+is sufficient in  order to use the complete Magick++ API. The Magick++
+API is enclosed within the <i>Magick</i> namespace so you must either
+add the prefix "<tt> Magick::</tt> " to each class/enumeration name or
+add the statement "<tt> using namespace  Magick;</tt>" after including
+the <tt>Magick++.h </tt> header.
 <p>The preferred way to allocate Image objects is via automatic
 allocation (on the stack). There is no concern that allocating Image
 objects on the   stack will excessively enlarge the stack since Magick++
 allocates all large   data objects (such as the actual image data) from
 the heap. Use of automatic   allocation is preferred over explicit
 allocation (via <i>new</i>) since it  is much less error prone and
-allows use of C++ scoping rules to avoid memory  leaks. Use of
-automatic allocation allows Magick++ objects to be assigned  and copied
-just like the C++ intrinsic data types (e.g. '<i>int</i> '), leading  to
-clear and easy to read code. Use of automatic allocation leads to
-naturally  exception-safe code since if an exception is thrown, the
-object is automatically  deallocated once the stack unwinds past the
-scope of the allocation (not the case for objects allocated via <i>new</i>
-). </p>
+allows use of C++ scoping rules to avoid memory  leaks. Use of automatic
+allocation allows Magick++ objects to be assigned  and copied just like
+the C++ intrinsic data types (e.g. '<i>int</i> '), leading  to clear and
+easy to read code. Use of automatic allocation leads to naturally 
+exception-safe code since if an exception is thrown, the object is
+automatically  deallocated once the stack unwinds past the scope of the
+allocation (not the case for objects allocated via <i>new</i> ). </p>
 <p>Image is very easy to use. For example, here is a the source to a
 program which reads an image, crops it, and writes it to a new file (the
-exception    handling is optional but strongly recommended): </p>
+exception handling is optional but strongly recommended): </p>
 <blockquote><tt><font color="#000066">#include &lt;Magick++.h&gt;</font></tt> <br>
   <tt><font color="#000066">#include &lt;iostream&gt;</font></tt> <br>
   <tt><font color="#000066">using namespace std;</font></tt> <br>
@@ -66,8 +64,8 @@ exception    handling is optional but strongly recommended): </p>
   <tt><font color="#000066">{</font></tt> <br>
   <tt><font color="#000066">&nbsp; // Construct the image object.
 Seperating image construction from the</font></tt> <br>
-  <tt><font color="#000066">&nbsp; // the read operation ensures that
-a failure to read the image file</font></tt> <br>
+  <tt><font color="#000066">&nbsp; // the read operation ensures that a
+failure to read the image file</font></tt> <br>
   <tt><font color="#000066">&nbsp; // doesn't render the image object
 useless.</font></tt> <br>
   <tt><font color="#000066">&nbsp; Image image;</font></tt><tt><font
@@ -75,8 +73,7 @@ useless.</font></tt> <br>
   <p><tt><font color="#000066">&nbsp; try {</font></tt> <br>
   <tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Read a file into
 image object</font></tt> <br>
-  <tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.read( "girl.gif"
-);</font></tt> </p>
+  <tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.read( "girl.gif" );</font></tt> </p>
   <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Crop the image to
 specified size</font></tt> (width, height, xOffset, yOffset)<br>
   <tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.crop(
@@ -149,8 +146,8 @@ If you wanted to change the color image to grayscale, you could add the
 lines:
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp;
 image.quantizeColorSpace( GRAYColorspace );</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.quantizeColors(
-256 );</font></tt> <br>
+<tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.quantizeColors( 256
+);</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.quantize( );</font></tt> </p>
 <p>or, more simply: </p>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.type(
@@ -165,11 +162,11 @@ images in   memory are known as BLOBs (Binary Large OBjects) and may be
 represented using  the <a href="Blob.html">Blob</a> class. The encoded
 image may be initially placed in memory by reading it  directly from a
 file, reading the image from a database, memory-mapped  from  a disk
-file, or could be written to memory by Magick++. Once the encoded 
-image has been placed within a Blob, it may be read into a Magick++
-Image  via a <a href="#constructor_blob">constructor</a> or <a
- href="#read">read()</a> . Likewise, a Magick++ image may be written to
-a Blob via <a href="#write"> write()</a> .
+file, or could be written to memory by Magick++. Once the encoded image
+has been placed within a Blob, it may be read into a Magick++ Image 
+via a <a href="#constructor_blob">constructor</a> or <a href="#read">read()</a>
+. Likewise, a Magick++ image may be written to a Blob via <a
+ href="#write"> write()</a> .
 <p>An example of using Image to write to a Blob follows: <br>
 &nbsp; </p>
 <blockquote><tt><font color="#000066">#include &lt;Magick++.h&gt;</font></tt> <br>
@@ -186,8 +183,7 @@ JPEG format</font></tt> <br>
   <tt><font color="#000066">&nbsp;&nbsp;&nbsp; Blob blob;</font></tt> <br>
   <tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.magick( "JPEG" )
 // Set JPEG output format</font></tt> <br>
-  <tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.write( &amp;blob
-);</font></tt> </p>
+  <tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.write( &amp;blob );</font></tt> </p>
   <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; [ Use BLOB data (in
 JPEG format) here ]</font></tt> </p>
   <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; return 0;</font></tt> <br>
@@ -196,7 +192,7 @@ JPEG format) here ]</font></tt> </p>
 <p><br>
 likewise, to read an image from a Blob, you could use one of the
 following examples: </p>
-<p>[ <font color="#000000">Entry condition for the following examples 
+<p>[ <font color="#000000">Entry condition for the following examples
 is that <i>data</i> is pointer to encoded image data and <i>length</i>
 represents the size of the data</font> ] </p>
 <blockquote><tt><font color="#000066">Blob blob( data, length );</font></tt> <br>
@@ -339,15 +335,13 @@ values and type_ parameters.</font></td>
 must process a multi-image file (such as an animation), the <a
  href="STL.html"> STL interface</a> , which provides a multi-image
 abstraction on top of <i>Image</i>, must   be used.
-<p>Image manipulation methods are very easy to use.&nbsp; For
-example: </p>
+<p>Image manipulation methods are very easy to use.&nbsp; For example: </p>
 <blockquote><font color="#663366">Image image;</font> <br>
   <font color="#663366">image.read("myImage.tiff");</font> <br>
   <font color="#663366">image.addNoise(GaussianNoise);</font> <br>
   <font color="#663366">image.write("myImage.tiff");</font></blockquote>
 adds gaussian noise to the image file "myImage.tiff".
-<p>The operations supported by Image are shown in the following
-table: <br>
+<p>The operations supported by Image are shown in the following table: <br>
 &nbsp;
 <table border="1" nosave="">
   <caption><b>Image Image Manipulation Methods</b></caption> <tbody>
@@ -366,14 +360,14 @@ table: <br>
 int height, unsigned offset = 0<br>
       </font></td>
       <td valign="top"><font size="-1">Apply adaptive thresholding  to
-the image. Adaptive thresholding is useful if the ideal threshold level 
-is not known in advance, or if the illumination gradient is not
-constant across the image. Adaptive thresholding works by evaulating the
-mean (average) of a pixel region (size specified by <i>width</i> and <i>height</i>)
+the image. Adaptive thresholding is useful if the ideal threshold level
+is not known in advance, or if the illumination gradient is not constant
+across the image. Adaptive thresholding works by evaulating the mean
+(average) of a pixel region (size specified by <i>width</i> and <i>height</i>)
 and using the mean as the thresholding value. In order to remove
 residual noise from the background, the threshold may be adjusted by
 subtracting a constant <i>offset</i> (default zero) from the mean to
-compute  the threshold.</font><br>
+compute the threshold.</font><br>
       </td>
     </tr>
     <tr>
@@ -383,6 +377,17 @@ compute  the threshold.</font><br>
       <td><font size="-1"><a href="Enumerations.html#NoiseType">NoiseType</a>
 noiseType_</font></td>
       <td><font size="-1">Add noise to image with specified noise type.</font></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: middle;"><small><a
+ name="affineTransform"></a>affineTransform<br>
+      </small></td>
+      <td style="vertical-align: middle;"><small>const DrawableAffine
+&amp;affine<br>
+      </small></td>
+      <td style="vertical-align: middle;"><small>Transform image by
+specified affine (or free transform) matrix.<br>
+      </small></td>
     </tr>
     <tr>
       <td rowspan="4">
@@ -424,7 +429,7 @@ image) and placement gravity.</font></td>
 = 0.5</font></td>
       <td><font size="-1">Blur image. The <i>radius_ </i>parameter
 specifies the radius of the Gaussian, in pixels, not counting the center
-pixel.&nbsp;    The <i>sigma_</i> parameter specifies the standard
+pixel.&nbsp; The <i>sigma_</i> parameter specifies the standard
 deviation of the Laplacian,    in pixels.</font></td>
     </tr>
     <tr>
@@ -490,8 +495,8 @@ specified percent   opacity.</font></td>
       <td><font size="-1">const string &amp;comment_</font></td>
       <td><font size="-1">Comment image (add comment string to
 image).&nbsp; By default, each image is commented with its file name.
-Use&nbsp; this&nbsp;    method to&nbsp; assign a specific comment to
-the image.&nbsp; Optionally   you can include the image filename, type,
+Use&nbsp; this&nbsp;    method to&nbsp; assign a specific comment to the
+image.&nbsp; Optionally   you can include the image filename, type,
 width, height, or other&nbsp; image&nbsp;  attributes by embedding <a
  href="FormatCharacters.html">special format characters.</a> </font></td>
     </tr>
@@ -506,8 +511,8 @@ another image. Sets <a href="#meanErrorPerPixel">meanErrorPerPixel</a> , <a
  href="#normalizedMaxError">normalizedMaxError</a> , and <a
  href="#normalizedMeanError">normalizedMeanError</a> in the current
 image. False is returned if the images are identical. An  ErrorOption
-exception is thrown if the reference image columns, rows, colorspace,
-or matte differ from the current image.</font><br>
+exception is thrown if the reference image columns, rows, colorspace, or
+matte differ from the current image.</font><br>
       </td>
     </tr>
     <tr>
@@ -587,8 +592,8 @@ kernel to apply.</font></td>
       </td>
       <td><font size="-1">void</font></td>
       <td><font size="-1">Display image on screen.</font> <br>
-      <font size="-1"><b><font color="#ff0000">Caution: </font></b>
-if an image format is is not compatable   with the display visual (e.g.
+      <font size="-1"><b><font color="#ff0000">Caution: </font></b> if
+an image format is is not compatable   with the display visual (e.g.
 JPEG on a colormapped display) then the original   image will be
 altered. Use a copy of the original if this is a problem.</font></td>
     </tr>
@@ -780,12 +785,11 @@ specified by 'sigma_'.</font></td>
       <td><font size="-1">Assign a label to an image. Use this option
 to&nbsp; assign&nbsp; a&nbsp; specific label to the image. Optionally
 you can include    the image filename, type, width, height, or scene
-number in the label by   embedding&nbsp; <a
- href="FormatCharacters.html"> special   format characters.</a> If the
-first character of string is @, the image label is read from a  file
-titled by the remaining characters in the string. When converting to
-Postscript, use this&nbsp; option to specify a header string to print
-above the image.</font></td>
+number in the label by   embedding&nbsp; <a href="FormatCharacters.html">
+special format characters.</a> If the first character of string is @, the
+image label is read from a  file titled by the remaining characters in
+the string. When converting to Postscript, use this&nbsp; option to
+specify a header string to print above the image.</font></td>
     </tr>
     <tr>
       <td>
@@ -813,8 +817,8 @@ with this option.</font></td>
       <center><a name="matteFloodfill"></a> <font size="-1">matteFloodfill</font></center>
       </td>
       <td><font size="-1">const <a href="Color.html">Color</a>
-&amp;target_, const unsigned int&nbsp; opacity_, const int x_, const
-int y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a> method_</font></td>
+&amp;target_, const unsigned int&nbsp; opacity_, const int x_, const int
+y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a> method_</font></td>
       <td><font size="-1">Floodfill designated area with a replacement
 opacity value.</font></td>
     </tr>
@@ -855,7 +859,7 @@ brightness of  an image</font></td>
       <td><font size="-1">bool grayscale_ = false</font></td>
       <td><font size="-1">Negate colors in image.&nbsp; Replace every
 pixel with  its complementary color (white becomes black, yellow becomes
-blue,  etc.).&nbsp;  Set grayscale to only negate grayscale values in
+blue, etc.).&nbsp;  Set grayscale to only negate grayscale values in
 image.</font></td>
     </tr>
     <tr>
@@ -880,10 +884,10 @@ normalizing the  pixel values to span the full range of color values).</font></t
       <td><font size="-1">unsigned int opacity_</font></td>
       <td><font size="-1">Set or attenuate the opacity channel in the
 image. If the image pixels are opaque then they are set to the specified
-opacity    value, otherwise they are blended with the supplied opacity
-value.&nbsp;   The value of opacity_ ranges from 0 (completely opaque)
-to <i>MaxRGB</i> .  The defines <i>OpaqueOpacity</i> and <i>TransparentOpacity</i>
-are available   to specify completely opaque or completely transparent,
+opacity value, otherwise they are blended with the supplied opacity
+value.&nbsp; The value of opacity_ ranges from 0 (completely opaque) to <i>MaxRGB</i>
+. The defines <i>OpaqueOpacity</i> and <i>TransparentOpacity</i> are
+available   to specify completely opaque or completely transparent,
 respectively.</font></td>
     </tr>
     <tr>
@@ -1075,11 +1079,11 @@ number of degrees.</font></td>
 by analyzing   the histograms of the color components and identifying
 units that are homogeneous   with the fuzzy c-means technique. Also uses <i>quantizeColorSpace</i>
 and <i>verbose</i> image attributes. Specify <i> clusterThreshold_</i> ,
-as the number&nbsp; of&nbsp; pixels&nbsp; each cluster&nbsp; must
-exceed   the cluster threshold to be considered valid. <i>SmoothingThreshold_</i>
+as the number&nbsp; of&nbsp; pixels&nbsp; each cluster&nbsp; must exceed
+the cluster threshold to be considered valid. <i>SmoothingThreshold_</i>
 eliminates noise in the&nbsp; second derivative of the histogram. As the
 value is&nbsp; increased, you can&nbsp; expect&nbsp; a&nbsp; smoother
-second  derivative.&nbsp; The default is 1.5.</font></td>
+second derivative.&nbsp; The default is 1.5.</font></td>
     </tr>
     <tr>
       <td>
@@ -1088,10 +1092,10 @@ second  derivative.&nbsp; The default is 1.5.</font></td>
       <td><font size="-1">double azimuth_ = 30, double elevation_ = 30,</font> <br>
       <font size="-1">bool colorShading_ = false</font></td>
       <td><font size="-1">Shade image using distant light source.
-Specify <i> azimuth_</i> and <i>elevation_</i> as the&nbsp; 
+Specify <i> azimuth_</i> and <i>elevation_</i> as the&nbsp;
 position&nbsp; of&nbsp;  the light source. By default, the shading
-results  as a grayscale image.. Set c<i>olorShading_</i> to <i>true</i>
-to shade the  red, green, and blue components of the image.</font></td>
+results as a grayscale image.. Set c<i>olorShading_</i> to <i>true</i> to
+shade the  red, green, and blue components of the image.</font></td>
     </tr>
     <tr>
       <td>
@@ -1126,7 +1130,7 @@ by a shear angle.&nbsp; For X direction&nbsp; shears,&nbsp;    x&nbsp;
 degrees is measured relative to the Y axis, and similarly, for Y
 direction shears&nbsp; y&nbsp; degrees is measured relative to the X
 axis. Empty triangles left over from shearing the&nbsp; image&nbsp; are
-filled&nbsp;   with&nbsp; the&nbsp; color&nbsp; defined as <i>borderColor</i>.&nbsp;</font></td>
+filled&nbsp; with&nbsp; the&nbsp; color&nbsp; defined as <i>borderColor</i>.&nbsp;</font></td>
     </tr>
     <tr>
       <td>
@@ -1245,8 +1249,8 @@ diffence amount.</font></td>
       <td><font size="-1">const string &amp;imageSpec_</font></td>
       <td><font size="-1">Write image to a file using filename i<i>mageSpec_</i>
 .</font> <br>
-      <font size="-1"><b><font color="#ff0000">Caution: </font></b>
-if an image format is selected which is   capable of supporting fewer
+      <font size="-1"><b><font color="#ff0000">Caution: </font></b> if
+an image format is selected which is   capable of supporting fewer
 colors than the original image or quantization   has been requested, the
 original image will be quantized to fewer colors.   Use a copy of the
 original if this is a problem.</font></td>
@@ -1258,8 +1262,8 @@ original if this is a problem.</font></td>
 parameter specifies the image   format to write (defaults to <a
  href="#magick">magick</a> ). The depth_ parameter species the image
 depth (defaults to <a href="#depth"> depth</a> ).</font> <br>
-      <font size="-1"><b><font color="#ff0000">Caution: </font></b>
-if an image format is selected which is   capable of supporting fewer
+      <font size="-1"><b><font color="#ff0000">Caution: </font></b> if
+an image format is selected which is   capable of supporting fewer
 colors than the original image or quantization   has been requested, the
 original image will be quantized to fewer colors.   Use a copy of the
 original if this is a problem.</font></td>
@@ -1695,7 +1699,7 @@ Postscript or Portable Document page. Often used with <i>psPageSize</i>.</font><
       <td>
       <center><a name="depth"></a> <font size="-1">depth</font></center>
       </td>
-      <td><font size="-1">&nbsp;unsigned int (8 or 16)</font></td>
+      <td><font size="-1">&nbsp;unsigned int (8, 16, or 32)</font></td>
       <td><font size="-1">void</font></td>
       <td><font size="-1">unsigned int depth_</font></td>
       <td><font size="-1">Image depth. Used to specify the bit depth
@@ -1893,9 +1897,9 @@ scheme&nbsp; for&nbsp; raw&nbsp; image formats such as RGB or YUV. <i>NoInterlac
 means do not&nbsp; interlace, <i>LineInterlace</i> uses scanline
 interlacing, and <i>PlaneInterlace</i> uses plane interlacing. <i>
 PartitionInterlace</i> is like <i>PlaneInterlace</i> except the&nbsp;
-different planes&nbsp; are saved&nbsp; to individual  files 
-(e.g.&nbsp; image.R, image.G, and image.B). Use <i>LineInterlace</i> or <i>
-PlaneInterlace</i> to create an interlaced GIF or progressive JPEG 
+different planes&nbsp; are saved&nbsp; to individual  files (e.g.&nbsp;
+image.R, image.G, and image.B). Use <i>LineInterlace</i> or <i>
+PlaneInterlace</i> to create an interlaced GIF or progressive JPEG
 image.</font></td>
     </tr>
     <tr>
@@ -1962,6 +1966,28 @@ an opaque  one.</font></td>
       <td><font size="-1">The mean error per pixel computed when an
 image is  color reduced. This parameter is only valid if verbose is set
 to true  and  the image has just been quantized.</font></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: middle;"><font
+ size="-1"><a name="modulusDepth"></a>modulusDepth<br>
+      </font></td>
+      <td style="text-align: left; vertical-align: middle;"><small>unsigned
+int<br>
+      </small></td>
+      <td style="text-align: left; vertical-align: middle;"><small><font
+ size="-1"><small>void<br>
+      </small></font></small></td>
+      <td style="text-align: left; vertical-align: middle;"><small>unsigned
+int depth_<br>
+      </small></td>
+      <td style="text-align: left; vertical-align: middle;"><small>Image
+modulus depth (minimum number of bits required to support
+red/green/blue components without loss of accuracy). The pixel modulus
+depth may be decreased by supplying a value which is less than the
+current value, updating the pixels (reducing accuracy) to the new
+depth. The pixel modulus depth can not be increased over the current
+value using this method.<br>
+      </small></td>
     </tr>
     <tr>
       <td>
@@ -2118,11 +2144,11 @@ results when color reducing an image.</font></td>
       <td><font size="-1">bool flag_</font></td>
       <td><font size="-1">Apply Floyd/Steinberg error diffusion to the
 image. The basic strategy of dithering is to&nbsp; trade&nbsp; intensity
-resolution&nbsp;    for&nbsp; spatial&nbsp; resolution&nbsp; by&nbsp;
+resolution&nbsp; for&nbsp; spatial&nbsp; resolution&nbsp; by&nbsp;
 averaging the intensities&nbsp;    of&nbsp; several&nbsp;
 neighboring&nbsp; pixels. Images which&nbsp; suffer&nbsp;    from&nbsp;
 severe&nbsp; contouring&nbsp; when&nbsp; reducing colors can  be
-improved with this option. The quantizeColors or monochrome option must 
+improved with this option. The quantizeColors or monochrome option must
 be set for this option to take effect.</font></td>
     </tr>
     <tr>
@@ -2424,13 +2450,13 @@ may be accessed directly via the <i>Image Pixel   Cache</i> .&nbsp; The
 image pixel cache is a rectangular window into the  actual image pixels
 (which may be in memory, memory-mapped from a disk file,  or entirely on
 disk). Two interfaces exist to access the <i>Image Pixel Cache.</i> The
-interface described here (part of the <i>Image</i> class) supports
-only one view at a time. See the <i><a href="Pixels.html">Pixels</a> </i>
+interface described here (part of the <i>Image</i> class) supports only
+one view at a time. See the <i><a href="Pixels.html">Pixels</a> </i>
 class for a more abstract interface which supports   simultaneous pixel
-views (up to the number of rows). As an analogy, the interface
-described here relates to the <i><a href="Pixels.html">Pixels</a> </i>
-class as stdio's gets() relates to fgets(). The <i><a href="Pixels.html">
-Pixels</a> </i> class provides the more general form of the interface.  
+views (up to the number of rows). As an analogy, the interface described
+here relates to the <i><a href="Pixels.html">Pixels</a> </i> class as
+stdio's gets() relates to fgets(). The <i><a href="Pixels.html"> Pixels</a> </i>
+class provides the more general form of the interface.
 <p>Obtain existing image pixels via <i>getPixels()</i>.   Create a new
 pixel region using <i>setPixels().</i></p>
 <p>In order to ensure that only the current generation of the image is
@@ -2443,13 +2469,13 @@ counting when copying or constructing an Image.<br>
 </p>
 <p>Depending on the capabilities of the operating system,   and the
 relationship of the window to the image, the pixel cache may be a copy
-of the pixels in the selected window, or it may be the actual image 
+of the pixels in the selected window, or it may be the actual image
 pixels. In any case calling <i>syncPixels()</i> insures that the base
-image  is updated with the contents of the modified pixel cache. The
+image is updated with the contents of the modified pixel cache. The
 method <i> readPixels()</i> supports copying foreign pixel data formats
-into the pixel cache according   to the <i>QuantumTypes</i>. The
-method <i>writePixels()</i> supports copying   the pixels in the cache
-to a foreign pixel representation according to the  format specified by <i>QuantumTypes</i>.</p>
+into the pixel cache according   to the <i>QuantumTypes</i>. The method <i>writePixels()</i>
+supports copying   the pixels in the cache to a foreign pixel
+representation according to the  format specified by <i>QuantumTypes</i>.</p>
 <p>The pixel region is effectively a small image in which   the pixels
 may be accessed, addressed, and updated, as shown in the following
 example:
@@ -2539,7 +2565,7 @@ or setPixels call and should never be deallocated by the user.</font><font
 pixel indexes represent   an array of type IndexPacket, with each entry
 corresponding to an x,y pixel    position. For PseudoClass images, the
 entry's value is the offset into the  colormap (see <a href="#colorMap">colorMap</a>
-) for that pixel. For CMYKA images, the indexes are used to contain the 
+) for that pixel. For CMYKA images, the indexes are used to contain the
 alpha channel.</font></td>
     </tr>
     <tr>
@@ -2572,8 +2598,8 @@ int columns_,   const unsigned int rows_</font></td>
 cache as defined by the specified rectangular region. Modified pixels
 may be subsequently   transferred back to the image via syncPixels. </font><font
  size="-1">The returned pointer remains valid until the next getPixel,
-getConstPixels, or setPixels call and should never be deallocated by
-the user.</font><font size="-1"></font></td>
+getConstPixels, or setPixels call and should never be deallocated by the
+user.</font><font size="-1"></font></td>
     </tr>
     <tr>
       <td>

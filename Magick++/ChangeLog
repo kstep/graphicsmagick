@@ -1,3 +1,14 @@
+2003-08-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (depth): Method now only updates the
+	Image/ImageInfo depth member and retrieves the value of the Image
+	depth member.
+	(modulusDepth): New method to inspect the pixels for actual
+	modulus depth, or update/reduce the pixels to a specified modulus
+	depth.  The depth method was performing this function so any code
+	which depended on the depth method to compute or set the modulus
+	depth should be updated to use modulusDepth() instead.
+
 2003-08-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (matte): If a new matte channel is created,
@@ -57,10 +68,9 @@
 
 	* lib/Magick++/STL.h (affineTransformImage): Add function object
 	contributed by Vladimir Lukianov to apply an affine transform to
-	the image.  Still needs documentation!
+	the image.
 	* lib/Image.cpp (affineTransform): Added method contributed by
-	Vladimir Lukianov to apply an affine transform to the image. Still
-	needs documentation!
+	Vladimir Lukianov to apply an affine transform to the image.
 
 2003-05-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

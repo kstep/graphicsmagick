@@ -810,6 +810,11 @@ namespace Magick
     // The mean error per pixel computed when an image is color reduced
     double          meanErrorPerPixel ( void ) const;
 
+    // Image modulus depth (minimum number of bits required to support
+    // red/green/blue components without loss of accuracy)
+    void            modulusDepth ( const unsigned int modulusDepth_ );
+    unsigned int    modulusDepth ( void ) const;
+
     // Tile size and offset within an image montage
     Geometry        montageGeometry ( void ) const;
 

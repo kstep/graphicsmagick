@@ -473,7 +473,7 @@ static int MvgAutoWrapPrintf(DrawContext context, const char *format, ...)
 
   if (formatted_length < 0)
     {
-      ThrowException(&context->image->exception,StreamError,"UnableToPrint",
+      ThrowException(&context->image->exception,DrawError,"UnableToPrint",
         format);
     }
   else

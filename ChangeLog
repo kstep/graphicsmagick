@@ -1,3 +1,10 @@
+2003-08-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/draw.c (MvgAutoWrapPrintf): StreamError reported when
+	DrawError was intended.
+	* coders/logo.c (ReadLOGOImage): Report FileOpenError rather than
+	BlobError if requested image does not exist.
+
 2003-08-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/cache.c (PersistCache): If HAVE_SYSCONF and _SC_PAGE_SIZE

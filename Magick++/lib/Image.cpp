@@ -2214,20 +2214,28 @@ Magick::Geometry Magick::Image::density ( void ) const
   return constOptions()->density( );
 }
 
-// Image depth (8 or 16)
+// Image depth (bits allocated to red/green/blue components)
 void Magick::Image::depth ( const unsigned int depth_ )
 {
+  unsigned int depth = depth_;
+
+  if (depth > QuantumDepth)
+    depth=QuantumDepth;
+
+  if (depth < 8)
+    depth=8;
+  else if (depth > 8 && depth < 16)
+    depth=16;
+  else if (depth > 16 && depth < 32)
+    depth=32;
+
   modifyImage();
-  SetImageDepth( image(), depth_ );
-  options()->depth( depth_ );
+  image()->depth=depth;
+  options()->depth( depth );
 }
 unsigned int Magick::Image::depth ( void ) const
 {
-  ExceptionInfo exceptionInfo;
-  GetExceptionInfo( &exceptionInfo );
-  unsigned int depth=GetImageDepth( constImage(), &exceptionInfo );
-  throwException( exceptionInfo );
-  return depth;
+  return constImage()->depth;
 }
 
 std::string Magick::Image::directory ( void ) const
@@ -2594,6 +2602,23 @@ Magick::Color Magick::Image::matteColor ( void ) const
 double Magick::Image::meanErrorPerPixel ( void ) const
 {
   return(constImage()->error.mean_error_per_pixel);
+}
+
+// Image modulus depth (minimum number of bits required to support
+// red/green/blue components without loss of accuracy)
+void Magick::Image::modulusDepth ( const unsigned int depth_ )
+{
+  modifyImage();
+  SetImageDepth( image(), depth_ );
+  options()->depth( depth_ );
+}
+unsigned int Magick::Image::modulusDepth ( void ) const
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  unsigned int depth=GetImageDepth( constImage(), &exceptionInfo );
+  throwException( exceptionInfo );
+  return depth;
 }
 
 void Magick::Image::monochrome ( const bool monochromeFlag_ )

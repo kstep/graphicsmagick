@@ -5137,7 +5137,7 @@ static Image *ReadLOGOImage(const ImageInfo *image_info,
   */
   if (blob == 0)
     {
-      ThrowReaderException(BlobError,"UnableToOpenFile",image)
+      ThrowReaderException(FileOpenError,"UnableToOpenFile",image)
     }
   image=BlobToImage(clone_info,blob,extent,exception);
 
