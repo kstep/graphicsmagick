@@ -1239,7 +1239,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
       q=GetImagePixels(image,x,y,1,1);
       if (q == (PixelPacket *) NULL)
         break;
-      *q=draw_info->stroke;
+      *q=draw_info->fill;
       (void) SyncImagePixels(image);
     }
     case ColorPrimitive:
@@ -1252,7 +1252,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
           q=GetImagePixels(image,x,y,1,1);
           if (q == (PixelPacket *) NULL)
             break;
-          *q=draw_info->stroke;
+          *q=draw_info->fill;
           (void) SyncImagePixels(image);
           break;
         }
@@ -1291,7 +1291,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
               break;
             for (x=0; x < (int) image->columns; x++)
             {
-              *q=draw_info->stroke;
+              *q=draw_info->fill;
               q++;
             }
             if (!SyncImagePixels(image))
@@ -1356,7 +1356,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
               break;
             for (x=0; x < (int) image->columns; x++)
             {
-              q->opacity=draw_info->stroke.opacity;
+              q->opacity=draw_info->fill.opacity;
               q++;
             }
             if (!SyncImagePixels(image))
