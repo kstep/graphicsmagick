@@ -564,8 +564,9 @@ MAGICK DELEGATES
       the wmftopng program.  The configure script for libwmf offers a
       choice between using the 'expat' XML library (--with-expat) and
       xmlsoft's libxml (--with-xml).  Since ImageMagick already uses
-      libxml, it is recommended that the options '--without-expat
-      --with-xml' be supplied to libwmf's configure script.
+      libxml (for SVG), it is recommended that the options
+      '--without-expat --with-xml' be supplied to libwmf's configure
+      script.
 
     o ImageMagick requires an X server for display and animate to work
       properly.  There is a nearly free X server available for Windows
