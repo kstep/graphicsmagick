@@ -145,7 +145,7 @@ int main(int argc,char **argv)
 	image_info->argv=argv;
   (void) FormatString(image_info->filename,"msl:%.1024s",argv[argc-1]);
   image=ReadImage(image_info,&exception);
-  if (image == (Image *) NULL)
+  if (image != (Image *) NULL)
     DestroyImages(image);
 	DestroyImageInfo(image_info);
 	DestroyMagick();
