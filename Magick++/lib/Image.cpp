@@ -616,6 +616,7 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
       firstPrimitive = false;
       ++p;
     }
+  primitive << ends;
 
   drawInfo->primitive = primitive.str();
   DrawImage( image(), drawInfo );

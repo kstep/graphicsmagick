@@ -1,3 +1,9 @@
+2000-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (draw): Bugfix - the primitive string was not
+ 	properly null terminated. It is a wonder that the code usually
+ 	worked at all.  Thanks to afatela@marktest.pt for reporting it.
+
 2000-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (deconstructImages): New STL function for
