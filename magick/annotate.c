@@ -879,19 +879,16 @@ static unsigned int RenderTruetype(Image *image,
         p=bitmap->bitmap.buffer;
         for (y=0; y < bitmap->bitmap.rows; y++)
         {
-          if (ceil(point.y+y-0.5) < 0)
-            continue;
-          if (ceil(point.y+y-0.5) >= image->rows)
-            break;
+          if ((ceil(point.y+y-0.5) < 0) ||
+              (ceil(point.y+y-0.5) >= image->rows))
+            {
+              p+=bitmap->bitmap.width;
+              continue;
+            }
           for (x=0; x < bitmap->bitmap.width; x++)
           {
             if ((ceil(point.x+x-0.5) < 0) ||
-                (ceil(point.x+x-0.5) >= image->columns))
-              {
-                p++;
-                continue;
-              }
-            if (*p == 0)
+                (ceil(point.x+x-0.5) >= image->columns) || (*p == 0))
               {
                 p++;
                 continue;
@@ -899,7 +896,10 @@ static unsigned int RenderTruetype(Image *image,
             q=GetImagePixels(image,(int) ceil(point.x+x-0.5),
               (int) ceil(point.y+y-0.5),1,1);
             if (q == (PixelPacket *) NULL)
-              break;
+              {
+                p++;
+                continue;
+              }
             opacity=MaxRGB-((unsigned long) (UpScale(*p)*
               (MaxRGB-fill_color.opacity))/MaxRGB);
             q->red=((unsigned long) (fill_color.red*(MaxRGB-opacity)+
@@ -910,9 +910,9 @@ static unsigned int RenderTruetype(Image *image,
               q->blue*opacity)/MaxRGB);
             q->opacity=((unsigned long) (opacity*(MaxRGB-opacity)+
               q->opacity*opacity)/MaxRGB);
-            if (!SyncImagePixels(image))
-              break;
             p++;
+            if (!SyncImagePixels(image))
+              continue;
           }
         }
       }
