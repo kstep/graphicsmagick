@@ -327,7 +327,7 @@ MagickExport void *GetMagickRegistry(const long id,RegistryType *type,
     }
     *type=registry_info->type;
     *length=registry_info->length;
-		break;
+    break;
   }
   LiberateSemaphoreInfo(&registry_semaphore);
   return(blob);
@@ -381,6 +381,12 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       Image
         *image;
 
+      long
+        id;
+
+      register RegistryInfo
+        *p;
+
       image=(Image *) blob;
       if (length != sizeof(Image))
         {
@@ -397,6 +403,19 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       clone_blob=(void *) CloneImageList(image,exception);
       if (clone_blob == (void *) NULL)
         return(-1);
+      id=(-1);
+      AcquireSemaphoreInfo(&registry_semaphore);
+      for (p=registry_list; p != (RegistryInfo *) NULL; p=p->next)
+      {
+        if (p->type != ImageRegistryType)
+          continue;
+        if (LocaleCompare(((Image *) p->blob)->filename,image->filename) != 0)
+          continue;
+        id=p->id;
+      }
+      LiberateSemaphoreInfo(&registry_semaphore);
+      if (id >= 0)
+        (void) DeleteMagickRegistry(p->id);
       break;
     }
     case ImageInfoRegistryType:
