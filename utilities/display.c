@@ -1476,7 +1476,7 @@ int main(int argc,char **argv)
                 Proceed to previous image.
               */
               for (i--; i > 0; i--)
-                if (image_marker[i] == ((int) image_number-2))
+                if ((int) image_marker[i] == (image_number-2))
                   break;
               image_number--;
             }
