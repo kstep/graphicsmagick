@@ -1,5 +1,7 @@
 2003-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/static.h: Add prototypes for RegisterXTRNImage and
+	UnregisterXTRNImage.	
 	* Makefile.am (DISTDIRS): Don't distribute the 'guide'
 	subdirectory. It is available for checkout from CVS.
 	* www: Utilities documentation is updated from <imdoc> masters.

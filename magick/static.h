@@ -140,6 +140,7 @@ extern ModuleExport void
   RegisterXCImage(void),
   RegisterXCFImage(void),
   RegisterXPMImage(void),
+  RegisterXTRNImage(void),
   RegisterXVImage(void),
   RegisterXWDImage(void),
   RegisterYUVImage(void),
@@ -266,6 +267,7 @@ extern ModuleExport void
   UnregisterXCImage(void),
   UnregisterXCFImage(void),
   UnregisterXPMImage(void),
+  UnregisterXTRNImage(void),
   UnregisterXVImage(void),
   UnregisterXWDImage(void),
   UnregisterYUVImage(void);
