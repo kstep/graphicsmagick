@@ -7540,16 +7540,17 @@ Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     if ((image->previous == (Image *) NULL) && !IsTainted(image))
       if (IsAccessible(image->magick_filename))
         if (GetDelegateInfo(image->magick,local_info->magick,&delegate_info))
-          {
-            /*
-              Let our bi-directional delegate process the image.
-            */
-            (void) strcpy(image->filename,image->magick_filename);
-            status=
-              InvokeDelegate(local_info,image,image->magick,local_info->magick);
-            DestroyImageInfo(local_info);
-            return(status);
-          }
+          if (delegate_info.direction == 0)
+            {
+              /*
+                Let our bi-directional delegate process the image.
+              */
+              (void) strcpy(image->filename,image->magick_filename);
+              status=InvokeDelegate(local_info,image,image->magick,
+                local_info->magick);
+              DestroyImageInfo(local_info);
+              return(status);
+            }
   /*
     Call appropriate image writer based on image type.
   */
