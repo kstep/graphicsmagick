@@ -174,6 +174,13 @@ typedef struct _CacheInfo
   unsigned long
     signature;
 } CacheInfo;
+
+typedef struct _CacheThreshold
+{
+  off_t
+    minimum,
+    maximum;
+} CacheThreshold;
 
 /*
   MagickExported interfaces.

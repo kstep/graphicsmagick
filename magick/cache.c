@@ -63,12 +63,6 @@
 #include "zlib.h"
 #endif
 
-typedef struct _CacheThreshold
-{
-  off_t
-    minimum,
-    maximum;
-} CacheThreshold;
 /*
   Global declarations.
 */
