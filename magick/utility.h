@@ -81,11 +81,6 @@ extern MagickExport void
   ExpandFilename(char *),
   GetPathComponent(const char *,PathType,char *),
   GetToken(const char *,char **,char *),
-#if defined(__GNUC__)
-  FormatString(char *,const char *,...) __attribute__((format (printf, 2, 3))),
-#else
-  FormatString(char *,const char *,...),
-#endif
   LiberateMemory(void **),
   LocaleLower(char *),
   LocaleUpper(char *),
@@ -93,6 +88,13 @@ extern MagickExport void
   Strip(char *),
   SetGeometry(const Image *,RectangleInfo *),
   TemporaryFilename(char *);
+
+extern MagickExport void
+#if defined(__GNUC__)
+  FormatString(char *,const char *,...) __attribute__((format (printf, 2, 3)));
+#else
+  FormatString(char *,const char *,...);
+#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
