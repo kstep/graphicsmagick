@@ -362,8 +362,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
    Rd_WP_DWORD(image,&Rec.RecordLength);
    if(EOFBlob(image)) break;
 
-//printf("[--Type:%d;%lX----]",(int)Rec.RecType,Rec.RecordLength);fflush(stdout);
-
    Header.DataOffset=TellBlob(image)+Rec.RecordLength;
 
    switch(Rec.RecType)
@@ -483,7 +481,6 @@ ModuleExport void RegisterWPGImage(void)
 
   entry=SetMagickInfo("WPG");
   entry->decoder=ReadWPGImage;
-//  entry->encoder=WriteWPGImage;
   entry->description=AllocateString("Word Perfect Graphics");
   entry->module=AllocateString("WPG");
   RegisterMagickInfo(entry);
@@ -512,38 +509,3 @@ ModuleExport void UnregisterWPGImage(void)
 {
   UnregisterMagickInfo("WPG");
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   W r i t e W P G I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteWPGImage writes an image to a file in WPG X image format.
-%
-%  The format of the WriteWPGImage method is:
-%
-%      unsigned int WriteWPGImage(const ImageInfo *image_info,Image *image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteWPGImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-
-/*static unsigned int WriteWPGImage(const ImageInfo *image_info,Image *image)
-{
-}
-*/
