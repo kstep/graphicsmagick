@@ -306,10 +306,8 @@ MagickExport void DestroyColorInfo(void)
   {
     color_info=p;
     p=p->next;
-    if (color_info->path != (char *) NULL)
-      MagickFreeMemory(color_info->path);
-    if (color_info->name != (char *) NULL)
-      MagickFreeMemory(color_info->name);
+    MagickFreeMemory(color_info->path);
+    MagickFreeMemory(color_info->name);
     MagickFreeMemory(color_info);
   }
   color_list=(ColorInfo *) NULL;
