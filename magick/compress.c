@@ -190,7 +190,7 @@ static const HuffmanTable
 %
 %  The format of the ASCII85Encode method is:
 %
-%      void Ascii85Initialize(void)
+%      void Ascii85Encode(Image *image,const unsigned long code)
 %
 %  A description of each parameter follows:
 %
@@ -215,22 +215,23 @@ static char *Ascii85Tuple(unsigned char *data)
     code,
     quantum;
 
-  code=(((data[0] << 8) | data[1]) << 16) | (data[2] << 8) | data[3];
+  code=((((unsigned long) data[0] << 8) | (unsigned long) data[1]) << 16) |
+    ((unsigned long) data[2] << 8) | (unsigned long) data[3];
   if (code == 0L)
     {
       tuple[0]='z';
       tuple[1]='\0';
       return(tuple);
     }
-  quantum=85L*85L*85L*85L;
+  quantum=85UL*85UL*85UL*85UL;
   for (i=0; i < 4; i++)
   {
     x=(long) (code/quantum);
     code-=quantum*x;
-    tuple[i]=(char) ('!'+x);
+    tuple[i]=(char) (x+(int) '!');
     quantum/=85L;
   }
-  tuple[4]=(char) ('!'+(code % 85L));
+  tuple[4]=(char) ((code % 85L)+(int) '!');
   tuple[5]='\0';
   return(tuple);
 }
@@ -372,16 +373,16 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
 
 #define InputBit(bit)  \
 {  \
-  if ((mask & 0xff) == 0)  \
+  if ((mask & 0xffU) == 0)  \
     {  \
       byte=ReadBlobByte(image);  \
       if (byte == EOF)  \
         break;  \
-      mask=0x80;  \
+      mask=0x80U;  \
     }  \
   runlength++;  \
-  bit=byte & mask ? 0x01 : 0x00; \
-  mask>>=1;  \
+  bit=(((unsigned int) byte) & mask) ? 0x01U : 0x00U; \
+  mask >>= 1U;  \
   if (bit)  \
     runlength=0;  \
 }
@@ -393,9 +394,6 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
     **mb_hash,
     **mw_hash;
 
-  IndexPacket
-    index;
-
   int
     bail,
     byte,
@@ -404,6 +402,11 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
     length,
     null_lines,
     runlength;
+
+  unsigned int
+    bit,
+    index,
+    mask;
 
   long
     count,
@@ -423,8 +426,6 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
     *p;
 
   unsigned char
-    bit,
-    mask,
     *scanline;
 
   /*
@@ -585,7 +586,7 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      index=(unsigned short) (*p++);
+      index=(unsigned int) (*p++);
       indexes[x]=index;
       *q++=image->colormap[index];
     }
@@ -648,15 +649,14 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
 {  \
   if (count > 0)  \
     byte=byte | bit;  \
-  bit>>=1;  \
-  if ((bit & 0xff) == 0)   \
+  bit >>= 1;  \
+  if ((bit & 0xffU) == 0)   \
     {  \
-      (*write_byte)(image,(magick_uint8_t)byte,info);  \
-      byte=0;  \
-      bit=0x80;  \
+      (void) (*write_byte)(image,(magick_uint8_t) byte,info);  \
+      byte=0U;  \
+      bit=0x80U;  \
     }  \
 }
-
 MagickExport unsigned int HuffmanEncode2Image(const ImageInfo *image_info,
   Image *image, WriteByteHook write_byte, void *info)
 {
@@ -688,12 +688,14 @@ MagickExport unsigned int HuffmanEncode2Image(const ImageInfo *image_info,
   register unsigned char
     *q;
 
-  register unsigned short
+  register unsigned int
     polarity;
 
-  unsigned char
+  unsigned int
     bit,
-    byte,
+    byte;
+
+  unsigned char
     *scanline;
 
   unsigned long
@@ -718,7 +720,7 @@ MagickExport unsigned int HuffmanEncode2Image(const ImageInfo *image_info,
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
     return(False);
-  SetImageType(huffman_image,BilevelType);
+  (void) SetImageType(huffman_image,BilevelType);
   byte=0;
   bit=0x80;
   if (is_fax == True)
@@ -733,7 +735,7 @@ MagickExport unsigned int HuffmanEncode2Image(const ImageInfo *image_info,
   /*
     Compress runlength encoded to 1D Huffman pixels.
   */
-  polarity=PixelIntensityToQuantum(&huffman_image->colormap[0]) < (MaxRGB/2);
+  polarity=(PixelIntensity(&huffman_image->colormap[0]) < (MaxRGB/2));
   if (huffman_image->colors == 2)
     polarity=(PixelIntensityToQuantum(&huffman_image->colormap[0]) <
       PixelIntensityToQuantum(&huffman_image->colormap[1]) ? 0x00 : 0x01);
@@ -824,8 +826,8 @@ MagickExport unsigned int HuffmanEncode2Image(const ImageInfo *image_info,
   /*
     Flush bits.
   */
-  if (bit != 0x80)
-    (*write_byte)(image,(magick_uint8_t)byte,info);
+  if (bit != 0x80U)
+    (void) (*write_byte)(image,(magick_uint8_t)byte,info);
   DestroyImage(huffman_image);
   MagickFreeMemory(scanline);
   return(True);
@@ -1081,7 +1083,7 @@ MagickExport unsigned int PackbitsEncode2Image(Image *image,
   int
     count;
 
-  register long
+  register int
     i,
     j;
 

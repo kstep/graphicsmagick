@@ -1,3 +1,8 @@
+2004-04-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/compress.c (Ascii85Tuple): Fix an encoding bug noticed on
+	DEC Alpha.
+
 2004-04-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pdf.c (ReadPDFImage): Double-check that Ghostscript
