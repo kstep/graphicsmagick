@@ -1309,6 +1309,12 @@ MagickExport unsigned int PushImagePixels(const Image *image,
           for (x=0; x < (int) image->columns; x++)
           {
             index=(*p++);
+            if (index >= image->colors)
+              {
+                index=0;
+                ThrowException(&image->exception,CorruptImageWarning,
+                  "invalid colormap index",image->filename);
+              }
             indexes[x]=index;
             *q++=image->colormap[index];
           }
@@ -1318,6 +1324,12 @@ MagickExport unsigned int PushImagePixels(const Image *image,
       {
         index=(*p++ << 8);
         index|=(*p++);
+        if (index >= image->colors)
+          {
+            index=0;
+            ThrowException(&image->exception,CorruptImageWarning,
+              "invalid colormap index",image->filename);
+              }
         indexes[x]=index;
         *q++=image->colormap[index];
       }
@@ -1330,6 +1342,12 @@ MagickExport unsigned int PushImagePixels(const Image *image,
           for (x=0; x < (int) image->columns; x++)
           {
             index=(*p++);
+            if (index >= image->colors)
+              {
+                index=0;
+                ThrowException(&image->exception,CorruptImageWarning,
+                  "invalid colormap index",image->filename);
+              }
             indexes[x]=index;
             *q=image->colormap[index];
             q->opacity=MaxRGB-UpScale(*p++);
@@ -1341,6 +1359,12 @@ MagickExport unsigned int PushImagePixels(const Image *image,
       {
         index=DownScale(*p++) << 8;
         index|=DownScale(*p++);
+        if (index >= image->colors)
+          {
+            index=0;
+            ThrowException(&image->exception,CorruptImageWarning,
+              "invalid colormap index",image->filename);
+          }
         indexes[x]=index;
         *q=image->colormap[index];
         q->opacity=XDownScale(XUpScale(MaxRGB)-(((*p) << 8) | *(p+1)));
@@ -1356,6 +1380,12 @@ MagickExport unsigned int PushImagePixels(const Image *image,
           for (x=0; x < (int) image->columns; x++)
           {
             index=(*p++);
+            if (index >= image->colors)
+              {
+                index=0;
+                ThrowException(&image->exception,CorruptImageWarning,
+                  "invalid colormap index",image->filename);
+              }
             indexes[x]=index;
             *q++=image->colormap[index];
           }
@@ -1365,6 +1395,12 @@ MagickExport unsigned int PushImagePixels(const Image *image,
       {
         index= ((*p) << 8) | *(p+1);
         p+=2;
+        if (index >= image->colors)
+          {
+            index=0;
+            ThrowException(&image->exception,CorruptImageWarning,
+              "invalid colormap index",image->filename);
+          }
         indexes[x]=index;
         *q++=image->colormap[index];
       }
@@ -1377,6 +1413,12 @@ MagickExport unsigned int PushImagePixels(const Image *image,
           for (x=0; x < (int) image->columns; x++)
           {
             index=(*p++);
+            if (index >= image->colors)
+              {
+                index=0;
+                ThrowException(&image->exception,CorruptImageWarning,
+                  "invalid colormap index",image->filename);
+              }
             indexes[x]=index;
             *q=image->colormap[index];
             q->opacity=MaxRGB-(*p++);
@@ -1388,6 +1430,12 @@ MagickExport unsigned int PushImagePixels(const Image *image,
       {
         index=((*p) << 8) | *(p+1);
         p+=2;
+        if (index >= image->colors)
+          {
+            index=0;
+            ThrowException(&image->exception,CorruptImageWarning,
+              "invalid colormap index",image->filename);
+          }
         indexes[x]=index;
         *q=image->colormap[index];
         q->opacity=XDownScale(XUpScale(MaxRGB)-(((*p) << 8) | *(p+1)));
