@@ -488,13 +488,21 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
 static inline PixelPacket BlendComposite(const PixelPacket *p,
   const PixelPacket *q,const double alpha)
 {
+  double
+    color;
+    
   PixelPacket
     composite;
-
-  composite.red=(Quantum) ((p->red*(MaxRGB-alpha)+q->red*alpha)/MaxRGB+0.5);
+    
+  color=(double) (p->red*(MaxRGB-alpha)+q->red*alpha)/MaxRGB;
+  composite.red=(Quantum)
+    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
+  color=(double) (p->green*(MaxRGB-alpha)+q->green*alpha)/MaxRGB;
   composite.green=(Quantum)
-    ((p->green*(MaxRGB-alpha)+q->green*alpha)/MaxRGB+0.5);
-  composite.blue=(Quantum) ((p->blue*(MaxRGB-alpha)+q->blue*alpha)/MaxRGB+0.5);
+    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
+  color=(double) (p->blue*(MaxRGB-alpha)+q->blue*alpha)/MaxRGB;
+  composite.blue=(Quantum)
+    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
   composite.opacity=p->opacity;
   return(composite);
 }
