@@ -769,19 +769,21 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
 #define Enhance(weight) \
-  mean=((QuantumPrecision) r->red+pixel.red)/2; \
+  mean=((double) r->red+pixel.red)/2; \
   distance=r->red-(double) pixel.red; \
   distance_squared=(2.0*((double) MaxRGB+1.0)+mean)*distance*distance/MaxRGB; \
-  mean=((QuantumPrecision) r->green+pixel.green)/2; \
+  mean=((double) r->green+pixel.green)/2; \
   distance=r->green-(double) pixel.green; \
   distance_squared+=4.0*distance*distance; \
-  mean=((QuantumPrecision) r->blue+pixel.blue)/2; \
+  mean=((double) r->blue+pixel.blue)/2; \
   distance=r->blue-(double) pixel.blue; \
-  distance_squared+=(3.0*((double) MaxRGB+1.0)-1.0-mean)*distance*distance/MaxRGB; \
-  mean=((QuantumPrecision) r->opacity+pixel.opacity)/2; \
+  distance_squared+= \
+    (3.0*((double) MaxRGB+1.0)-1.0-mean)*distance*distance/MaxRGB; \
+  mean=((double) r->opacity+pixel.opacity)/2; \
   distance=r->opacity-(double) pixel.opacity; \
-  distance_squared+=(3.0*((double) MaxRGB+1.0)-1.0-mean)*distance*distance/MaxRGB; \
-  if (distance_squared < ((QuantumPrecision) MaxRGB*MaxRGB/25.0)) \
+  distance_squared+= \
+    (3.0*((double) MaxRGB+1.0)-1.0-mean)*distance*distance/MaxRGB; \
+  if (distance_squared < ((double) MaxRGB*MaxRGB/25.0)) \
     { \
       aggregate.red+=(weight)*r->red; \
       aggregate.green+=(weight)*r->green; \
