@@ -4469,10 +4469,16 @@ Mogrify(ref,...)
             x,
             y;
         
+          compose=OverCompositeOp;
           if (attribute_flag[0])
             compose=(CompositeOperator) argument_list[0].int_reference;
+          if (attribute_flag[1])
+            composite_image=argument_list[1].image_reference;
           else
-            compose=InCompositeOp;
+            {
+              MagickWarning(OptionWarning,"Missing image in composite",NULL);
+              goto ReturnIt;
+            }
           if (!attribute_flag[3])
             argument_list[3].int_reference=0;
           if (!attribute_flag[4])
@@ -4481,18 +4487,13 @@ Mogrify(ref,...)
           rectangle_info.y=argument_list[4].int_reference;
           if (attribute_flag[2])
             {
+              CloneString(&composite_image->geometry,
+                argument_list[2].string_reference);
               flags=ParseImageGeometry(argument_list[2].string_reference,
                 &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
                 &rectangle_info.height);
               if (!(flags & HeightValue))
                 rectangle_info.height=rectangle_info.width;
-            }
-          if (attribute_flag[1])
-            composite_image=argument_list[1].image_reference;
-          else
-            {
-              MagickWarning(OptionWarning,"Missing image in composite",NULL);
-              goto ReturnIt;
             }
           tile=attribute_flag[7] ? argument_list[7].int_reference : False;
           if (attribute_flag[5] && !tile)

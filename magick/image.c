@@ -1235,6 +1235,8 @@ MagickExport unsigned int CompositeImage(Image *image,
     }
     case ModulateCompositeOp:
     {
+      image->storage_class=DirectClass;
+      composite_image->storage_class=DirectClass;
       midpoint=0x80;
       saturation_scale=50.0;
       brightness_scale=50.0;
