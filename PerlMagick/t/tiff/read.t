@@ -12,7 +12,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1; print "1..16\n"; }
+BEGIN { $| = 1; $test=1; print "1..17\n"; }
 END {print "not ok $test\n" unless $loaded;}
 
 use Graphics::Magick;
@@ -96,7 +96,7 @@ testRead( 'input_truecolor_16.tiff',
 
 #
 # 10) Test Reading 8-bit TrueColor Tiled (32x32 tiles)
-# 
+#
 ++$test;
 print("TrueColor (8-bit) tiled image, 32x32 tiles ...\n");
 testRead( 'input_truecolor_tiled32x32.tiff',
@@ -104,14 +104,22 @@ testRead( 'input_truecolor_tiled32x32.tiff',
 
 #
 # 11) Test Reading 8-bit TrueColor Tiled (8 rows per strip)
-# 
+#
 ++$test;
 print("TrueColor (8-bit) stripped, image, 8 rows per strip ...\n");
 testRead( 'input_truecolor_stripped.tiff',
   '326599218925e7aa27c735d482332744cccf41f460a1ba2d276a2d172f2b3de0' );
 
 #
-# 12) Test Reading Grayscale 4-bit
+# 12) Test Reading 8-bit TrueColor Planar
+#
+++$test;
+print("TrueColor (8-bit) planar image ...\n");
+testRead( 'input_truecolor_08_planar.tiff',
+  '326599218925e7aa27c735d482332744cccf41f460a1ba2d276a2d172f2b3de0' );
+
+#
+# 13) Test Reading Grayscale 4-bit
 #
 ++$test;
 print("Grayscale (4-bit) ...\n");
@@ -119,7 +127,7 @@ testRead( 'input_gray_4bit.tiff',
   '45c0655a417852480336d5e12d7bb16b9647d911b11589e9d000a05dd1813570');
 
 #
-# 13) Test Reading Grayscale 8-bit
+# 14) Test Reading Grayscale 8-bit
 # 
 ++$test;
 print("Grayscale (8-bit) ...\n");
@@ -127,7 +135,7 @@ testRead( 'input_gray_8bit.tiff',
   '00f6147d547f5a654369a5b41d18f0b44b38f9cc753c773f384808b9a18cac92');
 
 #
-# 14) Test Reading Grayscale 8-bit + matte
+# 15) Test Reading Grayscale 8-bit + matte
 # 
 ++$test;
 print("Grayscale (8-bit + matte) ...\n");
@@ -135,7 +143,7 @@ testRead( 'input_gray_8bit_matte.tiff',
   '70e1e096e53af6a312ec6aa54890a59b35d3c6932dfc052d6b355f62733635be');
 
 #
-# 15) Test Reading Grayscale 12-bit
+# 16) Test Reading Grayscale 12-bit
 # 
 ++$test;
 print("Grayscale (12-bit) ...\n");
@@ -145,7 +153,7 @@ testRead( 'input_gray_12bit.tiff',
   '4d382632a407732017ec16d6cbcb92a81cdb56150e9aedce1b987ac9b68d5948');
 
 #
-# 16) Test Reading Grayscale 16-bit
+# 17) Test Reading Grayscale 16-bit
 # 
 ++$test;
 print("Grayscale (16-bit) ...\n");

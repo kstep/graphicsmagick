@@ -1275,28 +1275,31 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert image to DirectClass pixel packets.
         */
-        for (y=0; y < (long) image->rows; y+=rows_per_strip)
+        i=0;
+        p=0;
+        for (y=0; y < image->rows; y++)
         {
-          i=(long) rows_per_strip;
-          if ((y+rows_per_strip) > (long) image->rows)
-            i=(long) (image->rows-y);
-          q=SetImagePixels(image,0,y,image->columns,i);
+          q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          q+=image->columns*i-1;
-          p=strip_pixels+image->columns*i-1;
-          if (!TIFFReadRGBAStrip(tiff,y,strip_pixels))
-            break;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            q->red=ScaleCharToQuantum(TIFFGetR(*p));
-            q->green=ScaleCharToQuantum(TIFFGetG(*p));
-            q->blue=ScaleCharToQuantum(TIFFGetB(*p));
-            if (image->matte)
-              q->opacity=(Quantum) ScaleCharToQuantum(TIFFGetA(*p));
-            p--;
-            q--;
-          }
+          if (0 == i)
+            {
+              if (!TIFFReadRGBAStrip(tiff,y,strip_pixels))
+                break;
+              i=(long) Min(rows_per_strip,image->rows-y);
+            }
+          i--;
+          p=strip_pixels+image->columns*i;
+          for (x=0; x < image->columns; x++)
+            {
+              q->red=ScaleCharToQuantum(TIFFGetR(*p));
+              q->green=ScaleCharToQuantum(TIFFGetG(*p));
+              q->blue=ScaleCharToQuantum(TIFFGetB(*p));
+              if (image->matte)
+                q->opacity=(Quantum) ScaleCharToQuantum(TIFFGetA(*p));
+              p++;
+              q++;
+            }
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)

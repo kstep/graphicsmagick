@@ -21,6 +21,23 @@
 </tr>
 </table>
 <p>
+2005-01-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> PerlMagick/t/tiff/read.t: Added test for reading truecolor
+        planar TIFF image.<BR>
+  <LI> coders/tiff.c (ReadTIFFImage):  Fixed stripped TIFF reader.
+
+</UL>
+<p>
+2005-01-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (WriteTIFFImage): Only set TIFFTAG_PREDICTOR to 2
+        for bits-per-sample values that libtiff supports.
+
+</UL>
+<p>
 2004-12-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
