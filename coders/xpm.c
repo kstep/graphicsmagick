@@ -734,6 +734,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   FormatString(buffer,"\"%u %u %u %d\",\n",image->columns,
     image->rows,colors,characters_per_pixel);
   (void) WriteBlobString(image,buffer);
+  SetImageDepth(image,8);
   for (i=0; i < (int) colors; i++)
   {
     /*
