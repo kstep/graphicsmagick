@@ -430,6 +430,19 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if ((Latin1Compare(primitive,"rectangle") == 0) && (ellipse.major != 0))
           CloneString(&primitive,"roundRectangle");
+        for (i=0; i < strlen(vertices); i++)
+          if (isalpha((int) vertices[i]))
+            vertices[i]=' ';
+        if (Latin1Compare(primitive,"polygon") == 0)
+          {
+            float
+              x;
+
+            i=sscanf(vertices,"%f%*[, ]%f%*[, ]%f%*[, ]%f%*[, ]%f",
+              &x,&x,&x,&x,&x);
+            if (i < 5)
+              CloneString(&primitive,"line");
+          }
         length=strlen(primitive)+MaxTextExtent;
         if (vertices != (char *) NULL)
           length+=strlen(vertices);
@@ -467,18 +480,12 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (Latin1Compare(graphic_context[n].fill,"none") != 0)
               (void) strncpy(command,"fill",4);
-            for (i=0; i < strlen(vertices); i++)
-              if (isalpha((int) vertices[i]))
-                vertices[i]=' ';
             (void) strcat(command,vertices);
           }
         if (Latin1Compare(primitive,"polygon") == 0)
           {
             if (Latin1Compare(graphic_context[n].fill,"none") != 0)
               (void) strncpy(command,"fill",4);
-            for (i=0; i < strlen(vertices); i++)
-              if (isalpha((int) vertices[i]))
-                vertices[i]=' ';
             (void) strcat(command,vertices);
           }
         if (Latin1Compare(primitive,"rectangle") == 0)
