@@ -44,7 +44,8 @@ INCLUDES = -I$(top_srcdir) $(INCLTDL)
 ALLMANPAGES = Magick-config.1
 
 libMagick_la_LDFLAGS = -no-undefined \
-	-release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
+	-release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION) \
+	-version-info 0:0:0
 
 #AM_CFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
 AM_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
