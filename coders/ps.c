@@ -1113,7 +1113,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (long) preview_image->columns; x++)
               {
                 byte<<=1;
-                if (indexes[x] != polarity)
+                if (indexes[x] == polarity)
                   byte|=0x01;
                 bit++;
                 if (bit == 8)
@@ -1281,7 +1281,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               for (x=0; x < (long) image->columns; x++)
               {
                 byte<<=1;
-                if (indexes[x] == polarity)
+                if (indexes[x] != polarity)
                   byte|=0x01;
                 bit++;
                 if (bit == 8)
