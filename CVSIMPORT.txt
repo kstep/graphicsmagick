@@ -43,6 +43,13 @@ wmf:
   Where 'LIBWMF_DIST' is the CVS vendor branch, and 'LIBWMF_0_2_5' is the
   vendor release tag.
 
+xml: Note, this one may be bogus!
+
+  cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+    import -m 'Import libxml2 2.4.19' delegates/libxml \
+    LIBXML_DIST LIBXML_2_4_19
+
+
 zlib:
 
   cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
