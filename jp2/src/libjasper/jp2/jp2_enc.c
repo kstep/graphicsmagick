@@ -156,9 +156,22 @@ jas_iccprof_t *iccprof;
 jas_stream_t *iccstream;
 int pos;
 int needcdef;
+int prec;
+int sgnd;
 
 	box = 0;
 	tmpstream = 0;
+
+	allcmptssame = 1;
+	sgnd = jas_image_cmptsgnd(image, 0);
+	prec = jas_image_cmptprec(image, 0);
+	for (i = 1; i < jas_image_numcmpts(image); ++i) {
+		if (jas_image_cmptsgnd(image, i) != sgnd ||
+		  jas_image_cmptprec(image, i) != prec) {
+			allcmptssame = 0;
+			break;
+		}
+	}
 
 	/* Output the signature box. */
 
@@ -208,7 +221,6 @@ int needcdef;
 	ihdr->width = jas_image_width(image);
 	ihdr->height = jas_image_height(image);
 	ihdr->numcmpts = jas_image_numcmpts(image);
-	allcmptssame = 0;
 	ihdr->bpc = allcmptssame ? JP2_SPTOBPC(jas_image_cmptsgnd(image, 0),
 	  jas_image_cmptprec(image, 0)) : JP2_IHDR_BPCNULL;
 	ihdr->comptype = JP2_IHDR_COMPTYPE;
@@ -329,6 +341,9 @@ int needcdef;
 			typeasoc = jp2_gettypeasoc(jas_image_clrspc(image), jas_image_cmpttype(image, i));
 			cdefchanent->type = typeasoc >> 16;
 			cdefchanent->assoc = typeasoc & 0x7fff;
+		}
+		if (jp2_box_put(box, tmpstream)) {
+			goto error;
 		}
 		jp2_box_destroy(box);
 		box = 0;

@@ -115,6 +115,10 @@
 #include <jasper/jas_types.h>
 #include <jasper/jas_stream.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Profile file signature. */
 #define	JAS_ICC_MAGIC		0x61637370
 
@@ -445,5 +449,8 @@ extern int jas_iccprofdata_sgraylen;
 jas_iccprof_t *jas_iccprof_createfrombuf(uchar *buf, int len);
 jas_iccprof_t *jas_iccprof_createfromclrspc(int clrspc);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,6 +1,6 @@
 # Note that this is NOT a relocatable package
 %define package_name  jasper
-%define ver           1.700.1
+%define ver           1.700.2
 %define prefix        /usr
 %define datadir       %{prefix}/share
 %define release       1

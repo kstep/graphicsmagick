@@ -248,6 +248,8 @@ jas_image_t *jpg_decode(jas_stream_t *in, char *optstr)
 	/* Destroy the JPEG decompression object. */
 	jpeg_destroy_decompress(&cinfo);
 
+	jas_matrix_destroy(dest_mgr->data);
+
 	fclose(input_file);
 
 	if (dest_mgr->error) {

@@ -1315,25 +1315,6 @@ static long uptomult(long x, long y)
 	return ((x + y - 1) / y) * y;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 jas_image_t *jas_image_chclrspc(jas_image_t *image, jas_cmprof_t *outprof,
   int intent)
 {
@@ -1490,6 +1471,15 @@ jas_image_dump(image, stderr);
 				goto error;
 		}
 	}
+
+	for (i = 0; i < numoutclrchans; ++i)
+		jas_free(outcmptfmts[i].buf);
+	jas_free(outcmptfmts);
+	for (i = 0; i < numinclrchans; ++i)
+		jas_free(incmptfmts[i].buf);
+	jas_free(incmptfmts);
+	jas_cmxform_destroy(xform);
+	jas_image_destroy(inimage);
 
 #if 0
 fprintf(stderr, "INIMAGE\n");

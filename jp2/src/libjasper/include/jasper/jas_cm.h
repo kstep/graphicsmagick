@@ -120,6 +120,10 @@
 #include <jasper/jas_config.h>
 #include <jasper/jas_icc.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef int jas_clrspc_t;
 
 /* transform operations */
@@ -304,5 +308,8 @@ jas_iccprof_t *jas_iccprof_createfromcmprof(jas_cmprof_t *prof);
 #define	jas_cmprof_clrspc(prof) ((prof)->clrspc)
 jas_cmprof_t *jas_cmprof_copy(jas_cmprof_t *prof);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif

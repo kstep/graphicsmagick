@@ -694,11 +694,12 @@ static void previmage()
 
 static int loadimage()
 {
+	int reshapeflag;
 	jas_stream_t *in;
 	int scrnwidth;
 	int scrnheight;
-	float vh;
-	float vw;
+	int vh;
+	int vw;
 	char *pathname;
 	jas_cmprof_t *outprof;
 
@@ -780,14 +781,23 @@ static int loadimage()
 	vh = jas_image_height(gs.image) / gs.sy;
 	gs.dirty = 1;
 
-	glutReshapeWindow(vw, vh);
+	reshapeflag = 0;
+	if (vw != glutGet(GLUT_WINDOW_WIDTH) ||
+	  vh != glutGet(GLUT_WINDOW_HEIGHT)) {
+		glutReshapeWindow(vw, vh);
+		reshapeflag = 1;
+	}
 	if (cmdopts.title) {
 		glutSetWindowTitle(cmdopts.title);
 	} else {
 		glutSetWindowTitle((pathname && pathname[0] != '\0') ? pathname :
 		  "stdin");
 	}
-	if (!glutLayerGet(GLUT_NORMAL_DAMAGED)) {
+	/* If we reshaped the window, GLUT will automatically invoke both
+	  the reshape and display callback (in this order).  Therefore, we
+	  only need to explicitly force the display callback to be invoked
+	  if the window was not reshaped. */
+	if (!reshapeflag) {
 		glutPostRedisplay();
 	}
 
