@@ -114,7 +114,7 @@ int main ( int argc, char **argv )
   size_t blob_length = 0;
   char *size = NULL;
   int rows, columns = 0;
-  int fuzz_factor = 0;
+  double fuzz_factor = 0;
   float diff = 0;
   ImageInfo imageInfo;
   ExceptionInfo exception;
@@ -196,6 +196,7 @@ int main ( int argc, char **argv )
   strcpy( imageInfo.filename, "" );
   original->delay = 10;
   blob = ImageToBlob ( &imageInfo, original, &blob_length, &exception );
+  imageInfo.depth=GetImageDepth(original);
   if ( blob == NULL )
     {
       printf ( "Failed to write BLOB in format %s\n", imageInfo.magick );
@@ -225,39 +226,20 @@ int main ( int argc, char **argv )
 
   if ( !strcmp( "JPEG", format ) ||
        !strcmp( "JPG", format ) ||
-       !strcmp( "JPEG24", format ) )
-    fuzz_factor = 5;
-
-  if ( !strcmp( "P7", format ) )
-       fuzz_factor = 15;
-
-  if ( !strcmp( "PAL", format ) )
-    fuzz_factor = 1;
-
-  if ( !strcmp( "PS", format ) )
-       fuzz_factor = 1;
-
-  if ( !strcmp( "PCD", format ) )
-    fuzz_factor = 8;
-
-  if (!strcmp( "PCDS", format ) )
-    fuzz_factor = 12;
-
-  if ( !strcmp( "PAL", format ) )
-    fuzz_factor = 1;
-
-  if ( !strcmp( "UYVY", format ) )
-    fuzz_factor = 1;
-
-/*   if ( !strcmp( "VIFF", format ) ) */
-/*     fuzz_factor = 1; */
-
-  if ( !strcmp( "YUV", format ) )
-    fuzz_factor = 3;
-
-  if ( CompareImage( fuzz_factor, original, final ) )
+       !strcmp( "JPG24", format ) ||
+       !strcmp( "PAL", format ) ||
+       !strcmp( "PCD", format ) ||
+       !strcmp( "PCDS", format ) ||
+       !strcmp( "UYVY", format ) ||
+       !strcmp( "YUV", format ) )
+    fuzz_factor = 0.008;
+  
+  if ( !IsImagesEqual(original, final ) &&
+       (original->normalized_mean_error > fuzz_factor) )
     {
-      printf( "R/W file check for format \"%s\" failed: (%2.1f%% component difference)\n", format, diff );
+      printf( "R/W file check for format \"%s\" failed: %u/%.6f/%.6fe\n",
+        format,original->mean_error_per_pixel,original->normalized_mean_error,
+        original->normalized_maximum_error);
       fflush(stdout);
     }
 
