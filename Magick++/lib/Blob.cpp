@@ -72,7 +72,7 @@ Magick::Blob& Magick::Blob::operator= ( const Magick::Blob& blob_ )
       }
       if ( doDelete )
         {
-          delete[] _blobRef;
+          delete _blobRef;
         }
       _blobRef = blob_._blobRef;
     }
@@ -175,7 +175,7 @@ Magick::BlobRef::BlobRef ( const void* data_,
 Magick::BlobRef::~BlobRef ( void )
 {
   if ( _allocator == Blob::NewAllocator )
-      delete static_cast<unsigned char*>(_data);
+      delete [] static_cast<unsigned char*>(_data);
   if ( _allocator == Blob::MallocAllocator )
     LiberateMemory(static_cast<void **>(&_data));
 }

@@ -767,13 +767,6 @@ void Magick::Image::floodFillTexture( const unsigned int x_, const unsigned int 
 {
   modifyImage();
 
-  // Test arguments to ensure they are within the image.
-  if ( y_ > rows() || x_ > columns() )
-  {
-    throwExceptionExplicit( OptionError,
-			    "Access outside of image boundary" );
-  }
-
   // Set drawing pattern
   options()->fillPattern(texture_.constImage());
 
