@@ -106,6 +106,7 @@ extern "C" {
 #define HasPNG
 #define HasTIFF
 #define HasTTF
+#define HAVE_FREETYPE_FREETYPE_H
 #define HasX11
 #define HasZLIB
 #define HasBZLIB
@@ -113,8 +114,7 @@ extern "C" {
 #define HasFPX
 #define HAVE_MMAP
 #define HasXML
-#define HAVE_LIBXML_XML_ERROR_H
-#define HAVE_FREETYPE_FREETYPE_H
+#define HAVE_LIBXML_XMLERROR_H
 #define HasLCMS
 #endif
 

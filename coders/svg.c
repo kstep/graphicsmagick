@@ -57,7 +57,7 @@
 #include "defines.h"
 #if defined(HasXML)
 #ifdef WIN32
-#include <libxml/win32config.h>
+#include <win32config.h>
 #endif
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>

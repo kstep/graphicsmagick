@@ -887,6 +887,7 @@ void CConfigureApp::process_module(ofstream &dsw,
   if (name.compare("svg") == 0)
   {
 		includes_list.push_back("..\\..\\libxml");
+		includes_list.push_back("..\\..\\libxml\\include");
   }
 
   // generate the includes paths required for this module
