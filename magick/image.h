@@ -513,6 +513,7 @@ typedef struct _ImageInfo
 
   unsigned int
     ping,
+	flatten,
     verbose,
     debug;
 

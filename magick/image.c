@@ -2720,6 +2720,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->dither=True;
   image_info->preview_type=JPEGPreview;
   image_info->signature=MagickSignature;
+  image_info->flatten=False;	/* leonardr: default is to load as subimages */
 }
 
 /*
