@@ -923,13 +923,7 @@ int main(int argc,char **argv)
   if (i != (argc-1))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   if (mask_image != (Image *) NULL)
-    {
-      status=CompositeImage(composite_image,CopyOpacityCompositeOp,
-        mask_image,0,0);
-      if (status == False)
-        CatchImageException(composite_image);
-      DestroyImage(mask_image);
-    }
+    SetImageClipMask(image,mask_image);
   if (compose == DissolveCompositeOp)
     {
       register PixelPacket

@@ -1,6 +1,6 @@
 The ImageMagick Studio LLC development group announces the release of
 ImageMagick 5.3.8.  Version 5.3.8 is a bug-fix release to resolve bugs
-reported against 5.3.6.
+reported against 5.3.7.
 
 ImageMagick is a robust collection of tools and libraries to read,
 write, and manipulate an image in many image formats (over 71 major
