@@ -843,7 +843,9 @@ to crop the image by ten percent (five percent on each side of the image),
 use \fB-crop 10%\fP.
 
 
-The \fIx\fP and \fIy\fP offsets specify the location of the upper left corner of
+If the \fIx\fP and \fIy\fP offsets are present, a single image is
+generated, consisting of the pixels from the cropping region.
+The offsets specify the location of the upper left corner of
 the cropping region measured downward and rightward with respect to the
 upper left corner of the image.
 If the \fB-gravity\fP option is present with \fINorthEast, East,\fP
@@ -855,9 +857,10 @@ or \fISouthEast\fP
 gravity, the distance is measured upward between the bottom
 edges.
 
-Omit the \fIx\fP and \fIy\fP offsets to generate one or more subimages
-of a uniform
-size.
+If the \fIx\fP and \fIy\fP offsets are omitted, a set of tiles of the
+specified geometry, covering the entire input image, is generated.  The
+rightmost tiles and the bottom tiles are smaller if the
+specified geometry extends beyond the dimensions of the input image.
 
 .TP
 .B "-cycle \fI<amount>"\fP

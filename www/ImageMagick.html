@@ -1074,7 +1074,9 @@ to crop the image by ten percent (five percent on each side of the image),
 use <strong>-crop 10%</strong>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The <em>x</em> and <em>y</em> offsets specify the location of the upper left corner of
+If the <em>x</em> and <em>y</em> offsets are present, a single image is
+generated, consisting of the pixels from the cropping region.
+The offsets specify the location of the upper left corner of
 the cropping region measured downward and rightward with respect to the
 upper left corner of the image.
 If the <strong>-gravity</strong> option is present with <em>NorthEast, East,</em>
@@ -1086,9 +1088,10 @@ or <em>SouthEast</em>
 gravity, the distance is measured upward between the bottom
 edges.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Omit the <em>x</em> and <em>y</em> offsets to generate one or more subimages
-of a uniform
-size.
+If the <em>x</em> and <em>y</em> offsets are omitted, a set of tiles of the
+specified geometry, covering the entire input image, is generated.  The
+rightmost tiles and the bottom tiles are smaller if the
+specified geometry extends beyond the dimensions of the input image.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
