@@ -545,11 +545,8 @@ MagickExport Image *MontageImages(const Image *images,
     montage->directory=(char *) AcquireMemory(count);
     if ((montage->montage == (char *) NULL) ||
 		    (montage->directory == (char *) NULL))
-      {
-        ThrowImageException(ResourceLimitWarning,"Unable to create montage",
-          "Memory allocation failed")
-        break;
-      }
+      ThrowImageException(ResourceLimitWarning,"Unable to create montage",
+        "Memory allocation failed");
     x_offset=0;
     y_offset=(long) title_offset;
     FormatString(montage->montage,"%ldx%ld%+ld%+ld",
