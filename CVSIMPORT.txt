@@ -36,8 +36,8 @@ lcms:
 png:
 
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import libpng  1.2.6rc1' delegates/png \
-    INITIAL LIBPNG_1_2_6rc1
+    import -m 'Import libpng  1.2.7' delegates/png \
+    INITIAL LIBPNG_1_2_7
 
 ralcgm:
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
@@ -63,7 +63,7 @@ xml: Note, this one may be bogus!
 zlib:
 
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import zlib 1.2.1' delegates/zlib \
-    INITIAL ZLIB_1_2_1
+    import -m 'Import zlib 1.2.2' delegates/zlib \
+    INITIAL ZLIB_1_2_2
 
 

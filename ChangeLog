@@ -1,3 +1,8 @@
+2004-11-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/gif.c: Fix two error-path memory leaks which were noticed
+	by Glenn Randers-Pehrson.
+
 2004-11-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/png.c (UnregisterPNGImage): Eliminate Warning: module
