@@ -136,10 +136,7 @@ static unsigned int IsMVG(const unsigned char *magick,const size_t length)
 */
 static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-#define BoundingBox  "ViewBox"
-
-  char
-    filename[MaxTextExtent];
+#define BoundingBox  "viewbox"
 
   DrawInfo
     *draw_info;
@@ -147,15 +144,23 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
+  size_t
+    length;
+
+  unsigned int
+    status;
+
   /*
-    Initialize Image structure.
+    Open image.
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
-  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+  if (status == False)
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   if ((image->columns == 0) || (image->rows == 0))
     {
       char
@@ -167,15 +172,9 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SegmentInfo
         bounds;
 
-      unsigned int
-        status;
- 
       /*
         Determine size of image canvas.
       */
-      status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-      if (status == False)
-        ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
       while (ReadBlobString(image,primitive) != (char *) NULL)
       {
         for (p=primitive; (*p == ' ') || (*p == '\t'); p++);
@@ -190,14 +189,21 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
+  /*
+    Render drawing.
+  */
   SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->fill=image_info->pen;
-  (void) strcpy(filename,"@");
-  (void) strcat(filename,image_info->filename);
-  (void) CloneString(&draw_info->primitive,filename);
+  if (GetBlobStreamType(image) == BlobStream)
+    draw_info->primitive=AllocateString((char *) GetBlobStreamData(image));
+  else
+    draw_info->primitive=FileToBlob(image->filename,&length,exception);
+  if (draw_info->primitive == (char *) NULL)
+    return((Image *) NULL);
   (void) DrawImage(image,draw_info);
   DestroyDrawInfo(draw_info);
+  CloseBlob(image);
   return(image);
 }
 
@@ -234,6 +240,7 @@ ModuleExport void RegisterMVGImage(void)
   entry->encoder=(EncoderHandler) WriteMVGImage;
   entry->magick=(MagickHandler) IsMVG;
   entry->adjoin=False;
+  entry->seekable_stream=True;
   entry->description=AcquireString("Magick Vector Graphics");
   entry->module=AcquireString("MVG");
   (void) RegisterMagickInfo(entry);
