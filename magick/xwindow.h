@@ -64,6 +64,7 @@ extern "C" {
 #define MaxNumberPens  11
 #define MaxNumberFonts  11
 #define MaxIconSize  96
+#define XIntensity(pixel)  ScaleIntensityToWideChar(pixel)
 
 /*
   Enumeration declarations.
