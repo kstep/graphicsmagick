@@ -3502,7 +3502,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         quantize_info.number_colors=atoi(argv[++i]);
         continue;
       }
-    if (LocaleNCompare("colorspace",option,7) == 0)
+    if (LocaleNCompare("colorspace",option+1,7) == 0)
       {
         char
           type;
@@ -3965,6 +3965,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (LocaleCompare("Matte",option) == 0)
               layer=MatteLayer;
           }
+        if ((*image)->colorspace != clone_info->colorspace)
+          RGBTransformImage(*image,clone_info->colorspace);
         LayerImage(*image,layer);
         continue;
       }
