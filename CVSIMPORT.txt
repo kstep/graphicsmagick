@@ -18,7 +18,8 @@ embryo:
     EMBRYO_DIST EMBRYO_0_9_1
 
 FreeType:
-cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
+
+  cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
     import -m 'Import freetype 2.1.5' delegates/freetype2 \
     FREETYPE2 FREETYPE_2_1_5
 

@@ -1,3 +1,8 @@
+2005-01-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/psd.c (ReadPSDImage): Fix stack overflow vulnerability
+	reported by Andrei Nigmatulin.
+
 2005-01-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* win2k/IMDisplay/IMDisplayDoc.cpp (DoReadImage): Ensure that image
