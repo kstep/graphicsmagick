@@ -278,21 +278,6 @@ int main(int argc,char **argv)
             MagickError(OptionError,"Unrecognized option",option);
             break;
           }
-          case 'g':
-          {
-            if (LocaleCompare("geometry",option+1) == 0)
-              {
-                if (*option == '-')
-                  {
-                    i++;
-                    if ((i == argc) || !IsGeometry(argv[i]))
-                      MagickError(OptionError,"Missing geometry",option);
-                  }
-                break;
-              }
-            MagickError(OptionError,"Unrecognized option",option);
-            break;
-          }
           case 'h':
           {
             if (LocaleCompare("help",option+1) == 0)
