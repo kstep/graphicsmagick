@@ -510,9 +510,6 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
   register const char
     *p;
 
-  register long
-    i;
-
   register unsigned short
     *q;
 
@@ -537,10 +534,10 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
     c=GetOneCharacter((const unsigned char *) p,&length);
     if (c < 0)
       {
-        *count=strlen(text);
-        for (i=0; i < (long) *count; i++)
-          encoding[i]=(unsigned char) text[i];
-        return(encoding);
+        q=unicode;
+        for (p=text; *p != '\0'; p++)
+          *q++=(unsigned char) *p;
+        break;
       }
     *q=(unsigned short) c;
     q++;
