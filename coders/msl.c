@@ -4215,10 +4215,6 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   msl_info.attributes[0]=image_info->attributes;
   msl_info.image[0]=AllocateImage(msl_info.image_info[0]);
   msl_info.group_info[0].numImages = 0;
-  if ((msl_info.image_info[0] == (ImageInfo *) NULL) ||
-      (msl_info.image[0] == (Image *) NULL))
-    MagickError(ResourceLimitError,"Unable to allocate image",
-      "Memory allocation failed");
   /*
     Open image file.
   */
