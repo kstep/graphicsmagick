@@ -1,3 +1,7 @@
+2004-03-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh: Updated version to 1.1Beta1
+
 2004-03-24  Mike Chiarappa  <mikechiarappa@libero.it>
 
 	* BCBMagick/magick/libMagick.bpr: updated to latest source modifications.

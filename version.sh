@@ -14,8 +14,8 @@ PACKAGE_VERSION='1.1'
 #
 # Formal Package release date
 # Set to string "unreleased" if package is not a formal release.
-#PACKAGE_RELEASE_DATE="05/05/03"
-PACKAGE_RELEASE_DATE="unreleased"
+PACKAGE_RELEASE_DATE="03/25/04"
+#PACKAGE_RELEASE_DATE="unreleased"
 
 #
 # Date of last ChangeLog update
@@ -30,7 +30,7 @@ if test "$PACKAGE_RELEASE_DATE" = "unreleased"
 then
   PACKAGE_VERSION_ADDENDUM=".0${PACKAGE_CHANGE_DATE}"
 else
-  PACKAGE_VERSION_ADDENDUM=''
+  PACKAGE_VERSION_ADDENDUM='Beta1'
 fi
 
 #
