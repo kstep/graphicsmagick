@@ -1645,7 +1645,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   assert(image->signature == MagickSignature);
   assert(image->cache != (void *) NULL);
   if ((image->columns == 0) || (image->rows == 0))
-    return(False);
+    ThrowBinaryException(ResourceLimitError,"No pixels defined in cache",
+      image->filename);
   if (cache_memory == ~0)
     {
       char
