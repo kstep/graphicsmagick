@@ -1946,6 +1946,8 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
     LiberateMemory((void **) &image_info->tile);
   if (image_info->page != (char *) NULL)
     LiberateMemory((void **) &image_info->page);
+  if (image_info->sampling_factor != (char *) NULL)
+    LiberateMemory((void **) &image_info->sampling_factor);
   if (image_info->server_name != (char *) NULL)
     LiberateMemory((void **) &image_info->server_name);
   if (image_info->font != (char *) NULL)
@@ -4227,6 +4229,18 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         break;
       }
+      case 'q':
+      {
+        if (LocaleCompare("quality",option+1) == 0)
+          {
+            /*
+              Set image compression quality.
+            */
+            clone_info->quality=atol(argv[++i]);
+            continue;
+          }
+        break;
+      }
       case 'r':
       {
         if (LocaleCompare("raise",option+1) == 0)
@@ -6133,14 +6147,14 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetImageInfo() initializes the `magick' field of the ImageInfo
-%  structure.  It is set to a type of image format based on the prefix or
-%  suffix of the filename.  For example, `ps:image' returns PS indicating
-%  a Postscript image.  JPEG is returned for this filename: `image.jpg'.
-%  The filename prefix has precendence over the suffix.  Use an optional
-%  index enclosed in brackets after a file name to specify a desired subimage
-%  of a multi-resolution image format like Photo CD (e.g. img0001.pcd[4]).
-%  A True (non-zero) return value indicates success.
+%  SetImageInfo() initializes the `magick' field of the ImageInfo structure.
+%  It is set to a type of image format based on the prefix or suffix of the
+%  filename.  For example, `ps:image' returns PS indicating a Postscript image.
+%  JPEG is returned for this filename: `image.jpg'.  The filename prefix has
+%  precendence over the suffix.  Use an optional index enclosed in brackets
+%  after a file name to specify a desired subimage of a multi-resolution image
+%  format like Photo CD (e.g. img0001.pcd[4]).  A True (non-zero) return value
+%  indicates success.
 %
 %  The format of the SetImageInfo method is:
 %
@@ -6173,11 +6187,9 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   const unsigned int rectify,ExceptionInfo *exception)
 {
   char
+    filename[MaxTextExtent],
     magic[MaxTextExtent],
     *q;
-
-  const char
-    *r;
 
   const MagicInfo
     *magic_info;
@@ -6315,9 +6327,6 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
     }
   if (rectify)
     {
-      char
-        filename[MaxTextExtent];
-
       const MagickInfo
         *magick_info;
 
@@ -6336,14 +6345,11 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   if (image_info->affirm)
     return(True);
   /*
-    Allocate image structure.
+    Determine the image format from the first few bytes of the file.
   */
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     return(False);
-  /*
-    Determine the image format from the first few bytes of the file.
-  */
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
@@ -6351,39 +6357,27 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       DestroyImage(image);
       return(False);
     }
-  *magick='\0';
-  if ((image->blob->data != (unsigned char *) NULL) || !image->blob->exempt)
-    (void) ReadBlob(image,2*MaxTextExtent,magick);
-  else
+  if ((GetBlobStreamType(image) == StandardStream) ||
+      (GetBlobStreamType(image) == PipeStream))
     {
-      FILE
-        *file;
-
-      int
-        c;
-
-      register long
-        i;
-
       /*
         Copy standard input or pipe to temporary file.
       */
-      image_info->file=(FILE *) NULL;
-      TemporaryFilename(image->filename);
+      TemporaryFilename(filename);
+      (void) ImageToFile(image,filename,exception);
+      CloseBlob(image);
+      (void) strcpy(image->filename,filename);
+      status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+      if (status == False)
+        {
+          DestroyImage(image);
+          return(False);
+        }
+      (void) strcpy(image_info->filename,filename);
       image_info->temporary=True;
-      (void) strncpy(image_info->filename,image->filename,MaxTextExtent-1);
-      file=fopen(image->filename,"wb");
-      if (file == (FILE *) NULL)
-        ThrowBinaryException(FileOpenError,"UnableToWriteFile",image->filename);
-      i=0;
-      for (c=fgetc(image->blob->file); c != EOF; c=fgetc(image->blob->file))
-      {
-        if (i < MaxTextExtent)
-          magick[i++]=(unsigned char) c;
-        (void) fputc(c,file);
-      }
-      (void) fclose(file);
     }
+  *magick='\0';
+  (void) ReadBlob(image,2*MaxTextExtent,magick);
   CloseBlob(image);
   DestroyImage(image);
   /*
@@ -6392,20 +6386,14 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   magic_info=GetMagicInfo(magick,2*MaxTextExtent,exception);
   if ((magic_info != (const MagicInfo *) NULL) &&
       (magic_info->name != (char *) NULL))
-    {
-      (void) strncpy(image_info->magick,magic_info->name,MaxTextExtent-1);
-      return(True);
-    }
+    (void) strncpy(image_info->magick,magic_info->name,MaxTextExtent-1);
   /*
     Check module IsImage() methods.
   */
-  r=GetImageMagick(magick,2*MaxTextExtent);
-  if (r != (const char *) NULL)
-    {
-      (void) strncpy(image_info->magick,r,MaxTextExtent-1);
-      return(True);
-    }
-  return(False);
+  p=(char *) GetImageMagick(magick,2*MaxTextExtent);
+  if (p != (char *) NULL)
+    (void) strncpy(image_info->magick,p,MaxTextExtent-1);
+  return(True);
 }
 
 /*
