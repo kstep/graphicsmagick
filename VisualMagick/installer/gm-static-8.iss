@@ -12,7 +12,7 @@
 
 #define  public MagickStaticPackage 1
 #define  public QuantumDepth "8"
-#include "inc\body.isi"
+#include "inc\body.isx"
 
 #ifdef Debug
   #expr SaveToFile(AddBackslash(SourcePath) + "gm-static-8.isp")

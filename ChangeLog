@@ -13,6 +13,9 @@
 	users who won't see the usage message if stdio is not supported.
 	* locale/C.mgk: Added "UsageError" error.  Added missing closure
 	to <Corrupt> tag which caused most/many message lookups to fail.
+	* magick/nt_base.h: Fixed a compile problem caused by masking
+	internals in delegate.h
+	* magick/ImageMagick.rc: Added missing .mgk files.
 
 2003-05-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
