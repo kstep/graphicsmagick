@@ -45,6 +45,10 @@
 #include <time.h>
 #include <assert.h>
 
+#if defined(HAVE_CONFIG_H)
+#include "magick/config.h"
+#endif
+
 #if !defined(vms) && !defined(macintosh)
 # include <sys/types.h>
 # include <sys/stat.h>
