@@ -142,6 +142,7 @@ typedef void
   Exception declarations.
 */
 extern MagickExport const char
+  *GetLocaleExceptionMessage(const ExceptionType,const char *),
   *GetLocaleMessage(const char *);
 
 extern MagickExport ErrorHandler

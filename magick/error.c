@@ -75,9 +75,6 @@ static void
 /*
   Global declarations.
 */
-static const char
-  *GetLocaleExceptionMessage(const ExceptionType,const char *);
-
 static ErrorHandler
   error_handler = DefaultErrorHandler;
 
