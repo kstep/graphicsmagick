@@ -2250,7 +2250,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
                   /*
                     Select a pen color from the X server.
                   */
-                  (void) XGetWindowColor(display,reply_info.text);
+                  (void) XGetWindowColor(display,windows,reply_info.text);
                   reply_info.marker=reply_info.text;
                   reply_info.cursor=reply_info.text+Extent(reply_info.text);
                   XDrawMatteText(display,&windows->widget,&reply_info);

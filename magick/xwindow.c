@@ -3419,7 +3419,8 @@ static Window XGetSubwindow(Display *display,Window window,int x,int y)
 %
 %  The format of the XGetWindowColor method is:
 %
-%      unsigned int XGetWindowColor(Display *display,char *name)
+%      unsigned int XGetWindowColor(Display *display,XWindows *windows,
+%        char *name)
 %
 %  A description of each parameter follows:
 %
@@ -3429,31 +3430,22 @@ static Window XGetSubwindow(Display *display,Window window,int x,int y)
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
+%    o windows: Specifies a pointer to a XWindows structure.
+%
 %    o name: The name of of the color if found in the X Color Database is
 %      returned in this character string.
 %
 %
 */
-MagickExport unsigned int XGetWindowColor(Display *display,char *name)
+MagickExport unsigned int XGetWindowColor(Display *display,XWindows *windows,
+  char *name)
 {
-  char
-    colorname[MaxTextExtent],
-    *path,
-    text[MaxTextExtent];
-
-  ExceptionInfo
-    exception;
-
-  FILE
-    *file;
-
   int
-    blue,
-    count,
-    green,
-    red,
     x,
     y;
+
+  PixelPacket
+    pixel;
 
   RectangleInfo
     crop_info;
@@ -3481,6 +3473,7 @@ MagickExport unsigned int XGetWindowColor(Display *display,char *name)
   */
   assert(display != (Display *) NULL);
   assert(name != (char *) NULL);
+  *name='\0';
   target_window=XSelectWindow(display,&crop_info);
   root_window=XRootWindow(display,XDefaultScreen(display));
   client_window=target_window;
@@ -3516,33 +3509,15 @@ MagickExport unsigned int XGetWindowColor(Display *display,char *name)
   color.pixel=XGetPixel(ximage,0,0);
   XDestroyImage(ximage);
   /*
-    Match color against the X color database.
+    Match color against the color database.
   */
   (void) XQueryColor(display,window_attributes.colormap,&color);
-  GetExceptionInfo(&exception);
-  path=GetConfigurePath("rgb.txt",&exception);
-  DestroyExceptionInfo(&exception);
-  if (path == (char *) NULL)
-    return(False);
-  file=fopen(path,"r");
-  LiberateMemory((void **) &path);
-  if (file == (FILE *) NULL)
-    return(False);
-  FormatString(name,"#%04x%04x%04x",color.red,color.green,color.blue);
-  while (fgets(text,MaxTextExtent,file) != (char *) NULL)
-  {
-    count=sscanf(text,"%d %d %d %[^\n]\n",&red,&green,&blue,colorname);
-    if (count != 4)
-      continue;
-    if ((red == ScaleShortToQuantum(color.red)) &&
-        (green == ScaleShortToQuantum(color.green)) &&
-        (blue == ScaleShortToQuantum(color.blue)))
-      {
-        (void) strncpy(name,colorname,MaxTextExtent-1);
-        break;
-      }
-  }
-  (void) fclose(file);
+  pixel.red=ScaleShortToQuantum(color.red);
+  pixel.green=ScaleShortToQuantum(color.green);
+  pixel.blue=ScaleShortToQuantum(color.blue);
+  pixel.opacity=OpaqueOpacity;
+  (void) QueryColorname(windows->image.image,&pixel,X11Compliance,name,
+    &windows->image.image->exception);
   return(True);
 }
 

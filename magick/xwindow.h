@@ -516,7 +516,7 @@ extern MagickExport unsigned int
   XAnnotateImage(Display *,const XPixelInfo *,XAnnotateInfo *,Image *),
   XDisplayBackgroundImage(Display *,XResourceInfo *,Image *),
   XDrawImage(Display *,const XPixelInfo *,XDrawInfo *,Image *),
-  XGetWindowColor(Display *,char *),
+  XGetWindowColor(Display *,XWindows *,char *),
   XMakeImage(Display *,const XResourceInfo *,XWindowInfo *,Image *,
     unsigned int,unsigned int),
   XQueryColorDatabase(const char *,XColor *);
