@@ -3122,7 +3122,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->ping && (image_info->subrange != 0) &&
         scenes_found > image_info->subimage+image_info->subrange)
       {
-        LogMagickEvent(CoderEvent,"     Skipping PNG image data for scene %d",
+        LogMagickEvent(CoderEvent,"     Skipping PNG image data for scene %ld",
            scenes_found-1);
         png_destroy_read_struct(&ping,&ping_info,&end_info);
         break;
