@@ -2492,7 +2492,7 @@ static const DicomInfo
     { 0x5000, 0x0103, (char *) "US", (char *) "Data Value Representation" },
     { 0x5000, 0x0104, (char *) "US", (char *) "Minimum Coordinate Value" },
     { 0x5000, 0x0105, (char *) "US", (char *) "Maximum Coordinate Value" },
-    { 0x5000, 0x0106, (char *) "US", (char *) "Curve Range" },
+    { 0x5000, 0x0106, (char *) "SH", (char *) "Curve Range" },
     { 0x5000, 0x0110, (char *) "US", (char *) "Curve Data Descriptor" },
     { 0x5000, 0x0112, (char *) "US", (char *) "Coordinate Start Value" },
     { 0x5000, 0x0114, (char *) "US", (char *) "Coordinate Step Value" },
@@ -2757,17 +2757,18 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   bytes_per_pixel=1;
   data=NULL;
   element=0;
+  explicit_vr[2]='\0';
   graymap=(unsigned short *) NULL;
   group=0;
   height=0;
   high_bit=0;
   max_value=MaxRGB;
-  mask=0x7fffffff;
+  mask=0xffff;
   msb_first=False;
   number_scenes=1;
   samples_per_pixel=1;
   significant_bits=0;
-  explicit_vr[2]='\0';
+  *transfer_syntax='\0';
   width=0;
   while ((group != 0x7FE0) || (element != 0x0010))
   {
@@ -2883,8 +2884,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if ((group == dicom_info[i].group) &&
               (element == dicom_info[i].element))
             break;
-        (void) fprintf(stdout,"0x%04x %4d (0x%04x,0x%04x)",image->offset,
-          length,group,element);
+        (void) fprintf(stdout,"0x%04x %4d %s-%s (0x%04x,0x%04x)",image->offset,
+          length,implicit_vr,explicit_vr,group,element);
         if (dicom_info[i].description != (char *) NULL)
           (void) fprintf(stdout," %.1024s",dicom_info[i].description);
         (void) fprintf(stdout,": ");
@@ -3129,7 +3130,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0))
     {
       char
-        filename[MaxTextExtent];       
+        filename[MaxTextExtent];
 
       FILE
         *file;
@@ -3140,6 +3141,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ImageInfo
         *clone_info;
 
+      unsigned char
+        magick[MaxTextExtent];
+
       /*
         Handle 2.4.50 lossy JPEG and 2.4.70 lossless JPEG.
       */
@@ -3147,11 +3151,16 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       file=fopen(filename,WriteBinaryType);
       if (file == (FILE *) NULL)
         ThrowReaderException(FileOpenWarning,"Unable to write file",image);
-      c=16;
-      if (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0)
-        c+=48;
-      for (i=0; i < c; i++)
-        (void) ReadBlobByte(image);
+      *magick='\0';
+      while ((c=ReadBlobByte(image)) != EOF)
+      {
+        magick[0]=magick[1];
+        magick[1]=magick[2];
+        magick[2]=c;
+        if (memcmp(magick,"\377\330\377",3) == 0)
+          break;
+      }
+      (void) fwrite(magick,1,3,file);
       c=ReadBlobByte(image);
       while (c != EOF)
       {
@@ -3281,8 +3290,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   index=max_value;
                 if (graymap != (unsigned short *) NULL)
                   index=graymap[index];
-                if (scale != (Quantum *) NULL)
-                  index=scale[index];
                 index=ValidateColormapIndex(image,index);
                 indexes[x]=index;
                 red=image->colormap[index].red;
