@@ -221,7 +221,8 @@ Export unsigned int AllocateCache(Cache cache,const ClassType class_type,
     TemporaryFilename(cache_info->filename);
   if (cache_info->file == -1)
     {
-      cache_info->file=open(cache_info->filename,O_RDWR | O_CREAT,0777);
+      cache_info->file=
+        open(cache_info->filename,O_RDWR | O_CREAT | O_BINARY,0777);
       if (cache_info->file == -1)
         return(False);
     }
@@ -744,7 +745,7 @@ Export unsigned int ReadCacheIndexes(Cache cache,
   */
   if (cache_info->file == -1)
     {
-      cache_info->file=open(cache_info->filename,O_RDWR,0777);
+      cache_info->file=open(cache_info->filename,O_RDWR | O_BINARY,0777);
       if (cache_info->file == -1)
         return(False);
     }
@@ -835,7 +836,7 @@ Export unsigned int ReadCachePixels(Cache cache,
   */
   if (cache_info->file == -1)
     {
-      cache_info->file=open(cache_info->filename,O_RDWR,0777);
+      cache_info->file=open(cache_info->filename,O_RDWR | O_BINARY,0777);
       if (cache_info->file == -1)
         return(False);
     }
@@ -997,7 +998,7 @@ Export unsigned int WriteCacheIndexes(Cache cache,
   */
   if (cache_info->file == -1)
     {
-      cache_info->file=open(cache_info->filename,O_RDWR,0777);
+      cache_info->file=open(cache_info->filename,O_RDWR | O_BINARY,0777);
       if (cache_info->file == -1)
         return(False);
     }
@@ -1088,7 +1089,7 @@ Export unsigned int WriteCachePixels(Cache cache,
   */
   if (cache_info->file == -1)
     {
-      cache_info->file=open(cache_info->filename,O_RDWR,0777);
+      cache_info->file=open(cache_info->filename,O_RDWR | O_BINARY,0777);
       if (cache_info->file == -1)
         return(False);
     }

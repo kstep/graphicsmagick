@@ -285,6 +285,18 @@ int main(int argc,char **argv)
       {
         case 'b':
         {
+          if (strncmp("background",option+1,5) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing background color",option);
+                  (void) QueryColorDatabase(argv[i],
+                    &image_info->background_color);
+                }
+              break;
+            }
           if (strncmp("blend",option+1,3) == 0)
             {
               blend=0.0;

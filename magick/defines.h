@@ -168,9 +168,6 @@ extern "C" {
 }
 #define RenderPostscriptText  "  Rendering postscript...  "
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
-#if !defined(STDIN_FILENO)
-#define STDIN_FILENO  0
-#endif
 #define True  1
 #define WriterExit(error,message,image) \
 { \
@@ -181,6 +178,14 @@ extern "C" {
   CloseBlob(image); \
   return(False); \
 }
+
+#if !defined(STDIN_FILENO)
+#define STDIN_FILENO  0
+#endif
+
+#if !defined(O_BINARY)
+#define O_BINARY  0
+#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

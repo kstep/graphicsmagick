@@ -450,19 +450,15 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
         "image does not contain the cache geometry");
       return((PixelPacket *) NULL);
     }
-  if (image->class != GetCacheClassType(image->cache))
+  /*
+    Allocate pixel cache.
+  */
+  status=AllocateCache(image->cache,image->class,image->columns,image->rows);
+  if (status == False)
     {
-      /*
-        Allocate pixel cache.
-      */
-      status=
-        AllocateCache(image->cache,image->class,image->columns,image->rows);
-      if (status == False)
-        {
-          MagickWarning(CacheWarning,"Unable to allocate pixel cache",
-            (char *) NULL);
-          return((PixelPacket *) NULL);
-        }
+      MagickWarning(CacheWarning,"Unable to allocate pixel cache",
+        (char *) NULL);
+      return((PixelPacket *) NULL);
     }
   image->cache_info.x=x;
   image->cache_info.y=y;
@@ -525,24 +521,20 @@ Export unsigned int SyncPixelCache(Image *image)
   unsigned int
     status;
 
+  assert(image != (Image *) NULL);
+  /*
+    Allocate pixel cache.
+  */
+  status=AllocateCache(image->cache,image->class,image->columns,image->rows);
+  if (status == False)
+    {
+      MagickWarning(CacheWarning,"Unable to allocate pixel cache",
+        (char *) NULL);
+      return(False);
+    }
   /*
     Transfer pixels to the cache.
   */
-  assert(image != (Image *) NULL);
-  if (image->class != GetCacheClassType(image->cache))
-    {
-      /*
-        Allocate pixel cache.
-      */
-      status=
-        AllocateCache(image->cache,image->class,image->columns,image->rows);
-      if (status == False)
-        {
-          MagickWarning(CacheWarning,"Unable to allocate pixel cache",
-            (char *) NULL);
-          return(False);
-        }
-    }
   status=WriteCachePixels(image->cache,&image->cache_info,image->pixels);
   if (image->class == PseudoClass)
     status|=WriteCacheIndexes(image->cache,&image->cache_info,image->indexes);

@@ -70,7 +70,7 @@
 %
 %  The format of the DecodeImage method is:
 %
-%      unsigned int DecodeImag(Image *image,const short int opacity)
+%      unsigned int DecodeImage(Image *image,const int opacity)
 %
 %  A description of each parameter follows:
 %
@@ -84,7 +84,7 @@
 %
 %
 */
-static unsigned int DecodeImage(Image *image,const short int opacity)
+static unsigned int DecodeImage(Image *image,const int opacity)
 {
 #define MaxStackSize  4096
 #define NullCode  (-1)
@@ -664,6 +664,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
     *image;
 
   int
+    opacity,
     status;
 
   RectangleInfo
@@ -674,9 +675,6 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
 
   register unsigned char
     *p;
-
-  short int
-    opacity;
 
   unsigned char
     background,
@@ -881,14 +879,12 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
     /*
       Inititialize colormap.
     */
-      if((int) opacity >= (int) image->colors)
-      {
-         image->colormap=(PixelPacket *)
-            AllocateMemory((int)(opacity+1)*sizeof(PixelPacket));
-      }
-      else
-         image->colormap=(PixelPacket *)
-            AllocateMemory(image->colors*sizeof(PixelPacket));
+    if (opacity >= (int) image->colors)
+      image->colormap=(PixelPacket *)
+        AllocateMemory((opacity+1)*sizeof(PixelPacket));
+    else
+      image->colormap=(PixelPacket *)
+        AllocateMemory(image->colors*sizeof(PixelPacket));
     if (image->colormap == (PixelPacket *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     if (!BitSet(flag,0x80))
@@ -928,15 +924,15 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
         }
         FreeMemory(colormap);
       }
-    if((int) opacity >= (int) image->colors)
+    if (opacity >= (int) image->colors)
       {
-        for (i=(int) image->colors;i < (int) (opacity+1); i++)
+        for (i=image->colors; i < (opacity+1); i++)
         {
           image->colormap[i].red=0;
           image->colormap[i].green=0;
           image->colormap[i].blue=0;
         }
-        image->colors=(unsigned short) (opacity+1);
+        image->colors=opacity+1;
       }
     /*
       Decode image.
