@@ -1002,7 +1002,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           for (x=0; x < (int) image->columns; x++)
           {
             *q++=indexes[x];
-            *q++=p->opacity;
+            *q++=MaxRGB-p->opacity;
             p++;
           }
           break;
@@ -1011,8 +1011,8 @@ MagickExport unsigned int PopImagePixels(const Image *image,
       {
         *q++=indexes[x] >> 8;
         *q++=indexes[x];
-        *q++=p->opacity >> 8;
-        *q++=p->opacity;
+        *q++=(MaxRGB-p->opacity) >> 8;
+        *q++=MaxRGB-p->opacity;
         p++;
       }
       break;
@@ -1043,7 +1043,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           for (x=0; x < (int) image->columns; x++)
           {
             *q++=Intensity(*p);
-            *q++=p->opacity;
+            *q++=MaxRGB-p->opacity;
             p++;
           }
           break;
@@ -1052,8 +1052,8 @@ MagickExport unsigned int PopImagePixels(const Image *image,
       {
         *q++=Intensity(*p) >> 8;
         *q++=Intensity(*p);
-        *q++=p->opacity >> 8;
-        *q++=p->opacity;
+        *q++=(MaxRGB-p->opacity) >> 8;
+        *q++=MaxRGB-p->opacity;
         p++;
       }
       break;
@@ -1119,6 +1119,24 @@ MagickExport unsigned int PopImagePixels(const Image *image,
       break;
     }
     case OpacityQuantum:
+    {
+      if (image->depth <= 8)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            *q++=MaxRGB-DownScale(p->opacity);
+            p++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        *q++=(MaxRGB-p->opacity) >> 8;
+        *q++=MaxRGB-p->opacity;
+        p++;
+      }
+      break;
+    }
     case BlackQuantum:
     {
       if (image->depth <= 8)
@@ -1165,6 +1183,33 @@ MagickExport unsigned int PopImagePixels(const Image *image,
       break;
     }
     case RGBAQuantum:
+    {
+      if (image->depth <= 8)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            *q++=DownScale(p->red);
+            *q++=DownScale(p->green);
+            *q++=DownScale(p->blue);
+            *q++=MaxRGB-DownScale(p->opacity);
+            p++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        *q++=p->red >> 8;
+        *q++=p->red;
+        *q++=p->green >> 8;
+        *q++=p->green;
+        *q++=p->blue >> 8;
+        *q++=p->blue;
+        *q++=(MaxRGB-p->opacity) >> 8;
+        *q++=MaxRGB-p->opacity;
+        p++;
+      }
+      break;
+    }
     case CMYKQuantum:
     {
       if (image->depth <= 8)
@@ -1286,7 +1331,7 @@ MagickExport unsigned int PushImagePixels(const Image *image,
             index=(*p++);
             indexes[x]=index;
             *q=image->colormap[index];
-            q->opacity=UpScale(*p++);
+            q->opacity=MaxRGB-UpScale(*p++);
             q++;
           }
           break;
@@ -1297,8 +1342,8 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         index|=(*p++);
         indexes[x]=index;
         *q=image->colormap[index];
-        q->opacity=(*p++ << 8);
-        q->opacity|=(*p++);
+        q->opacity=(MaxRGB-(*p++)) << 8;
+        q->opacity|=MaxRGB-(*p++);
         q++;
       }
       break;
@@ -1333,7 +1378,7 @@ MagickExport unsigned int PushImagePixels(const Image *image,
             index=(*p++);
             indexes[x]=index;
             *q=image->colormap[index];
-            q->opacity=(*p++);
+            q->opacity=MaxRGB-(*p++);
             q++;
           }
           break;
@@ -1344,8 +1389,8 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         index|=(*p++);
         indexes[x]=index;
         *q=image->colormap[index];
-        q->opacity=(*p++ << 8);
-        q->opacity|=(*p++);
+        q->opacity=(MaxRGB-(*p++)) << 8;
+        q->opacity|=MaxRGB-(*p++);
         q++;
       }
       break;
@@ -1411,6 +1456,24 @@ MagickExport unsigned int PushImagePixels(const Image *image,
       break;
     }
     case OpacityQuantum:
+    {
+      if (image->depth <= 8)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            q->opacity=MaxRGB-UpScale(*p++);
+            q++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        q->opacity=(MaxRGB-(*p++)) << 8;
+        q->opacity|=MaxRGB-(*p++);
+        q++;
+      }
+      break;
+    }
     case BlackQuantum:
     {
       if (image->depth <= 8)
@@ -1457,6 +1520,33 @@ MagickExport unsigned int PushImagePixels(const Image *image,
       break;
     }
     case RGBAQuantum:
+    {
+      if (image->depth <= 8)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            q->red=UpScale(*p++);
+            q->green=UpScale(*p++);
+            q->blue=UpScale(*p++);
+            q->opacity=MaxRGB-UpScale(*p++);
+            q++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        q->red=(*p++ << 8);
+        q->red|=(*p++);
+        q->green=(*p++ << 8);
+        q->green|=(*p++);
+        q->blue=(*p++ << 8);
+        q->blue|=(*p++);
+        q->opacity=(MaxRGB-(*p++)) << 8;
+        q->opacity|=MaxRGB-(*p++);
+        q++;
+      }
+      break;
+    }
     case CMYKQuantum:
     {
       if (image->depth <= 8)
