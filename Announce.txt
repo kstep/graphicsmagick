@@ -49,7 +49,7 @@ for details):
 
     - The default background color is changed from 'white' to 'none'
       (transparent black).
-
+      
   o Utilities enhancements/changes:
 
     - A display-like GUI for Windows is now available (thanks again to
@@ -91,7 +91,7 @@ Bob Friesenhahn       - Magick++, Unix modules, magic, configure, CVS,
 William Radcliffe     - VisualMagick, FlashPix, TIFF, timers, watermarking,
                         Windows modules, and fast polygon renderer.
 Glenn Randers-Pehrson - PNG, MNG, and test script improvements
-Leonard Rosenthol     - Mac support and drawing enhancements.
+Leonard Rosenthol     - Mac support, XCF, and drawing enhancements.
 
 We would like to give special thanks to several people who assist with
 ImageMagick:
