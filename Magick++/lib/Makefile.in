@@ -220,7 +220,8 @@ libMagick___la_SOURCES = \
 	Pixels.cpp STL.cpp Thread.cpp TypeMetric.cpp
 
 
-libMagick___la_LDFLAGS = -no-undefined \
+# Add -no-undefined once Cygwin supports throwing C++ exceptions from DLLs.
+libMagick___la_LDFLAGS = \
 	-version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 
 

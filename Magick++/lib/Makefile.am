@@ -24,7 +24,8 @@ libMagick___la_SOURCES = \
 	Functions.cpp Geometry.cpp Image.cpp Montage.cpp Options.cpp \
 	Pixels.cpp STL.cpp Thread.cpp TypeMetric.cpp
 
-libMagick___la_LDFLAGS = -no-undefined \
+# Add -no-undefined once Cygwin supports throwing C++ exceptions from DLLs.
+libMagick___la_LDFLAGS = \
 	-version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 
 libMagick___la_LIBADD = ../../magick/libMagick.la
