@@ -1,5 +1,6 @@
 2002-07-04  Cristy  <cristy@mystic.es.dupont.com>
   * Typos corrected in perl.html (thanks to Ron Savage);
+  * A color profile is now correctly referred to as ICM instead of IPTC.
 
 2002-07-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Added NTRegistryKeyLookup() to nt.c in order to look up ImageMagick
