@@ -214,7 +214,7 @@ testReadWrite( 'PSD:input.psd',
                'PSD:output.psd',
                q//,
                '7785d161ea66bd39394bb74ef704a0aa',
-               '68f7f773127ee624d2ab96fb90f46eb7' );
+               '1fd7098db7d9cffe97164874cb2e2cfa' );
 
 #
 # Irix RGB image file
@@ -326,7 +326,7 @@ testReadWriteSized( 'RGB:input_70x46.rgb',
 		    '70x46',
 		    q//,
 		    'e9b162b8431709942886f79b7b7c11bb',
-               'cba01fe4b4934f844248d887681f775b' );
+                    '80350402e42b5b55dca500bfc1a23d5a' );
 
 #
 # RGBA format
@@ -337,6 +337,6 @@ testReadWriteSized( 'RGBA:input_70x46.rgba',
 		    '70x46',
 		    q//,
 		    'f3e5ab88e328da3044c1fc177a7e2978',
-                    '02d15ba5c3a07f87306af970d82786d9' );
+                    '97558e5d40363309da60696286664df1' );
 
 1;

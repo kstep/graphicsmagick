@@ -53,7 +53,7 @@ testRead( 'input.dib', 'e9b162b8431709942886f79b7b7c11bb',
 #
 ++$test;
 testRead( 'input.fits', '7ddf23e85fe26456e87ad7347ee35f49',
-                        '9fd44c1810fe1ff2999059cacbee81ca' );
+                        'dafe0baf222917bc87be9e9b02c06dae' );
 
 #
 # CompuServe graphics interchange format
@@ -204,7 +204,7 @@ testRead( 'input_p6.ppm', 'e9b162b8431709942886f79b7b7c11bb',
 #
 ++$test;
 testRead( 'input.psd', '7785d161ea66bd39394bb74ef704a0aa',
-                       '68f7f773127ee624d2ab96fb90f46eb7' );
+                       '1fd7098db7d9cffe97164874cb2e2cfa' );
 
 #
 # Irix RGB image file
