@@ -93,7 +93,7 @@ static unsigned int
 %
 */
 
-static void ChopPathComponents(char *path,const unsigned long components)
+static void ChopLocaleComponents(char *path,const unsigned long components)
 {
   long
     count;
@@ -223,7 +223,7 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
       }
     if (LocaleCompare(keyword,"</locale>") == 0)
       {
-        ChopPathComponents(locale,2);
+        ChopLocaleComponents(locale,1);
         (void) strcat(locale,"/");
         continue;
       }
@@ -262,7 +262,7 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
       }
     if (LocaleCompare(keyword,"</message>") == 0)
       {
-        ChopPathComponents(locale,2);
+        ChopLocaleComponents(locale,2);
         (void) strcat(locale,"/");
         continue;
       }
@@ -275,7 +275,7 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
           continue;
         if (*(keyword+1) == '/')
           {
-            ChopPathComponents(locale,2);
+            ChopLocaleComponents(locale,1);
             (void) strcat(locale,"/");
             continue;
           }
