@@ -224,7 +224,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         (void) ReadBlob(image,tga_info.id_length,comment);
         comment[tga_info.id_length]='\0';
-        (void) SetImageAttribute(image,"Comment",comment);
+        (void) SetImageAttribute(image,"comment",comment);
         LiberateMemory((void **) &comment);
       }
     memset(&pixel,0,sizeof(PixelPacket));
@@ -619,7 +619,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     */
     TransformRGBImage(image,RGBColorspace);
     targa_info.id_length=0;
-    attribute=GetImageAttribute(image,"Comment");
+    attribute=GetImageAttribute(image,"comment");
     if (attribute != (ImageAttribute *) NULL)
       targa_info.id_length=Min(Extent(attribute->value),255);
     targa_info.colormap_type=0;

@@ -242,7 +242,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     Center image on PCL page.
   */
   text_size=0;
-  attribute=GetImageAttribute(image,"Label");
+  attribute=GetImageAttribute(image,"label");
   if (attribute != (ImageAttribute *) NULL)
     text_size=(unsigned int)
       (MultilineCensus(attribute->value)*image_info->pointsize+12);
@@ -290,7 +290,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     (void) ParseGeometry("75x75",&sans_offset,&sans_offset,&density,&density);
   FormatString(buffer,"\033*p%dx%dY",x,y);
   (void) WriteBlobString(image,buffer);
-  attribute=GetImageAttribute(image,"Label");
+  attribute=GetImageAttribute(image,"label");
   if (attribute != (ImageAttribute *) NULL)
     {
       /*

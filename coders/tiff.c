@@ -482,27 +482,27 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages);
     image->scene=value;
     if (TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1)
-      (void) SetImageAttribute(image,"Artist",text);
+      (void) SetImageAttribute(image,"artist",text);
     if (TIFFGetField(tiff,TIFFTAG_DATETIME,&text) == 1)
-      (void) SetImageAttribute(image,"TimeStamp",text);
+      (void) SetImageAttribute(image,"timeStamp",text);
     if (TIFFGetField(tiff,TIFFTAG_SOFTWARE,&text) == 1)
-      (void) SetImageAttribute(image,"Software",text);
+      (void) SetImageAttribute(image,"software",text);
     if (TIFFGetField(tiff,TIFFTAG_DOCUMENTNAME,&text) == 1)
-      (void) SetImageAttribute(image,"Document",text);
+      (void) SetImageAttribute(image,"document",text);
     if (TIFFGetField(tiff,TIFFTAG_MAKE,&text) == 1)
-      (void) SetImageAttribute(image,"Make",text);
+      (void) SetImageAttribute(image,"make",text);
     if (TIFFGetField(tiff,TIFFTAG_MODEL,&text) == 1)
-      (void) SetImageAttribute(image,"Model",text);
+      (void) SetImageAttribute(image,"model",text);
     if (TIFFGetField(tiff,33432,&text) == 1)
-      (void) SetImageAttribute(image,"Copyright",text);
+      (void) SetImageAttribute(image,"copyright",text);
     if (TIFFGetField(tiff,33423,&text) == 1)
-      (void) SetImageAttribute(image,"Kodak-33423",text);
+      (void) SetImageAttribute(image,"kodak-33423",text);
     if (TIFFGetField(tiff,36867,&text) == 1)
-      (void) SetImageAttribute(image,"Kodak-36867",text);
+      (void) SetImageAttribute(image,"kodak-36867",text);
     if (TIFFGetField(tiff,TIFFTAG_PAGENAME,&text) == 1)
-      (void) SetImageAttribute(image,"Label",text);
+      (void) SetImageAttribute(image,"label",text);
     if (TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text) == 1)
-      (void) SetImageAttribute(image,"Comment",text);
+      (void) SetImageAttribute(image,"comment",text);
     if (range < 0)
       range=max_sample_value;
     method=0;
@@ -1456,33 +1456,33 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short) image->scene,
           GetNumberScenes(image));
       }
-    attribute=GetImageAttribute(image,"Artist");
+    attribute=GetImageAttribute(image,"artist");
     if (attribute != (ImageAttribute *) NULL)
       TIFFSetField(tiff,TIFFTAG_ARTIST,attribute->value);
-    attribute=GetImageAttribute(image,"TimeStamp");
+    attribute=GetImageAttribute(image,"timeStamp");
     if (attribute != (ImageAttribute *) NULL)
       TIFFSetField(tiff,TIFFTAG_DATETIME,attribute->value);
-    attribute=GetImageAttribute(image,"Make");
+    attribute=GetImageAttribute(image,"make");
     if (attribute != (ImageAttribute *) NULL)
       TIFFSetField(tiff,TIFFTAG_MAKE,attribute->value);
-    attribute=GetImageAttribute(image,"Model");
+    attribute=GetImageAttribute(image,"model");
     if (attribute != (ImageAttribute *) NULL)
       TIFFSetField(tiff,TIFFTAG_MODEL,attribute->value);
     TIFFSetField(tiff,TIFFTAG_SOFTWARE,MagickVersion);
     TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
-    attribute=GetImageAttribute(image,"Copyright");
+    attribute=GetImageAttribute(image,"copyright");
     if (attribute != (ImageAttribute *) NULL)
       TIFFSetField(tiff,33432,attribute->value);
-    attribute=GetImageAttribute(image,"Kodak-33423");
+    attribute=GetImageAttribute(image,"kodak-33423");
     if (attribute != (ImageAttribute *) NULL)
       TIFFSetField(tiff,33423,attribute->value);
-    attribute=GetImageAttribute(image,"Kodak-36867");
+    attribute=GetImageAttribute(image,"kodak-36867");
     if (attribute != (ImageAttribute *) NULL)
       TIFFSetField(tiff,36867,attribute->value);
-    attribute=GetImageAttribute(image,"Label");
+    attribute=GetImageAttribute(image,"label");
     if (attribute != (ImageAttribute *) NULL)
       TIFFSetField(tiff,TIFFTAG_PAGENAME,attribute->value);
-    attribute=GetImageAttribute(image,"Comment");
+    attribute=GetImageAttribute(image,"comment");
     if (attribute != (ImageAttribute *) NULL)
       TIFFSetField(tiff,TIFFTAG_IMAGEDESCRIPTION,attribute->value);
     /*

@@ -191,7 +191,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
         q=comment+offset;
         if (LocaleCompare(q,P7Comment) == 0)
           *q='\0';
-        (void) SetImageAttribute(image,"Comment",comment);
+        (void) SetImageAttribute(image,"comment",comment);
         LiberateMemory((void **) &comment);
         continue;
       }
@@ -843,7 +843,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     else
       FormatString(buffer,"P%c\n",format);
     (void) WriteBlobString(image,buffer);
-    attribute=GetImageAttribute(image,"Comment");
+    attribute=GetImageAttribute(image,"comment");
     if (attribute != (ImageAttribute *) NULL)
       {
         register char

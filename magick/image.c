@@ -3609,9 +3609,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (LocaleNCompare("comment",option+1,4) == 0)
           {
             if (*option == '-')
-              (void) SetImageAttribute(*image,"Comment",argv[++i]);
+              (void) SetImageAttribute(*image,"comment",argv[++i]);
             else
-              (void) SetImageAttribute(*image,"Comment",(char *) NULL);
+              (void) SetImageAttribute(*image,"comment",(char *) NULL);
             continue;
           }
         if (LocaleNCompare("contrast",option+1,3) == 0)
@@ -4056,9 +4056,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (LocaleNCompare("label",option+1,3) == 0)
           {
             if (*option == '-')
-              (void) SetImageAttribute(*image,"Label",argv[++i]);
+              (void) SetImageAttribute(*image,"label",argv[++i]);
             else
-              (void) SetImageAttribute(*image,"Label",(char *) NULL);
+              (void) SetImageAttribute(*image,"label",(char *) NULL);
             continue;
           }
         if (LocaleCompare("-linewidth",option) == 0)

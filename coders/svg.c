@@ -2358,9 +2358,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           (void) strcpy(image->filename,image_info->filename);
           if (svg_info.comment != (char *) NULL)
-            (void) SetImageAttribute(image,"Comment",svg_info.comment);
+            (void) SetImageAttribute(image,"comment",svg_info.comment);
           if (svg_info.title != (char *) NULL)
-            (void) SetImageAttribute(image,"Title",svg_info.title);
+            (void) SetImageAttribute(image,"title",svg_info.title);
         }
     }
   /*

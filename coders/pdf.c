@@ -718,7 +718,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       Scale image to size of Portable Document page.
     */
     text_size=0;
-    attribute=GetImageAttribute(image,"Label");
+    attribute=GetImageAttribute(image,"label");
     if (attribute != (ImageAttribute *) NULL)
       text_size=(unsigned int)
         (MultilineCensus(attribute->value)*image_info->pointsize+12);
@@ -801,7 +801,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     length=TellBlob(image);
     (void) WriteBlobString(image,"q\n");
     labels=(char **) NULL;
-    attribute=GetImageAttribute(image,"Label");
+    attribute=GetImageAttribute(image,"label");
     if (attribute != (ImageAttribute *) NULL)
       labels=StringToList(attribute->value);
     if (labels != (char **) NULL)

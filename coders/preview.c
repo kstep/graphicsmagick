@@ -219,7 +219,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   if (preview_image == (Image *) NULL)
     return(False);
   preview_image->exempt=True;
-  (void) SetImageAttribute(preview_image,"Label",DefaultTileLabel);
+  (void) SetImageAttribute(preview_image,"label",DefaultTileLabel);
   /*
     Apply enhancement at varying strengths.
   */

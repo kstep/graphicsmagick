@@ -850,7 +850,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             if (comments == (char *) NULL)
               break;
-            (void) SetImageAttribute(image,"Comment",comments);
+            (void) SetImageAttribute(image,"comment",comments);
             LiberateMemory((void **) &comments);
             break;
           }
@@ -1167,7 +1167,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   /*
     Write GIF header.
   */
-  if ((GetImageAttribute(image,"Comment") == (ImageAttribute *) NULL) &&
+  if ((GetImageAttribute(image,"comment") == (ImageAttribute *) NULL) &&
       !image_info->adjoin && !image->matte)
     (void) WriteBlob(image,6,"GIF87a");
   else
@@ -1310,7 +1310,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         WriteBlobLSBShort(image,image->delay);
         (void) WriteBlobByte(image,opacity);
         (void) WriteBlobByte(image,0x00);
-        if (GetImageAttribute(image,"Comment") != (ImageAttribute *) NULL)
+        if (GetImageAttribute(image,"comment") != (ImageAttribute *) NULL)
           {
             ImageAttribute
               *attribute;
@@ -1326,7 +1326,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             */
             (void) WriteBlobByte(image,0x21);
             (void) WriteBlobByte(image,0xfe);
-            attribute=GetImageAttribute(image,"Comment");
+            attribute=GetImageAttribute(image,"comment");
             p=attribute->value;
             while (Extent(p) > 0)
             {

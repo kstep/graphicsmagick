@@ -477,7 +477,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   number_lines=0;
   for (tile=0; tile < number_images; tile++)
   {
-    attribute=GetImageAttribute(next_list[tile],"Label");
+    attribute=GetImageAttribute(next_list[tile],"label");
     if (attribute == (ImageAttribute *) NULL)
       continue;
     if (MultilineCensus(attribute->value) > (int) number_lines)
@@ -691,7 +691,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
           tile_info=frame_info;
           tile_info.width=width+2*frame_info.width;
           tile_info.height=height+2*frame_info.height;
-          attribute=GetImageAttribute(next,"Label");
+          attribute=GetImageAttribute(next,"label");
           if (attribute != (ImageAttribute *) NULL)
             tile_info.height+=(font_height+4)*MultilineCensus(attribute->value);
           next->orphan=True;
@@ -749,7 +749,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
                   break;
               }
             }
-          attribute=GetImageAttribute(next,"Label");
+          attribute=GetImageAttribute(next,"label");
           if (attribute != (ImageAttribute *) NULL)
             {
               /*

@@ -261,7 +261,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           *p='\0';
-          (void) SetImageAttribute(image,"Comment",comment);
+          (void) SetImageAttribute(image,"comment",comment);
           LiberateMemory((void **) &comment);
           c=ReadBlobByte(image);
         }

@@ -3043,7 +3043,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         ImageAttribute
           *attribute;
 
-        attribute=GetImageAttribute(image,"Comment");
+        attribute=GetImageAttribute(image,"comment");
         if (attribute == (ImageAttribute *) NULL)
           break;
         (void) strcpy(q,attribute->value);
@@ -3126,7 +3126,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         ImageAttribute
           *attribute;
 
-        attribute=GetImageAttribute(image,"Label");
+        attribute=GetImageAttribute(image,"label");
         if (attribute == (ImageAttribute *) NULL)
           break;
         (void) strcpy(q,attribute->value);

@@ -859,7 +859,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     */
     TransformRGBImage(image,RGBColorspace);
     text_size=0;
-    attribute=GetImageAttribute(image,"Label");
+    attribute=GetImageAttribute(image,"label");
     if (attribute != (ImageAttribute *) NULL)
       text_size=(unsigned int)
         (MultilineCensus(attribute->value)*image_info->pointsize+12);
@@ -928,7 +928,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             floor(bounds.x1+0.5),floor(bounds.y1+0.5),ceil(bounds.x2-0.5),
             ceil(bounds.y2-0.5));
         (void) WriteBlobString(image,buffer);
-        attribute=GetImageAttribute(image,"Label");
+        attribute=GetImageAttribute(image,"label");
         if (attribute != (ImageAttribute *) NULL)
           (void) WriteBlobString(image,
             "%%%%DocumentNeededResources: font Times-Roman\n");
@@ -1047,7 +1047,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           FormatString(buffer,"%.255s\n",*q);
           (void) WriteBlobString(image,buffer);
         }
-        attribute=GetImageAttribute(image,"Label");
+        attribute=GetImageAttribute(image,"label");
         if (attribute != (ImageAttribute *) NULL)
           for (i=MultilineCensus(attribute->value)-1; i >= 0; i--)
           {
@@ -1080,7 +1080,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       bounds.x2=x+width-1;
     if ((y+(int) (height+text_size)-1) > bounds.y2)
       bounds.y2=y+(height+text_size)-1;
-    attribute=GetImageAttribute(image,"Label");
+    attribute=GetImageAttribute(image,"label");
     if (attribute != (ImageAttribute *) NULL)
       (void) WriteBlobString(image,"%%%%PageResources: font Times-Roman\n");
     if (LocaleCompare(image_info->magick,"PS") != 0)
@@ -1093,7 +1093,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       image_info->pointsize);
     (void) WriteBlobString(image,buffer);
     labels=(char **) NULL;
-    attribute=GetImageAttribute(image,"Label");
+    attribute=GetImageAttribute(image,"label");
     if (attribute != (ImageAttribute *) NULL)
       labels=StringToList(attribute->value);
     if (labels != (char **) NULL)

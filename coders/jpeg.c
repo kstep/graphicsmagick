@@ -283,7 +283,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   for (p=comment; --length >= 0; p++)
     *p=GetCharacter(jpeg_info);
   *p='\0';
-  (void) SetImageAttribute(image,"Comment",comment);
+  (void) SetImageAttribute(image,"comment",comment);
   LiberateMemory((void **) &comment);
   return(True);
 }
@@ -1235,7 +1235,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   /*
     Write JPEG profiles.
   */
-  attribute=GetImageAttribute(image,"Comment");
+  attribute=GetImageAttribute(image,"comment");
   if ((attribute != (ImageAttribute *) NULL) && (attribute->value != NULL))
     for (i=0; i < Extent(attribute->value); i+=65533)
       jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) attribute->value+

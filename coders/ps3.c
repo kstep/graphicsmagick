@@ -284,7 +284,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       Scale image to size of Postscript page.
     */
     text_size=0;
-    attribute=GetImageAttribute(image,"Label");
+    attribute=GetImageAttribute(image,"label");
     if (attribute != (ImageAttribute *) NULL)
       text_size=(unsigned int)
         (MultilineCensus(attribute->value)*image_info->pointsize+12);
@@ -352,7 +352,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             floor(bounds.x1+0.5),floor(bounds.y1+0.5),ceil(bounds.x2-0.5),
             ceil(bounds.y2-0.5));
         (void) WriteBlobString(image,buffer);
-        attribute=GetImageAttribute(image,"Label");
+        attribute=GetImageAttribute(image,"label");
         if (attribute != (ImageAttribute *) NULL)
           {
             (void) WriteBlobString(image,
@@ -386,7 +386,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       bounds.x2=x+width-1;
     if ((y+(int) (height+text_size)-1) > bounds.y2)
       bounds.y2=y+(height+text_size)-1;
-    attribute=GetImageAttribute(image,"Label");
+    attribute=GetImageAttribute(image,"label");
     if (attribute != (ImageAttribute *) NULL)
       (void) WriteBlobString(image,"%%PageResources: font Times-Roman\n");
     /*

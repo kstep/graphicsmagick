@@ -266,7 +266,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         (void) ReadBlob(image,length-1,comment);
         comment[length-1]='\0';
-        (void) SetImageAttribute(image,"Comment",comment);
+        (void) SetImageAttribute(image,"comment",comment);
         LiberateMemory((void **) &comment);
         if ((length & 0x01) == 0)
           (void) ReadBlobByte(image);

@@ -322,7 +322,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       (void) GetNumberColors(image,file);
       (void) fclose(file);
       FormatString(command,"@%.1024s",filename);
-      (void) SetImageAttribute(histogram_image,"Comment",command);
+      (void) SetImageAttribute(histogram_image,"comment",command);
       (void) remove(filename);
     }
   /*

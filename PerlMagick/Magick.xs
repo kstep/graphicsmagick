@@ -274,8 +274,8 @@ static struct
     } arguments[MaxArguments];
   } Methods[] =
   {
-    { "Comment", { {"comment", StringReference} } },
-    { "Label", { {"label", StringReference} } },
+    { "comment", { {"comment", StringReference} } },
+    { "label", { {"label", StringReference} } },
     { "AddNoise", { {"noise", NoiseTypes} } },
     { "Colorize", { {"fill", StringReference}, {"opacity", StringReference} } },
     { "Border", { {"geom", StringReference}, {"width", IntegerReference},
@@ -2950,7 +2950,7 @@ Get(ref,...)
               ImageAttribute
                 *attribute;
 
-              attribute=GetImageAttribute(image,"Comment");
+              attribute=GetImageAttribute(image,"comment");
               if (attribute != (ImageAttribute *) NULL)
                 s=newSVpv(attribute->value,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -3276,7 +3276,7 @@ Get(ref,...)
 
               if (!image)
                 break;
-              attribute=GetImageAttribute(image,"Label");
+              attribute=GetImageAttribute(image,"label");
               if (attribute != (ImageAttribute *) NULL)
                 s=newSVpv(attribute->value,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -4178,8 +4178,8 @@ Mogrify(ref,...)
         {
           if (!attribute_flag[0])
             argument_list[0].string_reference=(char *) NULL;
-          while (SetImageAttribute(image,"Comment",(char *) NULL) != False);
-          (void) SetImageAttribute(image,"Comment",
+          while (SetImageAttribute(image,"comment",(char *) NULL) != False);
+          (void) SetImageAttribute(image,"comment",
             argument_list[0].string_reference);
           break;
         }
@@ -4187,8 +4187,8 @@ Mogrify(ref,...)
         {
           if (!attribute_flag[0])
             argument_list[0].string_reference=(char *) NULL;
-          while (SetImageAttribute(image,"Label",(char *) NULL) != False);
-          (void) SetImageAttribute(image,"Label",
+          while (SetImageAttribute(image,"label",(char *) NULL) != False);
+          (void) SetImageAttribute(image,"label",
             argument_list[0].string_reference);
           break;
         }
@@ -5818,7 +5818,7 @@ Montage(ref,...)
           if (LocaleCompare(attribute,"label") == 0)
             {
               for (next=image; next; next=next->next)
-                (void) SetImageAttribute(next,"Label",SvPV(ST(i),na));
+                (void) SetImageAttribute(next,"label",SvPV(ST(i),na));
               break;
             }
           break;

@@ -6676,7 +6676,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Edit image comment.
       */
       TemporaryFilename(image_info->filename);
-      comment=GetImageAttribute(*image,"Comment");
+      comment=GetImageAttribute(*image,"comment");
       if ((comment != (ImageAttribute *) NULL) &&
           (comment->value != (char *) NULL))
         {
@@ -6707,7 +6707,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
             command[MaxTextExtent];
 
           FormatString(command,"@%.1024s",image_info->filename);
-          (void) SetImageAttribute(*image,"Comment",command);
+          (void) SetImageAttribute(*image,"comment",command);
           (*image)->taint=True;
         }
       (void) remove(image_info->filename);
@@ -6798,7 +6798,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       image_info->preview_type=(PreviewType) (i+1);
       image_info->group=windows->image.id;
-      (void) SetImageAttribute(*image,"Label","Preview");
+      (void) SetImageAttribute(*image,"label","Preview");
       TemporaryFilename(filename);
       FormatString((*image)->filename,"preview:%s",filename);
       status=WriteImage(image_info,*image);
@@ -6819,7 +6819,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       image_info->group=windows->image.id;
-      (void) SetImageAttribute(*image,"Label","Histogram");
+      (void) SetImageAttribute(*image,"label","Histogram");
       TemporaryFilename(filename);
       FormatString((*image)->filename,"histogram:%s",filename);
       status=WriteImage(image_info,*image);
@@ -6846,7 +6846,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       image_info->group=windows->image.id;
-      (void) SetImageAttribute(*image,"Label","Matte");
+      (void) SetImageAttribute(*image,"label","Matte");
       TemporaryFilename(filename);
       FormatString((*image)->filename,"matte:%s",filename);
       status=WriteImage(image_info,*image);
@@ -11174,7 +11174,7 @@ static Image *XVisualDirectoryImage(Display *display,
       LiberateMemory((void **) &filelist[i]);
     if (next_image != (Image *) NULL)
       {
-        (void) SetImageAttribute(next_image,"Label",DefaultTileLabel);
+        (void) SetImageAttribute(next_image,"label",DefaultTileLabel);
         TransformImage(&next_image,(char *) NULL,DefaultTileGeometry);
         if (backdrop)
           {

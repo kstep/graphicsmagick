@@ -265,7 +265,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) strncpy(label,(char *) summary_info.title.ptr,
           summary_info.title.length);
         label[summary_info.title.length]='\0';
-        (void) SetImageAttribute(image,"Label",label);
+        (void) SetImageAttribute(image,"label",label);
         LiberateMemory((void **) &label);
       }
   if (summary_info.comments_valid)
@@ -288,7 +288,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) strncpy(comments,(char *) summary_info.comments.ptr,
           summary_info.comments.length);
         comments[summary_info.comments.length]='\0';
-        (void) SetImageAttribute(image,"Comment",comments);
+        (void) SetImageAttribute(image,"comment",comments);
         LiberateMemory((void **) &comments);
       }
   /*
@@ -868,7 +868,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   summary_info.thumbnail_valid=False;
   summary_info.appname_valid=False;
   summary_info.security_valid=False;
-  label=GetImageAttribute(image,"Label");
+  label=GetImageAttribute(image,"label");
   if (label != (ImageAttribute *) NULL)
     {
       /*
@@ -884,7 +884,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
         ThrowWriterException(DelegateWarning,"Unable to set image title",
           image);
     }
-  comment=GetImageAttribute(image,"Comment");
+  comment=GetImageAttribute(image,"comment");
   if (comment != (ImageAttribute *) NULL)
     {
       /*

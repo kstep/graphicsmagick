@@ -217,7 +217,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   status=ReadBlob(image,length,comment);
   comment[length]='\0';
-  (void) SetImageAttribute(image,"Comment",comment);
+  (void) SetImageAttribute(image,"comment",comment);
   LiberateMemory((void **) &comment);
   if (status == False)
     ThrowReaderException(CorruptImageWarning,

@@ -274,7 +274,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     (void) ReadBlob(image,512,(char *) viff_info.comment);
     viff_info.comment[511]='\0';
     if (Extent(viff_info.comment) > 4)
-      (void) SetImageAttribute(image,"Comment",viff_info.comment);
+      (void) SetImageAttribute(image,"comment",viff_info.comment);
     if ((viff_info.machine_dependency == VFF_DEP_DECORDER) ||
         (viff_info.machine_dependency == VFF_DEP_NSORDER))
       {
@@ -930,7 +930,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     viff_info.version=3;
     viff_info.machine_dependency=VFF_DEP_IEEEORDER;  /* IEEE byte ordering */
     *viff_info.comment='\0';
-    attribute=GetImageAttribute(image,"Comment");
+    attribute=GetImageAttribute(image,"comment");
     if (attribute != (ImageAttribute *) NULL)
       {
         (void) strncpy(viff_info.comment,attribute->value,
