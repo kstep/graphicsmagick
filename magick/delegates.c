@@ -84,7 +84,7 @@ const char
 %
 %  The format of the ReadDelegates method is:
 %
-%      void DestroyDelegateInfo(void)
+%      unsigned int ReadDelegates(const char *path,const char *directory)
 %
 %  A description of each parameter follows:
 %
@@ -219,12 +219,7 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
 %
 %  The format of the DestroyDelegateInfo method is:
 %
-%      DestroyDelegateInfo(image_info)
-%
-%  A description of each parameter follows:
-%
-%    o image_info: Specifies a pointer to a Delegates structure.
-%
+%      DestroyDelegateInfo(void)
 %
 */
 Export void DestroyDelegateInfo(void)
