@@ -1,21 +1,21 @@
 <?xml version="1.0"?>
 <delegatemap>
-  <delegate decode="browse" restrain="True" spawn="True" command='@BrowseDelegate@ http://www.imagemagick.org/ImageMagick/'  />
-  <delegate decode="bzip" restrain="True" command='|@BZIPDelegate@ -cd "%i"' />
+  <delegate decode="browse" stealth="True" spawn="True" command='@BrowseDelegate@ http://www.imagemagick.org/ImageMagick/'  />
+  <delegate decode="bzip" stealth="True" command='|@BZIPDelegate@ -cd "%i"' />
   <delegate decode="cgm" command='@CGMDecodeDelegate@ -d ps "%i" "%o" %u
     @ConvertDelegate@ -concatenate "%o"*.ps "%o"' />
-  <delegate decode="compress" restrain="True" command='|@LZWDecodeDelegate@ -c "%i"' />
+  <delegate decode="compress" stealth="True" command='|@LZWDecodeDelegate@ -c "%i"' />
   <delegate decode="dot" command='@DOTDecodeDelegate@ -Tps "%i" -o "%o"' />
   <delegate decode="dvi" command='@DVIDecodeDelegate@ -q -o "%o" "%i"' />
-  <delegate decode="edit" restrain="True" command='@EditorDelegate@ -title "Edit Image Comment" -e vi "%o"' />
+  <delegate decode="edit" stealth="True" command='@EditorDelegate@ -title "Edit Image Comment" -e vi "%o"' />
   <delegate decode="emf" command='@WMFDecodeDelegate@ "%i" "%o"' />
   <delegate decode="eps" encode="pdf" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSPDFDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="eps" encode="ps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="fig" command='@FIGDecodeDelegate@ -L ps "%i" "%o"' />
   <delegate decode="gplt" command='@EchoDelegate@ "set size 1.25,0.62
     set terminal postscript portrait color solid; set output "%o"; load "%i"" > %u;@GnuplotDecodeDelegate@ %u' />
-  <delegate decode="gs-color" restrain="True" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSColorDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
-  <delegate decode="gs-mono" restrain="True" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSMonoDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
+  <delegate decode="gs-color" stealth="True" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSColorDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
+  <delegate decode="gs-mono" stealth="True" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSMonoDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
   <delegate decode="hpgl" command='@HPGLDecodeDelegate@ -q -m eps -f `basename "%o"` "%i"
     mv `basename "%o"` "%o' />
   <delegate decode="htm" command='@HTMLDecodeDelegate@ -U -o "%o" "%i"' />
@@ -53,9 +53,9 @@
     @ConvertDelegate@ -concatenate "%i*.yuv" %u' />
   <delegate decode="yuv" encode="mpg" mode="encode" command='@MPEGEncodeDelegate@ %u "%o"
     @ConvertDelegate@ -concatenate "%i*.yuv" %u' />
-  <delegate decode="zip" restrain="True" command='|@ZipDelegate@ -cdfq "%i"' />
-  <delegate encode="bzip" restrain="True" command='|@BZIPDelegate@ -f > "%o"' />
-  <delegate encode="compress" restrain="True" command='|@LZWEncodeDelegate@ -c > "%o"' />
-  <delegate encode="show" restrain="True" spawn="True" command='@ShowImageDelegate@ -immutable -window_group %g -title "%l of %f" "tmp:%o"' />
-  <delegate encode="zip" restrain="True" command='|@ZipDelegate@ -cf > "%o"' />
+  <delegate decode="zip" stealth="True" command='|@ZipDelegate@ -cdfq "%i"' />
+  <delegate encode="bzip" stealth="True" command='|@BZIPDelegate@ -f > "%o"' />
+  <delegate encode="compress" stealth="True" command='|@LZWEncodeDelegate@ -c > "%o"' />
+  <delegate encode="show" stealth="True" spawn="True" command='@ShowImageDelegate@ -immutable -window_group %g -title "%l of %f" "tmp:%o"' />
+  <delegate encode="zip" stealth="True" command='|@ZipDelegate@ -cf > "%o"' />
 </delegatemap>

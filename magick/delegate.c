@@ -509,8 +509,8 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
 MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 {
   char
-    delegate[MaxTextExtent],
-    tag[MaxTextExtent];
+    **commands,
+    delegate[MaxTextExtent];
 
   register DelegateInfo
     *p;
@@ -520,33 +520,33 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"ImageMagick defines these delegates to read orwrite "
+  (void) fprintf(file,"ImageMagick defines these delegates to read or write "
     "image formats it does not\ndirectly support.\n");
   p=GetDelegateInfo("*","*",exception);
   if (p == (DelegateInfo *) NULL)
     return(False);
   if (p->filename != (char *) NULL)
     (void) fprintf(file,"\nFilename: %.1024s\n\n",p->filename);
-  (void) fprintf(file,"Decode-Tag   Encode-Tag  Delegate\n");
+  (void) fprintf(file,"Delegate             Command\n");
   (void) fprintf(file,"-------------------------------------------------------"
     "------------------------\n");
   for ( ; p != (DelegateInfo *) NULL; p=p->next)
   {
-    if (p->restrain)
+    if (p->stealth)
       continue;
-    i=0;
-    if (p->commands != (char *) NULL)
-      for (i=0; !isspace((int) p->commands[i]); i++)
-        delegate[i]=p->commands[i];
-    delegate[i]='\0';
-    for (i=0; i < 10; i++)
-      tag[i]=' ';
-    tag[i]='\0';
+    *delegate='\0';
     if (p->encode != (char *) NULL)
-      (void) strncpy(tag,p->encode,MaxTextExtent-1);
-    (void) fprintf(file,"%10s%.1024s=%.1024s%.1024s  %s\n",
-      p->decode ? p->decode : "",p->mode <= 0 ? "<" : " ",
-      p->mode >= 0 ? ">" : " ",tag,delegate);
+      (void) strncpy(delegate,p->encode,MaxTextExtent-1);
+    (void) strcat(delegate,"        ");
+    delegate[8]='\0';
+    commands=StringToList(p->commands);
+    if (commands == (char **) NULL)
+      continue;
+    (void) fprintf(file,"%8s%c=%c%s  %.55s%s\n",p->decode ? p->decode : "",
+      p->mode <= 0 ? '<' : ' ',p->mode >= 0 ? '>' : ' ',delegate,commands[0],
+      strlen(commands[0]) > 55 ? "..." : "");
+    for (i=0; commands[i] != (char *) NULL; i++)
+      LiberateMemory((void **) &commands[i]);
   }
   (void) fflush(file);
   return(True);
@@ -708,22 +708,17 @@ static unsigned int ReadConfigurationFile(const char *basename,
           }
         break;
       }
-      case 'R':
-      case 'r':
-      {
-        if (LocaleCompare((char *) keyword,"restrain") == 0)
-          {
-            delegate_list->restrain=LocaleCompare(token,"True") == 0;
-            break;
-          }
-        break;
-      }
       case 'S':
       case 's':
       {
         if (LocaleCompare((char *) keyword,"spawn") == 0)
           {
             delegate_list->spawn=LocaleCompare(token,"True") == 0;
+            break;
+          }
+        if (LocaleCompare((char *) keyword,"stealth") == 0)
+          {
+            delegate_list->stealth=LocaleCompare(token,"True") == 0;
             break;
           }
         break;

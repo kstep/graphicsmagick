@@ -27,7 +27,7 @@ typedef struct _DelegateInfo
     mode;
 
   unsigned int
-    restrain,
+    stealth,
     spawn;
 } DelegateInfo;
 
