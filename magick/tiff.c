@@ -809,12 +809,13 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
         /*
           Convert image to DirectClass pixel packets.
         */
-        for (y=image->rows-1; y >= 0; y--)
+        p=pixels+image->columns*image->rows-1;
+        for (y=0; y < (int) image->rows; y++)
         {
-          p=pixels+y*image->columns;
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
+          q+=image->columns-1;
           for (x=0; x < (int) image->columns; x++)
           {
             q->red=UpScale(TIFFGetR(*p));
@@ -822,14 +823,14 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
             q->blue=UpScale(TIFFGetB(*p));
             if (image->matte)
               q->opacity=UpScale(TIFFGetA(*p));
-            p++;
-            q++;
+            p--;
+            q--;
           }
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
         FreeMemory(pixels);
         break;
