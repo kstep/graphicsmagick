@@ -528,11 +528,13 @@ MAGICK DELEGATES
       to read the TIFF image format.  It in turn optionally requires
       the JPEG and ZLIB libraries.
 
-    o ImageMagick requires wmftopng available from
+    o ImageMagick requires libwmf or wmftopng available from
 
           http://www.wvware.com/libwmf.html
 
-      to read the Windows Meta File image format.
+      to read the Windows Meta File image format.  If libwmf is
+      used, then WMF files are rendered directly by ImageMagick
+      otherwise the rendering is done by wmftopng.
 
     o ImageMagick requires wget available via the Web as
 
