@@ -60,6 +60,11 @@
 #define XC(x) ((double)x)
 #define YC(y) ((double)y)
 
+#if defined(HAVE_FT2BUILD_H)
+   /* Some libwmf/FreeType installs are broken in that the libwmf
+     headers don't work without including <ft2build.h> first */
+#  include <ft2build.h>
+#endif /* defined(HAVE_FT2BUILD_H) */
 #include "libwmf/fund.h"
 #include "libwmf/types.h"
 #include "libwmf/api.h"

@@ -1,3 +1,10 @@
+2003-12-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wmf.c: Include <ft2build.h> if it is available since some
+	libwmf installs don't work unless it is included before the libwmf
+	API headers.
+	* configure.ac: Check for <ft2build.h>.
+
 2003-12-16  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/jpeg.c: Changed stored jpeg quality attribute from

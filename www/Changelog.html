@@ -53,13 +53,40 @@
 </tr>
 </table>
 <p>
+2003-12-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/wmf.c: Include &lt;ft2build.h&gt; if it is available since some
+        libwmf installs don't work unless it is included before the libwmf
+        API headers.<BR>
+  <LI> configure.ac: Check for &lt;ft2build.h&gt;.
+
+</UL>
+<p>
+2003-12-16  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/jpeg.c: Changed stored jpeg quality attribute from
+        [jpeg-quality] to JPEG-Quality.  Added attributes JPEG-Colorspace
+        and JPEG-Sampling-factors.  Added code to save and restore
+        these attributes when "-define JPEG:preserve-settings=yes" is
+        present in the comandline.  Quality is restored if the input
+        was a JPEG and the quality was preserved.  Sampling factors
+        are restored if the input was a JPEG, sampling factors were
+        preserved, and the colorspace for the output file is the same
+        as that of the input file.  Attributes are preserved when the
+        input file is a JPEG and either the "-verbose" option or the
+        "-define JPEG:preserve-settings=yes" option is present
+
+</UL>
+<p>
 2003-12-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> TclMagick/source/configure.ac: Add an initial TclMagick
         configure-based build environment based on a template and macros
-        from the Tcl project.  I recall that while the extension does build, it it
-        possible that it is not properly registered as a module to Tcl.
+        from the Tcl project.  I recall that while the extension does build,
+        it is possible that it is not properly registered as a module to Tcl.
 
 </UL>
 <p>

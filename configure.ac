@@ -1890,6 +1890,10 @@ then
     then
       AC_DEFINE(HasWMFlite,1,Define if you have wmflite library)
 
+      # Some libwmf installs appear to require that <ft2build.h> be
+      # included prior to including <libwmf/ipa.h>.  Oops!
+      AC_CHECK_HEADERS([ft2build.h])
+
       LIB_WMF='-lwmflite'
       LIBS="$LIB_WMF $LIBS"
       have_wmf='yes'
