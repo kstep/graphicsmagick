@@ -958,7 +958,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
           s->red=red > MaxRGB ? MaxRGB : red+0.5;
           s->green=green > MaxRGB ? MaxRGB : green+0.5;
           s->blue=blue > MaxRGB ? MaxRGB : blue+0.5;
-          s->opacity=opacity > OpaqueOpacity ? OpaqueOpacity : opacity+0.5;
+          s->opacity=opacity > MaxRGB ? MaxRGB : opacity+0.5;
           s++;
           y_vector[x].red=0;
           y_vector[x].green=0;
@@ -1022,7 +1022,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
             t->red=red > MaxRGB ? MaxRGB : red+0.5;
             t->green=green > MaxRGB ? MaxRGB : green+0.5;
             t->blue=blue > MaxRGB ? MaxRGB : blue+0.5;
-            t->opacity=opacity > OpaqueOpacity ? OpaqueOpacity : opacity+0.5;
+            t->opacity=opacity > MaxRGB ? MaxRGB : opacity+0.5;
             x_scale-=x_span;
             x_span=1.0;
             next_column=True;
@@ -1059,7 +1059,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
           t->red=red > MaxRGB ? MaxRGB : red+0.5;
           t->green=green > MaxRGB ? MaxRGB : green+0.5;
           t->blue=blue > MaxRGB ? MaxRGB : blue+0.5;
-          t->opacity=opacity > OpaqueOpacity ? OpaqueOpacity : opacity+0.5;
+          t->opacity=opacity > MaxRGB ? MaxRGB : opacity+0.5;
         }
       /*
         Transfer scanline to scaled image.
