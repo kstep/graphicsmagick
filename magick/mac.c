@@ -360,7 +360,7 @@ MagickExport void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
     name;
 
   assert(filename != (char *) NULL);
-  (void) strncpy((char *) name,filename,MaxTextExtent-1);
+  (void) strncpy((char *) name,filename,254);
   c2pstr((char *) name);
   FSMakeFSSpec(0,0,name,fsspec);
 }
@@ -873,7 +873,7 @@ MagickExport void MACWarningHandler(const ExceptionType warning,
 MagickExport DIR *opendir(const char *path)
 {
   char
-    pathname[1664];
+    pathname[MaxTextExtent];
 
   CInfoPBRec
     search_info;
@@ -986,7 +986,7 @@ MagickExport struct dirent *readdir(DIR *entry)
     dir_entry;
 
   static unsigned char
-    pathname[1664];
+    pathname[MaxTextExtent];
 
   if (entry == (DIR *) NULL)
     return((struct dirent *) NULL);
@@ -1002,8 +1002,7 @@ MagickExport struct dirent *readdir(DIR *entry)
       return((struct dirent *) NULL);
     }
   entry->d_index++;
-  (void) strncpy(dir_entry.d_name,p2cstr(search_info.hFileInfo.ioNamePtr),
-    MaxTextExtent-1);
+  (void) strncpy(dir_entry.d_name,p2cstr(search_info.hFileInfo.ioNamePtr),254);
   dir_entry.d_namlen=strlen(dir_entry.d_name);
   return(&dir_entry);
 }
@@ -1405,7 +1404,7 @@ MagickExport void SetApplicationType(const char *filename,const char *magick,
   assert(filename != (char *) NULL);
   filetype='    ';
   (void) strncpy((char *) &filetype,magick,Min(strlen(magick),4));
-  (void) strncpy((char *) name,filename,MaxTextExtent-1);
+  (void) strncpy((char *) name,filename,254);
   c2pstr((char *) name);
   FSMakeFSSpec(0,0,name,&file_specification);
   FSpCreate(&file_specification,application,filetype,smSystemScript);
