@@ -2905,7 +2905,15 @@ Get(ref,...)
         }
         case 'E':
         case 'e':
+        {
+          if (strEQcase(attribute,"error"))
+            {
+              if (image)
+                s=newSViv(image->mean_error_per_pixel);
+              break;
+            }
           break;
+        }
         case 'F':
         case 'f':
         {
@@ -3097,6 +3105,18 @@ Get(ref,...)
                   s=newSVpv(image->magick,0);
               break;
             }
+          if (strEQcase(attribute,"maximum_error"))
+            {
+              if (image)
+                s=newSVnv(image->normalized_maximum_error);
+              break;
+            }
+          if (strEQcase(attribute,"mean_error"))
+            {
+              if (image)
+                s=newSVnv(image->normalized_mean_error);
+              break;
+            }
           if (strEQcase(attribute,"monoch"))
             {
               j=info ? info->image_info->monochrome : IsMonochromeImage(image);
@@ -3125,29 +3145,6 @@ Get(ref,...)
             {
               if (image && image->montage)
                 s=newSVpv(image->montage,0);
-              break;
-            }
-          if (strEQcase(attribute,"mean"))
-            {
-              if (image)
-                s=newSViv(image->mean_error_per_pixel);
-              break;
-            }
-          break;
-        }
-        case 'N':
-        case 'n':
-        {
-          if (strEQcase(attribute,"normalized_max"))
-            {
-              if (image)
-                s=newSVnv(image->normalized_maximum_error);
-              break;
-            }
-          if (strEQcase(attribute,"normalized_mean"))
-            {
-              if (image)
-                s=newSVnv(image->normalized_mean_error);
               break;
             }
           break;

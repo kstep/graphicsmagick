@@ -309,19 +309,19 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               case 'b':
               case 'B':
               {
-                if (LocaleCompare(keyword,"Background-color") == 0)
+                if (LocaleCompare(keyword,"background-color") == 0)
                   {
                     (void) QueryColorDatabase(values,&image->background_color);
                     break;
                   }
-                if (LocaleCompare(keyword,"Blue-primary") == 0)
+                if (LocaleCompare(keyword,"blue-primary") == 0)
                   {
                     (void) sscanf(values,"%lf,%lf",
                       &image->chromaticity.blue_primary.x,
                       &image->chromaticity.blue_primary.y);
                     break;
                   }
-                if (LocaleCompare(keyword,"Border-color") == 0)
+                if (LocaleCompare(keyword,"border-color") == 0)
                   {
                     (void) QueryColorDatabase(values,&image->border_color);
                     break;
@@ -333,7 +333,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               case 'c':
               case 'C':
               {
-                if (LocaleCompare(keyword,"Class") == 0)
+                if (LocaleCompare(keyword,"class") == 0)
                   {
                     if (LocaleCompare(values,"PseudoClass") == 0)
                       image->storage_class=PseudoClass;
@@ -344,12 +344,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                         image->storage_class=UndefinedClass;
                     break;
                   }
-                if (LocaleCompare(keyword,"Colors") == 0)
+                if (LocaleCompare(keyword,"colors") == 0)
                   {
                     image->colors=(unsigned int) atoi(values);
                     break;
                   }
-                if (LocaleCompare(keyword,"Colorspace") == 0)
+                if (LocaleCompare(keyword,"colorspace") == 0)
                   {
                     if (LocaleCompare(values,"CMYK") == 0)
                       image->colorspace=CMYKColorspace;
@@ -358,7 +358,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                         image->colorspace=RGBColorspace;
                     break;
                   }
-                if (LocaleCompare(keyword,"Compression") == 0)
+                if (LocaleCompare(keyword,"compression") == 0)
                   {
                     if (LocaleCompare(values,"Zip") == 0)
                       image->compression=ZipCompression;
@@ -372,7 +372,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                           image->compression=UndefinedCompression;
                     break;
                   }
-                if (LocaleCompare(keyword,"Columns") == 0)
+                if (LocaleCompare(keyword,"columns") == 0)
                   {
                     image->columns=(unsigned int) atoi(values);
                     break;
@@ -384,19 +384,31 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               case 'd':
               case 'D':
               {
-                if (LocaleCompare(keyword,"Delay") == 0)
+                if (LocaleCompare(keyword,"delay") == 0)
                   {
                     image->delay=atoi(values);
                     break;
                   }
-                if (LocaleCompare(keyword,"Depth") == 0)
+                if (LocaleCompare(keyword,"depth") == 0)
                   {
                     image->depth=atoi(values) <= 8 ? 8 : 16;
                     break;
                   }
-                if (LocaleCompare(keyword,"Dispose") == 0)
+                if (LocaleCompare(keyword,"dispose") == 0)
                   {
                     image->dispose=atoi(values);
+                    break;
+                  }
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
+                break;
+              }
+              case 'e':
+              case 'E':
+              {
+                if (LocaleCompare(keyword,"error") == 0)
+                  {
+                    image->mean_error_per_pixel=atoi(values);
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
@@ -406,12 +418,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               case 'g':
               case 'G':
               {
-                if (LocaleCompare(keyword,"Gamma") == 0)
+                if (LocaleCompare(keyword,"gamma") == 0)
                   {
                     image->gamma=atof(values);
                     break;
                   }
-                if (LocaleCompare(keyword,"Green-primary") == 0)
+                if (LocaleCompare(keyword,"green-primary") == 0)
                   {
                     (void) sscanf(values,"%lf,%lf",
                       &image->chromaticity.green_primary.x,
@@ -425,12 +437,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               case 'i':
               case 'I':
               {
-                if (LocaleCompare(keyword,"Id") == 0)
+                if (LocaleCompare(keyword,"id") == 0)
                   {
                     (void) strcpy(id,values);
                     break;
                   }
-                if (LocaleCompare(keyword,"Iterations") == 0)
+                if (LocaleCompare(keyword,"iterations") == 0)
                   {
                     image->iterations=atoi(values);
                     break;
@@ -442,18 +454,28 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               case 'm':
               case 'M':
               {
-                if (LocaleCompare(keyword,"Matte") == 0)
+                if (LocaleCompare(keyword,"matte") == 0)
                   {
                     image->matte=(LocaleCompare(values,"True") == 0) ||
                       (LocaleCompare(values,"true") == 0);
                     break;
                   }
-                if (LocaleCompare(keyword,"Matte-color") == 0)
+                if (LocaleCompare(keyword,"matte-color") == 0)
                   {
                     (void) QueryColorDatabase(values,&image->matte_color);
                     break;
                   }
-                if (LocaleCompare(keyword,"Montage") == 0)
+                if (LocaleCompare(keyword,"maximum-error") == 0)
+                  {
+                    image->normalized_maximum_error=atof(values);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"mean-error") == 0)
+                  {
+                    image->normalized_mean_error=atof(values);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"montage") == 0)
                   {
                     (void) CloneString(&image->montage,values);
                     break;
@@ -465,21 +487,21 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               case 'p':
               case 'P':
               {
-                if (LocaleCompare(keyword,"Page") == 0)
+                if (LocaleCompare(keyword,"page") == 0)
                   {
                     ParseImageGeometry(PostscriptGeometry(values),
                       &image->page.x,&image->page.y,
                       &image->page.width,&image->page.height);
                     break;
                   }
-                if (LocaleNCompare(keyword,"Profile-",8) == 0)
+                if (LocaleNCompare(keyword,"profile-",8) == 0)
                   {
-                    if (LocaleCompare(keyword,"Profile-icc") == 0)
+                    if (LocaleCompare(keyword,"profile-icc") == 0)
                       {
                         image->color_profile.length=atoi(values);
                         break;
                       }
-                    if (LocaleCompare(keyword,"Profile-iptc") == 0)
+                    if (LocaleCompare(keyword,"profile-iptc") == 0)
                       {
                         image->iptc_profile.length=atoi(values);
                         break;
@@ -507,14 +529,14 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               case 'r':
               case 'R':
               {
-                if (LocaleCompare(keyword,"Red-primary") == 0)
+                if (LocaleCompare(keyword,"red-primary") == 0)
                   {
                     (void) sscanf(values,"%lf,%lf",
                       &image->chromaticity.red_primary.x,
                       &image->chromaticity.red_primary.y);
                     break;
                   }
-                if (LocaleCompare(keyword,"Rendering-intent") == 0)
+                if (LocaleCompare(keyword,"rendering-intent") == 0)
                   {
                     if (LocaleCompare(values,"Saturation") == 0)
                       image->rendering_intent=SaturationIntent;
@@ -531,13 +553,13 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                             image->rendering_intent=UndefinedIntent;
                     break;
                   }
-                if (LocaleCompare(keyword,"Resolution") == 0)
+                if (LocaleCompare(keyword,"resolution") == 0)
                   {
                     (void) sscanf(values,"%lfx%lf",&image->x_resolution,
                       &image->y_resolution);
                     break;
                   }
-                if (LocaleCompare(keyword,"Rows") == 0)
+                if (LocaleCompare(keyword,"rows") == 0)
                   {
                     image->rows=(unsigned int) atoi(values);
                     break;
@@ -549,7 +571,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               case 's':
               case 'S':
               {
-                if (LocaleCompare(keyword,"Scene") == 0)
+                if (LocaleCompare(keyword,"scene") == 0)
                   {
                     image->scene=(unsigned int) atoi(values);
                     break;
@@ -561,7 +583,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               case 'u':
               case 'U':
               {
-                if (LocaleCompare(keyword,"Units") == 0)
+                if (LocaleCompare(keyword,"units") == 0)
                   {
                     if (LocaleCompare(values,"undefined") == 0)
                       image->units=UndefinedResolution;
@@ -580,7 +602,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               case 'w':
               case 'W':
               {
-                if (LocaleCompare(keyword,"White-point") == 0)
+                if (LocaleCompare(keyword,"white-point") == 0)
                   {
                     (void) sscanf(values,"%lf,%lf",
                       &image->chromaticity.white_point.x,
@@ -1199,29 +1221,29 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     else
       if (image->colorspace != CMYKColorspace)
         RGBTransformImage(image,CMYKColorspace);
-    (void) WriteBlobString(image,"Id=ImageMagick\n");
+    (void) WriteBlobString(image,"id=ImageMagick\n");
     if (image->storage_class == PseudoClass)
-      FormatString(buffer,"Class=PseudoClass  Colors=%u  Matte=%s\n",
+      FormatString(buffer,"class=PseudoClass  colors=%u  matte=%s\n",
         image->colors,image->matte ? "True" : "False");
     else
       if (image->colorspace != CMYKColorspace)
-        FormatString(buffer,"Class=DirectClass  Matte=%s\n",
+        FormatString(buffer,"class=DirectClass  matte=%s\n",
           image->matte ? "True" : "False");
       else
-        (void) strcpy(buffer,"Class=DirectClass  Colorspace=CMYK\n");
+        (void) strcpy(buffer,"class=DirectClass  colorspace=CMYK\n");
     (void) WriteBlobString(image,buffer);
     *buffer='\0';
     if (compression == RunlengthEncodedCompression)
-      FormatString(buffer,"Compression=RunlengthEncoded\n");
+      FormatString(buffer,"compression=RunlengthEncoded\n");
     else
       if (compression == BZipCompression)
-        FormatString(buffer,"Compression=BZip\n");
+        FormatString(buffer,"compression=BZip\n");
       else
         if (compression == ZipCompression)
-          FormatString(buffer,"Compression=Zip\n");
+          FormatString(buffer,"compression=Zip\n");
     if (*buffer != '\0')
       (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"Columns=%u  Rows=%u  Depth=%u\n",image->columns,
+    FormatString(buffer,"columns=%u  rows=%u  depth=%u\n",image->columns,
       image->rows,image->depth);
     (void) WriteBlobString(image,buffer);
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
@@ -1243,22 +1265,22 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       }
     if ((image->page.width != 0) && (image->page.height != 0))
       {
-        FormatString(buffer,"Page=%ux%u%+d%+d\n",image->page.width,
+        FormatString(buffer,"page=%ux%u%+d%+d\n",image->page.width,
           image->page.height,image->page.x,image->page.y);
         (void) WriteBlobString(image,buffer);
       }
     (void) QueryColorName(&image->background_color,color);
-    FormatString(buffer,"Background-color=%.1024s  ",color);
+    FormatString(buffer,"background-color=%.1024s  ",color);
     (void) WriteBlobString(image,buffer);
     (void) QueryColorName(&image->border_color,color);
-    FormatString(buffer,"Border-color=%.1024s  ",color);
+    FormatString(buffer,"border-color=%.1024s  ",color);
     (void) WriteBlobString(image,buffer);
     (void) QueryColorName(&image->matte_color,color);
-    FormatString(buffer,"Matte-color=%.1024s\n",color);
+    FormatString(buffer,"matte-color=%.1024s\n",color);
     (void) WriteBlobString(image,buffer);
     if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
       {
-        FormatString(buffer,"Scene=%u  Iterations=%u  Delay=%u  Dispose=%u\n",
+        FormatString(buffer,"scene=%u  iterations=%u  delay=%u  dispose=%u\n",
           image->scene,image->iterations,image->delay,image->dispose);
         (void) WriteBlobString(image,buffer);
       }
@@ -1266,42 +1288,49 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       {
         if (image->scene != 0)
           {
-            FormatString(buffer,"Scene=%u\n",image->scene);
+            FormatString(buffer,"scene=%u\n",image->scene);
             (void) WriteBlobString(image,buffer);
           }
         if (image->iterations != 1)
           {
-            FormatString(buffer,"Iterations=%u\n",image->iterations);
+            FormatString(buffer,"iterations=%u\n",image->iterations);
             (void) WriteBlobString(image,buffer);
           }
         if (image->delay != 0)
           {
-            FormatString(buffer,"Delay=%u\n",image->delay);
+            FormatString(buffer,"delay=%u\n",image->delay);
             (void) WriteBlobString(image,buffer);
           }
         if (image->dispose != 0)
           {
-            FormatString(buffer,"Dispose=%u\n",image->dispose);
+            FormatString(buffer,"dispose=%u\n",image->dispose);
             (void) WriteBlobString(image,buffer);
           }
+      }
+    if (image->mean_error_per_pixel != 0)
+      {
+        FormatString(buffer,"error=%u  mean-error=%g  maximum-error=%g\n",
+          image->mean_error_per_pixel,image->normalized_mean_error,
+          image->normalized_maximum_error);
+        (void) WriteBlobString(image,buffer);
       }
     if (image->rendering_intent != UndefinedIntent)
       {
         if (image->rendering_intent == SaturationIntent)
-          (void) strcpy(buffer,"Rendering-intent=saturation\n");
+          (void) strcpy(buffer,"rendering-intent=saturation\n");
         else
           if (image->rendering_intent == PerceptualIntent)
-            (void) strcpy(buffer,"Rendering-intent=perceptual\n");
+            (void) strcpy(buffer,"rendering-intent=perceptual\n");
           else
             if (image->rendering_intent == AbsoluteIntent)
-              (void) strcpy(buffer,"Rendering-intent=absolute\n");
+              (void) strcpy(buffer,"rendering-intent=absolute\n");
             else
-              (void) strcpy(buffer,"Rendering-intent=relative\n");
+              (void) strcpy(buffer,"rendering-intent=relative\n");
         (void) WriteBlobString(image,buffer);
       }
     if (image->gamma != 0.0)
       {
-        FormatString(buffer,"Gamma=%g\n",image->gamma);
+        FormatString(buffer,"gamma=%g\n",image->gamma);
         (void) WriteBlobString(image,buffer);
       }
     if (image->chromaticity.white_point.x != 0.0)
@@ -1310,25 +1339,25 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           Note chomaticity points.
         */
         FormatString(buffer,
-          "Red-primary=%g,%g  Green-primary=%g,%g  Blue-primary=%g,%g\n",
+          "red-primary=%g,%g  green-primary=%g,%g  blue-primary=%g,%g\n",
           image->chromaticity.red_primary.x,image->chromaticity.red_primary.y,
           image->chromaticity.green_primary.x,
           image->chromaticity.green_primary.y,
           image->chromaticity.blue_primary.x,
           image->chromaticity.blue_primary.y);
         (void) WriteBlobString(image,buffer);
-        FormatString(buffer,"White-point=%g,%g\n",
+        FormatString(buffer,"white-point=%g,%g\n",
           image->chromaticity.white_point.x,image->chromaticity.white_point.y);
         (void) WriteBlobString(image,buffer);
       }
     if (image->color_profile.length > 0)
       {
-        FormatString(buffer,"Profile-icc=%u\n",image->color_profile.length);
+        FormatString(buffer,"profile-icc=%u\n",image->color_profile.length);
         (void) WriteBlobString(image,buffer);
       }
     if (image->iptc_profile.length > 0)
       {
-        FormatString(buffer,"Profile-iptc=%u\n",image->iptc_profile.length);
+        FormatString(buffer,"profile-iptc=%u\n",image->iptc_profile.length);
         (void) WriteBlobString(image,buffer);
       }
     if (image->generic_profiles != 0)
@@ -1338,7 +1367,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         */
         for (i=0; i < image->generic_profiles; i++)
         {
-          FormatString(buffer,"Profile-%s=%u\n",
+          FormatString(buffer,"profile-%s=%u\n",
             image->generic_profile[i].name == (char *) NULL ? "generic" :
             image->generic_profile[i].name,image->generic_profile[i].length);
           (void) WriteBlobString(image,buffer);
@@ -1346,7 +1375,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       }
     if (image->montage != (char *) NULL)
       {
-        FormatString(buffer,"Montage=%.1024s\n",image->montage);
+        FormatString(buffer,"montage=%.1024s\n",image->montage);
         (void) WriteBlobString(image,buffer);
       }
     SignatureImage(image);
@@ -1477,7 +1506,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           length=255;
           for (x=0; x < (int) image->columns; x++)
           {
-            if ((p->red == pixel.red) && (p->green == pixel.green) && 
+            if ((p->red == pixel.red) && (p->green == pixel.green) &&
                 (p->blue == pixel.blue) && (p->opacity == pixel.opacity) &&
                 (length < 255) && (x < (int) (image->columns-1)))
               length++;

@@ -1640,18 +1640,18 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
   file=fopen(cache_info->meta_filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     return(False);
-  (void) fprintf(file,"Id=MagickCache\n");
-  (void) fprintf(file,"Cache=%.1024s\n",cache_info->cache_filename);
+  (void) fprintf(file,"id=MagickCache\n");
+  (void) fprintf(file,"cache=%.1024s\n",cache_info->cache_filename);
   if (image->storage_class == PseudoClass)
-    (void) fprintf(file,"Class=PseudoClass  Colors=%u  Matte=%s\n",
+    (void) fprintf(file,"class=PseudoClass  Colors=%u  Matte=%s\n",
       image->colors,image->matte ? "True" : "False");
   else
     if (image->colorspace != CMYKColorspace)
-      (void) fprintf(file,"Class=DirectClass  Matte=%s\n",
+      (void) fprintf(file,"class=DirectClass  Matte=%s\n",
         image->matte ? "True" : "False");
     else
-      (void) fprintf(file,"Class=DirectClass  Colorspace=CMYK\n");
-  (void) fprintf(file,"Compression=");
+      (void) fprintf(file,"class=DirectClass  Colorspace=CMYK\n");
+  (void) fprintf(file,"compression=");
   switch (image->compression)
   {
     default:
@@ -1666,7 +1666,7 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
       (void) fprintf(file,"RunlengthEncoded\n"); break;
     case ZipCompression: (void) fprintf(file,"Zip\n"); break;
   }
-  (void) fprintf(file,"Columns=%u  Rows=%u  Depth=%u\n",image->columns,
+  (void) fprintf(file,"columns=%u  rows=%u  depth=%u\n",image->columns,
     image->rows,image->depth);
   if ((image->x_resolution != 0) && (image->y_resolution != 0))
     {
@@ -1685,74 +1685,78 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
         image->x_resolution,image->y_resolution,units);
     }
   if ((image->page.width != 0) && (image->page.height != 0))
-    (void) fprintf(file,"Page=%ux%u%+d%+d\n",image->page.width,
+    (void) fprintf(file,"page=%ux%u%+d%+d\n",image->page.width,
       image->page.height,image->page.x,image->page.y);
   (void) QueryColorName(&image->background_color,color);
-  (void) fprintf(file,"Background-color=%.1024s  ",color);
+  (void) fprintf(file,"background-color=%.1024s  ",color);
   (void) QueryColorName(&image->border_color,color);
-  (void) fprintf(file,"Border-color=%.1024s  ",color);
+  (void) fprintf(file,"border-color=%.1024s  ",color);
   (void) QueryColorName(&image->matte_color,color);
-  (void) fprintf(file,"Matte-color=%.1024s\n",color);
+  (void) fprintf(file,"matte-color=%.1024s\n",color);
   if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
-    (void) fprintf(file,"Scene=%u  Iterations=%u  Delay=%u  Dispose=%u\n",
+    (void) fprintf(file,"scene=%u  iterations=%u  delay=%u  Dispose=%u\n",
       image->scene,image->iterations,image->delay,image->dispose);
   else
     {
       if (image->scene != 0)
-        (void) fprintf(file,"Scene=%u\n",image->scene);
+        (void) fprintf(file,"scene=%u\n",image->scene);
       if (image->iterations != 1)
-        (void) fprintf(file,"Iterations=%u\n",image->iterations);
+        (void) fprintf(file,"iterations=%u\n",image->iterations);
       if (image->delay != 0)
-        (void) fprintf(file,"Delay=%u\n",image->delay);
+        (void) fprintf(file,"delay=%u\n",image->delay);
       if (image->dispose != 0)
-        (void) fprintf(file,"Dispose=%u\n",image->dispose);
+        (void) fprintf(file,"dispose=%u\n",image->dispose);
     }
+  if (image->mean_error_per_pixel != 0)
+    (void) fprintf(file,"error=%u  mean-error=%g  maximum-error=%g\n",
+      image->mean_error_per_pixel,image->normalized_mean_error,
+      image->normalized_maximum_error);
   if (image->rendering_intent != UndefinedIntent)
     {
       if (image->rendering_intent == SaturationIntent)
-        (void) fprintf(file,"Rendering-intent=saturation\n");
+        (void) fprintf(file,"rendering-intent=saturation\n");
       else
         if (image->rendering_intent == PerceptualIntent)
-          (void) fprintf(file,"Rendering-intent=perceptual\n");
+          (void) fprintf(file,"rendering-intent=perceptual\n");
         else
           if (image->rendering_intent == AbsoluteIntent)
-            (void) fprintf(file,"Rendering-intent=absolute\n");
+            (void) fprintf(file,"rendering-intent=absolute\n");
           else
-            (void) fprintf(file,"Rendering-intent=relative\n");
+            (void) fprintf(file,"rendering-intent=relative\n");
     }
   if (image->gamma != 0.0)
-    (void) fprintf(file,"Gamma=%g\n",image->gamma);
+    (void) fprintf(file,"gamma=%g\n",image->gamma);
   if (image->chromaticity.white_point.x != 0.0)
     {
       /*
         Note chomaticity points.
       */
       (void) fprintf(file,
-        "Red-primary=%g,%g  Green-primary=%g,%g  Blue-primary=%g,%g\n",
+        "red-primary=%g,%g  green-primary=%g,%g  blue-primary=%g,%g\n",
         image->chromaticity.red_primary.x,image->chromaticity.red_primary.y,
         image->chromaticity.green_primary.x,
         image->chromaticity.green_primary.y,
         image->chromaticity.blue_primary.x,
         image->chromaticity.blue_primary.y);
-      (void) fprintf(file,"White-point=%g,%g\n",
+      (void) fprintf(file,"white-point=%g,%g\n",
         image->chromaticity.white_point.x,image->chromaticity.white_point.y);
     }
   if (image->color_profile.length > 0)
-    (void) fprintf(file,"Profile-icc=%u\n",image->color_profile.length);
+    (void) fprintf(file,"profile-icc=%u\n",image->color_profile.length);
   if (image->iptc_profile.length > 0)
-    (void) fprintf(file,"Profile-iptc=%u\n",image->iptc_profile.length);
+    (void) fprintf(file,"profile-iptc=%u\n",image->iptc_profile.length);
   if (image->generic_profiles != 0)
     {
       /*
         Generic profile.
       */
       for (i=0; i < image->generic_profiles; i++)
-        (void) fprintf(file,"Profile-%s=%u\n",
+        (void) fprintf(file,"profile-%s=%u\n",
           image->generic_profile[i].name == (char *) NULL ? "generic" :
           image->generic_profile[i].name,image->generic_profile[i].length);
     }
   if (image->montage != (char *) NULL)
-    (void) fprintf(file,"Montage=%.1024s\n",image->montage);
+    (void) fprintf(file,"montage=%.1024s\n",image->montage);
   SignatureImage(image);
   attribute=GetImageAttribute(image,(char *) NULL);
   for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)

@@ -272,19 +272,19 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 'b':
             case 'B':
             {
-              if (LocaleCompare(keyword,"Background-color") == 0)
+              if (LocaleCompare(keyword,"background-color") == 0)
                 {
                   (void) QueryColorDatabase(values,&image->background_color);
                   break;
                 }
-              if (LocaleCompare(keyword,"Blue-primary") == 0)
+              if (LocaleCompare(keyword,"blue-primary") == 0)
                 {
                   (void) sscanf(values,"%lf,%lf",
                     &image->chromaticity.blue_primary.x,
                     &image->chromaticity.blue_primary.y);
                   break;
                 }
-              if (LocaleCompare(keyword,"Border-color") == 0)
+              if (LocaleCompare(keyword,"border-color") == 0)
                 {
                   (void) QueryColorDatabase(values,&image->border_color);
                   break;
@@ -296,12 +296,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 'c':
             case 'C':
             {
-              if (LocaleCompare(keyword,"Cache") == 0)
+              if (LocaleCompare(keyword,"cache") == 0)
                 {
                   (void) strcpy(cache_info->cache_filename,values);
                   break;
                 }
-              if (LocaleCompare(keyword,"Class") == 0)
+              if (LocaleCompare(keyword,"class") == 0)
                 {
                   if (LocaleCompare(values,"PseudoClass") == 0)
                     image->storage_class=PseudoClass;
@@ -312,12 +312,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       image->storage_class=UndefinedClass;
                   break;
                 }
-              if (LocaleCompare(keyword,"Colors") == 0)
+              if (LocaleCompare(keyword,"colors") == 0)
                 {
                   image->colors=(unsigned int) atoi(values);
                   break;
                 }
-              if (LocaleCompare(keyword,"Colorspace") == 0)
+              if (LocaleCompare(keyword,"colorspace") == 0)
                 {
                   if (LocaleCompare(values,"CMYK") == 0)
                     image->colorspace=CMYKColorspace;
@@ -326,7 +326,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       image->colorspace=RGBColorspace;
                   break;
                 }
-              if (LocaleCompare(keyword,"Compression") == 0)
+              if (LocaleCompare(keyword,"compression") == 0)
                 {
                   CompressionType
                     compression;
@@ -353,7 +353,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   image->compression=compression;
                   break;
                 }
-              if (LocaleCompare(keyword,"Columns") == 0)
+              if (LocaleCompare(keyword,"columns") == 0)
                 {
                   image->columns=(unsigned int) atoi(values);
                   break;
@@ -365,19 +365,31 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 'd':
             case 'D':
             {
-              if (LocaleCompare(keyword,"Delay") == 0)
+              if (LocaleCompare(keyword,"delay") == 0)
                 {
                   image->delay=atoi(values);
                   break;
                 }
-              if (LocaleCompare(keyword,"Depth") == 0)
+              if (LocaleCompare(keyword,"depth") == 0)
                 {
                   image->depth=atoi(values) <= 8 ? 8 : 16;
                   break;
                 }
-              if (LocaleCompare(keyword,"Dispose") == 0)
+              if (LocaleCompare(keyword,"dispose") == 0)
                 {
                   image->dispose=atoi(values);
+                  break;
+                }
+              (void) SetImageAttribute(image,keyword,
+                *values == '{' ? values+1 : values);
+              break;
+            }
+            case 'e':
+            case 'E':
+            {
+              if (LocaleCompare(keyword,"error") == 0)
+                {
+                  image->mean_error_per_pixel=atoi(values);
                   break;
                 }
               (void) SetImageAttribute(image,keyword,
@@ -387,12 +399,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 'g':
             case 'G':
             {
-              if (LocaleCompare(keyword,"Gamma") == 0)
+              if (LocaleCompare(keyword,"gamma") == 0)
                 {
                   image->gamma=atof(values);
                   break;
                 }
-              if (LocaleCompare(keyword,"Green-primary") == 0)
+              if (LocaleCompare(keyword,"green-primary") == 0)
                 {
                   (void) sscanf(values,"%lf,%lf",
                     &image->chromaticity.green_primary.x,
@@ -406,12 +418,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 'i':
             case 'I':
             {
-              if (LocaleCompare(keyword,"Id") == 0)
+              if (LocaleCompare(keyword,"id") == 0)
                 {
                   (void) strcpy(id,values);
                   break;
                 }
-              if (LocaleCompare(keyword,"Iterations") == 0)
+              if (LocaleCompare(keyword,"iterations") == 0)
                 {
                   image->iterations=atoi(values);
                   break;
@@ -423,18 +435,28 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 'm':
             case 'M':
             {
-              if (LocaleCompare(keyword,"Matte") == 0)
+              if (LocaleCompare(keyword,"matte") == 0)
                 {
                   image->matte=(LocaleCompare(values,"True") == 0) ||
                     (LocaleCompare(values,"true") == 0);
                   break;
                 }
-              if (LocaleCompare(keyword,"Matte-color") == 0)
+              if (LocaleCompare(keyword,"matte-color") == 0)
                 {
                   (void) QueryColorDatabase(values,&image->matte_color);
                   break;
                 }
-              if (LocaleCompare(keyword,"Montage") == 0)
+              if (LocaleCompare(keyword,"maximum-error") == 0)
+                {
+                  image->normalized_maximum_error=atof(values);
+                  break;
+                }
+              if (LocaleCompare(keyword,"mean-error") == 0)
+                {
+                  image->normalized_mean_error=atof(values);
+                  break;
+                }
+              if (LocaleCompare(keyword,"montage") == 0)
                 {
                   (void) CloneString(&image->montage,values);
                   break;
@@ -446,21 +468,21 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 'p':
             case 'P':
             {
-              if (LocaleCompare(keyword,"Page") == 0)
+              if (LocaleCompare(keyword,"page") == 0)
                 {
                   ParseImageGeometry(PostscriptGeometry(values),
                     &image->page.x,&image->page.y,
                     &image->page.width,&image->page.height);
                   break;
                 }
-              if (LocaleNCompare(keyword,"Profile-",8) == 0)
+              if (LocaleNCompare(keyword,"profile-",8) == 0)
                 {
-                  if (LocaleCompare(keyword,"Profile-icc") == 0)
+                  if (LocaleCompare(keyword,"profile-icc") == 0)
                     {
                       image->color_profile.length=atoi(values);
                       break;
                     }
-                  if (LocaleCompare(keyword,"Profile-iptc") == 0)
+                  if (LocaleCompare(keyword,"profile-iptc") == 0)
                     {
                       image->iptc_profile.length=atoi(values);
                       break;
@@ -488,14 +510,14 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 'r':
             case 'R':
             {
-              if (LocaleCompare(keyword,"Red-primary") == 0)
+              if (LocaleCompare(keyword,"red-primary") == 0)
                 {
                   (void) sscanf(values,"%lf,%lf",
                     &image->chromaticity.red_primary.x,
                     &image->chromaticity.red_primary.y);
                   break;
                 }
-              if (LocaleCompare(keyword,"Rendering-intent") == 0)
+              if (LocaleCompare(keyword,"rendering-intent") == 0)
                 {
                   if (LocaleCompare(values,"Saturation") == 0)
                     image->rendering_intent=SaturationIntent;
@@ -512,13 +534,13 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           image->rendering_intent=UndefinedIntent;
                   break;
                 }
-              if (LocaleCompare(keyword,"Resolution") == 0)
+              if (LocaleCompare(keyword,"resolution") == 0)
                 {
                   (void) sscanf(values,"%lfx%lf",&image->x_resolution,
                     &image->y_resolution);
                   break;
                 }
-              if (LocaleCompare(keyword,"Rows") == 0)
+              if (LocaleCompare(keyword,"rows") == 0)
                 {
                   image->rows=(unsigned int) atoi(values);
                   break;
@@ -530,7 +552,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 's':
             case 'S':
             {
-              if (LocaleCompare(keyword,"Scene") == 0)
+              if (LocaleCompare(keyword,"scene") == 0)
                 {
                   image->scene=(unsigned int) atoi(values);
                   break;
@@ -542,7 +564,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 'u':
             case 'U':
             {
-              if (LocaleCompare(keyword,"Units") == 0)
+              if (LocaleCompare(keyword,"units") == 0)
                 {
                   if (LocaleCompare(values,"undefined") == 0)
                     image->units=UndefinedResolution;
@@ -561,7 +583,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 'w':
             case 'W':
             {
-              if (LocaleCompare(keyword,"White-point") == 0)
+              if (LocaleCompare(keyword,"white-point") == 0)
                 {
                   (void) sscanf(values,"%lf,%lf",
                     &image->chromaticity.white_point.x,
