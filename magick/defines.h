@@ -144,9 +144,9 @@ extern "C" {
      (((double) (color).blue-(double) (target).blue)* \
       ((double) (color).blue-(double) (target).blue))) <= \
       (double) (distance*distance))
-#define CompositeCoverage(alpha,beta) ((alpha)+(beta)-(alpha)*(beta)/MaxRGB)
-#define CompositeOver(A,alpha,B,beta) ((unsigned long) (MaxRGB*((alpha)*(A)/ \
-  MaxRGB+(beta)*((B)-(alpha)*(A)/MaxRGB)/MaxRGB)/CompositeCoverage(alpha,beta)))
+#define CompositeOver(A,alpha,B,beta) ((unsigned long) \
+  (MaxRGB*((alpha)*(A)/MaxRGB+(beta)*((B)-(alpha)*(A)/MaxRGB)/MaxRGB)/ \
+  ((alpha)+(beta)-(alpha)*(beta)/MaxRGB)))
 #define Extent(string)  ((int) strlen(string))
 #define False  0
 #define DegreesToRadians(x) (MagickPI*(x)/180.0)

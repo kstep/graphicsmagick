@@ -474,8 +474,8 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
                     color.green,MaxRGB-color.opacity);
                   q->blue=CompositeOver(q->blue,MaxRGB-q->opacity,
                     color.blue,MaxRGB-color.opacity);
-                  q->opacity=CompositeCoverage(MaxRGB-q->opacity,
-                    MaxRGB-color.opacity);
+                  q->opacity=CompositeOver(q->opacity,MaxRGB-q->opacity,
+                    color.opacity,MaxRGB-color.opacity);
                   break;
                 }
               }
@@ -2797,8 +2797,8 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                         fill_color.green,MaxRGB-fill_opacity);
                       q->blue=CompositeOver(q->blue,MaxRGB-q->opacity,
                         fill_color.blue,MaxRGB-fill_opacity);
-                      q->opacity=CompositeCoverage(MaxRGB-q->opacity,
-                        MaxRGB-fill_opacity);
+                      q->opacity=CompositeOver(q->opacity,MaxRGB-q->opacity,
+                        fill_color.opacity,MaxRGB-fill_opacity);
                       break;
                     }
                   }
@@ -2831,8 +2831,8 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                 stroke_color.green,MaxRGB-stroke_opacity);
               q->blue=CompositeOver(q->blue,MaxRGB-q->opacity,
                 stroke_color.blue,MaxRGB-stroke_opacity);
-              q->opacity=CompositeCoverage(MaxRGB-q->opacity,
-                MaxRGB-stroke_opacity);
+              q->opacity=CompositeOver(q->opacity,MaxRGB-q->opacity,
+                stroke_color.opacity,MaxRGB-stroke_opacity);
               break;
             }
           }

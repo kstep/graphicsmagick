@@ -1328,8 +1328,8 @@ MagickExport unsigned int CompositeImage(Image *image,
                 p->green,MaxRGB-p->opacity);
               blue=CompositeOver(q->blue,MaxRGB-q->opacity,
                 p->blue,MaxRGB-p->opacity);
-              opacity=CompositeCoverage(MaxRGB-q->opacity,
-                MaxRGB-p->opacity);
+              opacity=CompositeOver(q->opacity,MaxRGB-q->opacity,
+                p->opacity,MaxRGB-p->opacity);
               break;
             }
           }

@@ -1103,7 +1103,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                   draw_info->fill.green,MaxRGB-opacity);
                 q->blue=CompositeOver(q->blue,MaxRGB-q->opacity,
                   draw_info->fill.blue,MaxRGB-opacity);
-                q->opacity=CompositeCoverage(MaxRGB-q->opacity,MaxRGB-opacity);
+                q->opacity=CompositeOver(q->opacity,MaxRGB-q->opacity,
+                  draw_info->fill.opacity,MaxRGB-opacity);
                 break;
               }
             }
