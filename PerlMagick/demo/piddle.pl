@@ -44,17 +44,7 @@ $image->Draw(primitve=>'Arc',stroke=>'black',fill=>'blue',linewidth=>4,
 #
 $image->Draw(primitive=>'polygon',
   points=>"160,120 130,190 210,145 110,145 190,190 160,120",stroke=>red,
-  linewidth=>3);
-$image->Draw(primitive=>'color',points=>'160,140',fill=>LimeGreen,
-  method=>'filltoborder',bordercolor=>red);
-$image->Draw(primitive=>'color',points=>'190,155',fill=>LimeGreen,
-  method=>'filltoborder',bordercolor=>red);
-$image->Draw(primitive=>'color',points=>'140,170',fill=>LimeGreen,
-  method=>'filltoborder',bordercolor=>red);
-$image->Draw(primitive=>'color',points=>'130,155',fill=>LimeGreen,
-  method=>'filltoborder',bordercolor=>red);
-$image->Draw(primitive=>'color',points=>'180,170',fill=>LimeGreen,
-  method=>'filltoborder',bordercolor=>red);
+  fill=>LimeGreen,linewidth=>3);
 #
 # Draw rectangle.
 #
