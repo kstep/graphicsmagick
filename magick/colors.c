@@ -1419,6 +1419,16 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
       color->opacity=OpaqueOpacity;
       return(True);
     }
+  if (LocaleNCompare(target,"rgba(",5) == 0)
+    {
+      (void) sscanf(target,"%*[^(](%d%*[ ,]%d%*[ ,]%d%*[ ,]%d",&red,&green,
+        &blue,&opacity);
+      color->red=UpScale(red);
+      color->green=UpScale(green);
+      color->blue=UpScale(blue);
+      color->opacity=opacity;
+      return(True);
+    }
   /*
     Search our internal color database.
   */

@@ -2718,7 +2718,9 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              (void) QueryColorName(&image->background_color,color);
+              FormatString(color,"%u,%u,%u,%u",image->background_color.red,
+                image->background_color.green,image->background_color.blue,
+                image->background_color.opacity);
               s=newSVpv(color,0);
               break;
             }
@@ -2767,7 +2769,9 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              (void) QueryColorName(&image->border_color,color);
+              FormatString(color,"%u,%u,%u,%u",image->border_color.red,
+                image->border_color.green,image->border_color.blue,
+                image->border_color.opacity);
               s=newSVpv(color,0);
               break;
             }
@@ -2842,7 +2846,9 @@ Get(ref,...)
               (void) sscanf(attribute,"%*[^[][%d",&j);
               if (j > image->colors)
                 j%=image->colors;
-              (void) QueryColorName(image->colormap+j,color);
+              FormatString(color,"%u,%u,%u,%u",image->colormap[j].red,
+                image->colormap[j].green,image->colormap[j].blue,
+                image->colormap[j].opacity);
               s=newSVpv(color,0);
               break;
             }
@@ -3121,7 +3127,9 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              (void) QueryColorName(&image->matte_color,color);
+              FormatString(color,"%u,%u,%u,%u",image->matte_color.red,
+                image->matte_color.green,image->matte_color.blue,
+                image->matte_color.opacity);
               s=newSVpv(color,0);
               break;
             }
@@ -6005,6 +6013,52 @@ QueryColor(ref,...)
             target_color.green,target_color.blue,target_color.opacity);
           s=sv_2mortal(newSVpv(message,0));
         }
+      PUSHs(s);
+    }
+    SvREFCNT_dec(error_list);
+    error_list=NULL;
+  }
+
+#
+###############################################################################
+#                                                                             #
+#                                                                             #
+#                                                                             #
+#   Q u e r y C o l o r N a m e                                               #
+#                                                                             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#
+#
+void
+QueryColorName(ref,...)
+  Image::Magick ref=NO_INIT
+  ALIAS:
+    querycolorname = 1
+  PPCODE:
+  {
+    char
+      message[MaxTextExtent];
+
+    PixelPacket
+      target_color;
+
+    register int
+      i;
+
+    SV
+      *s;
+
+    EXTEND(sp,items-1);
+    error_list=newSVpv("",0);
+    for (i=1; i < items; i++)
+    {
+      (void) QueryColorDatabase(SvPV(ST(i),na),&target_color);
+      if (!QueryColorName(&target_color,message))
+        s=(&sv_undef);
+      else
+        s=sv_2mortal(newSVpv(message,0));
       PUSHs(s);
     }
     SvREFCNT_dec(error_list);

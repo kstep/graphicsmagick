@@ -93,7 +93,7 @@ developed to be used by CGI scripts for Web pages.
 
 A Web page has been set up for this extension. See:
 
-	http://www.wizards.dupont.com/cristy/www/perl.html
+	http://www.simplesystems.org/ImageMagick/www/perl.html
 
 =head1 AUTHOR
 

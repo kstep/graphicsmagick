@@ -912,15 +912,13 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("pen",option+1) == 0)
             {
-              (void) QueryColorDatabase("none",&montage_info->fill);
-              (void) QueryColorDatabase("none",&montage_info->stroke);
+              (void) QueryColorDatabase("none",&image_info->pen);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
-                    MagickError(OptionError,"Missing fill color",option);
-                  (void) QueryColorDatabase(argv[i],&montage_info->fill);
-                  (void) QueryColorDatabase(argv[i],&montage_info->stroke);
+                    MagickError(OptionError,"Missing pen color",option);
+                  (void) QueryColorDatabase(argv[i],&image_info->pen);
                 }
               break;
             }

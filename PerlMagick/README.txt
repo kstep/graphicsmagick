@@ -9,11 +9,11 @@ Introduction
 
     See
 
-        http://www.wizards.dupont.com/magick/www/perl.html
+        http://www.simplesystems.org/ImageMagick/www/perl.html
 
     for additional information about PerlMagick.  See
 
-        http://www.wizards.dupont.com/magick/
+        http://www.simplesystems.org/ImageMagick/
 
     for instructions about installing ImageMagick.
 

@@ -1634,9 +1634,6 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
   register int
     i;
 
-  unsigned int
-    status;
-
   /*
     Write persistent cache meta-information.
   */

@@ -1318,11 +1318,13 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("pen",option+1) == 0)
             {
+              (void) QueryColorDatabase("none",&image_info->pen);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing pen color",option);
+                  (void) QueryColorDatabase(argv[i],&image_info->pen);
                 }
               break;
             }
