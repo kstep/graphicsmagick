@@ -819,9 +819,22 @@ then
     failed=0;
     passed=0;
 
-dnl First see if there is a library
     OLD_LDFLAGS="$LDFLAGS"
-    LDFLAGS=-L`freetype-config --prefix`/lib" $LDFLAGS" 2> /dev/null
+    OLD_CPPFLAGS="$CPPFLAGS"
+    if test -d "$builddir/ttf/include"
+    then
+       :
+    else
+       freetype_config=''
+       AC_CHECK_PROGS(freetype_config,freetype-config,)dnl
+       if test -n "$freetype_config"
+       then
+          LDFLAGS=-L`freetype-config --prefix`/lib" $LDFLAGS" 2> /dev/null
+          CPPFLAGS=`freetype-config --cflags`" $CPPFLAGS" 2> /dev/null
+       fi
+    fi
+
+dnl First see if there is a library
     if test "$LIB_TTF" = ''
     then
       AC_CHECK_LIB(freetype,FT_Init_FreeType,LIB_TTF='-lfreetype',,)
@@ -834,7 +847,6 @@ dnl First see if there is a library
     fi
 
 dnl Next see what magic is required for the headers
-    OLD_CPPFLAGS="$CPPFLAGS"
     if test "$LIB_TTF" != ''
     then
       CPPFLAGS=`freetype-config --cflags`" $CPPFLAGS" 2> /dev/null

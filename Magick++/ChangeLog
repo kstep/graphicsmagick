@@ -1,3 +1,9 @@
+2000-11-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Color.h (alphaQuantum): Bugfix.  Due to change in
+ 	treatment of opacity member, alphaQuantum() was not allowing value
+ 	to be set.
+
 2000-11-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (DrawableFillRule): New class to specify fill

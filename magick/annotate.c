@@ -59,8 +59,8 @@
 #include "xwindows.h"
 #endif
 #if defined(HasTTF)
-#include "freetype2/freetype.h"
-#include "freetype2/ftglyph.h"
+#include "freetype/freetype.h"
+#include "freetype/ftglyph.h"
 #endif
 
 /*
