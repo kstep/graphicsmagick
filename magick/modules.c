@@ -312,7 +312,7 @@ MagickExport void InitializeModules(void)
 
   char
     alias[MaxTextExtent],
-    aliases[MaxTextExtent],
+    filename[MaxTextExtent],
     message[MaxTextExtent],
     module[MaxTextExtent];
 
@@ -320,6 +320,7 @@ MagickExport void InitializeModules(void)
     *file;
 
   ModuleAliases
+    *aliases,
     *entry,
     *module_aliases;
 
@@ -345,7 +346,7 @@ MagickExport void InitializeModules(void)
     Add user specified path.
   */
   i=0;
-  module_path=(char **) AllocateMemory((MaxPathElements+1)*sizeof(char*));
+  module_path=(char **) AllocateMemory((MaxPathElements+1)*sizeof(char *));
   if (module_path == (char **) NULL)
     MagickError(ResourceLimitError,"Unable to allocate module path",
       "Memory allocation failed");
@@ -400,10 +401,10 @@ MagickExport void InitializeModules(void)
   module_aliases=(ModuleAliases *) NULL;
   for (i=0; module_path[i]; i++)
   {
-    (void) strcpy(aliases,module_path[i]);
-    (void) strcat(aliases,DirectorySeparator);
-    (void) strcat(aliases,"modules.mgk");
-    file=fopen(aliases,"r");
+    (void) strcpy(filename,module_path[i]);
+    (void) strcat(filename,DirectorySeparator);
+    (void) strcat(filename,"modules.mgk");
+    file=fopen(filename,"r");
     if (file == (FILE*) NULL)
       continue;
     while(!feof(file))
@@ -411,19 +412,16 @@ MagickExport void InitializeModules(void)
       if (fscanf(file,"%s %s",alias,module) != 2)
         continue;
       match=False;
-      if (module_aliases != (ModuleAliases *) NULL)
-        {
-          entry=module_aliases;
-          while (entry != (ModuleAliases *) NULL)
+      entry=module_aliases;
+      while (entry != (ModuleAliases *) NULL)
+      {
+        if (LocaleCompare(entry->alias,alias) == 0)
           {
-            if (LocaleCompare(entry->alias,alias) == 0)
-              {
-                match=True;
-                break;
-              }
-            entry=entry->next;
+            match=True;
+            break;
           }
-        }
+        entry=entry->next;
+      }
       if (match != False)
         continue;
       entry=(ModuleAliases *) AllocateMemory(sizeof(ModuleAliases));
@@ -432,16 +430,14 @@ MagickExport void InitializeModules(void)
       entry->alias=AllocateString(alias);
       entry->module=AllocateString(module);
       entry->next=(ModuleAliases *) NULL;
-      if (module_aliases != (ModuleAliases *) NULL)
-        {
-          module_aliases->next=entry;
-          module_aliases=module_aliases->next;
-        }
-      else
+      if (module_aliases == (ModuleAliases *) NULL)
         {
           module_aliases=entry;
-          module_aliases=module_aliases;
+          aliases=module_aliases;
+          continue;
         }
+      aliases->next=entry;
+      aliases=aliases->next;
     }
     (void) fclose(file);
   }
