@@ -99,7 +99,7 @@ PERLMAKEFILE=$(PERLMAGICK)/Makefile
 perl-sources:
 	if test -n "$(VPATH)" ; then \
 	  imagemagick=`(cd $(VPATH) ; pwd)` && \
-	  ( cd $(PERLMAGICK) && sh $$imagemagick/lndir.sh $$imagemagick/$(PERLMAGICK) > /dev/null 2>&1 ) \
+	  ( cd $(PERLMAGICK) && sh $$imagemagick/lndir.sh $$imagemagick/$(PERLMAGICK) ) \
 	fi
 	touch perl-sources
 
