@@ -132,7 +132,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True', texture=>'granite:'/,
   '82b75bbbd5c5f3a7ce5e4b6e5e25a36c3112bb12ec71734e6b30d7411f41f30a',
-  '4460aed62ea92c2f4fcf15bca4554b64c3f0287ecc1d7fe603d6b8370ea23126');
+  'b939669fdd6cc5728a72e38c6ced1667aa3627701edd57f9b9f8d17a951b2572');
 
 #
 # 14) Test Un-bordered, Un-framed Montage
@@ -142,7 +142,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'False',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
   'cd52634b03dbcaeaeac18c864ac546abe2873ac88e5052ad02954a11365693a0',
-  'c32daadc52aa79a6f12cf04182864192dcdb8197d51fa3b8ef8b1c414f8de1f1');
+  'b939669fdd6cc5728a72e38c6ced1667aa3627701edd57f9b9f8d17a951b2572');
 
 #
 # 15) Test Bordered, Un-framed Montage (frame=>'False')
@@ -152,7 +152,7 @@ testMontage( q/bordercolor=>'red'/,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'False',
   borderwidth=>'5', gravity=>'Center', background=>'gray'/,
   'eb1b247598e3607f2a35e47778c02aa290149d257219a2e78b4725b2e9af92ba',
-  '019881a171a42b04e82446d0d1025a01ccef7d056044536680c8bd5f909318d6');
+  'c57df18c429cef35f945eff1a652936f6175364d1faf98d913aeeecd2730f42c');
 
 #
 # 16) Test Bordered, Un-framed Montage (mode=>'UnFrame')
@@ -171,7 +171,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'16x1', geometry=>'90x80+0+0>', frame=>'False',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
   'f303be695aae3186a2487eec706c659b55437b0ee2e42bba5c1ebd99767d7915',
-  'e2d91de74a637bc34e1965900076654595ffd24995566974b4b8fc8c2ac44b31');
+  '9627d614aa805454ac77c23e2705b00eb24b87a296de29d698c7907051d3dc43');
 
 #
 # 18) Test concatenated thumbnail Montage (concatenated via special Concatenate mode)
@@ -191,4 +191,4 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'+0+0', frame=>'False', shadow=>'False',
   borderwidth=>'0', background=>'gray'/,
   '73ae9c5474bafee3b42a1a1626c6774c1a7b3371f705f91d507b55cfe29e5d5b',
-  '00afe64ddf0bfb87b0c66b1d3e06ebe41f5e5054cd3cad5a6d8fa0b5d9a26801');
+  '7a7119c257ab46d70ac2e6579b714786a28cd7c7d4837ff756b115f7f8d4c788');

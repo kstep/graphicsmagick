@@ -128,7 +128,7 @@ testFilter('input.miff', 'MatteFloodfill',
 testFilter('input.miff', 'Minify',
   q/ /,
   'e2cc6133847f02d4ae3834919ef8329de7b4876581b06dbc46802ca7bbb0ffec',
-  'c33bd56e6384526024abd702b6d87faac74e499b67e9c6e37164cfd04c6acc78');
+  '04c20b2b86f039474f0196077f1c634a877a28128aa04c141dba6df0d17b00db');
 
 ++$test;
 testFilter('input.miff', 'Modulate',
@@ -207,7 +207,7 @@ testFilter('input.miff', 'Segment',
 testFilter('input.miff', 'Shade',
   q/30/,
   'd539e24d03ae74330991d28c440bb69d629ddc491689e95290068a5e4e38eabe',
-  '6dfc24506f84516feaf3e106119d3a17f6059db67d1e196f8d4810d2816c0eb6');
+  'e36ed90943c91887f6f480e240da669297c28fd9e662fbcdba6ed02891aa5764');
 
 ++$test;
 testFilter('input.miff', 'Sharpen',

@@ -32,7 +32,7 @@ use Config;
 # Compute test specification
 my $delegate_tests='t/*.t';
 my $delegate;
-foreach $delegate (qw/ bzlib fpx jp2 jpeg lcms mpeg png ps tiff ttf wmf x xfig zlib/) {
+foreach $delegate (qw/ bzlib fpx jp2 jpeg lcms mpeg png ps tiff ttf x xfig zlib/) {
   if( -d "t/$delegate" ) {
     $delegate_tests .= " t/$delegate/*.t";
   }
@@ -58,7 +58,7 @@ WriteMakefile
    'INSTALLBIN'	=> '${exec_prefix}/bin',
 
    # Library specification
-   'LIBS'	=> ['-L/usr/lib -L/usr/lib -L/usr/local/lib -L/usr/X11R6/lib -L/home/cristy/ImageMagick/magick -lMagick -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -lfpx -lwmf -ldpstk -ldps -lXext -lXt -lSM -lICE -lX11 -lbz2 -lxml2 -lz -lpthread -lm'],
+   'LIBS'	=> ['-L/usr/lib -L/usr/lib -L/usr/local/lib -L/usr/X11R6/lib -L/home/cristy/ImageMagick/magick -lMagick -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -lfpx -ldpstk -ldps -lXext -lXt -lSM -lICE -lX11 -lbz2 -lxml2 -lz -lpthread -lm'],
 
    # Perl binary name (if a Perl binary is built)
    'MAP_TARGET'	=> 'PerlMagick',

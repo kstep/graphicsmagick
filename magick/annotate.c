@@ -555,9 +555,6 @@ static unsigned short *EncodeUnicode(const char *text,size_t *count)
   int
     c;
 
-  register int
-    i;
-
   register const char
     *p;
 
