@@ -61,7 +61,7 @@
 */
 const char
   *AppendBinaryType = "ab",
-  *BackgroundColor = "#000000ff",  /* black */
+  *BackgroundColor = "#ffffff",  /* white */
   *BorderColor = "#dfdfdf",  /* gray */
   *DefaultTileFrame = "15x15+3+3",
   *DefaultTileGeometry = "120x120+4+3>",
