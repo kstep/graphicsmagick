@@ -71,32 +71,6 @@ typedef struct _DIR
 
 #endif
 
-/*
-  We don't want to depend on Ghostscript's iapi.h so equivalent
-  function vectors are defined here.
-*/
-
-#ifndef gs_main_instance_DEFINED
-# define gs_main_instance_DEFINED
-typedef struct gs_main_instance_s gs_main_instance;
-#endif
-#if defined(WIN32)
-# ifndef DLLCALL
-#  define DLLCALL __stdcall
-# endif
-#endif /* WIN32 */
-typedef struct _GhostscriptVectors
-{
-  int
-    (DLLCALL* exit)(gs_main_instance *instance),
-    (DLLCALL* init_with_args)(gs_main_instance *instance, int argc, char **argv),
-    (DLLCALL* new_instance)(gs_main_instance **pinstance, void *caller_handle),
-    (DLLCALL* run_string)(gs_main_instance *instance, const char *str, int user_errors, int *pexit_code);
-
-  void
-    (DLLCALL* delete_instance)(gs_main_instance *instance);
-} GhostscriptVectors;
-
 
 /*
   NT utilities routines.

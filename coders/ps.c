@@ -119,7 +119,7 @@ static unsigned int ExecutePostscriptInterpreter(const unsigned int verbose,
     gs_func_struct;
 
   const GhostscriptVectors
-    *gs_func = &gs_funcs_struct;
+    *gs_func = &gs_func_struct;
 
   gs_func_struct.exit=gsapi_exit;
   gs_func_struct.init_with_args=gsapi_init_with_args;
