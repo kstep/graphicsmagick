@@ -294,6 +294,8 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
   GetBlobInfo(clone_info);
   if (blob_info == (BlobInfo *) NULL)
     return(clone_info);
+  clone_info->fifo=blob_info->fifo;
+  clone_info->file=blob_info->file;
   clone_info->length=blob_info->length;
   clone_info->extent=blob_info->extent;
   clone_info->quantum=blob_info->quantum;
@@ -302,6 +304,8 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
   clone_info->data=blob_info->data;
   clone_info->offset=blob_info->offset;
   clone_info->size=blob_info->size;
+  clone_info->reference_count=1;
+  clone_info->semaphore=(SemaphoreInfo *) NULL;
   return(clone_info);
 }
 
@@ -337,10 +341,11 @@ MagickExport void CloseBlob(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   image->taint=False;
-  if (image->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
+  if (image->blob->fifo !=
+       (int (*)(const Image *,const void *,const size_t)) NULL)
     {
-      (void) image->fifo(image,(const void *) NULL,0);
-      image->fifo=(int (*)(const Image *,const void *,const size_t)) NULL;
+      (void) image->blob->fifo(image,(const void *) NULL,0);
+      image->blob->fifo=(int (*)(const Image *,const void *,const size_t)) NULL;
       return;
     }
   image->blob->eof=False;
@@ -1016,7 +1021,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   if (image_info->fifo !=
       (int (*)(const Image *,const void *,const size_t)) NULL)
     {
-      image->fifo=image_info->fifo;  /* image stream */
+      image->blob->fifo=image_info->fifo;  /* image stream */
       if (*type == 'w')
         return(True);
     }
@@ -1915,8 +1920,9 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(data != (const char *) NULL);
-  if (image->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
-    return(image->fifo(image,data,length));
+  if (image->blob->fifo !=
+       (int (*)(const Image *,const void *,const size_t)) NULL)
+    return(image->blob->fifo(image,data,length));
   if (image->blob->data != (unsigned char *) NULL)
     {
       if ((image->blob->offset+length) >= image->blob->extent)

@@ -7092,7 +7092,8 @@ Read(ref,...)
       i;
 
     struct PackageInfo
-      *info;
+      *info,
+      *package_info;
 
     SV
       *reference,
@@ -7105,6 +7106,7 @@ Read(ref,...)
     volatile int
       number_images;
 
+    package_info=(struct PackageInfo *) NULL;
     number_images=0;
     error_list=newSVpv("",0);
     ac=(items < 2) ? 1 : items-1;
@@ -7123,10 +7125,11 @@ Read(ref,...)
       }
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
+    package_info=ClonePackageInfo(info);
     n=1;
     if (items <= 1)
-      *list=(char *)
-        (*info->image_info->filename ? info->image_info->filename : "XC:black");
+      *list=(char *) (*package_info->image_info->filename ?
+        package_info->image_info->filename : "XC:black");
     else
       for (n=0, i=0; i < ac; i++)
       {
@@ -7135,7 +7138,7 @@ Read(ref,...)
           continue;
         if ((items >= 3) && strEQcase(list[n],"file"))
           {
-            info->image_info->file=(FILE *) IoIFP(sv_2io(ST(i+2)));
+            package_info->image_info->file=(FILE *) IoIFP(sv_2io(ST(i+2)));
             continue;
           }
         n++;
@@ -7154,8 +7157,9 @@ Read(ref,...)
     GetExceptionInfo(&exception);
     for (i=number_images=0; i < n; i++)
     {
-      (void) strncpy(info->image_info->filename,list[i],MaxTextExtent-1);
-      image=ReadImage(info->image_info,&exception);
+      (void) strncpy(package_info->image_info->filename,list[i],
+        MaxTextExtent-1);
+      image=ReadImage(package_info->image_info,&exception);
       if (exception.severity != UndefinedException)
         MagickError(exception.severity,exception.reason,
           exception.description);
@@ -7168,7 +7172,6 @@ Read(ref,...)
         number_images++;
       }
     }
-    info->image_info->file=(FILE *) NULL;
     /*
       Free resources.
     */
@@ -7183,6 +7186,8 @@ Read(ref,...)
             }
 
   ReturnIt:
+    if (package_info)
+      DestroyPackageInfo(package_info);
     LiberateMemory((void **) &list);
     sv_setiv(error_list,(IV) number_images);
     SvPOK_on(error_list);

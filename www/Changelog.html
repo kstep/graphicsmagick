@@ -23,11 +23,22 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-04-12  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
+  * Fixed a bug in writing layer names in PSD files
+
+2002-04-10  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * Fixed PingImage() memory leak (thanks to Timo Vogel).
+  * Added encoding and unicode attributes to PerlMagick (patch provided
+    by Youki Kadobayashi).
+
 2002-04-08  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Added reference counted blobs.
   * Added MagickFatalError() and SetFatalErrorHandler() to the C API.
+  * One color images caused memory overwrite in QuantizeImage() (thanks
+    to Vincent Broz).
+  * Memory leak in NormalizeImage() (thanks to Vincent Broz).
 
-2002-04-06  Glenn Randers-Pehrson &lt;randeg@alum.pri.edu&gt;
+2002-04-06  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
   *  Added CCIS-601 4:2:2 YUV format read-write support.
   *  Added CCIS-601 4:2:2 MPEG-2 format write support.
   *  Fixed a bug introduced in 5.4.0 that caused files with "M2V"

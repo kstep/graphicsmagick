@@ -193,7 +193,6 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->border_color=image_info->border_color;
   allocate_image->matte_color=image_info->matte_color;
   allocate_image->scene=image_info->subimage;
-  allocate_image->fifo=image_info->fifo;
   allocate_image->client_data=image_info->client_data;
   return(allocate_image);
 }
@@ -1006,7 +1005,6 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->client_data=image->client_data;
   clone_image->start_loop=image->start_loop;
   GetCacheInfo(&clone_image->cache);
-  clone_image->fifo=image->fifo;
   clone_image->reference_count=1;
   clone_image->ascii85=image->ascii85;
   clone_image->exempt=image->exempt;

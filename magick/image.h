@@ -109,8 +109,13 @@ typedef struct _Ascii85Info
     buffer[10];
 } Ascii85Info;
 
+struct _Image;
+
 typedef struct _BlobInfo
 {
+  int
+    (*fifo)(const struct _Image *,const void *,const size_t);
+
   FILE
     *file;
 
@@ -428,9 +433,6 @@ typedef struct _Image
 
   void
     *cache;
-
-  int
-    (*fifo)(const struct _Image *,const void *,const size_t);
 
   long
     reference_count;

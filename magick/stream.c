@@ -543,7 +543,8 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
         "Unable to set pixel stream","image does not contain the geometry");
       return((PixelPacket *) NULL);
     }
-  if (image->fifo == (int (*)(const Image *,const void *,const size_t)) NULL)
+  if (image->blob->fifo ==
+       (int (*)(const Image *,const void *,const size_t)) NULL)
     {
       ThrowException(&image->exception,StreamError,
         "Unable to set pixel stream","no fifo is defined");
@@ -555,7 +556,7 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
       (image->colorspace != GetCacheColorspace(image->cache)))
     {
       if (GetCacheClass(image->cache) == UndefinedClass)
-        (void) image->fifo(image,(const void *) NULL,stream_info->columns);
+        (void) image->blob->fifo(image,(const void *) NULL,stream_info->columns);
       stream_info->storage_class=image->storage_class;
       stream_info->colorspace=image->colorspace;
       stream_info->columns=image->columns;
@@ -622,7 +623,7 @@ static unsigned int SyncPixelStream(Image *image)
   assert(image->signature == MagickSignature);
   stream_info=(StreamInfo *) image->cache;
   assert(stream_info->signature == MagickSignature);
-  return(image->fifo(image,stream_info->pixels,stream_info->columns));
+  return(image->blob->fifo(image,stream_info->pixels,stream_info->columns));
 }
 
 /*

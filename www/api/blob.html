@@ -30,6 +30,7 @@
 		<LI><A HREF="#getblobinfo">GetBlobInfo</A>
 		<LI><A HREF="#imagetoblob">ImageToBlob</A>
 		<LI><A HREF="#pingblob">PingBlob</A>
+		<LI><A HREF="#referenceblob">ReferenceBlob</A>
 	</UL>
 
 </UL>
@@ -54,6 +55,7 @@
 <P>void  <STRONG>GetBlobInfo</STRONG>( BlobInfo *blob_info );</P>
 <P>void * <STRONG>ImageToBlob</STRONG>( const ImageInfo *image_info, Image *image, size_t *length, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>PingBlob</STRONG>( const ImageInfo *image_info, const void *blob, const size_t length, ExceptionInfo *exception );</P>
+<P>BlobInfo  <STRONG>ReferenceBlob</STRONG>( BlobInfo *blob_info );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -236,6 +238,16 @@ This size_t integer reflects the length in bytes of the blob.
 <dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="referenceblob">ReferenceBlob</A></H2>
+<blockquote>ReferenceBlob() increments the reference count associated with the pixel blob returning a pointer to the blob. </blockquote><P>The format of the ReferenceBlob method is:</P>
+<blockquote><A HREF="types/BlobInfo.html">BlobInfo</A> ReferenceBlob ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob_info ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>blob_info:</STRONG><BR>
+<DD>
+The blob_info.
 </DL></DL>
 
 </BODY>
