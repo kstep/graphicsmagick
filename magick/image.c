@@ -2542,28 +2542,41 @@ MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
 %
 %
 */
+
+static inline PixelPacket BlendComposite(const PixelPacket *p,
+  const PixelPacket *q,const double alpha)
+{
+  double
+    color;
+
+  PixelPacket
+    composite;
+
+  color=((double) p->red*(MaxRGB-alpha)+q->red*alpha)/MaxRGB;
+  composite.red=(Quantum)
+    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
+  color=((double) p->green*(MaxRGB-alpha)+q->green*alpha)/MaxRGB;
+  composite.green=(Quantum)
+    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
+  color=((double) p->blue*(MaxRGB-alpha)+q->blue*alpha)/MaxRGB;
+  composite.blue=(Quantum)
+    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
+  composite.opacity=p->opacity;
+  return(composite);
+}
+
 MagickExport unsigned int GradientImage(Image *image,
   const PixelPacket *start_color,const PixelPacket *stop_color)
 {
-  double
-    blackness,
-    blackness_step,
-    hue,
-    hue_step,
-    whiteness,
-    whiteness_step;
-
   long
     y;
 
   register long
+    i,
     x;
 
   register PixelPacket
     *q;
-
-  unsigned long
-    number_pixels;
 
   /*
     Determine (Hue, Saturation, Brightness) gradient.
@@ -2572,31 +2585,22 @@ MagickExport unsigned int GradientImage(Image *image,
   assert(image->signature == MagickSignature);
   assert(start_color != (const PixelPacket *) NULL);
   assert(stop_color != (const PixelPacket *) NULL);
-  (void) TransformHWB(start_color->red,start_color->green,start_color->blue,
-    &hue,&whiteness,&blackness);
-  (void) TransformHWB(stop_color->red,stop_color->green,stop_color->blue,
-    &hue_step,&whiteness_step,&blackness_step);
-  number_pixels=image->columns*image->rows;
-  hue_step=(hue_step-hue)/number_pixels;
-  whiteness_step=(whiteness_step-whiteness)/number_pixels;
-  blackness_step=(blackness_step-blackness)/number_pixels;
   /*
-    Initialize image pixels.
+    Generate gradient pixels.
   */
+  i=0;
   for (y=0; y < (long) image->rows; y++)
   {
-    q=GetImagePixels(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
-    {
-      HWBTransform(hue,whiteness,blackness,&q->red,&q->green,&q->blue);
-      q->opacity=OpaqueOpacity;
+		{
+      *q=BlendComposite(start_color,stop_color,(double)
+        MaxRGB*i/(image->columns*image->rows));
       q++;
-      hue+=hue_step;
-      whiteness+=whiteness_step;
-      blackness+=blackness_step;
-    }
+      i++;
+		}
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
