@@ -595,7 +595,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
     *path;
 
   ExceptionInfo
-	  path_exception;
+    path_exception;
 
   register const MagickInfo
     *p;

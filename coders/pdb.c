@@ -207,8 +207,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       sort_info;
 
     char
-      type[4],	/* database type identifier "vIMG" */
-      id[4];		/* database creator identifier "View" */
+      type[4],  /* database type identifier "vIMG" */
+      id[4];    /* database creator identifier "View" */
 
     unsigned long
       seed,

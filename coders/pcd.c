@@ -882,7 +882,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     y;
 
   RectangleInfo
-	  geometry;
+    geometry;
 
   register const PixelPacket
     *p,
@@ -890,14 +890,14 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
 
   register int
     i,
-		x;
+    x;
 
   /*
     Scale image to tile size.
   */
   SetGeometry(image,&geometry);
   (void) GetMagickGeometry(page_geometry,&geometry.x,&geometry.y,
-	  &geometry.width,&geometry.height);
+    &geometry.width,&geometry.height);
   if ((geometry.width % 2) != 0)
     geometry.width--;
   if ((geometry.height % 2) != 0)
@@ -906,7 +906,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   if (clone_image == (Image *) NULL)
     return(False);
   tile_image=ZoomImage(clone_image,geometry.width,geometry.height,
-	  &image->exception);
+    &image->exception);
   DestroyImage(clone_image);
   if (tile_image == (Image *) NULL)
     return(False);

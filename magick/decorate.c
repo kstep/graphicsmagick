@@ -198,7 +198,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     Initialize framed image attributes.
   */
   frame_image=
-	  CloneImage(image,frame_info->width,frame_info->height,True,exception);
+    CloneImage(image,frame_info->width,frame_info->height,True,exception);
   if (frame_image == (Image *) NULL)
     return(False);
   SetImageType(frame_image,frame_image->matte_color.opacity !=
@@ -416,7 +416,7 @@ MagickExport unsigned int RaiseImage(Image *image,
     background;
 
   long
-		y;
+  	y;
 
   register long
     x;

@@ -794,7 +794,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   LiberateMemory((void **) &jpeg_pixels);
   CloseBlob(image);
   ThrowException(exception,image->exception.severity,image->exception.reason,
-	  image->exception.description);
+    image->exception.description);
   return(image);
 }
 #else

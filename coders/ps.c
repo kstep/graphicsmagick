@@ -384,7 +384,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   if (image_info->page != (char *) NULL)
     (void) GetGeometry(image_info->page,&page.x,&page.y,&page.width,
-		  &page.height);
+      &page.height);
   FormatString(geometry,"%lux%lu",
     (unsigned long) ceil(page.width*image->x_resolution/dx_resolution-0.5),
     (unsigned long) ceil(page.height*image->y_resolution/dy_resolution-0.5));
@@ -900,7 +900,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     pixel;
 
   RectangleInfo
-	  geometry;
+    geometry;
 
   register const PixelPacket
     *p;

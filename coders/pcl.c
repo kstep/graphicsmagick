@@ -213,10 +213,10 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     *indexes;
 
   register long
-	  x;
+    x;
 
   RectangleInfo
-	  geometry,
+    geometry,
     media_info;
 
   unsigned int
@@ -265,7 +265,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       if (LocaleCompare(image_info->magick,"PCL") == 0)
         (void) strcpy(page_geometry,PSPageGeometry);
   (void) GetMagickGeometry(page_geometry,&geometry.x,&geometry.y,
-	  &geometry.width,&geometry.height);
+    &geometry.width,&geometry.height);
   (void) GetGeometry(page_geometry,&media_info.x,&media_info.y,
     &media_info.width,&media_info.height);
   page_size=2;

@@ -1182,7 +1182,7 @@ MagickExport char *TagToModule(const char *tag)
 %
 */
 static unsigned int UnloadModule(const CoderInfo *coder_info,
-	ExceptionInfo *exception)
+  ExceptionInfo *exception)
 {
   char
     name[MaxTextExtent];

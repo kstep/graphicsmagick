@@ -368,25 +368,25 @@ static CompositeOperator PSDBlendModeToCompositeOperator(const char *mode)
 
 static char * CompositeOperatorToPSDBlendMode(CompositeOperator inOp)
 {
-	char*	outMode = "norm";
+  char*  outMode = "norm";
 
-	switch ( inOp )
-	{
-		case OverCompositeOp:		outMode = "norm";	break;
-		case MultiplyCompositeOp:	outMode = "mul ";	break;
-		case DissolveCompositeOp:	outMode = "diss";	break;
-		case DifferenceCompositeOp:	outMode = "diff";	break;
-		case DarkenCompositeOp:		outMode = "dark";	break;
-		case LightenCompositeOp:	outMode = "lite";	break;
-		case HueCompositeOp:		outMode = "hue ";	break;
-		case SaturateCompositeOp:	outMode = "sat ";	break;
-		case ColorizeCompositeOp:	outMode = "colr";	break;
-		case LuminizeCompositeOp:	outMode = "lum ";	break;
-		case ScreenCompositeOp:		outMode = "scrn";	break;
-		case OverlayCompositeOp:	outMode = "over";	break;
+  switch ( inOp )
+  {
+    case OverCompositeOp:    outMode = "norm";  break;
+    case MultiplyCompositeOp:  outMode = "mul ";  break;
+    case DissolveCompositeOp:  outMode = "diss";  break;
+    case DifferenceCompositeOp:  outMode = "diff";  break;
+    case DarkenCompositeOp:    outMode = "dark";  break;
+    case LightenCompositeOp:  outMode = "lite";  break;
+    case HueCompositeOp:    outMode = "hue ";  break;
+    case SaturateCompositeOp:  outMode = "sat ";  break;
+    case ColorizeCompositeOp:  outMode = "colr";  break;
+    case LuminizeCompositeOp:  outMode = "lum ";  break;
+    case ScreenCompositeOp:    outMode = "scrn";  break;
+    case OverlayCompositeOp:  outMode = "over";  break;
 
-		default:
-			outMode = "norm";
+    default:
+      outMode = "norm";
 /*
 
   if (LocaleNCompare(mode,"hLit",4) == 0)
@@ -401,9 +401,9 @@ static char * CompositeOperatorToPSDBlendMode(CompositeOperator inOp)
     return(OverCompositeOp);
 
 */
-	}
+  }
 
-	return outMode;
+  return outMode;
 }
 
 static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -516,15 +516,15 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     size;
 
   off_t
-	offset,
-	diff_offset;
+  offset,
+  diff_offset;
 
   unsigned char
     *data;
 
   unsigned int
     packet_size,
-	mask_size,
+  mask_size,
     skip_first_alpha = 0,
     status;
 
@@ -653,7 +653,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (length != 0)
     {
-	  offset = TellBlob(image);
+    offset = TellBlob(image);
       size=ReadBlobMSBLong(image);
       number_layers=(short) ReadBlobMSBShort(image);
       if (number_layers < 0)
@@ -904,9 +904,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         layer_info[i].image->file=(FILE *) NULL;
       }
 
-	  diff_offset = TellBlob(image) - offset;
+    diff_offset = TellBlob(image) - offset;
 
-	  mask_size = ReadBlobMSBLong(image);	/* global mask size: currently ignored */
+    mask_size = ReadBlobMSBLong(image);  /* global mask size: currently ignored */
 
       if (number_layers > 0)
         {
@@ -1072,7 +1072,7 @@ ModuleExport void RegisterPSDImage(void)
   entry->decoder=ReadPSDImage;
   entry->encoder=WritePSDImage;
   entry->magick=IsPSD;
-/*  entry->adjoin=False;	-- not any more, we can do multiple layers!! */
+/*  entry->adjoin=False;  -- not any more, we can do multiple layers!! */
   entry->description=AllocateString("Adobe Photoshop bitmap");
   entry->module=AllocateString("PSD");
   (void) RegisterMagickInfo(entry);
@@ -1134,10 +1134,10 @@ ModuleExport void UnregisterPSDImage(void)
 */
 
 static void WriteOneChannel( Image* image, Image* tmp_image, 
-							 unsigned char *pixels, QuantumType whichQuantum )
+               unsigned char *pixels, QuantumType whichQuantum )
 {
-	int
-		y;
+  int
+    y;
 
   register const PixelPacket
     *p;
@@ -1146,118 +1146,118 @@ static void WriteOneChannel( Image* image, Image* tmp_image,
     packet_size =tmp_image->depth > 8 ? 2 : 1;
 
 
-	for (y=0; y < (long) tmp_image->rows; y++)
-	{
-	  p=AcquireImagePixels(tmp_image,0,y,tmp_image->columns,1,&image->exception);
-	  if (p == (const PixelPacket *) NULL)
-		break;
-	  (void) PopImagePixels(tmp_image,whichQuantum,pixels);
-	  (void) WriteBlob(image,packet_size*tmp_image->columns,pixels);
-	}
+  for (y=0; y < (long) tmp_image->rows; y++)
+  {
+    p=AcquireImagePixels(tmp_image,0,y,tmp_image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
+    break;
+    (void) PopImagePixels(tmp_image,whichQuantum,pixels);
+    (void) WriteBlob(image,packet_size*tmp_image->columns,pixels);
+  }
 }
 
 static void WriteImageChannels( Image* image, Image* tmp_image, unsigned char *pixels )
 {
   /*
-	Write uncompressed pixel data as separate planes.
+  Write uncompressed pixel data as separate planes.
   */
-	(void) WriteBlobMSBShort(image,0);  /* compression */
+  (void) WriteBlobMSBShort(image,0);  /* compression */
   if (tmp_image->storage_class == PseudoClass)
   {
-	  if (!tmp_image->matte)
-		  WriteOneChannel( image, tmp_image, pixels, IndexQuantum );
-	  else
-		  WriteOneChannel( image, tmp_image, pixels, IndexAlphaQuantum );
+    if (!tmp_image->matte)
+      WriteOneChannel( image, tmp_image, pixels, IndexQuantum );
+    else
+      WriteOneChannel( image, tmp_image, pixels, IndexAlphaQuantum );
   }
   else
-	{
-	  if (tmp_image->matte)
-			WriteOneChannel( image, tmp_image, pixels, AlphaQuantum );
+  {
+    if (tmp_image->matte)
+      WriteOneChannel( image, tmp_image, pixels, AlphaQuantum );
 
-	    WriteOneChannel( image, tmp_image, pixels, RedQuantum );
-		WriteOneChannel( image, tmp_image, pixels, GreenQuantum );
-		WriteOneChannel( image, tmp_image, pixels, BlueQuantum );
+      WriteOneChannel( image, tmp_image, pixels, RedQuantum );
+    WriteOneChannel( image, tmp_image, pixels, GreenQuantum );
+    WriteOneChannel( image, tmp_image, pixels, BlueQuantum );
 
-	  if (tmp_image->colorspace == CMYKColorspace)
-		WriteOneChannel( image, tmp_image, pixels, BlackQuantum );
-	}	  
+    if (tmp_image->colorspace == CMYKColorspace)
+    WriteOneChannel( image, tmp_image, pixels, BlackQuantum );
+  }    
 }
 
 /* Write white background, RLE-compressed */
 
 static void WriteWhiteBackground( Image* image )
 {
-	long 			count,  w8, w;
-	char 			*d, scanline[256];
-	
-	int numChannels = 3, i, bytecount, dim = image->rows*numChannels;
-	
-	WriteBlobMSBShort( image, 1 ); /* RLE compressed */
+  long       count,  w8, w;
+  char       *d, scanline[256];
+  
+  int numChannels = 3, i, bytecount, dim = image->rows*numChannels;
+  
+  WriteBlobMSBShort( image, 1 ); /* RLE compressed */
 
-	w8 = image->columns;
-	
-	d = scanline;
-	/* Set up scanline */
-	for(w=w8; w>128; w-=128)
-	{
-		*d++ = -127; *d++ = (char)255;
-	}
+  w8 = image->columns;
+  
+  d = scanline;
+  /* Set up scanline */
+  for(w=w8; w>128; w-=128)
+  {
+    *d++ = -127; *d++ = (char)255;
+  }
 
-	switch(w)
-	{
-		case 0: break;
-		case 1: *d++=0; 		*d++ = (char)255;
-				break;
-		default: *d++=1-w; 		*d++ = (char)255;
-				break;
-	}
-	
-	bytecount = d - scanline;
-	
-	/* Scanline counts (rows*channels) */
-	for(i=0; i < dim; i++)
-	{
-		WriteBlobMSBShort( image, bytecount );
-	}
+  switch(w)
+  {
+    case 0: break;
+    case 1: *d++=0;     *d++ = (char)255;
+        break;
+    default: *d++=1-w;     *d++ = (char)255;
+        break;
+  }
+  
+  bytecount = d - scanline;
+  
+  /* Scanline counts (rows*channels) */
+  for(i=0; i < dim; i++)
+  {
+    WriteBlobMSBShort( image, bytecount );
+  }
 
-	/* RLE compressed data  */
-	count = bytecount;
-	for(i=0; i < dim; i++)
-	{
-		WriteBlob( image, count, scanline );
-	}
-	
+  /* RLE compressed data  */
+  count = bytecount;
+  for(i=0; i < dim; i++)
+  {
+    WriteBlob( image, count, scanline );
+  }
+  
 }
 
 static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
 {
   int
-	layer_count,
-	num_channels,
-	layer_info_size,
-	rounded_layer_info_size,
-	channel_size,
-	channelLength,
-	force_white_background = image->matte,
-	invert_layer_count = False;
+  layer_count,
+  num_channels,
+  layer_info_size,
+  rounded_layer_info_size,
+  channel_size,
+  channelLength,
+  force_white_background = image->matte,
+  invert_layer_count = False;
 
   register long
     i;
 
   unsigned char
     *pixels,
-	layer_name[4];
+  layer_name[4];
 
   unsigned int
     packet_size,
     status;
 
   ImageAttribute 
-	*theAttr;
+  *theAttr;
 
   Image
-	  * tmp_image = (Image *) NULL,
-	  * base_image = force_white_background ? image : image->next;
+    * tmp_image = (Image *) NULL,
+    * base_image = force_white_background ? image : image->next;
 
   /*
     Open output image file.
@@ -1279,20 +1279,20 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,4,"8BPS");
   (void) WriteBlobMSBShort(image,1);  /* version */
   for ( i=1; i<=6; i++)
-	(void) WriteBlobByte(image, 0);  /* 6 bytes of reserved */
+  (void) WriteBlobByte(image, 0);  /* 6 bytes of reserved */
   if ( force_white_background )
-	  num_channels = 3;
+    num_channels = 3;
   else 
   {
-	  if (image->storage_class == PseudoClass)
-		 num_channels = (image->matte ? 2 : 1);
-	  else 
-	  {
-		if (image->colorspace != CMYKColorspace)
-		  num_channels = (image->matte ? 4 : 3);
-		else
-		  num_channels = (image->matte ? 5 : 4);
-	  }
+    if (image->storage_class == PseudoClass)
+     num_channels = (image->matte ? 2 : 1);
+    else 
+    {
+    if (image->colorspace != CMYKColorspace)
+      num_channels = (image->matte ? 4 : 3);
+    else
+      num_channels = (image->matte ? 5 : 4);
+    }
   }
   (void) WriteBlobMSBShort(image,num_channels);
   (void) WriteBlobMSBLong(image,image->rows);
@@ -1349,142 +1349,142 @@ compute_layer_info:
   layer_info_size = 2;
   tmp_image = base_image;
   while ( tmp_image != NULL ) {
-	  packet_size=tmp_image->depth > 8 ? 2 : 1;
+    packet_size=tmp_image->depth > 8 ? 2 : 1;
 
-	  if (tmp_image->storage_class == PseudoClass)
-		 num_channels = (tmp_image->matte ? 2 : 1);
-	  else
-		if (tmp_image->colorspace != CMYKColorspace)
-		  num_channels = (tmp_image->matte ? 4 : 3);
-		else
-		  num_channels = (tmp_image->matte ? 5 : 4);
+    if (tmp_image->storage_class == PseudoClass)
+     num_channels = (tmp_image->matte ? 2 : 1);
+    else
+    if (tmp_image->colorspace != CMYKColorspace)
+      num_channels = (tmp_image->matte ? 4 : 3);
+    else
+      num_channels = (tmp_image->matte ? 5 : 4);
 
-	channelLength = tmp_image->columns * tmp_image->rows * packet_size + 2;	
-	layer_info_size += (4*4 + 2 + num_channels * 6 + 4 + 4 + 4 * 1 + 4 + 12 + num_channels * channelLength);
+  channelLength = tmp_image->columns * tmp_image->rows * packet_size + 2;  
+  layer_info_size += (4*4 + 2 + num_channels * 6 + 4 + 4 + 4 * 1 + 4 + 12 + num_channels * channelLength);
 
-	layer_count++;
-	tmp_image = tmp_image->next;
+  layer_count++;
+  tmp_image = tmp_image->next;
   }
 
   /* if the image has a matte, then we need to use layers */
   if ( layer_count == 0 && image->matte == True )
   {
-	invert_layer_count = True;
-	base_image = image;
-	goto compute_layer_info;	/* yes, goto's suck, but it keeps the code cleaner! */
+  invert_layer_count = True;
+  base_image = image;
+  goto compute_layer_info;  /* yes, goto's suck, but it keeps the code cleaner! */
   }
 
   if ( layer_count == 0 )
-	WriteBlobMSBLong(image, 0);
+  WriteBlobMSBLong(image, 0);
   else 
   {
-	  (void) WriteBlobMSBLong(image,layer_info_size + 4 + 4);  
-		if( layer_info_size/2 != (layer_info_size+1)/2 ) /* odd */
-			rounded_layer_info_size = layer_info_size + 1;
-		else
-			rounded_layer_info_size = layer_info_size;
-	  (void) WriteBlobMSBLong(image,rounded_layer_info_size);	
-	  
-	  if ( invert_layer_count )
-			layer_count *= -1;	/* if we have a matte, then use negative count! */
-	  (void) WriteBlobMSBShort(image, layer_count);	
-		  
-	  layer_count = 1;
-	  tmp_image = base_image;
-	  while ( tmp_image != NULL ) {
-		  (void) WriteBlobMSBLong(image,0);  
-		  (void) WriteBlobMSBLong(image,0);  
-		  (void) WriteBlobMSBLong(image,tmp_image->rows);  
-		  (void) WriteBlobMSBLong(image,tmp_image->columns);  
+    (void) WriteBlobMSBLong(image,layer_info_size + 4 + 4);  
+    if( layer_info_size/2 != (layer_info_size+1)/2 ) /* odd */
+      rounded_layer_info_size = layer_info_size + 1;
+    else
+      rounded_layer_info_size = layer_info_size;
+    (void) WriteBlobMSBLong(image,rounded_layer_info_size);  
+    
+    if ( invert_layer_count )
+      layer_count *= -1;  /* if we have a matte, then use negative count! */
+    (void) WriteBlobMSBShort(image, layer_count);  
+      
+    layer_count = 1;
+    tmp_image = base_image;
+    while ( tmp_image != NULL ) {
+      (void) WriteBlobMSBLong(image,0);  
+      (void) WriteBlobMSBLong(image,0);  
+      (void) WriteBlobMSBLong(image,tmp_image->rows);  
+      (void) WriteBlobMSBLong(image,tmp_image->columns);  
 
-		  packet_size=tmp_image->depth > 8 ? 2 : 1;
-		  channel_size = (packet_size * tmp_image->rows * tmp_image->columns) + 2;
-		  if (tmp_image->storage_class == PseudoClass) {
-			 (void) WriteBlobMSBShort(image, tmp_image->matte ? 2 : 1);
-			 if (tmp_image->matte) {
-				 (void) WriteBlobMSBShort(image, (unsigned long) -1);
-				 (void) WriteBlobMSBLong(image, channel_size);
-			 }
-			 (void) WriteBlobMSBShort(image, 0);
-			 (void) WriteBlobMSBLong(image, channel_size);
-		  } else
-			if (tmp_image->colorspace != CMYKColorspace)
-			{
-			  (void) WriteBlobMSBShort(image, tmp_image->matte ? 4 : 3);
-			 if (tmp_image->matte) {
-				 (void) WriteBlobMSBShort(image, (unsigned long) -1);
-				 (void) WriteBlobMSBLong(image, channel_size);
-			 }
-			 (void) WriteBlobMSBShort(image, 0);
-			 (void) WriteBlobMSBLong(image, channel_size);
-			 (void) WriteBlobMSBShort(image, 1);
-			 (void) WriteBlobMSBLong(image, channel_size);
-			 (void) WriteBlobMSBShort(image, 2);
-			 (void) WriteBlobMSBLong(image, channel_size);
-			}
-			else
-			{
-			  (void) WriteBlobMSBShort(image, tmp_image->matte ? 5 : 4);
-			 if (tmp_image->matte) {
-				 (void) WriteBlobMSBShort(image, (unsigned long) -1);
-				 (void) WriteBlobMSBLong(image, channel_size);
-			 }
-			 (void) WriteBlobMSBShort(image, 0);
-			 (void) WriteBlobMSBLong(image, channel_size);
-			 (void) WriteBlobMSBShort(image, 1);
-			 (void) WriteBlobMSBLong(image, channel_size);
-			 (void) WriteBlobMSBShort(image, 2);
-			 (void) WriteBlobMSBLong(image, channel_size);
-			 (void) WriteBlobMSBShort(image, 3);
-			 (void) WriteBlobMSBLong(image, channel_size);
-			}
-			
-		  (void) WriteBlob(image, 4, "8BIM");
-		  (void) WriteBlob(image, 4, CompositeOperatorToPSDBlendMode(tmp_image->compose));
-		  (void) WriteBlobByte(image, 255);		/* BOGUS: layer opacity */
-		  (void) WriteBlobByte(image, 0);
-		  (void) WriteBlobByte(image, 1);		/* BOGUS: layer attributes - visible, etc. */
-		  (void) WriteBlobByte(image, 0);
+      packet_size=tmp_image->depth > 8 ? 2 : 1;
+      channel_size = (packet_size * tmp_image->rows * tmp_image->columns) + 2;
+      if (tmp_image->storage_class == PseudoClass) {
+       (void) WriteBlobMSBShort(image, tmp_image->matte ? 2 : 1);
+       if (tmp_image->matte) {
+         (void) WriteBlobMSBShort(image, (unsigned long) -1);
+         (void) WriteBlobMSBLong(image, channel_size);
+       }
+       (void) WriteBlobMSBShort(image, 0);
+       (void) WriteBlobMSBLong(image, channel_size);
+      } else
+      if (tmp_image->colorspace != CMYKColorspace)
+      {
+        (void) WriteBlobMSBShort(image, tmp_image->matte ? 4 : 3);
+       if (tmp_image->matte) {
+         (void) WriteBlobMSBShort(image, (unsigned long) -1);
+         (void) WriteBlobMSBLong(image, channel_size);
+       }
+       (void) WriteBlobMSBShort(image, 0);
+       (void) WriteBlobMSBLong(image, channel_size);
+       (void) WriteBlobMSBShort(image, 1);
+       (void) WriteBlobMSBLong(image, channel_size);
+       (void) WriteBlobMSBShort(image, 2);
+       (void) WriteBlobMSBLong(image, channel_size);
+      }
+      else
+      {
+        (void) WriteBlobMSBShort(image, tmp_image->matte ? 5 : 4);
+       if (tmp_image->matte) {
+         (void) WriteBlobMSBShort(image, (unsigned long) -1);
+         (void) WriteBlobMSBLong(image, channel_size);
+       }
+       (void) WriteBlobMSBShort(image, 0);
+       (void) WriteBlobMSBLong(image, channel_size);
+       (void) WriteBlobMSBShort(image, 1);
+       (void) WriteBlobMSBLong(image, channel_size);
+       (void) WriteBlobMSBShort(image, 2);
+       (void) WriteBlobMSBLong(image, channel_size);
+       (void) WriteBlobMSBShort(image, 3);
+       (void) WriteBlobMSBLong(image, channel_size);
+      }
+      
+      (void) WriteBlob(image, 4, "8BIM");
+      (void) WriteBlob(image, 4, CompositeOperatorToPSDBlendMode(tmp_image->compose));
+      (void) WriteBlobByte(image, 255);    /* BOGUS: layer opacity */
+      (void) WriteBlobByte(image, 0);
+      (void) WriteBlobByte(image, 1);    /* BOGUS: layer attributes - visible, etc. */
+      (void) WriteBlobByte(image, 0);
 
-		  (void) WriteBlobMSBLong(image, 12);
-		  (void) WriteBlobMSBLong(image, 0);
-		  (void) WriteBlobMSBLong(image, 0);
+      (void) WriteBlobMSBLong(image, 12);
+      (void) WriteBlobMSBLong(image, 0);
+      (void) WriteBlobMSBLong(image, 0);
 
           theAttr = (ImageAttribute *)GetImageAttribute(tmp_image, "[layer-name]");
           if (theAttr) {
-			  sprintf((char *) &(layer_name[1]), "%4s", theAttr->value );
-			  (void) WriteBlobByte(image, 3);
-			  (void) WriteBlob(image, 3, &layer_name[1]);			
-		  } else {
-			  sprintf((char *) &(layer_name[1]), "L%02d", layer_count++ );
-			  (void) WriteBlobByte(image, 3);
-			  (void) WriteBlob(image, 3, &layer_name[1]);			
-		  }
-		  tmp_image = tmp_image->next;
-	  };
+        sprintf((char *) &(layer_name[1]), "%4s", theAttr->value );
+        (void) WriteBlobByte(image, 3);
+        (void) WriteBlob(image, 3, &layer_name[1]);      
+      } else {
+        sprintf((char *) &(layer_name[1]), "L%02d", layer_count++ );
+        (void) WriteBlobByte(image, 3);
+        (void) WriteBlob(image, 3, &layer_name[1]);      
+      }
+      tmp_image = tmp_image->next;
+    };
 
-	   /* now the image data! */
-		tmp_image = base_image;
-		while ( tmp_image != NULL ) {
-		  WriteImageChannels( image, tmp_image, pixels );
-		  
-			/* add in the pad! */
-		   if ( rounded_layer_info_size != layer_info_size )
-			  WriteBlobByte(image, 0);
+     /* now the image data! */
+    tmp_image = base_image;
+    while ( tmp_image != NULL ) {
+      WriteImageChannels( image, tmp_image, pixels );
+      
+      /* add in the pad! */
+       if ( rounded_layer_info_size != layer_info_size )
+        WriteBlobByte(image, 0);
 
-		  tmp_image = tmp_image->next;
-		};
+      tmp_image = tmp_image->next;
+    };
 
-		/* user mask data */
-	   (void) WriteBlobMSBLong(image, 0);
+    /* user mask data */
+     (void) WriteBlobMSBLong(image, 0);
 
   }
 
    /* now the background image data! */
    if ( force_white_background )
-	   WriteWhiteBackground( image );
+     WriteWhiteBackground( image );
    else
-	WriteImageChannels( image, image, pixels );
+  WriteImageChannels( image, image, pixels );
 
   LiberateMemory((void **) &pixels);
   CloseBlob(image);

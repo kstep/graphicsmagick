@@ -418,7 +418,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if ((LocaleCompare(id,"00db") == 0) || (LocaleCompare(id,"00dc") == 0))
       {
-	if (LocaleCompare(bmp_info.compression,"MJPG") == 0)
+  if (LocaleCompare(bmp_info.compression,"MJPG") == 0)
           {
             FormatString(message,"AVI compression %.1024s not yet supported",
               bmp_info.compression);

@@ -438,11 +438,11 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
     }
 #if 0
   printf("ipa_bmp_read: buffer=0x%lx length=%ld, width=%i, height=%i\n",
-	 (long) bmp_read->buffer, bmp_read->length,
-	 bmp_read->width, bmp_read->height);
+   (long) bmp_read->buffer, bmp_read->length,
+   bmp_read->width, bmp_read->height);
 #endif
   image = BlobToImage(image_info, (const void *) bmp_read->buffer,
-		      bmp_read->length, &exception);
+          bmp_read->length, &exception);
   DestroyImageInfo(image_info);
   if (!image)
     {
@@ -533,18 +533,18 @@ static void ipa_device_begin(wmfAPI * API)
   util_append_mvg(API, "push graphic-context\n");
 
   util_append_mvg(API, "viewbox 0 0 %u %u\n", ddata->image->columns,
-		    ddata->image->rows);
+        ddata->image->rows);
 
   util_append_mvg(API, "# Created by ImageMagick %s http://www.imagemagick.org\n",
                     MagickLibVersionText);
 
   /* Scale width and height to image */
   util_append_mvg(API, "scale %.10g,%.10g\n",
-		    ddata->scale_x, ddata->scale_y);
+        ddata->scale_x, ddata->scale_y);
   /* Translate to TL corner of bounding box */
   util_append_mvg(API, "translate %.10g,%.10g\n",
-		    ddata->translate_x,
-		    ddata->translate_y);
+        ddata->translate_x,
+        ddata->translate_y);
 
   /* Apply rotation */
   util_append_mvg(API, "rotate %.10g\n", ddata->rotate);
@@ -653,10 +653,10 @@ static void ipa_flood_interior(wmfAPI * API, wmfFlood_t * flood)
   util_append_mvg(API, "push graphic-context\n");
 
   util_append_mvg(API, "fill #%02x%02x%02x\n",
-		    (int) rgb->r, (int) rgb->g, (int) rgb->b);
+        (int) rgb->r, (int) rgb->g, (int) rgb->b);
 
   util_append_mvg(API, "color %.10g,%.10g filltoborder\n",
-		    XC(flood->pt.x), YC(flood->pt.y));
+        XC(flood->pt.x), YC(flood->pt.y));
 
   /* Restore graphic context */
   util_append_mvg(API, "pop graphic-context\n");
@@ -671,7 +671,7 @@ static void ipa_flood_exterior(wmfAPI * API, wmfFlood_t * flood)
   util_append_mvg(API, "push graphic-context\n");
 
   util_append_mvg(API, "fill #%02x%02x%02x\n",
-		    (int) rgb->r, (int) rgb->g, (int) rgb->b);
+        (int) rgb->r, (int) rgb->g, (int) rgb->b);
 
   if (flood->type == FLOODFILLSURFACE)
     util_append_mvg(API, "color %.10g,%.10g floodfill\n",
@@ -697,13 +697,13 @@ static void ipa_draw_pixel(wmfAPI * API, wmfDrawPixel_t * draw_pixel)
   util_append_mvg(API, "fill-opacity 1\n");
 
   util_append_mvg(API, "fill #%02x%02x%02x\n",
-		    (int) rgb->r, (int) rgb->g, (int) rgb->b);
+        (int) rgb->r, (int) rgb->g, (int) rgb->b);
 
   util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-		    XC(draw_pixel->pt.x),
-		    YC(draw_pixel->pt.y),
-		    XC(draw_pixel->pt.x + draw_pixel->pixel_width),
-		    YC(draw_pixel->pt.y + draw_pixel->pixel_height));
+        XC(draw_pixel->pt.x),
+        YC(draw_pixel->pt.y),
+        XC(draw_pixel->pt.x + draw_pixel->pixel_width),
+        YC(draw_pixel->pt.y + draw_pixel->pixel_height));
 
   /* Restore graphic context */
   util_append_mvg(API, "pop graphic-context\n");
@@ -730,7 +730,7 @@ static void ipa_draw_ellipse(wmfAPI * API, wmfDrawArc_t * draw_arc)
 }
 
 static void util_draw_arc(wmfAPI * API,
-			    wmfDrawArc_t * draw_arc, magick_arc_t finish)
+          wmfDrawArc_t * draw_arc, magick_arc_t finish)
 {
   wmfD_Coord
     BR,
@@ -791,7 +791,7 @@ static void util_draw_arc(wmfAPI * API,
       phi_e = atan2((double) end.y, (double) end.x) * 180 / MagickPI;
 
       if (phi_e <= phi_s)
-	phi_e += 360;
+  phi_e += 360;
     }
 
     util_set_pen(API, draw_arc->dc);
@@ -802,20 +802,20 @@ static void util_draw_arc(wmfAPI * API,
 
     if (finish == magick_arc_ellipse)
       util_append_mvg(API, "ellipse %.10g,%.10g %.10g,%.10g 0,360\n",
-			XC(O.x), YC(O.y), Rx, Ry);
+      XC(O.x), YC(O.y), Rx, Ry);
     else if (finish == magick_arc_pie)
       util_append_mvg(API, "ellipse %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
-			XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
+      XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
     else if (finish == magick_arc_chord)
     {
       util_append_mvg(API, "arc %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
-			XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
+      XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
       util_append_mvg(API, "line %.10g,%.10g %.10g,%.10g\n",
-			XC(start.x), YC(start.y), XC(end.x), YC(end.y));
+      XC(start.x), YC(start.y), XC(end.x), YC(end.y));
     }
-    else			/* if (finish == magick_arc_open) */
+    else      /* if (finish == magick_arc_open) */
       util_append_mvg(API, "arc %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
-			XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
+      XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
   }
 
   /* Restore graphic context */
@@ -831,8 +831,8 @@ static void ipa_draw_line(wmfAPI * API, wmfDrawLine_t * draw_line)
   {
     util_set_pen(API, draw_line->dc);
     util_append_mvg(API, "line %.10g,%.10g %.10g,%.10g\n",
-		      XC(draw_line->from.x), YC(draw_line->from.y),
-		      XC(draw_line->to.x), YC(draw_line->to.y));
+          XC(draw_line->from.x), YC(draw_line->from.y),
+          XC(draw_line->to.x), YC(draw_line->to.y));
   }
 
   /* Restore graphic context */
@@ -860,8 +860,8 @@ static void ipa_poly_line(wmfAPI * API, wmfPolyLine_t * poly_line)
     for (i = 0; i < poly_line->count; i++)
     {
       util_append_mvg(API, " %.10g,%.10g",
-			XC(poly_line->pt[i].x),
-			YC(poly_line->pt[i].y));
+      XC(poly_line->pt[i].x),
+      YC(poly_line->pt[i].y));
     }
 
     util_append_mvg(API, "\n");
@@ -892,8 +892,8 @@ static void ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line)
     for (i = 0; i < poly_line->count; i++)
     {
       util_append_mvg(API, " %.10g,%.10g",
-			XC(poly_line->pt[i].x),
-			YC(poly_line->pt[i].y));
+      XC(poly_line->pt[i].x),
+      YC(poly_line->pt[i].y));
     }
 
     util_append_mvg(API, "\n");
@@ -915,13 +915,13 @@ static void ipa_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_rect)
 
     if ((draw_rect->width > 0) || (draw_rect->height > 0))
       util_append_mvg(API, "roundrectangle %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
-			XC(draw_rect->TL.x), YC(draw_rect->TL.y),
-			XC(draw_rect->BR.x), YC(draw_rect->BR.y),
-			draw_rect->width / 2, draw_rect->height / 2);
+      XC(draw_rect->TL.x), YC(draw_rect->TL.y),
+      XC(draw_rect->BR.x), YC(draw_rect->BR.y),
+      draw_rect->width / 2, draw_rect->height / 2);
     else
       util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-			XC(draw_rect->TL.x), YC(draw_rect->TL.y),
-			XC(draw_rect->BR.x), YC(draw_rect->BR.y));
+      XC(draw_rect->TL.x), YC(draw_rect->TL.y),
+      XC(draw_rect->BR.x), YC(draw_rect->BR.y));
   }
 
   /* Restore graphic context */
@@ -1084,23 +1084,23 @@ static void ipa_functions(wmfAPI *API)
 
 static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 {
-  double		
-    angle = 0,			/* text rotation angle */
-    bbox_height,		/* bounding box height */
-    bbox_width,			/* bounding box width */
-    pointsize = 0;		/* pointsize to output font with desired height */
+  double    
+    angle = 0,      /* text rotation angle */
+    bbox_height,    /* bounding box height */
+    bbox_width,      /* bounding box width */
+    pointsize = 0;    /* pointsize to output font with desired height */
 
   TypeMetric
     metrics;
 
   wmfD_Coord
-    BL,				/* bottom left of bounding box */
-    BR,				/* bottom right of bounding box */
-    TL,				/* top left of bounding box */
-    TR;				/* top right of bounding box */
+    BL,        /* bottom left of bounding box */
+    BR,        /* bottom right of bounding box */
+    TL,        /* top left of bounding box */
+    TR;        /* top right of bounding box */
 
   wmfD_Coord
-    point;			/* text placement point */
+    point;      /* text placement point */
 
   wmfFont
     *font;
@@ -1243,7 +1243,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
       *fill = WMF_DC_TEXTCOLOR(draw_text->dc);
 
     util_append_mvg(API, "fill #%02x%02x%02x\n",
-		      (int) fill->r, (int) fill->g, (int) fill->b);
+          (int) fill->r, (int) fill->g, (int) fill->b);
   }
 
   /* Output font size */
@@ -1257,7 +1257,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 
   /* Transform horizontal scale to draw text at 1:1 ratio */
   util_append_mvg(API, "scale %.10g,%.10g\n",
-		    ddata->scale_y / ddata->scale_x, 1.0);
+        ddata->scale_y / ddata->scale_x, 1.0);
 
   /* Apply rotation */
   /* ImageMagick's drawing rotation is clockwise from horizontal
@@ -1287,7 +1287,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
      * Build escaped string
      */
     for (p = (unsigned char *) draw_text->str, q = (unsigned char *) escaped_string, string_length = 0;
-	 *p != 0 && string_length < ((int) sizeof(escaped_string) - 3); ++p)
+   *p != 0 && string_length < ((int) sizeof(escaped_string) - 3); ++p)
       {
         if (*p == '\'')
           {
@@ -1313,8 +1313,8 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
           line_height;
 
         wmfD_Coord
-          ulBR,			/* bottom right of underline rectangle */
-          ulTL;			/* top left of underline rectangle */
+          ulBR,      /* bottom right of underline rectangle */
+          ulTL;      /* top left of underline rectangle */
 
         line_height = ((double)1/(ddata->scale_x))*metrics.underline_thickness;
         if(metrics.underline_thickness < 1.5)
@@ -1334,8 +1334,8 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
         double line_height;
 
         wmfD_Coord
-          ulBR,			/* bottom right of strikeout rectangle */
-          ulTL;			/* top left of strikeout rectangle */
+          ulBR,      /* bottom right of strikeout rectangle */
+          ulTL;      /* top left of strikeout rectangle */
 
         line_height = ((double)1/(ddata->scale_x))*metrics.underline_thickness;
 
@@ -1401,7 +1401,7 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
     *brush = WMF_DC_BRUSH(dc);
 
   /* Set polygon fill rule */
-  switch (WMF_DC_POLYFILL(dc))	/* Is this correct ?? */
+  switch (WMF_DC_POLYFILL(dc))  /* Is this correct ?? */
     {
     case WINDING:
       util_append_mvg(API, "fill-rule nonzero\n");
@@ -1439,13 +1439,13 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
                           (int) WMF_BRUSH_COLOR(brush)->r,
                           (int) WMF_BRUSH_COLOR(brush)->g,
                           (int) WMF_BRUSH_COLOR(brush)->b);
-	break;
+  break;
       }
-    case BS_HOLLOW /* 1 */:		/* BS_HOLLOW & BS_NULL share enum */
+    case BS_HOLLOW /* 1 */:    /* BS_HOLLOW & BS_NULL share enum */
       /* WMF_BRUSH_COLOR and WMF_BRUSH_HATCH ignored */
       {
         util_append_mvg(API, "fill none\n");
-	break;
+  break;
       }
     case BS_HATCHED /* 2 */:
       /* WMF_BRUSH_COLOR specifies the hatch color, WMF_BRUSH_HATCH
@@ -1453,10 +1453,10 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
          WMF_DC_BACKGROUND specifies hatch background color.  */
       {
         util_append_mvg(API, "push defs\n");
-	util_append_mvg(API, "push pattern brush_%lu 0,0 8,8\n", ddata->pattern_id);
-	util_append_mvg(API, "push graphic-context\n");
+  util_append_mvg(API, "push pattern brush_%lu 0,0 8,8\n", ddata->pattern_id);
+  util_append_mvg(API, "push graphic-context\n");
 
-	if (WMF_DC_OPAQUE(dc))
+  if (WMF_DC_OPAQUE(dc))
           {
             util_append_mvg(API, "fill #%02x%02x%02x\n",
                               (int) WMF_DC_BACKGROUND(dc)->r,
@@ -1465,78 +1465,78 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
             util_append_mvg(API, "rectangle 0,0 7,7\n");
           }
 
-	util_append_mvg(API, "stroke-antialias 0\n");
-	util_append_mvg(API, "stroke-width 1\n");
+  util_append_mvg(API, "stroke-antialias 0\n");
+  util_append_mvg(API, "stroke-width 1\n");
 
-	util_append_mvg(API, "stroke #%02x%02x%02x\n",
+  util_append_mvg(API, "stroke #%02x%02x%02x\n",
                           (int) WMF_BRUSH_COLOR(brush)->r,
                           (int) WMF_BRUSH_COLOR(brush)->g,
                           (int) WMF_BRUSH_COLOR(brush)->b);
 
-	switch ((unsigned int) WMF_BRUSH_HATCH(brush))
+  switch ((unsigned int) WMF_BRUSH_HATCH(brush))
           {
 
-	  case HS_HORIZONTAL:	/* ----- */
-	    {
-	      util_append_mvg(API, "line 0,3 7,3\n");
-	      break;
-	    }
-	  case HS_VERTICAL:	/* ||||| */
-	    {
-	      util_append_mvg(API, "line 3,0 3,7\n");
-	      break;
-	    }
-	  case HS_FDIAGONAL:	/* \\\\\ */
-	    {
-	      util_append_mvg(API, "line 0,0 7,7\n");
-	      break;
-	    }
-	  case HS_BDIAGONAL:	/* ///// */
-	    {
-	      util_append_mvg(API, "line 0,7 7,0\n");
-	      break;
-	    }
-	  case HS_CROSS:	/* +++++ */
-	    {
-	      util_append_mvg(API, "line 0,3 7,3\n");
-	      util_append_mvg(API, "line 3,0 3,7\n");
-	      break;
-	    }
-	  case HS_DIAGCROSS:	/* xxxxx */
-	    {
-	      util_append_mvg(API, "line 0,0 7,7\n");
-	      util_append_mvg(API, "line 0,7 7,0\n");
-	      break;
-	    }
-	  default:
-	    {
-	    }
+    case HS_HORIZONTAL:  /* ----- */
+      {
+        util_append_mvg(API, "line 0,3 7,3\n");
+        break;
+      }
+    case HS_VERTICAL:  /* ||||| */
+      {
+        util_append_mvg(API, "line 3,0 3,7\n");
+        break;
+      }
+    case HS_FDIAGONAL:  /* \\\\\ */
+      {
+        util_append_mvg(API, "line 0,0 7,7\n");
+        break;
+      }
+    case HS_BDIAGONAL:  /* ///// */
+      {
+        util_append_mvg(API, "line 0,7 7,0\n");
+        break;
+      }
+    case HS_CROSS:  /* +++++ */
+      {
+        util_append_mvg(API, "line 0,3 7,3\n");
+        util_append_mvg(API, "line 3,0 3,7\n");
+        break;
+      }
+    case HS_DIAGCROSS:  /* xxxxx */
+      {
+        util_append_mvg(API, "line 0,0 7,7\n");
+        util_append_mvg(API, "line 0,7 7,0\n");
+        break;
+      }
+    default:
+      {
+      }
           }
-	util_append_mvg(API, "pop graphic-context\n");
-	util_append_mvg(API, "pop pattern\n");
+  util_append_mvg(API, "pop graphic-context\n");
+  util_append_mvg(API, "pop pattern\n");
         util_append_mvg(API, "pop defs\n");
-	util_append_mvg(API, "fill 'url(#brush_%lu)'\n", ddata->pattern_id);
-	++ddata->pattern_id;
-	break;
+  util_append_mvg(API, "fill 'url(#brush_%lu)'\n", ddata->pattern_id);
+  ++ddata->pattern_id;
+  break;
       }
     case BS_PATTERN /* 3 */:
       /* WMF_BRUSH_COLOR ignored, WMF_BRUSH_HATCH provides handle to
          bitmap */
       {
-	printf("util_set_brush: BS_PATTERN not supported\n");
-	break;
+  printf("util_set_brush: BS_PATTERN not supported\n");
+  break;
       }
     case BS_INDEXED /* 4 */:
       {
-	printf("util_set_brush: BS_INDEXED not supported\n");
-	break;
+  printf("util_set_brush: BS_INDEXED not supported\n");
+  break;
       }
     case BS_DIBPATTERN /* 5 */:
       {
-	wmfBMP
+  wmfBMP
           *brush_bmp = WMF_BRUSH_BITMAP(brush);
 
-	if (brush_bmp && brush_bmp->data != 0)
+  if (brush_bmp && brush_bmp->data != 0)
           {
             const char
               *mode;
@@ -1562,42 +1562,42 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
                 break;
               }
 
-            mode = "Copy";	/* Default is copy */
+            mode = "Copy";  /* Default is copy */
             switch (WMF_DC_ROP(dc))
               {
-              case SRCCOPY:	/* dest = source */
+              case SRCCOPY:  /* dest = source */
                 mode = "Copy";
                 break;
-              case SRCPAINT:	/* dest = source OR dest */
+              case SRCPAINT:  /* dest = source OR dest */
                 break;
-              case SRCAND:	/* dest = source AND dest */
+              case SRCAND:  /* dest = source AND dest */
                 break;
-              case SRCINVERT:	/* dest = source XOR dest */
+              case SRCINVERT:  /* dest = source XOR dest */
                 mode = "Xor";
                 break;
-              case SRCERASE:	/* dest = source AND (NOT dest) */
+              case SRCERASE:  /* dest = source AND (NOT dest) */
                 break;
-              case NOTSRCCOPY:	/* dest = (NOT source) */
+              case NOTSRCCOPY:  /* dest = (NOT source) */
 /*                 NegateImage(image, False); */
                 /* mode = "Copy"; */
                 break;
-              case NOTSRCERASE:	/* dest = (NOT source) AND (NOT dest) */
+              case NOTSRCERASE:  /* dest = (NOT source) AND (NOT dest) */
                 break;
-              case MERGECOPY:	/* dest = (source AND pattern) */
+              case MERGECOPY:  /* dest = (source AND pattern) */
                 break;
-              case MERGEPAINT:	/* dest = (NOT source) OR dest */
+              case MERGEPAINT:  /* dest = (NOT source) OR dest */
                 break;
-              case PATCOPY:	/* dest = pattern */
+              case PATCOPY:  /* dest = pattern */
                 break;
-              case PATPAINT:	/* dest = DPSnoo */
+              case PATPAINT:  /* dest = DPSnoo */
                 break;
-              case PATINVERT:	/* dest = pattern XOR dest */
+              case PATINVERT:  /* dest = pattern XOR dest */
                 break;
-              case DSTINVERT:	/* dest = (NOT dest) */
+              case DSTINVERT:  /* dest = (NOT dest) */
                 break;
-              case BLACKNESS:	/* dest = BLACK bits */
+              case BLACKNESS:  /* dest = BLACK bits */
                 break;
-              case WHITENESS:	/* dest = WHITE bits */
+              case WHITENESS:  /* dest = WHITE bits */
                 break;
               default:
                 {
@@ -1620,27 +1620,27 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
               ThrowException(&ddata->image->exception,exception.severity,
                              exception.reason,exception.description);
           }
-	else
-	  printf("util_set_brush: no BMP image data!\n");
+  else
+    printf("util_set_brush: no BMP image data!\n");
 
-	break;
+  break;
       }
     case BS_DIBPATTERNPT /* 6 */:
       /* WMF_BRUSH_COLOR ignored, WMF_BRUSH_HATCH provides pointer to
          DIB */
       {
-	printf("util_set_brush: BS_DIBPATTERNPT not supported\n");
-	break;
+  printf("util_set_brush: BS_DIBPATTERNPT not supported\n");
+  break;
       }
     case BS_PATTERN8X8 /* 7 */:
       {
-	printf("util_set_brush: BS_PATTERN8X8 not supported\n");
-	break;
+  printf("util_set_brush: BS_PATTERN8X8 not supported\n");
+  break;
       }
     case BS_DIBPATTERN8X8 /* 8 */:
       {
-	printf("util_set_brush: BS_DIBPATTERN8X8 not supported\n");
-	break;
+  printf("util_set_brush: BS_DIBPATTERN8X8 not supported\n");
+  break;
       }
     default:
       {
@@ -1677,7 +1677,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
 
   /* Pixel width is inverse of pixel scale */
   pixel_width = (((double) 1 / (ddata->scale_x)) +
-		 ((double) 1 / (ddata->scale_y))) / 2;
+     ((double) 1 / (ddata->scale_y))) / 2;
 
   /* Don't allow pen_width to be less than pixel_width in order to
      avoid dissapearing or spider-web lines */
@@ -1732,39 +1732,39 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
 
   switch (pen_style)
   {
-    case PS_DASH:		/* -------  */
+    case PS_DASH:    /* -------  */
       /* Pattern 18,7 */
       util_append_mvg(API, "stroke-antialias 0\n");
       util_append_mvg(API, "stroke-dasharray %.10g,%.10g\n",
-			pixel_width * 18, pixel_width * 7);
+      pixel_width * 18, pixel_width * 7);
       break;
 
     case PS_ALTERNATE:
-    case PS_DOT:		/* .......  */
+    case PS_DOT:    /* .......  */
       /* Pattern 3,3 */
       util_append_mvg(API, "stroke-antialias 0\n");
       util_append_mvg(API, "stroke-dasharray %.10g,%.10g\n",
-			pixel_width * 3, pixel_width * 3);
+      pixel_width * 3, pixel_width * 3);
       break;
 
-    case PS_DASHDOT:		/* _._._._  */
+    case PS_DASHDOT:    /* _._._._  */
       /* Pattern 9,6,3,6 */
       util_append_mvg(API, "stroke-antialias 0\n");
       util_append_mvg(API, "stroke-dasharray %.10g,%.10g,%.10g,%.10g\n",
-			pixel_width * 9, pixel_width * 6, pixel_width * 3,
-			pixel_width * 6);
+      pixel_width * 9, pixel_width * 6, pixel_width * 3,
+      pixel_width * 6);
       break;
 
-    case PS_DASHDOTDOT:	/* _.._.._  */
+    case PS_DASHDOTDOT:  /* _.._.._  */
       /* Pattern 9,3,3,3,3,3 */
       util_append_mvg(API, "stroke-antialias 0\n");
       util_append_mvg(API,
-			"stroke-dasharray %.10g,%.10g,%.10g,%.10g,%.10g,%.10g\n",
-			pixel_width * 9, pixel_width * 3, pixel_width * 3,
-			pixel_width * 3, pixel_width * 3, pixel_width * 3);
+      "stroke-dasharray %.10g,%.10g,%.10g,%.10g,%.10g,%.10g\n",
+      pixel_width * 9, pixel_width * 3, pixel_width * 3,
+      pixel_width * 3, pixel_width * 3, pixel_width * 3);
       break;
 
-    case PS_INSIDEFRAME:	/* There is nothing to do in this case... */
+    case PS_INSIDEFRAME:  /* There is nothing to do in this case... */
     case PS_SOLID:
     default:
       util_append_mvg(API, "stroke-dasharray none\n");
@@ -1772,7 +1772,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
   }
 
   util_append_mvg(API, "stroke #%02x%02x%02x\n",
-		    (int) pen_color->r, (int) pen_color->g, (int) pen_color->b);
+        (int) pen_color->r, (int) pen_color->g, (int) pen_color->b);
 }
 
 /* Estimate font pointsize based on Windows font parameters */
@@ -1957,21 +1957,21 @@ static wmfFontMap WMFFontMap[] = {
   { "Symbol",             "Symbol",      "Symbol",            "Symbol",         "Symbol"                },
   { "System",             "Courier",     "Courier-Oblique",   "Courier-Bold",   "Courier-BoldOblique"   },
   { "Times",              "Times-Roman", "Times-Italic",      "Times-Bold",     "Times-BoldItalic"      },
-  {  NULL,		   NULL,          NULL,                NULL,             NULL                   }
+  {  NULL,       NULL,          NULL,                NULL,             NULL                   }
 };
 
 /* Mapping between base name and Ghostscript family name */
 static wmfMapping SubFontMap[] = {
-  { "Arial",		"Helvetica" },
-  { "Courier",		"Courier"   },
-  { "Fixed",		"Courier"   },
-  { "Helvetica",	"Helvetica" },
-  { "Sans",		"Helvetica" },
-  { "Sym",		"Symbol"    },
-  { "Terminal",		"Courier"   },
-  { "Times",		"Times"     },
-  { "Wingdings",	"Symbol"    },
-  {  NULL,	         NULL       }
+  { "Arial",    "Helvetica" },
+  { "Courier",    "Courier"   },
+  { "Fixed",    "Courier"   },
+  { "Helvetica",  "Helvetica" },
+  { "Sans",    "Helvetica" },
+  { "Sym",    "Symbol"    },
+  { "Terminal",    "Courier"   },
+  { "Times",    "Times"     },
+  { "Wingdings",  "Symbol"    },
+  {  NULL,           NULL       }
 };
 
 static void lite_font_map( wmfAPI* API, wmfFont* font)
@@ -2407,9 +2407,9 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if ((API)->File->placeable)
     units_per_inch = (API)->File->pmh->Inch;
   else if( (wmf_width*wmf_height) < 1024*1024)
-    units_per_inch = POINTS_PER_INCH;	/* MM_TEXT */
+    units_per_inch = POINTS_PER_INCH;  /* MM_TEXT */
   else
-    units_per_inch = TWIPS_PER_INCH;	/* MM_TWIPS */
+    units_per_inch = TWIPS_PER_INCH;  /* MM_TWIPS */
 
   /* Calculate image width and height based on specified DPI
      resolution */
@@ -2466,7 +2466,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   printf("Bounding box scale factor:   %.10g,%.10g\n",
          ddata->scale_x, ddata->scale_y);
   printf("Translation:                 %.10g,%.10g\n",
-	 ddata->translate_x, ddata->translate_y);
+   ddata->translate_x, ddata->translate_y);
 
 
 #if 0

@@ -1389,7 +1389,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   next_row=True;
   y_span=1.0;
   y_scale=(double) scale_image->rows/image->rows;
-	memset(y_vector,0,image->columns*sizeof(ScalePacket));
+  memset(y_vector,0,image->columns*sizeof(ScalePacket));
   i=0;
   for (y=0; y < (long) scale_image->rows; y++)
   {

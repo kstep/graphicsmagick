@@ -63,38 +63,38 @@ register IndexPacket *indexes;
  switch (image->depth)
       {
       case 1:  /* Convert bitmap scanline. */
-	     {
-	     q=SetImagePixels(image,0,y,image->columns,1);
-	     if (q == (PixelPacket *) NULL)
-		   break;
-	     indexes=GetIndexes(image);
-	     for (x=0; x < ((long) image->columns-7); x+=8)
-		{
-		for (bit=0; bit < 8; bit++)
-		   {
-		   index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-		   indexes[x+bit]=index;
-		   *q++=image->colormap[index];
-		   }
-		p++;
-		}
-	     if ((image->columns % 8) != 0)
-		 {
-		 for (bit=0; bit < (long) (image->columns % 8); bit++)
-		     {
-		     index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-		     indexes[x+bit]=index;
-		     *q++=image->colormap[index];
-		     }
-		 p++;
-		 }
-	      if (!SyncImagePixels(image))
-		 break;
+       {
+       q=SetImagePixels(image,0,y,image->columns,1);
+       if (q == (PixelPacket *) NULL)
+       break;
+       indexes=GetIndexes(image);
+       for (x=0; x < ((long) image->columns-7); x+=8)
+    {
+    for (bit=0; bit < 8; bit++)
+       {
+       index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+       indexes[x+bit]=index;
+       *q++=image->colormap[index];
+       }
+    p++;
+    }
+       if ((image->columns % 8) != 0)
+     {
+     for (bit=0; bit < (long) (image->columns % 8); bit++)
+         {
+         index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+         indexes[x+bit]=index;
+         *q++=image->colormap[index];
+         }
+     p++;
+     }
+        if (!SyncImagePixels(image))
+     break;
 /*            if (image->previous == (Image *) NULL)
-		 if (QuantumTick(y,image->rows))
-		   ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
-	    break;
-	    }
+     if (QuantumTick(y,image->rows))
+       ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
+      break;
+      }
        }
 }
 

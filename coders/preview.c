@@ -190,7 +190,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     argc;
 
   long
-		y;
+    y;
 
   MonitorHandler
     handler;
@@ -199,11 +199,11 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     *montage_info;
 
   RectangleInfo
-		geometry;
+    geometry;
 
   register long
     i,
-		x;
+    x;
 
   unsigned int
     status;
@@ -217,12 +217,12 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   (void) TransformRGBImage(image,RGBColorspace);
   SetGeometry(image,&geometry);
   (void) GetMagickGeometry(DefaultPreviewGeometry,&geometry.x,&geometry.y,
-		&geometry.width,&geometry.height);
+    &geometry.width,&geometry.height);
   clone_image=CloneImage(image,0,0,True,&image->exception);
   if (clone_image == (Image *) NULL)
     return(False);
   preview_image=ZoomImage(clone_image,geometry.width,geometry.height,
-		&image->exception);
+    &image->exception);
   DestroyImage(clone_image);
   if (preview_image == (Image *) NULL)
     return(False);

@@ -449,33 +449,33 @@ MAGICK DELEGATES
 
     o ImageMagick requires the BZLIB library from
 
-	  http://sourceware.cygnus.com/bzip2/index.html
+          http://sourceware.cygnus.com/bzip2/index.html
 
       to read and write BZip compressed MIFF images.
 
     o ImageMagick requires ralcgm from
 
-	  http://www.agocg.ac.uk/train/cgm/ralcgm.htm
+          http://www.agocg.ac.uk/train/cgm/ralcgm.htm
 
       to read the Computer Graphics Metafile image format (may not
       compile under linux).  You also need Ghostscript (see below).
 
     o ImageMagick requires fig2dev from
 
-	  ftp://ftp.x.org/contrib/applications/drawing_tools/transfig
+          ftp://ftp.x.org/contrib/applications/drawing_tools/transfig
 
       to read the TransFig image format.
 
     o ImageMagick requires the FreeType software, version 2.0 or above,
       available as
 
-	 http://www.freetype.org/
+         http://www.freetype.org/
 
       to annotate with TrueType fonts.
 
     o ImageMagick requires Ghostscript software available from
 
-	 http://www.cs.wisc.edu/~ghost/
+         http://www.cs.wisc.edu/~ghost/
 
       to read the Postscript or the Portable Document format.  It is
       used to annotate an image when an X server is not available.  See
@@ -499,54 +499,54 @@ MAGICK DELEGATES
     o ImageMagick requires the NCSA HDF5 library available via anonymous
       FTP as
 
-	  ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current
+          ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current
 
       to read and write the HDF image format.  By default HDF support is
       disabled because HDF5 is not yet complete.
 
     o ImageMagick requires hp2xx available from
 
-	  http://www.gnu.org/software/hp2xx/hp2xx.html
+          http://www.gnu.org/software/hp2xx/hp2xx.html
 
       to read the HP-GL image format.
 
     o ImageMagick requires the LCMS library available from
 
-	  http://www.littlecms.com
+          http://www.littlecms.com
 
       to perform color management.
 
     o ImageMagick requires gnuplot available via anonymous FTP as
 
-	  ftp://ftp.dartmouth.edu/pub/gnuplot/gnuplot3.5.tar.Z
+          ftp://ftp.dartmouth.edu/pub/gnuplot/gnuplot3.5.tar.Z
 
       to read GNUPLOT plot files (with extension gplt).
 
     o ImageMagick requires html2ps available from
 
-	  http://www.tdb.uu.se/~jan/html2ps.html
+          http://www.tdb.uu.se/~jan/html2ps.html
 
       to read the HTML image format.
 
     o ImageMagick requires the JBIG-Kit software available via
       anonymous FTP as
 
-	  ftp://ftp.informatik.uni-erlangen.de/pub/doc/ISO/JBIG/
+          ftp://ftp.informatik.uni-erlangen.de/pub/doc/ISO/JBIG/
 
       to read the JBIG image format.
 
     o ImageMagick requires the Independent JPEG Group's software
       available via anonymous FTP as
 
-	  ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
+          ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
 
       to read the JPEG image format.
 
       Apply this JPEG patch to Independent JPEG Group's source
       distribution to read lossless jpeg-encoded DICOM images:
 
-	  ftp://ftp.imagemagick.org/pub/ImageMagick/delegates/
-	    ljpeg-6b.tar.gz
+          ftp://ftp.imagemagick.org/pub/ImageMagick/delegates/
+            ljpeg-6b.tar.gz
 
       Concerning iterative JPEG compression:  see Kinoshita and
       Yamamuro, Journal of Imaging Science and Technology, "Image
@@ -558,33 +558,33 @@ MAGICK DELEGATES
     o ImageMagick requires the MPEG utilities from the MPEG Software
       Simulation Group, which are available via anonymous FTP as
 
-	  ftp://ftp.mpeg.org/pub/mpeg/mssg/mpeg2vidcodec_v12.tar.gz
+          ftp://ftp.mpeg.org/pub/mpeg/mssg/mpeg2vidcodec_v12.tar.gz
 
       to read or write the MPEG image format.
 
     o ImageMagick requires the PNG library, version 1.0 or above, from
 
-	  http://www.libpng.org/pub/png/pngcode.html
+          http://www.libpng.org/pub/png/pngcode.html
 
       to read the PNG image format.
 
     o ImageMagick requires ra_ppm from Greg Ward's Radiance
       software available via anonymous FTP as
 
-	  http://radsite.lbl.gov/radiance/HOME.html
+          http://radsite.lbl.gov/radiance/HOME.html
 
       to read the Radiance image format (may not compile under linux).
 
     o ImageMagick requires rawtorle from the Utah Raster Toolkit
       available via anonymous FTP as
 
-	  ftp://ftp.cs.utah.edu/pub/dept/OLD/pub/urt-3.1b.tar.Z
+          ftp://ftp.cs.utah.edu/pub/dept/OLD/pub/urt-3.1b.tar.Z
 
       to write the RLE image format (may not compile under linux).
 
     o ImageMagick requires scanimage from
 
-	  http://www.mostang.com/sane/
+          http://www.mostang.com/sane/
 
       to import image from a scanner device.
 
@@ -652,17 +652,17 @@ MAGICK DELEGATES
       properly.  There is a nearly free X server available for Windows
       and Macintosh at
 
-	  http://www.microimages.com/freestuf/mix/
+          http://www.microimages.com/freestuf/mix/
 
     o ImageMagick requires libxml available from
 
-	  http://xmlsoft.org/
+          http://xmlsoft.org/
 
       to read the SVG image format.
 
     o ImageMagick requires the ZLIB library from
 
-	  http://ftp.freesoftware.com/pub/infozip/zlib/
+          http://ftp.freesoftware.com/pub/infozip/zlib/
 
       to read or write the PNG or Zip compressed MIFF images.
 

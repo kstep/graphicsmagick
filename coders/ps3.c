@@ -338,13 +338,13 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     y;
 
   RectangleInfo
-	  geometry;
+    geometry;
 
   register const PixelPacket
     *p;
 
   register long
-	  x;
+    x;
 
   SegmentInfo
     bounds;

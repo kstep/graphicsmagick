@@ -52,9 +52,9 @@
 #include "define.h"
 
 /* Auto coloring method, sorry this creates some artefact inside data
-MinReal+j*MaxComplex = red	MaxReal+j*MaxComplex = black
-MinReal+j*0 = white	        MaxReal+j*0 = black
-MinReal+j*MinComplex = blue	MaxReal+j*MinComplex = black
+MinReal+j*MaxComplex = red  MaxReal+j*MaxComplex = black
+MinReal+j*0 = white          MaxReal+j*0 = black
+MinReal+j*MinComplex = blue  MaxReal+j*MinComplex = black
 */
 
 
@@ -109,18 +109,18 @@ register IndexPacket *indexes;
                    ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
            }
            return;
-	   
+     
       case 16:
            {
-	   q=SetImagePixels(image,0,y,image->columns,1);
+     q=SetImagePixels(image,0,y,image->columns,1);
            if (q == (PixelPacket *) NULL)
-	     break;
+       break;
            for (x=0; x < (long) image->columns; x++)
               {
               q->red=XDownscale(*(WORD *)p);
               q->green=XDownscale(*(WORD *)p);
               q->blue=XDownscale(*(WORD *)p);
-	      p+=2;
+        p+=2;
               q++;
               }
            if (!SyncImagePixels(image))
@@ -128,8 +128,8 @@ register IndexPacket *indexes;
 /*          if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               MagickMonitor(LoadImageText,image->rows-y-1,image->rows);*/
-          return;	   
-	  } 
+          return;     
+    } 
        }
 }
 
@@ -147,10 +147,10 @@ register PixelPacket *q;
         return;
    for (x=0; x < (long) image->columns; x++)
           {
-	  f=(double)MaxRGB* (*p-Min)/(Max-Min);
+    f=(double)MaxRGB* (*p-Min)/(Max-Min);
           q->red=XDownscale(f);
-	  q->green=XDownscale(f);
-	  q->blue=XDownscale(f);
+    q->green=XDownscale(f);
+    q->blue=XDownscale(f);
           p++;
           q++;
           }
@@ -159,7 +159,7 @@ register PixelPacket *q;
 /*          if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               MagickMonitor(LoadImageText,image->rows-y-1,image->rows);*/
-   return;	   
+   return;     
 }
 
 
@@ -177,23 +177,23 @@ register PixelPacket *q;
         return;
    for (x=0; x < (long) image->columns; x++)
           {
-	  if(*p>0)
-	    {
-	    f=(*p/Max)*(MaxRGB-q->red);
-	    if((int) f+q->red>MaxRGB) q->red=MaxRGB;
-	                   else q->red+=(int) f;
+    if(*p>0)
+      {
+      f=(*p/Max)*(MaxRGB-q->red);
+      if((int) f+q->red>MaxRGB) q->red=MaxRGB;
+                     else q->red+=(int) f;
             if((int) f/2.0>q->green) q->green=q->blue=0;
-			   else q->green=q->blue-=(int) (f/2.0);		
-	    }
-	  if(*p<0)
-	    {
-	    f=(*p/Max)*(MaxRGB-q->blue);
-	    if((int) f+q->blue>MaxRGB) q->blue=MaxRGB;
-	                    else q->blue+=(int) f;
+         else q->green=q->blue-=(int) (f/2.0);    
+      }
+    if(*p<0)
+      {
+      f=(*p/Max)*(MaxRGB-q->blue);
+      if((int) f+q->blue>MaxRGB) q->blue=MaxRGB;
+                      else q->blue+=(int) f;
             if((int) f/2.0>q->green) q->green=q->red=0;
-			  else q->green=q->red-=(int) (f/2.0);		
-	    }
-	  p++;
+        else q->green=q->red-=(int) (f/2.0);    
+      }
+    p++;
           q++;
           }
    if (!SyncImagePixels(image))
@@ -201,7 +201,7 @@ register PixelPacket *q;
 /*          if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               MagickMonitor(LoadImageText,image->rows-y-1,image->rows);*/
-   return;	   
+   return;     
 }
 
 
@@ -232,7 +232,7 @@ static double ReadBlobLSBdouble(Image *image)
   assert(image->signature == MagickSignature);
   
   if(ReadBlob(image,8,(unsigned char *)&buffer)==0)
-	return(0.0);	
+  return(0.0);  
   if(*(char *)&lsb_first==1) return(buffer.d);
 
   c=buffer.chars[0]; buffer.chars[0]=buffer.chars[7]; buffer.chars[7]=c;
@@ -339,12 +339,12 @@ MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file!",
     case 0:(void) ReadBlob(image,4,&size); /*Object name string*/
            size=4*(long)((size+3+1)/4);
            (void) SeekBlob(image,size,SEEK_CUR);
-	   break;
+     break;
     case 1:
     case 2:
     case 3:
     case 4:(void) ReadBlob(image,4,&size); /*Object name string*/
-	   break;
+     break;
     default:goto MATLAB_KO;
     }
 
@@ -354,23 +354,23 @@ MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file!",
 
    switch(CellType)
       {
-      case 2:image->depth=8;		/*Byte type cell*/
+      case 2:image->depth=8;    /*Byte type cell*/
              ldblk=MATLAB_HDR.SizeX;
- 	     if(MATLAB_HDR.StructureFlag==0x806) goto MATLAB_KO;    
+        if(MATLAB_HDR.StructureFlag==0x806) goto MATLAB_KO;    
              break;
-      case 4:image->depth=16;    	/*Word type cell*/
+      case 4:image->depth=16;      /*Word type cell*/
              ldblk=2*MATLAB_HDR.SizeX;
-	     if(MATLAB_HDR.StructureFlag==0x806) goto MATLAB_KO;    
+       if(MATLAB_HDR.StructureFlag==0x806) goto MATLAB_KO;    
              break; 
-      case 9:image->depth=24;    	/*double type cell*/
+      case 9:image->depth=24;      /*double type cell*/
              if(sizeof(double)!=8) ThrowReaderException(CorruptImageWarning,"Incompatible size of double!",image);
-	     if(MATLAB_HDR.StructureFlag==0x806) 
-	        {			/*complex double type cell*/
-		}
-	     ldblk=8*MATLAB_HDR.SizeX;
+       if(MATLAB_HDR.StructureFlag==0x806) 
+          {      /*complex double type cell*/
+    }
+       ldblk=8*MATLAB_HDR.SizeX;
              break; 
       default:ThrowReaderException(CorruptImageWarning,"Unsupported cell type in the matrix!",image)
-      }	  
+      }    
 
    image->columns= MATLAB_HDR.SizeX;
    image->rows= MATLAB_HDR.SizeY;
@@ -395,7 +395,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
            image->colormap[i].green=Upscale(i);
            image->colormap[i].blue=Upscale(i);
            }
-     }	    
+     }      
 
            
 /* ----- Load raster data ----- */
@@ -404,81 +404,81 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 
 
    Min=0;
-	 Max=0;
+   Max=0;
    if(CellType==9) /*Find Min and Max Values for floats*/
      {
      filepos=TellBlob(image);
      for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
         {
-	ReadBlobDoublesLSB(image,ldblk,(double *)BImgBuff);
-	dblrow=(double *)BImgBuff;
-	if(i==0) {Min=Max=*dblrow;}
-	for(x=0;x<(long)MATLAB_HDR.SizeX;x++)
+  ReadBlobDoublesLSB(image,ldblk,(double *)BImgBuff);
+  dblrow=(double *)BImgBuff;
+  if(i==0) {Min=Max=*dblrow;}
+  for(x=0;x<(long)MATLAB_HDR.SizeX;x++)
             {
-	    if(Min>*dblrow) Min=*dblrow;
-	    if(Max<*dblrow) Max=*dblrow;
-	    dblrow++;            
-	    }
-	}       
+      if(Min>*dblrow) Min=*dblrow;
+      if(Max<*dblrow) Max=*dblrow;
+      dblrow++;            
+      }
+  }       
      SeekBlob(image,filepos,SEEK_SET);
      }
      
-	/*Main loop for reading all scanlines*/
+  /*Main loop for reading all scanlines*/
    for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
         {
-	switch(CellType)
-	    {
-	    case 4:ReadBlobWordLSB(image,ldblk,(WORD *)BImgBuff);
-		   InsertRow(BImgBuff,i,image);
-		   break;
-	    case 9:ReadBlobDoublesLSB(image,ldblk,(double *)BImgBuff);
-		   InsertFloatRow((double *)BImgBuff,i,image,Min,Max);
-		   break;
-	    default:(void) ReadBlob(image,ldblk,(char *)BImgBuff);
-		    InsertRow(BImgBuff,i,image);
-	    }	
+  switch(CellType)
+      {
+      case 4:ReadBlobWordLSB(image,ldblk,(WORD *)BImgBuff);
+       InsertRow(BImgBuff,i,image);
+       break;
+      case 9:ReadBlobDoublesLSB(image,ldblk,(double *)BImgBuff);
+       InsertFloatRow((double *)BImgBuff,i,image,Min,Max);
+       break;
+      default:(void) ReadBlob(image,ldblk,(char *)BImgBuff);
+        InsertRow(BImgBuff,i,image);
+      }  
         }
-	
-	/*Read complex part of numbers here*/
+  
+  /*Read complex part of numbers here*/
   if(MATLAB_HDR.StructureFlag==0x806)
-	{
-	if(CellType==9) /*Find Min and Max Values for complex parts of floats*/
+  {
+  if(CellType==9) /*Find Min and Max Values for complex parts of floats*/
           {
-	  filepos=TellBlob(image);
+    filepos=TellBlob(image);
           for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
-	    {
-	    ReadBlobDoublesLSB(image,ldblk,(double *)BImgBuff);
-	    dblrow=(double *)BImgBuff;
-	    if(i==0) {Min=Max=*dblrow;}
-	    for(x=0;x<(long)MATLAB_HDR.SizeX;x++)
+      {
+      ReadBlobDoublesLSB(image,ldblk,(double *)BImgBuff);
+      dblrow=(double *)BImgBuff;
+      if(i==0) {Min=Max=*dblrow;}
+      for(x=0;x<(long)MATLAB_HDR.SizeX;x++)
                 {
-	        if(Min>*dblrow) Min=*dblrow;
-		if(Max<*dblrow) Max=*dblrow;
-		dblrow++;            
-	        }
-	    }       
+          if(Min>*dblrow) Min=*dblrow;
+    if(Max<*dblrow) Max=*dblrow;
+    dblrow++;            
+          }
+      }       
           SeekBlob(image,filepos,SEEK_SET);
-	  
-	  for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
+    
+    for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
             {
-	    ReadBlobDoublesLSB(image,ldblk,(double *)BImgBuff);
-	    InsertComplexFloatRow((double *)BImgBuff,i,image,Min,Max);
-	    }	
+      ReadBlobDoublesLSB(image,ldblk,(double *)BImgBuff);
+      InsertComplexFloatRow((double *)BImgBuff,i,image,Min,Max);
+      }  
           }
         }
-	
-	
+  
+  
   if(BImgBuff!=NULL) {free(BImgBuff);BImgBuff=NULL;}
-		
-	      /*  Rotate image. */	           
+    
+        /*  Rotate image. */             
   rotated_image=RotateImage(image,90.0,exception);
   if (rotated_image != (Image *) NULL)
         {
-	DestroyImage(image);
+  DestroyImage(image);
         image=FlopImage(rotated_image,exception);
-	if(image==NULL) image=rotated_image;  /*Obtain something if flop operation fails*/
-		   else DestroyImage(rotated_image);
-	}
+  if(image==NULL) image=rotated_image;  /*Obtain something if flop operation fails*/
+       else DestroyImage(rotated_image);
+  }
 
   CloseBlob(image);
   return(image);

@@ -52,26 +52,26 @@
 #include "define.h"
 
 typedef struct
-	{
-	unsigned Width;
-	unsigned Height;
-	unsigned Reserved;
-	}CUTHeader;			/*Dr Hallo*/
+  {
+  unsigned Width;
+  unsigned Height;
+  unsigned Reserved;
+  }CUTHeader;      /*Dr Hallo*/
 typedef struct
-	{
-	char FileId[2];
-	unsigned Version;
-	unsigned Size;
-	char FileType;
-	char SubType;
-	unsigned BoardID;
-	unsigned GraphicsMode;
-	unsigned MaxIndex;
-	unsigned MaxRed;
-	unsigned MaxGreen;
-	unsigned MaxBlue;
-	char PaletteId[20];
-	}CUTPalHeader;
+  {
+  char FileId[2];
+  unsigned Version;
+  unsigned Size;
+  char FileType;
+  char SubType;
+  unsigned BoardID;
+  unsigned GraphicsMode;
+  unsigned MaxIndex;
+  unsigned MaxRed;
+  unsigned MaxGreen;
+  unsigned MaxBlue;
+  char PaletteId[20];
+  }CUTPalHeader;
 
 
 static void InsertRow(unsigned char *p,long y,Image *image)
@@ -97,7 +97,7 @@ register IndexPacket *indexes;
                    index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
                    indexes[x+bit]=index;
                    *q++=image->colormap[index];
-		   }
+       }
                 p++;
                 }
              if ((image->columns % 8) != 0)
@@ -128,36 +128,36 @@ register IndexPacket *indexes;
                  index=ValidateColormapIndex(image,(*p >> 6) & 0x3);
                  indexes[x]=index;
                  *q++=image->colormap[index];
-		 index=ValidateColormapIndex(image,(*p >> 4) & 0x3);
+     index=ValidateColormapIndex(image,(*p >> 4) & 0x3);
                  indexes[x]=index;
                  *q++=image->colormap[index];
-		 index=ValidateColormapIndex(image,(*p >> 2) & 0x3);
+     index=ValidateColormapIndex(image,(*p >> 2) & 0x3);
                  indexes[x]=index;
                  *q++=image->colormap[index];
                  index=ValidateColormapIndex(image,(*p) & 0x3);
                  indexes[x+1]=index;
                  *q++=image->colormap[index];
-		 p++;
+     p++;
                  }
            if ((image->columns % 4) != 0)
                  {
                    index=ValidateColormapIndex(image,(*p >> 6) & 0x3);
                    indexes[x]=index;
                    *q++=image->colormap[index];
-		   if ((image->columns % 4) >= 1)
+       if ((image->columns % 4) >= 1)
 
-		      {
-		      index=ValidateColormapIndex(image,(*p >> 4) & 0x3);
+          {
+          index=ValidateColormapIndex(image,(*p >> 4) & 0x3);
                       indexes[x]=index;
                       *q++=image->colormap[index];
-		      if ((image->columns % 4) >= 2)
+          if ((image->columns % 4) >= 2)
 
-		        {
-		        index=ValidateColormapIndex(image,(*p >> 2) & 0x3);
+            {
+            index=ValidateColormapIndex(image,(*p >> 2) & 0x3);
                         indexes[x]=index;
                         *q++=image->colormap[index];
-		        }
-		      }
+            }
+          }
                    p++;
                  }
            if (!SyncImagePixels(image))
@@ -167,7 +167,7 @@ register IndexPacket *indexes;
                    ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
            break;
            }
-	    
+      
       case 4:  /* Convert PseudoColor scanline. */
            {
            q=SetImagePixels(image,0,y,image->columns,1);
@@ -177,7 +177,7 @@ register IndexPacket *indexes;
            for (x=0; x < ((long) image->columns-1); x+=2)
                  {
                  index=ValidateColormapIndex(image,(*p >> 4) & 0xf);
-		 indexes[x]=index;
+     indexes[x]=index;
                  *q++=image->colormap[index];
                  index=ValidateColormapIndex(image,(*p) & 0xf);
                  indexes[x+1]=index;
@@ -197,14 +197,14 @@ register IndexPacket *indexes;
                  if (QuantumTick(y,image->rows))
                    ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
            break;
-	   }
+     }
       case 8: /* Convert PseudoColor scanline. */
            {
            q=SetImagePixels(image,0,y,image->columns,1);
            if (q == (PixelPacket *) NULL) break;
            indexes=GetIndexes(image);
 
-	   for (x=0; x < (long) image->columns; x++)
+     for (x=0; x < (long) image->columns; x++)
                 {
                 index=ValidateColormapIndex(image,*p);
                 indexes[x]=index;
@@ -232,17 +232,17 @@ int Upscale16;
 Upscale16=Upscale(16);
 MaxColor=0;
  for (y=0; y < (long)image->rows; y++)  
-	{
-	q=SetImagePixels(image,0,y,image->columns,1);  
-	for (x=0; x < (long)image->columns; x++)  
-             {  	   
-	     if(MaxColor<q->red) MaxColor=q->red;
-	     if(MaxColor>=Upscale16) return(255);	
-	     q++;	
-	     }	
-	}
-if(MaxColor<(int) Upscale(2)) MaxColor=2;		
-else if(MaxColor<(int) Upscale(16)) MaxColor=16;		
+  {
+  q=SetImagePixels(image,0,y,image->columns,1);  
+  for (x=0; x < (long)image->columns; x++)  
+             {       
+       if(MaxColor<q->red) MaxColor=q->red;
+       if(MaxColor>=Upscale16) return(255);  
+       q++;  
+       }  
+  }
+if(MaxColor<(int) Upscale(2)) MaxColor=2;    
+else if(MaxColor<(int) Upscale(16)) MaxColor=16;    
 return(MaxColor);
 }
 
@@ -319,25 +319,25 @@ CUT_KO:  ThrowReaderException(CorruptImageWarning,"Not a CUT image file",image);
   RunCount=ReadBlobByte(image);
   RunCountMasked=RunCount & 0x7F;
   ldblk=0;
-  while(RunCountMasked!=0)	/*end of line?*/
-	{
-	i=1;
-	if(RunCount<0x80) i=RunCountMasked;
-	(void) SeekBlob(image,TellBlob(image)+i,SEEK_SET);
-	if(EOFBlob(image)) goto CUT_KO;	/*wrong data*/
-	EncodedByte-=i+1;
-	ldblk+=RunCountMasked;
+  while(RunCountMasked!=0)  /*end of line?*/
+  {
+  i=1;
+  if(RunCount<0x80) i=RunCountMasked;
+  (void) SeekBlob(image,TellBlob(image)+i,SEEK_SET);
+  if(EOFBlob(image)) goto CUT_KO;  /*wrong data*/
+  EncodedByte-=i+1;
+  ldblk+=RunCountMasked;
 
-	RunCount=ReadBlobByte(image);
-	if(EOFBlob(image))  goto CUT_KO;	/*wrong data: unexpected eof in line*/
-	RunCountMasked=RunCount & 0x7F;
-	}
- if(EncodedByte!=1) goto CUT_KO;	/*wrong data: size incorrect*/
- i=0;				/*guess a number of bit planes*/
+  RunCount=ReadBlobByte(image);
+  if(EOFBlob(image))  goto CUT_KO;  /*wrong data: unexpected eof in line*/
+  RunCountMasked=RunCount & 0x7F;
+  }
+ if(EncodedByte!=1) goto CUT_KO;  /*wrong data: size incorrect*/
+ i=0;        /*guess a number of bit planes*/
  if(ldblk==(int) Header.Width)   i=8;
  if(2*ldblk==(int) Header.Width) i=4;
  if(8*ldblk==(int) Header.Width) i=1;
- if(i==0) goto CUT_KO;		/*wrong data: incorrect bit planes*/
+ if(i==0) goto CUT_KO;    /*wrong data: incorrect bit planes*/
 
  image->columns=Header.Width;
  image->rows=Header.Height;
@@ -353,32 +353,32 @@ CUT_KO:  ThrowReaderException(CorruptImageWarning,"Not a CUT image file",image);
  j=i;
  while(--i>0)
         {
-	if(clone_info->filename[i]=='.') 
-		{
-		break;
-		}
-	if(clone_info->filename[i]=='/' || clone_info->filename[i]=='\\' ||
-	   clone_info->filename[i]==':' ) 
-	       {
-	       i=j;
-	       break;
-	       }
-	}
-	
+  if(clone_info->filename[i]=='.') 
+    {
+    break;
+    }
+  if(clone_info->filename[i]=='/' || clone_info->filename[i]=='\\' ||
+     clone_info->filename[i]==':' ) 
+         {
+         i=j;
+         break;
+         }
+  }
+  
  (void) strcpy(clone_info->filename+i,".PAL");
  if((clone_info->file=fopen(clone_info->filename,"rb"))==NULL)
      {
      (void) strcpy(clone_info->filename+i,".pal");
      if((clone_info->file=fopen(clone_info->filename,"rb"))==NULL)
          {
-	 clone_info->filename[i]=0;
-	 if((clone_info->file=fopen(clone_info->filename,"rb"))==NULL) 
+   clone_info->filename[i]=0;
+   if((clone_info->file=fopen(clone_info->filename,"rb"))==NULL) 
              {
-	     DestroyImageInfo(clone_info);
-	     clone_info=NULL;
-	     goto NoPalette;
-	     }
-	 }
+       DestroyImageInfo(clone_info);
+       clone_info=NULL;
+       goto NoPalette;
+       }
+   }
      }
 
  if( (palette=AllocateImage(clone_info))==NULL ) goto NoPalette;
@@ -418,32 +418,32 @@ ErasePalette:
    
    for(i=0;i<=(int) PalHeader.MaxIndex;i++)
            {      /*this may be wrong- I don't know why is palette such strange*/
-	   j=(long) TellBlob(palette);
-	   if((j % 512)>512-6)
-	       {
-	       j=((j / 512)+1)*512;
-	       (void) SeekBlob(palette,j,SEEK_SET);
-	       }
-	   image->colormap[i].red=ReadBlobLSBShort(palette);
-	   if(MaxRGB!=PalHeader.MaxRed) 
-	       {
-	       image->colormap[i].red=(Quantum)
-	         (((unsigned long)image->colormap[i].red*MaxRGB+(PalHeader.MaxRed>>1))/PalHeader.MaxRed);
-	       }
-	   image->colormap[i].green=ReadBlobLSBShort(palette);
-	   if(MaxRGB!=PalHeader.MaxGreen) 
-	       {
-	       image->colormap[i].green=(Quantum)
-	         (((unsigned long)image->colormap[i].green*MaxRGB+(PalHeader.MaxGreen>>1))/PalHeader.MaxGreen);
-	       }
-	   image->colormap[i].blue=ReadBlobLSBShort(palette);       
-	   if(MaxRGB!=PalHeader.MaxBlue)  
-	       {
-	       image->colormap[i].blue=(Quantum)
-	         (((unsigned long)image->colormap[i].blue*MaxRGB+(PalHeader.MaxBlue>>1))/PalHeader.MaxBlue);
-	       }
-	       
-	   }
+     j=(long) TellBlob(palette);
+     if((j % 512)>512-6)
+         {
+         j=((j / 512)+1)*512;
+         (void) SeekBlob(palette,j,SEEK_SET);
+         }
+     image->colormap[i].red=ReadBlobLSBShort(palette);
+     if(MaxRGB!=PalHeader.MaxRed) 
+         {
+         image->colormap[i].red=(Quantum)
+           (((unsigned long)image->colormap[i].red*MaxRGB+(PalHeader.MaxRed>>1))/PalHeader.MaxRed);
+         }
+     image->colormap[i].green=ReadBlobLSBShort(palette);
+     if(MaxRGB!=PalHeader.MaxGreen) 
+         {
+         image->colormap[i].green=(Quantum)
+           (((unsigned long)image->colormap[i].green*MaxRGB+(PalHeader.MaxGreen>>1))/PalHeader.MaxGreen);
+         }
+     image->colormap[i].blue=ReadBlobLSBShort(palette);       
+     if(MaxRGB!=PalHeader.MaxBlue)  
+         {
+         image->colormap[i].blue=(Quantum)
+           (((unsigned long)image->colormap[i].blue*MaxRGB+(PalHeader.MaxBlue>>1))/PalHeader.MaxBlue);
+         }
+         
+     }
    }
 
    
@@ -454,17 +454,17 @@ NoPalette:
    
    image->colors=256;
    if (!AllocateImageColormap(image,image->colors))
-	   {
+     {
 NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-				image)
-           }	   
+        image)
+           }     
    
    for (i=0; i < (long)image->colors; i++)
-	   {
-	   image->colormap[i].red=Upscale(i);
-	   image->colormap[i].green=Upscale(i);
-	   image->colormap[i].blue=Upscale(i);
-	   }
+     {
+     image->colormap[i].red=Upscale(i);
+     image->colormap[i].green=Upscale(i);
+     image->colormap[i].blue=Upscale(i);
+     }
    }
 
            
@@ -483,70 +483,70 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
       RunCount=ReadBlobByte(image);
       RunCountMasked=RunCount & 0x7F;
 
-      while(RunCountMasked!=0)  	
-    		{
-    		if(RunCountMasked>j)
-			{		/*Wrong Data*/
-			RunCountMasked=(unsigned char) j;
-			if(j==0) 
-			    {
-			    break;
-			    }
-			}
+      while(RunCountMasked!=0)    
+        {
+        if(RunCountMasked>j)
+      {    /*Wrong Data*/
+      RunCountMasked=(unsigned char) j;
+      if(j==0) 
+          {
+          break;
+          }
+      }
 
-		if(RunCount>0x80)
-			{
-			RunValue=ReadBlobByte(image);
-			(void) memset(ptrB,RunValue,RunCountMasked);
-			}
-		else {
-		     (void) ReadBlob(image,RunCountMasked,ptrB);
-		     }
-		     
-		ptrB+=RunCountMasked;
-		j-=RunCountMasked;     
+    if(RunCount>0x80)
+      {
+      RunValue=ReadBlobByte(image);
+      (void) memset(ptrB,RunValue,RunCountMasked);
+      }
+    else {
+         (void) ReadBlob(image,RunCountMasked,ptrB);
+         }
+         
+    ptrB+=RunCountMasked;
+    j-=RunCountMasked;     
     
-		if(EOFBlob(image)) goto Finish;	/* wrong data: unexpected eof in line */
-		RunCount=ReadBlobByte(image);
-		RunCountMasked=RunCount & 0x7F;
-    		}
+    if(EOFBlob(image)) goto Finish;  /* wrong data: unexpected eof in line */
+    RunCount=ReadBlobByte(image);
+    RunCountMasked=RunCount & 0x7F;
+        }
 
-	InsertRow(BImgBuff,i,image);
-   	}
+  InsertRow(BImgBuff,i,image);
+     }
 
 
 /*detect monochrome image*/
 
 if(palette==NULL)
-    {		/*attempt to detect binary (black&white) images*/
+    {    /*attempt to detect binary (black&white) images*/
     if((image->storage_class == PseudoClass) && IsGrayImage(image,&image->exception))
       {
       if(GetCutColors(image)==2)
          {
-	 for (i=0; i < (long)image->colors; i++)
-	   {
-	   j=Upscale(i);
-	   if(image->colormap[i].red!=(Quantum) j) goto Finish;
-	   if(image->colormap[i].green!=(Quantum) j) goto Finish;
-	   if(image->colormap[i].blue!=(Quantum) j) goto Finish;
-	   }
+   for (i=0; i < (long)image->colors; i++)
+     {
+     j=Upscale(i);
+     if(image->colormap[i].red!=(Quantum) j) goto Finish;
+     if(image->colormap[i].green!=(Quantum) j) goto Finish;
+     if(image->colormap[i].blue!=(Quantum) j) goto Finish;
+     }
      
-	 image->colormap[1].red=image->colormap[1].green=image->colormap[1].blue=MaxRGB;
-	 for (i=0; i < (long)image->rows; i++)  
-	   {
-	   q=SetImagePixels(image,0,i,image->columns,1);  
-	   for (j=0; j < (long)image->columns; j++)  
-             {  	   
-	     if(q->red==Upscale(1))
-	        {
-	        q->red=q->green=q->blue=MaxRGB;
-	        }
-	     q++;	
-	     }	
-	   if (!SyncImagePixels(image)) goto Finish;
-	   }
-	 }
-       }     	 
+   image->colormap[1].red=image->colormap[1].green=image->colormap[1].blue=MaxRGB;
+   for (i=0; i < (long)image->rows; i++)  
+     {
+     q=SetImagePixels(image,0,i,image->columns,1);  
+     for (j=0; j < (long)image->columns; j++)  
+             {       
+       if(q->red==Upscale(1))
+          {
+          q->red=q->green=q->blue=MaxRGB;
+          }
+       q++;  
+       }  
+     if (!SyncImagePixels(image)) goto Finish;
+     }
+   }
+       }        
     } 
 
 Finish:

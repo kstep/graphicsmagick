@@ -2233,7 +2233,7 @@ static unsigned int XCompositeImage(Display *display,
   composite_image=ReadImage(resource_info->image_info,&image->exception);
   if (image->exception.severity != UndefinedException)
     MagickWarning(image->exception.severity,image->exception.reason,
-		  image->exception.description);
+  	  image->exception.description);
   XSetCursorState(display,windows,False);
   if (composite_image == (Image *) NULL)
     return(False);

@@ -317,7 +317,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
         image->y_resolution=image->x_resolution;
     }
   FormatString(density,"%gx%g",image->x_resolution,image->y_resolution);
-	SetGeometry(image,&page);
+  SetGeometry(image,&page);
   page.width=612;
   page.height=792;
   (void) GetGeometry(PSPageGeometry,&page.x,&page.y,&page.width,&page.height);

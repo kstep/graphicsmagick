@@ -758,7 +758,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     length=bytes_per_line*image->rows;
     pixels=(unsigned char *)
-		  AcquireMemory(Max(bytes_per_line,image->columns+1)*image->rows);
+      AcquireMemory(Max(bytes_per_line,image->columns+1)*image->rows);
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);

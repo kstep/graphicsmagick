@@ -454,7 +454,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->y_resolution=image->x_resolution;
     }
   FormatString(density,"%gx%g",image->x_resolution,image->y_resolution);
-	SetGeometry(image,&page);
+  SetGeometry(image,&page);
   page.width=612;
   page.height=792;
   (void) GetGeometry(PSPageGeometry,&page.x,&page.y,&page.width,&page.height);
@@ -748,7 +748,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     offset;
 
   RectangleInfo
-	  geometry,
+    geometry,
     media_info;
 
   register const PixelPacket
@@ -762,7 +762,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 
   register long
     i,
-		x;
+    x;
 
   size_t
     length;

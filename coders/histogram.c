@@ -186,7 +186,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     y;
 
   RectangleInfo
-		geometry;
+    geometry;
 
   register const PixelPacket
     *p;

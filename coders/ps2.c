@@ -491,11 +491,11 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     y;
 
   off_t
-	  start,
-		stop;
+    start,
+    stop;
 
   RectangleInfo
-	  geometry;
+    geometry;
 
   register const PixelPacket
     *p;
@@ -504,7 +504,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     *indexes;
 
   register long
-	  x;
+    x;
 
   register long
     i;
@@ -735,7 +735,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,"userdict begin\n");
     start=TellBlob(image);
     FormatString(buffer,"%%%%BeginData:%13ld %s Bytes\n",0L,
-		  compression == NoCompression ? "ASCII" : "BINARY");
+      compression == NoCompression ? "ASCII" : "BINARY");
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"DisplayImage\n");
     /*
@@ -1013,7 +1013,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     stop=TellBlob(image);
     (void) SeekBlob(image,start,SEEK_SET);
     FormatString(buffer,"%%%%BeginData:%13ld %s Bytes\n",(long) (stop-start+1),
-		  compression == NoCompression ? "ASCII" : "BINARY");
+      compression == NoCompression ? "ASCII" : "BINARY");
     (void) WriteBlobString(image,buffer);
     (void) SeekBlob(image,stop,SEEK_SET);
     (void) WriteBlobString(image,"%%EndData\n");

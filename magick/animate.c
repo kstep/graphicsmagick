@@ -469,7 +469,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     number_scenes;
 
   unsigned int
-	  coalesce,
+    coalesce,
     status;
 
   unsigned long
@@ -870,8 +870,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     }
   } while (event.type != DestroyNotify);
   (void) XSync(display,False);
-	for (i=0; i < (long) number_scenes; i++)
-	  DestroyImage(image_list[i]);
+  for (i=0; i < (long) number_scenes; i++)
+    DestroyImage(image_list[i]);
   LiberateMemory((void **) &image_list);
   if (coalesce)
     DestroyImageList(images);
@@ -1020,7 +1020,7 @@ MagickExport Image *XAnimateImages(Display *display,
 
   Image
     *display_image,
-		*image,
+    *image,
     **image_list,
     *nexus;
 
@@ -1060,7 +1060,7 @@ MagickExport Image *XAnimateImages(Display *display,
 
   unsigned int
     context_mask,
-		coalesce,
+    coalesce,
     state;
 
   WarningHandler
@@ -1179,7 +1179,7 @@ MagickExport Image *XAnimateImages(Display *display,
   class_hints=windows->class_hints;
   manager_hints=windows->manager_hints;
   root_window=XRootWindow(display,visual_info->screen);
-	coalesce=False;
+  coalesce=False;
   if (images->next != (Image *) NULL)
     {
       Image
@@ -2409,8 +2409,8 @@ MagickExport Image *XAnimateImages(Display *display,
     }
   }
   while (!(state & ExitState));
-	for (i=0; i < (long) number_scenes; i++)
-	  DestroyImage(image_list[i]);
+  for (i=0; i < (long) number_scenes; i++)
+    DestroyImage(image_list[i]);
   LiberateMemory((void **) &image_list);
   if (coalesce)
     DestroyImageList(images);

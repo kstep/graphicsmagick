@@ -6397,7 +6397,7 @@ QueryFont(ref,...)
   {
     char
       *name,
-			message[MaxTextExtent];
+      message[MaxTextExtent];
 
     const TypeInfo
       *type_info;
