@@ -23,6 +23,12 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-08-25  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * Arcs are now rendered properly.
+  * -page was previouly being ignored.
+  * Configure files are returned as blobs now (suggested by William
+    Radcliffe).
+
 2002-08-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Added --disable-installed option to configure to support building
     an ImageMagick which is not installed via hard-coded paths. This
@@ -595,6 +601,9 @@ ImageMagick Changes</font></font></font></b></td>
 2001-11-10  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Added SVG pattern support.
   * Changed default background color to none.
+
+2001-11-06  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * Added support of reading and writing 16-bit raw PPM/PGM files.
 
 2001-11-05  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Added -level to convert/mogrify (suggested by
