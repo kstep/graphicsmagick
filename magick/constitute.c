@@ -95,8 +95,9 @@
 %
 %    o map:  This character string can be any combination or order of
 %      R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow,
-%      M = magenta, and K = black.  The ordering reflects the order of the
-%      pixels in the supplied pixel array.
+%      M = magenta, and K = black, and I = intensity for grayscale images.
+%      The ordering reflects the order of the pixels in the supplied pixel
+%      array.
 %
 %    o type: pixel type where 0 = unsigned char, 1 = short int, 2 = int,
 %      3 = float, and 4 = double.  Float and double types are expected to be
@@ -164,6 +165,14 @@ MagickExport Image *ConstituteImage(const unsigned int width,
         image->colorspace=CMYKColorspace;
         break;
       }
+      case 'i':
+      case 'I':
+      {
+        if (!AllocateImageColormap(image,MaxRGB+1))
+          ThrowImageException(ResourceLimitWarning,"Unable to constitute image",
+            "Memory allocation failed");
+        break;
+      }
       default:
         break;
     }
@@ -219,6 +228,13 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               case 'K':
               {
                 q->opacity=UpScale(*p++);
+                break;
+              }
+              case 'I':
+              {
+                q->red=UpScale(*p++);
+                q->green=q->red;
+                q->blue=q->red;
                 break;
               }
               default:
@@ -284,6 +300,13 @@ MagickExport Image *ConstituteImage(const unsigned int width,
                 q->opacity=(*p++);
                 break;
               }
+              case 'I':
+              {
+                q->red=(*p++);
+                q->green=q->red;
+                q->blue=q->red;
+                break;
+              }
               default:
               {
                 DestroyImage(image);
@@ -345,6 +368,13 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               case 'K':
               {
                 q->opacity=(*p++);
+                break;
+              }
+              case 'I':
+              {
+                q->red=(*p++);
+                q->green=q->red;
+                q->blue=q->red;
                 break;
               }
               default:
@@ -410,6 +440,13 @@ MagickExport Image *ConstituteImage(const unsigned int width,
                 q->opacity=(Quantum) (MaxRGB*(*p++));
                 break;
               }
+              case 'I':
+              {
+                q->red=(Quantum) (MaxRGB*(*p++));
+                q->green=q->red;
+                q->blue=q->red;
+                break;
+              }
               default:
               {
                 DestroyImage(image);
@@ -471,6 +508,13 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               case 'K':
               {
                 q->opacity=(Quantum) (MaxRGB*(*p++));
+                break;
+              }
+              case 'I':
+              {
+                q->red=(Quantum) (MaxRGB*(*p++));
+                q->green=q->red;
+                q->blue=q->red;
                 break;
               }
               default:
