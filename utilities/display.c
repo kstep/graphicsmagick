@@ -1364,7 +1364,7 @@ int main(int argc,char **argv)
               Transmogrify image as defined by the image processing options.
             */
             resource_info.quantum=1;
-            status&=MogrifyImages(image_info,i,argv,&image);
+            status&=MogrifyImage(image_info,i,argv,&image);
             (void) CatchImageException(image);
             if (first_scene != last_scene)
               image->scene=scene;
