@@ -1240,7 +1240,7 @@ int main(int argc,char **argv)
         }
         case 'v':
         {
-          if (LocaleNCompare("verbose",option+1,2) == 0)
+          if (LocaleNCompare("verbose",option+1,4) == 0)
             {
               image_info->verbose=(*option == '-');
               break;

@@ -864,7 +864,12 @@ int main(int argc,char **argv)
         }
         case 'v':
         {
-          image_info->verbose=(*option == '-');
+          if (LocaleNCompare("verbose",option+1,4) == 0)
+            {
+              image_info->verbose=(*option == '-');
+              break;
+            }
+          MagickError(OptionError,"Unrecognized option",option);
           break;
         }
         case '?':

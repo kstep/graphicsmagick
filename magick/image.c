@@ -4750,7 +4750,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'v':
       {
-        if (LocaleNCompare("verbose",option+1,3) == 0)
+        if (LocaleNCompare("verbose",option+1,4) == 0)
           {
             clone_info->verbose=(*option == '-');
             quantize_info.measure_error=(*option == '-');

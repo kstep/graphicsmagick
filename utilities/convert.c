@@ -63,7 +63,7 @@
 %    -bordercolor color   border color
 %    -box color           color for annotation bounding box
 %    -cache threshold     number of megabytes available to the pixel cache
-%    -channel type        Red, Green, Blue, Matte
+%    -channel type        Red, Green, Blue, or Matte
 %    -charcoal radius     simulate a charcoal drawing
 %    -coalesce            merge a sequence of images
 %    -colorize value      colorize the image with the fill color
@@ -103,6 +103,7 @@
 %    -intent type         Absolute, Perceptual, Relative, or Saturation
 %    -interlace type      None, Line, Plane, or Partition
 %    -label name          assign a label to an image
+%    -list type           Delegates, Formats, Fonts, or Magic
 %    -loop iterations     add Netscape loop extension to your GIF animation
 %    -map filename        transform image colors to match this set of colors
 %    -matte               store matte channel if the image has one
@@ -301,7 +302,7 @@ static void Usage()
       "-intent type         Absolute, Perceptual, Relative, or Saturation",
       "-interlace type      None, Line, Plane, or Partition",
       "-label name          assign a label to an image",
-      "-label name          assign a label to an image",
+      "-list type           Delegates, Formats, Fonts, or Magic",
       "-loop iterations     add Netscape loop extension to your GIF animation",
       "-map filename        transform image colors to match this set of colors",
       "-matte               store matte channel if the image has one",
@@ -356,9 +357,6 @@ static void Usage()
   const char
     **p;
 
-  ExceptionInfo
-    exception;
-
   unsigned int
     version;
 
@@ -378,13 +376,6 @@ static void Usage()
   (void) printf(
     "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
   (void) printf("'-' for standard input or output.\n");
-  GetExceptionInfo(&exception);
-  if (!ListMagickInfo((FILE *) NULL,&exception))
-    MagickWarning(exception.severity,exception.reason,exception.description);
-  if (!ListDelegateInfo((FILE *) NULL,&exception))
-    MagickWarning(exception.severity,exception.reason,exception.description);
-  if (!ListFontInfo((FILE *) NULL,&exception))
-    MagickWarning(exception.severity,exception.reason,exception.description);
   Exit(0);
 }
 
@@ -1175,13 +1166,31 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("linewidth",option+1,2) == 0)
+          if (LocaleNCompare("list",option+1,3) == 0)
             {
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
-                    MagickError(OptionError,"Missing size",option);
+                  if (i == argc)
+                    MagickError(OptionError,"Missing list name",option);
+                  option=argv[i];
+                  if (LocaleCompare("Delegates",option) == 0)
+                    (void) ListDelegateInfo((FILE *) NULL,&exception);
+                  else
+                    if (LocaleCompare("Fonts",option) == 0)
+                      (void) ListFontInfo((FILE *) NULL,&exception);
+                    else
+                      if (LocaleCompare("Formats",option) == 0)
+                        (void) ListMagickInfo((FILE *) NULL,&exception);
+                      else
+                        if (LocaleCompare("Magic",option) == 0)
+                          (void) ListMagicInfo((FILE *) NULL,&exception);
+                        else
+                          MagickError(OptionError,"Invalid list type",option);
+                  if (exception.severity != UndefinedException)
+                    MagickError(exception.severity,exception.reason,
+                      exception.description);
+                  Exit(0);
                 }
               break;
             }
@@ -1789,7 +1798,7 @@ int main(int argc,char **argv)
         }
         case 'v':
         {
-          if (LocaleNCompare("verbose",option+1,2) == 0)
+          if (LocaleNCompare("verbose",option+1,4) == 0)
             {
               image_info->verbose=(*option == '-');
               break;

@@ -553,7 +553,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"\nImageMagick uses these delegates to read or write "
+  (void) fprintf(file,"ImageMagick uses these delegates to read or write "
     "image formats it does not\ndirectly support:\n\n");
   (void) fprintf(file,"Decode-Tag   Encode-Tag  Delegate\n");
   (void) fprintf(file,"-------------------------------------------------------"

@@ -476,7 +476,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"\nHere is a list of image formats recognized by "
+  (void) fprintf(file,"Here is a list of image formats recognized by "
     "ImageMagick.  Mode 'rw+'\nmeans ImageMagick can read, write, and "
     "save more than one image of a\nsequence to the same blob or file.\n\n");
   (void) fprintf(file,"    Format  Mode  Description\n");
