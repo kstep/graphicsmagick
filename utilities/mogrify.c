@@ -340,7 +340,7 @@ static void MogrifyUsage(void)
 %
 %
 */
-MagickExport unsigned int MogrifyUtility(int argc,char **argv)
+static unsigned int MogrifyUtility(int argc,char **argv)
 {
   char
     filename[MaxTextExtent],

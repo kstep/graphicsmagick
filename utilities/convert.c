@@ -633,7 +633,7 @@ static void ConvertUsage(void)
 %
 %
 */
-MagickExport unsigned int ConvertUtility(int argc,char **argv)
+static unsigned int ConvertUtility(int argc,char **argv)
 {
 #define NotInitialized  (unsigned int) (~0)
 

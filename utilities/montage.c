@@ -280,7 +280,7 @@ static void MontageUsage(void)
 %
 %
 */
-MagickExport unsigned int MontageUtility(int argc,char **argv)
+static unsigned int MontageUtility(int argc,char **argv)
 {
   char
     *option,
