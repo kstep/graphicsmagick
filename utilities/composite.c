@@ -79,7 +79,7 @@
 %    -page geometry      size and location of an image canvas
 %    -profile filename   add ICM or IPTC information profile to image
 %    -quality value      JPEG/MIFF/PNG compression level
-%    -resize geometry    perferred size or location of the image
+%    -resize geometry    resize the image
 %    -rotate degrees     apply Paeth rotation to the image
 %    -scene value        image scene number
 %    -size geometry      width and height of image
@@ -460,7 +460,7 @@ static void Usage(void)
       "-page geometry      size and location of an image canvas",
       "-profile filename   add ICM or IPTC information profile to image",
       "-quality value      JPEG/MIFF/PNG compression level",
-      "-resize geometry    perferred size or location of the image",
+      "-resize geometry    resize the image",
       "-rotate degrees     apply Paeth rotation to the image",
       "-scene value        image scene number",
       "-size geometry      width and height of image",

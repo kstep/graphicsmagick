@@ -119,7 +119,7 @@
 %    -page geometry      size and location of an image canvas
 %    -pointsize value    pointsize of Postscript font
 %    -quality value      JPEG/MIFF/PNG compression level
-%    -resize geometry    preferred tile and border sizes
+%    -resize geometry    resize the image
 %    -rotate degrees     apply Paeth rotation to the image
 %    -scene value        image scene number
 %    -shadow             add a shadow beneath a tile to simulate depth
@@ -210,7 +210,7 @@ static void Usage(void)
       "-page geometry      size and location of an image canvas",
       "-pointsize value    pointsize of Postscript font",
       "-quality value      JPEG/MIFF/PNG compression level",
-      "-resize geometry    preferred tile and border sizes",
+      "-resize geometry    resize the image",
       "-rotate degrees     apply Paeth rotation to the image",
       "-scene value        image scene number",
       "-shadow             add a shadow beneath a tile to simulate depth",
@@ -231,7 +231,7 @@ static void Usage(void)
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
   (void) printf("Usage: %.1024s [ -option value ...] file [ [ -options value "
-	  "... ] file ... ]\n",SetClientName((char *) NULL));
+    "... ] file ... ]\n",SetClientName((char *) NULL));
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);

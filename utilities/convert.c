@@ -131,11 +131,11 @@
 %    -quality value       JPEG/MIFF/PNG compression level
 %    -raise value         lighten/darken image edges to create a 3-D effect
 %    -region geometry     apply options to a portion of the image
-%    -resize geometry     perferred size or location of the image
+%    -resize geometry     resize the image
 %    -roll geometry       roll an image vertically or horizontally
 %    -rotate degrees      apply Paeth rotation to the image
 %    -sample geometry     scale image with pixel sampling
-%    -scale geometry      resize image
+%    -scale geometry      scale the image
 %    -scene value         image scene number
 %    -seed value          pseudo-random number generator seed value
 %    -segment values      segment an image
@@ -545,11 +545,11 @@ static void Usage(void)
       "-quality value       JPEG/MIFF/PNG compression level",
       "-raise value         lighten/darken image edges to create a 3-D effect",
       "-region geometry     apply options to a portion of the image",
-      "-resize geometry     perferred size or location of the image",
+      "-resize geometry     resize the image",
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sample geometry     scale image with pixel sampling",
-      "-scale geometry      resize image",
+      "-scale geometry      scale the image",
       "-scene value         image scene number",
       "-seed value          pseudo-random number generator seed value",
       "-segment values      segment an image",

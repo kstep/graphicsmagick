@@ -189,7 +189,7 @@ static void Usage(void)
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
   (void) printf("Usage: %.1024s [ -option value ... ] file [ [ -option value "
-	  "... ] file ... ]\n",SetClientName((char *) NULL));
+    "... ] file ... ]\n",SetClientName((char *) NULL));
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);

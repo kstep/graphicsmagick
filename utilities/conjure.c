@@ -113,7 +113,7 @@ static void Usage(void)
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
   (void) printf("\nIn additiion, define any key value pairs required by "
-	  "your script.  For\nexample,\n\n");
+    "your script.  For\nexample,\n\n");
   (void) printf("    conjure -size 100x100 -color blue -foo bar script.msl\n");
   Exit(0);
 }
