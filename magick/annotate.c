@@ -121,7 +121,6 @@ MagickExport unsigned int AnnotateImage(Image *image,
     metrics;
 
   int
-    j,
     x,
     y;
 
@@ -980,10 +979,13 @@ static unsigned int RenderPostscript(Image *image,
     extent.y/2.0);
   (void) fprintf(file,"%g %g scale\n",annotate_info->pointsize,
     annotate_info->pointsize);
-  (void) fprintf(file,
-    "/%.1024s-ISO dup /%.1024s ReencodeFont findfont setfont\n",
-    annotate_info->font ? annotate_info->font : "Times",
-    annotate_info->font ? annotate_info->font : "Times");
+  if ((annotate_info->font == (char *) NULL) || (*annotate_info->font == '\0'))
+    (void) fprintf(file,
+      "/Times-ISO dup /Times ReencodeFont findfont setfont\n");
+  else
+    (void) fprintf(file,
+      "/%.1024s-ISO dup /%.1024s ReencodeFont findfont setfont\n",
+      annotate_info->font,annotate_info->font);
   (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",annotate_info->affine.sx,
     -annotate_info->affine.rx,-annotate_info->affine.ry,
     annotate_info->affine.sy);
