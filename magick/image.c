@@ -258,9 +258,9 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
   for (i=0; i < (long) image->colors; i++)
   {
     pixel=i*(MaxRGB/Max(colors-1,1));
-    image->colormap[i].red=pixel;
-    image->colormap[i].green=pixel;
-    image->colormap[i].blue=pixel;
+    image->colormap[i].red=(Quantum) pixel;
+    image->colormap[i].green=(Quantum) pixel;
+    image->colormap[i].blue=(Quantum) pixel;
     image->colormap[i].opacity=OpaqueOpacity;
   }
   return(True);
@@ -5322,10 +5322,11 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
-          cyan=MaxRGB-q->red;
-          magenta=MaxRGB-q->green;
-          yellow=MaxRGB-q->blue;
-          black=cyan < magenta ? Min(cyan,yellow) : Min(magenta,yellow);
+          cyan=(Quantum) (MaxRGB-q->red);
+          magenta=(Quantum) (MaxRGB-q->green);
+          yellow=(Quantum) (MaxRGB-q->blue);
+          black=(Quantum)
+            (cyan < magenta ? Min(cyan,yellow) : Min(magenta,yellow));
           q->red=cyan;
           q->green=magenta;
           q->blue=yellow;
