@@ -106,10 +106,6 @@ SOURCE=.\configure_wizard.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\CStringEx.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\finished_page.cpp
 # End Source File
 # Begin Source File
@@ -144,10 +140,6 @@ SOURCE=.\configure.h
 # Begin Source File
 
 SOURCE=.\configure_wizard.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\CStringEx.h
 # End Source File
 # Begin Source File
 

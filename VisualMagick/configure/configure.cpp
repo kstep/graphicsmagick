@@ -5,7 +5,9 @@
 #include "Configure.h"
 #include "configure_wizard.h"
 #include "WaitDlg.h"
-#include "CStringEx.h"
+//#include "CStringEx.h"
+
+#define SYMBOLS_ALWAYS 1
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -56,19 +58,19 @@ BOOL absolutePaths = TRUE;
 BOOL onebigdllMode = FALSE;
 BOOL generateFontmap = FALSE;
 
-CString release_loc;
-CString debug_loc;
-CString bin_loc;
-CString lib_loc;
+string release_loc;
+string debug_loc;
+string bin_loc;
+string lib_loc;
 
-CString final_release_loc;
-CString final_debug_loc;
-CString final_bin_loc;
-CString final_lib_loc;
+string final_release_loc;
+string final_debug_loc;
+string final_bin_loc;
+string final_lib_loc;
 
-std::list<std::string> libs_list_shared;
-std::list<std::string> dependency_list;
-std::list<std::string> standard_include;
+list<string> libs_list_shared;
+list<string> dependency_list;
+list<string> standard_include;
 
 //
 // Get the full path to a file. The first argument is the
@@ -77,21 +79,21 @@ std::list<std::string> standard_include;
 // file or directory. All paths are relative to the place
 // were configure runs from.
 //
-std::string get_full_path(std::string root,std::string part)
+string get_full_path(string root,string part)
 {
   if (!absolutePaths)
   {
 #ifdef _DEBUG
     debuglog  << "get_full_path "
               << "root:" << root.c_str() << ","
-              << "return part:" << part.c_str() << endl;
+			  << "return part:" << part.c_str() << endl;
 #endif
     return part;
   }
   else
   {
     char full[_MAX_PATH];
-    std::string combined;
+    string combined;
 
     combined = root + part;
     
@@ -100,7 +102,7 @@ std::string get_full_path(std::string root,std::string part)
 #ifdef _DEBUG
       debuglog  << "get_full_path "
                 << "combined:" << combined.c_str() << ","
-                << "return full:" << full << endl;
+				<< "return full:" << full << endl;
 #endif
       return full;
     }
@@ -116,10 +118,10 @@ std::string get_full_path(std::string root,std::string part)
   }
 }
 
-std::string get_project_name(int project, int runtime,
-  std::string root, std::string prefix, std::string name)
+string get_project_name(int project, int runtime,
+  string root, string prefix, string name)
 {
-  std::string filename = root;
+  string filename = root;
   filename += "\\";
 	filename += prefix.c_str();
 	filename += name.c_str();
@@ -190,132 +192,257 @@ std::string get_project_name(int project, int runtime,
   return filename;
 }
 
+void LocalMakeLower(string &s)
+{
+  char* pszTemp = new char[s.length() + 1];
+  _tcscpy(pszTemp, s.c_str());
+  _tcslwr(pszTemp);
+  s = pszTemp;
+  delete [] pszTemp;
+  return;
+};
+
+int LocalFindNoCase( string &a, char *b, int startpos )
+{
+	string sa = a;
+	LocalMakeLower(sa);
+
+	string sb = b;
+	LocalMakeLower(sb);
+
+	return sa.find( sb, startpos );
+}
+
+void LocalFormat(string &a, const char *s, ... )
+{
+  va_list vl;
+  va_start(vl, s);
+
+  char *pszTemp = NULL;
+  int nBufferSize = 0;
+  int nRetVal = -1;
+
+  do
+  {
+      // Increment the buffer 100 characters at a time
+      // I'm not sure whether this is robust!
+      nBufferSize += 1024;
+      if (pszTemp)
+        delete [] pszTemp;
+      pszTemp = new char [nBufferSize];
+      nRetVal = _vstprintf(pszTemp, s, vl);
+  } while (nRetVal < 0);
+
+  a = pszTemp;
+  if (pszTemp)
+    delete [] pszTemp;
+
+  va_end(vl);
+  return;
+};
+
+int LocalGetFieldCount( string &s, const TCHAR* psz )
+{
+  int len = _tcslen( psz );
+	int pos = 0;
+  int iCount = 1;
+
+	while( (pos = s.find(psz, pos)) >= 0 )
+	{
+    pos += len;
+	  iCount++;
+	}
+  return iCount;
+};
+
+int LocalGetFieldCount( string &s, const TCHAR& ch )
+{
+	int pos = 0;
+  int iCount = 1;
+
+	while( (pos = s.find(ch, pos)) >= 0 )
+	{
+    pos++;
+	  iCount++;
+	}
+  return iCount;
+};
+
+string LocalGetField( string &s, const TCHAR* delim, int fieldnum )
+{
+  int lenDelim = _tcslen( delim );
+  int pos = 0, term = 0;
+  int retlen = 0, retpos = 0;
+
+  while( fieldnum-- >= 0 )
+  {
+	  term = s.find(delim, pos);
+	  if( term >= 0 )
+	  {
+		  retpos = pos;
+		  retlen = term - pos;
+		  pos = term + lenDelim;
+	  }
+	  else
+	  {
+		  retpos = pos;
+      retlen = s.length() - pos;
+      break;
+	  }
+  }
+  return s.substr(retpos, retlen);
+};
+
+string LocalGetField( string &s, const TCHAR& ch, int fieldnum )
+{
+  int pos = 0, term = 0;
+  int retlen = 0, retpos = 0;
+
+  while( fieldnum-- >= 0 )
+  {
+	  term = s.find(ch, pos);
+	  if( term >= 0 )
+	  {
+		  retpos = pos;
+		  retlen = term - pos;
+		  pos = term + 1;
+	  }
+	  else
+	  {
+		  retpos = pos;
+      retlen = s.length() - pos;
+      break;
+	  }
+  }
+  return s.substr(retpos, retlen);
+};
+
 void CConfigureApp::generate_dependencies(
     ofstream &dsw, bool add_cpp_depends, bool add_util_depends)
 {
-  CStringEx strDepends;
+  string strDepends;
 	for (
-		std::list<std::string>::iterator it1a = dependency_list.begin();
+		list<string>::iterator it1a = dependency_list.begin();
 		it1a != dependency_list.end();
 		it1a++)
 	{
     strDepends = (*it1a).c_str();
-    if (strDepends.FindNoCase("CORE_%szlib",0) == 0)
+    if (LocalFindNoCase(strDepends,"CORE_%szlib",0) == 0)
     {
-      strDepends.Format((*it1a).c_str(),"","");
-		  add_project_dependency(dsw, strDepends );
+      LocalFormat(strDepends,(*it1a).c_str(),"","");
+		  add_project_dependency(dsw, strDepends.c_str() );
     }
 	}
 
 	for (
-		std::list<std::string>::iterator it1b = dependency_list.begin();
+		list<string>::iterator it1b = dependency_list.begin();
 		it1b != dependency_list.end();
 		it1b++)
 	{
     strDepends = (*it1b).c_str();
-    if (strDepends.FindNoCase("CORE_%sbzlib",0) == 0)
+    if (LocalFindNoCase(strDepends,"CORE_%sbzlib",0) == 0)
     {
-      strDepends.Format((*it1b).c_str(),"","");
-		  add_project_dependency(dsw, strDepends );
+      LocalFormat(strDepends,(*it1b).c_str(),"","");
+		  add_project_dependency(dsw, strDepends.c_str() );
     }
 	}
 
 	for (
-		std::list<std::string>::iterator it1c = dependency_list.begin();
+		list<string>::iterator it1c = dependency_list.begin();
 		it1c != dependency_list.end();
 		it1c++)
 	{
     strDepends = (*it1c).c_str();
-    if (strDepends.FindNoCase("CORE_%sjpeg",0) == 0)
+    if (LocalFindNoCase(strDepends,"CORE_%sjpeg",0) == 0)
     {
-      strDepends.Format((*it1c).c_str(),"","");
-		  add_project_dependency(dsw, strDepends );
+      LocalFormat(strDepends,(*it1c).c_str(),"","");
+		  add_project_dependency(dsw, strDepends.c_str() );
     }
 	}
 
 	for (
-		std::list<std::string>::iterator it1 = dependency_list.begin();
+		list<string>::iterator it1 = dependency_list.begin();
 		it1 != dependency_list.end();
 		it1++)
 	{
     strDepends = (*it1).c_str();
-    if (strDepends.FindNoCase("CORE_%szlib",0) == 0)
+    if (LocalFindNoCase(strDepends,"CORE_%szlib",0) == 0)
       continue;
-    if (strDepends.FindNoCase("CORE_%sbzlib",0) == 0)
+    if (LocalFindNoCase(strDepends,"CORE_%sbzlib",0) == 0)
       continue;
-    if (strDepends.FindNoCase("CORE_%sjpeg",0) == 0)
+    if (LocalFindNoCase(strDepends,"CORE_%sjpeg",0) == 0)
       continue;
-    if (strDepends.FindNoCase("LIBR_",0) == 0)
+    if (LocalFindNoCase(strDepends,"LIBR_",0) == 0)
     {
-      strDepends.Format((*it1).c_str(),"","");
-		  add_project_dependency(dsw, strDepends );
+      LocalFormat(strDepends,(*it1).c_str(),"","");
+		  add_project_dependency(dsw, strDepends.c_str() );
     }
 	}
 	for (
-		std::list<std::string>::iterator it2 = dependency_list.begin();
+		list<string>::iterator it2 = dependency_list.begin();
 		it2 != dependency_list.end();
 		it2++)
 	{
     strDepends = (*it2).c_str();
-    if (strDepends.FindNoCase("CORE_",0) == 0)
+    if (LocalFindNoCase(strDepends,"CORE_",0) == 0)
     {
-      if (strDepends.FindNoCase("CORE_%smagick",0) == 0)
+      if (LocalFindNoCase(strDepends,"CORE_%smagick",0) == 0)
         continue;
-      strDepends.Format((*it2).c_str(),"","");
-		  add_project_dependency(dsw, strDepends );
+      LocalFormat(strDepends,(*it2).c_str(),"","");
+		  add_project_dependency(dsw, strDepends.c_str() );
     }
 	}
 	for (
-		std::list<std::string>::iterator it3 = dependency_list.begin();
+		list<string>::iterator it3 = dependency_list.begin();
 		it3 != dependency_list.end();
 		it3++)
 	{
     strDepends = (*it3).c_str();
-    if (strDepends.Find("CORE_%smagick",0) == 0)
+    if (LocalFindNoCase(strDepends,"CORE_%smagick",0) == 0)
     {
-      strDepends.Format((*it3).c_str(),"","");
-		  add_project_dependency(dsw, strDepends );
+      LocalFormat(strDepends,(*it3).c_str(),"","");
+		  add_project_dependency(dsw, strDepends.c_str() );
     }
 	}
   if (add_cpp_depends)
   {
 	  for (
-		  std::list<std::string>::iterator it4 = dependency_list.begin();
+		  list<string>::iterator it4 = dependency_list.begin();
 		  it4 != dependency_list.end();
 		  it4++)
 	  {
       strDepends = (*it4).c_str();
-      if (strDepends.Find("CORE_%sMagick",0) == 0)
+      if (LocalFindNoCase(strDepends,"CORE_%sMagick",0) == 0)
       {
-        strDepends.Format((*it4).c_str(),"","");
-		    add_project_dependency(dsw, strDepends );
+        LocalFormat(strDepends,(*it4).c_str(),"","");
+		    add_project_dependency(dsw, strDepends.c_str() );
       }
 	  }
   }
 	for (
-		std::list<std::string>::iterator it5 = dependency_list.begin();
+		list<string>::iterator it5 = dependency_list.begin();
 		it5 != dependency_list.end();
 		it5++)
 	{
     strDepends = (*it5).c_str();
-    if (strDepends.FindNoCase(MODULE_PREFIX,0) == 0)
+    if (LocalFindNoCase(strDepends,(char *)MODULE_PREFIX,0) == 0)
     {
-      strDepends.Format((*it5).c_str(),"","");
-		  add_project_dependency(dsw, strDepends );
+      LocalFormat(strDepends,(*it5).c_str(),"","");
+		  add_project_dependency(dsw, strDepends.c_str() );
     }
 	}
   if (add_util_depends)
   {
 	  for (
-		  std::list<std::string>::iterator it6 = dependency_list.begin();
+		  list<string>::iterator it6 = dependency_list.begin();
 		  it6 != dependency_list.end();
 		  it6++)
 	  {
       strDepends = (*it6).c_str();
-      if (strDepends.FindNoCase("UTIL_",0) == 0)
+      if (LocalFindNoCase(strDepends,"UTIL_",0) == 0)
       {
-        strDepends.Format((*it6).c_str(),"","");
-		    add_project_dependency(dsw, strDepends );
+        LocalFormat(strDepends,(*it6).c_str(),"","");
+		    add_project_dependency(dsw, strDepends.c_str() );
       }
 	  }
   }
@@ -324,7 +451,7 @@ void CConfigureApp::generate_dependencies(
 static bool doesDirExist(const char *name)
 {
   // check to see if the path exists
-  std::string libpath;
+  string libpath;
 	WIN32_FIND_DATA	libdata;
 	HANDLE libhandle = FindFirstFile(name, &libdata);
 	if (libhandle != INVALID_HANDLE_VALUE)
@@ -336,8 +463,8 @@ static bool doesDirExist(const char *name)
   return false;
 }
 
-static void add_includes(std::list<std::string> &includes_list,
-  std::string &libpath, int levels)
+static void add_includes(list<string> &includes_list,
+  string &libpath, int levels)
 {
 	WIN32_FIND_DATA	libdata;
 	HANDLE libhandle = FindFirstFile(libpath.c_str(), &libdata);
@@ -346,7 +473,7 @@ static void add_includes(std::list<std::string> &includes_list,
     FindClose(libhandle);
 		if ((libdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
     {
-      std::string ipath = "..\\";
+      string ipath = "..\\";
       for (int i=0; i<levels; i++)
         ipath += "..\\";
       ipath += libpath;
@@ -397,63 +524,63 @@ static void add_includes(std::list<std::string> &includes_list,
 }
 
 static bool process_one_entry(const char *entry, int nLinesRead,
-  std::list<std::string> &defines_list,
-  std::list<std::string> &includes_list,
-  std::list<std::string> &source_list,
-  std::list<std::string> &exclude_list,
-  std::list<std::string> &lib_release_list,
-  std::list<std::string> &lib_debug_list,
+  list<string> &defines_list,
+  list<string> &includes_list,
+  list<string> &source_list,
+  list<string> &exclude_list,
+  list<string> &lib_release_list,
+  list<string> &lib_debug_list,
   int runtime)
 {
-  CStringEx sTempString = entry;
+  string sTempString = entry;
   // check for a valid file by looking for the magick
   // sequence in the first four characters of the file.
   if ((nLinesRead == 0) &&
-	  (sTempString.Left(4) != "#ECF"))
+	  (sTempString.substr(0, 4) != "#ECF"))
 		  return true;
   // skip any blank lines
-  if (sTempString.GetLength() <= 0)
+  if (sTempString.length() <= 0)
 	  return true;
   // skip over any comments first - we allow three types
   if (sTempString[0] == _T('#'))
 	  return true;
-  if (sTempString.Left(3) == TEXT("rem"))
+  if (sTempString.substr(0, 3) == TEXT("rem"))
 	  return true;
-  if (sTempString.Left(3) == TEXT(";"))
+  if (sTempString.substr(0, 3) == TEXT(";"))
 	  return true;
   // now see if the line will parse as a name=value pair
-  CString sName = sTempString.GetField(_T(" = "),0);
-  CString sValue = sTempString.GetField(_T(" = "),1);
-  if (!sName.IsEmpty() && !sValue.IsEmpty())
+  string sName = LocalGetField(sTempString,_T(" = "),0);
+  string sValue = LocalGetField(sTempString,_T(" = "),1);
+  if (!sName.empty() && !sValue.empty())
   {
-    std::string temp;
+    string temp;
     temp = sValue;
-    if (sName.CompareNoCase(_T("DEFINE")) == 0)
+    if (_tcsicmp(sName.c_str(), _T("DEFINE")) == 0)
 	    defines_list.push_back(temp);
-    if (sName.CompareNoCase(_T("INCLUDE")) == 0)
+    if (_tcsicmp(sName.c_str(), _T("INCLUDE")) == 0)
 	    includes_list.push_back(temp);
-    if (sName.CompareNoCase(_T("SOURCE")) == 0)
+    if (_tcsicmp(sName.c_str(), _T("SOURCE")) == 0)
 	    source_list.push_back(temp);
-    if (sName.CompareNoCase(_T("EXCLUDE")) == 0)
+    if (_tcsicmp(sName.c_str(), _T("EXCLUDE")) == 0)
 	    exclude_list.push_back(temp);
-    if (sName.CompareNoCase(_T("LIBRARY")) == 0)
+    if (_tcsicmp(sName.c_str(), _T("LIBRARY")) == 0)
     {
 	    lib_release_list.push_back(temp);
 	    lib_debug_list.push_back(temp);
     }
-    if (sName.CompareNoCase(_T("LIBRELEASE")) == 0)
+    if (_tcsicmp(sName.c_str(),_T("LIBRELEASE")) == 0)
     {
 	    lib_release_list.push_back(temp);
     }
-    if (sName.CompareNoCase(_T("LIBDEBUG")) == 0)
+    if (_tcsicmp(sName.c_str(),_T("LIBDEBUG")) == 0)
     {
 	    lib_debug_list.push_back(temp);
     }
-    if (sName.CompareNoCase(_T("SUBSYSTEM")) == 0)
+    if (_tcsicmp(sName.c_str(),_T("SUBSYSTEM")) == 0)
     {
-      if (sValue.CompareNoCase(_T("CONSOLE")) == 0)
+      if (_tcsicmp(sValue.c_str(),_T("CONSOLE")) == 0)
         consoleMode = TRUE;
-      if (sValue.CompareNoCase(_T("WINDOWS")) == 0)
+      if (_tcsicmp(sValue.c_str(),_T("WINDOWS")) == 0)
         consoleMode = FALSE;
     }
     switch(runtime)
@@ -462,11 +589,11 @@ static bool process_one_entry(const char *entry, int nLinesRead,
       case SINGLETHREADEDSTATIC:
       case MULTITHREADEDSTATIC:
       case MULTITHREADEDSTATICDLL:
-        if (sName.CompareNoCase(_T("DEFINESTATIC")) == 0)
+        if (_tcsicmp(sName.c_str(),_T("DEFINESTATIC")) == 0)
 	        defines_list.push_back(temp);
         break;
       case MULTITHREADEDDLL:
-        if (sName.CompareNoCase(_T("DEFINEDLL")) == 0)
+        if (_tcsicmp(sName.c_str(),_T("DEFINEDLL")) == 0)
 	        defines_list.push_back(temp);
         break;
     }
@@ -475,18 +602,18 @@ static bool process_one_entry(const char *entry, int nLinesRead,
 }
 
 int load_environment_file( const char *inputfile,
-  std::list<std::string> &defines_list,
-  std::list<std::string> &includes_list,
-  std::list<std::string> &source_list,
-  std::list<std::string> &exclude_list,
-  std::list<std::string> &lib_release_list,
-  std::list<std::string> &lib_debug_list,
+  list<string> &defines_list,
+  list<string> &includes_list,
+  list<string> &source_list,
+  list<string> &exclude_list,
+  list<string> &lib_release_list,
+  list<string> &lib_debug_list,
   int runtime)
 {
   char szBuf[2048];
   int nLinesRead = 0;
   ifstream inpStream;
-  inpStream.open( inputfile, ios::in | ios::nocreate );
+  inpStream.open( inputfile, ios::in );
   if ( inpStream ) {
     for (;;) {
       inpStream.getline( szBuf, 2047, '\n' );
@@ -515,22 +642,22 @@ int load_environment_file( const char *inputfile,
 void CConfigureApp::process_utility(ofstream &dsw,
   const char *root, const char *filename, int runtime, int project_type)
 {
-	CStringEx basename = filename;
-  std::string name = basename.GetField('.',0);
-  std::string extn = basename.GetField('.',1);
-  std::string prefix = "UTIL_";
-  std::string staging = root;
+	string basename = filename;
+  string name = LocalGetField(basename,'.',0);
+  string extn = LocalGetField(basename,'.',1);
+  string prefix = "UTIL_";
+  string staging = root;
   int levels;
 
-	std::list<std::string> libs_list_release;
-	std::list<std::string> libs_list_debug;
-	std::list<std::string> includes_list;
-  std::list<std::string> defines_list;
-  std::list<std::string> source_list;
-  std::list<std::string> exclude_list;
+	list<string> libs_list_release;
+	list<string> libs_list_debug;
+	list<string> includes_list;
+  list<string> defines_list;
+  list<string> source_list;
+  list<string> exclude_list;
 
-  std::string envpath;
-  std::string search;
+  string envpath;
+  string search;
   envpath = staging;
   if (project_type == UTILITY)
   {
@@ -553,11 +680,12 @@ void CConfigureApp::process_utility(ofstream &dsw,
           runtime);
   }
 
-	for (std::list<std::string>::iterator it = exclude_list.begin();
+	for (list<string>::iterator it = exclude_list.begin();
 			it != exclude_list.end();
 			  it++)
 	{
-		if (stricmp(filename, (*it).c_str()) == 0)
+    const char *s = (*it).c_str();
+		if (stricmp(filename, s) == 0)
       return;
 	}
 
@@ -571,9 +699,8 @@ void CConfigureApp::process_utility(ofstream &dsw,
 		defines_list.push_back("_LIB");
   }
 
-  CStringEx strDepends = staging.c_str();
-  levels = strDepends.GetFieldCount('\\');
-  std::string extra;
+  levels = LocalGetFieldCount(staging,'\\');
+  string extra;
 
   for (int i=0; i<levels; i++)
     extra += "..\\";
@@ -582,17 +709,17 @@ void CConfigureApp::process_utility(ofstream &dsw,
   extra = "..\\magick";
   add_includes(includes_list, extra, levels-2);
 
-  if (strDepends.FindNoCase("\\SDL") >= 0)
+  if (LocalFindNoCase(staging,"\\SDL",0) >= 0)
   {
     extra = "..\\SDL";
     add_includes(includes_list, extra, levels-2);
   }
-  if (strDepends.FindNoCase("..\\jp2",0) == 0)
+  if (LocalFindNoCase(staging,"..\\jp2",0) == 0)
   {
     extra = "..\\jp2";
     add_includes(includes_list, extra, levels-2);
   }
-  if (strDepends.FindNoCase("..\\Magick++",0) == 0)
+  if (LocalFindNoCase(staging,"..\\Magick++",0) == 0)
   {
     extra = "..\\Magick++";
     add_includes(includes_list, extra, levels-2);
@@ -627,8 +754,8 @@ void CConfigureApp::process_utility(ofstream &dsw,
 
 	dependency_list.push_back(prefix + "%s" + name + "%s");
 
-  std::string project;
-  std::string pname;
+  string project;
+  string pname;
   pname = prefix + name;
   project = get_project_name(
     EXEPROJECT,runtime,staging.substr(1),prefix,name);
@@ -654,12 +781,12 @@ void CConfigureApp::process_utility(ofstream &dsw,
         {
 		      add_project_dependency(dsw, "CORE_Magick++");
         }
-        CStringEx strDepends = staging.c_str();
-        if (strDepends.Find("\\SDL") >= 0)
+        string strDepends = staging.c_str();
+        if (LocalFindNoCase(strDepends,"\\SDL",0) >= 0)
         {
 		      add_project_dependency(dsw, "CORE_SDL");
         }
-        if (strDepends.Find("..\\jp2",0) == 0)
+        if (LocalFindNoCase(strDepends,"..\\jp2",0) == 0)
         {
 		      add_project_dependency(dsw, "CORE_jp2");
         }
@@ -673,19 +800,19 @@ void CConfigureApp::process_library(ofstream &dsw,
     const char *root, const char *filename, int runtime, int project_type)
 {
   bool dll = false;
-	CStringEx basename = filename;
-  std::string name = basename.GetField('.',0);
-  std::string extn = basename.GetField('.',1);
-  std::string prefix = "CORE_";
-  std::string staging = root;
+	string basename = filename;
+  string name = LocalGetField(basename,'.',0);
+  string extn = LocalGetField(basename,'.',1);
+  string prefix = "CORE_";
+  string staging = root;
   int levels;
 
-	std::list<std::string> libs_list_release;
-	std::list<std::string> libs_list_debug;
-	std::list<std::string> includes_list;
-  std::list<std::string> defines_list;
-  std::list<std::string> source_list;
-  std::list<std::string> exclude_list;
+	list<string> libs_list_release;
+	list<string> libs_list_debug;
+	list<string> includes_list;
+  list<string> defines_list;
+  list<string> source_list;
+  list<string> exclude_list;
 
   if (runtime == MULTITHREADEDDLL)
 	{
@@ -704,10 +831,9 @@ void CConfigureApp::process_library(ofstream &dsw,
   if (project_type == STATICLIB)
     dll = false;
 
-  CStringEx strDepends = staging.c_str();
-  levels = strDepends.GetFieldCount('\\');
+  levels = LocalGetFieldCount(staging,'\\');
 
-  std::string extra;
+  string extra;
   extra = "..\\zlib";
   add_includes(includes_list, extra, levels-2);
   extra = "..\\jpeg";
@@ -716,7 +842,9 @@ void CConfigureApp::process_library(ofstream &dsw,
   //add_includes(includes_list, extra, levels-2);
   extra = "..\\lcms\\src";
   add_includes(includes_list, extra, levels-2);
+
   extra = "..\\lcms\\include";
+
   add_includes(includes_list, extra, levels-2);
   extra = "..\\ttf\\include";
   add_includes(includes_list, extra, levels-2);
@@ -724,7 +852,7 @@ void CConfigureApp::process_library(ofstream &dsw,
   add_includes(includes_list, extra, levels-2);
   add_includes(includes_list, staging, levels-2);
 
-  std::string envpath;
+  string envpath;
   envpath = staging;
   if (project_type == LIBRARY)
   {
@@ -771,8 +899,8 @@ void CConfigureApp::process_library(ofstream &dsw,
     source_list,
     exclude_list);
 
-  std::string project;
-  std::string pname;
+  string project;
+  string pname;
   pname = prefix + name;
 	dependency_list.push_back(prefix + "%s" + name + "%s");
 	project = get_project_name(
@@ -836,20 +964,19 @@ void CConfigureApp::process_library(ofstream &dsw,
   }
 }
 
-void AddExtraLibs(std::string &name,std::string root,
-      std::list<std::string> &libs_list_release,
-      std::list<std::string> &libs_list_debug)
+void AddExtraLibs(string &name,string root,
+      list<string> &libs_list_release,
+      list<string> &libs_list_debug)
 {
-  std::string libpath;
-  std::string extra_path;
-  std::string extra_lvls;
+  string libpath;
+  string extra_path;
+  string extra_lvls;
 	WIN32_FIND_DATA	libdata;
   bool gotRelease, gotDebug;
 
   gotRelease=gotDebug=false;
 
-  CStringEx getcount = root.c_str();
-  int levels = getcount.GetFieldCount('\\');
+  int levels = LocalGetFieldCount(root,'\\');
   for (int j=0; j<(levels-2); j++)
     extra_lvls += "..\\";
   extra_path = "..\\";
@@ -863,7 +990,7 @@ void AddExtraLibs(std::string &name,std::string root,
 	HANDLE libhandle = FindFirstFile(libpath.c_str(), &libdata);
 	if (libhandle != INVALID_HANDLE_VALUE)
   {
-    std::string extralibrary;
+    string extralibrary;
 	  do
 	  {
       extralibrary = extra_lvls;
@@ -884,7 +1011,7 @@ void AddExtraLibs(std::string &name,std::string root,
 	libhandle = FindFirstFile(libpath.c_str(), &libdata);
 	if (libhandle != INVALID_HANDLE_VALUE)
   {
-    std::string extralibrary;
+    string extralibrary;
 	  do
 	  {
       extralibrary = extra_lvls;
@@ -905,7 +1032,7 @@ void AddExtraLibs(std::string &name,std::string root,
 	  libhandle = FindFirstFile(libpath.c_str(), &libdata);
 	  if (libhandle != INVALID_HANDLE_VALUE)
     {
-      std::string extralibrary;
+      string extralibrary;
 	    do
 	    {
         extralibrary = extra_lvls;
@@ -925,22 +1052,22 @@ void CConfigureApp::process_module(ofstream &dsw,
       int runtime, int project_type)
 {
   bool dll = false;
-	CStringEx basename = filename;
-  std::string name = basename.GetField('.',0);
-  std::string extn = basename.GetField('.',1);
-  std::string prefix;
-  std::string staging = root;
+	string basename = filename;
+  string name = LocalGetField(basename,'.',0);
+  string extn = LocalGetField(basename,'.',1);
+  string prefix;
+  string staging = root;
   int i,levels;
 
   if (project_type == MODULE)
     prefix = MODULE_PREFIX;    
 
-	std::list<std::string> libs_list_release;
-	std::list<std::string> libs_list_debug;
-	std::list<std::string> includes_list;
-  std::list<std::string> defines_list;
-  std::list<std::string> source_list;
-  std::list<std::string> exclude_list;
+	list<string> libs_list_release;
+	list<string> libs_list_debug;
+	list<string> includes_list;
+  list<string> defines_list;
+  list<string> source_list;
+  list<string> exclude_list;
 
   if (runtime == MULTITHREADEDDLL)
 	{
@@ -953,10 +1080,9 @@ void CConfigureApp::process_module(ofstream &dsw,
 		defines_list.push_back("_LIB");
   }
 
-  CStringEx strDepends = root;
-  levels = strDepends.GetFieldCount('\\');
+  levels = LocalGetFieldCount(staging,'\\');
 
-  std::string extra;
+  string extra;
   for (i=0; i<levels; i++)
     extra += "..\\";
 	includes_list.push_back(extra);
@@ -1027,8 +1153,8 @@ void CConfigureApp::process_module(ofstream &dsw,
   add_includes(includes_list, extra, levels-2);
 
 	WIN32_FIND_DATA	libdata;
-  std::string libpath;
-  std::string dependency;
+  string libpath;
+  string dependency;
   // look for xxxx.txt files to see if there is a third party
   // library or a core library that is needed for this module
   extra.erase();
@@ -1069,8 +1195,8 @@ void CConfigureApp::process_module(ofstream &dsw,
   // not find the specially named ones, it add anything it finds in.
   AddExtraLibs(name,root,libs_list_release,libs_list_debug);
 
-  std::string envpath;
-  std::string search;
+  string envpath;
+  string search;
   envpath = root;
   if (project_type == MODULE)
   {
@@ -1123,8 +1249,8 @@ void CConfigureApp::process_module(ofstream &dsw,
     source_list,
     exclude_list);
 
-  std::string project;
-  std::string pname;
+  string project;
+  string pname;
   pname = prefix + name;
   if (project_type == MODULE)
 	  dependency_list.push_back(prefix + "%s" + name + "%s");
@@ -1208,15 +1334,15 @@ void CConfigureApp::process_3rd_party_library(ofstream &dsw,
   const char *root, const char *filename, int runtime, int project_type)
 {
   bool dll = false;
-	CStringEx basename = filename;
-  std::string name = basename.GetField('.',0);
-  std::string prefix = "LIBR_";
-  std::string staging = root;
+	string basename = filename;
+  string name = LocalGetField(basename,'.',0);
+  string prefix = "LIBR_";
+  string staging = root;
 
-	std::list<std::string> libs_list_release;
-	std::list<std::string> libs_list_debug;
-	std::list<std::string> includes_list;
-  std::list<std::string> defines_list;
+	list<string> libs_list_release;
+	list<string> libs_list_debug;
+	list<string> includes_list;
+  list<string> defines_list;
 
   if (runtime == MULTITHREADEDDLL)
 	{
@@ -1230,10 +1356,10 @@ void CConfigureApp::process_3rd_party_library(ofstream &dsw,
 		defines_list.push_back("_LIB");
   }
 
-  std::string libpath;
+  string libpath;
   libpath = "..\\";
   libpath += staging;
-  std::string dependency;
+  string dependency;
 	WIN32_FIND_DATA	libdata;
   HANDLE libhandle;
 
@@ -1242,8 +1368,8 @@ void CConfigureApp::process_3rd_party_library(ofstream &dsw,
   {
     FindClose(libhandle);
 
-    std::string project;
-    std::string pname;
+    string project;
+    string pname;
     pname = prefix + name;
 		dependency_list.push_back(prefix + "%s" + name + "%s");
 	  project = get_project_name(
@@ -1305,7 +1431,7 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
   const char *root, WIN32_FIND_DATA	&data,
   int project_type, int runtimeOption)
 {
-  CString subpath;
+  string subpath;
 
   switch (project_type)
   {
@@ -1313,12 +1439,12 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
     {
       if (!optionalFiles)
       {
-        CStringEx strTest = root;
-        if (strTest.FindNoCase("\\test") >= 0)
+        string strTest = root;
+        if (LocalFindNoCase(strTest,"\\test",0) >= 0)
           return;
-        if (strTest.FindNoCase("\\demo") >= 0)
+        if (LocalFindNoCase(strTest,"\\demo",0) >= 0)
           return;
-        if (strTest.FindNoCase("\\contrib") >= 0)
+        if (LocalFindNoCase(strTest,"\\contrib",0) >= 0)
           return;
       }
       // Look for any C files first and generate a project for each file that
@@ -1327,7 +1453,7 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
 	    subpath += root;
       subpath += "\\*.c";
 	    WIN32_FIND_DATA	subdata;
-	    HANDLE subhandle = FindFirstFile(subpath, &subdata);
+	    HANDLE subhandle = FindFirstFile(subpath.c_str(), &subdata);
 	    if (subhandle != INVALID_HANDLE_VALUE)
       {
 	      do
@@ -1342,7 +1468,7 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
       subpath = "..\\";
 	    subpath += root;
       subpath += "\\*.cpp";
-	    subhandle = FindFirstFile(subpath, &subdata);
+	    subhandle = FindFirstFile(subpath.c_str(), &subdata);
 	    if (subhandle != INVALID_HANDLE_VALUE)
       {
 	      do
@@ -1361,12 +1487,12 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
               return;
       if (!optionalFiles)
       {
-        CStringEx strTest = root;
-        if (strTest.FindNoCase("\\test") >= 0)
+        string strTest = root;
+        if (LocalFindNoCase(strTest,"\\test",0) >= 0)
           return;
-        if (strTest.FindNoCase("\\demo") >= 0)
+        if (LocalFindNoCase(strTest,"\\demo",0) >= 0)
           return;
-        if (strTest.FindNoCase("\\contrib") >= 0)
+        if (LocalFindNoCase(strTest,"\\contrib",0) >= 0)
           return;
       }
       // check to see if there seems to be some source code in the
@@ -1376,13 +1502,13 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
 	    subpath += root;
       subpath += "\\*.cpp";
 	    WIN32_FIND_DATA	subdata;
-	    HANDLE subhandle = FindFirstFile(subpath, &subdata);
+	    HANDLE subhandle = FindFirstFile(subpath.c_str(), &subdata);
 	    if (subhandle != INVALID_HANDLE_VALUE)
       {
 	      {
-	        CStringEx thepath = root;
-          int count = thepath.GetFieldCount('\\');
-          std::string parent = thepath.GetField('\\',count-1);
+          string strTest = root;
+          int count = LocalGetFieldCount(strTest,'\\');
+          string parent = LocalGetField(strTest,'\\',count-1);
           parent += ".cpp";
           process_utility(dsw, root, parent.c_str(), runtimeOption, project_type);
         }
@@ -1404,7 +1530,7 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
 	    subpath += root;
       subpath += "\\*.cpp";
 	    WIN32_FIND_DATA	subdata;
-	    HANDLE subhandle = FindFirstFile(subpath, &subdata);
+	    HANDLE subhandle = FindFirstFile(subpath.c_str(), &subdata);
 	    if (subhandle != INVALID_HANDLE_VALUE)
       {
         bFoundSomething = true;
@@ -1426,7 +1552,7 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
       subpath = "..\\";
 	    subpath += root;
       subpath += "\\*.c";
-	    subhandle = FindFirstFile(subpath, &subdata);
+	    subhandle = FindFirstFile(subpath.c_str(), &subdata);
 	    if (subhandle != INVALID_HANDLE_VALUE)
       {
         bFoundSomething = true;
@@ -1452,7 +1578,7 @@ bool CConfigureApp::is_project_type(const char *root, const int project_type)
   HANDLE handle;
   WIN32_FIND_DATA	data;
 
-  std::string searchpath = root;
+  string searchpath = root;
   searchpath += "\\";
   switch (project_type)
   {
@@ -1539,7 +1665,7 @@ void CConfigureApp::process_project_replacements(ofstream &dsw,
 
     // Scan all top level directories and process the ones
     // that we are allowed to.
-    std::string rootpath = root;
+    string rootpath = root;
     rootpath += "\\*";
 	  tophandle = FindFirstFile(rootpath.c_str(), &topdata);
 	  do
@@ -1559,7 +1685,7 @@ void CConfigureApp::process_project_replacements(ofstream &dsw,
 
         // Now look to see if there is a directory by the same name
         // one level above our config level
-        std::string searchpath;
+        string searchpath;
         searchpath = "..\\";
         searchpath += root;
         searchpath += "\\";
@@ -1577,7 +1703,7 @@ void CConfigureApp::process_project_replacements(ofstream &dsw,
 
           // Now look for all files with the specified spec in the
           // current directory
-          std::string filepath;
+          string filepath;
           filepath = root;
           filepath += "\\";
           filepath += topdata.cFileName;
@@ -1611,7 +1737,7 @@ void CConfigureApp::process_project_replacements(ofstream &dsw,
 	            handle = FindFirstFile(rootpath.c_str(), &nestdata);
 	            if (handle != INVALID_HANDLE_VALUE)
               {
-                std::string renamed;
+                string renamed;
                 FindClose(handle);
                 renamed = rootpath;
                 renamed += ".bak";
@@ -1651,7 +1777,7 @@ void CConfigureApp::process_project_type(ofstream &dsw,
     // Scan all top level directories and process the ones
     // that we are allowed to.
 	  WIN32_FIND_DATA	topdata;
-    std::string rootpath = root;
+    string rootpath = root;
     rootpath += "\\*";
 	  tophandle = FindFirstFile(rootpath.c_str(), &topdata);
 	  do
@@ -1669,7 +1795,7 @@ void CConfigureApp::process_project_type(ofstream &dsw,
         if (stricmp(topdata.cFileName,"..") == 0)
           continue;
 
-        std::string searchpath = root;
+        string searchpath = root;
         searchpath += "\\";
         searchpath += topdata.cFileName;
         searchpath += "\\";
@@ -1856,7 +1982,7 @@ class CRegistry
                                   CString&    subkey_name,
                                   CString&    class_name );
       virtual BOOL EnumerateValues( const DWORD    value_index,
-                                    CString&       name_of_value,
+                                    string&       name_of_value,
                                     KeyValueTypes& type_code,
                                     LPBYTE         data_buffer,
                                     DWORD&         size_of_data_buffer );
@@ -2045,7 +2171,7 @@ BOOL CRegistry::EnumerateKeys( const DWORD subkey_index, CString& subkey_name, C
 }
 
 BOOL CRegistry::EnumerateValues( const DWORD    value_index, 
-                                 CString&       name_of_value, 
+                                 string&       name_of_value, 
                                  KeyValueTypes& type_code,
                                  LPBYTE         data_buffer,
                                  DWORD&         size_of_data_buffer )
@@ -2427,13 +2553,32 @@ BOOL CRegistry::UnLoad( LPCTSTR name_of_subkey_to_unload )
   }
 }
 
+inline int LocalFindReplace(string &s, const TCHAR* psz,
+  const TCHAR* pszNew, bool bGlobal)
+{
+	int iReplaced = 0;
+
+	int pos = 0;
+  int len = _tcslen( psz );
+  int lenNew = _tcslen( pszNew );
+	while( (pos = s.find(psz, pos)) >= 0 )
+	{
+		s.replace( pos, len, pszNew );
+    pos += lenNew;
+		iReplaced++;
+		if( !bGlobal ) break;
+	}
+
+	return iReplaced;
+};
+
 BOOL CConfigureApp::InitInstance()
 {
 	// Standard initialization
 #ifdef _AFXDLL
-	Enable3dControls();			// Call this when using MFC in a shared DLL
+	//Enable3dControls();			// Call this when using MFC in a shared DLL
 #else
-	Enable3dControlsStatic();	// Call this when linking to MFC statically
+	//Enable3dControlsStatic();	// Call this when linking to MFC statically
 #endif
 	CConfigureWizard wizard;
 
@@ -2455,10 +2600,10 @@ BOOL CConfigureApp::InitInstance()
   wizard.m_Page2.m_standalone = standaloneMode;
   wizard.m_Page2.m_generateFontmap = generateFontmap;
 
-  wizard.m_Page3.m_tempRelease = release_loc;
-  wizard.m_Page3.m_tempDebug = debug_loc;
-  wizard.m_Page3.m_outputBin = bin_loc;
-  wizard.m_Page3.m_outputLib = lib_loc;
+  wizard.m_Page3.m_tempRelease = release_loc.c_str();
+  wizard.m_Page3.m_tempDebug = debug_loc.c_str();
+  wizard.m_Page3.m_outputBin = bin_loc.c_str();
+  wizard.m_Page3.m_outputLib = lib_loc.c_str();
 
   if (!generateFontmap)
   {
@@ -2472,17 +2617,18 @@ BOOL CConfigureApp::InitInstance()
             (registry.Open( "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Fonts",
                         CRegistry::permissionRead) == TRUE)
         ) {
-        CString filename;
+        string filename;
         registry.QueryInfo();
 
         BOOL result = TRUE;
 
         filename = bin_loc + "fonts.mgk";
-	      ofstream fontmap(filename);
+        ofstream fontmap(filename.c_str());
+
         fontmap << "<?xml version=\"1.0\"?>" << endl;
         for (int index=0; index<registry.GetNumberOfValues(); index++)
         {
-          CStringEx name_of_value;
+          string name_of_value;
           CRegistry::KeyValueTypes type_code;
           BYTE data_buffer[2048];
           LPBYTE ptr_data_buffer = data_buffer;
@@ -2491,16 +2637,16 @@ BOOL CConfigureApp::InitInstance()
                     data_buffer, size_of_data_buffer );
 
           // The font name looks like this: "XYZ Bold Italic (TrueType)"
-          CStringEx font_format, font_name, font_full_name;
-          int name_length = name_of_value.GetLength();
-          int type_pos = name_of_value.ReverseFind("(");
+          string font_format, font_name, font_full_name;
+          int name_length = name_of_value.length();
+          int type_pos = name_of_value.rfind('(', -1);
           if (type_pos > 0)
           {
-            font_full_name = name_of_value.Left(type_pos-1);
+            font_full_name = name_of_value.substr(0, type_pos-1);
             font_name = font_full_name;
-            font_name.FindReplace(" ","-",TRUE);
-            font_format = name_of_value.Mid(type_pos);
-            if (font_format.FindNoCase("(TrueType)") == 0)
+            LocalFindReplace(font_name," ","-",TRUE);
+            font_format = name_of_value.substr(type_pos);
+            if (LocalFindNoCase(font_format,"(TrueType)",0) == 0)
             {
               // Information we need to create:
               //  format="type1"
@@ -2704,33 +2850,32 @@ void CConfigureApp::write_lib_dsp(
   bool dll,
   int runtime,
   int project_type,
-	std::string root,
-	std::string search,
-	std::string dspname,
-	std::string prefix,
-	std::string extn,
-	std::list<std::string> &libs_list_shared,
-	std::list<std::string> &libs_list_release,
-	std::list<std::string> &libs_list_debug,
-	std::list<std::string> &defines_list,
-	std::list<std::string> &includes_list,
-	std::list<std::string> &source_list,
-  std::list<std::string> &exclude_list)
+	string root,
+	string search,
+	string dspname,
+	string prefix,
+	string extn,
+	list<string> &libs_list_shared,
+	list<string> &libs_list_release,
+	list<string> &libs_list_debug,
+	list<string> &defines_list,
+	list<string> &includes_list,
+	list<string> &source_list,
+  list<string> &exclude_list)
 {
-  CString libname = prefix.c_str();
+  string libname = prefix.c_str();
   libname += dspname.c_str();
 
 	ofstream dsp(get_project_name(
-    dll?DLLPROJECT:LIBPROJECT,runtime,root,prefix,dspname).c_str());
+	  dll?DLLPROJECT:LIBPROJECT,runtime,root,prefix,dspname).c_str());
 
-  CString outname;
-  std::string bin_path;
-  std::string lib_path;
-  std::string debug_path;
-  std::string release_path;
-  std::string extra_path;
-  CStringEx getcount = root.c_str();
-  int levels = getcount.GetFieldCount('\\');
+  string outname;
+  string bin_path;
+  string lib_path;
+  string debug_path;
+  string release_path;
+  string extra_path;
+  int levels = LocalGetFieldCount(root,'\\');
   {
     for (int j=0; j<(levels-2); j++)
       extra_path += "..\\";
@@ -2751,11 +2896,11 @@ void CConfigureApp::write_lib_dsp(
   // Temporary kludge to identify COM DLL's that need to be registered as part
   // of the build process.
   bool isCOMproject = false;
-  CStringEx strPath = root.c_str();
-  if (strPath.FindNoCase("\\ATL\\",0) > 0)
+  string strPath = root.c_str();
+  if (LocalFindNoCase(strPath,"\\ATL\\",0) > 0)
     isCOMproject = true;
 
-	dsp << "# Microsoft Developer Studio Project File - Name=\"" << libname << "\" - Package Owner=<4>" << endl;
+	dsp << "# Microsoft Developer Studio Project File - Name=\"" << libname.c_str() << "\" - Package Owner=<4>" << endl;
 	dsp << "# Microsoft Developer Studio Generated Build File, Format Version 6.00" << endl;
 	dsp << "# ** DO NOT EDIT **" << endl;
 	dsp << endl;
@@ -2764,28 +2909,28 @@ void CConfigureApp::write_lib_dsp(
   else
 	  dsp << "# TARGTYPE \"Win32 (x86) Static Library\" 0x0104" << endl;
 	dsp << endl;
-	dsp << "CFG=" << libname << " - Win32 Release" << endl;
+	dsp << "CFG=" << libname.c_str() << " - Win32 Release" << endl;
 	dsp << "!MESSAGE This is not a valid makefile. To build this project using NMAKE," << endl;
 	dsp << "!MESSAGE use the Export Makefile command and run" << endl;
 	dsp << "!MESSAGE " << endl;
-	dsp << "!MESSAGE NMAKE /f \"" << libname << ".mak\"." << endl;
+	dsp << "!MESSAGE NMAKE /f \"" << libname.c_str() << ".mak\"." << endl;
 	dsp << "!MESSAGE " << endl;
 	dsp << "!MESSAGE You can specify a configuration when running NMAKE" << endl;
 	dsp << "!MESSAGE by defining the macro CFG on the command line. For example:" << endl;
 	dsp << "!MESSAGE " << endl;
-	dsp << "!MESSAGE NMAKE /f \"" << libname << ".mak\" CFG=\"" << libname << " - Win32 Release\"" << endl;
+	dsp << "!MESSAGE NMAKE /f \"" << libname.c_str() << ".mak\" CFG=\"" << libname.c_str() << " - Win32 Release\"" << endl;
 	dsp << "!MESSAGE " << endl;
 	dsp << "!MESSAGE Possible choices for configuration are:" << endl;
 	dsp << "!MESSAGE " << endl;
   if (dll)
   {
-	  dsp << "!MESSAGE \"" << libname << " - Win32 Release\" (based on \"Win32 (x86) Dynamic-Link Library\")" << endl;
-	  dsp << "!MESSAGE \"" << libname << " - Win32 Debug\" (based on \"Win32 (x86) Dynamic-Link Library\")" << endl;
+	  dsp << "!MESSAGE \"" << libname.c_str() << " - Win32 Release\" (based on \"Win32 (x86) Dynamic-Link Library\")" << endl;
+	  dsp << "!MESSAGE \"" << libname.c_str() << " - Win32 Debug\" (based on \"Win32 (x86) Dynamic-Link Library\")" << endl;
   }
   else
   {
-	  dsp << "!MESSAGE \"" << libname << " - Win32 Release\" (based on \"Win32 (x86) Static Library\")" << endl;
-	  dsp << "!MESSAGE \"" << libname << " - Win32 Debug\" (based on \"Win32 (x86) Static Library\")" << endl;
+	  dsp << "!MESSAGE \"" << libname.c_str() << " - Win32 Release\" (based on \"Win32 (x86) Static Library\")" << endl;
+	  dsp << "!MESSAGE \"" << libname.c_str() << " - Win32 Debug\" (based on \"Win32 (x86) Static Library\")" << endl;
   }
 	dsp << "!MESSAGE " << endl;
 	dsp << endl;
@@ -2798,13 +2943,13 @@ void CConfigureApp::write_lib_dsp(
 	dsp << "RSC=rc.exe" << endl;
 	dsp << endl;
 
-	dsp << "!IF  \"$(CFG)\" == \"" << libname << " - Win32 Release\"" << endl;
+	dsp << "!IF  \"$(CFG)\" == \"" << libname.c_str() << " - Win32 Release\"" << endl;
 	dsp << endl;
 
 	dsp << "# PROP Use_MFC 0" << endl;
 	dsp << "# PROP Use_Debug_Libraries 0" << endl;
 	dsp << "# PROP Output_Dir \"" << get_full_path(root + "\\",lib_path).c_str() << "\"" << endl;
-	dsp << "# PROP Intermediate_Dir \"" << get_full_path(root + "\\",release_path).c_str() << libname << "\"" << endl;
+	dsp << "# PROP Intermediate_Dir \"" << get_full_path(root + "\\",release_path).c_str() << libname.c_str() << "\"" << endl;
 	dsp << "# PROP Target_Dir \"\"" << endl;
   if (dll)
 	  dsp << "LIB32=link.exe -lib" << endl;
@@ -2823,14 +2968,18 @@ void CConfigureApp::write_lib_dsp(
       dsp << " /MD";
       break;
   }
+#ifndef SYMBOLS_ALWAYS
   dsp << " /W3 /GX /O2";
+#else
+  dsp << " /W3 /GX /Zi /O2";
+#endif
 	{
 		for (
-			std::list<std::string>::iterator it = standard_include.begin();
+			list<string>::iterator it = standard_include.begin();
 			it != standard_include.end();
 			it++)
 		{
-		  std::string relpath;
+		  string relpath;
 		  if (!absolutePaths)
 		    relpath = extra_path;
 		  relpath += *it;
@@ -2839,7 +2988,7 @@ void CConfigureApp::write_lib_dsp(
 	}
 	{
 		for (
-			std::list<std::string>::iterator it = includes_list.begin();
+			list<string>::iterator it = includes_list.begin();
 			it != includes_list.end();
 			it++)
 		{
@@ -2849,7 +2998,7 @@ void CConfigureApp::write_lib_dsp(
   dsp << " /D \"NDEBUG\" /D \"WIN32\" /D \"_WINDOWS\" /D \"_VISUALC_\" /D \"NeedFunctionPrototypes\"";
 	{
 		for (
-			std::list<std::string>::iterator it = defines_list.begin();
+			list<string>::iterator it = defines_list.begin();
 			it != defines_list.end();
 			it++)
 		{
@@ -2860,7 +3009,7 @@ void CConfigureApp::write_lib_dsp(
 
   if (dll && isCOMproject)
   {
-	  std::string sources;
+	  string sources;
     
     sources = "..\\";
     sources += root;
@@ -2906,21 +3055,20 @@ void CConfigureApp::write_lib_dsp(
       case SINGLETHREADEDSTATIC:
       case MULTITHREADEDSTATICDLL:
         {
-          CStringEx strDepends, strTemp;
+          string strDepends;
 	        for (
-		        std::list<std::string>::iterator it1a = dependency_list.begin();
+		        list<string>::iterator it1a = dependency_list.begin();
 		        it1a != dependency_list.end();
 		        it1a++)
 	        {
-            strTemp = (*it1a).c_str();
             /* look for entries with a xxx%syyy%szzz format */
-            if (strTemp.FindNoCase("%s",0) > 0)
+            if (LocalFindNoCase((*it1a),"%s",0) > 0)
             {
               /* ignore any entries for utility programs as well */
-              if (strTemp.FindNoCase("UTIL_",0) != 0)
+              if (LocalFindNoCase((*it1a),"UTIL_",0) != 0)
               {
-                strDepends.Format((*it1a).c_str(),"RL_","_.lib");
-			          dsp << " " << strDepends << "";
+                LocalFormat(strDepends,(*it1a).c_str(),"RL_","_.lib");
+			          dsp << " " << strDepends.c_str() << "";
               }
             }
           }
@@ -2929,29 +3077,29 @@ void CConfigureApp::write_lib_dsp(
       default:
       case MULTITHREADEDDLL:
         {
-          CStringEx strDepends, strTemp;
-          strDepends.Format("CORE_%smagick%s","RL_","_.lib");
-			    dsp << " " << strDepends << "";
+          string strDepends;
+          LocalFormat(strDepends,"CORE_%smagick%s","RL_","_.lib");
+			    dsp << " " << strDepends.c_str() << "";
           if (useX11Stubs)
           {
-            strDepends.Format("CORE_%sxlib%s","RL_","_.lib");
-			      dsp << " " << strDepends << "";
+            LocalFormat(strDepends,"CORE_%sxlib%s","RL_","_.lib");
+			      dsp << " " << strDepends.c_str() << "";
           }
           if (extn.compare("cpp") == 0)
           {
-            strDepends.Format("CORE_%sMagick++%s","RL_","_.lib");
-			      dsp << " " << strDepends << "";
+            LocalFormat(strDepends,"CORE_%sMagick++%s","RL_","_.lib");
+			      dsp << " " << strDepends.c_str() << "";
           }
-          CStringEx strPath = root.c_str();
-          if (strPath.Find("\\SDL") >= 0)
+          string strPath = root;
+          if (LocalFindNoCase(strPath,"\\SDL",0) >= 0)
           {
-            strDepends.Format("CORE_%sSDL%s","RL_","_.lib");
-			      dsp << " " << strDepends << "";
+            LocalFormat(strDepends,"CORE_%sSDL%s","RL_","_.lib");
+			      dsp << " " << strDepends.c_str() << "";
           }
-          if (strPath.Find("..\\jp2",0) == 0)
+          if (LocalFindNoCase(strPath,"..\\jp2",0) == 0)
           {
-            strDepends.Format("CORE_%sjp2%s","RL_","_.lib");
-			      dsp << " " << strDepends << "";
+            LocalFormat(strDepends,"CORE_%sjp2%s","RL_","_.lib");
+			      dsp << " " << strDepends.c_str() << "";
           }
         }
         break;
@@ -2961,7 +3109,7 @@ void CConfigureApp::write_lib_dsp(
   {
 	  {
 		  for (
-			  std::list<std::string>::iterator it = libs_list_shared.begin();
+			  list<string>::iterator it = libs_list_shared.begin();
 			  it != libs_list_shared.end();
 			  it++)
 		  {
@@ -2971,7 +3119,7 @@ void CConfigureApp::write_lib_dsp(
   }
 	{
 		for (
-			std::list<std::string>::iterator it = libs_list_release.begin();
+			list<string>::iterator it = libs_list_release.begin();
 			it != libs_list_release.end();
 			it++)
 		{
@@ -2983,24 +3131,29 @@ void CConfigureApp::write_lib_dsp(
 	  dsp << " /nologo /subsystem:windows /dll";
     if (search.compare("*") != 0)
     {
-      dsp.setf( ios::hex );
-      dsp << " /base:\"0x" << dllbaselocation << "\"";
+      string strBase;
+      LocalFormat(strBase,"%lx",dllbaselocation);
+      dsp << " /base:\"0x" << strBase.c_str() << "\"";
       dllbaselocation += 0x00010000L;
     }
+#ifndef SYMBOLS_ALWAYS
     dsp << " /incremental:no /machine:I386";
-    dsp << " /pdb:\"" << get_full_path(root + "\\",bin_path).c_str() << outname << ".pdb\"";
-	  dsp << " /out:\"" << get_full_path(root + "\\",bin_path).c_str() << outname << ".dll\"";
+#else
+    dsp << " /incremental:no /debug /machine:I386";
+#endif
+    dsp << " /pdb:\"" << get_full_path(root + "\\",bin_path).c_str() << outname.c_str() << ".pdb\"";
+	  dsp << " /out:\"" << get_full_path(root + "\\",bin_path).c_str() << outname.c_str() << ".dll\"";
   }
   else
   {
 	  dsp << " /nologo /machine:I386";
-	  dsp << " /out:\"" << get_full_path(root + "\\",lib_path).c_str() << outname << ".lib\"";
+	  dsp << " /out:\"" << get_full_path(root + "\\",lib_path).c_str() << outname.c_str() << ".lib\"";
   }
 	dsp << endl;
 
   if (dll && isCOMproject)
   {
-	  std::string trigger, target;
+	  string trigger, target;
     
     trigger = "\"";
     trigger += get_full_path(root + "\\",release_path);
@@ -3014,19 +3167,19 @@ void CConfigureApp::write_lib_dsp(
 
 	  dsp << "# Begin Custom Build - Performing registration" << endl;
 	  dsp << trigger.c_str() << " : " << target.c_str() << endl;
-	  dsp << "\tmidle /tlb " << trigger.c_str() << endl;
+	  dsp << "\tregsvr32 /s /c " << target.c_str() << endl;
 	  dsp << "\techo regsvr32 exec. time >" << trigger.c_str() << endl;
 	  dsp << "# End Custom Build" << endl;
   }
 	dsp << endl;
 
-	dsp << "!ELSEIF  \"$(CFG)\" == \"" << libname << " - Win32 Debug\"" << endl;
+	dsp << "!ELSEIF  \"$(CFG)\" == \"" << libname.c_str() << " - Win32 Debug\"" << endl;
 	dsp << endl;
 
 	dsp << "# PROP Use_MFC 0" << endl;
 	dsp << "# PROP Use_Debug_Libraries 1" << endl;
 	dsp << "# PROP Output_Dir \"" << get_full_path(root + "\\",lib_path).c_str() << "\"" << endl;
-	dsp << "# PROP Intermediate_Dir \"" << get_full_path(root + "\\",debug_path).c_str() << libname << "\"" << endl;
+	dsp << "# PROP Intermediate_Dir \"" << get_full_path(root + "\\",debug_path).c_str() << libname.c_str() << "\"" << endl;
 	dsp << "# PROP Target_Dir \"\"" << endl;
   if (dll)
 	  dsp << "LIB32=link.exe -lib" << endl;
@@ -3048,11 +3201,11 @@ void CConfigureApp::write_lib_dsp(
   dsp << " /W3 /Gm /GX /Zi /Od";
 	{
 		for (
-			std::list<std::string>::iterator it = standard_include.begin();
+			list<string>::iterator it = standard_include.begin();
 			it != standard_include.end();
 			it++)
 		{
-		  std::string relpath;
+		  string relpath;
  		  if (!absolutePaths)
 		    relpath = extra_path;
 		  relpath += *it;
@@ -3061,7 +3214,7 @@ void CConfigureApp::write_lib_dsp(
 	}
 	{
 		for (
-			std::list<std::string>::iterator it = includes_list.begin();
+			list<string>::iterator it = includes_list.begin();
 			it != includes_list.end();
 			it++)
 		{
@@ -3071,7 +3224,7 @@ void CConfigureApp::write_lib_dsp(
   dsp << " /D \"_DEBUG\" /D \"WIN32\" /D \"_WINDOWS\" /D \"_VISUALC_\" /D \"NeedFunctionPrototypes\"";
 	{
 		for (
-			std::list<std::string>::iterator it = defines_list.begin();
+			list<string>::iterator it = defines_list.begin();
 			it != defines_list.end();
 			it++)
 		{
@@ -3082,7 +3235,7 @@ void CConfigureApp::write_lib_dsp(
 
   if (dll && isCOMproject)
   {
-	  std::string sources;
+	  string sources;
     
     sources = "..\\";
     sources += root;
@@ -3128,22 +3281,20 @@ void CConfigureApp::write_lib_dsp(
       case SINGLETHREADEDSTATIC:
       case MULTITHREADEDSTATICDLL:
         {
-          CStringEx strDepends, strTemp;
+          string strDepends;
 	        for (
-		        std::list<std::string>::iterator it1a = dependency_list.begin();
+		        list<string>::iterator it1a = dependency_list.begin();
 		        it1a != dependency_list.end();
 		        it1a++)
 	        {
-            strTemp = (*it1a).c_str();
-            strTemp = (*it1a).c_str();
             /* look for entries with a xxx%syyy%szzz format */
-            if (strTemp.FindNoCase("%s",0) > 0)
+            if (LocalFindNoCase((*it1a),"%s",0) > 0)
             {
               /* ignore any entries for utility programs as well */
-              if (strTemp.FindNoCase("UTIL_",0) != 0)
+              if (LocalFindNoCase((*it1a),"UTIL_",0) != 0)
               {
-                strDepends.Format((*it1a).c_str(),"DB_","_.lib");
-			          dsp << " " << strDepends << "";
+                LocalFormat(strDepends,(*it1a).c_str(),"DB_","_.lib");
+			          dsp << " " << strDepends.c_str() << "";
               }
             }
           }
@@ -3152,29 +3303,29 @@ void CConfigureApp::write_lib_dsp(
       default:
       case MULTITHREADEDDLL:
         {
-          CStringEx strDepends, strTemp;
-          strDepends.Format("CORE_%smagick%s","DB_","_.lib");
+          string strDepends;
+          LocalFormat(strDepends,"CORE_%smagick%s","DB_","_.lib");
 			    dsp << " " << strDepends << "";
           if (useX11Stubs)
           {
-            strDepends.Format("CORE_%sxlib%s","DB_","_.lib");
+            LocalFormat(strDepends,"CORE_%sxlib%s","DB_","_.lib");
 			      dsp << " " << strDepends << "";
           }
           if (extn.compare("cpp") == 0)
           {
-            strDepends.Format("CORE_%sMagick++%s","DB_","_.lib");
+            LocalFormat(strDepends,"CORE_%sMagick++%s","DB_","_.lib");
 			      dsp << " " << strDepends << "";
           }
-          CStringEx strPath = root.c_str();
-          if (strPath.Find("\\SDL") >= 0)
+          string strPath = root.c_str();
+          if (LocalFindNoCase(strPath,"\\SDL",0) >= 0)
           {
-            strDepends.Format("CORE_%sSDL%s","DB_","_.lib");
-			      dsp << " " << strDepends << "";
+            LocalFormat(strDepends,"CORE_%sSDL%s","DB_","_.lib");
+			      dsp << " " << strDepends.c_str() << "";
           }
-          if (strPath.Find("..\\jp2",0) == 0)
+          if (LocalFindNoCase(strPath,"..\\jp2",0) == 0)
           {
-            strDepends.Format("CORE_%sjp2%s","DB_","_.lib");
-			      dsp << " " << strDepends << "";
+            LocalFormat(strDepends,"CORE_%sjp2%s","DB_","_.lib");
+			      dsp << " " << strDepends.c_str() << "";
           }
         }
         break;
@@ -3184,7 +3335,7 @@ void CConfigureApp::write_lib_dsp(
   {
 	  {
 		  for (
-			  std::list<std::string>::iterator it = libs_list_shared.begin();
+			  list<string>::iterator it = libs_list_shared.begin();
 			  it != libs_list_shared.end();
 			  it++)
 		  {
@@ -3194,7 +3345,7 @@ void CConfigureApp::write_lib_dsp(
   }
 	{
 		for (
-			std::list<std::string>::iterator it = libs_list_debug.begin();
+			list<string>::iterator it = libs_list_debug.begin();
 			it != libs_list_debug.end();
 			it++)
 		{
@@ -3206,24 +3357,25 @@ void CConfigureApp::write_lib_dsp(
 	  dsp << " /nologo /subsystem:windows /dll";
     if (search.compare("*") != 0)
     {
-      dsp.setf( ios::hex );
-      dsp << " /base:\"0x" << dllbaselocation << "\"";
+      string strBase;
+      LocalFormat(strBase,"%lx",dllbaselocation);
+      dsp << " /base:\"0x" << strBase.c_str() << "\"";
       dllbaselocation += 0x00010000L;
     }
     dsp << " /incremental:no /debug /machine:I386";
-    dsp << " /pdb:\"" << get_full_path(root + "\\",bin_path).c_str() << outname << ".pdb\"";
-	  dsp << " /out:\"" << get_full_path(root + "\\",bin_path).c_str() << outname << ".dll\"";
+    dsp << " /pdb:\"" << get_full_path(root + "\\",bin_path).c_str() << outname.c_str() << ".pdb\"";
+	  dsp << " /out:\"" << get_full_path(root + "\\",bin_path).c_str() << outname.c_str() << ".dll\"";
   }
   else
   {
 	  dsp << " /nologo /machine:I386";
-	  dsp << " /out:\"" << get_full_path(root + "\\",lib_path).c_str() << outname << ".lib\"";
+	  dsp << " /out:\"" << get_full_path(root + "\\",lib_path).c_str() << outname.c_str() << ".lib\"";
   }
 	dsp << endl;
 
   if (dll && isCOMproject)
   {
-	  std::string trigger, target;
+	  string trigger, target;
     
     trigger = "\"";
     trigger += get_full_path(root + "\\",debug_path);
@@ -3247,12 +3399,12 @@ void CConfigureApp::write_lib_dsp(
 	dsp << endl;
 	dsp << "# Begin Target" << endl;
 	dsp << endl;
-	dsp << "# Name \"" << libname << " - Win32 Release\"" << endl;
-	dsp << "# Name \"" << libname << " - Win32 Debug\"" << endl;
+	dsp << "# Name \"" << libname.c_str() << " - Win32 Release\"" << endl;
+	dsp << "# Name \"" << libname.c_str() << " - Win32 Debug\"" << endl;
 
-  CString dir;
-  CString spec;
-  CString group;
+  string dir;
+  string spec;
+  string group;
 
   const ConfigureInfo
     valid_dirs[] = {
@@ -3266,9 +3418,9 @@ void CConfigureApp::write_lib_dsp(
   };
 
   group = valid_dirs[0].group;
-	begin_group(dsp, group);
+	begin_group(dsp, group.c_str());
   {
-		for (std::list<std::string>::iterator it = source_list.begin();
+		for (list<string>::iterator it = source_list.begin();
 			  it != source_list.end();
 			    it++)
 		{
@@ -3277,11 +3429,11 @@ void CConfigureApp::write_lib_dsp(
 	}
   for (int i=0; valid_dirs[i].name != NULL; i++)
   {
-    if (group.CompareNoCase(valid_dirs[i].group) != 0)
+    if (_tcsicmp(group.c_str(),valid_dirs[i].group) != 0)
     {
 	    end_group(dsp);
       group = valid_dirs[i].group;
-	    begin_group(dsp, group);
+	    begin_group(dsp, group.c_str());
     }
     dir = root.c_str();
     dir += valid_dirs[i].name;
@@ -3290,7 +3442,7 @@ void CConfigureApp::write_lib_dsp(
     else
 	    spec = dspname.c_str();
     spec += valid_dirs[i].extn;
-	  generate_dir(dsp, dir, spec, 0, project_type, exclude_list);
+	  generate_dir(dsp, dir.c_str(), spec.c_str(), 0, project_type, exclude_list);
   }
 	end_group(dsp);
 
@@ -3302,33 +3454,33 @@ void CConfigureApp::write_lib_dsp(
 void CConfigureApp::write_exe_dsp(
   int runtime,
   int project_type,
-	std::string root,
-	std::string search,
-	std::string dspname,
-	std::string prefix,
-	std::string extn,
-	std::list<std::string> &libs_list_shared,
-	std::list<std::string> &libs_list_release,
-	std::list<std::string> &libs_list_debug,
-	std::list<std::string> &defines_list,
-	std::list<std::string> &includes_list,
-	std::list<std::string> &source_list,
-  std::list<std::string> &exclude_list)
+	string root,
+	string search,
+	string dspname,
+	string prefix,
+	string extn,
+	list<string> &libs_list_shared,
+	list<string> &libs_list_release,
+	list<string> &libs_list_debug,
+	list<string> &defines_list,
+	list<string> &includes_list,
+	list<string> &source_list,
+  list<string> &exclude_list)
 {
-  CString libname = prefix.c_str();
+  string libname = prefix.c_str();
   libname += dspname.c_str();
 
 	ofstream dsp(get_project_name(
     EXEPROJECT,runtime,root,prefix,dspname).c_str());
 
-  CString outname;
-  std::string bin_path;
-  std::string lib_path;
-  std::string debug_path;
-  std::string release_path;
-  std::string extra_path;
-  CStringEx getcount = root.c_str();
-  int levels = getcount.GetFieldCount('\\');
+  string outname;
+  string bin_path;
+  string lib_path;
+  string debug_path;
+  string release_path;
+  string extra_path;
+
+  int levels = LocalGetFieldCount(root,'\\');
   {
     for (int j=0; j<(levels-2); j++)
       extra_path += "..\\";
@@ -3346,27 +3498,27 @@ void CConfigureApp::write_exe_dsp(
     release_path += extra_path;
   release_path += release_loc;
 
-	dsp << "# Microsoft Developer Studio Project File - Name=\"" << libname << "\" - Package Owner=<4>" << endl;
+	dsp << "# Microsoft Developer Studio Project File - Name=\"" << libname.c_str() << "\" - Package Owner=<4>" << endl;
 	dsp << "# Microsoft Developer Studio Generated Build File, Format Version 6.00" << endl;
 	dsp << "# ** DO NOT EDIT **" << endl;
 	dsp << endl;
 	dsp << "# TARGTYPE \"Win32 (x86) Console Application\" 0x0103" << endl;
 	dsp << endl;
-	dsp << "CFG=" << libname << " - Win32 Release" << endl;
+	dsp << "CFG=" << libname.c_str() << " - Win32 Release" << endl;
 	dsp << "!MESSAGE This is not a valid makefile. To build this project using NMAKE," << endl;
 	dsp << "!MESSAGE use the Export Makefile command and run" << endl;
 	dsp << "!MESSAGE " << endl;
-	dsp << "!MESSAGE NMAKE /f \"" << libname << ".mak\"." << endl;
+	dsp << "!MESSAGE NMAKE /f \"" << libname.c_str() << ".mak\"." << endl;
 	dsp << "!MESSAGE " << endl;
 	dsp << "!MESSAGE You can specify a configuration when running NMAKE" << endl;
 	dsp << "!MESSAGE by defining the macro CFG on the command line. For example:" << endl;
 	dsp << "!MESSAGE " << endl;
-	dsp << "!MESSAGE NMAKE /f \"" << libname << ".mak\" CFG=\"" << libname << " - Win32 Release\"" << endl;
+	dsp << "!MESSAGE NMAKE /f \"" << libname.c_str() << ".mak\" CFG=\"" << libname.c_str() << " - Win32 Release\"" << endl;
 	dsp << "!MESSAGE " << endl;
 	dsp << "!MESSAGE Possible choices for configuration are:" << endl;
 	dsp << "!MESSAGE " << endl;
-	dsp << "!MESSAGE \"" << libname << " - Win32 Release\" (based on \"Win32 (x86) Console Application\")" << endl;
-	dsp << "!MESSAGE \"" << libname << " - Win32 Debug\" (based on \"Win32 (x86) Console Application\")" << endl;
+	dsp << "!MESSAGE \"" << libname.c_str() << " - Win32 Release\" (based on \"Win32 (x86) Console Application\")" << endl;
+	dsp << "!MESSAGE \"" << libname.c_str() << " - Win32 Debug\" (based on \"Win32 (x86) Console Application\")" << endl;
 	dsp << "!MESSAGE " << endl;
 	dsp << endl;
 	dsp << "# Begin Project" << endl;
@@ -3378,13 +3530,13 @@ void CConfigureApp::write_exe_dsp(
 	dsp << "RSC=rc.exe" << endl;
 	dsp << endl;
 
-	dsp << "!IF  \"$(CFG)\" == \"" << libname << " - Win32 Release\"" << endl;
+	dsp << "!IF  \"$(CFG)\" == \"" << libname.c_str() << " - Win32 Release\"" << endl;
 	dsp << endl;
 
 	dsp << "# PROP Use_MFC 0" << endl;
 	dsp << "# PROP Use_Debug_Libraries 0" << endl;
 	dsp << "# PROP Output_Dir \"" << get_full_path(root + "\\",bin_path).c_str() << "\"" << endl;
-	dsp << "# PROP Intermediate_Dir \"" << get_full_path(root + "\\",release_path).c_str() << libname << "\"" << endl;
+	dsp << "# PROP Intermediate_Dir \"" << get_full_path(root + "\\",release_path).c_str() << libname.c_str() << "\"" << endl;
 	dsp << "# PROP Target_Dir \"\"" << endl;
 	dsp << "LIB32=link.exe -lib" << endl;
 	dsp << "# ADD CPP /nologo";
@@ -3402,15 +3554,19 @@ void CConfigureApp::write_exe_dsp(
       dsp << " /MD";
       break;
   }
+#ifndef SYMBOLS_ALWAYS
   dsp << " /W3 /GX /O2";
+#else
+  dsp << " /W3 /GX /Zi /O2";
+#endif
 	{
 		dsp << " /I \".\"";
 		for (
-			std::list<std::string>::iterator it = standard_include.begin();
+			list<string>::iterator it = standard_include.begin();
 			it != standard_include.end();
 			it++)
 		{
-      std::string relpath;
+      string relpath;
       if (!absolutePaths)
         relpath = extra_path;
       relpath += *it;
@@ -3419,7 +3575,7 @@ void CConfigureApp::write_exe_dsp(
 	}
 	{
 		for (
-			std::list<std::string>::iterator it = includes_list.begin();
+			list<string>::iterator it = includes_list.begin();
 			it != includes_list.end();
 			it++)
 		{
@@ -3434,7 +3590,7 @@ void CConfigureApp::write_exe_dsp(
   dsp << "/D \"_VISUALC_\" /D \"NeedFunctionPrototypes\"";
 	{
 		for (
-			std::list<std::string>::iterator it = defines_list.begin();
+			list<string>::iterator it = defines_list.begin();
 			it != defines_list.end();
 			it++)
 		{
@@ -3464,21 +3620,20 @@ void CConfigureApp::write_exe_dsp(
       case SINGLETHREADEDSTATIC:
       case MULTITHREADEDSTATICDLL:
         {
-          CStringEx strDepends, strTemp;
+          string strDepends;
 	        for (
-		        std::list<std::string>::iterator it1a = dependency_list.begin();
+		        list<string>::iterator it1a = dependency_list.begin();
 		        it1a != dependency_list.end();
 		        it1a++)
 	        {
-            strTemp = (*it1a).c_str();
             /* look for entries with a xxx%syyy%szzz format */
-            if (strTemp.FindNoCase("%s",0) > 0)
+            if (LocalFindNoCase((*it1a),"%s",0) > 0)
             {
               /* ignore any entries for utility programs as well */
-              if (strTemp.FindNoCase("UTIL_",0) != 0)
+              if (LocalFindNoCase((*it1a),"UTIL_",0) != 0)
               {
-                strDepends.Format((*it1a).c_str(),"RL_","_.lib");
-			          dsp << " " << strDepends << "";
+                LocalFormat(strDepends,(*it1a).c_str(),"RL_","_.lib");
+			          dsp << " " << strDepends.c_str() << "";
               }
             }
           }
@@ -3487,29 +3642,29 @@ void CConfigureApp::write_exe_dsp(
       default:
       case MULTITHREADEDDLL:
         {
-          CStringEx strDepends, strTemp;
-          strDepends.Format("CORE_%smagick%s","RL_","_.lib");
-			    dsp << " " << strDepends << "";
+          string strDepends;
+          LocalFormat(strDepends,"CORE_%smagick%s","RL_","_.lib");
+			    dsp << " " << strDepends.c_str() << "";
           if (useX11Stubs)
           {
-            strDepends.Format("CORE_%sxlib%s","RL_","_.lib");
-			      dsp << " " << strDepends << "";
+            LocalFormat(strDepends,"CORE_%sxlib%s","RL_","_.lib");
+			      dsp << " " << strDepends.c_str() << "";
           }
           if (extn.compare("cpp") == 0)
           {
-            strDepends.Format("CORE_%sMagick++%s","RL_","_.lib");
-			      dsp << " " << strDepends << "";
+            LocalFormat(strDepends,"CORE_%sMagick++%s","RL_","_.lib");
+			      dsp << " " << strDepends.c_str() << "";
           }
-          CStringEx strPath = root.c_str();
-          if (strPath.Find("\\SDL") >= 0)
+          string strPath = root.c_str();
+          if (LocalFindNoCase(strPath,"\\SDL",0) >= 0)
           {
-            strDepends.Format("CORE_%sSDL%s","RL_","_.lib");
-			      dsp << " " << strDepends << "";
+            LocalFormat(strDepends,"CORE_%sSDL%s","RL_","_.lib");
+			      dsp << " " << strDepends.c_str() << "";
           }
-          if (strPath.Find("..\\jp2",0) == 0)
+          if (LocalFindNoCase(strPath,"..\\jp2",0) == 0)
           {
-            strDepends.Format("CORE_%sjp2%s","RL_","_.lib");
-			      dsp << " " << strDepends << "";
+            LocalFormat(strDepends,"CORE_%sjp2%s","RL_","_.lib");
+			      dsp << " " << strDepends.c_str() << "";
           }
         }
         break;
@@ -3517,7 +3672,7 @@ void CConfigureApp::write_exe_dsp(
   }
 	{
 		for (
-			std::list<std::string>::iterator it = libs_list_shared.begin();
+			list<string>::iterator it = libs_list_shared.begin();
 			it != libs_list_shared.end();
 			it++)
 		{
@@ -3526,7 +3681,7 @@ void CConfigureApp::write_exe_dsp(
 	}
 	{
 		for (
-			std::list<std::string>::iterator it = libs_list_release.begin();
+			list<string>::iterator it = libs_list_release.begin();
 			it != libs_list_release.end();
 			it++)
 		{
@@ -3538,7 +3693,11 @@ void CConfigureApp::write_exe_dsp(
     dsp << "/subsystem:console ";
   else
     dsp << "/subsystem:windows ";
+#ifndef SYMBOLS_ALWAYS
   dsp << "/incremental:no /machine:I386 ";
+#else
+  dsp << "/incremental:no /debug /machine:I386 ";
+#endif
   if (decorateFiles)
     outname = prefix.c_str();
   else
@@ -3546,24 +3705,24 @@ void CConfigureApp::write_exe_dsp(
   if (decorateFiles)
     outname += "RL_";
   outname += dspname.c_str();
-  dsp << "/pdb:\"" << get_full_path(root + "\\",bin_path).c_str() << outname;
+  dsp << "/pdb:\"" << get_full_path(root + "\\",bin_path).c_str() << outname.c_str();
   if (decorateFiles)
     dsp << "_";
   dsp << ".pdb\"";
-  dsp << " /out:\"" << get_full_path(root + "\\",bin_path).c_str() << outname;
+  dsp << " /out:\"" << get_full_path(root + "\\",bin_path).c_str() << outname.c_str();
   if (decorateFiles)
     dsp << "_";
   dsp << ".exe\"";
 	dsp << endl;
 	dsp << endl;
 
-	dsp << "!ELSEIF  \"$(CFG)\" == \"" << libname << " - Win32 Debug\"" << endl;
+	dsp << "!ELSEIF  \"$(CFG)\" == \"" << libname.c_str() << " - Win32 Debug\"" << endl;
 	dsp << endl;
 
 	dsp << "# PROP Use_MFC 0" << endl;
 	dsp << "# PROP Use_Debug_Libraries 1" << endl;
 	dsp << "# PROP Output_Dir \"" << get_full_path(root + "\\",bin_path).c_str() << "\"" << endl;
-	dsp << "# PROP Intermediate_Dir \"" << get_full_path(root + "\\",debug_path).c_str() << libname << "\"" << endl;
+	dsp << "# PROP Intermediate_Dir \"" << get_full_path(root + "\\",debug_path).c_str() << libname.c_str() << "\"" << endl;
 	dsp << "# PROP Target_Dir \"\"" << endl;
 	dsp << "LIB32=link.exe -lib" << endl;
 	dsp << "# ADD CPP /nologo";
@@ -3585,11 +3744,11 @@ void CConfigureApp::write_exe_dsp(
 	{
 		dsp << " /I \".\"";
 		for (
-			std::list<std::string>::iterator it = standard_include.begin();
+			list<string>::iterator it = standard_include.begin();
 			it != standard_include.end();
 			it++)
 		{
-      std::string relpath;
+      string relpath;
       if (!absolutePaths)
         relpath = extra_path;
       relpath += *it;
@@ -3598,7 +3757,7 @@ void CConfigureApp::write_exe_dsp(
 	}
 	{
 		for (
-			std::list<std::string>::iterator it = includes_list.begin();
+			list<string>::iterator it = includes_list.begin();
 			it != includes_list.end();
 			it++)
 		{
@@ -3613,7 +3772,7 @@ void CConfigureApp::write_exe_dsp(
   dsp << "/D \"_VISUALC_\" /D \"NeedFunctionPrototypes\"";
 	{
 		for (
-			std::list<std::string>::iterator it = defines_list.begin();
+			list<string>::iterator it = defines_list.begin();
 			it != defines_list.end();
 			it++)
 		{
@@ -3643,22 +3802,20 @@ void CConfigureApp::write_exe_dsp(
       case SINGLETHREADEDSTATIC:
       case MULTITHREADEDSTATICDLL:
         {
-          CStringEx strDepends, strTemp;
+          string strDepends;
 	        for (
-		        std::list<std::string>::iterator it1a = dependency_list.begin();
+		        list<string>::iterator it1a = dependency_list.begin();
 		        it1a != dependency_list.end();
 		        it1a++)
 	        {
-            strTemp = (*it1a).c_str();
-            strTemp = (*it1a).c_str();
             /* look for entries with a xxx%syyy%szzz format */
-            if (strTemp.FindNoCase("%s",0) > 0)
+            if (LocalFindNoCase((*it1a),"%s",0) > 0)
             {
               /* ignore any entries for utility programs as well */
-              if (strTemp.FindNoCase("UTIL_",0) != 0)
+              if (LocalFindNoCase((*it1a),"UTIL_",0) != 0)
               {
-                strDepends.Format((*it1a).c_str(),"DB_","_.lib");
-			          dsp << " " << strDepends << "";
+                LocalFormat(strDepends,(*it1a).c_str(),"DB_","_.lib");
+			          dsp << " " << strDepends.c_str() << "";
               }
             }
           }
@@ -3667,29 +3824,29 @@ void CConfigureApp::write_exe_dsp(
       default:
       case MULTITHREADEDDLL:
         {
-          CStringEx strDepends, strTemp;
-          strDepends.Format("CORE_%smagick%s","DB_","_.lib");
-			    dsp << " " << strDepends << "";
+          string strDepends;
+          LocalFormat(strDepends,"CORE_%smagick%s","DB_","_.lib");
+			    dsp << " " << strDepends.c_str() << "";
           if (useX11Stubs)
           {
-            strDepends.Format("CORE_%sxlib%s","DB_","_.lib");
-			      dsp << " " << strDepends << "";
+            LocalFormat(strDepends,"CORE_%sxlib%s","DB_","_.lib");
+			      dsp << " " << strDepends.c_str() << "";
           }
           if (extn.compare("cpp") == 0)
           {
-            strDepends.Format("CORE_%sMagick++%s","DB_","_.lib");
-			      dsp << " " << strDepends << "";
+            LocalFormat(strDepends,"CORE_%sMagick++%s","DB_","_.lib");
+			      dsp << " " << strDepends.c_str() << "";
           }
-          CStringEx strPath = root.c_str();
-          if (strPath.Find("\\SDL") >= 0)
+          string strPath = root.c_str();
+          if (LocalFindNoCase(strPath,"\\SDL",0) >= 0)
           {
-            strDepends.Format("CORE_%sSDL%s","DB_","_.lib");
-			      dsp << " " << strDepends << "";
+            LocalFormat(strDepends,"CORE_%sSDL%s","DB_","_.lib");
+			      dsp << " " << strDepends.c_str() << "";
           }
-          if (strPath.Find("..\\jp2",0) == 0)
+          if (LocalFindNoCase(strPath,"..\\jp2",0) == 0)
           {
-            strDepends.Format("CORE_%sjp2%s","DB_","_.lib");
-			      dsp << " " << strDepends << "";
+            LocalFormat(strDepends,"CORE_%sjp2%s","DB_","_.lib");
+			      dsp << " " << strDepends.c_str() << "";
           }
         }
         break;
@@ -3697,7 +3854,7 @@ void CConfigureApp::write_exe_dsp(
   }
 	{
 		for (
-			std::list<std::string>::iterator it = libs_list_shared.begin();
+			list<string>::iterator it = libs_list_shared.begin();
 			it != libs_list_shared.end();
 			it++)
 		{
@@ -3706,7 +3863,7 @@ void CConfigureApp::write_exe_dsp(
 	}
 	{
 		for (
-			std::list<std::string>::iterator it = libs_list_debug.begin();
+			list<string>::iterator it = libs_list_debug.begin();
 			it != libs_list_debug.end();
 			it++)
 		{
@@ -3726,11 +3883,11 @@ void CConfigureApp::write_exe_dsp(
   else
     dsp << "/subsystem:windows ";
   dsp << "/incremental:no /debug /machine:I386 ";
-  dsp << "/pdb:\"" << get_full_path(root + "\\",bin_path).c_str() << outname;
+  dsp << "/pdb:\"" << get_full_path(root + "\\",bin_path).c_str() << outname.c_str();
   if (decorateFiles)
     dsp << "_";
   dsp << ".pdb\"";
-  dsp << " /out:\"" << get_full_path(root + "\\",bin_path).c_str() << outname;
+  dsp << " /out:\"" << get_full_path(root + "\\",bin_path).c_str() << outname.c_str();
   if (decorateFiles)
     dsp << "_";
   dsp << ".exe\"";
@@ -3740,12 +3897,12 @@ void CConfigureApp::write_exe_dsp(
 	dsp << endl;
 	dsp << "# Begin Target" << endl;
 	dsp << endl;
-	dsp << "# Name \"" << libname << " - Win32 Release\"" << endl;
-	dsp << "# Name \"" << libname << " - Win32 Debug\"" << endl;
+	dsp << "# Name \"" << libname.c_str() << " - Win32 Release\"" << endl;
+	dsp << "# Name \"" << libname.c_str() << " - Win32 Debug\"" << endl;
 
-  CString dir;
-  CString spec;
-  CString group;
+  string dir;
+  string spec;
+  string group;
 
   const ConfigureInfo
     valid_dirs[] = {
@@ -3759,9 +3916,9 @@ void CConfigureApp::write_exe_dsp(
   };
 
   group = valid_dirs[0].group;
-	begin_group(dsp, group);
+	begin_group(dsp, group.c_str());
   {
-		for (std::list<std::string>::iterator it = source_list.begin();
+		for (list<string>::iterator it = source_list.begin();
 			  it != source_list.end();
 			    it++)
 		{
@@ -3770,11 +3927,11 @@ void CConfigureApp::write_exe_dsp(
 	}
   for (int i=0; valid_dirs[i].name != NULL; i++)
   {
-    if (group.CompareNoCase(valid_dirs[i].group) != 0)
+    if (_tcsicmp(group.c_str(), valid_dirs[i].group) != 0)
     {
 	    end_group(dsp);
       group = valid_dirs[i].group;
-	    begin_group(dsp, group);
+	    begin_group(dsp, group.c_str());
     }
 
     dir = root.c_str();
@@ -3784,7 +3941,7 @@ void CConfigureApp::write_exe_dsp(
     else
 	    spec = dspname.c_str();
     spec += valid_dirs[i].extn;
-	  generate_dir(dsp, dir, spec, 0, project_type, exclude_list);
+	  generate_dir(dsp, dir.c_str(), spec.c_str(), 0, project_type, exclude_list);
   }
 	end_group(dsp);
 
@@ -3796,7 +3953,7 @@ void CConfigureApp::write_exe_dsp(
 void CConfigureApp::generate_dir(ofstream &dsp,
     const char *dir, const char *spec,
     int nestinglevel, int project_type,
-    std::list<std::string> &exclude_list)
+    list<string> &exclude_list)
 {
 	static const char *exclude_from_build[] =
 	{
@@ -3806,14 +3963,15 @@ void CConfigureApp::generate_dir(ofstream &dsp,
 		NULL
 	};
 
-	CString path = dir;
-	if (path.GetAt(path.GetLength() - 1) != '\\') {
+	string path = dir;
+	if (path[path.length() - 1] != '\\') {
     path += "\\";
   }
 
 	WIN32_FIND_DATA	data;
 
-	HANDLE handle = FindFirstFile(path + "*", &data);
+  string searchfor = path + "*";
+	HANDLE handle = FindFirstFile(searchfor.c_str(), &data);
 	if (handle != INVALID_HANDLE_VALUE)
   {
 	  do
@@ -3830,17 +3988,18 @@ void CConfigureApp::generate_dir(ofstream &dsp,
 
 		  if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
       {
-        if (is_project_type(path  + data.cFileName, project_type) == true)
-			    generate_dir(dsp, path + data.cFileName, spec,
+        searchfor = path + data.cFileName;
+        if (is_project_type(searchfor.c_str(), project_type) == true)
+			    generate_dir(dsp, searchfor.c_str(), spec,
             ++nestinglevel, project_type, exclude_list);
       }
 	  } while (FindNextFile(handle, &data));
     FindClose(handle);
   }
 
-  CString otherpath = "..\\";
-  otherpath += path;
-	handle = FindFirstFile(otherpath + spec, &data);
+  string otherpath = "..\\" + path;
+  string specpath = otherpath + spec;
+	handle = FindFirstFile(specpath.c_str(), &data);
 	if (handle != INVALID_HANDLE_VALUE)
   {
 	  do
@@ -3851,7 +4010,7 @@ void CConfigureApp::generate_dir(ofstream &dsp,
 			  if (stricmp(data.cFileName, exclude_from_build[i]) == 0)
           skip = true;
 
-		  for (std::list<std::string>::iterator it = exclude_list.begin();
+		  for (list<string>::iterator it = exclude_list.begin();
 			    it != exclude_list.end();
 			      it++)
 		  {
@@ -3866,9 +4025,8 @@ void CConfigureApp::generate_dir(ofstream &dsp,
       if (project_type == UTILITY || project_type == PROJECT
           || project_type == ADD_ON || project_type == MODULE)
       {
-        CStringEx getcount = path;
-        int levels = getcount.GetFieldCount('\\');
-        std::string relpath = "..\\";
+        int levels = LocalGetFieldCount(path,'\\');
+        string relpath = "..\\";
         for (int j=0; j<(levels-3); j++)
           relpath += "..\\";
         relpath += path;
@@ -3877,7 +4035,7 @@ void CConfigureApp::generate_dir(ofstream &dsp,
       }
       else
       {
-        std::string relpath = otherpath + data.cFileName;
+        string relpath = otherpath + data.cFileName;
 	      add_file(dsp, get_full_path("",relpath).c_str());
       }
 
@@ -3940,161 +4098,4 @@ BOOL BrowseForFolder(HWND hOwner, char* szTitle, char* szRetval)
 	}
 	else
 		return FALSE;
-}
-
-int Replace( LPCTSTR str, LPCTSTR pcszKey, 
-              LPCTSTR pcszReplacement,
-                BOOL bIgnoreCase = FALSE )
-{
-	ASSERT( pcszKey != NULL );
-	ASSERT( *pcszKey != _T('\0') );
-	ASSERT( pcszReplacement != NULL );
-	
-	if ( pcszKey == NULL ||
-        *pcszKey == _T('\0') ||
-          pcszReplacement == NULL )
-		return -1;
-	
-	int iStrLength = lstrlen( str );
-	int iKeyLength = lstrlen( pcszKey );
-	
-	// A quick optimization; if the key is larger than our current string,
-	// it cannot exist within -- get out of here.
-	
-	if ( iKeyLength > iStrLength )
-		return 0;
-	
-	// First, figure out how large a buffer we need. If the replacement
-	// is smaller or equal to the key, we can simply allocate the same
-	// size as the number of characters currently in the string.  If not,
-	// we can figure out the maximum number of keys that will be found,
-	// multiply by the size differential and allocate that much more.
-	// Once we have a number, we can allocate the buffer.
-	
-	int iBufLength;
-	int iRepLength = lstrlen( pcszReplacement );
-	
-	if ( iRepLength <= iKeyLength )
-	{
-		iBufLength = iStrLength + 1;
-	}
-	else
-	{
-		int iMaxKeys = iStrLength / iKeyLength + 1;
-		int iDelta = iRepLength - iKeyLength;
-		iBufLength = iStrLength + iMaxKeys * iDelta + 1;
-	}
-	
-	LPTSTR p = new TCHAR[iBufLength];
-	memset( p, 0, iBufLength );
-	
-	if ( p == NULL )
-		return -1;
-	
-	// declare some strings to handle case insensitivity
-	CString strStr( str );
-	CString strKey( pcszKey );
-	
-	if ( bIgnoreCase )
-	{
-		strStr.MakeUpper();
-		strKey.MakeUpper();
-	}
-	
-	// set up some loop controls and get to work!
-	LPCTSTR pSource = str;
-	LPCTSTR pCurr = strStr;
-	LPTSTR pOut = p;
-	int iReplacements = 0;
-	
-	while ( *pCurr != _T('\0') )
-	{
-		// if we find a match...
-		if ( _tcsnccmp( pCurr, strKey, iKeyLength ) == 0 )
-		{
-			// copy the replacement string into the output buffer
-			lstrcpy( pOut, pcszReplacement );
-			
-			// Increment the output pointer by the string just copied.  
-			// Increment the source and current pointers by the key length.
-			// Increment the replacement count.
-			
-			pOut += iRepLength;
-			pSource += iKeyLength;
-			pCurr += iKeyLength;			
-			iReplacements++;
-		}
-		else
-		{
-			// otherwise, copy the character across and increment pointers
-			*( pOut++ ) = *( pSource++ );
-			pCurr++;
-		}
-	}
-	
-	str = p;
-	delete [] p;
-	return iReplacements;
-}
-
-BOOL ParseReplacement( LPCTSTR p, CString& strKey, CString& strData )
-{
-	CString strTmp( p );
-	int iIndex = strTmp.Find( _T('=') );
-	
-	if ( iIndex > -1 )
-	{
-		strKey = strTmp.Left( iIndex );
-		strData = strTmp.Right( strTmp.GetLength() - iIndex - 1 );
-		return !strKey.IsEmpty() && !strData.IsEmpty();
-	}
-	
-	return FALSE;
-}
-
-BOOL ConvertTemplate( char *input, CStringList* pReplacements )
-{
-	if ( ( pReplacements != NULL ) && !pReplacements->IsEmpty() )
-	{
-		CString strKey, strData;
-		
-		for ( POSITION pos = pReplacements->GetHeadPosition();
-		pos != NULL;
-		pReplacements->GetNext( pos ) )
-		{
-			CString& str = pReplacements->GetAt( pos );			
-			if ( ParseReplacement( str, strKey, strData ) )
-			{
-				Replace( input, strKey, strData );
-			}
-		}
-	}
-  return TRUE;
-}
-
-int ReadTemplateFile( CString inputfile, CString outputfile )
-{
-  CStringList Replacements;
-  char szBuf[2048];
-  int nLinesRead = 0;
-	ofstream dsp(outputfile);
-  ifstream inpStream;
-  inpStream.open( inputfile, ios::in | ios::nocreate );
-  if ( inpStream ) {
-    for (;;) {
-      inpStream.getline( szBuf, 2047, '\n' );
-      if ( inpStream.eof() ) {
-        // last line may contain text also
-        // (if it's not terminated with '\n' EOF is returned)
-        return ConvertTemplate( szBuf, &Replacements );
-      }
-      if ( !inpStream.good() || !ConvertTemplate( szBuf, &Replacements ) )
-        return FALSE;      
-      dsp << szBuf << endl;
-      nLinesRead++;
-    }
-  }
-  inpStream.close();
-  inpStream.clear();
-  return nLinesRead;
 }
