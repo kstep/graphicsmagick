@@ -214,9 +214,6 @@ static void ConvertUsage(void)
   const char
     **p;
 
-  unsigned int
-    version;
-
   (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
   (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] "
