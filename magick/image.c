@@ -2222,11 +2222,11 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageDepth() returns the depth of the image, either 8 or 16 bits.  By
-%  default, pixels components are stored as 16-bit two byte unsigned short
-%  integers that range in value from 0 to 65535L.  However, If all the pixels
-%  have lower-order bytes that are identical to their higher-order bytes, the
-%  image depth is 8-bit.
+%  GetImageDepth() returns the depth of the image, either 8, 16, or 32 bits.
+%  Pixel components are stored in a Quantum, which is 8, 16, or 32 bits
+%  depending on the QuantumDepth value set when the software is compiled.
+%  GetImageDepth() returns the smallest modulo-8 storage size which supports
+%  the scale of the pixel within the range (i.e. no information is lost).
 %
 %  The format of the GetImageDepth method is:
 %
@@ -2243,66 +2243,56 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 MagickExport unsigned long GetImageDepth(const Image *image,
   ExceptionInfo *exception)
 {
-  long
-    y;
-
-  register const PixelPacket
-    *p;
-
-  register long
-    x;
+  unsigned int
+    depth;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-#if (QuantumDepth == 8)
-  return(QuantumDepth);
-#endif
-#if (QuantumDepth == 32)
-  for (y=0; y < (long) image->rows; y++)
+
+  depth=8;
+#if (QuantumDepth > 8)
   {
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    if (p == (const PixelPacket *) NULL)
-      break;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      if (p->red != ScaleShortToQuantum(ScaleQuantumToShort(p->red)))
-        break;
-      if (p->green != ScaleShortToQuantum(ScaleQuantumToShort(p->green)))
-        break;
-      if (p->blue != ScaleShortToQuantum(ScaleQuantumToShort(p->blue)))
-        break;
-      if (image->matte)
-        if (p->opacity != ScaleShortToQuantum(ScaleQuantumToShort(p->opacity)))
+    long
+      y;
+
+    register const PixelPacket
+      *p;
+
+    register long
+      x;
+
+    register unsigned int
+      scale;
+
+    for (y=0; y < (long) image->rows; y++)
+      {
+        p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
           break;
-      p++;
-    }
-    if (x < (long) image->columns)
-      break;
+        scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
+        for (x=(long) image->columns; x > 0; x--)
+          {
+            if ((p->red != scale*(p->red/scale)) ||
+                (p->green != scale*(p->green/scale)) ||
+                (p->blue != scale*(p->blue/scale)) ||
+                (image->matte &&
+                 (p->opacity != scale*((Quantum)(p->opacity/scale)))))
+              {
+                depth*=2;
+                if (depth == QuantumDepth)
+                  break;
+                scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
+              }
+            p++;
+          }
+        if (depth == QuantumDepth)
+          break;
+      }
   }
-  if (y < (long) image->rows)
-    return(QuantumDepth);
-#endif
-  for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    if (p == (const PixelPacket *) NULL)
-      break;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      if (p->red != ScaleCharToQuantum(ScaleQuantumToChar(p->red)))
-        return(16);
-      if (p->green != ScaleCharToQuantum(ScaleQuantumToChar(p->green)))
-        return(16);
-      if (p->blue != ScaleCharToQuantum(ScaleQuantumToChar(p->blue)))
-        return(16);
-      if (image->matte)
-        if (p->opacity != ScaleCharToQuantum(ScaleQuantumToChar(p->opacity)))
-          return(16);
-      p++;
-    }
-  }
-  return(8);
+#endif /* QuantumDepth > 8 */
+  return depth;
 }
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

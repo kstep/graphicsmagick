@@ -1,5 +1,8 @@
 2003-03-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/image.c (GetImageDepth): Re-implemented using a single-pass
+	algorithm and 1/2 the code. Previous implementation didn't return
+	correct results for Q:32 build.  Now it does.
 	* magick/command.c (IdentifyImageCommand): For identify, when
 	%q format specifier is present, image must be read rather than
 	pinged.  If not, either the value 8 is returned, or there is a
