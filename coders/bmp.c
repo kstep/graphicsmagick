@@ -1302,7 +1302,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           SetImageType(image,TrueColorMatteType);
         else
           if (bmp_info.number_colors < image->colors)
-            SetImageType(image, TrueColorType);
+            SetImageType(image,TrueColorType);
           else
             {
               bmp_info.file_size+=4*(1 << bmp_info.bits_per_pixel);
