@@ -507,7 +507,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  ThrowBinaryException(CoderError,"DPSLibraryIsNotAvailable",
+  ThrowException(exception,CoderError,"DPSLibraryIsNotAvailable",
     image_info->filename);
   return((Image *) NULL);
 }
