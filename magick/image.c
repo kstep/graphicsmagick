@@ -5053,48 +5053,37 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     *image,
     *mogrify_images;
 
-  int
-    scene;
-
   MonitorHandler
     handler;
 
+  register int
+    i;
+
   unsigned int
-    number_images,
     status;
+
+  unsigned long
+    number_images;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(images != (Image **) NULL);
   assert((*images)->signature == MagickSignature);
+  status=True;
+  mogrify_images=NewImageList();
   number_images=GetImageListSize(*images);
-  if (number_images == 1)
-    return(MogrifyImage(image_info,argc,argv,images));
-  MagickMonitor(MogrifyImageText,0,number_images);
-  handler=SetMonitorHandler((MonitorHandler) NULL);
-  status=MogrifyImage(image_info,argc,argv,images);
-  (void) SetMonitorHandler(handler);
-  if (status == False)
-    return(False);
-  if (image_info->verbose)
-    DescribeImage(*images,stdout,False);
-  mogrify_images=(*images);
-  image=(*images)->next;
-  for (scene=1; scene < (int) number_images; scene++)
+  for (i=0; i < (long) number_images; i++)
   {
+    image=PopImageList(images);
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    status=MogrifyImage(image_info,argc,argv,&image);
+    status|=MogrifyImage(image_info,argc,argv,&image);
     (void) SetMonitorHandler(handler);
-    if (status == False)
-      break;
-    mogrify_images->next=image;
-    mogrify_images->next->previous=mogrify_images;
-    mogrify_images=mogrify_images->next;
     if (image_info->verbose)
       DescribeImage(image,stdout,False);
-    image=image->next;
-    MagickMonitor(MogrifyImageText,scene,number_images);
+    PushImageList(&mogrify_images,image,&image->exception);
+    MagickMonitor(MogrifyImageText,i,number_images);
   }
+  *images=mogrify_images;
   return(status);
 }
 
