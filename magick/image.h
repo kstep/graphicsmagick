@@ -523,14 +523,6 @@ typedef struct _ImageInfo
     colorspace;
 
   /*
-    Animation members.
-  */
-  char
-    *dispose,
-    *delay,
-    *iterations;
-
-  /*
     Miscellaneous members.
   */
   PreviewType

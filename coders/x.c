@@ -233,8 +233,6 @@ static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   resource_database=XGetResourceDatabase(display,client_name);
   XGetResourceInfo(resource_database,client_name,&resource_info);
   resource_info.immutable=True;
-  if (image_info->delay)
-    resource_info.delay=atoi(image_info->delay);
   /*
     Display image.
   */

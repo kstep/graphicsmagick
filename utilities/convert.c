@@ -102,7 +102,6 @@
 %    -interlace type      None, Line, Plane, or Partition
 %    -label name          assign a label to an image
 %    -layer type          Red, Green, Blue, Matte
-%    -linewidth value     width of line in pixels
 %    -loop iterations     add Netscape loop extension to your GIF animation
 %    -map filename        transform image colors to match this set of colors
 %    -matte               store matte channel if the image has one
@@ -138,6 +137,7 @@
 %    -solarize threshold  negate all pixels above the threshold level
 %    -spread amount       displace image pixels by a random amount
 %    -stroke color        color to use when stroking a graphic primitive
+%    -strokewidth value   width of stroke
 %    -swirl degrees       swirl image pixels about the center
 %    -texture filename    name of texture to tile onto the image background
 %    -threshold value     threshold the image
@@ -300,7 +300,6 @@ static void Usage()
       "-interlace type      None, Line, Plane, or Partition",
       "-label name          assign a label to an image",
       "-layer type          Red, Green, Blue, Matte",
-      "-linewidth value     width of line in pixels",
       "-label name          assign a label to an image",
       "-loop iterations     add Netscape loop extension to your GIF animation",
       "-map filename        transform image colors to match this set of colors",
@@ -337,6 +336,7 @@ static void Usage()
       "-solarize threshold  negate all pixels above the threshold level",
       "-spread amount       displace image pixels by a random amount",
       "-stroke color        color to use when stoking a graphic primitive",
+      "-strokewidth value   width of stroke",
       "-swirl degrees       swirl image pixels about the center",
       "-texture filename    name of texture to tile onto the image background",
       "-threshold value     threshold the image",
@@ -772,13 +772,11 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("delay",option+1,3) == 0)
             {
-              CloneString(&image_info->delay,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing delay",option);
-                  image_info->delay=PostscriptGeometry(argv[i]);
                 }
               break;
             }
@@ -822,13 +820,11 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("dispose",option+1,5) == 0)
             {
-              CloneString(&image_info->dispose,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing method",option);
-                  image_info->dispose=PostscriptGeometry(argv[i]);
                 }
               break;
             }
@@ -1165,13 +1161,11 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("loop",option+1,2) == 0)
             {
-              image_info->iterations=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing iterations",option);
-                  image_info->iterations=PostscriptGeometry(argv[i]);
                 }
               break;
             }

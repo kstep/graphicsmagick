@@ -198,12 +198,6 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
     ParseImageGeometry(PostscriptGeometry(image_info->page),
       &allocate_image->page.x,&allocate_image->page.y,
       &allocate_image->page.width,&allocate_image->page.height);
-  if (image_info->dispose != (char *) NULL)
-    allocate_image->dispose=atoi(image_info->dispose);
-  if (image_info->delay != (char *) NULL)
-    allocate_image->delay=atoi(image_info->delay);
-  if (image_info->iterations != (char *) NULL)
-    allocate_image->iterations=atoi(image_info->iterations);
   allocate_image->depth=image_info->depth;
   allocate_image->background_color=image_info->background_color;
   allocate_image->border_color=image_info->border_color;
@@ -378,8 +372,6 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
   XGetResourceInfo(resource_database,client_name,&resource);
   *resource.image_info=(*image_info);
   resource.immutable=True;
-  if (image_info->delay != (char *) NULL)
-    resource.delay=atoi(image_info->delay);
   (void) XAnimateImages(display,&resource,&client_name,1,image);
   XCloseDisplay(display);
   return(image->exception.severity == UndefinedException);
@@ -973,12 +965,6 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     clone_info->texture=AllocateString(image_info->texture);
   if (image_info->density != (char *) NULL)
     clone_info->density=AllocateString(image_info->density);
-  if (image_info->dispose != (char *) NULL)
-    clone_info->dispose=AllocateString(image_info->dispose);
-  if (image_info->delay != (char *) NULL)
-    clone_info->delay=AllocateString(image_info->delay);
-  if (image_info->iterations != (char *) NULL)
-    clone_info->iterations=AllocateString(image_info->iterations);
   if (image_info->view != (char *) NULL)
     clone_info->view=AllocateString(image_info->view);
   return(clone_info);
@@ -2274,12 +2260,6 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
     LiberateMemory((void **) &image_info->page);
   if (image_info->density != (char *) NULL)
     LiberateMemory((void **) &image_info->density);
-  if (image_info->dispose != (char *) NULL)
-    LiberateMemory((void **) &image_info->dispose);
-  if (image_info->delay != (char *) NULL)
-    LiberateMemory((void **) &image_info->delay);
-  if (image_info->iterations != (char *) NULL)
-    LiberateMemory((void **) &image_info->iterations);
   if (image_info->texture != (char *) NULL)
     LiberateMemory((void **) &image_info->texture);
   if (image_info->font != (char *) NULL)
@@ -2401,8 +2381,6 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
   XGetResourceInfo(resource_database,client_name,&resource);
   *resource.image_info=(*image_info);
   resource.immutable=True;
-  if (image_info->delay != (char *) NULL)
-    resource.delay=atoi(image_info->delay);
   for (next=image; next; next=next->next)
   {
     state=DefaultState;
@@ -3215,6 +3193,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     *clone_info;
 
   int
+    count,
     flags,
     x,
     y;
@@ -3545,11 +3524,28 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       {
         if (LocaleNCompare("debug",option+1,3) == 0)
           draw_info->debug=(*option == '-');
-        if (LocaleNCompare("-density",option,4) == 0)
+        if (LocaleNCompare("-delay",option,4) == 0)
           {
             int
-              count;
+              maximum_delay,
+              minimun_delay;
 
+            /*
+              Set image delay.
+            */
+            count=sscanf(argv[++i],"%lf-%lf",&minimun_delay,&maximum_delay);
+            if (count == 1)
+              (*image)->delay=minimun_delay;
+            else
+              if ((*image)->delay < minimun_delay)
+                (*image)->delay=minimun_delay;
+              else
+                if ((*image)->delay > maximum_delay)
+                  (*image)->delay=maximum_delay;
+            continue;
+          }
+        if (LocaleNCompare("-density",option,4) == 0)
+          {
             /*
               Set image density.
             */
@@ -3558,6 +3554,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               &(*image)->x_resolution,&(*image)->y_resolution);
             if (count != 2)
               (*image)->y_resolution=(*image)->x_resolution;
+            continue;
           }
         if (LocaleNCompare("-depth",option,4) == 0)
           {
@@ -3582,6 +3579,14 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (LocaleNCompare("-display",option,6) == 0)
           {
             (void) CloneString(&clone_info->server_name,argv[++i]);
+            continue;
+          }
+        if (LocaleNCompare("-dispose",option,6) == 0)
+          {
+            /*
+              Set image dispose.
+            */
+            (*image)->dispose=atoi(argv[++i]);
             continue;
           }
         if (LocaleNCompare("dither",option+1,3) == 0)
@@ -3963,6 +3968,14 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (LocaleCompare("-linewidth",option) == 0)
           {
             draw_info->stroke_width=atof(argv[++i]);
+            continue;
+          }
+        if (LocaleNCompare("-loop",option,3) == 0)
+          {
+            /*
+              Set image iterations.
+            */
+            (*image)->iterations=atoi(argv[++i]);
             continue;
           }
         break;

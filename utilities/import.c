@@ -565,13 +565,11 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("dispose",option+1,5) == 0)
             {
-              CloneString(&image_info->dispose,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing method",option);
-                  image_info->dispose=PostscriptGeometry(argv[i]);
                 }
               break;
             }

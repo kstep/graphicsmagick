@@ -1376,8 +1376,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 mng_iterations=(png_uint_32) mng_get_long(&p[6]);
                 if (mng_iterations == PNG_MAX_UINT)
                   mng_iterations=0;
-                if (image_info->iterations == (char *) NULL)
-                  image->iterations=mng_iterations;
+                image->iterations=mng_iterations;
                 term_chunk_found=True;
               }
             LiberateMemory((void **) &chunk);

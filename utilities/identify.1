@@ -49,6 +49,13 @@ Operations to memory are significantly faster but if your computer does not
 have a sufficient amount of free memory you may want to adjust this threshold
 value.
 .TP
+.B "-density \fI<width>x<height>\fP
+vertical and horizontal resolution in pixels of the image.
+
+This option specifies an image density when decoding a Postscript or
+Portable Document page.  The default is 72 pixels per inch in the horizontal
+and vertical direction.  This option is used in concert with \fB-page\fP.
+.TP
 .B "-format \fIstring\fP"
 output formatted image characteristics.
 

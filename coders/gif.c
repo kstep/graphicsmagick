@@ -913,12 +913,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->page.height=page.height;
     image->page.y=page.y;
     image->page.x=page.x;
-    if (image_info->delay == (char *) NULL)
-      image->delay=delay;
-    if (image_info->dispose == (char *) NULL)
-      image->dispose=dispose;
-    if (image_info->iterations == (char *) NULL)
-      image->iterations=iterations;
     delay=0;
     dispose=0;
     iterations=1;

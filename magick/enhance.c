@@ -442,7 +442,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
     }
   }
   if (image->gamma != 0.0)
-    image->gamma*=(red_gamma+green_gamma+blue_gamma)/3.0;
+    image->gamma*=(red_gamma+green_gamma+blue_gamma+opacity_gamma)/4.0;
   LiberateMemory((void **) &gamma_map);
   return(True);
 }

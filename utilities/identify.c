@@ -56,6 +56,7 @@
 %
 %  Where options include:
 %    -cache threshold  megabytes of memory available to the pixel cache
+%    -density geometry vertical and horizontal density of the image
 %    -format "string"  output formatted image characteristics
 %    -ping             efficiently determine image characteristics
 %    -size geometry    width and height of image
@@ -98,6 +99,7 @@ static void Usage()
     *options[]=
     {
       "-cache threshold  megabytes of memory available to the pixel cache",
+      "-density geometry vertical and horizontal density of the image",
       "-format \"string\"  output formatted image characteristics",
       "-ping             efficiently determine image characteristics",
       "-size geometry    width and height of image",
@@ -225,6 +227,23 @@ int main(int argc,char **argv)
                       MagickError(OptionError,"Missing threshold",option);
                   }
                 SetCacheThreshold(atoi(argv[i]));
+                break;
+              }
+            MagickError(OptionError,"Unrecognized option",option);
+            break;
+          }
+          case 'd':
+          {
+            if (LocaleNCompare("density",option+1,3) == 0)
+              {
+                CloneString(&image_info->density,(char *) NULL);
+                if (*option == '-')
+                  {
+                  i++;
+                    if ((i == argc) || !IsGeometry(argv[i]))
+                      MagickError(OptionError,"Missing geometry",option);
+                    (void) CloneString(&image_info->density,argv[i]);
+                  }
                 break;
               }
             MagickError(OptionError,"Unrecognized option",option);

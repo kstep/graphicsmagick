@@ -386,8 +386,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"Delay") == 0)
                   {
-                    if (image_info->delay == (char *) NULL)
-                      image->delay=atoi(values);
+                    image->delay=atoi(values);
                     break;
                   }
                 if (LocaleCompare(keyword,"Depth") == 0)
@@ -397,8 +396,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"Dispose") == 0)
                   {
-                    if (image_info->dispose == (char *) NULL)
-                      image->dispose=atoi(values);
+                    image->dispose=atoi(values);
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
@@ -434,8 +432,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"Iterations") == 0)
                   {
-                    if (image_info->iterations == (char *) NULL)
-                      image->iterations=atoi(values);
+                    image->iterations=atoi(values);
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,

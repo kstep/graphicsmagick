@@ -1116,8 +1116,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     {
       if (strEQcase(attribute,"delay"))
         {
-          if (info)
-            (void) CloneString(&info->image_info->delay,SvPV(sval,na));
           for ( ; image; image=image->next)
             image->delay=SvIV(sval);
           return;
@@ -1154,8 +1152,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       if (strEQcase(attribute,"dispose"))
         {
-          if (info)
-            (void) CloneString(&info->image_info->dispose,SvPV(sval,na));
           for (; image; image=image->next)
             image->dispose=SvIV(sval);
           return;
@@ -1275,8 +1271,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"iterat"))
         {
   iterations:
-          if (info)
-            (void) CloneString(&info->image_info->iterations,SvPV(sval,na));
           for ( ; image; image=image->next)
             image->iterations=SvIV(sval);
           return;
@@ -2871,20 +2865,14 @@ Get(ref,...)
             }
           if (strEQcase(attribute,"dispose"))
             {
-              if (info && info->image_info->dispose)
-                s=newSVpv(info->image_info->dispose,0);
-              else
-                if (image)
-                  s=newSViv(image->dispose);
+              if (image)
+                s=newSViv(image->dispose);
               break;
             }
           if (strEQcase(attribute,"delay"))
             {
-              if (info && info->image_info->delay)
-                s=newSVpv(info->image_info->delay,0);
-              else
-                if (image)
-                  s=newSViv(image->delay);
+              if (image)
+                s=newSViv(image->delay);
               break;
             }
           if (strEQcase(attribute,"depth"))
@@ -3051,11 +3039,8 @@ Get(ref,...)
             }
           if (strEQcase(attribute,"iterat"))  /* same as loop */
             {
-              if (info && info->image_info->iterations)
-                s=newSVpv(info->image_info->iterations,0);
-              else
-                if (image)
-                  s=newSViv(image->iterations);
+              if (image)
+                s=newSViv(image->iterations);
               break;
             }
           if (strEQcase(attribute,"interlace"))
@@ -3094,11 +3079,8 @@ Get(ref,...)
             }
           if (strEQcase(attribute,"loop"))  /* same as iterations */
             {
-              if (info && info->image_info->iterations)
-                s=newSVpv(info->image_info->iterations,0);
-              else
-                if (image)
-                  s=newSViv(image->iterations);
+              if (image)
+                s=newSViv(image->iterations);
               break;
             }
           break;
