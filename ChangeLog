@@ -1,3 +1,9 @@
+2003-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/msl.c (MSLStartElement): Don't reset gravity if the
+	user provides an x,y coordinate. Passing coodinates was loosing
+	the gravity setting.
+
 2003-05-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/modules.mgk: Support the IMAGE: format via the LOGO
