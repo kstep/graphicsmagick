@@ -51,11 +51,9 @@
 #include "magick/utility.h"
 #include "magick/version.h"
 
-#if 0
-/* Not sure where/why this definition appeared so it is out for the moment. */
 #if defined(WIN32)
-#define M_PI MagickPI
-#endif
+/* The need for this under Visual C++ is a mystery to me */
+#  define M_PI MagickPI
 #endif
 
 #if defined(HasWMF) || defined(HasWMFlite)
