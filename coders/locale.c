@@ -14,6 +14,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
+%                               Kyle Shorter                                  %
 %                               September 2002                                %
 %                                                                             %
 %                                                                             %
@@ -452,6 +453,270 @@ ModuleExport void UnregisterLOCALEImage(void)
 %
 %
 */
+
+struct locale_str {
+    struct locale_str *next;  /* link list of subfield names at this level */
+    struct locale_str *lower; /* link list of subfield names below this level */
+    char *name;               /* the subfield name or the message */
+};
+
+static void accumulate(const char **, int, struct locale_str **);
+static void output_switches(Image *image,struct locale_str *, int, int);
+
+#define INDENT 2         /* # of spaces to indent each line of the output */
+
+static const char prologue[] = "\
+\nconst char *GetLocaleMessage(const char *tag)\
+\n{\
+\n   register const char *p, *tp, *np = tag;\
+\n#  define NEXT_FIELD ((p = (np = strchr((tp = np), '/')) ? np++ : (np = tp + strlen(tp))), tp)\n\
+\n   if (!tag || !tag[0])\
+\n      return \"\";\n";
+
+static const char epilogue[] = "\n   return tag;\n}\n";
+
+void AccumulateStrings(void **handle, const char **instr, int siz)
+{
+    accumulate(instr, siz, (struct locale_str **)handle);
+}
+
+static char *EscapeLocaleString(const char *str)
+{
+    const char *p;
+    char *strput, *s;
+    int n;
+
+    for (p = str, n = 0; *p; p++, n++)
+        if (*p == '"' || *p == '\\')
+            ++n;
+
+    if (!(strput = (char *)malloc(n + 1)))
+    {
+        fprintf(stderr, "out of memory!\n");
+        exit(1);
+    }
+
+    for (p = str, s = strput; *p; p++)
+    {
+        if (*str == '\\' || *str == '"')
+            *s++ = '\\';
+        *s++ = *p;
+    }
+
+    *s = '\0';
+    return strput;
+}
+
+void OutputSwitches(Image *image,void *handle, int dologue)
+{
+    if (dologue)
+        WriteBlobString(image,prologue);
+
+    output_switches(image,(struct locale_str *)handle, INDENT, 0);
+
+    if (dologue)
+        WriteBlobString(image,epilogue);
+}
+
+void FreeAccumulatedStrings(void *handle)
+{
+    struct locale_str *xl = (struct locale_str *)handle;
+    if (!handle)
+        return;
+    FreeAccumulatedStrings((void *)xl->next);
+    FreeAccumulatedStrings((void *)xl->lower);
+    free((void *)xl->name);
+    free(handle);
+}
+
+/*  accumulate -- read a line from the file, break it up at the '/'s into
+ *                individual subfields and build a tree structure that has
+ *                a string message (the last subfield) as its leaf node.
+ */
+static void accumulate(const char **buf, int siz, struct locale_str **locstr)
+{
+    const char *p, *np, *tp;
+    char *xp, *xn, *xt;
+    struct locale_str *xl, **xloc;
+    int n;
+
+    for (n = 0; (siz == 0 || n < siz) && buf[n]; n++)
+    {
+        xloc = locstr;
+
+        /* break the line into separate fields, setting up as follows: */
+        /* tp points at the first char of the current subfield */
+        /* np points at the first char of the next subfield */
+        /* p points one after the last char of the current subfield */
+        for (p = tp = buf[n]; p && *p; p = np)
+        {
+            if (!(np = strchr(p, '/')))    /* last field is the message */
+            {
+                if (!(xp = (char *) strdup(tp)))
+                {
+                    fprintf(stderr, " out of memory!\n");
+                    exit(1);
+                }
+                xt = xp;
+                for (xn = xp; (*xn = *xt); xt++)      /* eliminate '\'s */
+                    if (*xn != '\\')
+                        ++xn;
+
+                if (*xloc && !(*xloc)->lower)   /* see if already there */
+                {
+                    if (strcasecmp((*xloc)->name, xp))
+                        fprintf(stderr, "ignoring dup message for `%s'\n",
+                                         buf[n]);
+                    free(xp);
+                    break;
+                }
+                /* fall through to create the node */
+            }
+            else if (np == tp)      /* skip multiple /'s */
+            {
+                ++np, ++tp;
+                continue;
+            }
+            else if (np[-1] == '\\')  /* this '/' has been escaped */
+            {
+                ++np;
+                continue;
+            }
+            else    /* subfield name */
+            {
+                int x;
+
+                if (!(xp = (char *)malloc(np - tp + 1)))
+                {
+                    fprintf(stderr, "out of memory!\n" );
+                    exit(1);
+                }
+                strncpy(xp, tp, np - tp);
+                xp[np - tp] = '\0';
+                tp = ++np;
+
+                if (*xloc && !(*xloc)->lower) /* skip leaf node if it's there */
+                    xloc = &(*xloc)->next;
+                for (x = -1; (xl = *xloc); xloc = &xl->next)
+                    if ((x = strcasecmp(xp, xl->name)) <= 0)
+                        break;
+
+                if (x == 0)   /* subfield exists */
+                {
+                    free(xp);
+                    xloc = &xl->lower;
+                    continue;
+                }
+            }
+
+            /* node doesn't exist; create it */
+
+            if (*xp == '\0')
+                fprintf(stderr, "warning: message is null for '%s'\n", buf[n]);
+
+            if (!(xl = (struct locale_str *)malloc(sizeof *xl)))
+            {
+                fprintf(stderr, "out of memory!\n");
+                exit(1);
+            }
+            xl->name = xp;
+            xl->lower = 0;
+            xl->next = *xloc;
+            *xloc = xl;
+            xloc = &xl->lower;
+        }
+    }
+}
+
+/*  output_switches -- generate a single C statement from the list of names
+ *                     in the locstr tree. This is a recursive procedure.
+ *                     `indent' is the output line indentation to make the
+ *                     generated code readable.  `elseflag' just tries to
+ *                     line up "else if" in the output a little better.
+ */
+static void output_switches(Image *image,struct locale_str *locstr, int indent, int elseflag)
+{
+   char
+     message[10*MaxTextExtent];
+
+    int flag;
+    struct locale_str *xl;
+    char *p;
+
+    if (!locstr)
+    {
+        fprintf(stderr, "NULL locstr in output_switches\n");
+        return;
+    }
+
+    if (!locstr->next)     /* output simpler code for a single case */
+    {
+        p = EscapeLocaleString(locstr->name);
+        if (!locstr->lower)
+          {
+            FormatString(message, "%*sreturn *np ? tag : \"%s\";\n", indent, "", p);
+            WriteBlobString(image,message);
+          }
+        else
+        {
+            if (elseflag)
+                indent -= INDENT;
+
+            FormatString(message, "%*sif (strncasecmp(NEXT_FIELD, \"%s\", %d) || p - tp != %d)\n%*sreturn tag;\n%*selse\n",
+                    indent, "", p, strlen(locstr->name), strlen(locstr->name),
+                    indent+INDENT, "", indent, "");
+            WriteBlobString(image,message);
+
+            output_switches(image, locstr->lower, indent+INDENT, 1);
+        }
+        free(p);
+        return;
+    }
+
+    FormatString(message, "%*sswitch (*NEXT_FIELD)\n%*s{\n%*sdefault:\n%*sreturn tag;\n",
+                indent, "", indent, "", indent, "", indent+INDENT, "");
+    WriteBlobString(image,message);
+    xl = locstr;
+    if (!xl->lower)
+    {
+        p = EscapeLocaleString(xl->name);
+        FormatString(message, "\n%*scase '\\0':\n%*sreturn \"%s\";\n",
+                indent, "", indent+INDENT, "", p);
+        WriteBlobString(image,message);
+        free(p);
+        xl = xl->next;
+    }
+
+    for (flag = 1; xl; xl = xl->next)
+    {
+        if (flag)
+          {
+            FormatString(message, "\n%*scase '%c':  case '%c':\n",
+                    indent, "", tolower(*xl->name), toupper(*xl->name));
+            WriteBlobString(image,message);
+          }
+
+        p = EscapeLocaleString(xl->name);
+        FormatString(message, "%*sif (p - tp == %d && !strncasecmp(tp, \"%s\", %d))\n",
+                indent+INDENT, "", strlen(xl->name), p, strlen(xl->name));
+        WriteBlobString(image,message);
+        free(p);
+
+        output_switches(image,xl->lower, indent+INDENT+INDENT, 0);
+        FormatString(message, "%*selse\n", indent+INDENT, "");
+        WriteBlobString(image,message);
+
+        flag = xl->next == 0 || tolower(*xl->name) != tolower(*xl->next->name);
+        if (flag)
+          {
+            FormatString(message, "%*sreturn tag;\n", indent+INDENT+INDENT, "");
+            WriteBlobString(image,message);
+          }
+    }
+
+    FormatString(message, "%*s}\n", indent, "");
+    WriteBlobString(image,message);
+}
 static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
 {
   char
@@ -463,6 +728,9 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   register long
     i,
     j;
+
+  struct locale_str
+    *locales;
 
   unsigned int
     status;
@@ -509,13 +777,18 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   if (attribute != (const ImageAttribute *) NULL)
     WriteBlobString(image,attribute->value);
   /*
-    Write locale messages.
+	  Write locale messages.
   */
   for (i=0; i < count; i++)
-  {
-    WriteBlobString(image,locale[i]);
-    WriteBlobString(image,"\n");
-  }
+		(void) fprintf(stdout,"%.1024s\n",locale[i]);
+  /*
+    Write finite-state-machine.
+  */
+  locales=(struct locale_str *) NULL;
+  accumulate((const char **) locale,count,&locales);
+  WriteBlobString(image,prologue);
+  output_switches(image,locales, INDENT, 0);
+  WriteBlobString(image,epilogue);
   /*
     Free resources.
   */
