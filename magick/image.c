@@ -2047,8 +2047,7 @@ Export void CycleColormapImage(Image *image,const int amount)
 Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
 {
   char
-    color[MaxTextExtent],
-    **textlist;
+    color[MaxTextExtent];
 
   double
     elapsed_time,

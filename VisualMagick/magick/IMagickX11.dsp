@@ -156,7 +156,7 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
-SOURCE=..\..\magick\8BIM.c
+SOURCE=..\..\magick\BIM.c
 # End Source File
 # Begin Source File
 
@@ -165,6 +165,10 @@ SOURCE=..\..\magick\animate.c
 # Begin Source File
 
 SOURCE=..\..\magick\annotate.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\magick\attributes.c
 # End Source File
 # Begin Source File
 
@@ -376,6 +380,10 @@ SOURCE=..\..\magick\pcl.c
 # Begin Source File
 
 SOURCE=..\..\magick\pcx.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\magick\pdb.c
 # End Source File
 # Begin Source File
 
