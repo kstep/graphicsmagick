@@ -67,7 +67,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CloneImageList() returns a duplicate of the specified image list.
+%  CloneImageList() returns a duplicate of the image list.
 %
 %  The format of the CloneImageList method is:
 %
@@ -180,7 +180,7 @@ MagickExport void DestroyImageList(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageList() returns an image at the specified position in the image list.
+%  GetImageList() returns an image at the specified position in the list.
 %
 %  The format of the GetImageList method is:
 %
@@ -228,7 +228,7 @@ MagickExport Image *GetImageList(const Image *images,const unsigned long n,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageListSize() returns the number of images in the image list.
+%  GetImageListSize() returns the number of images in the list.
 %
 %  The format of the GetImageListSize method is:
 %
@@ -272,7 +272,7 @@ MagickExport unsigned long GetImageListSize(const Image *images)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetNextImage() returns the next image in an image sequence.
+%  GetNextImage() returns the next image in a list.
 %
 %  The format of the GetNextImage method is:
 %
@@ -305,16 +305,17 @@ MagickExport Image *GetNextImage(Image *images)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ListToGroupImage() is a convenience method that converts a linked list of
-%  images to a sequential array.  For example,
+%  ListToGroupImage() is a convenience method that converts an image list to
+%  a sequential array.  For example,
 %
 %    images = ListToGroupImage(image_list,&n);
-%    for (i=0; i < n; i++)
+%    for (i = 0; i < n; i++)
 %      puts(images[i]->filename);
 %
 %  The format of the ListToGroupImage method is:
 %
-%      Image **ListToGroupImage(const Image *image,unsigned long *number_images)
+%      Image **ListToGroupImage(const Image *image,
+%        unsigned long *number_images)
 %
 %  A description of each parameter follows:
 %
@@ -613,7 +614,7 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ShiftImageList() takes off the beginning of the image list.
+%  ShiftImageList() remove an image from the beginning of the list.
 %
 %  The format of the ShiftImageList method is:
 %
@@ -655,7 +656,7 @@ MagickExport Image *ShiftImageList(Image **images)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  UnshiftImageList() adds the image to the beginning of the image list.
+%  UnshiftImageList() adds the image to the beginning of the list.
 %
 %  The format of the UnshiftImageList method is:
 %

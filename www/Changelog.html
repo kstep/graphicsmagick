@@ -23,9 +23,17 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-01-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Modified type.mgk so that it may include the additional files
+    type-windows.mgk, type-solaris.mgk, and type-ghostscript.mgk depending
+    on the operating system used, and the font files available.
+
+2002-01-11  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
+  * PSD now supports writing layered images and IPTC data.
+  * Fixed some bugs in XCF.
+
 2002-01-11  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-  * Added image list methods to the API: CloneImageList(), GetImageList(),
-    NewImageList(), PopImageList(), PushImageList(), and SetImageList().
+  * Added image list methods to the API.
 
 2002-01-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * configure.ac : Renamed configure option --with-ttf-fontpath to
