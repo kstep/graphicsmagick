@@ -165,7 +165,12 @@ typedef struct _TypeMetric
     descent,
     width, 
     height,
-    max_advance,
+    max_advance;
+
+  SegmentInfo
+	  bounds;
+
+  double
 		underline_position,
     underline_thickness;
 } TypeMetric;
