@@ -408,7 +408,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   */
   FormatString(buffer,"<map name=\"%.1024s\">\n",mapname);
   (void) WriteBlobString(image,buffer);
-  FormatString(buffer,"  <area href=%.1024s",url);
+  FormatString(buffer,"  <area href=\"%.1024s",url);
   (void) WriteBlobString(image,buffer);
   if (image->directory == (char *) NULL)
     {
