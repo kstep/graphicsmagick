@@ -19,7 +19,7 @@ extern Export PixelPacket
 
 extern Export unsigned int
   ReadPixelCache(Image *,const QuantumTypes,const unsigned char *),
-  SyncPixelCache(Image *image),
+  SyncPixelCache(Image *),
   WritePixelCache(Image *,const QuantumTypes,unsigned char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

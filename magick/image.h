@@ -441,12 +441,6 @@ typedef struct _Image
     y_resolution;
 
   PixelPacket
-    *pixels;
-
-  unsigned short
-    *indexes;
-
-  PixelPacket
     background_color,
     border_color,
     matte_color;
@@ -492,11 +486,11 @@ typedef struct _Image
     restart_animation_here,
     tainted;
 
+  ExceptionInfo
+    exception;
+
   TimerInfo
     timer;
-
-  unsigned int
-    orphan;
 
   BlobInfo
     blob;
@@ -504,11 +498,17 @@ typedef struct _Image
   Cache
     cache;
 
-  RectangleInfo
-    cache_info;
+  unsigned int
+    view;
 
-  ExceptionInfo
-    exception;
+  PixelPacket
+    *pixels;
+
+  unsigned short
+    *indexes;
+
+  unsigned int
+    orphan;
 
   struct _Image
     *previous,

@@ -66,6 +66,23 @@
 /*
   Typedef declarations.
 */
+typedef struct _ViewInfo
+{
+  int
+    id;
+
+  unsigned int
+    width,
+    height;
+
+  int
+    x,
+    y;
+
+  void
+    *stash;
+} ViewInfo;
+
 typedef struct _CacheInfo
 {
   ClassType
@@ -100,8 +117,8 @@ typedef struct _CacheInfo
   off_t
     length;
 
-  void
-    *stash;
+  ViewInfo
+    view;
 } CacheInfo;
 
 /*
@@ -318,8 +335,8 @@ Export void DestroyCacheInfo(Cache cache)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  if (cache_info->stash != (void *) NULL)
-    FreeMemory(cache_info->stash);
+  if (cache_info->view.stash != (void *) NULL)
+    FreeMemory(cache_info->view.stash);
   switch (cache_info->type)
   {
     case MemoryCache:
@@ -471,7 +488,12 @@ Export void GetCacheInfo(Cache *cache)
   *cache_info->filename='\0';
   cache_info->file=(-1);
   cache_info->length=0;
-  cache_info->stash=(void *) NULL;
+  cache_info->view.id=0;
+  cache_info->view.width=0;
+  cache_info->view.height=0;
+  cache_info->view.x=0;
+  cache_info->view.y=0;
+  cache_info->view.stash=(void *) NULL;
   *cache=cache_info;
 }
 
@@ -598,13 +620,13 @@ Export void *GetCacheStash(Cache cache,unsigned int number_pixels)
   length=number_pixels*sizeof(PixelPacket);
   if (cache_info->class == PseudoClass)
     length+=number_pixels*sizeof(IndexPacket);
-  if (cache_info->stash == (PixelPacket *) NULL)
-    cache_info->stash=AllocateMemory(length);
+  if (cache_info->view.stash == (void *) NULL)
+    cache_info->view.stash=AllocateMemory(length);
   else
     if (cache_info->length < length)
-      cache_info->stash=ReallocateMemory(cache_info->stash,length);
+      cache_info->view.stash=ReallocateMemory(cache_info->view.stash,length);
   cache_info->length=length;
-  return(cache_info->stash);
+  return(cache_info->view.stash);
 }
 
 /*
@@ -689,8 +711,7 @@ Export CacheType GetCacheType(Cache cache)
 %
 %  The format of the ReadCacheIndexes method is:
 %
-%      unsigned int ReadCacheIndexes(Cache cache,
-%        const RectangleInfo *region_info,IndexPacket *indexes)
+%      unsigned int ReadCacheIndexes(Cache cache,IndexPacket *indexes)
 %
 %  A description of each parameter follows:
 %
@@ -699,16 +720,12 @@ Export CacheType GetCacheType(Cache cache)
 %
 %    o cache_info: Specifies a pointer to a CacheInfo structure.
 %
-%    o region_info:  The address of a RectangleInfo structure that defines
-%      the cache region to read.
-%
 %    o indexes: The colormap indexes are copied from this IndexPacket address
 %      to the pixel cache.
 %
 %
 */
-Export unsigned int ReadCacheIndexes(Cache cache,
-  const RectangleInfo *region_info,IndexPacket *indexes)
+Export unsigned int ReadCacheIndexes(Cache cache,IndexPacket *indexes)
 {
   CacheInfo
     *cache_info;
@@ -724,7 +741,7 @@ Export unsigned int ReadCacheIndexes(Cache cache,
   cache_info=(CacheInfo *) cache;
   if (cache_info->class != PseudoClass)
     return(False);
-  offset=region_info->y*cache_info->columns+region_info->x;
+  offset=cache_info->view.y*cache_info->columns+cache_info->view.x;
   if (cache_info->type != DiskCache)
     {
       /*
@@ -732,11 +749,11 @@ Export unsigned int ReadCacheIndexes(Cache cache,
       */
       if (indexes == (cache_info->indexes+offset))
         return(True);
-      for (y=0; y < (int) region_info->height; y++)
+      for (y=0; y < (int) cache_info->view.height; y++)
       {
         (void) memcpy(indexes,cache_info->indexes+offset,
-          region_info->width*sizeof(IndexPacket));
-        indexes+=region_info->width;
+          cache_info->view.width*sizeof(IndexPacket));
+        indexes+=cache_info->view.width;
         offset+=cache_info->columns;
       }
       return(True);
@@ -750,17 +767,17 @@ Export unsigned int ReadCacheIndexes(Cache cache,
       if (cache_info->file == -1)
         return(False);
     }
-  for (y=0; y < (int) region_info->height; y++)
+  for (y=0; y < (int) cache_info->view.height; y++)
   {
     count=lseek(cache_info->file,cache_info->number_pixels*sizeof(PixelPacket)+
       offset*sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
-    count=read(cache_info->file,(char *) indexes,region_info->width*
+    count=read(cache_info->file,(char *) indexes,cache_info->view.width*
       sizeof(IndexPacket));
-    if (count != (region_info->width*sizeof(IndexPacket)))
+    if (count != (cache_info->view.width*sizeof(IndexPacket)))
       return(False);
-    indexes+=region_info->width;
+    indexes+=cache_info->view.width;
     offset+=cache_info->columns;
   }
   return(True);
@@ -782,8 +799,7 @@ Export unsigned int ReadCacheIndexes(Cache cache,
 %
 %  The format of the ReadCachePixels method is:
 %
-%      unsigned int ReadCachePixels(Cache cache,
-%        const RectangleInfo *region_info,IndexPacket *indexes)
+%      unsigned int ReadCachePixels(Cache cache,IndexPacket *indexes)
 %
 %  A description of each parameter follows:
 %
@@ -792,16 +808,12 @@ Export unsigned int ReadCacheIndexes(Cache cache,
 %
 %    o cache_info: Specifies a pointer to a CacheInfo structure.
 %
-%    o region_info:  The address of a RectangleInfo structure that defines
-%      the cache region to read.
-%
 %    o pixels: The pixels are copied from this PixelPacket address to the
 %      pixel cache.
 %
 %
 */
-Export unsigned int ReadCachePixels(Cache cache,
-  const RectangleInfo *region_info,PixelPacket *pixels)
+Export unsigned int ReadCachePixels(Cache cache,PixelPacket *pixels)
 {
   CacheInfo
     *cache_info;
@@ -815,7 +827,7 @@ Export unsigned int ReadCachePixels(Cache cache,
 
   assert(cache != (Cache *) NULL);
   cache_info=(CacheInfo *) cache;
-  offset=region_info->y*cache_info->columns+region_info->x;
+  offset=cache_info->view.y*cache_info->columns+cache_info->view.x;
   if (cache_info->type != DiskCache)
     {
       /*
@@ -823,11 +835,11 @@ Export unsigned int ReadCachePixels(Cache cache,
       */
       if (pixels == (cache_info->pixels+offset))
         return(True);
-      for (y=0; y < (int) region_info->height; y++)
+      for (y=0; y < (int) cache_info->view.height; y++)
       {
         (void) memcpy(pixels,cache_info->pixels+offset,
-          region_info->width*sizeof(PixelPacket));
-        pixels+=region_info->width;
+          cache_info->view.width*sizeof(PixelPacket));
+        pixels+=cache_info->view.width;
         offset+=cache_info->columns;
       }
       return(True);
@@ -841,16 +853,16 @@ Export unsigned int ReadCachePixels(Cache cache,
       if (cache_info->file == -1)
         return(False);
     }
-  for (y=0; y < (int) region_info->height; y++)
+  for (y=0; y < (int) cache_info->view.height; y++)
   {
     count=lseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
       return(False);
-    count=read(cache_info->file,(char *) pixels,region_info->width*
+    count=read(cache_info->file,(char *) pixels,cache_info->view.width*
       sizeof(PixelPacket));
-    if (count != (region_info->width*sizeof(PixelPacket)))
+    if (count != (cache_info->view.width*sizeof(PixelPacket)))
       return(False);
-    pixels+=region_info->width;
+    pixels+=cache_info->view.width;
     offset+=cache_info->columns;
   }
   return(True);
@@ -933,6 +945,47 @@ Export void SetCacheType(Cache cache,const CacheType type)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S e t C a c h e V i e w                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetCacheView sets the cache view.
+%
+%  The format of the SetCacheView method is:
+%
+%      void SetCacheView(Cache cache,const unsigned int id,
+%        const RectangleInfo *view)
+%
+%  A description of each parameter follows:
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%    o type: The pixel cache type MemoryCache or DiskCache.
+%
+%
+*/
+Export void SetCacheView(Cache cache,const unsigned int id,
+  const RectangleInfo *view)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  cache_info->view.id=id;
+  cache_info->view.width=view->width;
+  cache_info->view.height=view->height;
+  cache_info->view.x=view->x;
+  cache_info->view.y=view->y;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e C a c h e I n d e x e s                                         %
 %                                                                             %
 %                                                                             %
@@ -944,8 +997,7 @@ Export void SetCacheType(Cache cache,const CacheType type)
 %
 %  The format of the WriteCachePixels method is:
 %
-%      unsigned int WriteCachePixels(Cache cache,
-%        const RectangleInfo *region_info,const IndexPacket *indexes)
+%      unsigned int WriteCachePixels(Cache cache,const IndexPacket *indexes)
 %
 %  A description of each parameter follows:
 %
@@ -954,16 +1006,12 @@ Export void SetCacheType(Cache cache,const CacheType type)
 %
 %    o cache_info: Specifies a pointer to a CacheInfo structure.
 %
-%    o region_info:  The address of a RectangleInfo structure that defines
-%      the cache region to write.
-%
 %    o indexes: The colormap indexes are copied from the pixel cache to this
 %      IndexPacket address.
 %
 %
 */
-Export unsigned int WriteCacheIndexes(Cache cache,
-  const RectangleInfo *region_info,const IndexPacket *indexes)
+Export unsigned int WriteCacheIndexes(Cache cache,const IndexPacket *indexes)
 {
   CacheInfo
     *cache_info;
@@ -979,7 +1027,7 @@ Export unsigned int WriteCacheIndexes(Cache cache,
   cache_info=(CacheInfo *) cache;
   if (cache_info->class != PseudoClass)
     return(False);
-  offset=region_info->y*cache_info->columns+region_info->x;
+  offset=cache_info->view.y*cache_info->columns+cache_info->view.x;
   if (cache_info->type != DiskCache)
     {
       /*
@@ -987,11 +1035,11 @@ Export unsigned int WriteCacheIndexes(Cache cache,
       */
       if (indexes == (cache_info->indexes+offset))
         return(True);
-      for (y=0; y < (int) region_info->height; y++)
+      for (y=0; y < (int) cache_info->view.height; y++)
       {
         (void) memcpy(cache_info->indexes+offset,indexes,
-          region_info->width*sizeof(IndexPacket));
-        indexes+=region_info->width;
+          cache_info->view.width*sizeof(IndexPacket));
+        indexes+=cache_info->view.width;
         offset+=cache_info->columns;
       }
       return(True);
@@ -1005,17 +1053,17 @@ Export unsigned int WriteCacheIndexes(Cache cache,
       if (cache_info->file == -1)
         return(False);
     }
-  for (y=0; y < (int) region_info->height; y++)
+  for (y=0; y < (int) cache_info->view.height; y++)
   {
     count=lseek(cache_info->file,cache_info->number_pixels*sizeof(PixelPacket)+
       offset*sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
-    count=write(cache_info->file,(char *) indexes,region_info->width*
+    count=write(cache_info->file,(char *) indexes,cache_info->view.width*
       sizeof(IndexPacket));
-    if (count != (region_info->width*sizeof(IndexPacket)))
+    if (count != (cache_info->view.width*sizeof(IndexPacket)))
       return(False);
-    indexes+=region_info->width;
+    indexes+=cache_info->view.width;
     offset+=cache_info->columns;
   }
   return(True);
@@ -1037,8 +1085,7 @@ Export unsigned int WriteCacheIndexes(Cache cache,
 %
 %  The format of the WriteCachePixels method is:
 %
-%      unsigned int WriteCachePixels(Cache cache,
-%        const RectangleInfo *region_info,const PixelPacket *pixels)
+%      unsigned int WriteCachePixels(Cache cache,const PixelPacket *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -1047,16 +1094,12 @@ Export unsigned int WriteCacheIndexes(Cache cache,
 %
 %    o cache_info: Specifies a pointer to a CacheInfo structure.
 %
-%    o region_info:  The address of a RectangleInfo structure that defines
-%      the cache region to write.
-%
 %    o pixels: The pixels are copied from the pixel cache to this PixelPacket
 %      address.
 %
 %
 */
-Export unsigned int WriteCachePixels(Cache cache,
-  const RectangleInfo *region_info,const PixelPacket *pixels)
+Export unsigned int WriteCachePixels(Cache cache,const PixelPacket *pixels)
 {
   CacheInfo
     *cache_info;
@@ -1070,7 +1113,7 @@ Export unsigned int WriteCachePixels(Cache cache,
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  offset=region_info->y*cache_info->columns+region_info->x;
+  offset=cache_info->view.y*cache_info->columns+cache_info->view.x;
   if (cache_info->type != DiskCache)
     {
       /*
@@ -1078,11 +1121,11 @@ Export unsigned int WriteCachePixels(Cache cache,
       */
       if (pixels == (cache_info->pixels+offset))
         return(True);
-      for (y=0; y < (int) region_info->height; y++)
+      for (y=0; y < (int) cache_info->view.height; y++)
       {
         (void) memcpy(cache_info->pixels+offset,pixels,
-          region_info->width*sizeof(PixelPacket));
-        pixels+=region_info->width;
+          cache_info->view.width*sizeof(PixelPacket));
+        pixels+=cache_info->view.width;
         offset+=cache_info->columns;
       }
       return(True);
@@ -1096,16 +1139,16 @@ Export unsigned int WriteCachePixels(Cache cache,
       if (cache_info->file == -1)
         return(False);
     }
-  for (y=0; y < (int) region_info->height; y++)
+  for (y=0; y < (int) cache_info->view.height; y++)
   {
     count=lseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
       return(False);
-    count=write(cache_info->file,(char *) pixels,region_info->width*
+    count=write(cache_info->file,(char *) pixels,cache_info->view.width*
       sizeof(PixelPacket));
-    if (count != (region_info->width*sizeof(PixelPacket)))
+    if (count != (cache_info->view.width*sizeof(PixelPacket)))
       return(False);
-    pixels+=region_info->width;
+    pixels+=cache_info->view.width;
     offset+=cache_info->columns;
   }
   return(True);

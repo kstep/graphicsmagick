@@ -128,11 +128,6 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   /*
     Initialize Image structure.
   */
-  GetCacheInfo(&allocated_image->cache);
-  allocated_image->cache_info.x=0;
-  allocated_image->cache_info.y=0;
-  allocated_image->cache_info.width=0;
-  allocated_image->cache_info.height=0;
   allocated_image->file=(FILE *) NULL;
   GetBlobInfo(&allocated_image->blob);
   allocated_image->exempt=False;
@@ -178,8 +173,6 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->color_profile.info=(unsigned char *) NULL;
   allocated_image->iptc_profile.length=0;
   allocated_image->iptc_profile.info=(unsigned char *) NULL;
-  allocated_image->pixels=(PixelPacket *) NULL;
-  allocated_image->indexes=(IndexPacket *) NULL;
   (void) QueryColorDatabase(BackgroundColor,&allocated_image->background_color);
   (void) QueryColorDatabase(BorderColor,&allocated_image->border_color);
   (void) QueryColorDatabase(MatteColor,&allocated_image->matte_color);
@@ -200,8 +193,12 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->magick_rows=0;
   allocated_image->tainted=False;
   allocated_image->restart_animation_here=False;
-  GetTimerInfo(&allocated_image->timer);
   GetExceptionInfo(&allocated_image->exception);
+  GetTimerInfo(&allocated_image->timer);
+  GetCacheInfo(&allocated_image->cache);
+  allocated_image->view=0;
+  allocated_image->pixels=(PixelPacket *) NULL;
+  allocated_image->indexes=(IndexPacket *) NULL;
   allocated_image->orphan=False;
   allocated_image->previous=(Image *) NULL;
   allocated_image->list=(Image *) NULL;
@@ -792,10 +789,7 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
     }
   GetBlobInfo(&clone_image->blob);
   GetCacheInfo(&clone_image->cache);
-  clone_image->cache_info.x=0;
-  clone_image->cache_info.y=0;
-  clone_image->cache_info.width=0;
-  clone_image->cache_info.height=0;
+  clone_image->view=0;
   clone_image->pixels=(PixelPacket *) NULL;
   clone_image->indexes=(IndexPacket *) NULL;
   if ((image->columns != columns) || (image->rows != rows))

@@ -33,10 +33,10 @@ extern Export PixelPacket
 
 extern Export unsigned int
   AllocateCache(Cache,const ClassType,const unsigned int,const unsigned int),
-  ReadCachePixels(Cache,const RectangleInfo *,PixelPacket *),
-  ReadCacheIndexes(Cache,const RectangleInfo *,IndexPacket *),
-  WriteCachePixels(Cache,const RectangleInfo *,const PixelPacket *),
-  WriteCacheIndexes(Cache,const RectangleInfo *,const IndexPacket *);
+  ReadCachePixels(Cache,PixelPacket *),
+  ReadCacheIndexes(Cache,IndexPacket *),
+  WriteCachePixels(Cache,const PixelPacket *),
+  WriteCacheIndexes(Cache,const IndexPacket *);
 
 extern Export void
   CloseCache(Cache),
@@ -44,7 +44,8 @@ extern Export void
   GetCacheInfo(Cache *),
   *GetCacheStash(Cache,unsigned int),
   SetCacheThreshold(const off_t),
-  SetCacheType(Cache,const CacheType);
+  SetCacheType(Cache,const CacheType),
+  SetCacheView(Cache,const unsigned int,const RectangleInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

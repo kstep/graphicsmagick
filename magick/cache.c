@@ -100,9 +100,9 @@ Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
   assert(image != (Image *) NULL);
   if (!SetPixelCache(image,x,y,columns,rows))
     return((PixelPacket *) NULL);
-  status=ReadCachePixels(image->cache,&image->cache_info,image->pixels);
+  status=ReadCachePixels(image->cache,image->pixels);
   if (image->class == PseudoClass)
-    status|=ReadCacheIndexes(image->cache,&image->cache_info,image->indexes);
+    status|=ReadCacheIndexes(image->cache,image->indexes);
   if (status == False)
     {
       ThrowException(&image->exception,CacheWarning,
@@ -436,6 +436,9 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
 Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
+  RectangleInfo
+    view;
+
   unsigned int
     status;
 
@@ -460,10 +463,11 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
         "Unable to allocate pixel cache",(char *) NULL);
       return((PixelPacket *) NULL);
     }
-  image->cache_info.x=x;
-  image->cache_info.y=y;
-  image->cache_info.width=columns;
-  image->cache_info.height=rows;
+  view.x=x;
+  view.y=y;
+  view.width=columns;
+  view.height=rows;
+  SetCacheView(image->cache,image->view,&view);
   if ((((x+columns) <= image->columns) && (rows == 1)) ||
       ((x == 0) && ((columns % image->columns) == 0)))
     {
@@ -532,9 +536,9 @@ Export unsigned int SyncPixelCache(Image *image)
   /*
     Transfer pixels to the cache.
   */
-  status=WriteCachePixels(image->cache,&image->cache_info,image->pixels);
+  status=WriteCachePixels(image->cache,image->pixels);
   if (image->class == PseudoClass)
-    status|=WriteCacheIndexes(image->cache,&image->cache_info,image->indexes);
+    status|=WriteCacheIndexes(image->cache,image->indexes);
   if (status == False)
     ThrowBinaryException(CacheWarning,"Unable to sync pixel cache",
       (char *) NULL);
