@@ -1,0 +1,23 @@
+SP1;CS0;LB Character set 7:
+
+SP1;CS7;LB !"#$%&'()*+,-./
+0123456789:;<=>?
+@ABCDEFGHIJKLMNO
+PQRSTUVWXYZ[\]^_
+`abcdefghijklmno
+pqrstuvwxyz{|}~
+
+LB
+
+LB
+
+CS7;ES0.1,-0.3;
+SR1,3;SL-0.1;
+SP1;LB !"#$%&'()*+,-./
+0123456789:;<=>?
+@ABCDEFGHIJKLMNO
+PQRSTUVWXYZ[\]^_
+`abcdefghijklmno
+pqrstuvwxyz{|}~
+
+

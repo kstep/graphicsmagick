@@ -1,0 +1,52 @@
+hp2xx-3.4.2
+
+This is mainly a bugfix release to correct some problems found in 3.4.1.
+Fixes include penwidth handling and page scaling in PDF and EPS modes, 
+color handling in the raster modes including the X11 previewer, and several 
+issues in the polygon code. 
+The SVG output mode introduced in 3.4.1 is now actually selectable on the 
+commandline, and a JPEG output module was added .
+
+I would greatly appreciate receiving bug reports, patches or even sample 
+HPGL files. (In the latter case, please make sure that no copyright or 
+confidentiality agreements are violated before sending any materials.)
+
+Martin Kroeker, 
+mk@daveg.com OR martin@ruby.chemie.uni-freiburg.de
+
+Disclaimer: while i currently work for Daveg GmbH and they have generously 
+            waived their rights (as per German employment laws) on the code 
+            i wrote for hp2xx, this software is totally unrelated to, and 
+            not endorsed by, Daveg GmbH. 
+See the file 'copying' (i.e. the GNU GPL) for license and warranty
+information.
+
+
+Changes from 3.4.1 to 3.4.2
+
+- Added support for the AC (fill pattern anchor corner) command
+- Added support for the CT (chord tolerance) command
+- Added color support in SVG output mode
+- Added output module for JPG images (requires libjpeg)
+
+Bug fixes:
+
+- SVG output mode could not be selected on the commandline
+- PDF and EPS modes were not always generating penwidth commands on pen changes
+- Polygon mode was influencing the overall pen up/down state
+- PM1 immediately after PM was not setting the new starting point correctly
+- FT instructions did not store/recall hatch spacing and angle correctly
+- X11 preview always used black for pen 1
+- Polygon fill algorithm did not handle parallel bounding lines correctly,
+  and could draw lines beyond the limits of the polygon in some cases.
+- the commandline interpreter now handles mis-spelled or unknown long
+  options gracefully (Serge Ivanchenko)
+- PDF output was only about 1/3 the intended size
+- handling of RO/IW was broken (again) for the unscaled case (no SC)
+- PNG output was still using a fixed eight pen palette
+- raster modes were limited to 15 pens due to restrictions of the internal
+  picture buffer (higher pen numbers were either mapped to black or scaled
+  to the accessible range, depending on output format)
+- DXF output had leading whitespace in layer numbers (Patrice Pinel)
+- EPS output still had oversized margins
+

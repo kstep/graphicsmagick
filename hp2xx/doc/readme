@@ -1,0 +1,49 @@
+(c) 2000 - 2001 M. Kroeker	HP2XX release 3.4
+(c) 1998 - 1999 M. Kroeker      HP2XX release 3.3
+(c) 1992 - 1994 H. Werntges     HP2XX release 3.x
+                                =================
+
+Files in hp2xx/doc:
+-------------------
+
+File name    Description
+------------------------------------------------------------
+
+README       This files
+
+hp_cmds.lst  List of supported HP-GL commands
+changes      Protocol of changes
+hp2xx.1      UNIX manual page, nroff format
+hp2xx.hlp    VAX-VMS help file
+hp2xxinf.tex Documentation using GNU-EMAC's "texinfo" format
+
+
+If you are using the generic makefile in ../sources, simply type
+   make install-man
+   make install-info
+
+
+Else, install the UNIX manual page simply by copying it to a suitable place,
+e. g., /usr/local/man/man1. Please note that hp2xx.1 is updated only
+occasionally, since the "official" documentation resides in texinfo format.
+
+hp2xxinf.tex (actually, hp2xx.texinfo) is the source file for
+manual generation and EMACS on-line help.
+
+
+For manual generation, run
+
+     % tex hp2xxinf
+
+to produce a .dvi file (provided that texinfo.sty) is present).
+
+
+For on-line help, run
+
+     % mv hp2xxinf.tex hp2xx.texinfo
+     % makeinfo hp2xx.texinfo
+
+This will produce a file "hp2xx.info" which you should install for
+use with EMACS.
+
+=============================================================================

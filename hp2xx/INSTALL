@@ -1,0 +1,61 @@
+(c) 1998 - 2001 M. Kroeker      HP2XX release 3.3.x - 3.4.x
+(c) 1992 - 1994 H. Werntges     HP2XX release 3.x
+                                =================
+
+
+Files in .        Description
+--------------------------------------------------------------------------
+README            This files
+COPYING           GNU General Public License Version 2
+
+sources           Directory containing all essential .c and .h
+                  source files. Also site of binary generation
+
+makes             Place for keeping makefiles for various platforms
+
+doc               Documentation
+
+hp-tests          Here I left some HP-GL files for testing
+
+old               Older versions of misc. files, still distributed as long
+                  as the new ones are not confirmed, e.g. files supporting
+                  machines where I can't run tests.
+
+
+
+
+Quick guide through hp2xx
+=========================
+
+
+Welcome to hp2xx, the HP-GL converter!
+
+
+Each subdirectory within hp2xx contains a local README file. There you find
+a short description on each file and/or directory found therein, as well as
+instructions and other comments on what matters at that point.
+
+Besides these basic instructions, a detailed manual is provided in
+./doc/hp2xxinf.tex (UNIX: hp2xx.texinfo).
+
+
+
+For installation,
+
+o  follow the instructions starting in ./makes/README
+
+o  optionally, see ./doc/hp2xxinf.tex (Manual in texinfo format)
+
+
+
+For bug reports, write to:
+
+	mk@daveg.com	
+	or martin@ruby.chemie.uni-freiburg.de 
+
+(Martin Kroeker)
+
+
+That's all, folks. Enjoy!
+
+

@@ -1,0 +1,309 @@
+Changes from 3.4.1 to 3.4.2
+
+- Added support for the AC (fill pattern anchor corner) command
+- Added support for the CT (chord tolerance) command
+- Added color support in SVG output mode
+- Added output module for JPG images (requires libjpeg)
+
+Bug fixes:
+
+- SVG output mode could not be selected on the commandline
+- PDF and EPS modes were not always generating penwidth commands on pen changes
+- Polygon mode was influencing the overall pen up/down state
+- PM1 immediately after PM was not setting the new starting point correctly
+- FT instructions did not store/recall hatch spacing and angle correctly
+- X11 preview always used black for pen 1
+- Polygon fill algorithm did not handle parallel bounding lines correctly,
+  and could draw lines beyond the limits of the polygon in some cases.
+- the commandline interpreter now handles mis-spelled or unknown long
+  options gracefully (Serge Ivanchenko)
+- PDF output was only about 1/3 the intended size
+- handling of RO/IW was broken (again) for the unscaled case (no SC)
+- PNG output was still using a fixed eight pen palette
+- raster modes were limited to 15 pens due to restrictions of the internal
+  picture buffer (higher pen numbers were either mapped to black or scaled
+  to the accessible range, depending on output format)
+- DXF output had leading whitespace in layer numbers (Patrice Pinel)
+- EPS output still had oversized margins
+
+Changes from 3.4.0 to 3.4.1
+
+- Scale penwidths in raster modes to resolve the metric/pixelcount
+  controversy in interpretation of the pen widths. (Gerhard Buergmann)
+- Added support for BR and BZ (cubic bezier curves)
+- Added Makefile template for Microsoft platforms, explicitly set binary
+  i/o mode on the standard in/out channels on these systems (Bruce Lightner)
+- Added support for character sets 9 (ISO reference) and 30-39 (western 
+  european languages).
+- Added support for fonts 173 and 205 (PS Math and Ventura Math).
+- Added partial support for the SD and AD commands (font selection only). 
+- X11 preview can be terminated by pressing any key on the preview window
+  now (Yury Strelenko). The preview window is limited to the available screen
+  size again, but if the drawing is larger than the screen, one can
+  now pan about the window using the mouse. The preview image can be zoomed
+  to twice the original resolution using mouse button 2. 
+- Added test case spectrum.plt, donated by Yuri Strelenko, to hp-tests
+- Added PDF output mode (requires libpdf)
+- Added simple DXF output.
+- Added output mode for XML/SVG.
+- Improved Epson Esc/P2 output mode, now known to work with the Stylus 1520.
+- Added description and templates for building on MS Windows using VisualC++
+  and added output as Windows Enhanced Metafile (EMF) with printing and 
+  preview support for this platform (Bengt-Arne Fjellner)  
+- Added option 'no_ps' or 'N' to suppress reading of the PS (plot size)
+  command - apparently some systems (CATIA) create files with bogus PS entries
+  resulting in absurdly wide images. 
+
+Bug fixes:
+ 
+- Removed extraneous progress message in PCX output (leftover from debugging,
+  pointed out by Francisco Filho)
+- Removed the intensity plane from PCX output, as it is not needed anymore
+  and appears to confuses some software.
+- backspacing degree sign in charset 2 looked more like a tiny A
+- NULL characters in labels were not ignored, causing incomplete labels
+- the default 'hardware limits' introduced by the original author in
+  3.2.0 (A4 with margins) were messing up the scaling and clipping.
+  (Joe Green). This version defaults to A0 (1188x840mm) hardware limits.
+- made OS/2 version compile again, updated makefile template for OS/2
+  (Kazutaka Nishiyama) 
+- reduced 'penwidth correction' in eps output (Yuri Strelenko)
+- the effects of a previous RO or WU commands were not undone by the next
+  IN command (Yuri Strelenko)
+- The provided Unix manual page was outdated in several areas
+- A pencolor (PC) command for pen 0 would cause hp2xx to abort with a spurious
+  error message(Tyler Mitchell)
+- Added x and y dpi to the TIFF header to placate certain viewers and plotters
+  (Glen Barr)
+- Dots in line definitions were drawn as very short lines (Andrew Bird)
+- the optional parameters of a BP statement were interpreted as regular
+  HPGL commands (causing strange error messages when there was a filename with 
+  HPGL-like character sequence among them)
+- reverted a change in the scaling mechanism for PS/IW. Geometry surrounded
+  by whitespace should be positioned correctly again.  
+- The trailing semicolon is now suppressed when reporting inline COmments.
+- The Postscript BeginProcSet command lacked a colon (Bengt-Arne Fjellner).
+- The count of ignored commands was reset to zero before the summary was
+  printed.
+
+
+Changes from 3.4.ALPHA6 to 3.4.0
+
+Bug fixes:
+
+- Added polygon mode support for CI
+- Label characters from unsupported fonts are now replaced by their
+  charset 0 equivalents instead of being replaced by blanks.
+- Text was sometimes incorrectly clipped when IW was set
+- Fixed a typo (missing parenthesis) in the Sun5 part of generic.mak
+- Polygon fills were (again) miscalculated in some cases
+
+Changes from 3.4.ALPHA5 to 3.4.ALPHA6
+
+Bug fixes:
+
+- The 'pen dot' feature was unnecessarily adding dots for the segments of 
+  polylines as well
+- PS command with height only and PS with width>height were not treated 
+  correctly, rotation and scaling were applied twice due to code duplication
+- small (cosmetic) corrections to the new linetype code (A. Bird)
+
+Changes from 3.4.ALPHA4 to 3.4.ALPHA5
+
+New features:
+
+- New linetype handling including support for line types 7,8,-7,-8 and
+  user-defined linetype (UL) (written by Andrew Bird)
+- Support for the COmment keyword added (Andrew Bird)
+- PD;PU-sequences without pen movement create a small dot now to mimick the
+  behaviour of a real pen plotter. 
+
+Bug fixes:
+
+- lines drawn in IW mode had extraneous pen-up moves added, which confused 
+  the line pattern generator.
+- clipping (IW) was seriously broken by cleanup and prototyping efforts in
+  ALPHA2/3. Thanks to Andrew Bird for finding and fixing this.
+
+Changes from 3.4.ALPHA3 to 3.4.ALPHA4
+
+New features:
+
+- Added -S option for selection of TIFF compression mode (Andrew Bird)
+- Rewrote pen property handling - a pen can now change width during a 
+  plot (Andrew Bird). Similarly added pencolor changing support (though for
+  the postscript driver only - all other modes require a rewrite of the 
+  intermediate raster 'picbuf' code).
+- Output mode 'esc2' for the Epson Stylus series of printers at 720dpi.
+  (limited to A4 size for now, and in 'microweave' mode, i.e. using only
+   one row of nozzles, which results in exact but very slow printing)
+
+Bug fixes:
+
+- auto-generation of output filenames sometimes failed (side effect of
+  the less restrictive naming rules introduced in ALPHA2)
+- removed extraneous asterisk in the INFO-DIR-ENTRY section of the
+  texinfo doc file (Reinhard Kotucha)
+- IW without parameters was assigned wrong values in some cases (bug
+  introduced in ALPHA2)
+- IW could clip lines just inside the limits due to rounding errors on
+  some platforms
+- changed PostScript 'translate' parameters to adjust plot position on page
+
+ 
+Changes from 3.4.ALPHA2 to 3.4.ALPHA3
+
+New features:
+
+- added command line option '-n'/'--nofill' to suppress polygon filling  
+
+Bug fixes:
+
+- Updated all makefiles to include fillpoly.(c,o)
+- Line pattern length was too long for LT-2
+- SC scale factors were not applied to XT/YT tick marks, resulting in
+  distorted plots
+- Added a #define to support compiling on WinNT (mentioned, but not
+  actually included in ALPHA2)
+
+Changes from 3.4.ALPHA1 to 3.4.ALPHA2
+
+New features:
+
+- OS/2 PM previewer now has stderr output redirection to a separate window
+  (patch provided by Kazutaka Nishiyama)
+- Added step-by-step instructions for compiling on Windows NT (provided by
+  James D. Shaw)
+- X11 preview generates a warning, but no longer aborts if the window is
+  larger than the current screen size 
+- file names may start with non-alphabetic characters (e.g. numbers
+  or unix-style path names) now (Michael Kennedy)
+ 
+Bug fixes:
+
+- deactivated the excessive debug output in the fill code (which could lead
+  to huge temporary files)
+- made the simple scanline algorithm a bit more robust (but it still gets out
+  of step in a few pathological cases - which means that filled and unfilled
+  sections will be reversed for the remainder of that line)
+- enclosed all references to the unfinished Epson driver in #ifdefs, so that
+  it is not built by default. (also fixed a few glaring bugs in the esc/p2 file
+  header code, but the driver still does not work _at_all_)
+- absolute PW pen widths between 0 and .1 were accidentally rounded to zero
+  (invisible lines)
+- the picture border was too wide in some cases (Gerhard Buergmann)
+
+
+Changes from 3.3.2 to 3.4.ALPHA1
+
+New features:
+
+- Support for HPGL/2 commands related to polygons and area fills :
+  EP, ER, FP, FT, PM, PT, RA, RR, WG (no user-defined fill types yet)
+- WU command support, PW fixed accordingly.
+- AT,RT command support (arc through three points)
+- Initial (non-functional) version of an Epson Esc/P2 driver based on 
+  to_pcl.
+- Parser improved to be more robust (especially with PE commands),
+  cliping (IW) support for PE lines, PJL and RTL control sequence handler,
+  type 1 and 2 (anisotropic) scaling support added to SC (Eugene Doudine).
+- Modified to_pcx to produce PCX mode 5 (truecolor) files in color mode,
+  PCX2 in monochrome. (The old PCX2 module is in the 'old' directory, in 
+  case this proves to be worse - i have changed a few of the palette 
+  definitions to get correct b/w output and primary colors even with this 
+  version).
+
+Bug fixes:
+- IW limits were interpreted as plotter units even if scaling (SC) was set.
+- PCX output sometimes had dark red background in b/w mode and wrong colors
+  in colormap mode (rewrote to_pcx.c for PCX5, see above).
+
+Changes from 3.3.1 to 3.3.2
+
+New features:
+
+- Added TIFF output mode (provided by M.Liberi) based on libtiff. Uses ZIP
+  deflate compression to avoid LZW patent issues at the risk of reduced
+  portability.
+- DV command (vertical text)
+
+Bug fixes:
+
+- Command line options for pen color and pen width take precedence over PC
+  or PW statements in the HPGL file now. This allows creation of PBM bitmaps
+  instead of PPM pixmaps from color plots again (by setting all pens to 
+  black, -c11111111), and should also help for programs that use several pens 
+  at constant widths, but emit global PW commands with every SP statement. 
+  A true fix for the latter case would require keeping track of the current 
+  pen settings for every line in the internal metaformat (maybe in 3.4)
+
+- Removed the A4 size limitation for Encapsulated PostScript output 
+
+- Default 20x20 plot size calculation was broken for Landscape format
+
+- Black pen was displayed as light gray in X11 preview, now uses a very dark
+  gray (gray10) 
+
+- pen color was not decoded correctly in PE pencolor statements
+
+- output file was closed twice in to_eps.c, which could cause a segmentation
+  fault inside (g)libc if hp2xx was used in batch mode
+
+Changes from 3.3.0 to 3.3.1
+
+New features:
+- PE with fractional coordinates (completes PE support)
+- unlimited label lengths through dynamic reallocation of LB memory
+
+Bug fixes:
+- PS/RO handling was still broken, should be fixed now
+- xfig file headers had erroneously claimed 3.2 compliance, but the files
+  still had 3.1 format
+- Makefiles in ~/makes updated 
+- DR and DI did not initialize character properties when called without
+  parameters
+- Current address of Michael Schmitz added to documentation 
+- removed leftover PCL file acad.pcl from hp-tests 
+
+Changes from 3.3.ALPHA2 to 3.3.0
+
+New features:
+(none)
+
+Bug fixes: 
+
+- Combinations of PS, RO and the -r command line switch could lead to
+  wrong scaling
+- the position of a clipping box was miscalculated for labels
+
+Changes from 3.3.ALPHA to 3.3.ALPHA2:
+
+New features:
+
+- the PS (plot size) command is now supported, allowing 'white space'
+  around plots
+- support for the EW (edge wedge) command
+
+Bug fixes:
+
+- PC support in 3.3.ALPHA was still limited to 8 colors
+- PW had the parameters backwards and no provision for the 
+  'set them all to this value' variant
+- tick marks were scaled incorrectly (long-standing bug)
+- EA advanced pen position (long-standing bug)
+
+Changes from 3.2.0 to 3.3.ALPHA:
+
+New features:
+
+- Character set support for fonts 1-7, and the 'upper half' of font 0.
+- Support for most character-related commands (CA,CS,SA,SS)
+- Support for the IW (input window, i.e. clipping) command
+- Partial support for the PE (polyline encoded) command (integer coords only)
+- Output generation for Brian Smith's XFig
+- Output generation for Gnuplot
+- Output generation in PNG format
+- Automatic medium size selection code in the PCL initialization sequence
+- Centering (-C) now supported even in true-size (-t) mode
+- HPGL/2 Pen Color and Pen Width support for up to 256 virtual pens
+

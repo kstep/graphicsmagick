@@ -1,0 +1,11 @@
+- Improve appearance of the builtin fonts
+- Add pattern fill commands 
+- [full] color support may be buggy in some modes, and is not implemented
+  in the Sun, OS/2 and MS Windows modules
+- to_vga, to_atari and to_sunvw do not yet support more than eight colors
+  (contributions from MS DOS/Windows, OS/2, Atari and Sun users needed).
+- Allow redefinition of PenColor in raster graphics modes
+- Provide correctly scaled pen widths in the raster modes instead of increasing
+  the pixel width of lines in crude intervals 
+- Optionally use an output formats' text commands where available, instead 
+  of converting LB characters to line drawings

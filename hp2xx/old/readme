@@ -1,0 +1,21 @@
+(c) 1992 - 1994 H. Werntges     HP2XX release 3.x
+                                =================
+
+Files in ./old:
+---------------------
+
+README         This file
+
+to_atari.c     Replaced by newer release by A. Schwab
+to_mf.c        Replaced by newer release (additions by J. Eggers:
+               ``mode -m cs'' to TeX-related outputs on ATARI platforms)
+to_pbm.c       Replaced by newer release (additions by Ian McPhedran)
+to_x11a.c      Alternative version of X.11 previewer "to_x11.c" with
+               modifications by E.K.Sorensen. Its window closes by
+               double-clicking the upper left corner instead of typing
+               <Ret> in the shell window.
+               I found this version somewhat incompatible with SunOS's
+               window manager olwm, so I put it here, but it might
+               work fine on "raw" X.11 platforms...
+ 
+-----------------------------------------------------------------------------

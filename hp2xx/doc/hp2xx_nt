@@ -1,0 +1,68 @@
+===================================================
+
+How to generate .EXE for HP2xx
+Jim Shaw
+
+To generate this project from the distribution using C++ Builder 3 and the
+IDE:
+
+1.  extract the distribution into a directory. (example: c:\data\hp2xx)
+
+2.  start C++Builder, and create a new console application, choosing
+    no VCL and creating an .EXE.  Save the "empty" application in the
+    directory you used in step1/sources. (example: c:\data\hp2xx\sources)
+
+3.  The .cpp file created in step 2 has the standard function 'main'
+    predefined.  However, we want to use the 'main' that came with
+    hp2xx in the file std_main.c.  Since the .cpp file must always
+    contain some kind of reference to main, we will do a #define main
+    to satisify that requirement.  Then, we will comment out the
+    predefined main code to avoid duplication.  The main that gets used
+    will then be the main in 'std_main.c'.
+
+    In the .cpp file created in step 2, add the line
+        #define main
+    after the includes, and before going on to step 4.
+
+4.  In the .cpp file, comment out the lines
+       int main(int argc, char **argv)
+       {
+             return 0;
+       }
+
+5.  Add the units necessary to compile the program (Project|Add to
+Project).
+    This may be hp2xx version and installation dependent.  Here is a
+    (perhaps partial) list:
+
+      std_main.c
+      hp2xx.c
+      picbuf.c
+      no_prev.c
+      to_eps.c
+      to_img.c
+      to_pbm.c
+      to_pcl.c
+      to_pcx.c
+      to_rgip.c
+      to_vec.c
+      bresnham.c
+      bresnham.h
+      chardraw.c
+      chardraw.h
+      getopt.c
+      getopt.h
+      getopt1.c
+      hpgl.c
+      iff.h
+      ilbm.h
+      to_fig.c
+      clip.c
+
+6.  edit picbuf.c file: in the line before  #include <unistd.h>  add
+       #ifndef _NO_VCL
+    in the line after  #include <unistd.h> add
+       #endif
+
+7.  Build the project.  You will get many warnings, but should not
+    get any errors.

@@ -1,0 +1,106 @@
+(c) 1992 - 1994 H. Werntges     HP2XX release 3.x
+                                =================
+
+Files in ./makes:
+---------------------
+
+README         This file
+
+generic.mak    Generic Makefile, primarily for UNIX-like systems
+
+amiga.mak      Makefile for AMIGA (last release by CHL, 01/93)
+atari.mak      Makefile for ATARI (last release by AS,  01/93)
+borland.mak    Makefile for DOS & Borland C++, tested with BCC 2.0
+dosdjgpp.mak   Makefile for DOS and DJ Delorie's go32 and gcc/g++ adaptation
+os2emx.mak     Makefile for OS/2 2.x and the E. Mattes' emx and gcc/g++,
+               tested with OS/2 2.[01] & emx-0.8[efg]
+
+generic.mak    Generic Makefile, primarily for UNIX-like systems
+
+vax-make.com   Make script for VAX-VMS
+descrip.mms    MMS script for VAX-VMS
+gnu.opt        Option file for VAX-VMS
+vax.opt        Option file for VAX-VMS
+
+cc-to-os.cmd   Simple make mechanism for OS/2 (full-screen previewer), by HSz
+
+
+
+For installation,
+
+  o  select the makefile template most closely resembling
+     your system's needs. On Unix systems, use "generic.mak".
+     
+  o  copy it to ../sources/makefile. The Makefile that is originally 
+     installed there as part of the source distribution is what i use
+     for development on Linux systems.
+
+  o  cd ../sources
+
+  o  manually adapt (edit) makefile. Sorry - installation procedure is only
+     beginning to evolve here due to lack of test facilities.
+
+     The special makefiles should hardly need any modification. Edit them
+     only if they don't work right away.
+
+     For the generic makefile, there are three configuration steps:
+
+       1) Site-specific changes:
+
+          -- Change the (prefix) definition to where you want to install hp2xx.
+          -- Change the compiler (CC) and the compiler switches (CFLAGS).
+             The defaults use gcc, of course.
+          -- If needed, add library paths and include paths (LDFLAGS, CPPFLAGS).
+
+       2) System-specific changes:
+
+          -- Main configuration step:
+
+             Un-comment the definitions for your target system
+             and comment-out the default definitions.
+
+             If your system is not listed, try the defaults first, and modify
+             them if needed. Study the other systems' settings to get an idea
+             of what modification may be necessary.
+
+       3) Optional additions:
+	  Optionally select support for TIFF and/or PNG output by un-commenting
+	  the appropriate definitions. Both require additional libraries, which
+	  are available from www.libtiff.org and www.libpng.org, respectively.
+          Libpng (and potentially also libtiff, depending on which options
+	  you chose for it) also requires zlib for compression algorithms,
+	  the libpng website should contain a pointer to it.
+	  Users of Epson Stylus family inkjets may add the preliminary 
+	  support provided by the to_escp2 module. Printing is currently
+	  very slow due to the use of only one line of nozzles, so piping
+	  the output of the postscript module into ghostscript might be a
+	  better choice.
+	  Optionally add support for modes PIC and PAC by un-commenting
+          the appropriate lines. These formats appear to have been
+	  quite popular in the Atari world once, and the code for them
+ 	  in hp2xx dates back to Werntges' original version.
+
+
+  o  Run "make all" from ../sources. This should result in a binary file.
+
+  o  Optionally run a few tests using the HP-GL files in ../hp-tests
+
+  o  INSTALLATION:
+
+     Either put this file somewhere on the search path,
+     etc. in /usr/local/bin, or run "make install-bin" (if provided).
+
+     Optionally install the documentation (see ../doc/README). If provided
+     (generic makefile), use
+
+          -- "make install-man"  to install the manual page,
+          -- "make install-info" to install the info file (recommended)
+
+     NOTE:
+          -- "make install" installs both the binary and all docs.
+
+  o  Optionally run "make clean" (not always provided).
+
+
+
+-----------------------------------------------------------------------------

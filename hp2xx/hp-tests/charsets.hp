@@ -1,0 +1,67 @@
+SP1;CS0;LB Character set 0:
+
+SP1;CS0;LB !"#$%&'()*+,-./
+0123456789:;<=>?
+@ABCDEFGHIJKLMNO
+PQRSTUVWXYZ[\]^_
+`abcdefghijklmno
+pqrstuvwxyz{|}~
+
+
+SP1;CS0;LB Character set 5:
+
+SP1;CS5;LB !"#$%&'()*+,-./
+0123456789:;<=>?
+@ABCDEFGHIJKLMNO
+PQRSTUVWXYZ[\]^_
+`abcdefghijklmno
+pqrstuvwxyz{|}~
+
+
+SP1;CS0;LB Character set 7:
+
+SP1;CS7;LB !"#$%&'()*+,-./
+0123456789:;<=>?
+@ABCDEFGHIJKLMNO
+PQRSTUVWXYZ[\]^_
+`abcdefghijklmno
+pqrstuvwxyz{|}~
+
+
+PUPA0,-3000;
+ES0.1,-0.3;
+SR1,3;SL-0.1;
+SP1;CS0;LB Character set 0:
+
+SP1;LB !"#$%&'()*+,-./
+0123456789:;<=>?
+@ABCDEFGHIJKLMNO
+PQRSTUVWXYZ[\]^_
+`abcdefghijklmno
+pqrstuvwxyz{|}~
+
+
+SP1;CS0;LB Character set 5:
+
+CS5;ES0.1,-0.3;
+SR1,3;SL-0.1;
+SP1;LB !"#$%&'()*+,-./
+0123456789:;<=>?
+@ABCDEFGHIJKLMNO
+PQRSTUVWXYZ[\]^_
+`abcdefghijklmno
+pqrstuvwxyz{|}~
+
+
+SP1;CS0;LB Character set 7:
+
+CS7;ES0.1,-0.3;
+SR1,3;SL-0.1;
+SP1;LB !"#$%&'()*+,-./
+0123456789:;<=>?
+@ABCDEFGHIJKLMNO
+PQRSTUVWXYZ[\]^_
+`abcdefghijklmno
+pqrstuvwxyz{|}~
+
+

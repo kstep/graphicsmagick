@@ -1,0 +1,154 @@
+# Microsoft Developer Studio Generated Dependency File, included by hp2xx.mak
+
+.\bresnham.c : \
+	".\bresnham.h"\
+	
+
+.\chardraw.c : \
+	".\bresnham.h"\
+	".\chardraw.h"\
+	".\charset0.h"\
+	".\charset1.h"\
+	".\charset2.h"\
+	".\charset3.h"\
+	".\charset4.h"\
+	".\charset5.h"\
+	".\charset6.h"\
+	".\charset7.h"\
+	".\hp2xx.h"\
+	".\lindef.h"\
+	
+
+.\clip.c : \
+	".\clip.h"\
+	
+
+.\fillpoly.c : \
+	".\bresnham.h"\
+	".\hp2xx.h"\
+	
+
+.\getopt.c : \
+	".\getopt.h"\
+	
+
+.\getopt1.c : \
+	".\getopt.h"\
+	
+
+.\hp2xx.c : \
+	".\bresnham.h"\
+	".\hp2xx.h"\
+	".\pendef.h"\
+	
+
+.\hpgl.c : \
+	".\bresnham.h"\
+	".\chardraw.h"\
+	".\clip.h"\
+	".\hp2xx.h"\
+	".\lindef.h"\
+	".\pendef.h"\
+	
+
+.\lindef.c : \
+	".\hpgl.h"\
+	".\lindef.h"\
+	
+
+.\pendef.c : \
+	".\pendef.h"\
+	
+
+.\picbuf.c : \
+	".\bresnham.h"\
+	".\hp2xx.h"\
+	".\pendef.h"\
+	
+
+.\std_main.c : \
+	".\bresnham.h"\
+	".\getopt.h"\
+	".\hp2xx.h"\
+	".\pendef.h"\
+	
+
+.\to_emf.c : \
+	"..\..\..\program\microsoft platform sdk\include\basetsd.h"\
+	"..\..\..\program\microsoft platform sdk\include\guiddef.h"\
+	"..\..\..\program\microsoft platform sdk\include\propidl.h"\
+	"..\..\..\program\microsoft platform sdk\include\tvout.h"\
+	"..\..\..\program\microsoft platform sdk\include\winefs.h"\
+	".\bresnham.h"\
+	".\hp2xx.h"\
+	".\pendef.h"\
+	
+
+.\to_eps.c : \
+	".\bresnham.h"\
+	".\hp2xx.h"\
+	".\pendef.h"\
+	
+
+.\to_escp2.c : \
+	".\bresnham.h"\
+	".\hp2xx.h"\
+	".\pendef.h"\
+	
+
+.\to_fig.c : \
+	".\bresnham.h"\
+	".\hp2xx.h"\
+	".\pendef.h"\
+	
+
+.\to_ilbm.c : \
+	".\bresnham.h"\
+	".\hp2xx.h"\
+	".\iff.h"\
+	".\ilbm.h"\
+	
+
+.\to_img.c : \
+	".\bresnham.h"\
+	".\hp2xx.h"\
+	
+
+.\to_pac.c : \
+	".\bresnham.h"\
+	".\hp2xx.h"\
+	
+
+.\to_pbm.c : \
+	".\bresnham.h"\
+	".\hp2xx.h"\
+	
+
+.\to_pcl.c : \
+	".\bresnham.h"\
+	".\hp2xx.h"\
+	".\pendef.h"\
+	
+
+.\to_pcx.c : \
+	".\bresnham.h"\
+	".\hp2xx.h"\
+	".\pendef.h"\
+	
+
+.\to_pic.c : \
+	".\bresnham.h"\
+	".\hp2xx.h"\
+	
+
+.\to_rgip.c : \
+	".\bresnham.h"\
+	".\hp2xx.h"\
+	".\pendef.h"\
+	
+
+.\to_vec.c : \
+	".\bresnham.h"\
+	".\hp2xx.h"\
+	".\pendef.h"\
+	

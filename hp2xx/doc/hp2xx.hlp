@@ -1,0 +1,376 @@
+1 HP2XX
+ A HPGL converter into some vector- and raster formats
+
+ HP2XX reads HPGL ASCII source files, interprets them, and converts them
+ into either another vector-oriented  format or one of several rasterfile
+ formats. Currently, its HPGL parser recognizes only a subset of HPGL/2.
+ Some high-level functions like polygon mode and fill patterns are missing.
+ Also, only some of the fixed space vector fonts and none of the variable
+ space arc fonts are supported. Beside these limitations, hp2xx has proven 
+ to work with many HP-GL sources without any trouble.
+
+ USAGE: hp2xx [-options] [hpgl-file(s)]
+2 GENERAL_OPTIONS
+ -f     Name of outputfile
+ -l     Name of optional log file
+ -m     Mode
+ -p     Pen size(s)
+ -c     Pen color(s)
+ -"P"   Selected page
+ -q     Quiet mode
+ -r     Rotation angle
+ -s     Name of swap file
+3 Description
+ hp2xx reads from stdin or from a file if any given on the command line.
+ If no output file name is given (default), the output automatically
+ goes into a file whose name is derived from the input file name and the
+ current mode. For example,
+        hp2xx -m pcl foo.hpgl
+ writes the output to a file "foo.pcl". Use option
+        -f outfile
+ to specify your output file name explicitly.
+
+ The program scans the current HPGL source, converts all drawing commands 
+ into elementary vectors, saves these in a temporary file, and 
+ concurrently determines the maximum coordinate range used. It then 
+ processes the vectors by mapping them into a user-defined coordinate 
+ system, preserving the aspect ratio of the original data.
+
+ This coordinate system by default fits into a window of
+ size 200 mm by 200 mm. To change the size of this bounding window, use
+        -h height
+ and
+        -w width
+ to set the (max.) desired height and width of your output picture;
+ optionally use
+        -a aspectfactor
+ to alter the aspect ratio by the given factor (aspectfactor < 1 narrows 
+ your picture).
+ The generated picture will always fit into the window defined by 
+ -h height and -w width, padded with background color at the lower or 
+ right margin if needed.
+
+ A second way of defining sizes is relying on the size the picture
+ would actually show if plotted on an (A4) sheet of paper by a 
+ HP-compatible plotter. By activating flag
+        -t
+ (true size), options -a, -h, and -w are ignored, and the sizes are
+ derived from the HP-GL file assuming that 1 HP unit = 1/40 mm.
+3 -f
+ Option Format  Default   Description
+   -f   char *  ""        Name of output file. "" = autom., "-" = stdout
+3 -l
+ Option Format  Default   Description
+   -l   char *  ""        Name of optional log file
+
+ By naming a file with option
+        -l log_file
+ you can redirect the diagnostic outputs into the given file, even without
+ a redirection mechanism for stderr like in UNIX shells (e. g., DOS).
+3 -m
+ Option Format  Default   Description
+   -m   char *  pre       Mode. Valid:
+                          mf,cad,em,epic,eps,pcl,pcx,pic,img,pbm,pre,uis
+ Use option
+        -m mode
+ to select the program mode, i.e. the output format. Currently supported:
+ mode = "mf" (Metafont), "em" (emTeX \special{} commands), "epic"
+ (line drawing using TeX macros within epic.sty), "eps" (PostScript),
+ "fig" (XFig version 3.1 format), "gpt" (Gnuplot ASCII format), "hpgl"
+ (simplified HP-GL, e.g. for import tasks), "pcl" (HP-PCL Level 3 format 
+(suitable for printing on a HP Laserjet II,  DeskJet, or compatible printer), 
+ "img" (GEMs IMG format), "pbm" (Portable Bit Map / Portable Pix Map), 
+ "pcx" (PC-Paintbrush format, also accepted by  MS-Paintbrush 
+ and many other PC based pixel renderers), "png" (Portable Network Graphics 
+ format), or "rgip" (Uniplex RGIP). 
+ If the plot contains colors, hp2xx will automatically create a PPM file
+ instead of a PBM file when pbm mode is selected.
+ There is also a preview option "pre" which supports VGA cards (DOS), 
+ ATARI, AMIGA, X11 servers, Sunview and VWS. Default mode is "pre".
+4 RASTER_FORMATS
+ The following formats are supported: HP-PCL, PCX, PIC, IMG, PBM/PPM, PNG, 
+ and  previews. However, generation of other formats is made easy for 
+ programmers because of hp2xx's modular structure. The program
+ allocates a bitmap on a line-by-line basis, swapping lines to disk
+ if needed, and plots into this bitmap. Depending on the selected
+ format, a conversion module is then activated, which can easily be
+ replaced by other converters. Add more formats if you like!
+5 PRE
+ Preview on all machines. Use options -h -w -o -O -C to define the screen
+ size and position of your output (-o -O -C may not always apply).
+ For VGA cards (DOS), option
+         -V VGAmode
+ gives you a simple way to utilize SVGA modes. Please take
+ care not to define larger windows than your graphics device can handle,
+ as the results are unpredictable. As hp2xx uses standard BIOS calls to
+ set pixels on VGA cards (slow but portable), you can select any hi-res
+ mode supported by your system by simply specifying the mode byte with
+ this option.
+5 PCL
+ HP-PCL Level 3 format, most useful for direct printer output. Due to
+ this action, there have been added some extra flags and options: Use
+ flag
+        -i
+ to send a printer initialization sequence before the actual image. Flag
+        -F
+ adds a Form Feed (FF, hex 0C) after the image is completed, which is
+ what you may want most of the time. However, overlay printing of
+ several files is feasible by omitting -F.
+
+ For additional control of the picture's final position on paper, you
+ may add x or y offsets using
+        -o X_offset
+ or
+        -O Y_offset.
+ E.g., -o 20 -O 30 will give you 30 mm additional top margin
+ and 20 mm additional left margin. Option -C modifies these offsets to
+ center the picture within the frame defined by -w -h.
+
+ For DeskJet / DeskJet Plus / DeskJet 500 / Deskjet 550 printers, there
+ are some special printer commands. Activate them with option
+         -S n.
+ n=0 switches them off, n=1 activates black/white mode, n=3 (DJ500C and
+ DJ550 only) supports CMY color data, n=4 (DJ550C only) supports CMYK
+ color data. Any n except 0 invokes TIFF data compression.
+5 PCX
+ PC-Paintbrush format
+ The size of a PCX picture is controlled via its specified height and
+ the current DPI value. To create a high-resolution PCX image, just
+ increase the DPI value as desired. PCX format does not accept offsets.
+5 IMG
+ GEM image format; see PCX.
+5 PBM
+ Portable bit map (or PPM, portable pixmap for color plots); see PCX.
+5 PIC_and_PAC
+ (Unsupported options)
+ ATARI ST screens (640x400 pixels) can easily be dumped to files.
+ Programs such as STAD accept graphics by including such screen
+ dump files. Graphics filling more than one screenful may be split
+ into screen-size blocks and loaded/mounted blockwise. hp2xx converts
+ to ATARI bitmap format by trying to fit the resulting picture into
+ a single screen equivalent (max. 400 rows, max. 80 Bytes (640 pixel)
+ per row). If it succeeds, hp2xx produces a single output file.
+ Specify ONLY its base name (option -f), since hp2xx adds the file
+ extension ".pic" or ".pac" automatically. Do NOT try to work on
+ more than one HPGL file simultaneously! Do NOT use more than 6
+ characters for the file name, and avoid digits. If more screen
+ blocks are required horizontally and/or vertically, hp2xx will
+ automatically split the picture into separate files, counting them
+ columnwise (top-to-bottom and left-to-right), adding a two-digit
+ number to the given file name. A maximum of 10 columns is supported.
+ The picture is padded with background color at its right and lower
+ margins, if needed. PAC features file compression, PIC does not.
+4 VECTOR_FORMATS
+ Supported vector formats are:
+        TeX/Metafont,
+        emTex-specials,
+        TeX/epic-Macros,
+        Simplified HP-GL,
+        XFig 3.2,
+        Gnuplot ASCII,
+ as well as
+        Uniplex RGIP, and
+        PostScript.
+ Use
+        -m mf
+ to convert a HPGL drawing into a Metafont character to be included
+ into a TeX document as the character "Z" of a special font that you
+ may create. Edit the metafont source, e.g., to change the letter "Z"
+ for another, or to change the line thickness, which is set to 0.4pt
+ by default. The other TeX-related modes ("cad" for TeXcad compatible
+ code, "em" for employing \special{em:line} macros, and "epic" for
+ drawing lines with macros from "epic.sty") address different
+ compromises to cope with TeX's poor line drawing capability and are
+ generally not recommended nor fully supported. Feel free to
+ experiment with them -- they generate ASCII output that should be
+ "input" into TeX/LaTeX documents.
+ Use option
+        -p pensize(s)
+ for control over pensize: The actual Metafont or PostScript pensize
+ will be "pensize * 0.1 mm", with pensize = 0 - 9 (0 = no drawing).
+ The same applies to PostScript mode
+        (-m eps),
+ you also need to use options -o -O -C (see below) for proper margins
+ on paper since hp2xx puts your picture "flush" to the left and upper
+ paper limit by default.
+ Option
+        -p pensize(s)
+ controls the size (in pixels) of the virtual plotting pen. The only
+ implemented shape of the pen tip is a square of the given length.
+ pen sizes of 5 to 9 units will be acccepted but replaced by 4 units.
+ Specifying -p4 when in 75 DPI mode will make pretty clumsy pictures,
+ while you may prefer -p2 over -p1 when in 300 DPI.
+3 -p_or_c
+ Option Format  Default   Description
+   -c   char *  11111111  Pen color(s). Valid: 1 to 8 digits of 0-7 each.
+                          0=off, 1=black, 2=red, 3=green, 4=blue, 5=cyan,
+                          6=magenta, 7=yellow.
+   -p   char *  11111111  Pensize(s) [dots] (default), [1/10 mm] (mf, ps).
+                         Valid: 1 to 8 digits of 0-9 each.
+
+ A carusel of 8 pens is simulated. You can specify pen sizes and colors
+ for each of these pens via options -p string and -c string.
+ "string" must consist of 1 to 8 digits (0-9 for size, 0-7 for color).
+ Digit number n (counting from left) corresponds to pen number n.
+ The digit value is this pen's color or size in internal units.
+ For raster formats, a unit is a pixel, and for vector format, it
+ corresponds to 1/10 mm (see below). The default size is 1 for all pens.
+ Colors are assigned according to:
+ 0=off, 1=black, 2=red, 3=green, 4=blue, 5=cyan, 6=magenta, 7=yellow.
+
+ Examples of use:
+        -p22222222 -c33333333
+ changes all pensizes to 2 units, all colors to green
+        -p302 -c407
+ makes pen #1 a blue pen of size 3 , pen #3 a yellow pen of size 2,
+ suppresses all drawing with pen #2, and keeps all other pen sizes and
+ colors.
+3 -(Capital)P
+ Option Format  Default   Description
+   -P   int     0:0       Selected page range (0 = 0:0 = all pages)
+
+ Sometimes, HP-GL files contain several pages of plotter output.
+ hp2xx recognizes the HP-GL commands for "feed-forward" or "new page",
+ but by default it draws everything on a single page. You can select
+ any particular page range by using option
+        -P firstpage:lastpage
+ which causes hp2xx to skip all drawing commands except those on the
+ given pages. Please note that even if only a single page is actually
+ drawn, hp2xx will nonetheless process the whole HP-GL file. This makes
+ sure that effects of early pages on internal modes indeed influence
+ later pages, as on a real plotter.
+3 -q
+ Option Format  Default   Description
+   -q           off       Quiet mode. No diagnostic output.
+3 -r
+ rotation_angle (in degrees):
+
+ Option Format  Default   Description
+   -r   double  0.0       Rotation angle [deg]. -r90 gives landscape
+
+ allows you to rotate the object prior to all scaling operations. Its
+ main use is to facilitate landscape format: -r90 rotates your whole
+ picture, e.g. from portait to landscape format. However, any
+ reasonable rotation angle is valid.
+3 -s
+ Option Format  Default   Description
+   -s   char *  hp2xx.swp Name of swap file
+
+ While processing large pictures at high resolution on low-memory
+ machines, typically under DOS, the program may start swapping.
+ Optionally change the swap file by using
+        -s swapfile,
+ e.g. to speed up processing by swapping to a RAM disk.
+2 SIZE_OPTIONS
+ Option Format  Default   Description
+   -a   double  1.0       Aspect factor. Valid: > 0.0
+   -h   double  200       Height [mm] of picture
+   -w   double  200       Width  [mm] of picture
+   -x   double   -        Preset xmin value of HPGL coordinate range
+   -"X" double   -        Preset xmax value of HPGL coordinate range
+   -y   double   -        Preset ymin value of HPGL coordinate range
+   -"Y" double   -        Preset ymax value of HPGL coordinate range
+   -t           off       True size mode. Inhibits effects of -a -h -w
+3 Scaling
+ If you need to process a series of similar objects which should be
+ translated into exactly the same coordinate system, there is a way to
+ override the auto-scaling: First, run all files separately and note
+ the infos on the used coordinate ranges. Then, pick a range that will
+ cover ALL your pictures. You can now assign defaults to the
+ internally generated range limits by specifying
+        -x xmin,
+        -X xmax,
+        -y ymin,
+ and
+        -Y ymax.
+
+ NOTE: Clipping is NOT supported! If any picture coordinate exceeds your
+       limits, they will be overwritten.
+2 RASTER_OPTIONS
+ Option Format  Default   Description
+   -d   int     75        DPI value (x or both x&y)
+   -"D" int     75        DPI value (y only)
+
+ If you use a raster format, the picture is rasterized by default into a
+ 75 DPI resolution image. Use option
+        -d DPI_value
+ to change the resolution, e.g. -d300 will cause a HP LJ-II compatible
+ 300 dpi rasterization. There is a way of specifying a different
+ resolution for y direction:
+        -D DPI_y_value
+2 PCL_only
+ Option Format  Default   Description
+   -"F"         off       Send a FormFeed after graphics data
+   -i           off       Pre-initialize printer
+   -"S" int     0         (Deskjet) Special commands:
+                             0=off,1=b/w,3=CMY,4=CMYK
+   -d   (see Raster)      Valid ONLY 300, 150, 100, 75
+   -"D" (see Raster)      INVALID for PCL!
+2 EPS_PCL_and_some_previews
+ Option Format  Default   Description
+   -o   double  0.0       x offset [mm] of picture (left  margin)
+   -"O" double  0.0       y offset [mm] of picture (upper margin)
+2 Examples
+ % hp2xx -m pcx -f my_output.pcx -d300 -p2222 -h50 -a 1.2 my_input.hp
+
+   creates a PCX file at 300 DPI of height 50 mm, using an aspect factor
+   of 1.2 and a pen size of 2 pixels for pens 1-4.
+
+
+ % my_hpgl_generator | hp2xx -f- -o20 -O30 -F -q | lpr -P my_PCL_printer
+
+   HPGL output is piped through hp2xx; the resulting PCL code is piped to
+   the printer queue, giving an image of height 100 mm at 75 DPI.
+   An additional left margin of 20mm and upper margin of 30mm is created.
+   A formfeed will be added (handy if your printer queue does not).
+
+
+ % hp2xx my_input.hp
+
+   Preview on screen or into window.
+2 Original Author (maintainer until 3.2.0)
+ Heinz W. Werntges, Physikal. Biologie, Geb. 26.12,
+ Heinrich-Heine-Universitaet,
+ D-40225 Duesseldorf, Germany.
+ Internet: werntges@convex.rz.uni-duesseldorf.de
+
+  Maintainer/author since version 3.3.0
+  Martin Kroeker, Daveg GmbH,
+  Schottener Weg 2,
+  D-64289 Darmstadt, Germany.
+ mk@daveg.com OR martin@ruby.chemie.uni-freiburg.de
+
+ ATARI features & PIC, PAC, IMG modes are due to Norbert Meyer, Duesseldorf.
+
+ AMIGA version & PBM mode are due to Claus Langhans, Kelkheim (Ts.)
+
+ X11 previewer is due to Michael Schoene, Duesseldorf.
+
+ Thanks for VAX support and a lot of testing to
+   Michael Schmitz & Gerhard Steger, Duesseldorf
+
+ (See the acknowledgement in the TEXINFO doc file for later contributors.)
+
+ Many OS/2 helps were due to Host Szillat, Berlin.
+2 Diagnostics
+ The number of ignored and/or unknown HPGL commands is given. You will be
+ informed if swapping starts. Progress is indicated by a logarithmic
+ count of internal vectors during scanning and plotting, or by dots
+ during (raster mode) output, where each dot corresponds to 10 scan lines.
+2 Bugs
+ There still are many non-implemented HPGL commands.
+
+ The color assignment of some X11 servers leaves something to be desired.
+
+ Color is only partially supported (not all possible formats).
+
+ VGA preview: Color "magenta" shows as brown on some VGA cards.
+
+ To match the specified sizes on your display during preview, you may have
+ to calibrate it using -d -D, e.g. by overwriting the 75 DPI default.
+
+ Only little testing has been done on TeX-related and ATARI formats,
+ so be prepared for bugs there, and PLEASE report them --  thank you!
+2 See_also
+ F. Sowa's raster-to-TeXfont converter.
+

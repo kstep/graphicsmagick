@@ -1,0 +1,443 @@
+Changes to hp2xx:
+=================
+
+V 3.4.1, hopefully sometime in Jan 02:
+
+call line_PicBuf with pt.width scaled by HP_to_xdots/10./0.025 to achieve
+more sensible translation from metric penwidths to integer multiples of a
+pixel in picbuf.c (Gerhard Buergmann; requires different pensizes correction
+in size_PicBuf as well). Added function bezier for the cubic bezier curves
+(BR,BZ) to hpgl.c - need real-world cases for testing. Added #ifdef'd code
+to stdmain.c that opens stdin/stdout in binary mode on windoze. to_pcx.c
+still had one of my eloquent fprintf statements from the debugging phase.
+charset2.h was missing a comma in the declaration of the degree sign. 
+Finally identified(?) Werntges' default setting of P1,P2 to A4-size paper 
+with margins as the cause of strange offsets and bad cliping ranges. 
+Joe Greens patch suggested using A3 dimensions (the largest size a 7550 could
+handle), i've decided to try A0 unless that blows up something somewhere.
+read_string() in hpgl.c was treating '\0', a valid no-op control character 
+in HPGL, like an ordinary character, accidentally terminating the label at 
+that point. Added charsets 9,30-39 (by selecting appropriate characters from 
+sets 0 and 7). Changed status of 'CV' (curved line generator)  command from 
+'unsupported' to 'not applicable' in hp_cmds.lst, as it is basically a pause 
+command that makes no sense for an emulation. Modified X11 previewer to allow
+terminating the program by keypresses or mouse clicks on the preview window,
+and to allow moving(paning) about a drawing that is larger than the available
+screensize (Based on patches and suggestions by Yuri Strelenko). Updated the
+manual page. Changed load_pen_color_table to return -1 instead of 0 on failure,
+as assigning and retrieving the color of pen 0 is a valid action in HPGL2. The
+previous code would gladly store PC0,255,255,255, but panic with a spurious
+'unexpected end of temp. file: SUCCESS' in the output module. Added the math
+fonts (Ventura math and the related PS math), as they contain greek characters
+and other symbols that might appear in scientific or engineering plots (after
+receiving a sample file from Bengt-Arne Fjellner that used several characters
+from ventura math). I do not claim to be an artist, and Werntges' encoding scheme
+does not simplify matters, but all glyphs should at least be recognizable.
+
+V 3.4.0, 01/02/09:
+
+case CI in hpgl.c did not yet feed the polygon buffer (and adding it
+immediately uncovered a bug in fillpoly.c - needed to check for coinciding
+start- and endpoint of fill lines, as they may occur for circle segments)
+Default case in chardraw changed to substitute the corresponding font 0 
+character instead of a blank - this makes much more sense at least for the
+ISO 646 international fonts 30-39. Fixed the IW clipping of labels - scaling 
+is now taken into account correctly. Added no-ops for EC (enable cutter) 
+and NR (not ready, i.e. pause plotter).
+
+V 3.4.alpha6, 01/01/08:
+
+lindef.c had two SCHARS that should be ints, and abs that should be fabs.
+In hpgl.c, case PS used MAX(myheight,xmax) when width was not given, instead
+of p2.y. The case of height<width was not handled (rotates frame of reference),
+we now simply swap width and heigth. The scale/rotate transformation was applied
+twice, leading to unnecessary whitespace around plots (duplicate code - bah).
+lines() now adds 'pen dots' only if the 'PU without parameters' occured as the
+first command in its current invocation (to avoid acting on PD0,0,1,1,...,PU).
+
+
+V 3.4.alpha5, 01/01/01:
+
+Fixed a bug in the line() function - a stupid if-else sequence added two
+MOVE_TOs instead of one when the iwflag was set. This made the pattern
+generator reinitialize at each stroke of a polyline, ruining the line pattern.
+Changed function lines() to create a small dot for PDPU sequences without 
+lateral movement, as a real pen plotter would do. (Some oscilloscope software 
+apparently dumps a screen image that way - ouch).
+Andrew Bird found and squashed the real IW bug i introduced in with my code
+cleanup and function prototyping in alpha3, and provided a rewrite of the 
+linetype code, adding linetypes 7,8 and UL in the process. 
+
+
+V 3.4.alpha4, 00/10/10:
+
+Added linewidth handling code and TIFF compression selection via the -S
+switch (both patches by Andrew Bird). Wrote similar handling scheme for
+pen colors in the Postscript driver - handling the raster modes will be
+much harder. Updated the documentation. Reverted some alpha2 changes to
+the IW/SC/PS handling that could cut off half of the plot. Added small
+tolerances to the clip ranges to avoid numerical problems. Added function
+prototypes and fixed variable declarations. Revived the Epson driver (using
+the excellent gimp-print driver by Kramitz et al. as documentation) so that it
+actually does something. It is limited to A4 format and produces very slow-
+printing code (using only one row of nozzles) at the moment, but at least 
+it does not require ghostscript on the same machine. Cleaned up the fill code
+a little. Since alpha2, some input paths were accepted without creating an 
+appropriate name for the output file.
+
+V 3.4.alpha3, 00/08/??:
+
+Added forgotten references to fillpoly.(c,o) to all Makefiles.
+Changed pattern definition for LT-2 in LPattern_Generator (lines were 
+twice their expected length) (John Reeve). Reinstated scaling of XT/YT
+tick marks in the special case of SCaling (bug introduced in 3.3.0 by a
+well-meant fix for the non-SC case). Added command line switch to turn
+off the polygon filling code.
+
+V 3.4.alpha2, 00/07/20:
+
+Fixed several numeric problems in the scanline fill code, and removed
+(commented) the debugging code that stored outlines and scanlines in the
+temporary file. Adapted penwidth correction for picbuf to new decipixel
+width scheme. Fixed PW code to map penwidths less than 0.1 to .1 
+Added a patch to provide a message window for the OS/2 viewer. Added build 
+instructions for NT. (both untested by me)
+The X11 previewer no longer aborts when the preview window exceeds
+the size of the screen.
+Changed the outfile name check from isalpha to isascii to allow relative
+filenames and names that start with a number. Fixed the broken header code
+in the new epson module, but still did not get it to work. I will probably 
+drop it again from 3.4, unless i receive requests and/or documentation for 
+esc/p2 output. 
+
+V 3.4.alpha1, 00/03/05:
+
+Added ER (edge rectangle relative), WU (pen width unit) and the 'arc through
+three points' commands AT and RT. 
+Started work on polygon and fill modes - FT (filltype), PM (polygon mode), 
+EP (edge polygon), FP (fill polygon), WG (filled wedge), RA (filled rectangle 
+absolute) and RR (filled rectangle relative).
+User-defined fill types are not yet supported, and the handling of pattern 
+angles is not always correct.
+Fixed a problem with IW after SC - IW parameters were always treated as
+plotter units, but SC imposes user units (reported by Gerhard Buergmann).
+Incorporated a set of patches provided by Eugene Doudine that make the
+parser more robust by checking both characters of a command and providing
+an error exit for broken PE parameters (previously hp2xx could get into an
+endless loop getting and ungetting characters from the input). His patches
+also rearrange the line drawing functions (PE_line removed, lines reduced
+to reader part for PU/PD/PA, new function line() as common backend with
+clipping etc.), add anisotropic scaling support (SC types 1 and 2) and
+parser functions for PJL and RTL headers.
+Investigated PCX colormap problems reported by Christian Steigies - the
+current code in to_pcx.c is not really suited for output of non-primary
+colors, and the palette seems strange. Changed a few palette entries so
+that black-and-white plots do not get a dark red background and switched
+back to the original color masking code. Should probably switch to PCX5
+24bit image generation (better PCX format documentation needed).
+Started work on an Esc/P2 output module for the Epson Stylus inkjet
+models, which do not understand PCL. Untested and probably does not work.
+
+
+V 3.3.2     , 00/02/12:
+
+Added flags to make the command line options -c and -s override any PC or PW 
+commands in the HPGL file. (One can now force monochrome output from a color 
+hpgl file again, and work around silly programs that use global PW at every 
+pen change). Fixed autoscaling of plot in landscape mode and interpretation
+of PE pen change commands. Removed artificial A4 page limitation in Postscript
+mode. Documented the automatic selection between PBM and PPM file formats 
+done in pbm mode. Changed color for 'black' pen in to_x11.c from (light) 
+gray to gray10. Added TIFF output module provided by M.Liberi after changing 
+requested compression from LZW to DEFLATE, added TIFF and PNG defines to 
+generic.mak. Added support for DV (vertical text).
+
+V 3.3.1     , 99/11/20:
+
+Changed handling of PS/RO to finally(?) eliminate the scaling problems.
+Corrected xfig file header (had FIG3.2 title but 3.1-style parameters). 
+Added Solaris/SunOS 5.x options for generic.mak (suggested by Wolfram Wagner),
+fixed all files in generic.mak that did not yet include to_fig.c and clip.c.
+Fixed DR/DI implementation to do correct initialization when called without 
+parameters, changed text height factor to better resemble plotter output, 
+(re)allocate LB strings dynamically instead of imposing arbitrary limit on 
+label length (patches supplied by Georgy Salnikov). Completed PE support.
+Cosmetic changes to compile without warnings with gcc -Wall. 
+Added Michael Schmitz' current email address in to_png.c.
+
+V 3.3.0     , 99/09/30:
+
+Corrected scaling of PS with RO and -r. Corrected positioning and scaling
+of clipping box for LB with IW. Removed BF from the list of unsupported 
+commands, as none of my HP-GL references mentions such a command.
+
+V 3.3 ALPHA2, 99/09/12:
+
+Corrected interpretation of PW (parameter list was backwards and there
+was no provision for the 'default' cases),  added support for NP and
+>8 pens, added PS (plot size) command to accurately reproduce page
+position, added EW (edge wedge) command support. Removed improper scaling
+of tick marks in ax_ticks(). Corrected rect(), which was advancing the
+pen position after an EA.
+
+=====================================================================
+
+V 3.3 ALPHA,  99/09/01:
+
+Incorporated PNG support (patches by Michael Schmitz as packaged
+by Lars Koeller for FreeBSD) and partial support for the PE command
+(by Eugene Doudine). Added more character sets, so that 0-7 are now
+supported (although some glyphs may be ugly or even wrong, they were
+drawn after the small illustrations in an old plotter manual). Added
+PenColor and PenWidth commands from HPGL/2 (not yet supported in the
+old Sun and OS/2 output modules - help needed for these platforms).
+PCL initialization sequence changed to use maximum available area in
+"-t" mode and generate paper selection commands for formats larger than
+A3 (untested).
+
+=====================================================================
+
+
+V 3.30.0, 99/01/31: (unreleased) 
+
+First version packaged by new maintainer (this is what you get when you
+ask where to send patches for an orphaned project).
+Output functions for xfig (by Ian McPhedran) and gnuplot (by Emmanuel Bigler).
+Support for the HP-GL commands IW (clipping) and CS (character set selection),
+implementation of character sets 5 (Special Symbols) and 7 (HP Roman8 
+Extensions), and support for 8bit addressing of charset 7 from charset 0.
+PCL initialization sequence now includes appropriate paper size selection 
+when in "-t" mode (European A4 and A3 formats only), as some (most?) printers 
+do not select the larger size automatically.
+
+
+
+======================================================================
+
+NOTES:
+     o  Intermediate versions have not been made publicly available.
+     o  Letters at end of version number indicate small changes like
+        source restructuring or minor bug fixes.
+
+
+V 3.20a, 94/02/15:
+
+This release contains major modifications. Besides a lot of cleamup it
+deals with the introduction of high-level functions which represent
+the different conversion phases of hp2xx. These may be called by *any*
+user front-end, not just the traditional command line interface.
+
+My intention is to facilitate the introduction of various graphical
+user front-ends. If you want to add one, study function "action_traditional"
+and read the comments in "hp2xx.h"!
+
+
+	-- hp2xx.h:     Re-structured! Options & parameters now separated into
+	                three groups: General / for input / for output conversion
+	-- hp2xx.c:     Now with high-level routines suitable for future
+	                GUI front-ends.
+	                CLI functions incl. main() moved to "std_main.c"
+	-- std_main.c:  New file! Keeps functions for traditional command line interface.
+	                PCL mode now also accepts 600 DPI.
+	-- hpgl.c:      Bug fixed: Gap in min/max determination caused later crash
+	-- to_pbm.c:    Color supported + compact binary format (by Ian McPhedran)
+	-- most files:    o  Adapted to new parameter structs
+	                  o  Re-organized
+	                  o  Use of "const"
+	                  o  Better error recovery
+	                  o  Direct output to stderr now eliminated (see std_main.c)
+	Plus all changes later than 3.14a
+
+
+V 3.15a, 94/01/02:
+
+    Suggestions by Lawrence Lowe:
+	-- to_pcl.c.c:  Effects of -o -O with and without -i more consistent
+	-- hpgl.c:      New option: -C (center mode); affects -o -O
+	-- chardraw.c:  Symbol plotting now with more general symbol centering
+	-- hp2xx.c:     Warning "DPI setting is no ..." suppressed in DeskJet modes
+	-- hpgl.c:      Second parameter of ES now optional (default 0)
+
+
+V 3.14b, 93/11/23:
+
+	-- to_pcx.c:    Color mode working again - though CLUT still has no effects
+	                (by R. Frahm, DESY, Hamburg)
+	-- hp2xxinf.tex:More typos fixes
+
+
+V 3.14a, 93/11/15:
+
+	-- to_eps.c:    Code now closer to Adobe EPSF structuring conventions
+	                (thanks to Nelson Beebe for his detailed report)
+	-- generic.mak: install-exe --> install-bin
+	-- hp2xxinf.tex:Typos fixes
+	Plus all changes later than 3.13a
+
+
+
+V 3.13c, 93/10/23 & 93/11/08:
+
+	-- to_vga.c:    Fix in getchar()-handling; bug reported by
+	                Uwe Girlich (girlich@aix520.informatik.uni-leipzig.de)
+	-- hp2xxinf.tex:Typo causing makeinfo error removed
+
+V 3.13b, 93/09/27:
+
+	-- hp2xx.c:     Fix in autoset_outfile_name() prevents crash in pipe mode
+	                Improved VAX/VMS "makefiles"
+
+V 3.13a, 93/09/03:
+
+	-- hp2xx.c:     Wait() --> NormalWait(); -m hpgl added; -Pn:m parser modified
+	-- hp2xx.h:     A few new #define's (VAX-VMS needs them); rect() prototype
+	-- hp2xx.c:     Wait() --> NormalWait(); -m hpgl added; -Pn:m parser modified
+	-- hpgl.c:      Support for EA (rect() added)
+	-- to_mf.c:     Mode 5 (Simple HP-GL) added
+	-- to_pm.c:     Minor changes to match emx 0.8g header
+	-- to_pcl.c:    Compression only in Deskjet modes
+	-- to_uis.c:    Minor fixes
+	Plus all changes later than 3.12a
+
+
+V 3.12f, 93/07/20: (see ./fixes)
+
+	-- hp2xx.c:     SilentWait() better adapted to UNIX pipes (A. Bagge)
+	-- hp2xx.h:     A few prototypes added
+	-- to_os2.c:    Updated (H. Szillat); working in combination with to_vga.c
+	-- to_pcl.c:    TIFF compression (mode 2) added
+	-- to_vga.c:    Minor adaptations
+	-- generic.mak: Fix for OS/2 full-screen version
+
+
+V 3.12e, 93/05/28: (see ./fixes)
+
+	-- hp2xx.h:     "Binary vs. text mode" finally added for OS/2, too
+	-- to_os2.c     (by H. Szillat) added to distribution
+	-- generic.mak: Minor improvements around OS/2, emx versions
+
+
+V 3.12d, 93/05/20: (see ./fixes)
+
+	-- hpgl.c:   Bug fix for LB/PR problem (by W. Eric Norum),
+	             LT1 pattern adjustment
+	-- to_eps.c: BoundingBox corrected for max pen width
+	-- to_pcl.c: Code for end-of-raster-graphics corrected
+	-- hp2xx.c:  Option --version added (GNU standard)
+
+
+V 3.12, 93/04/17:
+
+	-- New makefile for ATARI
+	-- ATARI only: Support for mode "cs" (Chr. Strunk's TeX specials)
+	-- New ATARI previewer
+	-- charset.h: `0' without slash now, according to HP-GL charset 0
+	-- chardraw.c:
+		Prepared for multiple fonts;
+		Bug fixed: 8-bit char codes won't crash hp2xx
+		plot_user_char() added (code by A. Treindl)
+	-- hpgl.c:
+		Arcs/circles now properly closed (occasional tiny gaps removed)
+		Bug fixed: SC followed by draw (without move) misplaced a point
+		Serious bug fixed in the line type (LT) pattern generator
+		Exception fixed in LT pattern generator
+		hypot() problem fixed (DOS)
+		UC supported
+	-- picbuf.c:
+		Always use 4 bits per pel in color mode (and 1 in b/w mode)
+		New encoding scheme for color codes:
+			nybbles instead of bit planes
+			--> more mem, but faster access in color mode
+		Obsolete type "DotBlock" finally replaced by "Byte"
+	-- to_pcl.c:
+		CMYK color support (for HP Deskjet 550C) added
+	-- to_mf.c:
+		Bug fix in "cad" mode (\emline statement lines now end with '%')
+	-- to_eps.c:
+		VM report lines are suppressed in 'quiet' mode
+		BoundingBox: improved rounding (using floor and ceil)
+
+	-- Much better generic makefile for many UNIX systems;
+		   improved special makefiles
+	-- Files re-organized (./extras removed):
+		"amigalib.zoo" now distributed as separate file
+			"hp2xx.amigalib.zoo"
+		HGC support now distributed in separate file
+			"hp2xx.hgc.showit.zoo"
+		Other sources moved from ./extras to ./sources
+
+V 3.11, 93/01/17:
+
+	-- New makefile for Amiga
+	-- Root directory renamed to hp2xx311 to make life easier
+	   for DOS-based people
+	-- File ownerships now rw-rw-rw
+	-- code_to_ucoord() in chardraw.c:
+		Reported bug (on RS6000 ONLY!) fixed
+
+V 3.10, 93/01/09
+	First release of sources as hp2xx.3.1.0.tar.Z under GNU conditions!!
+	CMY color for Deskjet (PLC), option -S now with parameter;
+	minor corrections
+
+V 3.03a, 92/12/14
+	Long options & "true size" mode (-t) added
+
+V 3.02c, 92/12/10
+	Range of pages (-P a:b) permitted now
+	New mode: "cad" for TeXcad code!
+
+V 3.02a, 92/10/20
+	HPGL command LT (line type) now fully supported; bug in eps mode removed.
+
+V 3.01d, 92/06/08
+	HPGL commands SM, TL, XT, YT supported
+
+V 3.00f, 92/05/25
+	Up to seven colors (some modes)! Multiple-input handling; log files;
+	auto-generation of output file names; output to stdout via "-f-"
+
+V 2.20d, 92/04/14
+	Symmetrical use of -h (height) and -w (width) options, new defaults:
+	200 [mm] for both -h & -w. Picture will always fit into a window
+	given by -h and -w
+
+V 2.20c, 92/03/03
+	Arcs, circles, fonts (Charset 0), pages, and many more commands supported
+	ATARI-ST binary file added (only old version of hp2xx - sorry)
+	DOS/386 binary file added (compiled with DJ Delorie's GNU-C version)
+		WARNING: hp2xx386.exe's previewer tries to activate 800x600 SVGA mode!
+	New modes: -m em (emTeX-specials), -m epic (epic macro \drawline)
+	Modes pic & pac only supported in (outdated) ATARI version
+	HPGL parser much easier portable and more tolerant to HPGL syntax variations
+	Bugs in character scaling fixed; LO now fully supported
+
+V 2.18e, 92/02/06
+	X11,Sunview,ATARI: preview; IMG format supported;
+	HPGL parser improved
+
+V 2.17, 92/01/12
+	Some debugging; more coherent sources, but no functional changes
+
+V 2.16a, 91/11/21
+	ATARI mode reduced again to simple "pic" format,
+	support of "LT;", "LT0;" (for point plotting),
+	support of different pens ("SP;", "SP0;"..."SP8;"),
+	internal changes (faster now), more flexible MF syntax
+
+V 2.14b, 91/10/10
+	ATARI mode: New file name convention, adapted to STAD
+	hp2xx.dvi:  Now part of distribution package
+
+V 2.14a, 91/09/08
+	ATARI ST support added.
+
+V 2.13a, 91/06/30
+	PostScript support added.
+	Warning: Due to lack of local resources, PostScript format could
+		 not be thoroughly tested. Please consider the PostScript
+		 part as in "beta" state and report all problems.
+
+V 2.12,  91/06/20
+	First external release!
+	Rotate option added, debug code removed

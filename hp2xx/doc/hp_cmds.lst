@@ -1,0 +1,203 @@
+List of supported HP-GL commands:         Date: 00/07/20
+=================================
+
+hp2xx originally emulated a subset of the Hewlett-Packard 7550A plotter.
+The following manuals were used as reference for command definitions:
+
+     [1] "HP 7550A Interfacing and Programming Manual"
+     [2] "HP Draftmaster Plotter Programmer's Reference"
+     [3] "The HP-GL/2 Reference Guide", ISBN 0-201-56308-8
+
+Not all commands are supported. Among the non-supported commands
+are those which do not really apply to a software emulator, like:
+
+   o commands affecting the communication between plotter and host computer,
+
+   o commands for changing the behaviour of a real plotter, like
+     plotting speed etc.,
+
+   o commands for the control of plotter memory allocation,
+
+   o commands causing various plotter outputs.
+
+
+Other non-supported commands would be desirable, but were left out
+due to their inherent complexity (or just because nobody pushed me, :-) ).
+Among those are:
+
+   o some of the commands for font (character set) management.
+     Only the fixed space vector fonts 0-7 are available in this version
+
+   o user-defined fill patterns, line fill and endcap styles
+
+
+The remainder of this file tabulates all HP-GL commands listed on
+pages 1-2 to 1-4 in [1] and marks them as either
+
+      not applicable       (.),         
+      ignored              (-),
+      supported            (+), or
+      partially supported  (*)
+
+  I use the label "supported" when I think the command is fully supported
+only in the context of the already implemented commands. In general,
+you should have absolutely no problem with this class of commands.
+
+  Though there still are unsupported commands, this does not mean that
+you might have trouble using hp2xx. Nowadays, most HP-GL files are
+machine-generated, e.g. by CAD or DTP programs. These tend to make use
+of just a simple subset of HP-GL. To my experience, chances are high
+that hp2xx will give you the picture you want!
+
+
+
+
+HP-GL|s n| Description & Remarks
+Cmd  | i |
+=====|===|========================================================
+ AA  |+  | Arc Absolute
+ AC  |+  | Anchor Corner (for fills)
+ AD  |*  | Alternate font Definition
+ AF  |+  | Advance Full page [same as PG]
+ AH  |+  | Advance Half page [same as PG]
+ AP  |  .| Automatic pen operations
+ AR  |+  | Arc Relative
+ AS  |  .| Acceleration select
+ AT  |+  | Absolute arc Through three points
+     |   |
+ BP  |+  | Begin Plot (same as PG;IN)
+ BL  |+  | Buffer Label
+ BR  |+  | Bezier curve, Relative
+ BZ  |+  | Bezier curve, Absolute
+     |   |
+ CA  |+  | Designate alternate character set
+ CC  | - | Character Chord angle
+ CF  | - | Character Fill mode
+ CI  |+  | Circle
+ CM  | - | Character selection mode
+ CO  |+  | Comment
+ CP  |+  | Character plot
+ CR  | - | Color Range for relative color data
+ CS  |+  | Designate standard character set
+ CT  |+  | Chord tolerance
+ CV  |  .| Curved line generator
+     |   |
+ DC  |  .| Digitize clear
+ DF  |+  | Default
+ DI  |+  | Absolute direction
+ DL  | - | Define downloadable character
+ DP  |  .| Digitize point
+ DR  |+  | Relative direction
+ DS  | - | Designate character into slot
+ DT  |+  | Define label terminator
+ DV  |+  | text Direction Vertical 
+     |   |
+ EA  |+  | Edge rectangle absolute
+ EC  |  .| Enable paper Cutter
+ EP  |+  | Edge polygon 
+ ER  |+  | Edge rectangle relative
+ ES  |+  | Extra space
+ EW  |+  | Edge wedge
+     |   |
+ FI  | - | pcl Font Id
+ FN  | - | pcl secondary Font Number
+ FP  |+  | Fill polygon
+ FR  | - | FRame advance
+ FS  |  .| Force select
+ FT  |+  | Fill type
+     |   |
+ GC  |  .| assign Group Count value
+ GM  |  .| Graphics memory
+     |   |
+ IM  | - | Input error condition reporting Mask 
+ IN  |+  | Initialize
+ IP  |+  | Input P1 and P2
+ IR  | - | Input Relative p1 and p2 locations
+ IV  | - | Invoke character slot
+ IW  |+  | Input window
+     |   |
+ KY  |  .| Define key
+     |   |
+ LA  | - | Line [ends and joins] Attributes
+ LB  |+  | Label
+ LO  |+  | Label origin
+ LT  |+  | Line type
+     |   |
+ MC  | - | Merge Control [for color of overlapping pixels]
+ MG  |+  | Message to Display (same as WD)
+ MT  |  .| Media Type  
+     |   |
+ NP  |+  | Number of Pens
+ NR  |  .| Not ready (unload page)
+     |   |
+ OA  |  .| Output actual position and pen status
+ OC  |  .| Output commanded position and pen status
+ OD  |  .| Output digitized point and pen status
+ OE  | - | Output error
+ OF  | - | Output factors
+ OG  |  .| Output group count
+ OH  | - | Output hard-clip limits
+ OI  |  .| Output identification
+ OK  |  .| Output key
+ OL  | - | Output label length
+ OO  |  .| Output options
+ OP  |+  | Output P1 and P2
+ OS  | - | Output status
+ OT  |  .| Output carousel type
+ OW  | - | Output window
+     |   |
+ PA  |+  | Plot absolute
+ PB  |+  | Print buffered label
+ PC  |+  | Pen color
+ PD  |+  | Pen down
+ PE  |+  | Polyline Encoded 
+ PG  |+  | Page feed
+ PR  |+  | Plot relative
+ PS  |+  | Plot Size
+ PT  |+  | Pen thickness
+ PU  |+  | Pen up
+ PW  |+  | Pen width
+     |   |
+ QL  |  .| Quality Level
+     |   |
+ RA  |+  | Fill rectangle absolute
+ RF  | - | Raster Fill pattern definition
+ RO  |+  | Rotate coordinate system 
+ RP  | - | Replot
+ RR  |+  | Fill rectangle relative
+ RT  |+  | Relative arc Through three points
+     |   |
+ SA  |+  | Select alternate character set
+ SB  |  .| Scalable or Bitmap font selection
+ SC  |+  | Scale
+ SD  |*  | Standard font and attribute Definition
+ SI  |+  | Absolute character size
+ SL  |+  | Character slant
+ SM  |+  | Symbol mode
+ SP  |+  | Select pen
+ SR  |+  | Relative character size
+ SS  |+  | Select standard character set
+ ST  |  .| Sort vectors for optimum plotting speed
+ SV  | - | Screened Vectors [line and edge fill patterns]
+     |   |
+ TD  | - | Transparent Data [print control characters in labels]
+ TL  |+  | Tick length
+ TR  | - | TRansparency mode [opaquify white areas] 
+     |   |
+ UC  |+  | User-defined character
+ UF  | - | User-defined fill type
+ UL  |+  | User-defined line type
+     |   |
+ VS  |  .| Velocity select
+     |   |
+ WD  |+  | Write to display
+ WG  |+  | Fill wedge
+ WU  |+  | pen Width Unit selection
+     |   |
+ XT  |+  | X-Tick
+     |   |
+ YT  |+  | Y-Tick
+
+Useless statistics : this makes currently (3.4.2) 
+68 fully supported, 2 partially supported, 24 not-applicable 
+and 26 unsupported commands.
