@@ -1690,9 +1690,6 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
   Image
     *huffman_image;
 
-  ImageInfo
-    local_info;
-
   int
     count;
 
@@ -1711,13 +1708,14 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
   /*
     Write image as CCITTFax4 TIFF image to a temporary file.
   */
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image != (Image *) NULL);
   image->orphan=True;
   huffman_image=CloneImage(image,image->columns,image->rows,True);
   image->orphan=False;
   TemporaryFilename(huffman_image->filename);
   (void) strcpy(huffman_image->magick,"TIFF");
-  local_info=(*image_info);
-  status=WriteImage(&local_info,huffman_image);
+  status=WriteImage(image_info,huffman_image);
   DestroyImage(huffman_image);
   if (status == False)
     return(False);

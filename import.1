@@ -131,7 +131,7 @@ the type of image compression: \fINone\fP, \fIBZip\fP, \fIFax\fP, \fIJPEG\fP,
 Specify \fB\+compress\fP to store the binary image in an uncompressed format.
 The default is the compression type of the specified image file.
 .TP
-.B "-crop \fI<width>{%}x<height>{%}{\+-}<x offset>{\+-}<y offset>\fP"
+.B "-crop \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}\fP"
 preferred size and location of the cropped image.  See \fBX(1)\fP for details
 about the geometry specification.
 
@@ -195,7 +195,7 @@ Use \fB+dither\fP to render Postscript without text or graphic aliasing.
 .B "-frame"
 include window manager frame.
 .TP
-.B "-geometry \fI<width>{%}x<height>{%}{\+-}<x offset>{\+-}<y offset>{!}{<}{>}\fP"
+.B "-geometry \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{!}{<}{>}\fP"
 the width and height of the image.
 
 By default, the width and height are maximum values.  That is, the
@@ -267,7 +267,7 @@ becomes blue, etc.).
 The red, green, and blue intensities of an image are negated.   Use
 \fB+negate\fP to only negate the grayscale pixels of the image.
 .TP
-.B "-page \fI<width>{%}x<height>{%}{\+-}<x offset>{\+-}<y offset>{!}{<}{>}\fP"
+.B "-page \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{!}{<}{>}\fP"
 preferred size and location of an image canvas.
 
 Use this option to specify the dimensions of the Postscript page in

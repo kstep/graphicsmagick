@@ -554,7 +554,7 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,Image *image,
           *magick;
 
         ImageInfo
-          local_info;
+          *local_info;
 
         register Image
           *p;
@@ -571,23 +571,33 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,Image *image,
             return(True);
           }
         Latin1Upper(magick);
-        local_info=(*image_info);
-        local_info.adjoin=False;
         (void) strcpy((char *) image_info->magick,magick);
         (void) strcpy(image->magick,magick);
         FreeMemory((char *) magick);
         (void) strcpy(filename,image->filename);
+        local_info=CloneImageInfo(image_info);
+        if (local_info == (ImageInfo *) NULL)
+          {
+            MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+              (char *) NULL);
+            return(True);
+          }
+        FormatString(local_info->filename,"%.1024s:",delegate_info.decode_tag);
+        SetImageInfo(local_info,True);
         for (p=image; p != (Image *) NULL; p=p->next)
         {
           (void) strcpy(p->filename,filename);
-          status=WriteImage(&local_info,p);
+          status=WriteImage(local_info,p);
           if (status == False)
             {
               MagickWarning(DelegateWarning,"delegate failed",
                 decode_tag ? decode_tag : encode_tag);
               return(False);
             }
+          if (local_info->adjoin)
+            break;
         }
+        DestroyImageInfo(local_info);
       }
   (void) strcpy(image->filename,filename);
   commands=StringToList(delegate_info.commands);

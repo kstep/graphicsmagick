@@ -10960,7 +10960,7 @@ static Image *XVisualDirectoryImage(Display *display,
     *next_image;
 
   ImageInfo
-    local_info;
+    *local_info;
 
   int
     number_files;
@@ -11020,7 +11020,9 @@ static Image *XVisualDirectoryImage(Display *display,
   */
   backdrop=(windows->visual_info->class == TrueColor) ||
    (windows->visual_info->class == DirectColor);
-  local_info=(*resource_info->image_info);
+  local_info=CloneImageInfo(resource_info->image_info);
+  if (local_info == (ImageInfo *) NULL)
+    return((Image *) NULL);
   image=(Image *) NULL;
   commands[0]=resource_info->client_name;
   commands[1]="-label";
@@ -11032,15 +11034,15 @@ static Image *XVisualDirectoryImage(Display *display,
   for (i=0; i < number_files; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    (void) strcpy(local_info.filename,filelist[i]);
-    *local_info.magick='\0';
-    local_info.size=DefaultTileGeometry;
-    next_image=ReadImage(&local_info);
+    (void) strcpy(local_info->filename,filelist[i]);
+    *local_info->magick='\0';
+    CloneString(&local_info->size,DefaultTileGeometry);
+    next_image=ReadImage(local_info);
     if (filelist[i] != filenames)
       FreeMemory((char *) filelist[i]);
     if (next_image != (Image *) NULL)
       {
-        MogrifyImages(&local_info,5,commands,&next_image);
+        MogrifyImages(local_info,5,commands,&next_image);
         next_image->matte=False;
         if (backdrop)
           {
@@ -11060,6 +11062,7 @@ static Image *XVisualDirectoryImage(Display *display,
     (void) SetMonitorHandler(handler);
     ProgressMonitor(LoadImageText,i,number_files);
   }
+  DestroyImageInfo(local_info);
   FreeMemory((char *) filelist);
   if (image == (Image *) NULL)
     {
@@ -11074,10 +11077,11 @@ static Image *XVisualDirectoryImage(Display *display,
   */
   GetMontageInfo(&montage_info);
   (void) strcpy(montage_info.filename,filename);
-  montage_info.font=resource_info->image_info->font;
+  CloneString(&montage_info.font,resource_info->image_info->font);
   montage_info.pointsize=resource_info->image_info->pointsize;
-  montage_info.texture="Granite:";
+  CloneString(&montage_info.texture,"Granite:");
   montage_image=MontageImages(image,&montage_info);
+  DestroyMontageInfo(&montage_info);
   DestroyImages(image);
   XSetCursorState(display,windows,False);
   if (montage_image == (Image *) NULL)

@@ -1,6 +1,6 @@
 Revision history for Perl extension Image::Magick.
 
-1.57 Fri Jan 01 1999
+1.58 Fri Jan 01 1999
         - Added Blob method.
 1.54 Tue Dec 01 1998
  	- Changed XMontageImages method to MontageImages method.

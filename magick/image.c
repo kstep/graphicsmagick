@@ -358,7 +358,7 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     *annotate_image;
 
   ImageInfo
-    local_info;
+    *local_info;
 
   int
     x,
@@ -379,6 +379,9 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
   assert(image != (Image *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
   if (!UncondenseImage(image))
+    return;
+  local_info=CloneImageInfo((ImageInfo *) NULL);
+  if (local_info == (ImageInfo *) NULL)
     return;
   /*
     Translate any embedded format characters (e.g. %f).
@@ -430,14 +433,12 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
   /*
     Annotate image.
   */
-  GetImageInfo(&local_info);
-  local_info.server_name=annotate_info->server_name;
-  local_info.density=annotate_info->density;
-  local_info.pointsize=annotate_info->pointsize;
-  local_info.font=annotate_info->font;
-  local_info.pen=annotate_info->pen;
-  local_info.border_color=annotate_info->border_color;
-  local_info.size=size;
+  CloneString(&local_info->server_name,annotate_info->server_name);
+  CloneString(&local_info->density,annotate_info->density);
+  local_info->pointsize=annotate_info->pointsize;
+  CloneString(&local_info->font,annotate_info->font);
+  CloneString(&local_info->pen,annotate_info->pen);
+  CloneString(&local_info->border_color,annotate_info->border_color);
   for (i=0; textlist[i] != (char *) NULL; i++)
   {
     if (*textlist[i] == '\0')
@@ -448,9 +449,9 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     /*
       Convert text to image.
     */
-    FormatString(local_info.filename,"%.1024s",textlist[i]);
+    FormatString(local_info->filename,"%.1024s",textlist[i]);
     FreeMemory(textlist[i]);
-    annotate_image=ReadLABELImage(&local_info);
+    annotate_image=ReadLABELImage(local_info);
     if (annotate_image == (Image *) NULL)
       {
         MagickWarning(ResourceLimitWarning,"Unable to annotate image",
@@ -531,10 +532,11 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
         /*
           Surround text with a bounding box.
         */
-        (void) sprintf(local_info.filename,"xc:%.1024s",annotate_info->box);
-        (void) sprintf(local_info.size,"%ux%u",annotate_image->columns,
+        (void) sprintf(local_info->filename,"xc:%.1024s",annotate_info->box);
+        (void) sprintf(size,"%ux%u",annotate_image->columns,
           annotate_image->rows);
-        box_image=ReadImage(&local_info);
+        CloneString(&local_info->size,size);
+        box_image=ReadImage(local_info);
         if (box_image != (Image *) NULL)
           {
             CompositeImage(image,ReplaceCompositeOp,box_image,
@@ -1297,7 +1299,7 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
   else
     {
       ImageInfo
-        local_info;
+        *local_info;
 
       register int
         i;
@@ -1305,9 +1307,12 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
       /*
         Read tiled pen.
       */
-      GetImageInfo(&local_info);
-      (void) strcpy(local_info.filename,pen+1);
-      tile=ReadImage(&local_info);
+      local_info=CloneImageInfo((ImageInfo *) NULL);
+      if (local_info == (ImageInfo *) NULL)
+        return;
+      (void) strcpy(local_info->filename,pen+1);
+      tile=ReadImage(local_info);
+      DestroyImageInfo(local_info);
       if (tile == (Image *) NULL)
         return;
       if (!UncondenseImage(tile))
@@ -2642,35 +2647,35 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     }
   *cloned_info=(*image_info);
   if (image_info->server_name != (char *) NULL)
-    CloneString(&cloned_info->server_name,image_info->server_name);
+    cloned_info->server_name=AllocateString(image_info->server_name);
   if (image_info->font != (char *) NULL)
-    CloneString(&cloned_info->font,image_info->font);
+    cloned_info->font=AllocateString(image_info->font);
   if (image_info->pen != (char *) NULL)
-    CloneString(&cloned_info->pen,image_info->pen);
+    cloned_info->pen=AllocateString(image_info->pen);
   if (image_info->size != (char *) NULL)
-    CloneString(&cloned_info->size,image_info->size);
+    cloned_info->size=AllocateString(image_info->size);
   if (image_info->tile != (char *) NULL)
-    CloneString(&cloned_info->tile,image_info->tile);
+    cloned_info->tile=AllocateString(image_info->tile);
   if (image_info->density != (char *) NULL)
-    CloneString(&cloned_info->density,image_info->density);
+    cloned_info->density=AllocateString(image_info->density);
   if (image_info->page != (char *) NULL)
-    CloneString(&cloned_info->page,image_info->page);
+    cloned_info->page=AllocateString(image_info->page);
   if (image_info->dispose != (char *) NULL)
-    CloneString(&cloned_info->dispose,image_info->dispose);
+    cloned_info->dispose=AllocateString(image_info->dispose);
   if (image_info->delay != (char *) NULL)
-    CloneString(&cloned_info->delay,image_info->delay);
+    cloned_info->delay=AllocateString(image_info->delay);
   if (image_info->iterations != (char *) NULL)
-    CloneString(&cloned_info->iterations,image_info->iterations);
+    cloned_info->iterations=AllocateString(image_info->iterations);
   if (image_info->texture != (char *) NULL)
-    CloneString(&cloned_info->texture,image_info->texture);
+    cloned_info->texture=AllocateString(image_info->texture);
   if (image_info->background_color != (char *) NULL)
-    CloneString(&cloned_info->background_color,image_info->background_color);
+    cloned_info->background_color=AllocateString(image_info->background_color);
   if (image_info->border_color != (char *) NULL)
-    CloneString(&cloned_info->border_color,image_info->border_color);
+    cloned_info->border_color=AllocateString(image_info->border_color);
   if (image_info->matte_color != (char *) NULL)
-    CloneString(&cloned_info->matte_color,image_info->matte_color);
+    cloned_info->matte_color=AllocateString(image_info->matte_color);
   if (image_info->undercolor != (char *) NULL)
-    CloneString(&cloned_info->undercolor,image_info->undercolor);
+    cloned_info->undercolor=AllocateString(image_info->undercolor);
   return(cloned_info);
 }
 
@@ -3669,7 +3674,7 @@ Export void DestroyImageInfo(ImageInfo *image_info)
   if (image_info->undercolor != (char *) NULL)
     FreeMemory((char *) image_info->undercolor);
   image_info->undercolor=(char *) NULL;
-  FreeMemory((char *) image_info);
+  FreeMemory((ImageInfo *) image_info);
   image_info=(ImageInfo *) NULL;
 }
 
@@ -3719,6 +3724,65 @@ Export void DestroyImages(Image *image)
     DestroyImage(image);
     image=next_image;
   } while (image != (Image *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e s t r o y M o n t a g e I n f o                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyMontageInfo deallocates memory associated with an MontageInfo
+%  structure.
+%
+%  The format of the DestroyMontageInfo routine is:
+%
+%      DestroyMontageInfo(montage_info)
+%
+%  A description of each parameter follows:
+%
+%    o montage_info: Specifies a pointer to an MontageInfo structure.
+%
+%
+*/
+Export void DestroyMontageInfo(MontageInfo *montage_info)
+{
+  assert(montage_info != (MontageInfo *) NULL);
+  if (montage_info->geometry != (char *) NULL)
+    FreeMemory((char *) montage_info->geometry);
+  montage_info->geometry=(char *) NULL;
+  if (montage_info->tile != (char *) NULL)
+    FreeMemory((char *) montage_info->tile);
+  montage_info->tile=(char *) NULL;
+  if (montage_info->background_color != (char *) NULL)
+    FreeMemory((char *) montage_info->background_color);
+  montage_info->background_color=(char *) NULL;
+  if (montage_info->border_color != (char *) NULL)
+    FreeMemory((char *) montage_info->border_color);
+  montage_info->border_color=(char *) NULL;
+  if (montage_info->matte_color != (char *) NULL)
+    FreeMemory((char *) montage_info->matte_color);
+  montage_info->matte_color=(char *) NULL;
+  if (montage_info->title != (char *) NULL)
+    FreeMemory((char *) montage_info->title);
+  montage_info->title=(char *) NULL;
+  if (montage_info->frame != (char *) NULL)
+    FreeMemory((char *) montage_info->frame);
+  montage_info->frame=(char *) NULL;
+  if (montage_info->texture != (char *) NULL)
+    FreeMemory((char *) montage_info->texture);
+  montage_info->texture=(char *) NULL;
+  if (montage_info->pen != (char *) NULL)
+    FreeMemory((char *) montage_info->pen);
+  montage_info->pen=(char *) NULL;
+  if (montage_info->font != (char *) NULL)
+    FreeMemory((char *) montage_info->font);
+  montage_info->font=(char *) NULL;
 }
 
 /*
@@ -3811,14 +3875,17 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   if ((annotate_info->pen != (char *) NULL) && (*annotate_info->pen == '@'))
     {
       ImageInfo
-        local_info;
+        *local_info;
 
       /*
         Read tiled pen.
       */
-      GetImageInfo(&local_info);
-      (void) strcpy(local_info.filename,annotate_info->pen+1);
-      tile=ReadImage(&local_info);
+      local_info=CloneImageInfo((ImageInfo *) NULL);
+      if (local_info == (ImageInfo *) NULL)
+        return;
+      (void) strcpy(local_info->filename,annotate_info->pen+1);
+      tile=ReadImage(local_info);
+      DestroyImageInfo(local_info);
       if (tile == (Image *) NULL)
         return;
       if (!UncondenseImage(tile))
@@ -5052,17 +5119,17 @@ Export void GetAnnotateInfo(ImageInfo *image_info,AnnotateInfo *annotate_info)
     *annotate_image;
 
   ImageInfo
-    local_info;
+    *local_info;
 
   assert(image_info != (ImageInfo *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
-  annotate_info->server_name=image_info->server_name;
-  annotate_info->density=image_info->density;
+  annotate_info->server_name=AllocateString(image_info->server_name);
+  annotate_info->density=AllocateString(image_info->density);
   annotate_info->pointsize=image_info->pointsize;
-  annotate_info->font=image_info->font;
+  annotate_info->font=AllocateString(image_info->font);
   annotate_info->font_name=(char *) NULL;
-  annotate_info->pen=image_info->pen;
-  annotate_info->border_color=image_info->border_color;
+  annotate_info->pen=AllocateString(image_info->pen);
+  annotate_info->border_color=AllocateString(image_info->border_color);
   annotate_info->geometry=(char *) NULL;
   annotate_info->text=(char *) NULL;
   annotate_info->box=(char *) NULL;
@@ -5078,13 +5145,16 @@ Export void GetAnnotateInfo(ImageInfo *image_info,AnnotateInfo *annotate_info)
   /*
     Get font bounds.
   */
-  local_info=(*image_info);
-  FormatString(local_info.filename,"%.1024s",Alphabet);
-  annotate_image=ReadLABELImage(&local_info);
+  local_info=CloneImageInfo(image_info);
+  if (local_info == (ImageInfo *) NULL)
+    return;
+  FormatString(local_info->filename,"%.1024s",Alphabet);
+  annotate_image=ReadLABELImage(local_info);
+  DestroyImageInfo(local_info);
   if (annotate_image == (Image *) NULL)
     return;
   if (annotate_image->label != (char *) NULL)
-    CloneString(&annotate_info->font_name,annotate_image->label);
+    annotate_info->font_name=AllocateString(annotate_image->label);
   annotate_info->bounds.width=
     (annotate_image->columns+(strlen(Alphabet) >> 1))/strlen(Alphabet);
   annotate_info->bounds.height=annotate_image->rows;
@@ -5232,11 +5302,11 @@ Export void GetMontageInfo(MontageInfo *montage_info)
 {
   assert(montage_info != (MontageInfo *) NULL);
   *montage_info->filename='\0';
-  montage_info->geometry=DefaultTileGeometry;
-  montage_info->tile=DefaultTilePageGeometry;
-  montage_info->background_color=DefaultTileBackground;
+  montage_info->geometry=AllocateString(DefaultTileGeometry);
+  montage_info->tile=AllocateString(DefaultTilePageGeometry);
+  montage_info->background_color=AllocateString(DefaultTileBackground);
   montage_info->border_color=(char *) NULL;
-  montage_info->matte_color=DefaultTileMatte;
+  montage_info->matte_color=AllocateString(DefaultTileMatte);
   montage_info->title=(char *) NULL;
   montage_info->frame=(char *) NULL;
   montage_info->texture=(char *) NULL;
@@ -7073,14 +7143,17 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     if (Latin1Compare("-map",option) == 0)
       {
         ImageInfo
-          local_info;
+          *local_info;
 
         /*
           Transform image colors to match this set of colors.
         */
-        local_info=(*image_info);
-        (void) strcpy(local_info.filename,argv[++i]);
-        map_image=ReadImage(&local_info);
+        local_info=CloneImageInfo(image_info);
+        if (local_info == (ImageInfo *) NULL)
+          continue;
+        (void) strcpy(local_info->filename,argv[++i]);
+        map_image=ReadImage(local_info);
+        DestroyImageInfo(local_info);
         continue;
       }
     if (Latin1Compare("matte",option+1) == 0)
@@ -7197,7 +7270,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
           *profile;
 
         ImageInfo
-          local_info;
+          *local_info;
 
         if (*option == '+')
           {
@@ -7224,9 +7297,12 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
         /*
           Add a ICC or IPTC profile to the image.
         */
-        local_info=(*image_info);
-        (void) strcpy(local_info.filename,argv[++i]);
-        profile=ReadImage(&local_info);
+        local_info=CloneImageInfo(image_info);
+        if (image_info == (ImageInfo *) NULL)
+          continue;
+        (void) strcpy(local_info->filename,argv[++i]);
+        profile=ReadImage(local_info);
+        DestroyImageInfo(local_info);
         if (profile == (Image *) NULL)
           continue;
         if (Latin1Compare("icc",profile->magick) == 0)
@@ -7801,7 +7877,7 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
     *tiled_image;
 
   ImageInfo
-    local_info;
+    *local_info;
 
   int
     x,
@@ -7989,24 +8065,23 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
   /*
     Initialize annotate info.
   */
-  GetImageInfo(&local_info);
-  local_info.pen=montage_info->pen;
-  local_info.font=montage_info->font;
-  local_info.pointsize=montage_info->pointsize;
-  local_info.background_color=montage_info->background_color;
-  local_info.border_color=montage_info->border_color;
-  GetAnnotateInfo((ImageInfo *) &local_info,&annotate_info);
-  annotate_info.geometry=geometry;
+  local_info=CloneImageInfo((ImageInfo *) NULL);
+  CloneString(&local_info->pen,montage_info->pen);
+  CloneString(&local_info->font,montage_info->font);
+  local_info->pointsize=montage_info->pointsize;
+  CloneString(&local_info->background_color,montage_info->background_color);
+  CloneString(&local_info->border_color,montage_info->border_color);
+  GetAnnotateInfo(local_info,&annotate_info);
   annotate_info.gravity=NorthGravity;
   /*
     Initialize font info.
   */
   font_height=annotate_info.bounds.height;
-  FormatLabel((ImageInfo *) &local_info,montage_info->title,((tile_info.width+
+  FormatLabel(local_info,montage_info->title,((tile_info.width+
     (border_width << 1))*Min(number_images,tiles_per_column)) >> 1,
     &font_height);
   for (tile=0; tile < number_images; tile++)
-    FormatLabel((ImageInfo *) &local_info,images[tile]->label,tile_info.width+
+    FormatLabel(local_info,images[tile]->label,tile_info.width+
       (border_width << 1),&font_height);
   /*
     Determine the number of lines in an image label.
@@ -8022,7 +8097,8 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
   /*
     Allocate image structure.
   */
-  montage_image=AllocateImage(&local_info);
+  montage_image=AllocateImage(local_info);
+  DestroyImageInfo(local_info);
   if (montage_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to montage images",
@@ -8119,9 +8195,10 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
         /*
           Annotate composite image with title.
         */
-        FormatString(annotate_info.geometry,"%ux%u%+d%+d",
-          montage_image->columns,font_height << 1,0,tile_info.y+4);
-        annotate_info.text=montage_info->title;
+        FormatString(geometry,"%ux%u%+d%+d",montage_image->columns,
+          font_height << 1,0,tile_info.y+4);
+        CloneString(&annotate_info.geometry,geometry);
+        CloneString(&annotate_info.text,montage_info->title);
         AnnotateImage(montage_image,&annotate_info);
       }
     (void) SetMonitorHandler(handler);
@@ -8309,13 +8386,14 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
               /*
                 Annotate composite image tile with label.
               */
-              FormatString(annotate_info.geometry,"%ux%u%+d%+d",
+              FormatString(geometry,"%ux%u%+d%+d",
                 (montage_info->frame ? image->columns : width)-
                 (border_width << 1),font_height,(int) (x_offset+border_width),
                 (int) (montage_info->frame ? y_offset+height+
                 (border_width << 1)-bevel_width-2 : y_offset+tile_info.height+
                 (border_width << 1)+(montage_info->shadow ? 4 : 0)+2));
-              annotate_info.text=image->label;
+              CloneString(&annotate_info.geometry,geometry);
+              CloneString(&annotate_info.text,image->label);
               AnnotateImage(montage_image,&annotate_info);
             }
         }

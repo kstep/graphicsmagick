@@ -280,7 +280,7 @@ the type of image compression: \fINone\fP, \fIBZip\fP, \fIFax\fP, \fIJPEG\fP,
 Specify \fB\+compress\fP to store the binary image in an uncompressed format.
 The default is the compression type of the specified image file.
 .TP
-.B "-crop \fI<width>{%}x<height>{%}{\+-}<x offset>{\+-}<y offset>\fP"
+.B "-crop \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}\fP"
 preferred size and location of the cropped image.  See \fBX(1)\fP for details
 about the geometry specification.
 
@@ -482,7 +482,7 @@ Use \fB+gamma\fP to set the image gamma level without actually adjusting
 the image pixels.  This option is useful if the image is of a known
 gamma but not set as an image attribute (e.g. PNG images).
 .TP
-.B "-geometry \fI<width>x<height>+<border width>+<border height>{!}{<}{>}\fP"
+.B "-geometry \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{!}{<}{>}\fP"
 preferred tile and border size of each tile of the composite image.
 
 By default, the width and height are maximum values.  That is, the
@@ -569,7 +569,7 @@ setting individual options (e.g. \fBUnframe\fP is equivalent to
 .B "-monochrome"
 transform the image to black and white.
 .TP
-.B "-page \fI<width>{%}x<height>{%}{\+-}<x offset>{\+-}<y offset>{!}{<}{>}\fP"
+.B "-page \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{!}{<}{>}\fP"
 preferred size and location of an image canvas.
 
 Use this option to specify the dimensions of the Postscript page in

@@ -694,6 +694,10 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
       }
       case LineInterlace:
       {
+        register int
+          x,
+          y;
+
         /*
           Line interlacing:  CCC...MMM...YYY...CCC...MMM...YYY...
         */
@@ -2002,7 +2006,7 @@ unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       *q++=(Quantum) 0x0;
       *q++=(Quantum) 0x0;
     }
-    if (image->previous == (Image *) NULL)
+    if ((image->previous == (Image *) NULL) || !image_info->adjoin)
       {
         /*
           Write global colormap.
@@ -2810,7 +2814,7 @@ unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
     *next;
 
   ImageInfo
-    local_info;
+    *local_info;
 
   int
     x,
@@ -2857,8 +2861,10 @@ unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(mapname,BaseFilename(filename));
   (void) strcpy(image->filename,image_info->filename);
   (void) strcpy(filename,image->filename);
-  local_info=(*image_info);
-  local_info.adjoin=True;
+  local_info=CloneImageInfo(image_info);
+  if (local_info == (ImageInfo *) NULL)
+    PrematureExit(FileOpenWarning,"Unable to allocate memory",image);
+  local_info->adjoin=True;
   status=True;
   if (Latin1Compare(image_info->magick,"SHTML") != 0)
     {
@@ -2946,7 +2952,7 @@ unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       AppendImageFormat("gif",image->filename);
       next=image->next;
       image->next=(Image *) NULL;
-      status|=WriteGIFImage(&local_info,image);
+      status|=WriteGIFImage(local_info,image);
       image->next=next;
       /*
         Determine image map filename.
@@ -2964,9 +2970,10 @@ unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   /*
     Open image map.
   */
-  OpenImage(&local_info,image,WriteBinaryType);
+  OpenImage(local_info,image,WriteBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
+  DestroyImageInfo(local_info);
   /*
     Determine the size and location of each image tile.
   */
@@ -3227,7 +3234,7 @@ unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 %
 */
 
-static void ColorProfileHandler(j_compress_ptr jpeg_info,Image *image)
+static void JPEGColorProfileHandler(j_compress_ptr jpeg_info,Image *image)
 {
   register int
     i,
@@ -3254,11 +3261,43 @@ static void ColorProfileHandler(j_compress_ptr jpeg_info,Image *image)
     for (j=0; j < length; j++)
       profile[j+14]=image->color_profile.info[j];
     jpeg_write_marker(jpeg_info,ICC_MARKER,profile,(unsigned int) length+14);
-    free((char *) profile);
+    FreeMemory((char *) profile);
   }
 }
 
-static void EmitMessage(j_common_ptr jpeg_info,int level)
+static void JPEGNewsProfileHandler(j_compress_ptr jpeg_info,Image *image)
+{
+  register int
+    i,
+    j;
+
+  unsigned char
+    *profile;
+
+  unsigned int
+    length;
+
+  /*
+    Save IPTC profile as a APP marker.
+  */
+  for (i=0; i < image->iptc_profile.length; i+=65507)
+  {
+    length=Min(image->iptc_profile.length-i,65507);
+    profile=(unsigned char *) AllocateMemory((length+26)*sizeof(unsigned char));
+    if (profile == (unsigned char *) NULL)
+      break;
+    (void) memcpy((char *) profile,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
+    profile[13]=0x00;
+    profile[24]=length >> 8;
+    profile[25]=length & 0xff;
+    for (j=0; j < length; j++)
+      profile[j+26]=image->iptc_profile.info[j];
+    jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int) length+26);
+    FreeMemory((char *) profile);
+  }
+}
+
+static void JPEGWarningHandler(j_common_ptr jpeg_info,int level)
 {
   char
     message[JMSG_LENGTH_MAX];
@@ -3337,7 +3376,7 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     Initialize JPEG parameters.
   */
   jpeg_info.err=jpeg_std_error(&jpeg_error);
-  jpeg_info.err->emit_message=EmitMessage;
+  jpeg_info.err->emit_message=JPEGWarningHandler;
   jpeg_create_compress(&jpeg_info);
   jpeg_stdio_dest(&jpeg_info,image->file);
   jpeg_info.image_width=image->columns;
@@ -3396,12 +3435,9 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) image->comments+i,
         (unsigned int) Min(Extent(image->comments+i),65533));
   if (image->color_profile.length > 0)
-    ColorProfileHandler(&jpeg_info,image);
+    JPEGColorProfileHandler(&jpeg_info,image);
   if (image->iptc_profile.length > 0)
-    for (i=0; i < image->iptc_profile.length; i+=65533)
-      jpeg_write_marker(&jpeg_info,IPTC_MARKER,(unsigned char *)
-        image->iptc_profile.info+i,(unsigned int)
-        Min(image->iptc_profile.length-i,65533));
+    JPEGNewsProfileHandler(&jpeg_info,image);
   /*
     Convert MIFF to JPEG raster pixels.
   */
@@ -7790,7 +7826,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
     *preview_image;
 
   ImageInfo
-    local_info;
+    *local_info;
 
   int
     argc,
@@ -7829,8 +7865,10 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   /*
     Apply enhancement at varying strengths.
   */
-  local_info=(*image_info);
-  local_info.quality=0;
+  local_info=CloneImageInfo(image_info);
+  if (local_info == (ImageInfo *) NULL)
+    PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+  local_info->quality=0;
   degrees=0;
   gamma=(double) (-0.2);
   colors=2;
@@ -7854,7 +7892,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       {
         commands[argc++]="-mattecolor";
         commands[argc++]=DefaultPreviewMatte;
-        MogrifyImage(&local_info,argc,commands,&images[i]);
+        MogrifyImage(local_info,argc,commands,&images[i]);
         continue;
       }
     handler=SetMonitorHandler((MonitorHandler) NULL);
@@ -8112,17 +8150,17 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       case JPEGPreview:
       default:
       {
-        local_info.quality=(unsigned int) (percentage+13.0);
-        FormatString(factor,"%u",local_info.quality);
+        local_info->quality=(unsigned int) (percentage+13.0);
+        FormatString(factor,"%u",local_info->quality);
         TemporaryFilename(images[i]->filename);
-        status=WriteJPEGImage(&local_info,images[i]);
+        status=WriteJPEGImage(local_info,images[i]);
         if (status != False)
           {
             Image
               *quality_image;
 
-            (void) strcpy(local_info.filename,images[i]->filename);
-            quality_image=ReadImage(&local_info);
+            (void) strcpy(local_info->filename,images[i]->filename);
+            quality_image=ReadImage(local_info);
             (void) remove(images[i]->filename);
             if (quality_image != (Image *) NULL)
               {
@@ -8144,10 +8182,11 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
     percentage+=12.5;
     commands[argc++]="-label";
     commands[argc++]=label;
-    MogrifyImage(&local_info,argc,commands,&images[i]);
+    MogrifyImage(local_info,argc,commands,&images[i]);
     (void) SetMonitorHandler(handler);
     ProgressMonitor(PreviewImageText,i,NumberTiles);
   }
+  DestroyImageInfo(local_info);
   DestroyImage(preview_image);
   /*
     Create the PCD Overview image.
@@ -8159,14 +8198,15 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   }
   GetMontageInfo(&montage_info);
   (void) strcpy(montage_info.filename,image->filename);
-  montage_info.geometry=DefaultPreviewGeometry;
-  montage_info.tile=DefaultPreviewPageGeometry;
-  montage_info.font=image_info->font;
+  CloneString(&montage_info.geometry,DefaultPreviewGeometry);
+  CloneString(&montage_info.tile,DefaultPreviewPageGeometry);
+  CloneString(&montage_info.font,image_info->font);
   montage_info.pointsize=image_info->pointsize;
-  montage_info.frame=DefaultTileFrame;
+  CloneString(&montage_info.frame,DefaultTileFrame);
   montage_info.shadow=True;
-  montage_info.texture="Granite:";
+  CloneString(&montage_info.texture,"Granite:");
   montage_image=MontageImages(*images,&montage_info);
+  DestroyMontageInfo(&montage_info);
   for (i=0;  i < i; i++)
     DestroyImage(images[i]);
   if (montage_image == (Image *) NULL)
@@ -11063,7 +11103,7 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
 */
 
 #if defined(IPTC_SUPPORT)
-static void TIFFIPTCProfileHandler(Image *image, TIFF *tiff, int type)
+static void TIFFNewsProfileHandler(TIFF *tiff,int type,Image *image)
 {
   register int
     i;
@@ -11095,8 +11135,7 @@ static void TIFFIPTCProfileHandler(Image *image, TIFF *tiff, int type)
     Handle TIFFTAG_PHOTOSHOP tag.
   */
   length=image->iptc_profile.length;
-  profile=(unsigned char *)
-    AllocateMemory((length+12)*sizeof(unsigned char));
+  profile=(unsigned char *) AllocateMemory((length+12)*sizeof(unsigned char));
   if ((length == 0) || (profile == (unsigned char *) NULL))
     return;
   (void) memcpy((char *) profile,"8BIM\04\04\0\0",8);
@@ -11282,8 +11321,8 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         height=(height+1)/2;
         if ((width == 0) || (height == 0))
           break;
-      } while (((width << 1) >= image->tile_info.width) ||
-               ((height << 1) >= image->tile_info.height));
+      } while (((2*width) >= image->tile_info.width) ||
+               ((2*height) >= image->tile_info.height));
       image=pyramid_image;
     }
   /*
@@ -11452,10 +11491,10 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #if defined(IPTC_SUPPORT)
 #if defined(PHOTOSHOP_SUPPORT)
     if (image->iptc_profile.length > 0)
-        TIFFIPTCProfileHandler(image, tiff, TIFFTAG_PHOTOSHOP);
+      TIFFNewsProfileHandler(tiff,TIFFTAG_PHOTOSHOP,image);
 #endif
     if (image->iptc_profile.length > 0)
-        TIFFIPTCProfileHandler(image, tiff, TIFFTAG_RICHTIFFIPTC);
+      TIFFNewsProfileHandler(tiff,TIFFTAG_RICHTIFFIPTC,image);
 #endif
     TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
     TIFFSetField(tiff,TIFFTAG_SOFTWARE,MagickVersion);
@@ -12828,6 +12867,7 @@ unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 
   Display
     *display;
+
 
   QuantizeInfo
     quantize_info;

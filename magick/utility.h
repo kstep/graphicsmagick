@@ -73,6 +73,7 @@
   Utilities methods.
 */
 extern Export char
+  *AllocateString(const char *),
   *BaseFilename(const char *),
   **ListColors(const char *,int *),
   **ListFiles(char *,const char *,int *),
@@ -80,7 +81,7 @@ extern Export char
   *SetClientName(const char *),
   **StringToArgv(const char *,int *),
   **StringToList(const char *),
-  *TranslateText(const ImageInfo *,Image *,const char *);
+  *TranslateText(const ImageInfo *,const Image *,const char *);
 
 extern Export int
   GlobExpression(char *,const char *),

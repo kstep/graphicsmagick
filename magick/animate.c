@@ -120,7 +120,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *next_image;
 
       ImageInfo
-        local_info;
+        *local_info;
 
       int
         number_files;
@@ -160,7 +160,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           MagickWarning(OptionWarning,"No image files were found",filenames);
           return((Image *) NULL);
         }
-      local_info=(*resource_info->image_info);
+      local_info=CloneImageInfo(resource_info->image_info);
+      if (local_info == (ImageInfo *) NULL)
+        break;
       image=(Image *) NULL;
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
@@ -168,9 +170,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       {
         if (number_files > 5)
           handler=SetMonitorHandler((MonitorHandler) NULL);
-        (void) strcpy(local_info.filename,filelist[i]);
-        *local_info.magick='\0';
-        next_image=ReadImage(&local_info);
+        (void) strcpy(local_info->filename,filelist[i]);
+        *local_info->magick='\0';
+        next_image=ReadImage(local_info);
         if (filelist[i] != filenames)
           FreeMemory((char *) filelist[i]);
         if (next_image != (Image *) NULL)
@@ -189,6 +191,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         (void) SetMonitorHandler(handler);
         ProgressMonitor(LoadImageText,i,number_files);
       }
+      DestroyImageInfo(local_info);
       if (image == (Image *) NULL)
         {
           XSetCursorState(display,windows,False);

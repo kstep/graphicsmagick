@@ -25,7 +25,7 @@ require AutoLoader;
 	Transparent Opaque
     );
 
-$VERSION = '1.57';
+$VERSION = '1.58';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()

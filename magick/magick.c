@@ -237,7 +237,7 @@ static const MagickInfo
       "Khoros Visualization image file" },
     { "XWD", ReadXWDImage, WriteXWDImage, False,
       "X Windows system window dump file (color)" },
-    { "YUV", ReadYUVImage, WriteYUVImage, True, "CCIR 601 4:1:1 file" },
+    { "YUV", ReadYUVImage, WriteYUVImage, False, "CCIR 601 4:1:1 file" },
     { (char *) NULL, (Image *(*)(const ImageInfo *)) NULL,
       (unsigned int (*)(const ImageInfo *,Image *)) NULL, 0,
       (char *) NULL },

@@ -206,7 +206,7 @@ the lighter and darker elements of the image.  Use
 <B>-contrast</B> to enhance the image or <B>+contrast</B> to reduce
 the image contrast.
 <P>
-<DT><B>-crop</B> &lt;<EM>width</EM>&gt;{%}<B>x</B>&lt;<EM>height</EM>&gt;{%}{+-}&lt;<B>x</B> <EM>offset</EM>&gt;{+-}&lt;<B>y</B> <EM>offset</EM>&gt;
+<DT><B>-crop</B> <I>&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}</I>
 <DD>preferred size and location of the cropped image.  See
 <B>X(1)</B> for details about the geometry specification.
 <P>
@@ -486,7 +486,7 @@ delineated with slashes (i.e. 1.7/2.3/1.2).
 the image pixels.  This option is useful if the image is of a known
 gamma but not set as an image attribute (e.g. PNG images).
 <P>
-<DT><B>-geometry</B> &lt;<EM>width</EM>&gt;{%}<B>x</B>&lt;<EM>height</EM>&gt;{%}{!}{&lt;}{&gt;}
+<DT><B>-geometry</B> <I>&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}{!}{&lt;}{&gt;}</I>
 <DD>preferred width and height of the image.  See <B>X(1)</B> for
 details about the geometry specification.
 <P>
@@ -649,8 +649,7 @@ This is a contrast enhancement technique.
 change this color to the pen color within the image.  See <b>-pen</b> for
 more details.
 <P>
-<DT><B>-page</B> <I>&lt;width&gt;{%}x&lt;height&gt;{%}{+-}&lt;x
-offset&gt;{+-}&lt;y offset&gt;{!}{&lt;}{&gt;}</I>
+<DT><B>-page</B> <I>&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}{!}{&lt;}{&gt;}</I>
 <DD>size and location of an image canvas.
 <P>
 <DD>Use this option to specify the dimensions of the

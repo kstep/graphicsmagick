@@ -59,6 +59,52 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   A l l o c a t e S t r i n g                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AllocateString allocates memory for a string and copies the source
+%  string to that memory location (and returns it).
+%
+%  The format of the AllocateString routine is:
+%
+%      allocated_string=AllocateString(source)
+%
+%  A description of each parameter follows:
+%
+%    o allocated_string:  Method AllocateString returns a copy of the source
+%      string.
+%
+%    o source: A character string.
+%
+%
+*/
+Export char *AllocateString(const char *source)
+{
+  char
+    *destination;
+
+  if (source == (char *) NULL)
+    return((char *) NULL);
+  destination=(char *)
+    AllocateMemory(Max(Extent(source)+1,MaxTextExtent)*sizeof(char));
+  if (destination == (char *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to allocate string",
+        "Memory allocation failed");
+      return((char *) NULL);
+    }
+  (void) strcpy(destination,source);
+  return(destination);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  A p p e n d I m a g e F o r m a t                                          %
 %                                                                             %
 %                                                                             %
@@ -203,13 +249,16 @@ Export char *BaseFilename(const char *name)
 %
 %
 */
-void CloneString(char **destination,const char *source)
+Export void CloneString(char **destination,const char *source)
 {
   assert(destination != (char **) NULL);
-  assert(source != (const char *) NULL);
   if (*destination != (char *) NULL)
     FreeMemory(*destination);
-  *destination=(char *) AllocateMemory((Extent(source)+1)*sizeof(char));
+  *destination=(char *) NULL;
+  if (source == (const char *) NULL)
+    return;
+  *destination=(char *) 
+    AllocateMemory(Max(Extent(source)+1,MaxTextExtent)*sizeof(char));
   if (*destination == (char *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to allocate string",
@@ -293,7 +342,8 @@ static int InterpretUnicode(const char *code,const int n)
   return(total);
 }
 
-unsigned short *ConvertTextToUnicode(const char *text,unsigned int *count)
+Export unsigned short *ConvertTextToUnicode(const char *text,
+  unsigned int *count)
 {
   int
     value;
@@ -2614,7 +2664,7 @@ Export void TemporaryFilename(char *filename)
 %
 %
 */
-Export char *TranslateText(const ImageInfo *image_info,Image *image,
+Export char *TranslateText(const ImageInfo *image_info,const Image *image,
   const char *formatted_text)
 {
   char
@@ -2629,13 +2679,13 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
     *local_image;
 
   ImageInfo
-    local_info;
+    *local_info;
 
   unsigned int
     indirection,
     length;
 
-  assert((image_info != (ImageInfo *) NULL) || (image != (Image *) NULL));
+  assert(image != (Image *) NULL);
   if ((formatted_text == (const char *) NULL) || (*formatted_text == '\0'))
     return((char *) NULL);
   text=(char *) formatted_text;
@@ -2697,18 +2747,8 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
         FreeMemory((char *) text);
       return((char *) NULL);
     }
-  if (image_info == (ImageInfo *) NULL)
-    {
-      GetImageInfo(&local_info);
-      image_info=(&local_info);
-    }
-  local_image=(Image *) NULL;
-  if (image == (Image *) NULL)
-    {
-      local_image=AllocateImage(image_info);
-      image=local_image;
-    }
-  if ((image_info == (ImageInfo *) NULL) || (image == (Image *) NULL))
+  local_info=CloneImageInfo(image_info);
+  if ((local_info == (ImageInfo *) NULL))
     {
       MagickWarning(ResourceLimitWarning,"Unable to translate text",
         "Memory allocation failed");
@@ -2826,7 +2866,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'g':
       {
-        FormatString(q,"0x%lx",image_info->group);
+        FormatString(q,"0x%lx",local_info->group);
         q=translated_text+Extent(translated_text);
         break;
       }
@@ -2858,19 +2898,19 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'n':
       {
-        FormatString(q,"%u",image_info->subrange);
+        FormatString(q,"%u",local_info->subrange);
         q=translated_text+Extent(translated_text);
         break;
       }
       case 'o':
       {
-        (void) strcpy(q,image_info->filename);
-        q+=Extent(image_info->filename);
+        (void) strcpy(q,local_info->filename);
+        q+=Extent(local_info->filename);
         break;
       }
       case 'p':
       {
-        register Image
+        register const Image
           *p;
 
         unsigned int
@@ -2892,15 +2932,15 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
       case 's':
       {
         FormatString(q,"%u",image->scene);
-        if (image_info->subrange != 0)
-          FormatString(q,"%u",image_info->subimage);
+        if (local_info->subrange != 0)
+          FormatString(q,"%u",local_info->subimage);
         q=translated_text+Extent(translated_text);
         break;
       }
       case 'u':
       {
-        (void) strcpy(q,image_info->unique);
-        q+=Extent(image_info->unique);
+        (void) strcpy(q,local_info->unique);
+        q+=Extent(local_info->unique);
         break;
       }
       case 'w':
@@ -2936,8 +2976,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
     }
   }
   *q='\0';
-  if (local_image != (Image *) NULL)
-    DestroyImage(local_image);
+  DestroyImageInfo(local_info);
   if (indirection)
     FreeMemory((char *) text);
   return(translated_text);

@@ -5008,7 +5008,6 @@ static boolean JPEGColorProfileHandler(j_decompress_ptr jpeg_info)
   register int
     i;
 
-
   /*
     Determine length of color profile.
   */
@@ -5590,7 +5589,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
   char
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
-    *text,
+    text[MaxTextExtent],
     page[MaxTextExtent];
 
   FILE
@@ -5600,7 +5599,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
     *image;
 
   ImageInfo
-    local_info;
+    *local_info;
 
   int
     x,
@@ -5631,14 +5630,16 @@ Image *ReadLABELImage(const ImageInfo *image_info)
   /*
     Create image label.
   */
-  local_info=(*image_info);
-  if (local_info.font == (char *) NULL)
-    local_info.font=DefaultXFont;
-  text=local_info.filename;
+  local_info=CloneImageInfo(image_info);
+  if (local_info == (ImageInfo *) NULL)
+    return((Image *) NULL);
+  if (local_info->font == (char *) NULL)
+    CloneString(&local_info->font,DefaultXFont);
+  (void) strcpy(text,local_info->filename);
   (void) XQueryColorDatabase("black",&pen_color);
-  if (local_info.pen != (char *) NULL)
-    (void) XQueryColorDatabase(local_info.pen,&pen_color);
-  if (*local_info.font == '@')
+  if (local_info->pen != (char *) NULL)
+    (void) XQueryColorDatabase(local_info->pen,&pen_color);
+  if (*local_info->font == '@')
     {
 #if defined(HasTTF)
       int
@@ -5701,17 +5702,18 @@ Image *ReadLABELImage(const ImageInfo *image_info)
       error=TT_Init_FreeType(&engine);
       if (error)
         PrematureExit(DelegateWarning,"Cannot initialize TTF engine",image);
-      error=TT_Open_Face(engine,local_info.font+1,&face);
+      error=TT_Open_Face(engine,local_info->font+1,&face);
       if (error)
         {
           /*
             Use default font.
           */
           MagickWarning(DelegateWarning,"Unable to open TTF font",
-            local_info.font+1);
+            local_info->font+1);
           DestroyImage(image);
-          local_info.font=DefaultXFont;
-          image=ReadLABELImage(&local_info);
+          CloneString(&local_info->font,DefaultXFont);
+          image=ReadLABELImage(local_info);
+          DestroyImageInfo(local_info);
           return(image);
         }
       TT_Get_Face_Properties(face,&face_properties);
@@ -5725,7 +5727,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
         }
       error|=TT_Set_Instance_Resolutions(instance,(unsigned short)
         image->x_resolution,(unsigned short) image->y_resolution);
-      error|=TT_Set_Instance_CharSize(instance,local_info.pointsize*64);
+      error|=TT_Set_Instance_CharSize(instance,local_info->pointsize*64);
       if (error)
         PrematureExit(DelegateWarning,"Cannot initialize TTF instance",image);
       for (code=0; (int) code < (int) face_properties.num_CharMaps; code++)
@@ -5774,7 +5776,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
       }
       TT_Get_Face_Properties(face,&face_properties);
       TT_Get_Instance_Metrics(instance,&instance_metrics);
-      width=local_info.pointsize >> 1;
+      width=local_info->pointsize >> 1;
       height=((int) (face_properties.horizontal->Ascender*
         instance_metrics.y_ppem)/(int) face_properties.header->Units_Per_EM)-
         ((int) (face_properties.horizontal->Descender*instance_metrics.y_ppem)/
@@ -5872,7 +5874,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
         (char *) NULL);
 #endif
     }
-  if (*local_info.font == '-')
+  if (*local_info->font == '-')
     {
       int
         status;
@@ -5912,7 +5914,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
           /*
             Open X server connection.
           */
-          display=XOpenDisplay(local_info.server_name);
+          display=XOpenDisplay(local_info->server_name);
           if (display != (Display *) NULL)
             {
               char
@@ -5927,7 +5929,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
               XGetResourceInfo(resource_database,client_name,&resource_info);
               resource_info.close_server=False;
               resource_info.colormap=PrivateColormap;
-              resource_info.font=local_info.font;
+              CloneString(&resource_info.font,local_info->font);
               resource_info.background_color="black";
               resource_info.foreground_color="white";
               map_info=XAllocStandardColormap();
@@ -5966,7 +5968,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
                     font_info,&resource_info,(XWindowInfo *) NULL);
                   display=(Display *) NULL;
                 }
-              cache_info=local_info;
+              cache_info=(*local_info);
             }
         }
       if (display == (Display *) NULL)
@@ -5975,10 +5977,11 @@ Image *ReadLABELImage(const ImageInfo *image_info)
             Use default font.
           */
           MagickWarning(XServerWarning,"Unable to open X server",
-            local_info.server_name);
+            local_info->server_name);
           DestroyImage(image);
-          local_info.font=DefaultPSFont;
-          image=ReadLABELImage(&local_info);
+          CloneString(&local_info->font,DefaultPSFont);
+          image=ReadLABELImage(local_info);
+          DestroyImageInfo(local_info);
           return(image);
         }
       /*
@@ -5986,13 +5989,13 @@ Image *ReadLABELImage(const ImageInfo *image_info)
       */
       XGetAnnotateInfo(&annotate_info);
       annotate_info.stencil=OpaqueStencil;
-      if (cache_info.font != local_info.font)
+      if (cache_info.font != local_info->font)
         {
           /*
             Font name has changed.
           */
           XFreeFont(display,font_info);
-          resource_info.font=local_info.font;
+          CloneString(&resource_info.font,local_info->font);
           font_info=XBestFont(display,&resource_info,False);
           if (font_info == (XFontStruct *) NULL)
             PrematureExit(ResourceLimitWarning,"Unable to load font",image);
@@ -6003,7 +6006,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
       annotate_info.height=font_info->ascent+font_info->descent;
       (void) sprintf(annotate_info.geometry,"%ux%u+0+0",annotate_info.width,
         annotate_info.height);
-      cache_info=local_info;
+      cache_info=(*local_info);
       /*
         Render label with a X11 server font.
       */
@@ -6038,40 +6041,41 @@ Image *ReadLABELImage(const ImageInfo *image_info)
   /*
     Render label with a Postscript font.
   */
-  local_info.density=(char *) NULL;
-  local_info.page=page;
-  (void) sprintf(local_info.page,"%ux%u+0+0!",local_info.pointsize*Extent(text),
-    local_info.pointsize << 1);
+  local_info->density=(char *) NULL;
+  CloneString(&local_info->page,page);
+  (void) sprintf(local_info->page,"%ux%u+0+0!",local_info->pointsize*
+    Extent(text),local_info->pointsize << 1);
   TemporaryFilename(filename);
   file=fopen(filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
   (void) fprintf(file,"%%!PS-Adobe-3.0\n");
   (void) fprintf(file,"/Helvetica findfont %u scalefont setfont\n",
-    local_info.pointsize);
+    local_info->pointsize);
   (void) fprintf(file,"/%.1024s findfont %u scalefont setfont\n",
-    local_info.font,local_info.pointsize);
+    local_info->font,local_info->pointsize);
   (void) fprintf(file,"0.0 0.0 0.0 setrgbcolor\n");
   (void) fprintf(file,"0 0 %u %u rectfill\n",
-    local_info.pointsize*Extent(text),local_info.pointsize << 1);
+    local_info->pointsize*Extent(text),local_info->pointsize << 1);
   (void) fprintf(file,"1.0 1.0 1.0 setrgbcolor\n");
-  (void) fprintf(file,"0 %u moveto (%.1024s) show\n",local_info.pointsize,
+  (void) fprintf(file,"0 %u moveto (%.1024s) show\n",local_info->pointsize,
     EscapeParenthesis(text));
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
-  (void) strcpy(local_info.filename,filename);
+  (void) strcpy(local_info->filename,filename);
   DestroyImage(image);
-  image=ReadPSImage(&local_info);
+  image=ReadPSImage(local_info);
   (void) remove(filename);
-  if (image == (Image *) NULL)
-    return(image);
   /*
     Set bounding box to the image dimensions.
   */
   crop_info.width=0;
-  crop_info.height=local_info.pointsize;
+  crop_info.height=local_info->pointsize;
   crop_info.x=0;
-  crop_info.y=local_info.pointsize >> 2;
+  crop_info.y=local_info->pointsize >> 2;
+  DestroyImageInfo(local_info);
+  if (image == (Image *) NULL)
+    return(image);
   q=image->pixels;
   runlength=q->length+1;
   corner.red=0;
@@ -6159,7 +6163,7 @@ Image *ReadLOGOImage(const ImageInfo *image_info)
     *image;
 
   ImageInfo
-    local_info;
+    *local_info;
 
   register const unsigned char
     *p;
@@ -6173,24 +6177,27 @@ Image *ReadLOGOImage(const ImageInfo *image_info)
   /*
     Open temporary output file.
   */
-  local_info=(*image_info);
-  (void) strcpy(filename,local_info.filename);
-  TemporaryFilename(local_info.filename);
-  file=fopen(local_info.filename,WriteBinaryType);
+  local_info=CloneImageInfo(image_info);
+  if (local_info == (ImageInfo *) NULL)
+    return((Image *) NULL);
+  (void) strcpy(filename,local_info->filename);
+  TemporaryFilename(local_info->filename);
+  file=fopen(local_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     {
       MagickWarning(FileOpenWarning,"Unable to write file",
-        local_info.filename);
+        local_info->filename);
+      DestroyImageInfo(local_info);
       return(ReadXCImage(image_info));
     }
   p=LogoImage;
   extent=LogoImageExtent;
-  if (Latin1Compare(local_info.magick,"GRANITE") == 0)
+  if (Latin1Compare(local_info->magick,"GRANITE") == 0)
     {
       p=GraniteImage;
       extent=GraniteImageExtent;
     }
-  if (Latin1Compare(local_info.magick,"NETSCAPE") == 0)
+  if (Latin1Compare(local_info->magick,"NETSCAPE") == 0)
     {
       p=NetscapeImage;
       extent=NetscapeImageExtent;
@@ -6206,13 +6213,15 @@ Image *ReadLOGOImage(const ImageInfo *image_info)
         filename);
       (void) fclose(file);
       (void) remove(filename);
-      return(ReadXCImage(&local_info));
+      DestroyImageInfo(local_info);
+      return(ReadXCImage(image_info));
     }
   (void) fclose(file);
-  image=ReadGIFImage(&local_info);
-  (void) remove(local_info.filename);
+  image=ReadGIFImage(local_info);
+  (void) remove(local_info->filename);
   if (image != (Image *) NULL)
     (void) strcpy(image->filename,filename);
+  DestroyImageInfo(local_info);
   return(image);
 }
 
@@ -7302,7 +7311,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
     *montage_image;
 
   ImageInfo
-    local_info;
+    *local_info;
 
   MontageInfo
     montage_info;
@@ -7310,20 +7319,24 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
   /*
     Create image tiles.
   */
-  local_info=(*image_info);
+  local_info=CloneImageInfo(image_info);
+  if (local_info == (ImageInfo *) NULL)
+    return((Image *) NULL);
   commands[0]=SetClientName((char *) NULL);
   commands[1]="-label";
   commands[2]=DefaultTileLabel;
-  MogrifyImages(&local_info,3,commands,&image);
+  MogrifyImages(local_info,3,commands,&image);
+  DestroyImageInfo(local_info);
   /*
     Create the PCD Overview image.
   */
   GetMontageInfo(&montage_info);
   (void) strcpy(montage_info.filename,image_info->filename);
   montage_image=MontageImages(image,&montage_info);
-  montage_info.font=image_info->font;
-  montage_info.pointsize=image_info->pointsize;
-  montage_info.texture="Granite:";
+  CloneString(&montage_info.font,image_info->font);
+  montage_info.pointsize,image_info->pointsize;
+  CloneString(&montage_info.texture,"Granite:");
+  DestroyMontageInfo(&montage_info);
   if (montage_image == (Image *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
   DestroyImage(image);
@@ -8285,9 +8298,6 @@ Image *ReadPDFImage(const ImageInfo *image_info)
     *image,
     *next_image;
 
-  ImageInfo
-    local_info;
-
   int
     count,
     status;
@@ -8445,8 +8455,7 @@ Image *ReadPDFImage(const ImageInfo *image_info)
       (void) remove(postscript_filename);
       return((Image *) NULL);
     }
-  local_info=(*image_info);
-  image=ReadPNMImage(&local_info);
+  image=ReadPNMImage(image_info);
   (void) remove(postscript_filename);
   (void) remove(image_info->filename);
   if (image == (Image *) NULL)
@@ -9007,14 +9016,16 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           *file;
 
         ImageInfo
-          local_info;
+          *local_info;
 
         /*
           Embedded JPEG.
         */
-        local_info=(*image_info);
-        TemporaryFilename(local_info.filename);
-        file=fopen(local_info.filename,WriteBinaryType);
+        local_info=CloneImageInfo(image_info);
+        if (local_info == (ImageInfo *) NULL)
+          PrematureExit(FileOpenWarning,"Unable to write file",image);
+        TemporaryFilename(local_info->filename);
+        file=fopen(local_info->filename,WriteBinaryType);
         if (file == (FILE *) NULL)
           PrematureExit(FileOpenWarning,"Unable to write file",image);
         length=MSBFirstReadLong(image->file);
@@ -9025,8 +9036,9 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
             (void) putc(c,file);
         }
         (void) fclose(file);
-        tiled_image=ReadJPEGImage(&local_info);
-        (void) remove(local_info.filename);
+        tiled_image=ReadJPEGImage(local_info);
+        DestroyImageInfo(local_info);
+        (void) remove(local_info->filename);
         if (tiled_image == (Image *) NULL)
           continue;
         FormatString(geometry,"%ux%u",
@@ -10676,9 +10688,6 @@ Image *ReadPSImage(const ImageInfo *image_info)
     *image,
     *next_image;
 
-  ImageInfo
-    local_info;
-
   int
     c,
     count,
@@ -10888,8 +10897,7 @@ Image *ReadPSImage(const ImageInfo *image_info)
         image_info->filename);
       return((Image *) NULL);
     }
-  local_info=(*image_info);
-  image=ReadPNMImage(&local_info);
+  image=ReadPNMImage(image_info);
   (void) remove(image_info->filename);
   if (image == (Image *) NULL)
     {
@@ -13021,7 +13029,7 @@ Image *ReadSTEGANOImage(const ImageInfo *image_info)
 }
 
   ImageInfo
-    local_info;
+    *local_info;
 
   int
     shift;
@@ -13049,9 +13057,13 @@ Image *ReadSTEGANOImage(const ImageInfo *image_info)
   /*
     Initialize Image structure.
   */
-  local_info=(*image_info);
-  *local_info.magick='\0';
-  stegano_image=ReadImage(&local_info);
+  local_info=CloneImageInfo(image_info);
+  if (local_info == (ImageInfo *) NULL)
+    PrematureExit(ResourceLimitWarning,"Memory allocation failed",
+      stegano_image);
+  *local_info->magick='\0';
+  stegano_image=ReadImage(local_info);
+  DestroyImageInfo(local_info);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
   if (!UncondenseImage(stegano_image))
@@ -13945,49 +13957,45 @@ static boolean TIFFNewsProfileHandler(char *text,long int length,Image *image,
       memcpy(image->iptc_profile.info,p,length);
       return(True);
     }
-  else
+  /*
+    Handle TIFFTAG_PHOTOSHOP tag.
+  */
+  while (length > 0)
+  {
+    if ((p[0]=='8') && (p[1]=='B') && (p[2]=='I') && (p[3]=='M') &&
+        (p[4] == 4) && (p[5] == 4))
+      break;
+    length-=2;
+    p+=2;
+  }
+  if (length <= 0)
+    return(False);
+  if (image->iptc_profile.length != 0)
     {
-      /*
-        Handle TIFFTAG_PHOTOSHOP tag.
-      */
-      while (length > 0)
-      {
-        if ((p[0]=='8') && (p[1]=='B') && (p[2]=='I') && (p[3]=='M') &&
-            (p[4] == 4) && (p[5] == 4))
-          break;
-        length-=2;
-        p+=2;
-      }
-      if (length <= 0)
-        return(False);
-      if (image->iptc_profile.length != 0)
-        {
-          FreeMemory(image->iptc_profile.info);
-          image->iptc_profile.length=0;
-        }
-      /*
-        Eat OSType, IPTC ID code, and Pascal string length bytes.
-      */
-      p+=6; 
-      length=(*p++);
-      if (length)
-        p+=length;
-      if ((length & 1) == 0)
-        p++;  /* align to an even byte boundary */
-      length=(p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
-      image->iptc_profile.info=(unsigned char *)
-        AllocateMemory((unsigned int) length*sizeof(unsigned char));
-      if (image->iptc_profile.info == (unsigned char *) NULL)
-        {
-          MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-            (char *) NULL);
-          return(False);
-        }
-      image->iptc_profile.length=length;
-      memcpy(image->iptc_profile.info,p+4,length);
-      return(True);
+      FreeMemory(image->iptc_profile.info);
+      image->iptc_profile.length=0;
     }
-  return(False);
+  /*
+    Eat OSType, IPTC ID code, and Pascal string length bytes.
+  */
+  p+=6; 
+  length=(*p++);
+  if (length)
+    p+=length;
+  if ((length & 1) == 0)
+    p++;  /* align to an even byte boundary */
+  length=(p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
+  image->iptc_profile.info=(unsigned char *)
+    AllocateMemory((unsigned int) length*sizeof(unsigned char));
+  if (image->iptc_profile.info == (unsigned char *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+        (char *) NULL);
+      return(False);
+    }
+  image->iptc_profile.length=length;
+  memcpy(image->iptc_profile.info,p+4,length);
+  return(True);
 }
 #endif
 
@@ -14713,7 +14721,7 @@ Image *ReadTILEImage(const ImageInfo *image_info)
     *tiled_image;
 
   ImageInfo
-    local_info;
+    *local_info;
 
   int
     y;
@@ -14734,9 +14742,12 @@ Image *ReadTILEImage(const ImageInfo *image_info)
   /*
     Initialize Image structure.
   */
-  local_info=(*image_info);
-  *local_info.magick='\0';
-  tiled_image=ReadImage(&local_info);
+  local_info=CloneImageInfo(image_info);
+  if (local_info == (ImageInfo *) NULL)
+    PrematureExit(ResourceLimitWarning,"Memory allocation failed",tiled_image);
+  *local_info->magick='\0';
+  tiled_image=ReadImage(local_info);
+  DestroyImageInfo(local_info);
   if (tiled_image == (Image *) NULL)
     return((Image *) NULL);
   tiled_image->orphan=True;
@@ -14746,7 +14757,7 @@ Image *ReadTILEImage(const ImageInfo *image_info)
   if (cloned_image == (Image *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",tiled_image);
   image=cloned_image;
-  (void) strcpy(image->filename,local_info.filename);
+  (void) strcpy(image->filename,image_info->filename);
   /*
     Tile texture onto image.
   */
@@ -15122,7 +15133,7 @@ Image *ReadTTFImage(const ImageInfo *image_info)
     i;
 
   ImageInfo
-    local_info;
+    *local_info;
 
   /*
     Allocate image structure.
@@ -15143,27 +15154,33 @@ Image *ReadTTFImage(const ImageInfo *image_info)
     Start with a white canvas.
   */
   y=0;
-  local_info=(*image_info);
-  local_info.size="800x520";
-  local_info.pen="black";
-  local_info.pointsize=18;
-  local_info.font=font;
-  FormatString(local_info.font,"@%.1024s",image_info->filename);
-  GetAnnotateInfo(&local_info,&annotate_info);
+  local_info=CloneImageInfo(image_info);
+  if (local_info == (ImageInfo *) NULL)
+    return((Image *) NULL);
+  CloneString(&local_info->size,"800x520");
+  CloneString(&local_info->pen,"black");
+  CloneString(&local_info->font,font);
+  local_info->pointsize=18;
+  FormatString(local_info->font,"@%.1024s",image_info->filename);
+  GetAnnotateInfo(local_info,&annotate_info);
   image->columns=annotate_info.bounds.width;
   image->rows=annotate_info.bounds.height;
   if (image_info->ping)
     {
+      DestroyAnnotateInfo(&annotate_info);
+      DestroyImageInfo(local_info);
       CloseImage(image);
       return(image);
     }
   DestroyImage(image);
-  annotate_info.geometry=geometry;
-  annotate_info.text=text;
-  (void) strcpy(local_info.filename,"white");
-  image=ReadXCImage(&local_info);
+  (void) strcpy(local_info->filename,"white");
+  image=ReadXCImage(local_info);
+  DestroyImageInfo(local_info);
   if (image == (Image *) NULL)
-    return((Image *) NULL);
+    {
+      DestroyAnnotateInfo(&annotate_info);
+      return((Image *) NULL);
+    }
   (void) strcpy(image->filename,image_info->filename);
   if (annotate_info.font_name != (char *) NULL)
     CloneString(&image->label,annotate_info.font_name);
@@ -15174,40 +15191,48 @@ Image *ReadTTFImage(const ImageInfo *image_info)
   if (annotate_info.font_name != (char *) NULL)
     {
       annotate_info.pointsize=30;
-      (void) strcpy(annotate_info.text,annotate_info.font_name);
-      FormatString(annotate_info.geometry,"+10%+d",y);
+      FormatString(geometry,"+10%+d",y);
+      CloneString(&annotate_info.geometry,geometry);
+      CloneString(&annotate_info.text,annotate_info.font_name);
       AnnotateImage(image,&annotate_info);
       y+=42;
     }
   annotate_info.pointsize=18;
-  (void) strcpy(annotate_info.text,"abcdefghijklmnopqrstuvwxyz");
-  FormatString(annotate_info.geometry,"+10%+d",y);
+  FormatString(geometry,"+10%+d",y);
+  CloneString(&annotate_info.geometry,geometry);
+  CloneString(&annotate_info.text,"abcdefghijklmnopqrstuvwxyz");
   AnnotateImage(image,&annotate_info);
   y+=20;
-  (void) strcpy(annotate_info.text,"ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-  FormatString(annotate_info.geometry,"+10%+d",y);
+  FormatString(geometry,"+10%+d",y);
+  CloneString(&annotate_info.geometry,geometry);
+  CloneString(&annotate_info.text,"ABCDEFGHIJKLMNOPQRSTUVWXYZ");
   AnnotateImage(image,&annotate_info);
   y+=20;
-  (void) strcpy(annotate_info.text,"1234567890.:,;(:*!?')");
-  FormatString(annotate_info.geometry,"+10%+d",y);
+  FormatString(geometry,"+10%+d",y);
+  CloneString(&annotate_info.geometry,geometry);
+  CloneString(&annotate_info.text,"1234567890.:,;(:*!?')");
   AnnotateImage(image,&annotate_info);
   y+=20;
   for (i=12; i <= 72; i+=6)
   {
     y+=i+6;
     annotate_info.pointsize=18;
-    FormatString(annotate_info.text,"%d",i);
-    FormatString(annotate_info.geometry,"+10%+d",y);
+    FormatString(geometry,"+10%+d",y);
+    CloneString(&annotate_info.geometry,geometry);
+    FormatString(text,"%d",i);
+    CloneString(&annotate_info.text,text);
     AnnotateImage(image,&annotate_info);
     annotate_info.pointsize=i;
-    (void) strcpy(annotate_info.text,
+    FormatString(geometry,"+40%+d",y);
+    CloneString(&annotate_info.geometry,geometry);
+    CloneString(&annotate_info.text,
       "That which does not kill us, makes us stronger");
-    FormatString(annotate_info.geometry,"+40%+d",y);
     AnnotateImage(image,&annotate_info);
     if (i >= 24)
       i+=6;
   }
   CondenseImage(image);
+  DestroyAnnotateInfo(&annotate_info);
   return(image);
 }
 #else
@@ -15338,15 +15363,10 @@ Image *ReadTXTImage(const ImageInfo *image_info)
   if (image_info->texture != (char *) NULL)
     TextureImage(image,image_info->texture);
   /*
-    Initialize image annotation info.
-  */
-  GetAnnotateInfo((ImageInfo *) image_info,&annotate_info);
-  annotate_info.text=text;
-  annotate_info.geometry=geometry;
-  (void) strcpy(filename,image_info->filename);
-  /*
     Annotate the text image.
   */
+  GetAnnotateInfo((ImageInfo *) image_info,&annotate_info);
+  (void) strcpy(filename,image_info->filename);
   offset=0;
   for ( ; ; )
   {
@@ -15358,8 +15378,9 @@ Image *ReadTXTImage(const ImageInfo *image_info)
       break;
     if (Extent(text) > 0)
       text[Extent(text)-1]='\0';
-    FormatString(annotate_info.geometry,"%+d%+d",bounding_box.x,
-      bounding_box.y+offset);
+    CloneString(&annotate_info.text,text);
+    FormatString(geometry,"%+d%+d",bounding_box.x,bounding_box.y+offset);
+    CloneString(&annotate_info.geometry,geometry);
     AnnotateImage(image,&annotate_info);
     offset+=annotate_info.bounds.height;
     if (image->previous == (Image *) NULL)
@@ -15375,6 +15396,7 @@ Image *ReadTXTImage(const ImageInfo *image_info)
     image->orphan=False;
     if (image->next == (Image *) NULL)
       {
+        DestroyAnnotateInfo(&annotate_info);
         MagickWarning(ResourceLimitWarning,"Unable to annotate image",
           "Memory allocation failed");
         break;
@@ -15412,6 +15434,7 @@ Image *ReadTXTImage(const ImageInfo *image_info)
       }
     offset=0;
   }
+  DestroyAnnotateInfo(&annotate_info);
   (void) IsPseudoClass(image);
   while (image->previous != (Image *) NULL)
     image=image->previous;
@@ -15832,7 +15855,7 @@ Image *ReadVIDImage(const ImageInfo *image_info)
     *next_image;
 
   ImageInfo
-    local_info;
+    *local_info;
 
   int
     number_files;
@@ -15877,7 +15900,10 @@ Image *ReadVIDImage(const ImageInfo *image_info)
     Read each image and convert them to a tile.
   */
   image=(Image *) NULL;
-  local_info=(*image_info);
+  local_info=CloneImageInfo(image_info);
+  if (local_info == (ImageInfo *) NULL)
+    return((Image *) NULL);
+  CloneString(&local_info->size,DefaultTileGeometry);
   commands[0]=SetClientName((char *) NULL);
   commands[1]="-label";
   commands[2]=DefaultTileLabel;
@@ -15886,14 +15912,13 @@ Image *ReadVIDImage(const ImageInfo *image_info)
   for (i=0; i < number_files; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    (void) strcpy(local_info.filename,filelist[i]);
-    *local_info.magick='\0';
-    local_info.size=DefaultTileGeometry;
-    next_image=ReadImage(&local_info);
+    (void) strcpy(local_info->filename,filelist[i]);
+    *local_info->magick='\0';
+    next_image=ReadImage(local_info);
     FreeMemory((char *) filelist[i]);
     if (next_image != (Image *) NULL)
       {
-        MogrifyImages(&local_info,5,commands,&next_image);
+        MogrifyImages(local_info,5,commands,&next_image);
         if (image == (Image *) NULL)
           image=next_image;
         else
@@ -15906,6 +15931,7 @@ Image *ReadVIDImage(const ImageInfo *image_info)
     (void) SetMonitorHandler(handler);
     ProgressMonitor(LoadImageText,i,number_files);
   }
+  DestroyImageInfo(local_info);
   FreeMemory((char *) filelist);
   if (image == (Image *) NULL)
     {
@@ -15920,10 +15946,11 @@ Image *ReadVIDImage(const ImageInfo *image_info)
   */
   GetMontageInfo(&montage_info);
   (void) strcpy(montage_info.filename,image_info->filename);
-  montage_info.font=image_info->font;
+  CloneString(&montage_info.font,image_info->font);
   montage_info.pointsize=image_info->pointsize;
-  montage_info.texture="Granite:";
+  CloneString(&montage_info.texture,"Granite:");
   montage_image=MontageImages(image,&montage_info);
+  DestroyMontageInfo(&montage_info);
   if (montage_image == (Image *) NULL)
     {
       MagickWarning(CorruptImageWarning,"unable to read VID image",

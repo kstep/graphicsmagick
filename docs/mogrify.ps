@@ -1,6 +1,6 @@
 %!PS-Adobe-3.0
 %%Creator: groff version 1.10
-%%CreationDate: Wed Dec 30 19:06:16 1998
+%%CreationDate: Fri Jan  1 14:04:24 1999
 %%DocumentNeededResources: font Times-Roman
 %%+ font Times-Bold
 %%+ font Times-Italic
@@ -327,11 +327,10 @@ BP
 %%EndPageSetup
 /F0 10/Times-Roman@0 SF(User Commands)72 48 Q -.834(mogrify \( 1 \))
 352.182 F/F1 10/Times-Bold@0 SF(-cr)108 96 Q(op)-.18 E/F2 10
-/Times-Italic@0 SF(<width>{%}x<height>{%}{+-}<x of)2.5 E(fset>{+-}<y of)
--.18 E(fset>)-.18 E F0
-(preferred size and location of the cropped image.)144 108 Q(See)5 E F1
-(X\(1\))2.5 E F0(for details about the geometry)2.5 E(speci\214cation.)
-144 120 Q 1.6 -.8(To s)144 144 T
+/Times-Italic@0 SF(<width>x<height>{+-}<x of)2.5 E(fset>{+-}<y of)-.18 E
+(fset>{%})-.18 E F0(preferred size and location of the cropped image.)
+144 108 Q(See)5 E F1(X\(1\))2.5 E F0(for details about the geometry)2.5
+E(speci\214cation.)144 120 Q 1.6 -.8(To s)144 144 T
 (pecify a percentage width or height instead, append).8 E F1(%)2.5 E F0
 5(.F)C(or e)-5.15 E(xample to crop the image by ten)-.15 E
 (percent on all sides of the image, use)144 156 Q F1(-cr)2.5 E(op 10%)
@@ -578,8 +577,8 @@ F0(-)A F3(*)A F0(-)A F3(*)A F0(-iso8859-)A F3(*)A F0 2.5(\). T)B 2.5(ou)
 2.5(els. This)-.15 F(option is useful if the image is of a kno)144 693.6
 Q(wn g)-.25 E(amma b)-.05 E(ut not set as an image attrib)-.2 E
 (ute \(e.g. PNG)-.2 E(images\).)144 705.6 Q F1(-geometry)108 722.4 Q F2
-(<width>{%}x<height>{%}{+-}<x of)2.5 E(fset>{+-}<y of)-.18 E
-(fset>{!}{<}{>})-.18 E F0 125.135(ImageMagick Last)72 770.4 R
+(<width>x<height>{+-}<x of)2.5 E(fset>{+-}<y of)-.18 E
+(fset>{%}{!}{<}{>})-.18 E F0 125.135(ImageMagick Last)72 770.4 R
 (change: 1 May 1994)2.5 E(6)178.175 E EP
 %%Page: 7 7
 %%BeginPageSetup
@@ -739,33 +738,34 @@ F0(transform image to span the full range of color v)144 124.8 Q(alues.)
 108 165.6 Q/F2 10/Times-Italic@0 SF(color)2.5 E F0
 (change this color to the pen color within the image.)144 177.6 Q(See)5
 E F1(-pen)2.5 E F0(for more details.)2.5 E F1(-page)108 194.4 Q F2
-(<width>{%}x<height>{%}{+-}<x of)2.5 E(fset>{+-}<y of)-.18 E
-(fset>{!}{<}{>})-.18 E F0(preferred size and location of an image can)
-144 206.4 Q -.25(va)-.4 G(s.).25 E(Use this option to specify the dimen\
-sions of the Postscript page in dots per inch or a TEXT page in)144
-230.4 Q(pix)144 242.4 Q 2.5(els. The)-.15 F
-(choices for a Postscript page are:)2.5 E 20(11x17 792)161.5 266.4 R
-(1224)5 E 15(Ledger 1224)161.5 278.4 R(792)7.5 E(Le)161.5 290.4 Q -.05
-(ga)-.15 G 22.5(l6).05 G 2.5(12 1008)-22.5 F 17.5(Letter 612)161.5 302.4
-R(792)7.5 E 5(LetterSmall 612 792)161.5 314.4 R 17.5(ArchE 2592)161.5
-326.4 R(3456)5 E 17.5(ArchD 1728)161.5 338.4 R(2592)5 E 17.5(ArchC 1296)
-161.5 350.4 R(1728)5 E 20(ArchB 864)161.5 362.4 R(1296)5 E 20(ArchA 648)
-161.5 374.4 R(864)7.5 E 25(A0 2380)161.5 386.4 R(3368)5 E 25(A1 1684)
-161.5 398.4 R(2380)5 E 25(A2 1190)161.5 410.4 R(1684)5 E 27.5(A3 842)
-161.5 422.4 R(1190)5 E 27.5(A4 595)161.5 434.4 R(842)7.5 E 15
-(A4Small 595)161.5 446.4 R(842)7.5 E 27.5(A5 421)161.5 458.4 R(595)7.5 E
-27.5(A6 297)161.5 470.4 R(421)7.5 E 27.5(A7 210)161.5 482.4 R(297)7.5 E
-27.5(A8 148)161.5 494.4 R(210)7.5 E 27.5(A9 105)161.5 506.4 R(148)7.5 E
-27.5(A10 74)161.5 518.4 R(105)7.5 E 25(B0 2836)161.5 530.4 R(4008)5 E 25
-(B1 2004)161.5 542.4 R(2836)5 E 25(B2 1418)161.5 554.4 R(2004)5 E 25
-(B3 1002)161.5 566.4 R(1418)5 E 27.5(B4 709)161.5 578.4 R(1002)5 E 27.5
-(B5 501)161.5 590.4 R(709)7.5 E 25(C0 2600)161.5 602.4 R(3677)5 E 25
-(C1 1837)161.5 614.4 R(2600)5 E 25(C2 1298)161.5 626.4 R(1837)5 E 27.5
-(C3 918)161.5 638.4 R(1298)5 E 27.5(C4 649)161.5 650.4 R(918)7.5 E 27.5
-(C5 459)161.5 662.4 R(649)7.5 E 27.5(C6 323)161.5 674.4 R(459)7.5 E 22.5
-(Flsa 612)161.5 686.4 R(936)7.5 E 22.5(Flse 612)161.5 698.4 R(936)7.5 E
-7.5(HalfLetter 396)161.5 710.4 R(612)7.5 E 125.135(ImageMagick Last)72
-768 R(change: 1 May 1994)2.5 E(9)178.175 E EP
+(<width>x<height>{+-}<x of)2.5 E(fset>{+-}<y of)-.18 E
+(fset>{%}{!}{<}{>})-.18 E F0
+(preferred size and location of an image can)144 206.4 Q -.25(va)-.4 G
+(s.).25 E(Use this option to specify the dimensions of the Postscript p\
+age in dots per inch or a TEXT page in)144 230.4 Q(pix)144 242.4 Q 2.5
+(els. The)-.15 F(choices for a Postscript page are:)2.5 E 20(11x17 792)
+161.5 266.4 R(1224)5 E 15(Ledger 1224)161.5 278.4 R(792)7.5 E(Le)161.5
+290.4 Q -.05(ga)-.15 G 22.5(l6).05 G 2.5(12 1008)-22.5 F 17.5
+(Letter 612)161.5 302.4 R(792)7.5 E 5(LetterSmall 612 792)161.5 314.4 R
+17.5(ArchE 2592)161.5 326.4 R(3456)5 E 17.5(ArchD 1728)161.5 338.4 R
+(2592)5 E 17.5(ArchC 1296)161.5 350.4 R(1728)5 E 20(ArchB 864)161.5
+362.4 R(1296)5 E 20(ArchA 648)161.5 374.4 R(864)7.5 E 25(A0 2380)161.5
+386.4 R(3368)5 E 25(A1 1684)161.5 398.4 R(2380)5 E 25(A2 1190)161.5
+410.4 R(1684)5 E 27.5(A3 842)161.5 422.4 R(1190)5 E 27.5(A4 595)161.5
+434.4 R(842)7.5 E 15(A4Small 595)161.5 446.4 R(842)7.5 E 27.5(A5 421)
+161.5 458.4 R(595)7.5 E 27.5(A6 297)161.5 470.4 R(421)7.5 E 27.5(A7 210)
+161.5 482.4 R(297)7.5 E 27.5(A8 148)161.5 494.4 R(210)7.5 E 27.5(A9 105)
+161.5 506.4 R(148)7.5 E 27.5(A10 74)161.5 518.4 R(105)7.5 E 25(B0 2836)
+161.5 530.4 R(4008)5 E 25(B1 2004)161.5 542.4 R(2836)5 E 25(B2 1418)
+161.5 554.4 R(2004)5 E 25(B3 1002)161.5 566.4 R(1418)5 E 27.5(B4 709)
+161.5 578.4 R(1002)5 E 27.5(B5 501)161.5 590.4 R(709)7.5 E 25(C0 2600)
+161.5 602.4 R(3677)5 E 25(C1 1837)161.5 614.4 R(2600)5 E 25(C2 1298)
+161.5 626.4 R(1837)5 E 27.5(C3 918)161.5 638.4 R(1298)5 E 27.5(C4 649)
+161.5 650.4 R(918)7.5 E 27.5(C5 459)161.5 662.4 R(649)7.5 E 27.5(C6 323)
+161.5 674.4 R(459)7.5 E 22.5(Flsa 612)161.5 686.4 R(936)7.5 E 22.5
+(Flse 612)161.5 698.4 R(936)7.5 E 7.5(HalfLetter 396)161.5 710.4 R(612)
+7.5 E 125.135(ImageMagick Last)72 768 R(change: 1 May 1994)2.5 E(9)
+178.175 E EP
 %%Page: 10 10
 %%BeginPageSetup
 BP

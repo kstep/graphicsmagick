@@ -228,7 +228,7 @@ This option enhances the intensity differences between the
 lighter and darker elements of the image.  Use \fB-contrast\fP to
 enhance the image or \fB+contrast\fP to reduce the image contrast.
 .TP
-.B "-crop \fI<width>{%}x<height>{%}{\+-}<x offset>{\+-}<y offset>\fP"
+.B "-crop \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}\fP"
 preferred size and location of the cropped image.  See \fBX(1)\fP for details
 about the geometry specification.
 
@@ -358,7 +358,7 @@ Use \fB+gamma\fP to set the image gamma level without actually adjusting
 the image pixels.  This option is useful if the image is of a known
 gamma but not set as an image attribute (e.g. PNG images).
 .TP
-.B "-geometry \fI<width>{%}x<height>{%}{\+-}<x offset>{\+-}<y offset>{!}{<}{>}\fP"
+.B "-geometry \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{!}{<}{>}\fP"
 preferred size and location of the image window.  See \fBX(1)\fP for details
 about the geometry specification.  By default, the window size is the image
 size and the location is chosen by you when it is mapped.
@@ -461,7 +461,7 @@ becomes blue, etc.).
 The red, green, and blue intensities of an image are negated.   Use
 \fB+negate\fP to only negate the grayscale pixels of the image.
 .TP
-.B "-page \fI<width>{%}x<height>{%}{\+-}<x offset>{\+-}<y offset>{!}{<}{>}\fP"
+.B "-page \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{!}{<}{>}\fP"
 preferred size and location of an image canvas.
 
 Use this option to specify the dimensions of the Postscript page in

@@ -939,6 +939,7 @@ extern Export void
   DestroyImage(Image *),
   DestroyImageInfo(ImageInfo *),
   DestroyImages(Image *),
+  DestroyMontageInfo(MontageInfo *),
   DrawImage(Image *,AnnotateInfo *),
   EqualizeImage(Image *),
   GammaImage(Image *,const char *),
