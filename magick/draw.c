@@ -487,22 +487,6 @@ Export void DestroyDrawInfo(DrawInfo *draw_info)
 %
 */
 
-static double Permutate(int n,int k)
-{
-  double
-    r;
-
-  register int
-    i;
-
-  r=1.0;
-  for (i=k+1; i <= n; i++)
-    r*=i;
-  for (i=1; i <= (n-k); i++)
-    r/=i;
-  return(r);
-}
-
 static void GenerateArc(PrimitiveInfo *primitive_info,PointInfo start,
   PointInfo end,PointInfo arc)
 {

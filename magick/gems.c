@@ -329,7 +329,8 @@ Export void HSLTransform(const double hue,const double saturation,
 %  The format of the Hull method is:
 %
 %      void Hull(const int x_offset,const int y_offset,const int polarity,
-%        const unsigned int columns,const unsigned int rows,Quantum *f,Quantum *g)
+%        const unsigned int columns,const unsigned int rows,Quantum *f,
+%        Quantum *g)
 %
 %  A description of each parameter follows:
 %
@@ -596,6 +597,47 @@ Export void Modulate(double percent_hue,double percent_saturation,
           hue-=1.0;
     }
   HSLTransform(hue,saturation,brightness,red,green,blue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P e r m u t a t e                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method Permutate()
+%
+%  The format of the Permutate method is:
+%
+%      void Permutate(int n,int k)
+%
+%  A description of each parameter follows:
+%
+%    o n:
+%
+%    o k:
+%
+%
+*/
+Export double Permutate(int n,int k)
+{
+  double
+    r;
+
+  register int
+    i;
+
+  r=1.0;
+  for (i=k+1; i <= n; i++)
+    r*=i;
+  for (i=1; i <= (n-k); i++)
+    r/=i;
+  return(r);
 }
 
 /*

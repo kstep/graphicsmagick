@@ -293,13 +293,11 @@ static char *TraversePath(const char *data)
     n;
 
   PointInfo
+    point,
     start;
 
   register const char
     *p;
-
-  SegmentInfo
-    segment;
 
   unsigned int
     status;
@@ -312,11 +310,29 @@ static char *TraversePath(const char *data)
       p++;
     switch (*p)
     {
+      case 'c':
+      {
+        for (n=0; ; n=0)
+        {
+          (void) sscanf(p+1,"%lf%lf%n",&x,&y,&n);
+          if (n == 0)
+            (void) sscanf(p+1,"%lf,%lf%n",&x,&y,&n);
+          if (n == 0)
+            break;
+          point.x+=x;
+          point.y+=y;
+          (void) FormatString(points,"%g,%g ",point.x,point.y);
+          if (!ConcatenateString(&path,points))
+            return((char *) NULL);
+          p+=n;
+        }
+        break;
+      }
       case 'h':
       {
         (void) sscanf(p+1,"%lf%n",&x,&n);
-        segment.x2+=x;
-        (void) FormatString(points,"%g,%g ",segment.x2,segment.y2);
+        point.x+=x;
+        (void) FormatString(points,"%g,%g ",point.x,point.y);
         if (!ConcatenateString(&path,points))
           return((char *) NULL);
         p+=n;
@@ -324,8 +340,8 @@ static char *TraversePath(const char *data)
       }
       case 'H':
       {
-        (void) sscanf(p+1,"%lf%n",&segment.x2,&n);
-        (void) FormatString(points,"%g,%g ",segment.x2,segment.y2);
+        (void) sscanf(p+1,"%lf%n",&point.x,&n);
+        (void) FormatString(points,"%g,%g ",point.x,point.y);
         if (!ConcatenateString(&path,points))
           return((char *) NULL);
         p+=n;
@@ -340,9 +356,9 @@ static char *TraversePath(const char *data)
             (void) sscanf(p+1,"%lf,%lf%n",&x,&y,&n);
           if (n == 0)
             break;
-          segment.x2+=x;
-          segment.y2+=y;
-          (void) FormatString(points,"%g,%g ",segment.x2,segment.y2);
+          point.x+=x;
+          point.y+=y;
+          (void) FormatString(points,"%g,%g ",point.x,point.y);
           if (!ConcatenateString(&path,points))
             return((char *) NULL);
           p+=n;
@@ -353,12 +369,12 @@ static char *TraversePath(const char *data)
       {
         for (n=0; ; n=0)
         {
-          (void) sscanf(p+1,"%lf%lf%n",&segment.x2,&segment.y2,&n);
+          (void) sscanf(p+1,"%lf%lf%n",&point.x,&point.y,&n);
           if (n == 0)
-            (void) sscanf(p+1,"%lf,%lf%n",&segment.x2,&segment.y2,&n);
+            (void) sscanf(p+1,"%lf,%lf%n",&point.x,&point.y,&n);
           if (n == 0)
             break;
-          (void) FormatString(points,"%g,%g  ",segment.x2,segment.y2);
+          (void) FormatString(points,"%g,%g  ",point.x,point.y);
           if (!ConcatenateString(&path,points))
             return((char *) NULL);
           p+=n;
@@ -368,22 +384,22 @@ static char *TraversePath(const char *data)
       case 'M':
       {
         n=0;
-        (void) sscanf(p+1,"%lf%lf%n",&segment.x1,&segment.y1,&n);
+        (void) sscanf(p+1,"%lf%lf%n",&point.x,&point.y,&n);
         if (n == 0)
-          (void) sscanf(p+1,"%lf,%lf%n",&segment.x1,&segment.y1,&n);
-        (void) FormatString(points,"%g,%g ",segment.x1,segment.y1);
+          (void) sscanf(p+1,"%lf,%lf%n",&point.x,&point.y,&n);
+        (void) FormatString(points,"%g,%g ",point.x,point.y);
         if (!ConcatenateString(&path,points))
           return((char *) NULL);
-        start.x=segment.x1;
-        start.y=segment.y1;
+        start.x=point.x;
+        start.y=point.y;
         p+=n;
         break;
       }
       case 'v':
       {
         (void) sscanf(p+1,"%lf%n",&y,&n);
-        segment.y2+=y;
-        (void) FormatString(points,"%g,%g ",segment.x2,segment.y2);
+        point.y+=y;
+        (void) FormatString(points,"%g,%g ",point.x,point.y);
         if (!ConcatenateString(&path,points))
           return((char *) NULL);
         p+=n;
@@ -391,8 +407,8 @@ static char *TraversePath(const char *data)
       }
       case 'V':
       {
-        (void) sscanf(p+1,"%lf%n",&segment.y2,&n);
-        (void) FormatString(points,"%g,%g ",segment.x2,segment.y2);
+        (void) sscanf(p+1,"%lf%n",&point.y,&n);
+        (void) FormatString(points,"%g,%g ",point.x,point.y);
         if (!ConcatenateString(&path,points))
           return((char *) NULL);
         p+=n;
@@ -401,8 +417,8 @@ static char *TraversePath(const char *data)
       case 'z':
       case 'Z':
       {
-        segment.x1=start.x;
-        segment.y1=start.y;
+        point.x=start.x;
+        point.y=start.y;
         (void) FormatString(points,"%g,%g ",start.x,start.y);
         if (!ConcatenateString(&path,points))
           return((char *) NULL);

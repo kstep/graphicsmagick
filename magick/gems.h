@@ -11,6 +11,9 @@ extern "C" {
 /*
   Graphic gems define declarations.
 */
+extern Export double
+  Permutate(int,int);
+
 extern Export PixelPacket
   InterpolateColor(Image *,const double,const double);
 
