@@ -782,7 +782,6 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 
   int
     length,
-    max_runlength,
     y;
 
   PixelPacket
@@ -1078,8 +1077,6 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       Write image pixels to file.
     */
     status=True;
-    length=0;
-    max_runlength=255;
     for (y=0; y < (int) image->rows; y++)
     {
       p=GetPixelCache(image,0,y,image->columns,1);
@@ -1105,20 +1102,16 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         }
       else
         {
-          if (y == 0)
-            {
-              pixel=(*image->pixels);
-              if (image->class == PseudoClass)
-                index=(*image->indexes);
-            }
+          pixel=(*image->pixels);
+          if (image->class == PseudoClass)
+            index=(*image->indexes);
+          length=0;
           q=pixels;
           for (x=0; x < (int) image->columns; x++)
           {
-            if ((x == (int) (image->columns-1)) && (y == (int) (image->rows-1)))
-              max_runlength=0;
             if ((p->red == pixel.red) && (p->green == pixel.green) && 
                 (p->blue == pixel.blue) && (p->opacity == pixel.opacity) &&
-                (length < max_runlength))
+                (length < 255) && (x < (image->columns-1)))
               length++;
             else
               {
