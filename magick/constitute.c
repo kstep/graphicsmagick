@@ -1606,8 +1606,9 @@ MagickExport unsigned int PushImagePixels(const Image *image,
         q->green|=(*p++);
         q->blue=(*p++ << 8);
         q->blue|=(*p++);
-        q->opacity=(MaxRGB-(*p++)) << 8;
-        q->opacity|=MaxRGB-(*p++);
+        q->opacity=(*p++) << 8;
+        q->opacity|=(*p++);
+        q->opacity=MaxRGB-q->opacity;
 #else
         q->red=(*p++);
         p++;
