@@ -194,7 +194,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               case 'c':
               case 'C':
               {
-                q->red=(*p++);
+                q->red=UpScale(*p++);
                 break;
               }
               case 'g':
@@ -202,7 +202,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               case 'm':
               case 'M':
               {
-                q->green=(*p++);
+                q->green=UpScale(*p++);
                 break;
               }
               case 'b':
@@ -210,7 +210,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               case 'y':
               case 'Y':
               {
-                q->blue=(*p++);
+                q->blue=UpScale(*p++);
                 break;
               }
               case 'a':
@@ -218,7 +218,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               case 'k':
               case 'K':
               {
-                q->opacity=(*p++);
+                q->opacity=UpScale(*p++);
                 break;
               }
               default:
