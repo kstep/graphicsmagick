@@ -698,14 +698,15 @@ static void SVGStartElement(void *context,const xmlChar *name,
   /*
     Called when an opening tag has been processed.
   */
-  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  SAX.startElement(%.1024s",name);
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+    "  SAX.startElement(%.1024s",name);
   svg_info=(SVGInfo *) context;
   svg_info->n++;
   ReacquireMemory((void **) &svg_info->scale,(svg_info->n+1)*sizeof(double));
   if (svg_info->scale == (double *) NULL)
     {
       ThrowException(svg_info->exception,ResourceLimitError,
-				"MemoryAllocationFailed","unable to convert SVG image");
+        "MemoryAllocationFailed","unable to convert SVG image");
       return;
     }
   svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
@@ -1021,7 +1022,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
     {
       keyword=(const char *) attributes[i];
       value=(const char *) attributes[i+1];
-      (void) LogMagickEvent(CoderEvent,__MagickMethod,"    %.1024s = %.1024s",keyword,value);
+      (void) LogMagickEvent(CoderEvent,__MagickMethod,
+        "    %.1024s = %.1024s",keyword,value);
       switch (*keyword)
       {
         case 'A':
@@ -1170,7 +1172,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
               {
                 keyword=(char *) tokens[j];
                 value=(char *) tokens[j+1];
-                (void) LogMagickEvent(CoderEvent,__MagickMethod,"    %.1024s: %.1024s",keyword,value);
+                (void) LogMagickEvent(CoderEvent,__MagickMethod,
+                  "    %.1024s: %.1024s",keyword,value);
                 current=transform;
                 IdentityAffine(&affine);
                 switch (*keyword)
@@ -1482,7 +1485,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
               {
                 keyword=(char *) tokens[j];
                 value=(char *) tokens[j+1];
-                (void) LogMagickEvent(CoderEvent,__MagickMethod,"    %.1024s: %.1024s",keyword,value);
+                (void) LogMagickEvent(CoderEvent,__MagickMethod,
+                  "    %.1024s: %.1024s",keyword,value);
                 switch (*keyword)
                 {
                   case 'C':
@@ -1742,7 +1746,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
               {
                 keyword=(char *) tokens[j];
                 value=(char *) tokens[j+1];
-                (void) LogMagickEvent(CoderEvent,__MagickMethod,"    %.1024s: %.1024s",keyword,value);
+                (void) LogMagickEvent(CoderEvent,__MagickMethod,
+                  "    %.1024s: %.1024s",keyword,value);
                 current=transform;
                 IdentityAffine(&affine);
                 switch (*keyword)
@@ -2002,7 +2007,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
   /*
     Called when the end of an element has been detected.
   */
-  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  SAX.endElement(%.1024s)",name);
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+    "  SAX.endElement(%.1024s)",name);
   svg_info=(SVGInfo *) context;
   switch (*name)
   {
@@ -2272,7 +2278,8 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
   /*
     Receiving some characters from the parser.
   */
-  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  SAX.characters(%.1024s,%d)",c,length);
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+    "  SAX.characters(%.1024s,%d)",c,length);
   svg_info=(SVGInfo *) context;
   if (svg_info->text != (char *) NULL)
     ReacquireMemory((void **) &svg_info->text,strlen(svg_info->text)+length+1);
@@ -2301,7 +2308,8 @@ static void SVGReference(void *context,const xmlChar *name)
   /*
     Called when an entity reference is detected.
   */
-  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  SAX.reference(%.1024s)",name);
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+    "  SAX.reference(%.1024s)",name);
   svg_info=(SVGInfo *) context;
   parser=svg_info->parser;
   if (*name == '#')
@@ -2318,7 +2326,8 @@ static void SVGIgnorableWhitespace(void *context,const xmlChar *c,int length)
   /*
     Receiving some ignorable whitespaces from the parser.
   */
-  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  SAX.ignorableWhitespace(%.30s, %d)",c,length);
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+    "  SAX.ignorableWhitespace(%.30s, %d)",c,length);
   svg_info=(SVGInfo *) context;
 }
 
@@ -2331,7 +2340,8 @@ static void SVGProcessingInstructions(void *context,const xmlChar *target,
   /*
     A processing instruction has been parsed.
   */
-  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  SAX.processingInstruction(%.1024s, %.1024s)",
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+    "  SAX.processingInstruction(%.1024s, %.1024s)",
     target,data);
   svg_info=(SVGInfo *) context;
 }
@@ -2344,7 +2354,8 @@ static void SVGComment(void *context,const xmlChar *value)
   /*
     A comment has been parsed.
   */
-  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  SAX.comment(%.1024s)",value);
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+    "  SAX.comment(%.1024s)",value);
   svg_info=(SVGInfo *) context;
   if (svg_info->comment != (char *) NULL)
     (void) ConcatenateString(&svg_info->comment,"\n");
@@ -2421,7 +2432,8 @@ static void SVGCDataBlock(void *context,const xmlChar *value,int length)
   /*
     Called when a pcdata block has been parsed.
   */
-  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  SAX.pcdata(%.1024s, %d)",value,length);
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+    "  SAX.pcdata(%.1024s, %d)",value,length);
   svg_info=(SVGInfo *) context;
   parser=svg_info->parser;
   child=xmlGetLastChild(parser->node);
