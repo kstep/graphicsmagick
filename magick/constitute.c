@@ -801,7 +801,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
         {
           for (i=0; i < (long) length; i++)
           {
-            switch (map[i])
+            switch (switch_map[i])
             {
               case RedMapQuantum:
               {
@@ -855,7 +855,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
         {
           for (i=0; i < (long) length; i++)
           {
-            switch (map[i])
+            switch (switch_map[i])
             {
               case RedMapQuantum:
               {
@@ -909,7 +909,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
         {
           for (i=0; i < (long) length; i++)
           {
-            switch (map[i])
+            switch (switch_map[i])
             {
               case RedMapQuantum:
               {
@@ -963,7 +963,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
         {
           for (i=0; i < (long) length; i++)
           {
-            switch (map[i])
+            switch (switch_map[i])
             {
               case RedMapQuantum:
               {
@@ -1017,7 +1017,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
         {
           for (i=0; i < (long) length; i++)
           {
-            switch (map[i])
+            switch (switch_map[i])
             {
               case RedMapQuantum:
               {
@@ -1071,7 +1071,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
         {
           for (i=0; i < (long) length; i++)
           {
-            switch (map[i])
+            switch (switch_map[i])
             {
               case RedMapQuantum:
               {

@@ -1,3 +1,14 @@
+2003-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/psd.c (ReadPSDImage): Applied patch
+	(SourceForge patch ID 722849) from Derry Bryson to
+	fix a memory leak. An image was being leaked.
+	* magick/constitute.c (DispatchImage): Applied patch
+	(SourceForge patch ID 722655) from Derry Bryson to
+	correctly use the switch_map array rather than the
+	map array.  Without this patch, DispatchImage does
+	not work at all.
+
 2003-04-16  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* magick/effect.c: 4x4 ordered dither threshold was

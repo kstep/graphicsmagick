@@ -1230,7 +1230,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->next=layer_info[0].image;
           layer_info[0].image->previous=image;
 #else
-    returnImage = layer_info[0].image;  
+          DestroyImage(image);
+          returnImage = layer_info[0].image;  
 #endif
           LiberateMemory((void **) &layer_info);
 
