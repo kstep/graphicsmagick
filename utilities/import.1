@@ -52,15 +52,11 @@ the option again with a different effect.
 X resources file. See \fIX(1)\fP. Options on the command line supersede
 values specified in your X resources file.
 .TP
-.B "-border \fI<width>x<height>"\fP
-\fRsurround the image with a border of color
-
-See \fB-geometry\fP for details
-about the geometry specification.
-
-.TP
 .B "-bordercolor \fI<color>"\fP
 \fRthe border color
+
+The color is specified using the format described in the "Color Names"
+section of \fIX(1)\fP.
 .TP
 .B "-cache \fI<threshold>"\fP
 \fRmegabytes of memory available to the pixel cache
@@ -180,7 +176,7 @@ area of an image.
 The x and y offsets specify the location of the upper left corner of
 the cropping region measured downward and rightward with respect to the
 upper left corner of the image.
-If the \fP-gravity\fP option is present with \fINorthEast, East,\fP
+If the \fB-gravity\fP option is present with \fINorthEast, East,\fP
 or \fISouthEast\fP
 gravity, it gives the distance leftward from the right edge
 of the image to the right edge of the cropping region.  Similarly, if
@@ -541,6 +537,9 @@ popups that are independent windows but appear over the specified window.
 .TP
 .B "-transparent \fI<color>"\fP
 \fRmake this color transparent within the image
+
+The color is specified using the format described in the "Color Names"
+section of \fIX(1)\fP.
 .TP
 .B "-trim"
 \fRtrim an image

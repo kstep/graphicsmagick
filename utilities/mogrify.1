@@ -37,6 +37,9 @@ the option again with a different effect.
 .TP
 .B "-background \fI<color>"\fP
 \fRthe background color
+
+The color is specified using the format described in the "Color Names"
+section of \fIX(1)\fP.
 .TP
 .B "-blur \fI<radius>x<sigma>"\fP
 \fRblur the image with a gaussian operator
@@ -54,6 +57,9 @@ about the geometry specification.
 .TP
 .B "-bordercolor \fI<color>"\fP
 \fRthe border color
+
+The color is specified using the format described in the "Color Names"
+section of \fIX(1)\fP.
 .TP
 .B "-cache \fI<threshold>"\fP
 \fRmegabytes of memory available to the pixel cache
@@ -226,7 +232,7 @@ area of an image.
 The x and y offsets specify the location of the upper left corner of
 the cropping region measured downward and rightward with respect to the
 upper left corner of the image.
-If the \fP-gravity\fP option is present with \fINorthEast, East,\fP
+If the \fB-gravity\fP option is present with \fINorthEast, East,\fP
 or \fISouthEast\fP
 gravity, it gives the distance leftward from the right edge
 of the image to the right edge of the cropping region.  Similarly, if
@@ -457,6 +463,9 @@ Good order values are odd numbers from 3 to 31.
 .TP
 .B "-fill \fI<color>"\fP
 \fRcolor to use when filling a graphic primitive
+
+The color is specified using the format described in the "Color Names"
+section of \fIX(1)\fP.
 
 See \fB-draw\fP for further
 details.
@@ -767,6 +776,9 @@ matte channel in the output file.
 .TP
 .B "-mattecolor \fI<color>"\fP
 \fRspecify the matte color
+
+The color is specified using the format described in the "Color Names"
+section of \fIX(1)\fP.
 .TP
 .B "-median \fI<order>"\fP
 \fRapply a median filter to the image
@@ -829,6 +841,9 @@ This is a contrast enhancement technique.
 .TP
 .B "-opaque \fI<color>"\fP
 \fRchange this color to the pen color within the image
+
+The color is specified using the format described in the "Color Names"
+section of \fIX(1)\fP.
 
 See \fB-fill\fP for more details.
 
@@ -919,6 +934,9 @@ whose width is specified with \fIradius\fP.
 .TP
 .B "-pen \fI<color>"\fP
 \fRspecify the pen color for drawing operations
+
+The color is specified using the format described in the "Color Names"
+section of \fIX(1)\fP.
 .TP
 .B "-pointsize \fI<value>"\fP
 \fRpointsize of the Postscript, OPTION1, or TrueType font
@@ -1156,6 +1174,9 @@ choose a candidate pixel to swap.
 .B "-stroke \fI<color>"\fP
 \fRcolor to use when stroking a graphic primitive
 
+The color is specified using the format described in the "Color Names"
+section of \fIX(1)\fP.
+
 See \fB-draw\fP for further
 details.
 
@@ -1188,6 +1209,9 @@ minimum intensity.
 .TP
 .B "-transparent \fI<color>"\fP
 \fRmake this color transparent within the image
+
+The color is specified using the format described in the "Color Names"
+section of \fIX(1)\fP.
 .TP
 .B "-treedepth \fI<value>"\fP
 \fRtree depth for the color reduction algorithm

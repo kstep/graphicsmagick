@@ -142,6 +142,8 @@ in your X resources file.
 This backdrop covers the entire workstation screen and is useful for hiding
 other X window activity while viewing the image. The color of the backdrop
 is specified as the background color.
+The color is specified using the format described in the "Color Names"
+section of \fIX(1)\fP.
 Refer to
 "X Resources", below,
 for details.
@@ -149,6 +151,9 @@ for details.
 .TP
 .B "-background \fI<color>"\fP
 \fRthe background color
+
+The color is specified using the format described in the "Color Names"
+section of \fIX(1)\fP.
 .TP
 .B "-border \fI<width>x<height>"\fP
 \fRsurround the image with a border of color
@@ -159,8 +164,11 @@ about the geometry specification.
 .TP
 .B "-bordercolor \fI<color>"\fP
 \fRthe border color
+
+The color is specified using the format described in the "Color Names"
+section of \fIX(1)\fP.
 .TP
-.B "-borderwidth \fI<color>"\fP
+.B "-borderwidth \fI<geometry>"\fP
 \fRthe border width
 .TP
 .B "-cache \fI<threshold>"\fP
@@ -325,7 +333,7 @@ area of an image.
 The x and y offsets specify the location of the upper left corner of
 the cropping region measured downward and rightward with respect to the
 upper left corner of the image.
-If the \fP-gravity\fP option is present with \fINorthEast, East,\fP
+If the \fB-gravity\fP option is present with \fINorthEast, East,\fP
 or \fISouthEast\fP
 gravity, it gives the distance leftward from the right edge
 of the image to the right edge of the cropping region.  Similarly, if
@@ -463,6 +471,9 @@ is Postscript, and x:fixed is OPTION1.
 .TP
 .B "-foreground \fI<color>"\fP
 \fRdefine the foreground color
+
+The color is specified using the format described in the "Color Names"
+section of \fIX(1)\fP.
 .TP
 .B "-frame \fI<width>x<height>+<outer bevel width>+<inner bevel width>"\fP
 \fRsurround the image with an ornamental border
@@ -646,6 +657,9 @@ matte channel in the output file.
 .TP
 .B "-mattecolor \fI<color>"\fP
 \fRspecify the matte color
+
+The color is specified using the format described in the "Color Names"
+section of \fIX(1)\fP.
 .TP
 .B "-monochrome"
 \fRtransform the image to black and white
