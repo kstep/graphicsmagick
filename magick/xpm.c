@@ -455,6 +455,7 @@ Export void RegisterXPMImage(void)
   entry->encoder=WriteXPMImage;
   entry->adjoin=False;
   entry->description=AllocateString("X Windows system pixmap (color)");
+  entry->module=AllocateString("XPM");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("XPM");
   entry->decoder=ReadXPMImage;
@@ -462,6 +463,7 @@ Export void RegisterXPMImage(void)
   entry->magick=IsXPM;
   entry->adjoin=False;
   entry->description=AllocateString("X Windows system pixmap (color)");
+  entry->module=AllocateString("XPM");
   RegisterMagickInfo(entry);
 }
 

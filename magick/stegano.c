@@ -234,6 +234,7 @@ Export void RegisterSTEGANOImage(void)
   entry=SetMagickInfo("STEGANO");
   entry->decoder=ReadSTEGANOImage;
   entry->description=AllocateString("Steganographic image");
+  entry->module=AllocateString("STEGANO");
   RegisterMagickInfo(entry);
 }
 

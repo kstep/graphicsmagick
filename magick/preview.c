@@ -100,6 +100,7 @@ Export void RegisterPREVIEWImage(void)
   entry->adjoin=False;
   entry->description=
     AllocateString("Show a preview an image enhancement, effect, or f/x");
+  entry->module=AllocateString("PREVIEW");
   RegisterMagickInfo(entry);
 }
 

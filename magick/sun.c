@@ -564,11 +564,13 @@ Export void RegisterSUNImage(void)
   entry->encoder=WriteSUNImage;
   entry->magick=IsSUN;
   entry->description=AllocateString("SUN Rasterfile");
+  entry->module=AllocateString("SUN");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("SUN");
   entry->decoder=ReadSUNImage;
   entry->encoder=WriteSUNImage;
   entry->description=AllocateString("SUN Rasterfile");
+  entry->module=AllocateString("SUN");
   RegisterMagickInfo(entry);
 }
 

@@ -278,11 +278,13 @@ Export void RegisterTXTImage(void)
   entry->encoder=WriteTXTImage;
   entry->raw=True;
   entry->description=AllocateString("Raw text");
+  entry->module=AllocateString("TXT");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("TXT");
   entry->decoder=ReadTXTImage;
   entry->encoder=WriteTXTImage;
   entry->description=AllocateString("Raw text");
+  entry->module=AllocateString("TXT");
   RegisterMagickInfo(entry);
 }
 

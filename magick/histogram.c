@@ -93,6 +93,7 @@ Export void RegisterHISTOGRAMImage(void)
   entry->encoder=WriteHISTOGRAMImage;
   entry->adjoin=False;
   entry->description=AllocateString("Histogram of the image");
+  entry->module=AllocateString("HISTOGRAM");
   RegisterMagickInfo(entry);
 }
 

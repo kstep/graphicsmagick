@@ -219,6 +219,7 @@ Export void RegisterVIDImage(void)
   entry=SetMagickInfo("VID");
   entry->decoder=ReadVIDImage;
   entry->description=AllocateString("Visual Image Directory");
+  entry->module=AllocateString("VID");
   RegisterMagickInfo(entry);
 }
 

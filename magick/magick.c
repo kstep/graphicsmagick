@@ -95,11 +95,10 @@ Export void DestroyMagickInfo()
   {
     entry=p;
     p=p->next;
-    if (entry->tag != (char *) NULL)
-      FreeMemory((void *) &entry->tag);
-    if (entry->description != (char *) NULL)
-      FreeMemory((void *) &entry->description);
-    FreeMemory((void *) &entry);
+    FreeMemory((void **) &entry->tag);
+    FreeMemory((void **) &entry->description);
+    FreeMemory((void **) &entry->module);
+    FreeMemory((void **) &entry);
   }
   magick_info=(MagickInfo *) NULL;
 }
@@ -387,7 +386,7 @@ Export MagickInfo *SetMagickInfo(const char *tag)
   entry=(MagickInfo *) AllocateMemory(sizeof(MagickInfo));
   if (entry == (MagickInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
-      "Memory allocation failed");
+		"Memory allocation failed");
   entry->tag=AllocateString(tag);
   entry->decoder=(Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL;
   entry->encoder=(unsigned int (*)(const ImageInfo *,Image *)) NULL;
@@ -397,6 +396,7 @@ Export MagickInfo *SetMagickInfo(const char *tag)
   entry->blob_support=True;
   entry->raw=False;
   entry->description=(char *) NULL;
+  entry->module=(char *) NULL;
   entry->data=(void *) NULL;
   entry->previous=(MagickInfo *) NULL;
   entry->next=(MagickInfo *) NULL;
@@ -439,27 +439,26 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
     *p;
 
   for (p=GetMagickInfo((char *) NULL); p != (MagickInfo *) NULL; p=p->next)
-  {
-    if (Latin1Compare(p->tag,tag) == 0)
-      {
-        if (p->tag != (char *) NULL)
-          FreeMemory((void *) &p->tag);
-        if (p->description != (char *) NULL)
-          FreeMemory((void *) &p->description);
-        if (p->previous != (MagickInfo *) NULL)
-          p->previous->next=p->next;
-        else
-          {
-            magick_info=p->next;
-            if (p->next != (MagickInfo *) NULL)
-              p->next->previous=(MagickInfo *) NULL;
-          }
-        if (p->next != (MagickInfo *) NULL)
-          p->next->previous=p->previous;
-        magick_info=p;
-        FreeMemory((void *) &magick_info);
-        return(True);
+    {
+      if (Latin1Compare(p->tag,tag) == 0)
+	{
+	  FreeMemory((void **) &p->tag);
+	  FreeMemory((void **) &p->description);
+	  FreeMemory((void **) &p->module);
+	  if (p->previous != (MagickInfo *) NULL)
+	    p->previous->next=p->next;
+	  else
+	    {
+	      magick_info=p->next;
+	      if (p->next != (MagickInfo *) NULL)
+		p->next->previous=(MagickInfo *) NULL;
+	    }
+	  if (p->next != (MagickInfo *) NULL)
+	    p->next->previous=p->previous;
+	  magick_info=p;
+	  FreeMemory((void **) &magick_info);
+	  return(True);
+	}
     }
-  }
   return(False);
 }

@@ -783,12 +783,14 @@ Export void RegisterMIFFImage(void)
     *entry;
 
   entry=SetMagickInfo("IMPLICIT");
+  entry->module=AllocateString("MIFF");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("MIFF");
   entry->decoder=ReadMIFFImage;
   entry->encoder=WriteMIFFImage;
   entry->magick=IsMIFF;
   entry->description=AllocateString("Magick image format");
+  entry->module=AllocateString("MIFF");
   RegisterMagickInfo(entry);
 }
 

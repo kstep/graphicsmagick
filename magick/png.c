@@ -2778,6 +2778,7 @@ Export void RegisterPNGImage(void)
   entry->encoder=WritePNGImage;
   entry->magick=IsMNG;
   entry->description=AllocateString("Multiple-image Network Graphics");
+  entry->module=AllocateString("PNG");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("PNG");
   entry->decoder=ReadPNGImage;
@@ -2785,6 +2786,7 @@ Export void RegisterPNGImage(void)
   entry->magick=IsPNG;
   entry->adjoin=False;
   entry->description=AllocateString("Portable Network Graphics");
+  entry->module=AllocateString("PNG");
   RegisterMagickInfo(entry);
 #endif
 }

@@ -396,6 +396,7 @@ Export void RegisterXBMImage(void)
   entry->adjoin=False;
   entry->description=
     AllocateString("X Windows system bitmap (black and white)");
+  entry->module=AllocateString("XBM");
   RegisterMagickInfo(entry);
 }
 

@@ -582,7 +582,8 @@ typedef struct _MagickInfo
     raw;
 
   char
-    *description;
+    *description,
+    *module;
 
   void
     *data;
@@ -770,7 +771,7 @@ extern Export void
   DestroyImageInfo(ImageInfo *),
   (*DestroyImagePixels)(Image *),
   DestroyImages(Image *),
-  DestroyMagickInfo(),
+  DestroyMagickInfo(void),
   DestroyMontageInfo(MontageInfo *),
   GetAnnotateInfo(const ImageInfo *,AnnotateInfo *),
   GetDrawInfo(const ImageInfo *,DrawInfo *),

@@ -174,6 +174,7 @@ Export void RegisterPCLImage(void)
   entry->magick=IsPCL;
   entry->adjoin=False;
   entry->description=AllocateString("Page Control Language");
+  entry->module=AllocateString("PCL");
   RegisterMagickInfo(entry);
 }
 

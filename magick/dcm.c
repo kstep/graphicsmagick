@@ -3375,6 +3375,7 @@ Export void RegisterDCMImage(void)
   entry->adjoin=False;
   entry->description=
     AllocateString("Digital Imaging and Communications in Medicine image");
+  entry->module=AllocateString("DCM");
   RegisterMagickInfo(entry);
 }
 

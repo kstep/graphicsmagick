@@ -211,6 +211,7 @@ Export void RegisterPLASMAImage(void)
   entry->decoder=ReadPlasmaImage;
   entry->adjoin=False;
   entry->description=AllocateString("Plasma fractal image");
+  entry->module=AllocateString("PLASMA");
   RegisterMagickInfo(entry);
 }
 

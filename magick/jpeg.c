@@ -749,6 +749,7 @@ Export void RegisterJPEGImage(void)
   entry->adjoin=False;
   entry->description=
     AllocateString("Joint Photographic Experts Group JFIF format");
+  entry->module=AllocateString("JPEG");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPEG");
   entry->decoder=ReadJPEGImage;
@@ -757,6 +758,7 @@ Export void RegisterJPEGImage(void)
   entry->adjoin=False;
   entry->description=
     AllocateString("Joint Photographic Experts Group JFIF format");
+  entry->module=AllocateString("JPEG");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPG");
   entry->decoder=ReadJPEGImage;
@@ -764,6 +766,7 @@ Export void RegisterJPEGImage(void)
   entry->adjoin=False;
   entry->description=
     AllocateString("Joint Photographic Experts Group JFIF format");
+  entry->module=AllocateString("JPEG");
   RegisterMagickInfo(entry);
 #endif
 }

@@ -174,12 +174,14 @@ Export void RegisterXCImage(void)
   entry->decoder=ReadXCImage;
   entry->adjoin=False;
   entry->description=AllocateString("NULL image");
+  entry->module=AllocateString("XC");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("XC");
   entry->decoder=ReadXCImage;
   entry->adjoin=False;
   entry->raw=True;
   entry->description=AllocateString("Constant image of X server color");
+  entry->module=AllocateString("XC");
   RegisterMagickInfo(entry);
 }
 

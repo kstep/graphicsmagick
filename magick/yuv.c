@@ -320,6 +320,7 @@ Export void RegisterYUVImage(void)
   entry->adjoin=False;
   entry->raw=True;
   entry->description=AllocateString("CCIR 601 4:1:1");
+  entry->module=AllocateString("YUV");
   RegisterMagickInfo(entry);
 }
 

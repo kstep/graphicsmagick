@@ -790,12 +790,14 @@ Export void RegisterPCDImage(void)
   entry->magick=IsPCD;
   entry->adjoin=False;
   entry->description=AllocateString("Photo CD");
+  entry->module=AllocateString("PCD");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("PCDS");
   entry->decoder=ReadPCDImage;
   entry->encoder=WritePCDImage;
   entry->adjoin=False;
   entry->description=AllocateString("Photo CD");
+  entry->module=AllocateString("PCD");
   RegisterMagickInfo(entry);
 }
 

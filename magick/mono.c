@@ -209,6 +209,7 @@ Export void RegisterMONOImage(void)
   entry->adjoin=False;
   entry->description=
     AllocateString("Bi-level bitmap in least-significant-byte first order");
+  entry->module=AllocateString("MONO");
   RegisterMagickInfo(entry);
 }
 

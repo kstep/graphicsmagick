@@ -93,6 +93,7 @@ Export void RegisterUILImage(void)
   entry->encoder=WriteUILImage;
   entry->adjoin=False;
   entry->description=AllocateString("X-Motif UIL table");
+  entry->module=AllocateString("UIL");
   RegisterMagickInfo(entry);
 }
 

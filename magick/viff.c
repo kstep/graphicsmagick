@@ -760,6 +760,7 @@ Export void RegisterVIFFImage(void)
   entry->encoder=WriteVIFFImage;
   entry->magick=IsVIFF;
   entry->description=AllocateString("Khoros Visualization image");
+  entry->module=AllocateString("VIFF");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("XV");
   entry->decoder=ReadVIFFImage;

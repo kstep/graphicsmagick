@@ -234,6 +234,7 @@ Export void RegisterIPTCImage(void)
   entry->magick=IsIPTC;
   entry->adjoin=False;
   entry->description=AllocateString("IPTC Newsphoto");
+  entry->module=AllocateString("IPTC");
   RegisterMagickInfo(entry);
 }
 

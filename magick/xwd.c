@@ -496,6 +496,7 @@ Export void RegisterXWDImage(void)
   entry->magick=IsXWD;
   entry->adjoin=False;
   entry->description=AllocateString("X Windows system window dump (color)");
+  entry->module=AllocateString("XWD");
   RegisterMagickInfo(entry);
 #endif
 }

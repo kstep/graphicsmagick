@@ -178,6 +178,7 @@ Export void RegisterICCImage(void)
   entry->encoder=WriteICCImage;
   entry->adjoin=False;
   entry->description=AllocateString("ICC Color Profile");
+  entry->module=AllocateString("ICC");
   RegisterMagickInfo(entry);
 }
 

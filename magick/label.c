@@ -874,6 +874,7 @@ Export void RegisterLABELImage(void)
   entry->decoder=ReadLABELImage;
   entry->adjoin=False;
   entry->description=AllocateString("Text image format");
+  entry->module=AllocateString("LABEL");
   RegisterMagickInfo(entry);
 }
 

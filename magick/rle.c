@@ -594,6 +594,7 @@ Export void RegisterRLEImage(void)
   entry->magick=IsRLE;
   entry->adjoin=False;
   entry->description=AllocateString("Utah Run length encoded image");
+  entry->module=AllocateString("RLE");
   RegisterMagickInfo(entry);
 }
 

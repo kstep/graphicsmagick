@@ -1050,12 +1050,14 @@ Export void RegisterTIFFImage(void)
   entry->encoder=WriteTIFFImage;
   entry->blob_support=False;
   entry->description=AllocateString("Pyramid encoded TIFF");
+  entry->module=AllocateString("TIFF");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("TIF");
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
   entry->blob_support=False;
   entry->description=AllocateString("Tagged Image File Format");
+  entry->module=AllocateString("TIFF");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("TIFF");
   entry->decoder=ReadTIFFImage;
@@ -1063,12 +1065,14 @@ Export void RegisterTIFFImage(void)
   entry->magick=IsTIFF;
   entry->blob_support=False;
   entry->description=AllocateString("Tagged Image File Format");
+  entry->module=AllocateString("TIFF");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("TIFF24");
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
   entry->blob_support=False;
   entry->description=AllocateString("24-bit Tagged Image File Format");
+  entry->module=AllocateString("TIFF");
   RegisterMagickInfo(entry);
 #endif
 }

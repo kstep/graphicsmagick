@@ -220,6 +220,7 @@ Export void Register8BIMImage(void)
   entry->magick=Is8BIM;
   entry->adjoin=False;
   entry->description=AllocateString("Photoshop resource format");
+  entry->module=AllocateString("BIM");
   RegisterMagickInfo(entry);
 }
 

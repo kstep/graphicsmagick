@@ -492,6 +492,7 @@ Export void RegisterFPXImage(void)
   entry->encoder=WriteFPXImage;
   entry->adjoin=False;
   entry->description=AllocateString("FlashPix Format");
+  entry->module=AllocateString("FPX");
   RegisterMagickInfo(entry);
 #endif
 }

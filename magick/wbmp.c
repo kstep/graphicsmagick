@@ -244,6 +244,7 @@ Export void RegisterWBMPImage(void)
   entry->encoder=WriteWBMPImage;
   entry->adjoin=False;
   entry->description=AllocateString("Wireless Bitmap (level 0) image");
+  entry->module=AllocateString("WBMP");
   RegisterMagickInfo(entry);
 }
 

@@ -98,6 +98,7 @@ Export void RegisterPS2Image(void)
   entry->encoder=WritePS2Image;
   entry->adjoin=False;
   entry->description=AllocateString("Adobe Level II Encapsulated PostScript");
+  entry->module=AllocateString("PS2");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("PS2");
   entry->encoder=WritePS2Image;

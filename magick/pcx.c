@@ -643,6 +643,7 @@ Export void RegisterPCXImage(void)
   entry->encoder=WritePCXImage;
   entry->magick=IsDCX;
   entry->description=AllocateString("ZSoft IBM PC multi-page Paintbrush");
+  entry->module=AllocateString("PCX");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("PCX");
   entry->decoder=ReadPCXImage;
@@ -650,6 +651,7 @@ Export void RegisterPCXImage(void)
   entry->magick=IsPCX;
   entry->adjoin=False;
   entry->description=AllocateString("ZSoft IBM PC Paintbrush");
+  entry->module=AllocateString("PCX");
   RegisterMagickInfo(entry);
 }
 

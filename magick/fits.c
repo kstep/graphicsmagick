@@ -524,6 +524,7 @@ Export void RegisterFITSImage(void)
   entry->magick=IsFITS;
   entry->adjoin=False;
   entry->description=AllocateString("Flexible Image Transport System");
+  entry->module=AllocateString("FITS");
   RegisterMagickInfo(entry);
 }
 

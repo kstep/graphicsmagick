@@ -530,6 +530,7 @@ Export void RegisterDPSImage(void)
   entry=SetMagickInfo("DPS");
   entry->decoder=ReadDPSImage;
   entry->description=AllocateString("Display Postscript");
+  entry->module=AllocateString("DPS");
   RegisterMagickInfo(entry);
 }
 

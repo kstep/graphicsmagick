@@ -524,6 +524,7 @@ Export void RegisterSGIImage(void)
   entry->encoder=WriteSGIImage;
   entry->magick=IsSGI;
   entry->description=AllocateString("Irix RGB image");
+  entry->module=AllocateString("SGI");
   RegisterMagickInfo(entry);
 }
 

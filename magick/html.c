@@ -134,6 +134,7 @@ Export void RegisterHTMLImage(void)
   entry->adjoin=False;
   entry->description=
     AllocateString("Hypertext Markup Language and a client-side image map");
+  entry->module=AllocateString("HTML");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("HTML");
   entry->adjoin=False;
@@ -145,6 +146,7 @@ Export void RegisterHTMLImage(void)
   entry->adjoin=False;
   entry->description=
     AllocateString("Hypertext Markup Language and a client-side image map");
+  entry->module=AllocateString("HTML");
   RegisterMagickInfo(entry);
 }
 

@@ -3877,24 +3877,28 @@ Export void RegisterLOGOImage(void)
   entry->encoder=WriteLOGOImage;
   entry->adjoin=False;
   entry->description=AllocateString("Granite texture");
+  entry->module=AllocateString("LOGO");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("H");
   entry->decoder=ReadLOGOImage;
   entry->encoder=WriteLOGOImage;
   entry->adjoin=False;
   entry->description=AllocateString("Internal format");
+  entry->module=AllocateString("LOGO");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("LOGO");
   entry->decoder=ReadLOGOImage;
   entry->encoder=WriteLOGOImage;
   entry->adjoin=False;
   entry->description=AllocateString("ImageMagick Logo");
+  entry->module=AllocateString("LOGO");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("NETSCAPE");
   entry->decoder=ReadLOGOImage;
   entry->encoder=WriteLOGOImage;
   entry->adjoin=False;
   entry->description=AllocateString("Netscape 216 color cube");
+  entry->module=AllocateString("LOGO");
   RegisterMagickInfo(entry);
 }
 

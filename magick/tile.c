@@ -171,6 +171,7 @@ Export void RegisterTILEImage(void)
   entry->decoder=ReadTILEImage;
   entry->raw=True;
   entry->description=AllocateString("Tile image with a texture");
+  entry->module=AllocateString("TILE");
   RegisterMagickInfo(entry);
 }
 

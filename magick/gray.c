@@ -245,6 +245,7 @@ Export void RegisterGRAYImage(void)
   entry->encoder=WriteGRAYImage;
   entry->raw=True;
   entry->description=AllocateString("Raw gray bytes");
+  entry->module=AllocateString("GRAY");
   RegisterMagickInfo(entry);
 }
 

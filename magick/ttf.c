@@ -252,6 +252,7 @@ Export void RegisterTTFImage(void)
   entry->decoder=ReadTTFImage;
   entry->adjoin=False;
   entry->description=AllocateString("TrueType font");
+  entry->module=AllocateString("TTF");
   RegisterMagickInfo(entry);
 #endif
 }

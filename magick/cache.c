@@ -641,6 +641,7 @@ Export void RegisterCACHEImage(void)
   entry->encoder=WriteCACHEImage;
   entry->magick=IsCACHE;
   entry->description=AllocateString("Magick Persistent Cache image format");
+  entry->module=AllocateString("CACHE");
   RegisterMagickInfo(entry);
 }
 

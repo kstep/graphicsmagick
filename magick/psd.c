@@ -828,6 +828,7 @@ Export void RegisterPSDImage(void)
   entry->magick=IsPSD;
   entry->adjoin=False;
   entry->description=AllocateString("Adobe Photoshop bitmap");
+  entry->module=AllocateString("PSD");
   RegisterMagickInfo(entry);
 }
 

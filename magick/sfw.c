@@ -355,6 +355,7 @@ Export void RegisterSFWImage(void)
   entry->magick=IsSFW;
   entry->adjoin=False;
   entry->description=AllocateString("Seattle Film Works");
+  entry->module=AllocateString("SFW");
   RegisterMagickInfo(entry);
 }
 

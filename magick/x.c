@@ -141,6 +141,7 @@ Export void RegisterXImage(void)
   entry->encoder=WriteXImage;
   entry->adjoin=False;
   entry->description=AllocateString("X Image");
+  entry->module=AllocateString("X");
   RegisterMagickInfo(entry);
 #endif
 }

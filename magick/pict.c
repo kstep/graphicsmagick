@@ -1231,18 +1231,21 @@ Export void RegisterPICTImage(void)
   entry->encoder=WritePICTImage;
   entry->adjoin=False;
   entry->description=AllocateString("Apple Macintosh QuickDraw/PICT");
+  entry->module=AllocateString("PICT");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("PICT");
   entry->decoder=ReadPICTImage;
   entry->encoder=WritePICTImage;
   entry->adjoin=False;
   entry->description=AllocateString("Apple Macintosh QuickDraw/PICT");
+  entry->module=AllocateString("PICT");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("PICT24");
   entry->decoder=ReadPICTImage;
   entry->encoder=WritePICTImage;
   entry->adjoin=False;
   entry->description=AllocateString("24-bit Apple Macintosh QuickDraw/PICT");
+  entry->module=AllocateString("PICT");
   RegisterMagickInfo(entry);
 }
 

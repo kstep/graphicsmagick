@@ -418,6 +418,7 @@ Export void RegisterHDFImage(void)
   entry->magick=IsHDF;
   entry->blob_support=False;
   entry->description=AllocateString("Hierarchical Data Format");
+  entry->module=AllocateString("HDF");
   RegisterMagickInfo(entry);
 #endif
 }

@@ -196,6 +196,7 @@ Export void RegisterUYVYImage(void)
   entry->adjoin=False;
   entry->raw=True;
   entry->description=AllocateString("16bit/pixel interleaved YUV");
+  entry->module=AllocateString("UYVY");
   RegisterMagickInfo(entry);
 }
 

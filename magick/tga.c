@@ -464,21 +464,25 @@ Export void RegisterTGAImage(void)
   entry->decoder=ReadTGAImage;
   entry->encoder=WriteTGAImage;
   entry->description=AllocateString("Truevision Targa image");
+  entry->module=AllocateString("TGA");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("TGA");
   entry->decoder=ReadTGAImage;
   entry->encoder=WriteTGAImage;
   entry->description=AllocateString("Truevision Targa image");
+  entry->module=AllocateString("TGA");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("VDA");
   entry->decoder=ReadTGAImage;
   entry->encoder=WriteTGAImage;
   entry->description=AllocateString("Truevision Targa image");
+  entry->module=AllocateString("TGA");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("VST");
   entry->decoder=ReadTGAImage;
   entry->encoder=WriteTGAImage;
   entry->description=AllocateString("Truevision Targa image");
+  entry->module=AllocateString("TGA");
   RegisterMagickInfo(entry);
 }
 

@@ -236,6 +236,7 @@ Export void RegisterMAPImage(void)
   entry->adjoin=False;
   entry->raw=True;
   entry->description=AllocateString("Colormap intensities and indices");
+  entry->module=AllocateString("MAP");
   RegisterMagickInfo(entry);
 }
 

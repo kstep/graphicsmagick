@@ -977,11 +977,13 @@ Export void RegisterSVGImage(void)
   entry->magick=IsSVG;
   entry->decoder=ReadSVGImage;
   entry->description=AllocateString("Scalable Vector Gaphics");
+  entry->module=AllocateString("SVG");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("XML");
   entry->magick=IsSVG;
   entry->decoder=ReadSVGImage;
   entry->description=AllocateString("Scalable Vector Gaphics");
+  entry->module=AllocateString("SVG");
   RegisterMagickInfo(entry);
 }
 

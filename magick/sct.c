@@ -274,6 +274,7 @@ Export void RegisterSCTImage(void)
   entry->magick=IsSCT;
   entry->adjoin=False;
   entry->description=AllocateString("Scitex HandShake");
+  entry->module=AllocateString("SCT");
   RegisterMagickInfo(entry);
 }
 

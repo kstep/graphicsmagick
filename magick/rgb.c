@@ -415,12 +415,14 @@ Export void RegisterRGBImage(void)
   entry->encoder=WriteRGBImage;
   entry->raw=True;
   entry->description=AllocateString("Raw red, green, and blue bytes");
+  entry->module=AllocateString("RGB");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("RGBA");
   entry->decoder=ReadRGBImage;
   entry->encoder=WriteRGBImage;
   entry->raw=True;
   entry->description=AllocateString("Raw red, green, blue, and matte bytes");
+  entry->module=AllocateString("RGB");
   RegisterMagickInfo(entry);
 }
 

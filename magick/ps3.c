@@ -97,6 +97,7 @@ Export void RegisterPS3Image(void)
   entry=SetMagickInfo("PS3");
   entry->encoder=WritePS3Image;
   entry->description=AllocateString("Adobe Level III PostScript");
+  entry->module=AllocateString("PS3");
   RegisterMagickInfo(entry);
 }
 

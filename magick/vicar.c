@@ -364,6 +364,7 @@ Export void RegisterVICARImage(void)
   entry->magick=IsVICAR;
   entry->adjoin=False;
   entry->description=AllocateString("VICAR rasterfile format");
+  entry->module=AllocateString("VICAR");
   RegisterMagickInfo(entry);
 }
 

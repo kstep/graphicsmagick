@@ -263,6 +263,7 @@ Export void RegisterPWPImage(void)
   entry->decoder=ReadPWPImage;
   entry->magick=IsPWP;
   entry->description=AllocateString("Seattle Film Works");
+  entry->module=AllocateString("PWP");
   RegisterMagickInfo(entry);
 }
 

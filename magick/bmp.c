@@ -907,16 +907,19 @@ Export void RegisterBMPImage(void)
   entry->encoder=WriteBMPImage;
   entry->magick=IsBMP;
   entry->description=AllocateString("Microsoft Windows bitmap image");
+  entry->module=AllocateString("BMP");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("BMP24");
   entry->decoder=ReadBMPImage;
   entry->encoder=WriteBMPImage;
   entry->description=AllocateString("Microsoft Windows 24-bit bitmap image");
+  entry->module=AllocateString("BMP");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("DIB");
   entry->decoder=ReadBMPImage;
   entry->encoder=WriteBMPImage;
   entry->description=AllocateString("Microsoft Windows bitmap image");
+  entry->module=AllocateString("BMP");
   RegisterMagickInfo(entry);
 }
 

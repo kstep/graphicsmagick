@@ -209,6 +209,7 @@ Export void RegisterFAXImage(void)
   entry->encoder=WriteFAXImage;
   entry->magick=IsFAX;
   entry->description=AllocateString("Group 3 FAX");
+  entry->module=AllocateString("FAX");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("G3");
   entry->decoder=ReadFAXImage;
@@ -216,6 +217,7 @@ Export void RegisterFAXImage(void)
   entry->magick=IsFAX;
   entry->adjoin=False;
   entry->description=AllocateString("Group 3 FAX");
+  entry->module=AllocateString("FAX");
   RegisterMagickInfo(entry);
 }
 

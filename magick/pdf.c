@@ -388,12 +388,14 @@ Export void RegisterPDFImage(void)
   entry->adjoin=False;
   entry->description=
     AllocateString("Encapsulated Portable Document Format");
+  entry->module=AllocateString("PDF");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("PDF");
   entry->decoder=ReadPDFImage;
   entry->encoder=WritePDFImage;
   entry->magick=IsPDF;
   entry->description=AllocateString("Portable Document Format");
+  entry->module=AllocateString("PDF");
   RegisterMagickInfo(entry);
 }
 

@@ -93,6 +93,7 @@ Export void RegisterMATTEImage(void)
   entry->encoder=WriteMATTEImage;
   entry->raw=True;
   entry->description=AllocateString("MATTE format");
+  entry->module=AllocateString("MATTE");
   RegisterMagickInfo(entry);
 }
 

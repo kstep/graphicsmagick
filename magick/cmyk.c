@@ -399,6 +399,7 @@ Export void RegisterCMYKImage(void)
   entry->raw=True;
   entry->description=
     AllocateString("Raw cyan, magenta, yellow, and black bytes");
+  entry->module=AllocateString("CMYK");
   RegisterMagickInfo(entry);
 }
 
