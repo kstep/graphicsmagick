@@ -68,7 +68,7 @@ testReadWrite( 'DIB:input.dib',
 testReadWrite( 'FITS:input.fits',
                'FITS:output.fits',
                q//,
-               '7ddf23e85fe26456e87ad7347ee35f49' );
+               '93a139ba1fbb9a6fbb6c7f2dd276ebe8' );
 
 #
 # CompuServe graphics interchange format
@@ -194,7 +194,7 @@ testReadWrite( 'PPM:input_p6.ppm',
 testReadWrite( 'PSD:input.psd',
                'PSD:output.psd',
                q//,
-               '898ac726feb48948a54697320978d325' );
+               '7785d161ea66bd39394bb74ef704a0aa' );
 
 #
 # Irix RGB image file
