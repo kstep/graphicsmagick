@@ -30,6 +30,4 @@ ImageMagick is available as
 
 The official ImageMagick WWW page is
 
-  http://www.imagemagick.org/cristy/ImageMagick.html
-
-The author is magick@wizards.dupont.com.
+  http://www.imagemagick.org/
