@@ -312,6 +312,7 @@ static void CompositeUsage(void)
       "-dispose method      GIF disposal method",
       "-dissolve value      dissolve the two images a given percent",
       "-dither              apply Floyd/Steinberg error diffusion to image",
+      "-endian type         LSB or MSB",
       "-filter type         use this filter when resizing an image",
       "-font name           font for rendering text",
       "-geometry geometry   location of the composite image",
@@ -763,6 +764,30 @@ unsigned int CompositeUtility(int argc,char **argv)
         if (LocaleCompare("dither",option+1) == 0)
           {
             image_info->dither=(*option == '-');
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'e':
+      {
+        if (LocaleCompare("endian",option+1) == 0)
+          {
+            image_info->endian=UndefinedEndian;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                image_info->endian=UndefinedEndian;
+                if (LocaleCompare("LSB",option) == 0)
+                  image_info->endian=LSBEndian;
+                if (LocaleCompare("MSB",option) == 0)
+                  image_info->endian=MSBEndian;
+                if (image_info->endian == UndefinedEndian)
+                  MagickError(OptionError,"Invalid endian type",option);
+              }
             break;
           }
         MagickError(OptionError,"Unrecognized option",option);

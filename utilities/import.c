@@ -92,45 +92,46 @@ static void ImportUsage(void)
   static const char
     *options[]=
     {
-      "-adjoin             join images into a single multi-image file",
-      "-border             include image borders in the output image",
-      "-cache threshold    megabytes of memory available to the pixel cache",
-      "-colors value       preferred number of colors in the image",
-      "-colorspace type    alternate image colorspace",
-      "-comment string     annotate image with comment",
-      "-compress type      type of image compression",
-      "-crop geometry      preferred size and location of the cropped image",
-      "-debug              display copious debugging information",
-      "-delay value        display the next image after pausing",
-      "-density geometry   vertical and horizontal density of the image",
-      "-depth value        depth of the image",
-      "-descend            obtain image by descending window hierarchy",
-      "-display server     X server to contact",
-      "-dispose method     GIF disposal method",
-      "-dither             apply Floyd/Steinberg error diffusion to image",
-      "-frame              include window manager frame",
-      "-geometry geometry  perferred size or location of the image",
-      "-interlace type     None, Line, Plane, or Partition",
-      "-help               print program options",
-      "-label name         assign a label to an image",
-      "-monochrome         transform image to black and white",
-      "-negate             replace every pixel with its complementary color ",
-      "-page geometry      size and location of an image canvas",
-      "-pause value        seconds delay between snapshots",
-      "-pointsize value    pointsize of Postscript font",
-      "-quality value      JPEG/MIFF/PNG compression level",
-      "-resize geometry    resize the image",
-      "-rotate degrees     apply Paeth rotation to the image",
-      "-scene value        image scene number",
-      "-screen             select image from root window",
-      "-silent             operate silently, i.e. don't ring any bells ",
-      "-snaps value        number of screen snapshots",
-      "-transparent color  make this color transparent within the image",
-      "-treedepth value    depth of the color tree",
-      "-trim               trim image edges",
-      "-type type          image type",
-      "-verbose            print detailed information about the image",
-      "-window id          select window with this id or name",
+      "-adjoin              join images into a single multi-image file",
+      "-border              include image borders in the output image",
+      "-cache threshold     megabytes of memory available to the pixel cache",
+      "-colors value        preferred number of colors in the image",
+      "-colorspace type     alternate image colorspace",
+      "-comment string      annotate image with comment",
+      "-compress type       type of image compression",
+      "-crop geometry       preferred size and location of the cropped image",
+      "-debug               display copious debugging information",
+      "-delay value         display the next image after pausing",
+      "-density geometry    vertical and horizontal density of the image",
+      "-depth value         depth of the image",
+      "-descend             obtain image by descending window hierarchy",
+      "-display server      X server to contact",
+      "-dispose method      GIF disposal method",
+      "-dither              apply Floyd/Steinberg error diffusion to image",
+      "-frame               include window manager frame",
+      "-endian type         LSB or MSB",
+      "-geometry geometry   perferred size or location of the image",
+      "-interlace type      None, Line, Plane, or Partition",
+      "-help                print program options",
+      "-label name          assign a label to an image",
+      "-monochrome          transform image to black and white",
+      "-negate              replace every pixel with its complementary color ",
+      "-page geometry       size and location of an image canvas",
+      "-pause value         seconds delay between snapshots",
+      "-pointsize value     pointsize of Postscript font",
+      "-quality value       JPEG/MIFF/PNG compression level",
+      "-resize geometry     resize the image",
+      "-rotate degrees      apply Paeth rotation to the image",
+      "-scene value         image scene number",
+      "-screen              select image from root window",
+      "-silent              operate silently, i.e. don't ring any bells ",
+      "-snaps value         number of screen snapshots",
+      "-transparent color   make this color transparent within the image",
+      "-treedepth value     depth of the color tree",
+      "-trim                trim image edges",
+      "-type type           image type",
+      "-verbose             print detailed information about the image",
+      "-window id           select window with this id or name",
       (char *) NULL
     };
 
@@ -555,6 +556,30 @@ int main(int argc,char **argv)
         if (LocaleCompare("dither",option+1) == 0)
           {
             quantize_info->dither=(*option == '-');
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'e':
+      {
+        if (LocaleCompare("endian",option+1) == 0)
+          {
+            image_info->endian=UndefinedEndian;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                image_info->endian=UndefinedEndian;
+                if (LocaleCompare("LSB",option) == 0)
+                  image_info->endian=LSBEndian;
+                if (LocaleCompare("MSB",option) == 0)
+                  image_info->endian=MSBEndian;
+                if (image_info->endian == UndefinedEndian)
+                  MagickError(OptionError,"Invalid endian type",option);
+              }
             break;
           }
         MagickError(OptionError,"Unrecognized option",option);
