@@ -1154,6 +1154,145 @@ static void SVGStartElement(void *context,const xmlChar *name,
         case 'G':
         case 'g':
         {
+          if (LocaleCompare(keyword,"gradientTransform") == 0)
+            {
+              AffineMatrix
+                affine,
+                current,
+                transform;
+              IdentityAffine(&transform);
+              if (svg_info->debug)
+                (void) fprintf(stdout,"  \n");
+              tokens=GetTransformTokens(value,&number_tokens);
+              for (j=0; j < (number_tokens-1); j+=2)
+              {
+                keyword=(char *) tokens[j];
+                value=(char *) tokens[j+1];
+                if (svg_info->debug)
+                  (void) fprintf(stdout,"    %.1024s: %.1024s\n",keyword,value);
+                current=transform;
+                IdentityAffine(&affine);
+                switch (*keyword)
+                {
+                  case 'M':
+                  case 'm':
+                  {
+                    if (LocaleCompare(keyword,"matrix") == 0)
+                      {
+                        p=(char *) value;
+                        GetToken(p,&p,token);
+                        affine.sx=atof(value);
+                        GetToken(p,&p,token);
+                        if (*token == ',')
+                          GetToken(p,&p,token);
+                        affine.rx=atof(token);
+                        GetToken(p,&p,token);
+                        if (*token == ',')
+                          GetToken(p,&p,token);
+                        affine.ry=atof(token);
+                        GetToken(p,&p,token);
+                        if (*token == ',')
+                          GetToken(p,&p,token);
+                        affine.sy=atof(token);
+                        GetToken(p,&p,token);
+                        if (*token == ',')
+                          GetToken(p,&p,token);
+                        affine.tx=atof(token);
+                        GetToken(p,&p,token);
+                        if (*token == ',')
+                          GetToken(p,&p,token);
+                        affine.ty=atof(token);
+                        break;
+                      }
+                    break;
+                  }
+                  case 'R':
+                  case 'r':
+                  {
+                    if (LocaleCompare(keyword,"rotate") == 0)
+                      {
+                        double
+                          angle;
+
+                        angle=GetUserSpaceCoordinateValue(svg_info,value);
+                        affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
+                        affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
+                        affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
+                        affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
+                        break;
+                      }
+                    break;
+                  }
+                  case 'S':
+                  case 's':
+                  {
+                    if (LocaleCompare(keyword,"scale") == 0)
+                      {
+                        for (p=(char *) value; *p != '\0'; p++)
+                          if (isspace((int) (*p)) || (*p == ','))
+                            break;
+                        affine.sx=GetUserSpaceCoordinateValue(svg_info,value);
+                        affine.sy=affine.sx;
+                        if (*p != '\0')
+                          affine.sy=GetUserSpaceCoordinateValue(svg_info,p+1);
+                        svg_info->scale[svg_info->n]=ExpandAffine(&affine);
+                        break;
+                      }
+                    if (LocaleCompare(keyword,"skewX") == 0)
+                      {
+                        affine.sx=svg_info->affine.sx;
+                        affine.ry=tan(DegreesToRadians(fmod(
+                          GetUserSpaceCoordinateValue(svg_info,value),360.0)));
+                        affine.sy=svg_info->affine.sy;
+                        break;
+                      }
+                    if (LocaleCompare(keyword,"skewY") == 0)
+                      {
+                        affine.sx=svg_info->affine.sx;
+                        affine.rx=tan(DegreesToRadians(fmod(
+                          GetUserSpaceCoordinateValue(svg_info,value),
+                          360.0)));
+                        affine.sy=svg_info->affine.sy;
+                        break;
+                      }
+                    break;
+                  }
+                  case 'T':
+                  case 't':
+                  {
+                    if (LocaleCompare(keyword,"translate") == 0)
+                      {
+                        for (p=(char *) value; *p != '\0'; p++)
+                          if (isspace((int) (*p)) || (*p == ','))
+                            break;
+                        affine.tx=GetUserSpaceCoordinateValue(svg_info,value);
+                        affine.ty=affine.tx;
+                        if (*p != '\0')
+                          affine.ty=GetUserSpaceCoordinateValue(svg_info,p+1);
+                        break;
+                      }
+                    break;
+                  }
+                  default:
+                    break;
+                }
+                transform.sx=current.sx*affine.sx+current.ry*affine.rx;
+                transform.rx=current.rx*affine.sx+current.sy*affine.rx;
+                transform.ry=current.sx*affine.ry+current.ry*affine.sy;
+                transform.sy=current.rx*affine.ry+current.sy*affine.sy;
+                transform.tx=current.sx*affine.tx+current.ry*affine.ty+
+                  current.tx;
+                transform.ty=current.rx*affine.tx+current.sy*affine.ty+
+                  current.ty;
+              }
+              (void) fprintf(svg_info->file,"affine %g %g %g %g %g %g\n",
+                transform.sx,transform.rx,transform.ry,transform.sy,
+                transform.tx,transform.ty);
+              for (j=0; j < number_tokens; j++)
+                LiberateMemory((void **) &tokens[j]);
+              LiberateMemory((void **) &tokens);
+              break;
+            }
           if (LocaleCompare(keyword,"gradientUnits") == 0)
             {
               (void) CloneString(&units,value);
