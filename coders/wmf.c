@@ -60,11 +60,6 @@
 
 #if defined(HasWMF)
 
-/* defines extracted from libwmf's "wmfdefs.h" */
-#ifndef PI
-#define PI      3.14159265358979323846
-#endif
-
 #ifdef MAX
 #undef MAX
 #endif
@@ -562,8 +557,8 @@ static void magick_draw_arc (wmfAPI* API,
           end.x -= O.x;
           end.y -= O.y;
 
-          phi_s = (float)(atan2((double)start.y,(double) start.x)*180/PI);
-          phi_e = (float)(atan2((double)end.y,(double)end.x)*180/PI);
+          phi_s = (float)(atan2((double)start.y,(double) start.x)*180/MagickPI);
+          phi_e = (float)(atan2((double)end.y,(double)end.x)*180/MagickPI);
 
           if (phi_e <= phi_s) phi_e += 360;
         }
@@ -861,12 +856,12 @@ static void wmf_magick_draw_text (wmfAPI* API,
   }
 
   /* Set box color */
-/*   if(!WMF_DC_TRANSPARENT(draw_text->dc)) */
-/*     { */
-/*       wmfRGB* box = WMF_DC_BACKGROUND (draw_text->dc); */
-/*       wmf_stream_printf (API,out,"box #%02x%02x%02x\n", */
-/*                          (int)box->r,(int)box->g,(int)box->b); */
-/*      } */
+  if(WMF_DC_OPAQUE(draw_text->dc))
+    {
+      wmfRGB* box = WMF_DC_BACKGROUND (draw_text->dc);
+      wmf_stream_printf (API,out,"decorate #%02x%02x%02x\n",
+                         (int)box->r,(int)box->g,(int)box->b);
+    }
 
   /* Output font file name */
   font_name = WMF_FONT_PSNAME (font);
@@ -883,10 +878,10 @@ static void wmf_magick_draw_text (wmfAPI* API,
     wmf_stream_printf (API,out,"decorate line-through\n");
 
   /* Set font size */
-/*   printf("========= Font Height  : %i\n", (int)WMF_FONT_HEIGHT(font)); */
-/*   printf("========= Font Width   : %i\n", (int)WMF_FONT_WIDTH(font)); */
-    pointsize = ceil((((double)2.54*ddata->y_resolution*WMF_FONT_HEIGHT(font)))/TWIPS_INCH);
-/*   printf("========= Pointsize    : %i\n", (int)pointsize); */
+  /*   printf("========= Font Height  : %i\n", (int)WMF_FONT_HEIGHT(font)); */
+  /*   printf("========= Font Width   : %i\n", (int)WMF_FONT_WIDTH(font)); */
+  pointsize = ceil((((double)2.54*ddata->y_resolution*WMF_FONT_HEIGHT(font)))/TWIPS_INCH);
+  /*   printf("========= Pointsize    : %i\n", (int)pointsize); */
   wmf_stream_printf (API,out,"font-size %i\n", pointsize);
 
   /* Translate coordinates so target is 0,0 */
@@ -899,10 +894,14 @@ static void wmf_magick_draw_text (wmfAPI* API,
   }
 
   /* Apply rotation */
+  /* ImageMagick's drawing rotation is clockwise from horizontal
+     while WMF drawing rotation is counterclockwise from horizontal */
   /* FIXME: rotation is backwards */
-  angle = RadiansToDegrees(WMF_TEXT_ANGLE(font));
+  angle = abs(RadiansToDegrees(2*MagickPI-WMF_TEXT_ANGLE(font)));
+  if(angle == 360)
+    angle = 0;
   if (angle != 0)
-    wmf_stream_printf (API,out,"rotate %d\n",angle);
+    wmf_stream_printf (API,out,"rotate %f\n",angle);
           
   /*
    * Render text
@@ -1382,7 +1381,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,"Failed to compute output size",
                          image);
   }
-  printf("wmf_size: %fx%f\n", wmf_width, wmf_height);
+/*   printf("wmf_size: %fx%f\n", wmf_width, wmf_height); */
 
   if(image->y_resolution > 0)
     {
@@ -1401,7 +1400,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
   wmf_width  = ceil(( wmf_width*CENTIMETERS_INCH)/TWIPS_INCH*x_resolution);
   wmf_height = ceil((wmf_height*CENTIMETERS_INCH)/TWIPS_INCH*y_resolution);
 
-  printf("Size: %fx%f\n", wmf_width, wmf_height);
+/*   printf("Size: %fx%f\n", wmf_width, wmf_height); */
 
   ddata = WMF_MAGICK_GetData (API);
   ddata->bbox = bounding_box;
