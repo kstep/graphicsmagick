@@ -1594,9 +1594,6 @@ static unsigned int XColorEditImage(Display *display,
   register RunlengthPacket
     *p;
 
-  static unsigned int
-    fuzz_factor = 0;
-
   unsigned int
     height,
     width;
@@ -1772,7 +1769,7 @@ static unsigned int XColorEditImage(Display *display,
           case ColorEditFuzzCommand:
           {
             static char
-              fuzz[MaxTextExtent] = "3";
+              fuzz[MaxTextExtent];
 
             static const char
               *FuzzMenu[]=
@@ -1796,14 +1793,15 @@ static unsigned int XColorEditImage(Display *display,
               break;
             if (entry != 5)
               {
-                fuzz_factor=atoi(FuzzMenu[entry]);
+                (*image)->fuzz=atoi(FuzzMenu[entry]);
                 break;
               }
+            (void) sprintf(fuzz,"%d",(*image)->fuzz);
             (void) XDialogWidget(display,windows,"Ok","Enter fuzz factor:",
               fuzz);
             if (*fuzz == '\0')
               break;
-            fuzz_factor=atoi(fuzz);
+            (*image)->fuzz=atoi(fuzz);
             break;
           }
           case ColorEditUndoCommand:
@@ -2065,7 +2063,6 @@ static unsigned int XColorEditImage(Display *display,
             image_info=CloneImageInfo(resource_info->image_info);
             (void) CloneString(&image_info->pen,
               resource_info->pen_colors[pen_id]);
-            (*image)->fuzz=fuzz_factor;
             GetAnnotateInfo(image_info,&annotate_info);
             ColorFloodfillImage(*image,&target,annotate_info.tile,x_offset,
               y_offset,method);
@@ -3789,6 +3786,12 @@ static unsigned int XDrawEditImage(Display *display,
             }
             case DrawStippleCommand:
             {
+              Image
+                *stipple_image;
+
+              ImageInfo
+                image_info;
+
               static char
                 filename[MaxTextExtent] = "\0";
 
@@ -3867,8 +3870,29 @@ static unsigned int XDrawEditImage(Display *display,
               XFileBrowserWidget(display,windows,"Stipple",filename);
               if (*filename == '\0')
                 break;
+              /*
+                Read image.
+              */
+              XSetCursorState(display,windows,True);
+              XCheckRefreshWindows(display,windows);
+              GetImageInfo(&image_info);
+              (void) strcpy(image_info.filename,filename);
+              stipple_image=ReadImage(&image_info);
+              XSetCursorState(display,windows,False);
+              if (stipple_image == (Image *) NULL)
+                {
+                  XNoticeWidget(display,windows,"Unable to read image:",
+                    filename);
+                  break;
+                }
+              TemporaryFilename(filename);
+              FormatString(stipple_image->filename,"xbm:%.1024s",filename);
+              status=WriteImage(&image_info,stipple_image);
+              DestroyImage(stipple_image);
+              DestroyImageInfo(&image_info);
               status=XReadBitmapFile(display,root_window,filename,&width,
                 &height,&stipple,&x,&y);
+              (void) remove(filename);
               if (status != BitmapSuccess)
                 XNoticeWidget(display,windows,"Unable to read X bitmap image:",
                   filename);
@@ -7220,6 +7244,7 @@ static unsigned int XMatteEditImage(Display *display,
     {
       "Method",
       "Border Color",
+      "Fuzz",
       "Matte Value",
       "Undo",
       "Help",
@@ -7232,6 +7257,7 @@ static unsigned int XMatteEditImage(Display *display,
     {
       MatteEditMethod,
       MatteEditBorderCommand,
+      MatteEditFuzzCommand,
       MatteEditValueCommand,
       MatteEditUndoCommand,
       MatteEditHelpCommand,
@@ -7279,7 +7305,7 @@ static unsigned int XMatteEditImage(Display *display,
     Map Command widget.
   */
   windows->command.name="Matte Edit";
-  windows->command.data=2;
+  windows->command.data=3;
   (void) XCommandWidget(display,windows,MatteEditMenu,(XEvent *) NULL);
   XMapRaised(display,windows->command.id);
   XClientMessage(display,windows->image.id,windows->im_protocols,
@@ -7386,6 +7412,44 @@ static unsigned int XMatteEditImage(Display *display,
             */
             (void) XParseColor(display,windows->map_info->colormap,
               resource_info->pen_colors[pen_number],&border_color);
+            break;
+          }
+          case MatteEditFuzzCommand:
+          {
+            static char
+              fuzz[MaxTextExtent];
+
+            static const char
+              *FuzzMenu[]=
+              {
+                "0",
+                "2",
+                "4",
+                "8",
+                "16",
+                (char *) NULL,
+                (char *) NULL,
+              };
+
+            /*
+              Select a command from the pop-up menu.
+            */
+            FuzzMenu[5]="Dialog...";
+            entry=XMenuWidget(display,windows,MatteEditMenu[id],FuzzMenu,
+              command);
+            if (entry < 0)
+              break;
+            if (entry != 5)
+              {
+                (*image)->fuzz=atoi(FuzzMenu[entry]);
+                break;
+              }
+            (void) sprintf(fuzz,"%d",(*image)->fuzz);
+            (void) XDialogWidget(display,windows,"Ok","Enter fuzz factor:",
+              fuzz);
+            if (*fuzz == '\0')
+              break;
+            (*image)->fuzz=atoi(fuzz);
             break;
           }
           case MatteEditValueCommand:

@@ -12963,7 +12963,7 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   /*
     Write X bitmap header.
   */
-  (void) strcpy(name,image->filename);
+  (void) strcpy(name,BaseFilename(image->filename));
   q=name;
   while ((*q != '.') && (*q != '\0'))
     q++;
