@@ -1210,7 +1210,7 @@ Export int LocaleCompare(const char *p,const char *q)
     p++;
     q++;
   }
-  return(*p-(*q));
+  return(i-j);
 }
 
 /*
@@ -1266,7 +1266,7 @@ Export void LocaleLower(char *string)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method LocaleNCompare compares two strings byte-by-byte, according to
-%  the ordering of the currnet locale encoding. LocaleNCompare returns an
+%  the ordering of the current locale encoding. LocaleNCompare returns an
 %  integer greater than, equal to, or less than 0, if the string pointed
 %  to by p is greater than, equal to, or less than the string pointed to
 %  by q respectively.  The sign of a non-zero return value is determined
@@ -1319,7 +1319,7 @@ Export int LocaleNCompare(const char *p,const char *q,size_t n)
     p++;
     q++;
   }
-  return(*p-(*q));
+  return(i-j);
 }
 
 /*
