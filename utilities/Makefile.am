@@ -83,7 +83,7 @@ check:
 	${GM} convert $(MODEL_MIFF) -fill gold \
 	        -pointsize 14 -font $(GENERIC_TTF) \
 	        -draw 'gravity North text 0,20 "Magick"' -label Annotate Annotate_out.miff
-	${GM} convert $(MODEL_MIFF) -blur 0.0x1.0                 -label Blur Blur_out.miff
+	${GM} convert $(MODEL_MIFF) -blur 0x1                     -label Blur Blur_out.miff
 	${GM} convert $(MODEL_MIFF) -bordercolor gold -border 6x6 -label Border Border_out.miff
 	${GM} convert $(MODEL_MIFF)                               -label Channel Channel_out.miff
 	${GM} convert $(MODEL_MIFF) -charcoal 0x1                 -label Charcoal Charcoal_out.miff
@@ -102,8 +102,8 @@ check:
 	${GM} convert $(MODEL_MIFF) -flop                         -label Flop Flop_out.miff
 	${GM} convert $(MODEL_MIFF) -frame 15x15+3+3              -label Frame Frame_out.miff
 	${GM} convert $(MODEL_MIFF) -gamma 1.6                    -label Gamma Gamma_out.miff
-	${GM} convert $(MODEL_MIFF) -gaussian 0.0x1.5             -label GaussianBlur GB_out.miff
-	${GM} convert -size 130x194 gradient:'#20a0ff-#ffff00' -label Gradient Gradient_out.miff
+	${GM} convert $(MODEL_MIFF) -gaussian 0x1.5               -label GaussianBlur GB_out.miff
+	${GM} convert -size 130x194 gradient:'#20a0ff-#ffff00'    -label Gradient Gradient_out.miff
 	${GM} convert $(MODEL_MIFF) -colorspace gray              -label Grayscale Grayscale_out.miff
 	${GM} convert $(MODEL_MIFF) -implode 0.5                  -label Implode Implode_out.miff
 	${GM} convert $(MODEL_MIFF) -level 20%                    -label Level Level_out.miff
@@ -114,7 +114,7 @@ check:
 	${GM} convert $(MODEL_MIFF) -negate                       -label Negate Negate_out.miff
 	${GM} convert $(MODEL_MIFF) -normalize                    -label Normalize Normal_out.miff
 	${GM} convert $(MODEL_MIFF) -paint 0x1                    -label Oilpaint Oil_out.miff
-	${GM} convert -size 130x194 plasma:fractal             -label Plasma Plasma_out.miff
+	${GM} convert -size 130x194 plasma:fractal                -label Plasma Plasma_out.miff
 	${GM} convert $(MODEL_MIFF)                               -label Quantize Quantize_out.miff
 	${GM} convert $(MODEL_MIFF) -raise 10x10                  -label Raise Raise_out.miff
 	${GM} convert $(MODEL_MIFF) -noise 0x1                    -label ReduceNoise RedN_out.miff
@@ -125,7 +125,7 @@ check:
 	${GM} convert $(MODEL_MIFF) -scale 60%                    -label Scale Scale_out.miff
 	${GM} convert $(MODEL_MIFF) -segment 1x1.5                -label Segment Segment_out.miff
 	${GM} convert $(MODEL_MIFF) -shade 30x30                  -label Shade Shade_out.miff
-	${GM} convert $(MODEL_MIFF) -sharpen 0.0x1.0              -label Sharpen Sharpen_out.miff
+	${GM} convert $(MODEL_MIFF) -sharpen 0x1                  -label Sharpen Sharpen_out.miff
 	${GM} convert $(MODEL_MIFF) -shave 10x10                  -label Shave Shave_out.miff
 	${GM} convert $(MODEL_MIFF) -fill black -shear 45x45 \
 	        -transparent black                       -label Shear Shear_out.miff
@@ -133,7 +133,7 @@ check:
 	${GM} convert $(MODEL_MIFF) -solarize 50%                 -label Solarize Solar_out.miff
 	${GM} convert $(MODEL_MIFF) -background '#000000FF' \
 	        -swirl 90                                -label Swirl Swirl_out.miff
-	${GM} convert $(MODEL_MIFF) -unsharp 0.0x1.0              -label UnsharpMask Unsharp_out.miff
+	${GM} convert $(MODEL_MIFF) -unsharp 0x1                  -label UnsharpMask Unsharp_out.miff
 	${GM} convert $(MODEL_MIFF) -background '#000000FF' \
 	        -wave 25x150                             -label Wave Wave_out.miff
 	${GM} convert $(MODEL_MIFF) -equalize -ordered-dither intensity 2x2 -label Ordered2x2 Ordered2_out.miff

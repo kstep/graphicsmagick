@@ -196,7 +196,7 @@ MAGICK DELEGATES
       Apply this JPEG patch to Independent JPEG Group's source distribution
       if you want to read lossless jpeg-encoded DICOM (medical) images:
 
-         ftp://ftp.imagemagick.org/pub/GraphicsMagick/delegates/ljpeg-6b.tar.gz
+         ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/delegates/ljpeg-6b.tar.gz
 
       Use of lossless JPEG is not encouraged. Unless you have a requirement
       to read lossless jpeg-encoded DICOM images, please disregard the patch.
@@ -304,7 +304,7 @@ MAGICK DELEGATES
       checking out the 'fpx' module, or retrieving the file
       libfpx-1.2.0.9.tar.gz from the ftp directory.
 
-         ftp://ftp.imagemagick.org/pub/GraphicsMagick/delegates/.
+         ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/delegates/.
 
       Please note that this library is not very portable. It is known to
       work properly under SPARC Solaris and Windows, but exhibits severe
@@ -346,7 +346,7 @@ MAGICK DELEGATES
          http://the-tech.mit.edu/KPT/
 
 ---------------------------------------------------------------------------
-Copyright (C) 2003 GraphicsMagick Group
+Copyright (C) 2003, 2004 GraphicsMagick Group
 Copyright (C) 2002 ImageMagick Studio
 Copyright (C) 1999 E. I. du Pont de Nemours and Company
 
