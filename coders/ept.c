@@ -58,6 +58,7 @@
 #include "magick.h"
 #include "monitor.h"
 #include "render.h"
+#include "static.h"
 #include "utility.h"
 
 /*
@@ -349,7 +350,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
     }
   (void) remove(postscript_filename);
   (void) MagickMonitor(RenderPostscriptText,7,8,&image->exception);
-  if (status)
+  if (!IsAccessible(image_info->filename))
     {
       /*
         Ghostscript has failed-- try the Display Postscript Extension.
