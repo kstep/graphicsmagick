@@ -950,6 +950,12 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             Image
               *preview_image;
 
+            int
+              y;
+
+            register int
+              x;
+
             /*
               Create preview image.
             */
@@ -1002,7 +1008,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                     count++;
                     if (count == 36)
                       {
-                        (void) strcpy(buffer,"\n%%  ");
+                        (void) strcpy(buffer,"\n%  ");
                         (void) WriteBlob(image,strlen(buffer),buffer);
                         count=0;
                       };
@@ -1018,7 +1024,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   count++;
                   if (count == 36)
                     {
-                      (void) strcpy(buffer,"\n%%  ");
+                      (void) strcpy(buffer,"\n%  ");
                       (void) WriteBlob(image,strlen(buffer),buffer);
                       count=0;
                     };
