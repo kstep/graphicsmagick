@@ -287,12 +287,7 @@ static unsigned int DecodeImage(Image *image,const long opacity)
       */
       top_stack--;
       index=(*top_stack);
-      if (index >= image->colors)
-        {
-          ThrowException(&image->exception,CorruptImageError,
-            "InvalidColormapIndex",image->filename);
-          index=0;
-        }
+      VerifyColormapIndex(image,index);
       indexes[x]=index;
       *q=image->colormap[index];
       q->opacity=(Quantum)

@@ -198,15 +198,13 @@ static void
 %
 */
 MagickExport IndexPacket ConstrainColormapIndex(Image *image,
-  const unsigned long index)
+  unsigned long index)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (index < image->colors)
-    return((IndexPacket) index);
-  ThrowException(&image->exception,CorruptImageError,"InvalidColormapIndex",
-    image->filename);
-  return(0);
+
+  VerifyColormapIndex(image,index);
+  return((IndexPacket) index);
 }
 
 /*

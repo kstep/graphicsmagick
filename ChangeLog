@@ -1,3 +1,16 @@
+2003-01-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Support reading 16-bit TIFF images
+	with a Q:8 build.
+
+	* magick/color.c (ConstrainColormapIndex): Use VerifyColormapIndex.
+
+	* coders/pnm.c (ReadPNMImage): Use VerifyColormapIndex.
+
+	* coders/gif.c (DecodeImage): Use VerifyColormapIndex.
+
+	* magick/image.c (SyncImage): Use VerifyColormapIndex.
+
 2003-01-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c (ReadBlobByte): Use getc when reading from FILE stream.

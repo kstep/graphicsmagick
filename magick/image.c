@@ -4850,18 +4850,12 @@ MagickExport void SyncImage(Image *image)
     indexes=GetIndexes(image);
     for (x=(long) image->columns; x > 0; x--)
     {
-      if (*indexes >= image->colors)
-        {
-          ThrowException(&image->exception,CorruptImageError,
-            "InvalidColormapIndex",image->filename);
-          *indexes=0;
-        }
-      p=&image->colormap[*indexes];
+      VerifyColormapIndex(image,*indexes);
+      p=&image->colormap[*indexes++];
       q->red=p->red;
       q->green=p->green;
       q->blue=p->blue;
       q++;
-      indexes++;
     }
     if (!SyncImagePixels(image))
       break;

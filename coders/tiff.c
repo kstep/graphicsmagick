@@ -578,7 +578,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     }
     image->columns=width;
     image->rows=height;
-    image->depth=bits_per_sample <= 8 ? 8 : QuantumDepth;
+    image->depth=bits_per_sample <= 8 ? 8 : bits_per_sample;
     if (logging)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %lu",
         image->depth);
@@ -998,6 +998,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         break;
       }
     }
+    if (image->depth > QuantumDepth)
+      image->depth=QuantumDepth;
     /*
       Proceed to next image.
     */

@@ -375,12 +375,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (long) image->columns; x++)
           {
             index=!PNMInteger(image,2);
-            if (index >= image->colors)
-              {
-                ThrowException(&image->exception,CorruptImageError,
-                  "InvalidColormapIndex",image->filename);
-                index=0;
-              }
+            VerifyColormapIndex(image,index);
             indexes[x]=index;
             *q++=image->colormap[index];
           }
@@ -413,12 +408,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (scale != (unsigned long *) NULL)
               intensity=scale[intensity];
             index=intensity;
-            if (index >= image->colors)
-              {
-                ThrowException(&image->exception,CorruptImageError,
-                  "InvalidColormapIndex",image->filename);
-                index=0;
-              }
+            VerifyColormapIndex(image,index);
             indexes[x]=index;
             *q++=image->colormap[index];
           }
@@ -547,12 +537,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               index=(*p << 8) | *(p+1);
               p+=2;
-              if (index >= image->colors)
-                {
-                  ThrowException(&image->exception,CorruptImageError,
-                    "InvalidColormapIndex",image->filename);
-                  index=0;
-                }
+              VerifyColormapIndex(image,index);
               indexes[x]=index;
               *q++=image->colormap[index];
             }
