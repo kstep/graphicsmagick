@@ -24,8 +24,8 @@ EXTRA_DIST = model.miff smile.miff smile_anim.miff tile.miff
 
 CLEANFILES = *_out.miff
 
-ZOOM_FILTERS = point box triangle hermite hanning hamming blackman gaussian \
-	       quadratic cubic catrom mitchell lanczos bessel sinc
+ZOOM_FILTERS = bessel blackman box catrom cubic gaussian hamming hanning hermite \
+ lanczos mitchell point quadratic sample scale sinc triangle
 ZOOM_GEOMETRY = 600x600
 
 if WIN32_NATIVE_BUILD
