@@ -1383,7 +1383,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size+(8-(strip_size % 8)));
     else
       if ((compress_tag == COMPRESSION_CCITTFAX4) ||
-          (compress_tag == COMPRESSION_ADOBE_DEFLATE) || (sizeof(long) > 4))
+          (compress_tag == COMPRESSION_ADOBE_DEFLATE))
         TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
       else
         TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
