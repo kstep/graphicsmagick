@@ -59,7 +59,6 @@
 #include "monitor.h"
 #include "render.h"
 #include "utility.h"
-#include "pdf.h"
 
 /*
   Forward declarations.

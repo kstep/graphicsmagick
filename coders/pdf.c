@@ -62,7 +62,6 @@
 #include "monitor.h"
 #include "utility.h"
 #include "version.h"
-#include "pdf.h"
 #if defined(HasTIFF)
 #define CCITTParam  "-1"
 #else

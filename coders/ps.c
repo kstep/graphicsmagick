@@ -60,7 +60,6 @@
 #include "magick.h"
 #include "monitor.h"
 #include "utility.h"
-#include "pdf.h"
 
 /*
   Forward declarations.
