@@ -911,7 +911,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "        source(%x), dest(%x)",
-                    blend_source, blend_dest);
+                    (unsigned int) blend_source, (unsigned int) blend_dest);
             }
         }
               }
