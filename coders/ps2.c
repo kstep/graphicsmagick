@@ -733,10 +733,11 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,"%%PageResources: font Times-Roman\n");
     if (LocaleCompare(image_info->magick,"PS2") != 0)
       (void) WriteBlobString(image,"userdict begin\n");
+    start=TellBlob(image);
     FormatString(buffer,"%%%%BeginData:%13ld %s Bytes\n",0L,
       compression == NoCompression ? "ASCII" : "Binary");
     (void) WriteBlobString(image,buffer);
-    start=TellBlob(image);
+    stop=TellBlob(image);
     (void) WriteBlobString(image,"DisplayImage\n");
     /*
       Output image data.
@@ -787,9 +788,6 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           {
             Image
               *jpeg_image;
-
-            size_t
-              length;
 
             void
               *blob;
@@ -895,9 +893,6 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             {
               Image
                 *jpeg_image;
-
-              size_t
-                length;
 
               void
                 *blob;
@@ -1119,9 +1114,10 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           }
         }
     (void) WriteBlobByte(image,'\n');
+    length=TellBlob(image)-stop;
     stop=TellBlob(image);
     (void) SeekBlob(image,start,SEEK_SET);
-    FormatString(buffer,"%%%%BeginData:%13ld %s Bytes\n",(long) (stop-start),
+    FormatString(buffer,"%%%%BeginData:%13ld %s Bytes\n",(long) length,
       compression == NoCompression ? "ASCII" : "Binary");
     (void) WriteBlobString(image,buffer);
     (void) SeekBlob(image,stop,SEEK_SET);
@@ -1132,7 +1128,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+    status=MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),
+      &image->exception);
+    if (status == False)
       break;
   } while (image_info->adjoin);
   if (image_info->adjoin)
