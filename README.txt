@@ -25,7 +25,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.1.tar.gz
+    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.1.0.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -83,8 +83,8 @@ UNIX COMPILATION
 
   Type:
 
-    gunzip ImageMagick-4.1.tar.gz
-    tar xvf ImageMagick-4.1.tar
+    gunzip ImageMagick-4.1.0.tar.gz
+    tar xvf ImageMagick-4.1.0.tar
     cd ImageMagick
 
   If you do not have gunzip(1), it is available as
@@ -772,6 +772,17 @@ ANIMATION
   know a better solution, please send me E-mail.  Note, that the Dec Alpha
   apparently does not pad the structure so ImageMagick should be fine on
   this particular 64-bit machine.
+
+ACKNOWLEDGEMENT
+
+  ImageMagick has been significantly enhanced due to the efforts of these
+  individuals:
+
+      Bob Friesenhahn <bfriesen@simple.dallas.tx.us>:  Configure scripts
+      Bill Radcliffe <BillR@corbis.com>:  FlashPix support
+
+  And thanks to the hundreds of people that have sent e-mail with bug
+  reports and suggestions for improving ImageMagick.
 
 
 COPYRIGHT
