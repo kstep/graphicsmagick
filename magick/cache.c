@@ -778,6 +778,7 @@ MagickExport PixelPacket *GetImagePixels(Image *image,const int x,const int y,
 {
   return((*get_pixel_handler)(image,x,y,columns,rows));
 }
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
