@@ -485,7 +485,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       }
       TT_Get_Face_Properties(face,&face_properties);
       TT_Get_Instance_Metrics(instance,&instance_metrics);
-      canvas.width=7;
+      canvas.width=0;
       for (i=0; i < length; i++)
       {
         if (glyphs[unicode[i]].z == (TT_Glyph *) NULL)
@@ -493,6 +493,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
         TT_Get_Glyph_Metrics(glyphs[unicode[i]],&glyph_metrics);
         canvas.width+=glyph_metrics.advance/64;
       }
+      canvas.width+=(glyph_metrics.bbox.xMin+glyph_metrics.bbox.xMax)/64;
       canvas.width=(canvas.width+3) & -4;
       canvas.rows=instance_metrics.y_ppem*(face_properties.horizontal->Ascender-
         face_properties.horizontal->Descender)/
