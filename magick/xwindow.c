@@ -5432,16 +5432,14 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
       /*
         Convert image to big-endian bitmap.
       */
-      background=(ScaleIntensityToInt(&window->pixel_info->foreground_color) <
-        ScaleIntensityToInt(&window->pixel_info->background_color) ?
-        0x80 : 0x00);
-      foreground=(ScaleIntensityToInt(&window->pixel_info->background_color) <
-        ScaleIntensityToInt(&window->pixel_info->foreground_color) ?
-        0x80 : 0x00);
-      polarity=ScaleIntensityToInt(image->colormap+0) < (0.5*MaxRGB);
+      background=(ScaleIntensity(&window->pixel_info->foreground_color) <
+        ScaleIntensity(&window->pixel_info->background_color) ?  0x80 : 0x00);
+      foreground=(ScaleIntensity(&window->pixel_info->background_color) <
+        ScaleIntensity(&window->pixel_info->foreground_color) ?  0x80 : 0x00);
+      polarity=ScaleIntensity(image->colormap+0) < (0.5*MaxRGB);
       if (image->colors == 2)
-        polarity=ScaleIntensityToInt(image->colormap+0) <
-          ScaleIntensityToInt(image->colormap+1);
+        polarity=ScaleIntensity(image->colormap+0) <
+          ScaleIntensity(image->colormap+1);
       for (y=0; y < (long) image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -5971,16 +5969,14 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
       /*
         Convert image to big-endian bitmap.
       */
-      background=(ScaleIntensityToInt(&window->pixel_info->foreground_color) <
-        ScaleIntensityToInt(&window->pixel_info->background_color) ?
-        0x01 : 0x00);
-      foreground=(ScaleIntensityToInt(&window->pixel_info->background_color) <
-        ScaleIntensityToInt(&window->pixel_info->foreground_color) ?
-        0x01 : 0x00);
-      polarity=ScaleIntensityToInt(image->colormap+0) < (0.5*MaxRGB);
+      background=(ScaleIntensity(&window->pixel_info->foreground_color) <
+        ScaleIntensity(&window->pixel_info->background_color) ?  0x01 : 0x00);
+      foreground=(ScaleIntensity(&window->pixel_info->background_color) <
+        ScaleIntensity(&window->pixel_info->foreground_color) ?  0x01 : 0x00);
+      polarity=ScaleIntensity(image->colormap+0) < (0.5*MaxRGB);
       if (image->colors == 2)
-        polarity=ScaleIntensityToInt(image->colormap+0) <
-          ScaleIntensityToInt(image->colormap+1);
+        polarity=ScaleIntensity(image->colormap+0) <
+          ScaleIntensity(image->colormap+1);
       for (y=0; y < (long) image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -6577,12 +6573,10 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
           foreground=0x80;
           if (ximage->format == XYBitmap)
             {
-              background=(ScaleIntensityToInt(&pixel_info->foreground_color) <
-                ScaleIntensityToInt(&pixel_info->background_color) ?
-                0x80 : 0x00);
-              foreground=(ScaleIntensityToInt(&pixel_info->background_color) <
-                ScaleIntensityToInt(&pixel_info->foreground_color) ?
-                0x80 : 0x00);
+              background=(ScaleIntensity(&pixel_info->foreground_color) <
+                ScaleIntensity(&pixel_info->background_color) ?  0x80 : 0x00);
+              foreground=(ScaleIntensity(&pixel_info->background_color) <
+                ScaleIntensity(&pixel_info->foreground_color) ?  0x80 : 0x00);
               if (windows->magnify.depth > 1)
                 Swap(background,foreground);
             }
@@ -6649,12 +6643,10 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
           foreground=0x01;
           if (ximage->format == XYBitmap)
             {
-              background=(ScaleIntensityToInt(&pixel_info->foreground_color) <
-                ScaleIntensityToInt(&pixel_info->background_color) ?
-                0x01 : 0x00);
-              foreground=(ScaleIntensityToInt(&pixel_info->background_color) <
-                ScaleIntensityToInt(&pixel_info->foreground_color) ?
-                0x01 : 0x00);
+              background=(ScaleIntensity(&pixel_info->foreground_color) <
+                ScaleIntensity(&pixel_info->background_color) ?  0x01 : 0x00);
+              foreground=(ScaleIntensity(&pixel_info->background_color) <
+                ScaleIntensity(&pixel_info->foreground_color) ?  0x01 : 0x00);
               if (windows->magnify.depth > 1)
                 Swap(background,foreground);
             }
@@ -7006,7 +6998,7 @@ static int IntensityCompare(const void *x,const void *y)
 
   color_1=(DiversityPacket *) x;
   color_2=(DiversityPacket *) y;
-  return((int) (ScaleIntensityToInt(color_2)-ScaleIntensityToInt(color_1)));
+  return((int) (ScaleIntensity(color_2)-ScaleIntensity(color_1)));
 }
 
 static int PopularityCompare(const void *x,const void *y)
@@ -7204,8 +7196,8 @@ MagickExport void XMakeStandardColormap(Display *display,
       else
         for (i=0; i < (long) image->colors; i++)
         {
-          gray_value=ScaleIntensityToInt(gamma_map+
-            ScaleIntensityToInt(image->colormap+i));
+          gray_value=ScaleIntensity(gamma_map+
+            ScaleIntensity(image->colormap+i));
           color.red=ScaleQuantumToShort(gray_value);
           color.green=ScaleQuantumToShort(gray_value);
           color.blue=ScaleQuantumToShort(gray_value);
@@ -7333,8 +7325,8 @@ MagickExport void XMakeStandardColormap(Display *display,
             for (i=0; i < (long) image->colors; i++)
             {
               index=diversity[i].index;
-              gray_value=ScaleIntensityToInt(gamma_map+
-                ScaleIntensityToInt(image->colormap+index));
+              gray_value=ScaleIntensity(gamma_map+
+                ScaleIntensity(image->colormap+index));
               color.red=ScaleQuantumToShort(gray_value);
               color.green=ScaleQuantumToShort(gray_value);
               color.blue=ScaleQuantumToShort(gray_value);
@@ -7378,8 +7370,8 @@ MagickExport void XMakeStandardColormap(Display *display,
             for (; i < (long) image->colors; i++)
             {
               index=diversity[i].index;
-              gray_value=ScaleIntensityToInt(gamma_map+
-                ScaleIntensityToInt(image->colormap+index));
+              gray_value=ScaleIntensity(gamma_map+
+                ScaleIntensity(image->colormap+index));
               color.red=ScaleQuantumToShort(gray_value);
               color.green=ScaleQuantumToShort(gray_value);
               color.blue=ScaleQuantumToShort(gray_value);
@@ -7470,8 +7462,8 @@ MagickExport void XMakeStandardColormap(Display *display,
       else
         for (i=0; i < (long) image->colors; i++)
         {
-          gray_value=ScaleIntensityToInt(gamma_map+
-            ScaleIntensityToInt(image->colormap+i));
+          gray_value=ScaleIntensity(gamma_map+
+            ScaleIntensity(image->colormap+i));
           color.red=ScaleQuantumToShort(gray_value);
           color.green=ScaleQuantumToShort(gray_value);
           color.blue=ScaleQuantumToShort(gray_value);

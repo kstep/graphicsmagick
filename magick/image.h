@@ -16,37 +16,37 @@ extern "C" {
 #if (QuantumDepth == 8)
 #define MaxRGB  255
 #define ScaleCharToQuantum(value) ((Quantum) (value))
-#define ScaleIntToQuantum(value) ((unsigned int) (value))
 #define ScaleLongToQuantum(value) ((Quantum) ((value)/16843009))
+#define ScaleQuantum(quantum) (quantum)
 #define ScaleQuantumToChar(quantum) ((unsigned char) (quantum))
-#define ScaleQuantumToInt(quantum) ((unsigned int) (quantum))
 #define ScaleQuantumToLong(quantum) ((unsigned long) (16843009UL*(quantum)))
 #define ScaleQuantumToShort(quantum) ((unsigned short) (257*(quantum)))
 #define ScaleShortToQuantum(value) ((Quantum) ((value)/257))
+#define ScaleToQuantum(value) (value)
 
 typedef unsigned char Quantum;
 #elif (QuantumDepth == 16)
 #define MaxRGB  65535
 #define ScaleCharToQuantum(value) ((Quantum) (257*(value)))
-#define ScaleIntToQuantum(value) ((unsigned int) (257*(value)))
 #define ScaleLongToQuantum(value) ((Quantum) ((value)/65537))
+#define ScaleQuantum(quantum) ((quantum)/257)
 #define ScaleQuantumToChar(quantum) ((unsigned char) ((quantum)/257))
-#define ScaleQuantumToInt(quantum) ((unsigned int) (quantum)/257)
 #define ScaleQuantumToLong(quantum) ((unsigned long) (65537UL*(quantum)))
 #define ScaleQuantumToShort(quantum) ((unsigned short) (quantum))
 #define ScaleShortToQuantum(value) ((Quantum) (value))
+#define ScaleToQuantum(value) (257L*(value))
 
 typedef unsigned short Quantum;
 #elif (QuantumDepth == 32)
 #define MaxRGB  4294967295UL
 #define ScaleCharToQuantum(value) ((Quantum) (16843009UL*(value)))
-#define ScaleIntToQuantum(value) ((unsigned int) (16843009UL*(value)))
 #define ScaleLongToQuantum(value) ((Quantum) ((value)))
+#define ScaleQuantum(quantum) ((quantum)/16843009)
 #define ScaleQuantumToChar(quantum) ((unsigned char) ((quantum)/16843009))
-#define ScaleQuantumToInt(quantum) ((unsigned int) ((quantum)/16843009)))
 #define ScaleQuantumToLong(quantum) ((unsigned long) (quantum))
 #define ScaleQuantumToShort(quantum) ((unsigned short) ((quantum)/65537))
 #define ScaleShortToQuantum(value) ((Quantum) (65537*(value)))
+#define ScaleToQuantum(value) (16843009UL*(value))
 
 typedef unsigned int Quantum;
 #else
@@ -59,8 +59,8 @@ typedef unsigned int Quantum;
 #define Intensity(color)  ScaleIntensityToQuantum(color)
 #define MaxColormapSize  65536U
 #define OpaqueOpacity  0
-#define ScaleIntensityToInt(pixel) ((unsigned int) \
-  ((9798L*(pixel)->red+19235L*(pixel)->green+3735L*(pixel)->blue)/32768L))
+#define ScaleIntensity(pixel) \
+  ((9798L*(pixel)->red+19235L*(pixel)->green+3735L*(pixel)->blue)/32768L)
 #define ScaleIntensityToQuantum(pixel) ((Quantum) \
   ((9798L*(pixel)->red+19235L*(pixel)->green+3735L*(pixel)->blue)/32768L))
 #define TransparentOpacity  MaxRGB
