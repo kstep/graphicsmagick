@@ -206,15 +206,15 @@ static void InsertComplexFloatRow(double *p, int y, Image * image, double Min,
 }
 
 /*This function reads one block of unsigned shortS*/
-static void ReadBlobWordLSB(Image * I, size_t len, unsigned short *data)
+static void ReadBlobWordLSB(Image * image, size_t len, unsigned short *data)
 {
   while (len >= 2)
   {
-    *data++ = ReadBlobLSBShort(I);
+    *data++ = ReadBlobLSBShort(image);
     len -= 2;
   }
   if (len > 0)
-    (void) SeekBlob(I, len, SEEK_CUR);
+    (void) SeekBlob(image, len, SEEK_CUR);
 }
 
 static double ReadBlobLSBdouble(Image * image)
@@ -252,15 +252,15 @@ static double ReadBlobLSBdouble(Image * image)
   return (buffer.d);
 }
 
-static void ReadBlobDoublesLSB(Image * I, size_t len, double *data)
+static void ReadBlobDoublesLSB(Image * image, size_t len, double *data)
 {
   while (len >= 8)
   {
-    *data++ = ReadBlobLSBdouble(I);
+    *data++ = ReadBlobLSBdouble(image);
     len -= sizeof(double);
   }
   if (len > 0)
-    (void) SeekBlob(I, len, SEEK_CUR);
+    (void) SeekBlob(image, len, SEEK_CUR);
 }
 
 /*
