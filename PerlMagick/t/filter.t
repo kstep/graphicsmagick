@@ -249,7 +249,7 @@ testFilter('input.miff', 'Threshold',
 
 ++$test;
 testFilter('input.miff', 'Trim',
-  q/ /,
+  q/0/,
   'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 ++$test;
