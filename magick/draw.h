@@ -147,7 +147,7 @@ typedef struct _TypeInfo
     *format,
     *metrics,
     *glyphs,
-    *version,
+    *version;
 
   unsigned int
     stealth;
