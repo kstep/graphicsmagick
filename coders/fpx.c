@@ -816,7 +816,10 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   compression=NONE;
   if (image_info->compression == JPEGCompression)
     compression=JPEG_UNSPECIFIED;
-  TemporaryFilename(filename);
+  (void) strcpy(filename,image->filename);
+  if ((image->file == stdout) || image->pipet ||
+      (image->blob.data != (char *) NULL))
+    TemporaryFilename(filename);
   {
 #if defined(macintosh)
     FSSpec
@@ -1081,19 +1084,21 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
   LiberateMemory((void **) &pixels);
-  /*
-    Copy temporary file to image blob.
-  */
-  file=fopen(filename,ReadBinaryType);
-  if (file == (FILE *) NULL)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  for (c=fgetc(file); c != EOF; c=fgetc(file))
-    (void) WriteBlobByte(image,c);
-  (void) fclose(file);
-  (void) remove(filename);
+  if ((image->file == stdout) || image->pipet ||
+      (image->blob.data != (char *) NULL))
+    {
+      /*
+        Copy temporary file to image blob.
+      */
+      file=fopen(filename,ReadBinaryType);
+      if (file == (FILE *) NULL)
+        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+      for (c=fgetc(file); c != EOF; c=fgetc(file))
+        (void) WriteBlobByte(image,c);
+      (void) fclose(file);
+      (void) remove(filename);
+    }
   CloseBlob(image);
-  if (LocaleCompare(image_info->magick,"PTIF") == 0)
-    DestroyImages(image);
   return(True);
 }
 #else

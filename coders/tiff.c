@@ -1184,9 +1184,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   FILE
     *file;
 
-  Image
-    *reference_image;
-
   ImageAttribute
     *attribute;
 
@@ -1228,8 +1225,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   /*
     Open TIFF file.
   */
-  reference_image=image;
-  status=OpenBlob(image_info,reference_image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   adjoin=image_info->adjoin;
@@ -1264,7 +1260,10 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   tiff_exception=(&image->exception);
   TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
-  TemporaryFilename(filename);
+  (void) strcpy(filename,image->filename);
+  if ((image->file == stdout) || image->pipet ||
+      (image->blob.data != (char *) NULL))
+    TemporaryFilename(filename);
   tiff=TIFFOpen(filename,WriteBinaryType);
   if (tiff == (TIFF *) NULL)
     return(False);
@@ -1745,17 +1744,20 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   TIFFClose(tiff);
   if (LocaleCompare(image_info->magick,"PTIF") == 0)
     DestroyImages(image);
-  /*
-    Copy temporary file to image blob.
-  */
-  image=reference_image;
-  file=fopen(filename,ReadBinaryType);
-  if (file == (FILE *) NULL)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  for (c=fgetc(file); c != EOF; c=fgetc(file))
-    (void) WriteBlobByte(image,c);
-  (void) fclose(file);
-  (void) remove(filename);
+  if ((image->file == stdout) || image->pipet ||
+      (image->blob.data != (char *) NULL))
+    {
+      /*
+        Copy temporary file to image blob.
+      */
+      file=fopen(filename,ReadBinaryType);
+      if (file == (FILE *) NULL)
+        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+      for (c=fgetc(file); c != EOF; c=fgetc(file))
+        (void) WriteBlobByte(image,c);
+      (void) fclose(file);
+      (void) remove(filename);
+    }
   CloseBlob(image);
   return(True);
 }
