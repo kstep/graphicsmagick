@@ -2,6 +2,7 @@
 
 	* Makefile.am (EXTRA_DIST): Added pkgIndex.tcl so that it gets
 	distributed.
+	(install-data-local): Change pkgIndex.tcl install location.
 
 	* generic/Makefile.am (libdir): Make the version part of the
 	install directory.
