@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>signature - Methods to Compute a Digital Signature for an Image</TITLE>
-<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
+<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
 </HEAD>
 
 <body background="../../images/background.png">
@@ -10,12 +10,12 @@
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<LI><A HREF="#NAME">NAME</A></LI>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
 	<UL>
 
-		<LI><A HREF="#SignatureImage">SignatureImage</A>
+		<LI><A HREF="#SignatureImage">SignatureImage</A></LI>
 	</UL>
 
 </UL>
@@ -27,12 +27,14 @@
 <P>
 signature - Methods to Compute a Digital Signature for an Image
 
+</P>
 <P>
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
 void  <STRONG>SignatureImage</STRONG>( Image <CODE>*image</CODE> );
 
+</P>
 <P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
@@ -43,24 +45,32 @@ void  <STRONG>SignatureImage</STRONG>( Image <CODE>*image</CODE> );
 Method SignatureImage computes a digital signature from an image. This signature uniquely identifies the image and is convenient for determining if the colormap of a sequence of images is identical when animating. The digital signature is from 
 <FONT SIZE=-1>RSA</FONT> Data Security 
 <FONT SIZE=-1>MD5</FONT> Digest Algorithm described in Internet draft 
-<FONT SIZE=-1>[MD5],</FONT> July 1992.
+<FONT SIZE=-1>[MD5],</FONT> July 1992, computed on the pixels after expanding them to 64-bit 
+<FONT SIZE=-1>RGBA</FONT> representation, with the two bytes of each 16-bit sample ordered most significant byte first. The signature is in 
+<FONT SIZE=-1>RGBA</FONT> or 
+<FONT SIZE=-1>CMYK</FONT> order depending on the colorspace of the image. If the image does not have any alpha information, an opaque value (65535) is used.
 
 
+</P>
 <P>
 The format of the SignatureImage method is:
 
+</P>
 <blockquote>void SignatureImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o">image:</A></STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 </DL></DL>
+
 </BODY>
 
 </HTML>

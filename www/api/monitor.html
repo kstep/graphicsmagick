@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>monitor - ImageMagick Progress Monitor Methods</TITLE>
-<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
+<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
 </HEAD>
 
 <body background="../../images/background.png">
@@ -10,13 +10,13 @@
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<LI><A HREF="#NAME">NAME</A></LI>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
 	<UL>
 
-		<LI><A HREF="#ProgressMonitor">ProgressMonitor</A>
-		<LI><A HREF="#SetMonitorHandler">SetMonitorHandler</A>
+		<LI><A HREF="#ProgressMonitor">ProgressMonitor</A></LI>
+		<LI><A HREF="#SetMonitorHandler">SetMonitorHandler</A></LI>
 	</UL>
 
 </UL>
@@ -28,15 +28,18 @@
 <P>
 monitor - ImageMagick Progress Monitor Methods
 
+</P>
 <P>
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
 void  <STRONG>ProgressMonitor</STRONG>( const char *text, const unsigned int quantum, const unsigned int span );
 
+</P>
 <P>
 MonitorHandler  <STRONG>SetMonitorHandler</STRONG>( MonitorHandler handler );
 
+</P>
 <P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
@@ -47,25 +50,30 @@ MonitorHandler  <STRONG>SetMonitorHandler</STRONG>( MonitorHandler handler );
 Method ProgressMonitor calls the monitor handler methods with a text string
 that describes the task and a measure of completion.
 
+</P>
 <P>
 The format of the ProgressMonitor method is:
 
+</P>
 <blockquote>void ProgressMonitor ( const char *text, const unsigned int quantum, const unsigned int span ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o">quantum:</A></STRONG><DD>
 <P>
 Specifies the quantum position within the span which represents how much
 progress has been made in completing a task.
 
+</P>
 <p><dt><STRONG>span:</STRONG><DD>
 <P>
 Specifies the span relative to completing a task.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -74,21 +82,26 @@ Specifies the span relative to completing a task.
 Method SetMonitorHandler sets the monitor handler to the specified method
 and returns the previous monitor handler.
 
+</P>
 <P>
 The format of the SetMonitorHandler method is:
 
+</P>
 <blockquote>MonitorHandler SetMonitorHandler ( MonitorHandler handler ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>handler:</STRONG><DD>
 <P>
 Specifies a pointer to a method to handle monitors.
 
+</P>
 </DL></DL>
+
 </BODY>
 
 </HTML>

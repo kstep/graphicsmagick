@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>decorate - ImageMagick Image Decoration Methods</TITLE>
-<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
+<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
 </HEAD>
 
 <body background="../../images/background.png">
@@ -10,14 +10,14 @@
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<LI><A HREF="#NAME">NAME</A></LI>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
 	<UL>
 
-		<LI><A HREF="#BorderImage">BorderImage</A>
-		<LI><A HREF="#FrameImage">FrameImage</A>
-		<LI><A HREF="#RaiseImage">RaiseImage</A>
+		<LI><A HREF="#BorderImage">BorderImage</A></LI>
+		<LI><A HREF="#FrameImage">FrameImage</A></LI>
+		<LI><A HREF="#RaiseImage">RaiseImage</A></LI>
 	</UL>
 
 </UL>
@@ -29,18 +29,22 @@
 <P>
 decorate - ImageMagick Image Decoration Methods
 
+</P>
 <P>
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
 Image * <STRONG>BorderImage</STRONG>( const Image *image, const RectangleInfo <CODE>*border_info</CODE> );
 
+</P>
 <P>
 Image * <STRONG>FrameImage</STRONG>( Image *image, const FrameInfo <CODE>*frame_info</CODE> );
 
+</P>
 <P>
 void  <STRONG>RaiseImage</STRONG>( Image *image, const RectangleInfo *raise_info, const int raised );
 
+</P>
 <P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
@@ -52,15 +56,18 @@ Method BorderImage takes an image and puts a border around it of a
 particular color. It allocates the memory necessary for the new Image
 structure and returns a pointer to the new image.
 
+</P>
 <P>
 The format of the BorderImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *BorderImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *border_info ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o">bordered_image:</A></STRONG><DD>
 <P>
@@ -68,15 +75,18 @@ Method BorderImage returns a pointer to the bordered image.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 <p><dt><STRONG>border_info:</STRONG><DD>
 <P>
 Specifies a pointer to a structure of type Rectangle which defines the
 border region.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -86,15 +96,18 @@ Method FrameImage takes an image and puts a frame around it of a particular
 color. It allocates the memory necessary for the new Image structure and
 returns a pointer to the new image.
 
+</P>
 <P>
 The format of the FrameImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *FrameImage ( <A HREF="types/Image.html">Image</A> *image, const FrameInfo *frame_info ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>frame_image:</STRONG><DD>
 <P>
@@ -102,15 +115,18 @@ Method FrameImage returns a pointer to the framed image.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 <p><dt><STRONG>frame_info:</STRONG><DD>
 <P>
 Specifies a pointer to a FrameInfo structure which defines the framed
 region.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -119,24 +135,29 @@ region.
 Method RaiseImage lightens and darkens the edges of an image to give a 
 <FONT SIZE=-1>3-D</FONT> raised or lower effect.
 
+</P>
 <P>
 The format of the RaiseImage method is:
 
+</P>
 <blockquote>void RaiseImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *raise_info, const int raised ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 <p><dt><STRONG>raise_info:</STRONG><DD>
 <P>
 Specifies a pointer to a XRectangle which defines the raised region.
 
+</P>
 <p><dt><STRONG>raised:</STRONG><DD>
 <P>
 
@@ -144,7 +165,9 @@ Specifies a pointer to a XRectangle which defines the raised region.
 <FONT SIZE=-1>3-D</FONT> raised effect, otherwise it has a lowered effect.
 
 
+</P>
 </DL></DL>
+
 </BODY>
 
 </HTML>

@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>effects - ImageMagick Image Effects Methods</TITLE>
-<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
+<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
 </HEAD>
 
 <body background="../../images/background.png">
@@ -10,32 +10,32 @@
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<LI><A HREF="#NAME">NAME</A></LI>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
 	<UL>
 
-		<LI><A HREF="#AddNoiseImage">AddNoiseImage</A>
-		<LI><A HREF="#BlurImage">BlurImage</A>
-		<LI><A HREF="#ColorizeImage">ColorizeImage</A>
-		<LI><A HREF="#EdgeImage">EdgeImage</A>
-		<LI><A HREF="#EmbossImage">EmbossImage</A>
-		<LI><A HREF="#EnhanceImage">EnhanceImage</A>
-		<LI><A HREF="#ImplodeImage">ImplodeImage</A>
-		<LI><A HREF="#MedianFilterImage">MedianFilterImage</A>
-		<LI><A HREF="#MorphImages">MorphImages</A>
-		<LI><A HREF="#OilPaintImage">OilPaintImage</A>
-		<LI><A HREF="#PlasmaImage">PlasmaImage</A>
-		<LI><A HREF="#ReduceNoiseImage">ReduceNoiseImage</A>
-		<LI><A HREF="#ShadeImage">ShadeImage</A>
-		<LI><A HREF="#SharpenImage">SharpenImage</A>
-		<LI><A HREF="#SolarizeImage">SolarizeImage</A>
-		<LI><A HREF="#SpreadImage">SpreadImage</A>
-		<LI><A HREF="#SteganoImage">SteganoImage</A>
-		<LI><A HREF="#StereoImage">StereoImage</A>
-		<LI><A HREF="#SwirlImage">SwirlImage</A>
-		<LI><A HREF="#ThresholdImage">ThresholdImage</A>
-		<LI><A HREF="#WaveImage">WaveImage</A>
+		<LI><A HREF="#AddNoiseImage">AddNoiseImage</A></LI>
+		<LI><A HREF="#BlurImage">BlurImage</A></LI>
+		<LI><A HREF="#ColorizeImage">ColorizeImage</A></LI>
+		<LI><A HREF="#EdgeImage">EdgeImage</A></LI>
+		<LI><A HREF="#EmbossImage">EmbossImage</A></LI>
+		<LI><A HREF="#EnhanceImage">EnhanceImage</A></LI>
+		<LI><A HREF="#ImplodeImage">ImplodeImage</A></LI>
+		<LI><A HREF="#MedianFilterImage">MedianFilterImage</A></LI>
+		<LI><A HREF="#MorphImages">MorphImages</A></LI>
+		<LI><A HREF="#OilPaintImage">OilPaintImage</A></LI>
+		<LI><A HREF="#PlasmaImage">PlasmaImage</A></LI>
+		<LI><A HREF="#ReduceNoiseImage">ReduceNoiseImage</A></LI>
+		<LI><A HREF="#ShadeImage">ShadeImage</A></LI>
+		<LI><A HREF="#SharpenImage">SharpenImage</A></LI>
+		<LI><A HREF="#SolarizeImage">SolarizeImage</A></LI>
+		<LI><A HREF="#SpreadImage">SpreadImage</A></LI>
+		<LI><A HREF="#SteganoImage">SteganoImage</A></LI>
+		<LI><A HREF="#StereoImage">StereoImage</A></LI>
+		<LI><A HREF="#SwirlImage">SwirlImage</A></LI>
+		<LI><A HREF="#ThresholdImage">ThresholdImage</A></LI>
+		<LI><A HREF="#WaveImage">WaveImage</A></LI>
 	</UL>
 
 </UL>
@@ -47,76 +47,99 @@
 <P>
 effects - ImageMagick Image Effects Methods
 
+</P>
 <P>
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
 Image * <STRONG>AddNoiseImage</STRONG>( Image *image, const NoiseType noise_type );
 
+</P>
 <P>
 Image * <STRONG>BlurImage</STRONG>( Image *image, const double factor );
 
+</P>
 <P>
 Image * <STRONG>ColorizeImage</STRONG>( Image *image, const char *opacity, const char <CODE>*pen_color</CODE> );
 
+</P>
 <P>
 Image * <STRONG>DespeckleImage</STRONG>( Image <CODE>*image</CODE> );
 
+</P>
 <P>
 Image * <STRONG>EdgeImage</STRONG>( Image *image, const double factor );
 
+</P>
 <P>
 Image * <STRONG>EmbossImage</STRONG>( Image <CODE>*image</CODE> );
 
+</P>
 <P>
 Image * <STRONG>EnhanceImage</STRONG>( Image <CODE>*image</CODE> );
 
+</P>
 <P>
 Image * <STRONG>ImplodeImage</STRONG>( Image *image, const double factor );
 
+</P>
 <P>
 Image * <STRONG>MedianFilterImage</STRONG>( Image *image, const unsigned int radius );
 
+</P>
 <P>
 Image * <STRONG>MorphImages</STRONG>( Image *images, const unsigned int number_frames );
 
+</P>
 <P>
 Image * <STRONG>OilPaintImage</STRONG>( Image *image, const unsigned int radius );
 
+</P>
 <P>
 unsigned int  <STRONG>PlasmaImage</STRONG>( Image *image, const SegmentInfo *segment, int attenuate, int depth );
 
+</P>
 <P>
 Image * <STRONG>ReduceNoiseImage</STRONG>( Image <CODE>*image</CODE> );
 
+</P>
 <P>
 Image * <STRONG>ShadeImage</STRONG>( Image *image, const unsigned int color_shading, double azimuth, double
 elevation );
 
+</P>
 <P>
 Image * <STRONG>SharpenImage</STRONG>( Image *image, const double factor );
 
+</P>
 <P>
 void  <STRONG>SolarizeImage</STRONG>( Image *image, const double factor );
 
+</P>
 <P>
 Image * <STRONG>SpreadImage</STRONG>( Image *image, const unsigned int amount );
 
+</P>
 <P>
 Image * <STRONG>SteganoImage</STRONG>( Image *image, Image <CODE>*watermark</CODE> );
 
+</P>
 <P>
 Image * <STRONG>StereoImage</STRONG>( Image *left_image, Image <CODE>*right_image</CODE> );
 
+</P>
 <P>
 Image * <STRONG>SwirlImage</STRONG>( Image *image, double degrees );
 
+</P>
 <P>
 void  <STRONG>ThresholdImage</STRONG>( Image *image, const double threshold );
 
+</P>
 <P>
 Image * <STRONG>WaveImage</STRONG>( Image *image, const double amplitude, const double wavelength );
 
+</P>
 <P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
@@ -128,15 +151,18 @@ Method AddNoiseImage creates a new image that is a copy of an existing one
 with noise added. It allocates the memory necessary for the new Image
 structure and returns a pointer to the new image.
 
+</P>
 <P>
 The format of the AddNoiseImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *AddNoiseImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#NoiseType">NoiseType</A> noise_type ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o">noisy_image:</A></STRONG><DD>
 <P>
@@ -144,15 +170,18 @@ Method AddNoiseImage returns a pointer to the image after the noise is minified.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
 
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>noise_type:</STRONG><DD>
 <P>
 The type of noise: Gaussian, multiplicative Gaussian, impulse, laplacian,
 or Poisson.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -162,28 +191,34 @@ Method BlurImage creates a new image that is a copy of an existing one with
 the pixels blurred. It allocates the memory necessary for the new Image
 structure and returns a pointer to the new image.
 
+</P>
 <P>
 BlurImage convolves the pixel neighborhood with this blurring mask:
 
+</P>
 <P>
 <PRE>   1  2  1
    2  W  2
    1  2  1
 </PRE>
+</P>
 <P>
 The scan only processes pixels that have a full set of neighbors. Pixels in
 the top, bottom, left, and right pairs of rows and columns are omitted from
 the scan.
 
+</P>
 <P>
 The format of the BlurImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *BlurImage ( <A HREF="types/Image.html">Image</A> *image, const double factor ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>blur_image:</STRONG><DD>
 <P>
@@ -191,15 +226,18 @@ Method BlurImage returns a pointer to the image after it is blurred.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>factor:</STRONG><DD>
 <P>
 An double value reflecting the percent weight to give to the center pixel
 of the neighborhood.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -209,45 +247,54 @@ Method ColorizeImage creates a new image that is a copy of an existing one
 with the image pixels colorized. The colorization is controlled with the
 pen color and the opacity levels.
 
+</P>
 <P>
 The format of the ColorizeImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ColorizeImage ( <A HREF="types/Image.html">Image</A> *image, const char *opacity, const char *pen_color ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>opacity:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> character string indicating the level of opacity as
 a percentage (0-100).
 
+</P>
 </DL></DL>
 <P>
 <PRE>    pen_color: A color string.
 =head2 DespeckleImage
 </PRE>
+</P>
 <P>
 Method DespeckleImage creates a new image that is a copy of an existing one with the speckle noise minified. It uses the eight hull algorithm described in Applied Optics, Vol. 24, No. 10, 15 May 1985, ``Geometric filter for Speckle Reduction'', by Thomas 
 <FONT SIZE=-1>R</FONT> Crimmins. Each pixel in the image is replaced by one of its eight of its surrounding pixels using a polarity and negative hull function. DespeckleImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.
 
 
+</P>
 <P>
 The format of the DespeckleImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *DespeckleImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>despeckle_image:</STRONG><DD>
 <P>
@@ -255,10 +302,12 @@ Method DespeckleImage returns a pointer to the image after it is despeckled.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
 
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -268,28 +317,34 @@ Method EdgeImage creates a new image that is a copy of an existing one with
 the edges highlighted. It allocates the memory necessary for the new Image
 structure and returns a pointer to the new image.
 
+</P>
 <P>
 EdgeImage convolves the pixel neighborhood with this edge detection mask:
 
+</P>
 <P>
 <PRE>  -1 -1 -1
   -1  W -1
   -1 -1 -1
 </PRE>
+</P>
 <P>
 The scan only processes pixels that have a full set of neighbors. Pixels in
 the top, bottom, left, and right pairs of rows and columns are omitted from
 the scan.
 
+</P>
 <P>
 The format of the EdgeImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *EdgeImage ( <A HREF="types/Image.html">Image</A> *image, const double factor ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>edge_image:</STRONG><DD>
 <P>
@@ -297,15 +352,18 @@ Method EdgeImage returns a pointer to the image after it is edge.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>factor:</STRONG><DD>
 <P>
 An double value reflecting the percent weight to give to the center pixel
 of the neighborhood.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -315,28 +373,34 @@ Method EmbossImage creates a new image that is a copy of an existing one
 with the edge highlighted. It allocates the memory necessary for the new
 Image structure and returns a pointer to the new image.
 
+</P>
 <P>
 EmbossImage convolves the pixel neighborhood with this edge detection mask:
 
+</P>
 <P>
 <PRE>  -1 -2  0
   -2  0  2
    0  2  1
 </PRE>
+</P>
 <P>
 The scan only processes pixels that have a full set of neighbors. Pixels in
 the top, bottom, left, and right pairs of rows and columns are omitted from
 the scan.
 
+</P>
 <P>
 The format of the EmbossImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *EmbossImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>emboss_image:</STRONG><DD>
 <P>
@@ -344,10 +408,12 @@ Method EmbossImage returns a pointer to the image after it is embossed.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -357,29 +423,35 @@ Method EnhanceImage creates a new image that is a copy of an existing one
 with the noise minified. It allocates the memory necessary for the new
 Image structure and returns a pointer to the new image.
 
+</P>
 <P>
 EnhanceImage does a weighted average of pixels in a 5x5 cell around each target pixel. Only pixels in the 5x5 cell that are within a 
 <FONT SIZE=-1>RGB</FONT> distance threshold of the target pixel are averaged.
 
 
+</P>
 <P>
 Weights assume that the importance of neighboring pixels is negately
 proportional to the square of their distance from the target pixel.
 
+</P>
 <P>
 The scan only processes pixels that have a full set of neighbors. Pixels in
 the top, bottom, left, and right pairs of rows and columns are omitted from
 the scan.
 
+</P>
 <P>
 The format of the EnhanceImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *EnhanceImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>enhance_image:</STRONG><DD>
 <P>
@@ -387,10 +459,12 @@ Method EnhanceImage returns a pointer to the image after it is enhanced.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -401,15 +475,18 @@ with the image pixels ``implode'' by the specified percentage. It allocates
 the memory necessary for the new Image structure and returns a pointer to
 the new image.
 
+</P>
 <P>
 The format of the ImplodeImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ImplodeImage ( <A HREF="types/Image.html">Image</A> *image, const double factor ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>implode_image:</STRONG><DD>
 <P>
@@ -417,16 +494,19 @@ Method ImplodeImage returns a pointer to the image after it is implode.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>factor:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> double value that defines the extent of the
 implosion.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -436,15 +516,18 @@ Method MedianFilterImage creates a new image that is a copy of an existing
 one with each pixel component replaced with the median color in a circular
 neighborhood.
 
+</P>
 <P>
 The format of the MedianFilterImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *MedianFilterImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int radius ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>median_image:</STRONG><DD>
 <P>
@@ -452,14 +535,17 @@ Method MedianFilterImage returns a pointer to the image after it is `filtered'.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
 
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>radius:</STRONG><DD>
 <P>
 An unsigned int that is the radius of the circular neighborhood.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -469,30 +555,36 @@ Method MorphImages morphs a set of images. Both the image pixels and size
 are linearly interpolated to give the appearance of a meta-morphosis from
 one image to the next.
 
+</P>
 <P>
 The format of the MorphImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *MorphImages ( <A HREF="types/Image.html">Image</A> *images, const unsigned int number_frames ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>morphed_image:</STRONG><DD>
 <P>
 Method MorphImages returns an image sequence that has linearly interpolated
 pixels and size between two input images.
 
+</P>
 <p><dt><STRONG>images:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>number_frames:</STRONG><DD>
 <P>
 This unsigned integer reflects the number of in-between images to generate.
 The more in-between frames, the smoother the morph.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -502,15 +594,18 @@ Method OilPaintImage creates a new image that is a copy of an existing one
 with each pixel component replaced with the color of greatest frequency in
 a circular neighborhood.
 
+</P>
 <P>
 The format of the OilPaintImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *OilPaintImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int radius ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>paint_image:</STRONG><DD>
 <P>
@@ -518,14 +613,17 @@ Method OilPaintImage returns a pointer to the image after it is `painted'.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>radius:</STRONG><DD>
 <P>
 An unsigned int that is the radius of the circular neighborhood.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -535,38 +633,46 @@ Method PlasmaImage initializes an image with plasma fractal values. The
 image must be initialized with a base color and the random number generator
 seeded before this method is called.
 
+</P>
 <P>
 The format of the PlasmaImage method is:
 
+</P>
 <blockquote>unsigned int PlasmaImage ( <A HREF="types/Image.html">Image</A> *image, const SegmentInfo *segment, int attenuate, int depth ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method PlasmaImage returns True when the fractal process is complete.
 Otherwise False is returned.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>segment:</STRONG><DD>
 <P>
 specifies a structure of type SegmentInfo that defines the boundaries of
 the area where the plasma fractals are applied.
 
+</P>
 <p><dt><STRONG>attenuate:</STRONG><DD>
 <P>
 specifies the plasma attenuation factor.
 
+</P>
 <p><dt><STRONG>depth:</STRONG><DD>
 <P>
 this integer values define the plasma recursion depth.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -577,20 +683,24 @@ one with the noise minified with a noise peak elimination filter. It
 allocates the memory necessary for the new Image structure and returns a
 pointer to the new image.
 
+</P>
 <P>
 The principal function of noise peak elimination filter is to smooth the objects within an image without losing edge information and without creating undesired structures. The central idea of the algorithm is to replace a pixel with its next neighbor in value within a 3 x 3 window, if this pixel has been found to be noise. 
 <FONT SIZE=-1>A</FONT> pixel is defined as noise if and only if this pixel is a maximum or minimum within the 3 x 3 window.
 
 
+</P>
 <P>
 The format of the ReduceNoiseImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ReduceNoiseImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>noisy_image:</STRONG><DD>
 <P>
@@ -598,10 +708,12 @@ Method ReduceNoiseImage returns a pointer to the image after the noise is minifi
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
 
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -612,15 +724,18 @@ with the image pixels shaded using a distance light source. It allocates
 the memory necessary for the new Image structure and returns a pointer to
 the new image.
 
+</P>
 <P>
 The format of the ShadeImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ShadeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int color_shading, double azimuth, double elevation ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>shade_image:</STRONG><DD>
 <P>
@@ -628,22 +743,26 @@ Method ShadeImage returns a pointer to the image after it is shaded.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>color_shading:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> value other than zero shades the red, green, and
 blue components of the image.
 
+</P>
 <p><dt><STRONG>azimuth, elevation:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> double value that indicates the light source
 direction.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -653,28 +772,34 @@ Method SharpenImage creates a new image that is a copy of an existing one
 with the pixels sharpened. It allocates the memory necessary for the new
 Image structure and returns a pointer to the new image.
 
+</P>
 <P>
 SharpenImage convolves the pixel neighborhood with this sharpening mask:
 
+</P>
 <P>
 <PRE>  -1 -2 -1
   -2  W -2
   -1 -2 -1
 </PRE>
+</P>
 <P>
 The scan only processes pixels that have a full set of neighbors. Pixels in
 the top, bottom, left, and right pairs of rows and columns are omitted from
 the scan.
 
+</P>
 <P>
 The format of the SharpenImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *SharpenImage ( <A HREF="types/Image.html">Image</A> *image, const double factor ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>sharpen_image:</STRONG><DD>
 <P>
@@ -682,15 +807,18 @@ Method SharpenImage returns a pointer to the image after it is sharpened.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>factor:</STRONG><DD>
 <P>
 An double value reflecting the percent weight to give to the center pixel
 of the neighborhood.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -699,24 +827,29 @@ of the neighborhood.
 Method SolarizeImage produces a 'solarization' effect seen when exposing a
 photographic film to light during the development process.
 
+</P>
 <P>
 The format of the SolarizeImage method is:
 
+</P>
 <blockquote>void SolarizeImage ( <A HREF="types/Image.html">Image</A> *image, const double factor ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>factor:</STRONG><DD>
 <P>
 An double value that defines the extent of the solarization.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -726,15 +859,18 @@ Method SpreadImage creates a new image that is a copy of an existing one
 with the image pixels randomly displaced. It allocates the memory necessary
 for the new Image structure and returns a pointer to the new image.
 
+</P>
 <P>
 The format of the SpreadImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *SpreadImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int amount ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>spread_image:</STRONG><DD>
 <P>
@@ -742,15 +878,18 @@ Method SpreadImage returns a pointer to the image after it is spread.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>amount:</STRONG><DD>
 <P>
 An unsigned value constraining the ``vicinity'' for choosing a random pixel
 to swap.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -758,15 +897,18 @@ to swap.
 <P>
 Method SteganoImage hides a digital watermark within the image.
 
+</P>
 <P>
 The format of the SteganoImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *SteganoImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *watermark ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>stegano_image:</STRONG><DD>
 <P>
@@ -774,14 +916,17 @@ Method SteganoImage returns a pointer to the steganographic image with the water
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
 
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 <p><dt><STRONG>watermark:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -794,15 +939,18 @@ The right image is converted to gray scale and written to the blue channel
 of the stereo image. View the composite image with red-blue glasses to
 create a stereo effect.
 
+</P>
 <P>
 The format of the StereoImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *StereoImage ( <A HREF="types/Image.html">Image</A> *left_image, <A HREF="types/Image.html">Image</A> *right_image ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>stereo_image:</STRONG><DD>
 <P>
@@ -810,14 +958,17 @@ Method StereoImage returns a pointer to the stereo image.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>left_image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 <p><dt><STRONG>right_image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -828,15 +979,18 @@ with the image pixels ``swirl'' at a specified angle. It allocates the
 memory necessary for the new Image structure and returns a pointer to the
 new image.
 
+</P>
 <P>
 The format of the SwirlImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *SwirlImage ( <A HREF="types/Image.html">Image</A> *image, double degrees ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>swirl_image:</STRONG><DD>
 <P>
@@ -844,14 +998,17 @@ Method SwirlImage returns a pointer to the image after it is swirl.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>degrees:</STRONG><DD>
 <P>
 An double value that defines the tightness of the swirling.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -859,25 +1016,30 @@ An double value that defines the tightness of the swirling.
 <P>
 Method ThresholdImage thresholds the reference image.
 
+</P>
 <P>
 The format of the ThresholdImage method is:
 
+</P>
 <blockquote>void ThresholdImage ( <A HREF="types/Image.html">Image</A> *image, const double threshold ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>threshold:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> double indicating the threshold value.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -888,15 +1050,18 @@ the image pixels altered along a sine wave. It allocates the memory
 necessary for the new Image structure and returns a pointer to the new
 image.
 
+</P>
 <P>
 The format of the WaveImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *WaveImage ( <A HREF="types/Image.html">Image</A> *image, const double amplitude, const double wavelength ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>shade_image:</STRONG><DD>
 <P>
@@ -904,17 +1069,21 @@ Method WaveImage returns a pointer to the image after it is shaded.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>amplitude, frequency:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> double value that indicates the amplitude and
 wavelength of the sine wave.
 
+</P>
 </DL></DL>
+
 </BODY>
 
 </HTML>

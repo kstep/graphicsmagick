@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>colors - Methods to Count the Colors in an Image</TITLE>
-<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
+<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
 </HEAD>
 
 <body background="../../images/background.png">
@@ -10,18 +10,18 @@
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<LI><A HREF="#NAME">NAME</A></LI>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
 	<UL>
 
-		<LI><A HREF="#CompressColormap">CompressColormap</A>
-		<LI><A HREF="#GetNumberColors">GetNumberColors</A>
-		<LI><A HREF="#IsGrayImage">IsGrayImage</A>
-		<LI><A HREF="#IsMonochromeImage">IsMonochromeImage</A>
-		<LI><A HREF="#IsPseudoClass">IsPseudoClass</A>
-		<LI><A HREF="#QueryColorDatabase">QueryColorDatabase</A>
-		<LI><A HREF="#QueryColorName">QueryColorName</A>
+		<LI><A HREF="#CompressColormap">CompressColormap</A></LI>
+		<LI><A HREF="#GetNumberColors">GetNumberColors</A></LI>
+		<LI><A HREF="#IsGrayImage">IsGrayImage</A></LI>
+		<LI><A HREF="#IsMonochromeImage">IsMonochromeImage</A></LI>
+		<LI><A HREF="#IsPseudoClass">IsPseudoClass</A></LI>
+		<LI><A HREF="#QueryColorDatabase">QueryColorDatabase</A></LI>
+		<LI><A HREF="#QueryColorName">QueryColorName</A></LI>
 	</UL>
 
 </UL>
@@ -33,30 +33,38 @@
 <P>
 colors - Methods to Count the Colors in an Image
 
+</P>
 <P>
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
 void  <STRONG>CompressColormap</STRONG>( Image <CODE>*image</CODE> );
 
+</P>
 <P>
 number_colors= <STRONG>GetNumberColors</STRONG>( image, file );
 
+</P>
 <P>
 unsigned int  <STRONG>IsGrayImage</STRONG>( Image <CODE>*image</CODE> );
 
+</P>
 <P>
 status= <STRONG>IsMonochromeImage</STRONG>( image );
 
+</P>
 <P>
 unsigned int  <STRONG>IsPseudoClass</STRONG>( Image <CODE>*image</CODE> );
 
+</P>
 <P>
 unsigned int  <STRONG>QueryColorDatabase</STRONG>( const char *target, PixelPacket <CODE>*color</CODE> );
 
+</P>
 <P>
 unsigned int  <STRONG>QueryColorName</STRONG>( const PixelPacket *color, char <CODE>*name</CODE> );
 
+</P>
 <P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
@@ -67,20 +75,24 @@ unsigned int  <STRONG>QueryColorName</STRONG>( const PixelPacket *color, char <C
 Method CompressColormap compresses an image colormap removing any duplicate
 and unused color entries.
 
+</P>
 <P>
 The format of the CompressColormap method is:
 
+</P>
 <blockquote>void CompressColormap ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o">image:</A></STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -88,27 +100,32 @@ The address of a structure of type Image.
 <P>
 Method GetNumberColors returns the number of unique colors in an image.
 
+</P>
 <P>
 The format of the GetNumberColors method is:
 
+</P>
 <blockquote>number_colors=GetNumberColors ( image, file ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
+</P>
 <DL><DL>
 <p><dt><STRONG>number_colors:</STRONG><DD>
 <P>
 Method GetNumberColors returns the number of unique colors in the specified
 image.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a byte (8 bits) array of run-length encoded pixel data of
 your source image. The sum of the run-length counts in the source image
 must be equal to or exceed the number of pixels.
 
+</P>
 <p><dt><STRONG>file:</STRONG><DD>
 <P>
 An pointer to a 
@@ -116,21 +133,25 @@ An pointer to a
 values and the number of times each occurs in the image is written to the
 file.
 
+</P>
 </DL></DL>
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
+</P>
 <DL><DL>
 <p><dt><STRONG>color_cube:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to the CubeInfo structure.
 
+</P>
 <p><dt><STRONG>level:</STRONG><DD>
 <P>
 Specifies the level in the classification the node resides.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -140,25 +161,30 @@ Method IsGrayImage returns True if the image is grayscale otherwise False
 is returned. If the image is DirectClass and grayscale, it is demoted to
 PseudoClass.
 
+</P>
 <P>
 The format of the IsGrayImage method is:
 
+</P>
 <blockquote>unsigned int IsGrayImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method IsGrayImage returns True if the image is grayscale otherwise False
 is returned.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -168,25 +194,30 @@ Method IsMonochromeImage returns True if the image is monochrome otherwise
 False is returned. If the image is DirectClass and monochrome, it is
 demoted to PseudoClass.
 
+</P>
 <P>
 The format of the IsMonochromeImage method is:
 
+</P>
 <blockquote>status=IsMonochromeImage ( image ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method IsMonochromeImage returns True if the image is monochrome otherwise
 False is returned.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -196,27 +227,32 @@ Method IsPseudoClass returns True if the image is PseudoClass and has 256
 unique colors or less. If the image is DirectClass and has 256 colors or
 less, the image is demoted to PseudoClass.
 
+</P>
 <P>
 The format of the IsPseudoClass method is:
 
+</P>
 <blockquote>unsigned int IsPseudoClass ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
+</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method IsPseudoClass returns True is the image is PseudoClass or has 256
 color or less.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a byte (8 bits) array of run-length encoded pixel data of
 your source image. The sum of the run-length counts in the source image
 must be equal to or exceed the number of pixels.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -225,15 +261,18 @@ must be equal to or exceed the number of pixels.
 Method QueryColorDatabase looks up a 
 <FONT SIZE=-1>RGB</FONT> values for a color given in the target string.
 
+</P>
 <P>
 The format of the QueryColorDatabase method is:
 
+</P>
 <blockquote>unsigned int QueryColorDatabase ( const char *target, <A HREF="types/PixelPacket.html">PixelPacket</A> *color ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><DD>
 <P>
@@ -241,11 +280,13 @@ Method QueryColorDatabase returns True if the
 <FONT SIZE=-1>RGB</FONT> values of the target color is defined, otherwise
 False is returned.
 
+</P>
 <p><dt><STRONG>target:</STRONG><DD>
 <P>
 Specifies the color to lookup in the 
 <FONT SIZE=-1>X</FONT> color database.
 
+</P>
 <p><dt><STRONG>color:</STRONG><DD>
 <P>
 
@@ -253,6 +294,7 @@ Specifies the color to lookup in the
 <FONT SIZE=-1>RGB</FONT> value of the target color is returned as this value.
 
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -262,15 +304,18 @@ Method QueryColorName returns the name of the color that is closest to the suppl
 <FONT SIZE=-1>RGB</FONT> space.
 
 
+</P>
 <P>
 The format of the QueryColorName method is:
 
+</P>
 <blockquote>unsigned int QueryColorName ( const <A HREF="types/PixelPacket.html">PixelPacket</A> *color, char *name ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
+</P>
 <DL><DL>
 <p><dt><STRONG>distance:</STRONG><DD>
 <P>
@@ -278,17 +323,21 @@ Method QueryColorName returns the distance-squared in
 <FONT SIZE=-1>RGB</FONT> space as well as the color name that is at a
 minimum distance.
 
+</P>
 <p><dt><STRONG>color:</STRONG><DD>
 <P>
 This is a pointer to a PixelPacket structure that contains the color we are
 searching for.
 
+</P>
 <p><dt><STRONG>name:</STRONG><DD>
 <P>
 The name of the color that is closest to the supplied color is returned in
 this character buffer.
 
+</P>
 </DL></DL>
+
 </BODY>
 
 </HTML>

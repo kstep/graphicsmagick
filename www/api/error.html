@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>error - ImageMagick Error Methods</TITLE>
-<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
+<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
 </HEAD>
 
 <body background="../../images/background.png">
@@ -10,15 +10,15 @@
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<LI><A HREF="#NAME">NAME</A></LI>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
 	<UL>
 
-		<LI><A HREF="#MagickError">MagickError</A>
-		<LI><A HREF="#MagickWarning">MagickWarning</A>
-		<LI><A HREF="#SetErrorHandler">SetErrorHandler</A>
-		<LI><A HREF="#SetWarningHandler">SetWarningHandler</A>
+		<LI><A HREF="#MagickError">MagickError</A></LI>
+		<LI><A HREF="#MagickWarning">MagickWarning</A></LI>
+		<LI><A HREF="#SetErrorHandler">SetErrorHandler</A></LI>
+		<LI><A HREF="#SetWarningHandler">SetWarningHandler</A></LI>
 	</UL>
 
 </UL>
@@ -30,22 +30,27 @@
 <P>
 error - ImageMagick Error Methods
 
+</P>
 <P>
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
 <STRONG>MagickError</STRONG>( error, message, qualifier );
 
+</P>
 <P>
 void  <STRONG>MagickWarning</STRONG>( const unsigned int warning, const char *message, const char
 <CODE>*qualifier</CODE> );
 
+</P>
 <P>
 ErrorHandler  <STRONG>SetErrorHandler</STRONG>( ErrorHandler handler );
 
+</P>
 <P>
 ErrorHandler  <STRONG>SetWarningHandler</STRONG>( ErrorHandler handler );
 
+</P>
 <P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
@@ -53,19 +58,23 @@ ErrorHandler  <STRONG>SetWarningHandler</STRONG>( ErrorHandler handler );
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o">warning:</A></STRONG><DD>
 <P>
 Specifies the numeric warning category.
 
+</P>
 <p><dt><STRONG>message:</STRONG><DD>
 <P>
 Specifies the message to display before terminating the program.
 
+</P>
 <p><dt><STRONG>qualifier:</STRONG><DD>
 <P>
 Specifies any qualifier to the message.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -73,28 +82,34 @@ Specifies any qualifier to the message.
 <P>
 Method MagickError calls the error handler methods with an error message.
 
+</P>
 <P>
 The format of the MagickError method is:
 
+</P>
 <blockquote>MagickError ( error, message, qualifier ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>error:</STRONG><DD>
 <P>
 Specifies the numeric error category.
 
+</P>
 <p><dt><STRONG>message:</STRONG><DD>
 <P>
 Specifies the message to display before terminating the program.
 
+</P>
 <p><dt><STRONG>qualifier:</STRONG><DD>
 <P>
 Specifies any qualifier to the message.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -103,28 +118,34 @@ Specifies any qualifier to the message.
 Method MagickWarning calls the warning handler methods with a warning
 message.
 
+</P>
 <P>
 The format of the MagickWarning method is:
 
+</P>
 <blockquote>void MagickWarning ( const unsigned int warning, const char *message, const char *qualifier ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>warning:</STRONG><DD>
 <P>
 Specifies the numeric warning category.
 
+</P>
 <p><dt><STRONG>message:</STRONG><DD>
 <P>
 Specifies the message to display before terminating the program.
 
+</P>
 <p><dt><STRONG>qualifier:</STRONG><DD>
 <P>
 Specifies any qualifier to the message.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -133,20 +154,24 @@ Specifies any qualifier to the message.
 Method SetErrorHandler sets the error handler to the specified method and
 returns the previous error handler.
 
+</P>
 <P>
 The format of the SetErrorHandler method is:
 
+</P>
 <blockquote>ErrorHandler SetErrorHandler ( ErrorHandler handler ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>handler:</STRONG><DD>
 <P>
 Specifies a pointer to a method to handle errors.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -155,21 +180,26 @@ Specifies a pointer to a method to handle errors.
 Method SetWarningHandler sets the warning handler to the specified method
 and returns the previous warning handler.
 
+</P>
 <P>
 The format of the SetWarningHandler method is:
 
+</P>
 <blockquote>ErrorHandler SetWarningHandler ( ErrorHandler handler ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>handler:</STRONG><DD>
 <P>
 Specifies a pointer to a method to handle warnings.
 
+</P>
 </DL></DL>
+
 </BODY>
 
 </HTML>

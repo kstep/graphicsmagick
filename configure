@@ -40,7 +40,7 @@ ac_help="$ac_help
 ac_help="$ac_help
   --enable-sfio           enable sfio-based stdio support (default is no)"
 ac_help="$ac_help
-  --enable-cache            set pixel cache threshhold (default 80MB)"
+  --enable-cache          set pixel cache threshhold (default 80MB)"
 ac_help="$ac_help
   --with-frozenpaths      enable frozen delegate paths (default is yes)"
 ac_help="$ac_help
@@ -64,7 +64,7 @@ ac_help="$ac_help
 ac_help="$ac_help
   --with-ttf              enable TrueType (default is yes)"
 ac_help="$ac_help
-  --with-ttf-fontpath    set default TrueType font path (default none)"
+  --with-ttf-fontpath     set default TrueType font path (default none)"
 ac_help="$ac_help
   --with-zlib             enable ZLIB (default is yes)"
 ac_help="$ac_help

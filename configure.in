@@ -162,7 +162,7 @@ AC_ARG_ENABLE(sfio,
 
 # Set pixel cache threshold
 AC_ARG_WITH(cache,
-	      [  --enable-cache            set pixel cache threshhold (default 80MB)],
+	      [  --enable-cache          set pixel cache threshhold (default 80MB)],
 	      [with_cache=$withval],
 	      [with_cache=80])
 AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache)
@@ -249,7 +249,7 @@ AC_ARG_WITH(ttf,
 
 # Set default TrueType font path
 AC_ARG_WITH(ttf-fontpath,
-	      [  --with-ttf-fontpath    set default TrueType font path (default none)],
+	      [  --with-ttf-fontpath     set default TrueType font path (default none)],
 	      [with_ttf_fontpath=$withval],
 	      [with_ttf_fontpath=''])
 if test "$with_ttf_fontpath" != "yes" && test -z "$with_ttf_fontpath"

@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>draw - Methods to Draw on an Image</TITLE>
-<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
+<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
 </HEAD>
 
 <body background="../../images/background.png">
@@ -10,15 +10,15 @@
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<LI><A HREF="#NAME">NAME</A></LI>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
 	<UL>
 
-		<LI><A HREF="#ColorFloodfillImage">ColorFloodfillImage</A>
-		<LI><A HREF="#DrawImage">DrawImage</A>
-		<LI><A HREF="#MatteFloodfillImage">MatteFloodfillImage</A>
-		<LI><A HREF="#OpaqueImage">OpaqueImage</A>
+		<LI><A HREF="#ColorFloodfillImage">ColorFloodfillImage</A></LI>
+		<LI><A HREF="#DrawImage">DrawImage</A></LI>
+		<LI><A HREF="#MatteFloodfillImage">MatteFloodfillImage</A></LI>
+		<LI><A HREF="#OpaqueImage">OpaqueImage</A></LI>
 	</UL>
 
 </UL>
@@ -30,6 +30,7 @@
 <P>
 draw - Methods to Draw on an Image
 
+</P>
 <P>
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
@@ -37,17 +38,21 @@ draw - Methods to Draw on an Image
 void  <STRONG>ColorFloodfillImage</STRONG>( Image *image, const PixelPacket *target, Image *tile, const int x_offset,
 const int y_offset, const PaintMethod method );
 
+</P>
 <P>
 void  <STRONG>DrawImage</STRONG>( Image *image, const AnnotateInfo <CODE>*annotate_info</CODE> );
 
+</P>
 <P>
 void  <STRONG>MatteFloodfillImage</STRONG>( Image *image, const PixelPacket *target, const unsigned int matte, const
 int x_offset, const int y_offset, const PaintMethod method );
 
+</P>
 <P>
 void  <STRONG>OpaqueImage</STRONG>( Image *image, const char *opaque_color, const char
 <CODE>*pen_color</CODE> );
 
+</P>
 <P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
@@ -59,20 +64,24 @@ Method ColorFloodfillImage floodfills the designated area with a color. The
 floodfill algorithm is strongly based on a similar algorithm in ``Graphics
 Gems'' by Paul Heckbert.
 
+</P>
 <P>
 The format of the ColorFloodfillImage method is:
 
+</P>
 <blockquote>void ColorFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> *target, <A HREF="types/Image.html">Image</A> *tile, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o">image:</A></STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 <p><dt><STRONG>target:</STRONG><DD>
 <P>
 
@@ -80,18 +89,22 @@ The address of a structure of type Image.
 <FONT SIZE=-1>RGB</FONT> value of the target color.
 
 
+</P>
 <p><dt><STRONG>tile:</STRONG><DD>
 <P>
 An image representing the image to tile onto the floodplane.
 
+</P>
 <p><dt><STRONG>x,y:</STRONG><DD>
 <P>
 Unsigned integers representing the current location of the pen.
 
+</P>
 <p><dt><STRONG>method:</STRONG><DD>
 <P>
 drawing method of type PrimitiveType: floodfill or fill to border.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -99,24 +112,29 @@ drawing method of type PrimitiveType: floodfill or fill to border.
 <P>
 Method DrawImage draws a primitive (line, rectangle, ellipse) on the image.
 
+</P>
 <P>
 The format of the DrawImage method is:
 
+</P>
 <blockquote>void DrawImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 <p><dt><STRONG>annotate_info:</STRONG><DD>
 <P>
 The address of a DrawInfo structure.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -126,20 +144,24 @@ Method MatteFloodfillImage floodfills the designated area with a matte
 value. The floodfill algorithm is strongly based on a similar algorithm in
 ``Graphics Gems'' by Paul Heckbert.
 
+</P>
 <P>
 The format of the MatteFloodfillImage method is:
 
+</P>
 <blockquote>void MatteFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> *target, const unsigned int matte, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 <p><dt><STRONG>target:</STRONG><DD>
 <P>
 
@@ -147,20 +169,24 @@ The address of a structure of type Image.
 <FONT SIZE=-1>RGB</FONT> value of the target color.
 
 
+</P>
 <p><dt><STRONG>matte:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> integer value representing the amount of
 transparency.
 
+</P>
 <p><dt><STRONG>x,y:</STRONG><DD>
 <P>
 Unsigned integers representing the current location of the pen.
 
+</P>
 <p><dt><STRONG>method:</STRONG><DD>
 <P>
 drawing method of type PrimitiveType: floodfill or fill to border.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -168,20 +194,24 @@ drawing method of type PrimitiveType: floodfill or fill to border.
 <P>
 Method OpaqueImage changes the color of an opaque pixel to the pen color.
 
+</P>
 <P>
 The format of the OpaqueImage method is:
 
+</P>
 <blockquote>void OpaqueImage ( <A HREF="types/Image.html">Image</A> *image, const char *opaque_color, const char *pen_color ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
+</P>
 <p><dt><STRONG>opaque_color, pen_color:</STRONG><DD>
 <P>
 
@@ -189,7 +219,9 @@ The address of a structure of type Image; returned from ReadImage.
 <FONT SIZE=-1>X11</FONT> color string.
 
 
+</P>
 </DL></DL>
+
 </BODY>
 
 </HTML>

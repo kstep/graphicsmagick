@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>zoom - Methods to Resize an Image</TITLE>
-<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
+<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
 </HEAD>
 
 <body background="../../images/background.png">
@@ -10,16 +10,16 @@
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<LI><A HREF="#NAME">NAME</A></LI>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
 	<UL>
 
-		<LI><A HREF="#MagnifyImage">MagnifyImage</A>
-		<LI><A HREF="#MinifyImage">MinifyImage</A>
-		<LI><A HREF="#SampleImage">SampleImage</A>
-		<LI><A HREF="#ScaleImage">ScaleImage</A>
-		<LI><A HREF="#ZoomImage">ZoomImage</A>
+		<LI><A HREF="#MagnifyImage">MagnifyImage</A></LI>
+		<LI><A HREF="#MinifyImage">MinifyImage</A></LI>
+		<LI><A HREF="#SampleImage">SampleImage</A></LI>
+		<LI><A HREF="#ScaleImage">ScaleImage</A></LI>
+		<LI><A HREF="#ZoomImage">ZoomImage</A></LI>
 	</UL>
 
 </UL>
@@ -31,24 +31,30 @@
 <P>
 zoom - Methods to Resize an Image
 
+</P>
 <P>
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
 magnify_image= <STRONG>MagnifyImage</STRONG>( image );
 
+</P>
 <P>
 Image * <STRONG>MinifyImage</STRONG>( Image <CODE>*image</CODE> );
 
+</P>
 <P>
 Image * <STRONG>SampleImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows );
 
+</P>
 <P>
 Image * <STRONG>ScaleImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows );
 
+</P>
 <P>
 Image * <STRONG>ZoomImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows );
 
+</P>
 <P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
@@ -60,23 +66,28 @@ Method MagnifyImage creates a new image that is a integral size greater
 than an existing one. It allocates the memory necessary for the new Image
 structure and returns a pointer to the new image.
 
+</P>
 <P>
 MagnifyImage scans the reference image to create a magnify image by
 bilinear interpolation. The magnify image columns and rows become:
 
+</P>
 <P>
 <PRE>  number_columns &lt;&lt; 1
   number_rows &lt;&lt; 1
 </PRE>
+</P>
 <P>
 The format of the MagnifyImage method is:
 
+</P>
 <blockquote>magnify_image=MagnifyImage ( image ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o">magnify_image:</A></STRONG><DD>
 <P>
@@ -84,10 +95,12 @@ Method MagnifyImage returns a pointer to the image after magnification.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -97,34 +110,41 @@ Method MinifyImage creates a new image that is a integral size less than an
 existing one. It allocates the memory necessary for the new Image structure
 and returns a pointer to the new image.
 
+</P>
 <P>
 MinifyImage scans the reference image to create a minified image by
 computing the weighted average of a 4x4 cell centered at each reference
 pixel. The target pixel requires two columns and two rows of the reference
 pixels. Therefore the minified image columns and rows become:
 
+</P>
 <P>
 <PRE>  number_columns/2
   number_rows/2
 </PRE>
+</P>
 <P>
 Weights assume that the importance of neighboring pixels is negately
 proportional to the square of their distance from the target pixel.
 
+</P>
 <P>
 The scan only processes pixels that have a full set of neighbors. Pixels in
 the top, bottom, left, and right pairs of rows and columns are omitted from
 the scan.
 
+</P>
 <P>
 The format of the MinifyImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *MinifyImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>minify_image:</STRONG><DD>
 <P>
@@ -132,10 +152,12 @@ Method MinifyImage returns a pointer to the image after reducing.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage
 or if the image size is less than IconSize*2.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -145,15 +167,18 @@ Method SampleImage creates a new image that is a scaled size of an existing
 one using pixel sampling. It allocates the memory necessary for the new
 Image structure and returns a pointer to the new image.
 
+</P>
 <P>
 The format of the SampleImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *SampleImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>sample_image:</STRONG><DD>
 <P>
@@ -161,18 +186,22 @@ Method SampleImage returns a pointer to the image after scaling.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 <p><dt><STRONG>columns:</STRONG><DD>
 <P>
 An integer that specifies the number of columns in the sampled image.
 
+</P>
 <p><dt><STRONG>rows:</STRONG><DD>
 <P>
 An integer that specifies the number of rows in the sampled image.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -186,20 +215,24 @@ pixels, each new pixel represents x/y old pixels. To read x/y pixels, read
 old pixel read in your new pixel. The remainder of the old pixel will be
 counted in the next new pixel.
 
+</P>
 <P>
 The scaling algorithm was suggested by <A HREF="mailto:rjohnson@shell.com">rjohnson@shell.com</A> and is adapted from <CODE>pnmscale(1)</CODE> of 
 <FONT SIZE=-1>PBMPLUS</FONT> by Jef Poskanzer.
 
 
+</P>
 <P>
 The format of the ScaleImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ScaleImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>scale_image:</STRONG><DD>
 <P>
@@ -207,18 +240,22 @@ Method ScaleImage returns a pointer to the image after scaling.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 <p><dt><STRONG>columns:</STRONG><DD>
 <P>
 An integer that specifies the number of columns in the scaled image.
 
+</P>
 <p><dt><STRONG>rows:</STRONG><DD>
 <P>
 An integer that specifies the number of rows in the scaled image.
 
+</P>
 </DL></DL>
 <P>
 <HR>
@@ -228,20 +265,24 @@ Method ZoomImage creates a new image that is a scaled size of an existing one. I
 <FONT SIZE=-1>III</FONT> for details on this algorithm.
 
 
+</P>
 <P>
 The filter member of the Image structure specifies which image filter to
 use. Blur specifies the blur factor where &gt; 1 is blurry, &lt; 1 is
 sharp.
 
+</P>
 <P>
 The format of the ZoomImage method is:
 
+</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ZoomImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
+</P>
 <DL><DL>
 <p><dt><STRONG>zoom_image:</STRONG><DD>
 <P>
@@ -249,19 +290,24 @@ Method ZoomImage returns a pointer to the image after scaling.
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
+</P>
 <p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
+</P>
 <p><dt><STRONG>columns:</STRONG><DD>
 <P>
 An integer that specifies the number of columns in the zoom image.
 
+</P>
 <p><dt><STRONG>rows:</STRONG><DD>
 <P>
 An integer that specifies the number of rows in the scaled image.
 
+</P>
 </DL></DL>
+
 </BODY>
 
 </HTML>
