@@ -1,3 +1,10 @@
+2001-11-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (matteFloodfill): Coordinates are long values.
+	(floodFillOpacity): New method to floodfill opacity across pixels
+	matching color (within fuzz-factor) at point. Similar to
+	matteFloodfill except that color is selected from starting point.
+
 2001-10-29  Bob Friesenhahn  <bfriesen@sun1107.ssd.usa.alcatel.com>
 
 	* lib/Image.cpp (strokeDashArray): Change to type double.

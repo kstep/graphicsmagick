@@ -768,6 +768,18 @@ void Magick::Image::floodFillColor( const Geometry &point_,
   floodFillTexture( point_, fillImage, borderColor_ );
 }
 
+// Floodfill pixels matching color (within fuzz factor) of target
+// pixel(x,y) with replacement opacity value using method.
+void Magick::Image::floodFillOpacity( const long x_, const long y_,
+                                      const unsigned int opacity_,
+                                      const PaintMethod method_ )
+{
+  modifyImage();
+  MatteFloodfillImage ( image(), pixelColor(x_,y_), opacity_,
+			x_, y_, method_ );
+  throwImageException();
+}
+
 // Flood-fill texture across pixels that match the color of the
 // target pixel and are neighbors of the target pixel.
 // Uses current fuzz setting when determining color match.
@@ -953,12 +965,11 @@ void Magick::Image::map ( const Image &mapImage_ , bool dither_ )
              dither_ );
   throwImageException();
 }
-
-// Floodfill designated area with a matte value
+// Floodfill designated area with replacement opacity value
 void Magick::Image::matteFloodfill ( const Color &target_ ,
-				     unsigned int matte_,
-				     int x_, int y_,
-				     Magick::PaintMethod method_ )
+				     const unsigned int opacity_,
+				     const long x_, const long y_,
+				     const Magick::PaintMethod method_ )
 {
   if ( !target_.isValid() )
   {
@@ -969,7 +980,7 @@ void Magick::Image::matteFloodfill ( const Color &target_ ,
   modifyImage();
 
   PixelPacket rllPacket = target_;
-  MatteFloodfillImage ( image(), rllPacket, matte_,
+  MatteFloodfillImage ( image(), rllPacket, opacity_,
 			x_, y_, method_ );
   throwImageException();
 }

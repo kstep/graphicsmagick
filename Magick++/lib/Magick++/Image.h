@@ -246,6 +246,12 @@ namespace Magick
 				    const Color &fillColor_,
 				    const Color &borderColor_ );
 
+    // Floodfill pixels matching color (within fuzz factor) of target
+    // pixel(x,y) with replacement opacity value using method.
+    void            floodFillOpacity ( const long x_, const long y_,
+                                       const unsigned int opacity_,
+                                       const PaintMethod method_ );
+
     // Flood-fill texture across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
@@ -296,11 +302,11 @@ namespace Magick
     // Remap image colors with closest color from reference image
     void            map ( const Image &mapImage_ , bool dither_ = false );
     
-    // Floodfill designated area with a matte value
+    // Floodfill designated area with replacement opacity value
     void            matteFloodfill ( const Color &target_ ,
-				     unsigned int matte_,
-				     int x_, int y_,
-				     PaintMethod method_ );
+				     const unsigned int opacity_,
+				     const long x_, const long y_,
+				     const PaintMethod method_ );
 
     // Filter image by replacing each pixel component with the median
     // color in a circular neighborhood

@@ -743,6 +743,16 @@ const <a href="Color.html">Color</a> &amp;fillColor_, const <a href="Color.html"
 &amp;borderColor_</font></td>
 </tr>
 
+<tr>
+<td><a NAME="floodFillOpacity"></a><font size=-1>floodFillOpacity</font></td>
+
+<td><font size=-1>const long x_, const long y_, const unsigned int opacity_,
+const PaintMethod method_</font></td>
+
+<td><font size=-1>Floodfill pixels matching color (within fuzz factor)
+of target pixel(x,y) with replacement opacity value using method.</font></td>
+</tr>
+
 <tr NOSAVE>
 <td ROWSPAN="4" NOSAVE>
 <center><a NAME="floodFillTexture"></a><font size=-1>floodFill-</font>
@@ -887,10 +897,11 @@ an image file with this option.</font></td>
 </td>
 
 <td><font size=-1>const <a href="Color.html">Color</a> &amp;target_, unsigned
-int matte_, int x_, int y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a>
+int&nbsp; opacity_, long x_, long y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a>
 method_</font></td>
 
-<td><font size=-1>Floodfill designated area with a matte value</font></td>
+<td><font size=-1>Floodfill designated area with a replacement opacity
+value.</font></td>
 </tr>
 
 <tr>
