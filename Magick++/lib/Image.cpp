@@ -2476,7 +2476,7 @@ std::string Magick::Image::magick ( void ) const
   return constOptions()->magick( );
 }
 
-void Magick::Image::matte ( bool matteFlag_ )
+void Magick::Image::matte ( const bool matteFlag_ )
 {
   modifyImage();
   image()->matte = matteFlag_;

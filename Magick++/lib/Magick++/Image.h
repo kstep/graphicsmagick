@@ -1021,7 +1021,8 @@ namespace Magick
     // by the region rectangle.  This area is subsequently transferred
     // from the pixel cache to the image via syncPixels.
     PixelPacket* setPixels ( const int x_, const int y_,
-			     unsigned int columns_, unsigned int rows_ );
+			     const unsigned int columns_,
+                             const unsigned int rows_ );
 
     // Transfers the image cache pixels to the image.
     void syncPixels ( void );
