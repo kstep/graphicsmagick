@@ -80,7 +80,7 @@
 
 /*
   This is temporary until I set up malloc'ed object attributes array.
-  Recompile with MNG_MAX_OBJECTS = 65536 to avoid this limit but
+  Recompile with MNG_MAX_OBJECTS=65536 to avoid this limit but
   waste more memory.
 */
 #define MNG_MAX_OBJECTS 256
@@ -129,50 +129,50 @@
   portable, we use ASCII numbers like this, not characters.
 */
 
-static png_byte FARDATA mng_MHDR[5] = { 77,  72,  68,  82, '\0'};
-static png_byte FARDATA mng_BACK[5] = { 66,  65,  67,  75, '\0'};
-static png_byte FARDATA mng_BASI[5] = { 66,  65,  83,  73, '\0'};
-static png_byte FARDATA mng_CLIP[5] = { 67,  76,  73,  80, '\0'};
-static png_byte FARDATA mng_CLON[5] = { 67,  76,  79,  78, '\0'};
-static png_byte FARDATA mng_DEFI[5] = { 68,  69,  70,  73, '\0'};
-static png_byte FARDATA mng_DHDR[5] = { 68,  72,  68,  82, '\0'};
-static png_byte FARDATA mng_DISC[5] = { 68,  73,  83,  67, '\0'};
-static png_byte FARDATA mng_ENDL[5] = { 69,  78,  68,  76, '\0'};
-static png_byte FARDATA mng_FRAM[5] = { 70,  82,  65,  77, '\0'};
-static png_byte FARDATA mng_IEND[5] = { 73,  69,  78,  68, '\0'};
-static png_byte FARDATA mng_IHDR[5] = { 73,  72,  68,  82, '\0'};
-static png_byte FARDATA mng_JHDR[5] = { 74,  72,  68,  82, '\0'};
-static png_byte FARDATA mng_LOOP[5] = { 76,  79,  79,  80, '\0'};
-static png_byte FARDATA mng_MAGN[5] = { 77,  65,  71,  78, '\0'};
-static png_byte FARDATA mng_MEND[5] = { 77,  69,  78,  68, '\0'};
-static png_byte FARDATA mng_MOVE[5] = { 77,  79,  86,  69, '\0'};
-static png_byte FARDATA mng_PAST[5] = { 80,  65,  83,  84, '\0'};
-static png_byte FARDATA mng_PLTE[5] = { 80,  76,  84,  69, '\0'};
-static png_byte FARDATA mng_SAVE[5] = { 83,  65,  86,  69, '\0'};
-static png_byte FARDATA mng_SEEK[5] = { 83,  69,  69,  75, '\0'};
-static png_byte FARDATA mng_SHOW[5] = { 83,  72,  79,  87, '\0'};
-static png_byte FARDATA mng_TERM[5] = { 84,  69,  82,  77, '\0'};
-static png_byte FARDATA mng_bKGD[5] = { 98,  75,  71,  68, '\0'};
-static png_byte FARDATA mng_cHRM[5] = { 99,  72,  82,  77, '\0'};
-static png_byte FARDATA mng_gAMA[5] = {103,  65,  77,  65, '\0'};
-static png_byte FARDATA mng_pHYg[5] = {112,  72,  89, 103, '\0'};
-static png_byte FARDATA mng_pHYs[5] = {112,  72,  89, 115, '\0'};
-static png_byte FARDATA mng_sBIT[5] = {115,  66,  73,  84, '\0'};
-static png_byte FARDATA mng_sRGB[5] = {115,  82,  71,  66, '\0'};
-static png_byte FARDATA mng_tRNS[5] = {116,  82,  78,  83, '\0'};
+static png_byte FARDATA mng_MHDR[5]={ 77,  72,  68,  82, '\0'};
+static png_byte FARDATA mng_BACK[5]={ 66,  65,  67,  75, '\0'};
+static png_byte FARDATA mng_BASI[5]={ 66,  65,  83,  73, '\0'};
+static png_byte FARDATA mng_CLIP[5]={ 67,  76,  73,  80, '\0'};
+static png_byte FARDATA mng_CLON[5]={ 67,  76,  79,  78, '\0'};
+static png_byte FARDATA mng_DEFI[5]={ 68,  69,  70,  73, '\0'};
+static png_byte FARDATA mng_DHDR[5]={ 68,  72,  68,  82, '\0'};
+static png_byte FARDATA mng_DISC[5]={ 68,  73,  83,  67, '\0'};
+static png_byte FARDATA mng_ENDL[5]={ 69,  78,  68,  76, '\0'};
+static png_byte FARDATA mng_FRAM[5]={ 70,  82,  65,  77, '\0'};
+static png_byte FARDATA mng_IEND[5]={ 73,  69,  78,  68, '\0'};
+static png_byte FARDATA mng_IHDR[5]={ 73,  72,  68,  82, '\0'};
+static png_byte FARDATA mng_JHDR[5]={ 74,  72,  68,  82, '\0'};
+static png_byte FARDATA mng_LOOP[5]={ 76,  79,  79,  80, '\0'};
+static png_byte FARDATA mng_MAGN[5]={ 77,  65,  71,  78, '\0'};
+static png_byte FARDATA mng_MEND[5]={ 77,  69,  78,  68, '\0'};
+static png_byte FARDATA mng_MOVE[5]={ 77,  79,  86,  69, '\0'};
+static png_byte FARDATA mng_PAST[5]={ 80,  65,  83,  84, '\0'};
+static png_byte FARDATA mng_PLTE[5]={ 80,  76,  84,  69, '\0'};
+static png_byte FARDATA mng_SAVE[5]={ 83,  65,  86,  69, '\0'};
+static png_byte FARDATA mng_SEEK[5]={ 83,  69,  69,  75, '\0'};
+static png_byte FARDATA mng_SHOW[5]={ 83,  72,  79,  87, '\0'};
+static png_byte FARDATA mng_TERM[5]={ 84,  69,  82,  77, '\0'};
+static png_byte FARDATA mng_bKGD[5]={ 98,  75,  71,  68, '\0'};
+static png_byte FARDATA mng_cHRM[5]={ 99,  72,  82,  77, '\0'};
+static png_byte FARDATA mng_gAMA[5]={103,  65,  77,  65, '\0'};
+static png_byte FARDATA mng_pHYg[5]={112,  72,  89, 103, '\0'};
+static png_byte FARDATA mng_pHYs[5]={112,  72,  89, 115, '\0'};
+static png_byte FARDATA mng_sBIT[5]={115,  66,  73,  84, '\0'};
+static png_byte FARDATA mng_sRGB[5]={115,  82,  71,  66, '\0'};
+static png_byte FARDATA mng_tRNS[5]={116,  82,  78,  83, '\0'};
 
 /*
-static png_byte FARDATA mng_IDAT[5] = { 73,  68,  65,  84, '\0'};
-static png_byte FARDATA mng_JDAT[5] = { 74,  68,  65,  84, '\0'};
-static png_byte FARDATA mng_JSEP[5] = { 74,  83,  69,  80, '\0'};
-static png_byte FARDATA mng_hIST[5] = {104,  73,  83,  84, '\0'};
-static png_byte FARDATA mng_iCCP[5] = {105,  67,  67,  80, '\0'};
-static png_byte FARDATA mng_iTXt[5] = {105,  84,  88, 116, '\0'};
-static png_byte FARDATA mng_oFFs[5] = {111,  70,  70, 115, '\0'};
-static png_byte FARDATA mng_sPLT[5] = {115,  80,  76,  84, '\0'};
-static png_byte FARDATA mng_tEXt[5] = {116,  69,  88, 116, '\0'};
-static png_byte FARDATA mng_tIME[5] = {116,  73,  77,  69, '\0'};
-static png_byte FARDATA mng_zTXt[5] = {122,  84,  88, 116, '\0'};
+static png_byte FARDATA mng_IDAT[5]={ 73,  68,  65,  84, '\0'};
+static png_byte FARDATA mng_JDAT[5]={ 74,  68,  65,  84, '\0'};
+static png_byte FARDATA mng_JSEP[5]={ 74,  83,  69,  80, '\0'};
+static png_byte FARDATA mng_hIST[5]={104,  73,  83,  84, '\0'};
+static png_byte FARDATA mng_iCCP[5]={105,  67,  67,  80, '\0'};
+static png_byte FARDATA mng_iTXt[5]={105,  84,  88, 116, '\0'};
+static png_byte FARDATA mng_oFFs[5]={111,  70,  70, 115, '\0'};
+static png_byte FARDATA mng_sPLT[5]={115,  80,  76,  84, '\0'};
+static png_byte FARDATA mng_tEXt[5]={116,  69,  88, 116, '\0'};
+static png_byte FARDATA mng_tIME[5]={116,  73,  77,  69, '\0'};
+static png_byte FARDATA mng_zTXt[5]={122,  84,  88, 116, '\0'};
 */
 
 typedef struct _MngBox
@@ -186,7 +186,7 @@ typedef struct _MngBox
 
 typedef struct _MngPair
 {
-  long
+  volatile long
     a,
     b;
 } MngPair;
@@ -607,7 +607,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
         for (x=0; x < (long) image->columns; x++)
         {
           j=(int) indexes[x];
-          indexes[x]= map[j];
+          indexes[x]=map[j];
         }
         if (!SyncImagePixels(image))
           break;
@@ -1198,7 +1198,7 @@ static png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size)
     ret;
 
   png_ptr=png_ptr;
-  ret = ((png_voidp) AcquireMemory((size_t) size));
+  ret=((png_voidp) AcquireMemory((size_t) size));
   if (ret == NULL)
     png_error("Insufficient memory.");
   return (ret);
@@ -1244,7 +1244,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
      nibbles;
 
    unsigned char
-     unhex[103]= {0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,
+     unhex[103]={0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,
                   0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,
                   0,0,0,0,0,0,0,0,0,1, 2,3,4,5,6,7,8,9,0,0,
                   0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,
@@ -1325,7 +1325,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     have_mng_structure,
     num_text;
 
-  int
+  volatile int
     have_global_bkgd,
     have_global_chrm,
     have_global_gama,
@@ -1343,8 +1343,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   long
     y;
 
-  long
-    image_count = 0,
+  volatile long
+    image_count=0,
     image_found;
 
   MngInfo
@@ -1392,7 +1392,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     loop_level,
     loops_active;
 
-  short
+  volatile short
     skipping_loop;
 
   unsigned char
@@ -1400,15 +1400,15 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     **scanlines;
 
   unsigned int
-    mandatory_back = 0,
+    mandatory_back=0,
     status;
 
-  unsigned int
-    framing_mode = 1,
+  volatile unsigned int
+    framing_mode=1,
 #ifdef MNG_OBJECT_BUFFERS
-    mng_background_object = 0,
+    mng_background_object=0,
 #endif
-    mng_type = 0;   /* 0: PNG; 1: MNG; 2: MNG-LC; 3: MNG-VLC */
+    mng_type=0;   /* 0: PNG; 1: MNG; 2: MNG-LC; 3: MNG-VLC */
 
   unsigned long
     default_frame_timeout,
@@ -1417,17 +1417,17 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_width,
     length;
 
-  unsigned long
+  volatile unsigned long
     default_frame_delay,
     final_delay,
     frame_delay,
     global_plte_length,
     global_trns_length,
     insert_layers,
-    mng_height = 0,
+    mng_height=0,
     mng_iterations=0,
-    mng_width = 0,
-    simplicity = 0,
+    mng_width=0,
+    simplicity=0,
     subframe_height=0,
     subframe_width=0,
     ticks_per_second;
@@ -1711,7 +1711,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (mng_type == 3)
               ThrowException(&image->exception,(ExceptionType) DelegateWarning,
                 "DEFI chunk found in MNG-VLC datastream",(char *) NULL);
-            object_id = (p[0]<<8) | p[1];
+            object_id=(p[0]<<8) | p[1];
             if (mng_type == 2 && object_id != 0)
               ThrowException(&image->exception,(ExceptionType) DelegateWarning,
                 "Nonzero object_id in MNG-LC datastream",(char *) NULL);
@@ -1764,10 +1764,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             have_global_bkgd=False;
             if (length > 5)
               {
-                mng_global_bkgd.red = XDownscale(((p[0]<<8) | p[1]));
-                mng_global_bkgd.green = XDownscale(((p[2]<<8)
+                mng_global_bkgd.red=XDownscale(((p[0]<<8) | p[1]));
+                mng_global_bkgd.green=XDownscale(((p[2]<<8)
                    | p[3]));
-                mng_global_bkgd.blue = XDownscale(((p[4]<<8) | p[5]));
+                mng_global_bkgd.blue=XDownscale(((p[4]<<8) | p[5]));
                 have_global_bkgd=True;
               }
             LiberateMemory((void **) &chunk);
@@ -1781,11 +1781,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               mandatory_back=0;
             if (mandatory_back && length>5)
               {
-                mng_background_color.red= XDownscale(((p[0]<<8)
+                mng_background_color.red=XDownscale(((p[0]<<8)
                    | p[1]));
-                mng_background_color.green= XDownscale(((p[2]<<8)
+                mng_background_color.green=XDownscale(((p[2]<<8)
                    | p[3]));
-                mng_background_color.blue= XDownscale(((p[4]<<8)
+                mng_background_color.blue=XDownscale(((p[4]<<8)
                    | p[5]));
                 mng_background_color.opacity=OpaqueOpacity;
               }
@@ -1995,8 +1995,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 else
                     image->start_loop=False;
-                image->columns= subframe_width;
-                image->rows= subframe_height;
+                image->columns=subframe_width;
+                image->rows=subframe_height;
                 image->page.width=subframe_width;
                 image->page.height=subframe_height;
                 image->page.x=clip.left;
@@ -2122,7 +2122,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Record starting point.
             */
-            loop_iters = mng_get_long(&chunk[1]);
+            loop_iters=mng_get_long(&chunk[1]);
             if (loop_iters == 0)
               skipping_loop=loop_level;
             else
@@ -2452,8 +2452,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   Make a background rectangle.
                 */
                 image->delay=0;
-                image->columns= mng_width;
-                image->rows= mng_height;
+                image->columns=mng_width;
+                image->rows=mng_height;
                 image->page.width=mng_width;
                 image->page.height=mng_height;
                 image->page.x=0;
@@ -2495,8 +2495,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             else
                 image->start_loop=False;
             image->delay=0;
-            image->columns= subframe_width;
-            image->rows= subframe_height;
+            image->columns=subframe_width;
+            image->rows=subframe_height;
             image->page.width=subframe_width;
             image->page.height=subframe_height;
             image->page.x=clip.left;
@@ -2536,7 +2536,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (framing_mode == 1 || framing_mode == 3)
           {
             image->delay=frame_delay;
-            frame_delay = default_frame_delay;
+            frame_delay=default_frame_delay;
           }
         else
           image->delay=0;
@@ -2634,14 +2634,14 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /* Disable thread-unsafe features of pnggccrd */
     if (png_access_version() >= 10200)
     {
-      png_uint_32 mmx_disable_mask = 0;
+      png_uint_32 mmx_disable_mask=0;
       png_uint_32 asm_flags;
 
       mmx_disable_mask |= ( PNG_ASM_FLAG_MMX_READ_COMBINE_ROW  \
                           | PNG_ASM_FLAG_MMX_READ_FILTER_SUB   \
                           | PNG_ASM_FLAG_MMX_READ_FILTER_AVG   \
                           | PNG_ASM_FLAG_MMX_READ_FILTER_PAETH );
-      asm_flags = png_get_asm_flags(png_ptr);
+      asm_flags=png_get_asm_flags(png_ptr);
       png_set_asm_flags(png_ptr, asm_flags & ~mmx_disable_mask);
     }
 #endif
@@ -2838,7 +2838,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           background.index=ping_info->background.index;
                         background.red=(png_uint_16)
                           mng_info->global_plte[background.index].red;
-                        background.green= (png_uint_16)
+                        background.green=(png_uint_16)
                           mng_info->global_plte[background.index].green;
                         background.blue=(png_uint_16)
                           mng_info->global_plte[background.index].blue;
@@ -2860,8 +2860,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->background_color=mng_global_bkgd;
 #else
         image->background_color.red=XDownscale(mng_global_bkgd.red);
-        image->background_color.green=(Quantum)
-          XDownscale(mng_global_bkgd.green);
+        image->background_color.green=XDownscale(mng_global_bkgd.green);
         image->background_color.blue=XDownscale(mng_global_bkgd.blue);
 #endif
       }
@@ -2878,12 +2877,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         else
           {
-            image->background_color.red=(Quantum)
-              XDownscale(ping_info->background.red);
-            image->background_color.green=(Quantum)
+            image->background_color.red=XDownscale(ping_info->background.red);
+            image->background_color.green=
               XDownscale(ping_info->background.green);
-            image->background_color.blue=(Quantum)
-              XDownscale(ping_info->background.blue);
+            image->background_color.blue=XDownscale(ping_info->background.blue);
           }
       }
 #endif
@@ -3051,24 +3048,24 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
                   {
-                    *r++ = *p++;
+                    *r++=*p++;
                     p++;
                     if ((ping_info->valid & PNG_INFO_tRNS) &&
                        (((*(p-2)<<8)|*(p-1))==transparent_color.opacity))
                       {
                          /* Cheap transparency */
-                         *r++ = TransparentOpacity;
+                         *r++=TransparentOpacity;
                       }
                     else
-                         *r++ = OpaqueOpacity;
+                         *r++=OpaqueOpacity;
                   }
                 if (ping_info->color_type == PNG_COLOR_TYPE_RGB)
                   {
-                    *r++ = *p++;
+                    *r++=*p++;
                     p++;
-                    *r++ = *p++;
+                    *r++=*p++;
                     p++;
-                    *r++ = *p++;
+                    *r++=*p++;
                     p++;
                     if ((ping_info->valid & PNG_INFO_tRNS) &&
                          (((*(p-6)<<8)|*(p-5))==transparent_color.red) &&
@@ -3076,24 +3073,24 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                          (((*(p-2)<<8)|*(p-1))==transparent_color.blue))
                       {
                          /* Cheap transparency */
-                         *r++ = TransparentOpacity;
+                         *r++=TransparentOpacity;
                       }
                     else
-                         *r++ = OpaqueOpacity;
+                         *r++=OpaqueOpacity;
                   }
                 if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
                 {
-                  *r++ = *p++;
+                  *r++=*p++;
                   p++;
-                  *r++ = *p++;
+                  *r++=*p++;
                   p++;
-                  *r++ = *p++;
+                  *r++=*p++;
                   p++;
                 }
                 if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA ||
                     ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
                 {
-                  *r++ = *p++;
+                  *r++=*p++;
                   p++;
                 }
               }
@@ -3336,7 +3333,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
 #if (QuantumDepth == 8)
     if (image->depth > 8)
-      image->depth = 8;
+      image->depth=8;
 #endif
     if (png_get_text(ping,ping_info,&text,&num_text) != 0)
       for (i=0; i < (long) num_text; i++)
@@ -3442,7 +3439,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   Copy the PLTE to the object buffer.
                 */
                 png_get_PLTE(ping,ping_info,&plte,&number_colors);
-                mng_info->ob[object_id]->plte_length = number_colors;
+                mng_info->ob[object_id]->plte_length=number_colors;
                 for (i=0; i<number_colors; i++)
                 {
                   mng_info->ob[object_id]->plte[i]=plte[i];
@@ -3561,8 +3558,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                 large_image=image->next;
                 *large_image->blob=(*image->blob);
-                large_image->columns= magnified_width;
-                large_image->rows= magnified_height;
+                large_image->columns=magnified_width;
+                large_image->rows=magnified_height;
 
                 magn_methx=mng_info->magn_methx;
                 magn_methy=mng_info->magn_methy;
@@ -3574,13 +3571,13 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     large_image->background_color.opacity=OpaqueOpacity;
                     SetImage(large_image,OpaqueOpacity);
                     if (magn_methx == 4)
-                      magn_methx = 2;
+                      magn_methx=2;
                     if (magn_methx == 5)
-                      magn_methx = 3;
+                      magn_methx=3;
                     if (magn_methy == 4)
-                      magn_methy = 2;
+                      magn_methy=2;
                     if (magn_methy == 5)
-                      magn_methy = 3;
+                      magn_methy=3;
                   }
 
                 /* magnify the rows into the right side of the large image */
@@ -3944,8 +3941,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image=image->next;
           *image->next->blob=(*image->blob);
         }
-      image->columns= mng_width;
-      image->rows= mng_height;
+      image->columns=mng_width;
+      image->rows=mng_height;
       image->page.width=mng_width;
       image->page.height=mng_height;
       image->page.x=0;
@@ -4227,8 +4224,8 @@ png_set_compression_buffer_size(png_structp png_ptr, png_uint_32 size)
 {
     if(png_ptr->zbuf)
        png_free(png_ptr, png_ptr->zbuf); png_ptr->zbuf=NULL;
-    png_ptr->zbuf_size = (png_size_t) size;
-    png_ptr->zbuf = (png_bytep) png_malloc(png_ptr, size);
+    png_ptr->zbuf_size=(png_size_t) size;
+    png_ptr->zbuf=(png_bytep) png_malloc(png_ptr, size);
     if(!png_ptr->zbuf)
        png_error(png_ptr,"Unable to allocate zbuf");
 }
@@ -4279,7 +4276,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
 #if (PNG_LIBPNG_VER > 10005)
    text=(png_textp) png_malloc(ping,(png_uint_32) sizeof(png_text));
    description_length=strlen((const char *) profile_description);
-   allocated_length= (png_uint_32) (length*2 + (length>>5) + 20
+   allocated_length=(png_uint_32) (length*2 + (length>>5) + 20
       + description_length);
    text[0].text=(png_charp) png_malloc(ping,allocated_length);
    text[0].key=(png_charp) png_malloc(ping, (png_uint_32) 80);
@@ -4297,7 +4294,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    for (i=0; i<(long) length; i++)
    {
      if (i%36 == 0)
-       *dp++ = '\n';
+       *dp++='\n';
      *(dp++)=hex[((*sp>>4) & 0x0f)];
      *(dp++)=hex[((*sp++ ) & 0x0f)];
    }
@@ -4331,7 +4328,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     need_iterations,
     need_matte;
 
-  int
+  volatile int
 #if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
     defined(PNG_MNG_FEATURES_SUPPORTED)
     equal_palettes,
@@ -4359,7 +4356,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   register IndexPacket
     *indexes;
 
-  register long
+  register volatile long
     x=0;
 
   register long
@@ -4383,7 +4380,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     matte,
     status;
   
-  unsigned int
+  volatile unsigned int
     adjoin,
     optimize,
     scene;
@@ -4393,7 +4390,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     initial_delay,
     save_image_depth;
   
-  unsigned long
+  volatile unsigned long
     delay,
     ticks_per_second=0;
 
@@ -4426,7 +4423,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   need_local_plte=True;
 #endif
   have_write_global_srgb=False;
-  have_write_global_gama= False;
+  have_write_global_gama=False;
   have_write_global_chrm=False;
   need_defi=False;
   need_fram=False;
@@ -4602,7 +4599,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            need_fram=True;  /* make it exact; we cannot have VLC anyway */
        }
      if (need_fram)
-        ticks_per_second = 100;
+        ticks_per_second=100;
      /*
         If pseudocolor, we should also check to see if all the
         palettes are identical and write a global PLTE if they are.
@@ -4612,27 +4609,27 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         Write the MNG version 0.96 signature and MHDR chunk.
      */
      (void) WriteBlob(image,8,"\212MNG\r\n\032\n");
-     (void) WriteBlobMSBLong(image,28L);  /* chunk data length = 28 */
+     (void) WriteBlobMSBLong(image,28L);  /* chunk data length=28 */
      PNGType(chunk,mng_MHDR);
      PNGLong(chunk+4,page.width);
      PNGLong(chunk+8,page.height);
      PNGLong(chunk+12,ticks_per_second);
-     PNGLong(chunk+16,0L);  /* layer count = unknown */
-     PNGLong(chunk+20,0L);  /* frame count = unknown */
-     PNGLong(chunk+24,0L);  /* play time = unknown   */
+     PNGLong(chunk+16,0L);  /* layer count=unknown */
+     PNGLong(chunk+20,0L);  /* frame count=unknown */
+     PNGLong(chunk+24,0L);  /* play time=unknown   */
      if (need_matte)
        {
          if (need_defi || need_fram || use_global_plte)
-           PNGLong(chunk+28,11L);    /* simplicity =  LC */
+           PNGLong(chunk+28,11L);    /* simplicity=LC */
          else
-           PNGLong(chunk+28,9L);    /* simplicity = VLC */
+           PNGLong(chunk+28,9L);    /* simplicity=VLC */
        }
      else
        {
          if (need_defi || need_fram || use_global_plte)
-           PNGLong(chunk+28,3L);    /* simplicity =  LC, no transparency */
+           PNGLong(chunk+28,3L);    /* simplicity=LC, no transparency */
          else
-           PNGLong(chunk+28,1L);    /* simplicity = VLC, no transparency */
+           PNGLong(chunk+28,1L);    /* simplicity=VLC, no transparency */
        }
      (void) WriteBlob(image,32,(char *) chunk);
      (void) WriteBlobMSBLong(image,crc32(0,chunk,32));
@@ -4642,7 +4639,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          /*
            Write MNG TERM chunk
          */
-         (void) WriteBlobMSBLong(image,10L);  /* data length = 10 */
+         (void) WriteBlobMSBLong(image,10L);  /* data length=10 */
          PNGType(chunk,mng_TERM);
          chunk[4]=3;  /* repeat animation */
          chunk[5]=0;  /* show last frame when done */
@@ -4791,7 +4788,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          {
            chunk[4+i*3]=Downscale(image->colormap[i].red) & 0xff;
            chunk[5+i*3]=Downscale(image->colormap[i].green) & 0xff;
-           chunk[6+i*3]= Downscale(image->colormap[i].blue) & 0xff;
+           chunk[6+i*3]=Downscale(image->colormap[i].blue) & 0xff;
          }
          (void) WriteBlob(image,data_length+4,(char *) chunk);
          (void) WriteBlobMSBLong(image,crc32(0,chunk,(int) (data_length+4)));
@@ -4877,7 +4874,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         page=image->page;
         if ((page.x !=  previous_x) || (page.y != previous_y))
           {
-             (void) WriteBlobMSBLong(image,12L);  /* data length = 12 */
+             (void) WriteBlobMSBLong(image,12L);  /* data length=12 */
              PNGType(chunk,mng_DEFI);
              chunk[4]=0; /* object 0 MSB */
              chunk[5]=0; /* object 0 LSB */
@@ -4894,7 +4891,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     */
     (void) TransformRGBImage(image,(ColorspaceType) RGBColorspace);
 #ifdef PNG_USER_MEM_SUPPORTED
-    ping = png_create_write_struct_2(PNG_LIBPNG_VER_STRING,image,
+    ping=png_create_write_struct_2(PNG_LIBPNG_VER_STRING,image,
       PNGErrorHandler,PNGWarningHandler,(void *) NULL,
       (png_malloc_ptr) png_IM_malloc,(png_free_ptr) png_IM_free);
 #else
@@ -4999,9 +4996,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           }
         else
           {
-            background.red = image->background_color.red;
-            background.green = image->background_color.green;
-            background.blue = image->background_color.blue;
+            background.red=image->background_color.red;
+            background.green=image->background_color.green;
+            background.blue=image->background_color.blue;
             background.gray=(png_uint_16) Intensity(&image->background_color);
           }
         background.index=(png_byte) background.gray;
@@ -5149,7 +5146,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         if (image->depth > QuantumDepth)
           image->depth=QuantumDepth;
         if (image->colors == 0 || image->colors > MaxRGB+1)
-          image->colors = 1<<image->depth;
+          image->colors=1<<image->depth;
         if (image->depth > 8)
           ping_info->bit_depth=16;
         else
@@ -5411,7 +5408,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         /*
           Note image rendering intent.
         */
-        (void) png_set_sRGB(ping,ping_info,(int) (image->rendering_intent+1));
+        (void) png_set_sRGB(ping,ping_info,(int) (image->rendering_intent-1));
         png_set_gAMA(ping,ping_info,0.45455);
       }
     not_valid=(!ping_info->valid);
@@ -5453,7 +5450,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             /*
               Write a MNG FRAM chunk with the new framing mode.
             */
-            (void) WriteBlobMSBLong(image,1L);  /* data length = 1 */
+            (void) WriteBlobMSBLong(image,1L);  /* data length=1 */
             PNGType(chunk,mng_FRAM);
             chunk[4]=(unsigned char) framing_mode;
             (void) WriteBlob(image,5,(char *) chunk);
@@ -5464,7 +5461,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             /*
               Write a MNG FRAM chunk with the delay.
             */
-            (void) WriteBlobMSBLong(image,10L);  /* data length = 10 */
+            (void) WriteBlobMSBLong(image,10L);  /* data length=10 */
             PNGType(chunk,mng_FRAM);
             chunk[4]=(unsigned char) framing_mode;
             chunk[5]=0;  /* frame name separator (no name) */
@@ -5708,7 +5705,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             /*
               Write FRAM 4 with clipping boundaries followed by FRAM 1.
             */
-            (void) WriteBlobMSBLong(image,27L);  /* data length = 27 */
+            (void) WriteBlobMSBLong(image,27L);  /* data length=27 */
             PNGType(chunk,mng_FRAM);
             chunk[4]=4;
             chunk[5]=0;  /* frame name separator (no name) */
