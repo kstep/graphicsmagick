@@ -1264,7 +1264,7 @@ MagickExport unsigned int CompositeImage(Image *image,
   /*
     Composite image.
   */
-  midpoint=UpScale(128);
+  midpoint=((MaxRGB+1)+((MaxRGB+1) >> 8))/2;
   for (y=0; y < (long) image->rows; y++)
   {
     if (y < y_offset)
@@ -1343,8 +1343,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           offset=(int) (Intensity(&pixel)-midpoint);
           if (offset == 0)
             break;
-          TransformHSL(q->red,q->green,q->blue,&hue,&saturation,
-            &brightness);
+          TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
           brightness+=(percent_brightness*offset)/midpoint;
           if (brightness < 0.0)
             brightness=0.0;
