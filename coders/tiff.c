@@ -556,6 +556,24 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) SetImageAttribute(image,"label",text);
     if (TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text) == 1)
       (void) SetImageAttribute(image,"comment",text);
+    /* the following is redundant with code from below, but serves to
+       correctly report the type of image when using the ping function
+     */
+    if (image->storage_class == DirectClass)
+      {
+        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
+          &sample_info);
+        if (image->colorspace == CMYKColorspace)
+          {
+            if (samples_per_pixel > 4)
+              image->matte=True;
+          }
+        else
+          if (samples_per_pixel > 3)
+            image->matte=True;
+      }
+    if (image_info->ping)
+      break;
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
@@ -1556,15 +1574,26 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           (image_info->interlace == PartitionInterlace))
         (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
     strip_size=Max(TIFFDefaultStripSize(tiff,-1),1);
-    if (compress_tag == COMPRESSION_JPEG)
-      (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size+
-        (8-(strip_size % 8)));
-    else
-      if ((compress_tag != COMPRESSION_CCITTFAX4) &&
-          (compress_tag != COMPRESSION_ADOBE_DEFLATE))
-        (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
-      else
+
+    switch (compress_tag)
+    {
+      case COMPRESSION_JPEG:
+        (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size+
+          (8-(strip_size % 8)));
+        break;
+      case COMPRESSION_ADOBE_DEFLATE:
         (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
+        (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
+        (void) TIFFSetField(tiff,TIFFTAG_ZIPQUALITY,9);
+        break;
+      case COMPRESSION_CCITTFAX4:
+        (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
+        break;
+      default:
+        (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
+        break;
+    }
+
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
         unsigned short
