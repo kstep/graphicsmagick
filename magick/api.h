@@ -48,6 +48,8 @@
 #		define Export
 #	endif
 
+#define ModuleExport __declspec(dllexport)
+
 #pragma warning(disable : 4018)
 #pragma warning(disable : 4244)
 #pragma warning(disable : 4142)

@@ -596,7 +596,7 @@ typedef struct _MagickInfo
 /*
   Image const declarations.
 */
-extern const char
+extern Export const char
   *Alphabet,
   *AppendBinaryType,
   *BackgroundColor,
@@ -617,7 +617,7 @@ extern const char
   *SaveImagesText,
   *WriteBinaryType;
 
-extern const ColorlistInfo
+extern Export const ColorlistInfo
   XPMColorlist[235],
   XColorlist[761];
 
