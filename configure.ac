@@ -692,8 +692,8 @@ AC_CHECK_TYPE(ssize_t, int)
 AC_TYPE_SIGNAL
 
 # Test for C compiler __func__ support
-if test "$ac_cv_have___func__" != 'yes' ; then
-AC_CACHE_CHECK(for C compiler __func__ support, ac_cv_have___func__,
+if test "$ac_cv_have_C__func__" != 'yes' ; then
+AC_CACHE_CHECK(for C compiler __func__ support, ac_cv_have_C__func__,
 [AC_TRY_COMPILE(
 ,
 changequote(<<, >>)dnl
@@ -702,12 +702,12 @@ const char *func=__func__;
 return 0;
 >>,
 changequote([, ])dnl
-ac_cv_have___func__='yes',
-ac_cv_have___func__='no')])
+ac_cv_have_C__func__='yes',
+ac_cv_have_C__func__='no')])
 
-if test "$ac_cv_have___func__" = 'yes' ; then
+if test "$ac_cv_have_C__func__" = 'yes' ; then
  AC_MSG_RESULT(yes)
- AC_DEFINE(HAS___func__,1,Define if C compiler supports __func__)
+ AC_DEFINE(HAS_C__func__,1,Define if C compiler supports __func__)
 else
  AC_MSG_RESULT(no)
 fi
@@ -830,6 +830,29 @@ then
  OLIBS="$LIBS"
  LIBS=''
  AC_LANG_PUSH(C++)
+
+  # Test for C++ compiler __func__ support
+ if test "$ac_cv_have_CPP__func__" != 'yes' ; then
+  AC_CACHE_CHECK(for C++ compiler __func__ support, ac_cv_have_CPP__func__,
+  [AC_TRY_COMPILE(
+  ,
+  changequote(<<, >>)dnl
+  <<
+  const char *func=__func__;
+  return 0;
+  >>,
+  changequote([, ])dnl
+  ac_cv_have_CPP__func__='yes',
+  ac_cv_have_CPP__func__='no')])
+
+  if test "$ac_cv_have_CPP__func__" = 'yes' ; then
+   AC_MSG_RESULT(yes)
+   AC_DEFINE(HAS_CPP__func__,1,Define if C++ compiler supports __func__)
+  else
+   AC_MSG_RESULT(no)
+  fi
+ fi
+
 # Full set of headers used ...
 # algorithm cctype cerrno cmath cstdio cstdlib cstring ctime exception
 # functional iomanip iosfwd iostream iterator list string strstream utility

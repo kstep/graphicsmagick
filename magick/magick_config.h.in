@@ -30,8 +30,11 @@
 /* LIBS used for linking */
 #undef GM_BUILD_LIBS
 
+/* Define if C++ compiler supports __func__ */
+#undef HAS_CPP__func__
+
 /* Define if C compiler supports __func__ */
-#undef HAS___func__
+#undef HAS_C__func__
 
 /* Define to 1 if you have the `argz_append' function. */
 #undef HAVE_ARGZ_APPEND

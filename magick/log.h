@@ -19,17 +19,31 @@ extern "C" {
 #  define __attribute__(x) /*nothing*/
 #endif
 
-#if !defined(GetMagickModule)
-#  if defined(HAS___func__)
-#    define GetMagickModule()  __FILE__,__func__,__LINE__
-#  else
-#    if defined(_VISUALC_)
-#      define GetMagickModule()  __FILE__,__FUNCTION__,__LINE__
+#if defined(MAGICK_IMPLEMENTATION)
+
+  /*
+    Obtain the current C function name (if possible)
+  */
+#  if !defined(GetCurrentFunction)
+#    if (((defined(__cplusplus) || defined(c_plusplus)) && defined(HAS_CPP__func__)) || \
+        (!(defined(__cplusplus) || defined(c_plusplus)) && defined(HAS_C__func__)))
+#      define GetCurrentFunction() (__func__)
+#    elif defined(_VISUALC_)
+#      define GetCurrentFunction() (__FUNCTION__)
 #    else
-#      define GetMagickModule()  __FILE__,"unknown",__LINE__
+#      define GetCurrentFunction() ("unknown")
 #    endif
 #  endif
-#endif
+
+  /*
+    Obtain current source file, function name, and source file line,
+    in a form acceptable for use with LogMagickEvent.
+  */
+#  if !defined(GetMagickModule)
+#    define GetMagickModule()  __FILE__,GetCurrentFunction(),__LINE__
+#  endif
+
+#endif /* MAGICK_IMPLEMENTATION */
 
 /* NOTE: any changes to this effect PerlMagick */
 typedef enum

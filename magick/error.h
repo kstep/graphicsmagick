@@ -14,7 +14,7 @@
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
-#endif
+#endif /* defined(__cplusplus) || defined(c_plusplus) */
 
 /*
   Enum declarations.
@@ -351,7 +351,7 @@ extern MagickExport WarningHandler
 #define MagickWarning3(severity_,reason_,description_) \
   (_MagickWarning(severity_,#reason_,#description_))
 #endif
-#endif
+#endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #define ThrowBinaryException(severity_,reason_,description_) \
 { \
@@ -473,6 +473,6 @@ extern MagickExport WarningHandler
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
-#endif
+#endif /* defined(__cplusplus) || defined(c_plusplus) */
 
-#endif
+#endif /* !defined(_MAGICK_ERROR_H) */

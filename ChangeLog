@@ -1,5 +1,13 @@
 2003-09-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac: Test C++ compiler for __func__ support.
+	* magick/log.h: Added GetCurrentFunction() macro to handle
+	__func__ support determination.  Re-wrote GetMagickModule() macro
+	to use GetCurrentFunction().  Changes should allow compilation of
+	Magick++ when the C compiler supports __func__ but the C++
+	compiler does not.
+	* configure.ac: Changed from using HAS___func__ define to
+	HAS_C__func__ since this feature may be language sensitive.
 	* locale/C.mgk: Added missing JNGCompressionNotSupported message.
 
 2003-09-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
