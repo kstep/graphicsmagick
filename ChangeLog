@@ -1,4 +1,9 @@
 2002-12-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/image.c: For TransformRGBImage() and RGBTransformImage()
+	round values to int when creating tables rather than using scaling
+	to avoid rounding.
+
+2002-12-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* coders/png.c: Fixed compile problems.
 	* magick/image.c: SyncImage() performance optimizations.
 	* TransformRGBImage() cleanup/enhancements. Some rounding issues remain.
