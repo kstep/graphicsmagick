@@ -167,7 +167,7 @@ UNIX/Cygwin COMPILATION
    --without-tiff          disable TIFF support
    --without-ttf           disable TrueType support
    --without-wmf           disable WMF support
-   --with-ttf-fontpath     set default TrueType font path (default none)
+   --with-fontpath         prepend to default font search path
    --without-xml           disable XML support
    --without-zlib          disable ZLIB support
    --with-x                use the X Window System

@@ -55,8 +55,8 @@ modename="$progname"
 # Constants.
 PROGRAM=ltmain.sh
 PACKAGE=libtool
-VERSION=1.4c
-TIMESTAMP=" (1.1065 2001/09/22 16:43:43)"
+VERSION=1.4e
+TIMESTAMP=" (1.1087 2002/01/11 00:25:18)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -212,6 +212,8 @@ do
 
   --mode) prevopt="--mode" prev=mode ;;
   --mode=*) mode="$optarg" ;;
+
+  --preserve-dup-deps) duplicate_deps="yes" ;;
 
   --quiet | --silent)
     show=:
@@ -1225,7 +1227,7 @@ EOF
 	    # These systems don't actually have a C library (as such)
 	    test "X$arg" = "X-lc" && continue
 	    ;;
-	  *-*-openbsd*)
+	  *-*-openbsd* | *-*-freebsd*)
 	    # Do not include libc due to us having libc/libc_r.
 	    test "X$arg" = "X-lc" && continue
 	    ;;
@@ -1236,7 +1238,7 @@ EOF
 	  esac
 	elif test "X$arg" = "X-lc_r"; then
 	 case $host in
-	 *-*-openbsd*)
+	 *-*-openbsd* | *-*-freebsd*)
 	   # Do not include libc_r directly, use -pthread flag.
 	   continue
 	   ;;
@@ -1638,9 +1640,11 @@ EOF
     # Find all interdependent deplibs by searching for libraries
     # that are linked more than once (e.g. -la -lb -la)
     for deplib in $deplibs; do
-      case "$libs " in
-      *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
-      esac
+      if test "X$duplicate_deps" = "Xyes" ; then
+	case "$libs " in
+	*" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
+	esac
+      fi
       libs="$libs $deplib"
     done
 
@@ -1651,12 +1655,14 @@ EOF
       # $postdeps and mark them as special (i.e., whose duplicates are
       # not to be eliminated).
       pre_post_deps=
-      for pre_post_dep in $predeps $postdeps; do
-	case "$pre_post_deps " in
-	*" $pre_post_dep "*) specialdeplibs="$specialdeplibs $pre_post_deps" ;;
-	esac
-	pre_post_deps="$pre_post_deps $pre_post_dep"
-      done
+      if test "X$duplicate_deps" = "Xyes" ; then
+	for pre_post_dep in $predeps $postdeps; do
+	  case "$pre_post_deps " in
+	  *" $pre_post_dep "*) specialdeplibs="$specialdeplibs $pre_post_deps" ;;
+	  esac
+	  pre_post_deps="$pre_post_deps $pre_post_dep"
+	done
+      fi
       pre_post_deps=
     fi
 
@@ -1890,9 +1896,11 @@ EOF
 	    tmp_libs=
 	    for deplib in $dependency_libs; do
 	      deplibs="$deplib $deplibs"
-	      case "$tmp_libs " in
-	      *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
-	      esac
+              if test "X$duplicate_deps" = "Xyes" ; then
+	        case "$tmp_libs " in
+	        *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
+	        esac
+              fi
 	      tmp_libs="$tmp_libs $deplib"
 	    done
 	  elif test "$linkmode" != prog && test "$linkmode" != lib; then
@@ -2017,9 +2025,11 @@ EOF
 	      # or/and link against static libraries
 	      newdependency_libs="$deplib $newdependency_libs"
 	    fi
-	    case "$tmp_libs " in
-	    *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
-	    esac
+	    if test "X$duplicate_deps" = "Xyes" ; then
+	      case "$tmp_libs " in
+	      *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
+	      esac
+	    fi
 	    tmp_libs="$tmp_libs $deplib"
 	  done # for deplib
 	  continue
@@ -2334,9 +2344,11 @@ EOF
 	  tmp_libs=
 	  for deplib in $dependency_libs; do
 	    newdependency_libs="$deplib $newdependency_libs"
-	    case "$tmp_libs " in
-	    *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
-	    esac
+	    if test "X$duplicate_deps" = "Xyes" ; then
+	      case "$tmp_libs " in
+	      *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
+	      esac
+	    fi
 	    tmp_libs="$tmp_libs $deplib"
 	  done
 
@@ -2647,16 +2659,21 @@ EOF
 	  versuffix=".$current";
 	  ;;
 
-	irix)
+	irix | nonstopux)
+	  case $version_type in
+	    nonstopux) verstring_prefix=nonstopux ;;
+	    *)         verstring_prefix=sgi ;;
+	  esac
+	  verstring="$verstring_prefix$major.$revision"
+
 	  major=`expr $current - $age + 1`
-	  verstring="sgi$major.$revision"
 
 	  # Add in all the interfaces that we are compatible with.
 	  loop=$revision
 	  while test "$loop" -ne 0; do
 	    iface=`expr $revision - $loop`
 	    loop=`expr $loop - 1`
-	    verstring="sgi$major.$iface:$verstring"
+	    verstring="$verstring_prefix$major.$iface:$verstring"
 	  done
 
 	  # Before this point, $major must not contain `.'.
@@ -2829,7 +2846,7 @@ EOF
 	  *-*-netbsd*)
 	    # Don't link with libc until the a.out ld.so is fixed.
 	    ;;
-	  *-*-openbsd*)
+	  *-*-openbsd* | *-*-freebsd*)
 	    # Do not include libc due to us having libc/libc_r.
 	    test "X$arg" = "X-lc" && continue
 	    ;;
@@ -2881,7 +2898,7 @@ EOF
 	    for i in $deplibs; do
 	      name="`expr $i : '-l\(.*\)'`"
 	      # If $name is empty we are operating on a -L argument.
-	      if test "$name" != "" -a "$name" -ne "0"; then
+             if test "$name" != "" && test "$name" -ne "0"; then
 		libname=`eval \\$echo \"$libname_spec\"`
 		deplib_matches=`eval \\$echo \"$library_names_spec\"`
 		set dummy $deplib_matches
@@ -2903,12 +2920,12 @@ EOF
 	      fi
 	    done
 	  else
-	    # Error occured in the first compile.  Let's try to salvage the situation:
-	    # Compile a seperate program for each library.
+	    # Error occured in the first compile.  Let's try to salvage
+	    # the situation: Compile a separate program for each library.
 	    for i in $deplibs; do
 	      name="`expr $i : '-l\(.*\)'`"
 	     # If $name is empty we are operating on a -L argument.
-	      if test "$name" != "" -a "$name" != "0"; then
+             if test "$name" != "" && test "$name" != "0"; then
 		$rm conftest
 		$LTCC -o conftest conftest.c $i
 		# Did it work?
@@ -2950,7 +2967,7 @@ EOF
 	  for a_deplib in $deplibs; do
 	    name="`expr $a_deplib : '-l\(.*\)'`"
 	    # If $name is empty we are operating on a -L argument.
-	    if test "$name" != "" -a "$name" != "0"; then
+           if test "$name" != "" && test  "$name" != "0"; then
 	      libname=`eval \\$echo \"$libname_spec\"`
 	      for i in $lib_search_path $sys_lib_search_path $shlib_search_path; do
 		    potential_libs=`ls $i/$libname[.-]* 2>/dev/null`
@@ -2973,6 +2990,13 @@ EOF
 			*) potlib=`$echo "X$potlib" | $Xsed -e 's,[^/]*$,,'`"$potliblink";;
 			esac
 		      done
+		      # It is ok to link against an archive when
+		      # building a shared library.
+		      if $AR -t $potlib > /dev/null 2>&1; then
+		        newdeplibs="$newdeplibs $a_deplib"
+		        a_deplib=""
+		        break 2
+		      fi
 		      if eval $file_magic_cmd \"\$potlib\" 2>/dev/null \
 			 | sed 10q \
 			 | egrep "$file_magic_regex" > /dev/null; then
@@ -4011,7 +4035,7 @@ static const void *lt_preloaded_setup() {
 	    relink_command="$var=\"$var_value\"; export $var; $relink_command"
 	  fi
 	done
-	relink_command="cd `pwd`; $relink_command"
+	relink_command="(cd `pwd`; $relink_command)"
 	relink_command=`$echo "X$relink_command" | $Xsed -e "$sed_quote_subst"`
       fi
 
@@ -4355,7 +4379,7 @@ fi\
 	fi
       done
       # Quote the link command for shipping.
-      relink_command="cd `pwd`; $SHELL $0 --mode=relink $libtool_args"
+      relink_command="(cd `pwd`; $SHELL $0 --mode=relink $libtool_args)"
       relink_command=`$echo "X$relink_command" | $Xsed -e "$sed_quote_subst"`
 
       # Only create the output if not a dry run.

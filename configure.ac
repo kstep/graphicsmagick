@@ -330,16 +330,16 @@ AC_ARG_WITH(wmf,
 	      [with_wmf=$withval],
 	      [with_wmf='yes'])
 
-# Set default TrueType font path
-AC_ARG_WITH(ttf-fontpath,
-	      [  --with-ttf-fontpath     set default TrueType font path (default none)],
-	      [with_ttf_fontpath=$withval],
-	      [with_ttf_fontpath=''])
-if test "$with_ttf_fontpath" != "yes" && test -z "$with_ttf_fontpath"
+# Set default font search path
+AC_ARG_WITH(fontpath,
+	      [  --with-fontpath         prepend to default font search path],
+	      [with_fontpath=$withval],
+	      [with_fontpath=''])
+if test "$with_fontpath" != "yes" && test -z "$with_fontpath"
 then
-  with_ttf_fontpath=''
+  with_fontpath=''
 else
-  AC_DEFINE_UNQUOTED(TT_FONT_PATH,"$with_ttf_fontpath",Define to specify default TrueType font path.)
+  AC_DEFINE_UNQUOTED(MAGICK_FONT_PATH,"$with_fontpath",Define to prepend to default font search path.)
 fi
 
 # Disable XML.
@@ -1813,7 +1813,7 @@ echo "MPEG v2           --with-mpeg2=$with_mpeg2      	$have_mpeg2"
 echo "PNG               --with-png=$with_png          	$have_png"
 echo "TIFF              --with-tiff=$with_tiff        	$have_tiff"
 echo "FreeType 2.0      --with-ttf=$with_ttf          	$have_ttf"
-echo "TTF Path          --with-ttf-fontpath=         	\"$with_ttf_fontpath\""
+echo "Font search path  --with-fontpath=         	    \"$with_fontpath\""
 echo "XML               --with-xml=$with_xml          	$have_xml"
 echo "WMF               --with-wmf=$with_wmf          	$have_wmf"
 echo "ZLIB              --with-zlib=$with_zlib        	$have_zlib"

@@ -594,8 +594,8 @@ AC_CACHE_VAL([lt_cv_sys_max_cmd_len], [dnl
     # If test is not a shell built-in, we'll probably end up computing a
     # maximum length that is only half of the actual maximum length, but
     # we can't tell.
-    while test "X"`$CONFIG_SHELL [$]0 --fallback-echo "X$testring" 2>/dev/null` \
-	       = "XX$testring" &&
+    while (test "X"`$CONFIG_SHELL [$]0 --fallback-echo "X$testring" 2>/dev/null` \
+	       = "XX$testring") >/dev/null 2>&1 &&
 	    new_result=`expr "X$testring" : ".*" 2>&1` &&
 	    lt_cv_sys_max_cmd_len=$new_result &&
 	    test $i != 17 # 1/2 MB should be enough
@@ -604,11 +604,10 @@ AC_CACHE_VAL([lt_cv_sys_max_cmd_len], [dnl
       testring=$testring$testring
     done
     testring=
-    # add a significant safety factor because C++ compilers can tack on massive
-    # amounts of additional arguments before passing them to the linker.  1/4
-    # should be good.
-    len=`expr $lt_cv_sys_max_cmd_len \/ 4`
-    lt_cv_sys_max_cmd_len=`expr $lt_cv_sys_max_cmd_len - $len`
+    # Add a significant safety factor because C++ compilers can tack on massive
+    # amounts of additional arguments before passing them to the linker.
+    # It appears as though 1/2 is a usable value.
+    lt_cv_sys_max_cmd_len=`expr $lt_cv_sys_max_cmd_len \/ 2`
     ;;
   esac
 ])
@@ -1208,14 +1207,17 @@ hpux9* | hpux10* | hpux11*)
   postinstall_cmds='chmod 555 $lib'
   ;;
 
-irix5* | irix6*)
-  version_type=irix
+irix5* | irix6* | nonstopux*)
+  case $host_os in
+    nonstopux*) version_type=nonstopux ;;
+    *)          version_type=irix ;;
+  esac
   need_lib_prefix=no
   need_version=no
   soname_spec='${libname}${release}.so$major'
   library_names_spec='${libname}${release}.so$versuffix ${libname}${release}.so$major ${libname}${release}.so $libname.so'
   case $host_os in
-  irix5*)
+  irix5* | nonstopux*)
     libsuff= shlibsuff=
     ;;
   *)
@@ -1446,7 +1448,7 @@ if test -f "$ltmain" && test -n "$tagnames"; then
   for tagname in $tagnames; do
     IFS="$lt_save_ifs"
     # Check whether tagname contains only valid characters
-    case `$echo "X$tagname" | $Xsed -e 's/[[-_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890,/]]//g'` in
+    case `$echo "X$tagname" | $Xsed -e 's:[[-_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890,/]]::g'` in
     "") ;;
     *)  AC_MSG_ERROR([invalid tag name: $tagname])
 	;;
@@ -1914,9 +1916,9 @@ hpux10.20* | hpux11*)
   fi
   ;;
 
-irix5* | irix6*)
+irix5* | irix6* | nonstopux*)
   case $host_os in
-  irix5*)
+  irix5* | nonstopux*)
     # this will be overridden with pass_all, but let us keep it just in case
     lt_cv_deplibs_check_method="file_magic ELF 32-bit MSB dynamic lib MIPS - version 1"
     ;;
@@ -1944,6 +1946,7 @@ linux*)
     # glibc up to 2.1.1 does not perform some relocations on ARM
     lt_cv_deplibs_check_method='file_magic ELF [[0-9]][[0-9]]*-bit [[LM]]SB (shared object|dynamic lib )' ;;
   esac
+  lt_cv_deplibs_check_method='file_magic ELF [[0-9]][[0-9]]*-bit [[LM]]SB (shared object|dynamic lib )'
   lt_cv_file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
   ;;
 
@@ -3244,7 +3247,7 @@ if test -f "$ltmain"; then
   # Now quote all the things that may contain metacharacters while being
   # careful not to overquote the AC_SUBSTed values.  We take copies of the
   # variables and quote the copies for generation of the libtool script.
-  for var in echo old_CC old_CFLAGS AR AR_FLAGS RANLIB LN_S NM SHELL \
+  for var in echo old_CC old_CFLAGS AR AR_FLAGS RANLIB LN_S LTCC NM SHELL \
     libname_spec library_names_spec soname_spec extract_expsyms_cmds \
     old_striplib striplib file_magic_cmd finish_cmds finish_eval \
     deplibs_check_method reload_flag reload_cmds need_locks \
@@ -3391,7 +3394,7 @@ AR=$lt_AR
 AR_FLAGS=$lt_AR_FLAGS
 
 # A C compiler.
-LTCC=$LTCC
+LTCC=$lt_LTCC
 
 # A language-specific compiler.
 CC=$lt_[]_LT_AC_TAGVAR(compiler, $1)
@@ -3746,7 +3749,7 @@ hpux*) # Its linker distinguishes data from code symbols
   lt_cv_sys_global_symbol_to_cdecl="sed -n -e 's/^T .* \(.*\)$/extern int \1();/p' -e 's/^$symcode* .* \(.*\)$/extern char \1;/p'"
   lt_cv_sys_global_symbol_to_c_name_address="sed -n -e 's/^: \([[^ ]]*\) $/  {\\\"\1\\\", (lt_ptr) 0},/p' -e 's/^$symcode* \([[^ ]]*\) \([[^ ]]*\)$/  {\"\2\", (lt_ptr) \&\2},/p'"
   ;;
-irix*)
+irix* | nonstopux*)
   symcode='[[BCDEGRST]]'
   ;;
 solaris* | sysv5*)
@@ -3913,7 +3916,7 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
       # like `-m68040'.
       _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-m68020 -resident32 -malways-restore-a4'
       ;;
-    beos* | irix5* | irix6* | osf3* | osf4* | osf5*)
+    beos* | irix5* | irix6* | nonstopux* | osf3* | osf4* | osf5*)
       # PIC is the default for these OSes.
       ;;
     cygwin* | mingw* | os2*)
@@ -4000,7 +4003,7 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
 	    ;;
 	esac
 	;;
-      irix5* | irix6*)
+      irix5* | irix6* | nonstopux*)
 	case $cc_basename in
 	  CC)
 	    _LT_AC_TAGVAR(lt_prog_compiler_wl, $1)='-Wl,'
@@ -4148,7 +4151,7 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
       _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-m68020 -resident32 -malways-restore-a4'
       ;;
 
-    beos* | irix5* | irix6* | osf3* | osf4* | osf5*)
+    beos* | irix5* | irix6* | nonstopux* | osf3* | osf4* | osf5*)
       # PIC is the default for these OSes.
       ;;
 
@@ -4216,7 +4219,7 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
       _LT_AC_TAGVAR(lt_prog_compiler_static, $1)='${wl}-a ${wl}archive'
       ;;
 
-    irix5* | irix6*)
+    irix5* | irix6* | nonstopux*)
       _LT_AC_TAGVAR(lt_prog_compiler_wl, $1)='-Wl,'
       # PIC (with -KPIC) is the default.
       _LT_AC_TAGVAR(lt_prog_compiler_static, $1)='-non_shared'
@@ -4324,7 +4327,7 @@ ifelse([$1],[CXX],[
     fi
     ;;
   cygwin* | mingw* | pw32*)
-    _LT_AC_TAGVAR(export_symbols_cmds, $1)="$ltdll_cmds"'
+    _LT_AC_TAGVAR(export_symbols_cmds, $1)="$ltdll_cmds"
   ;;
   *)
     _LT_AC_TAGVAR(export_symbols_cmds, $1)='$NM $libobjs $convenience | $global_symbol_pipe | sed '\''s/.* //'\'' | sort | uniq > $export_symbols'
@@ -4836,7 +4839,7 @@ EOF
       _LT_AC_TAGVAR(export_dynamic_flag_spec, $1)='${wl}-E'
       ;;
 
-    irix5* | irix6*)
+    irix5* | irix6* | nonstopux*)
       if test "$GCC" = yes; then
 	_LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname ${wl}$soname `test -n "$verstring" && echo ${wl}-set_version ${wl}$verstring` ${wl}-update_registry ${wl}${output_objdir}/so_locations -o $lib'
       else
@@ -5324,7 +5327,55 @@ AC_DEFUN([LT_AC_PROG_RC],
 ## configuration script generated by Autoconf, you may include it under
 ## the same distribution terms that you use for the rest of that program.
 
-# serial 4 AC_LIB_LTDL
+# serial 6 AC_LIB_LTDL
+
+# AC_WITH_LTDL
+# ------------
+# Clients of libltdl can use this macro to allow the installer to
+# choose between a shipped copy of the ltdl sources or a preinstalled
+# version of the library.
+AC_DEFUN([AC_WITH_LTDL],
+[AC_REQUIRE([AC_LIB_LTDL])
+AC_SUBST([LIBLTDL])
+AC_SUBST([INCLTDL])
+
+# Unless the user asks us to check, assume no installed ltdl exists.
+use_installed_libltdl=no
+
+AC_ARG_WITH([included_ltdl],
+    [  --with-included-ltdl    use the GNU ltdl sources included here])
+
+if test "x$with_included_ltdl" != xyes; then
+  # We are not being forced to use the included libltdl sources, so
+  # decide whether there is a useful installed version we can use.
+  AC_CHECK_HEADER([ltdl.h],
+      [AC_CHECK_LIB([ltdl], [lt_dlcaller_register],
+          [with_included_ltdl=no],
+          [with_included_ltdl=yes])
+  ])
+fi
+
+if test "x$enable_ltdl_install" != xyes; then
+  # If the user did not specify an installable libltdl, then default
+  # to a convenience lib.
+  AC_LIBLTDL_CONVENIENCE
+fi
+
+if test "x$with_included_ltdl" = xno; then
+  # If the included ltdl is not to be used. then Use the
+  # preinstalled libltdl we found.
+  AC_DEFINE([HAVE_LTDL], 1,
+    [Define this if a modern libltdl is already installed])
+  LIBLTDL=-lltdl
+fi
+
+# Report our decision...
+AC_MSG_CHECKING([whether to use included libltdl])
+AC_MSG_RESULT([$with_included_ltdl])
+
+AC_CONFIG_SUBDIRS([libltdl])
+])# AC_WITH_LTDL
+
 
 # AC_LIB_LTDL
 # -----------

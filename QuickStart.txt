@@ -32,6 +32,7 @@ Environment Variables:
       MAGICK_CACHE_THRESHOLD	megabytes of memory available to pixel cache
       TMPDIR			path to store temporary files
       LD_LIBRARY_PATH		path to libMagick.so
+      MAGICK_FONT_PATH          search path for font files
 
 
 Unix/Linux/Darwin/Cygwin Install:
@@ -116,3 +117,4 @@ VMS Install:
       set default [.imagemagick]
       @make
       identify -verbose logo:
+
