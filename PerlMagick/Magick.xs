@@ -470,6 +470,9 @@ static struct
       {"rotate", DoubleReference}, {"skewX", DoubleReference},
       {"skewY", DoubleReference} } },
     { "Compare", { {"image", ImageReference} } },
+    { "AdaptiveThreshold", { {"geometry", StringReference},
+      {"radius", DoubleReference}, {"sigma", DoubleReference},
+      {"offset", DoubleReference} } },
   };
 
 #ifdef START_MY_CXT
@@ -4287,6 +4290,8 @@ Mogrify(ref,...)
     AffineTransformImage = 150
     Compare            = 151
     CompareImage       = 152
+    AdaptiveThreshold  = 153
+    AdaptiveThresholdImage = 154
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -5789,8 +5794,8 @@ Mogrify(ref,...)
           if (attribute_flag[4])
             threshold=argument_list[4].double_reference;
           if (attribute_flag[0])
-            (void) sscanf(argument_list[0].string_reference,"%lfx%lf",
-              &radius,&sigma);
+            (void) sscanf(argument_list[0].string_reference,"%lfx%lf%lf%lf",
+              &radius,&sigma,&amount,&threshold);
           image=UnsharpMaskImage(image,radius,sigma,amount,threshold,
             &exception);
           break;
@@ -5965,6 +5970,28 @@ Mogrify(ref,...)
               goto ReturnIt;
             }
           (void) IsImagesEqual(image,argument_list[0].image_reference);
+          break;
+        }
+        case 77:  /* AdaptiveThreshold */
+        {
+          double
+            offset,
+            radius,
+            sigma;
+
+          radius=0.0;
+          sigma=1.0;
+          offset=1.0;
+          if (attribute_flag[1])
+            radius=argument_list[1].double_reference;
+          if (attribute_flag[2])
+            sigma=argument_list[2].double_reference;
+          if (attribute_flag[3])
+            offset=argument_list[3].double_reference;
+          if (attribute_flag[0])
+            (void) sscanf(argument_list[0].string_reference,"%lfx%lf%lf",
+              &radius,&sigma,&offset);
+          image=AdaptiveThresholdImage(image,radius,sigma,offset,&exception);
           break;
         }
       }

@@ -3895,6 +3895,31 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               (void) SetImageAttribute(*image,"label",argv[++i]);
             continue;
           }
+        if (LocaleCompare("lat",option+1) == 0)
+          {
+            double
+              offset,
+              radius,
+              sigma;
+
+            Image
+              *threshold_image;
+
+            /*
+              Local adaptive threshold image.
+            */
+            offset=1.0;
+            radius=0.0;
+            sigma=1.0;
+            (void) sscanf(argv[++i],"%lfx%lf%lf",&radius,&sigma,&offset);
+            threshold_image=AdaptiveThresholdImage(*image,radius,sigma,offset,
+              &(*image)->exception);
+            if (threshold_image == (Image *) NULL)
+              break;
+            DestroyImage(*image);
+            *image=threshold_image;
+            continue;
+          }
         if (LocaleCompare("level",option+1) == 0)
           {
             (void) LevelImage(*image,argv[++i]);

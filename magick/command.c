@@ -2288,6 +2288,16 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("lat",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                  ThrowConvertException(OptionError,"Missing geometry",option);
+              }
+            break;
+          }
         if (LocaleCompare("level",option+1) == 0)
           {
             i++;
@@ -4410,6 +4420,16 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowMogrifyException(OptionWarning,"Missing label name",
                     option);
+              }
+            break;
+          }
+        if (LocaleCompare("lat",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                  ThrowMogrifyException(OptionError,"Missing geometry",option);
               }
             break;
           }
