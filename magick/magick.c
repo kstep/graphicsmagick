@@ -580,7 +580,7 @@ MagickExport void InitializeMagick(const char *path)
       GetPathComponent(path,TailPath,filename);
       (void) SetClientName(filename);
     }
-#if !defined(WIN32)
+#if defined(WIN32)
   if (path == (const char *) NULL)
     {
       char
