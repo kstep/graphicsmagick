@@ -97,7 +97,7 @@ extern "C" {
 #define False  0
 #define ImageReference  (char **) 3
 #define IntegerReference  (char **) 1
-#define MaxArguments  26
+#define MaxArguments  27
 #ifndef na
 #define na  PL_na
 #endif
@@ -344,7 +344,8 @@ static struct
       {"antialias", BooleanTypes}, {"family", StringReference},
       {"style", StyleTypes}, {"stretch", StretchTypes},
       {"weight", IntegerReference}, {"align", AlignTypes},
-      {"encoding", StringReference}, {"unicode", BooleanTypes } } },
+      {"encoding", StringReference}, {"unicode", BooleanTypes },
+      {"affine", ArrayReference} } },
     { "ColorFloodfill", { {"geometry", StringReference},
       {"x", IntegerReference}, {"y", IntegerReference},
       {"fill", StringReference}, {"bordercolor", StringReference},
@@ -366,7 +367,8 @@ static struct
       {"rotate", DoubleReference}, {"skewX", DoubleReference},
       {"skewY", DoubleReference}, {"tile", ImageReference},
       {"pointsize", DoubleReference}, {"antialias", BooleanTypes},
-      {"density", StringReference}, {"linewidth", DoubleReference} } },
+      {"density", StringReference}, {"linewidth", DoubleReference},
+      {"affine", ArrayReference} } },
     { "Equalize", },
     { "Gamma", { {"gamma", StringReference}, {"red", DoubleReference},
       {"green", DoubleReference}, {"blue", DoubleReference} } },
@@ -425,9 +427,10 @@ static struct
     { "Level", { {"level", StringReference}, {"black-point", DoubleReference},
       {"mid-point", DoubleReference}, {"white-point", DoubleReference} } },
     { "Clip", },
-    { "AffineTransform", {{"translate", StringReference},
-      {"scale", StringReference}, {"rotate", DoubleReference},
-			{"skewX", DoubleReference}, {"skewY", DoubleReference} } },
+    { "AffineTransform", { {"affine", ArrayReference},
+      {"translate", StringReference}, {"scale", StringReference},
+      {"rotate", DoubleReference}, {"skewX", DoubleReference},
+      {"skewY", DoubleReference} } },
   };
 
 /*
@@ -4770,6 +4773,25 @@ Mogrify(ref,...)
             }
           if (attribute_flag[11])
             draw_info->gravity=(GravityType) argument_list[11].int_reference;
+          if (attribute_flag[26])
+            {
+              AV
+                *av;
+
+              av=(AV *) argument_list[26].array_reference;
+              if (av_len(av) >= 1)
+                draw_info->affine.sx=(double) SvNV(*(av_fetch(av,0,0)));
+              if (av_len(av) >= 2)
+                draw_info->affine.rx=(double) SvNV(*(av_fetch(av,1,0)));
+              if (av_len(av) >= 3)
+                draw_info->affine.ry=(double) SvNV(*(av_fetch(av,2,0)));
+              if (av_len(av) >= 4)
+                draw_info->affine.sy=(double) SvNV(*(av_fetch(av,3,0)));
+              if (av_len(av) >= 5)
+                draw_info->affine.tx=(double) SvNV(*(av_fetch(av,4,0)));
+              if (av_len(av) >= 6)
+                draw_info->affine.ty=(double) SvNV(*(av_fetch(av,5,0)));
+            }
           for (j=12; j < 17; j++)
           {
             if (!attribute_flag[j])
@@ -5089,6 +5111,25 @@ Mogrify(ref,...)
             draw_info->affine.tx=argument_list[8].double_reference;
           if (attribute_flag[9])
             draw_info->affine.ty=argument_list[9].double_reference;
+          if (attribute_flag[20])
+            {
+              AV
+                *av;
+
+              av=(AV *) argument_list[20].array_reference;
+              if (av_len(av) >= 1)
+                draw_info->affine.sx=(double) SvNV(*(av_fetch(av,0,0)));
+              if (av_len(av) >= 2)
+                draw_info->affine.rx=(double) SvNV(*(av_fetch(av,1,0)));
+              if (av_len(av) >= 3)
+                draw_info->affine.ry=(double) SvNV(*(av_fetch(av,2,0)));
+              if (av_len(av) >= 4)
+                draw_info->affine.sy=(double) SvNV(*(av_fetch(av,3,0)));
+              if (av_len(av) >= 5)
+                draw_info->affine.tx=(double) SvNV(*(av_fetch(av,4,0)));
+              if (av_len(av) >= 6)
+                draw_info->affine.ty=(double) SvNV(*(av_fetch(av,5,0)));
+            }
           for (j=10; j < 15; j++)
           {
             if (!attribute_flag[j])
@@ -5539,7 +5580,7 @@ Mogrify(ref,...)
 
           if (!attribute_flag[0])
             break;
-          av=(AV*) argument_list[0].array_reference;
+          av=(AV *) argument_list[0].array_reference;
           radius=(unsigned int) sqrt(av_len(av)+1);
           kernel=(double *) AcquireMemory(radius*radius*sizeof(double));
           for (j=0; j < (av_len(av)+1); j++)
@@ -5557,7 +5598,8 @@ Mogrify(ref,...)
           if (!attribute_flag[1])
             argument_list[1].string_reference=(char *) NULL;
           (void) ProfileImage(image,argument_list[0].string_reference,
-            (const unsigned char *) argument_list[1].string_reference,argument_list[1].length);
+            (const unsigned char *) argument_list[1].string_reference,
+            argument_list[1].length);
           break;
         }
         case 69:  /* UnsharpMask */
@@ -5656,7 +5698,26 @@ Mogrify(ref,...)
 
           draw_info=CloneDrawInfo(info ? info->image_info : (ImageInfo *) NULL,
             info ? info->draw_info : (DrawInfo *) NULL);
-          for (j=0; j < 5; j++)
+          if (attribute_flag[0])
+            {
+              AV
+                *av;
+
+              av=(AV *) argument_list[0].array_reference;
+              if (av_len(av) >= 1)
+                draw_info->affine.sx=(double) SvNV(*(av_fetch(av,0,0)));
+              if (av_len(av) >= 2)
+                draw_info->affine.rx=(double) SvNV(*(av_fetch(av,1,0)));
+              if (av_len(av) >= 3)
+                draw_info->affine.ry=(double) SvNV(*(av_fetch(av,2,0)));
+              if (av_len(av) >= 4)
+                draw_info->affine.sy=(double) SvNV(*(av_fetch(av,3,0)));
+              if (av_len(av) >= 5)
+                draw_info->affine.tx=(double) SvNV(*(av_fetch(av,4,0)));
+              if (av_len(av) >= 6)
+                draw_info->affine.ty=(double) SvNV(*(av_fetch(av,5,0)));
+            }
+          for (j=1; j < 6; j++)
           {
             if (!attribute_flag[j])
               continue;
@@ -5666,7 +5727,7 @@ Mogrify(ref,...)
             IdentityAffine(&affine);
             switch (j)
             {
-              case 0:
+              case 1:
               {
                 /*
                   Translate.
@@ -5676,7 +5737,7 @@ Mogrify(ref,...)
                   affine.ty=affine.tx;
                 break;
               }
-              case 1:
+              case 2:
               {
                 /*
                   Scale.
@@ -5686,7 +5747,7 @@ Mogrify(ref,...)
                   affine.sy=affine.sx;
                 break;
               }
-              case 2:
+              case 3:
               {
                 /*
                   Rotate.
@@ -5699,7 +5760,7 @@ Mogrify(ref,...)
                 affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
                 break;
               }
-              case 3:
+              case 4:
               {
                 /*
                   SkewX.
@@ -5707,7 +5768,7 @@ Mogrify(ref,...)
                 affine.ry=tan(DegreesToRadians(fmod(angle,360.0)));
                 break;
               }
-              case 4:
+              case 5:
               {
                 /*
                   SkewY.
