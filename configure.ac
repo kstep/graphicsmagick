@@ -1219,9 +1219,8 @@ then
     failed=0;
     passed=0;
     AC_CHECK_HEADER(libwmf/ipa.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-#    AC_CHECK_LIB(Xpm,XpmReadFileToBuffer,LIBS="-lXpm $LIBS"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-#    AC_CHECK_LIB(dib,save_DIBasXpm,LIBS="-ldib $LIBS"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(wmf,wmf_api_create,LIBS="-lwmf $LIBS"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    extra_libs=`libwmf-config --libs`
+    AC_CHECK_LIB(wmf,wmf_api_create,LIBS="-lwmf $LIBS"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,$extra_libs)
     AC_MSG_CHECKING(if WMF package is complete)
     if test $passed -gt 0
     then
