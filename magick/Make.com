@@ -26,7 +26,7 @@ $call Make attribute.c
 $call Make blob.c
 $call Make cache.c
 $call Make cache_view.c
-$call Make colors.c
+$call Make color.c
 $call Make compress.c
 $call Make constitute.c
 $call Make decorate.c
