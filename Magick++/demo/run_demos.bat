@@ -1,12 +1,9 @@
-@echo off
-@echo button ...
-..\..\VisualMagick\bin\button
-@echo
-@echo demo ...
-..\..\VisualMagick\bin\demo
-@echo
-@echo flip ...
-..\..\VisualMagick\bin\flip
-@echo
-@echo shapes ...
-..\..\VisualMagick\bin\shapes
+: Batch script to run Magick++ demos
+@echo !!! button !!!
+@..\..\VisualMagick\bin\button
+@echo !!! demo !!!
+@..\..\VisualMagick\bin\demo
+@echo !!! flip !!!
+@..\..\VisualMagick\bin\flip
+@echo !!! shapes !!!
+@..\..\VisualMagick\bin\shapes
