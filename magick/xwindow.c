@@ -3353,34 +3353,20 @@ MagickExport char *XGetResourceInstance(XrmDatabase database,
 MagickExport char *XGetScreenDensity(Display *display)
 {
   char
-    density[MaxTextExtent],
-    geometry[MaxTextExtent];
+    density[MaxTextExtent];
 
   double
     x_density,
     y_density;
 
-  int
-    x,
-    y;
-
-  unsigned int
-    height,
-    width;
-
   /*
     Set density as determined by screen size.
   */
-  (void) strcpy(density,PSDensityGeometry);
-  (void) sscanf(density,"%lfx%lf",&x_density,&y_density);
-  (void) strcpy(geometry,PSPageGeometry);
-  width=XDisplayWidth(display,XDefaultScreen(display));
-  height=XDisplayHeight(display,XDefaultScreen(display));
-  x=0;
-  y=0;
-  (void) XParseGeometry(geometry,&x,&y,&width,&height);
-  FormatString(density,"%d",(int) (Min(x_density,y_density)*
-    (XDisplayHeight(display,XDefaultScreen(display))-40)/(double) height));
+  x_density=((((double) DisplayWidth(display,XDefaultScreen(display)))*25.4)/ 
+    ((double) DisplayWidthMM(display,XDefaultScreen(display))));
+  y_density=((((double) DisplayHeight(display,XDefaultScreen(display)))*25.4)/ 
+    ((double) DisplayHeightMM(display,XDefaultScreen(display))));
+  FormatString(density,"%gx%g",x_density,y_density);
   return(PostscriptGeometry(density));
 }
 
