@@ -116,6 +116,25 @@ typedef struct _DrawInfo
     signature;
 } DrawInfo;
 
+typedef struct _FontInfo
+{ 
+  char
+    *filename,
+    *name,
+    *family,
+    *alias,
+    *description,
+    *format,
+    *weight,
+    *glyphs,
+    *metrics,
+    *version;
+
+  struct _FontInfo
+    *previous,
+    *next;
+} FontInfo;
+
 typedef struct _FontMetric
 {
   PointInfo
@@ -155,17 +174,22 @@ typedef struct _PrimitiveInfo
 extern MagickExport DrawInfo
   *CloneDrawInfo(const ImageInfo *,const DrawInfo *);
 
+extern MagickExport FontInfo
+  *GetFontInfo(const char *,ExceptionInfo *);
+
 extern MagickExport unsigned int
   AnnotateImage(Image *,const DrawInfo *),
   ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const int x,
     const int y,const PaintMethod),
   DrawImage(Image *,const DrawInfo *),
   GetFontMetrics(Image *,const DrawInfo *,FontMetric *),
+  ListFontInfo(FILE *,ExceptionInfo *),
   MatteFloodfillImage(Image *,const PixelPacket,const unsigned int,const int x,
     const int y,const PaintMethod);
 
 extern MagickExport void
   DestroyDrawInfo(DrawInfo *),
+  DestroyFontInfo(void),
   GetDrawInfo(const ImageInfo *,DrawInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
