@@ -1,4 +1,18 @@
-003-08-07  William Radcliffe  <billr@corbis.com>
+2003-08-17  William Radcliffe  <billr@corbis.com>
+	* coders\png.c: Had to modify a few excetpion calls to work with
+	newest macros.
+
+2003-08-17  William Radcliffe  <billr@corbis.com>
+	* coders\locale.c magick/error.h locale.c locale_c.h studio.h:
+	The LOCALEH header file generator now adds an MGK_ prefiix to
+	all the ID defines as part of a fix to support the new error
+	and exception macros cross platform.
+
+2003-08-16  William Radcliffe  <billr@corbis.com>
+	* wand\magick_wand.c pixel_wand.c: The wand api code was totally
+	left out of the large macro conversion below as an oversight.
+
+2003-08-15  William Radcliffe  <billr@corbis.com>
 
 	* .\coders art.c avi.c avs.c bmp.c caption.c clipboard.c cmyk.c
 	cut.c dcm.c dib.c dps.c dpx.c emf.c ept.c fax.c fits.c fpx.c gif.c
