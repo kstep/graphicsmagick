@@ -771,6 +771,8 @@ void wmf_magick_function (wmfAPI* API)
 
 static void wmf_magick_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
 {
+  magickPoint pt;
+
   wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
   char* ps_name = 0;
@@ -786,9 +788,18 @@ static void wmf_magick_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
 
   path = wmf_ipa_font_lookup (API,ps_name);
 
-  if (path) wmf_stream_printf (API,out,"font '%s'\n",path);
+  if (path)
+    {
+      wmf_stream_printf (API,out,"font '%s'\n",path);
 
   /* etc. */
+
+      pt = magick_translate(API,draw_text->pt);
+/*       wmf_stream_printf (API,out,"text %i,%i \"%.1024s\"\n", */
+/*                          pt.x, */
+/*                          pt.y, */
+/*                          draw_text->str); */
+    }
 }
 
 static void wmf_magick_udata_init (wmfAPI* API,wmfUserData_t* userdata)

@@ -334,7 +334,7 @@ ps2_la_LIBADD       = ../magick/libMagick.la @LIB_TIFF@ $(LIB_MATH)
 # PS3 module
 ps3_la_SOURCES      = ps3.c
 ps3_la_LDFLAGS      = -no-undefined -module -avoid-version
-ps3_la_LIBADD       = ../magick/libMagick.la $(LIB_MATH)
+ps3_la_LIBADD       = ../magick/libMagick.la @LIB_TIFF@ $(LIB_MATH)
 
 # PSD module
 psd_la_SOURCES      = psd.c

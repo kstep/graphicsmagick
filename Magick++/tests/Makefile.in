@@ -137,6 +137,7 @@ LZWDecodeDelegate = @LZWDecodeDelegate@
 LZWEncodeDelegate = @LZWEncodeDelegate@
 LaunchDelegate = @LaunchDelegate@
 MAGICKLIB = @MAGICKLIB@
+MAGICK_DEP_LIBS = @MAGICK_DEP_LIBS@
 MAINT = @MAINT@
 MAJOR_VERSION = @MAJOR_VERSION@
 MANDelegate = @MANDelegate@
@@ -178,6 +179,7 @@ am__include = @am__include@
 am__quote = @am__quote@
 freetype_config = @freetype_config@
 install_sh = @install_sh@
+xml2_config = @xml2_config@
 
 AUTOMAKE_OPTIONS = 1.4
 

@@ -162,6 +162,7 @@ LZWDecodeDelegate = @LZWDecodeDelegate@
 LZWEncodeDelegate = @LZWEncodeDelegate@
 LaunchDelegate = @LaunchDelegate@
 MAGICKLIB = @MAGICKLIB@
+MAGICK_DEP_LIBS = @MAGICK_DEP_LIBS@
 MAINT = @MAINT@
 MANDelegate = @MANDelegate@
 MPEGDecodeDelegate = @MPEGDecodeDelegate@
@@ -200,6 +201,7 @@ am__include = @am__include@
 am__quote = @am__quote@
 freetype_config = @freetype_config@
 install_sh = @install_sh@
+xml2_config = @xml2_config@
 
 MAJOR_VERSION = @MAJOR_VERSION@
 MICRO_VERSION = @MICRO_VERSION@
@@ -230,15 +232,8 @@ MAGICK_BASE_SRCS = PreRvIcccm.c animate.c annotate.c attribute.c blob.c \
 # Library sources
 @WITH_MODULES_TRUE@libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
 @WITH_MODULES_FALSE@libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
-@WITH_MODULES_TRUE@libMagick_la_LIBADD = @LIB_LCMS@ @LIB_TIFF@ @LIB_XML@ @LIB_TTF@ @LIB_JPEG@ @LIB_GS@ @LIB_XEXT@ @LIB_XT@ \
-@WITH_MODULES_TRUE@  @LIB_X11@ @LIB_ZLIB@ @LIB_THREAD@ @LIB_LF@ \
-@WITH_MODULES_TRUE@  @LIB_MATH@ $(top_builddir)/ltdl/libltdlc.la
-
-@WITH_MODULES_FALSE@libMagick_la_LIBADD = ../coders/libCoders.la @LIB_JBIG@ @LIB_HDF@ \
-@WITH_MODULES_FALSE@  @LIB_LCMS@ @LIB_TIFF@ @LIB_TTF@ @LIB_JP2@ @LIB_JPEG@ @LIB_GS@ @LIB_PNG@ \
-@WITH_MODULES_FALSE@  @LIB_FPX@ @LIB_WMF@ @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@ @LIB_BZLIB@ \
-@WITH_MODULES_FALSE@  @LIB_XML@ @LIB_ZLIB@ @LIB_THREAD@ @LIB_LF@ @LIB_MATH@
-
+@WITH_MODULES_TRUE@libMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_FALSE@libMagick_la_LIBADD = ../coders/libCoders.la @MAGICK_DEP_LIBS@
 
 # Binary scripts
 bin_SCRIPTS = Magick-config

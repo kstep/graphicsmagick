@@ -35,7 +35,7 @@ while test $# -gt 0; do
       echo '@LDFLAGS@'
       ;;
     --libs)
-      LIBS=`echo -lMagick++ -lMagick @MAGICKLIB@ @LIB_JBIG@ @LIB_HDF@ @LIB_LCMS@ @LIB_TIFF@ @LIB_TTF@ @LIB_JP2@ @LIB_JPEG@ @LIB_XML@ @LIB_PNG@ @LIB_FPX@ @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@ @LIB_THREAD@ @LIB_LF@ @LIB_MATH@ | sed -e 's/  */ /g'`
+      LIBS="-lMagick++ @MAGICKLIB@ @MAGICK_DEP_LIBS@"
       echo "$LIBS"
       ;;
     *)

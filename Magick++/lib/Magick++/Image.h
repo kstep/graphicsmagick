@@ -1105,7 +1105,7 @@ inline const MagickLib::ImageInfo * Magick::Image::constImageInfo( void ) const
 // Get image storage class
 inline Magick::ClassType Magick::Image::classType ( void ) const
 {
-  return static_cast<Magick::ClassType>(constImage()->c_class);
+  return static_cast<Magick::ClassType>(constImage()->storage_class);
 }
 
 // Get number of image columns

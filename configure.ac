@@ -12,8 +12,8 @@ AC_INIT(magick/magick.h)
 
 # Set version
 MAJOR_VERSION=5
-MINOR_VERSION=3
-MICRO_VERSION=9
+MINOR_VERSION=4
+MICRO_VERSION=0
 echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 AC_CANONICAL_SYSTEM
 AC_SUBST(MAJOR_VERSION)dnl
@@ -1620,6 +1620,16 @@ then
 fi
 AM_CONDITIONAL(WITH_MAGICK_PLUS_PLUS, test "$with_magick_plus_plus" != 'no')
 
+#
+# Build library dependency list for libMagick
+#
+if test "$with_modules" != 'no'
+then
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_XML $LIB_TTF $LIB_GS $LIB_XEXT $LIB_XT $LIB_X11 $LIB_ZLIB $LIB_THREAD $LIB_LF $LIB_MATH"
+else
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_HDF $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_XT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_THREAD $LIB_LF $LIB_MATH"
+fi
+AC_SUBST(MAGICK_DEP_LIBS)
 
 #
 # Remove extraneous spaces from output variables (asthetic)
@@ -1635,6 +1645,7 @@ CPPFLAGS=`echo $CPPFLAGS | sed -e 's/  */ /g'`
 CXXFLAGS=`echo $CXXFLAGS | sed -e 's/  */ /g'`
 LDFLAGS=`echo $LDFLAGS | sed -e 's/  */ /g'`
 TESTED_LIBS=`echo $LIBS | sed -e 's/  */ /g'`
+MAGICK_DEP_LIBS=`echo $MAGICK_DEP_LIBS | sed -e 's/  */ /g'`
 #LIBS=`echo $LIBS | sed -e 's/  */ /g'`
 LIBS=""
 
@@ -1705,6 +1716,7 @@ echo "  CPPFLAGS = $CPPFLAGS"
 echo "  CXX      = $CXX"
 echo "  CXXFLAGS = $CXXFLAGS"
 echo "  LDFLAGS  = $LDFLAGS"
-echo "  LIBS     = $TESTED_LIBS"
+#echo "  LIBS     = $TESTED_LIBS"
+echo "  LIBS     = $MAGICK_DEP_LIBS"
 echo ""
 

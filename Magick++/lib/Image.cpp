@@ -1925,7 +1925,7 @@ void Magick::Image::classType ( Magick::ClassType class_ )
       modifyImage();
       SyncImage( image() );
       LiberateMemory( reinterpret_cast<void**>(&(image()->colormap)) );
-      image()->c_class = static_cast<MagickLib::ClassType>(DirectClass);
+      image()->storage_class = static_cast<MagickLib::ClassType>(DirectClass);
       return;
     }
 
@@ -1935,7 +1935,7 @@ void Magick::Image::classType ( Magick::ClassType class_ )
       modifyImage();
       quantizeColors(MaxRGB + 1);
       quantize();
-      image()->c_class = static_cast<MagickLib::ClassType>(PseudoClass);
+      image()->storage_class = static_cast<MagickLib::ClassType>(PseudoClass);
     }
 }
 
