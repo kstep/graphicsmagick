@@ -3,6 +3,8 @@
 	* (index.html, www/*.html): Update to new web page style.
 	* scripts/txt2html: Update to output new web page style.
 	* ltmain.sh: Updated to latest CVS libtool.
+	* magick/tempfile.c (DestroyTemporaryFiles): Function was
+	crashing if it was executed twice.
 
 2003-04-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

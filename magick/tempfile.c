@@ -427,7 +427,9 @@ MagickExport void DestroyTemporaryFiles(void)
     *member,
     *liberate;
 
+  AcquireSemaphoreInfo(&templist_semaphore);
   member=templist;
+  templist=0;
   while(member)
     {
       liberate=member;
@@ -437,8 +439,10 @@ MagickExport void DestroyTemporaryFiles(void)
       if ((remove(liberate->filename)) != 0)
         (void) LogMagickEvent(TemporaryFileEvent,GetMagickModule(),
           "Temporary file removal failed \"%s\"",liberate->filename);
+      liberate->next=0;
       LiberateMemory((void **)&liberate);
     }
+  LiberateSemaphoreInfo(&templist_semaphore);
 }
 
 /*
